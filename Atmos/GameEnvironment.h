@@ -45,9 +45,10 @@ namespace Atmos
 
         static Modulator::Observer GenerateModulator(const Name &name);
         static ModulatorTrackGenerateT GenerateModulatorTrack(const Name &modName, const Name &trackName);
-        static void AttachModulator(const Modulator::Observer &attach);
+        static Modulator::Controller::ID AttachModulator(const Modulator::Observer &attach);
         static void DetachModulator(const Modulator::Observer &detach);
         static void DetachModulator(const Modulator::ModulatorBase &detach);
+        static Modulator::Observer FindModulator(Modulator::Controller::ID find);
 
         static ::affecter::System& GetAffecterSystem();
     };

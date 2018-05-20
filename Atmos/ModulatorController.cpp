@@ -7,12 +7,26 @@ namespace Atmos
 {
     namespace Modulator
     {
-        void Controller::Attach(const Observer &attach)
+        bool Controller::IsIn(const Observer &check) const
         {
-            if (IsWorking(attach))
-                return;
+            for (auto &loop : observers)
+                if (loop == check)
+                    return true;
 
-            observers.push_back(attach);
+            return false;
+        }
+
+        Controller::ID Controller::Attach(const Observer &attach)
+        {
+            if (IsIn(attach))
+                return observers.nullID;
+
+            return observers.Add(attach);
+        }
+
+        void Controller::Detach(ID detach)
+        {
+            observers.Remove(detach);
         }
 
         void Controller::Detach(const Observer &detach)
@@ -21,7 +35,7 @@ namespace Atmos
             {
                 if (detach == *loop)
                 {
-                    observers.erase(loop);
+                    observers.Remove(loop);
                     return;
                 }
             }
@@ -33,27 +47,25 @@ namespace Atmos
             {
                 if (&detach == loop->Get())
                 {
-                    observers.erase(loop);
+                    observers.Remove(loop);
                     return;
                 }
             }
+        }
+
+        Observer Controller::Find(ID find) const
+        {
+            auto found = observers.Find(find);
+            if (found == observers.end())
+                return Observer();
+
+            return *found;
         }
 
         void Controller::Work()
         {
             for (auto &loop : observers)
                 loop->Work();
-        }
-
-        bool Controller::IsWorking(const Observer &check) const
-        {
-            for (auto &loop : observers)
-            {
-                if (check == loop)
-                    return true;
-            }
-
-            return false;
         }
     }
 }

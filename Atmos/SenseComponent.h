@@ -28,85 +28,6 @@ namespace Atmos
             typedef SpriteList::HandleT SpriteHandle;
             typedef SoundList::HandleT SoundHandle;
             typedef AVEffectList::HandleT AVEffectHandle;
-
-            // Modulators
-            typedef Modulator::Modulator<SpriteHandle> SpriteModulator;
-            typedef Modulator::Modulator<SoundHandle> SoundModulator;
-            typedef Modulator::Modulator<AVEffectHandle> AVEffectModulator;
-
-            enum class ModulatorEntryType
-            {
-                SPRITE,
-                SOUND,
-                AV_EFFECT
-            };
-
-            class ModulatorEntry
-            {
-            public:
-                // The ID that is used to find the object it's going to modulate
-                typedef size_t ObjectID;
-                typedef ModulatorEntryType Type;
-            private:
-                INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
-                INSCRIPTION_ACCESS;
-            private:
-                ObjectID id;
-                Type type;
-                Modulator::GeneratorRoute generatorRoute;
-                Modulator::Observer modulatorObserver;
-            public:
-                ModulatorEntry();
-                ModulatorEntry(ObjectID id, Type type, const Modulator::GeneratorRoute &generatorRoute);
-                ModulatorEntry(ObjectID id, Type type, Modulator::GeneratorRoute &&generatorRoute);
-                ModulatorEntry(const ModulatorEntry &arg) = default;
-                ModulatorEntry(ModulatorEntry &&arg);
-                ModulatorEntry& operator=(const ModulatorEntry &arg) = default;
-                ModulatorEntry& operator=(ModulatorEntry &&arg);
-                bool operator==(const ModulatorEntry &arg) const;
-                bool operator!=(const ModulatorEntry &arg) const;
-
-                Modulator::Observer Start(SenseComponent &component);
-                void Stop();
-                bool IsWorking() const;
-                TimeValue GetSumTimeTaken() const;
-            };
-
-            class ModulatorPack
-            {
-            public:
-                typedef size_t EntryID;
-            private:
-                INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
-                INSCRIPTION_ACCESS;
-            private:
-                std::vector<ModulatorEntry> entries;
-            public:
-                ModulatorPack() = default;
-                ModulatorPack(const ModulatorPack &arg) = default;
-                ModulatorPack(ModulatorPack &&arg);
-                ModulatorPack& operator=(const ModulatorPack &arg) = default;
-                ModulatorPack& operator=(ModulatorPack &&arg);
-                bool operator==(const ModulatorPack &arg) const;
-                bool operator!=(const ModulatorPack &arg) const;
-
-                void StartAll(SenseComponent &component);
-                void StopAll();
-                bool IsWorking() const;
-                TimeValue GetTimeTaken() const;
-
-                ModulatorEntry* Add(ModulatorEntry::ObjectID id, ModulatorEntryType type);
-                ModulatorEntry* Add(ModulatorEntry::ObjectID id, ModulatorEntryType type, const Modulator::GeneratorRoute &generatorRoute);
-                ModulatorEntry* Add(ModulatorEntry::ObjectID id, ModulatorEntryType type, Modulator::GeneratorRoute &&generatorRoute);
-                ModulatorEntry* Add(const ModulatorEntry &add);
-                ModulatorEntry* Add(ModulatorEntry &&add);
-                void Remove(EntryID remove);
-            };
-
-            typedef std::unordered_map<Name, ModulatorPack> ModulatorPackMap;
-        private:
-            template<class T>
-            struct ModulatorTraits;
         private:
             INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
             INSCRIPTION_ACCESS;
@@ -139,8 +60,6 @@ namespace Atmos
             SpriteList sprites;
             SoundList sounds;
             AVEffectList avEffects;
-
-            ModulatorPackMap modulatorPacks;
 
             bool show;
 
@@ -182,13 +101,6 @@ namespace Atmos
             void RemoveAVEffect(AVEffectList::ID id);
             AVEffectHandle* FindAVEffect(AVEffectList::ID id);
             const AVEffectHandle* FindAVEffect(AVEffectList::ID id) const;
-
-            ModulatorPack* AddModulatorPack(const Name &name);
-            void RemoveModulatorPack(const Name &name);
-            ModulatorPack* FindModulatorPack(const Name &name);
-            const ModulatorPack* FindModulatorPack(const Name &name) const;
-            void StartModulatorPack(const Name &name);
-            void StopModulatorPack(const Name &name);
 
             void Show(bool set = true);
             void Hide();

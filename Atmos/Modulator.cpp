@@ -1,8 +1,6 @@
 
 #include "Modulator.h"
 
-#include "GameEnvironment.h"
-
 namespace Atmos
 {
     namespace Modulator
@@ -12,14 +10,15 @@ namespace Atmos
             working = true;
         }
 
-        ModulatorBase::ModulatorBase() : working(false)
+        ModulatorBase::ModulatorBase(const Name &generatorName) : generatorName(&generatorName), working(false)
         {}
 
-        ModulatorBase::ModulatorBase(ModulatorBase &&arg) : working(std::move(arg.working))
+        ModulatorBase::ModulatorBase(ModulatorBase &&arg) : generatorName(std::move(arg.generatorName)), working(std::move(arg.working))
         {}
 
         ModulatorBase& ModulatorBase::operator=(ModulatorBase &&arg)
         {
+            generatorName = std::move(arg.generatorName);
             working = std::move(arg.working);
             return *this;
         }
@@ -34,29 +33,30 @@ namespace Atmos
             return CloneImpl();
         }
 
-        TrackBase* ModulatorBase::AddTrack(TrackPtr &&add)
+        ModulatorBase::TrackID ModulatorBase::AddTrack(TrackPtr &&add)
         {
             return AddTrackImpl(std::move(add));
         }
 
-        void ModulatorBase::RemoveTrack(ID id)
+        void ModulatorBase::RemoveTrack(TrackID id)
         {
             RemoveTrackImpl(id);
         }
 
-        TrackBase* ModulatorBase::FindTrack(ID id)
+        TrackBase* ModulatorBase::FindTrack(TrackID id)
         {
             return FindTrackImpl(id);
         }
 
-        const TrackBase* ModulatorBase::FindTrack(ID id) const
+        const TrackBase* ModulatorBase::FindTrack(TrackID id) const
         {
             return FindTrackImpl(id);
         }
 
         void ModulatorBase::Stop()
         {
-            GameEnvironment::DetachModulator(*this);
+            working = false;
+            StopImpl();
         }
 
         bool ModulatorBase::Work()
@@ -64,7 +64,7 @@ namespace Atmos
             bool result = WorkImpl();
             if (result)
             {
-                working = false;
+                Stop();
                 return true;
             }
 
@@ -79,6 +79,11 @@ namespace Atmos
         TimeValue ModulatorBase::GetSumTimeTaken() const
         {
             return TimeValue();
+        }
+
+        const Name& ModulatorBase::GetGeneratorName() const
+        {
+            return *generatorName;
         }
     }
 }

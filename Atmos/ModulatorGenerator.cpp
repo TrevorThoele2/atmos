@@ -15,6 +15,23 @@ namespace Atmos
             return GenerateImpl();
         }
 
+        GeneratorBase::GeneratorBase(const Name &name) : name(name)
+        {}
+
+        GeneratorBase::GeneratorBase(GeneratorBase &&arg) : name(std::move(arg.name))
+        {}
+
+        GeneratorBase& GeneratorBase::operator=(GeneratorBase &&arg)
+        {
+            name = std::move(arg.name);
+            return *this;
+        }
+
+        bool GeneratorBase::operator==(const GeneratorBase &arg) const
+        {
+            return name == arg.name;
+        }
+
         Observer GeneratorBase::Generate() const
         {
             return GenerateImpl();
@@ -23,6 +40,11 @@ namespace Atmos
         GeneratorBase::GenerateTrackPtrT GeneratorBase::GenerateTrack(const Name &name) const
         {
             return GenerateTrackPtrT(GenerateTrackImpl(name));
+        }
+
+        const Name& GeneratorBase::GetName() const
+        {
+            return name;
         }
     }
 }

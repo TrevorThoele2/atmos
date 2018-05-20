@@ -1,8 +1,8 @@
 #pragma once
 
 #include <vector>
-
 #include "ModulatorObserver.h"
+#include "IDManager.h"
 
 namespace Atmos
 {
@@ -12,14 +12,19 @@ namespace Atmos
 
         class Controller
         {
-        private:
-            std::vector<Observer> observers;
         public:
-            void Attach(const Observer &attach);
+            typedef size_t ID;
+        private:
+            IDManager<std::vector<Observer>> observers;
+            bool IsIn(const Observer &check) const;
+        public:
+            // Modulators which are just being attached are classified as being staged; you must start them explicitly
+            ID Attach(const Observer &attach);
+            void Detach(ID detach);
             void Detach(const Observer &detach);
             void Detach(const ModulatorBase &detach);
+            Observer Find(ID find) const;
             void Work();
-            bool IsWorking(const Observer &check) const;
         };
     }
 }

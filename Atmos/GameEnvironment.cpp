@@ -60,7 +60,7 @@ namespace Atmos
         {
             auto &modulatorGenerators = Instance().modulatorGenerators;
 
-#define CREATE_GENERATOR(describer) static_cast<Modulator::Generator<decltype(describer)::Type>*>(modulatorGenerators.emplace(describer.name, ModulatorGeneratorPtr(new Modulator::Generator<decltype(describer)::Type>())).first->second.get())
+#define CREATE_GENERATOR(describer) static_cast<Modulator::Generator<decltype(describer)::Type>*>(modulatorGenerators.emplace(describer.name, ModulatorGeneratorPtr(new Modulator::Generator<decltype(describer)::Type>(describer.name))).first->second.get())
 
 #define START_TRACK_GENERATOR(describer, objectType)                    \
 gen->AddTrackGenerator(describer.name, describer.variantType,                                \
@@ -75,7 +75,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
             {
                 auto gen = CREATE_GENERATOR(Modulator::Description::Sprite);
                 // Position 3D X
-                START_TRACK_GENERATOR(Modulator::Description::Position3DX, Sprite)
+                START_TRACK_GENERATOR(Modulator::Description::Track::PositionX, Sprite)
                 {
                     args.object.SetX(static_cast<Sprite::PositionT::ValueT>((Modulator::Delta(args.ending.AsFloat()) * args.delta) + (Modulator::Delta(args.starting.AsFloat()) * (Modulator::Delta(1) - args.delta))));
                 }
@@ -83,7 +83,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
                 END_TRACK_GENERATOR;
 
                 // Position 3D Y
-                START_TRACK_GENERATOR(Modulator::Description::Position3DY, Sprite)
+                START_TRACK_GENERATOR(Modulator::Description::Track::PositionY, Sprite)
                 {
                     args.object.SetY(static_cast<Sprite::PositionT::ValueT>((Modulator::Delta(args.ending.AsFloat()) * args.delta) + (Modulator::Delta(args.starting.AsFloat()) * (Modulator::Delta(1) - args.delta))));
                 }
@@ -91,7 +91,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
                 END_TRACK_GENERATOR;
 
                 // Position 3D Z
-                START_TRACK_GENERATOR(Modulator::Description::Position3DZ, Sprite)
+                START_TRACK_GENERATOR(Modulator::Description::Track::PositionZ, Sprite)
                 {
                     args.object.SetZ(static_cast<Sprite::PositionT::ValueT>((Modulator::Delta(args.ending.AsFloat()) * args.delta) + (Modulator::Delta(args.starting.AsFloat()) * (Modulator::Delta(1) - args.delta))));
                 }
@@ -99,7 +99,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
                 END_TRACK_GENERATOR;
 
                 // Scaling X
-                START_TRACK_GENERATOR(Modulator::Description::ScalingX, Sprite)
+                START_TRACK_GENERATOR(Modulator::Description::Track::ScalingX, Sprite)
                 {
                     args.object.SetXScaler(static_cast<Size3D::ValueT>((Modulator::Delta(args.ending.AsFloat()) * args.delta) + (Modulator::Delta(args.starting.AsFloat()) * (Modulator::Delta(1) - args.delta))));
                 }
@@ -107,7 +107,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
                 END_TRACK_GENERATOR;
 
                 // Scaling Y
-                START_TRACK_GENERATOR(Modulator::Description::ScalingY, Sprite)
+                START_TRACK_GENERATOR(Modulator::Description::Track::ScalingY, Sprite)
                 {
                     args.object.SetXScaler(static_cast<Size3D::ValueT>((Modulator::Delta(args.ending.AsFloat()) * args.delta) + (Modulator::Delta(args.starting.AsFloat()) * (Modulator::Delta(1) - args.delta))));
                 }
@@ -115,7 +115,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
                 END_TRACK_GENERATOR;
 
                 // Scaling Z
-                START_TRACK_GENERATOR(Modulator::Description::ScalingZ, Sprite)
+                START_TRACK_GENERATOR(Modulator::Description::Track::ScalingZ, Sprite)
                 {
                     args.object.SetXScaler(static_cast<Size3D::ValueT>((Modulator::Delta(args.ending.AsFloat()) * args.delta) + (Modulator::Delta(args.starting.AsFloat()) * (Modulator::Delta(1) - args.delta))));
                 }
@@ -123,7 +123,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
                 END_TRACK_GENERATOR;
 
                 // Rotation X
-                START_TRACK_GENERATOR(Modulator::Description::RotationX, Sprite)
+                START_TRACK_GENERATOR(Modulator::Description::Track::RotationX, Sprite)
                 {
                     args.object.SetXRotation(Angle(Angle::RADIANS, static_cast<Angle::ValueT>((Modulator::Delta(args.ending.AsFloat()) * args.delta) + (Modulator::Delta(args.starting.AsFloat()) * (Modulator::Delta(1) - args.delta)))));
                 }
@@ -131,7 +131,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
                 END_TRACK_GENERATOR;
 
                 // Rotation Y
-                START_TRACK_GENERATOR(Modulator::Description::RotationY, Sprite)
+                START_TRACK_GENERATOR(Modulator::Description::Track::RotationY, Sprite)
                 {
                     args.object.SetYRotation(Angle(Angle::RADIANS, static_cast<Angle::ValueT>((Modulator::Delta(args.ending.AsFloat()) * args.delta) + (Modulator::Delta(args.starting.AsFloat()) * (Modulator::Delta(1) - args.delta)))));
                 }
@@ -139,7 +139,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
                 END_TRACK_GENERATOR;
 
                 // Rotation Z
-                START_TRACK_GENERATOR(Modulator::Description::RotationZ, Sprite)
+                START_TRACK_GENERATOR(Modulator::Description::Track::RotationZ, Sprite)
                 {
                     args.object.SetZRotation(Angle(Angle::RADIANS, static_cast<Angle::ValueT>((Modulator::Delta(args.ending.AsFloat()) * args.delta) + (Modulator::Delta(args.starting.AsFloat()) * (Modulator::Delta(1) - args.delta)))));
                 }
@@ -147,7 +147,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
                 END_TRACK_GENERATOR;
 
                 // Index
-                START_TRACK_GENERATOR(Modulator::Description::Index, Sprite)
+                START_TRACK_GENERATOR(Modulator::Description::Track::Index, Sprite)
                 {
                     args.object.SetIndex(static_cast<Sprite::Index>((Modulator::Delta(args.ending.AsInt()) * args.delta) + (Modulator::Delta(args.starting.AsInt()) * (Modulator::Delta(1) - args.delta))));
                 }
@@ -159,7 +159,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
             {
                 auto gen = CREATE_GENERATOR(Modulator::Description::Sound);
                 // Position 3D X
-                START_TRACK_GENERATOR(Modulator::Description::Position3DX, Sound)
+                START_TRACK_GENERATOR(Modulator::Description::Track::PositionX, Sound)
                 {
                     args.object.SetX(static_cast<Sound::PositionT::ValueT>((Modulator::Delta(args.ending.AsFloat()) * args.delta) + (Modulator::Delta(args.starting.AsFloat()) * (Modulator::Delta(1) - args.delta))));
                 }
@@ -167,7 +167,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
                 END_TRACK_GENERATOR;
 
                 // Position 3D Y
-                START_TRACK_GENERATOR(Modulator::Description::Position3DY, Sound)
+                START_TRACK_GENERATOR(Modulator::Description::Track::PositionY, Sound)
                 {
                     args.object.SetY(static_cast<Sound::PositionT::ValueT>((Modulator::Delta(args.ending.AsFloat()) * args.delta) + (Modulator::Delta(args.starting.AsFloat()) * (Modulator::Delta(1) - args.delta))));
                 }
@@ -175,7 +175,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
                 END_TRACK_GENERATOR;
 
                 // Position 3D Z
-                START_TRACK_GENERATOR(Modulator::Description::Position3DZ, Sound)
+                START_TRACK_GENERATOR(Modulator::Description::Track::PositionZ, Sound)
                 {
                     args.object.SetZ(static_cast<Sound::PositionT::ValueT>((Modulator::Delta(args.ending.AsFloat()) * args.delta) + (Modulator::Delta(args.starting.AsFloat()) * (Modulator::Delta(1) - args.delta))));
                 }
@@ -183,7 +183,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
                 END_TRACK_GENERATOR;
 
                 // Volume
-                START_TRACK_GENERATOR(Modulator::Description::Volume, Sound)
+                START_TRACK_GENERATOR(Modulator::Description::Track::Volume, Sound)
                 {
                     args.object.SetBaseVolume(static_cast<::Atmos::Sound::Volume>((Modulator::Delta(args.ending.AsFloat()) * args.delta) + (Modulator::Delta(args.starting.AsFloat()) * (Modulator::Delta(1) - args.delta))));
                 }
@@ -195,7 +195,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
             {
                 auto gen = CREATE_GENERATOR(Modulator::Description::AVEffect);
                 // Position 3D X
-                START_TRACK_GENERATOR(Modulator::Description::Position3DX, AVEffect)
+                START_TRACK_GENERATOR(Modulator::Description::Track::PositionX, AVEffect)
                 {
                     args.object.SetX(static_cast<Sprite::PositionT::ValueT>((Modulator::Delta(args.ending.AsFloat()) * args.delta) + (Modulator::Delta(args.starting.AsFloat()) * (Modulator::Delta(1) - args.delta))));
                 }
@@ -203,7 +203,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
                 END_TRACK_GENERATOR;
 
                 // Position 3D Y
-                START_TRACK_GENERATOR(Modulator::Description::Position3DY, AVEffect)
+                START_TRACK_GENERATOR(Modulator::Description::Track::PositionY, AVEffect)
                 {
                     args.object.SetY(static_cast<Sprite::PositionT::ValueT>((Modulator::Delta(args.ending.AsFloat()) * args.delta) + (Modulator::Delta(args.starting.AsFloat()) * (Modulator::Delta(1) - args.delta))));
                 }
@@ -211,7 +211,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
                 END_TRACK_GENERATOR;
 
                 // Position 3D Z
-                START_TRACK_GENERATOR(Modulator::Description::Position3DZ, AVEffect)
+                START_TRACK_GENERATOR(Modulator::Description::Track::PositionZ, AVEffect)
                 {
                     args.object.SetZ(static_cast<Sprite::PositionT::ValueT>((Modulator::Delta(args.ending.AsFloat()) * args.delta) + (Modulator::Delta(args.starting.AsFloat()) * (Modulator::Delta(1) - args.delta))));
                 }
@@ -223,7 +223,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
             {
                 auto gen = CREATE_GENERATOR(Modulator::Description::SenseComponent);
                 // Position 3D X
-                START_TRACK_GENERATOR(Modulator::Description::Position3DX, Ent::SenseComponent)
+                START_TRACK_GENERATOR(Modulator::Description::Track::PositionX, Ent::SenseComponent)
                 {
                     args.object.SetX(static_cast<Sprite::PositionT::ValueT>((Modulator::Delta(args.ending.AsFloat()) * args.delta) + (Modulator::Delta(args.starting.AsFloat()) * (Modulator::Delta(1) - args.delta))));
                 }
@@ -231,7 +231,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
                 END_TRACK_GENERATOR;
 
                 // Position 3D Y
-                START_TRACK_GENERATOR(Modulator::Description::Position3DY, Ent::SenseComponent)
+                START_TRACK_GENERATOR(Modulator::Description::Track::PositionY, Ent::SenseComponent)
                 {
                     args.object.SetY(static_cast<Sprite::PositionT::ValueT>((Modulator::Delta(args.ending.AsFloat()) * args.delta) + (Modulator::Delta(args.starting.AsFloat()) * (Modulator::Delta(1) - args.delta))));
                 }
@@ -239,7 +239,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
                 END_TRACK_GENERATOR;
 
                 // Position 3D Z
-                START_TRACK_GENERATOR(Modulator::Description::Position3DZ, Ent::SenseComponent)
+                START_TRACK_GENERATOR(Modulator::Description::Track::PositionZ, Ent::SenseComponent)
                 {
                     args.object.SetZ(static_cast<Sprite::PositionT::ValueT>((Modulator::Delta(args.ending.AsFloat()) * args.delta) + (Modulator::Delta(args.starting.AsFloat()) * (Modulator::Delta(1) - args.delta))));
                 }
@@ -350,9 +350,9 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
         return found->second->GenerateTrack(trackName);
     }
 
-    void GameEnvironment::AttachModulator(const Modulator::Observer &attach)
+    Modulator::Controller::ID GameEnvironment::AttachModulator(const Modulator::Observer &attach)
     {
-        Instance().modulatorController.Attach(attach);
+        return Instance().modulatorController.Attach(attach);
     }
 
     void GameEnvironment::DetachModulator(const Modulator::Observer &detach)
@@ -363,6 +363,11 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
     void GameEnvironment::DetachModulator(const Modulator::ModulatorBase &detach)
     {
         Instance().modulatorController.Detach(detach);
+    }
+
+    Modulator::Observer GameEnvironment::FindModulator(Modulator::Controller::ID find)
+    {
+        return Instance().modulatorController.Find(find);
     }
 
     ::affecter::System& GameEnvironment::GetAffecterSystem()

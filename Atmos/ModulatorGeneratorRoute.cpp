@@ -132,7 +132,7 @@ namespace Atmos
             auto generated = GameEnvironment::GenerateModulator(modName);
             for (auto &loop : trackEntries)
             {
-                auto track = generated->AddTrack(GameEnvironment::GenerateModulatorTrack(modName, loop.name));
+                auto track = generated->FindTrack(generated->AddTrack(GameEnvironment::GenerateModulatorTrack(modName, loop.name)));
                 for (auto &nodeLoop : loop.nodeEntries)
                 {
                     auto node = track->AddNode();

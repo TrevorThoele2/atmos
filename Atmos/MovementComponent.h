@@ -4,6 +4,7 @@
 #include "EntityComponent.h"
 
 #include "Name.h"
+#include "Script.h"
 
 #include <Affecter/Affecter.h>
 
@@ -21,10 +22,10 @@ namespace Atmos
         public:
             ::affecter::Connection affecterConnection;
 
-            Name upMod;
-            Name downMod;
-            Name leftMod;
-            Name rightMod;
+            Script::Instance upMod;
+            Script::Instance downMod;
+            Script::Instance leftMod;
+            Script::Instance rightMod;
 
             MovementComponent() = default;
             MovementComponent(const MovementComponent &arg);

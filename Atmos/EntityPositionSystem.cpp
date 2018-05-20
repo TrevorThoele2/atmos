@@ -60,29 +60,7 @@ namespace Atmos
 
 
         std::unordered_multimap<GridPosition, Entity> PositionSystem::map;
-        std::unordered_map<Entity, PositionSystem::ModulatorEntry> PositionSystem::moving;
-
-        PositionSystem::ModulatorEntry::ModulatorEntry(const Modulator::Observer &moverObserver, SenseComponent::ModulatorPack *sensePack) : moverObserver(moverObserver), sensePack(sensePack)
-        {}
-
-        bool PositionSystem::ModulatorEntry::operator==(const ModulatorEntry &arg) const
-        {
-            return moverObserver == arg.moverObserver && sensePack == arg.sensePack;
-        }
-
-        bool PositionSystem::ModulatorEntry::operator!=(const ModulatorEntry &arg) const
-        {
-            return !(*this == arg);
-        }
-
-        void PositionSystem::ModulatorEntry::Stop()
-        {
-            if(moverObserver.IsValid())
-                moverObserver->Stop();
-
-            if (sensePack)
-                sensePack->StopAll();
-        }
+        std::unordered_set<Entity> PositionSystem::moving;
 
         void PositionSystem::Init()
         {
@@ -135,7 +113,7 @@ namespace Atmos
             // Setup X part of the modulator if needed
             if (curPosition.GetX() != moveToPosition.GetX())
             {
-                auto track = observer->AddTrack(GameEnvironment::GenerateModulatorTrack(Modulator::Description::SenseComponent.name, Modulator::Description::Position3DX.name));
+                auto track = observer->FindTrack(observer->AddTrack(GameEnvironment::GenerateModulatorTrack(Modulator::Description::SenseComponent.name, Modulator::Description::Track::PositionX.name)));
                 auto node = track->AddNode();
                 node->SetTimeTaken(timeTaken);
 
@@ -147,7 +125,7 @@ namespace Atmos
             // Setup Y part of the modulator if needed
             if (curPosition.GetY() != moveToPosition.GetY())
             {
-                auto track = observer->AddTrack(GameEnvironment::GenerateModulatorTrack(Modulator::Description::SenseComponent.name, Modulator::Description::Position3DY.name));
+                auto track = observer->FindTrack(observer->AddTrack(GameEnvironment::GenerateModulatorTrack(Modulator::Description::SenseComponent.name, Modulator::Description::Track::PositionY.name)));
                 auto node = track->AddNode();
                 node->SetTimeTaken(timeTaken);
 
@@ -159,7 +137,7 @@ namespace Atmos
             // Setup Y part of the modulator if needed
             if (curPosition.GetZ() != moveToPosition.GetZ())
             {
-                auto track = observer->AddTrack(GameEnvironment::GenerateModulatorTrack(Modulator::Description::SenseComponent.name, Modulator::Description::Position3DY.name));
+                auto track = observer->FindTrack(observer->AddTrack(GameEnvironment::GenerateModulatorTrack(Modulator::Description::SenseComponent.name, Modulator::Description::Track::PositionY.name)));
                 auto node = track->AddNode();
                 node->SetTimeTaken(timeTaken);
 
@@ -227,7 +205,7 @@ namespace Atmos
             auto senseComponentMover = Instance().GenerateSenseComponentMover(generalComponent->position, moveTo, timeTaken);
             // Start the modulator
             static_cast<Modulator::Modulator<decltype(Modulator::Description::SenseComponent)::Type>*>(senseComponentMover.Get())->Start(*senseComponent);
-            moving.emplace(entity, ModulatorEntry(senseComponentMover, nullptr));
+            moving.emplace(entity);
             return true;
         }
 
@@ -245,26 +223,22 @@ namespace Atmos
             auto movementComponent = std::get<2>(components);
 
             // Figure out animate piece
-            Name modName;
+            Script::Instance modPicked;
             switch (direction.Get())
             {
             case Direction::UP:
-                modName = movementComponent->upMod;
+                modPicked = movementComponent->upMod;
                 break;
             case Direction::DOWN:
-                modName = movementComponent->downMod;
+                modPicked = movementComponent->downMod;
                 break;
             case Direction::LEFT:
-                modName = movementComponent->leftMod;
+                modPicked = movementComponent->leftMod;
                 break;
             case Direction::RIGHT:
-                modName = movementComponent->rightMod;
+                modPicked = movementComponent->rightMod;
                 break;
             }
-
-            auto foundMod = senseComponent->FindModulatorPack(modName);
-            if (!foundMod || foundMod->IsWorking())
-                return false;
 
             GridPosition &position = ::Atmos::GetCurrentEntities()->GetPosition(entity).Get();
             auto &moveTo = position.FindPositionAdjacent(direction);
@@ -274,7 +248,7 @@ namespace Atmos
 
             // Move render component
             // Move immediately
-            if (!foundMod)
+            if (!modPicked.IsValid())
             {
                 MoveEntityInstant(entity, moveTo);
                 return true;
@@ -289,10 +263,10 @@ namespace Atmos
             case Direction::UP:
             case Direction::DOWN:
             {
-                typedef decltype(Modulator::Description::Position3DY)::Type Type;
-                auto moverTrack = mover->AddTrack(GameEnvironment::GenerateModulatorTrack(Modulator::Description::SenseComponent.name, Modulator::Description::Position3DY.name));
+                typedef decltype(Modulator::Description::Track::PositionY)::Type Type;
+                auto moverTrack = mover->FindTrack(mover->AddTrack(GameEnvironment::GenerateModulatorTrack(Modulator::Description::SenseComponent.name, Modulator::Description::Track::PositionY.name)));
                 auto node = moverTrack->AddNode();
-                node->SetTimeTaken(foundMod->GetTimeTaken());
+                //node->SetTimeTaken(foundMod->GetTimeTaken());
 
                 Modulator::TrackNodeEndState endState(node->PrototypeEndState());
                 endState.SetNormal(Modulator::Value(std::int64_t(moveTo.GetX())));
@@ -303,10 +277,10 @@ namespace Atmos
             case Direction::LEFT:
             case Direction::RIGHT:
             {
-                typedef decltype(Modulator::Description::Position3DX)::Type Type;
-                auto moverTrack = mover->AddTrack(GameEnvironment::GenerateModulatorTrack(Modulator::Description::SenseComponent.name, Modulator::Description::Position3DX.name));
+                typedef decltype(Modulator::Description::Track::PositionX)::Type Type;
+                auto moverTrack = mover->FindTrack(mover->AddTrack(GameEnvironment::GenerateModulatorTrack(Modulator::Description::SenseComponent.name, Modulator::Description::Track::PositionX.name)));
                 auto node = moverTrack->AddNode();
-                node->SetTimeTaken(foundMod->GetTimeTaken());
+                //node->SetTimeTaken(foundMod->GetTimeTaken());
 
                 Modulator::TrackNodeEndState endState(node->PrototypeEndState());
                 endState.SetNormal(Modulator::Value(std::int64_t(moveTo.GetY())));
@@ -315,7 +289,7 @@ namespace Atmos
             }
             }
 
-            moving.emplace(entity, ModulatorEntry(mover, foundMod));
+            //moving.emplace(entity, ModulatorEntry(mover, foundMod));
             static_cast<SenseModulator*>(mover.Get())->Start(*senseComponent);
             // Set direction of the general component
             generalComponent->direction = direction;
@@ -466,7 +440,7 @@ namespace Atmos
         {
             for (auto loop = moving.begin(); loop != moving.end();)
             {
-                auto comps = GetCurrentEntities()->FindMultipleComponents<GeneralComponent*, MovementComponent*, SenseComponent*>(loop->first);
+                auto comps = GetCurrentEntities()->FindMultipleComponents<GeneralComponent*, MovementComponent*, SenseComponent*>(*loop);
                 auto general = std::get<0>(comps);
                 auto movement = std::get<1>(comps);
                 auto sense = std::get<2>(comps);
@@ -479,26 +453,27 @@ namespace Atmos
                         if (col != CollisionType::NONE)
                         {
                             if (col == CollisionType::TILE)
-                                collision(MovementCollisionEventArgs(loop->first, sense->position, true));
+                                collision(MovementCollisionEventArgs(*loop, sense->position, true));
                             else
-                                collision(MovementCollisionEventArgs(loop->first, sense->position, false));
+                                collision(MovementCollisionEventArgs(*loop, sense->position, false));
 
-                            loop->second.Stop();
                             loop = moving.erase(loop);
                             continue;
                         }
                     }
 
                     general->position = sense->position;
-                    OnMoveEntity(loop->first, general->position);
+                    OnMoveEntity(*loop, general->position);
                 }
                 else
                 {
-                    if (!loop->second.moverObserver->IsWorking())
+                    /*
+                    if (!loop->moverObserver->IsWorking())
                     {
                         loop = moving.erase(loop);
                         continue;
                     }
+                    */
                 }
 
                 ++loop;
