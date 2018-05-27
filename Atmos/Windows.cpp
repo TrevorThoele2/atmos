@@ -41,8 +41,8 @@ namespace Atmos
         hWnd = CreateWindowEx(exStyle, wc.lpszClassName, wc.lpszClassName, style, GetDimensionX().GetStart(), GetDimensionY().GetStart(), GetDimensionX().GetTotalLength(), GetDimensionY().GetTotalLength(), nullptr, nullptr, wc.hInstance, nullptr);
         if (hWnd == nullptr)
         {
-            ErrorHandler::Log("Window creation failed.",
-                ErrorHandler::Severity::ERROR_SEVERE);
+            Logger::Log("Window creation failed.",
+                Logger::Type::ERROR_SEVERE);
         }
     }
 
@@ -105,9 +105,9 @@ namespace Atmos
 
         if (!RegisterClassEx(&wc))
         {
-            ErrorHandler::Log("Class registration failed.",
-                ErrorHandler::Severity::ERROR_SEVERE,
-                ErrorHandler::NameValueVector{ NameValuePair("Code", static_cast<unsigned int>(GetLastError())) });
+            Logger::Log("Class registration failed.",
+                Logger::Type::ERROR_SEVERE,
+                Logger::NameValueVector{ NameValuePair("Code", static_cast<unsigned int>(GetLastError())) });
         }
     }
 

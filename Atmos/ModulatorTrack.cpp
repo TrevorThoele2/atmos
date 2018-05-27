@@ -13,27 +13,27 @@ namespace Atmos
             return CloneImpl();
         }
 
-        TrackNode* TrackBase::AddNode()
+        TrackBase::NodeID TrackBase::AddNode()
         {
             return AddNodeImpl();
         }
 
-        void TrackBase::RemoveNode(ID id)
+        void TrackBase::RemoveNode(NodeID id)
         {
             RemoveNodeImpl(id);
         }
 
-        TrackNode* TrackBase::FindNode(ID id)
+        TrackNode* TrackBase::FindNode(NodeID id)
         {
             return FindNodeImpl(id);
         }
 
-        const TrackNode* TrackBase::FindNode(ID id) const
+        const TrackNode* TrackBase::FindNode(NodeID id) const
         {
             return FindNodeImpl(id);
         }
 
-        bool TrackBase::HasNode(ID id) const
+        bool TrackBase::HasNode(NodeID id) const
         {
             return FindNodeImpl(id) != nullptr;
         }

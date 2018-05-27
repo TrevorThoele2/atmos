@@ -16,7 +16,7 @@
 
 #include "Environment.h"
 
-#include "Error.h"
+#include "Logger.h"
 
 namespace Atmos
 {
@@ -103,30 +103,41 @@ namespace Atmos
             auto &avatarMap = GetCurrentEntities()->GetRawMap<AvatarComponent>();
             if (avatarMap.empty())
             {
-                ErrorHandler::Log("There was no avatar in the field.",
-                    ErrorHandler::Severity::ERROR_SEVERE,
-                    ErrorHandler::NameValueVector{ NameValuePair("Field ID", ToString(field.GetID())) });
+                Logger::Log("There was no avatar in the field.",
+                    Logger::Type::ERROR_SEVERE,
+                    Logger::NameValueVector{ NameValuePair("Field ID", ToString(field.GetID())) });
                 return;
             }
 
             if (avatarMap.size() > 1)
-                ErrorHandler::Log("There were more than one avatar components in the field.",
-                    ErrorHandler::Severity::ERROR_SEVERE,
-                    ErrorHandler::NameValueVector{ NameValuePair("Field ID", ToString(field.GetID())) });
+                Logger::Log("There were more than one avatar components in the field.",
+                    Logger::Type::ERROR_SEVERE,
+                    Logger::NameValueVector{ NameValuePair("Field ID", ToString(field.GetID())) });
 
             Entity entity = avatarMap.begin()->second.GetOwnerEntity();
             if (entity == GetEntity())
                 return;
 
+            // Set entity and check if it was actually set
+            // If not, then it didn't have the correct components
             SetEntity(entity);
-
             if (GetEntity() == nullEntity)
             {
-                ErrorHandler::Log("The avatar did not have the right components.",
-                    ErrorHandler::Severity::ERROR_SEVERE,
-                    ErrorHandler::NameValueVector{
+                String hasString;
+                auto &hasComponents = package.GetHas(entity);
+                for (auto loop = hasComponents.begin(); loop != hasComponents.end(); ++loop)
+                {
+                    hasString.append((*loop)->GetTypeName());
+                    if (loop != --hasComponents.end())
+                        hasString.append(", ");
+                }
+
+                Logger::Log("The avatar did not have the right components.",
+                    Logger::Type::ERROR_SEVERE,
+                    Logger::NameValueVector{
                     NameValuePair("Field ID", ToString(field.GetID())),
-                    NameValuePair("Needs:", "General, Avatar, Character, Inventory, Movement, Sense")});
+                    NameValuePair("Needs", String("General, Avatar, Character, Inventory, Movement, Sense")),
+                    NameValuePair("Has", hasString)});
                 return;
             }
 

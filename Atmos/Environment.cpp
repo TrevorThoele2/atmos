@@ -209,7 +209,7 @@ namespace Atmos
 
     void Environment::SetupBasic()
     {
-        ErrorHandler::Init();
+        Logger::Init();
 
         // Sound and music
         MasterSoundHandler::Init();

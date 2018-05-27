@@ -325,10 +325,19 @@ namespace Atmos
 
                 static bool CheckHas(Entity entity)
                 {
-                    if (!GetCurrentEntities()->FindComponent<std::tuple_element<I, Tuple>::type>(entity))
+                    if (!GetCurrentEntities()->FindComponent<typename std::remove_pointer<typename std::tuple_element<I - 1, Tuple>::type>::type>(entity))
                         return false;
 
                     return TupleIterator<I - 1>::CheckHas(entity);
+                }
+
+                static void GetHas(Entity entity, std::vector<ComponentBase*> &ret)
+                {
+                    TupleIterator<I - 1>::GetHas(entity, ret);
+
+                    auto found = GetCurrentEntities()->FindComponent<typename std::remove_pointer<typename std::tuple_element<I - 1, Tuple>::type>::type>(entity);
+                    if (found)
+                        ret.push_back(found);
                 }
             };
 
@@ -362,6 +371,9 @@ namespace Atmos
                 {
                     return GetCurrentEntities()->FindComponent<std::tuple_element<0, Tuple>::type>(entity);
                 }
+
+                static void GetHas(Entity entity, std::vector<ComponentBase*> &ret)
+                {}
             };
         private:
             Entity entity;
@@ -405,6 +417,7 @@ namespace Atmos
             const OtherT* FindOther() const;
 
             static bool HasComponents(Entity entity);
+            static std::vector<ComponentBase*> GetHas(Entity entity);
         };
 
         template<class... ComponentTs>
@@ -522,6 +535,14 @@ namespace Atmos
         }
 
         template<class... ComponentTs>
+        std::vector<ComponentBase*> ComponentPackageRequired<ComponentTs...>::GetHas(Entity entity)
+        {
+            std::vector<ComponentBase*> ret;
+            TupleIterator<std::tuple_size<Tuple>::value>::GetHas(entity, ret);
+            return ret;
+        }
+
+        template<class... ComponentTs>
         struct ComponentPackageRequiredInherit
         {
         public:
@@ -543,6 +564,9 @@ namespace Atmos
             Optional<Name> GetName() const;
             Optional<GridPosition> GetPosition() const;
             Optional<Direction> GetDirection() const;
+
+            static bool HasComponents(Entity entity);
+            static std::vector<ComponentBase*> GetHas(Entity entity);
         };
 
         template<class... ComponentTs>
@@ -607,6 +631,18 @@ namespace Atmos
         Optional<Direction> ComponentPackageRequiredInherit<ComponentTs...>::GetDirection() const
         {
             return package.GetDirection();
+        }
+
+        template<class... ComponentTs>
+        bool ComponentPackageRequiredInherit<ComponentTs...>::HasComponents(Entity entity)
+        {
+            return Package::HasComponents(entity);
+        }
+
+        template<class... ComponentTs>
+        std::vector<ComponentBase*> ComponentPackageRequiredInherit<ComponentTs...>::GetHas(Entity entity)
+        {
+            return Package::GetHas(entity);
         }
     }
 }

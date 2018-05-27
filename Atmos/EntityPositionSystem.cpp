@@ -16,7 +16,7 @@
 #include "Animation.h"
 #include "ModulatorDescribers.h"
 
-#include "Error.h"
+#include "Logger.h"
 
 namespace Atmos
 {
@@ -114,7 +114,7 @@ namespace Atmos
             if (curPosition.GetX() != moveToPosition.GetX())
             {
                 auto track = observer->FindTrack(observer->AddTrack(GameEnvironment::GenerateModulatorTrack(Modulator::Description::SenseComponent.name, Modulator::Description::Track::PositionX.name)));
-                auto node = track->AddNode();
+                auto node = track->FindNode(track->AddNode());
                 node->SetTimeTaken(timeTaken);
 
                 Modulator::TrackNodeEndState endState(node->PrototypeEndState());
@@ -126,7 +126,7 @@ namespace Atmos
             if (curPosition.GetY() != moveToPosition.GetY())
             {
                 auto track = observer->FindTrack(observer->AddTrack(GameEnvironment::GenerateModulatorTrack(Modulator::Description::SenseComponent.name, Modulator::Description::Track::PositionY.name)));
-                auto node = track->AddNode();
+                auto node = track->FindNode(track->AddNode());
                 node->SetTimeTaken(timeTaken);
 
                 Modulator::TrackNodeEndState endState(node->PrototypeEndState());
@@ -138,7 +138,7 @@ namespace Atmos
             if (curPosition.GetZ() != moveToPosition.GetZ())
             {
                 auto track = observer->FindTrack(observer->AddTrack(GameEnvironment::GenerateModulatorTrack(Modulator::Description::SenseComponent.name, Modulator::Description::Track::PositionY.name)));
-                auto node = track->AddNode();
+                auto node = track->FindNode(track->AddNode());
                 node->SetTimeTaken(timeTaken);
 
                 Modulator::TrackNodeEndState endState(node->PrototypeEndState());
@@ -223,20 +223,20 @@ namespace Atmos
             auto movementComponent = std::get<2>(components);
 
             // Figure out animate piece
-            Script::Instance modPicked;
+            Script::Instance *modPicked = nullptr;
             switch (direction.Get())
             {
             case Direction::UP:
-                modPicked = movementComponent->upMod;
+                modPicked = &movementComponent->upMod;
                 break;
             case Direction::DOWN:
-                modPicked = movementComponent->downMod;
+                modPicked = &movementComponent->downMod;
                 break;
             case Direction::LEFT:
-                modPicked = movementComponent->leftMod;
+                modPicked = &movementComponent->leftMod;
                 break;
             case Direction::RIGHT:
-                modPicked = movementComponent->rightMod;
+                modPicked = &movementComponent->rightMod;
                 break;
             }
 
@@ -248,7 +248,7 @@ namespace Atmos
 
             // Move render component
             // Move immediately
-            if (!modPicked.IsValid())
+            if (!modPicked->IsValid())
             {
                 MoveEntityInstant(entity, moveTo);
                 return true;
@@ -256,6 +256,7 @@ namespace Atmos
 
             // Move via modulator
             // Create the mover modulator
+            modPicked->Execute();
             Modulator::Observer mover(GameEnvironment::GenerateModulator(Modulator::Description::SenseComponent.name));
             // Setup the mover modulator
             switch(direction.Get())
@@ -265,7 +266,7 @@ namespace Atmos
             {
                 typedef decltype(Modulator::Description::Track::PositionY)::Type Type;
                 auto moverTrack = mover->FindTrack(mover->AddTrack(GameEnvironment::GenerateModulatorTrack(Modulator::Description::SenseComponent.name, Modulator::Description::Track::PositionY.name)));
-                auto node = moverTrack->AddNode();
+                auto node = moverTrack->FindNode(moverTrack->AddNode());
                 //node->SetTimeTaken(foundMod->GetTimeTaken());
 
                 Modulator::TrackNodeEndState endState(node->PrototypeEndState());
@@ -279,7 +280,7 @@ namespace Atmos
             {
                 typedef decltype(Modulator::Description::Track::PositionX)::Type Type;
                 auto moverTrack = mover->FindTrack(mover->AddTrack(GameEnvironment::GenerateModulatorTrack(Modulator::Description::SenseComponent.name, Modulator::Description::Track::PositionX.name)));
-                auto node = moverTrack->AddNode();
+                auto node = moverTrack->FindNode(moverTrack->AddNode());
                 //node->SetTimeTaken(foundMod->GetTimeTaken());
 
                 Modulator::TrackNodeEndState endState(node->PrototypeEndState());

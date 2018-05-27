@@ -22,7 +22,7 @@ int (WINAPIV * __vsnprintf)(char *, size_t, const char*, va_list) = _vsnprintf;
 #include "SimpleFile.h"
 #include "Environment.h"
 
-#include "Error.h"
+#include "Logger.h"
 
 #include <AGUI\System.h>
 
@@ -128,8 +128,8 @@ namespace Atmos
         {
             auto hr = swapChain->Present(nullptr, nullptr, nullptr, nullptr, 0);
             if (hr != S_OK)
-                ErrorHandler::Log(String("A swap chain failed when presenting.\n") + DXGetErrorDescription(hr),
-                    ErrorHandler::Severity::ERROR_SEVERE);
+                Logger::Log(String("A swap chain failed when presenting.\n") + DXGetErrorDescription(hr),
+                    Logger::Type::ERROR_SEVERE);
         }
 
         void Reset() override
@@ -139,13 +139,13 @@ namespace Atmos
 
             HRESULT hr = Environment::GetGraphics<DX9GraphicsHandler>()->GetDevice()->CreateAdditionalSwapChain(&presentationParameters, &swapChain);
             if (hr != S_OK)
-                ErrorHandler::Log(String("A DirectX device could not create an additional swap chain.\n") + DXGetErrorDescription(hr),
-                    ErrorHandler::Severity::ERROR_SEVERE);
+                Logger::Log(String("A DirectX device could not create an additional swap chain.\n") + DXGetErrorDescription(hr),
+                    Logger::Type::ERROR_SEVERE);
 
             hr = swapChain->GetBackBuffer(0, D3DBACKBUFFER_TYPE_MONO, &backBuffer);
             if (hr != S_OK)
-                ErrorHandler::Log(String("A DirectX device could not retrieve the back bfufer from a swap chain.\n") + DXGetErrorDescription(hr),
-                    ErrorHandler::Severity::ERROR_SEVERE);
+                Logger::Log(String("A DirectX device could not retrieve the back bfufer from a swap chain.\n") + DXGetErrorDescription(hr),
+                    Logger::Type::ERROR_SEVERE);
         }
 
         void Release() override
@@ -191,15 +191,15 @@ namespace Atmos
         void StartPainting() override
         {
             if (backBuffer->LockRect(&lockedRect, nullptr, 0) != S_OK)
-                ErrorHandler::Log("A canvas' back buffer could not be locked.",
-                    ErrorHandler::Severity::ERROR_LOW);
+                Logger::Log("A canvas' back buffer could not be locked.",
+                    Logger::Type::ERROR_LOW);
         }
 
         void StopPainting() override
         {
             if (backBuffer->UnlockRect() != S_OK)
-                ErrorHandler::Log("A canvas' back buffer could not be unlocked.",
-                    ErrorHandler::Severity::ERROR_LOW);
+                Logger::Log("A canvas' back buffer could not be unlocked.",
+                    Logger::Type::ERROR_LOW);
         }
 
         void PaintPixel(const Canvas::PositionT &position, const Color &color, Canvas::Dimension height) override
@@ -740,23 +740,23 @@ namespace Atmos
 
         HRESULT hr = lineInterface->OnLostDevice();
         if(hr != S_OK)
-            ErrorHandler::Log(String("The DirectX line interface was not able to be released.\n") + DXGetErrorDescription(hr),
-                ErrorHandler::Severity::ERROR_SEVERE);
+            Logger::Log(String("The DirectX line interface was not able to be released.\n") + DXGetErrorDescription(hr),
+                Logger::Type::ERROR_SEVERE);
 
         // Reset
         hr = device->Reset(&presentationParameters);
         if (hr == D3DERR_DEVICELOST)
             return;
         else if (hr != S_OK)
-            ErrorHandler::Log(String("The DirectX device failed when resetting.\n") + DXGetErrorDescription(hr),
-                ErrorHandler::Severity::ERROR_SEVERE);
+            Logger::Log(String("The DirectX device failed when resetting.\n") + DXGetErrorDescription(hr),
+                Logger::Type::ERROR_SEVERE);
 
         // Recreate interfaces
         renderer2D->OnResetDevice();
         hr = lineInterface->OnResetDevice();
         if (hr != S_OK)
-            ErrorHandler::Log(String("The DirectX line interface was not able to be reset.\n") + DXGetErrorDescription(hr),
-                ErrorHandler::Severity::ERROR_SEVERE);
+            Logger::Log(String("The DirectX line interface was not able to be reset.\n") + DXGetErrorDescription(hr),
+                Logger::Type::ERROR_SEVERE);
         
         // Reset render states
         SetRenderStates();
@@ -779,16 +779,16 @@ namespace Atmos
         D3DXIMAGE_INFO info;
         HRESULT hr = D3DXGetImageInfoFromFile(path.c_str(), &info);
         if (hr != S_OK)
-            ErrorHandler::Log("An image asset could not be created.",
-                ErrorHandler::Severity::ERROR_SEVERE,
-                ErrorHandler::NameValueVector{ NameValuePair("File Path", path.GetValue()) });
+            Logger::Log("An image asset could not be created.",
+                Logger::Type::ERROR_SEVERE,
+                Logger::NameValueVector{ NameValuePair("File Path", path.GetValue()) });
 
         LPDIRECT3DTEXTURE9 tex;
         hr = D3DXCreateTextureFromFileEx(device, path.c_str(), info.Width, info.Height, D3DX_DEFAULT, 0, D3DFMT_A8R8G8B8, D3DPOOL_MANAGED, D3DX_DEFAULT, D3DX_DEFAULT, 0, nullptr, nullptr, &tex);
         if (hr != S_OK)
-            ErrorHandler::Log("An image asset could not be created.",
-                ErrorHandler::Severity::ERROR_SEVERE,
-                ErrorHandler::NameValueVector{ NameValuePair("File Path", path.GetValue()) });
+            Logger::Log("An image asset could not be created.",
+                Logger::Type::ERROR_SEVERE,
+                Logger::NameValueVector{ NameValuePair("File Path", path.GetValue()) });
 
         return ImageAsset(new ImageAssetData(tex), path.GetFileName(), cols, rows, info.Width, info.Height);
     }
@@ -798,16 +798,16 @@ namespace Atmos
         D3DXIMAGE_INFO info;
         HRESULT hr = D3DXGetImageInfoFromFileInMemory(buffer, size, &info);
         if (hr != S_OK)
-            ErrorHandler::Log("An image asset could not be created.",
-                ErrorHandler::Severity::ERROR_SEVERE,
-                ErrorHandler::NameValueVector{ NameValuePair("File Name", name.GetValue()) });
+            Logger::Log("An image asset could not be created.",
+                Logger::Type::ERROR_SEVERE,
+                Logger::NameValueVector{ NameValuePair("File Name", name.GetValue()) });
 
         LPDIRECT3DTEXTURE9 tex;
         hr = D3DXCreateTextureFromFileInMemoryEx(device, buffer, size, info.Width, info.Height, D3DX_DEFAULT, 0, D3DFMT_A8R8G8B8, D3DPOOL_MANAGED, D3DX_DEFAULT, D3DX_DEFAULT, 0, nullptr, nullptr, &tex);
         if (hr != S_OK)
-            ErrorHandler::Log("An image asset could not be created.",
-                ErrorHandler::Severity::ERROR_SEVERE,
-                ErrorHandler::NameValueVector{ NameValuePair("File Name", name.GetValue()) });
+            Logger::Log("An image asset could not be created.",
+                Logger::Type::ERROR_SEVERE,
+                Logger::NameValueVector{ NameValuePair("File Name", name.GetValue()) });
 
         return ImageAsset(new ImageAssetData(tex), name, cols, rows, info.Width, info.Height);
     }
@@ -817,9 +817,9 @@ namespace Atmos
         LPD3DXEFFECT effect;
         HRESULT hr = D3DXCreateEffectFromFile(device, path.c_str(), nullptr, nullptr, D3DXFX_NOT_CLONEABLE | D3DXSHADER_NO_PRESHADER, nullptr, &effect, nullptr);
         if (hr != S_OK)
-            ErrorHandler::Log("A shader asset could not be created.",
-                ErrorHandler::Severity::ERROR_SEVERE,
-                ErrorHandler::NameValueVector{ NameValuePair("File Path", path.GetValue()) });
+            Logger::Log("A shader asset could not be created.",
+                Logger::Type::ERROR_SEVERE,
+                Logger::NameValueVector{ NameValuePair("File Path", path.GetValue()) });
 
         return ShaderAsset(new ShaderAssetData(effect), path.GetFileName());
     }
@@ -829,9 +829,9 @@ namespace Atmos
         LPD3DXEFFECT effect;
         HRESULT hr = D3DXCreateEffect(device, buffer, size, nullptr, nullptr, D3DXFX_NOT_CLONEABLE | D3DXSHADER_NO_PRESHADER, nullptr, &effect, nullptr);
         if (hr != S_OK)
-            ErrorHandler::Log("A shader asset could not be created.",
-                ErrorHandler::Severity::ERROR_SEVERE,
-                ErrorHandler::NameValueVector{ NameValuePair("File Name", name.GetValue()) });
+            Logger::Log("A shader asset could not be created.",
+                Logger::Type::ERROR_SEVERE,
+                Logger::NameValueVector{ NameValuePair("File Name", name.GetValue()) });
 
         return ShaderAsset(new ShaderAssetData(effect), name);
     }
@@ -855,14 +855,14 @@ namespace Atmos
         LPDIRECT3DSWAPCHAIN9 swapChain;
         HRESULT hr = device->CreateAdditionalSwapChain(&pp, &swapChain);
         if (hr != S_OK)
-            ErrorHandler::Log("A render surface could not be created.",
-                ErrorHandler::Severity::ERROR_SEVERE);
+            Logger::Log("A render surface could not be created.",
+                Logger::Type::ERROR_SEVERE);
 
         LPDIRECT3DSURFACE9 backBuffer;
         hr = swapChain->GetBackBuffer(0, D3DBACKBUFFER_TYPE_MONO, &backBuffer);
         if (hr != S_OK)
-            ErrorHandler::Log("A render surface could not be created.",
-                ErrorHandler::Severity::ERROR_SEVERE);
+            Logger::Log("A render surface could not be created.",
+                Logger::Type::ERROR_SEVERE);
 
         return RenderSurface(new RenderSurfaceData(swapChain, backBuffer));
     }
@@ -872,8 +872,8 @@ namespace Atmos
         LPDIRECT3DTEXTURE9 tex;
         HRESULT hr = D3DXCreateTexture(device, dimensions.first, dimensions.second, D3DX_DEFAULT, 0, D3DFMT_X8R8G8B8, D3DPOOL_MANAGED, &tex);
         if (hr != S_OK)
-            ErrorHandler::Log("A canvas could not be created.",
-                ErrorHandler::Severity::ERROR_SEVERE);
+            Logger::Log("A canvas could not be created.",
+                Logger::Type::ERROR_SEVERE);
 
         return Canvas(new CanvasData(tex), dimensions.first, dimensions.second);
     }
@@ -895,8 +895,8 @@ namespace Atmos
         LPDIRECT3DTEXTURE9 tex;
         HRESULT hr = D3DXCreateTexture(device, dimensions.first, dimensions.second, D3DX_DEFAULT, D3DUSAGE_RENDERTARGET, D3DFMT_X8R8G8B8, D3DPOOL_DEFAULT, &tex);
         if (hr != S_OK)
-            ErrorHandler::Log("Resizing of a canvas was attempted and failed.",
-                ErrorHandler::Severity::ERROR_SEVERE);
+            Logger::Log("Resizing of a canvas was attempted and failed.",
+                Logger::Type::ERROR_SEVERE);
 
         canvas.GetData<CanvasData>()->tex->Release();
         canvas.GetData<CanvasData>()->tex = tex;
@@ -922,24 +922,24 @@ namespace Atmos
     {
         HRESULT hr = device->GetRenderTarget(0, &mainSurface);
         if (hr != S_OK)
-            ErrorHandler::Log("The main render target is unretrievable.",
-                ErrorHandler::Severity::ERROR_SEVERE);
+            Logger::Log("The main render target is unretrievable.",
+                Logger::Type::ERROR_SEVERE);
     }
 
     void DX9GraphicsHandler::PresentImpl()
     {
         HRESULT hr = device->Present(nullptr, nullptr, nullptr, nullptr);
         if (hr != S_OK)
-            ErrorHandler::Log("The frame was unpresentable.",
-                ErrorHandler::Severity::ERROR_SEVERE);
+            Logger::Log("The frame was unpresentable.",
+                Logger::Type::ERROR_SEVERE);
     }
 
     void DX9GraphicsHandler::PresentImpl(void *windowOverride)
     {
         HRESULT hr = device->Present(nullptr, nullptr, static_cast<HWND>(windowOverride), nullptr);
         if (hr != S_OK)
-            ErrorHandler::Log("The frame was unpresentable.",
-                ErrorHandler::Severity::ERROR_SEVERE);
+            Logger::Log("The frame was unpresentable.",
+                Logger::Type::ERROR_SEVERE);
     }
 
     void DX9GraphicsHandler::RenderSpriteImpl(const Sprite &sprite, float X, float Y)
@@ -1021,24 +1021,24 @@ namespace Atmos
     {
         HRESULT hr = device->SetRenderState(D3DRS_ZENABLE, false);
         if (hr != S_OK)
-            ErrorHandler::Log("DirectX9 Z buffer couldn't be set to false.",
-                ErrorHandler::Severity::ERROR_MODERATE);
+            Logger::Log("DirectX9 Z buffer couldn't be set to false.",
+                Logger::Type::ERROR_MODERATE);
         hr = device->SetRenderState(D3DRS_LIGHTING, false);
         if (hr != S_OK)
-            ErrorHandler::Log("DirectX9 lighting couldn't be set to false.",
-                ErrorHandler::Severity::ERROR_MODERATE);
+            Logger::Log("DirectX9 lighting couldn't be set to false.",
+                Logger::Type::ERROR_MODERATE);
         hr = device->SetRenderState(D3DRS_ALPHABLENDENABLE, true);
         if (hr != S_OK)
-            ErrorHandler::Log("DirectX9 alpha blend couldn't be set to true.",
-                ErrorHandler::Severity::ERROR_MODERATE);
+            Logger::Log("DirectX9 alpha blend couldn't be set to true.",
+                Logger::Type::ERROR_MODERATE);
         hr = device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
         if (hr != S_OK)
-            ErrorHandler::Log("DirectX9 source blend couldn't be set to false.",
-                ErrorHandler::Severity::ERROR_MODERATE);
+            Logger::Log("DirectX9 source blend couldn't be set to false.",
+                Logger::Type::ERROR_MODERATE);
         hr = device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
         if (hr != S_OK)
-            ErrorHandler::Log("DirectX9 destination blend couldn't be set to false.",
-                ErrorHandler::Severity::ERROR_MODERATE);
+            Logger::Log("DirectX9 destination blend couldn't be set to false.",
+                Logger::Type::ERROR_MODERATE);
     }
 
     void DX9GraphicsHandler::SetProjectionMatrix()

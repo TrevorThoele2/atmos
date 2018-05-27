@@ -2,7 +2,7 @@
 #include "ImageRegistry.h"
 
 #include "Environment.h"
-#include "Error.h"
+#include "Logger.h"
 
 #include <AGUI\System.h>
 
@@ -54,18 +54,18 @@ namespace Atmos
                 {
                     if (!ImageAsset::CanMake(buffer->first, buffer->second))
                     {
-                        ErrorHandler::Log("An image file was not loadable. It is probably corrupt or invalid.",
-                            ErrorHandler::Severity::ERROR_SEVERE,
-                            ErrorHandler::NameValueVector{ NameValuePair("File Name", fileName.GetValue()) });
+                        Logger::Log("An image file was not loadable. It is probably corrupt or invalid.",
+                            Logger::Type::ERROR_SEVERE,
+                            Logger::NameValueVector{ NameValuePair("File Name", fileName.GetValue()) });
                         continue;
                     }
 
                     Register(id, buffer->first, buffer->second, fileName, rows, cols);
                 }
                 else
-                    ErrorHandler::Log("An image file was not found in the asset package.",
-                        ErrorHandler::Severity::ERROR_SEVERE,
-                        ErrorHandler::NameValueVector{ NameValuePair("File Name", fileName.GetValue()) });
+                    Logger::Log("An image file was not found in the asset package.",
+                        Logger::Type::ERROR_SEVERE,
+                        Logger::NameValueVector{ NameValuePair("File Name", fileName.GetValue()) });
             }
         }
     }

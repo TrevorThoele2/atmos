@@ -3,7 +3,7 @@
 
 #include "CombatComponent.h"
 
-#include "Error.h"
+#include "Logger.h"
 
 #include <Inscription\Scribe.h>
 
@@ -175,17 +175,17 @@ namespace Atmos
             const String str("An element that isn't inside of element's data context is attempting to be found.");
             if (found == entries.end())
             {
-                ErrorHandler::Log(str,
-                    ErrorHandler::Severity::ERROR_LOW,
-                    ErrorHandler::NameValueVector{ NameValuePair("Element Name", main.Get()) });
+                Logger::Log(str,
+                    Logger::Type::ERROR_LOW,
+                    Logger::NameValueVector{ NameValuePair("Element Name", main.Get()) });
                 return DAMAGE_MULTIPLIER_NORMAL;
             }
 
             if (againstFound == entries.end())
             {
-                ErrorHandler::Log(str,
-                    ErrorHandler::Severity::ERROR_LOW,
-                    ErrorHandler::NameValueVector{ NameValuePair("Element Name", against.Get()) });
+                Logger::Log(str,
+                    Logger::Type::ERROR_LOW,
+                    Logger::NameValueVector{ NameValuePair("Element Name", against.Get()) });
                 return DAMAGE_MULTIPLIER_NORMAL;
             }
         }
@@ -207,9 +207,9 @@ namespace Atmos
         if (found == entries.end())
         {
             String str("An element that isn't inside of element's data context is attempting to be found.");
-            ErrorHandler::Log(str,
-                ErrorHandler::Severity::ERROR_LOW,
-                ErrorHandler::NameValueVector{ NameValuePair("Element Name", check.Get()) });
+            Logger::Log(str,
+                Logger::Type::ERROR_LOW,
+                Logger::NameValueVector{ NameValuePair("Element Name", check.Get()) });
             return Ret();
         }
 

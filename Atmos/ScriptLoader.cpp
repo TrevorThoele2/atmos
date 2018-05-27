@@ -4,9 +4,10 @@
 #include "ScriptController.h"
 #include "FalconScriptUtility.h"
 #include "FalconScriptObjects.h"
+#include "FalconScriptFunctions.h"
 
 #include "Enum.h"
-#include "Error.h"
+#include "Logger.h"
 #include "StringUtility.h"
 
 // Required for export to the module
@@ -46,8 +47,8 @@ namespace Atmos
     {
         FALCON_FUNC LogError(Falcon::VMachine *vm)
         {
-            try { ErrorHandler::Log(CheckedConversionFromFalcon<String>("message", vm),
-                ErrorHandler::Severity::ERROR_LOW); }
+            try { Logger::Log(CheckedConversionFromFalcon<String>("message", vm),
+                Logger::Type::ERROR_LOW); }
             catch (const ScriptException&) { return; }
         }
     }
@@ -318,8 +319,8 @@ namespace Atmos
             if (!charComp || charComp->type != Ent::CharacterComponent::Type::NPC)
             {
                 FatalScriptError(*ScriptController::Current(), "An entity was attempted to be put into the player party but was not an NPC.",
-                    ErrorHandler::Severity::ERROR_LOW,
-                    ErrorHandler::NameValueVector{ NameValuePair("Entity ID", ToString(entity)) });
+                    Logger::Type::ERROR_LOW,
+                    Logger::NameValueVector{ NameValuePair("Entity ID", ToString(entity)) });
                 return;
             }
 
@@ -342,8 +343,8 @@ namespace Atmos
             if (!name.IsValid())
             {
                 FatalScriptError(*ScriptController::Current(), "An entity's name was attempted to be found but the entity did not exist.",
-                    ErrorHandler::Severity::ERROR_LOW,
-                    ErrorHandler::NameValueVector{ NameValuePair("Entity ID", ToString(entity)) });
+                    Logger::Type::ERROR_LOW,
+                    Logger::NameValueVector{ NameValuePair("Entity ID", ToString(entity)) });
                 return;
             }
 
@@ -366,8 +367,8 @@ namespace Atmos
             if (!position.IsValid())
             {
                 FatalScriptError(*ScriptController::Current(), "An entity's position was attempted to be found but the entity did not exist.",
-                    ErrorHandler::Severity::ERROR_LOW,
-                    ErrorHandler::NameValueVector{ NameValuePair("Entity ID", ToString(entity)) });
+                    Logger::Type::ERROR_LOW,
+                    Logger::NameValueVector{ NameValuePair("Entity ID", ToString(entity)) });
                 return;
             }
 
@@ -560,14 +561,15 @@ namespace Atmos
             if (!madeMod)
             {
                 // Log error if not created
-                ErrorHandler::Log("A modulator was attempted to be created with an invalid name.",
-                    ErrorHandler::Severity::ERROR_LOW,
-                    ErrorHandler::NameValueVector{ NameValuePair("Name", name) });
+                Logger::Log("A modulator was attempted to be created with an invalid name.",
+                    Logger::Type::ERROR_LOW,
+                    Logger::NameValueVector{ NameValuePair("Name", name) });
                 return;
             }
 
             // Return the ID for the new modulator
-            vm->retval(FalconVariableTraits<::Atmos::Modulator::Controller::ID>::CreateItem(*vm, GameEnvironment::AttachModulator(madeMod)));
+            Classes::Modulator::Modulator::modID.value = GameEnvironment::AttachModulator(madeMod);
+            vm->retval(Classes::Modulator::Modulator::CreateItem(*vm));
         }
 
         FALCON_FUNC CreateTrack(Falcon::VMachine *vm)
@@ -585,9 +587,9 @@ namespace Atmos
             if (!mod)
             {
                 // Log error if not found
-                ErrorHandler::Log("A modulator was attempted to be found with an invalid ID.",
-                    ErrorHandler::Severity::ERROR_LOW,
-                    ErrorHandler::NameValueVector{ NameValuePair("ID", modID) });
+                Logger::Log("A modulator was attempted to be found with an invalid ID.",
+                    Logger::Type::ERROR_LOW,
+                    Logger::NameValueVector{ NameValuePair("ID", modID) });
                 return;
             }
 
@@ -595,9 +597,9 @@ namespace Atmos
             if (!madeTrack)
             {
                 // Log error if not made
-                ErrorHandler::Log("A modulator track was attempted to be created with an invalid name.",
-                    ErrorHandler::Severity::ERROR_LOW,
-                    ErrorHandler::NameValueVector{ NameValuePair("Track Name", name) });
+                Logger::Log("A modulator track was attempted to be created with an invalid name.",
+                    Logger::Type::ERROR_LOW,
+                    Logger::NameValueVector{ NameValuePair("Track Name", name) });
                 return;
             }
 
@@ -619,9 +621,9 @@ namespace Atmos
             if (!foundMod)
             {
                 // Log error if not found
-                ErrorHandler::Log("A modulator was attempted to be found with an invalid ID.",
-                    ErrorHandler::Severity::ERROR_LOW,
-                    ErrorHandler::NameValueVector{ NameValuePair("Mod ID", modID) });
+                Logger::Log("A modulator was attempted to be found with an invalid ID.",
+                    Logger::Type::ERROR_LOW,
+                    Logger::NameValueVector{ NameValuePair("Mod ID", modID) });
                 return;
             }
 
@@ -629,9 +631,9 @@ namespace Atmos
             if (!foundTrack)
             {
                 // Log error if not made
-                ErrorHandler::Log("A modulator track was attempted to be found with an invalid ID.",
-                    ErrorHandler::Severity::ERROR_LOW,
-                    ErrorHandler::NameValueVector{ NameValuePair("Track ID", trackID) });
+                Logger::Log("A modulator track was attempted to be found with an invalid ID.",
+                    Logger::Type::ERROR_LOW,
+                    Logger::NameValueVector{ NameValuePair("Track ID", trackID) });
                 return;
             }
 
@@ -788,9 +790,42 @@ namespace Atmos
     {
         Falcon::Module *mainModule = impl->mainModule;
 
+        // General
+        {
+            // Suspension
+            Functions::General::Suspend.PushAllToModule(*mainModule);
+            // Logger
+            Classes::General::LogType::PushAllToModule(*mainModule);
+            Functions::General::LogMessage.PushAllToModule(*mainModule);
+            // Random
+            Functions::General::RandomBool.PushAllToModule(*mainModule);
+            Functions::General::RandomInteger.PushAllToModule(*mainModule);
+        }
+
+        // Modulator
+        {
+            // Types
+            Classes::Modulator::Type::PushAllToModule(*mainModule);
+            Classes::Modulator::TrackType::PushAllToModule(*mainModule);
+            // Objects
+            Classes::Modulator::Modulator::PushAllToModule(*mainModule);
+            Classes::Modulator::Track::PushAllToModule(*mainModule);
+            Classes::Modulator::TrackNode::PushAllToModule(*mainModule);
+            // Creation
+            Functions::Modulator::Create.PushAllToModule(*mainModule);
+        }
+
+        // Entity
+        {
+            Classes::Ent::SenseComponent::PushAllToModule(*mainModule);
+            Functions::Entity::GetSenseComponent.PushAllToModule(*mainModule);
+        }
+
+        /*
         // General purpose
         {
-            mainModule->addExtFunc("Atmos_Suspend", GeneralScript::Suspend);
+            Functions::Suspend.PushAllToModule(*mainModule);
+            //mainModule->addExtFunc("Atmos_Suspend", GeneralScript::Suspend);
             mainModule->addExtFunc("Atmos_InstantiateScript", GeneralScript::InstantiateScript);
         }
 
@@ -883,7 +918,9 @@ namespace Atmos
             mainModule->addExtFunc("Atmos_FindPath", positionScript::FindPath)->addParam("positionFrom")->addParam("positionTo");
 
             // Setup grid position
-            Fal::GridPosition::Instance().PushAllToModule(*mainModule);
+            Fal::Classes::GridPosition::Instance().PushAllToModule(*mainModule);
+            */
+
             /*
             auto cls = mainModule->addClass(Convert(FalconVariableTraits<GridPosition>::falconTypeName), &positionScript::TilePositionConstructor)
                 ->addParam("x")
@@ -894,6 +931,7 @@ namespace Atmos
             mainModule->addClassProperty(cls, "z");
             */
 
+/*
             // Setup direction class
             {
                 typedef ::Atmos::Direction::ValueT Value;
@@ -920,7 +958,7 @@ namespace Atmos
 
                 auto setup = [&](const char *name, const String &value)
                 {
-                    mainModule->addClassProperty(cls, name).setString(&Convert(value)).setReadOnly(true);
+                    mainModule->addClassProperty(cls, name).setString(mainModule->addString(Convert(value))).setReadOnly(true);
                 };
 
                 setup("Sprite", ::Atmos::Modulator::Description::Sprite.name);
@@ -950,22 +988,36 @@ namespace Atmos
 
             // Setup Modulator class
             {
+                Fal::Classes::Modulator::PushAllToModule(*mainModule);
+                */
+
+                /*
                 auto cls = mainModule->addClass("Atmos_Modulator", &Fal::Modulator::constructor)
                     ->addParam("modID");
                 mainModule->addClassProperty(cls, "modID");
-            }
+                */
+            //}
 
+            /*
             // Setup Track class
             {
+                Fal::Classes::ModulatorTrack::PushAllToModule(*mainModule);
+                */
+                /*
                 auto cls = mainModule->addClass("Atmos_ModulatorTrack", &modulatorScript::TrackConstructor)
                     ->addParam("modID")
                     ->addParam("trackID");
                 mainModule->addClassProperty(cls, "modID");
                 mainModule->addClassProperty(cls, "trackID");
+                */
+            /*
             }
 
             // Setup Track Node class
             {
+                Fal::Classes::ModulatorTrackNode::PushAllToModule(*mainModule);
+                */
+                /*
                 auto cls = mainModule->addClass("Atmos_ModulatorTrackNode", &modulatorScript::TrackNodeConstructor)
                     ->addParam("modID")
                     ->addParam("trackID")
@@ -973,6 +1025,8 @@ namespace Atmos
                 mainModule->addClassProperty(cls, "modID");
                 mainModule->addClassProperty(cls, "trackID");
                 mainModule->addClassProperty(cls, "nodeID");
+                */
+            /*
             }
 
             // Create modulators
@@ -980,7 +1034,7 @@ namespace Atmos
             // Create modulator tracks
             mainModule->addExtFunc("Atmos_CreateModulatorTrack", &modulatorScript::CreateTrack)->addParam("mod")->addParam("name");
             // Create modulator track nodes
-            mainModule->addExtFunc("Atmos_CreateModulatorTrack", &modulatorScript::CreateTrack)->addParam("track");
+            mainModule->addExtFunc("Atmos_CreateModulatorTrackNode", &modulatorScript::CreateTrackNode)->addParam("track");
         }
 
         // Battle
@@ -993,7 +1047,11 @@ namespace Atmos
 
             mainModule->addExtFunc("AtmosBattle_Attack", &battleScript::Attack)->addParam("source")->addParam("target");
             mainModule->addExtFunc("AtmosBattle_EndTurn", &battleScript::EndTurn)->addParam("entity");
+
+            auto found = mainModule->findGlobalSymbol("Atmos_Direction");
+            int hold = 1 + 1;
         }
+        */
     }
 
     ScriptLoader& ScriptLoader::Instance()

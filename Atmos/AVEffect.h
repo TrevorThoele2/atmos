@@ -6,8 +6,6 @@
 #include "Sound.h"
 #include "Particle.h"
 
-#include "ModulatorGeneratorRoute.h"
-
 #include "OffsetMovement.h"
 
 #include "ObjectOffsetHandle.h"
@@ -18,6 +16,8 @@ namespace Atmos
     class AVEffect
     {
     public:
+        typedef Position3D PositionT;
+
         class Node
         {
         public:
@@ -51,12 +51,9 @@ namespace Atmos
             private:
                 ID id;
                 Type type;
-                Modulator::GeneratorRoute generatorRoute;
-                Modulator::Observer modulatorObserver;
             public:
                 ModulatorEntry() = default;
-                ModulatorEntry(ID id, Type type, const Modulator::GeneratorRoute &generatorRoute);
-                ModulatorEntry(ID id, Type type, Modulator::GeneratorRoute &&generatorRoute);
+                ModulatorEntry(ID id, Type type);
                 ModulatorEntry(const ModulatorEntry &arg) = default;
                 ModulatorEntry(ModulatorEntry &&arg);
                 ModulatorEntry& operator=(const ModulatorEntry &arg) = default;
@@ -64,7 +61,6 @@ namespace Atmos
                 bool operator==(const ModulatorEntry &arg) const;
                 bool operator!=(const ModulatorEntry &arg) const;
 
-                Modulator::Observer Start(Node &node);
                 void Stop();
                 bool IsWorking() const;
                 TimeValue GetSumTimeTaken() const;

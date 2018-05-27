@@ -14,7 +14,7 @@
 #include "AssetPackage.h"
 
 #include "FileUtility.h"
-#include "Error.h"
+#include "Logger.h"
 
 namespace Atmos
 {
@@ -83,9 +83,9 @@ namespace Atmos
     {
         if (fieldIDs.find(id) == fieldIDs.end())
         {
-            ErrorHandler::Log("A requested field does not exist.",
-                ErrorHandler::Severity::ERROR_MODERATE,
-                ErrorHandler::NameValueVector{ NameValuePair("Field ID", ToString(id)) });
+            Logger::Log("A requested field does not exist.",
+                Logger::Type::ERROR_MODERATE,
+                Logger::NameValueVector{ NameValuePair("Field ID", ToString(id)) });
             return false;
         }
 
@@ -255,9 +255,9 @@ namespace Atmos
             }
 
             if (!inScribe->WillLoad())
-                ErrorHandler::Log(std::move(noLoadError),
-                    ErrorHandler::Severity::ERROR_SEVERE,
-                    ErrorHandler::NameValueVector{ NameValuePair(noLoadErrorFileParamName, noLoadErrorFileParam) });
+                Logger::Log(std::move(noLoadError),
+                    Logger::Type::ERROR_SEVERE,
+                    Logger::NameValueVector{ NameValuePair(noLoadErrorFileParamName, noLoadErrorFileParam) });
             else
             {
                 // This will load
@@ -290,6 +290,7 @@ namespace Atmos
 
                 // Create the new field
                 auto newField = inScribe->GetAsHeap(useFieldID);
+                ATMOS_ASSERT_MESSAGE(newField, "The newly created field must exist.");
 
                 Instance().oldField.reset(field.release());
                 field.reset(newField);
@@ -342,9 +343,9 @@ namespace Atmos
                         const size_t bufferSize = 1000;
                         char buffer[bufferSize];
                         strerror_s(buffer, bufferSize);
-                        ErrorHandler::Log("Removing a stasis from the temporary directory has encountered an error.",
-                            ErrorHandler::Severity::ERROR_SEVERE,
-                            ErrorHandler::NameValueVector{ NameValuePair("Stasis Name", String(autosaveName)), NameValuePair("File Path", renamePath.GetValue()) });
+                        Logger::Log("Removing a stasis from the temporary directory has encountered an error.",
+                            Logger::Type::ERROR_SEVERE,
+                            Logger::NameValueVector{ NameValuePair("Stasis Name", String(autosaveName)), NameValuePair("File Path", renamePath.GetValue()) });
                     }
 
                     testRet = rename(tempPath.c_str(), renamePath.c_str());
@@ -353,9 +354,9 @@ namespace Atmos
                         const size_t bufferSize = 1000;
                         char buffer[bufferSize];
                         strerror_s(buffer, bufferSize);
-                        ErrorHandler::Log("Renaming a stasis has encountered an error.",
-                            ErrorHandler::Severity::ERROR_SEVERE,
-                            ErrorHandler::NameValueVector{ NameValuePair("Stasis Name", String(autosaveName)), NameValuePair("File Path", tempPath.GetValue()), NameValuePair("Requested File Path", renamePath.GetValue()) });
+                        Logger::Log("Renaming a stasis has encountered an error.",
+                            Logger::Type::ERROR_SEVERE,
+                            Logger::NameValueVector{ NameValuePair("Stasis Name", String(autosaveName)), NameValuePair("File Path", tempPath.GetValue()), NameValuePair("Requested File Path", renamePath.GetValue()) });
                     }
 
                     // Set the stasis name to load from

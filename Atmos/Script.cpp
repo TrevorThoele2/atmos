@@ -6,15 +6,11 @@
 #include "ScriptLoader.h"
 #include "FalconScriptUtility.h"
 
-#include "Error.h"
+#include "Logger.h"
 #include "Assert.h"
 
 #include <falcon\engine.h>
 #include <falcon\module.h>
-/*
-#include <falcon\fstream_sys_win.h>
-#include <falcon\vmmsg.h>
-*/
 
 #include <Inscription\Inscripter.h>
 #include <Inscription\Scribe.h>
@@ -230,6 +226,9 @@ namespace Atmos
 
         void Init()
         {
+            if (isInitialized)
+                return;
+
             try
             {
                 Falcon::Runtime runtime(&ScriptLoader::GetModuleLoader());
@@ -251,9 +250,9 @@ namespace Atmos
             catch (Falcon::Error *err)
             {
                 Falcon::AutoCString edesc(err->toString());
-                ErrorHandler::Log(String("Script initialization has encountered an error.\n") + edesc.c_str(),
-                    ErrorHandler::Severity::ERROR_MODERATE,
-                    ErrorHandler::NameValueVector{ NameValuePair("File Name", fileName.GetValue()) });
+                Logger::Log(String("Script initialization has encountered an error.\n") + edesc.c_str(),
+                    Logger::Type::ERROR_MODERATE,
+                    Logger::NameValueVector{ NameValuePair("File Name", fileName.GetValue()) });
                 isInitialized = false;
                 return;
             }
@@ -701,6 +700,9 @@ namespace Atmos
 {
     bool ScriptCompiler::SetScriptToCompile(const FilePath &filePath)
     {
+        // Make sure that falcon is initialized
+        ScriptRegistry::InitializeFalcon();
+
         try
         {
             inFocus.reset(new ScriptModule(*ScriptLoader::GetModuleLoader().loadFile(filePath.c_str()), filePath));
@@ -708,9 +710,9 @@ namespace Atmos
         catch (::Falcon::Error *err)
         {
             Falcon::AutoCString edesc(err->toString());
-            ErrorHandler::Log(String("Script compilation has encountered an error.\n") + edesc.c_str(),
-                ErrorHandler::Severity::ERROR_MODERATE,
-                ErrorHandler::NameValueVector{ NameValuePair("File Path", filePath.GetValue()) });
+            Logger::Log(String("Script compilation has encountered an error.\n") + edesc.c_str(),
+                Logger::Type::ERROR_MODERATE,
+                Logger::NameValueVector{ NameValuePair("File Path", filePath.GetValue()) });
 
             return false;
         }
@@ -720,6 +722,9 @@ namespace Atmos
 
     bool ScriptCompiler::SetScriptToCompile(const FilePath &filePath, const ScriptModule::Dependencies &dep)
     {
+        // Make sure that falcon is initialized
+        ScriptRegistry::InitializeFalcon();
+
         try
         {
             inFocus.reset(new ScriptModule(*ScriptLoader::GetModuleLoader().loadFile(filePath.c_str()), filePath, dep));
@@ -727,9 +732,9 @@ namespace Atmos
         catch (::Falcon::Error *err)
         {
             Falcon::AutoCString edesc(err->toString());
-            ErrorHandler::Log(String("Script compilation has encountered an error.\n") + edesc.c_str(),
-                ErrorHandler::Severity::ERROR_MODERATE,
-                ErrorHandler::NameValueVector{ NameValuePair("File Path", filePath.GetValue()) });
+            Logger::Log(String("Script compilation has encountered an error.\n") + edesc.c_str(),
+                Logger::Type::ERROR_MODERATE,
+                Logger::NameValueVector{ NameValuePair("File Path", filePath.GetValue()) });
             
             return false;
         }
@@ -739,6 +744,9 @@ namespace Atmos
 
     bool ScriptCompiler::SetScriptToCompile(Script &script)
     {
+        // Make sure that falcon is initialized
+        ScriptRegistry::InitializeFalcon();
+
         try
         {
             inFocus.reset(new ScriptModule(script.GetBaseModule(), script.GetFileName()));
@@ -746,9 +754,9 @@ namespace Atmos
         catch (::Falcon::Error *err)
         {
             Falcon::AutoCString edesc(err->toString());
-            ErrorHandler::Log(String("Script compilation has encountered an error.\n") + edesc.c_str(),
-                ErrorHandler::Severity::ERROR_MODERATE,
-                ErrorHandler::NameValueVector{ NameValuePair("File Name", script.GetFileName().GetValue()) });
+            Logger::Log(String("Script compilation has encountered an error.\n") + edesc.c_str(),
+                Logger::Type::ERROR_MODERATE,
+                Logger::NameValueVector{ NameValuePair("File Name", script.GetFileName().GetValue()) });
 
             return false;
         }
@@ -758,6 +766,9 @@ namespace Atmos
 
     bool ScriptCompiler::SetScriptToCompile(Script &script, const ScriptModule::Dependencies &dep)
     {
+        // Make sure that falcon is initialized
+        ScriptRegistry::InitializeFalcon();
+
         try
         {
             inFocus.reset(new ScriptModule(script.GetBaseModule(), script.GetFileName(), dep));
@@ -765,9 +776,9 @@ namespace Atmos
         catch (::Falcon::Error *err)
         {
             Falcon::AutoCString edesc(err->toString());
-            ErrorHandler::Log(String("Script compilation has encountered an error.\n") + edesc.c_str(),
-                ErrorHandler::Severity::ERROR_MODERATE,
-                ErrorHandler::NameValueVector{ NameValuePair("File Name", script.GetFileName().GetValue()) });
+            Logger::Log(String("Script compilation has encountered an error.\n") + edesc.c_str(),
+                Logger::Type::ERROR_MODERATE,
+                Logger::NameValueVector{ NameValuePair("File Name", script.GetFileName().GetValue()) });
 
             return false;
         }
@@ -804,9 +815,9 @@ namespace Atmos
         catch (::Falcon::Error *err)
         {
             Falcon::AutoCString edesc(err->toString());
-            ErrorHandler::Log(String("Script compilation has encountered an error.\n") + edesc.c_str(),
-                ErrorHandler::Severity::ERROR_MODERATE,
-                ErrorHandler::NameValueVector{ NameValuePair("File Name", inFocus->GetFileName().GetValue()) });
+            Logger::Log(String("Script compilation has encountered an error.\n") + edesc.c_str(),
+                Logger::Type::ERROR_MODERATE,
+                Logger::NameValueVector{ NameValuePair("File Name", inFocus->GetFileName().GetValue()) });
 
             return false;
         }

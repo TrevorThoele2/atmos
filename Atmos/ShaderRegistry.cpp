@@ -3,7 +3,7 @@
 
 #include "Environment.h"
 #include "AssetPackage.h"
-#include "Error.h"
+#include "Logger.h"
 
 #include <Inscription\Scribe.h>
 #include <Inscription\ContainerSize.h>
@@ -43,18 +43,18 @@ namespace Atmos
                 if (buffer)
                 {
                     //{
-                        //ErrorHandler::Log("A shader file was not loadable. It is probably corrupt or invalid.",
-                            //ErrorHandler::Severity::ERROR_SEVERE,
-                            //ErrorHandler::NameValueVector{ NameValuePair("File Name", fileName.GetValue()) });
+                        //Logger::Log("A shader file was not loadable. It is probably corrupt or invalid.",
+                            //Logger::Type::ERROR_SEVERE,
+                            //Logger::NameValueVector{ NameValuePair("File Name", fileName.GetValue()) });
                         //continue;
                     //}
 
                     Register(id, buffer->first, buffer->second, fileName);
                 }
                 else
-                    ErrorHandler::Log("A shader file was not found in the asset package.",
-                        ErrorHandler::Severity::ERROR_SEVERE,
-                        ErrorHandler::NameValueVector{ NameValuePair("File Name", fileName.GetValue()) });
+                    Logger::Log("A shader file was not found in the asset package.",
+                        Logger::Type::ERROR_SEVERE,
+                        Logger::NameValueVector{ NameValuePair("File Name", fileName.GetValue()) });
             }
         }
     }

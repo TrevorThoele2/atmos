@@ -15,6 +15,8 @@ namespace Atmos
     public:
         typedef std::vector<ScriptModuleBase*> Vector;
     public:
+        static void InitializeFalcon();
+
         // Returns true if the module was unique
         // The module returned is not guaranteed to be the type requested
         // If catch exception is false any exception related to creating the script module will not be caught

@@ -1,5 +1,5 @@
 
-#include "Error.h"
+#include "Logger.h"
 #include <Inscription\TextFile.h>
 #include <ctime>
 #include "Environment.h"
@@ -7,7 +7,7 @@
 
 namespace Atmos
 {
-    void DoLog(const String &string, ErrorHandler::Severity severity, ErrorHandler::NameValueVector *nvps = nullptr)
+    void DoLog(const String &string, Logger::Type type, Logger::NameValueVector *nvps = nullptr)
     {
         if (string.empty())
             return;
@@ -33,25 +33,25 @@ namespace Atmos
         inscription::TextOutFile outFile(Environment::GetFileSystem()->GetExePath().Append("errorLog.txt").GetValue(), true);
 
         // Output time and date
-        message = ErrorHandler::GetTimeValue() + "\n";
+        message = Logger::GetTimeValue() + "\n";
 
         // Output severity
         {
-            switch (severity)
+            switch (type)
             {
-            case ErrorHandler::Severity::ERROR_SEVERE:
-                message.append("Severity: Severe Error\n");
+            case Logger::Type::ERROR_SEVERE:
+                message.append("Type: Severe Error\n");
                 break;
-            case ErrorHandler::Severity::ERROR_MODERATE:
-                message.append("Severity: Moderate Error\n");
+            case Logger::Type::ERROR_MODERATE:
+                message.append("Type: Moderate Error\n");
                 break;
-            case ErrorHandler::Severity::ERROR_LOW:
-                message.append("Severity: Low Error\n");
+            case Logger::Type::ERROR_LOW:
+                message.append("Type: Low Error\n");
                 break;
-            case ErrorHandler::Severity::WARNING:
-                message.append("Severity: Warning\n");
+            case Logger::Type::WARNING:
+                message.append("Type: Warning\n");
                 break;
-            case ErrorHandler::Severity::INFORMATION:
+            case Logger::Type::INFORMATION:
                 break;
             }
         }
@@ -85,32 +85,32 @@ namespace Atmos
             placeNewLines(string.substr(string.size() - 2), message);
 
         outFile << message;
-        ErrorHandler::Instance().onLogged(message);
+        Logger::Instance().onLogged(message);
     }
 
-    void ErrorHandler::Log(const String &string, Severity severity)
+    void Logger::Log(const String &string, Type type)
     {
         if (!Instance().initialized)
         {
-            Instance().entries.push_back(Entry(string, severity, NameValueVector()));
+            Instance().entries.push_back(Entry(string, type, NameValueVector()));
             return;
         }
 
-        DoLog(string, severity);
+        DoLog(string, type);
     }
 
-    void ErrorHandler::Log(const String &string, Severity severity, ErrorHandler::NameValueVector &nvps)
+    void Logger::Log(const String &string, Type type, Logger::NameValueVector &nvps)
     {
         if (!Instance().initialized)
         {
-            Instance().entries.push_back(Entry(string, severity, nvps));
+            Instance().entries.push_back(Entry(string, type, nvps));
             return;
         }
 
-        DoLog(string, severity, &nvps);
+        DoLog(string, type, &nvps);
     }
 
-    String ErrorHandler::GetTimeValue()
+    String Logger::GetTimeValue()
     {
         String ret;
 
@@ -142,31 +142,31 @@ namespace Atmos
         return ret;
     }
 
-    void ErrorHandler::ClearFile()
+    void Logger::ClearFile()
     {
         // Just open up the file without appending
         inscription::TextOutFile outFile(Environment::GetFileSystem()->GetExePath().Append("errorLog.txt").GetValue());
     }
 
-    ErrorHandler::Entry::Entry(const String &string, Severity severity, const NameValueVector &nvps) : string(string), severity(severity), nvps(nvps)
+    Logger::Entry::Entry(const String &string, Type type, const NameValueVector &nvps) : string(string), type(type), nvps(nvps)
     {}
 
     void OnExit()
     {
-        DoLog("Session stop.", ErrorHandler::Severity::INFORMATION);
+        DoLog("Session stop.", Logger::Type::INFORMATION);
     }
 
-    ErrorHandler& ErrorHandler::Instance()
+    Logger& Logger::Instance()
     {
-        static ErrorHandler instance;
+        static Logger instance;
         return instance;
     }
 
-    void ErrorHandler::Init()
+    void Logger::Init()
     {
         Instance().initialized = true;
         ClearFile();
-        DoLog("Session start.", ErrorHandler::Severity::INFORMATION);
+        DoLog("Session start.", Logger::Type::INFORMATION);
         std::atexit(&OnExit);
 
         // Push all stacked entries
@@ -174,13 +174,13 @@ namespace Atmos
         while (entryLoop != Instance().entries.end())
         {
             if (entryLoop->nvps.empty())
-                Log(entryLoop->string, entryLoop->severity);
+                Log(entryLoop->string, entryLoop->type);
             else
-                Log(entryLoop->string, entryLoop->severity, entryLoop->nvps);
+                Log(entryLoop->string, entryLoop->type, entryLoop->nvps);
             entryLoop = Instance().entries.erase(entryLoop);
         }
     }
 
-    ErrorHandler::ErrorHandler() : initialized(false)
+    Logger::Logger() : initialized(false)
     {}
 }

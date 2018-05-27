@@ -79,6 +79,7 @@ namespace Atmos
             Modulator(const Name &generatorName);
             Modulator(const Modulator &arg);
             Modulator(Modulator &&arg);
+            ~Modulator();
             Modulator& operator=(const Modulator &arg);
             Modulator& operator=(Modulator &&arg);
             bool operator==(const Modulator &arg) const;
@@ -173,6 +174,12 @@ namespace Atmos
         template<class Object>
         Modulator<Object>::Modulator(Modulator &&arg) : ModulatorBase(std::move(arg)), obj(std::move(arg.obj)), tracks(std::move(arg.tracks))
         {}
+
+        template<class Object>
+        Modulator<Object>::~Modulator()
+        {
+            StopImpl();
+        }
 
         template<class Object>
         Modulator<Object>& Modulator<Object>::operator=(const Modulator &arg)

@@ -3,7 +3,7 @@
 
 #include "Script.h"
 #include "ScriptController.h"
-#include "Error.h"
+#include "Logger.h"
 
 #include <Function/Iterate.h>
 #include <falcon/engine.h>
@@ -100,10 +100,10 @@ namespace Atmos
             return string;
         }
 
-        void FatalScriptError(Script::Instance &instance, String &&string, ErrorHandler::Severity severity, ErrorHandler::NameValueVector &nameValueVector)
+        void FatalScriptError(Script::Instance &instance, String &&string, Logger::Type severity, Logger::NameValueVector &nameValueVector)
         {
             // First, log the error
-            ErrorHandler::Log("Fatal script error.\n" + string + "\n" + AddTracebackToString(instance, string),
+            Logger::Log("Fatal script error.\n" + string + "\n" + AddTracebackToString(instance, string),
                 severity,
                 nameValueVector);
             // Then, force quit the script
@@ -113,15 +113,15 @@ namespace Atmos
         void FatalScriptErrorParameterNotExist(Script::Instance &instance, const String &name)
         {
             FatalScriptError(instance, String("A script parameter was not sent from a script."),
-                ErrorHandler::Severity::ERROR_MODERATE,
-                ErrorHandler::NameValueVector{ NameValuePair("Parameter Name", name), NameValuePair("Script File Name", instance.GetFileName().GetValue()) });
+                Logger::Type::ERROR_MODERATE,
+                Logger::NameValueVector{ NameValuePair("Parameter Name", name), NameValuePair("Script File Name", instance.GetFileName().GetValue()) });
         }
 
         void FatalScriptErrorParameterNotExpectedType(Script::Instance &instance, const String &name, const String &expectedType, const String &givenType)
         {
             FatalScriptError(instance, String("A script parameter was not the expected type."),
-                ErrorHandler::Severity::ERROR_MODERATE,
-                ErrorHandler::NameValueVector{ NameValuePair("Parameter Name", name), NameValuePair("Script File Name", instance.GetFileName().GetValue()), NameValuePair("Type", givenType), NameValuePair("Expected Type", expectedType) });
+                Logger::Type::ERROR_MODERATE,
+                Logger::NameValueVector{ NameValuePair("Parameter Name", name), NameValuePair("Script File Name", instance.GetFileName().GetValue()), NameValuePair("Type", givenType), NameValuePair("Expected Type", expectedType) });
         }
 
         void FatalScriptErrorParameterNotExpectedType(Script::Instance &instance, const String &name, const String &expectedType, Falcon::Item &item)
@@ -146,7 +146,15 @@ namespace Atmos
             item.setBoolean(set);
         }
 
-        const String FalconVariableTraits<bool>::typeString("Bool");
+        void FalconVariableTraits<bool>::SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set)
+        {
+            item.setBool(set);
+        }
+
+        String FalconVariableTraits<bool>::GetTypeString()
+        {
+            return "Bool";
+        }
 
         Falcon::Item FalconVariableTraits<bool>::CreateItem(Falcon::VMachine &vm, const Type &set)
         {
@@ -170,7 +178,15 @@ namespace Atmos
             item.setInteger(set);
         }
 
-        const String FalconVariableTraits<std::uint8_t>::typeString("UInt8");
+        void FalconVariableTraits<std::uint8_t>::SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set)
+        {
+            item.setInteger(set);
+        }
+
+        String FalconVariableTraits<std::uint8_t>::GetTypeString()
+        {
+            return "UInt8";
+        }
 
         Falcon::Item FalconVariableTraits<std::uint8_t>::CreateItem(Falcon::VMachine &vm, const Type &set)
         {
@@ -194,7 +210,15 @@ namespace Atmos
             item.setInteger(set);
         }
 
-        const String FalconVariableTraits<std::uint16_t>::typeString("UInt16");
+        void FalconVariableTraits<std::uint16_t>::SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set)
+        {
+            item.setInteger(set);
+        }
+
+        String FalconVariableTraits<std::uint16_t>::GetTypeString()
+        {
+            return "UInt16";
+        }
 
         Falcon::Item FalconVariableTraits<std::uint16_t>::CreateItem(Falcon::VMachine &vm, const Type &set)
         {
@@ -218,7 +242,15 @@ namespace Atmos
             item.setInteger(set);
         }
 
-        const String FalconVariableTraits<std::uint32_t>::typeString("UInt32");
+        void FalconVariableTraits<std::uint32_t>::SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set)
+        {
+            item.setInteger(set);
+        }
+
+        String FalconVariableTraits<std::uint32_t>::GetTypeString()
+        {
+            return "UInt32";
+        }
 
         Falcon::Item FalconVariableTraits<std::uint32_t>::CreateItem(Falcon::VMachine &vm, const Type &set)
         {
@@ -242,7 +274,15 @@ namespace Atmos
             item.setInteger(set);
         }
 
-        const String FalconVariableTraits<std::uint64_t>::typeString("UInt64");
+        void FalconVariableTraits<std::uint64_t>::SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set)
+        {
+            item.setInteger(set);
+        }
+
+        String FalconVariableTraits<std::uint64_t>::GetTypeString()
+        {
+            return "UInt64";
+        }
 
         Falcon::Item FalconVariableTraits<std::uint64_t>::CreateItem(Falcon::VMachine &vm, const Type &set)
         {
@@ -266,7 +306,15 @@ namespace Atmos
             item.setInteger(set);
         }
 
-        const String FalconVariableTraits<std::int8_t>::typeString("Int8");
+        void FalconVariableTraits<std::int8_t>::SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set)
+        {
+            item.setInteger(set);
+        }
+
+        String FalconVariableTraits<std::int8_t>::GetTypeString()
+        {
+            return "Int8";
+        }
 
         Falcon::Item FalconVariableTraits<std::int8_t>::CreateItem(Falcon::VMachine &vm, const Type &set)
         {
@@ -290,7 +338,15 @@ namespace Atmos
             item.setInteger(set);
         }
 
-        const String FalconVariableTraits<std::int16_t>::typeString("Int16");
+        void FalconVariableTraits<std::int16_t>::SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set)
+        {
+            item.setInteger(set);
+        }
+
+        String FalconVariableTraits<std::int16_t>::GetTypeString()
+        {
+            return "Int16";
+        }
 
         Falcon::Item FalconVariableTraits<std::int16_t>::CreateItem(Falcon::VMachine &vm, const Type &set)
         {
@@ -314,7 +370,15 @@ namespace Atmos
             item.setInteger(set);
         }
 
-        const String FalconVariableTraits<std::int32_t>::typeString("Int32");
+        void FalconVariableTraits<std::int32_t>::SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set)
+        {
+            item.setInteger(set);
+        }
+
+        String FalconVariableTraits<std::int32_t>::GetTypeString()
+        {
+            return "Int32";
+        }
 
         Falcon::Item FalconVariableTraits<std::int32_t>::CreateItem(Falcon::VMachine &vm, const Type &set)
         {
@@ -338,7 +402,15 @@ namespace Atmos
             item.setInteger(set);
         }
 
-        const String FalconVariableTraits<std::int64_t>::typeString("Int64");
+        void FalconVariableTraits<std::int64_t>::SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set)
+        {
+            item.setInteger(set);
+        }
+
+        String FalconVariableTraits<std::int64_t>::GetTypeString()
+        {
+            return "Int64";
+        }
 
         Falcon::Item FalconVariableTraits<std::int64_t>::CreateItem(Falcon::VMachine &vm, const Type &set)
         {
@@ -364,7 +436,15 @@ namespace Atmos
             item.setNumeric(set);
         }
 
-        const String FalconVariableTraits<double>::typeString("Double");
+        void FalconVariableTraits<double>::SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set)
+        {
+            item.setNumeric(set);
+        }
+
+        String FalconVariableTraits<double>::GetTypeString()
+        {
+            return "Double";
+        }
 
         Falcon::Item FalconVariableTraits<double>::CreateItem(Falcon::VMachine &vm, const Type &set)
         {
@@ -390,7 +470,15 @@ namespace Atmos
             item.setString(&Convert(set));
         }
 
-        const String FalconVariableTraits<String>::typeString("String");
+        void FalconVariableTraits<String>::SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set)
+        {
+            item.setString(mod.addString(Convert(set)));
+        }
+
+        String FalconVariableTraits<String>::GetTypeString()
+        {
+            return "String";
+        }
 
         Falcon::Item FalconVariableTraits<String>::CreateItem(Falcon::VMachine &vm, const Type &set)
         {
@@ -452,7 +540,16 @@ namespace Atmos
             ::function::IterateRangeCheckStop<VariantIterationTraits::UnderlyingType, VariantCreateConverter, bool, VariantIterationTraits::maxU>(false, set, vm, valueProp);
         }
 
-        const String FalconVariableTraits<Variant>::typeString("Variant");
+        void FalconVariableTraits<Variant>::SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set)
+        {
+
+        }
+
+        String FalconVariableTraits<Variant>::GetTypeString()
+        {
+            return "Variant";
+        }
+
         const String FalconVariableTraits<Variant>::falconTypeName("atmos_Variant");
         const String FalconVariableTraits<Variant>::valueName("value");
 
@@ -496,7 +593,16 @@ namespace Atmos
             item.setProperty(Convert(highName), set.GetHigh());
         }
 
-        const String FalconVariableTraits<LargeInteger>::typeString("LargeInteger");
+        void FalconVariableTraits<LargeInteger>::SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set)
+        {
+
+        }
+
+        String FalconVariableTraits<LargeInteger>::GetTypeString()
+        {
+            return "LargeInteger";
+        }
+
         const String FalconVariableTraits<LargeInteger>::falconTypeName("atmos_LargeInteger");
         const String FalconVariableTraits<LargeInteger>::lowName("low");
         const String FalconVariableTraits<LargeInteger>::highName("high");
@@ -544,7 +650,16 @@ namespace Atmos
             item.setProperty(Convert(valueName), set.GetRawValue());
         }
 
-        const String FalconVariableTraits<FixedPoint64>::typeString("FixedPoint64");
+        void FalconVariableTraits<FixedPoint64>::SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set)
+        {
+
+        }
+
+        String FalconVariableTraits<FixedPoint64>::GetTypeString()
+        {
+            return "FixedPoint64";
+        }
+
         const String FalconVariableTraits<FixedPoint64>::falconTypeName("atmos_FixedPoint64");
         const String FalconVariableTraits<FixedPoint64>::valueName("value");
 
@@ -598,7 +713,11 @@ namespace Atmos
             item.setProperty(Convert(zName), set.z);
         }
 
-        const String FalconVariableTraits<GridPosition>::typeString("GridPosition");
+        String FalconVariableTraits<GridPosition>::GetTypeString()
+        {
+            return "GridPosition";
+        }
+
         const String FalconVariableTraits<GridPosition>::falconTypeName("Atmos_GridPosition");
         const String FalconVariableTraits<GridPosition>::xName("x");
         const String FalconVariableTraits<GridPosition>::yName("y");
@@ -706,7 +825,15 @@ namespace Atmos
             item.setInteger(set);
         }
 
-        const String FalconVariableTraits<Entity>::typeString("Entity");
+        void FalconVariableTraits<Entity>::SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set)
+        {
+            item.setInteger(set);
+        }
+
+        String FalconVariableTraits<Entity>::GetTypeString()
+        {
+            return "Entity";
+        }
 
         Falcon::Item FalconVariableTraits<Entity>::CreateItem(Falcon::VMachine &vm, const Type &set)
         {
