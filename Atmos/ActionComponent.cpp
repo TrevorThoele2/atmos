@@ -14,11 +14,12 @@ namespace Atmos
         ActionComponent::ActionComponent() : activator(Activator::USE_ON)
         {}
 
-        ActionComponent::ActionComponent(ActionComponent &&arg) : activator(std::move(arg.activator)), act(std::move(arg.act))
+        ActionComponent::ActionComponent(ActionComponent &&arg) : Component(std::move(arg)), activator(std::move(arg.activator)), act(std::move(arg.act))
         {}
 
         ActionComponent& ActionComponent::operator=(ActionComponent &&arg)
         {
+            Component::operator=(std::move(arg));
             activator = std::move(arg.activator);
             act = std::move(arg.act);
             return *this;

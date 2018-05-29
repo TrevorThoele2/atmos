@@ -794,6 +794,9 @@ namespace Atmos
         {
             // Suspension
             Functions::General::Suspend.PushAllToModule(*mainModule);
+            // Caller
+            Classes::General::CallerType::PushAllToModule(*mainModule);
+            Classes::General::Caller::PushAllToModule(*mainModule);
             // Logger
             Classes::General::LogType::PushAllToModule(*mainModule);
             Functions::General::LogMessage.PushAllToModule(*mainModule);
@@ -817,8 +820,21 @@ namespace Atmos
 
         // Entity
         {
+            Classes::Ent::ComponentType::PushAllToModule(*mainModule);
+
+            Classes::Ent::ActionComponent::PushAllToModule(*mainModule);
+            Classes::Ent::BattleComponent::PushAllToModule(*mainModule);
+            Classes::Ent::AIComponent::PushAllToModule(*mainModule);
+            Classes::Ent::AvatarComponent::PushAllToModule(*mainModule);
+            Classes::Ent::CharacterComponent::PushAllToModule(*mainModule);
+            Classes::Ent::CombatComponent::PushAllToModule(*mainModule);
+            Classes::Ent::DialogueComponent::PushAllToModule(*mainModule);
+            Classes::Ent::GeneralComponent::PushAllToModule(*mainModule);
+            Classes::Ent::InventoryComponent::PushAllToModule(*mainModule);
+            Classes::Ent::MovementComponent::PushAllToModule(*mainModule);
             Classes::Ent::SenseComponent::PushAllToModule(*mainModule);
-            Functions::Entity::GetSenseComponent.PushAllToModule(*mainModule);
+
+            Classes::Ent::Entity::PushAllToModule(*mainModule);
         }
 
         /*

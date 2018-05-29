@@ -92,10 +92,10 @@ namespace Atmos
             return item;
         }
 
-        String& AddTracebackToString(Script::Instance &instance, String &string)
+        String& AddTracebackToString(Falcon::VMachine &vm, String &string)
         {
             Falcon::SyntaxError error;
-            instance.GetVM()->fillErrorContext(&error);
+            vm.fillErrorContext(&error);
             string.append(Falcon::AutoCString(error.toString()).c_str());
             return string;
         }
@@ -103,7 +103,7 @@ namespace Atmos
         void FatalScriptError(Script::Instance &instance, String &&string, Logger::Type severity, Logger::NameValueVector &nameValueVector)
         {
             // First, log the error
-            Logger::Log("Fatal script error.\n" + string + "\n" + AddTracebackToString(instance, string),
+            Logger::Log("Fatal script error.\n" + string + "\n" + AddTracebackToString(*instance.GetVM().vm(), string),
                 severity,
                 nameValueVector);
             // Then, force quit the script

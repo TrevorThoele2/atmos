@@ -52,25 +52,29 @@ namespace Atmos
 
                 // Log message
                 FUNCTION(LogMessage, "Atmos_LogMessage")
-                    PARAMETERS(new Prototype::Parameter<String>("message"), new Prototype::Parameter<Logger::Type>("type"))
+                    PARAMETERS(new Prototype::Parameter<String>("message"), new Prototype::Parameter<Logger::Type>("type", false))
                 BODY
                 {
                     SETUP_FUNCTION(LogMessage);
 
-                    auto &type = selfFunc.GetParameter<Logger::Type>("type")->value;
-                    Logger::Log(CheckedConversionFromFalcon<String>("message", vm),
-                        type);
+                    auto message = selfFunc.GetParameter<String>("message");
+                    auto type = selfFunc.GetParameter<Logger::Type>("type");
+                    
+                    if (!type->WasSet())
+                        Logger::Log(message->value, Logger::Type::INFORMATION);
+                    else
+                        Logger::Log(message->value, type->value);
                 } BODY_END;
 
                 // Random bool
                 FUNCTION(RandomBool, "Atmos_RandomBool")
-                    PARAMETERS(new Prototype::Parameter<double>("probability"))
+                    PARAMETERS(new Prototype::Parameter<double>("probability", false))
                 BODY
                 {
                     SETUP_FUNCTION_CONTINUE(RandomBool);
 
                     auto probability = selfFunc.GetParameter<double>("probability");
-                    if (!probability)
+                    if (!probability->WasSet())
                         vm->retval(Act::Random::GenerateBool());
                     else
                         vm->retval(Act::Random::GenerateBool(probability->value));
@@ -87,7 +91,7 @@ namespace Atmos
 
                     auto floor = selfFunc.GetParameter<T>("floor");
                     auto ceiling = selfFunc.GetParameter<T>("ceiling");
-                    if (!floor || !ceiling)
+                    if (!floor->WasSet() || !ceiling->WasSet())
                         vm->retval(Act::Random::GenerateIntFullRange<T>());
                     else
                         vm->retval(Act::Random::GenerateInt<T>(floor->value, ceiling->value));
@@ -102,46 +106,22 @@ namespace Atmos
                 BODY
                 {
                     SETUP_FUNCTION(Create);
-                    auto &name = selfFunc.GetParameter<Name>("name")->value;
+                    auto name = selfFunc.GetParameter<Name>("name");
 
                     // Create the modulator
-                    ::Atmos::Modulator::Observer madeMod(GameEnvironment::GenerateModulator(name));
+                    ::Atmos::Modulator::Observer madeMod(GameEnvironment::GenerateModulator(name->value));
                     if (!madeMod)
                     {
                         // Log error if not created
                         Logger::Log("A modulator was attempted to be created with an invalid name.",
                             Logger::Type::ERROR_LOW,
-                            Logger::NameValueVector{ NameValuePair("Name", name) });
+                            Logger::NameValueVector{ NameValuePair("Name", name->value) });
                         return;
                     }
 
                     // Return the ID for the new modulator
                     Classes::Modulator::Modulator::modID.value = GameEnvironment::AttachModulator(madeMod);
                     vm->retval(Classes::Modulator::Modulator::CreateItem(*vm));
-                } BODY_END;
-            }
-
-            namespace Entity
-            {
-                // Get sense component
-                FUNCTION(GetSenseComponent, "AtmosEntity_GetSenseComponent")
-                    PARAMETERS(new Prototype::Parameter<::Atmos::Entity>("entity"))
-                BODY
-                {
-                    SETUP_FUNCTION(GetSenseComponent);
-
-                    auto &entity = selfFunc.GetParameter<::Atmos::Entity>("entity")->value;
-
-                    auto senseComponent = GetCurrentEntities()->FindComponent<::Atmos::Ent::SenseComponent>(entity);
-                    if (!senseComponent)
-                    {
-                        Logger::Log("A sense component was required but wasn't found.",
-                            Logger::Type::ERROR_MODERATE,
-                            Logger::NameValueVector{ NameValuePair("Entity", static_cast<size_t>(entity)) });
-                        return;
-                    }
-
-                    vm->retval(Classes::Ent::SenseComponent::CreateItem(*vm));
                 } BODY_END;
             }
         }

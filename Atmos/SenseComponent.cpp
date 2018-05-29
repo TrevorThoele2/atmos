@@ -38,13 +38,14 @@ namespace Atmos
         SenseComponent::SenseComponent() : show(true)
         {}
 
-        SenseComponent::SenseComponent(const SenseComponent &arg) : position(arg.position), sprites(arg.sprites, &position), sounds(arg.sounds, &position), avEffects(arg.avEffects, &position), show(arg.show)
+        SenseComponent::SenseComponent(const SenseComponent &arg) : Component(arg), position(arg.position), sprites(arg.sprites, &position), sounds(arg.sounds, &position), avEffects(arg.avEffects, &position), show(arg.show)
         {
             SyncObjects();
         }
 
         SenseComponent& SenseComponent::operator=(const SenseComponent &arg)
         {
+            Component::operator=(arg);
             position = arg.position;
             sprites = arg.sprites;
             sounds = arg.sounds;
@@ -54,13 +55,14 @@ namespace Atmos
             return *this;
         }
 
-        SenseComponent::SenseComponent(SenseComponent &&arg) : position(std::move(arg.position)), sprites(std::move(arg.sprites), &position), sounds(std::move(arg.sounds), &position), avEffects(std::move(arg.avEffects), &position), show(std::move(arg.show))
+        SenseComponent::SenseComponent(SenseComponent &&arg) : Component(std::move(arg)), position(std::move(arg.position)), sprites(std::move(arg.sprites), &position), sounds(std::move(arg.sounds), &position), avEffects(std::move(arg.avEffects), &position), show(std::move(arg.show))
         {
             SyncObjects();
         }
 
         SenseComponent& SenseComponent::operator=(SenseComponent &&arg)
         {
+            Component::operator=(std::move(arg));
             position = std::move(arg.position);
             sprites = std::move(arg.sprites);
             sounds = std::move(arg.sounds);

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vector>
 #include "FalconScriptBasePrototype.h"
 #include "FalconScriptUtility.h"
 
@@ -18,38 +19,90 @@ namespace Atmos
             public:
                 typedef std::unique_ptr<Prototype> PrototypePtr;
 
-                class PropertyBase
+                class ValueBase
                 {
+                protected:
+                    bool wasSet;
                 public:
                     const Name name;
-                    PropertyBase(const Name &name);
-                    virtual PropertyBase* Clone(Falcon::Item &item) const = 0;
-                    virtual void SetProperty(Falcon::VMachine &vm, Falcon::Item &obj) = 0;
+                    const bool strictType;
+                    ValueBase(const Name &name, bool strictType = true);
+                    virtual ValueBase* Clone(Falcon::Item &item) const = 0;
+                    // Use for setting a class property
+                    virtual void SetProperty(Falcon::VMachine &vm, Falcon::Item &self) = 0;
                     void SetItem(Falcon::VMachine &vm);
                     virtual void SetItem(Falcon::VMachine &vm, Falcon::Item &obj) = 0;
-                    // Returns true if it could make the item
+                    // Returns true if it could find the item
                     virtual bool FromItem(Falcon::VMachine &vm) = 0;
+                    // Is true if this was actually set from Falcon
+                    bool WasSet() const;
+                };
+
+                class PropertyBase : public ValueBase
+                {
+                public:
+                    PropertyBase(const Name &name, bool strictType = true);
                     virtual void PushToFalcon(Falcon::Symbol *cls, Falcon::Module &pushTo) = 0;
                 };
 
                 typedef std::unique_ptr<PropertyBase> PropertyPtr;
 
-                template<class T>
-                class Property : public PropertyBase
+                class ParameterBase : public ValueBase
+                {
+                public:
+                    ParameterBase(const Name &name, bool strictType = true);
+                    virtual void PushToFalcon(Falcon::Symbol *func, Falcon::Module &pushTo) = 0;
+                };
+
+                typedef std::unique_ptr<ParameterBase> ParameterPtr;
+
+                template<class T, class InheritFrom>
+                class ValueJoin : public InheritFrom
                 {
                 public:
                     typedef T Type;
+                private:
+                    virtual bool RetrieveItemFromVMImpl(Falcon::VMachine &vm, Falcon::Item &item) = 0;
                 public:
                     T value;
-                    Property(const Name &name);
-                    Property(const Name &name, const T &value);
-                    Property(const Name &name, T &&value);
-                    Property* Clone(Falcon::Item &item) const override final;
-                    void SetProperty(Falcon::VMachine &vm, Falcon::Item &obj) override final;
+                    ValueJoin(const Name &name, bool strictType = true);
+                    ValueJoin(const Name &name, const T &value, bool strictType = true);
+                    ValueJoin(const Name &name, T &&value, bool strictType = true);
+                    // Use for setting a class property
+                    void SetProperty(Falcon::VMachine &vm, Falcon::Item &self) override final;
+                    void SetPropertyTo(Falcon::VMachine &vm, Falcon::Item &self, const T &set);
+                    void SetPropertyTo(Falcon::VMachine &vm, Falcon::Item &self, T &&set);
                     void SetItem(Falcon::VMachine &vm, Falcon::Item &obj) override final;
-                    // Returns true if it could make the item
+                    // Returns true if it could find the item
                     bool FromItem(Falcon::VMachine &vm) override final;
+                };
+
+                template<class T>
+                class Property : public ValueJoin<T, PropertyBase>
+                {
+                private:
+                    bool readonly;
+                    bool RetrieveItemFromVMImpl(Falcon::VMachine &vm, Falcon::Item &item) override final;
+                public:
+                    Property(const Name &name, bool readonly = false, bool strictType = true);
+                    Property(const Name &name, const T &value, bool readonly = false, bool strictType = true);
+                    Property(const Name &name, T &&value, bool readonly = false, bool strictType = true);
+                    Property* Clone(Falcon::Item &item) const override final;
+                    bool IsReadonly() const;
                     void PushToFalcon(Falcon::Symbol *cls, Falcon::Module &pushTo) override final;
+                };
+
+                template<class T>
+                class Parameter : public ValueJoin<T, ParameterBase>
+                {
+                private:
+                    bool RetrieveItemFromVMImpl(Falcon::VMachine &vm, Falcon::Item &item) override final;
+                public:
+                    Parameter(const Name &name, bool strictType = true);
+                    Parameter(const Name &name, const T &value, bool strictType = true);
+                    Parameter(const Name &name, T &&value, bool strictType = true);
+                    Parameter* Clone(Falcon::Item &item) const override final;
+                    void PushToFalcon(Falcon::Symbol *func, Falcon::Module &pushTo) override final;
                 };
 
                 template<class T>
@@ -63,10 +116,10 @@ namespace Atmos
                     typedef typename UnderlyingT::iterator iterator;
                     typedef typename UnderlyingT::const_iterator const_iterator;
                 public:
-                    std::vector<T> underlying;
+                    UnderlyingT underlying;
 
                     List() = default;
-                    List(std::vector<T> &&underlying);
+                    List(UnderlyingT &&underlying);
 
                     T* Get(const Name &name);
                     template<class As>
@@ -85,43 +138,45 @@ namespace Atmos
 
                 class MethodBase
                 {
+                private:
+                    virtual bool ShouldSetupSelf() const;
                 public:
                     typedef Falcon::ext_func_t FalconFuncT;
                     FalconFuncT falconFunc;
-                    List<PropertyPtr> parameters;
-                    PrototypePtr self;
+                    List<ParameterPtr> parameters;
 
-                    MethodBase(std::vector<PropertyBase*> &&parameters, FalconFuncT falconFunc);
+                    MethodBase(std::vector<ParameterBase*> &&parameters, FalconFuncT falconFunc);
                     // Returns true if it found everything
                     // Generally indicates if a method can continue
                     bool Setup(Falcon::VMachine &vm);
                     // Returns true if it found all of the parameters
                     // Generally indicates if a method can continue
-                    bool SetupProperties(Falcon::VMachine &vm);
+                    bool SetupParameters(Falcon::VMachine &vm);
                     // Returns true if it found all of the properties
                     // Generally indicates if a method can continue
                     bool SetupSelf(Falcon::VMachine &vm);
 
                     template<class U>
-                    Property<U>* GetParameter(const Name &name);
+                    Parameter<U>* GetParameter(const Name &name);
                     template<class U>
-                    Property<U>* GetParameter(Property<U> &prop);
+                    Parameter<U>* GetParameter(Property<U> &prop);
                 };
 
                 class Method : public MethodBase
                 {
+                private:
+                    bool ShouldSetupSelf() const override;
                 public:
                     Name name;
                     bool isStatic;
-                    PrototypePtr self;
-                    Method(const Name &name, bool isStatic, std::vector<PropertyBase*> &&parameters, FalconFuncT falconFunc);
+                    Method(const Name &name, bool isStatic, std::vector<ParameterBase*> &&parameters, FalconFuncT falconFunc);
                     void PushToFalcon(Falcon::Symbol *cls, Falcon::Module &pushTo);
                 };
 
                 class Constructor : public MethodBase
                 {
                 public:
-                    Constructor(std::vector<PropertyBase*> &&parameters, FalconFuncT falconFunc);
+                    Constructor(std::vector<ParameterBase*> &&parameters, FalconFuncT falconFunc);
                     // Returns the class symbol
                     Falcon::Symbol* PushToFalcon(const Name &className, Falcon::Module &pushTo);
                 };
@@ -157,10 +212,6 @@ namespace Atmos
                 static Falcon::Symbol* CreateClassSymbol(const Name &className, Falcon::Module &pushTo, std::true_type);
                 static Falcon::Symbol* CreateClassSymbol(const Name &className, Falcon::Module &pushTo, std::false_type);
             private:
-                static Falcon::Item self;
-                static List<PropertyBase*> properties;
-                static List<Method*> methods;
-            private:
                 static void AddProperty(PropertyBase &add);
                 static void AddMethod(Method &add);
             public:
@@ -171,8 +222,8 @@ namespace Atmos
                 static Property<U>* GetProperty(const Name &name);
                 template<class U>
                 static Property<U>* GetProperty(Property<U> &prop);
-                static List<PropertyBase*> GetProperties();
-                static List<Method*> GetMethods();
+                static List<PropertyBase*>& GetProperties();
+                static List<Method*>& GetMethods();
 
                 // Checks if the item is the same as this prototype
                 static bool Is(Falcon::Item &item);
@@ -186,15 +237,13 @@ namespace Atmos
             };
 
             template<class Mixin>
-            Prototype<Mixin>::PropertyBase::PropertyBase(const Name &name) : name(name)
-            {
-                Mixin::AddProperty(*this);
-            }
+            Prototype<Mixin>::ValueBase::ValueBase(const Name &name, bool strictType) : name(name), strictType(strictType), wasSet(false)
+            {}
 
             template<class Mixin>
-            void Prototype<Mixin>::PropertyBase::SetItem(Falcon::VMachine &vm)
+            void Prototype<Mixin>::ValueBase::SetItem(Falcon::VMachine &vm)
             {
-                auto found = vm.findGlobalItem(Convert(name));
+                auto found = .RetrieveItemFromVM(name, vm);
                 if (!found)
                     return;
 
@@ -202,19 +251,139 @@ namespace Atmos
             }
 
             template<class Mixin>
-            template<class T>
-            Prototype<Mixin>::Property<T>::Property(const Name &name) : PropertyBase(name)
+            bool Prototype<Mixin>::ValueBase::WasSet() const
+            {
+                return wasSet;
+            }
+
+            template<class Mixin>
+            Prototype<Mixin>::PropertyBase::PropertyBase(const Name &name, bool strictType) : ValueBase(name, strictType)
             {}
 
             template<class Mixin>
-            template<class T>
-            Prototype<Mixin>::Property<T>::Property(const Name &name, const T &value) : PropertyBase(name), value(value)
+            Prototype<Mixin>::ParameterBase::ParameterBase(const Name &name, bool strictType) : ValueBase(name, strictType)
             {}
 
             template<class Mixin>
-            template<class T>
-            Prototype<Mixin>::Property<T>::Property(const Name &name, T &&value) : PropertyBase(name), value(std::move(value))
+            template<class T, class InheritFrom>
+            Prototype<Mixin>::ValueJoin<T, InheritFrom>::ValueJoin(const Name &name, bool strictType) : InheritFrom(name, strictType)
             {}
+
+            template<class Mixin>
+            template<class T, class InheritFrom>
+            Prototype<Mixin>::ValueJoin<T, InheritFrom>::ValueJoin(const Name &name, const T &value, bool strictType) : InheritFrom(name, strictType), value(value)
+            {}
+
+            template<class Mixin>
+            template<class T, class InheritFrom>
+            Prototype<Mixin>::ValueJoin<T, InheritFrom>::ValueJoin(const Name &name, T &&value, bool strictType) : InheritFrom(name, strictType), value(std::move(value))
+            {}
+
+            template<class Mixin>
+            template<class T, class InheritFrom>
+            void Prototype<Mixin>::ValueJoin<T, InheritFrom>::SetProperty(Falcon::VMachine &vm, Falcon::Item &self)
+            {
+                self.setProperty(Convert(name), TraitsT<T>::CreateItem(vm, value));
+            }
+
+            template<class Mixin>
+            template<class T, class InheritFrom>
+            void Prototype<Mixin>::ValueJoin<T, InheritFrom>::SetPropertyTo(Falcon::VMachine &vm, Falcon::Item &self, const T &set)
+            {
+                value = set;
+                self.setProperty(Convert(name), TraitsT<T>::CreateItem(vm, value));
+            }
+
+            template<class Mixin>
+            template<class T, class InheritFrom>
+            void Prototype<Mixin>::ValueJoin<T, InheritFrom>::SetPropertyTo(Falcon::VMachine &vm, Falcon::Item &self, T &&set)
+            {
+                value = std::move(set);
+                self.setProperty(Convert(name), TraitsT<T>::CreateItem(vm, value));
+            }
+
+            template<class Mixin>
+            template<class T, class InheritFrom>
+            void Prototype<Mixin>::ValueJoin<T, InheritFrom>::SetItem(Falcon::VMachine &vm, Falcon::Item &obj)
+            {
+                TraitsT<T>::SetItem(vm, obj, value);
+            }
+
+            template<class Mixin>
+            template<class T, class InheritFrom>
+            bool Prototype<Mixin>::ValueJoin<T, InheritFrom>::FromItem(Falcon::VMachine &vm)
+            {
+                Falcon::Item use;
+                {
+                    bool found = RetrieveItemFromVMImpl(vm, use);
+                    if (!found)
+                    {
+                        use.setNil();
+                        wasSet = false;
+                    }
+                    else
+                        wasSet = true;
+                }
+
+                if (strictType && !TraitsT<T>::Is(use))
+                {
+                    String message("A property for a class was not the type expected.");
+                    // Add traceback to the string
+                    AddTracebackToString(vm, message);
+                    // Create the content string
+                    Falcon::String contentString;
+                    use.toString(contentString);
+                    Logger::Log(message,
+                        Logger::Type::ERROR_MODERATE,
+                        Logger::NameValueVector{ NameValuePair("Class Name", Mixin::GetClsName()),
+                                                 NameValuePair("Property Name", name),
+                                                 NameValuePair("Expected Type", TraitsT<T>::GetTypeString()),
+                                                 NameValuePair("Content (Falcon)", Convert(contentString)) });
+                    return false;
+                }
+
+                if(!use.isNil())
+                    value = TraitsT<T>::FromItem(use);
+                return true;
+            }
+
+            template<class Mixin>
+            template<class T>
+            bool Prototype<Mixin>::Property<T>::RetrieveItemFromVMImpl(Falcon::VMachine &vm, Falcon::Item &item)
+            {
+                try { vm.self().getProperty(Convert(name), item); }
+                catch(...) { return false; }
+
+                return true;
+            }
+
+            template<class Mixin>
+            template<class T>
+            Prototype<Mixin>::Property<T>::Property(const Name &name, bool readonly, bool strictType) : ValueJoin(name, strictType), readonly(readonly)
+            {
+                Mixin::AddProperty(*this);
+            }
+
+            template<class Mixin>
+            template<class T>
+            Prototype<Mixin>::Property<T>::Property(const Name &name, const T &value, bool readonly, bool strictType) : ValueJoin(name, value, strictType), readonly(readonly)
+            {
+                Mixin::AddProperty(*this);
+            }
+
+            template<class Mixin>
+            template<class T>
+            Prototype<Mixin>::Property<T>::Property(const Name &name, T &&value, bool readonly, bool strictType) : ValueJoin(name, std::move(value), strictType), readonly(readonly)
+            {
+                Mixin::AddProperty(*this);
+            }
+
+            template<class Mixin>
+            template<class T>
+            bool Prototype<Mixin>::Property<T>::IsReadonly() const
+            {
+                return readonly;
+            }
 
             template<class Mixin>
             template<class T>
@@ -227,52 +396,58 @@ namespace Atmos
 
             template<class Mixin>
             template<class T>
-            void Prototype<Mixin>::Property<T>::SetProperty(Falcon::VMachine &vm, Falcon::Item &item)
+            void Prototype<Mixin>::Property<T>::PushToFalcon(Falcon::Symbol *cls, Falcon::Module &pushTo)
             {
-                item.setProperty(Convert(name), TraitsT<T>::CreateItem(vm, value));
+                auto &varDef = pushTo.addClassProperty(cls, *pushTo.addString(Convert(name)));
+                TraitsT<T>::SetItem(pushTo, varDef, value);
+                varDef.setReadOnly(readonly);
             }
 
             template<class Mixin>
             template<class T>
-            void Prototype<Mixin>::Property<T>::SetItem(Falcon::VMachine &vm, Falcon::Item &obj)
-            {
-                TraitsT<T>::SetItem(vm, obj, value);
-            }
-
-            template<class Mixin>
-            template<class T>
-            bool Prototype<Mixin>::Property<T>::FromItem(Falcon::VMachine &vm)
+            bool Prototype<Mixin>::Parameter<T>::RetrieveItemFromVMImpl(Falcon::VMachine &vm, Falcon::Item &item)
             {
                 auto found = RetrieveItemFromVM(name, &vm);
-                ATMOS_ASSERT_MESSAGE(found, "This object must exist.");
-
-                if (!TraitsT<T>::Is(*found))
-                {
-                    Falcon::String contentString;
-                    found->toString(contentString);
-                    Logger::Log("A property for a class was not the type expected.",
-                        Logger::Type::ERROR_MODERATE,
-                        Logger::NameValueVector{ NameValuePair("Class Name", Mixin::GetClsName()),
-                                                       NameValuePair("Property Name", name),
-                                                       NameValuePair("Expected Type", TraitsT<T>::GetTypeString()),
-                                                       NameValuePair("Content (Falcon)", Convert(contentString)) });
+                if (!found)
                     return false;
-                }
-
-                value = TraitsT<T>::FromItem(*found);
+                item = *found;
                 return true;
             }
 
             template<class Mixin>
             template<class T>
-            void Prototype<Mixin>::Property<T>::PushToFalcon(Falcon::Symbol *cls, Falcon::Module &pushTo)
+            Prototype<Mixin>::Parameter<T>::Parameter(const Name &name, bool strictType) : ValueJoin(name, strictType)
+            {}
+
+            template<class Mixin>
+            template<class T>
+            Prototype<Mixin>::Parameter<T>::Parameter(const Name &name, const T &value, bool strictType) : ValueJoin(name, value, strictType)
+            {}
+
+            template<class Mixin>
+            template<class T>
+            Prototype<Mixin>::Parameter<T>::Parameter(const Name &name, T &&value, bool strictType) : ValueJoin(name, std::move(value), strictType)
+            {}
+
+            template<class Mixin>
+            template<class T>
+            typename Prototype<Mixin>::Parameter<T>* Prototype<Mixin>::Parameter<T>::Clone(Falcon::Item &item) const
             {
-                TraitsT<T>::SetItem(pushTo, pushTo.addClassProperty(cls, *pushTo.addString(Convert(name))), value);
+                auto ret = new Parameter(*this);
+                ret->value = TraitsT<T>::FromItem(item);
+                return ret;
             }
 
             template<class Mixin>
             template<class T>
-            Prototype<Mixin>::List<T>::List(std::vector<T> &&underlying) : underlying(std::move(underlying))
+            void Prototype<Mixin>::Parameter<T>::PushToFalcon(Falcon::Symbol *func, Falcon::Module &pushTo)
+            {
+                func->addParam(Convert(name));
+            }
+
+            template<class Mixin>
+            template<class T>
+            Prototype<Mixin>::List<T>::List(UnderlyingT &&underlying) : underlying(std::move(underlying))
             {}
 
             template<class Mixin>
@@ -354,26 +529,32 @@ namespace Atmos
             }
 
             template<class Mixin>
-            Prototype<Mixin>::MethodBase::MethodBase(std::vector<PropertyBase*> &&parameters, FalconFuncT falconFunc) : falconFunc(falconFunc)
+            bool Prototype<Mixin>::MethodBase::ShouldSetupSelf() const
+            {
+                return true;
+            }
+
+            template<class Mixin>
+            Prototype<Mixin>::MethodBase::MethodBase(std::vector<ParameterBase*> &&parameters, FalconFuncT falconFunc) : falconFunc(falconFunc)
             {
                 for (auto &loop : parameters)
-                    this->parameters.underlying.push_back(PropertyPtr(loop));
+                    this->parameters.underlying.push_back(ParameterPtr(loop));
             }
 
             template<class Mixin>
             bool Prototype<Mixin>::MethodBase::Setup(Falcon::VMachine &vm)
             {
-                if (!SetupProperties(vm))
+                if (!SetupSelf(vm))
                     return false;
 
-                if (!SetupSelf(vm))
+                if (!SetupParameters(vm))
                     return false;
 
                 return true;
             }
 
             template<class Mixin>
-            bool Prototype<Mixin>::MethodBase::SetupProperties(Falcon::VMachine &vm)
+            bool Prototype<Mixin>::MethodBase::SetupParameters(Falcon::VMachine &vm)
             {
                 for (auto &loop : parameters)
                     if (!loop->FromItem(vm))
@@ -385,33 +566,46 @@ namespace Atmos
             template<class Mixin>
             bool Prototype<Mixin>::MethodBase::SetupSelf(Falcon::VMachine &vm)
             {
+                if (!ShouldSetupSelf())
+                    return true;
+
+                for (auto &loop : Mixin::GetProperties())
+                    if (!loop->FromItem(vm))
+                        return false;
+
                 return true;
             }
 
             template<class Mixin>
             template<class U>
-            typename Prototype<Mixin>::Property<U>* Prototype<Mixin>::MethodBase::GetParameter(const Name &name)
+            typename Prototype<Mixin>::Parameter<U>* Prototype<Mixin>::MethodBase::GetParameter(const Name &name)
             {
                 auto got = parameters.Get(name);
                 if (!got)
                     return nullptr;
 
-                return static_cast<Property<U>*>(got->get());
+                return static_cast<Parameter<U>*>(got->get());
             }
 
             template<class Mixin>
             template<class U>
-            typename Prototype<Mixin>::Property<U>* Prototype<Mixin>::MethodBase::GetParameter(Property<U> &prop)
+            typename Prototype<Mixin>::Parameter<U>* Prototype<Mixin>::MethodBase::GetParameter(Property<U> &prop)
             {
                 auto got = parameters.Get(prop.name);
                 if (!got)
                     return nullptr;
 
-                return static_cast<Property<U>*>(got->get());
+                return static_cast<Parameter<U>*>(got->get());
             }
 
             template<class Mixin>
-            Prototype<Mixin>::Method::Method(const Name &name, bool isStatic, std::vector<PropertyBase*> &&parameters, FalconFuncT falconFunc) : MethodBase(std::move(parameters), falconFunc), name(name), isStatic(isStatic)
+            bool Prototype<Mixin>::Method::ShouldSetupSelf() const
+            {
+                return !isStatic;
+            }
+
+            template<class Mixin>
+            Prototype<Mixin>::Method::Method(const Name &name, bool isStatic, std::vector<ParameterBase*> &&parameters, FalconFuncT falconFunc) : MethodBase(std::move(parameters), falconFunc), name(name), isStatic(isStatic)
             {
                 Mixin::AddMethod(*this);
             }
@@ -421,28 +615,21 @@ namespace Atmos
             {
                 auto method = pushTo.addClassMethod(cls, *pushTo.addString(Convert(name)), falconFunc).asSymbol();
                 for (auto &loop : parameters)
-                    method->addParam(Convert(loop->name));
+                    loop->PushToFalcon(method, pushTo);
             }
 
             template<class Mixin>
-            Prototype<Mixin>::Constructor::Constructor(std::vector<PropertyBase*> &&parameters, FalconFuncT falconFunc) : MethodBase(std::move(parameters), falconFunc)
+            Prototype<Mixin>::Constructor::Constructor(std::vector<ParameterBase*> &&parameters, FalconFuncT falconFunc) : MethodBase(std::move(parameters), falconFunc)
             {}
 
             template<class Mixin>
             Falcon::Symbol* Prototype<Mixin>::Constructor::PushToFalcon(const Name &className, Falcon::Module &pushTo)
             {
-                auto pushed = pushTo.addClass(*pushTo.addString(Convert(className)), falconFunc, true);
+                auto pushed = pushTo.addClass(*pushTo.addString(Convert(className)), falconFunc);
                 for (auto &loop : parameters)
-                    pushed->addParam(Convert(loop->name));
+                    loop->PushToFalcon(pushed, pushTo);
                 return pushed;
             }
-
-            template<class Mixin>
-            Falcon::Item Prototype<Mixin>::self;
-            template<class Mixin>
-            typename Prototype<Mixin>::List<typename Prototype<Mixin>::PropertyBase*> Prototype<Mixin>::properties;
-            template<class Mixin>
-            typename Prototype<Mixin>::List<typename Prototype<Mixin>::Method*> Prototype<Mixin>::methods;
 
             template<class Mixin>
             Falcon::Symbol* Prototype<Mixin>::CreateClassSymbol(const Name &className, Falcon::Module &pushTo, std::true_type)
@@ -459,13 +646,13 @@ namespace Atmos
             template<class Mixin>
             void Prototype<Mixin>::AddProperty(PropertyBase &add)
             {
-                properties.underlying.push_back(&add);
+                GetProperties().underlying.push_back(&add);
             }
 
             template<class Mixin>
             void Prototype<Mixin>::AddMethod(Method &add)
             {
-                methods.underlying.push_back(&add);
+                GetMethods().underlying.push_back(&add);
             }
 
             template<class Mixin>
@@ -496,14 +683,16 @@ namespace Atmos
             }
 
             template<class Mixin>
-            typename Prototype<Mixin>::List<typename Prototype<Mixin>::PropertyBase*> Prototype<Mixin>::GetProperties()
+            typename Prototype<Mixin>::List<typename Prototype<Mixin>::PropertyBase*>& Prototype<Mixin>::GetProperties()
             {
+                static List<PropertyBase*> properties;
                 return properties;
             }
 
             template<class Mixin>
-            typename Prototype<Mixin>::List<typename Prototype<Mixin>::Method*> Prototype<Mixin>::GetMethods()
+            typename Prototype<Mixin>::List<typename Prototype<Mixin>::Method*>& Prototype<Mixin>::GetMethods()
             {
+                static List<Method*> methods;
                 return methods;
             }
 
@@ -540,9 +729,9 @@ namespace Atmos
             template<class Mixin>
             Falcon::Item Prototype<Mixin>::CreateItem(Falcon::VMachine &vm)
             {
-                self = Falcon::Item(vm.findGlobalItem(GetClsName().c_str())->asClass()->createInstance());
-                for (auto &loop : properties)
-                    loop->SetItem(vm);
+                auto self = Falcon::Item(vm.findGlobalItem(GetClsName().c_str())->asClass()->createInstance());
+                for (auto &loop : GetProperties())
+                    loop->SetProperty(vm, self);
                 return self;
             }
 
@@ -551,9 +740,9 @@ namespace Atmos
             {
                 auto clsName = GetClsName();
                 auto cls = CreateClassSymbol(clsName, pushTo, std::integral_constant<bool, HasConstructor<Mixin>::value>{});
-                for (auto &loop : properties)
+                for (auto &loop : GetProperties())
                     loop->PushToFalcon(cls, pushTo);
-                for (auto &loop : methods)
+                for (auto &loop : GetMethods())
                     loop->PushToFalcon(cls, pushTo);
             }
         }

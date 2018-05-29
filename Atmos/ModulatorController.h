@@ -13,9 +13,9 @@ namespace Atmos
         class Controller
         {
         public:
-            typedef size_t ID;
+            typedef IDManagerBase::ID ID;
         private:
-            IDManager<std::vector<Observer>> observers;
+            IDManager<std::unordered_map<ID, Observer>> observers;
             bool IsIn(const Observer &check) const;
         public:
             // Modulators which are just being attached are classified as being staged; you must start them explicitly
@@ -25,6 +25,8 @@ namespace Atmos
             void Detach(const ModulatorBase &detach);
             Observer Find(ID find) const;
             void Work();
+
+            bool IsModulatorWorkingObject(void *obj) const;
         };
     }
 }

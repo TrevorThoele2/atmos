@@ -317,7 +317,7 @@ namespace Atmos
         InitializeImpl();
     }
 
-    Script::Instance::Instance(Instance &&arg) : impl(std::move(arg.impl)), suspended(arg.suspended), manualPaused(arg.manualPaused)
+    Script::Instance::Instance(Instance &&arg) : impl(std::move(arg.impl)), suspended(std::move(arg.suspended)), manualPaused(std::move(arg.manualPaused)), caller(std::move(arg.caller))
     {
         InitializeImpl();
     }
@@ -615,6 +615,16 @@ namespace Atmos
     const Script::Instance::ItemVector& Script::Instance::GetParameters() const
     {
         return parameters;
+    }
+
+    ScriptCaller& Script::Instance::GetCaller()
+    {
+        return caller;
+    }
+
+    const ScriptCaller& Script::Instance::GetCaller() const
+    {
+        return caller;
     }
 
     Script::Script(Dependencies &&dependencies, const FilePath &filePath) : ScriptModuleBase(std::move(dependencies)), impl(new Impl(filePath))

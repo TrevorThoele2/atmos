@@ -4,6 +4,8 @@
 
 #include "Modulator.h"
 #include "ModulatorController.h"
+#include "ComponentTypeName.h"
+#include "ScriptCaller.h"
 
 namespace Atmos
 {
@@ -13,6 +15,24 @@ namespace Atmos
         {
             namespace General
             {
+                class CallerType : public Prototype<CallerType>
+                {
+                public:
+                    static const Name className;
+                    static Property<ScriptCaller::Type> empty;
+                    static Property<ScriptCaller::Type> entity;
+                };
+
+                class Caller : public Prototype<Caller>
+                {
+                public:
+                    static const Name className;
+
+                    static Method isEmpty;
+                    static Method isEntity;
+                    static Method getEntity;
+                };
+
                 class LogType : public Prototype<LogType>
                 {
                 public:
@@ -115,6 +135,113 @@ namespace Atmos
 
             namespace Ent
             {
+                class ComponentType : public Prototype<ComponentType>
+                {
+                public:
+                    static const Name className;
+                    static Property<::Atmos::Ent::ComponentTypeName> action;
+                    static Property<::Atmos::Ent::ComponentTypeName> battle;
+                    static Property<::Atmos::Ent::ComponentTypeName> ai;
+                    static Property<::Atmos::Ent::ComponentTypeName> avatar;
+                    static Property<::Atmos::Ent::ComponentTypeName> character;
+                    static Property<::Atmos::Ent::ComponentTypeName> combat;
+                    static Property<::Atmos::Ent::ComponentTypeName> dialogue;
+                    static Property<::Atmos::Ent::ComponentTypeName> general;
+                    static Property<::Atmos::Ent::ComponentTypeName> inventory;
+                    static Property<::Atmos::Ent::ComponentTypeName> movement;
+                    static Property<::Atmos::Ent::ComponentTypeName> sense;
+                };
+
+                class ActionComponent : public Prototype<ActionComponent>
+                {
+                public:
+                    static const Name className;
+                    static Property<::Atmos::Entity> entity;
+
+                    static Constructor constructor;
+                };
+
+                class BattleComponent : public Prototype<BattleComponent>
+                {
+                public:
+                    static const Name className;
+                    static Property<::Atmos::Entity> entity;
+
+                    static Constructor constructor;
+                };
+
+                class AIComponent : public Prototype<AIComponent>
+                {
+                public:
+                    static const Name className;
+                    static Property<::Atmos::Entity> entity;
+
+                    static Constructor constructor;
+                };
+
+                class AvatarComponent : public Prototype<AvatarComponent>
+                {
+                public:
+                    static const Name className;
+                    static Property<::Atmos::Entity> entity;
+
+                    static Constructor constructor;
+                };
+
+                class CharacterComponent : public Prototype<CharacterComponent>
+                {
+                public:
+                    static const Name className;
+                    static Property<::Atmos::Entity> entity;
+
+                    static Constructor constructor;
+                };
+
+                class CombatComponent : public Prototype<CombatComponent>
+                {
+                public:
+                    static const Name className;
+                    static Property<::Atmos::Entity> entity;
+
+                    static Constructor constructor;
+                };
+
+                class DialogueComponent : public Prototype<DialogueComponent>
+                {
+                public:
+                    static const Name className;
+                    static Property<::Atmos::Entity> entity;
+
+                    static Constructor constructor;
+                };
+
+                class GeneralComponent : public Prototype<GeneralComponent>
+                {
+                public:
+                    static const Name className;
+                    static Property<::Atmos::Entity> entity;
+
+                    static Constructor constructor;
+                };
+
+                class InventoryComponent : public Prototype<InventoryComponent>
+                {
+                public:
+                    static const Name className;
+                    static Property<::Atmos::Entity> entity;
+
+                    static Constructor constructor;
+                };
+
+                class MovementComponent : public Prototype<MovementComponent>
+                {
+                public:
+                    static const Name className;
+                    static Property<::Atmos::Entity> entity;
+
+                    static Constructor constructor;
+                };
+
                 class SenseComponent : public Prototype<SenseComponent>
                 {
                 public:
@@ -125,6 +252,18 @@ namespace Atmos
 
                     static Method startModulatorWithSprite;
                     static Method startModulatorWithSound;
+                };
+
+                class Entity : public Prototype<Entity>
+                {
+                public:
+                    static const Name className;
+                    static Property<::Atmos::Entity> value;
+
+                    static Constructor constructor;
+
+                    static Method hasComponent;
+                    static Method getComponent;
                 };
             }
         }

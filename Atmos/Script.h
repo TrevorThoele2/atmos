@@ -6,6 +6,7 @@
 
 #include "Asset.h"
 #include "ScriptItem.h"
+#include "ScriptCaller.h"
 
 #include "FilePath.h"
 #include "Variant.h"
@@ -130,6 +131,8 @@ namespace Atmos
             Script::SymbolName executeName;
             ItemVector parameters;
 
+            ScriptCaller caller;
+
             void InitializeImpl();
             void CheckRemove();
         public:
@@ -197,6 +200,8 @@ namespace Atmos
             ScriptItem* FindParameter(size_t index);
             const ScriptItem* FindParameter(size_t index) const;
             const ItemVector& GetParameters() const;
+            ScriptCaller& GetCaller();
+            const ScriptCaller& GetCaller() const;
         };
     private:
         std::unique_ptr<Impl> impl;

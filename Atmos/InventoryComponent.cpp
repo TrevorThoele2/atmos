@@ -19,20 +19,22 @@ namespace Atmos
             scribe(container);
         }
 
-        InventoryComponent::InventoryComponent(const InventoryComponent &arg) : container(arg.container)
+        InventoryComponent::InventoryComponent(const InventoryComponent &arg) : Component(arg), container(arg.container)
         {}
 
-        InventoryComponent::InventoryComponent(InventoryComponent &&arg) : container(std::move(arg.container))
+        InventoryComponent::InventoryComponent(InventoryComponent &&arg) : Component(std::move(arg)), container(std::move(arg.container))
         {}
 
         InventoryComponent& InventoryComponent::operator=(const InventoryComponent &arg)
         {
+            Component::operator=(arg);
             container = arg.container;
             return *this;
         }
 
         InventoryComponent& InventoryComponent::operator=(InventoryComponent &&arg)
         {
+            Component::operator=(std::move(arg));
             container = std::move(arg.container);
             return *this;
         }

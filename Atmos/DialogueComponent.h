@@ -13,6 +13,10 @@ namespace Atmos
         private:
             INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
             INSCRIPTION_ACCESS;
+
+            void OnOwnerEntitySet() override final;
+            
+            void SetScriptCallers();
         public:
             Script::Instance script;
             DialogueComponent() = default;

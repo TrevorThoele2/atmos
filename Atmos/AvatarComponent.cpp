@@ -14,11 +14,12 @@ namespace Atmos
         AvatarComponent::AvatarComponent() : gold(0)
         {}
 
-        AvatarComponent::AvatarComponent(AvatarComponent &&arg) : gold(std::move(arg.gold))
+        AvatarComponent::AvatarComponent(AvatarComponent &&arg) : Component(std::move(arg)), gold(std::move(arg.gold))
         {}
 
         AvatarComponent& AvatarComponent::operator=(AvatarComponent &&arg)
         {
+            Component::operator=(std::move(arg));
             gold = std::move(arg.gold);
             return *this;
         }

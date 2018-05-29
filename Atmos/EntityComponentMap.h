@@ -189,7 +189,7 @@ namespace Atmos
         template<class ComponentT, class UnderlyingContainer>
         void ComponentMapBase<ComponentT, UnderlyingContainer>::Serialize(::inscription::Scribe &scribe)
         {
-            Traits::Serialize(scribe, container, onCreated, static_cast<void(*)(ComponentT&, Entity)>([](ComponentT &comp, Entity entity) { comp.ownerEntity = entity; }));
+            Traits::Serialize(scribe, container, onCreated, static_cast<void(*)(ComponentT&, Entity)>([](ComponentT &comp, Entity entity) { comp.SetOwnerEntity(entity); }));
         }
 
         template<class ComponentT, class UnderlyingContainer>
@@ -208,7 +208,7 @@ namespace Atmos
             auto &returned = Traits::Create(container, entity, std::forward<Args>(args)...);
             if (returned.first)
             {
-                returned.second.ownerEntity = entity;
+                returned.second.SetOwnerEntity(entity);
                 onCreated(returned.second);
             }
 
@@ -221,7 +221,7 @@ namespace Atmos
             auto moved = Traits::Move(container, moveTo.container, entity, newID);
             if (moved)
             {
-                moved->ownerEntity = newID;
+                moved->SetOwnerEntity(newID);
                 onCreated(*moved);
             }
         }
