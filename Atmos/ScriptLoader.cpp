@@ -30,6 +30,7 @@ namespace Atmos
 {
     using namespace ::Atmos::Fal;
 
+    /*
     namespace GeneralScript
     {
         FALCON_FUNC Suspend(Falcon::VMachine *vm)
@@ -145,8 +146,8 @@ namespace Atmos
         FALCON_FUNC FrameTimer_Elapsed(Falcon::VMachine *vm)
         {
             typedef FalconVariableTraits<TimeValue::ValueT> WrappedTraits;
-            auto goal = WrappedTraits::FromItem(*vm->findLocalSymbolItem(Convert(FalconVariableTraits<::Atmos::FrameTimer>::goalName)));
-            auto start = WrappedTraits::FromItem(*vm->findLocalSymbolItem(Convert(FalconVariableTraits<::Atmos::FrameTimer>::startName)));
+            auto goal = WrappedTraits::FromItem(*vm, *vm->findLocalSymbolItem(Convert(FalconVariableTraits<::Atmos::FrameTimer>::goalName)));
+            auto start = WrappedTraits::FromItem(*vm, *vm->findLocalSymbolItem(Convert(FalconVariableTraits<::Atmos::FrameTimer>::startName)));
             TimeValue now(Act::Time::GetFrameTime());
 
             vm->retval(WrappedTraits::CreateItem(*vm, (now.Get() - start) / goal));
@@ -160,8 +161,8 @@ namespace Atmos
         FALCON_FUNC FrameTimer_HasReachedGoal(Falcon::VMachine *vm)
         {
             typedef FalconVariableTraits<TimeValue::ValueT> WrappedTraits;
-            auto goal = WrappedTraits::FromItem(*vm->findLocalSymbolItem(Convert(FalconVariableTraits<::Atmos::FrameTimer>::goalName)));
-            auto start = WrappedTraits::FromItem(*vm->findLocalSymbolItem(Convert(FalconVariableTraits<::Atmos::FrameTimer>::startName)));
+            auto goal = WrappedTraits::FromItem(*vm, *vm->findLocalSymbolItem(Convert(FalconVariableTraits<::Atmos::FrameTimer>::goalName)));
+            auto start = WrappedTraits::FromItem(*vm, *vm->findLocalSymbolItem(Convert(FalconVariableTraits<::Atmos::FrameTimer>::startName)));
             TimeValue now(Act::Time::GetFrameTime());
 
             vm->retval(WrappedTraits::CreateItem(*vm, now.Get() - start));
@@ -227,6 +228,7 @@ namespace Atmos
 
     namespace entityScript
     {
+        /*
         FALCON_FUNC CanMoveEntity(Falcon::VMachine *vm)
         {
             // This can accept 1 or 2 arguments
@@ -246,7 +248,9 @@ namespace Atmos
             else
                 vm->retval(::Atmos::Ent::PositionSystem::CanMove(entity, FromItem<::Atmos::GridPosition>(*position)));
         }
+        */
 
+        /*
         FALCON_FUNC MoveEntity(Falcon::VMachine *vm)
         {
             // Requires 3 arguments
@@ -303,6 +307,7 @@ namespace Atmos
             vm->retval(CreateItem(*vm, ::Atmos::Ent::AvatarSystem::GetAvatar()->gold));
         }
 
+        /*
         FALCON_FUNC AddEntityToParty(Falcon::VMachine *vm)
         {
             Entity entity = Ent::nullEntity;
@@ -326,7 +331,9 @@ namespace Atmos
 
             Ent::PlayerParty::Add(entity);
         }
+        */
 
+        /*
         FALCON_FUNC GetEntityName(Falcon::VMachine *vm)
         {
             Entity entity = Ent::nullEntity;
@@ -350,7 +357,9 @@ namespace Atmos
 
             vm->retval(Convert(name.Get()));
         }
+        */
 
+        /*
         FALCON_FUNC GetEntityPosition(Falcon::VMachine *vm)
         {
             Entity entity = Ent::nullEntity;
@@ -374,7 +383,9 @@ namespace Atmos
 
             vm->retval(CreateItem(*vm, *position));
         }
+        */
 
+        /*
         FALCON_FUNC GetEntityWithName(Falcon::VMachine *vm)
         {
             Name name;
@@ -395,7 +406,9 @@ namespace Atmos
                 ret->append(*loop);
             vm->retval(ret);
         }
+        */
 
+        /*
         FALCON_FUNC GetItemCount(Falcon::VMachine *vm)
         {
             Entity entity = Ent::nullEntity;
@@ -410,7 +423,9 @@ namespace Atmos
 
             vm->retval(CreateItem(*vm, ::Atmos::Act::Ent::GetItemCount(entity)));
         }
+        */
 
+        /*
         FALCON_FUNC IsEntityInParty(Falcon::VMachine *vm)
         {
             Entity entity = Ent::nullEntity;
@@ -425,7 +440,9 @@ namespace Atmos
 
             vm->retval(Act::Ent::IsEntityInParty(entity));
         }
+        */
 
+        /*
         FALCON_FUNC GetPersistent(Falcon::VMachine *vm)
         {
             Entity entity = Ent::nullEntity;
@@ -568,8 +585,8 @@ namespace Atmos
             }
 
             // Return the ID for the new modulator
-            Classes::Modulator::Modulator::modID.value = GameEnvironment::AttachModulator(madeMod);
-            vm->retval(Classes::Modulator::Modulator::CreateItem(*vm));
+            //Classes::Modulator::Modulator::modID.value = GameEnvironment::AttachModulator(madeMod);
+            //vm->retval(Classes::Modulator::Modulator::CreateItem(*vm));
         }
 
         FALCON_FUNC CreateTrack(Falcon::VMachine *vm)
@@ -676,6 +693,7 @@ namespace Atmos
 
     namespace battleScript
     {
+        /*
         FALCON_FUNC FindClosestPlayer(Falcon::VMachine *vm)
         {
             auto position = FromItem<::Atmos::GridPosition>(*vm, "position");
@@ -693,7 +711,9 @@ namespace Atmos
 
             vm->retval(CreateItem(*vm, *::Atmos::Act::Battle::FindClosestMonster(*position)));
         }
+        */
 
+        /*
         FALCON_FUNC GetStartingPosition(Falcon::VMachine *vm)
         {
             Entity entity = Ent::nullEntity;
@@ -709,7 +729,9 @@ namespace Atmos
 
             vm->retval(CreateItem(*vm, battle->startingPos));
         }
+        */
 
+        /*
         FALCON_FUNC GetMovementRange(Falcon::VMachine *vm)
         {
             Entity entity = Ent::nullEntity;
@@ -725,7 +747,9 @@ namespace Atmos
 
             vm->retval(combat->movementRange);
         }
+        */
 
+        /*
         FALCON_FUNC IsTurnEnded(Falcon::VMachine *vm)
         {
             Entity entity = Ent::nullEntity;
@@ -741,7 +765,9 @@ namespace Atmos
 
             vm->retval(battle->turnEnded);
         }
+        */
 
+        /*
         FALCON_FUNC Attack(Falcon::VMachine *vm)
         {
             Entity source = Ent::nullEntity;
@@ -762,7 +788,9 @@ namespace Atmos
 
             battle->Attack(target);
         }
+        */
 
+        /*
         FALCON_FUNC EndTurn(Falcon::VMachine *vm)
         {
             Entity entity = Ent::nullEntity;
@@ -772,6 +800,7 @@ namespace Atmos
             ::Atmos::Act::Battle::EndTurn(entity);
         }
     }
+    */
 
     class ScriptLoader::Impl
     {
@@ -800,9 +829,25 @@ namespace Atmos
             // Logger
             Classes::General::LogType::PushAllToModule(*mainModule);
             Functions::General::LogMessage.PushAllToModule(*mainModule);
+            // Fixed point
+            Classes::General::FixedPoint::PushAllToModule(*mainModule);
+            // Pair
+            Classes::General::Pair::PushAllToModule(*mainModule);
             // Random
             Functions::General::RandomBool.PushAllToModule(*mainModule);
             Functions::General::RandomInteger.PushAllToModule(*mainModule);
+        }
+
+        // Position
+        {
+            Classes::Position::GridPosition::PushAllToModule(*mainModule);
+            Classes::Position::Position3D::PushAllToModule(*mainModule);
+        }
+
+        // Time
+        {
+            Classes::Time::Epoch::PushAllToModule(*mainModule);
+            Classes::Time::TimeValue::PushAllToModule(*mainModule);
         }
 
         // Modulator

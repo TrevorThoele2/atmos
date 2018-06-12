@@ -44,14 +44,10 @@ namespace Atmos
         static void LoadWorld(const FilePath &path);
         static void LoadStasis(const FilePath &path);
 
+        static Modulator::Controller& GetModulatorController();
         static void AddModulatorGenerator(const Name &name, std::unique_ptr<Modulator::GeneratorBase> &&add);
         static Modulator::Observer GenerateModulator(const Name &name);
         static ModulatorTrackGenerateT GenerateModulatorTrack(const Name &modName, const Name &trackName);
-        static Modulator::Controller::ID AttachModulator(const Modulator::Observer &attach);
-        static void DetachModulator(const Modulator::Observer &detach);
-        static void DetachModulator(const Modulator::ModulatorBase &detach);
-        static Modulator::Observer FindModulator(Modulator::Controller::ID find);
-        static bool IsModulatorWorkingObject(void *obj);
 
         static ::affecter::System& GetAffecterSystem();
     };

@@ -135,6 +135,11 @@ namespace Atmos
         WorldManager::UseStasis(path);
     }
 
+    Modulator::Controller& GameEnvironment::GetModulatorController()
+    {
+        return Instance().modulatorController;
+    }
+
     void GameEnvironment::AddModulatorGenerator(const Name &name, std::unique_ptr<Modulator::GeneratorBase> &&add)
     {
         Instance().modulatorGenerators.emplace(name, std::move(add));
@@ -158,31 +163,6 @@ namespace Atmos
             return ModulatorTrackGenerateT();
 
         return found->second->GenerateTrack(trackName);
-    }
-
-    Modulator::Controller::ID GameEnvironment::AttachModulator(const Modulator::Observer &attach)
-    {
-        return Instance().modulatorController.Attach(attach);
-    }
-
-    void GameEnvironment::DetachModulator(const Modulator::Observer &detach)
-    {
-        Instance().modulatorController.Detach(detach);
-    }
-
-    void GameEnvironment::DetachModulator(const Modulator::ModulatorBase &detach)
-    {
-        Instance().modulatorController.Detach(detach);
-    }
-
-    Modulator::Observer GameEnvironment::FindModulator(Modulator::Controller::ID find)
-    {
-        return Instance().modulatorController.Find(find);
-    }
-
-    bool GameEnvironment::IsModulatorWorkingObject(void *obj)
-    {
-        return Instance().modulatorController.IsModulatorWorkingObject(obj);
     }
 
     ::affecter::System& GameEnvironment::GetAffecterSystem()

@@ -18,10 +18,11 @@ namespace Atmos
 
             ObjectT &object;
             Value starting;
+            Value current;
             Value ending;
             Delta delta;
 
-            TrackModifierArgs(ObjectT &objectValue, Value starting, Value ending, Delta delta);
+            TrackModifierArgs(ObjectT &objectValue, Value starting, Value current, Value ending, Delta delta);
             TrackModifierArgs(const TrackModifierArgs &arg) = default;
             TrackModifierArgs& operator=(const TrackModifierArgs &arg) = default;
             bool operator==(const TrackModifierArgs &arg) const;
@@ -29,13 +30,13 @@ namespace Atmos
         };
 
         template<class Object>
-        TrackModifierArgs<Object>::TrackModifierArgs(ObjectT &object, Value starting, Value ending, Delta delta) : object(object), starting(starting), ending(ending), delta(delta)
+        TrackModifierArgs<Object>::TrackModifierArgs(ObjectT &object, Value starting, Value current, Value ending, Delta delta) : object(object), starting(std::move(starting)), current(std::move(current)), ending(std::move(ending)), delta(delta)
         {}
 
         template<class Object>
         bool TrackModifierArgs<Object>::operator==(const TrackModifierArgs &arg) const
         {
-            return &object == &arg.object && starting == arg.starting && ending == arg.ending && delta == arg.delta;
+            return &object == &arg.object && starting == arg.starting && current == arg.current && ending == arg.ending && delta == arg.delta;
         }
 
         template<class Object>
@@ -108,6 +109,7 @@ namespace Atmos
             FrameTimer timer;
 
             typename NodeContainer::iterator GetNodeGuaranteed(NodeID pos);
+            Value GetCurrentValue(Delta delta);
         public:
             Track();
             Track(Value::Type variantType, const ModifierT &modifier, const GetCurrentValueT &getCurrentValue);
@@ -204,6 +206,16 @@ namespace Atmos
         }
 
         template<class Object>
+        Value Track<Object>::GetCurrentValue(Delta delta)
+        {
+            auto &endValue = curPos->GetEndValue();
+            if (variantType == Value::Type::FLOAT)
+                return Value(static_cast<float>((Delta(endValue.AsFloat()) * delta) + (Delta(startValue.AsFloat()) * (Delta(1) - delta))));
+            else
+                return Value(static_cast<std::int64_t>((Delta(endValue.AsInt()) * delta) + (Delta(startValue.AsInt()) * (Delta(1) - delta))));
+        }
+
+        template<class Object>
         Track<Object>::Track() : startValue(Value(std::int64_t(0))), curPos(nodes.end()), curPosID(0)
         {}
 
@@ -276,11 +288,12 @@ namespace Atmos
             if (curPos == nodes.end())
                 return true;
 
-            ModifierArgs args(object, startValue, curPos->GetEndValue(), curPos->GetDelta());
-            modifier(args);
-
             if (timer.HasReachedGoal())
             {
+                Delta delta(1.0, RadixPoint(9));
+                ModifierArgs args(object, startValue, GetCurrentValue(delta), curPos->GetEndValue(), delta);
+                modifier(args);
+
                 ++curPos;
                 ++curPosID;
                 if (curPos == nodes.end())
@@ -289,6 +302,16 @@ namespace Atmos
                 startValue = getCurrentValue(object);
                 timer.SetGoal(curPos->GetTimeTaken());
                 timer.Start();
+            }
+            else
+            {
+                auto &endValue = curPos->GetEndValue();
+                if (endValue != startValue)
+                {
+                    auto &delta = curPos->GetDelta(timer);
+                    ModifierArgs args(object, startValue, GetCurrentValue(delta), curPos->GetEndValue(), delta);
+                    modifier(args);
+                }
             }
 
             return false;

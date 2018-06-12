@@ -369,7 +369,8 @@ namespace Atmos
 
     void Environment::Suspend(const TimeValue &time)
     {
-        Sleep(static_cast<unsigned int>(time.ConvertValue(TimeValueEpoch::MILLISECONDS)));
+        auto test = static_cast<unsigned int>(time.ConvertValue(TimeValueEpoch::MILLISECONDS));
+        Sleep(test);
     }
 
     void Environment::ToggleFullscreen()

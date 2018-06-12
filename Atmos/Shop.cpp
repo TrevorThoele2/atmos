@@ -142,12 +142,6 @@ namespace Atmos
             inventoryGui.Start();
         }
 
-        void Shop::Exit()
-        {
-            active = false;
-            root->Hide();
-        }
-
         void Shop::OnActionPressed(const Input::Action &args)
         {
             if (dialog.IsActive())
@@ -165,7 +159,7 @@ namespace Atmos
                 break;
             }
             case Input::ActionID::CANCEL:
-                Exit();
+                Leave();
                 break;
             }
         }
@@ -196,7 +190,7 @@ namespace Atmos
             button->ModifySprite(agui::Sprite("Graphics/GUI/buttonSmaller.png", 1, agui::Color()));
             button->GetText()->SetString("LEAVE");
             button->GetText()->color.Edit(0, 0, 0);
-            button->eventClicked.Subscribe(std::bind(&Shop::Exit));
+            button->eventClicked.Subscribe(std::bind(&Shop::Leave));
 
             // Dialog
             dialog.Init(*descBox);
@@ -220,6 +214,12 @@ namespace Atmos
             inventoryGui.SetList(inventory);
             inventoryGui.Start();
             return true;
+        }
+
+        void Shop::Leave()
+        {
+            active = false;
+            root->Hide();
         }
 
         bool Shop::IsActive()

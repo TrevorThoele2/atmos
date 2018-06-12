@@ -66,6 +66,7 @@ namespace Atmos
             void StartSpeech(const Name &name);
             void LeaveSpeech();
             void EnterShop(bool buying);
+            void LeaveShop();
             bool IsShopActive();
             Entity GetEntityTalking();
 

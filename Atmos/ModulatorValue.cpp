@@ -9,25 +9,28 @@ namespace Atmos
     {
         INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(Value)
         {
-            scribe(type);
-            switch (type)
+            if (scribe.IsOutput())
             {
-            case Type::INT:
-                scribe(i);
-                break;
-            case Type::FLOAT:
-                scribe(f);
-                break;
+                scribe.Save(variant.GetTypeAsID());
+                scribe.Save(variant.GetMaster());
+            }
+            else // INPUT
+            {
+                VariantT::ID id;
+                scribe.Load(id);
+                VariantT::MasterType master;
+                scribe.Load(master);
+                variant.SetMaster(master, id);
             }
         }
 
-        Value::Value() : i(std::int64_t(0)), type(Type::NONE)
+        Value::Value() : variant(std::int64_t(0))
         {}
 
-        Value::Value(std::int64_t i) : i(i), type(Type::INT)
+        Value::Value(std::int64_t i) : variant(i)
         {}
 
-        Value::Value(float f) : f(f), type(Type::FLOAT)
+        Value::Value(float f) : variant(f)
         {}
 
         Value::~Value()
@@ -35,18 +38,7 @@ namespace Atmos
 
         bool Value::operator==(const Value &arg) const
         {
-            if (type != arg.type)
-                return false;
-
-            switch (type)
-            {
-            case Type::INT:
-                return i == arg.i;
-            case Type::FLOAT:
-                return f == arg.f;
-            }
-
-            return true;
+            return variant == arg.variant;
         }
 
         bool Value::operator!=(const Value &arg) const
@@ -56,50 +48,69 @@ namespace Atmos
 
         void Value::Set()
         {
-            type = Type::NONE;
-            i = 0;
+            variant.Set(std::int64_t(0));
         }
 
         void Value::Set(std::int64_t set)
         {
-            type = Type::INT;
-            i = set;
+            variant.Set(std::move(set));
         }
 
         void Value::Set(float set)
         {
-            type = Type::FLOAT;
-            f = set;
+            variant.Set(std::move(set));
+        }
+
+        void Value::Convert(Type type)
+        {
+            if (type == GetType())
+                return;
+
+            if (type == Type::INT)
+                variant.Set(static_cast<std::int64_t>(variant.Get<float>()));
+            else if (type == Type::FLOAT)
+                variant.Set(static_cast<float>(variant.Get<std::int64_t>()));
         }
 
         bool Value::IsNone() const
         {
-            return type == Type::NONE;
+            return variant.IsInhabited();
         }
 
         bool Value::IsInt() const
         {
-            return type == Type::INT;
+            return variant.Is<std::int64_t>();
         }
 
         bool Value::IsFloat() const
         {
-            return type == Type::FLOAT;
+            return variant.Is<float>();
         }
 
         Value::Type Value::GetType() const
         {
-            return type;
+            if (IsInt())
+                return Type::INT;
+            else if (IsFloat())
+                return Type::FLOAT;
+            
+            return Type::NONE;
         }
 
         std::int64_t Value::AsInt() const
         {
-            return i;
+            if (!variant.IsInhabited() || !IsInt())
+                return 0;
+
+            return variant.Get<std::int64_t>();
         }
 
         float Value::AsFloat() const
         {
-            return f;
+            if (!variant.IsInhabited() || !IsFloat())
+                return 0;
+
+            return variant.Get<float>();
         }
     }
 }

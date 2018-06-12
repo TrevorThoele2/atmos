@@ -33,6 +33,6 @@ namespace Atmos
     {
         Script::Instance instance(static_cast<const Script*>(script.Get())->MakeInstance());
         instance.SetOrAddGlobalItem("entity", *affect);
-        instance.Execute();
+        instance.ExecuteDeferred();
     }
 }

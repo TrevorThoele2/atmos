@@ -4,6 +4,8 @@
 
 #include "Serialization.h"
 
+#include <Function/Variant.h>
+
 namespace Atmos
 {
     namespace Modulator
@@ -18,16 +20,12 @@ namespace Atmos
                 FLOAT
             };
         private:
+            typedef ::function::Variant<std::int64_t, float> VariantT;
+        private:
             INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
             INSCRIPTION_ACCESS;
         private:
-            union
-            {
-                std::int64_t i;
-                float f;
-            };
-        private:
-            Type type;
+            VariantT variant;
         public:
             explicit Value();
             explicit Value(std::int64_t i);
@@ -41,6 +39,7 @@ namespace Atmos
             void Set();
             void Set(std::int64_t set);
             void Set(float set);
+            void Convert(Type type);
 
             bool IsNone() const;
             bool IsInt() const;

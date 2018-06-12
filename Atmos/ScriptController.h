@@ -26,6 +26,7 @@ namespace Atmos
             Script::Instance::ItemVector parameters;
 
             bool justAdded;
+            bool executedThisFrame;
             bool executeMain;
 
             Piece(Script::Instance &instance);
@@ -39,7 +40,7 @@ namespace Atmos
         };
     private:
         bool isWorking;
-        typedef std::vector<Piece> Stack;
+        typedef std::list<Piece> Stack;
         Stack stack;
         Stack::iterator current;
         std::vector<Stack::iterator> deferredRemove;
@@ -48,15 +49,20 @@ namespace Atmos
         ScriptController(const ScriptController &arg) = delete;
         ScriptController& operator=(const ScriptController &arg) = delete;
 
+        static void LaunchOrRunScript(Stack::iterator current);
+
         static Stack::iterator Find(const Script::Instance &find);
         static Stack::const_iterator FindConst(const Script::Instance &find);
     public:
         static ScriptController& Instance();
         static void Add(Script::Instance &instance);
         static void Add(Script::Instance &instance, const Script::SymbolName &executeSymbol, const Script::Instance::ItemVector &parameters);
+        static void AddAndLaunch(Script::Instance &instance);
+        static void AddAndLaunch(Script::Instance &instance, const Script::SymbolName &executeSymbol, const Script::Instance::ItemVector &parameters);
         static void Remove(Script::Instance &instance);
 
         static void Work();
+        static size_t GetWorkedSize();
         static bool IsRunning(const Script::Instance &check);
         static Script::Instance* Current();
     };

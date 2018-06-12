@@ -38,7 +38,7 @@ namespace Atmos
         template<class... Args>
         bool AllComponentsValid(const MultipleComponents<Args...> &check)
         {
-            return function::IterateRangeCheckStop<function::VariadicTemplateSize, MultipleComponentsValidity, ComponentBase*, sizeof...(Args), 0>(nullptr, check) != nullptr;
+            return function::IterateRangeCheckStop<function::VariadicTemplateSize, MultipleComponentsValidity, ComponentBase*, sizeof...(Args) - 1, 0>(nullptr, check) != nullptr;
         }
     }
 }

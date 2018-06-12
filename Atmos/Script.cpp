@@ -244,8 +244,8 @@ namespace Atmos
                 vMachine->link(&runtime);
 
                 // Set the global items
-                for (auto &loop : *globalItems)
-                    Fal::SetItem(*vMachine.vm(), *vMachine->findGlobalItem(Fal::Convert(loop.GetName())), loop.GetValue());
+                //for (auto &loop : *globalItems)
+                   //Fal::SetItem(*vMachine.vm(), *vMachine->findGlobalItem(Fal::Convert(loop.GetName())), loop.GetValue());
             }
             catch (Falcon::Error *err)
             {
@@ -294,12 +294,6 @@ namespace Atmos
     {
         if(impl)
             impl->Init();
-    }
-
-    void Script::Instance::CheckRemove()
-    {
-        if (!suspended)
-            ScriptController::Remove(*this);
     }
 
     Script::Instance::Instance() : suspended(false), manualPaused(false)
@@ -385,7 +379,7 @@ namespace Atmos
         return impl->fileName;
     }
 
-    void Script::Instance::Execute()
+    void Script::Instance::ExecuteDeferred()
     {
         if (!IsValid())
             return;
@@ -393,12 +387,28 @@ namespace Atmos
         (executeName.empty()) ? ScriptController::Add(*this) : ScriptController::Add(*this, executeName, parameters);
     }
 
-    void Script::Instance::Execute(const SymbolName &overrideExecuteName, const Script::Instance::ItemVector &overrideParameters)
+    void Script::Instance::ExecuteDeferred(const SymbolName &overrideExecuteName, const Script::Instance::ItemVector &overrideParameters)
     {
         if (!IsValid())
             return;
 
         (executeName.empty()) ? ScriptController::Add(*this) : ScriptController::Add(*this, overrideExecuteName, overrideParameters);
+    }
+
+    void Script::Instance::ExecuteImmediately()
+    {
+        if (!IsValid())
+            return;
+
+        (executeName.empty()) ? ScriptController::AddAndLaunch(*this) : ScriptController::AddAndLaunch(*this, executeName, parameters);
+    }
+
+    void Script::Instance::ExecuteImmediately(const SymbolName &overrideExecuteName, const Script::Instance::ItemVector &overrideParameters)
+    {
+        if (!IsValid())
+            return;
+
+        (executeName.empty()) ? ScriptController::AddAndLaunch(*this) : ScriptController::AddAndLaunch(*this, overrideExecuteName, overrideParameters);
     }
 
     void Script::Instance::Resume()
@@ -407,7 +417,7 @@ namespace Atmos
             return;
 
         if (!suspended)
-            Execute();
+            ExecuteDeferred();
         else
         {
             suspended = false;

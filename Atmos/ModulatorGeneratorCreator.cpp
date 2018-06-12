@@ -3,26 +3,15 @@
 #include "ModulatorGenerator.h"
 #include "ModulatorDescribers.h"
 
+#include "StringUtility.h"
+#include "Logger.h"
+
 #include "GameEnvironment.h"
 
 namespace Atmos
 {
     namespace Modulator
     {
-        // Use this if we want to use floats
-        template<class T, class Object>
-        T CommonSetFloat(const TrackModifierArgs<Object> &args)
-        {
-            return static_cast<T>((Delta(args.ending.AsFloat()) * args.delta) + (Delta(args.starting.AsFloat()) * (Delta(1) - args.delta)));
-        }
-
-        // Use this if we want to use ints
-        template<class T, class Object>
-        T CommonSetInt(const TrackModifierArgs<Object> &args)
-        {
-            return static_cast<T>((Delta(args.ending.AsInt()) * args.delta) + (Delta(args.starting.AsInt()) * (Delta(1) - args.delta)));
-        }
-
         void CreateAllGenerators()
         {
 
@@ -45,7 +34,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
                 // Position X
                 START_TRACK_GENERATOR(Description::Track::PositionX)
                 {
-                    args.object.SetX(CommonSetFloat<T::PositionT::ValueT>(args));
+                    args.object.SetX(args.current.AsFloat());
                 }
                 END_MODIFIER { return Value(object.GetX()); }
                 END_TRACK_GENERATOR;
@@ -53,7 +42,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
                 // Position Y
                 START_TRACK_GENERATOR(Description::Track::PositionY)
                 {
-                    args.object.SetY(CommonSetFloat<T::PositionT::ValueT>(args));
+                    args.object.SetY(args.current.AsFloat());
                 }
                 END_MODIFIER { return Value(object.GetY()); }
                 END_TRACK_GENERATOR;
@@ -61,7 +50,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
                 // Position Z
                 START_TRACK_GENERATOR(Description::Track::PositionZ)
                 {
-                    args.object.SetZ(CommonSetFloat<T::PositionT::ValueT>(args));
+                    args.object.SetZ(args.current.AsFloat());
                 }
                 END_MODIFIER { return Value(object.GetZ()); }
                 END_TRACK_GENERATOR;
@@ -69,7 +58,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
                 // Scaling X
                 START_TRACK_GENERATOR(Description::Track::ScalingX)
                 {
-                    args.object.SetXScaler(CommonSetFloat<Size3D::ValueT>(args));
+                    args.object.SetXScaler(args.current.AsFloat());
                 }
                 END_MODIFIER { return Value(object.GetXScaler()); }
                 END_TRACK_GENERATOR;
@@ -77,7 +66,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
                 // Scaling Y
                 START_TRACK_GENERATOR(Description::Track::ScalingY)
                 {
-                    args.object.SetYScaler(CommonSetFloat<Size3D::ValueT>(args));
+                    args.object.SetYScaler(args.current.AsFloat());
                 }
                 END_MODIFIER { return Value(object.GetYScaler()); }
                 END_TRACK_GENERATOR;
@@ -85,7 +74,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
                 // Scaling Z
                 START_TRACK_GENERATOR(Description::Track::ScalingZ)
                 {
-                    args.object.SetZScaler(CommonSetFloat<Size3D::ValueT>(args));
+                    args.object.SetZScaler(args.current.AsFloat());
                 }
                 END_MODIFIER { return Value(object.GetZScaler()); }
                 END_TRACK_GENERATOR;
@@ -93,7 +82,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
                 // Rotation X
                 START_TRACK_GENERATOR(Description::Track::RotationX)
                 {
-                    args.object.SetXRotation(Angle(Angle::RADIANS, CommonSetFloat<Angle::ValueT>(args)));
+                    args.object.SetXRotation(Angle(Angle::RADIANS, args.current.AsFloat()));
                 }
                 END_MODIFIER { return Value(object.GetXRotation().AsRadians()); }
                 END_TRACK_GENERATOR;
@@ -101,7 +90,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
                 // Rotation Y
                 START_TRACK_GENERATOR(Description::Track::RotationY)
                 {
-                    args.object.SetYRotation(Angle(Angle::RADIANS, CommonSetFloat<Angle::ValueT>(args)));
+                    args.object.SetYRotation(Angle(Angle::RADIANS, args.current.AsFloat()));
                 }
                 END_MODIFIER { return Value(object.GetYRotation().AsRadians()); }
                 END_TRACK_GENERATOR;
@@ -109,7 +98,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
                 // Rotation Z
                 START_TRACK_GENERATOR(Description::Track::RotationZ)
                 {
-                    args.object.SetZRotation(Angle(Angle::RADIANS, CommonSetFloat<Angle::ValueT>(args)));
+                    args.object.SetZRotation(Angle(Angle::RADIANS, args.current.AsFloat()));
                 }
                 END_MODIFIER { return Value(object.GetZRotation().AsRadians()); }
                 END_TRACK_GENERATOR;
@@ -117,7 +106,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
                 // Index
                 START_TRACK_GENERATOR(Description::Track::Index)
                 {
-                    args.object.SetIndex(CommonSetInt<T::Index>(args));
+                    args.object.SetIndex(static_cast<::Atmos::Sprite::Index>(args.current.AsInt()));
                 }
                 END_MODIFIER { return Value(std::int64_t(object.GetIndex())); }
                 END_TRACK_GENERATOR;
@@ -131,7 +120,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
                 // Position X
                 START_TRACK_GENERATOR(Description::Track::PositionX)
                 {
-                    args.object.InformOffsetXChange(CommonSetFloat<T::PositionT::ValueT>(args));
+                    args.object.InformOffsetXChange(args.current.AsFloat());
                 }
                 END_MODIFIER { return Value(object.GetX()); }
                 END_TRACK_GENERATOR;
@@ -139,7 +128,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
                 // Position Y
                 START_TRACK_GENERATOR(Description::Track::PositionY)
                 {
-                    args.object.InformOffsetYChange(CommonSetFloat<T::PositionT::ValueT>(args));
+                    args.object.InformOffsetYChange(args.current.AsFloat());
                 }
                 END_MODIFIER { return Value(object.GetY()); }
                 END_TRACK_GENERATOR;
@@ -147,7 +136,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
                 // Position Z
                 START_TRACK_GENERATOR(Description::Track::PositionZ)
                 {
-                    args.object.InformOffsetZChange(CommonSetFloat<T::PositionT::ValueT>(args));
+                    args.object.InformOffsetZChange(args.current.AsFloat());
                 }
                 END_MODIFIER { return Value(object.GetZ()); }
                 END_TRACK_GENERATOR;
@@ -155,7 +144,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
                 // Scaling X
                 START_TRACK_GENERATOR(Description::Track::ScalingX)
                 {
-                    args.object.Get().SetXScaler(CommonSetFloat<Size3D::ValueT>(args));
+                    args.object.Get().SetXScaler(args.current.AsFloat());
                 }
                 END_MODIFIER { return Value(object.Get().GetXScaler()); }
                 END_TRACK_GENERATOR;
@@ -163,7 +152,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
                 // Scaling Y
                 START_TRACK_GENERATOR(Description::Track::ScalingY)
                 {
-                    args.object.Get().SetYScaler(CommonSetFloat<Size3D::ValueT>(args));
+                    args.object.Get().SetYScaler(args.current.AsFloat());
                 }
                 END_MODIFIER { return Value(object.Get().GetYScaler()); }
                 END_TRACK_GENERATOR;
@@ -171,7 +160,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
                 // Scaling Z
                 START_TRACK_GENERATOR(Description::Track::ScalingZ)
                 {
-                    args.object.Get().SetZScaler(CommonSetFloat<Size3D::ValueT>(args));
+                    args.object.Get().SetZScaler(args.current.AsFloat());
                 }
                 END_MODIFIER { return Value(object.Get().GetZScaler()); }
                 END_TRACK_GENERATOR;
@@ -179,7 +168,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
                 // Rotation X
                 START_TRACK_GENERATOR(Description::Track::RotationX)
                 {
-                    args.object.Get().SetXRotation(Angle(Angle::RADIANS, CommonSetFloat<Angle::ValueT>(args)));
+                    args.object.Get().SetXRotation(Angle(Angle::RADIANS, args.current.AsFloat()));
                 }
                 END_MODIFIER { return Value(object.Get().GetXRotation().AsRadians()); }
                 END_TRACK_GENERATOR;
@@ -187,7 +176,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
                 // Rotation Y
                 START_TRACK_GENERATOR(Description::Track::RotationY)
                 {
-                    args.object.Get().SetYRotation(Angle(Angle::RADIANS, CommonSetFloat<Angle::ValueT>(args)));
+                    args.object.Get().SetYRotation(Angle(Angle::RADIANS, args.current.AsFloat()));
                 }
                 END_MODIFIER { return Value(object.Get().GetYRotation().AsRadians()); }
                 END_TRACK_GENERATOR;
@@ -195,7 +184,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
                 // Rotation Z
                 START_TRACK_GENERATOR(Description::Track::RotationZ)
                 {
-                    args.object.Get().SetZRotation(Angle(Angle::RADIANS, CommonSetFloat<Angle::ValueT>(args)));
+                    args.object.Get().SetZRotation(Angle(Angle::RADIANS, args.current.AsFloat()));
                 }
                 END_MODIFIER { return Value(object.Get().GetZRotation().AsRadians()); }
                 END_TRACK_GENERATOR;
@@ -203,7 +192,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
                 // Index
                 START_TRACK_GENERATOR(Description::Track::Index)
                 {
-                    args.object.Get().SetIndex(CommonSetInt<T::ObjectT::Index>(args));
+                    args.object.Get().SetIndex(static_cast<Sprite::Index>(args.current.AsInt()));
                 }
                 END_MODIFIER { return Value(std::int64_t(object.Get().GetIndex())); }
                 END_TRACK_GENERATOR;
@@ -215,7 +204,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
                 // Position X
                 START_TRACK_GENERATOR(Description::Track::PositionX)
                 {
-                    args.object.SetX(CommonSetFloat<T::PositionT::ValueT>(args));
+                    args.object.SetX(args.current.AsFloat());
                 }
                 END_MODIFIER { return Value(object.GetX()); }
                 END_TRACK_GENERATOR;
@@ -223,7 +212,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
                 // Position Y
                 START_TRACK_GENERATOR(Description::Track::PositionY)
                 {
-                    args.object.SetY(CommonSetFloat<T::PositionT::ValueT>(args));
+                    args.object.SetY(args.current.AsFloat());
                 }
                 END_MODIFIER { return Value(object.GetY()); }
                 END_TRACK_GENERATOR;
@@ -231,7 +220,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
                 // Position Z
                 START_TRACK_GENERATOR(Description::Track::PositionZ)
                 {
-                    args.object.SetZ(CommonSetFloat<T::PositionT::ValueT>(args));
+                    args.object.SetZ(args.current.AsFloat());
                 }
                 END_MODIFIER { return Value(object.GetZ()); }
                 END_TRACK_GENERATOR;
@@ -239,7 +228,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
                 // Volume
                 START_TRACK_GENERATOR(Description::Track::Volume)
                 {
-                    args.object.SetBaseVolume(CommonSetFloat<T::Volume>(args));
+                    args.object.SetBaseVolume(args.current.AsFloat());
                 }
                 END_MODIFIER { return Value(object.GetBaseVolume()); }
                 END_TRACK_GENERATOR;
@@ -251,7 +240,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
                 // Position X
                 START_TRACK_GENERATOR(Description::Track::PositionX)
                 {
-                    args.object.InformOffsetXChange(CommonSetFloat<T::PositionT::ValueT>(args));
+                    args.object.InformOffsetXChange(args.current.AsFloat());
                 }
                 END_MODIFIER{ return Value(object.GetX()); }
                 END_TRACK_GENERATOR;
@@ -259,7 +248,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
                 // Position Y
                 START_TRACK_GENERATOR(Description::Track::PositionY)
                 {
-                    args.object.InformOffsetYChange(CommonSetFloat<T::PositionT::ValueT>(args));
+                    args.object.InformOffsetYChange(args.current.AsFloat());
                 }
                 END_MODIFIER{ return Value(object.GetY()); }
                 END_TRACK_GENERATOR;
@@ -267,7 +256,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
                 // Position Z
                 START_TRACK_GENERATOR(Description::Track::PositionZ)
                 {
-                    args.object.InformOffsetZChange(CommonSetFloat<T::PositionT::ValueT>(args));
+                    args.object.InformOffsetZChange(args.current.AsFloat());
                 }
                 END_MODIFIER{ return Value(object.GetZ()); }
                 END_TRACK_GENERATOR;
@@ -275,7 +264,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
                 // Volume
                 START_TRACK_GENERATOR(Description::Track::Volume)
                 {
-                    args.object.Get().SetBaseVolume(CommonSetFloat<T::ObjectT::Volume>(args));
+                    args.object.Get().SetBaseVolume(args.current.AsFloat());
                 }
                 END_MODIFIER{ return Value(object.Get().GetBaseVolume()); }
                 END_TRACK_GENERATOR;
@@ -287,7 +276,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
                 // Position 3D X
                 START_TRACK_GENERATOR(Description::Track::PositionX)
                 {
-                    args.object.SetX(CommonSetFloat<T::PositionT::ValueT>(args));
+                    args.object.SetX(args.current.AsFloat());
                 }
                 END_MODIFIER { return Value(object.GetX()); }
                 END_TRACK_GENERATOR;
@@ -295,7 +284,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
                 // Position 3D Y
                 START_TRACK_GENERATOR(Description::Track::PositionY)
                 {
-                    args.object.SetY(CommonSetFloat<T::PositionT::ValueT>(args));
+                    args.object.SetY(args.current.AsFloat());
                 }
                 END_MODIFIER { return Value(object.GetY()); }
                 END_TRACK_GENERATOR;
@@ -303,7 +292,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
                 // Position 3D Z
                 START_TRACK_GENERATOR(Description::Track::PositionZ)
                 {
-                    args.object.SetZ(CommonSetFloat<T::PositionT::ValueT>(args));
+                    args.object.SetZ(args.current.AsFloat());
                 }
                 END_MODIFIER { return Value(object.GetZ()); }
                 END_TRACK_GENERATOR;
@@ -315,7 +304,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
                 // Position 3D X
                 START_TRACK_GENERATOR(Description::Track::PositionX)
                 {
-                    args.object.SetX(CommonSetFloat<T::PositionT::ValueT>(args));
+                    args.object.SetX(args.current.AsFloat());
                 }
                 END_MODIFIER { return Value(object.GetX()); }
                 END_TRACK_GENERATOR;
@@ -323,7 +312,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
                 // Position 3D Y
                 START_TRACK_GENERATOR(Description::Track::PositionY)
                 {
-                    args.object.SetY(CommonSetFloat<T::PositionT::ValueT>(args));
+                    args.object.SetY(args.current.AsFloat());
                 }
                 END_MODIFIER { return Value(object.GetY()); }
                 END_TRACK_GENERATOR;
@@ -331,7 +320,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
                 // Position 3D Z
                 START_TRACK_GENERATOR(Description::Track::PositionZ)
                 {
-                    args.object.SetZ(CommonSetFloat<T::PositionT::ValueT>(args));
+                    args.object.SetZ(args.current.AsFloat());
                 }
                 END_MODIFIER { return Value(object.GetZ()); }
                 END_TRACK_GENERATOR;

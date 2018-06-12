@@ -137,7 +137,7 @@ namespace Atmos
             nameOutput->SetString(GetCurrentEntities()->GetName(dialogue.GetOwnerEntity()).Get());
             mainOutput->ClearString();
             root->Show();
-            currentDialogue->script.Execute();
+            currentDialogue->script.ExecuteDeferred();
             return true;
         }
 

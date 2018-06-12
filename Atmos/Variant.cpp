@@ -2,6 +2,7 @@
 #include "Variant.h"
 #include "StringUtility.h"
 #include <Inscription\Scribe.h>
+#include <Inscription\Vector.h>
 #include <Function\Iterate.h>
 
 namespace Atmos
@@ -15,7 +16,7 @@ namespace Atmos
             if (variant.GetType() != realT)
                 return false;
 
-            scribe((variant.*VariantTraits<realT>::as)());
+            scribe(::inscription::RemoveConst((variant.*VariantTraits<realT>::as)()));
             return true;
         }
     };

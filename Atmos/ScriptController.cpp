@@ -20,19 +20,19 @@ namespace Atmos
     ScriptController::Piece::U::~U()
     {}
 
-    ScriptController::Piece::Piece(Script::Instance &instance) : u(&instance), owns(false), justAdded(true), executeMain(true)
+    ScriptController::Piece::Piece(Script::Instance &instance) : u(&instance), owns(false), justAdded(true), executedThisFrame(false), executeMain(true)
     {}
 
-    ScriptController::Piece::Piece(Script::Instance &instance, const Script::SymbolName &executeSymbol, const Script::Instance::ItemVector &parameters) : u(&instance), owns(false), executeSymbol(executeSymbol), parameters(parameters), justAdded(true), executeMain(false)
+    ScriptController::Piece::Piece(Script::Instance &instance, const Script::SymbolName &executeSymbol, const Script::Instance::ItemVector &parameters) : u(&instance), owns(false), executeSymbol(executeSymbol), parameters(parameters), justAdded(true), executedThisFrame(false), executeMain(false)
     {}
 
     ScriptController::Piece::Piece(Script::Instance &&instance) : u(std::move(instance)), owns(true), justAdded(true), executeMain(true)
     {}
 
-    ScriptController::Piece::Piece(Script::Instance &&instance, const Script::SymbolName &executeSymbol, const Script::Instance::ItemVector &parameters) : u(std::move(instance)), owns(true), executeSymbol(executeSymbol), parameters(parameters), justAdded(true), executeMain(false)
+    ScriptController::Piece::Piece(Script::Instance &&instance, const Script::SymbolName &executeSymbol, const Script::Instance::ItemVector &parameters) : u(std::move(instance)), owns(true), executeSymbol(executeSymbol), parameters(parameters), justAdded(true), executedThisFrame(false), executeMain(false)
     {}
 
-    ScriptController::Piece::Piece(Piece &&arg) : owns(std::move(arg.owns)), executeSymbol(std::move(arg.executeSymbol)), parameters(std::move(arg.parameters)), justAdded(std::move(arg.justAdded)), executeMain(std::move(arg.executeMain))
+    ScriptController::Piece::Piece(Piece &&arg) : owns(std::move(arg.owns)), executeSymbol(std::move(arg.executeSymbol)), parameters(std::move(arg.parameters)), justAdded(std::move(arg.justAdded)), executedThisFrame(std::move(arg.executedThisFrame)), executeMain(std::move(arg.executeMain))
     {
         if (arg.owns)
             u.owned = std::move(arg.u.owned);
@@ -46,6 +46,7 @@ namespace Atmos
         executeSymbol = std::move(arg.executeSymbol);
         parameters = std::move(arg.parameters);
         justAdded = std::move(arg.justAdded);
+        executedThisFrame = std::move(arg.executedThisFrame);
         executeMain = std::move(arg.executeMain);
         if (arg.owns)
             u.owned = std::move(arg.u.owned);
@@ -66,6 +67,50 @@ namespace Atmos
 
     ScriptController::ScriptController() : isWorking(false)
     {}
+
+    void ScriptController::LaunchOrRunScript(Stack::iterator current)
+    {
+        bool error = false;
+        try
+        {
+            if (current->justAdded)
+            {
+                current->justAdded = false;
+                // Execute the scripts
+                if (current->executeMain)
+                    current->GetInstance()->GetVM()->launch();
+                else
+                    current->GetInstance()->GetVM()->launch(Fal::Convert(current->executeSymbol), current->parameters.size());
+            }
+            else
+                current->GetInstance()->GetVM()->run();
+        }
+        catch (Falcon::Error *err)
+        {
+            // Output an error
+            Logger::Log(String("The execution of a script has encountered an error.\n") + Falcon::AutoCString(err->toString()).c_str(),
+                Logger::Type::ERROR_MODERATE,
+                Logger::NameValueVector{ NameValuePair("Script File Name", current->GetInstance()->GetFileName().GetValue()) });
+            error = true;
+        }
+        catch (const Falcon::VMEventQuit&)
+        {
+
+        }
+
+        current->executedThisFrame = true;
+
+        if (!error)
+        {
+            if (!current->GetInstance()->IsSuspended())
+                Remove(*current->GetInstance());
+        }
+        else
+        {
+            if (current->GetInstance()->IsSuspended())
+                Remove(*current->GetInstance());
+        }
+    }
 
     ScriptController::Stack::iterator ScriptController::Find(const Script::Instance &find)
     {
@@ -105,12 +150,32 @@ namespace Atmos
         Instance().stack.push_back(Piece(instance));
     }
 
-    void ScriptController::Add(Script::Instance &instance, const Script::SymbolName &execute, const Script::Instance::ItemVector &parameters)
+    void ScriptController::Add(Script::Instance &instance, const Script::SymbolName &executeSymbol, const Script::Instance::ItemVector &parameters)
     {
         if (IsRunning(instance))
             return;
 
-        Instance().stack.push_back(Piece(instance, execute, parameters));
+        Instance().stack.push_back(Piece(instance, executeSymbol, parameters));
+    }
+
+    void ScriptController::AddAndLaunch(Script::Instance &instance)
+    {
+        if (IsRunning(instance))
+            return;
+
+        Instance().stack.push_back(Piece(instance));
+        Instance().current = --Instance().stack.end();
+        LaunchOrRunScript(Instance().current);
+    }
+
+    void ScriptController::AddAndLaunch(Script::Instance &instance, const Script::SymbolName &executeSymbol, const Script::Instance::ItemVector &parameters)
+    {
+        if (IsRunning(instance))
+            return;
+
+        Instance().stack.push_back(Piece(instance, executeSymbol, parameters));
+        Instance().current = --Instance().stack.end();
+        LaunchOrRunScript(Instance().current);
     }
 
     void ScriptController::Remove(Script::Instance &instance)
@@ -152,45 +217,10 @@ namespace Atmos
             auto next = current;
             ++next;
 
-            if (!current->GetInstance()->IsSuspended())
+            if (!current->executedThisFrame && !current->GetInstance()->IsSuspended())
             {
-                bool error = false;
-                try
-                {
-                    if (current->justAdded)
-                    {
-                        current->justAdded = false;
-                        // Execute the scripts
-                        if (current->executeMain)
-                            current->GetInstance()->GetVM()->launch();
-                        else
-                        {
-                            current->GetInstance()->GetVM()->launch(Fal::Convert(current->executeSymbol), current->parameters.size());
-                        }
-                    }
-                    else
-                        current->GetInstance()->GetVM()->run();
-                }
-                catch (Falcon::Error *err)
-                {
-                    // Output an error
-                    Logger::Log(String("The execution of a script has encountered an error.\n") + Falcon::AutoCString(err->toString()).c_str(),
-                        Logger::Type::ERROR_MODERATE,
-                        Logger::NameValueVector{ NameValuePair("Script File Name", current->GetInstance()->GetFileName().GetValue()) });
-                    error = true;
-                }
-                catch (const Falcon::VMEventQuit&)
-                {
-
-                }
-
-                if (!error)
-                    current->GetInstance()->CheckRemove();
-                else
-                {
-                    if (current->GetInstance()->IsSuspended())
-                        Remove(*current->GetInstance());
-                }
+                LaunchOrRunScript(current);
+                current->executedThisFrame = true;
             }
 
             current = next;
@@ -204,7 +234,15 @@ namespace Atmos
             stack.erase(loop);
         deferredRemove.clear();
 
+        for (auto &loop : stack)
+            loop.executedThisFrame = false;
+
         Instance().isWorking = false;
+    }
+
+    size_t ScriptController::GetWorkedSize()
+    {
+        return Instance().stack.size();
     }
 
     bool ScriptController::IsRunning(const Script::Instance &check)

@@ -345,8 +345,10 @@
     <ClCompile Include="CurrentMusic.cpp" />
     <ClCompile Include="DataStandard.cpp" />
     <ClCompile Include="Entity.cpp" />
+    <ClCompile Include="FalconScriptBasePrototype.cpp" />
     <ClCompile Include="FalconScriptFunctionPrototype.cpp" />
     <ClCompile Include="FalconScriptFunctions.cpp" />
+    <ClCompile Include="FalconScriptObjectPrototype.cpp" />
     <ClCompile Include="FalconScriptObjects.cpp" />
     <ClCompile Include="FixedPoint.cpp" />
     <ClCompile Include="GameEnvironment.cpp" />

@@ -9,23 +9,6 @@ namespace Atmos
     {
         namespace Functions
         {
-            Prototype::ParameterBase::ParameterBase(const Name &name, bool strictType) : name(name), strictType(strictType), wasSet(false)
-            {}
-
-            void Prototype::ParameterBase::SetItem(Falcon::VMachine &vm)
-            {
-                auto found = RetrieveItemFromVM(name, &vm);
-                if (!found)
-                    return;
-
-                SetItem(vm, *found);
-            }
-
-            bool Prototype::ParameterBase::WasSet() const
-            {
-                return wasSet;
-            }
-
             Prototype::Prototype(const Name &functionName, FalconFuncT falconFunc) : functionName(functionName), falconFunc(falconFunc)
             {}
 
@@ -38,7 +21,7 @@ namespace Atmos
             bool Prototype::Setup(Falcon::VMachine &vm)
             {
                 for (auto &loop : parameters)
-                    if (!loop->FromItem(*this, vm))
+                    if (!loop->FromItem(vm))
                         return false;
 
                 return true;

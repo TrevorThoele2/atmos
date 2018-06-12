@@ -1,6 +1,8 @@
 
 #include "Modulator.h"
 
+#include "ModulatorController.h"
+
 namespace Atmos
 {
     namespace Modulator
@@ -8,6 +10,7 @@ namespace Atmos
         void ModulatorBase::StartBase()
         {
             working = true;
+            Controller::onStarted(this);
         }
 
         ModulatorBase::ModulatorBase(const Name &generatorName) : generatorName(&generatorName), working(false)
@@ -54,6 +57,7 @@ namespace Atmos
         void ModulatorBase::Stop()
         {
             working = false;
+            Controller::onStopped(this);
             StopImpl();
         }
 
@@ -87,6 +91,11 @@ namespace Atmos
         bool ModulatorBase::IsWorkingObject(void *obj) const
         {
             return IsWorkingObjectImpl(obj);
+        }
+
+        std::type_index ModulatorBase::GetObjectType() const
+        {
+            return GetObjectTypeImpl();
         }
     }
 }

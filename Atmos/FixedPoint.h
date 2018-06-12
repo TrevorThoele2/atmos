@@ -376,12 +376,25 @@ namespace Atmos
         std::ostringstream out;
         out << std::setprecision(radixPoint.Get()) << std::fixed << u;
 
+        bool negative = false;
         size_t loop = out.str().size();
         while (loop-- > 0)
         {
-            val += (strtoll(out.str().substr(loop, 1).c_str(), nullptr, 0) * selector);
+            auto substr = out.str().substr(loop, 1);
+            if (substr == "-")
+            {
+                negative = true;
+                continue;
+            }
+            if (substr == ".")
+                continue;
+
+            val += (strtoll(substr.c_str(), nullptr, 0) * selector);
             selector *= 10;
         }
+
+        if (negative)
+            val *= -1;
 
         return val;
     }
@@ -391,13 +404,14 @@ namespace Atmos
     U FixedPoint<T>::FabricateFloatingPoint(ValueT val, Radix radixPoint)
     {
         U ret = 0;
-        U selector = 1;
+        U otherInflectionPoint = 1;
         for (size_t loop = 0; loop != radixPoint.Get(); ++loop)
-            selector /= 10;
+            otherInflectionPoint /= 10;
 
         while (val != 0)
         {
-            ret += (val % 10) * selector;
+            ret += (val % 10) * otherInflectionPoint;
+            otherInflectionPoint *= 10;
             val /= 10;
         }
 
