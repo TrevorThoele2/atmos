@@ -16,14 +16,6 @@ namespace Atmos
         {
             namespace General
             {
-                class CallerType : public Definition<CallerType>
-                {
-                public:
-                    static const Name className;
-                    static Property<ScriptCaller::Type> &empty;
-                    static Property<ScriptCaller::Type> &entity;
-                };
-
                 class Caller : public Definition<Caller>
                 {
                 public:

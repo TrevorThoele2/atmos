@@ -31,6 +31,9 @@ namespace Atmos
 
     void AssetPackage::AddToMap(BufferMap &map, const FilePath &path)
     {
+        if (path.IsEmpty())
+            return;
+
         map.emplace(path, ReadFileIntoBuffer(path));
     }
 

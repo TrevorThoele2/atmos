@@ -80,10 +80,6 @@ namespace Atmos
         {
             namespace General
             {
-                CLASS_NAME(CallerType, "Atmos_CallerType");
-                    PROPERTY_SPLIT(CallerType, ScriptCaller::Type, empty, "Empty", ScriptCaller::Type::EMPTY, true);
-                    PROPERTY_SPLIT(CallerType, ScriptCaller::Type, entity, "Entity", ScriptCaller::Type::ENTITY, true);
-
                 CLASS_NAME(Caller, "Atmos_Caller")
                 METHOD(Caller, isEmpty, "IsEmpty", true)
                     NO_PARAMETERS
