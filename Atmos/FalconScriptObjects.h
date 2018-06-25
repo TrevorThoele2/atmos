@@ -8,6 +8,13 @@
 #include "ScriptCaller.h"
 #include "InputDefines.h"
 
+#define DECLARE_CONSTRUCTORS(T)         \
+T();                                    \
+T(const T &arg);                        \
+T(T &&arg);                             \
+T& operator=(const T &arg) = default;   \
+T& operator=(T &&arg);
+
 namespace Atmos
 {
     namespace Fal
@@ -30,32 +37,36 @@ namespace Atmos
                 {
                 public:
                     static const Name className;
-                    static Property<Logger::Type> &errorSevere;
-                    static Property<Logger::Type> &errorModerate;
-                    static Property<Logger::Type> &errorLow;
-                    static Property<Logger::Type> &warning;
-                    static Property<Logger::Type> &information;
+                    static PropertyPrototype<Logger::Type> errorSevere;
+                    static PropertyPrototype<Logger::Type> errorModerate;
+                    static PropertyPrototype<Logger::Type> errorLow;
+                    static PropertyPrototype<Logger::Type> warning;
+                    static PropertyPrototype<Logger::Type> information;
                 };
 
                 class FixedPoint : public Definition<FixedPoint>
                 {
                 public:
                     static const Name className;
-                    static Property<std::int64_t> &value;
+                    PropertyPrototype<std::int64_t> value;
 
                     static Constructor constructor;
 
                     static Method &fromDecimal;
+
+                    DECLARE_CONSTRUCTORS(FixedPoint);
                 };
 
                 class Pair : public Definition<Pair>
                 {
                 public:
                     static const Name className;
-                    static Property<::Falcon::Item> &first;
-                    static Property<::Falcon::Item> &second;
+                    PropertyPrototype<::Falcon::Item> first;
+                    PropertyPrototype<::Falcon::Item> second;
 
                     static Constructor constructor;
+
+                    DECLARE_CONSTRUCTORS(Pair);
                 };
             }
 
@@ -65,38 +76,42 @@ namespace Atmos
                 {
                 public:
                     static const Name className;
-                    static Property<::Atmos::GridPosition::ValueT> &x;
-                    static Property<::Atmos::GridPosition::ValueT> &y;
-                    static Property<::Atmos::GridPosition::ValueT> &z;
+                    PropertyPrototype<::Atmos::GridPosition::ValueT> x;
+                    PropertyPrototype<::Atmos::GridPosition::ValueT> y;
+                    PropertyPrototype<::Atmos::GridPosition::ValueT> z;
 
                     static Constructor constructor;
 
                     static Method &distance;
                     static Method &convertToPosition3D;
+
+                    DECLARE_CONSTRUCTORS(GridPosition);
                 };
 
                 class Position3D : public Definition<Position3D>
                 {
                 public:
                     static const Name className;
-                    static Property<::Atmos::Position3D::ValueT> &x;
-                    static Property<::Atmos::Position3D::ValueT> &y;
-                    static Property<::Atmos::Position3D::ValueT> &z;
+                    PropertyPrototype<::Atmos::Position3D::ValueT> x;
+                    PropertyPrototype<::Atmos::Position3D::ValueT> y;
+                    PropertyPrototype<::Atmos::Position3D::ValueT> z;
 
                     static Constructor constructor;
 
                     static Method &distance;
                     static Method &convertToGridPosition;
+
+                    DECLARE_CONSTRUCTORS(Position3D);
                 };
 
                 class Direction : public Definition<Direction>
                 {
                 public:
                     static const Name className;
-                    static Property<::Atmos::Direction::ValueT> &left;
-                    static Property<::Atmos::Direction::ValueT> &up;
-                    static Property<::Atmos::Direction::ValueT> &right;
-                    static Property<::Atmos::Direction::ValueT> &down;
+                    static PropertyPrototype<::Atmos::Direction::ValueT> left;
+                    static PropertyPrototype<::Atmos::Direction::ValueT> up;
+                    static PropertyPrototype<::Atmos::Direction::ValueT> right;
+                    static PropertyPrototype<::Atmos::Direction::ValueT> down;
                 };
             }
 
@@ -106,23 +121,23 @@ namespace Atmos
                 {
                 public:
                     static const Name className;
-                    static Property<::Atmos::Input::ActionID> &moveUp;
-                    static Property<::Atmos::Input::ActionID> &moveDown;
-                    static Property<::Atmos::Input::ActionID> &moveLeft;
-                    static Property<::Atmos::Input::ActionID> &moveRight;
-                    static Property<::Atmos::Input::ActionID> &use;
-                    static Property<::Atmos::Input::ActionID> &navigateMenuUp;
-                    static Property<::Atmos::Input::ActionID> &navigateMenuDown;
-                    static Property<::Atmos::Input::ActionID> &navigateMenuLeft;
-                    static Property<::Atmos::Input::ActionID> &navigateMenuRight;
-                    static Property<::Atmos::Input::ActionID> &changeSelectedCharacterLeft;
-                    static Property<::Atmos::Input::ActionID> &changeSelectedCharacterRight;
-                    static Property<::Atmos::Input::ActionID> &inventory;
-                    static Property<::Atmos::Input::ActionID> &endTurn;
-                    static Property<::Atmos::Input::ActionID> &attack;
-                    static Property<::Atmos::Input::ActionID> &openSpells;
-                    static Property<::Atmos::Input::ActionID> &cancel;
-                    static Property<::Atmos::Input::ActionID> &stats;
+                    static PropertyPrototype<::Atmos::Input::ActionID> moveUp;
+                    static PropertyPrototype<::Atmos::Input::ActionID> moveDown;
+                    static PropertyPrototype<::Atmos::Input::ActionID> moveLeft;
+                    static PropertyPrototype<::Atmos::Input::ActionID> moveRight;
+                    static PropertyPrototype<::Atmos::Input::ActionID> use;
+                    static PropertyPrototype<::Atmos::Input::ActionID> navigateMenuUp;
+                    static PropertyPrototype<::Atmos::Input::ActionID> navigateMenuDown;
+                    static PropertyPrototype<::Atmos::Input::ActionID> navigateMenuLeft;
+                    static PropertyPrototype<::Atmos::Input::ActionID> navigateMenuRight;
+                    static PropertyPrototype<::Atmos::Input::ActionID> changeSelectedCharacterLeft;
+                    static PropertyPrototype<::Atmos::Input::ActionID> changeSelectedCharacterRight;
+                    static PropertyPrototype<::Atmos::Input::ActionID> inventory;
+                    static PropertyPrototype<::Atmos::Input::ActionID> endTurn;
+                    static PropertyPrototype<::Atmos::Input::ActionID> attack;
+                    static PropertyPrototype<::Atmos::Input::ActionID> openSpells;
+                    static PropertyPrototype<::Atmos::Input::ActionID> cancel;
+                    static PropertyPrototype<::Atmos::Input::ActionID> stats;
                 };
             }
 
@@ -132,31 +147,33 @@ namespace Atmos
                 {
                 public:
                     static const Name className;
-                    static Property<::Atmos::TimeValueEpoch> &minutes;
-                    static Property<::Atmos::TimeValueEpoch> &seconds;
-                    static Property<::Atmos::TimeValueEpoch> &milliseconds;
-                    static Property<::Atmos::TimeValueEpoch> &microseconds;
-                    static Property<::Atmos::TimeValueEpoch> &nanoseconds;
+                    static PropertyPrototype<::Atmos::TimeValueEpoch> minutes;
+                    static PropertyPrototype<::Atmos::TimeValueEpoch> seconds;
+                    static PropertyPrototype<::Atmos::TimeValueEpoch> milliseconds;
+                    static PropertyPrototype<::Atmos::TimeValueEpoch> microseconds;
+                    static PropertyPrototype<::Atmos::TimeValueEpoch> nanoseconds;
                 };
 
                 class TimeValue : public Definition<TimeValue>
                 {
                 public:
                     static const Name className;
-                    static Property<::Atmos::TimeValueEpoch> &epoch;
-                    static Property<General::FixedPoint> &value;
+                    PropertyPrototype<::Atmos::TimeValueEpoch> epoch;
+                    PropertyPrototype<General::FixedPoint> value;
 
                     static Constructor constructor;
+
+                    DECLARE_CONSTRUCTORS(TimeValue);
                 };
 
                 class FrameTimer : public Definition<FrameTimer>
                 {
                 public:
                     static const Name className;
-                    static Property<bool> &isRunning;
-                    static Property<TimeValue> &startProp;
-                    static Property<TimeValue> &goal;
-                    static Property<::Atmos::TimeValueEpoch> &epoch;
+                    PropertyPrototype<bool> isRunning;
+                    PropertyPrototype<TimeValue> startValue;
+                    PropertyPrototype<TimeValue> goal;
+                    PropertyPrototype<::Atmos::TimeValueEpoch> epoch;
 
                     static Constructor constructor;
 
@@ -165,6 +182,8 @@ namespace Atmos
                     static Method &isActive;
                     static Method &getElapsed;
                     static Method &hasReachedGoal;
+
+                    DECLARE_CONSTRUCTORS(FrameTimer);
                 };
             }
 
@@ -174,69 +193,82 @@ namespace Atmos
                 {
                 public:
                     static const Name className;
-                    static Property<Name> &sprite;
-                    static Property<Name> &spriteOffset;
-                    static Property<Name> &sound;
-                    static Property<Name> &soundOffset;
-                    static Property<Name> &avEffect;
-                    static Property<Name> &avEffectOffset;
-                    static Property<Name> &senseComponent;
+                    static PropertyPrototype<Name> sprite;
+                    static PropertyPrototype<Name> spriteOffset;
+                    static PropertyPrototype<Name> sound;
+                    static PropertyPrototype<Name> soundOffset;
+                    static PropertyPrototype<Name> avEffect;
+                    static PropertyPrototype<Name> avEffectOffset;
+                    static PropertyPrototype<Name> senseComponent;
                 };
 
                 class TrackType : public Definition<TrackType>
                 {
                 public:
                     static const Name className;
-                    static Property<Name> &positionX;
-                    static Property<Name> &positionY;
-                    static Property<Name> &positionZ;
-                    static Property<Name> &scalingX;
-                    static Property<Name> &scalingY;
-                    static Property<Name> &scalingZ;
-                    static Property<Name> &rotationX;
-                    static Property<Name> &rotationY;
-                    static Property<Name> &rotationZ;
+                    static PropertyPrototype<Name> positionX;
+                    static PropertyPrototype<Name> positionY;
+                    static PropertyPrototype<Name> positionZ;
+                    static PropertyPrototype<Name> scalingX;
+                    static PropertyPrototype<Name> scalingY;
+                    static PropertyPrototype<Name> scalingZ;
+                    static PropertyPrototype<Name> rotationX;
+                    static PropertyPrototype<Name> rotationY;
+                    static PropertyPrototype<Name> rotationZ;
+                    static PropertyPrototype<Name> colorA;
+                    static PropertyPrototype<Name> colorR;
+                    static PropertyPrototype<Name> colorG;
+                    static PropertyPrototype<Name> colorB;
+                    static PropertyPrototype<Name> index;
+                    static PropertyPrototype<Name> volume;
                 };
 
                 class Modulator : public Definition<Modulator>
                 {
                 public:
                     static const Name className;
-                    static Property<::Atmos::Modulator::Controller::ID> &modID;
+                    PropertyPrototype<::Atmos::Modulator::Controller::ID> modID;
 
                     static Constructor constructor;
 
                     static Method &createTrack;
                     static Method &forceStop;
+
+                    DECLARE_CONSTRUCTORS(Modulator);
                 };
 
                 class Track : public Definition<Track>
                 {
                 public:
                     static const Name className;
-                    static Property<::Atmos::Modulator::Controller::ID> &modID;
-                    static Property<::Atmos::Modulator::ModulatorBase::TrackID> &trackID;
+                    PropertyPrototype<::Atmos::Modulator::Controller::ID> modID;
+                    PropertyPrototype<::Atmos::Modulator::ModulatorBase::TrackID> trackID;
 
                     static Constructor constructor;
 
                     static Method &createNode;
+                    static Method &setDefaultStartValue;
+                    static Method &resetDefaultStartValue;
+
+                    DECLARE_CONSTRUCTORS(Track);
                 };
 
                 class TrackNode : public Definition<TrackNode>
                 {
                 public:
                     static const Name className;
-                    static Property<::Atmos::Modulator::Controller::ID> &modID;
-                    static Property<::Atmos::Modulator::ModulatorBase::TrackID> &trackID;
-                    static Property<::Atmos::Modulator::TrackBase::NodeID> &nodeID;
+                    PropertyPrototype<::Atmos::Modulator::Controller::ID> modID;
+                    PropertyPrototype<::Atmos::Modulator::ModulatorBase::TrackID> trackID;
+                    PropertyPrototype<::Atmos::Modulator::TrackBase::NodeID> nodeID;
 
                     static Constructor constructor;
 
                     static Method &setInterpolationLinear;
                     static Method &setInterpolationOscillation;
-                    static Method &setEndStateNormal;
-                    static Method &setEndStateRandom;
+                    static Method &setEndState;
                     static Method &setTimeTaken;
+
+                    DECLARE_CONSTRUCTORS(TrackNode);
                 };
             }
 
@@ -246,105 +278,123 @@ namespace Atmos
                 {
                 public:
                     static const Name className;
-                    static Property<::Atmos::Ent::ComponentTypeName> &action;
-                    static Property<::Atmos::Ent::ComponentTypeName> &battle;
-                    static Property<::Atmos::Ent::ComponentTypeName> &ai;
-                    static Property<::Atmos::Ent::ComponentTypeName> &avatar;
-                    static Property<::Atmos::Ent::ComponentTypeName> &character;
-                    static Property<::Atmos::Ent::ComponentTypeName> &combat;
-                    static Property<::Atmos::Ent::ComponentTypeName> &dialogue;
-                    static Property<::Atmos::Ent::ComponentTypeName> &general;
-                    static Property<::Atmos::Ent::ComponentTypeName> &inventory;
-                    static Property<::Atmos::Ent::ComponentTypeName> &movement;
-                    static Property<::Atmos::Ent::ComponentTypeName> &sense;
+                    static PropertyPrototype<::Atmos::Ent::ComponentTypeName> action;
+                    static PropertyPrototype<::Atmos::Ent::ComponentTypeName> battle;
+                    static PropertyPrototype<::Atmos::Ent::ComponentTypeName> ai;
+                    static PropertyPrototype<::Atmos::Ent::ComponentTypeName> avatar;
+                    static PropertyPrototype<::Atmos::Ent::ComponentTypeName> character;
+                    static PropertyPrototype<::Atmos::Ent::ComponentTypeName> combat;
+                    static PropertyPrototype<::Atmos::Ent::ComponentTypeName> dialogue;
+                    static PropertyPrototype<::Atmos::Ent::ComponentTypeName> general;
+                    static PropertyPrototype<::Atmos::Ent::ComponentTypeName> inventory;
+                    static PropertyPrototype<::Atmos::Ent::ComponentTypeName> movement;
+                    static PropertyPrototype<::Atmos::Ent::ComponentTypeName> sense;
                 };
 
                 class ActionComponent : public Definition<ActionComponent>
                 {
                 public:
                     static const Name className;
-                    static Property<::Atmos::Entity::ValueT> &entity;
+                    PropertyPrototype<::Atmos::Entity::ValueT> entity;
 
                     static Constructor constructor;
+
+                    DECLARE_CONSTRUCTORS(ActionComponent);
                 };
 
                 class BattleComponent : public Definition<BattleComponent>
                 {
                 public:
                     static const Name className;
-                    static Property<::Atmos::Entity::ValueT> &entity;
+                    PropertyPrototype<::Atmos::Entity::ValueT> entity;
 
                     static Constructor constructor;
+
+                    DECLARE_CONSTRUCTORS(BattleComponent);
                 };
 
                 class AIComponent : public Definition<AIComponent>
                 {
                 public:
                     static const Name className;
-                    static Property<::Atmos::Entity::ValueT> &entity;
+                    PropertyPrototype<::Atmos::Entity::ValueT> entity;
 
                     static Constructor constructor;
+
+                    DECLARE_CONSTRUCTORS(AIComponent);
                 };
 
                 class AvatarComponent : public Definition<AvatarComponent>
                 {
                 public:
                     static const Name className;
-                    static Property<::Atmos::Entity::ValueT> &entity;
+                    PropertyPrototype<::Atmos::Entity::ValueT> entity;
 
                     static Constructor constructor;
+
+                    DECLARE_CONSTRUCTORS(AvatarComponent);
                 };
 
                 class CharacterComponent : public Definition<CharacterComponent>
                 {
                 public:
                     static const Name className;
-                    static Property<::Atmos::Entity::ValueT> &entity;
+                    PropertyPrototype<::Atmos::Entity::ValueT> entity;
 
                     static Constructor constructor;
+
+                    DECLARE_CONSTRUCTORS(CharacterComponent);
                 };
 
                 class CombatComponent : public Definition<CombatComponent>
                 {
                 public:
                     static const Name className;
-                    static Property<::Atmos::Entity::ValueT> &entity;
+                    PropertyPrototype<::Atmos::Entity::ValueT> entity;
 
                     static Constructor constructor;
+
+                    DECLARE_CONSTRUCTORS(CombatComponent);
                 };
 
                 class DialogueComponent : public Definition<DialogueComponent>
                 {
                 public:
                     static const Name className;
-                    static Property<::Atmos::Entity::ValueT> &entity;
+                    PropertyPrototype<::Atmos::Entity::ValueT> entity;
 
                     static Constructor constructor;
+
+                    DECLARE_CONSTRUCTORS(DialogueComponent);
                 };
 
                 class GeneralComponent : public Definition<GeneralComponent>
                 {
                 public:
                     static const Name className;
-                    static Property<::Atmos::Entity::ValueT> &entity;
+                    PropertyPrototype<::Atmos::Entity::ValueT> entity;
 
                     static Constructor constructor;
+
+                    DECLARE_CONSTRUCTORS(GeneralComponent);
                 };
 
                 class InventoryComponent : public Definition<InventoryComponent>
                 {
                 public:
                     static const Name className;
-                    static Property<::Atmos::Entity::ValueT> &entity;
+                    PropertyPrototype<::Atmos::Entity::ValueT> entity;
 
                     static Constructor constructor;
+
+                    DECLARE_CONSTRUCTORS(InventoryComponent);
                 };
 
                 class MovementComponent : public Definition<MovementComponent>
                 {
                 public:
                     static const Name className;
-                    static Property<::Atmos::Entity::ValueT> &entity;
+                    PropertyPrototype<::Atmos::Entity::ValueT> entity;
 
                     static Constructor constructor;
 
@@ -352,13 +402,15 @@ namespace Atmos
                     static Method &moveInstant;
                     static Method &canMove;
                     static Method &completeMovementSetup;
+
+                    DECLARE_CONSTRUCTORS(MovementComponent);
                 };
 
                 class SenseComponent : public Definition<SenseComponent>
                 {
                 public:
                     static const Name className;
-                    static Property<::Atmos::Entity::ValueT> &entity;
+                    PropertyPrototype<::Atmos::Entity::ValueT> entity;
 
                     static Constructor constructor;
 
@@ -366,21 +418,27 @@ namespace Atmos
                     static Method &startModulatorWithSound;
                     static Method &getPosition;
                     static Method &getStagedPosition;
+
+                    DECLARE_CONSTRUCTORS(SenseComponent);
                 };
 
                 class Entity : public Definition<Entity>
                 {
                 public:
                     static const Name className;
-                    static Property<::Atmos::Entity::ValueT> &value;
+                    PropertyPrototype<::Atmos::Entity::ValueT> value;
 
                     static Constructor constructor;
 
                     static Method &hasComponent;
                     static Method &getComponent;
                     static Method &getPosition;
+
+                    DECLARE_CONSTRUCTORS(Entity);
                 };
             }
         }
     }
 }
+
+#undef DECLARE_CONSTRUCTORS

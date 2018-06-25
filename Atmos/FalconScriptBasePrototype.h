@@ -181,7 +181,7 @@ namespace Atmos
                 }
 
                 if (!item.isNil())
-                    obj = TraitsT<T>::FromItem(vm, item);
+                    obj = std::move(TraitsT<T>::FromItem(vm, item));
                 return true;
             }
 

@@ -58,13 +58,13 @@ namespace Atmos
         template<class T>
         bool FalconVariableTraitsClassPrototype<T>::Is(Falcon::Item &item)
         {
-            return T::Instance().Is(item);
+            return T::Scaffolding().Is(item);
         }
 
         template<class T>
         typename FalconVariableTraitsClassPrototype<T>::Type FalconVariableTraitsClassPrototype<T>::FromItem(Falcon::VMachine &vm, Falcon::Item &item)
         {
-            Type type(Type::Instance());
+            Type type(Type::Scaffolding());
             type.FromItem(vm, item);
             return type;
         }

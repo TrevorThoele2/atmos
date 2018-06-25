@@ -134,9 +134,19 @@ namespace Atmos
                 CopyFrom(arg);
             }
 
+            Prototype::Prototype(Prototype &&arg) : properties(std::move(arg.properties)), methods(std::move(arg.methods))
+            {}
+
             Prototype& Prototype::operator=(const Prototype &arg)
             {
                 CopyFrom(arg);
+                return *this;
+            }
+
+            Prototype& Prototype::operator=(Prototype &&arg)
+            {
+                properties = std::move(arg.properties);
+                methods = std::move(arg.methods);
                 return *this;
             }
 

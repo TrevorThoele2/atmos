@@ -364,9 +364,6 @@
     <Filter Include="Source Files\Assets\Material">
       <UniqueIdentifier>{36f8aff9-b4d8-48e5-969a-63374752e155}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Assets\Audio">
-      <UniqueIdentifier>{a4825785-5055-44e3-8bda-047dab740f9a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Assets\Image">
       <UniqueIdentifier>{aa05f55d-413e-4708-b2dd-dc657ea531ec}</UniqueIdentifier>
     </Filter>
@@ -381,6 +378,9 @@
     </Filter>
     <Filter Include="Source Files\Exceptions">
       <UniqueIdentifier>{aa0c0163-ab17-4a3a-b00a-610d82060f65}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Assets\Audio">
+      <UniqueIdentifier>{a4825785-5055-44e3-8bda-047dab740f9a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

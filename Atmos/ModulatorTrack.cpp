@@ -13,6 +13,16 @@ namespace Atmos
             return CloneImpl();
         }
 
+        void TrackBase::SetDefaultStartValue(const Value &set)
+        {
+            SetDefaultStartValueImpl(set);
+        }
+
+        void TrackBase::ResetDefaultStartValue()
+        {
+            ResetDefaultStartValueImpl();
+        }
+
         TrackBase::NodeID TrackBase::AddNode()
         {
             return AddNodeImpl();

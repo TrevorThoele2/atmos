@@ -51,6 +51,10 @@ namespace Atmos
                 extern const TrackDescriberBase<Angle::ValueT> RotationX;
                 extern const TrackDescriberBase<Angle::ValueT> RotationY;
                 extern const TrackDescriberBase<Angle::ValueT> RotationZ;
+                extern const TrackDescriberBase<Color::ValueT> ColorA;
+                extern const TrackDescriberBase<Color::ValueT> ColorR;
+                extern const TrackDescriberBase<Color::ValueT> ColorG;
+                extern const TrackDescriberBase<Color::ValueT> ColorB;
 
                 extern const TrackDescriberBase<::Atmos::Sound::Volume> Volume;
                 extern const TrackDescriberBase<::Atmos::Sprite::Index> Index;

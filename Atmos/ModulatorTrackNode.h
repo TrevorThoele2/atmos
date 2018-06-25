@@ -75,80 +75,12 @@ namespace Atmos
             Type GetType() const;
         };
 
-        class TrackNodeEndState
-        {
-        public:
-            typedef Range<Value> RangeT;
-
-            enum Type : unsigned char
-            {
-                NORMAL,
-                RANDOM,
-                NONE
-            };
-        private:
-            class Normal
-            {
-            private:
-                INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
-                INSCRIPTION_ACCESS;
-            public:
-                Value end;
-                Normal();
-                Normal(Value end);
-                Normal(const Normal &arg) = default;
-                Normal& operator=(const Normal &arg) = default;
-                bool operator==(const Normal &arg) const;
-                bool operator!=(const Normal &arg) const;
-            };
-
-            class Random
-            {
-            private:
-                INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
-                INSCRIPTION_ACCESS;
-            public:
-                mutable Value pickedValue;
-                RangeT range;
-                Random();
-                Random(const RangeT &range);
-                Random(const Random &arg) = default;
-                Random& operator=(const Random &arg) = default;
-                bool operator==(const Random &arg) const;
-                bool operator!=(const Random &arg) const;
-            };
-        private:
-            // The sequence of the types here needs to be the same as the Type enum
-            typedef ::function::Variant<Normal, Random> VariantT;
-        private:
-            INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
-            INSCRIPTION_ACCESS;
-        private:
-            VariantT variant;
-            Value::Type variantType;
-        public:
-            TrackNodeEndState(Value::Type variantType);
-            TrackNodeEndState(const TrackNodeEndState &arg);
-            TrackNodeEndState(TrackNodeEndState &&arg);
-            TrackNodeEndState& operator=(const TrackNodeEndState &arg);
-            TrackNodeEndState& operator=(TrackNodeEndState &&arg);
-            bool operator==(const TrackNodeEndState &arg) const;
-            bool operator!=(const TrackNodeEndState &arg) const;
-
-            void SetNormal(Value end);
-            void SetRandom(const RangeT &range);
-            Value GetEnding() const;
-            Type GetType() const;
-            Value::Type GetVariantType() const;
-        };
-
         class TrackNode
         {
         public:
-            typedef TrackNodeEndState EndStateT;
             typedef TrackNodeInterpolation InterpolationT;
         private:
-            EndStateT endState;
+            Value endState;
             InterpolationT interpolation;
             TimeValue timeTaken;
             Value::Type variantType;
@@ -161,16 +93,13 @@ namespace Atmos
             bool operator==(const TrackNode &arg) const;
             bool operator!=(const TrackNode &arg) const;
 
-            void SetEndState(const EndStateT &set);
+            void SetEndState(const Value &set);
             void SetInterpolation(const InterpolationT &set);
             Delta GetDelta(const FrameTimer &timer) const;
             Value GetEndValue() const;
 
             void SetTimeTaken(const TimeValue &set);
             const TimeValue& GetTimeTaken() const;
-            
-            // Use this to get an end state with the correct variant type
-            EndStateT PrototypeEndState() const;
         };
     }
 }
