@@ -466,7 +466,7 @@ namespace Atmos
             if (item.isNumeric())
                 return item.asNumeric();
             else
-                return item.asInteger();
+                return static_cast<double>(item.asInteger());
         }
 
         void FalconVariableTraits<double>::SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set)

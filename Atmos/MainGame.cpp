@@ -9,6 +9,7 @@
 #include "WorldManager.h"
 #include "CancelMenu.h"
 #include "ScriptController.h"
+#include "ScriptLocator.h"
 #include "Camera.h"
 #include "Environment.h"
 
@@ -102,6 +103,7 @@ namespace Atmos
         Ent::AISystem::Work();
         Ent::PositionSystem::Work();
         ScriptController::Work();
+        ScriptLocatorManager::Work();
         WorldManager::Work();
 
         GameDialog::Work();

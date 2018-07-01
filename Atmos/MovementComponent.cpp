@@ -15,10 +15,8 @@ namespace Atmos
     {
         INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(MovementComponent)
         {
-            scribe(upMod);
-            scribe(downMod);
-            scribe(leftMod);
-            scribe(rightMod);
+            scribe(movementMod);
+            scribe(changeDirectionMod);
         }
 
         void MovementComponent::OnOwnerEntitySet()
@@ -28,35 +26,29 @@ namespace Atmos
 
         void MovementComponent::SetScriptCallers()
         {
-            upMod.GetCaller().Set(GetOwnerEntity());
-            downMod.GetCaller().Set(GetOwnerEntity());
-            leftMod.GetCaller().Set(GetOwnerEntity());
-            rightMod.GetCaller().Set(GetOwnerEntity());
+            movementMod.GetCaller().Set(GetOwnerEntity());
+            changeDirectionMod.GetCaller().Set(GetOwnerEntity());
         }
 
-        MovementComponent::MovementComponent(const MovementComponent &arg) : Component(arg), upMod(arg.upMod), downMod(arg.downMod), leftMod(arg.leftMod), rightMod(arg.rightMod)
+        MovementComponent::MovementComponent(const MovementComponent &arg) : Component(arg), movementMod(arg.movementMod), changeDirectionMod(arg.changeDirectionMod)
         {}
 
-        MovementComponent::MovementComponent(MovementComponent &&arg) : Component(std::move(arg)), upMod(std::move(arg.upMod)), downMod(std::move(arg.downMod)), leftMod(std::move(arg.leftMod)), rightMod(std::move(arg.rightMod))
+        MovementComponent::MovementComponent(MovementComponent &&arg) : Component(std::move(arg)), movementMod(std::move(arg.movementMod)), changeDirectionMod(std::move(arg.changeDirectionMod))
         {}
 
         MovementComponent& MovementComponent::operator=(const MovementComponent &arg)
         {
             Component::operator=(arg);
-            upMod = arg.upMod;
-            downMod = arg.downMod;
-            leftMod = arg.leftMod;
-            rightMod = arg.rightMod;
+            movementMod = arg.movementMod;
+            changeDirectionMod = arg.changeDirectionMod;
             return *this;
         }
 
         MovementComponent& MovementComponent::operator=(MovementComponent &&arg)
         {
             Component::operator=(std::move(arg));
-            upMod = std::move(arg.upMod);
-            downMod = std::move(arg.downMod);
-            leftMod = std::move(arg.leftMod);
-            rightMod = std::move(arg.rightMod);
+            movementMod = std::move(arg.movementMod);
+            changeDirectionMod = std::move(arg.changeDirectionMod);
             return *this;
         }
 

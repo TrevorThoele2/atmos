@@ -1,6 +1,7 @@
 #pragma once
 
 #include "FalconScriptObjectPrototype.h"
+#include "ScriptLocator.h"
 
 #include "Modulator.h"
 #include "ModulatorController.h"
@@ -52,7 +53,12 @@ namespace Atmos
 
                     static Constructor constructor;
 
+                    static Method &add;
+                    static Method &subtract;
+                    static Method &multiply;
+                    static Method &divide;
                     static Method &fromDecimal;
+                    static Method &toDecimal;
 
                     DECLARE_CONSTRUCTORS(FixedPoint);
                 };
@@ -83,6 +89,7 @@ namespace Atmos
                     static Constructor constructor;
 
                     static Method &distance;
+                    static Method &directionTo;
                     static Method &convertToPosition3D;
 
                     DECLARE_CONSTRUCTORS(GridPosition);
@@ -272,6 +279,32 @@ namespace Atmos
                 };
             }
 
+            namespace Sense
+            {
+                class Sprite : public Definition<Sprite>
+                {
+                public:
+                    static const Name className;
+                    PropertyPrototype<ScriptLocatorManager::ID> locator;
+
+                    static Constructor constructor;
+
+                    static Method &setIndex;
+                    static Method &getIndex;
+                    static Method &startModulatorWith;
+
+                    DECLARE_CONSTRUCTORS(Sprite);
+                };
+
+                class Sound : public Definition<Sound>
+                {
+                public:
+                    static const Name className;
+
+                    static Method &startWithModulator;
+                };
+            }
+
             namespace Ent
             {
                 class ComponentType : public Definition<ComponentType>
@@ -332,6 +365,8 @@ namespace Atmos
 
                     static Constructor constructor;
 
+                    static Method &getGold;
+
                     DECLARE_CONSTRUCTORS(AvatarComponent);
                 };
 
@@ -387,6 +422,8 @@ namespace Atmos
 
                     static Constructor constructor;
 
+                    static Method &getTotalItemCount;
+
                     DECLARE_CONSTRUCTORS(InventoryComponent);
                 };
 
@@ -414,10 +451,12 @@ namespace Atmos
 
                     static Constructor constructor;
 
-                    static Method &startModulatorWithSprite;
-                    static Method &startModulatorWithSound;
                     static Method &getPosition;
+                    static Method &getSprite;
                     static Method &getStagedPosition;
+                    static Method &getStagedDirection;
+                    static Method &hasStagedPosition;
+                    static Method &hasStagedDirection;
 
                     DECLARE_CONSTRUCTORS(SenseComponent);
                 };
@@ -432,6 +471,8 @@ namespace Atmos
 
                     static Method &hasComponent;
                     static Method &getComponent;
+                    static Method &setDirection;
+                    static Method &getDirection;
                     static Method &getPosition;
 
                     DECLARE_CONSTRUCTORS(Entity);

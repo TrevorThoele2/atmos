@@ -6,6 +6,7 @@
 #include "ModulatorObserver.h"
 #include "GameEnvironment.h"
 #include "ActionFunctions.h"
+#include "AvatarSystem.h"
 
 #include <falcon/engine.h>
 
@@ -42,7 +43,6 @@ namespace Atmos
         {
             namespace General
             {
-                // Suspend
                 FUNCTION(Suspend, "Atmos_Suspend")
                     NO_PARAMETERS
                 BODY
@@ -50,7 +50,6 @@ namespace Atmos
                     ScriptController::Current()->Suspend();
                 } BODY_END;
 
-                // Log message
                 FUNCTION(LogMessage, "Atmos_LogMessage")
                     PARAMETERS(new Prototype::Parameter<String>("message"), new Prototype::Parameter<Logger::Type>("type", false))
                 BODY
@@ -66,7 +65,6 @@ namespace Atmos
                         Logger::Log(AddTracebackToString(*vm, **message), **type);
                 } BODY_END;
 
-                // Random bool
                 FUNCTION(RandomBool, "Atmos_RandomBool")
                     PARAMETERS(new Prototype::Parameter<double>("probability", false))
                 BODY
@@ -80,7 +78,6 @@ namespace Atmos
                         vm->retval(Act::Random::GenerateBool(**probability));
                 } BODY_END;
 
-                // Random integer
                 FUNCTION(RandomInteger, "Atmos_RandomInteger")
                     PARAMETERS(new Prototype::Parameter<std::int64_t>("floor"), new Prototype::Parameter<std::int64_t>("ceiling"))
                 BODY
@@ -100,7 +97,6 @@ namespace Atmos
 
             namespace Position
             {
-                // Find path
                 FUNCTION(FindPath, "Atmos_FindPath")
                     PARAMETERS(new Prototype::Parameter<Classes::Position::GridPosition>("from"), new Prototype::Parameter<Classes::Position::GridPosition>("to"))
                 BODY
@@ -132,7 +128,6 @@ namespace Atmos
 
             namespace Input
             {
-                // Is action active
                 FUNCTION(IsActionActive, "AtmosInput_IsActionActive")
                     PARAMETERS(new Prototype::Parameter<::Atmos::Input::ActionID>("action"))
                 BODY
@@ -142,7 +137,6 @@ namespace Atmos
 
                     vm->retval(Act::Input::IsActionActive(action->obj));
                 } BODY_END;
-                // Is action pressed
                 FUNCTION(IsActionPressed, "AtmosInput_IsActionPressed")
                     PARAMETERS(new Prototype::Parameter<::Atmos::Input::ActionID>("action"))
                 BODY
@@ -152,7 +146,6 @@ namespace Atmos
 
                     vm->retval(Act::Input::IsActionPressed(action->obj));
                 } BODY_END;
-                // Is action pressed
                 FUNCTION(IsActionDepressed, "AtmosInput_IsActionDepressed")
                     PARAMETERS(new Prototype::Parameter<::Atmos::Input::ActionID>("action"))
                 BODY
@@ -166,7 +159,6 @@ namespace Atmos
 
             namespace Modulator
             {
-                // Create modulator
                 FUNCTION(Create, "AtmosModulator_Create")
                     PARAMETERS(new Prototype::Parameter<Name>("name"))
                 BODY
@@ -193,7 +185,6 @@ namespace Atmos
 
             namespace Speech
             {
-                // SetCharacters
                 FUNCTION(SetCharacters, "AtmosSpeech_SetCharacters")
                     PARAMETERS(new Prototype::Parameter<String>("output"))
                 BODY
@@ -204,7 +195,6 @@ namespace Atmos
                     Act::Speech::SetCharacters(output->obj);
                 } BODY_END;
 
-                // SetCharacters
                 FUNCTION(AppendCharacters, "AtmosSpeech_AppendCharacters")
                     PARAMETERS(new Prototype::Parameter<String>("append"))
                 BODY
@@ -215,7 +205,6 @@ namespace Atmos
                     Act::Speech::AppendCharacters(append->obj);
                 } BODY_END;
 
-                // Clear characters
                 FUNCTION(ClearCharacters, "AtmosSpeech_ClearCharacters")
                     NO_PARAMETERS
                 BODY
@@ -225,7 +214,6 @@ namespace Atmos
                     Act::Speech::ClearCharacters();
                 } BODY_END;
 
-                // Activate input
                 FUNCTION(ActivateInput, "AtmosSpeech_ActivateInput")
                     PARAMETERS(new Prototype::Parameter<std::vector<String>>("strings"))
                 BODY
@@ -239,7 +227,6 @@ namespace Atmos
 
                 } BODY_END;
 
-                // Deactivate input
                 FUNCTION(DeactivateInput, "AtmosSpeech_DeactivateInput")
                     NO_PARAMETERS
                 BODY
@@ -250,7 +237,6 @@ namespace Atmos
 
                 } BODY_END;
 
-                // Get input position
                 FUNCTION(GetInputPosition, "AtmosSpeech_GetInputPosition")
                     NO_PARAMETERS
                 BODY
@@ -260,7 +246,6 @@ namespace Atmos
                     vm->retval(Act::Speech::GetInputPosition());
                 } BODY_END;
 
-                // Leave
                 FUNCTION(Leave, "AtmosSpeech_Leave")
                     NO_PARAMETERS
                 BODY
@@ -273,7 +258,6 @@ namespace Atmos
 
             namespace Shop
             {
-                // Enter
                 FUNCTION(Enter, "AtmosShop_Enter")
                     PARAMETERS(new Prototype::Parameter<bool>("buying"))
                 BODY
@@ -285,7 +269,6 @@ namespace Atmos
                     Act::Speech::EnterShop(**buying);
                 } BODY_END;
 
-                // Leave
                 FUNCTION(Leave, "AtmosShop_Leave")
                     NO_PARAMETERS
                 BODY
@@ -295,7 +278,6 @@ namespace Atmos
                     Act::Speech::LeaveShop();
                 } BODY_END;
 
-                // Leave
                 FUNCTION(IsActive, "AtmosShop_IsActive")
                     NO_PARAMETERS
                 BODY
@@ -308,28 +290,44 @@ namespace Atmos
 
             namespace Party
             {
-                // Add
                 FUNCTION(Add, "AtmosParty_Add")
-                    PARAMETERS(new Prototype::Parameter<::Atmos::Entity::ValueT>("entity"))
+                    PARAMETERS(new Prototype::Parameter<::Atmos::Fal::Classes::Ent::Entity>("entity"))
                 BODY
                 {
                     SETUP_FUNCTION(Add);
 
-                    auto entity = selfFunc.GetParameter<::Atmos::Entity::ValueT>("entity");
+                    auto entity = selfFunc.GetParameter<::Atmos::Fal::Classes::Ent::Entity>("entity");
 
-                    Act::Ent::AddToPlayerParty(entity->obj);
+                    Act::Ent::AddToPlayerParty((*entity)->value.Retrieve());
                 } BODY_END;
 
-                // Is entity in
                 FUNCTION(IsEntityIn, "AtmosParty_IsEntityIn")
-                    PARAMETERS(new Prototype::Parameter<::Atmos::Entity::ValueT>("entity"))
+                    PARAMETERS(new Prototype::Parameter<::Atmos::Fal::Classes::Ent::Entity>("entity"))
                 BODY
                 {
                     SETUP_FUNCTION(IsEntityIn);
 
-                    auto entity = selfFunc.GetParameter<::Atmos::Entity::ValueT>("entity");
+                    auto entity = selfFunc.GetParameter<::Atmos::Fal::Classes::Ent::Entity>("entity");
 
-                    vm->retval(Act::Ent::IsEntityInParty(entity->obj));
+                    vm->retval(Act::Ent::IsEntityInParty((*entity)->value.Retrieve()));
+                } BODY_END;
+            }
+
+            namespace Entity
+            {
+                FUNCTION(GetAvatar, "AtmosEntity_GetAvatar")
+                    NO_PARAMETERS
+                BODY
+                {
+                    SETUP_FUNCTION(GetAvatar);
+
+                    auto got = ::Atmos::Ent::AvatarSystem::GetAvatar();
+                    if (!got)
+                        ::Atmos::Fal::Classes::Ent::Entity::Scaffolding().value.Set(::Atmos::Ent::nullEntity);
+                    else
+                        ::Atmos::Fal::Classes::Ent::Entity::Scaffolding().value.Set(got->GetOwnerEntity());
+
+                    vm->retval(::Atmos::Fal::Classes::Ent::Entity::Scaffolding().CreateItem(*vm));
                 } BODY_END;
             }
         }

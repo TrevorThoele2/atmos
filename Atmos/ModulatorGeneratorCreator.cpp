@@ -106,7 +106,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
                 // Color A
                 START_TRACK_GENERATOR(Description::Track::ColorA)
                 {
-                    args.object.color.SetAlpha(args.current.AsInt());
+                    args.object.color.SetAlpha(static_cast<Color::ValueT>(args.current.AsInt()));
                 }
                 END_MODIFIER{ return Value(std::int64_t(object.color.GetAlpha())); }
                 END_TRACK_GENERATOR;
@@ -114,7 +114,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
                 // Color R
                 START_TRACK_GENERATOR(Description::Track::ColorR)
                 {
-                    args.object.color.SetRed(args.current.AsInt());
+                    args.object.color.SetRed(static_cast<Color::ValueT>(args.current.AsInt()));
                 }
                 END_MODIFIER{ return Value(std::int64_t(object.color.GetRed())); }
                 END_TRACK_GENERATOR;
@@ -122,7 +122,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
                 // Color G
                 START_TRACK_GENERATOR(Description::Track::ColorG)
                 {
-                    args.object.color.SetGreen(args.current.AsInt());
+                    args.object.color.SetGreen(static_cast<Color::ValueT>(args.current.AsInt()));
                 }
                 END_MODIFIER{ return Value(std::int64_t(object.color.GetGreen())); }
                 END_TRACK_GENERATOR;
@@ -130,7 +130,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
                 // Color B
                 START_TRACK_GENERATOR(Description::Track::ColorB)
                 {
-                    args.object.color.SetBlue(args.current.AsInt());
+                    args.object.color.SetBlue(static_cast<Color::ValueT>(args.current.AsInt()));
                 }
                 END_MODIFIER{ return Value(std::int64_t(object.color.GetBlue())); }
                 END_TRACK_GENERATOR;
@@ -224,7 +224,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
                 // Color A
                 START_TRACK_GENERATOR(Description::Track::ColorA)
                 {
-                    args.object.Get().color.SetAlpha(args.current.AsInt());
+                    args.object.Get().color.SetAlpha(static_cast<Color::ValueT>(args.current.AsInt()));
                 }
                 END_MODIFIER{ return Value(std::int64_t(object.Get().color.GetAlpha())); }
                 END_TRACK_GENERATOR;
@@ -232,7 +232,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
                 // Color R
                 START_TRACK_GENERATOR(Description::Track::ColorR)
                 {
-                    args.object.Get().color.SetRed(args.current.AsInt());
+                    args.object.Get().color.SetRed(static_cast<Color::ValueT>(args.current.AsInt()));
                 }
                 END_MODIFIER{ return Value(std::int64_t(object.Get().color.GetRed())); }
                 END_TRACK_GENERATOR;
@@ -240,7 +240,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
                 // Color G
                 START_TRACK_GENERATOR(Description::Track::ColorG)
                 {
-                    args.object.Get().color.SetGreen(args.current.AsInt());
+                    args.object.Get().color.SetGreen(static_cast<Color::ValueT>(args.current.AsInt()));
                 }
                 END_MODIFIER{ return Value(std::int64_t(object.Get().color.GetGreen())); }
                 END_TRACK_GENERATOR;
@@ -248,7 +248,7 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
                 // Color B
                 START_TRACK_GENERATOR(Description::Track::ColorB)
                 {
-                    args.object.Get().color.SetBlue(args.current.AsInt());
+                    args.object.Get().color.SetBlue(static_cast<Color::ValueT>(args.current.AsInt()));
                 }
                 END_MODIFIER{ return Value(std::int64_t(object.Get().color.GetBlue())); }
                 END_TRACK_GENERATOR;

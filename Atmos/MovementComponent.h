@@ -26,10 +26,8 @@ namespace Atmos
         public:
             ::affecter::Connection affecterConnection;
 
-            Script::Instance upMod;
-            Script::Instance downMod;
-            Script::Instance leftMod;
-            Script::Instance rightMod;
+            Script::Instance movementMod;
+            Script::Instance changeDirectionMod;
 
             MovementComponent() = default;
             MovementComponent(const MovementComponent &arg);

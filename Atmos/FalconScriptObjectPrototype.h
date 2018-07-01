@@ -69,15 +69,9 @@ namespace Atmos
                     MethodBase(const MethodBase &arg);
                     MethodBase& operator=(const MethodBase &arg);
                     virtual MethodBase* Clone(Prototype &prototype) const = 0;
-                    // Returns true if it found everything
-                    // Generally indicates if a method can continue
-                    bool Setup(Falcon::VMachine &vm);
                     // Returns true if it found all of the parameters
                     // Generally indicates if a method can continue
                     bool SetupParameters(Falcon::VMachine &vm);
-                    // Returns true if it found all of the properties
-                    // Generally indicates if a method can continue
-                    bool SetupSelf(Falcon::VMachine &vm);
 
                     template<class U>
                     Parameter<U>* GetParameter(const Name &name);
@@ -145,8 +139,14 @@ namespace Atmos
             template<class T>
             bool Prototype::Property<T>::RetrieveItemFromVMImpl(Falcon::VMachine &vm, Falcon::Item &item)
             {
-                try { vm.self().getProperty(Convert(name), item); }
-                catch (...) { return false; }
+                try
+                {
+                    vm.self().getProperty(Convert(name), item);
+                }
+                catch (...)
+                {
+                    return false;
+                }
 
                 return true;
             }

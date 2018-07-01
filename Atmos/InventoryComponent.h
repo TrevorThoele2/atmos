@@ -45,6 +45,8 @@ namespace Atmos
             void Move(ItemStack &stack, InventoryComponent &moveTo);
             bool AttemptConsume(ItemStack &stack);
             bool AttemptEquip(EquipSlot slot, ItemStack &stack);
+
+            size_t GetTotalCount() const;
         };
 
         ENTITY_COMPONENT_MAP_DECLARE("Inventory", InventoryComponent)

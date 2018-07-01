@@ -839,14 +839,49 @@ namespace Atmos
 
         // Position
         {
+            Functions::Position::FindPath.PushAllToModule(*mainModule);
             Classes::Position::GridPosition::PushAllToModule(*mainModule);
             Classes::Position::Position3D::PushAllToModule(*mainModule);
+            Classes::Position::Direction::PushAllToModule(*mainModule);
+        }
+
+        // Input
+        {
+            Functions::Input::IsActionActive.PushAllToModule(*mainModule);
+            Functions::Input::IsActionPressed.PushAllToModule(*mainModule);
+            Functions::Input::IsActionDepressed.PushAllToModule(*mainModule);
+            Classes::Input::ActionID::PushAllToModule(*mainModule);
         }
 
         // Time
         {
             Classes::Time::Epoch::PushAllToModule(*mainModule);
             Classes::Time::TimeValue::PushAllToModule(*mainModule);
+            Classes::Time::FrameTimer::PushAllToModule(*mainModule);
+        }
+        
+        // Speech
+        {
+            Functions::Speech::SetCharacters.PushAllToModule(*mainModule);
+            Functions::Speech::AppendCharacters.PushAllToModule(*mainModule);
+            Functions::Speech::ClearCharacters.PushAllToModule(*mainModule);
+            Functions::Speech::ActivateInput.PushAllToModule(*mainModule);
+            Functions::Speech::DeactivateInput.PushAllToModule(*mainModule);
+            Functions::Speech::GetInputPosition.PushAllToModule(*mainModule);
+            Functions::Speech::Leave.PushAllToModule(*mainModule);
+        }
+
+        // Shop
+        {
+            Functions::Shop::Enter.PushAllToModule(*mainModule);
+            Functions::Shop::Leave.PushAllToModule(*mainModule);
+            Functions::Shop::IsActive.PushAllToModule(*mainModule);
+        }
+
+        // Party
+        {
+            Functions::Party::Add.PushAllToModule(*mainModule);
+            Functions::Party::IsEntityIn.PushAllToModule(*mainModule);
         }
 
         // Modulator
@@ -862,8 +897,15 @@ namespace Atmos
             Functions::Modulator::Create.PushAllToModule(*mainModule);
         }
 
+        // Sense
+        {
+            Classes::Sense::Sprite::PushAllToModule(*mainModule);
+        }
+
         // Entity
         {
+            Functions::Entity::GetAvatar.PushAllToModule(*mainModule);
+
             Classes::Ent::ComponentType::PushAllToModule(*mainModule);
 
             Classes::Ent::ActionComponent::PushAllToModule(*mainModule);
