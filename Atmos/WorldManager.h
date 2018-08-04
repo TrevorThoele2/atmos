@@ -74,7 +74,6 @@ namespace Atmos
         static void Draw();
         static void DoLighting();
         static void LockIn();
-        // Will only destroy the field if destroyField is true (and only if it's not being temporarily used)
         static void Clear(bool destroyField = true);
 
         // Returns if the field exists

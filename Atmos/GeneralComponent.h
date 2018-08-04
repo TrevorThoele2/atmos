@@ -25,8 +25,6 @@ namespace Atmos
             class Storage
             {
             public:
-                typedef Variant::Type Type;
-            public:
                 Name name;
                 Variant variant;
 

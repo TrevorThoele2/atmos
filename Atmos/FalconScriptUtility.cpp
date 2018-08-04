@@ -101,36 +101,22 @@ namespace Atmos
             return ret;
         }
 
-        void FatalScriptError(Script::Instance &instance, String &&string, Logger::Type severity, Logger::NameValueVector &nameValueVector)
+        void FatalScriptError(String &&message, Logger::Type severity)
         {
-            // First, log the error
-            Logger::Log("Fatal script error.\n" + string + "\n" + AddTracebackToString(*instance.GetVM().vm(), string),
-                severity,
-                nameValueVector);
-            // Then, force quit the script
+            auto &instance = *ScriptController::Current();
+            Logger::Log(AddTracebackToString(*instance.GetVM().vm(), message),
+                severity);
             instance.ForceQuit();
         };
 
-        void FatalScriptErrorParameterNotExist(Script::Instance &instance, const String &name)
+        void FatalScriptError(String &&message, Logger::Type severity, Logger::NameValueVector &nameValueVector)
         {
-            FatalScriptError(instance, String("A script parameter was not sent from a script."),
-                Logger::Type::ERROR_MODERATE,
-                Logger::NameValueVector{ NameValuePair("Parameter Name", name), NameValuePair("Script File Name", instance.GetFileName().GetValue()) });
-        }
-
-        void FatalScriptErrorParameterNotExpectedType(Script::Instance &instance, const String &name, const String &expectedType, const String &givenType)
-        {
-            FatalScriptError(instance, String("A script parameter was not the expected type."),
-                Logger::Type::ERROR_MODERATE,
-                Logger::NameValueVector{ NameValuePair("Parameter Name", name), NameValuePair("Script File Name", instance.GetFileName().GetValue()), NameValuePair("Type", givenType), NameValuePair("Expected Type", expectedType) });
-        }
-
-        void FatalScriptErrorParameterNotExpectedType(Script::Instance &instance, const String &name, const String &expectedType, Falcon::Item &item)
-        {
-            Falcon::String string;
-            item.typeName(string);
-            FatalScriptErrorParameterNotExpectedType(instance, name, expectedType, Convert(string));
-        }
+            auto &instance = *ScriptController::Current();
+            Logger::Log(AddTracebackToString(*instance.GetVM().vm(), message),
+                severity,
+                nameValueVector);
+            instance.ForceQuit();
+        };
 
         bool FalconVariableTraits<bool>::Is(Falcon::Item &item)
         {
@@ -826,7 +812,7 @@ namespace Atmos
             auto found = RetrieveItemFromVM(name, vm);
             if (!found)
             {
-                FatalScriptErrorParameterNotExist(*ScriptController::Current(), name);
+                //FatalScriptErrorParameterNotExist(*ScriptController::Current(), name);
                 throw ScriptException();
             }
 
@@ -838,7 +824,7 @@ namespace Atmos
             auto found = vm->param(id);
             if (!found)
             {
-                FatalScriptErrorParameterNotExist(*ScriptController::Current(), name);
+                //FatalScriptErrorParameterNotExist(*ScriptController::Current(), name);
                 throw ScriptException();
             }
 

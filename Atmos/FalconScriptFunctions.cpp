@@ -7,6 +7,7 @@
 #include "GameEnvironment.h"
 #include "ActionFunctions.h"
 #include "AvatarSystem.h"
+#include "PlayerParty.h"
 
 #include <falcon/engine.h>
 
@@ -73,9 +74,9 @@ namespace Atmos
 
                     auto probability = selfFunc.GetParameter<double>("probability");
                     if (!probability->WasSet())
-                        vm->retval(Act::Random::GenerateBool());
+                        vm->retval(::Atmos::Random::GenerateBool());
                     else
-                        vm->retval(Act::Random::GenerateBool(**probability));
+                        vm->retval(::Atmos::Random::GenerateBool(**probability));
                 } BODY_END;
 
                 FUNCTION(RandomInteger, "Atmos_RandomInteger")
@@ -89,9 +90,9 @@ namespace Atmos
                     auto floor = selfFunc.GetParameter<T>("floor");
                     auto ceiling = selfFunc.GetParameter<T>("ceiling");
                     if (!floor->WasSet() || !ceiling->WasSet())
-                        vm->retval(Act::Random::GenerateIntFullRange<T>());
+                        vm->retval(::Atmos::Random::Generate<T>());
                     else
-                        vm->retval(Act::Random::GenerateInt<T>(**floor, **ceiling));
+                        vm->retval(::Atmos::Random::Generate(**floor, **ceiling));
                 } BODY_END;
             }
 
@@ -106,10 +107,12 @@ namespace Atmos
                     auto &from = selfFunc.GetParameter<Classes::Position::GridPosition>("from")->obj;
                     auto &to = selfFunc.GetParameter<Classes::Position::GridPosition>("to")->obj;
 
-                    ::Atmos::GridPosition atmosFrom(from.x.Retrieve(), from.y.Retrieve(), from.z.Retrieve());
-                    ::Atmos::GridPosition atmosTo(to.x.Retrieve(), to.y.Retrieve(), to.z.Retrieve());
-
-                    auto &path = ::Atmos::Act::Position::FindPath(atmosFrom, atmosTo);
+                    ::Atmos::Pathfinder::TileStack path;
+                    {
+                        ::Atmos::GridPosition atmosFrom(from.x.Retrieve(), from.y.Retrieve(), from.z.Retrieve());
+                        ::Atmos::GridPosition atmosTo(to.x.Retrieve(), to.y.Retrieve(), to.z.Retrieve());
+                        ::Atmos::Pathfinder::FindPath(path, atmosFrom, atmosTo);
+                    }
 
                     auto sendPath = new Falcon::CoreArray();
                     while (!path.empty())
@@ -135,7 +138,7 @@ namespace Atmos
                     SETUP_FUNCTION(IsActionActive);
                     auto action = selfFunc.GetParameter<::Atmos::Input::ActionID>("action");
 
-                    vm->retval(Act::Input::IsActionActive(action->obj));
+                    vm->retval(Environment::GetInput()->IsActionActive(action->obj));
                 } BODY_END;
                 FUNCTION(IsActionPressed, "AtmosInput_IsActionPressed")
                     PARAMETERS(new Prototype::Parameter<::Atmos::Input::ActionID>("action"))
@@ -144,7 +147,7 @@ namespace Atmos
                     SETUP_FUNCTION(IsActionPressed);
                     auto action = selfFunc.GetParameter<::Atmos::Input::ActionID>("action");
 
-                    vm->retval(Act::Input::IsActionPressed(action->obj));
+                    vm->retval(Environment::GetInput()->IsActionPressed(action->obj));
                 } BODY_END;
                 FUNCTION(IsActionDepressed, "AtmosInput_IsActionDepressed")
                     PARAMETERS(new Prototype::Parameter<::Atmos::Input::ActionID>("action"))
@@ -153,7 +156,7 @@ namespace Atmos
                     SETUP_FUNCTION(IsActionDepressed);
                     auto action = selfFunc.GetParameter<::Atmos::Input::ActionID>("action");
 
-                    vm->retval(Act::Input::IsActionDepressed(action->obj));
+                    vm->retval(Environment::GetInput()->IsActionDepressed(action->obj));
                 } BODY_END;
             }
 
@@ -192,7 +195,7 @@ namespace Atmos
                     SETUP_FUNCTION(SetCharacters);
 
                     auto output = selfFunc.GetParameter<String>("output");
-                    Act::Speech::SetCharacters(output->obj);
+                    ::Atmos::Speech::Handler::SetString(output->obj);
                 } BODY_END;
 
                 FUNCTION(AppendCharacters, "AtmosSpeech_AppendCharacters")
@@ -202,7 +205,7 @@ namespace Atmos
                     SETUP_FUNCTION(AppendCharacters);
 
                     auto append = selfFunc.GetParameter<String>("append");
-                    Act::Speech::AppendCharacters(append->obj);
+                    ::Atmos::Speech::Handler::AppendString(append->obj);
                 } BODY_END;
 
                 FUNCTION(ClearCharacters, "AtmosSpeech_ClearCharacters")
@@ -211,7 +214,7 @@ namespace Atmos
                 {
                     SETUP_FUNCTION(ClearCharacters);
 
-                    Act::Speech::ClearCharacters();
+                    ::Atmos::Speech::Handler::ClearString();
                 } BODY_END;
 
                 FUNCTION(ActivateInput, "AtmosSpeech_ActivateInput")
@@ -223,7 +226,7 @@ namespace Atmos
                     auto strings = selfFunc.GetParameter<std::vector<String>>("strings");
                     std::vector<String> copy(strings->obj);
 
-                    Act::Speech::ActivateInput(std::move(copy));
+                    ::Atmos::Speech::Handler::ActivateInput(std::move(copy));
 
                 } BODY_END;
 
@@ -233,7 +236,7 @@ namespace Atmos
                 {
                     SETUP_FUNCTION(DeactivateInput);
 
-                    Act::Speech::DeactivateInput();
+                    ::Atmos::Speech::Handler::DeactivateInput();
 
                 } BODY_END;
 
@@ -243,7 +246,7 @@ namespace Atmos
                 {
                     SETUP_FUNCTION(GetInputPosition);
 
-                    vm->retval(Act::Speech::GetInputPosition());
+                    vm->retval(::Atmos::Speech::Handler::GetInputPosition());
                 } BODY_END;
 
                 FUNCTION(Leave, "AtmosSpeech_Leave")
@@ -252,7 +255,7 @@ namespace Atmos
                 {
                     SETUP_FUNCTION(Leave);
 
-                    Act::Speech::LeaveSpeech();
+                    ::Atmos::Speech::Handler::Leave();
                 } BODY_END;
             }
 
@@ -266,7 +269,7 @@ namespace Atmos
 
                     auto buying = selfFunc.GetParameter<bool>("buying");
 
-                    Act::Speech::EnterShop(**buying);
+                    ::Atmos::Speech::Shop::Enter(**buying);
                 } BODY_END;
 
                 FUNCTION(Leave, "AtmosShop_Leave")
@@ -275,7 +278,7 @@ namespace Atmos
                 {
                     SETUP_FUNCTION(Leave);
 
-                    Act::Speech::LeaveShop();
+                    ::Atmos::Speech::Shop::Leave();
                 } BODY_END;
 
                 FUNCTION(IsActive, "AtmosShop_IsActive")
@@ -284,7 +287,7 @@ namespace Atmos
                 {
                     SETUP_FUNCTION(IsActive);
 
-                    vm->retval(Act::Speech::IsShopActive());
+                    vm->retval(::Atmos::Speech::Shop::IsActive());
                 } BODY_END;
             }
 
@@ -298,7 +301,7 @@ namespace Atmos
 
                     auto entity = selfFunc.GetParameter<::Atmos::Fal::Classes::Ent::Entity>("entity");
 
-                    Act::Ent::AddToPlayerParty((*entity)->value.Retrieve());
+                    ::Atmos::Ent::PlayerParty::Add((*entity)->value.Retrieve());
                 } BODY_END;
 
                 FUNCTION(IsEntityIn, "AtmosParty_IsEntityIn")
@@ -309,7 +312,7 @@ namespace Atmos
 
                     auto entity = selfFunc.GetParameter<::Atmos::Fal::Classes::Ent::Entity>("entity");
 
-                    vm->retval(Act::Ent::IsEntityInParty((*entity)->value.Retrieve()));
+                    vm->retval(::Atmos::Ent::PlayerParty::IsHere((*entity)->value.Retrieve()));
                 } BODY_END;
             }
 

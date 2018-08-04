@@ -1284,6 +1284,12 @@
     <ClInclude Include="ScriptLocator.h">
       <Filter>Header Files\Assets\Script</Filter>
     </ClInclude>
+    <ClInclude Include="RelativeFilePath.h">
+      <Filter>Header Files\File System</Filter>
+    </ClInclude>
+    <ClInclude Include="ActionException.h">
+      <Filter>Header Files\Action</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Battle.cpp">
@@ -1963,6 +1969,9 @@
     </ClCompile>
     <ClCompile Include="ScriptLocator.cpp">
       <Filter>Source Files\Assets\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="RelativeFilePath.cpp">
+      <Filter>Source Files\File System</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

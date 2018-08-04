@@ -8,6 +8,8 @@ namespace Atmos
     extern const char *worldFolder;
 
     class FileName;
+    class RelativeFilePath;
+
     class FilePath
     {
     public:
@@ -15,6 +17,7 @@ namespace Atmos
         FilePath(const String &string);
         // Must be null-terminated
         FilePath(const char *buf);
+        FilePath(const FilePath &arg, const RelativeFilePath &relative);
         FilePath(const FilePath &arg);
         FilePath(FilePath &&arg);
         FilePath& operator=(const FilePath &arg);
@@ -22,7 +25,6 @@ namespace Atmos
 
         bool operator==(const FilePath &arg) const;
         bool operator!=(const FilePath &arg) const;
-        operator const String&();
         operator const char*();
         const char* c_str() const;
 
@@ -31,15 +33,17 @@ namespace Atmos
         void SetExtension(const String &replace);
         void RemoveFileName();
         void RemoveExtension();
+        void RemoveDirectory(size_t index);
 
         FilePath& Append(const String &append);
 
-        bool HasFolder(const String &folderName);
-        bool FirstFolderIs(const String &folderName);
+        bool HasDirectory(const String &directoryName);
+        size_t GetDirectoryCount() const;
+        String GetDirectoryName(size_t index) const;
 
-        operator const String&() const;
-        const String& GetValue() const;
-        const String& GetExtension() const;
+        operator String() const;
+        String GetValue() const;
+        String GetExtension() const;
         String GetWithoutExtension() const;
         bool IsEmpty() const;
         FileName GetFileName() const;

@@ -1,5 +1,9 @@
 
 #include "FilePath.h"
+
+#include "RelativeFilePath.h"
+
+#include "Environment.h"
 #include "StringUtility.h"
 #include <Inscription\Scribe.h>
 
@@ -12,6 +16,16 @@ namespace Atmos
 
     FilePath::FilePath(const char *buf) : value(buf), extension(GetFileExtension(buf))
     {}
+
+    FilePath::FilePath(const FilePath &arg, const RelativeFilePath &relative) : value(arg.value)
+    {
+        RemoveFileName();
+        size_t directoryIndex = GetDirectoryCount() - 1;
+        for (size_t loop = 0; loop < relative.GetMoveUpCount(); ++loop, --directoryIndex)
+            RemoveDirectory(directoryIndex);
+
+        Append(relative.GetMoveDown());
+    }
 
     FilePath::FilePath(const FilePath &arg) : value(arg.value), extension(arg.extension)
     {}
@@ -43,11 +57,6 @@ namespace Atmos
         return !(*this == arg);
     }
 
-    FilePath::operator const String&()
-    {
-        return value;
-    }
-
     FilePath::operator const char*()
     {
         return value.c_str();
@@ -66,7 +75,7 @@ namespace Atmos
 
     void FilePath::SetName(const FileName &name)
     {
-        auto found = value.find_last_of('\\');
+        auto found = value.find_last_of(Environment::GetFileSystem()->GetFileSeparator());
         if (found == value.npos)
         {
             value = name;
@@ -96,6 +105,15 @@ namespace Atmos
         extension = "";
     }
 
+    void FilePath::RemoveDirectory(size_t index)
+    {
+        if (index >= GetDirectoryCount())
+            return;
+
+        String directoryName = GetDirectoryName(index);
+        value.erase(value.find(directoryName), directoryName.size());
+    }
+
     FilePath& FilePath::Append(const String &append)
     {
         value.append(append);
@@ -103,19 +121,19 @@ namespace Atmos
         return *this;
     }
 
-    bool FilePath::HasFolder(const String &folderName)
+    bool FilePath::HasDirectory(const String &directoryName)
     {
         size_t curPos = 0;
         // Retrieve folders from front to back until folderName is found or not
         String slice;
         while (true)
         {
-            auto found = value.find('\\', curPos);
+            auto found = value.find(Environment::GetFileSystem()->GetFileSeparator(), curPos);
             if (found == value.npos)
                 return false;
 
             slice = value.substr(curPos, found);
-            if (slice == folderName)
+            if (slice == directoryName)
                 return true;
 
             curPos = found;
@@ -124,26 +142,49 @@ namespace Atmos
         return false;
     }
 
-    bool FilePath::FirstFolderIs(const String &folderName)
+    size_t FilePath::GetDirectoryCount() const
     {
-        auto found = value.find('\\');
-        if (found == value.npos)
-            return false;
+        size_t count = 0;
+        if (value.find_first_of(Environment::GetFileSystem()->GetFileSeparator()) != 0)
+            ++count;
 
-        return value.substr(0, found) == folderName;
+        size_t position = value.find(Environment::GetFileSystem()->GetFileSeparator());
+        while (position != value.npos)
+        {
+            ++count;
+            position = value.find(Environment::GetFileSystem()->GetFileSeparator(), position + 1);
+        }
+
+        return count;
     }
 
-    FilePath::operator const String&() const
+    String FilePath::GetDirectoryName(size_t index) const
+    {
+        if (index >= GetDirectoryCount())
+            return String();
+
+        size_t positionStart = 0;
+        size_t positionEnd = value.find(Environment::GetFileSystem()->GetFileSeparator(), positionStart + 1);
+        for(size_t loop = 0; loop < index; ++loop)
+        {
+            positionStart = positionEnd;
+            positionEnd = value.find(Environment::GetFileSystem()->GetFileSeparator(), positionEnd + 1);
+        }
+
+        return value.substr(positionStart, positionEnd - positionStart);
+    }
+
+    FilePath::operator String() const
     {
         return value;
     }
 
-    const String& FilePath::GetValue() const
+    String FilePath::GetValue() const
     {
         return value;
     }
 
-    const String& FilePath::GetExtension() const
+    String FilePath::GetExtension() const
     {
         return extension;
     }
@@ -160,7 +201,7 @@ namespace Atmos
 
     FileName FilePath::GetFileName() const
     {
-        auto found = value.find_last_of('\\');
+        auto found = value.find_last_of(Environment::GetFileSystem()->GetFileSeparator());
         if (found == value.npos)
             return FileName(value);
 

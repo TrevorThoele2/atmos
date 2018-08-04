@@ -34,10 +34,8 @@ namespace Atmos
         Falcon::Item* RetrieveItemFromVM(const std::string &name, Falcon::VMachine *vm);
         String AddTracebackToString(Falcon::VMachine &vm, const String &string);
 
-        void FatalScriptError(Script::Instance &instance, String &&string, Logger::Type severity, Logger::NameValueVector &nameValueVector);
-        void FatalScriptErrorParameterNotExist(Script::Instance &instance, const String &name);
-        void FatalScriptErrorParameterNotExpectedType(Script::Instance &instance, const String &name, const String &expectedType, const String &givenType);
-        void FatalScriptErrorParameterNotExpectedType(Script::Instance &instance, const String &name, const String &expectedType, Falcon::Item &item);
+        void FatalScriptError(String &&message, Logger::Type severity);
+        void FatalScriptError(String &&message, Logger::Type severity, Logger::NameValueVector &nameValueVector);
 
         template<class T>
         struct FalconVariableTraitsClassPrototype

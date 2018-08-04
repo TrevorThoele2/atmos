@@ -1,6 +1,8 @@
 
 #include "Action.h"
 
+#include "ActionException.h"
+
 #include <Inscription\Scribe.h>
 
 namespace Atmos
@@ -33,6 +35,12 @@ namespace Atmos
         {
             static FactoryMap factories;
             return factories;
+        }
+
+        void Action::RequireParameterTypesEqual(ParameterIndex index, const Parameter &parameter)
+        {
+            if (GetParameterType(index) != Act::GetParameterType(parameter))
+                throw ActionException("The given parameter must be the same type as what it's going to set.");
         }
 
         Action::Action(ID id)
@@ -82,20 +90,28 @@ namespace Atmos
 
         void Action::SetParameter(ParameterIndex index)
         {
-            if(base)
+            if (base)
                 base->SetParameter(index);
         }
 
         void Action::SetParameter(ParameterIndex index, const Parameter &parameter)
         {
-            if(base)
+            if (base)
+            {
+                RequireParameterTypesEqual(index, parameter);
+
                 base->SetParameter(index, parameter);
+            }
         }
 
         void Action::SetParameter(ParameterIndex index, Parameter &&parameter)
         {
             if (base)
+            {
+                RequireParameterTypesEqual(index, parameter);
+
                 base->SetParameter(index, std::move(parameter));
+            }
         }
 
         void Action::SetParameters(std::vector<Parameter> &&parameters)
@@ -115,10 +131,10 @@ namespace Atmos
                 return base->GetParameter(index);
         }
 
-        Variant::Type Action::GetParameterType(ParameterIndex index) const
+        ParameterType Action::GetParameterType(ParameterIndex index) const
         {
             if (!base)
-                return Variant::Type::NONE;
+                return ParameterType::NONE;
             else
                 return base->GetParameterType(index);
         }

@@ -74,11 +74,16 @@ namespace Atmos
 
             this->item = &item;
 
-            auto currencyComponent = ::Atmos::Ent::AvatarSystem::GetAvatar();
-            playerGoldText->SetString(ToString(currencyComponent->gold));
+            auto avatarComponent = ::Atmos::Ent::AvatarSystem::GetAvatar();
+            playerGoldText->SetString(ToString(avatarComponent->gold));
 
             if (buying)
-                count.SetUpperBound(static_cast<unsigned char>(std::floor(currencyComponent->gold / (*this->item)->GetBuyingPrice())));
+            {
+                auto divisor = (*this->item)->GetBuyingPrice();
+                if (divisor == 0)
+                    divisor = 1;
+                count.SetUpperBound(static_cast<unsigned char>(std::floor(avatarComponent->gold / divisor)));
+            }
             else
                 count.SetUpperBound(this->item->GetCount().Get());
 
@@ -201,11 +206,13 @@ namespace Atmos
             Entity entity = (buying) ? Handler::currentDialogue->GetOwnerEntity() : ::Atmos::Ent::AvatarSystem::GetEntity();
             Ent::InventoryComponent *inventory = GetCurrentEntities()->FindComponent<Ent::InventoryComponent>(entity);
 
-            if (entity == Ent::nullEntity)
-                return false;
-
             if (!inventory || inventory->IsEmpty())
+            {
+                Logger::Log("The shop was attempted to be entered with an entity without an inventory.",
+                    Logger::Type::ERROR_LOW,
+                    Logger::NameValueVector{ NameValuePair{"Entity", static_cast<size_t>(entity)} });
                 return false;
+            }
 
             active = true;
             Shop::buying = buying;

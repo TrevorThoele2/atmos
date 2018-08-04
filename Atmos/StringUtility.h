@@ -21,6 +21,9 @@ namespace Atmos
 
     void SpliceString(String &in, const String &check, const String &replace);
 
+    String Trim(const String &trim);
+    bool IsAllWhitespace(const String &check);
+
     template<class T>
     void SpliceString(String &in, const String &check, const T replace)
     {
@@ -94,4 +97,6 @@ namespace Atmos
     }
     String ToString(TimeValue timeValue);
     String ToString(GameTimeValue timeValue);
+    class GridPosition;
+    String ToString(const GridPosition &position);
 }

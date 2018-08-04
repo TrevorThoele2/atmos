@@ -8,6 +8,7 @@
 #include "AssetPackage.h"
 #include "Script.h"
 
+#include "Environment.h"
 #include "SimpleFile.h"
 #include "StringUtility.h"
 #include "Logger.h"
@@ -195,7 +196,7 @@ namespace Atmos
         auto saver = [&](const char *sub, BufferMap &map)
         {
             String nextEntry(sub);
-            nextEntry.append("\\");
+            nextEntry.append(Environment::GetFileSystem()->GetFileSeparator());
             if (map.empty())
             {
                 zip.PutNextEntry(nextEntry);
@@ -275,13 +276,14 @@ namespace Atmos
 
             // Create the asset
             {
-                if (path.FirstFolderIs(imageSub))
+                auto &directoryName = path.GetDirectoryName(0);
+                if (directoryName == imageSub)
                     Instance().images.emplace(name, Buffer(buffer, size));
-                else if (path.FirstFolderIs(shaderSub))
+                else if (directoryName == shaderSub)
                     Instance().shaders.emplace(name, Buffer(buffer, size));
-                else if (path.FirstFolderIs(audioSub))
+                else if (directoryName == audioSub)
                     Instance().audio.emplace(name, Buffer(buffer, size));
-                else if (path.FirstFolderIs(scriptSub))
+                else if (directoryName == scriptSub)
                     Instance().scripts.emplace(name, Buffer(buffer, size));
             }
 

@@ -17,28 +17,6 @@ namespace Atmos
 {
     namespace Act
     {
-        namespace Detail
-        {
-            template<class T>
-            class StoreParameterMake
-            {
-            private:
-                template<class U>
-                struct TypeDef
-                {
-                    typedef U TD;
-                };
-
-                template<>
-                struct TypeDef<FileName>
-                {
-                    typedef String TD;
-                };
-            public:
-                typedef typename TypeDef<typename std::remove_const<typename std::remove_reference<T>::type>::type>::TD Type;
-            };
-        }
-
         class Action
         {
         public:
@@ -49,6 +27,11 @@ namespace Atmos
             INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
             INSCRIPTION_ACCESS;
         private:
+            template<ID funcID>
+            using FunctionTBase = typename Traits<funcID>::FunctionT;
+            template<ID funcID, ParameterIndex index>
+            using TypeOfIndex = typename std::remove_const<typename std::remove_reference<typename ::function::FunctionTraits<FunctionTBase<funcID>>::template Parameter<index>::Type>::type>::type;
+
             class Base
             {
             public:
@@ -63,7 +46,7 @@ namespace Atmos
                 virtual void SetParameter(ParameterIndex index, Parameter &&set) = 0;
                 virtual void SetParameters(std::vector<Parameter> &&parameters) = 0;
                 virtual Parameter GetParameter(ParameterIndex index) const = 0;
-                virtual Variant::Type GetParameterType(ParameterIndex index) const = 0;
+                virtual ParameterType GetParameterType(ParameterIndex index) const = 0;
                 virtual ParameterIndex GetParameterCount() const = 0;
 
                 virtual void Save(inscription::Scribe &scribe) = 0;
@@ -74,18 +57,21 @@ namespace Atmos
             {
             public:
                 typedef Traits<id> TraitsT;
-                typedef typename TraitsT::FunctionT FunctionT;
+                typedef FunctionTBase<id> FunctionT;
                 typedef typename TraitsT::ReturnT ReturnT;
                 static constexpr ParameterIndex parameterCount = TraitsT::parameterCount;
 
                 typedef std::array<Parameter, parameterCount> Parameters;
             private:
                 template<ParameterIndex index>
+                using FromParameter = TypeOfIndex<id, index>;
+            private:
+                template<ParameterIndex index>
                 struct ArrayBuilder
                 {
                     static void Do(Parameters &parameters)
                     {
-                        parameters[index] = Parameter(typename Detail::StoreParameterMake<typename function::FunctionTraits<FunctionT>::template Parameter<index>::Type>::Type{});
+                        parameters[index] = Parameter(TypeOfIndex<id, index>{});
                     }
 
                     // Emplacer
@@ -103,7 +89,7 @@ namespace Atmos
                     {
                         inscription::TrackingChangerStack tracking(scribe, false);
 
-                        scribe.Save(parameters[index].GetAs<typename Detail::StoreParameterMake<typename Traits<id>::ParameterPackT::template Parameter<index>::Type>::Type>());
+                        scribe.Save(parameters[index].Get<FromParameter<index>>());
                     }
                 };
 
@@ -113,7 +99,8 @@ namespace Atmos
                     template<class... HolderArgs>
                     static void Do(FunctionT function, Parameters &parameters, HolderArgs && ... holder)
                     {
-                        Invoker<index - 1>::Do(function, parameters, parameters[index - 1].GetAs<typename Detail::StoreParameterMake<typename TraitsT::ParameterPackT::template Parameter<index - 1>::Type>::Type>(), std::forward<HolderArgs>(holder)...);
+                        auto &fromParameter = parameters[index - 1].Get<TypeOfIndex<id, index - 1>>();
+                        Invoker<index - 1>::Do(function, parameters, fromParameter, std::forward<HolderArgs>(holder)...);
                     }
                 };
 
@@ -130,8 +117,6 @@ namespace Atmos
                 Parameters parameters;
 
                 Derived();
-                template<class... StoreArgs>
-                Derived(StoreArgs && ... storeArgs);
                 Derived(Parameters &&parameters);
 
                 Derived* Clone() const override;
@@ -143,7 +128,7 @@ namespace Atmos
                 void SetParameter(ParameterIndex index, Parameter &&set) override;
                 void SetParameters(std::vector<Parameter> &&parameters) override;
                 Parameter GetParameter(ParameterIndex index) const;
-                Variant::Type GetParameterType(ParameterIndex index) const;
+                ParameterType GetParameterType(ParameterIndex index) const;
                 ParameterIndex GetParameterCount() const;
 
                 void Save(inscription::Scribe &scribe) override;
@@ -171,7 +156,7 @@ namespace Atmos
                     {
                         inscription::TrackingChangerStack tracking(scribe, false);
 
-                        inscription::StackConstructor<typename Detail::StoreParameterMake<typename Traits<id>::ParameterPackT::template Parameter<index>::Type>::Type> parameterConstructor(scribe);
+                        inscription::StackConstructor<TypeOfIndex<id, index>> parameterConstructor(scribe);
                         parameters[index] = std::move(parameterConstructor.GetMove());
                     }
                 };
@@ -186,6 +171,8 @@ namespace Atmos
             static FactoryMap& Factories();
         private:
             std::unique_ptr<Base> base;
+        private:
+            void RequireParameterTypesEqual(ParameterIndex index, const Parameter &parameter);
         public:
             Action() = default;
             Action(ID id);
@@ -206,7 +193,7 @@ namespace Atmos
             void SetParameter(ParameterIndex index, Parameter &&parameter);
             void SetParameters(std::vector<Parameter> &&parameters);
             Optional<Parameter> GetParameter(ParameterIndex index) const;
-            Variant::Type GetParameterType(ParameterIndex index) const;
+            ParameterType GetParameterType(ParameterIndex index) const;
             ParameterIndex GetParameterCount() const;
 
             ID GetID() const;
@@ -221,14 +208,7 @@ namespace Atmos
         template<ID id>
         Action::Derived<id>::Derived()
         {
-            function::IterateRange<ParameterIndex, ArrayBuilder, parameterCount - 1, 0>(parameters);
-        }
-
-        template<ID id>
-        template<class... StoreArgs>
-        Action::Derived<id>::Derived(StoreArgs && ... storeArgs)
-        {
-            function::IterateRangeImprint<ArrayBuilder>(std::forward_as_tuple(std::forward<StoreArgs>(storeArgs)...), parameters);
+            ::function::IterateRange<ParameterIndex, ArrayBuilder, parameterCount - 1, 0>(parameters);
         }
 
         template<ID id>
@@ -289,9 +269,9 @@ namespace Atmos
         }
 
         template<ID id>
-        Variant::Type Action::Derived<id>::GetParameterType(ParameterIndex index) const
+        ParameterType Action::Derived<id>::GetParameterType(ParameterIndex index) const
         {
-            return parameters[index].GetType();
+            return ::Atmos::Act::GetParameterType(parameters[index]);
         }
 
         template<ID id>
@@ -303,7 +283,7 @@ namespace Atmos
         template<ID id>
         void Action::Derived<id>::Save(inscription::Scribe &scribe)
         {
-            function::IterateRange<ParameterIndex, ParameterSaver, parameterCount - 1, 0>(parameters, scribe);
+            ::function::IterateRange<ParameterIndex, ParameterSaver, parameterCount - 1, 0>(parameters, scribe);
         }
 
         template<ID id>
@@ -333,7 +313,7 @@ namespace Atmos
             Derived<id>*(*trueFunc)(inscription::Scribe&) = [](inscription::Scribe &scribe)
             {
                 Parameters parameters;
-                function::IterateRange<ParameterIndex, ParameterLoader, parameterCount - 1, 0>(parameters, scribe);
+                ::function::IterateRange<ParameterIndex, ParameterLoader, parameterCount - 1, 0>(parameters, scribe);
                 return new Derived<id>(std::move(parameters));
             };
 
@@ -360,7 +340,7 @@ namespace Atmos
 
         // TraitsBase
         template<ID idGiven, class T, T func>
-        void TraitsBase<idGiven, T, func>::Instantiate()
+        void TraitsCommon<idGiven, T, func>::Instantiate()
         {
             Action::InstantiateFactory<id>();
         }

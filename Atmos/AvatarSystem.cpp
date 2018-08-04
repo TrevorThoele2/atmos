@@ -245,10 +245,8 @@ namespace Atmos
 
         void AvatarSystem::SetEntity(Entity set)
         {
-            Instance().package.SetEntity(set);
-            //auto ret = Instance().package.SetEntity(set);
-            //if (ret)
-                //GetCurrentEntities()->SignalTransfer(set);
+            if (Instance().package.SetEntity(set))
+                GetCurrentEntities()->SignalTransfer(set);
         }
 
         Entity AvatarSystem::GetEntity()

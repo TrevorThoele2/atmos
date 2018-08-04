@@ -2,6 +2,7 @@
 #include "ModulatorValue.h"
 
 #include <Inscription/Scribe.h>
+#include "FunctionVariant.h"
 
 namespace Atmos
 {
@@ -9,19 +10,7 @@ namespace Atmos
     {
         INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(Value)
         {
-            if (scribe.IsOutput())
-            {
-                scribe.Save(variant.GetTypeAsID());
-                scribe.Save(variant.GetMaster());
-            }
-            else // INPUT
-            {
-                VariantT::ID id;
-                scribe.Load(id);
-                VariantT::MasterType master;
-                scribe.Load(master);
-                variant.SetMaster(master, id);
-            }
+            scribe(variant);
         }
 
         Value::Value() : variant(std::int64_t(0))

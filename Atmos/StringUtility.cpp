@@ -1,15 +1,18 @@
 
 #include "StringUtility.h"
 
+#include "Environment.h"
+#include "GridPosition.h"
+
 namespace Atmos
 {
     String GetFileName(const String &filePath)
     {
         String newString = filePath;
-        if (newString.find("\\") != newString.npos)
+        if (newString.find(Environment::GetFileSystem()->GetFileSeparator()) != newString.npos)
         {
             // Slice the file path to just its file name
-            auto pos = newString.find_last_of("\\") + 1;
+            auto pos = newString.find_last_of(Environment::GetFileSystem()->GetFileSeparator()) + 1;
             newString = newString.substr(pos);
         }
 
@@ -48,7 +51,7 @@ namespace Atmos
         if (newString.find(".") != newString.npos)
         {
             // Slice the file extension off
-            auto pos = newString.find_last_of("\\");
+            auto pos = newString.find_last_of(Environment::GetFileSystem()->GetFileSeparator());
             newString.erase(pos);
         }
 
@@ -81,6 +84,47 @@ namespace Atmos
 
             pos = in.find(check);
         }
+    }
+
+    void Trim(String &trim)
+    {
+        while (trim[0] == ' ' || trim[0] == '\n')
+            trim.erase(0);
+
+        while (trim[trim.size() - 1] == ' ' || trim[trim.size() - 1] == '\n')
+            trim.erase(trim.size() - 1);
+    }
+
+    String Trim(const String &trim)
+    {
+        String ret = trim;
+
+        while (ret[ret.size() - 1] == ' ' || ret[ret.size() - 1] == '\n')
+        {
+            ret.erase(ret.size() - 1);
+
+            if (ret.empty())
+                return ret;
+        }
+
+        while (ret[0] == ' ' || ret[0] == '\n')
+            ret.erase(0);
+
+        return ret;
+    }
+
+    bool IsAllWhitespace(const String &check)
+    {
+        if (check.empty())
+            return false;
+
+        for (auto &c : check)
+        {
+            if (c != ' ' && c != '\n')
+                return false;
+        }
+
+        return true;
     }
 
     namespace Detail
@@ -200,5 +244,10 @@ namespace Atmos
     String ToString(GameTimeValue timeValue)
     {
         return ToString(timeValue.Get());
+    }
+
+    String ToString(const GridPosition &position)
+    {
+        return ToString(position.GetX()) + "," + ToString(position.GetY()) + "," + ToString(position.GetZ());
     }
 }

@@ -16,6 +16,7 @@ namespace Atmos
             virtual FilePath GetDataPath() const = 0;
             virtual FilePath GetTempDirectoryPath() const = 0;
             virtual size_t GetMaxPathLength() const = 0;
+            virtual String GetFileSeparator() const = 0;
         };
     }
 }

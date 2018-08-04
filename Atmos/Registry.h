@@ -83,7 +83,7 @@ namespace Atmos
             for (auto &loop : list)
             {
                 // Save the name
-                scribe.Save(::inscription::RemoveConst(loop));
+                scribe.Save(::inscription::RemoveConst(loop.GetName()));
                 // Save the ID
                 scribe.Save(loop.GetID());
                 // Save the object
