@@ -321,23 +321,23 @@ namespace Atmos
         object.AddEntry(name, 0);
     }
 
-    void DataStandard<ResourceAttributeTable>::SerializeImpl(::inscription::Scribe &scribe)
+    void DataStandard<ResourceAttributeTable>::SerializeImpl(::Inscription::Scribe &scribe)
     {
-        ::inscription::TrackingChangerStack tracking(scribe, false);
+        ::Inscription::TrackingChangerStack tracking(scribe, false);
         if (scribe.IsOutput())
         {
-            ::inscription::ContainerSize size(entries.size());
+            ::Inscription::ContainerSize size(entries.size());
             scribe.Save(size);
 
             for (auto &loop : entries)
             {
-                scribe.Save(::inscription::RemoveConst(loop.first));
+                scribe.Save(::Inscription::RemoveConst(loop.first));
                 scribe.Save(loop.second.niceName);
             }
         }
         else // INPUT
         {
-            ::inscription::ContainerSize size;
+            ::Inscription::ContainerSize size;
             scribe.Load(size);
 
             while (size-- > 0)
@@ -353,7 +353,7 @@ namespace Atmos
         }
     }
 
-    void GlobalContext<ResourceAttributeTable>::SerializeImpl(::inscription::Scribe &scribe)
+    void GlobalContext<ResourceAttributeTable>::SerializeImpl(::Inscription::Scribe &scribe)
     {
         scribe(health);
         scribe(mana);

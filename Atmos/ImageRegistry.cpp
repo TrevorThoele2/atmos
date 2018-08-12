@@ -14,17 +14,17 @@ namespace Atmos
 {
     INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(AssetRegistry<ImageAsset>)
     {
-        ::inscription::TrackingChangerStack tracking(scribe, false);
+        ::Inscription::TrackingChangerStack tracking(scribe, false);
 
         if (scribe.IsOutput())
         {
-            inscription::ContainerSize size(map.size());
+            ::Inscription::ContainerSize size(map.size());
             scribe.Save(size);
 
             for (auto &loop : map)
             {
                 scribe.Save(loop.second.GetID());
-                scribe.Save(inscription::RemoveConst(loop.second.GetFileName()));
+                scribe.Save(::Inscription::RemoveConst(loop.second.GetFileName()));
                 scribe.Save(loop.second.GetColumns());
                 scribe.Save(loop.second.GetRows());
             }
@@ -33,7 +33,7 @@ namespace Atmos
         {
             Clear();
 
-            inscription::ContainerSize size;
+            ::Inscription::ContainerSize size;
             scribe.Load(size);
 
             while (size-- > 0)
@@ -73,17 +73,17 @@ namespace Atmos
 
     void AssetRegistry<ImageAsset>::BeforeRemove(Map::iterator itr)
     {
-        agui::System::DestroyImageResource(itr->first.c_str());
+        ::Agui::System::DestroyImageResource(itr->first.c_str());
     }
 
     void AssetRegistry<ImageAsset>::BeforeClear()
     {
-        agui::System::ClearImageResources();
+        ::Agui::System::ClearImageResources();
     }
 
     AssetRegistry<ImageAsset>::ReferenceT AssetRegistry<ImageAsset>::Register(ID id, void *buffer, std::int32_t size, const FileName &name, ImageAsset::GridDimension cols, ImageAsset::GridDimension rows)
     {
-        agui::System::CreateImageResource(buffer, size, agui::FileName(name.GetValue()), cols, rows);
+        Agui::System::CreateImageResource(buffer, size, Agui::FileName(name.GetValue()), cols, rows);
         return Emplace(id, name, std::move(Environment::GetGraphics()->CreateImage(buffer, size, name, rows, cols)));
     }
 
@@ -136,7 +136,7 @@ namespace Atmos
         }
 
         auto &grid = SetupGrid(cols, rows);
-        agui::System::CreateImageResource(filePath.c_str(), grid.first, grid.second);
+        Agui::System::CreateImageResource(filePath.c_str(), grid.first, grid.second);
         auto &asset = Environment::GetGraphics()->CreateImage(filePath, grid.first, grid.second);
         return Ret(true, Emplace(id, asset.GetFileName(), std::move(asset)));
     }

@@ -72,7 +72,7 @@ namespace Atmos
         void SetupPresentationParameters();
         void SetRenderStates();
         void SetProjectionMatrix();
-        void OnResolutionChanged(const agui::Resolution &arg);
+        void OnResolutionChanged(const Agui::Resolution &arg);
     protected:
         void RenderObject(LPDIRECT3DTEXTURE9 tex, const AssetReference<ShaderAsset> &shader, float X, float Y, float Z, const AxisBoundingBox2D &imageBounds, const Size2D &size, const Position2D &center, const Join2<float> &scaling, const Angle &rotation, const Color &color);
     public:

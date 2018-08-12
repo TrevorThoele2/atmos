@@ -202,17 +202,11 @@
     <Filter Include="Header Files\Game Data\Animation">
       <UniqueIdentifier>{1fb5591a-329e-4b91-bee3-7cec76593b7b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Game Data\Movement">
-      <UniqueIdentifier>{44812a3a-6691-41e5-93c4-12fc2b3e408e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Game Data">
       <UniqueIdentifier>{5a080eaa-7d96-423e-b3cb-49875a7ecccb}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Game Data\Animation">
       <UniqueIdentifier>{da3a823a-fd79-4053-a8a9-48171fc25efc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Game Data\Movement">
-      <UniqueIdentifier>{454464b4-f1e2-4947-a9fa-bfd83bbf804b}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Game Data\Attributes">
       <UniqueIdentifier>{2533610a-fd6b-4b97-ae03-38fdac11463a}</UniqueIdentifier>
@@ -411,9 +405,6 @@
     <ClInclude Include="ItemDrop.h">
       <Filter>Header Files\Registry Objects\Item</Filter>
     </ClInclude>
-    <ClInclude Include="Movement.h">
-      <Filter>Header Files\Game Data\Movement</Filter>
-    </ClInclude>
     <ClInclude Include="SpellList.h">
       <Filter>Header Files\Registry Objects\Spells</Filter>
     </ClInclude>
@@ -475,9 +466,6 @@
       <Filter>Header Files\Helper</Filter>
     </ClInclude>
     <ClInclude Include="Helper.h">
-      <Filter>Header Files\Helper</Filter>
-    </ClInclude>
-    <ClInclude Include="Math.h">
       <Filter>Header Files\Helper</Filter>
     </ClInclude>
     <ClInclude Include="RandomAccessSequence.h">
@@ -933,9 +921,6 @@
     <ClInclude Include="EquippableAspect.h">
       <Filter>Header Files\Registry Objects\Item</Filter>
     </ClInclude>
-    <ClInclude Include="OffsetMovement.h">
-      <Filter>Header Files\Game Data\Movement</Filter>
-    </ClInclude>
     <ClInclude Include="ObjectHandle.h">
       <Filter>Header Files\Game Data</Filter>
     </ClInclude>
@@ -1281,6 +1266,12 @@
     <ClInclude Include="ActionException.h">
       <Filter>Header Files\Action</Filter>
     </ClInclude>
+    <ClInclude Include="MathUtility.h">
+      <Filter>Header Files\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="Movement.h">
+      <Filter>Header Files\Game Data</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Battle.cpp">
@@ -1306,9 +1297,6 @@
     </ClCompile>
     <ClCompile Include="ItemDrop.cpp">
       <Filter>Source Files\Registry Objects\Item</Filter>
-    </ClCompile>
-    <ClCompile Include="Movement.cpp">
-      <Filter>Source Files\Game Data\Movement</Filter>
     </ClCompile>
     <ClCompile Include="SpellList.cpp">
       <Filter>Source Files\Registry Objects\Spell</Filter>
@@ -1960,6 +1948,12 @@
     </ClCompile>
     <ClCompile Include="RelativeFilePath.cpp">
       <Filter>Source Files\File System</Filter>
+    </ClCompile>
+    <ClCompile Include="Movement.cpp">
+      <Filter>Source Files\Game Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Cursor.cpp">
+      <Filter>Source Files\GUI</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

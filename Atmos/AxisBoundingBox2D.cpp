@@ -1,7 +1,7 @@
 
 #include "AxisBoundingBox2D.h"
 
-#include "Math.h"
+#include "MathUtility.h"
 
 #include <Inscription\Scribe.h>
 

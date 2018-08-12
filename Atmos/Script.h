@@ -234,7 +234,7 @@ namespace Atmos
     };
 }
 
-namespace inscription
+namespace Inscription
 {
     template<>
     class Inscripter<::Atmos::Script> : public InscripterBase<::Atmos::Script>

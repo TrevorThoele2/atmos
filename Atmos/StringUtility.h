@@ -9,7 +9,7 @@
 #include "TimeValue.h"
 #include "GameTimer.h"
 
-#include <Function/Type.h>
+#include <Chroma\Type.h>
 
 namespace Atmos
 {
@@ -30,10 +30,10 @@ namespace Atmos
         SpliceString(in, check, String(replace));
     }
 
-    namespace Detail
+    namespace detail
     {
         template<class T>
-        T FromStringImpl(const String &arg, const ::function::Type<T> &t)
+        T FromStringImpl(const String &arg, const ::Chroma::Type<T> &t)
         {
             ::std::istringstream stream(arg);
 
@@ -42,24 +42,24 @@ namespace Atmos
             return toReturn;
         }
 
-        String FromStringImpl(const String &arg, const ::function::Type<String> &t);
+        String FromStringImpl(const String &arg, const ::Chroma::Type<String> &t);
 
         template<class T>
-        FixedPoint<T> FromStringImpl(const String &arg, const ::function::Type<FixedPoint<T>> &t)
+        FixedPoint<T> FromStringImpl(const String &arg, const ::Chroma::Type<FixedPoint<T>> &t)
         {
             FixedPoint<T> ret;
             ret.FromString(arg);
             return ret;
         }
 
-        TimeValue FromStringImpl(const String &arg, const ::function::Type<TimeValue> &t);
-        GameTimeValue FromStringImpl(const String &arg, const ::function::Type<GameTimeValue> &t);
+        TimeValue FromStringImpl(const String &arg, const ::Chroma::Type<TimeValue> &t);
+        GameTimeValue FromStringImpl(const String &arg, const ::Chroma::Type<GameTimeValue> &t);
     }
 
     template<class T, typename ::std::enable_if<!::std::is_enum<T>::value, int>::type = 0>
     T FromString(const String &arg)
     {
-        return Detail::FromStringImpl(arg, ::function::Type<T>{});
+        return detail::FromStringImpl(arg, ::Chroma::Type<T>{});
     }
 
     template<class T, typename ::std::enable_if<::std::is_enum<T>::value, int>::type = 0>

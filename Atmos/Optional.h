@@ -93,7 +93,7 @@ namespace Atmos
             scribe.ReadNumeric(thisValid);
             if (thisValid)
             {
-                inscription::StackConstructor<T> constructor(scribe);
+                ::Inscription::StackConstructor<T> constructor(scribe);
                 ConstructValue(std::move(constructor.GetMove()));
             }
 

@@ -585,7 +585,7 @@ namespace Atmos
 
             // Container
             {
-                inscription::ContainerSize size(container.size());
+                ::Inscription::ContainerSize size(container.size());
                 scribe.Save(size);
 
                 Position position = nullPosition + 1;
@@ -599,7 +599,7 @@ namespace Atmos
 
             auto saver = [&](IDs &ids)
             {
-                inscription::ContainerSize size(ids.size());
+                ::Inscription::ContainerSize size(ids.size());
                 scribe.Save(size);
 
                 for (auto &loop : ids)
@@ -622,13 +622,13 @@ namespace Atmos
             {
                 container.clear();
 
-                inscription::ContainerSize size;
+                ::Inscription::ContainerSize size;
                 scribe.Load(size);
 
                 Position curPosition = nullPosition + 1;
                 while (size-- > 0)
                 {
-                    inscription::StackConstructor<Object> constructor(scribe);
+                    ::Inscription::StackConstructor<Object> constructor(scribe);
                     auto itr = Traits::Add(container, curPosition, std::move(constructor.GetMove()));
                     positionMap.emplace(curPosition, itr);
                     scribe.ReplaceTrackedObject(*constructor.Get(), *Traits::Unpack(container, itr));
@@ -640,7 +640,7 @@ namespace Atmos
             {
                 positive.clear();
 
-                inscription::ContainerSize size;
+                ::Inscription::ContainerSize size;
                 scribe.Load(size);
 
                 for(ID loop = 0; loop != size.Get(); ++loop)
@@ -655,7 +655,7 @@ namespace Atmos
             {
                 negative.clear();
 
-                inscription::ContainerSize size;
+                ::Inscription::ContainerSize size;
                 scribe.Load(size);
 
                 for (ID loop = 0; loop != size.Get(); ++loop)

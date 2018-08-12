@@ -1,7 +1,7 @@
 
 #include "ItemDescriptionBox.h"
 
-namespace agui
+namespace Agui
 {
     void ItemDescriptionBox::Setup()
     {

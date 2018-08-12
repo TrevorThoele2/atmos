@@ -17,7 +17,7 @@
 #include <Inscription\Vector.h>
 #include "SimpleFile.h"
 
-#include <Function\Iterate.h>
+#include <Chroma/Iterate.h>
 
 namespace Atmos
 {
@@ -95,11 +95,11 @@ namespace Atmos
         return GetFileName().GetValue();
     }
 
-    void ScriptModuleBase::Serialize(inscription::Scribe &scribe)
+    void ScriptModuleBase::Serialize(::Inscription::Scribe &scribe)
     {
         if (scribe.IsOutput())
         {
-            inscription::ContainerSize size(dependencies.size());
+            ::Inscription::ContainerSize size(dependencies.size());
             scribe.Save(size);
 
             for (auto &loop : dependencies)
@@ -107,7 +107,7 @@ namespace Atmos
         }
         else
         {
-            inscription::ContainerSize size;
+            ::Inscription::ContainerSize size;
             scribe.Load(size);
 
             while (size-- > 0)
@@ -707,12 +707,12 @@ namespace Atmos
 
     INSCRIPTION_TABLE_CONSTRUCTOR_DEFINE(Script)
     {
-        inscription::BaseSerialize<ScriptModuleBase>(*table.GetScribe(), *this);
+        ::Inscription::BaseSerialize<ScriptModuleBase>(*table.GetScribe(), *this);
         (*table.GetScribe())(impl->fileName);
     }
 }
 
-namespace inscription
+namespace Inscription
 {
     INSCRIPTION_INSCRIPTER_DEFINE_TABLE(::Atmos::Script)
     INSCRIPTION_TABLE_END

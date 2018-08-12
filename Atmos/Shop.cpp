@@ -51,20 +51,20 @@ namespace Atmos
         Shop::Dialog::Dialog() : active(false), item(nullptr), count(1, 1, 1), price(0)
         {}
 
-        void Shop::Dialog::Init(agui::ItemDescriptionBox &descBox)
+        void Shop::Dialog::Init(Agui::ItemDescriptionBox &descBox)
         {
-            textbox = agui::Textbox::Factory(&descBox, "dialog", agui::RelativePosition(agui::Dimension(), agui::Dimension(0, 64), agui::HorizontalAlignment::MID, agui::VerticalAlignment::BOT), 0);
+            textbox = Agui::Textbox::Factory(&descBox, "dialog", Agui::RelativePosition(Agui::Dimension(), Agui::Dimension(0, 64), Agui::HorizontalAlignment::MID, Agui::VerticalAlignment::BOT), 0);
             textbox->GetSprite()->color.Edit(255, 100, 255, 100);
             textbox->ScaleTo(256, 64);
             textbox->SetShowWithParent(false);
 
-            itemCountText = &textbox->CreateText("itemCount", 1, agui::RelativePosition(agui::HorizontalAlignment::MID, agui::VerticalAlignment::TOP), agui::Size(textbox->GetScaledWidth(), 0), agui::Text("", agui::Text::CENTER_HORIZONTAL, *agui::fontSlender, agui::Color(255, 0, 0, 0))).GetText();
+            itemCountText = &textbox->CreateText("itemCount", 1, Agui::RelativePosition(Agui::HorizontalAlignment::MID, Agui::VerticalAlignment::TOP), Agui::Size(textbox->GetScaledWidth(), 0), Agui::Text("", Agui::Text::CENTER_HORIZONTAL, *Agui::fontSlender, Agui::Color(255, 0, 0, 0))).GetText();
             itemCountText->SetAutoCalcTextHeight();
 
-            priceText = &textbox->CreateText("price", 1, agui::RelativePosition(agui::HorizontalAlignment::MID, agui::VerticalAlignment::BOT), agui::Size(textbox->GetScaledWidth(), 0), agui::Text("", agui::Text::CENTER_HORIZONTAL, *agui::fontSlender, agui::Color(255, 0, 0, 0))).GetText();
+            priceText = &textbox->CreateText("price", 1, Agui::RelativePosition(Agui::HorizontalAlignment::MID, Agui::VerticalAlignment::BOT), Agui::Size(textbox->GetScaledWidth(), 0), Agui::Text("", Agui::Text::CENTER_HORIZONTAL, *Agui::fontSlender, Agui::Color(255, 0, 0, 0))).GetText();
             priceText->SetAutoCalcTextHeight();
 
-            playerGoldText = &textbox->CreateText("playerGold", 1, agui::RelativePosition(agui::HorizontalAlignment::MID, agui::VerticalAlignment::MID), agui::Size(textbox->GetScaledWidth(), 0), agui::Text("", agui::Text::CENTER_HORIZONTAL, *agui::fontSlender, agui::Color(255, 0, 0, 0))).GetText();
+            playerGoldText = &textbox->CreateText("playerGold", 1, Agui::RelativePosition(Agui::HorizontalAlignment::MID, Agui::VerticalAlignment::MID), Agui::Size(textbox->GetScaledWidth(), 0), Agui::Text("", Agui::Text::CENTER_HORIZONTAL, *Agui::fontSlender, Agui::Color(255, 0, 0, 0))).GetText();
             playerGoldText->SetAutoCalcTextHeight();
         }
 
@@ -131,7 +131,7 @@ namespace Atmos
 
         bool Shop::active = false;
         bool Shop::buying = false;
-        agui::Root* Shop::root = nullptr;
+        Agui::Root* Shop::root = nullptr;
         Shop::Dialog Shop::dialog;
 
         InventoryGui Shop::inventoryGui;
@@ -176,23 +176,23 @@ namespace Atmos
 
         void Shop::Init()
         {
-            root = agui::System::CreateRoot("shop");
+            root = Agui::System::CreateRoot("shop");
 
             // Description box
-            auto descBox = agui::ItemDescriptionBox::Factory(root, "description", agui::RelativePosition(agui::Dimension(), agui::Dimension(0, 128), agui::HorizontalAlignment::MID, agui::VerticalAlignment::TOP), 0);
+            auto descBox = Agui::ItemDescriptionBox::Factory(root, "description", Agui::RelativePosition(Agui::Dimension(), Agui::Dimension(0, 128), Agui::HorizontalAlignment::MID, Agui::VerticalAlignment::TOP), 0);
             descBox->GetSprite()->color.Edit(255, 100, 100, 255);
             descBox->ScaleTo(256, 256);
 
-            inventoryGui.Init(*root, agui::RelativePosition(agui::HorizontalAlignment::RIGHT, agui::VerticalAlignment::TOP), "", *descBox, nullptr);
+            inventoryGui.Init(*root, Agui::RelativePosition(Agui::HorizontalAlignment::RIGHT, Agui::VerticalAlignment::TOP), "", *descBox, nullptr);
             inventoryGui.GetBackground()->GetSprite()->color.Edit(255, 255, 255, 100);
             inventoryGui.GetBackground()->ScaleTo(282, 568);
             inventoryGui.GetMenu()->GetSprite()->color.Edit(255, 100, 100, 255);
-            inventoryGui.GetMenu()->SetPosition(agui::RelativePosition(agui::Dimension(), agui::Dimension(0, 23), agui::HorizontalAlignment::MID, agui::VerticalAlignment::TOP));
+            inventoryGui.GetMenu()->SetPosition(Agui::RelativePosition(Agui::Dimension(), Agui::Dimension(0, 23), Agui::HorizontalAlignment::MID, Agui::VerticalAlignment::TOP));
             inventoryGui.GetMenu()->GetLayout()->ChangeDimensions(230, 503);
 
             // Leave button
-            auto button = agui::PushButton::Factory(inventoryGui.GetBackground(), "leave", agui::RelativePosition(agui::Dimension(), agui::Dimension(0, -5), agui::HorizontalAlignment::MID, agui::VerticalAlignment::BOT), 1);
-            button->ModifySprite(agui::Sprite("Graphics/GUI/buttonSmaller.png", 1, agui::Color()));
+            auto button = Agui::PushButton::Factory(inventoryGui.GetBackground(), "leave", Agui::RelativePosition(Agui::Dimension(), Agui::Dimension(0, -5), Agui::HorizontalAlignment::MID, Agui::VerticalAlignment::BOT), 1);
+            button->ModifySprite(Agui::Sprite("Graphics/GUI/buttonSmaller.png", 1, Agui::Color()));
             button->GetText()->SetString("LEAVE");
             button->GetText()->color.Edit(0, 0, 0);
             button->eventClicked.Subscribe(std::bind(&Shop::Leave));

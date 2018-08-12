@@ -172,7 +172,7 @@ namespace Atmos
         return found->second->GenerateTrack(trackName);
     }
 
-    ::affecter::System& GameEnvironment::GetAffecterSystem()
+    ::Affecter::System& GameEnvironment::GetAffecterSystem()
     {
         return Instance().affecterSystem;
     }

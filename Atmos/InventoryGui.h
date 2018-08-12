@@ -11,11 +11,11 @@
 
 namespace Atmos
 {
-    class InventoryGui : public ObjectMenu<ItemStack, Ent::InventoryComponent, agui::ItemDescriptionBox, agui::ItemContextMenu>
+    class InventoryGui : public ObjectMenu<ItemStack, Ent::InventoryComponent, Agui::ItemDescriptionBox, Agui::ItemContextMenu>
     {
     private:
-        agui::Image *background;
-        agui::Label *label;
+        Agui::Image *background;
+        Agui::Label *label;
 
         Ent::InventoryComponent *moveTo;
 
@@ -23,11 +23,11 @@ namespace Atmos
         void OnGotoContextMenu() override;
     public:
         InventoryGui();
-        InventoryGui(agui::Root &root, const agui::RelativePosition &pos, const std::string &labelString, DescriptionBox &description, ContextMenu *contextMenu);
-        void Init(agui::Root &root, const agui::RelativePosition &pos, const std::string &labelString, DescriptionBox &description, ContextMenu *contextMenu);
+        InventoryGui(Agui::Root &root, const Agui::RelativePosition &pos, const std::string &labelString, DescriptionBox &description, ContextMenu *contextMenu);
+        void Init(Agui::Root &root, const Agui::RelativePosition &pos, const std::string &labelString, DescriptionBox &description, ContextMenu *contextMenu);
         void SetMoveTo();
         void SetMoveTo(Ent::InventoryComponent &set);
-        agui::Image* GetBackground();
-        agui::Label* GetLabel();
+        Agui::Image* GetBackground();
+        Agui::Label* GetLabel();
     };
 }

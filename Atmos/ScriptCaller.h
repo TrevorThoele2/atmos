@@ -2,7 +2,7 @@
 
 #include "Entity.h"
 
-#include <Function/Variant.h>
+#include <Chroma/Variant.h>
 
 namespace Atmos
 {
@@ -15,7 +15,7 @@ namespace Atmos
             ENTITY
         };
     private:
-        typedef ::function::Variant<Entity> VariantT;
+        typedef ::Chroma::Variant<Entity> VariantT;
 
         VariantT variant;
     public:

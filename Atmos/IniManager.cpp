@@ -49,28 +49,28 @@ namespace Atmos
         {
             entries.push_back(EntryPtr(new EntrySection("GRAPHICS", true)));
             CreateEntry<ID::WINDOWED>("Windowed",
-                ::function::CreateFunction(static_cast<bool(*)()>([]() { return Environment::GetFlag(Environment::Flag::WINDOWED); })))
+                ::Chroma::CreateFunction(static_cast<bool(*)()>([]() { return Environment::GetFlag(Environment::Flag::WINDOWED); })))
                 ->value = true;
             CreateEntry<ID::RESOLUTION>("Resolution",
-                ::function::CreateFunction(static_cast<agui::Resolution::Size(*)()>([]() { return agui::System::GetCurrentResolution()->GetSize(); })))
+                ::Chroma::CreateFunction(static_cast<::Agui::Resolution::Size(*)()>([]() { return ::Agui::System::GetCurrentResolution()->GetSize(); })))
                 ->value = Traits<ID::RESOLUTION>::T(1024, 768);
             CreateEntry<ID::FPS>("FPS Limit",
-                ::function::CreateFunction(static_cast<FpsHandler::FPS(*)()>([]() { return FpsHandler::GetFpsLimit(); })))
+                ::Chroma::CreateFunction(static_cast<FpsHandler::FPS(*)()>([]() { return FpsHandler::GetFpsLimit(); })))
                 ->value = 0;
             CreateEntry<ID::VSYNC>("Vsync",
-                ::function::CreateFunction(static_cast<bool(*)()>([]() { return FpsHandler::GetVSync(); })))
+                ::Chroma::CreateFunction(static_cast<bool(*)()>([]() { return FpsHandler::GetVSync(); })))
                 ->value = true;
 
             entries.push_back(EntryPtr(new EntrySection("SOUND", false)));
             CreateEntry<ID::MASTER_SOUND>("Master Sound",
-                ::function::CreateFunction(static_cast<Volume(*)()>([]() { return MasterSoundHandler::GetMasterVolume(); })))
+                ::Chroma::CreateFunction(static_cast<Volume(*)()>([]() { return MasterSoundHandler::GetMasterVolume(); })))
                 ->value = 0.0f;
 
             entries.push_back(EntryPtr(new EntrySection("CONTROLS", false)));
 
 #define INPUT_ENTRY_MAKER(name, actionID, defaultKey)                                                                                                               \
 CreateEntry<ID::MOVE_LEFT>(name,                                                                                                                                    \
-    ::function::CreateFunction(static_cast<Input::KeyID(*)()>([]() { return static_cast<Input::KeyID>(Environment::GetInput()->GetAction(actionID)->iniID); })))    \
+    ::Chroma::CreateFunction(static_cast<Input::KeyID(*)()>([]() { return static_cast<Input::KeyID>(Environment::GetInput()->GetAction(actionID)->iniID); })))    \
     ->value = defaultKey;
 
             INPUT_ENTRY_MAKER("Move Left", Input::ActionID::MOVE_LEFT, Input::KeyID::A);
@@ -96,7 +96,7 @@ CreateEntry<ID::MOVE_LEFT>(name,                                                
 
         void Manager::Save()
         {
-            ::inscription::TextOutFile file(::Atmos::Environment::GetFileSystem()->GetExePath().Append(fileName).GetValue());
+            ::Inscription::TextOutFile file(::Atmos::Environment::GetFileSystem()->GetExePath().Append(fileName).GetValue());
             file.Flush();
 
             for (auto &loop : entries)
@@ -115,7 +115,7 @@ CreateEntry<ID::MOVE_LEFT>(name,                                                
                 return;
             }
 
-            ::inscription::TextInFile file(filePath);
+            ::Inscription::TextInFile file(filePath);
 
             String string;
             file.GetLine(string);

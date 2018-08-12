@@ -25,7 +25,7 @@
 
 namespace Atmos
 {
-    agui::Root* StatusScreen::Page::GetRoot()
+    Agui::Root* StatusScreen::Page::GetRoot()
     {
         return root;
     }
@@ -35,9 +35,9 @@ namespace Atmos
         return StatusScreen::currentPage->second.get() == this;
     }
 
-    StatusScreen::Page::Page(const std::string &name, agui::Root &mainRoot)
+    StatusScreen::Page::Page(const std::string &name, Agui::Root &mainRoot)
     {
-        root = agui::Root::Factory(&mainRoot, name);
+        root = Agui::Root::Factory(&mainRoot, name);
     }
 
     void StatusScreen::Page::Select(Entity selected)
@@ -53,10 +53,10 @@ namespace Atmos
         OnDeselected();
     }
 
-    StatusScreen::Stats::Entry::Entry(agui::TextComponent &component, const Name &niceName) : component(&component), niceName(niceName), type(Type::NAME)
+    StatusScreen::Stats::Entry::Entry(Agui::TextComponent &component, const Name &niceName) : component(&component), niceName(niceName), type(Type::NAME)
     {}
 
-    StatusScreen::Stats::Entry::Entry(agui::TextComponent &component, const Name &attributeName, bool isStat) : component(&component), attributeName(attributeName)
+    StatusScreen::Stats::Entry::Entry(Agui::TextComponent &component, const Name &attributeName, bool isStat) : component(&component), attributeName(attributeName)
     {
         if (isStat)
         {
@@ -87,35 +87,35 @@ namespace Atmos
         component->SetString(niceName + ToString((type == Type::STAT) ? *selected->stats.GetValue(attributeName) : *selected->resources.GetValue(attributeName)));
     }
 
-    void StatusScreen::Stats::CreateEntry(agui::Menu &menu)
+    void StatusScreen::Stats::CreateEntry(Agui::Menu &menu)
     {
-        auto connection = menu.CreateText("name", 1, agui::Text("", agui::Text::CENTER_HORIZONTAL, *agui::fontButton, agui::Color(255, 0, 0, 0)));
+        auto connection = menu.CreateText("name", 1, Agui::Text("", Agui::Text::CENTER_HORIZONTAL, *Agui::fontButton, Agui::Color(255, 0, 0, 0)));
         connection.GetText().SetAutoCalcTextSize();
         entries.push_back(Entry(connection.GetText(), "Name"));
     }
 
-    void StatusScreen::Stats::CreateEntry(agui::Menu &menu, const Name &attributeName, bool isStat)
+    void StatusScreen::Stats::CreateEntry(Agui::Menu &menu, const Name &attributeName, bool isStat)
     {
-        auto connection = menu.CreateText(attributeName, 1, agui::Text("", agui::Text::CENTER_HORIZONTAL, *agui::fontButton, agui::Color(255, 0, 0, 0)));
+        auto connection = menu.CreateText(attributeName, 1, Agui::Text("", Agui::Text::CENTER_HORIZONTAL, *Agui::fontButton, Agui::Color(255, 0, 0, 0)));
         connection.GetText().SetAutoCalcTextSize();
         entries.push_back(Entry(connection.GetText(), attributeName, isStat));
     }
 
-    StatusScreen::Stats::Stats(agui::Root &mainRoot) : Page("stats", mainRoot)
+    StatusScreen::Stats::Stats(Agui::Root &mainRoot) : Page("stats", mainRoot)
     {
         // Character status background
-        auto image = agui::Image::Factory(GetRoot(), "background", agui::RelativePosition(agui::HorizontalAlignment::RIGHT, agui::VerticalAlignment::TOP), 0);
+        auto image = Agui::Image::Factory(GetRoot(), "background", Agui::RelativePosition(Agui::HorizontalAlignment::RIGHT, Agui::VerticalAlignment::TOP), 0);
         image->ScaleTo(256, 768);
         image->GetSprite()->color.Edit(255, 0, 0, 0);
 
         // Character status label
-        auto label = agui::Label::Factory(image, "label", agui::RelativePosition(agui::Dimension(), agui::Dimension(0, 2), agui::HorizontalAlignment::MID, agui::VerticalAlignment::TOP), 0);
+        auto label = Agui::Label::Factory(image, "label", Agui::RelativePosition(Agui::Dimension(), Agui::Dimension(0, 2), Agui::HorizontalAlignment::MID, Agui::VerticalAlignment::TOP), 0);
         label->GetText()->SetString("STATUS:");
         label->GetText()->color.Edit(255, 255, 255, 255);
         label->GetText()->SetAutoCalcTextSize();
 
         // Character status
-        auto menu = agui::Menu::Factory(image, "characterStatus", agui::RelativePosition(agui::Dimension(), agui::Dimension(0, -5), agui::HorizontalAlignment::MID, agui::VerticalAlignment::BOT), 0);
+        auto menu = Agui::Menu::Factory(image, "characterStatus", Agui::RelativePosition(Agui::Dimension(), Agui::Dimension(0, -5), Agui::HorizontalAlignment::MID, Agui::VerticalAlignment::BOT), 0);
         menu->GetLayout()->SetSelfModifySize(false);
         menu->GetLayout()->ChangeDimensions(246, 738);
         menu->GetSprite()->color.Edit(255, 255, 255, 255);
@@ -142,7 +142,7 @@ namespace Atmos
             loop->Update(use);
     }
 
-    StatusScreen::Inventory::SectionBase::SectionBase(agui::Root &root, const agui::RelativePosition &position, agui::ItemDescriptionBox &description, agui::ItemContextMenu &contextMenu, const std::string &labelString, Inventory &handler) : handler(handler), gui(root, position, labelString, description, &contextMenu), other(nullptr)
+    StatusScreen::Inventory::SectionBase::SectionBase(Agui::Root &root, const Agui::RelativePosition &position, Agui::ItemDescriptionBox &description, Agui::ItemContextMenu &contextMenu, const std::string &labelString, Inventory &handler) : handler(handler), gui(root, position, labelString, description, &contextMenu), other(nullptr)
     {}
 
     void StatusScreen::Inventory::SectionBase::Focus()
@@ -162,7 +162,7 @@ namespace Atmos
         gui.SetMoveTo(*Ent::AvatarSystem::GetInventory());
     }
 
-    StatusScreen::Inventory::CharacterSection::CharacterSection(agui::Root &root, const agui::RelativePosition &position, agui::ItemDescriptionBox &description, agui::ItemContextMenu &contextMenu, Inventory &handler) : SectionBase(root, position, description, contextMenu, "INVENTORY:", handler)
+    StatusScreen::Inventory::CharacterSection::CharacterSection(Agui::Root &root, const Agui::RelativePosition &position, Agui::ItemDescriptionBox &description, Agui::ItemContextMenu &contextMenu, Inventory &handler) : SectionBase(root, position, description, contextMenu, "INVENTORY:", handler)
     {}
 
     void StatusScreen::Inventory::CharacterSection::Update(Entity selected)
@@ -173,7 +173,7 @@ namespace Atmos
             gui.SetList(nullptr);
     }
 
-    StatusScreen::Inventory::ReserveSection::ReserveSection(agui::Root &root, const agui::RelativePosition &position, agui::ItemDescriptionBox &description, agui::ItemContextMenu &contextMenu, Inventory &handler) : SectionBase(root, position, description, contextMenu, "RESERVE INVENTORY:", handler)
+    StatusScreen::Inventory::ReserveSection::ReserveSection(Agui::Root &root, const Agui::RelativePosition &position, Agui::ItemDescriptionBox &description, Agui::ItemContextMenu &contextMenu, Inventory &handler) : SectionBase(root, position, description, contextMenu, "RESERVE INVENTORY:", handler)
     {}
 
     void StatusScreen::Inventory::ReserveSection::Update(Entity selected)
@@ -230,22 +230,22 @@ namespace Atmos
         (*selectedSection)->Focus();
     }
 
-    StatusScreen::Inventory::Inventory(agui::Root &mainRoot) : Page("inventory", mainRoot)
+    StatusScreen::Inventory::Inventory(Agui::Root &mainRoot) : Page("inventory", mainRoot)
     {
         // Description
-        auto description = agui::ItemDescriptionBox::Factory(GetRoot(), "description", agui::RelativePosition(agui::Dimension(0, 535), agui::Dimension(0, 5)), 0);
+        auto description = Agui::ItemDescriptionBox::Factory(GetRoot(), "description", Agui::RelativePosition(Agui::Dimension(0, 535), Agui::Dimension(0, 5)), 0);
         description->ScaleTo(224, 224);
         description->GetSprite()->color.Edit(100, 255, 100);
 
         // Context menu
-        contextMenu = agui::ItemContextMenu::Factory(GetRoot(), "contextMenu", agui::RelativePosition(agui::Dimension(0, 535), agui::Dimension(0, 254)), 0);
+        contextMenu = Agui::ItemContextMenu::Factory(GetRoot(), "contextMenu", Agui::RelativePosition(Agui::Dimension(0, 535), Agui::Dimension(0, 254)), 0);
         contextMenu->GetMenu()->GetLayout()->SetSelfModifySize(false);
         contextMenu->GetMenu()->GetLayout()->ChangeDimensions(224, 224);
         contextMenu->GetMenu()->GetSprite()->color.Edit(100, 255, 100);
         contextMenu->SetShowWithParent(false);
 
-        sections[0].reset(new CharacterSection(*GetRoot(), agui::RelativePosition(agui::HorizontalAlignment::RIGHT, agui::VerticalAlignment::TOP), *description, *contextMenu, *this));
-        sections[1].reset(new ReserveSection(*GetRoot(), agui::RelativePosition(agui::Dimension(0, 270), agui::Dimension()), *description, *contextMenu, *this));
+        sections[0].reset(new CharacterSection(*GetRoot(), Agui::RelativePosition(Agui::HorizontalAlignment::RIGHT, Agui::VerticalAlignment::TOP), *description, *contextMenu, *this));
+        sections[1].reset(new ReserveSection(*GetRoot(), Agui::RelativePosition(Agui::Dimension(0, 270), Agui::Dimension()), *description, *contextMenu, *this));
         characterSection = sections.begin();
         reserveSection = ++sections.begin();
         (*characterSection)->other = reserveSection->get();
@@ -295,21 +295,21 @@ namespace Atmos
             return;
     }
 
-    StatusScreen::Spells::Spells(agui::Root &mainRoot) : Page("spells", mainRoot)
+    StatusScreen::Spells::Spells(Agui::Root &mainRoot) : Page("spells", mainRoot)
     {
         // Description
-        auto description = agui::SpellDescriptionBox::Factory(GetRoot(), "description", agui::RelativePosition(agui::Dimension(0, 535), agui::Dimension(0, 5)), 0);
+        auto description = Agui::SpellDescriptionBox::Factory(GetRoot(), "description", Agui::RelativePosition(Agui::Dimension(0, 535), Agui::Dimension(0, 5)), 0);
         description->ScaleTo(224, 224);
         description->GetSprite()->color.Edit(255, 255, 100);
 
         // Context menu
-        auto contextMenu = agui::SpellContextMenu::Factory(GetRoot(), "contextMenu", agui::RelativePosition(agui::Dimension(0, 535), agui::Dimension(0, 254)), 0);
+        auto contextMenu = Agui::SpellContextMenu::Factory(GetRoot(), "contextMenu", Agui::RelativePosition(Agui::Dimension(0, 535), Agui::Dimension(0, 254)), 0);
         contextMenu->GetMenu()->GetLayout()->SetSelfModifySize(false);
         contextMenu->GetMenu()->GetLayout()->ChangeDimensions(224, 224);
         contextMenu->GetMenu()->GetSprite()->color.Edit(255, 255, 100);
         contextMenu->SetShowWithParent(false);
 
-        gui.Init(*GetRoot(), agui::RelativePosition(agui::HorizontalAlignment::RIGHT, agui::VerticalAlignment::TOP), *description, contextMenu);
+        gui.Init(*GetRoot(), Agui::RelativePosition(Agui::HorizontalAlignment::RIGHT, Agui::VerticalAlignment::TOP), *description, contextMenu);
 
         AbilityUsing::Instance().eventStarted.Subscribe(&Spells::OnSpellSelected, *this);
     }
@@ -319,14 +319,14 @@ namespace Atmos
         gui.SetList(GetCurrentEntities()->FindComponent<Ent::CombatComponent>(selected));
     }
 
-    StatusScreen::Member::Member(agui::Image &frame) : frame(frame), portrait(*agui::Image::Factory(&frame, frame.GetName() + "Portrait", agui::RelativePosition(), 0.1f)), player(Ent::nullEntity)
+    StatusScreen::Member::Member(Agui::Image &frame) : frame(frame), portrait(*Agui::Image::Factory(&frame, frame.GetName() + "Portrait", Agui::RelativePosition(), 0.1f)), player(Ent::nullEntity)
     {
         portrait.SetMargins(4, 4, 4, 4);
     }
 
     // Static definitions
     bool StatusScreen::active = false;
-    agui::Root* StatusScreen::root = nullptr;
+    Agui::Root* StatusScreen::root = nullptr;
     StatusScreen::Pages StatusScreen::pages;
     StatusScreen::Pages::iterator StatusScreen::currentPage;
     StatusScreen::Members StatusScreen::members;
@@ -415,53 +415,53 @@ namespace Atmos
 
     void StatusScreen::Init()
     {
-        root = agui::System::CreateRoot("statusScreen");
+        root = Agui::System::CreateRoot("statusScreen");
 
-        auto image = agui::Image::Factory(root, "image", agui::RelativePosition(), 0);
+        auto image = Agui::Image::Factory(root, "image", Agui::RelativePosition(), 0);
         image->ScaleTo(1024, 768);
         image->GetSprite()->color.Edit(127, 0, 0, 255);
 
         // Make buttons
-        auto arrangerRoot = agui::ArrangerManager::CreateRoot();
-        auto grid = arrangerRoot->Create<agui::UniformGridLayout>(true, 2, 5.0f);
+        auto arrangerRoot = Agui::ArrangerManager::CreateRoot();
+        auto grid = arrangerRoot->Create<Agui::UniformGridLayout>(true, 2, 5.0f);
         grid->SetLeftMargin(5);
         grid->SetTopMargin(5);
 
-        auto button = agui::PushButton::Factory(image, "statsButton", agui::RelativePosition(agui::Dimension(), agui::Dimension(0, 16)), 0);
+        auto button = Agui::PushButton::Factory(image, "statsButton", Agui::RelativePosition(Agui::Dimension(), Agui::Dimension(0, 16)), 0);
         button->GetSprite()->SetResource("buttonSmaller.png");
         button->GetText()->SetString("STATS");
-        button->GetText()->color = agui::colorBlack;
+        button->GetText()->color = Agui::colorBlack;
         button->eventClicked.Subscribe(std::bind(&StatusScreen::Goto, StatusScreen::PageID::STATS));
         grid->Add(*button);
 
-        button = agui::PushButton::Factory(image, "inventoryButton", agui::RelativePosition(agui::Dimension(), agui::Dimension(0, 16)), 0);
+        button = Agui::PushButton::Factory(image, "inventoryButton", Agui::RelativePosition(Agui::Dimension(), Agui::Dimension(0, 16)), 0);
         button->GetSprite()->SetResource("buttonSmaller.png");
         button->GetText()->SetString("INVENTORY");
-        button->GetText()->color = agui::colorBlack;
+        button->GetText()->color = Agui::colorBlack;
         button->eventClicked.Subscribe(std::bind(&StatusScreen::Goto, StatusScreen::PageID::INVENTORY));
         grid->Add(*button);
 
-        button = agui::PushButton::Factory(image, "spellsButton", agui::RelativePosition(agui::Dimension(), agui::Dimension(0, 16)), 0);
+        button = Agui::PushButton::Factory(image, "spellsButton", Agui::RelativePosition(Agui::Dimension(), Agui::Dimension(0, 16)), 0);
         button->GetSprite()->SetResource("buttonSmaller.png");
         button->GetText()->SetString("SPELLS");
-        button->GetText()->color = agui::colorBlack;
+        button->GetText()->color = Agui::colorBlack;
         button->eventClicked.Subscribe(std::bind(&StatusScreen::Goto, StatusScreen::PageID::SPELLS));
         grid->Add(*button);
 
-        button = agui::PushButton::Factory(image, "leaveButton", agui::RelativePosition(agui::Dimension(), agui::Dimension(0, 16)), 0);
+        button = Agui::PushButton::Factory(image, "leaveButton", Agui::RelativePosition(Agui::Dimension(), Agui::Dimension(0, 16)), 0);
         button->GetSprite()->SetResource("buttonSmaller.png");
         button->GetText()->SetString("LEAVE");
-        button->GetText()->color = agui::colorBlack;
+        button->GetText()->color = Agui::colorBlack;
         button->eventClicked.Subscribe(std::bind(&StatusScreen::Leave));
         grid->Add(*button);
 
         // Make members
-        grid = arrangerRoot->Create<agui::UniformGridLayout>(true, rowSize, 10.0f);
+        grid = arrangerRoot->Create<Agui::UniformGridLayout>(true, rowSize, 10.0f);
         grid->SetLeftMargin(16);
         grid->SetTopMargin(80);
         for (Ent::PlayerParty::SizeT loop = 0; loop != Ent::PlayerParty::maxSize; loop++)
         {
-            members.push_back(Member(*agui::Image::Factory(image, ToString(loop), agui::RelativePosition(), 0)));
+            members.push_back(Member(*Agui::Image::Factory(image, ToString(loop), Agui::RelativePosition(), 0)));
             auto &emplaced = members.back();
             emplaced.frame.GetSprite()->SetResource("statusFrame.png");
             grid->Add(emplaced.frame);

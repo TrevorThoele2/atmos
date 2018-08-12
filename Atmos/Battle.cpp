@@ -32,20 +32,20 @@ namespace Atmos
     {
         void Gui::InitImpl()
         {
-            characterInfo = agui::Textbox::Factory(GetRoot(), "charInfo", agui::RelativePosition(agui::HorizontalAlignment::MID, agui::VerticalAlignment::TOP), 0);
+            characterInfo = Agui::Textbox::Factory(GetRoot(), "charInfo", Agui::RelativePosition(Agui::HorizontalAlignment::MID, Agui::VerticalAlignment::TOP), 0);
             characterInfo->GetSprite()->color.Edit(150, 0, 255, 0);
             characterInfo->SetShowWithParent(false);
-            characterInfo->CreateLayout<agui::SequenceLayout>(agui::Orientation::VERTICAL, 2.5f);
+            characterInfo->CreateLayout<Agui::SequenceLayout>(Agui::Orientation::VERTICAL, 2.5f);
             characterInfo->GetLayout()->ChangeDimensions(768, 192);
             characterInfo->GetLayout()->SetSelfModifySize(false);
 
-            name = &characterInfo->CreateText("name", 1, agui::RelativePosition(), agui::Text("", agui::Text::Format(), *agui::fontButton, agui::Color(255, 0, 0, 0))).GetText();
+            name = &characterInfo->CreateText("name", 1, Agui::RelativePosition(), Agui::Text("", Agui::Text::Format(), *Agui::fontButton, Agui::Color(255, 0, 0, 0))).GetText();
             name->SetAutoCalcTextSize();
 
-            health = &characterInfo->CreateText("health", 1, agui::RelativePosition(), agui::Text("", agui::Text::Format(), *agui::fontButton, agui::Color(255, 0, 0, 0))).GetText();
+            health = &characterInfo->CreateText("health", 1, Agui::RelativePosition(), Agui::Text("", Agui::Text::Format(), *Agui::fontButton, Agui::Color(255, 0, 0, 0))).GetText();
             health->SetAutoCalcTextSize();
 
-            mana = &characterInfo->CreateText("mana", 1, agui::RelativePosition(), agui::Text("", agui::Text::Format(), *agui::fontButton, agui::Color(255, 0, 0, 0))).GetText();
+            mana = &characterInfo->CreateText("mana", 1, Agui::RelativePosition(), Agui::Text("", Agui::Text::Format(), *Agui::fontButton, Agui::Color(255, 0, 0, 0))).GetText();
             mana->SetAutoCalcTextSize();
 
             InitSpells();
@@ -64,21 +64,21 @@ namespace Atmos
 
         void Gui::InitSpells()
         {
-            spellbookRoot = agui::Root::Factory(GetRoot(), "spellbookRoot");
+            spellbookRoot = Agui::Root::Factory(GetRoot(), "spellbookRoot");
 
             // Description
-            auto description = agui::SpellDescriptionBox::Factory(spellbookRoot, "description", agui::RelativePosition(agui::Dimension(0, 535), agui::Dimension(0, 5)), 0);
+            auto description = Agui::SpellDescriptionBox::Factory(spellbookRoot, "description", Agui::RelativePosition(Agui::Dimension(0, 535), Agui::Dimension(0, 5)), 0);
             description->ScaleTo(224, 224);
             description->GetSprite()->color.Edit(255, 255, 100);
 
             // Context menu
-            auto contextMenu = agui::SpellContextMenu::Factory(spellbookRoot, "contextMenu", agui::RelativePosition(agui::Dimension(0, 535), agui::Dimension(0, 254)), 0);
+            auto contextMenu = Agui::SpellContextMenu::Factory(spellbookRoot, "contextMenu", Agui::RelativePosition(Agui::Dimension(0, 535), Agui::Dimension(0, 254)), 0);
             contextMenu->GetMenu()->GetLayout()->SetSelfModifySize(false);
             contextMenu->GetMenu()->GetLayout()->ChangeDimensions(224, 224);
             contextMenu->GetMenu()->GetSprite()->color.Edit(255, 255, 100);
             contextMenu->SetShowWithParent(false);
 
-            spellbook.Init(*spellbookRoot, agui::RelativePosition(agui::HorizontalAlignment::RIGHT, agui::VerticalAlignment::TOP), *description, contextMenu);
+            spellbook.Init(*spellbookRoot, Agui::RelativePosition(Agui::HorizontalAlignment::RIGHT, Agui::VerticalAlignment::TOP), *description, contextMenu);
         }
 
         void Gui::OnCharacterChanged(CharacterEntity *character)
@@ -230,7 +230,7 @@ namespace Atmos
 
         void State::OnMouseKeyDoublePressed(const Input::MouseKey &arg)
         {
-            Camera::MoveTo<::affecter::SmoothstepType>(Environment::GetInput()->GetMousePositionInGameCoords(), FrameTimer(TimeValue(FixedPoint64(1))));
+            Camera::MoveTo<::Affecter::SmoothstepType>(Environment::GetInput()->GetMousePositionInGameCoords(), FrameTimer(TimeValue(FixedPoint64(1))));
         }
 
         void State::OnFieldChanged(Field &field)

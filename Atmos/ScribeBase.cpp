@@ -9,7 +9,7 @@ namespace Atmos
         GetBasicScribe().CopyTrackersTo(arg.GetBasicScribe());
     }
 
-    void ScribeBase::CopyTrackersTo(inscription::Scribe &scribe) const
+    void ScribeBase::CopyTrackersTo(::Inscription::Scribe &scribe) const
     {
         GetBasicScribe().CopyTrackersTo(scribe);
     }
@@ -19,7 +19,7 @@ namespace Atmos
         GetBasicScribe().MoveTrackersTo(arg.GetBasicScribe());
     }
 
-    void ScribeBase::MoveTrackersTo(inscription::Scribe &scribe)
+    void ScribeBase::MoveTrackersTo(::Inscription::Scribe &scribe)
     {
         GetBasicScribe().MoveTrackersTo(scribe);
     }

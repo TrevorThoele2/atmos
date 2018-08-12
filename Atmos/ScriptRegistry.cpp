@@ -119,12 +119,12 @@ namespace Atmos
 
     INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(AssetRegistry<ScriptModuleBase>)
     {
-        ::inscription::TrackingChangerStack tracking(scribe, false);
+        ::Inscription::TrackingChangerStack tracking(scribe, false);
 
         if (scribe.IsOutput())
         {
             // SAVING
-            inscription::ContainerSize size(map.size());
+            ::Inscription::ContainerSize size(map.size());
             scribe.Save(size);
 
             for (auto &loop : map)
@@ -132,12 +132,12 @@ namespace Atmos
                 // True if the base was a script
                 scribe.Save(loop.second->IsScript());
                 // Save name and ID
-                scribe.Save(inscription::RemoveConst(loop.second->GetFileName()));
+                scribe.Save(::Inscription::RemoveConst(loop.second->GetFileName()));
                 scribe.Save(loop.second->GetID());
 
                 // Dependencies
                 auto &dependencies = loop.second->GetDependencies();
-                inscription::ContainerSize dependencySize(dependencies.size());
+                ::Inscription::ContainerSize dependencySize(dependencies.size());
                 scribe.Save(dependencySize);
                 for (auto &dependencyLoop : dependencies)
                     scribe.Save(dependencyLoop->GetID());
@@ -149,7 +149,7 @@ namespace Atmos
             Clear();
 
             // Retrieve IDs -> module names
-            inscription::ContainerSize size;
+            ::Inscription::ContainerSize size;
             scribe.Load(size);
 
             struct Hold
@@ -240,7 +240,7 @@ namespace Atmos
 
                     auto &held = hold.back();
 
-                    inscription::ContainerSize dependencySize;
+                    ::Inscription::ContainerSize dependencySize;
                     scribe.Load(dependencySize);
                     held.dependencies.reserve(dependencySize.Get());
 

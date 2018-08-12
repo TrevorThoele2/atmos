@@ -19,7 +19,7 @@
 #include "MousePosition.h"
 
 #include "Logger.h"
-#include <AGUI\Resolution.h>
+#include <AGUI/Resolution.h>
 
 namespace Atmos
 {
@@ -61,7 +61,7 @@ namespace Atmos
 
         void OnFocusLost();
         void OnFocusRegain();
-        void OnResolutionChanged(const agui::Resolution &arg);
+        void OnResolutionChanged(const Agui::Resolution &arg);
         virtual void OnSetFullscreen() = 0;
     protected:
         void SetWindowDimensions();
@@ -226,12 +226,6 @@ namespace Atmos
     void Environment::CreateFileSystem(Args && ... args)
     {
         fileSystem.reset(new RealT(std::forward<Args>(args)...));
-    }
-
-    template<class Handler, class... Args>
-    void Environment::CreateTimeHandler(Args && ... args)
-    {
-        time.reset(new Handler(std::forward<Args>(args)...));
     }
 
     template<class Model>

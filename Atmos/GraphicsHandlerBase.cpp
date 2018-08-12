@@ -68,11 +68,11 @@ namespace Atmos
         for (auto &loop : canvasList)
             loop.Release();
 
-        agui::System::GetGraphics()->Release();
+        Agui::System::GetGraphics()->Release();
 
         ReinitializeImpl();
 
-        agui::System::GetGraphics()->Reset();
+        Agui::System::GetGraphics()->Reset();
 
         for (auto &loop : ShaderRegistry::Instance())
             loop.second.GetData()->Reset();

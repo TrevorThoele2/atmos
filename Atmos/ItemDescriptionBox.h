@@ -6,7 +6,7 @@
 
 #include <AGUI\Image.h>
 
-namespace agui
+namespace Agui
 {
     class ItemDescriptionBox : public DescriptionBox
     {
@@ -38,14 +38,14 @@ namespace agui
     class WidgetSetup<ItemDescriptionBox> : public WidgetSetupBase<ItemDescriptionBox>
     {
     private:
-        void Setup(ItemDescriptionBox &obj) const override
+        void Setup(WidgetType &obj) const override
         {
-            SetupOptional(obj, &ItemDescriptionBox::CreateSprite<const SpriteComponent&>, sprite);
-            SetupOptional(obj, &ItemDescriptionBox::CreateSpriteFitter<>, spriteFitter);
+            SetupOptional(obj, &WidgetType::CreateSprite<const SpriteComponent&>, sprite);
+            SetupOptional(obj, &WidgetType::CreateSpriteFitter<>, spriteFitter);
             obj.Init();
         }
     public:
-        Attribute<SpriteComponent> sprite;
+        ComponentAttribute<SpriteComponent> sprite;
         bool spriteFitter;
 
         WidgetSetup();

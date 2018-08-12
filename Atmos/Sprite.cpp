@@ -17,7 +17,7 @@ namespace Atmos
 {
     INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(Sprite)
     {
-        inscription::BaseSerialize<::Atmos::RenderFragment>(scribe, *this);
+        ::Inscription::BaseSerialize<::Atmos::RenderFragment>(scribe, *this);
         scribe(material);
         scribe(shaderPatch);
         scribe(index);
@@ -252,16 +252,16 @@ namespace Atmos
     }
 
     // Returns heap memory. Make sure to delete it if not giving it to AGUI
-    std::unique_ptr<agui::SpriteComponent> CreateAguiSpriteComponent(const Sprite &sprite, const agui::FileName &imageName, const agui::RelativePosition &relPosition)
+    std::unique_ptr<Agui::SpriteComponent> CreateAguiSpriteComponent(const Sprite &sprite, const Agui::FileName &imageName, const Agui::RelativePosition &relPosition)
     {
         if (!sprite.GetMaterial() || !sprite.GetMaterial()->GetXVisual())
-            return std::unique_ptr<agui::SpriteComponent>();
+            return std::unique_ptr<Agui::SpriteComponent>();
 
         AguiSpriteFactory factory(sprite);
-        return std::unique_ptr<agui::SpriteComponent>(factory.CreateComponent(imageName, relPosition));
+        return std::unique_ptr<Agui::SpriteComponent>(factory.CreateComponent(imageName, relPosition));
     }
 
-    Atmos::Sprite FromAguiSpriteComponent(const agui::SpriteComponent &sprite)
+    Atmos::Sprite FromAguiSpriteComponent(const Agui::SpriteComponent &sprite)
     {
         Atmos::Sprite ret(sprite.GetResource()->GetFileName().c_str(), sprite.GetIndex(), Atmos::Color(sprite.color.alpha, sprite.color.red, sprite.color.green, sprite.color.blue));
         ret.SetXScaler(sprite.GetSize().GetXScaler());

@@ -3,7 +3,6 @@
 
 #include "InventoryComponent.h"
 
-#include "Movement.h"
 #include <Affecter\Affecter.h>
 
 namespace Atmos

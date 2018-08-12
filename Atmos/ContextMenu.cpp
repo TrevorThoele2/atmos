@@ -3,7 +3,7 @@
 
 #include "ContextMenu.h"
 
-namespace agui
+namespace Agui
 {
     void ContextMenu::Connection::Destroy_impl()
     {
@@ -65,7 +65,7 @@ namespace agui
         AddConnectionsToCursor();
     }
 
-    ContextMenu::Cursor* ContextMenu::GetCursor()
+    Cursor* ContextMenu::GetCursor()
     {
         return cursor.Get();
     }

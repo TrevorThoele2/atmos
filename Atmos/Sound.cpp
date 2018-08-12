@@ -7,8 +7,6 @@
 #include "WorldManager.h"
 #include "Math.h"
 
-#include "Movement.h"
-
 #include <Inscription\Scribe.h>
 #include <Inscription\Inscripter.h>
 #include <Inscription\String.h>
@@ -18,8 +16,8 @@ namespace Atmos
 {
     INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(Sound)
     {
-        ::inscription::BaseSerialize<Sense>(scribe, *this);
-        ::inscription::BaseSerialize<SoundBase>(scribe, *this);
+        ::Inscription::BaseSerialize<Sense>(scribe, *this);
+        ::Inscription::BaseSerialize<SoundBase>(scribe, *this);
         scribe(baseVolume);
     }
 

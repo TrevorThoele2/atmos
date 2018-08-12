@@ -82,7 +82,7 @@ namespace Atmos
     private:
         static std::unordered_map<Element, Entry> entries;
 
-        static void SerializeImpl(::inscription::Scribe &scribe);
+        static void SerializeImpl(::Inscription::Scribe &scribe);
     public:
         typedef Element::Multiplier Multiplier;
 

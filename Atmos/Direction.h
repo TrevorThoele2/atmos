@@ -3,7 +3,7 @@
 
 #include <iterator>
 #include "Serialization.h"
-#include <Function\Enum.h>
+#include <Chroma/Enum.h>
 
 namespace Atmos
 {
@@ -60,5 +60,5 @@ namespace Atmos
         return static_cast<std::underlying_type<Direction::ValueT>::type>(val);
     }
 
-    typedef function::EnumIterationTraits<Direction::ValueT, Direction::ValueT::LEFT, Direction::ValueT::DOWN> DirectionIterationTraits;
+    typedef ::Chroma::EnumIterationTraits<Direction::ValueT, Direction::ValueT::LEFT, Direction::ValueT::DOWN> DirectionIterationTraits;
 }

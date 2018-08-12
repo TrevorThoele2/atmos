@@ -1,6 +1,6 @@
 #pragma once
 
-namespace inscription { class Scribe; }
+namespace Inscription { class Scribe; }
 
 namespace Atmos
 {
@@ -8,11 +8,11 @@ namespace Atmos
     class GlobalContextBase
     {
     public:
-        static void Serialize(::inscription::Scribe &scribe);
+        static void Serialize(::Inscription::Scribe &scribe);
     };
 
     template<class T, class Mixin>
-    void GlobalContextBase<T, Mixin>::Serialize(::inscription::Scribe &scribe)
+    void GlobalContextBase<T, Mixin>::Serialize(::Inscription::Scribe &scribe)
     {
         Mixin::SerializeImpl(scribe);
     }

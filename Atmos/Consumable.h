@@ -47,7 +47,7 @@ namespace Atmos
     };
 }
 
-namespace inscription
+namespace Inscription
 {
     template<>
     class Inscripter<::Atmos::Consumable::Stack> : public InscripterBase<::Atmos::Consumable::Stack>

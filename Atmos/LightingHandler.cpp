@@ -13,14 +13,14 @@
 
 namespace Atmos
 {
-    void LightingHandler::OnResolutionChange(const agui::Resolution &res)
+    void LightingHandler::OnResolutionChange(const Agui::Resolution &res)
     {
         Environment::GetGraphics()->ResizeCanvas(lightmap, GraphicsHandlerBase::ScreenDimensions(res.GetWidth(), res.GetHeight()));
     }
 
     LightingHandler::LightingHandler(Field &field) : FieldComponent(field), lightmap(Environment::GetGraphics()->CreateCanvas(Environment::GetGraphics()->GetCurrentDimensions()))
     {
-        agui::System::Instance().eventResolutionChanged.Subscribe(std::bind(&LightingHandler::OnResolutionChange, this, std::placeholders::_1));
+        Agui::System::Instance().eventResolutionChanged.Subscribe(std::bind(&LightingHandler::OnResolutionChange, this, std::placeholders::_1));
         lightmapView.SetCanvas(lightmap);
         lightmapView.SetPosition(Position3D(16.0f, 16.0f, 16.0f));
     }

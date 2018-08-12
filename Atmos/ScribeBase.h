@@ -4,7 +4,7 @@
 #include "FieldID.h"
 #include "Optional.h"
 
-namespace inscription
+namespace Inscription
 {
     class Scribe;
 }
@@ -14,14 +14,14 @@ namespace Atmos
     class ScribeBase
     {
     protected:
-        virtual inscription::Scribe& GetBasicScribe() = 0;
-        virtual const inscription::Scribe& GetBasicScribe() const = 0;
+        virtual ::Inscription::Scribe& GetBasicScribe() = 0;
+        virtual const ::Inscription::Scribe& GetBasicScribe() const = 0;
     public:
         virtual ~ScribeBase() = 0 {}
         void CopyTrackersTo(ScribeBase &arg) const;
-        void CopyTrackersTo(inscription::Scribe &scribe) const;
+        void CopyTrackersTo(::Inscription::Scribe &scribe) const;
         void MoveTrackersTo(ScribeBase &arg);
-        void MoveTrackersTo(inscription::Scribe &scribe);
+        void MoveTrackersTo(::Inscription::Scribe &scribe);
     };
 
     class OutScribeBase : public ScribeBase
@@ -29,7 +29,7 @@ namespace Atmos
     public:
         virtual ~OutScribeBase() = 0 {}
         virtual void Save(Field &field) = 0;
-        virtual void OverwriteFieldCount(inscription::ContainerSize::ValueT set) = 0;
+        virtual void OverwriteFieldCount(::Inscription::ContainerSize::ValueT set) = 0;
     };
 
     class WorldStartBase;
@@ -50,7 +50,7 @@ namespace Atmos
 
         virtual Optional<Field> Get(FieldID id) = 0;
         virtual Field* GetAsHeap(FieldID id) = 0;
-        virtual inscription::Buffer GetAsBuffer(FieldID id) = 0;
+        virtual ::Inscription::Buffer GetAsBuffer(FieldID id) = 0;
 
         virtual WorldStartBase& GetWorldStart() = 0;
 

@@ -13,7 +13,7 @@ namespace Atmos
 {
     INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(StatusEffect)
     {
-        ::inscription::BaseSerialize<RegistryObject>(scribe, *this);
+        ::Inscription::BaseSerialize<RegistryObject>(scribe, *this);
         scribe(script);
         scribe(applicationCount);
         scribe(proficiencyName);

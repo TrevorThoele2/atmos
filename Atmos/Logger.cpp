@@ -18,7 +18,7 @@ namespace Atmos
                 return;
         }
 
-        inscription::TextOutFile outFile(Environment::GetFileSystem()->GetExePath().Append("errorLog.txt").GetValue(), true);
+        ::Inscription::TextOutFile outFile(Environment::GetFileSystem()->GetExePath().Append("errorLog.txt").GetValue(), true);
 
         // Output time and date
         output = Logger::GetTimeValue() + ' ';
@@ -119,7 +119,7 @@ namespace Atmos
     void Logger::ClearFile()
     {
         // Just open up the file without appending
-        inscription::TextOutFile outFile(Environment::GetFileSystem()->GetExePath().Append("errorLog.txt").GetValue());
+        ::Inscription::TextOutFile outFile(Environment::GetFileSystem()->GetExePath().Append("errorLog.txt").GetValue());
     }
 
     Logger::Entry::Entry(const String &string, Type type, const NameValueVector &nvps) : string(string), type(type), nvps(nvps)

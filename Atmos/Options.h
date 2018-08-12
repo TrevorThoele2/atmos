@@ -40,26 +40,26 @@ namespace Atmos
         std::vector<AttributeBase*> attributes;
         Attribute<float> masterSound;
         Attribute<bool> fullscreen;
-        Attribute<const agui::Resolution*> resolution;
+        Attribute<const Agui::Resolution*> resolution;
 
-        agui::MenuButton *resButton, *ratioButton;
-        agui::Checkbox *fullscreenCheckbox;
-        agui::Fillbar *masterSoundFillbar;
-        agui::Label *masterSoundLabel;
+        Agui::MenuButton *resButton, *ratioButton;
+        Agui::Checkbox *fullscreenCheckbox;
+        Agui::Fillbar *masterSoundFillbar;
+        Agui::Label *masterSoundLabel;
 
         void InitImpl() override;
         void ShowImpl() override;
         void Exit();
 
-        void OnFullscreenChanged(const agui::Checkbox &args);
-        void OnAspectRatioTextPressed(const agui::Resolution::AspectRatio &ratio);
-        void OnResolutionTextPressed(const agui::Resolution &res);
-        void OnMasterSoundPercentageChange(const agui::Fillbar &args);
+        void OnFullscreenChanged(const Agui::Checkbox &args);
+        void OnAspectRatioTextPressed(const Agui::Resolution::AspectRatio &ratio);
+        void OnResolutionTextPressed(const Agui::Resolution &res);
+        void OnMasterSoundPercentageChange(const Agui::Fillbar &args);
 
         void OnAcceptButtonPressed();
         void OnCancelButtonPressed();
 
-        void FillResButton(const agui::Resolution::AspectRatio &ratio);
+        void FillResButton(const Agui::Resolution::AspectRatio &ratio);
         void SetMasterSoundLabelString();
     public:
         OptionsScreenGui();

@@ -4,7 +4,7 @@
 
 #include "Serialization.h"
 
-#include <Function/Variant.h>
+#include <Chroma\Variant.h>
 
 namespace Atmos
 {
@@ -20,7 +20,7 @@ namespace Atmos
                 FLOAT
             };
         private:
-            typedef ::function::Variant<std::int64_t, float> VariantT;
+            typedef ::Chroma::Variant<std::int64_t, float> VariantT;
         private:
             INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
             INSCRIPTION_ACCESS;

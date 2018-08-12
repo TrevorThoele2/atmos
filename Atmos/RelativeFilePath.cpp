@@ -232,7 +232,7 @@ namespace Atmos
         return FileName(moveDown.substr(found + 1));
     }
 
-    void RelativeFilePath::Serialize(inscription::Scribe &scribe)
+    void RelativeFilePath::Serialize(::Inscription::Scribe &scribe)
     {
         scribe(moveUp);
         scribe(moveDown);

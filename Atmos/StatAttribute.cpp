@@ -231,25 +231,25 @@ namespace Atmos
         object.AddEntry(entry.opposing, 0);
     }
 
-    void DataStandard<StatAttributeTable>::SerializeImpl(::inscription::Scribe &scribe)
+    void DataStandard<StatAttributeTable>::SerializeImpl(::Inscription::Scribe &scribe)
     {
-        ::inscription::TrackingChangerStack tracking(scribe, false);
+        ::Inscription::TrackingChangerStack tracking(scribe, false);
 
         if (scribe.IsOutput())
         {
-            ::inscription::ContainerSize size(entries.size());
+            ::Inscription::ContainerSize size(entries.size());
             scribe.Save(size);
 
             for (auto &loop : entries)
             {
-                scribe.Save(::inscription::RemoveConst(loop.first));
+                scribe.Save(::Inscription::RemoveConst(loop.first));
                 scribe.Save(loop.second.niceName);
                 scribe.Save(loop.second.opposing);
             }
         }
         else // INPUT
         {
-            ::inscription::ContainerSize size;
+            ::Inscription::ContainerSize size;
             scribe.Load(size);
 
             while (size-- > 0)

@@ -11,16 +11,16 @@
 
 namespace Atmos
 {
-    class Spellbook : public ObjectMenu<const Spell, Ent::CombatComponent, agui::SpellDescriptionBox, agui::SpellContextMenu>
+    class Spellbook : public ObjectMenu<const Spell, Ent::CombatComponent, Agui::SpellDescriptionBox, Agui::SpellContextMenu>
     {
     private:
-        agui::Image *background;
+        Agui::Image *background;
         Spellbook(const Spellbook &arg) = delete;
     public:
         Spellbook();
-        Spellbook(agui::Root &root, const agui::RelativePosition &pos, DescriptionBox &description, ContextMenu *contextMenu);
-        void Init(agui::Root &root, const agui::RelativePosition &pos, DescriptionBox &description, ContextMenu *contextMenu);
-        agui::Image* GetBackground();
+        Spellbook(Agui::Root &root, const Agui::RelativePosition &pos, DescriptionBox &description, ContextMenu *contextMenu);
+        void Init(Agui::Root &root, const Agui::RelativePosition &pos, DescriptionBox &description, ContextMenu *contextMenu);
+        Agui::Image* GetBackground();
     };
 
     static std::unique_ptr<Spellbook> spellbook;

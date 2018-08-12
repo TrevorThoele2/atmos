@@ -29,7 +29,7 @@ namespace Atmos
                 typedef unsigned char ID;
             public:
                 Input();
-                void Init(agui::Textbox &textbox);
+                void Init(Agui::Textbox &textbox);
                 void Activate(std::vector<String> &&strings);
                 void Deactivate();
                 ID GetCurrentPosition() const;
@@ -37,17 +37,17 @@ namespace Atmos
                 class Entry
                 {
                 public:
-                    agui::Textbox::Connection textboxConnection;
-                    Entry(agui::Textbox &textbox, const std::string &name, const std::string &string);
+                    Agui::Textbox::Connection textboxConnection;
+                    Entry(Agui::Textbox &textbox, const std::string &name, const std::string &string);
                 };
             private:
                 typedef std::unordered_map<ID, Entry> Entries;
-                typedef agui::Cursor<ID> CursorT;
+                typedef Agui::Cursor CursorT;
                 CursorT *cursor;
 
                 Entries entries;
 
-                agui::Textbox *handlerTextbox;
+                Agui::Textbox *handlerTextbox;
             };
         public:
             typedef Input::ID InputID;
@@ -55,9 +55,9 @@ namespace Atmos
             static Handler instance;
             Input input;
 
-            static agui::Root *root;
-            static agui::Textbox *textbox;
-            static agui::TextComponent *nameOutput, *mainOutput;
+            static Agui::Root *root;
+            static Agui::Textbox *textbox;
+            static Agui::TextComponent *nameOutput, *mainOutput;
 
             static Ent::DialogueComponent *currentDialogue;
 

@@ -311,7 +311,7 @@ namespace Atmos
     template<class IDType>
     INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(IDSequencer<IDType>)
     {
-        inscription::BaseSerialize<IDSequencerBase<IDType>>(scribe, *this);
+        ::Inscription::BaseSerialize<IDSequencerBase<IDType>>(scribe, *this);
         scribe(lowerLimit);
         scribe(upperLimit);
 
@@ -382,9 +382,9 @@ namespace Atmos
     }
 
     template<class IDType, IDType lowerLimit, IDType upperLimit>
-    void IDSequencerStatic<IDType, lowerLimit, upperLimit>::Serialize(::inscription::Scribe &scribe)
+    void IDSequencerStatic<IDType, lowerLimit, upperLimit>::Serialize(::Inscription::Scribe &scribe)
     {
-        inscription::BaseSerialize<IDSequencerBase<IDType>>(scribe, *this);
+        ::Inscription::BaseSerialize<IDSequencerBase<IDType>>(scribe, *this);
 
         if(scribe.IsInput())
             SetDirection();

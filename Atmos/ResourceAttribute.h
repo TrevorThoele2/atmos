@@ -122,7 +122,7 @@ namespace Atmos
         static EntryMap<Entry> entries;
         static void SetupObj(Object &object, const Name &name);
 
-        static void SerializeImpl(::inscription::Scribe &scribe);
+        static void SerializeImpl(::Inscription::Scribe &scribe);
 
         friend DataStandardInherit<ResourceAttributeTable>;
     public:
@@ -138,7 +138,7 @@ namespace Atmos
         typedef GlobalContextBase<ResourceAttributeTable, GlobalContext<ResourceAttributeTable>> BaseT;
         friend GlobalContextBase<ResourceAttributeTable, GlobalContext<ResourceAttributeTable>>;
     private:
-        static void SerializeImpl(::inscription::Scribe &scribe);
+        static void SerializeImpl(::Inscription::Scribe &scribe);
     public:
         static Name health;
         static Name mana;

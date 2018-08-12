@@ -29,7 +29,7 @@ namespace Atmos
         return *this;
     }
 
-    Sense::Sense(Sense &&arg) : center(std::move(arg.center)), enabled(std::move(arg.enabled)), dynamic(std::move(arg.dynamic)), movementAffecter(std::move(arg.movementAffecter))
+    Sense::Sense(Sense &&arg) : center(std::move(arg.center)), enabled(std::move(arg.enabled)), dynamic(std::move(arg.dynamic))
     {}
 
     Sense& Sense::operator=(Sense &&arg)
@@ -37,14 +37,7 @@ namespace Atmos
         center = std::move(arg.center);
         enabled = std::move(arg.enabled);
         dynamic = std::move(arg.dynamic);
-        movementAffecter = std::move(arg.movementAffecter);
         return *this;
-    }
-
-    Sense::~Sense()
-    {
-        if (movementAffecter)
-            movementAffecter->Stop();
     }
 
     bool Sense::operator==(const Sense &arg) const
@@ -123,14 +116,6 @@ namespace Atmos
     Position3D::ValueT Sense::GetZ() const
     {
         return center.GetZ();
-    }
-
-    bool Sense::IsMoving() const
-    {
-        if (movementAffecter)
-            return movementAffecter->IsActive();
-        else
-            return false;
     }
 
     void Sense::SetDynamic(bool set)

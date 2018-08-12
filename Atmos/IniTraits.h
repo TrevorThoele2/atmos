@@ -9,10 +9,10 @@
 
 namespace Atmos
 {
-    String ToString(const ::agui::Resolution::Size &arg);
+    String ToString(const ::Agui::Resolution::Size &arg);
     String ToString(const Input::KeyID &arg);
 
-    template<> ::agui::Resolution::Size FromString(const String &arg);
+    template<> ::Agui::Resolution::Size FromString(const String &arg);
     template<> Input::KeyID FromString(const String &arg);
 
     namespace Ini
@@ -21,7 +21,7 @@ namespace Atmos
         struct Traits;
 
         template<> struct Traits<ID::WINDOWED> { typedef bool T; };
-        template<> struct Traits<ID::RESOLUTION> { typedef ::agui::Resolution::Size T; };
+        template<> struct Traits<ID::RESOLUTION> { typedef ::Agui::Resolution::Size T; };
         template<> struct Traits<ID::FPS> { typedef unsigned int T; };
         template<> struct Traits<ID::VSYNC> { typedef bool T; };
 

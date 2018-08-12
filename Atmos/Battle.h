@@ -24,13 +24,13 @@ namespace Atmos
         private:
             friend State;
         private:
-            agui::Textbox *characterInfo;
-            agui::TextComponent *name;
-            agui::TextComponent *health;
-            agui::TextComponent *mana;
+            Agui::Textbox *characterInfo;
+            Agui::TextComponent *name;
+            Agui::TextComponent *health;
+            Agui::TextComponent *mana;
             CharacterEntity *selected;
 
-            agui::Root *spellbookRoot;
+            Agui::Root *spellbookRoot;
             Spellbook spellbook;
 
             void InitImpl() override;

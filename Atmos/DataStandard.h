@@ -3,8 +3,8 @@
 #include <set>
 #include <map>
 #include <unordered_map>
-#include <Function/Function.h>
-#include <Function/Iterate.h>
+#include <Chroma\Function.h>
+#include <Chroma\Iterate.h>
 #include "Name.h"
 
 #include "Serialization.h"
@@ -26,7 +26,7 @@ namespace Atmos
     public:
         constexpr static bool hasStandard = true;
 
-        static void Serialize(::inscription::Scribe &scribe);
+        static void Serialize(::Inscription::Scribe &scribe);
     protected:
         // Sets up something with a standard set of names
         class NameSet
@@ -99,7 +99,7 @@ namespace Atmos
     };
 
     template<class T>
-    void DataStandardInherit<T>::Serialize(::inscription::Scribe &scribe)
+    void DataStandardInherit<T>::Serialize(::Inscription::Scribe &scribe)
     {
         DataStandard<T>::SerializeImpl(scribe);
     }
@@ -284,7 +284,7 @@ namespace Atmos
     };
 }
 
-namespace inscription
+namespace Inscription
 {
     template<class T>
     struct TrackPointer<::Atmos::DataStandard<T>>

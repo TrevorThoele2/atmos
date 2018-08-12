@@ -146,7 +146,7 @@ namespace Atmos
             mousePosPrev = mousePos;
             SetMousePos();
             mousePosDelta.Update(mousePos);
-            agui::System::InjectMousePosition(static_cast<agui::Position::ValueT>(mousePos.x), static_cast<agui::Position::ValueT>(mousePos.y));
+            Agui::System::InjectMousePosition(static_cast<Agui::Position::ValueT>(mousePos.x), static_cast<Agui::Position::ValueT>(mousePos.y));
 
             // Work inputs
             WorkInputsImpl(inputVector);

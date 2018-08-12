@@ -4,6 +4,9 @@
 #include <limits>
 #include <cstdint>
 
+#undef min
+#undef max
+
 namespace Atmos
 {
     template<class Type>

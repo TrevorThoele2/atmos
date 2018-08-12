@@ -7,13 +7,13 @@
 
 #include "FontDefines.h"
 
-namespace agui
+namespace Agui
 {
     void ItemContextMenu::RegisterInputs()
     {
-        RegisterInput(Text("CONSUME", agui::Text::Format(), *agui::fontSlender, agui::colorBlack), RelativePosition(Dimension(0, 26), Dimension(0, 5)), std::bind(&ItemContextMenu::OnConsume, this));
-        RegisterInput(Text("EQUIP", agui::Text::Format(), *agui::fontSlender, agui::colorBlack), RelativePosition(Dimension(0, 26), Dimension(0, 25)), std::bind(&ItemContextMenu::OnEquip, this));
-        RegisterInput(Text("MOVE", agui::Text::Format(), *agui::fontSlender, agui::colorBlack), RelativePosition(Dimension(0, 26), Dimension(0, 45)), std::bind(&ItemContextMenu::OnMove, this));
+        RegisterInput(Text("CONSUME", Agui::Text::Format(), *Agui::fontSlender, Agui::colorBlack), RelativePosition(Dimension(0, 26), Dimension(0, 5)), std::bind(&ItemContextMenu::OnConsume, this));
+        RegisterInput(Text("EQUIP", Agui::Text::Format(), *Agui::fontSlender, Agui::colorBlack), RelativePosition(Dimension(0, 26), Dimension(0, 25)), std::bind(&ItemContextMenu::OnEquip, this));
+        RegisterInput(Text("MOVE", Agui::Text::Format(), *Agui::fontSlender, Agui::colorBlack), RelativePosition(Dimension(0, 26), Dimension(0, 45)), std::bind(&ItemContextMenu::OnMove, this));
     }
 
     void ItemContextMenu::OnConsume()

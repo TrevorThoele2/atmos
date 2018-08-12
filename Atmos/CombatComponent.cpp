@@ -31,7 +31,7 @@ namespace Atmos
 
             if (scribe.IsOutput())
             {
-                inscription::ContainerSize size(spells.size());
+                ::Inscription::ContainerSize size(spells.size());
                 scribe(size);
 
                 for (auto &loop : spells)
@@ -39,7 +39,7 @@ namespace Atmos
             }
             else
             {
-                inscription::ContainerSize size;
+                ::Inscription::ContainerSize size;
                 scribe.Load(size);
 
                 while (size-- > 0)

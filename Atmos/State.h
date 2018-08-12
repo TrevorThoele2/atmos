@@ -4,7 +4,7 @@
 #include "StateGui.h"
 
 #include "Event.h"
-#include <Function\Any.h>
+#include <Chroma\Any.h>
 
 namespace Atmos
 {
@@ -19,19 +19,19 @@ namespace Atmos
             class Derived
             {
             public:
-                typedef function::Function<void, Args...> Wrapped;
+                typedef ::Chroma::Function<void, Args...> Wrapped;
                 Wrapped wrapped;
                 Derived(Wrapped &&wrapped);
                 void Execute(Args ... args);
             };
         private:
-            function::Any base;
+			::Chroma::Any base;
         public:
             StateBase *state;
             EventScopedConnection connection;
 
             template<class... Args>
-            EventBound(StateBase *state, function::Function<void, Args...> &&wrapped);
+            EventBound(StateBase *state, ::Chroma::Function<void, Args...> &&wrapped);
             EventBound(EventBound &&arg);
             template<class... Args>
             void AttemptExecute(Args ... args);
@@ -56,17 +56,17 @@ namespace Atmos
         virtual bool CanGotoImpl() const;
 
         template<class... Args>
-        eventIterator SubscribeEventCommon(function::Event<Args...> &e, EventBound &&eBound);
+        eventIterator SubscribeEventCommon(::Chroma::Event<Args...> &e, EventBound &&eBound);
     protected:
         // Will not execute the function unless the current state is the top one
         template<class Ret, class... Args>
-        eventIterator SubscribeEvent(function::Event<Args...> &e, Ret(*func)(Args...));
+        eventIterator SubscribeEvent(::Chroma::Event<Args...> &e, Ret(*func)(Args...));
         // Will not execute the function unless the current state is the top one
         template<class Ret, class Obj, class... Args>
-        eventIterator SubscribeEvent(function::Event<Args...> &e, Ret(Obj::*func)(Args...), Obj &obj);
+        eventIterator SubscribeEvent(::Chroma::Event<Args...> &e, Ret(Obj::*func)(Args...), Obj &obj);
         // Will not execute the function unless the current state is the top one
         template<class Ret, class Obj, class... Args>
-        eventIterator SubscribeEvent(function::Event<Args...> &e, Ret(Obj::*func)(Args...) const, const Obj &obj);
+        eventIterator SubscribeEvent(::Chroma::Event<Args...> &e, Ret(Obj::*func)(Args...) const, const Obj &obj);
     public:
         StateBase();
         StateBase(const StateBase &arg) = delete;
@@ -90,7 +90,7 @@ namespace Atmos
     }
 
     template<class... Args>
-    StateBase::EventBound::EventBound(StateBase *state, function::Function<void, Args...> &&wrapped) : state(state), base(Derived<Args...>(std::move(wrapped)))
+    StateBase::EventBound::EventBound(StateBase *state, ::Chroma::Function<void, Args...> &&wrapped) : state(state), base(Derived<Args...>(std::move(wrapped)))
     {}
 
     template<class... Args>
@@ -101,7 +101,7 @@ namespace Atmos
     }
 
     template<class... Args>
-    StateBase::eventIterator StateBase::SubscribeEventCommon(function::Event<Args...> &e, EventBound &&eBound)
+    StateBase::eventIterator StateBase::SubscribeEventCommon(::Chroma::Event<Args...> &e, EventBound &&eBound)
     {
         events.push_back(std::move(eBound));
         auto &made = events.back();
@@ -111,21 +111,21 @@ namespace Atmos
     }
 
     template<class Ret, class... Args>
-    StateBase::eventIterator StateBase::SubscribeEvent(function::Event<Args...> &e, Ret(*func)(Args...))
+    StateBase::eventIterator StateBase::SubscribeEvent(::Chroma::Event<Args...> &e, Ret(*func)(Args...))
     {
-        return SubscribeEventCommon(e, EventBound(this, function::Function<void, Args...>(func)));
+        return SubscribeEventCommon(e, EventBound(this, ::Chroma::Function<void, Args...>(func)));
     }
 
     template<class Ret, class Obj, class... Args>
-    StateBase::eventIterator StateBase::SubscribeEvent(function::Event<Args...> &e, Ret(Obj::*func)(Args...), Obj &obj)
+    StateBase::eventIterator StateBase::SubscribeEvent(::Chroma::Event<Args...> &e, Ret(Obj::*func)(Args...), Obj &obj)
     {
-        return SubscribeEventCommon(e, EventBound(this, function::Function<void, Args...>(func, obj)));
+        return SubscribeEventCommon(e, EventBound(this, ::Chroma::Function<void, Args...>(func, obj)));
     }
 
     template<class Ret, class Obj, class... Args>
-    StateBase::eventIterator StateBase::SubscribeEvent(function::Event<Args...> &e, Ret(Obj::*func)(Args...) const, const Obj &obj)
+    StateBase::eventIterator StateBase::SubscribeEvent(::Chroma::Event<Args...> &e, Ret(Obj::*func)(Args...) const, const Obj &obj)
     {
-        return SubscribeEventCommon(e, EventBound(this, function::Function<void, Args...>(func, obj)));
+        return SubscribeEventCommon(e, EventBound(this, ::Chroma::Function<void, Args...>(func, obj)));
     }
 
     template<class Gui>

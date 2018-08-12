@@ -485,10 +485,10 @@ namespace Atmos
         };
 
         template<class... Args>
-        struct FalconVariableTraits<::function::Variant<Args...>>
+        struct FalconVariableTraits<::Chroma::Variant<Args...>>
         {
         public:
-            typedef function::Variant<Args...> Type;
+            typedef ::Chroma::Variant<Args...> Type;
         private:
             enum class VisitStrategy
             {
@@ -499,13 +499,13 @@ namespace Atmos
             };
 
             template<VisitStrategy strategy>
-            using StrategySelector = ::function::StrategySelector<VisitStrategy, strategy>;
+            using StrategySelector = ::Chroma::StrategySelector<VisitStrategy, strategy>;
 
             template<size_t i>
             class Iterator
             {
             private:
-                using U = typename ::function::VariadicTemplate<Args...>::Parameter<i>::Type;
+                using U = typename ::Chroma::VariadicTemplate<Args...>::Parameter<i>::Type;
             public:
                 static bool Check(Falcon::Item &item, StrategySelector<VisitStrategy::IS>)
                 {
@@ -556,44 +556,44 @@ namespace Atmos
         };
 
         template<class... Args>
-        typename const FalconVariableTraits<function::Variant<Args...>>::Type FalconVariableTraits<function::Variant<Args...>>::DefaultValue;
+        typename const FalconVariableTraits<::Chroma::Variant<Args...>>::Type FalconVariableTraits<::Chroma::Variant<Args...>>::DefaultValue;
 
         template<class... Args>
-        bool FalconVariableTraits<function::Variant<Args...>>::Is(Falcon::Item &item)
+        bool FalconVariableTraits<::Chroma::Variant<Args...>>::Is(Falcon::Item &item)
         {
-            return ::function::IterateRangeCheckStop<size_t, Iterator, bool, sizeof...(Args)-1, 0>(true, item, StrategySelector<VisitStrategy::IS>{});
+            return ::Chroma::IterateRangeCheckStop<size_t, Iterator, bool, sizeof...(Args)-1, 0>(true, item, StrategySelector<VisitStrategy::IS>{});
         }
 
         template<class... Args>
-        typename FalconVariableTraits<function::Variant<Args...>>::Type FalconVariableTraits<function::Variant<Args...>>::FromItem(Falcon::VMachine &vm, Falcon::Item &item)
+        typename FalconVariableTraits<::Chroma::Variant<Args...>>::Type FalconVariableTraits<::Chroma::Variant<Args...>>::FromItem(Falcon::VMachine &vm, Falcon::Item &item)
         {
             Type ret;
-            ::function::IterateRangeCheckStop<size_t, Iterator, bool, sizeof...(Args)-1, 0>(true, ret, vm, item, StrategySelector<VisitStrategy::FROM_ITEM>{});
+            ::Chroma::IterateRangeCheckStop<size_t, Iterator, bool, sizeof...(Args)-1, 0>(true, ret, vm, item, StrategySelector<VisitStrategy::FROM_ITEM>{});
             return ret;
         }
 
         template<class... Args>
-        void FalconVariableTraits<function::Variant<Args...>>::SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set)
+        void FalconVariableTraits<::Chroma::Variant<Args...>>::SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set)
         {
-            ::function::Visit<VisitImpl>(set, vm, item, StrategySelector<VisitStrategy::SET_ITEM>{});
+            ::Chroma::Visit<VisitImpl>(set, vm, item, StrategySelector<VisitStrategy::SET_ITEM>{});
         }
 
         template<class... Args>
-        void FalconVariableTraits<function::Variant<Args...>>::SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set)
+        void FalconVariableTraits<::Chroma::Variant<Args...>>::SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set)
         {
-            ::function::Visit<VisitImpl>(set, mod, item, StrategySelector<VisitStrategy::SET_ITEM>{});
+            ::Chroma::Visit<VisitImpl>(set, mod, item, StrategySelector<VisitStrategy::SET_ITEM>{});
         }
 
         template<class... Args>
-        String FalconVariableTraits<function::Variant<Args...>>::GetTypeString()
+        String FalconVariableTraits<::Chroma::Variant<Args...>>::GetTypeString()
         {
             return "Variant";
         }
 
         template<class... Args>
-        Falcon::Item FalconVariableTraits<function::Variant<Args...>>::CreateItem(Falcon::VMachine &vm, const Type &set)
+        Falcon::Item FalconVariableTraits<::Chroma::Variant<Args...>>::CreateItem(Falcon::VMachine &vm, const Type &set)
         {
-            return ::function::VisitReturn<VisitImpl, Falcon::Item>(set, vm, StrategySelector<VisitStrategy::CREATE_ITEM>{});
+            return ::Chroma::VisitReturn<VisitImpl, Falcon::Item>(set, vm, StrategySelector<VisitStrategy::CREATE_ITEM>{});
         }
 
         template<class T>

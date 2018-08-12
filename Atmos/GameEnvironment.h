@@ -7,7 +7,7 @@
 #include "ModulatorObserver.h"
 #include "ModulatorGenerator.h"
 #include "ModulatorController.h"
-#include <Affecter\System.h>
+#include <Affecter/System.h>
 
 #include "FilePath.h"
 
@@ -24,7 +24,7 @@ namespace Atmos
         std::unordered_map<Name, ModulatorGeneratorPtr> modulatorGenerators;
         Modulator::Controller modulatorController;
 
-        ::affecter::System affecterSystem;
+        ::Affecter::System affecterSystem;
 
         static void OnInputPressed(const Input::Key &args);
         static void OnFocusLost();
@@ -49,6 +49,6 @@ namespace Atmos
         static Modulator::Observer GenerateModulator(const Name &name);
         static ModulatorTrackGenerateT GenerateModulatorTrack(const Name &modName, const Name &trackName);
 
-        static ::affecter::System& GetAffecterSystem();
+        static ::Affecter::System& GetAffecterSystem();
     };
 }

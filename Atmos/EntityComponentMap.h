@@ -53,7 +53,7 @@ namespace Atmos
             static T* Find(ContainerT &container, Entity entity);
             static const T* FindConst(const ContainerT &container, Entity entity);
 
-            static void Serialize(inscription::Scribe &scribe, ContainerT &container, Event<T&> &createdEvent, void(*setOwner)(T&, Entity));
+            static void Serialize(::Inscription::Scribe &scribe, ContainerT &container, Event<T&> &createdEvent, void(*setOwner)(T&, Entity));
         };
 
         template<class T>
@@ -112,22 +112,22 @@ namespace Atmos
         }
 
         template<class T>
-        void ComponentMapBaseTraits<std::map<Entity, T>>::Serialize(inscription::Scribe &scribe, ContainerT &container, Event<T&> &createdEvent, void(*setOwner)(T&, Entity))
+        void ComponentMapBaseTraits<std::map<Entity, T>>::Serialize(::Inscription::Scribe &scribe, ContainerT &container, Event<T&> &createdEvent, void(*setOwner)(T&, Entity))
         {
             if (scribe.IsOutput())
             {
-                inscription::ContainerSize size(container.size());
+                ::Inscription::ContainerSize size(container.size());
                 scribe.Save(size);
 
                 for (auto &loop : container)
                 {
-                    scribe.Save(inscription::RemoveConst(loop.first));
+                    scribe.Save(::Inscription::RemoveConst(loop.first));
                     scribe.Save(loop.second);
                 }
             }
             else
             {
-                inscription::ContainerSize size;
+                ::Inscription::ContainerSize size;
                 scribe.Load(size);
 
                 while (size-- > 0)
@@ -187,7 +187,7 @@ namespace Atmos
         };
 
         template<class ComponentT, class UnderlyingContainer>
-        void ComponentMapBase<ComponentT, UnderlyingContainer>::Serialize(::inscription::Scribe &scribe)
+        void ComponentMapBase<ComponentT, UnderlyingContainer>::Serialize(::Inscription::Scribe &scribe)
         {
             Traits::Serialize(scribe, container, onCreated, static_cast<void(*)(ComponentT&, Entity)>([](ComponentT &comp, Entity entity) { comp.SetOwnerEntity(entity); }));
         }

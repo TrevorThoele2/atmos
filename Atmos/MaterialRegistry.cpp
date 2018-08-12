@@ -5,11 +5,11 @@ namespace Atmos
 {
     INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(AssetRegistry<Material>)
     {
-        ::inscription::TrackingChangerStack tracking(scribe, false);
+        ::Inscription::TrackingChangerStack tracking(scribe, false);
 
         if (scribe.IsOutput())
         {
-            inscription::ContainerSize size(map.size());
+            ::Inscription::ContainerSize size(map.size());
             scribe.Save(size);
 
             for (auto &loop : map)
@@ -17,7 +17,7 @@ namespace Atmos
                 // Save ID
                 scribe.Save(loop.second.GetID());
                 // Save name
-                scribe.Save(inscription::RemoveConst(loop.first));
+                scribe.Save(::Inscription::RemoveConst(loop.first));
                 // Save asset
                 scribe.Save(loop.second);
             }
@@ -26,7 +26,7 @@ namespace Atmos
         {
             Clear();
 
-            inscription::ContainerSize size;
+            ::Inscription::ContainerSize size;
             scribe.Load(size);
 
             while (size-- > 0)

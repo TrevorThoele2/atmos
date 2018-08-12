@@ -9,7 +9,7 @@ namespace Atmos
 {
     INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(RenderFragment)
     {
-        ::inscription::BaseSerialize<Sense>(scribe, *this);
+        ::Inscription::BaseSerialize<Sense>(scribe, *this);
         scribe(size);
         if (scribe.IsInput())
             CalculateBounds();

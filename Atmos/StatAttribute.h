@@ -107,7 +107,7 @@ namespace Atmos
         static Entries entries;
         static void SetupObj(Object &object, const Name &name, Entry &entry);
 
-        static void SerializeImpl(::inscription::Scribe &scribe);
+        static void SerializeImpl(::Inscription::Scribe &scribe);
 
         friend DataStandardInherit<StatAttributeTable>;
     public:

@@ -18,8 +18,8 @@ namespace Atmos
         typedef Map::const_iterator const_iterator;
     private:
         INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
-        void Save(inscription::Scribe &scribe);
-        void Load(inscription::Scribe &scribe);
+        void Save(::Inscription::Scribe &scribe);
+        void Load(::Inscription::Scribe &scribe);
         INSCRIPTION_ACCESS;
     private:
         Map container;

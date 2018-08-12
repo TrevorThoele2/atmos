@@ -11,14 +11,14 @@ namespace Atmos
     {
     private:
         std::string rootName;
-        agui::Root *root;
+        Agui::Root *root;
         virtual void InitImpl() = 0;
         virtual void UpdateImpl();
         virtual void ShowImpl();
         virtual void HideImpl();
     protected:
         StateGui(const std::string &name);
-        agui::Root* GetRoot();
+        Agui::Root* GetRoot();
     public:
         void Init();
         void Update();

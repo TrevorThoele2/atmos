@@ -5,7 +5,7 @@
 #include "Script.h"
 #include "IDManager.h"
 
-#include <Function\Function.h>
+#include <Chroma/Function.h>
 
 namespace Atmos
 {

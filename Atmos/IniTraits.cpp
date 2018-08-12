@@ -5,7 +5,7 @@
 
 namespace Atmos
 {
-    String ToString(const ::agui::Resolution::Size &arg)
+    String ToString(const ::Agui::Resolution::Size &arg)
     {
         return String(ToString(arg.width) + "x" + ToString(arg.height));
     }
@@ -15,14 +15,14 @@ namespace Atmos
         return Environment::GetInput()->GetKey(arg)->displayName;
     }
 
-    template<> ::agui::Resolution::Size FromString(const String &arg)
+    template<> ::Agui::Resolution::Size FromString(const String &arg)
     {
-        const ::agui::Resolution::Size invalidReturn(1024, 768);
+        const ::Agui::Resolution::Size invalidReturn(1024, 768);
 
         // First, get past all of the spaces
         size_t count = 0;
         auto loop = arg.begin();
-        while (loop != arg.end(), *loop == ' ')
+        while (loop != arg.end() && *loop == ' ')
             ++loop, ++count;
 
         // If we're already at the end, then leave
@@ -35,11 +35,11 @@ namespace Atmos
             return invalidReturn;
 
         // Now, we need to get the first dimension
-        ::agui::Resolution::Size::ValueT width = FromString<::agui::Resolution::Size::ValueT>(arg.substr(count, xPosition - count));
+        ::Agui::Resolution::Size::ValueT width = FromString<::Agui::Resolution::Size::ValueT>(arg.substr(count, xPosition - count));
         // Now, get the second dimension
-        ::agui::Resolution::Size::ValueT height = FromString<::agui::Resolution::Size::ValueT>(arg.substr(xPosition + 1));
+        ::Agui::Resolution::Size::ValueT height = FromString<::Agui::Resolution::Size::ValueT>(arg.substr(xPosition + 1));
 
-        return ::agui::Resolution::Size(width, height);
+        return ::Agui::Resolution::Size(width, height);
     }
 
     template<> Input::KeyID FromString(const String &arg)

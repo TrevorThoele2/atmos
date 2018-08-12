@@ -58,7 +58,7 @@ namespace Atmos
             basicScribe.Save(worldStart);
 
             // Save field placeholders
-            inscription::ContainerSize newCount(fieldSavers.size());
+            ::Inscription::ContainerSize newCount(fieldSavers.size());
             basicScribe.Save(newCount);
 
             for (auto &loop : fieldSavers)
@@ -69,17 +69,17 @@ namespace Atmos
         }
     }
 
-    inscription::Scribe& StasisScribeOut::GetBasicScribe()
+    ::Inscription::Scribe& StasisScribeOut::GetBasicScribe()
     {
         return basicScribe;
     }
 
-    const inscription::Scribe& StasisScribeOut::GetBasicScribe() const
+    const ::Inscription::Scribe& StasisScribeOut::GetBasicScribe() const
     {
         return basicScribe;
     }
 
-    StasisScribeOut::StasisScribeOut(const FileName &fileName, const FileName &worldFileName, inscription::ContainerSize::ValueT fieldCount, OpenMode openMode) : fileName(fileName), worldFileName(worldFileName), basicScribe(MakePathFromName(fileName), "ATMOS GAIA STASIS", 1), curSaver(fieldSavers.end()), hasOutputHeader(false)
+    StasisScribeOut::StasisScribeOut(const FileName &fileName, const FileName &worldFileName, ::Inscription::ContainerSize::ValueT fieldCount, OpenMode openMode) : fileName(fileName), worldFileName(worldFileName), basicScribe(MakePathFromName(fileName), "ATMOS GAIA STASIS", 1), curSaver(fieldSavers.end()), hasOutputHeader(false)
     {
         if(openMode == OpenMode::FORCE_EXTENSION)
             this->fileName.SetExtension(stasisExtension);
@@ -87,7 +87,7 @@ namespace Atmos
         fieldSavers.resize(fieldCount, FieldSaver(basicScribe));
     }
 
-    StasisScribeOut::StasisScribeOut(const FilePath &filePath, const FileName &worldFileName, inscription::ContainerSize::ValueT fieldCount, OpenMode openMode) : fileName(filePath), worldFileName(worldFileName), basicScribe(filePath, "ATMOS GAIA STASIS", 1), curSaver(fieldSavers.end()), hasOutputHeader(false)
+    StasisScribeOut::StasisScribeOut(const FilePath &filePath, const FileName &worldFileName, ::Inscription::ContainerSize::ValueT fieldCount, OpenMode openMode) : fileName(filePath), worldFileName(worldFileName), basicScribe(filePath, "ATMOS GAIA STASIS", 1), curSaver(fieldSavers.end()), hasOutputHeader(false)
     {
         if (openMode == OpenMode::FORCE_EXTENSION)
             this->fileName.SetExtension(stasisExtension);
@@ -110,7 +110,7 @@ namespace Atmos
         ++curSaver;
     }
 
-    void StasisScribeOut::Save(FieldID id, const inscription::Buffer &buffer)
+    void StasisScribeOut::Save(FieldID id, const ::Inscription::Buffer &buffer)
     {
         OutputHeader();
 
@@ -120,7 +120,7 @@ namespace Atmos
         ++curSaver;
     }
 
-    void StasisScribeOut::OverwriteFieldCount(inscription::ContainerSize::ValueT set)
+    void StasisScribeOut::OverwriteFieldCount(::Inscription::ContainerSize::ValueT set)
     {
         fieldSavers.resize(set, FieldSaver(basicScribe));
     }
@@ -183,7 +183,7 @@ namespace Atmos
         basicScribe.Load(worldStart);
 
         // Load field handles
-        inscription::ContainerSize size;
+        ::Inscription::ContainerSize size;
         basicScribe.Load(size);
         while (size-- > 0)
         {
@@ -207,12 +207,12 @@ namespace Atmos
         previousState.Restore();
     }
 
-    inscription::Scribe& StasisScribeIn::GetBasicScribe()
+    ::Inscription::Scribe& StasisScribeIn::GetBasicScribe()
     {
         return basicScribe;
     }
 
-    const inscription::Scribe& StasisScribeIn::GetBasicScribe() const
+    const ::Inscription::Scribe& StasisScribeIn::GetBasicScribe() const
     {
         return basicScribe;
     }
@@ -282,7 +282,7 @@ namespace Atmos
         return out;
     }
 
-    inscription::Buffer StasisScribeIn::GetAsBuffer(FieldID id)
+    ::Inscription::Buffer StasisScribeIn::GetAsBuffer(FieldID id)
     {
         auto found = fieldHandles.find(id);
         return found->second.LoadBuffer(found->second.size);

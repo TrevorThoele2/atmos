@@ -14,7 +14,7 @@
 
 namespace Atmos
 {
-    ControlsScreenGui::Button::Button(agui::PushButton &widget, Input::Action &action) : widget(widget), action(action), requested(nullptr)
+    ControlsScreenGui::Button::Button(Agui::PushButton &widget, Input::Action &action) : widget(widget), action(action), requested(nullptr)
     {}
 
     void ControlsScreenGui::Button::Request(const Input::SignalBase &request)
@@ -42,10 +42,10 @@ namespace Atmos
         Environment::GetInput()->eventKeys.pressed.Subscribe(&ControlsScreenGui::OnInputPressed, *this);
 
         // Background
-        auto background = agui::Image::Factory(GetRoot(), "background", agui::RelativePosition(agui::HorizontalAlignment::MID, agui::VerticalAlignment::MID), 0);
+        auto background = Agui::Image::Factory(GetRoot(), "background", Agui::RelativePosition(Agui::HorizontalAlignment::MID, Agui::VerticalAlignment::MID), 0);
         background->GetSprite()->ScaleTo(1024, 768);
         background->GetSprite()->color.Edit(255, 100, 100, 255);
-        agui::CreateRootResFitter(*background);
+        Agui::CreateRootResFitter(*background);
 
         buttons.reserve(Environment::GetInput()->GetActions().size());
         // Left most column
@@ -53,15 +53,15 @@ namespace Atmos
             AddButton(*loop);
 
         // Accept button
-        auto button = agui::PushButton::Factory(GetRoot(), "accept", agui::RelativePosition(agui::Dimension(0, 60), agui::Dimension(0, -48), agui::HorizontalAlignment::LEFT, agui::VerticalAlignment::BOT), 1);
+        auto button = Agui::PushButton::Factory(GetRoot(), "accept", Agui::RelativePosition(Agui::Dimension(0, 60), Agui::Dimension(0, -48), Agui::HorizontalAlignment::LEFT, Agui::VerticalAlignment::BOT), 1);
         button->GetText()->SetString("ACCEPT");
-        button->GetText()->color = agui::colorBlack;
+        button->GetText()->color = Agui::colorBlack;
         button->eventClicked.Subscribe(std::bind(&ControlsScreenGui::OnAcceptButtonClicked, this));
 
         // Cancel button
-        button = agui::PushButton::Factory(GetRoot(), "cancel", agui::RelativePosition(agui::Dimension(0, -60), agui::Dimension(0, -48), agui::HorizontalAlignment::RIGHT, agui::VerticalAlignment::BOT), 1);
+        button = Agui::PushButton::Factory(GetRoot(), "cancel", Agui::RelativePosition(Agui::Dimension(0, -60), Agui::Dimension(0, -48), Agui::HorizontalAlignment::RIGHT, Agui::VerticalAlignment::BOT), 1);
         button->GetText()->SetString("CANCEL");
-        button->GetText()->color = agui::colorBlack;
+        button->GetText()->color = Agui::colorBlack;
         button->eventClicked.Subscribe(std::bind(&ControlsScreenGui::OnCancelButtonClicked, this));
     }
 
@@ -107,22 +107,22 @@ namespace Atmos
 
         static auto xTotal = X_START;
         static auto yTotal = Y_START;
-        static agui::HorizontalAlignment horizAlign(agui::HorizontalAlignment::LEFT);
+        static Agui::HorizontalAlignment horizAlign(Agui::HorizontalAlignment::LEFT);
         static unsigned short count = 1;
 
         // Create push button and new ControlsButton
-        auto pushButton = agui::PushButton::Factory(GetRoot(), "button" + ToString(count), agui::RelativePosition(agui::Dimension(0, xTotal), agui::Dimension(0, yTotal), horizAlign, agui::VerticalAlignment::TOP), 1);
+        auto pushButton = Agui::PushButton::Factory(GetRoot(), "button" + ToString(count), Agui::RelativePosition(Agui::Dimension(0, xTotal), Agui::Dimension(0, yTotal), horizAlign, Agui::VerticalAlignment::TOP), 1);
         buttons.push_back(Button(*pushButton, action));
 
         // Setup push button
-        pushButton->ModifySprite(agui::Sprite("buttonSmall.png", 1, agui::Color()));
+        pushButton->ModifySprite(Agui::Sprite("buttonSmall.png", 1, Agui::Color()));
         pushButton->GetText()->SetString(action.GetMappedKey()->displayName);
-        pushButton->GetText()->color = agui::colorBlack;
+        pushButton->GetText()->color = Agui::colorBlack;
         pushButton->eventClicked.Subscribe(std::bind(&ControlsScreenGui::SetButtonPressed, this, &buttons.back()));
 
         // Label
-        auto label = agui::Label::Factory(pushButton, "label", agui::RelativePosition(agui::Dimension(), agui::Dimension(0, Y_LABEL_DIFFERENCE)), 0);
-        label->ModifyText(agui::Text(action.displayName + ":", agui::Text::WORD_BREAK, *agui::fontSlender, agui::colorBlack));
+        auto label = Agui::Label::Factory(pushButton, "label", Agui::RelativePosition(Agui::Dimension(), Agui::Dimension(0, Y_LABEL_DIFFERENCE)), 0);
+        label->ModifyText(Agui::Text(action.displayName + ":", Agui::Text::WORD_BREAK, *Agui::fontSlender, Agui::colorBlack));
         label->GetText()->SetAutoCalcTextSize();
 
         // Handle x and y positions
@@ -131,14 +131,14 @@ namespace Atmos
         {
             yTotal = Y_START;
 
-            if (horizAlign == agui::HorizontalAlignment::LEFT)
+            if (horizAlign == Agui::HorizontalAlignment::LEFT)
             {
-                horizAlign = agui::HorizontalAlignment::MID;
+                horizAlign = Agui::HorizontalAlignment::MID;
                 xTotal = 0;
             }
-            else if (horizAlign == agui::HorizontalAlignment::MID)
+            else if (horizAlign == Agui::HorizontalAlignment::MID)
             {
-                horizAlign = agui::HorizontalAlignment::RIGHT;
+                horizAlign = Agui::HorizontalAlignment::RIGHT;
                 xTotal = X_START;
             }
         }

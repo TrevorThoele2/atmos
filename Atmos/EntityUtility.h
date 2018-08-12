@@ -1,8 +1,8 @@
 #pragma once
 
 #include <tuple>
-#include <Function\VariadicTemplate.h>
-#include <Function\Iterate.h>
+#include <Chroma\VariadicTemplate.h>
+#include <Chroma\Iterate.h>
 
 namespace Atmos
 {
@@ -25,7 +25,7 @@ namespace Atmos
         template<class... Args>
         using MultipleComponents = std::tuple<Args...>;
 
-        template<function::VariadicTemplateSize I>
+        template<::Chroma::VariadicTemplateSize I>
         struct MultipleComponentsValidity
         {
             template<class... Args>
@@ -38,7 +38,7 @@ namespace Atmos
         template<class... Args>
         bool AllComponentsValid(const MultipleComponents<Args...> &check)
         {
-            return function::IterateRangeCheckStop<function::VariadicTemplateSize, MultipleComponentsValidity, ComponentBase*, sizeof...(Args) - 1, 0>(nullptr, check) != nullptr;
+            return ::Chroma::IterateRangeCheckStop<::Chroma::VariadicTemplateSize, MultipleComponentsValidity, ComponentBase*, sizeof...(Args) - 1, 0>(nullptr, check) != nullptr;
         }
     }
 }

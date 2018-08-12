@@ -6,9 +6,9 @@
 #include "ActionTraits.h"
 #include "FilePath.h"
 
-#include <Function/StdFunction.h>
-#include <Function/Iterate.h>
-#include <Function/Switch.h>
+#include <Chroma/StdFunction.h>
+#include <Chroma/Iterate.h>
+#include <Chroma/Switch.h>
 
 #include "Serialization.h"
 #include <Inscription/Array.h>
@@ -20,7 +20,7 @@ namespace Atmos
         class Action
         {
         public:
-            typedef function::ParameterIndex ParameterIndex;
+            typedef ::Chroma::ParameterIndex ParameterIndex;
             typedef ID ID;
             typedef Parameter Parameter;
         private:
@@ -30,7 +30,7 @@ namespace Atmos
             template<ID funcID>
             using FunctionTBase = typename Traits<funcID>::FunctionT;
             template<ID funcID, ParameterIndex index>
-            using TypeOfIndex = typename std::remove_const<typename std::remove_reference<typename ::function::FunctionTraits<FunctionTBase<funcID>>::template Parameter<index>::Type>::type>::type;
+            using TypeOfIndex = typename std::remove_const<typename std::remove_reference<typename ::Chroma::FunctionTraits<FunctionTBase<funcID>>::template Parameter<index>::Type>::type>::type;
 
             class Base
             {
@@ -49,7 +49,7 @@ namespace Atmos
                 virtual ParameterType GetParameterType(ParameterIndex index) const = 0;
                 virtual ParameterIndex GetParameterCount() const = 0;
 
-                virtual void Save(inscription::Scribe &scribe) = 0;
+                virtual void Save(::Inscription::Scribe &scribe) = 0;
             };
 
             template<ID id>
@@ -85,9 +85,9 @@ namespace Atmos
                 template<ParameterIndex index>
                 struct ParameterSaver
                 {
-                    static void Do(Parameters &parameters, inscription::Scribe &scribe)
+                    static void Do(Parameters &parameters, ::Inscription::Scribe &scribe)
                     {
-                        inscription::TrackingChangerStack tracking(scribe, false);
+                        ::Inscription::TrackingChangerStack tracking(scribe, false);
 
                         scribe.Save(parameters[index].Get<FromParameter<index>>());
                     }
@@ -131,7 +131,7 @@ namespace Atmos
                 ParameterType GetParameterType(ParameterIndex index) const;
                 ParameterIndex GetParameterCount() const;
 
-                void Save(inscription::Scribe &scribe) override;
+                void Save(::Inscription::Scribe &scribe) override;
             };
 
             class FactoryBase
@@ -139,7 +139,7 @@ namespace Atmos
             public:
                 virtual ~FactoryBase() = 0 {}
                 virtual Base* Create() const = 0;
-                virtual Base* Create(inscription::Scribe &scribe) const = 0;
+                virtual Base* Create(::Inscription::Scribe &scribe) const = 0;
             };
 
             template<ID id>
@@ -152,11 +152,11 @@ namespace Atmos
                 template<ParameterIndex index>
                 struct ParameterLoader
                 {
-                    static void Do(Parameters &parameters, inscription::Scribe &scribe)
+                    static void Do(Parameters &parameters, ::Inscription::Scribe &scribe)
                     {
-                        inscription::TrackingChangerStack tracking(scribe, false);
+                        ::Inscription::TrackingChangerStack tracking(scribe, false);
 
-                        inscription::StackConstructor<TypeOfIndex<id, index>> parameterConstructor(scribe);
+                        ::Inscription::StackConstructor<TypeOfIndex<id, index>> parameterConstructor(scribe);
                         parameters[index] = std::move(parameterConstructor.GetMove());
                     }
                 };
@@ -164,7 +164,7 @@ namespace Atmos
                 static FactoryDerived instance;
                 FactoryDerived();
                 Derived<id>* Create() const override;
-                Derived<id>* Create(inscription::Scribe &scribe) const override;
+                Derived<id>* Create(::Inscription::Scribe &scribe) const override;
             };
 
             typedef std::unordered_map<ID, FactoryBase*> FactoryMap;
@@ -208,7 +208,7 @@ namespace Atmos
         template<ID id>
         Action::Derived<id>::Derived()
         {
-            ::function::IterateRange<ParameterIndex, ArrayBuilder, parameterCount - 1, 0>(parameters);
+            ::Chroma::IterateRange<ParameterIndex, ArrayBuilder, parameterCount - 1, 0>(parameters);
         }
 
         template<ID id>
@@ -281,9 +281,9 @@ namespace Atmos
         }
 
         template<ID id>
-        void Action::Derived<id>::Save(inscription::Scribe &scribe)
+        void Action::Derived<id>::Save(::Inscription::Scribe &scribe)
         {
-            ::function::IterateRange<ParameterIndex, ParameterSaver, parameterCount - 1, 0>(parameters, scribe);
+            ::Chroma::IterateRange<ParameterIndex, ParameterSaver, parameterCount - 1, 0>(parameters, scribe);
         }
 
         template<ID id>
@@ -308,21 +308,21 @@ namespace Atmos
         }
 
         template<ID id>
-        Action::Derived<id>* Action::FactoryDerived<id>::Create(inscription::Scribe &scribe) const
+        Action::Derived<id>* Action::FactoryDerived<id>::Create(::Inscription::Scribe &scribe) const
         {
-            Derived<id>*(*trueFunc)(inscription::Scribe&) = [](inscription::Scribe &scribe)
+            Derived<id>*(*trueFunc)(::Inscription::Scribe&) = [](::Inscription::Scribe &scribe)
             {
                 Parameters parameters;
-                ::function::IterateRange<ParameterIndex, ParameterLoader, parameterCount - 1, 0>(parameters, scribe);
+                ::Chroma::IterateRange<ParameterIndex, ParameterLoader, parameterCount - 1, 0>(parameters, scribe);
                 return new Derived<id>(std::move(parameters));
             };
 
-            Derived<id>*(*falseFunc)(inscription::Scribe&) = [](inscription::Scribe &scribe)
+            Derived<id>*(*falseFunc)(::Inscription::Scribe&) = [](::Inscription::Scribe &scribe)
             {
                 return new Derived<id>();
             };
 
-            return ::function::Switch(std::integral_constant<bool, (parameterCount > 0)>{}, ::function::CreateFunction(trueFunc), ::function::CreateFunction(falseFunc), scribe);
+            return ::Chroma::Switch(std::integral_constant<bool, (parameterCount > 0)>{}, ::Chroma::CreateFunction(trueFunc), ::Chroma::CreateFunction(falseFunc), scribe);
         }
 
         template<ID id, class... Args>

@@ -218,7 +218,7 @@ namespace Atmos
         return static_cast<Position2D::ValueT>((dim * GRID_SIZE<ValueT>) + (GRID_SIZE<ValueT> / 2));
     }
 
-    void RelativeGridPosition::Serialize(inscription::Scribe &scribe)
+    void RelativeGridPosition::Serialize(::Inscription::Scribe &scribe)
     {
         scribe(x, y, z);
     }

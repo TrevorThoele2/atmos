@@ -5,7 +5,7 @@
 #include <list>
 #include <unordered_set>
 
-#include <Function\Event.h>
+#include <Chroma/Event.h>
 
 namespace Atmos
 {
@@ -26,7 +26,7 @@ namespace Atmos
         class Derived : public Base
         {
         public:
-            typedef ::function::EventConnection<Args...> WrappedT;
+            typedef ::Chroma::EventConnection<Args...> WrappedT;
 
             WrappedT wrapped;
 
@@ -47,9 +47,9 @@ namespace Atmos
     public:
         EventAnyConnection() = default;
         template<class... Args>
-        EventAnyConnection(const ::function::EventConnection<Args...> &connection);
+        EventAnyConnection(const ::Chroma::EventConnection<Args...> &connection);
         template<class... Args>
-        EventAnyConnection(::function::EventConnection<Args...>&&connection);
+        EventAnyConnection(::Chroma::EventConnection<Args...>&&connection);
         EventAnyConnection(const EventAnyConnection &arg);
         EventAnyConnection(EventAnyConnection &&arg);
         EventAnyConnection& operator=(const EventAnyConnection &arg);
@@ -59,9 +59,9 @@ namespace Atmos
         bool operator!=(const EventAnyConnection &arg) const;
 
         template<class... Args>
-        void Set(const ::function::EventConnection<Args...> &set);
+        void Set(const ::Chroma::EventConnection<Args...> &set);
         template<class... Args>
-        void Set(::function::EventConnection<Args...> &&set);
+        void Set(::Chroma::EventConnection<Args...> &&set);
 
         void Sever();
         bool IsValid() const;
@@ -100,28 +100,28 @@ namespace Atmos
     }
 
     template<class... Args>
-    EventAnyConnection::EventAnyConnection(const ::function::EventConnection<Args...> &connection) : base(new Derived<Args...>(connection))
+    EventAnyConnection::EventAnyConnection(const ::Chroma::EventConnection<Args...> &connection) : base(new Derived<Args...>(connection))
     {}
 
     template<class... Args>
-    EventAnyConnection::EventAnyConnection(::function::EventConnection<Args...> &&connection) : base(new Derived<Args...>(std::move(connection)))
+    EventAnyConnection::EventAnyConnection(::Chroma::EventConnection<Args...> &&connection) : base(new Derived<Args...>(std::move(connection)))
     {}
 
     template<class... Args>
-    void EventAnyConnection::Set(const ::function::EventConnection<Args...> &set)
+    void EventAnyConnection::Set(const ::Chroma::EventConnection<Args...> &set)
     {
         base.reset(new Derived<Args...>(set));
     }
 
     template<class... Args>
-    void EventAnyConnection::Set(::function::EventConnection<Args...> &&set)
+    void EventAnyConnection::Set(::Chroma::EventConnection<Args...> &&set)
     {
         base.reset(new Derived<Args...>(std::move(set)));
     }
 
     template<class... Args>
-    using Event = function::Event<Args...>;
-    using NullEvent = function::NullEvent;
+    using Event = ::Chroma::Event<Args...>;
+    using NullEvent = ::Chroma::NullEvent;
 
     // This will remove the connection when this is destructed
     class EventScopedConnection
@@ -140,7 +140,7 @@ namespace Atmos
         class Derived : public Base
         {
         public:
-            typedef typename function::Event<Args...>::Connection Wrapped;
+            typedef typename ::Chroma::Event<Args...>::Connection Wrapped;
             Wrapped wrapped;
 
             Derived(const Wrapped &wrapped);
@@ -155,9 +155,9 @@ namespace Atmos
     public:
         EventScopedConnection() = default;
         template<class... Args>
-        EventScopedConnection(const function::EventConnection<Args...> &wrapped);
+        EventScopedConnection(const ::Chroma::EventConnection<Args...> &wrapped);
         template<class... Args>
-        EventScopedConnection(function::EventConnection<Args...> &&wrapped);
+        EventScopedConnection(::Chroma::EventConnection<Args...> &&wrapped);
         EventScopedConnection(const EventScopedConnection &arg);
         EventScopedConnection(EventScopedConnection &&arg);
         ~EventScopedConnection();
@@ -167,9 +167,9 @@ namespace Atmos
         bool operator!=(const EventScopedConnection &arg) const;
 
         template<class... Args>
-        void Set(const function::EventConnection<Args...> &set);
+        void Set(const ::Chroma::EventConnection<Args...> &set);
         template<class... Args>
-        void Set(function::EventConnection<Args...> &&set);
+        void Set(::Chroma::EventConnection<Args...> &&set);
         // Does not remove this slot from the event
         void Reset();
 
@@ -216,21 +216,21 @@ namespace Atmos
     }
 
     template<class... Args>
-    EventScopedConnection::EventScopedConnection(const function::EventConnection<Args...> &wrapped) : base(new Derived<Args...>(wrapped))
+    EventScopedConnection::EventScopedConnection(const ::Chroma::EventConnection<Args...> &wrapped) : base(new Derived<Args...>(wrapped))
     {}
 
     template<class... Args>
-    EventScopedConnection::EventScopedConnection(function::EventConnection<Args...> &&wrapped) : base(new Derived<Args...>(std::move(wrapped)))
+    EventScopedConnection::EventScopedConnection(::Chroma::EventConnection<Args...> &&wrapped) : base(new Derived<Args...>(std::move(wrapped)))
     {}
 
     template<class... Args>
-    void EventScopedConnection::Set(const function::EventConnection<Args...> &set)
+    void EventScopedConnection::Set(const ::Chroma::EventConnection<Args...> &set)
     {
         base.reset(new Derived<Args...>(set));
     }
 
     template<class... Args>
-    void EventScopedConnection::Set(function::EventConnection<Args...> &&set)
+    void EventScopedConnection::Set(::Chroma::EventConnection<Args...> &&set)
     {
         base.reset(new Derived<Args...>(std::move(set)));
     }
@@ -247,9 +247,9 @@ namespace Atmos
         std::list<EventScopedConnection> slots;
     public:
         template<class... Args>
-        void Add(const function::EventConnection<Args...> &connection);
+        void Add(const ::Chroma::EventConnection<Args...> &connection);
         template<class... Args>
-        void Add(function::EventConnection<Args...> &&connection);
+        void Add(::Chroma::EventConnection<Args...> &&connection);
         void Add(const EventScopedConnection &add);
         void Add(EventScopedConnection &&add);
 
@@ -257,13 +257,13 @@ namespace Atmos
     };
 
     template<class... Args>
-    void EventScopedConnectionManager::Add(const function::EventConnection<Args...> &connection)
+    void EventScopedConnectionManager::Add(const ::Chroma::EventConnection<Args...> &connection)
     {
         slots.push_back(EventScopedConnection(connection));
     }
 
     template<class... Args>
-    void EventScopedConnectionManager::Add(function::EventConnection<Args...> &&connection)
+    void EventScopedConnectionManager::Add(::Chroma::EventConnection<Args...> &&connection)
     {
         slots.push_back(EventScopedConnection(std::move(connection)));
     }
@@ -328,33 +328,33 @@ namespace Atmos
     }
 
     template<class Ret, class... Args>
-    EventBoundSubscriber::EventBoundSubscriber(Event<Args...> &subTo, Ret(*func)(Args...)) : base(new Derived<Args...>(&subTo, function::Function<void, Args...>(func)))
+    EventBoundSubscriber::EventBoundSubscriber(Event<Args...> &subTo, Ret(*func)(Args...)) : base(new Derived<Args...>(&subTo, ::Chroma::Function<void, Args...>(func)))
     {}
 
     template<class Obj, class Ret, class... Args>
-    EventBoundSubscriber::EventBoundSubscriber(Event<Args...> &subTo, Ret(Obj::*func)(Args...), Obj &obj) : base(new Derived<Args...>(&subTo, function::Function<void, Args...>(func, obj)))
+    EventBoundSubscriber::EventBoundSubscriber(Event<Args...> &subTo, Ret(Obj::*func)(Args...), Obj &obj) : base(new Derived<Args...>(&subTo, ::Chroma::Function<void, Args...>(func, obj)))
     {}
 
     template<class Obj, class Ret, class... Args>
-    EventBoundSubscriber::EventBoundSubscriber(Event<Args...> &subTo, Ret(Obj::*func)(Args...) const, const Obj &obj) : base(new Derived<Args...>(&subTo, function::Function<void, Args...>(func, obj)))
+    EventBoundSubscriber::EventBoundSubscriber(Event<Args...> &subTo, Ret(Obj::*func)(Args...) const, const Obj &obj) : base(new Derived<Args...>(&subTo, ::Chroma::Function<void, Args...>(func, obj)))
     {}
 
     template<class Ret, class... Args>
     void EventBoundSubscriber::Setup(Event<Args...> &subTo, Ret(*func)(Args...))
     {
-        base.reset(new Derived<Args...>(&subTo, function::Function<void, Args...>(func)));
+        base.reset(new Derived<Args...>(&subTo, ::Chroma::Function<void, Args...>(func)));
     }
 
     template<class Obj, class Ret, class... Args>
     void EventBoundSubscriber::Setup(Event<Args...> &subTo, Ret(Obj::*func)(Args...), Obj &obj)
     {
-        base.reset(new Derived<Args...>(&subTo, function::Function<void, Args...>(func, obj)));
+        base.reset(new Derived<Args...>(&subTo, ::Chroma::Function<void, Args...>(func, obj)));
     }
 
     template<class Obj, class Ret, class... Args>
     void EventBoundSubscriber::Setup(Event<Args...> &subTo, Ret(Obj::*func)(Args...) const, const Obj &obj)
     {
-        base.reset(new Derived<Args...>(&subTo, function::Function<void, Args...>(func, obj)));
+        base.reset(new Derived<Args...>(&subTo, ::Chroma::Function<void, Args...>(func, obj)));
     }
 
     class EventBoundSubscriberManager

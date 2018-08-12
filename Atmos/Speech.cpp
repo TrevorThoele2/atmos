@@ -23,10 +23,10 @@ namespace Atmos
         Handler::Input::Input() : cursor(nullptr), handlerTextbox(nullptr)
         {}
 
-        void Handler::Input::Init(agui::Textbox &textbox)
+        void Handler::Input::Init(Agui::Textbox &textbox)
         {
             handlerTextbox = &textbox;
-            cursor = CursorT::Factory(handlerTextbox, "cursor", agui::RelativePosition(agui::Dimension(0.0f, -20.0f), agui::Dimension(), agui::HorizontalAlignment::LEFT, agui::VerticalAlignment::TOP), 0);
+            cursor = CursorT::Factory(handlerTextbox, "cursor", Agui::RelativePosition(Agui::Dimension(0.0f, -20.0f), Agui::Dimension(), Agui::HorizontalAlignment::LEFT, Agui::VerticalAlignment::TOP), 0);
         }
 
         void Handler::Input::Activate(std::vector<String> &&strings)
@@ -60,29 +60,29 @@ namespace Atmos
             return cursor->GetCurrentEntry();
         }
 
-        Handler::Input::Entry::Entry(agui::Textbox &textbox, const std::string &name, const std::string &string) : textboxConnection(textbox.CreateText(name, 1, agui::RelativePosition(agui::Dimension(0, 60), agui::Dimension()), agui::Size(), agui::Text(string, agui::Text::Format(), *agui::fontSlender, agui::colorBlack)))
+        Handler::Input::Entry::Entry(Agui::Textbox &textbox, const std::string &name, const std::string &string) : textboxConnection(textbox.CreateText(name, 1, Agui::RelativePosition(Agui::Dimension(0, 60), Agui::Dimension()), Agui::Size(), Agui::Text(string, Agui::Text::Format(), *Agui::fontSlender, Agui::colorBlack)))
         {}
 
         Handler Handler::instance;
-        agui::Root* Handler::root = nullptr;
-        agui::Textbox* Handler::textbox = nullptr;
-        agui::TextComponent* Handler::nameOutput = nullptr;
-        agui::TextComponent* Handler::mainOutput = nullptr;
+        Agui::Root* Handler::root = nullptr;
+        Agui::Textbox* Handler::textbox = nullptr;
+        Agui::TextComponent* Handler::nameOutput = nullptr;
+        Agui::TextComponent* Handler::mainOutput = nullptr;
         Ent::DialogueComponent* Handler::currentDialogue = nullptr;
 
         void Handler::InitGui()
         {
             const float width = 1024;
-            root = agui::System::CreateRoot("speech");
-            textbox = agui::Textbox::Factory(root, "textbox", agui::RelativePosition(agui::HorizontalAlignment::LEFT, agui::VerticalAlignment::BOT), 0);
-            textbox->CreateLayout<agui::SequenceLayout>()->SetSelfModifySize(false);
+            root = Agui::System::CreateRoot("speech");
+            textbox = Agui::Textbox::Factory(root, "textbox", Agui::RelativePosition(Agui::HorizontalAlignment::LEFT, Agui::VerticalAlignment::BOT), 0);
+            textbox->CreateLayout<Agui::SequenceLayout>()->SetSelfModifySize(false);
             textbox->GetSprite()->color.Edit(255, 100, 255, 100);
             textbox->GetLayout()->ChangeDimensions(width, 200);
 
-            nameOutput = &textbox->CreateText("name", 1, agui::Text("", agui::Text::Format(), *agui::fontSlender, agui::Color(255, 0, 0, 0))).GetText();
+            nameOutput = &textbox->CreateText("name", 1, Agui::Text("", Agui::Text::Format(), *Agui::fontSlender, Agui::Color(255, 0, 0, 0))).GetText();
             nameOutput->SetAutoCalcTextSize();
 
-            mainOutput = &textbox->CreateText("main", 1, agui::RelativePosition(agui::Dimension(0, 30), agui::Dimension(0, 0)), agui::Size(width - 60, 1), agui::Text("", agui::Text::Format(), *agui::fontSlender, agui::Color(255, 0, 0, 0))).GetText();
+            mainOutput = &textbox->CreateText("main", 1, Agui::RelativePosition(Agui::Dimension(0, 30), Agui::Dimension(0, 0)), Agui::Size(width - 60, 1), Agui::Text("", Agui::Text::Format(), *Agui::fontSlender, Agui::Color(255, 0, 0, 0))).GetText();
             mainOutput->SetAutoCalcTextHeight();
 
             instance.input.Init(*textbox);

@@ -27,7 +27,7 @@ namespace Atmos
     };
 }
 
-namespace inscription
+namespace Inscription
 {
     template<>
     class Inscripter<::Atmos::FieldDestination> : public InscripterBase<::Atmos::FieldDestination>

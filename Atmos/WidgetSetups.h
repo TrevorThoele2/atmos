@@ -1,7 +1,7 @@
 
 #pragma once
 
-namespace agui
+namespace Agui
 {
     void SetupWidgets();
 }

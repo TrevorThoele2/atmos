@@ -12,24 +12,24 @@ namespace Atmos
 {
     INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(AssetRegistry<ShaderAsset>)
     {
-        ::inscription::TrackingChangerStack tracking(scribe, false);
+        ::Inscription::TrackingChangerStack tracking(scribe, false);
 
         if (scribe.IsOutput())
         {
-            inscription::ContainerSize size(map.size());
+            ::Inscription::ContainerSize size(map.size());
             scribe.Save(size);
 
             for (auto &loop : map)
             {
                 scribe.Save(loop.second.GetID());
-                scribe.Save(inscription::RemoveConst(loop.second.GetFileName()));
+                scribe.Save(::Inscription::RemoveConst(loop.second.GetFileName()));
             }
         }
         else
         {
             Clear();
 
-            inscription::ContainerSize size;
+            ::Inscription::ContainerSize size;
             scribe.Load(size);
 
             while (size-- > 0)

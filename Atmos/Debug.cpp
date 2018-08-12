@@ -143,8 +143,13 @@ namespace Atmos
         windowPage->AddData("Client height:\n", static_cast<BasicFuncT>([]() { return ToString(Environment::GetClientHeight()); }), false);
         windowPage->AddData("Start X:\n", static_cast<BasicFuncT>([]() { return ToString(Environment::GetStartX()); }), false);
         windowPage->AddData("Start Y:\n", static_cast<BasicFuncT>([]() { return ToString(Environment::GetStartY()); }), false);
+<<<<<<< HEAD
         windowPage->AddData("Resolution Width:\n", static_cast<BasicFuncT>([]() { return ToString(agui::System::GetCurrentResolution()->GetSize().width); }), false);
         windowPage->AddData("Resolution Height:\n", static_cast<BasicFuncT>([]() { return ToString(agui::System::GetCurrentResolution()->GetSize().height); }), false);
+=======
+        windowPage->AddData("Resolution Width:\n", static_cast<BasicFuncT>([]() { return ToString(Agui::System::GetCurrentResolution()->GetSize().width); }), false);
+        windowPage->AddData("Resolution Height:\n", static_cast<BasicFuncT>([]() { return ToString(Agui::System::GetCurrentResolution()->GetSize().height); }), false);
+>>>>>>> Changes to work with Win10
         windowPage->AddData("View origin X:\n", static_cast<BasicFuncT>([]() { return ToString(Camera::GetViewOrigin().GetX()); }), false);
         windowPage->AddData("View origin Y:\n", static_cast<BasicFuncT>([]() { return ToString(Camera::GetViewOrigin().GetY()); }), false);
 
@@ -181,29 +186,29 @@ namespace Atmos
 
     void DebugScreen::SetupGui()
     {
-        root = agui::System::CreateRoot("debug");
+        root = Agui::System::CreateRoot("debug");
 
         // Debug background
-        mainTextbox = agui::Textbox::Factory(root, "debugMainTextbox", agui::RelativePosition(), 0);
+        mainTextbox = Agui::Textbox::Factory(root, "debugMainTextbox", Agui::RelativePosition(), 0);
         mainTextbox->GetSprite()->ScaleWidthTo(544);
         mainTextbox->GetSprite()->color.Edit(150, 0, 0, 0);
-        mainTextbox->CreateLayout<agui::SequenceLayout>(agui::Orientation::HORIZONTAL)->SetMargins(agui::BoundingBox(10, 10, 10, 10));
+        mainTextbox->CreateLayout<Agui::SequenceLayout>(Agui::Orientation::HORIZONTAL)->SetMargins(Agui::BoundingBox(10, 10, 10, 10));
 
-        auto connection = &mainTextbox->CreateText("label", 1, agui::RelativePosition(agui::Dimension(0, 10), agui::Dimension(0, 10)), agui::Text("", agui::Text::Format(), *agui::fontSlender, agui::Color()));
+        auto connection = &mainTextbox->CreateText("label", 1, Agui::RelativePosition(Agui::Dimension(0, 10), Agui::Dimension(0, 10)), Agui::Text("", Agui::Text::Format(), *Agui::fontSlender, Agui::Color()));
         connection->GetText().SetAutoCalcTextSize();
         label = &connection->GetText();
 
-        connection = &mainTextbox->CreateText("data", 1, agui::RelativePosition(agui::Dimension(0, 300), agui::Dimension(0, 10)), agui::Text("", agui::Text::Format(), *agui::fontSlender, agui::Color()));
+        connection = &mainTextbox->CreateText("data", 1, Agui::RelativePosition(Agui::Dimension(0, 300), Agui::Dimension(0, 10)), Agui::Text("", Agui::Text::Format(), *Agui::fontSlender, Agui::Color()));
         connection->GetText().SetAutoCalcTextSize();
         data = &connection->GetText();
 
         // FPS counter
-        auto fpsCounterBackground = agui::Image::Factory(root, "fpsCounterImage", agui::RelativePosition(agui::HorizontalAlignment::RIGHT, agui::VerticalAlignment::TOP), 0);
+        auto fpsCounterBackground = Agui::Image::Factory(root, "fpsCounterImage", Agui::RelativePosition(Agui::HorizontalAlignment::RIGHT, Agui::VerticalAlignment::TOP), 0);
         fpsCounterBackground->GetSprite()->color.Edit(127, 0, 0, 0);
         fpsCounterBackground->ScaleTo(130.0f, 30.0f);
 
-        fpsCounter = agui::Label::Factory(fpsCounterBackground, "fpsCounter", agui::RelativePosition(agui::HorizontalAlignment::MID, agui::VerticalAlignment::MID), 0);
-        fpsCounter->ModifyText(agui::Text("", agui::Text::Format({ agui::Text::CENTER_HORIZONTAL, agui::Text::SINGLE_LINE, agui::Text::CENTER_VERTICAL }), *agui::fontSlender, agui::Color()));
+        fpsCounter = Agui::Label::Factory(fpsCounterBackground, "fpsCounter", Agui::RelativePosition(Agui::HorizontalAlignment::MID, Agui::VerticalAlignment::MID), 0);
+        fpsCounter->ModifyText(Agui::Text("", Agui::Text::Format({ Agui::Text::CENTER_HORIZONTAL, Agui::Text::SINGLE_LINE, Agui::Text::CENTER_VERTICAL }), *Agui::fontSlender, Agui::Color()));
         fpsCounter->GetText()->SetAutoCalcTextSize();
 
         Update();
@@ -267,7 +272,7 @@ namespace Atmos
             {
                 return ToString(stopwatch->QueryElapsed().ConvertValue(TimeValueEpoch::MILLISECONDS));
             }),
-                ::function::Bind(&timer)),
+                ::Chroma::Bind(&timer)),
             false);
         // Add frame average
         profilerPage->AddData(appendLabel + " time average:\n",
@@ -275,7 +280,7 @@ namespace Atmos
             {
                 return ToString(stopwatch->GetAverage().ConvertValue(TimeValueEpoch::MILLISECONDS));
             }),
-                ::function::Bind(&timer)),
+                ::Chroma::Bind(&timer)),
             false);
         // Add frame highest
         profilerPage->AddData(appendLabel + " time highest:\n\n",
@@ -283,7 +288,7 @@ namespace Atmos
             {
                 return ToString(stopwatch->GetHighest().ConvertValue(TimeValueEpoch::MILLISECONDS));
             }),
-                ::function::Bind(&timer)),
+                ::Chroma::Bind(&timer)),
             true);
     }
 

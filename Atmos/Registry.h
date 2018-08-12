@@ -72,18 +72,18 @@ namespace Atmos
     };
 
     template<class T, class Mixin>
-    void RegistryBase<T, Mixin>::Serialize(::inscription::Scribe &scribe)
+    void RegistryBase<T, Mixin>::Serialize(::Inscription::Scribe &scribe)
     {
-        ::inscription::TrackingChangerStack tracking(scribe, false);
+        ::Inscription::TrackingChangerStack tracking(scribe, false);
         if (scribe.IsOutput())
         {
-            inscription::ContainerSize size(Size());
+            ::Inscription::ContainerSize size(Size());
             scribe.Save(size);
 
             for (auto &loop : list)
             {
                 // Save the name
-                scribe.Save(::inscription::RemoveConst(loop.GetName()));
+                scribe.Save(::Inscription::RemoveConst(loop.GetName()));
                 // Save the ID
                 scribe.Save(loop.GetID());
                 // Save the object
@@ -96,7 +96,7 @@ namespace Atmos
             nameMap.clear();
             idMap.clear();
 
-            inscription::ContainerSize size;
+            ::Inscription::ContainerSize size;
             scribe.Load(size);
 
             while (size-- > 0)
@@ -299,7 +299,7 @@ namespace Atmos
     class Registry;
 }
 
-namespace inscription
+namespace Inscription
 {
     template<class T>
     struct TrackPointer<::Atmos::Registry<T>>

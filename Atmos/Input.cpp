@@ -129,19 +129,19 @@ namespace Atmos
         void Key::ActiveImpl()
         {
             Environment::GetInput()->eventKeys.active(*this);
-            agui::System::InjectInputActive(guiId);
+            Agui::System::InjectInputActive(guiId);
         }
 
         void Key::UpImpl()
         {
             Environment::GetInput()->eventKeys.pressed(*this);
-            agui::System::InjectInputUp(guiId);
+            Agui::System::InjectInputUp(guiId);
         }
 
         void Key::DownImpl()
         {
             Environment::GetInput()->eventKeys.depressed(*this);
-            agui::System::InjectInputDown(guiId);
+            Agui::System::InjectInputDown(guiId);
         }
 
         void Key::DoubleDownImpl()
@@ -149,7 +149,7 @@ namespace Atmos
             Environment::GetInput()->eventKeys.doublePressed(*this);
         }
 
-        Key::Key(Data *data, KeyID id, agui::Key guiID, const String &displayName, bool canUseForAction) : Signal(data, id, guiID, displayName, canUseForAction)
+        Key::Key(Data *data, KeyID id, Agui::Key guiID, const String &displayName, bool canUseForAction) : Signal(data, id, guiID, displayName, canUseForAction)
         {}
 
         bool Key::IsKey() const
@@ -173,13 +173,13 @@ namespace Atmos
         void MouseKey::UpImpl()
         {
             Environment::GetInput()->eventMouseKeys.pressed(*this);
-            agui::System::InjectMouseButtonUp(guiId);
+            Agui::System::InjectMouseButtonUp(guiId);
         }
 
         void MouseKey::DownImpl()
         {
             Environment::GetInput()->eventMouseKeys.depressed(*this);
-            agui::System::InjectMouseButtonDown(guiId);
+            Agui::System::InjectMouseButtonDown(guiId);
         }
 
         void MouseKey::DoubleDownImpl()
@@ -187,7 +187,7 @@ namespace Atmos
             Environment::GetInput()->eventMouseKeys.doublePressed(*this);
         }
 
-        MouseKey::MouseKey(Data *data, MouseButton id, agui::MouseButton guiID, const String &displayName) : Signal(data, id, guiID, displayName, false)
+        MouseKey::MouseKey(Data *data, MouseButton id, Agui::MouseButton guiID, const String &displayName) : Signal(data, id, guiID, displayName, false)
         {}
 
         bool MouseKey::IsKey() const

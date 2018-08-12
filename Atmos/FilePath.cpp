@@ -208,7 +208,7 @@ namespace Atmos
         return FileName(value.substr(found + 1));
     }
 
-    void FilePath::Serialize(inscription::Scribe &scribe)
+    void FilePath::Serialize(::Inscription::Scribe &scribe)
     {
         scribe(value);
         if (scribe.IsInput())
@@ -306,7 +306,7 @@ namespace Atmos
         return value == "";
     }
 
-    void FileName::Serialize(inscription::Scribe &scribe)
+    void FileName::Serialize(::Inscription::Scribe &scribe)
     {
         scribe(value);
         if (scribe.IsInput())

@@ -3,7 +3,7 @@
 #include "ActionID.h"
 #include "ActionFunctions.h"
 
-#include <Function/FunctionTraits.h>
+#include <Chroma/FunctionTraits.h>
 
 namespace Atmos
 {
@@ -13,14 +13,14 @@ namespace Atmos
         class TraitsCommon
         {
         private:
-            typedef ::function::FunctionTraits<T> TraitsBase;
+            typedef ::Chroma::FunctionTraits<T> TraitsBase;
         protected:
             TraitsCommon() = default;
             static void Instantiate();
         public:
             static constexpr ::Atmos::Act::ID id = idGiven;
 
-            typedef ::function::ParameterIndex ParameterIndex;
+            typedef ::Chroma::ParameterIndex ParameterIndex;
 
             typedef typename TraitsBase::Type FunctionT;
             static constexpr FunctionT wrapped = func;

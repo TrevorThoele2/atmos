@@ -18,7 +18,7 @@ namespace Atmos
         public:
             typedef float Volume;
         private:
-            void Serialize(inscription::Scribe &scribe);
+            void Serialize(::Inscription::Scribe &scribe);
             INSCRIPTION_ACCESS;
         public:
             class Data

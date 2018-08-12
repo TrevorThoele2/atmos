@@ -16,7 +16,7 @@ namespace Atmos
     }
 }
 
-namespace inscription
+namespace Inscription
 {
     INSCRIPTION_INSCRIPTER_DEFINE_TABLE(::Atmos::GraphicalPatternEntry)
         INSCRIPTION_TABLE_ADD(sprite)

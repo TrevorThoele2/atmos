@@ -79,16 +79,16 @@ namespace Atmos
     };
 
     template<class T, class Store, class Key, class Mixin>
-    void AssetRegistryBase<T, Store, Key, Mixin>::Serialize(::inscription::Scribe &scribe)
+    void AssetRegistryBase<T, Store, Key, Mixin>::Serialize(::Inscription::Scribe &scribe)
     {
         if (scribe.IsOutput())
         {
-            ::inscription::ContainerSize size(map.size());
+            ::Inscription::ContainerSize size(map.size());
             scribe.Save(size);
 
             for (auto &loop : map)
             {
-                scribe.Save(::inscription::RemoveConst(loop.first));
+                scribe.Save(::Inscription::RemoveConst(loop.first));
                 scribe.Save(loop.second.GetID());
                 scribe.Save(loop.second);
             }
@@ -98,7 +98,7 @@ namespace Atmos
             map.clear();
             idMap.clear();
 
-            ::inscription::ContainerSize size;
+            ::Inscription::ContainerSize size;
             scribe.Load(size);
 
             while (size-- > 0)
@@ -300,7 +300,7 @@ namespace Atmos
     class AssetRegistry;
 }
 
-namespace inscription
+namespace Inscription
 {
     template<class T>
     struct TrackPointer<::Atmos::AssetRegistry<T>>

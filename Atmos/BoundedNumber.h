@@ -293,7 +293,7 @@ namespace Atmos
     template<class T>
     INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(DynamicBoundedNumber<T>)
     {
-        inscription::BaseSerialize<BoundedNumberBase<T>>(scribe, *this);
+        ::Inscription::BaseSerialize<BoundedNumberBase<T>>(scribe, *this);
     }
 
     template<class T>
@@ -628,9 +628,9 @@ namespace Atmos
     };
 
     template<class T, typename Detail::BoundedNumberFloatTransform<T>::Type lowerBound, typename Detail::BoundedNumberFloatTransform<T>::Type upperBound>
-    void StaticBoundedNumber<T, lowerBound, upperBound>::Serialize(::inscription::Scribe &scribe)
+    void StaticBoundedNumber<T, lowerBound, upperBound>::Serialize(::Inscription::Scribe &scribe)
     {
-        inscription::BaseSerialize<BoundedNumberBase<T>>(scribe, *this);
+        ::Inscription::BaseSerialize<BoundedNumberBase<T>>(scribe, *this);
     }
 
     template<class T, typename Detail::BoundedNumberFloatTransform<T>::Type lowerBound, typename Detail::BoundedNumberFloatTransform<T>::Type upperBound>

@@ -7,7 +7,7 @@ namespace Atmos
 {
     INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(AbilityBase)
     {
-        inscription::BaseSerialize<RegistryObject>(scribe, *this);
+        ::Inscription::BaseSerialize<RegistryObject>(scribe, *this);
     }
 
     AbilityBase::AbilityBase(AbilityBase &&arg) : RegistryObject(std::move(arg))

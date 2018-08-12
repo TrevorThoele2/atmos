@@ -88,8 +88,8 @@ namespace Atmos
             typedef Object ObjectT;
             typedef TrackNode NodeT;
             typedef TrackModifierArgs<ObjectT> ModifierArgs;
-            typedef ::function::Function<void, const ModifierArgs&> ModifierT;
-            typedef ::function::Function<Value, const ObjectT&> GetCurrentValueT;
+            typedef ::Chroma::Function<void, const ModifierArgs&> ModifierT;
+            typedef ::Chroma::Function<Value, const ObjectT&> GetCurrentValueT;
         private:
             typedef std::list<NodeT> NodeContainer;
             const NodeID startingID = 0;

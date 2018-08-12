@@ -12,7 +12,7 @@ namespace Atmos
     }
 }
 
-namespace agui
+namespace Agui
 {
     class ItemContextMenu : public ContextMenu
     {
@@ -44,14 +44,14 @@ namespace agui
     class WidgetSetup<ItemContextMenu> : public WidgetSetupBase<ItemContextMenu>
     {
     private:
-        void Setup(ItemContextMenu &obj) const override
+        void Setup(WidgetType &obj) const override
         {
-            SetupOptional(obj, &ItemContextMenu::SetMenu, menu);
-            SetupOptional(obj, &ItemContextMenu::SetCursor, cursor);
+            SetupOptional(obj, &WidgetType::SetMenu, menu);
+            SetupOptional(obj, &WidgetType::SetCursor, cursor);
         }
     public:
-        Attribute<Menu> menu;
-        Attribute<ItemContextMenu::Cursor> cursor;
+        WidgetAttribute<Menu> menu;
+		WidgetAttribute<Cursor> cursor;
 
         WidgetSetup() = default;
     };

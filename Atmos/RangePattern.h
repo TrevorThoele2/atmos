@@ -53,7 +53,7 @@ namespace Atmos
     };
 
     template<class Key, class T>
-    void RangePatternBase<Key, T>::Serialize(::inscription::Scribe &scribe)
+    void RangePatternBase<Key, T>::Serialize(::Inscription::Scribe &scribe)
     {
         scribe(container);
     }
@@ -190,7 +190,7 @@ namespace Atmos
     template<class T>
     INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(RelativeRangePattern<T>)
     {
-        inscription::BaseSerialize<BaseT>(scribe, *this);
+        ::Inscription::BaseSerialize<BaseT>(scribe, *this);
         scribe(midPoint);
         scribe(direction);
     }

@@ -92,7 +92,7 @@ namespace Atmos
         {}
 
         class HandlerBase;
-        class Key : public Signal<KeyID, agui::Key>
+        class Key : public Signal<KeyID, Agui::Key>
         {
         private:
             friend HandlerBase;
@@ -102,12 +102,12 @@ namespace Atmos
             void DownImpl() override;
             void DoubleDownImpl() override;
 
-            Key(Data *data, KeyID id, agui::Key guiID, const String &displayName, bool canUseForAction);
+            Key(Data *data, KeyID id, Agui::Key guiID, const String &displayName, bool canUseForAction);
             bool IsKey() const override;
             bool IsMouseKey() const override;
         };
 
-        class MouseKey : public Signal<MouseButton, agui::MouseButton>
+        class MouseKey : public Signal<MouseButton, Agui::MouseButton>
         {
         private:
             friend HandlerBase;
@@ -117,7 +117,7 @@ namespace Atmos
             void DownImpl() override;
             void DoubleDownImpl() override;
 
-            MouseKey(Data *data, MouseButton id, agui::MouseButton guiID, const String &displayName);
+            MouseKey(Data *data, MouseButton id, Agui::MouseButton guiID, const String &displayName);
             bool IsKey() const override;
             bool IsMouseKey() const override;
         };

@@ -24,7 +24,7 @@ namespace Atmos
     typedef RelativeRangePattern<GraphicalPatternEntry> RelativeGraphicalPattern;
 }
 
-namespace inscription
+namespace Inscription
 {
     template<>
     class Inscripter<::Atmos::GraphicalPatternEntry> : public InscripterBase<::Atmos::GraphicalPatternEntry>
