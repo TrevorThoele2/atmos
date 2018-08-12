@@ -31,7 +31,7 @@ namespace Atmos
         void ConstructValue(const ValueT &arg);
         void ConstructValue(ValueT &&arg);
         template<class... Args>
-        void ConstructValue(Args && ... args);
+        void ConstructValue(Args ... args);
         void DeleteValue();
 
         ValueT& GetValue();
@@ -115,7 +115,7 @@ namespace Atmos
 
     template<class T>
     template<class... Args>
-    void Optional<T>::ConstructValue(Args && ... args)
+    void Optional<T>::ConstructValue(Args ... args)
     {
         new (&value) T(std::forward<Args>(args)...);
     }

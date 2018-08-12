@@ -27,10 +27,11 @@ namespace Atmos
         }
         else
         {
+            Clear();
+
             inscription::ContainerSize size;
             scribe.Load(size);
 
-            map.clear();
             while (size-- > 0)
             {
                 ID id = 0;

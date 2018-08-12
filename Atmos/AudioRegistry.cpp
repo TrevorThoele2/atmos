@@ -29,6 +29,8 @@ namespace Atmos
         }
         else
         {
+            Clear();
+
             inscription::ContainerSize size;
             scribe.Load(size);
 

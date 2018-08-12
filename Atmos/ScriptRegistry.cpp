@@ -146,6 +146,8 @@ namespace Atmos
         else
         {
             // LOADING
+            Clear();
+
             // Retrieve IDs -> module names
             inscription::ContainerSize size;
             scribe.Load(size);

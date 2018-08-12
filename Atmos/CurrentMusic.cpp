@@ -21,15 +21,29 @@ namespace Atmos
         return instance;
     }
 
-    void CurrentMusic::ChangePlaying(const FileName &name)
+    void CurrentMusic::StopPlaying()
     {
         auto &playing = Instance().playing;
         if (playing)
+        {
             playing->Stop();
+            playing.Reset();
+        }
+    }
 
+    void CurrentMusic::ChangePlaying(const FileName &name)
+    {
+        StopPlaying();
+
+        auto &playing = Instance().playing;
         playing = AssetRegistry<AudioAsset>::CreateMusic(name);
         if (!playing)
+        {
+            Logger::Log("Cannot find audio asset for music.",
+                Logger::Type::ERROR_LOW,
+                Logger::NameValueVector{ NameValuePair("File Name", name.GetValue()) });
             return;
+        }
 
         playing->Play();
     }

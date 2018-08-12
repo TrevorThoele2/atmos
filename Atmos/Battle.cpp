@@ -18,6 +18,7 @@
 #include "EntityAISystem.h"
 #include "ScriptController.h"
 #include "StringUtility.h"
+#include "CurrentMusic.h"
 
 #include "Environment.h"
 
@@ -302,6 +303,11 @@ namespace Atmos
         bool State::CanGotoImpl() const
         {
             return canGoto;
+        }
+
+        void State::OnFocusedImpl()
+        {
+            CurrentMusic::StopPlaying();
         }
 
         void State::Start()

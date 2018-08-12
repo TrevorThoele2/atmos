@@ -143,8 +143,8 @@ namespace Atmos
         windowPage->AddData("Client height:\n", static_cast<BasicFuncT>([]() { return ToString(Environment::GetClientHeight()); }), false);
         windowPage->AddData("Start X:\n", static_cast<BasicFuncT>([]() { return ToString(Environment::GetStartX()); }), false);
         windowPage->AddData("Start Y:\n", static_cast<BasicFuncT>([]() { return ToString(Environment::GetStartY()); }), false);
-        windowPage->AddData("Resolution Width:\n", static_cast<BasicFuncT>([]() { return ToString(agui::System::GetCurrentRes()->GetSize().width); }), false);
-        windowPage->AddData("Resolution Height:\n", static_cast<BasicFuncT>([]() { return ToString(agui::System::GetCurrentRes()->GetSize().height); }), false);
+        windowPage->AddData("Resolution Width:\n", static_cast<BasicFuncT>([]() { return ToString(agui::System::GetCurrentResolution()->GetSize().width); }), false);
+        windowPage->AddData("Resolution Height:\n", static_cast<BasicFuncT>([]() { return ToString(agui::System::GetCurrentResolution()->GetSize().height); }), false);
         windowPage->AddData("View origin X:\n", static_cast<BasicFuncT>([]() { return ToString(Camera::GetViewOrigin().GetX()); }), false);
         windowPage->AddData("View origin Y:\n", static_cast<BasicFuncT>([]() { return ToString(Camera::GetViewOrigin().GetY()); }), false);
 

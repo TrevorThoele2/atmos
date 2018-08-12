@@ -34,19 +34,21 @@ namespace Atmos
         typedef typename Set::const_iterator const_iterator;
         typedef typename Set::size_type SizeT;
     private:
-        typedef std::vector<iterator> Vector;
+        typedef std::vector<iterator> Order;
     public:
         typedef std::unique_ptr<FunctionBase> FunctionPtr;
     private:
-        Set set;
-        Vector vector;
-        FunctionPtr ifRemoved;
-        FunctionPtr ifPlaced;
+        Set baseSet;
+        Order order;
+        FunctionPtr whenRemoved;
+        FunctionPtr whenMadeTop;
+
         void MakeTopCommon(std::pair<iterator, bool> &arg);
+        void PopCommon(typename Order::iterator popThis);
         void DoFunc(const FunctionPtr &func);
     public:
         UniqueStack() = default;
-        UniqueStack(FunctionPtr &&ifRemoved, FunctionPtr &&ifPlaced);
+        UniqueStack(FunctionPtr &&whenRemoved, FunctionPtr &&whenMadeTop);
         void MakeTop(T *push);
         void Pop();
         void Pop(T &pop);
@@ -75,59 +77,70 @@ namespace Atmos
     {
         if (arg.second)
         {
-            DoFunc(ifRemoved);
-            vector.push_back(arg.first);
-            DoFunc(ifPlaced);
+            DoFunc(whenRemoved);
+            order.push_back(arg.first);
+            DoFunc(whenMadeTop);
         }
         else
         {
-            auto loop = --vector.end();
+            auto loop = --order.end();
             while (**loop != *arg.first)
             {
-                DoFunc(ifRemoved);
-                set.erase(*loop);
-                loop = --vector.erase(loop);
+                DoFunc(whenRemoved);
+                baseSet.erase(*loop);
+                loop = --order.erase(loop);
             }
 
-            DoFunc(ifPlaced);
+            DoFunc(whenMadeTop);
         }
+    }
+
+    template<class T>
+    void UniqueStack<T>::PopCommon(typename Order::iterator popThis)
+    {
+        auto top = Top();
+
+        DoFunc(whenRemoved);
+        baseSet.erase(*popThis);
+        order.erase(popThis);
+        if (top != Top() && !order.empty())
+            DoFunc(whenMadeTop);
     }
 
     template<class T>
     void UniqueStack<T>::DoFunc(const FunctionPtr &func)
     {
-        if (func && !vector.empty())
-            func->Execute(***--vector.end());
+        if (func && !order.empty())
+            func->Execute(***--order.end());
     }
 
     template<class T>
-    UniqueStack<T>::UniqueStack(FunctionPtr &&ifRemoved, FunctionPtr &&ifPlaced) : ifRemoved(std::move(ifRemoved)), ifPlaced(std::move(ifPlaced))
+    UniqueStack<T>::UniqueStack(FunctionPtr &&whenRemoved, FunctionPtr &&whenMadeTop) : whenRemoved(std::move(whenRemoved)), whenMadeTop(std::move(whenMadeTop))
     {}
 
     template<class T>
     void UniqueStack<T>::MakeTop(T *push)
     {
-        MakeTopCommon(set.emplace(push));
+        MakeTopCommon(baseSet.emplace(push));
     }
 
     template<class T>
     void UniqueStack<T>::Pop()
     {
-        DoFunc(ifRemoved);
-        set.erase(vector.back());
-        vector.pop_back();
+        if(empty())
+            return;
+
+        PopCommon(--order.end());
     }
 
     template<class T>
     void UniqueStack<T>::Pop(T &pop)
     {
-        for (auto loop = vector.begin(); loop != vector.end(); loop++)
+        for (auto loop = order.begin(); loop != order.end(); ++loop)
         {
             if (**loop == &pop)
             {
-                DoFunc(ifRemoved);
-                vector.erase(loop);
-                set.erase(&pop);
+                PopCommon(loop);
                 return;
             }
         }
@@ -136,19 +149,19 @@ namespace Atmos
     template<class T>
     T* UniqueStack<T>::Top()
     {
-        if (vector.empty())
+        if (empty())
             return nullptr;
-        else
-            return *vector.back();
+
+        return *order.back();
     }
 
     template<class T>
     const T* UniqueStack<T>::Top() const
     {
-        if (vector.empty())
+        if (empty())
             return nullptr;
-        else
-            return *vector.back();
+
+        return *order.back();
     }
 
     template<class T>
@@ -161,36 +174,36 @@ namespace Atmos
     template<class T>
     typename UniqueStack<T>::iterator UniqueStack<T>::begin()
     {
-        return set.begin();
+        return baseSet.begin();
     }
 
     template<class T>
     typename UniqueStack<T>::const_iterator UniqueStack<T>::begin() const
     {
-        return set.begin();
+        return baseSet.begin();
     }
 
     template<class T>
     typename UniqueStack<T>::iterator UniqueStack<T>::end()
     {
-        return set.end();
+        return baseSet.end();
     }
 
     template<class T>
     typename UniqueStack<T>::const_iterator UniqueStack<T>::end() const
     {
-        return set.end();
+        return baseSet.end();
     }
 
     template<class T>
     typename UniqueStack<T>::SizeT UniqueStack<T>::size() const
     {
-        return set.size();
+        return baseSet.size();
     }
 
     template<class T>
     bool UniqueStack<T>::empty() const
     {
-        return set.empty();
+        return baseSet.empty();
     }
 }

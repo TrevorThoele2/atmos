@@ -3,6 +3,8 @@
 
 #include "State.h"
 
+#include "FilePath.h"
+
 namespace Atmos
 {
     class MainMenuGui : public StateGui
@@ -18,7 +20,15 @@ namespace Atmos
     class MainMenu : public State<MainMenuGui>
     {
     private:
+        static const FileName mainMenuMusic;;
+    private:
+        void AddMainMenuMusic();
+        void RemoveMainMenuMusic();
+
+        FilePath GetMainMenuPath() const;
+    private:
         void OnFocusedImpl() override;
+        void OnUnfocusedImpl() override;
     };
 
     extern MainMenu mainMenu;

@@ -20,6 +20,7 @@ namespace Atmos
             public:
                 virtual ~EntryBase();
                 virtual void SetByFileString(const String &set) = 0;
+                virtual void SetFromInternal() = 0;
                 virtual String GetFileString() const = 0;
                 virtual bool IsSection() const = 0;
             };
@@ -32,9 +33,11 @@ namespace Atmos
             public:
                 String name;
                 T value;
+                ::function::Function<T> valueGetter;
 
-                Entry(String &&name);
+                Entry(String &&name, ::function::Function<T> &&valueGetter);
                 void SetByFileString(const String &set) override final;
+                void SetFromInternal() override final;
                 String GetFileString() const override final;
                 bool IsSection() const override final;
             };
@@ -44,8 +47,10 @@ namespace Atmos
             public:
                 bool first;
                 String string;
+
                 EntrySection(String &&string, bool first);
                 void SetByFileString(const String &set) override final;
+                void SetFromInternal() override final;
                 String GetFileString() const override final;
                 bool IsSection() const override final;
             };
@@ -56,7 +61,7 @@ namespace Atmos
             std::vector<EntryPtr> entries;
 
             template<ID id>
-            Entry<typename Traits<id>::T>* CreateEntry(String &&name);
+            Entry<typename Traits<id>::T>* CreateEntry(String &&name, ::function::Function<typename Traits<id>::T> &&valueGetter);
         public:
             NullEvent eventPostLoad;
 
@@ -79,7 +84,7 @@ namespace Atmos
         const String Manager::Entry<T>::assignmentToken = " = ";
 
         template<class T>
-        Manager::Entry<T>::Entry(String &&name) : name(std::move(name))
+        Manager::Entry<T>::Entry(String &&name, ::function::Function<T> &&valueGetter) : name(std::move(name)), valueGetter(std::move(valueGetter))
         {}
 
         template<class T>
@@ -88,7 +93,7 @@ namespace Atmos
             // First, get past all spaces
             size_t count = 0;
             auto loop = set.begin();
-            while (loop != set.end(), *loop == ' ')
+            while (loop != set.end() && *loop == ' ')
                 ++loop, ++count;
 
             // If we're already at the end, or the name isn't right here (at the beginning), then leave
@@ -111,6 +116,12 @@ namespace Atmos
         }
 
         template<class T>
+        void Manager::Entry<T>::SetFromInternal()
+        {
+            value = valueGetter.Execute();
+        }
+
+        template<class T>
         String Manager::Entry<T>::GetFileString() const
         {
             return name + assignmentToken + ToString(value) + "\n";
@@ -123,9 +134,9 @@ namespace Atmos
         }
 
         template<ID id>
-        Manager::Entry<typename Traits<id>::T>* Manager::CreateEntry(String &&name)
+        Manager::Entry<typename Traits<id>::T>* Manager::CreateEntry(String &&name, ::function::Function<typename Traits<id>::T> &&valueGetter)
         {
-            entries.push_back(EntryPtr(new Entry<Traits<id>::T>(std::move(name))));
+            entries.push_back(EntryPtr(new Entry<Traits<id>::T>(std::move(name), std::move(valueGetter))));
             return static_cast<Entry<Traits<id>::T>*>(entries.back().get());
         }
 
@@ -140,178 +151,5 @@ namespace Atmos
         {
             return &static_cast<const Entry<Traits<id>::T>*>(entries[static_cast<size_t>(id)].get())->value;
         }
-
-        /*
-        class Handler
-        {
-        public:
-            class Section
-            {
-            private:
-                class LineBase
-                {
-                public:
-                    virtual ~LineBase() = 0 {}
-                    virtual String GetString() = 0;
-                    virtual void Load(const String &string) = 0;
-                };
-
-                template<class T>
-                class LineDerived : public Line<T>, public LineBase
-                {
-                private:
-                    String variableName;
-
-                    typedef std::function<T()> GetVarFunc;
-                    GetVarFunc getVarFunc;
-
-                    template<class U, typename std::enable_if<std::is_same<U, String>::value, int>::type = 0>
-                    String GetString(const U &obj);
-                    template<class U, typename std::enable_if<!std::is_same<U, String>::value, int>::type = 0>
-                    String GetString(const U &obj);
-
-                    template<class U, typename std::enable_if<std::is_same<U, String>::value, int>::type = 0>
-                    void SetVariable(const String &input);
-                    template<class U, typename std::enable_if<!std::is_same<U, String>::value, int>::type = 0>
-                    void SetVariable(const String &input);
-                public:
-                    LineDerived(const String &variableName, const GetVarFunc &getVarFunc);
-                    String GetString() override;
-                    void Load(const String &string) override;
-
-                    const String& GetVariableName() const override;
-                };
-            private:
-                String header;
-                typedef std::unique_ptr<LineBase> LinePtr;
-                std::vector<LinePtr> lines;
-
-                Section(const String &header);
-                void Save(String &string);
-                void Load(const String &header, ::inscription::TextInFile &file);
-                template<class T, class Func>
-                LineDerived<T>* CreateLinePortal(const String &variableName, Line<T> *&receiverLine, const Func &getVarFunc);
-            public:
-                Section(Section &&arg);
-                template<class T>
-                LineDerived<T>* CreateLine(const String &variableName, Line<T> *&receiverLine, T(*getVarFunc)());
-                template<class T, class Func>
-                LineDerived<T>* CreateLine(const String &variableName, Line<T> *&receiverLine, const Func &getVarFunc);
-                friend Handler;
-            };
-        private:
-            std::vector<Section> sections;
-
-            static const FileName FILE_NAME;
-
-            Handler() = default;
-            Handler(const Handler &arg) = delete;
-            Handler& operator=(const Handler &arg) = delete;
-
-            void CreateSections();
-            template<class T>
-            static T IniFromString(const String &str, const Section::LineDerived<T> &line);
-            static agui::Resolution::Size IniFromString(const String &str, const Section::LineDerived<agui::Resolution::Size> &line);
-            static Input::Key IniFromString(const String &str, const Section::LineDerived<Input::Key> &line);
-        public:
-            NullEvent eventPostLoad;
-
-            static Handler& Instance();
-            static Section* CreateSection(const String &header);
-            static void Save();
-            static void Load();
-        };
-
-        template<class T>
-        template<class U, typename std::enable_if<std::is_same<U, String>::value, int>::type>
-        String Handler::Section::LineDerived<T>::GetString(const U &obj)
-        {
-            return obj;
-        }
-
-        template<class T>
-        template<class U, typename std::enable_if<!std::is_same<U, String>::value, int>::type>
-        String Handler::Section::LineDerived<T>::GetString(const U &obj)
-        {
-            return ToString(obj);
-        }
-
-        template<class T>
-        template<class U, typename std::enable_if<std::is_same<U, String>::value, int>::type>
-        void Handler::Section::LineDerived<T>::SetVariable(const String &input)
-        {
-            variable = input;
-        }
-
-        template<class T>
-        template<class U, typename std::enable_if<!std::is_same<U, String>::value, int>::type>
-        void Handler::Section::LineDerived<T>::SetVariable(const String &input)
-        {
-            variable = Handler::IniFromString(input, *this);
-        }
-
-        template<class T>
-        Handler::Section::LineDerived<T>::LineDerived(const String &variableName, const GetVarFunc &getVarFunc) : variableName(variableName), getVarFunc(getVarFunc)
-        {}
-
-        template<class T>
-        String Handler::Section::LineDerived<T>::GetString()
-        {
-            return variableName + " = " + GetString(getVarFunc());
-        }
-
-        template<class T>
-        void Handler::Section::LineDerived<T>::Load(const String &string)
-        {
-            auto delimiterPos = string.find_last_of("=");
-            if (string.substr(0, delimiterPos - 1) != variableName)
-                return;
-
-            SetVariable<T>(string.substr(delimiterPos + 2));
-        }
-
-        template<class T>
-        const String& Handler::Section::LineDerived<T>::GetVariableName() const
-        {
-            return variableName;
-        }
-
-        template<class T, class Func>
-        Handler::Section::LineDerived<T>* Handler::Section::CreateLinePortal(const String &variableName, Line<T> *&receiverLine, const Func &getVarFunc)
-        {
-            auto made = new LineDerived<T>(variableName, getVarFunc);
-            receiverLine = made;
-            lines.push_back(LinePtr(made));
-            return made;
-        }
-
-        template<class T>
-        Handler::Section::LineDerived<T>* Handler::Section::CreateLine(const String &variableName, Line<T> *&receiverLine, T(*getVarFunc)())
-        {
-            return CreateLinePortal<T>(variableName, receiverLine, getVarFunc);
-        }
-
-        template<class T, class Func>
-        Handler::Section::LineDerived<T>* Handler::Section::CreateLine(const String &variableName, Line<T> *&receiverLine, const Func &getVarFunc)
-        {
-            return CreateLinePortal<T>(variableName, receiverLine, getVarFunc);
-        }
-
-        template<class T>
-        T Handler::IniFromString(const String &str, const Section::LineDerived<T> &line)
-        {
-            return FromString<T>(str);
-        }
-
-        template<>
-        struct Component<::agui::System>
-        {
-            static Line<agui::Resolution::Size> *resolution;
-
-            static void Init();
-        };
-
-        typedef Component<::agui::System> GuiSystem;
-        */
     }
 }

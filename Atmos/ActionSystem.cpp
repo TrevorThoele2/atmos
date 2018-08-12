@@ -7,6 +7,9 @@ namespace Atmos
 {
     namespace Ent
     {
+        ActionSystem::ActionSystem()
+        {}
+
         void ActionSystem::Init()
         {
             SubscribeEvent(WorldManager::Instance().eventFieldSet, &ActionSystem::OnFieldSet);
@@ -18,5 +21,7 @@ namespace Atmos
             for (auto loop : actionMap)
                 loop.second.OnFieldEntered();
         }
+
+        ENTITY_SYSTEM_FORCE_INSTANTIATION(ActionSystem);
     }
 }

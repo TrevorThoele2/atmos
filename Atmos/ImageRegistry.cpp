@@ -31,10 +31,11 @@ namespace Atmos
         }
         else // INPUT
         {
+            Clear();
+
             inscription::ContainerSize size;
             scribe.Load(size);
 
-            map.clear();
             while (size-- > 0)
             {
                 ID id;
@@ -68,6 +69,16 @@ namespace Atmos
                         Logger::NameValueVector{ NameValuePair("File Name", fileName.GetValue()) });
             }
         }
+    }
+
+    void AssetRegistry<ImageAsset>::BeforeRemove(Map::iterator itr)
+    {
+        agui::System::DestroyImageResource(itr->first.c_str());
+    }
+
+    void AssetRegistry<ImageAsset>::BeforeClear()
+    {
+        agui::System::ClearImageResources();
     }
 
     AssetRegistry<ImageAsset>::ReferenceT AssetRegistry<ImageAsset>::Register(ID id, void *buffer, std::int32_t size, const FileName &name, ImageAsset::GridDimension cols, ImageAsset::GridDimension rows)

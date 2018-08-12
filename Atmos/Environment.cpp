@@ -193,7 +193,7 @@ namespace Atmos
 
     const std::string& EnvironmentModel::GetVersion()
     {
-        static std::string ret("VERSION: 0.9.0 (4/28/2018)");
+        static std::string ret("VERSION: 0.9.0 (08/04/2018)");
         return ret;
     }
 

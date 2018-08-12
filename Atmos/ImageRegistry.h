@@ -22,6 +22,9 @@ namespace Atmos
         INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
     private:
+        void BeforeRemove(Map::iterator itr) override final;
+        void BeforeClear() override final;
+    private:
         ReferenceT Register(ID id, void *buffer, std::int32_t size, const FileName &name, ImageAsset::GridDimension cols, ImageAsset::GridDimension rows);
         static Join2<ImageAsset::GridDimension> SetupGrid(ImageAsset::GridDimension cols, ImageAsset::GridDimension rows);
 

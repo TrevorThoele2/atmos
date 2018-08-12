@@ -69,7 +69,7 @@ namespace Atmos
         // Resolutions
         // Aspect ratio menubutton
         ratioButton = agui::MenuButton::Factory(GetRoot(), "aspectRatioButton", agui::RelativePosition(agui::Dimension(0, -306), agui::Dimension(0, 25), agui::HorizontalAlignment::RIGHT, agui::VerticalAlignment::TOP), 1);
-        ratioButton->GetButton()->GetText()->SetString(GetAspectRatioName(agui::System::GetCurrentRes()->GetAspectRatio()));
+        ratioButton->GetButton()->GetText()->SetString(GetAspectRatioName(agui::System::GetCurrentResolution()->GetAspectRatio()));
         ratioButton->GetButton()->GetText()->color.Edit(0, 0, 0);
         ratioButton->GetMenu()->GetSprite()->color.Edit(255, 0, 0, 0);
 
@@ -85,12 +85,12 @@ namespace Atmos
 
         // Resolution menubutton
         resButton = agui::MenuButton::Factory(GetRoot(), "resolutionButton", agui::RelativePosition(agui::Dimension(0, -25), agui::Dimension(0, 25), agui::HorizontalAlignment::RIGHT, agui::VerticalAlignment::TOP), 1);
-        resButton->GetButton()->GetText()->SetString(GetResolutionName(*agui::System::GetCurrentRes()));
+        resButton->GetButton()->GetText()->SetString(GetResolutionName(*agui::System::GetCurrentResolution()));
         resButton->GetButton()->GetText()->color.Edit(0, 0, 0);
         resButton->GetMenu()->GetSprite()->color.Edit(255, 0, 0, 0);
 
         // Fill dropDownButton with resolutions
-        FillResButton(agui::System::GetCurrentRes()->GetAspectRatio());
+        FillResButton(agui::System::GetCurrentResolution()->GetAspectRatio());
 
         // Accept button
         auto button = agui::PushButton::Factory(GetRoot(), "accept", agui::RelativePosition(agui::Dimension(0, 60), agui::Dimension(0, -48), agui::HorizontalAlignment::LEFT, agui::VerticalAlignment::BOT), 1);
@@ -118,7 +118,7 @@ namespace Atmos
         // Fullscreen
         fullscreen.Init(fullscreenCheckbox->GetChecked());
         // Resolution attribute 
-        resolution.Init(agui::System::GetCurrentRes());
+        resolution.Init(agui::System::GetCurrentResolution());
     }
 
     void OptionsScreenGui::Exit()

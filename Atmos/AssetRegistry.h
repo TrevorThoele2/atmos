@@ -37,6 +37,9 @@ namespace Atmos
     private:
         AssetRegistryBase(const AssetRegistryBase &arg) = delete;
         AssetRegistryBase& operator=(const AssetRegistryBase &arg) = delete;
+
+        virtual void BeforeRemove(typename Map::iterator itr) {}
+        virtual void BeforeClear() {}
     protected:
         static Map map;
 

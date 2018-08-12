@@ -105,6 +105,7 @@ namespace Atmos
             void InitImpl() override;
             void WorkImpl() override;
             bool CanGotoImpl() const override;
+            void OnFocusedImpl() override;
 
             // Will setup the players and monsters after being placed
             void Start();
