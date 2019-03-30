@@ -20,11 +20,13 @@ namespace Atmos
     private:
         ValueT number;
 
-        virtual ValueT GetUpperBoundImpl() const = 0;
-        virtual ValueT GetLowerBoundImpl() const = 0;
+        virtual ValueT UpperBoundImpl() const = 0;
+        virtual ValueT LowerBoundImpl() const = 0;
     public:
         BoundedNumberBase(ValueT number);
         bool operator==(const BoundedNumberBase &arg) const;
+
+        operator ValueT() const;
 
         void Set(ValueT setTo);
         void SetByPercentage(double set);
@@ -35,10 +37,10 @@ namespace Atmos
 
         bool IsAtUpper() const;
         bool IsAtLower() const;
-        ValueT GetUpperBound() const;
-        ValueT GetLowerBound() const;
+        ValueT UpperBound() const;
+        ValueT LowerBound() const;
 
-        ValueT Get() const;
+        ValueT Value() const;
     };
 
     template<class T>
@@ -58,16 +60,22 @@ namespace Atmos
     }
 
     template<class T>
+    BoundedNumberBase<T>::operator ValueT() const
+    {
+        return Value();
+    }
+
+    template<class T>
     void BoundedNumberBase<T>::Set(ValueT setTo)
     {
-        auto upperBound = GetUpperBound();
+        auto upperBound = UpperBound();
         if (setTo > upperBound)
         {
             number = upperBound;
             return;
         }
 
-        auto lowerBound = GetLowerBound();
+        auto lowerBound = LowerBound();
         if (setTo < lowerBound)
         {
             number = lowerBound;
@@ -80,8 +88,8 @@ namespace Atmos
     template<class T>
     void BoundedNumberBase<T>::SetByPercentage(double set)
     {
-        auto lowerBound = GetLowerBound();
-        auto upperBound = GetUpperBound();
+        auto lowerBound = LowerBound();
+        auto upperBound = UpperBound();
         if (set < 0.0)
             Set(lowerBound);
         else if (set > 1.0)
@@ -93,8 +101,8 @@ namespace Atmos
     template<class T>
     void BoundedNumberBase<T>::Add(ValueT amount)
     {
-        ValueT upperBound = GetUpperBound();
-        ValueT lowerBound = GetLowerBound();
+        ValueT upperBound = UpperBound();
+        ValueT lowerBound = LowerBound();
 
         if (OverflowAdd(number, amount, upperBound))
             number = upperBound;
@@ -107,8 +115,8 @@ namespace Atmos
     template<class T>
     void BoundedNumberBase<T>::Subtract(ValueT amount)
     {
-        ValueT lowerBound = GetLowerBound();
-        ValueT upperBound = GetUpperBound();
+        ValueT lowerBound = LowerBound();
+        ValueT upperBound = UpperBound();
 
         if (OverflowSubtract(number, amount, upperBound))
             number = upperBound;
@@ -127,8 +135,8 @@ namespace Atmos
             return;
         }
 
-        ValueT lowerBound = GetLowerBound();
-        ValueT upperBound = GetUpperBound();
+        ValueT lowerBound = LowerBound();
+        ValueT upperBound = UpperBound();
 
         if (OverflowMultiply(number, amount, upperBound))
             number = upperBound;
@@ -144,8 +152,8 @@ namespace Atmos
         if (amount == 0)
             throw DivideByZeroException();
 
-        ValueT lowerBound = GetLowerBound();
-        ValueT upperBound = GetUpperBound();
+        ValueT lowerBound = LowerBound();
+        ValueT upperBound = UpperBound();
 
         if (OverflowMultiply(number, amount, upperBound))
             number = upperBound;
@@ -158,29 +166,29 @@ namespace Atmos
     template<class T>
     bool BoundedNumberBase<T>::IsAtUpper() const
     {
-        return number == GetUpperBound();
+        return number == UpperBound();
     }
 
     template<class T>
     bool BoundedNumberBase<T>::IsAtLower() const
     {
-        return number == GetLowerBound();
+        return number == LowerBound();
     }
 
     template<class T>
-    typename BoundedNumberBase<T>::ValueT BoundedNumberBase<T>::GetUpperBound() const
+    typename BoundedNumberBase<T>::ValueT BoundedNumberBase<T>::UpperBound() const
     {
-        return GetUpperBoundImpl();
+        return UpperBoundImpl();
     }
 
     template<class T>
-    typename BoundedNumberBase<T>::ValueT BoundedNumberBase<T>::GetLowerBound() const
+    typename BoundedNumberBase<T>::ValueT BoundedNumberBase<T>::LowerBound() const
     {
-        return GetLowerBoundImpl();
+        return LowerBoundImpl();
     }
 
     template<class T>
-    typename BoundedNumberBase<T>::ValueT BoundedNumberBase<T>::Get() const
+    typename BoundedNumberBase<T>::ValueT BoundedNumberBase<T>::Value() const
     {
         return number;
     }
@@ -195,8 +203,8 @@ namespace Atmos
         ValueT lowerBound;
         ValueT upperBound;
 
-        ValueT GetLowerBoundImpl() const override;
-        ValueT GetUpperBoundImpl() const override;
+        ValueT LowerBoundImpl() const override;
+        ValueT UpperBoundImpl() const override;
     public:
         DynamicBoundedNumber();
         explicit DynamicBoundedNumber(ValueT number, ValueT upperBound, ValueT lowerBound);
@@ -207,11 +215,11 @@ namespace Atmos
         bool operator>(const DynamicBoundedNumber &arg) const;
         bool operator>=(const DynamicBoundedNumber &arg) const;
 
-        friend bool operator==(const DynamicBoundedNumber &arg, ValueT value) { return arg.Get() == value; }
+        friend bool operator==(const DynamicBoundedNumber &arg, ValueT value) { return arg.Value() == value; }
         friend bool operator!=(const DynamicBoundedNumber &arg, ValueT value) { return !(arg == value); }
-        friend bool operator<(const DynamicBoundedNumber &arg, ValueT value) { return arg.Get() < value; }
+        friend bool operator<(const DynamicBoundedNumber &arg, ValueT value) { return arg.Value() < value; }
         friend bool operator<=(const DynamicBoundedNumber &arg, ValueT value) { return arg < value || arg == value; }
-        friend bool operator>(const DynamicBoundedNumber &arg, ValueT value) { return arg.Get() > value; }
+        friend bool operator>(const DynamicBoundedNumber &arg, ValueT value) { return arg.Value() > value; }
         friend bool operator>=(const DynamicBoundedNumber &arg, ValueT value) { return arg > value || arg == value; }
 
         explicit operator ValueT() const;
@@ -241,7 +249,7 @@ namespace Atmos
         friend DynamicBoundedNumber operator-(const DynamicBoundedNumber &arg, ValueT number)
         {
             DynamicBoundedNumber<T> ret(arg);
-            ret.Subtract(arg.Get());
+            ret.Subtract(arg.Value());
             return ret;
         }
 
@@ -297,13 +305,13 @@ namespace Atmos
     }
 
     template<class T>
-    typename DynamicBoundedNumber<T>::ValueT DynamicBoundedNumber<T>::GetLowerBoundImpl() const
+    typename DynamicBoundedNumber<T>::ValueT DynamicBoundedNumber<T>::LowerBoundImpl() const
     {
         return lowerBound;
     }
 
     template<class T>
-    typename DynamicBoundedNumber<T>::ValueT DynamicBoundedNumber<T>::GetUpperBoundImpl() const
+    typename DynamicBoundedNumber<T>::ValueT DynamicBoundedNumber<T>::UpperBoundImpl() const
     {
         return upperBound;
     }
@@ -331,37 +339,37 @@ namespace Atmos
     template<class T>
     bool DynamicBoundedNumber<T>::operator<(const DynamicBoundedNumber &arg) const
     {
-        return Get() < arg.Get();
+        return Value() < arg.Value();
     }
 
     template<class T>
     bool DynamicBoundedNumber<T>::operator<=(const DynamicBoundedNumber &arg) const
     {
-        return Get() <= arg.Get();
+        return Value() <= arg.Value();
     }
 
     template<class T>
     bool DynamicBoundedNumber<T>::operator>(const DynamicBoundedNumber &arg) const
     {
-        return Get() > arg.Get();
+        return Value() > arg.Value();
     }
 
     template<class T>
     bool DynamicBoundedNumber<T>::operator>=(const DynamicBoundedNumber &arg) const
     {
-        return Get() >= arg.Get();
+        return Value() >= arg.Value();
     }
 
     template<class T>
     DynamicBoundedNumber<T>::operator ValueT() const
     {
-        return Get();
+        return Value();
     }
 
     template<class T>
     DynamicBoundedNumber<T>& DynamicBoundedNumber<T>::operator=(const DynamicBoundedNumber &arg)
     {
-        Set(arg.Get());
+        Set(arg.Value());
         return *this;
     }
 
@@ -406,14 +414,14 @@ namespace Atmos
     DynamicBoundedNumber<T> DynamicBoundedNumber<T>::operator+(const DynamicBoundedNumber &arg) const
     {
         DynamicBoundedNumber<T> ret(*this);
-        ret.Add(arg.Get());
+        ret.Add(arg.Value());
         return ret;
     }
 
     template<class T>
     DynamicBoundedNumber<T>& DynamicBoundedNumber<T>::operator+=(const DynamicBoundedNumber &arg)
     {
-        Add(arg.Get());
+        Add(arg.Value());
         return *this;
     }
 
@@ -421,14 +429,14 @@ namespace Atmos
     DynamicBoundedNumber<T> DynamicBoundedNumber<T>::operator-(const DynamicBoundedNumber &arg) const
     {
         DynamicBoundedNumber<T> ret(*this);
-        ret.Subtract(arg.Get());
+        ret.Subtract(arg.Value());
         return ret;
     }
 
     template<class T>
     DynamicBoundedNumber<T>& DynamicBoundedNumber<T>::operator-=(const DynamicBoundedNumber &arg)
     {
-        Subtract(arg.Get());
+        Subtract(arg.Value());
         return *this;
     }
 
@@ -436,14 +444,14 @@ namespace Atmos
     DynamicBoundedNumber<T> DynamicBoundedNumber<T>::operator*(const DynamicBoundedNumber<T> &arg) const
     {
         DynamicBoundedNumber<T> ret(*this);
-        ret.Multiply(arg.Get());
+        ret.Multiply(arg.Value());
         return ret;
     }
 
     template<class T>
     DynamicBoundedNumber<T>& DynamicBoundedNumber<T>::operator*=(const DynamicBoundedNumber<T> &arg)
     {
-        Multiply(arg.Get());
+        Multiply(arg.Value());
         return *this;
     }
 
@@ -451,14 +459,14 @@ namespace Atmos
     DynamicBoundedNumber<T> DynamicBoundedNumber<T>::operator/(const DynamicBoundedNumber<T> &arg) const
     {
         DynamicBoundedNumber<T> ret(*this);
-        ret.Divide(arg.Get());
+        ret.Divide(arg.Value());
         return ret;
     }
 
     template<class T>
     DynamicBoundedNumber<T>& DynamicBoundedNumber<T>::operator/=(const DynamicBoundedNumber<T> &arg)
     {
-        Divide(arg.Get());
+        Divide(arg.Value());
         return *this;
     }
 
@@ -469,7 +477,7 @@ namespace Atmos
             return;
 
         lowerBound = setTo;
-        if (Get() < lowerBound)
+        if (Value() < lowerBound)
             Set(lowerBound);
     }
 
@@ -480,7 +488,7 @@ namespace Atmos
             return;
 
         upperBound = setTo;
-        if (Get() > upperBound)
+        if (Value() > upperBound)
             Set(upperBound);
     }
 
@@ -536,8 +544,8 @@ namespace Atmos
         INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
     private:
-        ValueT GetUpperBoundImpl() const override;
-        ValueT GetLowerBoundImpl() const override;
+        ValueT UpperBoundImpl() const override;
+        ValueT LowerBoundImpl() const override;
     public:
         StaticBoundedNumber();
         explicit StaticBoundedNumber(ValueT value);
@@ -548,11 +556,11 @@ namespace Atmos
         bool operator>(const StaticBoundedNumber &arg) const;
         bool operator>=(const StaticBoundedNumber &arg) const;
 
-        friend bool operator==(const StaticBoundedNumber &arg, ValueT value) { return arg.Get() == value; }
+        friend bool operator==(const StaticBoundedNumber &arg, ValueT value) { return arg.Value() == value; }
         friend bool operator!=(const StaticBoundedNumber &arg, ValueT value) { return !(arg == value); }
-        friend bool operator<(const StaticBoundedNumber &arg, ValueT value) { return arg.Get() < value; }
+        friend bool operator<(const StaticBoundedNumber &arg, ValueT value) { return arg.Value() < value; }
         friend bool operator<=(const StaticBoundedNumber &arg, ValueT value) { return arg < value || arg == value; }
-        friend bool operator>(const StaticBoundedNumber &arg, ValueT value) { return arg.Get() > value; }
+        friend bool operator>(const StaticBoundedNumber &arg, ValueT value) { return arg.Value() > value; }
         friend bool operator>=(const StaticBoundedNumber &arg, ValueT value) { return arg > value || arg == value; }
 
         explicit operator ValueT() const;
@@ -623,8 +631,8 @@ namespace Atmos
             return arg;
         }
 
-        static constexpr ValueT GetUpperBoundStatic();
-        static constexpr ValueT GetLowerBoundStatic();
+        static constexpr ValueT UpperBoundStatic();
+        static constexpr ValueT LowerBoundStatic();
     };
 
     template<class T, typename Detail::BoundedNumberFloatTransform<T>::Type lowerBound, typename Detail::BoundedNumberFloatTransform<T>::Type upperBound>
@@ -634,13 +642,13 @@ namespace Atmos
     }
 
     template<class T, typename Detail::BoundedNumberFloatTransform<T>::Type lowerBound, typename Detail::BoundedNumberFloatTransform<T>::Type upperBound>
-    typename StaticBoundedNumber<T, lowerBound, upperBound>::ValueT StaticBoundedNumber<T, lowerBound, upperBound>::GetUpperBoundImpl() const
+    typename StaticBoundedNumber<T, lowerBound, upperBound>::ValueT StaticBoundedNumber<T, lowerBound, upperBound>::UpperBoundImpl() const
     {
         return upperBound;
     }
 
     template<class T, typename Detail::BoundedNumberFloatTransform<T>::Type lowerBound, typename Detail::BoundedNumberFloatTransform<T>::Type upperBound>
-    typename StaticBoundedNumber<T, lowerBound, upperBound>::ValueT StaticBoundedNumber<T, lowerBound, upperBound>::GetLowerBoundImpl() const
+    typename StaticBoundedNumber<T, lowerBound, upperBound>::ValueT StaticBoundedNumber<T, lowerBound, upperBound>::LowerBoundImpl() const
     {
         return lowerBound;
     }
@@ -668,37 +676,37 @@ namespace Atmos
     template<class T, typename Detail::BoundedNumberFloatTransform<T>::Type lowerBound, typename Detail::BoundedNumberFloatTransform<T>::Type upperBound>
     bool StaticBoundedNumber<T, lowerBound, upperBound>::operator<(const StaticBoundedNumber &arg) const
     {
-        return Get() < arg.Get();
+        return Value() < arg.Value();
     }
 
     template<class T, typename Detail::BoundedNumberFloatTransform<T>::Type lowerBound, typename Detail::BoundedNumberFloatTransform<T>::Type upperBound>
     bool StaticBoundedNumber<T, lowerBound, upperBound>::operator<=(const StaticBoundedNumber &arg) const
     {
-        return Get() <= arg.Get();
+        return Value() <= arg.Value();
     }
 
     template<class T, typename Detail::BoundedNumberFloatTransform<T>::Type lowerBound, typename Detail::BoundedNumberFloatTransform<T>::Type upperBound>
     bool StaticBoundedNumber<T, lowerBound, upperBound>::operator>(const StaticBoundedNumber &arg) const
     {
-        return Get() > arg.Get();
+        return Value() > arg.Value();
     }
 
     template<class T, typename Detail::BoundedNumberFloatTransform<T>::Type lowerBound, typename Detail::BoundedNumberFloatTransform<T>::Type upperBound>
     bool StaticBoundedNumber<T, lowerBound, upperBound>::operator>=(const StaticBoundedNumber &arg) const
     {
-        return Get() >= arg.Get();
+        return Value() >= arg.Value();
     }
 
     template<class T, typename Detail::BoundedNumberFloatTransform<T>::Type lowerBound, typename Detail::BoundedNumberFloatTransform<T>::Type upperBound>
     StaticBoundedNumber<T, lowerBound, upperBound>::operator ValueT() const
     {
-        return Get();
+        return Value();
     }
 
     template<class T, typename Detail::BoundedNumberFloatTransform<T>::Type lowerBound, typename Detail::BoundedNumberFloatTransform<T>::Type upperBound>
     StaticBoundedNumber<T, lowerBound, upperBound>& StaticBoundedNumber<T, lowerBound, upperBound>::operator=(const StaticBoundedNumber &arg)
     {
-        Set(arg.Get());
+        Set(arg.Value());
         return *this;
     }
 
@@ -743,14 +751,14 @@ namespace Atmos
     StaticBoundedNumber<T, lowerBound, upperBound> StaticBoundedNumber<T, lowerBound, upperBound>::operator+(const StaticBoundedNumber &arg) const
     {
         StaticBoundedNumber<T, lowerBound, upperBound> ret(*this);
-        ret.Add(arg.Get());
+        ret.Add(arg.Value());
         return ret;
     }
 
     template<class T, typename Detail::BoundedNumberFloatTransform<T>::Type lowerBound, typename Detail::BoundedNumberFloatTransform<T>::Type upperBound>
     StaticBoundedNumber<T, lowerBound, upperBound>& StaticBoundedNumber<T, lowerBound, upperBound>::operator+=(const StaticBoundedNumber &arg)
     {
-        Add(arg.Get());
+        Add(arg.Value());
         return *this;
     }
 
@@ -758,14 +766,14 @@ namespace Atmos
     StaticBoundedNumber<T, lowerBound, upperBound> StaticBoundedNumber<T, lowerBound, upperBound>::operator-(const StaticBoundedNumber<T, lowerBound, upperBound> &arg) const
     {
         StaticBoundedNumber<T, lowerBound, upperBound> ret(*this);
-        ret.Subtract(arg.Get());
+        ret.Subtract(arg.Value());
         return ret;
     }
 
     template<class T, typename Detail::BoundedNumberFloatTransform<T>::Type lowerBound, typename Detail::BoundedNumberFloatTransform<T>::Type upperBound>
     StaticBoundedNumber<T, lowerBound, upperBound>& StaticBoundedNumber<T, lowerBound, upperBound>::operator-=(const StaticBoundedNumber &arg)
     {
-        Subtract(arg.Get());
+        Subtract(arg.Value());
         return *this;
     }
 
@@ -773,14 +781,14 @@ namespace Atmos
     StaticBoundedNumber<T, lowerBound, upperBound> StaticBoundedNumber<T, lowerBound, upperBound>::operator*(const StaticBoundedNumber &arg) const
     {
         StaticBoundedNumber<T, lowerBound, upperBound> ret(*this);
-        ret.Multiply(arg.Get());
+        ret.Multiply(arg.Value());
         return ret;
     }
 
     template<class T, typename Detail::BoundedNumberFloatTransform<T>::Type lowerBound, typename Detail::BoundedNumberFloatTransform<T>::Type upperBound>
     StaticBoundedNumber<T, lowerBound, upperBound>& StaticBoundedNumber<T, lowerBound, upperBound>::operator*=(const StaticBoundedNumber &arg)
     {
-        Multiply(arg.Get());
+        Multiply(arg.Value());
         return *this;
     }
 
@@ -788,25 +796,25 @@ namespace Atmos
     StaticBoundedNumber<T, lowerBound, upperBound> StaticBoundedNumber<T, lowerBound, upperBound>::operator/(const StaticBoundedNumber &arg) const
     {
         StaticBoundedNumber<T, lowerBound, upperBound> ret(*this);
-        ret.Divide(arg.Get());
+        ret.Divide(arg.Value());
         return ret;
     }
 
     template<class T, typename Detail::BoundedNumberFloatTransform<T>::Type lowerBound, typename Detail::BoundedNumberFloatTransform<T>::Type upperBound>
     StaticBoundedNumber<T, lowerBound, upperBound>& StaticBoundedNumber<T, lowerBound, upperBound>::operator/=(const StaticBoundedNumber &arg)
     {
-        Divide(arg.Get());
+        Divide(arg.Value());
         return *this;
     }
 
     template<class T, typename Detail::BoundedNumberFloatTransform<T>::Type lowerBound, typename Detail::BoundedNumberFloatTransform<T>::Type upperBound>
-    typename constexpr StaticBoundedNumber<T, lowerBound, upperBound>::ValueT StaticBoundedNumber<T, lowerBound, upperBound>::GetUpperBoundStatic()
+    typename constexpr StaticBoundedNumber<T, lowerBound, upperBound>::ValueT StaticBoundedNumber<T, lowerBound, upperBound>::UpperBoundStatic()
     {
         return upperBound;
     }
 
     template<class T, typename Detail::BoundedNumberFloatTransform<T>::Type lowerBound, typename Detail::BoundedNumberFloatTransform<T>::Type upperBound>
-    typename constexpr StaticBoundedNumber<T, lowerBound, upperBound>::ValueT StaticBoundedNumber<T, lowerBound, upperBound>::GetLowerBoundStatic()
+    typename constexpr StaticBoundedNumber<T, lowerBound, upperBound>::ValueT StaticBoundedNumber<T, lowerBound, upperBound>::LowerBoundStatic()
     {
         return lowerBound;
     }

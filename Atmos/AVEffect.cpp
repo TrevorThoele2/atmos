@@ -3,8 +3,12 @@
 
 #include "WorldManager.h"
 
+#include <Inscription/UnorderedMap.h>
+#include <Inscription/Vector.h>
+
 namespace Atmos
 {
+    /*
     INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(AVEffect::Node::ModulatorEntry)
     {
         scribe(id);
@@ -62,7 +66,7 @@ namespace Atmos
 
     bool AVEffect::Node::IsWorking() const
     {
-        for (auto &loop : modulators)
+        for (auto& loop : modulators)
         {
             if (loop.IsWorking())
                 return true;
@@ -107,13 +111,13 @@ namespace Atmos
 
     void AVEffect::Node::Start()
     {
-        for (auto &loop : modulators)
+        for (auto& loop : modulators)
             ;// loop.Start(*this);
     }
 
     void AVEffect::Node::Stop()
     {
-        for (auto &loop : modulators)
+        for (auto& loop : modulators)
             loop.Stop();
     }
 
@@ -381,4 +385,5 @@ namespace Atmos
                 ++loop;
         }
     }
+    */
 }

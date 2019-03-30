@@ -8,7 +8,6 @@
 #include "Name.h"
 
 #include "Serialization.h"
-#include <Inscription/TrackingTraits.h>
 
 namespace Atmos
 {
@@ -281,14 +280,5 @@ namespace Atmos
     {
     public:
         constexpr static bool hasStandard = false;
-    };
-}
-
-namespace Inscription
-{
-    template<class T>
-    struct TrackPointer<::Atmos::DataStandard<T>>
-    {
-        static constexpr TrackEnum value = TRACK_NEVER;
     };
 }

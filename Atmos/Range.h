@@ -30,7 +30,8 @@ namespace Atmos
     template<class T>
     INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(Range<T>)
     {
-        scribe(begin, end);
+        scribe(begin);
+        scribe(end);
     }
 
     template<class T>

@@ -1,40 +1,29 @@
 
-#include <cassert>
 #include "EntityAISystem.h"
 
-#include "MainGame.h"
-#include "Battle.h"
-#include "WorldManager.h"
+#include "RunningScript.h"
 
-#include "CurrentField.h"
+#include "ObjectManager.h"
 
 namespace Atmos
 {
     namespace Ent
     {
-        AISystem::ScriptToUse AISystem::DetermineScriptToUse()
+        nEntityAISystem::nEntityAISystem(ObjectManager& manager) : ObjectSystem(manager)
         {
-            if (mainGameState.IsTop())
-                return &AIComponent::ai;
-            else if (battleState.IsTop())
-                return &AIComponent::battleAI;
-                
-            return nullptr;
+            aiComponents = manager.Batch<nAIComponent>();
         }
 
-        void AISystem::Work()
+        void nEntityAISystem::WorkImpl()
         {
-            ScriptToUse use = DetermineScriptToUse();
-            if (!use)
-                return;
-
-            for (auto &loop : GetCurrentEntities()->GetRawMap<AIComponent>())
+            for (auto& loop : aiComponents)
             {
-                if ((loop.second.*use).IsValid())
-                   (loop.second.*use).Resume();
+                auto running = loop->script->RunningForThis();
+                if (!running.IsOccupied())
+                    continue;
+
+                running->Resume();
             }
         }
-
-        ENTITY_SYSTEM_FORCE_INSTANTIATION(AISystem);
     }
 }

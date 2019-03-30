@@ -1,16 +1,16 @@
 
 #pragma once
 
+#include "CombatComponent.h"
+#include "ObjectReference.h"
+
 #include "FixedPoint.h"
-#include "Element.h"
 #include "Name.h"
 
 #include "Serialization.h"
 
 namespace Atmos
 {
-    namespace Ent { class CombatComponent; }
-
     class CombatTransactionGenerator;
     class CombatTransaction
     {
@@ -22,13 +22,12 @@ namespace Atmos
     private:
         Amount amount;
         Name positiveStatName;
-        Element element;
-        CombatTransaction(Amount amount, const Name &attackStatName, const Element &element);
+        CombatTransaction(Amount amount, const Name &attackStatName);
     public:
         bool operator==(const CombatTransaction &arg) const;
         bool operator!=(const CombatTransaction &arg) const;
         // Collide against the defense of the target
-        void Collide(Ent::CombatComponent &target) const;
+        void Collide(TypedObjectReference<Ent::nCombatComponent> target) const;
         friend CombatTransactionGenerator;
     };
 
@@ -41,25 +40,22 @@ namespace Atmos
     private:
         Name resourceName;
         Name statName;
-        Element element;
         Name proficiencyName;
     public:
         CombatTransactionGenerator() = default;
         // Power is represented by a percentage that can go over 100%
-        CombatTransactionGenerator(const Name &resourceName, const Name &statName, const Element &element, const Name &proficiencyName);
+        CombatTransactionGenerator(const Name &resourceName, const Name &statName, const Name &proficiencyName);
         bool operator==(const CombatTransactionGenerator &arg) const;
         bool operator!=(const CombatTransactionGenerator &arg) const;
 
-        CombatTransaction Generate(const CombatTransaction::Amount &baseAmount, const Ent::CombatComponent &source) const;
+        CombatTransaction Generate(const CombatTransaction::Amount &baseAmount, TypedObjectReference<Ent::nCombatComponent> source) const;
 
         void SetResourceName(const Name &set);
         void SetStatName(const Name &set);
-        void SetElement(Element set);
         void SetProficiencyName(const Name &set);
 
         const Name& GetResourceName() const;
         const Name& GetStatName() const;
-        Element GetElement() const;
         const Name& GetProficiencyName() const;
     };
 }

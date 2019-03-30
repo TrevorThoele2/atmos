@@ -10,20 +10,13 @@ namespace Atmos
 {
     class Size3D
     {
-    public: typedef float ValueT;
-    private:
-        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
-        INSCRIPTION_ACCESS;
-    private:
-        ValueT width, height, depth, realWidth, realHeight, realDepth;
-        ValueT xScaler, yScaler, zScaler;
-        Angle xRotation, yRotation, zRotation;
-
-        void Calc();
+    public:
+        typedef float ValueT;
     public:
         Size3D(ValueT width = 0.0f, ValueT height = 0.0f, ValueT depth = 0.0f, ValueT xScaler = 1.0f, ValueT yScaler = 1.0f, ValueT zScaler = 1.0f, const Angle &xRotation = Angle(), const Angle &yRotation = Angle(), const Angle &zRotation = Angle());
         Size3D(const Size3D &arg);
         Size3D& operator=(const Size3D &arg);
+
         bool operator==(const Size3D &arg) const;
         bool operator!=(const Size3D &arg) const;
 
@@ -53,5 +46,14 @@ namespace Atmos
         const Angle& GetXRotation() const;
         const Angle& GetYRotation() const;
         const Angle& GetZRotation() const;
+    private:
+        ValueT width, height, depth, realWidth, realHeight, realDepth;
+        ValueT xScaler, yScaler, zScaler;
+        Angle xRotation, yRotation, zRotation;
+
+        void Calculate();
+    private:
+        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
+        INSCRIPTION_ACCESS;
     };
 }

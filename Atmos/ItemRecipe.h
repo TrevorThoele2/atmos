@@ -1,8 +1,7 @@
 #pragma once
 
-#include "RegistryObject.h"
-
 #include "Item.h"
+#include "ObjectReference.h"
 
 #include "Serialization.h"
 
@@ -14,20 +13,10 @@ namespace Atmos
         INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
     public:
-        RegistryObjectReference<Item> result;
+        TypedObjectReference<nItem> result;
 
-        ItemRecipe();
+        ItemRecipe(const Name& name);
         ItemRecipe(const ItemRecipe &arg) = default;
         ItemRecipe& operator=(const ItemRecipe &arg) = default;
-        ItemRecipe(ItemRecipe &&arg);
-        ItemRecipe& operator=(ItemRecipe &&arg);
-    };
-
-    template<>
-    class Registry<ItemRecipe> : public RegistryBase<ItemRecipe, Registry<ItemRecipe>>
-    {
-    private:
-        Registry() = default;
-        friend RegistryBase<ItemRecipe, Registry<ItemRecipe>>;
     };
 }

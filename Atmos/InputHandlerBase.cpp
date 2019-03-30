@@ -2,7 +2,7 @@
 #include "InputHandlerBase.h"
 
 #include "Environment.h"
-#include "Camera.h"
+#include "GameEnvironment.h"
 #include "Debug.h"
 
 #include <AGUI/System.h>
@@ -110,6 +110,9 @@ namespace Atmos
 
         void HandlerBase::InitCreateActions()
         {
+            if (keyInputMap.empty())
+                return;
+
             AddAction<ActionID::MOVE_LEFT>(keyInputMap.find(*Environment::GetIni().GetEntry<Ini::ID::MOVE_LEFT>())->second);
             AddAction<ActionID::MOVE_UP>(keyInputMap.find(*Environment::GetIni().GetEntry<Ini::ID::MOVE_UP>())->second);
             AddAction<ActionID::MOVE_RIGHT>(keyInputMap.find(*Environment::GetIni().GetEntry<Ini::ID::MOVE_RIGHT>())->second);
@@ -152,7 +155,7 @@ namespace Atmos
             WorkInputsImpl(inputVector);
 
             // Actions
-            for (auto &loop : actionMap)
+            for (auto& loop : actionMap)
                 loop.second.Work();
 
             DebugScreen::Input().Calc();
@@ -168,6 +171,16 @@ namespace Atmos
             return !IsInputActive(id);
         }
 
+        bool HandlerBase::IsInputPressed(KeyID id)
+        {
+            return keyInputMap.find(id)->second.IsPressed();
+        }
+
+        bool HandlerBase::IsInputDepressed(KeyID id)
+        {
+            return keyInputMap.find(id)->second.IsDepressed();
+        }
+
         bool HandlerBase::IsInputActive(MouseButton id)
         {
             return mouseKeyInputMap.find(id)->second.IsActive();
@@ -176,6 +189,16 @@ namespace Atmos
         bool HandlerBase::IsInputInactive(MouseButton id)
         {
             return !IsInputActive(id);
+        }
+
+        bool HandlerBase::IsInputPressed(MouseButton id)
+        {
+            return mouseKeyInputMap.find(id)->second.IsPressed();
+        }
+
+        bool HandlerBase::IsInputDepressed(MouseButton id)
+        {
+            return mouseKeyInputMap.find(id)->second.IsDepressed();
         }
 
         bool HandlerBase::IsActionActive(ActionID id)
@@ -190,17 +213,17 @@ namespace Atmos
 
         bool HandlerBase::IsActionPressed(ActionID id)
         {
-            return actionMap.find(id)->second.mappedKey->Pressed();
+            return actionMap.find(id)->second.mappedKey->IsPressed();
         }
 
         bool HandlerBase::IsActionDepressed(ActionID id)
         {
-            return actionMap.find(id)->second.mappedKey->Depressed();
+            return actionMap.find(id)->second.mappedKey->IsDepressed();
         }
 
         bool HandlerBase::IsKeyUsedForAction(const SignalBase &input)
         {
-            for (auto &loop : actionMap)
+            for (auto& loop : actionMap)
             {
                 if (loop.second.mappedKey == &input)
                     return true;
@@ -238,7 +261,7 @@ namespace Atmos
 
         SignalBase* HandlerBase::GetInputFromDisplayName(const String &displayName)
         {
-            for (auto &loop : inputVector)
+            for (auto& loop : inputVector)
             {
                 if (loop->displayName == displayName)
                     return loop;
@@ -249,7 +272,7 @@ namespace Atmos
 
         Action* HandlerBase::GetActionFromDisplayName(const String &displayName)
         {
-            for (auto &loop : actionMap)
+            for (auto& loop : actionMap)
             {
                 if (loop.second.displayName == displayName)
                     return &loop.second;
@@ -268,12 +291,13 @@ namespace Atmos
             return mousePosPress;
         }
 
-        MousePosition HandlerBase::GetMousePositionInGameCoords()
+        MousePosition HandlerBase::GetMousePositionInGameCoordinates()
         {
             MousePosition toReturn;
 
-            toReturn.x = static_cast<MousePosition::ValueT>(floor(static_cast<double>(mousePos.x) + Camera::GetTopLeft().GetX()));
-            toReturn.y = static_cast<MousePosition::ValueT>(floor(static_cast<double>(mousePos.y) + Camera::GetTopLeft().GetY()));
+            auto &cameraTopLeft = GameEnvironment::GetCamera().GetTopLeft();
+            toReturn.x = static_cast<MousePosition::ValueT>(floor(static_cast<double>(mousePos.x) + cameraTopLeft.GetX()));
+            toReturn.y = static_cast<MousePosition::ValueT>(floor(static_cast<double>(mousePos.y) + cameraTopLeft.GetY()));
 
             return toReturn;
         }

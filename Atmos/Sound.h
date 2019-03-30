@@ -2,47 +2,44 @@
 #pragma once
 
 #include "Sense.h"
-#include "SoundBase.h"
 
-#include "Position3D.h"
+#include "AudioAssetInstance.h"
 
-#include "Serialization.h"
+#include "ObjectSerialization.h"
 
 namespace Atmos
 {
-    class SoundHandler;
-    class Sound : public SoundBase, public Sense
+    class nSound : public nSense
     {
-    private:
-        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
-        INSCRIPTION_ACCESS;
-    private:
-        friend SoundHandler;
-        friend AssetRegistry<AudioAsset>;
-    private:
-        Volume baseVolume;
-
-        void OnPositionChanged() override;
-        void OnEnabledChanged() override;
-
-        void PlayImpl() override;
-        void StopImpl() override;
-
-        void Init();
-        void SetVolumeByCameraPos();
-    protected:
-        Sound(const AssetReference<AudioAsset> &asset, const Position3D &position, bool loop = false, bool enabled = true);
     public:
-        Sound();
-        Sound(const Sound &arg);
-        Sound(Sound &&arg);
-        Sound& operator=(const Sound &arg);
-        Sound& operator=(Sound &&arg);
+        typedef TypedObjectReference<AudioAssetInstance> AssetReference;
+        typedef StoredProperty<AssetReference> AssetProperty;
+        AssetProperty audioAsset;
+    public:
+        nSound();
+        nSound(const nSound& arg);
+        nSound(const ::Inscription::Table<nSound>& table);
 
-        bool operator==(const Sound &arg) const;
-        bool operator!=(const Sound &arg) const;
+        ObjectTypeDescription TypeDescription() const override;
+    private:
+        void SubscribeToProperties();
+    private:
+        void OnEnabledChanged(bool newValue);
+    };
 
-        void SetBaseVolume(Volume set);
-        Volume GetBaseVolume() const;
+    template<>
+    struct ObjectTraits<nSound> : ObjectTraitsBase<nSound>
+    {
+        static const ObjectTypeName typeName;
+        static constexpr ObjectTypeList<nSense> bases = {};
+    };
+}
+
+namespace Inscription
+{
+    DECLARE_OBJECT_INSCRIPTER(::Atmos::nSound)
+    {
+    public:
+        static void AddMembers(TableT& table);
     };
 }

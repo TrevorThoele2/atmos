@@ -18,19 +18,34 @@ namespace Atmos
     class OffsetManagedList
     {
     private:
-        typedef IDManager<std::unordered_map<IDManagerBase::ID, ObjectOffsetHandle<T, Position3D>>> ManagerT;
+        typedef IDManager<std::int32_t, ObjectOffsetHandle<T, Position3D>> ManagerT;
     public:
-        typedef typename ManagerT::Object HandleT;
-        typedef typename ManagerT::ID ID;
-        typedef typename ManagerT::Object::ObjectT ObjectT;
-        typedef typename ManagerT::Object::OffsetT OffsetT;
-        typedef typename ManagerT::Object::OffsetValueT OffsetValueT;
+        typedef typename ManagerT::ValueT HandleT;
+        typedef typename ManagerT::IdentifierT ID;
+        typedef typename ManagerT::ValueT::ObjectT ObjectT;
+        typedef typename ManagerT::ValueT::OffsetT OffsetT;
+        typedef typename ManagerT::ValueT::OffsetValueT OffsetValueT;
 
         typedef typename ManagerT::iterator iterator;
         typedef typename ManagerT::const_iterator const_iterator;
-        typedef typename ManagerT::size_type size_type;
+        typedef typename ManagerT::SizeT size_type;
 
         static const ID nullID = ManagerT::nullID;
+    public:
+        class AddedEntry
+        {
+        private:
+            friend OffsetManagedList;
+        private:
+            AddedEntry(ID id, iterator itr);
+        public:
+            iterator itr;
+            ID id;
+            AddedEntry(const AddedEntry &arg) = default;
+            AddedEntry(AddedEntry &&arg);
+            AddedEntry& operator=(const AddedEntry &arg) = default;
+            AddedEntry& operator=(AddedEntry &&arg);
+        };
     private:
         INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
@@ -38,10 +53,10 @@ namespace Atmos
         ManagerT manager;
         const Position3D *ownerPosition;
 
-        std::pair<bool, iterator> AddImpl(const HandleT &handle);
-        std::pair<bool, iterator> AddImpl(ID id, const HandleT &handle);
-        std::pair<bool, iterator> AddImpl(HandleT &&handle);
-        std::pair<bool, iterator> AddImpl(ID id, HandleT &&handle);
+        std::pair<bool, AddedEntry> AddImpl(const HandleT &handle);
+        std::pair<bool, AddedEntry> AddImpl(ID id, const HandleT &handle);
+        std::pair<bool, AddedEntry> AddImpl(HandleT &&handle);
+        std::pair<bool, AddedEntry> AddImpl(ID id, HandleT &&handle);
 
         void SetManagerOwnerPosition();
     public:
@@ -62,51 +77,51 @@ namespace Atmos
         // Will return false if the object was not added
         // Guaranteed to return a valid iterator
         // The owner position must be set before this is called
-        std::pair<bool, iterator> Add(const ObjectT &obj);
+        std::pair<bool, AddedEntry> Add(const ObjectT &obj);
         // Will return false if the object was not added
         // Guaranteed to return a valid iterator
         // The owner position must be set before this is called
-        std::pair<bool, iterator> Add(const ObjectT &obj, OffsetValueT xOffset, OffsetValueT yOffset, OffsetValueT zOffset);
+        std::pair<bool, AddedEntry> Add(const ObjectT &obj, OffsetValueT xOffset, OffsetValueT yOffset, OffsetValueT zOffset);
         // Will return false if the object was not added
         // Guaranteed to return a valid iterator
         // The owner position must be set before this is called
-        std::pair<bool, iterator> Add(ID id, const ObjectT &obj);
+        std::pair<bool, AddedEntry> Add(ID id, const ObjectT &obj);
         // Will return false if the object was not added
         // Guaranteed to return a valid iterator
         // The owner position must be set before this is called
-        std::pair<bool, iterator> Add(ID id, const ObjectT &obj, OffsetValueT xOffset, OffsetValueT yOffset, OffsetValueT zOffset);
+        std::pair<bool, AddedEntry> Add(ID id, const ObjectT &obj, OffsetValueT xOffset, OffsetValueT yOffset, OffsetValueT zOffset);
         // Will return false if the object was not added
         // Guaranteed to return a valid iterator
         // The owner position must be set before this is called
-        std::pair<bool, iterator> Add(ObjectT &&obj);
+        std::pair<bool, AddedEntry> Add(ObjectT &&obj);
         // Will return false if the object was not added
         // Guaranteed to return a valid iterator
         // The owner position must be set before this is called
-        std::pair<bool, iterator> Add(ObjectT &&obj, OffsetValueT xOffset, OffsetValueT yOffset, OffsetValueT zOffset);
+        std::pair<bool, AddedEntry> Add(ObjectT &&obj, OffsetValueT xOffset, OffsetValueT yOffset, OffsetValueT zOffset);
         // Will return false if the object was not added
         // Guaranteed to return a valid iterator
         // The owner position must be set before this is called
-        std::pair<bool, iterator> Add(ID id, ObjectT &&obj);
+        std::pair<bool, AddedEntry> Add(ID id, ObjectT &&obj);
         // Will return false if the object was not added
         // Guaranteed to return a valid iterator
         // The owner position must be set before this is called
-        std::pair<bool, iterator> Add(ID id, ObjectT &&obj, OffsetValueT xOffset, OffsetValueT yOffset, OffsetValueT zOffset);
+        std::pair<bool, AddedEntry> Add(ID id, ObjectT &&obj, OffsetValueT xOffset, OffsetValueT yOffset, OffsetValueT zOffset);
         // Will return false if the object was not added
         // Guaranteed to return a valid iterator
         // The owner position must be set before this is called
-        std::pair<bool, iterator> Add(const HandleT &handle);
+        std::pair<bool, AddedEntry> Add(const HandleT &handle);
         // Will return false if the object was not added
         // Guaranteed to return a valid iterator
         // The owner position must be set before this is called
-        std::pair<bool, iterator> Add(ID id, const HandleT &handle);
+        std::pair<bool, AddedEntry> Add(ID id, const HandleT &handle);
         // Will return false if the object was not added
         // Guaranteed to return a valid iterator
         // The owner position must be set before this is called
-        std::pair<bool, iterator> Add(HandleT &&handle);
+        std::pair<bool, AddedEntry> Add(HandleT &&handle);
         // Will return false if the object was not added
         // Guaranteed to return a valid iterator
         // The owner position must be set before this is called
-        std::pair<bool, iterator> Add(ID id, HandleT &&handle);
+        std::pair<bool, AddedEntry> Add(ID id, HandleT &&handle);
 
         void Remove(HandleT &remove);
         void Remove(ObjectT &remove);
@@ -135,58 +150,74 @@ namespace Atmos
     }
 
     template<class T>
-    std::pair<bool, typename OffsetManagedList<T>::iterator> OffsetManagedList<T>::AddImpl(const HandleT &handle)
+    OffsetManagedList<T>::AddedEntry::AddedEntry(ID id, iterator itr) : id(id), itr(itr)
+    {}
+
+    template<class T>
+    OffsetManagedList<T>::AddedEntry::AddedEntry(AddedEntry &&arg) : itr(std::move(arg.itr)), id(std::move(arg.id))
+    {}
+
+    template<class T>
+    typename OffsetManagedList<T>::AddedEntry& OffsetManagedList<T>::AddedEntry::operator=(AddedEntry &&arg)
     {
-        typedef std::pair<bool, iterator> RetT;
-        auto size = manager.size();
+        itr = std::move(arg.itr);
+        id = std::move(arg.id);
+        return *this;
+    }
+
+    template<class T>
+    std::pair<bool, typename OffsetManagedList<T>::AddedEntry> OffsetManagedList<T>::AddImpl(const HandleT &handle)
+    {
+        typedef std::pair<bool, AddedEntry> RetT;
+        auto size = manager.Size();
         auto added = manager.Add(handle);
-        if (size != manager.size())
-            return RetT(true, manager.Find(added));
+        if (size != manager.Size())
+            return RetT(true, AddedEntry(added.ID(), added));
         else
-            return RetT(false, manager.Find(added));
+            return RetT(false, AddedEntry(added.ID(), added));
     }
 
     template<class T>
-    std::pair<bool, typename OffsetManagedList<T>::iterator> OffsetManagedList<T>::AddImpl(ID id, const HandleT &handle)
+    std::pair<bool, typename OffsetManagedList<T>::AddedEntry> OffsetManagedList<T>::AddImpl(ID id, const HandleT &handle)
     {
-        typedef std::pair<bool, iterator> RetT;
-        auto size = manager.size();
+        typedef std::pair<bool, AddedEntry> RetT;
+        auto size = manager.Size();
         auto added = manager.Add(id, handle);
-        if (size != manager.size())
-            return RetT(true, manager.Find(added));
+        if (size != manager.Size())
+            return RetT(true, AddedEntry(added.ID(), added));
         else
-            return RetT(false, manager.Find(added));
+            return RetT(false, AddedEntry(added.ID(), added));
     }
 
     template<class T>
-    std::pair<bool, typename OffsetManagedList<T>::iterator> OffsetManagedList<T>::AddImpl(HandleT &&handle)
+    std::pair<bool, typename OffsetManagedList<T>::AddedEntry> OffsetManagedList<T>::AddImpl(HandleT &&handle)
     {
-        typedef std::pair<bool, iterator> RetT;
-        auto size = manager.size();
+        typedef std::pair<bool, AddedEntry> RetT;
+        auto size = manager.Size();
         auto added = manager.Add(std::move(handle));
-        if (size != manager.size())
-            return RetT(true, manager.Find(added));
+        if (size != manager.Size())
+            return RetT(true, AddedEntry(added.ID(), added));
         else
-            return RetT(false, manager.Find(added));
+            return RetT(false, AddedEntry(added.ID(), added));
     }
 
     template<class T>
-    std::pair<bool, typename OffsetManagedList<T>::iterator> OffsetManagedList<T>::AddImpl(ID id, HandleT &&handle)
+    std::pair<bool, typename OffsetManagedList<T>::AddedEntry> OffsetManagedList<T>::AddImpl(ID id, HandleT &&handle)
     {
-        typedef std::pair<bool, iterator> RetT;
-        auto size = manager.size();
+        typedef std::pair<bool, AddedEntry> RetT;
+        auto size = manager.Size();
         auto added = manager.Add(id, std::move(handle));
-        if (size != manager.size())
-            return RetT(true, manager.Find(added));
+        if (size != manager.Size())
+            return RetT(true, AddedEntry(added.ID(), added));
         else
-            return RetT(false, manager.Find(added));
+            return RetT(false, AddedEntry(added.ID(), added));
     }
 
     template<class T>
     void OffsetManagedList<T>::SetManagerOwnerPosition()
     {
-        for (auto &loop : manager)
-            loop.second.SetOwnerPosition(ownerPosition);
+        for (auto& loop : manager)
+            loop.SetOwnerPosition(ownerPosition);
     }
 
     template<class T>
@@ -252,68 +283,68 @@ namespace Atmos
     template<class T>
     void OffsetManagedList<T>::SetOwnerPosition(const Position3D *set)
     {
-ownerPosition = set;
-SetManagerOwnerPosition();
+        ownerPosition = set;
+        SetManagerOwnerPosition();
     }
 
     template<class T>
-    std::pair<bool, typename OffsetManagedList<T>::iterator> OffsetManagedList<T>::Add(const ObjectT &obj)
+    std::pair<bool, typename OffsetManagedList<T>::AddedEntry> OffsetManagedList<T>::Add(const ObjectT &obj)
     {
         ATMOS_ASSERT_MESSAGE(ownerPosition, "The owner position MUST be set before this is called.");
         return AddImpl(HandleT(obj, 0, 0, 0, ownerPosition));
     }
 
     template<class T>
-    std::pair<bool, typename OffsetManagedList<T>::iterator> OffsetManagedList<T>::Add(const ObjectT &obj, OffsetValueT xOffset, OffsetValueT yOffset, OffsetValueT zOffset)
+    std::pair<bool, typename OffsetManagedList<T>::AddedEntry> OffsetManagedList<T>::Add(const ObjectT &obj, OffsetValueT xOffset, OffsetValueT yOffset, OffsetValueT zOffset)
     {
         ATMOS_ASSERT_MESSAGE(ownerPosition, "The owner position MUST be set before this is called.");
         return AddImpl(HandleT(obj, xOffset, yOffset, zOffset, ownerPosition));
     }
 
     template<class T>
-    std::pair<bool, typename OffsetManagedList<T>::iterator> OffsetManagedList<T>::Add(ID id, const ObjectT &obj)
+    std::pair<bool, typename OffsetManagedList<T>::AddedEntry> OffsetManagedList<T>::Add(ID id, const ObjectT &obj)
     {
         ATMOS_ASSERT_MESSAGE(ownerPosition, "The owner position MUST be set before this is called.");
         return AddImpl(id, HandleT(obj, ownerPosition));
     }
 
     template<class T>
-    std::pair<bool, typename OffsetManagedList<T>::iterator> OffsetManagedList<T>::Add(ID id, const ObjectT &obj, OffsetValueT xOffset, OffsetValueT yOffset, OffsetValueT zOffset)
+    std::pair<bool, typename OffsetManagedList<T>::AddedEntry> OffsetManagedList<T>::Add(ID id, const ObjectT &obj, OffsetValueT xOffset, OffsetValueT yOffset, OffsetValueT zOffset)
     {
         ATMOS_ASSERT_MESSAGE(ownerPosition, "The owner position MUST be set before this is called.");
         return AddImpl(id, HandleT(obj, xOffset, yOffset, zOffset, ownerPosition));
     }
 
     template<class T>
-    std::pair<bool, typename OffsetManagedList<T>::iterator> OffsetManagedList<T>::Add(ObjectT &&obj)
+    std::pair<bool, typename OffsetManagedList<T>::AddedEntry> OffsetManagedList<T>::Add(ObjectT &&obj)
     {
         ATMOS_ASSERT_MESSAGE(ownerPosition, "The owner position MUST be set before this is called.");
         return AddImpl(HandleT(std::move(obj), 0, 0, 0, ownerPosition));
     }
 
     template<class T>
-    std::pair<bool, typename OffsetManagedList<T>::iterator> OffsetManagedList<T>::Add(ObjectT &&obj, OffsetValueT xOffset, OffsetValueT yOffset, OffsetValueT zOffset)
+    std::pair<bool, typename OffsetManagedList<T>::AddedEntry> OffsetManagedList<T>::Add(ObjectT &&obj, OffsetValueT xOffset, OffsetValueT yOffset, OffsetValueT zOffset)
     {
         ATMOS_ASSERT_MESSAGE(ownerPosition, "The owner position MUST be set before this is called.");
         return AddImpl(HandleT(std::move(obj), xOffset, yOffset, zOffset, ownerPosition));
     }
 
     template<class T>
-    std::pair<bool, typename OffsetManagedList<T>::iterator> OffsetManagedList<T>::Add(ID id, ObjectT &&obj)
+    std::pair<bool, typename OffsetManagedList<T>::AddedEntry> OffsetManagedList<T>::Add(ID id, ObjectT &&obj)
     {
         ATMOS_ASSERT_MESSAGE(ownerPosition, "The owner position MUST be set before this is called.");
         return AddImpl(id, HandleT(std::move(obj), 0, 0, 0, ownerPosition));
     }
 
     template<class T>
-    std::pair<bool, typename OffsetManagedList<T>::iterator> OffsetManagedList<T>::Add(ID id, ObjectT &&obj, OffsetValueT xOffset, OffsetValueT yOffset, OffsetValueT zOffset)
+    std::pair<bool, typename OffsetManagedList<T>::AddedEntry> OffsetManagedList<T>::Add(ID id, ObjectT &&obj, OffsetValueT xOffset, OffsetValueT yOffset, OffsetValueT zOffset)
     {
         ATMOS_ASSERT_MESSAGE(ownerPosition, "The owner position MUST be set before this is called.");
         return AddImpl(id, HandleT(std::move(obj), xOffset, yOffset, zOffset, ownerPosition));
     }
 
     template<class T>
-    std::pair<bool, typename OffsetManagedList<T>::iterator> OffsetManagedList<T>::Add(const HandleT &handle)
+    std::pair<bool, typename OffsetManagedList<T>::AddedEntry> OffsetManagedList<T>::Add(const HandleT &handle)
     {
         typedef std::pair<bool, iterator> RetT;
         ATMOS_ASSERT_MESSAGE(ownerPosition, "The owner position MUST be set before this is called.");
@@ -321,21 +352,21 @@ SetManagerOwnerPosition();
     }
 
     template<class T>
-    std::pair<bool, typename OffsetManagedList<T>::iterator> OffsetManagedList<T>::Add(ID id, const HandleT &handle)
+    std::pair<bool, typename OffsetManagedList<T>::AddedEntry> OffsetManagedList<T>::Add(ID id, const HandleT &handle)
     {
         ATMOS_ASSERT_MESSAGE(ownerPosition, "The owner position MUST be set before this is called.");
         return AddImpl(id, handle);
     }
 
     template<class T>
-    std::pair<bool, typename OffsetManagedList<T>::iterator> OffsetManagedList<T>::Add(HandleT &&handle)
+    std::pair<bool, typename OffsetManagedList<T>::AddedEntry> OffsetManagedList<T>::Add(HandleT &&handle)
     {
         ATMOS_ASSERT_MESSAGE(ownerPosition, "The owner position MUST be set before this is called.");
         return AddImpl(std::move(handle));
     }
 
     template<class T>
-    std::pair<bool, typename OffsetManagedList<T>::iterator> OffsetManagedList<T>::Add(ID id, HandleT &&handle)
+    std::pair<bool, typename OffsetManagedList<T>::AddedEntry> OffsetManagedList<T>::Add(ID id, HandleT &&handle)
     {
         ATMOS_ASSERT_MESSAGE(ownerPosition, "The owner position MUST be set before this is called.");
         return AddImpl(id, std::move(handle));
@@ -346,7 +377,7 @@ SetManagerOwnerPosition();
     {
         for (auto loop = manager.begin(); loop != manager.end(); ++loop)
         {
-            if (loop->second == remove)
+            if (*loop == remove)
             {
                 Remove(loop);
                 return;
@@ -400,7 +431,7 @@ SetManagerOwnerPosition();
     template<class T>
     typename OffsetManagedList<T>::ID OffsetManagedList<T>::GetNextAutoID() const
     {
-        return manager.GetNextAutoID();
+        return 0;
     }
 
     template<class T>

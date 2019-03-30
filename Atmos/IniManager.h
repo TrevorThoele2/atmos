@@ -33,9 +33,9 @@ namespace Atmos
             public:
                 String name;
                 T value;
-                ::function::Function<T> valueGetter;
+                std::function<T()> valueGetter;
 
-                Entry(String &&name, ::function::Function<T> &&valueGetter);
+                Entry(String &&name, std::function<T()> &&valueGetter);
                 void SetByFileString(const String &set) override final;
                 void SetFromInternal() override final;
                 String GetFileString() const override final;
@@ -61,7 +61,7 @@ namespace Atmos
             std::vector<EntryPtr> entries;
 
             template<ID id>
-            Entry<typename Traits<id>::T>* CreateEntry(String &&name, ::function::Function<typename Traits<id>::T> &&valueGetter);
+            Entry<typename Traits<id>::T>* CreateEntry(String &&name, std::function<typename Traits<id>::T()> &&valueGetter);
         public:
             NullEvent eventPostLoad;
 
@@ -84,7 +84,7 @@ namespace Atmos
         const String Manager::Entry<T>::assignmentToken = " = ";
 
         template<class T>
-        Manager::Entry<T>::Entry(String &&name, ::function::Function<T> &&valueGetter) : name(std::move(name)), valueGetter(std::move(valueGetter))
+        Manager::Entry<T>::Entry(String &&name, std::function<T()> &&valueGetter) : name(std::move(name)), valueGetter(std::move(valueGetter))
         {}
 
         template<class T>
@@ -112,19 +112,21 @@ namespace Atmos
             while (*retrieveFromLoop == '\n')
                 retrieveFromLoop = --retrieveFrom.erase(retrieveFromLoop);
 
-            value = FromString<T>(retrieveFrom);
+            auto &fromStringValue = FromIniString<T>(retrieveFrom);
+            if(fromStringValue)
+                value = fromStringValue.Get();
         }
 
         template<class T>
         void Manager::Entry<T>::SetFromInternal()
         {
-            value = valueGetter.Execute();
+            value = valueGetter();
         }
 
         template<class T>
         String Manager::Entry<T>::GetFileString() const
         {
-            return name + assignmentToken + ToString(value) + "\n";
+            return name + assignmentToken + ToIniString(value) + "\n";
         }
 
         template<class T>
@@ -134,7 +136,7 @@ namespace Atmos
         }
 
         template<ID id>
-        Manager::Entry<typename Traits<id>::T>* Manager::CreateEntry(String &&name, ::function::Function<typename Traits<id>::T> &&valueGetter)
+        Manager::Entry<typename Traits<id>::T>* Manager::CreateEntry(String &&name, std::function<typename Traits<id>::T()> &&valueGetter)
         {
             entries.push_back(EntryPtr(new Entry<Traits<id>::T>(std::move(name), std::move(valueGetter))));
             return static_cast<Entry<Traits<id>::T>*>(entries.back().get());

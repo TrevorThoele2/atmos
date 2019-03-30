@@ -1,44 +1,56 @@
 #pragma once
 
-#include <vector>
-#include "EntityComponent.h"
+#include "ObjectReference.h"
 
-#include "Name.h"
-#include "Script.h"
+#include "nEntityComponent.h"
 
-#include <Affecter/Affecter.h>
-
-#include "Serialization.h"
+#include "ScriptInstance.h"
 
 namespace Atmos
 {
     namespace Ent
     {
-        class MovementComponent : public Component<MovementComponent>
+        class nMovementComponent : public nEntityComponent
         {
-        private:
-            INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
-            INSCRIPTION_ACCESS;
-
-            void OnOwnerEntitySet() override final;
-
-            void SetScriptCallers();
         public:
-            ::Affecter::Connection affecterConnection;
+            typedef TypedObjectReference<ScriptInstance> ScriptInstance;
+        public:
+            bool enabled;
+        public:
+            ScriptInstance movementModulatorCreator;
+            ScriptInstance changeDirectionModulatorCreator;
+        public:
+            nMovementComponent(EntityReference reference);
+            nMovementComponent(const nMovementComponent& arg) = default;
+            nMovementComponent(const ::Inscription::Table<nMovementComponent>& table);
 
-            Script::Instance movementMod;
-            Script::Instance changeDirectionMod;
-
-            MovementComponent() = default;
-            MovementComponent(const MovementComponent &arg);
-            MovementComponent(MovementComponent &&arg);
-            MovementComponent& operator=(const MovementComponent &arg);
-            MovementComponent& operator=(MovementComponent &&arg);
+            void Enable();
+            void Disable();
 
             bool IsMoving() const;
             bool CanMove() const;
-        };
 
-        ENTITY_COMPONENT_MAP_DECLARE("Movement", MovementComponent)
+            ObjectTypeDescription TypeDescription() const override;
+        private:
+            void SetupScripts();
+        private:
+            INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
+            INSCRIPTION_ACCESS;
+        };
     }
+
+    template<>
+    struct ObjectTraits<Ent::nMovementComponent> : ObjectTraitsBase<Ent::nMovementComponent>
+    {
+        static const ObjectTypeName typeName;
+    };
+}
+
+namespace Inscription
+{
+    DECLARE_OBJECT_INSCRIPTER(::Atmos::Ent::nMovementComponent)
+    {
+    public:
+        static void AddMembers(TableT& table);
+    };
 }

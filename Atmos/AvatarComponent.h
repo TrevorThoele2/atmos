@@ -1,29 +1,40 @@
 #pragma once
 
-#include "EntityComponent.h"
+#include "nEntityComponent.h"
+
 #include "Currency.h"
-#include "Serialization.h"
 
 namespace Atmos
 {
     namespace Ent
     {
-        class AvatarComponent : public Component<AvatarComponent>
+        class nAvatarComponent : public nEntityComponent
         {
-        private:
-            INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
-            INSCRIPTION_ACCESS;
         public:
-            typedef Atmos::Gold Gold;
-            Gold gold;
+            Currency currency;
+        public:
+            nAvatarComponent(EntityReference owner);
+            nAvatarComponent(const nAvatarComponent& arg) = default;
+            nAvatarComponent(const ::Inscription::Table<nAvatarComponent>& table);
 
-            AvatarComponent();
-            AvatarComponent(const AvatarComponent &arg) = default;
-            AvatarComponent(AvatarComponent &&arg);
-            AvatarComponent& operator=(const AvatarComponent &arg) = default;
-            AvatarComponent& operator=(AvatarComponent &&arg);
+            ObjectTypeDescription TypeDescription() const override;
+        private:
+            INSCRIPTION_ACCESS;
         };
-
-        ENTITY_COMPONENT_MAP_DECLARE("Avatar", AvatarComponent)
     }
+
+    template<>
+    struct ObjectTraits<Ent::nAvatarComponent> : ObjectTraitsBase<Ent::nAvatarComponent>
+    {
+        static const ObjectTypeName typeName;
+    };
+}
+
+namespace Inscription
+{
+    DECLARE_OBJECT_INSCRIPTER(::Atmos::Ent::nAvatarComponent)
+    {
+    public:
+        static void AddMembers(TableT& table);
+    };
 }

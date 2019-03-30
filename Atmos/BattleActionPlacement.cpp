@@ -2,12 +2,11 @@
 #include "BattleActionPlacement.h"
 
 #include "Battle.h"
-#include "PlayerParty.h"
-#include "EntityPositionSystem.h"
 #include "WorldManager.h"
 
 namespace Atmos
 {
+    /*
     namespace Battle
     {
         void ActionPlacement::StartImpl()
@@ -43,7 +42,7 @@ namespace Atmos
             {
             case Input::MouseButton::LEFT:
                 {
-                    auto &mousePos = Environment::GetInput()->GetMousePositionInGameCoords();
+                    auto &mousePos = Environment::GetInput()->GetMousePositionInGameCoordinates();
                     auto found = GetCurrentTiles()->FindHighest(GridPosition::DimensionFromPosition(static_cast<Position2D::ValueT>(mousePos.x)), GridPosition::DimensionFromPosition(static_cast<Position2D::ValueT>(mousePos.y)));
                     if(found)
                         PlaceAt(found->GetPosition());
@@ -74,4 +73,5 @@ namespace Atmos
             placementSet.emplace(add);
         }
     }
+    */
 }

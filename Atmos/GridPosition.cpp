@@ -220,7 +220,9 @@ namespace Atmos
 
     void RelativeGridPosition::Serialize(::Inscription::Scribe &scribe)
     {
-        scribe(x, y, z);
+        scribe(x);
+        scribe(y);
+        scribe(z);
     }
 
     RelativeGridPosition::RelativeGridPosition(ValueT x, ValueT y, ValueT z) : x(x), y(y), z(z)

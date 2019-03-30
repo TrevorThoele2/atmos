@@ -7,27 +7,27 @@ namespace Agui
 {
     void SpellDescriptionBox::GetNameString(::std::string &string) const
     {
-        if(!selected)
+        if(!focusedSpell.IsOccupied())
             string = "";
         else
-            string = selected->GetName();
+            string = focusedSpell->name;
     }
 
     void SpellDescriptionBox::GetDescriptionString(::std::string &string) const
     {
-        if(!selected)
+        if(!focusedSpell.IsOccupied())
             string = "";
         else
-            string = selected->GetDescription();
+            string = focusedSpell->description;
     }
 
-    SpellDescriptionBox::SpellDescriptionBox(Object *parent, const std::string &name, const RelativePosition &pos, float z) : DescriptionBox(parent, name, pos, z), selected(nullptr)
+    SpellDescriptionBox::SpellDescriptionBox(Object *parent, const std::string &name, const RelativePosition &pos, float z) : DescriptionBox(parent, name, pos, z)
     {}
 
-    SpellDescriptionBox::SpellDescriptionBox(Object *parent, const WidgetPrototype &arg) : DescriptionBox(parent, arg), selected(nullptr)
+    SpellDescriptionBox::SpellDescriptionBox(Object *parent, const WidgetPrototype &arg) : DescriptionBox(parent, arg)
     {}
 
-    SpellDescriptionBox::SpellDescriptionBox(Object *parent, const SpellDescriptionBox &arg) : DescriptionBox(parent, arg), selected(nullptr)
+    SpellDescriptionBox::SpellDescriptionBox(Object *parent, const SpellDescriptionBox &arg) : DescriptionBox(parent, arg)
     {}
 
     SpellDescriptionBox* SpellDescriptionBox::Factory(Object *parent, const std::string &name, const RelativePosition &pos, float z)
@@ -47,13 +47,13 @@ namespace Agui
 
     void SpellDescriptionBox::Set()
     {
-        selected = nullptr;
+        focusedSpell.Reset();
         Refresh();
     }
 
-    void SpellDescriptionBox::Set(const Atmos::Spell &set)
+    void SpellDescriptionBox::Set(SpellReference set)
     {
-        selected = &set;
+        focusedSpell = set;
         Refresh();
     }
 

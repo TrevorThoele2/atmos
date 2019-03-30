@@ -89,10 +89,10 @@ namespace Atmos
     void Trim(String &trim)
     {
         while (trim[0] == ' ' || trim[0] == '\n')
-            trim.erase(0);
+            trim.erase(0, 1);
 
         while (trim[trim.size() - 1] == ' ' || trim[trim.size() - 1] == '\n')
-            trim.erase(trim.size() - 1);
+            trim.erase(trim.size() - 1, 1);
     }
 
     String Trim(const String &trim)
@@ -101,14 +101,14 @@ namespace Atmos
 
         while (ret[ret.size() - 1] == ' ' || ret[ret.size() - 1] == '\n')
         {
-            ret.erase(ret.size() - 1);
+            ret.erase(ret.size() - 1, 1);
 
             if (ret.empty())
                 return ret;
         }
 
         while (ret[0] == ' ' || ret[0] == '\n')
-            ret.erase(0);
+            ret.erase(0, 1);
 
         return ret;
     }

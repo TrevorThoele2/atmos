@@ -74,6 +74,7 @@ namespace Atmos
         void SetWorldStart(const WorldStart &set);
 
         const FilePath& GetFilePath() const;
+        static ::Inscription::Version GetCurrentVersion();
     };
 
     class WorldScribeIn : public InScribeBase
@@ -129,7 +130,7 @@ namespace Atmos
         bool WillLoad() override;
 
         Optional<Field> Get(FieldID id) override;
-        Field* GetAsHeap(FieldID id) override;
+        std::unique_ptr<Field> GetAsHeap(FieldID id) override;
         ::Inscription::Buffer GetAsBuffer(FieldID id) override;
 
         WorldStart& GetWorldStart() override;

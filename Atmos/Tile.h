@@ -1,83 +1,56 @@
 
 #pragma once
 
-#include "GridPosition.h"
+#include "Object.h"
+
 #include "Sprite.h"
-#include "OffsetManagedList.h"
+#include "ObjectOffset.h"
+#include "GridPosition.h"
 
-#include "Flags.h"
-#include "ObjectHandle.h"
-#include "AccessAdapter.h"
+#include "ReadonlyProperty.h"
+#include "StoredReadonlyProperty.h"
 
-#include "Serialization.h"
+#include "ObjectSerialization.h"
 
 namespace Atmos
 {
-    class TileHandler;
-    class Tile
+    class nTile : public Object
     {
     public:
-        typedef OffsetManagedList<Sprite> SpriteList;
-        typedef SpriteList::OffsetValueT SpriteOffsetT;
-    private:
-        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
-        INSCRIPTION_ACCESS;
-    private:
-        friend TileHandler;
-
-        enum class Flag : unsigned char
-        {
-            SOLID = 1 << 0,
-            PUSH_SPRITES = 1 << 1
-        };
-    private:
-        GridPosition pos;
-
-        Position3D spritePosition;
-        SpriteList spriteList;
-
-        Flags<Flag> flags;
-
-        void AttemptPushSprite(Sprite &sprite);
-        void PullSprite(Sprite &sprite);
+        typedef StoredReadonlyProperty<GridPosition> GridPositionProperty;
+        GridPositionProperty position;
     public:
-        ObjectHandle<TileHandler, Tile> handler;
+        typedef PositionalOffsetAdapter<nSprite> OffsetSprite;
+        typedef std::vector<OffsetSprite> SpriteList;
+        typedef ReadonlyProperty<SpriteList&> SpriteListProperty;
+        SpriteListProperty sprites;
+    public:
+        typedef StoredProperty<bool> SolidProperty;
+        SolidProperty solid;
+    public:
+        nTile(const GridPosition& position);
+        nTile(const nTile& arg) = default;
+        nTile(const ::Inscription::Table<nTile>& table);
 
-        Tile(const GridPosition &pos);
-        Tile(const Tile &arg);
-        Tile(Tile &&arg);
-        Tile& operator=(const Tile &arg);
-        Tile& operator=(Tile &&arg);
-        bool operator==(const Tile &arg) const;
-        bool operator!=(const Tile &arg) const;
+        ObjectTypeDescription TypeDescription() const override;
+    private:
+        SpriteList _spriteList;
+    private:
+        INSCRIPTION_ACCESS;
+    };
 
-        SpriteList::ID CreateSprite();
-        SpriteList::ID CreateSprite(SpriteList::ID id);
-        SpriteList::ID CreateSprite(const Sprite &sprite);
-        SpriteList::ID CreateSprite(const FileName &file, Sprite::Index index, const Color &color, SpriteOffsetT offsetX, SpriteOffsetT offsetY, SpriteOffsetT offsetZ);
-        SpriteList::ID CreateSprite(const Sprite &sprite, SpriteOffsetT offsetX, SpriteOffsetT offsetY, SpriteOffsetT offsetZ);
-        SpriteList::ID CreateSprite(const SpriteList::HandleT &handle);
-        SpriteList::ID CreateSprite(SpriteList::ID id, const SpriteList::HandleT &handle);
-        SpriteList::HandleT* FindSprite(SpriteList::ID id);
-        const SpriteList::HandleT* FindSprite(SpriteList::ID id) const;
-        void DestroySprite(SpriteList::HandleT &destroy);
-        void DestroySprite(SpriteList::ID destroy);
-        void DestroySprite(SpriteList::iterator destroy);
-        SpriteList::ID GetNextAutoSpriteID() const;
+    template<>
+    struct ObjectTraits<nTile> : ObjectTraitsBase<nTile>
+    {
+        static const ObjectTypeName typeName;
+    };
+}
 
-        void SetPosition(const GridPosition &set);
-        const GridPosition& GetPosition() const;
-        void GetSurrounding(std::unordered_set<const Tile*> &set) const;
-        void FindSquare(std::unordered_set<const Tile*> &set, unsigned short range) const;
-
-        void SetSolid(bool setTo);
-        bool IsSolid() const;
-        bool CanMoveInto() const;
-
-        SpriteList& GetSpriteList();
-        const SpriteList& GetSpriteList() const;
-        void PushSpritesToHandler();
-        void PullSpritesFromHandler();
-        bool PushesSprites() const;
+namespace Inscription
+{
+    DECLARE_OBJECT_INSCRIPTER(::Atmos::nTile)
+    {
+    public:
+        static void AddMembers(TableT& table);
     };
 }

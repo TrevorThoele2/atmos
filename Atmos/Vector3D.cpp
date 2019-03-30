@@ -35,7 +35,7 @@ namespace Atmos
     Angle Vector3D::Angle(const Vector3D &other) const
     {
         // Angle = arccos(dot product / (magnitude1 * magnitude2))
-        return ::Atmos::Angle(Angle::RADIANS, std::acos(Dot(other) / (Length() * other.Length())));
+        return ::Atmos::Angle(Radians(std::acos(Dot(other) / (Length() * other.Length()))));
     }
 
     Vector3D::ValueT Vector3D::Dot(const Vector3D &other) const

@@ -4,21 +4,16 @@
 
 namespace Atmos
 {
-    INSCRIPTION_TABLE_CONSTRUCTOR_DEFINE(GraphicalPatternEntry) : INSCRIPTION_TABLE_GET_MEM(sprite)
-    {}
-
-    GraphicalPatternEntry::GraphicalPatternEntry(Sprite &&sprite) : sprite(std::move(sprite))
+    GraphicalPatternEntry::GraphicalPatternEntry(SpriteReference sprite) : sprite(sprite)
     {}
 
     bool GraphicalPatternEntry::operator==(const GraphicalPatternEntry &arg) const
     {
         return sprite == arg.sprite;
     }
-}
 
-namespace Inscription
-{
-    INSCRIPTION_INSCRIPTER_DEFINE_TABLE(::Atmos::GraphicalPatternEntry)
-        INSCRIPTION_TABLE_ADD(sprite)
-    INSCRIPTION_TABLE_END
+    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(GraphicalPatternEntry)
+    {
+        scribe(sprite);
+    }
 }

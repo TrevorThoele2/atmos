@@ -3,16 +3,26 @@
 
 namespace Atmos
 {
-    class ImageAssetData : public ImageAsset::Data
+    class ImageAssetDataImplementation : public ImageAssetData
     {
     public:
-        ImageAssetData() = default;
+        ImageAssetDataImplementation() = default;
+
+        std::unique_ptr<ImageAssetData> Clone() const override
+        {
+            return std::unique_ptr<ImageAssetData>(new ImageAssetDataImplementation(*this));
+        }
     };
 
-    class ShaderAssetData : public ShaderAsset::Data
+    class ShaderAssetDataImplementation : public ShaderAssetData
     {
     public:
-        ShaderAssetData() = default;
+        ShaderAssetDataImplementation() = default;
+
+        std::unique_ptr<ShaderAssetData> Clone() const override
+        {
+            return std::unique_ptr<ShaderAssetData>(new ShaderAssetDataImplementation(*this));
+        }
 
         void Reset() override
         {}
@@ -93,24 +103,24 @@ namespace Atmos
         return ScreenDimensions(0, 0);
     }
 
-    ImageAsset NullGraphicsHandler::CreateImageImpl(const FilePath &path, ImageAsset::GridDimension cols, ImageAsset::GridDimension rows)
+    std::unique_ptr<ImageAssetData> NullGraphicsHandler::CreateImageDataImpl(const FilePath &path)
     {
-        return ImageAsset(new ImageAssetData(), path.GetFileName(), cols, rows, 0, 0);
+        return std::unique_ptr<ImageAssetData>(new ImageAssetDataImplementation());
     }
 
-    ImageAsset NullGraphicsHandler::CreateImageImpl(void *buffer, std::int32_t size, const FileName &name, ImageAsset::GridDimension cols, ImageAsset::GridDimension rows)
+    std::unique_ptr<ImageAssetData> NullGraphicsHandler::CreateImageDataImpl(void *buffer, std::int32_t size, const FileName &name)
     {
-        return ImageAsset(new ImageAssetData(), name, cols, rows, 0, 0);
+        return std::unique_ptr<ImageAssetData>(new ImageAssetDataImplementation());
     }
 
-    ShaderAsset NullGraphicsHandler::CreateShaderImpl(const FilePath &path)
+    std::unique_ptr<ShaderAssetData> NullGraphicsHandler::CreateShaderDataImpl(const FilePath &path)
     {
-        return ShaderAsset(new ShaderAssetData(), path.GetFileName());
+        return std::unique_ptr<ShaderAssetData>(new ShaderAssetDataImplementation());
     }
 
-    ShaderAsset NullGraphicsHandler::CreateShaderImpl(void *buffer, std::int32_t size, const FileName &name)
+    std::unique_ptr<ShaderAssetData> NullGraphicsHandler::CreateShaderDataImpl(void *buffer, std::int32_t size, const FileName &name)
     {
-        return ShaderAsset(new ShaderAssetData(), name);
+        return std::unique_ptr<ShaderAssetData>(new ShaderAssetDataImplementation());
     }
 
     RenderSurface NullGraphicsHandler::CreateRenderSurfaceImpl(void *window)
@@ -133,6 +143,9 @@ namespace Atmos
         return true;
     }
 
+    void NullGraphicsHandler::ResizeCanvasImpl(Canvas &canvas, const ScreenDimensions &dimensions)
+    {}
+
     void NullGraphicsHandler::SetRenderTargetImpl(RenderSurface &set)
     {}
 
@@ -151,13 +164,13 @@ namespace Atmos
     void NullGraphicsHandler::PresentImpl(void *windowOverride)
     {}
 
-    void NullGraphicsHandler::RenderSpriteImpl(const Sprite &sprite, float X, float Y)
+    void NullGraphicsHandler::RenderSpriteImpl(SpriteReference sprite, float X, float Y)
     {}
 
-    void NullGraphicsHandler::RenderCanvasViewImpl(const CanvasView &view, float X, float Y)
+    void NullGraphicsHandler::RenderCanvasViewImpl(CanvasViewReference view, float X, float Y)
     {}
 
-    void NullGraphicsHandler::RenderUnknownFragmentImpl(const RenderFragment &fragment, float X, float Y)
+    void NullGraphicsHandler::RenderUnknownFragmentImpl(RenderFragmentReference fragment, float X, float Y)
     {}
 
     void NullGraphicsHandler::RenderLineImpl(const LineRender &line)

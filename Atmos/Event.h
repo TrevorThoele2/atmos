@@ -328,33 +328,33 @@ namespace Atmos
     }
 
     template<class Ret, class... Args>
-    EventBoundSubscriber::EventBoundSubscriber(Event<Args...> &subTo, Ret(*func)(Args...)) : base(new Derived<Args...>(&subTo, ::Chroma::Function<void, Args...>(func)))
+    EventBoundSubscriber::EventBoundSubscriber(Event<Args...> &subTo, Ret(*func)(Args...)) : base(new Derived<Args...>(&subTo, ::Chroma::CreateFunction(func)))
     {}
 
     template<class Obj, class Ret, class... Args>
-    EventBoundSubscriber::EventBoundSubscriber(Event<Args...> &subTo, Ret(Obj::*func)(Args...), Obj &obj) : base(new Derived<Args...>(&subTo, ::Chroma::Function<void, Args...>(func, obj)))
+    EventBoundSubscriber::EventBoundSubscriber(Event<Args...> &subTo, Ret(Obj::*func)(Args...), Obj &obj) : base(new Derived<Args...>(&subTo, ::Chroma::CreateFunction(func, obj)))
     {}
 
     template<class Obj, class Ret, class... Args>
-    EventBoundSubscriber::EventBoundSubscriber(Event<Args...> &subTo, Ret(Obj::*func)(Args...) const, const Obj &obj) : base(new Derived<Args...>(&subTo, ::Chroma::Function<void, Args...>(func, obj)))
+    EventBoundSubscriber::EventBoundSubscriber(Event<Args...> &subTo, Ret(Obj::*func)(Args...) const, const Obj &obj) : base(new Derived<Args...>(&subTo, ::Chroma::CreateFunction(func, obj)))
     {}
 
     template<class Ret, class... Args>
     void EventBoundSubscriber::Setup(Event<Args...> &subTo, Ret(*func)(Args...))
     {
-        base.reset(new Derived<Args...>(&subTo, ::Chroma::Function<void, Args...>(func)));
+        base.reset(new Derived<Args...>(&subTo, std::function<void(Args...)>(func)));
     }
 
     template<class Obj, class Ret, class... Args>
     void EventBoundSubscriber::Setup(Event<Args...> &subTo, Ret(Obj::*func)(Args...), Obj &obj)
     {
-        base.reset(new Derived<Args...>(&subTo, ::Chroma::Function<void, Args...>(func, obj)));
+        base.reset(new Derived<Args...>(&subTo, std::function<void(Args...)>(std::bind(func, &obj))));
     }
 
     template<class Obj, class Ret, class... Args>
     void EventBoundSubscriber::Setup(Event<Args...> &subTo, Ret(Obj::*func)(Args...) const, const Obj &obj)
     {
-        base.reset(new Derived<Args...>(&subTo, ::Chroma::Function<void, Args...>(func, obj)));
+        base.reset(new Derived<Args...>(&subTo, std::function<void(Args...)>(std::bind(func, obj))));
     }
 
     class EventBoundSubscriberManager

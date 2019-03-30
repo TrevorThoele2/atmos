@@ -1,27 +1,39 @@
 #pragma once
 
-#include "Sound.h"
-#include "Serialization.h"
+#include "Object.h"
+
+#include "ObjectReference.h"
+
+#include "AudioAssetInstance.h"
+
+#include "StoredProperty.h"
+
+#include "ObjectSerialization.h"
 
 namespace Atmos
 {
-    class Music : public SoundBase
+    class Music : public Object
     {
-    private:
-        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
-        INSCRIPTION_ACCESS;
-    private:
-        friend AssetRegistry<AudioAsset>;
-    private:
-        void PlayImpl() override;
-        void StopImpl() override;
-    protected:
-        Music();
-        Music(const AssetReference<AudioAsset> &asset);
     public:
-        Music(const Music &arg);
-        Music(Music &&arg);
-        Music& operator=(const Music &arg);
-        Music& operator=(Music &&arg);
+        typedef TypedObjectReference<AudioAssetInstance> AssetReference;
+        typedef StoredProperty<AssetReference> AssetProperty;
+        AssetProperty audioAsset;
+    public:
+        ObjectTypeDescription TypeDescription() const override;
+    };
+
+    template<>
+    struct ObjectTraits<Music> : ObjectTraitsBase<Music>
+    {
+        static const ObjectTypeName typeName;
+    };
+}
+
+namespace Inscription
+{
+    DECLARE_OBJECT_INSCRIPTER(::Atmos::Music)
+    {
+    public:
+        static void AddMembers(TableT& table);
     };
 }

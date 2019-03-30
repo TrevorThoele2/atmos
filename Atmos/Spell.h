@@ -1,44 +1,48 @@
 #pragma once
 
-#include "AbilityBase.h"
-#include "Registry.h"
+#include <vector>
+
+#include "RegistryObject.h"
 
 #include "BattlePatternHolder.h"
 #include "AttackRange.h"
 #include "ResourceAttribute.h"
-#include "CharacterClassGroup.h"
+#include "CharacterClass.h"
+
+#include "ObjectSerialization.h"
 
 namespace Atmos
 {
-    class Spell : public AbilityBase
+    class nSpell : public RegistryObject
     {
-    private:
-        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
-        INSCRIPTION_ACCESS;
     public:
         BattlePatternHolder attackPattern;
         BattlePatternHolder::Piece *pieceOverworld;
         AttackRange range;
         Attribute resourceCost;
-        CharacterClassGroup allowedClasses;
+        typedef TypedObjectReference<nCharacterClass> CharacterClassReference;
+        std::vector<CharacterClassReference> allowedClasses;
+    public:
+        nSpell(const Name& name);
+        nSpell(const nSpell& arg) = default;
+        nSpell(const ::Inscription::Table<nSpell>& table);
 
-        Spell() = default;
-        Spell(const Spell &arg) = default;
-        Spell& operator=(const Spell &arg) = default;
-        Spell(Spell &&arg);
-        Spell& operator=(Spell &&arg);
-
-        bool operator==(const Spell &arg) const;
-        bool operator!=(const Spell &arg) const;
+        ObjectTypeDescription TypeDescription() const override;
     };
 
     template<>
-    class Registry<Spell> : public RegistryBase<Spell, Registry<Spell>>
+    struct ObjectTraits<nSpell> : ObjectTraitsBase<nSpell>
     {
-    private:
-        Registry() = default;
-        friend RegistryBase<Spell, Registry<Spell>>;
+        static const ObjectTypeName typeName;
+        static constexpr ObjectTypeList<RegistryObject> bases = {};
     };
+}
 
-    typedef Registry<Spell> SpellRegistry;
+namespace Inscription
+{
+    DECLARE_OBJECT_INSCRIPTER(::Atmos::nSpell)
+    {
+    public:
+        static void AddMembers(TableT& table);
+    };
 }

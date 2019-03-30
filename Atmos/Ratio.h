@@ -23,6 +23,8 @@ namespace Atmos
     template<class T>
     class DynamicRatio : public RatioBase<T>
     {
+    public:
+        typedef RatioBase<T>::ValueT ValueT;
     private:
         INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
@@ -116,6 +118,8 @@ namespace Atmos
     template<class T, T numerator, T denominator>
     class StaticRatio : public RatioBase<T>
     {
+    public:
+        typedef RatioBase<T>::ValueT ValueT;
     public:
         ValueT GetNumerator() const override;
         ValueT GetDenominator() const override;

@@ -1,90 +1,121 @@
 
 #include "AguiSpriteFactory.h"
-#include <AGUI\ImageResource.h>
 
-#include <Inscription\Scribe.h>
-#include <Inscription\String.h>
+#include <AGUI/ImageResource.h>
+
+#include "MaterialSystem.h"
+
+#include <Inscription/Scribe.h>
+#include <Inscription/String.h>
 
 namespace Atmos
 {
-    void AguiSpriteFactory::Serialize(::Inscription::Scribe &scribe)
+    AguiSpriteFactory::AguiSpriteFactory(
+        const Agui::FileName& resourceName,
+        ComponentT::Index index,
+        const Agui::Color& color,
+        ComponentT::Z z,
+        Agui::Size::ValueT widthScaler,
+        Agui::Size::ValueT heightScaler) :
+        
+        resourceName(resourceName), index(index), color(color), z(z), widthScaler(widthScaler), heightScaler(heightScaler)
+    {}
+
+    AguiSpriteFactory::AguiSpriteFactory(const ComponentT& arg) :
+        resourceName(arg.GetResource()->GetFileName()), index(arg.GetIndex()), color(arg.color),
+        z(arg.GetZ()), widthScaler(arg.GetSize().GetXScaler()), heightScaler(arg.GetSize().GetYScaler())
+    {}
+
+    AguiSpriteFactory::AguiSpriteFactory(TypedObjectReference<nSprite> arg) :
+        resourceName(arg->material->xVisual->fileName.c_str()), index(arg->index),
+        color(Agui::Color(arg->color.Get().alpha, arg->color.Get().red, arg->color.Get().green, arg->color.Get().blue)),
+        z(arg->position.z), widthScaler(arg->size.widthScaler), heightScaler(arg->size.heightScaler)
+    {}
+
+    void AguiSpriteFactory::Set(const ComponentT& arg)
+    {
+        resourceName = arg.GetResource()->GetFileName();
+        index = arg.GetIndex();
+        color = arg.color;
+        z = arg.GetZ();
+        widthScaler = arg.GetSize().GetXScaler();
+        heightScaler = arg.GetSize().GetYScaler();
+    }
+
+    void AguiSpriteFactory::Set(const TypedObjectReference<nSprite>& arg)
+    {
+        resourceName = arg->material->xVisual->fileName.c_str();
+        index = arg->index;
+        color = Agui::Color(arg->color.Get().alpha, arg->color.Get().red, arg->color.Get().green, arg->color.Get().blue);
+        z = arg->position.z;
+        widthScaler = arg->size.widthScaler;
+        heightScaler = arg->size.heightScaler;
+    }
+
+    void AguiSpriteFactory::Set(
+        const Agui::FileName& resourceName,
+        ComponentT::Index index,
+        const Agui::Color& color,
+        ComponentT::Z z,
+        Agui::Size::ValueT widthScaler,
+        Agui::Size::ValueT heightScaler)
+    {
+        this->resourceName = resourceName;
+        this->index = index;
+        this->color = color;
+        this->z = z;
+        this->widthScaler = widthScaler;
+        this->heightScaler = heightScaler;
+    }
+
+    Agui::SpriteComponent* AguiSpriteFactory::CreateComponent(const ComponentT::NameT& name, const Agui::RelativePosition& relativePosition) const
+    {
+        auto ret = Agui::SpriteComponent::Factory(name, z, relativePosition, Agui::Size(), Agui::Sprite(resourceName, index, color));
+        ret->ScaleWidth(widthScaler);
+        ret->ScaleHeight(heightScaler);
+        return ret;
+    }
+
+    TypedObjectReference<nSprite> AguiSpriteFactory::CreateAtmosSprite(ObjectManager& objectManager)
+    {
+        auto ret = objectManager.CreateObject<nSprite>();
+        ret->material = objectManager.FindSystem<MaterialSystem>()->FindAsset(resourceName);
+        ret->index = index;
+        ret->color = Atmos::Color(color.alpha, color.red, color.green, color.blue);
+        ret->size.widthScaler = widthScaler;
+        ret->size.heightScaler = heightScaler;
+        return ret;
+    }
+
+    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(AguiSpriteFactory)
     {
         ::Inscription::TrackingChangerStack tracking(scribe, false);
         if (scribe.IsOutput())
         {
-            scribe.Save(::Inscription::RemoveConst(imageName.GetValue()));
+            scribe.Save(::Inscription::RemoveConst(resourceName.GetValue()));
             scribe.Save(index);
-            scribe.Save(color.alpha, color.red, color.green, color.blue);
+            scribe.Save(color.alpha);
+            scribe.Save(color.red);
+            scribe.Save(color.green);
+            scribe.Save(color.blue);
             scribe.Save(z);
-            scribe.WriteNumeric(xScaler);
-            scribe.WriteNumeric(yScaler);
+            scribe.WriteNumeric(widthScaler);
+            scribe.WriteNumeric(heightScaler);
         }
         else
         {
             std::string str;
             scribe.Load(str);
-            imageName = str;
+            resourceName = str;
 
             scribe.Load(index);
-            scribe.Load(color.alpha, color.red, color.green, color.blue);
+            scribe.Load(color.alpha);
+            scribe.Load(color.red);
+            scribe.Load(color.green);
+            scribe.Load(color.blue);
             scribe.Load(z);
-            scribe.ReadNumeric(xScaler);
-            scribe.ReadNumeric(yScaler);
+            scribe.ReadNumeric(widthScaler);
+            scribe.ReadNumeric(heightScaler);
         }
-    }
-
-    AguiSpriteFactory::AguiSpriteFactory(const Agui::FileName &imageName, ComponentT::Index index, const Agui::Color &color, ComponentT::Z z, Agui::Size::ValueT xScaler, Agui::Size::ValueT yScaler) : imageName(imageName), index(index), color(color), z(z), xScaler(xScaler), yScaler(yScaler)
-    {}
-
-    AguiSpriteFactory::AguiSpriteFactory(const ComponentT &arg) : imageName(arg.GetResource()->GetFileName()), index(arg.GetIndex()), color(arg.color), z(arg.GetZ()), xScaler(arg.GetSize().GetXScaler()), yScaler(arg.GetSize().GetYScaler())
-    {}
-
-    AguiSpriteFactory::AguiSpriteFactory(const Sprite &arg) : imageName(arg.GetMaterial()->GetXVisual()->GetFileName().c_str()), index(arg.GetIndex()), color(Agui::Color(arg.color.alpha, arg.color.red, arg.color.green, arg.color.blue)), z(arg.GetPosition().GetZ()), xScaler(arg.GetSize().GetXScaler()), yScaler(arg.GetSize().GetYScaler())
-    {}
-
-    void AguiSpriteFactory::Set(const ComponentT &arg)
-    {
-        imageName = arg.GetResource()->GetFileName();
-        index = arg.GetIndex();
-        color = arg.color;
-        z = arg.GetZ();
-        xScaler = arg.GetSize().GetXScaler();
-        yScaler = arg.GetSize().GetYScaler();
-    }
-
-    void AguiSpriteFactory::Set(const Sprite &arg)
-    {
-        imageName = arg.GetMaterial()->GetXVisual()->GetFileName().c_str();
-        index = arg.GetIndex();
-        color = Agui::Color(arg.color.alpha, arg.color.red, arg.color.green, arg.color.blue);
-        z = arg.GetPosition().GetZ();
-        xScaler = arg.GetXScaler();
-        yScaler = arg.GetYScaler();
-    }
-
-    void AguiSpriteFactory::Set(const Agui::FileName &imageName, ComponentT::Index index, const Agui::Color &color, ComponentT::Z z, Agui::Size::ValueT xScaler, Agui::Size::ValueT yScaler)
-    {
-        this->imageName = imageName;
-        this->index = index;
-        this->color = color;
-        this->z = z;
-        this->xScaler = xScaler;
-        this->yScaler = yScaler;
-    }
-
-    Agui::SpriteComponent* AguiSpriteFactory::CreateComponent(const ComponentT::NameT &name, const Agui::RelativePosition &relativePosition) const
-    {
-        auto ret = Agui::SpriteComponent::Factory(name, z, relativePosition, Agui::Size(), Agui::Sprite(imageName, index, color));
-        ret->ScaleWidth(xScaler);
-        ret->ScaleHeight(yScaler);
-        return ret;
-    }
-
-    Sprite AguiSpriteFactory::CreateAtmosSprite()
-    {
-        Sprite ret(imageName.c_str(), index, Atmos::Color(color.alpha, color.red, color.green, color.blue));
-        ret.SetXScaler(xScaler);
-        ret.SetYScaler(yScaler);
-        return ret;
     }
 }

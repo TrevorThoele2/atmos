@@ -18,7 +18,7 @@ namespace Atmos
             ::Inscription::ContainerSize size(entries.size());
             scribe.Save(size);
 
-            for (auto &loop : entries)
+            for (auto& loop : entries)
             {
                 scribe.Save(::Inscription::RemoveConst(loop.first));
                 scribe.Save(loop.second.experience);
@@ -94,24 +94,24 @@ namespace Atmos
         return !(*this == arg);
     }
 
-    Proficiencies::Experience Proficiencies::AttemptIncrement(const Name &name, const Ent::CombatComponent &source)
+    Proficiencies::Experience Proficiencies::AttemptIncrement(const Name &name, CombatComponentReference source)
     {
         auto focused = entries.find(name);
         if (focused == entries.end())
         {
             focused = entries.emplace(name, Entry()).first;
             // Max possible level with the proficiency rating
-            Rating::WrappedT adjustedMaxLevel(Rating::WrappedT(static_cast<double>(source.charClass->FindProficiencyRating(name)->ConvertToDecimal())) * maxLevel);
+            Rating::WrappedT adjustedMaxLevel(Rating::WrappedT(static_cast<double>(source->characterClass->FindProficiencyRating(name)->ConvertToDecimal())) * maxLevel);
             // Figure out how many proficiency levels per character level
-            focused->second.profLevelPerCharLevel = adjustedMaxLevel / Rating::WrappedT::Split(Ent::CombatComponent::Level::GetUpperBoundStatic(), 0);
+            focused->second.profLevelPerCharLevel = adjustedMaxLevel / Rating::WrappedT::Split(Ent::nCombatComponent::Level::UpperBoundStatic(), 0);
         }
 
         // Filter out 50% of the attempts as no experience
-        if (!Random::GenerateBool())
-            return 0;
+        //if (!Random::GenerateBool())
+            //return 0;
 
         // Check if proficiency level is maxed out
-        Level curMaxLevel(focused->second.profLevelPerCharLevel * Level(source.level.Get(), 0));
+        Level curMaxLevel(focused->second.profLevelPerCharLevel * Level(source->level.Value(), 0));
         if (curMaxLevel <= focused->second.level)
             return 0;
 
@@ -129,6 +129,7 @@ namespace Atmos
             maxExpPossibility = maxPossibleExpCap;
 
         // Add experience
+        /*
         const Experience generatedExperience = Random::Generate(unsigned int(1), maxExpPossibility);
         focused->second.experience += generatedExperience;
 
@@ -137,6 +138,8 @@ namespace Atmos
             ++focused->second.level;
 
         return generatedExperience;
+        */
+        return 0;
     }
 
     Proficiencies::Experience Proficiencies::GetExperience(const Name &name) const

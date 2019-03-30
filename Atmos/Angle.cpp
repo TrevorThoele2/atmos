@@ -1,104 +1,60 @@
 
 #include "Angle.h"
-#include "MathUtility.h"
 
 #include <Inscription/Scribe.h>
 
 namespace Atmos
 {
-    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(Angle)
-    {
-        scribe(type);
-        scribe(value);
-    }
-
-    Angle::ValueT Angle::GetConvertToRadians() const
-    {
-        if (type == RADIANS)
-            return value;
-
-        return (value * PI<float>) / 180.0f;
-    }
-
-    Angle::ValueT Angle::GetConvertToDegrees() const
-    {
-        if (type == DEGREES)
-            return value;
-
-        return (value * 180.0f) / PI<float>;
-    }
-
-    Angle::ValueT Angle::ConditionalConvert(const Angle &other) const
-    {
-        if (type == other.type)
-            return other.value;
-        else
-            return (type == DEGREES) ? other.GetConvertToDegrees() : other.GetConvertToRadians();
-    }
-
-    Angle::Angle() : type(RADIANS), value(0.0f)
+    Angle::Angle() : selectedType(::Chroma::Type<Radians>{})
     {}
-
-    Angle::Angle(Type type, ValueT value) : type(type), value(value)
-    {}
-
-    Angle::Angle(const Angle &arg) : type(arg.type), value(arg.value)
-    {}
-
-    Angle& Angle::operator=(const Angle &arg)
-    {
-        value = ConditionalConvert(arg);
-        type = arg.type;
-        return *this;
-    }
 
     Angle Angle::operator+(const Angle &arg) const
     {
-        return Angle(type, value + ConditionalConvert(arg));
+        return Angle(underlying + arg.underlying);
     }
 
     Angle& Angle::operator+=(const Angle &arg)
     {
-        value += ConditionalConvert(arg);
+        underlying += arg.underlying;
         return *this;
     }
 
     Angle Angle::operator-(const Angle &arg) const
     {
-        return Angle(type, value - ConditionalConvert(arg));
+        return Angle(underlying - arg.underlying);
     }
 
     Angle& Angle::operator-=(const Angle &arg)
     {
-        value -= ConditionalConvert(arg);
+        underlying -= arg.underlying;
         return *this;
     }
 
     Angle Angle::operator*(const Angle &arg) const
     {
-        return Angle(type, value * ConditionalConvert(arg));
+        return Angle(underlying * arg.underlying);
     }
 
     Angle& Angle::operator*=(const Angle &arg)
     {
-        value *= ConditionalConvert(arg);
+        underlying *= arg.underlying;
         return *this;
     }
 
     Angle Angle::operator/(const Angle &arg) const
     {
-        return Angle(type, value / ConditionalConvert(arg));
+        return Angle(underlying / arg.underlying);
     }
 
     Angle& Angle::operator/=(const Angle &arg)
     {
-        value /= ConditionalConvert(arg);
+        underlying /= arg.underlying;
         return *this;
     }
 
     bool Angle::operator==(const Angle &arg) const
     {
-        return type == arg.type && value == arg.value;
+        return underlying == arg.underlying && selectedType == arg.selectedType;
     }
 
     bool Angle::operator!=(const Angle &arg) const
@@ -108,53 +64,40 @@ namespace Atmos
 
     bool Angle::operator<(const Angle &arg) const
     {
-        return (type == arg.type) ? value < arg.value : false;
+        return underlying < arg.underlying;
     }
 
     bool Angle::operator<=(const Angle &arg) const
     {
-        return (type == arg.type) ? value <= arg.value : false;
+        return underlying <= arg.underlying;
     }
 
     bool Angle::operator>(const Angle &arg) const
     {
-        return (type == arg.type) ? value > arg.value : false;
+        return underlying > arg.underlying;
     }
 
     bool Angle::operator>=(const Angle &arg) const
     {
-        return (type == arg.type) ? value >= arg.value : false;
+        return underlying >= arg.underlying;
     }
 
-    void Angle::ConvertToRadians()
+    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(Angle)
     {
-        value = GetConvertToRadians();
-        type = RADIANS;
-    }
+        if (scribe.IsOutput())
+        {
+            scribe.Save(static_cast<ValueT>(underlying));
+            scribe.Save(selectedType.SelectedAsID());
+        }
+        else // INPUT
+        {
+            ValueT value;
+            scribe.Load(value);
+            underlying = value;
 
-    void Angle::ConvertToDegrees()
-    {
-        value = GetConvertToDegrees();
-        type = DEGREES;
-    }
-
-    Angle::ValueT Angle::AsRadians() const
-    {
-        return GetConvertToRadians();
-    }
-
-    Angle::ValueT Angle::AsDegrees() const
-    {
-        return GetConvertToDegrees();
-    }
-
-    bool Angle::IsRadians() const
-    {
-        return type == RADIANS;
-    }
-
-    bool Angle::IsDegrees() const
-    {
-        return type == DEGREES;
+            SelectedType::ID selectedID;
+            scribe.Load(selectedID);
+            selectedType.Select(selectedID);
+        }
     }
 }

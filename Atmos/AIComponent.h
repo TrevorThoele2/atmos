@@ -1,35 +1,43 @@
 #pragma once
 
-#include <list>
-#include "EntityComponent.h"
-#include "Script.h"
+#include "nEntityComponent.h"
 
-#include "Serialization.h"
+#include "ScriptInstance.h"
 
 namespace Atmos
 {
     namespace Ent
     {
-        class AIComponent : public Component<AIComponent>
+        class nAIComponent : public nEntityComponent
         {
-        private:
-            INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
-            INSCRIPTION_ACCESS;
-
-            void OnOwnerEntitySet() override final;
-
-            void SetScriptCallers();
         public:
-            Script::Instance ai;
-            Script::Instance battleAI;
+            typedef TypedObjectReference<ScriptInstance> ScriptInstance;
+            ScriptInstance script;
+        public:
+            nAIComponent(EntityReference owner);
+            nAIComponent(const nAIComponent& arg) = default;
+            nAIComponent(const ::Inscription::Table<nAIComponent>& table);
 
-            AIComponent();
-            AIComponent(const AIComponent &arg) = default;
-            AIComponent(AIComponent &&arg);
-            AIComponent& operator=(const AIComponent &arg) = default;
-            AIComponent& operator=(AIComponent &&arg);
+            ObjectTypeDescription TypeDescription() const override;
+        private:
+            void SetupScripts();
+        private:
+            INSCRIPTION_ACCESS;
         };
-
-        ENTITY_COMPONENT_MAP_DECLARE("AI", AIComponent)
     }
+
+    template<>
+    struct ObjectTraits<Ent::nAIComponent> : ObjectTraitsBase<Ent::nAIComponent>
+    {
+        static const ObjectTypeName typeName;
+    };
+}
+
+namespace Inscription
+{
+    DECLARE_OBJECT_INSCRIPTER(::Atmos::Ent::nAIComponent)
+    {
+    public:
+        static void AddMembers(TableT& table);
+    };
 }

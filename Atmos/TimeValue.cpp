@@ -5,7 +5,8 @@ namespace Atmos
 {
     INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(TimeValue)
     {
-        scribe(value, epoch);
+        scribe(value);
+        scribe(epoch);
     }
 
     TimeValue::ValueT TimeValue::ConvertValueStatic(ValueT value, EpochT oldEpoch, EpochT newEpoch, bool manipulateValue)

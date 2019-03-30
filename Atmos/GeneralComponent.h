@@ -1,42 +1,22 @@
 #pragma once
 
-#include "EntityComponent.h"
-#include "EntityManager.h"
+#include "nEntityComponent.h"
 
-#include "Name.h"
+#include "NameValuePair.h"
 #include "GridPosition.h"
-#include "ObjectHandle.h"
-#include "Modulator.h"
+#include "Direction.h"
 #include "Tag.h"
-#include "Variant.h"
 
-#include "Serialization.h"
+#include "ObjectSerialization.h"
 
 namespace Atmos
 {
     namespace Ent
     {
-        class GeneralComponent : public Component<GeneralComponent>
+        class nGeneralComponent : public nEntityComponent
         {
-        private:
-            INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
-            INSCRIPTION_ACCESS;
         public:
-            class Storage
-            {
-            public:
-                Name name;
-                Variant variant;
-
-                Storage();
-                Storage(const Name &name, const Variant &set);
-                Storage(const Name &name, Variant &&set);
-                bool operator==(const Storage &arg) const;
-                bool operator!=(const Storage &arg) const;
-                Variant* operator->();
-                const Variant* operator->() const;
-                const Name& GetName() const;
-            };
+            typedef NameValuePair StorageObject;
         public:
             // Name
             Name name;
@@ -54,23 +34,14 @@ namespace Atmos
             bool solid;
 
             // Persistent storage
-            std::unordered_map<Name, Storage> storage;
+            std::unordered_map<Name, StorageObject> storage;
 
             // Tags
             std::unordered_set<Tag> tags;
-
-            // Handler
-            ObjectHandle<Manager, GeneralComponent> handler;
-
-            GeneralComponent();
-            GeneralComponent(const Name &name, const PositionT &position, const DirectionT &direction, Manager *manager);
-            GeneralComponent(const GeneralComponent &arg) = default;
-            GeneralComponent(GeneralComponent &&arg);
-            GeneralComponent& operator=(const GeneralComponent &arg) = default;
-            GeneralComponent& operator=(GeneralComponent &&arg);
-
-            bool operator==(const GeneralComponent &arg) const;
-            bool operator!=(const GeneralComponent &arg) const;
+        public:
+            nGeneralComponent(EntityReference reference);
+            nGeneralComponent(const nGeneralComponent& arg) = default;
+            nGeneralComponent(const ::Inscription::Table<nGeneralComponent>& table);
 
             void SetPosition(const PositionT &set);
             GridPosition GetPositionInFront() const;
@@ -78,35 +49,42 @@ namespace Atmos
             void SetSolid(bool set);
             bool IsSolid() const;
 
-            Storage* AddStorage(const Name &name, bool set);
-            Storage* AddStorage(const Name &name, std::uint8_t set);
-            Storage* AddStorage(const Name &name, std::uint16_t set);
-            Storage* AddStorage(const Name &name, std::uint32_t set);
-            Storage* AddStorage(const Name &name, std::uint64_t set);
-            Storage* AddStorage(const Name &name, std::int8_t set);
-            Storage* AddStorage(const Name &name, std::int16_t set);
-            Storage* AddStorage(const Name &name, std::int32_t set);
-            Storage* AddStorage(const Name &name, std::int64_t set);
-            Storage* AddStorage(const Name &name, const GridPosition &set);
-            Storage* AddStorage(const Name &name, const Variant &set);
-
-            Storage* AddStorage(const Storage &add);
-            Storage* AddStorage(Storage &&add);
+            StorageObject* AddStorage(const StorageObject &add);
+            StorageObject* AddStorage(StorageObject &&add);
             void RemoveStorage(const Name &remove);
-            void RemoveStorage(const Storage &remove);
+            void RemoveStorage(const StorageObject &remove);
 
-            Storage* FindStorage(const Name &find);
-            Storage* FindStorage(const Storage &find);
-            const Storage* FindStorage(const Name &find) const;
-            const Storage* FindStorage(const Storage &find) const;
+            StorageObject* FindStorage(const Name &find);
+            StorageObject* FindStorage(const StorageObject &find);
+            const StorageObject* FindStorage(const Name &find) const;
+            const StorageObject* FindStorage(const StorageObject &find) const;
             bool HasStorage(const Name &check) const;
-            bool HasStorage(const Storage &check) const;
+            bool HasStorage(const StorageObject &check) const;
 
             void TagAs(const Tag &add);
             void RemoveTag(const Tag &remove);
-            bool HasTag(const Tag &check) const;
-        };
+            bool IsTaggedAs(const Tag &check) const;
 
-        ENTITY_COMPONENT_MAP_DECLARE("General", GeneralComponent)
+            ObjectTypeDescription TypeDescription() const override;
+        private:
+            INSCRIPTION_ACCESS;
+        };
     }
+
+    template<>
+    struct ObjectTraits<Ent::nGeneralComponent> : ObjectTraitsBase<Ent::nGeneralComponent>
+    {
+        static const ObjectTypeName typeName;
+    };
+}
+
+namespace Inscription
+{
+    DECLARE_OBJECT_INSCRIPTER(::Atmos::Ent::nGeneralComponent)
+    {
+    public:
+        static void AddMembers(TableT& table);
+
+        INSCRIPTION_INSCRIPTER_DECLARE_SERIALIZE_FUNCTION;
+    };
 }

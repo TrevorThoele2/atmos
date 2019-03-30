@@ -1,186 +1,26 @@
 
-#include <wx\zipstrm.h>
-#include <wx\txtstrm.h>
-#include <wx\wfstream.h>
+#include <wx/zipstrm.h>
+#include <wx/txtstrm.h>
+#include <wx/wfstream.h>
 #include <wx/log.h>
 #include <unordered_map>
 
 #include "AssetPackage.h"
-#include "Script.h"
 
 #include "Environment.h"
-#include "SimpleFile.h"
 #include "StringUtility.h"
 #include "Logger.h"
 
 namespace Atmos
 {
-    String ProcessWorldFilePath(const FilePath &worldFilePath)
+    String ProcessWorldFilePath(const FilePath& worldFilePath)
     {
-        return ReplaceFileExtension(worldFilePath, AssetPackage::GetFileExtension());
+        return ReplaceFileExtension(worldFilePath, AssetPackage::FileExtension());
     }
-
-    const char* AssetPackage::imageSub = "images";
-    const char* AssetPackage::shaderSub = "shaders";
-    const char* AssetPackage::audioSub = "audio";
-    const char* AssetPackage::scriptSub = "scripts";
 
     AssetPackage::~AssetPackage()
     {
         ClearAll();
-    }
-
-    void AssetPackage::AddToMap(BufferMap &map, const FilePath &path)
-    {
-        if (path.IsEmpty())
-            return;
-
-        map.emplace(path, ReadFileIntoBuffer(path));
-    }
-
-    bool AssetPackage::RemoveFromMap(BufferMap &map, const FileName &name)
-    {
-        return map.erase(name) != 0;
-    }
-
-    AssetPackage::Buffer* AssetPackage::RetrieveAsset(BufferMap &map, const FileName &name)
-    {
-        auto found = map.find(name);
-        if (found == map.end())
-            return nullptr;
-
-        return &found->second;
-    }
-
-    void AssetPackage::ClearMap(BufferMap &map)
-    {
-        auto loop = map.begin();
-        while (loop != map.end())
-        {
-            delete[] loop->second.first;
-            loop = map.erase(loop);
-        }
-    }
-
-    void AssetPackage::ClearAll()
-    {
-        ClearMap(Instance().images);
-        ClearMap(Instance().shaders);
-        ClearMap(Instance().audio);
-        ClearMap(Instance().scripts);
-    }
-
-    AssetPackage& AssetPackage::Instance()
-    {
-        static AssetPackage instance;
-        return instance;
-    }
-
-    void AssetPackage::AddImage(const FilePath &path)
-    {
-        AddToMap(Instance().images, path);
-    }
-
-    void AssetPackage::AddShader(const FilePath &path)
-    {
-        AddToMap(Instance().shaders, path);
-    }
-
-    void AssetPackage::AddAudio(const FilePath &path)
-    {
-        AddToMap(Instance().audio, path);
-    }
-
-    void AssetPackage::AddScript(const FilePath &path)
-    {
-        FilePath usePath(path);
-        ScriptModuleBase::SetupModuleExtension(usePath);
-
-        AddToMap(Instance().scripts, usePath);
-    }
-
-    bool AssetPackage::RemoveImage(const FileName &name)
-    {
-        return RemoveFromMap(Instance().images, name);
-    }
-
-    bool AssetPackage::RemoveShader(const FileName &name)
-    {
-        return RemoveFromMap(Instance().shaders, name);
-    }
-    
-    bool AssetPackage::RemoveAudio(const FileName &name)
-    {
-        return RemoveFromMap(Instance().audio, name);
-    }
-
-    bool AssetPackage::RemoveScript(const FileName &name)
-    {
-        return RemoveFromMap(Instance().scripts, name);
-    }
-
-    AssetPackage::Buffer* AssetPackage::RetrieveImage(const FileName &name)
-    {
-        auto buffer = RetrieveAsset(Instance().images, name);
-        if (!buffer)
-            Logger::Log("A requested image was not found in the asset package. Discarding.",
-                Logger::Type::ERROR_SEVERE,
-                Logger::NameValueVector{ NameValuePair("File Name", name.GetValue()) });
-
-        return buffer;
-    }
-
-    AssetPackage::Buffer* AssetPackage::RetrieveShader(const FileName &name)
-    {
-        auto buffer = RetrieveAsset(Instance().shaders, name);
-        if (!buffer)
-            Logger::Log("A requested shader was not found in the asset package. Discarding.",
-                Logger::Type::ERROR_SEVERE,
-                Logger::NameValueVector{ NameValuePair("File Name", name.GetValue()) });
-
-        return buffer;
-    }
-
-    AssetPackage::Buffer* AssetPackage::RetrieveAudio(const FileName &name)
-    {
-        auto buffer = RetrieveAsset(Instance().audio, name);
-        if (!buffer)
-            Logger::Log("A requested audio was not found in the asset package. Discarding.",
-                Logger::Type::ERROR_SEVERE,
-                Logger::NameValueVector{ NameValuePair("File Name", name.GetValue()) });
-
-        return buffer;
-    }
-
-    AssetPackage::Buffer* AssetPackage::RetrieveScript(const FileName &name)
-    {
-        auto buffer = RetrieveAsset(Instance().scripts, name);
-        if (!buffer)
-            Logger::Log("A requested script was not found in the asset package. Discarding.",
-                Logger::Type::ERROR_SEVERE,
-                Logger::NameValueVector{ NameValuePair("File Name", name.GetValue()) });
-
-        return buffer;
-    }
-
-    const AssetPackage::BufferMap& AssetPackage::GetImages()
-    {
-        return Instance().images;
-    }
-
-    const AssetPackage::BufferMap& AssetPackage::GetShaders()
-    {
-        return Instance().shaders;
-    }
-
-    const AssetPackage::BufferMap& AssetPackage::GetAudio()
-    {
-        return Instance().audio;
-    }
-
-    const AssetPackage::BufferMap& AssetPackage::GetScripts()
-    {
-        return Instance().scripts;
     }
 
     void AssetPackage::Clear()
@@ -188,12 +28,12 @@ namespace Atmos
         ClearAll();
     }
 
-    void AssetPackage::Save(const FilePath &filePath)
+    void AssetPackage::Save(const FilePath& filePath)
     {
         wxFileOutputStream stream(ProcessWorldFilePath(filePath));
         wxZipOutputStream zip(stream);
 
-        auto saver = [&](const char *sub, BufferMap &map)
+        auto saver = [&](const char *sub, BufferMap& map)
         {
             String nextEntry(sub);
             nextEntry.append(Environment::GetFileSystem()->GetFileSeparator());
@@ -203,25 +43,25 @@ namespace Atmos
                 return;
             }
 
-            for (auto &loop : map)
+            for (auto& loop : map)
             {
                 zip.PutNextEntry(nextEntry + loop.first.GetValue());
                 zip.Write(loop.second.first, loop.second.second);
             }
         };
 
-        saver(imageSub, Instance().images);
-        saver(shaderSub, Instance().shaders);
-        saver(audioSub, Instance().audio);
-        saver(scriptSub, Instance().scripts);
+        saver(audioSub, audio);
+        saver(imageSub, images);
+        saver(scriptSub, scripts);
+        saver(shaderSub, shaders);
     }
 
-    void AssetPackage::SaveWorldFolder(const FileName &name)
+    void AssetPackage::SaveWorldFolder(const FileName& name)
     {
-        Save(FilePath(String(worldFolder) +  '\\' + name.GetValue()));
+        Save(FilePath(String(worldFolder) + '\\' + name.GetValue()));
     }
 
-    void AssetPackage::Load(const FilePath &path)
+    void AssetPackage::Load(const FilePath& path)
     {
         ClearAll();
 
@@ -276,28 +116,51 @@ namespace Atmos
 
             // Create the asset
             {
-                auto &directoryName = path.GetDirectoryName(0);
-                if (directoryName == imageSub)
-                    Instance().images.emplace(name, Buffer(buffer, size));
-                else if (directoryName == shaderSub)
-                    Instance().shaders.emplace(name, Buffer(buffer, size));
-                else if (directoryName == audioSub)
-                    Instance().audio.emplace(name, Buffer(buffer, size));
+                auto& directoryName = path.GetDirectoryName(0);
+                if (directoryName == audioSub)
+                    audio.emplace(name, Buffer(buffer, size));
+                else if (directoryName == imageSub)
+                    images.emplace(name, Buffer(buffer, size));
                 else if (directoryName == scriptSub)
-                    Instance().scripts.emplace(name, Buffer(buffer, size));
+                    scripts.emplace(name, Buffer(buffer, size));
+                else if (directoryName == shaderSub)
+                    shaders.emplace(name, Buffer(buffer, size));
             }
 
             entry = zip.GetNextEntry();
         }
     }
 
-    void AssetPackage::LoadWorldFolder(const FileName &name)
+    void AssetPackage::LoadWorldFolder(const FileName& name)
     {
         Load(FilePath(String(worldFolder) + '\\' + name.GetValue()));
     }
 
-    String AssetPackage::GetFileExtension()
+    String AssetPackage::FileExtension()
     {
         return "dat";
+    }
+
+    const char* AssetPackage::audioSub = "audio";
+    const char* AssetPackage::imageSub = "images";
+    const char* AssetPackage::scriptSub = "scripts";
+    const char* AssetPackage::shaderSub = "shaders";
+
+    void AssetPackage::ClearMap(BufferMap& map)
+    {
+        auto loop = map.begin();
+        while (loop != map.end())
+        {
+            delete[] loop->second.first;
+            loop = map.erase(loop);
+        }
+    }
+
+    void AssetPackage::ClearAll()
+    {
+        ClearMap(audio);
+        ClearMap(images);
+        ClearMap(scripts);
+        ClearMap(shaders);
     }
 }

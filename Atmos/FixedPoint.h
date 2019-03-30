@@ -855,49 +855,49 @@ namespace Atmos
     template<class T>
     FixedPoint<T>::operator char() const
     {
-        return char(SplitValueIPart());
+        return static_cast<char>(SplitValueIPart());
     }
 
     template<class T>
     FixedPoint<T>::operator unsigned char() const
     {
-        return unsigned char(SplitValueIPart());
+        return static_cast<unsigned char>(SplitValueIPart());
     }
 
     template<class T>
     FixedPoint<T>::operator short() const
     {
-        return short(SplitValueIPart());
+        return static_cast<short>(SplitValueIPart());
     }
 
     template<class T>
     FixedPoint<T>::operator unsigned short() const
     {
-        return unsigned short(SplitValueIPart());
+        return static_cast<unsigned short>(SplitValueIPart());
     }
 
     template<class T>
     FixedPoint<T>::operator int() const
     {
-        return int(SplitValueIPart());
+        return static_cast<int>(SplitValueIPart());
     }
 
     template<class T>
     FixedPoint<T>::operator unsigned int() const
     {
-        return unsigned int(SplitValueIPart());
+        return static_cast<unsigned int>(SplitValueIPart());
     }
 
     template<class T>
     FixedPoint<T>::operator long long() const
     {
-        return long long(SplitValueIPart());
+        return static_cast<long long>(SplitValueIPart());
     }
 
     template<class T>
     FixedPoint<T>::operator unsigned long long() const
     {
-        return unsigned long long(SplitValueIPart());
+        return static_cast<unsigned long long>(SplitValueIPart());
     }
 
     template<class T>
@@ -1009,7 +1009,8 @@ namespace Atmos
     template<class T>
     void FixedPoint<T>::FromString(const String &arg)
     {
-        value = BreakFloatingPoint(::Atmos::FromString<double>(arg), radixPoint);
+        //double fromString = ::Atmos::FromString<double>(arg);
+        //value = BreakFloatingPoint(fromString, radixPoint);
     }
 
     template<class T>

@@ -4,8 +4,8 @@
 
 #include "RangePattern.h"
 
+#include "ScriptInstance.h"
 #include "Sprite.h"
-#include "CombatChain.h"
 #include "FixedPoint.h"
 
 #include "Serialization.h"
@@ -14,31 +14,25 @@ namespace Atmos
 {
     class BattlePatternHolder
     {
-    private:
-        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
-        INSCRIPTION_ACCESS;
     public:
         class Piece
         {
+        public:
+            typedef TypedObjectReference<nSprite> SpriteReference;
+            SpriteReference selectionSprite;
+        public:
+            typedef TypedObjectReference<ScriptInstance> ScriptReference;
+            ScriptReference action;
+        public:
+            typedef FixedPoint64 Power;
+            Power powerPercentage;
+        public:
+            Piece() = default;
+            Piece(const Piece &arg) = default;
+            Piece& operator=(const Piece &arg) = default;
         private:
             INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
             INSCRIPTION_ACCESS;
-        public:
-            typedef FixedPoint64 Power;
-        public:
-            Sprite selectionSprite;
-            // Basically a percentage rating
-            Power power;
-            CombatChain chain;
-
-            Piece() = default;
-            Piece(const Sprite &selectionSprite, Power power, const CombatChain &chain);
-            Piece(const Piece &arg) = default;
-            Piece(Piece &&arg);
-            Piece& operator=(Piece &&arg);
-            Piece& operator=(const Piece &arg) = default;
-            bool operator==(const Piece &arg) const;
-            bool operator!=(const Piece &arg) const;
         };
     public:
         typedef std::vector<Piece> PieceRegistry;
@@ -46,12 +40,12 @@ namespace Atmos
 
         typedef RelativeRangePattern<Piece*> PatternT;
         PatternT pieces;
-
+    public:
         BattlePatternHolder() = default;
         BattlePatternHolder(const BattlePatternHolder &arg) = default;
         BattlePatternHolder& operator=(const BattlePatternHolder &arg) = default;
-
-        bool operator==(const BattlePatternHolder &arg) const;
-        bool operator!=(const BattlePatternHolder &arg) const;
+    private:
+        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
+        INSCRIPTION_ACCESS;
     };
 }

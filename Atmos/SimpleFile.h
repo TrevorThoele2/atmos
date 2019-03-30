@@ -73,7 +73,7 @@ namespace Atmos
     template<class SizeT>
     void SimpleInFile::FillBuffer(Buffer<SizeT> &fill, StreamSize size)
     {
-        stream.read(fill.CastBytes<char*>(), size);
+        stream.read(fill.GetBytes<char*>(), size);
     }
 
     class SimpleOutFile : public SimpleFile<std::ofstream>
@@ -90,7 +90,7 @@ namespace Atmos
     template<class T>
     void SimpleOutFile::operator<<(const T &arg)
     {
-        stream.write(reinterpret_cast<const char*>(&var), sizeof(var));
+        stream.write(reinterpret_cast<const char*>(&arg), sizeof(arg));
     }
 
     size_t GetFileSize(const FilePath &path);

@@ -10,13 +10,16 @@ namespace Atmos
     {
     public:
         typedef std::uint32_t SizeT;
-    private:
-        enum class Type
-        {
-            NONE,
-            WAV,
-            OGG
-        };
+    public:
+        AudioHandlerBase() = default;
+        virtual ~AudioHandlerBase() = 0 {}
+
+        std::unique_ptr<AudioAssetData> CreateAudioData(const FilePath& path);
+        std::unique_ptr<AudioAssetData> CreateAudioData(void* buffer, SizeT fileSize, const FileName& name);
+        virtual bool SetMasterVolume(float setTo) = 0;
+
+        static bool CanMake(const FilePath& path);
+        static bool CanMake(void* buffer, SizeT fileSize);
     protected:
         typedef Buffer<SizeT> BufferT;
 
@@ -30,24 +33,24 @@ namespace Atmos
             std::int32_t avgBytesPerSec;
         };
 
-        typedef std::pair<BufferT, Format> Data;
+        typedef std::pair<BufferT, Format> ExtractedFile;
     private:
-        AudioHandlerBase(const AudioHandlerBase &arg) = delete;
-        AudioHandlerBase& operator=(const AudioHandlerBase &arg) = delete;
+        enum class FileType
+        {
+            NONE,
+            WAV,
+            OGG
+        };
+    private:
+        AudioHandlerBase(const AudioHandlerBase& arg) = delete;
+        AudioHandlerBase& operator=(const AudioHandlerBase& arg) = delete;
+    private:
+        ExtractedFile ExtractFile(FileType fileType, BufferT&& buffer, SizeT fileSize);
+        ExtractedFile ExtractFileWAV(BufferT&& buffer, SizeT fileSize);
+        ExtractedFile ExtractFileOGG(BufferT&& buffer, SizeT fileSize);
 
-        Data CreateData(Type type, void *buffer, SizeT fileSize);
-        Data CreateDataWAV(void *buffer, SizeT fileSize);
-        Data CreateDataOGG(void *buffer, SizeT fileSize);
-        static Type GetType(void *buffer, SizeT fileSize);
-        virtual AudioAsset CreateAudioImpl(Data &&data, const FileName &name) = 0;
-    public:
-        AudioHandlerBase() = default;
-        virtual ~AudioHandlerBase() = 0 {}
-        AudioAsset CreateAudio(const FilePath &path);
-        AudioAsset CreateAudio(void *buffer, SizeT fileSize, const FileName &name);
-        virtual bool SetMasterVolume(float setTo) = 0;
-
-        static bool CanMake(const FilePath &path);
-        static bool CanMake(void *buffer, SizeT fileSize);
+        static FileType FileTypeOf(const BufferT& buffer, SizeT fileSize);
+    private:
+        virtual std::unique_ptr<AudioAssetData> CreateAudioDataImpl(ExtractedFile&& extracted, const FileName &name) = 0;
     };
 }

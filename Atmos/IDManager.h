@@ -1,676 +1,287 @@
 #pragma once
 
-#include <vector>
 #include <unordered_map>
-#include "IDSequencer.h"
 
-#include "Serialization.h"
-#include <Inscription\ContainerSize.h>
-#include <Inscription\Vector.h>
+#include "IDManagerIterator.h"
+#include "IntervalList.h"
+
+#include <Inscription/UnorderedMap.h>
 
 namespace Atmos
 {
-    class IDManagerBase
+    template<class ID, class T>
+    class IDManager
     {
     public:
-        typedef std::int32_t ID;
-    };
+        typedef ID IdentifierT;
+        typedef T ValueT;
+        typedef size_t SizeT;
 
-    template<class ContainerT>
-    struct IDManagerTraits;
-
-    template<class T, class Alloc>
-    struct IDManagerTraits<std::vector<T, Alloc>>
-    {
-        typedef std::vector<T, Alloc> ContainerT;
-        typedef T ObjectT;
-
-        static typename ContainerT::iterator Add(ContainerT &cont, IDManagerBase::ID id, ObjectT &&add)
-        {
-            cont.push_back(std::move(add));
-            return --cont.end();
-        }
-
-        static ObjectT* Unpack(ContainerT &cont, typename ContainerT::iterator itr)
-        {
-            if (itr == cont.end())
-                return nullptr;
-            else
-                return &*itr;
-        }
-    };
-
-    template<class T, class Hasher, class KeyEq, class Alloc>
-    struct IDManagerTraits<std::unordered_map<IDManagerBase::ID, T, Hasher, KeyEq, Alloc>>
-    {
-        typedef std::unordered_map<IDManagerBase::ID, T, Hasher, KeyEq, Alloc> ContainerT;
-        typedef T ObjectT;
-
-        static typename ContainerT::iterator Add(ContainerT &cont, IDManagerBase::ID id, T &&add)
-        {
-            return cont.emplace(id, std::move(add)).first;
-        }
-
-        static ObjectT* Unpack(ContainerT &cont, typename ContainerT::iterator itr)
-        {
-            if (itr == cont.end())
-                return nullptr;
-            else
-                return &itr->second;
-        }
-    };
-
-    template<class Container>
-    class IDManager : public IDManagerBase
-    {
-    public:
-        typedef Container ContainerType;
+        static constexpr IdentifierT nullID = 0;
     private:
-        typedef IDManagerTraits<ContainerType> Traits;
+        typedef std::unordered_map<IdentifierT, ValueT> ValueMap;
+        typedef typename ValueMap::iterator BasicIterator;
+        typedef typename ValueMap::const_iterator ConstBasicIterator;
     public:
-        typedef typename Traits::ObjectT Object;
-        typedef typename ContainerType::iterator iterator;
-        typedef typename ContainerType::const_iterator const_iterator;
-        typedef typename ContainerType::size_type size_type;
-
-        typedef IDManagerBase::ID ID;
-        static const ID nullID = 0;
-    private:
-        typedef std::vector<iterator> IDs;
-
-        typedef long long WideID;
-    private:
-        IDs positive;
-        IDs negative;
-        IDSequencerStatic<ID, -1, std::numeric_limits<ID>::min()> idSequencer;
-
-        ContainerType container;
-
-        ID AddImpl(Object &&obj);
-        ID AddImpl(ID id, Object &&obj);
-        // Returns (if removed, iterator after removed iterator)
-        std::pair<bool, iterator> RemoveImpl(iterator remove, typename IDs::iterator idItr, IDs &ids);
-        // Returns (if removed, iterator after removed iterator)
-        std::pair<bool, iterator> RemoveImpl(iterator remove, size_t position, IDs &ids);
-        // Returns (if removed, iterator after removed iterator)
-        std::pair<bool, const_iterator> RemoveImpl(const_iterator remove, typename IDs::iterator idItr, IDs &ids);
-        // Returns (if removed, iterator after removed iterator)
-        std::pair<bool, const_iterator> RemoveImpl(const_iterator remove, size_t position, IDs &ids);
-
-        template<class LeftT, class RightT>
-        inline bool CompareGreater(LeftT left, RightT right) const;
-        template<class LeftT, class RightT>
-        inline bool CompareGreaterEqual(LeftT left, RightT right) const;
-        template<class LeftT, class RightT>
-        inline bool CompareLesser(LeftT left, RightT right) const;
-        template<class LeftT, class RightT>
-        inline bool CompareLesserEqual(LeftT left, RightT right) const;
+        typedef IDManagerIteratorBase<ValueT, typename ValueMap::iterator> iterator;
+        typedef IDManagerIteratorBase<const ValueT, typename ValueMap::const_iterator> const_iterator;
     public:
-        IDManager() = default;
-        IDManager(const IDManager &arg) = default;
-        IDManager& operator=(const IDManager &arg) = default;
-        IDManager(IDManager &&arg);
-        IDManager& operator=(IDManager &&arg);
-        bool operator==(const IDManager &arg) const;
-        bool operator!=(const IDManager &arg) const;
+        bool operator==(const IDManager& arg) const;
+        bool operator!=(const IDManager& arg) const;
 
-        // Will return nullID if the subcomponent was not created
-        ID Add(const Object &add);
-        // Will return nullID if the subcomponent was not created
-        ID Add(Object &&add);
-        // Will return nullID if the subcomponent was not created
-        ID Add(ID id, const Object &add);
-        // Will return nullID if the subcomponent was not created
-        ID Add(ID id, Object &&add);
-        // Returns if the subcomponent was destroyed
-        bool Remove(ID id);
-        // If you supply true to this, then it will be assumed that the object has a positive ID. If false, a negative one.
-        // Returns the iterator after the removed
-        iterator Remove(iterator remove, bool hint = true);
-        // If you supply true to this, then it will be assumed that the object has a positive ID. If false, a negative one.
-        // Returns the iterator after the removed
-        const_iterator Remove(const_iterator remove, bool hint = true);
+        iterator Add(const T& add);
+        iterator Add(T&& add);
+        iterator Add(IdentifierT id, const T& add);
+        iterator Add(IdentifierT id, T&& add);
+        iterator Remove(IdentifierT id);
+        iterator Remove(iterator itr);
+        iterator Remove(const_iterator itr);
         void Clear();
-        iterator Find(ID id);
-        const_iterator Find(ID id) const;
+        iterator Find(IdentifierT id);
+        const_iterator Find(IdentifierT id) const;
 
-        bool CanCreate() const;
-        bool CanCreate(ID id) const;
-
-        ID GetUpperLimit() const;
-        ID GetLowerLimit() const;
-        // Returns the ID that will be used if letting the manager select the ID
-        ID GetNextAutoID() const;
-
+        SizeT Size() const;
         bool IsEmpty() const;
+
         iterator begin();
-        iterator end();
         const_iterator begin() const;
+        iterator end();
         const_iterator end() const;
-        size_type size() const;
-        size_type Size() const;
-        bool empty() const;
-        void clear();
+    private:
+        IntervalList<IdentifierT> occupiedIDs;
+        ValueMap values;
+    private:
+        iterator AddAutomatic(const ValueT& add);
+        iterator AddAutomatic(ValueT&& add);
+        iterator AddManual(IdentifierT id, const ValueT& add);
+        iterator AddManual(IdentifierT id, ValueT&& add);
+        iterator AddCommon(IdentifierT id, const ValueT& add);
+        iterator AddCommon(IdentifierT id, ValueT&& add);
+    private:
+        BasicIterator RemoveByID(IdentifierT id);
+        BasicIterator RemoveByIterator(BasicIterator itr);
+    private:
+        IdentifierT BaseAutomaticID() const;
+        IdentifierT NextAutomaticID() const;
+    private:
+        iterator Wrap(BasicIterator itr);
+        const_iterator Wrap(ConstBasicIterator itr) const;
+        BasicIterator Unwrap(iterator itr);
+        ConstBasicIterator Unwrap(const_iterator itr) const;
     private:
         INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
+    private:
+        static_assert(std::is_signed<IdentifierT>::value, "IDs are required to be signed in an IDManager");
     };
 
-    template<class Container>
-    typename IDManager<Container>::ID IDManager<Container>::AddImpl(Object &&obj)
+    template<class ID, class T>
+    bool IDManager<ID, T>::operator==(const IDManager& arg) const
     {
-        ID id = idSequencer.GetNextID();
-        iterator added = Traits::Add(container, id, std::move(obj));
-        ID negateID = (-1) * id;
-        (CompareGreater(negateID, negative.size())) ? negative.push_back(added) : negative[negateID - 1] = added;
-
-        idSequencer.ReserveNext();
-        return id;
+        return values == arg.values && occupiedIDs == arg.occupiedIDs;
     }
 
-    template<class Container>
-    typename IDManager<Container>::ID IDManager<Container>::AddImpl(ID id, Object &&obj)
-    {
-        // If the ID is less than or equal to null ID, then just add through the automatic ID adder
-        if (id <= nullID)
-            return AddImpl(std::move(obj));
-
-        iterator added = Traits::Add(container, id, std::move(obj));
-        // Check if ID is greater than the current size
-        if (CompareLesser(positive.size(), id))
-        {
-            positive.resize(id);
-            positive[id - 1] = added;
-            return id;
-        }
-
-        iterator &object = positive[id - 1];
-
-        // If the object at the ID the user wants to create at is already occupied
-        if (object != container.end())
-            // Don't create anything
-            return nullID;
-
-        object = added;
-        return id;
-    }
-
-    template<class Container>
-    std::pair<bool, typename IDManager<Container>::iterator> IDManager<Container>::RemoveImpl(iterator remove, typename IDs::iterator idItr, IDs &ids)
-    {
-        return RemoveImpl(remove, idItr - ids.begin(), ids);
-    }
-
-    template<class Container>
-    std::pair<bool, typename IDManager<Container>::iterator> IDManager<Container>::RemoveImpl(iterator remove, size_t position, IDs &ids)
-    {
-        typedef std::pair<bool, iterator> Ret;
-        if (remove == container.end())
-            return Ret(false, container.end());
-
-        if (CompareGreaterEqual(position, ids.size()))
-            return Ret(false, container.end());
-
-        if ((position + 1) == ids.size())
-            ids.pop_back();
-        else
-        {
-            iterator &focused = ids[position];
-            if (focused == container.end())
-                return Ret(false, ++remove);
-
-            ids[position] = container.end();
-        }
-
-        if (&ids == &negative)
-            idSequencer.IDRemoved(-1 * (position + 1));
-
-        return Ret(true, container.erase(remove));
-    }
-
-    template<class Container>
-    std::pair<bool, typename IDManager<Container>::const_iterator> IDManager<Container>::RemoveImpl(const_iterator remove, typename IDs::iterator idItr, IDs &ids)
-    {
-        return RemoveImpl(remove, idItr - ids.begin(), ids);
-    }
-
-    template<class Container>
-    std::pair<bool, typename IDManager<Container>::const_iterator> IDManager<Container>::RemoveImpl(const_iterator remove, size_t position, IDs &ids)
-    {
-        typedef std::pair<bool, const_iterator> Ret;
-        if (remove == container.end())
-            return Ret(false, container.end());
-
-        if (CompareGreaterEqual(position, ids.size()))
-            return Ret(false, container.end());
-
-        if ((position + 1) == ids.size())
-            ids.pop_back();
-        else
-        {
-            iterator &focused = ids[position];
-            if (focused == container.end())
-                return Ret(false, ++remove);
-
-            ids[position] = container.end();
-        }
-
-        if (&ids == &negative)
-            idSequencer.IDRemoved(-1 * (position + 1));
-
-        return Ret(true, container.erase(remove));
-    }
-
-    template<class Container>
-    template<class LeftT, class RightT>
-    bool IDManager<Container>::CompareGreater(LeftT left, RightT right) const
-    {
-        WideID useLeft = left;
-        WideID useRight = right;
-        return useLeft > useRight;
-    }
-
-    template<class Container>
-    template<class LeftT, class RightT>
-    bool IDManager<Container>::CompareGreaterEqual(LeftT left, RightT right) const
-    {
-        WideID useLeft = left;
-        WideID useRight = right;
-        return useLeft >= useRight;
-    }
-
-    template<class Container>
-    template<class LeftT, class RightT>
-    bool IDManager<Container>::CompareLesser(LeftT left, RightT right) const
-    {
-        WideID useLeft = left;
-        WideID useRight = right;
-        return useLeft < useRight;
-    }
-
-    template<class Container>
-    template<class LeftT, class RightT>
-    bool IDManager<Container>::CompareLesserEqual(LeftT left, RightT right) const
-    {
-        WideID useLeft = left;
-        WideID useRight = right;
-        return useLeft <= useRight;
-    }
-
-    template<class Container>
-    IDManager<Container>::IDManager(IDManager &&arg) : positive(std::move(arg.positive)), negative(std::move(arg.negative)), idSequencer(std::move(arg.idSequencer)), container(std::move(arg.container))
-    {}
-
-    template<class Container>
-    IDManager<Container>& IDManager<Container>::operator=(IDManager &&arg)
-    {
-        positive = std::move(arg.positive);
-        negative = std::move(arg.negative);
-        idSequencer = std::move(arg.idSequencer);
-        container = std::move(arg.container);
-        return *this;
-    }
-
-    template<class Container>
-    bool IDManager<Container>::operator==(const IDManager &arg) const
-    {
-        return positive == arg.positive && negative == arg.negative && idSequencer == arg.idSequencer && container == arg.container;
-    }
-
-    template<class Container>
-    bool IDManager<Container>::operator!=(const IDManager &arg) const
+    template<class ID, class T>
+    bool IDManager<ID, T>::operator!=(const IDManager& arg) const
     {
         return !(*this == arg);
     }
 
-    template<class Container>
-    typename IDManager<Container>::ID IDManager<Container>::Add(const Object &add)
+    template<class ID, class T>
+    typename IDManager<ID, T>::iterator IDManager<ID, T>::Add(const T& add)
     {
-        if (!idSequencer.CanMakeAnother())
-            return nullID;
-
-        return AddImpl(Object(add));
+        return AddAutomatic(add);
     }
 
-    template<class Container>
-    typename IDManager<Container>::ID IDManager<Container>::Add(Object &&add)
+    template<class ID, class T>
+    typename IDManager<ID, T>::iterator IDManager<ID, T>::Add(T&& add)
     {
-        if (!idSequencer.CanMakeAnother())
-            return nullID;
-
-        return AddImpl(std::move(add));
+        return AddAutomatic(std::move(add));
     }
 
-    template<class Container>
-    typename IDManager<Container>::ID IDManager<Container>::Add(ID id, const Object &add)
+    template<class ID, class T>
+    typename IDManager<ID, T>::iterator IDManager<ID, T>::Add(IdentifierT id, const T& add)
     {
-        return AddImpl(id, Object(add));
+        return AddManual(id, add);
     }
 
-    template<class Container>
-    typename IDManager<Container>::ID IDManager<Container>::Add(ID id, Object &&add)
+    template<class ID, class T>
+    typename IDManager<ID, T>::iterator IDManager<ID, T>::Add(IdentifierT id, T&& add)
     {
-        return AddImpl(id, std::move(add));
+        return AddManual(id, std::move(add));
     }
 
-    template<class Container>
-    bool IDManager<Container>::Remove(ID id)
+    template<class ID, class T>
+    typename IDManager<ID, T>::iterator IDManager<ID, T>::Remove(IdentifierT id)
     {
-        if (id > 0)
-            return RemoveImpl(positive[id - 1], positive.begin() + id, positive).first;
+        return RemoveByID(id);
+    }
+
+    template<class ID, class T>
+    typename IDManager<ID, T>::iterator IDManager<ID, T>::Remove(iterator itr)
+    {
+        return Wrap(RemoveByIterator(Unwrap(itr)));
+    }
+
+    template<class ID, class T>
+    typename IDManager<ID, T>::iterator IDManager<ID, T>::Remove(const_iterator itr)
+    {
+        return Wrap(RemoveByIterator(Unwrap(itr)));
+    }
+
+    template<class ID, class T>
+    void IDManager<ID, T>::Clear()
+    {
+        occupiedIDs.clear();
+        values.clear();
+    }
+
+    template<class ID, class T>
+    typename IDManager<ID, T>::iterator IDManager<ID, T>::Find(IdentifierT id)
+    {
+        return Wrap(values.find(id));
+    }
+
+    template<class ID, class T>
+    typename IDManager<ID, T>::const_iterator IDManager<ID, T>::Find(IdentifierT id) const
+    {
+        return Wrap(values.find(id));
+    }
+
+    template<class ID, class T>
+    typename IDManager<ID, T>::SizeT IDManager<ID, T>::Size() const
+    {
+        return values.size();
+    }
+
+    template<class ID, class T>
+    bool IDManager<ID, T>::IsEmpty() const
+    {
+        return Size() == 0;
+    }
+
+    template<class ID, class T>
+    typename IDManager<ID, T>::iterator IDManager<ID, T>::begin()
+    {
+        return Wrap(values.begin());
+    }
+
+    template<class ID, class T>
+    typename IDManager<ID, T>::const_iterator IDManager<ID, T>::begin() const
+    {
+        return Wrap(values.begin());
+    }
+
+    template<class ID, class T>
+    typename IDManager<ID, T>::iterator IDManager<ID, T>::end()
+    {
+        return Wrap(values.end());
+    }
+
+    template<class ID, class T>
+    typename IDManager<ID, T>::const_iterator IDManager<ID, T>::end() const
+    {
+        return Wrap(values.end());
+    }
+
+    template<class ID, class T>
+    typename IDManager<ID, T>::iterator IDManager<ID, T>::AddAutomatic(const ValueT& add)
+    {
+        return AddCommon(NextAutomaticID(), add);
+    }
+
+    template<class ID, class T>
+    typename IDManager<ID, T>::iterator IDManager<ID, T>::AddAutomatic(ValueT&& add)
+    {
+        return AddCommon(NextAutomaticID(), std::move(add));
+    }
+
+    template<class ID, class T>
+    typename IDManager<ID, T>::iterator IDManager<ID, T>::AddManual(IdentifierT id, const ValueT& add)
+    {
+        return AddCommon(id, add);
+    }
+
+    template<class ID, class T>
+    typename IDManager<ID, T>::iterator IDManager<ID, T>::AddManual(IdentifierT id, ValueT&& add)
+    {
+        return AddCommon(id, std::move(add));
+    }
+
+    template<class ID, class T>
+    typename IDManager<ID, T>::iterator IDManager<ID, T>::AddCommon(IdentifierT id, const ValueT& add)
+    {
+        occupiedIDs.Include(id);
+        return Wrap(values.emplace(id, add).first);
+    }
+
+    template<class ID, class T>
+    typename IDManager<ID, T>::iterator IDManager<ID, T>::AddCommon(IdentifierT id, ValueT&& add)
+    {
+        occupiedIDs.Include(id);
+        return Wrap(values.emplace(id, std::move(add)).first);
+    }
+
+    template<class ID, class T>
+    typename IDManager<ID, T>::BasicIterator IDManager<ID, T>::RemoveByID(IdentifierT id)
+    {
+        return RemoveByIterator(values.find(id));
+    }
+
+    template<class ID, class T>
+    typename IDManager<ID, T>::BasicIterator IDManager<ID, T>::RemoveByIterator(BasicIterator itr)
+    {
+        occupiedIDs.Remove(itr->first);
+        return values.erase(itr);
+    }
+
+    template<class ID, class T>
+    typename IDManager<ID, T>::IdentifierT IDManager<ID, T>::BaseAutomaticID() const
+    {
+        return -1;
+    }
+
+    template<class ID, class T>
+    typename IDManager<ID, T>::IdentifierT IDManager<ID, T>::NextAutomaticID() const
+    {
+        auto itr = occupiedIDs.begin();
+        if (itr == occupiedIDs.end() || itr->GetStart() != BaseAutomaticID())
+            return BaseAutomaticID();
         else
-            return RemoveImpl(negative[id - 1], negative.begin() + (-id), negative).first;
+            return itr->GetEnd() + 1;
     }
 
-    template<class Container>
-    typename IDManager<Container>::iterator IDManager<Container>::Remove(iterator remove, bool hint)
+    template<class ID, class T>
+    typename IDManager<ID, T>::iterator IDManager<ID, T>::Wrap(BasicIterator itr)
     {
-        auto destroyer = [&](IDs &vector)
-        {
-            for (auto loop = vector.begin(); loop != vector.end(); ++loop)
-            {
-                if (remove == *loop)
-                    return RemoveImpl(remove, loop, vector).second;
-            }
-
-            return container.end();
-        };
-
-        if (hint)
-        {
-            auto destroyed = destroyer(positive);
-            if (destroyed == container.end())
-                return destroyer(negative);
-            else
-                return destroyed;
-        }
-        else
-        {
-            auto destroyed = destroyer(negative);
-            if (destroyed == container.end())
-                return destroyer(positive);
-            else
-                return destroyed;
-        }
+        return iterator(itr);
     }
 
-    template<class Container>
-    typename IDManager<Container>::const_iterator IDManager<Container>::Remove(const_iterator remove, bool hint)
+    template<class ID, class T>
+    typename IDManager<ID, T>::const_iterator IDManager<ID, T>::Wrap(ConstBasicIterator itr) const
     {
-        auto destroyer = [&](IDs &vector)
-        {
-            for (auto loop = vector.begin(); loop != vector.end(); ++loop)
-            {
-                if (remove == *loop)
-                    return RemoveImpl(remove, loop, vector).second;
-            }
-
-            return const_iterator(container.end());
-        };
-
-        if (hint)
-        {
-            auto destroyed = destroyer(positive);
-            if (destroyed == container.end())
-                return destroyer(negative);
-            else
-                return destroyed;
-        }
-        else
-        {
-            auto destroyed = destroyer(negative);
-            if (destroyed == container.end())
-                return destroyer(positive);
-            else
-                return destroyed;
-        }
+        return const_iterator(itr);
     }
 
-    template<class Container>
-    void IDManager<Container>::Clear()
+    template<class ID, class T>
+    typename IDManager<ID, T>::BasicIterator IDManager<ID, T>::Unwrap(iterator itr)
     {
-        positive.clear();
-        negative.clear();
-        idSequencer.Reset();
-        container.clear();
+        return itr.wrapped;
     }
 
-    template<class Container>
-    typename IDManager<Container>::iterator IDManager<Container>::Find(ID id)
+    template<class ID, class T>
+    typename IDManager<ID, T>::ConstBasicIterator IDManager<ID, T>::Unwrap(const_iterator itr) const
     {
-        if (id == nullID)
-            return container.end();
-
-        auto finder = [&](IDs &vector, ID useID) -> iterator
-        {
-            if (CompareLesser(vector.size(), useID))
-                return container.end();
-
-            return vector[useID - 1];
-        };
-
-        if (id > 0)
-            return finder(positive, id);
-        else
-            return finder(negative, -id);
+        return itr.wrapped;
     }
 
-    template<class Container>
-    typename IDManager<Container>::const_iterator IDManager<Container>::Find(ID id) const
+    template<class ID, class T>
+    void IDManager<ID, T>::Serialize(::Inscription::Scribe& scribe)
     {
-        if (id == nullID)
-            return container.end();
+        scribe(values);
 
-        auto finder = [&](const IDs &vector, ID useID) -> const_iterator
-        {
-            if (CompareLesser(vector.size(), useID))
-                return container.end();
-
-            return vector[useID - 1];
-        };
-
-        if (id > 0)
-            return finder(positive, id);
-        else
-            return finder(negative, -id);
-    }
-
-    template<class Container>
-    bool IDManager<Container>::CanCreate() const
-    {
-        return idSequencer.CanMakeAnother();
-    }
-
-    template<class Container>
-    bool IDManager<Container>::CanCreate(ID id) const
-    {
-        if (id == nullID)
-            return false;
-
-        if (id < positive.size())
-            return positive[id - 1];
-
-        return true;
-    }
-
-    template<class Container>
-    typename IDManager<Container>::ID IDManager<Container>::GetUpperLimit() const
-    {
-        return std::numeric_limits<ID>::max();
-    }
-
-    template<class Container>
-    typename IDManager<Container>::ID IDManager<Container>::GetLowerLimit() const
-    {
-        return idSequencer.GetLowerLimit();
-    }
-
-    template<class Container>
-    typename IDManager<Container>::ID IDManager<Container>::GetNextAutoID() const
-    {
-        return idSequencer.GetNextID();
-    }
-
-    template<class Container>
-    bool IDManager<Container>::IsEmpty() const
-    {
-        return empty();
-    }
-
-    template<class Container>
-    typename IDManager<Container>::iterator IDManager<Container>::begin()
-    {
-        return container.begin();
-    }
-
-    template<class Container>
-    typename IDManager<Container>::iterator IDManager<Container>::end()
-    {
-        return container.end();
-    }
-
-    template<class Container>
-    typename IDManager<Container>::const_iterator IDManager<Container>::begin() const
-    {
-        return container.begin();
-    }
-
-    template<class Container>
-    typename IDManager<Container>::const_iterator IDManager<Container>::end() const
-    {
-        return container.end();
-    }
-
-    template<class Container>
-    typename IDManager<Container>::size_type IDManager<Container>::size() const
-    {
-        return container.size();
-    }
-
-    template<class Container>
-    typename IDManager<Container>::size_type IDManager<Container>::Size() const
-    {
-        return size();
-    }
-
-    template<class Container>
-    bool IDManager<Container>::empty() const
-    {
-        return container.empty();
-    }
-
-    template<class Container>
-    void IDManager<Container>::clear()
-    {
-        Clear();
-    }
-
-    template<class Container>
-    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(IDManager<Container>)
-    {
-        typedef size_t Position;
-        const Position nullPosition = 0;
-        struct Hasher
-        {
-            size_t operator()(const iterator &i) const
-            {
-                return std::hash<typename iterator::pointer>()(&*i);
-            }
-        };
-
-        // Handle IDs and sequencer
-        if (scribe.IsOutput())
-        {
-            std::unordered_map<iterator, Position, Hasher> positionMap;
-
-            // Container
-            {
-                ::Inscription::ContainerSize size(container.size());
-                scribe.Save(size);
-
-                Position position = nullPosition + 1;
-                for (auto loop = container.begin(); loop != container.end(); ++loop)
-                {
-                    scribe.Save(*Traits::Unpack(container, loop));
-                    positionMap.emplace(loop, position);
-                    ++position;
-                }
-            }
-
-            auto saver = [&](IDs &ids)
-            {
-                ::Inscription::ContainerSize size(ids.size());
-                scribe.Save(size);
-
-                for (auto &loop : ids)
-                {
-                    if (loop != container.end())
-                        scribe.WriteNumeric(positionMap.find(loop)->second);
-                    else
-                        scribe.WriteNumeric(nullPosition);
-                }
-            };
-
-            saver(positive);
-            saver(negative);
-        }
-        else
-        {
-            std::unordered_map<Position, iterator> positionMap;
-
-            // Container
-            {
-                container.clear();
-
-                ::Inscription::ContainerSize size;
-                scribe.Load(size);
-
-                Position curPosition = nullPosition + 1;
-                while (size-- > 0)
-                {
-                    ::Inscription::StackConstructor<Object> constructor(scribe);
-                    auto itr = Traits::Add(container, curPosition, std::move(constructor.GetMove()));
-                    positionMap.emplace(curPosition, itr);
-                    scribe.ReplaceTrackedObject(*constructor.Get(), *Traits::Unpack(container, itr));
-                    ++curPosition;
-                }
-            }
-
-            // Positive
-            {
-                positive.clear();
-
-                ::Inscription::ContainerSize size;
-                scribe.Load(size);
-
-                for(ID loop = 0; loop != size.Get(); ++loop)
-                {
-                    size_t pos = nullPosition;
-                    scribe.ReadNumeric(pos);
-                    (pos != nullPosition) ? positive.push_back(positionMap.find(pos)->second) : positive.push_back(container.end());
-                }
-            }
-
-            // Negative
-            {
-                negative.clear();
-
-                ::Inscription::ContainerSize size;
-                scribe.Load(size);
-
-                for (ID loop = 0; loop != size.Get(); ++loop)
-                {
-                    Position pos = nullPosition;
-                    scribe.ReadNumeric(pos);
-                    if (pos != nullPosition)
-                    {
-                        negative.push_back(positionMap.find(pos)->second);
-                        idSequencer.Reserve(-(loop + 1));
-                    }
-                    else
-                        negative.push_back(container.end());
-                }
-            }
-        }
+        occupiedIDs.Clear();
+        for (auto& loop : values)
+            occupiedIDs.Include(loop.first);
     }
 }

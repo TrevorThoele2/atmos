@@ -8,8 +8,9 @@
 #include "Name.h"
 #include "OperatorSelector.h"
 #include "BoundedNumber.h"
+#include "ObjectReference.h"
+#include "CharacterClass.h"
 #include "Optional.h"
-#include "RegistryObjectReference.h"
 
 #include "DataStandard.h"
 
@@ -17,7 +18,6 @@
 
 namespace Atmos
 {
-    class CharacterClass;
     class StatAttributeTable
     {
     public:
@@ -73,12 +73,12 @@ namespace Atmos
         void CalculateEntries();
     public:
         StatAttributeTable();
-        StatAttributeTable(const RegistryObjectReference<CharacterClass> &charClass);
+        StatAttributeTable(TypedObjectReference<nCharacterClass> charClass);
 
         bool operator==(const StatAttributeTable &arg) const;
         bool operator!=(const StatAttributeTable &arg) const;
 
-        void SetCharacterClass(const RegistryObjectReference<CharacterClass> &charClass);
+        void SetCharacterClass(TypedObjectReference<nCharacterClass> charClass);
 
         void AddModifier(const Modifier &mod);
         void RemoveModifier(const Modifier &mod);

@@ -1,41 +1,64 @@
 #pragma once
 
-#include "EntityComponent.h"
-#include "Action.h"
+#include "nEntityComponent.h"
 
-#include "Serialization.h"
+#include "ScriptInstance.h"
+
+#include "ObjectSerialization.h"
 
 namespace Atmos
 {
     namespace Ent
     {
-        class ActionComponent : public Component<ActionComponent>
+        class nActionComponent : public nEntityComponent
         {
         public:
-            enum class Activator : unsigned short
+            enum class Activator : std::int32_t
             {
                 ENTER_TILE,
+                ATTEMPT_ENTER_TILE,
                 USE_ON,
-                ENTER_FIELD
+                USE_INTO,
+                ENTER_FIELD,
+                LEAVE_FIELD
             };
-        private:
-            INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
-            INSCRIPTION_ACCESS;
+        public:
+            typedef TypedObjectReference<ScriptInstance> ScriptInstanceReference;
         public:
             Activator activator;
-            Act::Action act;
+            ScriptInstanceReference script;
 
-            ActionComponent();
-            ActionComponent(const ActionComponent &arg) = default;
-            ActionComponent(ActionComponent &&arg);
-            ActionComponent& operator=(const ActionComponent &arg) = default;
-            ActionComponent& operator=(ActionComponent &&arg);
+            nActionComponent(EntityReference owner);
+            nActionComponent(const nActionComponent& arg) = default;
+            nActionComponent(const ::Inscription::Table<nActionComponent>& table);
 
-            void OnMovedInto();
-            void OnUseOnTop();
-            void OnFieldEntered();
+            void FireMovedInto();
+            void FireAttemptMovedInto();
+            void FireUseOn();
+            void FireUseInto();
+            void FireFieldEntered();
+            void FireFieldLeft();
+
+            ObjectTypeDescription TypeDescription() const override;
+        private:
+            void SetupScripts();
+        private:
+            INSCRIPTION_ACCESS;
         };
-
-        ENTITY_COMPONENT_MAP_DECLARE("Action", ActionComponent)
     }
+
+    template<>
+    struct ObjectTraits<Ent::nActionComponent> : ObjectTraitsBase<Ent::nActionComponent>
+    {
+        static const ObjectTypeName typeName;
+    };
+}
+
+namespace Inscription
+{
+    DECLARE_OBJECT_INSCRIPTER(::Atmos::Ent::nActionComponent)
+    {
+    public:
+        static void AddMembers(TableT& table);
+    };
 }

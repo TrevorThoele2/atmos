@@ -35,7 +35,7 @@ const String KeyTraits<idPass>::displayName = displayNamePass
         KEY_TRAITS_DEFINE(KeyID::Y, "Y");
         KEY_TRAITS_DEFINE(KeyID::Z, "Z");
 
-        KEY_TRAITS_DEFINE(KeyID::LEFT_ARROW, "Left Aarrow");
+        KEY_TRAITS_DEFINE(KeyID::LEFT_ARROW, "Left Arrow");
         KEY_TRAITS_DEFINE(KeyID::UP_ARROW, "Up Arrow");
         KEY_TRAITS_DEFINE(KeyID::RIGHT_ARROW, "Right Arrow");
         KEY_TRAITS_DEFINE(KeyID::DOWN_ARROW, "Down Arrow");

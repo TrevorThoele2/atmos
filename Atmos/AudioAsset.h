@@ -1,97 +1,78 @@
 #pragma once
 
-#include <cstdint>
-#include <memory>
+#include "Object.h"
 
 #include "Asset.h"
 
-#include "FilePath.h"
-#include "Serialization.h"
+#include "ReadonlyProperty.h"
+
+#include "ObjectSerialization.h"
 
 namespace Atmos
 {
-    class AudioAsset : public Asset
+    class AudioAssetData;
+
+    class AudioAsset : public nFileAsset
     {
     public:
-        class Instance
-        {
-        public:
-            typedef float Volume;
-        private:
-            void Serialize(::Inscription::Scribe &scribe);
-            INSCRIPTION_ACCESS;
-        public:
-            class Data
-            {
-            private:
-                Instance *owner;
-                friend Instance;
-            public:
-                virtual ~Data() = 0 {}
-                Instance* GetOwner() const;
-                virtual Data* Clone() const = 0;
-                virtual void Start() = 0;
-                virtual void Stop() = 0;
-                virtual void SetVolume(Volume set) = 0;
-                virtual void Loop(bool set) = 0;
-                virtual bool Loop() const = 0;
-                virtual bool IsPlaying() const = 0;
-                virtual void Resubmit() = 0;
-            };
-        private:
-            std::unique_ptr<Data> data;
-            const AudioAsset *asset;
-
-            void SetData(Data *set);
-            void SetData(std::unique_ptr<Data> &&set);
-        public:
-            Instance();
-            Instance(const AudioAsset &asset, Data *data);
-            Instance(const Instance &arg);
-            Instance(Instance &&arg);
-            Instance& operator=(const Instance &arg);
-            Instance& operator=(Instance &&arg);
-            void Start();
-            void Stop();
-
-            void SetVolume(Volume set);
-            void Loop(bool set);
-            bool Loop() const;
-
-            bool IsPlaying() const;
-
-            void Resubmit();
-
-            const AudioAsset& GetOriginal() const;
-        };
+        typedef AudioAssetData DataT;
+        typedef std::unique_ptr<DataT> DataPtr;
     public:
-        class Data
-        {
-        private:
-            AudioAsset *owner;
-            friend AudioAsset;
-        public:
-            virtual ~Data() = 0 {}
-            AudioAsset* GetOwner() const;
-            virtual Instance MakeInstance(const AudioAsset &asset) const = 0;
-        };
+        AudioAsset(const FileName& fileName, DataPtr&& data);
+        AudioAsset(const AudioAsset& arg);
+        AudioAsset(const ::Inscription::Table<AudioAsset>& table);
+
+        DataT* Data();
+        const DataT* Data() const;
+        template<class RealDataT>
+        RealDataT* DataAs();
+        template<class RealDataT>
+        const RealDataT* DataAs() const;
+
+        ObjectTypeDescription TypeDescription() const override;
     private:
-        std::unique_ptr<Data> data;
-        FileName name;
+        DataPtr data;
+       
+        void SetDataFromPackage(const FileName& fileName);
+    };
 
-        void SetData(Data *set);
-        void SetData(std::unique_ptr<Data> &&set);
+    template<class RealDataT>
+    RealDataT* AudioAsset::DataAs()
+    {
+        return static_cast<RealDataT*>(data.get());
+    }
 
-        String GetStringImpl() const override final;
+    template<class RealDataT>
+    const RealDataT* AudioAsset::DataAs() const
+    {
+        return static_cast<RealDataT*>(data.get());
+    }
+
+    template<>
+    struct ObjectTraits<AudioAsset> : ObjectTraitsBase<AudioAsset>
+    {
+        static const ObjectTypeName typeName;
+        static constexpr ObjectTypeList<nFileAsset> bases = {};
+    };
+
+    class AudioAssetInstanceData;
+
+    class AudioAssetData
+    {
     public:
-        AudioAsset(Data *data, const FileName &name);
-        AudioAsset(AudioAsset &&arg);
-        AudioAsset& operator=(AudioAsset &&arg);
+        virtual ~AudioAssetData() = 0;
 
-        bool operator==(const AudioAsset &arg) const;
-        bool operator!=(const AudioAsset &arg) const;
+        virtual std::unique_ptr<AudioAssetData> Clone() const = 0;
 
-        Instance MakeInstance() const;
-        const FileName& GetFileName() const;
+        virtual std::unique_ptr<AudioAssetInstanceData> CreateInstanceData() const = 0;
+    };
+}
+
+namespace Inscription
+{
+    DECLARE_OBJECT_INSCRIPTER(::Atmos::AudioAsset)
+    {
+    public:
+        static void AddMembers(TableT& table);
     };
 }

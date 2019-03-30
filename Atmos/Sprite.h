@@ -1,14 +1,16 @@
 
 #pragma once
 
-#include <vector>
-
 #include "RenderFragment.h"
 #include "Material.h"
-#include "MaterialRegistry.h"
 #include "Color.h"
-
 #include "AxisBoundingBox2D.h"
+
+#include "ObjectReference.h"
+#include "ObjectManager.h"
+#include "nModulatorLinkMap.h"
+
+#include "StoredProperty.h"
 
 #include "FilePath.h"
 
@@ -17,66 +19,78 @@
 
 namespace Atmos
 {
-    class Sprite : public RenderFragment
+    class nSprite : public nRenderFragment
     {
     public:
-        typedef unsigned short Index;
-    private:
-        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
-        INSCRIPTION_ACCESS;
-    private:
-        AssetReference<Material> material;
-        AssetReference<ShaderAsset> shaderPatch;
-
-        AxisBoundingBox2D primaryAssetSlice;
-        Index index;
-
-        void Setup(Index index);
-        void CalcPrimaryRect();
-
-        void DrawImpl() const override;
-        AxisBoundingBox3D::Coordinate GetZHeight() const override;
+        typedef TypedObjectReference<Material> MaterialReference;
+        typedef StoredProperty<MaterialReference> MaterialProperty;
+        MaterialProperty material;
     public:
-        Color color;
+        typedef TypedObjectReference<ShaderAsset> ShaderReference;
+        typedef StoredProperty<ShaderReference> ShaderProperty;
+        ShaderProperty patchShader;
+    public:
+        typedef int Index;
+        typedef StoredProperty<Index> IndexProperty;
+        IndexProperty index;
+    public:
+        typedef StoredProperty<Color, Color&> ColorProperty;
+        ColorProperty color;
+    public:
+        typedef ReadonlyProperty<AxisBoundingBox2D> AABBProperty;
+        AABBProperty primaryAssetSlice;
+    public:
+        nSprite();
+        nSprite(const nSprite& arg);
+        nSprite(const ::Inscription::Table<nSprite>& table);
 
-        Sprite();
-        Sprite(const Name &materialName, Index index, const Color &color);
-        Sprite(const Material &material, Index index, const Color &color);
-        Sprite(const Sprite &arg);
-        Sprite(Sprite &&arg);
-        Sprite& operator=(const Sprite &arg);
-        Sprite& operator=(Sprite &&arg);
-
-        bool operator==(const Sprite &arg) const;
-        bool operator!=(const Sprite &arg) const;
-
-        void SetMaterial(const Name &name);
-        void SetMaterial(const Material &set);
-        void SetMaterial(const AssetReference<Material> &set);
-        AssetReference<Material> GetMaterial() const;
-
-        void SetShaderPatch(const Name &name);
-        void SetShaderPatch(const ShaderAsset &set);
-        void SetShaderPatch(const AssetReference<ShaderAsset> &set);
-        AssetReference<ShaderAsset> GetShaderPatch() const;
-
-        void SetIndex(Index setTo);
-        void IncrementIndex(Index delta);
-        Index GetIndex() const;
-        // The primary image slice is the one viewed during normal gameplay
-        const AxisBoundingBox2D& GetPrimaryAssetSlice() const;
-
-        void SetXScaler(Size3D::ValueT set);
-        void SetYScaler(Size3D::ValueT set);
-        void SetZScaler(Size3D::ValueT set);
-        void SetScalers(const Join3<Size3D::ValueT> &set);
-
-        void SetColor(const Color &set);
-
-        friend std::unique_ptr<Agui::SpriteComponent> CreateAguiSpriteComponent(const Sprite &sprite, const Agui::FileName &imageName, const Agui::RelativePosition &relPosition);
-        friend Sprite FromAguiSpriteComponent(const Agui::SpriteComponent &sprite);
+        ObjectTypeDescription TypeDescription() const override;
+    private:
+        void DrawImpl() override;
+    private:
+        void SubscribeToProperties();
+    private:
+        AxisBoundingBox2D _primaryAssetSlice;
+        void CalculatePrimaryAssetSlice();
+    private:
+        void OnPositionChanged(Position3D newValue);
+        void OnMaterialChanged(MaterialReference newValue);
+        void OnIndexChanged(Index newValue);
     };
 
-    std::unique_ptr<Agui::SpriteComponent> CreateAguiSpriteComponent(const Sprite &sprite, const Agui::FileName &imageName, const Agui::RelativePosition &relPosition = Agui::RelativePosition());
-    Sprite FromAguiSpriteComponent(const Agui::SpriteComponent &sprite);
+    template<>
+    struct ObjectTraits<nSprite> : ObjectTraitsBase<nSprite>
+    {
+        static const ObjectTypeName typeName;
+        static constexpr ObjectTypeList<nRenderFragment> bases = {};
+    };
+
+    namespace Modulator
+    {
+        template<>
+        struct LinkGeneratorGroup<nSprite> : public LinkGeneratorGroupBase<nSprite>
+        {
+            static Generator<Managed::Index> index;
+            static Generator<Color::ValueT> colorA;
+            static Generator<Color::ValueT> colorR;
+            static Generator<Color::ValueT> colorG;
+            static Generator<Color::ValueT> colorB;
+
+            LinkGeneratorGroup();
+        };
+    }
+
+    std::unique_ptr<Agui::SpriteComponent> CreateAguiSpriteComponent(
+        const TypedObjectReference<nSprite> sprite,
+        const Agui::FileName& imageName,
+        const Agui::RelativePosition& relPosition = Agui::RelativePosition());
+}
+
+namespace Inscription
+{
+    DECLARE_OBJECT_INSCRIPTER(::Atmos::nSprite)
+    {
+    public:
+        static void AddMembers(TableT& table);
+    };
 }

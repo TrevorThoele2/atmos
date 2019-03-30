@@ -4,6 +4,8 @@
 #include "FieldID.h"
 #include "Optional.h"
 
+#include "ObjectTypeNameSerializer.h"
+
 namespace Inscription
 {
     class Scribe;
@@ -49,7 +51,7 @@ namespace Atmos
         virtual bool WillLoad() = 0;
 
         virtual Optional<Field> Get(FieldID id) = 0;
-        virtual Field* GetAsHeap(FieldID id) = 0;
+        virtual std::unique_ptr<Field> GetAsHeap(FieldID id) = 0;
         virtual ::Inscription::Buffer GetAsBuffer(FieldID id) = 0;
 
         virtual WorldStartBase& GetWorldStart() = 0;

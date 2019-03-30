@@ -4,14 +4,7 @@
 #include <vector>
 
 #include "FieldID.h"
-#include "RenderFragmentHandler.h"
-#include "LightingHandler.h"
-#include "EntityManager.h"
-#include "TileHandler.h"
-#include "SoundHandler.h"
-#include "GroundItemHandler.h"
-#include "Scheduler.h"
-#include "OrphanScripts.h"
+#include "ObjectManager.h"
 
 #include "Serialization.h"
 
@@ -21,33 +14,18 @@ namespace Atmos
     {
     public:
         typedef FieldID ID;
-    private:
-        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
-        INSCRIPTION_ACCESS;
-    private:
-        ID id;
-
-        std::vector<FieldComponent*> componentVector;
-        void SetupVector();
     public:
-        TileHandler tiles;
-        EntityManager entities;
-
-        GroundItemHandler groundItems;
-
-        RenderFragmentHandler renderFragments;
-        SoundHandler sounds;
-
-        Scheduler scheduler;
-        OrphanScripts orphanScripts;
-
-        Field(ID id);
+        ObjectManager objectManager;
+    public:
+        Field(ID id, ObjectManager&& objectManager);
         Field(Field &&arg);
         Field& operator=(Field &&arg);
 
         ID GetID() const;
-        void OnFinalizeField();
-        void OnBeforeFieldSet(Field &newField);
-        void OnAfterFieldSet();
+    private:
+        ID id;
+    private:
+        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
+        INSCRIPTION_ACCESS;
     };
 }

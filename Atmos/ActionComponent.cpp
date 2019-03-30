@@ -5,42 +5,71 @@ namespace Atmos
 {
     namespace Ent
     {
-        INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(ActionComponent)
+        nActionComponent::nActionComponent(EntityReference owner) : nEntityComponent(owner), activator(Activator::USE_ON)
         {
-            scribe(activator);
-            scribe(act);
+            SetupScripts();
         }
 
-        ActionComponent::ActionComponent() : activator(Activator::USE_ON)
-        {}
-
-        ActionComponent::ActionComponent(ActionComponent &&arg) : Component(std::move(arg)), activator(std::move(arg.activator)), act(std::move(arg.act))
-        {}
-
-        ActionComponent& ActionComponent::operator=(ActionComponent &&arg)
+        nActionComponent::nActionComponent(const ::Inscription::Table<nActionComponent>& table) : INSCRIPTION_TABLE_GET_BASE(nEntityComponent)
         {
-            Component::operator=(std::move(arg));
-            activator = std::move(arg.activator);
-            act = std::move(arg.act);
-            return *this;
+            SetupScripts();
         }
 
-        void ActionComponent::OnMovedInto()
+        void nActionComponent::FireMovedInto()
         {
             if (activator == Activator::ENTER_TILE)
-                act.Execute();
+                script->ExecuteDeferred();
         }
 
-        void ActionComponent::OnUseOnTop()
+        void nActionComponent::FireAttemptMovedInto()
+        {
+            if (activator == Activator::ATTEMPT_ENTER_TILE)
+                script->ExecuteDeferred();
+        }
+
+        void nActionComponent::FireUseOn()
         {
             if (activator == Activator::USE_ON)
-                act.Execute();
+                script->ExecuteDeferred();
         }
 
-        void ActionComponent::OnFieldEntered()
+        void nActionComponent::FireUseInto()
+        {
+            if (activator == Activator::USE_INTO)
+                script->ExecuteDeferred();
+        }
+
+        void nActionComponent::FireFieldEntered()
         {
             if (activator == Activator::ENTER_FIELD)
-                act.Execute();
+                script->ExecuteDeferred();
         }
+
+        void nActionComponent::FireFieldLeft()
+        {
+            if (activator == Activator::LEAVE_FIELD)
+                script->ExecuteDeferred();
+        }
+
+        ObjectTypeDescription nActionComponent::TypeDescription() const
+        {
+            return ObjectTraits<nActionComponent>::TypeDescription();
+        }
+
+        void nActionComponent::SetupScripts()
+        {
+            script->owner = this;
+        }
+    }
+
+    const ObjectTypeName ObjectTraits<Ent::nActionComponent>::typeName = "ActionComponent";
+}
+
+namespace Inscription
+{
+    DEFINE_OBJECT_INSCRIPTER_MEMBERS(::Atmos::Ent::nActionComponent)
+    {
+        INSCRIPTION_TABLE_ADD(activator);
+        INSCRIPTION_TABLE_ADD(script);
     }
 }

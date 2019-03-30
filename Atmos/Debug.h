@@ -19,7 +19,7 @@ namespace Atmos
         class Data
         {
         public:
-            typedef ::Chroma::Function<String> FuncT;
+            typedef std::function<String()> FuncT;
         private:
             bool endingGap;
             FuncT func;
@@ -67,7 +67,7 @@ namespace Atmos
         typedef std::vector<Page> PageVector;
         PageVector pages;
         PageVector::iterator currentPage;
-        PageVector::iterator mousePage, profilerPage, windowPage, memoryPage, playerPage, miscPage;
+        PageVector::iterator mousePage, profilerPage, windowPage, memoryPage, gamePage;
 
         typedef std::vector<Profiler> ProfilerVector;
         std::vector<Profiler> profilers;

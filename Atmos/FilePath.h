@@ -28,14 +28,19 @@ namespace Atmos
         operator const char*();
         const char* c_str() const;
 
-        void Set(const String &set);
-        void SetName(const FileName &name);
-        void SetExtension(const String &replace);
-        void RemoveFileName();
-        void RemoveExtension();
-        void RemoveDirectory(size_t index);
+        FilePath& Set(const String &set);
+        FilePath& SetFileName(const FileName &name);
+        FilePath& SetExtension(const String &replace);
+        FilePath& RemoveFileName();
+        FilePath& RemoveExtension();
+        FilePath& RemoveDirectory(size_t index);
 
         FilePath& Append(const String &append);
+        FilePath& Append(const FileName& append);
+        FilePath& Append(const RelativeFilePath &append);
+        FilePath& Append(const char* append);
+        FilePath& AppendSeparator();
+        FilePath& ReplaceAllWith(const String &replace, const String &with);
 
         bool HasDirectory(const String &directoryName);
         size_t GetDirectoryCount() const;
@@ -74,8 +79,8 @@ namespace Atmos
         operator const char*();
         const char* c_str() const;
 
-        void Set(const String &set);
-        void SetExtension(const String &replace);
+        FileName& Set(const String &set);
+        FileName& SetExtension(const String &replace);
 
         operator const String&() const;
         const String& GetValue() const;

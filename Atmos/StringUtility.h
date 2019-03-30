@@ -9,7 +9,7 @@
 #include "TimeValue.h"
 #include "GameTimer.h"
 
-#include <Chroma\Type.h>
+#include <Chroma/Type.h>
 
 namespace Atmos
 {

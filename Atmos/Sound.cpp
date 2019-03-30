@@ -1,110 +1,43 @@
 
 #include "Sound.h"
 
-#include "AudioRegistry.h"
-#include "Camera.h"
-#include "Field.h"
-#include "WorldManager.h"
-#include "Math.h"
-
-#include <Inscription\Scribe.h>
-#include <Inscription\Inscripter.h>
-#include <Inscription\String.h>
-#include <Inscription\Const.h>
-
 namespace Atmos
 {
-    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(Sound)
+    nSound::nSound()
     {
-        ::Inscription::BaseSerialize<Sense>(scribe, *this);
-        ::Inscription::BaseSerialize<SoundBase>(scribe, *this);
-        scribe(baseVolume);
+        SubscribeToProperties();
     }
 
-    void Sound::OnPositionChanged()
+    nSound::nSound(const nSound& arg) : audioAsset(arg.audioAsset)
     {
-        SetVolumeByCameraPos();
+        SubscribeToProperties();
     }
 
-    void Sound::OnEnabledChanged()
-    {
-        
-    }
-
-    void Sound::PlayImpl()
-    {
-        WorldManager::GetCurrentField()->sounds.Add(*this);
-        StartAsset();
-    }
-
-    void Sound::StopImpl()
-    {
-        WorldManager::GetCurrentField()->sounds.Remove(*this);
-        Pause();
-    }
-
-    void Sound::Init()
-    {
-        SetVolumeByCameraPos();
-    }
-
-    void Sound::SetVolumeByCameraPos()
-    {
-        auto distance = Position3D::FindDistance(Position3D(GetPosition()), Camera::GetViewOrigin3D());
-        if (distance > baseVolume)
-        {
-            SetVolumeImpl(0);
-            return;
-        }
-
-        SetVolumeImpl(GetPercentage(baseVolume - distance, 0.0f, baseVolume));
-    }
-
-    Sound::Sound(const AssetReference<AudioAsset> &asset, const Position3D &pos, bool loop, bool enabled) : SoundBase(asset, loop), Sense(pos, enabled)
+    nSound::nSound(const ::Inscription::Table<nSound>& table) : INSCRIPTION_TABLE_GET_BASE(nSense)
     {}
 
-    Sound::Sound() : Sense(true)
-    {}
-
-    Sound::Sound(const Sound &arg) : SoundBase(arg), Sense(arg), baseVolume(arg.baseVolume)
-    {}
-
-    Sound::Sound(Sound &&arg) : SoundBase(std::move(arg)), Sense(std::move(arg)), baseVolume(std::move(arg.baseVolume))
-    {}
-
-    Sound& Sound::operator=(const Sound &arg)
+    ObjectTypeDescription nSound::TypeDescription() const
     {
-        SoundBase::operator=(arg);
-        Sense::operator=(arg);
-        baseVolume = arg.baseVolume;
-        return *this;
+        return ObjectTraits<nSound>::TypeDescription();
     }
 
-    Sound& Sound::operator=(Sound &&arg)
+    void nSound::SubscribeToProperties()
     {
-        SoundBase::operator=(std::move(arg));
-        Sense::operator=(std::move(arg));
-        baseVolume = std::move(arg.baseVolume);
-        return *this;
+        enabled.onValueChanged.Subscribe(&nSound::OnEnabledChanged, *this);
     }
 
-    bool Sound::operator==(const Sound &arg) const
+    void nSound::OnEnabledChanged(bool newValue)
     {
-        return SoundBase::operator==(arg) && Sense::operator==(arg) && baseVolume == arg.baseVolume;
+
     }
 
-    bool Sound::operator!=(const Sound &arg) const
-    {
-        return !(*this == arg);
-    }
+    const ObjectTypeName ObjectTraits<nSound>::typeName = "Sound";
+}
 
-    void Sound::SetBaseVolume(Volume set)
+namespace Inscription
+{
+    DEFINE_OBJECT_INSCRIPTER_MEMBERS(::Atmos::nSound)
     {
-        SetVolumeImpl(set);
-    }
 
-    Sound::Volume Sound::GetBaseVolume() const
-    {
-        return baseVolume;
     }
 }

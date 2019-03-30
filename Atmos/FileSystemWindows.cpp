@@ -8,6 +8,20 @@ namespace Atmos
 {
     namespace FileSystem
     {
+        bool WindowsHandler::RelocateFile(const FilePath &from, const FilePath &to)
+        {
+            RemoveFile(to);
+            bool wasMoved = rename(from.c_str(), to.c_str()) == 0;
+            if (wasMoved)
+                RemoveFile(from);
+            return wasMoved;
+        }
+
+        bool WindowsHandler::RemoveFile(const FilePath &remove)
+        {
+            return std::remove(remove.c_str()) == 0;
+        }
+
         FilePath WindowsHandler::GetExePath() const
         {
             TCHAR full_path[maxPathLength];

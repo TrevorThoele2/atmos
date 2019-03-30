@@ -1,49 +1,83 @@
 
 #include "GameEnvironment.h"
 
+#include "Environment.h"
 #include "WorldManager.h"
 #include "StateManager.h"
 #include "FPS.h"
 #include "ScriptController.h"
 #include "Debug.h"
 #include "Render.h"
-
-#include "CurrentMusic.h"
+#include "SpeechController.h"
+#include "Shop.h"
+#include "CurrentField.h"
 
 #include "Sprite.h"
-#include "ModulatorGeneratorCreator.h"
 
 #include "ActionSystem.h"
 
+//////////////////
+#include "AudioAsset.h"
+
+#include "Tile.h"
+#include "PositionalObject.h"
+#include "RenderFragment.h"
+#include "Sense.h"
+#include "Sprite.h"
+#include "nEntity.h"
+#include "nEntityComponent.h"
+#include "ActionComponent.h"
+
+#include "Ability.h"
+#include "CharacterClass.h"
+#include "Item.h"
+#include "Quest.h"
+#include "Spell.h"
+#include "StatusEffect.h"
+
+#include "nModulator.h"
+#include "nModulatorTrack.h"
+#include "nModulatorNode.h"
+
+#include "AudioSystem.h"
+#include "ImageSystem.h"
+#include "MaterialSystem.h"
+#include "ScriptSystem.h"
+#include "ShaderSystem.h"
+#include "TileSystem.h"
+#include "RenderFragmentSystem.h"
+
+#include "AbilitySystem.h"
+#include "CharacterClassSystem.h"
+#include "ItemSystem.h"
+#include "QuestSystem.h"
+#include "SpellSystem.h"
+#include "StatusEffectSystem.h"
+
+#include "ActionSystem.h"
+#include "AvatarSystem.h"
+#include "EntityAISystem.h"
+#include "nEntityPositionSystem.h"
+
+#include "SoundSystem.h"
+#include "MusicSystem.h"
+
+#include "TileFactory.h"
+#include "AudioFactory.h"
+#include "ImageFactory.h"
+#include "MaterialFactory.h"
+#include "ScriptFactory.h"
+#include "ShaderFactory.h"
+
+#include "AbilityFactory.h"
+#include "CharacterClassFactory.h"
+#include "ItemFactory.h"
+#include "QuestFactory.h"
+#include "SpellFactory.h"
+#include "StatusEffectFactory.h"
+
 namespace Atmos
 {
-    void GameEnvironment::OnInputPressed(const Input::Key &args)
-    {
-        if (args.id == Input::KeyID::F6)
-            RenderHandler::Instance().flags.Flip(RenderFlags::DONT_DRAW);
-    }
-
-    void GameEnvironment::OnFocusLost()
-    {
-        CurrentMusic::Pause();
-    }
-
-    void GameEnvironment::OnFocusRegain()
-    {
-        CurrentMusic::Resume();
-    }
-
-    void GameEnvironment::Work()
-    {
-        DebugScreen::Logic().Start();
-
-        Instance().modulatorController.Work();
-        Instance().affecterSystem.Work();
-        StateManager::Work();
-
-        DebugScreen::Logic().Calc();
-    }
-
     NullEvent GameEnvironment::eventFrameStart;
     NullEvent GameEnvironment::eventFrameStop;
 
@@ -55,24 +89,18 @@ namespace Atmos
 
     void GameEnvironment::Init()
     {
+        RegisterAllKnownObjectTypes();
+        RegisterAllObjectTypesToSerialization();
+        Instance().globalObjectManager = std::move(std::make_unique<ObjectManager>());
+        PushAllObjectTypes(Instance().globalTypes, *Instance().globalObjectManager);
+
         Environment::GetInput()->eventKeys.pressed.Subscribe(&GameEnvironment::OnInputPressed);
 
-        // Modulators
-        Modulator::CreateAllGenerators();
+        // World
+        Instance().worldManager.LockIn();
 
-        // Entities
-        Ent::SystemHandler::Init();
-
-        // Field
-        WorldManager::Init();
-        WorldManager::LockIn();
-
-        // Speech
-        Speech::Handler::Init();
         // States
         StateManager::Init();
-        // Scripts
-        ScriptController::Instance();
 
         // Debug
         DebugScreen::Init();
@@ -80,8 +108,8 @@ namespace Atmos
 
         return;
 
-        // Entity systems
-        Ent::ActionSystem::Instance();
+        // Modulator maps
+        Modulator::LinkGeneratorGroup<nSprite>::Instance();
     }
 
     void GameEnvironment::Loop()
@@ -102,11 +130,11 @@ namespace Atmos
                 // Input, logic, and rendering
                 Environment::GetInput()->Work();
                 Work();
-                RenderHandler::Render();
+                Instance().renderer.Work();
 
                 // Lock in new stuff
                 StateManager::LockIn();
-                WorldManager::LockIn();
+                Instance().worldManager.LockIn();
 
                 eventFrameStop();
                 // Update debugscreen and start the idle profiler
@@ -128,52 +156,193 @@ namespace Atmos
     }
 
     void GameEnvironment::StopAll()
-    {
-        Instance().affecterSystem.StopAll(true);
-    }
+    {}
 
     void GameEnvironment::LoadWorld(const FilePath &path)
     {
-        WorldManager::UseWorld(path);
+        Instance().worldManager.UseWorld(path);
     }
 
     void GameEnvironment::LoadStasis(const FilePath &path)
     {
-        WorldManager::UseStasis(path);
+        Instance().worldManager.UseStasis(path);
     }
 
-    Modulator::Controller& GameEnvironment::GetModulatorController()
+    ObjectManager GameEnvironment::MakeObjectManager()
     {
-        return Instance().modulatorController;
+        ObjectManager objectManager;
+
+        PushAllObjectTypes(Instance().localTypes, objectManager);
+
+        objectManager.Initialize();
+
+        return objectManager;
     }
 
-    void GameEnvironment::AddModulatorGenerator(const Name &name, std::unique_ptr<Modulator::GeneratorBase> &&add)
+    ObjectManager& GameEnvironment::GetGlobalObjectManager()
     {
-        Instance().modulatorGenerators.emplace(name, std::move(add));
+        return *Instance().globalObjectManager;
     }
 
-    Modulator::Observer GameEnvironment::GenerateModulator(const Name &name)
+    ObjectTypeGraph GameEnvironment::GetLocalObjectTypeGraph()
     {
-        auto &modulatorGenerators = Instance().modulatorGenerators;
-        auto found = modulatorGenerators.find(name);
-        if (found == modulatorGenerators.end())
-            return Modulator::Observer();
+        ObjectTypeGraph typeGraph;
 
-        return found->second->Generate();
+        for (auto& loop : Instance().localTypes)
+            loop->ToTypeGraph(typeGraph);
+
+        return typeGraph;
     }
 
-    GameEnvironment::ModulatorTrackGenerateT GameEnvironment::GenerateModulatorTrack(const Name &modName, const Name &trackName)
+    ObjectTypeGraph GameEnvironment::GetGlobalObjectTypeGraph()
     {
-        auto &modulatorGenerators = Instance().modulatorGenerators;
-        auto found = modulatorGenerators.find(modName);
-        if (found == modulatorGenerators.end())
-            return ModulatorTrackGenerateT();
-
-        return found->second->GenerateTrack(trackName);
+        return Instance().globalObjectManager->TypeGraph();
     }
 
-    ::Affecter::System& GameEnvironment::GetAffecterSystem()
+    void GameEnvironment::RegisterAllObjectTypesToSerialization()
     {
-        return Instance().affecterSystem;
+        ::Inscription::Scribe::RegisterType<Object>();
+        ::Inscription::Scribe::RegisterType<ObjectBatchSourceBase>();
+        ::Inscription::Scribe::RegisterType<ObjectManager>();
+
+        ::Inscription::Scribe::RegisterType<nAsset>();
+        ::Inscription::Scribe::RegisterType<nFileAsset>();
+        ::Inscription::Scribe::RegisterType<AudioAsset>();
+        ::Inscription::Scribe::RegisterType<ImageAsset>();
+        ::Inscription::Scribe::RegisterType<Material>();
+        ::Inscription::Scribe::RegisterType<ShaderAsset>();
+
+        ::Inscription::Scribe::RegisterType<nTile>();
+
+        ::Inscription::Scribe::RegisterType<Ent::nEntity>();
+        ::Inscription::Scribe::RegisterType<Ent::nEntityComponent>();
+        ::Inscription::Scribe::RegisterType<Ent::nActionComponent>();
+
+        ::Inscription::Scribe::RegisterType<PositionalObject>();
+        ::Inscription::Scribe::RegisterType<nRenderFragment>();
+        ::Inscription::Scribe::RegisterType<nSense>();
+        ::Inscription::Scribe::RegisterType<nSprite>();
+
+        ::Inscription::Scribe::RegisterType<Modulator::Modulator>();
+        ::Inscription::Scribe::RegisterType<Modulator::Track>();
+        ::Inscription::Scribe::RegisterType<Modulator::Node>();
+    }
+
+    WorldManager& GameEnvironment::GetWorldManager()
+    {
+        return Instance().worldManager;
+    }
+
+    Camera& GameEnvironment::GetCamera()
+    {
+        return Instance().camera;
+    }
+
+    Modulator::LinkMap& GameEnvironment::GetModulatorLinkMap()
+    {
+        return Instance().modulatorLinkMap;
+    }
+
+    AssetPackage& GameEnvironment::GetAssetPackage()
+    {
+        return Instance().assetPackage;
+    }
+
+    void GameEnvironment::OnInputPressed(const Input::Key &args)
+    {
+        if (args.id == Input::KeyID::F6)
+            Instance().renderer.flags.Flip(RenderFlags::DONT_DRAW);
+    }
+
+    void GameEnvironment::OnFocusLost()
+    {
+        GetLocalObjectManager()->FindSystem<MusicSystem>()->PauseCurrent();
+    }
+
+    void GameEnvironment::OnFocusRegain()
+    {
+        GetLocalObjectManager()->FindSystem<MusicSystem>()->ResumeCurrent();
+    }
+
+    void GameEnvironment::Work()
+    {
+        DebugScreen::Logic().Start();
+
+        StateManager::Work();
+
+        DebugScreen::Logic().Calc();
+    }
+
+    void GameEnvironment::RegisterAllKnownObjectTypes()
+    {
+        // Global
+        RegisterGlobalObjectType<nAsset>();
+        RegisterGlobalObjectType<nFileAsset>();
+        RegisterGlobalObjectType<AudioAsset>();
+        RegisterGlobalObjectType<ImageAsset>();
+        RegisterGlobalObjectType<Material>();
+        RegisterGlobalObjectType<ShaderAsset>();
+
+        RegisterGlobalObjectType<nAbility>();
+        RegisterGlobalObjectType<nCharacterClass>();
+        RegisterGlobalObjectType<nItem>();
+        RegisterGlobalObjectType<nQuest>();
+        RegisterGlobalObjectType<nSpell>();
+        RegisterGlobalObjectType<nStatusEffect>();
+
+        RegisterGlobalObjectSystem<AudioSystem>();
+        RegisterGlobalObjectSystem<ImageSystem>();
+        RegisterGlobalObjectSystem<MaterialSystem>();
+        RegisterGlobalObjectSystem<ScriptSystem>();
+        RegisterGlobalObjectSystem<ShaderSystem>();
+
+        RegisterGlobalObjectSystem<AbilitySystem>();
+        RegisterGlobalObjectSystem<CharacterClassSystem>();
+        RegisterGlobalObjectSystem<ItemSystem>();
+        RegisterGlobalObjectSystem<QuestSystem>();
+        RegisterGlobalObjectSystem<SpellSystem>();
+        RegisterGlobalObjectSystem<StatusEffectSystem>();
+
+        // Local
+        RegisterLocalObjectType<nTile>();
+
+        RegisterLocalObjectType<Ent::nEntity>();
+        RegisterLocalObjectType<Ent::nEntityComponent>();
+        RegisterLocalObjectType<Ent::nActionComponent>();
+
+        RegisterLocalObjectType<PositionalObject>();
+        RegisterLocalObjectType<nRenderFragment>();
+        RegisterLocalObjectType<nSense>();
+        RegisterLocalObjectType<nSprite>();
+
+        RegisterLocalObjectType<Modulator::Modulator>();
+        RegisterLocalObjectType<Modulator::Track>();
+        RegisterLocalObjectType<Modulator::Node>();
+
+        RegisterLocalObjectSystem<Ent::nEntityActionSystem>();
+        RegisterLocalObjectSystem<Ent::nEntityAvatarSystem>();
+        RegisterLocalObjectSystem<Ent::nEntityAISystem>();
+        RegisterLocalObjectSystem<Ent::nEntityPositionSystem>();
+
+        RegisterLocalObjectSystem<TileSystem>();
+        RegisterLocalObjectSystem<RenderFragmentSystem>();
+        RegisterLocalObjectSystem<SoundSystem>();
+        RegisterLocalObjectSystem<MusicSystem>();
+        RegisterLocalObjectSystem<Speech::Controller>();
+        RegisterLocalObjectSystem<Speech::Shop>();
+    }
+
+    GameEnvironment::ObjectTypeRegistratorBase::~ObjectTypeRegistratorBase()
+    {}
+
+    void GameEnvironment::PushAllObjectTypes(ObjectTypeRegistratorList& from, ObjectManager& to)
+    {
+        for (auto& loop : from)
+            loop->Register(to);
+    }
+
+    ObjectManager* GetGlobalObjectManager()
+    {
+        return &GameEnvironment::GetGlobalObjectManager();
     }
 }

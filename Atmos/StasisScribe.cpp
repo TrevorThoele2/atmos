@@ -5,12 +5,7 @@
 #include "WorldManager.h"
 #include "AssetPackage.h"
 #include "Environment.h"
-
-// Registries
-#include "ImageRegistry.h"
-#include "ShaderRegistry.h"
-#include "AudioRegistry.h"
-#include "Script.h"
+#include "GameEnvironment.h"
 
 #include "StatusEffect.h"
 #include "CharacterClass.h"
@@ -19,7 +14,7 @@
 
 namespace Atmos
 {
-    const char *stasisExtension = "stasis";
+    const char* stasisExtension = "stasis";
 
     void StasisScribeOut::FieldSaver::OnBeforeObjectSave()
     {
@@ -61,7 +56,7 @@ namespace Atmos
             ::Inscription::ContainerSize newCount(fieldSavers.size());
             basicScribe.Save(newCount);
 
-            for (auto &loop : fieldSavers)
+            for (auto& loop : fieldSavers)
                 loop.SavePlaceholder();
             curSaver = fieldSavers.begin();
 
@@ -79,7 +74,7 @@ namespace Atmos
         return basicScribe;
     }
 
-    StasisScribeOut::StasisScribeOut(const FileName &fileName, const FileName &worldFileName, ::Inscription::ContainerSize::ValueT fieldCount, OpenMode openMode) : fileName(fileName), worldFileName(worldFileName), basicScribe(MakePathFromName(fileName), "ATMOS GAIA STASIS", 1), curSaver(fieldSavers.end()), hasOutputHeader(false)
+    StasisScribeOut::StasisScribeOut(const FileName &fileName, const FileName &worldFileName, ::Inscription::ContainerSize::ValueT fieldCount, OpenMode openMode) : fileName(fileName), worldFileName(worldFileName), basicScribe(MakePathFromName(fileName), "ATMOS GAIA STASIS", GetCurrentVersion()), curSaver(fieldSavers.end()), hasOutputHeader(false)
     {
         if(openMode == OpenMode::FORCE_EXTENSION)
             this->fileName.SetExtension(stasisExtension);
@@ -87,7 +82,7 @@ namespace Atmos
         fieldSavers.resize(fieldCount, FieldSaver(basicScribe));
     }
 
-    StasisScribeOut::StasisScribeOut(const FilePath &filePath, const FileName &worldFileName, ::Inscription::ContainerSize::ValueT fieldCount, OpenMode openMode) : fileName(filePath), worldFileName(worldFileName), basicScribe(filePath, "ATMOS GAIA STASIS", 1), curSaver(fieldSavers.end()), hasOutputHeader(false)
+    StasisScribeOut::StasisScribeOut(const FilePath &filePath, const FileName &worldFileName, ::Inscription::ContainerSize::ValueT fieldCount, OpenMode openMode) : fileName(filePath), worldFileName(worldFileName), basicScribe(filePath, "ATMOS GAIA STASIS", GetCurrentVersion()), curSaver(fieldSavers.end()), hasOutputHeader(false)
     {
         if (openMode == OpenMode::FORCE_EXTENSION)
             this->fileName.SetExtension(stasisExtension);
@@ -150,6 +145,11 @@ namespace Atmos
         return FilePath(Environment::GetFileSystem()->GetExePath().Append("Saves\\"));
     }
 
+    ::Inscription::Version StasisScribeOut::GetCurrentVersion()
+    {
+        return 1;
+    }
+
     void StasisScribeIn::FieldHandle::LoadExtra()
     {
         scribe.ReadNumeric(fieldID);
@@ -195,16 +195,10 @@ namespace Atmos
 
     void StasisScribeIn::FillField(Field &fill, FieldHandles::iterator handle)
     {
-        // Setup the world manager to temporarily use the new field and find the field handle
-        WorldManager::State previousState = WorldManager::TemporaryUse(&fill);
-
         // Load the field while setting up a section to clear immediately after
         basicScribe.StartTrackingSection();
         handle->second.LoadObject(fill);
         basicScribe.StopTrackingSection(true);
-
-        // Now, release the field from the world manager
-        previousState.Restore();
     }
 
     ::Inscription::Scribe& StasisScribeIn::GetBasicScribe()
@@ -266,18 +260,18 @@ namespace Atmos
         if (found == fieldHandles.end())
             return Ret();
 
-        Field out(fieldID);
+        Field out(fieldID, GameEnvironment::MakeObjectManager());
         FillField(out, found);
         return Ret(std::move(out));
     }
 
-    Field* StasisScribeIn::GetAsHeap(FieldID id)
+    std::unique_ptr<Field> StasisScribeIn::GetAsHeap(FieldID id)
     {
         auto found = fieldHandles.find(id);
         if (found == fieldHandles.end())
             return nullptr;
 
-        auto out = new Field(id);
+        auto out = std::make_unique<Field>(id, GameEnvironment::MakeObjectManager());
         FillField(*out, found);
         return out;
     }
@@ -296,7 +290,7 @@ namespace Atmos
     void StasisScribeIn::GetIDs(std::vector<FieldID> &ids) const
     {
         ids.clear();
-        for (auto &loop : fieldHandles)
+        for (auto& loop : fieldHandles)
             ids.push_back(loop.first);
     }
 

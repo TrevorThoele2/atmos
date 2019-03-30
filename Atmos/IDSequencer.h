@@ -16,6 +16,7 @@ namespace Atmos
     {
     public:
         typedef IDType ID;
+        typedef size_t SizeT;
     private:
         typedef IntervalList<ID> Occupied;
     public:
@@ -41,6 +42,8 @@ namespace Atmos
 
         void Clear();
         void Reset();
+
+        SizeT Size() const;
 
         const_iterator begin() const;
         const_iterator end() const;
@@ -112,7 +115,7 @@ namespace Atmos
 
         ID id = 0;
         // If everything is empty
-        if (occupied.empty())
+        if (occupied.IsEmpty())
             id = GetBaseID();
         else
             id = GetNewID();
@@ -142,7 +145,7 @@ namespace Atmos
         if (GetUpperLimit() == GetLowerLimit())
             return false;
 
-        if (occupied.empty())
+        if (occupied.IsEmpty())
             return true;
 
         return occupied.rbegin()->GetEnd() != GetUpperLimit();
@@ -157,13 +160,19 @@ namespace Atmos
     template<class IDType>
     void IDSequencerBase<IDType>::Clear()
     {
-        occupied.clear();
+        occupied.Clear();
     }
 
     template<class IDType>
     void IDSequencerBase<IDType>::Reset()
     {
         Clear();
+    }
+
+    template<class IDType>
+    typename IDSequencerBase<IDType>::SizeT IDSequencerBase<IDType>::Size() const
+    {
+        return occupied.Size();
     }
 
     template<class IDType>
@@ -228,6 +237,10 @@ namespace Atmos
     template<class IDType>
     class IDSequencer : public IDSequencerBase<IDType>
     {
+    private:
+        typedef IDSequencerBase<IDType> BaseT;
+    public:
+        typedef typename BaseT::ID ID;
     public:
         IDSequencer(ID lowerLimit = std::numeric_limits<ID>::min(), ID upperLimit = std::numeric_limits<ID>::max());
         IDSequencer(const IDSequencer &arg) = default;
@@ -241,11 +254,11 @@ namespace Atmos
         void SetUpperLimit(ID set);
         ID GetLowerLimit() const override;
         ID GetUpperLimit() const override;
+    protected:
+        using BaseT::SetDirection;
     private:
         ID lowerLimit;
         ID upperLimit;
-
-        typedef IDSequencerBase<IDType> BaseT;
     private:
         INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
@@ -322,6 +335,10 @@ namespace Atmos
     template<class IDType, IDType lowerLimit = std::numeric_limits<IDType>::min(), IDType upperLimit = std::numeric_limits<IDType>::max()>
     class IDSequencerStatic : public IDSequencerBase<IDType>
     {
+    private:
+        typedef IDSequencerBase<IDType> BaseT;
+    public:
+        typedef typename BaseT::ID ID;
     public:
         IDSequencerStatic();
         IDSequencerStatic(const IDSequencerStatic &arg) = default;
@@ -333,8 +350,8 @@ namespace Atmos
 
         ID GetLowerLimit() const override;
         ID GetUpperLimit() const override;
-    private:
-        typedef IDSequencerBase<IDType> BaseT;
+    protected:
+        using BaseT::SetDirection;
     private:
         INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;

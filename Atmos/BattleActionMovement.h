@@ -5,6 +5,7 @@
 
 namespace Atmos
 {
+    /*
     namespace Battle
     {
         class ActionMovement : public ActionManager
@@ -30,4 +31,5 @@ namespace Atmos
         public:
         };
     }
+    */
 }

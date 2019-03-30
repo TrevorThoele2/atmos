@@ -2,76 +2,62 @@
 
 #include "RegistryObject.h"
 
-#include "ConsumableAspect.h"
-#include "EquippableAspect.h"
-
+#include "ScriptInstance.h"
 #include "Sprite.h"
-#include "Flags.h"
-#include "Optional.h"
 
-#include "Serialization.h"
+#include "Flags.h"
+
+#include "ObjectSerialization.h"
 
 namespace Atmos
 {
-    class Item : public RegistryObject
+    class nItem : public RegistryObject
     {
+    public:
+        typedef TypedObjectReference<ScriptInstance> ScriptInstanceReference;
+        ScriptInstanceReference consume;
+        ScriptInstanceReference equip;
+        ScriptInstanceReference attack;
+    public:
+        typedef TypedObjectReference<nSprite> SpriteReference;
+        SpriteReference portrait;
+        String description;
+    public:
+        typedef int Price;
+        Price buyPrice;
+        Price sellPrice;
     public:
         enum class Flag
         {
             KEY = 1 << 0,
             TEMPORARY = 1 << 1
         };
-
-        typedef unsigned int Price;
-    private:
-        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
-        INSCRIPTION_ACCESS;
-    public:
         Flags<Flag> flags;
+    public:
+        nItem(const Name& name);
+        nItem(const nItem& arg) = default;
+        nItem(const ::Inscription::Table<nItem>& table);
 
-        typedef Optional<ConsumableAspect> OptionalConsumable;
-        typedef Optional<EquippableAspect> OptionalEquippable;
+        bool IsConsumable() const;
+        bool IsEquippable() const;
+        bool CanAttackWith() const;
 
-        OptionalConsumable consumableAspect;
-        OptionalEquippable equippableAspect;
-
-        Price buyingPrice;
-        Price sellingPrice;
-
-        Sprite portrait;
-
-        Item() = default;
-        Item(const Item &arg) = default;
-        Item& operator=(const Item &arg) = default;
-        Item(Item &&arg);
-        Item& operator=(Item &&arg);
-
-        bool operator==(const Item &arg) const;
-        bool operator!=(const Item &arg) const;
-
-        // If pass false for signal, will reset the consumable aspect
-        // Will not reset the aspect if it already exists
-        void SignalConsumableAspect(bool signal = true);
-        // If pass false for signal, will reset the equippable aspect
-        // Will not reset the aspect if it already exists
-        void SignalEquippableAspect(bool signal = true);
-
-        bool HasConsumableAspect() const;
-        bool HasEquippableAspect() const;
-
-        void SetBuyingPrice(Price set);
-        void SetSellingPrice(Price set);
-        Price GetBuyingPrice() const;
-        Price GetSellingPrice() const;
+        ObjectTypeDescription TypeDescription() const override;
     };
 
     template<>
-    class Registry<Item> : public RegistryBase<Item, Registry<Item>>
+    struct ObjectTraits<nItem> : ObjectTraitsBase<nItem>
     {
-    private:
-        Registry() = default;
-        friend RegistryBase<Item, Registry<Item>>;
+        static const ObjectTypeName typeName;
+        static constexpr ObjectTypeList<RegistryObject> bases = {};
     };
+}
 
-    typedef Registry<Item> ItemRegistry;
+namespace Inscription
+{
+    DECLARE_OBJECT_INSCRIPTER(::Atmos::nItem)
+    {
+    public:
+        static void AddMembers(TableT& table);
+    };
 }

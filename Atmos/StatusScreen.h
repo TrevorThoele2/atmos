@@ -6,42 +6,62 @@
 #include <array>
 
 #include "State.h"
-#include "PlayerParty.h"
 #include "UniqueStack.h"
 
-#include "InventoryGui.h"
-#include "Spellbook.h"
+#include "ObjectReference.h"
+#include "nEntity.h"
+#include "CombatComponent.h"
+#include "Spell.h"
 
 namespace Atmos
 {
+    /*
     class MainGame;
     class StatusScreen
     {
+    public:
+        enum class PageID
+        {
+            STATS,
+            INVENTORY,
+            SPELLS
+        };
+    public:
+        static void Init();
+        static void Goto(PageID page);
+        static bool IsActive();
     private:
-        typedef Ent::PlayerParty::SizeT PartySizeT;
+        typedef size_t PartySizeT;
+    private:
+        typedef TypedObjectReference<Ent::nEntity> EntityReference;
+        typedef TypedObjectReference<Ent::nCombatComponent> CombatComponentReference;
+        typedef TypedObjectReference<nSpell> SpellReference;
     private:
         class Member;
         // Pages
         class Page
         {
+        public:
+            Page(const std::string &rootName, Agui::Root &mainRoot);
+            virtual void Update(EntityReference selected) = 0;
+            void Select(EntityReference selected);
+            void Deselect();
+
+            virtual void OnActionPressed(const Input::Action &args) {} 
+        protected:
+            Agui::Root* GetRoot();
+            bool IsSelected() const;
         private:
             Agui::Root *root;
             virtual void OnSelected() = 0;
             virtual void OnDeselected() = 0;
-        protected:
-            Agui::Root* GetRoot();
-            bool IsSelected() const;
-        public:
-            Page(const std::string &rootName, Agui::Root &mainRoot);
-            virtual void Update(Entity selected) = 0;
-            void Select(Entity selected);
-            void Deselect();
-
-            virtual void OnActionPressed(const Input::Action &args) {}
         };
 
         class Stats : public Page
         {
+        public:
+            Stats(Agui::Root &mainRoot);
+            void Update(EntityReference selected) override;
         private:
             class Entry
             {
@@ -60,7 +80,7 @@ namespace Atmos
             public:
                 Entry(Agui::TextComponent &component, const Name &niceName);
                 Entry(Agui::TextComponent &component, const Name &attributeName, bool isStat);
-                void Update(const Ent::CombatComponent *selected);
+                void Update(CombatComponentReference selected);
             };
         private:
             std::vector<Entry> entries;
@@ -70,13 +90,15 @@ namespace Atmos
             void CreateEntry(Agui::Menu &menu);
             // Attribute entry
             void CreateEntry(Agui::Menu &menu, const Name &attributeName, bool isStat);
-        public:
-            Stats(Agui::Root &mainRoot);
-            void Update(Entity selected) override;
         };
 
         class Inventory : public Page
         {
+        public:
+            Inventory(Agui::Root &mainRoot);
+            void Update(EntityReference selected) override;
+
+            void OnActionPressed(const Input::Action &args) override;
         private:
             class SectionBase
             {
@@ -89,7 +111,7 @@ namespace Atmos
                 Atmos::InventoryGui gui;
 
                 SectionBase(Agui::Root &root, const Agui::RelativePosition &position, Agui::ItemDescriptionBox &description, Agui::ItemContextMenu &contextMenu, const std::string &labelString, Inventory &handler);
-                virtual void Update(Entity selected) = 0;
+                virtual void Update(EntityReference selected) = 0;
                 virtual void Setup() = 0;
                 void Focus();
                 void Unfocus();
@@ -101,7 +123,7 @@ namespace Atmos
                 void OnFocus() override;
             public:
                 CharacterSection(Agui::Root &root, const Agui::RelativePosition &position, Agui::ItemDescriptionBox &description, Agui::ItemContextMenu &contextMenu, Inventory &handler);
-                void Update(Entity selected) override;
+                void Update(EntityReference selected) override;
                 void Setup() override {}
             };
 
@@ -111,7 +133,7 @@ namespace Atmos
                 void OnFocus() override {}
             public:
                 ReserveSection(Agui::Root &oot, const Agui::RelativePosition &position, Agui::ItemDescriptionBox &description, Agui::ItemContextMenu &contextMenu, Inventory &handler);
-                void Update(Entity selected) override;
+                void Update(EntityReference selected) override;
                 void Setup() override;
             };
         private:
@@ -132,24 +154,20 @@ namespace Atmos
 
             void IncSelectedSection();
             void SelectSection(Sections::iterator select);
-        public:
-            Inventory(Agui::Root &mainRoot);
-            void Update(Entity selected) override;
-
-            void OnActionPressed(const Input::Action &args) override;
+        private:
             friend SectionBase;
         };
 
         class Spells : public Page
         {
+        public:
+            Spells(Agui::Root &mainRoot);
+            void Update(EntityReference selected) override;
         private:
             Spellbook gui;
             void OnSelected() override;
             void OnDeselected() override;
-            void OnSpellSelected(const AbilityBase &ability);
-        public:
-            Spells(Agui::Root &mainRoot);
-            void Update(Entity selected) override;
+            void OnSpellSelected(SpellReference spell);
         };
         // End pages
 
@@ -158,15 +176,8 @@ namespace Atmos
         public:
             Agui::Image &frame;
             Agui::Image &portrait;
-            Entity player;
+            EntityReference player;
             Member(Agui::Image &frame);
-        };
-    public:
-        enum class PageID
-        {
-            STATS,
-            INVENTORY,
-            SPELLS
         };
     private:
         static Agui::Root *root;
@@ -193,10 +204,7 @@ namespace Atmos
         static void Leave();
         template<class T>
         static T* CreatePage(PageID id, Agui::Root &mainRoot);
-    public:
-        static void Init();
-        static void Goto(PageID page);
-        static bool IsActive();
+    private:
         friend MainGame;
     };
 
@@ -207,4 +215,5 @@ namespace Atmos
         pages.emplace(id, PagePtr(made));
         return made;
     }
+    */
 }

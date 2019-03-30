@@ -5,11 +5,16 @@
 #include "Name.h"
 #include "Percentage.h"
 
+#include "ObjectReference.h"
+
 #include "Serialization.h"
 
 namespace Atmos
 {
-    namespace Ent { class CombatComponent; }
+    namespace Ent
+    {
+        class nCombatComponent;
+    }
 
     class Proficiencies
     {
@@ -17,6 +22,8 @@ namespace Atmos
         typedef unsigned int Experience;
         typedef FixedPoint64 Level;
         typedef Percentage Rating;
+
+        typedef TypedObjectReference<Ent::nCombatComponent> CombatComponentReference;
     private:
         INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
@@ -49,7 +56,7 @@ namespace Atmos
         bool operator!=(const Proficiencies &arg) const;
 
         // Returns the experience given (can be 0)
-        Experience AttemptIncrement(const Name &name, const Ent::CombatComponent &source);
+        Experience AttemptIncrement(const Name &name, CombatComponentReference source);
         Experience GetExperience(const Name &name) const;
         Level GetLevel(const Name &name) const;
     };

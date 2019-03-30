@@ -1,15 +1,12 @@
 #pragma once
 
-#include "EntityComponentPackage.h"
-
 #include "GeneralComponent.h"
-#include "CharacterComponent.h"
 #include "SenseComponent.h"
 #include "CombatComponent.h"
-#include "BattleComponent.h"
 
 namespace Atmos
 {
+    /*
     namespace Battle
     {
         class CharacterEntity : public Ent::ComponentPackageRequiredInherit<Ent::GeneralComponent*, Ent::CharacterComponent*, Ent::SenseComponent*, Ent::CombatComponent*, Ent::BattleComponent*>
@@ -32,4 +29,5 @@ namespace Atmos
             ::Atmos::Ent::BattleComponent* GetBattle();
         };
     }
+    */
 }

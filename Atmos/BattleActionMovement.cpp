@@ -1,9 +1,9 @@
 
 #include "BattleActionMovement.h"
-#include "EntityPositionSystem.h"
 
 namespace Atmos
 {
+    /*
     namespace Battle
     {
         void ActionMovement::RangePattern::SetPiecePosition(const GridPosition &center, const RelativeGridPosition &relPos, ValueT &value)
@@ -82,8 +82,9 @@ namespace Atmos
         {
             rangePattern.Clear();
             rangePattern.SetupDiamond(GetSelectedEntity().GetBattle()->startingPos, GetSelectedEntity().GetBattle()->movementRangeLeft, Sprite("overlay.png", 1, Atmos::Color(127, 0, 255, 0)));
-            for (auto &loop : rangePattern)
+            for (auto& loop : rangePattern)
                 GetCurrentRenderFragments()->Add(loop.second);
         }
     }
+    */
 }

@@ -5,21 +5,28 @@
 
 #include "Fps.h"
 #include "Environment.h"
+#include "GameEnvironment.h"
 #include "StateManager.h"
 #include "Camera.h"
-#include "ImageRegistry.h"
-#include "ShaderRegistry.h"
-#include "MaterialRegistry.h"
-#include "AudioRegistry.h"
-#include "ScriptRegistry.h"
+#include "ImageSystem.h"
+#include "ShaderSystem.h"
+#include "MaterialSystem.h"
+#include "AudioSystem.h"
+#include "ScriptSystem.h"
 #include "ScriptController.h"
+#include "WorldManager.h"
 #include "DayCycle.h"
 #include "StringUtility.h"
+#include "TileSystem.h"
+#include "nEntitySystem.h"
+#include "nEntityPositionSystem.h"
 
-#include "Entity.h"
+#include "nEntity.h"
 #include "AvatarSystem.h"
-#include "EntityPositionSystem.h"
+#include "nEntityPositionSystem.h"
 #include "GeneralComponent.h"
+
+#include "CurrentField.h"
 
 #include "FontDefines.h"
 #include <AGUI\System.h>
@@ -28,6 +35,23 @@
 
 namespace Atmos
 {
+    template<class T>
+    T* RetrieveFromLocalObjectManager()
+    {
+        auto objectManager = GetLocalObjectManager();
+        if (!objectManager)
+            return nullptr;
+
+        return objectManager->FindSystem<T>();
+    }
+
+    template<class T>
+    T* RetrieveFromGlobalObjectManager()
+    {
+        auto objectManager = GetGlobalObjectManager();
+        return objectManager->FindSystem<T>();
+    }
+
     DebugScreen::Data::Data(FuncT &&func, bool endingGap) : func(std::move(func)), endingGap(endingGap)
     {}
 
@@ -53,7 +77,7 @@ namespace Atmos
     String DebugScreen::Page::GetDataString() const
     {
         String ret;
-        for (auto &loop : datums)
+        for (auto& loop : datums)
             ret.append(loop.GetString() + "\n");
         return ret;
     }
@@ -98,7 +122,7 @@ namespace Atmos
 
     DebugScreen::DebugScreen() : mainTextbox(nullptr), fpsCounter(nullptr)
     {
-        const size_t pageCount = 6;
+        const size_t pageCount = 5;
         for (size_t loop = 0; loop != pageCount; ++loop)
             pages.push_back(Page());
 
@@ -106,8 +130,7 @@ namespace Atmos
         profilerPage = pages.begin() + 1;
         windowPage = pages.begin() + 2;
         memoryPage = pages.begin() + 3;
-        playerPage = pages.begin() + 4;
-        miscPage = pages.begin() + 5;
+        gamePage = pages.begin() + 4;
 
         const size_t profilerCount = 7;
         for (size_t loop = 0; loop != profilerCount; ++loop)
@@ -123,8 +146,8 @@ namespace Atmos
 
         mousePage->AddData("Mouse Position X:\n", static_cast<BasicFuncT>([](){ return ToString(Environment::GetInput()->GetMousePosition().x); }), false);
         mousePage->AddData("Mouse Position Y:\n", static_cast<BasicFuncT>([]() { return ToString(Environment::GetInput()->GetMousePosition().y); }), false);
-        mousePage->AddData("Mouse Position X in game coordinates:\n", static_cast<BasicFuncT>([]() { return ToString(Environment::GetInput()->GetMousePositionInGameCoords().x); }), false);
-        mousePage->AddData("Mouse Position Y in game coordinates:\n", static_cast<BasicFuncT>([]() { return ToString(Environment::GetInput()->GetMousePositionInGameCoords().y); }), false);
+        mousePage->AddData("Mouse Position X in game coordinates:\n", static_cast<BasicFuncT>([]() { return ToString(Environment::GetInput()->GetMousePositionInGameCoordinates().x); }), false);
+        mousePage->AddData("Mouse Position Y in game coordinates:\n", static_cast<BasicFuncT>([]() { return ToString(Environment::GetInput()->GetMousePositionInGameCoordinates().y); }), false);
 
         AddProfilerData("Input", *inputProfiler);
         AddProfilerData("Logic", *logicProfiler);
@@ -143,43 +166,116 @@ namespace Atmos
         windowPage->AddData("Client height:\n", static_cast<BasicFuncT>([]() { return ToString(Environment::GetClientHeight()); }), false);
         windowPage->AddData("Start X:\n", static_cast<BasicFuncT>([]() { return ToString(Environment::GetStartX()); }), false);
         windowPage->AddData("Start Y:\n", static_cast<BasicFuncT>([]() { return ToString(Environment::GetStartY()); }), false);
-<<<<<<< HEAD
-        windowPage->AddData("Resolution Width:\n", static_cast<BasicFuncT>([]() { return ToString(agui::System::GetCurrentResolution()->GetSize().width); }), false);
-        windowPage->AddData("Resolution Height:\n", static_cast<BasicFuncT>([]() { return ToString(agui::System::GetCurrentResolution()->GetSize().height); }), false);
-=======
         windowPage->AddData("Resolution Width:\n", static_cast<BasicFuncT>([]() { return ToString(Agui::System::GetCurrentResolution()->GetSize().width); }), false);
         windowPage->AddData("Resolution Height:\n", static_cast<BasicFuncT>([]() { return ToString(Agui::System::GetCurrentResolution()->GetSize().height); }), false);
->>>>>>> Changes to work with Win10
-        windowPage->AddData("View origin X:\n", static_cast<BasicFuncT>([]() { return ToString(Camera::GetViewOrigin().GetX()); }), false);
-        windowPage->AddData("View origin Y:\n", static_cast<BasicFuncT>([]() { return ToString(Camera::GetViewOrigin().GetY()); }), false);
+        windowPage->AddData("View origin X:\n", static_cast<BasicFuncT>([]() { return ToString(GameEnvironment::GetCamera().GetViewOrigin().GetX()); }), false);
+        windowPage->AddData("View origin Y:\n", static_cast<BasicFuncT>([]() { return ToString(GameEnvironment::GetCamera().GetViewOrigin().GetY()); }), false);
 
-        memoryPage->AddData("Images in memory:\n", static_cast<BasicFuncT>([]() { return ToString(ImageRegistry::Size()); }), false);
-        memoryPage->AddData("Shaders in memory:\n", static_cast<BasicFuncT>([]() { return ToString(ShaderRegistry::Size()); }), false);
-        memoryPage->AddData("Materials in memory:\n", static_cast<BasicFuncT>([]() { return ToString(MaterialRegistry::Size()); }), false);
-        memoryPage->AddData("Audio in memory:\n", static_cast<BasicFuncT>([]() { return ToString(AudioRegistry::Size()); }), false);
-        memoryPage->AddData("Scripts in memory:\n\n", static_cast<BasicFuncT>([]() { return ToString(ScriptRegistry::Size()); }), true);
-
-        memoryPage->AddData("Scripts Being Worked:\n", static_cast<BasicFuncT>([]() { return ToString(ScriptController::GetWorkedSize()); }), false);
-        memoryPage->AddData("Entities Being Moved:\n", static_cast<BasicFuncT>([]() { return ToString(Ent::PositionSystem::GetWorkedSize()); }), false);
-        memoryPage->AddData("Modulators Being Worked:\n", static_cast<BasicFuncT>([]() { return ToString(GameEnvironment::GetModulatorController().GetWorkedSize()); }), false);
-
-        playerPage->AddData("Player col:\n", static_cast<BasicFuncT>([]()
+        memoryPage->AddData("Audio in memory:\n", static_cast<BasicFuncT>([]()
         {
-            if (::Atmos::Ent::AvatarSystem::IsValid())
-                return ToString(::Atmos::Ent::AvatarSystem::GetPosition().x);
-            else
-                return ToString(static_cast<GridPosition::ValueT>(0));
+            auto system = RetrieveFromGlobalObjectManager<AudioSystem>();
+            if (!system)
+                return String("0");
+
+            return ToString(system->Size());
+        }), false);
+        memoryPage->AddData("Images in memory:\n", static_cast<BasicFuncT>([]()
+        {
+            auto system = RetrieveFromGlobalObjectManager<ImageSystem>();
+            if (!system)
+                return String("0");
+
+            return ToString(system->Size());
+        }), false);
+        memoryPage->AddData("Materials in memory:\n", static_cast<BasicFuncT>([]()
+        {
+            auto system = RetrieveFromGlobalObjectManager<MaterialSystem>();
+            if (!system)
+                return String("0");
+
+            return ToString(system->Size());
+        }), false);
+        memoryPage->AddData("Scripts in memory:\n\n", static_cast<BasicFuncT>([]()
+        {
+            auto system = RetrieveFromGlobalObjectManager<ScriptSystem>();
+            if (!system)
+                return String("0");
+
+            return ToString(system->Size());
+        }), true);
+        memoryPage->AddData("Shaders in memory:\n", static_cast<BasicFuncT>([]()
+        {
+            auto system = RetrieveFromGlobalObjectManager<ShaderSystem>();
+            if (!system)
+                return String("0");
+
+            return ToString(system->Size());
         }), false);
 
-        playerPage->AddData("Player row:\n", static_cast<BasicFuncT>([]()
+        memoryPage->AddData("Tile Count:\n", static_cast<BasicFuncT>([]()
         {
-            if (::Atmos::Ent::AvatarSystem::IsValid())
-                return ToString(::Atmos::Ent::AvatarSystem::GetPosition().y);
-            else
-                return ToString(static_cast<GridPosition::ValueT>(0));
+            auto system = RetrieveFromLocalObjectManager<TileSystem>();
+            if (!system)
+                return String("0");
+
+            return ToString(system->Size());
+
         }), false);
 
-        miscPage->AddData("Current in-game time:\n", static_cast<BasicFuncT>([]() { return ToString(DayCycleHandler::GetCurrentTime()); }), false);
+        memoryPage->AddData("Entity Count:\n\n", static_cast<BasicFuncT>([]()
+        {
+            auto system = RetrieveFromLocalObjectManager<Ent::nEntitySystem>();
+            if (!system)
+                return String("0");
+
+            return ToString(system->Size());
+        }), true);
+
+        memoryPage->AddData("Scripts Being Worked:\n", static_cast<BasicFuncT>([]()
+        {
+            auto system = RetrieveFromLocalObjectManager<ScriptController>();
+            if (!system)
+                return String("0");
+
+            return ToString(system->Size());
+        }), false);
+
+        memoryPage->AddData("Entities Being Moved:\n", static_cast<BasicFuncT>([]()
+        {
+            auto system = RetrieveFromLocalObjectManager<Ent::nEntityPositionSystem>();
+            if (!system)
+                return String("0");
+
+            return ToString(system->MovingSize());
+        }), false);
+
+        gamePage->AddData("Player col:\n", static_cast<BasicFuncT>([]()
+        {
+            auto system = RetrieveFromLocalObjectManager<Ent::nEntityAvatarSystem>();
+            if (!system)
+                return ToString(static_cast<GridPosition::ValueT>(0));
+
+            return ToString(system->Avatar()->Component<Ent::nGeneralComponent>()->position.x);
+        }), false);
+
+        gamePage->AddData("Player row:\n", static_cast<BasicFuncT>([]()
+        {
+            auto system = RetrieveFromLocalObjectManager<Ent::nEntityAvatarSystem>();
+            if (!system)
+                return ToString(static_cast<GridPosition::ValueT>(0));
+
+            return ToString(system->Avatar()->Component<Ent::nGeneralComponent>()->position.y);
+        }), false);
+
+        gamePage->AddData("Field ID:\n", static_cast<BasicFuncT>([]()
+        {
+            auto currentField = GameEnvironment::GetWorldManager().GetCurrentField();
+            if (currentField)
+                return ToString(currentField->GetID());
+            else
+                return String("None");
+        }), false);
+        gamePage->AddData("Current in-game time:\n", static_cast<BasicFuncT>([]() { return ToString(DayCycleHandler::GetCurrentTime()); }), false);
 
         currentPage = pages.begin();
     }
@@ -268,27 +364,24 @@ namespace Atmos
         typedef typename TimeValue::ValueT ValueT;
         // Add frame time
         profilerPage->AddData(appendLabel + " time:\n",
-            Data::FuncT(static_cast<String(*)(const Profiler::TimerT*)>([](const Profiler::TimerT *stopwatch)
+            Data::FuncT([&timer]()
             {
-                return ToString(stopwatch->QueryElapsed().ConvertValue(TimeValueEpoch::MILLISECONDS));
+                return ToString(timer.QueryElapsed().ConvertValue(TimeValueEpoch::MILLISECONDS));
             }),
-                ::Chroma::Bind(&timer)),
             false);
         // Add frame average
         profilerPage->AddData(appendLabel + " time average:\n",
-            Data::FuncT(static_cast<String(*)(const Profiler::TimerT*)>([](const Profiler::TimerT *stopwatch)
+            Data::FuncT([&timer]()
             {
-                return ToString(stopwatch->GetAverage().ConvertValue(TimeValueEpoch::MILLISECONDS));
+                return ToString(timer.GetAverage().ConvertValue(TimeValueEpoch::MILLISECONDS));
             }),
-                ::Chroma::Bind(&timer)),
             false);
         // Add frame highest
         profilerPage->AddData(appendLabel + " time highest:\n\n",
-            Data::FuncT(static_cast<String(*)(const Profiler::TimerT*)>([](const Profiler::TimerT *stopwatch)
+            Data::FuncT([&timer]()
             {
-                return ToString(stopwatch->GetHighest().ConvertValue(TimeValueEpoch::MILLISECONDS));
+                return ToString(timer.GetHighest().ConvertValue(TimeValueEpoch::MILLISECONDS));
             }),
-                ::Chroma::Bind(&timer)),
             true);
     }
 

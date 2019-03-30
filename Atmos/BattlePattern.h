@@ -120,7 +120,7 @@ namespace Atmos
         template<class T>
         void Pattern<T>::SetPosition(const GridPosition &position)
         {
-            for (auto &loop : pattern)
+            for (auto& loop : pattern)
                 SetPiecePosition(position, loop.first, loop.second);
 
             this->position = position;

@@ -3,35 +3,9 @@
 
 namespace Atmos
 {
-    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(Size3D)
-    {
-        scribe(width, height, depth);
-        scribe(xScaler, yScaler, zScaler);
-        scribe(xRotation, yRotation, zRotation);
-        if (scribe.IsInput())
-            Calc();
-    }
-
-    void Size3D::Calc()
-    {
-        auto sinT = sin(xRotation.value);
-        auto cosT = cos(xRotation.value);
-
-        realWidth = width * xScaler;
-        realHeight = height * yScaler;
-        realDepth = depth * zScaler;
-
-        auto prevWidth = realWidth;
-        auto prevHeight = realHeight;
-        auto prevDepth = realDepth;
-
-        realWidth = (prevHeight * sinT) + (prevWidth * cosT);
-        realHeight = (prevWidth * sinT) + (prevHeight * cosT);
-    }
-
     Size3D::Size3D(ValueT width, ValueT height, ValueT depth, ValueT xScaler, ValueT yScaler, ValueT zScaler, const Angle &xRotation, const Angle &yRotation, const Angle &zRotation) : width(width), height(height), depth(depth), xScaler(xScaler), yScaler(yScaler), zScaler(zScaler), xRotation(xRotation), yRotation(yRotation), zRotation(zRotation)
     {
-        Calc();
+        Calculate();
     }
 
     Size3D::Size3D(const Size3D &arg) : width(arg.width), height(arg.height), depth(arg.depth), realWidth(arg.realWidth), realHeight(arg.realHeight), realDepth(arg.realDepth), xScaler(arg.xScaler), yScaler(arg.yScaler), zScaler(arg.zScaler), xRotation(arg.xRotation), yRotation(arg.yRotation), zRotation(arg.zRotation)
@@ -67,19 +41,19 @@ namespace Atmos
     void Size3D::SetWidth(ValueT setTo)
     {
         width = setTo;
-        Calc();
+        Calculate();
     }
 
     void Size3D::SetHeight(ValueT setTo)
     {
         height = setTo;
-        Calc();
+        Calculate();
     }
 
     void Size3D::SetDepth(ValueT setTo)
     {
         depth = setTo;
-        Calc();
+        Calculate();
     }
 
     Size3D::ValueT Size3D::GetWidth() const
@@ -115,19 +89,19 @@ namespace Atmos
     void Size3D::SetXScaler(ValueT setTo)
     {
         xScaler = setTo;
-        Calc();
+        Calculate();
     }
 
     void Size3D::SetYScaler(ValueT setTo)
     {
         yScaler = setTo;
-        Calc();
+        Calculate();
     }
 
     void Size3D::SetZScaler(ValueT setTo)
     {
         zScaler = setTo;
-        Calc();
+        Calculate();
     }
 
     Join3<Size3D::ValueT> Size3D::GetScalers() const
@@ -153,19 +127,19 @@ namespace Atmos
     void Size3D::SetXRotation(const Angle &setTo)
     {
         xRotation = setTo;
-        Calc();
+        Calculate();
     }
 
     void Size3D::SetYRotation(const Angle &setTo)
     {
         yRotation = setTo;
-        Calc();
+        Calculate();
     }
 
     void Size3D::SetZRotation(const Angle &setTo)
     {
         zRotation = setTo;
-        Calc();
+        Calculate();
     }
 
     const Angle& Size3D::GetXRotation() const
@@ -181,5 +155,37 @@ namespace Atmos
     const Angle& Size3D::GetZRotation() const
     {
         return zRotation;
+    }
+
+    void Size3D::Calculate()
+    {
+        auto sinT = sin(xRotation.As<Radians>());
+        auto cosT = cos(xRotation.As<Radians>());
+
+        realWidth = width * xScaler;
+        realHeight = height * yScaler;
+        realDepth = depth * zScaler;
+
+        auto prevWidth = realWidth;
+        auto prevHeight = realHeight;
+        auto prevDepth = realDepth;
+
+        realWidth = (prevHeight * sinT) + (prevWidth * cosT);
+        realHeight = (prevWidth * sinT) + (prevHeight * cosT);
+    }
+
+    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(Size3D)
+    {
+        scribe(width);
+        scribe(height);
+        scribe(depth);
+        scribe(xScaler);
+        scribe(yScaler);
+        scribe(zScaler);
+        scribe(xRotation);
+        scribe(yRotation);
+        scribe(zRotation);
+        if (scribe.IsInput())
+            Calculate();
     }
 }

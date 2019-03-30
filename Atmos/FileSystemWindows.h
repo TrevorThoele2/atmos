@@ -12,6 +12,8 @@ namespace Atmos
         private:
             static constexpr size_t maxPathLength = MAX_PATH * sizeof(TCHAR) + sizeof(TCHAR);
         public:
+            bool RelocateFile(const FilePath &from, const FilePath &to) override final;
+            bool RemoveFile(const FilePath &remove) override final;
             FilePath GetExePath() const override final;
             FilePath GetDataPath() const override final;
             FilePath GetTempDirectoryPath() const override final;

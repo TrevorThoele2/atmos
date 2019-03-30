@@ -7,7 +7,7 @@
 
 namespace Atmos
 {
-    void DoLog(const String &message, Logger::Type type, Logger::NameValueVector *nvps = nullptr)
+    void DoLog(const String& message, Logger::Type type, Logger::NameValueVector* nvps = nullptr)
     {
         if (message.empty())
             return;
@@ -18,7 +18,7 @@ namespace Atmos
                 return;
         }
 
-        ::Inscription::TextOutFile outFile(Environment::GetFileSystem()->GetExePath().Append("errorLog.txt").GetValue(), true);
+        ::Inscription::TextOutFile outFile(Environment::GetFileSystem()->GetExePath().Append("log.txt").GetValue(), true);
 
         // Output time and date
         output = Logger::GetTimeValue() + ' ';
@@ -46,14 +46,14 @@ namespace Atmos
         }
 
         output.append(' ' + message);
-        if (message.find_last_of('\n') != message.size() - 1)
+        if (output.find_last_of('\n') != output.size() - 1)
             output.append(1, '\n');
 
         // Output nvps
         {
             if (nvps)
             {
-                for (auto &loop : *nvps)
+                for (auto& loop : *nvps)
                     output.append("        " + loop.name + ": " + ToString(loop.value) + '\n');
             }
         }
@@ -62,7 +62,7 @@ namespace Atmos
         Logger::Instance().onLogged(output);
     }
 
-    void Logger::Log(const String &string, Type type)
+    void Logger::Log(const String& string, Type type)
     {
         if (!Instance().initialized)
         {
@@ -73,7 +73,7 @@ namespace Atmos
         DoLog(string, type);
     }
 
-    void Logger::Log(const String &string, Type type, Logger::NameValueVector &nvps)
+    void Logger::Log(const String& string, Type type, Logger::NameValueVector& nvps)
     {
         if (!Instance().initialized)
         {
@@ -119,10 +119,10 @@ namespace Atmos
     void Logger::ClearFile()
     {
         // Just open up the file without appending
-        ::Inscription::TextOutFile outFile(Environment::GetFileSystem()->GetExePath().Append("errorLog.txt").GetValue());
+        ::Inscription::TextOutFile outFile(Environment::GetFileSystem()->GetExePath().Append("log.txt").GetValue());
     }
 
-    Logger::Entry::Entry(const String &string, Type type, const NameValueVector &nvps) : string(string), type(type), nvps(nvps)
+    Logger::Entry::Entry(const String& string, Type type, const NameValueVector& nvps) : string(string), type(type), nvps(nvps)
     {}
 
     void OnExit()

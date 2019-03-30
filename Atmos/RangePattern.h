@@ -55,7 +55,7 @@ namespace Atmos
     template<class Key, class T>
     void RangePatternBase<Key, T>::Serialize(::Inscription::Scribe &scribe)
     {
-        scribe(container);
+        //scribe(container);
     }
 
     template<class Key, class T>

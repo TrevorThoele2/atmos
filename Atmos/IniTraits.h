@@ -7,16 +7,30 @@
 #include <AGUI/Resolution.h>
 #include "StringUtility.h"
 
+#include "Optional.h"
+
 namespace Atmos
 {
-    String ToString(const ::Agui::Resolution::Size &arg);
-    String ToString(const Input::KeyID &arg);
-
-    template<> ::Agui::Resolution::Size FromString(const String &arg);
-    template<> Input::KeyID FromString(const String &arg);
-
     namespace Ini
     {
+        template<class T>
+        String ToIniString(const T &arg)
+        {
+            return ::Atmos::ToString(arg);
+        }
+        String ToIniString(const ::Agui::Resolution::Size &arg);
+        String ToIniString(const Input::KeyID &arg);
+
+        template<class T>
+        Optional<T> FromIniString(const String &arg)
+        {
+            return ::Atmos::FromString<T>(arg);
+        }
+        template<>
+        Optional<::Agui::Resolution::Size> FromIniString(const String &arg);
+        template<>
+        Optional<Input::KeyID> FromIniString(const String &arg);
+
         template<ID>
         struct Traits;
 

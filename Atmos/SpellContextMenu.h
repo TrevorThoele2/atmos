@@ -3,22 +3,18 @@
 
 #include "ContextMenu.h"
 
-namespace Atmos
-{
-    class Spell;
-    namespace Ent
-    {
-        class CombatComponent;
-    }
-}
+#include "Spell.h"
+#include "CombatComponent.h"
+#include "ObjectReference.h"
 
 namespace Agui
 {
     class SpellContextMenu : public ContextMenu
     {
     private:
-        const Atmos::Spell *selected;
-        const Atmos::Ent::CombatComponent *source;
+        ::Atmos::TypedObjectReference<::Atmos::nSpell> selected;
+        ::Atmos::TypedObjectReference<::Atmos::Ent::nCombatComponent> source;
+
         void RegisterInputs() override;
         void OnCast();
     protected:
@@ -30,8 +26,8 @@ namespace Agui
         static SpellContextMenu* Factory(Object *parent, const WidgetPrototype &arg);
         static SpellContextMenu* Factory(Object *parent, const SpellContextMenu &arg);
         void SetSelected();
-        void SetSelected(const Atmos::Spell &set);
-        void SetSource(const Atmos::Ent::CombatComponent &set);
+        void SetSelected(::Atmos::TypedObjectReference<::Atmos::nSpell> set);
+        void SetSource(::Atmos::TypedObjectReference<::Atmos::Ent::nCombatComponent> set);
         WIDGET_COMMON_ACCESS(SpellContextMenu);
     };
 

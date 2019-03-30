@@ -3,78 +3,41 @@
 #include <vector>
 
 #include "RegistryObject.h"
-#include "Registry.h"
 
-#include "Script.h"
+#include "QuestPart.h"
 
-#include "Serialization.h"
+#include "ObjectSerialization.h"
 
 namespace Atmos
 {
-    class Quest : public RegistryObject
+    class nQuest : public RegistryObject
     {
     public:
-        typedef String Name;
-        typedef String Description;
+        typedef std::vector<QuestPart> PartList;
     public:
-        class Part
-        {
-        public:
-            typedef Quest::Name Name;
-            typedef Quest::Description Description;
-
-            enum class Type
-            {
-                WAR,
-                DIPLOMACY,
-                GATHER,
-                EXPLORE,
-                MISC
-            };
-        private:
-            INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
-            INSCRIPTION_ACCESS;
-        public:
-            Name name;
-            Description description;
-
-            Type type;
-
-            Part() = default;
-            Part(const Name &name, const Description &description, Type type);
-        };
-
-        typedef std::vector<Part> Parts;
-        typedef Parts::size_type PartID;
-    private:
-        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
-        INSCRIPTION_ACCESS;
+        PartList parts;
+        PartList::iterator curPos;
     public:
-        Parts parts;
-        Parts::iterator curPos;
-        Script::Instance script;
+        nQuest(const Name& name);
+        nQuest(const nQuest& arg) = default;
+        nQuest(const ::Inscription::Table<nQuest>& table);
 
-        Quest();
-        Quest(const Quest &arg) = default;
-        Quest& operator=(const Quest &arg) = default;
-        Quest(Quest &&arg);
-        Quest& operator=(Quest &&arg);
-
-        bool operator==(const Quest &arg) const;
-        bool operator!=(const Quest &arg) const;
-
-        Part* AddPart();
-        void RemovePart(PartID id);
-        Part* FindPart(PartID id);
+        ObjectTypeDescription TypeDescription() const override;
     };
 
     template<>
-    class Registry<Quest> : public RegistryBase<Quest, Registry<Quest>>
+    struct ObjectTraits<nQuest> : ObjectTraitsBase<nQuest>
     {
-    private:
-        Registry() = default;
-        friend RegistryBase<Quest, Registry<Quest>>;
+        static const ObjectTypeName typeName;
+        static constexpr ObjectTypeList<RegistryObject> bases = {};
     };
+}
 
-    typedef Registry<Quest> QuestRegistry;
+namespace Inscription
+{
+    DECLARE_OBJECT_INSCRIPTER(::Atmos::nQuest)
+    {
+    public:
+        static void AddMembers(TableT& table);
+    };
 }

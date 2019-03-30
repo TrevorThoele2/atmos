@@ -8,7 +8,8 @@ namespace Atmos
 {
     INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(Position2D)
     {
-        scribe(X, Y);
+        scribe(X);
+        scribe(Y);
         scribe(pixelPerfect);
         if (scribe.IsInput())
             Calc();

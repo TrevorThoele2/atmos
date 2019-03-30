@@ -16,10 +16,10 @@ namespace Atmos
             {
                 Environment::GetInput()->eventActionActive(*this);
                 // Pressed
-                if (mappedKey->Pressed())
+                if (mappedKey->IsPressed())
                     Environment::GetInput()->eventActionPressed(*this);
             }
-            else if (mappedKey->Depressed())
+            else if (mappedKey->IsDepressed())
                 Environment::GetInput()->eventActionDepressed(*this);
         }
 

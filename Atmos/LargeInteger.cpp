@@ -6,7 +6,8 @@ namespace Atmos
 {
     INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(LargeInteger)
     {
-        scribe(low, high);
+        scribe(low);
+        scribe(high);
     }
 
     void LargeInteger::AddImpl(const LargeInteger &left, const LargeInteger &right, LargeInteger &result)

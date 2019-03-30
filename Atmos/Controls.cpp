@@ -49,7 +49,7 @@ namespace Atmos
 
         buttons.reserve(Environment::GetInput()->GetActions().size());
         // Left most column
-        for (auto &loop : Environment::GetInput()->GetActions())
+        for (auto& loop : Environment::GetInput()->GetActions())
             AddButton(*loop);
 
         // Accept button
@@ -81,7 +81,7 @@ namespace Atmos
 
     void ControlsScreenGui::OnAcceptButtonClicked()
     {
-        for (auto &loop : buttons)
+        for (auto& loop : buttons)
             loop.LockIn();
 
         Environment::GetIni().Save();
@@ -90,7 +90,7 @@ namespace Atmos
 
     void ControlsScreenGui::OnCancelButtonClicked()
     {
-        for (auto &loop : buttons)
+        for (auto& loop : buttons)
             loop.Reset();
 
         StateManager::Pop();

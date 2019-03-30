@@ -1,88 +1,41 @@
 
 #include "Item.h"
-#include <Inscription/Scribe.h>
 
 namespace Atmos
 {
-    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(Item)
-    {
-        ::Inscription::BaseSerialize<RegistryObject>(scribe, *this);
-        scribe(flags);
-        scribe(consumableAspect);
-        scribe(equippableAspect);
-        scribe(buyingPrice);
-        scribe(sellingPrice);
-        scribe(portrait);
-    }
-
-    Item::Item(Item &&arg) : RegistryObject(std::move(arg)), flags(std::move(arg.flags)), consumableAspect(std::move(arg.consumableAspect)), equippableAspect(std::move(arg.equippableAspect)), buyingPrice(std::move(arg.buyingPrice)), sellingPrice(std::move(arg.sellingPrice)), portrait(std::move(arg.portrait))
+    nItem::nItem(const Name& name) : RegistryObject(name), buyPrice(0), sellPrice(0)
     {}
 
-    Item& Item::operator=(Item &&arg)
+    nItem::nItem(const ::Inscription::Table<nItem>& table) : INSCRIPTION_TABLE_GET_BASE(RegistryObject)
+    {}
+
+    bool nItem::IsConsumable() const
     {
-        RegistryObject::operator=(std::move(arg));
-        flags = std::move(arg.flags);
-        consumableAspect = std::move(arg.consumableAspect);
-        equippableAspect = std::move(arg.equippableAspect);
-        buyingPrice = std::move(arg.buyingPrice);
-        sellingPrice = std::move(arg.sellingPrice);
-        portrait = std::move(arg.portrait);
-        return *this;
+        return consume.IsOccupied();
     }
 
-    bool Item::operator==(const Item &arg) const
+    bool nItem::IsEquippable() const
     {
-        return RegistryObject::operator==(arg);
+        return equip.IsOccupied();
     }
 
-    bool Item::operator!=(const Item &arg) const
+    bool nItem::CanAttackWith() const
     {
-        return !(*this == arg);
+        return attack.IsOccupied();
     }
 
-    void Item::SignalConsumableAspect(bool signal)
+    ObjectTypeDescription nItem::TypeDescription() const
     {
-        if (signal && !HasConsumableAspect())
-            consumableAspect.Set(ConsumableAspect());
-        else
-            consumableAspect.Reset();
+        return ObjectTraits<nItem>::TypeDescription();
     }
 
-    void Item::SignalEquippableAspect(bool signal)
-    {
-        if (signal && !HasEquippableAspect())
-            equippableAspect.Set(EquippableAspect());
-        else
-            equippableAspect.Reset();
-    }
+    const ObjectTypeName ObjectTraits<nItem>::typeName = "Item";
+}
 
-    bool Item::HasConsumableAspect() const
+namespace Inscription
+{
+    DEFINE_OBJECT_INSCRIPTER_MEMBERS(::Atmos::nItem)
     {
-        return consumableAspect.IsValid();
-    }
 
-    bool Item::HasEquippableAspect() const
-    {
-        return equippableAspect.IsValid();
-    }
-
-    void Item::SetBuyingPrice(Price set)
-    {
-        buyingPrice = set;
-    }
-
-    void Item::SetSellingPrice(Price set)
-    {
-        sellingPrice = set;
-    }
-
-    Item::Price Item::GetBuyingPrice() const
-    {
-        return buyingPrice;
-    }
-
-    Item::Price Item::GetSellingPrice() const
-    {
-        return sellingPrice;
     }
 }
