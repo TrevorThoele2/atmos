@@ -4,16 +4,18 @@
 #include "ObjectSystem.h"
 
 #include "ActionComponent.h"
-#include "nEntity.h"
+#include "Entity.h"
 
 #include "String.h"
 
-#include <AGUI\Root.h>
-#include <AGUI\Textbox.h>
+#include <AGUI/Root.h>
+#include <AGUI/Textbox.h>
 #include "Cursor.h"
 
 namespace Atmos
 {
+    class LoggingSystem;
+
     namespace Speech
     {
         class Shop;
@@ -23,10 +25,11 @@ namespace Atmos
         public:
             typedef int InputID;
         public:
-            typedef TypedObjectReference<Ent::nEntity> EntityReference;
-            typedef TypedObjectReference<Ent::nActionComponent> ActionComponentReference;
+            typedef TypedObjectReference<Entity::Entity> EntityReference;
+            typedef TypedObjectReference<Entity::ActionComponent> ActionComponentReference;
         public:
             Controller(ObjectManager& manager);
+            Controller(const ::Inscription::Table<Controller>& table);
 
             bool Enter(ActionComponentReference actionComponent);
             void Leave();
@@ -58,11 +61,13 @@ namespace Atmos
         private:
             Name NameFor(EntityReference entity);
         private:
+            LoggingSystem* FindLoggingSystem();
+        private:
             class Input
             {
             public:
                 Input();
-                void Initialize(Agui::Textbox& textbox);
+                void Initialize(Agui::Textbox& textbox, ObjectManager& objectManager);
 
                 void Activate(std::vector<String>&& strings);
                 void Deactivate();
@@ -88,4 +93,14 @@ namespace Atmos
             friend Shop;
         };
     }
+}
+
+namespace Inscription
+{
+    INSCRIPTION_INSCRIPTER_DECLARE(::Atmos::Speech::Controller)
+    {
+    public:
+        INSCRIPTION_INSCRIPTER_DECLARE_TABLE;
+        INSCRIPTION_DECLARE_CLASS_NAME_RESOLVER;
+    };
 }

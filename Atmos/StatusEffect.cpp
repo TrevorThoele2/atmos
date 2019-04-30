@@ -2,11 +2,11 @@
 #include "StatusEffect.h"
 
 #include "CombatComponent.h"
-#include "CapCombatValue.h"
 
 namespace Atmos
 {
-    nStatusEffect::nStatusEffect(const Name& name) : RegistryObject(name), applicationCount(0), positive(false)
+    nStatusEffect::nStatusEffect(ObjectManager& manager, const Name& name) :
+        RegistryObject(manager, name), applicationCount(0), positive(false)
     {}
 
     nStatusEffect::nStatusEffect(const ::Inscription::Table<nStatusEffect>& table) : INSCRIPTION_TABLE_GET_BASE(RegistryObject)
@@ -28,7 +28,7 @@ namespace Atmos
 
 namespace Inscription
 {
-    DEFINE_OBJECT_INSCRIPTER_MEMBERS(::Atmos::nStatusEffect)
+    OBJECT_INSCRIPTER_DEFINE_MEMBERS(::Atmos::nStatusEffect)
     {
 
     }

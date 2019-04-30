@@ -15,6 +15,9 @@ namespace Inscription
     INSCRIPTION_INSCRIPTER_DEFINE_TABLE(::Atmos::StatusEffectSystem)
     {
         INSCRIPTION_INSCRIPTER_CREATE_TABLE;
+
+        INSCRIPTION_TABLE_ADD_BASE(::Atmos::ObjectSystem);
+
         INSCRIPTION_INSCRIPTER_RETURN_TABLE;
     }
 

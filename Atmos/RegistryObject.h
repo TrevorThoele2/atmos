@@ -19,7 +19,7 @@ namespace Atmos
         typedef StoredReadonlyProperty<String> DescriptionProperty;
         DescriptionProperty description;
     public:
-        RegistryObject(const Name& name);
+        RegistryObject(ObjectManager& manager, const Name& name);
         RegistryObject(const ::Inscription::Table<RegistryObject>& table);
 
         ObjectTypeDescription TypeDescription() const override;
@@ -37,6 +37,6 @@ namespace Inscription
     DECLARE_OBJECT_INSCRIPTER(::Atmos::RegistryObject)
     {
     public:
-        static void AddMembers(TableT& table);
+        OBJECT_INSCRIPTER_DECLARE_MEMBERS;
     };
 }

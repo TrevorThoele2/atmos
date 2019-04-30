@@ -9,18 +9,18 @@
 #include "ItemContextMenu.h"
 #include "SpellContextMenu.h"
 
-#include <AGUI\BasicWidget.h>
-#include <AGUI\PushButton.h>
-#include <AGUI\Checkbox.h>
-#include <AGUI\Fillbar.h>
-#include <AGUI\Image.h>
-#include <AGUI\Label.h>
-#include <AGUI\Menu.h>
-#include <AGUI\MenuButton.h>
-#include <AGUI\Scrollbar.h>
-#include <AGUI\Slider.h>
-#include <AGUI\Textbox.h>
-#include <AGUI\Thumb.h>
+#include <AGUI/BasicWidget.h>
+#include <AGUI/PushButton.h>
+#include <AGUI/Checkbox.h>
+#include <AGUI/Fillbar.h>
+#include <AGUI/Image.h>
+#include <AGUI/Label.h>
+#include <AGUI/Menu.h>
+#include <AGUI/MenuButton.h>
+#include <AGUI/Scrollbar.h>
+#include <AGUI/Slider.h>
+#include <AGUI/Textbox.h>
+#include <AGUI/Thumb.h>
 
 namespace Agui
 {

@@ -1,8 +1,6 @@
 
 #include "Canvas.h"
 
-#include "Environment.h"
-
 namespace Atmos
 {
     Canvas* Canvas::Data::GetOwner() const

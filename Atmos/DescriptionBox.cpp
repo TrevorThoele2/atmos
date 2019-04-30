@@ -2,7 +2,7 @@
 #include "DescriptionBox.h"
 
 #include "FontDefines.h"
-#include <AGUI\TextComponent.h>
+#include <AGUI/TextComponent.h>
 
 namespace Agui
 {

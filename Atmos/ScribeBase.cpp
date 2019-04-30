@@ -1,26 +1,30 @@
 
 #include "ScribeBase.h"
-#include <Inscription\Scribe.h>
+
+#include <Inscription/Scribe.h>
 
 namespace Atmos
 {
-    void ScribeBase::CopyTrackersTo(ScribeBase &arg) const
+    ScribeBase::~ScribeBase()
+    {}
+
+    void ScribeBase::CopyTrackersTo(ScribeBase& scribe) const
     {
-        GetBasicScribe().CopyTrackersTo(arg.GetBasicScribe());
+        UnderlyingScribe().CopyTrackersTo(scribe.UnderlyingScribe());
     }
 
-    void ScribeBase::CopyTrackersTo(::Inscription::Scribe &scribe) const
+    void ScribeBase::CopyTrackersTo(::Inscription::Scribe& scribe) const
     {
-        GetBasicScribe().CopyTrackersTo(scribe);
+        UnderlyingScribe().CopyTrackersTo(scribe);
     }
 
-    void ScribeBase::MoveTrackersTo(ScribeBase &arg)
+    void ScribeBase::MoveTrackersTo(ScribeBase& scribe)
     {
-        GetBasicScribe().MoveTrackersTo(arg.GetBasicScribe());
+        UnderlyingScribe().MoveTrackersTo(scribe.UnderlyingScribe());
     }
 
-    void ScribeBase::MoveTrackersTo(::Inscription::Scribe &scribe)
+    void ScribeBase::MoveTrackersTo(::Inscription::Scribe& scribe)
     {
-        GetBasicScribe().MoveTrackersTo(scribe);
+        UnderlyingScribe().MoveTrackersTo(scribe);
     }
 }

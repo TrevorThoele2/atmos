@@ -11,6 +11,7 @@ namespace Atmos
 {
     class Position3D;
     class AxisBoundingBox2D;
+
     class Position2D
     {
     public:

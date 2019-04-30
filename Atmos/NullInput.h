@@ -1,16 +1,16 @@
 #pragma once
 
-#include "InputHandlerBase.h"
+#include "InputManager.h"
 
 namespace Atmos
 {
     namespace Input
     {
-        class NullHandler : public HandlerBase
+        class NullManager : public Manager
         {
         private:
-            void AddInputsImpl() override;
-            void WorkInputsImpl(InputVector &inputs) override;
+            void CreateSignalsImpl() override;
+            void WorkSignalsImpl(SignalList& signalList) override;
             bool ShouldAddActions() const override;
             MousePosition GetMousePositionImpl() const override;
         };

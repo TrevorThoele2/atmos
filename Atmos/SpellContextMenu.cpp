@@ -50,7 +50,7 @@ namespace Agui
         selected = set;
     }
 
-    void SpellContextMenu::SetSource(::Atmos::TypedObjectReference<::Atmos::Ent::nCombatComponent> set)
+    void SpellContextMenu::SetSource(::Atmos::TypedObjectReference<::Atmos::Entity::CombatComponent> set)
     {
         source = set;
     }

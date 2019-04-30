@@ -11,13 +11,13 @@ namespace Atmos
 {
     class ShaderAssetData;
 
-    class ShaderAsset : public nFileAsset
+    class ShaderAsset : public FileAsset
     {
     public:
         typedef ShaderAssetData DataT;
         typedef std::unique_ptr<DataT> DataPtr;
     public:
-        ShaderAsset(const FileName& fileName, DataPtr&& data);
+        ShaderAsset(ObjectManager& manager, const FileName& fileName, DataPtr&& data);
         ShaderAsset(const ShaderAsset& arg);
         ShaderAsset(const ::Inscription::Table<ShaderAsset>& table);
 
@@ -49,7 +49,7 @@ namespace Atmos
     struct ObjectTraits<ShaderAsset> : ObjectTraitsBase<ShaderAsset>
     {
         static const ObjectTypeName typeName;
-        static constexpr ObjectTypeList<nFileAsset> bases = {};
+        static constexpr ObjectTypeList<FileAsset> bases = {};
     };
 
     class ShaderAssetData
@@ -77,6 +77,6 @@ namespace Inscription
     DECLARE_OBJECT_INSCRIPTER(::Atmos::ShaderAsset)
     {
     public:
-        static void AddMembers(TableT& table);
+        OBJECT_INSCRIPTER_DECLARE_MEMBERS;
     };
 }

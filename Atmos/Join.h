@@ -9,9 +9,6 @@ namespace Atmos
     template<class T>
     struct Join2
     {
-    private:
-        INSCRIPTION_SERIALIZE_FUNCTION { scribe(first, second); }
-        INSCRIPTION_ACCESS;
     public:
         T first, second;
         Join2() = default;
@@ -38,14 +35,14 @@ namespace Atmos
         {
             return (*this == arg);
         }
+    private:
+        INSCRIPTION_SERIALIZE_FUNCTION{ scribe(first, second); }
+        INSCRIPTION_ACCESS;
     };
 
     template<class T>
     struct Join3
     {
-    private:
-        INSCRIPTION_SERIALIZE_FUNCTION{ scribe(first, second, third); }
-        INSCRIPTION_ACCESS;
     public:
         T first, second, third;
         Join3() = default;
@@ -73,14 +70,14 @@ namespace Atmos
         {
             return !(*this == arg);
         }
+    private:
+        INSCRIPTION_SERIALIZE_FUNCTION{ scribe(first, second, third); }
+        INSCRIPTION_ACCESS;
     };
 
     template<class T>
     struct Join4
     {
-    private:
-        INSCRIPTION_SERIALIZE_FUNCTION{ scribe(first, second, third, fourth); }
-        INSCRIPTION_ACCESS;
     public:
         T first, second, third, fourth;
         Join4() = default;
@@ -109,5 +106,8 @@ namespace Atmos
         {
             return !(*this == arg);
         }
+    private:
+        INSCRIPTION_SERIALIZE_FUNCTION{ scribe(first, second, third, fourth); }
+        INSCRIPTION_ACCESS;
     };
 }

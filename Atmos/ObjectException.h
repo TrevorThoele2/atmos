@@ -1,6 +1,6 @@
 #pragma once
 
-#include <stdexcept>
+#include <exception>
 #include "String.h"
 
 namespace Atmos
@@ -9,11 +9,5 @@ namespace Atmos
     {
     public:
         ObjectException(const String& message);
-    };
-
-    class ObjectNonexistantException : public ObjectException
-    {
-    public:
-        ObjectNonexistantException();
     };
 }

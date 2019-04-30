@@ -6,15 +6,16 @@ class asIScriptEngine;
 
 namespace Atmos
 {
+    class ObjectManager;
+
     namespace Scripting
     {
         class GridPosition
         {
         public:
             ::Atmos::GridPosition::ValueT x, y, z;
-
-            static void Constructor(void* memory);
-            static void Destructor(void* memory);
+        public:
+            GridPosition();
 
             static void RegisterToAngelScript(asIScriptEngine* engine);
         };

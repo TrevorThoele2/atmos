@@ -1,28 +1,26 @@
-
 #pragma once
 
 #include "RenderFragment.h"
-#include "Material.h"
+#include "MaterialAsset.h"
 #include "Color.h"
 #include "AxisBoundingBox2D.h"
 
 #include "ObjectReference.h"
 #include "ObjectManager.h"
-#include "nModulatorLinkMap.h"
 
 #include "StoredProperty.h"
 
 #include "FilePath.h"
 
 #include "Serialization.h"
-#include <AGUI\SpriteComponent.h>
+#include <AGUI/SpriteComponent.h>
 
 namespace Atmos
 {
-    class nSprite : public nRenderFragment
+    class Sprite : public RenderFragment
     {
     public:
-        typedef TypedObjectReference<Material> MaterialReference;
+        typedef TypedObjectReference<MaterialAsset> MaterialReference;
         typedef StoredProperty<MaterialReference> MaterialProperty;
         MaterialProperty material;
     public:
@@ -40,9 +38,9 @@ namespace Atmos
         typedef ReadonlyProperty<AxisBoundingBox2D> AABBProperty;
         AABBProperty primaryAssetSlice;
     public:
-        nSprite();
-        nSprite(const nSprite& arg);
-        nSprite(const ::Inscription::Table<nSprite>& table);
+        Sprite(ObjectManager& manager);
+        Sprite(const Sprite& arg);
+        Sprite(const ::Inscription::Table<Sprite>& table);
 
         ObjectTypeDescription TypeDescription() const override;
     private:
@@ -59,38 +57,23 @@ namespace Atmos
     };
 
     template<>
-    struct ObjectTraits<nSprite> : ObjectTraitsBase<nSprite>
+    struct ObjectTraits<Sprite> : ObjectTraitsBase<Sprite>
     {
         static const ObjectTypeName typeName;
-        static constexpr ObjectTypeList<nRenderFragment> bases = {};
+        static constexpr ObjectTypeList<RenderFragment> bases = {};
     };
 
-    namespace Modulator
-    {
-        template<>
-        struct LinkGeneratorGroup<nSprite> : public LinkGeneratorGroupBase<nSprite>
-        {
-            static Generator<Managed::Index> index;
-            static Generator<Color::ValueT> colorA;
-            static Generator<Color::ValueT> colorR;
-            static Generator<Color::ValueT> colorG;
-            static Generator<Color::ValueT> colorB;
-
-            LinkGeneratorGroup();
-        };
-    }
-
     std::unique_ptr<Agui::SpriteComponent> CreateAguiSpriteComponent(
-        const TypedObjectReference<nSprite> sprite,
+        const TypedObjectReference<Sprite> sprite,
         const Agui::FileName& imageName,
         const Agui::RelativePosition& relPosition = Agui::RelativePosition());
 }
 
 namespace Inscription
 {
-    DECLARE_OBJECT_INSCRIPTER(::Atmos::nSprite)
+    DECLARE_OBJECT_INSCRIPTER(::Atmos::Sprite)
     {
     public:
-        static void AddMembers(TableT& table);
+        OBJECT_INSCRIPTER_DECLARE_MEMBERS;
     };
 }

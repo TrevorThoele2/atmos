@@ -5,14 +5,16 @@
 
 namespace Atmos
 {
+    class ObjectManager;
+
     namespace Scripting
     {
         class Tile : public Object
         {
         public:
             GridPosition position;
-
-            static Tile* Factory();
+        public:
+            Tile();
 
             static void RegisterToAngelScript(asIScriptEngine* engine);
         };

@@ -11,7 +11,7 @@
 #include "ObjectBatchException.h"
 
 #include "Event.h"
-#include "VetoableEventArguments.h"
+#include "ScopedEventConnectionList.h"
 
 namespace Atmos
 {
@@ -65,7 +65,7 @@ namespace Atmos
         void Invalidate();
         void ThrowIfInvalid() const;
     private:
-        EventScopedConnectionManager sourceConnections;
+        ScopedEventConnectionList sourceConnections;
 
         void SubscribeToSource();
         void UnsubscribeFromSource();

@@ -5,10 +5,7 @@
 #include "Item.h"
 #include "Random.h"
 
-#include "AvatarSystem.h"
 #include "InventoryComponent.h"
-
-#include "CurrentField.h"
 
 #include <Inscription\Inscripter.h>
 #include <Inscription\Memory.h>

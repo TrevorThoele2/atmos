@@ -1,6 +1,6 @@
 #pragma once
 
-#include "nEntityComponent.h"
+#include "EntityComponent.h"
 
 #include "ScriptInstance.h"
 
@@ -8,9 +8,9 @@
 
 namespace Atmos
 {
-    namespace Ent
+    namespace Entity
     {
-        class nActionComponent : public nEntityComponent
+        class ActionComponent : public Component
         {
         public:
             enum class Activator : std::int32_t
@@ -28,9 +28,9 @@ namespace Atmos
             Activator activator;
             ScriptInstanceReference script;
 
-            nActionComponent(EntityReference owner);
-            nActionComponent(const nActionComponent& arg) = default;
-            nActionComponent(const ::Inscription::Table<nActionComponent>& table);
+            ActionComponent(ObjectManager& manager, EntityReference owner);
+            ActionComponent(const ActionComponent& arg) = default;
+            ActionComponent(const ::Inscription::Table<ActionComponent>& table);
 
             void FireMovedInto();
             void FireAttemptMovedInto();
@@ -48,7 +48,7 @@ namespace Atmos
     }
 
     template<>
-    struct ObjectTraits<Ent::nActionComponent> : ObjectTraitsBase<Ent::nActionComponent>
+    struct ObjectTraits<Entity::ActionComponent> : ObjectTraitsBase<Entity::ActionComponent>
     {
         static const ObjectTypeName typeName;
     };
@@ -56,9 +56,9 @@ namespace Atmos
 
 namespace Inscription
 {
-    DECLARE_OBJECT_INSCRIPTER(::Atmos::Ent::nActionComponent)
+    DECLARE_OBJECT_INSCRIPTER(::Atmos::Entity::ActionComponent)
     {
     public:
-        static void AddMembers(TableT& table);
+        OBJECT_INSCRIPTER_DECLARE_MEMBERS;
     };
 }

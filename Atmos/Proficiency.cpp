@@ -4,8 +4,6 @@
 #include "CombatComponent.h"
 #include "Random.h"
 
-#include "Logger.h"
-
 #include <Inscription/Scribe.h>
 #include <Inscription/ContainerSize.h>
 
@@ -103,7 +101,7 @@ namespace Atmos
             // Max possible level with the proficiency rating
             Rating::WrappedT adjustedMaxLevel(Rating::WrappedT(static_cast<double>(source->characterClass->FindProficiencyRating(name)->ConvertToDecimal())) * maxLevel);
             // Figure out how many proficiency levels per character level
-            focused->second.profLevelPerCharLevel = adjustedMaxLevel / Rating::WrappedT::Split(Ent::nCombatComponent::Level::UpperBoundStatic(), 0);
+            focused->second.profLevelPerCharLevel = adjustedMaxLevel / Rating::WrappedT::Split(Entity::CombatComponent::Level::UpperBoundStatic(), 0);
         }
 
         // Filter out 50% of the attempts as no experience
@@ -145,10 +143,12 @@ namespace Atmos
     Proficiencies::Experience Proficiencies::GetExperience(const Name &name) const
     {
         auto found = entries.find(name);
+        /*
         if (found == entries.end())
             Logger::Log("Tried to find a proficiency with a tag that doesn't exist.",
                 Logger::Type::ERROR_LOW,
                 Logger::NameValueVector{ NameValuePair("Proficiency Name", name) });
+                */
 
         return found->second.experience;
     }
@@ -156,10 +156,12 @@ namespace Atmos
     Proficiencies::Level Proficiencies::GetLevel(const Name &name) const
     {
         auto found = entries.find(name);
+        /*
         if (found == entries.end())
             Logger::Log("Tried to find a proficiency with a tag that doesn't exist.",
                 Logger::Type::ERROR_LOW,
                 Logger::NameValueVector{ NameValuePair("Proficiency Name", name) });
+                */
 
         return found->second.level;
     }

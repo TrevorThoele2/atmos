@@ -11,7 +11,6 @@
 #include "ObjectTypeDescriptionGroup.h"
 
 #include "Event.h"
-#include "VetoableEventArguments.h"
 
 #include "Serialization.h"
 
@@ -118,11 +117,8 @@ namespace Inscription
     template<class T>
     class Inscripter<::Atmos::ObjectBatchSource<T>> : public InscripterBase<::Atmos::ObjectBatchSource<T>>
     {
-    private:
-        typedef InscripterBase<::Atmos::ObjectBatchSource<T>> BaseT;
     public:
-        typedef BaseT::TableT TableT;
-        typedef BaseT::ManagedT ManagedT;
+        INSCRIPTION_INSCRIPTER_BASE_TYPEDEFS(::Atmos::ObjectBatchSource<T>);
     public:
         INSCRIPTION_INSCRIPTER_TABLE
         {

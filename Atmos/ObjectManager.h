@@ -10,11 +10,13 @@
 #include "ObjectFactory.h"
 #include "ObjectSystem.h"
 #include "ObjectBatch.h"
-#include "ObjectException.h"
+#include "ObjectManagerException.h"
 
 #include "IDManager.h"
 
 #include "Event.h"
+
+#include "IsSameRuntimeType.h"
 
 #include "Serialization.h"
 
@@ -26,16 +28,17 @@ namespace Atmos
         typedef size_t SizeT;
     public:
         Event<ObjectReference> onAdded;
-
         Event<ObjectReference> onBeforeDestroyed;
     public:
         ObjectManager();
+        ObjectManager(ObjectManager&& arg);
+        ObjectManager& operator=(ObjectManager&& arg);
 
         void Initialize();
         void Work();
 
         template<class T, class... Args>
-        TypedObjectReference<T> CreateObject(Args && ... args);
+        TypedObjectReference<T> CreateObject(Args&& ... args);
 
         ObjectReference FindObject(ObjectID id);
         template<class T>
@@ -58,51 +61,78 @@ namespace Atmos
 
         template<class T>
         void RegisterObjectType();
-        template<class T>
-        void RegisterObjectSystem();
+        template<class T, class... Args>
+        void RegisterSystemType(Args&& ... args);
+        template<class T, class System, typename std::enable_if<std::is_base_of_v<ObjectSystem, System>, int>::type = 0>
+        void RegisterSystemType(System* use);
     public:
         ObjectTypeDescriptionGroup DescriptionGroupFor(const ObjectTypeName& typeName);
     private:
-        typedef std::unique_ptr<Object> ObjectPtr;
-        typedef IDManager<ObjectID, ObjectPtr> ObjectList;
-        
-        typedef std::unique_ptr<ObjectFactoryBase> ObjectFactoryPtr;
-        typedef std::unordered_map<ObjectTypeName, ObjectFactoryPtr> ObjectFactoryList;
-
-        typedef std::unique_ptr<ObjectSystem> ObjectSystemPtr;
-        typedef std::multimap<ObjectSystemPriority, ObjectSystemPtr> ObjectSystemList;
-
-        typedef std::unique_ptr<ObjectBatchSourceBase> ObjectBatchSourcePtr;
-        typedef std::unordered_map<ObjectTypeName, ObjectBatchSourcePtr> ObjectBatchSourceList;
-    private:
-        template<class T>
-        friend class ObjectBatchSource;
-    private:
         ObjectTypeGraph typeGraph;
     private:
-        ObjectList objects;
-        ObjectFactoryList factories;
-        ObjectSystemList systems;
-        ObjectBatchSourceList batchSources;
+        void NotifyCreation(Object& object);
+        void NotifyDestruction(Object& object);
     private:
+        typedef std::unique_ptr<Object> ObjectPtr;
+        typedef IDManager<ObjectID, ObjectPtr> ObjectList;
+
+        ObjectList objects;
+
         template<class T>
         TypedObjectReference<T> AddAndSetupObject(T& add);
     private:
+        typedef std::unique_ptr<ObjectFactoryBase> ObjectFactoryPtr;
+        typedef std::unordered_map<ObjectTypeName, ObjectFactoryPtr> ObjectFactoryList;
+
+        ObjectFactoryList factories;
+
         template<class Factory>
         Factory* CreateObjectFactory();
         template<class Factory>
         Factory* FindObjectFactory();
     private:
+        class ObjectSystemHandle
+        {
+        public:
+            virtual ~ObjectSystemHandle() = 0;
+            virtual ObjectSystem* Get() = 0;
+        };
+
+        class OwnedObjectSystemHandle : public ObjectSystemHandle
+        {
+        public:
+            std::unique_ptr<ObjectSystem> ptr;
+            ObjectSystem* Get() override;
+        };
+
+        class UnownedObjectSystemHandle : public ObjectSystemHandle
+        {
+        public:
+            ObjectSystem* ptr;
+            ObjectSystem* Get() override;
+        };
+
+        typedef std::unique_ptr<ObjectSystemHandle> ObjectSystemHandlePtr;
+        typedef std::multimap<ObjectSystemPriority, ObjectSystemHandlePtr> ObjectSystemList;
+
+        ObjectSystemList systems;
+
+        template<class System, class... Args>
+        System* CreateObjectSystem(Args&& ... args);
         template<class System>
-        System* CreateObjectSystem();
+        System* StoreOwnedObjectSystem(System* store);
+        template<class System>
+        System* StoreUnownedObjectSystem(System* store);
         template<class System>
         System* FindObjectSystem();
         template<class System>
         bool HasObjectSystem() const;
     private:
-        void NotifyCreation(Object& object);
-        void NotifyDestruction(Object& object);
-    private:
+        typedef std::unique_ptr<ObjectBatchSourceBase> ObjectBatchSourcePtr;
+        typedef std::unordered_map<ObjectTypeName, ObjectBatchSourcePtr> ObjectBatchSourceList;
+
+        ObjectBatchSourceList batchSources;
+
         // Will return an already created source if it exists
         template<class T>
         ObjectBatchSource<T>* CreateBatchSource();
@@ -114,14 +144,15 @@ namespace Atmos
         void NotifyBatchSourcesCreation(Object& object);
         void NotifyBatchSourcesDestruction(Object& object);
     private:
-        void EnsureBasicObjectSerializationRegistered();
+        template<class T>
+        friend class ObjectBatchSource;
     private:
         INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
     };
 
     template<class T, class... Args>
-    TypedObjectReference<T> ObjectManager::CreateObject(Args && ... args)
+    TypedObjectReference<T> ObjectManager::CreateObject(Args&& ... args)
     {
         STATIC_ASSERT_TYPE_DERIVED_FROM_OBJECT(T);
 
@@ -157,9 +188,11 @@ namespace Atmos
     template<class SystemT>
     SystemT* ObjectManager::FindSystem()
     {
+        STATIC_ASSERT_TYPE_DERIVED_FROM_OBJECT_SYSTEM(SystemT);
+
         for (auto& loop : systems)
         {
-            auto casted = dynamic_cast<SystemT*>(loop.second.get());
+            auto casted = dynamic_cast<SystemT*>(loop.second->Get());
             if (casted)
                 return casted;
         }
@@ -170,9 +203,11 @@ namespace Atmos
     template<class SystemT>
     const SystemT* ObjectManager::FindSystem() const
     {
+        STATIC_ASSERT_TYPE_DERIVED_FROM_OBJECT_SYSTEM(SystemT);
+
         for (auto& loop : systems)
         {
-            auto casted = dynamic_cast<SystemT*>(loop.second.get());
+            auto casted = dynamic_cast<const SystemT*>(loop.second->Get());
             if (casted)
                 return casted;
         }
@@ -191,12 +226,24 @@ namespace Atmos
         ::Inscription::Scribe::RegisterType<ObjectBatchSource<T>>();
     }
 
-    template<class T>
-    void ObjectManager::RegisterObjectSystem()
+    template<class T, class... Args>
+    void ObjectManager::RegisterSystemType(Args&& ... args)
     {
         STATIC_ASSERT_TYPE_DERIVED_FROM_OBJECT_SYSTEM(T);
 
-        CreateObjectSystem<T>();
+        auto system = CreateObjectSystem<T>(std::forward<Args>(args)...);
+        StoreOwnedObjectSystem(system);
+    }
+
+    template<class T, class System, typename std::enable_if<std::is_base_of_v<ObjectSystem, System>, int>::type>
+    void ObjectManager::RegisterSystemType(System* use)
+    {
+        STATIC_ASSERT_TYPE_DERIVED_FROM_OBJECT_SYSTEM(T);
+
+        if (!IsSameRuntimeType<T>(use))
+            throw IncorrectRegisteredObjectSystemTypeException();
+
+        StoreUnownedObjectSystem(use);
     }
 
     template<class T>
@@ -205,9 +252,6 @@ namespace Atmos
         typedef TypedObjectReference<T> ReferenceT;
 
         auto emplaced = objects.Add(ObjectPtr(&add));
-        auto &createdObject = *emplaced;
-        createdObject->id = emplaced.ID();
-        createdObject->manager = this;
 
         NotifyCreation(add);
         NotifyBatchSourcesCreation(add);
@@ -244,16 +288,32 @@ namespace Atmos
         return static_cast<Factory*>(found->second.get());
     }
 
-    template<class System>
-    System* ObjectManager::CreateObjectSystem()
+    template<class System, class... Args>
+    System* ObjectManager::CreateObjectSystem(Args&& ... args)
     {
         auto found = FindObjectSystem<System>();
         if (found)
             return found;
 
-        auto made = new System(*this);
-        systems.emplace(PriorityFor<System>(), ObjectSystemPtr(made));
-        return made;
+        return new System(*this, std::forward<Args>(args)...);
+    }
+
+    template<class System>
+    System* ObjectManager::StoreOwnedObjectSystem(System* store)
+    {
+        auto handle = new OwnedObjectSystemHandle();
+        handle->ptr.reset(store);
+        systems.emplace(PriorityFor<System>(), ObjectSystemHandlePtr(handle));
+        return store;
+    }
+
+    template<class System>
+    System* ObjectManager::StoreUnownedObjectSystem(System* store)
+    {
+        auto handle = new UnownedObjectSystemHandle();
+        handle->ptr = store;
+        systems.emplace(PriorityFor<System>(), ObjectSystemHandlePtr(handle));
+        return store;
     }
 
     template<class System>

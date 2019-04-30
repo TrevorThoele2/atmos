@@ -1,25 +1,26 @@
 
 #include "ScriptAsset.h"
 
-#include "ScriptEngineManager.h"
+#include "ObjectManager.h"
+#include "AngelScriptSystem.h"
+
 #include "AngelScriptAssert.h"
 #include <angelscript.h>
-
-#include "CurrentField.h"
 
 #include <Inscription/TextFile.h>
 
 namespace Atmos
 {
-    ScriptAsset::ScriptAsset(const FileName& fileName, DataPtr&& data) : nFileAsset(fileName), data(std::move(data))
+    ScriptAsset::ScriptAsset(ObjectManager& manager, const FileName& fileName, DataPtr&& data) :
+        FileAsset(manager, fileName), data(std::move(data))
     {
         data->Initialize(name, fileName);
     }
 
-    ScriptAsset::ScriptAsset(const ScriptAsset& arg) : nFileAsset(arg), data((arg.data) ? arg.data->Clone() : nullptr)
+    ScriptAsset::ScriptAsset(const ScriptAsset& arg) : FileAsset(arg), data((arg.data) ? arg.data->Clone() : nullptr)
     {}
 
-    ScriptAsset::ScriptAsset(const ::Inscription::Table<ScriptAsset>& table) : INSCRIPTION_TABLE_GET_BASE(nFileAsset)
+    ScriptAsset::ScriptAsset(const ::Inscription::Table<ScriptAsset>& table) : INSCRIPTION_TABLE_GET_BASE(FileAsset)
     {}
 
     ScriptAsset::DataT* ScriptAsset::Data()
@@ -34,12 +35,12 @@ namespace Atmos
 
     asIScriptModule* ScriptAsset::UnderlyingModule()
     {
-        return data->mod;
+        return data->module;
     }
 
     const asIScriptModule* ScriptAsset::UnderlyingModule() const
     {
-        return data->mod;
+        return data->module;
     }
 
     ObjectTypeDescription ScriptAsset::TypeDescription() const
@@ -49,7 +50,7 @@ namespace Atmos
 
     const ObjectTypeName ObjectTraits<ScriptAsset>::typeName = "ScriptAsset";
 
-    ScriptAssetData::ScriptAssetData() : mod(nullptr), isInitialized(false)
+    ScriptAssetData::ScriptAssetData(ObjectManager& objectManager) : objectManager(&objectManager), module(nullptr), isInitialized(false)
     {}
 
     std::unique_ptr<ScriptAssetData> ScriptAssetData::Clone() const
@@ -62,17 +63,17 @@ namespace Atmos
         if (isInitialized)
             return;
 
-        auto engine = GetLocalObjectManager()->FindSystem<Scripting::EngineManager>()->Engine();
+        auto engine = objectManager->FindSystem<Scripting::System>()->Engine();
 
         ::Inscription::TextInFile file(fileName);
         std::string fileAsString;
         file >> fileAsString;
 
-        mod = engine->GetModule(fileName.GetWithoutExtension().c_str(), asGM_ALWAYS_CREATE);
+        module = engine->GetModule(fileName.GetWithoutExtension().c_str(), asGM_ALWAYS_CREATE);
 
-        Scripting::AngelScriptAssert(mod->AddScriptSection(name.c_str(), fileAsString.c_str(), fileAsString.length()));
+        Scripting::AngelScriptAssert(module->AddScriptSection(name.c_str(), fileAsString.c_str(), fileAsString.length()));
 
-        mod->Build();
+        module->Build();
 
         isInitialized = true;
     }
@@ -80,7 +81,7 @@ namespace Atmos
 
 namespace Inscription
 {
-    DEFINE_OBJECT_INSCRIPTER_MEMBERS(::Atmos::ScriptAsset)
+    OBJECT_INSCRIPTER_DEFINE_MEMBERS(::Atmos::ScriptAsset)
     {
 
     }

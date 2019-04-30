@@ -57,12 +57,6 @@ namespace Atmos
     {
         return FindAsset(withName).IsOccupied();
     }
-
-    template<class T>
-    struct ObjectSystemTraits<RegistryObjectSystem<T>>
-    {
-        static const ObjectSystemPriority priority = 0;
-    };
 }
 
 namespace Inscription
@@ -70,6 +64,8 @@ namespace Inscription
     template<class T>
     class Inscripter<::Atmos::RegistryObjectSystem<T>> : public InscripterBase<::Atmos::RegistryObjectSystem<T>>
     {
+    public:
+        INSCRIPTION_INSCRIPTER_BASE_TYPEDEFS(::Atmos::RegistryObjectSystem<T>);
     public:
         INSCRIPTION_INSCRIPTER_DECLARE_TABLE;
     };
@@ -79,6 +75,7 @@ namespace Inscription
     {
         INSCRIPTION_INSCRIPTER_CREATE_TABLE;
 
+        INSCRIPTION_TABLE_ADD_BASE(::Atmos::ObjectSystem);
         INSCRIPTION_TABLE_ADD(batch);
 
         INSCRIPTION_INSCRIPTER_RETURN_TABLE;

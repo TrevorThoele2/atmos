@@ -127,7 +127,7 @@ namespace Atmos
         Size size;
         Bounds bounds;
     public:
-        PositionalObject();
+        PositionalObject(ObjectManager& manager);
         PositionalObject(const PositionalObject& arg);
         PositionalObject(PositionalObject&& arg);
         PositionalObject(const ::Inscription::Table<PositionalObject>& table);
@@ -172,7 +172,7 @@ namespace Inscription
     DECLARE_OBJECT_INSCRIPTER(::Atmos::PositionalObject)
     {
     public:
-        static void AddMembers(TableT& table);
+        OBJECT_INSCRIPTER_DECLARE_MEMBERS;
 
         INSCRIPTION_INSCRIPTER_DECLARE_SERIALIZE_FUNCTION;
     };

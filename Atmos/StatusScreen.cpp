@@ -2,26 +2,24 @@
 #include <functional>
 
 #include "StatusScreen.h"
-#include "AvatarSystem.h"
 #include "Spell.h"
 
 #include "GeneralComponent.h"
 #include "SenseComponent.h"
 #include "CombatComponent.h"
 
-#include "CurrentField.h"
 #include "StringUtility.h"
 #include "WrapMath.h"
 
 #include "Assert.h"
 
 #include "FontDefines.h"
-#include <AGUI\System.h>
-#include <AGUI\Image.h>
-#include <AGUI\Label.h>
-#include <AGUI\SequenceLayout.h>
-#include <AGUI\UniformGridLayout.h>
-#include <AGUI\PushButton.h>
+#include <AGUI/System.h>
+#include <AGUI/Image.h>
+#include <AGUI/Label.h>
+#include <AGUI/SequenceLayout.h>
+#include <AGUI/UniformGridLayout.h>
+#include <AGUI/PushButton.h>
 
 namespace Atmos
 {

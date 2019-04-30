@@ -5,7 +5,7 @@
 
 namespace Atmos
 {
-    ObjectSystem::ObjectSystem(ObjectManager& manager) : manager(&manager), isStarted(false)
+    ObjectSystem::ObjectSystem(ObjectManager& manager) : manager(&manager), isInitialized(false), isStarted(false)
     {}
 
     ObjectSystem::ObjectSystem(const ::Inscription::Table<ObjectSystem>& table) : INSCRIPTION_TABLE_GET_MEM(manager)
@@ -17,6 +17,7 @@ namespace Atmos
     void ObjectSystem::Initialize()
     {
         InitializeImpl();
+        isInitialized = true;
     }
 
     void ObjectSystem::StartStep()
@@ -40,12 +41,22 @@ namespace Atmos
         FinalizeImpl();
     }
 
+    bool ObjectSystem::IsInitialized() const
+    {
+        return isInitialized;
+    }
+
     bool ObjectSystem::IsStarted() const
     {
         return isStarted;
     }
 
     ObjectManager* ObjectSystem::Manager()
+    {
+        return manager;
+    }
+
+    const ObjectManager* ObjectSystem::Manager() const
     {
         return manager;
     }

@@ -11,22 +11,16 @@ namespace Atmos
 {
     class Size2D
     {
-    public: typedef float ValueT;
-    private:
-        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
-        INSCRIPTION_ACCESS;
-    private:
-        ValueT width, height, realWidth, realHeight;
-        ValueT xScaler, yScaler;
-        Angle rotation;
-
-        void Calc();
     public:
-        Size2D(ValueT width = 0.0f, ValueT height = 0.0f, ValueT xScaler = 1.0f, ValueT yScaler = 1.0f, const Angle &rotation = Angle());
+        typedef float ValueT;
+    public:
+        Size2D(ValueT width = 0.0f, ValueT height = 0.0f, ValueT xScaler = 1.0f, ValueT yScaler = 1.0f, const Angle& rotation = Angle());
         Size2D(const Size2D &arg);
-        Size2D& operator=(const Size2D &arg);
-        bool operator==(const Size2D &arg) const;
-        bool operator!=(const Size2D &arg) const;
+
+        Size2D& operator=(const Size2D& arg);
+
+        bool operator==(const Size2D& arg) const;
+        bool operator!=(const Size2D& arg) const;
 
         void SetWidth(ValueT setTo);
         void SetHeight(ValueT setTo);
@@ -43,7 +37,16 @@ namespace Atmos
         ValueT GetXScaler() const;
         ValueT GetYScaler() const;
 
-        void SetRotation(const Angle &setTo);
+        void SetRotation(const Angle& setTo);
         const Angle& GetRotation() const;
+    private:
+        ValueT width, height, realWidth, realHeight;
+        ValueT xScaler, yScaler;
+        Angle rotation;
+
+        void Calculate();
+    private:
+        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
+        INSCRIPTION_ACCESS;
     };
 }

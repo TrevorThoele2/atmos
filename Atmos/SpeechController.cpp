@@ -9,16 +9,20 @@
 #include "ScriptInstance.h"
 #include "RunningScript.h"
 
-#include "Logger.h"
+#include "LoggingSystem.h"
 
 #include "FontDefines.h"
-#include <AGUI\System.h>
+#include <AGUI/System.h>
 
 namespace Atmos
 {
     namespace Speech
     {
         Controller::Controller(ObjectManager& manager) : ObjectSystem(manager)
+        {}
+
+        Controller::Controller(const ::Inscription::Table<Controller>& table) :
+            INSCRIPTION_TABLE_GET_BASE(ObjectSystem)
         {}
 
         bool Controller::Enter(ActionComponentReference actionComponent)
@@ -28,9 +32,9 @@ namespace Atmos
 
             if (!actionComponent->script.IsOccupied())
             {
-                Logger::Log("The dialogue from an entity is empty.",
-                    Logger::Type::ERROR_LOW,
-                    Logger::NameValueVector{NameValuePair(
+                FindLoggingSystem()->Log("The dialogue from an entity is empty.",
+                    LogType::ERROR_LOW,
+                    LogNameValueVector{NameValuePair(
                         "Entity",
                         ToString(NameFor(actionComponent->owner))) });
                 return false;
@@ -137,25 +141,31 @@ namespace Atmos
                 Agui::Text("", Agui::Text::Format(),*Agui::fontSlender, Agui::Color(255, 0, 0, 0))).GetText();
             mainOutput->SetAutoCalcTextHeight();
 
-            input.Initialize(*textbox);
+            input.Initialize(*textbox, *Manager());
         }
 
         Name Controller::NameFor(EntityReference entity)
         {
-            return entity->Component<Ent::nGeneralComponent>()->name;
+            return entity->RetrieveComponent<Entity::GeneralComponent>()->name;
+        }
+
+        LoggingSystem* Controller::FindLoggingSystem()
+        {
+            return Manager()->FindSystem<LoggingSystem>();
         }
 
         Controller::Input::Input() : cursor(nullptr), handlerTextbox(nullptr)
         {}
 
-        void Controller::Input::Initialize(Agui::Textbox& textbox)
+        void Controller::Input::Initialize(Agui::Textbox& textbox, ObjectManager& objectManager)
         {
             handlerTextbox = &textbox;
             cursor = ::Agui::Cursor::Factory(
                 handlerTextbox,
                 "cursor",
                 Agui::RelativePosition(Agui::Dimension(0.0f, -20.0f), Agui::Dimension(), Agui::HorizontalAlignment::LEFT, Agui::VerticalAlignment::TOP),
-                0);
+                0,
+                objectManager);
         }
 
         void Controller::Input::Activate(std::vector<String>&& strings)
@@ -198,4 +208,18 @@ namespace Atmos
                 Agui::Text(string, Agui::Text::Format(), *Agui::fontSlender, Agui::colorBlack)))
         {}
     }
+}
+
+namespace Inscription
+{
+    INSCRIPTION_INSCRIPTER_DEFINE_TABLE(::Atmos::Speech::Controller)
+    {
+        INSCRIPTION_INSCRIPTER_CREATE_TABLE;
+
+        INSCRIPTION_TABLE_ADD_BASE(::Atmos::ObjectSystem);
+
+        INSCRIPTION_INSCRIPTER_RETURN_TABLE;
+    }
+
+    INSCRIPTION_DEFINE_SIMPLE_CLASS_NAME_RESOLVER(::Atmos::Speech::Controller, "SpeechController");
 }

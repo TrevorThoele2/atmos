@@ -3,50 +3,52 @@
 
 #include "ObjectManager.h"
 
-#include "nEntityPositionSystem.h"
+#include "EntityPositionSystem.h"
 
 namespace Atmos
 {
-    namespace Ent
+    namespace Entity
     {
-        nMovementComponent::nMovementComponent(EntityReference reference) : nEntityComponent(reference)
+        MovementComponent::MovementComponent(ObjectManager& manager, EntityReference reference) :
+            Component(manager, reference)
         {}
 
-        nMovementComponent::nMovementComponent(const ::Inscription::Table<nMovementComponent>& table) : INSCRIPTION_TABLE_GET_BASE(nEntityComponent)
+        MovementComponent::MovementComponent(const ::Inscription::Table<MovementComponent>& table) :
+            INSCRIPTION_TABLE_GET_BASE(Component)
         {}
 
-        void nMovementComponent::Enable()
+        void MovementComponent::Enable()
         {
             enabled = true;
         }
 
-        void nMovementComponent::Disable()
+        void MovementComponent::Disable()
         {
             enabled = false;
         }
 
-        bool nMovementComponent::IsMoving() const
+        bool MovementComponent::IsMoving() const
         {
-            return movementModulatorCreator->IsRunning() || changeDirectionModulatorCreator->IsRunning() || Manager()->FindSystem<nEntityPositionSystem>()->IsMoving(owner.Get());
+            return movementModulatorCreator->IsRunning() || changeDirectionModulatorCreator->IsRunning() || Manager()->FindSystem<PositionSystem>()->IsMoving(owner.Get());
         }
 
-        bool nMovementComponent::CanMove() const
+        bool MovementComponent::CanMove() const
         {
             return enabled && !IsMoving();
         }
 
-        ObjectTypeDescription nMovementComponent::TypeDescription() const
+        ObjectTypeDescription MovementComponent::TypeDescription() const
         {
-            return ObjectTraits<nMovementComponent>::TypeDescription();
+            return ObjectTraits<MovementComponent>::TypeDescription();
         }
 
-        void nMovementComponent::SetupScripts()
+        void MovementComponent::SetupScripts()
         {
             movementModulatorCreator->owner = this;
             changeDirectionModulatorCreator->owner = this;
         }
 
-        INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(nMovementComponent)
+        INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(MovementComponent)
         {
             scribe(enabled);
             scribe(movementModulatorCreator);
@@ -54,12 +56,12 @@ namespace Atmos
         }
     }
 
-    const ObjectTypeName ObjectTraits<Ent::nMovementComponent>::typeName = "MovementComponent";
+    const ObjectTypeName ObjectTraits<Entity::MovementComponent>::typeName = "MovementComponent";
 }
 
 namespace Inscription
 {
-    DEFINE_OBJECT_INSCRIPTER_MEMBERS(::Atmos::Ent::nMovementComponent)
+    OBJECT_INSCRIPTER_DEFINE_MEMBERS(::Atmos::Entity::MovementComponent)
     {
         INSCRIPTION_TABLE_ADD(enabled);
         INSCRIPTION_TABLE_ADD(movementModulatorCreator);

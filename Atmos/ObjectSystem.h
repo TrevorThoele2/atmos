@@ -21,12 +21,15 @@ namespace Atmos
         void StopStep();
         void Finalize();
 
+        bool IsInitialized() const;
         bool IsStarted() const;
     protected:
         ObjectManager* Manager();
+        const ObjectManager* Manager() const;
     private:
         ObjectManager* manager;
     private:
+        bool isInitialized;
         bool isStarted;
 
         virtual void InitializeImpl();

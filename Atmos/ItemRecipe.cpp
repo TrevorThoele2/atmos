@@ -3,11 +3,11 @@
 
 namespace Atmos
 {
+    ItemRecipe::ItemRecipe(ObjectManager& manager, const Name& name) : RegistryObject(manager, name)
+    {}
+
     INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(ItemRecipe)
     {
         scribe(result);
     }
-
-    ItemRecipe::ItemRecipe(const Name& name) : RegistryObject(name)
-    {}
 }

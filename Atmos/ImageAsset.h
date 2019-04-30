@@ -12,7 +12,7 @@ namespace Atmos
 {
     class ImageAssetData;
 
-    class ImageAsset : public nFileAsset
+    class ImageAsset : public FileAsset
     {
     public:
         typedef int Dimension;
@@ -24,7 +24,7 @@ namespace Atmos
         typedef ImageAssetData DataT;
         typedef std::unique_ptr<DataT> DataPtr;
     public:
-        ImageAsset(const FileName& fileName, DataPtr&& data);
+        ImageAsset(ObjectManager& manager, const FileName& fileName, DataPtr&& data);
         ImageAsset(const ImageAsset& arg);
         ImageAsset(const ::Inscription::Table<ImageAsset>& table);
 
@@ -56,7 +56,7 @@ namespace Atmos
     struct ObjectTraits<ImageAsset> : ObjectTraitsBase<ImageAsset>
     {
         static const ObjectTypeName typeName;
-        static constexpr ObjectTypeList<nFileAsset> bases = {};
+        static constexpr ObjectTypeList<FileAsset> bases = {};
     };
 
     class ImageAssetData
@@ -73,6 +73,6 @@ namespace Inscription
     DECLARE_OBJECT_INSCRIPTER(::Atmos::ImageAsset)
     {
     public:
-        static void AddMembers(TableT& table);
+        OBJECT_INSCRIPTER_DECLARE_MEMBERS;
     };
 }

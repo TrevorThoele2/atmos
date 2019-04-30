@@ -9,7 +9,6 @@
 #include "UniqueStack.h"
 
 #include "ObjectReference.h"
-#include "nEntity.h"
 #include "CombatComponent.h"
 #include "Spell.h"
 

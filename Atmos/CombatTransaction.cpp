@@ -2,13 +2,13 @@
 #include "CombatTransaction.h"
 
 #include "CombatComponent.h"
-#include "CapCombatValue.h"
 
 #include <Inscription\Scribe.h>
 #include <Inscription\Inscripter.h>
 
 namespace Atmos
 {
+    /*
     INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(CombatTransaction)
     {
         scribe(amount);
@@ -32,10 +32,8 @@ namespace Atmos
     {
         if (target->IsDead())
             return;
-        /*
         Defense acts as the same as above
             Each defense point counts as 1/2
-        */
 
         typedef Amount::Split Split;
         
@@ -54,13 +52,11 @@ namespace Atmos
         // Halve the defense
         defense *= Split(0, 5);
 
-        /*
         Damage after defense
         if(att >= def)
             damage = floor(attack * (1 - (((def / 2) / att) * 0.5)))
         else
             damage = floor(attack * ((att / (def / 2)) * .5))
-        */
 
         Amount damage;
         const Split one(1, 0);
@@ -97,12 +93,10 @@ namespace Atmos
 
     CombatTransaction CombatTransactionGenerator::Generate(const CombatTransaction::Amount &baseAmount, TypedObjectReference<Ent::nCombatComponent> source) const
     {
-        /*
         Each attack stat gives +X to an attack up to 50% of the base damage of the weapon equipped.
         Each stat point above the base that gives +1/2X to an attack up to 150% of the base damage of the weapon equipped..
         Each stat point above that is +1/3X.
         X is dependent upon the % of power that the pattern piece gives.
-        */
 
         typedef CombatTransaction::Amount Amount;
         typedef Amount::Split Split;
@@ -153,4 +147,5 @@ namespace Atmos
     {
         return proficiencyName;
     }
+    */
 }

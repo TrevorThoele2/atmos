@@ -1,18 +1,20 @@
 
 #include "AudioAsset.h"
 
-#include "GameEnvironment.h"
-#include "Environment.h"
+#include "ObjectManager.h"
+#include "AssetPackageSystem.h"
+#include "AudioSystem.h"
 
 namespace Atmos
 {
-    AudioAsset::AudioAsset(const FileName& fileName, DataPtr&& data) : nFileAsset(fileName), data(std::move(data))
+    AudioAsset::AudioAsset(ObjectManager& manager, const FileName& fileName, DataPtr&& data) :
+        FileAsset(manager, fileName), data(std::move(data))
     {}
 
-    AudioAsset::AudioAsset(const AudioAsset& arg) : nFileAsset(arg), data((arg.data) ? arg.data->Clone() : nullptr)
+    AudioAsset::AudioAsset(const AudioAsset& arg) : FileAsset(arg), data((arg.data) ? arg.data->Clone() : nullptr)
     {}
 
-    AudioAsset::AudioAsset(const ::Inscription::Table<AudioAsset>& table) : INSCRIPTION_TABLE_GET_BASE(nFileAsset)
+    AudioAsset::AudioAsset(const ::Inscription::Table<AudioAsset>& table) : INSCRIPTION_TABLE_GET_BASE(FileAsset)
     {
         SetDataFromPackage(fileName);
     }
@@ -34,8 +36,21 @@ namespace Atmos
 
     void AudioAsset::SetDataFromPackage(const FileName& fileName)
     {
-        auto buffer = GameEnvironment::GetAssetPackage().RetrieveBuffer<AudioAsset>(fileName);
-        data = std::move(Environment::GetAudio()->CreateAudioData(buffer.Get().first, buffer.Get().second, fileName));
+        auto assetPackageSystem = FindAssetPackageSystem();
+        auto audioManager = FindAudioSystem()->Get();
+
+        auto buffer = assetPackageSystem->RetrieveBuffer<AudioAsset>(fileName);
+        data = std::move(audioManager->CreateAudioData(buffer.Get().first, buffer.Get().second, fileName));
+    }
+
+    AssetPackageSystem* AudioAsset::FindAssetPackageSystem()
+    {
+        return Manager()->FindSystem<AssetPackageSystem>();
+    }
+
+    AudioSystem* AudioAsset::FindAudioSystem()
+    {
+        return Manager()->FindSystem<AudioSystem>();
     }
 
     const ObjectTypeName ObjectTraits<AudioAsset>::typeName = "AudioAsset";
@@ -46,7 +61,7 @@ namespace Atmos
 
 namespace Inscription
 {
-    DEFINE_OBJECT_INSCRIPTER_MEMBERS(::Atmos::AudioAsset)
+    OBJECT_INSCRIPTER_DEFINE_MEMBERS(::Atmos::AudioAsset)
     {
 
     }

@@ -7,7 +7,7 @@
 #include "Item.h"
 #include "ItemStack.h"
 
-#include <AGUI\Image.h>
+#include <AGUI/Image.h>
 
 namespace Agui
 {

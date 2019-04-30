@@ -7,7 +7,7 @@
 #pragma comment (lib, "d3dx9.lib")
 #undef CreateFont
 
-#include "GraphicsHandlerBase.h"
+#include "GraphicsManager.h"
 
 #include "ShaderAsset.h"
 #include "ObjectReference.h"
@@ -15,18 +15,21 @@
 #include "Size2D.h"
 #include "AxisBoundingBox2D.h"
 #include "FilePath.h"
-#include "Join.h"
+
 #include <AGUI/Resolution.h>
 
 namespace Atmos
 {
-    class DX9GraphicsHandler : public GraphicsHandlerBase
+    class LoggingSystem;
+    class FpsSystem;
+
+    class DX9GraphicsManager : public GraphicsManager
     {
     private:
         class Renderer2D;
     public:
-        DX9GraphicsHandler(HWND hwnd, const Join2<UINT>& backbuffer, bool fullscreen, bool subscribeEvents = true);
-        ~DX9GraphicsHandler();
+        DX9GraphicsManager(ObjectManager& objectManager, HWND hwnd, const ScreenDimensions& backbuffer, bool fullscreen);
+        ~DX9GraphicsManager();
 
         // Setting
         void SetFullscreen(bool set) override;
@@ -75,9 +78,9 @@ namespace Atmos
         D3DXMATRIX projection;
 
         LPDIRECT3DSURFACE9 mainSurface;
-
-        DX9GraphicsHandler(const DX9GraphicsHandler& arg) = delete;
-        DX9GraphicsHandler& operator=(const DX9GraphicsHandler& arg) = delete;
+    private:
+        DX9GraphicsManager(const DX9GraphicsManager& arg) = delete;
+        DX9GraphicsManager& operator=(const DX9GraphicsManager& arg) = delete;
 
         void ReinitializeImpl() override;
         void SetMainDimensionsImpl(const ScreenDimensions& dimensions) override;
@@ -112,5 +115,8 @@ namespace Atmos
         void SetRenderStates();
         void SetProjectionMatrix();
         void OnResolutionChanged(const Agui::Resolution& arg);
+    private:
+        FpsSystem* FindFpsSystem() const;
+        LoggingSystem* FindLoggingSystem() const;
     };
 }

@@ -10,18 +10,16 @@ int (WINAPIV * __vsnprintf)(char *, size_t, const char*, va_list) = _vsnprintf;
 
 #include "ImageAsset.h"
 
-#include "Shader.h"
 #include "CanvasView.h"
 #include "LineRender.h"
 
-#include "GameEnvironment.h"
-#include "FPS.h"
 #include "Flags.h"
 #include "SimpleFile.h"
-#include "Environment.h"
-#include "CurrentField.h"
 
-#include "Logger.h"
+#include "CameraSystem.h"
+#include "FpsSystem.h"
+#include "FileSystem.h"
+#include "LoggingSystem.h"
 
 #include <AGUI/System.h>
 
@@ -111,10 +109,12 @@ namespace Atmos
     class RenderSurfaceData : public RenderSurface::Data
     {
     public:
-        RenderSurfaceData(LPDIRECT3DSURFACE9 backBuffer) : swapChain(nullptr), backBuffer(backBuffer)
+        RenderSurfaceData(DX9GraphicsManager& owner, LoggingSystem& loggingSystem, LPDIRECT3DSURFACE9 backBuffer) :
+            owner(&owner), loggingSystem(&loggingSystem), swapChain(nullptr), backBuffer(backBuffer)
         {}
 
-        RenderSurfaceData(LPDIRECT3DSWAPCHAIN9 swapChain, LPDIRECT3DSURFACE9 backBuffer) : swapChain(swapChain), backBuffer(backBuffer)
+        RenderSurfaceData(DX9GraphicsManager& owner, LoggingSystem& loggingSystem, LPDIRECT3DSWAPCHAIN9 swapChain, LPDIRECT3DSURFACE9 backBuffer) :
+            owner(&owner), loggingSystem(&loggingSystem), swapChain(swapChain), backBuffer(backBuffer)
         {
             swapChain->GetPresentParameters(&presentationParameters);
         }
@@ -126,15 +126,15 @@ namespace Atmos
 
         void SetAsRenderTarget() override
         {
-            Environment::GetGraphics<DX9GraphicsHandler>()->GetDevice()->SetRenderTarget(0, backBuffer);
+            owner->GetDevice()->SetRenderTarget(0, backBuffer);
         }
 
         void Present() override
         {
             auto hr = swapChain->Present(nullptr, nullptr, nullptr, nullptr, 0);
             if (hr != S_OK)
-                Logger::Log(String("A swap chain failed when presenting.\n") + DXGetErrorDescription(hr),
-                    Logger::Type::ERROR_SEVERE);
+                loggingSystem->Log(String("A swap chain failed when presenting.\n") + DXGetErrorDescriptionA(hr),
+                    LogType::ERROR_SEVERE);
         }
 
         void Reset() override
@@ -142,17 +142,17 @@ namespace Atmos
             presentationParameters.BackBufferWidth = 0;
             presentationParameters.BackBufferHeight = 0;
 
-            HRESULT hr = Environment::GetGraphics<DX9GraphicsHandler>()->GetDevice()->CreateAdditionalSwapChain(
+            HRESULT hr = owner->GetDevice()->CreateAdditionalSwapChain(
                 &presentationParameters,
                 &swapChain);
             if (hr != S_OK)
-                Logger::Log(String("A DirectX device could not create an additional swap chain.\n") + DXGetErrorDescription(hr),
-                    Logger::Type::ERROR_SEVERE);
+                loggingSystem->Log(String("A DirectX device could not create an additional swap chain.\n") + DXGetErrorDescriptionA(hr),
+                    LogType::ERROR_SEVERE);
 
             hr = swapChain->GetBackBuffer(0, D3DBACKBUFFER_TYPE_MONO, &backBuffer);
             if (hr != S_OK)
-                Logger::Log(String("A DirectX device could not retrieve the back bfufer from a swap chain.\n") + DXGetErrorDescription(hr),
-                    Logger::Type::ERROR_SEVERE);
+                loggingSystem->Log(String("A DirectX device could not retrieve the back bfufer from a swap chain.\n") + DXGetErrorDescriptionA(hr),
+                    LogType::ERROR_SEVERE);
         }
 
         void Release() override
@@ -164,17 +164,20 @@ namespace Atmos
             swapChain = nullptr;
         }
 
-        RenderSurface::ScreenDimensions GetDimensions() override
+        Size GetSize() override
         {
             RECT rect;
             GetClientRect(presentationParameters.hDeviceWindow, &rect);
-            return RenderSurface::ScreenDimensions(rect.right, rect.bottom);
+            return Size(rect.right, rect.bottom);
         }
 
         const D3DPRESENT_PARAMETERS& GetPresentationParameters() const
         {
             return presentationParameters;
         }
+    private:
+        DX9GraphicsManager* owner;
+        LoggingSystem* loggingSystem;
     private:
         D3DPRESENT_PARAMETERS presentationParameters;
         LPDIRECT3DSWAPCHAIN9 swapChain;
@@ -184,12 +187,16 @@ namespace Atmos
     class CanvasData : public Canvas::Data
     {
     public:
+        DX9GraphicsManager* owner;
+        LoggingSystem* loggingSystem;
+
         LPDIRECT3DTEXTURE9 tex;
         LPDIRECT3DSURFACE9 backBuffer;
 
         D3DLOCKED_RECT lockedRect;
 
-        CanvasData(LPDIRECT3DTEXTURE9 tex) : tex(tex)
+        CanvasData(DX9GraphicsManager& owner, LoggingSystem& loggingSystem, LPDIRECT3DTEXTURE9 tex) :
+            owner(&owner), loggingSystem(&loggingSystem), tex(tex)
         {
             this->tex->GetSurfaceLevel(0, &backBuffer);
         }
@@ -202,15 +209,15 @@ namespace Atmos
         void StartPainting() override
         {
             if (backBuffer->LockRect(&lockedRect, nullptr, 0) != S_OK)
-                Logger::Log("A canvas' back buffer could not be locked.",
-                    Logger::Type::ERROR_LOW);
+                loggingSystem->Log("A canvas' back buffer could not be locked.",
+                    LogType::ERROR_LOW);
         }
 
         void StopPainting() override
         {
             if (backBuffer->UnlockRect() != S_OK)
-                Logger::Log("A canvas' back buffer could not be unlocked.",
-                    Logger::Type::ERROR_LOW);
+                loggingSystem->Log("A canvas' back buffer could not be unlocked.",
+                    LogType::ERROR_LOW);
         }
 
         void PaintPixel(const Canvas::PositionT& position, const Color& color, Canvas::Dimension height) override
@@ -232,7 +239,7 @@ namespace Atmos
         void Reset(Canvas::Dimension width, Canvas::Dimension height) override
         {
             D3DXCreateTexture(
-                Environment::GetGraphics<DX9GraphicsHandler>()->GetDevice(),
+                owner->GetDevice(),
                 width,
                 height,
                 D3DX_DEFAULT,
@@ -244,15 +251,15 @@ namespace Atmos
         }
     };
 
-    class DX9GraphicsHandler::Renderer2D
+    class DX9GraphicsManager::Renderer2D
     {
     public:
         typedef size_t ObjectsSize;
     public:
-        Renderer2D() = default;
+        Renderer2D(ObjectManager& objectManager);
 
         ~Renderer2D();
-        void Init(DX9GraphicsHandler& handler, LPDIRECT3DDEVICE9 device);
+        void Initialize(DX9GraphicsManager& handler, LPDIRECT3DDEVICE9 device);
 
         void Start(ObjectsSize size);
         // If the projection exists, then this will flush the sprites
@@ -355,89 +362,42 @@ namespace Atmos
 
         typedef std::vector<Object3D> Objects;
         Objects objects;
-
-        void InitBuffers();
+    private:
+        ObjectManager* objectManager;
+        CameraSystem* FindCameraSystem() const;
+        FileSystem* FindFileSystem() const;
+    private:
+        void InitializeBuffers();
     };
 
-    DX9GraphicsHandler::Renderer2D::Object3D::Object3D(
-        LPDIRECT3DTEXTURE9 tex,
-        TypedObjectReference<ShaderAsset> shader,
-        float X,
-        float Y,
-        float Z,
-        const AxisBoundingBox2D& imageBounds,
-        const Size2D& size,
-        const Position2D& center,
-        const Join2<float>& scaling,
-        const Angle& rotation,
-        const Color& color) : 
-        
-        tex(tex), z(Z), shader(shader),
-        vertices
-        {
-            Vertex(D3DXVECTOR2(0.0f, 0.0f),
-                ColorToD3D(color),
-                imageBounds.GetLeft(),
-                imageBounds.GetTop()),
-            Vertex(D3DXVECTOR2(size.GetWidth(), 0.0f),
-                ColorToD3D(color),
-                imageBounds.GetRight(),
-                imageBounds.GetTop()),
-            Vertex(D3DXVECTOR2(0.0f, size.GetHeight()),
-                ColorToD3D(color),
-                imageBounds.GetLeft(),
-                imageBounds.GetBottom()),
-            Vertex(D3DXVECTOR2(size.GetWidth(), size.GetHeight()),
-                ColorToD3D(color),
-                imageBounds.GetRight(),
-                imageBounds.GetBottom())
-        }
-    {
-        SetupQuad(X, Y, center, scaling, rotation.As<Radians>());
-    }
-
-    DX9GraphicsHandler::Renderer2D::Object3D::Object3D(Object3D&& arg) :
-        vertices(std::move(arg.vertices)), indicies(std::move(arg.indicies)), primCount(std::move(arg.primCount)),
-        z(std::move(arg.z)), tex(std::move(arg.tex)), shader(std::move(arg.shader))
+    DX9GraphicsManager::Renderer2D::Renderer2D(ObjectManager& objectManager) : objectManager(&objectManager)
     {}
 
-    DX9GraphicsHandler::Renderer2D::Object3D& DX9GraphicsHandler::Renderer2D::Object3D::operator=(Object3D&& arg)
-    {
-        vertices = std::move(arg.vertices);
-        indicies = std::move(arg.indicies);
-        primCount = std::move(arg.primCount);
-        z = std::move(arg.z);
-        tex = std::move(arg.tex);
-        shader = std::move(arg.shader);
-        return *this;
-    }
-
-    DX9GraphicsHandler::Renderer2D::~Renderer2D()
+    DX9GraphicsManager::Renderer2D::~Renderer2D()
     {
         vertexBuffer->Release();
         indexBuffer->Release();
         vertexDecl->Release();
     }
 
-    void DX9GraphicsHandler::Renderer2D::Init(DX9GraphicsHandler& handler, LPDIRECT3DDEVICE9 device)
+    void DX9GraphicsManager::Renderer2D::Initialize(DX9GraphicsManager& handler, LPDIRECT3DDEVICE9 device)
     {
         this->device = device;
-        InitBuffers();
+        InitializeBuffers();
 
-        auto globalObjectManager = GetGlobalObjectManager();
-        auto path = Environment::GetFileSystem()->GetExePath().Append("Shaders\\TexturedSprite.fx").GetValue();
+        auto path = FindFileSystem()->Get()->ExePath().Append("Shaders\\TexturedSprite.fx").GetValue();
 
         auto shaderData = handler.CreateShaderData(path);
-        defaultTexturedSpriteShader = globalObjectManager->CreateObject<ShaderAsset>(path, std::move(shaderData));
+        defaultTexturedSpriteShader = objectManager->CreateObject<ShaderAsset>(path, std::move(shaderData));
     }
 
-    void DX9GraphicsHandler::Renderer2D::Start(ObjectsSize size)
+    void DX9GraphicsManager::Renderer2D::Start(ObjectsSize size)
     {
         if (size != 0)
             objects.reserve(size);
     }
 
-    void DX9GraphicsHandler::Renderer2D::Stop(const D3DXMATRIX* projection)
+    void DX9GraphicsManager::Renderer2D::Stop(const D3DXMATRIX* projection)
     {
         if (projection)
             Flush(*projection);
@@ -445,7 +405,7 @@ namespace Atmos
         objects.clear();
     }
 
-    void DX9GraphicsHandler::Renderer2D::Flush(const D3DXMATRIX& projection)
+    void DX9GraphicsManager::Renderer2D::Flush(const D3DXMATRIX& projection)
     {
         if (objects.empty())
             return;
@@ -473,6 +433,8 @@ namespace Atmos
             std::sort(objects.begin(), objects.end(), sorter);
         }
 
+        auto cameraSystem = FindCameraSystem();
+
         device->SetVertexDeclaration(vertexDecl);
         device->SetStreamSource(0, vertexBuffer, 0, sizeof(Vertex));
         device->SetIndices(indexBuffer);
@@ -494,7 +456,7 @@ namespace Atmos
             focusedShaderImpl = focusedShader->DataAs<ShaderAssetDataImplementation>();
             focusedShaderImpl->effect->SetMatrix("g_Projection", &projection);
 
-            auto& cameraSize = GameEnvironment::GetCamera().GetSize();
+            auto& cameraSize = cameraSystem->GetSize();
             FLOAT screenSize[2] = { static_cast<FLOAT>(cameraSize.GetWidth()), static_cast<FLOAT>(cameraSize.GetHeight()) };
             focusedShaderImpl->effect->SetFloatArray("g_ScreenSize", screenSize, 2);
 
@@ -606,7 +568,7 @@ namespace Atmos
         drawPrims(true);
     }
 
-    void DX9GraphicsHandler::Renderer2D::Draw(
+    void DX9GraphicsManager::Renderer2D::Draw(
         LPDIRECT3DTEXTURE9 tex,
         TypedObjectReference<ShaderAsset> shader,
         float X,
@@ -622,25 +584,78 @@ namespace Atmos
         objects.push_back(Object3D(tex, shader, X, Y, Z, imageBounds, size, center, scaling, rotation, color));
     }
 
-    void DX9GraphicsHandler::Renderer2D::OnLostDevice()
+    void DX9GraphicsManager::Renderer2D::OnLostDevice()
     {
         vertexBuffer->Release();
         indexBuffer->Release();
         defaultTexturedSpriteShader->DataAs<ShaderAssetDataImplementation>()->effect->OnLostDevice();
     }
 
-    void DX9GraphicsHandler::Renderer2D::OnResetDevice()
+    void DX9GraphicsManager::Renderer2D::OnResetDevice()
     {
-        InitBuffers();
+        InitializeBuffers();
         defaultTexturedSpriteShader->DataAs<ShaderAssetDataImplementation>()->effect->OnResetDevice();
     }
 
-    TypedObjectReference<ShaderAsset> DX9GraphicsHandler::Renderer2D::GetDefaultTexturedSpriteShader()
+    TypedObjectReference<ShaderAsset> DX9GraphicsManager::Renderer2D::GetDefaultTexturedSpriteShader()
     {
         return defaultTexturedSpriteShader;
     }
 
-    void DX9GraphicsHandler::Renderer2D::Object3D::SetupQuad(
+    DX9GraphicsManager::Renderer2D::Object3D::Object3D(
+        LPDIRECT3DTEXTURE9 tex,
+        TypedObjectReference<ShaderAsset> shader,
+        float X,
+        float Y,
+        float Z,
+        const AxisBoundingBox2D& imageBounds,
+        const Size2D& size,
+        const Position2D& center,
+        const Join2<float>& scaling,
+        const Angle& rotation,
+        const Color& color) :
+
+        tex(tex), z(Z), shader(shader),
+        vertices
+    {
+        Vertex(D3DXVECTOR2(0.0f, 0.0f),
+            ColorToD3D(color),
+            imageBounds.GetLeft(),
+            imageBounds.GetTop()),
+        Vertex(D3DXVECTOR2(size.GetWidth(), 0.0f),
+            ColorToD3D(color),
+            imageBounds.GetRight(),
+            imageBounds.GetTop()),
+        Vertex(D3DXVECTOR2(0.0f, size.GetHeight()),
+            ColorToD3D(color),
+            imageBounds.GetLeft(),
+            imageBounds.GetBottom()),
+        Vertex(D3DXVECTOR2(size.GetWidth(), size.GetHeight()),
+            ColorToD3D(color),
+            imageBounds.GetRight(),
+            imageBounds.GetBottom())
+    }
+    {
+        SetupQuad(X, Y, center, scaling, rotation.As<Radians>());
+    }
+
+    DX9GraphicsManager::Renderer2D::Object3D::Object3D(Object3D&& arg) :
+        vertices(std::move(arg.vertices)), indicies(std::move(arg.indicies)), primCount(std::move(arg.primCount)),
+        z(std::move(arg.z)), tex(std::move(arg.tex)), shader(std::move(arg.shader))
+    {}
+
+    DX9GraphicsManager::Renderer2D::Object3D& DX9GraphicsManager::Renderer2D::Object3D::operator=(Object3D&& arg)
+    {
+        vertices = std::move(arg.vertices);
+        indicies = std::move(arg.indicies);
+        primCount = std::move(arg.primCount);
+        z = std::move(arg.z);
+        tex = std::move(arg.tex);
+        shader = std::move(arg.shader);
+        return *this;
+    }
+
+    void DX9GraphicsManager::Renderer2D::Object3D::SetupQuad(
         float X,
         float Y,
         const Position2D& center,
@@ -683,7 +698,7 @@ namespace Atmos
         primCount = 2;
     }
 
-    void DX9GraphicsHandler::Renderer2D::Object3D::SetupRegularPolygon(
+    void DX9GraphicsManager::Renderer2D::Object3D::SetupRegularPolygon(
         float radius,
         unsigned int polyCount,
         float X,
@@ -740,7 +755,7 @@ namespace Atmos
         primCount = polyCount;
     }
 
-    void DX9GraphicsHandler::Renderer2D::Object3D::SetupVertexCommon(
+    void DX9GraphicsManager::Renderer2D::Object3D::SetupVertexCommon(
         Vertex& vertex,
         const D3DXMATRIX& matrix,
         const D3DXVECTOR2& position,
@@ -751,7 +766,7 @@ namespace Atmos
         vertex.center = center;
     }
 
-    void DX9GraphicsHandler::Renderer2D::Object3D::SetupVertexCommon(
+    void DX9GraphicsManager::Renderer2D::Object3D::SetupVertexCommon(
         Vertex& vertex,
         const D3DXMATRIX& matrix,
         const D3DXVECTOR2& position,
@@ -763,7 +778,17 @@ namespace Atmos
         vertex.color = ColorToD3D(color);
     }
 
-    void DX9GraphicsHandler::Renderer2D::InitBuffers()
+    CameraSystem* DX9GraphicsManager::Renderer2D::FindCameraSystem() const
+    {
+        return objectManager->FindSystem<CameraSystem>();
+    }
+
+    FileSystem* DX9GraphicsManager::Renderer2D::FindFileSystem() const
+    {
+        return objectManager->FindSystem<FileSystem>();
+    }
+
+    void DX9GraphicsManager::Renderer2D::InitializeBuffers()
     {
         device->CreateVertexBuffer(
             maxVertexSprint * sizeof(Vertex),
@@ -790,21 +815,15 @@ namespace Atmos
         device->CreateVertexDeclaration(vElements, &vertexDecl);
     }
 
-    DX9GraphicsHandler::DX9GraphicsHandler(
-        HWND hwnd,
-        const Join2<UINT>& backbuffer,
-        bool fullscreen,
-        bool subscribeEvents) :
-        
-        hwnd(hwnd), renderer2D(new Renderer2D())
+    DX9GraphicsManager::DX9GraphicsManager(ObjectManager& objectManager, HWND hwnd, const ScreenDimensions& backbuffer, bool fullscreen) :
+        GraphicsManager(objectManager), hwnd(hwnd), renderer2D(new Renderer2D(objectManager))
     {
         ZeroMemory(&presentationParameters, sizeof(presentationParameters));
 
         SetMainDimensions(backbuffer);
         SetFullscreen(fullscreen);
-        if (subscribeEvents)
-            Agui::System::Instance().eventResolutionChanged.Subscribe(
-                std::bind(&DX9GraphicsHandler::OnResolutionChanged, this, std::placeholders::_1));
+        Agui::System::Instance().eventResolutionChanged.Subscribe(
+            std::bind(&DX9GraphicsManager::OnResolutionChanged, this, std::placeholders::_1));
 
         // Create the Direct3D interface
         d3d = Direct3DCreate9(D3D_SDK_VERSION);
@@ -812,7 +831,7 @@ namespace Atmos
         SetupPresentationParameters();
 
         d3d->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hwnd, D3DCREATE_HARDWARE_VERTEXPROCESSING, &presentationParameters, &device);
-        renderer2D->Init(*this, device);
+        renderer2D->Initialize(*this, device);
         D3DXCreateLine(device, &lineInterface);
 
         SetRenderStates();
@@ -820,19 +839,19 @@ namespace Atmos
         device->GetRenderTarget(0, &mainSurface);
     }
 
-    DX9GraphicsHandler::~DX9GraphicsHandler()
+    DX9GraphicsManager::~DX9GraphicsManager()
     {
         d3d->Release();
         device->Release();
         lineInterface->Release();
     }
 
-    void DX9GraphicsHandler::SetFullscreen(bool set)
+    void DX9GraphicsManager::SetFullscreen(bool set)
     {
         (set) ? presentationParameters.Windowed = false : presentationParameters.Windowed = true;
     }
 
-    void DX9GraphicsHandler::ClearTarget(const Flags<Target>& target)
+    void DX9GraphicsManager::ClearTarget(const Flags<Target>& target)
     {
         DWORD pass = 0;
         if (target.Get(Target::MAIN))
@@ -844,7 +863,7 @@ namespace Atmos
         device->Clear(0, nullptr, pass, 0, 1.0f, 0);
     }
 
-    void DX9GraphicsHandler::ClearTarget(const Flags<Target>& target, const Color& color)
+    void DX9GraphicsManager::ClearTarget(const Flags<Target>& target, const Color& color)
     {
         DWORD pass = 0;
         if (target.Get(Target::MAIN))
@@ -856,12 +875,12 @@ namespace Atmos
         device->Clear(0, nullptr, pass, ColorToD3D(color), 1.0f, 0);
     }
 
-    void DX9GraphicsHandler::Flush()
+    void DX9GraphicsManager::Flush()
     {
         renderer2D->Flush(projection);
     }
 
-    void DX9GraphicsHandler::SetRenderState(RenderState state, bool set)
+    void DX9GraphicsManager::SetRenderState(RenderState state, bool set)
     {
         D3DRENDERSTATETYPE pass;
 
@@ -874,7 +893,7 @@ namespace Atmos
         device->SetRenderState(pass, tf);
     }
 
-    bool DX9GraphicsHandler::Start()
+    bool DX9GraphicsManager::Start()
     {
         HRESULT hr = device->TestCooperativeLevel();
 
@@ -890,32 +909,32 @@ namespace Atmos
         return true;
     }
 
-    void DX9GraphicsHandler::End()
+    void DX9GraphicsManager::End()
     {
         device->EndScene();
     }
 
-    void DX9GraphicsHandler::StartSprites(size_t spriteCount)
+    void DX9GraphicsManager::StartSprites(size_t spriteCount)
     {
         renderer2D->Start(spriteCount);
     }
 
-    void DX9GraphicsHandler::EndSprites()
+    void DX9GraphicsManager::EndSprites()
     {
         renderer2D->Stop(&projection);
     }
 
-    void DX9GraphicsHandler::StartLines()
+    void DX9GraphicsManager::StartLines()
     {
         lineInterface->Begin();
     }
 
-    void DX9GraphicsHandler::EndLines()
+    void DX9GraphicsManager::EndLines()
     {
         lineInterface->End();
     }
 
-    void DX9GraphicsHandler::StartStencil()
+    void DX9GraphicsManager::StartStencil()
     {
         device->SetRenderState(D3DRS_STENCILENABLE, TRUE);
         device->SetRenderState(D3DRS_STENCILFUNC, D3DCMP_NEVER);
@@ -925,7 +944,7 @@ namespace Atmos
         device->SetRenderState(D3DRS_STENCILWRITEMASK, 0xFFFFFFFF);
     }
 
-    void DX9GraphicsHandler::StopStencil()
+    void DX9GraphicsManager::StopStencil()
     {
         Flush();
 
@@ -936,12 +955,12 @@ namespace Atmos
         device->SetRenderState(D3DRS_STENCILWRITEMASK, 0);
     }
 
-    LPDIRECT3DDEVICE9& DX9GraphicsHandler::GetDevice()
+    LPDIRECT3DDEVICE9& DX9GraphicsManager::GetDevice()
     {
         return device;
     }
 
-    void DX9GraphicsHandler::RenderObject(
+    void DX9GraphicsManager::RenderObject(
         LPDIRECT3DTEXTURE9 tex,
         TypedObjectReference<ShaderAsset> shader,
         float X,
@@ -960,7 +979,7 @@ namespace Atmos
         renderer2D->Draw(tex, shader, X, Y, Z, imageBounds, size, center, scaling, rotation, color);
     }
 
-    void DX9GraphicsHandler::ReinitializeImpl()
+    void DX9GraphicsManager::ReinitializeImpl()
     {
         SetupPresentationParameters();
 
@@ -969,48 +988,48 @@ namespace Atmos
 
         HRESULT hr = lineInterface->OnLostDevice();
         if (hr != S_OK)
-            Logger::Log(String("The DirectX line interface was not able to be released.\n") + DXGetErrorDescription(hr),
-                Logger::Type::ERROR_SEVERE);
+            FindLoggingSystem()->Log(String("The DirectX line interface was not able to be released.") + DXGetErrorDescription(hr),
+                LogType::ERROR_SEVERE);
 
         // Reset
         hr = device->Reset(&presentationParameters);
         if (hr == D3DERR_DEVICELOST)
             return;
         else if (hr != S_OK)
-            Logger::Log(String("The DirectX device failed when resetting.\n") + DXGetErrorDescription(hr),
-                Logger::Type::ERROR_SEVERE);
+            FindLoggingSystem()->Log(String("The DirectX device failed when resetting.") + DXGetErrorDescription(hr),
+                LogType::ERROR_SEVERE);
 
         // Recreate interfaces
         renderer2D->OnResetDevice();
         hr = lineInterface->OnResetDevice();
         if (hr != S_OK)
-            Logger::Log(String("The DirectX line interface was not able to be reset.\n") + DXGetErrorDescription(hr),
-                Logger::Type::ERROR_SEVERE);
+            FindLoggingSystem()->Log(String("The DirectX line interface was not able to be reset.") + DXGetErrorDescription(hr),
+                LogType::ERROR_SEVERE);
 
         // Reset render states
         SetRenderStates();
     }
 
-    void DX9GraphicsHandler::SetMainDimensionsImpl(const ScreenDimensions& dimensions)
+    void DX9GraphicsManager::SetMainDimensionsImpl(const ScreenDimensions& dimensions)
     {
-        presentationParameters.BackBufferWidth = dimensions.first;
-        presentationParameters.BackBufferHeight = dimensions.second;
+        presentationParameters.BackBufferWidth = dimensions.width;
+        presentationParameters.BackBufferHeight = dimensions.height;
         SetProjectionMatrix();
     }
 
-    DX9GraphicsHandler::ScreenDimensions DX9GraphicsHandler::GetMainDimensionsImpl() const
+    ScreenDimensions DX9GraphicsManager::GetMainDimensionsImpl() const
     {
         return ScreenDimensions(presentationParameters.BackBufferWidth, presentationParameters.BackBufferHeight);
     }
 
-    std::unique_ptr<ImageAssetData> DX9GraphicsHandler::CreateImageDataImpl(const FilePath& path)
+    std::unique_ptr<ImageAssetData> DX9GraphicsManager::CreateImageDataImpl(const FilePath& path)
     {
         D3DXIMAGE_INFO info;
         HRESULT hr = D3DXGetImageInfoFromFile(path.c_str(), &info);
         if (hr != S_OK)
-            Logger::Log("An image asset could not be created.",
-                Logger::Type::ERROR_SEVERE,
-                Logger::NameValueVector{ NameValuePair("File Path", path.GetValue()) });
+            FindLoggingSystem()->Log("An image asset could not be created.",
+                LogType::ERROR_SEVERE,
+                LogNameValueVector{ NameValuePair("File Path", path.GetValue()) });
 
         LPDIRECT3DTEXTURE9 tex;
         hr = D3DXCreateTextureFromFileEx(
@@ -1029,21 +1048,21 @@ namespace Atmos
             nullptr,
             &tex);
         if (hr != S_OK)
-            Logger::Log("An image asset could not be created.",
-                Logger::Type::ERROR_SEVERE,
-                Logger::NameValueVector{ NameValuePair("File Path", path.GetValue()) });
+            FindLoggingSystem()->Log("An image asset could not be created.",
+                LogType::ERROR_SEVERE,
+                LogNameValueVector{ NameValuePair("File Path", path.GetValue()) });
 
         return std::make_unique<ImageAssetDataImplementation>(tex);
     }
 
-    std::unique_ptr<ImageAssetData> DX9GraphicsHandler::CreateImageDataImpl(void* buffer, std::int32_t size, const FileName& name)
+    std::unique_ptr<ImageAssetData> DX9GraphicsManager::CreateImageDataImpl(void* buffer, std::int32_t size, const FileName& name)
     {
         D3DXIMAGE_INFO info;
         HRESULT hr = D3DXGetImageInfoFromFileInMemory(buffer, size, &info);
         if (hr != S_OK)
-            Logger::Log("An image asset could not be created.",
-                Logger::Type::ERROR_SEVERE,
-                Logger::NameValueVector{ NameValuePair("File Name", name.GetValue()) });
+            FindLoggingSystem()->Log("An image asset could not be created.",
+                LogType::ERROR_SEVERE,
+                LogNameValueVector{ NameValuePair("File Name", name.GetValue()) });
 
         LPDIRECT3DTEXTURE9 tex;
         hr = D3DXCreateTextureFromFileInMemoryEx(
@@ -1063,14 +1082,14 @@ namespace Atmos
             nullptr,
             &tex);
         if (hr != S_OK)
-            Logger::Log("An image asset could not be created.",
-                Logger::Type::ERROR_SEVERE,
-                Logger::NameValueVector{ NameValuePair("File Name", name.GetValue()) });
+            FindLoggingSystem()->Log("An image asset could not be created.",
+                LogType::ERROR_SEVERE,
+                LogNameValueVector{ NameValuePair("File Name", name.GetValue()) });
 
         return std::make_unique<ImageAssetDataImplementation>(tex);
     }
 
-    std::unique_ptr<ShaderAssetData> DX9GraphicsHandler::CreateShaderDataImpl(const FilePath& path)
+    std::unique_ptr<ShaderAssetData> DX9GraphicsManager::CreateShaderDataImpl(const FilePath& path)
     {
         LPD3DXEFFECT effect;
         HRESULT hr = D3DXCreateEffectFromFile(
@@ -1083,14 +1102,14 @@ namespace Atmos
             &effect,
             nullptr);
         if (hr != S_OK)
-            Logger::Log("A shader asset could not be created.",
-                Logger::Type::ERROR_SEVERE,
-                Logger::NameValueVector{ NameValuePair("File Path", path.GetValue()) });
+            FindLoggingSystem()->Log("A shader asset could not be created.",
+                LogType::ERROR_SEVERE,
+                LogNameValueVector{ NameValuePair("File Path", path.GetValue()) });
 
         return std::make_unique<ShaderAssetDataImplementation>(effect);
     }
 
-    std::unique_ptr<ShaderAssetData> DX9GraphicsHandler::CreateShaderDataImpl(void* buffer, std::int32_t size, const FileName& name)
+    std::unique_ptr<ShaderAssetData> DX9GraphicsManager::CreateShaderDataImpl(void* buffer, std::int32_t size, const FileName& name)
     {
         LPD3DXEFFECT effect;
         HRESULT hr = D3DXCreateEffect(
@@ -1104,14 +1123,14 @@ namespace Atmos
             &effect,
             nullptr);
         if (hr != S_OK)
-            Logger::Log("A shader asset could not be created.",
-                Logger::Type::ERROR_SEVERE,
-                Logger::NameValueVector{ NameValuePair("File Name", name.GetValue()) });
+            FindLoggingSystem()->Log("A shader asset could not be created.",
+                LogType::ERROR_SEVERE,
+                LogNameValueVector{ NameValuePair("File Name", name.GetValue()) });
 
         return std::make_unique<ShaderAssetDataImplementation>(effect);
     }
 
-    RenderSurface DX9GraphicsHandler::CreateRenderSurfaceImpl(void* window)
+    RenderSurface DX9GraphicsManager::CreateRenderSurfaceImpl(void* window)
     {
         D3DPRESENT_PARAMETERS pp;
         ZeroMemory(&pp, sizeof(pp));
@@ -1130,94 +1149,110 @@ namespace Atmos
         LPDIRECT3DSWAPCHAIN9 swapChain;
         HRESULT hr = device->CreateAdditionalSwapChain(&pp, &swapChain);
         if (hr != S_OK)
-            Logger::Log("A render surface could not be created.",
-                Logger::Type::ERROR_SEVERE);
+            FindLoggingSystem()->Log("A render surface could not be created.",
+                LogType::ERROR_SEVERE);
 
         LPDIRECT3DSURFACE9 backBuffer;
         hr = swapChain->GetBackBuffer(0, D3DBACKBUFFER_TYPE_MONO, &backBuffer);
         if (hr != S_OK)
-            Logger::Log("A render surface could not be created.",
-                Logger::Type::ERROR_SEVERE);
+            FindLoggingSystem()->Log("A render surface could not be created.",
+                LogType::ERROR_SEVERE);
 
-        return RenderSurface(new RenderSurfaceData(swapChain, backBuffer));
+        return RenderSurface(RenderSurface::DataPtr(new RenderSurfaceData(*this, *FindLoggingSystem(), swapChain, backBuffer)));
     }
 
-    Canvas DX9GraphicsHandler::CreateCanvasImpl(const ScreenDimensions& dimensions)
+    Canvas DX9GraphicsManager::CreateCanvasImpl(const ScreenDimensions& dimensions)
     {
         LPDIRECT3DTEXTURE9 tex;
-        HRESULT hr = D3DXCreateTexture(device, dimensions.first, dimensions.second, D3DX_DEFAULT, 0, D3DFMT_X8R8G8B8, D3DPOOL_MANAGED, &tex);
+        HRESULT hr = D3DXCreateTexture(
+            device,
+            dimensions.width,
+            dimensions.height,
+            D3DX_DEFAULT,
+            0,
+            D3DFMT_X8R8G8B8,
+            D3DPOOL_MANAGED,
+            &tex);
         if (hr != S_OK)
-            Logger::Log("A canvas could not be created.",
-                Logger::Type::ERROR_SEVERE);
+            FindLoggingSystem()->Log("A canvas could not be created.",
+                LogType::ERROR_SEVERE);
 
-        return Canvas(new CanvasData(tex), dimensions.first, dimensions.second);
+        return Canvas(new CanvasData(*this, *FindLoggingSystem(), tex), dimensions.width, dimensions.height);
     }
 
-    bool DX9GraphicsHandler::CanMakeImageImpl(const FilePath& path) const
+    bool DX9GraphicsManager::CanMakeImageImpl(const FilePath& path) const
     {
         D3DXIMAGE_INFO info;
         return D3DXGetImageInfoFromFile(path.c_str(), &info) == S_OK;
     }
 
-    bool DX9GraphicsHandler::CanMakeImageImpl(void* buffer, std::int32_t size) const
+    bool DX9GraphicsManager::CanMakeImageImpl(void* buffer, std::int32_t size) const
     {
         D3DXIMAGE_INFO info;
         return D3DXGetImageInfoFromFileInMemory(buffer, size, &info) == S_OK;
     }
 
-    void DX9GraphicsHandler::ResizeCanvasImpl(Canvas& canvas, const ScreenDimensions& dimensions)
+    void DX9GraphicsManager::ResizeCanvasImpl(Canvas& canvas, const ScreenDimensions& dimensions)
     {
         LPDIRECT3DTEXTURE9 tex;
-        HRESULT hr = D3DXCreateTexture(device, dimensions.first, dimensions.second, D3DX_DEFAULT, D3DUSAGE_RENDERTARGET, D3DFMT_X8R8G8B8, D3DPOOL_DEFAULT, &tex);
+        HRESULT hr = D3DXCreateTexture(
+            device,
+            dimensions.width,
+            dimensions.height,
+            D3DX_DEFAULT,
+            D3DUSAGE_RENDERTARGET,
+            D3DFMT_X8R8G8B8,
+            D3DPOOL_DEFAULT,
+            &tex);
         if (hr != S_OK)
-            Logger::Log("Resizing of a canvas was attempted and failed.",
-                Logger::Type::ERROR_SEVERE);
+            FindLoggingSystem()->Log("Resizing of a canvas was attempted and failed.",
+                LogType::ERROR_SEVERE);
 
         canvas.GetData<CanvasData>()->tex->Release();
         canvas.GetData<CanvasData>()->tex = tex;
     }
 
-    void DX9GraphicsHandler::SetRenderTargetImpl(RenderSurface& set)
+    void DX9GraphicsManager::SetRenderTargetImpl(RenderSurface& set)
     {
         SetProjectionMatrix();
     }
 
-    void DX9GraphicsHandler::SetRenderTargetToMainImpl()
+    void DX9GraphicsManager::SetRenderTargetToMainImpl()
     {
         device->SetRenderTarget(0, mainSurface);
         SetProjectionMatrix();
     }
 
-    void DX9GraphicsHandler::ReleaseMainRenderTarget()
+    void DX9GraphicsManager::ReleaseMainRenderTarget()
     {
         mainSurface->Release();
     }
 
-    void DX9GraphicsHandler::ResetMainRenderTarget()
+    void DX9GraphicsManager::ResetMainRenderTarget()
     {
         HRESULT hr = device->GetRenderTarget(0, &mainSurface);
         if (hr != S_OK)
-            Logger::Log("The main render target is unretrievable.",
-                Logger::Type::ERROR_SEVERE);
+            FindLoggingSystem()->Log("The main render target is unretrievable.",
+                LogType::ERROR_SEVERE);
     }
 
-    void DX9GraphicsHandler::PresentImpl()
+    void DX9GraphicsManager::PresentImpl()
     {
         HRESULT hr = device->Present(nullptr, nullptr, nullptr, nullptr);
         if (hr != S_OK)
-            Logger::Log("The frame was unpresentable.",
-                Logger::Type::ERROR_SEVERE);
+            FindLoggingSystem()->Log("The frame was unpresentable.",
+                LogType::ERROR_SEVERE);
     }
 
-    void DX9GraphicsHandler::PresentImpl(void* windowOverride)
+    void DX9GraphicsManager::PresentImpl(void* windowOverride)
     {
         HRESULT hr = device->Present(nullptr, nullptr, static_cast<HWND>(windowOverride), nullptr);
         if (hr != S_OK)
-            Logger::Log("The frame was unpresentable.",
-                Logger::Type::ERROR_SEVERE);
+            FindLoggingSystem()->Log("The frame was unpresentable.",
+                LogType::ERROR_SEVERE);
     }
 
-    void DX9GraphicsHandler::RenderSpriteImpl(SpriteReference sprite, float X, float Y)
+    void DX9GraphicsManager::RenderSpriteImpl(SpriteReference sprite, float X, float Y)
     {
         auto material = sprite->material;
         if (!material)
@@ -1242,7 +1277,7 @@ namespace Atmos
             sprite->color);
     }
 
-    void DX9GraphicsHandler::RenderCanvasViewImpl(CanvasViewReference view, float X, float Y)
+    void DX9GraphicsManager::RenderCanvasViewImpl(CanvasViewReference view, float X, float Y)
     {
         RenderObject(
             view->source->GetData<CanvasData>()->tex,
@@ -1258,10 +1293,10 @@ namespace Atmos
             Color(255, 255, 255, 255));
     }
 
-    void DX9GraphicsHandler::RenderUnknownFragmentImpl(RenderFragmentReference fragment, float X, float Y)
+    void DX9GraphicsManager::RenderUnknownFragmentImpl(RenderFragmentReference fragment, float X, float Y)
     {}
 
-    void DX9GraphicsHandler::RenderLineImpl(const LineRender& line)
+    void DX9GraphicsManager::RenderLineImpl(const LineRender& line)
     {
         if (line.GetWidth() != lineInterface->GetWidth())
         {
@@ -1279,7 +1314,7 @@ namespace Atmos
         lineInterface->Draw(points, 2, ColorToD3D(line.color));
     }
 
-    void DX9GraphicsHandler::SetupPresentationParameters()
+    void DX9GraphicsManager::SetupPresentationParameters()
     {
         // Discard old frames
         presentationParameters.SwapEffect = D3DSWAPEFFECT_DISCARD;
@@ -1289,7 +1324,7 @@ namespace Atmos
         presentationParameters.MultiSampleType = D3DMULTISAMPLE_NONE;
         presentationParameters.MultiSampleQuality = 0;
 
-        if (FpsHandler::GetVSync())
+        if (FindFpsSystem()->GetVSync())
             // Enable vsync
             presentationParameters.PresentationInterval = D3DPRESENT_INTERVAL_DEFAULT;
         else
@@ -1297,39 +1332,49 @@ namespace Atmos
             presentationParameters.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
     }
 
-    void DX9GraphicsHandler::SetRenderStates()
+    void DX9GraphicsManager::SetRenderStates()
     {
         HRESULT hr = device->SetRenderState(D3DRS_ZENABLE, false);
         if (hr != S_OK)
-            Logger::Log("DirectX9 Z buffer couldn't be set to false.",
-                Logger::Type::ERROR_MODERATE);
+            FindLoggingSystem()->Log("DirectX9 Z buffer couldn't be set to false.",
+                LogType::ERROR_SEVERE);
         hr = device->SetRenderState(D3DRS_LIGHTING, false);
         if (hr != S_OK)
-            Logger::Log("DirectX9 lighting couldn't be set to false.",
-                Logger::Type::ERROR_MODERATE);
+            FindLoggingSystem()->Log("DirectX9 lighting couldn't be set to false.",
+                LogType::ERROR_SEVERE);
         hr = device->SetRenderState(D3DRS_ALPHABLENDENABLE, true);
         if (hr != S_OK)
-            Logger::Log("DirectX9 alpha blend couldn't be set to true.",
-                Logger::Type::ERROR_MODERATE);
+            FindLoggingSystem()->Log("DirectX9 alpha blend couldn't be set to true.",
+                LogType::ERROR_SEVERE);
         hr = device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
         if (hr != S_OK)
-            Logger::Log("DirectX9 source blend couldn't be set to source alpha.",
-                Logger::Type::ERROR_MODERATE);
+            FindLoggingSystem()->Log("DirectX9 source blend couldn't be set to source alpha.",
+                LogType::ERROR_SEVERE);
         hr = device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
         if (hr != S_OK)
-            Logger::Log("DirectX9 destination blend couldn't be set to inverse source alpha.",
-                Logger::Type::ERROR_MODERATE);
+            FindLoggingSystem()->Log("DirectX9 destination blend couldn't be set to inverse source alpha.",
+                LogType::ERROR_SEVERE);
     }
 
-    void DX9GraphicsHandler::SetProjectionMatrix()
+    void DX9GraphicsManager::SetProjectionMatrix()
     {
         ScreenDimensions dimensions(GetCurrentDimensions());
-        D3DXMatrixOrthoOffCenterLH(&projection, 0, static_cast<FLOAT>(dimensions.first), static_cast<FLOAT>(dimensions.second), 0, 0.0f, 1.0f);
+        D3DXMatrixOrthoOffCenterLH(&projection, 0, static_cast<FLOAT>(dimensions.width), static_cast<FLOAT>(dimensions.height), 0, 0.0f, 1.0f);
     }
 
-    void DX9GraphicsHandler::OnResolutionChanged(const Agui::Resolution& arg)
+    void DX9GraphicsManager::OnResolutionChanged(const Agui::Resolution& arg)
     {
         SetMainDimensions(ScreenDimensions(static_cast<Dimension>(arg.GetWidth()), static_cast<Dimension>(arg.GetHeight())));
         Reinitialize();
+    }
+
+    FpsSystem* DX9GraphicsManager::FindFpsSystem() const
+    {
+        return objectManager->FindSystem<FpsSystem>();
+    }
+
+    LoggingSystem* DX9GraphicsManager::FindLoggingSystem() const
+    {
+        return objectManager->FindSystem<LoggingSystem>();
     }
 }

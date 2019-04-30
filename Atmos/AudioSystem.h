@@ -1,18 +1,21 @@
 #pragma once
 
-#include "AssetSystem.h"
-
-#include "AudioAsset.h"
-
-#include "Serialization.h"
+#include "UniqueProviderSystem.h"
+#include "AudioManager.h"
 
 namespace Atmos
 {
-    class AudioSystem : public AssetSystem<AudioAsset>
+    class AudioSystem : public UniqueProviderSystem<AudioManager>
     {
     public:
         AudioSystem(ObjectManager& manager);
         AudioSystem(const ::Inscription::Table<AudioSystem>& table);
+    };
+
+    template<>
+    struct ObjectSystemTraits<AudioSystem>
+    {
+        static const ObjectSystemPriority priority = 0;
     };
 }
 

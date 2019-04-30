@@ -6,11 +6,9 @@
 
 #include "ObjectManager.h"
 
-#include "StasisScribe.h"
-
 namespace Atmos
 {
-    ScriptInstance::ScriptInstance()
+    ScriptInstance::ScriptInstance(ObjectManager& manager) : Object(manager)
     {}
 
     ScriptInstance::ScriptInstance(const ::Inscription::Table<ScriptInstance>& table) : INSCRIPTION_TABLE_GET_BASE(Object)
@@ -78,7 +76,7 @@ namespace Atmos
 
 namespace Inscription
 {
-    DEFINE_OBJECT_INSCRIPTER_MEMBERS(::Atmos::ScriptInstance)
+    OBJECT_INSCRIPTER_DEFINE_MEMBERS(::Atmos::ScriptInstance)
     {
 
     }

@@ -1,9 +1,6 @@
 
 #include "ObjectManager.h"
 
-#include "GameEnvironment.h"
-#include "Assert.h"
-
 #include <Inscription/Scribe.h>
 #include <Inscription/Memory.h>
 #include <Inscription/Multimap.h>
@@ -13,16 +10,30 @@ namespace Atmos
     ObjectManager::ObjectManager()
     {}
 
+    ObjectManager::ObjectManager(ObjectManager&& arg) : typeGraph(std::move(arg.typeGraph)), objects(std::move(arg.objects)),
+        factories(std::move(arg.factories)), systems(std::move(arg.systems)), batchSources(std::move(arg.batchSources))
+    {}
+
+    ObjectManager& ObjectManager::operator=(ObjectManager&& arg)
+    {
+        typeGraph = std::move(arg.typeGraph);
+        objects = std::move(arg.objects);
+        factories = std::move(arg.factories);
+        systems = std::move(arg.systems);
+        batchSources = std::move(arg.batchSources);
+        return *this;
+    }
+
     void ObjectManager::Initialize()
     {
         for (auto& loop : systems)
-            loop.second->Initialize();
+            loop.second->Get()->Initialize();
     }
 
     void ObjectManager::Work()
     {
         for (auto& loop : systems)
-            loop.second->Work();
+            loop.second->Get()->Work();
     }
 
     ObjectReference ObjectManager::FindObject(ObjectID id)
@@ -81,6 +92,19 @@ namespace Atmos
         onBeforeDestroyed(object);
     }
 
+    ObjectManager::ObjectSystemHandle::~ObjectSystemHandle()
+    {}
+
+    ObjectSystem* ObjectManager::OwnedObjectSystemHandle::Get()
+    {
+        return ptr.get();
+    }
+
+    ObjectSystem* ObjectManager::UnownedObjectSystemHandle::Get()
+    {
+        return ptr;
+    }
+
     ObjectBatchSourceBase* ObjectManager::FindBatchSource(const ObjectTypeName& typeName)
     {
         auto &found = batchSources.find(typeName);
@@ -113,15 +137,6 @@ namespace Atmos
         else // INPUT
         {
             scribe.Load(objects);
-            auto loop = objects.begin();
-            auto end = objects.end();
-            auto test = loop == end;
-            for (auto loop = objects.begin(); loop != objects.end(); ++loop)
-            {
-                (*loop)->id = loop.ID();
-                (*loop)->manager = this;
-            }
-
             scribe.Load(batchSources);
             scribe.Load(systems);
         }

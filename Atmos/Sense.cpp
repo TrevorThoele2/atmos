@@ -5,26 +5,26 @@
 
 namespace Atmos
 {
-    nSense::nSense() : enabled(true)
+    Sense::Sense(ObjectManager& manager) : PositionalObject(manager), enabled(true)
     {}
 
-    nSense::nSense(const ::Inscription::Table<nSense>& table) : INSCRIPTION_TABLE_GET_BASE(PositionalObject)
+    Sense::Sense(const ::Inscription::Table<Sense>& table) : INSCRIPTION_TABLE_GET_BASE(PositionalObject)
     {}
 
-    nSense::~nSense()
+    Sense::~Sense()
     {}
 
-    ObjectTypeDescription nSense::TypeDescription() const
+    ObjectTypeDescription Sense::TypeDescription() const
     {
-        return ObjectTraits<nSense>::TypeDescription();
+        return ObjectTraits<Sense>::TypeDescription();
     }
 
-    const ObjectTypeName ObjectTraits<nSense>::typeName = "Sense";
+    const ObjectTypeName ObjectTraits<Sense>::typeName = "Sense";
 }
 
 namespace Inscription
 {
-    DEFINE_OBJECT_INSCRIPTER_MEMBERS(::Atmos::nSense)
+    OBJECT_INSCRIPTER_DEFINE_MEMBERS(::Atmos::Sense)
     {
 
     }

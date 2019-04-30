@@ -3,11 +3,13 @@
 
 #include "SpeechController.h"
 
-#include "AvatarSystem.h"
+#include "EntityAvatarSystem.h"
 #include "AvatarComponent.h"
 #include "InventoryComponent.h"
 #include "ActionComponent.h"
 
+#include "InputSystem.h"
+#include "LoggingSystem.h"
 #include "StringUtility.h"
 
 #include "FontDefines.h"
@@ -148,7 +150,8 @@ namespace Atmos
 
         Shop::Shop(ObjectManager& manager) : ObjectSystem(manager), active(false), controller(nullptr), isBuying(false), root(nullptr), dialog(*this)
         {
-            Environment::GetInput()->eventActionPressed.Subscribe(&Shop::OnActionPressed, *this);
+            auto input = manager.FindSystem<Input::System>();
+            input->Get()->eventActionPressed.Subscribe(&Shop::OnActionPressed, *this);
         }
 
         bool Shop::Enter(bool buying)
@@ -158,9 +161,9 @@ namespace Atmos
 
             if (!inventory || inventory->IsEmpty())
             {
-                Logger::Log("The shop was attempted to be entered with an entity without an inventory.",
-                    Logger::Type::ERROR_LOW,
-                    Logger::NameValueVector{ NameValuePair{"Entity", entity->ID()} });
+                FindLoggingSystem()->Log("The shop was attempted to be entered with an entity without an inventory.",
+                    LogType::ERROR_LOW,
+                    LogNameValueVector{ NameValuePair{"Entity", entity->ID()} });
                 return false;
             }
 
@@ -210,6 +213,29 @@ namespace Atmos
             dialog.Initialize(*descBox);
         }
 
+        Shop::EntityReference Shop::Avatar()
+        {
+            return Manager()->FindSystem<Entity::AvatarSystem>()->Avatar();
+        }
+
+        Shop::AvatarComponentReference Shop::AvatarComponent()
+        {
+            auto avatar = Avatar();
+            auto avatarComponent = avatar->RetrieveComponent<Entity::AvatarComponent>();
+            return avatarComponent;
+        }
+
+        Shop::InventoryComponentReference Shop::AvatarInventoryComponent()
+        {
+            auto avatar = Avatar();
+            return InventoryComponent(avatar);
+        }
+
+        Shop::InventoryComponentReference Shop::InventoryComponent(EntityReference entity)
+        {
+            return entity->RetrieveComponent<Entity::InventoryComponent>();
+        }
+
         void Shop::OnDialogDeactivated()
         {}
 
@@ -233,27 +259,9 @@ namespace Atmos
             }
         }
 
-        Shop::EntityReference Shop::Avatar()
+        LoggingSystem* Shop::FindLoggingSystem()
         {
-            return Manager()->FindSystem<Ent::nEntityAvatarSystem>()->Avatar();
-        }
-
-        Shop::AvatarComponentReference Shop::AvatarComponent()
-        {
-            auto avatar = Avatar();
-            auto avatarComponent = avatar->Component<Ent::nAvatarComponent>();
-            return avatarComponent;
-        }
-
-        Shop::InventoryComponentReference Shop::AvatarInventoryComponent()
-        {
-            auto avatar = Avatar();
-            return InventoryComponent(avatar);
-        }
-
-        Shop::InventoryComponentReference Shop::InventoryComponent(EntityReference entity)
-        {
-            return entity->Component<Ent::nInventoryComponent>();
+            return Manager()->FindSystem<LoggingSystem>();
         }
     }
 }

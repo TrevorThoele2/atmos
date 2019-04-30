@@ -1,18 +1,21 @@
 
 #include "StringUtility.h"
 
-#include "Environment.h"
 #include "GridPosition.h"
+
+#include "InputTraits.h"
+
+#include "FilePath.h"
 
 namespace Atmos
 {
     String GetFileName(const String &filePath)
     {
         String newString = filePath;
-        if (newString.find(Environment::GetFileSystem()->GetFileSeparator()) != newString.npos)
+        if (newString.find(FilePath::fileSeparator) != newString.npos)
         {
             // Slice the file path to just its file name
-            auto pos = newString.find_last_of(Environment::GetFileSystem()->GetFileSeparator()) + 1;
+            auto pos = newString.find_last_of(FilePath::fileSeparator) + 1;
             newString = newString.substr(pos);
         }
 
@@ -51,7 +54,7 @@ namespace Atmos
         if (newString.find(".") != newString.npos)
         {
             // Slice the file extension off
-            auto pos = newString.find_last_of(Environment::GetFileSystem()->GetFileSeparator());
+            auto pos = newString.find_last_of(FilePath::fileSeparator);
             newString.erase(pos);
         }
 
@@ -95,7 +98,7 @@ namespace Atmos
             trim.erase(trim.size() - 1, 1);
     }
 
-    String Trim(const String &trim)
+    String Trim(const String& trim)
     {
         String ret = trim;
 
@@ -113,7 +116,7 @@ namespace Atmos
         return ret;
     }
 
-    bool IsAllWhitespace(const String &check)
+    bool IsAllWhitespace(const String& check)
     {
         if (check.empty())
             return false;
@@ -127,6 +130,11 @@ namespace Atmos
         return true;
     }
 
+    bool StartsWith(const String& check, const String& startsWith)
+    {
+        return check.find_first_of(startsWith) == 0;
+    }
+
     namespace Detail
     {
         String FromStringImpl(const String &arg, const ::Chroma::Type<String> &t)
@@ -137,11 +145,6 @@ namespace Atmos
         TimeValue FromStringImpl(const String &arg, const ::Chroma::Type<TimeValue> &t)
         {
             return FromString<TimeValue::ValueT>(arg);
-        }
-
-        GameTimeValue FromStringImpl(const String &arg, const ::Chroma::Type<GameTimeValue> &t)
-        {
-            return FromString<GameTimeValue::ValueT>(arg);
         }
     }
 
@@ -197,6 +200,18 @@ namespace Atmos
         return ret;
     }
 
+    template<> ::Agui::Resolution::Size FromString(const String &arg)
+    {
+        ::Agui::Resolution::Size size;
+        auto pivot = arg.find_first_of("x");
+        auto left = arg.substr(0, pivot);
+        auto right = arg.substr(pivot + 1);
+
+        size.width = FromString<::Agui::Resolution::Size::ValueT>(left);
+        size.height = FromString<::Agui::Resolution::Size::ValueT>(right);
+        return size;
+    }
+
     template<class T>
     String ToStringCharCommon(T arg)
     {
@@ -241,13 +256,28 @@ namespace Atmos
         return ToString(timeValue.Get());
     }
 
-    String ToString(GameTimeValue timeValue)
-    {
-        return ToString(timeValue.Get());
-    }
-
     String ToString(const GridPosition &position)
     {
         return ToString(position.GetX()) + "," + ToString(position.GetY()) + "," + ToString(position.GetZ());
+    }
+
+    String ToString(const ::Agui::Resolution::Size &arg)
+    {
+        return ToString(arg.width) + "x" + ToString(arg.height);
+    }
+
+    String ToString(const Input::KeyID &arg)
+    {
+        return "";
+    }
+
+    String ToString(const Input::MouseKeyID &arg)
+    {
+        return "";
+    }
+
+    String ToString(const Input::ActionID &arg)
+    {
+        return "";
     }
 }

@@ -6,14 +6,17 @@
 
 #include "Tile.h"
 
+#include "ObjectSerialization.h"
+
 namespace Atmos
 {
     class TileSystem : public ObjectSystem
     {
     public:
-        typedef TypedObjectReference<nTile> Reference;
+        typedef TypedObjectReference<Tile> Reference;
     public:
         TileSystem(ObjectManager& manager);
+        TileSystem(const ::Inscription::Table<TileSystem>& table);
 
         Reference FindTile(const GridPosition& at) const;
 
@@ -21,13 +24,19 @@ namespace Atmos
 
         ObjectBatchSizeT Size() const;
     private:
-        typedef ObjectBatch<nTile> TileBatch;
+        void InitializeImpl() override;
+    private:
+        typedef ObjectBatch<Tile> TileBatch;
         TileBatch tiles;
     };
+}
 
-    template<>
-    struct ObjectSystemTraits<TileSystem>
+namespace Inscription
+{
+    INSCRIPTION_INSCRIPTER_DECLARE(::Atmos::TileSystem)
     {
-        static const ObjectSystemPriority priority = 0;
+    public:
+        INSCRIPTION_INSCRIPTER_DECLARE_TABLE;
+        INSCRIPTION_DECLARE_CLASS_NAME_RESOLVER;
     };
 }

@@ -7,8 +7,10 @@
 #include <angelscript.h>
 
 #include "ObjectManager.h"
+#include "DebugStatisticsSystem.h"
+#include "LoggingSystem.h"
 
-#include "Logger.h"
+#include "StringUtility.h"
 
 namespace Atmos
 {
@@ -17,6 +19,9 @@ namespace Atmos
         runningScripts = manager.Batch<RunningScript>();
         runningScripts.onCreated.Subscribe(&ScriptController::OnRunningScriptCreated, *this);
     }
+
+    ScriptController::ScriptController(const ::Inscription::Table<ScriptController>& table) : INSCRIPTION_TABLE_GET_BASE(ObjectSystem)
+    {}
 
     void ScriptController::ExecuteImmediately(RunningScriptReference reference)
     {
@@ -53,6 +58,15 @@ namespace Atmos
     bool ScriptController::IsRunning(ScriptInstanceReference scriptInstance) const
     {
         return RunningScriptFor(scriptInstance).IsOccupied();
+    }
+
+    void ScriptController::InitializeImpl()
+    {
+        auto debugStatistics = Manager()->FindSystem<DebugStatisticsSystem>();
+        debugStatistics->memoryPage.workingScriptSize.retrievalFunction = [this]() -> String
+        {
+            return ToString(Size());
+        };
     }
 
     void ScriptController::WorkImpl()
@@ -133,9 +147,9 @@ namespace Atmos
 
             if (!func)
             {
-                Logger::Log(String("Cannot find the function to execute for a script.\n"),
-                    Logger::Type::ERROR_MODERATE,
-                    Logger::NameValueVector{
+                FindLoggingSystem()->Log(String("Cannot find the function to execute for a script.\n"),
+                    LogType::ERROR_SEVERE,
+                    LogNameValueVector{
                         NameValuePair("Script File Name", (*itr)->source->asset->fileName.GetValue()),
                         NameValuePair("Execute Name", (*itr)->executeName) });
             }
@@ -165,4 +179,23 @@ namespace Atmos
     {
         runningScriptMap.erase(reference->source.Get());
     }
+
+    LoggingSystem* ScriptController::FindLoggingSystem()
+    {
+        return Manager()->FindSystem<LoggingSystem>();
+    }
+}
+
+namespace Inscription
+{
+    INSCRIPTION_INSCRIPTER_DEFINE_TABLE(::Atmos::ScriptController)
+    {
+        INSCRIPTION_INSCRIPTER_CREATE_TABLE;
+
+        INSCRIPTION_TABLE_ADD_BASE(::Atmos::ObjectSystem);
+
+        INSCRIPTION_INSCRIPTER_RETURN_TABLE;
+    }
+
+    INSCRIPTION_DEFINE_SIMPLE_CLASS_NAME_RESOLVER(::Atmos::ScriptController, "ScriptController");
 }

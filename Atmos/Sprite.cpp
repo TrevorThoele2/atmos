@@ -1,12 +1,12 @@
 
 #include "Sprite.h"
 
-#include "Environment.h"
-#include "CurrentField.h"
 #include "GridSize.h"
 
+#include "GraphicsSystem.h"
+
 #include "AguiSpriteFactory.h"
-#include <AGUI\ImageResource.h>
+#include <AGUI/ImageResource.h>
 
 #include <Inscription\Scribe.h>
 #include <Inscription\Inscripter.h>
@@ -14,21 +14,23 @@
 
 namespace Atmos
 {
-    nSprite::nSprite() :
+    Sprite::Sprite(ObjectManager& manager) :
+        RenderFragment(manager),
         index(0), primaryAssetSlice([this]() { return _primaryAssetSlice; })
     {
         SubscribeToProperties();
     }
 
-    nSprite::nSprite(const nSprite& arg) :
+    Sprite::Sprite(const Sprite& arg) :
+        RenderFragment(arg),
         material(arg.material), patchShader(arg.patchShader), index(arg.index), color(arg.color),
         primaryAssetSlice([this]() { return _primaryAssetSlice; })
     {
         SubscribeToProperties();
     }
 
-    nSprite::nSprite(const ::Inscription::Table<nSprite>& table) :
-        INSCRIPTION_TABLE_GET_BASE(nRenderFragment),
+    Sprite::Sprite(const ::Inscription::Table<Sprite>& table) :
+        INSCRIPTION_TABLE_GET_BASE(RenderFragment),
         INSCRIPTION_TABLE_GET_MEM(material),
         INSCRIPTION_TABLE_GET_MEM(patchShader),
         INSCRIPTION_TABLE_GET_MEM(color),
@@ -38,24 +40,25 @@ namespace Atmos
         SubscribeToProperties();
     }
 
-    ObjectTypeDescription nSprite::TypeDescription() const
+    ObjectTypeDescription Sprite::TypeDescription() const
     {
-        return ObjectTraits<nSprite>::TypeDescription();
+        return ObjectTraits<Sprite>::TypeDescription();
     }
 
-    void nSprite::DrawImpl()
+    void Sprite::DrawImpl()
     {
-        Environment::GetGraphics()->RenderSprite(*this);
+        auto graphics = Manager()->FindSystem<GraphicsSystem>();
+        graphics->Get()->RenderSprite(*this);
     }
 
-    void nSprite::SubscribeToProperties()
+    void Sprite::SubscribeToProperties()
     {
-        position.onValueChanged.Subscribe(&nSprite::OnPositionChanged, *this);
-        material.onValueChanged.Subscribe(&nSprite::OnMaterialChanged, *this);
-        index.onValueChanged.Subscribe(&nSprite::OnIndexChanged, *this);
+        position.onValueChanged.Subscribe(&Sprite::OnPositionChanged, *this);
+        material.onValueChanged.Subscribe(&Sprite::OnMaterialChanged, *this);
+        index.onValueChanged.Subscribe(&Sprite::OnIndexChanged, *this);
     }
 
-    void nSprite::CalculatePrimaryAssetSlice()
+    void Sprite::CalculatePrimaryAssetSlice()
     {
         if (!material || !material->xVisual)
         {
@@ -95,62 +98,25 @@ namespace Atmos
         size.depth.Set(GRID_SIZE<float>);
     }
 
-    void nSprite::OnPositionChanged(Position3D newValue)
+    void Sprite::OnPositionChanged(Position3D newValue)
     {
         CalculatePrimaryAssetSlice();
     }
 
-    void nSprite::OnMaterialChanged(MaterialReference newValue)
+    void Sprite::OnMaterialChanged(MaterialReference newValue)
     {
         CalculatePrimaryAssetSlice();
     }
 
-    void nSprite::OnIndexChanged(Index newValue)
+    void Sprite::OnIndexChanged(Index newValue)
     {
         CalculatePrimaryAssetSlice();
     }
 
-    const ObjectTypeName ObjectTraits<nSprite>::typeName = "Sprite";
-
-    namespace Modulator
-    {
-        LinkGeneratorGroup<nSprite>::Generator<nSprite::Index> LinkGeneratorGroup<nSprite>::index(
-            0,
-            [](TypedObjectReference<nSprite> sprite) { return Value(std::int64_t(sprite->index.Get())); },
-            [](TypedObjectReference<nSprite> sprite, nSprite::Index newValue) { sprite->index = newValue; });
-
-        LinkGeneratorGroup<nSprite>::Generator<Color::ValueT> LinkGeneratorGroup<nSprite>::colorA(
-            1,
-            [](TypedObjectReference<nSprite> sprite) { return Value(std::int64_t(sprite->color.Get().alpha)); },
-            [](TypedObjectReference<nSprite> sprite, Color::ValueT newValue) { sprite->color.Get().alpha = newValue; });
-
-        LinkGeneratorGroup<nSprite>::Generator<Color::ValueT> LinkGeneratorGroup<nSprite>::colorR(
-            2,
-            [](TypedObjectReference<nSprite> sprite) { return Value(std::int64_t(sprite->color.Get().red)); },
-            [](TypedObjectReference<nSprite> sprite, Color::ValueT newValue) { sprite->color.Get().red = newValue; });
-
-        LinkGeneratorGroup<nSprite>::Generator<Color::ValueT> LinkGeneratorGroup<nSprite>::colorG(
-            3,
-            [](TypedObjectReference<nSprite> sprite) { return Value(std::int64_t(sprite->color.Get().green)); },
-            [](TypedObjectReference<nSprite> sprite, Color::ValueT newValue) { sprite->color.Get().green = newValue; });
-
-        LinkGeneratorGroup<nSprite>::Generator<Color::ValueT> LinkGeneratorGroup<nSprite>::colorB(
-            4,
-            [](TypedObjectReference<nSprite> sprite) { return Value(std::int64_t(sprite->color.Get().blue)); },
-            [](TypedObjectReference<nSprite> sprite, Color::ValueT newValue) { sprite->color.Get().blue = newValue; });
-
-        LinkGeneratorGroup<nSprite>::LinkGeneratorGroup()
-        {
-            RegisterGenerator(index);
-            RegisterGenerator(colorA);
-            RegisterGenerator(colorR);
-            RegisterGenerator(colorG);
-            RegisterGenerator(colorB);
-        }
-    }
+    const ObjectTypeName ObjectTraits<Sprite>::typeName = "Sprite";
 
     std::unique_ptr<Agui::SpriteComponent> CreateAguiSpriteComponent(
-        const TypedObjectReference<nSprite> sprite,
+        const TypedObjectReference<Sprite> sprite,
         const Agui::FileName& imageName,
         const Agui::RelativePosition& relPosition)
     {
@@ -164,7 +130,7 @@ namespace Atmos
 
 namespace Inscription
 {
-    DEFINE_OBJECT_INSCRIPTER_MEMBERS(::Atmos::nSprite)
+    OBJECT_INSCRIPTER_DEFINE_MEMBERS(::Atmos::Sprite)
     {
         INSCRIPTION_TABLE_ADD(material);
         INSCRIPTION_TABLE_ADD(patchShader);

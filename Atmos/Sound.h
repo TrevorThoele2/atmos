@@ -9,16 +9,16 @@
 
 namespace Atmos
 {
-    class nSound : public nSense
+    class Sound : public Sense
     {
     public:
         typedef TypedObjectReference<AudioAssetInstance> AssetReference;
         typedef StoredProperty<AssetReference> AssetProperty;
         AssetProperty audioAsset;
     public:
-        nSound();
-        nSound(const nSound& arg);
-        nSound(const ::Inscription::Table<nSound>& table);
+        Sound(ObjectManager& manager);
+        Sound(const Sound& arg);
+        Sound(const ::Inscription::Table<Sound>& table);
 
         ObjectTypeDescription TypeDescription() const override;
     private:
@@ -28,18 +28,18 @@ namespace Atmos
     };
 
     template<>
-    struct ObjectTraits<nSound> : ObjectTraitsBase<nSound>
+    struct ObjectTraits<Sound> : ObjectTraitsBase<Sound>
     {
         static const ObjectTypeName typeName;
-        static constexpr ObjectTypeList<nSense> bases = {};
+        static constexpr ObjectTypeList<Sense> bases = {};
     };
 }
 
 namespace Inscription
 {
-    DECLARE_OBJECT_INSCRIPTER(::Atmos::nSound)
+    DECLARE_OBJECT_INSCRIPTER(::Atmos::Sound)
     {
     public:
-        static void AddMembers(TableT& table);
+        OBJECT_INSCRIPTER_DECLARE_MEMBERS;
     };
 }

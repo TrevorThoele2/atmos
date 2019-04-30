@@ -3,15 +3,16 @@
 
 namespace Atmos
 {
-    namespace Ent
+    namespace Entity
     {
-        nInventoryComponent::nInventoryComponent(EntityReference reference) : nEntityComponent(reference)
+        InventoryComponent::InventoryComponent(ObjectManager& manager, EntityReference reference) :
+            Component(manager, reference)
         {}
 
-        nInventoryComponent::nInventoryComponent(const ::Inscription::Table<nInventoryComponent>& table) : INSCRIPTION_TABLE_GET_BASE(nEntityComponent)
+        InventoryComponent::InventoryComponent(const ::Inscription::Table<InventoryComponent>& table) : INSCRIPTION_TABLE_GET_BASE(Component)
         {}
 
-        ItemStack* nInventoryComponent::Add(ItemReference itemSource, const ItemStack::Count& count)
+        ItemStack* InventoryComponent::Add(ItemReference itemSource, const ItemStack::Count& count)
         {
             if (count == 0)
                 return nullptr;
@@ -19,7 +20,7 @@ namespace Atmos
             return Add(ItemStack(itemSource, count));
         }
 
-        ItemStack* nInventoryComponent::Add(ItemStack&& add)
+        ItemStack* InventoryComponent::Add(ItemStack&& add)
         {
             Combine(add);
             if (add.count == 0)
@@ -29,7 +30,7 @@ namespace Atmos
             return &container.back();
         }
 
-        ItemStack* nInventoryComponent::Find(Container::ID position)
+        ItemStack* InventoryComponent::Find(Container::ID position)
         {
             auto found = container.Find(position);
             if (found == container.end())
@@ -38,7 +39,7 @@ namespace Atmos
             return &*found;
         }
 
-        void nInventoryComponent::Combine(ItemStack& stack)
+        void InventoryComponent::Combine(ItemStack& stack)
         {
             if (stack.count == 0)
                 return;
@@ -57,17 +58,17 @@ namespace Atmos
             }
         }
 
-        void nInventoryComponent::Remove(Container::ID index)
+        void InventoryComponent::Remove(Container::ID index)
         {
             container.Remove(index);
         }
 
-        bool nInventoryComponent::IsEmpty() const
+        bool InventoryComponent::IsEmpty() const
         {
             return container.empty();
         }
 
-        bool nInventoryComponent::IsHere(ItemStack& check) const
+        bool InventoryComponent::IsHere(ItemStack& check) const
         {
             for (auto& loop : container)
             {
@@ -78,7 +79,7 @@ namespace Atmos
             return false;
         }
 
-        void nInventoryComponent::Move(ItemStack& stack, TypedObjectReference<nInventoryComponent> moveTo)
+        void InventoryComponent::Move(ItemStack& stack, TypedObjectReference<InventoryComponent> moveTo)
         {
             for (auto loop = container.begin(); loop != container.end(); ++loop)
             {
@@ -91,7 +92,7 @@ namespace Atmos
             }
         }
 
-        bool nInventoryComponent::AttemptConsume(ItemStack& stack)
+        bool InventoryComponent::AttemptConsume(ItemStack& stack)
         {
             /*
             if (!stack->HasConsumableAspect())
@@ -111,7 +112,7 @@ namespace Atmos
             return true;
         }
 
-        bool nInventoryComponent::AttemptEquip(EquipSlot slot, ItemStack &stack)
+        bool InventoryComponent::AttemptEquip(EquipSlot slot, ItemStack &stack)
         {
             /*
             if (!stack->HasEquippableAspect())
@@ -134,7 +135,7 @@ namespace Atmos
             return true;
         }
 
-        size_t nInventoryComponent::GetTotalCount() const
+        size_t InventoryComponent::GetTotalCount() const
         {
             size_t ret = 0;
 
@@ -144,18 +145,18 @@ namespace Atmos
             return ret;
         }
 
-        ObjectTypeDescription nInventoryComponent::TypeDescription() const
+        ObjectTypeDescription InventoryComponent::TypeDescription() const
         {
-            return ObjectTraits<nInventoryComponent>::TypeDescription();
+            return ObjectTraits<InventoryComponent>::TypeDescription();
         }
     }
 
-    const ObjectTypeName ObjectTraits<Ent::nInventoryComponent>::typeName = "InventoryComponent";
+    const ObjectTypeName ObjectTraits<Entity::InventoryComponent>::typeName = "InventoryComponent";
 }
 
 namespace Inscription
 {
-    DEFINE_OBJECT_INSCRIPTER_MEMBERS(::Atmos::Ent::nInventoryComponent)
+    OBJECT_INSCRIPTER_DEFINE_MEMBERS(::Atmos::Entity::InventoryComponent)
     {
         INSCRIPTION_TABLE_ADD(container);
     }

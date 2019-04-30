@@ -13,7 +13,7 @@ namespace Agui
     {
     private:
         ::Atmos::TypedObjectReference<::Atmos::nSpell> selected;
-        ::Atmos::TypedObjectReference<::Atmos::Ent::nCombatComponent> source;
+        ::Atmos::TypedObjectReference<::Atmos::Entity::CombatComponent> source;
 
         void RegisterInputs() override;
         void OnCast();
@@ -27,7 +27,7 @@ namespace Agui
         static SpellContextMenu* Factory(Object *parent, const SpellContextMenu &arg);
         void SetSelected();
         void SetSelected(::Atmos::TypedObjectReference<::Atmos::nSpell> set);
-        void SetSource(::Atmos::TypedObjectReference<::Atmos::Ent::nCombatComponent> set);
+        void SetSource(::Atmos::TypedObjectReference<::Atmos::Entity::CombatComponent> set);
         WIDGET_COMMON_ACCESS(SpellContextMenu);
     };
 

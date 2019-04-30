@@ -40,7 +40,7 @@ namespace Atmos
         Scripting::GlobalItems globalItems;
         Scripting::Persistence persistence;
     public:
-        ScriptInstance();
+        ScriptInstance(ObjectManager& manager);
         ScriptInstance(const ScriptInstance& arg) = default;
         ScriptInstance(const ::Inscription::Table<ScriptInstance>& table);
 
@@ -75,6 +75,6 @@ namespace Inscription
     DECLARE_OBJECT_INSCRIPTER(::Atmos::ScriptInstance)
     {
     public:
-        static void AddMembers(TableT& table);
+        OBJECT_INSCRIPTER_DECLARE_MEMBERS;
     };
 }

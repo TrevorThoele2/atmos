@@ -3,7 +3,7 @@
 
 #include "Cursor.h"
 #include "InputAction.h"
-#include <AGUI\Menu.h>
+#include <AGUI/Menu.h>
 
 namespace Agui
 {

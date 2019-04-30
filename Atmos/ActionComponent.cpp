@@ -3,71 +3,72 @@
 
 namespace Atmos
 {
-    namespace Ent
+    namespace Entity
     {
-        nActionComponent::nActionComponent(EntityReference owner) : nEntityComponent(owner), activator(Activator::USE_ON)
+        ActionComponent::ActionComponent(ObjectManager& manager, EntityReference owner) :
+            Component(manager, owner), activator(Activator::USE_ON)
         {
             SetupScripts();
         }
 
-        nActionComponent::nActionComponent(const ::Inscription::Table<nActionComponent>& table) : INSCRIPTION_TABLE_GET_BASE(nEntityComponent)
+        ActionComponent::ActionComponent(const ::Inscription::Table<ActionComponent>& table) : INSCRIPTION_TABLE_GET_BASE(Component)
         {
             SetupScripts();
         }
 
-        void nActionComponent::FireMovedInto()
+        void ActionComponent::FireMovedInto()
         {
             if (activator == Activator::ENTER_TILE)
                 script->ExecuteDeferred();
         }
 
-        void nActionComponent::FireAttemptMovedInto()
+        void ActionComponent::FireAttemptMovedInto()
         {
             if (activator == Activator::ATTEMPT_ENTER_TILE)
                 script->ExecuteDeferred();
         }
 
-        void nActionComponent::FireUseOn()
+        void ActionComponent::FireUseOn()
         {
             if (activator == Activator::USE_ON)
                 script->ExecuteDeferred();
         }
 
-        void nActionComponent::FireUseInto()
+        void ActionComponent::FireUseInto()
         {
             if (activator == Activator::USE_INTO)
                 script->ExecuteDeferred();
         }
 
-        void nActionComponent::FireFieldEntered()
+        void ActionComponent::FireFieldEntered()
         {
             if (activator == Activator::ENTER_FIELD)
                 script->ExecuteDeferred();
         }
 
-        void nActionComponent::FireFieldLeft()
+        void ActionComponent::FireFieldLeft()
         {
             if (activator == Activator::LEAVE_FIELD)
                 script->ExecuteDeferred();
         }
 
-        ObjectTypeDescription nActionComponent::TypeDescription() const
+        ObjectTypeDescription ActionComponent::TypeDescription() const
         {
-            return ObjectTraits<nActionComponent>::TypeDescription();
+            return ObjectTraits<ActionComponent>::TypeDescription();
         }
 
-        void nActionComponent::SetupScripts()
+        void ActionComponent::SetupScripts()
         {
             script->owner = this;
         }
     }
 
-    const ObjectTypeName ObjectTraits<Ent::nActionComponent>::typeName = "ActionComponent";
+    const ObjectTypeName ObjectTraits<Entity::ActionComponent>::typeName = "ActionComponent";
 }
 
 namespace Inscription
 {
-    DEFINE_OBJECT_INSCRIPTER_MEMBERS(::Atmos::Ent::nActionComponent)
+    OBJECT_INSCRIPTER_DEFINE_MEMBERS(::Atmos::Entity::ActionComponent)
     {
         INSCRIPTION_TABLE_ADD(activator);
         INSCRIPTION_TABLE_ADD(script);

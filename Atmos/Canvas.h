@@ -11,7 +11,7 @@ namespace Atmos
 {
     class Position2D;
 
-    class GraphicsHandlerBase;
+    class GraphicsManager;
     class ShaderAsset;
     class Canvas
     {
@@ -41,7 +41,7 @@ namespace Atmos
         Dimension height;
         std::unique_ptr<Data> data;
 
-        friend GraphicsHandlerBase;
+        friend GraphicsManager;
 
         void SetData(Data *set);
         void SetData(std::unique_ptr<Data> &&set);

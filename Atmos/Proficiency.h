@@ -11,9 +11,9 @@
 
 namespace Atmos
 {
-    namespace Ent
+    namespace Entity
     {
-        class nCombatComponent;
+        class CombatComponent;
     }
 
     class Proficiencies
@@ -23,7 +23,7 @@ namespace Atmos
         typedef FixedPoint64 Level;
         typedef Percentage Rating;
 
-        typedef TypedObjectReference<Ent::nCombatComponent> CombatComponentReference;
+        typedef TypedObjectReference<Entity::CombatComponent> CombatComponentReference;
     private:
         INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;

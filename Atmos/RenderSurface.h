@@ -1,54 +1,47 @@
 #pragma once
 
 #include <memory>
-#include "Join.h"
+#include "ScreenDimensions.h"
 
 namespace Atmos
 {
-    class GraphicsHandlerBase;
+    class GraphicsManager;
+
     class RenderSurface
     {
     public:
-        typedef unsigned int Dimension;
-        typedef Join2<Dimension> ScreenDimensions;
-
+        typedef ScreenDimensions::Dimension Dimension;
+        typedef ScreenDimensions Size;
+    public:
         class Data
         {
-        private:
-            RenderSurface *owner;
-            friend RenderSurface;
         public:
-            virtual ~Data() = 0 {}
+            typedef RenderSurface::Size Size;
+        public:
+            virtual ~Data() = 0;
             RenderSurface* GetOwner() const;
             virtual void SetAsRenderTarget() = 0;
             virtual void Present() = 0;
             virtual void Reset() = 0;
             virtual void Release() = 0;
-            virtual ScreenDimensions GetDimensions() = 0;
+            virtual Size GetSize() = 0;
+        private:
+            RenderSurface* owner;
+        private:
+            friend RenderSurface;
         };
-    private:
-        std::unique_ptr<Data> data;
-        ScreenDimensions dimensions;
 
-        void SetData(Data *set);
-        void SetData(std::unique_ptr<Data> &&set);
-
-        void SetupDimensions();
-
-        void SetAsRenderTargetImpl();
-        friend GraphicsHandlerBase;
+        typedef std::unique_ptr<Data> DataPtr;
     public:
-        RenderSurface(Data *data);
-        RenderSurface(RenderSurface &&arg);
-        RenderSurface& operator=(RenderSurface &&arg);
+        RenderSurface(DataPtr&& data);
+        RenderSurface(RenderSurface&& arg);
+
+        RenderSurface& operator=(RenderSurface&& arg);
 
         Data* GetData() const;
         template<class DataT>
         DataT* GetData() const;
 
-        void DestroyThis();
-
-        void SetAsRenderTarget();
         void Present();
 
         void Reset();
@@ -56,7 +49,17 @@ namespace Atmos
 
         void FitToWindow();
 
-        const ScreenDimensions& GetDimensions() const;
+        const Size& GetSize() const;
+    private:
+        DataPtr data;
+        Size size;
+    private:
+        void SetData(DataPtr&& set);
+
+        void SetupDimensions();
+        void SetAsRenderTargetImpl();
+    private:
+        friend GraphicsManager;
     };
 
     template<class DataT>

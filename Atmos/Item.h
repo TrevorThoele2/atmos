@@ -19,7 +19,7 @@ namespace Atmos
         ScriptInstanceReference equip;
         ScriptInstanceReference attack;
     public:
-        typedef TypedObjectReference<nSprite> SpriteReference;
+        typedef TypedObjectReference<Sprite> SpriteReference;
         SpriteReference portrait;
         String description;
     public:
@@ -34,7 +34,7 @@ namespace Atmos
         };
         Flags<Flag> flags;
     public:
-        nItem(const Name& name);
+        nItem(ObjectManager& manager, const Name& name);
         nItem(const nItem& arg) = default;
         nItem(const ::Inscription::Table<nItem>& table);
 
@@ -58,6 +58,6 @@ namespace Inscription
     DECLARE_OBJECT_INSCRIPTER(::Atmos::nItem)
     {
     public:
-        static void AddMembers(TableT& table);
+        OBJECT_INSCRIPTER_DECLARE_MEMBERS;
     };
 }

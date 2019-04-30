@@ -15,6 +15,7 @@
 
 namespace Atmos
 {
+    /*
     namespace Battle
     {
         class Gui
@@ -29,7 +30,6 @@ namespace Atmos
         };
     }
 
-    /*
     namespace Battle
     {
         class CharacterEntity;

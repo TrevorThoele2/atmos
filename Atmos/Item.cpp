@@ -3,7 +3,7 @@
 
 namespace Atmos
 {
-    nItem::nItem(const Name& name) : RegistryObject(name), buyPrice(0), sellPrice(0)
+    nItem::nItem(ObjectManager& manager, const Name& name) : RegistryObject(manager, name), buyPrice(0), sellPrice(0)
     {}
 
     nItem::nItem(const ::Inscription::Table<nItem>& table) : INSCRIPTION_TABLE_GET_BASE(RegistryObject)
@@ -34,7 +34,7 @@ namespace Atmos
 
 namespace Inscription
 {
-    DEFINE_OBJECT_INSCRIPTER_MEMBERS(::Atmos::nItem)
+    OBJECT_INSCRIPTER_DEFINE_MEMBERS(::Atmos::nItem)
     {
 
     }

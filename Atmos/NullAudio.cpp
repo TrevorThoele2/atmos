@@ -48,12 +48,12 @@ namespace Atmos
         }
     };
 
-    bool NullAudioHandler::SetMasterVolume(float setTo)
+    bool NullAudioManager::SetMasterVolume(float setTo)
     {
         return true;
     }
 
-    std::unique_ptr<AudioAssetData> NullAudioHandler::CreateAudioDataImpl(ExtractedFile&& file, const FileName& name)
+    std::unique_ptr<AudioAssetData> NullAudioManager::CreateAudioDataImpl(ExtractedFile&& file, const FileName& name)
     {
         return std::make_unique<AudioAssetDataImplementation>();
     }

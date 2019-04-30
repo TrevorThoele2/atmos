@@ -5,18 +5,18 @@ namespace Atmos
 {
     namespace Input
     {
-        void NullHandler::AddInputsImpl()
+        void NullManager::CreateSignalsImpl()
         {}
 
-        void NullHandler::WorkInputsImpl(InputVector &inputs)
+        void NullManager::WorkSignalsImpl(SignalList& signalList)
         {}
 
-        bool NullHandler::ShouldAddActions() const
+        bool NullManager::ShouldAddActions() const
         {
             return false;
         }
 
-        MousePosition NullHandler::GetMousePositionImpl() const
+        MousePosition NullManager::GetMousePositionImpl() const
         {
             return MousePosition();
         }

@@ -1,10 +1,7 @@
 
 #pragma once
 
-#include "Helper.h"
-
 #include "Serialization.h"
-#include <Inscription\Inscripter.h>
 
 namespace Atmos
 {
@@ -15,10 +12,14 @@ namespace Atmos
         typedef T ValueT;
         typedef double Divided;
     public:
-        virtual ~RatioBase() = 0 {}
+        virtual ~RatioBase() = 0;
         virtual ValueT GetNumerator() const = 0;
         virtual ValueT GetDenominator() const = 0;
     };
+
+    template<class T>
+    RatioBase<T>::~RatioBase()
+    {}
 
     template<class T>
     class DynamicRatio : public RatioBase<T>
@@ -34,7 +35,7 @@ namespace Atmos
         void AttemptSimplify();
     public:
         DynamicRatio(ValueT numerator = 1, ValueT denominator = 1, bool simplify = true);
-        bool operator==(const DynamicRatio &arg) const;
+        bool operator==(const DynamicRatio& arg) const;
         void Set(ValueT num, ValueT den);
         void SetNumerator(ValueT set);
         void SetDenominator(ValueT set);
@@ -69,7 +70,7 @@ namespace Atmos
     }
 
     template<class T>
-    bool DynamicRatio<T>::operator==(const DynamicRatio &arg) const
+    bool DynamicRatio<T>::operator==(const DynamicRatio& arg) const
     {
         return numerator == arg.numerator && denominator == arg.denominator && simplify == arg.simplify;
     }

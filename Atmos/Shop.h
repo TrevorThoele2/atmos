@@ -5,7 +5,6 @@
 
 #include "ItemDescriptionBox.h"
 #include "ItemStack.h"
-#include "Input.h"
 #include "InputAction.h"
 
 #include "AvatarComponent.h"
@@ -17,6 +16,8 @@
 
 namespace Atmos
 {
+    class LoggingSystem;
+
     namespace Speech
     {
         class Controller;
@@ -71,9 +72,9 @@ namespace Atmos
             Dialog dialog;
             void InitializeGui();
         private:
-            typedef TypedObjectReference<Ent::nEntity> EntityReference;
-            typedef TypedObjectReference<Ent::nAvatarComponent> AvatarComponentReference;
-            typedef TypedObjectReference<Ent::nInventoryComponent> InventoryComponentReference;
+            typedef TypedObjectReference<Entity::Entity> EntityReference;
+            typedef TypedObjectReference<Entity::AvatarComponent> AvatarComponentReference;
+            typedef TypedObjectReference<Entity::InventoryComponent> InventoryComponentReference;
 
             EntityReference Avatar();
             AvatarComponentReference AvatarComponent();
@@ -83,6 +84,8 @@ namespace Atmos
         private:
             void OnDialogDeactivated();
             void OnActionPressed(const Input::Action& args);
+        private:
+            LoggingSystem* FindLoggingSystem();
         };
     }
 }

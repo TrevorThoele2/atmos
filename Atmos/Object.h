@@ -13,7 +13,7 @@ namespace Atmos
     class Object
     {
     public:
-        Object();
+        Object(ObjectManager& manager);
         Object(const ::Inscription::Table<Object>& table);
         virtual ~Object() = 0;
 
@@ -32,8 +32,6 @@ namespace Atmos
     private:
         ObjectID id;
         ObjectManager* manager;
-    private:
-        friend ObjectManager;
     public:
         INSCRIPTION_ACCESS;
     };

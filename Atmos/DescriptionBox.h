@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include <AGUI\SpriteWidget.h>
+#include <AGUI/SpriteWidget.h>
 
 namespace Agui
 {

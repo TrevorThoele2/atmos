@@ -3,15 +3,31 @@
 
 namespace Atmos
 {
-    Size3D::Size3D(ValueT width, ValueT height, ValueT depth, ValueT xScaler, ValueT yScaler, ValueT zScaler, const Angle &xRotation, const Angle &yRotation, const Angle &zRotation) : width(width), height(height), depth(depth), xScaler(xScaler), yScaler(yScaler), zScaler(zScaler), xRotation(xRotation), yRotation(yRotation), zRotation(zRotation)
+    Size3D::Size3D(
+        ValueT width,
+        ValueT height,
+        ValueT depth,
+        ValueT xScaler,
+        ValueT yScaler,
+        ValueT zScaler,
+        const Angle& xRotation,
+        const Angle& yRotation,
+        const Angle& zRotation) :
+        
+        width(width), height(height), depth(depth), xScaler(xScaler), yScaler(yScaler), zScaler(zScaler),
+        xRotation(xRotation), yRotation(yRotation), zRotation(zRotation)
     {
         Calculate();
     }
 
-    Size3D::Size3D(const Size3D &arg) : width(arg.width), height(arg.height), depth(arg.depth), realWidth(arg.realWidth), realHeight(arg.realHeight), realDepth(arg.realDepth), xScaler(arg.xScaler), yScaler(arg.yScaler), zScaler(arg.zScaler), xRotation(arg.xRotation), yRotation(arg.yRotation), zRotation(arg.zRotation)
+    Size3D::Size3D(const Size3D& arg) :
+        width(arg.width), height(arg.height), depth(arg.depth),
+        realWidth(arg.realWidth), realHeight(arg.realHeight), realDepth(arg.realDepth),
+        xScaler(arg.xScaler), yScaler(arg.yScaler), zScaler(arg.zScaler),
+        xRotation(arg.xRotation), yRotation(arg.yRotation), zRotation(arg.zRotation)
     {}
 
-    Size3D& Size3D::operator=(const Size3D &arg)
+    Size3D& Size3D::operator=(const Size3D& arg)
     {
         width = arg.width;
         height = arg.height;
@@ -28,12 +44,24 @@ namespace Atmos
         return *this;
     }
 
-    bool Size3D::operator==(const Size3D &arg) const
+    bool Size3D::operator==(const Size3D& arg) const
     {
-        return width == arg.width && height == arg.height && depth == arg.depth && realWidth == arg.realWidth && realHeight == arg.realHeight && realDepth == arg.realDepth && xScaler == arg.xScaler && yScaler == arg.yScaler && zScaler == arg.zScaler && xRotation == arg.xRotation && yRotation == arg.yRotation && zRotation == arg.zRotation;
+        return
+            width == arg.width &&
+            height == arg.height &&
+            depth == arg.depth &&
+            realWidth == arg.realWidth &&
+            realHeight == arg.realHeight &&
+            realDepth == arg.realDepth &&
+            xScaler == arg.xScaler &&
+            yScaler == arg.yScaler &&
+            zScaler == arg.zScaler &&
+            xRotation == arg.xRotation &&
+            yRotation == arg.yRotation &&
+            zRotation == arg.zRotation;
     }
 
-    bool Size3D::operator!=(const Size3D &arg) const
+    bool Size3D::operator!=(const Size3D& arg) const
     {
         return !(*this == arg);
     }
@@ -124,19 +152,19 @@ namespace Atmos
         return zScaler;
     }
 
-    void Size3D::SetXRotation(const Angle &setTo)
+    void Size3D::SetXRotation(const Angle& setTo)
     {
         xRotation = setTo;
         Calculate();
     }
 
-    void Size3D::SetYRotation(const Angle &setTo)
+    void Size3D::SetYRotation(const Angle& setTo)
     {
         yRotation = setTo;
         Calculate();
     }
 
-    void Size3D::SetZRotation(const Angle &setTo)
+    void Size3D::SetZRotation(const Angle& setTo)
     {
         zRotation = setTo;
         Calculate();

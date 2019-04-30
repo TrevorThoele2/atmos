@@ -2,11 +2,11 @@
 
 #include <vector>
 
-#include "nEntityComponent.h"
+#include "EntityComponent.h"
 
-#include "ObjectOffset.h"
 #include "Sprite.h"
 #include "Sound.h"
+#include "PositionalOffsetAdapter.h"
 
 #include "Position3D.h"
 
@@ -14,13 +14,13 @@
 
 namespace Atmos
 {
-    namespace Ent
+    namespace Entity
     {
-        class nSenseComponent : public nEntityComponent
+        class SenseComponent : public Component
         {
         public:
-            typedef PositionalOffsetAdapter<nSprite> SpriteOffset;
-            typedef PositionalOffsetAdapter<nSound> SoundOffset;
+            typedef PositionalOffsetAdapter<Sprite> SpriteOffset;
+            typedef PositionalOffsetAdapter<Sound> SoundOffset;
 
             typedef std::vector<SpriteOffset> SpriteList;
             typedef std::vector<SoundOffset> SoundList;
@@ -32,9 +32,9 @@ namespace Atmos
             SpriteList sprites;
             SoundList sounds;
         public:
-            nSenseComponent(EntityReference reference);
-            nSenseComponent(const nSenseComponent& arg) = default;
-            nSenseComponent(const ::Inscription::Table<nSenseComponent>& table);
+            SenseComponent(ObjectManager& manager, EntityReference reference);
+            SenseComponent(const SenseComponent& arg) = default;
+            SenseComponent(const ::Inscription::Table<SenseComponent>& table);
 
             void Enable(bool enable = true);
             void Disable();
@@ -52,7 +52,7 @@ namespace Atmos
     }
 
     template<>
-    struct ObjectTraits<Ent::nSenseComponent> : ObjectTraitsBase<Ent::nSenseComponent>
+    struct ObjectTraits<Entity::SenseComponent> : ObjectTraitsBase<Entity::SenseComponent>
     {
         static const ObjectTypeName typeName;
     };
@@ -60,10 +60,10 @@ namespace Atmos
 
 namespace Inscription
 {
-    DECLARE_OBJECT_INSCRIPTER(::Atmos::Ent::nSenseComponent)
+    DECLARE_OBJECT_INSCRIPTER(::Atmos::Entity::SenseComponent)
     {
     public:
-        static void AddMembers(TableT& table);
+        OBJECT_INSCRIPTER_DECLARE_MEMBERS;
 
         INSCRIPTION_INSCRIPTER_DECLARE_SERIALIZE_FUNCTION;
     };

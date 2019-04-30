@@ -3,22 +3,19 @@
 
 namespace Atmos
 {
-    Field::Field(ID id, ObjectManager&& objectManager) : id(id), objectManager(std::move(objectManager))
+    Field::Field(ID id) : _id(id),
+        id([this]() { return _id; })
     {}
 
-    Field::Field(Field &&arg) : id(arg.id), objectManager(std::move(arg.objectManager))
+    Field::Field(Field&& arg) : _id(std::move(arg._id)),
+        id([this]() { return _id; })
     {}
 
-    Field& Field::operator=(Field &&arg)
+    Field& Field::operator=(Field&& arg)
     {
-        id = std::move(arg.id);
+        _id = std::move(arg._id);
         objectManager = std::move(arg.objectManager);
         return *this;
-    }
-
-    Field::ID Field::GetID() const
-    {
-        return id;
     }
 
     INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(Field)

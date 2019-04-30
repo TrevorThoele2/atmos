@@ -2,8 +2,7 @@
 #include "CombatComponent.h"
 
 #include "Battle.h"
-#include "MainGame.h"
-#include "AvatarSystem.h"
+#include "EntityAvatarSystem.h"
 #include "InventoryComponent.h"
 
 #include <Inscription\UnorderedMap.h>
@@ -13,15 +12,16 @@
 
 namespace Atmos
 {
-    namespace Ent
+    namespace Entity
     {
-        nCombatComponent::nCombatComponent(EntityReference reference) : nEntityComponent(reference)
+        CombatComponent::CombatComponent(ObjectManager& manager, EntityReference reference) :
+            Component(manager, reference)
         {}
 
-        nCombatComponent::nCombatComponent(const ::Inscription::Table<nCombatComponent>& table) : INSCRIPTION_TABLE_GET_BASE(nEntityComponent)
+        CombatComponent::CombatComponent(const ::Inscription::Table<CombatComponent>& table) : INSCRIPTION_TABLE_GET_BASE(Component)
         {}
 
-        void nCombatComponent::SetClass(CharacterClassReference set)
+        void CombatComponent::SetClass(CharacterClassReference set)
         {
             ATMOS_ASSERT_MESSAGE(set.Get(), "This registry object MUST be set before-hand");
 
@@ -33,7 +33,7 @@ namespace Atmos
 
             // Remove all items that are going to be "lost"
             // Permanent
-            auto avatarInventory = Manager()->FindSystem<Ent::nEntityAvatarSystem>()->Avatar()->Component<Ent::nInventoryComponent>();
+            auto avatarInventory = Manager()->FindSystem<AvatarSystem>()->Avatar()->RetrieveComponent<InventoryComponent>();
             {
                 auto loop = permanentStash.rbegin();
                 while (permanentStash.size() > characterClass->permanentMaxItemCount)
@@ -44,12 +44,12 @@ namespace Atmos
             }
         }
 
-        bool nCombatComponent::IsDead() const
+        bool CombatComponent::IsDead() const
         {
             return resources.GetHealth() == 0;
         }
 
-        bool nCombatComponent::GiveItem(ItemReference item)
+        bool CombatComponent::GiveItem(ItemReference item)
         {
             if (!HasSpaceInStash())
                 return false;
@@ -58,7 +58,7 @@ namespace Atmos
             return true;
         }
 
-        bool nCombatComponent::RemoveItem(ItemStashSize pos)
+        bool CombatComponent::RemoveItem(ItemStashSize pos)
         {
             if (permanentStash.empty() || permanentStash.size() - 1 < pos)
                 return false;
@@ -67,7 +67,7 @@ namespace Atmos
             return true;
         }
 
-        nCombatComponent::ItemReference nCombatComponent::FindItem(ItemStashSize pos)
+        CombatComponent::ItemReference CombatComponent::FindItem(ItemStashSize pos)
         {
             auto found = permanentStash.Find(pos);
             if (found == permanentStash.end())
@@ -76,22 +76,22 @@ namespace Atmos
             return *found;
         }
 
-        bool nCombatComponent::HasSpaceInStash() const
+        bool CombatComponent::HasSpaceInStash() const
         {
             return permanentStash.size() < characterClass->permanentMaxItemCount;
         }
 
-        void nCombatComponent::Equip(EquipSlot slot, ItemReference item)
+        void CombatComponent::Equip(EquipSlot slot, ItemReference item)
         {
 
         }
 
-        void nCombatComponent::Unequip(EquipSlot slot)
+        void CombatComponent::Unequip(EquipSlot slot)
         {
 
         }
 
-        nCombatComponent::ItemReference nCombatComponent::GetEquipment(EquipSlot slot) const
+        CombatComponent::ItemReference CombatComponent::GetEquipment(EquipSlot slot) const
         {
             auto found = equipment.find(slot);
             if (found == equipment.end())
@@ -100,12 +100,12 @@ namespace Atmos
             return found->second;
         }
 
-        bool nCombatComponent::CanEquip(EquipSlot slot) const
+        bool CombatComponent::CanEquip(EquipSlot slot) const
         {
             return equipment.find(slot) == equipment.end();
         }
 
-        bool nCombatComponent::LearnSpell(SpellReference learn)
+        bool CombatComponent::LearnSpell(SpellReference learn)
         {
             if (!CanLearnSpell(learn))
                 return false;
@@ -114,7 +114,7 @@ namespace Atmos
             return true;
         }
 
-        bool nCombatComponent::CanLearnSpell(SpellReference test) const
+        bool CombatComponent::CanLearnSpell(SpellReference test) const
         {
             if (!characterClass)
                 return false;
@@ -123,7 +123,7 @@ namespace Atmos
             return found != test->allowedClasses.end();
         }
 
-        Defense nCombatComponent::GetDefense() const
+        Defense CombatComponent::GetDefense() const
         {
             Defense ret = 0;
             for (auto& loop : equipment)
@@ -135,18 +135,18 @@ namespace Atmos
             return ret;
         }
 
-        ObjectTypeDescription nCombatComponent::TypeDescription() const
+        ObjectTypeDescription CombatComponent::TypeDescription() const
         {
-            return ObjectTraits<nCombatComponent>::TypeDescription();
+            return ObjectTraits<CombatComponent>::TypeDescription();
         }
     }
 
-    const ObjectTypeName ObjectTraits<Ent::nCombatComponent>::typeName = "CombatComponent";
+    const ObjectTypeName ObjectTraits<Entity::CombatComponent>::typeName = "CombatComponent";
 }
 
 namespace Inscription
 {
-    DEFINE_OBJECT_INSCRIPTER_MEMBERS(::Atmos::Ent::nCombatComponent)
+    OBJECT_INSCRIPTER_DEFINE_MEMBERS(::Atmos::Entity::CombatComponent)
     {
         INSCRIPTION_TABLE_ADD(stats);
         INSCRIPTION_TABLE_ADD(resources);
@@ -162,7 +162,7 @@ namespace Inscription
         INSCRIPTION_TABLE_ADD(movementRange);
     }
 
-    INSCRIPTION_INSCRIPTER_DEFINE_SERIALIZE_FUNCTION(::Atmos::Ent::nCombatComponent)
+    INSCRIPTION_INSCRIPTER_DEFINE_SERIALIZE_FUNCTION(::Atmos::Entity::CombatComponent)
     {
         INSCRIPTION_INSCRIPTER_CALL_BASE_SERIALIZE_FUNCTION;
 

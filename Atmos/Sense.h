@@ -6,21 +6,21 @@
 
 namespace Atmos
 {
-    class nSense : public PositionalObject
+    class Sense : public PositionalObject
     {
     public:
         StoredProperty<bool> enabled;
     public:
-        nSense();
-        nSense(const nSense& arg) = default;
-        nSense(const ::Inscription::Table<nSense>& table);
-        virtual ~nSense() = 0;
+        Sense(ObjectManager& manager);
+        Sense(const Sense& arg) = default;
+        Sense(const ::Inscription::Table<Sense>& table);
+        virtual ~Sense() = 0;
     public:
         ObjectTypeDescription TypeDescription() const override;
     };
 
     template<>
-    struct ObjectTraits<nSense> : ObjectTraitsBase<nSense>
+    struct ObjectTraits<Sense> : ObjectTraitsBase<Sense>
     {
         static const ObjectTypeName typeName;
         static constexpr ObjectTypeList<PositionalObject> bases = {};
@@ -29,9 +29,9 @@ namespace Atmos
 
 namespace Inscription
 {
-    DECLARE_OBJECT_INSCRIPTER(::Atmos::nSense)
+    DECLARE_OBJECT_INSCRIPTER(::Atmos::Sense)
     {
     public:
-        static void AddMembers(TableT& table);
+        OBJECT_INSCRIPTER_DECLARE_MEMBERS;
     };
 }

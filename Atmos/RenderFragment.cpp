@@ -1,47 +1,46 @@
 
 #include "RenderFragment.h"
-#include "CurrentField.h"
 
 #include <Inscription\Scribe.h>
 
 namespace Atmos
 {
-    nRenderFragment::nRenderFragment()
+    RenderFragment::RenderFragment(ObjectManager& manager) : Sense(manager)
     {
         SubscribeToProperties();
     }
 
-    nRenderFragment::nRenderFragment(const ::Inscription::Table<nRenderFragment>& table) : INSCRIPTION_TABLE_GET_BASE(nSense)
+    RenderFragment::RenderFragment(const ::Inscription::Table<RenderFragment>& table) : INSCRIPTION_TABLE_GET_BASE(Sense)
     {
         SubscribeToProperties();
     }
 
-    void nRenderFragment::Draw()
+    void RenderFragment::Draw()
     {
         DrawImpl();
     }
 
-    ObjectTypeDescription nRenderFragment::TypeDescription() const
+    ObjectTypeDescription RenderFragment::TypeDescription() const
     {
-        return ObjectTraits<nRenderFragment>::TypeDescription();
+        return ObjectTraits<RenderFragment>::TypeDescription();
     }
 
-    void nRenderFragment::SubscribeToProperties()
+    void RenderFragment::SubscribeToProperties()
     {
-        enabled.onValueChanged.Subscribe(&nRenderFragment::OnEnabledChanged, *this);
+        enabled.onValueChanged.Subscribe(&RenderFragment::OnEnabledChanged, *this);
     }
 
-    void nRenderFragment::OnEnabledChanged(bool newValue)
+    void RenderFragment::OnEnabledChanged(bool newValue)
     {
 
     }
 
-    const ObjectTypeName ObjectTraits<nRenderFragment>::typeName = "RenderFragment";
+    const ObjectTypeName ObjectTraits<RenderFragment>::typeName = "RenderFragment";
 }
 
 namespace Inscription
 {
-    DEFINE_OBJECT_INSCRIPTER_MEMBERS(::Atmos::nRenderFragment)
+    OBJECT_INSCRIPTER_DEFINE_MEMBERS(::Atmos::RenderFragment)
     {
 
     }

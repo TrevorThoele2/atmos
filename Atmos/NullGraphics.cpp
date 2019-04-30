@@ -62,9 +62,9 @@ namespace Atmos
         void Release() override
         {}
 
-        RenderSurface::ScreenDimensions GetDimensions() override
+        RenderSurface::Size GetSize() override
         {
-            return RenderSurface::ScreenDimensions(0, 0);
+            return RenderSurface::Size(0, 0);
         }
     };
 
@@ -79,10 +79,10 @@ namespace Atmos
         void StopPainting() override
         {}
 
-        void PaintPixel(const Canvas::PositionT &position, const Color &color, Canvas::Dimension height) override
+        void PaintPixel(const Canvas::PositionT& position, const Color& color, Canvas::Dimension height) override
         {}
 
-        void Clear(const Color &color) override
+        void Clear(const Color& color) override
         {}
 
         void Release() override
@@ -92,128 +92,128 @@ namespace Atmos
         {}
     };
 
-    void NullGraphicsHandler::ReinitializeImpl()
+    void NullGraphicsManager::SetFullscreen(bool set)
     {}
 
-    void NullGraphicsHandler::SetMainDimensionsImpl(const ScreenDimensions &dimensions)
+    void NullGraphicsManager::ClearTarget(const Flags<Target>& target)
     {}
 
-    NullGraphicsHandler::ScreenDimensions NullGraphicsHandler::GetMainDimensionsImpl() const
-    {
-        return ScreenDimensions(0, 0);
-    }
-
-    std::unique_ptr<ImageAssetData> NullGraphicsHandler::CreateImageDataImpl(const FilePath &path)
-    {
-        return std::unique_ptr<ImageAssetData>(new ImageAssetDataImplementation());
-    }
-
-    std::unique_ptr<ImageAssetData> NullGraphicsHandler::CreateImageDataImpl(void *buffer, std::int32_t size, const FileName &name)
-    {
-        return std::unique_ptr<ImageAssetData>(new ImageAssetDataImplementation());
-    }
-
-    std::unique_ptr<ShaderAssetData> NullGraphicsHandler::CreateShaderDataImpl(const FilePath &path)
-    {
-        return std::unique_ptr<ShaderAssetData>(new ShaderAssetDataImplementation());
-    }
-
-    std::unique_ptr<ShaderAssetData> NullGraphicsHandler::CreateShaderDataImpl(void *buffer, std::int32_t size, const FileName &name)
-    {
-        return std::unique_ptr<ShaderAssetData>(new ShaderAssetDataImplementation());
-    }
-
-    RenderSurface NullGraphicsHandler::CreateRenderSurfaceImpl(void *window)
-    {
-        return RenderSurface(new RenderSurfaceData());
-    }
-
-    Canvas NullGraphicsHandler::CreateCanvasImpl(const ScreenDimensions &dimensions)
-    {
-        return Canvas(new CanvasData(), dimensions.first, dimensions.second);
-    }
-
-    bool NullGraphicsHandler::CanMakeImageImpl(const FilePath &path) const
-    {
-        return true;
-    }
-
-    bool NullGraphicsHandler::CanMakeImageImpl(void *buffer, std::int32_t size) const
-    {
-        return true;
-    }
-
-    void NullGraphicsHandler::ResizeCanvasImpl(Canvas &canvas, const ScreenDimensions &dimensions)
+    void NullGraphicsManager::ClearTarget(const Flags<Target>& target, const Color& color)
     {}
 
-    void NullGraphicsHandler::SetRenderTargetImpl(RenderSurface &set)
+    void NullGraphicsManager::Flush()
     {}
 
-    void NullGraphicsHandler::SetRenderTargetToMainImpl()
+    void NullGraphicsManager::SetRenderState(RenderState state, bool set)
     {}
 
-    void NullGraphicsHandler::ReleaseMainRenderTarget()
-    {}
-
-    void NullGraphicsHandler::ResetMainRenderTarget()
-    {}
-
-    void NullGraphicsHandler::PresentImpl()
-    {}
-
-    void NullGraphicsHandler::PresentImpl(void *windowOverride)
-    {}
-
-    void NullGraphicsHandler::RenderSpriteImpl(SpriteReference sprite, float X, float Y)
-    {}
-
-    void NullGraphicsHandler::RenderCanvasViewImpl(CanvasViewReference view, float X, float Y)
-    {}
-
-    void NullGraphicsHandler::RenderUnknownFragmentImpl(RenderFragmentReference fragment, float X, float Y)
-    {}
-
-    void NullGraphicsHandler::RenderLineImpl(const LineRender &line)
-    {}
-
-    void NullGraphicsHandler::SetFullscreen(bool set)
-    {}
-
-    void NullGraphicsHandler::ClearTarget(const Flags<Target> &target)
-    {}
-
-    void NullGraphicsHandler::ClearTarget(const Flags<Target> &target, const Color &color)
-    {}
-
-    void NullGraphicsHandler::Flush()
-    {}
-
-    void NullGraphicsHandler::SetRenderState(RenderState state, bool set)
-    {}
-
-    bool NullGraphicsHandler::Start()
+    bool NullGraphicsManager::Start()
     {
         return false;
     }
 
-    void NullGraphicsHandler::End()
+    void NullGraphicsManager::End()
     {}
 
-    void NullGraphicsHandler::StartSprites(size_t spriteCount)
+    void NullGraphicsManager::StartSprites(size_t spriteCount)
     {}
 
-    void NullGraphicsHandler::EndSprites()
+    void NullGraphicsManager::EndSprites()
     {}
 
-    void NullGraphicsHandler::StartLines()
+    void NullGraphicsManager::StartLines()
     {}
 
-    void NullGraphicsHandler::EndLines()
+    void NullGraphicsManager::EndLines()
     {}
 
-    void NullGraphicsHandler::StartStencil()
+    void NullGraphicsManager::StartStencil()
     {}
 
-    void NullGraphicsHandler::StopStencil()
+    void NullGraphicsManager::StopStencil()
+    {}
+
+    void NullGraphicsManager::ReinitializeImpl()
+    {}
+
+    void NullGraphicsManager::SetMainDimensionsImpl(const ScreenDimensions& dimensions)
+    {}
+
+    ScreenDimensions NullGraphicsManager::GetMainDimensionsImpl() const
+    {
+        return ScreenDimensions(0, 0);
+    }
+
+    std::unique_ptr<ImageAssetData> NullGraphicsManager::CreateImageDataImpl(const FilePath& path)
+    {
+        return std::unique_ptr<ImageAssetData>(new ImageAssetDataImplementation());
+    }
+
+    std::unique_ptr<ImageAssetData> NullGraphicsManager::CreateImageDataImpl(void* buffer, std::int32_t size, const FileName& name)
+    {
+        return std::unique_ptr<ImageAssetData>(new ImageAssetDataImplementation());
+    }
+
+    std::unique_ptr<ShaderAssetData> NullGraphicsManager::CreateShaderDataImpl(const FilePath& path)
+    {
+        return std::unique_ptr<ShaderAssetData>(new ShaderAssetDataImplementation());
+    }
+
+    std::unique_ptr<ShaderAssetData> NullGraphicsManager::CreateShaderDataImpl(void* buffer, std::int32_t size, const FileName& name)
+    {
+        return std::unique_ptr<ShaderAssetData>(new ShaderAssetDataImplementation());
+    }
+
+    RenderSurface NullGraphicsManager::CreateRenderSurfaceImpl(void* window)
+    {
+        return RenderSurface(RenderSurface::DataPtr(new RenderSurfaceData()));
+    }
+
+    Canvas NullGraphicsManager::CreateCanvasImpl(const ScreenDimensions& dimensions)
+    {
+        return Canvas(new CanvasData(), dimensions.width, dimensions.height);
+    }
+
+    bool NullGraphicsManager::CanMakeImageImpl(const FilePath& path) const
+    {
+        return true;
+    }
+
+    bool NullGraphicsManager::CanMakeImageImpl(void* buffer, std::int32_t size) const
+    {
+        return true;
+    }
+
+    void NullGraphicsManager::ResizeCanvasImpl(Canvas& canvas, const ScreenDimensions& dimensions)
+    {}
+
+    void NullGraphicsManager::SetRenderTargetImpl(RenderSurface& set)
+    {}
+
+    void NullGraphicsManager::SetRenderTargetToMainImpl()
+    {}
+
+    void NullGraphicsManager::ReleaseMainRenderTarget()
+    {}
+
+    void NullGraphicsManager::ResetMainRenderTarget()
+    {}
+
+    void NullGraphicsManager::PresentImpl()
+    {}
+
+    void NullGraphicsManager::PresentImpl(void* windowOverride)
+    {}
+
+    void NullGraphicsManager::RenderSpriteImpl(SpriteReference sprite, float X, float Y)
+    {}
+
+    void NullGraphicsManager::RenderCanvasViewImpl(CanvasViewReference view, float X, float Y)
+    {}
+
+    void NullGraphicsManager::RenderUnknownFragmentImpl(RenderFragmentReference fragment, float X, float Y)
+    {}
+
+    void NullGraphicsManager::RenderLineImpl(const LineRender& line)
     {}
 }

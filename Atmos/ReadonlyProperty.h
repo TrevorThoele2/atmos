@@ -41,7 +41,6 @@ namespace Atmos
     {
     public:
         typedef T Value;
-    private:
         typedef std::function<T()> Getter;
     public:
         ReadonlyProperty(Getter getter);

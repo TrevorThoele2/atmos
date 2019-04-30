@@ -1,6 +1,8 @@
 
 #include "AngelScriptGridPosition.h"
 
+#include "AngelScriptRegistrationInterface.h"
+
 #include "AngelScriptAssert.h"
 #include <angelscript.h>
 
@@ -8,26 +10,25 @@ namespace Atmos
 {
     namespace Scripting
     {
-        void GridPosition::Constructor(void* memory)
-        {
-            new(memory) GridPosition();
-        }
-
-        void GridPosition::Destructor(void* memory)
-        {
-            static_cast<GridPosition*>(memory)->~GridPosition();
-        }
+        GridPosition::GridPosition() : x(0), y(0), z(0)
+        {}
 
         void GridPosition::RegisterToAngelScript(asIScriptEngine* engine)
         {
-            AngelScriptAssert(engine->RegisterObjectType("GridPosition", sizeof(GridPosition), asOBJ_VALUE));
+            const char* className = "GridPosition";
+
+            AngelScriptAssert(engine->RegisterObjectType(
+                className, sizeof(GridPosition), asOBJ_VALUE));
             AngelScriptAssert(engine->RegisterObjectBehaviour(
-                "GridPosition", asBEHAVE_CONSTRUCT, "void f()", asFUNCTION(GridPosition::Constructor), asCALL_CDECL_OBJLAST));
+                className, asBEHAVE_CONSTRUCT, "void f()", asFUNCTION(RegistrationInterface::GenerateValue<GridPosition>), asCALL_GENERIC));
             AngelScriptAssert(engine->RegisterObjectBehaviour(
-                "GridPosition", asBEHAVE_DESTRUCT, "void f()", asFUNCTION(GridPosition::Destructor), asCALL_CDECL_OBJLAST));
-            AngelScriptAssert(engine->RegisterObjectProperty("GridPosition", "int x", asOFFSET(GridPosition, x)));
-            AngelScriptAssert(engine->RegisterObjectProperty("GridPosition", "int y", asOFFSET(GridPosition, y)));
-            AngelScriptAssert(engine->RegisterObjectProperty("GridPosition", "int z", asOFFSET(GridPosition, z)));
+                className, asBEHAVE_DESTRUCT, "void f()", asFUNCTION(RegistrationInterface::DestructValue<GridPosition>), asCALL_GENERIC));
+            AngelScriptAssert(engine->RegisterObjectProperty(
+                className, "int x", asOFFSET(GridPosition, x)));
+            AngelScriptAssert(engine->RegisterObjectProperty(
+                className, "int y", asOFFSET(GridPosition, y)));
+            AngelScriptAssert(engine->RegisterObjectProperty(
+                className, "int z", asOFFSET(GridPosition, z)));
         }
     }
 }

@@ -1,17 +1,19 @@
-
 #pragma once
 
 #include "Field.h"
 #include "FieldDestination.h"
 
-#include "FilePath.h"
+#include "ObjectRegistration.h"
+
 #include "Event.h"
+#include "FilePath.h"
 #include "Optional.h"
 
 namespace Atmos
 {
-    class Camera;
-    class WorldStartBase;
+    class FileSystem;
+    class LoggingSystem;
+
     class WorldManager
     {
     public:
@@ -20,35 +22,41 @@ namespace Atmos
         // This will be called right before a new field is made to replace the current one
         Event<Field*> eventFinalizeField;
     public:
-        WorldManager() = default;
-        WorldManager(const WorldManager &arg) = default;
-        WorldManager& operator=(const WorldManager &arg) = default;
+        WorldManager(ObjectManager& globalObjectManager, ObjectRegistration& objectRegistration);
+        WorldManager(const ::Inscription::Table<WorldManager>& table);
+
+        void Initialize();
 
         void Work();
-        void Draw();
         void LockIn();
         void Clear(bool destroyField = true);
 
         // Returns if the field exists
         bool Request(FieldID id);
         // Returns if the field exists
-        bool Request(const FieldDestination &request);
+        bool Request(const FieldDestination& request);
 
         // The transition field is the "old" field during a transition period
         Field* GetTransitionField();
         bool IsTransitioning();
 
         void StartNew();
-        void UseWorld(const FilePath &path);
-        void UseWorld(const FileName &name);
-        void UseStasis(const FileName &name);
+        void UseWorld(const FilePath& path);
+        void UseWorld(const FileName& name);
+        void UseStasis(const FileName& name);
 
         void Autosave();
-        void SaveStasis(const FileName &name);
+        void SaveStasis(const FileName& name);
 
-        const FilePath& GetWorldPath();
+        const FilePath& WorldPath();
 
-        Field* GetCurrentField();
+        Field* CurrentField();
+    private:
+        ObjectManager* globalObjectManager;
+        FileSystem* FindFileSystem() const;
+        LoggingSystem* FindLoggingSystem() const;
+
+        ObjectRegistration* objectRegistration;
     private:
         std::unique_ptr<Field> field;
         std::unique_ptr<Field> oldField;
@@ -63,13 +71,26 @@ namespace Atmos
         bool useWorldStart;
 
         FilePath worldPath;
-
-        void OnFocusLost();
-        void OnFocusRegain();
-
+    private:
         bool HasField(FieldID id);
 
         void Autosave(FieldID worldStartFieldID);
-        void SaveStasis(FieldID worldStartFieldID, const FileName &name);
+        void SaveStasis(FieldID worldStartFieldID, const FileName& name);
+    private:
+        FilePath CreateWorldFilePath(const FileName& fileName) const;
+        FilePath CreateStasisFilePath(const FileName& fileName) const;
+
+        FilePath WorldFolderFilePath() const;
+        FilePath StasisFolderFilePath() const;
+    };
+}
+
+namespace Inscription
+{
+    INSCRIPTION_INSCRIPTER_DECLARE(::Atmos::WorldManager)
+    {
+    public:
+        INSCRIPTION_INSCRIPTER_DECLARE_TABLE;
+        INSCRIPTION_DECLARE_CLASS_NAME_RESOLVER;
     };
 }

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "nEntityComponent.h"
+#include "EntityComponent.h"
 
 #include "NameValuePair.h"
 #include "GridPosition.h"
@@ -11,9 +11,9 @@
 
 namespace Atmos
 {
-    namespace Ent
+    namespace Entity
     {
-        class nGeneralComponent : public nEntityComponent
+        class GeneralComponent : public Component
         {
         public:
             typedef NameValuePair StorageObject;
@@ -39,9 +39,9 @@ namespace Atmos
             // Tags
             std::unordered_set<Tag> tags;
         public:
-            nGeneralComponent(EntityReference reference);
-            nGeneralComponent(const nGeneralComponent& arg) = default;
-            nGeneralComponent(const ::Inscription::Table<nGeneralComponent>& table);
+            GeneralComponent(ObjectManager& manager, EntityReference reference);
+            GeneralComponent(const GeneralComponent& arg) = default;
+            GeneralComponent(const ::Inscription::Table<GeneralComponent>& table);
 
             void SetPosition(const PositionT &set);
             GridPosition GetPositionInFront() const;
@@ -72,7 +72,7 @@ namespace Atmos
     }
 
     template<>
-    struct ObjectTraits<Ent::nGeneralComponent> : ObjectTraitsBase<Ent::nGeneralComponent>
+    struct ObjectTraits<Entity::GeneralComponent> : ObjectTraitsBase<Entity::GeneralComponent>
     {
         static const ObjectTypeName typeName;
     };
@@ -80,10 +80,10 @@ namespace Atmos
 
 namespace Inscription
 {
-    DECLARE_OBJECT_INSCRIPTER(::Atmos::Ent::nGeneralComponent)
+    DECLARE_OBJECT_INSCRIPTER(::Atmos::Entity::GeneralComponent)
     {
     public:
-        static void AddMembers(TableT& table);
+        OBJECT_INSCRIPTER_DECLARE_MEMBERS;
 
         INSCRIPTION_INSCRIPTER_DECLARE_SERIALIZE_FUNCTION;
     };

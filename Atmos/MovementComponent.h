@@ -2,15 +2,15 @@
 
 #include "ObjectReference.h"
 
-#include "nEntityComponent.h"
+#include "EntityComponent.h"
 
 #include "ScriptInstance.h"
 
 namespace Atmos
 {
-    namespace Ent
+    namespace Entity
     {
-        class nMovementComponent : public nEntityComponent
+        class MovementComponent : public Component
         {
         public:
             typedef TypedObjectReference<ScriptInstance> ScriptInstance;
@@ -20,9 +20,9 @@ namespace Atmos
             ScriptInstance movementModulatorCreator;
             ScriptInstance changeDirectionModulatorCreator;
         public:
-            nMovementComponent(EntityReference reference);
-            nMovementComponent(const nMovementComponent& arg) = default;
-            nMovementComponent(const ::Inscription::Table<nMovementComponent>& table);
+            MovementComponent(ObjectManager& manager, EntityReference reference);
+            MovementComponent(const MovementComponent& arg) = default;
+            MovementComponent(const ::Inscription::Table<MovementComponent>& table);
 
             void Enable();
             void Disable();
@@ -40,7 +40,7 @@ namespace Atmos
     }
 
     template<>
-    struct ObjectTraits<Ent::nMovementComponent> : ObjectTraitsBase<Ent::nMovementComponent>
+    struct ObjectTraits<Entity::MovementComponent> : ObjectTraitsBase<Entity::MovementComponent>
     {
         static const ObjectTypeName typeName;
     };
@@ -48,9 +48,9 @@ namespace Atmos
 
 namespace Inscription
 {
-    DECLARE_OBJECT_INSCRIPTER(::Atmos::Ent::nMovementComponent)
+    DECLARE_OBJECT_INSCRIPTER(::Atmos::Entity::MovementComponent)
     {
     public:
-        static void AddMembers(TableT& table);
+        OBJECT_INSCRIPTER_DECLARE_MEMBERS;
     };
 }

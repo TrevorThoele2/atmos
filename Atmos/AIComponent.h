@@ -1,22 +1,22 @@
 #pragma once
 
-#include "nEntityComponent.h"
+#include "EntityComponent.h"
 
 #include "ScriptInstance.h"
 
 namespace Atmos
 {
-    namespace Ent
+    namespace Entity
     {
-        class nAIComponent : public nEntityComponent
+        class AIComponent : public Component
         {
         public:
             typedef TypedObjectReference<ScriptInstance> ScriptInstance;
             ScriptInstance script;
         public:
-            nAIComponent(EntityReference owner);
-            nAIComponent(const nAIComponent& arg) = default;
-            nAIComponent(const ::Inscription::Table<nAIComponent>& table);
+            AIComponent(ObjectManager& manager, EntityReference owner);
+            AIComponent(const AIComponent& arg) = default;
+            AIComponent(const ::Inscription::Table<AIComponent>& table);
 
             ObjectTypeDescription TypeDescription() const override;
         private:
@@ -27,7 +27,7 @@ namespace Atmos
     }
 
     template<>
-    struct ObjectTraits<Ent::nAIComponent> : ObjectTraitsBase<Ent::nAIComponent>
+    struct ObjectTraits<Entity::AIComponent> : ObjectTraitsBase<Entity::AIComponent>
     {
         static const ObjectTypeName typeName;
     };
@@ -35,9 +35,9 @@ namespace Atmos
 
 namespace Inscription
 {
-    DECLARE_OBJECT_INSCRIPTER(::Atmos::Ent::nAIComponent)
+    DECLARE_OBJECT_INSCRIPTER(::Atmos::Entity::AIComponent)
     {
     public:
-        static void AddMembers(TableT& table);
+        OBJECT_INSCRIPTER_DECLARE_MEMBERS;
     };
 }

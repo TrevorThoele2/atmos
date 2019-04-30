@@ -9,22 +9,17 @@
 
 #include "GeneralComponent.h"
 
-#include "MainGame.h"
 #include "GridSize.h"
 #include "Direction.h"
-#include "WorldManager.h"
 #include "EntityAISystem.h"
-#include "ActionSystem.h"
 #include "ScriptController.h"
 #include "StringUtility.h"
-
-#include "Environment.h"
-#include "GameEnvironment.h"
 
 #include "FontDefines.h"
 
 namespace Atmos
 {
+    /*
     namespace Battle
     {
         Gui::Gui()
@@ -46,7 +41,6 @@ namespace Atmos
         }
     }
 
-    /*
     namespace Battle
     {
         void Gui::InitImpl()

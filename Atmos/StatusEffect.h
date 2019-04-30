@@ -20,7 +20,7 @@ namespace Atmos
         typedef unsigned char ApplicationCount;
         typedef FixedPoint64 Accuracy;
     public:
-        typedef TypedObjectReference<Ent::nCombatComponent> CombatComponentReference;
+        typedef TypedObjectReference<Entity::CombatComponent> CombatComponentReference;
     public:
         typedef TypedObjectReference<ScriptInstance> ScriptReference;
         ScriptReference script;
@@ -29,7 +29,7 @@ namespace Atmos
         Accuracy accuracy;
         bool positive;
     public:
-        nStatusEffect(const Name& name);
+        nStatusEffect(ObjectManager& manager, const Name& name);
         nStatusEffect(const nStatusEffect& arg) = default;
         nStatusEffect(const ::Inscription::Table<nStatusEffect>& table);
 
@@ -64,6 +64,6 @@ namespace Inscription
     DECLARE_OBJECT_INSCRIPTER(::Atmos::nStatusEffect)
     {
     public:
-        static void AddMembers(TableT& table);
+        OBJECT_INSCRIPTER_DECLARE_MEMBERS;
     };
 }

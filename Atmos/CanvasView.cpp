@@ -1,17 +1,12 @@
 
 #include "CanvasView.h"
 
-#include "Environment.h"
-
 namespace Atmos
 {
-    CanvasView::CanvasView() : nRenderFragment()
+    CanvasView::CanvasView(ObjectManager& manager, const Canvas* canvas) : RenderFragment(manager), source(canvas)
     {}
 
-    CanvasView::CanvasView(const Canvas& canvas) : nRenderFragment()
-    {}
-
-    CanvasView::CanvasView(const ::Inscription::Table<CanvasView>& table) : INSCRIPTION_TABLE_GET_BASE(nRenderFragment)
+    CanvasView::CanvasView(const ::Inscription::Table<CanvasView>& table) : INSCRIPTION_TABLE_GET_BASE(RenderFragment)
     {}
 
     ObjectTypeDescription CanvasView::TypeDescription() const
@@ -24,7 +19,7 @@ namespace Atmos
 
 namespace Inscription
 {
-    DEFINE_OBJECT_INSCRIPTER_MEMBERS(::Atmos::CanvasView)
+    OBJECT_INSCRIPTER_DEFINE_MEMBERS(::Atmos::CanvasView)
     {
 
     }
