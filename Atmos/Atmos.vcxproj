@@ -75,6 +75,8 @@
     <ClInclude Include="Engine.h" />
     <ClInclude Include="EngineSystem.h" />
     <ClInclude Include="EngineExecution.h" />
+    <ClInclude Include="NullFileManager.h" />
+    <ClInclude Include="NullWindow.h" />
     <ClInclude Include="ObjectException.h" />
     <ClInclude Include="ObjectRegistration.h" />
     <ClInclude Include="FileSystem.h" />
@@ -418,6 +420,8 @@
     <ClCompile Include="EngineSystem.cpp" />
     <ClCompile Include="EngineExecution.cpp" />
     <ClCompile Include="AnyEventConnection.cpp" />
+    <ClCompile Include="NullFileManager.cpp" />
+    <ClCompile Include="NullWindow.cpp" />
     <ClCompile Include="ObjectException.cpp" />
     <ClCompile Include="ObjectRegistration.cpp" />
     <ClCompile Include="FileSystem.cpp" />

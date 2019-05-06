@@ -1430,6 +1430,12 @@
     <ClInclude Include="AngelScriptEvent.h">
       <Filter>Header Files\AngelScript\Registration</Filter>
     </ClInclude>
+    <ClInclude Include="NullWindow.h">
+      <Filter>Header Files\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="NullFileManager.h">
+      <Filter>Header Files\File</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Battle.cpp">
@@ -2184,6 +2190,12 @@
     </ClCompile>
     <ClCompile Include="StopwatchBase.cpp">
       <Filter>Source Files\Time\Stopwatches</Filter>
+    </ClCompile>
+    <ClCompile Include="NullWindow.cpp">
+      <Filter>Source Files\Window</Filter>
+    </ClCompile>
+    <ClCompile Include="NullFileManager.cpp">
+      <Filter>Source Files\File</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -1,12 +1,14 @@
 
 #include "FileSystem.h"
 
+#include "NullFileManager.h"
+
 #include "FilePath.h"
 #include "RelativeFilePath.h"
 
 namespace Atmos
 {
-    FileSystem::FileSystem(ObjectManager& manager) : UniqueProviderSystem(manager)
+    FileSystem::FileSystem(ObjectManager& manager) : UniqueProviderSystem(manager, UniqueProviderSystem::ValuePtr(new NullFileManager()))
     {}
 
     FileSystem::FileSystem(const ::Inscription::Table<FileSystem>& table) :

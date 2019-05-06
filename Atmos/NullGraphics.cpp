@@ -92,6 +92,9 @@ namespace Atmos
         {}
     };
 
+    NullGraphicsManager::NullGraphicsManager(ObjectManager& objectManager) : GraphicsManager(objectManager)
+    {}
+
     void NullGraphicsManager::SetFullscreen(bool set)
     {}
 

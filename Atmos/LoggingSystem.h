@@ -35,7 +35,7 @@ namespace Atmos
         void Log(const String& string, Type type);
         void Log(const String& string, Type type, NameValueVector& nvps);
 
-        String TimeValue();
+        String CurrentTimeStamp();
         void ClearFile();
     private:
         void InitializeImpl();

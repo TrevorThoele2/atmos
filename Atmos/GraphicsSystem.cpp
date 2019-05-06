@@ -1,9 +1,12 @@
 
 #include "GraphicsSystem.h"
 
+#include "NullGraphics.h"
+
 namespace Atmos
 {
-    GraphicsSystem::GraphicsSystem(ObjectManager& manager) : UniqueProviderSystem(manager)
+    GraphicsSystem::GraphicsSystem(ObjectManager& manager) :
+        UniqueProviderSystem(manager, UniqueProviderSystem::ValuePtr(new NullGraphicsManager(manager)))
     {}
 
     GraphicsSystem::GraphicsSystem(const ::Inscription::Table<GraphicsSystem>& table) :

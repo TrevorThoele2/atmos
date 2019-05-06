@@ -8,7 +8,7 @@
 
 #include "StringUtility.h"
 
-#include <Inscription\TextFile.h>
+#include <Inscription/OutputTextFile.h>
 
 namespace Atmos
 {
@@ -42,9 +42,9 @@ namespace Atmos
         DoLog(string, type, nvps);
     }
 
-    String LoggingSystem::TimeValue()
+    String LoggingSystem::CurrentTimeStamp()
     {
-        String timeValue;
+        String message;
 
         time_t t = time(nullptr);
         struct tm now;
@@ -54,30 +54,30 @@ namespace Atmos
         {
             std::ostringstream stream;
             stream << std::setfill('0') << std::setw(2) << append;
-            timeValue.append(stream.str());
+            message.append(stream.str());
         };
 
-        timeValue.append("<");
+        message.append("<");
         widthAppender(now.tm_mday);
-        timeValue.append("/");
+        message.append("/");
         widthAppender(now.tm_mon + 1);
-        timeValue.append("/");
+        message.append("/");
         widthAppender(now.tm_year + 1900);
-        timeValue.append("> (");
+        message.append("> (");
         widthAppender(now.tm_hour);
-        timeValue.append(":");
+        message.append(":");
         widthAppender(now.tm_min);
-        timeValue.append(":");
+        message.append(":");
         widthAppender(now.tm_sec);
-        timeValue.append(")");
+        message.append(")");
 
-        return timeValue;
+        return message;
     }
 
     void LoggingSystem::ClearFile()
     {
         // Just open up the file without appending
-        ::Inscription::TextOutFile outFile(OutputFilePath());
+        ::Inscription::OutputTextFile outFile(OutputFilePath());
     }
 
     void LoggingSystem::InitializeImpl()
@@ -106,10 +106,10 @@ namespace Atmos
 
         String output;
 
-        ::Inscription::TextOutFile outFile(OutputFilePath(), true);
+        ::Inscription::OutputTextFile outFile(OutputFilePath(), true);
 
         // Output time and date
-        output = TimeValue() + ' ';
+        output = ToString(TimeValue()) + ' ';
 
         // Output severity
         {

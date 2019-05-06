@@ -1,6 +1,8 @@
 
 #include "WindowSystem.h"
 
+#include "NullWindow.h"
+
 #include "ObjectManager.h"
 #include "InitializationFileSystem.h"
 #include "DebugStatisticsSystem.h"
@@ -9,7 +11,8 @@
 
 namespace Atmos
 {
-    WindowSystem::WindowSystem(ObjectManager& manager) : UniqueProviderSystem(manager)
+    WindowSystem::WindowSystem(ObjectManager& manager) :
+        UniqueProviderSystem(manager, UniqueProviderSystem::ValuePtr(new NullWindow(manager)))
     {}
 
     WindowSystem::WindowSystem(const ::Inscription::Table<WindowSystem>& table) :

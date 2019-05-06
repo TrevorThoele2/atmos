@@ -25,9 +25,12 @@ namespace Atmos
         Value* operator->() const;
 
         void Set(ValuePtr&& set);
+        template<class U, class... Args>
+        void Create(Args&& ... args);
         Value* Get() const;
     protected:
         UniqueProviderSystem(ObjectManager& manager);
+        UniqueProviderSystem(ObjectManager& manager, ValuePtr&& value);
         UniqueProviderSystem(const ::Inscription::Table<UniqueProviderSystem>& table);
     private:
         ValuePtr value;
@@ -59,6 +62,15 @@ namespace Atmos
     }
 
     template<class T>
+    template<class U, class... Args>
+    void UniqueProviderSystem<T>::Create(Args&& ... args)
+    {
+        static_assert(std::is_base_of_v<T, U>, "When creating, the created type must be derived from the provided type.");
+
+        Set(ValuePtr(new U(std::forward<Args>(args)...)));
+    }
+
+    template<class T>
     typename UniqueProviderSystem<T>::Value* UniqueProviderSystem<T>::Get() const
     {
         return value.get();
@@ -66,6 +78,11 @@ namespace Atmos
 
     template<class T>
     UniqueProviderSystem<T>::UniqueProviderSystem(ObjectManager& manager) : ObjectSystem(manager)
+    {}
+
+    template<class T>
+    UniqueProviderSystem<T>::UniqueProviderSystem(ObjectManager& manager, ValuePtr&& value) :
+        ObjectSystem(manager), value(std::move(value))
     {}
 
     template<class T>

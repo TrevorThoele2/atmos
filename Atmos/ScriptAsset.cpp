@@ -7,7 +7,7 @@
 #include "AngelScriptAssert.h"
 #include <angelscript.h>
 
-#include <Inscription/TextFile.h>
+#include <Inscription/InputTextFile.h>
 
 namespace Atmos
 {
@@ -65,8 +65,8 @@ namespace Atmos
 
         auto engine = objectManager->FindSystem<Scripting::System>()->Engine();
 
-        ::Inscription::TextInFile file(fileName);
-        std::string fileAsString;
+        ::Inscription::InputTextFile file(fileName);
+        String fileAsString;
         file >> fileAsString;
 
         module = engine->GetModule(fileName.GetWithoutExtension().c_str(), asGM_ALWAYS_CREATE);
