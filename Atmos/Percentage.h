@@ -15,7 +15,7 @@ namespace Atmos
         static const WrappedT max;
         static const WrappedT min;
     private:
-        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
+        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
     private:
         WrappedT wrapped;

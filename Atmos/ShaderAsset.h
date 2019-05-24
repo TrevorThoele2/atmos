@@ -19,7 +19,7 @@ namespace Atmos
     public:
         ShaderAsset(ObjectManager& manager, const FileName& fileName, DataPtr&& data);
         ShaderAsset(const ShaderAsset& arg);
-        ShaderAsset(const ::Inscription::Table<ShaderAsset>& table);
+        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(ShaderAsset);
 
         DataT* Data();
         const DataT* Data() const;

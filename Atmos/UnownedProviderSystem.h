@@ -28,7 +28,7 @@ namespace Atmos
         Value* Get() const;
     protected:
         UnownedProviderSystem(ObjectManager& manager);
-        UnownedProviderSystem(const ::Inscription::Table<UnownedProviderSystem>& table);
+        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(UnownedProviderSystem);
     private:
         ValuePtr value;
     private:
@@ -69,7 +69,7 @@ namespace Atmos
     {}
 
     template<class T>
-    UnownedProviderSystem<T>::UnownedProviderSystem(const ::Inscription::Table<UnownedProviderSystem>& table) :
+    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE_TEMPLATE(UnownedProviderSystem, UnownedProviderSystem<T>) :
         INSCRIPTION_TABLE_GET_BASE(ObjectSystem), INSCRIPTION_TABLE_GET_MEM(value)
     {}
 }
@@ -82,13 +82,13 @@ namespace Inscription
     public:
         INSCRIPTION_INSCRIPTER_BASE_TYPEDEFS(::Atmos::UnownedProviderSystem<T>);
 
-        INSCRIPTION_INSCRIPTER_DECLARE_TABLE;
+        INSCRIPTION_BINARY_INSCRIPTER_DECLARE_TABLE;
     };
 
     template<class T>
-    INSCRIPTION_INSCRIPTER_DEFINE_TABLE(::Atmos::UnownedProviderSystem<T>)
+    INSCRIPTION_BINARY_INSCRIPTER_DEFINE_TABLE(::Atmos::UnownedProviderSystem<T>)
     {
-        INSCRIPTION_INSCRIPTER_CREATE_TABLE;
+        INSCRIPTION_BINARY_INSCRIPTER_CREATE_TABLE;
 
         INSCRIPTION_TABLE_ADD_BASE(::Atmos::ObjectSystem);
         INSCRIPTION_TABLE_ADD_UNOWNING_POINTER(value);

@@ -10,7 +10,7 @@ namespace Atmos
     {
     public:
         ScriptAssetSystem(ObjectManager& manager);
-        ScriptAssetSystem(const ::Inscription::Table<ScriptAssetSystem>& table);
+        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(ScriptAssetSystem);
     private:
         void InitializeImpl() override;
     };
@@ -21,7 +21,7 @@ namespace Inscription
     INSCRIPTION_INSCRIPTER_DECLARE(::Atmos::ScriptAssetSystem)
     {
     public:
-        INSCRIPTION_INSCRIPTER_DECLARE_TABLE;
-        INSCRIPTION_DECLARE_CLASS_NAME_RESOLVER;
+        INSCRIPTION_BINARY_INSCRIPTER_DECLARE_TABLE;
+        INSCRIPTION_BINARY_DECLARE_CLASS_NAME_RESOLVER;
     };
 }

@@ -254,7 +254,7 @@ namespace Atmos
             (realFarZ <= box.realFarZ && realNearZ >= box.realFarZ);
     }
 
-    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(AxisBoundingBox3D)
+    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(AxisBoundingBox3D)
     {
         scribe(left);
         scribe(right);

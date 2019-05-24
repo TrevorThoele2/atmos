@@ -9,24 +9,11 @@
 #include "MaterialAsset.h"
 #include "ShaderAsset.h"
 
-#include "Ability.h"
-#include "CharacterClass.h"
-#include "Quest.h"
-#include "Spell.h"
-#include "StatusEffect.h"
-
 #include "AudioAssetSystem.h"
 #include "ImageAssetSystem.h"
 #include "MaterialAssetSystem.h"
 #include "ScriptAssetSystem.h"
 #include "ShaderAssetSystem.h"
-
-#include "AbilitySystem.h"
-#include "CharacterClassSystem.h"
-#include "ItemSystem.h"
-#include "QuestSystem.h"
-#include "SpellSystem.h"
-#include "StatusEffectSystem.h"
 
 #include "Tile.h"
 
@@ -39,20 +26,12 @@
 #include "RenderFragmentSystem.h"
 #include "SoundSystem.h"
 #include "MusicSystem.h"
-#include "SpeechController.h"
-#include "Shop.h"
 
-#include "AbilityFactory.h"
 #include "AudioAssetFactory.h"
-#include "CharacterClassFactory.h"
 #include "ImageAssetFactory.h"
-#include "ItemFactory.h"
 #include "MaterialAssetFactory.h"
-#include "QuestFactory.h"
 #include "ScriptAssetFactory.h"
 #include "ShaderAssetFactory.h"
-#include "SpellFactory.h"
-#include "StatusEffectFactory.h"
 #include "TileFactory.h"
 
 #include <Inscription/Scribe.h>
@@ -210,25 +189,11 @@ namespace Atmos
         impl->CreateGlobalObjectRegistrator<MaterialAsset>();
         impl->CreateGlobalObjectRegistrator<ShaderAsset>();
 
-        impl->CreateGlobalObjectRegistrator<nAbility>();
-        impl->CreateGlobalObjectRegistrator<nCharacterClass>();
-        impl->CreateGlobalObjectRegistrator<nItem>();
-        impl->CreateGlobalObjectRegistrator<nQuest>();
-        impl->CreateGlobalObjectRegistrator<nSpell>();
-        impl->CreateGlobalObjectRegistrator<nStatusEffect>();
-
         impl->CreateGlobalSystemRegistrator<AudioAssetSystem>();
         impl->CreateGlobalSystemRegistrator<ImageAssetSystem>();
         impl->CreateGlobalSystemRegistrator<MaterialAssetSystem>();
         impl->CreateGlobalSystemRegistrator<ScriptAssetSystem>();
         impl->CreateGlobalSystemRegistrator<ShaderAssetSystem>();
-
-        impl->CreateGlobalSystemRegistrator<AbilitySystem>();
-        impl->CreateGlobalSystemRegistrator<CharacterClassSystem>();
-        impl->CreateGlobalSystemRegistrator<ItemSystem>();
-        impl->CreateGlobalSystemRegistrator<QuestSystem>();
-        impl->CreateGlobalSystemRegistrator<SpellSystem>();
-        impl->CreateGlobalSystemRegistrator<StatusEffectSystem>();
     }
 
     void ObjectRegistration::StoreAllLocals()
@@ -253,8 +218,6 @@ namespace Atmos
         impl->CreateLocalSystemRegistrator<RenderFragmentSystem>();
         impl->CreateLocalSystemRegistrator<SoundSystem>();
         impl->CreateLocalSystemRegistrator<MusicSystem>();
-        impl->CreateLocalSystemRegistrator<Speech::Controller>();
-        impl->CreateLocalSystemRegistrator<Speech::Shop>();
     }
 
     ObjectRegistration::ImplPtr ObjectRegistration::impl;

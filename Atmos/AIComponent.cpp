@@ -12,7 +12,7 @@ namespace Atmos
             SetupScripts();
         }
 
-        AIComponent::AIComponent(const ::Inscription::Table<AIComponent>& table) : INSCRIPTION_TABLE_GET_BASE(Component)
+        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(AIComponent) : INSCRIPTION_TABLE_GET_BASE(Component)
         {
             SetupScripts();
         }

@@ -47,8 +47,13 @@ namespace Atmos
 
             Manager* Owner();
             const Manager* Owner() const;
+
+            ObjectManager* GetObjectManager();
+            const ObjectManager* GetObjectManager() const;
         private:
             Manager* owner;
+
+            ObjectManager* objectManager;
         private:
             bool active;
             bool activePreviousFrame;

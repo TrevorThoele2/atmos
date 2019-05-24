@@ -11,7 +11,7 @@ namespace Atmos
             Component(manager, reference), enabled(true)
         {}
 
-        SenseComponent::SenseComponent(const ::Inscription::Table<SenseComponent>& table) : INSCRIPTION_TABLE_GET_BASE(Component)
+        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(SenseComponent) : INSCRIPTION_TABLE_GET_BASE(Component)
         {}
 
         void SenseComponent::Enable(bool enable)
@@ -64,22 +64,6 @@ namespace Atmos
         {
             return ObjectTraits<SenseComponent>::TypeDescription();
         }
-
-        INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(SenseComponent)
-        {
-            if (scribe.IsOutput())
-            {
-                scribe.Save(position);
-                scribe.Save(sprites);
-            }
-            else // INPUT
-            {
-                scribe.Load(position);
-                scribe.Load(sprites);
-
-                SyncObjects();
-            }
-        }
     }
 
     const ObjectTypeName ObjectTraits<Entity::SenseComponent>::typeName = "SenseComponent";
@@ -95,7 +79,7 @@ namespace Inscription
         INSCRIPTION_TABLE_ADD(enabled);
     }
 
-    INSCRIPTION_INSCRIPTER_DEFINE_SERIALIZE_FUNCTION(::Atmos::Entity::SenseComponent)
+    INSCRIPTION_BINARY_INSCRIPTER_DEFINE_SERIALIZE_FUNCTION(::Atmos::Entity::SenseComponent)
     {
         INSCRIPTION_INSCRIPTER_CALL_BASE_SERIALIZE_FUNCTION;
         if (scribe.IsInput())

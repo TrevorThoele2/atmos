@@ -18,7 +18,7 @@ namespace Atmos
         public:
             Entity(ObjectManager& manager);
             Entity(const Entity& arg);
-            Entity(const ::Inscription::Table<Entity>& table);
+            INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(Entity);
 
             template<class ComponentT>
             TypedObjectReference<ComponentT> RetrieveComponent() const;

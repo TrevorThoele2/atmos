@@ -26,7 +26,7 @@ namespace Atmos
     private:
         ID _id;
     private:
-        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
+        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
     };
 }

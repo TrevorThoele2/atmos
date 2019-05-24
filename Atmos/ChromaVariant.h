@@ -12,7 +12,7 @@ namespace Inscription
         struct VariantSaverImplementation
         {
             template<class T>
-            static void Do(T& obj, Scribe& scribe)
+            static void Do(T& obj, BinaryScribe& scribe)
             {
                 scribe.Save(obj);
             }
@@ -22,7 +22,7 @@ namespace Inscription
         struct VariantLoaderImplementation
         {
             template<class... Args>
-            static bool Check(::Chroma::Variant<Args...>& variant, char typeId, Scribe& scribe)
+            static bool Check(::Chroma::Variant<Args...>& variant, char typeId, BinaryScribe& scribe)
             {
                 typedef ::Chroma::Variant<Args...> VariantT;
                 typedef typename VariantT::VariadicTemplateT::template Parameter<index>::Type ParameterType;
@@ -41,7 +41,7 @@ namespace Inscription
     }
 
     template<class... Args>
-    void Serialize(Scribe& scribe, ::Chroma::Variant<Args...>& obj)
+    void Serialize(BinaryScribe& scribe, ::Chroma::Variant<Args...>& obj)
     {
         typedef ::Chroma::Variant<Args...> VariantT;
         if (scribe.IsOutput())

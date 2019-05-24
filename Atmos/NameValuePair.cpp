@@ -44,7 +44,7 @@ namespace Atmos
         return !(*this == arg);
     }
 
-    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(NameValuePair)
+    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(NameValuePair)
     {
         scribe(name);
         scribe(value);

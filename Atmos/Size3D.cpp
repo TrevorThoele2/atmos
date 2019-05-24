@@ -132,9 +132,13 @@ namespace Atmos
         Calculate();
     }
 
-    Join3<Size3D::ValueT> Size3D::GetScalers() const
+    Size3D::Scalers Size3D::GetScalers() const
     {
-        return Join3<ValueT>(xScaler, yScaler, zScaler);
+        Scalers scalers;
+        scalers.x = xScaler;
+        scalers.y = yScaler;
+        scalers.z = zScaler;
+        return scalers;
     }
 
     Size3D::ValueT Size3D::GetXScaler() const
@@ -202,7 +206,7 @@ namespace Atmos
         realHeight = (prevWidth * sinT) + (prevHeight * cosT);
     }
 
-    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(Size3D)
+    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(Size3D)
     {
         scribe(width);
         scribe(height);

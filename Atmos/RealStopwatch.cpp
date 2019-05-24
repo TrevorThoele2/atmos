@@ -11,7 +11,7 @@ namespace Atmos
         timeSystem = manager.FindSystem<TimeSystem>();
     }
 
-    RealStopwatch::RealStopwatch(const ::Inscription::Table<RealStopwatch>& table) : INSCRIPTION_TABLE_GET_BASE(StopwatchBase)
+    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(RealStopwatch) : INSCRIPTION_TABLE_GET_BASE(StopwatchBase)
     {
         timeSystem = Manager()->FindSystem<TimeSystem>();
     }

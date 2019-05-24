@@ -112,7 +112,7 @@ namespace Atmos
             return list.end();
         }
 
-        INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(GlobalItems)
+        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(GlobalItems)
         {
             scribe(list);
         }

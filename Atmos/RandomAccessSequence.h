@@ -29,7 +29,7 @@ namespace Atmos
     private:
         typedef std::vector<iterator> Vector;
     private:
-        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
+        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
     private:
         List list;
@@ -80,7 +80,7 @@ namespace Atmos
     };
 
     template<class T>
-    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(RandomAccessSequence<T>)
+    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE_BINARY(RandomAccessSequence<T>)
     {
         scribe(list);
         if (scribe.IsInput())

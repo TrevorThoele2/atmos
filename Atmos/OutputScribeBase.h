@@ -14,7 +14,7 @@ namespace Atmos
         virtual ~OutputScribeBase() = 0;
 
         virtual void Save(Field& field) = 0;
-        virtual void OverwriteFieldCount(::Inscription::ContainerSize::ValueT set) = 0;
+        virtual void OverwriteFieldCount(::Inscription::ContainerSize set) = 0;
     protected:
         OutputScribeBase() = default;
     };

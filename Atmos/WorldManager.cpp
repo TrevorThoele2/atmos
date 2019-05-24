@@ -24,7 +24,7 @@ namespace Atmos
         globalObjectManager(&globalObjectManager), objectRegistration(&objectRegistration)
     {}
 
-    WorldManager::WorldManager(const ::Inscription::Table<WorldManager>& table)
+    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(WorldManager)
     {}
 
     void WorldManager::Initialize()
@@ -426,11 +426,11 @@ namespace Atmos
 
 namespace Inscription
 {
-    INSCRIPTION_INSCRIPTER_DEFINE_TABLE(::Atmos::WorldManager)
+    INSCRIPTION_BINARY_INSCRIPTER_DEFINE_TABLE(::Atmos::WorldManager)
     {
-        INSCRIPTION_INSCRIPTER_CREATE_TABLE;
+        INSCRIPTION_BINARY_INSCRIPTER_CREATE_TABLE;
         INSCRIPTION_INSCRIPTER_RETURN_TABLE;
     }
 
-    INSCRIPTION_DEFINE_SIMPLE_CLASS_NAME_RESOLVER(::Atmos::WorldManager, "WorldManager");
+    INSCRIPTION_BINARY_DEFINE_SIMPLE_CLASS_NAME_RESOLVER(::Atmos::WorldManager, "WorldManager");
 }

@@ -14,7 +14,7 @@ namespace Atmos
     public:
         RenderFragment(ObjectManager& manager);
         RenderFragment(const RenderFragment& arg) = default;
-        RenderFragment(const ::Inscription::Table<RenderFragment>& table);
+        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(RenderFragment);
         
         void Draw();
 

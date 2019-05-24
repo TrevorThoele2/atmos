@@ -12,7 +12,7 @@ namespace Atmos
     FpsSystem::FpsSystem(ObjectManager& manager) : ObjectSystem(manager), stopwatch(manager)
     {}
 
-    FpsSystem::FpsSystem(const ::Inscription::Table<FpsSystem>& table) :
+    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(FpsSystem) :
         INSCRIPTION_TABLE_GET_BASE(ObjectSystem), INSCRIPTION_TABLE_GET_MEM(stopwatch)
     {}
 
@@ -141,9 +141,9 @@ namespace Atmos
 
 namespace Inscription
 {
-    INSCRIPTION_INSCRIPTER_DEFINE_TABLE(::Atmos::FpsSystem)
+    INSCRIPTION_BINARY_INSCRIPTER_DEFINE_TABLE(::Atmos::FpsSystem)
     {
-        INSCRIPTION_INSCRIPTER_CREATE_TABLE;
+        INSCRIPTION_BINARY_INSCRIPTER_CREATE_TABLE;
 
         INSCRIPTION_TABLE_ADD_BASE(::Atmos::ObjectSystem);
         INSCRIPTION_TABLE_ADD(stopwatch);

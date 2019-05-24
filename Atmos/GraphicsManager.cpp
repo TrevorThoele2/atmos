@@ -3,9 +3,6 @@
 
 #include "CameraSystem.h"
 
-#include <AGUI/System.h>
-#include <AGUI/GraphicsHandlerBase.h>
-
 namespace Atmos
 {
     GraphicsManager::~GraphicsManager()
@@ -28,11 +25,7 @@ namespace Atmos
         for (auto& loop : canvasList)
             loop.Release();
 
-        Agui::System::GetGraphics()->Release();
-
         ReinitializeImpl();
-
-        Agui::System::GetGraphics()->Reset();
 
         for (auto& loop : shaderAssetBatch)
             loop->Data()->Reset();

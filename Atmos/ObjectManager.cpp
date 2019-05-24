@@ -126,7 +126,7 @@ namespace Atmos
             loop.second->NotifyDestroyed(object);
     }
 
-    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(ObjectManager)
+    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(ObjectManager)
     {
         if (scribe.IsOutput())
         {

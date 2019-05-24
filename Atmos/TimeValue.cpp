@@ -182,7 +182,7 @@ namespace Atmos
         return value;
     }
 
-    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(TimeValue)
+    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(TimeValue)
     {
         scribe(value);
         scribe(epoch);

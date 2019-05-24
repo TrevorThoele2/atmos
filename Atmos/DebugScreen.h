@@ -9,12 +9,15 @@
 
 #include <Chroma/Function.h>
 
-#include <AGUI/Root.h>
-#include <AGUI/Textbox.h>
-#include <AGUI/Label.h>
-
 namespace Atmos
 {
+    class DebugScreen : public ObjectSystem
+    {
+    public:
+        DebugScreen(ObjectManager& manager);
+    };
+
+    /*
     namespace Input { class System; }
 
     class DebugScreen : public ObjectSystem
@@ -24,12 +27,6 @@ namespace Atmos
     private:
         void InitializeImpl() override;
         void WorkImpl() override;
-    private:
-        Agui::Root* root;
-        Agui::Textbox* mainTextbox;
-        Agui::TextComponent* label;
-        Agui::TextComponent* data;
-        Agui::Label* fpsCounter;
     private:
         int currentPageIndex;
         
@@ -60,6 +57,7 @@ namespace Atmos
     {
         static const ObjectSystemPriority priority = 0;
     };
+    */
 }
 
 namespace Inscription
@@ -68,6 +66,6 @@ namespace Inscription
     class Inscripter<::Atmos::DebugScreen> : public InscripterBase<::Atmos::DebugScreen>
     {
     public:
-        INSCRIPTION_INSCRIPTER_DECLARE_TABLE;
+        INSCRIPTION_BINARY_INSCRIPTER_DECLARE_TABLE;
     };
 }

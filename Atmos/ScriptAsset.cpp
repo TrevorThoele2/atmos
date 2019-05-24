@@ -20,7 +20,7 @@ namespace Atmos
     ScriptAsset::ScriptAsset(const ScriptAsset& arg) : FileAsset(arg), data((arg.data) ? arg.data->Clone() : nullptr)
     {}
 
-    ScriptAsset::ScriptAsset(const ::Inscription::Table<ScriptAsset>& table) : INSCRIPTION_TABLE_GET_BASE(FileAsset)
+    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(ScriptAsset) : INSCRIPTION_TABLE_GET_BASE(FileAsset)
     {}
 
     ScriptAsset::DataT* ScriptAsset::Data()
@@ -67,7 +67,7 @@ namespace Atmos
 
         ::Inscription::InputTextFile file(fileName);
         String fileAsString;
-        file >> fileAsString;
+        file.ReadData(fileAsString);
 
         module = engine->GetModule(fileName.GetWithoutExtension().c_str(), asGM_ALWAYS_CREATE);
 

@@ -15,7 +15,7 @@ namespace Atmos
         typedef size_t BitPosition;
         constexpr static BitPosition bitCount = sizeof(Data) * CHAR_BIT;
     private:
-        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
+        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
     private:
         Data data;
@@ -44,7 +44,7 @@ namespace Atmos
     };
 
     template<class T>
-    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(BitConcatenator<T>)
+    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE_BINARY(BitConcatenator<T>)
     {
         scribe(data);
     }

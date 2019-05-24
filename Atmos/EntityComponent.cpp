@@ -11,7 +11,7 @@ namespace Atmos
         Component::Component(const Component& arg) : Object(arg), owner(arg.owner)
         {}
 
-        Component::Component(const ::Inscription::Table<Component>& table) : INSCRIPTION_TABLE_GET_BASE(Object)
+        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(Component) : INSCRIPTION_TABLE_GET_BASE(Object)
         {}
 
         ObjectTypeDescription Component::TypeDescription() const

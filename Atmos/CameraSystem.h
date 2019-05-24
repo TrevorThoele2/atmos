@@ -18,10 +18,10 @@ namespace Atmos
     public:
         typedef Position3D::ValueT Zoom;
     public:
-        NullEvent eventMoved;
+        Event<> eventMoved;
     public:
         CameraSystem(ObjectManager& manager);
-        CameraSystem(const ::Inscription::Table<CameraSystem>& table);
+        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(CameraSystem);
 
         void Work();
 
@@ -80,7 +80,7 @@ namespace Inscription
     INSCRIPTION_INSCRIPTER_DECLARE(::Atmos::CameraSystem)
     {
     public:
-        INSCRIPTION_INSCRIPTER_DECLARE_TABLE;
-        INSCRIPTION_DECLARE_CLASS_NAME_RESOLVER;
+        INSCRIPTION_BINARY_INSCRIPTER_DECLARE_TABLE;
+        INSCRIPTION_BINARY_DECLARE_CLASS_NAME_RESOLVER;
     };
 }

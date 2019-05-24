@@ -2,7 +2,6 @@
 
 #include "InputSignal.h"
 #include "InputKeyID.h"
-#include <AGUI/Input.h>
 
 namespace Atmos
 {
@@ -10,7 +9,7 @@ namespace Atmos
     {
         class Manager;
 
-        class Key : public Signal<KeyID, Agui::KeyID>
+        class Key : public Signal<KeyID>
         {
         public:
             Key(Key&& arg);
@@ -20,7 +19,7 @@ namespace Atmos
                 ObjectManager& objectManager,
                 DataPtr&& data,
                 KeyID id,
-                Agui::KeyID guiID,
+                ::Agui::Input::Signal* guiSignal,
                 const String& displayName,
                 bool canUseForAction);
 

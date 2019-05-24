@@ -17,7 +17,7 @@ namespace Atmos
             typedef TypedObjectReference<AvatarComponent> AvatarComponentReference;
         public:
             AvatarSystem(ObjectManager& manager);
-            AvatarSystem(const ::Inscription::Table<AvatarSystem>& table);
+            INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(AvatarSystem);
 
             void Set(EntityReference set);
 
@@ -40,7 +40,7 @@ namespace Inscription
     INSCRIPTION_INSCRIPTER_DECLARE(::Atmos::Entity::AvatarSystem)
     {
     public:
-        INSCRIPTION_INSCRIPTER_DECLARE_TABLE;
-        INSCRIPTION_DECLARE_CLASS_NAME_RESOLVER;
+        INSCRIPTION_BINARY_INSCRIPTER_DECLARE_TABLE;
+        INSCRIPTION_BINARY_DECLARE_CLASS_NAME_RESOLVER;
     };
 }

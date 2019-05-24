@@ -49,7 +49,7 @@ namespace Atmos
     public:
         MaterialAsset(ObjectManager& manager, const Name& name);
         MaterialAsset(const MaterialAsset& arg);
-        MaterialAsset(const ::Inscription::Table<MaterialAsset>& table);
+        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(MaterialAsset);
 
         ObjectTypeDescription TypeDescription() const override;
     private:

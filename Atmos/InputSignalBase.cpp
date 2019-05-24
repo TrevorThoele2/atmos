@@ -58,7 +58,8 @@ namespace Atmos
         }
 
         SignalBase::SignalBase(Manager& owner, ObjectManager& objectManager, DataPtr&& data, const String& displayName, bool canUseForAction) :
-            owner(&owner), displayName(displayName), canUseForAction(canUseForAction), active(false), activePreviousFrame(false),
+            owner(&owner), objectManager(&objectManager), displayName(displayName), canUseForAction(canUseForAction),
+            active(false), activePreviousFrame(false),
             doubleClickStopwatch(
                 objectManager.CreateObject<FrameStopwatch>(
                     TimeValue(FixedPoint64::Split(0, FixedPoint64::Split::AdjustF(25, FixedPoint64::GetDefaultRadixPoint())))))
@@ -66,8 +67,10 @@ namespace Atmos
             SetData(std::move(data));
         }
 
-        SignalBase::SignalBase(SignalBase&& arg) : owner(std::move(arg.owner)), displayName(std::move(arg.displayName)),
-            canUseForAction(std::move(arg.canUseForAction)), active(std::move(arg.active)), activePreviousFrame(std::move(arg.activePreviousFrame)),
+        SignalBase::SignalBase(SignalBase&& arg) :
+            owner(std::move(arg.owner)), objectManager(std::move(arg.objectManager)),
+            displayName(std::move(arg.displayName)), canUseForAction(std::move(arg.canUseForAction)),
+            active(std::move(arg.active)), activePreviousFrame(std::move(arg.activePreviousFrame)),
             doubleClickStopwatch(std::move(arg.doubleClickStopwatch))
         {}
 
@@ -79,6 +82,16 @@ namespace Atmos
         const Manager* SignalBase::Owner() const
         {
             return owner;
+        }
+
+        ObjectManager* SignalBase::GetObjectManager()
+        {
+            return objectManager;
+        }
+
+        const ObjectManager* SignalBase::GetObjectManager() const
+        {
+            return objectManager;
         }
 
         void SignalBase::DoActive()

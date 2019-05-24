@@ -21,7 +21,7 @@ namespace Atmos
     public:
         ScriptAsset(ObjectManager& manager, const FileName& fileName, DataPtr&& data);
         ScriptAsset(const ScriptAsset& arg);
-        ScriptAsset(const ::Inscription::Table<ScriptAsset>& table);
+        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(ScriptAsset);
 
         DataT* Data();
         const DataT* Data() const;

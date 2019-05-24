@@ -8,7 +8,7 @@ namespace Atmos
     Sense::Sense(ObjectManager& manager) : PositionalObject(manager), enabled(true)
     {}
 
-    Sense::Sense(const ::Inscription::Table<Sense>& table) : INSCRIPTION_TABLE_GET_BASE(PositionalObject)
+    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(Sense) : INSCRIPTION_TABLE_GET_BASE(PositionalObject)
     {}
 
     Sense::~Sense()

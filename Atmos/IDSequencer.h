@@ -69,7 +69,7 @@ namespace Atmos
         ID GetBaseID() const;
         ID GetNewID() const;
     private:
-        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
+        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
     };
 
@@ -228,7 +228,7 @@ namespace Atmos
     }
 
     template<class IDType>
-    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(IDSequencerBase<IDType>)
+    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE_BINARY(IDSequencerBase<IDType>)
     {
         scribe(occupied);
     }
@@ -260,7 +260,7 @@ namespace Atmos
         ID lowerLimit;
         ID upperLimit;
     private:
-        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
+        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
     };
 
@@ -322,7 +322,7 @@ namespace Atmos
     }
 
     template<class IDType>
-    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(IDSequencer<IDType>)
+    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE_BINARY(IDSequencer<IDType>)
     {
         ::Inscription::BaseSerialize<IDSequencerBase<IDType>>(scribe, *this);
         scribe(lowerLimit);
@@ -353,7 +353,7 @@ namespace Atmos
     protected:
         using BaseT::SetDirection;
     private:
-        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
+        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
     };
 

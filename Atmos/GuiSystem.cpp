@@ -7,19 +7,14 @@
 
 #include "StringUtility.h"
 
-#include <AGUI/System.h>
-
 namespace Atmos
 {
-    GuiSystem::GuiSystem(ObjectManager& manager) : ObjectSystem(manager)
-    {}
-
-    GuiSystem::GuiSystem(const ::Inscription::Table<GuiSystem>& table) :
-        INSCRIPTION_TABLE_GET_BASE(ObjectSystem)
+    GuiSystem::GuiSystem(ObjectManager& manager) : UniqueProviderSystem(manager)
     {}
 
     void GuiSystem::InitializeImpl()
     {
+        /*
         auto initialization = Manager()->FindSystem<InitializationFileSystem>();
         auto entry = initialization->graphics.CreateEntry<::Agui::Resolution::Size>("Windowed", [this]()
         {
@@ -38,19 +33,26 @@ namespace Atmos
         {
             return ToString(::Agui::System::GetCurrentResolution()->GetHeight());
         };
+        */
     }
 }
 
 namespace Inscription
 {
-    INSCRIPTION_INSCRIPTER_DEFINE_TABLE(::Atmos::GuiSystem)
+    INSCRIPTION_BINARY_INSCRIPTER_DEFINE_SERIALIZE_FUNCTION(::Atmos::GuiSystem)
     {
-        INSCRIPTION_INSCRIPTER_CREATE_TABLE;
-
-        INSCRIPTION_TABLE_ADD_BASE(::Atmos::ObjectSystem);
-
-        INSCRIPTION_INSCRIPTER_RETURN_TABLE;
+        if (scribe.IsOutput())
+        {
+            scribe.SaveUnowningPointer(obj.Manager());
+        }
     }
 
-    INSCRIPTION_DEFINE_SIMPLE_CLASS_NAME_RESOLVER(::Atmos::GuiSystem, "GuiSystem");
+    INSCRIPTION_BINARY_INSCRIPTER_DEFINE_CONSTRUCT_OBJECT_FUNCTION(::Atmos::GuiSystem)
+    {
+        ::Atmos::ObjectManager* objectManager;
+        scribe.LoadUnowningPointer(objectManager);
+        obj = new ManagedT(*objectManager);
+    }
+
+    INSCRIPTION_BINARY_DEFINE_SIMPLE_CLASS_NAME_RESOLVER(::Atmos::GuiSystem, "GuiSystem");
 }

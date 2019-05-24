@@ -13,7 +13,7 @@ namespace Atmos
         typedef unsigned int Fps;
     public:
         FpsSystem(ObjectManager& manager);
-        FpsSystem(const ::Inscription::Table<FpsSystem>& table);
+        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(FpsSystem);
 
         void SetFpsLimit(Fps fps);
         Fps GetFpsLimit();
@@ -56,10 +56,9 @@ namespace Atmos
 
 namespace Inscription
 {
-    template<>
-    class Inscripter<::Atmos::FpsSystem> : public InscripterBase<::Atmos::FpsSystem>
+    INSCRIPTION_INSCRIPTER_DECLARE(::Atmos::FpsSystem)
     {
     public:
-        INSCRIPTION_INSCRIPTER_DECLARE_TABLE;
+        INSCRIPTION_BINARY_INSCRIPTER_DECLARE_TABLE;
     };
 }

@@ -23,7 +23,7 @@ namespace Atmos
     class RadixPoint
     {
     private:
-        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
+        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
     public:
         typedef size_t ValueT;
@@ -88,7 +88,7 @@ namespace Atmos
             static FPart AdjustF(ValueT value, Radix radixPoint);
         };
     private:
-        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
+        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
     private:
         ValueT value;
@@ -340,7 +340,7 @@ namespace Atmos
     }
 
     template<class T>
-    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(FixedPoint<T>)
+    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(FixedPoint<T>)
     {
         scribe(value);
         scribe(radixPoint);

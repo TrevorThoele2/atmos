@@ -11,7 +11,7 @@ namespace Atmos
             Component(manager, reference), solid(false)
         {}
 
-        GeneralComponent::GeneralComponent(const ::Inscription::Table<GeneralComponent>& table) : INSCRIPTION_TABLE_GET_BASE(Component)
+        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(GeneralComponent) : INSCRIPTION_TABLE_GET_BASE(Component)
         {}
 
         void GeneralComponent::SetPosition(const PositionT &set)
@@ -146,7 +146,7 @@ namespace Inscription
         INSCRIPTION_TABLE_ADD(tags);
     }
 
-    INSCRIPTION_INSCRIPTER_DEFINE_SERIALIZE_FUNCTION(::Atmos::Entity::GeneralComponent)
+    INSCRIPTION_BINARY_INSCRIPTER_DEFINE_SERIALIZE_FUNCTION(::Atmos::Entity::GeneralComponent)
     {
         if (scribe.IsOutput())
         {

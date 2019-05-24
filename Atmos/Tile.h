@@ -30,7 +30,7 @@ namespace Atmos
     public:
         Tile(ObjectManager& manager, const GridPosition& position);
         Tile(const Tile& arg) = default;
-        Tile(const ::Inscription::Table<Tile>& table);
+        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(Tile);
 
         ObjectTypeDescription TypeDescription() const override;
     private:

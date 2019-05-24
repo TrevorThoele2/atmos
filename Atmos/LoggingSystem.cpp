@@ -6,6 +6,7 @@
 #include "ObjectManager.h"
 #include "FileSystem.h"
 
+#include "FileName.h"
 #include "StringUtility.h"
 
 #include <Inscription/OutputTextFile.h>
@@ -16,7 +17,7 @@ namespace Atmos
         ObjectSystem(manager)
     {}
 
-    LoggingSystem::LoggingSystem(const ::Inscription::Table<LoggingSystem>& table) :
+    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(LoggingSystem) :
         INSCRIPTION_TABLE_GET_BASE(ObjectSystem)
     {}
 
@@ -143,7 +144,7 @@ namespace Atmos
             }
         }
 
-        outFile << output;
+        outFile.WriteData(output);
         onLogged(output);
     }
 
@@ -165,14 +166,14 @@ namespace Atmos
 
 namespace Inscription
 {
-    INSCRIPTION_INSCRIPTER_DEFINE_TABLE(::Atmos::LoggingSystem)
+    INSCRIPTION_BINARY_INSCRIPTER_DEFINE_TABLE(::Atmos::LoggingSystem)
     {
-        INSCRIPTION_INSCRIPTER_CREATE_TABLE;
+        INSCRIPTION_BINARY_INSCRIPTER_CREATE_TABLE;
 
         INSCRIPTION_TABLE_ADD_BASE(::Atmos::ObjectSystem);
 
         INSCRIPTION_INSCRIPTER_RETURN_TABLE;
     }
 
-    INSCRIPTION_DEFINE_SIMPLE_CLASS_NAME_RESOLVER(::Atmos::LoggingSystem, "LoggingSystem");
+    INSCRIPTION_BINARY_DEFINE_SIMPLE_CLASS_NAME_RESOLVER(::Atmos::LoggingSystem, "LoggingSystem");
 }

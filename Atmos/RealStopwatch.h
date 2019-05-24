@@ -12,7 +12,7 @@ namespace Atmos
     {
     public:
         RealStopwatch(ObjectManager& manager, TimeValue goal = TimeValue());
-        RealStopwatch(const ::Inscription::Table<RealStopwatch>& table);
+        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(RealStopwatch);
 
         bool operator==(const RealStopwatch& arg) const;
 

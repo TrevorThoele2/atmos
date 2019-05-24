@@ -6,7 +6,7 @@ namespace Atmos
     CanvasView::CanvasView(ObjectManager& manager, const Canvas* canvas) : RenderFragment(manager), source(canvas)
     {}
 
-    CanvasView::CanvasView(const ::Inscription::Table<CanvasView>& table) : INSCRIPTION_TABLE_GET_BASE(RenderFragment)
+    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(CanvasView) : INSCRIPTION_TABLE_GET_BASE(RenderFragment)
     {}
 
     ObjectTypeDescription CanvasView::TypeDescription() const

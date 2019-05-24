@@ -18,7 +18,7 @@ namespace Atmos
         typedef TypedObjectReference<T> Reference;
     public:
         AssetSystem(ObjectManager& manager);
-        AssetSystem(const ::Inscription::Table<AssetSystem>& table);
+        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(AssetSystem);
 
         Reference FindAsset(const Name& withName) const;
 
@@ -40,7 +40,7 @@ namespace Atmos
     }
 
     template<class T>
-    AssetSystem<T>::AssetSystem(const ::Inscription::Table<AssetSystem>& table) :
+    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE_TEMPLATE(AssetSystem, AssetSystem<T>) :
         INSCRIPTION_TABLE_GET_BASE(ObjectSystem), INSCRIPTION_TABLE_GET_MEM(batch)
     {}
 
@@ -81,13 +81,13 @@ namespace Inscription
     public:
         INSCRIPTION_INSCRIPTER_BASE_TYPEDEFS(::Atmos::AssetSystem<T>);
     public:
-        INSCRIPTION_INSCRIPTER_DECLARE_TABLE;
+        INSCRIPTION_BINARY_INSCRIPTER_DECLARE_TABLE;
     };
 
     template<class T>
-    typename Inscripter<::Atmos::AssetSystem<T>>::TableT Inscripter<::Atmos::AssetSystem<T>>::CreateTable(Scribe& scribe)
+    typename Inscripter<::Atmos::AssetSystem<T>>::Table<::Inscription::BinaryScribe> Inscripter<::Atmos::AssetSystem<T>>::CreateTable(BinaryScribe& scribe)
     {
-        INSCRIPTION_INSCRIPTER_CREATE_TABLE;
+        INSCRIPTION_BINARY_INSCRIPTER_CREATE_TABLE;
 
         INSCRIPTION_TABLE_ADD_BASE(::Atmos::ObjectSystem);
         INSCRIPTION_TABLE_ADD(batch);

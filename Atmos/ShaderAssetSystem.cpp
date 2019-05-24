@@ -10,7 +10,7 @@ namespace Atmos
     ShaderAssetSystem::ShaderAssetSystem(ObjectManager& manager) : AssetSystem(manager)
     {}
 
-    ShaderAssetSystem::ShaderAssetSystem(const ::Inscription::Table<ShaderAssetSystem>& table) : INSCRIPTION_TABLE_GET_BASE(AssetSystem)
+    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(ShaderAssetSystem) : INSCRIPTION_TABLE_GET_BASE(AssetSystem)
     {}
 
     void ShaderAssetSystem::InitializeImpl()
@@ -25,14 +25,14 @@ namespace Atmos
 
 namespace Inscription
 {
-    INSCRIPTION_INSCRIPTER_DEFINE_TABLE(::Atmos::ShaderAssetSystem)
+    INSCRIPTION_BINARY_INSCRIPTER_DEFINE_TABLE(::Atmos::ShaderAssetSystem)
     {
-        INSCRIPTION_INSCRIPTER_CREATE_TABLE;
+        INSCRIPTION_BINARY_INSCRIPTER_CREATE_TABLE;
 
         INSCRIPTION_TABLE_ADD_BASE(::Atmos::AssetSystem<::Atmos::ShaderAsset>);
 
         INSCRIPTION_INSCRIPTER_RETURN_TABLE;
     }
 
-    INSCRIPTION_DEFINE_SIMPLE_CLASS_NAME_RESOLVER(::Atmos::ShaderAssetSystem, "ShaderAssetSystem");
+    INSCRIPTION_BINARY_DEFINE_SIMPLE_CLASS_NAME_RESOLVER(::Atmos::ShaderAssetSystem, "ShaderAssetSystem");
 }

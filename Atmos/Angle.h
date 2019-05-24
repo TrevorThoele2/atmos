@@ -53,7 +53,7 @@ namespace Atmos
         typedef ::Chroma::SelectableType<Radians, Degrees> SelectedType;
         SelectedType selectedType;
     private:
-        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
+        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
     };
 

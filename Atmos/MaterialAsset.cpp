@@ -17,7 +17,7 @@ namespace Atmos
         SubscribeToProperties();
     }
 
-    MaterialAsset::MaterialAsset(const ::Inscription::Table<MaterialAsset>& table) :
+    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(MaterialAsset) :
         INSCRIPTION_TABLE_GET_BASE(Asset),
         width([this]() { return _width; }), height([this]() { return _height; })
     {

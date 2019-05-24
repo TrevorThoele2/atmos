@@ -15,7 +15,7 @@ namespace Atmos
         {
         public:
             ActionSystem(ObjectManager& manager);
-            ActionSystem(const ::Inscription::Table<ActionSystem>& table);
+            INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(ActionSystem);
         private:
             void InitializeImpl() override;
             void WorkImpl() override;
@@ -33,7 +33,7 @@ namespace Inscription
     INSCRIPTION_INSCRIPTER_DECLARE(::Atmos::Entity::ActionSystem)
     {
     public:
-        INSCRIPTION_INSCRIPTER_DECLARE_TABLE;
-        INSCRIPTION_DECLARE_CLASS_NAME_RESOLVER;
+        INSCRIPTION_BINARY_INSCRIPTER_DECLARE_TABLE;
+        INSCRIPTION_BINARY_DECLARE_CLASS_NAME_RESOLVER;
     };
 }

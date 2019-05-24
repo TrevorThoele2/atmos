@@ -16,7 +16,7 @@ namespace Atmos
         public:
             AIComponent(ObjectManager& manager, EntityReference owner);
             AIComponent(const AIComponent& arg) = default;
-            AIComponent(const ::Inscription::Table<AIComponent>& table);
+            INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(AIComponent);
 
             ObjectTypeDescription TypeDescription() const override;
         private:

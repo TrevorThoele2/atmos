@@ -21,7 +21,7 @@ namespace Atmos
 
     bool InputWorldScribe::Load(LoadType load)
     {
-        underlyingScribe.Reset();
+        underlyingScribe.MovePositionToStart();
 
         switch (load)
         {
@@ -102,12 +102,12 @@ namespace Atmos
         return filePath;
     }
 
-    ::Inscription::Scribe& InputWorldScribe::UnderlyingScribe()
+    ::Inscription::BinaryScribe& InputWorldScribe::UnderlyingScribe()
     {
         return underlyingScribe;
     }
 
-    const ::Inscription::Scribe& InputWorldScribe::UnderlyingScribe() const
+    const ::Inscription::BinaryScribe& InputWorldScribe::UnderlyingScribe() const
     {
         return underlyingScribe;
     }

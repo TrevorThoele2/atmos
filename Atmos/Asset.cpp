@@ -9,7 +9,7 @@ namespace Atmos
     Asset::Asset(const Asset& arg) : Object(arg), name(arg.name)
     {}
 
-    Asset::Asset(const ::Inscription::Table<Asset>& table) : INSCRIPTION_TABLE_GET_BASE(Object), INSCRIPTION_TABLE_GET_MEM(name)
+    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(Asset) : INSCRIPTION_TABLE_GET_BASE(Object), INSCRIPTION_TABLE_GET_MEM(name)
     {}
 
     ObjectTypeDescription Asset::TypeDescription() const
@@ -35,7 +35,7 @@ namespace Atmos
         Asset(arg), fileName(arg.fileName)
     {}
 
-    FileAsset::FileAsset(const ::Inscription::Table<FileAsset>& table) :
+    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(FileAsset) :
         INSCRIPTION_TABLE_GET_BASE(Asset), INSCRIPTION_TABLE_GET_MEM(fileName)
     {}
 

@@ -50,7 +50,7 @@ namespace Atmos
         data->objectManager = &manager;
     }
 
-    RunningScript::RunningScript(const ::Inscription::Table<RunningScript>& table) :
+    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(RunningScript) :
         INSCRIPTION_TABLE_GET_BASE(Object), data(new Data(source)), source([this]() { return data->source; })
     {}
 

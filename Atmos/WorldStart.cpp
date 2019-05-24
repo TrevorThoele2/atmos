@@ -15,7 +15,7 @@ namespace Atmos
         return *this;
     }
 
-    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(WorldStart)
+    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(WorldStart)
     {
         scribe(fieldID);
     }

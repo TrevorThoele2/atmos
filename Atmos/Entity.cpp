@@ -11,7 +11,7 @@ namespace Atmos
         Entity::Entity(const Entity& arg) : Object(arg)
         {}
 
-        Entity::Entity(const ::Inscription::Table<Entity>& table) : INSCRIPTION_TABLE_GET_BASE(Object)
+        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(Entity) : INSCRIPTION_TABLE_GET_BASE(Object)
         {}
 
         ObjectTypeDescription Entity::TypeDescription() const

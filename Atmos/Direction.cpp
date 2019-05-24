@@ -5,7 +5,7 @@
 
 namespace Atmos
 {
-    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(Direction)
+    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(Direction)
     {
         scribe(value);
     }

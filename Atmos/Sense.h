@@ -13,7 +13,7 @@ namespace Atmos
     public:
         Sense(ObjectManager& manager);
         Sense(const Sense& arg) = default;
-        Sense(const ::Inscription::Table<Sense>& table);
+        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(Sense);
         virtual ~Sense() = 0;
     public:
         ObjectTypeDescription TypeDescription() const override;

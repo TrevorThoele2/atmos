@@ -9,7 +9,7 @@ namespace Atmos
     {
     public:
         FileSystem(ObjectManager& manager);
-        FileSystem(const ::Inscription::Table<FileSystem>& table);
+        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(FileSystem);
     private:
         void InitializeImpl() override;
     private:
@@ -23,7 +23,7 @@ namespace Inscription
     INSCRIPTION_INSCRIPTER_DECLARE(::Atmos::FileSystem)
     {
     public:
-        INSCRIPTION_INSCRIPTER_DECLARE_TABLE;
-        INSCRIPTION_DECLARE_CLASS_NAME_RESOLVER;
+        INSCRIPTION_BINARY_INSCRIPTER_DECLARE_TABLE;
+        INSCRIPTION_BINARY_DECLARE_CLASS_NAME_RESOLVER;
     };
 }

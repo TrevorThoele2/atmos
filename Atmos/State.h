@@ -24,7 +24,7 @@ namespace Atmos
         bool IsTop() const;
     protected:
         State(ObjectManager& manager);
-        State(const ::Inscription::Table<State>& table);
+        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(State);
 
         StateSystem* System();
         const StateSystem* System() const;

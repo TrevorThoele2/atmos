@@ -25,7 +25,7 @@ namespace Atmos
 
     bool InputStasisScribe::Load(LoadType load)
     {
-        underlyingScribe.Reset();
+        underlyingScribe.MovePositionToStart();
         if (!LoadBeforeGlobal())
             return false;
 
@@ -48,7 +48,7 @@ namespace Atmos
 
     bool InputStasisScribe::WillLoad()
     {
-        underlyingScribe.Reset();
+        underlyingScribe.MovePositionToStart();
         return LoadBeforeGlobal();
     }
 
@@ -105,12 +105,12 @@ namespace Atmos
         return fileName;
     }
 
-    ::Inscription::Scribe& InputStasisScribe::UnderlyingScribe()
+    ::Inscription::BinaryScribe& InputStasisScribe::UnderlyingScribe()
     {
         return underlyingScribe;
     }
 
-    const ::Inscription::Scribe& InputStasisScribe::UnderlyingScribe() const
+    const ::Inscription::BinaryScribe& InputStasisScribe::UnderlyingScribe() const
     {
         return underlyingScribe;
     }

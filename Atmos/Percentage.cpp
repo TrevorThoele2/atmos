@@ -8,7 +8,7 @@ namespace Atmos
     const Percentage::WrappedT Percentage::max(Percentage::WrappedT::Split(100, 0));
     const Percentage::WrappedT Percentage::min(Percentage::WrappedT::Split(0, 0));
 
-    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(Percentage)
+    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(Percentage)
     {
         scribe(wrapped);
     }

@@ -1,8 +1,6 @@
 
 #include "StateGui.h"
 
-#include <AGUI/System.h>
-
 namespace Atmos
 {
     StateGui::~StateGui()
@@ -10,7 +8,6 @@ namespace Atmos
 
     void StateGui::Initialize()
     {
-        root = Agui::System::CreateRoot(rootName);
         DoInitialize();
     }
 
@@ -21,23 +18,16 @@ namespace Atmos
 
     void StateGui::Show()
     {
-        root->Show();
         DoShow();
     }
 
     void StateGui::Hide()
     {
-        root->Hide();
         DoHide();
     }
 
-    Agui::Root* StateGui::Root()
-    {
-        return root;
-    }
-
     StateGui::StateGui(ObjectManager& objectManager, const String& rootName) :
-        objectManager(&objectManager), rootName(rootName), root(nullptr)
+        objectManager(&objectManager), rootName(rootName)
     {}
 
     void StateGui::DoUpdate()

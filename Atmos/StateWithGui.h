@@ -20,7 +20,7 @@ namespace Atmos
         void Update();
     protected:
         StateWithGui(ObjectManager& manager);
-        StateWithGui(const ::Inscription::Table<StateWithGui>& table);
+        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(StateWithGui);
     private:
         void InitializeImpl() override final;
         void WorkImpl() override final;
@@ -46,7 +46,7 @@ namespace Atmos
     {}
 
     template<class Gui>
-    StateWithGui<Gui>::StateWithGui(const ::Inscription::Table<StateWithGui>& table) : INSCRIPTION_TABLE_GET_BASE(State)
+    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE_TEMPLATE(StateWithGui, StateWithGui<Gui>) : INSCRIPTION_TABLE_GET_BASE(State)
     {}
 
     template<class Gui>

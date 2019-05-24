@@ -8,34 +8,22 @@ namespace Atmos
         return owner;
     }
 
-    void Canvas::SetData(Data *set)
+    Canvas::Canvas(DataPtr&& data, DimensionValue width, DimensionValue height) : width(width), height(height), isPainting(false)
     {
-        data.reset(set);
-        data->owner = this;
+        SetData(std::move(data));
     }
 
-    void Canvas::SetData(std::unique_ptr<Data> &&set)
-    {
-        data = std::move(set);
-        data->owner = this;
-    }
-
-    Canvas::Canvas(Data *data, Dimension width, Dimension height) : painting(false), width(width), height(height)
-    {
-        SetData(data);
-    }
-
-    Canvas::Canvas(Canvas &&arg) : painting(std::move(arg.painting)), width(arg.width), height(arg.height)
+    Canvas::Canvas(Canvas&& arg) : width(arg.width), height(arg.height), isPainting(std::move(arg.isPainting))
     {
         SetData(std::move(arg.data));
     }
 
-    Canvas& Canvas::operator=(Canvas &&arg)
+    Canvas& Canvas::operator=(Canvas&& arg)
     {
-        painting = std::move(arg.painting);
-        SetData(std::move(arg.data));
         width = arg.width;
         height = arg.height;
+        isPainting = std::move(arg.isPainting);
+        SetData(std::move(arg.data));
         return *this;
     }
 
@@ -46,7 +34,7 @@ namespace Atmos
 
     void Canvas::StartPainting()
     {
-        painting = true;
+        isPainting = true;
         data->StartPainting();
     }
 
@@ -56,15 +44,15 @@ namespace Atmos
             return;
 
         data->StopPainting();
-        painting = false;
+        isPainting = false;
     }
 
     bool Canvas::IsPainting() const
     {
-        return painting;
+        return isPainting;
     }
 
-    void Canvas::PaintPixel(const PositionT &position, const Color &color)
+    void Canvas::PaintPixel(const Position& position, const Color& color)
     {
         if (!IsPainting())
             return;
@@ -72,7 +60,7 @@ namespace Atmos
         data->PaintPixel(position, color, height);
     }
 
-    void Canvas::Clear(const Color &color)
+    void Canvas::Clear(const Color& color)
     {
         if (!IsPainting())
             return;
@@ -80,12 +68,12 @@ namespace Atmos
         data->Clear(color);
     }
 
-    Canvas::Dimension Canvas::GetWidth() const
+    Canvas::DimensionValue Canvas::GetWidth() const
     {
         return width;
     }
 
-    Canvas::Dimension Canvas::GetHeight() const
+    Canvas::DimensionValue Canvas::GetHeight() const
     {
         return height;
     }
@@ -98,5 +86,11 @@ namespace Atmos
     void Canvas::Reset()
     {
         data->Reset(width, height);
+    }
+
+    void Canvas::SetData(std::unique_ptr<Data>&& set)
+    {
+        data = std::move(set);
+        data->owner = this;
     }
 }

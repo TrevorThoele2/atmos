@@ -95,9 +95,12 @@ namespace Atmos
         Calculate();
     }
 
-    Join2<Size2D::ValueT> Size2D::GetScalers() const
+    Size2D::Scalers Size2D::GetScalers() const
     {
-        return Join2<ValueT>(xScaler, yScaler);
+        Scalers scalers;
+        scalers.x = xScaler;
+        scalers.y = yScaler;
+        return scalers;
     }
 
     Size2D::ValueT Size2D::GetXScaler() const
@@ -136,7 +139,7 @@ namespace Atmos
         realHeight = (prevWidth * sinValue) + (prevHeight * cosValue);
     }
 
-    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(Size2D)
+    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(Size2D)
     {
         scribe(width);
         scribe(height);

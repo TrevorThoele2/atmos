@@ -2,53 +2,47 @@
 
 #include <memory>
 
+#include "ScreenPosition.h"
+#include "ScreenDimensions.h"
 #include "Color.h"
 #include "String.h"
 
-#include "Join.h"
-
 namespace Atmos
 {
-    class Position2D;
-
     class GraphicsManager;
     class ShaderAsset;
+
     class Canvas
     {
     public:
-        typedef unsigned int Dimension;
-        typedef Join2<Dimension> PositionT;
+        typedef ScreenPosition Position;
+        typedef ScreenDimensions Dimensions;
+        typedef Dimensions::Dimension DimensionValue;
     public:
         class Data
         {
-        private:
-            Canvas *owner;
-            friend Canvas;
         public:
             virtual ~Data() = 0 {}
+
             Canvas* GetOwner() const;
+
             virtual void StartPainting() = 0;
             virtual void StopPainting() = 0;
-            virtual void PaintPixel(const PositionT &position, const Color &color, Dimension height) = 0;
-            virtual void Clear(const Color &color) = 0;
+            virtual void PaintPixel(const Position& position, const Color& color, DimensionValue height) = 0;
+            virtual void Clear(const Color& color) = 0;
             virtual void Release() = 0;
-            virtual void Reset(Dimension width, Dimension height) = 0;
+            virtual void Reset(DimensionValue width, DimensionValue height) = 0;
+        private:
+            Canvas *owner;
+        private:
+            friend Canvas;
         };
-    private:
-        bool painting;
 
-        Dimension width;
-        Dimension height;
-        std::unique_ptr<Data> data;
-
-        friend GraphicsManager;
-
-        void SetData(Data *set);
-        void SetData(std::unique_ptr<Data> &&set);
+        typedef std::unique_ptr<Data> DataPtr;
     public:
-        Canvas(Data *data, Dimension width, Dimension height);
-        Canvas(Canvas &&arg);
-        Canvas& operator=(Canvas &&arg);
+        Canvas(DataPtr&& data, DimensionValue width, DimensionValue height);
+        Canvas(Canvas&& arg);
+        Canvas& operator=(Canvas&& arg);
 
         Data* GetData() const;
         template<class DataT>
@@ -61,16 +55,26 @@ namespace Atmos
         bool IsPainting() const;
         
         // Will not work unless this is in manual mode
-        void PaintPixel(const PositionT &position, const Color &color);
+        void PaintPixel(const Position& position, const Color& color);
 
         // This must be set as the texture for this to work
-        void Clear(const Color &color);
+        void Clear(const Color& color);
 
-        Dimension GetWidth() const;
-        Dimension GetHeight() const;
+        DimensionValue GetWidth() const;
+        DimensionValue GetHeight() const;
 
         void Release();
         void Reset();
+    private:
+        bool isPainting;
+
+        DimensionValue width;
+        DimensionValue height;
+        std::unique_ptr<Data> data;
+    private:
+        void SetData(std::unique_ptr<Data>&& set);
+    private:
+        friend GraphicsManager;
     };
 
     template<class DataT>

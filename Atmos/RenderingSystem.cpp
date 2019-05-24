@@ -8,14 +8,12 @@
 
 #include "GraphicsManager.h"
 
-#include <AGUI/System.h>
-
 namespace Atmos
 {
     RenderingSystem::RenderingSystem(ObjectManager& manager) : ObjectSystem(manager)
     {}
 
-    RenderingSystem::RenderingSystem(const ::Inscription::Table<RenderingSystem>& table) :
+    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(RenderingSystem) :
         INSCRIPTION_TABLE_GET_BASE(ObjectSystem)
     {}
 
@@ -49,7 +47,6 @@ namespace Atmos
 
         graphics->EndSprites();
 
-        ::Agui::System::Work();
         graphics->End();
         graphics->Present();
 
@@ -74,14 +71,14 @@ namespace Atmos
 
 namespace Inscription
 {
-    INSCRIPTION_INSCRIPTER_DEFINE_TABLE(::Atmos::RenderingSystem)
+    INSCRIPTION_BINARY_INSCRIPTER_DEFINE_TABLE(::Atmos::RenderingSystem)
     {
-        INSCRIPTION_INSCRIPTER_CREATE_TABLE;
+        INSCRIPTION_BINARY_INSCRIPTER_CREATE_TABLE;
 
         INSCRIPTION_TABLE_ADD_BASE(::Atmos::ObjectSystem);
 
         INSCRIPTION_INSCRIPTER_RETURN_TABLE;
     }
 
-    INSCRIPTION_DEFINE_SIMPLE_CLASS_NAME_RESOLVER(::Atmos::RenderingSystem, "RenderingSystem");
+    INSCRIPTION_BINARY_DEFINE_SIMPLE_CLASS_NAME_RESOLVER(::Atmos::RenderingSystem, "RenderingSystem");
 }

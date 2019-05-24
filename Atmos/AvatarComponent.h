@@ -15,7 +15,7 @@ namespace Atmos
         public:
             AvatarComponent(ObjectManager& manager, EntityReference owner);
             AvatarComponent(const AvatarComponent& arg) = default;
-            AvatarComponent(const ::Inscription::Table<AvatarComponent>& table);
+            INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(AvatarComponent);
 
             ObjectTypeDescription TypeDescription() const override;
         private:

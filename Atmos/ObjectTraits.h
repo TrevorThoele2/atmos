@@ -2,6 +2,7 @@
 
 #include "ObjectTypeDescription.h"
 #include "ObjectTypeList.h"
+#include "ObjectTypeName.h"
 
 #include <Chroma/Iterate.h>
 

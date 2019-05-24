@@ -30,6 +30,6 @@ namespace Inscription
     class Inscripter<::Atmos::Scripting::System> : public InscripterBase<::Atmos::Scripting::System>
     {
     public:
-        INSCRIPTION_INSCRIPTER_DECLARE_TABLE;
+        INSCRIPTION_BINARY_INSCRIPTER_DECLARE_TABLE;
     };
 }

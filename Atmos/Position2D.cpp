@@ -6,7 +6,7 @@
 
 namespace Atmos
 {
-    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(Position2D)
+    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(Position2D)
     {
         scribe(X);
         scribe(Y);

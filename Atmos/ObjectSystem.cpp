@@ -8,7 +8,7 @@ namespace Atmos
     ObjectSystem::ObjectSystem(ObjectManager& manager) : manager(&manager), isInitialized(false), isStarted(false)
     {}
 
-    ObjectSystem::ObjectSystem(const ::Inscription::Table<ObjectSystem>& table) : INSCRIPTION_TABLE_GET_MEM(manager)
+    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(ObjectSystem) : INSCRIPTION_TABLE_GET_MEM(manager)
     {}
 
     ObjectSystem::~ObjectSystem()
@@ -81,9 +81,9 @@ namespace Atmos
 
 namespace Inscription
 {
-    INSCRIPTION_INSCRIPTER_DEFINE_TABLE(::Atmos::ObjectSystem)
+    INSCRIPTION_BINARY_INSCRIPTER_DEFINE_TABLE(::Atmos::ObjectSystem)
     {
-        INSCRIPTION_INSCRIPTER_CREATE_TABLE;
+        INSCRIPTION_BINARY_INSCRIPTER_CREATE_TABLE;
 
         INSCRIPTION_TABLE_ADD_UNOWNING_POINTER(manager);
 

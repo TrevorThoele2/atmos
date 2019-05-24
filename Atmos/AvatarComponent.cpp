@@ -10,7 +10,7 @@ namespace Atmos
             Component(manager, owner), currency(0)
         {}
 
-        AvatarComponent::AvatarComponent(const ::Inscription::Table<AvatarComponent>& table) : INSCRIPTION_TABLE_GET_BASE(Component)
+        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(AvatarComponent) : INSCRIPTION_TABLE_GET_BASE(Component)
         {}
 
         ObjectTypeDescription AvatarComponent::TypeDescription() const

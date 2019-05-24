@@ -4,6 +4,7 @@
 
 #include "Serialization.h"
 #include <Inscription/ContainerSize.h>
+#include <Inscription/ScopedTrackingChanger.h>
 
 namespace Atmos
 {
@@ -14,7 +15,7 @@ namespace Atmos
         typedef T ValueT;
         typedef size_t SizeT;
     private:
-        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
+        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
     private:
         static constexpr ValueT lowest = std::numeric_limits<T>::lowest();
@@ -74,9 +75,9 @@ namespace Atmos
     };
 
     template<class T>
-    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(IntervalList<T>)
+    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(IntervalList<T>)
     {
-        ::Inscription::TrackingChangerStack tracking(scribe, false);
+        ::Inscription::ScopedTrackingChanger tracking(scribe, false);
         if (scribe.IsOutput())
         {
             ::Inscription::ContainerSize size(vector.size());

@@ -43,7 +43,7 @@ namespace Atmos
         return list.end();
     }
 
-    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(ObjectTypeDescriptionGroup)
+    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(ObjectTypeDescriptionGroup)
     {
         scribe(list);
     }

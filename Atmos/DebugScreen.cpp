@@ -9,12 +9,13 @@
 #include "StringUtility.h"
 
 #include "FontDefines.h"
-#include <AGUI/System.h>
-#include <AGUI/SequenceLayout.h>
-#include <AGUI/Image.h>
 
 namespace Atmos
 {
+    DebugScreen::DebugScreen(ObjectManager& manager) : ObjectSystem(manager)
+    {}
+
+    /*
     template<class T>
     T* RetrieveFromLocalObjectManager()
     {
@@ -193,13 +194,14 @@ namespace Atmos
     {
         return Manager()->FindSystem<Input::System>();
     }
+    */
 }
 
 namespace Inscription
 {
-    INSCRIPTION_INSCRIPTER_DEFINE_TABLE(::Atmos::DebugScreen)
+    INSCRIPTION_BINARY_INSCRIPTER_DEFINE_TABLE(::Atmos::DebugScreen)
     {
-        INSCRIPTION_INSCRIPTER_CREATE_TABLE;
+        INSCRIPTION_BINARY_INSCRIPTER_CREATE_TABLE;
 
         INSCRIPTION_TABLE_ADD_BASE(::Atmos::ObjectSystem);
 

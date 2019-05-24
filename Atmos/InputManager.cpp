@@ -5,8 +5,6 @@
 #include "CameraSystem.h"
 #include "DebugStatisticsSystem.h"
 
-#include <AGUI/System.h>
-
 namespace Atmos
 {
     namespace Input
@@ -34,9 +32,6 @@ namespace Atmos
             previousMousePosition = mousePosition;
             SetMousePosition();
             mousePositionDelta.Update(mousePosition);
-            ::Agui::System::InjectMousePosition(
-                static_cast<::Agui::Position::ValueT>(mousePosition.x),
-                static_cast<::Agui::Position::ValueT>(mousePosition.y));
 
             WorkSignalsImpl(signalList);
 

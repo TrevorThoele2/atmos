@@ -18,7 +18,7 @@ namespace Atmos
         return *this;
     }
 
-    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(Field)
+    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(Field)
     {
         scribe(objectManager);
     }

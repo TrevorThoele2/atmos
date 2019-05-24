@@ -46,7 +46,7 @@ namespace Atmos
     State::State(ObjectManager& manager) : Object(manager)
     {}
 
-    State::State(const ::Inscription::Table<State>& table) : INSCRIPTION_TABLE_GET_BASE(Object)
+    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(State) : INSCRIPTION_TABLE_GET_BASE(Object)
     {}
 
     StateSystem* State::System()

@@ -12,7 +12,7 @@ namespace Atmos
     }
 
     template<class T>
-    ObjectBatchSource<T>::ObjectBatchSource(const ::Inscription::Table<ObjectBatchSource>& table) : INSCRIPTION_TABLE_GET_MEM(manager)
+    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE_TEMPLATE(ObjectBatchSource, ObjectBatchSource<T>) : INSCRIPTION_TABLE_GET_MEM(manager)
     {
         SetupAssociatedDescriptionGroup();
         Synchronize();

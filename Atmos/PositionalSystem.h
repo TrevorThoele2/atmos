@@ -16,7 +16,7 @@ namespace Atmos
         Octree grid;
     public:
         PositionalSystem(ObjectManager& manager);
-        PositionalSystem(const ::Inscription::Table<PositionalSystem>& table);
+        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(PositionalSystem);
     private:
         typedef ObjectBatch<PositionalObject> Batch;
         typedef TypedObjectReference<PositionalObject> Reference;
@@ -34,7 +34,7 @@ namespace Inscription
     INSCRIPTION_INSCRIPTER_DECLARE(::Atmos::PositionalSystem)
     {
     public:
-        INSCRIPTION_INSCRIPTER_DECLARE_TABLE;
-        INSCRIPTION_DECLARE_CLASS_NAME_RESOLVER;
+        INSCRIPTION_BINARY_INSCRIPTER_DECLARE_TABLE;
+        INSCRIPTION_BINARY_DECLARE_CLASS_NAME_RESOLVER;
     };
 }

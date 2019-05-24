@@ -13,7 +13,7 @@ namespace Atmos
         System::System(ObjectManager& manager) : UniqueProviderSystem(manager, UniqueProviderSystem::ValuePtr(new NullManager()))
         {}
 
-        System::System(const ::Inscription::Table<System>& table) :
+        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(System) :
             INSCRIPTION_TABLE_GET_BASE(UniqueProviderSystem<Input::Manager>)
         {}
 
@@ -59,14 +59,14 @@ namespace Atmos
 
 namespace Inscription
 {
-    INSCRIPTION_INSCRIPTER_DEFINE_TABLE(::Atmos::Input::System)
+    INSCRIPTION_BINARY_INSCRIPTER_DEFINE_TABLE(::Atmos::Input::System)
     {
-        INSCRIPTION_INSCRIPTER_CREATE_TABLE;
+        INSCRIPTION_BINARY_INSCRIPTER_CREATE_TABLE;
 
         INSCRIPTION_TABLE_ADD_BASE(::Atmos::UniqueProviderSystem<::Atmos::Input::Manager>);
 
         INSCRIPTION_INSCRIPTER_RETURN_TABLE;
     }
 
-    INSCRIPTION_DEFINE_SIMPLE_CLASS_NAME_RESOLVER(::Atmos::Input::System, "InputSystem");
+    INSCRIPTION_BINARY_DEFINE_SIMPLE_CLASS_NAME_RESOLVER(::Atmos::Input::System, "InputSystem");
 }

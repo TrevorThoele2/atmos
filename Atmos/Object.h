@@ -14,7 +14,7 @@ namespace Atmos
     {
     public:
         Object(ObjectManager& manager);
-        Object(const ::Inscription::Table<Object>& table);
+        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(Object);
         virtual ~Object() = 0;
 
         ObjectID ID() const;
@@ -73,6 +73,6 @@ namespace Inscription
     INSCRIPTION_INSCRIPTER_DECLARE(::Atmos::Object)
     {
     public:
-        INSCRIPTION_INSCRIPTER_DECLARE_TABLE;
+        INSCRIPTION_BINARY_INSCRIPTER_DECLARE_TABLE;
     };
 }

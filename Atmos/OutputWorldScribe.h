@@ -7,7 +7,7 @@
 #include "FilePath.h"
 
 #include "SkipFileSaver.h"
-#include <Inscription/BinaryScribe.h>
+#include <Inscription/OutputBinaryScribe.h>
 
 namespace Atmos
 {
@@ -29,22 +29,22 @@ namespace Atmos
     public:
         OutputWorldScribe(
             const FilePath& filePath,
-            ::Inscription::ContainerSize::ValueT fieldCount,
+            ::Inscription::ContainerSize fieldCount,
             ObjectManager& globalObjectManager,
             OpenMode openMode = OpenMode::FORCE_EXTENSION);
 
         void Save(Field& field) override;
 
-        void OverwriteFieldCount(::Inscription::ContainerSize::ValueT set) override;
+        void OverwriteFieldCount(::Inscription::ContainerSize set) override;
 
         const FilePath& GetFilePath() const;
 
         static ::Inscription::Version CurrentVersion();
     protected:
-        ::Inscription::Scribe& UnderlyingScribe() override;
-        const ::Inscription::Scribe& UnderlyingScribe() const override;
+        ::Inscription::BinaryScribe& UnderlyingScribe() override;
+        const ::Inscription::BinaryScribe& UnderlyingScribe() const override;
     private:
-        typedef ::Inscription::BinaryScribe Underlying;
+        typedef ::Inscription::OutputBinaryScribe Underlying;
 
         class FieldSaver : public SkipFileSaver<Underlying>
         {

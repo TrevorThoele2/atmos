@@ -2,7 +2,7 @@
 
 #include "ObjectSystem.h"
 
-#include "FilePath.h"
+#include "FileName.h"
 
 namespace Atmos
 {
@@ -10,7 +10,7 @@ namespace Atmos
     {
     public:
         MusicSystem(ObjectManager& manager);
-        MusicSystem(const ::Inscription::Table<MusicSystem>& table);
+        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(MusicSystem);
 
         void BeginPlaying(const FileName& fileName);
         void TerminateCurrent();
@@ -25,7 +25,7 @@ namespace Inscription
     INSCRIPTION_INSCRIPTER_DECLARE(::Atmos::MusicSystem)
     {
     public:
-        INSCRIPTION_INSCRIPTER_DECLARE_TABLE;
-        INSCRIPTION_DECLARE_CLASS_NAME_RESOLVER;
+        INSCRIPTION_BINARY_INSCRIPTER_DECLARE_TABLE;
+        INSCRIPTION_BINARY_DECLARE_CLASS_NAME_RESOLVER;
     };
 }

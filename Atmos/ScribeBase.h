@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Inscription { class Scribe; }
+namespace Inscription { class BinaryScribe; }
 
 namespace Atmos
 {
@@ -10,13 +10,13 @@ namespace Atmos
         virtual ~ScribeBase() = 0;
 
         void CopyTrackersTo(ScribeBase& scribe) const;
-        void CopyTrackersTo(::Inscription::Scribe& scribe) const;
+        void CopyTrackersTo(::Inscription::BinaryScribe& scribe) const;
         void MoveTrackersTo(ScribeBase& scribe);
-        void MoveTrackersTo(::Inscription::Scribe& scribe);
+        void MoveTrackersTo(::Inscription::BinaryScribe& scribe);
     protected:
         ScribeBase() = default;
     protected:
-        virtual ::Inscription::Scribe& UnderlyingScribe() = 0;
-        virtual const ::Inscription::Scribe& UnderlyingScribe() const = 0;
+        virtual ::Inscription::BinaryScribe& UnderlyingScribe() = 0;
+        virtual const ::Inscription::BinaryScribe& UnderlyingScribe() const = 0;
     };
 }

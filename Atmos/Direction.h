@@ -28,7 +28,7 @@ namespace Atmos
             OPPOSED
         };
     private:
-        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
+        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
     private:
         ValueT value;

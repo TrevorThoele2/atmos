@@ -3,7 +3,7 @@
 
 namespace Atmos
 {
-    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(RadixPoint)
+    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(RadixPoint)
     {
         scribe(value);
     }

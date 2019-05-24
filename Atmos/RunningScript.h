@@ -39,7 +39,7 @@ namespace Atmos
     public:
         RunningScript(ObjectManager& manager, SourceReference source);
         RunningScript(const RunningScript& arg) = default;
-        RunningScript(const ::Inscription::Table<RunningScript>& table);
+        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(RunningScript);
 
         void Resume();
         void Suspend();

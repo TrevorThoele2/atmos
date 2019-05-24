@@ -22,7 +22,7 @@ namespace Atmos
         public:
             MovementComponent(ObjectManager& manager, EntityReference reference);
             MovementComponent(const MovementComponent& arg) = default;
-            MovementComponent(const ::Inscription::Table<MovementComponent>& table);
+            INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(MovementComponent);
 
             void Enable();
             void Disable();
@@ -34,7 +34,6 @@ namespace Atmos
         private:
             void SetupScripts();
         private:
-            INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
             INSCRIPTION_ACCESS;
         };
     }

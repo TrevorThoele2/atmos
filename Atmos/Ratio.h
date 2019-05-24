@@ -27,7 +27,7 @@ namespace Atmos
     public:
         typedef RatioBase<T>::ValueT ValueT;
     private:
-        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
+        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
     private:
         ValueT numerator, denominator;
@@ -45,7 +45,7 @@ namespace Atmos
     };
 
     template<class T>
-    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(DynamicRatio<T>)
+    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(DynamicRatio<T>)
     {
         scribe(numerator);
         scribe(denominator);

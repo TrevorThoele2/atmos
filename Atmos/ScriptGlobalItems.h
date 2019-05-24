@@ -44,7 +44,7 @@ namespace Atmos
             typedef std::vector<NameValuePair> List;
             List list;
         private:
-            INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
+            INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
             INSCRIPTION_ACCESS;
         };
     }

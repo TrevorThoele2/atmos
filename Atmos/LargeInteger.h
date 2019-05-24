@@ -16,7 +16,7 @@ namespace Atmos
         static constexpr WrappedT maxWrappedValue = std::numeric_limits<unsigned long long>::max();
         static constexpr size_t digitCount = sizeof(WrappedT) * 2 * CHAR_BIT;
     private:
-        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
+        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
     private:
         WrappedT low;

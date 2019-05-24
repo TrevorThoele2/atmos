@@ -55,7 +55,7 @@ namespace Atmos
         private:
             friend PositionalObject;
         private:
-            INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
+            INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
             INSCRIPTION_ACCESS;
         };
 
@@ -103,7 +103,7 @@ namespace Atmos
         private:
             friend PositionalObject;
         private:
-            INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
+            INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
             INSCRIPTION_ACCESS;
         };
 
@@ -130,7 +130,7 @@ namespace Atmos
         PositionalObject(ObjectManager& manager);
         PositionalObject(const PositionalObject& arg);
         PositionalObject(PositionalObject&& arg);
-        PositionalObject(const ::Inscription::Table<PositionalObject>& table);
+        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(PositionalObject);
 
         virtual ~PositionalObject() = 0;
 
@@ -174,6 +174,6 @@ namespace Inscription
     public:
         OBJECT_INSCRIPTER_DECLARE_MEMBERS;
 
-        INSCRIPTION_INSCRIPTER_DECLARE_SERIALIZE_FUNCTION;
+        INSCRIPTION_BINARY_INSCRIPTER_DECLARE_SERIALIZE_FUNCTION;
     };
 }
