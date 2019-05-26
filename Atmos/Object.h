@@ -10,6 +10,7 @@
 namespace Atmos
 {
     class ObjectManager;
+
     class Object
     {
     public:

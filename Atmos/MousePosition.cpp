@@ -3,20 +3,20 @@
 
 namespace Atmos
 {
-    MousePosition::MousePosition(ValueT x, ValueT y) : x(x), y(y)
+    MousePosition::MousePosition(Value x, Value y) : x(x), y(y)
     {}
 
-    bool MousePosition::operator==(const MousePosition &arg) const
+    bool MousePosition::operator==(const MousePosition& arg) const
     {
         return x == arg.x && y == arg.y;
     }
 
-    bool MousePosition::operator!=(const MousePosition &arg) const
+    bool MousePosition::operator!=(const MousePosition& arg) const
     {
         return !(*this == arg);
     }
 
-    void MousePosition::Set(ValueT x, ValueT y)
+    void MousePosition::Set(Value x, Value y)
     {
         this->x = x;
         this->y = y;
@@ -29,56 +29,57 @@ namespace Atmos
 
     Position2D MousePosition::ToPosition() const
     {
-        return Position2D(static_cast<Position2D::ValueT>(x), static_cast<Position2D::ValueT>(y));
+        return Position2D(static_cast<Position2D::Value>(x), static_cast<Position2D::Value>(y));
     }
 
-    void MousePositionDelta::CalcDelta()
+    void MousePositionDelta::CalculateDelta()
     {
-        delta.x = prev.x - now.x;
-        delta.y = prev.y - now.y;
+        delta.x = previous.x - current.x;
+        delta.y = previous.y - current.y;
     }
 
     MousePositionDelta::MousePositionDelta()
     {
-        now.Set(0, 0);
-        prev.Set(0, 0);
+        current.Set(0, 0);
+        previous.Set(0, 0);
         delta.Set(0, 0);
     }
 
-    MousePositionDelta::MousePositionDelta(const MousePosition &mousePos, const MousePosition &mousePosPrev) : now(mousePos), prev(mousePosPrev)
+    MousePositionDelta::MousePositionDelta(const MousePosition& mousePos, const MousePosition& mousePosPrev) :
+        current(mousePos), previous(mousePosPrev)
     {
-        CalcDelta();
+        CalculateDelta();
     }
 
-    void MousePositionDelta::Setup(const MousePosition &mousePos)
+    void MousePositionDelta::Setup(const MousePosition& mousePos)
     {
-        now = mousePos;
-        prev = mousePos;
-        CalcDelta();
+        current = mousePos;
+        previous = mousePos;
+        CalculateDelta();
     }
 
-    void MousePositionDelta::Update(const MousePosition &mousePos)
+    void MousePositionDelta::Update(const MousePosition& mousePos)
     {
-        now = mousePos;
-        CalcDelta();
+        current = mousePos;
+        CalculateDelta();
     }
 
-    bool MousePositionDelta::Moved() const
+    bool MousePositionDelta::HasMoved() const
     {
         return delta.x != 0 || delta.y != 0;
     }
 
-    const MousePosition& MousePositionDelta::GetNow() const
+    const MousePosition& MousePositionDelta::Current() const
     {
-        return now;
+        return current;
     }
 
-    const MousePosition& MousePositionDelta::GetPrevious() const
+    const MousePosition& MousePositionDelta::Previous() const
     {
-        return prev;
+        return previous;
     }
 
-    const MousePosition& MousePositionDelta::GetDelta() const
+    const MousePosition& MousePositionDelta::Delta() const
     {
         return delta;
     }

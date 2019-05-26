@@ -17,7 +17,7 @@ namespace Atmos
         void Suspend(const TimeValue& time) override;
         bool OnStartFrame() override;
     protected:
-        AxisBoundingBox2D AdjustWindowDimensions() override;
+        AxisAlignedBox2D AdjustWindowDimensions() override;
         void OnSetWindowDimensions() override;
         Position GetDefaultWindowPosition() override;
         void OnSetFullscreen() override;

@@ -9,12 +9,16 @@ namespace Inscription
     {
         if (scribe.IsOutput())
         {
-            scribe.Save(::Inscription::RemoveConst(obj.GetValue()));
+            auto& outputScribe = *scribe.AsOutput();
+
+            outputScribe.Save(::Inscription::RemoveConst(obj.GetValue()));
         }
         else // INPUT
         {
+            auto& inputScribe = *scribe.AsInput();
+
             std::string str;
-            scribe.Load(str);
+            inputScribe.Load(str);
 
             obj = ::Chroma::FileName(str);
         }

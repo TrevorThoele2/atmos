@@ -5,7 +5,8 @@
 #include "ObjectTypeName.h"
 #include "ObjectTypeDescriptionGroup.h"
 
-#include <Inscription/Scribe.h>
+#include <Inscription/OutputBinaryScribe.h>
+#include <Inscription/InputBinaryScribe.h>
 
 namespace Atmos
 {
@@ -16,10 +17,10 @@ namespace Atmos
 
         void Clear();
     public:
-        void SaveAll(::Inscription::BinaryScribe& scribe);
-        void LoadAll(::Inscription::BinaryScribe& scribe);
-        void Save(const ObjectTypeName& typeName, ::Inscription::BinaryScribe& scribe);
-        void Load(ObjectTypeName& typeName, ::Inscription::BinaryScribe& scribe);
+        void SaveAll(::Inscription::OutputBinaryScribe& scribe);
+        void LoadAll(::Inscription::InputBinaryScribe& scribe);
+        void Save(const ObjectTypeName& typeName, ::Inscription::OutputBinaryScribe& scribe);
+        void Load(ObjectTypeName& typeName, ::Inscription::InputBinaryScribe& scribe);
     private:
         typedef size_t ID;
 

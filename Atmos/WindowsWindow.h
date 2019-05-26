@@ -31,7 +31,7 @@ namespace Atmos
 
         HWND GetHwnd() override;
     protected:
-        AxisBoundingBox2D AdjustWindowDimensions() override;
+        AxisAlignedBox2D AdjustWindowDimensions() override;
         void OnSetWindowDimensions() override;
         Position GetDefaultWindowPosition() override;
         void OnSetFullscreen() override;

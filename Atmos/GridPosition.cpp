@@ -1,4 +1,3 @@
-
 #include <functional>
 
 #include "GridPosition.h"
@@ -9,81 +8,78 @@
 
 namespace Atmos
 {
-    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(GridPosition)
-    {
-        scribe(x);
-        scribe(y);
-        scribe(z);
-    }
-
-    GridPosition::GridPosition(ValueT x, ValueT y, ValueT z) : x(x), y(y), z(z)
+    GridPosition::GridPosition(Value x, Value y, Value z) :
+        x(x), y(y), z(z)
     {}
 
-    GridPosition::GridPosition(const GridPosition &source, const RelativeGridPosition &offset) : x(source.x + offset.x), y(source.y + offset.y), z(source.z + offset.z)
+    GridPosition::GridPosition(const GridPosition& source, const RelativeGridPosition& offset) :
+        x(source.x + offset.x), y(source.y + offset.y), z(source.z + offset.z)
     {}
 
-    GridPosition::GridPosition(const Position2D &arg, ValueT z) : x(DimensionFromPosition(arg.GetX())), y(DimensionFromPosition(arg.GetY())), z(z)
+    GridPosition::GridPosition(const Position2D& arg, Value z) :
+        x(DimensionFromPosition(arg.x)), y(DimensionFromPosition(arg.y)), z(z)
     {}
 
-    GridPosition::GridPosition(const Position3D &pos) : x(DimensionFromPosition(pos.GetX())), y(DimensionFromPosition(pos.GetY())), z(DimensionFromPosition(pos.GetZ()))
+    GridPosition::GridPosition(const Position3D& pos) :
+        x(DimensionFromPosition(pos.x)), y(DimensionFromPosition(pos.y)), z(DimensionFromPosition(pos.z))
     {}
 
-    bool GridPosition::operator==(const GridPosition &arg) const
+    bool GridPosition::operator==(const GridPosition& arg) const
     {
         return x == arg.x && y == arg.y && z == arg.z;
     }
 
-    bool GridPosition::operator!=(const GridPosition &arg) const
+    bool GridPosition::operator!=(const GridPosition& arg) const
     {
         return !(*this == arg);
     }
 
-    void GridPosition::Edit(ValueT x, ValueT y, ValueT z)
+    void GridPosition::Edit(Value x, Value y, Value z)
     {
         this->x = x;
         this->y = y;
         this->z = z;
     }
 
-    void GridPosition::Edit(const RelativeGridPosition &offset)
+    void GridPosition::Edit(const RelativeGridPosition& offset)
     {
         x += offset.x;
         y += offset.y;
         z += offset.z;
     }
 
-    void GridPosition::Edit(const GridPosition &source, const RelativeGridPosition &offset)
+    void GridPosition::Edit(const GridPosition& source, const RelativeGridPosition& offset)
     {
         x = source.x + offset.x;
         y = source.y + offset.y;
         z = source.z + offset.z;
     }
 
-    void GridPosition::Edit(const Position2D &pos, ValueT z)
+    void GridPosition::Edit(const Position2D& pos, Value z)
     {
-        x = DimensionFromPosition(pos.GetX());
-        y = DimensionFromPosition(pos.GetY());
+        x = DimensionFromPosition(pos.x);
+        y = DimensionFromPosition(pos.y);
         this->z = z;
     }
 
-    void GridPosition::Edit(const Position3D &pos)
+    void GridPosition::Edit(const Position3D& pos)
     {
-        x = DimensionFromPosition(pos.GetX());
-        y = DimensionFromPosition(pos.GetY());
-        z = DimensionFromPosition(pos.GetZ());
+        x = DimensionFromPosition(pos.x);
+        y = DimensionFromPosition(pos.y);
+        z = DimensionFromPosition(pos.z);
     }
 
-    void GridPosition::SetX(ValueT set)
+    void GridPosition::SetX(Value set)
     {
         x = set;
     }
 
-    void GridPosition::SetY(ValueT set)
+    void GridPosition::SetY(Value set)
     {
         y = set;
     }
 
-    void GridPosition::SetZ(ValueT set)
+    void GridPosition::SetZ(Value set)
     {
         z = set;
     }
@@ -98,65 +94,65 @@ namespace Atmos
         return Position3D(DimensionToPosition(x), DimensionToPosition(y), DimensionToPosition(z));
     }
 
-    GridPosition::ValueT GridPosition::GetX() const
+    GridPosition::Value GridPosition::GetX() const
     {
         return x;
     }
 
-    GridPosition::ValueT GridPosition::GetY() const
+    GridPosition::Value GridPosition::GetY() const
     {
         return y;
     }
 
-    GridPosition::ValueT GridPosition::GetZ() const
+    GridPosition::Value GridPosition::GetZ() const
     {
         return z;
     }
 
-    GridPosition GridPosition::FindOffset(const RelativeGridPosition &offset) const
+    GridPosition GridPosition::FindOffset(const RelativeGridPosition& offset) const
     {
         GridPosition ret;
         ret.Edit(*this, offset);
         return ret;
     }
 
-    GridPosition::ValueT GridPosition::FindXDistance(const GridPosition &destination) const
+    GridPosition::Value GridPosition::FindXDistance(const GridPosition& destination) const
     {
         return destination.x - x;
     }
 
-    GridPosition::ValueT GridPosition::FindYDistance(const GridPosition &destination) const
+    GridPosition::Value GridPosition::FindYDistance(const GridPosition& destination) const
     {
         return destination.y - y;
     }
 
-    GridPosition::ValueT GridPosition::FindZDistance(const GridPosition &destination) const
+    GridPosition::Value GridPosition::FindZDistance(const GridPosition& destination) const
     {
         return destination.z - z;
     }
 
-    unsigned int GridPosition::FindDistance(const GridPosition &destination) const
+    unsigned int GridPosition::FindDistance(const GridPosition& destination) const
     {
         return std::abs(FindXDistance(destination)) + std::abs(FindYDistance(destination)) + std::abs(FindZDistance(destination));
     }
 
-    Direction GridPosition::DetermineDirection(const GridPosition &ending) const
+    Direction GridPosition::DetermineDirection(const GridPosition& ending) const
     {
         if (ending.x < x)
-            return Direction::ValueT::LEFT;
+            return Direction::Value::LEFT;
         else if (ending.x > x)
-            return Direction::ValueT::RIGHT;
+            return Direction::Value::RIGHT;
         else if (ending.y < y)
-            return Direction::ValueT::UP;
+            return Direction::Value::UP;
         else if (ending.y > y)
-            return Direction::ValueT::DOWN;
+            return Direction::Value::DOWN;
         else if (ending.z > z)
-            return Direction::ValueT::Z_UP;
+            return Direction::Value::Z_UP;
         else
-            return Direction::ValueT::Z_DOWN;
+            return Direction::Value::Z_DOWN;
     }
 
-    bool GridPosition::IsCloser(const GridPosition &first, const GridPosition &second) const
+    bool GridPosition::IsCloser(const GridPosition& first, const GridPosition& second) const
     {
         auto thisDist = FindDistance(first);
         auto argDist = FindDistance(second);
@@ -164,28 +160,28 @@ namespace Atmos
         return argDist >= thisDist;
     }
 
-    GridPosition GridPosition::FindPositionAdjacent(const Direction &dir) const
+    GridPosition GridPosition::FindPositionAdjacent(const Direction& dir) const
     {
         GridPosition newPos(*this);
 
         switch (dir.Get())
         {
-        case Direction::ValueT::UP:
+        case Direction::Value::UP:
             --newPos.y;
             break;
-        case Direction::ValueT::DOWN:
+        case Direction::Value::DOWN:
             ++newPos.y;
             break;
-        case Direction::ValueT::LEFT:
+        case Direction::Value::LEFT:
             --newPos.x;
             break;
-        case Direction::ValueT::RIGHT:
+        case Direction::Value::RIGHT:
             ++newPos.x;
             break;
-        case Direction::ValueT::Z_UP:
+        case Direction::Value::Z_UP:
             ++newPos.z;
             break;
-        case Direction::ValueT::Z_DOWN:
+        case Direction::Value::Z_DOWN:
             --newPos.z;
             break;
         }
@@ -193,43 +189,58 @@ namespace Atmos
         return newPos;
     }
 
-    RelativeGridPosition GridPosition::Difference(const GridPosition &against) const
+    RelativeGridPosition GridPosition::Difference(const GridPosition& against) const
     {
         return RelativeGridPosition(against.x - x, against.y - y, against.z - z);
     }
 
-    GridPosition GridPosition::FromScreen(const Position2D &position, ValueT z, const Position2D &topLeftScreen)
+    GridPosition GridPosition::FromScreen(const Position2D& position, Value z, const Position2D& topLeftScreen)
     {
-        return GridPosition(DimensionFromPosition(position.GetX() + topLeftScreen.GetX()), DimensionFromPosition(position.GetY() + topLeftScreen.GetY()), z);
+        return GridPosition(
+            DimensionFromPosition(position.x + topLeftScreen.x),
+            DimensionFromPosition(position.y + topLeftScreen.y),
+            z);
     }
 
-    GridPosition GridPosition::FromScreen(const Position3D &position, const Position2D &topLeftScreen)
+    GridPosition GridPosition::FromScreen(const Position3D& position, const Position2D& topLeftScreen)
     {
-        return GridPosition(DimensionFromPosition(position.GetX() + topLeftScreen.GetX()), DimensionFromPosition(position.GetY() + topLeftScreen.GetY()), DimensionFromPosition(position.GetZ()));
+        return GridPosition(
+            DimensionFromPosition(position.x + topLeftScreen.x),
+            DimensionFromPosition(position.y + topLeftScreen.y),
+            DimensionFromPosition(position.z));
     }
 
-    GridPosition::ValueT GridPosition::DimensionFromPosition(Position2D::ValueT dim)
+    GridPosition::Value GridPosition::DimensionFromPosition(Position2D::Value dim)
     {
-        return static_cast<GridPosition::ValueT>(std::floor(dim / GRID_SIZE<Position3D::ValueT>));
+        return static_cast<GridPosition::Value>(std::floor(dim / GRID_SIZE<Position3D::Value>));
     }
 
-    Position2D::ValueT GridPosition::DimensionToPosition(ValueT dim)
+    Position2D::Value GridPosition::DimensionToPosition(Value dim)
     {
-        return static_cast<Position2D::ValueT>((dim * GRID_SIZE<ValueT>) + (GRID_SIZE<ValueT> / 2));
+        return static_cast<Position2D::Value>((dim * GRID_SIZE<Value>) + (GRID_SIZE<Value> / 2));
     }
 
-    RelativeGridPosition::RelativeGridPosition(ValueT x, ValueT y, ValueT z) : x(x), y(y), z(z)
+    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(GridPosition)
+    {
+        scribe(x);
+        scribe(y);
+        scribe(z);
+    }
+
+    RelativeGridPosition::RelativeGridPosition(ValueT x, ValueT y, ValueT z) :
+        x(x), y(y), z(z)
     {}
 
-    RelativeGridPosition::RelativeGridPosition(const GridPosition &source, const GridPosition &destination) : x(destination.x - source.x), y(destination.y - source.y), z(destination.z - source.z)
+    RelativeGridPosition::RelativeGridPosition(const GridPosition& source, const GridPosition& destination) :
+        x(destination.x - source.x), y(destination.y - source.y), z(destination.z - source.z)
     {}
 
-    bool RelativeGridPosition::operator==(const RelativeGridPosition &arg) const
+    bool RelativeGridPosition::operator==(const RelativeGridPosition& arg) const
     {
         return x == arg.x && y == arg.y && z == arg.z;
     }
 
-    bool RelativeGridPosition::operator!=(const RelativeGridPosition &arg) const
+    bool RelativeGridPosition::operator!=(const RelativeGridPosition& arg) const
     {
         return !(*this == arg);
     }

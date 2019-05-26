@@ -4,7 +4,7 @@
 #include "ObjectReference.h"
 #include "ObjectException.h"
 
-#include "PositionalObject.h"
+#include "AxisAlignedObject.h"
 
 #include "StoredProperty.h"
 
@@ -27,7 +27,7 @@ namespace Atmos
         class Position
         {
         public:
-            typedef StoredProperty<Position3D::ValueT> Property;
+            typedef StoredProperty<Position3D::Value> Property;
         public:
             Property xOffset;
             Property yOffset;
@@ -49,7 +49,7 @@ namespace Atmos
             void Calculate();
         private:
             void SubscribeToProperties();
-            void OnPropertyChanged(Position3D::ValueT value);
+            void OnPropertyChanged(Position3D::Value value);
         private:
             PositionalOffsetAdapter* owner;
         private:
@@ -58,7 +58,7 @@ namespace Atmos
 
             void SetSource();
             void SetSource(SourceReference set);
-            void OnSourcePositionChanged(TypedObjectReference<PositionalObject> object, Position3D previous);
+            void OnSourcePositionChanged(Position3D previous);
         private:
             friend PositionalOffsetAdapter;
         private:
@@ -74,6 +74,7 @@ namespace Atmos
         SourceProperty source;
     public:
         PositionalOffsetAdapter();
+        PositionalOffsetAdapter(SourceReference source);
         PositionalOffsetAdapter(const PositionalOffsetAdapter& arg);
         PositionalOffsetAdapter(PositionalOffsetAdapter&& arg);
 
@@ -93,7 +94,7 @@ namespace Atmos
         INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
     private:
-        static_assert(std::is_base_of<PositionalObject, T>::value, "This must be derived from PositionalObject");
+        static_assert(std::is_base_of<AxisAlignedObject, T>::value, "This must be derived from AxisAlignedObject");
     };
 
     template<class T>
@@ -160,9 +161,9 @@ namespace Atmos
         if (!source)
             return;
 
-        underlying.SetX(source->position.x + xOffset);
-        underlying.SetY(source->position.y + yOffset);
-        underlying.SetZ(source->position.z + zOffset);
+        underlying.x = source->position.x + xOffset;
+        underlying.y = source->position.y + yOffset;
+        underlying.z = source->position.z + zOffset;
         owner->PositionHasChanged(underlying);
     }
 
@@ -175,7 +176,7 @@ namespace Atmos
     }
 
     template<class T>
-    void PositionalOffsetAdapter<T>::Position::OnPropertyChanged(Position3D::ValueT value)
+    void PositionalOffsetAdapter<T>::Position::OnPropertyChanged(Position3D::Value value)
     {
         Calculate();
     }
@@ -197,7 +198,7 @@ namespace Atmos
     }
 
     template<class T>
-    void PositionalOffsetAdapter<T>::Position::OnSourcePositionChanged(TypedObjectReference<PositionalObject> object, Position3D previous)
+    void PositionalOffsetAdapter<T>::Position::OnSourcePositionChanged(Position3D previous)
     {
         Calculate();
     }
@@ -220,7 +221,8 @@ namespace Atmos
     }
 
     template<class T>
-    PositionalOffsetAdapter<T>::PositionalOffsetAdapter(const PositionalOffsetAdapter& arg) : position(arg.position), source(arg.source)
+    PositionalOffsetAdapter<T>::PositionalOffsetAdapter(SourceReference source) :
+        source(source)
     {
         LinkPosition();
         CalculatePosition();
@@ -228,7 +230,17 @@ namespace Atmos
     }
 
     template<class T>
-    PositionalOffsetAdapter<T>::PositionalOffsetAdapter(PositionalOffsetAdapter&& arg) : position(std::move(arg.position)), source(std::move(arg.source))
+    PositionalOffsetAdapter<T>::PositionalOffsetAdapter(const PositionalOffsetAdapter& arg) :
+        position(arg.position), source(arg.source)
+    {
+        LinkPosition();
+        CalculatePosition();
+        SubscribeToProperties();
+    }
+
+    template<class T>
+    PositionalOffsetAdapter<T>::PositionalOffsetAdapter(PositionalOffsetAdapter&& arg) :
+        position(std::move(arg.position)), source(std::move(arg.source))
     {
         LinkPosition();
         CalculatePosition();

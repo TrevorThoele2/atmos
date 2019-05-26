@@ -13,7 +13,7 @@ namespace Atmos
         class GridPosition
         {
         public:
-            ::Atmos::GridPosition::ValueT x, y, z;
+            ::Atmos::GridPosition::Value x, y, z;
         public:
             GridPosition();
 

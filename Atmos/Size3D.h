@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Angle.h"
+#include "ReadonlyProperty.h"
 
 #include "Serialization.h"
 
@@ -9,64 +9,36 @@ namespace Atmos
     class Size3D
     {
     public:
-        typedef float ValueT;
+        typedef float Value;
+
+        Value baseWidth;
+        Value baseHeight;
+        Value baseDepth;
+
+        typedef float Scaler;
+
+        Scaler widthScaler;
+        Scaler heightScaler;
+        Scaler depthScaler;
+
+        typedef ReadonlyProperty<Value> ScaledValueProperty;
+
+        const Value scaledWidth = ScaledValueProperty(
+            [this]() { return baseWidth * widthScaler; });
+        const Value scaledHeight = ScaledValueProperty(
+            [this]() { return baseHeight * heightScaler; });
+        const Value scaledDepth = ScaledValueProperty(
+            [this]() { return baseDepth * depthScaler; });
     public:
-        struct Scalers
-        {
-            ValueT x;
-            ValueT y;
-            ValueT z;
-        };
-    public:
-        Size3D(
-            ValueT width = 0.0f,
-            ValueT height = 0.0f,
-            ValueT depth = 0.0f,
-            ValueT xScaler = 1.0f,
-            ValueT yScaler = 1.0f,
-            ValueT zScaler = 1.0f,
-            const Angle& xRotation = Angle(),
-            const Angle& yRotation = Angle(),
-            const Angle& zRotation = Angle());
+        Size3D();
+        Size3D(Value baseWidth, Value baseHeight, Value baseDepth);
+        Size3D(Value baseWidth, Value baseHeight, Value baseDepth, Scaler widthScaler, Scaler heightScaler, Scaler depthScaler);
         Size3D(const Size3D& arg);
 
         Size3D& operator=(const Size3D& arg);
 
         bool operator==(const Size3D& arg) const;
         bool operator!=(const Size3D& arg) const;
-
-        void SetWidth(ValueT setTo);
-        void SetHeight(ValueT setTo);
-        void SetDepth(ValueT setTo);
-
-        ValueT GetWidth() const;
-        ValueT GetHeight() const;
-        ValueT GetDepth() const;
-        ValueT GetScaledWidth() const;
-        ValueT GetScaledHeight() const;
-        ValueT GetScaledDepth() const;
-
-        void SetXScaler(ValueT setTo);
-        void SetYScaler(ValueT setTo);
-        void SetZScaler(ValueT setTo);
-
-        Scalers GetScalers() const;
-        ValueT GetXScaler() const;
-        ValueT GetYScaler() const;
-        ValueT GetZScaler() const;
-
-        void SetXRotation(const Angle& setTo);
-        void SetYRotation(const Angle& setTo);
-        void SetZRotation(const Angle& setTo);
-        const Angle& GetXRotation() const;
-        const Angle& GetYRotation() const;
-        const Angle& GetZRotation() const;
-    private:
-        ValueT width, height, depth, realWidth, realHeight, realDepth;
-        ValueT xScaler, yScaler, zScaler;
-        Angle xRotation, yRotation, zRotation;
-
-        void Calculate();
     private:
         INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;

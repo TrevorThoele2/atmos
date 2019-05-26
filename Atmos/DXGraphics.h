@@ -13,7 +13,9 @@
 #include "ObjectReference.h"
 
 #include "Size2D.h"
-#include "AxisBoundingBox2D.h"
+#include "AxisAlignedBox2D.h"
+#include "Angle.h"
+
 #include "FilePath.h"
 
 #include <AGUI/Resolution.h>
@@ -68,7 +70,7 @@ namespace Atmos
             float X,
             float Y,
             float Z,
-            const AxisBoundingBox2D& imageBounds,
+            const AxisAlignedBox2D& imageBounds,
             const Size2D& size,
             const Position2D& center,
             const Scalings& scalings,

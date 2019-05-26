@@ -43,14 +43,18 @@ namespace Inscription
     {
         if (scribe.IsOutput())
         {
-            scribe.SaveUnowningPointer(obj.Manager());
+            auto& outputScribe = *scribe.AsOutput();
+
+            outputScribe.SaveUnowningPointer(obj.Manager());
         }
     }
 
     INSCRIPTION_BINARY_INSCRIPTER_DEFINE_CONSTRUCT_OBJECT_FUNCTION(::Atmos::GuiSystem)
     {
+        auto& inputScribe = *scribe.AsInput();
+
         ::Atmos::ObjectManager* objectManager;
-        scribe.LoadUnowningPointer(objectManager);
+        inputScribe.LoadUnowningPointer(objectManager);
         obj = new ManagedT(*objectManager);
     }
 

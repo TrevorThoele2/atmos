@@ -1,45 +1,44 @@
-
 #include "Line2D.h"
 #include "Math.h"
 
 namespace Atmos
 {
-    Line2D::Line2D(const Position2D &first, const Position2D &second) : first(first), second(second)
+    Line2D::Line2D(const Position2D& first, const Position2D& second) : first(first), second(second)
     {}
 
-    Line2D::operator Vector2D() const
-    {
-        return Vector2D(second.GetX() - first.GetX(), second.GetY() - first.GetY());
-    }
-
-    bool Line2D::operator==(const Line2D &arg) const
+    bool Line2D::operator==(const Line2D& arg) const
     {
         return first == arg.first && second == arg.second;
     }
 
-    bool Line2D::operator!=(const Line2D &arg) const
+    bool Line2D::operator!=(const Line2D& arg) const
     {
         return !(*this == arg);
     }
 
-    Optional<Position2D::ValueT> Line2D::Slope() const
+    Line2D::operator Vector2D() const
     {
-        typedef Optional<Position2D::ValueT> RetT;
-        const Position2D::ValueT x = second.GetX() - first.GetX();
-        const Position2D::ValueT y = second.GetY() - first.GetY();
+        return Vector2D(second.x - first.x, second.y - first.y);
+    }
+
+    Optional<Position2D::Value> Line2D::Slope() const
+    {
+        typedef Optional<Position2D::Value> RetT;
+        const Position2D::Value x = second.x - first.x;
+        const Position2D::Value y = second.y - first.y;
         return (x == 0) ? RetT() : (y / x);
     }
 
-    Optional<Position2D::ValueT> Line2D::YIntercept() const
+    Optional<Position2D::Value> Line2D::YIntercept() const
     {
-        typedef Optional<Position2D::ValueT> RetT;
+        typedef Optional<Position2D::Value> RetT;
         const RetT slope(Slope());
-        return (!slope.IsValid()) ? RetT() : (-1 * *slope * first.GetX()) + first.GetY();
+        return (!slope.IsValid()) ? RetT() : (-1 * *slope * first.x) + first.y;
     }
 
-    Position2D::ValueT Line2D::Length() const
+    Position2D::Value Line2D::Length() const
     {
-        return std::sqrt(std::pow(second.GetX() - first.GetX(), 2) + std::pow(second.GetY() - first.GetY(), 2));
+        return std::sqrt(std::pow(second.x - first.x, 2) + std::pow(second.y - first.y, 2));
     }
 
     ::Atmos::Angle Line2D::Angle() const
@@ -47,27 +46,27 @@ namespace Atmos
         return ::Atmos::Angle(Radians(std::atan2(DeltaY(), DeltaX())));
     }
 
-    ::Atmos::Angle Line2D::Angle(const Line2D &other) const
+    ::Atmos::Angle Line2D::Angle(const Line2D& other) const
     {
         return other.Angle() - Angle();
     }
 
-    Position2D::ValueT Line2D::Dot(const Line2D &other) const
+    Position2D::Value Line2D::Dot(const Line2D& other) const
     {
-        return (first.GetX() * second.GetX()) + (first.GetY() * second.GetY());
+        return (first.x * second.x) + (first.y * second.y);
     }
 
-    Position2D::ValueT Line2D::Cross(const Line2D &other) const
+    Position2D::Value Line2D::Cross(const Line2D& other) const
     {
-        return first.GetX() * second.GetY() - second.GetX() * first.GetY();
+        return first.x * second.y - second.x * first.y;
     }
 
     Vector2D Line2D::Direction() const
     {
-        return Vector2D(second.GetX() - first.GetX(), second.GetY() - first.GetY());
+        return Vector2D(second.x - first.x, second.y - first.y);
     }
 
-    bool Line2D::CheckIntersect(const Line2D &other) const
+    bool Line2D::CheckIntersect(const Line2D& other) const
     {
         // If the points coincide, then they intersect
         if (first == other.first || first == other.second || second == other.first || second == other.second)
@@ -93,7 +92,7 @@ namespace Atmos
         return false;
     }
 
-    Optional<Position2D> Line2D::IntersectionPoint(const Line2D &other, bool infinite) const
+    Optional<Position2D> Line2D::IntersectionPoint(const Line2D& other, bool infinite) const
     {
         /*
         Two lines
@@ -139,13 +138,13 @@ namespace Atmos
         return Optional<Position2D>();
     }
 
-    Position2D::ValueT Line2D::DeltaX() const
+    Position2D::Value Line2D::DeltaX() const
     {
-        return second.GetX() - first.GetX();
+        return second.x - first.x;
     }
 
-    Position2D::ValueT Line2D::DeltaY() const
+    Position2D::Value Line2D::DeltaY() const
     {
-        return second.GetY() - first.GetY();
+        return second.y - first.y;
     }
 }

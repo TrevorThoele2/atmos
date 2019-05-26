@@ -7,16 +7,19 @@ namespace Atmos
     class MousePosition
     {
     public:
-        typedef int ValueT;
+        typedef int Value;
     public:
-        ValueT x, y;
-        MousePosition(ValueT x = 0, ValueT y = 0);
+        Value x, y;
+    public:
+        MousePosition(Value x = 0, Value y = 0);
         MousePosition(const MousePosition &arg) = default;
+
         MousePosition& operator=(const MousePosition &arg) = default;
+
         bool operator==(const MousePosition &arg) const;
         bool operator!=(const MousePosition &arg) const;
 
-        void Set(ValueT x, ValueT y);
+        void Set(Value x, Value y);
 
         operator Position2D() const;
         Position2D ToPosition() const;
@@ -24,19 +27,21 @@ namespace Atmos
 
     class MousePositionDelta
     {
-    private:
-        MousePosition now, prev, delta;
-        void CalcDelta();
     public:
         MousePositionDelta();
-        MousePositionDelta(const MousePosition &mousePos, const MousePosition &mousePosPrev);
-        // Sets now and prev to mousePos
-        void Setup(const MousePosition &mousePos);
-        void Update(const MousePosition &mousePos);
+        MousePositionDelta(const MousePosition& mousePos, const MousePosition& mousePosPrev);
 
-        bool Moved() const;
-        const MousePosition& GetNow() const;
-        const MousePosition& GetPrevious() const;
-        const MousePosition& GetDelta() const;
+        // Sets current and previous to mousePos
+        void Setup(const MousePosition& mousePos);
+        void Update(const MousePosition& mousePos);
+
+        bool HasMoved() const;
+        const MousePosition& Current() const;
+        const MousePosition& Previous() const;
+        const MousePosition& Delta() const;
+    private:
+        MousePosition current, previous, delta;
+    private:
+        void CalculateDelta();
     };
 }

@@ -59,37 +59,37 @@ namespace Atmos
         zoom = set;
     }
 
-    void CameraSystem::SetX(Position3D::ValueT set)
+    void CameraSystem::SetX(Position3D::Value set)
     {
         ResetFocus();
-        basePosition.SetX(set);
+        basePosition.x = set;
     }
 
-    void CameraSystem::SetY(Position3D::ValueT set)
+    void CameraSystem::SetY(Position3D::Value set)
     {
         ResetFocus();
-        basePosition.SetY(set);
+        basePosition.y = set;
     }
 
-    void CameraSystem::SetZ(Position3D::ValueT set)
+    void CameraSystem::SetZ(Position3D::Value set)
     {
         ResetFocus();
-        basePosition.SetZ(set);
+        basePosition.z = set;
     }
 
-    Position3D::ValueT CameraSystem::GetX() const
+    Position3D::Value CameraSystem::GetX() const
     {
-        return focusedPosition->GetX();
+        return focusedPosition->x;
     }
 
-    Position3D::ValueT CameraSystem::GetY() const
+    Position3D::Value CameraSystem::GetY() const
     {
-        return focusedPosition->GetY();
+        return focusedPosition->y;
     }
 
-    Position3D::ValueT CameraSystem::GetZ() const
+    Position3D::Value CameraSystem::GetZ() const
     {
-        return focusedPosition->GetZ();
+        return focusedPosition->z;
     }
 
     const Position2D& CameraSystem::GetTopLeft() const
@@ -112,12 +112,12 @@ namespace Atmos
         return size;
     }
 
-    const AxisBoundingBox2D& CameraSystem::GetSides() const
+    const AxisAlignedBox2D& CameraSystem::GetSides() const
     {
         return sides;
     }
 
-    void CameraSystem::Move(Direction direction, Position3D::ValueT by)
+    void CameraSystem::Move(Direction direction, Position3D::Value by)
     {
         ResetFocus();
 
@@ -126,30 +126,30 @@ namespace Atmos
 
         switch (direction.Get())
         {
-        case Direction::UP:
-            basePosition.DecrementY(normalizedDistance);
-            break;
-        case Direction::DOWN:
-            basePosition.IncrementY(normalizedDistance);
-            break;
         case Direction::LEFT:
-            basePosition.DecrementX(normalizedDistance);
+            basePosition.x -= normalizedDistance;
+            break;
+        case Direction::UP:
+            basePosition.y -= normalizedDistance;
             break;
         case Direction::RIGHT:
-            basePosition.IncrementX(normalizedDistance);
+            basePosition.x += normalizedDistance;
+            break;
+        case Direction::DOWN:
+            basePosition.y += normalizedDistance;
             break;
         }
 
         Work();
     }
 
-    void CameraSystem::MoveBy(Position3D::ValueT x, Position3D::ValueT y, Position3D::ValueT z)
+    void CameraSystem::MoveBy(Position3D::Value x, Position3D::Value y, Position3D::Value z)
     {
         ResetFocus();
 
-        basePosition.IncrementX(x);
-        basePosition.IncrementY(y);
-        basePosition.IncrementZ(z);
+        basePosition.x += x;
+        basePosition.y += y;
+        basePosition.z += z;
 
         Work();
     }
@@ -166,9 +166,9 @@ namespace Atmos
     {
         ResetFocus();
 
-        basePosition.IncrementX(delta.GetX());
-        basePosition.IncrementY(delta.GetY());
-        basePosition.IncrementZ(delta.GetZ());
+        basePosition.x += delta.x;
+        basePosition.y += delta.y;
+        basePosition.z += delta.z;
     }
 
     void CameraSystem::InitializeImpl()
@@ -176,25 +176,26 @@ namespace Atmos
         auto debugStatistics = Manager()->FindSystem<DebugStatisticsSystem>();
         debugStatistics->windowPage.viewOriginX.retrievalFunction = [this]() -> String
         {
-            return ToString(GetViewOrigin().GetX());
+            return ToString(GetViewOrigin().x);
         };
         debugStatistics->windowPage.viewOriginY.retrievalFunction = [this]() -> String
         {
-            return ToString(GetViewOrigin().GetY());
+            return ToString(GetViewOrigin().y);
         };
     }
 
     void CameraSystem::CalculateSides()
     {
-        auto halfWidth = size.GetWidth() / 2;
-        auto halfHeight = size.GetHeight() / 2;
+        auto halfWidth = size.scaledWidth / 2;
+        auto halfHeight = size.scaledHeight / 2;
 
-        sides.SetLeft(viewOrigin.GetX() - halfWidth);
-        sides.SetRight(viewOrigin.GetX() + halfWidth);
-        sides.SetTop(viewOrigin.GetY() - halfHeight);
-        sides.SetBottom(viewOrigin.GetY() + halfHeight);
+        sides.left = viewOrigin.x - halfWidth;
+        sides.top = viewOrigin.y - halfHeight;
+        sides.right = viewOrigin.x + halfWidth;
+        sides.bottom = viewOrigin.y + halfHeight;
 
-        topLeft.Set(sides.GetLeft(), sides.GetTop());
+        topLeft.x = sides.left;
+        topLeft.y = sides.top;
     }
 
     bool CameraSystem::IsFocusValid()

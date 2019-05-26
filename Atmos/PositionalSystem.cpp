@@ -5,7 +5,7 @@ namespace Atmos
 {
     PositionalSystem::PositionalSystem(ObjectManager& manager) : ObjectSystem(manager)
     {
-        batch = manager.Batch<PositionalObject>();
+        batch = manager.Batch<AxisAlignedObject>();
         batch.onCreated.Subscribe(&PositionalSystem::OnCreated, *this);
     }
 
@@ -17,10 +17,13 @@ namespace Atmos
     {
         grid.Add(object);
 
-        object->onBoundsChanged.Subscribe(&PositionalSystem::OnObjectBoundsChanged, *this);
+        object->onBoundsChanged.Subscribe([this, object](AxisAlignedBox3D previous)
+        {
+            OnObjectBoundsChanged(object, previous);
+        });
     }
 
-    void PositionalSystem::OnObjectBoundsChanged(Reference object, AxisBoundingBox3D previous)
+    void PositionalSystem::OnObjectBoundsChanged(Reference object, AxisAlignedBox3D previous)
     {
         grid.InformChanged(object, previous);
     }

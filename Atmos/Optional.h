@@ -358,18 +358,22 @@ namespace Atmos
     {
         if (scribe.IsOutput())
         {
-            scribe.Save(valid);
+            auto& outputScribe = *scribe.AsOutput();
+
+            outputScribe.Save(valid);
             if (valid)
-                scribe.Save(value);
+                outputScribe.Save(value);
         }
         else
         {
+            auto& inputScribe = *scribe.AsInput();
+
             DeleteValue();
             bool thisValid;
-            scribe.ReadNumeric(thisValid);
+            inputScribe.ReadNumeric(thisValid);
             if (thisValid)
             {
-                ::Inscription::ScopedConstructor<T> constructor(scribe);
+                ::Inscription::ScopedConstructor<T> constructor(inputScribe);
                 ConstructValue(std::move(constructor.GetMove()));
             }
 

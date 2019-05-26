@@ -50,7 +50,7 @@ namespace Atmos
 
     void Sprite::SubscribeToProperties()
     {
-        position.onValueChanged.Subscribe(&Sprite::OnPositionChanged, *this);
+        onPositionChanged.Subscribe(&Sprite::OnPositionChanged, *this);
         material.onValueChanged.Subscribe(&Sprite::OnMaterialChanged, *this);
         index.onValueChanged.Subscribe(&Sprite::OnIndexChanged, *this);
     }
@@ -59,14 +59,12 @@ namespace Atmos
     {
         if (!material || !material->xVisual)
         {
-            _primaryAssetSlice.SetTop(0);
-            _primaryAssetSlice.SetBottom(0);
-            _primaryAssetSlice.SetLeft(0);
-            _primaryAssetSlice.SetRight(0);
+            _primaryAssetSlice.top = 0;
+            _primaryAssetSlice.bottom = 0;
+            _primaryAssetSlice.left = 0;
+            _primaryAssetSlice.right = 0;
 
-            size.width.Set(0.0f);
-            size.height.Set(0.0f);
-            size.depth.Set(GRID_SIZE<float>);
+            InformBaseSizeChanged(0.0f, 0.0f, GRID_SIZE<float>);
             return;
         }
 
@@ -84,15 +82,16 @@ namespace Atmos
         auto indexWidth = static_cast<float>(material->width / columns);
         auto indexHeight = static_cast<float>(material->height / rows);
 
-        _primaryAssetSlice.SetTop(row * indexHeight);
-        _primaryAssetSlice.SetBottom(row * indexHeight + indexHeight);
-        _primaryAssetSlice.SetLeft(column * indexWidth);
-        _primaryAssetSlice.SetRight(column * indexWidth + indexWidth);
+        _primaryAssetSlice.top = row * indexHeight;
+        _primaryAssetSlice.bottom = row * indexHeight + indexHeight;
+        _primaryAssetSlice.left = column * indexWidth;
+        _primaryAssetSlice.right = column * indexWidth + indexWidth;
 
         // Calculate size
-        size.width.Set(static_cast<float>(material->width / material->columns));
-        size.height.Set(static_cast<float>(material->height / material->rows));
-        size.depth.Set(GRID_SIZE<float>);
+        auto width = static_cast<float>(material->width / material->columns);
+        auto height = static_cast<float>(material->height / material->rows);
+        auto depth = GRID_SIZE<float>;
+        InformBaseSizeChanged(width, height, depth);
     }
 
     void Sprite::OnPositionChanged(Position3D newValue)

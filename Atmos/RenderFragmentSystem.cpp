@@ -22,10 +22,13 @@ namespace Atmos
     {
         grid.Add(object);
 
-        object->onBoundsChanged.Subscribe(&RenderFragmentSystem::OnObjectBoundsChanged, *this);
+        object->onBoundsChanged.Subscribe([this, object](AxisAlignedBox3D previous)
+        {
+            OnObjectBoundsChanged(object, previous);
+        });
     }
 
-    void RenderFragmentSystem::OnObjectBoundsChanged(TypedObjectReference<PositionalObject> object, AxisBoundingBox3D previous)
+    void RenderFragmentSystem::OnObjectBoundsChanged(TypedObjectReference<AxisAlignedObject> object, AxisAlignedBox3D previous)
     {
         grid.InformChanged(object, previous);
     }

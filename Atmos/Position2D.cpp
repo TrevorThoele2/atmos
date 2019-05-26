@@ -1,182 +1,98 @@
 
 #include "Position2D.h"
 #include "Position3D.h"
-#include "AxisBoundingBox2D.h"
+#include "AxisAlignedBox2D.h"
 #include <Inscription\Scribe.h>
 
 namespace Atmos
 {
-    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(Position2D)
-    {
-        scribe(X);
-        scribe(Y);
-        scribe(pixelPerfect);
-        if (scribe.IsInput())
-            Calc();
-    }
+    Position2D::Position2D() : x(0), y(0)
+    {}
 
-    void Position2D::Calc()
-    {
-        if (pixelPerfect)
-        {
-            realX = std::floor(X + 0.5f);
-            realY = std::floor(Y + 0.5f);
-        }
-        else
-        {
-            realX = X;
-            realY = Y;
-        }
-    }
+    Position2D::Position2D(Value x, Value y) : x(x), y(y)
+    {}
 
-    Position2D::Position2D(ValueT X, ValueT Y, bool pixelPerfect) : X(X), Y(Y), pixelPerfect(pixelPerfect)
-    {
-        Calc();
-    }
+    Position2D::Position2D(const Position3D& arg) : x(arg.x), y(arg.y)
+    {}
 
-    Position2D::Position2D(const Position3D &arg) : X(arg.GetX()), Y(arg.GetY()), pixelPerfect(arg.GetPixelPerfect())
-    {
-        Calc();
-    }
+    Position2D::Position2D(const Position2D& arg) : x(arg.x), y(arg.y)
+    {}
 
-    Position2D::Position2D(const Position2D &arg) : X(arg.X), Y(arg.Y), pixelPerfect(arg.pixelPerfect)
+    Position2D& Position2D::operator=(const Position2D& arg)
     {
-        Calc();
-    }
-
-    Position2D& Position2D::operator=(const Position2D &arg)
-    {
-        X = arg.X;
-        Y = arg.Y;
-        pixelPerfect = arg.pixelPerfect;
-        Calc();
+        x = arg.x;
+        y = arg.y;
         return *this;
     }
 
-    bool Position2D::operator==(const Position2D &arg) const
+    bool Position2D::operator==(const Position2D& arg) const
     {
-        return realX == arg.realX && realY == arg.realY;
+        return x == arg.x && y == arg.y;
     }
 
-    bool Position2D::operator!=(const Position2D &arg) const
+    bool Position2D::operator!=(const Position2D& arg) const
     {
         return !(*this == arg);
     }
 
-    void Position2D::Set(ValueT X, ValueT Y)
+    bool Position2D::Within(Value left, Value right, Value top, Value bottom) const
     {
-        this->X = X;
-        this->Y = Y;
-        Calc();
+        return x >= left && x <= right && y >= top && y <= bottom;
     }
 
-    void Position2D::SetX(ValueT set)
+    bool Position2D::Within(const AxisAlignedBox2D& box) const
     {
-        X = set;
-        Calc();
+        return Within(box.left, box.right, box.top, box.bottom);
     }
 
-    void Position2D::IncrementX(ValueT inc)
+    Position2D Position2D::FromScreen(const Position2D& convert, const Position2D& topLeftScreen)
     {
-        X += inc;
-        Calc();
+        return Position2D(convert.x + topLeftScreen.x, convert.y + topLeftScreen.y);
     }
 
-    void Position2D::DecrementX(ValueT dec)
+    typename Position2D::Value Position2D::FindDistance(const Position2D& starting, const Position2D& destination)
     {
-        X -= dec;
-        Calc();
-    }
-
-    void Position2D::SetY(ValueT set)
-    {
-        Y = set;
-        Calc();
-    }
-
-    void Position2D::IncrementY(ValueT inc)
-    {
-        Y += inc;
-        Calc();
-    }
-
-    void Position2D::DecrementY(ValueT dec)
-    {
-        Y -= dec;
-        Calc();
-    }
-
-    void Position2D::SetPixelPerfect(bool set)
-    {
-        pixelPerfect = set;
-        Calc();
-    }
-
-    Position2D::ValueT Position2D::GetX() const
-    {
-        return realX;
-    }
-
-    Position2D::ValueT Position2D::GetY() const
-    {
-        return realY;
-    }
-
-    bool Position2D::GetPixelPerfect() const
-    {
-        return pixelPerfect;
-    }
-
-    bool Position2D::Within(ValueT left, ValueT right, ValueT top, ValueT bottom) const
-    {
-        return realX >= left && realX <= right && realY >= top && realY <= bottom;
-    }
-
-    bool Position2D::Within(const AxisBoundingBox2D &box) const
-    {
-        return Within(box.GetLeft(), box.GetRight(), box.GetTop(), box.GetBottom());
-    }
-
-    Position2D Position2D::FromScreen(const Position2D &convert, const Position2D &topLeftScreen)
-    {
-        return Position2D(convert.GetX() + topLeftScreen.GetX(), convert.GetY() + topLeftScreen.GetY());
-    }
-
-    typename Position2D::ValueT Position2D::FindDistance(const Position2D &starting, const Position2D &destination)
-    {
-        auto distanceX = (destination.GetX() - starting.GetX());
-        auto distanceY = (destination.GetY() - starting.GetY());
+        auto distanceX = (destination.x - starting.x);
+        auto distanceY = (destination.y - starting.y);
 
         return sqrt(pow(distanceX, 2) + pow(distanceY, 2));
     }
 
-    Position2D Position2D::FindCenter(const std::vector<Position2D> &container)
+    Position2D Position2D::FindCenter(const std::vector<Position2D>& container)
     {
         auto topLeft = *container.begin();
         auto bottomRight = *container.begin();
         for (auto loop = ++container.begin(); loop != container.end(); ++loop)
         {
-            if (loop->GetX() < topLeft.GetX())
-                topLeft.SetX(loop->GetX());
-            else if (loop->GetX() > bottomRight.GetX())
-                bottomRight.SetX(loop->GetX());
+            if (loop->x < topLeft.x)
+                topLeft.x = loop->x;
+            else if (loop->x > bottomRight.x)
+                bottomRight.x = loop->x;
 
-            if (loop->GetY() < topLeft.GetY())
-                topLeft.SetY(loop->GetY());
-            else if (loop->GetY() > bottomRight.GetY())
-                bottomRight.SetY(loop->GetY());
+            if (loop->y < topLeft.y)
+                topLeft.y = loop->y;
+            else if (loop->y > bottomRight.y)
+                bottomRight.y = loop->y;
         }
 
         return FindCenter(topLeft, bottomRight);
     }
 
-    Position2D Position2D::FindCenter(const std::set<Position2D> &container)
+    Position2D Position2D::FindCenter(const std::set<Position2D>& container)
     {
         return FindCenter(*container.begin(), *container.rbegin());
     }
 
-    Position2D Position2D::FindCenter(const Position2D &topLeft, const Position2D &bottomRight)
+    Position2D Position2D::FindCenter(const Position2D& topLeft, const Position2D& bottomRight)
     {
-        return Position2D(topLeft.GetX() + ((bottomRight.GetX() - topLeft.GetX()) / 2), topLeft.GetY() + ((bottomRight.GetY() - topLeft.GetY()) / 2));
+        return Position2D(
+            topLeft.x + ((bottomRight.x - topLeft.x) / 2),
+            topLeft.y + ((bottomRight.y - topLeft.y) / 2));
+    }
+
+    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(Position2D)
+    {
+        scribe(x);
+        scribe(y);
     }
 }

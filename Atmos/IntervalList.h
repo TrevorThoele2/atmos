@@ -12,42 +12,36 @@ namespace Atmos
     class IntervalList
     {
     public:
-        typedef T ValueT;
-        typedef size_t SizeT;
-    private:
-        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
-        INSCRIPTION_ACCESS;
-    private:
-        static constexpr ValueT lowest = std::numeric_limits<T>::lowest();
-
+        typedef T Value;
+        typedef size_t Size;
+    public:
         class Node
         {
         public:
-            typedef typename IntervalList::ValueT ValueT;
-        private:
-            friend IntervalList;
-        private:
-            ValueT start;
-            ValueT size;
+            typedef typename IntervalList::Value Value;
         public:
-            Node(ValueT start = lowest, ValueT size = lowest);
+            Node();
+            Node(Value start, Value size);
+
             bool operator==(const Node &arg) const;
             bool operator!=(const Node &arg) const;
-            ValueT GetStart() const;
-            ValueT GetEnd() const;
-            ValueT GetSize() const;
-            bool IsIncluded(ValueT val) const;
+
+            Value Start() const;
+            Value End() const;
+            Value GetSize() const;
+
+            bool IsInside(Value val) const;
+        private:
+            Value start;
+            Value size;
+        private:
+            friend IntervalList;
         };
-
-        friend Node;
     private:
-        typedef std::vector<Node> NodeVector;
-        NodeVector vector;
-
-        static ValueT GetEndValue(ValueT start, ValueT size);
+        typedef std::vector<Node> NodeList;
     public:
-        typedef typename NodeVector::const_iterator const_iterator;
-        typedef typename NodeVector::const_reverse_iterator const_reverse_iterator;
+        typedef typename NodeList::const_iterator const_iterator;
+        typedef typename NodeList::const_reverse_iterator const_reverse_iterator;
     public:
         IntervalList() = default;
         IntervalList(const IntervalList &arg) = default;
@@ -58,13 +52,13 @@ namespace Atmos
         bool operator==(const IntervalList &arg) const;
         bool operator!=(const IntervalList &arg) const;
 
-        void Include(ValueT val);
-        void Remove(ValueT val);
-        bool IsIncluded(ValueT val) const;
+        void Include(Value val);
+        void Remove(Value val);
+        bool IsIncluded(Value val) const;
 
         void Clear();
 
-        SizeT Size() const;
+        Size GetSize() const;
 
         bool IsEmpty() const;
 
@@ -72,43 +66,25 @@ namespace Atmos
         const_iterator end() const;
         const_reverse_iterator rbegin() const;
         const_reverse_iterator rend() const;
+    private:
+        static constexpr Value lowest = std::numeric_limits<T>::lowest();
+
+        friend Node;
+    private:
+        NodeList vector;
+
+        static Value EndValue(Value start, Value size);
+    private:
+        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
+        INSCRIPTION_ACCESS;
     };
 
     template<class T>
-    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(IntervalList<T>)
-    {
-        ::Inscription::ScopedTrackingChanger tracking(scribe, false);
-        if (scribe.IsOutput())
-        {
-            ::Inscription::ContainerSize size(vector.size());
-            scribe.Save(size);
-
-            for (auto& loop : vector)
-            {
-                scribe.Save(loop.GetStart());
-                scribe.Save(loop.GetSize());
-            }
-        }
-        else // INPUT
-        {
-            ::Inscription::ContainerSize size;
-            scribe.Load(size);
-
-            while (size-- > 0)
-            {
-                ValueT start;
-                scribe.Load(start);
-
-                ValueT size;
-                scribe.Load(size);
-
-                vector.push_back(Node(start, size));
-            }
-        }
-    }
+    IntervalList<T>::Node::Node() : start(lowest), size(lowest)
+    {}
 
     template<class T>
-    IntervalList<T>::Node::Node(ValueT start, ValueT size) : start(start), size(size)
+    IntervalList<T>::Node::Node(Value start, Value size) : start(start), size(size)
     {}
 
     template<class T>
@@ -124,27 +100,27 @@ namespace Atmos
     }
 
     template<class T>
-    typename IntervalList<T>::Node::ValueT IntervalList<T>::Node::GetStart() const
+    typename IntervalList<T>::Node::Value IntervalList<T>::Node::Start() const
     {
         return start;
     }
 
     template<class T>
-    typename IntervalList<T>::Node::ValueT IntervalList<T>::Node::GetEnd() const
+    typename IntervalList<T>::Node::Value IntervalList<T>::Node::End() const
     {
-        return IntervalList::GetEndValue(start, size);
+        return IntervalList::EndValue(start, size);
     }
 
     template<class T>
-    typename IntervalList<T>::Node::ValueT IntervalList<T>::Node::GetSize() const
+    typename IntervalList<T>::Node::Value IntervalList<T>::Node::GetSize() const
     {
         return size;
     }
 
     template<class T>
-    bool IntervalList<T>::Node::IsIncluded(ValueT val) const
+    bool IntervalList<T>::Node::IsInside(Value val) const
     {
-        return start <= val && GetEnd() >= val;
+        return start <= val && End() >= val;
     }
 
     template<class T>
@@ -156,12 +132,6 @@ namespace Atmos
     {
         vector = std::move(arg.vector);
         return *this;
-    }
-
-    template<class T>
-    typename IntervalList<T>::ValueT IntervalList<T>::GetEndValue(ValueT start, ValueT size)
-    {
-        return start + size - 1;
     }
 
     template<class T>
@@ -177,7 +147,7 @@ namespace Atmos
     }
 
     template<class T>
-    void IntervalList<T>::Include(ValueT val)
+    void IntervalList<T>::Include(Value val)
     {
         if (IsIncluded(val))
             return;
@@ -197,7 +167,7 @@ namespace Atmos
         }
 
         // Check if we need to make an interval at the end of the list
-        if (std::prev(vector.end())->GetEnd() + 1 < val)
+        if (std::prev(vector.end())->End() + 1 < val)
         {
             vector.push_back(Node(val, 1));
             return;
@@ -212,7 +182,7 @@ namespace Atmos
             if (val != lowest && loop->start - 1 == val)
             {
                 // Check if we need to concatenate two intervals
-                if (prev->GetEnd() + 1 == val)
+                if (prev->End() + 1 == val)
                 {
                     prev->size += loop->size + 1;
                     vector.erase(loop);
@@ -226,7 +196,7 @@ namespace Atmos
             }
 
             // Check the value immediately after the end of this node
-            if (loop->GetEnd() + 1 == val)
+            if (loop->End() + 1 == val)
             {
                 // Check if we need to concatenate two intervals
                 if (next != vector.end() && next->start - 1 == val)
@@ -242,7 +212,7 @@ namespace Atmos
             }
 
             // Check if we need to make a new interval between this one and the next one
-            if (next != vector.end() && next->start < val && loop->GetEnd() > val)
+            if (next != vector.end() && next->start < val && loop->End() > val)
             {
                 vector.insert(loop, Node(val, 1));
                 return;
@@ -255,7 +225,7 @@ namespace Atmos
     }
 
     template<class T>
-    void IntervalList<T>::Remove(ValueT val)
+    void IntervalList<T>::Remove(Value val)
     {
         // If the vector is empty
         if (vector.empty())
@@ -273,7 +243,7 @@ namespace Atmos
                 return;
             }
 
-            const ValueT endValue = loop->GetEnd();
+            const Value endValue = loop->End();
             // Check the value at the end of the node
             if (endValue == val)
             {
@@ -286,20 +256,20 @@ namespace Atmos
             // Check if we need to split this node (deleting something in the middle)
             if (loop->start < val && endValue > val)
             {
-                ValueT oSize = loop->size;
+                Value oSize = loop->size;
                 loop->size = loop->size - (endValue - val + 1);
-                vector.insert(std::next(loop), Node(GetEndValue(loop->start, loop->size) + 2, oSize - loop->size - 1));
+                vector.insert(std::next(loop), Node(EndValue(loop->start, loop->size) + 2, oSize - loop->size - 1));
                 return;
             }
         }
     }
 
     template<class T>
-    bool IntervalList<T>::IsIncluded(ValueT val) const
+    bool IntervalList<T>::IsIncluded(Value val) const
     {
         for (auto& loop : vector)
         {
-            if (loop.IsIncluded(val))
+            if (loop.IsInside(val))
                 return true;
         }
 
@@ -313,9 +283,9 @@ namespace Atmos
     }
 
     template<class T>
-    typename IntervalList<T>::SizeT IntervalList<T>::Size() const
+    typename IntervalList<T>::Size IntervalList<T>::GetSize() const
     {
-        SizeT ret = 0;
+        Size ret = 0;
         for (auto& loop : vector)
             ret += loop.GetSize();
         return ret;
@@ -349,5 +319,48 @@ namespace Atmos
     typename IntervalList<T>::const_reverse_iterator IntervalList<T>::rend() const
     {
         return vector.rend();
+    }
+
+    template<class T>
+    typename IntervalList<T>::Value IntervalList<T>::EndValue(Value start, Value size)
+    {
+        return start + size - 1;
+    }
+
+    template<class T>
+    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(IntervalList<T>)
+    {
+        ::Inscription::ScopedTrackingChanger tracking(scribe, false);
+        if (scribe.IsOutput())
+        {
+            auto& outputScribe = *scribe.AsOutput();
+
+            ::Inscription::ContainerSize size(vector.size());
+            outputScribe.Save(size);
+
+            for (auto& loop : vector)
+            {
+                outputScribe.Save(loop.Start());
+                outputScribe.Save(loop.GetSize());
+            }
+        }
+        else // INPUT
+        {
+            auto& inputScribe = *scribe.AsInput();
+
+            ::Inscription::ContainerSize size;
+            inputScribe.Load(size);
+
+            while (size-- > 0)
+            {
+                Value start;
+                inputScribe.Load(start);
+
+                Value size;
+                inputScribe.Load(size);
+
+                vector.push_back(Node(start, size));
+            }
+        }
     }
 }

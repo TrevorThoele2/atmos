@@ -105,14 +105,14 @@ namespace Atmos
         return hwnd;
     }
 
-    AxisBoundingBox2D WindowsWindow::AdjustWindowDimensions()
+    AxisAlignedBox2D WindowsWindow::AdjustWindowDimensions()
     {
         RECT rect;
         SetRect(&rect, 0, 0, ClientSize().width, ClientSize().height);
         AdjustWindowRectEx(&rect, style, false, exStyle);
 
-        typedef AxisBoundingBox2D::Coordinate Coordinate;
-        return AxisBoundingBox2D(
+        typedef AxisAlignedBox2D::Coordinate Coordinate;
+        return AxisAlignedBox2D(
             static_cast<Coordinate>(rect.left),
             static_cast<Coordinate>(rect.top),
             static_cast<Coordinate>(rect.right),

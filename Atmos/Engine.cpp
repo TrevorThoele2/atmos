@@ -8,7 +8,7 @@ namespace Atmos
 
     void Engine::Setup()
     {
-        registration.RegisterGlobal(globalObjectManager);
+        registration.PushGlobalsTo(globalObjectManager);
     }
 
     void Engine::LoadWorld(const FilePath& filePath)
