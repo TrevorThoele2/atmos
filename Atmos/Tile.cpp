@@ -1,21 +1,15 @@
-
 #include "Tile.h"
 
-#include <Inscription/Scribe.h>
-#include <Inscription/Inscripter.h>
-#include <Inscription/Vector.h>
+#include <Inscription/VectorScribe.h>
 
 namespace Atmos
 {
-    Tile::Tile(ObjectManager& manager, const GridPosition& position) :
-        Object(manager),
-        position(position), sprites([this]() -> SpriteList& { return _spriteList; }), solid(false)
+    Tile::Tile(ObjectManager& manager, const Position& position) :
+        Object(manager), _position(position), solid(false)
     {}
 
-    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(Tile) :
-        INSCRIPTION_TABLE_GET_BASE(Object), INSCRIPTION_TABLE_GET_MEM(position),
-        INSCRIPTION_TABLE_GET_MEM(_spriteList), INSCRIPTION_TABLE_GET_MEM(solid),
-        sprites([this]() -> SpriteList& { return _spriteList; })
+    Tile::Tile(const ::Inscription::BinaryTableData<Tile>& data) :
+        Object(std::get<0>(data.bases)), _position(data.position), _spriteList(data.spriteList), solid(data.solid)
     {}
 
     ObjectTypeDescription Tile::TypeDescription() const
@@ -28,10 +22,11 @@ namespace Atmos
 
 namespace Inscription
 {
-    OBJECT_INSCRIPTER_DEFINE_MEMBERS(::Atmos::Tile)
+    Scribe<::Atmos::Tile, BinaryArchive>::Table::Table()
     {
-        INSCRIPTION_TABLE_ADD(position);
-        INSCRIPTION_TABLE_ADD(_spriteList);
-        INSCRIPTION_TABLE_ADD(solid);
+        MergeDataEntries({
+            DataEntry::Auto(&ObjectT::_position, &DataT::position),
+            DataEntry::Auto(&ObjectT::_spriteList, &DataT::spriteList),
+            DataEntry::Auto(&ObjectT::solid, &DataT::solid) });
     }
 }

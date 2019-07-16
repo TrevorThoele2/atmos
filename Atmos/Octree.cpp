@@ -1,5 +1,4 @@
-
-#include "RenderFragmentGrid.h"
+#include "Octree.h"
 #include "RenderFragment.h"
 
 #include "MathUtility.h"
@@ -14,7 +13,8 @@ namespace Atmos
     }
 
     Octree::Octree(Octree&& arg) :
-        size(std::move(arg.size)), heads(std::move(arg.heads)), totalObjects(std::move(arg.totalObjects)), toAddObjects(std::move(arg.toAddObjects))
+        size(std::move(arg.size)), heads(std::move(arg.heads)),
+        totalObjects(std::move(arg.totalObjects)), toAddObjects(std::move(arg.toAddObjects))
     {}
 
     Octree& Octree::operator=(Octree&& arg)

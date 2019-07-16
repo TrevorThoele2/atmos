@@ -10,7 +10,6 @@ namespace Atmos
     {
     public:
         MusicSystem(ObjectManager& manager);
-        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(MusicSystem);
 
         void BeginPlaying(const FileName& fileName);
         void TerminateCurrent();
@@ -22,10 +21,11 @@ namespace Atmos
 
 namespace Inscription
 {
-    INSCRIPTION_INSCRIPTER_DECLARE(::Atmos::MusicSystem)
+    template<>
+    class Scribe<::Atmos::MusicSystem, BinaryArchive> :
+        public ObjectSystemScribe<::Atmos::MusicSystem, BinaryArchive>
     {
     public:
-        INSCRIPTION_BINARY_INSCRIPTER_DECLARE_TABLE;
-        INSCRIPTION_BINARY_DECLARE_CLASS_NAME_RESOLVER;
+        static void Scriven(ObjectT& object, ArchiveT& archive);
     };
 }

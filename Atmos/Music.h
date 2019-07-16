@@ -8,7 +8,7 @@
 
 #include "StoredProperty.h"
 
-#include "ObjectSerialization.h"
+#include "ObjectScribe.h"
 
 namespace Atmos
 {
@@ -31,9 +31,17 @@ namespace Atmos
 
 namespace Inscription
 {
-    DECLARE_OBJECT_INSCRIPTER(::Atmos::Music)
+    template<>
+    struct TableData<::Atmos::Music, BinaryArchive> :
+        public ObjectTableDataBase<::Atmos::Music, BinaryArchive>
+    {};
+
+    template<>
+    class Scribe<::Atmos::Music, BinaryArchive> :
+        public ObjectScribe<::Atmos::Music, BinaryArchive>
     {
     public:
-        OBJECT_INSCRIPTER_DECLARE_MEMBERS;
+        class Table : public TableBase
+        {};
     };
 }

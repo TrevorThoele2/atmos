@@ -1,6 +1,6 @@
 #pragma once
 
-#include "InputScribeBase.h"
+#include "InputArchiveBase.h"
 
 #include "WorldStart.h"
 
@@ -9,11 +9,11 @@
 #include "FilePath.h"
 
 #include "SkipFileHandle.h"
-#include <Inscription/InputBinaryScribe.h>
+#include <Inscription/InputBinaryArchive.h>
 
 namespace Atmos
 {
-    class InputWorldScribe : public InputScribeBase
+    class InputWorldArchive : public InputArchiveBase
     {
     public:
         enum class OpenMode
@@ -24,7 +24,7 @@ namespace Atmos
     public:
         static const char* const worldExtension;
     public:
-        InputWorldScribe(
+        InputWorldArchive(
             const FilePath& filePath,
             ObjectManager& globalObjectManager,
             OpenMode openMode = OpenMode::FORCE_EXTENSION);
@@ -42,10 +42,10 @@ namespace Atmos
 
         const FilePath& GetFilePath() const;
     protected:
-        ::Inscription::BinaryScribe& UnderlyingScribe() override;
-        const ::Inscription::BinaryScribe& UnderlyingScribe() const override;
+        ::Inscription::BinaryArchive& UnderlyingArchive() override;
+        const ::Inscription::BinaryArchive& UnderlyingArchive() const override;
     private:
-        typedef ::Inscription::InputBinaryScribe Underlying;
+        typedef ::Inscription::InputBinaryArchive Underlying;
 
         class FieldHandle : public SkipFileHandle<Underlying>
         {
@@ -55,14 +55,14 @@ namespace Atmos
             FieldID fieldID;
             Size size;
         public:
-            FieldHandle(FocusedScribe& scribe);
+            FieldHandle(FocusedArchive& archive);
         private:
             void LoadExtra() override;
         };
 
         typedef std::map<FieldID, FieldHandle> FieldHandleMap;
     private:
-        Underlying underlyingScribe;
+        Underlying underlyingArchive;
 
         FilePath filePath;
         FieldHandleMap fieldHandles;

@@ -16,7 +16,7 @@
 
 namespace Atmos
 {
-    class Sprite : public RenderFragment
+    class Sprite : public Fragment
     {
     public:
         typedef TypedObjectReference<MaterialAsset> MaterialReference;
@@ -34,12 +34,12 @@ namespace Atmos
         typedef StoredProperty<Color, Color&> ColorProperty;
         ColorProperty color;
     public:
-        typedef ReadonlyProperty<AxisAlignedBox2D> AABBProperty;
-        AABBProperty primaryAssetSlice;
+        typedef ReadonlyProperty<AxisAlignedBox2D> BoxProperty;
+        BoxProperty primaryAssetSlice = BoxProperty([this]() { return _primaryAssetSlice; });
     public:
         Sprite(ObjectManager& manager);
         Sprite(const Sprite& arg);
-        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(Sprite);
+        Sprite(const ::Inscription::BinaryTableData<Sprite>& data);
 
         ObjectTypeDescription TypeDescription() const override;
     private:
@@ -59,15 +59,31 @@ namespace Atmos
     struct ObjectTraits<Sprite> : ObjectTraitsBase<Sprite>
     {
         static const ObjectTypeName typeName;
-        static constexpr ObjectTypeList<RenderFragment> bases = {};
+        static constexpr ObjectTypeList<Fragment> bases = {};
     };
 }
 
 namespace Inscription
 {
-    DECLARE_OBJECT_INSCRIPTER(::Atmos::Sprite)
+    template<>
+    struct TableData<::Atmos::Sprite, BinaryArchive> :
+        public ObjectTableDataBase<::Atmos::Sprite, BinaryArchive>
+    {
+        ObjectT::MaterialReference material;
+        ObjectT::ShaderReference patchShader;
+        ObjectT::Index index;
+        ::Atmos::Color color;
+    };
+
+    template<>
+    class Scribe<::Atmos::Sprite, BinaryArchive> :
+        public ObjectScribe<::Atmos::Sprite, BinaryArchive>
     {
     public:
-        OBJECT_INSCRIPTER_DECLARE_MEMBERS;
+        class Table : public TableBase
+        {
+        public:
+            Table();
+        };
     };
 }

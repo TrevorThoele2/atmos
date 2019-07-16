@@ -1,31 +1,32 @@
-
-#include "InputStasisScribe.h"
+#include "InputStasisArchive.h"
 
 #include "FileSystem.h"
 
-#include "InputWorldScribe.h"
+#include "InputWorldArchive.h"
+
+#include <Inscription/FileNameScribe.h>
 
 namespace Atmos
 {
-    const char* const InputStasisScribe::defaultExtension = "stasis";
+    const char* const InputStasisArchive::defaultExtension = "stasis";
 
-    InputStasisScribe::InputStasisScribe(
+    InputStasisArchive::InputStasisArchive(
         const FilePath& filePath,
         const FilePath& worldFilePath,
         ObjectManager& globalObjectManager,
         OpenMode openMode) :
 
-        InputScribeBase([this]() { return _worldStart; }),
-        fileName(filePath), worldFilePath(worldFilePath), underlyingScribe(filePath, "ATMOS GAIA STASIS"),
+        InputArchiveBase([this]() { return _worldStart; }),
+        fileName(filePath), worldFilePath(worldFilePath), underlyingArchive(filePath, "ATMOS GAIA STASIS"),
         globalObjectManager(&globalObjectManager)
     {
         if (openMode == OpenMode::FORCE_EXTENSION)
             this->fileName.SetExtension(defaultExtension);
     }
 
-    bool InputStasisScribe::Load(LoadType load)
+    bool InputStasisArchive::Load(LoadType load)
     {
-        underlyingScribe.MovePositionToStart();
+        underlyingArchive.MovePositionToStart();
         if (!LoadBeforeGlobal())
             return false;
 
@@ -46,13 +47,13 @@ namespace Atmos
         return true;
     }
 
-    bool InputStasisScribe::WillLoad()
+    bool InputStasisArchive::WillLoad()
     {
-        underlyingScribe.MovePositionToStart();
+        underlyingArchive.MovePositionToStart();
         return LoadBeforeGlobal();
     }
 
-    Optional<Field> InputStasisScribe::ExtractField(FieldID fieldID)
+    Optional<Field> InputStasisArchive::ExtractField(FieldID fieldID)
     {
         typedef Optional<Field> Ret;
 
@@ -65,7 +66,7 @@ namespace Atmos
         return Ret(std::move(out));
     }
 
-    std::unique_ptr<Field> InputStasisScribe::ExtractFieldAsHeap(FieldID id)
+    std::unique_ptr<Field> InputStasisArchive::ExtractFieldAsHeap(FieldID id)
     {
         auto found = fieldHandles.find(id);
         if (found == fieldHandles.end())
@@ -76,13 +77,13 @@ namespace Atmos
         return out;
     }
 
-    ::Inscription::Buffer InputStasisScribe::ExtractFieldAsBuffer(FieldID id)
+    ::Inscription::Buffer InputStasisArchive::ExtractFieldAsBuffer(FieldID id)
     {
         auto found = fieldHandles.find(id);
         return found->second.LoadBuffer(found->second.size);
     }
 
-    InputStasisScribe::FieldIDList InputStasisScribe::AllFieldIDs() const
+    InputStasisArchive::FieldIDList InputStasisArchive::AllFieldIDs() const
     {
         FieldIDList list;
         for (auto& loop : fieldHandles)
@@ -90,79 +91,79 @@ namespace Atmos
         return list;
     }
 
-    bool InputStasisScribe::HasField(FieldID fieldID) const
+    bool InputStasisArchive::HasField(FieldID fieldID) const
     {
         return fieldHandles.find(fieldID) != fieldHandles.end();
     }
 
-    size_t InputStasisScribe::FieldCount() const
+    size_t InputStasisArchive::FieldCount() const
     {
         return fieldHandles.size();
     }
 
-    const FileName& InputStasisScribe::GetFileName() const
+    const FileName& InputStasisArchive::GetFileName() const
     {
         return fileName;
     }
 
-    ::Inscription::BinaryScribe& InputStasisScribe::UnderlyingScribe()
+    ::Inscription::BinaryArchive& InputStasisArchive::UnderlyingArchive()
     {
-        return underlyingScribe;
+        return underlyingArchive;
     }
 
-    const ::Inscription::BinaryScribe& InputStasisScribe::UnderlyingScribe() const
+    const ::Inscription::BinaryArchive& InputStasisArchive::UnderlyingArchive() const
     {
-        return underlyingScribe;
+        return underlyingArchive;
     }
 
-    InputStasisScribe::FieldHandle::FieldHandle(FocusedScribe& scribe) : SkipFileHandle(scribe), size(0)
+    InputStasisArchive::FieldHandle::FieldHandle(FocusedArchive& archive) : SkipFileHandle(archive), size(0)
     {}
 
-    void InputStasisScribe::FieldHandle::LoadExtra()
+    void InputStasisArchive::FieldHandle::LoadExtra()
     {
-        scribe.ReadNumeric(fieldID);
-        scribe.ReadNumeric(size);
+        archive(fieldID);
+        archive(size);
     }
 
-    bool InputStasisScribe::LoadBeforeGlobal()
+    bool InputStasisArchive::LoadBeforeGlobal()
     {
         FileName worldFileName;
 
         // Load base world name
-        underlyingScribe.Load(worldFileName);
+        underlyingArchive(worldFileName);
 
         return worldFileName == worldFilePath.GetFileName();
     }
 
-    void InputStasisScribe::LoadGlobal()
+    void InputStasisArchive::LoadGlobal()
     {
-        InputWorldScribe world(worldFilePath, *globalObjectManager);
-        world.Load(InputWorldScribe::LOAD_GLOBAL);
+        InputWorldArchive world(worldFilePath, *globalObjectManager);
+        world.Load(InputWorldArchive::LOAD_GLOBAL);
 
-        world.MoveTrackersTo(underlyingScribe);
+        world.MoveTrackersTo(underlyingArchive);
     }
 
-    void InputStasisScribe::LoadAfterGlobal()
+    void InputStasisArchive::LoadAfterGlobal()
     {
         // Load WorldStart
-        underlyingScribe.Load(_worldStart);
+        underlyingArchive(_worldStart);
 
         // Load field handles
         ::Inscription::ContainerSize size;
-        underlyingScribe.Load(size);
+        underlyingArchive(size);
         while (size-- > 0)
         {
-            FieldHandle handle(underlyingScribe);
+            FieldHandle handle(underlyingArchive);
             handle.LoadPosition();
             fieldHandles.emplace(handle.fieldID, handle);
         }
     }
 
-    void InputStasisScribe::FillField(Field& fill, FieldHandles::iterator handle)
+    void InputStasisArchive::FillField(Field& fill, FieldHandles::iterator handle)
     {
         // Load the field while setting up a section to clear immediately after
-        underlyingScribe.StartTrackingSection();
+        underlyingArchive.StartTrackingSection();
         handle->second.LoadObject(fill);
-        underlyingScribe.StopTrackingSection(true);
+        underlyingArchive.StopTrackingSection(true);
     }
 }

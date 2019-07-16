@@ -18,13 +18,15 @@
 
 namespace Atmos
 {
-    class Position2D;
     class FilePath;
-    class Color;
-
-    class LineRender;
-
     class CameraSystem;
+}
+
+namespace Atmos::Render
+{
+    class Position2D;
+    class Color;
+    class Line;
 
     class GraphicsManager
     {
@@ -44,7 +46,7 @@ namespace Atmos
     public:
         typedef TypedObjectReference<Sprite> SpriteReference;
         typedef TypedObjectReference<CanvasView> CanvasViewReference;
-        typedef TypedObjectReference<RenderFragment> RenderFragmentReference;
+        typedef TypedObjectReference<Fragment> RenderFragmentReference;
     public:
         virtual ~GraphicsManager() = 0;
         void Reinitialize();
@@ -53,19 +55,19 @@ namespace Atmos
         std::unique_ptr<ImageAssetData> CreateImageData(void* buffer, std::int32_t size, const FileName& name);
         std::unique_ptr<ShaderAssetData> CreateShaderData(const FilePath& path);
         std::unique_ptr<ShaderAssetData> CreateShaderData(void* buffer, std::int32_t size, const FileName& name);
-        RenderSurface& CreateRenderSurface(void* window);
+        Surface& CreateRenderSurface(void* window);
         Canvas& CreateCanvas(const ScreenDimensions& dimensions);
 
-        void DestroyRenderSurface(RenderSurface& destroy);
+        void DestroyRenderSurface(Surface& destroy);
 
         bool CanMakeImage(const FilePath& path) const;
         bool CanMakeImage(void* buffer, std::int32_t size) const;
 
         void ResizeCanvas(Canvas& canvas, const ScreenDimensions& dimensions);
 
-        void SetRenderTarget(RenderSurface& set);
+        void SetRenderTarget(Surface& set);
         void SetRenderTargetToMain();
-        const RenderSurface* GetCurrentRenderTarget() const;
+        const Surface* GetCurrentRenderTarget() const;
 
         void RenderSprite(SpriteReference sprite, bool offsetWithCamera = true);
         void RenderSprite(SpriteReference sprite, float X, float Y, bool offsetWithCamera = false);
@@ -76,7 +78,7 @@ namespace Atmos
         void RenderUnknownFragment(RenderFragmentReference fragment, bool offsetWithCamera = true);
         void RenderUnknownFragment(RenderFragmentReference fragment, float X, float Y, bool offsetWithCamera = true);
         void RenderUnknownFragment(RenderFragmentReference fragment, const Position2D& position, bool offsetWithCamera = true);
-        void RenderLine(const LineRender& line);
+        void RenderLine(const Line& line);
 
         virtual void SetFullscreen(bool set) = 0;
         // This only has an effect if the main render target is being used
@@ -114,7 +116,7 @@ namespace Atmos
 
         bool IsUsingNonMainRenderSurface() const;
     private:
-        typedef std::list<RenderSurface> RenderSurfaceList;
+        typedef std::list<Surface> RenderSurfaceList;
         RenderSurfaceList renderSurfaces;
         RenderSurfaceList::iterator currentRenderSurface;
 
@@ -131,7 +133,7 @@ namespace Atmos
         virtual std::unique_ptr<ImageAssetData> CreateImageDataImpl(void* buffer, std::int32_t size, const FileName& name) = 0;
         virtual std::unique_ptr<ShaderAssetData> CreateShaderDataImpl(const FilePath& path) = 0;
         virtual std::unique_ptr<ShaderAssetData> CreateShaderDataImpl(void* buffer, std::int32_t size, const FileName& name) = 0;
-        virtual RenderSurface CreateRenderSurfaceImpl(void* window) = 0;
+        virtual Surface CreateRenderSurfaceImpl(void* window) = 0;
         virtual Canvas CreateCanvasImpl(const ScreenDimensions& dimensions) = 0;
 
         virtual bool CanMakeImageImpl(const FilePath& path) const = 0;
@@ -139,7 +141,7 @@ namespace Atmos
 
         virtual void ResizeCanvasImpl(Canvas& canvas, const ScreenDimensions& dimensions) = 0;
 
-        virtual void SetRenderTargetImpl(RenderSurface& set) = 0;
+        virtual void SetRenderTargetImpl(Surface& set) = 0;
         virtual void SetRenderTargetToMainImpl() = 0;
         virtual void ReleaseMainRenderTarget() = 0;
         virtual void ResetMainRenderTarget() = 0;
@@ -153,9 +155,9 @@ namespace Atmos
         virtual void RenderCanvasViewImpl(CanvasViewReference view, float X, float Y) = 0;
         void RenderUnknownFragmentCameraOffset(RenderFragmentReference fragment, float X, float Y);
         virtual void RenderUnknownFragmentImpl(RenderFragmentReference fragment, float X, float Y) = 0;
-        virtual void RenderLineImpl(const LineRender& line) = 0;
+        virtual void RenderLineImpl(const Line& line) = 0;
 
-        RenderSurfaceList::iterator FindRenderSurface(RenderSurface& surface);
+        RenderSurfaceList::iterator FindRenderSurface(Surface& surface);
         void SetCameraSizeToCurrentDimensions();
     private:
         CameraSystem* cameraSystem;

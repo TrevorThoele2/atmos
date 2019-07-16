@@ -72,15 +72,6 @@ namespace Atmos
             owner->PositionHasChanged(real);
     }
 
-    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(AxisAlignedObject::Position)
-    {
-        scribe(_x);
-        scribe(_y);
-        scribe(_z);
-        if (scribe.IsInput())
-            Calculate();
-    }
-
     AxisAlignedObject::Size& AxisAlignedObject::Size::operator=(const Size3D& arg)
     {
         _baseWidth = arg.baseWidth;
@@ -181,18 +172,6 @@ namespace Atmos
         Calculate();
     }
 
-    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(AxisAlignedObject::Size)
-    {
-        scribe(_baseWidth);
-        scribe(_baseHeight);
-        scribe(_baseDepth);
-        scribe(_widthScaler);
-        scribe(_heightScaler);
-        scribe(_depthScaler);
-        if (scribe.IsInput())
-            Calculate();
-    }
-
     AxisAlignedObject::Bounds::operator AxisAlignedBox3D() const
     {
         return underlying;
@@ -203,26 +182,29 @@ namespace Atmos
         return underlying;
     }
 
-    AxisAlignedObject::AxisAlignedObject(ObjectManager& manager) : Object(manager)
+    AxisAlignedObject::AxisAlignedObject(ObjectManager& manager) :
+        Object(manager)
     {
         LinkAll();
         CalculateBounds();
     }
 
-    AxisAlignedObject::AxisAlignedObject(const AxisAlignedObject& arg) : Object(arg), position(arg.position)
+    AxisAlignedObject::AxisAlignedObject(const AxisAlignedObject& arg) :
+        Object(arg), position(arg.position)
     {
         LinkAll();
         CalculateBounds();
     }
 
-    AxisAlignedObject::AxisAlignedObject(AxisAlignedObject&& arg) : Object(std::move(arg)), position(std::move(arg.position))
+    AxisAlignedObject::AxisAlignedObject(AxisAlignedObject&& arg) :
+        Object(std::move(arg)), position(std::move(arg.position))
     {
         LinkAll();
         CalculateBounds();
     }
 
-    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(AxisAlignedObject) :
-        INSCRIPTION_TABLE_GET_BASE(Object), INSCRIPTION_TABLE_GET_MEM(position)
+    AxisAlignedObject::AxisAlignedObject(const ::Inscription::BinaryTableData<AxisAlignedObject>& data) :
+        Object(std::get<0>(data.bases)), position(data.position), size(data.size)
     {
         LinkAll();
         CalculateBounds();
@@ -293,17 +275,41 @@ namespace Atmos
 
 namespace Inscription
 {
-    OBJECT_INSCRIPTER_DEFINE_MEMBERS(::Atmos::AxisAlignedObject)
+    void Scribe<::Atmos::AxisAlignedObject::Position, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
     {
-        INSCRIPTION_TABLE_ADD(position);
-        INSCRIPTION_TABLE_ADD(size);
+        archive(object._x);
+        archive(object._y);
+        archive(object._z);
+        if (archive.IsInput())
+            object.Calculate();
     }
 
-    INSCRIPTION_BINARY_INSCRIPTER_DEFINE_SERIALIZE_FUNCTION(::Atmos::AxisAlignedObject)
+    void Scribe<::Atmos::AxisAlignedObject::Size, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
     {
-        INSCRIPTION_INSCRIPTER_CALL_BASE_SERIALIZE_FUNCTION;
-        obj.position.Calculate();
-        obj.size.Calculate();
-        obj.CalculateBounds();
+        archive(object._baseWidth);
+        archive(object._baseHeight);
+        archive(object._baseDepth);
+        archive(object._widthScaler);
+        archive(object._heightScaler);
+        archive(object._depthScaler);
+        if (archive.IsInput())
+            object.Calculate();
+    }
+
+    Scribe<::Atmos::AxisAlignedObject, BinaryArchive>::Table::Table()
+    {
+        MergeDataEntries({
+            DataEntry::Auto(&ObjectT::position, &DataT::position),
+            DataEntry::Auto(&ObjectT::size, &DataT::size) });
+    }
+
+    void Scribe<::Atmos::AxisAlignedObject, BinaryArchive>::Table::ObjectScrivenImplementation(ObjectT& object, ArchiveT& archive)
+    {
+        if (archive.IsInput())
+        {
+            object.position.Calculate();
+            object.size.Calculate();
+            object.CalculateBounds();
+        }
     }
 }

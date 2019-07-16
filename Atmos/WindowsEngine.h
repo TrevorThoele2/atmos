@@ -10,7 +10,7 @@ namespace Atmos
     public:
         WindowsEngine(HINSTANCE hInstance, LPSTR lpCmdLine, int nCmdShow, const String& className);
     protected:
-        CreatedContext CreateDefaultContext() override;
+        InitializationProperties CreateInitializationProperties(ObjectManager& globalObjectManager) override;
 
         void DoExit() override;
     private:

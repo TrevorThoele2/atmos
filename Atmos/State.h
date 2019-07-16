@@ -4,7 +4,7 @@
 
 #include "ScopedEventConnectionList.h"
 
-#include "ObjectSerialization.h"
+#include "ObjectScribe.h"
 
 namespace Atmos
 {
@@ -24,7 +24,7 @@ namespace Atmos
         bool IsTop() const;
     protected:
         State(ObjectManager& manager);
-        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(State);
+        State(const ::Inscription::BinaryTableData<State>& data);
 
         StateSystem* System();
         const StateSystem* System() const;
@@ -52,7 +52,9 @@ namespace Atmos
         virtual void DoOnUnfocused();
     private:
         template<class... Args>
-        void ExecuteWhenTopCommon(::Chroma::Event<Args...>& e, typename ::Chroma::Event<Args...>::FunctionT&& subscribingFunction);
+        void ExecuteWhenTopCommon(
+            ::Chroma::Event<Args...>& e,
+            typename ::Chroma::Event<Args...>::FunctionT&& subscribingFunction);
     private:
         friend class StateSystem;
     };
@@ -76,7 +78,9 @@ namespace Atmos
     }
 
     template<class... Args>
-    void State::ExecuteWhenTopCommon(::Chroma::Event<Args...>& e, typename ::Chroma::Event<Args...>::FunctionT&& subscribingFunction)
+    void State::ExecuteWhenTopCommon(
+        ::Chroma::Event<Args...>& e,
+        typename ::Chroma::Event<Args...>::FunctionT&& subscribingFunction)
     {
         auto wrappingFunction = [this, subscribingFunction](Args&& ... args)
         {
@@ -100,9 +104,17 @@ namespace Atmos
 
 namespace Inscription
 {
-    DECLARE_OBJECT_INSCRIPTER(::Atmos::State)
+    template<>
+    struct TableData<::Atmos::State, BinaryArchive> :
+        public ObjectTableDataBase<::Atmos::State, BinaryArchive>
+    {};
+
+    template<>
+    class Scribe<::Atmos::State, BinaryArchive> :
+        public ObjectScribe<::Atmos::State, BinaryArchive>
     {
     public:
-        OBJECT_INSCRIPTER_DECLARE_MEMBERS;
+        class Table : public TableBase
+        {};
     };
 }

@@ -48,7 +48,7 @@ namespace Atmos
         template<class BaseT, typename std::enable_if<std::is_base_of<BaseT, T>::value, int>::type = 0>
         operator TypedObjectReference<BaseT>() const
         {
-            return TypedObjectReference<BaseT>(obj);
+            return TypedObjectReference<BaseT>(referenced);
         }
 
         T* operator->();
@@ -59,7 +59,7 @@ namespace Atmos
         template<class DerivedT, typename std::enable_if<std::is_base_of<T, DerivedT>::value, int>::type = 0>
         TypedObjectReference<DerivedT> Downcast() const
         {
-            return TypedObjectReference<DerivedT>(dynamic_cast<DerivedT*>(obj));
+            return TypedObjectReference<DerivedT>(dynamic_cast<DerivedT*>(referenced));
         }
 
         ConstTypedObjectReference<T> ToConst() const;
@@ -71,61 +71,60 @@ namespace Atmos
 
         bool IsOccupied() const;
     private:
-        T* obj;
+        T* referenced;
     private:
-        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
     };
 
     template<class T>
-    TypedObjectReference<T>::TypedObjectReference() : obj(nullptr)
+    TypedObjectReference<T>::TypedObjectReference() : referenced(nullptr)
     {}
 
     template<class T>
-    TypedObjectReference<T>::TypedObjectReference(T* obj) : obj(obj)
+    TypedObjectReference<T>::TypedObjectReference(T* obj) : referenced(obj)
     {}
 
     template<class T>
-    TypedObjectReference<T>::TypedObjectReference(T& obj) : obj(&obj)
+    TypedObjectReference<T>::TypedObjectReference(T& obj) : referenced(&obj)
     {}
 
     template<class T>
     template<class U, typename std::enable_if<!std::is_same<U, Object>::value, int>::type>
-    TypedObjectReference<T>::TypedObjectReference(ObjectReference& reference) : obj(static_cast<T*>(reference.Get()))
+    TypedObjectReference<T>::TypedObjectReference(ObjectReference& reference) : referenced(static_cast<T*>(reference.Get()))
     {}
 
     template<class T>
-    TypedObjectReference<T>::TypedObjectReference(TypedObjectReference&& arg) : obj(arg.obj)
+    TypedObjectReference<T>::TypedObjectReference(TypedObjectReference&& arg) : referenced(arg.referenced)
     {
-        arg.obj = nullptr;
+        arg.referenced = nullptr;
     }
 
     template<class T>
     TypedObjectReference<T>& TypedObjectReference<T>::operator=(TypedObjectReference&& arg)
     {
-        obj = arg.obj;
-        arg.obj = nullptr;
+        referenced = arg.referenced;
+        arg.referenced = nullptr;
         return *this;
     }
 
     template<class T>
     TypedObjectReference<T>& TypedObjectReference<T>::operator=(T* obj)
     {
-        this->obj = obj;
+        this->referenced = obj;
         return *this;
     }
 
     template<class T>
     TypedObjectReference<T>& TypedObjectReference<T>::operator=(T& obj)
     {
-        this->obj = &obj;
+        this->referenced = &obj;
         return *this;
     }
 
     template<class T>
     bool TypedObjectReference<T>::operator==(const TypedObjectReference& arg) const
     {
-        return obj == arg.obj;
+        return referenced == arg.referenced;
     }
 
     template<class T>
@@ -158,7 +157,7 @@ namespace Atmos
         if (!IsOccupied())
             return ObjectReference();
 
-        return ObjectReference(obj);
+        return ObjectReference(referenced);
     }
 
     template<class T>
@@ -197,37 +196,31 @@ namespace Atmos
         if (!IsOccupied())
             return ConstTypedObjectReference<T>();
 
-        return ConstTypedObjectReference<T>(obj);
+        return ConstTypedObjectReference<T>(referenced);
     }
 
     template<class T>
     void TypedObjectReference<T>::Reset()
     {
-        obj = nullptr;
+        referenced = nullptr;
     }
 
     template<class T>
     T* TypedObjectReference<T>::Get()
     {
-        return obj;
+        return referenced;
     }
 
     template<class T>
     const T* TypedObjectReference<T>::Get() const
     {
-        return obj;
+        return referenced;
     }
 
     template<class T>
     bool TypedObjectReference<T>::IsOccupied() const
     {
         return Get() != nullptr;
-    }
-
-    template<class T>
-    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(TypedObjectReference<T>)
-    {
-        scribe.UnowningPointer(obj);
     }
 
     template<class T>
@@ -258,7 +251,7 @@ namespace Atmos
         template<class BaseT, typename std::enable_if<std::is_base_of<BaseT, T>::value, int>::type = 0>
         operator ConstTypedObjectReference<BaseT>() const
         {
-            return ConstTypedObjectReference<BaseT>(obj);
+            return ConstTypedObjectReference<BaseT>(referenced);
         }
 
         const T* operator->() const;
@@ -267,7 +260,7 @@ namespace Atmos
         template<class DerivedT, typename std::enable_if<std::is_base_of<T, DerivedT>::value, int>::type = 0>
         ConstTypedObjectReference<DerivedT> Downcast() const
         {
-            return ConstTypedObjectReference<DerivedT>(dynamic_cast<DerivedT*>(obj));
+            return ConstTypedObjectReference<DerivedT>(dynamic_cast<DerivedT*>(referenced));
         }
 
         void Reset();
@@ -276,75 +269,74 @@ namespace Atmos
 
         bool IsOccupied() const;
     private:
-        const T* obj;
+        const T* referenced;
     private:
-        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
     };
 
     template<class T>
-    ConstTypedObjectReference<T>::ConstTypedObjectReference() : obj(nullptr)
+    ConstTypedObjectReference<T>::ConstTypedObjectReference() : referenced(nullptr)
     {}
 
     template<class T>
-    ConstTypedObjectReference<T>::ConstTypedObjectReference(const T* obj) : obj(obj)
+    ConstTypedObjectReference<T>::ConstTypedObjectReference(const T* obj) : referenced(obj)
     {}
 
     template<class T>
-    ConstTypedObjectReference<T>::ConstTypedObjectReference(const T& obj) : obj(&obj)
+    ConstTypedObjectReference<T>::ConstTypedObjectReference(const T& obj) : referenced(&obj)
     {}
 
     template<class T>
-    ConstTypedObjectReference<T>::ConstTypedObjectReference(T* obj) : obj(obj)
+    ConstTypedObjectReference<T>::ConstTypedObjectReference(T* obj) : referenced(obj)
     {}
 
     template<class T>
-    ConstTypedObjectReference<T>::ConstTypedObjectReference(T& obj) : obj(&obj)
+    ConstTypedObjectReference<T>::ConstTypedObjectReference(T& obj) : referenced(&obj)
     {}
 
     template<class T>
     template<class U, typename std::enable_if<!std::is_same<U, Object>::value, int>::type>
-    ConstTypedObjectReference<T>::ConstTypedObjectReference(ConstObjectReference& reference) : obj(static_cast<const T*>(reference.obj))
+    ConstTypedObjectReference<T>::ConstTypedObjectReference(ConstObjectReference& reference) : referenced(static_cast<const T*>(reference.referenced))
     {}
 
     template<class T>
-    ConstTypedObjectReference<T>::ConstTypedObjectReference(ConstTypedObjectReference&& arg) : obj(arg.obj)
+    ConstTypedObjectReference<T>::ConstTypedObjectReference(ConstTypedObjectReference&& arg) : referenced(arg.referenced)
     {
-        arg.obj = nullptr;
+        arg.referenced = nullptr;
     }
 
     template<class T>
     ConstTypedObjectReference<T>& ConstTypedObjectReference<T>::operator=(ConstTypedObjectReference&& arg)
     {
-        obj = arg.obj;
-        arg.obj = nullptr;
+        referenced = arg.referenced;
+        arg.referenced = nullptr;
         return *this;
     }
 
     template<class T>
     ConstTypedObjectReference<T>& ConstTypedObjectReference<T>::operator=(const T* obj)
     {
-        this->obj = obj;
+        this->referenced = obj;
         return *this;
     }
 
     template<class T>
     ConstTypedObjectReference<T>& ConstTypedObjectReference<T>::operator=(const T& obj)
     {
-        this->obj = &obj;
+        this->referenced = &obj;
         return *this;
     }
 
     template<class T>
     bool ConstTypedObjectReference<T>::operator==(const ConstTypedObjectReference& arg) const
     {
-        return obj == arg.obj;
+        return referenced == arg.referenced;
     }
 
     template<class T>
     bool ConstTypedObjectReference<T>::operator!=(const ConstTypedObjectReference& arg) const
     {
-        return obj != arg.obj;
+        return referenced != arg.referenced;
     }
 
     template<class T>
@@ -360,7 +352,7 @@ namespace Atmos
             return ObjectReference();
 
         ObjectReference ret;
-        ret.obj = obj;
+        ret.referenced = referenced;
         return ret;
     }
 
@@ -379,13 +371,13 @@ namespace Atmos
     template<class T>
     void ConstTypedObjectReference<T>::Reset()
     {
-        obj = nullptr;
+        referenced = nullptr;
     }
 
     template<class T>
     const T* ConstTypedObjectReference<T>::Get() const
     {
-        return obj;
+        return referenced;
     }
 
     template<class T>
@@ -393,12 +385,41 @@ namespace Atmos
     {
         return Get() != nullptr;
     }
+}
+
+namespace Inscription
+{
+    template<class T>
+    class Scribe<::Atmos::TypedObjectReference<T>, BinaryArchive> :
+        public CompositeScribe<::Atmos::TypedObjectReference<T>, BinaryArchive>
+    {
+    private:
+        using BaseT = typename CompositeScribe<::Atmos::TypedObjectReference<T>, BinaryArchive>;
+    public:
+        using ObjectT = typename BaseT::ObjectT;
+        using ArchiveT = typename BaseT::ArchiveT;
+    public:
+        static void Scriven(ObjectT& object, ArchiveT& archive)
+        {
+            archive(object.referenced);
+        }
+    };
 
     template<class T>
-    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(ConstTypedObjectReference<T>)
+    class Scribe<::Atmos::ConstTypedObjectReference<T>, BinaryArchive> :
+        public CompositeScribe<::Atmos::ConstTypedObjectReference<T>, BinaryArchive>
     {
-        scribe.UnowningPointer(obj);
-    }
+    private:
+        using BaseT = typename CompositeScribe<::Atmos::ConstTypedObjectReference<T>, BinaryArchive>;
+    public:
+        using ObjectT = typename BaseT::ObjectT;
+        using ArchiveT = typename BaseT::ArchiveT;
+    public:
+        static void Scriven(ObjectT& object, ArchiveT& archive)
+        {
+            archive(object.referenced);
+        }
+    };
 }
 
 namespace std

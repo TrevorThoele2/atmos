@@ -105,11 +105,14 @@ namespace Atmos
             nearTopLeft.y + ((nearBottomRight.y - nearTopLeft.y) / 2),
             nearTopLeft.z + ((farTopLeft.z - nearTopLeft.z) / 2));
     }
+}
 
-    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(Position3D)
+namespace Inscription
+{
+    void Scribe<::Atmos::Position3D, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
     {
-        scribe(x);
-        scribe(y);
-        scribe(z);
+        archive(object.x);
+        archive(object.y);
+        archive(object.z);
     }
 }

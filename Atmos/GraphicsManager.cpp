@@ -1,9 +1,8 @@
-
 #include "GraphicsManager.h"
 
 #include "CameraSystem.h"
 
-namespace Atmos
+namespace Atmos::Render
 {
     GraphicsManager::~GraphicsManager()
     {}
@@ -62,7 +61,7 @@ namespace Atmos
         return CreateShaderDataImpl(buffer, size, name);
     }
 
-    RenderSurface& GraphicsManager::CreateRenderSurface(void* window)
+    Surface& GraphicsManager::CreateRenderSurface(void* window)
     {
         renderSurfaces.push_back(std::move(CreateRenderSurfaceImpl(window)));
         return renderSurfaces.back();
@@ -74,7 +73,7 @@ namespace Atmos
         return canvasList.back();
     }
 
-    void GraphicsManager::DestroyRenderSurface(RenderSurface& destroy)
+    void GraphicsManager::DestroyRenderSurface(Surface& destroy)
     {
         auto found = FindRenderSurface(destroy);
         if (found == renderSurfaces.end())
@@ -100,7 +99,7 @@ namespace Atmos
         ResizeCanvasImpl(canvas, dimensions);
     }
 
-    void GraphicsManager::SetRenderTarget(RenderSurface& set)
+    void GraphicsManager::SetRenderTarget(Surface& set)
     {
         if (currentRenderSurface != renderSurfaces.end() && &*currentRenderSurface == &set)
             return;
@@ -122,7 +121,7 @@ namespace Atmos
         SetCameraSizeToCurrentDimensions();
     }
 
-    const RenderSurface* GraphicsManager::GetCurrentRenderTarget() const
+    const Surface* GraphicsManager::GetCurrentRenderTarget() const
     {
         if (currentRenderSurface == renderSurfaces.end())
             return nullptr;
@@ -256,7 +255,7 @@ namespace Atmos
                 position.y);
     }
 
-    void GraphicsManager::RenderLine(const LineRender& line)
+    void GraphicsManager::RenderLine(const Line& line)
     {
         RenderLineImpl(line);
     }
@@ -352,7 +351,7 @@ namespace Atmos
             Y - cameraSystem->GetTopLeft().y);
     }
 
-    GraphicsManager::RenderSurfaceList::iterator GraphicsManager::FindRenderSurface(RenderSurface& surface)
+    GraphicsManager::RenderSurfaceList::iterator GraphicsManager::FindRenderSurface(Surface& surface)
     {
         for (auto loop = renderSurfaces.begin(); loop != renderSurfaces.end(); ++loop)
         {

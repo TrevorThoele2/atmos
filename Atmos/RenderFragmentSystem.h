@@ -5,21 +5,20 @@
 #include "ObjectManager.h"
 
 #include "RenderFragment.h"
-#include "RenderFragmentGrid.h"
+#include "Octree.h"
 
-namespace Atmos
+namespace Atmos::Render
 {
-    class RenderFragmentSystem : public ObjectSystem
+    class FragmentSystem : public ObjectSystem
     {
     public:
-        typedef TypedObjectReference<RenderFragment> Reference;
+        typedef TypedObjectReference<Fragment> Reference;
     public:
-        RenderFragmentSystem(ObjectManager& manager);
-        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(RenderFragmentSystem);
+        FragmentSystem(ObjectManager& manager);
 
         void DrawAll();
     private:
-        typedef ObjectBatch<RenderFragment> RenderFragmentBatch;
+        typedef ObjectBatch<Fragment> RenderFragmentBatch;
 
         RenderFragmentBatch renderFragments;
     private:
@@ -33,10 +32,11 @@ namespace Atmos
 
 namespace Inscription
 {
-    INSCRIPTION_INSCRIPTER_DECLARE(::Atmos::RenderFragmentSystem)
+    template<>
+    class Scribe<::Atmos::FragmentSystem, BinaryArchive> :
+        public ObjectSystemScribe<::Atmos::FragmentSystem, BinaryArchive>
     {
     public:
-        INSCRIPTION_BINARY_INSCRIPTER_DECLARE_TABLE;
-        INSCRIPTION_BINARY_DECLARE_CLASS_NAME_RESOLVER;
+        static void Scriven(ObjectT& object, ArchiveT& archive);
     };
 }

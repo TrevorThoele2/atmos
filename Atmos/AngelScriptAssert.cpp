@@ -5,13 +5,10 @@
 
 #include "Assert.h"
 
-namespace Atmos
+namespace Atmos::Scripting
 {
-    namespace Scripting
+    void AngelScriptAssert(int result)
     {
-        void AngelScriptAssert(int result)
-        {
-            ATMOS_ASSERT(result >= 0);
-        }
+        ATMOS_ASSERT(result >= 0);
     }
 }

@@ -1,5 +1,4 @@
-
-#include "InputWorldScribe.h"
+#include "InputWorldArchive.h"
 
 #include "AssetPackageSystem.h"
 
@@ -7,21 +6,21 @@
 
 namespace Atmos
 {
-    const char* const InputWorldScribe::worldExtension = "gaia";
+    const char* const InputWorldArchive::worldExtension = "gaia";
 
-    InputWorldScribe::InputWorldScribe(
+    InputWorldArchive::InputWorldArchive(
         const FilePath& filePath,
         ObjectManager& globalObjectManager,
         OpenMode openMode) :
 
-        InputScribeBase([this]() { return _worldStart; }),
+        InputArchiveBase([this]() { return _worldStart; }),
         globalObjectManager(&globalObjectManager),
-        filePath(GetForcedFilePath(filePath, openMode)), underlyingScribe(GetForcedFilePath(filePath, openMode), "ATMOS GAIA")
+        filePath(GetForcedFilePath(filePath, openMode)), underlyingArchive(GetForcedFilePath(filePath, openMode), "ATMOS GAIA")
     {}
 
-    bool InputWorldScribe::Load(LoadType load)
+    bool InputWorldArchive::Load(LoadType load)
     {
-        underlyingScribe.MovePositionToStart();
+        underlyingArchive.MovePositionToStart();
 
         switch (load)
         {
@@ -33,10 +32,10 @@ namespace Atmos
             LoadGlobal();
             break;
         case LoadType::LOAD_FIELD_PLACEHOLDERS:
-            RegistrySkipHandle skipper(underlyingScribe);
+            RegistrySkipHandle skipper(underlyingArchive);
 
             LoadGlobal(&skipper);
-            underlyingScribe.SeekStream(skipper.SkipPosition());
+            underlyingArchive.SeekStream(skipper.SkipPosition());
             LoadAfterGlobal();
 
             break;
@@ -45,12 +44,12 @@ namespace Atmos
         return true;
     }
 
-    bool InputWorldScribe::WillLoad()
+    bool InputWorldArchive::WillLoad()
     {
         return true;
     }
 
-    Optional<Field> InputWorldScribe::ExtractField(FieldID id)
+    Optional<Field> InputWorldArchive::ExtractField(FieldID id)
     {
         typedef Optional<Field> Ret;
         auto found = fieldHandles.find(id);
@@ -62,7 +61,7 @@ namespace Atmos
         return Ret(std::move(out));
     }
 
-    std::unique_ptr<Field> InputWorldScribe::ExtractFieldAsHeap(FieldID id)
+    std::unique_ptr<Field> InputWorldArchive::ExtractFieldAsHeap(FieldID id)
     {
         auto found = fieldHandles.find(id);
         if (found == fieldHandles.end())
@@ -73,13 +72,13 @@ namespace Atmos
         return out;
     }
 
-    ::Inscription::Buffer InputWorldScribe::ExtractFieldAsBuffer(FieldID id)
+    ::Inscription::Buffer InputWorldArchive::ExtractFieldAsBuffer(FieldID id)
     {
         auto found = fieldHandles.find(id);
         return found->second.LoadBuffer(found->second.size);
     }
 
-    InputWorldScribe::FieldIDList InputWorldScribe::AllFieldIDs() const
+    InputWorldArchive::FieldIDList InputWorldArchive::AllFieldIDs() const
     {
         FieldIDList list;
         for (auto& loop : fieldHandles)
@@ -87,41 +86,41 @@ namespace Atmos
         return list;
     }
 
-    bool InputWorldScribe::HasField(FieldID fieldID) const
+    bool InputWorldArchive::HasField(FieldID fieldID) const
     {
         return fieldHandles.find(fieldID) != fieldHandles.end();
     }
 
-    size_t InputWorldScribe::FieldCount() const
+    size_t InputWorldArchive::FieldCount() const
     {
         return fieldHandles.size();
     }
 
-    const FilePath& InputWorldScribe::GetFilePath() const
+    const FilePath& InputWorldArchive::GetFilePath() const
     {
         return filePath;
     }
 
-    ::Inscription::BinaryScribe& InputWorldScribe::UnderlyingScribe()
+    ::Inscription::BinaryArchive& InputWorldArchive::UnderlyingArchive()
     {
-        return underlyingScribe;
+        return underlyingArchive;
     }
 
-    const ::Inscription::BinaryScribe& InputWorldScribe::UnderlyingScribe() const
+    const ::Inscription::BinaryArchive& InputWorldArchive::UnderlyingArchive() const
     {
-        return underlyingScribe;
+        return underlyingArchive;
     }
 
-    InputWorldScribe::FieldHandle::FieldHandle(FocusedScribe& scribe) : SkipFileHandle(scribe), size(0)
+    InputWorldArchive::FieldHandle::FieldHandle(FocusedArchive& archive) : SkipFileHandle(archive), size(0)
     {}
 
-    void InputWorldScribe::FieldHandle::LoadExtra()
+    void InputWorldArchive::FieldHandle::LoadExtra()
     {
-        scribe.ReadNumeric(fieldID);
-        scribe.ReadNumeric(size);
+        archive(fieldID);
+        archive(size);
     }
 
-    void InputWorldScribe::LoadGlobal(RegistrySkipHandle* registrySkipper)
+    void InputWorldArchive::LoadGlobal(RegistrySkipHandle* registrySkipper)
     {
         if (registrySkipper)
         {
@@ -130,7 +129,7 @@ namespace Atmos
         }
         else
         {
-            RegistrySkipHandle notUsed(underlyingScribe);
+            RegistrySkipHandle notUsed(underlyingArchive);
             notUsed.LoadPosition();
         }
 
@@ -140,37 +139,37 @@ namespace Atmos
 
         // Load object type names
         ObjectTypeNameSerializer objectTypeNameSerializer;
-        objectTypeNameSerializer.LoadAll(underlyingScribe);
+        objectTypeNameSerializer.LoadAll(underlyingArchive);
 
         // Load global object manager
-        underlyingScribe.Load(*globalObjectManager);
+        underlyingArchive(*globalObjectManager);
     }
 
-    void InputWorldScribe::LoadAfterGlobal()
+    void InputWorldArchive::LoadAfterGlobal()
     {
         // Load WorldStart
-        underlyingScribe.Load(_worldStart);
+        underlyingArchive(_worldStart);
 
         // Retrieve field handles
         ::Inscription::ContainerSize size;
-        underlyingScribe.Load(size);
+        underlyingArchive(size);
         while (size-- > 0)
         {
-            FieldHandle handle(underlyingScribe);
+            FieldHandle handle(underlyingArchive);
             handle.LoadPosition();
             fieldHandles.emplace(handle.fieldID, handle);
         }
     }
 
-    void InputWorldScribe::FillField(Field& fill, FieldHandleMap::iterator handle)
+    void InputWorldArchive::FillField(Field& fill, FieldHandleMap::iterator handle)
     {
         // Load the field while setting up a section to clear immediately after
-        underlyingScribe.StartTrackingSection();
+        underlyingArchive.StartTrackingSection();
         handle->second.LoadObject(fill);
-        underlyingScribe.StopTrackingSection(true);
+        underlyingArchive.StopTrackingSection(true);
     }
 
-    FilePath InputWorldScribe::GetForcedFilePath(const FilePath& filePath, OpenMode openMode)
+    FilePath InputWorldArchive::GetForcedFilePath(const FilePath& filePath, OpenMode openMode)
     {
         FilePath ret(filePath);
         if (openMode == OpenMode::FORCE_EXTENSION)

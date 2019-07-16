@@ -6,19 +6,19 @@
 
 namespace Atmos
 {
-    RealStopwatch::RealStopwatch(ObjectManager& manager, TimeValue goal) : StopwatchBase(manager, goal)
+    RealStopwatch::RealStopwatch(ObjectManager& manager, TimeValue goal) :
+        Stopwatch(manager, goal)
     {
         timeSystem = manager.FindSystem<TimeSystem>();
     }
 
-    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(RealStopwatch) : INSCRIPTION_TABLE_GET_BASE(StopwatchBase)
-    {
-        timeSystem = Manager()->FindSystem<TimeSystem>();
-    }
+    RealStopwatch::RealStopwatch(const ::Inscription::BinaryTableData<RealStopwatch>& data) :
+        Stopwatch(std::get<0>(data.bases))
+    {}
 
     bool RealStopwatch::operator==(const RealStopwatch& arg) const
     {
-        return StopwatchBase::operator==(arg);
+        return Stopwatch::operator==(arg);
     }
 
     TimeValue RealStopwatch::CurrentTime() const
@@ -32,12 +32,4 @@ namespace Atmos
     }
 
     const ObjectTypeName ObjectTraits<RealStopwatch>::typeName = "RealStopwatch";
-}
-
-namespace Inscription
-{
-    OBJECT_INSCRIPTER_DEFINE_MEMBERS(::Atmos::RealStopwatch)
-    {
-
-    }
 }

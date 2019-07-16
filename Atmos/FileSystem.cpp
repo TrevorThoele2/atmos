@@ -1,4 +1,3 @@
-
 #include "FileSystem.h"
 
 #include "NullFileManager.h"
@@ -8,11 +7,8 @@
 
 namespace Atmos
 {
-    FileSystem::FileSystem(ObjectManager& manager) : UniqueProviderSystem(manager, UniqueProviderSystem::ValuePtr(new NullFileManager()))
-    {}
-
-    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(FileSystem) :
-        INSCRIPTION_TABLE_GET_BASE(UniqueProviderSystem<FileManager>)
+    FileSystem::FileSystem(ObjectManager& manager) :
+        UniqueProviderSystem(manager, UniqueProviderSystem::ValuePtr(new NullFileManager()))
     {}
 
     void FileSystem::InitializeImpl()
@@ -36,14 +32,8 @@ namespace Atmos
 
 namespace Inscription
 {
-    INSCRIPTION_BINARY_INSCRIPTER_DEFINE_TABLE(::Atmos::FileSystem)
+    void Scribe<::Atmos::FileSystem, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
     {
-        INSCRIPTION_BINARY_INSCRIPTER_CREATE_TABLE;
-
-        INSCRIPTION_TABLE_ADD_BASE(::Atmos::UniqueProviderSystem<::Atmos::FileManager>);
-
-        INSCRIPTION_INSCRIPTER_RETURN_TABLE;
+        BaseScriven<::Atmos::UniqueProviderSystem<::Atmos::FileManager>>(object, archive);
     }
-
-    INSCRIPTION_BINARY_DEFINE_SIMPLE_CLASS_NAME_RESOLVER(::Atmos::FileSystem, "FileSystem");
 }

@@ -1,24 +1,21 @@
 
 #include "NullInput.h"
 
-namespace Atmos
+namespace Atmos::Input
 {
-    namespace Input
+    void NullManager::CreateSignalsImpl()
+    {}
+
+    void NullManager::WorkSignalsImpl(SignalList& signalList)
+    {}
+
+    bool NullManager::ShouldAddActions() const
     {
-        void NullManager::CreateSignalsImpl()
-        {}
+        return false;
+    }
 
-        void NullManager::WorkSignalsImpl(SignalList& signalList)
-        {}
-
-        bool NullManager::ShouldAddActions() const
-        {
-            return false;
-        }
-
-        MousePosition NullManager::GetMousePositionImpl() const
-        {
-            return MousePosition();
-        }
+    MousePosition NullManager::GetMousePositionImpl() const
+    {
+        return MousePosition();
     }
 }

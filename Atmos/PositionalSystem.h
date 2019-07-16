@@ -6,17 +6,16 @@
 
 #include "AxisAlignedObject.h"
 
-#include "RenderFragmentGrid.h"
+#include "Octree.h"
 
 namespace Atmos
 {
     class PositionalSystem : public ObjectSystem
     {
     public:
-        Octree grid;
+        Render::Octree grid;
     public:
         PositionalSystem(ObjectManager& manager);
-        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(PositionalSystem);
     private:
         typedef ObjectBatch<AxisAlignedObject> Batch;
         typedef TypedObjectReference<AxisAlignedObject> Reference;
@@ -31,10 +30,11 @@ namespace Atmos
 
 namespace Inscription
 {
-    INSCRIPTION_INSCRIPTER_DECLARE(::Atmos::PositionalSystem)
+    template<>
+    class Scribe<::Atmos::PositionalSystem, BinaryArchive> :
+        public ObjectSystemScribe<::Atmos::PositionalSystem, BinaryArchive>
     {
     public:
-        INSCRIPTION_BINARY_INSCRIPTER_DECLARE_TABLE;
-        INSCRIPTION_BINARY_DECLARE_CLASS_NAME_RESOLVER;
+        static void Scriven(ObjectT& object, ArchiveT& archive);
     };
 }

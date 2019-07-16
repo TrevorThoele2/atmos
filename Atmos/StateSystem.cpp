@@ -9,10 +9,6 @@ namespace Atmos
         stack(Stack::FunctionPtr(Stack::MakeFunction(&State::OnUnfocused)), Stack::FunctionPtr(Stack::MakeFunction(&State::OnFocused)))
     {}
 
-    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(StateSystem) :
-        INSCRIPTION_TABLE_GET_BASE(ObjectSystem)
-    {}
-
     void StateSystem::RegisterState(StatePtr&& state)
     {
         registered.emplace(TypeFor(*state.get()), std::move(state));
@@ -111,14 +107,8 @@ namespace Atmos
 
 namespace Inscription
 {
-    INSCRIPTION_BINARY_INSCRIPTER_DEFINE_TABLE(::Atmos::StateSystem)
+    void Scribe<::Atmos::StateSystem, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
     {
-        INSCRIPTION_BINARY_INSCRIPTER_CREATE_TABLE;
-
-        INSCRIPTION_TABLE_ADD_BASE(::Atmos::ObjectSystem);
-
-        INSCRIPTION_INSCRIPTER_RETURN_TABLE;
+        BaseScriven<::Atmos::ObjectSystem>(object, archive);
     }
-
-    INSCRIPTION_BINARY_DEFINE_SIMPLE_CLASS_NAME_RESOLVER(::Atmos::StateSystem, "StateSystem");
 }

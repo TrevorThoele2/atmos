@@ -22,38 +22,43 @@ namespace Atmos
 {
     class RadixPoint
     {
-    private:
-        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
-        INSCRIPTION_ACCESS;
     public:
-        typedef size_t ValueT;
-        ValueT value;
-        explicit constexpr RadixPoint(ValueT value = 0) : value(value) {}
-        RadixPoint& operator=(ValueT arg);
-        bool operator==(const RadixPoint &arg) const;
-        bool operator!=(const RadixPoint &arg) const;
-        explicit operator ValueT() const;
-        ValueT Get() const;
+        typedef size_t Value;
+    public:
+        Value value;
+    public:
+        explicit constexpr RadixPoint(Value value = 0) : value(value)
+        {}
+
+        RadixPoint& operator=(Value arg);
+
+        bool operator==(const RadixPoint& arg) const;
+        bool operator!=(const RadixPoint& arg) const;
+
+        explicit operator Value() const;
+        Value Get() const;
+    private:
+        INSCRIPTION_ACCESS;
     };
 
     template<class T>
     class FixedPoint
     {
     public:
-        typedef T ValueT;
+        typedef T Value;
         typedef size_t DigitCount;
         typedef RadixPoint Radix;
 
-        constexpr static DigitCount maxDigits = NumericLimits<ValueT>::digits10();
+        constexpr static DigitCount maxDigits = NumericLimits<Value>::digits10();
     public:
         class Split
         {
         private:
-            ValueT MakeValue() const;
+            Value MakeValue() const;
             friend FixedPoint;
         public:
-            typedef typename FixedPoint::ValueT IPart;
-            typedef typename FixedPoint::ValueT FPart;
+            typedef typename FixedPoint::Value IPart;
+            typedef typename FixedPoint::Value FPart;
             typedef typename FixedPoint::Radix Radix;
             IPart i;
             FPart f;
@@ -85,48 +90,14 @@ namespace Atmos
             // The position is calculated from the right side of the decimal
             // 1, 0 = equivalent of 0.1
             // 1, 1 = equivalent of 0.01
-            static FPart AdjustF(ValueT value, Radix radixPoint);
+            static FPart AdjustF(Value value, Radix radixPoint);
         };
-    private:
-        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
-        INSCRIPTION_ACCESS;
-    private:
-        ValueT value;
-        Radix radixPoint;
-
-        static void AssertRadixPoint(Radix proposed);
-
-        template<class U, typename std::enable_if<std::is_floating_point<U>::value, int>::type = 0>
-        static ValueT GetValueFromArg(U arg, Radix radixPoint);
-        template<class U, typename std::enable_if<!std::is_floating_point<U>::value, int>::type = 0>
-        static ValueT GetValueFromArg(U arg, Radix radixPoint);
-
-        template<class U>
-        static ValueT BreakFloatingPoint(U u, Radix radixPoint);
-        template<class U>
-        static U FabricateFloatingPoint(ValueT val, Radix radixPoint);
-
-        static ValueT GetInflectionPointStatic(Radix radixPoint);
-        ValueT GetInflectionPoint() const;
-
-        ValueT SplitValueIPart() const;
-        ValueT SplitValueFPart() const;
-        static Split SplitValueStatic(ValueT value, Radix radixPoint);
-
-        static DigitCount GetDigitCount(ValueT value);
-
-        static inline ValueT Add(ValueT left, ValueT right);
-        static inline ValueT Subtract(ValueT left, ValueT right);
-        static inline ValueT Multiply(ValueT left, ValueT right, RadixPoint radixPointRight);
-        // Only need the right radix point; the result will be using the left radix point
-        static inline ValueT Divide(ValueT left, ValueT right, RadixPoint radixPointRight);
-        static inline ValueT Modulo(ValueT left, ValueT right);
     public:
         constexpr FixedPoint(Radix radixPoint = GetDefaultRadixPoint()) : value(0), radixPoint(radixPoint) {}
         template<class U>
         explicit FixedPoint(U i, Radix radixPoint = GetDefaultRadixPoint());
         FixedPoint(const Split &split);
-        explicit FixedPoint(ValueT i, ValueT f, Radix radixPoint = GetDefaultRadixPoint());
+        explicit FixedPoint(Value i, Value f, Radix radixPoint = GetDefaultRadixPoint());
         FixedPoint(const FixedPoint &arg) = default;
         FixedPoint& operator=(const Split &split);
         FixedPoint& operator=(const FixedPoint &arg) = default;
@@ -184,8 +155,8 @@ namespace Atmos
         explicit operator double() const;
         explicit operator Split() const;
 
-        void SetRawValue(ValueT set);
-        ValueT GetRawValue() const;
+        void SetRawValue(Value set);
+        Value GetRawValue() const;
         void Floor();
         void Ceiling();
         // If manipulateValue == false, then this won't change the value
@@ -196,18 +167,51 @@ namespace Atmos
         String ToString() const;
         void FromString(const String &arg);
 
-        static ValueT GetMax();
-        static ValueT GetMin();
-        static ValueT GetLowest();
+        static Value GetMax();
+        static Value GetMin();
+        static Value GetLowest();
 
         Split SplitValue() const;
-        static Split SplitValue(ValueT split);
+        static Split SplitValue(Value split);
 
         static constexpr Radix GetDefaultRadixPoint();
+    private:
+        Value value;
+        Radix radixPoint;
+
+        static void AssertRadixPoint(Radix proposed);
+
+        template<class U, typename std::enable_if<std::is_floating_point<U>::value, int>::type = 0>
+        static Value GetValueFromArg(U arg, Radix radixPoint);
+        template<class U, typename std::enable_if<!std::is_floating_point<U>::value, int>::type = 0>
+        static Value GetValueFromArg(U arg, Radix radixPoint);
+
+        template<class U>
+        static Value BreakFloatingPoint(U u, Radix radixPoint);
+        template<class U>
+        static U FabricateFloatingPoint(Value val, Radix radixPoint);
+
+        static Value GetInflectionPointStatic(Radix radixPoint);
+        Value GetInflectionPoint() const;
+
+        Value SplitValueIPart() const;
+        Value SplitValueFPart() const;
+        static Split SplitValueStatic(Value value, Radix radixPoint);
+
+        static DigitCount GetDigitCount(Value value);
+
+        static inline Value Add(Value left, Value right);
+        static inline Value Subtract(Value left, Value right);
+        static inline Value Multiply(Value left, Value right, RadixPoint radixPointRight);
+        // Only need the right radix point; the result will be using the left radix point
+        static inline Value Divide(Value left, Value right, RadixPoint radixPointRight);
+        static inline Value Modulo(Value left, Value right);
+    private:
+        INSCRIPTION_ACCESS;
     };
 
     template<class T>
-    inline typename FixedPoint<T>::ValueT FixedPoint<T>::Split::MakeValue() const
+    inline typename FixedPoint<T>::Value FixedPoint<T>::Split::MakeValue() const
     {
         return i * FixedPoint::GetInflectionPointStatic(radixPoint) + f;
     }
@@ -334,237 +338,9 @@ namespace Atmos
     }
 
     template<class T>
-    typename FixedPoint<T>::Split::FPart FixedPoint<T>::Split::AdjustF(ValueT value, Radix radixPoint)
+    typename FixedPoint<T>::Split::FPart FixedPoint<T>::Split::AdjustF(Value value, Radix radixPoint)
     {
         return (value * FixedPoint::GetInflectionPointStatic(Radix(radixPoint.Get() - GetDigitCount(value))));
-    }
-
-    template<class T>
-    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(FixedPoint<T>)
-    {
-        scribe(value);
-        scribe(radixPoint);
-    }
-
-    template<class T>
-    inline void FixedPoint<T>::AssertRadixPoint(Radix proposed)
-    {
-        ATMOS_ASSERT_MESSAGE(proposed.Get() <= FixedPoint::maxDigits, "The radix point must be within the digit values.");
-    }
-
-    template<class T>
-    template<class U, typename std::enable_if<std::is_floating_point<U>::value, int>::type>
-    typename FixedPoint<T>::ValueT FixedPoint<T>::GetValueFromArg(U arg, Radix radixPoint)
-    {
-        return BreakFloatingPoint(arg, radixPoint);
-    }
-
-    template<class T>
-    template<class U, typename std::enable_if<!std::is_floating_point<U>::value, int>::type>
-    typename FixedPoint<T>::ValueT FixedPoint<T>::GetValueFromArg(U arg, Radix radixPoint)
-    {
-        return arg * GetInflectionPointStatic(radixPoint);
-    }
-
-    template<class T>
-    template<class U>
-    typename FixedPoint<T>::ValueT FixedPoint<T>::BreakFloatingPoint(U u, Radix radixPoint)
-    {
-        ValueT val = 0;
-        ValueT selector = 1;
-
-        std::ostringstream out;
-        out << std::setprecision(radixPoint.Get()) << std::fixed << u;
-
-        bool negative = false;
-        size_t loop = out.str().size();
-        while (loop-- > 0)
-        {
-            auto substr = out.str().substr(loop, 1);
-            if (substr == "-")
-            {
-                negative = true;
-                continue;
-            }
-            if (substr == ".")
-                continue;
-
-            val += (strtoll(substr.c_str(), nullptr, 0) * selector);
-            selector *= 10;
-        }
-
-        if (negative)
-            val *= -1;
-
-        return val;
-    }
-
-    template<class T>
-    template<class U>
-    U FixedPoint<T>::FabricateFloatingPoint(ValueT val, Radix radixPoint)
-    {
-        U ret = 0;
-        U otherInflectionPoint = 1;
-        for (size_t loop = 0; loop != radixPoint.Get(); ++loop)
-            otherInflectionPoint /= 10;
-
-        while (val != 0)
-        {
-            ret += (val % 10) * otherInflectionPoint;
-            otherInflectionPoint *= 10;
-            val /= 10;
-        }
-
-        return ret;
-    }
-
-    template<class T>
-    typename FixedPoint<T>::ValueT FixedPoint<T>::GetInflectionPointStatic(Radix radixPoint)
-    {
-        ValueT ret = ValueT(1);
-        for (size_t loop = 0; loop < radixPoint.Get(); ++loop)
-            ret *= ValueT(10);
-
-        return ret;
-    }
-
-    template<class T>
-    typename FixedPoint<T>::ValueT FixedPoint<T>::GetInflectionPoint() const
-    {
-        ValueT ret = ValueT(1);
-        for (size_t loop = 0; loop < radixPoint.Get(); ++loop)
-            ret *= ValueT(10);
-
-        return ret;
-    }
-
-    template<class T>
-    inline typename FixedPoint<T>::ValueT FixedPoint<T>::SplitValueIPart() const
-    {
-        return value / GetInflectionPoint();
-    }
-
-    template<class T>
-    inline typename FixedPoint<T>::ValueT FixedPoint<T>::SplitValueFPart() const
-    {
-        return value - ((value / GetInflectionPoint()) * GetInflectionPoint());
-    }
-
-    template<class T>
-    inline typename FixedPoint<T>::Split FixedPoint<T>::SplitValueStatic(ValueT value, Radix radixPoint)
-    {
-        ValueT i = value / GetInflectionPointStatic(radixPoint);
-        return Split(i, value - i * GetInflectionPointStatic(radixPoint));
-    }
-
-    template<class T>
-    inline typename FixedPoint<T>::DigitCount FixedPoint<T>::GetDigitCount(ValueT value)
-    {
-        if (value == 0)
-            return 1;
-
-        DigitCount count = 0;
-        while (value != 0)
-        {
-            value /= 10;
-            ++count;
-        }
-
-        return count;
-    }
-
-    template<class T>
-    inline typename FixedPoint<T>::ValueT FixedPoint<T>::Add(ValueT left, ValueT right)
-    {
-        return left + right;
-    }
-
-    template<class T>
-    inline typename FixedPoint<T>::ValueT FixedPoint<T>::Subtract(ValueT left, ValueT right)
-    {
-        return left - right;
-    }
-
-    template<class T>
-    inline typename FixedPoint<T>::ValueT FixedPoint<T>::Multiply(ValueT left, ValueT right, RadixPoint radixPointRight)
-    {
-        const ValueT multiplicand = left;
-        ValueT multiplier = right;
-        ValueT digitPlacement = 10;
-        ValueT result = 0;
-
-        DigitCount count = 0;
-        const ValueT radixDifference(Power(10, radixPointRight.Get()));
-        while (multiplier != 0 || count <= radixPointRight.Get())
-        {
-            const ValueT digit = multiplier % 10;
-            ValueT multiplication(multiplicand * digit);
-            // If the count of digits is less than or equal to the radixPoint, shift result to the right
-            // Else if the count of digits is greater than the radixPoint, move the newly added value to the left
-            // Multiplication results in twice as many digits, and we're using the original data type so we can only store half the digits that come from multiplication
-            if (count <= radixPointRight.Get())
-                result /= 10;
-            else
-            {
-                multiplication *= digitPlacement;
-                digitPlacement *= 10;
-            }
-
-            ++count;
-            result += multiplication;
-            multiplier /= 10;
-        }
-
-        return result;
-    }
-
-    // Only need the right radix point; the result will be using the left radix point
-    template<class T>
-    inline typename FixedPoint<T>::ValueT FixedPoint<T>::Divide(ValueT left, ValueT right, RadixPoint radixPointRight)
-    {
-        if (right == 0)
-            throw DivideByZeroException();
-
-        ValueT dividend = left;
-        const ValueT divisor = right;
-        const DigitCount dividendDigits(GetDigitCount(dividend));
-        ValueT result = 0;
-        ValueT selector = Power(ValueT(10), dividendDigits - 1);
-        ValueT digit = 0;
-        ValueT answer = 0;
-        ValueT running = 0;
-
-        DigitCount count = 0;
-        while (count <= dividendDigits + radixPointRight.Get() - 1)
-        {
-            if (selector == 0)
-                digit = 0;
-            else
-                digit = dividend / selector;
-            running += digit;
-            answer = running / divisor;
-            result *= 10;
-
-            result += answer;
-            running -= answer * divisor;
-
-            dividend -= digit * selector;
-            selector /= 10;
-            running *= 10;
-
-            ++count;
-        }
-
-        return result;
-    }
-
-    template<class T>
-    inline typename FixedPoint<T>::ValueT FixedPoint<T>::Modulo(ValueT left, ValueT right)
-    {
-        if (right == 0)
-            throw DivideByZeroException();
-
-        return left - (left / right * right);
     }
 
     template<class T>
@@ -581,7 +357,7 @@ namespace Atmos
     }
 
     template<class T>
-    FixedPoint<T>::FixedPoint(ValueT i, ValueT f, Radix radixPoint) : value(i * GetInflectionPointStatic(radixPoint) + f), radixPoint(radixPoint)
+    FixedPoint<T>::FixedPoint(Value i, Value f, Radix radixPoint) : value(i * GetInflectionPointStatic(radixPoint) + f), radixPoint(radixPoint)
     {
         FixedPoint::AssertRadixPoint(radixPoint);
     }
@@ -919,13 +695,13 @@ namespace Atmos
     }
 
     template<class T>
-    void FixedPoint<T>::SetRawValue(ValueT set)
+    void FixedPoint<T>::SetRawValue(Value set)
     {
         value = set;
     }
 
     template<class T>
-    typename FixedPoint<T>::ValueT FixedPoint<T>::GetRawValue() const
+    typename FixedPoint<T>::Value FixedPoint<T>::GetRawValue() const
     {
         return value;
     }
@@ -959,9 +735,9 @@ namespace Atmos
 
         if (manipulateValue)
         {
-            ValueT normalizer = 1;
+            Value normalizer = 1;
             for (; relativeRadix > 0; --relativeRadix)
-                normalizer *= ValueT(10);
+                normalizer *= Value(10);
             // POSITIVE relative radix point; move via multiplication (add zeros)
             if (relativeRadix > 0)
                 value *= normalizer;
@@ -982,7 +758,7 @@ namespace Atmos
     String FixedPoint<T>::ToString() const
     {
         String ret;
-        ValueT hold = value;
+        Value hold = value;
         DigitCount count = 0;
         // Find out if negative, and if so, remove negativity (we'll add it in at the end)
         const bool negative = value < 0;
@@ -1014,10 +790,10 @@ namespace Atmos
     }
 
     template<class T>
-    typename FixedPoint<T>::ValueT FixedPoint<T>::GetMax()
+    typename FixedPoint<T>::Value FixedPoint<T>::GetMax()
     {
-        ValueT value = 0;
-        ValueT significantDigit = 1;
+        Value value = 0;
+        Value significantDigit = 1;
         for (DigitCount loop = 0; loop < maxDigits; ++loop)
         {
             value += 9 * significantDigit;
@@ -1028,21 +804,21 @@ namespace Atmos
     }
 
     template<class T>
-    typename FixedPoint<T>::ValueT FixedPoint<T>::GetMin()
+    typename FixedPoint<T>::Value FixedPoint<T>::GetMin()
     {
         if (NumericLimits<T>::is_signed)
-            return ValueT(-1);
+            return Value(-1);
         else
-            return ValueT(1);
+            return Value(1);
     }
 
     template<class T>
-    typename FixedPoint<T>::ValueT FixedPoint<T>::GetLowest()
+    typename FixedPoint<T>::Value FixedPoint<T>::GetLowest()
     {
         if (NumericLimits<T>::is_signed)
         {
-            ValueT value = 0;
-            ValueT significantDigit = 1;
+            Value value = 0;
+            Value significantDigit = 1;
             for (DigitCount loop = 0; loop < maxDigits; ++loop)
             {
                 value += 9 * significantDigit;
@@ -1063,7 +839,7 @@ namespace Atmos
     }
 
     template<class T>
-    typename FixedPoint<T>::Split FixedPoint<T>::SplitValue(ValueT split)
+    typename FixedPoint<T>::Split FixedPoint<T>::SplitValue(Value split)
     {
         return FixedPoint(split).SplitValue();
     }
@@ -1071,7 +847,228 @@ namespace Atmos
     template<class T>
     constexpr typename FixedPoint<T>::Radix FixedPoint<T>::GetDefaultRadixPoint()
     {
-        return Radix(NumericLimits<ValueT>::digits10() / 2);
+        return Radix(NumericLimits<Value>::digits10() / 2);
+    }
+
+    template<class T>
+    inline void FixedPoint<T>::AssertRadixPoint(Radix proposed)
+    {
+        ATMOS_ASSERT_MESSAGE(proposed.Get() <= FixedPoint::maxDigits, "The radix point must be within the digit values.");
+    }
+
+    template<class T>
+    template<class U, typename std::enable_if<std::is_floating_point<U>::value, int>::type>
+    typename FixedPoint<T>::Value FixedPoint<T>::GetValueFromArg(U arg, Radix radixPoint)
+    {
+        return BreakFloatingPoint(arg, radixPoint);
+    }
+
+    template<class T>
+    template<class U, typename std::enable_if<!std::is_floating_point<U>::value, int>::type>
+    typename FixedPoint<T>::Value FixedPoint<T>::GetValueFromArg(U arg, Radix radixPoint)
+    {
+        return arg * GetInflectionPointStatic(radixPoint);
+    }
+
+    template<class T>
+    template<class U>
+    typename FixedPoint<T>::Value FixedPoint<T>::BreakFloatingPoint(U u, Radix radixPoint)
+    {
+        Value val = 0;
+        Value selector = 1;
+
+        std::ostringstream out;
+        out << std::setprecision(radixPoint.Get()) << std::fixed << u;
+
+        bool negative = false;
+        size_t loop = out.str().size();
+        while (loop-- > 0)
+        {
+            auto substr = out.str().substr(loop, 1);
+            if (substr == "-")
+            {
+                negative = true;
+                continue;
+            }
+            if (substr == ".")
+                continue;
+
+            val += (strtoll(substr.c_str(), nullptr, 0) * selector);
+            selector *= 10;
+        }
+
+        if (negative)
+            val *= -1;
+
+        return val;
+    }
+
+    template<class T>
+    template<class U>
+    U FixedPoint<T>::FabricateFloatingPoint(Value val, Radix radixPoint)
+    {
+        U ret = 0;
+        U otherInflectionPoint = 1;
+        for (size_t loop = 0; loop != radixPoint.Get(); ++loop)
+            otherInflectionPoint /= 10;
+
+        while (val != 0)
+        {
+            ret += (val % 10) * otherInflectionPoint;
+            otherInflectionPoint *= 10;
+            val /= 10;
+        }
+
+        return ret;
+    }
+
+    template<class T>
+    typename FixedPoint<T>::Value FixedPoint<T>::GetInflectionPointStatic(Radix radixPoint)
+    {
+        Value ret = Value(1);
+        for (size_t loop = 0; loop < radixPoint.Get(); ++loop)
+            ret *= Value(10);
+
+        return ret;
+    }
+
+    template<class T>
+    typename FixedPoint<T>::Value FixedPoint<T>::GetInflectionPoint() const
+    {
+        Value ret = Value(1);
+        for (size_t loop = 0; loop < radixPoint.Get(); ++loop)
+            ret *= Value(10);
+
+        return ret;
+    }
+
+    template<class T>
+    inline typename FixedPoint<T>::Value FixedPoint<T>::SplitValueIPart() const
+    {
+        return value / GetInflectionPoint();
+    }
+
+    template<class T>
+    inline typename FixedPoint<T>::Value FixedPoint<T>::SplitValueFPart() const
+    {
+        return value - ((value / GetInflectionPoint()) * GetInflectionPoint());
+    }
+
+    template<class T>
+    inline typename FixedPoint<T>::Split FixedPoint<T>::SplitValueStatic(Value value, Radix radixPoint)
+    {
+        Value i = value / GetInflectionPointStatic(radixPoint);
+        return Split(i, value - i * GetInflectionPointStatic(radixPoint));
+    }
+
+    template<class T>
+    inline typename FixedPoint<T>::DigitCount FixedPoint<T>::GetDigitCount(Value value)
+    {
+        if (value == 0)
+            return 1;
+
+        DigitCount count = 0;
+        while (value != 0)
+        {
+            value /= 10;
+            ++count;
+        }
+
+        return count;
+    }
+
+    template<class T>
+    inline typename FixedPoint<T>::Value FixedPoint<T>::Add(Value left, Value right)
+    {
+        return left + right;
+    }
+
+    template<class T>
+    inline typename FixedPoint<T>::Value FixedPoint<T>::Subtract(Value left, Value right)
+    {
+        return left - right;
+    }
+
+    template<class T>
+    inline typename FixedPoint<T>::Value FixedPoint<T>::Multiply(Value left, Value right, RadixPoint radixPointRight)
+    {
+        const Value multiplicand = left;
+        Value multiplier = right;
+        Value digitPlacement = 10;
+        Value result = 0;
+
+        DigitCount count = 0;
+        const Value radixDifference(Power(10, radixPointRight.Get()));
+        while (multiplier != 0 || count <= radixPointRight.Get())
+        {
+            const Value digit = multiplier % 10;
+            Value multiplication(multiplicand * digit);
+            // If the count of digits is less than or equal to the radixPoint, shift result to the right
+            // Else if the count of digits is greater than the radixPoint, move the newly added value to the left
+            // Multiplication results in twice as many digits, and we're using the original data type so we can only store half the digits that come from multiplication
+            if (count <= radixPointRight.Get())
+                result /= 10;
+            else
+            {
+                multiplication *= digitPlacement;
+                digitPlacement *= 10;
+            }
+
+            ++count;
+            result += multiplication;
+            multiplier /= 10;
+        }
+
+        return result;
+    }
+
+    // Only need the right radix point; the result will be using the left radix point
+    template<class T>
+    inline typename FixedPoint<T>::Value FixedPoint<T>::Divide(Value left, Value right, RadixPoint radixPointRight)
+    {
+        if (right == 0)
+            throw DivideByZeroException();
+
+        Value dividend = left;
+        const Value divisor = right;
+        const DigitCount dividendDigits(GetDigitCount(dividend));
+        Value result = 0;
+        Value selector = Power(Value(10), dividendDigits - 1);
+        Value digit = 0;
+        Value answer = 0;
+        Value running = 0;
+
+        DigitCount count = 0;
+        while (count <= dividendDigits + radixPointRight.Get() - 1)
+        {
+            if (selector == 0)
+                digit = 0;
+            else
+                digit = dividend / selector;
+            running += digit;
+            answer = running / divisor;
+            result *= 10;
+
+            result += answer;
+            running -= answer * divisor;
+
+            dividend -= digit * selector;
+            selector /= 10;
+            running *= 10;
+
+            ++count;
+        }
+
+        return result;
+    }
+
+    template<class T>
+    inline typename FixedPoint<T>::Value FixedPoint<T>::Modulo(Value left, Value right)
+    {
+        if (right == 0)
+            throw DivideByZeroException();
+
+        return left - (left / right * right);
     }
 
     template<class T>
@@ -1115,5 +1112,31 @@ namespace Atmos
         }
 
         static constexpr bool is_signed = NumericLimits<FixedPoint<T>>::is_signed;
+    };
+}
+
+namespace Inscription
+{
+    template<>
+    class Scribe<::Atmos::RadixPoint, BinaryArchive> : public CompositeScribe<::Atmos::RadixPoint, BinaryArchive>
+    {
+    public:
+        static void Scriven(ObjectT& object, ArchiveT& archive);
+    };
+
+    template<class T>
+    class Scribe<::Atmos::FixedPoint<T>, BinaryArchive> : public CompositeScribe<::Atmos::FixedPoint<T>, BinaryArchive>
+    {
+    private:
+        using BaseT = typename CompositeScribe<::Atmos::FixedPoint<T>, BinaryArchive>;
+    public:
+        using ObjectT = typename BaseT::ObjectT;
+        using ArchiveT = typename BaseT::ArchiveT;
+    public:
+        static void Scriven(ObjectT& object, ArchiveT& archive)
+        {
+            archive(object.value);
+            archive(object.radixPoint);
+        }
     };
 }

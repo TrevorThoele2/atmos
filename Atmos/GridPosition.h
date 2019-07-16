@@ -64,8 +64,24 @@ namespace Atmos
         static Value DimensionFromPosition(Position3D::Value dim);
         static Position3D::Value DimensionToPosition(Value dim);
     private:
-        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
+    };
+}
+
+namespace Inscription
+{
+    template<>
+    class Scribe<::Atmos::GridPosition, BinaryArchive> : public CompositeScribe<::Atmos::GridPosition, BinaryArchive>
+    {
+    public:
+        static void Scriven(ObjectT& object, ArchiveT& archive);
+    };
+
+    template<>
+    class Scribe<::Atmos::RelativeGridPosition, BinaryArchive> : public CompositeScribe<::Atmos::RelativeGridPosition, BinaryArchive>
+    {
+    public:
+        static void Scriven(ObjectT& object, ArchiveT& archive);
     };
 }
 
@@ -102,7 +118,6 @@ namespace Atmos
         bool operator!=(const RelativeGridPosition &arg) const;
         void Edit(ValueT x = 0, ValueT y = 0, ValueT z = 0);
     private:
-        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
     };
 }

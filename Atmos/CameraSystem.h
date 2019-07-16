@@ -21,7 +21,6 @@ namespace Atmos
         Event<> eventMoved;
     public:
         CameraSystem(ObjectManager& manager);
-        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(CameraSystem);
 
         void Work();
 
@@ -77,10 +76,11 @@ namespace Atmos
 
 namespace Inscription
 {
-    INSCRIPTION_INSCRIPTER_DECLARE(::Atmos::CameraSystem)
+    template<>
+    class Scribe<::Atmos::CameraSystem, BinaryArchive> :
+        public ObjectSystemScribe<::Atmos::CameraSystem, BinaryArchive>
     {
     public:
-        INSCRIPTION_BINARY_INSCRIPTER_DECLARE_TABLE;
-        INSCRIPTION_BINARY_DECLARE_CLASS_NAME_RESOLVER;
+        static void Scriven(ObjectT& object, ArchiveT& archive);
     };
 }

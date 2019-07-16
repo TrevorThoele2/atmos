@@ -16,4 +16,10 @@ namespace Atmos
     public:
         IncorrectRegisteredObjectSystemTypeException();
     };
+
+    class ObjectFactoryDoesntExist : public ObjectManagerException
+    {
+    public:
+        ObjectFactoryDoesntExist();
+    };
 }

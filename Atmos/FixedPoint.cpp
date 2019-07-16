@@ -3,34 +3,37 @@
 
 namespace Atmos
 {
-    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(RadixPoint)
-    {
-        scribe(value);
-    }
-
-    RadixPoint& RadixPoint::operator=(ValueT arg)
+    RadixPoint& RadixPoint::operator=(Value arg)
     {
         value = arg;
         return *this;
     }
 
-    bool RadixPoint::operator==(const RadixPoint &arg) const
+    bool RadixPoint::operator==(const RadixPoint& arg) const
     {
         return value == arg.value;
     }
 
-    bool RadixPoint::operator!=(const RadixPoint &arg) const
+    bool RadixPoint::operator!=(const RadixPoint& arg) const
     {
         return !(*this == arg);
     }
 
-    RadixPoint::operator ValueT() const
+    RadixPoint::operator Value() const
     {
         return value;
     }
 
-    RadixPoint::ValueT RadixPoint::Get() const
+    RadixPoint::Value RadixPoint::Get() const
     {
         return value;
+    }
+}
+
+namespace Inscription
+{
+    void Scribe<::Atmos::RadixPoint, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
+    {
+        archive(object.value);
     }
 }

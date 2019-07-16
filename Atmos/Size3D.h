@@ -40,7 +40,16 @@ namespace Atmos
         bool operator==(const Size3D& arg) const;
         bool operator!=(const Size3D& arg) const;
     private:
-        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
+    };
+}
+
+namespace Inscription
+{
+    template<>
+    class Scribe<::Atmos::Size3D, BinaryArchive> : public CompositeScribe<::Atmos::Size3D, BinaryArchive>
+    {
+    public:
+        static void Scriven(ObjectT& object, ArchiveT& archive);
     };
 }

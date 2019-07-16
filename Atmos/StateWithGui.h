@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include "State.h"
@@ -20,7 +19,7 @@ namespace Atmos
         void Update();
     protected:
         StateWithGui(ObjectManager& manager);
-        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(StateWithGui);
+        StateWithGui(typename const ::Inscription::BinaryTableData<StateWithGui>& data);
     private:
         void InitializeImpl() override final;
         void WorkImpl() override final;
@@ -46,7 +45,8 @@ namespace Atmos
     {}
 
     template<class Gui>
-    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE_TEMPLATE(StateWithGui, StateWithGui<Gui>) : INSCRIPTION_TABLE_GET_BASE(State)
+    StateWithGui<Gui>::StateWithGui(typename const ::Inscription::BinaryTableData<StateWithGui>& data) :
+        State(std::get<0>(data.bases))
     {}
 
     template<class Gui>
@@ -82,4 +82,29 @@ namespace Atmos
     {
         gui.Hide();
     }
+}
+
+namespace Inscription
+{
+    template<class Gui>
+    struct TableData<::Atmos::StateWithGui<Gui>, BinaryArchive> :
+        public ObjectTableDataBase<::Atmos::StateWithGui<Gui>, BinaryArchive>
+    {};
+
+    template<class Gui>
+    class Scribe<::Atmos::StateWithGui<Gui>, BinaryArchive> :
+        public ObjectScribe<::Atmos::StateWithGui<Gui>, BinaryArchive>
+    {
+    private:
+        using BaseT = ObjectScribe<::Atmos::StateWithGui<Gui>, BinaryArchive>;
+    public:
+        using ObjectT = typename BaseT::ObjectT;
+        using ArchiveT = typename BaseT::ArchiveT;
+    public:
+        using DataBase = typename BaseT::DataBase;
+        using TableBase = typename BaseT::TableBase;
+    public:
+        class Table : public TableBase
+        {};
+    };
 }

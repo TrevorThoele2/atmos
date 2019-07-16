@@ -1,4 +1,3 @@
-
 #include "ObjectTypeNameSerializer.h"
 
 #include "Assert.h"
@@ -27,49 +26,55 @@ namespace Atmos
         entries.clear();
     }
 
-    void ObjectTypeNameSerializer::SaveAll(::Inscription::OutputBinaryScribe& scribe)
+    void ObjectTypeNameSerializer::SaveAll(::Inscription::OutputBinaryArchive& archive)
     {
         ::Inscription::ContainerSize size(entries.size());
-        scribe.Save(size);
+        archive(size);
 
         for (auto& loop : entries)
         {
-            scribe.Save(loop.typeName);
-            scribe.Save(loop.id);
+            archive(loop.typeName);
+            archive(loop.id);
         }
     }
 
-    void ObjectTypeNameSerializer::LoadAll(::Inscription::InputBinaryScribe& scribe)
+    void ObjectTypeNameSerializer::LoadAll(::Inscription::InputBinaryArchive& archive)
     {
         ::Inscription::ContainerSize size;
-        scribe.Load(size);
+        archive(size);
 
         while (size-- > 0)
         {
             ObjectTypeName typeName;
-            scribe.Load(typeName);
+            archive(typeName);
 
             ID id;
-            scribe.Load(id);
+            archive(id);
 
             entries.push_back(Entry(typeName, id));
         }
     }
 
-    void ObjectTypeNameSerializer::Save(const ObjectTypeName& typeName, ::Inscription::OutputBinaryScribe& scribe)
+    void ObjectTypeNameSerializer::Save(const ObjectTypeName& typeName, ::Inscription::OutputBinaryArchive& archive)
     {
-        auto found = std::find_if(entries.begin(), entries.end(), [&typeName](const Entry& entry) { return entry.typeName == typeName; });
+        auto found = std::find_if(
+            entries.begin(),
+            entries.end(),
+            [&typeName](const Entry& entry) { return entry.typeName == typeName; });
         ATMOS_ASSERT(found != entries.end());
         
-        scribe.Save(found->id);
+        archive(found->id);
     }
 
-    void ObjectTypeNameSerializer::Load(ObjectTypeName& typeName, ::Inscription::InputBinaryScribe& scribe)
+    void ObjectTypeNameSerializer::Load(ObjectTypeName& typeName, ::Inscription::InputBinaryArchive& archive)
     {
         ID id;
-        scribe.Load(id);
+        archive(id);
 
-        auto found = std::find_if(entries.begin(), entries.end(), [&id](const Entry& entry) { return entry.id == id; });
+        auto found = std::find_if(
+            entries.begin(),
+            entries.end(),
+            [&id](const Entry& entry) { return entry.id == id; });
         ATMOS_ASSERT(found != entries.end());
 
         typeName = found->typeName;

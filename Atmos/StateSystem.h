@@ -21,7 +21,6 @@ namespace Atmos
         Event<State&> eventTopChanged;
     public:
         StateSystem(ObjectManager& manager);
-        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(StateSystem);
 
         void RegisterState(StatePtr&& state);
         void InitializeStates();
@@ -79,10 +78,11 @@ namespace Atmos
 
 namespace Inscription
 {
-    INSCRIPTION_INSCRIPTER_DECLARE(::Atmos::StateSystem)
+    template<>
+    class Scribe<::Atmos::StateSystem, BinaryArchive> :
+        public ObjectSystemScribe<::Atmos::StateSystem, BinaryArchive>
     {
     public:
-        INSCRIPTION_BINARY_INSCRIPTER_DECLARE_TABLE;
-        INSCRIPTION_BINARY_DECLARE_CLASS_NAME_RESOLVER;
+        static void Scriven(ObjectT& object, ArchiveT& archive);
     };
 }

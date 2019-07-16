@@ -12,11 +12,3 @@ namespace Atmos
 
     const ObjectTypeName ObjectTraits<Music>::typeName;
 }
-
-namespace Inscription
-{
-    OBJECT_INSCRIPTER_DEFINE_MEMBERS(::Atmos::Music)
-    {
-
-    }
-}

@@ -7,33 +7,30 @@
 
 #include "Field.h"
 
-namespace Atmos
+namespace Atmos::Entity
 {
-    namespace Entity
+    class ActionSystem : public ObjectSystem
     {
-        class ActionSystem : public ObjectSystem
-        {
-        public:
-            ActionSystem(ObjectManager& manager);
-            INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(ActionSystem);
-        private:
-            void InitializeImpl() override;
-            void WorkImpl() override;
-        private:
-            ObjectBatch<ActionComponent> actionComponents;
-        private:
-            void OnFieldSet(Field& field);
-            void OnFieldUnset(Field* field);
-        };
-    }
+    public:
+        ActionSystem(ObjectManager& manager);
+    private:
+        void InitializeImpl() override;
+        void WorkImpl() override;
+    private:
+        ObjectBatch<ActionComponent> actionComponents;
+    private:
+        void OnFieldSet(Field& field);
+        void OnFieldUnset(Field* field);
+    };
 }
 
 namespace Inscription
 {
-    INSCRIPTION_INSCRIPTER_DECLARE(::Atmos::Entity::ActionSystem)
+    template<>
+    class Scribe<::Atmos::Entity::ActionSystem, BinaryArchive> :
+        public ObjectSystemScribe<::Atmos::Entity::ActionSystem, BinaryArchive>
     {
     public:
-        INSCRIPTION_BINARY_INSCRIPTER_DECLARE_TABLE;
-        INSCRIPTION_BINARY_DECLARE_CLASS_NAME_RESOLVER;
+        static void Scriven(ObjectT& object, ArchiveT& archive);
     };
 }

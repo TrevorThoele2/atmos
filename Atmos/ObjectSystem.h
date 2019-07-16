@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ObjectSystemTraits.h"
+#include "ObjectSystemScribe.h"
 
 #include "Serialization.h"
 
@@ -12,7 +13,6 @@ namespace Atmos
     {
     public:
         ObjectSystem(ObjectManager& manager);
-        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(ObjectSystem);
         virtual ~ObjectSystem() = 0;
 
         void Initialize();
@@ -44,9 +44,10 @@ namespace Atmos
 
 namespace Inscription
 {
-    INSCRIPTION_INSCRIPTER_DECLARE(::Atmos::ObjectSystem)
+    template<>
+    class Scribe<::Atmos::ObjectSystem, BinaryArchive> : public CompositeScribe<::Atmos::ObjectSystem, BinaryArchive>
     {
     public:
-        INSCRIPTION_BINARY_INSCRIPTER_DECLARE_TABLE;
+        static void Scriven(ObjectT& object, ArchiveT& archive);
     };
 }

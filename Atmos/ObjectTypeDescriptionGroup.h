@@ -29,7 +29,17 @@ namespace Atmos
     private:
         List list;
     private:
-        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
+    };
+}
+
+namespace Inscription
+{
+    template<>
+    class Scribe<::Atmos::ObjectTypeDescriptionGroup, BinaryArchive> :
+        public CompositeScribe<::Atmos::ObjectTypeDescriptionGroup, BinaryArchive>
+    {
+    public:
+        static void Scriven(ObjectT& object, ArchiveT& archive);
     };
 }

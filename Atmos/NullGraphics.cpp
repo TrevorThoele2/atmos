@@ -1,7 +1,6 @@
-
 #include "NullGraphics.h"
 
-namespace Atmos
+namespace Atmos::Render
 {
     class ImageAssetDataImplementation : public ImageAssetData
     {
@@ -45,7 +44,7 @@ namespace Atmos
         {}
     };
 
-    class RenderSurfaceData : public RenderSurface::Data
+    class RenderSurfaceData : public Surface::Data
     {
     public:
         RenderSurfaceData() = default;
@@ -62,9 +61,9 @@ namespace Atmos
         void Release() override
         {}
 
-        RenderSurface::Size GetSize() override
+        Surface::Size GetSize() override
         {
-            return RenderSurface::Size(0, 0);
+            return Surface::Size(0, 0);
         }
     };
 
@@ -167,9 +166,9 @@ namespace Atmos
         return std::unique_ptr<ShaderAssetData>(new ShaderAssetDataImplementation());
     }
 
-    RenderSurface NullGraphicsManager::CreateRenderSurfaceImpl(void* window)
+    Surface NullGraphicsManager::CreateRenderSurfaceImpl(void* window)
     {
-        return RenderSurface(RenderSurface::DataPtr(new RenderSurfaceData()));
+        return Surface(Surface::DataPtr(new RenderSurfaceData()));
     }
 
     Canvas NullGraphicsManager::CreateCanvasImpl(const ScreenDimensions& dimensions)
@@ -190,7 +189,7 @@ namespace Atmos
     void NullGraphicsManager::ResizeCanvasImpl(Canvas& canvas, const ScreenDimensions& dimensions)
     {}
 
-    void NullGraphicsManager::SetRenderTargetImpl(RenderSurface& set)
+    void NullGraphicsManager::SetRenderTargetImpl(Surface& set)
     {}
 
     void NullGraphicsManager::SetRenderTargetToMainImpl()
@@ -217,6 +216,6 @@ namespace Atmos
     void NullGraphicsManager::RenderUnknownFragmentImpl(RenderFragmentReference fragment, float X, float Y)
     {}
 
-    void NullGraphicsManager::RenderLineImpl(const LineRender& line)
+    void NullGraphicsManager::RenderLineImpl(const Line& line)
     {}
 }

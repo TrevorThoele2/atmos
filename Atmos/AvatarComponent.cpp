@@ -2,30 +2,23 @@
 #include "AvatarComponent.h"
 #include <Inscription\Scribe.h>
 
-namespace Atmos
+namespace Atmos::Entity
 {
-    namespace Entity
+    AvatarComponent::AvatarComponent(ObjectManager& manager, EntityReference owner) :
+        Component(manager, owner), currency(0)
+    {}
+
+    AvatarComponent::AvatarComponent(const ::Inscription::BinaryTableData<AvatarComponent>& data) :
+        Component(std::get<0>(data.bases))
+    {}
+
+    ObjectTypeDescription AvatarComponent::TypeDescription() const
     {
-        AvatarComponent::AvatarComponent(ObjectManager& manager, EntityReference owner) :
-            Component(manager, owner), currency(0)
-        {}
-
-        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(AvatarComponent) : INSCRIPTION_TABLE_GET_BASE(Component)
-        {}
-
-        ObjectTypeDescription AvatarComponent::TypeDescription() const
-        {
-            return ObjectTraits<AvatarComponent>::TypeDescription();
-        }
+        return ObjectTraits<AvatarComponent>::TypeDescription();
     }
-
-    const ObjectTypeName ObjectTraits<Entity::AvatarComponent>::typeName = "AvatarComponent";
 }
 
-namespace Inscription
+namespace Atmos
 {
-    OBJECT_INSCRIPTER_DEFINE_MEMBERS(::Atmos::Entity::AvatarComponent)
-    {
-        INSCRIPTION_TABLE_ADD(currency);
-    }
+    const ObjectTypeName ObjectTraits<Entity::AvatarComponent>::typeName = "AvatarComponent";
 }

@@ -174,9 +174,12 @@ namespace Atmos
         return Direction::Value::UP;
 #undef CAST_PIECE
     }
+}
 
-    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(Direction)
+namespace Inscription
+{
+    void Scribe<::Atmos::Direction, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
     {
-        scribe(value);
+        archive(object.value);
     }
 }

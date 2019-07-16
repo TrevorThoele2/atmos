@@ -1,88 +1,88 @@
-
 #include "SenseComponent.h"
 
-#include <Inscription/Vector.h>
+#include <Inscription/VectorScribe.h>
 
-namespace Atmos
+namespace Atmos::Entity
 {
-    namespace Entity
+    SenseComponent::SenseComponent(ObjectManager& manager, EntityReference reference) :
+        Component(manager, reference), enabled(true)
+    {}
+
+    SenseComponent::SenseComponent(const ::Inscription::BinaryTableData<SenseComponent>& data) :
+        Component(std::get<0>(data.bases))
+    {}
+
+    void SenseComponent::Enable(bool enable)
     {
-        SenseComponent::SenseComponent(ObjectManager& manager, EntityReference reference) :
-            Component(manager, reference), enabled(true)
-        {}
+        enabled = enable;
+        SyncObjects();
+    }
 
-        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(SenseComponent) : INSCRIPTION_TABLE_GET_BASE(Component)
-        {}
+    void SenseComponent::Disable()
+    {
+        Enable(false);
+    }
 
-        void SenseComponent::Enable(bool enable)
+    bool SenseComponent::IsEnabled() const
+    {
+        return enabled;
+    }
+
+    void SenseComponent::SyncObjects()
+    {
+        if (enabled)
         {
-            enabled = enable;
-            SyncObjects();
-        }
-
-        void SenseComponent::Disable()
-        {
-            Enable(false);
-        }
-
-        bool SenseComponent::IsEnabled() const
-        {
-            return enabled;
-        }
-
-        void SenseComponent::SyncObjects()
-        {
-            if (enabled)
+            for (auto& loop : sprites)
             {
-                for (auto& loop : sprites)
-                {
-                    //GetCurrentRenderFragments()->Add(*loop.source);
-                    loop.source->enabled = true;
-                }
-
-                for (auto& loop : sounds)
-                {
-                    loop.source->enabled = true;
-                }
+                //GetCurrentRenderFragments()->Add(*loop.source);
+                loop.source->enabled = true;
             }
-            else
-            {
-                for (auto& loop : sprites)
-                {
-                    //GetCurrentRenderFragments()->Remove(*loop.source);
-                    loop.source->enabled = false;
-                }
 
-                for (auto& loop : sounds)
-                {
-                    loop.source->enabled = false;
-                }
+            for (auto& loop : sounds)
+            {
+                loop.source->enabled = true;
             }
         }
-
-        ObjectTypeDescription SenseComponent::TypeDescription() const
+        else
         {
-            return ObjectTraits<SenseComponent>::TypeDescription();
+            for (auto& loop : sprites)
+            {
+                //GetCurrentRenderFragments()->Remove(*loop.source);
+                loop.source->enabled = false;
+            }
+
+            for (auto& loop : sounds)
+            {
+                loop.source->enabled = false;
+            }
         }
     }
 
+    ObjectTypeDescription SenseComponent::TypeDescription() const
+    {
+        return ObjectTraits<SenseComponent>::TypeDescription();
+    }
+}
+
+namespace Atmos
+{
     const ObjectTypeName ObjectTraits<Entity::SenseComponent>::typeName = "SenseComponent";
 }
 
 namespace Inscription
 {
-    OBJECT_INSCRIPTER_DEFINE_MEMBERS(::Atmos::Entity::SenseComponent)
+    Scribe<::Atmos::Entity::SenseComponent, BinaryArchive>::Table::Table()
     {
-        INSCRIPTION_TABLE_ADD(position);
-        INSCRIPTION_TABLE_ADD(sprites);
-        INSCRIPTION_TABLE_ADD(sounds);
-        INSCRIPTION_TABLE_ADD(enabled);
+        MergeDataEntries({
+            DataEntry::Auto(&ObjectT::position, &DataT::position),
+            DataEntry::Auto(&ObjectT::sprites, &DataT::sprites),
+            DataEntry::Auto(&ObjectT::sounds, &DataT::sounds),
+            DataEntry::Auto(&ObjectT::enabled, &DataT::enabled) });
     }
 
-    INSCRIPTION_BINARY_INSCRIPTER_DEFINE_SERIALIZE_FUNCTION(::Atmos::Entity::SenseComponent)
+    void Scribe<::Atmos::Entity::SenseComponent, BinaryArchive>::Table::ObjectScrivenImplementation(ObjectT& object, ArchiveT& archive)
     {
-        INSCRIPTION_INSCRIPTER_CALL_BASE_SERIALIZE_FUNCTION;
-        if (scribe.IsInput())
-            obj.SyncObjects();
+        if (archive.IsInput())
+            object.SyncObjects();
     }
 }

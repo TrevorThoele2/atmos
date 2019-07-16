@@ -11,88 +11,81 @@
 #include "AngelScriptGridPosition.h"
 #include "AngelScriptEvent.h"
 
-namespace Atmos
+namespace Atmos::Scripting
 {
-    namespace Scripting
+    class System::Interface
     {
-        class System::Interface
-        {
-        public:
-            asIScriptEngine* engine;
-        public:
-            Interface(System& owner, ObjectManager& objectManager);
-        private:
-            UserData userData;
-            void SetAndPushUserData(System& owner, ObjectManager& objectManager);
-        private:
-            void MessageCallback(const asSMessageInfo* msg, void* param);
-        private:
-            ObjectManager* objectManager;
-            LoggingSystem* FindLoggingSystem();
-        };
+    public:
+        asIScriptEngine* engine;
+    public:
+        Interface(System& owner, ObjectManager& objectManager);
+    private:
+        UserData userData;
+        void SetAndPushUserData(System& owner, ObjectManager& objectManager);
+    private:
+        void MessageCallback(const asSMessageInfo* msg, void* param);
+    private:
+        ObjectManager* objectManager;
+        LoggingSystem* FindLoggingSystem();
+    };
 
-        System::Interface::Interface(System& owner, ObjectManager& objectManager) : objectManager(&objectManager)
-        {
-            engine = asCreateScriptEngine();
-            if (!engine)
-                FindLoggingSystem()->Log("Creation of the scripting engine has failed.",
-                    LogType::ERROR_SEVERE);
-            engine->SetMessageCallback(asMETHOD(Interface, MessageCallback), 0, asCALL_THISCALL);
+    System::Interface::Interface(System& owner, ObjectManager& objectManager) : objectManager(&objectManager)
+    {
+        engine = asCreateScriptEngine();
+        if (!engine)
+            FindLoggingSystem()->Log("Creation of the scripting engine has failed.",
+                LogType::ERROR_SEVERE);
+        engine->SetMessageCallback(asMETHOD(Interface, MessageCallback), 0, asCALL_THISCALL);
 
-            SetAndPushUserData(owner, objectManager);
+        SetAndPushUserData(owner, objectManager);
 
-            GridPosition::RegisterToAngelScript(engine);
-            Tile::RegisterToAngelScript(engine);
-            Event::RegisterToAngelScript(engine);
-        }
+        GridPosition::RegisterToAngelScript(engine);
+        Tile::RegisterToAngelScript(engine);
+        Event::RegisterToAngelScript(engine);
+    }
 
-        void System::Interface::SetAndPushUserData(System& owner, ObjectManager& objectManager)
-        {
-            userData.objectManager = &objectManager;
-            userData.system = &owner;
+    void System::Interface::SetAndPushUserData(System& owner, ObjectManager& objectManager)
+    {
+        userData.objectManager = &objectManager;
+        userData.system = &owner;
 
-            engine->SetUserData(&userData);
-        }
+        engine->SetUserData(&userData);
+    }
 
-        void System::Interface::MessageCallback(const asSMessageInfo* msg, void* param)
-        {
-            LogType logType = LogType::ERROR_SEVERE;
-            if (msg->type == asMSGTYPE_WARNING)
-                logType = LogType::WARNING;
-            else if (msg->type == asMSGTYPE_INFORMATION)
-                logType = LogType::INFORMATION;
+    void System::Interface::MessageCallback(const asSMessageInfo* msg, void* param)
+    {
+        LogType logType = LogType::ERROR_SEVERE;
+        if (msg->type == asMSGTYPE_WARNING)
+            logType = LogType::WARNING;
+        else if (msg->type == asMSGTYPE_INFORMATION)
+            logType = LogType::INFORMATION;
 
-            FindLoggingSystem()->Log(msg->message, logType,
-                LogNameValueVector{
-                    NameValuePair("Section", String(msg->section)),
-                    NameValuePair("Row", msg->row),
-                    NameValuePair("Column", msg->col),
-                });
-        }
+        FindLoggingSystem()->Log(msg->message, logType,
+            LogNameValueVector{
+                NameValuePair("Section", String(msg->section)),
+                NameValuePair("Row", msg->row),
+                NameValuePair("Column", msg->col),
+            });
+    }
 
-        LoggingSystem* System::Interface::FindLoggingSystem()
-        {
-            return objectManager->FindSystem<LoggingSystem>();
-        }
+    LoggingSystem* System::Interface::FindLoggingSystem()
+    {
+        return objectManager->FindSystem<LoggingSystem>();
+    }
 
-        System::System(ObjectManager& manager) : ObjectSystem(manager), interface(std::make_unique<Interface>(*this, manager))
-        {}
+    System::System(ObjectManager& manager) : ObjectSystem(manager), interface(std::make_unique<Interface>(*this, manager))
+    {}
 
-        asIScriptEngine* System::Engine()
-        {
-            return interface->engine;
-        }
+    asIScriptEngine* System::Engine()
+    {
+        return interface->engine;
     }
 }
 
 namespace Inscription
 {
-    INSCRIPTION_BINARY_INSCRIPTER_DEFINE_TABLE(::Atmos::Scripting::System)
+    void Scribe<::Atmos::Scripting::System, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
     {
-        INSCRIPTION_BINARY_INSCRIPTER_CREATE_TABLE;
-
-        INSCRIPTION_TABLE_ADD_BASE(::Atmos::ObjectSystem);
-
-        INSCRIPTION_INSCRIPTER_RETURN_TABLE;
+        BaseScriven<::Atmos::ObjectSystem>(object, archive);
     }
 }

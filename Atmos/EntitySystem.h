@@ -9,43 +9,40 @@
 #include "EntityComponent.h"
 #include "GeneralComponent.h"
 
-namespace Atmos
+namespace Atmos::Entity
 {
-    namespace Entity
+    class System : public ObjectSystem
     {
-        class System : public ObjectSystem
-        {
-        public:
-            typedef TypedObjectReference<Entity> EntityReference;
-        public:
-            System(ObjectManager& manager);
-            INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(System);
+    public:
+        typedef TypedObjectReference<Entity> EntityReference;
+    public:
+        System(ObjectManager& manager);
 
-            EntityReference EntityWithName(const Name& name) const;
+        EntityReference EntityWithName(const Name& name) const;
 
-            ObjectBatchSizeT Size() const;
-        private:
-            void InitializeImpl() override;
-        private:
-            ObjectBatch<Entity> entityBatch;
-        private:
-            ObjectBatch<GeneralComponent> generalBatch;
-        private:
-            typedef TypedObjectReference<Component> EntityComponentReference;
-            ObjectBatch<Component> componentBatch;
+        ObjectBatchSizeT Size() const;
+    private:
+        void InitializeImpl() override;
+    private:
+        ObjectBatch<Entity> entityBatch;
+    private:
+        ObjectBatch<GeneralComponent> generalBatch;
+    private:
+        typedef TypedObjectReference<Component> EntityComponentReference;
+        ObjectBatch<Component> componentBatch;
 
-            void OnEntityComponentCreated(EntityComponentReference created);
-            void OnEntityComponentDestroyed(EntityComponentReference destroyed);
-        };
-    }
+        void OnEntityComponentCreated(EntityComponentReference created);
+        void OnEntityComponentDestroyed(EntityComponentReference destroyed);
+    };
 }
 
 namespace Inscription
 {
-    INSCRIPTION_INSCRIPTER_DECLARE(::Atmos::Entity::System)
+    template<>
+    class Scribe<::Atmos::Entity::System, BinaryArchive> :
+        public ObjectSystemScribe<::Atmos::Entity::System, BinaryArchive>
     {
     public:
-        INSCRIPTION_BINARY_INSCRIPTER_DECLARE_TABLE;
-        INSCRIPTION_BINARY_DECLARE_CLASS_NAME_RESOLVER;
+        static void Scriven(ObjectT& object, ArchiveT& archive);
     };
 }

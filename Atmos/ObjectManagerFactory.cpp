@@ -1,17 +1,19 @@
-
 #include "ObjectManagerFactory.h"
 
 namespace Atmos
 {
-    ObjectManager ObjectManagerFactory::Produce() const
-    {
-        ObjectManager objectManager;
-        for (auto& loop : typeRegistratorList)
-            loop->Register(objectManager);
-        objectManager.Initialize();
-        return objectManager;
-    }
+    ObjectManagerFactory::ObjectManagerFactory(
+        TypeRegistration::Group& typeGroup,
+        TypeRegistration::Group& infrastructureTypeGroup) :
 
-    ObjectManagerFactory::TypeRegistrator::~TypeRegistrator()
+        typeGroup(&typeGroup), infrastructureTypeGroup(&infrastructureTypeGroup)
     {}
+
+    ObjectManager ObjectManagerFactory::Create()
+    {
+        ObjectManager created;
+        typeGroup->PushTo(created);
+        infrastructureTypeGroup->PushTo(created);
+        return created;
+    }
 }

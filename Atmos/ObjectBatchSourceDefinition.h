@@ -12,13 +12,6 @@ namespace Atmos
     }
 
     template<class T>
-    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE_TEMPLATE(ObjectBatchSource, ObjectBatchSource<T>) : INSCRIPTION_TABLE_GET_MEM(manager)
-    {
-        SetupAssociatedDescriptionGroup();
-        Synchronize();
-    }
-
-    template<class T>
     ObjectBatchSource<T>::~ObjectBatchSource()
     {
         onInvalidated();

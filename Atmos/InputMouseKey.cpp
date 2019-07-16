@@ -3,55 +3,52 @@
 
 #include "InputManager.h"
 
-namespace Atmos
+namespace Atmos::Input
 {
-    namespace Input
+    MouseKey::MouseKey(MouseKey&& arg) : Signal(std::move(arg))
+    {}
+
+    MouseKey::MouseKey(
+        Manager& owner,
+        ObjectManager& objectManager,
+        DataPtr&& data,
+        MouseKeyID id,
+        ::Agui::Input::Signal* guiSignal,
+        const String& displayName) :
+
+        Signal(owner, objectManager, std::move(data), id, guiSignal, displayName, false)
+    {}
+
+    void MouseKey::DoActiveImpl()
     {
-        MouseKey::MouseKey(MouseKey&& arg) : Signal(std::move(arg))
-        {}
+        auto& mousePositionDelta = Owner()->GetMousePositionDelta();
+        Owner()->eventMouseKeys.active(*this);
+        if (mousePositionDelta.HasMoved())
+            Owner()->eventMouseClickDragged(mousePositionDelta);
+    }
 
-        MouseKey::MouseKey(
-            Manager& owner,
-            ObjectManager& objectManager,
-            DataPtr&& data,
-            MouseKeyID id,
-            ::Agui::Input::Signal* guiSignal,
-            const String& displayName) :
+    void MouseKey::DoUpImpl()
+    {
+        Owner()->eventMouseKeys.pressed(*this);
+    }
 
-            Signal(owner, objectManager, std::move(data), id, guiSignal, displayName, false)
-        {}
+    void MouseKey::DoDownImpl()
+    {
+        Owner()->eventMouseKeys.depressed(*this);
+    }
 
-        void MouseKey::DoActiveImpl()
-        {
-            auto& mousePositionDelta = Owner()->GetMousePositionDelta();
-            Owner()->eventMouseKeys.active(*this);
-            if (mousePositionDelta.HasMoved())
-                Owner()->eventMouseClickDragged(mousePositionDelta);
-        }
+    void MouseKey::DoDoubleDownImpl()
+    {
+        Owner()->eventMouseKeys.doublePressed(*this);
+    }
 
-        void MouseKey::DoUpImpl()
-        {
-            Owner()->eventMouseKeys.pressed(*this);
-        }
+    bool MouseKey::IsKey() const
+    {
+        return false;
+    }
 
-        void MouseKey::DoDownImpl()
-        {
-            Owner()->eventMouseKeys.depressed(*this);
-        }
-
-        void MouseKey::DoDoubleDownImpl()
-        {
-            Owner()->eventMouseKeys.doublePressed(*this);
-        }
-
-        bool MouseKey::IsKey() const
-        {
-            return false;
-        }
-
-        bool MouseKey::IsMouseKey() const
-        {
-            return true;
-        }
+    bool MouseKey::IsMouseKey() const
+    {
+        return true;
     }
 }

@@ -1,4 +1,3 @@
-
 #include "WorldManager.h"
 
 #include "FileSystem.h"
@@ -11,20 +10,17 @@
 
 #include "StringUtility.h"
 
-#include "OutputWorldScribe.h"
-#include "InputWorldScribe.h"
-#include "OutputStasisScribe.h"
-#include "InputStasisScribe.h"
+#include "OutputWorldArchive.h"
+#include "InputWorldArchive.h"
+#include "OutputStasisArchive.h"
+#include "InputStasisArchive.h"
 
 namespace Atmos
 {
     const char* autosaveName = "Autosave.stasis";
 
-    WorldManager::WorldManager(ObjectManager& globalObjectManager, ObjectRegistration& objectRegistration) :
-        globalObjectManager(&globalObjectManager), objectRegistration(&objectRegistration)
-    {}
-
-    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(WorldManager)
+    WorldManager::WorldManager(ObjectManager& globalObjectManager, ObjectManagerFactory& objectManagerFactory) :
+        globalObjectManager(&globalObjectManager), objectManagerFactory(&objectManagerFactory)
     {}
 
     void WorldManager::Initialize()
@@ -65,26 +61,26 @@ namespace Atmos
         {
             bool isWorld = !stasisName.IsValid();
 
-            std::unique_ptr<InputScribeBase> inputScribe;
+            std::unique_ptr<InputArchiveBase> inputArchive;
             String noLoadError;
             String noLoadErrorFileParamName;
             String noLoadErrorFileParam;
             if (isWorld)
             {
-                inputScribe.reset(new InputWorldScribe(worldPath, *globalObjectManager));
+                inputArchive.reset(new InputWorldArchive(worldPath, *globalObjectManager));
                 noLoadError = "The world file was unloadable.";
                 noLoadErrorFileParamName = "World File Path";
                 noLoadErrorFileParam = worldPath.GetValue();
             }
             else
             {
-                inputScribe.reset(new InputStasisScribe(CreateStasisFilePath(stasisName.Get()), worldPath, *globalObjectManager));
+                inputArchive.reset(new InputStasisArchive(CreateStasisFilePath(stasisName.Get()), worldPath, *globalObjectManager));
                 noLoadError = "The stasis file's world is not the same as the provided world.";
                 noLoadErrorFileParamName = "Stasis File Name";
                 noLoadErrorFileParam = stasisName.Get().GetValue();
             }
 
-            if (!inputScribe->WillLoad())
+            if (!inputArchive->WillLoad())
             {
                 FindLoggingSystem()->Log(std::move(noLoadError),
                     LogType::ERROR_SEVERE,
@@ -96,18 +92,18 @@ namespace Atmos
 
                 // We are going to load simultaneously while saving
                 if (prevField)
-                    inputScribe->Load(InputScribeBase::LOAD_FIELD_PLACEHOLDERS);
+                    inputArchive->Load(InputArchiveBase::LOAD_FIELD_PLACEHOLDERS);
                 else
-                    inputScribe->Load();
+                    inputArchive->Load();
 
                 // Retrieve the world start and check if to use it
                 if (useWorldStart)
-                    useFieldID = inputScribe->worldStart.Get().fieldID;
+                    useFieldID = inputArchive->worldStart.Get().fieldID;
 
                 // Retrieve the new field IDs
                 {
                     fieldIDs.clear();
-                    auto idVector = inputScribe->AllFieldIDs();
+                    auto idVector = inputArchive->AllFieldIDs();
                     for (auto& loop : idVector)
                         fieldIDs.emplace(loop);
                 }
@@ -116,7 +112,7 @@ namespace Atmos
                 eventFinalizeField(prevField);
 
                 // Create the new field
-                auto newField = inputScribe->ExtractFieldAsHeap(useFieldID);
+                auto newField = inputArchive->ExtractFieldAsHeap(useFieldID);
                 ATMOS_ASSERT_MESSAGE(newField, "The newly created field must exist.");
 
                 oldField.reset(field.release());
@@ -135,9 +131,9 @@ namespace Atmos
 
                     // Create the out scribe (always outputting into a stasis)
                     {
-                        OutputStasisScribe outputScribe(tempPath, worldPath.GetFileName(), inputScribe->FieldCount());
+                        OutputStasisArchive outputScribe(tempPath, worldPath.GetFileName(), inputArchive->FieldCount());
 
-                        inputScribe->CopyTrackersTo(outputScribe);
+                        inputArchive->CopyTrackersTo(outputScribe);
 
                         // Set the world start
                         worldStart.fieldID = useFieldID;
@@ -151,11 +147,11 @@ namespace Atmos
                             else if (loop == newField->id)
                                 outputScribe.Save(*newField);
                             else
-                                outputScribe.Save(loop, inputScribe->ExtractFieldAsBuffer(loop));
+                                outputScribe.Save(loop, inputArchive->ExtractFieldAsBuffer(loop));
                         }
                     }
                     // OutScribe has been destroyed
-                    inputScribe.reset();
+                    inputArchive.reset();
                     // InScribe has been destroyed
 
                     FilePath newPath(CreateStasisFilePath(autosaveName));
@@ -336,10 +332,10 @@ namespace Atmos
 
             // This scope is needed for the scribes to deconstruct themselves
             {
-                OutputStasisScribe outputScribe(temporaryPath, worldPath.GetFileName(), 0, OutputStasisScribe::OpenMode::NONE);
+                OutputStasisArchive outputScribe(temporaryPath, worldPath.GetFileName(), 0, OutputStasisArchive::OpenMode::NONE);
 
-                InputStasisScribe inputScribe(CreateStasisFilePath(name), worldPath, *globalObjectManager);
-                inputScribe.Load(InputStasisScribe::LOAD_FIELD_PLACEHOLDERS);
+                InputStasisArchive inputScribe(CreateStasisFilePath(name), worldPath, *globalObjectManager);
+                inputScribe.Load(InputStasisArchive::LOAD_FIELD_PLACEHOLDERS);
                 auto fieldIds = inputScribe.AllFieldIDs();
 
                 outputScribe.OverwriteFieldCount(inputScribe.FieldCount());
@@ -372,21 +368,21 @@ namespace Atmos
             // If the stasis name is invalid or not the same as the one we're using, that means we're loading from a world
             // So we must use the world and overwrite this field
             // We use two scribes - one to load in from the world, and the other to output at the same time
-            OutputStasisScribe outputScribe(CreateStasisFilePath(name), worldPath.GetFileName(), 0);
+            OutputStasisArchive outputScribe(CreateStasisFilePath(name), worldPath.GetFileName(), 0);
 
-            InputWorldScribe inputScribe(worldPath, *globalObjectManager);
+            InputWorldArchive inputArchive(worldPath, *globalObjectManager);
             if (currentField)
-                inputScribe.Load(InputWorldScribe::LOAD_FIELD_PLACEHOLDERS);
+                inputArchive.Load(InputWorldArchive::LOAD_FIELD_PLACEHOLDERS);
             else
-                inputScribe.Load();
+                inputArchive.Load();
 
-            auto ids = inputScribe.AllFieldIDs();
+            auto ids = inputArchive.AllFieldIDs();
 
             outputScribe.OverwriteFieldCount(ids.size());
-            inputScribe.CopyTrackersTo(outputScribe);
+            inputArchive.CopyTrackersTo(outputScribe);
             // Set the world start for this stasis
             {
-                FieldID useID = (currentField) ? currentField->id.Get() : inputScribe.worldStart.Get().fieldID.Get();
+                FieldID useID = (currentField) ? currentField->id.Get() : inputArchive.worldStart.Get().fieldID.Get();
                 outputScribe.worldStart = WorldStart(useID);
             }
 
@@ -396,7 +392,7 @@ namespace Atmos
                 if (currentField && loop == currentField->id)
                     outputScribe.Save(*currentField);
                 else
-                    outputScribe.Save(loop, inputScribe.ExtractFieldAsBuffer(loop));
+                    outputScribe.Save(loop, inputArchive.ExtractFieldAsBuffer(loop));
             }
         }
 
@@ -426,11 +422,6 @@ namespace Atmos
 
 namespace Inscription
 {
-    INSCRIPTION_BINARY_INSCRIPTER_DEFINE_TABLE(::Atmos::WorldManager)
-    {
-        INSCRIPTION_BINARY_INSCRIPTER_CREATE_TABLE;
-        INSCRIPTION_INSCRIPTER_RETURN_TABLE;
-    }
-
-    INSCRIPTION_BINARY_DEFINE_SIMPLE_CLASS_NAME_RESOLVER(::Atmos::WorldManager, "WorldManager");
+    void Scribe<::Atmos::WorldManager, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
+    {}
 }

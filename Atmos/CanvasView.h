@@ -2,12 +2,13 @@
 
 #include "RenderFragment.h"
 
-#include "ObjectSerialization.h"
+#include "ObjectScribe.h"
 
-namespace Atmos
+namespace Atmos::Render
 {
     class Canvas;
-    class CanvasView : public RenderFragment
+
+    class CanvasView : public Fragment
     {
     public:
         typedef StoredProperty<const Canvas*> CanvasProperty;
@@ -15,7 +16,7 @@ namespace Atmos
     public:
         CanvasView(ObjectManager& manager, const Canvas* source);
         CanvasView(const CanvasView& arg) = default;
-        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(CanvasView);
+        CanvasView(const ::Inscription::BinaryTableData<CanvasView>& data);
         CanvasView& operator=(const CanvasView& arg) = default;
 
         ObjectTypeDescription TypeDescription() const override;
@@ -25,15 +26,23 @@ namespace Atmos
     struct ObjectTraits<CanvasView> : ObjectTraitsBase<CanvasView>
     {
         static const ObjectTypeName typeName;
-        static constexpr ObjectTypeList<RenderFragment> bases = {};
+        static constexpr ObjectTypeList<Fragment> bases = {};
     };
 }
 
 namespace Inscription
 {
-    DECLARE_OBJECT_INSCRIPTER(::Atmos::CanvasView)
+    template<>
+    struct TableData<::Atmos::CanvasView, BinaryArchive> :
+        public ObjectTableDataBase<::Atmos::CanvasView, BinaryArchive>
+    {};
+
+    template<>
+    class Scribe<::Atmos::CanvasView, BinaryArchive> :
+        public ObjectScribe<::Atmos::CanvasView, BinaryArchive>
     {
     public:
-        OBJECT_INSCRIPTER_DECLARE_MEMBERS;
+        class Table : public TableBase
+        {};
     };
 }

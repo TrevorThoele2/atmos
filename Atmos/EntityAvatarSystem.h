@@ -6,41 +6,38 @@
 #include "AvatarComponent.h"
 #include "Entity.h"
 
-namespace Atmos
+namespace Atmos::Entity
 {
-    namespace Entity
+    class AvatarSystem : public ObjectSystem
     {
-        class AvatarSystem : public ObjectSystem
-        {
-        private:
-            typedef TypedObjectReference<Entity> EntityReference;
-            typedef TypedObjectReference<AvatarComponent> AvatarComponentReference;
-        public:
-            AvatarSystem(ObjectManager& manager);
-            INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(AvatarSystem);
+    private:
+        typedef TypedObjectReference<Entity> EntityReference;
+        typedef TypedObjectReference<AvatarComponent> AvatarComponentReference;
+    public:
+        AvatarSystem(ObjectManager& manager);
 
-            void Set(EntityReference set);
+        void Set(EntityReference set);
 
-            EntityReference Avatar();
-            AvatarComponentReference Component();
-        private:
-            void InitializeImpl() override;
-        private:
-            EntityReference avatar;
-        private:
-            ObjectBatch<AvatarComponent> avatarBatch;
-            void OnAvatarComponentCreated(AvatarComponentReference reference);
-            void OnAvatarComponentDestroyed(AvatarComponentReference reference);
-        };
-    }
+        EntityReference Avatar();
+        AvatarComponentReference Component();
+    private:
+        void InitializeImpl() override;
+    private:
+        EntityReference avatar;
+    private:
+        ObjectBatch<AvatarComponent> avatarBatch;
+        void OnAvatarComponentCreated(AvatarComponentReference reference);
+        void OnAvatarComponentDestroyed(AvatarComponentReference reference);
+    };
 }
 
 namespace Inscription
 {
-    INSCRIPTION_INSCRIPTER_DECLARE(::Atmos::Entity::AvatarSystem)
+    template<>
+    class Scribe<::Atmos::Entity::AvatarSystem, BinaryArchive> :
+        public ObjectSystemScribe<::Atmos::Entity::AvatarSystem, BinaryArchive>
     {
     public:
-        INSCRIPTION_BINARY_INSCRIPTER_DECLARE_TABLE;
-        INSCRIPTION_BINARY_DECLARE_CLASS_NAME_RESOLVER;
+        static void Scriven(ObjectT& object, ArchiveT& archive);
     };
 }

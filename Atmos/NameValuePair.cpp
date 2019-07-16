@@ -1,4 +1,3 @@
-
 #include "NameValuePair.h"
 
 #include "ChromaVariant.h"
@@ -43,10 +42,13 @@ namespace Atmos
     {
         return !(*this == arg);
     }
+}
 
-    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(NameValuePair)
+namespace Inscription
+{
+    void Scribe<::Atmos::NameValuePair, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
     {
-        scribe(name);
-        scribe(value);
+        archive(object.name);
+        archive(object.value);
     }
 }

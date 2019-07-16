@@ -1,14 +1,11 @@
 #pragma once
 
-namespace Atmos
+namespace Atmos::Input
 {
-    namespace Input
+    enum class MouseKeyID
     {
-        enum class MouseKeyID
-        {
-            NONE,
-            LEFT,
-            RIGHT
-        };
-    }
+        NONE,
+        LEFT,
+        RIGHT
+    };
 }

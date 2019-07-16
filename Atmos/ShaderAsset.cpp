@@ -11,7 +11,8 @@ namespace Atmos
     ShaderAsset::ShaderAsset(const ShaderAsset& arg) : FileAsset(arg), data((arg.data) ? arg.data->Clone() : nullptr)
     {}
 
-    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(ShaderAsset) : INSCRIPTION_TABLE_GET_BASE(FileAsset)
+    ShaderAsset::ShaderAsset(const ::Inscription::BinaryTableData<ShaderAsset>& data) :
+        FileAsset(std::get<0>(data.bases))
     {}
 
     ShaderAsset::DataT* ShaderAsset::Data()
@@ -33,12 +34,4 @@ namespace Atmos
 
     ShaderAssetData::~ShaderAssetData()
     {}
-}
-
-namespace Inscription
-{
-    OBJECT_INSCRIPTER_DEFINE_MEMBERS(::Atmos::ShaderAsset)
-    {
-
-    }
 }

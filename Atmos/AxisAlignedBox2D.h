@@ -50,7 +50,16 @@ namespace Atmos
         Coordinate MakeMinusCoordinate(Position2D::Value centerValue, Size2D::Value sizeValue) const;
         Coordinate MakePlusCoordinate(Position2D::Value centerValue, Size2D::Value sizeValue) const;
     private:
-        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
+    };
+}
+
+namespace Inscription
+{
+    template<>
+    class Scribe<::Atmos::AxisAlignedBox2D, BinaryArchive> : public CompositeScribe<::Atmos::AxisAlignedBox2D, BinaryArchive>
+    {
+    public:
+        static void Scriven(ObjectT& object, ArchiveT& archive);
     };
 }

@@ -1,11 +1,8 @@
 
 #include "AngelScriptUserData.h"
 
-namespace Atmos
+namespace Atmos::Scripting
 {
-    namespace Scripting
-    {
-        UserData::UserData() : objectManager(nullptr), system(nullptr)
-        {}
-    }
+    UserData::UserData() : objectManager(nullptr), system(nullptr)
+    {}
 }

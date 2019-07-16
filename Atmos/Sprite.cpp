@@ -1,38 +1,27 @@
-
 #include "Sprite.h"
 
 #include "GridSize.h"
 
 #include "GraphicsSystem.h"
 
-#include <Inscription\Scribe.h>
-#include <Inscription\Inscripter.h>
-#include <Inscription\Table.h>
-
 namespace Atmos
 {
     Sprite::Sprite(ObjectManager& manager) :
-        RenderFragment(manager),
-        index(0), primaryAssetSlice([this]() { return _primaryAssetSlice; })
+        Fragment(manager), index(0)
     {
         SubscribeToProperties();
     }
 
     Sprite::Sprite(const Sprite& arg) :
-        RenderFragment(arg),
-        material(arg.material), patchShader(arg.patchShader), index(arg.index), color(arg.color),
-        primaryAssetSlice([this]() { return _primaryAssetSlice; })
+        Fragment(arg), material(arg.material), patchShader(arg.patchShader),
+        index(arg.index), color(arg.color)
     {
         SubscribeToProperties();
     }
 
-    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(Sprite) :
-        INSCRIPTION_TABLE_GET_BASE(RenderFragment),
-        INSCRIPTION_TABLE_GET_MEM(material),
-        INSCRIPTION_TABLE_GET_MEM(patchShader),
-        INSCRIPTION_TABLE_GET_MEM(color),
-        INSCRIPTION_TABLE_GET_MEM(index),
-        primaryAssetSlice([this]() { return _primaryAssetSlice; })
+    Sprite::Sprite(const ::Inscription::BinaryTableData<Sprite>& data) :
+        Fragment(std::get<0>(data.bases)), material(data.material), patchShader(data.patchShader),
+        color(data.color), index(data.index)
     {
         SubscribeToProperties();
     }
@@ -114,11 +103,12 @@ namespace Atmos
 
 namespace Inscription
 {
-    OBJECT_INSCRIPTER_DEFINE_MEMBERS(::Atmos::Sprite)
+    Scribe<::Atmos::Sprite, BinaryArchive>::Table::Table()
     {
-        INSCRIPTION_TABLE_ADD(material);
-        INSCRIPTION_TABLE_ADD(patchShader);
-        INSCRIPTION_TABLE_ADD(index);
-        INSCRIPTION_TABLE_ADD(color);
+        MergeDataEntries({
+            DataEntry::Auto(&ObjectT::material, &DataT::material),
+            DataEntry::Auto(&ObjectT::patchShader, &DataT::patchShader),
+            DataEntry::Auto(&ObjectT::index, &DataT::index),
+            DataEntry::Auto(&ObjectT::color, &DataT::color) });
     }
 }

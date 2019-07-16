@@ -15,7 +15,7 @@ namespace Atmos
     {
     public:
         Object(ObjectManager& manager);
-        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(Object);
+        Object(const ::Inscription::BinaryTableData<Object>& data);
         virtual ~Object() = 0;
 
         ObjectID ID() const;
@@ -33,8 +33,9 @@ namespace Atmos
     private:
         ObjectID id;
         ObjectManager* manager;
-    public:
+    private:
         INSCRIPTION_ACCESS;
+        friend ObjectManager;
     };
 
     template<class T>
@@ -71,9 +72,23 @@ namespace Atmos
 
 namespace Inscription
 {
-    INSCRIPTION_INSCRIPTER_DECLARE(::Atmos::Object)
+    template<>
+    struct TableData<::Atmos::Object, BinaryArchive> :
+        public TableDataBase<::Atmos::Object, BinaryArchive>
+    {
+        ::Atmos::ObjectID id;
+        ::Atmos::ObjectManager* manager;
+    };
+
+    template<>
+    class Scribe<::Atmos::Object, BinaryArchive> :
+        public TableScribe<::Atmos::Object, BinaryArchive>
     {
     public:
-        INSCRIPTION_BINARY_INSCRIPTER_DECLARE_TABLE;
+        class Table : public TableBase
+        {
+        public:
+            Table();
+        };
     };
 }

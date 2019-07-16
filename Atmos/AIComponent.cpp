@@ -1,40 +1,39 @@
-
 #include "AIComponent.h"
-#include <Inscription\Inscripter.h>
+
+namespace Atmos::Entity
+{
+    AIComponent::AIComponent(ObjectManager& manager, EntityReference owner) :
+        Component(manager, owner)
+    {
+        SetupScripts();
+    }
+
+    AIComponent::AIComponent(const ::Inscription::BinaryTableData<AIComponent>& data) :
+        Component(std::get<0>(data.bases)), script(data.script)
+    {
+        SetupScripts();
+    }
+
+    ObjectTypeDescription AIComponent::TypeDescription() const
+    {
+        return ObjectTraits<AIComponent>::TypeDescription();
+    }
+
+    void AIComponent::SetupScripts()
+    {
+        script->owner = this;
+    }
+}
 
 namespace Atmos
 {
-    namespace Entity
-    {
-        AIComponent::AIComponent(ObjectManager& manager, EntityReference owner) :
-            Component(manager, owner)
-        {
-            SetupScripts();
-        }
-
-        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(AIComponent) : INSCRIPTION_TABLE_GET_BASE(Component)
-        {
-            SetupScripts();
-        }
-
-        ObjectTypeDescription AIComponent::TypeDescription() const
-        {
-            return ObjectTraits<AIComponent>::TypeDescription();
-        }
-
-        void AIComponent::SetupScripts()
-        {
-            script->owner = this;
-        }
-    }
-
     const ObjectTypeName ObjectTraits<Entity::AIComponent>::typeName = "AIComponent";
 }
 
 namespace Inscription
 {
-    OBJECT_INSCRIPTER_DEFINE_MEMBERS(::Atmos::Entity::AIComponent)
+    Scribe<::Atmos::Entity::AIComponent, BinaryArchive>::Table::Table()
     {
-        INSCRIPTION_TABLE_ADD(script);
+        AddDataEntry(DataEntry::Auto(&ObjectT::script, &DataT::script));
     }
 }

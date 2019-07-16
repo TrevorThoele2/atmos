@@ -81,27 +81,29 @@ namespace Atmos
     {
         return underlying >= arg.underlying;
     }
+}
 
-    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(Angle)
+namespace Inscription
+{
+    void Scribe<::Atmos::Angle, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
     {
-        if (scribe.IsOutput())
+        if (archive.IsOutput())
         {
-            auto& outputScribe = *scribe.AsOutput();
+            auto underlying = static_cast<ObjectT::Value>(object.underlying);
+            archive(underlying);
 
-            outputScribe.Save(static_cast<ValueT>(underlying));
-            outputScribe.Save(selectedType.SelectedAsID());
+            auto selectedID = object.selectedType.SelectedAsID();
+            archive(selectedID);
         }
         else // INPUT
         {
-            auto& inputScribe = *scribe.AsInput();
+            ObjectT::Value value;
+            archive(value);
+            object.underlying = value;
 
-            ValueT value;
-            inputScribe.Load(value);
-            underlying = value;
-
-            SelectedType::ID selectedID;
-            inputScribe.Load(selectedID);
-            selectedType.Select(selectedID);
+            ObjectT::SelectedType::ID selectedID;
+            archive(selectedID);
+            object.selectedType.Select(selectedID);
         }
     }
 }

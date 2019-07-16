@@ -220,13 +220,6 @@ namespace Atmos
         return static_cast<Position2D::Value>((dim * GRID_SIZE<Value>) + (GRID_SIZE<Value> / 2));
     }
 
-    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(GridPosition)
-    {
-        scribe(x);
-        scribe(y);
-        scribe(z);
-    }
-
     RelativeGridPosition::RelativeGridPosition(ValueT x, ValueT y, ValueT z) :
         x(x), y(y), z(z)
     {}
@@ -251,11 +244,21 @@ namespace Atmos
         this->y = y;
         this->z = z;
     }
+}
 
-    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(RelativeGridPosition)
+namespace Inscription
+{
+    void Scribe<::Atmos::GridPosition, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
     {
-        scribe(x);
-        scribe(y);
-        scribe(z);
+        archive(object.x);
+        archive(object.y);
+        archive(object.z);
+    }
+
+    void Scribe<::Atmos::RelativeGridPosition, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
+    {
+        archive(object.x);
+        archive(object.y);
+        archive(object.z);
     }
 }

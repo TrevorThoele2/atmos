@@ -6,19 +6,20 @@
 
 namespace Atmos
 {
-    FrameStopwatch::FrameStopwatch(ObjectManager& manager, TimeValue goal) : StopwatchBase(manager, goal)
+    FrameStopwatch::FrameStopwatch(ObjectManager& manager, TimeValue goal) : Stopwatch(manager, goal)
     {
         timeSystem = Manager()->FindSystem<TimeSystem>();
     }
 
-    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(FrameStopwatch) : INSCRIPTION_TABLE_GET_BASE(StopwatchBase)
+    FrameStopwatch::FrameStopwatch(const ::Inscription::BinaryTableData<FrameStopwatch>& data) :
+        Stopwatch(std::get<0>(data.bases))
     {
         timeSystem = Manager()->FindSystem<TimeSystem>();
     }
 
     bool FrameStopwatch::operator==(const FrameStopwatch& arg) const
     {
-        return StopwatchBase::operator==(arg);
+        return Stopwatch::operator==(arg);
     }
 
     bool FrameStopwatch::operator!=(const FrameStopwatch& arg) const
@@ -37,12 +38,4 @@ namespace Atmos
     }
 
     const ObjectTypeName ObjectTraits<FrameStopwatch>::typeName = "FrameStopwatch";
-}
-
-namespace Inscription
-{
-    OBJECT_INSCRIPTER_DEFINE_MEMBERS(::Atmos::FrameStopwatch)
-    {
-
-    }
 }

@@ -9,66 +9,61 @@ namespace Atmos
     class Percentage
     {
     public:
-        typedef FixedPoint64 WrappedT;
-        typedef WrappedT::Split Split;
+        using Wrapped = FixedPoint64;
+        using Split = Wrapped::Split;
 
-        static const WrappedT max;
-        static const WrappedT min;
-    private:
-        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
-        INSCRIPTION_ACCESS;
-    private:
-        WrappedT wrapped;
+        static const Wrapped max;
+        static const Wrapped min;
     public:
         Percentage() = default;
-        Percentage(const WrappedT::Split &split);
-        Percentage(const Percentage &arg) = default;
-        Percentage& operator=(const WrappedT::Split &split);
-        Percentage& operator=(const Percentage &arg) = default;
+        Percentage(const Wrapped::Split& split);
+        Percentage(const Percentage& arg) = default;
+        Percentage& operator=(const Wrapped::Split& split);
+        Percentage& operator=(const Percentage& arg) = default;
 
-        bool operator==(const Percentage &arg) const;
-        bool operator==(const WrappedT &arg) const;
-        bool operator==(const Split &arg) const;
-        bool operator!=(const Percentage &arg) const;
-        bool operator!=(const WrappedT &arg) const;
-        bool operator!=(const Split &arg) const;
-        bool operator<(const Percentage &arg) const;
-        bool operator<(const WrappedT &arg) const;
-        bool operator<(const Split &arg) const;
-        bool operator<=(const Percentage &arg) const;
-        bool operator<=(const WrappedT &arg) const;
-        bool operator<=(const Split &arg) const;
-        bool operator>(const Percentage &arg) const;
-        bool operator>(const WrappedT &arg) const;
-        bool operator>(const Split &arg) const;
-        bool operator>=(const Percentage &arg) const;
-        bool operator>=(const WrappedT &arg) const;
-        bool operator>=(const Split &arg) const;
+        bool operator==(const Percentage& arg) const;
+        bool operator==(const Wrapped& arg) const;
+        bool operator==(const Split& arg) const;
+        bool operator!=(const Percentage& arg) const;
+        bool operator!=(const Wrapped& arg) const;
+        bool operator!=(const Split& arg) const;
+        bool operator<(const Percentage& arg) const;
+        bool operator<(const Wrapped& arg) const;
+        bool operator<(const Split& arg) const;
+        bool operator<=(const Percentage& arg) const;
+        bool operator<=(const Wrapped& arg) const;
+        bool operator<=(const Split& arg) const;
+        bool operator>(const Percentage& arg) const;
+        bool operator>(const Wrapped& arg) const;
+        bool operator>(const Split& arg) const;
+        bool operator>=(const Percentage& arg) const;
+        bool operator>=(const Wrapped& arg) const;
+        bool operator>=(const Split& arg) const;
 
-        Percentage operator+(const Percentage &arg) const;
-        Percentage operator+(const WrappedT &arg) const;
-        Percentage operator+(const Split &arg) const;
-        Percentage operator-(const Percentage &arg) const;
-        Percentage operator-(const WrappedT &arg) const;
-        Percentage operator-(const Split &arg) const;
-        Percentage operator*(const Percentage &arg) const;
-        Percentage operator*(const WrappedT &arg) const;
-        Percentage operator*(const Split &arg) const;
-        Percentage operator/(const Percentage &arg) const;
-        Percentage operator/(const WrappedT &arg) const;
-        Percentage operator/(const Split &arg) const;
-        Percentage& operator+=(const Percentage &arg);
-        Percentage& operator+=(const WrappedT &arg);
-        Percentage& operator+=(const Split &arg);
-        Percentage& operator-=(const Percentage &arg);
-        Percentage& operator-=(const WrappedT &arg);
-        Percentage& operator-=(const Split &arg);
-        Percentage& operator*=(const Percentage &arg);
-        Percentage& operator*=(const WrappedT &arg);
-        Percentage& operator*=(const Split &arg);
-        Percentage& operator/=(const Percentage &arg);
-        Percentage& operator/=(const WrappedT &arg);
-        Percentage& operator/=(const Split &arg);
+        Percentage operator+(const Percentage& arg) const;
+        Percentage operator+(const Wrapped& arg) const;
+        Percentage operator+(const Split& arg) const;
+        Percentage operator-(const Percentage& arg) const;
+        Percentage operator-(const Wrapped& arg) const;
+        Percentage operator-(const Split& arg) const;
+        Percentage operator*(const Percentage& arg) const;
+        Percentage operator*(const Wrapped& arg) const;
+        Percentage operator*(const Split& arg) const;
+        Percentage operator/(const Percentage& arg) const;
+        Percentage operator/(const Wrapped& arg) const;
+        Percentage operator/(const Split& arg) const;
+        Percentage& operator+=(const Percentage& arg);
+        Percentage& operator+=(const Wrapped& arg);
+        Percentage& operator+=(const Split& arg);
+        Percentage& operator-=(const Percentage& arg);
+        Percentage& operator-=(const Wrapped& arg);
+        Percentage& operator-=(const Split& arg);
+        Percentage& operator*=(const Percentage& arg);
+        Percentage& operator*=(const Wrapped& arg);
+        Percentage& operator*=(const Split& arg);
+        Percentage& operator/=(const Percentage& arg);
+        Percentage& operator/=(const Wrapped& arg);
+        Percentage& operator/=(const Split& arg);
 
         Percentage& operator++();
         Percentage& operator--();
@@ -86,7 +81,7 @@ namespace Atmos
         explicit operator float() const;
         explicit operator double() const;
         explicit operator Split() const;
-        explicit operator WrappedT() const;
+        explicit operator Wrapped() const;
 
         void Floor();
         void Ceiling();
@@ -94,5 +89,20 @@ namespace Atmos
         // 100 = 1
         // 95 = 0.95
         Percentage ConvertToDecimal() const;
+    private:
+        Wrapped wrapped;
+    private:
+        INSCRIPTION_ACCESS;
+    };
+}
+
+namespace Inscription
+{
+    template<>
+    class Scribe<::Atmos::Percentage, BinaryArchive> :
+        public CompositeScribe<::Atmos::Percentage, BinaryArchive>
+    {
+    public:
+        static void Scriven(ObjectT& object, ArchiveT& archive);
     };
 }

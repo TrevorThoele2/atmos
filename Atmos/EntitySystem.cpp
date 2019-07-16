@@ -6,61 +6,55 @@
 
 #include "StringUtility.h"
 
-namespace Atmos
+namespace Atmos::Entity
 {
-    namespace Entity
+    System::System(ObjectManager& manager) : ObjectSystem(manager)
     {
-        System::System(ObjectManager& manager) : ObjectSystem(manager)
+        entityBatch = manager.Batch<Entity>();
+
+        generalBatch = manager.Batch<GeneralComponent>();
+
+        componentBatch = manager.Batch<Component>();
+        componentBatch.onCreated.Subscribe(&System::OnEntityComponentCreated, *this);
+        componentBatch.onBeforeDestroyed.Subscribe(&System::OnEntityComponentDestroyed, *this);
+    }
+
+    System::EntityReference System::EntityWithName(const Name& name) const
+    {
+        for (auto& loop : generalBatch)
+            if (loop->name == name)
+                return loop->owner;
+
+        return EntityReference();
+    }
+
+    ObjectBatchSizeT System::Size() const
+    {
+        return generalBatch.Size();
+    }
+
+    void System::InitializeImpl()
+    {
+        auto debugStatistics = Manager()->FindSystem<DebugStatisticsSystem>();
+        debugStatistics->memoryPage.entitySize.retrievalFunction = [this]() -> String
         {
-            entityBatch = manager.Batch<Entity>();
+            return ToString(Size());
+        };
+    }
 
-            generalBatch = manager.Batch<GeneralComponent>();
+    void System::OnEntityComponentCreated(EntityComponentReference created)
+    {
+        created->owner->componentList.push_back(created);
+    }
 
-            componentBatch = manager.Batch<Component>();
-            componentBatch.onCreated.Subscribe(&System::OnEntityComponentCreated, *this);
-            componentBatch.onBeforeDestroyed.Subscribe(&System::OnEntityComponentDestroyed, *this);
-        }
-
-        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(System) : INSCRIPTION_TABLE_GET_BASE(ObjectSystem)
-        {}
-
-        System::EntityReference System::EntityWithName(const Name& name) const
+    void System::OnEntityComponentDestroyed(EntityComponentReference destroyed)
+    {
+        for (auto loop = destroyed->owner->componentList.begin(); loop != destroyed->owner->componentList.end(); ++loop)
         {
-            for (auto& loop : generalBatch)
-                if (loop->name == name)
-                    return loop->owner;
-
-            return EntityReference();
-        }
-
-        ObjectBatchSizeT System::Size() const
-        {
-            return generalBatch.Size();
-        }
-
-        void System::InitializeImpl()
-        {
-            auto debugStatistics = Manager()->FindSystem<DebugStatisticsSystem>();
-            debugStatistics->memoryPage.entitySize.retrievalFunction = [this]() -> String
+            if (*loop == destroyed)
             {
-                return ToString(Size());
-            };
-        }
-
-        void System::OnEntityComponentCreated(EntityComponentReference created)
-        {
-            created->owner->componentList.push_back(created);
-        }
-
-        void System::OnEntityComponentDestroyed(EntityComponentReference destroyed)
-        {
-            for (auto loop = destroyed->owner->componentList.begin(); loop != destroyed->owner->componentList.end(); ++loop)
-            {
-                if (*loop == destroyed)
-                {
-                    destroyed->owner->componentList.erase(loop);
-                    return;
-                }
+                destroyed->owner->componentList.erase(loop);
+                return;
             }
         }
     }
@@ -68,14 +62,8 @@ namespace Atmos
 
 namespace Inscription
 {
-    INSCRIPTION_BINARY_INSCRIPTER_DEFINE_TABLE(::Atmos::Entity::System)
+    void Scribe<::Atmos::Entity::System, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
     {
-        INSCRIPTION_BINARY_INSCRIPTER_CREATE_TABLE;
-
-        INSCRIPTION_TABLE_ADD_BASE(::Atmos::ObjectSystem);
-
-        INSCRIPTION_INSCRIPTER_RETURN_TABLE;
+        BaseScriven<::Atmos::ObjectSystem>(object, archive);
     }
-
-    INSCRIPTION_BINARY_DEFINE_SIMPLE_CLASS_NAME_RESOLVER(::Atmos::Entity::System, "EntitySystem");
 }

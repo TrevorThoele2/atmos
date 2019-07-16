@@ -3,123 +3,120 @@
 
 #include "ObjectManager.h"
 
-namespace Atmos
+namespace Atmos::Input
 {
-    namespace Input
+    void SignalBase::Work(bool currentValue)
     {
-        void SignalBase::Work(bool currentValue)
+        activePreviousFrame = active;
+        if (currentValue)
         {
-            activePreviousFrame = active;
-            if (currentValue)
-            {
-                active = true;
-                DoActive();
-            }
-            else
-                active = false;
-
-            if (IsPressed())
-                DoDown();
-            else if (IsDepressed())
-                DoUp();
+            active = true;
+            DoActive();
         }
+        else
+            active = false;
 
-        bool SignalBase::IsActive() const
-        {
-            return active;
-        }
+        if (IsPressed())
+            DoDown();
+        else if (IsDepressed())
+            DoUp();
+    }
 
-        bool SignalBase::IsPressed() const
-        {
-            return !activePreviousFrame && active;
-        }
+    bool SignalBase::IsActive() const
+    {
+        return active;
+    }
 
-        bool SignalBase::IsDepressed() const
-        {
-            return activePreviousFrame && !active;
-        }
+    bool SignalBase::IsPressed() const
+    {
+        return !activePreviousFrame && active;
+    }
 
-        bool SignalBase::CanUseForAction() const
-        {
-            return canUseForAction;
-        }
+    bool SignalBase::IsDepressed() const
+    {
+        return activePreviousFrame && !active;
+    }
 
-        SignalBase::Data::~Data()
-        {}
+    bool SignalBase::CanUseForAction() const
+    {
+        return canUseForAction;
+    }
 
-        SignalBase::Data* SignalBase::GetData()
-        {
-            return data.get();
-        }
+    SignalBase::Data::~Data()
+    {}
 
-        const SignalBase::Data* SignalBase::GetData() const
-        {
-            return data.get();
-        }
+    SignalBase::Data* SignalBase::GetData()
+    {
+        return data.get();
+    }
 
-        SignalBase::SignalBase(Manager& owner, ObjectManager& objectManager, DataPtr&& data, const String& displayName, bool canUseForAction) :
-            owner(&owner), objectManager(&objectManager), displayName(displayName), canUseForAction(canUseForAction),
-            active(false), activePreviousFrame(false),
-            doubleClickStopwatch(
-                objectManager.CreateObject<FrameStopwatch>(
-                    TimeValue(FixedPoint64::Split(0, FixedPoint64::Split::AdjustF(25, FixedPoint64::GetDefaultRadixPoint())))))
-        {
-            SetData(std::move(data));
-        }
+    const SignalBase::Data* SignalBase::GetData() const
+    {
+        return data.get();
+    }
 
-        SignalBase::SignalBase(SignalBase&& arg) :
-            owner(std::move(arg.owner)), objectManager(std::move(arg.objectManager)),
-            displayName(std::move(arg.displayName)), canUseForAction(std::move(arg.canUseForAction)),
-            active(std::move(arg.active)), activePreviousFrame(std::move(arg.activePreviousFrame)),
-            doubleClickStopwatch(std::move(arg.doubleClickStopwatch))
-        {}
+    SignalBase::SignalBase(Manager& owner, ObjectManager& objectManager, DataPtr&& data, const String& displayName, bool canUseForAction) :
+        owner(&owner), objectManager(&objectManager), displayName(displayName), canUseForAction(canUseForAction),
+        active(false), activePreviousFrame(false),
+        doubleClickStopwatch(
+            objectManager.CreateObject<FrameStopwatch>(
+                TimeValue(FixedPoint64::Split(0, FixedPoint64::Split::AdjustF(25, FixedPoint64::GetDefaultRadixPoint())))))
+    {
+        SetData(std::move(data));
+    }
 
-        Manager* SignalBase::Owner()
-        {
-            return owner;
-        }
+    SignalBase::SignalBase(SignalBase&& arg) :
+        owner(std::move(arg.owner)), objectManager(std::move(arg.objectManager)),
+        displayName(std::move(arg.displayName)), canUseForAction(std::move(arg.canUseForAction)),
+        active(std::move(arg.active)), activePreviousFrame(std::move(arg.activePreviousFrame)),
+        doubleClickStopwatch(std::move(arg.doubleClickStopwatch))
+    {}
 
-        const Manager* SignalBase::Owner() const
-        {
-            return owner;
-        }
+    Manager* SignalBase::Owner()
+    {
+        return owner;
+    }
 
-        ObjectManager* SignalBase::GetObjectManager()
-        {
-            return objectManager;
-        }
+    const Manager* SignalBase::Owner() const
+    {
+        return owner;
+    }
 
-        const ObjectManager* SignalBase::GetObjectManager() const
-        {
-            return objectManager;
-        }
+    ObjectManager* SignalBase::GetObjectManager()
+    {
+        return objectManager;
+    }
 
-        void SignalBase::DoActive()
-        {
-            DoActiveImpl();
-        }
+    const ObjectManager* SignalBase::GetObjectManager() const
+    {
+        return objectManager;
+    }
 
-        void SignalBase::DoUp()
-        {
-            DoUpImpl();
-        }
+    void SignalBase::DoActive()
+    {
+        DoActiveImpl();
+    }
 
-        void SignalBase::DoDown()
-        {
-            DoDownImpl();
+    void SignalBase::DoUp()
+    {
+        DoUpImpl();
+    }
 
-            // Check for double click
-            if (!doubleClickStopwatch->HasReachedGoal())
-                DoDoubleDownImpl();
+    void SignalBase::DoDown()
+    {
+        DoDownImpl();
 
-            // Reset the double click timer
-            doubleClickStopwatch->Start();
-        }
+        // Check for double click
+        if (!doubleClickStopwatch->HasReachedGoal())
+            DoDoubleDownImpl();
 
-        void SignalBase::SetData(DataPtr&& set)
-        {
-            data = std::move(set);
-            data->owner = this;
-        }
+        // Reset the double click timer
+        doubleClickStopwatch->Start();
+    }
+
+    void SignalBase::SetData(DataPtr&& set)
+    {
+        data = std::move(set);
+        data->owner = this;
     }
 }

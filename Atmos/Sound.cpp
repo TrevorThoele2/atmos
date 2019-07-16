@@ -13,7 +13,8 @@ namespace Atmos
         SubscribeToProperties();
     }
 
-    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(Sound) : INSCRIPTION_TABLE_GET_BASE(Sense)
+    Sound::Sound(const ::Inscription::BinaryTableData<Sound>& data) :
+        Sense(std::get<0>(data.bases))
     {}
 
     ObjectTypeDescription Sound::TypeDescription() const
@@ -32,12 +33,4 @@ namespace Atmos
     }
 
     const ObjectTypeName ObjectTraits<Sound>::typeName = "Sound";
-}
-
-namespace Inscription
-{
-    OBJECT_INSCRIPTER_DEFINE_MEMBERS(::Atmos::Sound)
-    {
-
-    }
 }

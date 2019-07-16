@@ -89,10 +89,13 @@ namespace Atmos
             topLeft.x + ((bottomRight.x - topLeft.x) / 2),
             topLeft.y + ((bottomRight.y - topLeft.y) / 2));
     }
+}
 
-    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(Position2D)
+namespace Inscription
+{
+    void Scribe<::Atmos::Position2D, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
     {
-        scribe(x);
-        scribe(y);
+        archive(object.x);
+        archive(object.y);
     }
 }

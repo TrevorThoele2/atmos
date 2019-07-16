@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include <vector>
@@ -26,7 +25,17 @@ namespace Atmos
     private:
         ID _id;
     private:
-        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
+    };
+}
+
+namespace Inscription
+{
+    template<>
+    class Scribe<::Atmos::Field, BinaryArchive> :
+        public CompositeScribe<::Atmos::Field, BinaryArchive>
+    {
+    public:
+        static void Scriven(ObjectT& object, ArchiveT& archive);
     };
 }

@@ -9,9 +9,13 @@
 
 namespace Atmos
 {
-    class GraphicsManager;
     class ShaderAsset;
+}
 
+namespace Atmos::Render
+{
+    class GraphicsManager;
+    
     class Canvas
     {
     public:

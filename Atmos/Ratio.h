@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include "Serialization.h"
@@ -6,56 +5,64 @@
 namespace Atmos
 {
     template<class T>
-    class RatioBase
+    class Ratio
     {
     public:
-        typedef T ValueT;
-        typedef double Divided;
+        using Value = T;
+        using Divided = double;
     public:
-        virtual ~RatioBase() = 0;
-        virtual ValueT GetNumerator() const = 0;
-        virtual ValueT GetDenominator() const = 0;
+        virtual ~Ratio() = 0;
+
+        virtual Value Numerator() const = 0;
+        virtual Value Denominator() const = 0;
     };
 
     template<class T>
-    RatioBase<T>::~RatioBase()
+    Ratio<T>::~Ratio()
     {}
 
     template<class T>
-    class DynamicRatio : public RatioBase<T>
+    class DynamicRatio : public Ratio<T>
     {
     public:
-        typedef RatioBase<T>::ValueT ValueT;
-    private:
-        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
-        INSCRIPTION_ACCESS;
-    private:
-        ValueT numerator, denominator;
-        bool simplify;
-        void AttemptSimplify();
+        typedef Ratio<T>::Value Value;
+
+        Value numerator;
+        Value denominator;
     public:
-        DynamicRatio(ValueT numerator = 1, ValueT denominator = 1, bool simplify = true);
+        DynamicRatio();
+        DynamicRatio(Value numerator, Value denominator);
+
         bool operator==(const DynamicRatio& arg) const;
-        void Set(ValueT num, ValueT den);
-        void SetNumerator(ValueT set);
-        void SetDenominator(ValueT set);
-        void SetSimplify(bool set);
-        ValueT GetNumerator() const override;
-        ValueT GetDenominator() const override;
+
+        void Simplify();
+
+        void Numerator(Value set);
+        void Denominator(Value set);
+        Value Numerator() const override;
+        Value Denominator() const override;
+    private:
+        INSCRIPTION_ACCESS;
     };
 
     template<class T>
-    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(DynamicRatio<T>)
+    DynamicRatio<T>::DynamicRatio() : numerator(1), denominator(1)
+    {}
+
+    template<class T>
+    DynamicRatio<T>::DynamicRatio(Value numerator, Value denominator) : numerator(numerator), denominator(denominator)
+    {}
+
+    template<class T>
+    bool DynamicRatio<T>::operator==(const DynamicRatio& arg) const
     {
-        scribe(numerator);
-        scribe(denominator);
-        scribe(simplify);
+        return numerator == arg.numerator && denominator == arg.denominator;
     }
 
     template<class T>
-    void DynamicRatio<T>::AttemptSimplify()
+    void DynamicRatio<T>::Simplify()
     {
-        if (!simplify || denominator == 0)
+        if (denominator == 0)
             return;
 
         auto result = GCD(numerator, denominator);
@@ -64,77 +71,67 @@ namespace Atmos
     }
 
     template<class T>
-    DynamicRatio<T>::DynamicRatio(ValueT numerator, ValueT denominator, bool simplify) : numerator(numerator), denominator(denominator)
-    {
-        AttemptSimplify();
-    }
-
-    template<class T>
-    bool DynamicRatio<T>::operator==(const DynamicRatio& arg) const
-    {
-        return numerator == arg.numerator && denominator == arg.denominator && simplify == arg.simplify;
-    }
-
-    template<class T>
-    void DynamicRatio<T>::Set(ValueT num, ValueT den)
-    {
-        numerator = num;
-        denominator = den;
-        AttemptSimplify();
-    }
-
-    template<class T>
-    void DynamicRatio<T>::SetNumerator(ValueT set)
+    void DynamicRatio<T>::Numerator(Value set)
     {
         numerator = set;
-        AttemptSimplify();
     }
 
     template<class T>
-    void DynamicRatio<T>::SetDenominator(ValueT set)
+    void DynamicRatio<T>::Denominator(Value set)
     {
         denominator = set;
-        AttemptSimplify();
     }
 
     template<class T>
-    void DynamicRatio<T>::SetSimplify(bool set)
-    {
-        denominator = set;
-        AttemptSimplify();
-    }
-
-    template<class T>
-    typename DynamicRatio<T>::ValueT DynamicRatio<T>::GetNumerator() const
+    typename DynamicRatio<T>::Value DynamicRatio<T>::Numerator() const
     {
         return numerator;
     }
 
     template<class T>
-    typename DynamicRatio<T>::ValueT DynamicRatio<T>::GetDenominator() const
+    typename DynamicRatio<T>::Value DynamicRatio<T>::Denominator() const
     {
         return denominator;
     }
 
     template<class T, T numerator, T denominator>
-    class StaticRatio : public RatioBase<T>
+    class StaticRatio : public Ratio<T>
     {
     public:
-        typedef RatioBase<T>::ValueT ValueT;
+        using Value = Ratio<T>::Value;
     public:
-        ValueT GetNumerator() const override;
-        ValueT GetDenominator() const override;
+        Value Numerator() const override;
+        Value Denominator() const override;
     };
 
     template<class T, T numerator, T denominator>
-    typename StaticRatio<T, numerator, denominator>::ValueT StaticRatio<T, numerator, denominator>::GetNumerator() const
+    auto StaticRatio<T, numerator, denominator>::Numerator() const -> Value
     {
         return numerator;
     }
 
     template<class T, T numerator, T denominator>
-    typename StaticRatio<T, numerator, denominator>::ValueT StaticRatio<T, numerator, denominator>::GetDenominator() const
+    auto StaticRatio<T, numerator, denominator>::Denominator() const -> Value
     {
         return denominator;
     }
+}
+
+namespace Inscription
+{
+    template<class T>
+    class Scribe<::Atmos::DynamicRatio<T>, BinaryArchive> : public CompositeScribe<::Atmos::DynamicRatio<T>, BinaryArchive>
+    {
+    private:
+        using BaseT = CompositeScribe<::Atmos::DynamicRatio<T>, BinaryArchive>;
+    public:
+        using ObjectT = typename BaseT::ObjectT;
+        using ArchiveT = typename BaseT::ArchiveT;
+    public:
+        static void Scriven(ObjectT& object, ArchiveT& archive)
+        {
+            archive(object.numerator);
+            archive(object.denominator);
+        }
+    };
 }

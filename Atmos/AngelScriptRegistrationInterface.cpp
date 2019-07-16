@@ -1,14 +1,11 @@
 
 #include "AngelScriptRegistrationInterface.h"
 
-namespace Atmos
+namespace Atmos::Scripting
 {
-    namespace Scripting
+    UserData* RegistrationInterface::UserDataFrom(asIScriptGeneric* gen)
     {
-        UserData* RegistrationInterface::UserDataFrom(asIScriptGeneric* gen)
-        {
-            auto engine = gen->GetEngine();
-            return reinterpret_cast<UserData*>(engine->GetUserData());
-        }
+        auto engine = gen->GetEngine();
+        return reinterpret_cast<UserData*>(engine->GetUserData());
     }
 }

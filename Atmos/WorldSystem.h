@@ -9,16 +9,16 @@ namespace Atmos
     {
     public:
         WorldSystem(ObjectManager& manager);
-        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(WorldSystem);
     };
 }
 
 namespace Inscription
 {
-    INSCRIPTION_INSCRIPTER_DECLARE(::Atmos::WorldSystem)
+    template<>
+    class Scribe<::Atmos::WorldSystem, BinaryArchive> :
+        public ObjectSystemScribe<::Atmos::WorldSystem, BinaryArchive>
     {
     public:
-        INSCRIPTION_BINARY_INSCRIPTER_DECLARE_TABLE;
-        INSCRIPTION_BINARY_DECLARE_CLASS_NAME_RESOLVER;
+        static void Scriven(ObjectT& object, ArchiveT& archive);
     };
 }

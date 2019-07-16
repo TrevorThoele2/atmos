@@ -21,7 +21,17 @@ namespace Atmos
         bool operator==(const Scalers2D& arg) const;
         bool operator!=(const Scalers2D& arg) const;
     private:
-        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
+    };
+}
+
+namespace Inscription
+{
+    template<>
+    class Scribe<::Atmos::Scalers2D, BinaryArchive> :
+        public CompositeScribe<::Atmos::Scalers2D, BinaryArchive>
+    {
+    public:
+        static void Scriven(ObjectT& object, ArchiveT& archive);
     };
 }

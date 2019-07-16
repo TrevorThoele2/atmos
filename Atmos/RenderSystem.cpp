@@ -1,5 +1,4 @@
-
-#include "RenderingSystem.h"
+#include "RenderSystem.h"
 
 #include "ObjectManager.h"
 #include "RenderFragmentSystem.h"
@@ -8,16 +7,12 @@
 
 #include "GraphicsManager.h"
 
-namespace Atmos
+namespace Atmos::Render
 {
-    RenderingSystem::RenderingSystem(ObjectManager& manager) : ObjectSystem(manager)
+    RenderSystem::RenderSystem(ObjectManager& manager) : ObjectSystem(manager)
     {}
 
-    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(RenderingSystem) :
-        INSCRIPTION_TABLE_GET_BASE(ObjectSystem)
-    {}
-
-    void RenderingSystem::WorkImpl()
+    void RenderSystem::WorkImpl()
     {
         auto graphics = FindGraphicsSystem()->Get();
         auto debugStatistics = FindDebugStatisticsSystem();
@@ -53,17 +48,17 @@ namespace Atmos
         debugStatistics->renderProfiler.Calculate();
     }
 
-    GraphicsSystem* RenderingSystem::FindGraphicsSystem()
+    GraphicsSystem* RenderSystem::FindGraphicsSystem()
     {
         return Manager()->FindSystem<GraphicsSystem>();
     }
 
-    RenderFragmentSystem* RenderingSystem::FindRenderFragmentSystem()
+    FragmentSystem* RenderSystem::FindRenderFragmentSystem()
     {
-        return Manager()->FindSystem<RenderFragmentSystem>();
+        return Manager()->FindSystem<FragmentSystem>();
     }
 
-    DebugStatisticsSystem* RenderingSystem::FindDebugStatisticsSystem()
+    DebugStatisticsSystem* RenderSystem::FindDebugStatisticsSystem()
     {
         return Manager()->FindSystem<DebugStatisticsSystem>();
     }
@@ -71,14 +66,8 @@ namespace Atmos
 
 namespace Inscription
 {
-    INSCRIPTION_BINARY_INSCRIPTER_DEFINE_TABLE(::Atmos::RenderingSystem)
+    void Scribe<::Atmos::RenderSystem, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
     {
-        INSCRIPTION_BINARY_INSCRIPTER_CREATE_TABLE;
-
-        INSCRIPTION_TABLE_ADD_BASE(::Atmos::ObjectSystem);
-
-        INSCRIPTION_INSCRIPTER_RETURN_TABLE;
+        BaseScriven<::Atmos::ObjectSystem>(object, archive);
     }
-
-    INSCRIPTION_BINARY_DEFINE_SIMPLE_CLASS_NAME_RESOLVER(::Atmos::RenderingSystem, "RenderingSystem");
 }

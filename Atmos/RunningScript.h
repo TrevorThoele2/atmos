@@ -6,13 +6,12 @@
 #include "ObjectReference.h"
 
 #include "ScriptInstance.h"
-#include "ScriptGlobalItems.h"
 #include "ScriptParameters.h"
 #include "ScriptPersistence.h"
 
 #include "ReadonlyProperty.h"
 
-#include "ObjectSerialization.h"
+#include "ObjectScribe.h"
 
 class asIScriptContext;
 
@@ -23,13 +22,13 @@ namespace Atmos
     public:
         typedef TypedObjectReference<ScriptInstance> SourceReference;
     public:
-        ReadonlyProperty<SourceReference> source;
+        using SourceProperty = ReadonlyProperty<SourceReference>;
+        SourceProperty source;
 
         Name executeName;
         Scripting::Parameters parameters;
         ObjectReference owner;
 
-        Scripting::GlobalItems globalItems;
         Scripting::Persistence persistence;
     public:
         bool hasBeenExecuted;
@@ -39,7 +38,7 @@ namespace Atmos
     public:
         RunningScript(ObjectManager& manager, SourceReference source);
         RunningScript(const RunningScript& arg) = default;
-        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(RunningScript);
+        RunningScript(const ::Inscription::BinaryTableData<RunningScript>& data);
 
         void Resume();
         void Suspend();
@@ -64,9 +63,16 @@ namespace Atmos
 
 namespace Inscription
 {
-    DECLARE_OBJECT_INSCRIPTER(::Atmos::RunningScript)
+    template<>
+    struct TableData<::Atmos::RunningScript, BinaryArchive> :
+        public ObjectTableDataBase<::Atmos::RunningScript, BinaryArchive>
+    {};
+
+    template<>
+    class Scribe<::Atmos::RunningScript, BinaryArchive> : public ObjectScribe<::Atmos::RunningScript, BinaryArchive>
     {
     public:
-        OBJECT_INSCRIPTER_DECLARE_MEMBERS;
+        class Table : public TableBase
+        {};
     };
 }

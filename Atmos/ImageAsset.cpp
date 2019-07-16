@@ -1,4 +1,3 @@
-
 #include "ImageAsset.h"
 
 namespace Atmos
@@ -11,8 +10,8 @@ namespace Atmos
         FileAsset(arg), data((arg.data) ? arg.data->Clone() : nullptr), width(arg.width), height(arg.height)
     {}
 
-    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(ImageAsset) :
-        INSCRIPTION_TABLE_GET_BASE(FileAsset)
+    ImageAsset::ImageAsset(const ::Inscription::BinaryTableData<ImageAsset>& data) :
+        FileAsset(std::get<0>(data.bases))
     {}
 
     ImageAsset::DataT* ImageAsset::Data()
@@ -34,12 +33,4 @@ namespace Atmos
 
     ImageAssetData::~ImageAssetData()
     {}
-}
-
-namespace Inscription
-{
-    OBJECT_INSCRIPTER_DEFINE_MEMBERS(::Atmos::ImageAsset)
-    {
-
-    }
 }

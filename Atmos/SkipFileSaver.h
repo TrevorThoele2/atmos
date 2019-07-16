@@ -2,15 +2,17 @@
 
 #include "SkipFileObject.h"
 
+#include <Inscription/BufferScribe.h>
+
 namespace Atmos
 {
-    template<class ScribeT>
-    class SkipFileSaver : public SkipFileObject<ScribeT>
+    template<class Archive>
+    class SkipFileSaver : public SkipFileObject<Archive>
     {
     public:
-        typedef typename SkipFileObject<ScribeT>::FocusedScribe FocusedScribe;
+        using FocusedArchive = typename SkipFileObject<Archive>::FocusedArchive;
     public:
-        SkipFileSaver(FocusedScribe& scribe);
+        SkipFileSaver(FocusedArchive& archive);
 
         void SavePlaceholder();
         void SaveNothing();
@@ -18,7 +20,7 @@ namespace Atmos
         void SaveObject(T& object);
         void SaveBuffer(const ::Inscription::Buffer& buffer);
     protected:
-        typedef typename SkipFileObject<ScribeT>::Position Position;
+        typedef typename SkipFileObject<Archive>::Position Position;
     private:
         void OverwritePlaceholder(Position overwrite);
     private:
@@ -29,22 +31,23 @@ namespace Atmos
         virtual void SaveExtra();
     };
 
-    template<class ScribeT>
-    SkipFileSaver<ScribeT>::SkipFileSaver(FocusedScribe& scribe) : SkipFileObject(scribe)
+    template<class Archive>
+    SkipFileSaver<Archive>::SkipFileSaver(FocusedArchive& archive) : SkipFileObject(archive)
     {}
 
-    template<class ScribeT>
-    void SkipFileSaver<ScribeT>::SavePlaceholder()
+    template<class Archive>
+    void SkipFileSaver<Archive>::SavePlaceholder()
     {
-        position = scribe.TellStream();
-        scribe.Save(Position());
+        position = archive.TellStream();
+        Position placeholder;
+        archive(placeholder);
         SavePlaceholderExtra();
     }
 
-    template<class ScribeT>
-    void SkipFileSaver<ScribeT>::SaveNothing()
+    template<class Archive>
+    void SkipFileSaver<Archive>::SaveNothing()
     {
-        Position currentPosition = scribe.TellStream();
+        Position currentPosition = archive.TellStream();
 
         OnBeforeObjectSave();
         OnAfterObjectSave();
@@ -52,54 +55,54 @@ namespace Atmos
         OverwritePlaceholder(currentPosition);
     }
 
-    template<class ScribeT>
+    template<class Archive>
     template<class T>
-    void SkipFileSaver<ScribeT>::SaveObject(T& object)
+    void SkipFileSaver<Archive>::SaveObject(T& object)
     {
-        Position currentPosition = scribe.TellStream();
+        Position currentPosition = archive.TellStream();
 
         OnBeforeObjectSave();
-        scribe.Save(object);
+        archive(object);
         OnAfterObjectSave();
 
         OverwritePlaceholder(currentPosition);
     }
 
-    template<class ScribeT>
-    void SkipFileSaver<ScribeT>::SaveBuffer(const ::Inscription::Buffer& buffer)
+    template<class Archive>
+    void SkipFileSaver<Archive>::SaveBuffer(const ::Inscription::Buffer& buffer)
     {
-        Position currentPosition = scribe.TellStream();
+        Position currentPosition = archive.TellStream();
 
         OnBeforeObjectSave();
-        scribe.WriteBuffer(buffer);
+        archive(buffer);
         OnAfterObjectSave();
 
         OverwritePlaceholder(currentPosition);
     }
 
-    template<class ScribeT>
-    void SkipFileSaver<ScribeT>::OverwritePlaceholder(Position overwrite)
+    template<class Archive>
+    void SkipFileSaver<Archive>::OverwritePlaceholder(Position overwrite)
     {
-        Position currentPosition = scribe.TellStream();
-        scribe.SeekStream(position);
-        scribe.Save(overwrite);
+        Position currentPosition = archive.TellStream();
+        archive.SeekStream(position);
+        archive(overwrite);
         SaveExtra();
-        scribe.SeekStream(currentPosition);
+        archive.SeekStream(currentPosition);
     }
 
-    template<class ScribeT>
-    void SkipFileSaver<ScribeT>::OnBeforeObjectSave()
+    template<class Archive>
+    void SkipFileSaver<Archive>::OnBeforeObjectSave()
     {}
 
-    template<class ScribeT>
-    void SkipFileSaver<ScribeT>::OnAfterObjectSave()
+    template<class Archive>
+    void SkipFileSaver<Archive>::OnAfterObjectSave()
     {}
 
-    template<class ScribeT>
-    void SkipFileSaver<ScribeT>::SavePlaceholderExtra()
+    template<class Archive>
+    void SkipFileSaver<Archive>::SavePlaceholderExtra()
     {}
 
-    template<class ScribeT>
-    void SkipFileSaver<ScribeT>::SaveExtra()
+    template<class Archive>
+    void SkipFileSaver<Archive>::SaveExtra()
     {}
 }

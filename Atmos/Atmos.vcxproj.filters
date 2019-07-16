@@ -27,9 +27,6 @@
     <Filter Include="Header Files\Render">
       <UniqueIdentifier>{52e3ff53-5f40-4d5f-803d-c8e3acbfb5ec}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Render\Color">
-      <UniqueIdentifier>{0847696d-cf19-4511-b55c-05f1fa41c034}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Sound">
       <UniqueIdentifier>{0040e232-5328-41e8-9583-c7fda3776428}</UniqueIdentifier>
     </Filter>
@@ -258,33 +255,6 @@
     <Filter Include="Header Files\File">
       <UniqueIdentifier>{319dc3b7-a4d3-4243-a2a8-0d229a4f6ab6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\World\Stasis Scribe">
-      <UniqueIdentifier>{c99e5890-f82d-422b-b8ad-7f196b5e01e9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\World\Stasis Scribe">
-      <UniqueIdentifier>{10a08c38-184f-47c4-955e-548481570820}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Serialization\ScribeBase">
-      <UniqueIdentifier>{44efc06a-e12c-4150-9914-519b00d8e8e2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Serialization\ScribeBase">
-      <UniqueIdentifier>{92588c19-f4bd-4e27-9c6c-3439682def1c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\World\World Scribe">
-      <UniqueIdentifier>{67ba23ad-074b-4810-8907-9d18cd1ed2a5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\World\World Scribe">
-      <UniqueIdentifier>{800b0608-37d4-410d-9b4e-8790474a95f8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Serialization\Skip File">
-      <UniqueIdentifier>{5947c944-570c-4310-b74c-617d1cc6d664}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Time\Stopwatches">
-      <UniqueIdentifier>{534fe9e6-2447-4a7b-9f14-ee71be4e826f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Time\Stopwatches">
-      <UniqueIdentifier>{eb950769-20e0-427c-ac24-1c3d5ee93d1b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\AngelScript\Registration">
       <UniqueIdentifier>{2bce928d-4833-49b3-b722-4be718b382c9}</UniqueIdentifier>
     </Filter>
@@ -327,6 +297,48 @@
     <Filter Include="Source Files\PositionalObject">
       <UniqueIdentifier>{574988d0-8406-4442-ba6b-b68f4ec3ac72}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\TypeRegistration">
+      <UniqueIdentifier>{a61fbb38-0e5e-4177-8c3c-7ef2e8a32101}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\TypeRegistration">
+      <UniqueIdentifier>{0bff50a9-4cc7-4e91-943f-6b4c8f184cc6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Serialization\SkipFile">
+      <UniqueIdentifier>{5947c944-570c-4310-b74c-617d1cc6d664}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Serialization\Archive">
+      <UniqueIdentifier>{92588c19-f4bd-4e27-9c6c-3439682def1c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Serialization\Archive">
+      <UniqueIdentifier>{44efc06a-e12c-4150-9914-519b00d8e8e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\World\StasisArchive">
+      <UniqueIdentifier>{10a08c38-184f-47c4-955e-548481570820}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\World\WorldArchive">
+      <UniqueIdentifier>{800b0608-37d4-410d-9b4e-8790474a95f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\World\StasisArchive">
+      <UniqueIdentifier>{c99e5890-f82d-422b-b8ad-7f196b5e01e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\World\WorldArchive">
+      <UniqueIdentifier>{67ba23ad-074b-4810-8907-9d18cd1ed2a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Time\Stopwatch">
+      <UniqueIdentifier>{534fe9e6-2447-4a7b-9f14-ee71be4e826f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Time\Stopwatch">
+      <UniqueIdentifier>{eb950769-20e0-427c-ac24-1c3d5ee93d1b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Object\Scribe">
+      <UniqueIdentifier>{7e422f5c-903a-47b6-83e5-b29762f2e9e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Object\Scribe">
+      <UniqueIdentifier>{49baf5b4-c93e-46a8-97ec-d55319351f93}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Object\Traits">
+      <UniqueIdentifier>{4a519250-2083-4dc5-91be-7752f82ab189}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Field.h">
@@ -352,9 +364,6 @@
     </ClInclude>
     <ClInclude Include="Range.h">
       <Filter>Header Files\Helper</Filter>
-    </ClInclude>
-    <ClInclude Include="Color.h">
-      <Filter>Header Files\Render\Color</Filter>
     </ClInclude>
     <ClInclude Include="StateGui.h">
       <Filter>Header Files\State</Filter>
@@ -415,12 +424,6 @@
     </ClInclude>
     <ClInclude Include="InputAction.h">
       <Filter>Header Files\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="LineRender.h">
-      <Filter>Header Files\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="RenderFragmentGrid.h">
-      <Filter>Header Files\Render</Filter>
     </ClInclude>
     <ClInclude Include="Tag.h">
       <Filter>Header Files\GameData</Filter>
@@ -515,9 +518,6 @@
     <ClInclude Include="ObjectSystem.h">
       <Filter>Header Files\Object</Filter>
     </ClInclude>
-    <ClInclude Include="ObjectTraits.h">
-      <Filter>Header Files\Object</Filter>
-    </ClInclude>
     <ClInclude Include="ObjectTypeDescription.h">
       <Filter>Header Files\Object</Filter>
     </ClInclude>
@@ -602,14 +602,8 @@
     <ClInclude Include="AudioAssetInstance.h">
       <Filter>Header Files\Assets\Audio</Filter>
     </ClInclude>
-    <ClInclude Include="ObjectSystemTraits.h">
-      <Filter>Header Files\Object</Filter>
-    </ClInclude>
     <ClInclude Include="ObjectSystemPriority.h">
       <Filter>Header Files\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="ScriptGlobalItems.h">
-      <Filter>Header Files\Assets\Script</Filter>
     </ClInclude>
     <ClInclude Include="ScriptParameters.h">
       <Filter>Header Files\Assets\Script</Filter>
@@ -626,9 +620,6 @@
     <ClInclude Include="ObjectFactoryBase.h">
       <Filter>Header Files\Object</Filter>
     </ClInclude>
-    <ClInclude Include="ObjectFactoryTraits.h">
-      <Filter>Header Files\Object</Filter>
-    </ClInclude>
     <ClInclude Include="TileFactory.h">
       <Filter>Header Files\Tile</Filter>
     </ClInclude>
@@ -637,9 +628,6 @@
     </ClInclude>
     <ClInclude Include="PositionalSystem.h">
       <Filter>Header Files\PositionalObject</Filter>
-    </ClInclude>
-    <ClInclude Include="ObjectSerialization.h">
-      <Filter>Header Files\Object</Filter>
     </ClInclude>
     <ClInclude Include="ObjectTypeNameSerializer.h">
       <Filter>Header Files\Object</Filter>
@@ -715,9 +703,6 @@
     </ClInclude>
     <ClInclude Include="GameState.h">
       <Filter>Header Files\State</Filter>
-    </ClInclude>
-    <ClInclude Include="ObjectManagerFactory.h">
-      <Filter>Header Files\Object</Filter>
     </ClInclude>
     <ClInclude Include="PositionalOffsetAdapter.h">
       <Filter>Header Files\PositionalObject</Filter>
@@ -833,17 +818,11 @@
     <ClInclude Include="WindowsEngine.h">
       <Filter>Header Files\Engine</Filter>
     </ClInclude>
-    <ClInclude Include="CreatedEngineContext.h">
-      <Filter>Header Files\Engine</Filter>
-    </ClInclude>
     <ClInclude Include="EngineExecution.h">
       <Filter>Header Files\Engine</Filter>
     </ClInclude>
     <ClInclude Include="UniqueProviderSystem.h">
       <Filter>Header Files\Provider</Filter>
-    </ClInclude>
-    <ClInclude Include="CameraSystem.h">
-      <Filter>Header Files\Render</Filter>
     </ClInclude>
     <ClInclude Include="AssetPackageSystem.h">
       <Filter>Header Files\Assets</Filter>
@@ -856,9 +835,6 @@
     </ClInclude>
     <ClInclude Include="StateSystem.h">
       <Filter>Header Files\State</Filter>
-    </ClInclude>
-    <ClInclude Include="RenderingSystem.h">
-      <Filter>Header Files\Render</Filter>
     </ClInclude>
     <ClInclude Include="InitializationFileSection.h">
       <Filter>Header Files\Initialization</Filter>
@@ -1007,35 +983,14 @@
     <ClInclude Include="ObjectManagerException.h">
       <Filter>Header Files\Object</Filter>
     </ClInclude>
-    <ClInclude Include="InputWorldScribe.h">
-      <Filter>Header Files\World\World Scribe</Filter>
-    </ClInclude>
-    <ClInclude Include="OutputWorldScribe.h">
-      <Filter>Header Files\World\World Scribe</Filter>
-    </ClInclude>
-    <ClInclude Include="InputStasisScribe.h">
-      <Filter>Header Files\World\Stasis Scribe</Filter>
-    </ClInclude>
-    <ClInclude Include="OutputStasisScribe.h">
-      <Filter>Header Files\World\Stasis Scribe</Filter>
-    </ClInclude>
-    <ClInclude Include="ScribeBase.h">
-      <Filter>Header Files\Serialization\ScribeBase</Filter>
-    </ClInclude>
-    <ClInclude Include="OutputScribeBase.h">
-      <Filter>Header Files\Serialization\ScribeBase</Filter>
-    </ClInclude>
-    <ClInclude Include="InputScribeBase.h">
-      <Filter>Header Files\Serialization\ScribeBase</Filter>
-    </ClInclude>
     <ClInclude Include="SkipFileObject.h">
-      <Filter>Header Files\Serialization\Skip File</Filter>
+      <Filter>Header Files\Serialization\SkipFile</Filter>
     </ClInclude>
     <ClInclude Include="SkipFileHandle.h">
-      <Filter>Header Files\Serialization\Skip File</Filter>
+      <Filter>Header Files\Serialization\SkipFile</Filter>
     </ClInclude>
     <ClInclude Include="SkipFileSaver.h">
-      <Filter>Header Files\Serialization\Skip File</Filter>
+      <Filter>Header Files\Serialization\SkipFile</Filter>
     </ClInclude>
     <ClInclude Include="EntityAvatarSystem.h">
       <Filter>Header Files\Entities\Systems</Filter>
@@ -1046,9 +1001,6 @@
     <ClInclude Include="WorldSystem.h">
       <Filter>Header Files\World</Filter>
     </ClInclude>
-    <ClInclude Include="ObjectRegistration.h">
-      <Filter>Header Files\Object</Filter>
-    </ClInclude>
     <ClInclude Include="ObjectException.h">
       <Filter>Header Files\Object</Filter>
     </ClInclude>
@@ -1058,17 +1010,14 @@
     <ClInclude Include="UnownedProviderSystem.h">
       <Filter>Header Files\Provider</Filter>
     </ClInclude>
-    <ClInclude Include="StopwatchBase.h">
-      <Filter>Header Files\Time\Stopwatches</Filter>
-    </ClInclude>
     <ClInclude Include="FrameStopwatch.h">
-      <Filter>Header Files\Time\Stopwatches</Filter>
+      <Filter>Header Files\Time\Stopwatch</Filter>
     </ClInclude>
     <ClInclude Include="RealStopwatch.h">
-      <Filter>Header Files\Time\Stopwatches</Filter>
+      <Filter>Header Files\Time\Stopwatch</Filter>
     </ClInclude>
     <ClInclude Include="ExtendedStopwatchAdapter.h">
-      <Filter>Header Files\Time\Stopwatches</Filter>
+      <Filter>Header Files\Time\Stopwatch</Filter>
     </ClInclude>
     <ClInclude Include="AngelScriptTile.h">
       <Filter>Header Files\AngelScript\Registration</Filter>
@@ -1172,6 +1121,78 @@
     <ClInclude Include="Size2D.h">
       <Filter>Header Files\Position\2D</Filter>
     </ClInclude>
+    <ClInclude Include="TypeRegistration.h">
+      <Filter>Header Files\TypeRegistration</Filter>
+    </ClInclude>
+    <ClInclude Include="EngineTypeRegistration.h">
+      <Filter>Header Files\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectManagerFactory.h">
+      <Filter>Header Files\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="EngineInitializationProperties.h">
+      <Filter>Header Files\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="EngineNotSetup.h">
+      <Filter>Header Files\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="InputArchiveBase.h">
+      <Filter>Header Files\Serialization\Archive</Filter>
+    </ClInclude>
+    <ClInclude Include="OutputArchiveBase.h">
+      <Filter>Header Files\Serialization\Archive</Filter>
+    </ClInclude>
+    <ClInclude Include="ArchiveBase.h">
+      <Filter>Header Files\Serialization\Archive</Filter>
+    </ClInclude>
+    <ClInclude Include="InputStasisArchive.h">
+      <Filter>Header Files\World\StasisArchive</Filter>
+    </ClInclude>
+    <ClInclude Include="OutputStasisArchive.h">
+      <Filter>Header Files\World\StasisArchive</Filter>
+    </ClInclude>
+    <ClInclude Include="InputWorldArchive.h">
+      <Filter>Header Files\World\WorldArchive</Filter>
+    </ClInclude>
+    <ClInclude Include="OutputWorldArchive.h">
+      <Filter>Header Files\World\WorldArchive</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectSystemScribe.h">
+      <Filter>Header Files\Object\Scribe</Filter>
+    </ClInclude>
+    <ClInclude Include="Stopwatch.h">
+      <Filter>Header Files\Time\Stopwatch</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectTraits.h">
+      <Filter>Header Files\Object\Traits</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectFactoryTraits.h">
+      <Filter>Header Files\Object\Traits</Filter>
+    </ClInclude>
+    <ClInclude Include="ProcessedObjectTraits.h">
+      <Filter>Header Files\Object\Traits</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectSystemTraits.h">
+      <Filter>Header Files\Object\Traits</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectScribe.h">
+      <Filter>Header Files\Object\Scribe</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderSystem.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Line.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Color.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Octree.h">
+      <Filter>Header Files\PositionalObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Field.cpp">
@@ -1185,9 +1206,6 @@
     </ClCompile>
     <ClCompile Include="FontDefines.cpp">
       <Filter>Source Files\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="Color.cpp">
-      <Filter>Source Files\Render\Color</Filter>
     </ClCompile>
     <ClCompile Include="StateGui.cpp">
       <Filter>Source Files\State</Filter>
@@ -1216,14 +1234,8 @@
     <ClCompile Include="EntityAISystem.cpp">
       <Filter>Source Files\Entities\Systems</Filter>
     </ClCompile>
-    <ClCompile Include="FilePath.cpp">
-      <Filter>Source Files\File</Filter>
-    </ClCompile>
     <ClCompile Include="FileUtility.cpp">
       <Filter>Source Files\File</Filter>
-    </ClCompile>
-    <ClCompile Include="Optional.cpp">
-      <Filter>Source Files\Helper</Filter>
     </ClCompile>
     <ClCompile Include="Music.cpp">
       <Filter>Source Files\Sound</Filter>
@@ -1236,12 +1248,6 @@
     </ClCompile>
     <ClCompile Include="InputAction.cpp">
       <Filter>Source Files\Input</Filter>
-    </ClCompile>
-    <ClCompile Include="LineRender.cpp">
-      <Filter>Source Files\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="RenderFragmentGrid.cpp">
-      <Filter>Source Files\Render</Filter>
     </ClCompile>
     <ClCompile Include="WorldStart.cpp">
       <Filter>Source Files\World</Filter>
@@ -1278,9 +1284,6 @@
     </ClCompile>
     <ClCompile Include="InputException.cpp">
       <Filter>Source Files\Exceptions</Filter>
-    </ClCompile>
-    <ClCompile Include="RelativeFilePath.cpp">
-      <Filter>Source Files\File</Filter>
     </ClCompile>
     <ClCompile Include="SenseComponent.cpp">
       <Filter>Source Files\Entities\Components\Derived</Filter>
@@ -1335,9 +1338,6 @@
     </ClCompile>
     <ClCompile Include="AudioAssetInstance.cpp">
       <Filter>Source Files\Assets\Audio</Filter>
-    </ClCompile>
-    <ClCompile Include="ScriptGlobalItems.cpp">
-      <Filter>Source Files\Assets\Script</Filter>
     </ClCompile>
     <ClCompile Include="ScriptParameters.cpp">
       <Filter>Source Files\Assets\Script</Filter>
@@ -1414,9 +1414,6 @@
     <ClCompile Include="AngelScriptUtility.cpp">
       <Filter>Source Files\AngelScript</Filter>
     </ClCompile>
-    <ClCompile Include="Event.cpp">
-      <Filter>Source Files\Events</Filter>
-    </ClCompile>
     <ClCompile Include="AnyEventConnection.cpp">
       <Filter>Source Files\Events</Filter>
     </ClCompile>
@@ -1434,9 +1431,6 @@
     </ClCompile>
     <ClCompile Include="GameState.cpp">
       <Filter>Source Files\State</Filter>
-    </ClCompile>
-    <ClCompile Include="ObjectManagerFactory.cpp">
-      <Filter>Source Files\Object</Filter>
     </ClCompile>
     <ClCompile Include="PositionalOffsetAdapter.cpp">
       <Filter>Source Files\PositionalObject</Filter>
@@ -1483,9 +1477,6 @@
     <ClCompile Include="EngineExecution.cpp">
       <Filter>Source Files\Engine</Filter>
     </ClCompile>
-    <ClCompile Include="CameraSystem.cpp">
-      <Filter>Source Files\Render</Filter>
-    </ClCompile>
     <ClCompile Include="AssetPackageSystem.cpp">
       <Filter>Source Files\Assets</Filter>
     </ClCompile>
@@ -1497,9 +1488,6 @@
     </ClCompile>
     <ClCompile Include="StateSystem.cpp">
       <Filter>Source Files\State</Filter>
-    </ClCompile>
-    <ClCompile Include="RenderingSystem.cpp">
-      <Filter>Source Files\Render</Filter>
     </ClCompile>
     <ClCompile Include="InitializationFileSection.cpp">
       <Filter>Source Files\Initialization</Filter>
@@ -1639,27 +1627,6 @@
     <ClCompile Include="ObjectManagerException.cpp">
       <Filter>Source Files\Object</Filter>
     </ClCompile>
-    <ClCompile Include="InputWorldScribe.cpp">
-      <Filter>Source Files\World\World Scribe</Filter>
-    </ClCompile>
-    <ClCompile Include="OutputWorldScribe.cpp">
-      <Filter>Source Files\World\World Scribe</Filter>
-    </ClCompile>
-    <ClCompile Include="InputStasisScribe.cpp">
-      <Filter>Source Files\World\Stasis Scribe</Filter>
-    </ClCompile>
-    <ClCompile Include="OutputStasisScribe.cpp">
-      <Filter>Source Files\World\Stasis Scribe</Filter>
-    </ClCompile>
-    <ClCompile Include="ScribeBase.cpp">
-      <Filter>Source Files\Serialization\ScribeBase</Filter>
-    </ClCompile>
-    <ClCompile Include="OutputScribeBase.cpp">
-      <Filter>Source Files\Serialization\ScribeBase</Filter>
-    </ClCompile>
-    <ClCompile Include="InputScribeBase.cpp">
-      <Filter>Source Files\Serialization\ScribeBase</Filter>
-    </ClCompile>
     <ClCompile Include="EntityAvatarSystem.cpp">
       <Filter>Source Files\Entities\Systems</Filter>
     </ClCompile>
@@ -1669,9 +1636,6 @@
     <ClCompile Include="WorldSystem.cpp">
       <Filter>Source Files\World</Filter>
     </ClCompile>
-    <ClCompile Include="ObjectRegistration.cpp">
-      <Filter>Source Files\Object</Filter>
-    </ClCompile>
     <ClCompile Include="ObjectException.cpp">
       <Filter>Source Files\Object</Filter>
     </ClCompile>
@@ -1679,21 +1643,15 @@
       <Filter>Source Files\Engine</Filter>
     </ClCompile>
     <ClCompile Include="FrameStopwatch.cpp">
-      <Filter>Source Files\Time\Stopwatches</Filter>
+      <Filter>Source Files\Time\Stopwatch</Filter>
     </ClCompile>
     <ClCompile Include="RealStopwatch.cpp">
-      <Filter>Source Files\Time\Stopwatches</Filter>
-    </ClCompile>
-    <ClCompile Include="StopwatchBase.cpp">
-      <Filter>Source Files\Time\Stopwatches</Filter>
+      <Filter>Source Files\Time\Stopwatch</Filter>
     </ClCompile>
     <ClCompile Include="NullWindow.cpp">
       <Filter>Source Files\Window</Filter>
     </ClCompile>
     <ClCompile Include="NullFileManager.cpp">
-      <Filter>Source Files\File</Filter>
-    </ClCompile>
-    <ClCompile Include="FileName.cpp">
       <Filter>Source Files\File</Filter>
     </ClCompile>
     <ClCompile Include="Pathfinder.cpp">
@@ -1763,6 +1721,57 @@
       <Filter>Source Files\Position\Grid</Filter>
     </ClCompile>
     <ClCompile Include="AxisAlignedObject.cpp">
+      <Filter>Source Files\PositionalObject</Filter>
+    </ClCompile>
+    <ClCompile Include="TypeRegistration.cpp">
+      <Filter>Source Files\TypeRegistration</Filter>
+    </ClCompile>
+    <ClCompile Include="EngineTypeRegistration.cpp">
+      <Filter>Source Files\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectManagerFactory.cpp">
+      <Filter>Source Files\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="EngineNotSetup.cpp">
+      <Filter>Source Files\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="InputArchiveBase.cpp">
+      <Filter>Source Files\Serialization\Archive</Filter>
+    </ClCompile>
+    <ClCompile Include="OutputArchiveBase.cpp">
+      <Filter>Source Files\Serialization\Archive</Filter>
+    </ClCompile>
+    <ClCompile Include="ArchiveBase.cpp">
+      <Filter>Source Files\Serialization\Archive</Filter>
+    </ClCompile>
+    <ClCompile Include="InputStasisArchive.cpp">
+      <Filter>Source Files\World\StasisArchive</Filter>
+    </ClCompile>
+    <ClCompile Include="OutputStasisArchive.cpp">
+      <Filter>Source Files\World\StasisArchive</Filter>
+    </ClCompile>
+    <ClCompile Include="InputWorldArchive.cpp">
+      <Filter>Source Files\World\WorldArchive</Filter>
+    </ClCompile>
+    <ClCompile Include="OutputWorldArchive.cpp">
+      <Filter>Source Files\World\WorldArchive</Filter>
+    </ClCompile>
+    <ClCompile Include="Stopwatch.cpp">
+      <Filter>Source Files\Time\Stopwatch</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderSystem.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Line.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Color.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Octree.cpp">
       <Filter>Source Files\PositionalObject</Filter>
     </ClCompile>
   </ItemGroup>

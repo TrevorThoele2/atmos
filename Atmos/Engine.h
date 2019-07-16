@@ -1,12 +1,13 @@
 #pragma once
 
-#include "CreatedEngineContext.h"
+#include "EngineInitializationProperties.h"
 #include "EngineExecution.h"
 
 #include "WorldManager.h"
 #include "ObjectManager.h"
+#include "ObjectManagerFactory.h"
 
-#include "ObjectRegistration.h"
+#include "TypeRegistration.h"
 
 namespace Atmos
 {
@@ -23,19 +24,36 @@ namespace Atmos
 
         void Exit();
     protected:
-        typedef CreatedEngineContext CreatedContext;
-    protected:
-        WorldManager worldManager;
-
-        ObjectManager globalObjectManager;
+        typedef EngineInitializationProperties InitializationProperties;
     protected:
         Engine();
 
-        virtual CreatedContext CreateDefaultContext() = 0;
+        virtual InitializationProperties CreateInitializationProperties(ObjectManager& globalObjectManager) = 0;
 
         virtual void DoExit() = 0;
     private:
-        EngineExecution execution;
-        ObjectRegistration registration;
+        bool IsSetup() const;
+
+        void SetupRequired();
+    private:
+        ObjectManager globalObjectManager;
+        ObjectManagerFactory localObjectManagerFactory;
+
+        TypeRegistration typeRegistration;
+        TypeRegistration::Group* globalTypes;
+        TypeRegistration::Group* localTypes;
+        TypeRegistration::Group* infrastructureTypes;
+
+        class ExecutionContext
+        {
+        public:
+            EngineExecution execution;
+            WorldManager worldManager;
+        public:
+            ExecutionContext(Engine& owner, WorldManager&& worldManager);
+        };
+
+        typedef std::unique_ptr<ExecutionContext> ExecutionContextPtr;
+        ExecutionContextPtr executionContext;
     };
 }

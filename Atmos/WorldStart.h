@@ -18,7 +18,17 @@ namespace Atmos
         WorldStart(const WorldStart& arg);
         WorldStart& operator=(const WorldStart& arg);
     private:
-        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
+    };
+}
+
+namespace Inscription
+{
+    template<>
+    class Scribe<::Atmos::WorldStart, BinaryArchive> :
+        public CompositeScribe<::Atmos::WorldStart, BinaryArchive>
+    {
+    public:
+        static void Scriven(ObjectT& object, ArchiveT& archive);
     };
 }

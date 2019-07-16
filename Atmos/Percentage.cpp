@@ -5,238 +5,233 @@
 
 namespace Atmos
 {
-    const Percentage::WrappedT Percentage::max(Percentage::WrappedT::Split(100, 0));
-    const Percentage::WrappedT Percentage::min(Percentage::WrappedT::Split(0, 0));
+    const Percentage::Wrapped Percentage::max(Percentage::Wrapped::Split(100, 0));
+    const Percentage::Wrapped Percentage::min(Percentage::Wrapped::Split(0, 0));
 
-    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(Percentage)
-    {
-        scribe(wrapped);
-    }
-
-    Percentage::Percentage(const WrappedT::Split &split) : wrapped(split)
+    Percentage::Percentage(const Wrapped::Split& split) : wrapped(split)
     {}
 
-    Percentage& Percentage::operator=(const WrappedT::Split &split)
+    Percentage& Percentage::operator=(const Wrapped::Split& split)
     {
         wrapped = split;
         return *this;
     }
 
-    bool Percentage::operator==(const Percentage &arg) const
+    bool Percentage::operator==(const Percentage& arg) const
     {
         return wrapped == arg.wrapped;
     }
 
-    bool Percentage::operator==(const WrappedT &arg) const
+    bool Percentage::operator==(const Wrapped& arg) const
     {
         return wrapped == arg;
     }
 
-    bool Percentage::operator==(const Split &arg) const
+    bool Percentage::operator==(const Split& arg) const
     {
         return wrapped == arg;
     }
 
-    bool Percentage::operator!=(const Percentage &arg) const
+    bool Percentage::operator!=(const Percentage& arg) const
     {
         return !(*this == arg);
     }
 
-    bool Percentage::operator!=(const WrappedT &arg) const
+    bool Percentage::operator!=(const Wrapped& arg) const
     {
         return !(*this == arg);
     }
 
-    bool Percentage::operator!=(const Split &arg) const
+    bool Percentage::operator!=(const Split& arg) const
     {
         return !(*this == arg);
     }
 
-    bool Percentage::operator<(const Percentage &arg) const
+    bool Percentage::operator<(const Percentage& arg) const
     {
         return wrapped < arg.wrapped;
     }
 
-    bool Percentage::operator<(const WrappedT &arg) const
+    bool Percentage::operator<(const Wrapped& arg) const
     {
         return wrapped < arg;
     }
 
-    bool Percentage::operator<(const Split &arg) const
+    bool Percentage::operator<(const Split& arg) const
     {
         return wrapped < arg;
     }
 
-    bool Percentage::operator<=(const Percentage &arg) const
+    bool Percentage::operator<=(const Percentage& arg) const
     {
         return *this < arg || *this == arg;
     }
 
-    bool Percentage::operator<=(const WrappedT &arg) const
+    bool Percentage::operator<=(const Wrapped& arg) const
     {
         return *this < arg || *this == arg;
     }
 
-    bool Percentage::operator<=(const Split &arg) const
+    bool Percentage::operator<=(const Split& arg) const
     {
         return *this < arg || *this == arg;
     }
 
-    bool Percentage::operator>(const Percentage &arg) const
+    bool Percentage::operator>(const Percentage& arg) const
     {
         return wrapped > arg.wrapped;
     }
 
-    bool Percentage::operator>(const WrappedT &arg) const
+    bool Percentage::operator>(const Wrapped& arg) const
     {
         return wrapped > arg;
     }
 
-    bool Percentage::operator>(const Split &arg) const
+    bool Percentage::operator>(const Split& arg) const
     {
         return wrapped > arg;
     }
 
-    bool Percentage::operator>=(const Percentage &arg) const
+    bool Percentage::operator>=(const Percentage& arg) const
     {
         return *this > arg || *this == arg;
     }
 
-    bool Percentage::operator>=(const WrappedT &arg) const
+    bool Percentage::operator>=(const Wrapped& arg) const
     {
         return *this > arg || *this == arg;
     }
 
-    bool Percentage::operator>=(const Split &arg) const
+    bool Percentage::operator>=(const Split& arg) const
     {
         return *this > arg || *this == arg;
     }
 
-    Percentage Percentage::operator+(const Percentage &arg) const
+    Percentage Percentage::operator+(const Percentage& arg) const
     {
-        if (OverflowAdd(wrapped, arg.wrapped, WrappedT(max)))
+        if (OverflowAdd(wrapped, arg.wrapped, Wrapped(max)))
             return Percentage(max);
-        else if (UnderflowAdd(wrapped, arg.wrapped, WrappedT(min)))
+        else if (UnderflowAdd(wrapped, arg.wrapped, Wrapped(min)))
             return Percentage(min);
 
         return Percentage(wrapped + arg.wrapped);
     }
 
-    Percentage Percentage::operator+(const WrappedT &arg) const
+    Percentage Percentage::operator+(const Wrapped& arg) const
     {
-        if (OverflowAdd(wrapped, arg, WrappedT(max)))
+        if (OverflowAdd(wrapped, arg, Wrapped(max)))
             return Percentage(max);
-        else if (UnderflowAdd(wrapped, arg, WrappedT(min)))
+        else if (UnderflowAdd(wrapped, arg, Wrapped(min)))
             return Percentage(min);
 
         return Percentage(wrapped + arg);
     }
 
-    Percentage Percentage::operator+(const Split &arg) const
+    Percentage Percentage::operator+(const Split& arg) const
     {
-        if (OverflowAdd(wrapped, WrappedT(arg), WrappedT(max)))
+        if (OverflowAdd(wrapped, Wrapped(arg), Wrapped(max)))
             return Percentage(max);
-        else if (UnderflowAdd(wrapped, WrappedT(arg), WrappedT(min)))
+        else if (UnderflowAdd(wrapped, Wrapped(arg), Wrapped(min)))
             return Percentage(min);
 
         return Percentage(wrapped + arg);
     }
 
-    Percentage Percentage::operator-(const Percentage &arg) const
+    Percentage Percentage::operator-(const Percentage& arg) const
     {
-        if (OverflowSubtract(wrapped, arg.wrapped, WrappedT(max)))
+        if (OverflowSubtract(wrapped, arg.wrapped, Wrapped(max)))
             return Percentage(max);
-        else if (UnderflowSubtract(wrapped, arg.wrapped, WrappedT(min)))
+        else if (UnderflowSubtract(wrapped, arg.wrapped, Wrapped(min)))
             return Percentage(min);
 
         return Percentage(wrapped - arg.wrapped);
     }
 
-    Percentage Percentage::operator-(const WrappedT &arg) const
+    Percentage Percentage::operator-(const Wrapped& arg) const
     {
-        if (OverflowSubtract(wrapped, arg, WrappedT(max)))
+        if (OverflowSubtract(wrapped, arg, Wrapped(max)))
             return Percentage(max);
-        else if (UnderflowSubtract(wrapped, arg, WrappedT(min)))
+        else if (UnderflowSubtract(wrapped, arg, Wrapped(min)))
             return Percentage(min);
 
         return Percentage(wrapped - arg);
     }
 
-    Percentage Percentage::operator-(const Split &arg) const
+    Percentage Percentage::operator-(const Split& arg) const
     {
-        if (OverflowSubtract(wrapped, WrappedT(arg), WrappedT(max)))
+        if (OverflowSubtract(wrapped, Wrapped(arg), Wrapped(max)))
             return Percentage(max);
-        else if (UnderflowSubtract(wrapped, WrappedT(arg), WrappedT(min)))
+        else if (UnderflowSubtract(wrapped, Wrapped(arg), Wrapped(min)))
             return Percentage(min);
 
-        return Percentage(wrapped - WrappedT(arg));
+        return Percentage(wrapped - Wrapped(arg));
     }
 
-    Percentage Percentage::operator*(const Percentage &arg) const
+    Percentage Percentage::operator*(const Percentage& arg) const
     {
-        if (OverflowMultiply(wrapped, arg.wrapped, WrappedT(max)))
+        if (OverflowMultiply(wrapped, arg.wrapped, Wrapped(max)))
             return Percentage(max);
-        else if (UnderflowMultiply(wrapped, arg.wrapped, WrappedT(min)))
+        else if (UnderflowMultiply(wrapped, arg.wrapped, Wrapped(min)))
             return Percentage(min);
 
         return Percentage(wrapped * arg.wrapped);
     }
 
-    Percentage Percentage::operator*(const WrappedT &arg) const
+    Percentage Percentage::operator*(const Wrapped& arg) const
     {
-        if (OverflowMultiply(wrapped, arg, WrappedT(max)))
+        if (OverflowMultiply(wrapped, arg, Wrapped(max)))
             return Percentage(max);
-        else if (UnderflowMultiply(wrapped, arg, WrappedT(min)))
+        else if (UnderflowMultiply(wrapped, arg, Wrapped(min)))
             return Percentage(min);
 
         return Percentage(wrapped * arg);
     }
 
-    Percentage Percentage::operator*(const Split &arg) const
+    Percentage Percentage::operator*(const Split& arg) const
     {
-        if (OverflowMultiply(wrapped, WrappedT(arg), WrappedT(max)))
+        if (OverflowMultiply(wrapped, Wrapped(arg), Wrapped(max)))
             return Percentage(max);
-        else if (UnderflowMultiply(wrapped, WrappedT(arg), WrappedT(min)))
+        else if (UnderflowMultiply(wrapped, Wrapped(arg), Wrapped(min)))
             return Percentage(min);
 
-        return Percentage(wrapped * WrappedT(arg));
+        return Percentage(wrapped * Wrapped(arg));
     }
 
-    Percentage Percentage::operator/(const Percentage &arg) const
+    Percentage Percentage::operator/(const Percentage& arg) const
     {
-        if (OverflowDivide(wrapped, arg.wrapped, WrappedT(max)))
+        if (OverflowDivide(wrapped, arg.wrapped, Wrapped(max)))
             return Percentage(max);
-        else if (UnderflowDivide(wrapped, arg.wrapped, WrappedT(min)))
+        else if (UnderflowDivide(wrapped, arg.wrapped, Wrapped(min)))
             return Percentage(min);
 
         return Percentage(wrapped / arg.wrapped);
     }
 
-    Percentage Percentage::operator/(const WrappedT &arg) const
+    Percentage Percentage::operator/(const Wrapped& arg) const
     {
-        if (OverflowDivide(wrapped, arg, WrappedT(max)))
+        if (OverflowDivide(wrapped, arg, Wrapped(max)))
             return Percentage(max);
-        else if (UnderflowDivide(wrapped, arg, WrappedT(min)))
+        else if (UnderflowDivide(wrapped, arg, Wrapped(min)))
             return Percentage(min);
 
         return Percentage(wrapped / arg);
     }
 
-    Percentage Percentage::operator/(const Split &arg) const
+    Percentage Percentage::operator/(const Split& arg) const
     {
-        if (OverflowDivide(wrapped, WrappedT(arg), WrappedT(max)))
+        if (OverflowDivide(wrapped, Wrapped(arg), Wrapped(max)))
             return Percentage(max);
-        else if (UnderflowDivide(wrapped, WrappedT(arg), WrappedT(min)))
+        else if (UnderflowDivide(wrapped, Wrapped(arg), Wrapped(min)))
             return Percentage(min);
 
-        return Percentage(wrapped / WrappedT(arg));
+        return Percentage(wrapped / Wrapped(arg));
     }
 
-    Percentage& Percentage::operator+=(const Percentage &arg)
+    Percentage& Percentage::operator+=(const Percentage& arg)
     {
-        if (OverflowAdd(wrapped, arg.wrapped, WrappedT(max)))
+        if (OverflowAdd(wrapped, arg.wrapped, Wrapped(max)))
             wrapped = max;
-        else if (UnderflowAdd(wrapped, arg.wrapped, WrappedT(min)))
+        else if (UnderflowAdd(wrapped, arg.wrapped, Wrapped(min)))
             wrapped = min;
         else
             wrapped += arg.wrapped;
@@ -244,11 +239,11 @@ namespace Atmos
         return *this;
     }
 
-    Percentage& Percentage::operator+=(const WrappedT &arg)
+    Percentage& Percentage::operator+=(const Wrapped& arg)
     {
-        if (OverflowAdd(wrapped, arg, WrappedT(max)))
+        if (OverflowAdd(wrapped, arg, Wrapped(max)))
             wrapped = max;
-        else if (UnderflowAdd(wrapped, arg, WrappedT(min)))
+        else if (UnderflowAdd(wrapped, arg, Wrapped(min)))
             wrapped = min;
         else
             wrapped += arg;
@@ -256,23 +251,23 @@ namespace Atmos
         return *this;
     }
 
-    Percentage& Percentage::operator+=(const Split &arg)
+    Percentage& Percentage::operator+=(const Split& arg)
     {
-        if (OverflowAdd(wrapped, WrappedT(arg), WrappedT(max)))
+        if (OverflowAdd(wrapped, Wrapped(arg), Wrapped(max)))
             wrapped = max;
-        else if (UnderflowAdd(wrapped, WrappedT(arg), WrappedT(min)))
+        else if (UnderflowAdd(wrapped, Wrapped(arg), Wrapped(min)))
             wrapped = min;
         else
-            wrapped += WrappedT(arg);
+            wrapped += Wrapped(arg);
 
         return *this;
     }
 
-    Percentage& Percentage::operator-=(const Percentage &arg)
+    Percentage& Percentage::operator-=(const Percentage& arg)
     {
-        if (OverflowSubtract(wrapped, arg.wrapped, WrappedT(max)))
+        if (OverflowSubtract(wrapped, arg.wrapped, Wrapped(max)))
             wrapped = max;
-        else if (UnderflowSubtract(wrapped, arg.wrapped, WrappedT(min)))
+        else if (UnderflowSubtract(wrapped, arg.wrapped, Wrapped(min)))
             wrapped = min;
         else
             wrapped -= arg.wrapped;
@@ -280,11 +275,11 @@ namespace Atmos
         return *this;
     }
 
-    Percentage& Percentage::operator-=(const WrappedT &arg)
+    Percentage& Percentage::operator-=(const Wrapped& arg)
     {
-        if (OverflowSubtract(wrapped, arg, WrappedT(max)))
+        if (OverflowSubtract(wrapped, arg, Wrapped(max)))
             wrapped = max;
-        else if (UnderflowSubtract(wrapped, arg, WrappedT(min)))
+        else if (UnderflowSubtract(wrapped, arg, Wrapped(min)))
             wrapped = min;
         else
             wrapped -= arg;
@@ -292,11 +287,11 @@ namespace Atmos
         return *this;
     }
 
-    Percentage& Percentage::operator-=(const Split &arg)
+    Percentage& Percentage::operator-=(const Split& arg)
     {
-        if (OverflowSubtract(wrapped, WrappedT(arg), WrappedT(max)))
+        if (OverflowSubtract(wrapped, Wrapped(arg), Wrapped(max)))
             wrapped = max;
-        else if (UnderflowSubtract(wrapped, WrappedT(arg), WrappedT(min)))
+        else if (UnderflowSubtract(wrapped, Wrapped(arg), Wrapped(min)))
             wrapped = min;
         else
             wrapped -= arg;
@@ -304,11 +299,11 @@ namespace Atmos
         return *this;
     }
 
-    Percentage& Percentage::operator*=(const Percentage &arg)
+    Percentage& Percentage::operator*=(const Percentage& arg)
     {
-        if (OverflowMultiply(wrapped, arg.wrapped, WrappedT(max)))
+        if (OverflowMultiply(wrapped, arg.wrapped, Wrapped(max)))
             wrapped = max;
-        else if (UnderflowMultiply(wrapped, arg.wrapped, WrappedT(min)))
+        else if (UnderflowMultiply(wrapped, arg.wrapped, Wrapped(min)))
             wrapped = min;
         else
             wrapped *= arg.wrapped;
@@ -316,11 +311,11 @@ namespace Atmos
         return *this;
     }
 
-    Percentage& Percentage::operator*=(const WrappedT &arg)
+    Percentage& Percentage::operator*=(const Wrapped& arg)
     {
-        if (OverflowMultiply(wrapped, arg, WrappedT(max)))
+        if (OverflowMultiply(wrapped, arg, Wrapped(max)))
             wrapped = max;
-        else if (UnderflowMultiply(wrapped, arg, WrappedT(min)))
+        else if (UnderflowMultiply(wrapped, arg, Wrapped(min)))
             wrapped = min;
         else
             wrapped *= arg;
@@ -328,23 +323,23 @@ namespace Atmos
         return *this;
     }
 
-    Percentage& Percentage::operator*=(const Split &arg)
+    Percentage& Percentage::operator*=(const Split& arg)
     {
-        if (OverflowMultiply(wrapped, WrappedT(arg), WrappedT(max)))
+        if (OverflowMultiply(wrapped, Wrapped(arg), Wrapped(max)))
             wrapped = max;
-        else if (UnderflowMultiply(wrapped, WrappedT(arg), WrappedT(min)))
+        else if (UnderflowMultiply(wrapped, Wrapped(arg), Wrapped(min)))
             wrapped = min;
         else
-            wrapped *= WrappedT(arg);
+            wrapped *= Wrapped(arg);
 
         return *this;
     }
 
-    Percentage& Percentage::operator/=(const Percentage &arg)
+    Percentage& Percentage::operator/=(const Percentage& arg)
     {
-        if (OverflowDivide(wrapped, arg.wrapped, WrappedT(max)))
+        if (OverflowDivide(wrapped, arg.wrapped, Wrapped(max)))
             wrapped = max;
-        else if (UnderflowDivide(wrapped, arg.wrapped, WrappedT(min)))
+        else if (UnderflowDivide(wrapped, arg.wrapped, Wrapped(min)))
             wrapped = min;
         else
             wrapped /= arg.wrapped;
@@ -352,11 +347,11 @@ namespace Atmos
         return *this;
     }
 
-    Percentage& Percentage::operator/=(const WrappedT &arg)
+    Percentage& Percentage::operator/=(const Wrapped& arg)
     {
-        if (OverflowDivide(wrapped, arg, WrappedT(max)))
+        if (OverflowDivide(wrapped, arg, Wrapped(max)))
             wrapped = max;
-        else if (UnderflowDivide(wrapped, arg, WrappedT(min)))
+        else if (UnderflowDivide(wrapped, arg, Wrapped(min)))
             wrapped = min;
         else
             wrapped /= arg;
@@ -364,14 +359,14 @@ namespace Atmos
         return *this;
     }
 
-    Percentage& Percentage::operator/=(const Split &arg)
+    Percentage& Percentage::operator/=(const Split& arg)
     {
-        if (OverflowDivide(wrapped, WrappedT(arg), WrappedT(max)))
+        if (OverflowDivide(wrapped, Wrapped(arg), Wrapped(max)))
             wrapped = max;
-        else if (UnderflowDivide(wrapped, WrappedT(arg), WrappedT(min)))
+        else if (UnderflowDivide(wrapped, Wrapped(arg), Wrapped(min)))
             wrapped = min;
         else
-            wrapped /= WrappedT(arg);
+            wrapped /= Wrapped(arg);
 
         return *this;
     }
@@ -457,7 +452,7 @@ namespace Atmos
         return static_cast<Split>(wrapped);
     }
 
-    Percentage::operator WrappedT() const
+    Percentage::operator Wrapped() const
     {
         return wrapped;
     }
@@ -475,5 +470,13 @@ namespace Atmos
     Percentage Percentage::ConvertToDecimal() const
     {
         return *this / max;
+    }
+}
+
+namespace Inscription
+{
+    void Scribe<::Atmos::Percentage, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
+    {
+        archive(object.wrapped);
     }
 }

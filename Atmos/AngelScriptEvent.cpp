@@ -9,85 +9,82 @@
 #include "AngelScriptAssert.h"
 #include <angelscript.h>
 
-namespace Atmos
+namespace Atmos::Scripting
 {
-    namespace Scripting
+    Event::Event(ObjectManager& objectManager) : objectManager(&objectManager)
     {
-        Event::Event(ObjectManager& objectManager) : objectManager(&objectManager)
-        {
-            auto engine = Engine();
-            context = engine->CreateContext();
-        }
+        auto engine = Engine();
+        context = engine->CreateContext();
+    }
 
-        Event::~Event()
+    Event::~Event()
+    {
+        for (auto loop = subscribedFunctions.begin(); loop != subscribedFunctions.end();)
         {
-            for (auto loop = subscribedFunctions.begin(); loop != subscribedFunctions.end();)
+            (*loop)->Release();
+            loop = subscribedFunctions.erase(loop);
+        }
+        context->Release();
+    }
+
+    void Event::Subscribe(asIScriptFunction* function)
+    {
+        subscribedFunctions.push_back(function);
+    }
+
+    void Event::Unsubscribe(asIScriptFunction* function)
+    {
+        for (auto loop = subscribedFunctions.begin(); loop != subscribedFunctions.end(); ++loop)
+        {
+            if (*loop == function)
             {
                 (*loop)->Release();
-                loop = subscribedFunctions.erase(loop);
-            }
-            context->Release();
-        }
-
-        void Event::Subscribe(asIScriptFunction* function)
-        {
-            subscribedFunctions.push_back(function);
-        }
-
-        void Event::Unsubscribe(asIScriptFunction* function)
-        {
-            for (auto loop = subscribedFunctions.begin(); loop != subscribedFunctions.end(); ++loop)
-            {
-                if (*loop == function)
-                {
-                    (*loop)->Release();
-                    subscribedFunctions.erase(loop);
-                    break;
-                }
-            }
-
-            function->Release();
-        }
-
-        void Event::Execute()
-        {
-            for (auto& loop : subscribedFunctions)
-            {
-                context->Prepare(loop);
-                context->Execute();
-                context->Unprepare();
+                subscribedFunctions.erase(loop);
+                break;
             }
         }
 
-        void Event::RegisterToAngelScript(asIScriptEngine* engine)
+        function->Release();
+    }
+
+    void Event::Execute()
+    {
+        for (auto& loop : subscribedFunctions)
         {
-            AngelScriptAssert(engine->RegisterFuncdef(
-                "void EventFunction()"));
-
-            const char* className = "Event";
-
-            AngelScriptAssert(engine->RegisterObjectType(
-                className, sizeof(Event), asOBJ_VALUE));
-            AngelScriptAssert(engine->RegisterObjectBehaviour(
-                className, asBEHAVE_CONSTRUCT, "void f()", asFUNCTION(RegistrationInterface::GenerateGenericValue<Event>), asCALL_GENERIC));
-            AngelScriptAssert(engine->RegisterObjectBehaviour(
-                className, asBEHAVE_DESTRUCT, "void f()", asFUNCTION(RegistrationInterface::DestructGenericValue<Event>), asCALL_GENERIC));
-            AngelScriptAssert(engine->RegisterObjectMethod(
-                className, "void Subscribe(EventFunction@ function)", asMETHOD(Event, Subscribe), asCALL_THISCALL));
-            AngelScriptAssert(engine->RegisterObjectMethod(
-                className, "void Unsubscribe(EventFunction@ function)", asMETHOD(Event, Unsubscribe), asCALL_THISCALL));
-            AngelScriptAssert(engine->RegisterObjectMethod(
-                className, "void Execute()", asMETHOD(Event, Execute), asCALL_THISCALL));
+            context->Prepare(loop);
+            context->Execute();
+            context->Unprepare();
         }
+    }
 
-        asIScriptEngine* Event::Engine()
-        {
-            return FindSystem()->Engine();
-        }
+    void Event::RegisterToAngelScript(asIScriptEngine* engine)
+    {
+        AngelScriptAssert(engine->RegisterFuncdef(
+            "void EventFunction()"));
 
-        System* Event::FindSystem()
-        {
-            return objectManager->FindSystem<System>();
-        }
+        const char* className = "Event";
+
+        AngelScriptAssert(engine->RegisterObjectType(
+            className, sizeof(Event), asOBJ_VALUE));
+        AngelScriptAssert(engine->RegisterObjectBehaviour(
+            className, asBEHAVE_CONSTRUCT, "void f()", asFUNCTION(RegistrationInterface::GenerateGenericValue<Event>), asCALL_GENERIC));
+        AngelScriptAssert(engine->RegisterObjectBehaviour(
+            className, asBEHAVE_DESTRUCT, "void f()", asFUNCTION(RegistrationInterface::DestructGenericValue<Event>), asCALL_GENERIC));
+        AngelScriptAssert(engine->RegisterObjectMethod(
+            className, "void Subscribe(EventFunction@ function)", asMETHOD(Event, Subscribe), asCALL_THISCALL));
+        AngelScriptAssert(engine->RegisterObjectMethod(
+            className, "void Unsubscribe(EventFunction@ function)", asMETHOD(Event, Unsubscribe), asCALL_THISCALL));
+        AngelScriptAssert(engine->RegisterObjectMethod(
+            className, "void Execute()", asMETHOD(Event, Execute), asCALL_THISCALL));
+    }
+
+    asIScriptEngine* Event::Engine()
+    {
+        return FindSystem()->Engine();
+    }
+
+    System* Event::FindSystem()
+    {
+        return objectManager->FindSystem<System>();
     }
 }

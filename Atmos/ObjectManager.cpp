@@ -1,9 +1,7 @@
-
 #include "ObjectManager.h"
 
-#include <Inscription/Scribe.h>
-#include <Inscription/Memory.h>
-#include <Inscription/Multimap.h>
+#include <Inscription/MultimapScribe.h>
+#include <Inscription/MemoryScribe.h>
 
 namespace Atmos
 {
@@ -125,24 +123,14 @@ namespace Atmos
         for (auto& loop : batchSources)
             loop.second->NotifyDestroyed(object);
     }
+}
 
-    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(ObjectManager)
+namespace Inscription
+{
+    void Scribe<::Atmos::ObjectManager, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
     {
-        if (scribe.IsOutput())
-        {
-            auto& outputScribe = *scribe.AsOutput();
-
-            outputScribe.Save(objects);
-            outputScribe.Save(batchSources);
-            outputScribe.Save(systems);
-        }
-        else // INPUT
-        {
-            auto& inputScribe = *scribe.AsInput();
-
-            inputScribe.Load(objects);
-            inputScribe.Load(batchSources);
-            inputScribe.Load(systems);
-        }
+        archive(object.objects);
+        archive(object.batchSources);
+        archive(object.systems);
     }
 }

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "InputScribeBase.h"
+#include "InputArchiveBase.h"
 
 #include "WorldStart.h"
 
@@ -10,11 +10,11 @@
 #include "FileName.h"
 
 #include "SkipFileHandle.h"
-#include <Inscription/InputBinaryScribe.h>
+#include <Inscription/InputBinaryArchive.h>
 
 namespace Atmos
 {
-    class InputStasisScribe : public InputScribeBase
+    class InputStasisArchive : public InputArchiveBase
     {
     public:
         enum class OpenMode
@@ -25,7 +25,7 @@ namespace Atmos
     public:
         static const char* const defaultExtension;
     public:
-        InputStasisScribe(
+        InputStasisArchive(
             const FilePath& filePath,
             const FilePath& worldFilePath,
             ObjectManager& globalObjectManager,
@@ -47,11 +47,11 @@ namespace Atmos
 
         const FileName& GetFileName() const;
     protected:
-        ::Inscription::BinaryScribe& UnderlyingScribe() override;
-        const ::Inscription::BinaryScribe& UnderlyingScribe() const override;
+        ::Inscription::BinaryArchive& UnderlyingArchive() override;
+        const ::Inscription::BinaryArchive& UnderlyingArchive() const override;
     private:
-        typedef ::Inscription::InputBinaryScribe Underlying;
-        Underlying underlyingScribe;
+        typedef ::Inscription::InputBinaryArchive Underlying;
+        Underlying underlyingArchive;
     private:
         class FieldHandle : public SkipFileHandle<Underlying>
         {
@@ -61,7 +61,7 @@ namespace Atmos
             FieldID fieldID;
             Size size;
         public:
-            FieldHandle(FocusedScribe& scribe);
+            FieldHandle(FocusedArchive& archive);
         private:
             void LoadExtra() override;
         };

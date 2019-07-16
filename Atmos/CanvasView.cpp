@@ -1,12 +1,12 @@
-
 #include "CanvasView.h"
 
-namespace Atmos
+namespace Atmos::Render
 {
-    CanvasView::CanvasView(ObjectManager& manager, const Canvas* canvas) : RenderFragment(manager), source(canvas)
+    CanvasView::CanvasView(ObjectManager& manager, const Canvas* canvas) : Fragment(manager), source(canvas)
     {}
 
-    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(CanvasView) : INSCRIPTION_TABLE_GET_BASE(RenderFragment)
+    CanvasView::CanvasView(const ::Inscription::BinaryTableData<CanvasView>& data) :
+        Fragment(std::get<0>(data.bases))
     {}
 
     ObjectTypeDescription CanvasView::TypeDescription() const
@@ -15,12 +15,4 @@ namespace Atmos
     }
 
     const ObjectTypeName ObjectTraits<CanvasView>::typeName = "CanvasView";
-}
-
-namespace Inscription
-{
-    OBJECT_INSCRIPTER_DEFINE_MEMBERS(::Atmos::CanvasView)
-    {
-
-    }
 }

@@ -1,19 +1,20 @@
-
 #include "Canvas.h"
 
-namespace Atmos
+namespace Atmos::Render
 {
     Canvas* Canvas::Data::GetOwner() const
     {
         return owner;
     }
 
-    Canvas::Canvas(DataPtr&& data, DimensionValue width, DimensionValue height) : width(width), height(height), isPainting(false)
+    Canvas::Canvas(DataPtr&& data, DimensionValue width, DimensionValue height) :
+        width(width), height(height), isPainting(false)
     {
         SetData(std::move(data));
     }
 
-    Canvas::Canvas(Canvas&& arg) : width(arg.width), height(arg.height), isPainting(std::move(arg.isPainting))
+    Canvas::Canvas(Canvas&& arg) :
+        width(arg.width), height(arg.height), isPainting(std::move(arg.isPainting))
     {
         SetData(std::move(arg.data));
     }

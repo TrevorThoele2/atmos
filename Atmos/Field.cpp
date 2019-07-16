@@ -17,9 +17,12 @@ namespace Atmos
         objectManager = std::move(arg.objectManager);
         return *this;
     }
+}
 
-    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(Field)
+namespace Inscription
+{
+    void Scribe<::Atmos::Field, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
     {
-        scribe(objectManager);
+        archive(object.objectManager);
     }
 }

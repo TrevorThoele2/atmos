@@ -4,14 +4,14 @@
 
 namespace Atmos
 {
-    template<class ScribeT>
-    class SkipFileHandle : public SkipFileObject<ScribeT>
+    template<class Archive>
+    class SkipFileHandle : public SkipFileObject<Archive>
     {
     public:
-        typedef typename SkipFileObject<ScribeT>::Position Position;
-        typedef typename SkipFileObject<ScribeT>::FocusedScribe FocusedScribe;
+        using Position = typename SkipFileObject<Archive>::Position;
+        using FocusedArchive = typename SkipFileObject<Archive>::FocusedArchive;
     public:
-        SkipFileHandle(FocusedScribe& scribe);
+        SkipFileHandle(FocusedArchive& archive);
 
         Position LoadPosition();
         template<class T>
@@ -26,63 +26,63 @@ namespace Atmos
         virtual void LoadExtra();
     };
 
-    template<class ScribeT>
-    SkipFileHandle<ScribeT>::SkipFileHandle(FocusedScribe& scribe) : SkipFileObject(scribe)
+    template<class Archive>
+    SkipFileHandle<Archive>::SkipFileHandle(FocusedArchive& archive) : SkipFileObject(archive)
     {}
 
-    template<class ScribeT>
-    typename SkipFileHandle<ScribeT>::Position SkipFileHandle<ScribeT>::LoadPosition()
+    template<class Archive>
+    typename SkipFileHandle<Archive>::Position SkipFileHandle<Archive>::LoadPosition()
     {
-        scribe.Load(position);
+        archive(position);
         LoadExtra();
         return position;
     }
 
-    template<class ScribeT>
+    template<class Archive>
     template<class T>
-    void SkipFileHandle<ScribeT>::LoadObject(T& object)
+    void SkipFileHandle<Archive>::LoadObject(T& object)
     {
-        auto currentPosition = scribe.TellStream();
-        scribe.SeekStream(position);
+        auto currentPosition = archive.TellStream();
+        archive.SeekStream(position);
 
         OnBeforeObjectLoad();
-        scribe.Load(object);
+        archive(object);
         OnAfterObjectLoad();
 
-        scribe.SeekStream(currentPosition);
+        archive.SeekStream(currentPosition);
     }
 
-    template<class Scribe>
-    ::Inscription::Buffer SkipFileHandle<Scribe>::LoadBuffer(::Inscription::Buffer::SizeT size)
+    template<class Archive>
+    ::Inscription::Buffer SkipFileHandle<Archive>::LoadBuffer(::Inscription::Buffer::SizeT size)
     {
-        auto currentPosition = scribe.TellStream();
-        scribe.SeekStream(position);
+        auto currentPosition = archive.TellStream();
+        archive.SeekStream(position);
 
         OnBeforeObjectLoad();
         ::Inscription::Buffer buffer(size);
-        scribe.ReadBuffer(buffer);
+        archive(buffer);
         OnAfterObjectLoad();
 
-        scribe.SeekStream(currentPosition);
+        archive.SeekStream(currentPosition);
 
         return buffer;
     }
 
-    template<class Scribe>
-    typename SkipFileHandle<Scribe>::Position SkipFileHandle<Scribe>::SkipPosition() const
+    template<class Archive>
+    typename SkipFileHandle<Archive>::Position SkipFileHandle<Archive>::SkipPosition() const
     {
         return position;
     }
 
-    template<class Scribe>
-    void SkipFileHandle<Scribe>::OnBeforeObjectLoad()
+    template<class Archive>
+    void SkipFileHandle<Archive>::OnBeforeObjectLoad()
     {}
 
-    template<class Scribe>
-    void SkipFileHandle<Scribe>::OnAfterObjectLoad()
+    template<class Archive>
+    void SkipFileHandle<Archive>::OnAfterObjectLoad()
     {}
 
-    template<class Scribe>
-    void SkipFileHandle<Scribe>::LoadExtra()
+    template<class Archive>
+    void SkipFileHandle<Archive>::LoadExtra()
     {}
 }

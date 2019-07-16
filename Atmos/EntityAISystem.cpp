@@ -5,42 +5,30 @@
 
 #include "ObjectManager.h"
 
-namespace Atmos
+namespace Atmos::Entity
 {
-    namespace Entity
+    AISystem::AISystem(ObjectManager& manager) : ObjectSystem(manager)
     {
-        AISystem::AISystem(ObjectManager& manager) : ObjectSystem(manager)
+        aiComponents = manager.Batch<AIComponent>();
+    }
+
+    void AISystem::WorkImpl()
+    {
+        for (auto& loop : aiComponents)
         {
-            aiComponents = manager.Batch<AIComponent>();
-        }
+            auto running = loop->script->RunningForThis();
+            if (!running.IsOccupied())
+                continue;
 
-        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(AISystem) : INSCRIPTION_TABLE_GET_BASE(ObjectSystem)
-        {}
-
-        void AISystem::WorkImpl()
-        {
-            for (auto& loop : aiComponents)
-            {
-                auto running = loop->script->RunningForThis();
-                if (!running.IsOccupied())
-                    continue;
-
-                running->Resume();
-            }
+            running->Resume();
         }
     }
 }
 
 namespace Inscription
 {
-    INSCRIPTION_BINARY_INSCRIPTER_DEFINE_TABLE(::Atmos::Entity::AISystem)
+    void Scribe<::Atmos::Entity::AISystem, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
     {
-        INSCRIPTION_BINARY_INSCRIPTER_CREATE_TABLE;
-
-        INSCRIPTION_TABLE_ADD_BASE(::Atmos::ObjectSystem);
-
-        INSCRIPTION_INSCRIPTER_RETURN_TABLE;
+        BaseScriven<::Atmos::ObjectSystem>(object, archive);
     }
-
-    INSCRIPTION_BINARY_DEFINE_SIMPLE_CLASS_NAME_RESOLVER(::Atmos::Entity::AISystem, "EntityAISystem");
 }

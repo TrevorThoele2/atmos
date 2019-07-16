@@ -1,25 +1,23 @@
-
 #include "MaterialAsset.h"
 
 namespace Atmos
 {
+    const ObjectTypeName ObjectTraits<MaterialAsset>::typeName = "Material";
+
     MaterialAsset::MaterialAsset(ObjectManager& manager, const Name& name) :
-        Asset(manager, name), columns(0), rows(0),
-        width([this]() { return _width; }), height([this]() { return _height; })
+        Asset(manager, name), columns(0), rows(0)
     {
         SubscribeToProperties();
     }
 
     MaterialAsset::MaterialAsset(const MaterialAsset& arg) :
-        Asset(arg), columns(0), rows(0),
-        width([this]() { return _width; }), height([this]() { return _height; })
+        Asset(arg), columns(0), rows(0)
     {
         SubscribeToProperties();
     }
 
-    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(MaterialAsset) :
-        INSCRIPTION_TABLE_GET_BASE(Asset),
-        width([this]() { return _width; }), height([this]() { return _height; })
+    MaterialAsset::MaterialAsset(const ::Inscription::BinaryTableData<MaterialAsset>& data) :
+        Asset(std::get<0>(data.bases))
     {
         SubscribeToProperties();
     }
@@ -88,15 +86,5 @@ namespace Atmos
     void MaterialAsset::OnImagePropertyChanged(TypedObjectReference<ImageAsset> reference)
     {
         CalculateDimensions();
-    }
-
-    const ObjectTypeName ObjectTraits<MaterialAsset>::typeName = "Material";
-}
-
-namespace Inscription
-{
-    OBJECT_INSCRIPTER_DEFINE_MEMBERS(::Atmos::MaterialAsset)
-    {
-
     }
 }

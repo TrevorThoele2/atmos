@@ -1,9 +1,8 @@
-
 #include "Color.h"
 
 #include <Inscription\Scribe.h>
 
-namespace Atmos
+namespace Atmos::Render
 {
     Color::Color() : alpha(255), red(255), green(255), blue(255)
     {}
@@ -32,12 +31,15 @@ namespace Atmos
     {
         return !(*this == arg);
     }
+}
 
-    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(Color)
+namespace Inscription
+{
+    void Scribe<::Atmos::Color, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
     {
-        scribe(alpha);
-        scribe(red);
-        scribe(green);
-        scribe(blue);
+        archive(object.alpha);
+        archive(object.red);
+        archive(object.green);
+        archive(object.blue);
     }
 }

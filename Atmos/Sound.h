@@ -1,11 +1,10 @@
-
 #pragma once
 
 #include "Sense.h"
 
 #include "AudioAssetInstance.h"
 
-#include "ObjectSerialization.h"
+#include "ObjectScribe.h"
 
 namespace Atmos
 {
@@ -18,7 +17,7 @@ namespace Atmos
     public:
         Sound(ObjectManager& manager);
         Sound(const Sound& arg);
-        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(Sound);
+        Sound(const ::Inscription::BinaryTableData<Sound>& data);
 
         ObjectTypeDescription TypeDescription() const override;
     private:
@@ -37,9 +36,17 @@ namespace Atmos
 
 namespace Inscription
 {
-    DECLARE_OBJECT_INSCRIPTER(::Atmos::Sound)
+    template<>
+    struct TableData<::Atmos::Sound, BinaryArchive> :
+        public ObjectTableDataBase<::Atmos::Sound, BinaryArchive>
+    {};
+
+    template<>
+    class Scribe<::Atmos::Sound, BinaryArchive> :
+        public ObjectScribe<::Atmos::Sound, BinaryArchive>
     {
     public:
-        OBJECT_INSCRIPTER_DECLARE_MEMBERS;
+        class Table : public TableBase
+        {};
     };
 }
