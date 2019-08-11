@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include "FieldID.h"
@@ -7,17 +6,17 @@
 
 #include "Serialization.h"
 
-namespace Atmos
+namespace Atmos::World
 {
     class FieldDestination
     {
     public:
         Direction direction;
-        GridPosition position;
+        Grid::Position position;
         FieldID id;
     public:
         FieldDestination() = default;
-        FieldDestination(const Direction& direction, const GridPosition& position, FieldID id);
+        FieldDestination(const Direction& direction, const Grid::Position& position, FieldID id);
         FieldDestination(const FieldDestination& arg) = default;
 
         FieldDestination& operator=(const FieldDestination& arg) = default;
@@ -29,10 +28,11 @@ namespace Atmos
 namespace Inscription
 {
     template<>
-    class Scribe<::Atmos::FieldDestination, BinaryArchive> :
-        public CompositeScribe<::Atmos::FieldDestination, BinaryArchive>
+    class Scribe<::Atmos::World::FieldDestination, BinaryArchive> :
+        public CompositeScribe<::Atmos::World::FieldDestination, BinaryArchive>
     {
-    public:
-        static void Scriven(ObjectT& object, ArchiveT& archive);
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
+        void ConstructImplementation(ObjectT* storage, ArchiveT& archive) override;
     };
 }

@@ -14,16 +14,16 @@
 
 #include "Serialization.h"
 
-namespace Atmos
+namespace Atmos::Render
 {
-    class Sprite : public Fragment
+    class Sprite : public RenderFragment
     {
     public:
-        typedef TypedObjectReference<MaterialAsset> MaterialReference;
+        typedef TypedObjectReference<Asset::MaterialAsset> MaterialReference;
         typedef StoredProperty<MaterialReference> MaterialProperty;
         MaterialProperty material;
     public:
-        typedef TypedObjectReference<ShaderAsset> ShaderReference;
+        typedef TypedObjectReference<Asset::ShaderAsset> ShaderReference;
         typedef StoredProperty<ShaderReference> ShaderProperty;
         ShaderProperty patchShader;
     public:
@@ -54,30 +54,33 @@ namespace Atmos
         void OnMaterialChanged(MaterialReference newValue);
         void OnIndexChanged(Index newValue);
     };
+}
 
+namespace Atmos
+{
     template<>
-    struct ObjectTraits<Sprite> : ObjectTraitsBase<Sprite>
+    struct ObjectTraits<Render::Sprite> : ObjectTraitsBase<Render::Sprite>
     {
         static const ObjectTypeName typeName;
-        static constexpr ObjectTypeList<Fragment> bases = {};
+        static constexpr ObjectTypeList<Render::RenderFragment> bases = {};
     };
 }
 
 namespace Inscription
 {
     template<>
-    struct TableData<::Atmos::Sprite, BinaryArchive> :
-        public ObjectTableDataBase<::Atmos::Sprite, BinaryArchive>
+    struct TableData<::Atmos::Render::Sprite, BinaryArchive> :
+        public ObjectTableDataBase<::Atmos::Render::Sprite, BinaryArchive>
     {
         ObjectT::MaterialReference material;
         ObjectT::ShaderReference patchShader;
         ObjectT::Index index;
-        ::Atmos::Color color;
+        ::Atmos::Render::Color color;
     };
 
     template<>
-    class Scribe<::Atmos::Sprite, BinaryArchive> :
-        public ObjectScribe<::Atmos::Sprite, BinaryArchive>
+    class Scribe<::Atmos::Render::Sprite, BinaryArchive> :
+        public ObjectScribe<::Atmos::Render::Sprite, BinaryArchive>
     {
     public:
         class Table : public TableBase

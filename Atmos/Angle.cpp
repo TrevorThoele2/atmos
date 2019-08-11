@@ -85,7 +85,7 @@ namespace Atmos
 
 namespace Inscription
 {
-    void Scribe<::Atmos::Angle, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
+    void Scribe<::Atmos::Angle, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
     {
         if (archive.IsOutput())
         {
@@ -105,5 +105,10 @@ namespace Inscription
             archive(selectedID);
             object.selectedType.Select(selectedID);
         }
+    }
+
+    void Scribe<::Atmos::Angle, BinaryArchive>::ConstructImplementation(ObjectT* storage, ArchiveT& archive)
+    {
+        DoBasicConstruction(storage, archive);
     }
 }

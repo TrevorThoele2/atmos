@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Atmos
+namespace Atmos::Audio
 {
-    typedef float Volume;
+    using Volume = float;
 }

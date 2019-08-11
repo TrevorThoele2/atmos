@@ -1,12 +1,11 @@
-
-#include "NullAudio.h"
+#include "NullAudioManager.h"
 
 #include "AudioAsset.h"
 #include "AudioAssetInstance.h"
 
-namespace Atmos
+namespace Atmos::Audio
 {
-    class AudioAssetInstanceDataImplementation : public AudioAssetInstanceData
+    class AudioAssetInstanceDataImplementation : public Asset::AudioAssetInstanceData
     {
     public:
         AudioAssetInstanceDataImplementation() = default;
@@ -32,7 +31,7 @@ namespace Atmos
         {}
     };
 
-    class AudioAssetDataImplementation : public AudioAssetData
+    class AudioAssetDataImplementation : public Asset::AudioAssetData
     {
     public:
         AudioAssetDataImplementation() = default;
@@ -42,9 +41,9 @@ namespace Atmos
             return std::unique_ptr<AudioAssetData>(new AudioAssetDataImplementation(*this));
         }
 
-        std::unique_ptr<AudioAssetInstanceData> CreateInstanceData() const override
+        std::unique_ptr<Asset::AudioAssetInstanceData> CreateInstanceData() const override
         {
-            return std::unique_ptr<AudioAssetInstanceData>(new AudioAssetInstanceDataImplementation());
+            return std::unique_ptr<Asset::AudioAssetInstanceData>(new AudioAssetInstanceDataImplementation());
         }
     };
 
@@ -53,7 +52,8 @@ namespace Atmos
         return true;
     }
 
-    std::unique_ptr<AudioAssetData> NullAudioManager::CreateAudioDataImpl(ExtractedFile&& file, const FileName& name)
+    std::unique_ptr<Asset::AudioAssetData> NullAudioManager::CreateAudioDataImpl(
+        ExtractedFile&& file, const File::Name& name)
     {
         return std::make_unique<AudioAssetDataImplementation>();
     }

@@ -1,12 +1,15 @@
-
 #pragma once
 
 #include "String.h"
 
 namespace Atmos
 {
-    class State;
     class ObjectManager;
+}
+
+namespace Atmos::State
+{
+    class State;
 
     class StateGui
     {

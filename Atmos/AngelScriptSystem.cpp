@@ -11,17 +11,17 @@
 #include "AngelScriptGridPosition.h"
 #include "AngelScriptEvent.h"
 
-namespace Atmos::Scripting
+namespace Atmos::Script
 {
-    class System::Interface
+    class ScriptSystem::Interface
     {
     public:
         asIScriptEngine* engine;
     public:
-        Interface(System& owner, ObjectManager& objectManager);
+        Interface(ScriptSystem& owner, ObjectManager& objectManager);
     private:
         UserData userData;
-        void SetAndPushUserData(System& owner, ObjectManager& objectManager);
+        void SetAndPushUserData(ScriptSystem& owner, ObjectManager& objectManager);
     private:
         void MessageCallback(const asSMessageInfo* msg, void* param);
     private:
@@ -29,7 +29,7 @@ namespace Atmos::Scripting
         LoggingSystem* FindLoggingSystem();
     };
 
-    System::Interface::Interface(System& owner, ObjectManager& objectManager) : objectManager(&objectManager)
+    ScriptSystem::Interface::Interface(ScriptSystem& owner, ObjectManager& objectManager) : objectManager(&objectManager)
     {
         engine = asCreateScriptEngine();
         if (!engine)
@@ -44,7 +44,7 @@ namespace Atmos::Scripting
         Event::RegisterToAngelScript(engine);
     }
 
-    void System::Interface::SetAndPushUserData(System& owner, ObjectManager& objectManager)
+    void ScriptSystem::Interface::SetAndPushUserData(ScriptSystem& owner, ObjectManager& objectManager)
     {
         userData.objectManager = &objectManager;
         userData.system = &owner;
@@ -52,7 +52,7 @@ namespace Atmos::Scripting
         engine->SetUserData(&userData);
     }
 
-    void System::Interface::MessageCallback(const asSMessageInfo* msg, void* param)
+    void ScriptSystem::Interface::MessageCallback(const asSMessageInfo* msg, void* param)
     {
         LogType logType = LogType::ERROR_SEVERE;
         if (msg->type == asMSGTYPE_WARNING)
@@ -68,15 +68,15 @@ namespace Atmos::Scripting
             });
     }
 
-    LoggingSystem* System::Interface::FindLoggingSystem()
+    LoggingSystem* ScriptSystem::Interface::FindLoggingSystem()
     {
         return objectManager->FindSystem<LoggingSystem>();
     }
 
-    System::System(ObjectManager& manager) : ObjectSystem(manager), interface(std::make_unique<Interface>(*this, manager))
+    ScriptSystem::ScriptSystem(ObjectManager& manager) : ObjectSystem(manager), interface(std::make_unique<Interface>(*this, manager))
     {}
 
-    asIScriptEngine* System::Engine()
+    asIScriptEngine* ScriptSystem::Engine()
     {
         return interface->engine;
     }
@@ -84,7 +84,7 @@ namespace Atmos::Scripting
 
 namespace Inscription
 {
-    void Scribe<::Atmos::Scripting::System, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
+    void Scribe<::Atmos::Script::ScriptSystem, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
     {
         BaseScriven<::Atmos::ObjectSystem>(object, archive);
     }

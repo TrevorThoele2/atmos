@@ -4,7 +4,7 @@
 
 #include "StateSystem.h"
 
-namespace Atmos
+namespace Atmos::State
 {
     State::~State()
     {}
@@ -80,6 +80,9 @@ namespace Atmos
 
     void State::DoOnUnfocused()
     {}
+}
 
-    const ObjectTypeName ObjectTraits<State>::typeName = "State";
+namespace Atmos
+{
+    const ObjectTypeName ObjectTraits<State::State>::typeName = "State";
 }

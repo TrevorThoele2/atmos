@@ -1,11 +1,10 @@
-
 #pragma once
 
 #include <vector>
 #include <list>
 
 #include "Serialization.h"
-#include <Inscription\List.h>
+#include <Inscription/ListScribe.h>
 
 namespace Atmos
 {
@@ -29,7 +28,6 @@ namespace Atmos
     private:
         typedef std::vector<iterator> Vector;
     private:
-        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
     private:
         List list;
@@ -78,14 +76,6 @@ namespace Atmos
         size_type size() const;
         void clear();
     };
-
-    template<class T>
-    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE_BINARY(RandomAccessSequence<T>)
-    {
-        scribe(list);
-        if (scribe.IsInput())
-            FillVector(*this);
-    }
 
     template<class T>
     void RandomAccessSequence<T>::FillVector(const RandomAccessSequence &arg)
@@ -406,5 +396,41 @@ namespace Atmos
     void RandomAccessSequence<T>::clear()
     {
         Clear();
+    }
+}
+
+namespace Inscription
+{
+    template<class T>
+    class Scribe<::Atmos::RandomAccessSequence<T>, BinaryArchive> :
+        public CompositeScribe<::Atmos::RandomAccessSequence<T>, BinaryArchive>
+    {
+    private:
+        using BaseT = CompositeScribe<::Atmos::RandomAccessSequence<T>, BinaryArchive>;
+    public:
+        using ObjectT = typename BaseT::ObjectT;
+        using ArchiveT = typename BaseT::ArchiveT;
+
+        using BaseT::Scriven;
+        using BaseT::Construct;
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
+        void ConstructImplementation(ObjectT* storage, ArchiveT& archive) override;
+    };
+
+    template<class T>
+    void Scribe<::Atmos::RandomAccessSequence<T>, BinaryArchive>::ScrivenImplementation(
+        ObjectT& object, ArchiveT& archive)
+    {
+        archive(object.list);
+        if (archive.IsInput())
+            object.FillVector(object);
+    }
+
+    template<class T>
+    void Scribe<::Atmos::RandomAccessSequence<T>, BinaryArchive>::ConstructImplementation(
+        ObjectT* storage, ArchiveT& archive)
+    {
+        DoBasicConstruction(storage, archive);
     }
 }

@@ -35,11 +35,16 @@ namespace Atmos::Render
 
 namespace Inscription
 {
-    void Scribe<::Atmos::Color, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
+    void Scribe<::Atmos::Render::Color, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
     {
         archive(object.alpha);
         archive(object.red);
         archive(object.green);
         archive(object.blue);
+    }
+
+    void Scribe<::Atmos::Render::Color, BinaryArchive>::ConstructImplementation(ObjectT* storage, ArchiveT& archive)
+    {
+        DoBasicConstruction(storage, archive);
     }
 }

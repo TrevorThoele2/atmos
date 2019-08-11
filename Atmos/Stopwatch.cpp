@@ -1,8 +1,8 @@
 #include "Stopwatch.h"
 
-namespace Atmos
+namespace Atmos::Time
 {
-    Stopwatch::Stopwatch(ObjectManager& manager, TimeValue goal) :
+    Stopwatch::Stopwatch(ObjectManager& manager, Value goal) :
         Object(manager), goal(goal), start()
     {}
 
@@ -23,28 +23,28 @@ namespace Atmos
         return !(*this == arg);
     }
 
-    TimeValue Stopwatch::Start()
+    Value Stopwatch::Start()
     {
         start = CurrentTime();
         return start;
     }
 
-    void Stopwatch::SetStart(const TimeValue& set)
+    void Stopwatch::SetStart(const Value& set)
     {
         start = set;
     }
 
-    TimeValue Stopwatch::GetStart() const
+    Value Stopwatch::GetStart() const
     {
         return start;
     }
 
-    void Stopwatch::SetGoal(TimeValue set)
+    void Stopwatch::SetGoal(Value set)
     {
         goal = set;
     }
 
-    TimeValue Stopwatch::GetGoal() const
+    Value Stopwatch::GetGoal() const
     {
         return goal;
     }
@@ -54,12 +54,12 @@ namespace Atmos
         return Elapsed() >= goal;
     }
 
-    TimeValue Stopwatch::Elapsed() const
+    Value Stopwatch::Elapsed() const
     {
         return CurrentTime() - start;
     }
 
-    TimeValue Stopwatch::PercentageElapsed() const
+    Value Stopwatch::PercentageElapsed() const
     {
         return Elapsed() / goal;
     }
@@ -68,18 +68,21 @@ namespace Atmos
     {
         return ObjectTraits<Stopwatch>::TypeDescription();
     }
+}
 
-    const ObjectTypeName ObjectTraits<Stopwatch>::typeName = "Stopwatch";
+namespace Atmos
+{
+    const ObjectTypeName ObjectTraits<Time::Stopwatch>::typeName = "Stopwatch";
 }
 
 namespace Inscription
 {
-    Scribe<::Atmos::Stopwatch, BinaryArchive>::Table::Table()
+    Scribe<::Atmos::Time::Stopwatch, BinaryArchive>::Table::Table()
     {
         AddDataEntry(DataEntry::Auto(&ObjectT::goal, &DataT::goal));
     }
 
-    void Scribe<::Atmos::Stopwatch, BinaryArchive>::Table::ObjectScrivenImplementation(
+    void Scribe<::Atmos::Time::Stopwatch, BinaryArchive>::Table::ObjectScrivenImplementation(
         ObjectT& object, ArchiveT& archive)
     {
         if (archive.IsOutput())
@@ -88,7 +91,7 @@ namespace Inscription
         }
         else // INPUT
         {
-            ::Atmos::TimeValue timeStamp;
+            ::Atmos::Time::Value timeStamp;
             archive(timeStamp);
             object.start = object.CurrentTime() - timeStamp;
         }

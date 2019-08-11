@@ -1,10 +1,9 @@
-
 #include "TimeSystem.h"
 
 #include "ObjectManager.h"
 #include "FpsSystem.h"
 
-namespace Atmos
+namespace Atmos::Time
 {
     TimeSystem::TimeSystem(ObjectManager& manager) : ObjectSystem(manager)
     {}
@@ -16,26 +15,26 @@ namespace Atmos
         totalElapsed += lastElapsed;
     }
 
-    TimeValue TimeSystem::GetTotalElapsed() const
+    Value TimeSystem::GetTotalElapsed() const
     {
         return totalElapsed;
     }
 
-    TimeValue TimeSystem::GetLastElapsed() const
+    Value TimeSystem::GetLastElapsed() const
     {
         return lastElapsed;
     }
 
-    TimeValue TimeSystem::CurrentTime() const
+    Value TimeSystem::CurrentTime() const
     {
         auto nanosecondsTime = clock.now().time_since_epoch().count();
-        return TimeValue(nanosecondsTime, TimeValueEpoch::NANOSECONDS).ConvertValue(TimeValueEpoch::SECONDS);
+        return Value(nanosecondsTime, Epoch::NANOSECONDS).GetAs(Epoch::SECONDS);
     }
 }
 
 namespace Inscription
 {
-    void Scribe<::Atmos::TimeSystem, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
+    void Scribe<::Atmos::Time::TimeSystem, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
     {
         BaseScriven<::Atmos::ObjectSystem>(object, archive);
     }

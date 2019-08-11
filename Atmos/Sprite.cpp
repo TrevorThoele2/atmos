@@ -1,26 +1,26 @@
 #include "Sprite.h"
 
-#include "GridSize.h"
+#include "TileSize.h"
 
 #include "GraphicsSystem.h"
 
-namespace Atmos
+namespace Atmos::Render
 {
     Sprite::Sprite(ObjectManager& manager) :
-        Fragment(manager), index(0)
+        RenderFragment(manager), index(0)
     {
         SubscribeToProperties();
     }
 
     Sprite::Sprite(const Sprite& arg) :
-        Fragment(arg), material(arg.material), patchShader(arg.patchShader),
+        RenderFragment(arg), material(arg.material), patchShader(arg.patchShader),
         index(arg.index), color(arg.color)
     {
         SubscribeToProperties();
     }
 
     Sprite::Sprite(const ::Inscription::BinaryTableData<Sprite>& data) :
-        Fragment(std::get<0>(data.bases)), material(data.material), patchShader(data.patchShader),
+        RenderFragment(std::get<0>(data.bases)), material(data.material), patchShader(data.patchShader),
         color(data.color), index(data.index)
     {
         SubscribeToProperties();
@@ -53,7 +53,7 @@ namespace Atmos
             _primaryAssetSlice.left = 0;
             _primaryAssetSlice.right = 0;
 
-            InformBaseSizeChanged(0.0f, 0.0f, GRID_SIZE<float>);
+            InformBaseSizeChanged(0.0f, 0.0f, Grid::TileSize<float>);
             return;
         }
 
@@ -79,7 +79,7 @@ namespace Atmos
         // Calculate size
         auto width = static_cast<float>(material->width / material->columns);
         auto height = static_cast<float>(material->height / material->rows);
-        auto depth = GRID_SIZE<float>;
+        auto depth = Grid::TileSize<float>;
         InformBaseSizeChanged(width, height, depth);
     }
 
@@ -97,13 +97,16 @@ namespace Atmos
     {
         CalculatePrimaryAssetSlice();
     }
+}
 
-    const ObjectTypeName ObjectTraits<Sprite>::typeName = "Sprite";
+namespace Atmos
+{
+    const ObjectTypeName ObjectTraits<Render::Sprite>::typeName = "Sprite";
 }
 
 namespace Inscription
 {
-    Scribe<::Atmos::Sprite, BinaryArchive>::Table::Table()
+    Scribe<::Atmos::Render::Sprite, BinaryArchive>::Table::Table()
     {
         MergeDataEntries({
             DataEntry::Auto(&ObjectT::material, &DataT::material),

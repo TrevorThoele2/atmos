@@ -96,8 +96,11 @@ namespace Inscription
     public:
         using ObjectT = typename BaseT::ObjectT;
         using ArchiveT = typename BaseT::ArchiveT;
-    public:
-        static void Scriven(ObjectT& object, ArchiveT& archive)
+
+        using BaseT::Scriven;
+        using BaseT::Construct;
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override
         {
             archive(object.value);
         }

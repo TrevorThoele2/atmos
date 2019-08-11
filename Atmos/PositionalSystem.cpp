@@ -27,7 +27,7 @@ namespace Atmos
 
 namespace Inscription
 {
-    void Scribe<::Atmos::PositionalSystem, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
+    void Scribe<::Atmos::PositionalSystem, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
     {
         BaseScriven<::Atmos::ObjectSystem>(object, archive);
     }

@@ -47,7 +47,7 @@ namespace Atmos
 
 namespace Inscription
 {
-    void Scribe<::Atmos::Size3D, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
+    void Scribe<::Atmos::Size3D, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
     {
         archive(object.baseWidth);
         archive(object.baseHeight);
@@ -55,5 +55,10 @@ namespace Inscription
         archive(object.widthScaler);
         archive(object.heightScaler);
         archive(object.depthScaler);
+    }
+
+    void Scribe<::Atmos::Size3D, BinaryArchive>::ConstructImplementation(ObjectT* storage, ArchiveT& archive)
+    {
+        DoBasicConstruction(storage, archive);
     }
 }

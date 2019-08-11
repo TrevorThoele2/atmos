@@ -59,8 +59,9 @@ namespace Atmos::Input
         owner(&owner), objectManager(&objectManager), displayName(displayName), canUseForAction(canUseForAction),
         active(false), activePreviousFrame(false),
         doubleClickStopwatch(
-            objectManager.CreateObject<FrameStopwatch>(
-                TimeValue(FixedPoint64::Split(0, FixedPoint64::Split::AdjustF(25, FixedPoint64::GetDefaultRadixPoint())))))
+            objectManager.CreateObject<Time::FrameStopwatch>(
+                Time::Value(
+                    FixedPoint64::Split(0, FixedPoint64::Split::AdjustF(25, FixedPoint64::GetDefaultRadixPoint())))))
     {
         SetData(std::move(data));
     }

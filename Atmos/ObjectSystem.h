@@ -26,17 +26,17 @@ namespace Atmos
     protected:
         ObjectManager* Manager();
         const ObjectManager* Manager() const;
-    private:
-        ObjectManager* manager;
-    private:
-        bool isInitialized;
-        bool isStarted;
-
+    protected:
         virtual void InitializeImpl();
         virtual bool StartStepImpl();
         virtual void WorkImpl();
         virtual void StopStepImpl();
         virtual void FinalizeImpl();
+    private:
+        ObjectManager* manager;
+    private:
+        bool isInitialized;
+        bool isStarted;
     private:
         INSCRIPTION_ACCESS;
     };
@@ -47,7 +47,8 @@ namespace Inscription
     template<>
     class Scribe<::Atmos::ObjectSystem, BinaryArchive> : public CompositeScribe<::Atmos::ObjectSystem, BinaryArchive>
     {
-    public:
-        static void Scriven(ObjectT& object, ArchiveT& archive);
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
+        void ConstructImplementation(ObjectT* storage, ArchiveT& archive) override;
     };
 }

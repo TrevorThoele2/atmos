@@ -5,7 +5,7 @@
 #include "ExtendedStopwatchAdapter.h"
 #include "RealStopwatch.h"
 
-namespace Atmos
+namespace Atmos::Time
 {
     class FpsSystem : public ObjectSystem
     {
@@ -26,13 +26,15 @@ namespace Atmos
         void ResetTimer();
         const ExtendedStopwatchAdapter<RealStopwatch>& GetStopwatch();
 
-        TimeValue GetFrameStart();
-        TimeValue GetFrameEnd();
-        TimeValue GetLastFrameTime();
+        Value GetFrameStart();
+        Value GetFrameEnd();
+        Value GetLastFrameTime();
 
         Fps GetFps();
+    protected:
+        void InitializeImpl() override;
     private:
-        typedef ExtendedStopwatchAdapter<RealStopwatch> Stopwatch;
+        using Stopwatch = ExtendedStopwatchAdapter<RealStopwatch>;
     private:
         bool vSync;
         Fps currentFpsLimit;
@@ -41,10 +43,8 @@ namespace Atmos
         static const Fps defaultFpsLimit;
 
         Stopwatch stopwatch;
-        TimeValue start;
-        TimeValue end;
-    private:
-        void InitializeImpl() override;
+        Value start;
+        Value end;
     private:
         bool IsFrameDone();
         void FrameDone();
@@ -56,10 +56,10 @@ namespace Atmos
 namespace Inscription
 {
     template<>
-    class Scribe<::Atmos::FpsSystem, BinaryArchive> :
-        public ObjectSystemScribe<::Atmos::FpsSystem, BinaryArchive>
+    class Scribe<::Atmos::Time::FpsSystem, BinaryArchive> :
+        public ObjectSystemScribe<::Atmos::Time::FpsSystem, BinaryArchive>
     {
-    public:
-        static void Scriven(ObjectT& object, ArchiveT& archive);
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
     };
 }

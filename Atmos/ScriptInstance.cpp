@@ -1,4 +1,3 @@
-
 #include "ScriptInstance.h"
 
 #include "RunningScript.h"
@@ -6,7 +5,7 @@
 
 #include "ObjectManager.h"
 
-namespace Atmos
+namespace Atmos::Script
 {
     ScriptInstance::ScriptInstance(ObjectManager& manager) : Object(manager)
     {}
@@ -59,13 +58,16 @@ namespace Atmos
         running->persistence = persistence;
         return running;
     }
+}
 
-    const ObjectTypeName ObjectTraits<ScriptInstance>::typeName = "ScriptInstance";
+namespace Atmos
+{
+    const ObjectTypeName ObjectTraits<Script::ScriptInstance>::typeName = "ScriptInstance";
 }
 
 namespace Inscription
 {
-    Scribe<::Atmos::ScriptInstance, BinaryArchive>::Table::Table()
+    Scribe<::Atmos::Script::ScriptInstance, BinaryArchive>::Table::Table()
     {
         MergeDataEntries({
             DataEntry::Auto(&ObjectT::asset, &DataT::asset),

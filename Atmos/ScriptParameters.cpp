@@ -4,7 +4,7 @@
 
 #include <Inscription/VectorScribe.h>
 
-namespace Atmos::Scripting
+namespace Atmos::Script
 {
     void Parameters::Add(const Value& add)
     {
@@ -65,8 +65,13 @@ namespace Atmos::Scripting
 
 namespace Inscription
 {
-    void Scribe<::Atmos::Scripting::Parameters, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
+    void Scribe<::Atmos::Script::Parameters, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
     {
         archive(object.list);
+    }
+
+    void Scribe<::Atmos::Script::Parameters, BinaryArchive>::ConstructImplementation(ObjectT* storage, ArchiveT& archive)
+    {
+        DoBasicConstruction(storage, archive);
     }
 }

@@ -5,11 +5,11 @@
 
 namespace Atmos::Input
 {
-    class System : public UniqueProviderSystem<Manager>
+    class InputSystem : public UniqueProviderSystem<Manager>
     {
     public:
-        System(ObjectManager& manager);
-    private:
+        InputSystem(ObjectManager& manager);
+    protected:
         void InitializeImpl() override;
     };
 }
@@ -17,10 +17,10 @@ namespace Atmos::Input
 namespace Inscription
 {
     template<>
-    class Scribe<::Atmos::Input::System, BinaryArchive> :
-        public ObjectSystemScribe<::Atmos::Input::System, BinaryArchive>
+    class Scribe<::Atmos::Input::InputSystem, BinaryArchive> :
+        public ObjectSystemScribe<::Atmos::Input::InputSystem, BinaryArchive>
     {
-    public:
-        static void Scriven(ObjectT& object, ArchiveT& archive);
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
     };
 }

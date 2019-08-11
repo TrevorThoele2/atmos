@@ -32,7 +32,7 @@ namespace Atmos::Render
             graphics->ClearTarget(Flags<Target>({ Target::MAIN }), Color(0, 255, 0, 0));
         }
 
-        if (!flags.Get(RenderFlags::DONT_DRAW))
+        if (!flags.Get(Flag::DONT_DRAW))
         {
             auto renderFragmentSystem = FindRenderFragmentSystem();
             renderFragmentSystem->DrawAll();
@@ -53,9 +53,9 @@ namespace Atmos::Render
         return Manager()->FindSystem<GraphicsSystem>();
     }
 
-    FragmentSystem* RenderSystem::FindRenderFragmentSystem()
+    RenderFragmentSystem* RenderSystem::FindRenderFragmentSystem()
     {
-        return Manager()->FindSystem<FragmentSystem>();
+        return Manager()->FindSystem<RenderFragmentSystem>();
     }
 
     DebugStatisticsSystem* RenderSystem::FindDebugStatisticsSystem()
@@ -66,7 +66,7 @@ namespace Atmos::Render
 
 namespace Inscription
 {
-    void Scribe<::Atmos::RenderSystem, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
+    void Scribe<::Atmos::Render::RenderSystem, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
     {
         BaseScriven<::Atmos::ObjectSystem>(object, archive);
     }

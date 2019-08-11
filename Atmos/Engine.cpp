@@ -23,12 +23,12 @@ namespace Atmos
 
         globalTypes->PushTo(globalObjectManager);
 
-        WorldManager worldManager(globalObjectManager, localObjectManagerFactory);
+        World::WorldManager worldManager(globalObjectManager, localObjectManagerFactory);
 
         executionContext.reset(new ExecutionContext(*this, std::move(worldManager)));
     }
 
-    void Engine::LoadWorld(const FilePath& filePath)
+    void Engine::LoadWorld(const File::Path& filePath)
     {
         SetupRequired();
 
@@ -61,7 +61,7 @@ namespace Atmos
             throw EngineNotSetup();
     }
 
-    Engine::ExecutionContext::ExecutionContext(Engine& owner, WorldManager&& worldManager) :
+    Engine::ExecutionContext::ExecutionContext(Engine& owner, World::WorldManager&& worldManager) :
         execution(EngineExecution(owner.globalObjectManager, this->worldManager)),
         worldManager(std::move(worldManager))
     {}

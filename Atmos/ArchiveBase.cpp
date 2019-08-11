@@ -2,7 +2,7 @@
 
 #include <Inscription/BinaryArchive.h>
 
-namespace Atmos
+namespace Atmos::World::Serialization
 {
     ArchiveBase::~ArchiveBase()
     {}

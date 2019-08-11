@@ -7,13 +7,13 @@
 
 #include "Serialization.h"
 
-namespace Atmos
+namespace Atmos::Asset
 {
     class ImageAssetSystem : public AssetSystem<ImageAsset>
     {
     public:
         ImageAssetSystem(ObjectManager& manager);
-    private:
+    protected:
         void InitializeImpl() override;
     };
 }
@@ -21,10 +21,10 @@ namespace Atmos
 namespace Inscription
 {
     template<>
-    class Scribe<::Atmos::ImageAssetSystem, BinaryArchive> :
-        public ObjectSystemScribe<::Atmos::ImageAssetSystem, BinaryArchive>
+    class Scribe<::Atmos::Asset::ImageAssetSystem, BinaryArchive> :
+        public ObjectSystemScribe<::Atmos::Asset::ImageAssetSystem, BinaryArchive>
     {
-    public:
-        static void Scriven(ObjectT& object, ArchiveT& archive);
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
     };
 }

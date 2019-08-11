@@ -1,8 +1,9 @@
 #pragma once
 
 #include <Chroma/RelativeFilePath.h>
+#include <Inscription/RelativeFilePathScribe.h>
 
-namespace Atmos
+namespace Atmos::File
 {
-    using ::Chroma::RelativeFilePath;
+    using RelativePath = ::Chroma::RelativeFilePath;
 }

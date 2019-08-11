@@ -34,7 +34,8 @@ namespace Inscription
     template<>
     class Scribe<::Atmos::NameValuePair, BinaryArchive> : public CompositeScribe<::Atmos::NameValuePair, BinaryArchive>
     {
-    public:
-        static void Scriven(ObjectT& object, ArchiveT& archive);
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
+        void ConstructImplementation(ObjectT* storage, ArchiveT& archive) override;
     };
 }

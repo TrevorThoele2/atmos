@@ -1,37 +1,36 @@
-
 #include "NullFileManager.h"
 
-namespace Atmos
+namespace Atmos::File
 {
     NullFileManager::NullFileManager()
     {}
 
-    void NullFileManager::MakeDirectory(const FilePath& path)
+    void NullFileManager::MakeDirectory(const Path& path)
     {}
 
-    bool NullFileManager::RelocateFile(const FilePath& from, const FilePath& to)
+    bool NullFileManager::RelocateFile(const Path& from, const Path& to)
     {
         return false;
     }
 
-    bool NullFileManager::RemoveFile(const FilePath& remove)
+    bool NullFileManager::RemoveFile(const Path& remove)
     {
         return false;
     }
 
-    FilePath NullFileManager::ExePath() const
+    Path NullFileManager::ExePath() const
     {
-        return FilePath();
+        return Path();
     }
 
-    FilePath NullFileManager::DataPath() const
+    Path NullFileManager::DataPath() const
     {
-        return FilePath();
+        return Path();
     }
 
-    FilePath NullFileManager::TemporaryDirectoryPath() const
+    Path NullFileManager::TemporaryDirectoryPath() const
     {
-        return FilePath();
+        return Path();
     }
 
     size_t NullFileManager::MaxPathLength() const

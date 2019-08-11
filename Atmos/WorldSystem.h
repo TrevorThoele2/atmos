@@ -3,7 +3,7 @@
 #include "UnownedProviderSystem.h"
 #include "WorldManager.h"
 
-namespace Atmos
+namespace Atmos::World
 {
     class WorldSystem : public UnownedProviderSystem<WorldManager>
     {
@@ -15,10 +15,10 @@ namespace Atmos
 namespace Inscription
 {
     template<>
-    class Scribe<::Atmos::WorldSystem, BinaryArchive> :
-        public ObjectSystemScribe<::Atmos::WorldSystem, BinaryArchive>
+    class Scribe<::Atmos::World::WorldSystem, BinaryArchive> :
+        public ObjectSystemScribe<::Atmos::World::WorldSystem, BinaryArchive>
     {
-    public:
-        static void Scriven(ObjectT& object, ArchiveT& archive);
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
     };
 }

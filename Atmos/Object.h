@@ -89,6 +89,8 @@ namespace Inscription
         {
         public:
             Table();
+        protected:
+            void ConstructImplementation(ObjectT* storage, ArchiveT& archive);
         };
     };
 }

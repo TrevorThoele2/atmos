@@ -10,15 +10,15 @@ namespace Atmos::Render
     void GraphicsManager::Reinitialize()
     {
         // Focused render surface
-        auto prevRenderSurface = currentRenderSurface;
+        auto prevSurface = currentSurface;
         SetRenderTargetToMain();
 
-        auto& shaderAssetBatch = objectManager->Batch<ShaderAsset>();
+        auto& shaderAssetBatch = objectManager->Batch<Asset::ShaderAsset>();
         for (auto& loop : shaderAssetBatch)
             loop->Data()->Release();
 
         ReleaseMainRenderTarget();
-        for (auto& loop : renderSurfaces)
+        for (auto& loop : surfaces)
             loop.Release();
 
         for (auto& loop : canvasList)
@@ -30,41 +30,41 @@ namespace Atmos::Render
             loop->Data()->Reset();
 
         ResetMainRenderTarget();
-        for (auto& loop : renderSurfaces)
+        for (auto& loop : surfaces)
             loop.Reset();
 
         for (auto& loop : canvasList)
             loop.Reset();
 
         // Reset the focused render target
-        if (prevRenderSurface != renderSurfaces.end())
-            SetRenderTarget(*prevRenderSurface);
+        if (prevSurface != surfaces.end())
+            SetRenderTarget(*prevSurface);
     }
 
-    std::unique_ptr<ImageAssetData> GraphicsManager::CreateImageData(const FilePath& path)
+    std::unique_ptr<Asset::ImageAssetData> GraphicsManager::CreateImageData(const File::Path& path)
     {
         return CreateImageDataImpl(path);
     }
 
-    std::unique_ptr<ImageAssetData> GraphicsManager::CreateImageData(void* buffer, std::int32_t size, const FileName& name)
+    std::unique_ptr<Asset::ImageAssetData> GraphicsManager::CreateImageData(void* buffer, std::int32_t size, const File::Name& name)
     {
         return CreateImageDataImpl(buffer, size, name);
     }
 
-    std::unique_ptr<ShaderAssetData> GraphicsManager::CreateShaderData(const FilePath& path)
+    std::unique_ptr<Asset::ShaderAssetData> GraphicsManager::CreateShaderData(const File::Path& path)
     {
         return CreateShaderDataImpl(path);
     }
 
-    std::unique_ptr<ShaderAssetData> GraphicsManager::CreateShaderData(void* buffer, std::int32_t size, const FileName& name)
+    std::unique_ptr<Asset::ShaderAssetData> GraphicsManager::CreateShaderData(void* buffer, std::int32_t size, const File::Name& name)
     {
         return CreateShaderDataImpl(buffer, size, name);
     }
 
-    Surface& GraphicsManager::CreateRenderSurface(void* window)
+    Surface& GraphicsManager::CreateSurface(void* window)
     {
-        renderSurfaces.push_back(std::move(CreateRenderSurfaceImpl(window)));
-        return renderSurfaces.back();
+        surfaces.push_back(std::move(CreateSurfaceImpl(window)));
+        return surfaces.back();
     }
 
     Canvas& GraphicsManager::CreateCanvas(const ScreenDimensions& dimensions)
@@ -73,16 +73,16 @@ namespace Atmos::Render
         return canvasList.back();
     }
 
-    void GraphicsManager::DestroyRenderSurface(Surface& destroy)
+    void GraphicsManager::DestroySurface(Surface& destroy)
     {
-        auto found = FindRenderSurface(destroy);
-        if (found == renderSurfaces.end())
+        auto found = FindSurface(destroy);
+        if (found == surfaces.end())
             return;
 
-        renderSurfaces.erase(found);
+        surfaces.erase(found);
     }
 
-    bool GraphicsManager::CanMakeImage(const FilePath& path) const
+    bool GraphicsManager::CanMakeImage(const File::Path& path) const
     {
         return CanMakeImageImpl(path);
     }
@@ -101,32 +101,32 @@ namespace Atmos::Render
 
     void GraphicsManager::SetRenderTarget(Surface& set)
     {
-        if (currentRenderSurface != renderSurfaces.end() && &*currentRenderSurface == &set)
+        if (currentSurface != surfaces.end() && &*currentSurface == &set)
             return;
 
-        auto foundItr = FindRenderSurface(set);
-        if (foundItr == renderSurfaces.end())
+        auto foundItr = FindSurface(set);
+        if (foundItr == surfaces.end())
             return;
 
-        currentRenderSurface = foundItr;
-        SetRenderTargetImpl(*currentRenderSurface);
+        currentSurface = foundItr;
+        SetRenderTargetImpl(*currentSurface);
         SetCameraSizeToCurrentDimensions();
-        currentRenderSurface->SetAsRenderTargetImpl();
+        currentSurface->SetAsRenderTargetImpl();
     }
 
     void GraphicsManager::SetRenderTargetToMain()
     {
-        currentRenderSurface = renderSurfaces.end();
+        currentSurface = surfaces.end();
         SetRenderTargetToMainImpl();
         SetCameraSizeToCurrentDimensions();
     }
 
     const Surface* GraphicsManager::GetCurrentRenderTarget() const
     {
-        if (currentRenderSurface == renderSurfaces.end())
+        if (currentSurface == surfaces.end())
             return nullptr;
         else
-            return &*currentRenderSurface;
+            return &*currentSurface;
     }
 
     void GraphicsManager::RenderSprite(SpriteReference sprite, bool offsetWithCamera)
@@ -262,7 +262,7 @@ namespace Atmos::Render
 
     void GraphicsManager::SetMainDimensions(const ScreenDimensions& set)
     {
-        if (!IsUsingNonMainRenderSurface())
+        if (!IsUsingNonMainSurface())
         {
             dimensions = set;
             SetMainDimensionsImpl(this->dimensions);
@@ -290,10 +290,10 @@ namespace Atmos::Render
 
     ScreenDimensions GraphicsManager::GetCurrentDimensions() const
     {
-        if (!IsUsingNonMainRenderSurface())
+        if (!IsUsingNonMainSurface())
             return GetMainDimensionsImpl();
         else
-            return currentRenderSurface->GetSize();
+            return currentSurface->GetSize();
     }
 
     GraphicsManager::Dimension GraphicsManager::GetCurrentWidth() const
@@ -308,7 +308,7 @@ namespace Atmos::Render
 
     void GraphicsManager::Present()
     {
-        (currentRenderSurface != renderSurfaces.end()) ? currentRenderSurface->Present() : PresentImpl();
+        (currentSurface != surfaces.end()) ? currentSurface->Present() : PresentImpl();
     }
 
     void GraphicsManager::Present(void* windowOverride)
@@ -317,14 +317,14 @@ namespace Atmos::Render
     }
 
     GraphicsManager::GraphicsManager(ObjectManager& objectManager) :
-        objectManager(&objectManager), currentRenderSurface(renderSurfaces.end())
+        objectManager(&objectManager), currentSurface(surfaces.end())
     {
         cameraSystem = objectManager.FindSystem<CameraSystem>();
     }
 
-    bool GraphicsManager::IsUsingNonMainRenderSurface() const
+    bool GraphicsManager::IsUsingNonMainSurface() const
     {
-        return currentRenderSurface != renderSurfaces.end();
+        return currentSurface != surfaces.end();
     }
 
     void GraphicsManager::RenderSpriteCameraOffset(SpriteReference sprite, float X, float Y)
@@ -351,15 +351,15 @@ namespace Atmos::Render
             Y - cameraSystem->GetTopLeft().y);
     }
 
-    GraphicsManager::RenderSurfaceList::iterator GraphicsManager::FindRenderSurface(Surface& surface)
+    GraphicsManager::SurfaceList::iterator GraphicsManager::FindSurface(Surface& surface)
     {
-        for (auto loop = renderSurfaces.begin(); loop != renderSurfaces.end(); ++loop)
+        for (auto loop = surfaces.begin(); loop != surfaces.end(); ++loop)
         {
             if (&*loop == &surface)
                 return loop;
         }
 
-        return renderSurfaces.end();
+        return surfaces.end();
     }
 
     void GraphicsManager::SetCameraSizeToCurrentDimensions()

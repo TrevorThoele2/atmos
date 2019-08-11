@@ -74,9 +74,14 @@ namespace Atmos
 
 namespace Inscription
 {
-    void Scribe<::Atmos::AxisAlignedBox2D, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
+    void Scribe<::Atmos::AxisAlignedBox2D, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
     {
         archive(object.center);
         archive(object.size);
+    }
+
+    void Scribe<::Atmos::AxisAlignedBox2D, BinaryArchive>::ConstructImplementation(ObjectT* storage, ArchiveT& archive)
+    {
+        DoBasicConstruction(storage, archive);
     }
 }

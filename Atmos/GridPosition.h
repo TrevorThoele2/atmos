@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include "Direction.h"
@@ -9,31 +8,31 @@
 
 #include "Serialization.h"
 
-namespace Atmos
+namespace Atmos::Grid
 {
-    class RelativeGridPosition;
+    class RelativePosition;
 
-    class GridPosition
+    class Position
     {
     public:
-        typedef int Value;
+        using Value = int;
     public:
         Value x, y, z;
     public:
-        GridPosition(Value x = 0, Value y = 0, Value z = 0);
-        GridPosition(const GridPosition& source, const RelativeGridPosition& offset);
-        GridPosition(const Position2D& pos, Value z);
-        GridPosition(const Position3D& pos);
-        GridPosition(const GridPosition& arg) = default;
+        Position(Value x = 0, Value y = 0, Value z = 0);
+        Position(const Position& source, const RelativePosition& offset);
+        Position(const Position2D& pos, Value z);
+        Position(const Position3D& pos);
+        Position(const Position& arg) = default;
 
-        GridPosition& operator=(const GridPosition& arg) = default;
+        Position& operator=(const Position& arg) = default;
 
-        bool operator==(const GridPosition &arg) const;
-        bool operator!=(const GridPosition &arg) const;
+        bool operator==(const Position &arg) const;
+        bool operator!=(const Position &arg) const;
 
         void Edit(Value x = 0, Value y = 0, Value z = 0);
-        void Edit(const RelativeGridPosition& offset);
-        void Edit(const GridPosition& source, const RelativeGridPosition& offset);
+        void Edit(const RelativePosition& offset);
+        void Edit(const Position& source, const RelativePosition& offset);
         void Edit(const Position2D& pos, Value z);
         void Edit(const Position3D& pos);
         void SetX(Value set);
@@ -46,21 +45,21 @@ namespace Atmos
         Value GetX() const;
         Value GetY() const;
         Value GetZ() const;
-        GridPosition FindOffset(const RelativeGridPosition& offset) const;
+        Position FindOffset(const RelativePosition& offset) const;
 
-        GridPosition::Value FindXDistance(const GridPosition& destination) const;
-        GridPosition::Value FindYDistance(const GridPosition& destination) const;
-        GridPosition::Value FindZDistance(const GridPosition& destination) const;
-        unsigned int FindDistance(const GridPosition& destination) const;
-        Direction DetermineDirection(const GridPosition& ending) const;
+        Position::Value FindXDistance(const Position& destination) const;
+        Position::Value FindYDistance(const Position& destination) const;
+        Position::Value FindZDistance(const Position& destination) const;
+        unsigned int FindDistance(const Position& destination) const;
+        Direction DetermineDirection(const Position& ending) const;
         // Returns true if first is closer, false if second
-        bool IsCloser(const GridPosition& first, const GridPosition& second) const;
-        GridPosition FindPositionAdjacent(const Direction& dir) const;
+        bool IsCloser(const Position& first, const Position& second) const;
+        Position FindPositionAdjacent(const Direction& dir) const;
 
-        RelativeGridPosition Difference(const GridPosition& against) const;
+        RelativePosition Difference(const Position& against) const;
 
-        static GridPosition FromScreen(const Position2D& position, Value z, const Position2D& topLeftScreen);
-        static GridPosition FromScreen(const Position3D& position, const Position2D& topLeftScreen);
+        static Position FromScreen(const Position2D& position, Value z, const Position2D& topLeftScreen);
+        static Position FromScreen(const Position3D& position, const Position2D& topLeftScreen);
         static Value DimensionFromPosition(Position3D::Value dim);
         static Position3D::Value DimensionToPosition(Value dim);
     private:
@@ -71,27 +70,31 @@ namespace Atmos
 namespace Inscription
 {
     template<>
-    class Scribe<::Atmos::GridPosition, BinaryArchive> : public CompositeScribe<::Atmos::GridPosition, BinaryArchive>
+    class Scribe<::Atmos::Grid::Position, BinaryArchive> :
+        public CompositeScribe<::Atmos::Grid::Position, BinaryArchive>
     {
-    public:
-        static void Scriven(ObjectT& object, ArchiveT& archive);
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
+        void ConstructImplementation(ObjectT* storage, ArchiveT& archive) override;
     };
 
     template<>
-    class Scribe<::Atmos::RelativeGridPosition, BinaryArchive> : public CompositeScribe<::Atmos::RelativeGridPosition, BinaryArchive>
+    class Scribe<::Atmos::Grid::RelativePosition, BinaryArchive> :
+        public CompositeScribe<::Atmos::Grid::RelativePosition, BinaryArchive>
     {
-    public:
-        static void Scriven(ObjectT& object, ArchiveT& archive);
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
+        void ConstructImplementation(ObjectT* storage, ArchiveT& archive) override;
     };
 }
 
 namespace std
 {
     template<>
-    struct hash<::Atmos::GridPosition>
+    struct hash<::Atmos::Grid::Position>
     {
-        typedef ::Atmos::GridPosition argument_type;
-        typedef std::size_t result_type;
+        using argument_type = ::Atmos::Grid::Position;
+        using result_type = std::size_t;
 
         result_type operator()(const argument_type &arg) const
         {
@@ -103,20 +106,21 @@ namespace std
     };
 }
 
-namespace Atmos
+namespace Atmos::Grid
 {
-    class RelativeGridPosition
+    class RelativePosition
     {
     public:
-        typedef GridPosition::Value ValueT;
+        using Value = Position::Value;
     public:
-        ValueT x, y, z;
+        Value x, y, z;
     public:
-        RelativeGridPosition(ValueT x = 0, ValueT y = 0, ValueT z = 0);
-        RelativeGridPosition(const GridPosition &source, const GridPosition &destination);
-        bool operator==(const RelativeGridPosition &arg) const;
-        bool operator!=(const RelativeGridPosition &arg) const;
-        void Edit(ValueT x = 0, ValueT y = 0, ValueT z = 0);
+        RelativePosition();
+        RelativePosition(Value x, Value y, Value z);
+        RelativePosition(const Position &source, const Position &destination);
+        bool operator==(const RelativePosition &arg) const;
+        bool operator!=(const RelativePosition &arg) const;
+        void Edit(Value x = 0, Value y = 0, Value z = 0);
     private:
         INSCRIPTION_ACCESS;
     };
@@ -125,25 +129,25 @@ namespace Atmos
 namespace std
 {
     template<>
-    struct hash<::Atmos::RelativeGridPosition>
+    struct hash<::Atmos::Grid::RelativePosition>
     {
-        typedef ::Atmos::RelativeGridPosition argument_type;
-        typedef std::size_t result_type;
+        using argument_type = ::Atmos::Grid::RelativePosition;
+        using result_type = std::size_t;
 
         result_type operator()(const argument_type &arg) const
         {
-            const result_type first(std::hash<argument_type::ValueT>()(arg.x));
-            const result_type second(std::hash<argument_type::ValueT>()(arg.y));
-            const result_type third(std::hash<argument_type::ValueT>()(arg.z));
+            const result_type first(std::hash<argument_type::Value>()(arg.x));
+            const result_type second(std::hash<argument_type::Value>()(arg.y));
+            const result_type third(std::hash<argument_type::Value>()(arg.z));
             return first ^ (second << 1) ^ (third >> 1);
         }
     };
 }
 
-namespace Atmos
+namespace Atmos::Grid
 {
     template<class Cont>
-    void FindPosSquarePlane(Cont& positions, const GridPosition& topLeft, GridPosition::Value range)
+    void FindPosSquarePlane(Cont& positions, const Position& topLeft, Position::Value range)
     {
         positions.clear();
 
@@ -169,9 +173,9 @@ namespace Atmos
     }
 
     template<class Cont>
-    void GetSurroundingPlane(Cont& toFill, const GridPosition& pos)
+    void GetSurroundingPlane(Cont& toFill, const Position& pos)
     {
         // Surrounding tiles will always be 3x3 square
-        FindPosSquarePlane(toFill, GridPosition(pos.x - 1, pos.y - 1, pos.z), 3);
+        FindPosSquarePlane(toFill, Position(pos.x - 1, pos.y - 1, pos.z), 3);
     }
 }

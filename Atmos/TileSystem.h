@@ -8,7 +8,7 @@
 
 #include "ObjectScribe.h"
 
-namespace Atmos
+namespace Atmos::Grid
 {
     class TileSystem : public ObjectSystem
     {
@@ -17,12 +17,12 @@ namespace Atmos
     public:
         TileSystem(ObjectManager& manager);
 
-        Reference FindTile(const GridPosition& at) const;
+        Reference FindTile(const Position& at) const;
 
-        bool Exists(const GridPosition& at) const;
+        bool Exists(const Position& at) const;
 
         ObjectBatchSizeT Size() const;
-    private:
+    protected:
         void InitializeImpl() override;
     private:
         typedef ObjectBatch<Tile> TileBatch;
@@ -33,10 +33,10 @@ namespace Atmos
 namespace Inscription
 {
     template<>
-    class Scribe<::Atmos::TileSystem, BinaryArchive> :
-        public ObjectSystemScribe<::Atmos::TileSystem, BinaryArchive>
+    class Scribe<::Atmos::Grid::TileSystem, BinaryArchive> :
+        public ObjectSystemScribe<::Atmos::Grid::TileSystem, BinaryArchive>
     {
-    public:
-        static void Scriven(ObjectT& object, ArchiveT& archive);
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
     };
 }

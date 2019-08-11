@@ -1,8 +1,8 @@
 #include "AudioSystem.h"
 
-#include "NullAudio.h"
+#include "NullAudioManager.h"
 
-namespace Atmos
+namespace Atmos::Audio
 {
     AudioSystem::AudioSystem(ObjectManager& manager) :
         UniqueProviderSystem(manager, UniqueProviderSystem::ValuePtr(new NullAudioManager()))
@@ -11,8 +11,8 @@ namespace Atmos
 
 namespace Inscription
 {
-    void Scribe<::Atmos::AudioSystem, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
+    void Scribe<::Atmos::Audio::AudioSystem, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
     {
-        BaseScriven<::Atmos::AudioSystem>(object, archive);
+        BaseScriven<::Atmos::UniqueProviderSystem<::Atmos::Audio::AudioManager>>(object, archive);
     }
 }

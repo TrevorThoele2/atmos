@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Atmos::Scripting
+namespace Atmos::Script
 {
     class ReferenceCounted
     {

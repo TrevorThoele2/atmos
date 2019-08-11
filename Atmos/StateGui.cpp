@@ -1,7 +1,6 @@
-
 #include "StateGui.h"
 
-namespace Atmos
+namespace Atmos::State
 {
     StateGui::~StateGui()
     {}

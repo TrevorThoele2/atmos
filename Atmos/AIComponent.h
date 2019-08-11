@@ -9,7 +9,7 @@ namespace Atmos::Entity
     class AIComponent : public Component
     {
     public:
-        typedef TypedObjectReference<ScriptInstance> ScriptInstance;
+        typedef TypedObjectReference<Script::ScriptInstance> ScriptInstance;
         ScriptInstance script;
     public:
         AIComponent(ObjectManager& manager, EntityReference owner);

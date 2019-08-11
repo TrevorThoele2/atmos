@@ -6,13 +6,13 @@
 namespace Atmos
 {
     template<>
-    class ObjectFactory<Tile> : public ObjectFactoryBase
+    class ObjectFactory<Grid::Tile> : public ObjectFactoryBase
     {
     public:
-        typedef Tile Created;
+        typedef Grid::Tile Created;
     public:
         ObjectFactory(ObjectManager& manager);
 
-        Created* CreateObject(const GridPosition& position);
+        Created* CreateObject(const Grid::Position& position);
     };
 }

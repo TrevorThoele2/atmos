@@ -66,7 +66,7 @@ namespace Inscription
     class Scribe<::Atmos::DebugScreen, BinaryArchive> :
         public ObjectSystemScribe<::Atmos::DebugScreen, BinaryArchive>
     {
-    public:
-        static void Scriven(ObjectT& object, ArchiveT& archive);
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
     };
 }

@@ -6,7 +6,7 @@
 #include "Event.h"
 #include <Chroma\Any.h>
 
-namespace Atmos
+namespace Atmos::State
 {
     template<class Gui>
     class StateWithGui : public State
@@ -20,7 +20,7 @@ namespace Atmos
     protected:
         StateWithGui(ObjectManager& manager);
         StateWithGui(typename const ::Inscription::BinaryTableData<StateWithGui>& data);
-    private:
+    protected:
         void InitializeImpl() override final;
         void WorkImpl() override final;
         virtual void DoInitialize();
@@ -87,16 +87,16 @@ namespace Atmos
 namespace Inscription
 {
     template<class Gui>
-    struct TableData<::Atmos::StateWithGui<Gui>, BinaryArchive> :
-        public ObjectTableDataBase<::Atmos::StateWithGui<Gui>, BinaryArchive>
+    struct TableData<::Atmos::State::StateWithGui<Gui>, BinaryArchive> :
+        public ObjectTableDataBase<::Atmos::State::StateWithGui<Gui>, BinaryArchive>
     {};
 
     template<class Gui>
-    class Scribe<::Atmos::StateWithGui<Gui>, BinaryArchive> :
-        public ObjectScribe<::Atmos::StateWithGui<Gui>, BinaryArchive>
+    class Scribe<::Atmos::State::StateWithGui<Gui>, BinaryArchive> :
+        public ObjectScribe<::Atmos::State::StateWithGui<Gui>, BinaryArchive>
     {
     private:
-        using BaseT = ObjectScribe<::Atmos::StateWithGui<Gui>, BinaryArchive>;
+        using BaseT = ObjectScribe<::Atmos::State::StateWithGui<Gui>, BinaryArchive>;
     public:
         using ObjectT = typename BaseT::ObjectT;
         using ArchiveT = typename BaseT::ArchiveT;

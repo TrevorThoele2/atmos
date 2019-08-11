@@ -5,7 +5,7 @@
 
 #include "Assert.h"
 
-namespace Atmos::Scripting
+namespace Atmos::Script
 {
     void AngelScriptAssert(int result)
     {

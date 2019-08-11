@@ -11,7 +11,7 @@
 #include "State.h"
 #include "Event.h"
 
-namespace Atmos
+namespace Atmos::State
 {
     class StateSystem : public ObjectSystem
     {
@@ -68,9 +68,12 @@ namespace Atmos
     {
         return std::type_index(typeid(StateWithGui));
     }
+}
 
+namespace Atmos
+{
     template<>
-    struct ObjectSystemTraits<StateSystem>
+    struct ObjectSystemTraits<State::StateSystem>
     {
         static const ObjectSystemPriority priority = 0;
     };
@@ -79,10 +82,10 @@ namespace Atmos
 namespace Inscription
 {
     template<>
-    class Scribe<::Atmos::StateSystem, BinaryArchive> :
-        public ObjectSystemScribe<::Atmos::StateSystem, BinaryArchive>
+    class Scribe<::Atmos::State::StateSystem, BinaryArchive> :
+        public ObjectSystemScribe<::Atmos::State::StateSystem, BinaryArchive>
     {
-    public:
-        static void Scriven(ObjectT& object, ArchiveT& archive);
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
     };
 }

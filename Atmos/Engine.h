@@ -18,7 +18,7 @@ namespace Atmos
 
         void Setup();
 
-        void LoadWorld(const FilePath& filePath);
+        void LoadWorld(const File::Path& filePath);
 
         void StartExecution();
 
@@ -48,9 +48,9 @@ namespace Atmos
         {
         public:
             EngineExecution execution;
-            WorldManager worldManager;
+            World::WorldManager worldManager;
         public:
-            ExecutionContext(Engine& owner, WorldManager&& worldManager);
+            ExecutionContext(Engine& owner, World::WorldManager&& worldManager);
         };
 
         typedef std::unique_ptr<ExecutionContext> ExecutionContextPtr;

@@ -17,13 +17,13 @@ namespace Atmos
         typedef typename std::streamsize StreamSize;
         typedef std::ios_base::openmode Mode;
     private:
-        FilePath path;
+        File::Path path;
 
         virtual Pos Tell(StreamT &tell) = 0;
     protected:
         StreamT stream;
     public:
-        SimpleFile(const FilePath &path, Mode mode);
+        SimpleFile(const File::Path &path, Mode mode);
         virtual ~SimpleFile() = 0 {}
         // Returns the position before the seek
         virtual void Seek(Pos pos) = 0;
@@ -32,7 +32,7 @@ namespace Atmos
     };
 
     template<class StreamT>
-    SimpleFile<StreamT>::SimpleFile(const FilePath &path, Mode mode) : path(path)
+    SimpleFile<StreamT>::SimpleFile(const File::Path &path, Mode mode) : path(path)
     {
         stream.open(path.c_str(), mode);
     }
@@ -55,7 +55,7 @@ namespace Atmos
     private:
         Pos Tell(StreamT &tell) override;
     public:
-        SimpleInFile(const FilePath &path);
+        SimpleInFile(const File::Path &path);
         template<class T>
         void operator>>(T &arg);
         void Seek(Pos pos) override;
@@ -81,7 +81,7 @@ namespace Atmos
     private:
         Pos Tell(StreamT &tell) override;
     public:
-        SimpleOutFile(const FilePath &path);
+        SimpleOutFile(const File::Path &path);
         template<class T>
         void operator<<(const T &arg);
         void Seek(Pos pos) override;
@@ -93,7 +93,7 @@ namespace Atmos
         stream.write(reinterpret_cast<const char*>(&arg), sizeof(arg));
     }
 
-    size_t GetFileSize(const FilePath &path);
+    size_t GetFileSize(const File::Path &path);
     // The first parameter of the return value MUST be delete[]'d after you are done with it
-    std::pair<void*, size_t> ReadFileIntoBuffer(const FilePath &path);
+    std::pair<void*, size_t> ReadFileIntoBuffer(const File::Path &path);
 }

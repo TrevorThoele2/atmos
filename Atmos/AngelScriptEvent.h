@@ -11,9 +11,9 @@ namespace Atmos
     class ObjectManager;
 }
 
-namespace Atmos::Scripting
+namespace Atmos::Script
 {
-    class System;
+    class ScriptSystem;
 
     class Event
     {
@@ -34,6 +34,6 @@ namespace Atmos::Scripting
         asIScriptEngine* Engine();
     private:
         ObjectManager* objectManager;
-        System* FindSystem();
+        ScriptSystem* FindSystem();
     };
 }

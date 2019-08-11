@@ -4,7 +4,7 @@
 
 #include "Serialization.h"
 #include <Inscription/ContainerSize.h>
-#include <Inscription/ScopeTrackingModifier.h>
+#include <Inscription/ObjectTrackingContext.h>
 
 namespace Atmos
 {
@@ -340,7 +340,7 @@ namespace Inscription
     public:
         static void Scriven(ObjectT& object, ArchiveT& archive)
         {
-            ScopeTrackingModifier tracking(archive, false);
+            ObjectTrackingContext trackingContext(ObjectTrackingContext::Inactive, archive);
             if (archive.IsOutput())
             {
                 ContainerSize size(object.vector.size());

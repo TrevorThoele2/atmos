@@ -35,14 +35,20 @@ namespace Atmos::Render
         void SetMainDimensionsImpl(const ScreenDimensions& dimensions) override;
         ScreenDimensions GetMainDimensionsImpl() const override;
 
-        std::unique_ptr<ImageAssetData> CreateImageDataImpl(const FilePath& path) override;
-        std::unique_ptr<ImageAssetData> CreateImageDataImpl(void *buffer, std::int32_t size, const FileName& name) override;
-        std::unique_ptr<ShaderAssetData> CreateShaderDataImpl(const FilePath& path) override;
-        std::unique_ptr<ShaderAssetData> CreateShaderDataImpl(void *buffer, std::int32_t size, const FileName& name) override;
-        Surface CreateRenderSurfaceImpl(void* window) override;
-        Canvas CreateCanvasImpl(const ScreenDimensions& dimensions) override;
+        std::unique_ptr<Asset::ImageAssetData> CreateImageDataImpl(
+            const File::Path& path) override;
+        std::unique_ptr<Asset::ImageAssetData> CreateImageDataImpl(
+            void *buffer, std::int32_t size, const File::Name& name) override;
+        std::unique_ptr<Asset::ShaderAssetData> CreateShaderDataImpl(
+            const File::Path& path) override;
+        std::unique_ptr<Asset::ShaderAssetData> CreateShaderDataImpl(
+            void *buffer, std::int32_t size, const File::Name& name) override;
+        Surface CreateSurfaceImpl(
+            void* window) override;
+        Canvas CreateCanvasImpl(
+            const ScreenDimensions& dimensions) override;
 
-        bool CanMakeImageImpl(const FilePath& path) const override;
+        bool CanMakeImageImpl(const File::Path& path) const override;
         bool CanMakeImageImpl(void* buffer, std::int32_t size) const override;
 
         void ResizeCanvasImpl(Canvas& canvas, const ScreenDimensions& dimensions) override;

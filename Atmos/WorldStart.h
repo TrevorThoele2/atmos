@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include "FieldID.h"
@@ -7,7 +6,7 @@
 
 #include "Serialization.h"
 
-namespace Atmos
+namespace Atmos::World
 {
     class WorldStart
     {
@@ -25,10 +24,11 @@ namespace Atmos
 namespace Inscription
 {
     template<>
-    class Scribe<::Atmos::WorldStart, BinaryArchive> :
-        public CompositeScribe<::Atmos::WorldStart, BinaryArchive>
+    class Scribe<::Atmos::World::WorldStart, BinaryArchive> :
+        public CompositeScribe<::Atmos::World::WorldStart, BinaryArchive>
     {
-    public:
-        static void Scriven(ObjectT& object, ArchiveT& archive);
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
+        void ConstructImplementation(ObjectT* storage, ArchiveT& archive) override;
     };
 }

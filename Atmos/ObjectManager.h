@@ -392,8 +392,36 @@ namespace Inscription
     class Scribe<::Atmos::ObjectManager, BinaryArchive> :
         public CompositeScribe<::Atmos::ObjectManager, BinaryArchive>
     {
-    public:
-        static void Scriven(ObjectT& object, ArchiveT& archive);
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
+        void ConstructImplementation(ObjectT* storage, ArchiveT& archive) override;
+    };
+
+    template<>
+    class Scribe<::Atmos::ObjectManager::ObjectSystemHandle, BinaryArchive> :
+        public CompositeScribe<::Atmos::ObjectManager::ObjectSystemHandle, BinaryArchive>
+    {
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
+        void ConstructImplementation(ObjectT* storage, ArchiveT& archive) override;
+    };
+
+    template<>
+    class Scribe<::Atmos::ObjectManager::OwnedObjectSystemHandle, BinaryArchive> :
+        public CompositeScribe<::Atmos::ObjectManager::OwnedObjectSystemHandle, BinaryArchive>
+    {
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
+        void ConstructImplementation(ObjectT* storage, ArchiveT& archive) override;
+    };
+
+    template<>
+    class Scribe<::Atmos::ObjectManager::UnownedObjectSystemHandle, BinaryArchive> :
+        public CompositeScribe<::Atmos::ObjectManager::UnownedObjectSystemHandle, BinaryArchive>
+    {
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
+        void ConstructImplementation(ObjectT* storage, ArchiveT& archive) override;
     };
 }
 

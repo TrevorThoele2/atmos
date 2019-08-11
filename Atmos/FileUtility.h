@@ -2,7 +2,7 @@
 
 #include "FilePath.h"
 
-namespace Atmos
+namespace Atmos::File
 {
-    bool DoesFileExist(const FilePath &path);
+    bool DoesFileExist(const Path &path);
 }

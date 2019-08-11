@@ -1,7 +1,6 @@
-
 #include "Field.h"
 
-namespace Atmos
+namespace Atmos::World
 {
     Field::Field(ID id) : _id(id),
         id([this]() { return _id; })
@@ -21,8 +20,13 @@ namespace Atmos
 
 namespace Inscription
 {
-    void Scribe<::Atmos::Field, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
+    void Scribe<::Atmos::World::Field, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
     {
         archive(object.objectManager);
+    }
+
+    void Scribe<::Atmos::World::Field, BinaryArchive>::ConstructImplementation(ObjectT* storage, ArchiveT& archive)
+    {
+        DoBasicConstruction(storage, archive);
     }
 }

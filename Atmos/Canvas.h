@@ -7,7 +7,7 @@
 #include "Color.h"
 #include "String.h"
 
-namespace Atmos
+namespace Atmos::Asset
 {
     class ShaderAsset;
 }

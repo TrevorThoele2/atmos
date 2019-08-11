@@ -16,7 +16,7 @@ namespace Atmos
 
     void InitializationFileSystem::Save()
     {
-        FilePath filePath = CreateFilePath();
+        File::Path filePath = CreateFilePath();
         ::Inscription::OutputTextFile file(filePath);
         file.ClearFile();
 
@@ -25,20 +25,20 @@ namespace Atmos
         file.WriteData(controls.FileString());
     }
 
-    FilePath InitializationFileSystem::CreateFilePath() const
-    {
-        return fileSystem->Get()->ExePath().Append(fileName).GetValue();
-    }
-
     void InitializationFileSystem::InitializeImpl()
     {
         Load();
     }
 
+    File::Path InitializationFileSystem::CreateFilePath() const
+    {
+        return fileSystem->Get()->ExePath().Append(fileName).GetValue();
+    }
+
     void InitializationFileSystem::Load()
     {
-        FilePath filePath = CreateFilePath();
-        if (!DoesFileExist(filePath))
+        File::Path filePath = CreateFilePath();
+        if (!File::DoesFileExist(filePath))
         {
             Save();
             return;
@@ -97,7 +97,7 @@ namespace Atmos
 
     void InitializationFileSystem::FindAndSetFileSystem()
     {
-        fileSystem = Manager()->FindSystem<FileSystem>();
+        fileSystem = Manager()->FindSystem<File::FileSystem>();
     }
 
     const String InitializationFileSystem::assignmentToken = "=";
@@ -105,7 +105,7 @@ namespace Atmos
 
 namespace Inscription
 {
-    void Scribe<::Atmos::InitializationFileSystem, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
+    void Scribe<::Atmos::InitializationFileSystem, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
     {
         BaseScriven<::Atmos::ObjectSystem>(object, archive);
     }

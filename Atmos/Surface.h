@@ -3,13 +3,10 @@
 #include <memory>
 #include "ScreenDimensions.h"
 
-namespace Atmos
-{
-    class GraphicsManager;
-}
-
 namespace Atmos::Render
 {
+    class GraphicsManager;
+
     class Surface
     {
     public:

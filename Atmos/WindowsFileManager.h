@@ -4,18 +4,18 @@
 
 #include "WindowsInclude.h"
 
-namespace Atmos
+namespace Atmos::File
 {
     class WindowsFileManager : public FileManager
     {
     public:
-        void MakeDirectory(const FilePath& path) override;
-        bool RelocateFile(const FilePath& from, const FilePath& to) override;
-        bool RemoveFile(const FilePath& remove) override;
+        void MakeDirectory(const Path& path) override;
+        bool RelocateFile(const Path& from, const Path& to) override;
+        bool RemoveFile(const Path& remove) override;
 
-        FilePath ExePath() const override;
-        FilePath DataPath() const override;
-        FilePath TemporaryDirectoryPath() const override;
+        Path ExePath() const override;
+        Path DataPath() const override;
+        Path TemporaryDirectoryPath() const override;
         size_t MaxPathLength() const override;
         String FileSeparator() const override;
     private:

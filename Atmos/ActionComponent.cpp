@@ -1,10 +1,9 @@
-
 #include "ActionComponent.h"
 
 namespace Atmos::Entity
 {
     ActionComponent::ActionComponent(ObjectManager& manager, EntityReference owner) :
-        Component(manager, owner), activator(Activator::USE_ON)
+        Component(manager, owner), activator(Activator::UseOn)
     {
         SetupScripts();
     }
@@ -17,37 +16,37 @@ namespace Atmos::Entity
 
     void ActionComponent::FireMovedInto()
     {
-        if (activator == Activator::ENTER_TILE)
+        if (activator == Activator::EnterTile)
             script->ExecuteDeferred();
     }
 
     void ActionComponent::FireAttemptMovedInto()
     {
-        if (activator == Activator::ATTEMPT_ENTER_TILE)
+        if (activator == Activator::AttemptEnterTile)
             script->ExecuteDeferred();
     }
 
     void ActionComponent::FireUseOn()
     {
-        if (activator == Activator::USE_ON)
+        if (activator == Activator::UseOn)
             script->ExecuteDeferred();
     }
 
     void ActionComponent::FireUseInto()
     {
-        if (activator == Activator::USE_INTO)
+        if (activator == Activator::UseInto)
             script->ExecuteDeferred();
     }
 
     void ActionComponent::FireFieldEntered()
     {
-        if (activator == Activator::ENTER_FIELD)
+        if (activator == Activator::EnterField)
             script->ExecuteDeferred();
     }
 
     void ActionComponent::FireFieldLeft()
     {
-        if (activator == Activator::LEAVE_FIELD)
+        if (activator == Activator::LeaveField)
             script->ExecuteDeferred();
     }
 

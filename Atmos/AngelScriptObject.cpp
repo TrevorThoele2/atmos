@@ -1,6 +1,6 @@
 #include "AngelScriptObject.h"
 
-namespace Atmos::Scripting
+namespace Atmos::Script
 {
     Object::~Object()
     {}

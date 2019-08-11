@@ -9,10 +9,13 @@
 
 #include "Event.h"
 
-namespace Atmos
+namespace Atmos::Time
 {
     class TimeSystem;
+}
 
+namespace Atmos::Render
+{
     class CameraSystem : public ObjectSystem
     {
     public:
@@ -46,7 +49,7 @@ namespace Atmos
         void MoveBy(Position3D::Value x, Position3D::Value y, Position3D::Value z);
         void MoveToInstant(const Position3D& pos);
         void MoveDeltaInstant(const Position3D& delta);
-    private:
+    protected:
         void InitializeImpl() override;
     private:
         typedef const Position3D* Position3DT;
@@ -70,17 +73,17 @@ namespace Atmos
         void CalculateSides();
         bool IsFocusValid();
     private:
-        TimeSystem* FindTimeSystem();
+        Time::TimeSystem* FindTimeSystem();
     };
 }
 
 namespace Inscription
 {
     template<>
-    class Scribe<::Atmos::CameraSystem, BinaryArchive> :
-        public ObjectSystemScribe<::Atmos::CameraSystem, BinaryArchive>
+    class Scribe<::Atmos::Render::CameraSystem, BinaryArchive> :
+        public ObjectSystemScribe<::Atmos::Render::CameraSystem, BinaryArchive>
     {
-    public:
-        static void Scriven(ObjectT& object, ArchiveT& archive);
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
     };
 }

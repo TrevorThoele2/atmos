@@ -1,8 +1,8 @@
-#include "NullGraphics.h"
+#include "NullGraphicsManager.h"
 
 namespace Atmos::Render
 {
-    class ImageAssetDataImplementation : public ImageAssetData
+    class ImageAssetDataImplementation : public Asset::ImageAssetData
     {
     public:
         ImageAssetDataImplementation() = default;
@@ -13,7 +13,7 @@ namespace Atmos::Render
         }
     };
 
-    class ShaderAssetDataImplementation : public ShaderAssetData
+    class ShaderAssetDataImplementation : public Asset::ShaderAssetData
     {
     public:
         ShaderAssetDataImplementation() = default;
@@ -44,10 +44,10 @@ namespace Atmos::Render
         {}
     };
 
-    class RenderSurfaceData : public Surface::Data
+    class SurfaceData : public Surface::Data
     {
     public:
-        RenderSurfaceData() = default;
+        SurfaceData() = default;
 
         void SetAsRenderTarget() override
         {}
@@ -146,37 +146,43 @@ namespace Atmos::Render
         return ScreenDimensions(0, 0);
     }
 
-    std::unique_ptr<ImageAssetData> NullGraphicsManager::CreateImageDataImpl(const FilePath& path)
+    std::unique_ptr<Asset::ImageAssetData> NullGraphicsManager::CreateImageDataImpl(
+        const File::Path& path)
     {
-        return std::unique_ptr<ImageAssetData>(new ImageAssetDataImplementation());
+        return std::unique_ptr<Asset::ImageAssetData>(new ImageAssetDataImplementation());
     }
 
-    std::unique_ptr<ImageAssetData> NullGraphicsManager::CreateImageDataImpl(void* buffer, std::int32_t size, const FileName& name)
+    std::unique_ptr<Asset::ImageAssetData> NullGraphicsManager::CreateImageDataImpl(
+        void* buffer, std::int32_t size, const File::Name& name)
     {
-        return std::unique_ptr<ImageAssetData>(new ImageAssetDataImplementation());
+        return std::unique_ptr<Asset::ImageAssetData>(new ImageAssetDataImplementation());
     }
 
-    std::unique_ptr<ShaderAssetData> NullGraphicsManager::CreateShaderDataImpl(const FilePath& path)
+    std::unique_ptr<Asset::ShaderAssetData> NullGraphicsManager::CreateShaderDataImpl(
+        const File::Path& path)
     {
-        return std::unique_ptr<ShaderAssetData>(new ShaderAssetDataImplementation());
+        return std::unique_ptr<Asset::ShaderAssetData>(new ShaderAssetDataImplementation());
     }
 
-    std::unique_ptr<ShaderAssetData> NullGraphicsManager::CreateShaderDataImpl(void* buffer, std::int32_t size, const FileName& name)
+    std::unique_ptr<Asset::ShaderAssetData> NullGraphicsManager::CreateShaderDataImpl(
+        void* buffer, std::int32_t size, const File::Name& name)
     {
-        return std::unique_ptr<ShaderAssetData>(new ShaderAssetDataImplementation());
+        return std::unique_ptr<Asset::ShaderAssetData>(new ShaderAssetDataImplementation());
     }
 
-    Surface NullGraphicsManager::CreateRenderSurfaceImpl(void* window)
+    Surface NullGraphicsManager::CreateSurfaceImpl(
+        void* window)
     {
-        return Surface(Surface::DataPtr(new RenderSurfaceData()));
+        return Surface(Surface::DataPtr(new SurfaceData()));
     }
 
-    Canvas NullGraphicsManager::CreateCanvasImpl(const ScreenDimensions& dimensions)
+    Canvas NullGraphicsManager::CreateCanvasImpl(
+        const ScreenDimensions& dimensions)
     {
         return Canvas(Canvas::DataPtr(new CanvasData()), dimensions.width, dimensions.height);
     }
 
-    bool NullGraphicsManager::CanMakeImageImpl(const FilePath& path) const
+    bool NullGraphicsManager::CanMakeImageImpl(const File::Path& path) const
     {
         return true;
     }

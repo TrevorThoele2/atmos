@@ -11,7 +11,7 @@
 #include "SkipFileHandle.h"
 #include <Inscription/InputBinaryArchive.h>
 
-namespace Atmos
+namespace Atmos::World::Serialization
 {
     class InputWorldArchive : public InputArchiveBase
     {
@@ -25,7 +25,7 @@ namespace Atmos
         static const char* const worldExtension;
     public:
         InputWorldArchive(
-            const FilePath& filePath,
+            const File::Path& filePath,
             ObjectManager& globalObjectManager,
             OpenMode openMode = OpenMode::FORCE_EXTENSION);
 
@@ -40,7 +40,7 @@ namespace Atmos
         bool HasField(FieldID fieldID) const override;
         size_t FieldCount() const override;
 
-        const FilePath& GetFilePath() const;
+        const File::Path& GetFilePath() const;
     protected:
         ::Inscription::BinaryArchive& UnderlyingArchive() override;
         const ::Inscription::BinaryArchive& UnderlyingArchive() const override;
@@ -64,7 +64,7 @@ namespace Atmos
     private:
         Underlying underlyingArchive;
 
-        FilePath filePath;
+        File::Path filePath;
         FieldHandleMap fieldHandles;
         WorldStart _worldStart;
     private:
@@ -77,6 +77,6 @@ namespace Atmos
 
         void FillField(Field& fill, FieldHandleMap::iterator handle);
 
-        static FilePath GetForcedFilePath(const FilePath& filePath, OpenMode openMode);
+        static File::Path GetForcedFilePath(const File::Path& filePath, OpenMode openMode);
     };
 }

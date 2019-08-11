@@ -15,23 +15,23 @@
 
 #include "ObjectScribe.h"
 
-namespace Atmos
+namespace Atmos::Script
 {
     class RunningScript;
 
     class ScriptInstance : public Object
     {
     public:
-        typedef TypedObjectReference<ScriptAsset> AssetReference;
+        typedef TypedObjectReference<Asset::ScriptAsset> AssetReference;
     public:
         StoredProperty<AssetReference> asset;
 
         ObjectReference owner;
 
         Name executeName;
-        Scripting::Parameters parameters;
+        Parameters parameters;
 
-        Scripting::Persistence persistence;
+        Persistence persistence;
     public:
         ScriptInstance(ObjectManager& manager);
         ScriptInstance(const ScriptInstance& arg) = default;
@@ -52,9 +52,12 @@ namespace Atmos
     private:
         TypedObjectReference<RunningScript> CreateRunningFromThis();
     };
+}
 
+namespace Atmos
+{
     template<>
-    struct ObjectTraits<ScriptInstance> : ObjectTraitsBase<ScriptInstance>
+    struct ObjectTraits<Script::ScriptInstance> : ObjectTraitsBase<Script::ScriptInstance>
     {
         static const ObjectTypeName typeName;
     };
@@ -63,17 +66,18 @@ namespace Atmos
 namespace Inscription
 {
     template<>
-    struct TableData<::Atmos::ScriptInstance, BinaryArchive> :
-        public ObjectTableDataBase<::Atmos::ScriptInstance, BinaryArchive>
+    struct TableData<::Atmos::Script::ScriptInstance, BinaryArchive> :
+        public ObjectTableDataBase<::Atmos::Script::ScriptInstance, BinaryArchive>
     {
         ObjectT::AssetReference asset;
         ::Atmos::Name executeName;
-        ::Atmos::Scripting::Parameters parameters;
-        ::Atmos::Scripting::Persistence persistence;
+        ::Atmos::Script::Parameters parameters;
+        ::Atmos::Script::Persistence persistence;
     };
 
     template<>
-    class Scribe<::Atmos::ScriptInstance, BinaryArchive> : public ObjectScribe<::Atmos::ScriptInstance, BinaryArchive>
+    class Scribe<::Atmos::Script::ScriptInstance, BinaryArchive> :
+        public ObjectScribe<::Atmos::Script::ScriptInstance, BinaryArchive>
     {
     public:
         class Table : public TableBase

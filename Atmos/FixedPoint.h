@@ -1120,8 +1120,9 @@ namespace Inscription
     template<>
     class Scribe<::Atmos::RadixPoint, BinaryArchive> : public CompositeScribe<::Atmos::RadixPoint, BinaryArchive>
     {
-    public:
-        static void Scriven(ObjectT& object, ArchiveT& archive);
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
+        void ConstructImplementation(ObjectT* storage, ArchiveT& archive) override;
     };
 
     template<class T>
@@ -1132,11 +1133,21 @@ namespace Inscription
     public:
         using ObjectT = typename BaseT::ObjectT;
         using ArchiveT = typename BaseT::ArchiveT;
-    public:
-        static void Scriven(ObjectT& object, ArchiveT& archive)
+
+        using BaseT::Scriven;
+        using BaseT::Construct;
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override
         {
             archive(object.value);
             archive(object.radixPoint);
         }
+
+        void ConstructImplementation(ObjectT* storage, ArchiveT& archive) override
+        {
+            DoBasicConstruction(storage, archive);
+        }
+
+        using BaseT::DoBasicConstruction;
     };
 }

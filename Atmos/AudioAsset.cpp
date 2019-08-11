@@ -4,9 +4,9 @@
 #include "AssetPackageSystem.h"
 #include "AudioSystem.h"
 
-namespace Atmos
+namespace Atmos::Asset
 {
-    AudioAsset::AudioAsset(ObjectManager& manager, const FileName& fileName, DataPtr&& data) :
+    AudioAsset::AudioAsset(ObjectManager& manager, const File::Name& fileName, DataPtr&& data) :
         FileAsset(manager, fileName), data(std::move(data))
     {}
 
@@ -34,7 +34,7 @@ namespace Atmos
         return ObjectTraits<AudioAsset>::TypeDescription();
     }
 
-    void AudioAsset::SetDataFromPackage(const FileName& fileName)
+    void AudioAsset::SetDataFromPackage(const File::Name& fileName)
     {
         auto assetPackageSystem = FindAssetPackageSystem();
         auto audioManager = FindAudioSystem()->Get();
@@ -48,13 +48,16 @@ namespace Atmos
         return Manager()->FindSystem<AssetPackageSystem>();
     }
 
-    AudioSystem* AudioAsset::FindAudioSystem()
+    Audio::AudioSystem* AudioAsset::FindAudioSystem()
     {
-        return Manager()->FindSystem<AudioSystem>();
+        return Manager()->FindSystem<Audio::AudioSystem>();
     }
-
-    const ObjectTypeName ObjectTraits<AudioAsset>::typeName = "AudioAsset";
 
     AudioAssetData::~AudioAssetData()
     {}
+}
+
+namespace Atmos
+{
+    const ObjectTypeName ObjectTraits<Asset::AudioAsset>::typeName = "AudioAsset";
 }

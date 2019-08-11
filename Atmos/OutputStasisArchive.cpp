@@ -6,13 +6,13 @@
 
 #include <Inscription/FileNameScribe.h>
 
-namespace Atmos
+namespace Atmos::World::Serialization
 {
     const char* const OutputStasisArchive::defaultExtension = "stasis";
 
     OutputStasisArchive::OutputStasisArchive(
-        const FilePath& filePath,
-        const FileName& worldFileName,
+        const File::Path& filePath,
+        const File::Name& worldFileName,
         ::Inscription::ContainerSize fieldCount,
         OpenMode openMode) :
 
@@ -30,13 +30,8 @@ namespace Atmos
     {
         OutputHeader();
 
-        // Save the field ID
         curSaver->fieldID = save.id;
-
-        // Save the field itself while clearing out the tracking entries made
-        underlyingArchive.StartTrackingSection();
         curSaver->SaveObject(save);
-        underlyingArchive.StopTrackingSection(true);
 
         ++curSaver;
     }
@@ -56,7 +51,7 @@ namespace Atmos
         fieldSaverList.resize(set, FieldSaver(underlyingArchive));
     }
 
-    const FileName& OutputStasisArchive::GetFileName() const
+    const File::Name& OutputStasisArchive::GetFileName() const
     {
         return fileName;
     }

@@ -1,4 +1,3 @@
-
 #include "WindowsWindow.h"
 
 #include "LoggingSystem.h"
@@ -19,12 +18,18 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
     return DefWindowProc(hWnd, message, wParam, lParam);
 }
 
-namespace Atmos
+namespace Atmos::Window
 {
     WindowsWindowBase::WindowsWindowBase(ObjectManager& objectManager) : WindowBase(objectManager)
     {}
 
-    WindowsWindow::WindowsWindow(ObjectManager& objectManager, HINSTANCE hInstance, LPSTR lpCmdLine, int nCmdShow, const String& className) :
+    WindowsWindow::WindowsWindow(
+        ObjectManager& objectManager,
+        HINSTANCE hInstance,
+        LPSTR lpCmdLine,
+        int nCmdShow,
+        const String& className) :
+
         WindowsWindowBase(objectManager),
         nCmdShow(nCmdShow), className(className + "Client"),
         windowedStyle(WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_OVERLAPPED), windowedStyleEx(0),
@@ -79,10 +84,10 @@ namespace Atmos
         return GetFocus() == hwnd;
     }
 
-    void WindowsWindow::Suspend(const TimeValue &time)
+    void WindowsWindow::Suspend(const Time::Value &time)
     {
-        auto test = static_cast<unsigned int>(time.ConvertValue(TimeValueEpoch::MILLISECONDS));
-        Sleep(test);
+        auto sleepFor = static_cast<unsigned int>(time.GetAs(Time::Epoch::MILLISECONDS));
+        Sleep(sleepFor);
     }
 
     bool WindowsWindow::OnStartFrame()

@@ -9,20 +9,20 @@
 
 namespace Atmos::Render
 {
-    class FragmentSystem : public ObjectSystem
+    class RenderFragmentSystem : public ObjectSystem
     {
     public:
-        typedef TypedObjectReference<Fragment> Reference;
+        typedef TypedObjectReference<RenderFragment> Reference;
     public:
-        FragmentSystem(ObjectManager& manager);
+        RenderFragmentSystem(ObjectManager& manager);
 
         void DrawAll();
     private:
-        typedef ObjectBatch<Fragment> RenderFragmentBatch;
+        typedef ObjectBatch<RenderFragment> RenderFragmentBatch;
 
         RenderFragmentBatch renderFragments;
     private:
-        Octree grid;
+        Grid::Octree grid;
     private:
         void OnCreated(Reference object);
     private:
@@ -33,10 +33,10 @@ namespace Atmos::Render
 namespace Inscription
 {
     template<>
-    class Scribe<::Atmos::FragmentSystem, BinaryArchive> :
-        public ObjectSystemScribe<::Atmos::FragmentSystem, BinaryArchive>
+    class Scribe<::Atmos::Render::RenderFragmentSystem, BinaryArchive> :
+        public ObjectSystemScribe<::Atmos::Render::RenderFragmentSystem, BinaryArchive>
     {
-    public:
-        static void Scriven(ObjectT& object, ArchiveT& archive);
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
     };
 }

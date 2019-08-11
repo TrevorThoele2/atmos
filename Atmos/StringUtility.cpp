@@ -12,10 +12,10 @@ namespace Atmos
     String GetFileName(const String &filePath)
     {
         String newString = filePath;
-        if (newString.find(FilePath::fileSeparator) != newString.npos)
+        if (newString.find(File::Path::fileSeparator) != newString.npos)
         {
             // Slice the file path to just its file name
-            auto pos = newString.find_last_of(FilePath::fileSeparator) + 1;
+            auto pos = newString.find_last_of(File::Path::fileSeparator) + 1;
             newString = newString.substr(pos);
         }
 
@@ -54,7 +54,7 @@ namespace Atmos
         if (newString.find(".") != newString.npos)
         {
             // Slice the file extension off
-            auto pos = newString.find_last_of(FilePath::fileSeparator);
+            auto pos = newString.find_last_of(File::Path::fileSeparator);
             newString.erase(pos);
         }
 
@@ -142,9 +142,9 @@ namespace Atmos
             return arg;
         }
 
-        TimeValue FromStringImpl(const String &arg, const ::Chroma::Type<TimeValue> &t)
+        Time::Value FromStringImpl(const String &arg, const ::Chroma::Type<Time::Value> &t)
         {
-            return FromString<TimeValue::Value>(arg);
+            return FromString<Time::Value::Number>(arg);
         }
     }
 
@@ -251,14 +251,17 @@ namespace Atmos
         return arg.ToString();
     }
 
-    String ToString(TimeValue timeValue)
+    String ToString(Time::Value timeValue)
     {
         return ToString(timeValue.Get());
     }
 
-    String ToString(const GridPosition &position)
+    String ToString(const Grid::Position &position)
     {
-        return ToString(position.GetX()) + "," + ToString(position.GetY()) + "," + ToString(position.GetZ());
+        return
+            ToString(position.GetX()) + "," +
+            ToString(position.GetY()) + "," +
+            ToString(position.GetZ());
     }
 
     String ToString(const ::Agui::Resolution::Size &arg)

@@ -1,6 +1,6 @@
 #include "WorldStart.h"
 
-namespace Atmos
+namespace Atmos::World
 {
     WorldStart::WorldStart(FieldID fieldID) : fieldID(fieldID)
     {}
@@ -17,8 +17,13 @@ namespace Atmos
 
 namespace Inscription
 {
-    void Scribe<::Atmos::WorldStart, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
+    void Scribe<::Atmos::World::WorldStart, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
     {
         archive(object.fieldID);
+    }
+
+    void Scribe<::Atmos::World::WorldStart, BinaryArchive>::ConstructImplementation(ObjectT* storage, ArchiveT& archive)
+    {
+        DoBasicConstruction(storage, archive);
     }
 }

@@ -7,7 +7,7 @@
 
 #include "StringUtility.h"
 
-namespace Atmos
+namespace Atmos::Render
 {
     CameraSystem::CameraSystem(ObjectManager& manager) : ObjectSystem(manager)
     {}
@@ -117,7 +117,8 @@ namespace Atmos
         ResetFocus();
 
         auto& lastElapsed = FindTimeSystem()->GetLastElapsed();
-        decltype(by) normalizedDistance = by * static_cast<float>(lastElapsed.ConvertValue(TimeValueEpoch::SECONDS));
+        decltype(by) normalizedDistance =
+            by * static_cast<float>(lastElapsed.GetAs(Time::Epoch::SECONDS));
 
         switch (direction.Get())
         {
@@ -198,15 +199,15 @@ namespace Atmos
         return focusedPosition != nullptr;
     }
 
-    TimeSystem* CameraSystem::FindTimeSystem()
+    Time::TimeSystem* CameraSystem::FindTimeSystem()
     {
-        return Manager()->FindSystem<TimeSystem>();
+        return Manager()->FindSystem<Time::TimeSystem>();
     }
 }
 
 namespace Inscription
 {
-    void Scribe<::Atmos::CameraSystem, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
+    void Scribe<::Atmos::Render::CameraSystem, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
     {
         BaseScriven<::Atmos::ObjectSystem>(object, archive);
     }

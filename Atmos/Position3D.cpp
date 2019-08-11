@@ -109,10 +109,15 @@ namespace Atmos
 
 namespace Inscription
 {
-    void Scribe<::Atmos::Position3D, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
+    void Scribe<::Atmos::Position3D, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
     {
         archive(object.x);
         archive(object.y);
         archive(object.z);
+    }
+
+    void Scribe<::Atmos::Position3D, BinaryArchive>::ConstructImplementation(ObjectT* storage, ArchiveT& archive)
+    {
+        DoBasicConstruction(storage, archive);
     }
 }

@@ -5,7 +5,7 @@
 
 #include "ImageAsset.h"
 #include "ShaderAsset.h"
-#include "RenderSurface.h"
+#include "Surface.h"
 #include "Canvas.h"
 
 #include "ScreenDimensions.h"
@@ -14,19 +14,14 @@
 #include "CanvasView.h"
 #include "ObjectReference.h"
 
+#include "FilePath.h"
 #include "Flags.h"
-
-namespace Atmos
-{
-    class FilePath;
-    class CameraSystem;
-}
 
 namespace Atmos::Render
 {
-    class Position2D;
     class Color;
     class Line;
+    class CameraSystem;
 
     class GraphicsManager
     {
@@ -46,21 +41,21 @@ namespace Atmos::Render
     public:
         typedef TypedObjectReference<Sprite> SpriteReference;
         typedef TypedObjectReference<CanvasView> CanvasViewReference;
-        typedef TypedObjectReference<Fragment> RenderFragmentReference;
+        typedef TypedObjectReference<RenderFragment> RenderFragmentReference;
     public:
         virtual ~GraphicsManager() = 0;
         void Reinitialize();
 
-        std::unique_ptr<ImageAssetData> CreateImageData(const FilePath& path);
-        std::unique_ptr<ImageAssetData> CreateImageData(void* buffer, std::int32_t size, const FileName& name);
-        std::unique_ptr<ShaderAssetData> CreateShaderData(const FilePath& path);
-        std::unique_ptr<ShaderAssetData> CreateShaderData(void* buffer, std::int32_t size, const FileName& name);
-        Surface& CreateRenderSurface(void* window);
+        std::unique_ptr<Asset::ImageAssetData> CreateImageData(const File::Path& path);
+        std::unique_ptr<Asset::ImageAssetData> CreateImageData(void* buffer, std::int32_t size, const File::Name& name);
+        std::unique_ptr<Asset::ShaderAssetData> CreateShaderData(const File::Path& path);
+        std::unique_ptr<Asset::ShaderAssetData> CreateShaderData(void* buffer, std::int32_t size, const File::Name& name);
+        Surface& CreateSurface(void* window);
         Canvas& CreateCanvas(const ScreenDimensions& dimensions);
 
-        void DestroyRenderSurface(Surface& destroy);
+        void DestroySurface(Surface& destroy);
 
-        bool CanMakeImage(const FilePath& path) const;
+        bool CanMakeImage(const File::Path& path) const;
         bool CanMakeImage(void* buffer, std::int32_t size) const;
 
         void ResizeCanvas(Canvas& canvas, const ScreenDimensions& dimensions);
@@ -114,11 +109,11 @@ namespace Atmos::Render
     protected:
         GraphicsManager(ObjectManager& objectManager);
 
-        bool IsUsingNonMainRenderSurface() const;
+        bool IsUsingNonMainSurface() const;
     private:
-        typedef std::list<Surface> RenderSurfaceList;
-        RenderSurfaceList renderSurfaces;
-        RenderSurfaceList::iterator currentRenderSurface;
+        typedef std::list<Surface> SurfaceList;
+        SurfaceList surfaces;
+        SurfaceList::iterator currentSurface;
 
         typedef std::list<Canvas> CanvasList;
         CanvasList canvasList;
@@ -129,14 +124,14 @@ namespace Atmos::Render
         virtual void SetMainDimensionsImpl(const ScreenDimensions& dimensions) = 0;
         virtual ScreenDimensions GetMainDimensionsImpl() const = 0;
 
-        virtual std::unique_ptr<ImageAssetData> CreateImageDataImpl(const FilePath& path) = 0;
-        virtual std::unique_ptr<ImageAssetData> CreateImageDataImpl(void* buffer, std::int32_t size, const FileName& name) = 0;
-        virtual std::unique_ptr<ShaderAssetData> CreateShaderDataImpl(const FilePath& path) = 0;
-        virtual std::unique_ptr<ShaderAssetData> CreateShaderDataImpl(void* buffer, std::int32_t size, const FileName& name) = 0;
-        virtual Surface CreateRenderSurfaceImpl(void* window) = 0;
+        virtual std::unique_ptr<Asset::ImageAssetData> CreateImageDataImpl(const File::Path& path) = 0;
+        virtual std::unique_ptr<Asset::ImageAssetData> CreateImageDataImpl(void* buffer, std::int32_t size, const File::Name& name) = 0;
+        virtual std::unique_ptr<Asset::ShaderAssetData> CreateShaderDataImpl(const File::Path& path) = 0;
+        virtual std::unique_ptr<Asset::ShaderAssetData> CreateShaderDataImpl(void* buffer, std::int32_t size, const File::Name& name) = 0;
+        virtual Surface CreateSurfaceImpl(void* window) = 0;
         virtual Canvas CreateCanvasImpl(const ScreenDimensions& dimensions) = 0;
 
-        virtual bool CanMakeImageImpl(const FilePath& path) const = 0;
+        virtual bool CanMakeImageImpl(const File::Path& path) const = 0;
         virtual bool CanMakeImageImpl(void* buffer, std::int32_t size) const = 0;
 
         virtual void ResizeCanvasImpl(Canvas& canvas, const ScreenDimensions& dimensions) = 0;
@@ -157,7 +152,7 @@ namespace Atmos::Render
         virtual void RenderUnknownFragmentImpl(RenderFragmentReference fragment, float X, float Y) = 0;
         virtual void RenderLineImpl(const Line& line) = 0;
 
-        RenderSurfaceList::iterator FindRenderSurface(Surface& surface);
+        SurfaceList::iterator FindSurface(Surface& surface);
         void SetCameraSizeToCurrentDimensions();
     private:
         CameraSystem* cameraSystem;

@@ -9,7 +9,7 @@
 
 #include "Serialization.h"
 
-namespace Atmos
+namespace Atmos::World
 {
     class Field
     {
@@ -32,10 +32,11 @@ namespace Atmos
 namespace Inscription
 {
     template<>
-    class Scribe<::Atmos::Field, BinaryArchive> :
-        public CompositeScribe<::Atmos::Field, BinaryArchive>
+    class Scribe<::Atmos::World::Field, BinaryArchive> :
+        public CompositeScribe<::Atmos::World::Field, BinaryArchive>
     {
-    public:
-        static void Scriven(ObjectT& object, ArchiveT& archive);
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
+        void ConstructImplementation(ObjectT* storage, ArchiveT& archive) override;
     };
 }

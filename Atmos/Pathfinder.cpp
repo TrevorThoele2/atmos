@@ -1,4 +1,3 @@
-
 #include "Pathfinder.h"
 
 #include "TileSystem.h"
@@ -8,13 +7,13 @@ namespace Atmos
     Pathfinder::Pathfinder(ObjectManager& manager) : ObjectSystem(manager)
     {}
 
-    Pathfinder::TileStack Pathfinder::FindPath(const GridPosition& start, const GridPosition& finish)
+    Pathfinder::TileStack Pathfinder::FindPath(const Grid::Position& start, const Grid::Position& finish)
     {
         TileStack createdStack;
         if (start == finish)
             return createdStack;
 
-        auto tiles = Manager()->FindSystem<TileSystem>();
+        auto tiles = Manager()->FindSystem<Grid::TileSystem>();
         if (!tiles)
             return createdStack;
 
@@ -70,7 +69,7 @@ namespace Atmos
         return createdStack;
     }
 
-    Pathfinder::Node::Node(Cost gCost, Cost hCost, const GridPosition& position) :
+    Pathfinder::Node::Node(Cost gCost, Cost hCost, const Grid::Position& position) :
         gCost(gCost), hCost(hCost), position(position), fCost(gCost + hCost), parent(nullptr)
     {}
 
@@ -117,7 +116,7 @@ namespace Atmos
         return !(*this == arg);
     }
 
-    const GridPosition& Pathfinder::Node::Position() const
+    const Grid::Position& Pathfinder::Node::Position() const
     {
         return position;
     }
@@ -159,7 +158,7 @@ namespace Atmos
         return parent.get();
     }
 
-    Pathfinder::NodeHeap::iterator Pathfinder::FindNode(const GridPosition& position, NodeHeap& heap)
+    Pathfinder::NodeHeap::iterator Pathfinder::FindNode(const Grid::Position& position, NodeHeap& heap)
     {
         return std::find_if(heap.begin(), heap.end(),
             [position](const Node& node)

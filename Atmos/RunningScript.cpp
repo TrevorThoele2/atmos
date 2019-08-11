@@ -1,4 +1,3 @@
-
 #include "RunningScript.h"
 
 #include "ObjectManager.h"
@@ -7,7 +6,7 @@
 #include "AngelScriptAssert.h"
 #include <angelscript.h>
 
-namespace Atmos
+namespace Atmos::Script
 {
     class RunningScript::Data
     {
@@ -36,7 +35,7 @@ namespace Atmos
             if (isInitialized)
                 return;
 
-            auto engine = objectManager->FindSystem<Scripting::System>()->Engine();
+            auto engine = objectManager->FindSystem<Script::ScriptSystem>()->Engine();
             context = engine->CreateContext();
 
             isInitialized = true;
@@ -67,7 +66,7 @@ namespace Atmos
         if (suspended)
             return;
 
-        Scripting::AngelScriptAssert(data->context->Suspend());
+        AngelScriptAssert(data->context->Suspend());
         suspended = true;
     }
 
@@ -90,6 +89,9 @@ namespace Atmos
     {
         return ObjectTraits<RunningScript>::TypeDescription();
     }
+}
 
-    const ObjectTypeName ObjectTraits<RunningScript>::typeName = "RunningScript";
+namespace Atmos
+{
+    const ObjectTypeName ObjectTraits<Script::RunningScript>::typeName = "RunningScript";
 }

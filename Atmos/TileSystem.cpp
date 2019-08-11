@@ -1,4 +1,3 @@
-
 #include "TileSystem.h"
 
 #include "ObjectManager.h"
@@ -6,14 +5,14 @@
 
 #include "StringUtility.h"
 
-namespace Atmos
+namespace Atmos::Grid
 {
     TileSystem::TileSystem(ObjectManager& manager) : ObjectSystem(manager)
     {
         tiles = manager.Batch<Tile>();
     }
 
-    TypedObjectReference<Tile> TileSystem::FindTile(const GridPosition& at) const
+    TypedObjectReference<Tile> TileSystem::FindTile(const Position& at) const
     {
         for (auto& loop : tiles)
         {
@@ -24,7 +23,7 @@ namespace Atmos
         return TypedObjectReference<Tile>();
     }
 
-    bool TileSystem::Exists(const GridPosition& at) const
+    bool TileSystem::Exists(const Position& at) const
     {
         return FindTile(at).IsOccupied();
     }
@@ -46,7 +45,7 @@ namespace Atmos
 
 namespace Inscription
 {
-    void Scribe<::Atmos::TileSystem, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
+    void Scribe<::Atmos::Grid::TileSystem, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
     {
         BaseScriven<::Atmos::ObjectSystem>(object, archive);
     }

@@ -2,12 +2,12 @@
 
 #include "ArchiveBase.h"
 
+#include "Field.h"
+
 #include <Inscription/ContainerSize.h>
 
-namespace Atmos
+namespace Atmos::World::Serialization
 {
-    class Field;
-
     class OutputArchiveBase : public ArchiveBase
     {
     public:

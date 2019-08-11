@@ -56,7 +56,7 @@ namespace Atmos::Input
         bool active;
         bool activePreviousFrame;
         bool canUseForAction;
-        typedef TypedObjectReference<FrameStopwatch> FrameStopwatchReference;
+        typedef TypedObjectReference<Time::FrameStopwatch> FrameStopwatchReference;
         FrameStopwatchReference doubleClickStopwatch;
     private:
         void DoActive();

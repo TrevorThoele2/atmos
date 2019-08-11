@@ -1,11 +1,11 @@
 #include "MusicSystem.h"
 
-namespace Atmos
+namespace Atmos::Audio
 {
     MusicSystem::MusicSystem(ObjectManager& manager) : ObjectSystem(manager)
     {}
 
-    void MusicSystem::BeginPlaying(const FileName& fileName)
+    void MusicSystem::BeginPlaying(const File::Name& fileName)
     {
 
     }
@@ -28,7 +28,7 @@ namespace Atmos
 
 namespace Inscription
 {
-    void Scribe<::Atmos::MusicSystem, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
+    void Scribe<::Atmos::Audio::MusicSystem, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
     {
         BaseScriven<::Atmos::ObjectSystem>(object, archive);
     }

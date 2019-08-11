@@ -2,19 +2,26 @@
 
 #include <Inscription\Scribe.h>
 
-namespace Atmos
+namespace Atmos::World
 {
-    FieldDestination::FieldDestination(const Direction& direction, const GridPosition& position, FieldID id) :
+    FieldDestination::FieldDestination(const Direction& direction, const Grid::Position& position, FieldID id) :
         direction(direction), position(position), id(id)
     {}
 }
 
 namespace Inscription
 {
-    void Scribe<::Atmos::FieldDestination, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
+    void Scribe<::Atmos::World::FieldDestination, BinaryArchive>::ScrivenImplementation(
+        ObjectT& object, ArchiveT& archive)
     {
         archive(object.direction);
         archive(object.position);
         archive(object.id);
+    }
+
+    void Scribe<::Atmos::World::FieldDestination, BinaryArchive>::ConstructImplementation(
+        ObjectT* storage, ArchiveT& archive)
+    {
+        DoBasicConstruction(storage, archive);
     }
 }

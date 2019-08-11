@@ -10,7 +10,7 @@ namespace Atmos
     {
     public:
         GuiSystem(ObjectManager& manager);
-    private:
+    protected:
         void InitializeImpl() override;
     };
 }

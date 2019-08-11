@@ -15,7 +15,7 @@
 #include "OutputStasisArchive.h"
 #include "InputStasisArchive.h"
 
-namespace Atmos
+namespace Atmos::World
 {
     const char* autosaveName = "Autosave.stasis";
 
@@ -61,20 +61,23 @@ namespace Atmos
         {
             bool isWorld = !stasisName.IsValid();
 
-            std::unique_ptr<InputArchiveBase> inputArchive;
+            std::unique_ptr<Serialization::InputArchiveBase> inputArchive;
             String noLoadError;
             String noLoadErrorFileParamName;
             String noLoadErrorFileParam;
             if (isWorld)
             {
-                inputArchive.reset(new InputWorldArchive(worldPath, *globalObjectManager));
+                inputArchive.reset(new Serialization::InputWorldArchive(worldPath, *globalObjectManager));
                 noLoadError = "The world file was unloadable.";
                 noLoadErrorFileParamName = "World File Path";
                 noLoadErrorFileParam = worldPath.GetValue();
             }
             else
             {
-                inputArchive.reset(new InputStasisArchive(CreateStasisFilePath(stasisName.Get()), worldPath, *globalObjectManager));
+                inputArchive.reset(new Serialization::InputStasisArchive(
+                    CreateStasisFilePath(stasisName.Get()),
+                    worldPath,
+                    *globalObjectManager));
                 noLoadError = "The stasis file's world is not the same as the provided world.";
                 noLoadErrorFileParamName = "Stasis File Name";
                 noLoadErrorFileParam = stasisName.Get().GetValue();
@@ -92,7 +95,7 @@ namespace Atmos
 
                 // We are going to load simultaneously while saving
                 if (prevField)
-                    inputArchive->Load(InputArchiveBase::LOAD_FIELD_PLACEHOLDERS);
+                    inputArchive->Load(Serialization::InputArchiveBase::LOAD_FIELD_PLACEHOLDERS);
                 else
                     inputArchive->Load();
 
@@ -131,7 +134,10 @@ namespace Atmos
 
                     // Create the out scribe (always outputting into a stasis)
                     {
-                        OutputStasisArchive outputScribe(tempPath, worldPath.GetFileName(), inputArchive->FieldCount());
+                        Serialization::OutputStasisArchive outputScribe(
+                            tempPath,
+                            worldPath.GetFileName(),
+                            inputArchive->FieldCount());
 
                         inputArchive->CopyTrackersTo(outputScribe);
 
@@ -154,7 +160,7 @@ namespace Atmos
                     inputArchive.reset();
                     // InScribe has been destroyed
 
-                    FilePath newPath(CreateStasisFilePath(autosaveName));
+                    File::Path newPath(CreateStasisFilePath(autosaveName));
                     if (!fileSystem->RemoveFile(newPath))
                     {
                         loggingSystem->Log("Removing a stasis file from the temporary directory has encountered an error.",
@@ -255,19 +261,19 @@ namespace Atmos
         useWorldStart = true;
     }
 
-    void WorldManager::UseWorld(const FilePath& path)
+    void WorldManager::UseWorld(const File::Path& path)
     {
         worldPath = path;
         StartNew();
     }
 
-    void WorldManager::UseWorld(const FileName& name)
+    void WorldManager::UseWorld(const File::Name& name)
     {
         worldPath = "Worlds" + name.GetValue();
         StartNew();
     }
 
-    void WorldManager::UseStasis(const FileName& name)
+    void WorldManager::UseStasis(const File::Name& name)
     {
         stasisName.Set(name);
         StartNew();
@@ -279,13 +285,13 @@ namespace Atmos
             Autosave(field->id);
     }
 
-    void WorldManager::SaveStasis(const FileName& name)
+    void WorldManager::SaveStasis(const File::Name& name)
     {
         if (field)
             SaveStasis(field->id, name);
     }
 
-    const FilePath& WorldManager::WorldPath()
+    const File::Path& WorldManager::WorldPath()
     {
         return worldPath;
     }
@@ -295,9 +301,9 @@ namespace Atmos
         return field.get();
     }
 
-    FileSystem* WorldManager::FindFileSystem() const
+    File::FileSystem* WorldManager::FindFileSystem() const
     {
-        return globalObjectManager->FindSystem<FileSystem>();
+        return globalObjectManager->FindSystem<File::FileSystem>();
     }
 
     LoggingSystem* WorldManager::FindLoggingSystem() const
@@ -315,9 +321,9 @@ namespace Atmos
         SaveStasis(worldStartFieldID, autosaveName);
     }
 
-    void WorldManager::SaveStasis(FieldID worldStartFieldID, const FileName &name)
+    void WorldManager::SaveStasis(FieldID worldStartFieldID, const File::Name &name)
     {
-        auto fileSystem = globalObjectManager->FindSystem<FileSystem>()->Get();
+        auto fileSystem = globalObjectManager->FindSystem<File::FileSystem>()->Get();
 
         Field* currentField = field.get();
         if (stasisName.IsValid() && stasisName == name)
@@ -332,10 +338,18 @@ namespace Atmos
 
             // This scope is needed for the scribes to deconstruct themselves
             {
-                OutputStasisArchive outputScribe(temporaryPath, worldPath.GetFileName(), 0, OutputStasisArchive::OpenMode::NONE);
+                Serialization::OutputStasisArchive outputScribe(
+                    temporaryPath,
+                    worldPath.GetFileName(),
+                    0,
+                    Serialization::OutputStasisArchive::OpenMode::NONE);
 
-                InputStasisArchive inputScribe(CreateStasisFilePath(name), worldPath, *globalObjectManager);
-                inputScribe.Load(InputStasisArchive::LOAD_FIELD_PLACEHOLDERS);
+                Serialization::InputStasisArchive inputScribe(
+                    CreateStasisFilePath(name),
+                    worldPath,
+                    *globalObjectManager);
+
+                inputScribe.Load(Serialization::InputStasisArchive::LOAD_FIELD_PLACEHOLDERS);
                 auto fieldIds = inputScribe.AllFieldIDs();
 
                 outputScribe.OverwriteFieldCount(inputScribe.FieldCount());
@@ -357,7 +371,7 @@ namespace Atmos
                 }
             }
 
-            FilePath renamePath(StasisFolderFilePath());
+            File::Path renamePath(StasisFolderFilePath());
             renamePath.Append(name);
             std::remove(renamePath.c_str());
             // Finish up renaming it
@@ -368,11 +382,17 @@ namespace Atmos
             // If the stasis name is invalid or not the same as the one we're using, that means we're loading from a world
             // So we must use the world and overwrite this field
             // We use two scribes - one to load in from the world, and the other to output at the same time
-            OutputStasisArchive outputScribe(CreateStasisFilePath(name), worldPath.GetFileName(), 0);
+            Serialization::OutputStasisArchive outputScribe(
+                CreateStasisFilePath(name),
+                worldPath.GetFileName(),
+                0);
 
-            InputWorldArchive inputArchive(worldPath, *globalObjectManager);
+            Serialization::InputWorldArchive inputArchive(
+                worldPath,
+                *globalObjectManager);
+
             if (currentField)
-                inputArchive.Load(InputWorldArchive::LOAD_FIELD_PLACEHOLDERS);
+                inputArchive.Load(Serialization::InputWorldArchive::LOAD_FIELD_PLACEHOLDERS);
             else
                 inputArchive.Load();
 
@@ -399,22 +419,22 @@ namespace Atmos
         stasisName.Set(name);
     }
 
-    FilePath WorldManager::CreateWorldFilePath(const FileName& fileName) const
+    File::Path WorldManager::CreateWorldFilePath(const File::Name& fileName) const
     {
         return WorldFolderFilePath().Append(fileName);
     }
 
-    FilePath WorldManager::CreateStasisFilePath(const FileName& fileName) const
+    File::Path WorldManager::CreateStasisFilePath(const File::Name& fileName) const
     {
         return StasisFolderFilePath().Append(fileName);
     }
 
-    FilePath WorldManager::WorldFolderFilePath() const
+    File::Path WorldManager::WorldFolderFilePath() const
     {
         return FindFileSystem()->Get()->ExePath().Append("Worlds").AppendSeparator();
     }
 
-    FilePath WorldManager::StasisFolderFilePath() const
+    File::Path WorldManager::StasisFolderFilePath() const
     {
         return FindFileSystem()->Get()->ExePath().Append("Saves").AppendSeparator();
     }
@@ -422,6 +442,9 @@ namespace Atmos
 
 namespace Inscription
 {
-    void Scribe<::Atmos::WorldManager, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
+    void Scribe<::Atmos::World::WorldManager, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
+    {}
+
+    void Scribe<::Atmos::World::WorldManager, BinaryArchive>::ConstructImplementation(ObjectT* storage, ArchiveT& archive)
     {}
 }

@@ -3,13 +3,13 @@
 #include "UniqueProviderSystem.h"
 #include "WindowBase.h"
 
-namespace Atmos
+namespace Atmos::Window
 {
     class WindowSystem : public UniqueProviderSystem<WindowBase>
     {
     public:
         WindowSystem(ObjectManager& manager);
-    private:
+    protected:
         void InitializeImpl() override;
     };
 }
@@ -17,10 +17,10 @@ namespace Atmos
 namespace Inscription
 {
     template<>
-    class Scribe<::Atmos::WindowSystem, BinaryArchive> :
-        public ObjectSystemScribe<::Atmos::WindowSystem, BinaryArchive>
+    class Scribe<::Atmos::Window::WindowSystem, BinaryArchive> :
+        public ObjectSystemScribe<::Atmos::Window::WindowSystem, BinaryArchive>
     {
-    public:
-        static void Scriven(ObjectT& object, ArchiveT& archive);
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
     };
 }

@@ -102,7 +102,8 @@ namespace Inscription
     class Scribe<::Atmos::Percentage, BinaryArchive> :
         public CompositeScribe<::Atmos::Percentage, BinaryArchive>
     {
-    public:
-        static void Scriven(ObjectT& object, ArchiveT& archive);
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
+        void ConstructImplementation(ObjectT* storage, ArchiveT& archive) override;
     };
 }

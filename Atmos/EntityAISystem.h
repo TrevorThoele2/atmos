@@ -12,7 +12,7 @@ namespace Atmos::Entity
     {
     public:
         AISystem(ObjectManager& manager);
-    private:
+    protected:
         void WorkImpl() override;
     private:
         typedef ObjectBatch<AIComponent> AIBatch;
@@ -26,7 +26,7 @@ namespace Inscription
     class Scribe<::Atmos::Entity::AISystem, BinaryArchive> :
         public ObjectSystemScribe<::Atmos::Entity::AISystem, BinaryArchive>
     {
-    public:
-        static void Scriven(ObjectT& object, ArchiveT& archive);
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
     };
 }

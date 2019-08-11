@@ -5,14 +5,14 @@
 
 #include "InputKey.h"
 
-namespace Atmos
+namespace Atmos::Input
 {
-    namespace Input
-    {
-        class Key;
-        class Action;
-    }
+    class Key;
+    class Action;
+}
 
+namespace Atmos::State
+{
     class GameStateGui : public StateGui
     {
     public:
@@ -35,25 +35,28 @@ namespace Atmos
 
         bool AnyTertiaryOpen() const;
     };
+}
 
+namespace Atmos
+{
     template<>
-    struct ObjectTraits<GameState> : ObjectTraitsBase<GameState>
+    struct ObjectTraits<State::GameState> : ObjectTraitsBase<State::GameState>
     {
         static const ObjectTypeName typeName;
-        static constexpr ObjectTypeList<State> bases = {};
+        static constexpr ObjectTypeList<State::State> bases = {};
     };
 }
 
 namespace Inscription
 {
     template<>
-    struct TableData<::Atmos::GameState, BinaryArchive> :
-        public ObjectTableDataBase<::Atmos::GameState, BinaryArchive>
+    struct TableData<::Atmos::State::GameState, BinaryArchive> :
+        public ObjectTableDataBase<::Atmos::State::GameState, BinaryArchive>
     {};
 
     template<>
-    class Scribe<::Atmos::GameState, BinaryArchive> :
-        public ObjectScribe<::Atmos::GameState, BinaryArchive>
+    class Scribe<::Atmos::State::GameState, BinaryArchive> :
+        public ObjectScribe<::Atmos::State::GameState, BinaryArchive>
     {
     public:
         class Table : public TableBase

@@ -62,7 +62,8 @@ namespace Atmos
         return static_cast<std::underlying_type<Direction::Value>::type>(value);
     }
 
-    typedef ::Chroma::EnumIterationTraits<Direction::Value, Direction::Value::LEFT, Direction::Value::DOWN> DirectionIterationTraits;
+    typedef ::Chroma::EnumIterationTraits<Direction::Value, Direction::Value::LEFT, Direction::Value::DOWN>
+        DirectionIterationTraits;
 }
 
 namespace Inscription
@@ -70,8 +71,9 @@ namespace Inscription
     template<>
     class Scribe<::Atmos::Direction, BinaryArchive> : public CompositeScribe<::Atmos::Direction, BinaryArchive>
     {
-    public:
-        static void Scriven(ObjectT& object, ArchiveT& archive);
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
+        void ConstructImplementation(ObjectT* storage, ArchiveT& archive) override;
     };
 
     template<>

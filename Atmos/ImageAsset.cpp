@@ -1,8 +1,8 @@
 #include "ImageAsset.h"
 
-namespace Atmos
+namespace Atmos::Asset
 {
-    ImageAsset::ImageAsset(ObjectManager& manager, const FileName& fileName, DataPtr&& data) :
+    ImageAsset::ImageAsset(ObjectManager& manager, const File::Name& fileName, DataPtr&& data) :
         FileAsset(manager, fileName), data(std::move(data)), width(0), height(0)
     {}
 
@@ -29,8 +29,11 @@ namespace Atmos
         return ObjectTraits<ImageAsset>::TypeDescription();
     }
 
-    const ObjectTypeName ObjectTraits<ImageAsset>::typeName = "ImageAsset";
-
     ImageAssetData::~ImageAssetData()
     {}
+}
+
+namespace Atmos
+{
+    const ObjectTypeName ObjectTraits<Asset::ImageAsset>::typeName = "ImageAsset";
 }

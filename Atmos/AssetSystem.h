@@ -9,7 +9,7 @@
 
 #include "Name.h"
 
-namespace Atmos
+namespace Atmos::Asset
 {
     template<class T>
     class AssetSystem : public ObjectSystem
@@ -70,19 +70,29 @@ namespace Atmos
 namespace Inscription
 {
     template<class T>
-    class Scribe<::Atmos::AssetSystem<T>, BinaryArchive> :
-        public ObjectSystemScribe<::Atmos::AssetSystem<T>, BinaryArchive>
+    class Scribe<::Atmos::Asset::AssetSystem<T>, BinaryArchive> :
+        public ObjectSystemScribe<::Atmos::Asset::AssetSystem<T>, BinaryArchive>
     {
     private:
-        using BaseT = typename ObjectSystemScribe<::Atmos::AssetSystem<T>, BinaryArchive>;
+        using BaseT = typename ObjectSystemScribe<::Atmos::Asset::AssetSystem<T>, BinaryArchive>;
     public:
         using ObjectT = typename BaseT::ObjectT;
         using ArchiveT = typename BaseT::ArchiveT;
-    public:
-        static void Scriven(ObjectT& object, ArchiveT& archive)
+        
+        using BaseT::Scriven;
+        using BaseT::Construct;
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override
         {
             BaseScriven<::Atmos::ObjectSystem>(object, archive);
             archive(object.batch);
         }
+
+        void ConstructImplementation(ObjectT* storage, ArchiveT& archive) override
+        {
+            DoBasicConstruction(storage, archive);
+        }
+
+        using BaseT::DoBasicConstruction;
     };
 }

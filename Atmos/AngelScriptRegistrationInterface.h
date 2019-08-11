@@ -3,7 +3,7 @@
 #include "AngelScriptUserData.h"
 #include <angelscript.h>
 
-namespace Atmos::Scripting
+namespace Atmos::Script
 {
     class RegistrationInterface
     {

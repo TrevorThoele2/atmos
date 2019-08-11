@@ -5,7 +5,7 @@
 #include "FilePath.h"
 #include "RelativeFilePath.h"
 
-namespace Atmos
+namespace Atmos::File
 {
     FileSystem::FileSystem(ObjectManager& manager) :
         UniqueProviderSystem(manager, UniqueProviderSystem::ValuePtr(new NullFileManager()))
@@ -25,15 +25,15 @@ namespace Atmos
     void FileSystem::SetupFilePaths()
     {
         auto fileSeparator = Get()->FileSeparator();
-        FilePath::fileSeparator = fileSeparator;
-        RelativeFilePath::fileSeparator = fileSeparator;
+        Path::fileSeparator = fileSeparator;
+        RelativePath::fileSeparator = fileSeparator;
     }
 }
 
 namespace Inscription
 {
-    void Scribe<::Atmos::FileSystem, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
+    void Scribe<::Atmos::File::FileSystem, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
     {
-        BaseScriven<::Atmos::UniqueProviderSystem<::Atmos::FileManager>>(object, archive);
+        BaseScriven<::Atmos::UniqueProviderSystem<::Atmos::File::FileManager>>(object, archive);
     }
 }

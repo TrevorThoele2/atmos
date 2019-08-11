@@ -6,7 +6,7 @@
 #include "TimeValue.h"
 #include "String.h"
 
-namespace Atmos
+namespace Atmos::Window
 {
     class WindowsWindowBase : public WindowBase
     {
@@ -19,14 +19,19 @@ namespace Atmos
     class WindowsWindow : public WindowsWindowBase
     {
     public:
-        WindowsWindow(ObjectManager& objectManager, HINSTANCE hInstance, LPSTR lpCmdLine, int nCmdShow, const String& className);
+        WindowsWindow(
+            ObjectManager& objectManager,
+            HINSTANCE hInstance,
+            LPSTR lpCmdLine,
+            int nCmdShow,
+            const String& className);
 
         void Setup() override;
 
         void Show() override;
         void Exit() override;
         bool IsCurrentlyFocused() const override;
-        void Suspend(const TimeValue& time);
+        void Suspend(const Time::Value& time);
         bool OnStartFrame() override;
 
         HWND GetHwnd() override;

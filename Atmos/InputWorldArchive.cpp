@@ -4,18 +4,19 @@
 
 #include "ObjectTypeNameSerializer.h"
 
-namespace Atmos
+namespace Atmos::World::Serialization
 {
     const char* const InputWorldArchive::worldExtension = "gaia";
 
     InputWorldArchive::InputWorldArchive(
-        const FilePath& filePath,
+        const File::Path& filePath,
         ObjectManager& globalObjectManager,
         OpenMode openMode) :
 
         InputArchiveBase([this]() { return _worldStart; }),
         globalObjectManager(&globalObjectManager),
-        filePath(GetForcedFilePath(filePath, openMode)), underlyingArchive(GetForcedFilePath(filePath, openMode), "ATMOS GAIA")
+        filePath(GetForcedFilePath(filePath, openMode)),
+        underlyingArchive(GetForcedFilePath(filePath, openMode), "ATMOS GAIA")
     {}
 
     bool InputWorldArchive::Load(LoadType load)
@@ -96,7 +97,7 @@ namespace Atmos
         return fieldHandles.size();
     }
 
-    const FilePath& InputWorldArchive::GetFilePath() const
+    const File::Path& InputWorldArchive::GetFilePath() const
     {
         return filePath;
     }
@@ -134,7 +135,7 @@ namespace Atmos
         }
 
         // Load asset package
-        auto assetPackageSystem = globalObjectManager->FindSystem<AssetPackageSystem>();
+        auto assetPackageSystem = globalObjectManager->FindSystem<Asset::AssetPackageSystem>();
         assetPackageSystem->Load(filePath);
 
         // Load object type names
@@ -163,15 +164,12 @@ namespace Atmos
 
     void InputWorldArchive::FillField(Field& fill, FieldHandleMap::iterator handle)
     {
-        // Load the field while setting up a section to clear immediately after
-        underlyingArchive.StartTrackingSection();
         handle->second.LoadObject(fill);
-        underlyingArchive.StopTrackingSection(true);
     }
 
-    FilePath InputWorldArchive::GetForcedFilePath(const FilePath& filePath, OpenMode openMode)
+    File::Path InputWorldArchive::GetForcedFilePath(const File::Path& filePath, OpenMode openMode)
     {
-        FilePath ret(filePath);
+        File::Path ret(filePath);
         if (openMode == OpenMode::FORCE_EXTENSION)
             ret.SetExtension(worldExtension);
         return ret;

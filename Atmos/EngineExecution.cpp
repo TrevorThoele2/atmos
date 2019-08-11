@@ -1,4 +1,3 @@
-
 #include "EngineExecution.h"
 
 #include "ObjectManager.h"
@@ -11,15 +10,15 @@
 
 namespace Atmos
 {
-    EngineExecution::EngineExecution(ObjectManager& globalObjectManager, WorldManager& worldManager) :
+    EngineExecution::EngineExecution(ObjectManager& globalObjectManager, World::WorldManager& worldManager) :
         globalObjectManager(&globalObjectManager), worldManager(&worldManager),
         engineSystem(globalObjectManager.FindSystem<EngineSystem>()), isFocusLost(false)
     {}
 
     void EngineExecution::Start()
     {
-        auto windowSystem = globalObjectManager->FindSystem<WindowSystem>();
-        auto fpsSystem = globalObjectManager->FindSystem<FpsSystem>();
+        auto windowSystem = globalObjectManager->FindSystem<Window::WindowSystem>();
+        auto fpsSystem = globalObjectManager->FindSystem<Time::FpsSystem>();
         auto debugStatistics = globalObjectManager->FindSystem<DebugStatisticsSystem>();
 
         while (StartFrame(windowSystem))
@@ -38,19 +37,19 @@ namespace Atmos
                 debugStatistics->idleProfiler.Start();
 
                 while (fpsSystem->DoIdle())
-                    windowSystem->Get()->Suspend(TimeValue(FixedPoint64(0), TimeValueEpoch::MILLISECONDS));
+                    windowSystem->Get()->Suspend(Time::Value(FixedPoint64(0), Time::Epoch::MILLISECONDS));
             }
             else // Window is not in focus
             {
                 if (!isFocusLost)
                     OnFocusLost();
 
-                windowSystem->Get()->Suspend(TimeValue(FixedPoint64(1), TimeValueEpoch::MILLISECONDS));
+                windowSystem->Get()->Suspend(Time::Value(FixedPoint64(1), Time::Epoch::MILLISECONDS));
             }
         }
     }
 
-    bool EngineExecution::StartFrame(WindowSystem* windowSystem)
+    bool EngineExecution::StartFrame(Window::WindowSystem* windowSystem)
     {
         // Check for and emit focus events
         if (IsCurrentlyFocused(windowSystem) != wasFocusedLastPass)
@@ -62,7 +61,7 @@ namespace Atmos
         return windowSystem->Get()->OnStartFrame();
     }
 
-    bool EngineExecution::IsCurrentlyFocused(WindowSystem* windowSystem) const
+    bool EngineExecution::IsCurrentlyFocused(Window::WindowSystem* windowSystem) const
     {
         return windowSystem->Get()->IsCurrentlyFocused();
     }

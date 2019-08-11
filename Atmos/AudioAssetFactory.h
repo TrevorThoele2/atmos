@@ -7,7 +7,7 @@
 namespace Atmos
 {
     template<>
-    class ObjectFactory<AudioAsset> : public FileAssetFactory<AudioAsset>
+    class ObjectFactory<Asset::AudioAsset> : public FileAssetFactory<Asset::AudioAsset>
     {
     public:
         ObjectFactory(ObjectManager& manager);

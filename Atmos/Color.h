@@ -32,7 +32,8 @@ namespace Inscription
     class Scribe<::Atmos::Render::Color, BinaryArchive> :
         public CompositeScribe<::Atmos::Render::Color, BinaryArchive>
     {
-    public:
-        static void Scriven(ObjectT& object, ArchiveT& archive);
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
+        void ConstructImplementation(ObjectT* storage, ArchiveT& archive) override;
     };
 }

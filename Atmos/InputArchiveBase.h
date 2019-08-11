@@ -10,7 +10,7 @@
 #include "FieldID.h"
 #include "Optional.h"
 
-namespace Atmos
+namespace Atmos::World::Serialization
 {
     class InputArchiveBase : public ArchiveBase
     {
@@ -24,8 +24,8 @@ namespace Atmos
     public:
         typedef std::vector<FieldID> FieldIDList;
     public:
-        typedef ReadonlyProperty<WorldStart> WorldStartProperty;
-        WorldStartProperty worldStart;
+        typedef ReadonlyProperty<WorldStart> StartProperty;
+        StartProperty worldStart;
     public:
         virtual ~InputArchiveBase() = 0;
 
@@ -41,6 +41,6 @@ namespace Atmos
         virtual bool HasField(FieldID fieldID) const = 0;
         virtual size_t FieldCount() const = 0;
     protected:
-        InputArchiveBase(WorldStartProperty::Getter worldStartGetter);
+        InputArchiveBase(StartProperty::Getter worldStartGetter);
     };
 }

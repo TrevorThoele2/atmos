@@ -5,7 +5,7 @@
 
 #include "Sound.h"
 
-namespace Atmos
+namespace Atmos::Audio
 {
     class SoundSystem : public ObjectSystem
     {
@@ -27,10 +27,10 @@ namespace Atmos
 namespace Inscription
 {
     template<>
-    class Scribe<::Atmos::SoundSystem, BinaryArchive> :
-        public ObjectSystemScribe<::Atmos::SoundSystem, BinaryArchive>
+    class Scribe<::Atmos::Audio::SoundSystem, BinaryArchive> :
+        public ObjectSystemScribe<::Atmos::Audio::SoundSystem, BinaryArchive>
     {
-    public:
-        static void Scriven(ObjectT& object, ArchiveT& archive);
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
     };
 }

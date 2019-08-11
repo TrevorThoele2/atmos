@@ -4,13 +4,13 @@
 
 #include "MaterialAsset.h"
 
-namespace Atmos
+namespace Atmos::Asset
 {
     class MaterialAssetSystem : public AssetSystem<MaterialAsset>
     {
     public:
         MaterialAssetSystem(ObjectManager& manager);
-    private:
+    protected:
         void InitializeImpl() override;
     };
 }
@@ -18,10 +18,10 @@ namespace Atmos
 namespace Inscription
 {
     template<>
-    class Scribe<::Atmos::MaterialAssetSystem, BinaryArchive> :
-        public ObjectSystemScribe<::Atmos::MaterialAssetSystem, BinaryArchive>
+    class Scribe<::Atmos::Asset::MaterialAssetSystem, BinaryArchive> :
+        public ObjectSystemScribe<::Atmos::Asset::MaterialAssetSystem, BinaryArchive>
     {
-    public:
-        static void Scriven(ObjectT& object, ArchiveT& archive);
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
     };
 }

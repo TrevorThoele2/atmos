@@ -160,7 +160,7 @@ namespace Atmos::Input
         GetCursorPos(&pt);
 
         auto windowSystem = FindWindowSystem();
-        auto window = static_cast<WindowsWindowBase*>(windowSystem->Get());
+        auto window = static_cast<Window::WindowsWindowBase*>(windowSystem->Get());
         ScreenToClient(window->GetHwnd(), &pt);
         return MousePosition(static_cast<MousePosition::Value>(pt.x), static_cast<MousePosition::Value>(pt.y));
     }
@@ -187,8 +187,8 @@ namespace Atmos::Input
         return screen.IsHit(GetMousePositionImpl());
     }
 
-    WindowSystem* WindowsManager::FindWindowSystem() const
+    Window::WindowSystem* WindowsManager::FindWindowSystem() const
     {
-        return GetObjectManager()->FindSystem<WindowSystem>();
+        return GetObjectManager()->FindSystem<Window::WindowSystem>();
     }
 }

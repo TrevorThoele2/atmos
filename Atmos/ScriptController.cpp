@@ -1,4 +1,3 @@
-
 #include "ScriptController.h"
 
 #include "ScriptAsset.h"
@@ -12,7 +11,7 @@
 
 #include "StringUtility.h"
 
-namespace Atmos
+namespace Atmos::Script
 {
     ScriptController::ScriptController(ObjectManager& manager) : ObjectSystem(manager)
     {
@@ -135,9 +134,9 @@ namespace Atmos
                 func = mod->GetFunctionByDecl("void Main()");
             else
             {
-                Scripting::ParameterIndex parameterIndex = 0;
+                ParameterIndex parameterIndex = 0;
                 for (auto& loop : (*itr)->parameters)
-                    Scripting::PushVariantToAngelScriptParameter(parameterIndex, loop, context);
+                    PushVariantToAngelScriptParameter(parameterIndex, loop, context);
 
                 func = mod->GetFunctionByDecl((*itr)->executeName.c_str());
             }
@@ -151,10 +150,10 @@ namespace Atmos
                         NameValuePair("Execute Name", (*itr)->executeName) });
             }
 
-            Scripting::AngelScriptAssert(context->Prepare(func));
+            AngelScriptAssert(context->Prepare(func));
         }
 
-        Scripting::AngelScriptAssert(context->Execute());
+        AngelScriptAssert(context->Execute());
 
         (*itr)->executedThisFrame = true;
 
@@ -185,7 +184,7 @@ namespace Atmos
 
 namespace Inscription
 {
-    void Scribe<::Atmos::ScriptController, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
+    void Scribe<::Atmos::Script::ScriptController, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
     {
         BaseScriven<::Atmos::ObjectSystem>(object, archive);
     }

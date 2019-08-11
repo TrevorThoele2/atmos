@@ -7,12 +7,12 @@
 #include "TypeRegistration.h"
 #include "EngineTypeRegistration.h"
 
-namespace Atmos
+namespace Atmos::World::Serialization
 {
     const char* const OutputWorldArchive::worldExtension = "gaia";
 
     OutputWorldArchive::OutputWorldArchive(
-        const FilePath& filePath,
+        const File::Path& filePath,
         ::Inscription::ContainerSize fieldCount,
         ObjectManager& globalObjectManager,
         OpenMode openMode) :
@@ -29,13 +29,8 @@ namespace Atmos
     {
         OutputHeader();
 
-        // Save the field ID
         curSaver->fieldID = field.id;
-
-        // Save the field itself while clearing out the tracking entries made
-        underlyingArchive.StartTrackingSection();
         curSaver->SaveObject(field);
-        underlyingArchive.StopTrackingSection(true);
 
         ++curSaver;
     }
@@ -45,7 +40,7 @@ namespace Atmos
         fieldSavers.resize(set, FieldSaver(underlyingArchive));
     }
 
-    const FilePath& OutputWorldArchive::GetFilePath() const
+    const File::Path& OutputWorldArchive::GetFilePath() const
     {
         return filePath;
     }
@@ -132,9 +127,9 @@ namespace Atmos
         hasOutputHeader = true;
     }
 
-    FilePath OutputWorldArchive::GetForcedFilePath(const FilePath& filePath, OpenMode openMode)
+    File::Path OutputWorldArchive::GetForcedFilePath(const File::Path& filePath, OpenMode openMode)
     {
-        FilePath ret(filePath);
+        File::Path ret(filePath);
         if (openMode == OpenMode::FORCE_EXTENSION)
             ret.SetExtension(worldExtension);
         return ret;

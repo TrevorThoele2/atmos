@@ -1,10 +1,9 @@
-
 #include <fstream>
 #include "FileUtility.h"
 
-namespace Atmos
+namespace Atmos::File
 {
-    bool DoesFileExist(const FilePath &path)
+    bool DoesFileExist(const Path &path)
     {
         std::ifstream checker(path.c_str(), std::ios_base::in | std::ios_base::app);
         return checker.good();

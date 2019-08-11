@@ -8,10 +8,10 @@
 
 namespace Atmos::Input
 {
-    System::System(ObjectManager& manager) : UniqueProviderSystem(manager, UniqueProviderSystem::ValuePtr(new NullManager()))
+    InputSystem::InputSystem(ObjectManager& manager) : UniqueProviderSystem(manager, UniqueProviderSystem::ValuePtr(new NullManager()))
     {}
 
-    void System::InitializeImpl()
+    void InputSystem::InitializeImpl()
     {
         Get()->Initialize();
 
@@ -52,7 +52,7 @@ namespace Atmos::Input
 
 namespace Inscription
 {
-    void Scribe<::Atmos::Input::System, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
+    void Scribe<::Atmos::Input::InputSystem, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
     {
         BaseScriven<::Atmos::ObjectSystem>(object, archive);
     }

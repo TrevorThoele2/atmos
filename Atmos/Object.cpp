@@ -38,4 +38,9 @@ namespace Inscription
             DataEntry::Auto(&ObjectT::id, &DataT::id),
             DataEntry::Auto(&ObjectT::manager, &DataT::manager) });
     }
+
+    void Scribe<::Atmos::Object, BinaryArchive>::Table::ConstructImplementation(ObjectT* storage, ArchiveT& archive)
+    {
+        DoBasicConstruction(storage, archive);
+    }
 }

@@ -9,7 +9,7 @@
 #include "AngelScriptAssert.h"
 #include <angelscript.h>
 
-namespace Atmos::Scripting
+namespace Atmos::Script
 {
     Event::Event(ObjectManager& objectManager) : objectManager(&objectManager)
     {
@@ -83,8 +83,8 @@ namespace Atmos::Scripting
         return FindSystem()->Engine();
     }
 
-    System* Event::FindSystem()
+    ScriptSystem* Event::FindSystem()
     {
-        return objectManager->FindSystem<System>();
+        return objectManager->FindSystem<ScriptSystem>();
     }
 }

@@ -13,7 +13,7 @@ namespace Atmos
     class PositionalSystem : public ObjectSystem
     {
     public:
-        Render::Octree grid;
+        Grid::Octree grid;
     public:
         PositionalSystem(ObjectManager& manager);
     private:
@@ -34,7 +34,7 @@ namespace Inscription
     class Scribe<::Atmos::PositionalSystem, BinaryArchive> :
         public ObjectSystemScribe<::Atmos::PositionalSystem, BinaryArchive>
     {
-    public:
-        static void Scriven(ObjectT& object, ArchiveT& archive);
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
     };
 }

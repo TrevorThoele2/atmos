@@ -3,12 +3,21 @@
 
 #include <Inscription/Scribe.h>
 
-namespace Atmos
+namespace Atmos::Audio
 {
+    Music::Music(ObjectManager& manager) : Object(manager)
+    {}
+
+    Music::Music(const ::Inscription::BinaryTableData<Music>& data) : Object(std::get<0>(data.bases))
+    {}
+
     ObjectTypeDescription Music::TypeDescription() const
     {
         return ObjectTraits<Music>::TypeDescription();
     }
+}
 
-    const ObjectTypeName ObjectTraits<Music>::typeName;
+namespace Atmos
+{
+    const ObjectTypeName ObjectTraits<Audio::Music>::typeName;
 }

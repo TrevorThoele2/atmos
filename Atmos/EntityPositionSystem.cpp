@@ -20,7 +20,7 @@ namespace Atmos::Entity
 
     }
 
-    void PositionSystem::MoveEntity(EntityReference entity, const GridPosition& to, TimeValue timeTaken)
+    void PositionSystem::MoveEntity(EntityReference entity, const Grid::Position& to, Time::Value timeTaken)
     {
 
     }
@@ -30,12 +30,12 @@ namespace Atmos::Entity
 
     }
 
-    void PositionSystem::MoveEntityInstant(EntityReference entity, const GridPosition& to)
+    void PositionSystem::MoveEntityInstant(EntityReference entity, const Grid::Position& to)
     {
 
     }
 
-    void PositionSystem::MoveEntityInstant(EntityReference entity, const RelativeGridPosition& offset)
+    void PositionSystem::MoveEntityInstant(EntityReference entity, const Grid::RelativePosition& offset)
     {
 
     }
@@ -45,12 +45,12 @@ namespace Atmos::Entity
         return false;
     }
 
-    bool PositionSystem::CanMove(ConstEntityReference entity, const GridPosition& to) const
+    bool PositionSystem::CanMove(ConstEntityReference entity, const Grid::Position& to) const
     {
         return false;
     }
 
-    bool PositionSystem::CanMove(ConstEntityReference entity, const RelativeGridPosition& to) const
+    bool PositionSystem::CanMove(ConstEntityReference entity, const Grid::RelativePosition& to) const
     {
         return false;
     }
@@ -99,7 +99,7 @@ namespace Atmos::Entity
 
 namespace Inscription
 {
-    void Scribe<::Atmos::Entity::PositionSystem, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
+    void Scribe<::Atmos::Entity::PositionSystem, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
     {
         BaseScriven<::Atmos::ObjectSystem>(object, archive);
     }

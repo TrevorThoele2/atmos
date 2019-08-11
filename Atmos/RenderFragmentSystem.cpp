@@ -2,18 +2,18 @@
 
 namespace Atmos::Render
 {
-    FragmentSystem::FragmentSystem(ObjectManager& manager) : ObjectSystem(manager)
+    RenderFragmentSystem::RenderFragmentSystem(ObjectManager& manager) : ObjectSystem(manager)
     {
-        renderFragments = manager.Batch<Fragment>();
-        renderFragments.onCreated.Subscribe(&FragmentSystem::OnCreated, *this);
+        renderFragments = manager.Batch<RenderFragment>();
+        renderFragments.onCreated.Subscribe(&RenderFragmentSystem::OnCreated, *this);
     }
 
-    void FragmentSystem::DrawAll()
+    void RenderFragmentSystem::DrawAll()
     {
 
     }
 
-    void FragmentSystem::OnCreated(Reference object)
+    void RenderFragmentSystem::OnCreated(Reference object)
     {
         grid.Add(object);
 
@@ -23,7 +23,7 @@ namespace Atmos::Render
         });
     }
 
-    void FragmentSystem::OnObjectBoundsChanged(TypedObjectReference<AxisAlignedObject> object, AxisAlignedBox3D previous)
+    void RenderFragmentSystem::OnObjectBoundsChanged(TypedObjectReference<AxisAlignedObject> object, AxisAlignedBox3D previous)
     {
         grid.InformChanged(object, previous);
     }
@@ -31,7 +31,7 @@ namespace Atmos::Render
 
 namespace Inscription
 {
-    void Scribe<::Atmos::FragmentSystem, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
+    void Scribe<::Atmos::Render::RenderFragmentSystem, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
     {
         BaseScriven<::Atmos::ObjectSystem>(object, archive);
     }

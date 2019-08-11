@@ -21,20 +21,20 @@ namespace Atmos::Entity
 
         void SetDirection(EntityReference entity, const Direction& direction);
 
-        void MoveEntity(EntityReference entity, const GridPosition& to, TimeValue timeTaken);
+        void MoveEntity(EntityReference entity, const Grid::Position& to, Time::Value timeTaken);
         void MoveEntity(EntityReference entity, const Direction& direction);
-        void MoveEntityInstant(EntityReference entity, const GridPosition& to);
-        void MoveEntityInstant(EntityReference entity, const RelativeGridPosition& offset);
+        void MoveEntityInstant(EntityReference entity, const Grid::Position& to);
+        void MoveEntityInstant(EntityReference entity, const Grid::RelativePosition& offset);
 
         bool CanMove(ConstEntityReference entity) const;
-        bool CanMove(ConstEntityReference entity, const GridPosition& to) const;
-        bool CanMove(ConstEntityReference entity, const RelativeGridPosition& to) const;
+        bool CanMove(ConstEntityReference entity, const Grid::Position& to) const;
+        bool CanMove(ConstEntityReference entity, const Grid::RelativePosition& to) const;
         bool CanMove(ConstEntityReference entity, const Direction& direction) const;
 
         bool IsMoving(ConstEntityReference entity) const;
 
         ObjectBatchSizeT MovingSize() const;
-    private:
+    protected:
         void InitializeImpl() override;
     private:
         typedef ObjectBatch<Entity> EntityBatch;
@@ -43,7 +43,7 @@ namespace Atmos::Entity
         void OnEntityCreated(EntityReference reference);
         void OnEntityDestroyed(EntityReference reference);
     private:
-        typedef std::unordered_map<GridPosition, EntityReference> PositionedEntities;
+        typedef std::unordered_map<Grid::Position, EntityReference> PositionedEntities;
         PositionedEntities positionedEntities;
     private:
         typedef std::vector<EntityReference> MovingEntities;
@@ -60,7 +60,7 @@ namespace Inscription
     class Scribe<::Atmos::Entity::PositionSystem, BinaryArchive> :
         public ObjectSystemScribe<::Atmos::Entity::PositionSystem, BinaryArchive>
     {
-    public:
-        static void Scriven(ObjectT& object, ArchiveT& archive);
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
     };
 }

@@ -3,7 +3,7 @@
 
 #include <angelscript.h>
 
-namespace Atmos::Scripting
+namespace Atmos::Script
 {
     struct VariantVisitImplementation
     {

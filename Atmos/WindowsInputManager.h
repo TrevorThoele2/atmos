@@ -2,7 +2,7 @@
 
 #include "InputManager.h"
 
-namespace Atmos
+namespace Atmos::Window
 {
     class WindowSystem;
 }
@@ -22,6 +22,6 @@ namespace Atmos::Input
         bool IsSignalDownBase(SignalBase& signal) const;
         bool IsMouseWithinScreen() const;
     private:
-        WindowSystem* FindWindowSystem() const;
+        Window::WindowSystem* FindWindowSystem() const;
     };
 }

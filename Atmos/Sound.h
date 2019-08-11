@@ -1,17 +1,19 @@
 #pragma once
 
-#include "Sense.h"
+#include "AxisAlignedObject.h"
 
 #include "AudioAssetInstance.h"
 
 #include "ObjectScribe.h"
 
-namespace Atmos
+namespace Atmos::Audio
 {
-    class Sound : public Sense
+    class Sound : public AxisAlignedObject
     {
     public:
-        typedef TypedObjectReference<AudioAssetInstance> AssetReference;
+        StoredProperty<bool> enabled;
+    public:
+        typedef TypedObjectReference<Asset::AudioAssetInstance> AssetReference;
         typedef StoredProperty<AssetReference> AssetProperty;
         AssetProperty audioAsset;
     public:
@@ -25,25 +27,28 @@ namespace Atmos
     private:
         void OnEnabledChanged(bool newValue);
     };
+}
 
+namespace Atmos
+{
     template<>
-    struct ObjectTraits<Sound> : ObjectTraitsBase<Sound>
+    struct ObjectTraits<Audio::Sound> : ObjectTraitsBase<Audio::Sound>
     {
         static const ObjectTypeName typeName;
-        static constexpr ObjectTypeList<Sense> bases = {};
+        static constexpr ObjectTypeList<AxisAlignedObject> bases = {};
     };
 }
 
 namespace Inscription
 {
     template<>
-    struct TableData<::Atmos::Sound, BinaryArchive> :
-        public ObjectTableDataBase<::Atmos::Sound, BinaryArchive>
+    struct TableData<::Atmos::Audio::Sound, BinaryArchive> :
+        public ObjectTableDataBase<::Atmos::Audio::Sound, BinaryArchive>
     {};
 
     template<>
-    class Scribe<::Atmos::Sound, BinaryArchive> :
-        public ObjectScribe<::Atmos::Sound, BinaryArchive>
+    class Scribe<::Atmos::Audio::Sound, BinaryArchive> :
+        public ObjectScribe<::Atmos::Audio::Sound, BinaryArchive>
     {
     public:
         class Table : public TableBase

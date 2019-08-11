@@ -1,10 +1,10 @@
 #include "InputArchiveBase.h"
 
-namespace Atmos
+namespace Atmos::World::Serialization
 {
     InputArchiveBase::~InputArchiveBase()
     {}
 
-    InputArchiveBase::InputArchiveBase(WorldStartProperty::Getter worldStartGetter) : worldStart(worldStartGetter)
+    InputArchiveBase::InputArchiveBase(StartProperty::Getter worldStartGetter) : worldStart(worldStartGetter)
     {}
 }

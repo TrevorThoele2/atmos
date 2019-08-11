@@ -36,12 +36,12 @@ namespace Atmos
 
         String CurrentTimeStamp();
         void ClearFile();
-    private:
+    protected:
         void InitializeImpl();
     private:
         void DoLog(const String& message, Type type, Optional<NameValueVector> nvps = Optional<NameValueVector>());
         void OnExit();
-        FilePath OutputFilePath() const;
+        File::Path OutputFilePath() const;
     private:
         struct Entry
         {
@@ -64,7 +64,7 @@ namespace Inscription
     class Scribe<::Atmos::LoggingSystem, BinaryArchive> :
         public ObjectSystemScribe<::Atmos::LoggingSystem, BinaryArchive>
     {
-    public:
-        static void Scriven(ObjectT& object, ArchiveT& archive);
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
     };
 }

@@ -2,8 +2,8 @@
 
 #include "WindowsWindow.h"
 #include "WindowsInputManager.h"
-#include "DXGraphics.h"
-#include "DXAudio.h"
+#include "DirectX9GraphicsManager.h"
+#include "DirectX9AudioManager.h"
 #include "WindowsFileManager.h"
 
 namespace Atmos
@@ -16,12 +16,16 @@ namespace Atmos
     {
         typedef InitializationProperties Properties;
 
-        auto window = new WindowsWindow(globalObjectManager, hInstance, lpCmdLine, nCmdShow, className);
+        auto window = new Window::WindowsWindow(globalObjectManager, hInstance, lpCmdLine, nCmdShow, className);
         auto input = new Input::WindowsManager();
         auto backbufferSize = ScreenDimensions(window->ClientSize().width, window->ClientSize().height);
-        auto graphics = new DX9GraphicsManager(globalObjectManager, window->GetHwnd(), backbufferSize, window->IsFullscreen());
-        auto audio = new DX9AudioManager();
-        auto fileSystem = new WindowsFileManager();
+        auto graphics = new Render::DirectX9GraphicsManager(
+            globalObjectManager,
+            window->GetHwnd(),
+            backbufferSize,
+            window->IsFullscreen());
+        auto audio = new Audio::DirectX9AudioManager();
+        auto fileSystem = new File::WindowsFileManager();
 
         Properties properties;
         properties.window = Properties::Window(window);

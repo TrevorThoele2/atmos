@@ -59,7 +59,7 @@ namespace Atmos
             void Calculate();
         private:
             AxisAlignedObject* owner;
-        private:
+            void SignalOwnerThisChanged();
             friend AxisAlignedObject;
         private:
             INSCRIPTION_TABLE_ACCESS;
@@ -123,7 +123,7 @@ namespace Atmos
             void Calculate();
         private:
             AxisAlignedObject* owner;
-        private:
+            void SignalOwnerThisChanged();
             friend AxisAlignedObject;
         private:
             INSCRIPTION_TABLE_ACCESS;
@@ -188,16 +188,18 @@ namespace Inscription
     class Scribe<::Atmos::AxisAlignedObject::Position, BinaryArchive> :
         public CompositeScribe<::Atmos::AxisAlignedObject::Position, BinaryArchive>
     {
-    public:
-        static void Scriven(ObjectT& object, ArchiveT& archive);
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
+        void ConstructImplementation(ObjectT* storage, ArchiveT& archive) override;
     };
 
     template<>
     class Scribe<::Atmos::AxisAlignedObject::Size, BinaryArchive> :
         public CompositeScribe<::Atmos::AxisAlignedObject::Size, BinaryArchive>
     {
-    public:
-        static void Scriven(ObjectT& object, ArchiveT& archive);
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
+        void ConstructImplementation(ObjectT* storage, ArchiveT& archive) override;
     };
 
     template<>

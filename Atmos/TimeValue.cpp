@@ -1,193 +1,197 @@
-
 #include "TimeValue.h"
 
-namespace Atmos
+namespace Atmos::Time
 {
-    TimeValue::TimeValue(Value value, EpochT epoch) : value(value), epoch(epoch)
+    Value::Value(Number number, Epoch epoch) : number(number), epoch(epoch)
     {
-        value = ConvertValueStatic(value, EpochT::SECONDS, epoch, true);
+        number = ConvertNumberStatic(number, Epoch::SECONDS, epoch, true);
     }
 
-    TimeValue::TimeValue(Value::Value value, EpochT epoch) : value(value, GetRadixPoint(epoch)), epoch(epoch)
+    Value::Value(Number::Value number, Epoch epoch) : number(number, GetRadixPoint(epoch)), epoch(epoch)
     {}
 
-    bool TimeValue::operator==(const TimeValue& arg) const
+    bool Value::operator==(const Value& arg) const
     {
-        return value == ConvertValueStatic(arg.value, arg.epoch, epoch);
+        return number == ConvertNumberStatic(arg.number, arg.epoch, epoch);
     }
 
-    bool TimeValue::operator!=(const TimeValue& arg) const
+    bool Value::operator!=(const Value& arg) const
     {
         return !(*this == arg);
     }
 
-    bool TimeValue::operator<(const TimeValue& arg) const
+    bool Value::operator<(const Value& arg) const
     {
-        return value < ConvertValueStatic(arg.value, arg.epoch, epoch);
+        return number < ConvertNumberStatic(arg.number, arg.epoch, epoch);
     }
 
-    bool TimeValue::operator<=(const TimeValue& arg) const
+    bool Value::operator<=(const Value& arg) const
     {
-        return value <= ConvertValueStatic(arg.value, arg.epoch, epoch);
+        return number <= ConvertNumberStatic(arg.number, arg.epoch, epoch);
     }
 
-    bool TimeValue::operator>(const TimeValue& arg) const
+    bool Value::operator>(const Value& arg) const
     {
-        return value > ConvertValueStatic(arg.value, arg.epoch, epoch);
+        return number > ConvertNumberStatic(arg.number, arg.epoch, epoch);
     }
 
-    bool TimeValue::operator>=(const TimeValue& arg) const
+    bool Value::operator>=(const Value& arg) const
     {
-        return value >= ConvertValueStatic(arg.value, arg.epoch, epoch);
+        return number >= ConvertNumberStatic(arg.number, arg.epoch, epoch);
     }
 
-    TimeValue TimeValue::operator+(const TimeValue& arg) const
+    Value Value::operator+(const Value& arg) const
     {
-        return TimeValue(value + ConvertValueStatic(arg.value, arg.epoch, epoch));
+        return Value(number + ConvertNumberStatic(arg.number, arg.epoch, epoch));
     }
 
-    TimeValue& TimeValue::operator+=(const TimeValue& arg)
+    Value& Value::operator+=(const Value& arg)
     {
-        value += ConvertValueStatic(arg.value, arg.epoch, epoch);
+        number += ConvertNumberStatic(arg.number, arg.epoch, epoch);
         return *this;
     }
 
-    TimeValue TimeValue::operator-(const TimeValue& arg) const
+    Value Value::operator-(const Value& arg) const
     {
-        return TimeValue(value - ConvertValueStatic(arg.value, arg.epoch, epoch));
+        return Value(number - ConvertNumberStatic(arg.number, arg.epoch, epoch));
     }
 
-    TimeValue& TimeValue::operator-=(const TimeValue& arg)
+    Value& Value::operator-=(const Value& arg)
     {
-        value -= ConvertValueStatic(arg.value, arg.epoch, epoch);
+        number -= ConvertNumberStatic(arg.number, arg.epoch, epoch);
         return *this;
     }
 
-    TimeValue TimeValue::operator*(const TimeValue& arg) const
+    Value Value::operator*(const Value& arg) const
     {
-        return TimeValue(value * ConvertValueStatic(arg.value, arg.epoch, epoch));
+        return Value(number * ConvertNumberStatic(arg.number, arg.epoch, epoch));
     }
 
-    TimeValue& TimeValue::operator*=(const TimeValue& arg)
+    Value& Value::operator*=(const Value& arg)
     {
-        value *= ConvertValueStatic(arg.value, arg.epoch, epoch);
+        number *= ConvertNumberStatic(arg.number, arg.epoch, epoch);
         return *this;
     }
 
-    TimeValue TimeValue::operator/(const TimeValue& arg) const
+    Value Value::operator/(const Value& arg) const
     {
-        return TimeValue(value / ConvertValueStatic(arg.value, arg.epoch, epoch));
+        return Value(number / ConvertNumberStatic(arg.number, arg.epoch, epoch));
     }
 
-    TimeValue& TimeValue::operator/=(const TimeValue& arg)
+    Value& Value::operator/=(const Value& arg)
     {
-        value /= ConvertValueStatic(arg.value, arg.epoch, epoch);
+        number /= ConvertNumberStatic(arg.number, arg.epoch, epoch);
         return *this;
     }
 
-    TimeValue::operator double() const
+    Value::operator double() const
     {
-        return static_cast<double>(value);
+        return static_cast<double>(number);
     }
 
-    TimeValue::operator Value() const
+    Value::operator Number() const
     {
-        return value;
+        return number;
     }
 
-    typename TimeValue::Value TimeValue::Get() const
+    Value::Number Value::Get() const
     {
-        return value;
+        return number;
     }
 
-    TimeValue::Radix TimeValue::GetRadixPoint() const
+    Value::Number Value::GetAs(Epoch epoch) const
     {
-        return value.GetRadixPoint();
+        return ConvertNumberStatic(number, this->epoch, epoch);
     }
 
-    TimeValue::Radix TimeValue::GetRadixPoint(EpochT epoch)
+    Value::Radix Value::GetRadixPoint() const
+    {
+        return number.GetRadixPoint();
+    }
+
+    Value::Radix Value::GetRadixPoint(Epoch epoch)
     {
         switch (epoch)
         {
-        case EpochT::MINUTES:
-            return TimeValue::Radix(Value::GetDefaultRadixPoint().Get() + 1);
-        case EpochT::SECONDS:
-            return TimeValue::Radix(Value::GetDefaultRadixPoint());
-        case EpochT::MILLISECONDS:
-            return TimeValue::Radix(Value::GetDefaultRadixPoint().Get() - 3);
-        case EpochT::MICROSECONDS:
-            return TimeValue::Radix(Value::GetDefaultRadixPoint().Get() - 6);
-        case EpochT::NANOSECONDS:
-            return TimeValue::Radix(Value::GetDefaultRadixPoint().Get() - 9);
+        case Epoch::MINUTES:
+            return Number::Radix(Number::GetDefaultRadixPoint().Get() + 1);
+        case Epoch::SECONDS:
+            return Number::Radix(Number::GetDefaultRadixPoint());
+        case Epoch::MILLISECONDS:
+            return Number::Radix(Number::GetDefaultRadixPoint().Get() - 3);
+        case Epoch::MICROSECONDS:
+            return Number::Radix(Number::GetDefaultRadixPoint().Get() - 6);
+        case Epoch::NANOSECONDS:
+            return Number::Radix(Number::GetDefaultRadixPoint().Get() - 9);
         }
 
-        return TimeValue::Radix(Value::GetDefaultRadixPoint());
+        return Number::Radix(Number::GetDefaultRadixPoint());
     }
 
-    void TimeValue::Convert(EpochT epoch)
+    void Value::ConvertTo(Epoch epoch)
     {
-        value = ConvertValueStatic(value, this->epoch, epoch);
+        number = ConvertNumberStatic(number, this->epoch, epoch);
     }
 
-    TimeValue::Value TimeValue::ConvertValue(EpochT epoch) const
-    {
-        return ConvertValueStatic(value, this->epoch, epoch);
-    }
-
-    TimeValue::EpochT TimeValue::GetEpoch() const
+    Epoch Value::GetEpoch() const
     {
         return epoch;
     }
 
-    TimeValue::Value TimeValue::ConvertValueStatic(Value value, EpochT oldEpoch, EpochT newEpoch, bool manipulateValue)
+    Value::Number Value::ConvertNumberStatic(Number number, Epoch oldEpoch, Epoch newEpoch, bool manipulateValue)
     {
         unsigned int epochDifference = 0;
         switch (oldEpoch)
         {
-        case EpochT::MINUTES:
+        case Epoch::MINUTES:
             epochDifference -= 1;
             break;
-        case EpochT::SECONDS:
+        case Epoch::SECONDS:
             break;
-        case EpochT::MILLISECONDS:
+        case Epoch::MILLISECONDS:
             epochDifference += 3;
             break;
-        case EpochT::MICROSECONDS:
+        case Epoch::MICROSECONDS:
             epochDifference += 6;
             break;
-        case EpochT::NANOSECONDS:
+        case Epoch::NANOSECONDS:
             epochDifference += 9;
             break;
         }
 
         switch (newEpoch)
         {
-        case EpochT::MINUTES:
+        case Epoch::MINUTES:
             epochDifference += 1;
             break;
-        case EpochT::SECONDS:
+        case Epoch::SECONDS:
             break;
-        case EpochT::MILLISECONDS:
+        case Epoch::MILLISECONDS:
             epochDifference -= 3;
             break;
-        case EpochT::MICROSECONDS:
+        case Epoch::MICROSECONDS:
             epochDifference -= 6;
             break;
-        case EpochT::NANOSECONDS:
+        case Epoch::NANOSECONDS:
             epochDifference -= 9;
             break;
         }
 
-        value.SetRadixPoint(RadixPoint(Value::GetDefaultRadixPoint().Get() + epochDifference), manipulateValue);
-        return value;
+        number.SetRadixPoint(RadixPoint(Number::GetDefaultRadixPoint().Get() + epochDifference), manipulateValue);
+        return number;
     }
 }
 
 namespace Inscription
 {
-    void Scribe<::Atmos::TimeValue, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
+    void Scribe<::Atmos::Time::Value, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
     {
-        archive(object.value);
+        archive(object.number);
         archive(object.epoch);
+    }
+
+    void Scribe<::Atmos::Time::Value, BinaryArchive>::ConstructImplementation(ObjectT* storage, ArchiveT& archive)
+    {
+        DoBasicConstruction(storage, archive);
     }
 }

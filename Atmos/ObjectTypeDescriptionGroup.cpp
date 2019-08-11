@@ -45,8 +45,13 @@ namespace Atmos
 
 namespace Inscription
 {
-    void Scribe<::Atmos::ObjectTypeDescriptionGroup, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
+    void Scribe<::Atmos::ObjectTypeDescriptionGroup, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
     {
         archive(object.list);
+    }
+
+    void Scribe<::Atmos::ObjectTypeDescriptionGroup, BinaryArchive>::ConstructImplementation(ObjectT* storage, ArchiveT& archive)
+    {
+        DoBasicConstruction(storage, archive);
     }
 }
