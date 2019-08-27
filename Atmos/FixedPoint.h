@@ -9,11 +9,12 @@
 
 #include "MathUtility.h"
 #include "NumericLimits.h"
-
-#include "DivideByZeroException.h"
+#include "DivisionByZero.h"
 
 #include "String.h"
-#include "Assert.h"
+
+#include "Exception.h"
+#include <Chroma/Contract.h>
 
 #include "Serialization.h"
 #include <Inscription/Scribe.h>
@@ -741,7 +742,7 @@ namespace Atmos
             // POSITIVE relative radix point; move via multiplication (add zeros)
             if (relativeRadix > 0)
                 value *= normalizer;
-            else // NEGATIVE relative radix point; move via division (remove end digits)
+            else // NEGATIVE relative radix point; move via division (remove frameEndTime digits)
                 value /= normalizer;
         }
 
@@ -760,7 +761,7 @@ namespace Atmos
         String ret;
         Value hold = value;
         DigitCount count = 0;
-        // Find out if negative, and if so, remove negativity (we'll add it in at the end)
+        // Find out if negative, and if so, remove negativity (we'll add it in at the frameEndTime)
         const bool negative = value < 0;
         if (negative)
             hold *= -1;
@@ -853,7 +854,11 @@ namespace Atmos
     template<class T>
     inline void FixedPoint<T>::AssertRadixPoint(Radix proposed)
     {
-        ATMOS_ASSERT_MESSAGE(proposed.Get() <= FixedPoint::maxDigits, "The radix point must be within the digit values.");
+        SOFT_ASSERT
+        (
+            proposed.Get() <= FixedPoint::maxDigits,
+            Exception("The radix point must be within the digit values.")
+        );
     }
 
     template<class T>
@@ -1027,7 +1032,7 @@ namespace Atmos
     inline typename FixedPoint<T>::Value FixedPoint<T>::Divide(Value left, Value right, RadixPoint radixPointRight)
     {
         if (right == 0)
-            throw DivideByZeroException();
+            throw DivisionByZero();
 
         Value dividend = left;
         const Value divisor = right;
@@ -1066,7 +1071,7 @@ namespace Atmos
     inline typename FixedPoint<T>::Value FixedPoint<T>::Modulo(Value left, Value right)
     {
         if (right == 0)
-            throw DivideByZeroException();
+            throw DivisionByZero();
 
         return left - (left / right * right);
     }
@@ -1122,32 +1127,23 @@ namespace Inscription
     {
     protected:
         void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
-        void ConstructImplementation(ObjectT* storage, ArchiveT& archive) override;
     };
 
     template<class T>
     class Scribe<::Atmos::FixedPoint<T>, BinaryArchive> : public CompositeScribe<::Atmos::FixedPoint<T>, BinaryArchive>
     {
     private:
-        using BaseT = typename CompositeScribe<::Atmos::FixedPoint<T>, BinaryArchive>;
+        using BaseT = CompositeScribe<::Atmos::FixedPoint<T>, BinaryArchive>;
     public:
         using ObjectT = typename BaseT::ObjectT;
         using ArchiveT = typename BaseT::ArchiveT;
 
         using BaseT::Scriven;
-        using BaseT::Construct;
     protected:
         void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override
         {
             archive(object.value);
             archive(object.radixPoint);
         }
-
-        void ConstructImplementation(ObjectT* storage, ArchiveT& archive) override
-        {
-            DoBasicConstruction(storage, archive);
-        }
-
-        using BaseT::DoBasicConstruction;
     };
 }

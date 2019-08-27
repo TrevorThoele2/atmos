@@ -5,7 +5,6 @@
 #include "ScreenPosition.h"
 #include "ScreenDimensions.h"
 #include "Color.h"
-#include "String.h"
 
 namespace Atmos::Asset
 {
@@ -19,16 +18,16 @@ namespace Atmos::Render
     class Canvas
     {
     public:
-        typedef ScreenPosition Position;
-        typedef ScreenDimensions Dimensions;
-        typedef Dimensions::Dimension DimensionValue;
+        using Position = ScreenPosition;
+        using Dimensions = ScreenDimensions;
+        using DimensionValue = Dimensions::Dimension;
     public:
         class Data
         {
         public:
-            virtual ~Data() = 0 {}
+            virtual ~Data() = 0;
 
-            Canvas* GetOwner() const;
+            [[nodiscard]] Canvas* Owner() const;
 
             virtual void StartPainting() = 0;
             virtual void StopPainting() = 0;
@@ -37,26 +36,26 @@ namespace Atmos::Render
             virtual void Release() = 0;
             virtual void Reset(DimensionValue width, DimensionValue height) = 0;
         private:
-            Canvas *owner;
+            Canvas* owner = nullptr;
         private:
             friend Canvas;
         };
 
-        typedef std::unique_ptr<Data> DataPtr;
+        using DataPtr = std::unique_ptr<Data>;
     public:
         Canvas(DataPtr&& data, DimensionValue width, DimensionValue height);
-        Canvas(Canvas&& arg);
-        Canvas& operator=(Canvas&& arg);
+        Canvas(Canvas&& arg) noexcept;
+        Canvas& operator=(Canvas&& arg) noexcept;
 
-        Data* GetData() const;
+        [[nodiscard]] Data* GetData() const;
         template<class DataT>
-        DataT* GetData() const;
+        [[nodiscard]] DataT* GetData() const;
 
         // Must be called before starting to paint to it
         void StartPainting();
         // Call when done painting
         void StopPainting();
-        bool IsPainting() const;
+        [[nodiscard]] bool IsPainting() const;
         
         // Will not work unless this is in manual mode
         void PaintPixel(const Position& position, const Color& color);
@@ -64,19 +63,19 @@ namespace Atmos::Render
         // This must be set as the texture for this to work
         void Clear(const Color& color);
 
-        DimensionValue GetWidth() const;
-        DimensionValue GetHeight() const;
+        [[nodiscard]] DimensionValue Width() const;
+        [[nodiscard]] DimensionValue Height() const;
 
         void Release();
         void Reset();
     private:
-        bool isPainting;
+        bool isPainting = false;
 
         DimensionValue width;
         DimensionValue height;
         std::unique_ptr<Data> data;
     private:
-        void SetData(std::unique_ptr<Data>&& set);
+        void SetData(DataPtr&& set);
     private:
         friend GraphicsManager;
     };

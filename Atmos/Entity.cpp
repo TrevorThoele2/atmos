@@ -2,23 +2,13 @@
 
 namespace Atmos::Entity
 {
-    Entity::Entity(ObjectManager& manager) : Object(manager)
-    {}
-
-    Entity::Entity(const Entity& arg) : Object(arg)
-    {}
-
-    Entity::Entity(const ::Inscription::BinaryTableData<Entity>& data) :
-        Object(std::get<0>(data.bases))
-    {}
-
-    ObjectTypeDescription Entity::TypeDescription() const
+    void Entity::PostConstruct(ShardTuple shards)
     {
-        return ObjectTraits<Entity>::TypeDescription();
+        general = std::get<0>(shards);
     }
 }
 
-namespace Atmos
+namespace Arca
 {
-    const ObjectTypeName ObjectTraits<Entity::Entity>::typeName = "Entity";
+    const TypeName Traits<Atmos::Entity::Entity>::typeName;
 }

@@ -1,70 +1,75 @@
-
 #include "AngelScriptUtility.h"
 
 #include <angelscript.h>
 
-namespace Atmos::Script
+namespace Atmos::Script::Angel
 {
     struct VariantVisitImplementation
     {
-        static void Do(bool value, ParameterIndex index, asIScriptContext* context)
+        ParameterIndex index;
+        asIScriptContext* context;
+
+        VariantVisitImplementation(ParameterIndex index, asIScriptContext* context) : index(index), context(context)
+        {}
+
+        void operator()(bool value) const
         {
             context->SetArgByte(index, value);
         }
 
-        static void Do(std::int8_t value, ParameterIndex index, asIScriptContext* context)
+        void operator()(std::int8_t value) const
         {
             context->SetArgByte(index, value);
         }
 
-        static void Do(std::int16_t value, ParameterIndex index, asIScriptContext* context)
+        void operator()(std::int16_t value) const
         {
             context->SetArgWord(index, value);
         }
 
-        static void Do(std::int32_t value, ParameterIndex index, asIScriptContext* context)
+        void operator()(std::int32_t value) const
         {
             context->SetArgDWord(index, value);
         }
 
-        static void Do(std::int64_t value, ParameterIndex index, asIScriptContext* context)
+        void operator()(std::int64_t value) const
         {
             context->SetArgQWord(index, value);
         }
 
-        static void Do(std::uint8_t value, ParameterIndex index, asIScriptContext* context)
+        void operator()(std::uint8_t value) const
         {
             context->SetArgByte(index, value);
         }
 
-        static void Do(std::uint16_t value, ParameterIndex index, asIScriptContext* context)
+        void operator()(std::uint16_t value) const
         {
             context->SetArgWord(index, value);
         }
 
-        static void Do(std::uint32_t value, ParameterIndex index, asIScriptContext* context)
+        void operator()(std::uint32_t value) const
         {
             context->SetArgDWord(index, value);
         }
 
-        static void Do(std::uint64_t value, ParameterIndex index, asIScriptContext* context)
+        void operator()(std::uint64_t value) const
         {
             context->SetArgQWord(index, value);
         }
 
-        static void Do(float value, ParameterIndex index, asIScriptContext* context)
+        void operator()(float value) const
         {
             context->SetArgFloat(index, value);
         }
 
-        static void Do(double value, ParameterIndex index, asIScriptContext* context)
+        void operator()(double value) const
         {
             context->SetArgDouble(index, value);
         }
     };
 
-    void PushVariantToAngelScriptParameter(ParameterIndex index, VariantT& variant, asIScriptContext* context)
+    void PushVariantToParameter(ParameterIndex index, Variant& variant, asIScriptContext* context)
     {
-        ::Chroma::Visit<VariantVisitImplementation>(variant, index, context);
+        std::visit(VariantVisitImplementation{index, context}, variant);
     }
 }

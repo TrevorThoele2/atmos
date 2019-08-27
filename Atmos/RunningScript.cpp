@@ -1,9 +1,9 @@
 #include "RunningScript.h"
 
-#include "ObjectManager.h"
-#include "AngelScriptSystem.h"
+#include <Arca/Reliquary.h>
+#include "AngelScriptCurator.h"
 
-#include "AngelScriptAssert.h"
+#include "AngelScriptResultVerification.h"
 #include <angelscript.h>
 
 namespace Atmos::Script
@@ -11,68 +11,63 @@ namespace Atmos::Script
     class RunningScript::Data
     {
     public:
-        SourceReference source;
-        asIScriptContext* context;
-        bool isInitialized;
+        Source* source;
+        asIScriptContext* context = nullptr;
     public:
-        ObjectManager* objectManager;
-    public:
-        Data(SourceReference source) :
-            source(source), context(nullptr), isInitialized(false), objectManager(nullptr)
-        {}
-
-        Data(const Data& arg) :
-            source(arg.source), context(nullptr), isInitialized(false), objectManager(arg.objectManager)
+        explicit Data(Source& source) : source(&source)
         {}
 
         ~Data()
         {
-            context->Release();
+            if (context)
+                context->Release();
         }
 
-        void Initialize()
+        void Initialize(asIScriptEngine* engine)
         {
-            if (isInitialized)
+            if (context)
                 return;
 
-            auto engine = objectManager->FindSystem<Script::ScriptSystem>()->Engine();
             context = engine->CreateContext();
-
-            isInitialized = true;
         }
     };
 
-    RunningScript::RunningScript(ObjectManager& manager, SourceReference source) :
-        Object(manager), data(new Data(source)), suspended(false), hasBeenExecuted(false), executedThisFrame(false),
-        source([this]() { return data->source; })
-    {
-        data->objectManager = &manager;
-    }
+    RunningScript::RunningScript() = default;
 
-    RunningScript::RunningScript(const ::Inscription::BinaryTableData<RunningScript>& data) :
-        Object(std::get<0>(data.bases)), data(new Data(source)), source([this]() { return this->data->source; })
+    RunningScript::RunningScript(const RunningScript& arg) :
+        source(arg.source),
+        data(std::make_unique<Data>(*arg.data))
     {}
+
+    RunningScript::~RunningScript() = default;
+
+    RunningScript& RunningScript::operator=(const RunningScript& arg)
+    {
+        source = arg.source;
+        data = std::make_unique<Data>(*arg.data);
+        return *this;
+    }
 
     void RunningScript::Resume()
     {
-        if (!suspended)
+        if (!isSuspended)
             return;
 
-        suspended = false;
+        isSuspended = false;
     }
 
     void RunningScript::Suspend()
     {
-        if (suspended)
+        if (isSuspended)
             return;
 
-        AngelScriptAssert(data->context->Suspend());
-        suspended = true;
+        Angel::VerifyResult(data->context->Suspend());
+        isSuspended = true;
     }
 
     bool RunningScript::IsSuspended() const
     {
-        return suspended;
+        return isSuspended;
     }
 
     bool RunningScript::ShouldExecuteMain() const
@@ -85,13 +80,14 @@ namespace Atmos::Script
         return data->context;
     }
 
-    ObjectTypeDescription RunningScript::TypeDescription() const
+    void RunningScript::Initialize(Source& source)
     {
-        return ObjectTraits<RunningScript>::TypeDescription();
+        this->source = &source;
+        data = std::make_unique<Data>(source);
     }
 }
 
-namespace Atmos
+namespace Arca
 {
-    const ObjectTypeName ObjectTraits<Script::RunningScript>::typeName = "RunningScript";
+    const TypeName Traits<::Atmos::Script::RunningScript>::typeName = "RunningScript";
 }

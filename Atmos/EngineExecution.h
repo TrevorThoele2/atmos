@@ -1,15 +1,17 @@
 #pragma once
 
-#include "Event.h"
+namespace Arca
+{
+    class Reliquary;
+}
 
 namespace Atmos
 {
-    class ObjectManager;
-    class EngineSystem;
+    class EngineProvider;
 
     namespace Window
     {
-        class WindowSystem;
+        class WindowProvider;
     }
 
     namespace World
@@ -20,20 +22,19 @@ namespace Atmos
     class EngineExecution
     {
     public:
-        EngineExecution(ObjectManager& globalObjectManager, World::WorldManager& worldManager);
+        EngineExecution(Arca::Reliquary& reliquary, World::WorldManager& worldManager);
 
         void Start();
     private:
-        ObjectManager* globalObjectManager;
-        EngineSystem* engineSystem;
+        Arca::Reliquary* reliquary;
 
         World::WorldManager* worldManager;
     private:
-        bool wasFocusedLastPass;
-        bool isFocusLost;
+        bool wasFocusedLastPass = false;
+        bool isFocusLost = false;
     private:
-        bool StartFrame(Window::WindowSystem* windowSystem);
-        bool IsCurrentlyFocused(Window::WindowSystem* windowSystem) const;
+        bool StartFrame();
+        [[nodiscard]] bool IsCurrentlyFocused() const;
 
         void OnFocusLost();
         void OnFocusRegain();

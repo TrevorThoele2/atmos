@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include "Overflow.h"
@@ -150,7 +149,7 @@ namespace Atmos
     void BoundedNumberBase<T>::Divide(ValueT amount)
     {
         if (amount == 0)
-            throw DivideByZeroException();
+            throw DivisionByZero();
 
         ValueT lowerBound = LowerBound();
         ValueT upperBound = UpperBound();

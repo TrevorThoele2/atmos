@@ -1,51 +1,40 @@
 #pragma once
 
-#include "RenderFragment.h"
-
-#include "ObjectScribe.h"
+#include <Arca/ClosedTypedRelicAutomation.h>
+#include "Canvas.h"
+#include "Bounds.h"
 
 namespace Atmos::Render
 {
-    class Canvas;
-
-    class CanvasView : public RenderFragment
+    class CanvasView final : public Arca::ClosedTypedRelicAutomation<CanvasView, Bounds>
     {
     public:
-        typedef StoredProperty<const Canvas*> CanvasProperty;
-        CanvasProperty source;
-    public:
-        CanvasView(ObjectManager& manager, const Canvas* source);
-        CanvasView(const CanvasView& arg) = default;
-        CanvasView(const ::Inscription::BinaryTableData<CanvasView>& data);
-        CanvasView& operator=(const CanvasView& arg) = default;
+        void PostConstruct(ShardTuple shards);
+        void Initialize(Canvas& source);
 
-        ObjectTypeDescription TypeDescription() const override;
+        [[nodiscard]] const Canvas& Source() const;
+
+        [[nodiscard]] const Bounds& Bounds() const;
+    private:
+        Canvas* source = nullptr;
+        Atmos::Bounds* bounds = nullptr;
     };
 }
 
-namespace Atmos
+namespace Arca
 {
     template<>
-    struct ObjectTraits<Render::CanvasView> : ObjectTraitsBase<Render::CanvasView>
+    struct Traits<::Atmos::Render::CanvasView>
     {
-        static const ObjectTypeName typeName;
-        static constexpr ObjectTypeList<Render::RenderFragment> bases = {};
+        static const ObjectType objectType = ObjectType::Relic;
+        static const TypeName typeName;
     };
 }
 
 namespace Inscription
 {
     template<>
-    struct TableData<::Atmos::Render::CanvasView, BinaryArchive> :
-        public ObjectTableDataBase<::Atmos::Render::CanvasView, BinaryArchive>
+    class Scribe<::Atmos::Render::CanvasView, BinaryArchive> final :
+        public ArcaNullScribe<::Atmos::Render::CanvasView, BinaryArchive>
     {};
-
-    template<>
-    class Scribe<::Atmos::Render::CanvasView, BinaryArchive> :
-        public ObjectScribe<::Atmos::Render::CanvasView, BinaryArchive>
-    {
-    public:
-        class Table : public TableBase
-        {};
-    };
 }

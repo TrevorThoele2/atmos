@@ -1,30 +1,11 @@
-
 #include "Position2D.h"
+
 #include "Position3D.h"
 #include "AxisAlignedBox2D.h"
 #include <Inscription\Scribe.h>
 
 namespace Atmos
 {
-    Position2D::Position2D() : x(0), y(0)
-    {}
-
-    Position2D::Position2D(Value x, Value y) : x(x), y(y)
-    {}
-
-    Position2D::Position2D(const Position3D& arg) : x(arg.x), y(arg.y)
-    {}
-
-    Position2D::Position2D(const Position2D& arg) : x(arg.x), y(arg.y)
-    {}
-
-    Position2D& Position2D::operator=(const Position2D& arg)
-    {
-        x = arg.x;
-        y = arg.y;
-        return *this;
-    }
-
     bool Position2D::operator==(const Position2D& arg) const
     {
         return x == arg.x && y == arg.y;
@@ -35,22 +16,22 @@ namespace Atmos
         return !(*this == arg);
     }
 
-    bool Position2D::Within(Value left, Value right, Value top, Value bottom) const
+    bool Position2D::Contains(Value left, Value right, Value top, Value bottom) const
     {
         return x >= left && x <= right && y >= top && y <= bottom;
     }
 
-    bool Position2D::Within(const AxisAlignedBox2D& box) const
+    bool Position2D::Contains(const AxisAlignedBox2D& box) const
     {
-        return Within(box.left, box.right, box.top, box.bottom);
+        return Contains(box.Left(), box.Right(), box.Top(), box.Bottom());
     }
 
     Position2D Position2D::FromScreen(const Position2D& convert, const Position2D& topLeftScreen)
     {
-        return Position2D(convert.x + topLeftScreen.x, convert.y + topLeftScreen.y);
+        return Position2D{ convert.x + topLeftScreen.x, convert.y + topLeftScreen.y };
     }
 
-    typename Position2D::Value Position2D::FindDistance(const Position2D& starting, const Position2D& destination)
+    typename Position2D::Value Position2D::DistanceBetween(const Position2D& starting, const Position2D& destination)
     {
         auto distanceX = (destination.x - starting.x);
         auto distanceY = (destination.y - starting.y);
@@ -58,7 +39,7 @@ namespace Atmos
         return sqrt(pow(distanceX, 2) + pow(distanceY, 2));
     }
 
-    Position2D Position2D::FindCenter(const std::vector<Position2D>& container)
+    Position2D Position2D::CenterOf(const std::vector<Position2D>& container)
     {
         auto topLeft = *container.begin();
         auto bottomRight = *container.begin();
@@ -75,19 +56,21 @@ namespace Atmos
                 bottomRight.y = loop->y;
         }
 
-        return FindCenter(topLeft, bottomRight);
+        return CenterOf(topLeft, bottomRight);
     }
 
-    Position2D Position2D::FindCenter(const std::set<Position2D>& container)
+    Position2D Position2D::CenterOf(const std::set<Position2D>& container)
     {
-        return FindCenter(*container.begin(), *container.rbegin());
+        return CenterOf(*container.begin(), *container.rbegin());
     }
 
-    Position2D Position2D::FindCenter(const Position2D& topLeft, const Position2D& bottomRight)
+    Position2D Position2D::CenterOf(const Position2D& topLeft, const Position2D& bottomRight)
     {
-        return Position2D(
+        return Position2D
+        {
             topLeft.x + ((bottomRight.x - topLeft.x) / 2),
-            topLeft.y + ((bottomRight.y - topLeft.y) / 2));
+            topLeft.y + ((bottomRight.y - topLeft.y) / 2)
+        };
     }
 }
 
@@ -97,10 +80,5 @@ namespace Inscription
     {
         archive(object.x);
         archive(object.y);
-    }
-
-    void Scribe<::Atmos::Position2D, BinaryArchive>::ConstructImplementation(ObjectT* storage, ArchiveT& archive)
-    {
-        DoBasicConstruction(storage, archive);
     }
 }

@@ -3,8 +3,6 @@
 #include "AngleConversion.h"
 #include "AngleUnitsTypeValidation.h"
 
-#include "Optional.h"
-
 #include "Serialization.h"
 
 #include <Chroma/SelectableType.h>
@@ -21,7 +19,7 @@ namespace Atmos
     public:
         Angle();
         template<class T, AllowOnlyAngleUnits<T> = 0>
-        Angle(T arg);
+        explicit Angle(T arg);
 
         template<class T, AllowOnlyAngleUnits<T> = 0>
         Angle& operator=(T arg);
@@ -46,7 +44,7 @@ namespace Atmos
         T As() const;
 
         template<class T, AllowOnlyAngleUnits<T> = 0>
-        bool Is() const;
+        [[nodiscard]] bool Is() const;
     private:
         Radians underlying;
     private:
@@ -57,7 +55,7 @@ namespace Atmos
     };
 
     template<class T, Angle::AllowOnlyAngleUnits<T>>
-    Angle::Angle(T arg) : underlying(AngleConverter<T>::From(arg)), selectedType(::Chroma::Type<T>{})
+    Angle::Angle(T arg) : underlying(AngleConverter<T>::From(arg)), selectedType(::Chroma::TypeIdentity<T>{})
     {}
 
     template<class T, Angle::AllowOnlyAngleUnits<T>>
@@ -84,10 +82,9 @@ namespace Atmos
 namespace Inscription
 {
     template<>
-    class Scribe<::Atmos::Angle, BinaryArchive> : public CompositeScribe<::Atmos::Angle, BinaryArchive>
+    class Scribe<::Atmos::Angle, BinaryArchive> final : public CompositeScribe<::Atmos::Angle, BinaryArchive>
     {
     protected:
         void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
-        void ConstructImplementation(ObjectT* storage, ArchiveT& archive) override;
     };
 }

@@ -2,28 +2,30 @@
 
 namespace Atmos::Render
 {
-    Canvas* Canvas::Data::GetOwner() const
+    Canvas::Data::~Data() = default;
+
+    Canvas* Canvas::Data::Owner() const
     {
         return owner;
     }
 
     Canvas::Canvas(DataPtr&& data, DimensionValue width, DimensionValue height) :
-        width(width), height(height), isPainting(false)
+        width(width), height(height)
     {
         SetData(std::move(data));
     }
 
-    Canvas::Canvas(Canvas&& arg) :
-        width(arg.width), height(arg.height), isPainting(std::move(arg.isPainting))
+    Canvas::Canvas(Canvas&& arg) noexcept :
+        isPainting(arg.isPainting), width(arg.width), height(arg.height)
     {
         SetData(std::move(arg.data));
     }
 
-    Canvas& Canvas::operator=(Canvas&& arg)
+    Canvas& Canvas::operator=(Canvas&& arg) noexcept
     {
         width = arg.width;
         height = arg.height;
-        isPainting = std::move(arg.isPainting);
+        isPainting = arg.isPainting;
         SetData(std::move(arg.data));
         return *this;
     }
@@ -69,12 +71,12 @@ namespace Atmos::Render
         data->Clear(color);
     }
 
-    Canvas::DimensionValue Canvas::GetWidth() const
+    Canvas::DimensionValue Canvas::Width() const
     {
         return width;
     }
 
-    Canvas::DimensionValue Canvas::GetHeight() const
+    Canvas::DimensionValue Canvas::Height() const
     {
         return height;
     }
@@ -89,7 +91,7 @@ namespace Atmos::Render
         data->Reset(width, height);
     }
 
-    void Canvas::SetData(std::unique_ptr<Data>&& set)
+    void Canvas::SetData(DataPtr&& set)
     {
         data = std::move(set);
         data->owner = this;

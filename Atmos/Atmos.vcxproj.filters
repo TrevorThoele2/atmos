@@ -126,18 +126,6 @@
     <Filter Include="Source Files\Logging">
       <UniqueIdentifier>{7948401a-5e4c-432a-989e-e2e9008b9b65}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Object">
-      <UniqueIdentifier>{7555968d-fb2f-416c-895f-4be21b8be312}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Object">
-      <UniqueIdentifier>{7247a964-49c7-4e52-9072-b7577ddaca58}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\IDManager">
-      <UniqueIdentifier>{3a794035-25af-45ad-8d1e-8c29fa870005}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Properties">
-      <UniqueIdentifier>{0ecc5b11-b882-4b5b-928a-13dc531ac35d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Modulators\Interpolation">
       <UniqueIdentifier>{2ef764c0-2c65-4bea-9959-6c6a44a9dd4b}</UniqueIdentifier>
     </Filter>
@@ -159,26 +147,11 @@
     <Filter Include="Source Files\Math">
       <UniqueIdentifier>{968bd1c6-884c-46f5-a5ee-c8d654b12b9a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\AngelScript">
-      <UniqueIdentifier>{bb380e76-0fdb-4c8d-96b8-8fee573af8bd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\AngelScript\Addon">
-      <UniqueIdentifier>{10f6fe88-04e4-48f9-90b3-089a5df04ba3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\AngelScript">
-      <UniqueIdentifier>{510dbc17-4162-419b-bc6f-d999f3fa4ded}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\AngelScript\Addon">
-      <UniqueIdentifier>{075d222d-98d0-4c59-b8d6-b5799d513a8f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Engine">
       <UniqueIdentifier>{ddce0791-135a-492f-9185-7990a04c0440}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Engine">
       <UniqueIdentifier>{5210a282-5189-4ad0-9027-918aa06c9757}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Provider">
-      <UniqueIdentifier>{0690f5dc-8974-4114-8155-d10c5f6fd4c1}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Initialization">
       <UniqueIdentifier>{08744f75-03d2-46be-bc11-8e578882cd06}</UniqueIdentifier>
@@ -204,12 +177,6 @@
     <Filter Include="Header Files\File">
       <UniqueIdentifier>{319dc3b7-a4d3-4243-a2a8-0d229a4f6ab6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\AngelScript\Registration">
-      <UniqueIdentifier>{2bce928d-4833-49b3-b722-4be718b382c9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\AngelScript\Registration\Bases">
-      <UniqueIdentifier>{b1a10f14-f416-4dee-a889-914cefbd468d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Position\2D">
       <UniqueIdentifier>{86cb1bc0-1e43-4214-9fe8-ad8343543e7d}</UniqueIdentifier>
     </Filter>
@@ -234,53 +201,17 @@
     <Filter Include="Source Files\Position\Direction">
       <UniqueIdentifier>{0e6d1164-a7a9-4467-be95-53f8245a3575}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\PositionalObject">
-      <UniqueIdentifier>{7fb22f80-31ef-484c-ad60-6bdcf9d9d2de}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\PositionalObject">
-      <UniqueIdentifier>{574988d0-8406-4442-ba6b-b68f4ec3ac72}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\TypeRegistration">
-      <UniqueIdentifier>{a61fbb38-0e5e-4177-8c3c-7ef2e8a32101}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\TypeRegistration">
-      <UniqueIdentifier>{0bff50a9-4cc7-4e91-943f-6b4c8f184cc6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Serialization\SkipFile">
-      <UniqueIdentifier>{5947c944-570c-4310-b74c-617d1cc6d664}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Time\Stopwatch">
       <UniqueIdentifier>{534fe9e6-2447-4a7b-9f14-ee71be4e826f}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Time\Stopwatch">
       <UniqueIdentifier>{eb950769-20e0-427c-ac24-1c3d5ee93d1b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Object\Scribe">
-      <UniqueIdentifier>{7e422f5c-903a-47b6-83e5-b29762f2e9e2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Object\Scribe">
-      <UniqueIdentifier>{49baf5b4-c93e-46a8-97ec-d55319351f93}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Object\Traits">
-      <UniqueIdentifier>{4a519250-2083-4dc5-91be-7752f82ab189}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\World\Serialization">
       <UniqueIdentifier>{92588c19-f4bd-4e27-9c6c-3439682def1c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\World\Serialization\StasisArchive">
-      <UniqueIdentifier>{c99e5890-f82d-422b-b8ad-7f196b5e01e9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\World\Serialization\WorldArchive">
-      <UniqueIdentifier>{67ba23ad-074b-4810-8907-9d18cd1ed2a5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\World\Serialization">
       <UniqueIdentifier>{44efc06a-e12c-4150-9914-519b00d8e8e2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\World\Serialization\StasisArchive">
-      <UniqueIdentifier>{10a08c38-184f-47c4-955e-548481570820}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\World\Serialization\WorldArchive">
-      <UniqueIdentifier>{800b0608-37d4-410d-9b4e-8790474a95f8}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Render\Canvas">
       <UniqueIdentifier>{39e2655d-4c18-448f-8d79-53c15bf8a058}</UniqueIdentifier>
@@ -306,26 +237,98 @@
     <Filter Include="Header Files\Entity\Component">
       <UniqueIdentifier>{44b016f2-25dd-4a06-948b-c2fc9cfd8618}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Entity\Component\Infrastructure">
-      <UniqueIdentifier>{ca149a3d-75e9-4af8-ba4c-ef3e86f9775f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Entity\System">
-      <UniqueIdentifier>{5dd13e0f-ab59-4397-825b-335831f0a430}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Entity\Component">
       <UniqueIdentifier>{d3c0fea4-1e46-4199-af57-1c1d3869854b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Entity\Component\Infrastructure">
-      <UniqueIdentifier>{ed64c241-d852-4659-bc38-1fc64159d603}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Entity\System">
-      <UniqueIdentifier>{aa40266a-e180-4c3b-b4a8-0ac2edb5aabc}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Grid">
       <UniqueIdentifier>{03e08cf4-496a-4af0-8620-7c590ccf3305}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Grid">
       <UniqueIdentifier>{c9671fee-8858-4697-97ab-c8ebcdb0118d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Script">
+      <UniqueIdentifier>{5d2af305-be22-493a-9f5b-95b32a24be5d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Script\AngelScript">
+      <UniqueIdentifier>{bb380e76-0fdb-4c8d-96b8-8fee573af8bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Script\AngelScript\Addon">
+      <UniqueIdentifier>{10f6fe88-04e4-48f9-90b3-089a5df04ba3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Script\AngelScript\Registration">
+      <UniqueIdentifier>{2bce928d-4833-49b3-b722-4be718b382c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Script\AngelScript\Registration\Bases">
+      <UniqueIdentifier>{b1a10f14-f416-4dee-a889-914cefbd468d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Script">
+      <UniqueIdentifier>{b274c423-aba4-4c01-bb59-05857b196420}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Script\AngelScript">
+      <UniqueIdentifier>{510dbc17-4162-419b-bc6f-d999f3fa4ded}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Script\AngelScript\Addon">
+      <UniqueIdentifier>{075d222d-98d0-4c59-b8d6-b5799d513a8f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Position\Object">
+      <UniqueIdentifier>{574988d0-8406-4442-ba6b-b68f4ec3ac72}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Position\Object">
+      <UniqueIdentifier>{7fb22f80-31ef-484c-ad60-6bdcf9d9d2de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Render\Camera">
+      <UniqueIdentifier>{6ed31266-b6a3-401d-9405-60f4aa43e8d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Render\Camera">
+      <UniqueIdentifier>{70ea4b19-3a06-4276-95c3-6394d0954d9f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Provider">
+      <UniqueIdentifier>{0690f5dc-8974-4114-8155-d10c5f6fd4c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Script\AngelScript\Registration">
+      <UniqueIdentifier>{659a8192-8154-4c6e-9295-c89d4d7592c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Script\AngelScript\Registration\Bases">
+      <UniqueIdentifier>{8ee3d6e5-914f-4b4a-9e2d-9c08b542d3ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Input\Signals">
+      <UniqueIdentifier>{5a00eaa9-c51e-44f5-9b57-73aa2172c699}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Entity\Curator">
+      <UniqueIdentifier>{5dd13e0f-ab59-4397-825b-335831f0a430}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Entity\Curator">
+      <UniqueIdentifier>{aa40266a-e180-4c3b-b4a8-0ac2edb5aabc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Entity\Position">
+      <UniqueIdentifier>{5af4fb77-6546-43c7-820b-7b0f97cf3731}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Entity\Position">
+      <UniqueIdentifier>{cfb940b1-17a4-466d-a0ff-bd1b6d65e0ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\World\Serialization\Stasis">
+      <UniqueIdentifier>{c99e5890-f82d-422b-b8ad-7f196b5e01e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\World\Serialization\World">
+      <UniqueIdentifier>{67ba23ad-074b-4810-8907-9d18cd1ed2a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\World\Serialization\Stasis">
+      <UniqueIdentifier>{10a08c38-184f-47c4-955e-548481570820}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\World\Serialization\World">
+      <UniqueIdentifier>{800b0608-37d4-410d-9b4e-8790474a95f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\World\Map">
+      <UniqueIdentifier>{4a699d32-9bff-4632-8d5d-12c1e8c3e768}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\World\Map">
+      <UniqueIdentifier>{40b208f4-b183-40ed-ad68-e21106ffe219}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Render\MaterialView">
+      <UniqueIdentifier>{e25e5bfa-b747-4420-ab7e-45c86acd0195}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Render\MaterialView">
+      <UniqueIdentifier>{bdbf69b8-7408-4c63-b60b-5e8426251269}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -334,9 +337,6 @@
     </ClInclude>
     <ClInclude Include="FieldDestination.h">
       <Filter>Header Files\World\Field</Filter>
-    </ClInclude>
-    <ClInclude Include="Tile.h">
-      <Filter>Header Files\Grid</Filter>
     </ClInclude>
     <ClInclude Include="FontDefines.h">
       <Filter>Header Files\GUI</Filter>
@@ -352,9 +352,6 @@
     </ClInclude>
     <ClInclude Include="Range.h">
       <Filter>Header Files\Helper</Filter>
-    </ClInclude>
-    <ClInclude Include="StateGui.h">
-      <Filter>Header Files\State</Filter>
     </ClInclude>
     <ClInclude Include="FieldID.h">
       <Filter>Header Files\World\Field</Filter>
@@ -374,20 +371,11 @@
     <ClInclude Include="Buffer.h">
       <Filter>Header Files\Helper</Filter>
     </ClInclude>
-    <ClInclude Include="RenderFragment.h">
-      <Filter>Header Files\Render</Filter>
-    </ClInclude>
     <ClInclude Include="CanvasView.h">
       <Filter>Header Files\Render\Canvas</Filter>
     </ClInclude>
     <ClInclude Include="Canvas.h">
       <Filter>Header Files\Render\Canvas</Filter>
-    </ClInclude>
-    <ClInclude Include="Optional.h">
-      <Filter>Header Files\Helper</Filter>
-    </ClInclude>
-    <ClInclude Include="EntityAISystem.h">
-      <Filter>Header Files\Entity\System</Filter>
     </ClInclude>
     <ClInclude Include="FilePath.h">
       <Filter>Header Files\File</Filter>
@@ -398,17 +386,11 @@
     <ClInclude Include="Volume.h">
       <Filter>Header Files\Audio</Filter>
     </ClInclude>
-    <ClInclude Include="InputAction.h">
-      <Filter>Header Files\Input</Filter>
-    </ClInclude>
     <ClInclude Include="Tag.h">
       <Filter>Header Files\GameData</Filter>
     </ClInclude>
     <ClInclude Include="OperatorSelector.h">
       <Filter>Header Files\Helper</Filter>
-    </ClInclude>
-    <ClInclude Include="WorldStart.h">
-      <Filter>Header Files\World</Filter>
     </ClInclude>
     <ClInclude Include="NameValuePair.h">
       <Filter>Header Files\Helper</Filter>
@@ -434,200 +416,35 @@
     <ClInclude Include="ScrubbedType.h">
       <Filter>Header Files\Helper</Filter>
     </ClInclude>
-    <ClInclude Include="DivideByZeroException.h">
-      <Filter>Header Files\Exceptions</Filter>
-    </ClInclude>
-    <ClInclude Include="InputException.h">
-      <Filter>Header Files\Exceptions</Filter>
-    </ClInclude>
     <ClInclude Include="RelativeFilePath.h">
       <Filter>Header Files\File</Filter>
-    </ClInclude>
-    <ClInclude Include="ObjectBatch.h">
-      <Filter>Header Files\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="ObjectBatchException.h">
-      <Filter>Header Files\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="ObjectBatchSource.h">
-      <Filter>Header Files\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="ObjectID.h">
-      <Filter>Header Files\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="ObjectManager.h">
-      <Filter>Header Files\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="ObjectReference.h">
-      <Filter>Header Files\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="ObjectStaticAssert.h">
-      <Filter>Header Files\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="ObjectSystem.h">
-      <Filter>Header Files\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="ObjectTypeDescription.h">
-      <Filter>Header Files\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="ObjectTypeDescriptionGroup.h">
-      <Filter>Header Files\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="ObjectTypeGraph.h">
-      <Filter>Header Files\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="ObjectTypeList.h">
-      <Filter>Header Files\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="ObjectTypeName.h">
-      <Filter>Header Files\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="IDManager.h">
-      <Filter>Header Files\IDManager</Filter>
-    </ClInclude>
-    <ClInclude Include="IDManagerIterator.h">
-      <Filter>Header Files\IDManager</Filter>
-    </ClInclude>
-    <ClInclude Include="Object.h">
-      <Filter>Header Files\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="ObjectTypeValidation.h">
-      <Filter>Header Files\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="TileSystem.h">
-      <Filter>Header Files\Grid</Filter>
-    </ClInclude>
-    <ClInclude Include="RenderFragmentSystem.h">
-      <Filter>Header Files\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="ObjectMap.h">
-      <Filter>Header Files\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="ObjectMapIterator.h">
-      <Filter>Header Files\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="AssetSystem.h">
-      <Filter>Header Files\Assets</Filter>
-    </ClInclude>
-    <ClInclude Include="Property.h">
-      <Filter>Header Files\Properties</Filter>
-    </ClInclude>
-    <ClInclude Include="ReadonlyProperty.h">
-      <Filter>Header Files\Properties</Filter>
-    </ClInclude>
-    <ClInclude Include="PropertyCore.h">
-      <Filter>Header Files\Properties</Filter>
-    </ClInclude>
-    <ClInclude Include="ArithmeticPropertySlotInterface.h">
-      <Filter>Header Files\Properties</Filter>
-    </ClInclude>
-    <ClInclude Include="PointerPropertySlotInterface.h">
-      <Filter>Header Files\Properties</Filter>
-    </ClInclude>
-    <ClInclude Include="ReadonlyPointerPropertySlotInterface.h">
-      <Filter>Header Files\Properties</Filter>
     </ClInclude>
     <ClInclude Include="DifferentiatableInherit.h">
       <Filter>Header Files\Helper</Filter>
     </ClInclude>
-    <ClInclude Include="StoredProperty.h">
-      <Filter>Header Files\Properties</Filter>
-    </ClInclude>
-    <ClInclude Include="StoredReadonlyProperty.h">
-      <Filter>Header Files\Properties</Filter>
-    </ClInclude>
-    <ClInclude Include="EqualityPropertySlotInterface.h">
-      <Filter>Header Files\Properties</Filter>
-    </ClInclude>
     <ClInclude Include="HasEqualityComparison.h">
       <Filter>Header Files\Helper</Filter>
-    </ClInclude>
-    <ClInclude Include="ListPropertySlotInterface.h">
-      <Filter>Header Files\Properties</Filter>
-    </ClInclude>
-    <ClInclude Include="ObjectBatchSourceDefinition.h">
-      <Filter>Header Files\Object</Filter>
     </ClInclude>
     <ClInclude Include="AudioAssetInstance.h">
       <Filter>Header Files\Assets\Audio</Filter>
     </ClInclude>
-    <ClInclude Include="ObjectSystemPriority.h">
-      <Filter>Header Files\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="ScriptParameters.h">
-      <Filter>Header Files\Assets\Script</Filter>
-    </ClInclude>
-    <ClInclude Include="ScriptPersistence.h">
-      <Filter>Header Files\Assets\Script</Filter>
-    </ClInclude>
-    <ClInclude Include="ObjectFactory.h">
-      <Filter>Header Files\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="ObjectFactoryBase.h">
-      <Filter>Header Files\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="TileFactory.h">
-      <Filter>Header Files\Grid</Filter>
-    </ClInclude>
-    <ClInclude Include="AssetFactory.h">
-      <Filter>Header Files\Assets</Filter>
-    </ClInclude>
-    <ClInclude Include="PositionalSystem.h">
-      <Filter>Header Files\PositionalObject</Filter>
-    </ClInclude>
-    <ClInclude Include="ObjectTypeNameSerializer.h">
-      <Filter>Header Files\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="ObjectTypeGraphIterator.h">
-      <Filter>Header Files\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="ObjectTypeGraphNode.h">
-      <Filter>Header Files\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="NullInput.h">
-      <Filter>Header Files\Input</Filter>
-    </ClInclude>
     <ClInclude Include="AudioAsset.h">
       <Filter>Header Files\Assets\Audio</Filter>
     </ClInclude>
-    <ClInclude Include="RunningScript.h">
-      <Filter>Header Files\Assets\Script</Filter>
-    </ClInclude>
-    <ClInclude Include="ScriptController.h">
-      <Filter>Header Files\Assets\Script</Filter>
-    </ClInclude>
-    <ClInclude Include="ScriptInstance.h">
-      <Filter>Header Files\Assets\Script</Filter>
-    </ClInclude>
-    <ClInclude Include="SoundSystem.h">
-      <Filter>Header Files\Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="MusicSystem.h">
-      <Filter>Header Files\Audio</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\AngelScript\sdk\add_on\scriptstdstring\scriptstdstring.h">
-      <Filter>Header Files\AngelScript\Addon</Filter>
+      <Filter>Header Files\Script\AngelScript\Addon</Filter>
     </ClInclude>
     <ClInclude Include="..\..\AngelScript\sdk\add_on\scriptarray\scriptarray.h">
-      <Filter>Header Files\AngelScript\Addon</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptAssert.h">
-      <Filter>Header Files\AngelScript</Filter>
+      <Filter>Header Files\Script\AngelScript\Addon</Filter>
     </ClInclude>
     <ClInclude Include="ScriptAsset.h">
-      <Filter>Header Files\Assets\Script</Filter>
-    </ClInclude>
-    <ClInclude Include="ScriptVariant.h">
       <Filter>Header Files\Assets\Script</Filter>
     </ClInclude>
     <ClInclude Include="Variant.h">
       <Filter>Header Files\GameData</Filter>
     </ClInclude>
-    <ClInclude Include="ChromaVariant.h">
-      <Filter>Header Files\Serialization</Filter>
-    </ClInclude>
     <ClInclude Include="AngelScriptUtility.h">
-      <Filter>Header Files\AngelScript</Filter>
+      <Filter>Header Files\Script\AngelScript</Filter>
     </ClInclude>
     <ClInclude Include="Event.h">
       <Filter>Header Files\Event</Filter>
@@ -635,23 +452,8 @@
     <ClInclude Include="AnyEventConnection.h">
       <Filter>Header Files\Event</Filter>
     </ClInclude>
-    <ClInclude Include="ScopedEventConnection.h">
-      <Filter>Header Files\Event</Filter>
-    </ClInclude>
-    <ClInclude Include="BoundEventSubscriber.h">
-      <Filter>Header Files\Event</Filter>
-    </ClInclude>
-    <ClInclude Include="BoundEventSubscriberList.h">
-      <Filter>Header Files\Event</Filter>
-    </ClInclude>
-    <ClInclude Include="ScopedEventConnectionList.h">
-      <Filter>Header Files\Event</Filter>
-    </ClInclude>
     <ClInclude Include="GameState.h">
       <Filter>Header Files\State</Filter>
-    </ClInclude>
-    <ClInclude Include="PositionalOffsetAdapter.h">
-      <Filter>Header Files\PositionalObject</Filter>
     </ClInclude>
     <ClInclude Include="Name.h">
       <Filter>Header Files\Helper</Filter>
@@ -661,9 +463,6 @@
     </ClInclude>
     <ClInclude Include="SimpleFile.h">
       <Filter>Header Files\Serialization</Filter>
-    </ClInclude>
-    <ClInclude Include="Assert.h">
-      <Filter>Header Files\Helper</Filter>
     </ClInclude>
     <ClInclude Include="BoundedNumberWrap.h">
       <Filter>Header Files\Math</Filter>
@@ -725,39 +524,6 @@
     <ClInclude Include="BitConcatenator.h">
       <Filter>Header Files\Helper</Filter>
     </ClInclude>
-    <ClInclude Include="NotImplementedException.h">
-      <Filter>Header Files\Exceptions</Filter>
-    </ClInclude>
-    <ClInclude Include="InputSignalBase.h">
-      <Filter>Header Files\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="InputSignal.h">
-      <Filter>Header Files\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="InputKey.h">
-      <Filter>Header Files\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="InputMouseKey.h">
-      <Filter>Header Files\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="InputKeyID.h">
-      <Filter>Header Files\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="InputActionID.h">
-      <Filter>Header Files\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="InputMouseKeyID.h">
-      <Filter>Header Files\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="InputKeyIDVariant.h">
-      <Filter>Header Files\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="LoggingSystem.h">
-      <Filter>Header Files\Logging</Filter>
-    </ClInclude>
-    <ClInclude Include="InputTraits.h">
-      <Filter>Header Files\Input</Filter>
-    </ClInclude>
     <ClInclude Include="Engine.h">
       <Filter>Header Files\Engine</Filter>
     </ClInclude>
@@ -766,21 +532,6 @@
     </ClInclude>
     <ClInclude Include="EngineExecution.h">
       <Filter>Header Files\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="UniqueProviderSystem.h">
-      <Filter>Header Files\Provider</Filter>
-    </ClInclude>
-    <ClInclude Include="AssetPackageSystem.h">
-      <Filter>Header Files\Assets</Filter>
-    </ClInclude>
-    <ClInclude Include="TimeSystem.h">
-      <Filter>Header Files\Time</Filter>
-    </ClInclude>
-    <ClInclude Include="FpsSystem.h">
-      <Filter>Header Files\Time</Filter>
-    </ClInclude>
-    <ClInclude Include="StateSystem.h">
-      <Filter>Header Files\State</Filter>
     </ClInclude>
     <ClInclude Include="InitializationFileSection.h">
       <Filter>Header Files\Initialization</Filter>
@@ -791,29 +542,8 @@
     <ClInclude Include="InitializationFileExtractedSection.h">
       <Filter>Header Files\Initialization</Filter>
     </ClInclude>
-    <ClInclude Include="InitializationFileSystem.h">
-      <Filter>Header Files\Initialization</Filter>
-    </ClInclude>
-    <ClInclude Include="GuiSystem.h">
-      <Filter>Header Files\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="MasterSoundSystem.h">
-      <Filter>Header Files\Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="FileSystem.h">
-      <Filter>Header Files\File</Filter>
-    </ClInclude>
-    <ClInclude Include="StateWithGui.h">
-      <Filter>Header Files\State</Filter>
-    </ClInclude>
-    <ClInclude Include="State.h">
-      <Filter>Header Files\State</Filter>
-    </ClInclude>
     <ClInclude Include="InputManager.h">
       <Filter>Header Files\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="DebugStatisticsSystem.h">
-      <Filter>Header Files\Debug</Filter>
     </ClInclude>
     <ClInclude Include="DebugScreen.h">
       <Filter>Header Files\Debug</Filter>
@@ -827,17 +557,11 @@
     <ClInclude Include="WindowBase.h">
       <Filter>Header Files\Window</Filter>
     </ClInclude>
-    <ClInclude Include="WindowSystem.h">
-      <Filter>Header Files\Window</Filter>
-    </ClInclude>
     <ClInclude Include="WindowsWindow.h">
       <Filter>Header Files\Window</Filter>
     </ClInclude>
     <ClInclude Include="MaterialAsset.h">
       <Filter>Header Files\Assets\Material</Filter>
-    </ClInclude>
-    <ClInclude Include="InputSystem.h">
-      <Filter>Header Files\Input</Filter>
     </ClInclude>
     <ClInclude Include="AudioManager.h">
       <Filter>Header Files\Audio</Filter>
@@ -848,56 +572,17 @@
     <ClInclude Include="WindowsInclude.h">
       <Filter>Header Files\Engine</Filter>
     </ClInclude>
-    <ClInclude Include="GraphicsSystem.h">
-      <Filter>Header Files\Render</Filter>
-    </ClInclude>
     <ClInclude Include="FileManager.h">
       <Filter>Header Files\File</Filter>
     </ClInclude>
     <ClInclude Include="WindowsFileManager.h">
       <Filter>Header Files\File</Filter>
     </ClInclude>
-    <ClInclude Include="AudioAssetSystem.h">
-      <Filter>Header Files\Assets\Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="AudioAssetFactory.h">
-      <Filter>Header Files\Assets\Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="ImageAssetSystem.h">
-      <Filter>Header Files\Assets\Image</Filter>
-    </ClInclude>
-    <ClInclude Include="ImageAssetFactory.h">
-      <Filter>Header Files\Assets\Image</Filter>
-    </ClInclude>
-    <ClInclude Include="MaterialAssetSystem.h">
-      <Filter>Header Files\Assets\Material</Filter>
-    </ClInclude>
-    <ClInclude Include="MaterialAssetFactory.h">
-      <Filter>Header Files\Assets\Material</Filter>
-    </ClInclude>
-    <ClInclude Include="ScriptAssetSystem.h">
-      <Filter>Header Files\Assets\Script</Filter>
-    </ClInclude>
-    <ClInclude Include="ScriptAssetFactory.h">
-      <Filter>Header Files\Assets\Script</Filter>
-    </ClInclude>
-    <ClInclude Include="ShaderAssetSystem.h">
-      <Filter>Header Files\Assets\Shader</Filter>
-    </ClInclude>
-    <ClInclude Include="ShaderAssetFactory.h">
-      <Filter>Header Files\Assets\Shader</Filter>
-    </ClInclude>
-    <ClInclude Include="AudioSystem.h">
-      <Filter>Header Files\Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptSystem.h">
-      <Filter>Header Files\AngelScript</Filter>
-    </ClInclude>
     <ClInclude Include="AngelScriptUserData.h">
-      <Filter>Header Files\AngelScript</Filter>
+      <Filter>Header Files\Script\AngelScript</Filter>
     </ClInclude>
     <ClInclude Include="AngelScriptRegistrationInterface.h">
-      <Filter>Header Files\AngelScript</Filter>
+      <Filter>Header Files\Script\AngelScript</Filter>
     </ClInclude>
     <ClInclude Include="ModulatorInterpolation.h">
       <Filter>Header Files\Modulators\Interpolation</Filter>
@@ -911,47 +596,8 @@
     <ClInclude Include="ModulatorInterpolationSmoothstep.h">
       <Filter>Header Files\Modulators\Interpolation</Filter>
     </ClInclude>
-    <ClInclude Include="EntitySystem.h">
-      <Filter>Header Files\Entity</Filter>
-    </ClInclude>
-    <ClInclude Include="Entity.h">
-      <Filter>Header Files\Entity</Filter>
-    </ClInclude>
-    <ClInclude Include="EntityPositionSystem.h">
-      <Filter>Header Files\Entity\System</Filter>
-    </ClInclude>
     <ClInclude Include="WorldManager.h">
       <Filter>Header Files\World</Filter>
-    </ClInclude>
-    <ClInclude Include="ObjectManagerException.h">
-      <Filter>Header Files\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="SkipFileObject.h">
-      <Filter>Header Files\Serialization\SkipFile</Filter>
-    </ClInclude>
-    <ClInclude Include="SkipFileHandle.h">
-      <Filter>Header Files\Serialization\SkipFile</Filter>
-    </ClInclude>
-    <ClInclude Include="SkipFileSaver.h">
-      <Filter>Header Files\Serialization\SkipFile</Filter>
-    </ClInclude>
-    <ClInclude Include="EntityAvatarSystem.h">
-      <Filter>Header Files\Entity\System</Filter>
-    </ClInclude>
-    <ClInclude Include="EntityActionSystem.h">
-      <Filter>Header Files\Entity\System</Filter>
-    </ClInclude>
-    <ClInclude Include="WorldSystem.h">
-      <Filter>Header Files\World</Filter>
-    </ClInclude>
-    <ClInclude Include="ObjectException.h">
-      <Filter>Header Files\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="EngineSystem.h">
-      <Filter>Header Files\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="UnownedProviderSystem.h">
-      <Filter>Header Files\Provider</Filter>
     </ClInclude>
     <ClInclude Include="FrameStopwatch.h">
       <Filter>Header Files\Time\Stopwatch</Filter>
@@ -963,19 +609,16 @@
       <Filter>Header Files\Time\Stopwatch</Filter>
     </ClInclude>
     <ClInclude Include="AngelScriptTile.h">
-      <Filter>Header Files\AngelScript\Registration</Filter>
+      <Filter>Header Files\Script\AngelScript\Registration</Filter>
     </ClInclude>
     <ClInclude Include="AngelScriptGridPosition.h">
-      <Filter>Header Files\AngelScript\Registration</Filter>
+      <Filter>Header Files\Script\AngelScript\Registration</Filter>
     </ClInclude>
     <ClInclude Include="AngelScriptReferenceCounted.h">
-      <Filter>Header Files\AngelScript\Registration\Bases</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptObject.h">
-      <Filter>Header Files\AngelScript\Registration</Filter>
+      <Filter>Header Files\Script\AngelScript\Registration\Bases</Filter>
     </ClInclude>
     <ClInclude Include="AngelScriptEvent.h">
-      <Filter>Header Files\AngelScript\Registration</Filter>
+      <Filter>Header Files\Script\AngelScript\Registration</Filter>
     </ClInclude>
     <ClInclude Include="NullWindow.h">
       <Filter>Header Files\Window</Filter>
@@ -987,7 +630,7 @@
       <Filter>Header Files\File</Filter>
     </ClInclude>
     <ClInclude Include="Pathfinder.h">
-      <Filter>Header Files\PositionalObject</Filter>
+      <Filter>Header Files\Position\Object</Filter>
     </ClInclude>
     <ClInclude Include="AxisAlignedBox2D.h">
       <Filter>Header Files\Position\2D</Filter>
@@ -1028,9 +671,6 @@
     <ClInclude Include="ScreenPosition.h">
       <Filter>Header Files\Position\Screen</Filter>
     </ClInclude>
-    <ClInclude Include="MousePosition.h">
-      <Filter>Header Files\Position\Screen</Filter>
-    </ClInclude>
     <ClInclude Include="Angle.h">
       <Filter>Header Files\Position\Direction</Filter>
     </ClInclude>
@@ -1052,20 +692,8 @@
     <ClInclude Include="Direction.h">
       <Filter>Header Files\Position\Direction</Filter>
     </ClInclude>
-    <ClInclude Include="AxisAlignedObject.h">
-      <Filter>Header Files\PositionalObject</Filter>
-    </ClInclude>
     <ClInclude Include="Size2D.h">
       <Filter>Header Files\Position\2D</Filter>
-    </ClInclude>
-    <ClInclude Include="TypeRegistration.h">
-      <Filter>Header Files\TypeRegistration</Filter>
-    </ClInclude>
-    <ClInclude Include="EngineTypeRegistration.h">
-      <Filter>Header Files\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="ObjectManagerFactory.h">
-      <Filter>Header Files\Object</Filter>
     </ClInclude>
     <ClInclude Include="EngineInitializationProperties.h">
       <Filter>Header Files\Engine</Filter>
@@ -1073,58 +701,13 @@
     <ClInclude Include="EngineNotSetup.h">
       <Filter>Header Files\Engine</Filter>
     </ClInclude>
-    <ClInclude Include="InputArchiveBase.h">
-      <Filter>Header Files\World\Serialization</Filter>
-    </ClInclude>
-    <ClInclude Include="OutputArchiveBase.h">
-      <Filter>Header Files\World\Serialization</Filter>
-    </ClInclude>
-    <ClInclude Include="ArchiveBase.h">
-      <Filter>Header Files\World\Serialization</Filter>
-    </ClInclude>
-    <ClInclude Include="InputStasisArchive.h">
-      <Filter>Header Files\World\Serialization\StasisArchive</Filter>
-    </ClInclude>
-    <ClInclude Include="OutputStasisArchive.h">
-      <Filter>Header Files\World\Serialization\StasisArchive</Filter>
-    </ClInclude>
-    <ClInclude Include="InputWorldArchive.h">
-      <Filter>Header Files\World\Serialization\WorldArchive</Filter>
-    </ClInclude>
-    <ClInclude Include="OutputWorldArchive.h">
-      <Filter>Header Files\World\Serialization\WorldArchive</Filter>
-    </ClInclude>
-    <ClInclude Include="ObjectSystemScribe.h">
-      <Filter>Header Files\Object\Scribe</Filter>
-    </ClInclude>
     <ClInclude Include="Stopwatch.h">
       <Filter>Header Files\Time\Stopwatch</Filter>
-    </ClInclude>
-    <ClInclude Include="ObjectTraits.h">
-      <Filter>Header Files\Object\Traits</Filter>
-    </ClInclude>
-    <ClInclude Include="ObjectFactoryTraits.h">
-      <Filter>Header Files\Object\Traits</Filter>
-    </ClInclude>
-    <ClInclude Include="ProcessedObjectTraits.h">
-      <Filter>Header Files\Object\Traits</Filter>
-    </ClInclude>
-    <ClInclude Include="ObjectSystemTraits.h">
-      <Filter>Header Files\Object\Traits</Filter>
-    </ClInclude>
-    <ClInclude Include="ObjectScribe.h">
-      <Filter>Header Files\Object\Scribe</Filter>
-    </ClInclude>
-    <ClInclude Include="RenderSystem.h">
-      <Filter>Header Files\Render</Filter>
     </ClInclude>
     <ClInclude Include="Line.h">
       <Filter>Header Files\Render</Filter>
     </ClInclude>
     <ClInclude Include="Color.h">
-      <Filter>Header Files\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="Sprite.h">
       <Filter>Header Files\Render</Filter>
     </ClInclude>
     <ClInclude Include="Sound.h">
@@ -1135,9 +718,6 @@
     </ClInclude>
     <ClInclude Include="NullAudioManager.h">
       <Filter>Header Files\Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="CameraSystem.h">
-      <Filter>Header Files\Render</Filter>
     </ClInclude>
     <ClInclude Include="DirectX9GraphicsManager.h">
       <Filter>Header Files\Render</Filter>
@@ -1172,9 +752,6 @@
     <ClInclude Include="MovementComponent.h">
       <Filter>Header Files\Entity\Component</Filter>
     </ClInclude>
-    <ClInclude Include="EntityComponent.h">
-      <Filter>Header Files\Entity\Component\Infrastructure</Filter>
-    </ClInclude>
     <ClInclude Include="GridPosition.h">
       <Filter>Header Files\Grid</Filter>
     </ClInclude>
@@ -1184,43 +761,364 @@
     <ClInclude Include="Octree.h">
       <Filter>Header Files\Grid</Filter>
     </ClInclude>
+    <ClInclude Include="LogSeverity.h">
+      <Filter>Header Files\Logging</Filter>
+    </ClInclude>
+    <ClInclude Include="LogNameValuePairs.h">
+      <Filter>Header Files\Logging</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception.h">
+      <Filter>Header Files\Exceptions</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugStatistics.h">
+      <Filter>Header Files\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="Fps.h">
+      <Filter>Header Files\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeInformation.h">
+      <Filter>Header Files\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeSettings.h">
+      <Filter>Header Files\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="RunningScript.h">
+      <Filter>Header Files\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptController.h">
+      <Filter>Header Files\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptInstance.h">
+      <Filter>Header Files\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptPersistence.h">
+      <Filter>Header Files\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptVariant.h">
+      <Filter>Header Files\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptParameters.h">
+      <Filter>Header Files\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="AssetCurator.h">
+      <Filter>Header Files\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioAssetCurator.h">
+      <Filter>Header Files\Assets\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageAssetCurator.h">
+      <Filter>Header Files\Assets\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="MaterialAssetCurator.h">
+      <Filter>Header Files\Assets\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptAssetCurator.h">
+      <Filter>Header Files\Assets\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderAssetCurator.h">
+      <Filter>Header Files\Assets\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="InitializationInformation.h">
+      <Filter>Header Files\Initialization</Filter>
+    </ClInclude>
+    <ClInclude Include="VolumeCurator.h">
+      <Filter>Header Files\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="MusicCurator.h">
+      <Filter>Header Files\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundCurator.h">
+      <Filter>Header Files\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugStatisticsCurator.h">
+      <Filter>Header Files\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityCurator.h">
+      <Filter>Header Files\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityActionCurator.h">
+      <Filter>Header Files\Entity\Curator</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityAICurator.h">
+      <Filter>Header Files\Entity\Curator</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityAvatarCurator.h">
+      <Filter>Header Files\Entity\Curator</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityPositionCurator.h">
+      <Filter>Header Files\Entity\Curator</Filter>
+    </ClInclude>
+    <ClInclude Include="DivisionByZero.h">
+      <Filter>Header Files\Exceptions</Filter>
+    </ClInclude>
+    <ClInclude Include="InitializationFileCurator.h">
+      <Filter>Header Files\Initialization</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Header Files\Render\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="LogCurator.h">
+      <Filter>Header Files\Logging</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraCurator.h">
+      <Filter>Header Files\Render\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraMoved.h">
+      <Filter>Header Files\Render\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="ProcessedLog.h">
+      <Filter>Header Files\Logging</Filter>
+    </ClInclude>
+    <ClInclude Include="Log.h">
+      <Filter>Header Files\Logging</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderCurator.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptCurator.h">
+      <Filter>Header Files\Script\AngelScript</Filter>
+    </ClInclude>
+    <ClInclude Include="StateCurator.h">
+      <Filter>Header Files\State</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeCurator.h">
+      <Filter>Header Files\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="StateRequest.h">
+      <Filter>Header Files\State</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptRelic.h">
+      <Filter>Header Files\Script\AngelScript\Registration</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptResultVerification.h">
+      <Filter>Header Files\Script\AngelScript</Filter>
+    </ClInclude>
+    <ClInclude Include="FocusLost.h">
+      <Filter>Header Files\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="FocusRegained.h">
+      <Filter>Header Files\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="FieldSet.h">
+      <Filter>Header Files\World\Field</Filter>
+    </ClInclude>
+    <ClInclude Include="FieldUnset.h">
+      <Filter>Header Files\World\Field</Filter>
+    </ClInclude>
+    <ClInclude Include="MappedAssets.h">
+      <Filter>Header Files\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="FileAssetPackageCurator.h">
+      <Filter>Header Files\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="UniqueProvider.h">
+      <Filter>Header Files\Provider</Filter>
+    </ClInclude>
+    <ClInclude Include="UnownedProvider.h">
+      <Filter>Header Files\Provider</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicsManagerProvider.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioManagerProvider.h">
+      <Filter>Header Files\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="WorldManagerProvider.h">
+      <Filter>Header Files\World</Filter>
+    </ClInclude>
+    <ClInclude Include="InputID.h">
+      <Filter>Header Files\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="MappedInputs.h">
+      <Filter>Header Files\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="MouseMoved.h">
+      <Filter>Header Files\Input\Signals</Filter>
+    </ClInclude>
+    <ClInclude Include="MouseClickDragged.h">
+      <Filter>Header Files\Input\Signals</Filter>
+    </ClInclude>
+    <ClInclude Include="ActionActive.h">
+      <Filter>Header Files\Input\Signals</Filter>
+    </ClInclude>
+    <ClInclude Include="ActionPressed.h">
+      <Filter>Header Files\Input\Signals</Filter>
+    </ClInclude>
+    <ClInclude Include="ActionDepressed.h">
+      <Filter>Header Files\Input\Signals</Filter>
+    </ClInclude>
+    <ClInclude Include="MappedActions.h">
+      <Filter>Header Files\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Input.h">
+      <Filter>Header Files\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Action.h">
+      <Filter>Header Files\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="MouseInformation.h">
+      <Filter>Header Files\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="ScreenPositionDelta.h">
+      <Filter>Header Files\Position\Screen</Filter>
+    </ClInclude>
+    <ClInclude Include="NullInputManager.h">
+      <Filter>Header Files\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="InputManagerProvider.h">
+      <Filter>Header Files\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="InputCurator.h">
+      <Filter>Header Files\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowProvider.h">
+      <Filter>Header Files\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="ReconstructGraphics.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowDimensionsChanged.h">
+      <Filter>Header Files\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicsCurator.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="CanvasViewCurator.h">
+      <Filter>Header Files\Render\Canvas</Filter>
+    </ClInclude>
+    <ClInclude Include="Bounds.h">
+      <Filter>Header Files\Position\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity.h">
+      <Filter>Header Files\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="MoveCamera.h">
+      <Filter>Header Files\Render\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="MoveCameraBy.h">
+      <Filter>Header Files\Render\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="MoveCameraDeltaInstant.h">
+      <Filter>Header Files\Render\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="MoveCameraToInstant.h">
+      <Filter>Header Files\Render\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="CurrentAvatar.h">
+      <Filter>Header Files\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="ExecuteImmediately.h">
+      <Filter>Header Files\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="ForceQuit.h">
+      <Filter>Header Files\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="AllRunningScripts.h">
+      <Filter>Header Files\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="VolumeInformation.h">
+      <Filter>Header Files\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="ChangeMasterVolume.h">
+      <Filter>Header Files\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="StdVariant.h">
+      <Filter>Header Files\Serialization</Filter>
+    </ClInclude>
+    <ClInclude Include="MoveEntity.h">
+      <Filter>Header Files\Entity\Position</Filter>
+    </ClInclude>
+    <ClInclude Include="MoveEntityDirection.h">
+      <Filter>Header Files\Entity\Position</Filter>
+    </ClInclude>
+    <ClInclude Include="MoveEntityInstant.h">
+      <Filter>Header Files\Entity\Position</Filter>
+    </ClInclude>
+    <ClInclude Include="PositionedEntities.h">
+      <Filter>Header Files\Entity\Position</Filter>
+    </ClInclude>
+    <ClInclude Include="RotateEntity.h">
+      <Filter>Header Files\Entity\Position</Filter>
+    </ClInclude>
+    <ClInclude Include="TypeRegistration.h">
+      <Filter>Header Files\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="MappedEntities.h">
+      <Filter>Header Files\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="FileManagerProvider.h">
+      <Filter>Header Files\File</Filter>
+    </ClInclude>
+    <ClInclude Include="InputStasisArchiveInterface.h">
+      <Filter>Header Files\World\Serialization\Stasis</Filter>
+    </ClInclude>
+    <ClInclude Include="OutputStasisArchiveInterface.h">
+      <Filter>Header Files\World\Serialization\Stasis</Filter>
+    </ClInclude>
+    <ClInclude Include="InputWorldArchiveInterface.h">
+      <Filter>Header Files\World\Serialization\World</Filter>
+    </ClInclude>
+    <ClInclude Include="OutputWorldArchiveInterface.h">
+      <Filter>Header Files\World\Serialization\World</Filter>
+    </ClInclude>
+    <ClInclude Include="ArchiveInterface.h">
+      <Filter>Header Files\World\Serialization</Filter>
+    </ClInclude>
+    <ClInclude Include="InputFieldArchiveInterface.h">
+      <Filter>Header Files\World\Serialization</Filter>
+    </ClInclude>
+    <ClInclude Include="GuiEngineProvider.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Map.h">
+      <Filter>Header Files\World\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="SparseRegion.h">
+      <Filter>Header Files\Grid</Filter>
+    </ClInclude>
+    <ClInclude Include="MaterialViewCurator.h">
+      <Filter>Header Files\Render\MaterialView</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticMaterialView.h">
+      <Filter>Header Files\Render\MaterialView</Filter>
+    </ClInclude>
+    <ClInclude Include="DynamicMaterialView.h">
+      <Filter>Header Files\Render\MaterialView</Filter>
+    </ClInclude>
+    <ClInclude Include="MaterialViewCore.h">
+      <Filter>Header Files\Render\MaterialView</Filter>
+    </ClInclude>
+    <ClInclude Include="MaterialRender.h">
+      <Filter>Header Files\Render\MaterialView</Filter>
+    </ClInclude>
+    <ClInclude Include="CanvasRender.h">
+      <Filter>Header Files\Render\Canvas</Filter>
+    </ClInclude>
+    <ClInclude Include="WorldFileExtension.h">
+      <Filter>Header Files\World\Serialization\World</Filter>
+    </ClInclude>
+    <ClInclude Include="StasisFileExtension.h">
+      <Filter>Header Files\World\Serialization\Stasis</Filter>
+    </ClInclude>
+    <ClInclude Include="ShouldCreateAsset.h">
+      <Filter>Header Files\Assets</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Field.cpp">
-      <Filter>Source Files\World\Field</Filter>
-    </ClCompile>
     <ClCompile Include="FieldDestination.cpp">
       <Filter>Source Files\World\Field</Filter>
-    </ClCompile>
-    <ClCompile Include="Tile.cpp">
-      <Filter>Source Files\Grid</Filter>
     </ClCompile>
     <ClCompile Include="FontDefines.cpp">
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
-    <ClCompile Include="StateGui.cpp">
-      <Filter>Source Files\State</Filter>
-    </ClCompile>
-    <ClCompile Include="RenderFragment.cpp">
-      <Filter>Source Files\Render</Filter>
-    </ClCompile>
     <ClCompile Include="Buffer.cpp">
       <Filter>Source Files\Helper</Filter>
-    </ClCompile>
-    <ClCompile Include="EntityAISystem.cpp">
-      <Filter>Source Files\Entity\System</Filter>
     </ClCompile>
     <ClCompile Include="FileUtility.cpp">
       <Filter>Source Files\File</Filter>
     </ClCompile>
     <ClCompile Include="Music.cpp">
       <Filter>Source Files\Audio</Filter>
-    </ClCompile>
-    <ClCompile Include="InputAction.cpp">
-      <Filter>Source Files\Input</Filter>
-    </ClCompile>
-    <ClCompile Include="WorldStart.cpp">
-      <Filter>Source Files\World</Filter>
     </ClCompile>
     <ClCompile Include="NameValuePair.cpp">
       <Filter>Source Files\Helper</Filter>
@@ -1240,143 +1138,32 @@
     <ClCompile Include="TimeValue.cpp">
       <Filter>Source Files\Time</Filter>
     </ClCompile>
-    <ClCompile Include="DivideByZeroException.cpp">
-      <Filter>Source Files\Exceptions</Filter>
-    </ClCompile>
-    <ClCompile Include="InputException.cpp">
-      <Filter>Source Files\Exceptions</Filter>
-    </ClCompile>
-    <ClCompile Include="Object.cpp">
-      <Filter>Source Files\Object</Filter>
-    </ClCompile>
-    <ClCompile Include="ObjectBatchException.cpp">
-      <Filter>Source Files\Object</Filter>
-    </ClCompile>
-    <ClCompile Include="ObjectBatchSource.cpp">
-      <Filter>Source Files\Object</Filter>
-    </ClCompile>
-    <ClCompile Include="ObjectManager.cpp">
-      <Filter>Source Files\Object</Filter>
-    </ClCompile>
-    <ClCompile Include="ObjectSystem.cpp">
-      <Filter>Source Files\Object</Filter>
-    </ClCompile>
-    <ClCompile Include="ObjectTypeDescription.cpp">
-      <Filter>Source Files\Object</Filter>
-    </ClCompile>
-    <ClCompile Include="ObjectTypeDescriptionGroup.cpp">
-      <Filter>Source Files\Object</Filter>
-    </ClCompile>
-    <ClCompile Include="ObjectTypeGraph.cpp">
-      <Filter>Source Files\Object</Filter>
-    </ClCompile>
-    <ClCompile Include="TileSystem.cpp">
-      <Filter>Source Files\Grid</Filter>
-    </ClCompile>
-    <ClCompile Include="RenderFragmentSystem.cpp">
-      <Filter>Source Files\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="PositionalSystem.cpp">
-      <Filter>Source Files\PositionalObject</Filter>
-    </ClCompile>
     <ClCompile Include="AudioAssetInstance.cpp">
       <Filter>Source Files\Assets\Audio</Filter>
-    </ClCompile>
-    <ClCompile Include="ScriptParameters.cpp">
-      <Filter>Source Files\Assets\Script</Filter>
-    </ClCompile>
-    <ClCompile Include="ScriptPersistence.cpp">
-      <Filter>Source Files\Assets\Script</Filter>
-    </ClCompile>
-    <ClCompile Include="ObjectFactoryBase.cpp">
-      <Filter>Source Files\Object</Filter>
-    </ClCompile>
-    <ClCompile Include="TileFactory.cpp">
-      <Filter>Source Files\Grid</Filter>
-    </ClCompile>
-    <ClCompile Include="ObjectTypeNameSerializer.cpp">
-      <Filter>Source Files\Object</Filter>
-    </ClCompile>
-    <ClCompile Include="ObjectTypeGraphNode.cpp">
-      <Filter>Source Files\Object</Filter>
-    </ClCompile>
-    <ClCompile Include="NullInput.cpp">
-      <Filter>Source Files\Input</Filter>
-    </ClCompile>
-    <ClCompile Include="SoundSystem.cpp">
-      <Filter>Source Files\Audio</Filter>
     </ClCompile>
     <ClCompile Include="AudioAsset.cpp">
       <Filter>Source Files\Assets\Audio</Filter>
     </ClCompile>
-    <ClCompile Include="RunningScript.cpp">
-      <Filter>Source Files\Assets\Script</Filter>
-    </ClCompile>
-    <ClCompile Include="ScriptController.cpp">
-      <Filter>Source Files\Assets\Script</Filter>
-    </ClCompile>
-    <ClCompile Include="ScriptInstance.cpp">
-      <Filter>Source Files\Assets\Script</Filter>
-    </ClCompile>
-    <ClCompile Include="MusicSystem.cpp">
-      <Filter>Source Files\Audio</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptEvent.cpp">
-      <Filter>Source Files\AngelScript</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptReferenceCounted.cpp">
-      <Filter>Source Files\AngelScript</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptObject.cpp">
-      <Filter>Source Files\AngelScript</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptTile.cpp">
-      <Filter>Source Files\AngelScript</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptGridPosition.cpp">
-      <Filter>Source Files\AngelScript</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\AngelScript\sdk\add_on\scriptstdstring\scriptstdstring.cpp">
-      <Filter>Source Files\AngelScript\Addon</Filter>
+      <Filter>Source Files\Script\AngelScript\Addon</Filter>
     </ClCompile>
     <ClCompile Include="..\..\AngelScript\sdk\add_on\scriptarray\scriptarray.cpp">
-      <Filter>Source Files\AngelScript\Addon</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptAssert.cpp">
-      <Filter>Source Files\AngelScript</Filter>
+      <Filter>Source Files\Script\AngelScript\Addon</Filter>
     </ClCompile>
     <ClCompile Include="ScriptAsset.cpp">
-      <Filter>Source Files\Assets\Script</Filter>
-    </ClCompile>
-    <ClCompile Include="ScriptVariant.cpp">
       <Filter>Source Files\Assets\Script</Filter>
     </ClCompile>
     <ClCompile Include="Variant.cpp">
       <Filter>Source Files\GameData</Filter>
     </ClCompile>
     <ClCompile Include="AngelScriptUtility.cpp">
-      <Filter>Source Files\AngelScript</Filter>
+      <Filter>Source Files\Script\AngelScript</Filter>
     </ClCompile>
     <ClCompile Include="AnyEventConnection.cpp">
       <Filter>Source Files\Event</Filter>
     </ClCompile>
-    <ClCompile Include="ScopedEventConnection.cpp">
-      <Filter>Source Files\Event</Filter>
-    </ClCompile>
-    <ClCompile Include="ScopedEventConnectionList.cpp">
-      <Filter>Source Files\Event</Filter>
-    </ClCompile>
-    <ClCompile Include="BoundEventSubscriber.cpp">
-      <Filter>Source Files\Event</Filter>
-    </ClCompile>
-    <ClCompile Include="BoundEventSubscriberList.cpp">
-      <Filter>Source Files\Event</Filter>
-    </ClCompile>
     <ClCompile Include="GameState.cpp">
       <Filter>Source Files\State</Filter>
-    </ClCompile>
-    <ClCompile Include="PositionalOffsetAdapter.cpp">
-      <Filter>Source Files\PositionalObject</Filter>
     </ClCompile>
     <ClCompile Include="SimpleFile.cpp">
       <Filter>Source Files\Serialization</Filter>
@@ -1393,24 +1180,6 @@
     <ClCompile Include="LargeInteger.cpp">
       <Filter>Source Files\Math</Filter>
     </ClCompile>
-    <ClCompile Include="NotImplementedException.cpp">
-      <Filter>Source Files\Exceptions</Filter>
-    </ClCompile>
-    <ClCompile Include="InputSignalBase.cpp">
-      <Filter>Source Files\Input</Filter>
-    </ClCompile>
-    <ClCompile Include="InputKey.cpp">
-      <Filter>Source Files\Input</Filter>
-    </ClCompile>
-    <ClCompile Include="InputMouseKey.cpp">
-      <Filter>Source Files\Input</Filter>
-    </ClCompile>
-    <ClCompile Include="LoggingSystem.cpp">
-      <Filter>Source Files\Logging</Filter>
-    </ClCompile>
-    <ClCompile Include="InputTraits.cpp">
-      <Filter>Source Files\Input</Filter>
-    </ClCompile>
     <ClCompile Include="Engine.cpp">
       <Filter>Source Files\Engine</Filter>
     </ClCompile>
@@ -1419,18 +1188,6 @@
     </ClCompile>
     <ClCompile Include="EngineExecution.cpp">
       <Filter>Source Files\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="AssetPackageSystem.cpp">
-      <Filter>Source Files\Assets</Filter>
-    </ClCompile>
-    <ClCompile Include="TimeSystem.cpp">
-      <Filter>Source Files\Time</Filter>
-    </ClCompile>
-    <ClCompile Include="FpsSystem.cpp">
-      <Filter>Source Files\Time</Filter>
-    </ClCompile>
-    <ClCompile Include="StateSystem.cpp">
-      <Filter>Source Files\State</Filter>
     </ClCompile>
     <ClCompile Include="InitializationFileSection.cpp">
       <Filter>Source Files\Initialization</Filter>
@@ -1441,27 +1198,6 @@
     <ClCompile Include="InitializationFileExtractedSection.cpp">
       <Filter>Source Files\Initialization</Filter>
     </ClCompile>
-    <ClCompile Include="InitializationFileSystem.cpp">
-      <Filter>Source Files\Initialization</Filter>
-    </ClCompile>
-    <ClCompile Include="GuiSystem.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="MasterSoundSystem.cpp">
-      <Filter>Source Files\Audio</Filter>
-    </ClCompile>
-    <ClCompile Include="FileSystem.cpp">
-      <Filter>Source Files\File</Filter>
-    </ClCompile>
-    <ClCompile Include="State.cpp">
-      <Filter>Source Files\State</Filter>
-    </ClCompile>
-    <ClCompile Include="InputManager.cpp">
-      <Filter>Source Files\Input</Filter>
-    </ClCompile>
-    <ClCompile Include="DebugStatisticsSystem.cpp">
-      <Filter>Source Files\Debug</Filter>
-    </ClCompile>
     <ClCompile Include="DebugScreen.cpp">
       <Filter>Source Files\Debug</Filter>
     </ClCompile>
@@ -1471,25 +1207,16 @@
     <ClCompile Include="WindowBase.cpp">
       <Filter>Source Files\Window</Filter>
     </ClCompile>
-    <ClCompile Include="WindowSystem.cpp">
-      <Filter>Source Files\Window</Filter>
-    </ClCompile>
     <ClCompile Include="WindowsWindow.cpp">
       <Filter>Source Files\Window</Filter>
     </ClCompile>
     <ClCompile Include="MaterialAsset.cpp">
       <Filter>Source Files\Assets\Material</Filter>
     </ClCompile>
-    <ClCompile Include="InputSystem.cpp">
-      <Filter>Source Files\Input</Filter>
-    </ClCompile>
     <ClCompile Include="AudioManager.cpp">
       <Filter>Source Files\Audio</Filter>
     </ClCompile>
     <ClCompile Include="GraphicsManager.cpp">
-      <Filter>Source Files\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="GraphicsSystem.cpp">
       <Filter>Source Files\Render</Filter>
     </ClCompile>
     <ClCompile Include="FileManager.cpp">
@@ -1498,47 +1225,8 @@
     <ClCompile Include="WindowsFileManager.cpp">
       <Filter>Source Files\File</Filter>
     </ClCompile>
-    <ClCompile Include="AudioAssetSystem.cpp">
-      <Filter>Source Files\Assets\Audio</Filter>
-    </ClCompile>
-    <ClCompile Include="AudioAssetFactory.cpp">
-      <Filter>Source Files\Assets\Audio</Filter>
-    </ClCompile>
-    <ClCompile Include="ImageAssetSystem.cpp">
-      <Filter>Source Files\Assets\Image</Filter>
-    </ClCompile>
-    <ClCompile Include="ImageAssetFactory.cpp">
-      <Filter>Source Files\Assets\Image</Filter>
-    </ClCompile>
-    <ClCompile Include="MaterialAssetSystem.cpp">
-      <Filter>Source Files\Assets\Material</Filter>
-    </ClCompile>
-    <ClCompile Include="MaterialAssetFactory.cpp">
-      <Filter>Source Files\Assets\Material</Filter>
-    </ClCompile>
-    <ClCompile Include="ScriptAssetSystem.cpp">
-      <Filter>Source Files\Assets\Script</Filter>
-    </ClCompile>
-    <ClCompile Include="ScriptAssetFactory.cpp">
-      <Filter>Source Files\Assets\Script</Filter>
-    </ClCompile>
-    <ClCompile Include="ShaderAssetSystem.cpp">
-      <Filter>Source Files\Assets\Shader</Filter>
-    </ClCompile>
-    <ClCompile Include="ShaderAssetFactory.cpp">
-      <Filter>Source Files\Assets\Shader</Filter>
-    </ClCompile>
-    <ClCompile Include="AudioSystem.cpp">
-      <Filter>Source Files\Audio</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptSystem.cpp">
-      <Filter>Source Files\AngelScript</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptUserData.cpp">
-      <Filter>Source Files\AngelScript</Filter>
-    </ClCompile>
     <ClCompile Include="AngelScriptRegistrationInterface.cpp">
-      <Filter>Source Files\AngelScript</Filter>
+      <Filter>Source Files\Script\AngelScript</Filter>
     </ClCompile>
     <ClCompile Include="ModulatorInterpolation.cpp">
       <Filter>Source Files\Modulators\Interpolation</Filter>
@@ -1552,35 +1240,8 @@
     <ClCompile Include="ModulatorInterpolationSmoothstep.cpp">
       <Filter>Source Files\Modulators\Interpolation</Filter>
     </ClCompile>
-    <ClCompile Include="EntitySystem.cpp">
-      <Filter>Source Files\Entity</Filter>
-    </ClCompile>
-    <ClCompile Include="Entity.cpp">
-      <Filter>Source Files\Entity</Filter>
-    </ClCompile>
-    <ClCompile Include="EntityPositionSystem.cpp">
-      <Filter>Source Files\Entity\System</Filter>
-    </ClCompile>
     <ClCompile Include="WorldManager.cpp">
       <Filter>Source Files\World</Filter>
-    </ClCompile>
-    <ClCompile Include="ObjectManagerException.cpp">
-      <Filter>Source Files\Object</Filter>
-    </ClCompile>
-    <ClCompile Include="EntityAvatarSystem.cpp">
-      <Filter>Source Files\Entity\System</Filter>
-    </ClCompile>
-    <ClCompile Include="EntityActionSystem.cpp">
-      <Filter>Source Files\Entity\System</Filter>
-    </ClCompile>
-    <ClCompile Include="WorldSystem.cpp">
-      <Filter>Source Files\World</Filter>
-    </ClCompile>
-    <ClCompile Include="ObjectException.cpp">
-      <Filter>Source Files\Object</Filter>
-    </ClCompile>
-    <ClCompile Include="EngineSystem.cpp">
-      <Filter>Source Files\Engine</Filter>
     </ClCompile>
     <ClCompile Include="FrameStopwatch.cpp">
       <Filter>Source Files\Time\Stopwatch</Filter>
@@ -1595,7 +1256,7 @@
       <Filter>Source Files\File</Filter>
     </ClCompile>
     <ClCompile Include="Pathfinder.cpp">
-      <Filter>Source Files\PositionalObject</Filter>
+      <Filter>Source Files\Position\Object</Filter>
     </ClCompile>
     <ClCompile Include="Line2D.cpp">
       <Filter>Source Files\Position\2D</Filter>
@@ -1639,9 +1300,6 @@
     <ClCompile Include="ScreenPosition.cpp">
       <Filter>Source Files\Position\Screen</Filter>
     </ClCompile>
-    <ClCompile Include="MousePosition.cpp">
-      <Filter>Source Files\Position\Screen</Filter>
-    </ClCompile>
     <ClCompile Include="Angle.cpp">
       <Filter>Source Files\Position\Direction</Filter>
     </ClCompile>
@@ -1657,55 +1315,16 @@
     <ClCompile Include="Radians.cpp">
       <Filter>Source Files\Position\Direction</Filter>
     </ClCompile>
-    <ClCompile Include="AxisAlignedObject.cpp">
-      <Filter>Source Files\PositionalObject</Filter>
-    </ClCompile>
-    <ClCompile Include="TypeRegistration.cpp">
-      <Filter>Source Files\TypeRegistration</Filter>
-    </ClCompile>
-    <ClCompile Include="EngineTypeRegistration.cpp">
-      <Filter>Source Files\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="ObjectManagerFactory.cpp">
-      <Filter>Source Files\Object</Filter>
-    </ClCompile>
     <ClCompile Include="EngineNotSetup.cpp">
       <Filter>Source Files\Engine</Filter>
     </ClCompile>
-    <ClCompile Include="InputArchiveBase.cpp">
-      <Filter>Source Files\World\Serialization</Filter>
-    </ClCompile>
-    <ClCompile Include="OutputArchiveBase.cpp">
-      <Filter>Source Files\World\Serialization</Filter>
-    </ClCompile>
-    <ClCompile Include="ArchiveBase.cpp">
-      <Filter>Source Files\World\Serialization</Filter>
-    </ClCompile>
-    <ClCompile Include="InputStasisArchive.cpp">
-      <Filter>Source Files\World\Serialization\StasisArchive</Filter>
-    </ClCompile>
-    <ClCompile Include="OutputStasisArchive.cpp">
-      <Filter>Source Files\World\Serialization\StasisArchive</Filter>
-    </ClCompile>
-    <ClCompile Include="InputWorldArchive.cpp">
-      <Filter>Source Files\World\Serialization\WorldArchive</Filter>
-    </ClCompile>
-    <ClCompile Include="OutputWorldArchive.cpp">
-      <Filter>Source Files\World\Serialization\WorldArchive</Filter>
-    </ClCompile>
     <ClCompile Include="Stopwatch.cpp">
       <Filter>Source Files\Time\Stopwatch</Filter>
-    </ClCompile>
-    <ClCompile Include="RenderSystem.cpp">
-      <Filter>Source Files\Render</Filter>
     </ClCompile>
     <ClCompile Include="Line.cpp">
       <Filter>Source Files\Render</Filter>
     </ClCompile>
     <ClCompile Include="Color.cpp">
-      <Filter>Source Files\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="Sprite.cpp">
       <Filter>Source Files\Render</Filter>
     </ClCompile>
     <ClCompile Include="Sound.cpp">
@@ -1716,9 +1335,6 @@
     </ClCompile>
     <ClCompile Include="NullAudioManager.cpp">
       <Filter>Source Files\Audio</Filter>
-    </ClCompile>
-    <ClCompile Include="CameraSystem.cpp">
-      <Filter>Source Files\Render</Filter>
     </ClCompile>
     <ClCompile Include="Canvas.cpp">
       <Filter>Source Files\Render\Canvas</Filter>
@@ -1756,14 +1372,290 @@
     <ClCompile Include="SenseComponent.cpp">
       <Filter>Source Files\Entity\Component</Filter>
     </ClCompile>
-    <ClCompile Include="EntityComponent.cpp">
-      <Filter>Source Files\Entity\Component\Infrastructure</Filter>
-    </ClCompile>
     <ClCompile Include="GridPosition.cpp">
       <Filter>Source Files\Grid</Filter>
     </ClCompile>
-    <ClCompile Include="Octree.cpp">
-      <Filter>Source Files\Grid</Filter>
+    <ClCompile Include="Exception.cpp">
+      <Filter>Source Files\Exceptions</Filter>
+    </ClCompile>
+    <ClCompile Include="TimeInformation.cpp">
+      <Filter>Source Files\Time</Filter>
+    </ClCompile>
+    <ClCompile Include="TimeSettings.cpp">
+      <Filter>Source Files\Time</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugStatistics.cpp">
+      <Filter>Source Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="RunningScript.cpp">
+      <Filter>Source Files\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptController.cpp">
+      <Filter>Source Files\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptInstance.cpp">
+      <Filter>Source Files\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptParameters.cpp">
+      <Filter>Source Files\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptVariant.cpp">
+      <Filter>Source Files\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptPersistence.cpp">
+      <Filter>Source Files\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="InitializationInformation.cpp">
+      <Filter>Source Files\Initialization</Filter>
+    </ClCompile>
+    <ClCompile Include="VolumeCurator.cpp">
+      <Filter>Source Files\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="MusicCurator.cpp">
+      <Filter>Source Files\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundCurator.cpp">
+      <Filter>Source Files\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugStatisticsCurator.cpp">
+      <Filter>Source Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="EntityActionCurator.cpp">
+      <Filter>Source Files\Entity\Curator</Filter>
+    </ClCompile>
+    <ClCompile Include="EntityAICurator.cpp">
+      <Filter>Source Files\Entity\Curator</Filter>
+    </ClCompile>
+    <ClCompile Include="EntityAvatarCurator.cpp">
+      <Filter>Source Files\Entity\Curator</Filter>
+    </ClCompile>
+    <ClCompile Include="EntityPositionCurator.cpp">
+      <Filter>Source Files\Entity\Curator</Filter>
+    </ClCompile>
+    <ClCompile Include="EntityCurator.cpp">
+      <Filter>Source Files\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="DivisionByZero.cpp">
+      <Filter>Source Files\Exceptions</Filter>
+    </ClCompile>
+    <ClCompile Include="InitializationFileCurator.cpp">
+      <Filter>Source Files\Initialization</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source Files\Render\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="LogCurator.cpp">
+      <Filter>Source Files\Logging</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraCurator.cpp">
+      <Filter>Source Files\Render\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Log.cpp">
+      <Filter>Source Files\Logging</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderCurator.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptCurator.cpp">
+      <Filter>Source Files\Script\AngelScript</Filter>
+    </ClCompile>
+    <ClCompile Include="StateCurator.cpp">
+      <Filter>Source Files\State</Filter>
+    </ClCompile>
+    <ClCompile Include="TimeCurator.cpp">
+      <Filter>Source Files\Time</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptReferenceCounted.cpp">
+      <Filter>Source Files\Script\AngelScript\Registration\Bases</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptTile.cpp">
+      <Filter>Source Files\Script\AngelScript\Registration</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptGridPosition.cpp">
+      <Filter>Source Files\Script\AngelScript\Registration</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptEvent.cpp">
+      <Filter>Source Files\Script\AngelScript\Registration</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptRelic.cpp">
+      <Filter>Source Files\Script\AngelScript\Registration</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptResultVerification.cpp">
+      <Filter>Source Files\Script\AngelScript</Filter>
+    </ClCompile>
+    <ClCompile Include="FileAssetPackageCurator.cpp">
+      <Filter>Source Files\Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="FocusLost.cpp">
+      <Filter>Source Files\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="FocusRegained.cpp">
+      <Filter>Source Files\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraMoved.cpp">
+      <Filter>Source Files\Render\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicsManagerProvider.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioManagerProvider.cpp">
+      <Filter>Source Files\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="WorldManagerProvider.cpp">
+      <Filter>Source Files\World</Filter>
+    </ClCompile>
+    <ClCompile Include="MappedInputs.cpp">
+      <Filter>Source Files\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="MappedActions.cpp">
+      <Filter>Source Files\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Input.cpp">
+      <Filter>Source Files\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Action.cpp">
+      <Filter>Source Files\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="MouseInformation.cpp">
+      <Filter>Source Files\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="ScreenPositionDelta.cpp">
+      <Filter>Source Files\Position\Screen</Filter>
+    </ClCompile>
+    <ClCompile Include="NullInputManager.cpp">
+      <Filter>Source Files\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="InputManagerProvider.cpp">
+      <Filter>Source Files\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="InputCurator.cpp">
+      <Filter>Source Files\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="WindowProvider.cpp">
+      <Filter>Source Files\Window</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicsCurator.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="CanvasViewCurator.cpp">
+      <Filter>Source Files\Render\Canvas</Filter>
+    </ClCompile>
+    <ClCompile Include="Bounds.cpp">
+      <Filter>Source Files\Position\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Entity.cpp">
+      <Filter>Source Files\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="MoveCamera.cpp">
+      <Filter>Source Files\Render\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="MoveCameraBy.cpp">
+      <Filter>Source Files\Render\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="MoveCameraToInstant.cpp">
+      <Filter>Source Files\Render\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="MoveCameraDeltaInstant.cpp">
+      <Filter>Source Files\Render\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="FieldSet.cpp">
+      <Filter>Source Files\World\Field</Filter>
+    </ClCompile>
+    <ClCompile Include="FieldUnset.cpp">
+      <Filter>Source Files\World\Field</Filter>
+    </ClCompile>
+    <ClCompile Include="CurrentAvatar.cpp">
+      <Filter>Source Files\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="ReconstructGraphics.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="WindowDimensionsChanged.cpp">
+      <Filter>Source Files\Window</Filter>
+    </ClCompile>
+    <ClCompile Include="ExecuteImmediately.cpp">
+      <Filter>Source Files\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="ForceQuit.cpp">
+      <Filter>Source Files\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="AllRunningScripts.cpp">
+      <Filter>Source Files\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="VolumeInformation.cpp">
+      <Filter>Source Files\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="ChangeMasterVolume.cpp">
+      <Filter>Source Files\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="ProcessedLog.cpp">
+      <Filter>Source Files\Logging</Filter>
+    </ClCompile>
+    <ClCompile Include="MoveEntity.cpp">
+      <Filter>Source Files\Entity\Position</Filter>
+    </ClCompile>
+    <ClCompile Include="MoveEntityDirection.cpp">
+      <Filter>Source Files\Entity\Position</Filter>
+    </ClCompile>
+    <ClCompile Include="MoveEntityInstant.cpp">
+      <Filter>Source Files\Entity\Position</Filter>
+    </ClCompile>
+    <ClCompile Include="PositionedEntities.cpp">
+      <Filter>Source Files\Entity\Position</Filter>
+    </ClCompile>
+    <ClCompile Include="RotateEntity.cpp">
+      <Filter>Source Files\Entity\Position</Filter>
+    </ClCompile>
+    <ClCompile Include="TypeRegistration.cpp">
+      <Filter>Source Files\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="MappedEntities.cpp">
+      <Filter>Source Files\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="FileManagerProvider.cpp">
+      <Filter>Source Files\File</Filter>
+    </ClCompile>
+    <ClCompile Include="Field.cpp">
+      <Filter>Source Files\World\Field</Filter>
+    </ClCompile>
+    <ClCompile Include="InputStasisArchiveInterface.cpp">
+      <Filter>Source Files\World\Serialization\Stasis</Filter>
+    </ClCompile>
+    <ClCompile Include="OutputStasisArchiveInterface.cpp">
+      <Filter>Source Files\World\Serialization\Stasis</Filter>
+    </ClCompile>
+    <ClCompile Include="InputWorldArchiveInterface.cpp">
+      <Filter>Source Files\World\Serialization\World</Filter>
+    </ClCompile>
+    <ClCompile Include="OutputWorldArchiveInterface.cpp">
+      <Filter>Source Files\World\Serialization\World</Filter>
+    </ClCompile>
+    <ClCompile Include="ArchiveInterface.cpp">
+      <Filter>Source Files\World\Serialization</Filter>
+    </ClCompile>
+    <ClCompile Include="StateRequest.cpp">
+      <Filter>Source Files\State</Filter>
+    </ClCompile>
+    <ClCompile Include="GuiEngineProvider.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Map.cpp">
+      <Filter>Source Files\World\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="MaterialViewCurator.cpp">
+      <Filter>Source Files\Render\MaterialView</Filter>
+    </ClCompile>
+    <ClCompile Include="StaticMaterialView.cpp">
+      <Filter>Source Files\Render\MaterialView</Filter>
+    </ClCompile>
+    <ClCompile Include="DynamicMaterialView.cpp">
+      <Filter>Source Files\Render\MaterialView</Filter>
+    </ClCompile>
+    <ClCompile Include="MaterialViewCore.cpp">
+      <Filter>Source Files\Render\MaterialView</Filter>
+    </ClCompile>
+    <ClCompile Include="InputManager.cpp">
+      <Filter>Source Files\Input</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

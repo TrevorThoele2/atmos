@@ -1,48 +1,34 @@
 #pragma once
 
-#include "Object.h"
-
 #include "FileAsset.h"
-
-#include "ReadonlyProperty.h"
-
-#include "ObjectScribe.h"
-
-namespace Atmos::Audio
-{
-    class AudioSystem;
-}
+#include <Arca/ClosedTypedRelicAutomation.h>
 
 namespace Atmos::Asset
 {
     class AudioAssetData;
-    class AssetPackageSystem;
+    class AssetPackageCurator;
 
-    class AudioAsset : public FileAsset
+    class AudioAsset final : public Arca::ClosedTypedRelicAutomation<AudioAsset>, public FileAsset
     {
     public:
-        typedef AudioAssetData DataT;
-        typedef std::unique_ptr<DataT> DataPtr;
+        using DataT = AudioAssetData;
+        using DataPtr = std::unique_ptr<DataT>;
     public:
-        AudioAsset(ObjectManager& manager, const File::Name& fileName, DataPtr&& data);
-        AudioAsset(const AudioAsset& arg);
-        AudioAsset(const ::Inscription::BinaryTableData<AudioAsset>& data);
+        AudioAsset();
+        AudioAsset(const AudioAsset& arg) = delete;
+        AudioAsset(AudioAsset&& arg) noexcept = default;
+        explicit AudioAsset(const ::Inscription::BinaryTableData<AudioAsset>& data);
 
-        DataT* Data();
-        const DataT* Data() const;
+        [[nodiscard]] DataT* Data();
+        [[nodiscard]] const DataT* Data() const;
         template<class RealDataT>
-        RealDataT* DataAs();
+        [[nodiscard]] RealDataT* DataAs();
         template<class RealDataT>
-        const RealDataT* DataAs() const;
-
-        ObjectTypeDescription TypeDescription() const override;
+        [[nodiscard]] const RealDataT* DataAs() const;
+    public:
+        void Initialize(const File::Name& fileName, DataPtr&& data);
     private:
         DataPtr data;
-       
-        void SetDataFromPackage(const File::Name& fileName);
-    private:
-        AssetPackageSystem* FindAssetPackageSystem();
-        Audio::AudioSystem* FindAudioSystem();
     };
 
     template<class RealDataT>
@@ -63,20 +49,22 @@ namespace Atmos::Asset
     {
     public:
         virtual ~AudioAssetData() = 0;
-
-        virtual std::unique_ptr<AudioAssetData> Clone() const = 0;
-
-        virtual std::unique_ptr<AudioAssetInstanceData> CreateInstanceData() const = 0;
+        [[nodiscard]] virtual std::unique_ptr<AudioAssetData> Clone() const = 0;
+        [[nodiscard]] virtual std::unique_ptr<AudioAssetInstanceData> CreateInstanceData() const = 0;
     };
 }
 
-namespace Atmos
+namespace Arca
 {
     template<>
-    struct ObjectTraits<Asset::AudioAsset> : ObjectTraitsBase<Asset::AudioAsset>
+    struct Traits<::Atmos::Asset::AudioAsset>
     {
-        static const ObjectTypeName typeName;
-        static constexpr ObjectTypeList<Asset::FileAsset> bases = {};
+        static const ObjectType objectType = ObjectType::Relic;
+        static const TypeName typeName;
+        static bool ShouldCreate(
+            Reliquary& reliquary,
+            const ::Atmos::File::Name& fileName,
+            ::Atmos::Asset::AudioAsset::DataPtr&& data);
     };
 }
 
@@ -84,15 +72,20 @@ namespace Inscription
 {
     template<>
     struct TableData<::Atmos::Asset::AudioAsset, BinaryArchive> :
-        public ObjectTableDataBase<::Atmos::Asset::AudioAsset, BinaryArchive>
-    {};
+        TableDataBase<::Atmos::Asset::AudioAsset, BinaryArchive>
+    {
+        Base<::Atmos::Asset::FileAsset> base;
+    };
 
     template<>
-    class Scribe<::Atmos::Asset::AudioAsset, BinaryArchive> :
-        public ObjectScribe<::Atmos::Asset::AudioAsset, BinaryArchive>
+    class Scribe<::Atmos::Asset::AudioAsset, BinaryArchive> final :
+        public ArcaTableScribe<::Atmos::Asset::AudioAsset, BinaryArchive>
     {
     public:
-        class Table : public TableBase
-        {};
+        class Table final : public TableBase
+        {
+        public:
+            Table();
+        };
     };
 }

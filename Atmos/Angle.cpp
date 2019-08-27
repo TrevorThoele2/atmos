@@ -5,7 +5,7 @@
 
 namespace Atmos
 {
-    Angle::Angle() : selectedType(::Chroma::Type<Radians>{})
+    Angle::Angle() : selectedType(::Chroma::TypeIdentity<Radians>{})
     {}
 
     Angle Angle::operator+(const Angle& arg) const
@@ -105,10 +105,5 @@ namespace Inscription
             archive(selectedID);
             object.selectedType.Select(selectedID);
         }
-    }
-
-    void Scribe<::Atmos::Angle, BinaryArchive>::ConstructImplementation(ObjectT* storage, ArchiveT& archive)
-    {
-        DoBasicConstruction(storage, archive);
     }
 }

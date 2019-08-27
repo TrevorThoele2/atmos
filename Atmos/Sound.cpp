@@ -2,37 +2,18 @@
 
 namespace Atmos::Audio
 {
-    Sound::Sound(ObjectManager& manager) : AxisAlignedObject(manager)
+    void Sound::PostConstruct(ShardTuple shards)
     {
-        SubscribeToProperties();
+        bounds = std::get<0>(shards);
     }
 
-    Sound::Sound(const Sound& arg) : AxisAlignedObject(arg), audioAsset(arg.audioAsset)
+    void Sound::Initialize(Asset&& asset)
     {
-        SubscribeToProperties();
-    }
-
-    Sound::Sound(const ::Inscription::BinaryTableData<Sound>& data) :
-        AxisAlignedObject(std::get<0>(data.bases))
-    {}
-
-    ObjectTypeDescription Sound::TypeDescription() const
-    {
-        return ObjectTraits<Sound>::TypeDescription();
-    }
-
-    void Sound::SubscribeToProperties()
-    {
-        enabled.onValueChanged.Subscribe(&Sound::OnEnabledChanged, *this);
-    }
-
-    void Sound::OnEnabledChanged(bool newValue)
-    {
-
+        this->asset = std::move(asset);
     }
 }
 
-namespace Atmos
+namespace Arca
 {
-    const ObjectTypeName ObjectTraits<Audio::Sound>::typeName = "Sound";
+    const TypeName Traits<::Atmos::Audio::Sound>::typeName = "Sound";
 }

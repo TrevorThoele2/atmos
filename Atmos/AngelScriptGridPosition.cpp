@@ -1,31 +1,58 @@
-
 #include "AngelScriptGridPosition.h"
 
 #include "AngelScriptRegistrationInterface.h"
 
-#include "AngelScriptAssert.h"
+#include "AngelScriptResultVerification.h"
 #include <angelscript.h>
 
-namespace Atmos::Script
+namespace Atmos::Script::Angel
 {
     GridPosition::GridPosition() : x(0), y(0), z(0)
     {}
 
-    void GridPosition::RegisterToAngelScript(asIScriptEngine* engine)
+    void GridPosition::RegisterTo(asIScriptEngine* engine)
     {
         const char* className = "GridPosition";
 
-        AngelScriptAssert(engine->RegisterObjectType(
-            className, sizeof(GridPosition), asOBJ_VALUE));
-        AngelScriptAssert(engine->RegisterObjectBehaviour(
-            className, asBEHAVE_CONSTRUCT, "void f()", asFUNCTION(RegistrationInterface::GenerateValue<GridPosition>), asCALL_GENERIC));
-        AngelScriptAssert(engine->RegisterObjectBehaviour(
-            className, asBEHAVE_DESTRUCT, "void f()", asFUNCTION(RegistrationInterface::DestructValue<GridPosition>), asCALL_GENERIC));
-        AngelScriptAssert(engine->RegisterObjectProperty(
-            className, "int x", asOFFSET(GridPosition, x)));
-        AngelScriptAssert(engine->RegisterObjectProperty(
-            className, "int y", asOFFSET(GridPosition, y)));
-        AngelScriptAssert(engine->RegisterObjectProperty(
-            className, "int z", asOFFSET(GridPosition, z)));
+        VerifyResult(engine->RegisterObjectType
+        (
+            className,
+            sizeof(GridPosition),
+            asOBJ_VALUE
+        ));
+        VerifyResult(engine->RegisterObjectBehaviour
+        (
+            className,
+            asBEHAVE_CONSTRUCT,
+            "void f()",
+            asFUNCTION(RegistrationInterface::GenerateValue<GridPosition>),
+            asCALL_GENERIC
+        ));
+        VerifyResult(engine->RegisterObjectBehaviour
+        (
+            className,
+            asBEHAVE_DESTRUCT,
+            "void f()",
+            asFUNCTION(RegistrationInterface::DestructValue<GridPosition>),
+            asCALL_GENERIC
+        ));
+        VerifyResult(engine->RegisterObjectProperty
+        (
+            className,
+            "int x",
+            asOFFSET(GridPosition, x)
+        ));
+        VerifyResult(engine->RegisterObjectProperty
+        (
+            className,
+            "int y",
+            asOFFSET(GridPosition, y)
+        ));
+        VerifyResult(engine->RegisterObjectProperty
+        (
+            className,
+            "int z",
+            asOFFSET(GridPosition, z)
+        ));
     }
 }

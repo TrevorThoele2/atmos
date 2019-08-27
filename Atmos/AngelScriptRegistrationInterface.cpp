@@ -1,7 +1,6 @@
-
 #include "AngelScriptRegistrationInterface.h"
 
-namespace Atmos::Script
+namespace Atmos::Script::Angel
 {
     UserData* RegistrationInterface::UserDataFrom(asIScriptGeneric* gen)
     {

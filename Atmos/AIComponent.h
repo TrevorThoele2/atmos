@@ -1,57 +1,34 @@
 #pragma once
 
-#include "EntityComponent.h"
+#include <Arca/ShardTraits.h>
 
 #include "ScriptInstance.h"
 
 namespace Atmos::Entity
 {
-    class AIComponent : public Component
+    class AIComponent
     {
     public:
-        typedef TypedObjectReference<Script::ScriptInstance> ScriptInstance;
-        ScriptInstance script;
-    public:
-        AIComponent(ObjectManager& manager, EntityReference owner);
-        AIComponent(const AIComponent& arg) = default;
-        AIComponent(const ::Inscription::BinaryTableData<AIComponent>& data);
-
-        ObjectTypeDescription TypeDescription() const override;
-    private:
-        void SetupScripts();
+        Script::ScriptInstance* script;
     private:
         INSCRIPTION_ACCESS;
     };
 }
 
-namespace Atmos
+namespace Arca
 {
     template<>
-    struct ObjectTraits<Entity::AIComponent> : ObjectTraitsBase<Entity::AIComponent>
+    struct Traits<::Atmos::Entity::AIComponent>
     {
-        static const ObjectTypeName typeName;
-        static constexpr ObjectTypeList<Entity::Component> bases = {};
+        static const ObjectType objectType = ObjectType::Shard;
+        static const TypeName typeName;
     };
 }
 
 namespace Inscription
 {
     template<>
-    struct TableData<::Atmos::Entity::AIComponent, BinaryArchive> :
-        public ObjectTableDataBase<::Atmos::Entity::AIComponent, BinaryArchive>
-    {
-        ObjectT::ScriptInstance script;
-    };
-
-    template<>
     class Scribe<::Atmos::Entity::AIComponent, BinaryArchive> :
-        public ObjectScribe<::Atmos::Entity::AIComponent, BinaryArchive>
-    {
-    public:
-        class Table : public TableBase
-        {
-        public:
-            Table();
-        };
-    };
+        public ArcaNullScribe<::Atmos::Entity::AIComponent, BinaryArchive>
+    {};
 }

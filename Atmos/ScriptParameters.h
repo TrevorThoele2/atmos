@@ -11,14 +11,14 @@ namespace Atmos::Script
     class Parameters
     {
     public:
-        typedef VariantT Value;
+        using Value = Variant;
     private:
-        typedef std::vector<Value> List;
+        using List = std::vector<Value>;
     public:
-        typedef List::iterator iterator;
-        typedef List::const_iterator const_iterator;
+        using iterator = List::iterator;
+        using const_iterator = List::const_iterator;
 
-        typedef List::size_type SizeT;
+        using SizeT = List::size_type;
     public:
         void Add(const Value& add);
         void Remove(size_t index);
@@ -48,6 +48,5 @@ namespace Inscription
     {
     protected:
         void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
-        void ConstructImplementation(ObjectT* storage, ArchiveT& archive) override;
     };
 }

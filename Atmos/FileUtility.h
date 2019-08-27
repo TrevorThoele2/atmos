@@ -4,5 +4,5 @@
 
 namespace Atmos::File
 {
-    bool DoesFileExist(const Path &path);
+    bool DoesFileExist(const Path& path);
 }

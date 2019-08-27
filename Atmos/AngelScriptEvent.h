@@ -6,19 +6,19 @@ class asIScriptFunction;
 class asIScriptContext;
 class asIScriptEngine;
 
-namespace Atmos
+namespace Arca
 {
-    class ObjectManager;
+    class Reliquary;
 }
 
-namespace Atmos::Script
+namespace Atmos::Script::Angel
 {
-    class ScriptSystem;
+    class ScriptCurator;
 
     class Event
     {
     public:
-        Event(ObjectManager& objectManager);
+        Event(Arca::Reliquary& reliquary);
         ~Event();
 
         void Subscribe(asIScriptFunction* function);
@@ -26,14 +26,14 @@ namespace Atmos::Script
 
         void Execute();
 
-        static void RegisterToAngelScript(asIScriptEngine* engine);
+        static void RegisterTo(asIScriptEngine* engine);
     private:
         asIScriptContext* context;
         std::vector<asIScriptFunction*> subscribedFunctions;
 
         asIScriptEngine* Engine();
     private:
-        ObjectManager* objectManager;
-        ScriptSystem* FindSystem();
+        Arca::Reliquary* reliquary;
+        ScriptCurator* FindSystem();
     };
 }

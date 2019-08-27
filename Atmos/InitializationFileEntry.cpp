@@ -1,8 +1,7 @@
-
 #include "InitializationFileEntry.h"
 
-namespace Atmos
+namespace Atmos::Initialization
 {
-    InitializationFileEntryBase::~InitializationFileEntryBase()
+    FileEntryBase::~FileEntryBase()
     {}
 }

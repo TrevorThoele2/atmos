@@ -10,7 +10,7 @@ namespace Atmos
         class Interpolation
         {
         public:
-            enum class Type
+            enum class Severity
             {
                 NONE,
 
@@ -21,12 +21,12 @@ namespace Atmos
 
             typedef TimeValue::ValueT Delta;
         public:
-            const Type type;
+            const Severity type;
         public:
             virtual Interpolation* Clone() const = 0;
             virtual Delta TransformDelta(Delta delta) const = 0;
         protected:
-            Interpolation(Type type);
+            Interpolation(Severity type);
         };
     }
 }

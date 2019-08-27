@@ -11,7 +11,7 @@ namespace Atmos
         typedef float ValueT;
     public:
         AngleUnits();
-        AngleUnits(ValueT value);
+        explicit AngleUnits(ValueT value);
 
         virtual ~AngleUnits() = 0;
 

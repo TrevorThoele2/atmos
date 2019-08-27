@@ -3,7 +3,7 @@
 #include "AngelScriptUserData.h"
 #include <angelscript.h>
 
-namespace Atmos::Script
+namespace Atmos::Script::Angel
 {
     class RegistrationInterface
     {
@@ -34,7 +34,7 @@ namespace Atmos::Script
     void RegistrationInterface::GenerateGenericValue(asIScriptGeneric* gen)
     {
         auto userData = UserDataFrom(gen);
-        new(gen->GetAddressOfReturnLocation()) T(*userData->objectManager);
+        new(gen->GetAddressOfReturnLocation()) T(*userData->reliquary);
     }
 
     template<class T>

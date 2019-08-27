@@ -43,56 +43,56 @@ namespace Atmos
     {
         switch (move)
         {
-        case RelativeValue::SAME:
+        case RelativeValue::Same:
             return;
-        case RelativeValue::LEFT:
+        case RelativeValue::Left:
             switch (value)
             {
-            case Value::UP:
-                value = Value::LEFT;
+            case Value::Up:
+                value = Value::Left;
                 return;
-            case Value::DOWN:
-                value = Value::RIGHT;
+            case Value::Down:
+                value = Value::Right;
                 return;
-            case Value::LEFT:
-                value = Value::DOWN;
+            case Value::Left:
+                value = Value::Down;
                 return;
-            case Value::RIGHT:
-                value = Value::UP;
+            case Value::Right:
+                value = Value::Up;
                 return;
             }
 
-        case RelativeValue::RIGHT:
+        case RelativeValue::Right:
             switch (value)
             {
-            case Value::UP:
-                value = Value::RIGHT;
+            case Value::Up:
+                value = Value::Right;
                 return;
-            case Value::DOWN:
-                value = Value::LEFT;
+            case Value::Down:
+                value = Value::Left;
                 return;
-            case Value::LEFT:
-                value = Value::UP;
+            case Value::Left:
+                value = Value::Up;
                 return;
-            case Value::RIGHT:
-                value = Value::DOWN;
+            case Value::Right:
+                value = Value::Down;
                 return;
             }
 
-        case RelativeValue::OPPOSED:
+        case RelativeValue::Opposed:
             switch (value)
             {
-            case Value::UP:
-                value = Value::DOWN;
+            case Value::Up:
+                value = Value::Down;
                 return;
-            case Value::DOWN:
-                value = Value::UP;
+            case Value::Down:
+                value = Value::Up;
                 return;
-            case Value::LEFT:
-                value = Value::RIGHT;
+            case Value::Left:
+                value = Value::Right;
                 return;
-            case Value::RIGHT:
-                value = Value::LEFT;
+            case Value::Right:
+                value = Value::Left;
                 return;
             }
         }
@@ -102,57 +102,57 @@ namespace Atmos
     {
         switch (this->value)
         {
-        case Value::UP:
+        case Value::Up:
             switch (value)
             {
-            case Value::UP:
-                return RelativeValue::SAME;
-            case Value::DOWN:
-                return RelativeValue::OPPOSED;
-            case Value::LEFT:
-                return RelativeValue::LEFT;
-            case Value::RIGHT:
-                return RelativeValue::RIGHT;
+            case Value::Up:
+                return RelativeValue::Same;
+            case Value::Down:
+                return RelativeValue::Opposed;
+            case Value::Left:
+                return RelativeValue::Left;
+            case Value::Right:
+                return RelativeValue::Right;
             }
-        case Value::DOWN:
+        case Value::Down:
             switch (value)
             {
-            case Value::UP:
-                return RelativeValue::OPPOSED;
-            case Value::DOWN:
-                return RelativeValue::SAME;
-            case Value::LEFT:
-                return RelativeValue::RIGHT;
-            case Value::RIGHT:
-                return RelativeValue::LEFT;
+            case Value::Up:
+                return RelativeValue::Opposed;
+            case Value::Down:
+                return RelativeValue::Same;
+            case Value::Left:
+                return RelativeValue::Right;
+            case Value::Right:
+                return RelativeValue::Left;
             }
-        case Value::LEFT:
+        case Value::Left:
             switch (value)
             {
-            case Value::UP:
-                return RelativeValue::RIGHT;
-            case Value::DOWN:
-                return RelativeValue::LEFT;
-            case Value::LEFT:
-                return RelativeValue::SAME;
-            case Value::RIGHT:
-                return RelativeValue::OPPOSED;
+            case Value::Up:
+                return RelativeValue::Right;
+            case Value::Down:
+                return RelativeValue::Left;
+            case Value::Left:
+                return RelativeValue::Same;
+            case Value::Right:
+                return RelativeValue::Opposed;
             }
-        case Value::RIGHT:
+        case Value::Right:
             switch (value)
             {
-            case Value::UP:
-                return RelativeValue::LEFT;
-            case Value::DOWN:
-                return RelativeValue::RIGHT;
-            case Value::LEFT:
-                return RelativeValue::OPPOSED;
-            case Value::RIGHT:
-                return RelativeValue::SAME;
+            case Value::Up:
+                return RelativeValue::Left;
+            case Value::Down:
+                return RelativeValue::Right;
+            case Value::Left:
+                return RelativeValue::Opposed;
+            case Value::Right:
+                return RelativeValue::Same;
             }
         }
 
-        return RelativeValue::SAME;
+        return RelativeValue::Same;
     }
 
     Direction::RelativeValue Direction::GetRelativeDirection(const Direction& direction) const
@@ -165,13 +165,13 @@ namespace Atmos
 #define CAST_PIECE(value) case CastFromValue<Value::value>(): return Value::value;
         switch (from)
         {
-            CAST_PIECE(UP)
-            CAST_PIECE(DOWN)
-            CAST_PIECE(LEFT)
-            CAST_PIECE(RIGHT)
+            CAST_PIECE(Up)
+            CAST_PIECE(Down)
+            CAST_PIECE(Left)
+            CAST_PIECE(Right)
         }
 
-        return Direction::Value::UP;
+        return Direction::Value::Up;
 #undef CAST_PIECE
     }
 }
@@ -181,10 +181,5 @@ namespace Inscription
     void Scribe<::Atmos::Direction, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
     {
         archive(object.value);
-    }
-
-    void Scribe<::Atmos::Direction, BinaryArchive>::ConstructImplementation(ObjectT* storage, ArchiveT& archive)
-    {
-        DoBasicConstruction(storage, archive);
     }
 }

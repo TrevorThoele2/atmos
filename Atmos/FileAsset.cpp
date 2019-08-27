@@ -2,37 +2,33 @@
 
 namespace Atmos::Asset
 {
-    FileAsset::~FileAsset()
-    {}
-
-    ObjectTypeDescription FileAsset::TypeDescription() const
+    File::Name FileAsset::FileName() const
     {
-        return ObjectTraits<FileAsset>::TypeDescription();
+        return fileName;
     }
 
-    FileAsset::FileAsset(ObjectManager& manager, const File::Name& fileName) :
-        Asset(manager, fileName), fileName(fileName)
-    {}
-
-    FileAsset::FileAsset(const FileAsset& arg) :
-        Asset(arg), fileName(arg.fileName)
+    FileAsset::FileAsset(FileAsset&& arg) noexcept : Asset(std::move(arg)), fileName(std::move(arg.fileName))
     {}
 
     FileAsset::FileAsset(const ::Inscription::BinaryTableData<FileAsset>& data) :
-        Asset(std::get<0>(data.bases)), fileName(data.fileName)
+        Asset(data.base), fileName(data.fileName)
     {}
-}
 
-namespace Atmos
-{
-    const ObjectTypeName ObjectTraits<Asset::FileAsset>::typeName = "FileAsset";
+    void FileAsset::SetFileName(const File::Name& fileName)
+    {
+        SetName(fileName);
+        this->fileName = fileName;
+    }
 }
 
 namespace Inscription
 {
     Scribe<::Atmos::Asset::FileAsset, BinaryArchive>::Table::Table()
     {
-        MergeDataEntries({
-            DataEntry::Auto(&ObjectT::fileName, &DataT::fileName) });
+        MergeDataLinks
+        ({
+            DataLink::Base(data.base),
+            DataLink::Auto(&ObjectT::fileName, &DataT::fileName) }
+        );
     }
 }

@@ -15,7 +15,7 @@ namespace Atmos::File
     bool WindowsFileManager::RelocateFile(const Path& from, const Path& to)
     {
         RemoveFile(to);
-        bool wasMoved = rename(from.c_str(), to.c_str()) == 0;
+        const auto wasMoved = rename(from.c_str(), to.c_str()) == 0;
         if (wasMoved)
             RemoveFile(from);
         return wasMoved;

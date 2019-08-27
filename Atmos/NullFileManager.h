@@ -4,19 +4,19 @@
 
 namespace Atmos::File
 {
-    class NullFileManager : public FileManager
+    class NullFileManager final : public FileManager
     {
     public:
-        NullFileManager();
+        NullFileManager() = default;
 
         void MakeDirectory(const Path& path) override;
         bool RelocateFile(const Path& from, const Path& to) override;
         bool RemoveFile(const Path& remove) override;
 
-        Path ExePath() const override;
-        Path DataPath() const override;
-        Path TemporaryDirectoryPath() const override;
-        size_t MaxPathLength() const override;
-        String FileSeparator() const override;
+        [[nodiscard]] Path ExePath() const override;
+        [[nodiscard]] Path DataPath() const override;
+        [[nodiscard]] Path TemporaryDirectoryPath() const override;
+        [[nodiscard]] size_t MaxPathLength() const override;
+        [[nodiscard]] String FileSeparator() const override;
     };
 }

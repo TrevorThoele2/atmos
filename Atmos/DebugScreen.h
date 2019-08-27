@@ -1,21 +1,15 @@
-
 #pragma once
 
-#include "ObjectSystem.h"
-#include "DebugStatisticsSystem.h"
+#include <Arca/Curator.h>
 
-#include "InputKey.h"
 #include "String.h"
 
 #include <Chroma/Function.h>
 
 namespace Atmos
 {
-    class DebugScreen : public ObjectSystem
-    {
-    public:
-        DebugScreen(ObjectManager& manager);
-    };
+    class DebugScreen : public Arca::Curator
+    {};
 
     /*
     namespace Input { class System; }
@@ -30,7 +24,7 @@ namespace Atmos
     private:
         int currentPageIndex;
         
-        typedef DebugStatisticsSystem StatisticsSystem;
+        typedef StatisticsSystem StatisticsSystem;
         typedef StatisticsSystem::Page Page;
         Page* currentPage;
 
@@ -48,7 +42,7 @@ namespace Atmos
         void OnF4();
     private:
         StatisticsSystem* FindStatisticsSystem();
-        FpsSystem* FindFpsSystem();
+        TimeSystem* FindFpsSystem();
         Input::System* FindInputSystem();
     };
 
@@ -63,10 +57,7 @@ namespace Atmos
 namespace Inscription
 {
     template<>
-    class Scribe<::Atmos::DebugScreen, BinaryArchive> :
-        public ObjectSystemScribe<::Atmos::DebugScreen, BinaryArchive>
-    {
-    protected:
-        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
-    };
+    class Scribe<::Atmos::DebugScreen, BinaryArchive> final
+        : public ArcaNullScribe<::Atmos::DebugScreen, BinaryArchive>
+    {};
 }

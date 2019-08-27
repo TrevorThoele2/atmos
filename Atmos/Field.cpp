@@ -2,31 +2,24 @@
 
 namespace Atmos::World
 {
-    Field::Field(ID id) : _id(id),
-        id([this]() { return _id; })
+    Field::Field(FieldID id) : id(id)
     {}
 
-    Field::Field(Field&& arg) : _id(std::move(arg._id)),
-        id([this]() { return _id; })
+    Field::Field(FieldID id, Arca::Reliquary& reliquary) : id(id), reliquary(&reliquary)
     {}
 
-    Field& Field::operator=(Field&& arg)
+    Field& Field::operator=(Field&& arg) noexcept
     {
-        _id = std::move(arg._id);
-        objectManager = std::move(arg.objectManager);
+        id = arg.id;
+        reliquary = arg.reliquary;
         return *this;
     }
 }
 
 namespace Inscription
 {
-    void Scribe<::Atmos::World::Field, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
+    void Scribe<Atmos::World::Field, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
     {
-        archive(object.objectManager);
-    }
-
-    void Scribe<::Atmos::World::Field, BinaryArchive>::ConstructImplementation(ObjectT* storage, ArchiveT& archive)
-    {
-        DoBasicConstruction(storage, archive);
+        archive(*object.reliquary);
     }
 }

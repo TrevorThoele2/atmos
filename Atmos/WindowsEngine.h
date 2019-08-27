@@ -5,12 +5,12 @@
 
 namespace Atmos
 {
-    class WindowsEngine : public Engine
+    class WindowsEngine final : public Engine
     {
     public:
-        WindowsEngine(HINSTANCE hInstance, LPSTR lpCmdLine, int nCmdShow, const String& className);
+        WindowsEngine(HINSTANCE hInstance, LPSTR lpCmdLine, int nCmdShow, String className);
     protected:
-        InitializationProperties CreateInitializationProperties(ObjectManager& globalObjectManager) override;
+        InitializationProperties CreateInitializationProperties(Arca::Reliquary& reliquary) override;
 
         void DoExit() override;
     private:

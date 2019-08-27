@@ -1,6 +1,6 @@
-
 #include "LargeInteger.h"
-#include "DivideByZeroException.h"
+
+#include "DivisionByZero.h"
 
 namespace Atmos
 {
@@ -473,7 +473,7 @@ namespace Atmos
     void LargeInteger::DivideImpl(const LargeInteger& dividend, const LargeInteger& divisor, LargeInteger& quotient, LargeInteger& remainder)
     {
         if (divisor == LargeInteger(0U))
-            throw DivideByZeroException();
+            throw DivisionByZero();
         else if (dividend == LargeInteger(0U))
         {
             quotient = 0U;
@@ -530,10 +530,5 @@ namespace Inscription
     {
         archive(object.low);
         archive(object.high);
-    }
-
-    void Scribe<::Atmos::LargeInteger, BinaryArchive>::ConstructImplementation(ObjectT* storage, ArchiveT& archive)
-    {
-        DoBasicConstruction(storage, archive);
     }
 }

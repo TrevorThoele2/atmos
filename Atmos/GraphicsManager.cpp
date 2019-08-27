@@ -1,21 +1,27 @@
 #include "GraphicsManager.h"
 
-#include "CameraSystem.h"
+#include "Camera.h"
+
+#include "WindowDimensionsChanged.h"
 
 namespace Atmos::Render
 {
-    GraphicsManager::~GraphicsManager()
-    {}
+    GraphicsManager::~GraphicsManager() = default;
 
-    void GraphicsManager::Reinitialize()
+    void GraphicsManager::Initialize()
+    {
+        camera = Arca::Ptr<Camera>(*reliquary);
+    }
+
+    void GraphicsManager::ReconstructAll()
     {
         // Focused render surface
-        auto prevSurface = currentSurface;
+        const auto prevSurface = currentSurface;
         SetRenderTargetToMain();
 
-        auto& shaderAssetBatch = objectManager->Batch<Asset::ShaderAsset>();
+        auto shaderAssetBatch = reliquary->Batch<Asset::ShaderAsset>();
         for (auto& loop : shaderAssetBatch)
-            loop->Data()->Release();
+            loop.Data()->Release();
 
         ReleaseMainRenderTarget();
         for (auto& loop : surfaces)
@@ -24,10 +30,10 @@ namespace Atmos::Render
         for (auto& loop : canvasList)
             loop.Release();
 
-        ReinitializeImpl();
+        ReconstructInternals();
 
         for (auto& loop : shaderAssetBatch)
-            loop->Data()->Reset();
+            loop.Data()->Reset();
 
         ResetMainRenderTarget();
         for (auto& loop : surfaces)
@@ -63,13 +69,13 @@ namespace Atmos::Render
 
     Surface& GraphicsManager::CreateSurface(void* window)
     {
-        surfaces.push_back(std::move(CreateSurfaceImpl(window)));
+        surfaces.push_back(CreateSurfaceImpl(window));
         return surfaces.back();
     }
 
     Canvas& GraphicsManager::CreateCanvas(const ScreenDimensions& dimensions)
     {
-        canvasList.push_back(std::move(CreateCanvasImpl(dimensions)));
+        canvasList.push_back(CreateCanvasImpl(dimensions));
         return canvasList.back();
     }
 
@@ -104,11 +110,11 @@ namespace Atmos::Render
         if (currentSurface != surfaces.end() && &*currentSurface == &set)
             return;
 
-        auto foundItr = FindSurface(set);
-        if (foundItr == surfaces.end())
+        const auto foundSurface = FindSurface(set);
+        if (foundSurface == surfaces.end())
             return;
 
-        currentSurface = foundItr;
+        currentSurface = foundSurface;
         SetRenderTargetImpl(*currentSurface);
         SetCameraSizeToCurrentDimensions();
         currentSurface->SetAsRenderTargetImpl();
@@ -129,130 +135,105 @@ namespace Atmos::Render
             return &*currentSurface;
     }
 
-    void GraphicsManager::RenderSprite(SpriteReference sprite, bool offsetWithCamera)
+    void GraphicsManager::RenderMaterialView(MaterialRender& materialRender, bool offsetWithCamera)
     {
-        (offsetWithCamera) ?
-            RenderSpriteCameraOffset(
-                sprite,
-                sprite->bounds.Get().left,
-                sprite->bounds.Get().top) :
-            
-            RenderSpriteImpl(
-                sprite,
-                sprite->bounds.Get().left,
-                sprite->bounds.Get().top);
+        offsetWithCamera ?
+            RenderMaterialViewCameraOffset
+            (
+                materialRender,
+                materialRender.position.x,
+                materialRender.position.y
+            )
+            :
+            RenderMaterialViewImpl
+            (
+                materialRender,
+                materialRender.position.x,
+                materialRender.position.y
+            );
     }
 
-    void GraphicsManager::RenderSprite(SpriteReference sprite, float X, float Y, bool offsetWithCamera)
+    void GraphicsManager::RenderMaterialView(MaterialRender& materialRender, float x, float y, bool offsetWithCamera)
     {
-        (offsetWithCamera) ?
-            RenderSpriteCameraOffset(
-                sprite,
-                X,
-                Y) :
-            
-            RenderSpriteImpl(
-                sprite,
-                X,
-                Y);
+        offsetWithCamera ?
+            RenderMaterialViewCameraOffset
+            (
+                materialRender,
+                x,
+                y
+            )
+            :
+            RenderMaterialViewImpl
+            (
+                materialRender,
+                x,
+                y
+            );
     }
 
-    void GraphicsManager::RenderSprite(SpriteReference sprite, const Position2D& position, bool offsetWithCamera)
+    void GraphicsManager::RenderMaterialView(MaterialRender& materialRender, const Position2D& position, bool offsetWithCamera)
     {
-        (offsetWithCamera) ?
-            RenderSpriteCameraOffset(
-                sprite,
+        offsetWithCamera ?
+            RenderMaterialViewCameraOffset(
+                materialRender,
                 position.x,
-                position.y) :
-            
-            RenderSpriteImpl(
-                sprite,
-                position.x,
-                position.y);
-    }
-
-    void GraphicsManager::RenderCanvasView(CanvasViewReference view, bool offsetWithCamera)
-    {
-        (offsetWithCamera) ?
-            RenderCanvasViewCameraOffset(
-                view,
-                view->bounds.Get().left,
-                view->bounds.Get().top) :
-            
-            RenderCanvasViewImpl(
-                view,
-                view->bounds.Get().left,
-                view->bounds.Get().top);
-    }
-
-    void GraphicsManager::RenderCanvasView(CanvasViewReference view, float X, float Y, bool offsetWithCamera)
-    {
-        (offsetWithCamera) ?
-            RenderCanvasViewCameraOffset(
-                view,
-                X,
-                Y) :
-            
-            RenderCanvasViewImpl(
-                view,
-                X,
-                Y);
-    }
-
-    void GraphicsManager::RenderCanvasView(CanvasViewReference view, const Position2D& position, bool offsetWithCamera)
-    {
-        (offsetWithCamera) ?
-            RenderCanvasViewCameraOffset(
-                view,
-                position.x,
-                position.y) :
-            
-            RenderCanvasViewImpl(
-                view,
+                position.y)
+            :
+            RenderMaterialViewImpl(
+                materialRender,
                 position.x,
                 position.y);
     }
 
-    void GraphicsManager::RenderUnknownFragment(RenderFragmentReference fragment, bool offsetWithCamera)
+    void GraphicsManager::RenderCanvasView(CanvasRender& canvasRender, bool offsetWithCamera)
     {
         (offsetWithCamera) ?
-            RenderUnknownFragmentCameraOffset(
-                fragment,
-                fragment->bounds.Get().left,
-                fragment->bounds.Get().top) :
-            
-            RenderUnknownFragmentImpl(
-                fragment,
-                fragment->bounds.Get().left,
-                fragment->bounds.Get().top);
+            RenderCanvasViewCameraOffset
+            (
+                canvasRender,
+                canvasRender.position.x,
+                canvasRender.position.y
+            ) :
+            RenderCanvasViewImpl
+            (
+                canvasRender,
+                canvasRender.position.x,
+                canvasRender.position.y
+            );
     }
 
-    void GraphicsManager::RenderUnknownFragment(RenderFragmentReference fragment, float X, float Y, bool offsetWithCamera)
+    void GraphicsManager::RenderCanvasView(CanvasRender& canvasRender, float x, float y, bool offsetWithCamera)
     {
         (offsetWithCamera) ?
-            RenderUnknownFragmentCameraOffset(
-                fragment,
-                X,
-                Y) :
-            
-            RenderUnknownFragmentImpl(
-                fragment,
-                X,
-                Y);
+            RenderCanvasViewCameraOffset
+            (
+                canvasRender,
+                x,
+                y
+            ) :
+            RenderCanvasViewImpl
+            (
+                canvasRender,
+                x,
+                y
+            );
     }
 
-    void GraphicsManager::RenderUnknownFragment(RenderFragmentReference fragment, const Position2D& position, bool offsetWithCamera)
+    void GraphicsManager::RenderCanvasView(CanvasRender& canvasRender, const Position2D& position, bool offsetWithCamera)
     {
         (offsetWithCamera) ?
-            RenderUnknownFragmentCameraOffset(
-                fragment,
+            RenderCanvasViewCameraOffset
+            (
+                canvasRender,
                 position.x,
-                position.y) :
-            
-            RenderUnknownFragmentImpl(
-                fragment,
+                position.y
+            ) :
+            RenderCanvasViewImpl
+            (
+                canvasRender,
                 position.x,
-                position.y);
+                position.y
+            );
     }
 
     void GraphicsManager::RenderLine(const Line& line)
@@ -266,44 +247,23 @@ namespace Atmos::Render
         {
             dimensions = set;
             SetMainDimensionsImpl(this->dimensions);
-            cameraSystem->SetSize(
-                Size2D(
-                    static_cast<Size2D::Value>(set.width),
-                    static_cast<Size2D::Value>(set.height)));
+            camera->Size({
+                static_cast<Size2D::Value>(set.width),
+                static_cast<Size2D::Value>(set.height) }
+            );
         }
     }
 
-    ScreenDimensions GraphicsManager::GetMainDimensions() const
+    ScreenDimensions GraphicsManager::MainDimensions() const
     {
-        return GetMainDimensionsImpl();
+        return MainDimensionsImpl();
     }
 
-    GraphicsManager::Dimension GraphicsManager::GetMainWidth() const
+    ScreenDimensions GraphicsManager::CurrentDimensions() const
     {
-        return GetMainDimensions().width;
-    }
-
-    GraphicsManager::Dimension GraphicsManager::GetMainHeight() const
-    {
-        return GetMainDimensions().height;
-    }
-
-    ScreenDimensions GraphicsManager::GetCurrentDimensions() const
-    {
-        if (!IsUsingNonMainSurface())
-            return GetMainDimensionsImpl();
-        else
-            return currentSurface->GetSize();
-    }
-
-    GraphicsManager::Dimension GraphicsManager::GetCurrentWidth() const
-    {
-        return GetCurrentDimensions().width;
-    }
-
-    GraphicsManager::Dimension GraphicsManager::GetCurrentHeight() const
-    {
-        return GetCurrentDimensions().height;
+        return !IsUsingNonMainSurface()
+            ? MainDimensionsImpl()
+            : currentSurface->Size();
     }
 
     void GraphicsManager::Present()
@@ -316,10 +276,14 @@ namespace Atmos::Render
         PresentImpl(windowOverride);
     }
 
-    GraphicsManager::GraphicsManager(ObjectManager& objectManager) :
-        objectManager(&objectManager), currentSurface(surfaces.end())
+    GraphicsManager::GraphicsManager(Arca::Reliquary& reliquary) :
+        reliquary(&reliquary), currentSurface(surfaces.end())
     {
-        cameraSystem = objectManager.FindSystem<CameraSystem>();
+        reliquary.ExecuteOn<Window::DimensionsChanged>(
+            [this](const Window::DimensionsChanged& signal)
+            {
+                SetMainDimensions(signal.dimensions);
+            });
     }
 
     bool GraphicsManager::IsUsingNonMainSurface() const
@@ -327,28 +291,24 @@ namespace Atmos::Render
         return currentSurface != surfaces.end();
     }
 
-    void GraphicsManager::RenderSpriteCameraOffset(SpriteReference sprite, float X, float Y)
+    void GraphicsManager::RenderMaterialViewCameraOffset(MaterialRender& materialRender, float x, float y)
     {
-        RenderSpriteImpl(
-            sprite,
-            X - cameraSystem->GetTopLeft().x,
-            Y - cameraSystem->GetTopLeft().y);
+        RenderMaterialViewImpl
+        (
+            materialRender,
+            x - camera->ScreenSides().Left(),
+            y - camera->ScreenSides().Top()
+        );
     }
 
-    void GraphicsManager::RenderCanvasViewCameraOffset(CanvasViewReference view, float X, float Y)
+    void GraphicsManager::RenderCanvasViewCameraOffset(CanvasRender& canvasRender, float x, float y)
     {
-        RenderCanvasViewImpl(
-            view,
-            X - cameraSystem->GetTopLeft().x,
-            Y - cameraSystem->GetTopLeft().y);
-    }
-
-    void GraphicsManager::RenderUnknownFragmentCameraOffset(RenderFragmentReference fragment, float X, float Y)
-    {
-        RenderUnknownFragmentImpl(
-            fragment,
-            X - cameraSystem->GetTopLeft().x,
-            Y - cameraSystem->GetTopLeft().y);
+        RenderCanvasViewImpl
+        (
+            canvasRender,
+            x - camera->ScreenSides().Left(),
+            y - camera->ScreenSides().Top()
+        );
     }
 
     GraphicsManager::SurfaceList::iterator GraphicsManager::FindSurface(Surface& surface)
@@ -364,10 +324,11 @@ namespace Atmos::Render
 
     void GraphicsManager::SetCameraSizeToCurrentDimensions()
     {
-        auto &currentDimensions = GetCurrentDimensions();
-        cameraSystem->SetSize(
-            Size2D(
-                static_cast<Size2D::Value>(currentDimensions.width),
-                static_cast<Size2D::Value>(currentDimensions.height)));
+        const auto currentDimensions = CurrentDimensions();
+        camera->Size
+        ({
+            static_cast<Size2D::Value>(currentDimensions.width),
+            static_cast<Size2D::Value>(currentDimensions.height) }
+        );
     }
 }

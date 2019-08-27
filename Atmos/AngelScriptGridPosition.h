@@ -4,12 +4,7 @@
 
 class asIScriptEngine;
 
-namespace Atmos
-{
-    class ObjectManager;
-}
-
-namespace Atmos::Script
+namespace Atmos::Script::Angel
 {
     class GridPosition
     {
@@ -18,6 +13,6 @@ namespace Atmos::Script
     public:
         GridPosition();
 
-        static void RegisterToAngelScript(asIScriptEngine* engine);
+        static void RegisterTo(asIScriptEngine* engine);
     };
 }

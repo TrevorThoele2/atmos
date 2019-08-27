@@ -1,42 +1,32 @@
 #pragma once
 
-#include <vector>
+#include <memory>
 
 #include "FieldID.h"
-#include "ObjectManager.h"
-
-#include "ReadonlyProperty.h"
-
-#include "Serialization.h"
+#include <Arca/Reliquary.h>
 
 namespace Atmos::World
 {
-    class Field
+    struct Field
     {
-    public:
-        typedef FieldID ID;
-        ReadonlyProperty<ID> id;
-    public:
-        ObjectManager objectManager;
-    public:
-        Field(ID id);
-        Field(Field&& arg);
-        Field& operator=(Field&& arg);
-    private:
-        ID _id;
-    private:
-        INSCRIPTION_ACCESS;
+        FieldID id = 0;
+        Arca::Reliquary* reliquary = nullptr;
+
+        Field() = default;
+        explicit Field(FieldID id);
+        Field(FieldID id, Arca::Reliquary& reliquary);
+        Field(Field&& arg) noexcept = default;
+        Field& operator=(Field&& arg) noexcept;
     };
 }
 
 namespace Inscription
 {
     template<>
-    class Scribe<::Atmos::World::Field, BinaryArchive> :
-        public CompositeScribe<::Atmos::World::Field, BinaryArchive>
+    class Scribe<Atmos::World::Field, BinaryArchive> final
+        : public CompositeScribe<Atmos::World::Field, BinaryArchive>
     {
     protected:
         void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
-        void ConstructImplementation(ObjectT* storage, ArchiveT& archive) override;
     };
 }

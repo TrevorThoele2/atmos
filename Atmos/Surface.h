@@ -10,37 +10,32 @@ namespace Atmos::Render
     class Surface
     {
     public:
-        typedef ScreenDimensions::Dimension Dimension;
-        typedef ScreenDimensions Size;
-    public:
         class Data
         {
         public:
-            typedef Surface::Size Size;
-        public:
             virtual ~Data() = 0;
-            Surface* GetOwner() const;
+            [[nodiscard]] Surface* Owner() const;
             virtual void SetAsRenderTarget() = 0;
             virtual void Present() = 0;
             virtual void Reset() = 0;
             virtual void Release() = 0;
-            virtual Size GetSize() = 0;
+            virtual ScreenDimensions Size() = 0;
         private:
-            Surface* owner;
+            Surface* owner = nullptr;
         private:
             friend Surface;
         };
 
-        typedef std::unique_ptr<Data> DataPtr;
+        using DataPtr = std::unique_ptr<Data>;
     public:
-        Surface(DataPtr&& data);
-        Surface(Surface&& arg);
+        explicit Surface(DataPtr&& data);
+        Surface(Surface&& arg) noexcept;
 
-        Surface& operator=(Surface&& arg);
+        Surface& operator=(Surface&& arg) noexcept;
 
-        Data* GetData() const;
+        [[nodiscard]] Data* GetData() const;
         template<class DataT>
-        DataT* GetData() const;
+        [[nodiscard]] DataT* GetData() const;
 
         void Present();
 
@@ -49,10 +44,10 @@ namespace Atmos::Render
 
         void FitToWindow();
 
-        const Size& GetSize() const;
+        [[nodiscard]] ScreenDimensions Size() const;
     private:
         DataPtr data;
-        Size size;
+        ScreenDimensions size;
     private:
         void SetData(DataPtr&& set);
 

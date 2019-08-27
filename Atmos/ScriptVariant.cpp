@@ -1,4 +1,3 @@
-
 #include "ScriptVariant.h"
 
 #include <Chroma/Iterate.h>
@@ -9,21 +8,21 @@ namespace Atmos
     {
     public:
         template<class T>
-        static String DoReturn(T& t)
+        String operator()(T& t)
         {
             return ToString(t);
         }
     };
 
-    String ToString(const Script::VariantT& arg)
+    String ToString(const Script::Variant& arg)
     {
-        return ::Chroma::VisitReturn<ToStringImplementation, String>(arg);
+        return std::visit(ToStringImplementation{}, arg);
     }
 }
 
 namespace Chroma
 {
-    template Variant<
+    template std::variant<
         bool,
         std::int8_t,
         std::int16_t,
@@ -34,5 +33,6 @@ namespace Chroma
         std::uint32_t,
         std::uint64_t,
         float,
-        double>;
+        double
+    >;
 }

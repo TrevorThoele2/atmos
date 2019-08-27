@@ -1,17 +1,13 @@
 #pragma once
 
-#include "EntityComponent.h"
-
 #include "ScriptInstance.h"
 
-#include "ObjectScribe.h"
-
-namespace Atmos:: Entity
+namespace Atmos::Entity
 {
-    class ActionComponent : public Component
+    class ActionComponent
     {
     public:
-        enum class Activator : std::int32_t
+        enum class Activation : std::int32_t
         {
             EnterTile,
             AttemptEnterTile,
@@ -21,63 +17,34 @@ namespace Atmos:: Entity
             LeaveField
         };
     public:
-        typedef TypedObjectReference<Script::ScriptInstance> ScriptInstanceReference;
-    public:
-        Activator activator;
-        ScriptInstanceReference script;
+        Activation activation = Activation::UseOn;
+        Script::ScriptInstance* script = nullptr;
 
-        ActionComponent(ObjectManager& manager, EntityReference owner);
-        ActionComponent(const ActionComponent& arg) = default;
-        ActionComponent(const ::Inscription::BinaryTableData<ActionComponent>& data);
+        ActionComponent() = default;
 
-        void FireMovedInto();
-        void FireAttemptMovedInto();
-        void FireUseOn();
-        void FireUseInto();
-        void FireFieldEntered();
-        void FireFieldLeft();
-
-        ObjectTypeDescription TypeDescription() const override;
-    private:
-        void SetupScripts();
-    private:
-        INSCRIPTION_ACCESS;
+        void FireMovedInto() const;
+        void FireAttemptMovedInto() const;
+        void FireUseOn() const;
+        void FireUseInto() const;
+        void FireFieldEntered() const;
+        void FireFieldLeft() const;
     };
 }
 
-namespace Atmos
+namespace Arca
 {
     template<>
-    struct ObjectTraits<Entity::ActionComponent> : ObjectTraitsBase<Entity::ActionComponent>
+    struct Traits<::Atmos::Entity::ActionComponent>
     {
-        static const ObjectTypeName typeName;
-        static constexpr ObjectTypeList<Entity::Component> bases = {};
+        static const ObjectType objectType = ObjectType::Shard;
+        static const TypeName typeName;
     };
 }
 
 namespace Inscription
 {
     template<>
-    struct TableData<::Atmos::Entity::ActionComponent, BinaryArchive> :
-        public ObjectTableDataBase<::Atmos::Entity::ActionComponent, BinaryArchive>
-    {
-        ObjectT::Activator activator;
-    };
-
-    template<>
-    class Scribe<::Atmos::Entity::ActionComponent, BinaryArchive> :
-        public ObjectScribe<::Atmos::Entity::ActionComponent, BinaryArchive>
-    {
-    public:
-        class Table : public TableBase
-        {
-        public:
-            Table();
-        };
-    };
-
-    template<>
-    class Scribe<::Atmos::Entity::ActionComponent::Activator, BinaryArchive> :
-        public EnumScribe<::Atmos::Entity::ActionComponent::Activator, BinaryArchive>
+    class Scribe<Atmos::Entity::ActionComponent, BinaryArchive> final
+        : public ArcaNullScribe<Atmos::Entity::ActionComponent, BinaryArchive>
     {};
 }

@@ -2,9 +2,6 @@
 
 namespace Atmos::File
 {
-    NullFileManager::NullFileManager()
-    {}
-
     void NullFileManager::MakeDirectory(const Path& path)
     {}
 

@@ -1,14 +1,15 @@
-
 #include "InitializationFileSection.h"
 
 #include "StringUtility.h"
 
-namespace Atmos
+#include <Chroma/Contract.h>
+
+namespace Atmos::Initialization
 {
-    InitializationFileSection::InitializationFileSection(const String& header) : header(header)
+    FileSection::FileSection(const String& header) : header(header)
     {}
 
-    InitializationFileSection::EntryBase* InitializationFileSection::FindEntry(const String& name)
+    FileSection::EntryBase* FileSection::FindEntry(const String& name)
     {
         auto found = entries.find(name);
         if (found == entries.end())
@@ -17,9 +18,9 @@ namespace Atmos
         return found->second.get();
     }
 
-    void InitializationFileSection::SetTo(const ExtractedSection& extracted)
+    void FileSection::SetTo(const ExtractedSection& extracted)
     {
-        ATMOS_ASSERT(header == extracted.header);
+        DEBUG_PRECONDITION(header == extracted.header);
 
         for (auto& curLine : extracted.nameValues)
         {
@@ -34,7 +35,7 @@ namespace Atmos
         }
     }
 
-    String InitializationFileSection::FileString() const
+    String FileSection::FileString() const
     {
         String fileString = header;
         for (auto& loop : entries)
@@ -42,7 +43,7 @@ namespace Atmos
         return fileString;
     }
 
-    String InitializationFileSection::Header() const
+    String FileSection::Header() const
     {
         return header;
     }

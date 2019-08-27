@@ -3,9 +3,6 @@
 #include "Position2D.h"
 #include "Size2D.h"
 
-#include "Property.h"
-#include "ReadonlyProperty.h"
-
 #include "Serialization.h"
 
 namespace Atmos
@@ -13,42 +10,59 @@ namespace Atmos
     class AxisAlignedBox2D
     {
     public:
-        typedef float Coordinate;
+        using Coordinate = float;
     public:
-        typedef Property<Coordinate> CoordinateProperty;
-        CoordinateProperty left = CoordinateProperty(
-            [this]() { return MakeMinusCoordinate(center.x, size.scaledWidth); },
-            [this](Coordinate newValue) { SetCoordinate(newValue, left, center.x, size.scaledWidth); });
-        CoordinateProperty top = CoordinateProperty(
-            [this]() { return MakeMinusCoordinate(center.y, size.scaledHeight); },
-            [this](Coordinate newValue) { SetCoordinate(newValue, top, center.y, size.scaledHeight); });
-        CoordinateProperty right = CoordinateProperty(
-            [this]() { return MakePlusCoordinate(center.x, size.scaledWidth); },
-            [this](Coordinate newValue) { SetCoordinate(newValue, right, center.x, size.scaledWidth); });
-        CoordinateProperty bottom = CoordinateProperty(
-            [this]() { return MakePlusCoordinate(center.y, size.scaledHeight); },
-            [this](Coordinate newValue) { SetCoordinate(newValue, bottom, center.y, size.scaledHeight); });
-
-        Position2D center;
-        Size2D size;
-    public:
-        AxisAlignedBox2D();
+        AxisAlignedBox2D() = default;
+        AxisAlignedBox2D(const Position2D& center, const Size2D& size);
         AxisAlignedBox2D(Coordinate left, Coordinate top, Coordinate right, Coordinate bottom);
 
-        AxisAlignedBox2D& operator=(const AxisAlignedBox2D& arg);
+        bool operator==(const AxisAlignedBox2D& arg) const;
+        bool operator!=(const AxisAlignedBox2D& arg) const;
 
-        bool operator==(const AxisAlignedBox2D &arg) const;
-        bool operator!=(const AxisAlignedBox2D &arg) const;
+        void Center(const Position2D& to);
+        void Size(const Size2D& to);
+        [[nodiscard]] Position2D Center() const;
+        [[nodiscard]] Size2D Size() const;
 
-        bool IsHit(const Position2D& check) const;
-        bool Within(const Position2D& check) const;
-        bool Within(const AxisAlignedBox2D& box) const;
-        bool Overlapping(const AxisAlignedBox2D& box) const;
+        void Edit(const Position2D& center, const Size2D& size);
+        void Edit(Coordinate left, Coordinate top, Coordinate right, Coordinate bottom);
+
+        void Left(Coordinate set);
+        void Top(Coordinate set);
+        void Right(Coordinate set);
+        void Bottom(Coordinate set);
+
+        [[nodiscard]] Coordinate Left() const;
+        [[nodiscard]] Coordinate Top() const;
+        [[nodiscard]] Coordinate Right() const;
+        [[nodiscard]] Coordinate Bottom() const;
+
+        [[nodiscard]] Size2D::Value Width() const;
+        [[nodiscard]] Size2D::Value Height() const;
+
+        [[nodiscard]] bool Contains(const Position2D& check) const;
+        [[nodiscard]] bool Contains(const AxisAlignedBox2D& box) const;
+        [[nodiscard]] bool Intersects(const AxisAlignedBox2D& box) const;
     private:
-        void SetCoordinate(Coordinate newValue, Coordinate focused, Position2D::Value centerValue, Size2D::Value sizeValue);
+        Position2D center;
+        Size2D size;
 
-        Coordinate MakeMinusCoordinate(Position2D::Value centerValue, Size2D::Value sizeValue) const;
-        Coordinate MakePlusCoordinate(Position2D::Value centerValue, Size2D::Value sizeValue) const;
+        Coordinate left = 0.0f;
+        Coordinate top = 0.0f;
+        Coordinate right = 0.0f;
+        Coordinate bottom = 0.0f;
+
+        void ChangeCoordinate(Coordinate& change, Coordinate to);
+
+        void CalculateCoordinates();
+        void CalculateCenterAndSize();
+
+        void CoordinatePrecondition(
+            const Coordinate& low,
+            const Coordinate& high,
+            const std::string& lowName,
+            const std::string& highName
+        );
     private:
         INSCRIPTION_ACCESS;
     };
@@ -62,6 +76,5 @@ namespace Inscription
     {
     protected:
         void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
-        void ConstructImplementation(ObjectT* storage, ArchiveT& archive) override;
     };
 }

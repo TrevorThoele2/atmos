@@ -3,14 +3,19 @@
 namespace Atmos::Asset
 {
     AudioAssetInstance::AudioAssetInstance(const AudioAsset& audioAsset, DataPtr&& data) :
-        data(std::move(data)), isPlaying(false)
-    {
-        SubscribeToProperties();
-    }
+        data(std::move(data))
+    {}
 
-    AudioAssetInstance::AudioAssetInstance(const AudioAssetInstance& arg) : data(arg.data->Clone()), isPlaying(false)
+    AudioAssetInstance::AudioAssetInstance(const AudioAssetInstance& arg) :
+        data(arg.data->Clone()), volume(arg.volume), isLooping(arg.isLooping)
+    {}
+
+    AudioAssetInstance& AudioAssetInstance::operator=(const AudioAssetInstance& arg)
     {
-        SubscribeToProperties();
+        data = arg.data->Clone();
+        volume = arg.volume;
+        isLooping = arg.isLooping;
+        return *this;
     }
 
     void AudioAssetInstance::Start()
@@ -28,29 +33,27 @@ namespace Atmos::Asset
         return isPlaying;
     }
 
-    void AudioAssetInstance::SubscribeToProperties()
+    void AudioAssetInstance::Loop(bool set)
     {
-        volume.onValueChanged.Subscribe([this](Audio::Volume newValue)
-        {
-            this->OnVolumeChanged(newValue);
-        });
-
-        volume.onValueChanged.Subscribe([this](bool newValue)
-        {
-            this->OnLoopChanged(newValue);
-        });
+        isLooping = set;
+        data->Loop(set);
     }
 
-    void AudioAssetInstance::OnVolumeChanged(Audio::Volume newValue)
+    bool AudioAssetInstance::IsLooping() const
     {
-        data->SetVolume(newValue);
+        return isLooping;
     }
 
-    void AudioAssetInstance::OnLoopChanged(bool newValue)
+    void AudioAssetInstance::ChangeVolume(Audio::Volume volume)
     {
-        data->Loop(newValue);
+        this->volume = volume;
+        data->SetVolume(this->volume);
     }
 
-    AudioAssetInstanceData::~AudioAssetInstanceData()
-    {}
+    Audio::Volume AudioAssetInstance::Volume() const
+    {
+        return volume;
+    }
+
+    AudioAssetInstanceData::~AudioAssetInstanceData() = default;
 }

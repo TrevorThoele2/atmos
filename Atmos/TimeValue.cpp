@@ -4,7 +4,7 @@ namespace Atmos::Time
 {
     Value::Value(Number number, Epoch epoch) : number(number), epoch(epoch)
     {
-        number = ConvertNumberStatic(number, Epoch::SECONDS, epoch, true);
+        this->number = ConvertNumberStatic(number, Epoch::Seconds, epoch, true);
     }
 
     Value::Value(Number::Value number, Epoch epoch) : number(number, GetRadixPoint(epoch)), epoch(epoch)
@@ -113,15 +113,15 @@ namespace Atmos::Time
     {
         switch (epoch)
         {
-        case Epoch::MINUTES:
+        case Epoch::Minutes:
             return Number::Radix(Number::GetDefaultRadixPoint().Get() + 1);
-        case Epoch::SECONDS:
+        case Epoch::Seconds:
             return Number::Radix(Number::GetDefaultRadixPoint());
-        case Epoch::MILLISECONDS:
+        case Epoch::Milliseconds:
             return Number::Radix(Number::GetDefaultRadixPoint().Get() - 3);
-        case Epoch::MICROSECONDS:
+        case Epoch::Microseconds:
             return Number::Radix(Number::GetDefaultRadixPoint().Get() - 6);
-        case Epoch::NANOSECONDS:
+        case Epoch::Nanoseconds:
             return Number::Radix(Number::GetDefaultRadixPoint().Get() - 9);
         }
 
@@ -143,36 +143,36 @@ namespace Atmos::Time
         unsigned int epochDifference = 0;
         switch (oldEpoch)
         {
-        case Epoch::MINUTES:
+        case Epoch::Minutes:
             epochDifference -= 1;
             break;
-        case Epoch::SECONDS:
+        case Epoch::Seconds:
             break;
-        case Epoch::MILLISECONDS:
+        case Epoch::Milliseconds:
             epochDifference += 3;
             break;
-        case Epoch::MICROSECONDS:
+        case Epoch::Microseconds:
             epochDifference += 6;
             break;
-        case Epoch::NANOSECONDS:
+        case Epoch::Nanoseconds:
             epochDifference += 9;
             break;
         }
 
         switch (newEpoch)
         {
-        case Epoch::MINUTES:
+        case Epoch::Minutes:
             epochDifference += 1;
             break;
-        case Epoch::SECONDS:
+        case Epoch::Seconds:
             break;
-        case Epoch::MILLISECONDS:
+        case Epoch::Milliseconds:
             epochDifference -= 3;
             break;
-        case Epoch::MICROSECONDS:
+        case Epoch::Microseconds:
             epochDifference -= 6;
             break;
-        case Epoch::NANOSECONDS:
+        case Epoch::Nanoseconds:
             epochDifference -= 9;
             break;
         }
@@ -188,10 +188,5 @@ namespace Inscription
     {
         archive(object.number);
         archive(object.epoch);
-    }
-
-    void Scribe<::Atmos::Time::Value, BinaryArchive>::ConstructImplementation(ObjectT* storage, ArchiveT& archive)
-    {
-        DoBasicConstruction(storage, archive);
     }
 }

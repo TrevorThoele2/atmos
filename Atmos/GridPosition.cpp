@@ -1,10 +1,8 @@
-#include <functional>
-
 #include "GridPosition.h"
-#include "TileSize.h"
-#include "Math.h"
 
-#include <Inscription\Scribe.h>
+#include "TileSize.h"
+
+#include <Inscription/Scribe.h>
 
 namespace Atmos::Grid
 {
@@ -16,8 +14,8 @@ namespace Atmos::Grid
         x(source.x + offset.x), y(source.y + offset.y), z(source.z + offset.z)
     {}
 
-    Position::Position(const Position2D& arg, Value z) :
-        x(DimensionFromPosition(arg.x)), y(DimensionFromPosition(arg.y)), z(z)
+    Position::Position(const Position2D& position, Value z) :
+        x(DimensionFromPosition(position.x)), y(DimensionFromPosition(position.y)), z(z)
     {}
 
     Position::Position(const Position3D& pos) :
@@ -86,12 +84,12 @@ namespace Atmos::Grid
 
     Position::operator Position2D() const
     {
-        return Position2D(DimensionToPosition(x), DimensionToPosition(y));
+        return Position2D{ DimensionToPosition(x), DimensionToPosition(y) };
     }
 
     Position::operator Position3D() const
     {
-        return Position3D(DimensionToPosition(x), DimensionToPosition(y), DimensionToPosition(z));
+        return Position3D{ DimensionToPosition(x), DimensionToPosition(y), DimensionToPosition(z) };
     }
 
     Position::Value Position::GetX() const
@@ -142,23 +140,23 @@ namespace Atmos::Grid
     Direction Position::DetermineDirection(const Position& ending) const
     {
         if (ending.x < x)
-            return Direction::Value::LEFT;
+            return Direction::Value::Left;
         else if (ending.x > x)
-            return Direction::Value::RIGHT;
+            return Direction::Value::Right;
         else if (ending.y < y)
-            return Direction::Value::UP;
+            return Direction::Value::Up;
         else if (ending.y > y)
-            return Direction::Value::DOWN;
+            return Direction::Value::Down;
         else if (ending.z > z)
-            return Direction::Value::Z_UP;
+            return Direction::Value::ZUp;
         else
-            return Direction::Value::Z_DOWN;
+            return Direction::Value::ZDown;
     }
 
     bool Position::IsCloser(const Position& first, const Position& second) const
     {
-        auto thisDist = FindDistance(first);
-        auto argDist = FindDistance(second);
+        const auto thisDist = FindDistance(first);
+        const auto argDist = FindDistance(second);
 
         return argDist >= thisDist;
     }
@@ -169,22 +167,22 @@ namespace Atmos::Grid
 
         switch (dir.Get())
         {
-        case Direction::Value::UP:
+        case Direction::Value::Up:
             --newPos.y;
             break;
-        case Direction::Value::DOWN:
+        case Direction::Value::Down:
             ++newPos.y;
             break;
-        case Direction::Value::LEFT:
+        case Direction::Value::Left:
             --newPos.x;
             break;
-        case Direction::Value::RIGHT:
+        case Direction::Value::Right:
             ++newPos.x;
             break;
-        case Direction::Value::Z_UP:
+        case Direction::Value::ZUp:
             ++newPos.z;
             break;
-        case Direction::Value::Z_DOWN:
+        case Direction::Value::ZDown:
             --newPos.z;
             break;
         }
@@ -215,7 +213,7 @@ namespace Atmos::Grid
 
     Position::Value Position::DimensionFromPosition(Position2D::Value dim)
     {
-        return static_cast<Position::Value>(std::floor(dim / TileSize<Position3D::Value>));
+        return static_cast<Value>(std::floor(dim / TileSize<Position3D::Value>));
     }
 
     Position2D::Value Position::DimensionToPosition(Value dim)
@@ -263,23 +261,11 @@ namespace Inscription
         archive(object.z);
     }
 
-    void Scribe<::Atmos::Grid::Position, BinaryArchive>::ConstructImplementation(
-        ObjectT* storage, ArchiveT& archive)
-    {
-        DoBasicConstruction(storage, archive);
-    }
-
     void Scribe<::Atmos::Grid::RelativePosition, BinaryArchive>::ScrivenImplementation(
         ObjectT& object, ArchiveT& archive)
     {
         archive(object.x);
         archive(object.y);
         archive(object.z);
-    }
-
-    void Scribe<::Atmos::Grid::RelativePosition, BinaryArchive>::ConstructImplementation(
-        ObjectT* storage, ArchiveT& archive)
-    {
-        DoBasicConstruction(storage, archive);
     }
 }

@@ -7,25 +7,17 @@ namespace Atmos::Asset
     class FileAsset : public Asset
     {
     public:
-        const File::Name fileName;
-    public:
-        virtual ~FileAsset() = 0;
-
-        ObjectTypeDescription TypeDescription() const override;
+        [[nodiscard]] File::Name FileName() const;
     protected:
-        FileAsset(ObjectManager& manager, const File::Name& fileName);
-        FileAsset(const FileAsset& arg);
-        FileAsset(const ::Inscription::BinaryTableData<FileAsset>& data);
-    };
-}
+        FileAsset() = default;
+        FileAsset(FileAsset&& arg) noexcept;
+        explicit FileAsset(const ::Inscription::BinaryTableData<FileAsset>& data);
 
-namespace Atmos
-{
-    template<>
-    struct ObjectTraits<Asset::FileAsset> : ObjectTraitsBase<Asset::FileAsset>
-    {
-        static const ObjectTypeName typeName;
-        static constexpr ObjectTypeList<Asset::Asset> bases = {};
+        void SetFileName(const File::Name& fileName);
+    private:
+        File::Name fileName;
+    private:
+        INSCRIPTION_ACCESS;
     };
 }
 
@@ -33,17 +25,18 @@ namespace Inscription
 {
     template<>
     struct TableData<::Atmos::Asset::FileAsset, BinaryArchive> :
-        public ObjectTableDataBase<::Atmos::Asset::FileAsset, BinaryArchive>
+        TableDataBase<::Atmos::Asset::FileAsset, BinaryArchive>
     {
+        Base<::Atmos::Asset::Asset> base;
         ::Atmos::File::Name fileName;
     };
 
     template<>
-    class Scribe<::Atmos::Asset::FileAsset, BinaryArchive> :
-        public ObjectScribe<::Atmos::Asset::FileAsset, BinaryArchive>
+    class Scribe<::Atmos::Asset::FileAsset, BinaryArchive> final :
+        public TableScribe<::Atmos::Asset::FileAsset, BinaryArchive>
     {
     public:
-        class Table : public TableBase
+        class Table final : public TableBase
         {
         public:
             Table();

@@ -2,9 +2,6 @@
 
 namespace Atmos
 {
-    Line3D::Line3D(const Position3D& first, const Position3D& second) : first(first), second(second)
-    {}
-
     bool Line3D::operator==(const Line3D& arg) const
     {
         return first == arg.first && second == arg.second;
@@ -17,10 +14,12 @@ namespace Atmos
 
     Line3D::operator Vector3D() const
     {
-        return Vector3D(
+        return Vector3D
+        {
             second.x - first.x,
             second.y - first.y,
-            second.z - first.z);
+            second.z - first.z
+        };
     }
 
     Position3D::Value Line3D::Length() const
@@ -52,12 +51,12 @@ namespace Atmos
 
     Line3D Line3D::TranslateToOrigin() const
     {
-        return Line3D(Position3D(0, 0, 0), Position3D(second.x - first.x, second.y - first.y, second.z - first.z));
+        return Line3D{ Position3D{0, 0, 0}, Position3D{second.x - first.x, second.y - first.y, second.z - first.z} };
     }
 
     Vector3D Line3D::Direction() const
     {
-        return Vector3D(second.x - first.x, second.y - first.y, second.z - first.z);
+        return Vector3D{ second.x - first.x, second.y - first.y, second.z - first.z };
     }
 
     bool Line3D::CheckIntersect(const Line3D& other) const
@@ -65,29 +64,31 @@ namespace Atmos
         return true;
     }
 
-    Optional<Position3D> Line3D::IntersectionPoint(const Line3D& other, bool infinite) const
+    std::optional<Position3D> Line3D::IntersectionPoint(const Line3D& other, bool infinite) const
     {
-        typedef Optional<Position3D> RetT;
         // a(V1 x V2) = (P2-P1) x V2
 
         // Check if lines overlap completely
         if (first == other.first && second == other.second)
-            return RetT();
+            return {};
         else if (first == other.first || first == other.second)
-            return RetT(first);
+            return { first };
         else if (second == other.first || second == other.second)
-            return RetT(second);
+            return { second };
 
         const Vector3D vector1(Direction());
         const Vector3D vector2(other.Direction());
         // Check parallelity
         if (vector1 == vector2)
-            return RetT();
+            return {};
 
         // V1 x V2
-        auto cross1 = vector1.Cross(vector2);
+        const auto cross1 = vector1.Cross(vector2);
         // (P2 - P1) x V2
-        auto cross2 = Vector3D(other.first.x - first.x, other.first.y - first.y, other.first.z - first.z).Cross(vector2);
+        const auto cross2 = Vector3D
+        {
+            other.first.x - first.x, other.first.y - first.y, other.first.z - first.z
+        }.Cross(vector2);
 
         Vector3D::Value a = 0;
         if (cross1.x != 0)
@@ -98,7 +99,7 @@ namespace Atmos
             a = cross2.z / cross1.z;
 
         // P1 + aV1
-        return RetT(Position3D(first.x + (a * vector1.x), first.y + (a * vector1.y), first.z + (a * vector1.z)));
+        return { Position3D{ first.x + (a * vector1.x), first.y + (a * vector1.y), first.z + (a * vector1.z) } };
     }
 
     Position3D::Value Line3D::DeltaX() const

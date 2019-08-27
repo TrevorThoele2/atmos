@@ -1,4 +1,5 @@
 #include "WindowsEngine.h"
+#include <utility>
 
 #include "WindowsWindow.h"
 #include "WindowsInputManager.h"
@@ -8,31 +9,32 @@
 
 namespace Atmos
 {
-    WindowsEngine::WindowsEngine(HINSTANCE hInstance, LPSTR lpCmdLine, int nCmdShow, const String& className) :
-        hInstance(hInstance), lpCmdLine(lpCmdLine), nCmdShow(nCmdShow), className(className)
+    WindowsEngine::WindowsEngine(HINSTANCE hInstance, LPSTR lpCmdLine, int nCmdShow, String className) :
+        hInstance(hInstance), lpCmdLine(lpCmdLine), nCmdShow(nCmdShow), className(std::move(className))
     {}
 
-    WindowsEngine::InitializationProperties WindowsEngine::CreateInitializationProperties(ObjectManager& globalObjectManager)
+    WindowsEngine::InitializationProperties WindowsEngine::CreateInitializationProperties(
+        Arca::Reliquary& reliquary)
     {
-        typedef InitializationProperties Properties;
+        using Properties = InitializationProperties;
 
-        auto window = new Window::WindowsWindow(globalObjectManager, hInstance, lpCmdLine, nCmdShow, className);
-        auto input = new Input::WindowsManager();
+        auto window = std::make_unique<Window::WindowsWindow>(reliquary, nCmdShow, className);
+        auto input = std::make_unique<Input::WindowsManager>(window->Hwnd());
         auto backbufferSize = ScreenDimensions(window->ClientSize().width, window->ClientSize().height);
-        auto graphics = new Render::DirectX9GraphicsManager(
-            globalObjectManager,
-            window->GetHwnd(),
+        auto graphics = std::make_unique<Render::DirectX9GraphicsManager>
+        (
+            reliquary,
+            window->Hwnd(),
             backbufferSize,
-            window->IsFullscreen());
-        auto audio = new Audio::DirectX9AudioManager();
-        auto fileSystem = new File::WindowsFileManager();
+            window->IsFullscreen()
+        );
+        auto audio = std::make_unique<Audio::DirectX9AudioManager>();
 
         Properties properties;
-        properties.window = Properties::Window(window);
-        properties.inputManager = Properties::InputManager(input);
-        properties.graphicsManager = Properties::GraphicsManager(graphics);
-        properties.audioManager = Properties::AudioManager(audio);
-        properties.fileSystemManager = Properties::FileManager(fileSystem);
+        properties.window = std::move(window);
+        properties.inputManager = std::move(input);
+        properties.graphicsManager = std::move(graphics);
+        properties.audioManager = std::move(audio);
         return properties;
     }
 

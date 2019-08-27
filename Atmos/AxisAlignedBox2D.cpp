@@ -1,30 +1,27 @@
 #include "AxisAlignedBox2D.h"
 
-#include "MathUtility.h"
-
-#include <Inscription\Scribe.h>
+#include <cctype>
+#include <Chroma/Contract.h>
 
 namespace Atmos
 {
-    AxisAlignedBox2D::AxisAlignedBox2D() :
-        center(), size()
-    {}
+    AxisAlignedBox2D::AxisAlignedBox2D(const Position2D& center, const Size2D& size) :
+        center(center), size(size)
+    {
+        CalculateCoordinates();
+    }
 
     AxisAlignedBox2D::AxisAlignedBox2D(Coordinate left, Coordinate top, Coordinate right, Coordinate bottom) :
-        center((right - left) + left, (bottom - top) + top),
-        size(right - left, bottom - top)
-    {}
-
-    AxisAlignedBox2D& AxisAlignedBox2D::operator=(const AxisAlignedBox2D& arg)
+        left(left), top(top), right(right), bottom(bottom)
     {
-        center = arg.center;
-        size = arg.size;
-        return *this;
+        CoordinatePrecondition(left, right, "left", "right");
+        CoordinatePrecondition(top, bottom, "top", "bottom");
+        CalculateCenterAndSize();
     }
 
     bool AxisAlignedBox2D::operator==(const AxisAlignedBox2D& arg) const
     {
-        return center == arg.center && size == arg.size;
+        return left == arg.left && top == arg.top && right == arg.right && bottom == arg.bottom;
     }
 
     bool AxisAlignedBox2D::operator!=(const AxisAlignedBox2D& arg) const
@@ -32,43 +29,152 @@ namespace Atmos
         return !(*this == arg);
     }
 
-    bool AxisAlignedBox2D::IsHit(const Position2D& check) const
+    void AxisAlignedBox2D::Center(const Position2D& to)
     {
-        return Within(check);
+        center = to;
+        CalculateCoordinates();
     }
 
-    bool AxisAlignedBox2D::Within(const Position2D& check) const
+    void AxisAlignedBox2D::Size(const Size2D& to)
+    {
+        size = to;
+        CalculateCoordinates();
+    }
+
+    Position2D AxisAlignedBox2D::Center() const
+    {
+        return center;
+    }
+
+    Size2D AxisAlignedBox2D::Size() const
+    {
+        return size;
+    }
+
+    void AxisAlignedBox2D::Edit(const Position2D& center, const Size2D& size)
+    {
+        this->center = center;
+        this->size = size;
+        CalculateCoordinates();
+    }
+
+    void AxisAlignedBox2D::Edit(Coordinate left, Coordinate top, Coordinate right, Coordinate bottom)
+    {
+        CoordinatePrecondition(left, right, "left", "right");
+        CoordinatePrecondition(top, bottom, "top", "bottom");
+        this->left = left;
+        this->top = top;
+        this->right = right;
+        this->bottom = bottom;
+        CalculateCenterAndSize();
+    }
+
+    void AxisAlignedBox2D::Left(Coordinate set)
+    {
+        CoordinatePrecondition(set, right, "left", "right");
+        ChangeCoordinate(left, set);
+    }
+
+    void AxisAlignedBox2D::Top(Coordinate set)
+    {
+        CoordinatePrecondition(set, bottom, "top", "bottom");
+        ChangeCoordinate(top, set);
+    }
+
+    void AxisAlignedBox2D::Right(Coordinate set)
+    {
+        CoordinatePrecondition(left, set, "left", "right");
+        ChangeCoordinate(right, set);
+    }
+
+    void AxisAlignedBox2D::Bottom(Coordinate set)
+    {
+        CoordinatePrecondition(top, set, "top", "bottom");
+        ChangeCoordinate(bottom, set);
+    }
+
+    auto AxisAlignedBox2D::Left() const -> Coordinate
+    {
+        return center.x - (size.width / 2);
+    }
+
+    auto AxisAlignedBox2D::Top() const -> Coordinate
+    {
+        return center.y - (size.height / 2);
+    }
+
+    auto AxisAlignedBox2D::Right() const -> Coordinate
+    {
+        return center.x + (size.width / 2);
+    }
+
+    auto AxisAlignedBox2D::Bottom() const -> Coordinate
+    {
+        return center.y + (size.height / 2);
+    }
+
+    Size2D::Value AxisAlignedBox2D::Width() const
+    {
+        return size.width;
+    }
+
+    Size2D::Value AxisAlignedBox2D::Height() const
+    {
+        return size.height;
+    }
+
+    bool AxisAlignedBox2D::Contains(const Position2D& check) const
     {
         return check.x >= left && check.x <= right && check.y >= top && check.y <= bottom;
     }
 
-    bool AxisAlignedBox2D::Within(const AxisAlignedBox2D& box) const
+    bool AxisAlignedBox2D::Contains(const AxisAlignedBox2D& box) const
     {
         return left >= box.left && right <= box.right && top >= box.top && bottom <= box.bottom;
     }
 
-    bool AxisAlignedBox2D::Overlapping(const AxisAlignedBox2D& box) const
+    bool AxisAlignedBox2D::Intersects(const AxisAlignedBox2D& box) const
     {
         return
             (left <= box.right && right >= box.left) &&
             (top <= box.bottom && bottom >= box.top);
     }
 
-    void AxisAlignedBox2D::SetCoordinate(Coordinate newValue, Coordinate focused, Position2D::Value centerValue, Size2D::Value sizeValue)
+    void AxisAlignedBox2D::ChangeCoordinate(Coordinate& change, Coordinate to)
     {
-        const auto delta = focused - newValue;
-        sizeValue += delta;
-        centerValue += (delta / 2);
+        change = to;
+        CalculateCenterAndSize();
     }
 
-    AxisAlignedBox2D::Coordinate AxisAlignedBox2D::MakeMinusCoordinate(Position2D::Value centerValue, Size2D::Value sizeValue) const
+    void AxisAlignedBox2D::CalculateCoordinates()
     {
-        return centerValue - (sizeValue / 2);
+        left = center.x - (size.width / 2);
+        top = center.y - (size.height / 2);
+        right = center.x + (size.width / 2);
+        bottom  = center.y + (size.height / 2);
     }
 
-    AxisAlignedBox2D::Coordinate AxisAlignedBox2D::MakePlusCoordinate(Position2D::Value centerValue, Size2D::Value sizeValue) const
+    void AxisAlignedBox2D::CalculateCenterAndSize()
     {
-        return centerValue + (sizeValue / 2);
+        size.width = right - left;
+        size.height = bottom - top;
+        center.x = left + (size.width / 2);
+        center.y = top + (size.height / 2);
+    }
+
+    void AxisAlignedBox2D::CoordinatePrecondition(
+        const Coordinate& low,
+        const Coordinate& high,
+        const std::string& lowName,
+        const std::string& highName
+    ) {
+        auto useLowName = lowName;
+        useLowName[0] = std::toupper(useLowName[0]);
+
+        SOFT_PRECONDITION(
+            low <= high,
+            std::invalid_argument(useLowName + " must be <= " + highName + " when given to an AxisAlignedBox3D.")
+        );
     }
 }
 
@@ -78,10 +184,5 @@ namespace Inscription
     {
         archive(object.center);
         archive(object.size);
-    }
-
-    void Scribe<::Atmos::AxisAlignedBox2D, BinaryArchive>::ConstructImplementation(ObjectT* storage, ArchiveT& archive)
-    {
-        DoBasicConstruction(storage, archive);
     }
 }

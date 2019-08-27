@@ -1,20 +1,9 @@
 #include "RealStopwatch.h"
 
-#include "ObjectManager.h"
-#include "TimeSystem.h"
+#include <chrono>
 
 namespace Atmos::Time
 {
-    RealStopwatch::RealStopwatch(ObjectManager& manager, Value goal) :
-        Stopwatch(manager, goal)
-    {
-        timeSystem = manager.FindSystem<TimeSystem>();
-    }
-
-    RealStopwatch::RealStopwatch(const ::Inscription::BinaryTableData<RealStopwatch>& data) :
-        Stopwatch(std::get<0>(data.bases))
-    {}
-
     bool RealStopwatch::operator==(const RealStopwatch& arg) const
     {
         return Stopwatch::operator==(arg);
@@ -22,16 +11,21 @@ namespace Atmos::Time
 
     Value RealStopwatch::CurrentTime() const
     {
-        return timeSystem->CurrentTime();
-    }
-
-    ObjectTypeDescription RealStopwatch::TypeDescription() const
-    {
-        return ObjectTraits<RealStopwatch>::TypeDescription();
+        const auto nanosecondsTime = std::chrono::high_resolution_clock::now().time_since_epoch().count();
+        return Value(Value(nanosecondsTime, Epoch::Nanoseconds).GetAs(Epoch::Seconds));
     }
 }
 
-namespace Atmos
+namespace Arca
 {
-    const ObjectTypeName ObjectTraits<Time::RealStopwatch>::typeName = "RealStopwatch";
+    const TypeName Traits<::Atmos::Time::RealStopwatch>::typeName = "RealStopwatch";
+}
+
+namespace Inscription
+{
+    void Scribe<::Atmos::Time::RealStopwatch, BinaryArchive>::ScrivenImplementation(
+        ObjectT& object, ArchiveT& archive)
+    {
+        BaseScriven<Atmos::Time::Stopwatch>(object, archive);
+    }
 }

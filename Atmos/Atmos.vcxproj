@@ -29,18 +29,76 @@
   <ItemGroup>
     <ClInclude Include="..\..\AngelScript\sdk\add_on\scriptarray\scriptarray.h" />
     <ClInclude Include="..\..\AngelScript\sdk\add_on\scriptstdstring\scriptstdstring.h" />
+    <ClInclude Include="Action.h" />
+    <ClInclude Include="ActionActive.h" />
+    <ClInclude Include="ActionDepressed.h" />
+    <ClInclude Include="ActionPressed.h" />
+    <ClInclude Include="ShouldCreateAsset.h" />
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="CameraMoved.h" />
+    <ClInclude Include="CanvasRender.h" />
+    <ClInclude Include="CanvasViewCurator.h" />
+    <ClInclude Include="ChangeMasterVolume.h" />
+    <ClInclude Include="CurrentAvatar.h" />
+    <ClInclude Include="Entity.h" />
+    <ClInclude Include="ExecuteImmediately.h" />
+    <ClInclude Include="FieldSet.h" />
+    <ClInclude Include="FieldUnset.h" />
+    <ClInclude Include="ForceQuit.h" />
+    <ClInclude Include="GraphicsCurator.h" />
+    <ClInclude Include="MaterialViewCore.h" />
+    <ClInclude Include="MaterialRender.h" />
+    <ClInclude Include="StaticMaterialView.h" />
+    <ClInclude Include="InputFieldArchiveInterface.h" />
+    <ClInclude Include="Map.h" />
+    <ClInclude Include="MaterialViewCurator.h" />
+    <ClInclude Include="InitializationInformation.h" />
+    <ClInclude Include="Input.h" />
+    <ClInclude Include="InputCurator.h" />
+    <ClInclude Include="InputID.h" />
+    <ClInclude Include="Log.h" />
+    <ClInclude Include="FocusLost.h" />
+    <ClInclude Include="FocusRegained.h" />
+    <ClInclude Include="MappedActions.h" />
+    <ClInclude Include="MappedAssets.h" />
+    <ClInclude Include="MappedEntities.h" />
+    <ClInclude Include="MappedInputs.h" />
+    <ClInclude Include="MouseClickDragged.h" />
+    <ClInclude Include="MouseInformation.h" />
+    <ClInclude Include="MouseMoved.h" />
+    <ClInclude Include="Bounds.h" />
+    <ClInclude Include="MoveCamera.h" />
+    <ClInclude Include="MoveCameraBy.h" />
+    <ClInclude Include="MoveCameraDeltaInstant.h" />
+    <ClInclude Include="MoveCameraToInstant.h" />
+    <ClInclude Include="MoveEntity.h" />
+    <ClInclude Include="MoveEntityDirection.h" />
+    <ClInclude Include="MoveEntityInstant.h" />
+    <ClInclude Include="PositionedEntities.h" />
+    <ClInclude Include="ProcessedLog.h" />
+    <ClInclude Include="ReconstructGraphics.h" />
+    <ClInclude Include="AllRunningScripts.h" />
+    <ClInclude Include="RotateEntity.h" />
+    <ClInclude Include="SparseRegion.h" />
+    <ClInclude Include="StasisFileExtension.h" />
+    <ClInclude Include="StateRequest.h" />
+    <ClInclude Include="TimeInformation.h" />
+    <ClInclude Include="DebugStatistics.h" />
     <ClInclude Include="Epoch.h" />
+    <ClInclude Include="Exception.h" />
     <ClInclude Include="FileAsset.h" />
-    <ClInclude Include="ProcessedObjectTraits.h" />
+    <ClInclude Include="Fps.h" />
+    <ClInclude Include="TimeSettings.h" />
+    <ClInclude Include="LogNameValuePairs.h" />
+    <ClInclude Include="LogSeverity.h" />
     <ClInclude Include="EngineNotSetup.h" />
-    <ClInclude Include="EngineTypeRegistration.h" />
-    <ClInclude Include="EntityActionSystem.h" />
-    <ClInclude Include="AngelScriptAssert.h" />
+    <ClInclude Include="EntityActionCurator.h" />
+    <ClInclude Include="AngelScriptResultVerification.h" />
     <ClInclude Include="AngelScriptEvent.h" />
     <ClInclude Include="AngelScriptRegistrationInterface.h" />
-    <ClInclude Include="AngelScriptSystem.h" />
+    <ClInclude Include="AngelScriptCurator.h" />
     <ClInclude Include="AngelScriptGridPosition.h" />
-    <ClInclude Include="AngelScriptObject.h" />
+    <ClInclude Include="AngelScriptRelic.h" />
     <ClInclude Include="AngelScriptReferenceCounted.h" />
     <ClInclude Include="AngelScriptTile.h" />
     <ClInclude Include="AngelScriptUserData.h" />
@@ -49,144 +107,76 @@
     <ClInclude Include="AngleConversion.h" />
     <ClInclude Include="AngleUnits.h" />
     <ClInclude Include="AngleUnitsTypeValidation.h" />
-    <ClInclude Include="AssetFactory.h" />
-    <ClInclude Include="AssetPackageSystem.h" />
-    <ClInclude Include="AssetSystem.h" />
+    <ClInclude Include="FileAssetPackageCurator.h" />
+    <ClInclude Include="AssetCurator.h" />
     <ClInclude Include="AudioAssetInstance.h" />
-    <ClInclude Include="AudioAssetFactory.h" />
-    <ClInclude Include="AudioSystem.h" />
+    <ClInclude Include="AudioManagerProvider.h" />
     <ClInclude Include="AxisAlignedBox3D.h" />
     <ClInclude Include="BitConcatenator.h" />
     <ClInclude Include="BoundedNumberWrap.h" />
-    <ClInclude Include="BoundEventSubscriber.h" />
-    <ClInclude Include="BoundEventSubscriberList.h" />
-    <ClInclude Include="CameraSystem.h" />
+    <ClInclude Include="CameraCurator.h" />
     <ClInclude Include="ContainerUtility.h" />
-    <ClInclude Include="DebugStatisticsSystem.h" />
+    <ClInclude Include="DebugStatisticsCurator.h" />
     <ClInclude Include="Degrees.h" />
     <ClInclude Include="Engine.h" />
-    <ClInclude Include="EngineSystem.h" />
     <ClInclude Include="EngineExecution.h" />
     <ClInclude Include="FileName.h" />
     <ClInclude Include="NullFileManager.h" />
     <ClInclude Include="NullWindow.h" />
-    <ClInclude Include="ObjectException.h" />
-    <ClInclude Include="ObjectManagerFactory.h" />
-    <ClInclude Include="ObjectSystemScribe.h" />
-    <ClInclude Include="TypeRegistration.h" />
-    <ClInclude Include="FileSystem.h" />
-    <ClInclude Include="FpsSystem.h" />
-    <ClInclude Include="InputArchiveBase.h" />
-    <ClInclude Include="ObjectManagerException.h" />
-    <ClInclude Include="OutputArchiveBase.h" />
-    <ClInclude Include="OutputStasisArchive.h" />
+    <ClInclude Include="FileManagerProvider.h" />
+    <ClInclude Include="TimeCurator.h" />
+    <ClInclude Include="OutputStasisArchiveInterface.h" />
     <ClInclude Include="Scalers2D.h" />
     <ClInclude Include="Scalers3D.h" />
     <ClInclude Include="ScreenDimensions.h" />
     <ClInclude Include="ScreenPosition.h" />
-    <ClInclude Include="SkipFileHandle.h" />
-    <ClInclude Include="SkipFileSaver.h" />
-    <ClInclude Include="UnownedProviderSystem.h" />
-    <ClInclude Include="WindowSystem.h" />
-    <ClInclude Include="GraphicsSystem.h" />
-    <ClInclude Include="GuiSystem.h" />
-    <ClInclude Include="EqualityPropertySlotInterface.h" />
-    <ClInclude Include="ChromaVariant.h" />
+    <ClInclude Include="TypeRegistration.h" />
+    <ClInclude Include="UniqueProvider.h" />
+    <ClInclude Include="UnownedProvider.h" />
+    <ClInclude Include="VolumeInformation.h" />
+    <ClInclude Include="WindowDimensionsChanged.h" />
+    <ClInclude Include="WindowProvider.h" />
+    <ClInclude Include="GraphicsManagerProvider.h" />
+    <ClInclude Include="GuiEngineProvider.h" />
+    <ClInclude Include="StdVariant.h" />
     <ClInclude Include="AnyEventConnection.h" />
     <ClInclude Include="WindowBase.h" />
-    <ClInclude Include="DivideByZeroException.h" />
+    <ClInclude Include="DivisionByZero.h" />
     <ClInclude Include="FixedPoint.h" />
     <ClInclude Include="HasEqualityComparison.h" />
-    <ClInclude Include="IDManagerIterator.h" />
-    <ClInclude Include="ImageAssetFactory.h" />
     <ClInclude Include="InitializationFileEntry.h" />
     <ClInclude Include="InitializationFileExtractedSection.h" />
     <ClInclude Include="InitializationFileSection.h" />
-    <ClInclude Include="InitializationFileSystem.h" />
-    <ClInclude Include="InputActionID.h" />
-    <ClInclude Include="InputException.h" />
-    <ClInclude Include="InputKey.h" />
-    <ClInclude Include="InputKeyID.h" />
-    <ClInclude Include="InputKeyIDVariant.h" />
-    <ClInclude Include="InputSystem.h" />
-    <ClInclude Include="InputMouseKeyID.h" />
-    <ClInclude Include="InputMouseKey.h" />
-    <ClInclude Include="InputSignal.h" />
-    <ClInclude Include="InputSignalBase.h" />
+    <ClInclude Include="InitializationFileCurator.h" />
+    <ClInclude Include="InputManagerProvider.h" />
     <ClInclude Include="IntervalList.h" />
     <ClInclude Include="IsList.h" />
     <ClInclude Include="IsSameRuntimeType.h" />
     <ClInclude Include="LargeInteger.h" />
-    <ClInclude Include="ListPropertySlotInterface.h" />
-    <ClInclude Include="LoggingSystem.h" />
-    <ClInclude Include="MasterSoundSystem.h" />
-    <ClInclude Include="MaterialAssetFactory.h" />
-    <ClInclude Include="MusicSystem.h" />
+    <ClInclude Include="LogCurator.h" />
+    <ClInclude Include="VolumeCurator.h" />
+    <ClInclude Include="MusicCurator.h" />
     <ClInclude Include="NameValuePair.h" />
-    <ClInclude Include="ArithmeticPropertySlotInterface.h" />
     <ClInclude Include="AudioAsset.h" />
-    <ClInclude Include="Entity.h" />
-    <ClInclude Include="EntityComponent.h" />
-    <ClInclude Include="EntityPositionSystem.h" />
-    <ClInclude Include="EntitySystem.h" />
+    <ClInclude Include="EntityPositionCurator.h" />
+    <ClInclude Include="EntityCurator.h" />
     <ClInclude Include="ModulatorInterpolation.h" />
     <ClInclude Include="ModulatorInterpolationLinear.h" />
     <ClInclude Include="ModulatorInterpolationOscillation.h" />
     <ClInclude Include="ModulatorInterpolationSmoothstep.h" />
-    <ClInclude Include="NotImplementedException.h" />
     <ClInclude Include="EngineInitializationProperties.h" />
-    <ClInclude Include="RenderSystem.h" />
-    <ClInclude Include="StateSystem.h" />
-    <ClInclude Include="TimeSystem.h" />
-    <ClInclude Include="UniqueProviderSystem.h" />
+    <ClInclude Include="RenderCurator.h" />
+    <ClInclude Include="StateCurator.h" />
     <ClInclude Include="RunningScript.h" />
-    <ClInclude Include="ScopedEventConnection.h" />
-    <ClInclude Include="ScopedEventConnectionList.h" />
     <ClInclude Include="ScriptAsset.h" />
     <ClInclude Include="ScriptController.h" />
     <ClInclude Include="ScriptInstance.h" />
-    <ClInclude Include="NullInput.h" />
-    <ClInclude Include="Object.h" />
-    <ClInclude Include="ObjectBatch.h" />
-    <ClInclude Include="ObjectBatchException.h" />
-    <ClInclude Include="ObjectBatchSource.h" />
-    <ClInclude Include="ObjectBatchSourceDefinition.h" />
-    <ClInclude Include="ObjectFactory.h" />
-    <ClInclude Include="ObjectFactoryBase.h" />
-    <ClInclude Include="ObjectFactoryTraits.h" />
-    <ClInclude Include="ObjectID.h" />
-    <ClInclude Include="ObjectManager.h" />
-    <ClInclude Include="ObjectMap.h" />
-    <ClInclude Include="ObjectMapIterator.h" />
-    <ClInclude Include="ObjectReference.h" />
-    <ClInclude Include="ObjectScribe.h" />
-    <ClInclude Include="ObjectStaticAssert.h" />
-    <ClInclude Include="ObjectSystem.h" />
-    <ClInclude Include="ObjectSystemPriority.h" />
-    <ClInclude Include="ObjectSystemTraits.h" />
-    <ClInclude Include="ObjectTraits.h" />
-    <ClInclude Include="ObjectTypeDescription.h" />
-    <ClInclude Include="ObjectTypeDescriptionGroup.h" />
-    <ClInclude Include="ObjectTypeGraph.h" />
-    <ClInclude Include="ObjectTypeGraphIterator.h" />
-    <ClInclude Include="ObjectTypeGraphNode.h" />
-    <ClInclude Include="ObjectTypeList.h" />
-    <ClInclude Include="ObjectTypeName.h" />
-    <ClInclude Include="ObjectTypeNameSerializer.h" />
-    <ClInclude Include="ObjectTypeValidation.h" />
-    <ClInclude Include="PointerPropertySlotInterface.h" />
-    <ClInclude Include="PositionalSystem.h" />
-    <ClInclude Include="Property.h" />
-    <ClInclude Include="PropertyCore.h" />
-    <ClInclude Include="ReadonlyPointerPropertySlotInterface.h" />
-    <ClInclude Include="ReadonlyProperty.h" />
-    <ClInclude Include="AxisAlignedObject.h" />
+    <ClInclude Include="NullInputManager.h" />
     <ClInclude Include="Radians.h" />
     <ClInclude Include="Line2D.h" />
     <ClInclude Include="Line3D.h" />
-    <ClInclude Include="MaterialAssetSystem.h" />
+    <ClInclude Include="MaterialAssetCurator.h" />
     <ClInclude Include="Name.h" />
-    <ClInclude Include="PositionalOffsetAdapter.h" />
     <ClInclude Include="OperatorSelector.h" />
     <ClInclude Include="Overflow.h" />
     <ClInclude Include="Percentage.h" />
@@ -194,29 +184,19 @@
     <ClInclude Include="AccessAdapter.h" />
     <ClInclude Include="ActionComponent.h" />
     <ClInclude Include="AIComponent.h" />
-    <ClInclude Include="Assert.h" />
     <ClInclude Include="AvatarComponent.h" />
-    <ClInclude Include="InputAction.h" />
     <ClInclude Include="MaterialAsset.h" />
     <ClInclude Include="RelativeFilePath.h" />
     <ClInclude Include="Octree.h" />
     <ClInclude Include="Asset.h" />
-    <ClInclude Include="ScriptAssetFactory.h" />
     <ClInclude Include="ScriptParameters.h" />
     <ClInclude Include="ScriptPersistence.h" />
-    <ClInclude Include="ScriptAssetSystem.h" />
+    <ClInclude Include="ScriptAssetCurator.h" />
     <ClInclude Include="ScrubbedType.h" />
-    <ClInclude Include="ShaderAssetFactory.h" />
     <ClInclude Include="Size3D.h" />
-    <ClInclude Include="SoundSystem.h" />
-    <ClInclude Include="RenderFragmentSystem.h" />
-    <ClInclude Include="State.h" />
-    <ClInclude Include="StoredProperty.h" />
-    <ClInclude Include="StoredReadonlyProperty.h" />
+    <ClInclude Include="SoundCurator.h" />
     <ClInclude Include="StringUtility.h" />
     <ClInclude Include="Tag.h" />
-    <ClInclude Include="TileFactory.h" />
-    <ClInclude Include="TileSystem.h" />
     <ClInclude Include="DifferentiatableInherit.h" />
     <ClInclude Include="Variant.h" />
     <ClInclude Include="Vector2D.h" />
@@ -224,9 +204,9 @@
     <ClInclude Include="WindowsEngine.h" />
     <ClInclude Include="WindowsWindow.h" />
     <ClInclude Include="WindowsInputManager.h" />
-    <ClInclude Include="EntityAISystem.h" />
+    <ClInclude Include="EntityAICurator.h" />
     <ClInclude Include="AudioManager.h" />
-    <ClInclude Include="EntityAvatarSystem.h" />
+    <ClInclude Include="EntityAvatarCurator.h" />
     <ClInclude Include="Buffer.h" />
     <ClInclude Include="Canvas.h" />
     <ClInclude Include="CanvasView.h" />
@@ -237,16 +217,13 @@
     <ClInclude Include="FileUtility.h" />
     <ClInclude Include="Fraction.h" />
     <ClInclude Include="GeneralComponent.h" />
-    <ClInclude Include="IDManager.h" />
     <ClInclude Include="InputManager.h" />
-    <ClInclude Include="MousePosition.h" />
+    <ClInclude Include="ScreenPositionDelta.h" />
     <ClInclude Include="Music.h" />
     <ClInclude Include="NullAudioManager.h" />
     <ClInclude Include="NullGraphicsManager.h" />
-    <ClInclude Include="Optional.h" />
-    <ClInclude Include="RenderFragment.h" />
     <ClInclude Include="ImageAsset.h" />
-    <ClInclude Include="ImageAssetSystem.h" />
+    <ClInclude Include="ImageAssetCurator.h" />
     <ClInclude Include="AxisAlignedBox2D.h" />
     <ClInclude Include="BoundedNumber.h" />
     <ClInclude Include="DirectX9AudioManager.h" />
@@ -258,16 +235,15 @@
     <ClInclude Include="Line.h" />
     <ClInclude Include="MovementComponent.h" />
     <ClInclude Include="NumericLimits.h" />
-    <ClInclude Include="ArchiveBase.h" />
+    <ClInclude Include="ArchiveInterface.h" />
     <ClInclude Include="Serialization.h" />
-    <ClInclude Include="ShaderAssetSystem.h" />
+    <ClInclude Include="ShaderAssetCurator.h" />
     <ClInclude Include="ShaderAsset.h" />
     <ClInclude Include="SimpleFile.h" />
-    <ClInclude Include="SkipFileObject.h" />
-    <ClInclude Include="AudioAssetSystem.h" />
+    <ClInclude Include="AudioAssetCurator.h" />
     <ClInclude Include="Surface.h" />
     <ClInclude Include="SenseComponent.h" />
-    <ClInclude Include="InputStasisArchive.h" />
+    <ClInclude Include="InputStasisArchiveInterface.h" />
     <ClInclude Include="TileSize.h" />
     <ClInclude Include="TimeValue.h" />
     <ClInclude Include="UnpackTuple.h" />
@@ -282,13 +258,13 @@
     <ClInclude Include="Field.h" />
     <ClInclude Include="FieldDestination.h" />
     <ClInclude Include="FieldID.h" />
+    <ClInclude Include="WorldFileExtension.h" />
     <ClInclude Include="WorldManager.h" />
-    <ClInclude Include="OutputWorldArchive.h" />
+    <ClInclude Include="OutputWorldArchiveInterface.h" />
     <ClInclude Include="Flags.h" />
     <ClInclude Include="FontDefines.h" />
     <ClInclude Include="FrameStopwatch.h" />
     <ClInclude Include="Function.h" />
-    <ClInclude Include="InputTraits.h" />
     <ClInclude Include="GameState.h" />
     <ClInclude Include="MathUtility.h" />
     <ClInclude Include="Pathfinder.h" />
@@ -300,159 +276,155 @@
     <ClInclude Include="Ratio.h" />
     <ClInclude Include="Size2D.h" />
     <ClInclude Include="Sound.h" />
-    <ClInclude Include="Sprite.h" />
+    <ClInclude Include="DynamicMaterialView.h" />
     <ClInclude Include="UniqueStack.h" />
-    <ClInclude Include="StateWithGui.h" />
-    <ClInclude Include="StateGui.h" />
     <ClInclude Include="String.h" />
-    <ClInclude Include="Tile.h" />
     <ClInclude Include="GridPosition.h" />
     <ClInclude Include="Stopwatch.h" />
-    <ClInclude Include="InputWorldArchive.h" />
-    <ClInclude Include="WorldStart.h" />
-    <ClInclude Include="WorldSystem.h" />
+    <ClInclude Include="InputWorldArchiveInterface.h" />
+    <ClInclude Include="WorldManagerProvider.h" />
     <ClInclude Include="WrapMath.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\AngelScript\sdk\add_on\scriptarray\scriptarray.cpp" />
     <ClCompile Include="..\..\AngelScript\sdk\add_on\scriptstdstring\scriptstdstring.cpp" />
+    <ClCompile Include="Action.cpp" />
+    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CameraMoved.cpp" />
+    <ClCompile Include="CanvasViewCurator.cpp" />
+    <ClCompile Include="ChangeMasterVolume.cpp" />
+    <ClCompile Include="CurrentAvatar.cpp" />
+    <ClCompile Include="DebugStatistics.cpp" />
+    <ClCompile Include="Entity.cpp" />
+    <ClCompile Include="ExecuteImmediately.cpp" />
+    <ClCompile Include="Field.cpp" />
+    <ClCompile Include="FieldSet.cpp" />
+    <ClCompile Include="FieldUnset.cpp" />
+    <ClCompile Include="FocusLost.cpp" />
+    <ClCompile Include="FocusRegained.cpp" />
+    <ClCompile Include="ForceQuit.cpp" />
+    <ClCompile Include="GraphicsCurator.cpp" />
+    <ClCompile Include="InputManager.cpp" />
+    <ClCompile Include="MaterialViewCore.cpp" />
+    <ClCompile Include="StaticMaterialView.cpp" />
+    <ClCompile Include="Map.cpp" />
+    <ClCompile Include="MaterialViewCurator.cpp" />
+    <ClCompile Include="InitializationInformation.cpp" />
+    <ClCompile Include="Input.cpp" />
+    <ClCompile Include="InputCurator.cpp" />
+    <ClCompile Include="MappedActions.cpp" />
+    <ClCompile Include="MappedEntities.cpp" />
+    <ClCompile Include="MappedInputs.cpp" />
+    <ClCompile Include="Log.cpp" />
+    <ClCompile Include="MouseInformation.cpp" />
+    <ClCompile Include="Bounds.cpp" />
+    <ClCompile Include="MoveCamera.cpp" />
+    <ClCompile Include="MoveCameraBy.cpp" />
+    <ClCompile Include="MoveCameraDeltaInstant.cpp" />
+    <ClCompile Include="MoveCameraToInstant.cpp" />
+    <ClCompile Include="MoveEntity.cpp" />
+    <ClCompile Include="MoveEntityDirection.cpp" />
+    <ClCompile Include="MoveEntityInstant.cpp" />
+    <ClCompile Include="PositionedEntities.cpp" />
+    <ClCompile Include="ProcessedLog.cpp" />
+    <ClCompile Include="ReconstructGraphics.cpp" />
+    <ClCompile Include="AllRunningScripts.cpp" />
+    <ClCompile Include="RotateEntity.cpp" />
+    <ClCompile Include="StateRequest.cpp" />
+    <ClCompile Include="TimeInformation.cpp" />
     <ClCompile Include="EngineNotSetup.cpp" />
-    <ClCompile Include="EngineTypeRegistration.cpp" />
-    <ClCompile Include="EntityActionSystem.cpp" />
-    <ClCompile Include="AngelScriptAssert.cpp" />
+    <ClCompile Include="EntityActionCurator.cpp" />
+    <ClCompile Include="AngelScriptResultVerification.cpp" />
     <ClCompile Include="AngelScriptEvent.cpp" />
     <ClCompile Include="AngelScriptRegistrationInterface.cpp" />
-    <ClCompile Include="AngelScriptSystem.cpp" />
+    <ClCompile Include="AngelScriptCurator.cpp" />
     <ClCompile Include="AngelScriptGridPosition.cpp" />
-    <ClCompile Include="AngelScriptObject.cpp" />
+    <ClCompile Include="AngelScriptRelic.cpp" />
     <ClCompile Include="AngelScriptReferenceCounted.cpp" />
     <ClCompile Include="AngelScriptTile.cpp" />
-    <ClCompile Include="AngelScriptUserData.cpp" />
     <ClCompile Include="AngelScriptUtility.cpp" />
     <ClCompile Include="Angle.cpp" />
     <ClCompile Include="AngleConversion.cpp" />
-    <ClCompile Include="AssetPackageSystem.cpp" />
+    <ClCompile Include="FileAssetPackageCurator.cpp" />
     <ClCompile Include="AudioAssetInstance.cpp" />
-    <ClCompile Include="AudioAssetFactory.cpp" />
-    <ClCompile Include="AudioSystem.cpp" />
+    <ClCompile Include="AudioManagerProvider.cpp" />
     <ClCompile Include="AxisAlignedBox3D.cpp" />
-    <ClCompile Include="BoundEventSubscriber.cpp" />
-    <ClCompile Include="BoundEventSubscriberList.cpp" />
-    <ClCompile Include="CameraSystem.cpp" />
-    <ClCompile Include="DebugStatisticsSystem.cpp" />
+    <ClCompile Include="CameraCurator.cpp" />
+    <ClCompile Include="DebugStatisticsCurator.cpp" />
     <ClCompile Include="Degrees.cpp" />
     <ClCompile Include="Engine.cpp" />
-    <ClCompile Include="EngineSystem.cpp" />
     <ClCompile Include="EngineExecution.cpp" />
     <ClCompile Include="AnyEventConnection.cpp" />
+    <ClCompile Include="Exception.cpp" />
     <ClCompile Include="FileAsset.cpp" />
+    <ClCompile Include="TimeSettings.cpp" />
     <ClCompile Include="NullFileManager.cpp" />
     <ClCompile Include="NullWindow.cpp" />
-    <ClCompile Include="ObjectException.cpp" />
-    <ClCompile Include="ObjectManagerFactory.cpp" />
-    <ClCompile Include="TypeRegistration.cpp" />
-    <ClCompile Include="FileSystem.cpp" />
-    <ClCompile Include="FpsSystem.cpp" />
-    <ClCompile Include="InputArchiveBase.cpp" />
-    <ClCompile Include="ObjectManagerException.cpp" />
-    <ClCompile Include="OutputArchiveBase.cpp" />
-    <ClCompile Include="OutputStasisArchive.cpp" />
+    <ClCompile Include="FileManagerProvider.cpp" />
+    <ClCompile Include="TimeCurator.cpp" />
+    <ClCompile Include="OutputStasisArchiveInterface.cpp" />
     <ClCompile Include="Scalers2D.cpp" />
     <ClCompile Include="Scalers3D.cpp" />
     <ClCompile Include="ScreenDimensions.cpp" />
     <ClCompile Include="ScreenPosition.cpp" />
-    <ClCompile Include="WindowSystem.cpp" />
-    <ClCompile Include="GraphicsSystem.cpp" />
-    <ClCompile Include="GuiSystem.cpp" />
+    <ClCompile Include="TypeRegistration.cpp" />
+    <ClCompile Include="VolumeInformation.cpp" />
+    <ClCompile Include="WindowDimensionsChanged.cpp" />
+    <ClCompile Include="WindowProvider.cpp" />
+    <ClCompile Include="GraphicsManagerProvider.cpp" />
+    <ClCompile Include="GuiEngineProvider.cpp" />
     <ClCompile Include="FixedPoint.cpp" />
     <ClCompile Include="WindowBase.cpp" />
-    <ClCompile Include="DivideByZeroException.cpp" />
-    <ClCompile Include="ImageAssetFactory.cpp" />
+    <ClCompile Include="DivisionByZero.cpp" />
     <ClCompile Include="InitializationFileEntry.cpp" />
     <ClCompile Include="InitializationFileExtractedSection.cpp" />
     <ClCompile Include="InitializationFileSection.cpp" />
-    <ClCompile Include="InitializationFileSystem.cpp" />
-    <ClCompile Include="InputException.cpp" />
-    <ClCompile Include="InputKey.cpp" />
-    <ClCompile Include="InputSystem.cpp" />
-    <ClCompile Include="InputMouseKey.cpp" />
-    <ClCompile Include="InputSignalBase.cpp" />
+    <ClCompile Include="InitializationFileCurator.cpp" />
+    <ClCompile Include="InputManagerProvider.cpp" />
     <ClCompile Include="LargeInteger.cpp" />
-    <ClCompile Include="LoggingSystem.cpp" />
-    <ClCompile Include="MasterSoundSystem.cpp" />
-    <ClCompile Include="MaterialAssetFactory.cpp" />
-    <ClCompile Include="MusicSystem.cpp" />
+    <ClCompile Include="LogCurator.cpp" />
+    <ClCompile Include="VolumeCurator.cpp" />
+    <ClCompile Include="MusicCurator.cpp" />
     <ClCompile Include="NameValuePair.cpp" />
     <ClCompile Include="AudioAsset.cpp" />
-    <ClCompile Include="Entity.cpp" />
-    <ClCompile Include="EntityComponent.cpp" />
-    <ClCompile Include="EntityPositionSystem.cpp" />
-    <ClCompile Include="EntitySystem.cpp" />
+    <ClCompile Include="EntityPositionCurator.cpp" />
+    <ClCompile Include="EntityCurator.cpp" />
     <ClCompile Include="ModulatorInterpolation.cpp" />
     <ClCompile Include="ModulatorInterpolationLinear.cpp" />
     <ClCompile Include="ModulatorInterpolationSmoothstep.cpp" />
     <ClCompile Include="ModulatorInterpolationOscillation.cpp" />
-    <ClCompile Include="NotImplementedException.cpp" />
-    <ClCompile Include="RenderSystem.cpp" />
+    <ClCompile Include="RenderCurator.cpp" />
     <ClCompile Include="RunningScript.cpp" />
-    <ClCompile Include="ScopedEventConnection.cpp" />
-    <ClCompile Include="ScopedEventConnectionList.cpp" />
     <ClCompile Include="ScriptAsset.cpp" />
     <ClCompile Include="ScriptController.cpp" />
     <ClCompile Include="ScriptInstance.cpp" />
-    <ClCompile Include="NullInput.cpp" />
-    <ClCompile Include="Object.cpp" />
-    <ClCompile Include="ObjectBatchException.cpp" />
-    <ClCompile Include="ObjectBatchSource.cpp" />
-    <ClCompile Include="ObjectFactoryBase.cpp" />
-    <ClCompile Include="ObjectManager.cpp" />
-    <ClCompile Include="PositionalOffsetAdapter.cpp" />
-    <ClCompile Include="ObjectSystem.cpp" />
-    <ClCompile Include="ObjectTypeDescription.cpp" />
-    <ClCompile Include="ObjectTypeDescriptionGroup.cpp" />
-    <ClCompile Include="ObjectTypeGraph.cpp" />
-    <ClCompile Include="ObjectTypeGraphNode.cpp" />
-    <ClCompile Include="ObjectTypeNameSerializer.cpp" />
-    <ClCompile Include="PositionalSystem.cpp" />
-    <ClCompile Include="ScriptAssetFactory.cpp" />
+    <ClCompile Include="NullInputManager.cpp" />
     <ClCompile Include="ScriptParameters.cpp" />
     <ClCompile Include="ScriptPersistence.cpp" />
-    <ClCompile Include="ShaderAssetFactory.cpp" />
-    <ClCompile Include="SoundSystem.cpp" />
-    <ClCompile Include="State.cpp" />
-    <ClCompile Include="StateSystem.cpp" />
-    <ClCompile Include="TileFactory.cpp" />
-    <ClCompile Include="TimeSystem.cpp" />
+    <ClCompile Include="SoundCurator.cpp" />
+    <ClCompile Include="StateCurator.cpp" />
     <ClCompile Include="Variant.cpp" />
-    <ClCompile Include="AxisAlignedObject.cpp" />
     <ClCompile Include="Radians.cpp" />
     <ClCompile Include="Line2D.cpp" />
     <ClCompile Include="Line3D.cpp" />
-    <ClCompile Include="MaterialAssetSystem.cpp" />
     <ClCompile Include="Percentage.cpp" />
     <ClCompile Include="Position3D.cpp" />
     <ClCompile Include="ActionComponent.cpp" />
     <ClCompile Include="AIComponent.cpp" />
     <ClCompile Include="AvatarComponent.cpp" />
-    <ClCompile Include="InputAction.cpp" />
-    <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="MaterialAsset.cpp" />
-    <ClCompile Include="Octree.cpp" />
     <ClCompile Include="Asset.cpp" />
-    <ClCompile Include="ScriptAssetSystem.cpp" />
     <ClCompile Include="Size3D.cpp" />
-    <ClCompile Include="RenderFragmentSystem.cpp" />
     <ClCompile Include="StringUtility.cpp" />
-    <ClCompile Include="TileSystem.cpp" />
     <ClCompile Include="TimeValue.cpp" />
     <ClCompile Include="Vector2D.cpp" />
     <ClCompile Include="Vector3D.cpp" />
     <ClCompile Include="WindowsEngine.cpp" />
     <ClCompile Include="WindowsWindow.cpp" />
     <ClCompile Include="WindowsInputManager.cpp" />
-    <ClCompile Include="EntityAISystem.cpp" />
+    <ClCompile Include="EntityAICurator.cpp" />
     <ClCompile Include="AudioManager.cpp" />
-    <ClCompile Include="EntityAvatarSystem.cpp" />
+    <ClCompile Include="EntityAvatarCurator.cpp" />
     <ClCompile Include="Buffer.cpp" />
     <ClCompile Include="Canvas.cpp" />
     <ClCompile Include="CanvasView.cpp" />
@@ -460,37 +432,31 @@
     <ClCompile Include="WindowsFileManager.cpp" />
     <ClCompile Include="FileUtility.cpp" />
     <ClCompile Include="GeneralComponent.cpp" />
-    <ClCompile Include="InputTraits.cpp" />
-    <ClCompile Include="MousePosition.cpp" />
+    <ClCompile Include="ScreenPositionDelta.cpp" />
     <ClCompile Include="MovementComponent.cpp" />
     <ClCompile Include="Music.cpp" />
     <ClCompile Include="NullAudioManager.cpp" />
     <ClCompile Include="NullGraphicsManager.cpp" />
     <ClCompile Include="Position2D.cpp" />
-    <ClCompile Include="RenderFragment.cpp" />
     <ClCompile Include="SenseComponent.cpp" />
     <ClCompile Include="GraphicsManager.cpp" />
     <ClCompile Include="ImageAsset.cpp" />
-    <ClCompile Include="ImageAssetSystem.cpp" />
     <ClCompile Include="AxisAlignedBox2D.cpp" />
     <ClCompile Include="DirectX9AudioManager.cpp" />
     <ClCompile Include="Line.cpp" />
-    <ClCompile Include="ArchiveBase.cpp" />
-    <ClCompile Include="ShaderAssetSystem.cpp" />
+    <ClCompile Include="ArchiveInterface.cpp" />
     <ClCompile Include="ShaderAsset.cpp" />
     <ClCompile Include="SimpleFile.cpp" />
-    <ClCompile Include="AudioAssetSystem.cpp" />
     <ClCompile Include="Surface.cpp" />
-    <ClCompile Include="InputStasisArchive.cpp" />
+    <ClCompile Include="InputStasisArchiveInterface.cpp" />
     <ClCompile Include="ScriptVariant.cpp" />
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="DebugScreen.cpp" />
     <ClCompile Include="Direction.cpp" />
     <ClCompile Include="DirectX9GraphicsManager.cpp" />
-    <ClCompile Include="Field.cpp" />
     <ClCompile Include="FieldDestination.cpp" />
     <ClCompile Include="WorldManager.cpp" />
-    <ClCompile Include="OutputWorldArchive.cpp" />
+    <ClCompile Include="OutputWorldArchiveInterface.cpp" />
     <ClCompile Include="FontDefines.cpp" />
     <ClCompile Include="FrameStopwatch.cpp" />
     <ClCompile Include="GameState.cpp" />
@@ -499,55 +465,52 @@
     <ClCompile Include="Random.cpp" />
     <ClCompile Include="Size2D.cpp" />
     <ClCompile Include="Sound.cpp" />
-    <ClCompile Include="Sprite.cpp" />
-    <ClCompile Include="StateGui.cpp" />
-    <ClCompile Include="Tile.cpp" />
+    <ClCompile Include="DynamicMaterialView.cpp" />
     <ClCompile Include="GridPosition.cpp" />
     <ClCompile Include="Stopwatch.cpp" />
-    <ClCompile Include="InputWorldArchive.cpp" />
-    <ClCompile Include="WorldStart.cpp" />
-    <ClCompile Include="WorldSystem.cpp" />
+    <ClCompile Include="InputWorldArchiveInterface.cpp" />
+    <ClCompile Include="WorldManagerProvider.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{0E94289D-72E8-4A52-B32A-7B26C1A9FF0C}</ProjectGuid>
     <RootNamespace>Engine</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>Atmos</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release Debug|Win32'">
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Debug|x64'" Label="Configuration">
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -569,7 +532,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Debug|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\Users\Trevor\Documents\Visual Studio 2015\Projects\Function;C:\Users\Trevor\Documents\Programming Projects\wxWidgets2\include;C:\Users\Trevor\Documents\Programming Projects\wxWidgets2\lib\vc_lib\mswud;C:\Program Files %28x86%29\Falcon\include;C:\Users\Trevor\Documents\Programming Projects\Ogg\Built\include;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;C:\Users\Trevor\Documents\Programming Projects\Inscription;C:\Users\Trevor\Documents\Programming Projects\AGUI;C:\Users\Trevor\Documents\Programming Projects\Affecter;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\Trevor\Documents\Programming Projects\Reliquary;C:\Users\Trevor\Documents\Visual Studio 2015\Projects\Function;C:\Users\Trevor\Documents\Programming Projects\wxWidgets2\include;C:\Users\Trevor\Documents\Programming Projects\wxWidgets2\lib\vc_lib\mswud;C:\Program Files %28x86%29\Falcon\include;C:\Users\Trevor\Documents\Programming Projects\Ogg\Built\include;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;C:\Users\Trevor\Documents\Programming Projects\Inscription;C:\Users\Trevor\Documents\Programming Projects\AGUI;C:\Users\Trevor\Documents\Programming Projects\Affecter;$(IncludePath)</IncludePath>
     <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Debug|x64'">
@@ -578,14 +541,14 @@
     <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\Users\Trevor\Documents\Programming Projects\AGUI;C:\Users\Trevor\Documents\Programming Projects\Inscription;C:\Users\Trevor\Documents\Programming Projects\Chroma;C:\Users\Trevor\Documents\Programming Projects\Ogg\libvorbis-1.3.6\include;C:\Users\Trevor\Documents\Programming Projects\wxWidgets2\lib\vc_lib\mswud;C:\Users\Trevor\Documents\Programming Projects\wxWidgets2\include;C:\Users\Trevor\Documents\Programming Projects\Ogg\libogg-1.3.3\include;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;C:\Users\Trevor\Documents\Programming Projects\AngelScript\sdk\angelscript\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\Trevor\Documents\ProgrammingProjects\AGUI;C:\Users\Trevor\Documents\ProgrammingProjects\Inscription;C:\Users\Trevor\Documents\ProgrammingProjects\Chroma;C:\Users\Trevor\Documents\ProgrammingProjects\Arca;C:\Users\Trevor\Documents\ProgrammingProjects\Ogg\libvorbis-1.3.6\include;C:\Users\Trevor\Documents\ProgrammingProjects\wxWidgets2\lib\vc_lib\mswud;C:\Users\Trevor\Documents\ProgrammingProjects\wxWidgets2\include;C:\Users\Trevor\Documents\ProgrammingProjects\Ogg\libogg-1.3.3\include;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;C:\Users\Trevor\Documents\ProgrammingProjects\AngelScript\sdk\angelscript\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>C:\Users\Trevor\Documents\Visual Studio 2015\Projects\Function;C:\Users\Trevor\Documents\Programming Projects\wxWidgets2\lib\vc_lib\mswud;C:\Users\Trevor\Documents\Programming Projects\wxWidgets2\include;C:\Program Files %28x86%29\Falcon\include;C:\Users\Trevor\Documents\Programming Projects\Affecter;C:\Users\Trevor\Documents\Programming Projects\Ogg\Built\include;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;C:\Users\Trevor\Documents\Programming Projects\AGUI;C:\Users\Trevor\Documents\Programming Projects\Inscription;$(IncludePath)</IncludePath>
     <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>C:\Users\Trevor\Documents\Programming Projects\Affecter;C:\Users\Trevor\Documents\Programming Projects\AGUI;C:\Users\Trevor\Documents\Programming Projects\Inscription;C:\Users\Trevor\Documents\Programming Projects\Chroma;C:\Users\Trevor\Documents\Programming Projects\Ogg\libogg-1.3.3\include;C:\Users\Trevor\Documents\Programming Projects\Ogg\libvorbis-1.3.6\include;C:\Users\Trevor\Documents\Programming Projects\AngelScript\sdk\angelscript\include;C:\Users\Trevor\Documents\Programming Projects\wxWidgets2\include;C:\Users\Trevor\Documents\Programming Projects\wxWidgets2\lib\vc_lib\mswud;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\Trevor\Documents\Programming Projects\Affecter;C:\Users\Trevor\Documents\Programming Projects\AGUI;C:\Users\Trevor\Documents\Programming Projects\Inscription;C:\Users\Trevor\Documents\Programming Projects\Chroma;C:\Users\Trevor\Documents\Programming Projects\Reliquary;C:\Users\Trevor\Documents\Programming Projects\Ogg\libogg-1.3.3\include;C:\Users\Trevor\Documents\Programming Projects\Ogg\libvorbis-1.3.6\include;C:\Users\Trevor\Documents\Programming Projects\AngelScript\sdk\angelscript\include;C:\Users\Trevor\Documents\Programming Projects\wxWidgets2\include;C:\Users\Trevor\Documents\Programming Projects\wxWidgets2\lib\vc_lib\mswud;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>C:\Users\Trevor\Documents\Visual Studio 2015\Projects\Function;C:\Users\Trevor\Documents\Programming Projects\wxWidgets2\lib\vc_lib\mswud;C:\Users\Trevor\Documents\Programming Projects\wxWidgets2\include;C:\Program Files %28x86%29\Falcon\include;C:\Users\Trevor\Documents\Programming Projects\Ogg\Built\include;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;C:\Users\Trevor\Documents\Programming Projects\Inscription;C:\Users\Trevor\Documents\Programming Projects\AGUI;C:\Users\Trevor\Documents\Programming Projects\Affecter;$(IncludePath)</IncludePath>
@@ -639,7 +602,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG; NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

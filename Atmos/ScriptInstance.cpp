@@ -1,19 +1,13 @@
 #include "ScriptInstance.h"
 
-#include "RunningScript.h"
-#include "ScriptController.h"
+#include <Arca/Reliquary.h>
 
-#include "ObjectManager.h"
+#include "RunningScript.h"
+#include "AllRunningScripts.h"
+#include "ExecuteImmediately.h"
 
 namespace Atmos::Script
 {
-    ScriptInstance::ScriptInstance(ObjectManager& manager) : Object(manager)
-    {}
-
-    ScriptInstance::ScriptInstance(const ::Inscription::BinaryTableData<ScriptInstance>& data) :
-        Object(std::get<0>(data.bases))
-    {}
-
     void ScriptInstance::ExecuteDeferred()
     {
         if (IsRunning())
@@ -27,52 +21,34 @@ namespace Atmos::Script
         if (IsRunning())
             return;
 
-        auto running = CreateRunningFromThis();
-        Manager()->FindSystem<ScriptController>()->ExecuteImmediately(running);
+        auto& running = CreateRunningFromThis();
+        Owner().Raise<Script::ExecuteImmediately>(running);
     }
 
-    TypedObjectReference<RunningScript> ScriptInstance::RunningForThis() const
+    RunningScript* ScriptInstance::RunningForThis() const
     {
         if (!IsRunning())
-            return TypedObjectReference<RunningScript>();
+            return nullptr;
 
-        return Manager()->FindSystem<ScriptController>()->RunningScriptFor(*this);
+        return Owner().Find<AllRunningScripts>()->RunningScriptFor(*this);
     }
 
     bool ScriptInstance::IsRunning() const
     {
-        return Manager()->FindSystem<ScriptController>()->IsRunning(this);
+        return Owner().Find<AllRunningScripts>()->IsRunning(*this);
     }
 
-    ObjectTypeDescription ScriptInstance::TypeDescription() const
+    RunningScript& ScriptInstance::CreateRunningFromThis()
     {
-        return ObjectTraits<ScriptInstance>::TypeDescription();
-    }
-
-    TypedObjectReference<RunningScript> ScriptInstance::CreateRunningFromThis()
-    {
-        auto running = Manager()->CreateObject<RunningScript>(*this);
-        running->owner = owner;
+        auto running = Owner().Create<RunningScript>(*this);
         running->executeName = executeName;
         running->parameters = parameters;
         running->persistence = persistence;
-        return running;
+        return *running;
     }
 }
 
-namespace Atmos
+namespace Arca
 {
-    const ObjectTypeName ObjectTraits<Script::ScriptInstance>::typeName = "ScriptInstance";
-}
-
-namespace Inscription
-{
-    Scribe<::Atmos::Script::ScriptInstance, BinaryArchive>::Table::Table()
-    {
-        MergeDataEntries({
-            DataEntry::Auto(&ObjectT::asset, &DataT::asset),
-            DataEntry::Auto(&ObjectT::executeName, &DataT::executeName),
-            DataEntry::Auto(&ObjectT::parameters, &DataT::parameters),
-            DataEntry::Auto(&ObjectT::persistence, &DataT::persistence) });
-    }
+    const TypeName Traits<::Atmos::Script::ScriptInstance>::typeName = "ScriptInstance";
 }

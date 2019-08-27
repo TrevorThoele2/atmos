@@ -6,19 +6,19 @@
 
 namespace Atmos::File
 {
-    class WindowsFileManager : public FileManager
+    class WindowsFileManager final : public FileManager
     {
     public:
         void MakeDirectory(const Path& path) override;
         bool RelocateFile(const Path& from, const Path& to) override;
         bool RemoveFile(const Path& remove) override;
 
-        Path ExePath() const override;
-        Path DataPath() const override;
-        Path TemporaryDirectoryPath() const override;
-        size_t MaxPathLength() const override;
-        String FileSeparator() const override;
+        [[nodiscard]] Path ExePath() const override;
+        [[nodiscard]] Path DataPath() const override;
+        [[nodiscard]] Path TemporaryDirectoryPath() const override;
+        [[nodiscard]] size_t MaxPathLength() const override;
+        [[nodiscard]] String FileSeparator() const override;
     private:
-        static constexpr size_t maxPathLength = MAX_PATH * sizeof(TCHAR) + sizeof(TCHAR);
+        constexpr static size_t maxPathLength = MAX_PATH * sizeof(TCHAR) + sizeof(TCHAR);
     };
 }

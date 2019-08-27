@@ -6,15 +6,9 @@
 #include "ScreenPosition.h"
 #include "ScreenDimensions.h"
 
-namespace Atmos
+namespace Arca
 {
-    class ObjectManager;
-    class LoggingSystem;
-
-    namespace Render
-    {
-        class GraphicsSystem;
-    }
+    class Reliquary;
 }
 
 namespace Atmos::Window
@@ -22,31 +16,31 @@ namespace Atmos::Window
     class WindowBase
     {
     public:
-        typedef ScreenPosition Position;
-        typedef ScreenDimensions Size;
+        using Position = ScreenPosition;
+        using Size = ScreenDimensions;
     public:
         virtual ~WindowBase() = 0;
 
-        virtual void Setup() = 0;
+        void Setup(Arca::Reliquary& reliquary);
 
         virtual void Show() = 0;
         virtual void Exit() = 0;
-        virtual bool IsCurrentlyFocused() const = 0;
+        [[nodiscard]] virtual bool IsCurrentlyFocused() const = 0;
         virtual void Suspend(const Time::Value& time) = 0;
         virtual bool OnStartFrame() = 0;
 
         void ToggleFullscreen();
         void SetFullscreen(bool set = true);
-        bool IsFullscreen() const;
-        bool IsWindowed() const;
+        [[nodiscard]] bool IsFullscreen() const;
+        [[nodiscard]] bool IsWindowed() const;
 
-        Size DefaultSize();
-        Size ClientSize();
-        Size WindowSize();
-        Position StartPosition();
+        [[nodiscard]] Size DefaultSize() const;
+        [[nodiscard]] Size ClientSize() const;
+        [[nodiscard]] Size WindowSize() const;
+        [[nodiscard]] Position StartPosition() const;
     protected:
-        WindowBase(ObjectManager& objectManager);
-    protected:
+        virtual void SetupImpl() = 0;
+
         void SetWindowDimensions();
 
         virtual AxisAlignedBox2D AdjustWindowDimensions() = 0;
@@ -54,33 +48,15 @@ namespace Atmos::Window
         virtual Position GetDefaultWindowPosition() = 0;
         virtual void OnSetFullscreen() = 0;
     protected:
-        ObjectManager* GetObjectManager();
-        const ObjectManager* GetObjectManager() const;
-        LoggingSystem* FindLoggingSystem();
+        [[nodiscard]] Arca::Reliquary& Reliquary();
+        [[nodiscard]] const Arca::Reliquary& Reliquary() const;
     private:
         Size clientSize;
         Size windowSize;
         Position startPosition;
     private:
-        bool isFocusLost;
-        bool isFullscreen;
+        bool isFullscreen = false;
     private:
-        ObjectManager* objectManager;
-        Render::GraphicsSystem* FindGraphicsSystem();
-    };
-}
-
-namespace Inscription
-{
-    template<>
-    class Scribe<::Atmos::Window::WindowBase, BinaryArchive> :
-        public TableScribe<::Atmos::Window::WindowBase, BinaryArchive>
-    {
-    public:
-        class Table : public TableBase
-        {
-        protected:
-            void ConstructImplementation(ObjectT* storage, ArchiveT& archive) override;
-        };
+        Arca::Reliquary* reliquary = nullptr;
     };
 }

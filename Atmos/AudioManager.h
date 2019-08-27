@@ -10,8 +10,10 @@ namespace Atmos::Audio
     class AudioManager
     {
     public:
-        typedef std::uint32_t SizeT;
+        using SizeT = std::uint32_t;
     public:
+        AudioManager(const AudioManager& arg) = delete;
+        AudioManager& operator=(const AudioManager& arg) = delete;
         virtual ~AudioManager() = 0;
 
         std::unique_ptr<Asset::AudioAssetData> CreateAudioData(const File::Path& path);
@@ -23,7 +25,7 @@ namespace Atmos::Audio
     protected:
         AudioManager();
     protected:
-        typedef Buffer<SizeT> BufferT;
+        using BufferT = Buffer<SizeT>;
 
         struct Format
         {
@@ -35,17 +37,14 @@ namespace Atmos::Audio
             std::int32_t avgBytesPerSec;
         };
 
-        typedef std::pair<BufferT, Format> ExtractedFile;
+        using ExtractedFile = std::pair<BufferT, Format>;
     private:
         enum class FileType
         {
-            NONE,
-            WAV,
-            OGG
+            None,
+            Wav,
+            Ogg
         };
-    private:
-        AudioManager(const AudioManager& arg) = delete;
-        AudioManager& operator=(const AudioManager& arg) = delete;
     private:
         ExtractedFile ExtractFile(FileType fileType, BufferT&& buffer, SizeT fileSize);
         ExtractedFile ExtractFileWAV(BufferT&& buffer, SizeT fileSize);
@@ -55,20 +54,5 @@ namespace Atmos::Audio
     private:
         virtual std::unique_ptr<Asset::AudioAssetData> CreateAudioDataImpl(
             ExtractedFile&& extracted, const File::Name& name) = 0;
-    };
-}
-
-namespace Inscription
-{
-    template<>
-    class Scribe<::Atmos::Audio::AudioManager, BinaryArchive> :
-        public TableScribe<::Atmos::Audio::AudioManager, BinaryArchive>
-    {
-    public:
-        class Table : public TableBase
-        {
-        protected:
-            void ConstructImplementation(ObjectT* storage, ArchiveT& archive) override;
-        };
     };
 }

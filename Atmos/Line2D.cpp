@@ -1,11 +1,7 @@
 #include "Line2D.h"
-#include "Math.h"
 
 namespace Atmos
 {
-    Line2D::Line2D(const Position2D& first, const Position2D& second) : first(first), second(second)
-    {}
-
     bool Line2D::operator==(const Line2D& arg) const
     {
         return first == arg.first && second == arg.second;
@@ -18,22 +14,22 @@ namespace Atmos
 
     Line2D::operator Vector2D() const
     {
-        return Vector2D(second.x - first.x, second.y - first.y);
+        return Vector2D{ second.x - first.x, second.y - first.y };
     }
 
-    Optional<Position2D::Value> Line2D::Slope() const
+    std::optional<Position2D::Value> Line2D::Slope() const
     {
-        typedef Optional<Position2D::Value> RetT;
+        using ReturnValue = std::optional<Position2D::Value>;
         const Position2D::Value x = second.x - first.x;
         const Position2D::Value y = second.y - first.y;
-        return (x == 0) ? RetT() : (y / x);
+        return (x == 0) ? ReturnValue() : (y / x);
     }
 
-    Optional<Position2D::Value> Line2D::YIntercept() const
+    std::optional<Position2D::Value> Line2D::YIntercept() const
     {
-        typedef Optional<Position2D::Value> RetT;
-        const RetT slope(Slope());
-        return (!slope.IsValid()) ? RetT() : (-1 * *slope * first.x) + first.y;
+        using ReturnValue = std::optional<Position2D::Value>;
+        const ReturnValue slope(Slope());
+        return (!slope) ? ReturnValue() : (-1 * *slope * first.x) + first.y;
     }
 
     Position2D::Value Line2D::Length() const
@@ -63,7 +59,7 @@ namespace Atmos
 
     Vector2D Line2D::Direction() const
     {
-        return Vector2D(second.x - first.x, second.y - first.y);
+        return Vector2D{ second.x - first.x, second.y - first.y };
     }
 
     bool Line2D::CheckIntersect(const Line2D& other) const
@@ -92,7 +88,7 @@ namespace Atmos
         return false;
     }
 
-    Optional<Position2D> Line2D::IntersectionPoint(const Line2D& other, bool infinite) const
+    std::optional<Position2D> Line2D::IntersectionPoint(const Line2D& other, bool infinite) const
     {
         /*
         Two lines
@@ -135,7 +131,7 @@ namespace Atmos
         Position2D::ValueT b2 = other.first.GetY() - (other.first.GetX() * m2);
         */
 
-        return Optional<Position2D>();
+        return {};
     }
 
     Position2D::Value Line2D::DeltaX() const

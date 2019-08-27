@@ -11,11 +11,11 @@ namespace Atmos
     {
     public:
         Name name;
-        VariantT value;
+        Variant value;
     public:
         NameValuePair();
-        NameValuePair(const Name& name, const VariantT& value);
-        NameValuePair(Name&& name, VariantT&& value);
+        NameValuePair(const Name& name, const Variant& value);
+        NameValuePair(Name&& name, Variant&& value);
         NameValuePair(const NameValuePair& arg);
         NameValuePair(NameValuePair&& arg);
 
@@ -36,6 +36,5 @@ namespace Inscription
     {
     protected:
         void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
-        void ConstructImplementation(ObjectT* storage, ArchiveT& archive) override;
     };
 }

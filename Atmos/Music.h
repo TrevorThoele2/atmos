@@ -1,51 +1,35 @@
 #pragma once
 
-#include "Object.h"
-#include "ObjectReference.h"
-#include "ObjectScribe.h"
+#include <Arca/ClosedTypedRelicAutomation.h>
 
 #include "AudioAssetInstance.h"
 
-#include "StoredProperty.h"
-
 namespace Atmos::Audio
 {
-    class Music : public Object
+    class Music
     {
     public:
-        typedef TypedObjectReference<Asset::AudioAssetInstance> AssetReference;
-        typedef StoredProperty<AssetReference> AssetProperty;
-        AssetProperty audioAsset;
+        using AssetInstance = Asset::AudioAssetInstance;
+        AssetInstance audioAsset;
     public:
-        Music(ObjectManager& manager);
-        Music(const ::Inscription::BinaryTableData<Music>& data);
-
-        ObjectTypeDescription TypeDescription() const override;
+        Music() = default;
     };
 }
 
-namespace Atmos
+namespace Arca
 {
     template<>
-    struct ObjectTraits<Audio::Music> : ObjectTraitsBase<Audio::Music>
+    struct Traits<::Atmos::Audio::Music>
     {
-        static const ObjectTypeName typeName;
+        static const ObjectType objectType = ObjectType::Relic;
+        static const TypeName typeName;
     };
 }
 
 namespace Inscription
 {
     template<>
-    struct TableData<::Atmos::Audio::Music, BinaryArchive> :
-        public ObjectTableDataBase<::Atmos::Audio::Music, BinaryArchive>
+    class Scribe<::Atmos::Audio::Music, BinaryArchive> final :
+        public ArcaNullScribe<::Atmos::Audio::Music, BinaryArchive>
     {};
-
-    template<>
-    class Scribe<::Atmos::Audio::Music, BinaryArchive> :
-        public ObjectScribe<::Atmos::Audio::Music, BinaryArchive>
-    {
-    public:
-        class Table : public TableBase
-        {};
-    };
 }

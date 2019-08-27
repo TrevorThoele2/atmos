@@ -2,26 +2,19 @@
 
 #include "InputManager.h"
 
-namespace Atmos::Window
-{
-    class WindowSystem;
-}
+#include "WindowsInclude.h"
 
 namespace Atmos::Input
 {
-    class WindowsManager : public Manager
+    class WindowsManager final : public Manager
     {
     public:
-        WindowsManager() = default;
+        explicit WindowsManager(HWND hwnd);
+
+        [[nodiscard]] std::vector<CreatedInput> CreateAllInputs() const override;
+        [[nodiscard]] ScreenPosition CurrentMousePosition() const override;
+        [[nodiscard]] bool IsInputDown(Input& input) const override;
     private:
-        void CreateSignalsImpl() override;
-        void WorkSignalsImpl(SignalList& signalList) override;
-        bool ShouldAddActions() const override;
-        MousePosition GetMousePositionImpl() const override;
-    private:
-        bool IsSignalDownBase(SignalBase& signal) const;
-        bool IsMouseWithinScreen() const;
-    private:
-        Window::WindowSystem* FindWindowSystem() const;
+        HWND hwnd;
     };
 }

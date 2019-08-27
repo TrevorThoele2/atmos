@@ -1,57 +1,40 @@
 #pragma once
 
-#include "AxisAlignedObject.h"
+#include <Arca/ClosedTypedRelicAutomation.h>
 
+#include "Bounds.h"
 #include "AudioAssetInstance.h"
-
-#include "ObjectScribe.h"
 
 namespace Atmos::Audio
 {
-    class Sound : public AxisAlignedObject
+    class Sound final : public Arca::ClosedTypedRelicAutomation<Sound, Bounds>
     {
     public:
-        StoredProperty<bool> enabled;
+        using Asset = Asset::AudioAssetInstance;
     public:
-        typedef TypedObjectReference<Asset::AudioAssetInstance> AssetReference;
-        typedef StoredProperty<AssetReference> AssetProperty;
-        AssetProperty audioAsset;
-    public:
-        Sound(ObjectManager& manager);
-        Sound(const Sound& arg);
-        Sound(const ::Inscription::BinaryTableData<Sound>& data);
+        void PostConstruct(ShardTuple shards);
+        void Initialize(Asset&& asset);
+    private:
+        Arca::Ptr<Bounds> bounds;
 
-        ObjectTypeDescription TypeDescription() const override;
-    private:
-        void SubscribeToProperties();
-    private:
-        void OnEnabledChanged(bool newValue);
+        Asset asset;
     };
 }
 
-namespace Atmos
+namespace Arca
 {
     template<>
-    struct ObjectTraits<Audio::Sound> : ObjectTraitsBase<Audio::Sound>
+    struct Traits<::Atmos::Audio::Sound>
     {
-        static const ObjectTypeName typeName;
-        static constexpr ObjectTypeList<AxisAlignedObject> bases = {};
+        static const ObjectType objectType = ObjectType::Relic;
+        static const TypeName typeName;
     };
 }
 
 namespace Inscription
 {
     template<>
-    struct TableData<::Atmos::Audio::Sound, BinaryArchive> :
-        public ObjectTableDataBase<::Atmos::Audio::Sound, BinaryArchive>
+    class Scribe<::Atmos::Audio::Sound, BinaryArchive> final :
+        public ArcaNullScribe<::Atmos::Audio::Sound, BinaryArchive>
     {};
-
-    template<>
-    class Scribe<::Atmos::Audio::Sound, BinaryArchive> :
-        public ObjectScribe<::Atmos::Audio::Sound, BinaryArchive>
-    {
-    public:
-        class Table : public TableBase
-        {};
-    };
 }

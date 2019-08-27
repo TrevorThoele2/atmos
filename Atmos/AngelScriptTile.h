@@ -1,22 +1,17 @@
 #pragma once
 
-#include "AngelScriptObject.h"
+#include "AngelScriptRelic.h"
 #include "AngelScriptGridPosition.h"
 
-namespace Atmos
+namespace Atmos::Script::Angel
 {
-    class ObjectManager;
-}
-
-namespace Atmos::Script
-{
-    class Tile : public Object
+    class Tile : public Relic
     {
     public:
         GridPosition position;
     public:
         Tile();
 
-        static void RegisterToAngelScript(asIScriptEngine* engine);
+        static void RegisterTo(asIScriptEngine* engine);
     };
 }

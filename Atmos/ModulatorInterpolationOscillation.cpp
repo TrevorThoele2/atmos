@@ -6,7 +6,7 @@ namespace Atmos
 {
     namespace Modulator
     {
-        InterpolationOscillation::InterpolationOscillation() : Interpolation(Type::OSCILLATION), acceleration(0), rate(0)
+        InterpolationOscillation::InterpolationOscillation() : Interpolation(Severity::OSCILLATION), acceleration(0), rate(0)
         {}
 
         InterpolationOscillation* InterpolationOscillation::Clone() const

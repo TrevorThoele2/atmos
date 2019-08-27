@@ -1,194 +1,166 @@
-
 #include "WindowsInputManager.h"
-
-#include "WindowsInclude.h"
-
-#include "ObjectManager.h"
-#include "WindowSystem.h"
-
-#include "WindowsWindow.h"
-
-#include "IsSameRuntimeType.h"
+#include <utility>
 
 namespace Atmos::Input
 {
-    class SignalBaseData : public SignalBase::Data
+    class InputDataImplementation : public InputData
     {
     public:
-        typedef int Code;
-        Code code;
-    public:
-        SignalBaseData(Code code) : code(code)
+        using Code = int;
+        const Code code;
+
+        explicit InputDataImplementation(Code code) : code(code)
         {}
+
+        [[nodiscard]] std::unique_ptr<InputData> Clone() const override
+        {
+            return std::make_unique<InputDataImplementation>(code);
+        }
     };
 
-    void WindowsManager::CreateSignalsImpl()
+    WindowsManager::WindowsManager(HWND hwnd) : hwnd(hwnd)
+    {}
+
+    std::vector<WindowsManager::CreatedInput> WindowsManager::CreateAllInputs() const
     {
-        auto createSignal = [](int code) -> SignalDataPtr
+        std::vector<CreatedInput> createdInputs;
+        const auto create = [&createdInputs](InputID id, String displayName, InputDataImplementation::Code code)
         {
-            return SignalDataPtr(new SignalBaseData(code));
+            createdInputs.push_back({
+                std::move(id),
+                Input
+                {
+                    std::move(displayName),
+                    std::make_unique<InputDataImplementation>(code)
+                } });
         };
 
-        CreateMouseKey<MouseKeyID::LEFT>(createSignal(VK_LBUTTON));
-        CreateMouseKey<MouseKeyID::RIGHT>(createSignal(VK_RBUTTON));
+        create("leftmouse", "Left Mouse Button", VK_LBUTTON);
+        create("rightmouse", "Right Mouse Button", VK_RBUTTON);
+        create("a", "A", 0x41);
+        create("b", "B", 0x42);
+        create("c", "C", 0x43);
+        create("d", "D", 0x44);
+        create("e", "E", 0x45);
+        create("f", "F", 0x46);
+        create("g", "G", 0x47);
+        create("h", "H", 0x48);
+        create("i", "I", 0x49);
+        create("j", "J", 0x4A);
+        create("k", "K", 0x4B);
+        create("l", "L", 0x4C);
+        create("m", "M", 0x4D);
+        create("n", "N", 0x4E);
+        create("o", "O", 0x4F);
+        create("p", "P", 0x50);
+        create("q", "Q", 0x51);
+        create("r", "R", 0x52);
+        create("s", "S", 0x53);
+        create("t", "T", 0x54);
+        create("u", "U", 0x55);
+        create("v", "V", 0x56);
+        create("w", "W", 0x57);
+        create("x", "X", 0x58);
+        create("y", "Y", 0x59);
+        create("z", "Z", 0x5A);
 
-        // Inputs
-        CreateKey<KeyID::A>(createSignal(0x41));
-        CreateKey<KeyID::B>(createSignal(0x42));
-        CreateKey<KeyID::C>(createSignal(0x43));
-        CreateKey<KeyID::D>(createSignal(0x44));
-        CreateKey<KeyID::E>(createSignal(0x45));
-        CreateKey<KeyID::F>(createSignal(0x46));
-        CreateKey<KeyID::G>(createSignal(0x47));
-        CreateKey<KeyID::H>(createSignal(0x48));
-        CreateKey<KeyID::I>(createSignal(0x49));
-        CreateKey<KeyID::J>(createSignal(0x4A));
-        CreateKey<KeyID::K>(createSignal(0x4B));
-        CreateKey<KeyID::L>(createSignal(0x4C));
-        CreateKey<KeyID::M>(createSignal(0x4D));
-        CreateKey<KeyID::N>(createSignal(0x4E));
-        CreateKey<KeyID::O>(createSignal(0x4F));
-        CreateKey<KeyID::P>(createSignal(0x50));
-        CreateKey<KeyID::Q>(createSignal(0x51));
-        CreateKey<KeyID::R>(createSignal(0x52));
-        CreateKey<KeyID::S>(createSignal(0x53));
-        CreateKey<KeyID::T>(createSignal(0x54));
-        CreateKey<KeyID::U>(createSignal(0x55));
-        CreateKey<KeyID::V>(createSignal(0x56));
-        CreateKey<KeyID::W>(createSignal(0x57));
-        CreateKey<KeyID::X>(createSignal(0x58));
-        CreateKey<KeyID::Y>(createSignal(0x59));
-        CreateKey<KeyID::Z>(createSignal(0x5A));
+        create("left", "Left", VK_LEFT);
+        create("up", "Up", VK_UP);
+        create("right", "Right", VK_RIGHT);
+        create("down", "Down", VK_DOWN);
 
-        CreateKey<KeyID::LEFT_ARROW>(createSignal(VK_LEFT));
-        CreateKey<KeyID::UP_ARROW>(createSignal(VK_UP));
-        CreateKey<KeyID::RIGHT_ARROW>(createSignal(VK_RIGHT));
-        CreateKey<KeyID::DOWN_ARROW>(createSignal(VK_DOWN));
+        create("tab", "Tab", VK_TAB);
+        create("spacebar", "Spacebar", VK_SPACE);
+        create("enter", "Enter", VK_RETURN);
+        create("escape", "Escape", VK_ESCAPE);
+        create("insert", "Insert", VK_INSERT);
+        create("home", "Home", VK_HOME);
+        create("pageup", "Page Up", VK_PRIOR);
+        create("pagedown", "Page Down", VK_NEXT);
+        create("delete", "Delete", VK_DELETE);
+        create("end", "End", VK_END);
 
-        CreateKey<KeyID::TAB>(createSignal(VK_TAB));
-        CreateKey<KeyID::SPACEBAR>(createSignal(VK_SPACE));
-        CreateKey<KeyID::ENTER>(createSignal(VK_RETURN));
-        CreateKey<KeyID::ESCAPE>(createSignal(VK_ESCAPE));
-        CreateKey<KeyID::INSERT>(createSignal(VK_INSERT));
-        CreateKey<KeyID::HOME>(createSignal(VK_HOME));
-        CreateKey<KeyID::PAGE_UP>(createSignal(VK_PRIOR));
-        CreateKey<KeyID::PAGE_DOWN>(createSignal(VK_NEXT));
-        CreateKey<KeyID::DEL>(createSignal(VK_DELETE));
-        CreateKey<KeyID::END>(createSignal(VK_END));
+        create("cancel", "Cancel", VK_CANCEL);
+        create("backspace", "Backspace", VK_BACK);
+        create("clear", "Clear", VK_CLEAR);
+        create("pause", "Pause", VK_PAUSE);
+        create("select", "Select", VK_SELECT);
+        create("print", "Print", VK_PRINT);
+        create("printscreen", "Print Screen", VK_SNAPSHOT);
+        create("decimal", ".", VK_DECIMAL);
 
-        CreateKey<KeyID::CANCEL>(createSignal(VK_CANCEL));
-        CreateKey<KeyID::BACKSPACE>(createSignal(VK_BACK));
-        CreateKey<KeyID::CLEAR>(createSignal(VK_CLEAR));
-        CreateKey<KeyID::PAUSE>(createSignal(VK_PAUSE));
-        CreateKey<KeyID::SELECT>(createSignal(VK_SELECT));
-        CreateKey<KeyID::PRINT>(createSignal(VK_PRINT));
-        CreateKey<KeyID::PRINT_SCREEN>(createSignal(VK_SNAPSHOT));
-        CreateKey<KeyID::DECIMAL>(createSignal(VK_DECIMAL));
+        create("add", "+", VK_ADD);
+        create("subtract", "-", VK_SUBTRACT);
+        create("multiply", "*", VK_MULTIPLY);
+        create("divide", "/", VK_DIVIDE);
 
-        CreateKey<KeyID::ADD>(createSignal(VK_ADD));
-        CreateKey<KeyID::SUBTRACT>(createSignal(VK_SUBTRACT));
-        CreateKey<KeyID::MULTIPLY>(createSignal(VK_MULTIPLY));
-        CreateKey<KeyID::DIVIDE>(createSignal(VK_DIVIDE));
+        create("capslock", "Caps Lock", VK_CAPITAL);
+        create("numlock", "Num Lock", VK_NUMLOCK);
+        create("scrollock", "Scroll Lock", VK_SCROLL);
 
-        CreateKey<KeyID::CAPS_LOCK>(createSignal(VK_CAPITAL));
-        CreateKey<KeyID::NUM_LOCK>(createSignal(VK_NUMLOCK));
-        CreateKey<KeyID::SCROLL_LOCK>(createSignal(VK_SCROLL));
+        create("leftbracket", "[", VK_OEM_4);
+        create("rightbracket", "]", VK_OEM_6);
 
-        CreateKey<KeyID::L_BRACKET>(createSignal(VK_OEM_4));
-        CreateKey<KeyID::R_BRACKET>(createSignal(VK_OEM_6));
+        create("f1", "F1", VK_F1);
+        create("f2", "F2", VK_F2);
+        create("f3", "F3", VK_F3);
+        create("f4", "F4", VK_F4);
+        create("f5", "F5", VK_F5);
+        create("f6", "F6", VK_F6);
+        create("f7", "F7", VK_F7);
+        create("f8", "F8", VK_F8);
+        create("f9", "F9", VK_F9);
+        create("f10", "F10", VK_F10);
+        create("f11", "F11", VK_F11);
+        create("f12", "F12", VK_F12);
+        create("f13", "F13", VK_F13);
+        create("f14", "F14", VK_F14);
+        create("f15", "F15", VK_F15);
+        create("f16", "F16", VK_F16);
+        create("f17", "F17", VK_F17);
+        create("f18", "F18", VK_F18);
+        create("f19", "F19", VK_F19);
+        create("f20", "F20", VK_F20);
+        create("f21", "F21", VK_F21);
+        create("f22", "F22", VK_F22);
+        create("f23", "F23", VK_F23);
+        create("f24", "F24", VK_F24);
 
-        CreateKey<KeyID::F1>(createSignal(VK_F1));
-        CreateKey<KeyID::F2>(createSignal(VK_F2));
-        CreateKey<KeyID::F3>(createSignal(VK_F3));
-        CreateKey<KeyID::F4>(createSignal(VK_F4));
-        CreateKey<KeyID::F5>(createSignal(VK_F5));
-        CreateKey<KeyID::F6>(createSignal(VK_F6));
-        CreateKey<KeyID::F7>(createSignal(VK_F7));
-        CreateKey<KeyID::F8>(createSignal(VK_F8));
-        CreateKey<KeyID::F9>(createSignal(VK_F9));
-        CreateKey<KeyID::F10>(createSignal(VK_F10));
-        CreateKey<KeyID::F11>(createSignal(VK_F11));
-        CreateKey<KeyID::F12>(createSignal(VK_F12));
-        CreateKey<KeyID::F13>(createSignal(VK_F13));
-        CreateKey<KeyID::F14>(createSignal(VK_F14));
-        CreateKey<KeyID::F15>(createSignal(VK_F15));
-        CreateKey<KeyID::F16>(createSignal(VK_F16));
-        CreateKey<KeyID::F17>(createSignal(VK_F17));
-        CreateKey<KeyID::F18>(createSignal(VK_F18));
-        CreateKey<KeyID::F19>(createSignal(VK_F19));
-        CreateKey<KeyID::F20>(createSignal(VK_F20));
-        CreateKey<KeyID::F21>(createSignal(VK_F21));
-        CreateKey<KeyID::F22>(createSignal(VK_F22));
-        CreateKey<KeyID::F23>(createSignal(VK_F23));
-        CreateKey<KeyID::F24>(createSignal(VK_F24));
+        create("numpad0", "Numpad 0", VK_NUMPAD0);
+        create("numpad1", "Numpad 1", VK_NUMPAD1);
+        create("numpad2", "Numpad 2", VK_NUMPAD2);
+        create("numpad3", "Numpad 3", VK_NUMPAD3);
+        create("numpad4", "Numpad 4", VK_NUMPAD4);
+        create("numpad5", "Numpad 5", VK_NUMPAD5);
+        create("numpad6", "Numpad 6", VK_NUMPAD6);
+        create("numpad7", "Numpad 7", VK_NUMPAD7);
+        create("numpad8", "Numpad 8", VK_NUMPAD8);
+        create("numpad9", "Numpad 9", VK_NUMPAD9);
 
-        CreateKey<KeyID::NUMPAD_0>(createSignal(VK_NUMPAD0));
-        CreateKey<KeyID::NUMPAD_1>(createSignal(VK_NUMPAD1));
-        CreateKey<KeyID::NUMPAD_2>(createSignal(VK_NUMPAD2));
-        CreateKey<KeyID::NUMPAD_3>(createSignal(VK_NUMPAD3));
-        CreateKey<KeyID::NUMPAD_4>(createSignal(VK_NUMPAD4));
-        CreateKey<KeyID::NUMPAD_5>(createSignal(VK_NUMPAD5));
-        CreateKey<KeyID::NUMPAD_6>(createSignal(VK_NUMPAD6));
-        CreateKey<KeyID::NUMPAD_7>(createSignal(VK_NUMPAD7));
-        CreateKey<KeyID::NUMPAD_8>(createSignal(VK_NUMPAD8));
-        CreateKey<KeyID::NUMPAD_9>(createSignal(VK_NUMPAD9));
+        create("leftshift", "Left Shift", VK_LSHIFT);
+        create("rightshift", "Right Shift", VK_RSHIFT);
+        create("leftcontrol", "Left Control", VK_LCONTROL);
+        create("rightcontrol", "Right Control", VK_RCONTROL);
+        create("leftalt", "Left Alt", VK_LMENU);
+        create("rightalt", "Right Alt", VK_RMENU);
+        create("leftwindows", "Left Windows", VK_LWIN);
+        create("rightwindows", "Right Windows", VK_RWIN);
 
-        CreateKey<KeyID::L_SHIFT>(createSignal(VK_LSHIFT));
-        CreateKey<KeyID::R_SHIFT>(createSignal(VK_RSHIFT));
-        CreateKey<KeyID::L_CONTROL>(createSignal(VK_LCONTROL));
-        CreateKey<KeyID::R_CONTROL>(createSignal(VK_RCONTROL));
-        CreateKey<KeyID::L_ALT>(createSignal(VK_LMENU));
-        CreateKey<KeyID::R_ALT>(createSignal(VK_RMENU));
-        CreateKey<KeyID::L_WIN>(createSignal(VK_LWIN));
-        CreateKey<KeyID::R_WIN>(createSignal(VK_RWIN));
+        return createdInputs;
     }
 
-    void WindowsManager::WorkSignalsImpl(SignalList& signalList)
+    ScreenPosition WindowsManager::CurrentMousePosition() const
     {
-        for (auto& loop : signalList)
-            loop->Work(IsSignalDownBase(*loop));
+        POINT point;
+        GetCursorPos(&point);
+
+        ScreenToClient(hwnd, &point);
+        return { point.x, point.y };
     }
 
-    bool WindowsManager::ShouldAddActions() const
+    bool WindowsManager::IsInputDown(Input& input) const
     {
-        return true;
-    }
-
-    MousePosition WindowsManager::GetMousePositionImpl() const
-    {
-        POINT pt;
-        GetCursorPos(&pt);
-
-        auto windowSystem = FindWindowSystem();
-        auto window = static_cast<Window::WindowsWindowBase*>(windowSystem->Get());
-        ScreenToClient(window->GetHwnd(), &pt);
-        return MousePosition(static_cast<MousePosition::Value>(pt.x), static_cast<MousePosition::Value>(pt.y));
-    }
-
-    bool WindowsManager::IsSignalDownBase(SignalBase &signal) const
-    {
-        auto isMouseKey = IsSameRuntimeType<MouseKey>(signal);
-        if (isMouseKey && !IsMouseWithinScreen())
-            return false;
-
-        auto signalData = signal.GetData<SignalBaseData>();
-        return GetAsyncKeyState(signalData->code) & 0x8000 ? 1 : 0;
-    }
-
-    bool WindowsManager::IsMouseWithinScreen() const
-    {
-        auto windowSystem = FindWindowSystem();
-        auto& clientSize = windowSystem->Get()->ClientSize();
-        AxisAlignedBox2D screen(
-            0,
-            0,
-            static_cast<AxisAlignedBox2D::Coordinate>(clientSize.width),
-            static_cast<AxisAlignedBox2D::Coordinate>(clientSize.height));
-        return screen.IsHit(GetMousePositionImpl());
-    }
-
-    Window::WindowSystem* WindowsManager::FindWindowSystem() const
-    {
-        return GetObjectManager()->FindSystem<Window::WindowSystem>();
+        const auto signalData = input.DataAs<InputDataImplementation>();
+        return GetAsyncKeyState(signalData->code) & 0x8000;
     }
 }

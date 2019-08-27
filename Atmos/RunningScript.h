@@ -2,81 +2,66 @@
 
 #include <memory>
 
-#include "Object.h"
-#include "ObjectReference.h"
+#include <Arca/ClosedTypedRelicAutomation.h>
 
 #include "ScriptInstance.h"
 #include "ScriptParameters.h"
 #include "ScriptPersistence.h"
 
-#include "ReadonlyProperty.h"
-
-#include "ObjectScribe.h"
-
 class asIScriptContext;
 
 namespace Atmos::Script
 {
-    class RunningScript : public Object
+    class RunningScript final : public Arca::ClosedTypedRelicAutomation<RunningScript>
     {
     public:
-        typedef TypedObjectReference<ScriptInstance> SourceReference;
+        using Source = ScriptInstance;
+        Source* source = nullptr;
     public:
-        using SourceProperty = ReadonlyProperty<SourceReference>;
-        SourceProperty source;
-
         Name executeName;
         Parameters parameters;
-        ObjectReference owner;
-
         Persistence persistence;
     public:
-        bool hasBeenExecuted;
-        bool executedThisFrame;
-    private:
-        class Data;
+        bool hasBeenExecuted = false;
+        bool executedThisFrame = false;
     public:
-        RunningScript(ObjectManager& manager, SourceReference source);
-        RunningScript(const RunningScript& arg) = default;
-        RunningScript(const ::Inscription::BinaryTableData<RunningScript>& data);
+        RunningScript();
+        RunningScript(const RunningScript& arg);
+        ~RunningScript();
+
+        RunningScript& operator=(const RunningScript& arg);
 
         void Resume();
         void Suspend();
-        bool IsSuspended() const;
+        [[nodiscard]] bool IsSuspended() const;
 
-        bool ShouldExecuteMain() const;
+        [[nodiscard]] bool ShouldExecuteMain() const;
 
         asIScriptContext* UnderlyingContext();
-
-        ObjectTypeDescription TypeDescription() const override;
+    public:
+        void Initialize(Source& source);
     private:
+        bool isSuspended = false;
+    private:
+        class Data;
         std::unique_ptr<Data> data;
-        bool suspended;
     };
 }
 
-namespace Atmos
+namespace Arca
 {
     template<>
-    struct ObjectTraits<Script::RunningScript> : ObjectTraitsBase<Script::RunningScript>
+    struct Traits<::Atmos::Script::RunningScript>
     {
-        static const ObjectTypeName typeName;
+        static const ObjectType objectType = ObjectType::Relic;
+        static const TypeName typeName;
     };
 }
 
 namespace Inscription
 {
     template<>
-    struct TableData<::Atmos::Script::RunningScript, BinaryArchive> :
-        public ObjectTableDataBase<::Atmos::Script::RunningScript, BinaryArchive>
+    class Scribe<Atmos::Script::RunningScript, BinaryArchive> final
+        : public ArcaNullScribe<Atmos::Script::RunningScript, BinaryArchive>
     {};
-
-    template<>
-    class Scribe<::Atmos::Script::RunningScript, BinaryArchive> :
-        public ObjectScribe<::Atmos::Script::RunningScript, BinaryArchive>
-    {
-    public:
-        class Table : public TableBase
-        {};
-    };
 }

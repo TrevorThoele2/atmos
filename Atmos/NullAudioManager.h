@@ -4,15 +4,15 @@
 
 namespace Atmos::Audio
 {
-    class NullAudioManager : public AudioManager
+    class NullAudioManager final : public AudioManager
     {
     public:
         NullAudioManager() = default;
-        bool SetMasterVolume(float setTo) override;
-    private:
         NullAudioManager(const NullAudioManager& arg) = delete;
         NullAudioManager& operator=(const NullAudioManager& arg) = delete;
 
+        bool SetMasterVolume(float set) override;
+    private:
         std::unique_ptr<Asset::AudioAssetData> CreateAudioDataImpl(
             ExtractedFile&& file, const File::Name& name) override;
     };
