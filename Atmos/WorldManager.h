@@ -18,7 +18,7 @@ namespace Atmos::World
     class WorldManager
     {
     public:
-        explicit WorldManager(Arca::Reliquary& reliquary);
+        explicit WorldManager(Arca::Reliquary& globalReliquary);
 
         void Work();
         void LockIn();
@@ -28,6 +28,7 @@ namespace Atmos::World
 
         void UseWorld(const File::Path& path);
         void UseWorld(const File::Name& name);
+        void UseField(Field&& field);
         void UseStasis(const File::Name& name);
 
         void Autosave();
@@ -35,10 +36,11 @@ namespace Atmos::World
         const File::Path& WorldPath();
 
         Field* CurrentField();
+        const Field* CurrentField() const;
     private:
-        Arca::Reliquary* reliquary = nullptr;
+        Arca::Reliquary* globalReliquary = nullptr;
 
-        Arca::Ptr<Debug::Statistics> debugStatistics;
+        Arca::GlobalPtr<Debug::Statistics> debugStatistics;
     private:
         struct RequestedField
         {
@@ -63,10 +65,15 @@ namespace Atmos::World
             File::Path filePath;
         };
 
-        using Utilization = std::variant<WorldUtilization, StasisUtilization>;
+        struct FieldUtilization
+        {
+            Field field;
+        };
+
+        using Utilization = std::variant<WorldUtilization, StasisUtilization, FieldUtilization>;
         std::optional<Utilization> utilization;
     private:
-        std::unique_ptr<Field> field;
+        std::optional<Field> currentField;
 
         std::optional<File::Name> stasisName;
         std::unordered_set<FieldID> fieldIDs;

@@ -11,14 +11,14 @@
 
 namespace Atmos
 {
-    EngineExecution::EngineExecution(Arca::Reliquary& reliquary, World::WorldManager& worldManager) :
-        reliquary(&reliquary), worldManager(&worldManager)
+    EngineExecution::EngineExecution(Arca::Reliquary& globalReliquary, World::WorldManager& worldManager) :
+        globalReliquary(&globalReliquary), worldManager(&worldManager)
     {}
 
     void EngineExecution::Start()
     {
-        auto& timeCurator = reliquary->Find<Time::TimeCurator>();
-        auto debugStatistics = reliquary->Find<Debug::Statistics>();
+        auto& timeCurator = globalReliquary->Find<Time::TimeCurator>();
+        auto debugStatistics = Arca::GlobalPtr<Debug::Statistics>(*globalReliquary);
 
         while (StartFrame())
         {
@@ -51,8 +51,8 @@ namespace Atmos
         if (IsCurrentlyFocused() != wasFocusedLastPass)
         {
             wasFocusedLastPass ?
-                reliquary->Raise<FocusLost>() :
-                reliquary->Raise<FocusRegained>();
+                globalReliquary->Raise<FocusLost>() :
+                globalReliquary->Raise<FocusRegained>();
             wasFocusedLastPass = !wasFocusedLastPass;
         }
 

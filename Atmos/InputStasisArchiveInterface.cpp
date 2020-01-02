@@ -1,24 +1,31 @@
 #include "InputStasisArchiveInterface.h"
 
+#include "TypeRegistration.h"
+
 namespace Atmos::World::Serialization
 {
     InputStasisArchiveInterface::InputStasisArchiveInterface(const File::Path& filePath) :
-        InputFieldArchiveInterface(filePath),
         archive(filePath, "ATMOS STASIS")
     {
         Load();
     }
 
-    std::optional<Field> InputStasisArchiveInterface::ExtractField(FieldID id, Arca::Reliquary& reliquary)
+    std::optional<Field> InputStasisArchiveInterface::ExtractField(FieldID id, Arca::Reliquary& globalReliquary)
     {
-        Field out{ id, reliquary };
+        Arca::ReliquaryOrigin origin;
+        RegisterFieldTypes(origin, globalReliquary);
+
+        Field out{ id, origin.Actualize() };
         fieldJumpTable.FillObject(id, out, archive);
         return std::move(out);
     }
 
-    std::unique_ptr<Field> InputStasisArchiveInterface::ExtractFieldAsHeap(FieldID id, Arca::Reliquary& reliquary)
+    std::unique_ptr<Field> InputStasisArchiveInterface::ExtractFieldAsHeap(FieldID id, Arca::Reliquary& globalReliquary)
     {
-        auto out = std::make_unique<Field>(id, reliquary);
+        Arca::ReliquaryOrigin origin;
+        RegisterFieldTypes(origin, globalReliquary);
+
+        auto out = std::make_unique<Field>(id, origin.Actualize());
         fieldJumpTable.FillObject(id, *out, archive);
         return out;
     }
@@ -36,16 +43,6 @@ namespace Atmos::World::Serialization
     size_t InputStasisArchiveInterface::FieldSize() const
     {
         return fieldJumpTable.Size();
-    }
-
-    ::Inscription::BinaryArchive& InputStasisArchiveInterface::Archive()
-    {
-        return archive;
-    }
-
-    const ::Inscription::BinaryArchive& InputStasisArchiveInterface::Archive() const
-    {
-        return archive;
     }
 
     void InputStasisArchiveInterface::Load()

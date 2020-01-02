@@ -10,9 +10,9 @@ namespace Atmos::Entity
 {
     void AvatarCurator::InitializeImplementation()
     {
-        currentAvatar = Owner().Find<CurrentAvatar>();
+        currentAvatar = Arca::GlobalPtr<CurrentAvatar>(Owner());
 
-        debugStatistics = Owner().Find<Debug::Statistics>();
+        debugStatistics = Arca::GlobalPtr<Debug::Statistics>(Owner());
     }
 
     void AvatarCurator::WorkImplementation(Stage& stage)
@@ -27,7 +27,7 @@ namespace Atmos::Entity
                 if (currentAvatar->entity)
                     Owner().Destroy(AsHandle(*currentAvatar->entity));
 
-                currentAvatar->entity = Owner().Find<Entity>(signal.handle.ID());
+                currentAvatar->entity = Arca::LocalPtr<Entity>(signal.handle.ID(), Owner());
                 currentAvatar->component = actualized;
             });
 

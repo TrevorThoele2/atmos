@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Arca/SignalTraits.h>
+#include <Arca/Signal.h>
 #include "Position3D.h"
 
 namespace Atmos::Render

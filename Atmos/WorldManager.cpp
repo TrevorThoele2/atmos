@@ -16,21 +16,22 @@ namespace Atmos::World
 {
     const char* autosaveName = "Autosave.stasis";
 
-    WorldManager::WorldManager(Arca::Reliquary& reliquary) : reliquary(&reliquary)
+    WorldManager::WorldManager(Arca::Reliquary& globalReliquary) : globalReliquary(&globalReliquary)
     {
-        debugStatistics = Arca::Ptr<Debug::Statistics>(reliquary);
+        debugStatistics = Arca::GlobalPtr<Debug::Statistics>(globalReliquary);
 
         File::manager->MakeDirectory(StasisFolderFilePath());
     }
 
     void WorldManager::Work()
     {
-        field->reliquary->Work();
+        globalReliquary->Work();
+        if (currentField)
+            currentField->Reliquary().Work();
 
         {
-            const auto currentField = CurrentField();
             debugStatistics->game.fieldID = currentField ?
-                currentField->id :
+                currentField->ID() :
                 std::optional<FieldID>{};
         }
 
@@ -78,6 +79,11 @@ namespace Atmos::World
         utilization = WorldUtilization{ worldPath };
     }
 
+    void WorldManager::UseField(Field&& field)
+    {
+        utilization = FieldUtilization{ std::move(field) };
+    }
+
     void WorldManager::UseStasis(const File::Name& name)
     {
         stasisName = name;
@@ -86,8 +92,7 @@ namespace Atmos::World
 
     void WorldManager::Autosave()
     {
-        if (field)
-            Autosave(field->id);
+
     }
 
     const File::Path& WorldManager::WorldPath()
@@ -97,7 +102,14 @@ namespace Atmos::World
 
     Field* WorldManager::CurrentField()
     {
-        return field.get();
+        return currentField
+            ? &*currentField
+            : nullptr;
+    }
+
+    const Field* WorldManager::CurrentField() const
+    {
+        return const_cast<WorldManager&>(*this).CurrentField();
     }
 
     bool WorldManager::ContainsField(FieldID id)
@@ -112,9 +124,21 @@ namespace Atmos::World
 
     void WorldManager::ChangeField(FieldID id)
     {
-        auto inputArchiveInterface = InputArchiveInterface();
-        SetFieldIDs(inputArchiveInterface->AllFieldIDs());
-        field = inputArchiveInterface->ExtractFieldAsHeap(id, *reliquary);
+        DEBUG_ASSERT(utilization.has_value());
+
+        if (std::holds_alternative<FieldUtilization>(*utilization))
+        {
+            auto& fieldUtilization = std::get<FieldUtilization>(*utilization);
+            auto& field = fieldUtilization.field;
+            SetFieldIDs({ field.ID() });
+            currentField = std::move(field);
+        }
+        else
+        {
+            auto inputArchiveInterface = InputArchiveInterface();
+            SetFieldIDs(inputArchiveInterface->AllFieldIDs());
+            currentField = inputArchiveInterface->ExtractField(id, *globalReliquary);
+        }
     }
 
     std::unique_ptr<Serialization::InputFieldArchiveInterface> WorldManager::InputArchiveInterface() const

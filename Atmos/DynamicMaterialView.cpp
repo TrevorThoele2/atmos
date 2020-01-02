@@ -2,89 +2,89 @@
 
 namespace Atmos::Render
 {
-    void MaterialView::MaterialIndex(Index to)
+    void DynamicMaterialView::MaterialIndex(Index to)
     {
         core->MaterialIndex(to);
     }
 
-    auto MaterialView::MaterialIndex() const -> Index
+    auto DynamicMaterialView::MaterialIndex() const -> Index
     {
         return core->MaterialIndex();
     }
 
-    void MaterialView::Color(Render::Color to)
+    void DynamicMaterialView::Color(Render::Color to)
     {
         core->Color(to);
     }
 
-    Render::Color MaterialView::Color() const
+    Render::Color DynamicMaterialView::Color() const
     {
         return core->Color();
     }
 
-    void MaterialView::PatchShader(Arca::Ptr<Asset::ShaderAsset> to)
+    void DynamicMaterialView::PatchShader(Arca::LocalPtr<Asset::ShaderAsset> to)
     {
         core->PatchShader(to);
     }
 
-    Arca::Ptr<Asset::ShaderAsset> MaterialView::PatchShader() const
+    Arca::LocalPtr<Asset::ShaderAsset> DynamicMaterialView::PatchShader() const
     {
         return core->PatchShader();
     }
 
-    Arca::Ptr<Asset::MaterialAsset> MaterialView::Material() const
+    Arca::LocalPtr<Asset::MaterialAsset> DynamicMaterialView::Material() const
     {
         return core->Material();
     }
 
-    AxisAlignedBox2D MaterialView::MaterialSlice() const
+    AxisAlignedBox2D DynamicMaterialView::MaterialSlice() const
     {
         return core->MaterialSlice();
     }
 
-    void MaterialView::Position(const Position3D& to)
+    void DynamicMaterialView::Position(const Position3D& to)
     {
         bounds->Position(to);
     }
 
-    void MaterialView::Size(const Size3D& to)
+    void DynamicMaterialView::Size(const Size3D& to)
     {
         bounds->Size(to);
     }
 
-    Position3D MaterialView::Position() const
+    Position3D DynamicMaterialView::Position() const
     {
         return bounds->Position();
     }
 
-    Size3D MaterialView::Size() const
+    Size3D DynamicMaterialView::Size() const
     {
         return bounds->Size();
     }
 
-    AxisAlignedBox3D MaterialView::Box() const
+    AxisAlignedBox3D DynamicMaterialView::Box() const
     {
         return bounds->Box();
     }
 
-    const Bounds& MaterialView::Bounds() const
+    const Bounds& DynamicMaterialView::Bounds() const
     {
         return *bounds;
     }
 
-    void MaterialView::PostConstruct(ShardTuple shards)
+    void DynamicMaterialView::PostConstruct(ShardTuple shards)
     {
         core = std::get<0>(shards);
         bounds = std::get<1>(shards);
     }
 
-    void MaterialView::Initialize(const Position3D& position)
+    void DynamicMaterialView::Initialize(const Position3D& position)
     {
-
+        bounds->Position(position);
     }
 }
 
 namespace Arca
 {
-    const TypeName Traits<::Atmos::Render::MaterialView>::typeName = "DynamicMaterialView";
+    const TypeName Traits<::Atmos::Render::DynamicMaterialView>::typeName = "DynamicMaterialView";
 }

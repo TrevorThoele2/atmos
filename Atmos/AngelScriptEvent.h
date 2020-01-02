@@ -34,6 +34,6 @@ namespace Atmos::Script::Angel
         asIScriptEngine* Engine();
     private:
         Arca::Reliquary* reliquary;
-        ScriptCurator* FindSystem();
+        ScriptCurator* FindCurator();
     };
 }

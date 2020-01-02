@@ -1,13 +1,13 @@
 #pragma once
 
-#include <Arca/SignalTraits.h>
+#include <Arca/Signal.h>
 #include "Entity.h"
 
 namespace Atmos::Entity
 {
     struct MoveEntityDirection
     {
-        Entity* entity = nullptr;
+        Arca::LocalPtr<Entity> entity;
         Direction direction;
     };
 }

@@ -22,11 +22,11 @@ namespace Atmos
     class EngineExecution
     {
     public:
-        EngineExecution(Arca::Reliquary& reliquary, World::WorldManager& worldManager);
+        EngineExecution(Arca::Reliquary& globalReliquary, World::WorldManager& worldManager);
 
         void Start();
     private:
-        Arca::Reliquary* reliquary;
+        Arca::Reliquary* globalReliquary;
 
         World::WorldManager* worldManager;
     private:

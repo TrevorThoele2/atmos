@@ -2,17 +2,33 @@
 
 namespace Atmos::World
 {
-    Field::Field(FieldID id) : id(id)
+    Field::Field(FieldID id, std::unique_ptr<Arca::Reliquary>&& reliquary) :
+        id(id), reliquary(std::move(reliquary))
     {}
 
-    Field::Field(FieldID id, Arca::Reliquary& reliquary) : id(id), reliquary(&reliquary)
+    Field::Field(Field&& arg) noexcept : id(arg.id), reliquary(std::move(arg.reliquary))
     {}
 
     Field& Field::operator=(Field&& arg) noexcept
     {
         id = arg.id;
-        reliquary = arg.reliquary;
+        reliquary = std::move(arg.reliquary);
         return *this;
+    }
+
+    FieldID Field::ID() const
+    {
+        return id;
+    }
+
+    Arca::Reliquary& Field::Reliquary()
+    {
+        return *reliquary;
+    }
+
+    const Arca::Reliquary& Field::Reliquary() const
+    {
+        return *reliquary;
     }
 }
 

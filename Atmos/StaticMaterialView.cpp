@@ -22,17 +22,17 @@ namespace Atmos::Render
         return core->Color();
     }
 
-    void StaticMaterialView::PatchShader(Arca::Ptr<Asset::ShaderAsset> to)
+    void StaticMaterialView::PatchShader(Arca::LocalPtr<Asset::ShaderAsset> to)
     {
         core->PatchShader(to);
     }
 
-    Arca::Ptr<Asset::ShaderAsset> StaticMaterialView::PatchShader() const
+    Arca::LocalPtr<Asset::ShaderAsset> StaticMaterialView::PatchShader() const
     {
         return core->PatchShader();
     }
 
-    Arca::Ptr<Asset::MaterialAsset> StaticMaterialView::Material() const
+    Arca::LocalPtr<Asset::MaterialAsset> StaticMaterialView::Material() const
     {
         return core->Material();
     }
@@ -57,12 +57,12 @@ namespace Atmos::Render
         return bounds->Box();
     }
 
-    Arca::Ptr<MaterialViewCore> StaticMaterialView::Core() const
+    Arca::LocalPtr<MaterialViewCore> StaticMaterialView::Core() const
     {
         return core;
     }
 
-    Arca::Ptr<const Bounds> StaticMaterialView::Bounds() const
+    Arca::LocalPtr<const Bounds> StaticMaterialView::Bounds() const
     {
         return bounds;
     }
@@ -75,7 +75,7 @@ namespace Atmos::Render
 
     void StaticMaterialView::Initialize(const Position3D& position)
     {
-
+        const_cast<Atmos::Bounds&>(*bounds).Position(position);
     }
 }
 

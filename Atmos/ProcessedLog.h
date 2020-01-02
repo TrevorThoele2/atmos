@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Arca/SignalTraits.h>
+#include <Arca/Signal.h>
 
 #include "String.h"
 

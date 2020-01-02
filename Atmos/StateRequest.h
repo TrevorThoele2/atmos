@@ -1,18 +1,19 @@
 #pragma once
 
-#include <Arca/SignalTraits.h>
+#include <Arca/Signal.h>
+#include <Arca/LocalPtr.h>
+
+#include "GameState.h"
 
 #include <variant>
 
 namespace Atmos::State
 {
-    class State;
-
     struct Request
     {
         enum Pop {};
 
-        using Value = std::variant<State*, Pop>;
+        using Value = std::variant<Arca::LocalPtr<GameState>, Pop>;
         Value value;
     };
 }

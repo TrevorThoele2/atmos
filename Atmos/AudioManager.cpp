@@ -243,3 +243,8 @@ namespace Atmos::Audio
         return FileType::None;
     }
 }
+
+namespace Arca
+{
+    const TypeName Traits<Atmos::Audio::AudioManager>::typeName = "AudioManager";
+}

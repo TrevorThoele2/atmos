@@ -83,7 +83,7 @@ namespace Atmos::Log
         if (IsAllWhitespace(message))
             return;
 
-        const auto timeInformation = Owner().Find<Time::Information>();
+        const auto timeInformation = Arca::GlobalPtr<Time::Information>(Owner());
 
         ::Inscription::OutputTextFile outFile(OutputFilePath(), true);
 

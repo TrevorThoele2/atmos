@@ -56,3 +56,12 @@ namespace Atmos::Audio
             ExtractedFile&& extracted, const File::Name& name) = 0;
     };
 }
+
+namespace Arca
+{
+    template<>
+    struct Traits<::Atmos::Audio::AudioManager>
+    {
+        static const TypeName typeName;
+    };
+}

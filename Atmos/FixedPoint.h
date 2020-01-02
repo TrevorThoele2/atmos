@@ -15,6 +15,7 @@
 
 #include "Exception.h"
 #include <Chroma/Contract.h>
+#include <Chroma/StringUtility.h>
 
 #include "Serialization.h"
 #include <Inscription/Scribe.h>
@@ -771,7 +772,7 @@ namespace Atmos
             if (count == radixPoint.Get())
                 ret.insert(0, ".");
 
-            ret.insert(0, ::Atmos::ToString(hold % 10));
+            ret.insert(0, ::Chroma::ToString(hold % 10));
             hold /= 10;
             ++count;
         }

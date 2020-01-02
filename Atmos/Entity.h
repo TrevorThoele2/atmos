@@ -8,7 +8,7 @@ namespace Atmos::Entity
     class Entity final : public Arca::OpenTypedRelicAutomation<Entity, GeneralComponent>
     {
     public:
-        Arca::Ptr<GeneralComponent> general;
+        Arca::LocalPtr<GeneralComponent> general;
 
         void PostConstruct(ShardTuple shards);
     };

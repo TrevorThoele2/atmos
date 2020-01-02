@@ -36,8 +36,8 @@ namespace Atmos::Entity
 
             });
 
-        positionedEntities = Owner().Find<PositionedEntities>();
+        positionedEntities = Arca::GlobalPtr<PositionedEntities>(Owner());
 
-        debugStatistics = Owner().Find<Debug::Statistics>();
+        debugStatistics = Arca::GlobalPtr<Debug::Statistics>(Owner());
     }
 }

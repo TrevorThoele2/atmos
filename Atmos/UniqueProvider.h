@@ -1,30 +1,27 @@
 #pragma once
 
 #include <memory>
+#include <Arca/ClosedTypedRelicAutomation.h>
 
 namespace Atmos
 {
     template<class T>
-    class UniqueProvider
+    class UniqueProvider : public Arca::ClosedTypedRelicAutomation<UniqueProvider<T>>
     {
     public:
         using Value = T;
         using ValuePtr = std::unique_ptr<Value>;
     public:
-        virtual ~UniqueProvider() = 0;
-    public:
+        UniqueProvider() = default;
+
         Value& operator*() const;
         Value* operator->() const;
 
         void Change(ValuePtr&& ptr);
-        Value* Get() const;
+        [[nodiscard]] Value* Get() const;
     protected:
         ValuePtr value;
-        virtual void OnChange() {}
     };
-
-    template <class T>
-    UniqueProvider<T>::~UniqueProvider() = default;
 
     template<class T>
     auto UniqueProvider<T>::operator*() const -> Value&
@@ -42,7 +39,6 @@ namespace Atmos
     void UniqueProvider<T>::Change(ValuePtr&& ptr)
     {
         value = std::move(ptr);
-        OnChange();
     }
 
     template<class T>
@@ -50,4 +46,26 @@ namespace Atmos
     {
         return value.get();
     }
+}
+
+namespace Arca
+{
+    template<class T>
+    struct Traits<Atmos::UniqueProvider<T>>
+    {
+        static const ObjectType objectType = ObjectType::Relic;
+        static const TypeName typeName;
+        static const Locality locality = Locality::Global;
+    };
+
+    template<class T>
+    const TypeName Traits<Atmos::UniqueProvider<T>>::typeName = Traits<T>::typeName + "Provider";
+}
+
+namespace Inscription
+{
+    template<class T>
+    class Scribe<::Atmos::UniqueProvider<T>, BinaryArchive> final :
+        public ArcaNullScribe<::Atmos::UniqueProvider<T>, BinaryArchive>
+    {};
 }

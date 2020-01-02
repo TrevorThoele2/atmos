@@ -4,37 +4,20 @@
 
 namespace Atmos::World::Serialization
 {
-    OutputWorldArchiveInterface::OutputWorldArchiveInterface
-    (
-        const File::Path& filePath,
-        std::vector<Field>& fields
-    ) :
-        ArchiveInterface(filePath),
-        archive(filePath, "ATMOS WORLD", CurrentVersion())
-    {
-        Save(fields);
-    }
-
-    ::Inscription::Version OutputWorldArchiveInterface::CurrentVersion()
-    {
-        return 1;
-    }
-
-    ::Inscription::BinaryArchive& OutputWorldArchiveInterface::Archive()
-    {
-        return archive;
-    }
-
-    const ::Inscription::BinaryArchive& OutputWorldArchiveInterface::Archive() const
-    {
-        return archive;
-    }
+    OutputWorldArchiveInterface::OutputWorldArchiveInterface(const File::Path& filePath) :
+        archive(filePath, "ATMOS WORLD", 1)
+    {}
 
     void OutputWorldArchiveInterface::Save(std::vector<Field>& fields)
     {
         ::Inscription::OutputJumpTable<FieldID, Field> jumpTable;
         for (auto& field : fields)
-            jumpTable.Add(field.id, field);
+            jumpTable.Add(field.ID(), field);
         archive(jumpTable);
+    }
+
+    ::Inscription::Version OutputWorldArchiveInterface::CurrentVersion()
+    {
+        return 1;
     }
 }

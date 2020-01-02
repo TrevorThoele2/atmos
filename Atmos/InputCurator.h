@@ -4,7 +4,7 @@
 
 #include "MappedInputs.h"
 #include "MappedActions.h"
-#include "InputManagerProvider.h"
+#include "InputManager.h"
 
 namespace Atmos::Input
 {
@@ -14,10 +14,10 @@ namespace Atmos::Input
         void InitializeImplementation() override;
         void WorkImplementation(Stage& stage) override;
     private:
-        ManagerProvider* managerProvider = nullptr;
+        Arca::ComputedPtr<Manager*> manager;
 
-        MappedInputs* mappedInputs = nullptr;
-        MappedActions* mappedActions = nullptr;
+        Arca::GlobalPtr<MappedInputs> mappedInputs;
+        Arca::GlobalPtr<MappedActions> mappedActions;
     };
 }
 

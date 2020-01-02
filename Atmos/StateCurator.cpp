@@ -30,7 +30,7 @@ namespace Atmos::State
         }
     }
 
-    void StateCurator::Push(State& state)
+    void StateCurator::Push(GameState& state)
     {
         stack.push_back(&state);
     }

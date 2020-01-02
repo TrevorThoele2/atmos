@@ -75,7 +75,7 @@ namespace Atmos::Debug
         entryAdder("Misc3", statistics->profilers.misc3, misc3);
 
         AddEntry("Total Elapsed", totalElapsed);
-        auto timeInformation = owner.Owner().Find<Time::Information>();
+        auto timeInformation = Arca::GlobalPtr<Time::Information>(owner.Owner());
         totalElapsed.retrievalFunction = [&timeInformation]() -> String
         {
             return ToString(timeInformation->totalElapsed);
@@ -118,7 +118,7 @@ namespace Atmos::Debug
 
     void StatisticsCurator::InitializeImplementation()
     {
-        statistics = Owner().Find<Statistics>();
+        statistics = Arca::GlobalPtr<Statistics>(Owner());
 
         BundlePages();
         BundleProfilers();

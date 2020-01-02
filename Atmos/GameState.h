@@ -4,7 +4,7 @@
 
 namespace Atmos::State
 {
-    class GameState : public Arca::ClosedTypedRelicAutomation<GameState>
+    class GameState final : public Arca::ClosedTypedRelicAutomation<GameState>
     {
     public:
         GameState() = default;

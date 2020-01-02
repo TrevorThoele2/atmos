@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Arca/ShardTraits.h>
+#include <Arca/Shard.h>
 
 #include <vector>
 
@@ -14,7 +14,7 @@ namespace Atmos::Entity
     class SenseComponent
     {
     public:
-        using MaterialViewList = std::vector<Render::MaterialView>;
+        using MaterialViewList = std::vector<Render::DynamicMaterialView>;
         using SoundList = std::vector<Audio::Sound>;
 
         MaterialViewList materialViews;

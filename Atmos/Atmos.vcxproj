@@ -33,6 +33,7 @@
     <ClInclude Include="ActionActive.h" />
     <ClInclude Include="ActionDepressed.h" />
     <ClInclude Include="ActionPressed.h" />
+    <ClInclude Include="Field.h" />
     <ClInclude Include="ShouldCreateAsset.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraMoved.h" />
@@ -110,7 +111,6 @@
     <ClInclude Include="FileAssetPackageCurator.h" />
     <ClInclude Include="AssetCurator.h" />
     <ClInclude Include="AudioAssetInstance.h" />
-    <ClInclude Include="AudioManagerProvider.h" />
     <ClInclude Include="AxisAlignedBox3D.h" />
     <ClInclude Include="BitConcatenator.h" />
     <ClInclude Include="BoundedNumberWrap.h" />
@@ -136,7 +136,6 @@
     <ClInclude Include="VolumeInformation.h" />
     <ClInclude Include="WindowDimensionsChanged.h" />
     <ClInclude Include="WindowProvider.h" />
-    <ClInclude Include="GraphicsManagerProvider.h" />
     <ClInclude Include="GuiEngineProvider.h" />
     <ClInclude Include="StdVariant.h" />
     <ClInclude Include="AnyEventConnection.h" />
@@ -148,7 +147,6 @@
     <ClInclude Include="InitializationFileExtractedSection.h" />
     <ClInclude Include="InitializationFileSection.h" />
     <ClInclude Include="InitializationFileCurator.h" />
-    <ClInclude Include="InputManagerProvider.h" />
     <ClInclude Include="IntervalList.h" />
     <ClInclude Include="IsList.h" />
     <ClInclude Include="IsSameRuntimeType.h" />
@@ -235,7 +233,6 @@
     <ClInclude Include="Line.h" />
     <ClInclude Include="MovementComponent.h" />
     <ClInclude Include="NumericLimits.h" />
-    <ClInclude Include="ArchiveInterface.h" />
     <ClInclude Include="Serialization.h" />
     <ClInclude Include="ShaderAssetCurator.h" />
     <ClInclude Include="ShaderAsset.h" />
@@ -255,7 +252,6 @@
     <ClInclude Include="Direction.h" />
     <ClInclude Include="DirectX9GraphicsManager.h" />
     <ClInclude Include="Event.h" />
-    <ClInclude Include="Field.h" />
     <ClInclude Include="FieldDestination.h" />
     <ClInclude Include="FieldID.h" />
     <ClInclude Include="WorldFileExtension.h" />
@@ -282,7 +278,6 @@
     <ClInclude Include="GridPosition.h" />
     <ClInclude Include="Stopwatch.h" />
     <ClInclude Include="InputWorldArchiveInterface.h" />
-    <ClInclude Include="WorldManagerProvider.h" />
     <ClInclude Include="WrapMath.h" />
   </ItemGroup>
   <ItemGroup>
@@ -304,6 +299,7 @@
     <ClCompile Include="FocusRegained.cpp" />
     <ClCompile Include="ForceQuit.cpp" />
     <ClCompile Include="GraphicsCurator.cpp" />
+    <ClCompile Include="InputFieldArchiveInterface.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="MaterialViewCore.cpp" />
     <ClCompile Include="StaticMaterialView.cpp" />
@@ -347,7 +343,6 @@
     <ClCompile Include="AngleConversion.cpp" />
     <ClCompile Include="FileAssetPackageCurator.cpp" />
     <ClCompile Include="AudioAssetInstance.cpp" />
-    <ClCompile Include="AudioManagerProvider.cpp" />
     <ClCompile Include="AxisAlignedBox3D.cpp" />
     <ClCompile Include="CameraCurator.cpp" />
     <ClCompile Include="DebugStatisticsCurator.cpp" />
@@ -371,7 +366,6 @@
     <ClCompile Include="VolumeInformation.cpp" />
     <ClCompile Include="WindowDimensionsChanged.cpp" />
     <ClCompile Include="WindowProvider.cpp" />
-    <ClCompile Include="GraphicsManagerProvider.cpp" />
     <ClCompile Include="GuiEngineProvider.cpp" />
     <ClCompile Include="FixedPoint.cpp" />
     <ClCompile Include="WindowBase.cpp" />
@@ -380,7 +374,6 @@
     <ClCompile Include="InitializationFileExtractedSection.cpp" />
     <ClCompile Include="InitializationFileSection.cpp" />
     <ClCompile Include="InitializationFileCurator.cpp" />
-    <ClCompile Include="InputManagerProvider.cpp" />
     <ClCompile Include="LargeInteger.cpp" />
     <ClCompile Include="LogCurator.cpp" />
     <ClCompile Include="VolumeCurator.cpp" />
@@ -444,7 +437,6 @@
     <ClCompile Include="AxisAlignedBox2D.cpp" />
     <ClCompile Include="DirectX9AudioManager.cpp" />
     <ClCompile Include="Line.cpp" />
-    <ClCompile Include="ArchiveInterface.cpp" />
     <ClCompile Include="ShaderAsset.cpp" />
     <ClCompile Include="SimpleFile.cpp" />
     <ClCompile Include="Surface.cpp" />
@@ -469,7 +461,6 @@
     <ClCompile Include="GridPosition.cpp" />
     <ClCompile Include="Stopwatch.cpp" />
     <ClCompile Include="InputWorldArchiveInterface.cpp" />
-    <ClCompile Include="WorldManagerProvider.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{0E94289D-72E8-4A52-B32A-7B26C1A9FF0C}</ProjectGuid>

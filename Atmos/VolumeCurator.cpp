@@ -6,8 +6,8 @@ namespace Atmos::Audio
 {
     void VolumeCurator::InitializeImplementation()
     {
-        volumeInformation = Owner().Find<VolumeInformation>();
-        initializationInformation = Owner().Find<Initialization::Information>();
+        volumeInformation = Arca::GlobalPtr<VolumeInformation>(Owner());
+        initializationInformation = Arca::GlobalPtr<Initialization::Information>(Owner());
     }
 
     void VolumeCurator::WorkImplementation(Stage& stage)

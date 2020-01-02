@@ -1,19 +1,11 @@
 #pragma once
 
-#include <Arca/ClosedTypedRelicAutomation.h>
 #include "UniqueProvider.h"
-
 #include <AGUI/Engine.h>
 
 namespace Atmos
 {
-    class GuiEngineProvider final
-        : public Arca::ClosedTypedRelicAutomation<GuiEngineProvider>
-        , public UniqueProvider<Agui::Engine>
-    {
-    public:
-        void PostConstruct();
-    };
+    using GuiEngineProvider = UniqueProvider<Agui::Engine>;
 }
 
 namespace Arca
@@ -23,13 +15,6 @@ namespace Arca
     {
         static const ObjectType objectType = ObjectType::Relic;
         static const TypeName typeName;
+        static const Locality locality = Locality::Global;
     };
-}
-
-namespace Inscription
-{
-    template<>
-    class Scribe<Atmos::GuiEngineProvider, BinaryArchive> final
-        : public ArcaNullScribe<Atmos::GuiEngineProvider, BinaryArchive>
-    {};
 }
