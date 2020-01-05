@@ -1,71 +1,67 @@
 #pragma once
 
 #include <memory>
-#include <Arca/ClosedTypedRelicAutomation.h>
 
 namespace Atmos
 {
     template<class T>
-    class UniqueProvider : public Arca::ClosedTypedRelicAutomation<UniqueProvider<T>>
+    class UniqueProvider
     {
-    public:
-        using Value = T;
-        using ValuePtr = std::unique_ptr<Value>;
     public:
         UniqueProvider() = default;
 
-        Value& operator*() const;
-        Value* operator->() const;
+        virtual ~UniqueProvider();
 
-        void Change(ValuePtr&& ptr);
-        [[nodiscard]] Value* Get() const;
+        template<class U, class... Args>
+        void Setup(Args&& ... args);
+
+        T& operator*();
+        const T& operator*() const;
+        T* operator->();
+        const T* operator->() const;
     protected:
+        using ValuePtr = std::unique_ptr<T>;
         ValuePtr value;
+    protected:
+        virtual void OnSetup();
     };
 
     template<class T>
-    auto UniqueProvider<T>::operator*() const -> Value&
+    UniqueProvider<T>::~UniqueProvider() = default;
+
+    template<class T>
+    template<class U, class... Args>
+    void UniqueProvider<T>::Setup(Args&& ... args)
     {
-        return *Get();
+        value = std::make_unique<U>(std::forward<Args>(args)...);
+        OnSetup();
     }
 
     template<class T>
-    auto UniqueProvider<T>::operator->() const -> Value*
+    T& UniqueProvider<T>::operator*()
     {
-        return Get();
+        return *value;
     }
 
     template<class T>
-    void UniqueProvider<T>::Change(ValuePtr&& ptr)
+    const T& UniqueProvider<T>::operator*() const
     {
-        value = std::move(ptr);
+        return *value;
     }
 
     template<class T>
-    auto UniqueProvider<T>::Get() const -> Value*
+    T* UniqueProvider<T>::operator->()
     {
         return value.get();
     }
-}
 
-namespace Arca
-{
     template<class T>
-    struct Traits<Atmos::UniqueProvider<T>>
+    const T* UniqueProvider<T>::operator->() const
     {
-        static const ObjectType objectType = ObjectType::Relic;
-        static const TypeName typeName;
-        static const Locality locality = Locality::Global;
-    };
+        return value.get();
+    }
 
     template<class T>
-    const TypeName Traits<Atmos::UniqueProvider<T>>::typeName = Traits<T>::typeName + "Provider";
-}
-
-namespace Inscription
-{
-    template<class T>
-    class Scribe<::Atmos::UniqueProvider<T>, BinaryArchive> final :
-        public ArcaNullScribe<::Atmos::UniqueProvider<T>, BinaryArchive>
-    {};
+    void UniqueProvider<T>::OnSetup()
+    {}
 }

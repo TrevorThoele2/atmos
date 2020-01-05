@@ -45,7 +45,7 @@ namespace Arca
     struct Traits<::Atmos::Render::Camera>
     {
         static const ObjectType objectType = ObjectType::Relic;
-        static const TypeName typeName;
+        static inline const TypeName typeName = "Camera";
         static const Locality locality = Locality::Global;
     };
 }

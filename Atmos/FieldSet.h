@@ -18,6 +18,6 @@ namespace Arca
     struct Traits<Atmos::World::FieldSet>
     {
         static const ObjectType objectType = ObjectType::Signal;
-        static const TypeName typeName;
+        static inline const TypeName typeName = "FieldSet";
     };
 }

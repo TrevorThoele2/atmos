@@ -33,7 +33,7 @@ namespace Arca
     struct Traits<::Atmos::Time::Information>
     {
         static const ObjectType objectType = ObjectType::Relic;
-        static const TypeName typeName;
+        static inline const TypeName typeName = "TimeInformation";
         static const Locality locality = Locality::Global;
     };
 }

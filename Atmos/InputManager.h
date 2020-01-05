@@ -33,6 +33,6 @@ namespace Arca
     template<>
     struct Traits<::Atmos::Input::Manager>
     {
-        static const TypeName typeName;
+        static inline const TypeName typeName = "InputManager";
     };
 }

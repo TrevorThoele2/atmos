@@ -21,7 +21,7 @@ namespace Atmos
         auto window = std::make_unique<Window::WindowsWindow>(reliquary, nCmdShow, className);
         auto input = std::make_unique<Input::WindowsManager>(window->Hwnd());
         auto backbufferSize = ScreenDimensions(window->ClientSize().width, window->ClientSize().height);
-        auto graphics = std::make_unique<Render::DirectX9GraphicsManager>
+        auto graphics = std::make_unique<Render::DirectX9::GraphicsManager>
         (
             reliquary,
             window->Hwnd(),

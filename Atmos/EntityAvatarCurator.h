@@ -30,7 +30,7 @@ namespace Arca
     struct Traits<Atmos::Entity::AvatarCurator>
     {
         static const ObjectType objectType = ObjectType::Curator;
-        static const TypeName typeName;
+        static inline const TypeName typeName = "AvatarCurator";
     };
 }
 

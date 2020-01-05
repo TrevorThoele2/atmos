@@ -80,7 +80,6 @@ namespace Atmos::Asset
 
 namespace Arca
 {
-    const TypeName Traits<::Atmos::Asset::ScriptAsset>::typeName = "ScriptAsset";
     bool Traits<::Atmos::Asset::ScriptAsset>::ShouldCreate(
         Reliquary& reliquary, const ::Atmos::File::Name& fileName, ::Atmos::Asset::ScriptAsset::DataPtr&& data)
     {

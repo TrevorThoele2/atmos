@@ -47,8 +47,3 @@ namespace Atmos::Script
         return *running;
     }
 }
-
-namespace Arca
-{
-    const TypeName Traits<::Atmos::Script::ScriptInstance>::typeName = "ScriptInstance";
-}

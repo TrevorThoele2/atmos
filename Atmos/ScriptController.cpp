@@ -48,8 +48,3 @@ namespace Atmos::Script
 
     }
 }
-
-namespace Arca
-{
-    const TypeName Traits<Atmos::Script::ScriptController>::typeName = "ScriptController";
-}

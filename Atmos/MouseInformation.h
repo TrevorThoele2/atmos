@@ -20,7 +20,7 @@ namespace Arca
     struct Traits<Atmos::Input::MouseInformation>
     {
         static const ObjectType objectType = ObjectType::Relic;
-        static const TypeName typeName;
+        static inline const TypeName typeName = "MouseInformation";
         static const Locality locality = Locality::Global;
     };
 }

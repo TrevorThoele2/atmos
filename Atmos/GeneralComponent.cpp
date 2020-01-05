@@ -105,8 +105,3 @@ namespace Atmos::Entity
         return tags.find(check) != tags.end();
     }
 }
-
-namespace Arca
-{
-    const TypeName Traits<::Atmos::Entity::GeneralComponent>::typeName = "GeneralComponent";
-}

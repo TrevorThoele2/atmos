@@ -8,7 +8,7 @@ namespace Atmos
         CalculateBox();
     }
 
-    void Bounds::Size(const Size3D& to)
+    void Bounds::Size(const Size2D& to)
     {
         size = to;
         CalculateBox();
@@ -19,12 +19,12 @@ namespace Atmos
         return position;
     }
 
-    Size3D Bounds::Size() const
+    Size2D Bounds::Size() const
     {
         return size;
     }
 
-    AxisAlignedBox3D Bounds::Box() const
+    AxisAlignedBox2D Bounds::Box() const
     {
         return box;
     }
@@ -33,11 +33,6 @@ namespace Atmos
     {
         
     }
-}
-
-namespace Arca
-{
-    const TypeName Traits<Atmos::Bounds>::typeName = "Bounds";
 }
 
 namespace Inscription

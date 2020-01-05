@@ -12,8 +12,3 @@ namespace Atmos::Audio
         this->asset = std::move(asset);
     }
 }
-
-namespace Arca
-{
-    const TypeName Traits<::Atmos::Audio::Sound>::typeName = "Sound";
-}

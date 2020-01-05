@@ -25,11 +25,6 @@ namespace Atmos::Time
     }
 }
 
-namespace Arca
-{
-    const TypeName Traits<::Atmos::Time::FrameStopwatch>::typeName = "FrameStopwatch";
-}
-
 namespace Inscription
 {
     void Scribe<::Atmos::Time::FrameStopwatch, BinaryArchive>::ScrivenImplementation(

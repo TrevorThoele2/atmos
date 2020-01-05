@@ -18,7 +18,7 @@ namespace Arca
     struct Traits<Atmos::World::Map>
     {
         static const ObjectType objectType = ObjectType::Relic;
-        static const TypeName typeName;
+        static inline const TypeName typeName = "Map";
         static const Locality locality = Locality::Global;
     };
 }

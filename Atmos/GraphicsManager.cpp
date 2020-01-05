@@ -200,8 +200,3 @@ namespace Atmos::Render
         return surfaces.end();
     }
 }
-
-namespace Arca
-{
-    const TypeName Traits<Atmos::Render::GraphicsManager>::typeName = "GraphicsManager";
-}

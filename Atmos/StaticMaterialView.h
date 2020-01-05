@@ -24,14 +24,14 @@ namespace Atmos::Render
         [[nodiscard]] AxisAlignedBox2D MaterialSlice() const;
 
         [[nodiscard]] Position3D Position() const;
-        [[nodiscard]] Size3D Size() const;
-        [[nodiscard]] AxisAlignedBox3D Box() const;
+        [[nodiscard]] Size2D Size() const;
+        [[nodiscard]] AxisAlignedBox2D Box() const;
 
         [[nodiscard]] Arca::LocalPtr<MaterialViewCore> Core() const;
         [[nodiscard]] Arca::LocalPtr<const Bounds> Bounds() const;
     public:
         void PostConstruct(ShardTuple shards);
-        void Initialize(const Position3D& position);
+        void Initialize(const Position3D& position, const Size2D& size);
     private:
         Arca::LocalPtr<MaterialViewCore> core;
         Arca::LocalPtr<const Atmos::Bounds> bounds;
@@ -46,7 +46,7 @@ namespace Arca
     struct Traits<Atmos::Render::StaticMaterialView>
     {
         static const ObjectType objectType = ObjectType::Relic;
-        static const TypeName typeName;
+        static inline const TypeName typeName = "StaticMaterialView";
     };
 }
 

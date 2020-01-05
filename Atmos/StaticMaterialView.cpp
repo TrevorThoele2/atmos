@@ -47,12 +47,12 @@ namespace Atmos::Render
         return bounds->Position();
     }
 
-    Size3D StaticMaterialView::Size() const
+    Size2D StaticMaterialView::Size() const
     {
         return bounds->Size();
     }
 
-    AxisAlignedBox3D StaticMaterialView::Box() const
+    AxisAlignedBox2D StaticMaterialView::Box() const
     {
         return bounds->Box();
     }
@@ -73,13 +73,10 @@ namespace Atmos::Render
         bounds = std::get<1>(shards);
     }
 
-    void StaticMaterialView::Initialize(const Position3D& position)
+    void StaticMaterialView::Initialize(const Position3D& position, const Size2D& size)
     {
-        const_cast<Atmos::Bounds&>(*bounds).Position(position);
+        auto mutableBounds = const_cast<Atmos::Bounds&>(*bounds);
+        mutableBounds.Position(position);
+        mutableBounds.Size(size);
     }
-}
-
-namespace Arca
-{
-    const TypeName Traits<Atmos::Render::StaticMaterialView>::typeName = "StaticMaterialView";
 }

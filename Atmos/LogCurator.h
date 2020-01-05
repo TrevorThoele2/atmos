@@ -9,7 +9,7 @@
 
 #include "FilePath.h"
 
-namespace Atmos::Log
+namespace Atmos::Logging
 {
     class Curator final : public Arca::Curator
     {
@@ -18,7 +18,6 @@ namespace Atmos::Log
         void ClearFile();
     protected:
         void InitializeImplementation() override;
-        void WorkImplementation(Stage& stage) override;
     private:
         Arca::Batch<Log> logs;
 
@@ -44,10 +43,20 @@ namespace Atmos::Log
     };
 }
 
+namespace Arca
+{
+    template<>
+    struct Traits<Atmos::Logging::Curator>
+    {
+        static const ObjectType objectType = ObjectType::Curator;
+        static inline const TypeName typeName = "LoggingCurator";
+    };
+}
+
 namespace Inscription
 {
     template<>
-    class Scribe<::Atmos::Log::Curator, BinaryArchive> final :
-        public ArcaNullScribe<::Atmos::Log::Curator, BinaryArchive>
+    class Scribe<::Atmos::Logging::Curator, BinaryArchive> final :
+        public ArcaNullScribe<::Atmos::Logging::Curator, BinaryArchive>
     {};
 }

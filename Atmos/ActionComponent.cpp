@@ -38,8 +38,3 @@ namespace Atmos::Entity
             script->ExecuteDeferred();
     }
 }
-
-namespace Arca
-{
-    const TypeName Traits<::Atmos::Entity::ActionComponent>::typeName = "ActionComponent";
-}

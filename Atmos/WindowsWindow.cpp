@@ -95,7 +95,7 @@ namespace Atmos::Window
         );
 
         if (hwnd == nullptr)
-            Reliquary().Raise<Log::Log>("Window creation failed.", Log::Severity::SevereError);
+            Reliquary().Raise<Logging::Log>("Window creation failed.", Logging::Severity::SevereError);
     }
 
     AxisAlignedBox2D WindowsWindow::AdjustWindowDimensions()

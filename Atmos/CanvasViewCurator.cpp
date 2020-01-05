@@ -12,8 +12,3 @@ namespace Atmos::Render
 
     }
 }
-
-namespace Arca
-{
-    const TypeName Traits<Atmos::Render::CanvasViewCurator>::typeName = "CanvasViewCurator";
-}

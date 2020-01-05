@@ -38,7 +38,6 @@ namespace Atmos::Asset
 
 namespace Arca
 {
-    const TypeName Traits<::Atmos::Asset::MaterialAsset>::typeName = "MaterialAsset";
     bool Traits<::Atmos::Asset::MaterialAsset>::ShouldCreate(Reliquary& reliquary, const ::Atmos::Name& name)
     {
         return Atmos::Asset::ShouldCreateAsset<::Atmos::Asset::MaterialAsset>(reliquary, name);

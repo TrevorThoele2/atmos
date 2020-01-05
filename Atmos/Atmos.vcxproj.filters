@@ -330,6 +330,18 @@
     <Filter Include="Source Files\Render\MaterialView">
       <UniqueIdentifier>{bdbf69b8-7408-4c63-b60b-5e8426251269}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Render\DirectX9">
+      <UniqueIdentifier>{18b9970d-ad36-46b7-9423-3eb34cb43db6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Render\DirectX9">
+      <UniqueIdentifier>{c8df2d40-59bc-48f8-8f20-c64aae2ebc75}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Environment">
+      <UniqueIdentifier>{6057bb8c-16e8-4117-8949-691b35a6a40e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Environment">
+      <UniqueIdentifier>{c1ef003e-1d21-411c-a0b2-4094a426a84e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FieldDestination.h">
@@ -524,9 +536,6 @@
     <ClInclude Include="Engine.h">
       <Filter>Header Files\Engine</Filter>
     </ClInclude>
-    <ClInclude Include="WindowsEngine.h">
-      <Filter>Header Files\Engine</Filter>
-    </ClInclude>
     <ClInclude Include="EngineExecution.h">
       <Filter>Header Files\Engine</Filter>
     </ClInclude>
@@ -715,9 +724,6 @@
     </ClInclude>
     <ClInclude Include="NullAudioManager.h">
       <Filter>Header Files\Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="DirectX9GraphicsManager.h">
-      <Filter>Header Files\Render</Filter>
     </ClInclude>
     <ClInclude Include="NullGraphicsManager.h">
       <Filter>Header Files\Render</Filter>
@@ -908,12 +914,6 @@
     <ClInclude Include="FileAssetPackageCurator.h">
       <Filter>Header Files\Assets</Filter>
     </ClInclude>
-    <ClInclude Include="UniqueProvider.h">
-      <Filter>Header Files\Provider</Filter>
-    </ClInclude>
-    <ClInclude Include="UnownedProvider.h">
-      <Filter>Header Files\Provider</Filter>
-    </ClInclude>
     <ClInclude Include="InputID.h">
       <Filter>Header Files\Input</Filter>
     </ClInclude>
@@ -1088,6 +1088,36 @@
     <ClInclude Include="Field.h">
       <Filter>Header Files\World\Field</Filter>
     </ClInclude>
+    <ClInclude Include="WindowsEngine.h">
+      <Filter>Header Files\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectX9GraphicsManager.h">
+      <Filter>Header Files\Render\DirectX9</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectX9Data.h">
+      <Filter>Header Files\Render\DirectX9</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectX9Includes.h">
+      <Filter>Header Files\Render\DirectX9</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectX9Utilities.h">
+      <Filter>Header Files\Render\DirectX9</Filter>
+    </ClInclude>
+    <ClInclude Include="Environment.h">
+      <Filter>Header Files\Environment</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectX9Renderer2D.h">
+      <Filter>Header Files\Render\DirectX9</Filter>
+    </ClInclude>
+    <ClInclude Include="UniqueProviderRelic.h">
+      <Filter>Header Files\Provider</Filter>
+    </ClInclude>
+    <ClInclude Include="UnownedProviderRelic.h">
+      <Filter>Header Files\Provider</Filter>
+    </ClInclude>
+    <ClInclude Include="UniqueProvider.h">
+      <Filter>Header Files\Provider</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FieldDestination.cpp">
@@ -1101,9 +1131,6 @@
     </ClCompile>
     <ClCompile Include="FileUtility.cpp">
       <Filter>Source Files\File</Filter>
-    </ClCompile>
-    <ClCompile Include="Music.cpp">
-      <Filter>Source Files\Audio</Filter>
     </ClCompile>
     <ClCompile Include="NameValuePair.cpp">
       <Filter>Source Files\Helper</Filter>
@@ -1327,9 +1354,6 @@
     <ClCompile Include="CanvasView.cpp">
       <Filter>Source Files\Render\Canvas</Filter>
     </ClCompile>
-    <ClCompile Include="DirectX9GraphicsManager.cpp">
-      <Filter>Source Files\Render</Filter>
-    </ClCompile>
     <ClCompile Include="NullGraphicsManager.cpp">
       <Filter>Source Files\Render</Filter>
     </ClCompile>
@@ -1363,9 +1387,6 @@
     <ClCompile Include="Exception.cpp">
       <Filter>Source Files\Exceptions</Filter>
     </ClCompile>
-    <ClCompile Include="TimeInformation.cpp">
-      <Filter>Source Files\Time</Filter>
-    </ClCompile>
     <ClCompile Include="TimeSettings.cpp">
       <Filter>Source Files\Time</Filter>
     </ClCompile>
@@ -1389,9 +1410,6 @@
     </ClCompile>
     <ClCompile Include="ScriptPersistence.cpp">
       <Filter>Source Files\Script</Filter>
-    </ClCompile>
-    <ClCompile Include="InitializationInformation.cpp">
-      <Filter>Source Files\Initialization</Filter>
     </ClCompile>
     <ClCompile Include="VolumeCurator.cpp">
       <Filter>Source Files\Audio</Filter>
@@ -1471,28 +1489,10 @@
     <ClCompile Include="FileAssetPackageCurator.cpp">
       <Filter>Source Files\Assets</Filter>
     </ClCompile>
-    <ClCompile Include="FocusLost.cpp">
-      <Filter>Source Files\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="FocusRegained.cpp">
-      <Filter>Source Files\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="CameraMoved.cpp">
-      <Filter>Source Files\Render\Camera</Filter>
-    </ClCompile>
-    <ClCompile Include="MappedInputs.cpp">
-      <Filter>Source Files\Input</Filter>
-    </ClCompile>
-    <ClCompile Include="MappedActions.cpp">
-      <Filter>Source Files\Input</Filter>
-    </ClCompile>
     <ClCompile Include="Input.cpp">
       <Filter>Source Files\Input</Filter>
     </ClCompile>
     <ClCompile Include="Action.cpp">
-      <Filter>Source Files\Input</Filter>
-    </ClCompile>
-    <ClCompile Include="MouseInformation.cpp">
       <Filter>Source Files\Input</Filter>
     </ClCompile>
     <ClCompile Include="ScreenPositionDelta.cpp">
@@ -1519,64 +1519,13 @@
     <ClCompile Include="Entity.cpp">
       <Filter>Source Files\Entity</Filter>
     </ClCompile>
-    <ClCompile Include="MoveCamera.cpp">
-      <Filter>Source Files\Render\Camera</Filter>
-    </ClCompile>
-    <ClCompile Include="MoveCameraBy.cpp">
-      <Filter>Source Files\Render\Camera</Filter>
-    </ClCompile>
-    <ClCompile Include="MoveCameraToInstant.cpp">
-      <Filter>Source Files\Render\Camera</Filter>
-    </ClCompile>
-    <ClCompile Include="MoveCameraDeltaInstant.cpp">
-      <Filter>Source Files\Render\Camera</Filter>
-    </ClCompile>
-    <ClCompile Include="FieldSet.cpp">
-      <Filter>Source Files\World\Field</Filter>
-    </ClCompile>
-    <ClCompile Include="FieldUnset.cpp">
-      <Filter>Source Files\World\Field</Filter>
-    </ClCompile>
-    <ClCompile Include="CurrentAvatar.cpp">
-      <Filter>Source Files\Entity</Filter>
-    </ClCompile>
-    <ClCompile Include="ReconstructGraphics.cpp">
-      <Filter>Source Files\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="WindowDimensionsChanged.cpp">
-      <Filter>Source Files\Window</Filter>
-    </ClCompile>
     <ClCompile Include="ExecuteImmediately.cpp">
-      <Filter>Source Files\Script</Filter>
-    </ClCompile>
-    <ClCompile Include="ForceQuit.cpp">
       <Filter>Source Files\Script</Filter>
     </ClCompile>
     <ClCompile Include="AllRunningScripts.cpp">
       <Filter>Source Files\Script</Filter>
     </ClCompile>
-    <ClCompile Include="VolumeInformation.cpp">
-      <Filter>Source Files\Audio</Filter>
-    </ClCompile>
-    <ClCompile Include="ChangeMasterVolume.cpp">
-      <Filter>Source Files\Audio</Filter>
-    </ClCompile>
-    <ClCompile Include="ProcessedLog.cpp">
-      <Filter>Source Files\Logging</Filter>
-    </ClCompile>
-    <ClCompile Include="MoveEntity.cpp">
-      <Filter>Source Files\Entity\Position</Filter>
-    </ClCompile>
-    <ClCompile Include="MoveEntityDirection.cpp">
-      <Filter>Source Files\Entity\Position</Filter>
-    </ClCompile>
-    <ClCompile Include="MoveEntityInstant.cpp">
-      <Filter>Source Files\Entity\Position</Filter>
-    </ClCompile>
     <ClCompile Include="PositionedEntities.cpp">
-      <Filter>Source Files\Entity\Position</Filter>
-    </ClCompile>
-    <ClCompile Include="RotateEntity.cpp">
       <Filter>Source Files\Entity\Position</Filter>
     </ClCompile>
     <ClCompile Include="TypeRegistration.cpp">
@@ -1599,9 +1548,6 @@
     </ClCompile>
     <ClCompile Include="OutputWorldArchiveInterface.cpp">
       <Filter>Source Files\World\Serialization\World</Filter>
-    </ClCompile>
-    <ClCompile Include="StateRequest.cpp">
-      <Filter>Source Files\State</Filter>
     </ClCompile>
     <ClCompile Include="GuiEngineProvider.cpp">
       <Filter>Source Files\GUI</Filter>
@@ -1629,6 +1575,21 @@
     </ClCompile>
     <ClCompile Include="InputFieldArchiveInterface.cpp">
       <Filter>Source Files\World\Serialization</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectX9GraphicsManager.cpp">
+      <Filter>Source Files\Render\DirectX9</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectX9Data.cpp">
+      <Filter>Source Files\Render\DirectX9</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectX9Utilities.cpp">
+      <Filter>Source Files\Render\DirectX9</Filter>
+    </ClCompile>
+    <ClCompile Include="Environment.cpp">
+      <Filter>Source Files\Environment</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectX9Renderer2D.cpp">
+      <Filter>Source Files\Render\DirectX9</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

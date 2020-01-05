@@ -7,8 +7,3 @@ namespace Atmos::Entity
         general = std::get<0>(shards);
     }
 }
-
-namespace Arca
-{
-    const TypeName Traits<Atmos::Entity::Entity>::typeName;
-}

@@ -15,7 +15,7 @@ namespace Atmos::Render
     {
         auto graphics = &**Arca::ComputedPtr<GraphicsManager*>(Owner());
 
-        for(auto& loop : toRender)
+        for (auto& loop : toRender)
         {
             auto& core = *std::get<0>(loop);
             auto& bounds = *std::get<1>(loop);
@@ -36,9 +36,4 @@ namespace Atmos::Render
             graphics->RenderMaterialView(render);
         }
     }
-}
-
-namespace Arca
-{
-    const TypeName Traits<Atmos::Render::MaterialViewCurator>::typeName = "MaterialViewCurator";
 }

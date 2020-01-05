@@ -26,6 +26,8 @@ namespace Atmos::Time
         timeSettings = Arca::GlobalPtr<Settings>(Owner());
 
         fpsTimer = FpsStopwatch{ Owner().Create<FpsStopwatch::SourceT>(Value(Value::Number(1, 0))) };
+
+        StartFrame();
     }
 
     bool TimeCurator::IsFrameDone() const
@@ -54,11 +56,6 @@ namespace Atmos::Time
         timeInformation->lastFrameElapsed = timeInformation->frameEndTime - timeInformation->frameStartTime;
         timeInformation->totalElapsed += timeInformation->lastFrameElapsed;
     }
-}
-
-namespace Arca
-{
-    const TypeName Traits<Atmos::Time::TimeCurator>::typeName = "TimeCurator";
 }
 
 namespace Inscription

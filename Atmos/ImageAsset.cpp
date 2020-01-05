@@ -41,8 +41,6 @@ namespace Atmos::Asset
 
 namespace Arca
 {
-    const TypeName Traits<::Atmos::Asset::ImageAsset>::typeName = "ImageAsset";
-
     bool Traits<::Atmos::Asset::ImageAsset>::ShouldCreate(
         Reliquary& reliquary, const ::Atmos::File::Name& fileName, ::Atmos::Asset::ImageAsset::DataPtr&& data)
     {

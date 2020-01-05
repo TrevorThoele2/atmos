@@ -31,8 +31,6 @@ namespace Atmos::Asset
 
 namespace Arca
 {
-    const TypeName Traits<::Atmos::Asset::AudioAsset>::typeName = "AudioAsset";
-
     bool Traits<::Atmos::Asset::AudioAsset>::ShouldCreate(
         Reliquary& reliquary, const ::Atmos::File::Name& fileName, ::Atmos::Asset::AudioAsset::DataPtr&& data)
     {

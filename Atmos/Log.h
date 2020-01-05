@@ -8,7 +8,7 @@
 
 #include <optional>
 
-namespace Atmos::Log
+namespace Atmos::Logging
 {
     class Log
     {
@@ -25,9 +25,9 @@ namespace Atmos::Log
 namespace Arca
 {
     template<>
-    struct Traits<Atmos::Log::Log>
+    struct Traits<Atmos::Logging::Log>
     {
         static const ObjectType objectType = ObjectType::Signal;
-        static const TypeName typeName;
+        static inline const TypeName typeName = "Log";
     };
 }

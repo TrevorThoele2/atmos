@@ -47,8 +47,3 @@ namespace Atmos::Render
         return zoom;
     }
 }
-
-namespace Arca
-{
-    const TypeName Traits<::Atmos::Render::Camera>::typeName = "Camera";
-}
