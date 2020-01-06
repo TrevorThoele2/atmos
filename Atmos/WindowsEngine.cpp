@@ -5,6 +5,9 @@
 #include "WindowsInputManager.h"
 #include "DirectX9GraphicsManager.h"
 #include "DirectX9AudioManager.h"
+
+#include "Environment.h"
+#include "FileManagerProvider.h"
 #include "WindowsFileManager.h"
 
 namespace Atmos
@@ -12,6 +15,12 @@ namespace Atmos
     WindowsEngine::WindowsEngine(HINSTANCE hInstance, LPSTR lpCmdLine, int nCmdShow, String className) :
         hInstance(hInstance), lpCmdLine(lpCmdLine), nCmdShow(nCmdShow), className(std::move(className))
     {}
+
+    void WindowsEngine::SetupImplementation()
+    {
+        environment.Setup<Environment>("\n");
+        File::manager.Setup<File::WindowsFileManager>();
+    }
 
     WindowsEngine::InitializationProperties WindowsEngine::CreateInitializationProperties(
         Arca::Reliquary& reliquary)

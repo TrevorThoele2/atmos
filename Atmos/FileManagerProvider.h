@@ -16,5 +16,5 @@ namespace Atmos::File
         void SetupFilePaths();
     };
 
-    static ManagerProvider manager;
+    extern ManagerProvider manager;
 }

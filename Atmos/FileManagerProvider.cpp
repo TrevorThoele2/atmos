@@ -29,4 +29,6 @@ namespace Atmos::File
         Path::fileSeparator = fileSeparator;
         RelativePath::fileSeparator = fileSeparator;
     }
+
+    ManagerProvider manager;
 }
