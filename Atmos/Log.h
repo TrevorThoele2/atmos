@@ -2,8 +2,8 @@
 
 #include <Arca/Signal.h>
 
-#include "LogSeverity.h"
-#include "LogNameValuePairs.h"
+#include "LoggingSeverity.h"
+#include "LoggingDetails.h"
 #include "String.h"
 
 #include <optional>
@@ -15,10 +15,10 @@ namespace Atmos::Logging
     public:
         const String message;
         const Severity severity;
-        const std::optional<NameValuePairs> nameValuePairs;
+        const std::optional<Details> details;
     public:
         Log(String message, Severity severity);
-        Log(String message, Severity severity, const NameValuePairs& nameValuePairs);
+        Log(String message, Severity severity, const Details& details);
     };
 }
 

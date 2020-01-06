@@ -266,7 +266,7 @@ namespace Atmos::Render::DirectX9
             D3DXGetImageInfoFromFile(path.c_str(), &info),
             "An image asset could not be created.",
             Logging::Severity::SevereError,
-            Logging::NameValuePairs{ NameValuePair("File Path", path.GetValue()) });
+            Logging::Details{ {"File Path", path.GetValue()} });
 
         LPDIRECT3DTEXTURE9 tex;
         LogIfError(
@@ -289,7 +289,7 @@ namespace Atmos::Render::DirectX9
             ),
             "An image asset could not be created.",
             Logging::Severity::SevereError,
-            Logging::NameValuePairs{ NameValuePair("File Path", path.GetValue()) });
+            Logging::Details{ {"File Path", path.GetValue()} });
 
         return std::make_unique<ImageAssetDataImplementation>(tex);
     }
@@ -302,7 +302,7 @@ namespace Atmos::Render::DirectX9
             D3DXGetImageInfoFromFileInMemory(buffer, size, &info),
             "An image asset could not be created.",
             Logging::Severity::SevereError,
-            Logging::NameValuePairs{ NameValuePair("File Name", name.GetValue()) });
+            Logging::Details{ {"File Name", name.GetValue()} });
         
         LPDIRECT3DTEXTURE9 tex;
         LogIfError(
@@ -326,7 +326,7 @@ namespace Atmos::Render::DirectX9
             ),
             "An image asset could not be created.",
             Logging::Severity::SevereError,
-            Logging::NameValuePairs{ NameValuePair("File Name", name.GetValue()) });
+            Logging::Details{ {"File Name", name.GetValue()} });
 
         return std::make_unique<ImageAssetDataImplementation>(tex);
     }
@@ -349,7 +349,7 @@ namespace Atmos::Render::DirectX9
             ),
             "A shader asset could not be created.",
             Logging::Severity::SevereError,
-            Logging::NameValuePairs{ NameValuePair("File Path", path.GetValue()) });
+            Logging::Details{ {"File Path", path.GetValue()} });
 
         return std::make_unique<ShaderAssetDataImplementation>(effect);
     }
@@ -373,7 +373,7 @@ namespace Atmos::Render::DirectX9
             ),
             "A shader asset could not be created.",
             Logging::Severity::SevereError,
-            Logging::NameValuePairs{ NameValuePair("File Path", name.GetValue()) });
+            Logging::Details{ {"File Path", name.GetValue()} });
 
         return std::make_unique<ShaderAssetDataImplementation>(effect);
     }
@@ -650,8 +650,8 @@ namespace Atmos::Render::DirectX9
         HRESULT hr,
         const String& message,
         Logging::Severity severity,
-        const std::optional<Logging::NameValuePairs>& nameValuePairs) const
+        const std::optional<Logging::Details>& details) const
     {
-        DirectX9::LogIfError(hr, *reliquary, message, severity, nameValuePairs);
+        DirectX9::LogIfError(hr, *reliquary, message, severity, details);
     }
 }

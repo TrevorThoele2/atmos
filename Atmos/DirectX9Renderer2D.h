@@ -9,8 +9,8 @@
 #include "Angle.h"
 #include "Color.h"
 
-#include "LogSeverity.h"
-#include "LogNameValuePairs.h"
+#include "LoggingSeverity.h"
+#include "LoggingDetails.h"
 #include <Arca/Reliquary.h>
 
 namespace Atmos::Render::DirectX9
@@ -151,6 +151,6 @@ namespace Atmos::Render::DirectX9
             HRESULT hr,
             const String& message,
             Logging::Severity severity,
-            const std::optional<Logging::NameValuePairs>& nameValuePairs = {}) const;
+            const std::optional<Logging::Details>& details = {}) const;
     };
 }

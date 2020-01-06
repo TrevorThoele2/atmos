@@ -5,5 +5,5 @@
 
 namespace Atmos::Logging
 {
-    using NameValuePairs = std::vector<NameValuePair>;
+    using Details = std::vector<NameValuePair>;
 }

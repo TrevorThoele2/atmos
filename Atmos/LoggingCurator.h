@@ -4,8 +4,8 @@
 #include <Arca/SignalBatch.h>
 
 #include "Log.h"
-#include "LogSeverity.h"
-#include "LogNameValuePairs.h"
+#include "LoggingSeverity.h"
+#include "LoggingDetails.h"
 
 #include "FilePath.h"
 
@@ -25,7 +25,7 @@ namespace Atmos::Logging
         (
             const String& message,
             Severity severity,
-            std::optional<NameValuePairs> nameValuePairs = {}
+            std::optional<Details> details = {}
         );
         void OnExit();
         [[nodiscard]] static File::Path OutputFilePath();
@@ -34,7 +34,7 @@ namespace Atmos::Logging
         {
             String string;
             Severity severity;
-            NameValuePairs nameValuePairs;
+            Details details;
         };
 
         std::vector<Entry> queuedEntryList;

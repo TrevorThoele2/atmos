@@ -81,7 +81,7 @@ namespace Atmos::Render::DirectX9
             HRESULT hr,
             const String& message,
             Logging::Severity severity,
-            const std::optional<Logging::NameValuePairs>& nameValuePairs = {}) const;
+            const std::optional<Logging::Details>& details = {}) const;
     };
 
     class CanvasData final : public Canvas::Data
@@ -115,6 +115,6 @@ namespace Atmos::Render::DirectX9
             HRESULT hr,
             const String& message,
             Logging::Severity severity,
-            const std::optional<Logging::NameValuePairs>& nameValuePairs = {}) const;
+            const std::optional<Logging::Details>& details = {}) const;
     };
 }

@@ -7,7 +7,7 @@ namespace Atmos::Logging
         message(std::move(message)), severity(severity)
     {}
 
-    Log::Log(String message, Severity severity, const NameValuePairs& nameValuePairs) :
-        message(std::move(message)), severity(severity), nameValuePairs(nameValuePairs)
+    Log::Log(String message, Severity severity, const Details& details) :
+        message(std::move(message)), severity(severity), details(details)
     {}
 }

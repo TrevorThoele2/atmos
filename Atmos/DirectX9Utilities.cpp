@@ -2,7 +2,6 @@
 
 #include <DxErr.h>
 #include "Log.h"
-#include "Environment.h"
 
 namespace Atmos::Render::DirectX9
 {
@@ -17,17 +16,17 @@ namespace Atmos::Render::DirectX9
         Arca::Reliquary& reliquary,
         const String& message,
         Logging::Severity severity,
-        const std::optional<Logging::NameValuePairs>& nameValuePairs
+        const std::optional<Logging::Details>& details
     ) {
         if (hr == S_OK)
             return;
 
-        auto useNameValuePairs = nameValuePairs
-            ? *nameValuePairs
-            : Logging::NameValuePairs{};
+        auto useDetails = details
+            ? *details
+            : Logging::Details{};
 
-        useNameValuePairs.insert(useNameValuePairs.begin(), { "Description", String(DXGetErrorDescriptionA(hr)) });
+        useDetails.insert(useDetails.begin(), { "Description", String(DXGetErrorDescriptionA(hr)) });
 
-        reliquary.Raise<Logging::Log>(message, severity, useNameValuePairs);
+        reliquary.Raise<Logging::Log>(message, severity, useDetails);
     }
 }

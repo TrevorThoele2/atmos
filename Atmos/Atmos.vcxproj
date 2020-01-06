@@ -95,8 +95,8 @@
     <ClInclude Include="FileAsset.h" />
     <ClInclude Include="Fps.h" />
     <ClInclude Include="TimeSettings.h" />
-    <ClInclude Include="LogNameValuePairs.h" />
-    <ClInclude Include="LogSeverity.h" />
+    <ClInclude Include="LoggingDetails.h" />
+    <ClInclude Include="LoggingSeverity.h" />
     <ClInclude Include="EngineNotSetup.h" />
     <ClInclude Include="EntityActionCurator.h" />
     <ClInclude Include="AngelScriptResultVerification.h" />
@@ -157,7 +157,7 @@
     <ClInclude Include="IsList.h" />
     <ClInclude Include="IsSameRuntimeType.h" />
     <ClInclude Include="LargeInteger.h" />
-    <ClInclude Include="LogCurator.h" />
+    <ClInclude Include="LoggingCurator.h" />
     <ClInclude Include="VolumeCurator.h" />
     <ClInclude Include="MusicCurator.h" />
     <ClInclude Include="NameValuePair.h" />
@@ -359,7 +359,7 @@
     <ClCompile Include="InitializationFileSection.cpp" />
     <ClCompile Include="InitializationFileCurator.cpp" />
     <ClCompile Include="LargeInteger.cpp" />
-    <ClCompile Include="LogCurator.cpp" />
+    <ClCompile Include="LoggingCurator.cpp" />
     <ClCompile Include="VolumeCurator.cpp" />
     <ClCompile Include="MusicCurator.cpp" />
     <ClCompile Include="NameValuePair.cpp" />

@@ -64,7 +64,7 @@ namespace Atmos::Asset
             (
                 "Could not open the asset file.",
                 Logging::Severity::SevereError,
-                Logging::NameValuePairs{ NameValuePair("File Path", processedPath.GetValue()) }
+                Logging::Details{ NameValuePair("File Path", processedPath.GetValue()) }
             );
             return;
         }
@@ -79,7 +79,7 @@ namespace Atmos::Asset
             (
                 "The asset file cannot be read.",
                 Logging::Severity::SevereError,
-                Logging::NameValuePairs{ NameValuePair("File Path", processedPath.GetValue()) }
+                Logging::Details{ NameValuePair("File Path", processedPath.GetValue()) }
             );
             return;
         }
@@ -100,7 +100,7 @@ namespace Atmos::Asset
                 (
                     "The asset package cannot be read. There probably isn't any data available.",
                     Logging::Severity::SevereError,
-                    Logging::NameValuePairs{ NameValuePair("File Name", name.GetValue()) }
+                    Logging::Details{ NameValuePair("File Name", name.GetValue()) }
                 );
                 continue;
             }
@@ -112,7 +112,7 @@ namespace Atmos::Asset
                 (
                     "Read too little data in the asset package.",
                     Logging::Severity::SevereError,
-                    Logging::NameValuePairs{ NameValuePair("File Name", name.GetValue()) }
+                    Logging::Details{ NameValuePair("File Name", name.GetValue()) }
                 );
                 continue;
             }
