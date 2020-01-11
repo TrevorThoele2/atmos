@@ -3,13 +3,19 @@
 #include <Arca/Signal.h>
 
 #include "String.h"
+#include "LoggingSeverity.h"
+#include "LoggingDetails.h"
 
 namespace Atmos::Logging
 {
     class ProcessedLog
     {
     public:
-        String string;
+        const String resultantMessage;
+
+        const String originalMessage;
+        const Severity severity;
+        const std::optional<Details> details;
     };
 }
 

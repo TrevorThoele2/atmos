@@ -17,7 +17,9 @@ namespace Atmos::Logging
         const Severity severity;
         const std::optional<Details> details;
     public:
+        explicit Log(String message);
         Log(String message, Severity severity);
+        Log(String message, const Details& details);
         Log(String message, Severity severity, const Details& details);
     };
 }

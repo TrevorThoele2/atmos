@@ -33,7 +33,7 @@ namespace Atmos::Time
 
 namespace Atmos::Render::DirectX9
 {
-    class Renderer2D;
+    class Renderer;
 
     class GraphicsManager final : public Render::GraphicsManager
     {
@@ -57,17 +57,16 @@ namespace Atmos::Render::DirectX9
         void SetRenderState(RenderState state, bool set) override;
 
         bool Start() override;
-        void End() override;
+        void Stop() override;
 
-        void StartSprites(size_t spriteCount = 0) override;
-        void EndSprites() override;
+        void StartObjects(size_t spriteCount = 0) override;
+        void StopObjects() override;
         void StartLines() override;
-        void EndLines() override;
-
+        void StopLines() override;
         void StartStencil() override;
         void StopStencil() override;
 
-        LPDIRECT3DDEVICE9& GetDevice();
+        LPDIRECT3DDEVICE9& Device();
     protected:
         void RenderObject
         (
@@ -88,8 +87,7 @@ namespace Atmos::Render::DirectX9
         LPDIRECT3D9 d3d;
         D3DPRESENT_PARAMETERS presentationParameters;
 
-        std::unique_ptr<Renderer2D> renderer2D;
-        LPD3DXLINE lineInterface;
+        std::unique_ptr<Renderer> renderer;
 
         D3DXMATRIX projection;
 

@@ -117,19 +117,19 @@ namespace Atmos::Render
         return false;
     }
 
-    void NullGraphicsManager::End()
+    void NullGraphicsManager::Stop()
     {}
 
-    void NullGraphicsManager::StartSprites(size_t spriteCount)
+    void NullGraphicsManager::StartObjects(size_t spriteCount)
     {}
 
-    void NullGraphicsManager::EndSprites()
+    void NullGraphicsManager::StopObjects()
     {}
 
     void NullGraphicsManager::StartLines()
     {}
 
-    void NullGraphicsManager::EndLines()
+    void NullGraphicsManager::StopLines()
     {}
 
     void NullGraphicsManager::StartStencil()

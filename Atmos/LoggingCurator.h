@@ -30,15 +30,6 @@ namespace Atmos::Logging
         void OnExit();
         [[nodiscard]] static File::Path OutputFilePath();
     private:
-        struct Entry
-        {
-            String string;
-            Severity severity;
-            Details details;
-        };
-
-        std::vector<Entry> queuedEntryList;
-    private:
         INSCRIPTION_ACCESS;
     };
 }

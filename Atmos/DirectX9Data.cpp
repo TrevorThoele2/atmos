@@ -96,7 +96,7 @@ namespace Atmos::Render::DirectX9
 
     void SurfaceData::SetAsRenderTarget()
     {
-        owner->GetDevice()->SetRenderTarget(0, backBuffer);
+        owner->Device()->SetRenderTarget(0, backBuffer);
     }
 
     void SurfaceData::Present()
@@ -114,7 +114,7 @@ namespace Atmos::Render::DirectX9
 
         LogIfError
         (
-            owner->GetDevice()->CreateAdditionalSwapChain
+            owner->Device()->CreateAdditionalSwapChain
             (
                 &presentationParameters,
                 &swapChain
@@ -213,7 +213,7 @@ namespace Atmos::Render::DirectX9
     {
         D3DXCreateTexture
         (
-            owner->GetDevice(),
+            owner->Device(),
             width,
             height,
             D3DX_DEFAULT,

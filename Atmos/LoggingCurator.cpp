@@ -57,16 +57,6 @@ namespace Atmos::Logging
         ClearFile();
         DoLog("Session start.", Severity::Information);
 
-        auto entryLoop = queuedEntryList.begin();
-        while (entryLoop != queuedEntryList.end())
-        {
-            if (entryLoop->details.empty())
-                DoLog(entryLoop->string, entryLoop->severity);
-            else
-                DoLog(entryLoop->string, entryLoop->severity, entryLoop->details);
-            entryLoop = queuedEntryList.erase(entryLoop);
-        }
-
         Owner().ExecuteOn<Log>(
             [this](const Log& log)
             {
@@ -115,7 +105,7 @@ namespace Atmos::Logging
                 output.append("        " + loop.name + ": " + ToString(loop.value) + '\n');
 
         outFile.WriteData(output);
-        Owner().Raise<ProcessedLog>(output);
+        Owner().Raise<ProcessedLog>(output, message, severity, details);
     }
 
     void Curator::OnExit()

@@ -82,14 +82,14 @@ namespace Atmos::Render
         virtual void SetRenderState(RenderState state, bool value) = 0;
 
         virtual bool Start() = 0;
-        virtual void End() = 0;
+        virtual void Stop() = 0;
         void Present();
         void Present(void* windowOverride);
 
-        virtual void StartSprites(size_t spriteCount = 0) = 0;
-        virtual void EndSprites() = 0;
+        virtual void StartObjects(size_t spriteCount = 0) = 0;
+        virtual void StopObjects() = 0;
         virtual void StartLines() = 0;
-        virtual void EndLines() = 0;
+        virtual void StopLines() = 0;
 
         virtual void StartStencil() = 0;
         virtual void StopStencil() = 0;

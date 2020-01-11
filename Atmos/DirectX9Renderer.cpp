@@ -1,4 +1,4 @@
-#include "DirectX9Renderer2D.h"
+#include "DirectX9Renderer.h"
 
 #include "DirectX9GraphicsManager.h"
 #include "DirectX9Data.h"
@@ -10,25 +10,19 @@
 
 namespace Atmos::Render::DirectX9
 {
-    Renderer2D::Vertex::Vertex() :
-        position(0, 0), color(0), u(0.0f), v(0.0f)
+    Renderer::Renderer(Arca::Reliquary& reliquary) : reliquary(&reliquary)
     {}
 
-    Renderer2D::Vertex::Vertex(D3DXVECTOR2&& position, D3DCOLOR color, FLOAT u, FLOAT v) :
-        position(position), center(0.0f, 0.0f), color(color), u(u), v(v)
-    {}
-
-    Renderer2D::Renderer2D(Arca::Reliquary& reliquary) : reliquary(&reliquary)
-    {}
-
-    Renderer2D::~Renderer2D()
+    Renderer::~Renderer()
     {
         vertexBuffer->Release();
         indexBuffer->Release();
         vertexDecl->Release();
+
+        lineInterface->Release();
     }
 
-    void Renderer2D::Initialize(GraphicsManager& handler, LPDIRECT3DDEVICE9 device)
+    void Renderer::Initialize(GraphicsManager& handler, LPDIRECT3DDEVICE9 device)
     {
         this->device = device;
         InitializeBuffers();
@@ -39,30 +33,40 @@ namespace Atmos::Render::DirectX9
         defaultTexturedImageViewShader = reliquary->Create<Asset::ShaderAsset>(
             texturedSpritePath,
             std::move(shaderData));
+
+        D3DXCreateLine(device, &lineInterface);
     }
 
-    void Renderer2D::Start(ObjectsSize size)
+    void Renderer::StartObjects(ObjectsSize size)
     {
         if (size != 0)
             objects.reserve(size);
     }
 
-    void Renderer2D::Stop(const D3DXMATRIX* projection)
+    void Renderer::StopObjects()
     {
-        if (projection)
-            Flush(*projection);
-
         objects.clear();
     }
 
-    void Renderer2D::Flush(const D3DXMATRIX& projection)
+    void Renderer::StartLines()
+    {
+        lineInterface->Begin();
+    }
+
+    void Renderer::StopLines()
+    {
+        lineInterface->End();
+    }
+
+    void Renderer::Flush(const D3DXMATRIX& projection)
     {
         if (objects.empty())
             return;
 
-        // Sort objects
-        {
-            const auto sorter = [](const Object3D& left, const Object3D& right)
+        std::sort(
+            objects.begin(),
+            objects.end(),
+            [](const Object3D& left, const Object3D& right)
             {
                 const auto leftZ = left.z;
                 const auto rightZ = right.z;
@@ -77,10 +81,7 @@ namespace Atmos::Render::DirectX9
                 }
                 else
                     return leftZ < rightZ;
-            };
-
-            std::sort(objects.begin(), objects.end(), sorter);
-        }
+            });
 
         auto camera = Arca::GlobalPtr<Camera>(*reliquary);
 
@@ -106,8 +107,12 @@ namespace Atmos::Render::DirectX9
             focusedShaderImpl = focusedShader->DataAs<ShaderAssetDataImplementation>();
             focusedShaderImpl->effect->SetMatrix("g_Projection", &projection);
 
-            auto cameraSize = camera->Size();
-            FLOAT screenSize[2] = { static_cast<FLOAT>(cameraSize.width), static_cast<FLOAT>(cameraSize.height) };
+            const auto cameraSize = camera->Size();
+            FLOAT screenSize[2] =
+            {
+                static_cast<FLOAT>(cameraSize.width),
+                static_cast<FLOAT>(cameraSize.height)
+            };
             focusedShaderImpl->effect->SetFloatArray("g_ScreenSize", screenSize, 2);
 
             if (focusedTex && focusedShaderImpl)
@@ -134,7 +139,7 @@ namespace Atmos::Render::DirectX9
             vertexBuffer->Unlock();
             indexBuffer->Unlock();
 
-            const Asset::ShaderAssetData::PassCount passCount = focusedShaderImpl->Begin();
+            const auto passCount = focusedShaderImpl->Begin();
             Asset::ShaderAssetData::PassCount passCountCurrent = 0;
 
             do
@@ -159,13 +164,13 @@ namespace Atmos::Render::DirectX9
             }
         };
 
-        for (auto loop = objects.begin(); loop != objects.end(); ++loop)
+        for (auto& object : objects)
         {
-            const auto loopVerticesSize = loop->vertices.size();
-            const auto loopIndicesSize = loop->indices.size();
+            const auto loopVerticesSize = object.vertices.size();
+            const auto loopIndicesSize = object.indices.size();
 
-            const auto loopTexture = loop->tex;
-            const auto loopShader = loop->shader;
+            const auto loopTexture = object.tex;
+            const auto loopShader = object.shader;
 
             // Check if the sprint is done
             if (vertexCount + loopVerticesSize >= maxVertexSprint || indexCount + loopIndicesSize >= maxIndexSprint)
@@ -201,20 +206,20 @@ namespace Atmos::Render::DirectX9
             // Vertices
             memcpy(
                 &reinterpret_cast<Vertex*>(vertexData)[vertexCount],
-                loop->vertices.data(),
+                object.vertices.data(),
                 loopVerticesSize * sizeof(Vertex));
 
             // Indices
             for (size_t indexLoop = 0; indexLoop != loopIndicesSize; ++indexLoop)
-                loop->indices[indexLoop] = vertexCount + loop->indices[indexLoop];
+                object.indices[indexLoop] = vertexCount + object.indices[indexLoop];
             memcpy(
                 &reinterpret_cast<Index*>(indexData)[indexCount],
-                loop->indices.data(),
+                object.indices.data(),
                 loopIndicesSize * sizeof(Index));
 
             vertexCount += static_cast<BufferSize>(loopVerticesSize);
             indexCount += static_cast<BufferSize>(loopIndicesSize);
-            primitiveCount += loop->primCount;
+            primitiveCount += object.primCount;
         }
 
         vertexBuffer->Unlock();
@@ -227,7 +232,7 @@ namespace Atmos::Render::DirectX9
         drawPrimitives(true);
     }
 
-    void Renderer2D::Draw
+    void Renderer::Draw
     (
         LPDIRECT3DTEXTURE9 tex,
         Asset::ShaderAsset* shader,
@@ -244,25 +249,65 @@ namespace Atmos::Render::DirectX9
         objects.emplace_back(tex, shader, X, Y, Z, imageBounds, size, center, scalers, rotation, color);
     }
 
-    void Renderer2D::OnLostDevice()
+    void Renderer::Draw
+    (
+        const Position2D& from,
+        const Position2D& to,
+        float width,
+        const Color& color
+    ) {
+        if (width != lineInterface->GetWidth())
+        {
+            StopLines();
+            lineInterface->SetWidth(width);
+            StartLines();
+        }
+
+        D3DXVECTOR2 points[] =
+        {
+            D3DXVECTOR2(from.x, from.y),
+            D3DXVECTOR2(to.x, to.y)
+        };
+        lineInterface->Draw(points, 2, ColorToD3D(color));
+    }
+
+    void Renderer::OnLostDevice()
     {
         vertexBuffer->Release();
         indexBuffer->Release();
         defaultTexturedImageViewShader->DataAs<ShaderAssetDataImplementation>()->effect->OnLostDevice();
+
+        LogIfError(
+            lineInterface->OnLostDevice(),
+            "The DirectX line interface was not able to be released.",
+            Logging::Severity::SevereError);
     }
 
-    void Renderer2D::OnResetDevice()
+    void Renderer::OnResetDevice()
     {
         InitializeBuffers();
         defaultTexturedImageViewShader->DataAs<ShaderAssetDataImplementation>()->effect->OnResetDevice();
+
+        LogIfError(
+            lineInterface->OnResetDevice(),
+            "The DirectX line interface was not able to be reset.",
+            Logging::Severity::SevereError);
     }
 
-    Asset::ShaderAsset* Renderer2D::DefaultTexturedImageViewShader()
+    Asset::ShaderAsset* Renderer::DefaultTexturedImageViewShader()
     {
         return defaultTexturedImageViewShader;
     }
 
-    Renderer2D::Object3D::Object3D
+    Renderer::Vertex::Vertex() :
+        position(0, 0), color(0), u(0.0f), v(0.0f)
+    {}
+
+    Renderer::Vertex::Vertex(D3DXVECTOR2&& position, D3DCOLOR color, FLOAT u, FLOAT v) :
+        position(position), center(0.0f, 0.0f), color(color), u(u), v(v)
+    {}
+
+    Renderer::Object3D::Object3D
     (
         LPDIRECT3DTEXTURE9 tex,
         Asset::ShaderAsset* shader,
@@ -314,12 +359,12 @@ namespace Atmos::Render::DirectX9
         SetupQuad(X, Y, center, scalers, rotation.As<Radians>());
     }
 
-    Renderer2D::Object3D::Object3D(Object3D&& arg) :
+    Renderer::Object3D::Object3D(Object3D&& arg) :
         vertices(std::move(arg.vertices)), indices(std::move(arg.indices)), primCount(arg.primCount),
         z(arg.z), tex(arg.tex), shader(arg.shader)
     {}
 
-    Renderer2D::Object3D& Renderer2D::Object3D::operator=(
+    Renderer::Object3D& Renderer::Object3D::operator=(
         Object3D&& arg)
     {
         vertices = std::move(arg.vertices);
@@ -331,7 +376,7 @@ namespace Atmos::Render::DirectX9
         return *this;
     }
 
-    void Renderer2D::Object3D::SetupQuad
+    void Renderer::Object3D::SetupQuad
     (
         float X,
         float Y,
@@ -382,7 +427,7 @@ namespace Atmos::Render::DirectX9
         primCount = 2;
     }
 
-    void Renderer2D::Object3D::SetupRegularPolygon
+    void Renderer::Object3D::SetupRegularPolygon
     (
         float radius,
         unsigned int polyCount,
@@ -442,7 +487,7 @@ namespace Atmos::Render::DirectX9
         primCount = polyCount;
     }
 
-    void Renderer2D::Object3D::SetupVertexCommon
+    void Renderer::Object3D::SetupVertexCommon
     (
         Vertex& vertex,
         const D3DXMATRIX& matrix,
@@ -454,7 +499,7 @@ namespace Atmos::Render::DirectX9
         vertex.center = center;
     }
 
-    void Renderer2D::Object3D::SetupVertexCommon
+    void Renderer::Object3D::SetupVertexCommon
     (
         Vertex& vertex,
         const D3DXMATRIX& matrix,
@@ -467,7 +512,7 @@ namespace Atmos::Render::DirectX9
         vertex.color = ColorToD3D(color);
     }
 
-    void Renderer2D::InitializeBuffers()
+    void Renderer::InitializeBuffers()
     {
         device->CreateVertexBuffer
         (
@@ -499,7 +544,7 @@ namespace Atmos::Render::DirectX9
         device->CreateVertexDeclaration(vElements, &vertexDecl);
     }
 
-    void Renderer2D::LogIfError(
+    void Renderer::LogIfError(
         HRESULT hr,
         const String& message,
         Logging::Severity severity,

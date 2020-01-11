@@ -17,20 +17,21 @@ namespace Atmos::Render::DirectX9
 {
     class GraphicsManager;
 
-    class Renderer2D
+    class Renderer
     {
     public:
         using ObjectsSize = size_t;
     public:
-        explicit Renderer2D(Arca::Reliquary& reliquary);
+        explicit Renderer(Arca::Reliquary& reliquary);
 
-        ~Renderer2D();
+        ~Renderer();
 
         void Initialize(GraphicsManager& handler, LPDIRECT3DDEVICE9 device);
 
-        void Start(ObjectsSize size);
-        // If the projection exists, then this will flush the sprites
-        void Stop(const D3DXMATRIX* projection);
+        void StartObjects(ObjectsSize size);
+        void StopObjects();
+        void StartLines();
+        void StopLines();
         void Flush(const D3DXMATRIX& projection);
 
         void Draw
@@ -45,6 +46,14 @@ namespace Atmos::Render::DirectX9
             const Position2D& center,
             const Scalers2D& scalers,
             const Angle& rotation,
+            const Color& color
+        );
+
+        void Draw
+        (
+            const Position2D& from,
+            const Position2D& to,
+            float width,
             const Color& color
         );
 
@@ -139,6 +148,8 @@ namespace Atmos::Render::DirectX9
         LPDIRECT3DINDEXBUFFER9 indexBuffer;
         LPDIRECT3DVERTEXDECLARATION9 vertexDecl;
         Arca::LocalPtr<Asset::ShaderAsset> defaultTexturedImageViewShader;
+
+        LPD3DXLINE lineInterface;
 
         using Objects = std::vector<Object3D>;
         Objects objects;
