@@ -14,10 +14,10 @@ namespace Atmos::Input
         void InitializeImplementation() override;
         void WorkImplementation(Stage& stage) override;
     private:
-        Arca::ComputedPtr<Manager*> manager;
+        Arca::ComputedIndex<Manager*> manager;
 
-        Arca::GlobalPtr<MappedInputs> mappedInputs;
-        Arca::GlobalPtr<MappedActions> mappedActions;
+        Arca::GlobalIndex<MappedInputs> mappedInputs;
+        Arca::GlobalIndex<MappedActions> mappedActions;
     };
 }
 

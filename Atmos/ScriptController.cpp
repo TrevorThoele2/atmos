@@ -33,9 +33,9 @@ namespace Atmos::Script
                 //allRunningScripts->Remove(actualized);
             });
 
-        allRunningScripts = Arca::GlobalPtr<AllRunningScripts>(Owner());
+        allRunningScripts = Arca::GlobalIndex<AllRunningScripts>(Owner());
 
-        debugStatistics = Arca::GlobalPtr<Debug::Statistics>(Owner());
+        debugStatistics = Arca::GlobalIndex<Debug::Statistics>(Owner());
     }
 
     void ScriptController::WorkImplementation(Stage& stage)

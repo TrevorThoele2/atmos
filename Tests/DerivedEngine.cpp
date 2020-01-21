@@ -3,8 +3,13 @@
 #include <Atmos/NullInputManager.h>
 #include <Atmos/NullAudioManager.h>
 
+void DerivedEngine::SetupImplementation()
+{
+    
+}
+
 auto DerivedEngine::CreateInitializationProperties(Arca::Reliquary& reliquary)
--> InitializationProperties
+    -> InitializationProperties
 {
     this->globalReliquary = &reliquary;
 

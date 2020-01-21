@@ -4,10 +4,10 @@ namespace Atmos::Input
 {
     void Curator::InitializeImplementation()
     {
-        manager = Arca::ComputedPtr<Manager*>(Owner());
+        manager = Arca::ComputedIndex<Manager*>(Owner());
 
-        mappedInputs = Arca::GlobalPtr<MappedInputs>(Owner());
-        mappedActions = Arca::GlobalPtr<MappedActions>(Owner());
+        mappedInputs = Arca::GlobalIndex<MappedInputs>(Owner());
+        mappedActions = Arca::GlobalIndex<MappedActions>(Owner());
     }
 
     void Curator::WorkImplementation(Stage& stage)

@@ -15,13 +15,13 @@ namespace Atmos::Time
         using SourceT = Stopwatch;
     public:
         ExtendedStopwatchAdapter();
-        explicit ExtendedStopwatchAdapter(Arca::LocalPtr<SourceT> source);
+        explicit ExtendedStopwatchAdapter(Arca::RelicIndex<SourceT> source);
         explicit ExtendedStopwatchAdapter(const ::Inscription::BinaryTableData<ExtendedStopwatchAdapter>& data);
 
         bool operator==(const ExtendedStopwatchAdapter& arg) const;
 
-        void Source(Arca::LocalPtr<SourceT> source);
-        Arca::LocalPtr<SourceT> Source() const;
+        void Source(Arca::RelicIndex<SourceT> source);
+        Arca::RelicIndex<SourceT> Source() const;
 
         Value Start();
         Value Calculate();
@@ -35,7 +35,7 @@ namespace Atmos::Time
         void ResetHighest();
         [[nodiscard]] Value GetHighest() const;
     private:
-        Arca::LocalPtr<SourceT> source;
+        Arca::RelicIndex<SourceT> source;
 
         Value elapsed = Value(Value::Number(0));
         Value average = Value(Value::Number(0));
@@ -48,7 +48,7 @@ namespace Atmos::Time
     ExtendedStopwatchAdapter<Stopwatch>::ExtendedStopwatchAdapter() = default;
 
     template<class Stopwatch>
-    ExtendedStopwatchAdapter<Stopwatch>::ExtendedStopwatchAdapter(Arca::LocalPtr<SourceT> source) :
+    ExtendedStopwatchAdapter<Stopwatch>::ExtendedStopwatchAdapter(Arca::RelicIndex<SourceT> source) :
         source(source)
     {}
 
@@ -68,13 +68,13 @@ namespace Atmos::Time
     }
 
     template<class Stopwatch>
-    void ExtendedStopwatchAdapter<Stopwatch>::Source(Arca::LocalPtr<SourceT> source)
+    void ExtendedStopwatchAdapter<Stopwatch>::Source(Arca::RelicIndex<SourceT> source)
     {
         this->source = source;
     }
 
     template<class Stopwatch>
-    auto ExtendedStopwatchAdapter<Stopwatch>::Source() const -> Arca::LocalPtr<SourceT>
+    auto ExtendedStopwatchAdapter<Stopwatch>::Source() const -> Arca::RelicIndex<SourceT>
     {
         return source;
     }
@@ -156,7 +156,7 @@ namespace Inscription
         using ObjectT = ::Atmos::Time::ExtendedStopwatchAdapter<Stopwatch>;
 
         using SourceT = typename ObjectT::SourceT;
-        Arca::LocalPtr<SourceT> source;
+        Arca::RelicIndex<SourceT> source;
 
         ::Atmos::Time::Value elapsed;
         ::Atmos::Time::Value average;

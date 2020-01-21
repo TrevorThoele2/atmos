@@ -338,6 +338,7 @@
     <ClCompile Include="AnyEventConnection.cpp" />
     <ClCompile Include="Exception.cpp" />
     <ClCompile Include="FileAsset.cpp" />
+    <ClCompile Include="TimeInformation.cpp" />
     <ClCompile Include="TimeSettings.cpp" />
     <ClCompile Include="NullFileManager.cpp" />
     <ClCompile Include="NullWindow.cpp" />

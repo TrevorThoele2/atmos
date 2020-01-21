@@ -26,7 +26,7 @@ namespace Atmos::Initialization
 
     void FileCurator::InitializeImplementation()
     {
-        information = Arca::GlobalPtr<Information>(Owner());
+        information = Arca::GlobalIndex<Information>(Owner());
 
         sound.CreateEntry("Master Volume", &information->sound.masterVolume);
 

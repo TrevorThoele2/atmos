@@ -8,7 +8,7 @@ namespace Atmos::Entity
 {
     struct MoveEntity
     {
-        Arca::LocalPtr<Entity> entity;
+        Arca::RelicIndex<Entity> entity;
         Grid::Position toPosition;
         Time::Value timeTaken;
     };

@@ -1,8 +1,6 @@
 #include "TypeRegistration.h"
 
 #include "DebugStatistics.h"
-#include "FocusLost.h"
-#include "FocusRegained.h"
 #include "TimeCurator.h"
 #include "StaticMaterialView.h"
 #include "DynamicMaterialView.h"
@@ -17,24 +15,15 @@
 
 namespace Atmos
 {
-    void RegisterCommonTypes(Arca::ReliquaryOrigin& origin)
-    {
-        origin
-            .Type<FocusRegained>()
-            .Type<FocusLost>();
-    }
-
     void RegisterGlobalTypes(Arca::ReliquaryOrigin& origin)
     {
-        RegisterCommonTypes(origin);
-
         origin
-            .Type<Debug::Statistics>()
-            .Type<Time::TimeCurator>()
-            .Type<Time::Information>()
-            .Type<Time::Settings>()
-            .Type<Time::RealStopwatch>()
-            .Type<Time::FrameStopwatch>();
+            .Register<Debug::Statistics>()
+            .Register<Time::TimeCurator>()
+            .Register<Time::Information>()
+            .Register<Time::Settings>()
+            .Register<Time::RealStopwatch>()
+            .Register<Time::FrameStopwatch>();
 
         RegisterProviderComputation<UniqueProviderRelic<Input::Manager>>(origin);
         RegisterProviderComputation<UniqueProviderRelic<Render::GraphicsManager>>(origin);
@@ -43,15 +32,13 @@ namespace Atmos
 
     void RegisterFieldTypes(Arca::ReliquaryOrigin& origin, Arca::Reliquary& globalReliquary)
     {
-        RegisterCommonTypes(origin);
-
         origin
-            .Type<Bounds>()
-            .Type<Render::MaterialViewCore>()
-            .Type<Render::StaticMaterialView>()
-            .Type<Render::DynamicMaterialView>()
-            .Type<Render::MaterialViewCurator>()
-            .Type<Render::Camera>();
+            .Register<Bounds>()
+            .Register<Render::MaterialViewCore>()
+            .Register<Render::StaticMaterialView>()
+            .Register<Render::DynamicMaterialView>()
+            .Register<Render::MaterialViewCurator>()
+            .Register<Render::Camera>();
 
         RegisterRedirectionComputation<UniqueProviderRelic<Input::Manager>>(origin, globalReliquary);
         RegisterRedirectionComputation<UniqueProviderRelic<Render::GraphicsManager>>(origin, globalReliquary);

@@ -11,7 +11,7 @@ namespace Atmos::Render
     protected:
         void InitializeImplementation() override;
     private:
-        Arca::ComputedPtr<GraphicsManager*> manager;
+        Arca::ComputedIndex<GraphicsManager*> manager;
     };
 }
 

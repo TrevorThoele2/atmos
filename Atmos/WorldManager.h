@@ -40,7 +40,7 @@ namespace Atmos::World
     private:
         Arca::Reliquary* globalReliquary = nullptr;
 
-        Arca::GlobalPtr<Debug::Statistics> debugStatistics;
+        Arca::GlobalIndex<Debug::Statistics> debugStatistics;
     private:
         struct RequestedField
         {

@@ -49,7 +49,7 @@ namespace Inscription
                 archive(id);
 
                 const auto reliquary = archive.UserContext<Arca::Reliquary>();
-                profiler.Source(Arca::LocalPtr<ObjectT::Profiler::SourceT>(id, *reliquary));
+                profiler.Source(Arca::RelicIndex<ObjectT::Profiler::SourceT>(id, *reliquary));
             };
 
             loadProfiler(object.profilers.input);

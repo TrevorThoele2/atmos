@@ -2,9 +2,9 @@
 
 namespace Atmos::Audio
 {
-    void Sound::PostConstruct(ShardTuple shards)
+    void Sound::PostConstruct()
     {
-        bounds = std::get<0>(shards);
+        bounds = Create<Bounds>();
     }
 
     void Sound::Initialize(Asset&& asset)

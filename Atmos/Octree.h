@@ -1,20 +1,29 @@
 #pragma once
 
 #include <array>
-#include <unordered_set>
 #include <memory>
+#include <assert.h>
 
 #include "AxisAlignedBox3D.h"
 #include "GridPosition.h"
 #include "TileSize.h"
+#include "MathUtility.h"
 
 namespace Atmos::Grid
 {
-    template<class T>
+    template<class ID, class T>
     class Octree
     {
     public:
-        using List = std::vector<T*>;
+        struct Stored
+        {
+            ID id;
+            T value;
+
+            Stored(ID id, const T& value);
+        };
+
+        using List = std::vector<Stored>;
     public:
         Octree();
         Octree(const Octree& arg) = delete;
@@ -22,12 +31,13 @@ namespace Atmos::Grid
         Octree& operator=(const Octree& arg) = delete;
         Octree& operator=(Octree&& arg) noexcept;
 
-        void Work();
-
-        void Add(T& add);
-        void Remove(T& remove);
+        void Add(ID id, const T& add, const AxisAlignedBox3D& bounds);
+        void Remove(ID id, const AxisAlignedBox3D& bounds);
         void Clear();
-        void InformChanged(T& changed, const AxisAlignedBox3D& previousBounds);
+        void InformChanged(
+            ID id,
+            const AxisAlignedBox3D& previousBounds,
+            const AxisAlignedBox3D& newBounds);
 
         [[nodiscard]] List AllInside(const AxisAlignedBox3D& aabb) const;
 
@@ -38,7 +48,7 @@ namespace Atmos::Grid
         using NodePtr = std::unique_ptr<Node>;
 
         // 0th layer is TileSize, 1st is TileSize * 2, 2nd is TileSize * 4
-        using Layer = unsigned char;
+        using LayerNumber = unsigned char;
 
         using ChildID = unsigned char;
         enum Child : ChildID
@@ -69,30 +79,26 @@ namespace Atmos::Grid
         ChildrenArray heads;
 
         List totalObjects;
-        List toAddObjects;
 
         // Will create a LeafNode when layer == 0
         static std::unique_ptr<Node> CreateNode(
-            Layer layer,
+            LayerNumber layer,
             Position::Value layerSize,
             Position::Value x,
             Position::Value y,
             Position::Value z);
-        void FabricateHeads(Layer layer);
-
-        void AddImpl(T& add);
-        void RemoveImpl(T& remove, const AxisAlignedBox3D& bounds);
+        void FabricateHeads(LayerNumber layer);
 
         [[nodiscard]] AxisAlignedBox3D TotalBounds() const
         {
             return AxisAlignedBox3D
             {
-                heads[WNF]->GetBounds().Left(),
-                heads[WNF]->GetBounds().Top(),
-                heads[WNF]->GetBounds().FarZ(),
-                heads[ESN]->GetBounds().Right(),
-                heads[ESN]->GetBounds().Bottom(),
-                heads[ESN]->GetBounds().NearZ()
+                heads[WNF]->Bounds().Left(),
+                heads[WNF]->Bounds().Top(),
+                heads[WNF]->Bounds().FarZ(),
+                heads[ESN]->Bounds().Right(),
+                heads[ESN]->Bounds().Bottom(),
+                heads[ESN]->Bounds().NearZ()
             };
         }
 
@@ -131,9 +137,9 @@ namespace Atmos::Grid
             virtual ~Node() = 0;
 
             // Recursively will find a place for it; if it cannot find one, then it will return false
-            virtual bool Emplace(T& emplace, const AxisAlignedBox3D& fragmentBounds) = 0;
+            virtual bool Emplace(ID id, const T& emplace, const AxisAlignedBox3D& bounds) = 0;
             // Returns true if the fragment was removed successfully
-            virtual bool Remove(T& remove, const AxisAlignedBox3D& fragmentBounds) = 0;
+            virtual bool Remove(ID id, const AxisAlignedBox3D& bounds) = 0;
 
             virtual void Clear() = 0;
 
@@ -141,7 +147,7 @@ namespace Atmos::Grid
             [[nodiscard]] virtual bool IsTotalEmpty() const = 0;
             [[nodiscard]] Position Position() const;
             [[nodiscard]] virtual AxisAlignedBox3D Bounds() const = 0;
-            [[nodiscard]] virtual Layer Layer() const = 0;
+            [[nodiscard]] virtual LayerNumber Layer() const = 0;
             [[nodiscard]] virtual Position::Value LayerSize() const = 0;
             // Returns the size of this set + the size of all the children
             [[nodiscard]] virtual size_t TotalSize() const = 0;
@@ -162,16 +168,16 @@ namespace Atmos::Grid
             LeafNode& operator=(LeafNode&& arg) noexcept;
 
             // Recursively will find a place for it; if it cannot find one, then it will return false
-            bool Emplace(T& emplace, const AxisAlignedBox3D& fragmentBounds) override;
+            bool Emplace(ID id, const T& emplace, const AxisAlignedBox3D& bounds) override;
             // Returns true if the fragment was removed successfully
-            bool Remove(T& remove, const AxisAlignedBox3D& fragmentBounds) override;
+            bool Remove(ID id, const AxisAlignedBox3D& bounds) override;
 
             void Clear() override;
 
             void AllInside(const AxisAlignedBox3D& aabb, List& list) override;
             [[nodiscard]] bool IsTotalEmpty() const override;
             [[nodiscard]] AxisAlignedBox3D Bounds() const override;
-            [[nodiscard]] Layer Layer() const override;
+            [[nodiscard]] LayerNumber Layer() const override;
             [[nodiscard]] Position::Value LayerSize() const override;
             // Returns the size of this set + the size of all the children
             [[nodiscard]] size_t TotalSize() const override;
@@ -195,7 +201,7 @@ namespace Atmos::Grid
 
             size_t totalSize = 0;
 
-            Layer layer;
+            LayerNumber layer;
             Position::Value layerSize;
         private:
             template<class ItrT>
@@ -205,7 +211,7 @@ namespace Atmos::Grid
             void DeleteChildren();
         public:
             ParentNode(
-                Layer layer,
+                LayerNumber layer,
                 Position::Value layerSize,
                 Position::Value x,
                 Position::Value y,
@@ -216,9 +222,9 @@ namespace Atmos::Grid
             ParentNode& operator=(ParentNode&& arg) noexcept;
 
             // Recursively will find a place for it; if it cannot find one, then it will return false
-            bool Emplace(T& emplace, const AxisAlignedBox3D& fragmentBounds) override;
+            bool Emplace(ID id, const T& emplace, const AxisAlignedBox3D& bounds) override;
             // Returns true if the fragment was removed successfully
-            bool Remove(T& remove, const AxisAlignedBox3D& fragmentBounds) override;
+            bool Remove(ID id, const AxisAlignedBox3D& bounds) override;
 
             // Returns true if the child was successfully added
             bool AddChild(Node& node);
@@ -228,7 +234,7 @@ namespace Atmos::Grid
             void AllInside(const AxisAlignedBox3D& aabb, List& list) override;
             [[nodiscard]] bool IsTotalEmpty() const override;
             [[nodiscard]] AxisAlignedBox3D Bounds() const override;
-            [[nodiscard]] Layer Layer() const override;
+            [[nodiscard]] LayerNumber Layer() const override;
             [[nodiscard]] Position::Value LayerSize() const override;
             // Returns the size of this set + the size of all the children
             [[nodiscard]] size_t TotalSize() const override;
@@ -238,7 +244,7 @@ namespace Atmos::Grid
                 return false;
             }
 
-            static Position::Value FabricateLayerSize(typename Octree::Layer layer);
+            static Position::Value FabricateLayerSize(typename Octree::LayerNumber layer);
         protected:
             using Node::x;
             using Node::y;
@@ -247,103 +253,135 @@ namespace Atmos::Grid
         };
     };
 
-    template<class T>
-    Octree<T>::Octree()
+    template<class ID, class T>
+    Octree<ID, T>::Stored::Stored(ID id, const T& value) : id(id), value(value)
+    {}
+
+    template<class ID, class T>
+    Octree<ID, T>::Octree()
     {
         FabricateHeads(0);
     }
 
-    template<class T>
-    Octree<T>::Octree(Octree&& arg) noexcept :
+    template<class ID, class T>
+    Octree<ID, T>::Octree(Octree&& arg) noexcept :
         size(std::move(arg.size)), heads(std::move(arg.heads)),
-        totalObjects(std::move(arg.totalObjects)), toAddObjects(std::move(arg.toAddObjects))
+        totalObjects(std::move(arg.totalObjects))
     {}
 
-    template<class T>
-    Octree<T>& Octree<T>::operator=(Octree&& arg) noexcept
+    template<class ID, class T>
+    Octree<ID, T>& Octree<ID, T>::operator=(Octree&& arg) noexcept
     {
         size = std::move(arg.size);
         heads = std::move(arg.heads);
         totalObjects = std::move(arg.totalObjects);
-        toAddObjects = std::move(arg.toAddObjects);
         return *this;
     }
 
-    template<class T>
-    void Octree<T>::Work()
+    template<class ID, class T>
+    void Octree<ID, T>::Add(ID id, const T& add, const AxisAlignedBox3D& bounds)
     {
-        if (totalObjects.IsEmpty())
+        auto attemptEmplace = [this, id, &add, bounds]() -> bool
+        {
+            for (auto& loop : heads)
+            {
+                if (loop->Emplace(id, add, bounds))
+                {
+                    ++size;
+                    return true;
+                }
+            }
+
+            // Check if inside total
+            if (IsWithinTotal(bounds))
+            {
+                totalObjects.emplace_back(id, add);
+                ++size;
+                return true;
+            }
+
+            return false;
+        };
+
+        while (!attemptEmplace())
+            FabricateHeads(heads[0]->Layer() + 1);
+    }
+
+    template<class ID, class T>
+    void Octree<ID, T>::Remove(ID id, const AxisAlignedBox3D& bounds)
+    {
+        if (IsEmpty())
             return;
 
-        for (auto& loop : toAddObjects)
-            AddImpl(loop);
+        for (auto& loop : heads)
+        {
+            if (loop->Remove(id, bounds))
+            {
+                --size;
+                return;
+            }
+        }
 
-        toAddObjects.Clear();
+        if (IsWithinTotal(bounds))
+        {
+            for(auto loop = totalObjects.begin(); loop != totalObjects.end(); ++loop)
+            {
+                if(loop->id == id)
+                {
+                    totalObjects.erase(loop);
+                    --size;
+                    break;
+                }
+            }
+        }
     }
 
-    template<class T>
-    void Octree<T>::Add(T& add)
-    {
-        if (toAddObjects.Has(add))
-            return;
-
-        RemoveImpl(add, add->Bounds());
-        toAddObjects.Add(add);
-    }
-
-    template<class T>
-    void Octree<T>::Remove(T& remove)
-    {
-        RemoveImpl(remove, remove->Bounds());
-    }
-
-    template<class T>
-    void Octree<T>::Clear()
+    template<class ID, class T>
+    void Octree<ID, T>::Clear()
     {
         FabricateHeads(0);
         size = 0;
         totalObjects.Clear();
-        toAddObjects.Clear();
     }
 
-    template<class T>
-    void Octree<T>::InformChanged(T& changed, const AxisAlignedBox3D& previousBounds)
+    template<class ID, class T>
+    void Octree<ID, T>::InformChanged(
+        ID id,
+        const AxisAlignedBox3D& previousBounds,
+        const AxisAlignedBox3D& newBounds)
     {
-        if (toAddObjects.Has(changed))
-            return;
-
-        RemoveImpl(changed, previousBounds);
-        toAddObjects.Add(changed);
+        Remove(id, previousBounds);
+        Add(id, newBounds);
     }
 
-    template<class T>
-    auto Octree<T>::AllInside(const AxisAlignedBox3D& aabb) const -> List
+    template<class ID, class T>
+    auto Octree<ID, T>::AllInside(const AxisAlignedBox3D& aabb) const -> List
     {
         List returnValue;
         for (auto& loop : heads)
             loop->AllInside(aabb, returnValue);
 
         if (TotalBounds().Intersects(aabb))
-            returnValue.Insert(totalObjects.begin(), totalObjects.end());
+            returnValue.insert(returnValue.begin(), totalObjects.begin(), totalObjects.end());
 
         return returnValue;
     }
 
-    template<class T>
-    bool Octree<T>::IsEmpty() const
+    template<class ID, class T>
+    bool Octree<ID, T>::IsEmpty() const
     {
         return Size() == 0;
     }
 
-    template<class T>
-    size_t Octree<T>::Size() const
+    template<class ID, class T>
+    size_t Octree<ID, T>::Size() const
     {
         return size;
     }
 
-    template<class T>
-    auto Octree<T>::CreateNode(
-        Layer layer,
+    template<class ID, class T>
+    auto Octree<ID, T>::CreateNode(
+        LayerNumber layer,
         Position::Value layerSize,
         Position::Value x,
         Position::Value y,
@@ -352,12 +390,12 @@ namespace Atmos::Grid
         -> std::unique_ptr<Node>
     {
         return layer == 0
-            ? std::make_unique<LeafNode>(x, y, z)
-            : std::make_unique<ParentNode>(layer, layerSize, x, y, z);
+            ? static_cast<std::unique_ptr<Node>>(std::make_unique<LeafNode>(x, y, z))
+            : static_cast<std::unique_ptr<Node>>(std::make_unique<ParentNode>(layer, layerSize, x, y, z));
     }
 
-    template<class T>
-    void Octree<T>::FabricateHeads(Layer layer)
+    template<class ID, class T>
+    void Octree<ID, T>::FabricateHeads(LayerNumber layer)
     {
         if (layer == 0)
         {
@@ -372,7 +410,7 @@ namespace Atmos::Grid
         }
         else
         {
-            auto headCreator = [&](
+            auto headCreator = [this, layer](
                 NodePtr& ptr,
                 Position::Value x,
                 Position::Value y,
@@ -384,9 +422,9 @@ namespace Atmos::Grid
                     delete prevHead;
                 else
                 {
-                    if (!static_cast<ParentNode*>(ptr.get())->AddChild(prevHead))
+                    if (!static_cast<ParentNode*>(ptr.get())->AddChild(*prevHead))
                     {
-                        size -= prevHead->GetTotalSize();
+                        size -= prevHead->TotalSize();
                         delete prevHead;
                     }
                 }
@@ -403,67 +441,18 @@ namespace Atmos::Grid
         }
     }
 
-    template<class T>
-    void Octree<T>::AddImpl(T& add)
-    {
-        auto attemptEmplace = []() -> bool
-        {
-            for (auto& loop : heads)
-            {
-                if (loop->Emplace(add, add->Bounds()))
-                {
-                    ++size;
-                    return true;
-                }
-            }
-
-            // Check if inside total
-            if (IsWithinTotal(add->Bounds()))
-            {
-                totalObjects.Add(add);
-                ++size;
-                return true;
-            }
-
-            return false;
-        };
-
-        while (!attemptEmplace())
-            FabricateHeads(heads[0]->GetLayer() + 1);
-    }
-
-    template<class T>
-    void Octree<T>::RemoveImpl(T& remove, const AxisAlignedBox3D& bounds)
-    {
-        toAddObjects.Remove(remove);
-        if (IsEmpty())
-            return;
-
-        for (auto& loop : heads)
-        {
-            if (loop->Remove(remove, bounds))
-            {
-                --size;
-                return;
-            }
-        }
-
-        if (IsWithinTotal(bounds) && totalObjects.Remove(remove))
-            --size;
-    }
-
-    template<class T>
-    Octree<T>::ChildDetermination::ChildDetermination(
+    template<class ID, class T>
+    Octree<ID, T>::ChildDetermination::ChildDetermination(
         ChildID selection,
         Position::Value xOffset,
         Position::Value yOffset,
-        Position::Value zOffset) :
-
+        Position::Value zOffset)
+        :
         selection(selection), xOffset(xOffset), yOffset(yOffset), zOffset(zOffset)
     {}
 
-    template<class T>
-    auto Octree<T>::DetermineChild(
+    template<class ID, class T>
+    auto Octree<ID, T>::DetermineChild(
         Position::Value layerSize,
         const AxisAlignedBox3D& bounds,
         const AxisAlignedBox3D& againstBounds)
@@ -524,90 +513,99 @@ namespace Atmos::Grid
         return std::move(determination);
     }
 
-    template<class T>
-    Octree<T>::Node::Node(Position::Value x, Position::Value y, Position::Value z) :
+    template<class ID, class T>
+    Octree<ID, T>::Node::Node(Position::Value x, Position::Value y, Position::Value z) :
         x(x), y(y), z(z)
     {}
 
-    template<class T>
-    Octree<T>::Node::Node(Node&& arg) noexcept : x(std::move(arg.x)), y(std::move(arg.y)), z(std::move(arg.z))
+    template<class ID, class T>
+    Octree<ID, T>::Node::Node(Node&& arg) noexcept :
+        x(arg.x), y(arg.y), z(arg.z)
     {}
 
-    template<class T>
-    auto Octree<T>::Node::operator=(Node&& arg) noexcept -> Node&
+    template<class ID, class T>
+    auto Octree<ID, T>::Node::operator=(Node&& arg) noexcept -> Node&
     {
-        const_cast<Position::Value&>(x) = std::move(arg.x);
-        const_cast<Position::Value&>(y) = std::move(arg.y);
-        const_cast<Position::Value&>(z) = std::move(arg.z);
+        x = arg.x;
+        y = arg.y;
+        z = arg.z;
         return *this;
     }
 
-    template<class T>
-    Octree<T>::Node::~Node() = default;
+    template<class ID, class T>
+    Octree<ID, T>::Node::~Node() = default;
 
-    template<class T>
-    Position Octree<T>::Node::Position() const
+    template<class ID, class T>
+    Position Octree<ID, T>::Node::Position() const
     {
         return { x, y, z };
     }
 
-    template<class T>
-    Octree<T>::LeafNode::LeafNode(Position::Value x, Position::Value y, Position::Value z) :
+    template<class ID, class T>
+    Octree<ID, T>::LeafNode::LeafNode(Position::Value x, Position::Value y, Position::Value z) :
         Node(x, y, z)
     {}
 
-    template<class T>
-    Octree<T>::LeafNode::LeafNode(LeafNode&& arg) noexcept : Node(std::move(arg))
+    template<class ID, class T>
+    Octree<ID, T>::LeafNode::LeafNode(LeafNode&& arg) noexcept : Node(std::move(arg))
     {}
 
-    template<class T>
-    auto Octree<T>::LeafNode::operator=(LeafNode&& arg) noexcept -> LeafNode&
+    template<class ID, class T>
+    auto Octree<ID, T>::LeafNode::operator=(LeafNode&& arg) noexcept -> LeafNode&
     {
         Node::operator=(std::move(arg));
         return *this;
     }
 
-    template<class T>
-    bool Octree<T>::LeafNode::Emplace(T& emplace, const AxisAlignedBox3D& fragmentBounds)
+    template<class ID, class T>
+    bool Octree<ID, T>::LeafNode::Emplace(ID id, const T& emplace, const AxisAlignedBox3D& bounds)
     {
         // Check if the fragment can fit entirely within this node
-        if (!fragmentBounds.Contains(Bounds()))
+        if (!bounds.Contains(Bounds()))
             return false;
 
-        objects.Add(emplace);
+        objects.emplace_back(id, emplace);
         return true;
     }
 
-    template<class T>
-    bool Octree<T>::LeafNode::Remove(T& remove, const AxisAlignedBox3D& fragmentBounds)
+    template<class ID, class T>
+    bool Octree<ID, T>::LeafNode::Remove(ID id, const AxisAlignedBox3D& bounds)
     {
-        return objects.Remove(remove);
+        for (auto loop = objects.begin(); loop != objects.end(); ++loop)
+        {
+            if (loop->id == id)
+            {
+                objects.erase(loop);
+                return true;
+            }
+        }
+
+        return false;
     }
 
-    template<class T>
-    void Octree<T>::LeafNode::Clear()
+    template<class ID, class T>
+    void Octree<ID, T>::LeafNode::Clear()
     {
-        objects.Clear();
+        objects.clear();
     }
 
-    template<class T>
-    void Octree<T>::LeafNode::AllInside(const AxisAlignedBox3D& aabb, List& list)
+    template<class ID, class T>
+    void Octree<ID, T>::LeafNode::AllInside(const AxisAlignedBox3D& aabb, List& list)
     {
-        // Check if the aabb overlaps this node
         if (!aabb.Intersects(Bounds()))
             return;
 
-        list.insert(objects.begin(), objects.end());
+        list.insert(list.begin(), objects.begin(), objects.end());
     }
 
-    template<class T>
-    bool Octree<T>::LeafNode::IsTotalEmpty() const
+    template<class ID, class T>
+    bool Octree<ID, T>::LeafNode::IsTotalEmpty() const
     {
-        return objects.IsEmpty();
+        return objects.empty();
     }
 
-    template<class T>
-    AxisAlignedBox3D Octree<T>::LeafNode::Bounds() const
+    template<class ID, class T>
+    AxisAlignedBox3D Octree<ID, T>::LeafNode::Bounds() const
     {
         const auto gridSize(TileSize<Position::Value>);
         return AxisAlignedBox3D(
@@ -619,35 +617,35 @@ namespace Atmos::Grid
             static_cast<AxisAlignedBox3D::Coordinate>(z * gridSize + gridSize));
     }
 
-    template<class T>
-    auto Octree<T>::LeafNode::Layer() const -> typename Octree<T>::Layer
+    template<class ID, class T>
+    auto Octree<ID, T>::LeafNode::Layer() const -> LayerNumber
     {
         return 0;
     }
 
-    template<class T>
-    Position::Value Octree<T>::LeafNode::LayerSize() const
+    template<class ID, class T>
+    Position::Value Octree<ID, T>::LeafNode::LayerSize() const
     {
         return TileSize<Position::Value>;
     }
 
-    template<class T>
-    size_t Octree<T>::LeafNode::TotalSize() const
+    template<class ID, class T>
+    size_t Octree<ID, T>::LeafNode::TotalSize() const
     {
-        return objects.Size();
+        return objects.size();
     }
 
-    template<class T>
-    void Octree<T>::ParentNode::DeleteChildren()
+    template<class ID, class T>
+    void Octree<ID, T>::ParentNode::DeleteChildren()
     {
         for (auto& loop : children)
             loop.reset();
-        totalSize = objects.Size();
+        totalSize = objects.size();
     }
 
-    template<class T>
-    Octree<T>::ParentNode::ParentNode(
-        typename Octree<T>::Layer layer,
+    template<class ID, class T>
+    Octree<ID, T>::ParentNode::ParentNode(
+        LayerNumber layer,
         Position::Value layerSize,
         Position::Value x,
         Position::Value y,
@@ -661,17 +659,18 @@ namespace Atmos::Grid
             static_cast<AxisAlignedBox3D::Coordinate>(x * layerSize + layerSize),
             static_cast<AxisAlignedBox3D::Coordinate>(y * layerSize + layerSize),
             static_cast<AxisAlignedBox3D::Coordinate>(z * layerSize + layerSize)),
-        layer(layer), layerSize(layerSize)
+        layer(layer),
+        layerSize(layerSize)
     {}
 
-    template<class T>
-    Octree<T>::ParentNode::ParentNode(ParentNode&& arg) noexcept :
+    template<class ID, class T>
+    Octree<ID, T>::ParentNode::ParentNode(ParentNode&& arg) noexcept :
         Node(std::move(arg)), children(std::move(arg.children)), bounds(std::move(arg.bounds)),
         totalSize(std::move(arg.totalSize)), layer(arg.layer), layerSize(arg.layerSize)
     {}
 
-    template<class T>
-    auto Octree<T>::ParentNode::operator=(ParentNode&& arg) noexcept -> ParentNode&
+    template<class ID, class T>
+    auto Octree<ID, T>::ParentNode::operator=(ParentNode&& arg) noexcept -> ParentNode&
     {
         Node::operator=(std::move(arg));
         children = std::move(arg.children);
@@ -681,11 +680,11 @@ namespace Atmos::Grid
         return *this;
     }
 
-    template<class T>
-    bool Octree<T>::ParentNode::Emplace(T& emplace, const AxisAlignedBox3D& fragmentBounds)
+    template<class ID, class T>
+    bool Octree<ID, T>::ParentNode::Emplace(ID id, const T& emplace, const AxisAlignedBox3D& bounds)
     {
         // Check if the fragment can fit entirely within this node
-        if (!fragmentBounds.Contains(bounds))
+        if (!bounds.Contains(bounds))
             return false;
 
         // Try to emplace into the children
@@ -694,7 +693,7 @@ namespace Atmos::Grid
             if (!loop)
                 continue;
 
-            if (loop->Emplace(emplace, fragmentBounds))
+            if (loop->Emplace(id, emplace, bounds))
             {
                 ++totalSize;
                 return true;
@@ -703,38 +702,38 @@ namespace Atmos::Grid
 
         // Wasn't emplaced into any children, but could require a new child
 
-        auto determination = DetermineChild(layerSize, bounds, fragmentBounds);
-        if (!determination.IsValid())
+        auto determination = DetermineChild(layerSize, bounds, bounds);
+        if (!determination)
         {
-            objects.Add(emplace);
+            objects.emplace_back(id, emplace);
             ++totalSize;
             return true;
         }
 
         NodePtr& selectedNode = children[determination->selection];
-        DEBUG_ASSERT(!selectedNode);
-        selectedNode.reset(CreateNode(
+        assert(!selectedNode);
+        selectedNode = CreateNode(
             layer - 1,
             FabricateLayerSize(layer - 1),
             (x * 2) + determination->xOffset,
             (y * 2) + determination->yOffset,
-            (z * 2) + determination->zOffset));
-        const bool emplaced = selectedNode->Emplace(emplace, fragmentBounds);
+            (z * 2) + determination->zOffset);
+        const bool emplaced = selectedNode->Emplace(id, emplace, bounds);
         if (emplaced)
             ++totalSize;
 
         return emplaced;
     }
 
-    template<class T>
-    bool Octree<T>::ParentNode::Remove(T& remove, const AxisAlignedBox3D& fragmentBounds)
+    template<class ID, class T>
+    bool Octree<ID, T>::ParentNode::Remove(ID id, const AxisAlignedBox3D& bounds)
     {
         // If this node is totally empty, then just leave
         if (IsTotalEmpty())
             return false;
 
         // Check if the fragment can fit entirely within this node
-        if (!fragmentBounds.Contains(bounds))
+        if (!bounds.Contains(bounds))
             return false;
 
         // Check all children to see if they can remove it
@@ -743,7 +742,7 @@ namespace Atmos::Grid
             if (!loop)
                 continue;
 
-            if (loop->Remove(remove, fragmentBounds))
+            if (loop->Remove(id, bounds))
             {
                 // Delete the child node if it's empty
                 if (loop->IsTotalEmpty())
@@ -754,36 +753,42 @@ namespace Atmos::Grid
             }
         }
 
-        const bool erased = objects.Remove(remove);
-        if (erased)
-            --totalSize;
-        return erased;
+        for(auto loop = objects.begin(); loop != objects.end(); ++loop)
+        {
+            if (loop->id == id)
+            {
+                objects.erase(loop);
+                --totalSize;
+                return true;
+            }
+        }
+
+        return false;
     }
 
-    template<class T>
-    bool Octree<T>::ParentNode::AddChild(Node& node)
+    template<class ID, class T>
+    bool Octree<ID, T>::ParentNode::AddChild(Node& node)
     {
-        auto determination = DetermineChild(layerSize, bounds, node->GetBounds());
+        auto determination = DetermineChild(layerSize, bounds, node.Bounds());
         if (!determination)
             return false;
 
-        children[determination->selection].reset(node);
-        totalSize += node->GetTotalSize();
+        children[determination->selection].reset(&node);
+        totalSize += node.TotalSize();
         return true;
     }
 
-    template<class T>
-    void Octree<T>::ParentNode::Clear()
+    template<class ID, class T>
+    void Octree<ID, T>::ParentNode::Clear()
     {
         DeleteChildren();
-        objects.Clear();
+        objects.clear();
         totalSize = 0;
     }
 
-    template<class T>
-    void Octree<T>::ParentNode::AllInside(const AxisAlignedBox3D& aabb, List& list)
+    template<class ID, class T>
+    void Octree<ID, T>::ParentNode::AllInside(const AxisAlignedBox3D& aabb, List& list)
     {
-        // Check if the aabb overlaps this node
         if (!aabb.Intersects(bounds))
             return;
 
@@ -796,42 +801,41 @@ namespace Atmos::Grid
             loop->AllInside(aabb, list);
         }
 
-        // Insert fragments
-        list.insert(objects.begin(), objects.end());
+        list.insert(list.begin(), objects.begin(), objects.end());
     }
 
-    template<class T>
-    bool Octree<T>::ParentNode::IsTotalEmpty() const
+    template<class ID, class T>
+    bool Octree<ID, T>::ParentNode::IsTotalEmpty() const
     {
         return totalSize == 0;
     }
 
-    template<class T>
-    AxisAlignedBox3D Octree<T>::ParentNode::Bounds() const
+    template<class ID, class T>
+    AxisAlignedBox3D Octree<ID, T>::ParentNode::Bounds() const
     {
         return bounds;
     }
 
-    template<class T>
-    auto Octree<T>::ParentNode::Layer() const -> typename Octree<T>::Layer
+    template<class ID, class T>
+    auto Octree<ID, T>::ParentNode::Layer() const -> LayerNumber
     {
         return layer;
     }
 
-    template<class T>
-    Position::Value Octree<T>::ParentNode::LayerSize() const
+    template<class ID, class T>
+    Position::Value Octree<ID, T>::ParentNode::LayerSize() const
     {
         return layerSize;
     }
 
-    template<class T>
-    size_t Octree<T>::ParentNode::TotalSize() const
+    template<class ID, class T>
+    size_t Octree<ID, T>::ParentNode::TotalSize() const
     {
         return totalSize;
     }
 
-    template<class T>
-    Position::Value Octree<T>::ParentNode::FabricateLayerSize(typename Octree<T>::Layer layer)
+    template<class ID, class T>
+    Position::Value Octree<ID, T>::ParentNode::FabricateLayerSize(LayerNumber layer)
     {
         return TileSize<Position::Value> * PowerOfTwo(layer);
     }

@@ -28,9 +28,9 @@ namespace Atmos::Render
         void InitializeImplementation() override;
         void WorkImplementation(Stage& stage) override;
     private:
-        Arca::ComputedPtr<GraphicsManager*> graphics;
+        Arca::ComputedIndex<GraphicsManager*> graphics;
     private:
-        Arca::GlobalPtr<Debug::Statistics> debugStatistics;
+        Arca::GlobalIndex<Debug::Statistics> debugStatistics;
     };
 }
 

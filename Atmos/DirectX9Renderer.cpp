@@ -83,7 +83,7 @@ namespace Atmos::Render::DirectX9
                     return leftZ < rightZ;
             });
 
-        auto camera = Arca::GlobalPtr<Camera>(*reliquary);
+        auto camera = Arca::GlobalIndex<Camera>(*reliquary);
 
         device->SetVertexDeclaration(vertexDecl);
         device->SetStreamSource(0, vertexBuffer, 0, sizeof(Vertex));

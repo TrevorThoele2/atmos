@@ -4,12 +4,12 @@
 
 namespace Atmos::Render
 {
-    void MaterialViewCore::Material(Arca::LocalPtr<Asset::MaterialAsset> to)
+    void MaterialViewCore::Material(Arca::RelicIndex<Asset::MaterialAsset> to)
     {
         material = to;
     }
 
-    Arca::LocalPtr<Asset::MaterialAsset> MaterialViewCore::Material() const
+    Arca::RelicIndex<Asset::MaterialAsset> MaterialViewCore::Material() const
     {
         return material;
     }
@@ -39,12 +39,12 @@ namespace Atmos::Render
         return color;
     }
 
-    void MaterialViewCore::PatchShader(Arca::LocalPtr<Asset::ShaderAsset> to)
+    void MaterialViewCore::PatchShader(Arca::RelicIndex<Asset::ShaderAsset> to)
     {
         patchShader = to;
     }
 
-    Arca::LocalPtr<Asset::ShaderAsset> MaterialViewCore::PatchShader() const
+    Arca::RelicIndex<Asset::ShaderAsset> MaterialViewCore::PatchShader() const
     {
         return patchShader;
     }

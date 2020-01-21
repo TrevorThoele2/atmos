@@ -1597,5 +1597,8 @@
     <ClCompile Include="Line.cpp">
       <Filter>Source Files\Render\Line</Filter>
     </ClCompile>
+    <ClCompile Include="TimeInformation.cpp">
+      <Filter>Source Files\Time</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -147,7 +147,7 @@ namespace Atmos::Render::DirectX9
         LPDIRECT3DVERTEXBUFFER9 vertexBuffer;
         LPDIRECT3DINDEXBUFFER9 indexBuffer;
         LPDIRECT3DVERTEXDECLARATION9 vertexDecl;
-        Arca::LocalPtr<Asset::ShaderAsset> defaultTexturedImageViewShader;
+        Arca::RelicIndex<Asset::ShaderAsset> defaultTexturedImageViewShader;
 
         LPD3DXLINE lineInterface;
 

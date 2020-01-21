@@ -5,12 +5,12 @@
 
 namespace Atmos::Entity
 {
-    class Entity final : public Arca::OpenTypedRelicAutomation<Entity, GeneralComponent>
+    class Entity final : public Arca::OpenTypedRelicAutomation<Entity>
     {
     public:
-        Arca::LocalPtr<GeneralComponent> general;
+        Arca::ShardIndex<GeneralComponent> general;
 
-        void PostConstruct(ShardTuple shards);
+        void PostConstruct();
     };
 }
 
