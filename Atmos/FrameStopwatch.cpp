@@ -1,27 +1,34 @@
 #include "FrameStopwatch.h"
 
-#include <Arca/Reliquary.h>
+#include "StartStopwatch.h"
+#include "CalculateStopwatch.h"
 
 namespace Atmos::Time
 {
-    bool FrameStopwatch::operator==(const FrameStopwatch& arg) const
+    FrameStopwatch::FrameStopwatch(Init init) :
+        OpenTypedRelic(init),
+        timeInformation(init.owner)
     {
-        return Stopwatch::operator==(arg);
+        core = Create<Core>(
+            [this]()
+            {
+                return CurrentTime();
+            });
     }
 
-    bool FrameStopwatch::operator!=(const FrameStopwatch& arg) const
+    Value FrameStopwatch::Start() const
     {
-        return !(*this == arg);
+        return Owner().Do<StartStopwatch>(ID());
+    }
+
+    Value FrameStopwatch::Elapsed() const
+    {
+        return Owner().Do<CalculateStopwatch>(ID());
     }
 
     Value FrameStopwatch::CurrentTime() const
     {
         return timeInformation->totalElapsed;
-    }
-
-    void FrameStopwatch::PostConstruct()
-    {
-        timeInformation = Arca::GlobalIndex<Information>(Owner());
     }
 }
 
@@ -29,10 +36,5 @@ namespace Inscription
 {
     void Scribe<::Atmos::Time::FrameStopwatch, BinaryArchive>::ScrivenImplementation(
         ObjectT& object, ArchiveT& archive)
-    {
-        if (archive.IsInput())
-            object.timeInformation = Arca::GlobalIndex<Atmos::Time::Information>(object.Owner());
-
-        BaseScriven<Atmos::Time::Stopwatch>(object, archive);
-    }
+    {}
 }

@@ -1,17 +1,17 @@
 #pragma once
 
-#include <Arca/ClosedTypedRelicAutomation.h>
+#include <Arca/ClosedTypedRelic.h>
 
 #include "AvatarComponent.h"
 #include "Entity.h"
 
 namespace Atmos::Entity
 {
-    class CurrentAvatar final : public Arca::ClosedTypedRelicAutomation<CurrentAvatar>
+    class CurrentAvatar final : public Arca::ClosedTypedRelic<CurrentAvatar>
     {
     public:
-        AvatarComponent* component = nullptr;
-        Entity* entity = nullptr;
+        Arca::ShardIndex<AvatarComponent> component;
+        Arca::RelicIndex<Entity> entity;
     };
 }
 

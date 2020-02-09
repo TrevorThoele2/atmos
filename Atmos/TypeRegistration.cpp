@@ -1,11 +1,12 @@
 #include "TypeRegistration.h"
 
 #include "DebugStatistics.h"
-#include "TimeCurator.h"
+#include "TimeSettings.h"
 #include "StaticMaterialView.h"
 #include "DynamicMaterialView.h"
 #include "Camera.h"
 #include "FrameStopwatch.h"
+#include "StopwatchStatistics.h"
 #include "MaterialViewCurator.h"
 
 #include "UniqueProviderRelic.h"
@@ -15,19 +16,24 @@
 
 namespace Atmos
 {
-    void RegisterGlobalTypes(Arca::ReliquaryOrigin& origin)
+    void RegisterGlobalTypes(
+        Arca::ReliquaryOrigin& origin,
+        std::unique_ptr<Input::Manager>&& input,
+        std::unique_ptr<Render::GraphicsManager>&& graphics,
+        std::unique_ptr<Audio::AudioManager>&& audio)
     {
         origin
             .Register<Debug::Statistics>()
-            .Register<Time::TimeCurator>()
             .Register<Time::Information>()
             .Register<Time::Settings>()
+            .Register<Time::StopwatchCore>()
+            .Register<Time::StopwatchStatistics>()
             .Register<Time::RealStopwatch>()
             .Register<Time::FrameStopwatch>();
 
-        RegisterProviderComputation<UniqueProviderRelic<Input::Manager>>(origin);
-        RegisterProviderComputation<UniqueProviderRelic<Render::GraphicsManager>>(origin);
-        RegisterProviderComputation<UniqueProviderRelic<Audio::AudioManager>>(origin);
+        RegisterProviderComputation<UniqueProviderRelic<Input::Manager>>(origin, std::move(input));
+        RegisterProviderComputation<UniqueProviderRelic<Render::GraphicsManager>>(origin, std::move(graphics));
+        RegisterProviderComputation<UniqueProviderRelic<Audio::AudioManager>>(origin, std::move(audio));
     }
 
     void RegisterFieldTypes(Arca::ReliquaryOrigin& origin, Arca::Reliquary& globalReliquary)

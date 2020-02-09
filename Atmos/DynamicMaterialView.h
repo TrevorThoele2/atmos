@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Arca/ClosedTypedRelicAutomation.h>
+#include <Arca/ClosedTypedRelic.h>
 
 #include "MaterialViewCore.h"
 #include "Bounds.h"
@@ -8,23 +8,26 @@
 namespace Atmos::Render
 {
     class DynamicMaterialView final :
-        public Arca::ClosedTypedRelicAutomation<DynamicMaterialView>
+        public Arca::ClosedTypedRelic<DynamicMaterialView>
     {
+    public:
+        DynamicMaterialView(Init init);
+        DynamicMaterialView(Init init, const Position3D& position, const Size2D& size);
     public:
         using Index = int;
 
-        void MaterialIndex(Index to);
+        void MaterialIndex(Index to) const;
         [[nodiscard]] Index MaterialIndex() const;
-        void Color(Color to);
+        void Color(Color to) const;
         [[nodiscard]] Render::Color Color() const;
-        void PatchShader(Arca::RelicIndex<Asset::ShaderAsset> to);
+        void PatchShader(Arca::RelicIndex<Asset::ShaderAsset> to) const;
         [[nodiscard]] Arca::RelicIndex<Asset::ShaderAsset> PatchShader() const;
 
         [[nodiscard]] Arca::RelicIndex<Asset::MaterialAsset> Material() const;
         [[nodiscard]] AxisAlignedBox2D MaterialSlice() const;
 
-        void Position(const Position3D& to);
-        void Size(const Size2D& to);
+        void Position(const Position3D& to) const;
+        void Size(const Size2D& to) const;
 
         [[nodiscard]] Position3D Position() const;
         [[nodiscard]] Size2D Size() const;
@@ -34,13 +37,25 @@ namespace Atmos::Render
         [[nodiscard]] Arca::ShardIndex<Bounds> Bounds() const;
     public:
         void PostConstruct();
-        void Initialize(const Position3D& position, const Size2D& size);
+        void Initialize();
     private:
         Arca::ShardIndex<MaterialViewCore> core;
         Arca::ShardIndex<Atmos::Bounds> bounds;
     private:
+        template<class CommandT, class MemberT>
+        CommandT CreateModificationCommand(std::optional<MemberT> CommandT::*member, MemberT value) const;
+    private:
         INSCRIPTION_ACCESS;
     };
+
+    template<class CommandT, class MemberT>
+    CommandT DynamicMaterialView::CreateModificationCommand(std::optional<MemberT> CommandT::*member, MemberT value) const
+    {
+        CommandT command;
+        command.id = ID();
+        (command.*member) = value;
+        return command;
+    }
 }
 
 namespace Arca

@@ -14,12 +14,22 @@ namespace Atmos::Entity
 {
     class EntityCurator final : public Arca::Curator
     {
-    protected:
-        void InitializeImplementation() override;
+    public:
+        explicit EntityCurator(Init init);
     private:
-        MappedEntities* mappedEntities = nullptr;
+        Arca::GlobalIndex<MappedEntities> mappedEntities;
     private:
-        Debug::Statistics* debugStatistics = nullptr;
+        Arca::GlobalIndex<Debug::Statistics> debugStatistics;
+    };
+}
+
+namespace Arca
+{
+    template<>
+    struct Traits<Atmos::Entity::EntityCurator>
+    {
+        static const ObjectType objectType = ObjectType::Curator;
+        static inline const TypeName typeName = "EntityCurator";
     };
 }
 

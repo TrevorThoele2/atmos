@@ -9,11 +9,9 @@ namespace Atmos::Debug
     class StatisticsCurator final : public Arca::Curator
     {
     public:
-        StatisticsCurator() = default;
-    protected:
-        void InitializeImplementation() override;
+        explicit StatisticsCurator(Init init);
     private:
-        Statistics* statistics = nullptr;
+        Arca::GlobalIndex<Statistics> statistics;
     private:
         class PageEntry
         {

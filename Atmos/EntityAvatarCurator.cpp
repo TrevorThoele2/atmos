@@ -8,42 +8,34 @@
 
 namespace Atmos::Entity
 {
-    void AvatarCurator::InitializeImplementation()
-    {
-        currentAvatar = Arca::GlobalIndex<CurrentAvatar>(Owner());
+    AvatarCurator::AvatarCurator(Init init) :
+        Curator(init), currentAvatar(init.owner), debugStatistics(init.owner)
+    {}
 
-        debugStatistics = Arca::GlobalIndex<Debug::Statistics>(Owner());
-    }
-
-    void AvatarCurator::WorkImplementation(Stage& stage)
+    void AvatarCurator::Work()
     {
-        Owner().ExecuteOn<Arca::Created>(
-            [this](const Arca::Created& signal)
+        Owner().ExecuteOn<Arca::CreatedKnown<AvatarComponent>>(
+            [this](const Arca::CreatedKnown<AvatarComponent>& signal)
             {
-                const auto actualized = Arca::Actualize<AvatarComponent>(signal.handle);
-                if (!actualized)
-                    return;
-
                 if (currentAvatar->entity)
                     Owner().Destroy(AsHandle(*currentAvatar->entity));
 
-                currentAvatar->entity = Arca::RelicIndex<Entity>(signal.handle.ID(), Owner());
-                currentAvatar->component = actualized;
+                auto currentAvatarData = Data(currentAvatar);
+                currentAvatarData->entity = Arca::RelicIndex<Entity>(signal.index.ID(), Owner());
+                currentAvatarData->component = signal.index;
             });
 
-        Owner().ExecuteOn<Arca::Destroying>(
-            [this](const Arca::Destroying& signal)
+        Owner().ExecuteOn<Arca::DestroyingKnown<AvatarComponent>>(
+            [this](const Arca::DestroyingKnown<AvatarComponent>&)
             {
-                const auto actualized = Arca::Actualize<AvatarComponent>(signal.handle);
-                if (!actualized)
-                    return;
-
-                currentAvatar->entity = {};
-                currentAvatar->component = {};
+                auto currentAvatarData = Data(currentAvatar);
+                currentAvatarData->entity = {};
+                currentAvatarData->component = {};
             });
 
         auto& general = *currentAvatar->entity->general;
-        debugStatistics->game.playerColumn = general.position.x;
-        debugStatistics->game.playerRow = general.position.y;
+        const auto debugStatisticsData = Data(debugStatistics);
+        debugStatisticsData->game.playerColumn = general.position.x;
+        debugStatisticsData->game.playerRow = general.position.y;
     }
 }

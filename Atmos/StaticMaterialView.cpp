@@ -1,45 +1,50 @@
 #include "StaticMaterialView.h"
 
+#include "ChangeMaterialViewCore.h"
+
 namespace Atmos::Render
 {
-    void StaticMaterialView::MaterialIndex(Index to)
+    void StaticMaterialView::MaterialIndex(Index to) const
     {
-        core->MaterialIndex(to);
+        const auto command = CreateModificationCommand(&ChangeMaterialViewCore::index, to);
+        Owner().Do<ChangeMaterialViewCore>(command);
     }
 
     auto StaticMaterialView::MaterialIndex() const -> Index
     {
-        return core->MaterialIndex();
+        return core->materialIndex;
     }
 
-    void StaticMaterialView::Color(Render::Color to)
+    void StaticMaterialView::Color(Render::Color to) const
     {
-        core->Color(to);
+        const auto command = CreateModificationCommand(&ChangeMaterialViewCore::color, to);
+        Owner().Do<ChangeMaterialViewCore>(command);
     }
 
     Render::Color StaticMaterialView::Color() const
     {
-        return core->Color();
+        return core->color;
     }
 
-    void StaticMaterialView::PatchShader(Arca::RelicIndex<Asset::ShaderAsset> to)
+    void StaticMaterialView::PatchShader(Arca::RelicIndex<Asset::ShaderAsset> to) const
     {
-        core->PatchShader(to);
+        const auto command = CreateModificationCommand(&ChangeMaterialViewCore::patchShader, to);
+        Owner().Do<ChangeMaterialViewCore>(command);
     }
 
     Arca::RelicIndex<Asset::ShaderAsset> StaticMaterialView::PatchShader() const
     {
-        return core->PatchShader();
+        return core->patchShader;
     }
 
     Arca::RelicIndex<Asset::MaterialAsset> StaticMaterialView::Material() const
     {
-        return core->Material();
+        return core->material;
     }
 
     AxisAlignedBox2D StaticMaterialView::MaterialSlice() const
     {
-        return core->MaterialSlice();
+        return core->materialSlice;
     }
 
     Position3D StaticMaterialView::Position() const
@@ -67,16 +72,17 @@ namespace Atmos::Render
         return bounds;
     }
 
-    void StaticMaterialView::PostConstruct()
+    StaticMaterialView::StaticMaterialView(Init init)
+        : ClosedTypedRelic(init)
     {
-        core = Create<MaterialViewCore>();
-        bounds = Create<const Atmos::Bounds>();
+        core = FindOrCreate<MaterialViewCore>();
+        bounds = FindOrCreate<const Atmos::Bounds>();
     }
 
-    void StaticMaterialView::Initialize(const Position3D& position, const Size2D& size)
+    StaticMaterialView::StaticMaterialView(Init init, const Position3D& position, const Size2D& size)
+        : ClosedTypedRelic(init)
     {
-        auto& mutableBounds = const_cast<Atmos::Bounds&>(*bounds);
-        mutableBounds.Position(position);
-        mutableBounds.Size(size);
+        core = FindOrCreate<MaterialViewCore>();
+        bounds = FindOrCreate<const Atmos::Bounds>(position, size);
     }
 }

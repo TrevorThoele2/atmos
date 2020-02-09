@@ -2,6 +2,6 @@
 
 namespace Atmos::Script
 {
-    ExecuteImmediately::ExecuteImmediately(RunningScript& script) : script(script)
+    ExecuteImmediately::ExecuteImmediately(Arca::RelicIndex<RunningScript> script) : script(script)
     {}
 }

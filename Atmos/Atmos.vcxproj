@@ -33,12 +33,45 @@
     <ClInclude Include="ActionActive.h" />
     <ClInclude Include="ActionDepressed.h" />
     <ClInclude Include="ActionPressed.h" />
-    <ClInclude Include="DirectX9Data.h" />
+    <ClInclude Include="AngelScriptAssetData.h" />
+    <ClInclude Include="AngelScriptManager.h" />
+    <ClInclude Include="Asset.h" />
+    <ClInclude Include="AssetCore.h" />
+    <ClInclude Include="AudioAssetData.h" />
+    <ClInclude Include="CalculateStopwatch.h" />
+    <ClInclude Include="CanvasData.h" />
+    <ClInclude Include="ChangeMaterialViewCore.h" />
+    <ClInclude Include="CurrentFieldCurator.h" />
+    <ClInclude Include="CurrentFieldData.h" />
+    <ClInclude Include="DirectX9CanvasData.h" />
+    <ClInclude Include="DirectX9ImageAssetData.h" />
+    <ClInclude Include="DirectX9ShaderAssetData.h" />
+    <ClInclude Include="DirectX9SurfaceData.h" />
+    <ClInclude Include="ExtractAsset.h" />
+    <ClInclude Include="FileAsset.h" />
     <ClInclude Include="DirectX9Includes.h" />
     <ClInclude Include="DirectX9Renderer.h" />
     <ClInclude Include="DirectX9Utilities.h" />
     <ClInclude Include="Environment.h" />
+    <ClInclude Include="IdleCurator.h" />
+    <ClInclude Include="ImageAssetData.h" />
+    <ClInclude Include="Logger.h" />
+    <ClInclude Include="MainSurface.h" />
+    <ClInclude Include="MoveBounds.h" />
+    <ClInclude Include="Renderer.h" />
+    <ClInclude Include="ResetAverage.h" />
+    <ClInclude Include="ResetHighest.h" />
+    <ClInclude Include="ResizeBounds.h" />
+    <ClInclude Include="ScriptAssetData.h" />
+    <ClInclude Include="ScriptManager.h" />
+    <ClInclude Include="ShaderAssetData.h" />
+    <ClInclude Include="SimpleFile.h" />
+    <ClInclude Include="StartStopwatch.h" />
+    <ClInclude Include="StopwatchCurator.h" />
+    <ClInclude Include="StopwatchStatistics.h" />
     <ClInclude Include="Field.h" />
+    <ClInclude Include="FrameEndCurator.h" />
+    <ClInclude Include="FrameStartCurator.h" />
     <ClInclude Include="ShouldCreateAsset.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraMoved.h" />
@@ -88,11 +121,14 @@
     <ClInclude Include="SparseRegion.h" />
     <ClInclude Include="StasisFileExtension.h" />
     <ClInclude Include="StateRequest.h" />
+    <ClInclude Include="StopwatchCore.h" />
+    <ClInclude Include="Surface.h" />
+    <ClInclude Include="SurfaceCore.h" />
+    <ClInclude Include="SurfaceData.h" />
     <ClInclude Include="TimeInformation.h" />
     <ClInclude Include="DebugStatistics.h" />
     <ClInclude Include="Epoch.h" />
     <ClInclude Include="Exception.h" />
-    <ClInclude Include="FileAsset.h" />
     <ClInclude Include="Fps.h" />
     <ClInclude Include="TimeSettings.h" />
     <ClInclude Include="LoggingDetails.h" />
@@ -113,7 +149,7 @@
     <ClInclude Include="AngleConversion.h" />
     <ClInclude Include="AngleUnits.h" />
     <ClInclude Include="AngleUnitsTypeValidation.h" />
-    <ClInclude Include="FileAssetPackageCurator.h" />
+    <ClInclude Include="AssetFileCurator.h" />
     <ClInclude Include="AssetCurator.h" />
     <ClInclude Include="AudioAssetInstance.h" />
     <ClInclude Include="AxisAlignedBox3D.h" />
@@ -129,17 +165,18 @@
     <ClInclude Include="NullFileManager.h" />
     <ClInclude Include="NullWindow.h" />
     <ClInclude Include="FileManagerProvider.h" />
-    <ClInclude Include="TimeCurator.h" />
     <ClInclude Include="OutputStasisArchiveInterface.h" />
     <ClInclude Include="Scalers2D.h" />
     <ClInclude Include="Scalers3D.h" />
-    <ClInclude Include="ScreenDimensions.h" />
+    <ClInclude Include="ScreenSize.h" />
     <ClInclude Include="ScreenPosition.h" />
     <ClInclude Include="TypeRegistration.h" />
     <ClInclude Include="UniqueProvider.h" />
     <ClInclude Include="UniqueProviderRelic.h" />
     <ClInclude Include="UnownedProviderRelic.h" />
+    <ClInclude Include="UnrecognizedAudioFormat.h" />
     <ClInclude Include="VolumeInformation.h" />
+    <ClInclude Include="WindowCreationFailed.h" />
     <ClInclude Include="WindowDimensionsChanged.h" />
     <ClInclude Include="WindowProvider.h" />
     <ClInclude Include="GuiEngineProvider.h" />
@@ -192,7 +229,6 @@
     <ClInclude Include="MaterialAsset.h" />
     <ClInclude Include="RelativeFilePath.h" />
     <ClInclude Include="Octree.h" />
-    <ClInclude Include="Asset.h" />
     <ClInclude Include="ScriptParameters.h" />
     <ClInclude Include="ScriptPersistence.h" />
     <ClInclude Include="ScriptAssetCurator.h" />
@@ -232,7 +268,6 @@
     <ClInclude Include="BoundedNumber.h" />
     <ClInclude Include="DirectX9AudioManager.h" />
     <ClInclude Include="Enum.h" />
-    <ClInclude Include="ExtendedStopwatchAdapter.h" />
     <ClInclude Include="FilePath.h" />
     <ClInclude Include="GraphicsManager.h" />
     <ClInclude Include="IDSequencer.h" />
@@ -242,9 +277,8 @@
     <ClInclude Include="Serialization.h" />
     <ClInclude Include="ShaderAssetCurator.h" />
     <ClInclude Include="ShaderAsset.h" />
-    <ClInclude Include="SimpleFile.h" />
     <ClInclude Include="AudioAssetCurator.h" />
-    <ClInclude Include="Surface.h" />
+    <ClInclude Include="AncillarySurface.h" />
     <ClInclude Include="SenseComponent.h" />
     <ClInclude Include="InputStasisArchiveInterface.h" />
     <ClInclude Include="TileSize.h" />
@@ -282,7 +316,6 @@
     <ClInclude Include="UniqueStack.h" />
     <ClInclude Include="String.h" />
     <ClInclude Include="GridPosition.h" />
-    <ClInclude Include="Stopwatch.h" />
     <ClInclude Include="InputWorldArchiveInterface.h" />
     <ClInclude Include="WrapMath.h" />
   </ItemGroup>
@@ -290,20 +323,41 @@
     <ClCompile Include="..\..\AngelScript\sdk\add_on\scriptarray\scriptarray.cpp" />
     <ClCompile Include="..\..\AngelScript\sdk\add_on\scriptstdstring\scriptstdstring.cpp" />
     <ClCompile Include="Action.cpp" />
+    <ClCompile Include="AngelScriptAssetData.cpp" />
+    <ClCompile Include="AngelScriptManager.cpp" />
+    <ClCompile Include="AssetCore.cpp" />
+    <ClCompile Include="AudioAssetData.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CanvasData.cpp" />
     <ClCompile Include="CanvasViewCurator.cpp" />
+    <ClCompile Include="CurrentFieldCurator.cpp" />
+    <ClCompile Include="CurrentFieldData.cpp" />
     <ClCompile Include="DebugStatistics.cpp" />
-    <ClCompile Include="DirectX9Data.cpp" />
+    <ClCompile Include="DirectX9CanvasData.cpp" />
+    <ClCompile Include="DirectX9ImageAssetData.cpp" />
     <ClCompile Include="DirectX9Renderer.cpp" />
+    <ClCompile Include="DirectX9ShaderAssetData.cpp" />
+    <ClCompile Include="DirectX9SurfaceData.cpp" />
     <ClCompile Include="DirectX9Utilities.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="Environment.cpp" />
     <ClCompile Include="ExecuteImmediately.cpp" />
     <ClCompile Include="Field.cpp" />
+    <ClCompile Include="FrameEndCurator.cpp" />
+    <ClCompile Include="FrameStartCurator.cpp" />
     <ClCompile Include="GraphicsCurator.cpp" />
+    <ClCompile Include="IdleCurator.cpp" />
+    <ClCompile Include="ImageAssetData.cpp" />
     <ClCompile Include="InputFieldArchiveInterface.cpp" />
     <ClCompile Include="InputManager.cpp" />
+    <ClCompile Include="Logger.cpp" />
+    <ClCompile Include="MainSurface.cpp" />
     <ClCompile Include="MaterialViewCore.cpp" />
+    <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="ScriptAssetData.cpp" />
+    <ClCompile Include="ScriptManager.cpp" />
+    <ClCompile Include="ShaderAssetData.cpp" />
+    <ClCompile Include="SimpleFile.cpp" />
     <ClCompile Include="StaticMaterialView.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="MaterialViewCurator.cpp" />
@@ -327,7 +381,7 @@
     <ClCompile Include="AngelScriptUtility.cpp" />
     <ClCompile Include="Angle.cpp" />
     <ClCompile Include="AngleConversion.cpp" />
-    <ClCompile Include="FileAssetPackageCurator.cpp" />
+    <ClCompile Include="AssetFileCurator.cpp" />
     <ClCompile Include="AudioAssetInstance.cpp" />
     <ClCompile Include="AxisAlignedBox3D.cpp" />
     <ClCompile Include="CameraCurator.cpp" />
@@ -337,19 +391,23 @@
     <ClCompile Include="EngineExecution.cpp" />
     <ClCompile Include="AnyEventConnection.cpp" />
     <ClCompile Include="Exception.cpp" />
-    <ClCompile Include="FileAsset.cpp" />
+    <ClCompile Include="StopwatchCore.cpp" />
+    <ClCompile Include="StopwatchCurator.cpp" />
+    <ClCompile Include="StopwatchStatistics.cpp" />
+    <ClCompile Include="SurfaceData.cpp" />
     <ClCompile Include="TimeInformation.cpp" />
     <ClCompile Include="TimeSettings.cpp" />
     <ClCompile Include="NullFileManager.cpp" />
     <ClCompile Include="NullWindow.cpp" />
     <ClCompile Include="FileManagerProvider.cpp" />
-    <ClCompile Include="TimeCurator.cpp" />
     <ClCompile Include="OutputStasisArchiveInterface.cpp" />
     <ClCompile Include="Scalers2D.cpp" />
     <ClCompile Include="Scalers3D.cpp" />
-    <ClCompile Include="ScreenDimensions.cpp" />
+    <ClCompile Include="ScreenSize.cpp" />
     <ClCompile Include="ScreenPosition.cpp" />
     <ClCompile Include="TypeRegistration.cpp" />
+    <ClCompile Include="UnrecognizedAudioFormat.cpp" />
+    <ClCompile Include="WindowCreationFailed.cpp" />
     <ClCompile Include="WindowProvider.cpp" />
     <ClCompile Include="GuiEngineProvider.cpp" />
     <ClCompile Include="FixedPoint.cpp" />
@@ -391,7 +449,6 @@
     <ClCompile Include="AIComponent.cpp" />
     <ClCompile Include="AvatarComponent.cpp" />
     <ClCompile Include="MaterialAsset.cpp" />
-    <ClCompile Include="Asset.cpp" />
     <ClCompile Include="Size3D.cpp" />
     <ClCompile Include="StringUtility.cpp" />
     <ClCompile Include="TimeValue.cpp" />
@@ -422,8 +479,7 @@
     <ClCompile Include="DirectX9AudioManager.cpp" />
     <ClCompile Include="Line.cpp" />
     <ClCompile Include="ShaderAsset.cpp" />
-    <ClCompile Include="SimpleFile.cpp" />
-    <ClCompile Include="Surface.cpp" />
+    <ClCompile Include="AncillarySurface.cpp" />
     <ClCompile Include="InputStasisArchiveInterface.cpp" />
     <ClCompile Include="ScriptVariant.cpp" />
     <ClCompile Include="Color.cpp" />
@@ -443,7 +499,6 @@
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="DynamicMaterialView.cpp" />
     <ClCompile Include="GridPosition.cpp" />
-    <ClCompile Include="Stopwatch.cpp" />
     <ClCompile Include="InputWorldArchiveInterface.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -516,7 +571,7 @@
     <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\Users\Trevor\Documents\ProgrammingProjects\AGUI;C:\Users\Trevor\Documents\ProgrammingProjects\Inscription;C:\Users\Trevor\Documents\ProgrammingProjects\Chroma;C:\Users\Trevor\Documents\ProgrammingProjects\Arca;C:\Users\Trevor\Documents\ProgrammingProjects\Ogg\libvorbis-1.3.6\include;C:\Users\Trevor\Documents\ProgrammingProjects\wxWidgets2\lib\vc_lib\mswud;C:\Users\Trevor\Documents\ProgrammingProjects\wxWidgets2\include;C:\Users\Trevor\Documents\ProgrammingProjects\Ogg\libogg-1.3.3\include;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;C:\Users\Trevor\Documents\ProgrammingProjects\AngelScript\sdk\angelscript\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\Trevor\Documents\ProgrammingProjects\function2\include;C:\Users\Trevor\Documents\ProgrammingProjects\AGUI;C:\Users\Trevor\Documents\ProgrammingProjects\Inscription;C:\Users\Trevor\Documents\ProgrammingProjects\Chroma;C:\Users\Trevor\Documents\ProgrammingProjects\Arca;C:\Users\Trevor\Documents\ProgrammingProjects\Ogg\libvorbis-1.3.6\include;C:\Users\Trevor\Documents\ProgrammingProjects\wxWidgets2\lib\vc_lib\mswud;C:\Users\Trevor\Documents\ProgrammingProjects\wxWidgets2\include;C:\Users\Trevor\Documents\ProgrammingProjects\Ogg\libogg-1.3.3\include;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;C:\Users\Trevor\Documents\ProgrammingProjects\AngelScript\sdk\angelscript\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>C:\Users\Trevor\Documents\Visual Studio 2015\Projects\Function;C:\Users\Trevor\Documents\Programming Projects\wxWidgets2\lib\vc_lib\mswud;C:\Users\Trevor\Documents\Programming Projects\wxWidgets2\include;C:\Program Files %28x86%29\Falcon\include;C:\Users\Trevor\Documents\Programming Projects\Affecter;C:\Users\Trevor\Documents\Programming Projects\Ogg\Built\include;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;C:\Users\Trevor\Documents\Programming Projects\AGUI;C:\Users\Trevor\Documents\Programming Projects\Inscription;$(IncludePath)</IncludePath>

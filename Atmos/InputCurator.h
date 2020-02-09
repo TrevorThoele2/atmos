@@ -10,9 +10,10 @@ namespace Atmos::Input
 {
     class Curator final : public Arca::Curator
     {
-    protected:
-        void InitializeImplementation() override;
-        void WorkImplementation(Stage& stage) override;
+    public:
+        explicit Curator(Init init);
+
+        void Work();
     private:
         Arca::ComputedIndex<Manager*> manager;
 

@@ -6,20 +6,20 @@
 
 namespace Atmos::Entity
 {
-    void ActionCurator::InitializeImplementation()
-    {
-        actionComponents = Owner().Batch<ActionComponent>();
-    }
+    ActionCurator::ActionCurator(Init init) :
+        Curator(init),
+        actionComponents(init.owner.Batch<ActionComponent>())
+    {}
 
-    void ActionCurator::WorkImplementation(Stage& stage)
+    void ActionCurator::Work()
     {
         for (auto& loop : actionComponents)
         {
-            auto runningScript = loop.script->RunningForThis();
+            const auto runningScript = loop.script->RunningForThis();
             if (!runningScript)
                 continue;
 
-            runningScript->Resume();
+            Data(runningScript)->Resume();
         }
 
         if (!fieldSet.IsEmpty())

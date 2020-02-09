@@ -22,19 +22,15 @@ namespace Atmos
         File::manager.Setup<File::WindowsFileManager>();
     }
 
-    WindowsEngine::InitializationProperties WindowsEngine::CreateInitializationProperties(
-        Arca::Reliquary& reliquary)
+    WindowsEngine::InitializationProperties WindowsEngine::CreateInitializationProperties()
     {
         using Properties = InitializationProperties;
 
-        auto window = std::make_unique<Window::WindowsWindow>(reliquary, nCmdShow, className);
+        auto window = std::make_unique<Window::WindowsWindow>(nCmdShow, className);
         auto input = std::make_unique<Input::WindowsManager>(window->Hwnd());
-        auto backbufferSize = ScreenDimensions(window->ClientSize().width, window->ClientSize().height);
         auto graphics = std::make_unique<Render::DirectX9::GraphicsManager>
         (
-            reliquary,
             window->Hwnd(),
-            backbufferSize,
             window->IsFullscreen()
         );
         auto audio = std::make_unique<Audio::DirectX9AudioManager>();

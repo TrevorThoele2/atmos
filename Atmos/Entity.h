@@ -1,16 +1,17 @@
 #pragma once
 
-#include <Arca/OpenTypedRelicAutomation.h>
+#include <Arca/OpenTypedRelic.h>
 #include "GeneralComponent.h"
 
 namespace Atmos::Entity
 {
-    class Entity final : public Arca::OpenTypedRelicAutomation<Entity>
+    class Entity final : public Arca::OpenTypedRelic<Entity>
     {
     public:
         Arca::ShardIndex<GeneralComponent> general;
 
         void PostConstruct();
+        void Initialize();
     };
 }
 

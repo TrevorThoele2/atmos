@@ -12,15 +12,12 @@ namespace Atmos::Script::Angel
 {
     class ScriptCurator final : public Arca::Curator
     {
-    private:
-        class Interface;
     public:
-        ScriptCurator() = default;
+        explicit ScriptCurator(Init init);
 
         asIScriptEngine* Engine();
-    protected:
-        void InitializeImplementation() override;
     private:
+        class Interface;
         using InterfacePtr = std::unique_ptr<Interface>;
         InterfacePtr interface;
     };

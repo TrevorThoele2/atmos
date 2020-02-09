@@ -4,7 +4,6 @@
 #include "EngineNotSetup.h"
 
 #include "WindowProvider.h"
-#include "UniqueProviderRelic.h"
 
 namespace Atmos
 {
@@ -15,11 +14,16 @@ namespace Atmos
         if (IsSetup())
             return;
 
-        Arca::ReliquaryOrigin origin;
-        RegisterGlobalTypes(origin);
-        globalReliquary = origin.Actualize();
+        auto initializationProperties = CreateInitializationProperties();
+        Window::window.Setup(std::move(initializationProperties.window));
 
-        ProvideInitializationProperties(CreateInitializationProperties(*globalReliquary));
+        Arca::ReliquaryOrigin origin;
+        RegisterGlobalTypes(
+            origin,
+            std::move(initializationProperties.inputManager),
+            std::move(initializationProperties.graphicsManager),
+            std::move(initializationProperties.audioManager));
+        globalReliquary = origin.Actualize();
 
         World::WorldManager worldManager(*globalReliquary);
 
@@ -56,6 +60,16 @@ namespace Atmos
         DoExit();
     }
 
+    Arca::Reliquary* Engine::GlobalReliquary()
+    {
+        return globalReliquary.get();
+    }
+
+    const Arca::Reliquary* Engine::GlobalReliquary() const
+    {
+        return globalReliquary.get();
+    }
+
     bool Engine::IsSetup() const
     {
         return executionContext != nullptr;
@@ -71,15 +85,4 @@ namespace Atmos
         execution(EngineExecution(*owner.globalReliquary, this->worldManager)),
         worldManager(std::move(worldManager))
     {}
-
-    void Engine::ProvideInitializationProperties(InitializationProperties&& properties)
-    {
-        Window::window.Setup(std::move(properties.window));
-        Arca::GlobalIndex<UniqueProviderRelic<Input::Manager>>(*globalReliquary)->Change(
-            std::move(properties.inputManager));
-        Arca::GlobalIndex<UniqueProviderRelic<Render::GraphicsManager>>(*globalReliquary)->Change(
-            std::move(properties.graphicsManager));
-        Arca::GlobalIndex<UniqueProviderRelic<Audio::AudioManager>>(*globalReliquary)->Change(
-            std::move(properties.audioManager));
-    }
 }

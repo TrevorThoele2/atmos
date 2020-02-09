@@ -1,13 +1,13 @@
 #pragma once
 
-#include <Arca/ClosedTypedRelicAutomation.h>
+#include <Arca/ClosedTypedRelic.h>
 
 #include "Bounds.h"
 #include "AudioAssetInstance.h"
 
 namespace Atmos::Audio
 {
-    class Sound final : public Arca::ClosedTypedRelicAutomation<Sound>
+    class Sound final : public Arca::ClosedTypedRelic<Sound>
     {
     public:
         using Asset = Asset::AudioAssetInstance;

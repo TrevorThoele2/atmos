@@ -1,17 +1,13 @@
 #include "WindowBase.h"
 
-#include <Arca/Reliquary.h>
-
 #include "WindowDimensionsChanged.h"
-#include "ReconstructGraphics.h"
 
 namespace Atmos::Window
 {
     WindowBase::~WindowBase() = default;
 
-    void WindowBase::Setup(Arca::Reliquary& reliquary)
+    void WindowBase::Setup()
     {
-        this->reliquary = &reliquary;
         SetupImpl();
     }
 
@@ -28,7 +24,6 @@ namespace Atmos::Window
         isFullscreen = set;
         OnSetFullscreen();
         SetFullscreen(isFullscreen);
-        reliquary->Raise<Render::ReconstructGraphics>();
     }
 
     bool WindowBase::IsFullscreen() const
@@ -76,17 +71,6 @@ namespace Atmos::Window
             startPosition = defaultPosition;
         }
 
-        reliquary->Raise<DimensionsChanged>(clientSize);
         OnSetWindowDimensions();
-    }
-
-    Arca::Reliquary& WindowBase::Reliquary()
-    {
-        return *reliquary;
-    }
-
-    const Arca::Reliquary& WindowBase::Reliquary() const
-    {
-        return *reliquary;
     }
 }

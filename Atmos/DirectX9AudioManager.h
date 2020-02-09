@@ -16,14 +16,15 @@ namespace Atmos::Audio
         ~DirectX9AudioManager();
 
         void CreateSourceVoice(IXAudio2SourceVoice** sourceVoice, const WAVEFORMATEX& waveFormat);
-        bool SetMasterVolume(float set) override;
+        bool SetMasterVolume(Volume set) override;
+    protected:
+        std::unique_ptr<Asset::AudioAssetData> CreateAudioDataImpl(
+            const FormattedBuffer& file,
+            const Name& name) override;
     private:
-        IXAudio2* xaudio2Interface = nullptr;
+        IXAudio2* xAudio2Interface = nullptr;
         IXAudio2MasteringVoice* masteringVoice = nullptr;
     private:
-        std::unique_ptr<Asset::AudioAssetData> CreateAudioDataImpl(
-            ExtractedFile&& file,
-            const File::Name& name) override;
         void CreateMasteringVoice(IXAudio2MasteringVoice** sourceVoice);
     };
 }

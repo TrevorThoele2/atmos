@@ -7,11 +7,12 @@ namespace Atmos
     class ScreenPositionDelta
     {
     public:
-        const ScreenPosition from{};
-        const ScreenPosition to{};
-        const ScreenPosition delta{};
+        ScreenPosition from;
+        ScreenPosition to;
 
         ScreenPositionDelta() = default;
         ScreenPositionDelta(ScreenPosition from, ScreenPosition to);
+
+        [[nodiscard]] ScreenPosition Delta() const;
     };
 }

@@ -33,7 +33,7 @@ namespace Atmos::Script::Angel
     {
         engine = asCreateScriptEngine();
         if (!engine)
-            reliquary.Raise<Logging::Log>
+            reliquary.Do<Logging::Log>
             (
                 "Creation of the scripting engine has failed.", Logging::Severity::SevereError
             );
@@ -62,7 +62,7 @@ namespace Atmos::Script::Angel
         else if (messageInfo->type == asMSGTYPE_INFORMATION)
             logType = Logging::Severity::Information;
 
-        reliquary->Raise<Logging::Log>
+        reliquary->Do<Logging::Log>
         (
             messageInfo->message,
             logType,
@@ -75,13 +75,13 @@ namespace Atmos::Script::Angel
         );
     }
 
+    ScriptCurator::ScriptCurator(Init init) :
+        Curator(init),
+        interface(std::make_unique<Interface>(*this, init.owner))
+    {}
+
     asIScriptEngine* ScriptCurator::Engine()
     {
         return interface->engine;
-    }
-
-    void ScriptCurator::InitializeImplementation()
-    {
-        interface = std::make_unique<Interface>(*this, Owner());
     }
 }

@@ -7,28 +7,9 @@
 
 #include "GraphicsManager.h"
 
-#include "ShaderAsset.h"
-
-#include "Size2D.h"
-#include "AxisAlignedBox2D.h"
-#include "Angle.h"
-#include "Scalers2D.h"
-
-#include "FilePath.h"
-
-#include <AGUI/Resolution.h>
-
-#include "LoggingSeverity.h"
-#include "LoggingDetails.h"
-
 namespace Atmos::File
 {
     class ManagerProvider;
-}
-
-namespace Atmos::Time
-{
-    class Settings;
 }
 
 namespace Atmos::Render::DirectX9
@@ -38,111 +19,44 @@ namespace Atmos::Render::DirectX9
     class GraphicsManager final : public Render::GraphicsManager
     {
     public:
-        GraphicsManager
-        (
-            Arca::Reliquary& reliquary,
-            HWND hwnd,
-            const ScreenDimensions& backbuffer,
-            bool fullscreen
-        );
+        GraphicsManager(HWND hwnd, bool fullscreen);
         GraphicsManager(const GraphicsManager& arg) = delete;
         GraphicsManager& operator=(const GraphicsManager& arg) = delete;
         ~GraphicsManager();
 
+        void Initialize(Arca::Reliquary& reliquary) override;
+
+        [[nodiscard]] std::unique_ptr<Asset::ImageAssetData> CreateImageData(
+            const Buffer& buffer, const Name& name) override;
+        [[nodiscard]] std::unique_ptr<Asset::ShaderAssetData> CreateShaderData(
+            const Buffer& buffer, const Name& name) override;
+        [[nodiscard]] std::unique_ptr<SurfaceData> CreateMainSurfaceData() override;
+        [[nodiscard]] std::unique_ptr<SurfaceData> CreateSurfaceData(
+            void* window) override;
+        [[nodiscard]] std::unique_ptr<CanvasData> CreateCanvasData(
+            const ScreenSize& size) override;
+
         void SetFullscreen(bool set) override;
 
-        void ClearTarget(const Flags<Target>& target) override;
-        void ClearTarget(const Flags<Target>& target, const Color& color) override;
-        void Flush() override;
+        void ClearStencil(const Color& color = Color()) override;
         void SetRenderState(RenderState state, bool set) override;
 
-        bool Start() override;
-        void Stop() override;
+        void ChangeVerticalSync(bool set) override;
 
-        void StartObjects(size_t spriteCount = 0) override;
-        void StopObjects() override;
-        void StartLines() override;
-        void StopLines() override;
-        void StartStencil() override;
-        void StopStencil() override;
-
-        LPDIRECT3DDEVICE9& Device();
-    protected:
-        void RenderObject
-        (
-            LPDIRECT3DTEXTURE9 tex,
-            Asset::ShaderAsset* shader,
-            float X,
-            float Y,
-            float Z,
-            const AxisAlignedBox2D& imageBounds,
-            const Size2D& size,
-            const Position2D& center,
-            const Scalers2D& scalers,
-            const Angle& rotation,
-            const Color& color
-        ) const;
+        [[nodiscard]] LPDIRECT3DDEVICE9 Device() const;
     private:
         HWND hwnd;
         LPDIRECT3D9 d3d;
         D3DPRESENT_PARAMETERS presentationParameters;
-
-        std::unique_ptr<Renderer> renderer;
-
-        D3DXMATRIX projection;
-
-        LPDIRECT3DSURFACE9 mainSurface;
     private:
         LPDIRECT3DDEVICE9 device;
-        void CreateDevice();
+        [[nodiscard]] LPDIRECT3DDEVICE9 CreateDevice();
     private:
         void ReconstructInternals() override;
-        void SetMainDimensionsImpl(const ScreenDimensions& dimensions) override;
-        [[nodiscard]] ScreenDimensions MainDimensionsImpl() const override;
-
-        [[nodiscard]] std::unique_ptr<Asset::ImageAssetData> CreateImageDataImpl(
-            const File::Path& path) override;
-        [[nodiscard]] std::unique_ptr<Asset::ImageAssetData> CreateImageDataImpl(
-            void* buffer, std::int32_t size, const File::Name& name) override;
-        [[nodiscard]] std::unique_ptr<Asset::ShaderAssetData> CreateShaderDataImpl(
-            const File::Path& path) override;
-        [[nodiscard]] std::unique_ptr<Asset::ShaderAssetData> CreateShaderDataImpl(
-            void* buffer, std::int32_t size, const File::Name& name) override;
-        [[nodiscard]] Surface CreateSurfaceImpl(
-            void* window) override;
-        [[nodiscard]] Canvas CreateCanvasImpl(
-            const ScreenDimensions& dimensions) override;
-
-        [[nodiscard]] bool CanMakeImageImpl(const File::Path& path) const override;
-        [[nodiscard]] bool CanMakeImageImpl(void* buffer, std::int32_t size) const override;
-
-        void ResizeCanvasImpl(Canvas& canvas, const ScreenDimensions& dimensions) override;
-
-        void SetRenderTargetImpl(Surface& set) override;
-        void SetRenderTargetToMainImpl() override;
-        void ReleaseMainRenderTarget() override;
-        void ResetMainRenderTarget() override;
-
-        void PresentImpl() override;
-        void PresentImpl(void* windowOverride) override;
-
-        void RenderMaterialViewImpl(MaterialRender& materialRender) override;
-        void RenderCanvasViewImpl(CanvasRender& canvasRender) override;
-        void RenderLineImpl(const Line& line) override;
 
         void SetupPresentationParameters();
         void SetRenderStates() const;
-        void SetProjectionMatrix();
-        void OnResolutionChanged(const Agui::Resolution& arg);
     private:
         static std::optional<D3DRENDERSTATETYPE> RenderStateToD3D(RenderState renderState);
-    private:
-        void LogIfError(
-            HRESULT hr,
-            const String& message,
-            Logging::Severity severity,
-            const std::optional<Logging::Details>& details = {}) const;
-    private:
-        Arca::GlobalIndex<Time::Settings> timeSettings;
     };
 }

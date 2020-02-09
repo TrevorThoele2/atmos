@@ -12,17 +12,25 @@ namespace Atmos::State
 {
     class StateCurator final : public Arca::Curator
     {
-    protected:
-        void InitializeImplementation() override;
-        void WorkImplementation(Stage& stage) override;
+    public:
+        void Handle(const Request& command);
     private:
-        using Stack = std::vector<GameState*>;
+        using Stack = std::vector<const GameState*>;
         Stack stack;
 
-        Arca::Batch<Request> requests;
-
-        void Push(GameState& state);
+        void Push(const GameState& state);
         void Pop();
+    };
+}
+
+namespace Arca
+{
+    template<>
+    struct Traits<Atmos::State::StateCurator>
+    {
+        static const ObjectType objectType = ObjectType::Curator;
+        static inline TypeName typeName = "StateCurator";
+        using HandledCommands = HandledCommands<Atmos::State::Request>;
     };
 }
 

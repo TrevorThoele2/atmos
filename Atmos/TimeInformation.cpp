@@ -1,9 +1,12 @@
 #include "TimeInformation.h"
 
+#include "StopwatchStatistics.h"
+
 namespace Atmos::Time
 {
-    void Information::PostConstruct()
+    Information::Information(Init init)
+        : ClosedTypedRelic(init), stopwatch(init.owner.Do<Arca::Create<RealStopwatch>>())
     {
-        stopwatch = Stopwatch(Owner().Create<RealStopwatch>());
+        stopwatch->Create<StopwatchStatistics>();
     }
 }

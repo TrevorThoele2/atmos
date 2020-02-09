@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Arca/Signal.h>
+#include <Arca/Command.h>
 #include "Direction.h"
 #include "Position3D.h"
 
@@ -18,7 +18,7 @@ namespace Arca
     template<>
     struct Traits<Atmos::Render::MoveCamera>
     {
-        static const ObjectType objectType = ObjectType::Signal;
+        static const ObjectType objectType = ObjectType::Command;
         static inline const TypeName typeName = "MoveCamera";
     };
 }

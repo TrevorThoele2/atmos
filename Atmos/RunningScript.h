@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include <Arca/ClosedTypedRelicAutomation.h>
+#include <Arca/ClosedTypedRelic.h>
 
 #include "ScriptInstance.h"
 #include "ScriptParameters.h"
@@ -12,11 +12,11 @@ class asIScriptContext;
 
 namespace Atmos::Script
 {
-    class RunningScript final : public Arca::ClosedTypedRelicAutomation<RunningScript>
+    class RunningScript final : public Arca::ClosedTypedRelic<RunningScript>
     {
     public:
         using Source = ScriptInstance;
-        Source* source = nullptr;
+        Arca::RelicIndex<Source> source;
     public:
         Name executeName;
         Parameters parameters;
@@ -25,7 +25,13 @@ namespace Atmos::Script
         bool hasBeenExecuted = false;
         bool executedThisFrame = false;
     public:
-        RunningScript();
+        explicit RunningScript(Init init);
+        RunningScript(
+            Init init,
+            Arca::RelicIndex<Source> source,
+            const Name& executeName,
+            const Parameters& parameters,
+            const Persistence& persistence);
         RunningScript(const RunningScript& arg);
         ~RunningScript();
 
@@ -38,8 +44,6 @@ namespace Atmos::Script
         [[nodiscard]] bool ShouldExecuteMain() const;
 
         asIScriptContext* UnderlyingContext();
-    public:
-        void Initialize(Source& source);
     private:
         bool isSuspended = false;
     private:

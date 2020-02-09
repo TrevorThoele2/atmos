@@ -1,19 +1,23 @@
 #pragma once
 
-#include <Arca/ClosedTypedRelicAutomation.h>
+#include <Arca/ClosedTypedRelic.h>
 
 #include "TimeValue.h"
 #include "Fps.h"
 
 namespace Atmos::Time
 {
-    class Settings final : public Arca::ClosedTypedRelicAutomation<Settings>
+    class Settings final : public Arca::ClosedTypedRelic<Settings>
     {
     public:
         Fps fpsLimit = 0;
         static const Fps defaultFpsLimit;
 
         bool verticalSync = false;
+
+        explicit Settings(Init init) : ClosedTypedRelic(init)
+        {}
+        Settings(const Settings& arg) = default;
     };
 }
 

@@ -14,9 +14,10 @@ namespace Atmos::Entity
 {
     class ActionCurator final : public Arca::Curator
     {
-    protected:
-        void InitializeImplementation() override;
-        void WorkImplementation(Stage& stage) override;
+    public:
+        explicit ActionCurator(Init init);
+
+        void Work();
     private:
         Arca::Batch<ActionComponent> actionComponents;
 

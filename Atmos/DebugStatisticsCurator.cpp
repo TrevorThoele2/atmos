@@ -2,11 +2,24 @@
 
 #include <Arca/Reliquary.h>
 #include "TimeInformation.h"
+#include "StopwatchStatistics.h"
+#include "ResetAverage.h"
+#include "ResetHighest.h"
 
 #include "StringUtility.h"
 
 namespace Atmos::Debug
 {
+    StatisticsCurator::StatisticsCurator(Init init) :
+        Curator(init), statistics(init.owner)
+    {
+        BundlePages();
+        BundleProfilers();
+
+        for (auto& loop : pageList)
+            loop->Initialize();
+    }
+
     StatisticsCurator::PageEntry::PageEntry() : retrievalFunction([]() -> String { return ""; })
     {}
 
@@ -47,19 +60,19 @@ namespace Atmos::Debug
             AddEntry(name + " time", entrySet.time);
             entrySet.time.retrievalFunction = [&profiler]() -> String
             {
-                return ToString(profiler.QueryElapsed().GetAs(Time::Epoch::Milliseconds));
+                return ToString(profiler->Elapsed().GetAs(Time::Epoch::Milliseconds));
             };
 
             AddEntry(name + " average", entrySet.average);
             entrySet.average.retrievalFunction = [&profiler]() -> String
             {
-                return ToString(profiler.GetAverage().GetAs(Time::Epoch::Milliseconds));
+                return ToString(profiler->Find<Time::StopwatchStatistics>()->average.GetAs(Time::Epoch::Milliseconds));
             };
 
             AddEntry(name + " highest", entrySet.highest);
             entrySet.highest.retrievalFunction = [&profiler]() -> String
             {
-                return ToString(profiler.GetHighest().GetAs(Time::Epoch::Milliseconds));
+                return ToString(profiler->Find<Time::StopwatchStatistics>()->highest.GetAs(Time::Epoch::Milliseconds));
             };
         };
 
@@ -116,17 +129,6 @@ namespace Atmos::Debug
         AddEntry("View Origin Y", viewOriginY);
     }
 
-    void StatisticsCurator::InitializeImplementation()
-    {
-        statistics = Arca::GlobalIndex<Statistics>(Owner());
-
-        BundlePages();
-        BundleProfilers();
-
-        for (auto& loop : pageList)
-            loop->Initialize();
-    }
-
     void StatisticsCurator::BundlePages()
     {
         pageList.push_back(&profilerPage);
@@ -137,25 +139,26 @@ namespace Atmos::Debug
 
     void StatisticsCurator::BundleProfilers()
     {
-        profilerList.push_back(&statistics->profilers.input);
-        profilerList.push_back(&statistics->profilers.logic);
-        profilerList.push_back(&statistics->profilers.render);
-        profilerList.push_back(&statistics->profilers.frameTime);
-        profilerList.push_back(&statistics->profilers.idle);
-        profilerList.push_back(&statistics->profilers.misc1);
-        profilerList.push_back(&statistics->profilers.misc2);
-        profilerList.push_back(&statistics->profilers.misc3);
+        auto statisticsData = Data(statistics);
+        profilerList.push_back(&statisticsData->profilers.input);
+        profilerList.push_back(&statisticsData->profilers.logic);
+        profilerList.push_back(&statisticsData->profilers.render);
+        profilerList.push_back(&statisticsData->profilers.frameTime);
+        profilerList.push_back(&statisticsData->profilers.idle);
+        profilerList.push_back(&statisticsData->profilers.misc1);
+        profilerList.push_back(&statisticsData->profilers.misc2);
+        profilerList.push_back(&statisticsData->profilers.misc3);
     }
 
     void StatisticsCurator::ResetProfilerAverage()
     {
         for (auto& loop : profilerList)
-            loop->ResetAverage();
+            Owner().Do<Time::ResetAverage>(loop->ID());
     }
 
     void StatisticsCurator::ResetProfilerHighest()
     {
         for (auto& loop : profilerList)
-            loop->ResetHighest();
+            Owner().Do<Time::ResetHighest>(loop->ID());
     }
 }

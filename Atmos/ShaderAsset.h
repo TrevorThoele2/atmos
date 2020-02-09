@@ -1,64 +1,18 @@
 #pragma once
 
 #include "FileAsset.h"
-#include <Arca/ClosedTypedRelicAutomation.h>
+#include "ShaderAssetData.h"
 
 namespace Atmos::Asset
 {
-    class ShaderAssetData;
-
-    class ShaderAsset final : public Arca::ClosedTypedRelicAutomation<ShaderAsset>, public FileAsset
+    class ShaderAsset final : public FileAsset<ShaderAssetData, ShaderAsset>
     {
     public:
-        using DataT = ShaderAssetData;
-        using DataPtr = std::unique_ptr<DataT>;
-    public:
-        ShaderAsset();
-        ShaderAsset(const ShaderAsset& arg) = delete;
+        explicit ShaderAsset(Init init);
+        ShaderAsset(Init init, const Atmos::Name& name, DataPtr&& data);
         ShaderAsset(ShaderAsset&& arg) noexcept;
-        explicit ShaderAsset(const ::Inscription::BinaryTableData<ShaderAsset>& data);
 
-        [[nodiscard]] DataT* Data();
-        [[nodiscard]] const DataT* Data() const;
-        template<class RealDataT>
-        [[nodiscard]] RealDataT* DataAs();
-        template<class RealDataT>
-        [[nodiscard]] const RealDataT* DataAs() const;
-    public:
-        void Initialize(const File::Name& fileName, DataPtr&& data);
-    private:
-        DataPtr data;
-    };
-
-    template<class RealDataT>
-    RealDataT* ShaderAsset::DataAs()
-    {
-        return static_cast<RealDataT*>(data.get());
-    }
-
-    template<class RealDataT>
-    const RealDataT* ShaderAsset::DataAs() const
-    {
-        return static_cast<RealDataT*>(data.get());
-    }
-
-    class ShaderAssetData
-    {
-    public:
-        using PassCount = unsigned int;
-    public:
-        virtual ~ShaderAssetData() = 0;
-
-        [[nodiscard]] virtual std::unique_ptr<ShaderAssetData> Clone() const = 0;
-        
-        virtual void Reset() = 0;
-        virtual void Release() = 0;
-
-        virtual PassCount Begin() const = 0;
-        virtual void End() const = 0;
-
-        virtual void BeginNextPass(PassCount pass) const = 0;
-        virtual void EndPass() const = 0;
+        ShaderAsset& operator=(ShaderAsset&& arg) noexcept;
     };
 }
 
@@ -71,7 +25,7 @@ namespace Arca
         static inline const TypeName typeName = "ShaderAsset";
         static bool ShouldCreate(
             Reliquary& reliquary,
-            const ::Atmos::File::Name& fileName,
+            const ::Atmos::Name& name,
             ::Atmos::Asset::ShaderAsset::DataPtr&& data);
     };
 }
@@ -79,21 +33,10 @@ namespace Arca
 namespace Inscription
 {
     template<>
-    struct TableData<::Atmos::Asset::ShaderAsset, BinaryArchive> :
-        TableDataBase<::Atmos::Asset::ShaderAsset, BinaryArchive>
-    {
-        Base<::Atmos::Asset::FileAsset> base;
-    };
-
-    template<>
     class Scribe<::Atmos::Asset::ShaderAsset, BinaryArchive> final :
-        public ArcaTableScribe<::Atmos::Asset::ShaderAsset, BinaryArchive>
+        public ArcaCompositeScribe<::Atmos::Asset::ShaderAsset, BinaryArchive>
     {
-    public:
-        class Table final : public TableBase
-        {
-        public:
-            Table();
-        };
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
     };
 }

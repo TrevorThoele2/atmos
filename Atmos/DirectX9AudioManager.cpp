@@ -44,7 +44,9 @@ namespace Atmos::Audio
 
         void Loop(bool set) override
         {
-            (set) ? buffer.LoopCount = XAUDIO2_LOOP_INFINITE : buffer.LoopCount = 0;
+            buffer.LoopCount = set
+                ? XAUDIO2_LOOP_INFINITE
+                : 0;
             Resubmit();
         }
 
@@ -64,14 +66,17 @@ namespace Atmos::Audio
     class AudioAssetDataImplementation final : public Asset::AudioAssetData
     {
     public:
-        AudioAssetDataImplementation(DirectX9AudioManager& owner, XAUDIO2_BUFFER&& buffer, WAVEFORMATEX&& format)
-            : owner(&owner), buffer(buffer), waveFormat(format)
+        AudioAssetDataImplementation(
+            DirectX9AudioManager& owner,
+            std::shared_ptr<unsigned char>&& audioData,
+            const XAUDIO2_BUFFER& buffer,
+            const WAVEFORMATEX& format)
+            :
+            owner(&owner),
+            audioData(std::move(audioData)),
+            buffer(buffer),
+            waveFormat(format)
         {}
-
-        ~AudioAssetDataImplementation()
-        {
-            delete[] buffer.pAudioData;
-        }
 
         [[nodiscard]] std::unique_ptr<AudioAssetData> Clone() const override
         {
@@ -85,6 +90,7 @@ namespace Atmos::Audio
     private:
         DirectX9AudioManager* owner;
     private:
+        std::shared_ptr<unsigned char> audioData;
         XAUDIO2_BUFFER buffer;
         WAVEFORMATEX waveFormat;
     };
@@ -93,57 +99,60 @@ namespace Atmos::Audio
     {
         CoInitializeEx(nullptr, COINIT_MULTITHREADED);
         // Fill the engine pointer
-        XAudio2Create(&xaudio2Interface, 0, XAUDIO2_DEFAULT_PROCESSOR);
+        XAudio2Create(&xAudio2Interface, 0, XAUDIO2_DEFAULT_PROCESSOR);
         CreateMasteringVoice(&masteringVoice);
     }
 
     DirectX9AudioManager::~DirectX9AudioManager()
     {
-        xaudio2Interface->Release();
+        xAudio2Interface->Release();
     }
 
     void DirectX9AudioManager::CreateSourceVoice(IXAudio2SourceVoice** sourceVoice, const WAVEFORMATEX& waveFormat)
     {
-        xaudio2Interface->CreateSourceVoice(sourceVoice, &waveFormat);
+        xAudio2Interface->CreateSourceVoice(sourceVoice, &waveFormat);
     }
 
-    bool DirectX9AudioManager::SetMasterVolume(float set)
+    bool DirectX9AudioManager::SetMasterVolume(Volume set)
     {
         return SUCCEEDED(masteringVoice->SetVolume(set));
     }
 
     std::unique_ptr<Asset::AudioAssetData> DirectX9AudioManager::CreateAudioDataImpl(
-        ExtractedFile&& file, const File::Name& name)
+        const FormattedBuffer& file, const Name& name)
     {
-        const auto recovered = file.first.RecoverBytes<BYTE*>();
-        const auto rawBuffer = recovered.first;
-        const auto rawBufferSize = recovered.second;
+        auto audioData = std::make_shared<unsigned char>(file.buffer.size());
+        CopyBuffer(file.buffer.data(), audioData.get(), file.buffer.size(), 0);
 
         XAUDIO2_BUFFER buffer;
-        buffer.AudioBytes = rawBufferSize;
+        buffer.AudioBytes = file.buffer.size();
         buffer.Flags = 0;
         buffer.LoopBegin = 0;
         buffer.LoopCount = 0;
         buffer.LoopLength = 0;
-        buffer.pAudioData = rawBuffer;
+        buffer.pAudioData = audioData.get();
         buffer.pContext = nullptr;
         buffer.PlayBegin = 0;
         buffer.PlayLength = 0;
 
         WAVEFORMATEX waveFormat;
-        waveFormat.nChannels = file.second.channels;
-        waveFormat.nSamplesPerSec = file.second.samplesPerSec;
-        waveFormat.nAvgBytesPerSec = file.second.avgBytesPerSec;
+        waveFormat.nChannels = file.format.channels;
+        waveFormat.nSamplesPerSec = file.format.samplesPerSec;
+        waveFormat.nAvgBytesPerSec = file.format.avgBytesPerSec;
         waveFormat.cbSize = 0;
-        waveFormat.nBlockAlign = file.second.blockAlign;
-        waveFormat.wBitsPerSample = file.second.bitsPerSample;
-        waveFormat.wFormatTag = file.second.formatTag;
+        waveFormat.nBlockAlign = file.format.blockAlign;
+        waveFormat.wBitsPerSample = file.format.bitsPerSample;
+        waveFormat.wFormatTag = file.format.formatTag;
 
-        return std::make_unique<AudioAssetDataImplementation>(*this, std::move(buffer), std::move(waveFormat));
+        return std::make_unique<AudioAssetDataImplementation>(
+            *this,
+            std::move(audioData),
+            buffer,
+            waveFormat);
     }
 
     void DirectX9AudioManager::CreateMasteringVoice(IXAudio2MasteringVoice** sourceVoice)
     {
-        xaudio2Interface->CreateMasteringVoice(sourceVoice);
+        xAudio2Interface->CreateMasteringVoice(sourceVoice);
     }
 }

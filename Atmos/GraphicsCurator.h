@@ -3,13 +3,16 @@
 #include <Arca/Curator.h>
 
 #include "GraphicsManager.h"
+#include "ReconstructGraphics.h"
 
 namespace Atmos::Render
 {
     class GraphicsCurator final : public Arca::Curator
     {
-    protected:
-        void InitializeImplementation() override;
+    public:
+        explicit GraphicsCurator(Init init);
+    public:
+        void Handle(const ReconstructGraphics& command);
     private:
         Arca::ComputedIndex<GraphicsManager*> manager;
     };
@@ -22,6 +25,7 @@ namespace Arca
     {
         static const ObjectType objectType = ObjectType::Curator;
         static inline const TypeName typeName = "GraphicsCurator";
+        using HandledCommands = HandledCommands<Atmos::Render::ReconstructGraphics>;
     };
 }
 

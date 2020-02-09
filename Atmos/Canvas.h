@@ -1,10 +1,9 @@
 #pragma once
 
-#include <memory>
+#include <Arca/ClosedTypedRelic.h>
+#include "CanvasData.h"
 
-#include "ScreenPosition.h"
-#include "ScreenDimensions.h"
-#include "Color.h"
+#include <memory>
 
 namespace Atmos::Asset
 {
@@ -13,43 +12,20 @@ namespace Atmos::Asset
 
 namespace Atmos::Render
 {
-    class GraphicsManager;
-    
-    class Canvas
+    class Canvas : public Arca::ClosedTypedRelic<Canvas>
     {
     public:
-        using Position = ScreenPosition;
-        using Dimensions = ScreenDimensions;
-        using DimensionValue = Dimensions::Dimension;
+        using DataT = CanvasData;
+        using DataPtr = std::unique_ptr<DataT>;
     public:
-        class Data
-        {
-        public:
-            virtual ~Data() = 0;
-
-            [[nodiscard]] Canvas* Owner() const;
-
-            virtual void StartPainting() = 0;
-            virtual void StopPainting() = 0;
-            virtual void PaintPixel(const Position& position, const Color& color, DimensionValue height) = 0;
-            virtual void Clear(const Color& color) = 0;
-            virtual void Release() = 0;
-            virtual void Reset(DimensionValue width, DimensionValue height) = 0;
-        private:
-            Canvas* owner = nullptr;
-        private:
-            friend Canvas;
-        };
-
-        using DataPtr = std::unique_ptr<Data>;
-    public:
-        Canvas(DataPtr&& data, DimensionValue width, DimensionValue height);
+        Canvas(Init init, ScreenSize size, DataPtr&& data);
         Canvas(Canvas&& arg) noexcept;
+
         Canvas& operator=(Canvas&& arg) noexcept;
 
-        [[nodiscard]] Data* GetData() const;
+        [[nodiscard]] DataT* Data() const;
         template<class DataT>
-        [[nodiscard]] DataT* GetData() const;
+        [[nodiscard]] DataT* Data() const;
 
         // Must be called before starting to paint to it
         void StartPainting();
@@ -58,31 +34,43 @@ namespace Atmos::Render
         [[nodiscard]] bool IsPainting() const;
         
         // Will not work unless this is in manual mode
-        void PaintPixel(const Position& position, const Color& color);
+        void PaintPixel(const ScreenPosition& position, const Color& color, ScreenPosition::Value height);
 
         // This must be set as the texture for this to work
         void Clear(const Color& color);
 
-        [[nodiscard]] DimensionValue Width() const;
-        [[nodiscard]] DimensionValue Height() const;
+        [[nodiscard]] ScreenSize Size() const;
 
         void Release();
         void Reset();
     private:
         bool isPainting = false;
 
-        DimensionValue width;
-        DimensionValue height;
-        std::unique_ptr<Data> data;
-    private:
-        void SetData(DataPtr&& set);
-    private:
-        friend GraphicsManager;
+        ScreenSize size;
+        std::unique_ptr<DataT> data;
     };
 
     template<class DataT>
-    DataT* Canvas::GetData() const
+    DataT* Canvas::Data() const
     {
         return static_cast<DataT*>(data.get());
     }
+}
+
+namespace Arca
+{
+    template<>
+    struct Traits<Atmos::Render::Canvas>
+    {
+        static const ObjectType objectType = ObjectType::Relic;
+        static inline const TypeName typeName = "Canvas";
+    };
+}
+
+namespace Inscription
+{
+    template<>
+    class Scribe<Atmos::Render::Canvas, BinaryArchive> final :
+        public ArcaNullScribe<Atmos::Render::Canvas, BinaryArchive>
+    {};
 }

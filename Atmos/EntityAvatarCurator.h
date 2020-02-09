@@ -14,13 +14,14 @@ namespace Atmos::Entity
 {
     class AvatarCurator final : public Arca::Curator
     {
-    protected:
-        void InitializeImplementation() override;
-        void WorkImplementation(Stage& stage) override;
+    public:
+        explicit AvatarCurator(Init init);
+
+        void Work();
     private:
-        CurrentAvatar* currentAvatar = nullptr;
+        Arca::GlobalIndex<CurrentAvatar> currentAvatar;
     private:
-        Debug::Statistics* debugStatistics = nullptr;
+        Arca::GlobalIndex<Debug::Statistics> debugStatistics;
     };
 }
 

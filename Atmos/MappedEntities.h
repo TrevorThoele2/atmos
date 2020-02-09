@@ -1,11 +1,11 @@
 #pragma once
 
-#include <Arca/ClosedTypedRelicAutomation.h>
+#include <Arca/ClosedTypedRelic.h>
 #include "Entity.h"
 
 namespace Atmos::Entity
 {
-    class MappedEntities final : public Arca::ClosedTypedRelicAutomation<MappedEntities>
+    class MappedEntities final : public Arca::ClosedTypedRelic<MappedEntities>
     {
     public:
         [[nodiscard]] Entity* EntityWithName(const String& name);

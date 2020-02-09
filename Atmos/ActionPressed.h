@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Arca/SignalTraits.h>
+#include <Arca/Signal.h>
 
 #include "Action.h"
 
@@ -18,5 +18,6 @@ namespace Arca
     struct Traits<Atmos::Input::ActionPressed>
     {
         static const ObjectType objectType = ObjectType::Signal;
+        static inline const TypeName typeName = "InputActionPressed";
     };
 }

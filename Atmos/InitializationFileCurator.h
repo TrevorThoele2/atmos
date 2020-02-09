@@ -16,11 +16,11 @@ namespace Atmos::Initialization
     class FileCurator final : public Arca::Curator
     {
     public:
+        explicit FileCurator(Init init);
+
         void Save();
-    protected:
-        void InitializeImplementation() override;
     private:
-        Information* information = nullptr;
+        Arca::GlobalIndex<Information> information;
     private:
         FileSection graphics = FileSection("<GRAPHICS>");
         FileSection sound = FileSection("<SOUND>");

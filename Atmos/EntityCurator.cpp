@@ -9,26 +9,19 @@
 
 namespace Atmos::Entity
 {
-    void EntityCurator::InitializeImplementation()
+    EntityCurator::EntityCurator(Init init) :
+        Curator(init), mappedEntities(init.owner), debugStatistics(init.owner)
     {
-        Owner().ExecuteOn<Arca::Created>(
-            [](const Arca::Created& signal)
+        Owner().ExecuteOn<Arca::CreatedKnown<Entity>>(
+            [](const Arca::CreatedKnown<Entity>& signal)
             {
-                auto actualized = Arca::Actualize<Entity>(signal.handle);
-                if (!actualized)
-                    return;
+                
             });
 
-        Owner().ExecuteOn<Arca::Destroying>(
-            [](const Arca::Destroying& signal)
+        Owner().ExecuteOn<Arca::DestroyingKnown<Entity>>(
+            [](const Arca::DestroyingKnown<Entity>& signal)
             {
-                auto actualized = Arca::Actualize<Entity>(signal.handle);
-                if (!actualized)
-                    return;
+
             });
-
-        mappedEntities = Arca::GlobalIndex<MappedEntities>(Owner());
-
-        debugStatistics = Arca::GlobalIndex<Debug::Statistics>(Owner());
     }
 }

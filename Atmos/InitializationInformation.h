@@ -1,13 +1,13 @@
 #pragma once
 
-#include <Arca/ClosedTypedRelicAutomation.h>
+#include <Arca/ClosedTypedRelic.h>
 
 #include "InputID.h"
 #include "Volume.h"
 
 namespace Atmos::Initialization
 {
-    class Information final : public Arca::ClosedTypedRelicAutomation<Information>
+    class Information final : public Arca::ClosedTypedRelic<Information>
     {
     public:
         struct Graphics

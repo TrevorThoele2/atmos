@@ -11,12 +11,8 @@ namespace Atmos::Script
     class RunningScript::Data
     {
     public:
-        Source* source;
         asIScriptContext* context = nullptr;
     public:
-        explicit Data(Source& source) : source(&source)
-        {}
-
         ~Data()
         {
             if (context)
@@ -32,9 +28,23 @@ namespace Atmos::Script
         }
     };
 
-    RunningScript::RunningScript() = default;
+    RunningScript::RunningScript(Init init) : ClosedTypedRelic(init)
+    {}
+
+    RunningScript::RunningScript(
+        Init init,
+        Arca::RelicIndex<Source> source,
+        const Name& executeName,
+        const Parameters& parameters,
+        const Persistence& persistence)
+        :
+        ClosedTypedRelic(init),
+        source(source), executeName(executeName), parameters(parameters), persistence(persistence),
+        data(std::make_unique<Data>())
+    {}
 
     RunningScript::RunningScript(const RunningScript& arg) :
+        ClosedTypedRelic(arg),
         source(arg.source),
         data(std::make_unique<Data>(*arg.data))
     {}
@@ -78,11 +88,5 @@ namespace Atmos::Script
     asIScriptContext* RunningScript::UnderlyingContext()
     {
         return data->context;
-    }
-
-    void RunningScript::Initialize(Source& source)
-    {
-        this->source = &source;
-        data = std::make_unique<Data>(source);
     }
 }

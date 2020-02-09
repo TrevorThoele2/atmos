@@ -4,12 +4,7 @@
 #include "AxisAlignedBox2D.h"
 
 #include "ScreenPosition.h"
-#include "ScreenDimensions.h"
-
-namespace Arca
-{
-    class Reliquary;
-}
+#include "ScreenSize.h"
 
 namespace Atmos::Window
 {
@@ -17,11 +12,11 @@ namespace Atmos::Window
     {
     public:
         using Position = ScreenPosition;
-        using Size = ScreenDimensions;
+        using Size = ScreenSize;
     public:
         virtual ~WindowBase() = 0;
 
-        void Setup(Arca::Reliquary& reliquary);
+        void Setup();
 
         virtual void Show() = 0;
         virtual void Exit() = 0;
@@ -47,16 +42,11 @@ namespace Atmos::Window
         virtual void OnSetWindowDimensions() = 0;
         virtual Position GetDefaultWindowPosition() = 0;
         virtual void OnSetFullscreen() = 0;
-    protected:
-        [[nodiscard]] Arca::Reliquary& Reliquary();
-        [[nodiscard]] const Arca::Reliquary& Reliquary() const;
     private:
         Size clientSize;
         Size windowSize;
         Position startPosition;
     private:
         bool isFullscreen = false;
-    private:
-        Arca::Reliquary* reliquary = nullptr;
     };
 }

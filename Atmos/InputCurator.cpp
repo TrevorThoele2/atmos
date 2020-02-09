@@ -2,15 +2,11 @@
 
 namespace Atmos::Input
 {
-    void Curator::InitializeImplementation()
-    {
-        manager = Arca::ComputedIndex<Manager*>(Owner());
+    Curator::Curator(Init init) :
+        Arca::Curator(init), manager(init.owner), mappedInputs(init.owner), mappedActions(init.owner)
+    {}
 
-        mappedInputs = Arca::GlobalIndex<MappedInputs>(Owner());
-        mappedActions = Arca::GlobalIndex<MappedActions>(Owner());
-    }
-
-    void Curator::WorkImplementation(Stage& stage)
+    void Curator::Work()
     {
         
     }

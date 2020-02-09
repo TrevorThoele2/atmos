@@ -8,7 +8,7 @@ namespace Atmos::Entity
 {
     struct RotateEntity
     {
-        Entity* entity = nullptr;
+        Arca::RelicIndex<Entity> entity;
         Direction toFace;
     };
 }
@@ -18,7 +18,7 @@ namespace Arca
     template<>
     struct Traits<Atmos::Entity::RotateEntity>
     {
-        static const ObjectType objectType = ObjectType::Signal;
+        static const ObjectType objectType = ObjectType::Command;
         static inline const TypeName typeName = "RotateEntity";
     };
 }

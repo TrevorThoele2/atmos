@@ -1,65 +1,113 @@
 #pragma once
 
-#include <memory>
-#include "ScreenDimensions.h"
+#include <Arca/ClosedTypedRelic.h>
+#include "SurfaceCore.h"
+
+#include "Color.h"
 
 namespace Atmos::Render
 {
-    class GraphicsManager;
+    struct MaterialRender;
+    struct CanvasRender;
+    struct Line;
 
-    class Surface
+    template<class Derived>
+    class Surface : public Arca::ClosedTypedRelic<Derived>
     {
+    private:
+        using BaseT = Arca::ClosedTypedRelic<Derived>;
+    protected:
+        using Init = typename BaseT::Init;
     public:
-        class Data
-        {
-        public:
-            virtual ~Data() = 0;
-            [[nodiscard]] Surface* Owner() const;
-            virtual void SetAsRenderTarget() = 0;
-            virtual void Present() = 0;
-            virtual void Reset() = 0;
-            virtual void Release() = 0;
-            virtual ScreenDimensions Size() = 0;
-        private:
-            Surface* owner = nullptr;
-        private:
-            friend Surface;
-        };
+        void StageRender(const MaterialRender& materialRender);
+        void StageRender(const CanvasRender& canvasRender);
+        void StageRender(const Line& line);
+        void RenderStaged();
 
-        using DataPtr = std::unique_ptr<Data>;
-    public:
-        explicit Surface(DataPtr&& data);
-        Surface(Surface&& arg) noexcept;
+        void FullColor(const Color& color = Color());
 
-        Surface& operator=(Surface&& arg) noexcept;
-
-        [[nodiscard]] Data* GetData() const;
-        template<class DataT>
-        [[nodiscard]] DataT* GetData() const;
-
-        void Present();
+        [[nodiscard]] ScreenSize Size() const;
 
         void Reset();
         void Release();
+    protected:
+        using DataT = SurfaceData;
+        using DataPtr = std::unique_ptr<DataT>;
+    protected:
+        Surface(Init init, DataPtr&& data);
 
-        void FitToWindow();
-
-        [[nodiscard]] ScreenDimensions Size() const;
+        [[nodiscard]] DataT* Data() const;
+        template<class DataT>
+        [[nodiscard]] DataT* Data() const;
     private:
-        DataPtr data;
-        ScreenDimensions size;
-    private:
-        void SetData(DataPtr&& set);
-
-        void SetupDimensions();
-        void SetAsRenderTargetImpl();
-    private:
-        friend GraphicsManager;
+        using Core = SurfaceCore;
+        Arca::ShardIndex<Core> core;
     };
 
-    template<class DataT>
-    DataT* Surface::GetData() const
+    template<class Derived>
+    void Surface<Derived>::StageRender(const MaterialRender& materialRender)
     {
-        return static_cast<DataT*>(data.get());
+        Data()->StageRender(materialRender);
+    }
+
+    template<class Derived>
+    void Surface<Derived>::StageRender(const CanvasRender& canvasRender)
+    {
+        Data()->StageRender(canvasRender);
+    }
+
+    template<class Derived>
+    void Surface<Derived>::StageRender(const Line& line)
+    {
+        Data()->StageRender(line);
+    }
+
+    template<class Derived>
+    void Surface<Derived>::RenderStaged()
+    {
+
+    }
+
+    template<class Derived>
+    void Surface<Derived>::FullColor(const Color& color)
+    {
+        Data()->FullColor(color);
+    }
+
+    template<class Derived>
+    ScreenSize Surface<Derived>::Size() const
+    {
+        return Data()->Size();
+    }
+
+    template<class Derived>
+    void Surface<Derived>::Reset()
+    {
+        Data()->Reset();
+    }
+
+    template<class Derived>
+    void Surface<Derived>::Release()
+    {
+        Data()->Release();
+    }
+
+    template<class Derived>
+    Surface<Derived>::Surface(Init init, DataPtr&& data) :
+        Arca::ClosedTypedRelic<Derived>(init),
+        core(init.owner.template Do<Arca::Create<Core>>(init.id, std::move(data)))
+    {}
+
+    template<class Derived>
+    auto Surface<Derived>::Data() const -> DataT*
+    {
+        return core->data.get();
+    }
+
+    template<class Derived>
+    template<class DataT>
+    DataT* Surface<Derived>::Data() const
+    {
+        return static_cast<DataT*>(core->data.get());
     }
 }

@@ -29,12 +29,6 @@ namespace Atmos::World
         if (currentField)
             currentField->Reliquary().Work();
 
-        {
-            debugStatistics->game.fieldID = currentField ?
-                currentField->ID() :
-                std::optional<FieldID>{};
-        }
-
         LockIn();
     }
 

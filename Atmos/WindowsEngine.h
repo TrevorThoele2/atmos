@@ -12,7 +12,7 @@ namespace Atmos
     protected:
         void SetupImplementation() override;
 
-        InitializationProperties CreateInitializationProperties(Arca::Reliquary& reliquary) override;
+        InitializationProperties CreateInitializationProperties() override;
 
         void DoExit() override;
     private:

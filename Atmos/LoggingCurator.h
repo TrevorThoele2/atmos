@@ -1,7 +1,6 @@
 #pragma once
 
 #include <Arca/Curator.h>
-#include <Arca/SignalBatch.h>
 
 #include "Log.h"
 #include "LoggingSeverity.h"
@@ -14,21 +13,9 @@ namespace Atmos::Logging
     class Curator final : public Arca::Curator
     {
     public:
-        String CurrentTimeStamp();
-        void ClearFile();
-    protected:
-        void InitializeImplementation() override;
-    private:
-        Arca::Batch<Log> logs;
-
-        void DoLog
-        (
-            const String& message,
-            Severity severity,
-            std::optional<Details> details = {}
-        );
-        void OnExit();
-        [[nodiscard]] static File::Path OutputFilePath();
+        explicit Curator(Init init);
+    public:
+        void Handle(const Log& log);
     private:
         INSCRIPTION_ACCESS;
     };
@@ -41,6 +28,7 @@ namespace Arca
     {
         static const ObjectType objectType = ObjectType::Curator;
         static inline const TypeName typeName = "LoggingCurator";
+        using HandledCommands = Arca::HandledCommands<Atmos::Logging::Log>;
     };
 }
 

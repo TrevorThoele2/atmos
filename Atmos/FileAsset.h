@@ -4,42 +4,95 @@
 
 namespace Atmos::Asset
 {
-    class FileAsset : public Asset
+    template<class AssetData, class Derived>
+    class FileAsset : public Asset<Derived>
     {
+    private:
+        using BaseT = Asset<Derived>;
     public:
-        [[nodiscard]] File::Name FileName() const;
+        using FileDataT = AssetData;
+        using DataPtr = std::unique_ptr<FileDataT>;
     protected:
-        FileAsset() = default;
-        FileAsset(FileAsset&& arg) noexcept;
-        explicit FileAsset(const ::Inscription::BinaryTableData<FileAsset>& data);
+        using Init = typename BaseT::Init;
+    public:
+        explicit FileAsset(Init init);
+        FileAsset(Init init, const Atmos::Name& name, DataPtr&& data);
+        FileAsset(const FileAsset& arg) = delete;
+        FileAsset(FileAsset&& arg) noexcept = default;
 
-        void SetFileName(const File::Name& fileName);
+        FileAsset& operator=(FileAsset&& arg) noexcept;
+
+        [[nodiscard]] FileDataT* FileData();
+        [[nodiscard]] const FileDataT* FileData() const;
+        template<class RealFileDataT>
+        [[nodiscard]] RealFileDataT* FileDataAs();
+        template<class RealFileDataT>
+        [[nodiscard]] const RealFileDataT* FileDataAs() const;
     private:
-        File::Name fileName;
-    private:
-        INSCRIPTION_ACCESS;
+        DataPtr data;
     };
+
+    template<class AssetData, class Derived>
+    FileAsset<AssetData, Derived>::FileAsset(Init init) :
+        Asset(init)
+    {}
+
+    template<class AssetData, class Derived>
+    FileAsset<AssetData, Derived>::FileAsset(Init init, const Atmos::Name& name, DataPtr&& data) :
+        Asset(init, name),
+        data(std::move(data))
+    {}
+
+    template<class AssetData, class Derived>
+    FileAsset<AssetData, Derived>& FileAsset<AssetData, Derived>::operator=(FileAsset&& arg) noexcept
+    {
+        Asset<Derived>::operator=(std::move(arg));
+        data = std::move(arg.data);
+        return *this;
+    }
+
+    template<class AssetData, class Derived>
+    auto FileAsset<AssetData, Derived>::FileData() -> FileDataT*
+    {
+        return data.get();
+    }
+
+    template<class AssetData, class Derived>
+    auto FileAsset<AssetData, Derived>::FileData() const -> const FileDataT*
+    {
+        return data.get();
+    }
+
+    template<class AssetData, class Derived>
+    template<class RealFileDataT>
+    RealFileDataT* FileAsset<AssetData, Derived>::FileDataAs()
+    {
+        return static_cast<RealFileDataT*>(data.get());
+    }
+
+    template<class AssetData, class Derived>
+    template<class RealFileDataT>
+    const RealFileDataT* FileAsset<AssetData, Derived>::FileDataAs() const
+    {
+        return static_cast<RealFileDataT*>(data.get());
+    }
 }
 
 namespace Inscription
 {
-    template<>
-    struct TableData<::Atmos::Asset::FileAsset, BinaryArchive> :
-        TableDataBase<::Atmos::Asset::FileAsset, BinaryArchive>
+    template<class AssetData, class Derived>
+    class Scribe<::Atmos::Asset::FileAsset<AssetData, Derived>, BinaryArchive> final :
+        public ArcaCompositeScribe<::Atmos::Asset::FileAsset<AssetData, Derived>, BinaryArchive>
     {
-        Base<::Atmos::Asset::Asset> base;
-        ::Atmos::File::Name fileName;
-    };
-
-    template<>
-    class Scribe<::Atmos::Asset::FileAsset, BinaryArchive> final :
-        public TableScribe<::Atmos::Asset::FileAsset, BinaryArchive>
-    {
+    private:
+        using BaseT = ArcaCompositeScribe<::Atmos::Asset::FileAsset<AssetData, Derived>, BinaryArchive>;
     public:
-        class Table final : public TableBase
-        {
-        public:
-            Table();
-        };
+        using ObjectT = typename BaseT::ObjectT;
+        using ArchiveT = typename BaseT::ArchiveT;
+
+        using BaseT::Scriven;
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override
+        {}
     };
 }

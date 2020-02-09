@@ -1,35 +1,35 @@
 #pragma once
 
 #include "Asset.h"
-#include <Arca/ClosedTypedRelicAutomation.h>
 
 #include "ImageAsset.h"
 #include "ShaderAsset.h"
 
 namespace Atmos::Asset
 {
-    class MaterialAsset final : public Arca::ClosedTypedRelicAutomation<MaterialAsset>, public Asset
+    class MaterialAsset final : public Asset<MaterialAsset>
     {
     public:
         using GridDimension = int;
+    public:
+        explicit MaterialAsset(Init init);
+        MaterialAsset(Init init, const Atmos::Name& name, GridDimension columns, GridDimension rows);
+
+        MaterialAsset& operator=(MaterialAsset&& arg) noexcept;
+
         [[nodiscard]] GridDimension Columns() const;
         [[nodiscard]] GridDimension Rows() const;
-    public:
-        [[nodiscard]] ImageAsset* Image() const;
-        [[nodiscard]] ShaderAsset* Shader() const;
-    public:
-        MaterialAsset();
-        MaterialAsset(const MaterialAsset& arg) = delete;
-        MaterialAsset(MaterialAsset&& arg) noexcept = default;
-        explicit MaterialAsset(const ::Inscription::BinaryTableData<MaterialAsset>& data);
-    public:
-        void Initialize(const Atmos::Name& name);
+
+        [[nodiscard]] Arca::RelicIndex<ImageAsset> Image() const;
+        [[nodiscard]] Arca::RelicIndex<ShaderAsset> Shader() const;
     private:
         GridDimension columns = 0;
         GridDimension rows = 0;
 
-        ImageAsset* image = nullptr;
-        ShaderAsset* shader = nullptr;
+        Arca::RelicIndex<ImageAsset> image;
+        Arca::RelicIndex<ShaderAsset> shader;
+    private:
+        INSCRIPTION_ACCESS;
     };
 }
 
@@ -47,21 +47,10 @@ namespace Arca
 namespace Inscription
 {
     template<>
-    struct TableData<::Atmos::Asset::MaterialAsset, BinaryArchive> :
-        TableDataBase<::Atmos::Asset::MaterialAsset, BinaryArchive>
-    {
-        Base<::Atmos::Asset::Asset> base;
-    };
-
-    template<>
     class Scribe<::Atmos::Asset::MaterialAsset, BinaryArchive> final :
-        public ArcaTableScribe<::Atmos::Asset::MaterialAsset, BinaryArchive>
+        public ArcaCompositeScribe<::Atmos::Asset::MaterialAsset, BinaryArchive>
     {
-    public:
-        class Table final : public TableBase
-        {
-        public:
-            Table();
-        };
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
     };
 }

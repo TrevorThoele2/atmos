@@ -5,9 +5,8 @@
 
 namespace Atmos::Render
 {
-    class Line
+    struct Line
     {
-    public:
         Position2D from;
         Position2D to;
 

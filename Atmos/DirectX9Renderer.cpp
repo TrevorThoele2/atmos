@@ -1,281 +1,154 @@
 #include "DirectX9Renderer.h"
 
 #include "DirectX9GraphicsManager.h"
-#include "DirectX9Data.h"
+#include "DirectX9ImageAssetData.h"
+#include "DirectX9ShaderAssetData.h"
+#include "DirectX9CanvasData.h"
+#include "DirectX9SurfaceData.h"
 #include "DirectX9Utilities.h"
 
 #include "Camera.h"
 #include "FileManagerProvider.h"
 #include "MathUtility.h"
 
+#include "SimpleFile.h"
+
 namespace Atmos::Render::DirectX9
 {
-    Renderer::Renderer(Arca::Reliquary& reliquary) : reliquary(&reliquary)
+    Renderer::Renderer(GraphicsManager& owner) : owner(owner)
     {}
 
     Renderer::~Renderer()
     {
         vertexBuffer->Release();
         indexBuffer->Release();
-        vertexDecl->Release();
+        vertexDeclaration->Release();
 
         lineInterface->Release();
     }
 
-    void Renderer::Initialize(GraphicsManager& handler, LPDIRECT3DDEVICE9 device)
+    void Renderer::Initialize(LPDIRECT3DDEVICE9 device, Arca::Reliquary& reliquary)
     {
         this->device = device;
         InitializeBuffers();
 
         auto texturedSpritePath = File::manager->ExePath() + "Shaders\\TexturedSprite.fx";
 
-        auto shaderData = handler.CreateShaderData(texturedSpritePath);
-        defaultTexturedImageViewShader = reliquary->Create<Asset::ShaderAsset>(
-            texturedSpritePath,
+        SimpleInFile inFile(texturedSpritePath);
+        const auto texturedSpriteBuffer = inFile.ReadBuffer();
+
+        auto shaderData = owner.CreateShaderData(texturedSpriteBuffer, "TexturedSprite");
+        defaultTexturedImageViewShader = reliquary.Do<Arca::Create<Asset::ShaderAsset>>(
+            "TexturedSprite",
             std::move(shaderData));
 
         D3DXCreateLine(device, &lineInterface);
+
+        device->GetRenderTarget(0, &mainSurface);
     }
 
-    void Renderer::StartObjects(ObjectsSize size)
+    void Renderer::StageRender(const MaterialRender& materialRender)
     {
-        if (size != 0)
-            objects.reserve(size);
+        if (!materialRender.material)
+            return;
+
+        const auto material = materialRender.material;
+        const auto image = material->Image();
+        const auto materialSlice = materialRender.materialSlice;
+        const auto size = materialRender.size;
+        const auto position = materialRender.position;
+
+        StageRender
+        (
+            image->FileDataAs<ImageAssetDataImplementation>()->Texture(),
+            materialRender.patchShader ? materialRender.patchShader : &*material->Shader(),
+            position.x,
+            position.y,
+            materialRender.position.z,
+            materialSlice,
+            materialSlice.Size(),
+            materialSlice.Center(),
+            Scalers2D{ size.width, size.height },
+            Angle(),
+            materialRender.color
+        );
     }
 
-    void Renderer::StopObjects()
+    void Renderer::StageRender(const CanvasRender& canvasRender)
     {
-        objects.clear();
+        const auto position = canvasRender.position;
+        const auto size = canvasRender.size;
+
+        StageRender
+        (
+            canvasRender.canvas.Data<CanvasDataImplementation>()->Texture(),
+            DefaultTexturedImageViewShader(),
+            position.x,
+            position.y,
+            position.z,
+            AxisAlignedBox2D{ 0.0f, 0.0f, 1.0f, 1.0f },
+            Size2D{ size.width, size.height },
+            Position2D{ size.width / 2, size.height / 2 },
+            Scalers2D{ 1.0f, 1.0f },
+            Angle(),
+            Color(255, 255, 255, 255)
+        );
     }
 
-    void Renderer::StartLines()
+    void Renderer::StageRender(const Line& line)
     {
-        lineInterface->Begin();
+        StageRender(line.from, line.to, line.width, line.color);
     }
 
-    void Renderer::StopLines()
-    {
-        lineInterface->End();
-    }
-
-    void Renderer::Flush(const D3DXMATRIX& projection)
+    void Renderer::RenderStaged(const SurfaceData& surface)
     {
         if (objects.empty())
             return;
 
-        std::sort(
-            objects.begin(),
-            objects.end(),
-            [](const Object3D& left, const Object3D& right)
-            {
-                const auto leftZ = left.z;
-                const auto rightZ = right.z;
-                if (leftZ == rightZ)
-                {
-                    const auto leftTex = left.tex;
-                    const auto rightTex = right.tex;
+        LPDIRECT3DSURFACE9 previousRenderSurface;
+        device->GetRenderTarget(0, &previousRenderSurface);
+        device->SetRenderTarget(0, dynamic_cast<const SurfaceDataImplementation&>(surface).BackBuffer());
 
-                    return leftTex == rightTex
-                        ? left.shader < right.shader
-                        : leftTex < rightTex;
-                }
-                else
-                    return leftZ < rightZ;
-            });
-
-        auto camera = Arca::GlobalIndex<Camera>(*reliquary);
-
-        device->SetVertexDeclaration(vertexDecl);
-        device->SetStreamSource(0, vertexBuffer, 0, sizeof(Vertex));
-        device->SetIndices(indexBuffer);
-
-        LPDIRECT3DTEXTURE9 focusedTex = nullptr;
-        Asset::ShaderAsset* focusedShader;
-        const ShaderAssetDataImplementation* focusedShaderImpl = nullptr;
-
-        const auto setTexture = [&focusedTex, &focusedShaderImpl](LPDIRECT3DTEXTURE9 set)
         {
-            focusedTex = set;
-            if (focusedTex && focusedShaderImpl)
-                focusedShaderImpl->effect->SetTexture("g_Texture", focusedTex);
-        };
+            D3DXMATRIX projection;
 
-        const auto setShader =
-            [&focusedTex, &focusedShader, &focusedShaderImpl, &camera, &projection](Asset::ShaderAsset* set)
-        {
-            focusedShader = set;
-            focusedShaderImpl = focusedShader->DataAs<ShaderAssetDataImplementation>();
-            focusedShaderImpl->effect->SetMatrix("g_Projection", &projection);
+            const auto size(surface.Size());
+            D3DXMatrixOrthoOffCenterLH
+            (
+                &projection,
+                0,
+                static_cast<FLOAT>(size.width),
+                static_cast<FLOAT>(size.height),
+                0,
+                0.0f,
+                1.0f
+            );
 
-            const auto cameraSize = camera->Size();
-            FLOAT screenSize[2] =
-            {
-                static_cast<FLOAT>(cameraSize.width),
-                static_cast<FLOAT>(cameraSize.height)
-            };
-            focusedShaderImpl->effect->SetFloatArray("g_ScreenSize", screenSize, 2);
-
-            if (focusedTex && focusedShaderImpl)
-                focusedShaderImpl->effect->SetTexture("g_Texture", focusedTex);
-        };
-
-        setShader(objects.begin()->shader);
-        setTexture(objects.begin()->tex);
-
-        void* vertexData = nullptr;
-        void* indexData = nullptr;
-        vertexBuffer->Lock(0, 0, &vertexData, D3DLOCK_DISCARD);
-        indexBuffer->Lock(0, 0, &indexData, D3DLOCK_DISCARD);
-
-        BufferSize vertexCount = 0;
-        BufferSize indexCount = 0;
-        BufferSize primitiveCount = 0;
-
-        const auto drawPrimitives =
-            [this, &focusedShaderImpl, &vertexCount, &primitiveCount, &vertexData, &indexData, &indexCount]
-        (
-            bool endOfDraw)
-        {
-            vertexBuffer->Unlock();
-            indexBuffer->Unlock();
-
-            const auto passCount = focusedShaderImpl->Begin();
-            Asset::ShaderAssetData::PassCount passCountCurrent = 0;
-
-            do
-            {
-                focusedShaderImpl->BeginNextPass(passCountCurrent);
-                ++passCountCurrent;
-
-                device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, vertexCount, 0, primitiveCount);
-
-                focusedShaderImpl->EndPass();
-            } while (passCountCurrent < passCount);
-
-            focusedShaderImpl->End();
-
-            if (!endOfDraw)
-            {
-                vertexBuffer->Lock(0, 0, &vertexData, D3DLOCK_DISCARD);
-                indexBuffer->Lock(0, 0, &indexData, D3DLOCK_DISCARD);
-                vertexCount = 0;
-                indexCount = 0;
-                primitiveCount = 0;
-            }
-        };
-
-        for (auto& object : objects)
-        {
-            const auto loopVerticesSize = object.vertices.size();
-            const auto loopIndicesSize = object.indices.size();
-
-            const auto loopTexture = object.tex;
-            const auto loopShader = object.shader;
-
-            // Check if the sprint is done
-            if (vertexCount + loopVerticesSize >= maxVertexSprint || indexCount + loopIndicesSize >= maxIndexSprint)
-                drawPrimitives(false);
-
-            // Check if the texture AND shader is different
-            if (focusedTex != loopTexture && focusedShader != loopShader)
-            {
-                if (vertexCount > 0)
-                    drawPrimitives(false);
-
-                setTexture(loopTexture);
-                setShader(loopShader);
-            }
-            // Check if the texture is different
-            else if (focusedTex != loopTexture)
-            {
-                if (vertexCount > 0)
-                    drawPrimitives(false);
-
-                setTexture(loopTexture);
-            }
-            // Check if the shader is different
-            else if (focusedShader != loopShader)
-            {
-                if (vertexCount > 0)
-                    drawPrimitives(false);
-
-                setTexture(focusedTex);
-                setShader(loopShader);
-            }
-
-            // Vertices
-            memcpy(
-                &reinterpret_cast<Vertex*>(vertexData)[vertexCount],
-                object.vertices.data(),
-                loopVerticesSize * sizeof(Vertex));
-
-            // Indices
-            for (size_t indexLoop = 0; indexLoop != loopIndicesSize; ++indexLoop)
-                object.indices[indexLoop] = vertexCount + object.indices[indexLoop];
-            memcpy(
-                &reinterpret_cast<Index*>(indexData)[indexCount],
-                object.indices.data(),
-                loopIndicesSize * sizeof(Index));
-
-            vertexCount += static_cast<BufferSize>(loopVerticesSize);
-            indexCount += static_cast<BufferSize>(loopIndicesSize);
-            primitiveCount += object.primCount;
+            Pipeline pipeline(
+                owner,
+                device,
+                vertexBuffer,
+                indexBuffer,
+                vertexDeclaration,
+                lineInterface,
+                projection,
+                surface.Size());
+            pipeline.Flush(objects);
         }
 
-        vertexBuffer->Unlock();
-        indexBuffer->Unlock();
+        device->SetRenderTarget(0, previousRenderSurface);
 
-        objects.clear();
-        if (vertexCount == 0)
-            return;
-
-        drawPrimitives(true);
-    }
-
-    void Renderer::Draw
-    (
-        LPDIRECT3DTEXTURE9 tex,
-        Asset::ShaderAsset* shader,
-        float X,
-        float Y,
-        float Z,
-        const AxisAlignedBox2D& imageBounds,
-        const Size2D& size,
-        const Position2D& center,
-        const Scalers2D& scalers,
-        const Angle& rotation,
-        const Color& color
-    ) {
-        objects.emplace_back(tex, shader, X, Y, Z, imageBounds, size, center, scalers, rotation, color);
-    }
-
-    void Renderer::Draw
-    (
-        const Position2D& from,
-        const Position2D& to,
-        float width,
-        const Color& color
-    ) {
-        if (width != lineInterface->GetWidth())
-        {
-            StopLines();
-            lineInterface->SetWidth(width);
-            StartLines();
-        }
-
-        D3DXVECTOR2 points[] =
-        {
-            D3DXVECTOR2(from.x, from.y),
-            D3DXVECTOR2(to.x, to.y)
-        };
-        lineInterface->Draw(points, 2, ColorToD3D(color));
+        LogIfError(
+            device->Present(nullptr, nullptr, nullptr, nullptr),
+            "The frame is not presentable.",
+            Logging::Severity::SevereError);
     }
 
     void Renderer::OnLostDevice()
     {
         vertexBuffer->Release();
         indexBuffer->Release();
-        defaultTexturedImageViewShader->DataAs<ShaderAssetDataImplementation>()->effect->OnLostDevice();
+        defaultTexturedImageViewShader->FileDataAs<ShaderAssetDataImplementation>()->Effect()->OnLostDevice();
 
         LogIfError(
             lineInterface->OnLostDevice(),
@@ -286,7 +159,7 @@ namespace Atmos::Render::DirectX9
     void Renderer::OnResetDevice()
     {
         InitializeBuffers();
-        defaultTexturedImageViewShader->DataAs<ShaderAssetDataImplementation>()->effect->OnResetDevice();
+        defaultTexturedImageViewShader->FileDataAs<ShaderAssetDataImplementation>()->Effect()->OnResetDevice();
 
         LogIfError(
             lineInterface->OnResetDevice(),
@@ -294,23 +167,19 @@ namespace Atmos::Render::DirectX9
             Logging::Severity::SevereError);
     }
 
-    Asset::ShaderAsset* Renderer::DefaultTexturedImageViewShader()
+    Arca::RelicIndex<Asset::ShaderAsset> Renderer::DefaultTexturedImageViewShader()
     {
         return defaultTexturedImageViewShader;
     }
 
-    Renderer::Vertex::Vertex() :
-        position(0, 0), color(0), u(0.0f), v(0.0f)
+    Renderer::Vertex::Vertex(const D3DXVECTOR2& position, D3DCOLOR color, FLOAT u, FLOAT v) :
+        position(position), color(color), u(u), v(v)
     {}
 
-    Renderer::Vertex::Vertex(D3DXVECTOR2&& position, D3DCOLOR color, FLOAT u, FLOAT v) :
-        position(position), center(0.0f, 0.0f), color(color), u(u), v(v)
-    {}
-
-    Renderer::Object3D::Object3D
+    Renderer::StagedObject::StagedObject
     (
         LPDIRECT3DTEXTURE9 tex,
-        Asset::ShaderAsset* shader,
+        const Asset::ShaderAsset* shader,
         float X,
         float Y,
         float Z,
@@ -359,13 +228,7 @@ namespace Atmos::Render::DirectX9
         SetupQuad(X, Y, center, scalers, rotation.As<Radians>());
     }
 
-    Renderer::Object3D::Object3D(Object3D&& arg) :
-        vertices(std::move(arg.vertices)), indices(std::move(arg.indices)), primCount(arg.primCount),
-        z(arg.z), tex(arg.tex), shader(arg.shader)
-    {}
-
-    Renderer::Object3D& Renderer::Object3D::operator=(
-        Object3D&& arg)
+    Renderer::StagedObject& Renderer::StagedObject::operator=(StagedObject&& arg) noexcept
     {
         vertices = std::move(arg.vertices);
         indices = std::move(arg.indices);
@@ -376,7 +239,7 @@ namespace Atmos::Render::DirectX9
         return *this;
     }
 
-    void Renderer::Object3D::SetupQuad
+    void Renderer::StagedObject::SetupQuad
     (
         float X,
         float Y,
@@ -427,7 +290,7 @@ namespace Atmos::Render::DirectX9
         primCount = 2;
     }
 
-    void Renderer::Object3D::SetupRegularPolygon
+    void Renderer::StagedObject::SetupRegularPolygon
     (
         float radius,
         unsigned int polyCount,
@@ -487,7 +350,7 @@ namespace Atmos::Render::DirectX9
         primCount = polyCount;
     }
 
-    void Renderer::Object3D::SetupVertexCommon
+    void Renderer::StagedObject::SetupVertexCommon
     (
         Vertex& vertex,
         const D3DXMATRIX& matrix,
@@ -499,7 +362,7 @@ namespace Atmos::Render::DirectX9
         vertex.center = center;
     }
 
-    void Renderer::Object3D::SetupVertexCommon
+    void Renderer::StagedObject::SetupVertexCommon
     (
         Vertex& vertex,
         const D3DXMATRIX& matrix,
@@ -532,7 +395,7 @@ namespace Atmos::Render::DirectX9
             nullptr
         );
 
-        D3DVERTEXELEMENT9 vElements[] =
+        D3DVERTEXELEMENT9 vertexElements[] =
         {
             { 0, 0, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0 },
             { 0, 8, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 1 },
@@ -541,15 +404,269 @@ namespace Atmos::Render::DirectX9
             D3DDECL_END()
         };
 
-        device->CreateVertexDeclaration(vElements, &vertexDecl);
+        device->CreateVertexDeclaration(vertexElements, &vertexDeclaration);
     }
 
-    void Renderer::LogIfError(
-        HRESULT hr,
-        const String& message,
-        Logging::Severity severity,
-        const std::optional<Logging::Details>& details) const
+    void Renderer::StageRender
+    (
+        LPDIRECT3DTEXTURE9 tex,
+        const Asset::ShaderAsset* shader,
+        float X,
+        float Y,
+        float Z,
+        const AxisAlignedBox2D& imageBounds,
+        const Size2D& size,
+        const Position2D& center,
+        const Scalers2D& scalers,
+        const Angle& rotation,
+        const Color& color
+    ) {
+        objects.emplace_back(tex, shader, X, Y, Z, imageBounds, size, center, scalers, rotation, color);
+    }
+
+    void Renderer::StageRender
+    (
+        const Position2D& from,
+        const Position2D& to,
+        float width,
+        const Color& color
+    ) {
+        if (width != lineInterface->GetWidth())
+        {
+            lineInterface->End();
+            lineInterface->SetWidth(width);
+            lineInterface->Begin();
+        }
+
+        D3DXVECTOR2 points[] =
+        {
+            D3DXVECTOR2(from.x, from.y),
+            D3DXVECTOR2(to.x, to.y)
+        };
+        lineInterface->Draw(points, 2, ColorToD3D(color));
+    }
+
+    Renderer::Pipeline::Pipeline(
+        GraphicsManager& manager,
+        LPDIRECT3DDEVICE9 device,
+        LPDIRECT3DVERTEXBUFFER9 vertexBuffer,
+        LPDIRECT3DINDEXBUFFER9 indexBuffer,
+        LPDIRECT3DVERTEXDECLARATION9 vertexDeclaration,
+        LPD3DXLINE lineInterface,
+        D3DXMATRIX projection,
+        const ScreenSize& screenSize)
+        :
+        manager(manager),
+        device(device),
+        vertexBuffer(vertexBuffer),
+        indexBuffer(indexBuffer),
+        vertexDeclaration(vertexDeclaration),
+        lineInterface(lineInterface),
+        projection(projection),
+        screenSize(screenSize)
+    {}
+
+    void Renderer::Pipeline::Flush(Objects& objects)
     {
-        DirectX9::LogIfError(hr, *reliquary, message, severity, details);
+        if (!Start())
+        {
+            objects.clear();
+            return;
+        }
+
+        Sort(objects);
+
+        device->SetVertexDeclaration(vertexDeclaration);
+        device->SetStreamSource(0, vertexBuffer, 0, sizeof(Vertex));
+        device->SetIndices(indexBuffer);
+
+        SetShader(objects.begin()->shader);
+        SetTexture(objects.begin()->tex);
+
+        vertexBuffer->Lock(0, 0, &vertexData, D3DLOCK_DISCARD);
+        indexBuffer->Lock(0, 0, &indexData, D3DLOCK_DISCARD);
+
+        for (auto& object : objects)
+            HandleObject(object);
+
+        vertexBuffer->Unlock();
+        indexBuffer->Unlock();
+
+        objects.clear();
+        if (vertexCount == 0)
+            return;
+
+        DrawEndPrimitives();
+
+        End();
+    }
+
+    bool Renderer::Pipeline::Start()
+    {
+        const auto cooperativeLevel = device->TestCooperativeLevel();
+
+        // Device is lost but can't reset it
+        if (cooperativeLevel == D3DERR_DEVICELOST)
+            return false;
+
+        // Device is lost, and can reset
+        if (cooperativeLevel == D3DERR_DEVICENOTRESET)
+            manager.Reconstruct();
+
+        device->BeginScene();
+
+        lineInterface->Begin();
+
+        return true;
+    }
+
+    void Renderer::Pipeline::Sort(Objects& objects) const
+    {
+        std::sort(
+            objects.begin(),
+            objects.end(),
+            [](const StagedObject& left, const StagedObject& right)
+            {
+                const auto leftZ = left.z;
+                const auto rightZ = right.z;
+                if (leftZ != rightZ)
+                    return leftZ < rightZ;
+
+                const auto leftTex = left.tex;
+                const auto rightTex = right.tex;
+
+                return leftTex == rightTex
+                    ? left.shader < right.shader
+                    : leftTex < rightTex;
+            });
+    }
+
+    void Renderer::Pipeline::HandleObject(StagedObject& object)
+    {
+        const auto loopVerticesSize = object.vertices.size();
+        const auto loopIndicesSize = object.indices.size();
+
+        const auto loopTexture = object.tex;
+        const auto loopShader = object.shader;
+
+        // Check if the sprint is done
+        if (vertexCount + loopVerticesSize >= maxVertexSprint
+            || indexCount + loopIndicesSize >= maxIndexSprint)
+            DrawPrimitives();
+
+        // Check if the texture AND shader is different
+        if (currentTexture != loopTexture && currentShader != loopShader)
+        {
+            if (vertexCount > 0)
+                DrawPrimitives();
+
+            SetTexture(loopTexture);
+            SetShader(loopShader);
+        }
+        // Check if the texture is different
+        else if (currentTexture != loopTexture)
+        {
+            if (vertexCount > 0)
+                DrawPrimitives();
+
+            SetTexture(loopTexture);
+        }
+        // Check if the shader is different
+        else if (currentShader != loopShader)
+        {
+            if (vertexCount > 0)
+                DrawPrimitives();
+
+            SetTexture(currentTexture);
+            SetShader(loopShader);
+        }
+
+        // Vertices
+        memcpy(
+            &reinterpret_cast<Vertex*>(vertexData)[vertexCount],
+            object.vertices.data(),
+            loopVerticesSize * sizeof(Vertex));
+
+        // Indices
+        for (size_t indexLoop = 0; indexLoop != loopIndicesSize; ++indexLoop)
+            object.indices[indexLoop] = vertexCount + object.indices[indexLoop];
+        memcpy(
+            &reinterpret_cast<Index*>(indexData)[indexCount],
+            object.indices.data(),
+            loopIndicesSize * sizeof(Index));
+
+        vertexCount += static_cast<BufferSize>(loopVerticesSize);
+        indexCount += static_cast<BufferSize>(loopIndicesSize);
+        primitiveCount += object.primCount;
+    }
+
+    void Renderer::Pipeline::DrawPrimitives()
+    {
+        DrawPrimitivesCommon();
+        vertexBuffer->Lock(0, 0, &vertexData, D3DLOCK_DISCARD);
+        indexBuffer->Lock(0, 0, &indexData, D3DLOCK_DISCARD);
+        vertexCount = 0;
+        indexCount = 0;
+        primitiveCount = 0;
+    }
+
+    void Renderer::Pipeline::DrawEndPrimitives()
+    {
+        DrawPrimitivesCommon();
+    }
+
+    void Renderer::Pipeline::DrawPrimitivesCommon()
+    {
+        vertexBuffer->Unlock();
+        indexBuffer->Unlock();
+
+        const auto passCount = currentShaderData->Begin();
+        Asset::ShaderAssetData::PassCount passCountCurrent = 0;
+
+        do
+        {
+            currentShaderData->BeginNextPass(passCountCurrent);
+            ++passCountCurrent;
+
+            device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, vertexCount, 0, primitiveCount);
+
+            currentShaderData->EndPass();
+        } while (passCountCurrent < passCount);
+
+        currentShaderData->End();
+    }
+
+    void Renderer::Pipeline::End()
+    {
+        lineInterface->End();
+
+        device->EndScene();
+    }
+
+    void Renderer::Pipeline::SetTexture(LPDIRECT3DTEXTURE9 set)
+    {
+        currentTexture = set;
+        if (currentTexture && currentShaderData)
+            currentShaderData->Effect()->SetTexture("g_Texture", currentTexture);
+    }
+
+    void Renderer::Pipeline::SetShader(const Asset::ShaderAsset* set)
+    {
+        currentShader = set;
+        currentShaderData = currentShader->FileDataAs<ShaderAssetDataImplementation>();
+        currentShaderData->Effect()->SetMatrix("g_Projection", &projection);
+
+        FLOAT g_ScreenSize[2] =
+        {
+            static_cast<FLOAT>(screenSize.width),
+            static_cast<FLOAT>(screenSize.height)
+        };
+        currentShaderData->Effect()->SetFloatArray(
+            "g_ScreenSize",
+            g_ScreenSize,
+            2);
+
+        if (currentTexture && currentShaderData)
+            currentShaderData->Effect()->SetTexture("g_Texture", currentTexture);
     }
 }

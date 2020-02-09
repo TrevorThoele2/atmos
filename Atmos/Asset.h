@@ -1,48 +1,81 @@
 #pragma once
 
-#include "Name.h"
-#include "FileName.h"
-#include "FilePath.h"
-
-#include "Serialization.h"
+#include <Arca/ClosedTypedRelic.h>
+#include "AssetCore.h"
 
 namespace Atmos::Asset
 {
-    class Asset
+    template<class Derived>
+    class Asset : public Arca::ClosedTypedRelic<Derived>
     {
-    public:
-        [[nodiscard]] Name Name() const;
+    private:
+        using BaseT = Arca::ClosedTypedRelic<Derived>;
     protected:
-        Asset() = default;
-        Asset(Asset&& arg) noexcept;
-        explicit Asset(const ::Inscription::BinaryTableData<Asset>& data);
+        using Init = typename BaseT::Init;
+    public:
+        explicit Asset(Init init);
+        explicit Asset(Init init, const Name& name);
+        Asset(const Asset& arg) = delete;
+        Asset(Asset&& arg) noexcept = default;
 
-        void SetName(const Atmos::Name& name);
+        Asset& operator=(Asset&& arg) noexcept;
+
+        [[nodiscard]] Name Name() const;
+        [[nodiscard]] Arca::ShardIndex<Core> Core() const;
     private:
-        Atmos::Name name;
-    private:
-        INSCRIPTION_ACCESS;
+        Arca::ShardIndex<Atmos::Asset::Core> core;
     };
+
+    template<class Derived>
+    Asset<Derived>::Asset(Init init) :
+        Arca::ClosedTypedRelic<Derived>(init), core(init.id, init.owner)
+    {}
+
+    template<class Derived>
+    Asset<Derived>::Asset(Init init, const Atmos::Name& name) :
+        Arca::ClosedTypedRelic<Derived>(init),
+        core(init.owner.template Do<Arca::Create<Atmos::Asset::Core>>(init.id, name))
+    {}
+
+    template<class Derived>
+    Asset<Derived>& Asset<Derived>::operator=(Asset&& arg) noexcept
+    {
+        Arca::ClosedTypedRelic<Derived>::operator=(std::move(arg));
+        core = std::move(arg.core);
+        return *this;
+    }
+
+    template<class Derived>
+    Atmos::Name Asset<Derived>::Name() const
+    {
+        return core->name;
+    }
+
+    template<class Derived>
+    Arca::ShardIndex<Core> Asset<Derived>::Core() const
+    {
+        return core;
+    }
 }
 
 namespace Inscription
 {
-    template<>
-    struct TableData<::Atmos::Asset::Asset, BinaryArchive> :
-        TableDataBase<::Atmos::Asset::Asset, BinaryArchive>
+    template<class Derived>
+    class Scribe<Atmos::Asset::Asset<Derived>, BinaryArchive> final :
+        public CompositeScribe<Atmos::Asset::Asset<Derived>, BinaryArchive>
     {
-        ::Atmos::Name name;
+    private:
+        using BaseT = CompositeScribe<Atmos::Asset::Asset<Derived>, BinaryArchive>;
+    public:
+        using ObjectT = typename BaseT::ObjectT;
+        using ArchiveT = typename BaseT::ArchiveT;
+
+        using BaseT::Scriven;
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
     };
 
-    template<>
-    class Scribe<::Atmos::Asset::Asset, BinaryArchive> final :
-        public TableScribe<::Atmos::Asset::Asset, BinaryArchive>
-    {
-    public:
-        class Table final : public TableBase
-        {
-        public:
-            Table();
-        };
-    };
+    template<class Derived>
+    void Scribe<Atmos::Asset::Asset<Derived>, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
+    {}
 }

@@ -1,22 +1,21 @@
 #pragma once
 
-#include <Arca/ClosedTypedRelicAutomation.h>
+#include <Arca/ClosedTypedRelic.h>
 #include "Canvas.h"
 #include "Bounds.h"
 
 namespace Atmos::Render
 {
-    class CanvasView final : public Arca::ClosedTypedRelicAutomation<CanvasView>
+    class CanvasView final : public Arca::ClosedTypedRelic<CanvasView>
     {
     public:
-        void PostConstruct();
-        void Initialize(Canvas& source);
+        CanvasView(Init init, Arca::RelicIndex<Canvas> source);
 
         [[nodiscard]] const Canvas& Source() const;
 
         [[nodiscard]] const Bounds& Bounds() const;
     private:
-        Canvas* source = nullptr;
+        Arca::RelicIndex<Canvas> source;
         Arca::ShardIndex<Atmos::Bounds> bounds;
     };
 }

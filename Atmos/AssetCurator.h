@@ -1,10 +1,6 @@
 #pragma once
 
 #include <Arca/Curator.h>
-#include <Arca/Reliquary.h>
-#include <Arca/Created.h>
-#include <Arca/Destroying.h>
-#include <Arca/Actualization.h>
 
 #include "Asset.h"
 #include "MappedAssets.h"
@@ -19,55 +15,41 @@ namespace Atmos::Asset
     template<class T>
     class AssetCurator : public Arca::Curator
     {
+    public:
+        void Work();
     protected:
-        AssetCurator() = default;
-    protected:
-        void InitializeImplementation() override;
-        void WorkImplementation() override;
+        explicit AssetCurator(Init init);
     private:
         using Traits = AssetCuratorTraits<T>;
     private:
-        MappedAssets<T>* mappedAssets = nullptr;
-        Debug::Statistics* debugStatistics = nullptr;
-
-        Arca::Batch<Arca::Created> createdBatch{};
-        Arca::Batch<Arca::Destroying> destroyingBatch{};
+        Arca::GlobalIndex<MappedAssets<T>> mappedAssets;
+        Arca::GlobalIndex<Debug::Statistics> debugStatistics;
     private:
         INSCRIPTION_ACCESS;
     };
 
     template<class T>
-    void AssetCurator<T>::InitializeImplementation()
+    void AssetCurator<T>::Work()
     {
-        mappedAssets = Owner().Find<MappedAssets<T>>();
-        debugStatistics = Owner().Find<Debug::Statistics>();
-
-        createdBatch = Owner().Batch<Arca::Created>();
-        destroyingBatch = Owner().Batch<Arca::Destroying>();
+        (debugStatistics->memory.*Traits::debugStatisticsSize) = mappedAssets->Size();
     }
 
     template<class T>
-    void AssetCurator<T>::WorkImplementation()
+    AssetCurator<T>::AssetCurator(Init init) :
+        Curator(init),
+        mappedAssets(init.owner), debugStatistics(init.owner)
     {
-        for (auto& loop : createdBatch)
-        {
-            auto actualized = Arca::Actualize<T>(loop.handle);
-            if (!actualized)
-                continue;
+        init.owner.ExecuteOn<Arca::CreatedKnown<T>>(
+            [this](const Arca::CreatedKnown<T>& signal)
+            {
+                mappedAssets->map.emplace(signal.index->Name(), signal.index);
+            });
 
-            mappedAssets->map.emplace(actualized->Name(), actualized);
-        }
-
-        for (auto& loop : destroyingBatch)
-        {
-            auto actualized = Arca::Actualize<T>(loop.handle);
-            if (!actualized)
-                continue;
-
-            mappedAssets->map.erase(actualized->Name());
-        }
-
-        (debugStatistics->memory.*Traits::debugStatisticsSize) = mappedAssets->Size();
+        init.owner.ExecuteOn<Arca::DestroyingKnown<T>>(
+            [this](const Arca::DestroyingKnown<T>& signal)
+            {
+                mappedAssets->map.erase(signal.index->Name());
+            });
     }
 
     template<class T>

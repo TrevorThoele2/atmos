@@ -348,6 +348,21 @@
     <Filter Include="Source Files\Render\Line">
       <UniqueIdentifier>{3a4cef86-3e3d-432c-afc2-251ccc4dc8d7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Time\Stopwatch\Commands">
+      <UniqueIdentifier>{74fb9959-cad8-4e8f-ad81-acd52f6fdc66}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Render\Surface">
+      <UniqueIdentifier>{1d23b4f6-bf03-4ce3-87e7-3a5ba05e0891}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Render\Surface">
+      <UniqueIdentifier>{636ba12e-4468-48e1-823d-a62cf9e2b173}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Render\DirectX9\Data">
+      <UniqueIdentifier>{dccfba7b-ed8a-422e-9362-1c18f63702a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Render\DirectX9\Data">
+      <UniqueIdentifier>{5f30c8c0-b2a8-4855-9332-53631634bc0c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FieldDestination.h">
@@ -416,9 +431,6 @@
     <ClInclude Include="StringUtility.h">
       <Filter>Header Files\Helper</Filter>
     </ClInclude>
-    <ClInclude Include="Asset.h">
-      <Filter>Header Files\Assets</Filter>
-    </ClInclude>
     <ClInclude Include="ImageAsset.h">
       <Filter>Header Files\Assets\Image</Filter>
     </ClInclude>
@@ -475,9 +487,6 @@
     </ClInclude>
     <ClInclude Include="Random.h">
       <Filter>Header Files\Helper</Filter>
-    </ClInclude>
-    <ClInclude Include="SimpleFile.h">
-      <Filter>Header Files\Serialization</Filter>
     </ClInclude>
     <ClInclude Include="BoundedNumberWrap.h">
       <Filter>Header Files\Math</Filter>
@@ -617,9 +626,6 @@
     <ClInclude Include="RealStopwatch.h">
       <Filter>Header Files\Time\Stopwatch</Filter>
     </ClInclude>
-    <ClInclude Include="ExtendedStopwatchAdapter.h">
-      <Filter>Header Files\Time\Stopwatch</Filter>
-    </ClInclude>
     <ClInclude Include="AngelScriptTile.h">
       <Filter>Header Files\Script\AngelScript\Registration</Filter>
     </ClInclude>
@@ -677,9 +683,6 @@
     <ClInclude Include="Vector3D.h">
       <Filter>Header Files\Position\3D</Filter>
     </ClInclude>
-    <ClInclude Include="ScreenDimensions.h">
-      <Filter>Header Files\Position\Screen</Filter>
-    </ClInclude>
     <ClInclude Include="ScreenPosition.h">
       <Filter>Header Files\Position\Screen</Filter>
     </ClInclude>
@@ -713,9 +716,6 @@
     <ClInclude Include="EngineNotSetup.h">
       <Filter>Header Files\Engine</Filter>
     </ClInclude>
-    <ClInclude Include="Stopwatch.h">
-      <Filter>Header Files\Time\Stopwatch</Filter>
-    </ClInclude>
     <ClInclude Include="Color.h">
       <Filter>Header Files\Render</Filter>
     </ClInclude>
@@ -730,12 +730,6 @@
     </ClInclude>
     <ClInclude Include="NullGraphicsManager.h">
       <Filter>Header Files\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="Surface.h">
-      <Filter>Header Files\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="FileAsset.h">
-      <Filter>Header Files\Assets</Filter>
     </ClInclude>
     <ClInclude Include="Epoch.h">
       <Filter>Header Files\Time</Filter>
@@ -878,9 +872,6 @@
     <ClInclude Include="StateCurator.h">
       <Filter>Header Files\State</Filter>
     </ClInclude>
-    <ClInclude Include="TimeCurator.h">
-      <Filter>Header Files\Time</Filter>
-    </ClInclude>
     <ClInclude Include="StateRequest.h">
       <Filter>Header Files\State</Filter>
     </ClInclude>
@@ -903,9 +894,6 @@
       <Filter>Header Files\World\Field</Filter>
     </ClInclude>
     <ClInclude Include="MappedAssets.h">
-      <Filter>Header Files\Assets</Filter>
-    </ClInclude>
-    <ClInclude Include="FileAssetPackageCurator.h">
       <Filter>Header Files\Assets</Filter>
     </ClInclude>
     <ClInclude Include="InputID.h">
@@ -1088,9 +1076,6 @@
     <ClInclude Include="DirectX9GraphicsManager.h">
       <Filter>Header Files\Render\DirectX9</Filter>
     </ClInclude>
-    <ClInclude Include="DirectX9Data.h">
-      <Filter>Header Files\Render\DirectX9</Filter>
-    </ClInclude>
     <ClInclude Include="DirectX9Includes.h">
       <Filter>Header Files\Render\DirectX9</Filter>
     </ClInclude>
@@ -1124,6 +1109,135 @@
     <ClInclude Include="Line.h">
       <Filter>Header Files\Render\Line</Filter>
     </ClInclude>
+    <ClInclude Include="ChangeMaterialViewCore.h">
+      <Filter>Header Files\Render\MaterialView</Filter>
+    </ClInclude>
+    <ClInclude Include="FrameStartCurator.h">
+      <Filter>Header Files\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="FrameEndCurator.h">
+      <Filter>Header Files\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="CurrentFieldData.h">
+      <Filter>Header Files\World\Field</Filter>
+    </ClInclude>
+    <ClInclude Include="CurrentFieldCurator.h">
+      <Filter>Header Files\World\Field</Filter>
+    </ClInclude>
+    <ClInclude Include="StopwatchCore.h">
+      <Filter>Header Files\Time\Stopwatch</Filter>
+    </ClInclude>
+    <ClInclude Include="StopwatchStatistics.h">
+      <Filter>Header Files\Time\Stopwatch</Filter>
+    </ClInclude>
+    <ClInclude Include="StopwatchCurator.h">
+      <Filter>Header Files\Time\Stopwatch</Filter>
+    </ClInclude>
+    <ClInclude Include="CalculateStopwatch.h">
+      <Filter>Header Files\Time\Stopwatch\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="StartStopwatch.h">
+      <Filter>Header Files\Time\Stopwatch\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="ResetAverage.h">
+      <Filter>Header Files\Time\Stopwatch\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="ResetHighest.h">
+      <Filter>Header Files\Time\Stopwatch\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="AssetCore.h">
+      <Filter>Header Files\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="FileAsset.h">
+      <Filter>Header Files\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="Asset.h">
+      <Filter>Header Files\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="AssetFileCurator.h">
+      <Filter>Header Files\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="ExtractAsset.h">
+      <Filter>Header Files\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="UnrecognizedAudioFormat.h">
+      <Filter>Header Files\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="SimpleFile.h">
+      <Filter>Header Files\Serialization</Filter>
+    </ClInclude>
+    <ClInclude Include="IdleCurator.h">
+      <Filter>Header Files\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowCreationFailed.h">
+      <Filter>Header Files\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="Logger.h">
+      <Filter>Header Files\Logging</Filter>
+    </ClInclude>
+    <ClInclude Include="MoveBounds.h">
+      <Filter>Header Files\Position\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="ResizeBounds.h">
+      <Filter>Header Files\Position\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="ScreenSize.h">
+      <Filter>Header Files\Position\Screen</Filter>
+    </ClInclude>
+    <ClInclude Include="MainSurface.h">
+      <Filter>Header Files\Render\Surface</Filter>
+    </ClInclude>
+    <ClInclude Include="AncillarySurface.h">
+      <Filter>Header Files\Render\Surface</Filter>
+    </ClInclude>
+    <ClInclude Include="SurfaceData.h">
+      <Filter>Header Files\Render\Surface</Filter>
+    </ClInclude>
+    <ClInclude Include="Surface.h">
+      <Filter>Header Files\Render\Surface</Filter>
+    </ClInclude>
+    <ClInclude Include="SurfaceCore.h">
+      <Filter>Header Files\Render\Surface</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectX9SurfaceData.h">
+      <Filter>Header Files\Render\DirectX9\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectX9CanvasData.h">
+      <Filter>Header Files\Render\DirectX9\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectX9ShaderAssetData.h">
+      <Filter>Header Files\Render\DirectX9\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectX9ImageAssetData.h">
+      <Filter>Header Files\Render\DirectX9\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioAssetData.h">
+      <Filter>Header Files\Assets\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageAssetData.h">
+      <Filter>Header Files\Assets\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptAssetData.h">
+      <Filter>Header Files\Assets\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderAssetData.h">
+      <Filter>Header Files\Assets\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="CanvasData.h">
+      <Filter>Header Files\Render\Canvas</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptAssetData.h">
+      <Filter>Header Files\Script\AngelScript</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptManager.h">
+      <Filter>Header Files\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptManager.h">
+      <Filter>Header Files\Script\AngelScript</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FieldDestination.cpp">
@@ -1143,9 +1257,6 @@
     </ClCompile>
     <ClCompile Include="StringUtility.cpp">
       <Filter>Source Files\Helper</Filter>
-    </ClCompile>
-    <ClCompile Include="Asset.cpp">
-      <Filter>Source Files\Assets</Filter>
     </ClCompile>
     <ClCompile Include="ImageAsset.cpp">
       <Filter>Source Files\Assets\Image</Filter>
@@ -1182,9 +1293,6 @@
     </ClCompile>
     <ClCompile Include="GameState.cpp">
       <Filter>Source Files\State</Filter>
-    </ClCompile>
-    <ClCompile Include="SimpleFile.cpp">
-      <Filter>Source Files\Serialization</Filter>
     </ClCompile>
     <ClCompile Include="Random.cpp">
       <Filter>Source Files\Helper</Filter>
@@ -1312,9 +1420,6 @@
     <ClCompile Include="Vector3D.cpp">
       <Filter>Source Files\Position\3D</Filter>
     </ClCompile>
-    <ClCompile Include="ScreenDimensions.cpp">
-      <Filter>Source Files\Position\Screen</Filter>
-    </ClCompile>
     <ClCompile Include="ScreenPosition.cpp">
       <Filter>Source Files\Position\Screen</Filter>
     </ClCompile>
@@ -1336,9 +1441,6 @@
     <ClCompile Include="EngineNotSetup.cpp">
       <Filter>Source Files\Engine</Filter>
     </ClCompile>
-    <ClCompile Include="Stopwatch.cpp">
-      <Filter>Source Files\Time\Stopwatch</Filter>
-    </ClCompile>
     <ClCompile Include="Color.cpp">
       <Filter>Source Files\Render</Filter>
     </ClCompile>
@@ -1359,12 +1461,6 @@
     </ClCompile>
     <ClCompile Include="NullGraphicsManager.cpp">
       <Filter>Source Files\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="Surface.cpp">
-      <Filter>Source Files\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="FileAsset.cpp">
-      <Filter>Source Files\Assets</Filter>
     </ClCompile>
     <ClCompile Include="ActionComponent.cpp">
       <Filter>Source Files\Entity\Component</Filter>
@@ -1465,9 +1561,6 @@
     <ClCompile Include="StateCurator.cpp">
       <Filter>Source Files\State</Filter>
     </ClCompile>
-    <ClCompile Include="TimeCurator.cpp">
-      <Filter>Source Files\Time</Filter>
-    </ClCompile>
     <ClCompile Include="AngelScriptReferenceCounted.cpp">
       <Filter>Source Files\Script\AngelScript\Registration\Bases</Filter>
     </ClCompile>
@@ -1485,9 +1578,6 @@
     </ClCompile>
     <ClCompile Include="AngelScriptResultVerification.cpp">
       <Filter>Source Files\Script\AngelScript</Filter>
-    </ClCompile>
-    <ClCompile Include="FileAssetPackageCurator.cpp">
-      <Filter>Source Files\Assets</Filter>
     </ClCompile>
     <ClCompile Include="Input.cpp">
       <Filter>Source Files\Input</Filter>
@@ -1579,9 +1669,6 @@
     <ClCompile Include="DirectX9GraphicsManager.cpp">
       <Filter>Source Files\Render\DirectX9</Filter>
     </ClCompile>
-    <ClCompile Include="DirectX9Data.cpp">
-      <Filter>Source Files\Render\DirectX9</Filter>
-    </ClCompile>
     <ClCompile Include="DirectX9Utilities.cpp">
       <Filter>Source Files\Render\DirectX9</Filter>
     </ClCompile>
@@ -1599,6 +1686,99 @@
     </ClCompile>
     <ClCompile Include="TimeInformation.cpp">
       <Filter>Source Files\Time</Filter>
+    </ClCompile>
+    <ClCompile Include="FrameStartCurator.cpp">
+      <Filter>Source Files\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="FrameEndCurator.cpp">
+      <Filter>Source Files\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="CurrentFieldCurator.cpp">
+      <Filter>Source Files\World\Field</Filter>
+    </ClCompile>
+    <ClCompile Include="CurrentFieldData.cpp">
+      <Filter>Source Files\World\Field</Filter>
+    </ClCompile>
+    <ClCompile Include="StopwatchCore.cpp">
+      <Filter>Source Files\Time\Stopwatch</Filter>
+    </ClCompile>
+    <ClCompile Include="StopwatchCurator.cpp">
+      <Filter>Source Files\Time\Stopwatch</Filter>
+    </ClCompile>
+    <ClCompile Include="AssetCore.cpp">
+      <Filter>Source Files\Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="AssetFileCurator.cpp">
+      <Filter>Source Files\Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="UnrecognizedAudioFormat.cpp">
+      <Filter>Source Files\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="SimpleFile.cpp">
+      <Filter>Source Files\Serialization</Filter>
+    </ClCompile>
+    <ClCompile Include="IdleCurator.cpp">
+      <Filter>Source Files\Time</Filter>
+    </ClCompile>
+    <ClCompile Include="WindowCreationFailed.cpp">
+      <Filter>Source Files\Window</Filter>
+    </ClCompile>
+    <ClCompile Include="Logger.cpp">
+      <Filter>Source Files\Logging</Filter>
+    </ClCompile>
+    <ClCompile Include="ScreenSize.cpp">
+      <Filter>Source Files\Position\Screen</Filter>
+    </ClCompile>
+    <ClCompile Include="MainSurface.cpp">
+      <Filter>Source Files\Render\Surface</Filter>
+    </ClCompile>
+    <ClCompile Include="AncillarySurface.cpp">
+      <Filter>Source Files\Render\Surface</Filter>
+    </ClCompile>
+    <ClCompile Include="SurfaceData.cpp">
+      <Filter>Source Files\Render\Surface</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectX9CanvasData.cpp">
+      <Filter>Source Files\Render\DirectX9\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectX9SurfaceData.cpp">
+      <Filter>Source Files\Render\DirectX9\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectX9ShaderAssetData.cpp">
+      <Filter>Source Files\Render\DirectX9\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectX9ImageAssetData.cpp">
+      <Filter>Source Files\Render\DirectX9\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioAssetData.cpp">
+      <Filter>Source Files\Assets\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageAssetData.cpp">
+      <Filter>Source Files\Assets\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptAssetData.cpp">
+      <Filter>Source Files\Assets\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderAssetData.cpp">
+      <Filter>Source Files\Assets\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="CanvasData.cpp">
+      <Filter>Source Files\Render\Canvas</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptAssetData.cpp">
+      <Filter>Source Files\Script\AngelScript</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptManager.cpp">
+      <Filter>Source Files\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptManager.cpp">
+      <Filter>Source Files\Script\AngelScript</Filter>
+    </ClCompile>
+    <ClCompile Include="StopwatchStatistics.cpp">
+      <Filter>Source Files\Time\Stopwatch</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

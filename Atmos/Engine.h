@@ -4,7 +4,6 @@
 #include "EngineExecution.h"
 
 #include <Arca/Reliquary.h>
-#include <Arca/ReliquaryOrigin.h>
 #include "WorldManager.h"
 
 namespace Atmos
@@ -29,9 +28,12 @@ namespace Atmos
 
         virtual void SetupImplementation() = 0;
 
-        virtual InitializationProperties CreateInitializationProperties(Arca::Reliquary& reliquary) = 0;
+        virtual InitializationProperties CreateInitializationProperties() = 0;
 
         virtual void DoExit() = 0;
+    protected:
+        [[nodiscard]] Arca::Reliquary* GlobalReliquary();
+        [[nodiscard]] const Arca::Reliquary* GlobalReliquary() const;
     private:
         [[nodiscard]] bool IsSetup() const;
         void SetupRequired() const;
@@ -49,7 +51,5 @@ namespace Atmos
 
         using ExecutionContextPtr = std::unique_ptr<ExecutionContext>;
         ExecutionContextPtr executionContext;
-
-        void ProvideInitializationProperties(InitializationProperties&& properties);
     };
 }

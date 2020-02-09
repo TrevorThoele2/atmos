@@ -11,7 +11,7 @@ namespace Atmos::Render
 {
     struct MaterialRender
     {
-        Asset::MaterialAsset* material;
+        const Asset::MaterialAsset* material;
 
         Position3D position;
         Size2D size;
@@ -20,6 +20,6 @@ namespace Atmos::Render
 
         AxisAlignedBox2D materialSlice;
 
-        Asset::ShaderAsset* patchShader;
+        const Asset::ShaderAsset* patchShader;
     };
 }

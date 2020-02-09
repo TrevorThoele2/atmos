@@ -5,7 +5,6 @@ namespace Atmos
     struct ScreenPosition
     {
         using Value = int;
-
         Value x;
         Value y;
 

@@ -4,18 +4,13 @@
 
 namespace Atmos::Audio
 {
-    void VolumeCurator::InitializeImplementation()
-    {
-        volumeInformation = Arca::GlobalIndex<VolumeInformation>(Owner());
-        initializationInformation = Arca::GlobalIndex<Initialization::Information>(Owner());
-    }
+    VolumeCurator::VolumeCurator(Init init) :
+        Curator(init), volumeInformation(init.owner), initializationInformation(init.owner)
+    {}
 
-    void VolumeCurator::WorkImplementation(Stage& stage)
+    void VolumeCurator::Handle(const ChangeMasterVolume& command)
     {
-        for (auto& loop : changeMasterVolume)
-        {
-            volumeInformation->master = loop.to;
-            initializationInformation->sound.masterVolume = loop.to;
-        }
+        Data(volumeInformation)->master = command.to;
+        Data(initializationInformation)->sound.masterVolume = command.to;
     }
 }

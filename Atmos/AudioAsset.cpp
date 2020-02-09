@@ -4,46 +4,28 @@
 
 namespace Atmos::Asset
 {
-    AudioAsset::AudioAsset() = default;
-
-    AudioAsset::AudioAsset(const ::Inscription::BinaryTableData<AudioAsset>& data) :
-        FileAsset(data.base)
-    {}
-
-    AudioAsset::DataT* AudioAsset::Data()
+    AudioAsset& AudioAsset::operator=(AudioAsset&& arg) noexcept
     {
-        return data.get();
+        FileAsset::operator=(std::move(arg));
+        return *this;
     }
-
-    const AudioAsset::DataT* AudioAsset::Data() const
-    {
-        return data.get();
-    }
-
-    void AudioAsset::Initialize(const File::Name& fileName, DataPtr&& data)
-    {
-        SetFileName(fileName);
-        this->data = std::move(data);
-    }
-
-    AudioAssetData::~AudioAssetData() = default;
 }
 
 namespace Arca
 {
     bool Traits<::Atmos::Asset::AudioAsset>::ShouldCreate(
-        Reliquary& reliquary, const ::Atmos::File::Name& fileName, ::Atmos::Asset::AudioAsset::DataPtr&& data)
+        Reliquary& reliquary, const ::Atmos::Name& name, ::Atmos::Asset::AudioAsset::DataPtr&& data)
     {
-        return Atmos::Asset::ShouldCreateAsset<::Atmos::Asset::AudioAsset>(reliquary, fileName);
+        return Atmos::Asset::ShouldCreateAsset<::Atmos::Asset::AudioAsset>(reliquary, name);
     }
 }
 
 namespace Inscription
 {
-    Scribe<::Atmos::Asset::AudioAsset, BinaryArchive>::Table::Table()
+    void Scribe<::Atmos::Asset::AudioAsset, BinaryArchive>::ScrivenImplementation(
+        ObjectT& object, ArchiveT& archive)
     {
-        MergeDataLinks({
-            DataLink::Base(data.base) }
-        );
+        BaseScriven<Atmos::Asset::FileAsset<Atmos::Asset::AudioAssetData, Atmos::Asset::AudioAsset>>(
+            object, archive);
     }
 }

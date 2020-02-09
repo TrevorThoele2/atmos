@@ -7,20 +7,26 @@
 #include "MaterialViewCore.h"
 #include "Bounds.h"
 #include "Camera.h"
+#include "ChangeMaterialViewCore.h"
 
 namespace Atmos::Render
 {
     class MaterialViewCurator final : public Arca::Curator
     {
-    protected:
-        void PostConstructImplementation() override;
-        void WorkImplementation(Stage& stage) override;
+    public:
+        explicit MaterialViewCurator(Init init);
+
+        void Work();
+    public:
+        void Handle(const ChangeMaterialViewCore& command);
     private:
         using MaterialMatrix = Arca::All<MaterialViewCore, Arca::Either<Bounds>>;
         using MaterialIndex = Arca::MatrixIndex<MaterialMatrix>;
         Grid::Octree<Arca::RelicID, MaterialIndex> octree;
 
         Arca::GlobalIndex<Camera> camera;
+    private:
+        void CalculateMaterialSlice(MaterialViewCore& core);
     private:
         void OnMaterialFormed(const Arca::MatrixFormed<MaterialMatrix>& matrix);
         void OnMaterialDissolved(const Arca::MatrixDissolved<MaterialMatrix>& matrix);

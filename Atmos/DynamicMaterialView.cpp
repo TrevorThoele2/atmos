@@ -1,55 +1,78 @@
 #include "DynamicMaterialView.h"
 
+#include "ChangeMaterialViewCore.h"
+#include "MoveBounds.h"
+#include "ResizeBounds.h"
+
 namespace Atmos::Render
 {
-    void DynamicMaterialView::MaterialIndex(Index to)
+    DynamicMaterialView::DynamicMaterialView(Init init)
+        : ClosedTypedRelic(init)
     {
-        core->MaterialIndex(to);
+        core = FindOrCreate<MaterialViewCore>();
+        bounds = FindOrCreate<Atmos::Bounds>();
+    }
+
+    DynamicMaterialView::DynamicMaterialView(
+        Init init, const Position3D& position, const Size2D& size)
+        :
+        ClosedTypedRelic(init)
+    {
+        core = Create<MaterialViewCore>();
+        bounds = Create<Atmos::Bounds>(position, size);
+    }
+
+    void DynamicMaterialView::MaterialIndex(Index to) const
+    {
+        const auto command = CreateModificationCommand(&ChangeMaterialViewCore::index, to);
+        Owner().Do<ChangeMaterialViewCore>(command);
     }
 
     auto DynamicMaterialView::MaterialIndex() const -> Index
     {
-        return core->MaterialIndex();
+        return core->materialIndex;
     }
 
-    void DynamicMaterialView::Color(Render::Color to)
+    void DynamicMaterialView::Color(Render::Color to) const
     {
-        core->Color(to);
+        const auto command = CreateModificationCommand(&ChangeMaterialViewCore::color, to);
+        Owner().Do<ChangeMaterialViewCore>(command);
     }
 
     Render::Color DynamicMaterialView::Color() const
     {
-        return core->Color();
+        return core->color;
     }
 
-    void DynamicMaterialView::PatchShader(Arca::RelicIndex<Asset::ShaderAsset> to)
+    void DynamicMaterialView::PatchShader(Arca::RelicIndex<Asset::ShaderAsset> to) const
     {
-        core->PatchShader(to);
+        const auto command = CreateModificationCommand(&ChangeMaterialViewCore::patchShader, to);
+        Owner().Do<ChangeMaterialViewCore>(command);
     }
 
     Arca::RelicIndex<Asset::ShaderAsset> DynamicMaterialView::PatchShader() const
     {
-        return core->PatchShader();
+        return core->patchShader;
     }
 
     Arca::RelicIndex<Asset::MaterialAsset> DynamicMaterialView::Material() const
     {
-        return core->Material();
+        return core->material;
     }
 
     AxisAlignedBox2D DynamicMaterialView::MaterialSlice() const
     {
-        return core->MaterialSlice();
+        return core->materialSlice;
     }
 
-    void DynamicMaterialView::Position(const Position3D& to)
+    void DynamicMaterialView::Position(const Position3D& to) const
     {
-        bounds->Position(to);
+        Owner().Do<MoveBounds>(ID(), to);
     }
 
-    void DynamicMaterialView::Size(const Size2D& to)
+    void DynamicMaterialView::Size(const Size2D& to) const
     {
-        bounds->Size(to);
+        Owner().Do<ResizeBounds>(ID(), to);
     }
 
     Position3D DynamicMaterialView::Position() const
@@ -75,17 +98,5 @@ namespace Atmos::Render
     Arca::ShardIndex<Bounds> DynamicMaterialView::Bounds() const
     {
         return bounds;
-    }
-
-    void DynamicMaterialView::PostConstruct()
-    {
-        core = Create<MaterialViewCore>();
-        bounds = Create<Atmos::Bounds>();
-    }
-
-    void DynamicMaterialView::Initialize(const Position3D& position, const Size2D& size)
-    {
-        bounds->Position(position);
-        bounds->Size(size);
     }
 }

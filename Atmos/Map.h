@@ -1,11 +1,11 @@
 #pragma once
 
-#include <Arca/ClosedTypedRelicAutomation.h>
+#include <Arca/ClosedTypedRelic.h>
 #include "SparseRegion.h"
 
 namespace Atmos::World
 {
-    class Map final : public Arca::ClosedTypedRelicAutomation<Map>
+    class Map final : public Arca::ClosedTypedRelic<Map>
     {
     public:
         Grid::SparseRegion definedRegion;

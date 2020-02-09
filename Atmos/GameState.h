@@ -1,14 +1,11 @@
 #pragma once
 
-#include <Arca/ClosedTypedRelicAutomation.h>
+#include <Arca/ClosedTypedRelic.h>
 
 namespace Atmos::State
 {
-    class GameState final : public Arca::ClosedTypedRelicAutomation<GameState>
-    {
-    public:
-        GameState() = default;
-    };
+    class GameState final : public Arca::ClosedTypedRelic<GameState>
+    {};
 }
 
 namespace Arca

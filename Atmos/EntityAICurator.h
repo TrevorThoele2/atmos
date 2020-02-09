@@ -9,9 +9,10 @@ namespace Atmos::Entity
 {
     class AICurator final : public Arca::Curator
     {
-    protected:
-        void InitializeImplementation() override;
-        void WorkImplementation(Stage& stage) override;
+    public:
+        explicit AICurator(Init init);
+
+        void Work();
     private:
         Arca::Batch<AIComponent> aiComponents;
     };

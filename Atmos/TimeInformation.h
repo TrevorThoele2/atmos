@@ -1,18 +1,17 @@
 #pragma once
 
-#include <Arca/ClosedTypedRelicAutomation.h>
+#include <Arca/ClosedTypedRelic.h>
 
 #include "TimeValue.h"
 #include "Fps.h"
-#include "ExtendedStopwatchAdapter.h"
 #include "RealStopwatch.h"
 
 namespace Atmos::Time
 {
-    class Information final : public Arca::ClosedTypedRelicAutomation<Information>
+    class Information final : public Arca::ClosedTypedRelic<Information>
     {
     public:
-        Information() = default;
+        explicit Information(Init init);
 
         Value frameStartTime;
         Value frameEndTime;
@@ -22,10 +21,8 @@ namespace Atmos::Time
 
         Fps fps = 0;
 
-        using Stopwatch = ExtendedStopwatchAdapter<RealStopwatch>;
+        using Stopwatch = Arca::RelicIndex<RealStopwatch>;
         Stopwatch stopwatch;
-    public:
-        void PostConstruct();
     };
 }
 

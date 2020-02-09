@@ -12,14 +12,24 @@ namespace Atmos::Audio
 {
     class VolumeCurator final : public Arca::Curator
     {
-    protected:
-        void InitializeImplementation() override;
-        void WorkImplementation(Stage& stage) override;
+    public:
+        explicit VolumeCurator(Init init);
+    public:
+        void Handle(const ChangeMasterVolume& command);
     private:
-        VolumeInformation* volumeInformation = nullptr;
-        Initialization::Information* initializationInformation = nullptr;
+        Arca::GlobalIndex<VolumeInformation> volumeInformation;
+        Arca::GlobalIndex<Initialization::Information> initializationInformation;
+    };
+}
 
-        Arca::Batch<ChangeMasterVolume> changeMasterVolume;
+namespace Arca
+{
+    template<>
+    struct Traits<Atmos::Audio::VolumeCurator>
+    {
+        static const ObjectType objectType = ObjectType::Curator;
+        static inline const TypeName typeName = "VolumeCurator";
+        using HandledCommands = Arca::HandledCommands<Atmos::Audio::ChangeMasterVolume>;
     };
 }
 

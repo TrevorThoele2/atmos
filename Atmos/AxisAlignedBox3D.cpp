@@ -1,8 +1,5 @@
 #include "AxisAlignedBox3D.h"
 
-#include <cctype>
-#include <Chroma/Contract.h>
-
 namespace Atmos
 {
     AxisAlignedBox3D::AxisAlignedBox3D(const Position3D& center, const Size3D& size) :
@@ -21,9 +18,6 @@ namespace Atmos
     ) :
         left(left), top(top), farZ(farZ), right(right), bottom(bottom), nearZ(nearZ)
     {
-        CoordinatePrecondition(left, right, "left", "right");
-        CoordinatePrecondition(top, bottom, "top", "bottom");
-        CoordinatePrecondition(farZ, nearZ, "farZ", "nearZ");
         CalculateCenterAndSize();
     }
 
@@ -74,9 +68,6 @@ namespace Atmos
         Coordinate bottom,
         Coordinate nearZ
     ) {
-        CoordinatePrecondition(left, right, "left", "right");
-        CoordinatePrecondition(top, bottom, "top", "bottom");
-        CoordinatePrecondition(farZ, nearZ, "farZ", "nearZ");
         this->left = left;
         this->top = top;
         this->farZ = farZ;
@@ -88,37 +79,31 @@ namespace Atmos
 
     void AxisAlignedBox3D::Left(Coordinate set)
     {
-        CoordinatePrecondition(set, right, "left", "right");
         ChangeCoordinate(left, set);
     }
 
     void AxisAlignedBox3D::Top(Coordinate set)
     {
-        CoordinatePrecondition(set, bottom, "top", "bottom");
         ChangeCoordinate(top, set);
     }
 
     void AxisAlignedBox3D::FarZ(Coordinate set)
     {
-        CoordinatePrecondition(set, nearZ, "farZ", "nearZ");
         ChangeCoordinate(farZ, set);
     }
 
     void AxisAlignedBox3D::Right(Coordinate set)
     {
-        CoordinatePrecondition(left, set, "left", "right");
         ChangeCoordinate(right, set);
     }
 
     void AxisAlignedBox3D::Bottom(Coordinate set)
     {
-        CoordinatePrecondition(top, set, "top", "bottom");
         ChangeCoordinate(bottom, set);
     }
 
     void AxisAlignedBox3D::NearZ(Coordinate set)
     {
-        CoordinatePrecondition(farZ, set, "farZ", "nearZ");
         ChangeCoordinate(nearZ, set);
     }
 
@@ -221,21 +206,6 @@ namespace Atmos
         center.x = left + (size.width / 2);
         center.y = top + (size.height / 2);
         center.z = farZ + (size.depth / 2);
-    }
-
-    void AxisAlignedBox3D::CoordinatePrecondition(
-        const Coordinate& low,
-        const Coordinate& high,
-        const std::string& lowName,
-        const std::string& highName
-    ) {
-        auto useLowName = lowName;
-        useLowName[0] = std::toupper(useLowName[0]);
-
-        SOFT_PRECONDITION(
-            low <= high,
-            std::invalid_argument(useLowName + " must be <= " + highName + " when given to an AxisAlignedBox3D.")
-        );
     }
 }
 

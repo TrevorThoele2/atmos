@@ -2,7 +2,6 @@
 
 #include <Arca/Reliquary.h>
 #include "WindowProvider.h"
-#include "TimeCurator.h"
 #include "DebugStatistics.h"
 #include "FocusLost.h"
 #include "FocusRegained.h"
@@ -17,9 +16,6 @@ namespace Atmos
 
     void EngineExecution::Start()
     {
-        auto& timeCurator = globalReliquary->Find<Time::TimeCurator>();
-        auto debugStatistics = Arca::GlobalIndex<Debug::Statistics>(*globalReliquary);
-
         while (StartFrame())
         {
             if (IsCurrentlyFocused())
@@ -27,14 +23,7 @@ namespace Atmos
                 if (isFocusLost)
                     OnFocusRegain();
 
-                debugStatistics->profilers.idle.Calculate();
-
                 worldManager->Work();
-
-                debugStatistics->profilers.idle.Start();
-
-                while (timeCurator.DoIdle())
-                    Window::window->Suspend(Time::Value(FixedPoint64(0), Time::Epoch::Milliseconds));
             }
             else
             {

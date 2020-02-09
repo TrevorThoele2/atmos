@@ -1,99 +1,89 @@
-
 #pragma once
 
-#include <utility>
 #include <fstream>
 #include "FilePath.h"
 #include "Buffer.h"
 
 namespace Atmos
 {
-    template<class StreamT>
+    template<class Stream>
     class SimpleFile
     {
     public:
-        typedef StreamT StreamT;
-        typedef typename StreamT::pos_type Pos;
-        typedef typename std::streamsize StreamSize;
-        typedef std::ios_base::openmode Mode;
+        using StreamT = Stream;
+        using Position = typename StreamT::pos_type;
+        using OpenMode = std::ios_base::openmode;
+    public:
+        SimpleFile(const File::Path& path, OpenMode mode);
+        virtual ~SimpleFile() = 0;
+        // Returns the position before the seek
+        virtual void Seek(Position position) = 0;
+        Position Tell();
+        std::streamsize Size();
+    protected:
+        Stream stream;
+
+        virtual Position DoTell() = 0;
     private:
         File::Path path;
-
-        virtual Pos Tell(StreamT &tell) = 0;
-    protected:
-        StreamT stream;
-    public:
-        SimpleFile(const File::Path &path, Mode mode);
-        virtual ~SimpleFile() = 0 {}
-        // Returns the position before the seek
-        virtual void Seek(Pos pos) = 0;
-        Pos Tell();
-        StreamSize GetFileSize();
     };
 
-    template<class StreamT>
-    SimpleFile<StreamT>::SimpleFile(const File::Path &path, Mode mode) : path(path)
+    template<class Stream>
+    SimpleFile<Stream>::SimpleFile(const File::Path& path, OpenMode mode) : path(path)
     {
         stream.open(path.c_str(), mode);
     }
 
-    template<class StreamT>
-    typename SimpleFile<StreamT>::Pos SimpleFile<StreamT>::Tell()
+    template<class Stream>
+    SimpleFile<Stream>::~SimpleFile() = default;
+
+    template<class Stream>
+    auto SimpleFile<Stream>::Tell() -> Position
     {
         return Tell(stream);
     }
 
-    template<class StreamT>
-    typename SimpleFile<StreamT>::StreamSize SimpleFile<StreamT>::GetFileSize()
+    template<class Stream>
+    std::streamsize SimpleFile<Stream>::Size()
     {
-        StreamT checkStream(path.c_str(), std::ios::binary | std::ios::ate);
+        Stream checkStream(path.c_str(), std::ios::binary | std::ios::ate);
         return Tell(checkStream);
     }
 
-    class SimpleInFile : public SimpleFile<std::ifstream>
+    class SimpleInFile final : public SimpleFile<std::ifstream>
     {
-    private:
-        Pos Tell(StreamT &tell) override;
     public:
-        SimpleInFile(const File::Path &path);
+        explicit SimpleInFile(const File::Path& path);
         template<class T>
-        void operator>>(T &arg);
-        void Seek(Pos pos) override;
-        template<class SizeT>
-        void FillBuffer(Buffer<SizeT> &fill, StreamSize size);
-        void FillBuffer(char *buf, StreamSize size);
+        void operator>>(T& arg);
+        void Seek(Position position) override;
+        [[nodiscard]] Buffer ReadBuffer(std::streamsize size = std::numeric_limits<std::streamsize>::max());
+    private:
+        Position DoTell() override;
     };
 
     template<class T>
-    void SimpleInFile::operator>>(T &arg)
+    void SimpleInFile::operator>>(T& arg)
     {
         stream.read(reinterpret_cast<char*>(&arg), sizeof(arg));
     }
 
-    template<class SizeT>
-    void SimpleInFile::FillBuffer(Buffer<SizeT> &fill, StreamSize size)
+    class SimpleOutFile final : public SimpleFile<std::ofstream>
     {
-        stream.read(fill.GetBytes<char*>(), size);
-    }
-
-    class SimpleOutFile : public SimpleFile<std::ofstream>
-    {
-    private:
-        Pos Tell(StreamT &tell) override;
     public:
-        SimpleOutFile(const File::Path &path);
+        explicit SimpleOutFile(const File::Path& path);
         template<class T>
-        void operator<<(const T &arg);
-        void Seek(Pos pos) override;
+        void operator<<(const T& arg);
+        void Seek(Position position) override;
+    private:
+        Position DoTell() override;
     };
 
     template<class T>
-    void SimpleOutFile::operator<<(const T &arg)
+    void SimpleOutFile::operator<<(const T& arg)
     {
         stream.write(reinterpret_cast<const char*>(&arg), sizeof(arg));
     }
 
-    size_t GetFileSize(const File::Path &path);
-    // The first parameter of the return value MUST be delete[]'d after you are done with it
-    std::pair<void*, size_t> ReadFileIntoBuffer(const File::Path &path);
+    size_t FileSize(const File::Path& path);
 }
