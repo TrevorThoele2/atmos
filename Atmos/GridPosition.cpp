@@ -1,6 +1,6 @@
 #include "GridPosition.h"
 
-#include "TileSize.h"
+#include "GridCellSize.h"
 
 #include <Inscription/Scribe.h>
 
@@ -213,12 +213,12 @@ namespace Atmos::Grid
 
     Position::Value Position::DimensionFromPosition(Position2D::Value dim)
     {
-        return static_cast<Value>(std::floor(dim / TileSize<Position3D::Value>));
+        return static_cast<Value>(std::floor(dim / CellSize<Position3D::Value>));
     }
 
     Position2D::Value Position::DimensionToPosition(Value dim)
     {
-        return static_cast<Position2D::Value>((dim * TileSize<Value>) + (TileSize<Value> / 2));
+        return static_cast<Position2D::Value>((dim * CellSize<Value>) + (CellSize<Value> / 2));
     }
 
     RelativePosition::RelativePosition() :

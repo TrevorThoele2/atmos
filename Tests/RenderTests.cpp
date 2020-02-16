@@ -4,9 +4,13 @@
 
 #include <Atmos/StaticMaterialView.h>
 #include <Atmos/DynamicMaterialView.h>
+#include <Atmos/ResizeCamera.h>
 #include <Atmos/TypeRegistration.h>
+#include <Atmos/GridCellSize.h>
 
 #include "DerivedEngine.h"
+
+using namespace Atmos;
 
 SCENARIO_METHOD(RenderTestsFixture, "rendering material views")
 {
@@ -181,6 +185,68 @@ SCENARIO_METHOD(RenderTestsFixture, "rendering material views")
                             {
                                 return entry.size == size;
                             });
+                    }));
+            }
+        }
+    }
+}
+
+SCENARIO_METHOD(RenderTestsFixture, "rendering culled material views")
+{
+    GIVEN("setup engine with field")
+    {
+        DerivedEngine engine;
+        engine.Setup();
+
+        auto fieldOrigin = Arca::ReliquaryOrigin();
+        RegisterFieldTypes(fieldOrigin, *engine.TheGlobalReliquary());
+        World::Field field(0, fieldOrigin.Actualize());
+
+        WHEN("creating static material views and starting execution")
+        {
+            field.Reliquary().Do<ResizeCamera>(ScreenSize(100, 100));
+
+            static constexpr auto gridCellSize = Grid::CellSize<Position3D::Value>;
+            static constexpr auto halfGridCellSize = gridCellSize / 2;
+
+            auto materialView1 = field.Reliquary().Do<Arca::Create<StaticMaterialView>>();
+            auto materialView2 = field.Reliquary().Do<Arca::Create<StaticMaterialView>>(
+                Position3D{ gridCellSize * -16 + halfGridCellSize, halfGridCellSize, halfGridCellSize },
+                Size2D{ gridCellSize, gridCellSize });
+            auto materialView3 = field.Reliquary().Do<Arca::Create<StaticMaterialView>>(
+                Position3D{ gridCellSize + halfGridCellSize, gridCellSize * 4 + halfGridCellSize, halfGridCellSize },
+                Size2D{ gridCellSize, gridCellSize * 16 });
+
+            engine.UseField(std::move(field));
+            engine.StartExecution();
+
+            THEN("only material views inside the camera are rendered")
+            {
+                auto& materialRenders = engine.mockGraphicsManager->renderer.materialRenders;
+                REQUIRE(materialRenders.size() == 2);
+
+                REQUIRE(std::any_of(
+                    materialRenders.begin(),
+                    materialRenders.end(),
+                    [&materialView1](const MaterialRender& entry)
+                    {
+                        return entry.position == materialView1->Position();
+                    }));
+
+                REQUIRE(!std::any_of(
+                    materialRenders.begin(),
+                    materialRenders.end(),
+                    [&materialView2](const MaterialRender& entry)
+                    {
+                        return entry.position == materialView2->Position();
+                    }));
+
+                REQUIRE(std::any_of(
+                    materialRenders.begin(),
+                    materialRenders.end(),
+                    [&materialView3](const MaterialRender& entry)
+                    {
+                        return entry.position == materialView3->Position();
                     }));
             }
         }

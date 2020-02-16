@@ -4,6 +4,12 @@
 
 namespace Atmos::Asset
 {
+    AudioAsset::AudioAsset(Init init) : FileAsset(init)
+    {}
+
+    AudioAsset::AudioAsset(AudioAsset&& arg) noexcept : FileAsset(std::move(arg))
+    {}
+
     AudioAsset& AudioAsset::operator=(AudioAsset&& arg) noexcept
     {
         FileAsset::operator=(std::move(arg));

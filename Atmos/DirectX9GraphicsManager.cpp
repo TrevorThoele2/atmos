@@ -35,8 +35,10 @@ namespace Atmos::Render::DirectX9
 
     GraphicsManager::~GraphicsManager()
     {
-        d3d->Release();
-        device->Release();
+        if (d3d)
+            d3d->Release();
+        if (device)
+            device->Release();
     }
 
     void GraphicsManager::Initialize(Arca::Reliquary& reliquary)

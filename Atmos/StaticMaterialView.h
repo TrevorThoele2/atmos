@@ -30,7 +30,7 @@ namespace Atmos::Render
         [[nodiscard]] Arca::ShardIndex<MaterialViewCore> Core() const;
         [[nodiscard]] Arca::ShardIndex<const Bounds> Bounds() const;
     public:
-        StaticMaterialView(Init init);
+        explicit StaticMaterialView(Init init);
         StaticMaterialView(Init init, const Position3D& position, const Size2D& size);
     private:
         Arca::ShardIndex<MaterialViewCore> core;

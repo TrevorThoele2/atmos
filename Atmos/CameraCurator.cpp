@@ -9,7 +9,7 @@
 namespace Atmos::Render
 {
     CameraCurator::CameraCurator(Init init) :
-        Curator(init), debugStatistics(init.owner)
+        Curator(init), camera(init.owner), debugStatistics(init.owner)
     {}
 
     void CameraCurator::Work()
@@ -48,6 +48,11 @@ namespace Atmos::Render
     void CameraCurator::Handle(const MoveCameraDeltaInstant& command)
     {
         MoveDeltaInstant(command.x, command.y, command.z);
+    }
+
+    void CameraCurator::Handle(const ResizeCamera& command)
+    {
+        Resize(command.toSize);
     }
 
     void CameraCurator::Move(Direction direction, Position3D::Value by)
@@ -99,6 +104,11 @@ namespace Atmos::Render
         basePosition.x += x;
         basePosition.y += y;
         basePosition.z += z;
+    }
+
+    void CameraCurator::Resize(const ScreenSize& size)
+    {
+        Data(camera)->Size(size);
     }
 
     void CameraCurator::ResetFocus()

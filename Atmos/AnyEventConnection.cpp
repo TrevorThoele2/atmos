@@ -1,21 +1,20 @@
-
 #include "AnyEventConnection.h"
 
-namespace Creation
+namespace Atmos
 {
     AnyEventConnection::AnyEventConnection(const AnyEventConnection& arg) : base(arg.base->Clone())
     {}
 
-    AnyEventConnection::AnyEventConnection(AnyEventConnection&& arg) : base(std::move(arg.base))
+    AnyEventConnection::AnyEventConnection(AnyEventConnection&& arg) noexcept : base(std::move(arg.base))
     {}
 
     AnyEventConnection& AnyEventConnection::operator=(const AnyEventConnection& arg)
     {
-        base.reset(arg.base->Clone());
+        base = arg.base->Clone();
         return *this;
     }
 
-    AnyEventConnection& AnyEventConnection::operator=(AnyEventConnection&& arg)
+    AnyEventConnection& AnyEventConnection::operator=(AnyEventConnection&& arg) noexcept
     {
         base = std::move(arg.base);
         return *this;
@@ -53,6 +52,5 @@ namespace Creation
         return base->IsValid();
     }
 
-    AnyEventConnection::Base::~Base()
-    {}
+    AnyEventConnection::Base::~Base() = default;
 }

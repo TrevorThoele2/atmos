@@ -755,12 +755,6 @@
     <ClInclude Include="GridPosition.h">
       <Filter>Header Files\Grid</Filter>
     </ClInclude>
-    <ClInclude Include="TileSize.h">
-      <Filter>Header Files\Grid</Filter>
-    </ClInclude>
-    <ClInclude Include="Octree.h">
-      <Filter>Header Files\Grid</Filter>
-    </ClInclude>
     <ClInclude Include="Exception.h">
       <Filter>Header Files\Exceptions</Filter>
     </ClInclude>
@@ -1237,6 +1231,15 @@
     </ClInclude>
     <ClInclude Include="AngelScriptManager.h">
       <Filter>Header Files\Script\AngelScript</Filter>
+    </ClInclude>
+    <ClInclude Include="ResizeCamera.h">
+      <Filter>Header Files\Render\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="GridCellSize.h">
+      <Filter>Header Files\Grid</Filter>
+    </ClInclude>
+    <ClInclude Include="Octree.h">
+      <Filter>Header Files\Grid</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

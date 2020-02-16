@@ -6,6 +6,8 @@
 #include "MoveCameraBy.h"
 #include "MoveCameraToInstant.h"
 #include "MoveCameraDeltaInstant.h"
+#include "ResizeCamera.h"
+
 #include "DebugStatistics.h"
 
 namespace Atmos::Render
@@ -23,6 +25,7 @@ namespace Atmos::Render
         void Handle(const MoveCameraBy& command);
         void Handle(const MoveCameraToInstant& command);
         void Handle(const MoveCameraDeltaInstant& command);
+        void Handle(const ResizeCamera& command);
     private:
         Arca::GlobalIndex<Camera> camera;
 
@@ -33,6 +36,7 @@ namespace Atmos::Render
         void MoveBy(Position3D::Value x, Position3D::Value y, Position3D::Value z);
         void MoveToInstant(const Position3D& pos);
         void MoveDeltaInstant(Position3D::Value x, Position3D::Value y, Position3D::Value z);
+        void Resize(const ScreenSize& size);
     private:
         void ResetFocus();
 
@@ -54,7 +58,8 @@ namespace Arca
             Atmos::Render::MoveCamera,
             Atmos::Render::MoveCameraBy,
             Atmos::Render::MoveCameraDeltaInstant,
-            Atmos::Render::MoveCameraToInstant>;
+            Atmos::Render::MoveCameraToInstant,
+            Atmos::Render::ResizeCamera>;
     };
 }
 

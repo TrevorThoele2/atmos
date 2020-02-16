@@ -55,11 +55,20 @@ namespace Atmos
         return ret;
     }
 
-    // Will do 2 ^ count
     template<class T>
     T PowerOfTwo(T count)
     {
         return 1 << count;
+    }
+
+    inline float PowerOfTwo(float count)
+    {
+        return Power(2.0f, count);
+    }
+
+    inline double PowerOfTwo(double count)
+    {
+        return Power(2.0, count);
     }
 
     template<class T>
@@ -108,14 +117,20 @@ namespace Atmos
     }
 
     template<class T>
+    inline bool IsDivisibleBy(T value, T by)
+    {
+        return value % by == 0;
+    }
+
+    template<class T>
     inline bool IsEven(T t)
     {
-        return t % 2 == 0;
+        return IsDivisibleBy(t, 2);
     }
 
     template<class T>
     inline bool IsOdd(T t)
     {
-        return t % 2 == 1;
+        return !IsDivisibleBy(t, 2);
     }
 }

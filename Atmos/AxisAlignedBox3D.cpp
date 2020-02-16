@@ -166,12 +166,12 @@ namespace Atmos
     bool AxisAlignedBox3D::Contains(const AxisAlignedBox3D& box) const
     {
         return
-            left >= box.left &&
-            right <= box.right &&
-            top >= box.top &&
-            bottom <= box.bottom &&
-            farZ >= box.farZ &&
-            farZ <= box.nearZ;
+            box.left >= left &&
+            box.right <= right &&
+            box.top >= top &&
+            box.bottom <= bottom &&
+            box.farZ >= farZ &&
+            box.nearZ <= nearZ;
     }
 
     bool AxisAlignedBox3D::Intersects(const AxisAlignedBox3D& box) const

@@ -11,17 +11,6 @@
 
 namespace Atmos::Logging
 {
-    Logger::Logger()
-    {
-        ClearFile();
-        Log("Session start.", Severity::Information);
-    }
-
-    Logger::~Logger()
-    {
-        Log("Session stop.", Severity::Information);
-    }
-
     std::optional<ProcessedLog> Logger::Log(const Logging::Log& log)
     {
         return Log(log.message, log.severity, log.details);
@@ -71,7 +60,26 @@ namespace Atmos::Logging
                 output.append("        " + loop.name + ": " + ToString(loop.value) + '\n');
 
         outFile.WriteData(output);
-        return ProcessedLog{ output, message, severity, details };
+        ProcessedLog processed{ output, message, severity, details };
+        onLog(processed);
+        return processed;
+    }
+
+    void Logger::StartSession()
+    {
+        ClearFile();
+        Log("Session started.");
+    }
+
+    void Logger::StopSession()
+    {
+        Log("Session stopped.");
+    }
+
+    void Logger::ClearFile()
+    {
+        // Just open up the file without appending
+        ::Inscription::OutputTextFile outFile(OutputFilePath());
     }
 
     File::Path Logger::OutputFilePath()
@@ -110,11 +118,5 @@ namespace Atmos::Logging
         message.append(")");
 
         return message;
-    }
-
-    void Logger::ClearFile()
-    {
-        // Just open up the file without appending
-        ::Inscription::OutputTextFile outFile(OutputFilePath());
     }
 }

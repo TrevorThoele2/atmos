@@ -40,11 +40,11 @@ namespace Atmos::Render
             }
         };
 
-        auto materialViews = octree.AllInside(queryBox);
+        auto materialViews = octree.AllWithin(queryBox);
         for (auto& index : materialViews)
         {
-            auto& core = *std::get<0>(*index.value);
-            auto& bounds = *std::get<1>(*index.value);
+            auto& core = *std::get<0>(*index->value);
+            auto& bounds = *std::get<1>(*index->value);
 
             auto position = bounds.Position();
             position.x -= camera->ScreenSides().Left();

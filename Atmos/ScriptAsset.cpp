@@ -4,6 +4,12 @@
 
 namespace Atmos::Asset
 {
+    ScriptAsset::ScriptAsset(Init init) : FileAsset(init)
+    {}
+
+    ScriptAsset::ScriptAsset(ScriptAsset&& arg) noexcept : FileAsset(std::move(arg))
+    {}
+
     ScriptAsset& ScriptAsset::operator=(ScriptAsset&& arg) noexcept
     {
         FileAsset::operator=(std::move(arg));

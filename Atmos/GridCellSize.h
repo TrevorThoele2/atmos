@@ -3,5 +3,5 @@
 namespace Atmos::Grid
 {
     template<class T>
-    const T TileSize = T(32);
+    constexpr T CellSize = T(32);
 }

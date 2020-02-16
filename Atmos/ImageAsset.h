@@ -8,7 +8,8 @@ namespace Atmos::Asset
     class ImageAsset final : public FileAsset<ImageAssetData, ImageAsset>
     {
     public:
-        using FileAsset::FileAsset;
+        explicit ImageAsset(Init init);
+        ImageAsset(ImageAsset&& arg) noexcept;
 
         ImageAsset& operator=(ImageAsset&& arg) noexcept;
     public:

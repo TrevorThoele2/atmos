@@ -5,6 +5,7 @@
 #include "StaticMaterialView.h"
 #include "DynamicMaterialView.h"
 #include "Camera.h"
+#include "CameraCurator.h"
 #include "FrameStopwatch.h"
 #include "StopwatchStatistics.h"
 #include "MaterialViewCurator.h"
@@ -44,7 +45,8 @@ namespace Atmos
             .Register<Render::StaticMaterialView>()
             .Register<Render::DynamicMaterialView>()
             .Register<Render::MaterialViewCurator>()
-            .Register<Render::Camera>();
+            .Register<Render::Camera>()
+            .Register<Render::CameraCurator>();
 
         RegisterRedirectionComputation<UniqueProviderRelic<Input::Manager>>(origin, globalReliquary);
         RegisterRedirectionComputation<UniqueProviderRelic<Render::GraphicsManager>>(origin, globalReliquary);

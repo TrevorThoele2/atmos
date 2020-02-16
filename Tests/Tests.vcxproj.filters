@@ -25,6 +25,9 @@
     <ClCompile Include="MockRenderer.cpp">
       <Filter>Source Files\Objects</Filter>
     </ClCompile>
+    <ClCompile Include="OctreeTests.cpp">
+      <Filter>Source Files\Tests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneralFixture.h">
@@ -47,6 +50,9 @@
     </ClInclude>
     <ClInclude Include="MockRenderer.h">
       <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="OctreeTests.h">
+      <Filter>Header Files\Tests</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
