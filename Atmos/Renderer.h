@@ -2,7 +2,7 @@
 
 #include "MaterialRender.h"
 #include "CanvasRender.h"
-#include "Line.h"
+#include "LineRender.h"
 
 #include "SurfaceData.h"
 
@@ -15,7 +15,7 @@ namespace Atmos::Render
 
         virtual void StageRender(const MaterialRender& materialRender) = 0;
         virtual void StageRender(const CanvasRender& canvasRender) = 0;
-        virtual void StageRender(const Line& line) = 0;
+        virtual void StageRender(const LineRender& lineRender) = 0;
         virtual void RenderStaged(const SurfaceData& surface) = 0;
     };
 }

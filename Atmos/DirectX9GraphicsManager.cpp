@@ -188,7 +188,7 @@ namespace Atmos::Render::DirectX9
     void GraphicsManager::ClearStencil(const Color& color)
     {
         LogIfError(
-            device->Clear(0, nullptr, D3DCLEAR_STENCIL, ColorToD3D(color), 1.0f, 0),
+            device->Clear(0, nullptr, D3DCLEAR_STENCIL, ToDirectXColor(color), 1.0f, 0),
             "Could not clear stencil buffer.",
             Logging::Severity::SevereError);
     }

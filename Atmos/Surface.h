@@ -9,7 +9,7 @@ namespace Atmos::Render
 {
     struct MaterialRender;
     struct CanvasRender;
-    struct Line;
+    struct LineRender;
 
     template<class Derived>
     class Surface : public Arca::ClosedTypedRelic<Derived>
@@ -21,7 +21,7 @@ namespace Atmos::Render
     public:
         void StageRender(const MaterialRender& materialRender);
         void StageRender(const CanvasRender& canvasRender);
-        void StageRender(const Line& line);
+        void StageRender(const LineRender& lineRender);
         void RenderStaged();
 
         void FullColor(const Color& color = Color());
@@ -57,9 +57,9 @@ namespace Atmos::Render
     }
 
     template<class Derived>
-    void Surface<Derived>::StageRender(const Line& line)
+    void Surface<Derived>::StageRender(const LineRender& lineRender)
     {
-        Data()->StageRender(line);
+        Data()->StageRender(lineRender);
     }
 
     template<class Derived>

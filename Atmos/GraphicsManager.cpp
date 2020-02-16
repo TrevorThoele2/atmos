@@ -21,9 +21,9 @@ namespace Atmos::Render
         renderer->StageRender(canvasRender);
     }
 
-    void GraphicsManager::StageRender(const Line& line)
+    void GraphicsManager::StageRender(const LineRender& lineRender)
     {
-        renderer->StageRender(line);
+        renderer->StageRender(lineRender);
     }
 
     void GraphicsManager::RenderStaged(const SurfaceData& surface)

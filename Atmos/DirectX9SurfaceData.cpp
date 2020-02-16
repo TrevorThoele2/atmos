@@ -23,7 +23,7 @@ namespace Atmos::Render::DirectX9
     void SurfaceDataImplementation::FullColor(const Color& color)
     {
         LogIfError(
-            owner->Device()->Clear(0, nullptr, D3DCLEAR_TARGET, ColorToD3D(color), 1.0f, 0),
+            owner->Device()->Clear(0, nullptr, D3DCLEAR_TARGET, ToDirectXColor(color), 1.0f, 0),
             "Could not clear surface.",
             Logging::Severity::SevereError);
     }

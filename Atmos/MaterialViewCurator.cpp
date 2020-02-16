@@ -7,16 +7,16 @@ namespace Atmos::Render
     MaterialViewCurator::MaterialViewCurator(Init init) :
         Curator(init), camera(init.owner)
     {
-        Owner().ExecuteOn<Arca::MatrixFormed<MaterialMatrix>>(
-            [this](const Arca::MatrixFormed<MaterialMatrix>& signal)
+        Owner().ExecuteOn<Arca::MatrixFormed<Matrix>>(
+            [this](const Arca::MatrixFormed<Matrix>& signal)
             {
-                OnMaterialFormed(signal);
+                OnViewFormed(signal);
             });
 
-        Owner().ExecuteOn<Arca::MatrixDissolved<MaterialMatrix>>(
-            [this](const Arca::MatrixDissolved<MaterialMatrix>& signal)
+        Owner().ExecuteOn<Arca::MatrixDissolved<Matrix>>(
+            [this](const Arca::MatrixDissolved<Matrix>& signal)
             {
-                OnMaterialDissolved(signal);
+                OnViewDissolved(signal);
             });
     }
 
@@ -124,19 +124,19 @@ namespace Atmos::Render
         materialSlice.Right(column * indexWidth + indexWidth);
     }
 
-    void MaterialViewCurator::OnMaterialFormed(const Arca::MatrixFormed<MaterialMatrix>& matrix)
+    void MaterialViewCurator::OnViewFormed(const Arca::MatrixFormed<Matrix>& view)
     {
-        octree.Add(matrix.index.ID(), matrix.index, BoxFor(matrix.index));
+        octree.Add(view.index.ID(), view.index, BoxFor(view.index));
     }
 
-    void MaterialViewCurator::OnMaterialDissolved(const Arca::MatrixDissolved<MaterialMatrix>& matrix)
+    void MaterialViewCurator::OnViewDissolved(const Arca::MatrixDissolved<Matrix>& view)
     {
-        octree.Remove(matrix.index.ID(), BoxFor(matrix.index));
+        octree.Remove(view.index.ID(), BoxFor(view.index));
     }
 
-    AxisAlignedBox3D MaterialViewCurator::BoxFor(const MaterialIndex& matrix)
+    AxisAlignedBox3D MaterialViewCurator::BoxFor(const MatrixIndex& view)
     {
-        const auto& bounds = *std::get<1>(*matrix);
+        const auto& bounds = *std::get<1>(*view);
         return AxisAlignedBox3D
         {
             bounds.Position(),

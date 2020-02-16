@@ -36,7 +36,7 @@ namespace Atmos::Render::DirectX9
         this->device = device;
         InitializeBuffers();
 
-        auto texturedSpritePath = File::manager->ExePath() + "Shaders\\TexturedSprite.fx";
+        const auto texturedSpritePath = File::manager->ExePath() + "Shaders\\TexturedSprite.fx";
 
         SimpleInFile inFile(texturedSpritePath);
         const auto texturedSpriteBuffer = inFile.ReadBuffer();
@@ -99,14 +99,14 @@ namespace Atmos::Render::DirectX9
         );
     }
 
-    void Renderer::StageRender(const Line& line)
+    void Renderer::StageRender(const LineRender& lineRender)
     {
-        StageRender(line.from, line.to, line.width, line.color);
+        StageRender(lineRender.from, lineRender.to, lineRender.z, lineRender.width, lineRender.color);
     }
 
     void Renderer::RenderStaged(const SurfaceData& surface)
     {
-        if (objects.empty())
+        if (layers.empty())
             return;
 
         LPDIRECT3DSURFACE9 previousRenderSurface;
@@ -137,7 +137,7 @@ namespace Atmos::Render::DirectX9
                 lineInterface,
                 projection,
                 surface.Size());
-            pipeline.Flush(objects);
+            pipeline.Flush(layers);
         }
 
         device->SetRenderTarget(0, previousRenderSurface);
@@ -171,7 +171,7 @@ namespace Atmos::Render::DirectX9
             Logging::Severity::SevereError);
     }
 
-    Arca::RelicIndex<Asset::ShaderAsset> Renderer::DefaultTexturedImageViewShader()
+    Arca::RelicIndex<Asset::ShaderAsset> Renderer::DefaultTexturedImageViewShader() const
     {
         return defaultTexturedImageViewShader;
     }
@@ -184,9 +184,8 @@ namespace Atmos::Render::DirectX9
     (
         LPDIRECT3DTEXTURE9 tex,
         const Asset::ShaderAsset* shader,
-        float X,
-        float Y,
-        float Z,
+        float x,
+        float y,
         const AxisAlignedBox2D& imageBounds,
         const Size2D& size,
         const Position2D& center,
@@ -199,37 +198,36 @@ namespace Atmos::Render::DirectX9
             Vertex
             (
                 D3DXVECTOR2(0.0f, 0.0f),
-                ColorToD3D(color),
+                ToDirectXColor(color),
                 imageBounds.Left(),
                 imageBounds.Top()
             ),
             Vertex
             (
                 D3DXVECTOR2(size.width, 0.0f),
-                ColorToD3D(color),
+                ToDirectXColor(color),
                 imageBounds.Right(),
                 imageBounds.Top()
             ),
             Vertex
             (
                 D3DXVECTOR2(0.0f, size.height),
-                ColorToD3D(color),
+                ToDirectXColor(color),
                 imageBounds.Left(),
                 imageBounds.Bottom()
             ),
             Vertex
             (
                 D3DXVECTOR2(size.width, size.height),
-                ColorToD3D(color),
+                ToDirectXColor(color),
                 imageBounds.Right(),
                 imageBounds.Bottom()
             )
         },
-        z(Z),
         tex(tex),
         shader(shader)
     {
-        SetupQuad(X, Y, center, scalers, rotation.As<Radians>());
+        SetupQuad(x, y, center, scalers, rotation.As<Radians>());
     }
 
     Renderer::StagedObject& Renderer::StagedObject::operator=(StagedObject&& arg) noexcept
@@ -237,7 +235,6 @@ namespace Atmos::Render::DirectX9
         vertices = std::move(arg.vertices);
         indices = std::move(arg.indices);
         primCount = arg.primCount;
-        z = arg.z;
         tex = arg.tex;
         shader = arg.shader;
         return *this;
@@ -245,8 +242,8 @@ namespace Atmos::Render::DirectX9
 
     void Renderer::StagedObject::SetupQuad
     (
-        float X,
-        float Y,
+        float x,
+        float y,
         const Position2D& center,
         const Scalers2D& scalers,
         float rotation
@@ -256,7 +253,7 @@ namespace Atmos::Render::DirectX9
         D3DXMATRIX matrix;
         {
             D3DXVECTOR2 centerVector(center.x, center.y);
-            D3DXVECTOR2 positionVector(X, Y);
+            D3DXVECTOR2 positionVector(x, y);
             D3DXVECTOR2 scalingVector(scalers.x, scalers.y);
 
             D3DXMatrixIdentity(&matrix);
@@ -273,9 +270,9 @@ namespace Atmos::Render::DirectX9
         }
 
         auto vertex = vertices.data();
-        for (auto x = 0; x < 4; ++x)
+        for (auto i = 0; i < 4; ++i)
         {
-            SetupVertexCommon(*vertex, matrix, vertex->position, transformedCenter);
+            SetupVertex(*vertex, matrix, vertex->position, transformedCenter);
             ++vertex;
         }
 
@@ -298,21 +295,21 @@ namespace Atmos::Render::DirectX9
     (
         float radius,
         unsigned int polyCount,
-        float X,
-        float Y,
+        float x,
+        float y,
         const Scalers2D& scalers,
         float rotation,
         const Color& color
     ) {
-        const float angle = FULL_CIRCLE_RADIANS<float> / polyCount;
-        const float useRadius = radius / std::cos(angle / 2);
+        const auto angle = FULL_CIRCLE_RADIANS<float> / polyCount;
+        const auto useRadius = radius / std::cos(angle / 2);
 
         // Setup matrix and center
         D3DXVECTOR2 transformedCenter;
         D3DXMATRIX matrix;
         {
             D3DXVECTOR2 centerVector(useRadius, useRadius);
-            D3DXVECTOR2 positionVector(X - useRadius, Y - useRadius);
+            D3DXVECTOR2 positionVector(x - useRadius, y - useRadius);
             D3DXVECTOR2 scalingVector(scalers.x, scalers.y);
 
             D3DXMatrixIdentity(&matrix);
@@ -321,11 +318,11 @@ namespace Atmos::Render::DirectX9
             D3DXVec2TransformCoord(&transformedCenter, &centerVector, &matrix);
         }
 
-        // Vertices and indicies
+        // Vertices and indices
         {
-            auto setIndex = [&](size_t currentPoly)
+            const auto setIndex = [this](size_t currentPoly)
             {
-                const size_t startIndex = currentPoly * 3;
+                const auto startIndex = currentPoly * 3;
                 indices[startIndex] = static_cast<Index>(currentPoly + 1);
                 indices[startIndex + 1] = static_cast<Index>(currentPoly + 2);
                 indices[startIndex + 2] = static_cast<Index>(0);
@@ -334,7 +331,7 @@ namespace Atmos::Render::DirectX9
             float currentAngle = FULL_CIRCLE_RADIANS<float> / 2.0f;
             vertices.resize(polyCount + 1);
             indices.resize(polyCount * 3);
-            SetupVertexCommon(vertices[0], matrix, D3DXVECTOR2(useRadius, useRadius), transformedCenter, color);
+            SetupVertex(vertices[0], matrix, D3DXVECTOR2(useRadius, useRadius), transformedCenter, color);
 
             for (size_t loopPoly = 0; loopPoly != polyCount; ++loopPoly)
             {
@@ -342,7 +339,7 @@ namespace Atmos::Render::DirectX9
                     useRadius + (std::cos(currentAngle) * useRadius),
                     useRadius + (std::sin(currentAngle) * useRadius));
 
-                SetupVertexCommon(vertices[loopPoly + 1], matrix, vector, transformedCenter, color);
+                SetupVertex(vertices[loopPoly + 1], matrix, vector, transformedCenter, color);
                 setIndex(loopPoly);
                 currentAngle += angle;
             }
@@ -354,7 +351,7 @@ namespace Atmos::Render::DirectX9
         primCount = polyCount;
     }
 
-    void Renderer::StagedObject::SetupVertexCommon
+    void Renderer::StagedObject::SetupVertex
     (
         Vertex& vertex,
         const D3DXMATRIX& matrix,
@@ -366,7 +363,7 @@ namespace Atmos::Render::DirectX9
         vertex.center = center;
     }
 
-    void Renderer::StagedObject::SetupVertexCommon
+    void Renderer::StagedObject::SetupVertex
     (
         Vertex& vertex,
         const D3DXMATRIX& matrix,
@@ -376,7 +373,36 @@ namespace Atmos::Render::DirectX9
     ) {
         D3DXVec2TransformCoord(&vertex.position, &position, &matrix);
         vertex.center = center;
-        vertex.color = ColorToD3D(color);
+        vertex.color = ToDirectXColor(color);
+    }
+
+    Renderer::StagedLine::StagedLine(const Position2D& from, const Position2D& to, float width, const Color& color) :
+        points
+        {
+            D3DXVECTOR2(from.x, from.y),
+            D3DXVECTOR2(to.x, to.y)
+        },
+        width(width),
+        color(ToDirectXColor(color))
+    {}
+
+    Renderer::Layer::Layer(FLOAT z) : z(z)
+    {}
+
+    auto Renderer::LayerWithZ(FLOAT z) -> Layers::iterator
+    {
+        auto found = std::find_if(
+            layers.begin(),
+            layers.end(),
+            [z](const Layer& layer)
+            {
+                return layer.z == z;
+            });
+        if (found != layers.end())
+            return found;
+
+        layers.emplace_back(z);
+        return --layers.end();
     }
 
     void Renderer::InitializeBuffers()
@@ -415,9 +441,9 @@ namespace Atmos::Render::DirectX9
     (
         LPDIRECT3DTEXTURE9 tex,
         const Asset::ShaderAsset* shader,
-        float X,
-        float Y,
-        float Z,
+        float x,
+        float y,
+        float z,
         const AxisAlignedBox2D& imageBounds,
         const Size2D& size,
         const Position2D& center,
@@ -425,29 +451,20 @@ namespace Atmos::Render::DirectX9
         const Angle& rotation,
         const Color& color
     ) {
-        objects.emplace_back(tex, shader, X, Y, Z, imageBounds, size, center, scalers, rotation, color);
+        const auto layer = LayerWithZ(z);
+        layer->objects.emplace_back(tex, shader, x, y, imageBounds, size, center, scalers, rotation, color);
     }
 
     void Renderer::StageRender
     (
         const Position2D& from,
         const Position2D& to,
+        Position2D::Value z,
         float width,
         const Color& color
     ) {
-        if (width != lineInterface->GetWidth())
-        {
-            lineInterface->End();
-            lineInterface->SetWidth(width);
-            lineInterface->Begin();
-        }
-
-        D3DXVECTOR2 points[] =
-        {
-            D3DXVECTOR2(from.x, from.y),
-            D3DXVECTOR2(to.x, to.y)
-        };
-        lineInterface->Draw(points, 2, ColorToD3D(color));
+        const auto layer = LayerWithZ(z);
+        layer->lines.emplace_back(from, to, width, color);
     }
 
     Renderer::Pipeline::Pipeline(
@@ -469,34 +486,41 @@ namespace Atmos::Render::DirectX9
         projection(projection),
         screenSize(screenSize)
     {}
-
-    void Renderer::Pipeline::Flush(Objects& objects)
+    
+    void Renderer::Pipeline::Flush(Layers& layers)
     {
         if (!Start())
         {
-            objects.clear();
+            layers.clear();
             return;
         }
 
-        Sort(objects);
+        Sort(layers);
 
         device->SetVertexDeclaration(vertexDeclaration);
         device->SetStreamSource(0, vertexBuffer, 0, sizeof(Vertex));
         device->SetIndices(indexBuffer);
 
-        SetShader(objects.begin()->shader);
-        SetTexture(objects.begin()->tex);
+        for (auto& layer : layers)
+        {
+            auto& objects = layer.objects;
+            SetShader(objects.begin()->shader);
+            SetTexture(objects.begin()->tex);
 
-        vertexBuffer->Lock(0, 0, &vertexData, D3DLOCK_DISCARD);
-        indexBuffer->Lock(0, 0, &indexData, D3DLOCK_DISCARD);
+            vertexBuffer->Lock(0, 0, &vertexData, D3DLOCK_DISCARD);
+            indexBuffer->Lock(0, 0, &indexData, D3DLOCK_DISCARD);
 
-        for (auto& object : objects)
-            HandleObject(object);
+            for (auto& object : objects)
+                Handle(object);
 
-        vertexBuffer->Unlock();
-        indexBuffer->Unlock();
+            vertexBuffer->Unlock();
+            indexBuffer->Unlock();
 
-        objects.clear();
+            for (auto& line : layer.lines)
+                Handle(line);
+        }
+
+        layers.clear();
         if (vertexCount == 0)
             return;
 
@@ -524,18 +548,26 @@ namespace Atmos::Render::DirectX9
         return true;
     }
 
-    void Renderer::Pipeline::Sort(Objects& objects) const
+    void Renderer::Pipeline::Sort(Layers& layers) const
     {
         std::sort(
-            objects.begin(),
-            objects.end(),
-            [](const StagedObject& left, const StagedObject& right)
+            layers.begin(),
+            layers.end(),
+            [](const Layer& left, const Layer& right)
             {
                 const auto leftZ = left.z;
                 const auto rightZ = right.z;
-                if (leftZ != rightZ)
-                    return leftZ < rightZ;
+                return leftZ < rightZ;
+            });
+    }
 
+    void Renderer::Pipeline::Sort(Layer& layer) const
+    {
+        std::sort(
+            layer.objects.begin(),
+            layer.objects.end(),
+            [](const StagedObject& left, const StagedObject& right)
+            {
                 const auto leftTex = left.tex;
                 const auto rightTex = right.tex;
 
@@ -543,15 +575,23 @@ namespace Atmos::Render::DirectX9
                     ? left.shader < right.shader
                     : leftTex < rightTex;
             });
+
+        std::sort(
+            layer.lines.begin(),
+            layer.lines.end(),
+            [](const StagedLine& left, const StagedLine& right)
+            {
+                return left.width < right.width;
+            });
     }
 
-    void Renderer::Pipeline::HandleObject(StagedObject& object)
+    void Renderer::Pipeline::Handle(StagedObject& staged)
     {
-        const auto loopVerticesSize = object.vertices.size();
-        const auto loopIndicesSize = object.indices.size();
+        const auto loopVerticesSize = staged.vertices.size();
+        const auto loopIndicesSize = staged.indices.size();
 
-        const auto loopTexture = object.tex;
-        const auto loopShader = object.shader;
+        const auto loopTexture = staged.tex;
+        const auto loopShader = staged.shader;
 
         // Check if the sprint is done
         if (vertexCount + loopVerticesSize >= maxVertexSprint
@@ -588,20 +628,32 @@ namespace Atmos::Render::DirectX9
         // Vertices
         memcpy(
             &reinterpret_cast<Vertex*>(vertexData)[vertexCount],
-            object.vertices.data(),
+            staged.vertices.data(),
             loopVerticesSize * sizeof(Vertex));
 
         // Indices
         for (size_t indexLoop = 0; indexLoop != loopIndicesSize; ++indexLoop)
-            object.indices[indexLoop] = vertexCount + object.indices[indexLoop];
+            staged.indices[indexLoop] = vertexCount + staged.indices[indexLoop];
         memcpy(
             &reinterpret_cast<Index*>(indexData)[indexCount],
-            object.indices.data(),
+            staged.indices.data(),
             loopIndicesSize * sizeof(Index));
 
         vertexCount += static_cast<BufferSize>(loopVerticesSize);
         indexCount += static_cast<BufferSize>(loopIndicesSize);
-        primitiveCount += object.primCount;
+        primitiveCount += staged.primCount;
+    }
+
+    void Renderer::Pipeline::Handle(StagedLine& staged)
+    {
+        if (staged.width != lineInterface->GetWidth())
+        {
+            lineInterface->End();
+            lineInterface->SetWidth(staged.width);
+            lineInterface->Begin();
+        }
+
+        lineInterface->Draw(staged.points, 2, staged.color);
     }
 
     void Renderer::Pipeline::DrawPrimitives()

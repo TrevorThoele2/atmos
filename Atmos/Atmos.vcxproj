@@ -55,9 +55,13 @@
     <ClInclude Include="Environment.h" />
     <ClInclude Include="IdleCurator.h" />
     <ClInclude Include="ImageAssetData.h" />
+    <ClInclude Include="LineCurator.h" />
+    <ClInclude Include="LineRender.h" />
+    <ClInclude Include="LineWidth.h" />
     <ClInclude Include="Logger.h" />
     <ClInclude Include="MainSurface.h" />
     <ClInclude Include="MoveBounds.h" />
+    <ClInclude Include="MoveLine.h" />
     <ClInclude Include="Octree.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="ResetAverage.h" />
@@ -351,6 +355,7 @@
     <ClCompile Include="ImageAssetData.cpp" />
     <ClCompile Include="InputFieldArchiveInterface.cpp" />
     <ClCompile Include="InputManager.cpp" />
+    <ClCompile Include="LineCurator.cpp" />
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="MainSurface.cpp" />
     <ClCompile Include="MaterialViewCore.cpp" />

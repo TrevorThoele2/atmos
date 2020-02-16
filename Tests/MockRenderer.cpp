@@ -6,5 +6,9 @@ void MockRenderer::StageRender(const MaterialRender& materialRender)
 }
 
 void MockRenderer::StageRender(const CanvasRender& canvasRender) {}
-void MockRenderer::StageRender(const Line& line) {}
+void MockRenderer::StageRender(const LineRender& lineRender)
+{
+    lineRenders.push_back(lineRender);
+}
+
 void MockRenderer::RenderStaged(const SurfaceData& surface) {}
