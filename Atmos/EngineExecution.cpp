@@ -29,7 +29,7 @@ namespace Atmos
                 if (!isFocusLost)
                     OnFocusLost();
 
-                Window::window->Suspend(Time::Value(FixedPoint64(1), Time::Epoch::Milliseconds));
+                Window::window->Suspend(std::chrono::duration_cast<Time::Seconds>(Time::Milliseconds(1)));
             }
         }
     }

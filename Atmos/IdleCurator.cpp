@@ -10,7 +10,7 @@ namespace Atmos::Time
     void IdleCurator::Work()
     {
         while (!IsDone())
-            Window::window->Suspend(Time::Value(FixedPoint64(0), Time::Epoch::Milliseconds));
+            Window::window->Suspend(Time::Duration<>(0));
     }
 
     bool IdleCurator::IsDone() const
@@ -18,6 +18,6 @@ namespace Atmos::Time
         if (timeSettings->fpsLimit == 0 || timeSettings->verticalSync)
             return true;
 
-        return timeInformation->stopwatch->Elapsed().Get() >= Time::Value::Number(timeSettings->fpsLimit);
+        return timeInformation->stopwatch->Elapsed() >= Milliseconds(timeSettings->fpsLimit);
     }
 }

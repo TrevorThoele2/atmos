@@ -2,80 +2,52 @@
 
 #include <chrono>
 
-#include "Epoch.h"
-
-#include "FixedPoint.h"
-
 #include "Serialization.h"
 
 namespace Atmos::Time
 {
-    using Value = std::chrono::time_point<std::chrono::steady_clock>;
+    using Hours = std::chrono::hours;
+    using Minutes = std::chrono::minutes;
+    using Seconds = std::chrono::seconds;
+    using Milliseconds = std::chrono::milliseconds;
+    using Microseconds = std::chrono::microseconds;
+    using Nanoseconds = std::chrono::nanoseconds;
 
-    class Value
-    {
-    public:
-        using Number = FixedPoint64;
-        using Radix = Number::Radix;
-    public:
-        explicit Value(Number number = Number(), Epoch epoch = Epoch::Seconds);
-        Value(Number::Value number, Epoch epoch);
-        Value(const Value& arg) = default;
+    template<class Rep = long long, class Period = std::nano>
+    using Duration = std::chrono::duration<Rep, Period>;
 
-        Value& operator=(const Value& arg) = default;
-
-        bool operator==(const Value& arg) const;
-        bool operator!=(const Value& arg) const;
-        bool operator<(const Value& arg) const;
-        bool operator<=(const Value& arg) const;
-        bool operator>(const Value& arg) const;
-        bool operator>=(const Value& arg) const;
-
-        Value operator+(const Value& arg) const;
-        Value& operator+=(const Value& arg);
-        Value operator-(const Value& arg) const;
-        Value& operator-=(const Value& arg);
-        Value operator*(const Value& arg) const;
-        Value& operator*=(const Value& arg);
-        Value operator/(const Value& arg) const;
-        Value& operator/=(const Value& arg);
-
-        explicit operator double() const;
-
-        explicit operator Number() const;
-        [[nodiscard]] Number Get() const;
-        [[nodiscard]] Number GetAs(Epoch epoch) const;
-        [[nodiscard]] Radix GetRadixPoint() const;
-        static Radix GetRadixPoint(Epoch epoch);
-
-        void ConvertTo(Epoch epoch);
-        [[nodiscard]] Epoch GetEpoch() const;
-    private:
-        Number number;
-        Epoch epoch;
-    private:
-        static Number ConvertNumberStatic(
-            Number number,
-            Epoch oldEpoch,
-            Epoch newEpoch,
-            bool manipulateValue = false);
-    private:
-        INSCRIPTION_ACCESS;
-    };
+    template<class Duration = Nanoseconds>
+    using Value = std::chrono::time_point<std::chrono::steady_clock, Duration>;
 }
 
 namespace Inscription
 {
-    template<>
-    class Scribe<::Atmos::Time::Value, BinaryArchive> final :
-        public CompositeScribe<::Atmos::Time::Value, BinaryArchive>
+    template<class Clock, class Duration>
+    class Scribe<::std::chrono::time_point<Clock, Duration>, BinaryArchive> final :
+        public CompositeScribe<::std::chrono::time_point<Clock, Duration>, BinaryArchive>
     {
-    protected:
-        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
-    };
+    private:
+        using BaseT = CompositeScribe<::std::chrono::time_point<Clock, Duration>, BinaryArchive>;
+    public:
+        using ObjectT = typename BaseT::ObjectT;
+        using ArchiveT = typename BaseT::ArchiveT;
 
-    template<>
-    class Scribe<::Atmos::Time::Epoch, BinaryArchive> final :
-        public EnumScribe<::Atmos::Time::Epoch, BinaryArchive>
-    {};
+        using BaseT::Scriven;
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override
+        {
+            if (archive.IsOutput())
+            {
+                auto time = object.time_since_epoch().count();
+                archive(time);
+            }
+            else
+            {
+                long long time;
+                archive(time);
+
+                object = ObjectT(ObjectT::duration(time));
+            }
+        }
+    };
 }

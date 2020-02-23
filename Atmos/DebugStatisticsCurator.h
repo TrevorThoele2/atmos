@@ -4,6 +4,8 @@
 
 #include "DebugStatistics.h"
 
+#include "String.h"
+
 namespace Atmos::Debug
 {
     class StatisticsCurator final : public Arca::Curator

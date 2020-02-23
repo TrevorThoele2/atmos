@@ -11,7 +11,7 @@ bool MockWindow::IsCurrentlyFocused() const
     return true;
 }
 
-void MockWindow::Suspend(const Time::Value& time)
+void MockWindow::Suspend(const Time::Duration<>& time)
 {}
 
 bool MockWindow::OnStartFrame()

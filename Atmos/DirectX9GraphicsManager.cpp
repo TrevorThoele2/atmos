@@ -15,6 +15,8 @@ int (WINAPIV * __vsnprintf)(char *, size_t, const char*, va_list) = _vsnprintf;
 
 #include "TimeSettings.h"
 
+#include <Chroma/Contract.h>
+
 namespace Atmos::Render::DirectX9
 {
     GraphicsManager::GraphicsManager(HWND hwnd, bool fullscreen) :

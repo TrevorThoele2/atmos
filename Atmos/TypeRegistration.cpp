@@ -71,6 +71,7 @@ namespace Atmos
                 .Register<Camera>()
                 .Register<CameraCurator>()
                 .Register<Curator>()
+                .Register<SurfaceCore>()
                 .Register<MainSurface>(graphicsManager.CreateMainSurfaceData());
         }
 

@@ -9,14 +9,14 @@ namespace Atmos::Time
     StopwatchCurator::StopwatchCurator(Init init) : Curator(init)
     {}
 
-    Value StopwatchCurator::Handle(const StartStopwatch& command)
+    Value<> StopwatchCurator::Handle(const StartStopwatch& command)
     {
         auto coreData = MutablePointer<StopwatchCore>(command.id);
         coreData->start = coreData->currentTime();
         return coreData->start;
     }
 
-    Value StopwatchCurator::Handle(const CalculateStopwatch& command)
+    Duration<> StopwatchCurator::Handle(const CalculateStopwatch& command)
     {
         const auto coreData = MutablePointer<StopwatchCore>(command.id);
 
@@ -30,10 +30,11 @@ namespace Atmos::Time
                 statisticsData->highest = elapsed;
 
             // accumulator = (alpha * new_value) + (1.0 - alpha) * accumulator
-            const Value::Number alpha(0.001, elapsed.GetRadixPoint());
-            statisticsData->average = Value(static_cast<Value::Number>(
-                (alpha * elapsed.Get()) +
-                (Value::Number(1, 0, elapsed.GetRadixPoint()) - alpha) * statisticsData->average.Get()));
+            const auto alpha = Nanoseconds(1'000'000);
+            statisticsData->average = 
+                (alpha * elapsed.count())
+                + (Nanoseconds(1'000'000'000) - alpha)
+                * statisticsData->average.count();
         }
 
         return elapsed;
@@ -43,13 +44,13 @@ namespace Atmos::Time
     {
         auto statisticsData = MutablePointer<StopwatchStatistics>(command.id);
         if (statisticsData)
-            statisticsData->average = Value(Value::Number(0));
+            statisticsData->average = Seconds();
     }
 
     void StopwatchCurator::Handle(const ResetHighest& command)
     {
         auto statisticsData = MutablePointer<StopwatchStatistics>(command.id);
         if (statisticsData)
-            statisticsData->highest = Value(Value::Number(0));
+            statisticsData->highest = Seconds();
     }
 }

@@ -41,9 +41,9 @@ namespace Atmos::Window
         return GetFocus() == hwnd;
     }
 
-    void WindowsWindow::Suspend(const Time::Value &time)
+    void WindowsWindow::Suspend(const Time::Duration<>& time)
     {
-        const auto sleepFor = static_cast<unsigned int>(time.GetAs(Time::Epoch::Milliseconds));
+        const auto sleepFor = static_cast<DWORD>(std::chrono::duration_cast<Time::Milliseconds>(time).count());
         Sleep(sleepFor);
     }
 
