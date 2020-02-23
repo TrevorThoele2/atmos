@@ -14,7 +14,7 @@ namespace Atmos::Render
     public:
         void Handle(const ReconstructGraphics& command);
     private:
-        Arca::ComputedIndex<GraphicsManager*> manager;
+        Arca::Postulate<GraphicsManager*> manager;
     };
 }
 

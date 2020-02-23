@@ -10,7 +10,7 @@ namespace Atmos
         if (start == finish)
             return createdStack;
 
-        const auto map = Arca::GlobalIndex<World::Map>(Owner());
+        const auto map = Arca::Index<World::Map>(Owner());
         if (!map)
             return createdStack;
 

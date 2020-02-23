@@ -26,18 +26,18 @@ namespace Atmos::Render
         return core->color;
     }
 
-    void StaticMaterialView::PatchShader(Arca::RelicIndex<Asset::ShaderAsset> to) const
+    void StaticMaterialView::PatchShader(Arca::Index<Asset::ShaderAsset> to) const
     {
         const auto command = CreateModificationCommand(&ChangeMaterialViewCore::patchShader, to);
         Owner().Do<ChangeMaterialViewCore>(command);
     }
 
-    Arca::RelicIndex<Asset::ShaderAsset> StaticMaterialView::PatchShader() const
+    Arca::Index<Asset::ShaderAsset> StaticMaterialView::PatchShader() const
     {
         return core->patchShader;
     }
 
-    Arca::RelicIndex<Asset::MaterialAsset> StaticMaterialView::Material() const
+    Arca::Index<Asset::MaterialAsset> StaticMaterialView::Material() const
     {
         return core->material;
     }
@@ -62,12 +62,12 @@ namespace Atmos::Render
         return bounds->Box();
     }
 
-    Arca::ShardIndex<MaterialViewCore> StaticMaterialView::Core() const
+    Arca::Index<MaterialViewCore> StaticMaterialView::Core() const
     {
         return core;
     }
 
-    Arca::ShardIndex<const Bounds> StaticMaterialView::Bounds() const
+    Arca::Index<const Bounds> StaticMaterialView::Bounds() const
     {
         return bounds;
     }

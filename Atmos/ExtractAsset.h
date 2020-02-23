@@ -19,6 +19,6 @@ namespace Arca
     {
         static const ObjectType objectType = ObjectType::Command;
         static inline const TypeName typeName = "ExtractAsset";
-        using Return = Atmos::Buffer;
+        using Result = Atmos::Buffer;
     };
 }

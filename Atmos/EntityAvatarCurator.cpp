@@ -2,14 +2,25 @@
 
 #include <Arca/Reliquary.h>
 #include <Arca/Actualization.h>
-#include "DebugStatistics.h"
 
 #include "GeneralComponent.h"
 
 namespace Atmos::Entity
 {
     AvatarCurator::AvatarCurator(Init init) :
-        Curator(init), currentAvatar(init.owner), debugStatistics(init.owner)
+        Curator(init), currentAvatar(init.owner),
+        debugPlayerColumn(
+            [this](Debug::Statistics& statistics)
+            {
+                statistics.game.playerColumn = currentAvatar->entity->general->position.x;
+            },
+            init.owner),
+        debugPlayerRow(
+            [this](Debug::Statistics& statistics)
+            {
+                statistics.game.playerRow = currentAvatar->entity->general->position.y;
+            },
+            init.owner)
     {}
 
     void AvatarCurator::Work()
@@ -20,22 +31,20 @@ namespace Atmos::Entity
                 if (currentAvatar->entity)
                     Owner().Destroy(AsHandle(*currentAvatar->entity));
 
-                auto currentAvatarData = Data(currentAvatar);
-                currentAvatarData->entity = Arca::RelicIndex<Entity>(signal.index.ID(), Owner());
-                currentAvatarData->component = signal.index;
+                auto currentAvatarData = MutablePointer(currentAvatar);
+                currentAvatarData->entity = Arca::Index<Entity>(signal.reference.ID(), Owner());
+                currentAvatarData->component = signal.reference;
             });
 
         Owner().ExecuteOn<Arca::DestroyingKnown<AvatarComponent>>(
             [this](const Arca::DestroyingKnown<AvatarComponent>&)
             {
-                auto currentAvatarData = Data(currentAvatar);
+                auto currentAvatarData = MutablePointer(currentAvatar);
                 currentAvatarData->entity = {};
                 currentAvatarData->component = {};
             });
 
-        auto& general = *currentAvatar->entity->general;
-        const auto debugStatisticsData = Data(debugStatistics);
-        debugStatisticsData->game.playerColumn = general.position.x;
-        debugStatisticsData->game.playerRow = general.position.y;
+        debugPlayerColumn.Set();
+        debugPlayerRow.Set();
     }
 }

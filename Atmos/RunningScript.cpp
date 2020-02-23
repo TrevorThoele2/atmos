@@ -33,7 +33,7 @@ namespace Atmos::Script
 
     RunningScript::RunningScript(
         Init init,
-        Arca::RelicIndex<Source> source,
+        Arca::Index<Source> source,
         const Name& executeName,
         const Parameters& parameters,
         const Persistence& persistence)

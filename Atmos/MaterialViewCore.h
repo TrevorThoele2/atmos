@@ -16,13 +16,13 @@ namespace Atmos::Render
     public:
         using Index = int;
     public:
-        Arca::RelicIndex<Asset::MaterialAsset> material;
+        Arca::Index<Asset::MaterialAsset> material;
         Index materialIndex = 0;
         AxisAlignedBox2D materialSlice;
 
         Render::Color color;
 
-        Arca::RelicIndex<Asset::ShaderAsset> patchShader;
+        Arca::Index<Asset::ShaderAsset> patchShader;
     };
 }
 

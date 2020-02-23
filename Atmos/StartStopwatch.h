@@ -22,6 +22,6 @@ namespace Arca
     {
         static const ObjectType objectType = ObjectType::Command;
         static inline const TypeName typeName = "StartStopwatch";
-        using Return = Atmos::Time::Value;
+        using Result = Atmos::Time::Value;
     };
 }

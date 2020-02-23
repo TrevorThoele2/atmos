@@ -10,7 +10,7 @@ namespace Atmos::Audio
 
     void VolumeCurator::Handle(const ChangeMasterVolume& command)
     {
-        Data(volumeInformation)->master = command.to;
-        Data(initializationInformation)->sound.masterVolume = command.to;
+        MutablePointer(volumeInformation)->master = command.to;
+        MutablePointer(initializationInformation)->sound.masterVolume = command.to;
     }
 }

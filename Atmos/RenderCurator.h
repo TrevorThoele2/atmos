@@ -2,32 +2,39 @@
 
 #include <Arca/Curator.h>
 
-#include "Flags.h"
+#include "MainSurface.h"
 
-#include "GraphicsManager.h"
-
-namespace Atmos::Debug
-{
-    class Statistics;
-}
+#include "DebugProfiler.h"
 
 namespace Atmos::Render
 {
-    class RenderCurator final : public Arca::Curator
+    class Curator final : public Arca::Curator
     {
     public:
-        explicit RenderCurator(Init init);
+        explicit Curator(Init init);
 
-        void Work(Stage& stage);
+        void Work();
     private:
-        Arca::GlobalIndex<Debug::Statistics> debugStatistics;
+        Arca::Index<MainSurface> mainSurface;
+    private:
+        Debug::Profiler debugRenderProfiler;
+    };
+}
+
+namespace Arca
+{
+    template<>
+    struct Traits<Atmos::Render::Curator>
+    {
+        static const ObjectType objectType = ObjectType::Curator;
+        static inline TypeName typeName = "RenderCurator";
     };
 }
 
 namespace Inscription
 {
     template<>
-    class Scribe<::Atmos::Render::RenderCurator, BinaryArchive> final :
-        public ArcaNullScribe<::Atmos::Render::RenderCurator, BinaryArchive>
+    class Scribe<::Atmos::Render::Curator, BinaryArchive> final :
+        public ArcaNullScribe<::Atmos::Render::Curator, BinaryArchive>
     {};
 }

@@ -1253,6 +1253,15 @@
     <ClInclude Include="LineWidth.h">
       <Filter>Header Files\Render\Line</Filter>
     </ClInclude>
+    <ClInclude Include="CameraResized.h">
+      <Filter>Header Files\Render\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugValue.h">
+      <Filter>Header Files\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugProfiler.h">
+      <Filter>Header Files\Debug</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FieldDestination.cpp">
@@ -1797,6 +1806,12 @@
     </ClCompile>
     <ClCompile Include="LineCurator.cpp">
       <Filter>Source Files\Render\Line</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugProfiler.cpp">
+      <Filter>Source Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugValue.cpp">
+      <Filter>Source Files\Debug</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

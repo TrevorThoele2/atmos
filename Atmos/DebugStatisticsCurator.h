@@ -11,7 +11,7 @@ namespace Atmos::Debug
     public:
         explicit StatisticsCurator(Init init);
     private:
-        Arca::GlobalIndex<Statistics> statistics;
+        Arca::Index<Statistics> statistics;
     private:
         class PageEntry
         {

@@ -12,6 +12,8 @@ namespace Atmos::Time
     class StopwatchCurator final : public Arca::Curator
     {
     public:
+        explicit StopwatchCurator(Init init);
+
         Value Handle(const StartStopwatch& command);
         Value Handle(const CalculateStopwatch& command);
         void Handle(const ResetAverage& command);

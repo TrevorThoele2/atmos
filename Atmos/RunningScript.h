@@ -16,7 +16,7 @@ namespace Atmos::Script
     {
     public:
         using Source = ScriptInstance;
-        Arca::RelicIndex<Source> source;
+        Arca::Index<Source> source;
     public:
         Name executeName;
         Parameters parameters;
@@ -28,7 +28,7 @@ namespace Atmos::Script
         explicit RunningScript(Init init);
         RunningScript(
             Init init,
-            Arca::RelicIndex<Source> source,
+            Arca::Index<Source> source,
             const Name& executeName,
             const Parameters& parameters,
             const Persistence& persistence);

@@ -171,7 +171,7 @@ namespace Atmos::Render::DirectX9
             Logging::Severity::SevereError);
     }
 
-    Arca::RelicIndex<Asset::ShaderAsset> Renderer::DefaultTexturedImageViewShader() const
+    Arca::Index<Asset::ShaderAsset> Renderer::DefaultTexturedImageViewShader() const
     {
         return defaultTexturedImageViewShader;
     }

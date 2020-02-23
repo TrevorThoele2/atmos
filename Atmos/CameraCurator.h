@@ -2,18 +2,17 @@
 
 #include <Arca/Curator.h>
 
+#include "Camera.h"
 #include "MoveCamera.h"
 #include "MoveCameraBy.h"
 #include "MoveCameraToInstant.h"
 #include "MoveCameraDeltaInstant.h"
 #include "ResizeCamera.h"
 
-#include "DebugStatistics.h"
+#include "DebugValue.h"
 
 namespace Atmos::Render
 {
-    class Camera;
-
     class CameraCurator final : public Arca::Curator
     {
     public:
@@ -27,7 +26,7 @@ namespace Atmos::Render
         void Handle(const MoveCameraDeltaInstant& command);
         void Handle(const ResizeCamera& command);
     private:
-        Arca::GlobalIndex<Camera> camera;
+        Arca::Index<Camera> camera;
 
         // Holder for any potential positions that aren't stored elsewhere (just looking somewhere, etc)
         Position3D basePosition;
@@ -43,7 +42,8 @@ namespace Atmos::Render
         void CalculateSides();
         bool IsFocusValid();
     private:
-        Arca::GlobalIndex<Debug::Statistics> debugStatistics;
+        Debug::Value debugViewOriginX;
+        Debug::Value debugViewOriginY;
     };
 }
 

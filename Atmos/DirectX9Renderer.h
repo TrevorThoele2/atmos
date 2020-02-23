@@ -32,7 +32,7 @@ namespace Atmos::Render::DirectX9
         void OnLostDevice();
         void OnResetDevice();
 
-        [[nodiscard]] Arca::RelicIndex<Asset::ShaderAsset> DefaultTexturedImageViewShader() const;
+        [[nodiscard]] Arca::Index<Asset::ShaderAsset> DefaultTexturedImageViewShader() const;
     private:
         GraphicsManager& owner;
     private:
@@ -131,7 +131,7 @@ namespace Atmos::Render::DirectX9
         LPDIRECT3DVERTEXBUFFER9 vertexBuffer = nullptr;
         LPDIRECT3DINDEXBUFFER9 indexBuffer = nullptr;
         LPDIRECT3DVERTEXDECLARATION9 vertexDeclaration = nullptr;
-        Arca::RelicIndex<Asset::ShaderAsset> defaultTexturedImageViewShader{};
+        Arca::Index<Asset::ShaderAsset> defaultTexturedImageViewShader{};
 
         LPD3DXLINE lineInterface = nullptr;
 

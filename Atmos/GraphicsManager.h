@@ -4,7 +4,6 @@
 
 #include "ImageAsset.h"
 #include "ShaderAsset.h"
-#include "Surface.h"
 #include "Canvas.h"
 
 #include "ScreenSize.h"

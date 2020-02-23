@@ -2,12 +2,18 @@
 
 #include <Arca/Curator.h>
 
+#include "DebugValue.h"
+
 namespace Atmos::World
 {
     class CurrentFieldCurator final : public Arca::Curator
     {
     public:
+        explicit CurrentFieldCurator(Init init);
+
         void Work();
+    private:
+        Debug::Value debugFieldID;
     };
 }
 

@@ -17,24 +17,24 @@ namespace Atmos::Render
         [[nodiscard]] Index MaterialIndex() const;
         void Color(Color to) const;
         [[nodiscard]] Render::Color Color() const;
-        void PatchShader(Arca::RelicIndex<Asset::ShaderAsset> to) const;
-        [[nodiscard]] Arca::RelicIndex<Asset::ShaderAsset> PatchShader() const;
+        void PatchShader(Arca::Index<Asset::ShaderAsset> to) const;
+        [[nodiscard]] Arca::Index<Asset::ShaderAsset> PatchShader() const;
 
-        [[nodiscard]] Arca::RelicIndex<Asset::MaterialAsset> Material() const;
+        [[nodiscard]] Arca::Index<Asset::MaterialAsset> Material() const;
         [[nodiscard]] AxisAlignedBox2D MaterialSlice() const;
 
         [[nodiscard]] Position3D Position() const;
         [[nodiscard]] Size2D Size() const;
         [[nodiscard]] AxisAlignedBox2D Box() const;
 
-        [[nodiscard]] Arca::ShardIndex<MaterialViewCore> Core() const;
-        [[nodiscard]] Arca::ShardIndex<const Bounds> Bounds() const;
+        [[nodiscard]] Arca::Index<MaterialViewCore> Core() const;
+        [[nodiscard]] Arca::Index<const Bounds> Bounds() const;
     public:
         explicit StaticMaterialView(Init init);
         StaticMaterialView(Init init, const Position3D& position, const Size2D& size);
     private:
-        Arca::ShardIndex<MaterialViewCore> core;
-        Arca::ShardIndex<const Atmos::Bounds> bounds;
+        Arca::Index<MaterialViewCore> core;
+        Arca::Index<const Atmos::Bounds> bounds;
     private:
         template<class CommandT, class MemberT>
         CommandT CreateModificationCommand(std::optional<MemberT> CommandT::* member, MemberT value) const;

@@ -1,24 +1,25 @@
 #include "RenderCurator.h"
 
-#include "MainSurface.h"
-
-#include "StartStopwatch.h"
-#include "CalculateStopwatch.h"
-
-#include "DebugStatistics.h"
-
 namespace Atmos::Render
 {
-    RenderCurator::RenderCurator(Init init) :
-        Curator(init), debugStatistics(init.owner)
+    Curator::Curator(Init init) :
+        Arca::Curator(init), mainSurface(init.owner),
+        debugRenderProfiler(
+            [](Debug::Statistics& statistics) -> Arca::Index<Time::RealStopwatch>&
+            {
+                return statistics.profilers.render;
+            },
+            init.owner)
     {}
 
-    void RenderCurator::Work(Stage& stage)
+    void Curator::Work()
     {
-        Owner().Do<Time::StartStopwatch>(debugStatistics->profilers.render.ID());
+        debugRenderProfiler.Start();
 
-        Data<MainSurface>()->RenderStaged();
+        auto mainSurfaceData = MutablePointer(mainSurface);
+        mainSurfaceData->FullColor(Color{ 255, 255, 0, 0 });
+        mainSurfaceData->RenderStaged();
 
-        Owner().Do<Time::CalculateStopwatch>(debugStatistics->profilers.render.ID());
+        debugRenderProfiler.Calculate();
     }
 }

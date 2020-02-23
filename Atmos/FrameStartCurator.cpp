@@ -1,19 +1,22 @@
 #include "FrameStartCurator.h"
 
-#include "StartStopwatch.h"
-#include "CalculateStopwatch.h"
-
 namespace Atmos
 {
     FrameStartCurator::FrameStartCurator(Init init) :
-        Curator(init), timeInformation(init.owner), debugStatistics(init.owner)
+        Curator(init), timeInformation(init.owner),
+        debugIdleProfiler(
+            [](Debug::Statistics& statistics) -> Arca::Index<Time::RealStopwatch>&
+            {
+                return statistics.profilers.idle;
+            },
+            init.owner)
     {}
 
     void FrameStartCurator::Work()
     {
-        auto timeInformationData = Data(timeInformation);
-        timeInformationData->frameStartTime = Owner().Do<Time::StartStopwatch>(timeInformationData->ID());
+        auto timeInformationData = MutablePointer(timeInformation);
+        timeInformationData->frameStartTime = timeInformationData->stopwatch->Start();
 
-        Owner().Do<Time::CalculateStopwatch>(debugStatistics->profilers.idle.ID());
+        debugIdleProfiler.Calculate();
     }
 }

@@ -21,7 +21,7 @@ namespace Atmos::Time
 
         Fps fps = 0;
 
-        using Stopwatch = Arca::RelicIndex<RealStopwatch>;
+        using Stopwatch = Arca::Index<RealStopwatch>;
         Stopwatch stopwatch;
     };
 }

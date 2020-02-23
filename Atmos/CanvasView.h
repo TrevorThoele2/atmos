@@ -9,14 +9,14 @@ namespace Atmos::Render
     class CanvasView final : public Arca::ClosedTypedRelic<CanvasView>
     {
     public:
-        CanvasView(Init init, Arca::RelicIndex<Canvas> source);
+        CanvasView(Init init, Arca::Index<Canvas> source);
 
         [[nodiscard]] const Canvas& Source() const;
 
         [[nodiscard]] const Bounds& Bounds() const;
     private:
-        Arca::RelicIndex<Canvas> source;
-        Arca::ShardIndex<Atmos::Bounds> bounds;
+        Arca::Index<Canvas> source;
+        Arca::Index<Atmos::Bounds> bounds;
     };
 }
 

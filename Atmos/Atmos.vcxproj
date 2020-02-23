@@ -39,10 +39,13 @@
     <ClInclude Include="AssetCore.h" />
     <ClInclude Include="AudioAssetData.h" />
     <ClInclude Include="CalculateStopwatch.h" />
+    <ClInclude Include="CameraResized.h" />
     <ClInclude Include="CanvasData.h" />
     <ClInclude Include="ChangeMaterialViewCore.h" />
     <ClInclude Include="CurrentFieldCurator.h" />
     <ClInclude Include="CurrentFieldData.h" />
+    <ClInclude Include="DebugProfiler.h" />
+    <ClInclude Include="DebugValue.h" />
     <ClInclude Include="DirectX9CanvasData.h" />
     <ClInclude Include="DirectX9ImageAssetData.h" />
     <ClInclude Include="DirectX9ShaderAssetData.h" />
@@ -337,7 +340,9 @@
     <ClCompile Include="CanvasViewCurator.cpp" />
     <ClCompile Include="CurrentFieldCurator.cpp" />
     <ClCompile Include="CurrentFieldData.cpp" />
+    <ClCompile Include="DebugProfiler.cpp" />
     <ClCompile Include="DebugStatistics.cpp" />
+    <ClCompile Include="DebugValue.cpp" />
     <ClCompile Include="DirectX9CanvasData.cpp" />
     <ClCompile Include="DirectX9ImageAssetData.cpp" />
     <ClCompile Include="DirectX9Renderer.cpp" />

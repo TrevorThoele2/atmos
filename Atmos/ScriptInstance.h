@@ -26,12 +26,12 @@ namespace Atmos::Script
         void ExecuteDeferred();
         // Will immediately execute the script
         void ExecuteImmediately();
-        [[nodiscard]] Arca::RelicIndex<RunningScript> RunningForThis() const;
+        [[nodiscard]] Arca::Index<RunningScript> RunningForThis() const;
         // Returns if this script is currently running
         // NOTE: Suspension has no effect on this
         [[nodiscard]] bool IsRunning() const;
     private:
-        Arca::RelicIndex<RunningScript> CreateRunningFromThis();
+        Arca::Index<RunningScript> CreateRunningFromThis();
     };
 }
 

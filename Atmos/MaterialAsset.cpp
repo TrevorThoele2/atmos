@@ -36,12 +36,12 @@ namespace Atmos::Asset
         return rows;
     }
 
-    Arca::RelicIndex<ImageAsset> MaterialAsset::Image() const
+    Arca::Index<ImageAsset> MaterialAsset::Image() const
     {
         return image;
     }
 
-    Arca::RelicIndex<ShaderAsset> MaterialAsset::Shader() const
+    Arca::Index<ShaderAsset> MaterialAsset::Shader() const
     {
         return shader;
     }

@@ -3,6 +3,8 @@
 #include <Arca/ClosedTypedRelic.h>
 #include "SurfaceCore.h"
 
+#include "GraphicsManager.h"
+
 #include "Color.h"
 
 namespace Atmos::Render
@@ -19,9 +21,6 @@ namespace Atmos::Render
     protected:
         using Init = typename BaseT::Init;
     public:
-        void StageRender(const MaterialRender& materialRender);
-        void StageRender(const CanvasRender& canvasRender);
-        void StageRender(const LineRender& lineRender);
         void RenderStaged();
 
         void FullColor(const Color& color = Color());
@@ -39,33 +38,18 @@ namespace Atmos::Render
         [[nodiscard]] DataT* Data() const;
         template<class DataT>
         [[nodiscard]] DataT* Data() const;
+    protected:
+        using BaseT::Owner;
     private:
         using Core = SurfaceCore;
-        Arca::ShardIndex<Core> core;
+        Arca::Index<Core> core;
     };
-
-    template<class Derived>
-    void Surface<Derived>::StageRender(const MaterialRender& materialRender)
-    {
-        Data()->StageRender(materialRender);
-    }
-
-    template<class Derived>
-    void Surface<Derived>::StageRender(const CanvasRender& canvasRender)
-    {
-        Data()->StageRender(canvasRender);
-    }
-
-    template<class Derived>
-    void Surface<Derived>::StageRender(const LineRender& lineRender)
-    {
-        Data()->StageRender(lineRender);
-    }
 
     template<class Derived>
     void Surface<Derived>::RenderStaged()
     {
-
+        auto graphicsManager = Arca::Postulate<GraphicsManager*>(Owner()).Get();
+        graphicsManager->RenderStaged(*Data());
     }
 
     template<class Derived>
@@ -95,7 +79,7 @@ namespace Atmos::Render
     template<class Derived>
     Surface<Derived>::Surface(Init init, DataPtr&& data) :
         Arca::ClosedTypedRelic<Derived>(init),
-        core(init.owner.template Do<Arca::Create<Core>>(init.id, std::move(data)))
+        core(init.template Create<Core>(std::move(data)))
     {}
 
     template<class Derived>

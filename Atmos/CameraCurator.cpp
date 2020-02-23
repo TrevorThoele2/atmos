@@ -2,6 +2,7 @@
 
 #include "Camera.h"
 #include "CameraMoved.h"
+#include "CameraResized.h"
 
 #include <Arca/Reliquary.h>
 #include "TimeInformation.h"
@@ -9,7 +10,19 @@
 namespace Atmos::Render
 {
     CameraCurator::CameraCurator(Init init) :
-        Curator(init), camera(init.owner), debugStatistics(init.owner)
+        Curator(init), camera(init.owner),
+        debugViewOriginX(
+            [this](Debug::Statistics& statistics)
+            {
+                statistics.window.viewOriginX = camera->ViewOrigin().x;
+            },
+            init.owner),
+        debugViewOriginY(
+            [this](Debug::Statistics& statistics)
+            {
+                statistics.window.viewOriginY = camera->ViewOrigin().y;
+            },
+            init.owner)
     {}
 
     void CameraCurator::Work()
@@ -25,9 +38,8 @@ namespace Atmos::Render
         if (previousViewOrigin != viewOrigin)
             Owner().Raise<CameraMoved>(camera);
 
-        const auto debugStatisticsData = Data(debugStatistics);
-        debugStatisticsData->window.viewOriginX = camera->ViewOrigin().x;
-        debugStatisticsData->window.viewOriginY = camera->ViewOrigin().y;
+        debugViewOriginX.Set();
+        debugViewOriginY.Set();
     }
 
     void CameraCurator::Handle(const MoveCamera& command)
@@ -59,7 +71,7 @@ namespace Atmos::Render
     {
         ResetFocus();
 
-        auto& lastFrameElapsed = Arca::GlobalIndex<Time::Information>(Owner())->lastFrameElapsed;
+        auto& lastFrameElapsed = Arca::Index<Time::Information>(Owner())->lastFrameElapsed;
         const auto normalizedDistance =
             by * static_cast<float>(lastFrameElapsed.GetAs(Time::Epoch::Seconds));
 
@@ -108,12 +120,13 @@ namespace Atmos::Render
 
     void CameraCurator::Resize(const ScreenSize& size)
     {
-        Data(camera)->Size(size);
+        MutablePointer(camera)->Size(size);
+        Owner().Raise<CameraResized>(Arca::Index<Camera>(Owner()));
     }
 
     void CameraCurator::ResetFocus()
     {
-        Data(camera)->FocusedPosition(&basePosition);
+        MutablePointer(camera)->FocusedPosition(&basePosition);
     }
 
     void CameraCurator::CalculateSides()

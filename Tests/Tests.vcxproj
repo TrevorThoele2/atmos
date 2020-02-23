@@ -140,6 +140,7 @@
     <ClCompile Include="MockWindow.cpp" />
     <ClCompile Include="OctreeTests.cpp" />
     <ClCompile Include="RenderTests.cpp" />
+    <ClCompile Include="StopwatchTests.cpp" />
     <ClCompile Include="WorldSerializationTests.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -150,6 +151,7 @@
     <ClInclude Include="MockWindow.h" />
     <ClInclude Include="OctreeTests.h" />
     <ClInclude Include="RenderTests.h" />
+    <ClInclude Include="StopwatchTests.h" />
     <ClInclude Include="WorldSerializationTests.h" />
   </ItemGroup>
   <ItemGroup>

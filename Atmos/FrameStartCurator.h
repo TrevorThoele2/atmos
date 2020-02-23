@@ -3,7 +3,7 @@
 #include <Arca/Curator.h>
 #include "TimeInformation.h"
 
-#include "DebugStatistics.h"
+#include "DebugProfiler.h"
 
 namespace Atmos
 {
@@ -14,9 +14,9 @@ namespace Atmos
 
         void Work();
     private:
-        Arca::GlobalIndex<Time::Information> timeInformation;
+        Arca::Index<Time::Information> timeInformation;
     private:
-        Arca::GlobalIndex<Debug::Statistics> debugStatistics;
+        Debug::Profiler debugIdleProfiler;
     };
 }
 

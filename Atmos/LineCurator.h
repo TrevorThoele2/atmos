@@ -19,10 +19,10 @@ namespace Atmos::Render
     public:
         void Handle(const MoveLine& command);
     private:
-        using LineIndex = Arca::RelicIndex<Line>;
+        using LineIndex = Arca::Index<Line>;
         Grid::Octree<Arca::RelicID, LineIndex> octree;
 
-        Arca::GlobalIndex<Camera> camera;
+        Arca::Index<Camera> camera;
     private:
         void OnLineCreated(const Arca::CreatedKnown<Line>& line);
         void OnLineDestroying(const Arca::DestroyingKnown<Line>& line);

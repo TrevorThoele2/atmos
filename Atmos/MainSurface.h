@@ -8,6 +8,7 @@ namespace Atmos::Render
     {
     public:
         MainSurface(Init init, DataPtr&& data);
+        MainSurface(MainSurface&& arg) noexcept = default;
     };
 }
 

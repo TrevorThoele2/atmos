@@ -6,13 +6,12 @@
 
 #include <Arca/Reliquary.h>
 #include <Arca/Actualization.h>
-#include "DebugStatistics.h"
 #include "Log.h"
 
 namespace Atmos::Script
 {
     ScriptController::ScriptController(Init init) :
-        Curator(init), allRunningScripts(init.owner), debugStatistics(init.owner)
+        Curator(init), allRunningScripts(init.owner)
     {
         Owner().ExecuteOn<Arca::CreatedKnown<RunningScript>>(
             [](const Arca::CreatedKnown<RunningScript>& signal)
