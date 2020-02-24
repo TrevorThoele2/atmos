@@ -12,30 +12,16 @@ namespace Atmos::Render
     class Camera final : public Arca::ClosedTypedRelic<Camera>
     {
     public:
-        explicit Camera(Init init);
-
-        void FocusedPosition(const Position3D* to);
-        [[nodiscard]] const Position3D* FocusedPosition() const;
-
-        void ViewOrigin(const Position2D& to);
-        [[nodiscard]] Position2D ViewOrigin() const;
-        void Size(const ScreenSize& to);
-        [[nodiscard]] ScreenSize Size() const;
-        [[nodiscard]] AxisAlignedBox2D ScreenSides() const;
-
-        void Zoom(Position3D::Value to);
-        [[nodiscard]] Position3D::Value Zoom() const;
-    private:
         const Position3D* focusedPosition = nullptr;
 
-        // View origin is the middle of the screen
-        Position2D viewOrigin;
+        Position2D center;
         ScreenSize size;
-        AxisAlignedBox2D screenSides;
-
-        Position2D topLeft;
 
         Position3D::Value zoom = 0;
+
+        [[nodiscard]] AxisAlignedBox2D ScreenSides() const;
+    public:
+        explicit Camera(Init init);
     };
 }
 
@@ -54,6 +40,9 @@ namespace Inscription
 {
     template<>
     class Scribe<::Atmos::Render::Camera, BinaryArchive> final :
-        public ArcaNullScribe<::Atmos::Render::Camera, BinaryArchive>
-    {};
+        public ArcaCompositeScribe<::Atmos::Render::Camera, BinaryArchive>
+    {
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
+    };
 }

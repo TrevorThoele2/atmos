@@ -7,6 +7,8 @@
 #include "LargeInteger.h"
 #include "FixedPoint.h"
 #include "TimeValue.h"
+#include "Position3D.h"
+#include "Size2D.h"
 
 #include <Chroma/TypeIdentity.h>
 
@@ -36,6 +38,12 @@ namespace Atmos
     {
         SpliceString(in, check, String(replace));
     }
+
+    template<class T, typename ::std::enable_if<!::std::is_enum<T>::value, int>::type = 0>
+    T FromString(const String& arg);
+
+    template<class T, typename ::std::enable_if<::std::is_enum<T>::value, int>::type = 0>
+    T FromString(const String& arg);
 
     namespace detail
     {
@@ -72,13 +80,13 @@ namespace Atmos
         }
     }
 
-    template<class T, typename ::std::enable_if<!::std::is_enum<T>::value, int>::type = 0>
+    template<class T, typename ::std::enable_if<!::std::is_enum<T>::value, int>::type>
     T FromString(const String &arg)
     {
         return detail::FromStringImpl(arg, ::Chroma::TypeIdentity<T>{});
     }
 
-    template<class T, typename ::std::enable_if<::std::is_enum<T>::value, int>::type = 0>
+    template<class T, typename ::std::enable_if<::std::is_enum<T>::value, int>::type>
     T FromString(const String &arg)
     {
         return static_cast<T>(FromString<::std::underlying_type<T>::type>(arg));
@@ -123,5 +131,7 @@ namespace Atmos
         return ToString(duration.count());
     }
     String ToString(const Grid::Position &position);
+    String ToString(const Position3D& position);
+    String ToString(const Size2D& size);
     String ToString(const ::Agui::Resolution::Size &arg);
 }

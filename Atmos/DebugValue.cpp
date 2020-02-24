@@ -2,9 +2,9 @@
 
 namespace Atmos::Debug
 {
-    Value::Value(StatisticSetter statisticSetter, Arca::Reliquary& reliquary) :
+    Value::Value(StatisticSetter statisticSetter, Arca::MutablePointer mutablePointer) :
         statisticSetter(std::move(statisticSetter)),
-        statistics(StatisticsFrom(reliquary))
+        statistics(StatisticsFrom(mutablePointer))
     {}
 
     void Value::Set()
@@ -15,13 +15,14 @@ namespace Atmos::Debug
         statisticSetter(*statistics);
     }
 
-    Statistics* Value::StatisticsFrom(Arca::Reliquary& reliquary)
+    Statistics* Value::StatisticsFrom(Arca::MutablePointer mutablePointer)
     {
         try
         {
-            return Arca::Postulate<Statistics*>(reliquary).Get();
+            const Arca::Postulate<Statistics*> postulate(mutablePointer.Reliquary());
+            return mutablePointer.Of(*postulate);
         }
-        catch (std::exception&)
+        catch (Arca::NotRegistered&)
         {
             return nullptr;
         }

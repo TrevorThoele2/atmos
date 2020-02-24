@@ -117,8 +117,7 @@
     <ClInclude Include="Bounds.h" />
     <ClInclude Include="MoveCamera.h" />
     <ClInclude Include="MoveCameraBy.h" />
-    <ClInclude Include="MoveCameraDeltaInstant.h" />
-    <ClInclude Include="MoveCameraToInstant.h" />
+    <ClInclude Include="MoveCameraTo.h" />
     <ClInclude Include="MoveEntity.h" />
     <ClInclude Include="MoveEntityDirection.h" />
     <ClInclude Include="MoveEntityInstant.h" />

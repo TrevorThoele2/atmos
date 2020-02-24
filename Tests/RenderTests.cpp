@@ -8,6 +8,7 @@
 #include <Atmos/ResizeCamera.h>
 #include <Atmos/TypeRegistration.h>
 #include <Atmos/GridCellSize.h>
+#include <Atmos/StringUtility.h>
 
 #include "DerivedEngine.h"
 
@@ -24,12 +25,12 @@ SCENARIO_METHOD(RenderTestsFixture, "rendering material views")
         RegisterFieldTypes(fieldOrigin, *engine.TheGlobalReliquary());
         World::Field field(0, fieldOrigin.Actualize());
 
+        field.Reliquary().Do<ResizeCamera>(ScreenSize(
+            std::numeric_limits<ScreenSize::Dimension>::max(),
+            std::numeric_limits<ScreenSize::Dimension>::max()));
+
         WHEN("creating static material views and starting execution")
         {
-            field.Reliquary().Do<ResizeCamera>(ScreenSize(
-                std::numeric_limits<ScreenSize::Dimension>::max(),
-                std::numeric_limits<ScreenSize::Dimension>::max()));
-
             auto positions = std::vector<Position3D>
             {
                 Position3D
@@ -173,12 +174,12 @@ SCENARIO_METHOD(RenderTestsFixture, "rendering lines")
         RegisterFieldTypes(fieldOrigin, *engine.TheGlobalReliquary());
         World::Field field(0, fieldOrigin.Actualize());
 
+        field.Reliquary().Do<ResizeCamera>(ScreenSize(
+            std::numeric_limits<ScreenSize::Dimension>::max(),
+            std::numeric_limits<ScreenSize::Dimension>::max()));
+
         WHEN("creating lines and starting execution")
         {
-            field.Reliquary().Do<ResizeCamera>(ScreenSize(
-                std::numeric_limits<ScreenSize::Dimension>::max(),
-                std::numeric_limits<ScreenSize::Dimension>::max()));
-
             auto fromPositions = std::vector<Position3D>
             {
                 Position3D
@@ -229,7 +230,7 @@ SCENARIO_METHOD(RenderTestsFixture, "rendering lines")
             engine.UseField(std::move(field));
             engine.StartExecution();
 
-            THEN("all materials rendered in graphics manager")
+            THEN("all lines rendered in graphics manager")
             {
                 auto& lineRenders = engine.mockGraphicsManager->renderer.lineRenders;
                 REQUIRE(lineRenders.size() == 3);
@@ -242,72 +243,6 @@ SCENARIO_METHOD(RenderTestsFixture, "rendering lines")
                         [i, &fromPositions, &toPositions](const LineRender& entry)
                         {
                             return entry.from == fromPositions[i] && entry.to == toPositions[i];
-                        }));
-                }
-            }
-        }
-
-        WHEN("creating dynamic material views and starting execution")
-        {
-            auto positions = std::vector<Position3D>
-            {
-                Position3D
-                {
-                    dataGeneration.Random<Position3D::Value>(TestFramework::Range<Position3D::Value>(-1000, 1000)),
-                    dataGeneration.Random<Position3D::Value>(TestFramework::Range<Position3D::Value>(-1000, 1000)),
-                    dataGeneration.Random<Position3D::Value>(TestFramework::Range<Position3D::Value>(-1000, 1000))
-                },
-                Position3D
-                {
-                    dataGeneration.Random<Position3D::Value>(TestFramework::Range<Position3D::Value>(-1000, 1000)),
-                    dataGeneration.Random<Position3D::Value>(TestFramework::Range<Position3D::Value>(-1000, 1000)),
-                    dataGeneration.Random<Position3D::Value>(TestFramework::Range<Position3D::Value>(-1000, 1000))
-                },
-                Position3D
-                {
-                    dataGeneration.Random<Position3D::Value>(TestFramework::Range<Position3D::Value>(-1000, 1000)),
-                    dataGeneration.Random<Position3D::Value>(TestFramework::Range<Position3D::Value>(-1000, 1000)),
-                    dataGeneration.Random<Position3D::Value>(TestFramework::Range<Position3D::Value>(-1000, 1000))
-                }
-            };
-            auto sizes = std::vector<Size2D>
-            {
-                Size2D
-                {
-                    dataGeneration.Random<Size2D::Value>(TestFramework::Range<Size2D::Value>(1, 1000)),
-                    dataGeneration.Random<Size2D::Value>(TestFramework::Range<Size2D::Value>(1, 1000))
-                },
-                Size2D
-                {
-                    dataGeneration.Random<Size2D::Value>(TestFramework::Range<Size2D::Value>(1, 1000)),
-                    dataGeneration.Random<Size2D::Value>(TestFramework::Range<Size2D::Value>(1, 1000))
-                },
-                Size2D
-                {
-                    dataGeneration.Random<Size2D::Value>(TestFramework::Range<Size2D::Value>(1, 1000)),
-                    dataGeneration.Random<Size2D::Value>(TestFramework::Range<Size2D::Value>(1, 1000))
-                }
-            };
-            field.Reliquary().Do<Arca::Create<DynamicMaterialView>>(positions[0], sizes[0]);
-            field.Reliquary().Do<Arca::Create<DynamicMaterialView>>(positions[1], sizes[1]);
-            field.Reliquary().Do<Arca::Create<DynamicMaterialView>>(positions[2], sizes[2]);
-
-            engine.UseField(std::move(field));
-            engine.StartExecution();
-
-            THEN("all materials rendered in graphics manager")
-            {
-                auto& materialRenders = engine.mockGraphicsManager->renderer.materialRenders;
-                REQUIRE(materialRenders.size() == 3);
-
-                for (auto i = 0; i < 3; ++i)
-                {
-                    REQUIRE(std::any_of(
-                        materialRenders.begin(),
-                        materialRenders.end(),
-                        [i, &positions, &sizes](const MaterialRender& entry)
-                        {
-                            return entry.position == positions[i] && entry.size == sizes[i];
                         }));
                 }
             }

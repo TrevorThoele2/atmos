@@ -15,3 +15,12 @@ namespace Atmos
         return !(*this == arg);
     }
 }
+
+namespace Inscription
+{
+    void Scribe<Atmos::ScreenSize, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
+    {
+        archive(object.width);
+        archive(object.height);
+    }
+}

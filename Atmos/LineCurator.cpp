@@ -28,35 +28,41 @@ namespace Atmos::Render
         {
             Position3D
             {
-                camera->ViewOrigin().x,
-                camera->ViewOrigin().y,
+                camera->center.x,
+                camera->center.y,
                 0
             },
             Size3D
             {
-                static_cast<Size3D::Value>(camera->Size().width),
-                static_cast<Size3D::Value>(camera->Size().height),
+                static_cast<Size3D::Value>(camera->size.width),
+                static_cast<Size3D::Value>(camera->size.height),
                 std::numeric_limits<Size3D::Value>::max()
             }
         };
 
         auto lines = octree.AllWithin(queryBox);
+        if (lines.size() < 3)
+        {
+            auto testMe = octree.AllWithin(queryBox);
+            int wait = 1 + 1;
+        }
+
         for (auto& index : lines)
         {
             auto& line = *index->value;
 
-            auto from = line.from;
-            from.x -= camera->ScreenSides().Left();
-            from.y -= camera->ScreenSides().Top();
-
-            auto to = line.to;
-            to.x -= camera->ScreenSides().Left();
-            to.y -= camera->ScreenSides().Top();
-
-            LineRender render
+            const LineRender render
             {
-                from,
-                to,
+                Position2D
+                {
+                    line.from.x - camera->center.x,
+                    line.from.y - camera->center.y
+                },
+                Position2D
+                {
+                    line.to.x - camera->center.x,
+                    line.to.y - camera->center.y
+                },
                 line.z,
                 line.width,
                 line.color
@@ -75,7 +81,7 @@ namespace Atmos::Render
         const auto prevTo = index->to;
         const auto prevZ = index->z;
 
-        auto data = MutablePointer(index);
+        auto data = MutablePointer().Of(index);
         if(command.from)
             data->from = *command.from;
 

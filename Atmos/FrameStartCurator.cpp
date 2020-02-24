@@ -9,12 +9,12 @@ namespace Atmos
             {
                 return statistics.profilers.idle;
             },
-            init.owner)
+            MutablePointer())
     {}
 
     void FrameStartCurator::Work()
     {
-        auto timeInformationData = MutablePointer(timeInformation);
+        auto timeInformationData = MutablePointer().Of(timeInformation);
         timeInformationData->frameStartTime = timeInformationData->stopwatch->Start();
 
         debugIdleProfiler.Calculate();

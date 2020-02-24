@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Serialization.h"
+
 namespace Atmos
 {
     struct ScreenSize
@@ -14,5 +16,16 @@ namespace Atmos
 
         bool operator==(const ScreenSize& arg) const;
         bool operator!=(const ScreenSize& arg) const;
+    };
+}
+
+namespace Inscription
+{
+    template<>
+    class Scribe<Atmos::ScreenSize, BinaryArchive> final :
+        public CompositeScribe<Atmos::ScreenSize, BinaryArchive>
+    {
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
     };
 }

@@ -19,7 +19,7 @@ namespace Atmos::Entity
             if (!runningScript)
                 continue;
 
-            MutablePointer(runningScript)->Resume();
+            MutablePointer().Of(runningScript)->Resume();
         }
 
         if (!fieldSet.IsEmpty())

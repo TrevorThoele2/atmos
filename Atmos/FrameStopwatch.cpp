@@ -16,6 +16,11 @@ namespace Atmos::Time
         return Owner().Do<StartStopwatch>(ID());
     }
 
+    bool FrameStopwatch::IsStarted() const
+    {
+        return core->IsStarted();
+    }
+
     Duration<> FrameStopwatch::Elapsed() const
     {
         return Owner().Do<CalculateStopwatch>(ID());

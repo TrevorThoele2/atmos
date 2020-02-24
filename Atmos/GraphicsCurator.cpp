@@ -14,26 +14,26 @@ namespace Atmos::Render
     {
         auto shaderAssetBatch = Owner().Batch<Asset::ShaderAsset>();
         for (auto& loop : shaderAssetBatch)
-            MutablePointer(loop)->FileData()->Release();
+            MutablePointer().Of(loop)->FileData()->Release();
 
-        auto mainSurface = MutablePointer<MainSurface>();
+        auto mainSurface = MutablePointer().Of<MainSurface>();
         mainSurface->Release();
         for (auto& loop : Owner().Batch<AncillarySurface>())
-            MutablePointer(loop)->Release();
+            MutablePointer().Of(loop)->Release();
 
         for (auto& loop : Owner().Batch<Canvas>())
-            MutablePointer(loop)->Release();
+            MutablePointer().Of(loop)->Release();
 
         manager->Reconstruct();
 
         for (auto& loop : shaderAssetBatch)
-            MutablePointer(loop)->FileData()->Reset();
+            MutablePointer().Of(loop)->FileData()->Reset();
 
         mainSurface->Reset();
         for (auto& loop : Owner().Batch<AncillarySurface>())
-            MutablePointer(loop)->Reset();
+            MutablePointer().Of(loop)->Reset();
 
         for (auto& loop : Owner().Batch<Canvas>())
-            MutablePointer(loop)->Reset();
+            MutablePointer().Of(loop)->Reset();
     }
 }

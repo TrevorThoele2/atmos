@@ -28,14 +28,14 @@ namespace Atmos::Render
         {
             Position3D
             {
-                camera->ViewOrigin().x,
-                camera->ViewOrigin().y,
+                camera->center.x,
+                camera->center.y,
                 0
             },
             Size3D
             {
-                static_cast<Size3D::Value>(camera->Size().width),
-                static_cast<Size3D::Value>(camera->Size().height),
+                static_cast<Size3D::Value>(camera->size.width),
+                static_cast<Size3D::Value>(camera->size.height),
                 std::numeric_limits<Size3D::Value>::max()
             }
         };
@@ -46,14 +46,17 @@ namespace Atmos::Render
             auto& core = *std::get<0>(*index->value);
             auto& bounds = *std::get<1>(*index->value);
 
-            auto position = bounds.Position();
-            position.x -= camera->ScreenSides().Left();
-            position.y -= camera->ScreenSides().Top();
+            const auto boundsPosition = bounds.Position();
 
-            MaterialRender render
+            const MaterialRender render
             {
                 core.material.Get(),
-                position,
+                Position3D
+                {
+                    boundsPosition.x - camera->center.x,
+                    boundsPosition.y - camera->center.y,
+                    boundsPosition.z
+                },
                 bounds.Size(),
                 core.color,
                 core.materialSlice,
@@ -69,7 +72,7 @@ namespace Atmos::Render
         if (!index)
             return;
 
-        auto data = MutablePointer(index);
+        auto data = MutablePointer().Of(index);
         if (command.material)
         {
             data->material = *command.material;

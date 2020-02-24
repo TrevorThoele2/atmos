@@ -121,5 +121,15 @@ namespace Atmos
             origin
                 .Register<Statistics>();
         }
+
+        void RegisterGlobalRedirectionTypes(Arca::ReliquaryOrigin& origin, Arca::Reliquary& globalReliquary)
+        {
+            origin.Postulate<const Statistics*>(
+                [&globalReliquary](Arca::Reliquary&) -> const Statistics*
+                {
+                    const Arca::Index<Statistics> backing(globalReliquary);
+                    return backing;
+                });
+        }
     }
 }

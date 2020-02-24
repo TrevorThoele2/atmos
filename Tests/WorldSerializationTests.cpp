@@ -8,6 +8,7 @@
 
 #include <Atmos/OutputWorldArchiveInterface.h>
 #include <Atmos/WorldFileExtension.h>
+#include <Atmos/ResizeCamera.h>
 
 #include "DerivedEngine.h"
 
@@ -21,6 +22,10 @@ SCENARIO_METHOD(WorldSerializationTestsFixture, "rendering after world serializa
         auto fieldOrigin = Arca::ReliquaryOrigin();
         RegisterFieldTypes(fieldOrigin, *engine.TheGlobalReliquary());
         World::Field field(0, fieldOrigin.Actualize());
+
+        field.Reliquary().Do<ResizeCamera>(ScreenSize(
+            std::numeric_limits<ScreenSize::Dimension>::max(),
+            std::numeric_limits<ScreenSize::Dimension>::max()));
 
         WHEN("creating static material views and loading through world file then starting execution")
         {
@@ -85,33 +90,16 @@ SCENARIO_METHOD(WorldSerializationTestsFixture, "rendering after world serializa
                 auto& materialRenders = engine.mockGraphicsManager->renderer.materialRenders;
                 REQUIRE(materialRenders.size() == 3);
 
-                REQUIRE(std::any_of(
-                    materialRenders.begin(),
-                    materialRenders.end(),
-                    [&positions](const MaterialRender& entry)
-                    {
-                        return std::any_of(
-                            positions.begin(),
-                            positions.end(),
-                            [&entry](const Position3D& position)
-                            {
-                                return entry.position == position;
-                            });
-                    }));
-
-                REQUIRE(std::any_of(
-                    materialRenders.begin(),
-                    materialRenders.end(),
-                    [&sizes](const MaterialRender& entry)
-                    {
-                        return std::any_of(
-                            sizes.begin(),
-                            sizes.end(),
-                            [&entry](const Size2D& size)
-                            {
-                                return entry.size == size;
-                            });
-                    }));
+                for (auto i = 0; i < 3; ++i)
+                {
+                    REQUIRE(std::any_of(
+                        materialRenders.begin(),
+                        materialRenders.end(),
+                        [i, &positions, &sizes](const MaterialRender& entry)
+                        {
+                            return entry.position == positions[i] && entry.size == sizes[i];
+                        }));
+                }
             }
         }
     }

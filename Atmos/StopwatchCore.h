@@ -12,6 +12,8 @@ namespace Atmos::Time
 
         StopwatchCore() = default;
         explicit StopwatchCore(std::function<Value<>()>&& currentTime);
+
+        [[nodiscard]] bool IsStarted() const;
     };
 }
 
