@@ -26,9 +26,9 @@ namespace Atmos::Render
         renderer->StageRender(lineRender);
     }
 
-    void GraphicsManager::RenderStaged(const SurfaceData& surface)
+    void GraphicsManager::RenderStaged(const SurfaceData& surface, const Color& backgroundColor)
     {
-        renderer->RenderStaged(surface);
+        renderer->RenderStaged(surface, backgroundColor);
     }
 
     GraphicsManager::GraphicsManager(std::unique_ptr<Render::Renderer>&& renderer) :

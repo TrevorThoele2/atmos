@@ -2,6 +2,7 @@
 
 #include <Arca/Shard.h>
 #include "SurfaceData.h"
+#include "Color.h"
 #include <memory>
 
 namespace Atmos::Render
@@ -11,6 +12,8 @@ namespace Atmos::Render
         using DataT = SurfaceData;
         using DataPtr = std::unique_ptr<DataT>;
         DataPtr data;
+
+        Color backgroundColor;
 
         SurfaceCore() = default;
         explicit SurfaceCore(DataPtr&& data) : data(std::move(data))

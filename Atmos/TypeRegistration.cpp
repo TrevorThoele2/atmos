@@ -8,6 +8,13 @@
 #include "Camera.h"
 #include "CameraCurator.h"
 
+#include "AudioAsset.h"
+#include "ImageAsset.h"
+#include "MaterialAsset.h"
+#include "ScriptAsset.h"
+#include "ShaderAsset.h"
+#include "MappedAssets.h"
+
 #include "TimeSettings.h"
 #include "FrameStopwatch.h"
 #include "StopwatchStatistics.h"
@@ -96,6 +103,25 @@ namespace Atmos
         void RegisterGlobalRedirectionTypes(Arca::ReliquaryOrigin& origin, Arca::Reliquary& globalReliquary)
         {
             RegisterRedirectionPostulate<UniqueProviderRelic<AudioManager>>(origin, globalReliquary);
+        }
+    }
+
+    namespace Asset
+    {
+        void RegisterTypes(Arca::ReliquaryOrigin& origin)
+        {
+            origin
+                .Register<Core>()
+                .Register<AudioAsset>()
+                .Register<ImageAsset>()
+                .Register<MaterialAsset>()
+                .Register<ScriptAsset>()
+                .Register<ShaderAsset>()
+                .Register<MappedAssets<AudioAsset>>()
+                .Register<MappedAssets<ImageAsset>>()
+                .Register<MappedAssets<MaterialAsset>>()
+                .Register<MappedAssets<ScriptAsset>>()
+                .Register<MappedAssets<ShaderAsset>>();
         }
     }
 

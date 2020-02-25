@@ -28,13 +28,14 @@ namespace Atmos::Asset
 
     template<class Derived>
     Asset<Derived>::Asset(Init init) :
-        Arca::ClosedTypedRelic<Derived>(init), core(init.id, init.owner)
+        Arca::ClosedTypedRelic<Derived>(init),
+        core(init.template Create<Atmos::Asset::Core>())
     {}
 
     template<class Derived>
     Asset<Derived>::Asset(Init init, const Atmos::Name& name) :
         Arca::ClosedTypedRelic<Derived>(init),
-        core(init.owner.template Do<Arca::Create<Atmos::Asset::Core>>(init.id, name))
+        core(init.template Create<Atmos::Asset::Core>(name))
     {}
 
     template<class Derived>

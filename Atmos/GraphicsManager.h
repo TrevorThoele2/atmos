@@ -45,7 +45,7 @@ namespace Atmos::Render
         void StageRender(const MaterialRender& materialRender);
         void StageRender(const CanvasRender& canvasRender);
         void StageRender(const LineRender& lineRender);
-        void RenderStaged(const SurfaceData& surface);
+        void RenderStaged(const SurfaceData& surface, const Color& backgroundColor);
 
         virtual void SetFullscreen(bool set) = 0;
 

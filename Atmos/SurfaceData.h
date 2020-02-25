@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ScreenSize.h"
-#include "Color.h"
 
 namespace Atmos::Render
 {
@@ -9,8 +8,6 @@ namespace Atmos::Render
     {
     public:
         virtual ~SurfaceData() = 0;
-
-        virtual void FullColor(const Color& color) = 0;
 
         virtual void Present() = 0;
 
