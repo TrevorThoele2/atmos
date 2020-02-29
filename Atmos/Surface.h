@@ -19,6 +19,8 @@ namespace Atmos::Render
     protected:
         using Init = typename BaseT::Init;
     public:
+        virtual ~Surface() = 0;
+
         void RenderStaged();
 
         [[nodiscard]] ScreenSize Size() const;
@@ -34,18 +36,24 @@ namespace Atmos::Render
         [[nodiscard]] DataT* Data() const;
         template<class DataT>
         [[nodiscard]] DataT* Data() const;
+
+        [[nodiscard]] Arca::Index<SurfaceCore> Core() const;
+    protected:
+        virtual void RenderStagedImpl(GraphicsManager& graphicsManager) = 0;
     protected:
         using BaseT::Owner;
     private:
-        using Core = SurfaceCore;
-        Arca::Index<Core> core;
+        Arca::Index<SurfaceCore> core;
     };
+
+    template<class Derived>
+    Surface<Derived>::~Surface() = default;
 
     template<class Derived>
     void Surface<Derived>::RenderStaged()
     {
-        auto graphicsManager = Arca::Postulate<GraphicsManager*>(Owner()).Get();
-        graphicsManager->RenderStaged(*Data(), core->backgroundColor);
+        const auto graphicsManager = Arca::Postulate<GraphicsManager*>(Owner()).Get();
+        RenderStagedImpl(*graphicsManager);
     }
 
     template<class Derived>
@@ -69,7 +77,7 @@ namespace Atmos::Render
     template<class Derived>
     Surface<Derived>::Surface(Init init, DataPtr&& data) :
         Arca::ClosedTypedRelic<Derived>(init),
-        core(init.template Create<Core>(std::move(data)))
+        core(init.template Create<SurfaceCore>(std::move(data)))
     {}
 
     template<class Derived>
@@ -83,5 +91,11 @@ namespace Atmos::Render
     DataT* Surface<Derived>::Data() const
     {
         return static_cast<DataT*>(core->data.get());
+    }
+
+    template<class Derived>
+    Arca::Index<SurfaceCore> Surface<Derived>::Core() const
+    {
+        return core;
     }
 }

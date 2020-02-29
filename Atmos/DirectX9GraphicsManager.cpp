@@ -23,12 +23,11 @@ namespace Atmos::Render::DirectX9
         Render::GraphicsManager(std::make_unique<DirectX9::Renderer>(*this)), hwnd(hwnd)
     {
         ZeroMemory(&presentationParameters, sizeof presentationParameters);
-
+        SetupPresentationParameters();
         SetFullscreen(fullscreen);
+        presentationParameters.hDeviceWindow = hwnd;
 
         d3d = Direct3DCreate9(D3D_SDK_VERSION);
-        presentationParameters.hDeviceWindow = hwnd;
-        SetupPresentationParameters();
 
         device = CreateDevice();
 
@@ -48,15 +47,21 @@ namespace Atmos::Render::DirectX9
         Renderer<DirectX9::Renderer>().Initialize(device, reliquary);
     }
 
+    bool GraphicsManager::IsOk() const
+    {
+        return IsDeviceOk();
+    }
+
     std::unique_ptr<Asset::ImageAssetData> GraphicsManager::CreateImageData(
         const Buffer& buffer, const Name& name)
     {
         D3DXIMAGE_INFO info;
         LogIfError(
             D3DXGetImageInfoFromFileInMemory(buffer.data(), buffer.size(), &info),
-            "An image asset could not be created.",
-            Logging::Severity::SevereError,
-            Logging::Details{ {"Name", name} });
+            [name]() { return Logging::Log(
+                "An image asset could not be created.",
+                Logging::Severity::SevereError,
+                Logging::Details{ {"Name", name} }); });
 
         LPDIRECT3DTEXTURE9 tex;
         LogIfError(
@@ -78,9 +83,10 @@ namespace Atmos::Render::DirectX9
                 nullptr,
                 &tex
             ),
-            "An image asset could not be created.",
-            Logging::Severity::SevereError,
-            Logging::Details{ {"Name", name} });
+            [name]() { return Logging::Log(
+                "An image asset could not be created.",
+                Logging::Severity::SevereError,
+                Logging::Details{ {"Name", name} }); });
 
         return std::make_unique<ImageAssetDataImplementation>(tex);
     }
@@ -102,9 +108,10 @@ namespace Atmos::Render::DirectX9
                 &effect,
                 nullptr
             ),
-            "A shader asset could not be created.",
-            Logging::Severity::SevereError,
-            Logging::Details{ {"Name", name} });
+            [name]() { return Logging::Log(
+                "A shader asset could not be created.",
+                Logging::Severity::SevereError,
+                Logging::Details{ {"Name", name} }); });
 
         return std::make_unique<ShaderAssetDataImplementation>(effect);
     }
@@ -129,14 +136,16 @@ namespace Atmos::Render::DirectX9
         LPDIRECT3DSWAPCHAIN9 swapChain;
         LogIfError(
             device->CreateAdditionalSwapChain(&presentationParameters, &swapChain),
-            "A render surface could not be created.",
-            Logging::Severity::SevereError);
+            []() { return Logging::Log(
+                "A render surface could not be created.",
+                Logging::Severity::SevereError); });
 
         LPDIRECT3DSURFACE9 backBuffer;
         LogIfError(
             swapChain->GetBackBuffer(0, D3DBACKBUFFER_TYPE_MONO, &backBuffer),
-            "A render surface could not be created.",
-            Logging::Severity::SevereError);
+            []() { return Logging::Log(
+                "A render surface could not be created.",
+                Logging::Severity::SevereError); });
 
         return std::make_unique<SurfaceDataImplementation>(*this, swapChain, backBuffer);
     }
@@ -146,14 +155,16 @@ namespace Atmos::Render::DirectX9
         LPDIRECT3DSWAPCHAIN9 swapChain;
         LogIfError(
             device->GetSwapChain(0, &swapChain),
-            "The main render surface data could not be retrieved.",
-            Logging::Severity::SevereError);
+            []() { return Logging::Log(
+                "The main render surface data could not be retrieved.",
+                Logging::Severity::SevereError); });
 
         LPDIRECT3DSURFACE9 backBuffer;
         LogIfError(
             swapChain->GetBackBuffer(0, D3DBACKBUFFER_TYPE_MONO, &backBuffer),
-            "The main render surface data could not be retrieved.",
-            Logging::Severity::SevereError);
+            []() { return Logging::Log(
+                "The main render surface data could not be retrieved.",
+                Logging::Severity::SevereError); });
 
         return std::make_unique<SurfaceDataImplementation>(*this, swapChain, backBuffer);
     }
@@ -174,8 +185,9 @@ namespace Atmos::Render::DirectX9
                 D3DPOOL_MANAGED,
                 &texture
             ),
-            "A canvas could not be created.",
-            Logging::Severity::SevereError);
+            []() { return Logging::Log(
+                "A canvas could not be created.",
+                Logging::Severity::SevereError); });
 
         return std::make_unique<CanvasDataImplementation>(*this, size, texture);
     }
@@ -191,8 +203,9 @@ namespace Atmos::Render::DirectX9
     {
         LogIfError(
             device->Clear(0, nullptr, D3DCLEAR_STENCIL, ToDirectXColor(color), 1.0f, 0),
-            "Could not clear stencil buffer.",
-            Logging::Severity::SevereError);
+            []() { return Logging::Log(
+                "Could not clear stencil buffer.",
+                Logging::Severity::SevereError); });
     }
 
     void GraphicsManager::SetRenderState(RenderState state, bool set)
@@ -219,6 +232,40 @@ namespace Atmos::Render::DirectX9
         return device;
     }
 
+    bool GraphicsManager::ShouldReconstructInternals() const
+    {
+        return !IsDeviceLost();
+    }
+
+    void GraphicsManager::ReconstructInternals(const ScreenSize& screenSize)
+    {
+        if (!IsDeviceNotReset())
+        {
+            SetupPresentationParameters();
+            presentationParameters.BackBufferWidth = screenSize.width;
+            presentationParameters.BackBufferHeight = screenSize.height;
+
+            Renderer<DirectX9::Renderer>().OnLostDevice();
+        }
+
+        {
+            const auto hr = device->Reset(&presentationParameters);
+            if (IsError(hr))
+            {
+                LogIfError(
+                    hr,
+                    []() { return Logging::Log(
+                        "The DirectX device failed when resetting.",
+                        Logging::Severity::SevereError); });
+                return;
+            }
+        }
+
+        Renderer<DirectX9::Renderer>().OnResetDevice();
+
+        SetRenderStates();
+    }
+
     LPDIRECT3DDEVICE9 GraphicsManager::CreateDevice()
     {
         LPDIRECT3DDEVICE9 device;
@@ -232,33 +279,10 @@ namespace Atmos::Render::DirectX9
                 &presentationParameters,
                 &device
             ),
-            "The Direct3D device could not be created.",
-            Logging::Severity::SevereError);
+            []() { return Logging::Log(
+                "The Direct3D device could not be created.",
+                Logging::Severity::SevereError); });
         return device;
-    }
-
-    void GraphicsManager::ReconstructInternals()
-    {
-        SetupPresentationParameters();
-
-        Renderer<DirectX9::Renderer>().OnLostDevice();
-
-        {
-            const auto hr = device->Reset(&presentationParameters);
-            if (hr == D3DERR_DEVICELOST)
-                return;
-            else
-                LogIfError(
-                    hr,
-                    "The DirectX device failed when resetting.",
-                    Logging::Severity::SevereError);
-        }
-
-        // Recreate interfaces
-        Renderer<DirectX9::Renderer>().OnResetDevice();
-
-        // Reset render states
-        SetRenderStates();
     }
 
     void GraphicsManager::SetupPresentationParameters()
@@ -274,24 +298,47 @@ namespace Atmos::Render::DirectX9
     {
         LogIfError(
             device->SetRenderState(D3DRS_ZENABLE, false),
-            "DirectX9 Z buffer couldn't be set to false.",
-            Logging::Severity::SevereError);
+            []() { return Logging::Log(
+                "DirectX9 Z buffer couldn't be set to false.",
+                Logging::Severity::SevereError); });
         LogIfError(
             device->SetRenderState(D3DRS_LIGHTING, false),
-            "DirectX9 lighting couldn't be set to false.",
-            Logging::Severity::SevereError);
+            []() { return Logging::Log(
+                "DirectX9 lighting couldn't be set to false.",
+                Logging::Severity::SevereError); });
         LogIfError(
             device->SetRenderState(D3DRS_ALPHABLENDENABLE, true),
-            "DirectX9 alpha blend couldn't be set to true.",
-            Logging::Severity::SevereError);
+            []() { return Logging::Log(
+                "DirectX9 alpha blend couldn't be set to true.",
+                Logging::Severity::SevereError); });
         LogIfError(
             device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA),
-            "DirectX9 source blend couldn't be set to source alpha.",
-            Logging::Severity::SevereError);
+            []() { return Logging::Log(
+                "DirectX9 source blend couldn't be set to source alpha.",
+                Logging::Severity::SevereError); });
         LogIfError(
             device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA),
-            "DirectX9 destination blend couldn't be set to inverse source alpha.",
-            Logging::Severity::SevereError);
+            []() { return Logging::Log(
+                "DirectX9 destination blend couldn't be set to inverse source alpha.",
+                Logging::Severity::SevereError); });
+    }
+
+    bool GraphicsManager::IsDeviceOk() const
+    {
+        const auto cooperativeLevel = device->TestCooperativeLevel();
+        return cooperativeLevel == D3D_OK;
+    }
+
+    bool GraphicsManager::IsDeviceLost() const
+    {
+        const auto cooperativeLevel = device->TestCooperativeLevel();
+        return cooperativeLevel == D3DERR_DEVICELOST;
+    }
+
+    bool GraphicsManager::IsDeviceNotReset() const
+    {
+        const auto cooperativeLevel = device->TestCooperativeLevel();
+        return cooperativeLevel == D3DERR_DEVICENOTRESET;
     }
 
     std::optional<D3DRENDERSTATETYPE> GraphicsManager::RenderStateToD3D(RenderState renderState)

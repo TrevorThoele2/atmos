@@ -30,7 +30,10 @@ namespace Atmos::Render
 
         virtual void Initialize(Arca::Reliquary& reliquary) = 0;
 
-        void Reconstruct();
+        void Reconstruct(const ScreenSize& screenSize);
+        [[nodiscard]] bool ShouldReconstruct() const;
+
+        [[nodiscard]] virtual bool IsOk() const = 0;
 
         [[nodiscard]] virtual std::unique_ptr<Asset::ImageAssetData> CreateImageData(
             const Buffer& buffer, const Name& name) = 0;
@@ -45,6 +48,7 @@ namespace Atmos::Render
         void StageRender(const MaterialRender& materialRender);
         void StageRender(const CanvasRender& canvasRender);
         void StageRender(const LineRender& lineRender);
+        void RenderStaged(const ScreenSize& screenSize, const Color& backgroundColor);
         void RenderStaged(const SurfaceData& surface, const Color& backgroundColor);
 
         virtual void SetFullscreen(bool set) = 0;
@@ -63,10 +67,11 @@ namespace Atmos::Render
         [[nodiscard]] RendererT& Renderer();
         template<class RendererT>
         [[nodiscard]] const RendererT& Renderer() const;
+    protected:
+        [[nodiscard]] virtual bool ShouldReconstructInternals() const = 0;
+        virtual void ReconstructInternals(const ScreenSize& screenSize) = 0;
     private:
         std::unique_ptr<Render::Renderer> renderer;
-    private:
-        virtual void ReconstructInternals() = 0;
     };
 
     template<class RendererT>

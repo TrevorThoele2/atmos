@@ -34,8 +34,9 @@ namespace Atmos::Render::DirectX9
                 D3DPOOL_DEFAULT,
                 &newTexture
             ),
-            "Resizing of a canvas was attempted and failed.",
-            Logging::Severity::SevereError);
+            []() { return Logging::Log(
+                "Resizing of a canvas was attempted and failed.",
+                Logging::Severity::SevereError); });
 
         texture->Release();
         texture = newTexture;
@@ -45,16 +46,18 @@ namespace Atmos::Render::DirectX9
     {
         LogIfError(
             backBuffer->LockRect(&lockedRect, nullptr, 0),
-            "A canvas' back buffer could not be locked.",
-            Logging::Severity::LowError);
+            []() { return Logging::Log(
+                "A canvas' back buffer could not be locked.",
+                Logging::Severity::LowError); });
     }
 
     void CanvasDataImplementation::StopPainting()
     {
         LogIfError(
             backBuffer->UnlockRect(),
-            "A canvas' back buffer could not be unlocked.",
-            Logging::Severity::LowError);
+            []() { return Logging::Log(
+                "A canvas' back buffer could not be unlocked.",
+                Logging::Severity::LowError); });
     }
 
     void CanvasDataImplementation::PaintPixel(

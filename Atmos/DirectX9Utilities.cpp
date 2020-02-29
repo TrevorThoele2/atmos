@@ -1,8 +1,5 @@
 #include "DirectX9Utilities.h"
 
-#include <DxErr.h>
-#include "Logger.h"
-
 namespace Atmos::Render::DirectX9
 {
     D3DCOLOR ToDirectXColor(const Color& color)
@@ -10,22 +7,13 @@ namespace Atmos::Render::DirectX9
         return D3DCOLOR_ARGB(color.alpha, color.red, color.green, color.blue);
     }
 
-    void LogIfError
-    (
-        HRESULT hr,
-        const String& message,
-        Logging::Severity severity,
-        const std::optional<Logging::Details>& details
-    ) {
-        if (hr == S_OK)
-            return;
+    bool IsSuccess(HRESULT hr)
+    {
+        return SUCCEEDED(hr);
+    }
 
-        auto useDetails = details
-            ? *details
-            : Logging::Details{};
-
-        useDetails.insert(useDetails.begin(), { "Description", String(DXGetErrorDescriptionA(hr)) });
-
-        Logging::logger.Log(Logging::Log(message, severity, useDetails));
+    bool IsError(HRESULT hr)
+    {
+        return FAILED(hr);
     }
 }

@@ -27,6 +27,7 @@ namespace Atmos::Render::DirectX9
         void StageRender(const MaterialRender& materialRender) override;
         void StageRender(const CanvasRender& canvasRender) override;
         void StageRender(const LineRender& lineRender) override;
+        void RenderStaged(const ScreenSize& screenSize, const Color& backgroundColor) override;
         void RenderStaged(const SurfaceData& surface, const Color& backgroundColor) override;
 
         void OnLostDevice();
@@ -135,8 +136,6 @@ namespace Atmos::Render::DirectX9
 
         LPD3DXLINE lineInterface = nullptr;
 
-        LPDIRECT3DSURFACE9 mainSurface = nullptr;
-
         struct Layer
         {
             using Objects = std::vector<StagedObject>;
@@ -180,6 +179,8 @@ namespace Atmos::Render::DirectX9
             const Color& color
         );
     private:
+        void PushThroughPipeline(const ScreenSize& screenSize, const Color& backgroundColor);
+
         class Pipeline
         {
         public:

@@ -5,8 +5,12 @@
 #include "MaterialViewCurator.h"
 #include "LineCurator.h"
 #include "RenderCurator.h"
+#include "GraphicsCurator.h"
 #include "Camera.h"
 #include "CameraCurator.h"
+#include "AncillarySurface.h"
+#include "Canvas.h"
+#include "SurfaceCurator.h"
 
 #include "AudioAsset.h"
 #include "ImageAsset.h"
@@ -78,8 +82,12 @@ namespace Atmos
                 .Register<Camera>()
                 .Register<CameraCurator>()
                 .Register<Curator>()
+                .Register<GraphicsCurator>()
                 .Register<SurfaceCore>()
-                .Register<MainSurface>(graphicsManager.CreateMainSurfaceData());
+                .Register<MainSurface>(graphicsManager.CreateMainSurfaceData())
+                .Register<AncillarySurface>()
+                .Register<Canvas>()
+                .Register<SurfaceCurator>();
         }
 
         void RegisterGlobalRedirectionTypes(Arca::ReliquaryOrigin& origin, Arca::Reliquary& globalReliquary)

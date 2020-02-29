@@ -1819,5 +1819,8 @@
     <ClCompile Include="LoggingTransfer.cpp">
       <Filter>Source Files\Logging</Filter>
     </ClCompile>
+    <ClCompile Include="ChangeSurfaceBackgroundColor.cpp">
+      <Filter>Source Files\Render\Surface</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

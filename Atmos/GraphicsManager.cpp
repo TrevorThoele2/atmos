@@ -6,9 +6,17 @@ namespace Atmos::Render
 {
     GraphicsManager::~GraphicsManager() = default;
 
-    void GraphicsManager::Reconstruct()
+    void GraphicsManager::Reconstruct(const ScreenSize& screenSize)
     {
-        ReconstructInternals();
+        if (!ShouldReconstruct())
+            return;
+
+        ReconstructInternals(screenSize);
+    }
+
+    bool GraphicsManager::ShouldReconstruct() const
+    {
+        return ShouldReconstructInternals();
     }
 
     void GraphicsManager::StageRender(const MaterialRender& materialRender)
@@ -24,6 +32,11 @@ namespace Atmos::Render
     void GraphicsManager::StageRender(const LineRender& lineRender)
     {
         renderer->StageRender(lineRender);
+    }
+
+    void GraphicsManager::RenderStaged(const ScreenSize& screenSize, const Color& backgroundColor)
+    {
+        renderer->RenderStaged(screenSize, backgroundColor);
     }
 
     void GraphicsManager::RenderStaged(const SurfaceData& surface, const Color& backgroundColor)

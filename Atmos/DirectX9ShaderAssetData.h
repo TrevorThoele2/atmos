@@ -23,7 +23,7 @@ namespace Atmos::Render::DirectX9
         void BeginNextPass(PassCount pass) const override;
         void EndPass() const override;
 
-        LPD3DXEFFECT Effect() const;
+        [[nodiscard]] LPD3DXEFFECT Effect() const;
     private:
         LPD3DXEFFECT effect;
     };
