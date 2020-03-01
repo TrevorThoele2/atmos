@@ -9,6 +9,7 @@
 #include <Atmos/OutputWorldArchiveInterface.h>
 #include <Atmos/WorldFileExtension.h>
 #include <Atmos/ResizeCamera.h>
+#include <Atmos/Camera.h>
 
 #include "DerivedEngine.h"
 
@@ -26,6 +27,10 @@ SCENARIO_METHOD(WorldSerializationTestsFixture, "rendering after world serializa
         field.Reliquary().Do<ResizeCamera>(ScreenSize(
             std::numeric_limits<ScreenSize::Dimension>::max(),
             std::numeric_limits<ScreenSize::Dimension>::max()));
+
+        const auto camera = Arca::Index<Camera>(field.Reliquary());
+        const auto cameraLeft = camera->ScreenSides().Left();
+        const auto cameraTop = camera->ScreenSides().Top();
 
         WHEN("creating static material views and loading through world file then starting execution")
         {
@@ -95,9 +100,13 @@ SCENARIO_METHOD(WorldSerializationTestsFixture, "rendering after world serializa
                     REQUIRE(std::any_of(
                         materialRenders.begin(),
                         materialRenders.end(),
-                        [i, &positions, &sizes](const MaterialRender& entry)
+                        [i, &positions, &sizes, cameraLeft, cameraTop](const MaterialRender& entry)
                         {
-                            return entry.position == positions[i] && entry.size == sizes[i];
+                            auto expectedPosition = positions[i];
+                            expectedPosition.x -= cameraLeft;
+                            expectedPosition.y -= cameraTop;
+
+                            return entry.position == expectedPosition && entry.size == sizes[i];
                         }));
                 }
             }

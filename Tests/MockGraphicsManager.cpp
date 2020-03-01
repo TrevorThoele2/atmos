@@ -47,9 +47,6 @@ class SurfaceDataImplementation final : public SurfaceData
 public:
     SurfaceDataImplementation() = default;
 
-    void FullColor(const Color& color) override
-    {}
-
     void Present() override
     {}
 
@@ -102,6 +99,11 @@ MockGraphicsManager::MockGraphicsManager() :
 void MockGraphicsManager::Initialize(Arca::Reliquary& reliquary)
 {}
 
+bool MockGraphicsManager::IsOk() const
+{
+    return true;
+}
+
 std::unique_ptr<Asset::ImageAssetData> MockGraphicsManager::CreateImageData(
     const Buffer& buffer, const Name& name)
 {
@@ -143,5 +145,10 @@ void MockGraphicsManager::SetRenderState(RenderState state, bool set)
 void MockGraphicsManager::ChangeVerticalSync(bool set)
 {}
 
-void MockGraphicsManager::ReconstructInternals()
+bool MockGraphicsManager::ShouldReconstructInternals() const
+{
+    return false;
+}
+
+void MockGraphicsManager::ReconstructInternals(const ScreenSize& screenSize)
 {}

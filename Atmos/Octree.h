@@ -82,8 +82,8 @@ namespace Atmos::Grid
             void IntersectingChildren(
                 Bounds bounds,
                 std::vector<const Node*>& nodes,
-                Position3D center,
-                Scale scale) const;
+                Position3D parentCenter,
+                Scale parentScale) const;
 
             void Subdivide();
             void Unify();
@@ -207,17 +207,19 @@ namespace Atmos::Grid
     void Octree<ID, Value>::Node::IntersectingChildren(
         Bounds bounds,
         std::vector<const Node*>& nodes,
-        Position3D center,
-        Scale scale) const
+        Position3D parentCenter,
+        Scale parentScale) const
     {
         if (!IsSubdivided())
             return;
 
-        auto attemptAddToNodes = [&nodes, this, center, scale, bounds](ChosenChild chosenChild)
+        const auto childScale = parentScale - 1;
+
+        auto attemptAddToNodes = [&nodes, this, parentCenter, childScale, bounds](ChosenChild chosenChild)
         {
-            const auto childCenter = CenterForChild(center, chosenChild, scale);
-            const auto childScale = scale - 1;
-            if (BoundsFor(childCenter, childScale).Intersects(bounds))
+            const auto childCenter = CenterForChild(parentCenter, chosenChild, childScale);
+            const auto childBounds = BoundsFor(childCenter, childScale);
+            if (childBounds.Intersects(bounds))
             {
                 const auto childIndex = IndexFor(chosenChild);
                 auto child = children[childIndex].get();
@@ -438,7 +440,7 @@ namespace Atmos::Grid
     Position3D Octree<ID, Value>::CenterForChild(Position3D nodeCenter, ChosenChild chosenChild, Scale scale)
     {
         const auto length = LengthFor(scale);
-        const auto shiftLength = length / 4;
+        const auto shiftLength = length / 2;
 
         Position3D position;
         position.x = chosenChild.left ? nodeCenter.x - shiftLength : nodeCenter.x + shiftLength;

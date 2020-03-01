@@ -9,6 +9,7 @@
 #include <Atmos/TypeRegistration.h>
 #include <Atmos/GridCellSize.h>
 #include <Atmos/StringUtility.h>
+#include <Atmos/Camera.h>
 
 #include "DerivedEngine.h"
 
@@ -28,6 +29,10 @@ SCENARIO_METHOD(RenderTestsFixture, "rendering material views")
         field.Reliquary().Do<ResizeCamera>(ScreenSize(
             std::numeric_limits<ScreenSize::Dimension>::max(),
             std::numeric_limits<ScreenSize::Dimension>::max()));
+
+        const auto camera = Arca::Index<Camera>(field.Reliquary());
+        const auto cameraLeft = camera->ScreenSides().Left();
+        const auto cameraTop = camera->ScreenSides().Top();
 
         WHEN("creating static material views and starting execution")
         {
@@ -87,9 +92,13 @@ SCENARIO_METHOD(RenderTestsFixture, "rendering material views")
                     REQUIRE(std::any_of(
                         materialRenders.begin(),
                         materialRenders.end(),
-                        [i, &positions, &sizes](const MaterialRender& entry)
+                        [i, &positions, &sizes, cameraLeft, cameraTop](const MaterialRender& entry)
                         {
-                            return entry.position == positions[i] && entry.size == sizes[i];
+                            auto expectedPosition = positions[i];
+                            expectedPosition.x -= cameraLeft;
+                            expectedPosition.y -= cameraTop;
+
+                            return entry.position == expectedPosition && entry.size == sizes[i];
                         }));
                 }
             }
@@ -153,9 +162,13 @@ SCENARIO_METHOD(RenderTestsFixture, "rendering material views")
                     REQUIRE(std::any_of(
                         materialRenders.begin(),
                         materialRenders.end(),
-                        [i, &positions, &sizes](const MaterialRender& entry)
+                        [i, &positions, &sizes, cameraLeft, cameraTop](const MaterialRender& entry)
                         {
-                            return entry.position == positions[i] && entry.size == sizes[i];
+                            auto expectedPosition = positions[i];
+                            expectedPosition.x -= cameraLeft;
+                            expectedPosition.y -= cameraTop;
+
+                            return entry.position == expectedPosition && entry.size == sizes[i];
                         }));
                 }
             }
@@ -177,6 +190,10 @@ SCENARIO_METHOD(RenderTestsFixture, "rendering lines")
         field.Reliquary().Do<ResizeCamera>(ScreenSize(
             std::numeric_limits<ScreenSize::Dimension>::max(),
             std::numeric_limits<ScreenSize::Dimension>::max()));
+
+        const auto camera = Arca::Index<Camera>(field.Reliquary());
+        const auto cameraLeft = camera->ScreenSides().Left();
+        const auto cameraTop = camera->ScreenSides().Top();
 
         WHEN("creating lines and starting execution")
         {
@@ -240,9 +257,17 @@ SCENARIO_METHOD(RenderTestsFixture, "rendering lines")
                     REQUIRE(std::any_of(
                         lineRenders.begin(),
                         lineRenders.end(),
-                        [i, &fromPositions, &toPositions](const LineRender& entry)
+                        [i, &fromPositions, &toPositions, cameraLeft, cameraTop](const LineRender& entry)
                         {
-                            return entry.from == fromPositions[i] && entry.to == toPositions[i];
+                            auto expectedFromPosition = fromPositions[i];
+                            expectedFromPosition.x -= cameraLeft;
+                            expectedFromPosition.y -= cameraTop;
+
+                            auto expectedToPosition = toPositions[i];
+                            expectedToPosition.x -= cameraLeft;
+                            expectedToPosition.y -= cameraTop;
+
+                            return entry.from == expectedFromPosition && entry.to == expectedToPosition;
                         }));
                 }
             }
@@ -261,10 +286,14 @@ SCENARIO_METHOD(RenderTestsFixture, "rendering culled material views")
         RegisterFieldTypes(fieldOrigin, *engine.TheGlobalReliquary());
         World::Field field(0, fieldOrigin.Actualize());
 
+        field.Reliquary().Do<ResizeCamera>(ScreenSize(100, 100));
+
+        const auto camera = Arca::Index<Camera>(field.Reliquary());
+        const auto cameraLeft = camera->ScreenSides().Left();
+        const auto cameraTop = camera->ScreenSides().Top();
+
         WHEN("creating static material views and starting execution")
         {
-            field.Reliquary().Do<ResizeCamera>(ScreenSize(100, 100));
-
             static constexpr auto gridCellSize = Grid::CellSize<Position3D::Value>;
             static constexpr auto halfGridCellSize = gridCellSize / 2;
 
@@ -287,25 +316,37 @@ SCENARIO_METHOD(RenderTestsFixture, "rendering culled material views")
                 REQUIRE(std::any_of(
                     materialRenders.begin(),
                     materialRenders.end(),
-                    [&materialView1](const MaterialRender& entry)
+                    [&materialView1, cameraLeft, cameraTop](const MaterialRender& entry)
                     {
-                        return entry.position == materialView1->Position();
+                        auto expectedPosition = materialView1->Position();
+                        expectedPosition.x -= cameraLeft;
+                        expectedPosition.y -= cameraTop;
+
+                        return entry.position == expectedPosition;
                     }));
 
                 REQUIRE(!std::any_of(
                     materialRenders.begin(),
                     materialRenders.end(),
-                    [&materialView2](const MaterialRender& entry)
+                    [&materialView2, cameraLeft, cameraTop](const MaterialRender& entry)
                     {
-                        return entry.position == materialView2->Position();
+                        auto expectedPosition = materialView2->Position();
+                        expectedPosition.x -= cameraLeft;
+                        expectedPosition.y -= cameraTop;
+
+                        return entry.position == expectedPosition;
                     }));
 
                 REQUIRE(std::any_of(
                     materialRenders.begin(),
                     materialRenders.end(),
-                    [&materialView3](const MaterialRender& entry)
+                    [&materialView3, cameraLeft, cameraTop](const MaterialRender& entry)
                     {
-                        return entry.position == materialView3->Position();
+                        auto expectedPosition = materialView3->Position();
+                        expectedPosition.x -= cameraLeft;
+                        expectedPosition.y -= cameraTop;
+
+                        return entry.position == expectedPosition;
                     }));
             }
         }

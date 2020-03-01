@@ -22,8 +22,6 @@ namespace Atmos::Render
 
     void MaterialViewCurator::Work()
     {
-        auto graphics = Arca::Postulate<GraphicsManager*>(Owner()).Get();
-
         const AxisAlignedBox3D queryBox
         {
             Position3D
@@ -40,7 +38,13 @@ namespace Atmos::Render
             }
         };
 
+        const auto cameraLeft = camera->ScreenSides().Left();
+        const auto cameraTop = camera->ScreenSides().Top();
+
         auto materialViews = octree.AllWithin(queryBox);
+
+        auto graphics = Arca::Postulate<GraphicsManager*>(Owner()).Get();
+
         for (auto& index : materialViews)
         {
             auto& core = *std::get<0>(*index->value);
@@ -53,8 +57,8 @@ namespace Atmos::Render
                 core.material.Get(),
                 Position3D
                 {
-                    boundsPosition.x - camera->center.x,
-                    boundsPosition.y - camera->center.y,
+                    boundsPosition.x - cameraLeft,
+                    boundsPosition.y - cameraTop,
                     boundsPosition.z
                 },
                 bounds.Size(),
@@ -72,24 +76,24 @@ namespace Atmos::Render
         if (!index)
             return;
 
-        auto data = MutablePointer().Of(index);
+        auto core = MutablePointer().Of(index);
         if (command.material)
         {
-            data->material = *command.material;
-            CalculateMaterialSlice(*data);
+            core->material = *command.material;
+            CalculateMaterialSlice(*core);
         }
 
         if (command.index)
         {
-            data->materialIndex = *command.index;
-            CalculateMaterialSlice(*data);
+            core->materialIndex = *command.index;
+            CalculateMaterialSlice(*core);
         }
 
         if (command.color)
-            data->color = *command.color;
+            core->color = *command.color;
 
         if (command.patchShader)
-            data->patchShader = *command.patchShader;
+            core->patchShader = *command.patchShader;
     }
 
     void MaterialViewCurator::CalculateMaterialSlice(MaterialViewCore& core)

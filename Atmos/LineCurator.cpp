@@ -22,8 +22,6 @@ namespace Atmos::Render
 
     void LineCurator::Work()
     {
-        auto graphics = Arca::Postulate<GraphicsManager*>(Owner()).Get();
-
         const AxisAlignedBox3D queryBox
         {
             Position3D
@@ -40,12 +38,12 @@ namespace Atmos::Render
             }
         };
 
+        const auto cameraLeft = camera->ScreenSides().Left();
+        const auto cameraTop = camera->ScreenSides().Top();
+
         auto lines = octree.AllWithin(queryBox);
-        if (lines.size() < 3)
-        {
-            auto testMe = octree.AllWithin(queryBox);
-            int wait = 1 + 1;
-        }
+
+        auto graphics = Arca::Postulate<GraphicsManager*>(Owner()).Get();
 
         for (auto& index : lines)
         {
@@ -55,13 +53,13 @@ namespace Atmos::Render
             {
                 Position2D
                 {
-                    line.from.x - camera->center.x,
-                    line.from.y - camera->center.y
+                    line.from.x - cameraLeft,
+                    line.from.y - cameraTop
                 },
                 Position2D
                 {
-                    line.to.x - camera->center.x,
-                    line.to.y - camera->center.y
+                    line.to.x - cameraLeft,
+                    line.to.y - cameraTop
                 },
                 line.z,
                 line.width,

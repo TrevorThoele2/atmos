@@ -17,6 +17,8 @@ public:
 
     void Initialize(Arca::Reliquary& reliquary) override;
 
+    [[nodiscard]] bool IsOk() const override;
+
     [[nodiscard]] std::unique_ptr<Asset::ImageAssetData> CreateImageData(
         const Buffer& buffer, const Name& name) override;
     [[nodiscard]] std::unique_ptr<Asset::ShaderAssetData> CreateShaderData(
@@ -35,5 +37,6 @@ public:
 
     void ChangeVerticalSync(bool set) override;
 private:
-    void ReconstructInternals() override;
+    bool ShouldReconstructInternals() const override;
+    void ReconstructInternals(const ScreenSize& screenSize) override;
 };
