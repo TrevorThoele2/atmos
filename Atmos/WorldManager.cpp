@@ -18,7 +18,7 @@ namespace Atmos::World
 
     WorldManager::WorldManager(Arca::Reliquary& globalReliquary) : globalReliquary(&globalReliquary)
     {
-        File::manager->MakeDirectory(StasisFolderFilePath());
+        std::filesystem::create_directory(StasisFolderFilePath());
     }
 
     void WorldManager::Work()
@@ -61,14 +61,8 @@ namespace Atmos::World
 
     void WorldManager::UseWorld(const File::Path& path)
     {
-        worldPath = path;
+        worldPath = path.has_parent_path() ? path : "Worlds" / path;
         utilization = WorldUtilization{ path };
-    }
-
-    void WorldManager::UseWorld(const File::Name& name)
-    {
-        worldPath = "Worlds" + name.GetValue();
-        utilization = WorldUtilization{ worldPath };
     }
 
     void WorldManager::UseField(Field&& field)
@@ -76,10 +70,10 @@ namespace Atmos::World
         utilization = FieldUtilization{ std::move(field) };
     }
 
-    void WorldManager::UseStasis(const File::Name& name)
+    void WorldManager::UseStasis(const File::Path& path)
     {
-        stasisName = name;
-        utilization = WorldUtilization{ File::Path("Stasis" + name.GetValue()) };
+        stasisName = path.string();
+        utilization = WorldUtilization{ File::Path("Stasis" + path.string()) };
     }
 
     void WorldManager::Autosave()
@@ -87,7 +81,7 @@ namespace Atmos::World
 
     }
 
-    const File::Path& WorldManager::WorldPath()
+    const File::Path& WorldManager::WorldPath() const
     {
         return worldPath;
     }
@@ -160,23 +154,23 @@ namespace Atmos::World
             fieldIDs.emplace(id);
     }
 
-    File::Path WorldManager::CreateWorldFilePath(const File::Name& fileName)
+    File::Path WorldManager::CreateWorldFilePath(const File::Path& fileName)
     {
-        return WorldFolderFilePath().Append(fileName);
+        return WorldFolderFilePath() / fileName;
     }
 
-    File::Path WorldManager::CreateStasisFilePath(const File::Name& fileName)
+    File::Path WorldManager::CreateStasisFilePath(const File::Path& fileName)
     {
-        return StasisFolderFilePath().Append(fileName);
+        return StasisFolderFilePath() / fileName;
     }
 
     File::Path WorldManager::WorldFolderFilePath()
     {
-        return (File::manager->ExePath() + "Worlds").AppendSeparator();
+        return std::filesystem::current_path() / "Worlds";
     }
 
     File::Path WorldManager::StasisFolderFilePath()
     {
-        return (File::manager->ExePath() + "Saves").AppendSeparator();
+        return std::filesystem::current_path() / "Saves";
     }
 }

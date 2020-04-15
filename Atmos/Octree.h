@@ -17,12 +17,13 @@ namespace Atmos::Grid
         struct Object
         {
             ID id;
+            Bounds bounds;
             Value value;
 
-            Object(ID id, const Value& value) : id(id), value(value)
+            Object(ID id, Bounds bounds, const Value& value) : id(id), bounds(bounds), value(value)
             {}
 
-            Object(ID id, Value&& value) : id(id), value(std::move(value))
+            Object(ID id, Bounds bounds, Value&& value) : id(id), bounds(bounds), value(std::move(value))
             {}
         };
     public:
@@ -174,7 +175,8 @@ namespace Atmos::Grid
         head.IntersectingChildren(bounds, nodes, headCenter, headScale);
         for (auto& node : nodes)
             for (auto& object : node->objects)
-                objects.push_back(&object);
+                if (object.bounds.Intersects(bounds))
+                    objects.push_back(&object);
 
         return objects;
     }
@@ -318,7 +320,7 @@ namespace Atmos::Grid
         for(auto& node : hierarchy)
             ++node->totalSize;
 
-        hierarchy[hierarchy.size() - 1]->objects.emplace_back(id, std::forward<T>(value));
+        hierarchy[hierarchy.size() - 1]->objects.emplace_back(id, bounds, std::forward<T>(value));
     }
 
     template<class ID, class Value>
@@ -442,11 +444,12 @@ namespace Atmos::Grid
         const auto length = LengthFor(scale);
         const auto shiftLength = length / 2;
 
-        Position3D position;
-        position.x = chosenChild.left ? nodeCenter.x - shiftLength : nodeCenter.x + shiftLength;
-        position.y = chosenChild.top ? nodeCenter.y - shiftLength : nodeCenter.y + shiftLength;
-        position.z = chosenChild.farZ ? nodeCenter.z - shiftLength : nodeCenter.z + shiftLength;
-        return position;
+        return Position3D
+        {
+            chosenChild.left ? nodeCenter.x - shiftLength : nodeCenter.x + shiftLength,
+            chosenChild.top ? nodeCenter.y - shiftLength : nodeCenter.y + shiftLength,
+            chosenChild.farZ ? nodeCenter.z - shiftLength : nodeCenter.z + shiftLength
+        };
     }
 
     template<class ID, class Value>

@@ -141,9 +141,9 @@ namespace Atmos::Render
         octree.Remove(view.index.ID(), BoxFor(view.index));
     }
 
-    AxisAlignedBox3D MaterialViewCurator::BoxFor(const Index& view)
+    AxisAlignedBox3D MaterialViewCurator::BoxFor(const Index& index)
     {
-        const auto& bounds = *std::get<1>(*view);
+        const auto& bounds = *std::get<1>(*index);
         return AxisAlignedBox3D
         {
             bounds.Position(),

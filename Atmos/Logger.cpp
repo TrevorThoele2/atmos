@@ -4,7 +4,6 @@
 
 #include "FileManagerProvider.h"
 
-#include "FileName.h"
 #include "StringUtility.h"
 
 #include <Inscription/OutputTextFile.h>
@@ -84,8 +83,7 @@ namespace Atmos::Logging
 
     File::Path Logger::OutputFilePath()
     {
-        const File::Name fileName("log.txt");
-        return File::manager->ExePath().SetFileName(fileName).GetValue();
+        return std::filesystem::current_path() / "log.txt";
     }
 
     String Logger::CurrentTimeStamp()

@@ -8,7 +8,6 @@
 #include "InitializationFileSection.h"
 
 #include "FilePath.h"
-#include "FileName.h"
 
 namespace Atmos::Initialization
 {
@@ -28,7 +27,7 @@ namespace Atmos::Initialization
         using FileSectionList = std::vector<FileSection*>;
         FileSectionList sectionList { &graphics, &sound, &controls};
     private:
-        const File::Name fileName = File::Name("Initialization.ini");
+        const File::Path fileName = File::Path("Initialization.ini");
         [[nodiscard]] File::Path FilePath() const;
 
         void Load();

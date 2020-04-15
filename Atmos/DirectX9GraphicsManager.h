@@ -1,8 +1,6 @@
 #pragma once
 
 #include "DirectX9Includes.h"
-#pragma comment (lib, "d3d9.lib")
-#pragma comment (lib, "d3dx9.lib")
 #undef CreateFont
 
 #include "GraphicsManager.h"

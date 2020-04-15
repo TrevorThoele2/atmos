@@ -7,7 +7,6 @@
 #include <Arca/Reliquary.h>
 
 #include "StringUtility.h"
-#include "FileUtility.h"
 #include <Inscription/OutputTextFile.h>
 #include <Inscription/InputTextFile.h>
 
@@ -54,13 +53,13 @@ namespace Atmos::Initialization
 
     File::Path FileCurator::FilePath() const
     {
-        return File::manager->ExePath() + fileName;
+        return std::filesystem::current_path() / fileName;
     }
 
     void FileCurator::Load()
     {
         File::Path filePath = FilePath();
-        if (!File::DoesFileExist(filePath))
+        if (!std::filesystem::exists(filePath))
         {
             Save();
             return;

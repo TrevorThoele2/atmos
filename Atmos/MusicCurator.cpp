@@ -2,7 +2,7 @@
 
 namespace Atmos::Audio
 {
-    void MusicCurator::BeginPlaying(const File::Name& fileName)
+    void MusicCurator::BeginPlaying(const File::Path& fileName)
     {
 
     }

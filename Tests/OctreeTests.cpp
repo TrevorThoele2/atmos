@@ -572,7 +572,7 @@ SCENARIO_METHOD(OctreeTestsFixture, "multiple objects octree", "[octree]")
             auto values = dataGeneration.RandomGroup<std::string>(8);
 
             const auto gridCellSize = CellSize<Position3D::Value>;
-            const auto distance = std::numeric_limits<Position3D::Value>::max() - gridCellSize;
+            const auto distance = std::numeric_limits<Position3D::Value>::max() / 2 - gridCellSize;
 
             auto addObject = [&octree, &ids, &values, gridCellSize](size_t i, const Position3D& center)
             {
@@ -600,7 +600,12 @@ SCENARIO_METHOD(OctreeTestsFixture, "multiple objects octree", "[octree]")
                 const auto bounds = AxisAlignedBox3D
                 {
                     Position3D { 0, 0, 0 },
-                    Size3D { gridCellSize * 2, gridCellSize * 2, gridCellSize * 2 }
+                    Size3D
+                    {
+                        std::numeric_limits<Position3D::Value>::max(),
+                        std::numeric_limits<Position3D::Value>::max(),
+                        std::numeric_limits<Position3D::Value>::max()
+                    }
                 };
 
                 auto allWithin = octree.AllWithin(bounds);

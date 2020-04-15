@@ -3,7 +3,6 @@
 #include "NullFileManager.h"
 
 #include "FilePath.h"
-#include "RelativeFilePath.h"
 
 namespace Atmos::File
 {
@@ -15,19 +14,11 @@ namespace Atmos::File
     void ManagerProvider::OnSetup()
     {
         CreateDefaultDirectories();
-        SetupFilePaths();
     }
 
     void ManagerProvider::CreateDefaultDirectories()
     {
-        value->MakeDirectory(value->DataPath());
-    }
-
-    void ManagerProvider::SetupFilePaths()
-    {
-        const auto fileSeparator = value->FileSeparator();
-        Path::fileSeparator = fileSeparator;
-        RelativePath::fileSeparator = fileSeparator;
+        std::filesystem::create_directory(value->DataPath());
     }
 
     ManagerProvider manager;
