@@ -2,11 +2,6 @@
 
 namespace Atmos::Render
 {
-    MainSurface::MainSurface(Init init, DataPtr&& data) : Surface(init, std::move(data))
+    MainSurface::MainSurface(Init init) : Surface(init, {})
     {}
-
-    void MainSurface::RenderStagedImpl(GraphicsManager& graphicsManager)
-    {
-        graphicsManager.RenderStaged(Core()->data->Size(), Core()->backgroundColor);
-    }
 }

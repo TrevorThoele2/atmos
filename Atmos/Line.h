@@ -11,8 +11,7 @@ namespace Atmos::Render
     class Line : public Arca::ClosedTypedRelic<Line>
     {
     public:
-        Position2D from;
-        Position2D to;
+        std::vector<Position2D> points;
         Position2D::Value z = 0;
 
         LineWidth width = 0;
@@ -22,8 +21,8 @@ namespace Atmos::Render
         explicit Line(Init init) : ClosedTypedRelic(init)
         {}
 
-        Line(Init init, Position2D from, Position2D to);
-        Line(Init init, Position2D from, Position2D to, Position2D::Value z, LineWidth width, Color color);
+        Line(Init init, const std::vector<Position2D>& points);
+        Line(Init init, const std::vector<Position2D>& points, Position2D::Value z, LineWidth width, Color color);
     };
 }
 

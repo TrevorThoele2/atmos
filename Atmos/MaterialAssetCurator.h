@@ -13,3 +13,22 @@ namespace Atmos::Asset
         constexpr static DebugStatisticsSize debugStatisticsSize = &Debug::Statistics::Memory::materialAssetSize;
     };
 }
+
+namespace Arca
+{
+    template<>
+    struct Traits<Atmos::Asset::MaterialAssetCurator>
+    {
+        static const ObjectType objectType = ObjectType::Curator;
+        static inline const TypeName typeName = "MaterialAssetCurator";
+        using HandledCommands = HandledCommands<Atmos::Asset::FindAsset<Atmos::Asset::MaterialAsset>>;
+    };
+}
+
+namespace Inscription
+{
+    template<>
+    class Scribe<Atmos::Asset::MaterialAssetCurator, BinaryArchive> final :
+        public ArcaNullScribe<Atmos::Asset::MaterialAssetCurator, BinaryArchive>
+    {};
+}

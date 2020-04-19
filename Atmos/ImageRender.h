@@ -1,0 +1,24 @@
+#pragma once
+
+#include "ImageAsset.h"
+#include "Position3D.h"
+#include "Size2D.h"
+#include "AxisAlignedBox2D.h"
+#include "Color.h"
+#include "MaterialAsset.h"
+
+namespace Atmos::Render
+{
+    struct ImageRender
+    {
+        const Asset::ImageAsset* asset;
+        AxisAlignedBox2D assetSlice;
+
+        Position3D position;
+        Size2D size;
+
+        Color color;
+
+        const Asset::MaterialAsset* material;
+    };
+}

@@ -44,6 +44,11 @@ namespace Atmos
             });
     }
 
+    namespace File
+    {
+        void RegisterTypes(Arca::ReliquaryOrigin& origin);
+    }
+
     namespace Input
     {
         void RegisterGlobalRedirectionTypes(Arca::ReliquaryOrigin& origin, Arca::Reliquary& globalReliquary);
@@ -51,7 +56,7 @@ namespace Atmos
 
     namespace Render
     {
-        void RegisterTypes(Arca::ReliquaryOrigin& origin, GraphicsManager& graphicsManager);
+        void RegisterTypes(Arca::ReliquaryOrigin& origin);
         void RegisterGlobalRedirectionTypes(Arca::ReliquaryOrigin& origin, Arca::Reliquary& globalReliquary);
         Arca::Stage Stage();
     }

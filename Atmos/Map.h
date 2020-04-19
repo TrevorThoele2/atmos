@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Arca/ClosedTypedRelic.h>
-#include "StaticMaterialView.h"
+#include "StaticImage.h"
 #include "SparseRegion.h"
 
 namespace Atmos::World
@@ -9,7 +9,7 @@ namespace Atmos::World
     class Map final : public Arca::ClosedTypedRelic<Map>
     {
     public:
-        using Terrain = std::vector<Arca::Index<Render::StaticMaterialView>>;
+        using Terrain = std::vector<Arca::Index<Render::StaticImage>>;
         Terrain terrain;
 
         Grid::SparseRegion entityRegion;

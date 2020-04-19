@@ -10,41 +10,32 @@ namespace Atmos::Render
         manager(init.owner)
     {}
 
-    void GraphicsCurator::Handle(const ReconstructGraphics& reconstructGraphics)
+    void GraphicsCurator::Handle(const ReconstructGraphics& command)
     {
         if (!manager->ShouldReconstruct())
             return;
 
-        auto shaderAssets = MutablePointersOf<Asset::ShaderAsset>();
-        auto mainSurface = MutablePointer().Of<MainSurface>();
-        auto ancillarySurfaces = MutablePointersOf<AncillarySurface>();
-        auto canvases = MutablePointersOf<Canvas>();
+        GraphicsReconstructionObjects reconstructionObjects;
+        reconstructionObjects.screenSize = command.screenSize;
+        reconstructionObjects.shaderAssets = MutablePointersOf<Asset::ShaderAsset>();
+        reconstructionObjects.mainSurface = MutablePointer().Of<MainSurface>();
+        reconstructionObjects.ancillarySurfaces = MutablePointersOf<AncillarySurface>();
 
-        for (auto& asset : shaderAssets)
-            asset->FileData()->Release();
+        manager->Reconstruct(reconstructionObjects);
+    }
 
-        mainSurface->Release();
+    std::unique_ptr<Asset::ImageAssetData> GraphicsCurator::Handle(const Asset::CreateImageAssetData& command)
+    {
+        return manager->CreateImageData(command.buffer, command.name, command.size);
+    }
 
-        for (auto& surface : ancillarySurfaces)
-            surface->Release();
+    std::unique_ptr<Asset::ShaderAssetData> GraphicsCurator::Handle(const Asset::CreateShaderAssetData& command)
+    {
+        return manager->CreateShaderData(command.buffer, command.name, command.entryPoint);
+    }
 
-        for (auto& canvas : canvases)
-            canvas->Release();
-
-        manager->Reconstruct(reconstructGraphics.screenSize);
-
-        if (manager->IsOk())
-        {
-            for (auto& asset : shaderAssets)
-                asset->FileData()->Reset();
-
-            mainSurface->Reset();
-
-            for (auto& surface : ancillarySurfaces)
-                surface->Reset();
-
-            for (auto& canvas : canvases)
-                canvas->Reset();
-        }
+    std::unique_ptr<SurfaceData> GraphicsCurator::Handle(const CreateSurfaceData& command)
+    {
+        return manager->CreateSurfaceData(command.window);
     }
 }

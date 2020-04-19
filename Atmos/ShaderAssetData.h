@@ -1,25 +1,18 @@
 #pragma once
 
-#include <memory>
+#include "String.h"
 
 namespace Atmos::Asset
 {
     class ShaderAssetData
     {
     public:
-        using PassCount = unsigned int;
-    public:
         virtual ~ShaderAssetData() = 0;
 
-        [[nodiscard]] virtual std::unique_ptr<ShaderAssetData> Clone() const = 0;
-
-        virtual void Reset() = 0;
-        virtual void Release() = 0;
-
-        virtual PassCount Begin() const = 0;
-        virtual void End() const = 0;
-
-        virtual void BeginNextPass(PassCount pass) const = 0;
-        virtual void EndPass() const = 0;
+        [[nodiscard]] const String& EntryPoint() const;
+    protected:
+        ShaderAssetData(const String& entryPoint);
+    private:
+        String entryPoint;
     };
 }

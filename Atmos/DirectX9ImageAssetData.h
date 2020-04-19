@@ -8,10 +8,8 @@ namespace Atmos::Render::DirectX9
     class ImageAssetDataImplementation final : public Asset::ImageAssetData
     {
     public:
-        explicit ImageAssetDataImplementation(LPDIRECT3DTEXTURE9 texture);
+        explicit ImageAssetDataImplementation(LPDIRECT3DTEXTURE9 texture, Dimension width, Dimension height);
         ~ImageAssetDataImplementation();
-
-        [[nodiscard]] std::unique_ptr<ImageAssetData> Clone() const override;
 
         [[nodiscard]] LPDIRECT3DTEXTURE9 Texture() const;
     private:

@@ -10,8 +10,6 @@ namespace Atmos::Script::Angel
     public:
         explicit AssetDataImplementation(asIScriptModule& module);
 
-        [[nodiscard]] std::unique_ptr<ScriptAssetData> Clone() const override;
-
         [[nodiscard]] asIScriptModule* Module() const;
     private:
         asIScriptModule* module = nullptr;

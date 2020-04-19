@@ -4,9 +4,9 @@ namespace Atmos::Logging
 {
     enum class Severity
     {
+        Verbose,
         Information,
         Warning,
-        LowError,
-        SevereError
+        Error
     };
 }

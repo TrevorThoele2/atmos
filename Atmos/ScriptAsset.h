@@ -13,6 +13,7 @@ namespace Atmos::Asset
         using SymbolName = Atmos::Name;
     public:
         explicit ScriptAsset(Init init);
+        ScriptAsset(Init init, const ::Atmos::Name& name, DataPtr&& data);
         ScriptAsset(ScriptAsset&& arg) noexcept;
 
         ScriptAsset& operator=(ScriptAsset&& arg) noexcept;

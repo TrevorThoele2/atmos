@@ -19,7 +19,7 @@ namespace Atmos::Window
         void Suspend(const Time::Duration<>& time) override;
         bool OnStartFrame() override;
 
-        [[nodiscard]] HWND Hwnd() const;
+        [[nodiscard]] void* Handle() const override;
     protected:
         void SetupImpl() override;
 

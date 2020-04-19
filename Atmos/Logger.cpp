@@ -35,17 +35,17 @@ namespace Atmos::Logging
         {
             switch (severity)
             {
-            case Severity::SevereError:
-                output.append("<SEVERE>");
+            case Severity::Verbose:
+                output.append("<VERBOSE>");
                 break;
-            case Severity::LowError:
-                output.append("<LOW>");
+            case Severity::Information:
+                output.append("<INFO>");
                 break;
             case Severity::Warning:
                 output.append("<WARNING>");
                 break;
-            case Severity::Information:
-                output.append("<INFO>");
+            case Severity::Error:
+                output.append("<ERROR>");
                 break;
             }
         }
@@ -94,7 +94,7 @@ namespace Atmos::Logging
         struct tm now;
         localtime_s(&now, &t);
 
-        const auto widthAppender = [&message](auto append)
+        const auto appendToMessage = [&message](auto append)
         {
             std::ostringstream stream;
             stream << std::setfill('0') << std::setw(2) << append;
@@ -102,17 +102,17 @@ namespace Atmos::Logging
         };
 
         message.append("<");
-        widthAppender(now.tm_mday);
+        appendToMessage(now.tm_mday);
         message.append("/");
-        widthAppender(now.tm_mon + 1);
+        appendToMessage(now.tm_mon + 1);
         message.append("/");
-        widthAppender(now.tm_year + 1900);
+        appendToMessage(now.tm_year + 1900);
         message.append("> (");
-        widthAppender(now.tm_hour);
+        appendToMessage(now.tm_hour);
         message.append(":");
-        widthAppender(now.tm_min);
+        appendToMessage(now.tm_min);
         message.append(":");
-        widthAppender(now.tm_sec);
+        appendToMessage(now.tm_sec);
         message.append(")");
 
         return message;

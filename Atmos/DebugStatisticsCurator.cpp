@@ -103,9 +103,9 @@ namespace Atmos::Debug
     {
         AddEntry("Audio Count", audioAssetSize);
         AddEntry("Image Count", imageAssetSize);
-        AddEntry("Material Count", imageAssetSize);
-        AddEntry("Script Count", imageAssetSize);
-        AddEntry("Shader Count", imageAssetSize);
+        AddEntry("Material Count", materialAssetSize);
+        AddEntry("Script Count", scriptAssetSize);
+        AddEntry("Shader Count", shaderAssetSize);
         AddEntry("Tile Count", tileSize);
         AddEntry("Entity Count", entitySize);
         AddEntry("Working Script Count", workingScriptSize);

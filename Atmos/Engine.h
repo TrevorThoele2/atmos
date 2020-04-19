@@ -17,6 +17,7 @@ namespace Atmos
 
         void UseField(World::Field&& field);
         void LoadWorld(const File::Path& filePath);
+        World::Field* CurrentField();
 
         void StartExecution();
 

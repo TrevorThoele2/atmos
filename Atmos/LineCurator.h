@@ -27,7 +27,7 @@ namespace Atmos::Render
         void OnLineCreated(const Arca::CreatedKnown<Line>& line);
         void OnLineDestroying(const Arca::DestroyingKnown<Line>& line);
     private:
-        static AxisAlignedBox3D BoxFor(const Position2D& from, const Position2D& to, Position2D::Value z);
+        static AxisAlignedBox3D BoxFor(const std::vector<Position2D>& points, Position2D::Value z);
         static AxisAlignedBox3D BoxFor(const LineIndex& line);
     };
 }

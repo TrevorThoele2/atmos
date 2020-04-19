@@ -8,8 +8,7 @@ namespace Atmos::Render
 {
     struct LineRender
     {
-        Position2D from;
-        Position2D to;
+        std::vector<Position2D> points;
         Position2D::Value z;
 
         LineWidth width;

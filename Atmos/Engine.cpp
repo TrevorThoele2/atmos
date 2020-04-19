@@ -48,6 +48,11 @@ namespace Atmos
         executionContext->worldManager.LockIn();
     }
 
+    World::Field* Engine::CurrentField()
+    {
+        return executionContext->worldManager.CurrentField();
+    }
+
     void Engine::StartExecution()
     {
         SetupRequired();

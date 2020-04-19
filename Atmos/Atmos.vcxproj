@@ -40,24 +40,45 @@
     <ClInclude Include="AudioAssetData.h" />
     <ClInclude Include="CalculateStopwatch.h" />
     <ClInclude Include="CameraResized.h" />
-    <ClInclude Include="CanvasData.h" />
-    <ClInclude Include="ChangeMaterialViewCore.h" />
+    <ClInclude Include="ChangeImageCore.h" />
     <ClInclude Include="ChangeSurfaceBackgroundColor.h" />
+    <ClInclude Include="CreateImageAssetData.h" />
+    <ClInclude Include="CreateMainSurfaceData.h" />
+    <ClInclude Include="VulkanCombinedImageSamplerDescriptor.h" />
+    <ClInclude Include="GlobalInitializer.h" />
+    <ClInclude Include="ImageAssetType.h" />
+    <ClInclude Include="LoadAssetError.h" />
+    <ClInclude Include="LoadImageAsset.h" />
+    <ClInclude Include="GraphicsReconstructionObjects.h" />
+    <ClInclude Include="VulkanPipelineAssemblyOrigin.h" />
+    <ClInclude Include="VulkanLineShaders.h" />
+    <ClInclude Include="VulkanPipeline.h" />
+    <ClInclude Include="VulkanPipelineAssembly.h" />
+    <ClInclude Include="VulkanShaderAssetData.h" />
+    <ClInclude Include="VulkanShaderCompiler.h" />
+    <ClInclude Include="VulkanSwapchainSupport.h" />
+    <ClInclude Include="VulkanUniformBufferDescriptor.h" />
+    <ClInclude Include="VulkanUniversalData.h" />
+    <ClInclude Include="VulkanCreateImageView.h" />
+    <ClInclude Include="CreateShaderAssetData.h" />
+    <ClInclude Include="CreateSurfaceData.h" />
     <ClInclude Include="CurrentFieldCurator.h" />
     <ClInclude Include="CurrentFieldData.h" />
     <ClInclude Include="DebugProfiler.h" />
     <ClInclude Include="DebugValue.h" />
-    <ClInclude Include="DirectX9CanvasData.h" />
     <ClInclude Include="DirectX9ImageAssetData.h" />
     <ClInclude Include="DirectX9ShaderAssetData.h" />
     <ClInclude Include="DirectX9SurfaceData.h" />
-    <ClInclude Include="ExtractAsset.h" />
+    <ClInclude Include="ExtractFile.h" />
     <ClInclude Include="FileAsset.h" />
     <ClInclude Include="DirectX9Includes.h" />
     <ClInclude Include="DirectX9Renderer.h" />
     <ClInclude Include="DirectX9Utilities.h" />
     <ClInclude Include="Environment.h" />
+    <ClInclude Include="FileCurator.h" />
     <ClInclude Include="FilePath.h" />
+    <ClInclude Include="FindAsset.h" />
+    <ClInclude Include="GraphicsError.h" />
     <ClInclude Include="IdleCurator.h" />
     <ClInclude Include="ImageAssetData.h" />
     <ClInclude Include="LineCurator.h" />
@@ -69,7 +90,11 @@
     <ClInclude Include="MoveBounds.h" />
     <ClInclude Include="MoveLine.h" />
     <ClInclude Include="Octree.h" />
-    <ClInclude Include="Renderer.h" />
+    <ClInclude Include="VulkanSingleUseCommandBuffer.h" />
+    <ClInclude Include="VulkanBuffer.h" />
+    <ClInclude Include="VulkanImageAssetData.h" />
+    <ClInclude Include="VulkanMemory.h" />
+    <ClInclude Include="VulkanQueueFamilyIndices.h" />
     <ClInclude Include="ResetAverage.h" />
     <ClInclude Include="ResetHighest.h" />
     <ClInclude Include="ResizeBounds.h" />
@@ -87,8 +112,6 @@
     <ClInclude Include="ShouldCreateAsset.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraMoved.h" />
-    <ClInclude Include="CanvasRender.h" />
-    <ClInclude Include="CanvasViewCurator.h" />
     <ClInclude Include="ChangeMasterVolume.h" />
     <ClInclude Include="CurrentAvatar.h" />
     <ClInclude Include="Entity.h" />
@@ -97,12 +120,12 @@
     <ClInclude Include="FieldUnset.h" />
     <ClInclude Include="ForceQuit.h" />
     <ClInclude Include="GraphicsCurator.h" />
-    <ClInclude Include="MaterialViewCore.h" />
-    <ClInclude Include="MaterialRender.h" />
-    <ClInclude Include="StaticMaterialView.h" />
+    <ClInclude Include="ImageCore.h" />
+    <ClInclude Include="ImageRender.h" />
+    <ClInclude Include="StaticImage.h" />
     <ClInclude Include="InputFieldArchiveInterface.h" />
     <ClInclude Include="Map.h" />
-    <ClInclude Include="MaterialViewCurator.h" />
+    <ClInclude Include="ImageCurator.h" />
     <ClInclude Include="InitializationInformation.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="InputCurator.h" />
@@ -160,7 +183,6 @@
     <ClInclude Include="AngleConversion.h" />
     <ClInclude Include="AngleUnits.h" />
     <ClInclude Include="AngleUnitsTypeValidation.h" />
-    <ClInclude Include="AssetFileCurator.h" />
     <ClInclude Include="AssetCurator.h" />
     <ClInclude Include="AudioAssetInstance.h" />
     <ClInclude Include="AxisAlignedBox3D.h" />
@@ -186,6 +208,14 @@
     <ClInclude Include="UnownedProviderRelic.h" />
     <ClInclude Include="UnrecognizedAudioFormat.h" />
     <ClInclude Include="VolumeInformation.h" />
+    <ClInclude Include="VulkanGraphicsManager.h" />
+    <ClInclude Include="VulkanIncludes.h" />
+    <ClInclude Include="VulkanRenderer.h" />
+    <ClInclude Include="VulkanStagedBuffer.h" />
+    <ClInclude Include="VulkanSurfaceData.h" />
+    <ClInclude Include="VulkanSwapchainSupportDetails.h" />
+    <ClInclude Include="VulkanUtilities.h" />
+    <ClInclude Include="VulkanVertexInput.h" />
     <ClInclude Include="WindowCreationFailed.h" />
     <ClInclude Include="WindowDimensionsChanged.h" />
     <ClInclude Include="WindowProvider.h" />
@@ -256,8 +286,6 @@
     <ClInclude Include="AudioManager.h" />
     <ClInclude Include="EntityAvatarCurator.h" />
     <ClInclude Include="Buffer.h" />
-    <ClInclude Include="Canvas.h" />
-    <ClInclude Include="CanvasView.h" />
     <ClInclude Include="BinaryHeap.h" />
     <ClInclude Include="Bind.h" />
     <ClInclude Include="FileManager.h" />
@@ -318,7 +346,7 @@
     <ClInclude Include="Ratio.h" />
     <ClInclude Include="Size2D.h" />
     <ClInclude Include="Sound.h" />
-    <ClInclude Include="DynamicMaterialView.h" />
+    <ClInclude Include="DynamicImage.h" />
     <ClInclude Include="UniqueStack.h" />
     <ClInclude Include="String.h" />
     <ClInclude Include="GridPosition.h" />
@@ -334,15 +362,18 @@
     <ClCompile Include="AssetCore.cpp" />
     <ClCompile Include="AudioAssetData.cpp" />
     <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="CanvasData.cpp" />
-    <ClCompile Include="CanvasViewCurator.cpp" />
     <ClCompile Include="ChangeSurfaceBackgroundColor.cpp" />
+    <ClCompile Include="VulkanCombinedImageSamplerDescriptor.cpp" />
+    <ClCompile Include="GlobalInitializer.cpp" />
+    <ClCompile Include="ImageAssetCurator.cpp" />
+    <ClCompile Include="LoadAssetError.cpp" />
+    <ClCompile Include="VulkanUniformBufferDescriptor.cpp" />
+    <ClCompile Include="VulkanCreateImageView.cpp" />
     <ClCompile Include="CurrentFieldCurator.cpp" />
     <ClCompile Include="CurrentFieldData.cpp" />
     <ClCompile Include="DebugProfiler.cpp" />
     <ClCompile Include="DebugStatistics.cpp" />
     <ClCompile Include="DebugValue.cpp" />
-    <ClCompile Include="DirectX9CanvasData.cpp" />
     <ClCompile Include="DirectX9ImageAssetData.cpp" />
     <ClCompile Include="DirectX9Renderer.cpp" />
     <ClCompile Include="DirectX9ShaderAssetData.cpp" />
@@ -352,9 +383,11 @@
     <ClCompile Include="Environment.cpp" />
     <ClCompile Include="ExecuteImmediately.cpp" />
     <ClCompile Include="Field.cpp" />
+    <ClCompile Include="FileCurator.cpp" />
     <ClCompile Include="FrameEndCurator.cpp" />
     <ClCompile Include="FrameStartCurator.cpp" />
     <ClCompile Include="GraphicsCurator.cpp" />
+    <ClCompile Include="GraphicsError.cpp" />
     <ClCompile Include="IdleCurator.cpp" />
     <ClCompile Include="ImageAssetData.cpp" />
     <ClCompile Include="InputFieldArchiveInterface.cpp" />
@@ -363,15 +396,17 @@
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="LoggingTransfer.cpp" />
     <ClCompile Include="MainSurface.cpp" />
-    <ClCompile Include="MaterialViewCore.cpp" />
-    <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="ImageCore.cpp" />
     <ClCompile Include="ScriptAssetData.cpp" />
     <ClCompile Include="ScriptManager.cpp" />
     <ClCompile Include="ShaderAssetData.cpp" />
     <ClCompile Include="SimpleFile.cpp" />
-    <ClCompile Include="StaticMaterialView.cpp" />
+    <ClCompile Include="VulkanPipelineAssemblyOrigin.cpp" />
+    <ClCompile Include="VulkanShaderCompiler.cpp" />
+    <ClCompile Include="VulkanSingleUseCommandBuffer.cpp" />
+    <ClCompile Include="StaticImage.cpp" />
     <ClCompile Include="Map.cpp" />
-    <ClCompile Include="MaterialViewCurator.cpp" />
+    <ClCompile Include="ImageCurator.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="InputCurator.cpp" />
     <ClCompile Include="MappedEntities.cpp" />
@@ -392,7 +427,6 @@
     <ClCompile Include="AngelScriptUtility.cpp" />
     <ClCompile Include="Angle.cpp" />
     <ClCompile Include="AngleConversion.cpp" />
-    <ClCompile Include="AssetFileCurator.cpp" />
     <ClCompile Include="AudioAssetInstance.cpp" />
     <ClCompile Include="AxisAlignedBox3D.cpp" />
     <ClCompile Include="CameraCurator.cpp" />
@@ -419,6 +453,19 @@
     <ClCompile Include="ScreenPosition.cpp" />
     <ClCompile Include="TypeRegistration.cpp" />
     <ClCompile Include="UnrecognizedAudioFormat.cpp" />
+    <ClCompile Include="VulkanBuffer.cpp" />
+    <ClCompile Include="VulkanGraphicsManager.cpp" />
+    <ClCompile Include="VulkanImageAssetData.cpp" />
+    <ClCompile Include="VulkanMemory.cpp" />
+    <ClCompile Include="VulkanPipeline.cpp" />
+    <ClCompile Include="VulkanRenderer.cpp" />
+    <ClCompile Include="VulkanShaderAssetData.cpp" />
+    <ClCompile Include="VulkanStagedBuffer.cpp" />
+    <ClCompile Include="VulkanSurfaceData.cpp" />
+    <ClCompile Include="VulkanSwapchainSupport.cpp" />
+    <ClCompile Include="VulkanUniversalData.cpp" />
+    <ClCompile Include="VulkanUtilities.cpp" />
+    <ClCompile Include="VulkanVertexInput.cpp" />
     <ClCompile Include="WindowCreationFailed.cpp" />
     <ClCompile Include="WindowProvider.cpp" />
     <ClCompile Include="GuiEngineProvider.cpp" />
@@ -472,8 +519,6 @@
     <ClCompile Include="AudioManager.cpp" />
     <ClCompile Include="EntityAvatarCurator.cpp" />
     <ClCompile Include="Buffer.cpp" />
-    <ClCompile Include="Canvas.cpp" />
-    <ClCompile Include="CanvasView.cpp" />
     <ClCompile Include="FileManager.cpp" />
     <ClCompile Include="WindowsFileManager.cpp" />
     <ClCompile Include="GeneralComponent.cpp" />
@@ -507,7 +552,7 @@
     <ClCompile Include="Random.cpp" />
     <ClCompile Include="Size2D.cpp" />
     <ClCompile Include="Sound.cpp" />
-    <ClCompile Include="DynamicMaterialView.cpp" />
+    <ClCompile Include="DynamicImage.cpp" />
     <ClCompile Include="GridPosition.cpp" />
     <ClCompile Include="InputWorldArchiveInterface.cpp" />
   </ItemGroup>
@@ -581,7 +626,7 @@
     <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\Users\Trevor\Documents\ProgrammingProjects\function2\include;C:\Users\Trevor\Documents\ProgrammingProjects\AGUI;C:\Users\Trevor\Documents\ProgrammingProjects\Inscription;C:\Users\Trevor\Documents\ProgrammingProjects\Chroma;C:\Users\Trevor\Documents\ProgrammingProjects\Arca;C:\Users\Trevor\Documents\ProgrammingProjects\Ogg\libvorbis-1.3.6\include;C:\Users\Trevor\Documents\ProgrammingProjects\wxWidgets2\lib\vc_lib\mswud;C:\Users\Trevor\Documents\ProgrammingProjects\wxWidgets2\include;C:\Users\Trevor\Documents\ProgrammingProjects\Ogg\libogg-1.3.3\include;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;C:\Users\Trevor\Documents\ProgrammingProjects\AngelScript\sdk\angelscript\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\Trevor\Documents\ProgrammingProjects\FreeImage\Dist\x32;C:\Users\Trevor\Documents\ProgrammingProjects\function2\include;C:\Users\Trevor\Documents\ProgrammingProjects\AGUI;C:\Users\Trevor\Documents\ProgrammingProjects\Inscription;C:\Users\Trevor\Documents\ProgrammingProjects\Chroma;C:\Users\Trevor\Documents\ProgrammingProjects\Arca;C:\Users\Trevor\Documents\ProgrammingProjects\Ogg\libvorbis-1.3.6\include;C:\Users\Trevor\Documents\ProgrammingProjects\wxWidgets2\lib\vc_lib\mswud;C:\Users\Trevor\Documents\ProgrammingProjects\wxWidgets2\include;C:\Users\Trevor\Documents\ProgrammingProjects\Ogg\libogg-1.3.3\include;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;C:\Users\Trevor\Documents\ProgrammingProjects\glm;C:\VulkanSDK\1.2.135.0\Include;C:\Users\Trevor\Documents\ProgrammingProjects\AngelScript\sdk\angelscript\include;C:\Users\Trevor\Documents\ProgrammingProjects\Boost\boost_1_72_0;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>C:\Users\Trevor\Documents\Visual Studio 2015\Projects\Function;C:\Users\Trevor\Documents\Programming Projects\wxWidgets2\lib\vc_lib\mswud;C:\Users\Trevor\Documents\Programming Projects\wxWidgets2\include;C:\Program Files %28x86%29\Falcon\include;C:\Users\Trevor\Documents\Programming Projects\Affecter;C:\Users\Trevor\Documents\Programming Projects\Ogg\Built\include;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;C:\Users\Trevor\Documents\Programming Projects\AGUI;C:\Users\Trevor\Documents\Programming Projects\Inscription;$(IncludePath)</IncludePath>
@@ -600,10 +645,11 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <PreprocessorDefinitions>_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING;NOMINMAX;ATMOS_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>FREEIMAGE_LIB;_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING;NOMINMAX;ATMOS_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <DisableSpecificWarnings>5033;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

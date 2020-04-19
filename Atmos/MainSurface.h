@@ -1,16 +1,18 @@
 #pragma once
 
 #include "Surface.h"
+#include <Chroma/VariadicTemplate.h>
 
 namespace Atmos::Render
 {
+    class GraphicsManager;
+    class SurfaceCurator;
+
     class MainSurface final : public Surface<MainSurface>
     {
     public:
-        MainSurface(Init init, DataPtr&& data);
+        MainSurface(Init init);
         MainSurface(MainSurface&& arg) noexcept = default;
-    protected:
-        void RenderStagedImpl(GraphicsManager& graphicsManager) override;
     };
 }
 

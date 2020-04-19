@@ -62,7 +62,7 @@ namespace Atmos::Window
         return true;
     }
 
-    HWND WindowsWindow::Hwnd() const
+    void* WindowsWindow::Handle() const
     {
         return hwnd;
     }

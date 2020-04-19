@@ -8,8 +8,6 @@ namespace Atmos::Render
     {
     public:
         AncillarySurface(Init init, DataPtr&& data);
-    protected:
-        void RenderStagedImpl(GraphicsManager& graphicsManager) override;
     };
 }
 

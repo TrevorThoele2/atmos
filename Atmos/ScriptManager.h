@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include "ScriptAssetData.h"
 
 #include "String.h"

@@ -132,11 +132,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AssetTests.cpp" />
     <ClCompile Include="DerivedEngine.cpp" />
     <ClCompile Include="GeneralFixture.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MockGraphicsManager.cpp" />
-    <ClCompile Include="MockRenderer.cpp" />
+    <ClCompile Include="MockSurfaceData.cpp" />
     <ClCompile Include="MockWindow.cpp" />
     <ClCompile Include="OctreeTests.cpp" />
     <ClCompile Include="RenderTests.cpp" />
@@ -144,10 +145,11 @@
     <ClCompile Include="WorldSerializationTests.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AssetTests.h" />
     <ClInclude Include="DerivedEngine.h" />
     <ClInclude Include="GeneralFixture.h" />
     <ClInclude Include="MockGraphicsManager.h" />
-    <ClInclude Include="MockRenderer.h" />
+    <ClInclude Include="MockSurfaceData.h" />
     <ClInclude Include="MockWindow.h" />
     <ClInclude Include="OctreeTests.h" />
     <ClInclude Include="RenderTests.h" />

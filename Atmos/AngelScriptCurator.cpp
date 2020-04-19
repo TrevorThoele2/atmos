@@ -35,7 +35,7 @@ namespace Atmos::Script::Angel
         if (!engine)
             reliquary.Do<Logging::Log>
             (
-                "Creation of the scripting engine has failed.", Logging::Severity::SevereError
+                "Creation of the scripting engine has failed.", Logging::Severity::Error
             );
         engine->SetMessageCallback(asMETHOD(Interface, MessageCallback), nullptr, asCALL_THISCALL);
 
@@ -56,7 +56,7 @@ namespace Atmos::Script::Angel
 
     void ScriptCurator::Interface::MessageCallback(const asSMessageInfo* messageInfo, void* param)
     {
-        auto logType = Logging::Severity::SevereError;
+        auto logType = Logging::Severity::Error;
         if (messageInfo->type == asMSGTYPE_WARNING)
             logType = Logging::Severity::Warning;
         else if (messageInfo->type == asMSGTYPE_INFORMATION)

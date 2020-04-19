@@ -1,12 +1,13 @@
 #pragma once
 
-#include "Renderer.h"
 #include "DirectX9Includes.h"
 #include "DirectX9ShaderAssetData.h"
 
+#include "ImageRender.h"
+#include "LineRender.h"
+
 #include "ShaderAsset.h"
 
-#include "Scalers2D.h"
 #include "Angle.h"
 #include "Color.h"
 #include "ScreenSize.h"
@@ -15,35 +16,35 @@ namespace Atmos::Render::DirectX9
 {
     class GraphicsManager;
 
-    class Renderer final : public Render::Renderer
+    class Renderer final
     {
     public:
-        explicit Renderer(GraphicsManager& owner);
+        explicit Renderer(
+            GraphicsManager& owner,
+            Arca::Index<Asset::ShaderAsset> defaultTexturedMaterialShader,
+            Arca::Reliquary& reliquary);
 
         ~Renderer();
 
-        void Initialize(LPDIRECT3DDEVICE9 device, Arca::Reliquary& reliquary);
+        void StageRender(const ImageRender& imageRender);
+        void StageRender(const LineRender& lineRender);
 
-        void StageRender(const MaterialRender& materialRender) override;
-        void StageRender(const CanvasRender& canvasRender) override;
-        void StageRender(const LineRender& lineRender) override;
-        void RenderStaged(const ScreenSize& screenSize, const Color& backgroundColor) override;
-        void RenderStaged(const SurfaceData& surface, const Color& backgroundColor) override;
+        void DrawFrame(ScreenSize screenSize, const Color& backgroundColor);
 
         void OnLostDevice();
         void OnResetDevice();
 
-        [[nodiscard]] Arca::Index<Asset::ShaderAsset> DefaultTexturedImageViewShader() const;
+        [[nodiscard]] Arca::Index<Asset::ShaderAsset> DefaultTexturedMaterialShader() const;
     private:
         GraphicsManager& owner;
+        Arca::Reliquary* reliquary = nullptr;
     private:
         struct Vertex
         {
             D3DXVECTOR2 position = {0, 0};
-            D3DXVECTOR2 center = {0, 0};
             D3DCOLOR color = 0;
-            FLOAT u = 0;
-            FLOAT v = 0;
+            FLOAT u = 0.0f;
+            FLOAT v = 0.0f;
 
             Vertex() = default;
             Vertex(const D3DXVECTOR2& position, D3DCOLOR color, FLOAT u, FLOAT v);
@@ -57,69 +58,37 @@ namespace Atmos::Render::DirectX9
             std::vector<Vertex> vertices;
             std::vector<Index> indices;
             unsigned int primCount = 0;
-            LPDIRECT3DTEXTURE9 tex;
-            const Asset::ShaderAsset* shader;
+            LPDIRECT3DTEXTURE9 texture;
+            const Asset::ShaderAsset* shader = nullptr;
 
-            StagedObject
-            (
-                LPDIRECT3DTEXTURE9 tex,
-                const Asset::ShaderAsset* shader,
-                float x,
-                float y,
-                const AxisAlignedBox2D& imageBounds,
-                const Size2D& size,
-                const Position2D& center,
-                const Scalers2D& scalers,
-                const Angle& rotation,
-                const Color& color
-            );
+            StagedObject(
+                std::vector<Vertex>&& vertices,
+                std::vector<Index>&& indices,
+                unsigned int primCount,
+                LPDIRECT3DTEXTURE9 texture,
+                const Asset::ShaderAsset* shader);
             StagedObject(StagedObject&& arg) noexcept = default;
-            StagedObject& operator=(StagedObject&& arg) noexcept;
-        private:
-            void SetupQuad
-            (
-                float x,
-                float y,
-                const Position2D& center,
-                const Scalers2D& scalers,
-                float rotation
-            );
-            void SetupRegularPolygon
-            (
-                float radius,
-                unsigned int polyCount,
-                float x,
-                float y,
-                const Scalers2D& scalers,
-                float rotation,
-                const Color& color
-            );
-
-            static void SetupVertex
-            (
-                Vertex& vertex,
-                const D3DXMATRIX& matrix,
-                const D3DXVECTOR2& position,
-                const D3DXVECTOR2& center
-            );
-            static void SetupVertex
-            (
-                Vertex& vertex,
-                const D3DXMATRIX& matrix,
-                const D3DXVECTOR2& position,
-                const D3DXVECTOR2& center,
-                const Color& color
-            );
+            StagedObject& operator=(StagedObject&& arg) noexcept = default;
         };
+
+        StagedObject CreateQuad(
+            LPDIRECT3DTEXTURE9 texture,
+            const Asset::ShaderAsset* shader,
+            float x,
+            float y,
+            const AxisAlignedBox2D& imageBounds,
+            const Size2D& size,
+            const Angle& rotation,
+            const Color& color);
 
         class StagedLine
         {
         public:
-            D3DXVECTOR2 points[2];
+            std::vector<D3DXVECTOR2> points;
             FLOAT width;
             D3DCOLOR color;
 
-            StagedLine(const Position2D& from, const Position2D& to, float width, const Color& color);
+            StagedLine(const std::vector<Position2D>& points, float width, const Color& color);
         };
     private:
         using BufferSize = unsigned short;
@@ -132,7 +101,7 @@ namespace Atmos::Render::DirectX9
         LPDIRECT3DVERTEXBUFFER9 vertexBuffer = nullptr;
         LPDIRECT3DINDEXBUFFER9 indexBuffer = nullptr;
         LPDIRECT3DVERTEXDECLARATION9 vertexDeclaration = nullptr;
-        Arca::Index<Asset::ShaderAsset> defaultTexturedImageViewShader{};
+        Arca::Index<Asset::ShaderAsset> defaultTexturedMaterialShader{};
 
         LPD3DXLINE lineInterface = nullptr;
 
@@ -155,31 +124,24 @@ namespace Atmos::Render::DirectX9
     private:
         void InitializeBuffers();
     private:
-        void StageRender
-        (
-            LPDIRECT3DTEXTURE9 tex,
+        void StageRender(
+            LPDIRECT3DTEXTURE9 texture,
             const Asset::ShaderAsset* shader,
             float x,
             float y,
             float z,
             const AxisAlignedBox2D& imageBounds,
             const Size2D& size,
-            const Position2D& center,
-            const Scalers2D& scalers,
             const Angle& rotation,
-            const Color& color
-        );
+            const Color& color);
 
-        void StageRender
-        (
-            const Position2D& from,
-            const Position2D& to,
+        void StageRender(
+            const std::vector<Position2D>& points,
             Position2D::Value z,
             float width,
-            const Color& color
-        );
+            const Color& color);
     private:
-        void PushThroughPipeline(const ScreenSize& screenSize, const Color& backgroundColor);
+        void PushAllThroughPipeline(const ScreenSize& screenSize, const Color& backgroundColor);
 
         class Pipeline
         {

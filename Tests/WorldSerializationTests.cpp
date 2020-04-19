@@ -2,16 +2,18 @@
 
 #include "WorldSerializationTests.h"
 
-#include <Atmos/StaticMaterialView.h>
-#include <Atmos/DynamicMaterialView.h>
+#include <Atmos/StaticImage.h>
+#include <Atmos/DynamicImage.h>
 #include <Atmos/TypeRegistration.h>
 
 #include <Atmos/OutputWorldArchiveInterface.h>
 #include <Atmos/WorldFileExtension.h>
 #include <Atmos/ResizeCamera.h>
 #include <Atmos/Camera.h>
+#include <Atmos/MainSurface.h>
 
 #include "DerivedEngine.h"
+#include "MockSurfaceData.h"
 
 SCENARIO_METHOD(WorldSerializationTestsFixture, "rendering after world serialization")
 {
@@ -32,7 +34,7 @@ SCENARIO_METHOD(WorldSerializationTestsFixture, "rendering after world serializa
         const auto cameraLeft = camera->ScreenSides().Left();
         const auto cameraTop = camera->ScreenSides().Top();
 
-        WHEN("creating static material views and loading through world file then starting execution")
+        WHEN("creating static images and loading through world file then starting execution")
         {
             std::vector<World::Field> fields;
             fields.push_back(std::move(field));
@@ -76,9 +78,9 @@ SCENARIO_METHOD(WorldSerializationTestsFixture, "rendering after world serializa
                     dataGeneration.Random<Size2D::Value>(TestFramework::Range<Size2D::Value>(1, 1000))
                 }
             };
-            fields[0].Reliquary().Do<Arca::Create<StaticMaterialView>>(positions[0], sizes[0]);
-            fields[0].Reliquary().Do<Arca::Create<StaticMaterialView>>(positions[1], sizes[1]);
-            fields[0].Reliquary().Do<Arca::Create<StaticMaterialView>>(positions[2], sizes[2]);
+            fields[0].Reliquary().Do<Arca::Create<StaticImage>>(positions[0], sizes[0]);
+            fields[0].Reliquary().Do<Arca::Create<StaticImage>>(positions[1], sizes[1]);
+            fields[0].Reliquary().Do<Arca::Create<StaticImage>>(positions[2], sizes[2]);
 
             auto filePath = "Test." + World::Serialization::worldFileExtension;
 
@@ -90,17 +92,20 @@ SCENARIO_METHOD(WorldSerializationTestsFixture, "rendering after world serializa
             engine.LoadWorld(filePath);
             engine.StartExecution();
 
-            THEN("all materials rendered in graphics manager")
+            THEN("all images rendered in graphics manager")
             {
-                auto& materialRenders = engine.mockGraphicsManager->renderer.materialRenders;
-                REQUIRE(materialRenders.size() == 3);
+                auto mainSurface = Arca::Index<MainSurface>(engine.CurrentField()->Reliquary());
+                auto mainSurfaceImplementation = mainSurface->Data<MockSurfaceDataImplementation>();
+
+                auto& imageRenders = mainSurfaceImplementation->imageRenders;
+                REQUIRE(imageRenders.size() == 3);
 
                 for (auto i = 0; i < 3; ++i)
                 {
                     REQUIRE(std::any_of(
-                        materialRenders.begin(),
-                        materialRenders.end(),
-                        [i, &positions, &sizes, cameraLeft, cameraTop](const MaterialRender& entry)
+                        imageRenders.begin(),
+                        imageRenders.end(),
+                        [i, &positions, &sizes, cameraLeft, cameraTop](const ImageRender& entry)
                         {
                             auto expectedPosition = positions[i];
                             expectedPosition.x -= cameraLeft;

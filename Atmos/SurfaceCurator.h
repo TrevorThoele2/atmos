@@ -3,6 +3,7 @@
 #include <Arca/Curator.h>
 
 #include "ChangeSurfaceBackgroundColor.h"
+#include "CreateMainSurfaceData.h"
 
 namespace Atmos::Render
 {
@@ -12,6 +13,7 @@ namespace Atmos::Render
         explicit SurfaceCurator(Init init);
 
         void Handle(const ChangeSurfaceBackgroundColor& command);
+        void Handle(const CreateMainSurfaceData& command);
     };
 }
 
@@ -22,7 +24,9 @@ namespace Arca
     {
         static const ObjectType objectType = ObjectType::Curator;
         static inline const TypeName typeName = "SurfaceCurator";
-        using HandledCommands = HandledCommands<Atmos::Render::ChangeSurfaceBackgroundColor>;
+        using HandledCommands = HandledCommands<
+            Atmos::Render::ChangeSurfaceBackgroundColor,
+            Atmos::Render::CreateMainSurfaceData>;
     };
 }
 

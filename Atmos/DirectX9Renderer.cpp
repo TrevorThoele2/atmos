@@ -3,20 +3,27 @@
 #include "DirectX9GraphicsManager.h"
 #include "DirectX9ImageAssetData.h"
 #include "DirectX9ShaderAssetData.h"
-#include "DirectX9CanvasData.h"
 #include "DirectX9SurfaceData.h"
 #include "DirectX9Utilities.h"
 
 #include "Camera.h"
-#include "FileManagerProvider.h"
-#include "MathUtility.h"
-
-#include "SimpleFile.h"
 
 namespace Atmos::Render::DirectX9
 {
-    Renderer::Renderer(GraphicsManager& owner) : owner(owner)
-    {}
+    Renderer::Renderer(
+        GraphicsManager& owner,
+        Arca::Index<Asset::ShaderAsset> defaultTexturedMaterialShader,
+        Arca::Reliquary& reliquary)
+        :
+        owner(owner),
+        reliquary(&reliquary),
+        device(owner.Device()),
+        defaultTexturedMaterialShader(defaultTexturedMaterialShader)
+    {
+        InitializeBuffers();
+
+        D3DXCreateLine(device, &lineInterface);
+    }
 
     Renderer::~Renderer()
     {
@@ -31,91 +38,33 @@ namespace Atmos::Render::DirectX9
             lineInterface->Release();
     }
 
-    void Renderer::Initialize(LPDIRECT3DDEVICE9 device, Arca::Reliquary& reliquary)
+    void Renderer::StageRender(const ImageRender& imageRender)
     {
-        this->device = device;
-        InitializeBuffers();
-
-        const auto texturedSpritePath = std::filesystem::current_path() / "Shaders" / "TexturedSprite.fx";
-
-        SimpleInFile inFile(texturedSpritePath);
-        const auto texturedSpriteBuffer = inFile.ReadBuffer();
-
-        auto shaderData = owner.CreateShaderData(texturedSpriteBuffer, "TexturedSprite");
-        defaultTexturedImageViewShader = reliquary.Do<Arca::Create<Asset::ShaderAsset>>(
-            "TexturedSprite",
-            std::move(shaderData));
-
-        D3DXCreateLine(device, &lineInterface);
-    }
-
-    void Renderer::StageRender(const MaterialRender& materialRender)
-    {
-        if (!materialRender.material)
+        if (!imageRender.asset)
             return;
 
-        const auto material = materialRender.material;
-        const auto image = material->Image();
-        const auto materialSlice = materialRender.materialSlice;
-        const auto size = materialRender.size;
-        const auto position = materialRender.position;
-
-        StageRender
-        (
-            image->FileDataAs<ImageAssetDataImplementation>()->Texture(),
-            materialRender.patchShader ? materialRender.patchShader : &*material->Shader(),
-            position.x,
-            position.y,
-            materialRender.position.z,
-            materialSlice,
-            materialSlice.Size(),
-            materialSlice.Center(),
-            Scalers2D{ size.width, size.height },
+        StageRender(
+            imageRender.asset->FileDataAs<ImageAssetDataImplementation>()->Texture(),
+            imageRender.material->VertexShader()
+                ? &*imageRender.material->VertexShader()
+                : DefaultTexturedMaterialShader(),
+            imageRender.position.x,
+            imageRender.position.y,
+            imageRender.position.z,
+            imageRender.assetSlice,
+            imageRender.size,
             Angle(),
-            materialRender.color
-        );
-    }
-
-    void Renderer::StageRender(const CanvasRender& canvasRender)
-    {
-        const auto position = canvasRender.position;
-        const auto size = canvasRender.size;
-
-        StageRender
-        (
-            canvasRender.canvas.Data<CanvasDataImplementation>()->Texture(),
-            DefaultTexturedImageViewShader(),
-            position.x,
-            position.y,
-            position.z,
-            AxisAlignedBox2D{ 0.0f, 0.0f, 1.0f, 1.0f },
-            Size2D{ size.width, size.height },
-            Position2D{ size.width / 2, size.height / 2 },
-            Scalers2D{ 1.0f, 1.0f },
-            Angle(),
-            Color(255, 255, 255, 255)
-        );
+            imageRender.color);
     }
 
     void Renderer::StageRender(const LineRender& lineRender)
     {
-        StageRender(lineRender.from, lineRender.to, lineRender.z, lineRender.width, lineRender.color);
+        StageRender(lineRender.points, lineRender.z, lineRender.width, lineRender.color);
     }
 
-    void Renderer::RenderStaged(const ScreenSize& screenSize, const Color& backgroundColor)
+    void Renderer::DrawFrame(ScreenSize screenSize, const Color& backgroundColor)
     {
-        PushThroughPipeline(screenSize, backgroundColor);
-    }
-
-    void Renderer::RenderStaged(const SurfaceData& surface, const Color& backgroundColor)
-    {
-        LPDIRECT3DSURFACE9 previousRenderSurface;
-        device->GetRenderTarget(0, &previousRenderSurface);
-        device->SetRenderTarget(0, dynamic_cast<const SurfaceDataImplementation&>(surface).BackBuffer());
-
-        PushThroughPipeline(surface.Size(), backgroundColor);
-
-        device->SetRenderTarget(0, previousRenderSurface);
+        PushAllThroughPipeline(screenSize, backgroundColor);
     }
 
     void Renderer::OnLostDevice()
@@ -132,8 +81,8 @@ namespace Atmos::Render::DirectX9
             indexBuffer = nullptr;
         }
 
-        if (defaultTexturedImageViewShader)
-            defaultTexturedImageViewShader->FileDataAs<ShaderAssetDataImplementation>()->Effect()->OnLostDevice();
+        if (defaultTexturedMaterialShader)
+            defaultTexturedMaterialShader->FileDataAs<ShaderAssetDataImplementation>()->Effect()->OnLostDevice();
 
         if (lineInterface)
         {
@@ -141,15 +90,15 @@ namespace Atmos::Render::DirectX9
                 lineInterface->OnLostDevice(),
                 []() { return Logging::Log(
                     "The DirectX line interface was not able to be released.",
-                    Logging::Severity::SevereError); });
+                    Logging::Severity::Error); });
         }
     }
 
     void Renderer::OnResetDevice()
     {
         InitializeBuffers();
-        if (defaultTexturedImageViewShader)
-            defaultTexturedImageViewShader->FileDataAs<ShaderAssetDataImplementation>()->Effect()->OnResetDevice();
+        if (defaultTexturedMaterialShader)
+            defaultTexturedMaterialShader->FileDataAs<ShaderAssetDataImplementation>()->Effect()->OnResetDevice();
 
         if (lineInterface)
         {
@@ -157,224 +106,99 @@ namespace Atmos::Render::DirectX9
                 lineInterface->OnResetDevice(),
                 []() { return Logging::Log(
                     "The DirectX line interface was not able to be reset.",
-                    Logging::Severity::SevereError); });
+                    Logging::Severity::Error); });
         }
     }
 
-    Arca::Index<Asset::ShaderAsset> Renderer::DefaultTexturedImageViewShader() const
+    Arca::Index<Asset::ShaderAsset> Renderer::DefaultTexturedMaterialShader() const
     {
-        return defaultTexturedImageViewShader;
+        return defaultTexturedMaterialShader;
     }
 
     Renderer::Vertex::Vertex(const D3DXVECTOR2& position, D3DCOLOR color, FLOAT u, FLOAT v) :
-        position(position), color(color), u(u), v(v)
+        position(position), color(color)
     {}
 
-    Renderer::StagedObject::StagedObject
-    (
-        LPDIRECT3DTEXTURE9 tex,
+    auto Renderer::CreateQuad(
+        LPDIRECT3DTEXTURE9 texture,
         const Asset::ShaderAsset* shader,
         float x,
         float y,
         const AxisAlignedBox2D& imageBounds,
         const Size2D& size,
-        const Position2D& center,
-        const Scalers2D& scalers,
         const Angle& rotation,
-        const Color& color
-    ) :
-        vertices
-        {
-            Vertex
-            (
-                D3DXVECTOR2(0.0f, 0.0f),
-                ToDirectXColor(color),
-                imageBounds.Left(),
-                imageBounds.Top()
-            ),
-            Vertex
-            (
-                D3DXVECTOR2(size.width, 0.0f),
-                ToDirectXColor(color),
-                imageBounds.Right(),
-                imageBounds.Top()
-            ),
-            Vertex
-            (
-                D3DXVECTOR2(0.0f, size.height),
-                ToDirectXColor(color),
-                imageBounds.Left(),
-                imageBounds.Bottom()
-            ),
-            Vertex
-            (
-                D3DXVECTOR2(size.width, size.height),
-                ToDirectXColor(color),
-                imageBounds.Right(),
-                imageBounds.Bottom()
-            )
-        },
-        tex(tex),
-        shader(shader)
+        const Color& color)
+        -> StagedObject
     {
-        SetupQuad(x, y, center, scalers, rotation.As<Radians>());
-    }
-
-    Renderer::StagedObject& Renderer::StagedObject::operator=(StagedObject&& arg) noexcept
-    {
-        vertices = std::move(arg.vertices);
-        indices = std::move(arg.indices);
-        primCount = arg.primCount;
-        tex = arg.tex;
-        shader = arg.shader;
-        return *this;
-    }
-
-    void Renderer::StagedObject::SetupQuad
-    (
-        float x,
-        float y,
-        const Position2D& center,
-        const Scalers2D& scalers,
-        float rotation
-    ) {
-        // Setup matrix and center
-        D3DXVECTOR2 transformedCenter;
         D3DXMATRIX matrix;
         {
-            D3DXVECTOR2 centerVector(center.x, center.y);
             D3DXVECTOR2 positionVector(x, y);
-            D3DXVECTOR2 scalingVector(scalers.x, scalers.y);
+            D3DXVECTOR2 centerVector(0.0f, 0.0f);
+            D3DXVECTOR2 scalingVector(size.width / imageBounds.Width(), size.height / imageBounds.Height());
 
             D3DXMatrixIdentity(&matrix);
             D3DXMatrixTransformation2D(
                 &matrix,
-                nullptr,
+                &centerVector,
                 0.0f,
                 &scalingVector,
                 &centerVector,
-                rotation,
+                rotation.As<Radians>(),
                 &positionVector);
-
-            D3DXVec2TransformCoord(&transformedCenter, &centerVector, &matrix);
         }
 
-        auto vertex = vertices.data();
-        for (auto i = 0; i < 4; ++i)
+        std::vector<Vertex> vertices =
         {
-            SetupVertex(*vertex, matrix, vertex->position, transformedCenter);
-            ++vertex;
-        }
-
-        // Indices
-        // 0, 1, 2
-        // 1, 3, 2
-
-        indices.resize(6);
-        indices[0] = 0;
-        indices[1] = 1;
-        indices[2] = 2;
-        indices[3] = 1;
-        indices[4] = 3;
-        indices[5] = 2;
-
-        primCount = 2;
-    }
-
-    void Renderer::StagedObject::SetupRegularPolygon
-    (
-        float radius,
-        unsigned int polyCount,
-        float x,
-        float y,
-        const Scalers2D& scalers,
-        float rotation,
-        const Color& color
-    ) {
-        const auto angle = FULL_CIRCLE_RADIANS<float> / polyCount;
-        const auto useRadius = radius / std::cos(angle / 2);
-
-        // Setup matrix and center
-        D3DXVECTOR2 transformedCenter;
-        D3DXMATRIX matrix;
-        {
-            D3DXVECTOR2 centerVector(useRadius, useRadius);
-            D3DXVECTOR2 positionVector(x - useRadius, y - useRadius);
-            D3DXVECTOR2 scalingVector(scalers.x, scalers.y);
-
-            D3DXMatrixIdentity(&matrix);
-            D3DXMatrixTransformation2D(&matrix, &centerVector, 0.0f, &scalingVector, &centerVector, rotation, &positionVector);
-
-            D3DXVec2TransformCoord(&transformedCenter, &centerVector, &matrix);
-        }
-
-        // Vertices and indices
-        {
-            const auto setIndex = [this](size_t currentPoly)
             {
-                const auto startIndex = currentPoly * 3;
-                indices[startIndex] = static_cast<Index>(currentPoly + 1);
-                indices[startIndex + 1] = static_cast<Index>(currentPoly + 2);
-                indices[startIndex + 2] = static_cast<Index>(0);
-            };
-
-            float currentAngle = FULL_CIRCLE_RADIANS<float> / 2.0f;
-            vertices.resize(polyCount + 1);
-            indices.resize(polyCount * 3);
-            SetupVertex(vertices[0], matrix, D3DXVECTOR2(useRadius, useRadius), transformedCenter, color);
-
-            for (size_t loopPoly = 0; loopPoly != polyCount; ++loopPoly)
+                D3DXVECTOR2(0.0f, 0.0f),
+                ToDirectXColor(color),
+                0.0f,
+                0.0f
+            },
             {
-                auto vector = D3DXVECTOR2(
-                    useRadius + (std::cos(currentAngle) * useRadius),
-                    useRadius + (std::sin(currentAngle) * useRadius));
-
-                SetupVertex(vertices[loopPoly + 1], matrix, vector, transformedCenter, color);
-                setIndex(loopPoly);
-                currentAngle += angle;
+                D3DXVECTOR2(imageBounds.Width(), 0.0f),
+                ToDirectXColor(color),
+                1.0f,
+                0.0f
+            },
+            {
+                D3DXVECTOR2(0.0f, imageBounds.Height()),
+                ToDirectXColor(color),
+                0.0f,
+                1.0f
+            },
+            {
+                D3DXVECTOR2(imageBounds.Width(), imageBounds.Height()),
+                ToDirectXColor(color),
+                1.0f,
+                1.0f
             }
+        };
 
-            // Fix the second-to-last index
-            indices[indices.size() - 2] = 1;
-        }
+        for (auto& vertex : vertices)
+            D3DXVec2TransformCoord(&vertex.position, &vertex.position, &matrix);
 
-        primCount = polyCount;
+        return StagedObject(std::move(vertices), { 0, 1, 2, 1, 3, 2 }, 2, texture, shader);
     }
 
-    void Renderer::StagedObject::SetupVertex
-    (
-        Vertex& vertex,
-        const D3DXMATRIX& matrix,
-        const D3DXVECTOR2& position,
-        const D3DXVECTOR2& center
-    ) {
-        D3DXVec2TransformCoord(&vertex.position, &position, &matrix);
+    Renderer::StagedObject::StagedObject(
+        std::vector<Vertex>&& vertices,
+        std::vector<Index>&& indices,
+        unsigned int primCount,
+        LPDIRECT3DTEXTURE9 texture,
+        const Asset::ShaderAsset* shader)
+        :
+        vertices(vertices), indices(indices), primCount(primCount), texture(texture), shader(shader)
+    {}
 
-        vertex.center = center;
-    }
-
-    void Renderer::StagedObject::SetupVertex
-    (
-        Vertex& vertex,
-        const D3DXMATRIX& matrix,
-        const D3DXVECTOR2& position,
-        const D3DXVECTOR2& center,
-        const Color& color
-    ) {
-        D3DXVec2TransformCoord(&vertex.position, &position, &matrix);
-        vertex.center = center;
-        vertex.color = ToDirectXColor(color);
-    }
-
-    Renderer::StagedLine::StagedLine(const Position2D& from, const Position2D& to, float width, const Color& color) :
-        points
-        {
-            D3DXVECTOR2(from.x, from.y),
-            D3DXVECTOR2(to.x, to.y)
-        },
+    Renderer::StagedLine::StagedLine(const std::vector<Position2D>& points, float width, const Color& color) :
         width(width),
         color(ToDirectXColor(color))
-    {}
+    {
+        this->points.reserve(points.size());
+        for (auto& point : points)
+            this->points.emplace_back(point.x, point.y);
+    }
 
     Renderer::Layer::Layer(FLOAT z) : z(z)
     {}
@@ -397,81 +221,68 @@ namespace Atmos::Render::DirectX9
 
     void Renderer::InitializeBuffers()
     {
-        device->CreateVertexBuffer
-        (
+        device->CreateVertexBuffer(
             maxVertexSprint * sizeof(Vertex),
             D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY,
             0,
             D3DPOOL_DEFAULT,
             &vertexBuffer,
-            nullptr
-        );
-        device->CreateIndexBuffer
-        (
+            nullptr);
+        device->CreateIndexBuffer(
             maxIndexSprint * sizeof(Index),
             D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY,
             D3DFMT_INDEX16, D3DPOOL_DEFAULT,
             &indexBuffer,
-            nullptr
-        );
+            nullptr);
 
         D3DVERTEXELEMENT9 vertexElements[] =
         {
             { 0, 0, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0 },
-            { 0, 8, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 1 },
-            { 0, 16, D3DDECLTYPE_D3DCOLOR, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_COLOR, 0 },
-            { 0, 20, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 0 },
+            { 0, 8, D3DDECLTYPE_D3DCOLOR, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_COLOR, 0 },
+            { 0, 12, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 0 },
             D3DDECL_END()
         };
 
         device->CreateVertexDeclaration(vertexElements, &vertexDeclaration);
     }
 
-    void Renderer::StageRender
-    (
-        LPDIRECT3DTEXTURE9 tex,
+    void Renderer::StageRender(
+        LPDIRECT3DTEXTURE9 texture,
         const Asset::ShaderAsset* shader,
         float x,
         float y,
         float z,
         const AxisAlignedBox2D& imageBounds,
         const Size2D& size,
-        const Position2D& center,
-        const Scalers2D& scalers,
         const Angle& rotation,
-        const Color& color
-    ) {
+        const Color& color)
+    {
         const auto layer = LayerWithZ(z);
-        layer->objects.emplace_back(tex, shader, x, y, imageBounds, size, center, scalers, rotation, color);
+        layer->objects.push_back(CreateQuad(texture, shader, x, y, imageBounds, size, rotation, color));
     }
 
-    void Renderer::StageRender
-    (
-        const Position2D& from,
-        const Position2D& to,
+    void Renderer::StageRender(
+        const std::vector<Position2D>& points,
         Position2D::Value z,
         float width,
-        const Color& color
-    ) {
+        const Color& color)
+    {
         const auto layer = LayerWithZ(z);
-        layer->lines.emplace_back(from, to, width, color);
+        layer->lines.emplace_back(points, width, color);
     }
 
-    void Renderer::PushThroughPipeline(const ScreenSize& screenSize, const Color& backgroundColor)
+    void Renderer::PushAllThroughPipeline(const ScreenSize& screenSize, const Color& backgroundColor)
     {
         D3DXMATRIX projection;
 
-        const auto size(screenSize);
-        D3DXMatrixOrthoOffCenterLH
-        (
+        D3DXMatrixOrthoOffCenterLH(
             &projection,
             0,
-            static_cast<FLOAT>(size.width),
-            static_cast<FLOAT>(size.height),
+            static_cast<FLOAT>(screenSize.width),
+            static_cast<FLOAT>(screenSize.height),
             0,
             0.0f,
-            1.0f
-        );
+            1.0f);
 
         Pipeline pipeline(
             owner,
@@ -527,7 +338,7 @@ namespace Atmos::Render::DirectX9
             if (!objects.empty())
             {
                 SetShader(objects.begin()->shader);
-                SetTexture(objects.begin()->tex);
+                SetTexture(objects.begin()->texture);
 
                 vertexBuffer->Lock(0, 0, &vertexData, D3DLOCK_DISCARD);
                 indexBuffer->Lock(0, 0, &indexData, D3DLOCK_DISCARD);
@@ -574,7 +385,7 @@ namespace Atmos::Render::DirectX9
             device->Clear(0, nullptr, D3DCLEAR_TARGET, color, 1.0f, 0),
             []() { return Logging::Log(
                 "Could not set background color.",
-                Logging::Severity::SevereError); });
+                Logging::Severity::Error); });
     }
 
     void Renderer::Pipeline::Sort(Layers& layers) const
@@ -597,8 +408,8 @@ namespace Atmos::Render::DirectX9
             layer.objects.end(),
             [](const StagedObject& left, const StagedObject& right)
             {
-                const auto leftTex = left.tex;
-                const auto rightTex = right.tex;
+                const auto leftTex = left.texture;
+                const auto rightTex = right.texture;
 
                 return leftTex == rightTex
                     ? left.shader < right.shader
@@ -619,7 +430,7 @@ namespace Atmos::Render::DirectX9
         const auto loopVerticesSize = staged.vertices.size();
         const auto loopIndicesSize = staged.indices.size();
 
-        const auto loopTexture = staged.tex;
+        const auto loopTexture = staged.texture;
         const auto loopShader = staged.shader;
 
         // Check if the sprint is done
@@ -682,7 +493,7 @@ namespace Atmos::Render::DirectX9
             lineInterface->Begin();
         }
 
-        lineInterface->Draw(staged.points, 2, staged.color);
+        lineInterface->Draw(staged.points.data(), staged.points.size(), staged.color);
     }
 
     void Renderer::Pipeline::DrawPrimitives()
@@ -709,7 +520,7 @@ namespace Atmos::Render::DirectX9
         indexBuffer->Unlock();
 
         const auto passCount = currentShaderData->Begin();
-        Asset::ShaderAssetData::PassCount passCountCurrent = 0;
+        size_t passCountCurrent = 0;
 
         do
         {
@@ -732,7 +543,7 @@ namespace Atmos::Render::DirectX9
             device->Present(nullptr, nullptr, nullptr, nullptr),
             []() { return Logging::Log(
                 "The frame is not presentable.",
-                Logging::Severity::SevereError); });
+                Logging::Severity::Error); });
     }
 
     void Renderer::Pipeline::SetTexture(LPDIRECT3DTEXTURE9 set)

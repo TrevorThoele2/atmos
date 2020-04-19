@@ -1,7 +1,5 @@
 #pragma once
 
-#include <memory>
-
 namespace Atmos::Asset
 {
     class ScriptAssetData
@@ -10,7 +8,5 @@ namespace Atmos::Asset
         ScriptAssetData() = default;
 
         virtual ~ScriptAssetData() = 0;
-
-        [[nodiscard]] virtual std::unique_ptr<ScriptAssetData> Clone() const = 0;
     };
 }

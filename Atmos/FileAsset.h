@@ -28,6 +28,8 @@ namespace Atmos::Asset
         [[nodiscard]] RealFileDataT* FileDataAs();
         template<class RealFileDataT>
         [[nodiscard]] const RealFileDataT* FileDataAs() const;
+
+        [[nodiscard]] bool HasFileData() const;
     private:
         DataPtr data;
     };
@@ -75,6 +77,12 @@ namespace Atmos::Asset
     const RealFileDataT* FileAsset<AssetData, Derived>::FileDataAs() const
     {
         return static_cast<RealFileDataT*>(data.get());
+    }
+
+    template<class AssetData, class Derived>
+    bool FileAsset<AssetData, Derived>::HasFileData() const
+    {
+        return static_cast<bool>(data);
     }
 }
 

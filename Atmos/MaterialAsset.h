@@ -10,25 +10,21 @@ namespace Atmos::Asset
     class MaterialAsset final : public Asset<MaterialAsset>
     {
     public:
-        using GridDimension = int;
-    public:
         explicit MaterialAsset(Init init);
-        MaterialAsset(Init init, const Atmos::Name& name, GridDimension columns, GridDimension rows);
+        MaterialAsset(
+            Init init,
+            const Atmos::Name& name,
+            Arca::Index<ShaderAsset> vertexShader,
+            Arca::Index<ShaderAsset> fragmentShader);
         MaterialAsset(MaterialAsset&& arg) noexcept;
 
         MaterialAsset& operator=(MaterialAsset&& arg) noexcept;
 
-        [[nodiscard]] GridDimension Columns() const;
-        [[nodiscard]] GridDimension Rows() const;
-
-        [[nodiscard]] Arca::Index<ImageAsset> Image() const;
-        [[nodiscard]] Arca::Index<ShaderAsset> Shader() const;
+        [[nodiscard]] Arca::Index<ShaderAsset> VertexShader() const;
+        [[nodiscard]] Arca::Index<ShaderAsset> FragmentShader() const;
     private:
-        GridDimension columns = 0;
-        GridDimension rows = 0;
-
-        Arca::Index<ImageAsset> image;
-        Arca::Index<ShaderAsset> shader;
+        Arca::Index<ShaderAsset> vertexShader;
+        Arca::Index<ShaderAsset> fragmentShader;
     private:
         INSCRIPTION_ACCESS;
     };
@@ -41,7 +37,11 @@ namespace Arca
     {
         static const ObjectType objectType = ObjectType::Relic;
         static inline const TypeName typeName = "MaterialAsset";
-        static bool ShouldCreate(Reliquary& reliquary, const ::Atmos::Name& name);
+        static bool ShouldCreate(
+            Reliquary& reliquary,
+            const Atmos::Name& name,
+            Index<Atmos::Asset::ShaderAsset> vertexShader,
+            Index<Atmos::Asset::ShaderAsset> fragmentShader);
     };
 }
 

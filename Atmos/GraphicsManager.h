@@ -1,21 +1,23 @@
 #pragma once
 
-#include "Renderer.h"
-
 #include "ImageAsset.h"
 #include "ShaderAsset.h"
-#include "Canvas.h"
+#include "SurfaceData.h"
 
 #include "ScreenSize.h"
 
-#include "MaterialRender.h"
-#include "CanvasRender.h"
+#include "ImageRender.h"
 #include "LineRender.h"
+
+#include "GraphicsReconstructionObjects.h"
 
 #include "Buffer.h"
 
 namespace Atmos::Render
 {
+    class MainSurface;
+    class AncillarySurface;
+
     class GraphicsManager
     {
     public:
@@ -28,63 +30,47 @@ namespace Atmos::Render
     public:
         virtual ~GraphicsManager() = 0;
 
-        virtual void Initialize(Arca::Reliquary& reliquary) = 0;
+        void Initialize(Arca::Reliquary& reliquary, void* mainWindow);
 
-        void Reconstruct(const ScreenSize& screenSize);
+        [[nodiscard]] std::unique_ptr<Asset::ImageAssetData> CreateImageData(
+            const Buffer& buffer, const Name& name, const Size2D& size);
+        [[nodiscard]] std::unique_ptr<Asset::ShaderAssetData> CreateShaderData(
+            const Buffer& buffer, const Name& name, const String& entryPoint);
+        [[nodiscard]] std::unique_ptr<SurfaceData> CreateMainSurfaceData(
+            void* window);
+        [[nodiscard]] std::unique_ptr<SurfaceData> CreateSurfaceData(
+            void* window);
+
+        void Reconstruct(GraphicsReconstructionObjects objects);
         [[nodiscard]] bool ShouldReconstruct() const;
 
         [[nodiscard]] virtual bool IsOk() const = 0;
 
-        [[nodiscard]] virtual std::unique_ptr<Asset::ImageAssetData> CreateImageData(
-            const Buffer& buffer, const Name& name) = 0;
-        [[nodiscard]] virtual std::unique_ptr<Asset::ShaderAssetData> CreateShaderData(
-            const Buffer& buffer, const Name& name) = 0;
-        [[nodiscard]] virtual std::unique_ptr<SurfaceData> CreateMainSurfaceData() = 0;
-        [[nodiscard]] virtual std::unique_ptr<SurfaceData> CreateSurfaceData(
-            void* window) = 0;
-        [[nodiscard]] virtual std::unique_ptr<CanvasData> CreateCanvasData(
-            const ScreenSize& dimensions) = 0;
-
-        void StageRender(const MaterialRender& materialRender);
-        void StageRender(const CanvasRender& canvasRender);
-        void StageRender(const LineRender& lineRender);
-        void RenderStaged(const ScreenSize& screenSize, const Color& backgroundColor);
-        void RenderStaged(const SurfaceData& surface, const Color& backgroundColor);
-
         virtual void SetFullscreen(bool set) = 0;
-
-        virtual void ClearStencil(const Color& color = Color()) = 0;
-
-        virtual void SetRenderState(RenderState state, bool value) = 0;
 
         virtual void ChangeVerticalSync(bool set) = 0;
     protected:
-        explicit GraphicsManager(std::unique_ptr<Renderer>&& renderer);
+        GraphicsManager() = default;
+
+        [[nodiscard]] Arca::Reliquary& Reliquary();
+        [[nodiscard]] const Arca::Reliquary& Reliquary() const;
     protected:
-        [[nodiscard]] Renderer& Renderer();
-        [[nodiscard]] const Render::Renderer& Renderer() const;
-        template<class RendererT>
-        [[nodiscard]] RendererT& Renderer();
-        template<class RendererT>
-        [[nodiscard]] const RendererT& Renderer() const;
-    protected:
+        virtual void InitializeImpl() = 0;
+
+        [[nodiscard]] virtual std::unique_ptr<Asset::ImageAssetData> CreateImageDataImpl(
+            const Buffer& buffer, const Name& name, const Size2D& size) = 0;
+        [[nodiscard]] virtual std::unique_ptr<Asset::ShaderAssetData> CreateShaderDataImpl(
+            const Buffer& buffer, const Name& name, const String& entryPoint) = 0;
+        [[nodiscard]] virtual std::unique_ptr<SurfaceData> CreateMainSurfaceDataImpl(
+            void* window) = 0;
+        [[nodiscard]] virtual std::unique_ptr<SurfaceData> CreateSurfaceDataImpl(
+            void* window) = 0;
+
         [[nodiscard]] virtual bool ShouldReconstructInternals() const = 0;
-        virtual void ReconstructInternals(const ScreenSize& screenSize) = 0;
+        virtual void ReconstructInternals(GraphicsReconstructionObjects objects) = 0;
     private:
-        std::unique_ptr<Render::Renderer> renderer;
+        Arca::Reliquary* reliquary;
     };
-
-    template<class RendererT>
-    RendererT& GraphicsManager::Renderer()
-    {
-        return static_cast<RendererT&>(Renderer());
-    }
-
-    template<class RendererT>
-    const RendererT& GraphicsManager::Renderer() const
-    {
-        return static_cast<const RendererT&>(Renderer());
-    }
 }
 
 namespace Arca

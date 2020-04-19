@@ -4,7 +4,7 @@
 
 #include <vector>
 
-#include "DynamicMaterialView.h"
+#include "DynamicImage.h"
 #include "Sound.h"
 
 #include "Position3D.h"
@@ -14,10 +14,10 @@ namespace Atmos::Entity
     class SenseComponent
     {
     public:
-        using MaterialViewList = std::vector<Render::DynamicMaterialView>;
+        using ImageList = std::vector<Render::DynamicImage>;
         using SoundList = std::vector<Audio::Sound>;
 
-        MaterialViewList materialViews;
+        ImageList images;
         SoundList sounds;
     public:
         using Position = Position3D;
