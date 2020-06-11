@@ -408,8 +408,23 @@
     <Filter Include="Header Files\Render\Vulkan\Descriptors">
       <UniqueIdentifier>{8599f520-55ff-42e1-911a-33240b2eeb63}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Render\Descriptors">
+    <Filter Include="Source Files\Render\Vulkan\Descriptors">
       <UniqueIdentifier>{0dea2241-bcac-4e8e-ae45-c7908ac859da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Render\Vulkan\Pipeline">
+      <UniqueIdentifier>{5df594d1-1d6c-4b49-a861-5b110fa03121}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Render\Vulkan\Pipeline">
+      <UniqueIdentifier>{a14c3d49-baeb-4249-9379-6b6158295ede}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Render\Commands">
+      <UniqueIdentifier>{925d0c8b-4ff0-4c3c-9438-7344552ce019}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Render\Vulkan\Renderer">
+      <UniqueIdentifier>{a7376ee1-bb3c-4fbe-94e5-8fe42cc51057}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Render\Vulkan\Renderer">
+      <UniqueIdentifier>{245cf1f7-4284-450d-9805-59c3ff2e64e2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -962,9 +977,6 @@
     <ClInclude Include="WindowProvider.h">
       <Filter>Header Files\Window</Filter>
     </ClInclude>
-    <ClInclude Include="ReconstructGraphics.h">
-      <Filter>Header Files\Render</Filter>
-    </ClInclude>
     <ClInclude Include="WindowDimensionsChanged.h">
       <Filter>Header Files\Window</Filter>
     </ClInclude>
@@ -1160,9 +1172,6 @@
     <ClInclude Include="MoveBounds.h">
       <Filter>Header Files\Position\Object</Filter>
     </ClInclude>
-    <ClInclude Include="ResizeBounds.h">
-      <Filter>Header Files\Position\Object</Filter>
-    </ClInclude>
     <ClInclude Include="ScreenSize.h">
       <Filter>Header Files\Position\Screen</Filter>
     </ClInclude>
@@ -1259,9 +1268,6 @@
     <ClInclude Include="FilePath.h">
       <Filter>Header Files\File</Filter>
     </ClInclude>
-    <ClInclude Include="CreateSurfaceData.h">
-      <Filter>Header Files\Render</Filter>
-    </ClInclude>
     <ClInclude Include="GraphicsError.h">
       <Filter>Header Files\Render</Filter>
     </ClInclude>
@@ -1275,9 +1281,6 @@
       <Filter>Header Files\Assets</Filter>
     </ClInclude>
     <ClInclude Include="VulkanGraphicsManager.h">
-      <Filter>Header Files\Render\Vulkan</Filter>
-    </ClInclude>
-    <ClInclude Include="VulkanRenderer.h">
       <Filter>Header Files\Render\Vulkan</Filter>
     </ClInclude>
     <ClInclude Include="VulkanUtilities.h">
@@ -1313,9 +1316,6 @@
     <ClInclude Include="VulkanShaderAssetData.h">
       <Filter>Header Files\Render\Vulkan\Data</Filter>
     </ClInclude>
-    <ClInclude Include="VulkanPipeline.h">
-      <Filter>Header Files\Render\Vulkan\Structures</Filter>
-    </ClInclude>
     <ClInclude Include="GraphicsReconstructionObjects.h">
       <Filter>Header Files\Render</Filter>
     </ClInclude>
@@ -1337,9 +1337,6 @@
     <ClInclude Include="StaticImage.h">
       <Filter>Header Files\Render\Image</Filter>
     </ClInclude>
-    <ClInclude Include="CreateMainSurfaceData.h">
-      <Filter>Header Files\Render\Surface</Filter>
-    </ClInclude>
     <ClInclude Include="VulkanShaderCompiler.h">
       <Filter>Header Files\Render\Vulkan</Filter>
     </ClInclude>
@@ -1348,9 +1345,6 @@
     </ClInclude>
     <ClInclude Include="VulkanSwapchainSupport.h">
       <Filter>Header Files\Render\Vulkan\Swapchain</Filter>
-    </ClInclude>
-    <ClInclude Include="VulkanLineShaders.h">
-      <Filter>Header Files\Render\Vulkan\Structures</Filter>
     </ClInclude>
     <ClInclude Include="VulkanUniversalData.h">
       <Filter>Header Files\Render\Vulkan\Structures</Filter>
@@ -1376,17 +1370,92 @@
     <ClInclude Include="GlobalInitializer.h">
       <Filter>Header Files\GlobalInit</Filter>
     </ClInclude>
-    <ClInclude Include="VulkanPipelineAssembly.h">
-      <Filter>Header Files\Render\Vulkan\Structures</Filter>
-    </ClInclude>
-    <ClInclude Include="VulkanPipelineAssemblyOrigin.h">
-      <Filter>Header Files\Render\Vulkan\Structures</Filter>
-    </ClInclude>
     <ClInclude Include="VulkanUniformBufferDescriptor.h">
       <Filter>Header Files\Render\Vulkan\Descriptors</Filter>
     </ClInclude>
     <ClInclude Include="VulkanCombinedImageSamplerDescriptor.h">
       <Filter>Header Files\Render\Vulkan\Descriptors</Filter>
+    </ClInclude>
+    <ClInclude Include="ScaleBounds.h">
+      <Filter>Header Files\Position\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="BoundsCurator.h">
+      <Filter>Header Files\Position\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageAssetSize.h">
+      <Filter>Header Files\Assets\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageAssetGridSize.h">
+      <Filter>Header Files\Assets\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageAssetPosition.h">
+      <Filter>Header Files\Assets\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="Image.h">
+      <Filter>Header Files\Render\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanImage.h">
+      <Filter>Header Files\Render\Vulkan\Structures</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanQuadData.h">
+      <Filter>Header Files\Render\Vulkan\Structures</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanDebug.h">
+      <Filter>Header Files\Render\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanDescriptorSetGroup.h">
+      <Filter>Header Files\Render\Vulkan\Descriptors</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanCommandBufferGroup.h">
+      <Filter>Header Files\Render\Vulkan\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanPipeline.h">
+      <Filter>Header Files\Render\Vulkan\Pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="FreeImageIncludes.h">
+      <Filter>Header Files\Assets\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="ReconstructGraphics.h">
+      <Filter>Header Files\Render\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="CreateSurfaceData.h">
+      <Filter>Header Files\Render\Surface</Filter>
+    </ClInclude>
+    <ClInclude Include="InitializeGraphics.h">
+      <Filter>Header Files\Render\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="SetFullscreen.h">
+      <Filter>Header Files\Render\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="ChangeVerticalSync.h">
+      <Filter>Header Files\Render\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="ExternalManagers.h">
+      <Filter>Header Files\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="SetupMainSurfaceData.h">
+      <Filter>Header Files\Render\Surface</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanRendererCore.h">
+      <Filter>Header Files\Render\Vulkan\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanLineRenderer.h">
+      <Filter>Header Files\Render\Vulkan\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanQuadRenderer.h">
+      <Filter>Header Files\Render\Vulkan\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanRendererInterface.h">
+      <Filter>Header Files\Render\Vulkan\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanRenderer.h">
+      <Filter>Header Files\Render\Vulkan\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowsUndef.h">
+      <Filter>Header Files\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="CreateAssetData.h">
+      <Filter>Header Files\Assets</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1918,9 +1987,6 @@
     <ClCompile Include="VulkanGraphicsManager.cpp">
       <Filter>Source Files\Render\Vulkan</Filter>
     </ClCompile>
-    <ClCompile Include="VulkanRenderer.cpp">
-      <Filter>Source Files\Render\Vulkan</Filter>
-    </ClCompile>
     <ClCompile Include="VulkanUtilities.cpp">
       <Filter>Source Files\Render\Vulkan</Filter>
     </ClCompile>
@@ -1944,9 +2010,6 @@
     </ClCompile>
     <ClCompile Include="VulkanShaderAssetData.cpp">
       <Filter>Source Files\Render\Vulkan\Data</Filter>
-    </ClCompile>
-    <ClCompile Include="VulkanPipeline.cpp">
-      <Filter>Source Files\Render\Vulkan\Structures</Filter>
     </ClCompile>
     <ClCompile Include="VulkanSingleUseCommandBuffer.cpp">
       <Filter>Source Files\Render\Vulkan\Commands</Filter>
@@ -1984,14 +2047,41 @@
     <ClCompile Include="GlobalInitializer.cpp">
       <Filter>Source Files\GlobalInit</Filter>
     </ClCompile>
-    <ClCompile Include="VulkanPipelineAssemblyOrigin.cpp">
-      <Filter>Source Files\Render\Vulkan\Structures</Filter>
-    </ClCompile>
     <ClCompile Include="VulkanCombinedImageSamplerDescriptor.cpp">
-      <Filter>Source Files\Render\Descriptors</Filter>
+      <Filter>Source Files\Render\Vulkan\Descriptors</Filter>
     </ClCompile>
     <ClCompile Include="VulkanUniformBufferDescriptor.cpp">
-      <Filter>Source Files\Render\Descriptors</Filter>
+      <Filter>Source Files\Render\Vulkan\Descriptors</Filter>
+    </ClCompile>
+    <ClCompile Include="BoundsCurator.cpp">
+      <Filter>Source Files\Position\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanImage.cpp">
+      <Filter>Source Files\Render\Vulkan\Structures</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanDebug.cpp">
+      <Filter>Source Files\Render\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanDescriptorSetGroup.cpp">
+      <Filter>Source Files\Render\Vulkan\Descriptors</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanCommandBufferGroup.cpp">
+      <Filter>Source Files\Render\Vulkan\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanPipeline.cpp">
+      <Filter>Source Files\Render\Vulkan\Pipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanLineRenderer.cpp">
+      <Filter>Source Files\Render\Vulkan\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanQuadRenderer.cpp">
+      <Filter>Source Files\Render\Vulkan\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanRenderer.cpp">
+      <Filter>Source Files\Render\Vulkan\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanRendererInterface.cpp">
+      <Filter>Source Files\Render\Vulkan\Renderer</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

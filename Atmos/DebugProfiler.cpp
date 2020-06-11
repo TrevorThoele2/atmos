@@ -27,8 +27,8 @@ namespace Atmos::Debug
     {
         try
         {
-            const Arca::Postulate<Statistics*> postulate(mutablePointer.Reliquary());
-            return mutablePointer.Of(*postulate);
+            const Arca::Index<Statistics> index(mutablePointer.Reliquary());
+            return mutablePointer.Of(index);
         }
         catch(Arca::NotRegistered&)
         {

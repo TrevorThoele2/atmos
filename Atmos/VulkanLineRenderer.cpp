@@ -1,0 +1,203 @@
+#include "VulkanLineRenderer.h"
+
+#include "VulkanUniversalData.h"
+#include "VulkanUtilities.h"
+
+namespace Atmos::Render::Vulkan
+{
+    LineRenderer::LineRenderer(
+        std::shared_ptr<vk::Device> device,
+        uint32_t graphicsQueueIndex,
+        vk::Queue graphicsQueue,
+        vk::PhysicalDeviceMemoryProperties memoryProperties)
+        :
+        vertexBuffer(vertexStride * sizeof(Vertex), *device, memoryProperties, vk::BufferUsageFlagBits::eVertexBuffer),
+        core(
+            device,
+            memoryProperties,
+            Vulkan::VertexInput(
+                sizeof(Vertex),
+                {
+                    vk::VertexInputAttributeDescription(
+                        0, 0, vk::Format::eR32G32Sfloat, offsetof(Vertex, position)),
+                    vk::VertexInputAttributeDescription(
+                        1, 0, vk::Format::eR32G32B32A32Sfloat, offsetof(Vertex, color))
+                }),
+            {
+                DescriptorSetGroup::Definition
+                {
+                    vk::DescriptorType::eUniformBuffer,
+                    0,
+                    vk::ShaderStageFlagBits::eFragment | vk::ShaderStageFlagBits::eVertex,
+                    1
+                }
+            },
+            vk::PrimitiveTopology::eLineList,
+            Asset::MaterialType::Line),
+        graphicsQueue(graphicsQueue),
+        commandBuffers(*device, graphicsQueueIndex),
+        device(device)
+    {}
+
+    void LineRenderer::Initialize(uint32_t swapchainImageCount, vk::RenderPass renderPass, vk::Extent2D extent)
+    {
+        core.Initialize(swapchainImageCount, renderPass, extent);
+    }
+
+    void LineRenderer::StageRender(const LineRender& lineRender)
+    {
+        if (lineRender.points.empty())
+            return;
+
+        std::vector<Vertex> points;
+        for (auto& point : lineRender.points)
+        {
+            const auto color = AtmosToVulkanColor(lineRender.color);
+            points.push_back(Vertex{
+                color,
+                { point.x, point.y } });
+        }
+
+        auto context = core.ContextFor(lineRender.z);
+        if (!context)
+            context = &core.AddContext(lineRender.z, Context{});
+        auto& group = context->GroupFor(*lineRender.material);
+        group.ListFor(lineRender.width).emplace_back(points);
+        core.allDiscriminations.emplace(lineRender.width);
+    }
+
+    void LineRenderer::Start(Arca::Reliquary& reliquary, vk::CommandBuffer commandBuffer)
+    {
+        core.Start(reliquary, commandBuffer);
+    }
+
+    void LineRenderer::DrawNextLayer(uint32_t currentImage, glm::vec2 cameraSize)
+    {
+        const auto setupDiscrimination = [](LineWidth discrimination, vk::DescriptorSet& descriptorSet)
+        {};
+
+        core.AttemptReconstructDiscriminatedDescriptorSet(setupDiscrimination);
+
+        auto drawContext = core.CurrentDrawContext();
+        auto& context = drawContext->currentLayer->second;
+        for (auto& group : context.groups)
+        {
+            WriteToBuffers(
+                group.second,
+                group.first,
+                drawContext->commandBuffer,
+                currentImage,
+                cameraSize);
+        }
+
+        ++drawContext->layerCount;
+        ++drawContext->currentLayer;
+    }
+
+    void LineRenderer::End()
+    {
+        core.End();
+    }
+
+    bool LineRenderer::IsDone() const
+    {
+        return core.IsDone();
+    }
+
+    Position3D::Value LineRenderer::NextLayer() const
+    {
+        return core.NextLayer();
+    }
+
+    size_t LineRenderer::LayerCount() const
+    {
+        return core.LayerCount();
+    }
+
+    LineRenderer::Line::Line(const std::vector<Vertex>& points) : vertices(points)
+    {}
+
+    auto LineRenderer::Context::Group::ListFor(LineWidth width) -> std::vector<Line>&
+    {
+        auto found = lines.find(width);
+        if (found == lines.end())
+            return lines.emplace(width, std::vector<Line>{}).first->second;
+
+        return found->second;
+    }
+
+    auto LineRenderer::Context::GroupFor(const Asset::Material& material) -> Group&
+    {
+        auto found = groups.find(&material);
+        if (found == groups.end())
+            return groups.emplace(&material, Group{}).first->second;
+
+        return found->second;
+    }
+
+    void LineRenderer::WriteToBuffers(
+        const Context::Group& group,
+        const Asset::Material* materialAsset,
+        vk::CommandBuffer commandBuffer,
+        std::uint32_t currentImage,
+        glm::vec2 cameraSize)
+    {
+        auto& pipeline = *core.PipelineFor(*materialAsset);
+        pipeline.uniformBuffers[currentImage].PushBytes(UniversalData::Ortho(cameraSize), 0);
+
+        for (auto& object : group.lines)
+            WriteToBuffers(
+                object.second,
+                object.first,
+                pipeline,
+                commandBuffer,
+                currentImage);
+    }
+
+    void LineRenderer::WriteToBuffers(
+        const std::vector<Line>& lines,
+        LineWidth width,
+        Pipeline& pipeline,
+        vk::CommandBuffer commandBuffer,
+        std::uint32_t currentImage)
+    {
+        auto drawContext = core.CurrentDrawContext();
+        const auto startVertexCount = drawContext->count;
+
+        std::vector<Vertex> drawnVertices;
+        for (auto& line : lines)
+        {
+            drawnVertices.insert(drawnVertices.begin(), line.vertices.begin(), line.vertices.end());
+            drawContext->count += line.vertices.size();
+        }
+
+        vk::Buffer vertexBuffers[] = { vertexBuffer.destination.value.get() };
+        vk::DeviceSize offsets[] = { 0 };
+        commandBuffer.bindVertexBuffers(0, 1, vertexBuffers, offsets);
+
+        commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, pipeline.value.get());
+
+        auto currentDescriptorSet = core.DiscriminatedDescriptorSetFor(
+            [width, currentImage](const Core::DiscriminatedDescriptorSet& descriptorSet)
+            {
+                return width == descriptorSet.discriminator && currentImage == descriptorSet.imageIndex;
+            })->descriptorSet;
+        commandBuffer.bindDescriptorSets(
+            vk::PipelineBindPoint::eGraphics,
+            pipeline.layout.get(),
+            0,
+            1,
+            &currentDescriptorSet,
+            0,
+            nullptr);
+
+        commandBuffer.setLineWidth(width);
+
+        const auto lineVertexOffset = vk::DeviceSize(startVertexCount) * sizeof Vertex;
+        const auto lineVertexSize = drawnVertices.size() * sizeof Vertex;
+
+        vertexBuffer.PushSourceBytes(drawnVertices.data(), lineVertexOffset, lineVertexSize);
+        vertexBuffer.CopyFromSourceToDestination(lineVertexOffset, lineVertexSize, commandBuffers.Pool(), graphicsQueue);
+        drawContext->commandBuffer.draw(drawnVertices.size(), 1, startVertexCount, 0);
+    }
+}

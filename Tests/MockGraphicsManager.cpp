@@ -1,13 +1,7 @@
 #include "MockGraphicsManager.h"
 
 #include "MockSurfaceData.h"
-
-class ImageAssetDataImplementation final : public Asset::ImageAssetData
-{
-public:
-    ImageAssetDataImplementation() : ImageAssetData(0, 0)
-    {}
-};
+#include "MockImageAssetData.h"
 
 class ShaderAssetDataImplementation final : public Asset::ShaderAssetData
 {
@@ -16,63 +10,9 @@ public:
     {}
 };
 
-class CanvasDataImplementation final : public CanvasData
-{
-public:
-    CanvasDataImplementation() = default;
-
-    void Resize(ScreenSize size) override
-    {}
-
-    void StartPainting() override
-    {}
-
-    void StopPainting() override
-    {}
-
-    void PaintPixel(
-        const ScreenPosition& position,
-        const Color& color,
-        ScreenPosition::Value height) override
-    {}
-
-    void Clear(const Color& color) override
-    {}
-};
-
 bool MockGraphicsManager::IsOk() const
 {
     return true;
-}
-
-std::unique_ptr<Asset::ImageAssetData> MockGraphicsManager::CreateImageData(
-    const Buffer& buffer, const Name& name, const Size2D& size)
-{
-    return std::make_unique<ImageAssetDataImplementation>();
-}
-
-std::unique_ptr<Asset::ShaderAssetData> MockGraphicsManager::CreateShaderData(
-    const Buffer& buffer, const Name& name, const String& entryPoint)
-{
-    return std::make_unique<ShaderAssetDataImplementation>();
-}
-
-std::unique_ptr<SurfaceData> MockGraphicsManager::CreateMainSurfaceData(
-    void* window)
-{
-    return std::make_unique<MockSurfaceDataImplementation>();
-}
-
-std::unique_ptr<SurfaceData> MockGraphicsManager::CreateSurfaceData(
-    void* window)
-{
-    return std::make_unique<MockSurfaceDataImplementation>();
-}
-
-std::unique_ptr<CanvasData> MockGraphicsManager::CreateCanvasData(
-    const ScreenSize& size)
-{
-    return std::make_unique<CanvasDataImplementation>();
 }
 
 void MockGraphicsManager::SetFullscreen(bool set)
@@ -83,6 +23,33 @@ void MockGraphicsManager::ChangeVerticalSync(bool set)
 
 void MockGraphicsManager::InitializeImpl()
 {}
+
+std::unique_ptr<Asset::ImageAssetData> MockGraphicsManager::CreateImageDataImpl(
+    const Buffer& buffer,
+    const Name& name,
+    const Asset::ImageAssetSize& size,
+    const Asset::ImageAssetGridSize& gridSize)
+{
+    return std::make_unique<ImageAssetDataImplementation>();
+}
+
+std::unique_ptr<Asset::ShaderAssetData> MockGraphicsManager::CreateShaderDataImpl(
+    const Buffer& buffer, const Name& name, const String & entryPoint)
+{
+    return std::make_unique<ShaderAssetDataImplementation>();
+}
+
+std::unique_ptr<SurfaceData> MockGraphicsManager::CreateMainSurfaceDataImpl(
+    void* window)
+{
+    return std::make_unique<MockSurfaceDataImplementation>();
+}
+
+std::unique_ptr<SurfaceData> MockGraphicsManager::CreateSurfaceDataImpl(
+    void* window)
+{
+    return std::make_unique<MockSurfaceDataImplementation>();
+}
 
 bool MockGraphicsManager::ShouldReconstructInternals() const
 {

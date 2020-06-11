@@ -4,39 +4,46 @@
 
 namespace Atmos::Asset
 {
-    MaterialAsset::MaterialAsset(Init init) :
+    Material::Material(Init init) :
         Asset(init)
     {}
 
-    MaterialAsset::MaterialAsset(
+    Material::Material(
         Init init,
         const Atmos::Name& name,
-        Arca::Index<ShaderAsset> vertexShader,
-        Arca::Index<ShaderAsset> fragmentShader)
+        MaterialType type,
+        Arca::Index<Shader> vertexShader,
+        Arca::Index<Shader> fragmentShader)
         :
         Asset(init, name),
-        vertexShader(std::move(vertexShader)), fragmentShader(std::move(fragmentShader))
+        type(type), vertexShader(std::move(vertexShader)), fragmentShader(std::move(fragmentShader))
     {}
 
-    MaterialAsset::MaterialAsset(MaterialAsset&& arg) noexcept :
+    Material::Material(Material&& arg) noexcept :
         Asset(std::move(arg)),
-        vertexShader(std::move(arg.vertexShader)), fragmentShader(std::move(arg.fragmentShader))
+        type(arg.type), vertexShader(std::move(arg.vertexShader)), fragmentShader(std::move(arg.fragmentShader))
     {}
 
-    MaterialAsset& MaterialAsset::operator=(MaterialAsset && arg) noexcept
+    Material& Material::operator=(Material && arg) noexcept
     {
         Asset::operator=(std::move(arg));
+        type = arg.type;
         vertexShader = std::move(arg.vertexShader);
         fragmentShader = std::move(arg.fragmentShader);
         return *this;
     }
 
-    Arca::Index<ShaderAsset> MaterialAsset::VertexShader() const
+    MaterialType Material::Type() const
+    {
+        return type;
+    }
+
+    Arca::Index<Shader> Material::VertexShader() const
     {
         return vertexShader;
     }
 
-    Arca::Index<ShaderAsset> MaterialAsset::FragmentShader() const
+    Arca::Index<Shader> Material::FragmentShader() const
     {
         return fragmentShader;
     }
@@ -44,22 +51,23 @@ namespace Atmos::Asset
 
 namespace Arca
 {
-    bool Traits<::Atmos::Asset::MaterialAsset>::ShouldCreate(
+    bool Traits<::Atmos::Asset::Material>::ShouldCreate(
         Reliquary& reliquary,
         const ::Atmos::Name& name,
-        Index<Atmos::Asset::ShaderAsset>,
-        Index<Atmos::Asset::ShaderAsset>)
+        Atmos::Asset::MaterialType,
+        Index<Atmos::Asset::Shader>,
+        Index<Atmos::Asset::Shader>)
     {
-        return Atmos::Asset::ShouldCreateAsset<::Atmos::Asset::MaterialAsset>(reliquary, name);
+        return Atmos::Asset::ShouldCreate<::Atmos::Asset::Material>(reliquary, name);
     }
 }
 
 namespace Inscription
 {
-    void Scribe<Atmos::Asset::MaterialAsset, BinaryArchive>::ScrivenImplementation(
+    void Scribe<Atmos::Asset::Material, BinaryArchive>::ScrivenImplementation(
         ObjectT& object, ArchiveT& archive)
     {
-        BaseScriven<Atmos::Asset::Asset<Atmos::Asset::MaterialAsset>>(object, archive);
+        BaseScriven<Atmos::Asset::Asset<Atmos::Asset::Material>>(object, archive);
         archive(object.vertexShader);
         archive(object.fragmentShader);
     }

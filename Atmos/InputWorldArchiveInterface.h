@@ -15,8 +15,8 @@ namespace Atmos::World::Serialization
     public:
         explicit InputWorldArchiveInterface(const File::Path& filePath);
 
-        [[nodiscard]] std::optional<Field> ExtractField(FieldID id, Arca::Reliquary& globalReliquary) override;
-        [[nodiscard]] std::unique_ptr<Field> ExtractFieldAsHeap(FieldID id, Arca::Reliquary& globalReliquary) override;
+        [[nodiscard]] std::optional<Field> ExtractField(FieldID id, ExternalManagers externalManagers) override;
+        [[nodiscard]] std::unique_ptr<Field> ExtractFieldAsHeap(FieldID id, ExternalManagers externalManagers) override;
 
         [[nodiscard]] std::vector<FieldID> AllFieldIDs() const override;
         [[nodiscard]] bool ContainsField(FieldID fieldID) const override;

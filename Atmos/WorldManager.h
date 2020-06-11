@@ -15,7 +15,7 @@ namespace Atmos::World
     class WorldManager
     {
     public:
-        explicit WorldManager(Arca::Reliquary& globalReliquary);
+        explicit WorldManager(ExternalManagers externalManagers);
 
         void Work();
         void LockIn();
@@ -34,7 +34,7 @@ namespace Atmos::World
         [[nodiscard]] Field* CurrentField();
         [[nodiscard]] const Field* CurrentField() const;
     private:
-        Arca::Reliquary* globalReliquary = nullptr;
+        ExternalManagers externalManagers;
     private:
         struct RequestedField
         {

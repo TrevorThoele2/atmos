@@ -4,10 +4,10 @@
 
 namespace Atmos::Asset
 {
-    class LoadAssetError final : public Exception
+    class LoadError final : public Exception
     {
     public:
-        LoadAssetError(const String& message);
-        LoadAssetError(const String& message, const NameValuePairs& details);
+        LoadError(const String& message);
+        LoadError(const String& message, const NameValuePairs& details);
     };
 }

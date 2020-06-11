@@ -3,17 +3,12 @@
 namespace Atmos::Render::Vulkan
 {
     ImageAssetDataImplementation::ImageAssetDataImplementation(
-        vk::UniqueImage image,
-        vk::UniqueDeviceMemory memory,
-        vk::UniqueImageView imageView,
-        CombinedImageSamplerDescriptor descriptor,
-        Dimension width,
-        Dimension height)
+        Image&& image,
+        vk::UniqueImageView&& imageView,
+        CombinedImageSamplerDescriptor descriptor)
         :
-        ImageAssetData(width, height),
         image(std::move(image)),
-        memory(std::move(memory)),
         imageView(std::move(imageView)),
-        descriptor(descriptor)
+        descriptor(std::move(descriptor))
     {}
 }

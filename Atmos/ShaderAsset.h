@@ -5,36 +5,43 @@
 
 namespace Atmos::Asset
 {
-    class ShaderAsset final : public FileAsset<ShaderAssetData, ShaderAsset>
+    class Shader final : public FileAsset<ShaderData, Shader>
     {
     public:
-        explicit ShaderAsset(Init init);
-        ShaderAsset(Init init, const Atmos::Name& name, DataPtr&& data);
-        ShaderAsset(ShaderAsset&& arg) noexcept;
+        explicit Shader(Init init);
+        Shader(Init init, const Atmos::Name& name, DataPtr&& data, const String& entryPoint);
+        Shader(Shader&& arg) noexcept;
 
-        ShaderAsset& operator=(ShaderAsset&& arg) noexcept;
+        Shader& operator=(Shader&& arg) noexcept;
+
+        [[nodiscard]] const String& EntryPoint() const;
+    private:
+        String entryPoint;
+    private:
+        INSCRIPTION_ACCESS;
     };
 }
 
 namespace Arca
 {
     template<>
-    struct Traits<::Atmos::Asset::ShaderAsset>
+    struct Traits<::Atmos::Asset::Shader>
     {
         static const ObjectType objectType = ObjectType::Relic;
         static inline const TypeName typeName = "ShaderAsset";
         static bool ShouldCreate(
             Reliquary& reliquary,
             const ::Atmos::Name& name,
-            ::Atmos::Asset::ShaderAsset::DataPtr&& data);
+            const ::Atmos::Asset::Shader::DataPtr& data,
+            const ::Atmos::String& entryPoint);
     };
 }
 
 namespace Inscription
 {
     template<>
-    class Scribe<::Atmos::Asset::ShaderAsset, BinaryArchive> final :
-        public ArcaCompositeScribe<::Atmos::Asset::ShaderAsset, BinaryArchive>
+    class Scribe<::Atmos::Asset::Shader, BinaryArchive> final :
+        public ArcaCompositeScribe<::Atmos::Asset::Shader, BinaryArchive>
     {
     protected:
         void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;

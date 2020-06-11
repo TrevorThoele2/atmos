@@ -9,29 +9,23 @@ namespace Atmos::Render::Vulkan
         vk::PhysicalDevice physicalDevice,
         vk::UniqueSurfaceKHR&& underlying,
         vk::Sampler sampler,
-        LineShaders lineShaders,
         vk::Queue graphicsQueue,
         vk::Queue presentQueue,
-        vk::CommandPool commandPool,
         QueueFamilyIndices queueFamilyIndices,
-        vk::PhysicalDeviceMemoryProperties memoryProperties,
-        Arca::Reliquary& reliquary)
+        vk::PhysicalDeviceMemoryProperties memoryProperties)
         :
         device(device),
         physicalDevice(physicalDevice),
         sampler(sampler),
-        underlying(std::move(underlying)),
-        commandPool(commandPool)
+        underlying(std::move(underlying))
     {
         renderer = std::make_unique<Renderer>(
             device,
             sampler,
-            lineShaders,
-            commandPool,
             graphicsQueue,
             presentQueue,
-            memoryProperties,
-            reliquary);
+            queueFamilyIndices.graphicsFamily,
+            memoryProperties);
 
         Initialize(queueFamilyIndices);
 
@@ -74,7 +68,12 @@ namespace Atmos::Render::Vulkan
         imageViews.clear();
         imageViews.reserve(images.size());
         for (auto& image : images)
-            imageViews.push_back(CreateImageView(image, *device, swapchainDetails.imageFormat));
+            imageViews.push_back(CreateImageView(
+                image,
+                *device,
+                swapchainDetails.imageFormat,
+                0,
+                1));
         nonUniqueImageViews.clear();
         nonUniqueImageViews.reserve(imageViews.size());
         for (auto& imageView : imageViews)
@@ -98,9 +97,9 @@ namespace Atmos::Render::Vulkan
         renderer->StageRender(lineRender);
     }
 
-    void SurfaceDataImplementation::DrawFrame(const Color& backgroundColor)
+    void SurfaceDataImplementation::DrawFrame(Arca::Reliquary& reliquary, const Color& backgroundColor)
     {
-        renderer->DrawFrame(Size());
+        renderer->DrawFrame(reliquary, Size());
     }
 
     ScreenSize SurfaceDataImplementation::Size() const

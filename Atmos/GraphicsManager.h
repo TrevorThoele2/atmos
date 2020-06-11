@@ -4,10 +4,7 @@
 #include "ShaderAsset.h"
 #include "SurfaceData.h"
 
-#include "ScreenSize.h"
-
 #include "ImageRender.h"
-#include "LineRender.h"
 
 #include "GraphicsReconstructionObjects.h"
 
@@ -31,11 +28,14 @@ namespace Atmos::Render
         virtual ~GraphicsManager() = 0;
 
         void Initialize(Arca::Reliquary& reliquary, void* mainWindow);
+        void SetupDefaults(Arca::Reliquary& reliquary);
 
-        [[nodiscard]] std::unique_ptr<Asset::ImageAssetData> CreateImageData(
-            const Buffer& buffer, const Name& name, const Size2D& size);
-        [[nodiscard]] std::unique_ptr<Asset::ShaderAssetData> CreateShaderData(
-            const Buffer& buffer, const Name& name, const String& entryPoint);
+        [[nodiscard]] std::unique_ptr<Asset::ImageData> CreateImageData(
+            const Buffer& buffer,
+            const Name& name,
+            const Asset::ImageSize& size);
+        [[nodiscard]] std::unique_ptr<Asset::ShaderData> CreateShaderData(
+            const Buffer& buffer, const Name& name);
         [[nodiscard]] std::unique_ptr<SurfaceData> CreateMainSurfaceData(
             void* window);
         [[nodiscard]] std::unique_ptr<SurfaceData> CreateSurfaceData(
@@ -51,16 +51,16 @@ namespace Atmos::Render
         virtual void ChangeVerticalSync(bool set) = 0;
     protected:
         GraphicsManager() = default;
-
-        [[nodiscard]] Arca::Reliquary& Reliquary();
-        [[nodiscard]] const Arca::Reliquary& Reliquary() const;
     protected:
-        virtual void InitializeImpl() = 0;
+        virtual void InitializeImpl() {}
+        virtual void SetupDefaultsImpl(Arca::Reliquary& reliquary) {};
 
-        [[nodiscard]] virtual std::unique_ptr<Asset::ImageAssetData> CreateImageDataImpl(
-            const Buffer& buffer, const Name& name, const Size2D& size) = 0;
-        [[nodiscard]] virtual std::unique_ptr<Asset::ShaderAssetData> CreateShaderDataImpl(
-            const Buffer& buffer, const Name& name, const String& entryPoint) = 0;
+        [[nodiscard]] virtual std::unique_ptr<Asset::ImageData> CreateImageDataImpl(
+            const Buffer& buffer,
+            const Name& name,
+            const Asset::ImageSize& size) = 0;
+        [[nodiscard]] virtual std::unique_ptr<Asset::ShaderData> CreateShaderDataImpl(
+            const Buffer& buffer, const Name& name) = 0;
         [[nodiscard]] virtual std::unique_ptr<SurfaceData> CreateMainSurfaceDataImpl(
             void* window) = 0;
         [[nodiscard]] virtual std::unique_ptr<SurfaceData> CreateSurfaceDataImpl(
@@ -68,8 +68,6 @@ namespace Atmos::Render
 
         [[nodiscard]] virtual bool ShouldReconstructInternals() const = 0;
         virtual void ReconstructInternals(GraphicsReconstructionObjects objects) = 0;
-    private:
-        Arca::Reliquary* reliquary;
     };
 }
 

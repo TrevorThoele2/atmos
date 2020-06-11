@@ -29,15 +29,15 @@ namespace Atmos::Render::Vulkan
         source.PushBytes(bytes, offset, size);
     }
 
-    void StagedBuffer::CopyFromSourceToDestination(
-        vk::DeviceSize size, vk::CommandPool commandPool, vk::Queue queue)
-    {
-        source.Copy(destination, size, commandPool, queue);
-    }
-
     void StagedBuffer::CopyFromSourceToDestination(vk::CommandPool commandPool, vk::Queue queue)
     {
-        source.Copy(destination, source.size, commandPool, queue);
+        source.Copy(destination, 0, 0, source.size, commandPool, queue);
+    }
+
+    void StagedBuffer::CopyFromSourceToDestination(
+        vk::DeviceSize offset, vk::DeviceSize size, vk::CommandPool commandPool, vk::Queue queue)
+    {
+        source.Copy(destination, offset, offset, size, commandPool, queue);
     }
 
     StagedBuffer::StagedBuffer(

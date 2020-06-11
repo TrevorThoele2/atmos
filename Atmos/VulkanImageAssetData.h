@@ -2,24 +2,21 @@
 
 #include "ImageAssetData.h"
 #include "VulkanIncludes.h"
+#include "VulkanImage.h"
 #include "VulkanCombinedImageSamplerDescriptor.h"
 
 namespace Atmos::Render::Vulkan
 {
-    class ImageAssetDataImplementation final : public Asset::ImageAssetData
+    class ImageAssetDataImplementation final : public Asset::ImageData
     {
     public:
-        vk::UniqueImage image;
-        vk::UniqueDeviceMemory memory;
+        Image image;
         vk::UniqueImageView imageView;
         CombinedImageSamplerDescriptor descriptor;
     public:
         ImageAssetDataImplementation(
-            vk::UniqueImage image,
-            vk::UniqueDeviceMemory memory,
-            vk::UniqueImageView imageView,
-            CombinedImageSamplerDescriptor descriptor,
-            Dimension width,
-            Dimension height);
+            Image&& image,
+            vk::UniqueImageView&& imageView,
+            CombinedImageSamplerDescriptor descriptor);
     };
 }

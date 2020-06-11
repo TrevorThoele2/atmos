@@ -4,17 +4,17 @@
 
 namespace Atmos::Asset
 {
-    ScriptAsset::ScriptAsset(Init init) : FileAsset(init)
+    Script::Script(Init init) : FileAsset(init)
     {}
 
-    ScriptAsset::ScriptAsset(Init init, const ::Atmos::Name& name, DataPtr&& data) :
+    Script::Script(Init init, const ::Atmos::Name& name, DataPtr&& data) :
         FileAsset(init, name, std::move(data))
     {}
 
-    ScriptAsset::ScriptAsset(ScriptAsset&& arg) noexcept : FileAsset(std::move(arg))
+    Script::Script(Script&& arg) noexcept : FileAsset(std::move(arg))
     {}
 
-    ScriptAsset& ScriptAsset::operator=(ScriptAsset&& arg) noexcept
+    Script& Script::operator=(Script&& arg) noexcept
     {
         FileAsset::operator=(std::move(arg));
         return *this;
@@ -23,19 +23,19 @@ namespace Atmos::Asset
 
 namespace Arca
 {
-    bool Traits<::Atmos::Asset::ScriptAsset>::ShouldCreate(
-        Reliquary& reliquary, const ::Atmos::Name& name, ::Atmos::Asset::ScriptAsset::DataPtr&& data)
+    bool Traits<::Atmos::Asset::Script>::ShouldCreate(
+        Reliquary& reliquary, const ::Atmos::Name& name, const ::Atmos::Asset::Script::DataPtr& data)
     {
-        return Atmos::Asset::ShouldCreateAsset<::Atmos::Asset::ScriptAsset>(reliquary, name);
+        return Atmos::Asset::ShouldCreate<::Atmos::Asset::Script>(reliquary, name);
     }
 }
 
 namespace Inscription
 {
-    void Scribe<Atmos::Asset::ScriptAsset, BinaryArchive>::ScrivenImplementation(
+    void Scribe<Atmos::Asset::Script, BinaryArchive>::ScrivenImplementation(
         ObjectT& object, ArchiveT& archive)
     {
-        BaseScriven<Atmos::Asset::FileAsset<Atmos::Asset::ScriptAssetData, Atmos::Asset::ScriptAsset>>(
+        BaseScriven<Atmos::Asset::FileAsset<Atmos::Asset::ScriptData, Atmos::Asset::Script>>(
             object, archive);
     }
 }

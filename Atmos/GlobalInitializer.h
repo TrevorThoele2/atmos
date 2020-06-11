@@ -1,6 +1,6 @@
 #pragma once
 
-#include <FreeImage.h>
+#include "FreeImageIncludes.h"
 
 namespace Atmos
 {

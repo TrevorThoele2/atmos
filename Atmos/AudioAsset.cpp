@@ -24,9 +24,9 @@ namespace Atmos::Asset
 namespace Arca
 {
     bool Traits<::Atmos::Asset::AudioAsset>::ShouldCreate(
-        Reliquary& reliquary, const ::Atmos::Name& name, ::Atmos::Asset::AudioAsset::DataPtr&& data)
+        Reliquary& reliquary, const ::Atmos::Name& name, const ::Atmos::Asset::AudioAsset::DataPtr& data)
     {
-        return Atmos::Asset::ShouldCreateAsset<::Atmos::Asset::AudioAsset>(reliquary, name);
+        return Atmos::Asset::ShouldCreate<::Atmos::Asset::AudioAsset>(reliquary, name);
     }
 }
 

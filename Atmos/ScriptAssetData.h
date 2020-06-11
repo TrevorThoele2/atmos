@@ -2,11 +2,11 @@
 
 namespace Atmos::Asset
 {
-    class ScriptAssetData
+    class ScriptData
     {
     public:
-        ScriptAssetData() = default;
-
-        virtual ~ScriptAssetData() = 0;
+        virtual ~ScriptData() = 0;
+    protected:
+        ScriptData() = default;
     };
 }

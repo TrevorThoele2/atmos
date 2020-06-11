@@ -20,15 +20,11 @@ namespace Atmos::Render
     public:
         void Handle(const ChangeImageCore& command);
     private:
-        void OnCoreCreated(const Arca::CreatedKnown<ImageCore>& created);
-    private:
         using Matrix = Arca::All<ImageCore, Arca::Either<Bounds>>;
         using Index = Arca::Index<Matrix>;
         Grid::Octree<Arca::RelicID, Index> octree;
 
         Arca::Index<Camera> camera;
-    private:
-        void CalculateAssetSlice(ImageCore& core);
     private:
         void OnViewFormed(const Arca::MatrixFormed<Matrix>& view);
         void OnViewDissolved(const Arca::MatrixDissolved<Matrix>& view);

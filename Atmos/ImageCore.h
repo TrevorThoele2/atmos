@@ -16,13 +16,18 @@ namespace Atmos::Render
     public:
         using Index = int;
     public:
-        Arca::Index<Asset::ImageAsset> asset;
-        AxisAlignedBox2D assetSlice;
+        Arca::Index<Asset::Image> asset;
         Index assetIndex = 0;
+        Arca::Index<Asset::Material> material;
 
-        Render::Color color;
-
-        Arca::Index<Asset::MaterialAsset> material;
+        Color color;
+    public:
+        ImageCore() = default;
+        ImageCore(
+            Arca::Index<Asset::Image> asset,
+            Index assetIndex,
+            Arca::Index<Asset::Material> material,
+            Color color);
     };
 }
 

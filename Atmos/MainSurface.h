@@ -1,13 +1,9 @@
 #pragma once
 
 #include "Surface.h"
-#include <Chroma/VariadicTemplate.h>
 
 namespace Atmos::Render
 {
-    class GraphicsManager;
-    class SurfaceCurator;
-
     class MainSurface final : public Surface<MainSurface>
     {
     public:

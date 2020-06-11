@@ -8,9 +8,9 @@ namespace Atmos::Render::Vulkan
         binding(binding), bufferInfo(buffer, offset, range)
     {}
 
-    vk::WriteDescriptorSet UniformBufferDescriptor::Write(vk::DescriptorSet descriptorSet)
+    void UniformBufferDescriptor::Update(vk::DescriptorSet descriptorSet, vk::Device device) const
     {
-        return vk::WriteDescriptorSet(
+        const vk::WriteDescriptorSet write(
             descriptorSet,
             binding,
             0,
@@ -19,5 +19,6 @@ namespace Atmos::Render::Vulkan
             nullptr,
             &bufferInfo,
             nullptr);
+        device.updateDescriptorSets(1, &write, 0, nullptr);
     }
 }

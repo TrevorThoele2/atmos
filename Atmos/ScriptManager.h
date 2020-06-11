@@ -12,6 +12,6 @@ namespace Atmos::Script
     public:
         virtual ~Manager() = 0;
 
-        [[nodiscard]] virtual std::unique_ptr<Asset::ScriptAssetData> CreateAssetData(String name, String fileData) = 0;
+        [[nodiscard]] virtual std::unique_ptr<Asset::ScriptData> CreateAssetData(String name, String fileData) = 0;
     };
 }

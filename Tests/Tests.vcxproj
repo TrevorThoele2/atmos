@@ -71,7 +71,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>C:\Users\Trevor\Documents\ProgrammingProjects\Catch;C:\Users\Trevor\Documents\ProgrammingProjects\TestFramework;C:\Users\Trevor\Documents\ProgrammingProjects\function2\include;C:\Users\Trevor\Documents\ProgrammingProjects\AGUI;C:\Users\Trevor\Documents\ProgrammingProjects\Inscription;C:\Users\Trevor\Documents\ProgrammingProjects\Chroma;C:\Users\Trevor\Documents\ProgrammingProjects\Arca;C:\Users\Trevor\Documents\ProgrammingProjects\Ogg\Built\include;C:\Users\Trevor\Documents\ProgrammingProjects\AngelScript\sdk\angelscript\include;C:\Users\Trevor\Documents\ProgrammingProjects\wxWidgets2\include;C:\Users\Trevor\Documents\ProgrammingProjects\wxWidgets2\lib\vc_lib\mswud;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;C:\Users\Trevor\Documents\ProgrammingProjects\Atmos;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\Trevor\Documents\ProgrammingProjects\AngelScript\sdk\angelscript\lib;C:\Users\Trevor\Documents\ProgrammingProjects\Ogg\libvorbis-1.3.6\win32\VS2010\Win32\Debug;C:\Users\Trevor\Documents\ProgrammingProjects\Ogg\libogg-1.3.3\win32\VS2015\Win32\Debug;C:\Users\Trevor\Documents\ProgrammingProjects\wxWidgets2\lib\vc_lib;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;$(LibraryPath)</LibraryPath>
+    <LibraryPath>C:\Users\Trevor\Documents\ProgrammingProjects\FreeImage\Dist\x32;C:\Users\Trevor\Documents\ProgrammingProjects\AngelScript\sdk\angelscript\lib;C:\Users\Trevor\Documents\ProgrammingProjects\Ogg\libvorbis-1.3.6\win32\VS2010\Win32\Debug;C:\Users\Trevor\Documents\ProgrammingProjects\Ogg\libogg-1.3.3\win32\VS2015\Win32\Debug;C:\Users\Trevor\Documents\ProgrammingProjects\wxWidgets2\lib\vc_lib;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>C:\Users\Trevor\Documents\ProgrammingProjects\Boost\boost_1_68_0\%24boost_installation_prefix\include\boost-1_68;C:\Users\Trevor\Documents\Programming Projects\AGUI;C:\Users\Trevor\Documents\Programming Projects\Inscription;C:\Users\Trevor\Documents\Programming Projects\Chroma;C:\Users\Trevor\Documents\Programming Projects\Atmos;C:\Users\Trevor\Documents\Programming Projects\Ogg\Built\include;C:\Users\Trevor\Documents\Programming Projects\wxWidgets2\include;C:\Users\Trevor\Documents\Programming Projects\wxWidgets2\lib\vc_lib\mswu;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include</IncludePath>
@@ -89,7 +89,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <AdditionalDependencies>angelscriptd.lib;libogg_static.lib;libvorbis_static.lib;libvorbisfile_static.lib;wxmsw31ud_core.lib;wxbase31ud.lib;wxmsw31ud_aui.lib;wxtiffd.lib;wxjpegd.lib;wxpngd.lib;wxzlibd.lib;wxregexud.lib;wxexpatd.lib;winmm.lib;comctl32.lib;rpcrt4.lib;wsock32.lib;wininet.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>angelscriptd.lib;libogg_static.lib;libvorbis_static.lib;libvorbisfile_static.lib;freeimagelibd.lib;wxmsw31ud_core.lib;wxbase31ud.lib;wxmsw31ud_aui.lib;wxtiffd.lib;wxjpegd.lib;wxpngd.lib;wxzlibd.lib;wxregexud.lib;wxexpatd.lib;winmm.lib;comctl32.lib;rpcrt4.lib;wsock32.lib;wininet.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/NODEFAULTLIB:libcmtd.lib %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
@@ -137,6 +137,7 @@
     <ClCompile Include="GeneralFixture.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MockGraphicsManager.cpp" />
+    <ClCompile Include="MockImageAssetData.cpp" />
     <ClCompile Include="MockSurfaceData.cpp" />
     <ClCompile Include="MockWindow.cpp" />
     <ClCompile Include="OctreeTests.cpp" />
@@ -149,6 +150,7 @@
     <ClInclude Include="DerivedEngine.h" />
     <ClInclude Include="GeneralFixture.h" />
     <ClInclude Include="MockGraphicsManager.h" />
+    <ClInclude Include="MockImageAssetData.h" />
     <ClInclude Include="MockSurfaceData.h" />
     <ClInclude Include="MockWindow.h" />
     <ClInclude Include="OctreeTests.h" />

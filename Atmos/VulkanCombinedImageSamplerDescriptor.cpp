@@ -8,9 +8,9 @@ namespace Atmos::Render::Vulkan
         binding(binding), imageInfo(sampler, imageView, imageLayout)
     {}
 
-    vk::WriteDescriptorSet CombinedImageSamplerDescriptor::Write(vk::DescriptorSet descriptorSet)
+    void CombinedImageSamplerDescriptor::Update(vk::DescriptorSet descriptorSet, vk::Device device) const
     {
-        return vk::WriteDescriptorSet(
+        const vk::WriteDescriptorSet write(
             descriptorSet,
             binding,
             0,
@@ -19,5 +19,6 @@ namespace Atmos::Render::Vulkan
             &imageInfo,
             nullptr,
             nullptr);
+        device.updateDescriptorSets(1, &write, 0, nullptr);
     }
 }

@@ -5,12 +5,12 @@
 
 namespace Atmos::Render::DirectX9
 {
-    class ShaderAssetDataImplementation final : public Asset::ShaderAssetData
+    class ShaderAssetDataImplementation final : public Asset::ShaderData
     {
     public:
         using PassCount = unsigned int;
     public:
-        explicit ShaderAssetDataImplementation(LPD3DXEFFECT effect, const String& entryPoint);
+        explicit ShaderAssetDataImplementation(LPD3DXEFFECT effect);
         ~ShaderAssetDataImplementation();
 
         void Reset();

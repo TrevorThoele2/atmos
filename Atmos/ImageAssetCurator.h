@@ -2,26 +2,27 @@
 
 #include "AssetCurator.h"
 
-#include <FreeImage.h>
+#include "FreeImageIncludes.h"
 #include "ImageAsset.h"
 #include "LoadImageAsset.h"
+#include "GraphicsManager.h"
 
 namespace Atmos::Asset
 {
-    class ImageAssetCurator : public AssetCurator<ImageAsset>
+    class ImageCurator : public Curator<Image>
     {
     public:
-        explicit ImageAssetCurator(Init init);
+        explicit ImageCurator(Init init);
     public:
-        using AssetCurator<ImageAsset>::Handle;
+        using Curator<Image>::Handle;
 
-        LoadedImageAsset Handle(const LoadImageAsset& command);
+        LoadedImage Handle(const LoadImage& command);
     private:
-        static std::optional<ImageAssetType> TypeFromFIF(FREE_IMAGE_FORMAT format);
+        static std::optional<ImageType> TypeFromFIF(FREE_IMAGE_FORMAT format);
     };
 
     template<>
-    struct AssetCuratorTraits<ImageAsset> : AssetCuratorTraitsBase<ImageAsset>
+    struct CuratorTraits<Image> : CuratorTraitsBase<Image>
     {
         constexpr static DebugStatisticsSize debugStatisticsSize = &Debug::Statistics::Memory::imageAssetSize;
     };
@@ -30,20 +31,20 @@ namespace Atmos::Asset
 namespace Arca
 {
     template<>
-    struct Traits<Atmos::Asset::ImageAssetCurator>
+    struct Traits<Atmos::Asset::ImageCurator>
     {
         static const ObjectType objectType = ObjectType::Curator;
         static inline const TypeName typeName = "ImageAssetCurator";
         using HandledCommands = HandledCommands<
-            Atmos::Asset::FindAsset<Atmos::Asset::ImageAsset>,
-            Atmos::Asset::LoadImageAsset>;
+            Atmos::Asset::Find<Atmos::Asset::Image>,
+            Atmos::Asset::LoadImage>;
     };
 }
 
 namespace Inscription
 {
     template<>
-    class Scribe<Atmos::Asset::ImageAssetCurator, BinaryArchive> final :
-        public ArcaNullScribe<Atmos::Asset::ImageAssetCurator, BinaryArchive>
+    class Scribe<Atmos::Asset::ImageCurator, BinaryArchive> final :
+        public ArcaNullScribe<Atmos::Asset::ImageCurator, BinaryArchive>
     {};
 }

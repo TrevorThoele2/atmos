@@ -11,29 +11,29 @@
 namespace Atmos::Asset
 {
     template<class T>
-    struct AssetCuratorTraits;
+    struct CuratorTraits;
 
     template<class T>
-    class AssetCurator : public Arca::Curator
+    class Curator : public Arca::Curator
     {
     public:
-        explicit AssetCurator(Init init);
+        explicit Curator(Init init);
 
         void Work();
 
-        Arca::Index<T> Handle(const FindAsset<T>& command);
+        Arca::Index<T> Handle(const Find<T>& command);
     private:
-        using Traits = AssetCuratorTraits<T>;
+        using Traits = CuratorTraits<T>;
     private:
-        Arca::Index<MappedAssets<T>> mappedAssets;
+        Arca::Index<Mapped<T>> mappedAssets;
         Debug::Value debugSizeValue;
     private:
         INSCRIPTION_ACCESS;
     };
 
     template<class T>
-    AssetCurator<T>::AssetCurator(Init init) :
-        Curator(init),
+    Curator<T>::Curator(Init init) :
+        Arca::Curator(init),
         mappedAssets(init.owner),
         debugSizeValue(
             [this](Debug::Statistics& statistics)
@@ -56,19 +56,19 @@ namespace Atmos::Asset
     }
 
     template<class T>
-    void AssetCurator<T>::Work()
+    void Curator<T>::Work()
     {
         debugSizeValue.Set();
     }
 
     template<class T>
-    Arca::Index<T> AssetCurator<T>::Handle(const FindAsset<T>& command)
+    Arca::Index<T> Curator<T>::Handle(const Find<T>& command)
     {
         return mappedAssets->Find(command.name);
     }
 
     template<class T>
-    struct AssetCuratorTraitsBase
+    struct CuratorTraitsBase
     {
         using DebugStatisticsSize = size_t Debug::Statistics::Memory::*;
     };
@@ -77,11 +77,11 @@ namespace Atmos::Asset
 namespace Inscription
 {
     template<class T>
-    class Scribe<::Atmos::Asset::AssetCurator<T>, BinaryArchive> :
-        public ArcaNullScribe<::Atmos::Asset::AssetCurator<T>, BinaryArchive>
+    class Scribe<::Atmos::Asset::Curator<T>, BinaryArchive> :
+        public ArcaNullScribe<::Atmos::Asset::Curator<T>, BinaryArchive>
     {
     private:
-        using BaseT = ArcaNullScribe<::Atmos::Asset::AssetCurator<T>, BinaryArchive>;
+        using BaseT = ArcaNullScribe<::Atmos::Asset::Curator<T>, BinaryArchive>;
     public:
         using ObjectT = typename BaseT::ObjectT;
         using ArchiveT = typename BaseT::ArchiveT;

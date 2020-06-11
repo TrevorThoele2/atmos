@@ -4,11 +4,9 @@
 #include "VulkanImageAssetData.h"
 #include "VulkanShaderAssetData.h"
 
-#include "VulkanMemory.h"
-#include "VulkanSingleUseCommandBuffer.h"
+#include "VulkanImage.h"
 #include "VulkanCreateImageView.h"
 #include "VulkanSwapchainSupport.h"
-#include "VulkanUtilities.h"
 
 #include "AncillarySurface.h"
 #include "MainSurface.h"
@@ -23,30 +21,8 @@
 
 namespace Atmos::Render::Vulkan
 {
-    GraphicsManager::~GraphicsManager()
+    GraphicsManager::GraphicsManager()
     {
-        DestroyDebugMessenger();
-    }
-
-    bool GraphicsManager::IsOk() const
-    {
-        return true;
-    }
-
-    void GraphicsManager::SetFullscreen(bool set)
-    {
-        
-    }
-
-    void GraphicsManager::ChangeVerticalSync(bool set)
-    {
-        
-    }
-
-    void GraphicsManager::InitializeImpl()
-    {
-        debugCallbackData.reliquary = &Reliquary();
-
 #ifndef NDEBUG
         instanceLayers.push_back(VK_LAYER_KHRONOS_VALIDATION_LAYER_NAME);
         instanceExtensions.push_back(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
@@ -56,50 +32,49 @@ namespace Atmos::Render::Vulkan
         ValidateRequiredInstanceLayers();
 
         instance = CreateInstance();
-        debugMessenger = CreateDebugMessenger(instance, debugCallbackData);
+        debug.Initialize(instance);
     }
 
-    std::unique_ptr<Asset::ImageAssetData> GraphicsManager::CreateImageDataImpl(
-        const Bytes& bytes, const Name& name, const Size2D& size)
+    bool GraphicsManager::IsOk() const
+    {
+        return true;
+    }
+
+    void GraphicsManager::SetFullscreen(bool set)
+    {
+
+    }
+
+    void GraphicsManager::ChangeVerticalSync(bool set)
+    {
+        
+    }
+
+    void GraphicsManager::SetupDefaultsImpl(Arca::Reliquary& reliquary)
+    {
+        
+    }
+
+    std::unique_ptr<Asset::ImageData> GraphicsManager::CreateImageDataImpl(
+        const Bytes& bytes,
+        const Name& name,
+        const Asset::ImageSize& size)
     {
         const auto width = static_cast<uint32_t>(size.width);
         const auto height = static_cast<uint32_t>(size.height);
+        const auto extent = vk::Extent3D(width, height, 1);
 
         const auto format = vk::Format::eR8G8B8A8Srgb;
 
-        const auto firstLayout = vk::ImageLayout::eUndefined;
-        const auto secondLayout = vk::ImageLayout::eTransferDstOptimal;
-        const auto thirdLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
-
-        const auto extent = vk::Extent3D(width, height, 1);
-        const vk::ImageCreateInfo imageCreateInfo(
-            {},
-            vk::ImageType::e2D,
+        auto image = Image(
             format,
+            vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled,
             extent,
             1,
-            1,
-            vk::SampleCountFlagBits::e1,
-            vk::ImageTiling::eOptimal,
-            vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled,
-            vk::SharingMode::eExclusive,
-            {},
-            {},
-            firstLayout);
-        auto image = device->createImageUnique(imageCreateInfo);
-
-        const auto memoryRequirements = device->getImageMemoryRequirements(image.get());
-
-        const vk::MemoryAllocateInfo memoryAllocationInfo(
-            memoryRequirements.size,
-            FindSuitableMemoryType(
-                memoryRequirements.memoryTypeBits,
-                vk::MemoryPropertyFlagBits::eDeviceLocal,
-                memoryProperties));
-
-        auto imageMemory = device->allocateMemoryUnique(memoryAllocationInfo);
-
-        device->bindImageMemory(image.get(), imageMemory.get(), 0);
+            vk::ImageLayout::eUndefined,
+            *device,
+            memoryProperties);
+        image.TransitionLayout(vk::ImageLayout::eTransferDstOptimal, 0, 1, *device, *commandPool, graphicsQueue);
 
         Buffer stagingBuffer(
             vk::DeviceSize(bytes.size()),
@@ -109,36 +84,37 @@ namespace Atmos::Render::Vulkan
             memoryProperties);
         stagingBuffer.PushBytes(bytes, 0);
 
-        TransitionImageLayout(
-            image.get(),
-            format,
-            firstLayout,
-            secondLayout);
-        stagingBuffer.Copy(image.get(), width, height, *commandPool, graphicsQueue);
-        TransitionImageLayout(
-            image.get(),
-            format,
-            secondLayout,
-            thirdLayout);
+        stagingBuffer.Copy(
+            image.value.get(),
+            0,
+            0,
+            0,
+            { 0, 0, 0 },
+            { width, height, 1 },
+            0,
+            1,
+            *commandPool,
+            graphicsQueue);
+        image.TransitionLayout(vk::ImageLayout::eShaderReadOnlyOptimal, 0, 1, *device, *commandPool, graphicsQueue);
 
-        auto imageView = CreateImageView(image.get(), *device, format);
+        auto imageView = CreateImageView(image.value.get(), *device, format, 0, 1);
 
         auto descriptor = CombinedImageSamplerDescriptor(
             imageView.get(), sampler.get(), vk::ImageLayout::eShaderReadOnlyOptimal, 1);
 
         return std::make_unique<ImageAssetDataImplementation>(
-            std::move(image), std::move(imageMemory), std::move(imageView), descriptor, width, height);
+            std::move(image), std::move(imageView), descriptor);
     }
 
-    std::unique_ptr<Asset::ShaderAssetData> GraphicsManager::CreateShaderDataImpl(
-        const Bytes& bytes, const Name& name, const String& entryPoint)
+    std::unique_ptr<Asset::ShaderData> GraphicsManager::CreateShaderDataImpl(
+        const Bytes& bytes, const Name& name)
     {
         const vk::ShaderModuleCreateInfo createInfo(
             {},
             bytes.size(),
             reinterpret_cast<const uint32_t*>(bytes.data()));
         auto created = device->createShaderModule(createInfo);
-        return std::make_unique<ShaderAssetDataImplementation>(created, entryPoint, device);
+        return std::make_unique<ShaderAssetDataImplementation>(created, device);
     }
 
     std::unique_ptr<SurfaceData> GraphicsManager::CreateMainSurfaceDataImpl(void* window)
@@ -158,17 +134,6 @@ namespace Atmos::Render::Vulkan
         device = CreateDevice(instance, physicalDevice, *queueIndices, deviceExtensions, instanceLayers);
 
         sampler = CreateSampler(*device);
-
-        defaultTexturedImageMaterial = CreateMaterial(
-            { "TexturedImage.vert", "TexturedImageVertex.spv", "main" },
-            { "TexturedImage.frag", "TexturedImageFragment.spv", "main" },
-            "DefaultTexturedImage");
-
-        lineShaders =
-        {
-            CreateShader({"Line.vert", "LineVertex.spv", "main"}),
-            CreateShader({"Line.frag", "LineFragment.spv", "main"})
-        };
 
         graphicsQueue = device->getQueue(queueIndices->graphicsFamily, 0);
         const auto presentQueue = device->getQueue(queueIndices->presentFamily, 0);
@@ -206,37 +171,6 @@ namespace Atmos::Render::Vulkan
             handleSurface(*surface->Data<SurfaceDataImplementation>());
     }
 
-    Arca::Index<Asset::ShaderAsset> GraphicsManager::CreateShader(ShaderCreateDescriptor descriptor)
-    {
-        const auto inputFilePath = std::filesystem::current_path() / "Shaders" / descriptor.inputName;
-        const auto outputFilePath = std::filesystem::current_path() / "Shaders" / descriptor.outputName;
-
-        shaderCompiler.Compile(inputFilePath, outputFilePath);
-
-        SimpleInFile inFile(outputFilePath);
-        const auto bytes = inFile.ReadBuffer();
-
-        auto data = CreateShaderData(bytes, descriptor.inputName, descriptor.entryPoint);
-
-        return Reliquary().Do<Arca::Create<Asset::ShaderAsset>>(
-            descriptor.inputName,
-            std::move(data));
-    }
-
-    Arca::Index<Asset::MaterialAsset> GraphicsManager::CreateMaterial(
-        ShaderCreateDescriptor vertex,
-        ShaderCreateDescriptor fragment,
-        const String& materialName)
-    {
-        auto vertexShader = CreateShader(std::move(vertex));
-        auto fragmentShader = CreateShader(std::move(fragment));
-
-        return Reliquary().Do<Arca::Create<Asset::MaterialAsset>>(
-            materialName,
-            vertexShader,
-            fragmentShader);
-    }
-
     vk::Instance GraphicsManager::CreateInstance()
     {
         vk::ApplicationInfo applicationInfo({}, {}, {}, {}, VK_API_VERSION_1_2);
@@ -257,8 +191,8 @@ namespace Atmos::Render::Vulkan
         {
             createInfo.enabledLayerCount = 0;
         }
-        auto debugMessengerCreateInfo = DebugMessengerCreateInfo(debugCallbackData);
-        createInfo.pNext = &debugMessengerCreateInfo;
+        auto debugCreateInfo = debug.CreateInfo();
+        createInfo.pNext = &debugCreateInfo;
 
         return vk::createInstance(createInfo);
     }
@@ -409,10 +343,9 @@ namespace Atmos::Render::Vulkan
             ++i;
         }
 
-        if (!graphicsFamily || !presentFamily)
-            return {};
-        else
-            return QueueFamilyIndices{ graphicsFamily.value(), presentFamily.value() };
+        return graphicsFamily && presentFamily
+            ? QueueFamilyIndices{ graphicsFamily.value(), presentFamily.value() }
+            : QueueFamilyIndices{};
     }
 
     std::unique_ptr<SurfaceData> GraphicsManager::CreateSurfaceDataCommon(
@@ -426,13 +359,10 @@ namespace Atmos::Render::Vulkan
             physicalDevice,
             std::move(underlying),
             sampler.get(),
-            lineShaders,
             graphicsQueue,
             presentQueue,
-            *commandPool,
             queueIndices,
-            memoryProperties,
-            Reliquary());
+            memoryProperties);
     }
 
     vk::UniqueSurfaceKHR GraphicsManager::CreateSurface(void* window, vk::Instance instance)
@@ -445,9 +375,9 @@ namespace Atmos::Render::Vulkan
     {
         const vk::SamplerCreateInfo createInfo(
             {},
-            vk::Filter::eLinear,
-            vk::Filter::eLinear,
-            vk::SamplerMipmapMode::eLinear,
+            vk::Filter::eNearest,
+            vk::Filter::eNearest,
+            vk::SamplerMipmapMode::eNearest,
             vk::SamplerAddressMode::eRepeat,
             vk::SamplerAddressMode::eRepeat,
             vk::SamplerAddressMode::eRepeat,
@@ -462,130 +392,5 @@ namespace Atmos::Render::Vulkan
             false);
 
         return device.createSamplerUnique(createInfo);
-    }
-
-    void GraphicsManager::TransitionImageLayout(
-        vk::Image image, vk::Format format, vk::ImageLayout oldLayout, vk::ImageLayout newLayout)
-    {
-        SingleUseCommandBuffer(*device, *commandPool, graphicsQueue,
-            [image, oldLayout, newLayout](vk::CommandBuffer commandBuffer)
-            {
-                const vk::ImageSubresourceRange subresourceRange(vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1);
-                vk::ImageMemoryBarrier barrier(
-                    {},
-                    {},
-                    oldLayout,
-                    newLayout,
-                    VK_QUEUE_FAMILY_IGNORED,
-                    VK_QUEUE_FAMILY_IGNORED,
-                    image,
-                    subresourceRange);
-
-                vk::PipelineStageFlags sourceStage;
-                vk::PipelineStageFlags destinationStage;
-
-                if (oldLayout == vk::ImageLayout::eUndefined && newLayout == vk::ImageLayout::eTransferDstOptimal)
-                {
-                    barrier.srcAccessMask = {};
-                    barrier.dstAccessMask = vk::AccessFlagBits::eTransferWrite;
-
-                    sourceStage = vk::PipelineStageFlagBits::eTopOfPipe;
-                    destinationStage = vk::PipelineStageFlagBits::eTransfer;
-                }
-                else if (oldLayout == vk::ImageLayout::eTransferDstOptimal && newLayout == vk::ImageLayout::eShaderReadOnlyOptimal)
-                {
-                    barrier.srcAccessMask = vk::AccessFlagBits::eTransferWrite;
-                    barrier.dstAccessMask = vk::AccessFlagBits::eShaderRead;
-
-                    sourceStage = vk::PipelineStageFlagBits::eTransfer;
-                    destinationStage = vk::PipelineStageFlagBits::eFragmentShader;
-                }
-                else
-                    throw GraphicsError("Unsupported layout transition.");
-
-                commandBuffer.pipelineBarrier(sourceStage, destinationStage, {}, nullptr, nullptr, barrier);
-            });
-    }
-
-    VkDebugUtilsMessengerEXT GraphicsManager::CreateDebugMessenger(
-        vk::Instance instance, DebugCallbackData& debugCallbackData)
-    {
-        const auto createInfo = DebugMessengerCreateInfo(debugCallbackData);
-        const auto createDebugUtilsMessenger = reinterpret_cast<PFN_vkCreateDebugUtilsMessengerEXT>(instance.getProcAddr("vkCreateDebugUtilsMessengerEXT"));
-        if (!createDebugUtilsMessenger)
-            throw GraphicsError("Could not retrieve debug messenger.");
-
-        VkDebugUtilsMessengerEXT returnValue;
-        if (IsError(createDebugUtilsMessenger(static_cast<VkInstance>(instance), &createInfo, nullptr, &returnValue)))
-            throw GraphicsError("Could not create debug messenger.");
-        return returnValue;
-    }
-
-    void GraphicsManager::DestroyDebugMessenger()
-    {
-        const auto destroyDebugUtilsMessenger = reinterpret_cast<PFN_vkDestroyDebugUtilsMessengerEXT>(instance.getProcAddr("vkDestroyDebugUtilsMessengerEXT"));
-        if (destroyDebugUtilsMessenger != nullptr) {
-            destroyDebugUtilsMessenger(static_cast<VkInstance>(instance), debugMessenger, nullptr);
-        }
-    }
-
-    VkDebugUtilsMessengerCreateInfoEXT GraphicsManager::DebugMessengerCreateInfo(
-        DebugCallbackData& debugCallbackData)
-    {
-        VkDebugUtilsMessengerCreateInfoEXT createInfo;
-        createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
-        createInfo.messageSeverity =
-            VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT |
-            VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT |
-            VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT |
-            VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
-        createInfo.messageType =
-            VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT |
-            VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT |
-            VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
-        createInfo.pfnUserCallback = &DebugCallback;
-        createInfo.pUserData = &debugCallbackData;
-        createInfo.pNext = nullptr;
-        createInfo.flags = 0;
-        return createInfo;
-    }
-
-    VKAPI_ATTR VkBool32 VKAPI_CALL GraphicsManager::DebugCallback(
-        VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
-        VkDebugUtilsMessageTypeFlagsEXT messageType,
-        const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
-        void* pUserData)
-    {
-        Logging::Severity severity;
-        if (messageSeverity < VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT)
-            return VK_FALSE;
-
-        switch(messageSeverity)
-        {
-        case VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT:
-            severity = Logging::Severity::Verbose;
-            break;
-        case VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT:
-            severity = Logging::Severity::Information;
-            break;
-        case VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT:
-            severity = Logging::Severity::Warning;
-            break;
-        case VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT:
-            severity = Logging::Severity::Error;
-            break;
-        default:
-            severity = Logging::Severity::Error;
-            break;
-        }
-
-        const auto message = pCallbackData->pMessage ? pCallbackData->pMessage : String("No message.");
-
-        auto data = static_cast<DebugCallbackData*>(pUserData);
-        data->reliquary->Do(Logging::Log(
-            String(message),
-            severity));
-
-        return VK_FALSE;
     }
 }

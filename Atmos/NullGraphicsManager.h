@@ -18,10 +18,12 @@ namespace Atmos::Render
     protected:
         void InitializeImpl() override;
 
-        [[nodiscard]] std::unique_ptr<Asset::ImageAssetData> CreateImageDataImpl(
-            const Buffer& buffer, const Name& name, const Size2D& size) override;
-        [[nodiscard]] std::unique_ptr<Asset::ShaderAssetData> CreateShaderDataImpl(
-            const Buffer& buffer, const Name& name, const String& entryPoint) override;
+        [[nodiscard]] std::unique_ptr<Asset::ImageData> CreateImageDataImpl(
+            const Buffer& buffer,
+            const Name& name,
+            const Asset::ImageSize& size) override;
+        [[nodiscard]] std::unique_ptr<Asset::ShaderData> CreateShaderDataImpl(
+            const Buffer& buffer, const Name& name) override;
         [[nodiscard]] std::unique_ptr<SurfaceData> CreateMainSurfaceDataImpl(
             void* window) override;
         [[nodiscard]] std::unique_ptr<SurfaceData> CreateSurfaceDataImpl(

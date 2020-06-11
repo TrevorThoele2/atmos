@@ -14,6 +14,7 @@
 
 #include "DerivedEngine.h"
 #include "MockSurfaceData.h"
+#include "MockImageAssetData.h"
 
 SCENARIO_METHOD(WorldSerializationTestsFixture, "rendering after world serialization")
 {
@@ -26,13 +27,21 @@ SCENARIO_METHOD(WorldSerializationTestsFixture, "rendering after world serializa
         RegisterFieldTypes(fieldOrigin, *engine.TheGlobalReliquary());
         World::Field field(0, fieldOrigin.Actualize());
 
-        field.Reliquary().Do<ResizeCamera>(ScreenSize(
+        auto& fieldReliquary = field.Reliquary();
+
+        Arca::Postulate<GraphicsManager*>(fieldReliquary)->Initialize(fieldReliquary, nullptr);
+
+        fieldReliquary.Do<ResizeCamera>(ScreenSize(
             std::numeric_limits<ScreenSize::Dimension>::max(),
             std::numeric_limits<ScreenSize::Dimension>::max()));
 
-        const auto camera = Arca::Index<Camera>(field.Reliquary());
+        const auto camera = Arca::Index<Camera>(fieldReliquary);
         const auto cameraLeft = camera->ScreenSides().Left();
         const auto cameraTop = camera->ScreenSides().Top();
+
+        std::unique_ptr<Asset::ImageAssetData> imageData = std::make_unique<ImageAssetDataImplementation>();
+        auto imageAsset = engine.TheGlobalReliquary()->Do<Arca::Create<Asset::ImageAsset>>(
+            String{}, std::move(imageData), Asset::ImageAssetGridSize{});
 
         WHEN("creating static images and loading through world file then starting execution")
         {
@@ -60,27 +69,45 @@ SCENARIO_METHOD(WorldSerializationTestsFixture, "rendering after world serializa
                     dataGeneration.Random<Position3D::Value>(TestFramework::Range<Position3D::Value>(-1000, 1000))
                 }
             };
-            auto sizes = std::vector<Size2D>
+            auto scalers = std::vector<Scalers2D>
             {
-                Size2D
+                Scalers2D
                 {
-                    dataGeneration.Random<Size2D::Value>(TestFramework::Range<Size2D::Value>(1, 1000)),
-                    dataGeneration.Random<Size2D::Value>(TestFramework::Range<Size2D::Value>(1, 1000))
+                    dataGeneration.Random<Scalers2D::Value>(TestFramework::Range<Scalers2D::Value>(1, 1000)),
+                    dataGeneration.Random<Scalers2D::Value>(TestFramework::Range<Scalers2D::Value>(1, 1000))
                 },
-                Size2D
+                Scalers2D
                 {
-                    dataGeneration.Random<Size2D::Value>(TestFramework::Range<Size2D::Value>(1, 1000)),
-                    dataGeneration.Random<Size2D::Value>(TestFramework::Range<Size2D::Value>(1, 1000))
+                    dataGeneration.Random<Scalers2D::Value>(TestFramework::Range<Scalers2D::Value>(1, 1000)),
+                    dataGeneration.Random<Scalers2D::Value>(TestFramework::Range<Scalers2D::Value>(1, 1000))
                 },
-                Size2D
+                Scalers2D
                 {
-                    dataGeneration.Random<Size2D::Value>(TestFramework::Range<Size2D::Value>(1, 1000)),
-                    dataGeneration.Random<Size2D::Value>(TestFramework::Range<Size2D::Value>(1, 1000))
+                    dataGeneration.Random<Scalers2D::Value>(TestFramework::Range<Scalers2D::Value>(1, 1000)),
+                    dataGeneration.Random<Scalers2D::Value>(TestFramework::Range<Scalers2D::Value>(1, 1000))
                 }
             };
-            fields[0].Reliquary().Do<Arca::Create<StaticImage>>(positions[0], sizes[0]);
-            fields[0].Reliquary().Do<Arca::Create<StaticImage>>(positions[1], sizes[1]);
-            fields[0].Reliquary().Do<Arca::Create<StaticImage>>(positions[2], sizes[2]);
+            fields[0].Reliquary().Do<Arca::Create<StaticImage>>(
+                imageAsset,
+                0,
+                Color{},
+                Arca::Index<Asset::MaterialAsset>{},
+                positions[0],
+                scalers[0]);
+            fields[0].Reliquary().Do<Arca::Create<StaticImage>>(
+                imageAsset,
+                0,
+                Color{},
+                Arca::Index<Asset::MaterialAsset>{},
+                positions[1],
+                scalers[1]);
+            fields[0].Reliquary().Do<Arca::Create<StaticImage>>(
+                imageAsset,
+                0,
+                Color{},
+                Arca::Index<Asset::MaterialAsset>{},
+                positions[2],
+                scalers[2]);
 
             auto filePath = "Test." + World::Serialization::worldFileExtension;
 
@@ -90,11 +117,15 @@ SCENARIO_METHOD(WorldSerializationTestsFixture, "rendering after world serializa
             }
 
             engine.LoadWorld(filePath);
+
+            auto& loadedFieldReliquary = engine.CurrentField()->Reliquary();
+            Arca::Postulate<GraphicsManager*>(loadedFieldReliquary)->Initialize(loadedFieldReliquary, nullptr);
+
             engine.StartExecution();
 
             THEN("all images rendered in graphics manager")
             {
-                auto mainSurface = Arca::Index<MainSurface>(engine.CurrentField()->Reliquary());
+                auto mainSurface = Arca::Index<MainSurface>(loadedFieldReliquary);
                 auto mainSurfaceImplementation = mainSurface->Data<MockSurfaceDataImplementation>();
 
                 auto& imageRenders = mainSurfaceImplementation->imageRenders;
@@ -105,13 +136,14 @@ SCENARIO_METHOD(WorldSerializationTestsFixture, "rendering after world serializa
                     REQUIRE(std::any_of(
                         imageRenders.begin(),
                         imageRenders.end(),
-                        [i, &positions, &sizes, cameraLeft, cameraTop](const ImageRender& entry)
+                        [i, &positions, &scalers, cameraLeft, cameraTop](const ImageRender& entry)
                         {
                             auto expectedPosition = positions[i];
                             expectedPosition.x -= cameraLeft;
                             expectedPosition.y -= cameraTop;
 
-                            return entry.position == expectedPosition && entry.size == sizes[i];
+                            return entry.position == expectedPosition
+                                && entry.size == Size2D{ scalers[i].x, scalers[i].y };
                         }));
                 }
             }

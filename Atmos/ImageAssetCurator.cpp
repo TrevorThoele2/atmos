@@ -4,123 +4,140 @@
 
 namespace Atmos::Asset
 {
-	ImageAssetCurator::ImageAssetCurator(Init init) : AssetCurator(init)
+	ImageCurator::ImageCurator(Init init) : Curator(init)
 	{}
 
-    LoadedImageAsset ImageAssetCurator::Handle(const LoadImageAsset& command)
+    LoadedImage ImageCurator::Handle(const LoadImage& command)
     {
         const auto filePath = command.filePath.string();
         auto format = FreeImage_GetFileType(filePath.c_str());
         if (format == FIF_UNKNOWN)
             format = FreeImage_GetFIFFromFilename(filePath.c_str());
         if (format == FIF_UNKNOWN)
-            throw LoadAssetError("Loading an image asset has encountered an error.", { {"FilePath", filePath } });
-        const auto bitmap = FreeImage_Load(format, filePath.c_str());
+            throw LoadError("Loading an image asset has encountered an error.", { {"FilePath", filePath } });
+        const auto loadedBitmap = FreeImage_Load(format, filePath.c_str());
 		try
 		{
-			if (!FreeImage_HasPixels(bitmap))
-				throw LoadAssetError("Attempted load of an image asset without pixels.", { {"FilePath", filePath } });
-			const auto width = FreeImage_GetWidth(bitmap);
-			const auto height = FreeImage_GetHeight(bitmap);
-			const auto bitsPerPixel = FreeImage_GetBPP(bitmap);
-			const auto bits = FreeImage_GetBits(bitmap);
+			if (!FreeImage_HasPixels(loadedBitmap))
+				throw LoadError("Attempted load of an image asset without pixels.", { {"FilePath", filePath } });
 
-			const auto byteSize = bitsPerPixel / 8 * width * height;
-			Buffer buffer;
-			buffer.insert(buffer.begin(), bits, bits + byteSize);
+			const auto bitmap = FreeImage_ConvertTo32Bits(loadedBitmap);
 
-			FreeImage_Unload(bitmap);
+			try
+			{
+				FreeImage_Unload(loadedBitmap);
 
-			return LoadedImageAsset{
-			    std::move(buffer),
-			    *TypeFromFIF(format),
-			    Size2D{ Size2D::Value(width), Size2D::Value(height) } };
+				FreeImage_FlipVertical(bitmap);
+
+				SwapRedBlue32(bitmap);
+
+				const auto width = FreeImage_GetWidth(bitmap);
+				const auto height = FreeImage_GetHeight(bitmap);
+				const auto bitsPerPixel = FreeImage_GetBPP(bitmap);
+				const auto bits = FreeImage_GetBits(bitmap);
+
+				const auto byteSize = bitsPerPixel / CHAR_BIT * width * height;
+				Buffer buffer;
+				buffer.insert(buffer.begin(), bits, bits + byteSize);
+
+				FreeImage_Unload(bitmap);
+
+				return LoadedImage{
+					std::move(buffer),
+					*TypeFromFIF(format),
+					ImageSize{ ImageSize::Dimension(width), ImageSize::Dimension(height) } };
+			}
+			catch(...)
+			{
+				FreeImage_Unload(bitmap);
+				throw;
+			}
 		}
 		catch (...)
 		{
-			FreeImage_Unload(bitmap);
+			FreeImage_Unload(loadedBitmap);
 			throw;
 		}
     }
 
-    std::optional<ImageAssetType> ImageAssetCurator::TypeFromFIF(FREE_IMAGE_FORMAT format)
+    std::optional<ImageType> ImageCurator::TypeFromFIF(FREE_IMAGE_FORMAT format)
     {
         switch (format)
         {
 		case FIF_BMP:
-			return ImageAssetType::Bmp;
+			return ImageType::Bmp;
 		case FIF_ICO:
-			return ImageAssetType::Ico;
+			return ImageType::Ico;
 		case FIF_JPEG:
-			return ImageAssetType::Jpeg;
+			return ImageType::Jpeg;
 		case FIF_JNG:
-			return ImageAssetType::Jng;
+			return ImageType::Jng;
 		case FIF_KOALA:
-			return ImageAssetType::Koala;
+			return ImageType::Koala;
 		case FIF_LBM:
-			return ImageAssetType::Lbm;
+			return ImageType::Lbm;
 		case FIF_MNG:
-			return ImageAssetType::Mng;
+			return ImageType::Mng;
 		case FIF_PBM:
-			return ImageAssetType::Pbm;
+			return ImageType::Pbm;
 		case FIF_PBMRAW:
-			return ImageAssetType::Pbmraw;
+			return ImageType::Pbmraw;
 		case FIF_PCD:
-			return ImageAssetType::Pcd;
+			return ImageType::Pcd;
 		case FIF_PCX:
-			return ImageAssetType::Pcx;
+			return ImageType::Pcx;
 		case FIF_PGM:
-			return ImageAssetType::Pgm;
+			return ImageType::Pgm;
 		case FIF_PGMRAW:
-			return ImageAssetType::Pgmraw;
+			return ImageType::Pgmraw;
 		case FIF_PNG:
-			return ImageAssetType::Png;
+			return ImageType::Png;
 		case FIF_PPM:
-			return ImageAssetType::Ppm;
+			return ImageType::Ppm;
 		case FIF_PPMRAW:
-			return ImageAssetType::Ppmraw;
+			return ImageType::Ppmraw;
 		case FIF_RAS:
-			return ImageAssetType::Ras;
+			return ImageType::Ras;
 		case FIF_TARGA:
-			return ImageAssetType::Targa;
+			return ImageType::Targa;
 		case FIF_TIFF:
-			return ImageAssetType::Tiff;
+			return ImageType::Tiff;
 		case FIF_WBMP:
-			return ImageAssetType::Wbmp;
+			return ImageType::Wbmp;
 		case FIF_PSD:
-			return ImageAssetType::Psd;
+			return ImageType::Psd;
 		case FIF_CUT:
-			return ImageAssetType::Cut;
+			return ImageType::Cut;
 		case FIF_XBM:
-			return ImageAssetType::Xbm;
+			return ImageType::Xbm;
 		case FIF_XPM:
-			return ImageAssetType::Xpm;
+			return ImageType::Xpm;
 		case FIF_DDS:
-			return ImageAssetType::Dds;
+			return ImageType::Dds;
 		case FIF_GIF:
-			return ImageAssetType::Gif;
+			return ImageType::Gif;
 		case FIF_HDR:
-			return ImageAssetType::Hdr;
+			return ImageType::Hdr;
 		case FIF_FAXG3:
-			return ImageAssetType::Faxg3;
+			return ImageType::Faxg3;
 		case FIF_SGI:
-			return ImageAssetType::Sgi;
+			return ImageType::Sgi;
 		case FIF_EXR:
-			return ImageAssetType::Exr;
+			return ImageType::Exr;
 		case FIF_J2K:
-			return ImageAssetType::J2k;
+			return ImageType::J2k;
 		case FIF_JP2:
-			return ImageAssetType::Jp2;
+			return ImageType::Jp2;
 		case FIF_PFM:
-			return ImageAssetType::Pfm;
+			return ImageType::Pfm;
 		case FIF_PICT:
-			return ImageAssetType::Pict;
+			return ImageType::Pict;
 		case FIF_RAW:
-			return ImageAssetType::Raw;
+			return ImageType::Raw;
 		case FIF_WEBP:
-			return ImageAssetType::Webp;
+			return ImageType::Webp;
 		case FIF_JXR:
-			return ImageAssetType::Jxr;
+			return ImageType::Jxr;
 		default:
 			return {};
         }

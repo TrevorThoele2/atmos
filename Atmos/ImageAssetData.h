@@ -2,19 +2,11 @@
 
 namespace Atmos::Asset
 {
-    class ImageAssetData
+    class ImageData
     {
     public:
-        using Dimension = int;
-    public:
-        virtual ~ImageAssetData() = 0;
-
-        [[nodiscard]] Dimension Width() const;
-        [[nodiscard]] Dimension Height() const;
+        virtual ~ImageData() = 0;
     protected:
-        ImageAssetData(Dimension width, Dimension height);
-    private:
-        Dimension width;
-        Dimension height;
+        ImageData() = default;
     };
 }

@@ -19,10 +19,7 @@ namespace Atmos::Render::DirectX9
     class Renderer final
     {
     public:
-        explicit Renderer(
-            GraphicsManager& owner,
-            Arca::Index<Asset::ShaderAsset> defaultTexturedMaterialShader,
-            Arca::Reliquary& reliquary);
+        explicit Renderer(GraphicsManager& owner);
 
         ~Renderer();
 
@@ -33,11 +30,8 @@ namespace Atmos::Render::DirectX9
 
         void OnLostDevice();
         void OnResetDevice();
-
-        [[nodiscard]] Arca::Index<Asset::ShaderAsset> DefaultTexturedMaterialShader() const;
     private:
         GraphicsManager& owner;
-        Arca::Reliquary* reliquary = nullptr;
     private:
         struct Vertex
         {
@@ -59,21 +53,21 @@ namespace Atmos::Render::DirectX9
             std::vector<Index> indices;
             unsigned int primCount = 0;
             LPDIRECT3DTEXTURE9 texture;
-            const Asset::ShaderAsset* shader = nullptr;
+            const Asset::Shader* shader = nullptr;
 
             StagedObject(
                 std::vector<Vertex>&& vertices,
                 std::vector<Index>&& indices,
                 unsigned int primCount,
                 LPDIRECT3DTEXTURE9 texture,
-                const Asset::ShaderAsset* shader);
+                const Asset::Shader* shader);
             StagedObject(StagedObject&& arg) noexcept = default;
             StagedObject& operator=(StagedObject&& arg) noexcept = default;
         };
 
         StagedObject CreateQuad(
             LPDIRECT3DTEXTURE9 texture,
-            const Asset::ShaderAsset* shader,
+            const Asset::Shader* shader,
             float x,
             float y,
             const AxisAlignedBox2D& imageBounds,
@@ -101,7 +95,6 @@ namespace Atmos::Render::DirectX9
         LPDIRECT3DVERTEXBUFFER9 vertexBuffer = nullptr;
         LPDIRECT3DINDEXBUFFER9 indexBuffer = nullptr;
         LPDIRECT3DVERTEXDECLARATION9 vertexDeclaration = nullptr;
-        Arca::Index<Asset::ShaderAsset> defaultTexturedMaterialShader{};
 
         LPD3DXLINE lineInterface = nullptr;
 
@@ -126,7 +119,7 @@ namespace Atmos::Render::DirectX9
     private:
         void StageRender(
             LPDIRECT3DTEXTURE9 texture,
-            const Asset::ShaderAsset* shader,
+            const Asset::Shader* shader,
             float x,
             float y,
             float z,
@@ -176,7 +169,7 @@ namespace Atmos::Render::DirectX9
             ScreenSize screenSize;
 
             LPDIRECT3DTEXTURE9 currentTexture = nullptr;
-            const Asset::ShaderAsset* currentShader = nullptr;
+            const Asset::Shader* currentShader = nullptr;
             const ShaderAssetDataImplementation* currentShaderData = nullptr;
         private:
             bool Start();
@@ -191,7 +184,7 @@ namespace Atmos::Render::DirectX9
             void End();
 
             void SetTexture(LPDIRECT3DTEXTURE9 set);
-            void SetShader(const Asset::ShaderAsset* set);
+            void SetShader(const Asset::Shader* set);
         };
     };
 }

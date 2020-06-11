@@ -2,7 +2,7 @@
 
 namespace Atmos::Asset
 {
-	enum class ImageAssetType
+	enum class ImageType
 	{
 		Bmp,
 		Ico,

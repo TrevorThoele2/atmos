@@ -2,6 +2,10 @@
 
 #include "VulkanIncludes.h"
 
+#include "Color.h"
+
+#include <glm/glm.hpp>
+
 namespace Atmos::Render::Vulkan
 {
     bool IsSuccess(vk::Result result);
@@ -18,4 +22,6 @@ namespace Atmos::Render::Vulkan
             nonUnique.push_back(uniqueElement.get());
         return nonUnique;
     }
+
+    glm::vec4 AtmosToVulkanColor(const Color& color);
 }

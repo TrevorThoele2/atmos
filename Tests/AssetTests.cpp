@@ -35,8 +35,7 @@ SCENARIO_METHOD(AssetTestsFixture, "assets")
             auto asset = reliquary->Do(Arca::Create<ImageAsset>{
                 name,
                 std::unique_ptr<ImageAssetData>{},
-                columns,
-                rows});
+                ImageAssetGridSize{ columns, rows }});
 
             THEN("asset has name")
             {

@@ -1,7 +1,6 @@
 #include "WorldManager.h"
 
 #include "FileManagerProvider.h"
-#include "EntityAvatarCurator.h"
 #include "DebugStatistics.h"
 #include "Log.h"
 
@@ -16,14 +15,13 @@ namespace Atmos::World
 {
     const char* autosaveName = "Autosave.stasis";
 
-    WorldManager::WorldManager(Arca::Reliquary& globalReliquary) : globalReliquary(&globalReliquary)
+    WorldManager::WorldManager(ExternalManagers externalManagers) : externalManagers(externalManagers)
     {
         std::filesystem::create_directory(StasisFolderFilePath());
     }
 
     void WorldManager::Work()
     {
-        globalReliquary->Work();
         if (currentField)
             currentField->Reliquary().Work();
 
@@ -123,7 +121,7 @@ namespace Atmos::World
         {
             auto inputArchiveInterface = InputArchiveInterface();
             SetFieldIDs(inputArchiveInterface->AllFieldIDs());
-            currentField = inputArchiveInterface->ExtractField(id, *globalReliquary);
+            currentField = inputArchiveInterface->ExtractField(id, externalManagers);
         }
     }
 

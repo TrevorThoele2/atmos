@@ -14,7 +14,7 @@ namespace Atmos::Render
         virtual void StageRender(const ImageRender& imageRender) = 0;
         virtual void StageRender(const LineRender& lineRender) = 0;
 
-        virtual void DrawFrame(const Color& backgroundColor) = 0;
+        virtual void DrawFrame(Arca::Reliquary& reliquary, const Color& backgroundColor) = 0;
 
         [[nodiscard]] virtual ScreenSize Size() const = 0;
     };
