@@ -4,8 +4,6 @@
 #include "ShaderAsset.h"
 #include "SurfaceData.h"
 
-#include "ImageRender.h"
-
 #include "GraphicsReconstructionObjects.h"
 
 #include "Buffer.h"
@@ -28,7 +26,6 @@ namespace Atmos::Render
         virtual ~GraphicsManager() = 0;
 
         void Initialize(Arca::Reliquary& reliquary, void* mainWindow);
-        void SetupDefaults(Arca::Reliquary& reliquary);
 
         [[nodiscard]] std::unique_ptr<Asset::ImageData> CreateImageData(
             const Buffer& buffer,
@@ -47,13 +44,11 @@ namespace Atmos::Render
         [[nodiscard]] virtual bool IsOk() const = 0;
 
         virtual void SetFullscreen(bool set) = 0;
-
         virtual void ChangeVerticalSync(bool set) = 0;
     protected:
         GraphicsManager() = default;
     protected:
         virtual void InitializeImpl() {}
-        virtual void SetupDefaultsImpl(Arca::Reliquary& reliquary) {};
 
         [[nodiscard]] virtual std::unique_ptr<Asset::ImageData> CreateImageDataImpl(
             const Buffer& buffer,

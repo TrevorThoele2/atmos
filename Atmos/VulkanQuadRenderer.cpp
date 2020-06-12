@@ -106,9 +106,9 @@ namespace Atmos::Render::Vulkan
         core.allDiscriminations.emplace(imageAsset);
     }
 
-    void QuadRenderer::Start(Arca::Reliquary& reliquary, vk::CommandBuffer commandBuffer)
+    void QuadRenderer::Start(const std::vector<const Asset::Material*>& materials, vk::CommandBuffer commandBuffer)
     {
-        core.Start(reliquary, commandBuffer);
+        core.Start(materials, commandBuffer);
     }
 
     void QuadRenderer::DrawNextLayer(uint32_t currentImage, glm::vec2 cameraSize)

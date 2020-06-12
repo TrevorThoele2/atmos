@@ -66,9 +66,9 @@ namespace Atmos::Render::Vulkan
         core.allDiscriminations.emplace(lineRender.width);
     }
 
-    void LineRenderer::Start(Arca::Reliquary& reliquary, vk::CommandBuffer commandBuffer)
+    void LineRenderer::Start(const std::vector<const Asset::Material*>& materials, vk::CommandBuffer commandBuffer)
     {
-        core.Start(reliquary, commandBuffer);
+        core.Start(materials, commandBuffer);
     }
 
     void LineRenderer::DrawNextLayer(uint32_t currentImage, glm::vec2 cameraSize)

@@ -28,7 +28,7 @@ namespace Atmos::Render::Vulkan
 
         void StageRender(const LineRender& lineRender);
 
-        void Start(Arca::Reliquary& reliquary, vk::CommandBuffer commandBuffer);
+        void Start(const std::vector<const Asset::Material*>& materials, vk::CommandBuffer commandBuffer);
         void DrawNextLayer(uint32_t currentImage, glm::vec2 cameraSize) override;
         void End();
         [[nodiscard]] bool IsDone() const override;
