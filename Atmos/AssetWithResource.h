@@ -103,6 +103,8 @@ namespace Inscription
         using BaseT::Scriven;
     protected:
         void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override
-        {}
+        {
+            Inscription::BaseScriven<Atmos::Asset::Asset<Derived>>(object, archive);
+        }
     };
 }

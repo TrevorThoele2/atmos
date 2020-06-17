@@ -10,9 +10,7 @@ namespace Atmos::Asset
     Loaded<Image> ImageCurator::Handle(const Load<Image>& command)
     {
         const auto filePath = command.filePath.string();
-        auto format = FreeImage_GetFileType(filePath.c_str());
-        if (format == FIF_UNKNOWN)
-            format = FreeImage_GetFIFFromFilename(filePath.c_str());
+		const auto format = FIFFor(filePath);
         if (format == FIF_UNKNOWN)
             throw LoadError("Loading an image asset has encountered an error.", { {"FilePath", filePath } });
         const auto loadedBitmap = FreeImage_Load(format, filePath.c_str());
@@ -59,6 +57,14 @@ namespace Atmos::Asset
 			throw;
 		}
     }
+
+    FREE_IMAGE_FORMAT ImageCurator::FIFFor(const String& filePath)
+	{
+		const auto format = FreeImage_GetFileType(filePath.c_str());
+		return format != FIF_UNKNOWN
+		    ? format
+			: FreeImage_GetFIFFromFilename(filePath.c_str());
+	}
 
     std::optional<ImageType> ImageCurator::TypeFromFIF(FREE_IMAGE_FORMAT format)
     {

@@ -23,7 +23,7 @@ namespace Atmos::Render
         explicit Line(Init init) : ClosedTypedRelic(init)
         {}
 
-        Line(Init init, const std::vector<Position2D>& points);
+        Line(Init init, const std::vector<Position2D>& points, Arca::Index<Asset::Material> material);
         Line(Init init,
             const std::vector<Position2D>& points,
             Position2D::Value z,
