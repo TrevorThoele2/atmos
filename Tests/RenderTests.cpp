@@ -94,21 +94,21 @@ SCENARIO_METHOD(RenderTestsFixture, "rendering images")
 
         WHEN("creating static images")
         {
-            auto image1 = fieldReliquary.Do<Arca::Create<DynamicImage>>(
+            auto image1 = fieldReliquary.Do<Arca::Create<StaticImage>>(
                 imageAsset,
                 0,
                 materialAsset,
                 Color{},
                 positions[0],
                 scalers[0]);
-            auto image2 = fieldReliquary.Do<Arca::Create<DynamicImage>>(
+            auto image2 = fieldReliquary.Do<Arca::Create<StaticImage>>(
                 imageAsset,
                 0,
                 materialAsset,
                 Color{},
                 positions[1],
                 scalers[1]);
-            auto image3 = fieldReliquary.Do<Arca::Create<DynamicImage>>(
+            auto image3 = fieldReliquary.Do<Arca::Create<StaticImage>>(
                 imageAsset,
                 0,
                 materialAsset,
@@ -172,6 +172,78 @@ SCENARIO_METHOD(RenderTestsFixture, "rendering images")
                                     && entry.size == Size2D{ scalers[i].x, scalers[i].y };
                             }));
                     }
+                }
+            }
+        }
+
+        WHEN("creating static images without asset")
+        {
+            fieldReliquary.Do<Arca::Create<StaticImage>>(
+                Arca::Index<Asset::Image>{},
+                0,
+                materialAsset,
+                Color{},
+                positions[0],
+                scalers[0]);
+            fieldReliquary.Do<Arca::Create<StaticImage>>(
+                Arca::Index<Asset::Image>{},
+                0,
+                materialAsset,
+                Color{},
+                positions[1],
+                scalers[1]);
+            fieldReliquary.Do<Arca::Create<StaticImage>>(
+                Arca::Index<Asset::Image>{},
+                0,
+                materialAsset,
+                Color{},
+                positions[2],
+                scalers[2]);
+            WHEN("starting engine execution")
+            {
+                engine.UseField(std::move(field));
+                engine.StartExecution();
+
+                THEN("no images rendered in graphics manager")
+                {
+                    auto& imageRenders = mainSurfaceImplementation->imageRenders;
+                    REQUIRE(imageRenders.size() == 0);
+                }
+            }
+        }
+
+        WHEN("creating static images without material")
+        {
+            fieldReliquary.Do<Arca::Create<StaticImage>>(
+                imageAsset,
+                0,
+                Arca::Index<Asset::Material>{},
+                Color{},
+                positions[0],
+                scalers[0]);
+            fieldReliquary.Do<Arca::Create<StaticImage>>(
+                imageAsset,
+                0,
+                Arca::Index<Asset::Material>{},
+                Color{},
+                positions[1],
+                scalers[1]);
+            fieldReliquary.Do<Arca::Create<StaticImage>>(
+                imageAsset,
+                0,
+                Arca::Index<Asset::Material>{},
+                Color{},
+                positions[2],
+                scalers[2]);
+            WHEN("starting engine execution")
+            {
+                engine.UseField(std::move(field));
+                engine.StartExecution();
+
+                THEN("no images rendered in graphics manager")
+                {
+                    auto& imageRenders = mainSurfaceImplementation->imageRenders;
+                    REQUIRE(imageRenders.size() == 0);
                 }
             }
         }
@@ -257,6 +329,78 @@ SCENARIO_METHOD(RenderTestsFixture, "rendering images")
                                     && entry.size == Size2D{ scalers[i].x, scalers[i].y };
                             }));
                     }
+                }
+            }
+        }
+
+        WHEN("creating dynamic images without asset")
+        {
+            fieldReliquary.Do<Arca::Create<DynamicImage>>(
+                Arca::Index<Asset::Image>{},
+                0,
+                materialAsset,
+                Color{},
+                positions[0],
+                scalers[0]);
+            fieldReliquary.Do<Arca::Create<DynamicImage>>(
+                Arca::Index<Asset::Image>{},
+                0,
+                materialAsset,
+                Color{},
+                positions[1],
+                scalers[1]);
+            fieldReliquary.Do<Arca::Create<DynamicImage>>(
+                Arca::Index<Asset::Image>{},
+                0,
+                materialAsset,
+                Color{},
+                positions[2],
+                scalers[2]);
+            WHEN("starting engine execution")
+            {
+                engine.UseField(std::move(field));
+                engine.StartExecution();
+
+                THEN("no images rendered in graphics manager")
+                {
+                    auto& imageRenders = mainSurfaceImplementation->imageRenders;
+                    REQUIRE(imageRenders.size() == 0);
+                }
+            }
+        }
+
+        WHEN("creating dynamic images without material")
+        {
+            fieldReliquary.Do<Arca::Create<DynamicImage>>(
+                imageAsset,
+                0,
+                Arca::Index<Asset::Material>{},
+                Color{},
+                positions[0],
+                scalers[0]);
+            fieldReliquary.Do<Arca::Create<DynamicImage>>(
+                imageAsset,
+                0,
+                Arca::Index<Asset::Material>{},
+                Color{},
+                positions[1],
+                scalers[1]);
+            fieldReliquary.Do<Arca::Create<DynamicImage>>(
+                imageAsset,
+                0,
+                Arca::Index<Asset::Material>{},
+                Color{},
+                positions[2],
+                scalers[2]);
+            WHEN("starting engine execution")
+            {
+                engine.UseField(std::move(field));
+                engine.StartExecution();
+
+                THEN("no images rendered in graphics manager")
+                {
+                    auto& imageRenders = mainSurfaceImplementation->imageRenders;
+                    REQUIRE(imageRenders.size() == 0);
                 }
             }
         }
@@ -507,6 +651,65 @@ SCENARIO_METHOD(RenderTestsFixture, "rendering lines")
                                 return entry.points[0] == expectedFromPosition && entry.points[1] == expectedToPosition;
                             }));
                     }
+                }
+            }
+        }
+
+        WHEN("creating lines without materials")
+        {
+            auto fromPositions = std::vector<Position2D>
+            {
+                Position2D
+                {
+                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000)),
+                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000))
+                },
+                Position2D
+                {
+                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000)),
+                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000))
+                },
+                Position2D
+                {
+                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000)),
+                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000))
+                }
+            };
+
+            auto toPositions = std::vector<Position2D>
+            {
+                Position2D
+                {
+                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000)),
+                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000))
+                },
+                Position2D
+                {
+                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000)),
+                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000))
+                },
+                Position2D
+                {
+                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000)),
+                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000))
+                }
+            };
+            fieldReliquary.Do(Arca::Create<Line>{
+                std::vector<Position2D>{ fromPositions[0], toPositions[0] }, Arca::Index<Asset::Material>{}});
+            fieldReliquary.Do(Arca::Create<Line>{
+                std::vector<Position2D>{ fromPositions[1], toPositions[1] }, Arca::Index<Asset::Material>{}});
+            fieldReliquary.Do(Arca::Create<Line>{
+                std::vector<Position2D>{ fromPositions[2], toPositions[2] }, Arca::Index<Asset::Material>{}});
+
+            WHEN("starting engine execution")
+            {
+                engine.UseField(std::move(field));
+                engine.StartExecution();
+
+                THEN("no lines rendered in graphics manager")
+                {
+                    auto& lineRenders = mainSurfaceImplementation->lineRenders;
+                    REQUIRE(lineRenders.size() == 0);
                 }
             }
         }
