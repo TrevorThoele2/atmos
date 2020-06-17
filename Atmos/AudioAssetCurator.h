@@ -5,10 +5,10 @@
 
 namespace Atmos::Asset
 {
-    using AudioAssetCurator = Curator<AudioAsset>;
+    using AudioCurator = Curator<Audio>;
 
     template<>
-    struct CuratorTraits<AudioAsset> : CuratorTraitsBase<AudioAsset>
+    struct CuratorTraits<Audio> : CuratorTraitsBase<Audio>
     {
         constexpr static DebugStatisticsSize debugStatisticsSize = &Debug::Statistics::Memory::audioAssetSize;
     };
@@ -17,18 +17,18 @@ namespace Atmos::Asset
 namespace Arca
 {
     template<>
-    struct Traits<Atmos::Asset::AudioAssetCurator>
+    struct Traits<Atmos::Asset::AudioCurator>
     {
         static const ObjectType objectType = ObjectType::Curator;
         static inline const TypeName typeName = "AudioAssetCurator";
-        using HandledCommands = HandledCommands<Atmos::Asset::Find<Atmos::Asset::AudioAsset>>;
+        using HandledCommands = HandledCommands<Atmos::Asset::Find<Atmos::Asset::Audio>>;
     };
 }
 
 namespace Inscription
 {
     template<>
-    class Scribe<Atmos::Asset::AudioAssetCurator, BinaryArchive> final :
-        public ArcaNullScribe<Atmos::Asset::AudioAssetCurator, BinaryArchive>
+    class Scribe<Atmos::Asset::AudioCurator, BinaryArchive> final :
+        public ArcaNullScribe<Atmos::Asset::AudioCurator, BinaryArchive>
     {};
 }

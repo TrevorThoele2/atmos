@@ -1,14 +1,14 @@
 #pragma once
 
-#include "FileAsset.h"
-#include "ImageAssetData.h"
+#include "AssetWithResource.h"
+#include "ImageAssetResource.h"
 #include "ImageAssetSize.h"
 #include "ImageAssetGridSize.h"
 #include "AxisAlignedBox2D.h"
 
 namespace Atmos::Asset
 {
-    class Image final : public FileAsset<ImageData, Image>
+    class Image final : public AssetWithResource<Resource::Image, Image>
     {
     public:
         using Dimension = ImageSize::Dimension;
@@ -17,7 +17,7 @@ namespace Atmos::Asset
         explicit Image(Init init);
         Image(Init init,
             const ::Atmos::Name& name,
-            DataPtr&& data,
+            ResourcePtr&& resource,
             ImageSize size,
             ImageGridSize gridSize);
         Image(Image&& arg) noexcept;
@@ -54,7 +54,7 @@ namespace Arca
         static bool ShouldCreate(
             Reliquary& reliquary,
             const ::Atmos::Name& name,
-            const ::Atmos::Asset::Image::DataPtr& data,
+            const ::Atmos::Asset::Image::ResourcePtr& data,
             ::Atmos::Asset::ImageSize size,
             ::Atmos::Asset::ImageGridSize gridSize);
     };

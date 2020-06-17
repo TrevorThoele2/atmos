@@ -1,17 +1,17 @@
 #pragma once
 
-#include "ShaderAssetData.h"
+#include "ShaderAssetResource.h"
 #include "VulkanIncludes.h"
 
-namespace Atmos::Render::Vulkan
+namespace Atmos::Asset::Resource::Vulkan
 {
-    class ShaderAssetDataImplementation final : public Asset::ShaderData
+    class Shader final : public Resource::Shader
     {
     public:
-        ShaderAssetDataImplementation(
+        Shader(
             vk::ShaderModule module,
             std::shared_ptr<vk::Device> device);
-        ~ShaderAssetDataImplementation();
+        ~Shader();
 
         [[nodiscard]] vk::ShaderModule Module() const;
     private:

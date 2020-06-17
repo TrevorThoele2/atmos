@@ -2,7 +2,6 @@
 
 #include "AssetCurator.h"
 #include "ShaderAsset.h"
-#include "CreateShaderAssetData.h"
 #include "GraphicsManager.h"
 
 namespace Atmos::Asset

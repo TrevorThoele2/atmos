@@ -14,7 +14,7 @@ namespace Atmos::Audio
         AudioManager& operator=(const AudioManager& arg) = delete;
         virtual ~AudioManager() = 0;
 
-        std::unique_ptr<Asset::AudioAssetData> CreateAudioData(const Buffer& buffer, const Name& name);
+        std::unique_ptr<Asset::Resource::Audio> CreateAudioResource(const Buffer& buffer, const Name& name);
         virtual bool SetMasterVolume(Volume setTo) = 0;
     protected:
         AudioManager();
@@ -48,7 +48,7 @@ namespace Atmos::Audio
 
         static FileType FileTypeOf(const Buffer& buffer);
     private:
-        virtual std::unique_ptr<Asset::AudioAssetData> CreateAudioDataImpl(
+        virtual std::unique_ptr<Asset::Resource::Audio> CreateAudioResourceImpl(
             const FormattedBuffer& buffer, const Name& name) = 0;
     };
 }

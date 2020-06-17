@@ -2,7 +2,7 @@
 
 #include "ImageAsset.h"
 #include "ShaderAsset.h"
-#include "SurfaceData.h"
+#include "SurfaceResource.h"
 
 #include "GraphicsReconstructionObjects.h"
 
@@ -27,16 +27,22 @@ namespace Atmos::Render
 
         void Initialize(Arca::Reliquary& reliquary, void* mainWindow);
 
-        [[nodiscard]] std::unique_ptr<Asset::ImageData> CreateImageData(
+        [[nodiscard]] std::unique_ptr<Asset::Resource::Image> CreateImageResource(
             const Buffer& buffer,
             const Name& name,
             const Asset::ImageSize& size);
-        [[nodiscard]] std::unique_ptr<Asset::ShaderData> CreateShaderData(
+        [[nodiscard]] std::unique_ptr<Asset::Resource::Shader> CreateShaderResource(
             const Buffer& buffer, const Name& name);
-        [[nodiscard]] std::unique_ptr<SurfaceData> CreateMainSurfaceData(
+        [[nodiscard]] std::unique_ptr<Resource::Surface> CreateMainSurfaceResource(
             void* window);
-        [[nodiscard]] std::unique_ptr<SurfaceData> CreateSurfaceData(
+        [[nodiscard]] std::unique_ptr<Resource::Surface> CreateSurfaceResource(
             void* window);
+
+        void ResourceDestroying(Asset::Resource::Image& resource);
+        void ResourceDestroying(Asset::Resource::Shader& resource);
+        void ResourceDestroying(Resource::Surface& resource);
+
+        void PruneResources(Arca::Reliquary& reliquary);
 
         void Reconstruct(GraphicsReconstructionObjects objects);
         [[nodiscard]] bool ShouldReconstruct() const;
@@ -50,16 +56,22 @@ namespace Atmos::Render
     protected:
         virtual void InitializeImpl() {}
 
-        [[nodiscard]] virtual std::unique_ptr<Asset::ImageData> CreateImageDataImpl(
+        [[nodiscard]] virtual std::unique_ptr<Asset::Resource::Image> CreateImageResourceImpl(
             const Buffer& buffer,
             const Name& name,
             const Asset::ImageSize& size) = 0;
-        [[nodiscard]] virtual std::unique_ptr<Asset::ShaderData> CreateShaderDataImpl(
+        [[nodiscard]] virtual std::unique_ptr<Asset::Resource::Shader> CreateShaderResourceImpl(
             const Buffer& buffer, const Name& name) = 0;
-        [[nodiscard]] virtual std::unique_ptr<SurfaceData> CreateMainSurfaceDataImpl(
+        [[nodiscard]] virtual std::unique_ptr<Resource::Surface> CreateMainSurfaceResourceImpl(
             void* window) = 0;
-        [[nodiscard]] virtual std::unique_ptr<SurfaceData> CreateSurfaceDataImpl(
+        [[nodiscard]] virtual std::unique_ptr<Resource::Surface> CreateSurfaceResourceImpl(
             void* window) = 0;
+
+        virtual void ResourceDestroyingImpl(Asset::Resource::Image& resource) {}
+        virtual void ResourceDestroyingImpl(Asset::Resource::Shader& resource) {}
+        virtual void ResourceDestroyingImpl(Resource::Surface& resource) {}
+
+        virtual void PruneResourcesImpl(Arca::Reliquary& reliquary) {}
 
         [[nodiscard]] virtual bool ShouldReconstructInternals() const = 0;
         virtual void ReconstructInternals(GraphicsReconstructionObjects objects) = 0;

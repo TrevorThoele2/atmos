@@ -9,7 +9,8 @@ namespace Atmos::Render::Vulkan
         const std::function<void(vk::CommandBuffer)>& execute)
     {
         const vk::CommandBufferAllocateInfo allocateInfo(commandPool, vk::CommandBufferLevel::ePrimary, 1);
-        auto commandBuffer = std::move(device.allocateCommandBuffersUnique(allocateInfo)[0]);
+        auto commandBuffers = device.allocateCommandBuffersUnique(allocateInfo);
+        auto& commandBuffer = commandBuffers[0];
 
         const vk::CommandBufferBeginInfo beginInfo(vk::CommandBufferUsageFlagBits::eOneTimeSubmit);
         commandBuffer->begin(beginInfo);
@@ -18,7 +19,7 @@ namespace Atmos::Render::Vulkan
 
         commandBuffer->end();
 
-        const vk::SubmitInfo submitInfo({}, {}, {}, 1, &commandBuffer.get());
+        const vk::SubmitInfo submitInfo(0, nullptr, nullptr, 1, &commandBuffer.get(), 0, nullptr);
         queue.submit(submitInfo, nullptr);
         queue.waitIdle();
     }

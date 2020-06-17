@@ -1,36 +1,36 @@
-#include "DirectX9ShaderAssetData.h"
+#include "DirectX9ShaderAssetResource.h"
 
 #include "DirectX9Utilities.h"
 
-namespace Atmos::Render::DirectX9
+namespace Atmos::Asset::Resource::DirectX9
 {
-    ShaderAssetDataImplementation::ShaderAssetDataImplementation(LPD3DXEFFECT effect) : effect(effect)
+    Shader::Shader(LPD3DXEFFECT effect) : effect(effect)
     {}
 
-    ShaderAssetDataImplementation::~ShaderAssetDataImplementation()
+    Shader::~Shader()
     {
         effect->Release();
     }
 
-    void ShaderAssetDataImplementation::Reset()
+    void Shader::Reset()
     {
-        LogIfError(
+        Render::DirectX9::LogIfError(
             effect->OnResetDevice(),
             []() { return Logging::Log(
                 "Resetting shader failed.",
                 Logging::Severity::Error); });
     }
 
-    void ShaderAssetDataImplementation::Release()
+    void Shader::Release()
     {
-        LogIfError(
+        Render::DirectX9::LogIfError(
             effect->OnLostDevice(),
             []() { return Logging::Log(
                 "Releasing shader failed.",
                 Logging::Severity::Error); });
     }
 
-    auto ShaderAssetDataImplementation::Begin() const -> PassCount
+    auto Shader::Begin() const -> PassCount
     {
         {
             D3DXHANDLE technique;
@@ -43,22 +43,22 @@ namespace Atmos::Render::DirectX9
         return pass;
     }
 
-    void ShaderAssetDataImplementation::End() const
+    void Shader::End() const
     {
         effect->End();
     }
 
-    void ShaderAssetDataImplementation::BeginNextPass(PassCount pass) const
+    void Shader::BeginNextPass(PassCount pass) const
     {
         effect->BeginPass(pass);
     }
 
-    void ShaderAssetDataImplementation::EndPass() const
+    void Shader::EndPass() const
     {
         effect->EndPass();
     }
 
-    LPD3DXEFFECT ShaderAssetDataImplementation::Effect() const
+    LPD3DXEFFECT Shader::Effect() const
     {
         return effect;
     }

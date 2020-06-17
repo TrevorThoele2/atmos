@@ -16,7 +16,7 @@ namespace Atmos::Asset
     public:
         using Curator<Image>::Handle;
 
-        LoadedImage Handle(const LoadImage& command);
+        Loaded<Image> Handle(const Load<Image>& command);
     private:
         static std::optional<ImageType> TypeFromFIF(FREE_IMAGE_FORMAT format);
     };
@@ -37,7 +37,7 @@ namespace Arca
         static inline const TypeName typeName = "ImageAssetCurator";
         using HandledCommands = HandledCommands<
             Atmos::Asset::Find<Atmos::Asset::Image>,
-            Atmos::Asset::LoadImage>;
+            Atmos::Asset::Load<Atmos::Asset::Image>>;
     };
 }
 

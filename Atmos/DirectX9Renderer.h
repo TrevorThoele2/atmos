@@ -1,7 +1,7 @@
 #pragma once
 
 #include "DirectX9Includes.h"
-#include "DirectX9ShaderAssetData.h"
+#include "DirectX9ShaderAssetResource.h"
 
 #include "ImageRender.h"
 #include "LineRender.h"
@@ -170,7 +170,7 @@ namespace Atmos::Render::DirectX9
 
             LPDIRECT3DTEXTURE9 currentTexture = nullptr;
             const Asset::Shader* currentShader = nullptr;
-            const ShaderAssetDataImplementation* currentShaderData = nullptr;
+            const Asset::Resource::DirectX9::Shader* currentShaderResource = nullptr;
         private:
             bool Start();
             void SetBackgroundColor(D3DCOLOR color);

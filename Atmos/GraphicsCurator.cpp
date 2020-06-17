@@ -8,7 +8,34 @@ namespace Atmos::Render
     GraphicsCurator::GraphicsCurator(Init init, GraphicsManager& manager) :
         Curator(init),
         manager(&manager)
-    {}
+    {
+        Owner().ExecuteOn<Arca::DestroyingKnown<Asset::Image>>([this](const Arca::DestroyingKnown<Asset::Image>& signal)
+            {
+                const auto resource = MutablePointer().Of(signal.reference)->Resource();
+                if (!resource)
+                    return;
+
+                this->manager->ResourceDestroying(*resource);
+            });
+
+        Owner().ExecuteOn<Arca::DestroyingKnown<Asset::Shader>>([this](const Arca::DestroyingKnown<Asset::Shader>& signal)
+            {
+                const auto resource = MutablePointer().Of(signal.reference)->Resource();
+                if (!resource)
+                    return;
+
+                this->manager->ResourceDestroying(*resource);
+            });
+
+        Owner().ExecuteOn<Arca::DestroyingKnown<SurfaceCore>>([this](const Arca::DestroyingKnown<SurfaceCore>& signal)
+            {
+                const auto& resource = MutablePointer().Of(signal.reference)->resource;
+                if (!resource)
+                    return;
+
+                this->manager->ResourceDestroying(*resource);
+            });
+    }
 
     void GraphicsCurator::Handle(const InitializeGraphics& command)
     {
@@ -29,17 +56,17 @@ namespace Atmos::Render
         manager->Reconstruct(reconstructionObjects);
     }
 
-    void GraphicsCurator::Handle(const SetupMainSurfaceData& command)
+    void GraphicsCurator::Handle(const Resource::SetupMainSurface& command)
     {
         const Arca::Index<MainSurface> mainSurface(Owner());
 
-        auto data = manager->CreateMainSurfaceData(command.window);
-        MutablePointer().Of<SurfaceCore>(mainSurface.ID())->data = std::move(data);
+        auto resource = manager->CreateMainSurfaceResource(command.window);
+        MutablePointer().Of<SurfaceCore>(mainSurface.ID())->resource = std::move(resource);
     }
 
-    std::unique_ptr<SurfaceData> GraphicsCurator::Handle(const CreateSurfaceData& command)
+    std::unique_ptr<Resource::Surface> GraphicsCurator::Handle(const Resource::CreateSurface& command)
     {
-        return manager->CreateSurfaceData(command.window);
+        return manager->CreateSurfaceResource(command.window);
     }
 
     void GraphicsCurator::Handle(const SetFullscreen& command)
@@ -52,13 +79,18 @@ namespace Atmos::Render
         manager->ChangeVerticalSync(command.to);
     }
 
-    std::unique_ptr<Asset::ImageData> GraphicsCurator::Handle(const Asset::CreateData<Asset::ImageData>& command)
+    void GraphicsCurator::Handle(const PruneGraphicsResources&)
     {
-        return manager->CreateImageData(command.buffer, command.name, command.size);
+        manager->PruneResources(Owner());
     }
 
-    std::unique_ptr<Asset::ShaderData> GraphicsCurator::Handle(const Asset::CreateData<Asset::ShaderData>& command)
+    std::unique_ptr<Asset::Resource::Image> GraphicsCurator::Handle(const Asset::Resource::Create<Asset::Resource::Image>& command)
     {
-        return manager->CreateShaderData(command.buffer, command.name);
+        return manager->CreateImageResource(command.buffer, command.name, command.size);
+    }
+
+    std::unique_ptr<Asset::Resource::Shader> GraphicsCurator::Handle(const Asset::Resource::Create<Asset::Resource::Shader>& command)
+    {
+        return manager->CreateShaderResource(command.buffer, command.name);
     }
 }

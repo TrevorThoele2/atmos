@@ -1,15 +1,15 @@
 #pragma once
 
 #include <Arca/Command.h>
-#include "CreateAssetData.h"
-#include "ShaderAssetData.h"
+#include "CreateAssetResource.h"
+#include "ShaderAssetResource.h"
 #include "Buffer.h"
 #include "Name.h"
 
-namespace Atmos::Asset
+namespace Atmos::Asset::Resource
 {
     template<>
-    struct CreateData<ShaderData>
+    struct Create<Shader>
     {
         Buffer buffer;
         Name name;
@@ -19,10 +19,10 @@ namespace Atmos::Asset
 namespace Arca
 {
     template<>
-    struct Traits<Atmos::Asset::CreateData<Atmos::Asset::ShaderData>>
+    struct Traits<Atmos::Asset::Resource::Create<Atmos::Asset::Resource::Shader>>
     {
         static const ObjectType objectType = ObjectType::Command;
         static inline const TypeName typeName = "CreateAssetData<ShaderAssetData>";
-        using Result = std::unique_ptr<Atmos::Asset::ShaderData>;
+        using Result = std::unique_ptr<Atmos::Asset::Resource::Shader>;
     };
 }

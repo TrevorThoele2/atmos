@@ -1,21 +1,23 @@
 #pragma once
 
-#include "SurfaceData.h"
+#include "SurfaceResource.h"
 #include "DirectX9Includes.h"
 #include "DirectX9Renderer.h"
 
-namespace Atmos::Render::DirectX9
+namespace Atmos::Render::Resource::DirectX9
 {
-    class SurfaceDataImplementation final : public SurfaceData
+    using namespace Render::DirectX9;
+
+    class Surface final : public Resource::Surface
     {
     public:
-        SurfaceDataImplementation(
-            GraphicsManager& owner,
+        Surface(
+            DirectX9::GraphicsManager& owner,
             LPDIRECT3DSWAPCHAIN9 swapChain,
             LPDIRECT3DSURFACE9 backBuffer,
             bool setAsRenderTarget);
 
-        ~SurfaceDataImplementation();
+        ~Surface();
 
         void StageRender(const ImageRender& imageRender) override;
         void StageRender(const LineRender& lineRender) override;
@@ -33,8 +35,8 @@ namespace Atmos::Render::DirectX9
         void DrawFrameNormal(const Color& backgroundColor);
         void DrawFrameAsRenderTarget(const Color& backgroundColor);
     private:
-        GraphicsManager* owner = nullptr;
-        std::unique_ptr<Renderer> renderer;
+        DirectX9::GraphicsManager* owner = nullptr;
+        std::unique_ptr<Renderer> renderer{};
     private:
         D3DPRESENT_PARAMETERS presentationParameters{};
         LPDIRECT3DSWAPCHAIN9 swapChain = nullptr;

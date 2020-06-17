@@ -2,29 +2,30 @@
 
 #include "AudioAsset.h"
 #include "AudioAssetInstance.h"
+#include "AudioAssetInstanceResource.h"
 
 namespace Atmos::Audio
 {
-    class AudioAssetInstanceDataImplementation final : public Asset::AudioAssetInstanceData
+    class AudioAssetInstanceResourceImplementation final : public Asset::Resource::AudioInstance
     {
     public:
-        AudioAssetInstanceDataImplementation(
+        AudioAssetInstanceResourceImplementation(
             DirectX9AudioManager& owner, const XAUDIO2_BUFFER& buffer, const WAVEFORMATEX& format) :
             owner(&owner), buffer(buffer), sourceVoice(nullptr), waveFormat(format)
         {}
 
-        AudioAssetInstanceDataImplementation(const AudioAssetInstanceDataImplementation& arg) :
+        AudioAssetInstanceResourceImplementation(const AudioAssetInstanceResourceImplementation& arg) :
             owner(arg.owner), buffer(arg.buffer), sourceVoice(nullptr), waveFormat(arg.waveFormat)
         {}
 
-        ~AudioAssetInstanceDataImplementation()
+        ~AudioAssetInstanceResourceImplementation()
         {
-            AudioAssetInstanceDataImplementation::Stop();
+            AudioAssetInstanceResourceImplementation::Stop();
         }
 
-        [[nodiscard]] std::unique_ptr<AudioAssetInstanceData> Clone() const override
+        [[nodiscard]] std::unique_ptr<AudioInstance> Clone() const override
         {
-            return std::make_unique<AudioAssetInstanceDataImplementation>(*this);
+            return std::make_unique<AudioAssetInstanceResourceImplementation>(*this);
         }
 
         void Start() override
@@ -63,7 +64,7 @@ namespace Atmos::Audio
         const WAVEFORMATEX& waveFormat;
     };
 
-    class AudioAssetDataImplementation final : public Asset::AudioAssetData
+    class AudioAssetDataImplementation final : public Asset::Resource::Audio
     {
     public:
         AudioAssetDataImplementation(
@@ -78,9 +79,9 @@ namespace Atmos::Audio
             waveFormat(format)
         {}
 
-        [[nodiscard]] std::unique_ptr<Asset::AudioAssetInstanceData> CreateInstanceData() const override
+        [[nodiscard]] std::unique_ptr<Asset::Resource::AudioInstance> CreateInstanceResource() const override
         {
-            return std::make_unique<AudioAssetInstanceDataImplementation>(*owner, buffer, waveFormat);
+            return std::make_unique<AudioAssetInstanceResourceImplementation>(*owner, buffer, waveFormat);
         }
     private:
         DirectX9AudioManager* owner;
@@ -113,7 +114,7 @@ namespace Atmos::Audio
         return SUCCEEDED(masteringVoice->SetVolume(set));
     }
 
-    std::unique_ptr<Asset::AudioAssetData> DirectX9AudioManager::CreateAudioDataImpl(
+    std::unique_ptr<Asset::Resource::Audio> DirectX9AudioManager::CreateAudioResourceImpl(
         const FormattedBuffer& file, const Name& name)
     {
         auto audioData = std::vector<unsigned char>(file.buffer.size());

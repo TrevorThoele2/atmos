@@ -2,6 +2,6 @@
 
 namespace Atmos::Render
 {
-    AncillarySurface::AncillarySurface(Init init, DataPtr&& data) : Surface(init, std::move(data))
+    AncillarySurface::AncillarySurface(Init init, ResourcePtr&& resource) : Surface(init, std::move(resource))
     {}
 }

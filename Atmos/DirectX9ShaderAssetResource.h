@@ -1,17 +1,17 @@
 #pragma once
 
-#include "ShaderAssetData.h"
+#include "ShaderAssetResource.h"
 #include "DirectX9Includes.h"
 
-namespace Atmos::Render::DirectX9
+namespace Atmos::Asset::Resource::DirectX9
 {
-    class ShaderAssetDataImplementation final : public Asset::ShaderData
+    class Shader final : public Resource::Shader
     {
     public:
         using PassCount = unsigned int;
     public:
-        explicit ShaderAssetDataImplementation(LPD3DXEFFECT effect);
-        ~ShaderAssetDataImplementation();
+        explicit Shader(LPD3DXEFFECT effect);
+        ~Shader();
 
         void Reset();
         void Release();

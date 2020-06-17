@@ -63,21 +63,19 @@ namespace Atmos::Render::Vulkan
             context = &core.AddContext(lineRender.z, Context{});
         auto& group = context->GroupFor(*lineRender.material);
         group.ListFor(lineRender.width).emplace_back(points);
-        core.allDiscriminations.emplace(lineRender.width);
+        core.AddDiscriminator(lineRender.width);
     }
 
     void LineRenderer::Start(const std::vector<const Asset::Material*>& materials, vk::CommandBuffer commandBuffer)
     {
-        core.Start(materials, commandBuffer);
+        const auto setupDiscrimination = [](LineWidth discrimination, vk::DescriptorSet& descriptorSet)
+        {};
+
+        core.Start(materials, commandBuffer, setupDiscrimination);
     }
 
     void LineRenderer::DrawNextLayer(uint32_t currentImage, glm::vec2 cameraSize)
     {
-        const auto setupDiscrimination = [](LineWidth discrimination, vk::DescriptorSet& descriptorSet)
-        {};
-
-        core.AttemptReconstructDiscriminatedDescriptorSet(setupDiscrimination);
-
         auto drawContext = core.CurrentDrawContext();
         auto& context = drawContext->currentLayer->second;
         for (auto& group : context.groups)

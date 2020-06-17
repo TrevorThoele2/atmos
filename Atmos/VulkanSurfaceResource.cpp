@@ -1,10 +1,10 @@
-#include "VulkanSurfaceData.h"
+#include "VulkanSurfaceResource.h"
 
 #include "VulkanCreateImageView.h"
 
-namespace Atmos::Render::Vulkan
+namespace Atmos::Render::Resource::Vulkan
 {
-    SurfaceDataImplementation::SurfaceDataImplementation(
+    Surface::Surface(
         std::shared_ptr<vk::Device> device,
         vk::PhysicalDevice physicalDevice,
         vk::UniqueSurfaceKHR&& underlying,
@@ -35,7 +35,7 @@ namespace Atmos::Render::Vulkan
             });
     }
 
-    SurfaceDataImplementation::~SurfaceDataImplementation()
+    Surface::~Surface()
     {
         renderer.reset();
         imageViews.clear();
@@ -43,12 +43,12 @@ namespace Atmos::Render::Vulkan
         underlying.reset();
     }
 
-    void SurfaceDataImplementation::Reinitialize(QueueFamilyIndices queueFamilyIndices)
+    void Surface::Reinitialize(QueueFamilyIndices queueFamilyIndices)
     {
         Initialize(queueFamilyIndices);
     }
 
-    void SurfaceDataImplementation::Initialize(QueueFamilyIndices queueFamilyIndices)
+    void Surface::Initialize(QueueFamilyIndices queueFamilyIndices)
     {
         device->waitIdle();
 
@@ -87,22 +87,27 @@ namespace Atmos::Render::Vulkan
             extent);
     }
 
-    void SurfaceDataImplementation::StageRender(const ImageRender& imageRender)
+    void Surface::StageRender(const ImageRender& imageRender)
     {
         renderer->StageRender(imageRender);
     }
 
-    void SurfaceDataImplementation::StageRender(const LineRender& lineRender)
+    void Surface::StageRender(const LineRender& lineRender)
     {
         renderer->StageRender(lineRender);
     }
 
-    void SurfaceDataImplementation::DrawFrame(Arca::Reliquary& reliquary, const Color& backgroundColor)
+    void Surface::DrawFrame(Arca::Reliquary& reliquary, const Color& backgroundColor)
     {
         renderer->DrawFrame(reliquary, Size());
     }
 
-    ScreenSize SurfaceDataImplementation::Size() const
+    void Surface::WaitForIdle() const
+    {
+        renderer->WaitForIdle();
+    }
+
+    ScreenSize Surface::Size() const
     {
         return
         {
@@ -111,12 +116,12 @@ namespace Atmos::Render::Vulkan
         };
     }
 
-    vk::SurfaceKHR SurfaceDataImplementation::Underlying() const
+    vk::SurfaceKHR Surface::Underlying() const
     {
         return underlying.get();
     }
 
-    auto SurfaceDataImplementation::CreateSwapchain(
+    auto Surface::CreateSwapchain(
         QueueFamilyIndices queueFamilyIndices,
         SwapchainSupportDetails support,
         vk::Device device,
@@ -170,7 +175,7 @@ namespace Atmos::Render::Vulkan
         return { device.createSwapchainKHRUnique(createInfo), surfaceFormat.format, extent };
     }
 
-    vk::SurfaceFormatKHR SurfaceDataImplementation::ChooseSwapChainFormat(
+    vk::SurfaceFormatKHR Surface::ChooseSwapChainFormat(
         const std::vector<vk::SurfaceFormatKHR>& surfaceFormats)
     {
         for (const auto& surfaceFormat : surfaceFormats)
@@ -183,7 +188,7 @@ namespace Atmos::Render::Vulkan
         return surfaceFormats[0];
     }
 
-    vk::PresentModeKHR SurfaceDataImplementation::ChooseSwapChainPresentMode(
+    vk::PresentModeKHR Surface::ChooseSwapChainPresentMode(
         const std::vector<vk::PresentModeKHR>& surfacePresentModes)
     {
         for (const auto& surfacePresentMode : surfacePresentModes)

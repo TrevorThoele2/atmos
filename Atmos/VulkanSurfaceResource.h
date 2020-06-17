@@ -1,19 +1,20 @@
 #pragma once
 
-#include "SurfaceData.h"
+#include "SurfaceResource.h"
 #include "VulkanRenderer.h"
 #include "VulkanIncludes.h"
 
-#include "VulkanPipeline.h"
 #include "VulkanQueueFamilyIndices.h"
 #include "VulkanSwapchainSupport.h"
 
-namespace Atmos::Render::Vulkan
+namespace Atmos::Render::Resource::Vulkan
 {
-    class SurfaceDataImplementation final : public SurfaceData
+    using namespace Render::Vulkan;
+
+    class Surface final : public Resource::Surface
     {
     public:
-        SurfaceDataImplementation(
+        Surface(
             std::shared_ptr<vk::Device> device,
             vk::PhysicalDevice physicalDevice,
             vk::UniqueSurfaceKHR&& underlying,
@@ -22,7 +23,7 @@ namespace Atmos::Render::Vulkan
             vk::Queue presentQueue,
             QueueFamilyIndices queueFamilyIndices,
             vk::PhysicalDeviceMemoryProperties memoryProperties);
-        ~SurfaceDataImplementation();
+        ~Surface();
 
         void Reinitialize(QueueFamilyIndices queueFamilyIndices);
 
@@ -30,6 +31,8 @@ namespace Atmos::Render::Vulkan
         void StageRender(const LineRender& lineRender) override;
 
         void DrawFrame(Arca::Reliquary& reliquary, const Color& backgroundColor) override;
+
+        void WaitForIdle() const;
 
         [[nodiscard]] ScreenSize Size() const override;
 

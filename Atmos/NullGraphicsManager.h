@@ -18,15 +18,15 @@ namespace Atmos::Render
     protected:
         void InitializeImpl() override;
 
-        [[nodiscard]] std::unique_ptr<Asset::ImageData> CreateImageDataImpl(
+        [[nodiscard]] std::unique_ptr<Asset::Resource::Image> CreateImageResourceImpl(
             const Buffer& buffer,
             const Name& name,
             const Asset::ImageSize& size) override;
-        [[nodiscard]] std::unique_ptr<Asset::ShaderData> CreateShaderDataImpl(
+        [[nodiscard]] std::unique_ptr<Asset::Resource::Shader> CreateShaderResourceImpl(
             const Buffer& buffer, const Name& name) override;
-        [[nodiscard]] std::unique_ptr<SurfaceData> CreateMainSurfaceDataImpl(
+        [[nodiscard]] std::unique_ptr<Resource::Surface> CreateMainSurfaceResourceImpl(
             void* window) override;
-        [[nodiscard]] std::unique_ptr<SurfaceData> CreateSurfaceDataImpl(
+        [[nodiscard]] std::unique_ptr<Resource::Surface> CreateSurfaceResourceImpl(
             void* window) override;
 
         void ReconstructInternals(GraphicsReconstructionObjects objects) override;

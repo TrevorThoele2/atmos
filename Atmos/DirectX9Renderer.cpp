@@ -1,9 +1,9 @@
 #include "DirectX9Renderer.h"
 
 #include "DirectX9GraphicsManager.h"
-#include "DirectX9ImageAssetData.h"
-#include "DirectX9ShaderAssetData.h"
-#include "DirectX9SurfaceData.h"
+#include "DirectX9ImageAssetResource.h"
+#include "DirectX9ShaderAssetResource.h"
+#include "DirectX9SurfaceResource.h"
 #include "DirectX9Utilities.h"
 
 #include "Camera.h"
@@ -40,7 +40,7 @@ namespace Atmos::Render::DirectX9
             return;
 
         StageRender(
-            imageRender.asset->FileDataAs<ImageAssetDataImplementation>()->Texture(),
+            imageRender.asset->ResourceAs<Asset::Resource::DirectX9::Image>()->Texture(),
             imageRender.material->VertexShader(),
             imageRender.position.x,
             imageRender.position.y,
@@ -503,20 +503,20 @@ namespace Atmos::Render::DirectX9
         vertexBuffer->Unlock();
         indexBuffer->Unlock();
 
-        const auto passCount = currentShaderData->Begin();
+        const auto passCount = currentShaderResource->Begin();
         size_t passCountCurrent = 0;
 
         do
         {
-            currentShaderData->BeginNextPass(passCountCurrent);
+            currentShaderResource->BeginNextPass(passCountCurrent);
             ++passCountCurrent;
 
             device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, vertexCount, 0, primitiveCount);
 
-            currentShaderData->EndPass();
+            currentShaderResource->EndPass();
         } while (passCountCurrent < passCount);
 
-        currentShaderData->End();
+        currentShaderResource->End();
     }
 
     void Renderer::Pipeline::End()
@@ -533,27 +533,27 @@ namespace Atmos::Render::DirectX9
     void Renderer::Pipeline::SetTexture(LPDIRECT3DTEXTURE9 set)
     {
         currentTexture = set;
-        if (currentTexture && currentShaderData)
-            currentShaderData->Effect()->SetTexture("g_Texture", currentTexture);
+        if (currentTexture && currentShaderResource)
+            currentShaderResource->Effect()->SetTexture("g_Texture", currentTexture);
     }
 
     void Renderer::Pipeline::SetShader(const Asset::Shader* set)
     {
         currentShader = set;
-        currentShaderData = currentShader->FileDataAs<ShaderAssetDataImplementation>();
-        currentShaderData->Effect()->SetMatrix("g_Projection", &projection);
+        currentShaderResource = currentShader->ResourceAs<Asset::Resource::DirectX9::Shader>();
+        currentShaderResource->Effect()->SetMatrix("g_Projection", &projection);
 
         FLOAT g_ScreenSize[2] =
         {
             static_cast<FLOAT>(screenSize.width),
             static_cast<FLOAT>(screenSize.height)
         };
-        currentShaderData->Effect()->SetFloatArray(
+        currentShaderResource->Effect()->SetFloatArray(
             "g_ScreenSize",
             g_ScreenSize,
             2);
 
-        if (currentTexture && currentShaderData)
-            currentShaderData->Effect()->SetTexture("g_Texture", currentTexture);
+        if (currentTexture && currentShaderResource)
+            currentShaderResource->Effect()->SetTexture("g_Texture", currentTexture);
     }
 }

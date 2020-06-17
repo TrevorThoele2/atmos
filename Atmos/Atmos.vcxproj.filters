@@ -339,12 +339,6 @@
     <Filter Include="Source Files\Render\Surface">
       <UniqueIdentifier>{636ba12e-4468-48e1-823d-a62cf9e2b173}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Render\DirectX9\Data">
-      <UniqueIdentifier>{dccfba7b-ed8a-422e-9362-1c18f63702a3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Render\DirectX9\Data">
-      <UniqueIdentifier>{5f30c8c0-b2a8-4855-9332-53631634bc0c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\World\Map">
       <UniqueIdentifier>{4a699d32-9bff-4632-8d5d-12c1e8c3e768}</UniqueIdentifier>
     </Filter>
@@ -356,12 +350,6 @@
     </Filter>
     <Filter Include="Source Files\Render\Vulkan">
       <UniqueIdentifier>{3a303106-4c53-4a2e-b0f3-47a8167172bf}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Render\Vulkan\Data">
-      <UniqueIdentifier>{d516b839-6a19-45e8-bda1-1f9f5115a3f2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Render\Vulkan\Data">
-      <UniqueIdentifier>{4aeba525-17c5-415f-8a91-25fa5d9248d2}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Render\Vulkan\Structures">
       <UniqueIdentifier>{fcebf7ad-4ec0-4b45-bdf6-53c9be308fbe}</UniqueIdentifier>
@@ -425,6 +413,18 @@
     </Filter>
     <Filter Include="Source Files\Render\Vulkan\Renderer">
       <UniqueIdentifier>{245cf1f7-4284-450d-9805-59c3ff2e64e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Render\DirectX9\Resource">
+      <UniqueIdentifier>{dccfba7b-ed8a-422e-9362-1c18f63702a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Render\DirectX9\Resource">
+      <UniqueIdentifier>{5f30c8c0-b2a8-4855-9332-53631634bc0c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Render\Vulkan\Resource">
+      <UniqueIdentifier>{d516b839-6a19-45e8-bda1-1f9f5115a3f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Render\Vulkan\Resource">
+      <UniqueIdentifier>{4aeba525-17c5-415f-8a91-25fa5d9248d2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1148,9 +1148,6 @@
     <ClInclude Include="AssetCore.h">
       <Filter>Header Files\Assets</Filter>
     </ClInclude>
-    <ClInclude Include="FileAsset.h">
-      <Filter>Header Files\Assets</Filter>
-    </ClInclude>
     <ClInclude Include="Asset.h">
       <Filter>Header Files\Assets</Filter>
     </ClInclude>
@@ -1181,35 +1178,11 @@
     <ClInclude Include="AncillarySurface.h">
       <Filter>Header Files\Render\Surface</Filter>
     </ClInclude>
-    <ClInclude Include="SurfaceData.h">
-      <Filter>Header Files\Render\Surface</Filter>
-    </ClInclude>
     <ClInclude Include="Surface.h">
       <Filter>Header Files\Render\Surface</Filter>
     </ClInclude>
     <ClInclude Include="SurfaceCore.h">
       <Filter>Header Files\Render\Surface</Filter>
-    </ClInclude>
-    <ClInclude Include="DirectX9SurfaceData.h">
-      <Filter>Header Files\Render\DirectX9\Data</Filter>
-    </ClInclude>
-    <ClInclude Include="DirectX9ShaderAssetData.h">
-      <Filter>Header Files\Render\DirectX9\Data</Filter>
-    </ClInclude>
-    <ClInclude Include="DirectX9ImageAssetData.h">
-      <Filter>Header Files\Render\DirectX9\Data</Filter>
-    </ClInclude>
-    <ClInclude Include="AudioAssetData.h">
-      <Filter>Header Files\Assets\Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="ImageAssetData.h">
-      <Filter>Header Files\Assets\Image</Filter>
-    </ClInclude>
-    <ClInclude Include="ScriptAssetData.h">
-      <Filter>Header Files\Assets\Script</Filter>
-    </ClInclude>
-    <ClInclude Include="ShaderAssetData.h">
-      <Filter>Header Files\Assets\Shader</Filter>
     </ClInclude>
     <ClInclude Include="AngelScriptAssetData.h">
       <Filter>Header Files\Script\AngelScript</Filter>
@@ -1286,14 +1259,8 @@
     <ClInclude Include="VulkanUtilities.h">
       <Filter>Header Files\Render\Vulkan</Filter>
     </ClInclude>
-    <ClInclude Include="VulkanSurfaceData.h">
-      <Filter>Header Files\Render\Vulkan\Data</Filter>
-    </ClInclude>
     <ClInclude Include="VulkanIncludes.h">
       <Filter>Header Files\Render\Vulkan</Filter>
-    </ClInclude>
-    <ClInclude Include="VulkanImageAssetData.h">
-      <Filter>Header Files\Render\Vulkan\Data</Filter>
     </ClInclude>
     <ClInclude Include="VulkanQueueFamilyIndices.h">
       <Filter>Header Files\Render\Vulkan\Structures</Filter>
@@ -1312,9 +1279,6 @@
     </ClInclude>
     <ClInclude Include="VulkanCreateImageView.h">
       <Filter>Header Files\Render\Vulkan\Images</Filter>
-    </ClInclude>
-    <ClInclude Include="VulkanShaderAssetData.h">
-      <Filter>Header Files\Render\Vulkan\Data</Filter>
     </ClInclude>
     <ClInclude Include="GraphicsReconstructionObjects.h">
       <Filter>Header Files\Render</Filter>
@@ -1351,12 +1315,6 @@
     </ClInclude>
     <ClInclude Include="VulkanVertexInput.h">
       <Filter>Header Files\Render\Vulkan\Structures</Filter>
-    </ClInclude>
-    <ClInclude Include="CreateImageAssetData.h">
-      <Filter>Header Files\Assets\Image</Filter>
-    </ClInclude>
-    <ClInclude Include="CreateShaderAssetData.h">
-      <Filter>Header Files\Assets\Shader</Filter>
     </ClInclude>
     <ClInclude Include="LoadImageAsset.h">
       <Filter>Header Files\Assets\Image</Filter>
@@ -1406,9 +1364,6 @@
     <ClInclude Include="VulkanDescriptorSetGroup.h">
       <Filter>Header Files\Render\Vulkan\Descriptors</Filter>
     </ClInclude>
-    <ClInclude Include="VulkanCommandBufferGroup.h">
-      <Filter>Header Files\Render\Vulkan\Commands</Filter>
-    </ClInclude>
     <ClInclude Include="VulkanPipeline.h">
       <Filter>Header Files\Render\Vulkan\Pipeline</Filter>
     </ClInclude>
@@ -1417,9 +1372,6 @@
     </ClInclude>
     <ClInclude Include="ReconstructGraphics.h">
       <Filter>Header Files\Render\Commands</Filter>
-    </ClInclude>
-    <ClInclude Include="CreateSurfaceData.h">
-      <Filter>Header Files\Render\Surface</Filter>
     </ClInclude>
     <ClInclude Include="InitializeGraphics.h">
       <Filter>Header Files\Render\Commands</Filter>
@@ -1432,9 +1384,6 @@
     </ClInclude>
     <ClInclude Include="ExternalManagers.h">
       <Filter>Header Files\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="SetupMainSurfaceData.h">
-      <Filter>Header Files\Render\Surface</Filter>
     </ClInclude>
     <ClInclude Include="VulkanRendererCore.h">
       <Filter>Header Files\Render\Vulkan\Renderer</Filter>
@@ -1454,8 +1403,68 @@
     <ClInclude Include="WindowsUndef.h">
       <Filter>Header Files\Engine</Filter>
     </ClInclude>
-    <ClInclude Include="CreateAssetData.h">
+    <ClInclude Include="AudioAssetResource.h">
+      <Filter>Header Files\Assets\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioAssetInstanceResource.h">
+      <Filter>Header Files\Assets\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="CreateImageAssetResource.h">
+      <Filter>Header Files\Assets\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageAssetResource.h">
+      <Filter>Header Files\Assets\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="AssetWithResource.h">
       <Filter>Header Files\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="CreateAssetResource.h">
+      <Filter>Header Files\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptAssetResource.h">
+      <Filter>Header Files\Assets\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderAssetResource.h">
+      <Filter>Header Files\Assets\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadAsset.h">
+      <Filter>Header Files\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectX9SurfaceResource.h">
+      <Filter>Header Files\Render\DirectX9\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanSurfaceResource.h">
+      <Filter>Header Files\Render\Vulkan\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="CreateSurfaceResource.h">
+      <Filter>Header Files\Render\Surface</Filter>
+    </ClInclude>
+    <ClInclude Include="SetupMainSurfaceResource.h">
+      <Filter>Header Files\Render\Surface</Filter>
+    </ClInclude>
+    <ClInclude Include="SurfaceResource.h">
+      <Filter>Header Files\Render\Surface</Filter>
+    </ClInclude>
+    <ClInclude Include="CreateShaderAssetResource.h">
+      <Filter>Header Files\Assets\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanImageAssetResource.h">
+      <Filter>Header Files\Render\Vulkan\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanShaderAssetResource.h">
+      <Filter>Header Files\Render\Vulkan\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectX9ShaderAssetResource.h">
+      <Filter>Header Files\Render\DirectX9\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectX9ImageAssetResource.h">
+      <Filter>Header Files\Render\DirectX9\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="PruneGraphicsResources.h">
+      <Filter>Header Files\Render\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanCommandBufferGroup.h">
+      <Filter>Header Files\Render\Vulkan\Commands</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1921,30 +1930,6 @@
     <ClCompile Include="AncillarySurface.cpp">
       <Filter>Source Files\Render\Surface</Filter>
     </ClCompile>
-    <ClCompile Include="SurfaceData.cpp">
-      <Filter>Source Files\Render\Surface</Filter>
-    </ClCompile>
-    <ClCompile Include="DirectX9SurfaceData.cpp">
-      <Filter>Source Files\Render\DirectX9\Data</Filter>
-    </ClCompile>
-    <ClCompile Include="DirectX9ShaderAssetData.cpp">
-      <Filter>Source Files\Render\DirectX9\Data</Filter>
-    </ClCompile>
-    <ClCompile Include="DirectX9ImageAssetData.cpp">
-      <Filter>Source Files\Render\DirectX9\Data</Filter>
-    </ClCompile>
-    <ClCompile Include="AudioAssetData.cpp">
-      <Filter>Source Files\Assets\Audio</Filter>
-    </ClCompile>
-    <ClCompile Include="ImageAssetData.cpp">
-      <Filter>Source Files\Assets\Image</Filter>
-    </ClCompile>
-    <ClCompile Include="ScriptAssetData.cpp">
-      <Filter>Source Files\Assets\Script</Filter>
-    </ClCompile>
-    <ClCompile Include="ShaderAssetData.cpp">
-      <Filter>Source Files\Assets\Shader</Filter>
-    </ClCompile>
     <ClCompile Include="AngelScriptAssetData.cpp">
       <Filter>Source Files\Script\AngelScript</Filter>
     </ClCompile>
@@ -1990,12 +1975,6 @@
     <ClCompile Include="VulkanUtilities.cpp">
       <Filter>Source Files\Render\Vulkan</Filter>
     </ClCompile>
-    <ClCompile Include="VulkanSurfaceData.cpp">
-      <Filter>Source Files\Render\Vulkan\Data</Filter>
-    </ClCompile>
-    <ClCompile Include="VulkanImageAssetData.cpp">
-      <Filter>Source Files\Render\Vulkan\Data</Filter>
-    </ClCompile>
     <ClCompile Include="VulkanMemory.cpp">
       <Filter>Source Files\Render\Vulkan\Memory</Filter>
     </ClCompile>
@@ -2007,9 +1986,6 @@
     </ClCompile>
     <ClCompile Include="VulkanCreateImageView.cpp">
       <Filter>Source Files\Render\Vulkan\Images</Filter>
-    </ClCompile>
-    <ClCompile Include="VulkanShaderAssetData.cpp">
-      <Filter>Source Files\Render\Vulkan\Data</Filter>
     </ClCompile>
     <ClCompile Include="VulkanSingleUseCommandBuffer.cpp">
       <Filter>Source Files\Render\Vulkan\Commands</Filter>
@@ -2082,6 +2058,42 @@
     </ClCompile>
     <ClCompile Include="VulkanRendererInterface.cpp">
       <Filter>Source Files\Render\Vulkan\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioAssetInstanceResource.cpp">
+      <Filter>Source Files\Assets\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageAssetResource.cpp">
+      <Filter>Source Files\Assets\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioAssetResource.cpp">
+      <Filter>Source Files\Assets\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptAssetResource.cpp">
+      <Filter>Source Files\Assets\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderAssetResource.cpp">
+      <Filter>Source Files\Assets\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectX9SurfaceResource.cpp">
+      <Filter>Source Files\Render\DirectX9\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanSurfaceResource.cpp">
+      <Filter>Source Files\Render\Vulkan\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="SurfaceResource.cpp">
+      <Filter>Source Files\Render\Surface</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectX9ShaderAssetResource.cpp">
+      <Filter>Source Files\Render\DirectX9\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectX9ImageAssetResource.cpp">
+      <Filter>Source Files\Render\DirectX9\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanImageAssetResource.cpp">
+      <Filter>Source Files\Render\Vulkan\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanShaderAssetResource.cpp">
+      <Filter>Source Files\Render\Vulkan\Resource</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

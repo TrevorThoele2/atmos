@@ -13,7 +13,7 @@ namespace Atmos::Audio
 
         bool SetMasterVolume(float set) override;
     private:
-        std::unique_ptr<Asset::AudioAssetData> CreateAudioDataImpl(
+        std::unique_ptr<Asset::Resource::Audio> CreateAudioResourceImpl(
             const FormattedBuffer& buffer, const Name& name) override;
     };
 }

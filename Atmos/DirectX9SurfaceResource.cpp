@@ -1,13 +1,12 @@
-#include "DirectX9SurfaceData.h"
+#include "DirectX9SurfaceResource.h"
 
 #include "DirectX9GraphicsManager.h"
 #include "DirectX9Utilities.h"
 
-namespace Atmos::Render::DirectX9
+namespace Atmos::Render::Resource::DirectX9
 {
-    SurfaceDataImplementation::SurfaceDataImplementation
-    (
-        GraphicsManager& owner,
+    Surface::Surface(
+        DirectX9::GraphicsManager& owner,
         LPDIRECT3DSWAPCHAIN9 swapChain,
         LPDIRECT3DSURFACE9 backBuffer,
         bool setAsRenderTarget)
@@ -21,22 +20,22 @@ namespace Atmos::Render::DirectX9
         swapChain->GetPresentParameters(&presentationParameters);
     }
 
-    SurfaceDataImplementation::~SurfaceDataImplementation()
+    Surface::~Surface()
     {
         Release();
     }
 
-    void SurfaceDataImplementation::StageRender(const ImageRender& imageRender)
+    void Surface::StageRender(const ImageRender& imageRender)
     {
         renderer->StageRender(imageRender);
     }
 
-    void SurfaceDataImplementation::StageRender(const LineRender& lineRender)
+    void Surface::StageRender(const LineRender& lineRender)
     {
         renderer->StageRender(lineRender);
     }
 
-    void SurfaceDataImplementation::DrawFrame(Arca::Reliquary& reliquary, const Color& backgroundColor)
+    void Surface::DrawFrame(Arca::Reliquary& reliquary, const Color& backgroundColor)
     {
         if (!setAsRenderTarget)
             DrawFrameNormal(backgroundColor);
@@ -44,7 +43,7 @@ namespace Atmos::Render::DirectX9
             DrawFrameAsRenderTarget(backgroundColor);
     }
 
-    void SurfaceDataImplementation::Reset()
+    void Surface::Reset()
     {
         renderer->OnResetDevice();
 
@@ -75,7 +74,7 @@ namespace Atmos::Render::DirectX9
         }
     }
 
-    void SurfaceDataImplementation::Release()
+    void Surface::Release()
     {
         if (backBuffer)
         {
@@ -92,24 +91,24 @@ namespace Atmos::Render::DirectX9
         renderer->OnLostDevice();
     }
 
-    ScreenSize SurfaceDataImplementation::Size() const
+    ScreenSize Surface::Size() const
     {
         RECT rect;
         GetClientRect(presentationParameters.hDeviceWindow, &rect);
         return ScreenSize(rect.right, rect.bottom);
     }
 
-    D3DPRESENT_PARAMETERS SurfaceDataImplementation::PresentationParameters() const
+    D3DPRESENT_PARAMETERS Surface::PresentationParameters() const
     {
         return presentationParameters;
     }
 
-    LPDIRECT3DSURFACE9 SurfaceDataImplementation::BackBuffer() const
+    LPDIRECT3DSURFACE9 Surface::BackBuffer() const
     {
         return backBuffer;
     }
 
-    void SurfaceDataImplementation::DrawFrameNormal(const Color& backgroundColor)
+    void Surface::DrawFrameNormal(const Color& backgroundColor)
     {
         renderer->DrawFrame(Size(), backgroundColor);
         LogIfError(
@@ -119,7 +118,7 @@ namespace Atmos::Render::DirectX9
                 Logging::Severity::Error); });
     }
 
-    void SurfaceDataImplementation::DrawFrameAsRenderTarget(const Color& backgroundColor)
+    void Surface::DrawFrameAsRenderTarget(const Color& backgroundColor)
     {
         LPDIRECT3DSURFACE9 previousRenderSurface;
         owner->Device()->GetRenderTarget(0, &previousRenderSurface);

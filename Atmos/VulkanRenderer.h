@@ -45,6 +45,8 @@ namespace Atmos::Render::Vulkan
         void StageRender(const LineRender& lineRender);
 
         void DrawFrame(Arca::Reliquary& reliquary, const ScreenSize& cameraSize);
+
+        void WaitForIdle() const;
     private:
         std::shared_ptr<vk::Device> device;
     private:

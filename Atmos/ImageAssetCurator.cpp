@@ -7,7 +7,7 @@ namespace Atmos::Asset
 	ImageCurator::ImageCurator(Init init) : Curator(init)
 	{}
 
-    LoadedImage ImageCurator::Handle(const LoadImage& command)
+    Loaded<Image> ImageCurator::Handle(const Load<Image>& command)
     {
         const auto filePath = command.filePath.string();
         auto format = FreeImage_GetFileType(filePath.c_str());
@@ -42,7 +42,7 @@ namespace Atmos::Asset
 
 				FreeImage_Unload(bitmap);
 
-				return LoadedImage{
+				return Loaded<Image>{
 					std::move(buffer),
 					*TypeFromFIF(format),
 					ImageSize{ ImageSize::Dimension(width), ImageSize::Dimension(height) } };

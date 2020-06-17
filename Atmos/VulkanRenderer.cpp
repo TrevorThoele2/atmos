@@ -1,9 +1,8 @@
 #include "VulkanRenderer.h"
 
-#include "VulkanImageAssetData.h"
-
 #include "VulkanUtilities.h"
 #include "GraphicsError.h"
+#include "Logger.h"
 
 namespace Atmos::Render::Vulkan
 {
@@ -86,6 +85,7 @@ namespace Atmos::Render::Vulkan
             nullptr);
         if (imageIndex.result == vk::Result::eErrorOutOfDateKHR)
         {
+            Logging::logger.Log("Vulkan image is out of date.");
             onOutOfDate();
             return;
         }
@@ -136,8 +136,16 @@ namespace Atmos::Render::Vulkan
             const vk::SwapchainKHR swapchains[] = { swapchain };
             vk::PresentInfoKHR presentInfo(1, signalSemaphores, 1, swapchains, &imageIndex.value, nullptr);
             const auto presentResult = presentQueue.presentKHR(&presentInfo);
-            if (presentResult == vk::Result::eErrorOutOfDateKHR || presentResult == vk::Result::eSuboptimalKHR)
+            if (presentResult == vk::Result::eErrorOutOfDateKHR)
+            {
+                Logging::logger.Log("Vulkan presentation is out of date.", Logging::Severity::Verbose);
                 onOutOfDate();
+            }
+            else if (presentResult == vk::Result::eSuboptimalKHR)
+            {
+                Logging::logger.Log("Vulkan presentation is suboptimal.", Logging::Severity::Verbose);
+                onOutOfDate();
+            }
             else if (IsError(presentResult))
                 throw GraphicsError("Could not present swap chain.");
         }
@@ -151,6 +159,15 @@ namespace Atmos::Render::Vulkan
         endFrame();
     }
 
+    void Renderer::WaitForIdle() const
+    {
+        std::vector<vk::Fence> fences;
+        fences.reserve(inFlightFences.size());
+        for (auto& fence : inFlightFences)
+            fences.push_back(fence.get());
+        device->waitForFences(fences, VK_TRUE, UINT64_MAX);
+    }
+
     void Renderer::Draw(
         Arca::Reliquary& reliquary,
         std::vector<vk::CommandBuffer>& usedCommandBuffers,
@@ -160,6 +177,18 @@ namespace Atmos::Render::Vulkan
         if (quadRenderer.LayerCount() == 0 && lineRenderer.LayerCount() == 0)
             return;
 
+        const auto commandBuffer = commandBuffers.Next();
+        usedCommandBuffers.push_back(commandBuffer);
+
+        const auto materialBatch = reliquary.Batch<Asset::Material>();
+        std::vector<const Asset::Material*> materials;
+        materials.reserve(materialBatch.Size());
+        for (auto& material : materialBatch)
+            materials.push_back(&material);
+
+        quadRenderer.Start(materials, commandBuffer);
+        lineRenderer.Start(materials, commandBuffer);
+
         const vk::ClearValue clearValue(vk::ClearColorValue(std::array<float, 4> { 0.0f, 0.0f, 0.0f, 1.0f }));
         const vk::RenderPassBeginInfo renderPassBeginInfo(
             renderPass.get(),
@@ -168,21 +197,10 @@ namespace Atmos::Render::Vulkan
             1,
             &clearValue);
 
-        const auto commandBuffer = commandBuffers.Next();
-        usedCommandBuffers.push_back(commandBuffer);
-
         const vk::CommandBufferBeginInfo beginInfo({}, nullptr);
         commandBuffer.begin(beginInfo);
 
         commandBuffer.beginRenderPass(renderPassBeginInfo, vk::SubpassContents::eInline);
-
-        const auto materialBatch = reliquary.Batch<Asset::Material>();
-        std::vector<const Asset::Material*> materials;
-        materials.reserve(materialBatch.Size());
-        for (auto& material : materialBatch)
-            materials.push_back(&material);
-        quadRenderer.Start(materials, commandBuffer);
-        lineRenderer.Start(materials, commandBuffer);
 
         const auto end = [&]()
         {

@@ -9,7 +9,7 @@ namespace Atmos::Audio
     class Music
     {
     public:
-        using AssetInstance = Asset::AudioAssetInstance;
+        using AssetInstance = Asset::AudioInstance;
         AssetInstance audioAsset;
     public:
         Music() = default;

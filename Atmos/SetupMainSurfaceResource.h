@@ -1,11 +1,10 @@
 #pragma once
 
 #include <Arca/Command.h>
-#include "SurfaceData.h"
 
-namespace Atmos::Render
+namespace Atmos::Render::Resource
 {
-    struct SetupMainSurfaceData
+    struct SetupMainSurface
     {
         void* window;
     };
@@ -14,7 +13,7 @@ namespace Atmos::Render
 namespace Arca
 {
     template<>
-    struct Traits<Atmos::Render::SetupMainSurfaceData>
+    struct Traits<Atmos::Render::Resource::SetupMainSurface>
     {
         static const ObjectType objectType = ObjectType::Command;
         static inline const TypeName typeName = "SetupMainSurfaceData";
