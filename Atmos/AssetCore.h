@@ -21,7 +21,7 @@ namespace Arca
     struct Traits<Atmos::Asset::Core>
     {
         static const ObjectType objectType = ObjectType::Shard;
-        static inline const TypeName typeName = "AssetCore";
+        static inline const TypeName typeName = "Atmos::Asset::Core";
     };
 }
 

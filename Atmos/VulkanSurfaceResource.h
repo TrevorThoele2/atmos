@@ -29,6 +29,7 @@ namespace Atmos::Render::Resource::Vulkan
 
         void StageRender(const ImageRender& imageRender) override;
         void StageRender(const LineRender& lineRender) override;
+        void StageRender(const RegionRender& regionRender) override;
 
         void DrawFrame(Arca::Reliquary& reliquary, const Color& backgroundColor) override;
 

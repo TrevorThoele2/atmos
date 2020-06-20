@@ -69,7 +69,7 @@ namespace Arca
     struct Traits<Atmos::UniqueProviderRelic<T>>
     {
         static const ObjectType objectType = ObjectType::Relic;
-        static inline const TypeName typeName = Traits<T>::typeName + "Provider";
+        static inline const TypeName typeName = "Atmos::UniqueProvider<" + Traits<T>::typeName + ">";
         static const Locality locality = Locality::Global;
     };
 }

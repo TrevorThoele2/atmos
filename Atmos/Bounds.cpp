@@ -4,8 +4,8 @@ namespace Atmos
 {
     Bounds::Bounds() = default;
 
-    Bounds::Bounds(const Position3D& position, const Size2D& baseSize, const Scalers2D& scalers) :
-        position(position), baseSize(baseSize), scalers(scalers)
+    Bounds::Bounds(const Position3D& position, const Size2D& baseSize, const Scalers2D& scalers, const Angle& rotation) :
+        position(position), baseSize(baseSize), scalers(scalers), rotation(rotation)
     {}
 
     void Bounds::Position(const Position3D& to)
@@ -16,6 +16,16 @@ namespace Atmos
     void Bounds::BaseSize(const Size2D& to)
     {
         baseSize = to;
+    }
+
+    void Bounds::Scalers(const Scalers2D& to)
+    {
+        scalers = to;
+    }
+
+    void Bounds::Rotation(const Angle& to)
+    {
+        rotation = to;
     }
 
     Position3D Bounds::Position() const
@@ -33,19 +43,14 @@ namespace Atmos
         return Size2D{ baseSize.width * scalers.x, baseSize.height * scalers.y };
     }
 
-    void Bounds::Scalers(const Scalers2D& to)
-    {
-        scalers = to;
-    }
-
     Scalers2D Bounds::Scalers() const
     {
         return scalers;
     }
 
-    AxisAlignedBox2D Bounds::Box() const
+    Angle Bounds::Rotation() const
     {
-        return AxisAlignedBox2D(Position(), Size());
+        return rotation;
     }
 }
 
@@ -56,5 +61,6 @@ namespace Inscription
         archive(object.position);
         archive(object.baseSize);
         archive(object.scalers);
+        archive(object.rotation);
     }
 }

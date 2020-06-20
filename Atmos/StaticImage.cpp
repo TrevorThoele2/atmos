@@ -12,7 +12,8 @@ namespace Atmos::Render
         Arca::Index<Asset::Material> material,
         const Render::Color& color,
         const Position3D& position,
-        const Scalers2D& scalers)
+        const Scalers2D& scalers,
+        const Angle& rotation)
         :
         Image(
             init,
@@ -21,6 +22,7 @@ namespace Atmos::Render
             material,
             color,
             position,
-            scalers)
+            scalers,
+            rotation)
     {}
 }

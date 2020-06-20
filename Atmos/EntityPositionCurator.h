@@ -35,7 +35,7 @@ namespace Arca
     struct Traits<Atmos::Entity::PositionCurator>
     {
         static const ObjectType objectType = ObjectType::Curator;
-        static inline const TypeName typeName = "EntityPositionCurator";
+        static inline const TypeName typeName = "Atmos::Entity::PositionCurator";
         using HandledCommands = HandledCommands<
             Atmos::Entity::MoveEntity,
             Atmos::Entity::MoveEntityInstant,

@@ -22,7 +22,7 @@ namespace Arca
     struct Traits<::Atmos::Asset::Audio>
     {
         static const ObjectType objectType = ObjectType::Relic;
-        static inline const TypeName typeName = "AudioAsset";
+        static inline const TypeName typeName = "Atmos::Asset::Audio";
         static bool ShouldCreate(
             Reliquary& reliquary,
             const ::Atmos::Name& name,

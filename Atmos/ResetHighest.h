@@ -20,6 +20,6 @@ namespace Arca
     struct Traits<Atmos::Time::ResetHighest>
     {
         static const ObjectType objectType = ObjectType::Command;
-        static inline const TypeName typeName = "ResetHighest";
+        static inline const TypeName typeName = "Atmos::Time::ResetHighest";
     };
 }

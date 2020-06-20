@@ -16,6 +16,6 @@ namespace Arca
     struct Traits<Atmos::Render::Resource::SetupMainSurface>
     {
         static const ObjectType objectType = ObjectType::Command;
-        static inline const TypeName typeName = "SetupMainSurfaceData";
+        static inline const TypeName typeName = "Atmos::Render::Resource::SetupMainSurface";
     };
 }

@@ -29,7 +29,7 @@ namespace Arca
     struct Traits<Atmos::Script::Angel::ScriptCurator>
     {
         static const ObjectType objectType = ObjectType::Curator;
-        static inline const TypeName typeName = "AngelScriptCurator";
+        static inline const TypeName typeName = "Atmos::Script::Angel::ScriptCurator";
     };
 }
 

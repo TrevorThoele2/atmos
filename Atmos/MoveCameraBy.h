@@ -18,6 +18,6 @@ namespace Arca
     struct Traits<Atmos::Render::MoveCameraBy>
     {
         static const ObjectType objectType = ObjectType::Command;
-        static inline const TypeName typeName = "MoveCameraBy";
+        static inline const TypeName typeName = "Atmos::Render::MoveCameraBy";
     };
 }

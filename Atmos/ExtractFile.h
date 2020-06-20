@@ -25,7 +25,7 @@ namespace Arca
     struct Traits<Atmos::File::ExtractFile>
     {
         static const ObjectType objectType = ObjectType::Command;
-        static inline const TypeName typeName = "ExtractFile";
+        static inline const TypeName typeName = "Atmos::File::ExtractFile";
         using Result = Atmos::Buffer;
     };
 
@@ -33,7 +33,7 @@ namespace Arca
     struct Traits<Atmos::File::ExtractZippedFile>
     {
         static const ObjectType objectType = ObjectType::Command;
-        static inline const TypeName typeName = "ExtractZippedFile";
+        static inline const TypeName typeName = "Atmos::File::ExtractZippedFile";
         using Result = Atmos::Buffer;
     };
 }

@@ -20,7 +20,7 @@ namespace Arca
     struct Traits<Atmos::Asset::ScriptCurator>
     {
         static const ObjectType objectType = ObjectType::Curator;
-        static inline const TypeName typeName = "ScriptAssetCurator";
+        static inline const TypeName typeName = "Atmos::Asset::ScriptCurator";
         using HandledCommands = HandledCommands<Atmos::Asset::Find<Atmos::Asset::Script>>;
     };
 }

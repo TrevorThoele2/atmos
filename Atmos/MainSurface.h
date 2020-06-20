@@ -18,7 +18,7 @@ namespace Arca
     struct Traits<Atmos::Render::MainSurface>
     {
         static const ObjectType objectType = ObjectType::Relic;
-        static inline const TypeName typeName = "MainRenderSurface";
+        static inline const TypeName typeName = "Atmos::Render::MainSurface";
         static const Locality locality = Locality::Global;
     };
 }

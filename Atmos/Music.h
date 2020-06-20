@@ -1,18 +1,16 @@
 #pragma once
 
-#include <Arca/ClosedTypedRelicAutomation.h>
+#include <Arca/ClosedTypedRelic.h>
 
 #include "AudioAssetInstance.h"
 
 namespace Atmos::Audio
 {
-    class Music
+    class Music final : public Arca::ClosedTypedRelic<Music>
     {
     public:
         using AssetInstance = Asset::AudioInstance;
         AssetInstance audioAsset;
-    public:
-        Music() = default;
     };
 }
 
@@ -22,7 +20,7 @@ namespace Arca
     struct Traits<::Atmos::Audio::Music>
     {
         static const ObjectType objectType = ObjectType::Relic;
-        static inline const TypeName typeName = "Music";
+        static inline const TypeName typeName = "Atmos::Audio::Music";
     };
 }
 

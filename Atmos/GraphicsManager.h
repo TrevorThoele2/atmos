@@ -83,6 +83,6 @@ namespace Arca
     template<>
     struct Traits<::Atmos::Render::GraphicsManager>
     {
-        static inline const TypeName typeName = "GraphicsManager";
+        static inline const TypeName typeName = "Atmos::Render::GraphicsManager";
     };
 }

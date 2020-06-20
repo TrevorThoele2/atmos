@@ -19,6 +19,6 @@ namespace Arca
     struct Traits<Atmos::Entity::RotateEntity>
     {
         static const ObjectType objectType = ObjectType::Command;
-        static inline const TypeName typeName = "RotateEntity";
+        static inline const TypeName typeName = "Atmos::Entity::RotateEntity";
     };
 }

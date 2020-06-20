@@ -19,6 +19,6 @@ namespace Arca
     struct Traits<Atmos::Render::MoveCameraTo>
     {
         static const ObjectType objectType = ObjectType::Command;
-        static inline const TypeName typeName = "MoveCameraTo";
+        static inline const TypeName typeName = "Atmos::Render::MoveCameraTo";
     };
 }

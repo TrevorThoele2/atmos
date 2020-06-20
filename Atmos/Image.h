@@ -30,7 +30,7 @@ namespace Atmos::Render
 
         [[nodiscard]] Position3D Position() const;
         [[nodiscard]] Size2D Size() const;
-        [[nodiscard]] AxisAlignedBox2D Box() const;
+        [[nodiscard]] Angle Rotation() const;
 
         [[nodiscard]] Arca::Index<ImageCore> Core() const;
         [[nodiscard]] Arca::Index<BoundsT> Bounds() const;
@@ -48,7 +48,8 @@ namespace Atmos::Render
             Arca::Index<Asset::Material> material,
             const Render::Color& color,
             const Position3D& position,
-            const Scalers2D& scalers);
+            const Scalers2D& scalers,
+            const Angle& rotation);
 
         using BaseT::FindOrCreate;
     private:
@@ -130,9 +131,9 @@ namespace Atmos::Render
     }
 
     template<class Derived, bool mutableBounds>
-    AxisAlignedBox2D Image<Derived, mutableBounds>::Box() const
+    Angle Image<Derived, mutableBounds>::Rotation() const
     {
-        return bounds->Box();
+        return bounds->Rotation();
     }
 
     template<class Derived, bool mutableBounds>
@@ -162,7 +163,8 @@ namespace Atmos::Render
         Arca::Index<Asset::Material> material,
         const Render::Color& color,
         const Position3D& position,
-        const Scalers2D& scalers)
+        const Scalers2D& scalers,
+        const Angle& rotation)
         :
         Arca::ClosedTypedRelic<Derived>(init)
     {
@@ -170,7 +172,7 @@ namespace Atmos::Render
         const auto baseSize = asset
             ? asset->SliceSize()
             : Size2D{ 0, 0 };
-        bounds = FindOrCreate<BoundsT>(position, baseSize, scalers);
+        bounds = FindOrCreate<BoundsT>(position, baseSize, scalers, rotation);
     }
 
     template<class Derived, bool mutableBounds>

@@ -29,7 +29,7 @@ namespace Arca
     struct Traits<Atmos::State::StateCurator>
     {
         static const ObjectType objectType = ObjectType::Curator;
-        static inline TypeName typeName = "StateCurator";
+        static inline TypeName typeName = "Atmos::State::StateCurator";
         using HandledCommands = HandledCommands<Atmos::State::Request>;
     };
 }

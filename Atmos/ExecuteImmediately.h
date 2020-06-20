@@ -18,6 +18,6 @@ namespace Arca
     struct Traits<Atmos::Script::ExecuteImmediately>
     {
         static const ObjectType objectType = ObjectType::Command;
-        static inline const TypeName typeName = "ScriptExecuteImmediately";
+        static inline const TypeName typeName = "Atmos::Script::ExecuteImmediately";
     };
 }

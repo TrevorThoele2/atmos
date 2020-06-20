@@ -20,7 +20,7 @@ namespace Arca
     struct Traits<Atmos::Input::MappedInputs>
     {
         static const ObjectType objectType = ObjectType::Relic;
-        static inline const TypeName typeName = "MappedInputs";
+        static inline const TypeName typeName = "Atmos::Input::MappedInputs";
         static const Locality locality = Locality::Global;
     };
 }

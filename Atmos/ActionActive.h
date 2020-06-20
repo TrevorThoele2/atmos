@@ -18,6 +18,6 @@ namespace Arca
     struct Traits<Atmos::Input::ActionActive>
     {
         static const ObjectType objectType = ObjectType::Signal;
-        static inline const TypeName typeName = "InputActionActive";
+        static inline const TypeName typeName = "Atmos::Input::ActionActive";
     };
 }

@@ -78,7 +78,7 @@ namespace Arca
     struct Traits<::Atmos::Debug::Statistics>
     {
         static const ObjectType objectType = ObjectType::Relic;
-        static inline const TypeName typeName = "DebugStatistics";
+        static inline const TypeName typeName = "Atmos::Debug::Statistics";
         static const Locality locality = Locality::Global;
     };
 }

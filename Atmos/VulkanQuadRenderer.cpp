@@ -57,13 +57,29 @@ namespace Atmos::Render::Vulkan
 
     void QuadRenderer::StageRender(const ImageRender& imageRender)
     {
-        const auto halfWidth = imageRender.size.width / 2;
-        const auto halfHeight = imageRender.size.height / 2;
-        const auto position = imageRender.position;
+        const auto rotate = [](const Position2D& position, const Angle& angle, const Position2D& center)
+        {
+            const auto sinAngle = std::sin(angle);
+            const auto cosAngle = std::cos(angle);
+
+            return Position2D
+            {
+                position.x * cosAngle - position.y * sinAngle + center.x,
+                position.x * sinAngle + position.y * cosAngle + center.y
+            };
+        };
+
         const auto imageAsset = imageRender.asset;
         const auto slice = imageRender.assetSlice;
         const auto materialAsset = imageRender.material;
         const auto color = AtmosToVulkanColor(imageRender.color);
+
+        const auto halfWidth = imageRender.size.width / 2;
+        const auto halfHeight = imageRender.size.height / 2;
+        const auto topLeft = rotate({ -halfWidth, -halfHeight }, imageRender.angle, imageRender.position);
+        const auto topRight = rotate({ halfWidth, -halfHeight }, imageRender.angle, imageRender.position);
+        const auto bottomLeft = rotate({ -halfWidth, halfHeight }, imageRender.angle, imageRender.position);
+        const auto bottomRight = rotate({ halfWidth, halfHeight }, imageRender.angle, imageRender.position);
 
         const auto adjustedSliceLeft = slice.Left() / imageAsset->Width();
         const auto adjustedSliceTop = slice.Top() / imageAsset->Height();
@@ -75,25 +91,25 @@ namespace Atmos::Render::Vulkan
             Vertex
             {
                 color,
-                { position.x - halfWidth, position.y - halfHeight },
+                { topLeft.x, topLeft.y },
                 { adjustedSliceLeft, adjustedSliceTop }
             },
             Vertex
             {
                 color,
-                { position.x + halfWidth, position.y - halfHeight },
+                { topRight.x, topRight.y },
                 { adjustedSliceRight, adjustedSliceTop }
             },
             Vertex
             {
                 color,
-                { position.x - halfWidth, position.y + halfHeight },
+                { bottomLeft.x, bottomLeft.y },
                 { adjustedSliceLeft, adjustedSliceBottom }
             },
             Vertex
             {
                 color,
-                { position.x + halfWidth, position.y + halfHeight },
+                { bottomRight.x, bottomRight.y },
                 { adjustedSliceRight, adjustedSliceBottom }
             }
         };

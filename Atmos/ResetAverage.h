@@ -20,6 +20,6 @@ namespace Arca
     struct Traits<Atmos::Time::ResetAverage>
     {
         static const ObjectType objectType = ObjectType::Command;
-        static inline const TypeName typeName = "ResetAverage";
+        static inline const TypeName typeName = "Atmos::Time::ResetAverage";
     };
 }

@@ -28,7 +28,7 @@ namespace Arca
     struct Traits<Atmos::Logging::Transfer>
     {
         static const ObjectType objectType = ObjectType::Curator;
-        static inline const TypeName typeName = "LoggingTransfer";
+        static inline const TypeName typeName = "Atmos::Logging::Transfer";
     };
 }
 

@@ -14,7 +14,7 @@ namespace Arca
     struct Traits<Atmos::GuiEngineProvider>
     {
         static const ObjectType objectType = ObjectType::Relic;
-        static inline const TypeName typeName = "GuiEngineProvider";
+        static inline const TypeName typeName = "Atmos::GuiEngineProvider";
         static const Locality locality = Locality::Global;
     };
 }

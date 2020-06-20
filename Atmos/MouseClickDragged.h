@@ -18,6 +18,6 @@ namespace Arca
     struct Traits<Atmos::Input::MouseMoved>
     {
         static const ObjectType objectType = ObjectType::Signal;
-        static inline const TypeName typeName = "InputMouseMoved";
+        static inline const TypeName typeName = "Atmos::Input::MouseMoved";
     };
 }

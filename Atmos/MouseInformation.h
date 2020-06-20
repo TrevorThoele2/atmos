@@ -1,12 +1,12 @@
 #pragma once
 
-#include <Arca/ClosedTypedRelicAutomation.h>
+#include <Arca/ClosedTypedRelic.h>
 
 #include "ScreenPosition.h"
 
 namespace Atmos::Input
 {
-    class MouseInformation final : public Arca::ClosedTypedRelicAutomation<MouseInformation>
+    class MouseInformation final : public Arca::ClosedTypedRelic<MouseInformation>
     {
     public:
         ScreenPosition position;
@@ -20,7 +20,7 @@ namespace Arca
     struct Traits<Atmos::Input::MouseInformation>
     {
         static const ObjectType objectType = ObjectType::Relic;
-        static inline const TypeName typeName = "MouseInformation";
+        static inline const TypeName typeName = "Atmos::Input::MouseInformation";
         static const Locality locality = Locality::Global;
     };
 }

@@ -26,8 +26,8 @@ namespace Atmos::Render
 
         Arca::Index<Camera> camera;
     private:
-        void OnViewFormed(const Arca::MatrixFormed<Matrix>& view);
-        void OnViewDissolved(const Arca::MatrixDissolved<Matrix>& view);
+        void OnCreated(const Arca::MatrixFormed<Matrix>& signal);
+        void OnDestroying(const Arca::MatrixDissolved<Matrix>& signal);
     private:
         static AxisAlignedBox3D BoxFor(const Index& index);
     };
@@ -39,7 +39,7 @@ namespace Arca
     struct Traits<Atmos::Render::ImageCurator>
     {
         static const ObjectType objectType = ObjectType::Curator;
-        static inline const TypeName typeName = "ImageCurator";
+        static inline const TypeName typeName = "Atmos::Render::ImageCurator";
         using HandledCommands = HandledCommands<Atmos::Render::ChangeImageCore>;
     };
 }

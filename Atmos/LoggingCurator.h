@@ -27,7 +27,7 @@ namespace Arca
     struct Traits<Atmos::Logging::Curator>
     {
         static const ObjectType objectType = ObjectType::Curator;
-        static inline const TypeName typeName = "LoggingCurator";
+        static inline const TypeName typeName = "Atmos::Logging::Curator";
         using HandledCommands = Arca::HandledCommands<Atmos::Logging::Log>;
     };
 }

@@ -33,7 +33,7 @@ namespace Arca
     struct Traits<Atmos::Script::ScriptController>
     {
         static const ObjectType objectType = ObjectType::Curator;
-        static inline const TypeName typeName = "ScriptController";
+        static inline const TypeName typeName = "Atmos::Script::ScriptController";
         using HandledCommands = HandledCommands<
             Atmos::Script::ExecuteImmediately,
             Atmos::Script::ForceQuit>;

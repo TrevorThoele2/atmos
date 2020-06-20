@@ -37,7 +37,7 @@ namespace Arca
     struct Traits<::Atmos::Entity::ActionComponent>
     {
         static const ObjectType objectType = ObjectType::Shard;
-        static inline const TypeName typeName = "ActionComponent";
+        static inline const TypeName typeName = "Atmos::Entity::ActionComponent";
     };
 }
 

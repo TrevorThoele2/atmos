@@ -16,6 +16,6 @@ namespace Arca
     struct Traits<Atmos::Render::SetFullscreen>
     {
         static const ObjectType objectType = ObjectType::Command;
-        static inline const TypeName typeName = "SetFullscreen";
+        static inline const TypeName typeName = "Atmos::Render::SetFullscreen";
     };
 }

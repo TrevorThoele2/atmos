@@ -52,7 +52,7 @@ namespace Arca
     struct Traits<::Atmos::Initialization::Information>
     {
         static const ObjectType objectType = ObjectType::Relic;
-        static inline const TypeName typeName = "InitializationInformation";
+        static inline const TypeName typeName = "Atmos::Initialization::Information";
         static const Locality locality = Locality::Global;
     };
 }
