@@ -2,13 +2,10 @@
 
 #include "VulkanRendererInterface.h"
 #include "VulkanRendererCore.h"
-
-#include "VulkanUniformBufferDescriptor.h"
 #include "VulkanStagedBuffer.h"
-#include "VulkanCombinedImageSamplerDescriptor.h"
 #include "VulkanCommandBufferGroup.h"
 
-#include "ImageRender.h"
+#include "RegionRender.h"
 #include "Position3D.h"
 
 #include <glm/glm.hpp>
@@ -24,36 +21,43 @@ namespace Atmos::Render::Vulkan
             vk::Queue graphicsQueue,
             vk::PhysicalDeviceMemoryProperties memoryProperties);
 
-        void Initialize(uint32_t swapchainImageCount, vk::RenderPass renderPass, vk::Extent2D extent);
+        void Initialize(uint32_t swapchainImageCount, vk::RenderPass renderPass, vk::Extent2D extent) override;
 
-        void StageRender(const ImageRender& imageRender);
+        void StageRender(const RegionRender& regionRender);
 
-        void Start(const std::vector<const Asset::Material*>& materials, vk::CommandBuffer commandBuffer);
+        void Start(const std::vector<const Asset::Material*>& materials, vk::CommandBuffer commandBuffer) override;
         void DrawNextLayer(uint32_t currentImage, glm::vec2 cameraSize) override;
-        void End();
+        void End() override;
         [[nodiscard]] bool IsDone() const override;
 
         [[nodiscard]] Position3D::Value NextLayer() const override;
-        [[nodiscard]] size_t LayerCount() const;
-    private:
-        std::optional<UniformBufferDescriptor> uniformBufferDescriptor;
+        [[nodiscard]] size_t LayerCount() const override;
     private:
         struct Vertex
         {
             alignas(8) glm::vec2 position;
         };
 
+        using Index = uint16_t;
+
         struct Region
         {
             using Vertices = std::vector<Vertex>;
             Vertices vertices;
-            Region(const Vertices& vertices);
+
+            using Indices = std::vector<Index>;
+            Indices indices;
+
+            Region(const Vertices& vertices, const Indices& indices);
         };
 
         static const int stride = 5000;
 
         StagedBuffer vertexBuffer;
-        static const int vertexStride = stride * 4;
+        static const int vertexStride = stride;
+
+        StagedBuffer indexBuffer;
+        static const int indexStride = stride * 2;
 
         struct Context
         {
@@ -62,31 +66,32 @@ namespace Atmos::Render::Vulkan
                 std::vector<Region> regions;
             };
 
-            std::unordered_map<const Asset::Material*, Group> groups;
-            CombinedImageSamplerDescriptor descriptor;
-
-            explicit Context(const CombinedImageSamplerDescriptor& descriptor) :
-                descriptor(descriptor)
-            {}
-
+            std::map<const Asset::Material*, Group> groups;
             Group& GroupFor(const Asset::Material& material);
         };
+    private:
+        struct DrawContextAddition
+        {
+            std::uint32_t vertexCount = 0;
+            std::uint32_t indexCount = 0;
+        };
+
+        using Core = RendererCore<void, Context, DrawContextAddition>;
+        Core core;
+
+        using DrawContext = Core::DrawContext;
 
         void WriteToBuffers(
             const Context::Group& group,
             const Asset::Material* materialAsset,
-            vk::CommandBuffer commandBuffer,
-            std::uint32_t currentImage,
+            DrawContext& drawContext,
+            uint32_t currentImage,
             glm::vec2 cameraSize);
         void WriteToBuffers(
-            const std::vector<Region>& quads,
-            const Asset::Image* imageAsset,
+            const std::vector<Region>& regions,
             Pipeline& pipeline,
-            vk::CommandBuffer commandBuffer,
-            std::uint32_t currentImage);
-    private:
-        using Core = RendererCore<const Asset::Image*, Context>;
-        Core core;
+            DrawContext& drawContext,
+            uint32_t currentImage);
     private:
         vk::Queue graphicsQueue;
         CommandBufferGroup commandBuffers;

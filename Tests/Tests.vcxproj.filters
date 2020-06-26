@@ -7,9 +7,6 @@
     <ClCompile Include="GeneralFixture.cpp">
       <Filter>Source Files\Fixtures</Filter>
     </ClCompile>
-    <ClCompile Include="RenderTests.cpp">
-      <Filter>Source Files\Tests</Filter>
-    </ClCompile>
     <ClCompile Include="WorldSerializationTests.cpp">
       <Filter>Source Files\Tests</Filter>
     </ClCompile>
@@ -37,13 +34,22 @@
     <ClCompile Include="MockSurfaceResource.cpp">
       <Filter>Source Files\Objects</Filter>
     </ClCompile>
+    <ClCompile Include="RenderAlgorithmTests.cpp">
+      <Filter>Source Files\Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageRenderingTests.cpp">
+      <Filter>Source Files\Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="LineRenderingTests.cpp">
+      <Filter>Source Files\Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="GridRegionRenderingTests.cpp">
+      <Filter>Source Files\Tests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneralFixture.h">
       <Filter>Header Files\Fixtures</Filter>
-    </ClInclude>
-    <ClInclude Include="RenderTests.h">
-      <Filter>Header Files\Tests</Filter>
     </ClInclude>
     <ClInclude Include="WorldSerializationTests.h">
       <Filter>Header Files\Tests</Filter>
@@ -71,6 +77,18 @@
     </ClInclude>
     <ClInclude Include="MockImageAssetResource.h">
       <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderAlgorithmTests.h">
+      <Filter>Header Files\Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageRenderingTests.h">
+      <Filter>Header Files\Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="LineRenderingTests.h">
+      <Filter>Header Files\Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="GridRegionRenderingTests.h">
+      <Filter>Header Files\Tests</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -5,6 +5,7 @@
 
 #include "ImageRender.h"
 #include "LineRender.h"
+#include "RegionRender.h"
 
 #include "ShaderAsset.h"
 
@@ -25,6 +26,7 @@ namespace Atmos::Render::DirectX9
 
         void StageRender(const ImageRender& imageRender);
         void StageRender(const LineRender& lineRender);
+        void StageRender(const RegionRender& regionRender);
 
         void DrawFrame(ScreenSize screenSize, const Color& backgroundColor);
 

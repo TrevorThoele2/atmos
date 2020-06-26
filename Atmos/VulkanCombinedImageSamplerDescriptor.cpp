@@ -3,7 +3,7 @@
 namespace Atmos::Render::Vulkan
 {
     CombinedImageSamplerDescriptor::CombinedImageSamplerDescriptor(
-        vk::ImageView imageView, vk::Sampler sampler, vk::ImageLayout imageLayout, std::uint32_t binding)
+        vk::ImageView imageView, vk::Sampler sampler, vk::ImageLayout imageLayout, uint32_t binding)
         :
         binding(binding), imageInfo(sampler, imageView, imageLayout)
     {}

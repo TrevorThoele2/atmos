@@ -2,8 +2,11 @@
 
 #include "Map.h"
 
+#include "GridPositionAlgorithms.h"
+
 namespace Atmos
 {
+    /*
     Pathfinder::Path Pathfinder::FindPath(const Grid::Position& start, const Grid::Position& finish)
     {
         Path createdStack;
@@ -16,7 +19,7 @@ namespace Atmos
 
         NodeHeap openSet;
         NodeMap closedSet;
-        openSet.Push(Node(0, start.FindDistance(finish), start));
+        openSet.Push(Node(0, Length(start, finish), start));
 
         while (!openSet.IsEmpty())
         {
@@ -168,4 +171,5 @@ namespace Atmos
         Path empty;
         std::swap(stack, empty);
     }
+    */
 }

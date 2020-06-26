@@ -1,356 +1,256 @@
 #pragma once
 
-#include <optional>
-#include <map>
-#include "VulkanIncludes.h"
+#include "VulkanKeyedDescriptorSetGroup.h"
+#include "VulkanObjectLayering.h"
+#include "VulkanPipelineGroup.h"
+#include "VulkanDrawContext.h"
 
-#include "VulkanDescriptorSetGroup.h"
-#include "VulkanPipeline.h"
-
-#include "Position3D.h"
+#include <glm/glm.hpp>
 
 namespace Atmos::Render::Vulkan
 {
-    template<class Discriminator, class Context>
-    class RendererCore
+    template<class Key, class Context, class DrawContextAddition>
+    class RendererCoreBase
     {
     public:
-        struct DrawContext
-        {
-            std::vector<const Asset::Material*> materials;
-            uint32_t count = 0;
-            vk::CommandBuffer commandBuffer;
-            uint32_t layerCount = 0;
-            typename std::map<Position3D::Value, Context>::iterator currentLayer;
-        };
-
-        struct DiscriminatedDescriptorSet
-        {
-            Discriminator discriminator;
-            std::uint32_t imageIndex;
-            vk::DescriptorSet descriptorSet;
-            DiscriminatedDescriptorSet(
-                Discriminator discriminator, std::uint32_t imageIndex, vk::DescriptorSet descriptorSet);
-        };
+        using DrawContext = DrawContext<Context, DrawContextAddition>;
+        using Draw = std::function<void(Context&, DrawContext&, uint32_t, glm::vec2)>;
     public:
-        RendererCore(
+        RendererCoreBase(
             std::shared_ptr<vk::Device> device,
             vk::PhysicalDeviceMemoryProperties memoryProperties,
+            const std::vector<DescriptorSetGroup::Definition>& descriptorSetDefinitions,
             VertexInput vertexInput,
-            const std::vector<DescriptorSetGroup::Definition>& descriptorSetGroupDefinitions,
             vk::PrimitiveTopology primitiveTopology,
-            Asset::MaterialType materialAssetType,
-            std::optional<Discriminator> onlyDiscrimination = {});
+            Asset::MaterialType materialType,
+            Draw&& draw);
+        virtual ~RendererCoreBase() = 0;
 
         void Initialize(uint32_t swapchainImageCount, vk::RenderPass renderPass, vk::Extent2D extent);
-    public:
-        template<class SetupDiscrimination>
-        void Start(const std::vector<const Asset::Material*>& materials, vk::CommandBuffer commandBuffer, SetupDiscrimination setupDiscrimination);
+
+        void DrawNextLayer(uint32_t currentImage, glm::vec2 cameraSize);
         void End();
         [[nodiscard]] bool IsDone() const;
-        [[nodiscard]] DrawContext* CurrentDrawContext();
-    public:
-        void AddDiscriminator(Discriminator discriminator);
 
-        template<class Predicate>
-        DiscriminatedDescriptorSet* DiscriminatedDescriptorSetFor(Predicate predicate);
-    public:
-        Context& AddContext(Position3D::Value key, const Context& value);
-        Context* ContextFor(Position3D::Value value);
-    public:
-        Pipeline* PipelineFor(const Asset::Material& material);
-    public:
+        Context& AddContext(Position3D::Value z, Context&& context);
+        Context* ContextFor(Position3D::Value z);
+
+        [[nodiscard]] Pipeline* PipelineFor(const Asset::Material& material);
+
         [[nodiscard]] Position3D::Value NextLayer() const;
         [[nodiscard]] size_t LayerCount() const;
-    private:
-        using LayeredContexts = std::map<Position3D::Value, Context>;
-        LayeredContexts layeredContexts;
+    protected:
+        using DescriptorSets = KeyedDescriptorSetGroup<Key>;
+        DescriptorSets descriptorSets;
+
+        using ObjectLayering = ObjectLayering<Context>;
+        ObjectLayering layers;
+        PipelineGroup pipelines;
+        std::shared_ptr<vk::Device> device;
+
+        void StartCommon(
+            const std::vector<const Asset::Material*>& materials,
+            vk::CommandBuffer commandBuffer,
+            bool recreatePipelines);
     private:
         std::optional<DrawContext> drawContext;
-    private:
-        struct DiscriminatorSource
-        {
-            Discriminator discriminator;
-            std::uint32_t swapchainImageIndex;
-            DiscriminatorSource(Discriminator discriminator, std::uint32_t swapchainImageIndex);
-        };
 
-        std::vector<DiscriminatorSource> discriminatorSources;
-        std::vector<DescriptorSetGroup::Definition> descriptorSetGroupDefinitions;
-        std::optional<DescriptorSetGroup> descriptorSets;
-        std::vector<DiscriminatedDescriptorSet> discriminatedDescriptorSets;
-
-        std::optional<Discriminator> onlyDiscrimination;
-
-        template<class SetupDiscrimination>
-        void SetupDiscriminatedDescriptorSet(SetupDiscrimination setupDiscrimination);
-    private:
-        VertexInput vertexInput;
-        std::vector<Pipeline> pipelines;
-        vk::PrimitiveTopology primitiveTopology;
-        Pipeline CreatePipeline(
-            const Asset::Material* material,
-            vk::DescriptorSetLayout descriptorSetLayout,
-            vk::Extent2D extent);
-    private:
-        std::shared_ptr<vk::Device> device;
-        uint32_t swapchainImageCount = 0;
-        vk::Extent2D extent;
+        uint32_t swapchainImageCount;
         vk::RenderPass renderPass;
-        vk::PhysicalDeviceMemoryProperties memoryProperties;
-    private:
-        Asset::MaterialType materialAssetType;
+        vk::Extent2D extent;
+
+        Draw draw;
     };
 
-    template<class Discriminator, class Context>
-    RendererCore<Discriminator, Context>::DiscriminatedDescriptorSet::DiscriminatedDescriptorSet(
-        Discriminator discriminator,
-        std::uint32_t imageIndex,
-        vk::DescriptorSet descriptorSet)
-        :
-        discriminator(discriminator),
-        imageIndex(imageIndex),
-        descriptorSet(descriptorSet)
-    {}
-
-    template<class Discriminator, class Context>
-    RendererCore<Discriminator, Context>::RendererCore(
+    template<class Key, class Context, class DrawContextAddition>
+    RendererCoreBase<Key, Context, DrawContextAddition>::RendererCoreBase(
         std::shared_ptr<vk::Device> device,
         vk::PhysicalDeviceMemoryProperties memoryProperties,
+        const std::vector<DescriptorSetGroup::Definition>& descriptorSetDefinitions,
         VertexInput vertexInput,
-        const std::vector<DescriptorSetGroup::Definition>& descriptorSetGroupDefinitions,
         vk::PrimitiveTopology primitiveTopology,
-        Asset::MaterialType materialAssetType,
-        std::optional<Discriminator> onlyDiscrimination)
+        Asset::MaterialType materialType,
+        Draw&& draw)
         :
-        descriptorSetGroupDefinitions(descriptorSetGroupDefinitions),
-        onlyDiscrimination(onlyDiscrimination),
-        vertexInput(vertexInput),
-        primitiveTopology(primitiveTopology),
+        descriptorSets(descriptorSetDefinitions, *device),
+        pipelines(device, memoryProperties, vertexInput, primitiveTopology, materialType),
         device(device),
-        memoryProperties(memoryProperties),
-        materialAssetType(materialAssetType)
+        draw(std::move(draw))
     {}
 
-    template<class Discriminator, class Context>
-    void RendererCore<Discriminator, Context>::Initialize(
-        uint32_t swapchainImageCount, vk::RenderPass renderPass, vk::Extent2D extent)
+    template <class Key, class Context, class DrawContextAddition>
+    RendererCoreBase<Key, Context, DrawContextAddition>::~RendererCoreBase() = default;
+
+    template<class Key, class Context, class DrawContextAddition>
+    void RendererCoreBase<Key, Context, DrawContextAddition>::Initialize(uint32_t swapchainImageCount, vk::RenderPass renderPass, vk::Extent2D extent)
     {
         this->swapchainImageCount = swapchainImageCount;
         this->renderPass = renderPass;
         this->extent = extent;
 
-        descriptorSets = DescriptorSetGroup(descriptorSetGroupDefinitions, *device);
-
-        if (onlyDiscrimination)
-        {
-            discriminatorSources.clear();
-            for (uint32_t swapchainImageIndex = 0; swapchainImageIndex < swapchainImageCount; ++swapchainImageIndex)
-                discriminatorSources.emplace_back(*onlyDiscrimination, swapchainImageIndex);
-        }
+        descriptorSets.Clear();
+        descriptorSets.Initialize(swapchainImageCount);
     }
 
-    template<class Discriminator, class Context>
-    template<class SetupDiscrimination>
-    void RendererCore<Discriminator, Context>::Start(
-        const std::vector<const Asset::Material*>& materials, vk::CommandBuffer commandBuffer, SetupDiscrimination setupDiscrimination)
+    template<class Key, class Context, class DrawContextAddition>
+    void RendererCoreBase<Key, Context, DrawContextAddition>::DrawNextLayer(uint32_t currentImage, glm::vec2 cameraSize)
     {
-        if (layeredContexts.empty())
-            return;
+        auto& context = drawContext->currentLayer->second;
 
-        drawContext = DrawContext();
-        drawContext->materials = materials;
-        drawContext->commandBuffer = commandBuffer;
-        drawContext->currentLayer = layeredContexts.begin();
+        draw(context, *drawContext, currentImage, cameraSize);
 
-        SetupDiscriminatedDescriptorSet(setupDiscrimination);
+        ++drawContext->layerCount;
+        ++drawContext->currentLayer;
     }
 
-    template<class Discriminator, class Context>
-    void RendererCore<Discriminator, Context>::End()
+    template<class Key, class Context, class DrawContextAddition>
+    void RendererCoreBase<Key, Context, DrawContextAddition>::End()
     {
-        layeredContexts.clear();
         drawContext = {};
 
-        descriptorSets->Reset();
-        if (!onlyDiscrimination)
-            discriminatorSources.clear();
+        layers.Clear();
+        descriptorSets.Clear();
     }
 
-    template<class Discriminator, class Context>
-    bool RendererCore<Discriminator, Context>::IsDone() const
+    template<class Key, class Context, class DrawContextAddition>
+    bool RendererCoreBase<Key, Context, DrawContextAddition>::IsDone() const
     {
-        return !drawContext || drawContext->currentLayer == layeredContexts.end();
+        return !drawContext || drawContext->currentLayer == layers.end();
     }
 
-    template<class Discriminator, class Context>
-    auto RendererCore<Discriminator, Context>::CurrentDrawContext() -> DrawContext*
+    template<class Key, class Context, class DrawContextAddition>
+    Context& RendererCoreBase<Key, Context, DrawContextAddition>::AddContext(Position3D::Value z, Context&& context)
     {
-        return drawContext
-            ? &*drawContext
-            : nullptr;
+        return layers.Add(z, std::move(context));
     }
 
-    template<class Discriminator, class Context>
-    void RendererCore<Discriminator, Context>::AddDiscriminator(Discriminator discriminator)
+    template<class Key, class Context, class DrawContextAddition>
+    Context* RendererCoreBase<Key, Context, DrawContextAddition>::ContextFor(Position3D::Value z)
     {
-        for (auto& source : discriminatorSources)
-            if (source.discriminator == discriminator)
-                return;
-
-        for (uint32_t swapchainImageIndex = 0; swapchainImageIndex < swapchainImageCount; ++swapchainImageIndex)
-            discriminatorSources.emplace_back(discriminator, swapchainImageIndex);
+        return layers.Find(z);
     }
 
-    template<class Discriminator, class Context>
-    template<class Predicate>
-    auto RendererCore<Discriminator, Context>::DiscriminatedDescriptorSetFor(Predicate predicate)
-        -> DiscriminatedDescriptorSet*
+    template<class Key, class Context, class DrawContextAddition>
+    Pipeline* RendererCoreBase<Key, Context, DrawContextAddition>::PipelineFor(const Asset::Material& material)
     {
-        auto found = std::find_if(
-            discriminatedDescriptorSets.begin(),
-            discriminatedDescriptorSets.end(),
-            predicate);
-        return (found == discriminatedDescriptorSets.end())
-            ? nullptr
-            : &*found;
+        return pipelines.Find(material);
     }
 
-    template<class Discriminator, class Context>
-    Context& RendererCore<Discriminator, Context>::AddContext(Position3D::Value key, const Context& value)
-    {
-        return layeredContexts.emplace(key, value).first->second;
-    }
-
-    template<class Discriminator, class Context>
-    auto RendererCore<Discriminator, Context>::ContextFor(Position3D::Value value) -> Context*
-    {
-        auto found = layeredContexts.find(value);
-        if (found == layeredContexts.end())
-            return nullptr;
-
-        return &found->second;
-    }
-
-    template<class Discriminator, class Context>
-    auto RendererCore<Discriminator, Context>::PipelineFor(const Asset::Material& material) -> Pipeline*
-    {
-        for (auto& pipeline : pipelines)
-            if (pipeline.material == &material)
-                return &pipeline;
-
-        return nullptr;
-    }
-
-    template<class Discriminator, class Context>
-    Position3D::Value RendererCore<Discriminator, Context>::NextLayer() const
+    template<class Key, class Context, class DrawContextAddition>
+    Position3D::Value RendererCoreBase<Key, Context, DrawContextAddition>::NextLayer() const
     {
         return drawContext->currentLayer->first;
     }
 
-    template<class Discriminator, class Context>
-    size_t RendererCore<Discriminator, Context>::LayerCount() const
+    template<class Key, class Context, class DrawContextAddition>
+    size_t RendererCoreBase<Key, Context, DrawContextAddition>::LayerCount() const
     {
-        return layeredContexts.size();
+        return layers.Count();
     }
 
-    template<class Discriminator, class Context>
-    RendererCore<Discriminator, Context>::DiscriminatorSource::DiscriminatorSource(
-        Discriminator discriminator, std::uint32_t swapchainImageIndex)
-        :
-        discriminator(discriminator), swapchainImageIndex(swapchainImageIndex)
-    {}
-
-    template <class Discriminator, class Context>
-    template<class SetupDiscrimination>
-    void RendererCore<Discriminator, Context>::SetupDiscriminatedDescriptorSet(
-        SetupDiscrimination setupDiscrimination)
+    template<class Key, class Context, class DrawContextAddition>
+    void RendererCoreBase<Key, Context, DrawContextAddition>::StartCommon(
+        const std::vector<const Asset::Material*>& materials,
+        vk::CommandBuffer commandBuffer,
+        bool recreatePipelines)
     {
-        const auto iterateDiscriminatorSources = [this](auto onEach)
-        {
-            for (std::uint32_t i = 0; i < discriminatorSources.size(); ++i)
-            {
-                const auto& source = discriminatorSources[i];
-                const auto descriptorSet = descriptorSets->At(i);
-                onEach(source, descriptorSet, i);
-            }
-        };
+        if (recreatePipelines)
+            pipelines.Recreate(materials, descriptorSets.Layout(), swapchainImageCount, renderPass, extent);
 
-        const auto updatePipeline = [this, &iterateDiscriminatorSources](Pipeline& pipeline)
-        {
-            iterateDiscriminatorSources(
-                [this, &pipeline](
-                    const DiscriminatorSource& source, vk::DescriptorSet descriptorSet, std::uint32_t)
-                {
-                    pipeline.uniformBufferDescriptors[source.swapchainImageIndex].Update(descriptorSet, *device);
-                });
-        };
+        for (auto& pipeline : pipelines)
+            for (auto& descriptorSet : descriptorSets)
+                pipeline.uniformBufferDescriptors[descriptorSet.imageIndex].Update(descriptorSet.descriptorSet, *device);
 
-        const auto requiredDescriptorSetSize = discriminatorSources.size();
-        if (descriptorSets->Size() < requiredDescriptorSetSize)
-        {
-            pipelines.clear();
-            pipelines.reserve(drawContext->materials.size());
-            discriminatedDescriptorSets.clear();
-            discriminatedDescriptorSets.reserve(requiredDescriptorSetSize);
-            descriptorSets->Reserve(requiredDescriptorSetSize);
-
-            iterateDiscriminatorSources(
-                [this, setupDiscrimination](
-                    const DiscriminatorSource& source, vk::DescriptorSet descriptorSet, std::uint32_t)
-                {
-                    setupDiscrimination(source.discriminator, descriptorSet);
-                    discriminatedDescriptorSets.emplace_back(
-                        source.discriminator, source.swapchainImageIndex, descriptorSet);
-                });
-
-            for (auto& material : drawContext->materials)
-            {
-                if (material->Type() != materialAssetType)
-                    continue;
-
-                pipelines.push_back(CreatePipeline(material, descriptorSets->DescriptorSetLayout(), extent));
-                auto& pipeline = pipelines.back();
-
-                updatePipeline(pipeline);
-            }
-        }
-        else
-        {
-            iterateDiscriminatorSources(
-                [this, setupDiscrimination](
-                    const DiscriminatorSource& source, vk::DescriptorSet descriptorSet, std::uint32_t index)
-                {
-                    auto& discriminatedDescriptorSet = discriminatedDescriptorSets[index];
-                    discriminatedDescriptorSet.discriminator = source.discriminator;
-                    setupDiscrimination(discriminatedDescriptorSet.discriminator, descriptorSet);
-                });
-
-            for (auto& pipeline : pipelines)
-                updatePipeline(pipeline);
-        }
+        drawContext = DrawContext();
+        drawContext->materials = materials;
+        drawContext->commandBuffer = commandBuffer;
+        drawContext->currentLayer = layers.begin();
     }
 
-    template<class Discriminator, class Context>
-    auto RendererCore<Discriminator, Context>::CreatePipeline(
-        const Asset::Material* material,
-        vk::DescriptorSetLayout descriptorSetLayout,
-        vk::Extent2D extent)
-
-        -> Pipeline
+    template<class Key, class Context, class DrawContextAddition>
+    class RendererCore final : public RendererCoreBase<Key, Context, DrawContextAddition>
     {
-        return Pipeline
-        {
-            *material,
-            *device,
-            swapchainImageCount,
-            memoryProperties,
-            { descriptorSetLayout },
-            renderPass,
-            vertexInput,
-            extent,
-            primitiveTopology,
-            {}
-        };
+    private:
+        using BaseT = RendererCoreBase<Key, Context, DrawContextAddition>;
+
+        using DescriptorSets = typename BaseT::DescriptorSets;
+    public:
+        using KeyedSet = typename DescriptorSets::KeyedSet;
+    public:
+        using BaseT::BaseT;
+
+        template<class SetupKey>
+        void Start(const std::vector<const Asset::Material*>& materials, vk::CommandBuffer commandBuffer, SetupKey setupKey);
+        void AddKey(Key key);
+        KeyedSet* KeyedSetFor(Key key, uint32_t imageIndex);
+    protected:
+        using BaseT::descriptorSets;
+        using BaseT::layers;
+        using BaseT::pipelines;
+        using BaseT::device;
+        using BaseT::StartCommon;
+    };
+
+    template<class Key, class Context, class DrawContextAddition>
+    template<class SetupKey>
+    void RendererCore<Key, Context, DrawContextAddition>::Start(
+        const std::vector<const Asset::Material*>& materials, vk::CommandBuffer commandBuffer, SetupKey setupKey)
+    {
+        if (layers.Empty())
+            return;
+
+        const auto recreatedDescriptorSets = descriptorSets.UpdateSets(setupKey);
+        StartCommon(materials, commandBuffer, recreatedDescriptorSets);
+    }
+
+    template<class Key, class Context, class DrawContextAddition>
+    void RendererCore<Key, Context, DrawContextAddition>::AddKey(Key key)
+    {
+        descriptorSets.AddKey(key);
+    }
+
+    template<class Key, class Context, class DrawContextAddition>
+    auto RendererCore<Key, Context, DrawContextAddition>::KeyedSetFor(Key key, uint32_t imageIndex) -> KeyedSet*
+    {
+        return descriptorSets.KeyedSetFor(key, imageIndex);
+    }
+
+    template<class Context, class DrawContextAddition>
+    class RendererCore<void, Context, DrawContextAddition> final : public RendererCoreBase<void, Context, DrawContextAddition>
+    {
+    private:
+        using BaseT = RendererCoreBase<void, Context, DrawContextAddition>;
+
+        using DescriptorSets = typename BaseT::DescriptorSets;
+    public:
+        using KeyedSet = typename DescriptorSets::KeyedSet;
+    public:
+        using BaseT::BaseT;
+
+        void Start(const std::vector<const Asset::Material*>& materials, vk::CommandBuffer commandBuffer);
+        KeyedSet* KeyedSetFor(uint32_t imageIndex);
+    protected:
+        using BaseT::descriptorSets;
+        using BaseT::layers;
+        using BaseT::pipelines;
+        using BaseT::device;
+        using BaseT::StartCommon;
+    };
+
+    template<class Context, class DrawContextAddition>
+    void RendererCore<void, Context, DrawContextAddition>::Start(
+        const std::vector<const Asset::Material*>& materials, vk::CommandBuffer commandBuffer)
+    {
+        if (layers.Empty())
+            return;
+
+        const auto recreatedDescriptorSets = descriptorSets.UpdateSets();
+        StartCommon(materials, commandBuffer, recreatedDescriptorSets);
+    }
+
+    template<class Context, class DrawContextAddition>
+    auto RendererCore<void, Context, DrawContextAddition>::KeyedSetFor(uint32_t imageIndex) -> KeyedSet*
+    {
+        return descriptorSets.KeyedSetFor(imageIndex);
     }
 }

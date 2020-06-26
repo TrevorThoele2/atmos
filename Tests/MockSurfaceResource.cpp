@@ -10,6 +10,11 @@ void MockSurfaceResourceImplementation::StageRender(const Atmos::Render::LineRen
     lineRenders.push_back(lineRender);
 }
 
+void MockSurfaceResourceImplementation::StageRender(const Atmos::Render::RegionRender& regionRender)
+{
+    regionRenders.push_back(regionRender);
+}
+
 void MockSurfaceResourceImplementation::DrawFrame(Arca::Reliquary& reliquary, const Atmos::Render::Color& backgroundColor)
 {
     

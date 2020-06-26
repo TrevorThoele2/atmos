@@ -426,11 +426,32 @@
     <Filter Include="Source Files\Render\Vulkan\Resource">
       <UniqueIdentifier>{4aeba525-17c5-415f-8a91-25fa5d9248d2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Render\Region">
+    <Filter Include="Header Files\Render\Vulkan\Renderer\Infrastructure">
+      <UniqueIdentifier>{ea369583-c431-49b1-b4f7-91e77fb04d4b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Render\Vulkan\Renderer\Infrastructure">
+      <UniqueIdentifier>{46a4990e-f978-4a78-bd32-455486b667bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Render\Algorithms">
+      <UniqueIdentifier>{aec8cb75-277f-44d2-a555-dc6dcc660d9b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Render\Algorithms">
+      <UniqueIdentifier>{28d5f623-bdf5-49c9-b52d-068ff153e4c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Position\Algorithms">
+      <UniqueIdentifier>{6cab46aa-871e-437c-b570-34716c5bf980}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Position\Algorithms">
+      <UniqueIdentifier>{e0ea15f9-2d85-48a2-a5d4-3046dddfec8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Render\GridRegion">
       <UniqueIdentifier>{06415266-1757-446f-8602-003550936030}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Render\Region">
+    <Filter Include="Source Files\Render\GridRegion">
       <UniqueIdentifier>{94a2943f-f9aa-4f8d-8bcb-1f31e1338fc6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Render\Region">
+      <UniqueIdentifier>{97768607-a1df-4f08-abe2-458fd26b8467}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1049,9 +1070,6 @@
     <ClInclude Include="GuiEngineProvider.h">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
-    <ClInclude Include="SparseRegion.h">
-      <Filter>Header Files\Grid</Filter>
-    </ClInclude>
     <ClInclude Include="WorldFileExtension.h">
       <Filter>Header Files\World\Serialization\World</Filter>
     </ClInclude>
@@ -1376,9 +1394,6 @@
     <ClInclude Include="ExternalManagers.h">
       <Filter>Header Files\Engine</Filter>
     </ClInclude>
-    <ClInclude Include="VulkanRendererCore.h">
-      <Filter>Header Files\Render\Vulkan\Renderer</Filter>
-    </ClInclude>
     <ClInclude Include="VulkanLineRenderer.h">
       <Filter>Header Files\Render\Vulkan\Renderer</Filter>
     </ClInclude>
@@ -1386,9 +1401,6 @@
       <Filter>Header Files\Render\Vulkan\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="VulkanRendererInterface.h">
-      <Filter>Header Files\Render\Vulkan\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="VulkanRenderer.h">
       <Filter>Header Files\Render\Vulkan\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="WindowsUndef.h">
@@ -1460,20 +1472,56 @@
     <ClInclude Include="RotateBounds.h">
       <Filter>Header Files\Position\Object</Filter>
     </ClInclude>
-    <ClInclude Include="Region.h">
-      <Filter>Header Files\Render\Region</Filter>
-    </ClInclude>
-    <ClInclude Include="RegionCurator.h">
-      <Filter>Header Files\Render\Region</Filter>
-    </ClInclude>
-    <ClInclude Include="RegionRender.h">
-      <Filter>Header Files\Render\Region</Filter>
-    </ClInclude>
     <ClInclude Include="VulkanRegionRenderer.h">
       <Filter>Header Files\Render\Vulkan\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="VulkanKeyedDescriptorSetGroup.h">
       <Filter>Header Files\Render\Vulkan\Descriptors</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanObjectLayering.h">
+      <Filter>Header Files\Render\Vulkan\Renderer\Infrastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanPipelineGroup.h">
+      <Filter>Header Files\Render\Vulkan\Renderer\Infrastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanDrawContext.h">
+      <Filter>Header Files\Render\Vulkan\Renderer\Infrastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanMasterRenderer.h">
+      <Filter>Header Files\Render\Vulkan\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanRendererCore.h">
+      <Filter>Header Files\Render\Vulkan\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Position2DAlgorithms.h">
+      <Filter>Header Files\Position\Algorithms</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderAlgorithms.h">
+      <Filter>Header Files\Render\Algorithms</Filter>
+    </ClInclude>
+    <ClInclude Include="RegionRender.h">
+      <Filter>Header Files\Render\Region</Filter>
+    </ClInclude>
+    <ClInclude Include="GridRegion.h">
+      <Filter>Header Files\Render\GridRegion</Filter>
+    </ClInclude>
+    <ClInclude Include="GridRegionCurator.h">
+      <Filter>Header Files\Render\GridRegion</Filter>
+    </ClInclude>
+    <ClInclude Include="GridPositionAlgorithms.h">
+      <Filter>Header Files\Grid</Filter>
+    </ClInclude>
+    <ClInclude Include="GridPositionConversion.h">
+      <Filter>Header Files\Grid</Filter>
+    </ClInclude>
+    <ClInclude Include="PositionConversions.h">
+      <Filter>Header Files\Position\Algorithms</Filter>
+    </ClInclude>
+    <ClInclude Include="SparseRegion.h">
+      <Filter>Header Files\Grid</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderMesh.h">
+      <Filter>Header Files\Render</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2050,9 +2098,6 @@
     <ClCompile Include="VulkanQuadRenderer.cpp">
       <Filter>Source Files\Render\Vulkan\Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="VulkanRenderer.cpp">
-      <Filter>Source Files\Render\Vulkan\Renderer</Filter>
-    </ClCompile>
     <ClCompile Include="VulkanRendererInterface.cpp">
       <Filter>Source Files\Render\Vulkan\Renderer</Filter>
     </ClCompile>
@@ -2092,17 +2137,38 @@
     <ClCompile Include="VulkanShaderAssetResource.cpp">
       <Filter>Source Files\Render\Vulkan\Resource</Filter>
     </ClCompile>
-    <ClCompile Include="Region.cpp">
-      <Filter>Source Files\Render\Region</Filter>
-    </ClCompile>
-    <ClCompile Include="RegionCurator.cpp">
-      <Filter>Source Files\Render\Region</Filter>
-    </ClCompile>
     <ClCompile Include="VulkanRegionRenderer.cpp">
       <Filter>Source Files\Render\Vulkan\Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="VulkanDiscriminatedDescriptorSetGroup.cpp">
+    <ClCompile Include="VulkanKeyedDescriptorSetGroup.cpp">
       <Filter>Source Files\Render\Vulkan\Descriptors</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanPipelineGroup.cpp">
+      <Filter>Source Files\Render\Vulkan\Renderer\Infrastructure</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanMasterRenderer.cpp">
+      <Filter>Source Files\Render\Vulkan\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Position2DAlgorithms.cpp">
+      <Filter>Source Files\Position\Algorithms</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderAlgorithms.cpp">
+      <Filter>Source Files\Render\Algorithms</Filter>
+    </ClCompile>
+    <ClCompile Include="GridRegion.cpp">
+      <Filter>Source Files\Render\GridRegion</Filter>
+    </ClCompile>
+    <ClCompile Include="GridRegionCurator.cpp">
+      <Filter>Source Files\Render\GridRegion</Filter>
+    </ClCompile>
+    <ClCompile Include="GridPositionAlgorithms.cpp">
+      <Filter>Source Files\Grid</Filter>
+    </ClCompile>
+    <ClCompile Include="GridPositionConversion.cpp">
+      <Filter>Source Files\Grid</Filter>
+    </ClCompile>
+    <ClCompile Include="PositionConversions.cpp">
+      <Filter>Source Files\Position\Algorithms</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "SurfaceResource.h"
-#include "VulkanRenderer.h"
+#include "VulkanMasterRenderer.h"
 #include "VulkanIncludes.h"
 
 #include "VulkanQueueFamilyIndices.h"
@@ -44,7 +44,7 @@ namespace Atmos::Render::Resource::Vulkan
     private:
         vk::Sampler sampler;
 
-        std::unique_ptr<Renderer> renderer;
+        std::unique_ptr<MasterRenderer> renderer;
     private:
         vk::UniqueSurfaceKHR underlying;
         vk::UniqueSwapchainKHR swapchain;

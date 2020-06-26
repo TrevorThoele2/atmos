@@ -1,10 +1,9 @@
 #include <catch.hpp>
 
-#include "RenderTests.h"
+#include "ImageRenderingTests.h"
 
 #include <Atmos/StaticImage.h>
 #include <Atmos/DynamicImage.h>
-#include <Atmos/Line.h>
 #include <Atmos/ResizeCamera.h>
 #include <Atmos/TypeRegistration.h>
 #include <Atmos/GridCellSize.h>
@@ -19,7 +18,7 @@
 
 using namespace Atmos;
 
-SCENARIO_METHOD(RenderTestsFixture, "rendering images")
+SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images")
 {
     GIVEN("setup engine with field")
     {
@@ -47,7 +46,7 @@ SCENARIO_METHOD(RenderTestsFixture, "rendering images")
 
         std::unique_ptr<Asset::Resource::Image> imageResource = std::make_unique<ImageAssetResourceImplementation>();
         auto imageAsset = fieldReliquary.Do<Arca::Create<Asset::Image>>(
-            String{}, std::move(imageResource), Asset::ImageSize{1, 1}, Asset::ImageGridSize{});
+            String{}, std::move(imageResource), Asset::ImageSize{ 1, 1 }, Asset::ImageGridSize{});
 
         auto materialAsset = fieldReliquary.Do<Arca::Create<Asset::Material>>(
             String{}, Asset::MaterialType::Image, Arca::Index<Asset::Shader>{}, Arca::Index<Asset::Shader>{});
@@ -100,21 +99,24 @@ SCENARIO_METHOD(RenderTestsFixture, "rendering images")
                 materialAsset,
                 Color{},
                 positions[0],
-                scalers[0]);
+                scalers[0],
+                Angle{});
             auto image2 = fieldReliquary.Do<Arca::Create<StaticImage>>(
                 imageAsset,
                 0,
                 materialAsset,
                 Color{},
                 positions[1],
-                scalers[1]);
+                scalers[1],
+                Angle{});
             auto image3 = fieldReliquary.Do<Arca::Create<StaticImage>>(
                 imageAsset,
                 0,
                 materialAsset,
                 Color{},
                 positions[2],
-                scalers[2]);
+                scalers[2],
+                Angle{});
             WHEN("starting engine execution")
             {
                 engine.UseField(std::move(field));
@@ -184,21 +186,24 @@ SCENARIO_METHOD(RenderTestsFixture, "rendering images")
                 materialAsset,
                 Color{},
                 positions[0],
-                scalers[0]);
+                scalers[0],
+                Angle{});
             fieldReliquary.Do<Arca::Create<StaticImage>>(
                 Arca::Index<Asset::Image>{},
                 0,
                 materialAsset,
                 Color{},
                 positions[1],
-                scalers[1]);
+                scalers[1],
+                Angle{});
             fieldReliquary.Do<Arca::Create<StaticImage>>(
                 Arca::Index<Asset::Image>{},
                 0,
                 materialAsset,
                 Color{},
                 positions[2],
-                scalers[2]);
+                scalers[2],
+                Angle{});
             WHEN("starting engine execution")
             {
                 engine.UseField(std::move(field));
@@ -207,7 +212,7 @@ SCENARIO_METHOD(RenderTestsFixture, "rendering images")
                 THEN("no images rendered in graphics manager")
                 {
                     auto& imageRenders = mainSurfaceImplementation->imageRenders;
-                    REQUIRE(imageRenders.size() == 0);
+                    REQUIRE(imageRenders.empty());
                 }
             }
         }
@@ -220,21 +225,24 @@ SCENARIO_METHOD(RenderTestsFixture, "rendering images")
                 Arca::Index<Asset::Material>{},
                 Color{},
                 positions[0],
-                scalers[0]);
+                scalers[0],
+                Angle{});
             fieldReliquary.Do<Arca::Create<StaticImage>>(
                 imageAsset,
                 0,
                 Arca::Index<Asset::Material>{},
                 Color{},
                 positions[1],
-                scalers[1]);
+                scalers[1],
+                Angle{});
             fieldReliquary.Do<Arca::Create<StaticImage>>(
                 imageAsset,
                 0,
                 Arca::Index<Asset::Material>{},
                 Color{},
                 positions[2],
-                scalers[2]);
+                scalers[2],
+                Angle{});
             WHEN("starting engine execution")
             {
                 engine.UseField(std::move(field));
@@ -243,7 +251,7 @@ SCENARIO_METHOD(RenderTestsFixture, "rendering images")
                 THEN("no images rendered in graphics manager")
                 {
                     auto& imageRenders = mainSurfaceImplementation->imageRenders;
-                    REQUIRE(imageRenders.size() == 0);
+                    REQUIRE(imageRenders.empty());
                 }
             }
         }
@@ -256,21 +264,24 @@ SCENARIO_METHOD(RenderTestsFixture, "rendering images")
                 materialAsset,
                 Color{},
                 positions[0],
-                scalers[0]);
+                scalers[0],
+                Angle{});
             auto image2 = fieldReliquary.Do<Arca::Create<DynamicImage>>(
                 imageAsset,
                 0,
                 materialAsset,
                 Color{},
                 positions[1],
-                scalers[1]);
+                scalers[1],
+                Angle{});
             auto image3 = fieldReliquary.Do<Arca::Create<DynamicImage>>(
                 imageAsset,
                 0,
                 materialAsset,
                 Color{},
                 positions[2],
-                scalers[2]);
+                scalers[2],
+                Angle{});
 
             WHEN("starting engine execution")
             {
@@ -341,21 +352,24 @@ SCENARIO_METHOD(RenderTestsFixture, "rendering images")
                 materialAsset,
                 Color{},
                 positions[0],
-                scalers[0]);
+                scalers[0],
+                Angle{});
             fieldReliquary.Do<Arca::Create<DynamicImage>>(
                 Arca::Index<Asset::Image>{},
                 0,
                 materialAsset,
                 Color{},
                 positions[1],
-                scalers[1]);
+                scalers[1],
+                Angle{});
             fieldReliquary.Do<Arca::Create<DynamicImage>>(
                 Arca::Index<Asset::Image>{},
                 0,
                 materialAsset,
                 Color{},
                 positions[2],
-                scalers[2]);
+                scalers[2],
+                Angle{});
             WHEN("starting engine execution")
             {
                 engine.UseField(std::move(field));
@@ -364,7 +378,7 @@ SCENARIO_METHOD(RenderTestsFixture, "rendering images")
                 THEN("no images rendered in graphics manager")
                 {
                     auto& imageRenders = mainSurfaceImplementation->imageRenders;
-                    REQUIRE(imageRenders.size() == 0);
+                    REQUIRE(imageRenders.empty());
                 }
             }
         }
@@ -377,21 +391,24 @@ SCENARIO_METHOD(RenderTestsFixture, "rendering images")
                 Arca::Index<Asset::Material>{},
                 Color{},
                 positions[0],
-                scalers[0]);
+                scalers[0],
+                Angle{});
             fieldReliquary.Do<Arca::Create<DynamicImage>>(
                 imageAsset,
                 0,
                 Arca::Index<Asset::Material>{},
                 Color{},
                 positions[1],
-                scalers[1]);
+                scalers[1],
+                Angle{});
             fieldReliquary.Do<Arca::Create<DynamicImage>>(
                 imageAsset,
                 0,
                 Arca::Index<Asset::Material>{},
                 Color{},
                 positions[2],
-                scalers[2]);
+                scalers[2],
+                Angle{});
             WHEN("starting engine execution")
             {
                 engine.UseField(std::move(field));
@@ -400,14 +417,14 @@ SCENARIO_METHOD(RenderTestsFixture, "rendering images")
                 THEN("no images rendered in graphics manager")
                 {
                     auto& imageRenders = mainSurfaceImplementation->imageRenders;
-                    REQUIRE(imageRenders.size() == 0);
+                    REQUIRE(imageRenders.empty());
                 }
             }
         }
     }
 }
 
-SCENARIO_METHOD(RenderTestsFixture, "rendering culled images")
+SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering culled images")
 {
     GIVEN("setup engine with field")
     {
@@ -433,7 +450,7 @@ SCENARIO_METHOD(RenderTestsFixture, "rendering culled images")
 
         std::unique_ptr<Asset::Resource::Image> imageResource = std::make_unique<ImageAssetResourceImplementation>();
         auto imageAsset = fieldReliquary.Do<Arca::Create<Asset::Image>>(
-            String{}, std::move(imageResource), Asset::ImageSize{1, 1}, Asset::ImageGridSize{});
+            String{}, std::move(imageResource), Asset::ImageSize{ 1, 1 }, Asset::ImageGridSize{});
 
         auto materialAsset = fieldReliquary.Do<Arca::Create<Asset::Material>>(
             String{}, Asset::MaterialType::Image, Arca::Index<Asset::Shader>{}, Arca::Index<Asset::Shader>{});
@@ -449,21 +466,24 @@ SCENARIO_METHOD(RenderTestsFixture, "rendering culled images")
                 materialAsset,
                 Color{},
                 Position3D{},
-                Scalers2D{});
+                Scalers2D{},
+                Angle{});
             auto image2 = fieldReliquary.Do<Arca::Create<StaticImage>>(
                 imageAsset,
                 0,
                 materialAsset,
                 Color{},
                 Position3D{ gridCellSize * -16 + halfGridCellSize, halfGridCellSize, halfGridCellSize },
-                Scalers2D{ gridCellSize, gridCellSize });
+                Scalers2D{ gridCellSize, gridCellSize },
+                Angle{});
             auto image3 = fieldReliquary.Do<Arca::Create<StaticImage>>(
                 imageAsset,
                 0,
                 materialAsset,
                 Color{},
                 Position3D{ gridCellSize + halfGridCellSize, gridCellSize * 4 + halfGridCellSize, halfGridCellSize },
-                Scalers2D{ gridCellSize, gridCellSize * 16 });
+                Scalers2D{ gridCellSize, gridCellSize * 16 },
+                Angle{});
 
             engine.UseField(std::move(field));
             engine.StartExecution();
@@ -508,209 +528,6 @@ SCENARIO_METHOD(RenderTestsFixture, "rendering culled images")
 
                         return entry.position == expectedPosition;
                     }));
-            }
-        }
-    }
-}
-
-SCENARIO_METHOD(RenderTestsFixture, "rendering lines")
-{
-    GIVEN("setup engine with field")
-    {
-        DerivedEngine engine;
-        engine.Setup();
-
-        auto fieldOrigin = Arca::ReliquaryOrigin();
-        RegisterFieldTypes(fieldOrigin, *engine.nullAudioManager, *engine.nullInputManager, *engine.mockGraphicsManager);
-        World::Field field(0, fieldOrigin.Actualize());
-
-        auto& fieldReliquary = field.Reliquary();
-
-        engine.mockGraphicsManager->Initialize(fieldReliquary, nullptr);
-
-        const auto mainSurface = Arca::Index<MainSurface>(fieldReliquary);
-        auto mainSurfaceImplementation = mainSurface->Resource<MockSurfaceResourceImplementation>();
-
-        auto materialAsset = fieldReliquary.Do<Arca::Create<Asset::Material>>(
-            String{}, Asset::MaterialType::Image, Arca::Index<Asset::Shader>{}, Arca::Index<Asset::Shader>{});
-
-        fieldReliquary.Do<ResizeCamera>(ScreenSize(
-            std::numeric_limits<ScreenSize::Dimension>::max(),
-            std::numeric_limits<ScreenSize::Dimension>::max()));
-
-        const auto camera = Arca::Index<Camera>(fieldReliquary);
-        const auto cameraLeft = camera->ScreenSides().Left();
-        const auto cameraTop = camera->ScreenSides().Top();
-
-        WHEN("creating lines")
-        {
-            auto fromPositions = std::vector<Position2D>
-            {
-                Position2D
-                {
-                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000)),
-                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000))
-                },
-                Position2D
-                {
-                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000)),
-                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000))
-                },
-                Position2D
-                {
-                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000)),
-                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000))
-                }
-            };
-
-            auto toPositions = std::vector<Position2D>
-            {
-                Position2D
-                {
-                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000)),
-                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000))
-                },
-                Position2D
-                {
-                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000)),
-                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000))
-                },
-                Position2D
-                {
-                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000)),
-                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000))
-                }
-            };
-            auto line1 = fieldReliquary.Do(Arca::Create<Line>{
-                std::vector<Position2D>{ fromPositions[0], toPositions[0] }, materialAsset});
-            auto line2 = fieldReliquary.Do(Arca::Create<Line>{
-                std::vector<Position2D>{ fromPositions[1], toPositions[1] }, materialAsset});
-            auto line3 = fieldReliquary.Do(Arca::Create<Line>{
-                std::vector<Position2D>{ fromPositions[2], toPositions[2] }, materialAsset});
-
-            WHEN("starting engine execution")
-            {
-                engine.UseField(std::move(field));
-                engine.StartExecution();
-
-                THEN("all lines rendered in graphics manager")
-                {
-                    auto& lineRenders = mainSurfaceImplementation->lineRenders;
-                    REQUIRE(lineRenders.size() == 3);
-
-                    for (auto i = 0; i < 3; ++i)
-                    {
-                        REQUIRE(std::any_of(
-                            lineRenders.begin(),
-                            lineRenders.end(),
-                            [i, &fromPositions, &toPositions, cameraLeft, cameraTop](const LineRender& entry)
-                            {
-                                auto expectedFromPosition = fromPositions[i];
-                                expectedFromPosition.x -= cameraLeft;
-                                expectedFromPosition.y -= cameraTop;
-
-                                auto expectedToPosition = toPositions[i];
-                                expectedToPosition.x -= cameraLeft;
-                                expectedToPosition.y -= cameraTop;
-
-                                return entry.points[0] == expectedFromPosition && entry.points[1] == expectedToPosition;
-                            }));
-                    }
-                }
-            }
-
-            WHEN("starting engine execution, destroying static images, then starting execution")
-            {
-                engine.UseField(std::move(field));
-                engine.StartExecution();
-
-                fieldReliquary.Do<Arca::Destroy<Line>>(line1.ID());
-                fieldReliquary.Do<Arca::Destroy<Line>>(line2.ID());
-                fieldReliquary.Do<Arca::Destroy<Line>>(line3.ID());
-
-                THEN("lines were rendered only once")
-                {
-                    auto& lineRenders = mainSurfaceImplementation->lineRenders;
-                    REQUIRE(lineRenders.size() == 3);
-
-                    for (auto i = 0; i < 3; ++i)
-                    {
-                        REQUIRE(std::any_of(
-                            lineRenders.begin(),
-                            lineRenders.end(),
-                            [i, &fromPositions, &toPositions, cameraLeft, cameraTop](const LineRender& entry)
-                            {
-                                auto expectedFromPosition = fromPositions[i];
-                                expectedFromPosition.x -= cameraLeft;
-                                expectedFromPosition.y -= cameraTop;
-
-                                auto expectedToPosition = toPositions[i];
-                                expectedToPosition.x -= cameraLeft;
-                                expectedToPosition.y -= cameraTop;
-
-                                return entry.points[0] == expectedFromPosition && entry.points[1] == expectedToPosition;
-                            }));
-                    }
-                }
-            }
-        }
-
-        WHEN("creating lines without materials")
-        {
-            auto fromPositions = std::vector<Position2D>
-            {
-                Position2D
-                {
-                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000)),
-                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000))
-                },
-                Position2D
-                {
-                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000)),
-                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000))
-                },
-                Position2D
-                {
-                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000)),
-                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000))
-                }
-            };
-
-            auto toPositions = std::vector<Position2D>
-            {
-                Position2D
-                {
-                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000)),
-                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000))
-                },
-                Position2D
-                {
-                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000)),
-                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000))
-                },
-                Position2D
-                {
-                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000)),
-                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000))
-                }
-            };
-            fieldReliquary.Do(Arca::Create<Line>{
-                std::vector<Position2D>{ fromPositions[0], toPositions[0] }, Arca::Index<Asset::Material>{}});
-            fieldReliquary.Do(Arca::Create<Line>{
-                std::vector<Position2D>{ fromPositions[1], toPositions[1] }, Arca::Index<Asset::Material>{}});
-            fieldReliquary.Do(Arca::Create<Line>{
-                std::vector<Position2D>{ fromPositions[2], toPositions[2] }, Arca::Index<Asset::Material>{}});
-
-            WHEN("starting engine execution")
-            {
-                engine.UseField(std::move(field));
-                engine.StartExecution();
-
-                THEN("no lines rendered in graphics manager")
-                {
-                    auto& lineRenders = mainSurfaceImplementation->lineRenders;
-                    REQUIRE(lineRenders.size() == 0);
-                }
             }
         }
     }

@@ -56,6 +56,11 @@ namespace Atmos::Render::DirectX9
         StageRender(lineRender.points, lineRender.z, lineRender.width, lineRender.color);
     }
 
+    void Renderer::StageRender(const RegionRender& regionRender)
+    {
+        
+    }
+
     void Renderer::DrawFrame(ScreenSize screenSize, const Color& backgroundColor)
     {
         PushAllThroughPipeline(screenSize, backgroundColor);

@@ -12,11 +12,6 @@ namespace Atmos::Entity
         return true;
     }
 
-    bool PositionedEntities::CanMove(const Entity& entity, const Grid::RelativePosition& to) const
-    {
-        return true;
-    }
-
     bool PositionedEntities::CanMove(const Entity& entity, const Direction& direction) const
     {
         return true;

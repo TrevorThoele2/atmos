@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include "ScriptAssetData.h"
+#include "ScriptAssetResource.h"
 
 #include "String.h"
 
@@ -12,6 +12,6 @@ namespace Atmos::Script
     public:
         virtual ~Manager() = 0;
 
-        [[nodiscard]] virtual std::unique_ptr<Asset::ScriptData> CreateAssetData(String name, String fileData) = 0;
+        [[nodiscard]] virtual std::unique_ptr<Asset::Resource::Script> CreateAssetResource(String name, String fileData) = 0;
     };
 }

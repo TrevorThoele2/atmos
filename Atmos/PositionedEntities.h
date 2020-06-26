@@ -10,7 +10,6 @@ namespace Atmos::Entity
     public:
         [[nodiscard]] bool CanMove(const Entity& entity) const;
         [[nodiscard]] bool CanMove(const Entity& entity, const Grid::Position& to) const;
-        [[nodiscard]] bool CanMove(const Entity& entity, const Grid::RelativePosition& to) const;
         [[nodiscard]] bool CanMove(const Entity& entity, const Direction& direction) const;
 
         [[nodiscard]] bool IsMoving(const Entity& entity) const;

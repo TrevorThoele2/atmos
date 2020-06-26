@@ -12,6 +12,7 @@
 
 namespace Atmos
 {
+    /*
     class Pathfinder final : public Arca::Curator
     {
     public:
@@ -67,4 +68,5 @@ namespace Atmos
         static void ReconstructPath(Path& stack, const Node& end);
         void ClearStack(Path& stack) const;
     };
+    */
 }

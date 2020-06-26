@@ -135,13 +135,16 @@
     <ClCompile Include="AssetTests.cpp" />
     <ClCompile Include="DerivedEngine.cpp" />
     <ClCompile Include="GeneralFixture.cpp" />
+    <ClCompile Include="GridRegionRenderingTests.cpp" />
+    <ClCompile Include="ImageRenderingTests.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MockGraphicsManager.cpp" />
     <ClCompile Include="MockImageAssetResource.cpp" />
     <ClCompile Include="MockSurfaceResource.cpp" />
     <ClCompile Include="MockWindow.cpp" />
     <ClCompile Include="OctreeTests.cpp" />
-    <ClCompile Include="RenderTests.cpp" />
+    <ClCompile Include="RenderAlgorithmTests.cpp" />
+    <ClCompile Include="LineRenderingTests.cpp" />
     <ClCompile Include="StopwatchTests.cpp" />
     <ClCompile Include="WorldSerializationTests.cpp" />
   </ItemGroup>
@@ -149,12 +152,15 @@
     <ClInclude Include="AssetTests.h" />
     <ClInclude Include="DerivedEngine.h" />
     <ClInclude Include="GeneralFixture.h" />
+    <ClInclude Include="GridRegionRenderingTests.h" />
+    <ClInclude Include="ImageRenderingTests.h" />
     <ClInclude Include="MockGraphicsManager.h" />
     <ClInclude Include="MockImageAssetResource.h" />
     <ClInclude Include="MockSurfaceResource.h" />
     <ClInclude Include="MockWindow.h" />
     <ClInclude Include="OctreeTests.h" />
-    <ClInclude Include="RenderTests.h" />
+    <ClInclude Include="RenderAlgorithmTests.h" />
+    <ClInclude Include="LineRenderingTests.h" />
     <ClInclude Include="StopwatchTests.h" />
     <ClInclude Include="WorldSerializationTests.h" />
   </ItemGroup>

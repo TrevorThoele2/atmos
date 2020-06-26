@@ -2,8 +2,6 @@
 
 #include "VulkanRendererInterface.h"
 #include "VulkanRendererCore.h"
-
-#include "VulkanUniformBufferDescriptor.h"
 #include "VulkanStagedBuffer.h"
 #include "VulkanCombinedImageSamplerDescriptor.h"
 #include "VulkanCommandBufferGroup.h"
@@ -24,17 +22,17 @@ namespace Atmos::Render::Vulkan
             vk::Queue graphicsQueue,
             vk::PhysicalDeviceMemoryProperties memoryProperties);
 
-        void Initialize(uint32_t swapchainImageCount, vk::RenderPass renderPass, vk::Extent2D extent);
+        void Initialize(uint32_t swapchainImageCount, vk::RenderPass renderPass, vk::Extent2D extent) override;
 
         void StageRender(const ImageRender& imageRender);
 
-        void Start(const std::vector<const Asset::Material*>& materials, vk::CommandBuffer commandBuffer);
+        void Start(const std::vector<const Asset::Material*>& materials, vk::CommandBuffer commandBuffer) override;
         void DrawNextLayer(uint32_t currentImage, glm::vec2 cameraSize) override;
-        void End();
+        void End() override;
         [[nodiscard]] bool IsDone() const override;
 
         [[nodiscard]] Position3D::Value NextLayer() const override;
-        [[nodiscard]] size_t LayerCount() const;
+        [[nodiscard]] size_t LayerCount() const override;
     private:
         std::optional<UniformBufferDescriptor> uniformBufferDescriptor;
     private:
@@ -82,22 +80,29 @@ namespace Atmos::Render::Vulkan
 
             Group& GroupFor(const Asset::Material& material);
         };
+    private:
+        struct DrawContextAddition
+        {
+            std::uint32_t quadCount = 0;
+        };
+
+        using Core = RendererCore<const Asset::Image*, Context, DrawContextAddition>;
+        Core core;
+
+        using DrawContext = Core::DrawContext;
 
         void WriteToBuffers(
             const Context::Group& group,
             const Asset::Material* materialAsset,
-            vk::CommandBuffer commandBuffer,
-            std::uint32_t currentImage,
+            DrawContext& drawContext,
+            uint32_t currentImage,
             glm::vec2 cameraSize);
         void WriteToBuffers(
             const std::vector<Quad>& quads,
             const Asset::Image* imageAsset,
             Pipeline& pipeline,
-            vk::CommandBuffer commandBuffer,
-            std::uint32_t currentImage);
-    private:
-        using Core = RendererCore<const Asset::Image*, Context>;
-        Core core;
+            DrawContext& drawContext,
+            uint32_t currentImage);
     private:
         vk::Queue graphicsQueue;
         CommandBufferGroup commandBuffers;

@@ -359,11 +359,11 @@ namespace Atmos::Render::Vulkan
     auto GraphicsManager::SuitableQueueFamilies(vk::PhysicalDevice physicalDevice, vk::SurfaceKHR surface)
         -> std::optional<QueueFamilyIndices>
     {
-        std::optional<std::uint32_t> graphicsFamily;
-        std::optional<std::uint32_t> presentFamily;
+        std::optional<uint32_t> graphicsFamily;
+        std::optional<uint32_t> presentFamily;
 
         const auto availableQueueFamilyProperties = physicalDevice.getQueueFamilyProperties();
-        std::uint32_t i = 0;
+        uint32_t i = 0;
         for (auto& properties : availableQueueFamilyProperties)
         {
             if (properties.queueFlags & vk::QueueFlagBits::eGraphics)

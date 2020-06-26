@@ -3,7 +3,7 @@
 namespace Atmos::Render::Vulkan
 {
     UniformBufferDescriptor::UniformBufferDescriptor(
-        vk::Buffer buffer, std::uint32_t offset, std::uint32_t range, std::uint32_t binding)
+        vk::Buffer buffer, uint32_t offset, uint32_t range, uint32_t binding)
         :
         binding(binding), bufferInfo(buffer, offset, range)
     {}

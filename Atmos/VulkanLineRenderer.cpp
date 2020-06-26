@@ -15,14 +15,6 @@ namespace Atmos::Render::Vulkan
         core(
             device,
             memoryProperties,
-            Vulkan::VertexInput(
-                sizeof(Vertex),
-                {
-                    vk::VertexInputAttributeDescription(
-                        0, 0, vk::Format::eR32G32Sfloat, offsetof(Vertex, position)),
-                    vk::VertexInputAttributeDescription(
-                        1, 0, vk::Format::eR32G32B32A32Sfloat, offsetof(Vertex, color))
-                }),
             {
                 DescriptorSetGroup::Definition
                 {
@@ -32,9 +24,28 @@ namespace Atmos::Render::Vulkan
                     1
                 }
             },
+            VertexInput(
+                sizeof(Vertex),
+                {
+                    vk::VertexInputAttributeDescription(
+                        0, 0, vk::Format::eR32G32Sfloat, offsetof(Vertex, position)),
+                    vk::VertexInputAttributeDescription(
+                        1, 0, vk::Format::eR32G32B32A32Sfloat, offsetof(Vertex, color))
+                }),
             vk::PrimitiveTopology::eLineList,
             Asset::MaterialType::Line,
-            LineWidth(0)),
+            [this](Context& context, DrawContext& drawContext, uint32_t currentImage, glm::vec2 cameraSize)
+            {
+                for (auto& group : context.groups)
+                {
+                    WriteToBuffers(
+                        group.second,
+                        group.first,
+                        drawContext,
+                        currentImage,
+                        cameraSize);
+                }
+            }),
         graphicsQueue(graphicsQueue),
         commandBuffers(*device, graphicsQueueIndex),
         device(device)
@@ -68,28 +79,12 @@ namespace Atmos::Render::Vulkan
 
     void LineRenderer::Start(const std::vector<const Asset::Material*>& materials, vk::CommandBuffer commandBuffer)
     {
-        const auto setupDiscrimination = [](LineWidth discrimination, vk::DescriptorSet& descriptorSet)
-        {};
-
-        core.Start(materials, commandBuffer, setupDiscrimination);
+        core.Start(materials, commandBuffer);
     }
 
     void LineRenderer::DrawNextLayer(uint32_t currentImage, glm::vec2 cameraSize)
     {
-        auto drawContext = core.CurrentDrawContext();
-        auto& context = drawContext->currentLayer->second;
-        for (auto& group : context.groups)
-        {
-            WriteToBuffers(
-                group.second,
-                group.first,
-                drawContext->commandBuffer,
-                currentImage,
-                cameraSize);
-        }
-
-        ++drawContext->layerCount;
-        ++drawContext->currentLayer;
+        core.DrawNextLayer(currentImage, cameraSize);
     }
 
     void LineRenderer::End()
@@ -136,8 +131,8 @@ namespace Atmos::Render::Vulkan
     void LineRenderer::WriteToBuffers(
         const Context::Group& group,
         const Asset::Material* materialAsset,
-        vk::CommandBuffer commandBuffer,
-        std::uint32_t currentImage,
+        DrawContext& drawContext,
+        uint32_t currentImage,
         glm::vec2 cameraSize)
     {
         auto& pipeline = *core.PipelineFor(*materialAsset);
@@ -148,7 +143,7 @@ namespace Atmos::Render::Vulkan
                 object.second,
                 object.first,
                 pipeline,
-                commandBuffer,
+                drawContext,
                 currentImage);
     }
 
@@ -156,17 +151,17 @@ namespace Atmos::Render::Vulkan
         const std::vector<Line>& lines,
         LineWidth width,
         Pipeline& pipeline,
-        vk::CommandBuffer commandBuffer,
-        std::uint32_t currentImage)
+        DrawContext& drawContext,
+        uint32_t currentImage)
     {
-        auto drawContext = core.CurrentDrawContext();
-        const auto startVertexCount = drawContext->count;
+        const auto& commandBuffer = drawContext.commandBuffer;
+        const auto startVertexCount = drawContext.addition.vertexCount;
 
         std::vector<Vertex> drawnVertices;
         for (auto& line : lines)
         {
             drawnVertices.insert(drawnVertices.begin(), line.vertices.begin(), line.vertices.end());
-            drawContext->count += line.vertices.size();
+            drawContext.addition.vertexCount += line.vertices.size();
         }
 
         vk::Buffer vertexBuffers[] = { vertexBuffer.destination.value.get() };
@@ -175,11 +170,7 @@ namespace Atmos::Render::Vulkan
 
         commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, pipeline.value.get());
 
-        auto currentDescriptorSet = core.DiscriminatedDescriptorSetFor(
-            [currentImage](const Core::DiscriminatedDescriptorSet& descriptorSet)
-            {
-                return currentImage == descriptorSet.imageIndex;
-            })->descriptorSet;
+        auto currentDescriptorSet = core.KeyedSetFor(currentImage)->descriptorSet;
         commandBuffer.bindDescriptorSets(
             vk::PipelineBindPoint::eGraphics,
             pipeline.layout.get(),
@@ -196,6 +187,6 @@ namespace Atmos::Render::Vulkan
 
         vertexBuffer.PushSourceBytes(drawnVertices.data(), lineVertexOffset, lineVertexSize);
         vertexBuffer.CopyFromSourceToDestination(lineVertexOffset, lineVertexSize, commandBuffers.Pool(), graphicsQueue);
-        drawContext->commandBuffer.draw(drawnVertices.size(), 1, startVertexCount, 0);
+        drawContext.commandBuffer.draw(drawnVertices.size(), 1, startVertexCount, 0);
     }
 }

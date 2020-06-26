@@ -179,9 +179,8 @@ namespace Atmos
     String ToString(const Grid::Position &position)
     {
         return
-            ToString(position.GetX()) + "," +
-            ToString(position.GetY()) + "," +
-            ToString(position.GetZ());
+            ToString(position.x) + "," +
+            ToString(position.y) + ",";
     }
 
     String ToString(const Position3D& position)
