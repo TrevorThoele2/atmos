@@ -41,7 +41,7 @@ namespace Atmos::Render::DirectX9
 
         StageRender(
             imageRender.asset->ResourceAs<Asset::Resource::DirectX9::Image>()->Texture(),
-            imageRender.material->VertexShader(),
+            imageRender.material->Passes()[0].VertexShader(),
             imageRender.position.x,
             imageRender.position.y,
             imageRender.position.z,

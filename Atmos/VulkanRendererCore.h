@@ -4,8 +4,7 @@
 #include "VulkanObjectLayering.h"
 #include "VulkanPipelineGroup.h"
 #include "VulkanDrawContext.h"
-
-#include <glm/glm.hpp>
+#include "VulkanUniversalData.h"
 
 namespace Atmos::Render::Vulkan
 {
@@ -14,7 +13,7 @@ namespace Atmos::Render::Vulkan
     {
     public:
         using DrawContext = DrawContext<Context, DrawContextAddition>;
-        using Draw = std::function<void(Context&, DrawContext&, uint32_t, glm::vec2)>;
+        using Draw = std::function<void(Context&, DrawContext&, uint32_t, UniversalData)>;
     public:
         RendererCoreBase(
             std::shared_ptr<vk::Device> device,
@@ -28,14 +27,15 @@ namespace Atmos::Render::Vulkan
 
         void Initialize(uint32_t swapchainImageCount, vk::RenderPass renderPass, vk::Extent2D extent);
 
-        void DrawNextLayer(uint32_t currentImage, glm::vec2 cameraSize);
+        void DrawNextLayer(uint32_t currentImage, UniversalData universalData);
         void End();
         [[nodiscard]] bool IsDone() const;
 
         Context& AddContext(Position3D::Value z, Context&& context);
         Context* ContextFor(Position3D::Value z);
 
-        [[nodiscard]] Pipeline* PipelineFor(const Asset::Material& material);
+        [[nodiscard]] std::vector<Pipeline>* PipelinesFor(const Asset::Material& material);
+        [[nodiscard]] vk::PipelineLayout PipelineLayout() const;
 
         [[nodiscard]] Position3D::Value NextLayer() const;
         [[nodiscard]] size_t LayerCount() const;
@@ -55,7 +55,7 @@ namespace Atmos::Render::Vulkan
     private:
         std::optional<DrawContext> drawContext;
 
-        uint32_t swapchainImageCount;
+        uint32_t swapchainImageCount = 0;
         vk::RenderPass renderPass;
         vk::Extent2D extent;
 
@@ -93,11 +93,12 @@ namespace Atmos::Render::Vulkan
     }
 
     template<class Key, class Context, class DrawContextAddition>
-    void RendererCoreBase<Key, Context, DrawContextAddition>::DrawNextLayer(uint32_t currentImage, glm::vec2 cameraSize)
+    void RendererCoreBase<Key, Context, DrawContextAddition>::DrawNextLayer(
+        uint32_t currentImage, UniversalData universalData)
     {
         auto& context = drawContext->currentLayer->second;
 
-        draw(context, *drawContext, currentImage, cameraSize);
+        draw(context, *drawContext, currentImage, universalData);
 
         ++drawContext->layerCount;
         ++drawContext->currentLayer;
@@ -131,9 +132,15 @@ namespace Atmos::Render::Vulkan
     }
 
     template<class Key, class Context, class DrawContextAddition>
-    Pipeline* RendererCoreBase<Key, Context, DrawContextAddition>::PipelineFor(const Asset::Material& material)
+    std::vector<Pipeline>* RendererCoreBase<Key, Context, DrawContextAddition>::PipelinesFor(const Asset::Material& material)
     {
         return pipelines.Find(material);
+    }
+
+    template<class Key, class Context, class DrawContextAddition>
+    vk::PipelineLayout RendererCoreBase<Key, Context, DrawContextAddition>::PipelineLayout() const
+    {
+        return pipelines.Layout();
     }
 
     template<class Key, class Context, class DrawContextAddition>
@@ -155,11 +162,13 @@ namespace Atmos::Render::Vulkan
         bool recreatePipelines)
     {
         if (recreatePipelines)
-            pipelines.Recreate(materials, descriptorSets.Layout(), swapchainImageCount, renderPass, extent);
+            pipelines.Recreate(materials, { descriptorSets.Layout() }, swapchainImageCount, renderPass, extent);
 
-        for (auto& pipeline : pipelines)
-            for (auto& descriptorSet : descriptorSets)
-                pipeline.uniformBufferDescriptors[descriptorSet.imageIndex].Update(descriptorSet.descriptorSet, *device);
+        for (auto& pipelineGroupEntry : pipelines)
+            for(auto& pipeline : pipelineGroupEntry.second)
+                for (auto& descriptorSet : descriptorSets)
+                    pipeline.uniformBufferDescriptors[descriptorSet.imageIndex].Update(
+                        descriptorSet.descriptorSet, *device);
 
         drawContext = DrawContext();
         drawContext->materials = materials;

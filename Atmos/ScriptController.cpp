@@ -13,13 +13,13 @@ namespace Atmos::Script
     ScriptController::ScriptController(Init init) :
         Curator(init), allRunningScripts(init.owner)
     {
-        Owner().ExecuteOn<Arca::CreatedKnown<RunningScript>>(
+        Owner().On<Arca::CreatedKnown<RunningScript>>(
             [](const Arca::CreatedKnown<RunningScript>& signal)
             {
                 
             });
 
-        Owner().ExecuteOn<Arca::DestroyingKnown<RunningScript>>(
+        Owner().On<Arca::DestroyingKnown<RunningScript>>(
             [](const Arca::DestroyingKnown<RunningScript>& signal)
             {
                 

@@ -5,24 +5,20 @@
 
 namespace Atmos::Render::Vulkan
 {
-    UniversalData UniversalData::Ortho(const glm::vec2& cameraSize)
+    UniversalData::UniversalData(const glm::vec2& screenSize, const glm::vec2& mapPosition) :
+        screenSize(screenSize), mapPosition(mapPosition)
     {
         const auto left = 0.0f;
         const auto top = 0.0f;
-        const auto right = cameraSize.x;
-        const auto bottom = cameraSize.y;
+        const auto right = screenSize.x;
+        const auto bottom = screenSize.y;
 
         const glm::vec3 eye = { 0.0f, 0.0f, 1.0f };
         const glm::vec3 center = { 0.0f, 0.0f, 0.0f };
         const glm::vec3 up = { 0.0f, 1.0f, 0.0f };
 
-        auto data = UniversalData
-        {
-            glm::mat4(1.0f),
-            glm::lookAt(eye, center, up),
-            glm::ortho(left, right, top, bottom, 1.0f, 0.0f)
-        };
-
-        return data;
+        model = glm::mat4(1.0f);
+        view = glm::lookAt(eye, center, up);
+        projection = glm::ortho(left, right, top, bottom, 1.0f, 0.0f);
     }
 }

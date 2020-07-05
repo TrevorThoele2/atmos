@@ -9,7 +9,7 @@ namespace Atmos::Render
         Curator(init),
         manager(&manager)
     {
-        Owner().ExecuteOn<Arca::DestroyingKnown<Asset::Image>>([this](const Arca::DestroyingKnown<Asset::Image>& signal)
+        Owner().On<Arca::DestroyingKnown<Asset::Image>>([this](const Arca::DestroyingKnown<Asset::Image>& signal)
             {
                 const auto resource = MutablePointer().Of(signal.reference)->Resource();
                 if (!resource)
@@ -18,7 +18,7 @@ namespace Atmos::Render
                 this->manager->ResourceDestroying(*resource);
             });
 
-        Owner().ExecuteOn<Arca::DestroyingKnown<Asset::Shader>>([this](const Arca::DestroyingKnown<Asset::Shader>& signal)
+        Owner().On<Arca::DestroyingKnown<Asset::Shader>>([this](const Arca::DestroyingKnown<Asset::Shader>& signal)
             {
                 const auto resource = MutablePointer().Of(signal.reference)->Resource();
                 if (!resource)
@@ -27,7 +27,7 @@ namespace Atmos::Render
                 this->manager->ResourceDestroying(*resource);
             });
 
-        Owner().ExecuteOn<Arca::DestroyingKnown<SurfaceCore>>([this](const Arca::DestroyingKnown<SurfaceCore>& signal)
+        Owner().On<Arca::DestroyingKnown<SurfaceCore>>([this](const Arca::DestroyingKnown<SurfaceCore>& signal)
             {
                 const auto& resource = MutablePointer().Of(signal.reference)->resource;
                 if (!resource)

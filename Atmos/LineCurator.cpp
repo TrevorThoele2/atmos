@@ -7,13 +7,13 @@ namespace Atmos::Render
     LineCurator::LineCurator(Init init) :
         Curator(init), camera(init.owner)
     {
-        Owner().ExecuteOn<Arca::CreatedKnown<Line>>(
+        Owner().On<Arca::CreatedKnown<Line>>(
             [this](const Arca::CreatedKnown<Line>& signal)
             {
                 OnCreated(signal);
             });
 
-        Owner().ExecuteOn<Arca::DestroyingKnown<Line>>(
+        Owner().On<Arca::DestroyingKnown<Line>>(
             [this](const Arca::DestroyingKnown<Line>& signal)
             {
                 OnDestroying(signal);

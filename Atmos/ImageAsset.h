@@ -14,12 +14,12 @@ namespace Atmos::Asset
         using Dimension = ImageSize::Dimension;
         using GridDimension = ImageGridSize::Dimension;
     public:
-        explicit Image(Init init);
         Image(Init init,
             const ::Atmos::Name& name,
             ResourcePtr&& resource,
             ImageSize size,
             ImageGridSize gridSize);
+        Image(Init init, Arca::Serialization serialization);
         Image(Image&& arg) noexcept;
 
         Image& operator=(Image&& arg) noexcept;

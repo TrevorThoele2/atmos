@@ -18,7 +18,7 @@ namespace Atmos::Render::Vulkan
 
     void PipelineGroup::Recreate(
         const std::vector<const Asset::Material*>& materials,
-        vk::DescriptorSetLayout descriptorSetLayout,
+        const std::vector<vk::DescriptorSetLayout>& descriptorSetLayouts,
         uint32_t swapchainImageCount,
         vk::RenderPass renderPass,
         vk::Extent2D extent)
@@ -26,22 +26,32 @@ namespace Atmos::Render::Vulkan
         pipelines.clear();
         pipelines.reserve(materials.size());
 
+        const vk::PipelineLayoutCreateInfo layoutCreateInfo({}, descriptorSetLayouts.size(), descriptorSetLayouts.data());
+        layout = device->createPipelineLayoutUnique(layoutCreateInfo);
+
         for (auto& material : materials)
         {
-            if (material->Type() != materialAssetType || !material->VertexShader() || !material->FragmentShader())
+            if (material->Type() != materialAssetType)
                 continue;
 
-            pipelines.push_back(Create(material, descriptorSetLayout, swapchainImageCount, renderPass, extent));
+            pipelines.emplace(
+                material,
+                CreatePipelines(*material, swapchainImageCount, renderPass, extent));
         }
     }
 
-    Pipeline* PipelineGroup::Find(const Asset::Material& material)
+    std::vector<Pipeline>* PipelineGroup::Find(const Asset::Material& material)
     {
-        for (auto& pipeline : pipelines)
-            if (pipeline.material == &material)
-                return &pipeline;
+        const auto found = pipelines.find(&material);
+        if (found == pipelines.end())
+            return {};
 
-        return nullptr;
+        return &found->second;
+    }
+
+    vk::PipelineLayout PipelineGroup::Layout() const
+    {
+        return layout.get();
     }
 
     auto PipelineGroup::begin() -> iterator
@@ -64,27 +74,32 @@ namespace Atmos::Render::Vulkan
         return pipelines.end();
     }
 
-    auto PipelineGroup::Create(
-        const Asset::Material* material,
-        vk::DescriptorSetLayout descriptorSetLayout,
+    std::vector<Pipeline> PipelineGroup::CreatePipelines(
+        const Asset::Material& material,
         uint32_t swapchainImageCount,
         vk::RenderPass renderPass,
         vk::Extent2D extent)
-
-        -> Pipeline
     {
-        return Pipeline
+        std::vector<Pipeline> returnValue;
+        for(auto& pass : material.Passes())
         {
-            *material,
-            *device,
-            swapchainImageCount,
-            memoryProperties,
-            { descriptorSetLayout },
-            renderPass,
-            vertexInput,
-            extent,
-            primitiveTopology,
-            {}
-        };
+            if (!pass.VertexShader() || !pass.FragmentShader())
+                continue;
+
+            returnValue.push_back(Pipeline(
+                &*pass.VertexShader(),
+                &*pass.FragmentShader(),
+                *device,
+                layout.get(),
+                swapchainImageCount,
+                memoryProperties,
+                renderPass,
+                vertexInput,
+                extent,
+                primitiveTopology,
+                {}));
+        }
+
+        return returnValue;
     }
 }

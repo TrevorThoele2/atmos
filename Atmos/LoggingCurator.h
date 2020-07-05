@@ -3,10 +3,7 @@
 #include <Arca/Curator.h>
 
 #include "Log.h"
-#include "LoggingSeverity.h"
 #include "LoggingDetails.h"
-
-#include "FilePath.h"
 
 namespace Atmos::Logging
 {

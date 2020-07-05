@@ -77,7 +77,7 @@ namespace Atmos::Render::Vulkan
         regionRenderer.StageRender(regionRender);
     }
 
-    void MasterRenderer::DrawFrame(Arca::Reliquary& reliquary, const ScreenSize& cameraSize)
+    void MasterRenderer::DrawFrame(Arca::Reliquary& reliquary, const ScreenSize& screenSize, const ScreenPosition& mapPosition)
     {
         device->waitForFences(inFlightFences[previousFrame].get(), VK_TRUE, UINT64_MAX);
 
@@ -117,11 +117,11 @@ namespace Atmos::Render::Vulkan
 
         try
         {
-            Draw(
-                reliquary,
-                usedCommandBuffers,
-                imageIndex.value,
-                glm::vec2{ cameraSize.width, cameraSize.height });
+            const auto universalData = UniversalData(
+                glm::vec2{ screenSize.width, screenSize.height },
+                glm::vec2{ mapPosition.x, mapPosition.y });
+
+            Draw(reliquary, usedCommandBuffers, imageIndex.value, universalData);
 
             vk::Semaphore waitSemaphores[] = { imageAvailableSemaphores[currentFrame].get() };
             vk::Semaphore signalSemaphores[] = { renderFinishedSemaphores[currentFrame].get() };
@@ -187,7 +187,7 @@ namespace Atmos::Render::Vulkan
         Arca::Reliquary& reliquary,
         std::vector<vk::CommandBuffer>& usedCommandBuffers,
         uint32_t currentImage,
-        glm::vec2 cameraSize)
+        UniversalData universalData)
     {
         const auto commandBuffer = commandBuffers.Next();
         usedCommandBuffers.push_back(commandBuffer);
@@ -261,7 +261,7 @@ namespace Atmos::Render::Vulkan
                 if (availableRenderers.empty())
                     break;
 
-                (*nextRenderer)->DrawNextLayer(currentImage, cameraSize);
+                (*nextRenderer)->DrawNextLayer(currentImage, universalData);
             }
         }
         catch(...)

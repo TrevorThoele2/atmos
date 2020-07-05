@@ -1241,9 +1241,6 @@
     <ClInclude Include="SurfaceCurator.h">
       <Filter>Header Files\Render\Surface</Filter>
     </ClInclude>
-    <ClInclude Include="LoggingTransfer.h">
-      <Filter>Header Files\Logging</Filter>
-    </ClInclude>
     <ClInclude Include="Map.h">
       <Filter>Header Files\World\Map</Filter>
     </ClInclude>
@@ -1999,9 +1996,6 @@
     <ClCompile Include="SurfaceCurator.cpp">
       <Filter>Source Files\Render</Filter>
     </ClCompile>
-    <ClCompile Include="LoggingTransfer.cpp">
-      <Filter>Source Files\Logging</Filter>
-    </ClCompile>
     <ClCompile Include="ChangeSurfaceBackgroundColor.cpp">
       <Filter>Source Files\Render\Surface</Filter>
     </ClCompile>
@@ -2052,9 +2046,6 @@
     </ClCompile>
     <ClCompile Include="VulkanSwapchainSupport.cpp">
       <Filter>Source Files\Render\Vulkan\Swapchain</Filter>
-    </ClCompile>
-    <ClCompile Include="VulkanUniversalData.cpp">
-      <Filter>Source Files\Render\Vulkan\Structures</Filter>
     </ClCompile>
     <ClCompile Include="VulkanVertexInput.cpp">
       <Filter>Source Files\Render\Vulkan\Structures</Filter>
@@ -2169,6 +2160,9 @@
     </ClCompile>
     <ClCompile Include="PositionConversions.cpp">
       <Filter>Source Files\Position\Algorithms</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanUniversalData.cpp">
+      <Filter>Source Files\Render\Vulkan\Structures</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

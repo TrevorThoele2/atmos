@@ -44,7 +44,7 @@ SCENARIO_METHOD(WorldSerializationTestsFixture, "rendering after world serializa
             "Pixel.png", std::move(imageResource), Asset::ImageSize{1, 1}, Asset::ImageGridSize{});
 
         auto materialAsset = fieldReliquary.Do<Arca::Create<Asset::Material>>(
-            String{}, Asset::MaterialType::Image, Arca::Index<Asset::Shader>{}, Arca::Index<Asset::Shader>{});
+            String{}, Asset::MaterialType::Image, std::vector<Asset::Material::Pass>{});
 
         WHEN("creating static images and loading through world file then starting execution")
         {

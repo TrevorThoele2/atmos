@@ -16,6 +16,7 @@
 #include "RegionRender.h"
 
 #include "ScreenSize.h"
+#include "ScreenPosition.h"
 
 #include "Event.h"
 
@@ -48,7 +49,7 @@ namespace Atmos::Render::Vulkan
         void StageRender(const LineRender& lineRender);
         void StageRender(const RegionRender& regionRender);
 
-        void DrawFrame(Arca::Reliquary& reliquary, const ScreenSize& cameraSize);
+        void DrawFrame(Arca::Reliquary& reliquary, const ScreenSize& screenSize, const ScreenPosition& mapPosition);
 
         void WaitForIdle() const;
     private:
@@ -71,7 +72,7 @@ namespace Atmos::Render::Vulkan
             Arca::Reliquary& reliquary,
             std::vector<vk::CommandBuffer>& usedCommandBuffers,
             uint32_t currentImage,
-            glm::vec2 cameraSize);
+            UniversalData universalData);
         static void ClearImage(vk::Image image, std::array<float, 4> color, vk::CommandBuffer commandBuffer);
     private:
         vk::SwapchainKHR swapchain;

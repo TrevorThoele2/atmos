@@ -32,17 +32,9 @@ namespace Atmos::Render::Vulkan
                 }),
             vk::PrimitiveTopology::eTriangleList,
             Asset::MaterialType::Region,
-            [this](Context& context, DrawContext& drawContext, uint32_t currentImage, glm::vec2 cameraSize)
+            [this](Context& context, DrawContext& drawContext, uint32_t currentImage, UniversalData universalData)
             {
-                for (auto& group : context.groups)
-                {
-                    WriteToBuffers(
-                        group.second,
-                        group.first,
-                        drawContext,
-                        currentImage,
-                        cameraSize);
-                }
+                Draw(context, drawContext, currentImage, universalData);
             }),
         graphicsQueue(graphicsQueue),
         commandBuffers(*device, graphicsQueueIndex),
@@ -75,9 +67,9 @@ namespace Atmos::Render::Vulkan
         core.Start(materials, commandBuffer);
     }
 
-    void RegionRenderer::DrawNextLayer(uint32_t currentImage, glm::vec2 cameraSize)
+    void RegionRenderer::DrawNextLayer(uint32_t currentImage, UniversalData universalData)
     {
-        core.DrawNextLayer(currentImage, cameraSize);
+        core.DrawNextLayer(currentImage, universalData);
     }
 
     void RegionRenderer::End()
@@ -113,21 +105,49 @@ namespace Atmos::Render::Vulkan
         return found->second;
     }
 
-    void RegionRenderer::WriteToBuffers(
-        const Context::Group& group,
-        const Asset::Material* materialAsset,
+    void RegionRenderer::Draw(
+        Context& context,
         DrawContext& drawContext,
         uint32_t currentImage,
-        glm::vec2 cameraSize)
+        UniversalData universalData)
     {
-        auto& pipeline = *core.PipelineFor(*materialAsset);
-        pipeline.uniformBuffers[currentImage].PushBytes(UniversalData::Ortho(cameraSize), 0);
+        const auto& commandBuffer = drawContext.commandBuffer;
 
-        WriteToBuffers(
-            group.regions,
-            pipeline,
-            drawContext,
-            currentImage);
+        vk::Buffer vertexBuffers[] = { vertexBuffer.destination.value.get() };
+        vk::DeviceSize offsets[] = { 0 };
+        commandBuffer.bindVertexBuffers(0, 1, vertexBuffers, offsets);
+
+        commandBuffer.bindIndexBuffer(indexBuffer.destination.value.get(), 0, vk::IndexType::eUint16);
+
+        for (auto& group : context.groups)
+        {
+            WriteToBuffers(
+                group.second,
+                *group.first,
+                drawContext,
+                currentImage,
+                universalData);
+        }
+    }
+
+    void RegionRenderer::WriteToBuffers(
+        const Context::Group& group,
+        const Asset::Material& materialAsset,
+        DrawContext& drawContext,
+        uint32_t currentImage,
+        UniversalData universalData)
+    {
+        auto& pipelines = *core.PipelinesFor(materialAsset);
+        for (auto& pipeline : pipelines)
+        {
+            pipeline.uniformBuffers[currentImage].PushBytes(universalData, 0);
+
+            WriteToBuffers(
+                group.regions,
+                pipeline,
+                drawContext,
+                currentImage);
+        }
     }
 
     void RegionRenderer::WriteToBuffers(
@@ -152,18 +172,12 @@ namespace Atmos::Render::Vulkan
             drawContext.addition.indexCount += region.indices.size();
         }
 
-        vk::Buffer vertexBuffers[] = { vertexBuffer.destination.value.get() };
-        vk::DeviceSize offsets[] = { 0 };
-        commandBuffer.bindVertexBuffers(0, 1, vertexBuffers, offsets);
-
-        commandBuffer.bindIndexBuffer(indexBuffer.destination.value.get(), 0, vk::IndexType::eUint16);
-
         commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, pipeline.value.get());
 
         auto currentDescriptorSet = core.KeyedSetFor(currentImage)->descriptorSet;
         commandBuffer.bindDescriptorSets(
             vk::PipelineBindPoint::eGraphics,
-            pipeline.layout.get(),
+            core.PipelineLayout(),
             0,
             1,
             &currentDescriptorSet,

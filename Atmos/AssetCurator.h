@@ -27,6 +27,9 @@ namespace Atmos::Asset
     private:
         Arca::Index<Mapped<T>> mappedAssets;
         Debug::Value debugSizeValue;
+
+        void AddToMap(Arca::Index<T> index);
+        void RemoveFromMap(const String& name);
     private:
         INSCRIPTION_ACCESS;
     };
@@ -42,16 +45,28 @@ namespace Atmos::Asset
             },
                 MutablePointer())
     {
-        init.owner.ExecuteOn<Arca::CreatedKnown<T>>(
+        init.owner.On<Arca::CreatedKnown<T>>(
             [this](const Arca::CreatedKnown<T>& signal)
             {
-                MutablePointer().Of(mappedAssets)->map.emplace(signal.reference->Name(), signal.reference);
+                AddToMap(signal.reference);
             });
 
-        init.owner.ExecuteOn<Arca::DestroyingKnown<T>>(
+        init.owner.On<Arca::DestroyingKnown<T>>(
             [this](const Arca::DestroyingKnown<T>& signal)
             {
-                MutablePointer().Of(mappedAssets)->map.erase(signal.reference->Name());
+                RemoveFromMap(signal.reference->Name());
+            });
+
+        init.owner.On<Arca::AssigningKnown<T>>(
+            [this](const Arca::AssigningKnown<T>& signal)
+            {
+                RemoveFromMap(signal.reference->Name());
+            });
+
+        init.owner.On<Arca::AssignedKnown<T>>(
+            [this](const Arca::AssignedKnown<T>& signal)
+            {
+                AddToMap(signal.reference);
             });
     }
 
@@ -65,6 +80,19 @@ namespace Atmos::Asset
     Arca::Index<T> Curator<T>::Handle(const Find<T>& command)
     {
         return mappedAssets->Find(command.name);
+    }
+
+    template<class T>
+    void Curator<T>::AddToMap(Arca::Index<T> index)
+    {
+        const auto name = index->Name();
+        MutablePointer().Of(mappedAssets)->map.emplace(name, index);
+    }
+
+    template<class T>
+    void Curator<T>::RemoveFromMap(const String& name)
+    {
+        MutablePointer().Of(mappedAssets)->map.erase(name);
     }
 
     template<class T>

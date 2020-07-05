@@ -3,6 +3,7 @@
 
 #include <Arca/ReliquaryOrigin.h>
 #include <Atmos/TypeRegistration.h>
+#include <Atmos/MappedAssets.h>
 
 SCENARIO_METHOD(AssetTestsFixture, "assets")
 {
@@ -20,9 +21,33 @@ SCENARIO_METHOD(AssetTestsFixture, "assets")
 
             auto asset = reliquary->Do(Arca::Create<Atmos::Asset::Audio>{name, std::unique_ptr<Resource::Audio>{}});
 
+            auto mappedAssets = Arca::Index<Atmos::Asset::Mapped<Atmos::Asset::Audio>>(*reliquary);
+
             THEN("asset has name")
             {
                 REQUIRE(asset->Name() == name);
+            }
+
+            THEN("mapped assets contains entry")
+            {
+                REQUIRE(mappedAssets->Exists(name));
+                REQUIRE(mappedAssets->Find(name) == asset);
+            }
+
+            WHEN("reassigning asset")
+            {
+                auto newName = dataGeneration.Random<String>();
+
+                reliquary->Do(Arca::AssignMove<Atmos::Asset::Audio>{
+                    asset.ID(), newName, std::unique_ptr<Resource::Audio>{}});
+
+                THEN("mapped asset is new asset")
+                {
+                    REQUIRE(mappedAssets->Exists(newName));
+                    REQUIRE(mappedAssets->Find(newName) == asset);
+                    REQUIRE(!mappedAssets->Exists(name));
+                    REQUIRE(mappedAssets->Find(name) == nullptr);
+                }
             }
         }
 
@@ -37,6 +62,8 @@ SCENARIO_METHOD(AssetTestsFixture, "assets")
                 std::unique_ptr<Resource::Image>{},
                 ImageSize{},
                 ImageGridSize{ columns, rows }});
+
+            auto mappedAssets = Arca::Index<Atmos::Asset::Mapped<Atmos::Asset::Image>>(*reliquary);
 
             THEN("asset has name")
             {
@@ -62,31 +89,80 @@ SCENARIO_METHOD(AssetTestsFixture, "assets")
             {
                 REQUIRE(asset->Rows() == rows);
             }
+
+            THEN("mapped assets contains entry")
+            {
+                REQUIRE(mappedAssets->Exists(name));
+                REQUIRE(mappedAssets->Find(name) == asset);
+            }
+
+            WHEN("reassigning asset")
+            {
+                auto newName = dataGeneration.Random<String>();
+
+                reliquary->Do(Arca::AssignMove<Atmos::Asset::Image>{
+                    asset.ID(),
+                    newName,
+                    std::unique_ptr<Resource::Image>{},
+                    ImageSize{},
+                    ImageGridSize{ columns, rows }});
+
+                THEN("mapped asset is new asset")
+                {
+                    REQUIRE(mappedAssets->Size() == 1);
+                    REQUIRE(mappedAssets->Exists(newName));
+                    REQUIRE(mappedAssets->Find(newName) == asset);
+                    REQUIRE(!mappedAssets->Exists(name));
+                    REQUIRE(mappedAssets->Find(name) == nullptr);
+                }
+            }
         }
 
-        WHEN("creating material asset with null shaders")
+        WHEN("creating material asset with empty passes")
         {
             auto name = dataGeneration.Random<String>();
 
             auto asset = reliquary->Do(Arca::Create<Material>{
                 name,
                 MaterialType::Image,
-                Arca::Index<Shader>{},
-                Arca::Index<Shader>{}});
+                std::vector<Material::Pass>{}});
+
+            auto mappedAssets = Arca::Index<Atmos::Asset::Mapped<Atmos::Asset::Material>>(*reliquary);
 
             THEN("asset has name")
             {
                 REQUIRE(asset->Name() == name);
             }
 
-            THEN("asset has empty vertex shader")
+            THEN("asset has empty passes")
             {
-                REQUIRE(asset->VertexShader().Get() == nullptr);
+                REQUIRE(asset->Passes().empty());
             }
 
-            THEN("asset has empty fragment shader")
+            THEN("mapped assets contains entry")
             {
-                REQUIRE(asset->FragmentShader().Get() == nullptr);
+                REQUIRE(mappedAssets->Exists(name));
+                REQUIRE(mappedAssets->Find(name) == asset);
+            }
+
+            WHEN("reassigning asset")
+            {
+                auto newName = dataGeneration.Random<String>();
+
+                reliquary->Do(Arca::AssignMove<Atmos::Asset::Material>{
+                    asset.ID(),
+                    newName,
+                    MaterialType::Image,
+                    std::vector<Material::Pass>{}});
+
+                THEN("mapped asset is new asset")
+                {
+                    REQUIRE(mappedAssets->Size() == 1);
+                    REQUIRE(mappedAssets->Exists(newName));
+                    REQUIRE(mappedAssets->Find(newName) == asset);
+                    REQUIRE(!mappedAssets->Exists(name));
+                    REQUIRE(mappedAssets->Find(name) == nullptr);
+                }
             }
         }
 
@@ -96,9 +172,36 @@ SCENARIO_METHOD(AssetTestsFixture, "assets")
 
             auto asset = reliquary->Do(Arca::Create<Script>{name, std::unique_ptr<Resource::Script>{}});
 
+            auto mappedAssets = Arca::Index<Atmos::Asset::Mapped<Atmos::Asset::Script>>(*reliquary);
+
             THEN("asset has name")
             {
                 REQUIRE(asset->Name() == name);
+            }
+
+            THEN("mapped assets contains entry")
+            {
+                REQUIRE(mappedAssets->Exists(name));
+                REQUIRE(mappedAssets->Find(name) == asset);
+            }
+
+            WHEN("reassigning asset")
+            {
+                auto newName = dataGeneration.Random<String>();
+
+                reliquary->Do(Arca::AssignMove<Atmos::Asset::Script>{
+                    asset.ID(),
+                    newName,
+                    std::unique_ptr<Resource::Script>{}});
+
+                THEN("mapped asset is new asset")
+                {
+                    REQUIRE(mappedAssets->Size() == 1);
+                    REQUIRE(mappedAssets->Exists(newName));
+                    REQUIRE(mappedAssets->Find(newName) == asset);
+                    REQUIRE(!mappedAssets->Exists(name));
+                    REQUIRE(mappedAssets->Find(name) == nullptr);
+                }
             }
         }
 
@@ -108,9 +211,37 @@ SCENARIO_METHOD(AssetTestsFixture, "assets")
 
             auto asset = reliquary->Do(Arca::Create<Shader>{name, std::unique_ptr<Resource::Shader>{}, ""});
 
+            auto mappedAssets = Arca::Index<Atmos::Asset::Mapped<Atmos::Asset::Shader>>(*reliquary);
+
             THEN("asset has name")
             {
                 REQUIRE(asset->Name() == name);
+            }
+
+            THEN("mapped assets contains entry")
+            {
+                REQUIRE(mappedAssets->Exists(name));
+                REQUIRE(mappedAssets->Find(name) == asset);
+            }
+
+            WHEN("reassigning asset")
+            {
+                auto newName = dataGeneration.Random<String>();
+
+                reliquary->Do(Arca::AssignMove<Atmos::Asset::Shader>{
+                    asset.ID(),
+                    newName,
+                    std::unique_ptr<Resource::Shader>{},
+                    ""});
+
+                THEN("mapped asset is new asset")
+                {
+                    REQUIRE(mappedAssets->Size() == 1);
+                    REQUIRE(mappedAssets->Exists(newName));
+                    REQUIRE(mappedAssets->Find(newName) == asset);
+                    REQUIRE(!mappedAssets->Exists(name));
+                    REQUIRE(mappedAssets->Find(name) == nullptr);
+                }
             }
         }
     }

@@ -8,8 +8,8 @@ namespace Atmos::Asset
     class Shader final : public AssetWithResource<Resource::Shader, Shader>
     {
     public:
-        explicit Shader(Init init);
         Shader(Init init, const Atmos::Name& name, ResourcePtr&& resource, const String& entryPoint);
+        Shader(Init init, Arca::Serialization serialization);
         Shader(Shader&& arg) noexcept;
 
         Shader& operator=(Shader&& arg) noexcept;

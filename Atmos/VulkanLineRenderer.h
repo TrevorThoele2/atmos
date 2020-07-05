@@ -27,7 +27,7 @@ namespace Atmos::Render::Vulkan
         void StageRender(const LineRender& lineRender);
 
         void Start(const std::vector<const Asset::Material*>& materials, vk::CommandBuffer commandBuffer) override;
-        void DrawNextLayer(uint32_t currentImage, glm::vec2 cameraSize) override;
+        void DrawNextLayer(uint32_t currentImage, UniversalData universalData) override;
         void End() override;
         [[nodiscard]] bool IsDone() const override;
 
@@ -74,12 +74,17 @@ namespace Atmos::Render::Vulkan
 
         using DrawContext = Core::DrawContext;
 
-        void WriteToBuffers(
-            const Context::Group& group,
-            const Asset::Material* materialAsset,
+        void Draw(
+            Context& context,
             DrawContext& drawContext,
             uint32_t currentImage,
-            glm::vec2 cameraSize);
+            UniversalData universalData);
+        void WriteToBuffers(
+            const Context::Group& group,
+            const Asset::Material& materialAsset,
+            DrawContext& drawContext,
+            uint32_t currentImage,
+            UniversalData universalData);
         void WriteToBuffers(
             const std::vector<Line>& lines,
             LineWidth width,

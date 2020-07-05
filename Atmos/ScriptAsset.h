@@ -12,8 +12,8 @@ namespace Atmos::Asset
     public:
         using SymbolName = Atmos::Name;
     public:
-        explicit Script(Init init);
         Script(Init init, const ::Atmos::Name& name, ResourcePtr&& resource);
+        Script(Init init, Arca::Serialization serialization);
         Script(Script&& arg) noexcept;
 
         Script& operator=(Script&& arg) noexcept;

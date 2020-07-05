@@ -34,17 +34,9 @@ namespace Atmos::Render::Vulkan
                 }),
             vk::PrimitiveTopology::eLineList,
             Asset::MaterialType::Line,
-            [this](Context& context, DrawContext& drawContext, uint32_t currentImage, glm::vec2 cameraSize)
+            [this](Context& context, DrawContext& drawContext, uint32_t currentImage, UniversalData universalData)
             {
-                for (auto& group : context.groups)
-                {
-                    WriteToBuffers(
-                        group.second,
-                        group.first,
-                        drawContext,
-                        currentImage,
-                        cameraSize);
-                }
+                Draw(context, drawContext, currentImage, universalData);
             }),
         graphicsQueue(graphicsQueue),
         commandBuffers(*device, graphicsQueueIndex),
@@ -82,9 +74,9 @@ namespace Atmos::Render::Vulkan
         core.Start(materials, commandBuffer);
     }
 
-    void LineRenderer::DrawNextLayer(uint32_t currentImage, glm::vec2 cameraSize)
+    void LineRenderer::DrawNextLayer(uint32_t currentImage, UniversalData universalData)
     {
-        core.DrawNextLayer(currentImage, cameraSize);
+        core.DrawNextLayer(currentImage, universalData);
     }
 
     void LineRenderer::End()
@@ -128,23 +120,49 @@ namespace Atmos::Render::Vulkan
         return found->second;
     }
 
-    void LineRenderer::WriteToBuffers(
-        const Context::Group& group,
-        const Asset::Material* materialAsset,
+    void LineRenderer::Draw(
+        Context& context,
         DrawContext& drawContext,
         uint32_t currentImage,
-        glm::vec2 cameraSize)
+        UniversalData universalData)
     {
-        auto& pipeline = *core.PipelineFor(*materialAsset);
-        pipeline.uniformBuffers[currentImage].PushBytes(UniversalData::Ortho(cameraSize), 0);
+        const auto& commandBuffer = drawContext.commandBuffer;
 
-        for (auto& object : group.lines)
+        vk::Buffer vertexBuffers[] = { vertexBuffer.destination.value.get() };
+        vk::DeviceSize offsets[] = { 0 };
+        commandBuffer.bindVertexBuffers(0, 1, vertexBuffers, offsets);
+
+        for (auto& group : context.groups)
+        {
             WriteToBuffers(
-                object.second,
-                object.first,
-                pipeline,
+                group.second,
+                *group.first,
                 drawContext,
-                currentImage);
+                currentImage,
+                universalData);
+        }
+    }
+
+    void LineRenderer::WriteToBuffers(
+        const Context::Group& group,
+        const Asset::Material& materialAsset,
+        DrawContext& drawContext,
+        uint32_t currentImage,
+        UniversalData universalData)
+    {
+        auto& pipelines = *core.PipelinesFor(materialAsset);
+        for (auto& pipeline : pipelines)
+        {
+            pipeline.uniformBuffers[currentImage].PushBytes(universalData, 0);
+
+            for (auto& object : group.lines)
+                WriteToBuffers(
+                    object.second,
+                    object.first,
+                    pipeline,
+                    drawContext,
+                    currentImage);
+        }
     }
 
     void LineRenderer::WriteToBuffers(
@@ -164,16 +182,12 @@ namespace Atmos::Render::Vulkan
             drawContext.addition.vertexCount += line.vertices.size();
         }
 
-        vk::Buffer vertexBuffers[] = { vertexBuffer.destination.value.get() };
-        vk::DeviceSize offsets[] = { 0 };
-        commandBuffer.bindVertexBuffers(0, 1, vertexBuffers, offsets);
-
         commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, pipeline.value.get());
 
         auto currentDescriptorSet = core.KeyedSetFor(currentImage)->descriptorSet;
         commandBuffer.bindDescriptorSets(
             vk::PipelineBindPoint::eGraphics,
-            pipeline.layout.get(),
+            core.PipelineLayout(),
             0,
             1,
             &currentDescriptorSet,

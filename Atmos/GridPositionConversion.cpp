@@ -8,8 +8,8 @@ namespace Atmos::Grid
     {
         return
         {
-            static_cast<Position::Value>(position.x) / CellSize<Position::Value>,
-            static_cast<Position::Value>(position.y) / CellSize<Position::Value>
+            static_cast<Position::Value>(std::floor(position.x / CellSize<Position2D::Value>)),
+            static_cast<Position::Value>(std::floor(position.y / CellSize<Position2D::Value>))
         };
     }
 
@@ -17,8 +17,8 @@ namespace Atmos::Grid
     {
         return
         {
-            static_cast<Position::Value>(position.x) / CellSize<Position::Value>,
-            static_cast<Position::Value>(position.y) / CellSize<Position::Value>
+            static_cast<Position::Value>(std::floor(position.x / CellSize<Position3D::Value>)),
+            static_cast<Position::Value>(std::floor(position.y / CellSize<Position3D::Value>))
         };
     }
 }

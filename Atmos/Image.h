@@ -40,7 +40,6 @@ namespace Atmos::Render
     protected:
         using Init = typename BaseT::Init;
 
-        Image(Init init);
         Image(
             Init init,
             Arca::Index<Asset::Image> asset,
@@ -50,8 +49,10 @@ namespace Atmos::Render
             const Position3D& position,
             const Scalers2D& scalers,
             const Angle& rotation);
+        Image(Init init, Arca::Serialization);
 
-        using BaseT::FindOrCreate;
+        using BaseT::Create;
+        using BaseT::Find;
     private:
         Arca::Index<ImageCore> core;
         Arca::Index<BoundsT> bounds;
@@ -149,13 +150,6 @@ namespace Atmos::Render
     }
 
     template<class Derived, bool mutableBounds>
-    Image<Derived, mutableBounds>::Image(Init init) :
-        Arca::ClosedTypedRelic<Derived>(init),
-        core(FindOrCreate<ImageCore>()),
-        bounds(FindOrCreate<BoundsT>())
-    {}
-
-    template<class Derived, bool mutableBounds>
     Image<Derived, mutableBounds>::Image(
         Init init,
         Arca::Index<Asset::Image> asset,
@@ -168,12 +162,19 @@ namespace Atmos::Render
         :
         Arca::ClosedTypedRelic<Derived>(init)
     {
-        core = FindOrCreate<ImageCore>(asset, assetIndex, material, color);
+        core = Create<ImageCore>(asset, assetIndex, material, color);
         const auto baseSize = asset
             ? asset->SliceSize()
             : Size2D{ 0, 0 };
-        bounds = FindOrCreate<BoundsT>(position, baseSize, scalers, rotation);
+        bounds = Create<BoundsT>(position, baseSize, scalers, rotation);
     }
+
+    template<class Derived, bool mutableBounds>
+    Image<Derived, mutableBounds>::Image(Init init, Arca::Serialization) :
+        Arca::ClosedTypedRelic<Derived>(init),
+        core(Find<ImageCore>()),
+        bounds(Find<BoundsT>())
+    {}
 
     template<class Derived, bool mutableBounds>
     template<class CommandT, class MemberT>

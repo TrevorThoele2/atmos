@@ -7,12 +7,12 @@
 
 namespace Atmos::Asset
 {
-    Shader::Shader(Init init) :
-        AssetWithResource(init)
-    {}
-
     Shader::Shader(Init init, const Atmos::Name& name, ResourcePtr&& resource, const String& entryPoint) :
         AssetWithResource(init, name, std::move(resource)), entryPoint(entryPoint)
+    {}
+
+    Shader::Shader(Init init, Arca::Serialization serialization) :
+        AssetWithResource(init, serialization)
     {}
 
     Shader::Shader(Shader&& arg) noexcept :

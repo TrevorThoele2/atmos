@@ -45,17 +45,9 @@ namespace Atmos::Render::Vulkan
                 }),
             vk::PrimitiveTopology::eTriangleList,
             Asset::MaterialType::Image,
-            [this](Context& context, DrawContext& drawContext, uint32_t currentImage, glm::vec2 cameraSize)
+            [this](Context& context, DrawContext& drawContext, uint32_t currentImage, UniversalData universalData)
             {
-                for (auto& group : context.groups)
-                {
-                    WriteToBuffers(
-                        group.second,
-                        group.first,
-                        drawContext,
-                        currentImage,
-                        cameraSize);
-                }
+                Draw(context, drawContext, currentImage, universalData);
             }),
         graphicsQueue(graphicsQueue),
         commandBuffers(*device, graphicsQueueIndex),
@@ -145,9 +137,9 @@ namespace Atmos::Render::Vulkan
         core.Start(materials, commandBuffer, setupKey);
     }
 
-    void QuadRenderer::DrawNextLayer(uint32_t currentImage, glm::vec2 cameraSize)
+    void QuadRenderer::DrawNextLayer(uint32_t currentImage, UniversalData universalData)
     {
-        core.DrawNextLayer(currentImage, cameraSize);
+        core.DrawNextLayer(currentImage, universalData);
     }
 
     void QuadRenderer::End()
@@ -191,23 +183,51 @@ namespace Atmos::Render::Vulkan
         return found->second;
     }
 
-    void QuadRenderer::WriteToBuffers(
-        const Context::Group& group,
-        const Asset::Material* materialAsset,
+    void QuadRenderer::Draw(
+        Context& context,
         DrawContext& drawContext,
         uint32_t currentImage,
-        glm::vec2 cameraSize)
+        UniversalData universalData)
     {
-        auto& pipeline = *core.PipelineFor(*materialAsset);
-        pipeline.uniformBuffers[currentImage].PushBytes(UniversalData::Ortho(cameraSize), 0);
+        const auto& commandBuffer = drawContext.commandBuffer;
 
-        for(auto& object : group.quads)
+        vk::Buffer vertexBuffers[] = { vertexBuffer.destination.value.get() };
+        vk::DeviceSize offsets[] = { 0 };
+        commandBuffer.bindVertexBuffers(0, 1, vertexBuffers, offsets);
+
+        commandBuffer.bindIndexBuffer(indexBuffer.destination.value.get(), 0, vk::IndexType::eUint16);
+
+        for (auto& group : context.groups)
+        {
             WriteToBuffers(
-                object.second,
-                object.first,
-                pipeline,
+                group.second,
+                *group.first,
                 drawContext,
-                currentImage);
+                currentImage,
+                universalData);
+        }
+    }
+
+    void QuadRenderer::WriteToBuffers(
+        const Context::Group& group,
+        const Asset::Material& materialAsset,
+        DrawContext& drawContext,
+        uint32_t currentImage,
+        UniversalData universalData)
+    {
+        auto& pipelines = *core.PipelinesFor(materialAsset);
+        for (auto& pipeline : pipelines)
+        {
+            pipeline.uniformBuffers[currentImage].PushBytes(universalData, 0);
+
+            for (auto& object : group.quads)
+                WriteToBuffers(
+                    object.second,
+                    object.first,
+                    pipeline,
+                    drawContext,
+                    currentImage);
+        }
     }
 
     void QuadRenderer::WriteToBuffers(
@@ -240,18 +260,12 @@ namespace Atmos::Render::Vulkan
             ++drawContext.addition.quadCount;
         }
 
-        vk::Buffer vertexBuffers[] = { vertexBuffer.destination.value.get() };
-        vk::DeviceSize offsets[] = { 0 };
-        commandBuffer.bindVertexBuffers(0, 1, vertexBuffers, offsets);
-
-        commandBuffer.bindIndexBuffer(indexBuffer.destination.value.get(), 0, vk::IndexType::eUint16);
-
         commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, pipeline.value.get());
 
         auto currentDescriptorSet = core.KeyedSetFor(imageAsset, currentImage)->descriptorSet;
         commandBuffer.bindDescriptorSets(
             vk::PipelineBindPoint::eGraphics,
-            pipeline.layout.get(),
+            core.PipelineLayout(),
             0,
             1,
             &currentDescriptorSet,
