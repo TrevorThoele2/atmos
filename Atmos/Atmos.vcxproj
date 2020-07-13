@@ -64,7 +64,7 @@
     <ClInclude Include="GridRegionCurator.h" />
     <ClInclude Include="RegionRender.h" />
     <ClInclude Include="RelativeImage.h" />
-    <ClInclude Include="RelativeBoundsPosition.h" />
+    <ClInclude Include="RelativeBounds.h" />
     <ClInclude Include="RenderAlgorithms.h" />
     <ClInclude Include="RenderMesh.h" />
     <ClInclude Include="RotateBounds.h" />
@@ -402,7 +402,7 @@
     <ClCompile Include="GridRegionCurator.cpp" />
     <ClCompile Include="PointConversions.cpp" />
     <ClCompile Include="RelativeImage.cpp" />
-    <ClCompile Include="RelativeBoundsPosition.cpp" />
+    <ClCompile Include="RelativeBounds.cpp" />
     <ClCompile Include="RenderAlgorithms.cpp" />
     <ClCompile Include="VulkanCombinedImageSamplerDescriptor.cpp" />
     <ClCompile Include="GlobalInitializer.cpp" />

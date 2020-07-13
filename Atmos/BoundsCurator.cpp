@@ -4,12 +4,25 @@
 #include "BoundsScaled.h"
 #include "BoundsRotated.h"
 
-#include "TimeInformation.h"
-
 namespace Atmos::Spatial
 {
     BoundsCurator::BoundsCurator(Init init) : Curator(init)
-    {}
+    {
+        const auto onBoundsAndRelativeBounds = [this](
+            const Arca::MatrixFormed<Arca::All<Bounds, RelativeBounds>>& signal)
+        {
+            const auto id = signal.index.ID();
+            const auto parentBounds = RetrieveParentBounds(id);
+            if (!parentBounds)
+                return;
+
+            const auto relativeBounds = MutablePointer().Of<RelativeBounds>(id);
+            const auto bounds = MutablePointer().Of<Bounds>(id);
+
+            CalculatePosition(*bounds, *relativeBounds, *parentBounds);
+        };
+        Owner().On<Arca::MatrixFormed<Arca::All<Bounds, RelativeBounds>>>(onBoundsAndRelativeBounds);
+    }
 
     void BoundsCurator::Handle(const MoveBoundsTo& command)
     {
@@ -42,25 +55,27 @@ namespace Atmos::Spatial
             command.id,
             [this, command](Bounds& bounds)
             {
-                auto& lastFrameElapsed = Arca::Index<Time::Information>(Owner())->lastFrameElapsed;
-                const auto normalizedDistance =
-                    command.amount
-                    * static_cast<float>(std::chrono::duration_cast<Time::Seconds>(lastFrameElapsed).count());
                 const auto fromPosition = bounds.Position();
                 auto toPosition = fromPosition;
                 switch (command.direction.Get())
                 {
                 case Direction::Left:
-                    toPosition.x -= normalizedDistance;
+                    toPosition.x -= command.amount;
                     break;
                 case Direction::Up:
-                    toPosition.y -= normalizedDistance;
+                    toPosition.y -= command.amount;
+                    break;
+                case Direction::ZFarther:
+                    toPosition.z -= command.amount;
                     break;
                 case Direction::Right:
-                    toPosition.x += normalizedDistance;
+                    toPosition.x += command.amount;
                     break;
                 case Direction::Down:
-                    toPosition.y += normalizedDistance;
+                    toPosition.y += command.amount;
+                    break;
+                case Direction::ZNearer:
+                    toPosition.z += command.amount;
                     break;
                 default:
                     break;
@@ -86,18 +101,14 @@ namespace Atmos::Spatial
 
     void BoundsCurator::DoMovement(Bounds& bounds, const Point3D& to, Arca::RelicID id)
     {
-        auto [relativePosition, parentBounds] = RetrieveRelativePositionAndParentBounds(id);
-        if (relativePosition)
+        const auto relativeBounds = MutablePointer().Of<RelativeBounds>(id);
+        if (relativeBounds)
         {
+            const auto parentBounds = RetrieveParentBounds(id);
             if (!parentBounds)
                 return;
 
-            const auto parentPosition = parentBounds->Position();
-            auto& delta = relativePosition->delta;
-
-            delta.x = parentPosition.x - to.x;
-            delta.y = parentPosition.y - to.y;
-            delta.z = parentPosition.z - to.z;
+            CalculateRelativePosition(*relativeBounds, *parentBounds, to);
         }
 
         bounds.Position(to);
@@ -121,34 +132,58 @@ namespace Atmos::Spatial
         Owner().Raise(BoundsRotated(Arca::Index<Bounds>(id, Owner())));
     }
 
-    auto BoundsCurator::RetrieveRelativePositionAndParentBounds(Arca::RelicID id)
-        -> RelativePositionAndParentBounds
+    void BoundsCurator::CalculatePosition(
+        Bounds& bounds, RelativeBounds& relativeBounds, Bounds& parentBounds)
     {
-        auto relativePosition = MutablePointer().Of<RelativeBoundsPosition>(id);
-        if (!relativePosition)
-            return { nullptr, {} };
+        const auto parentPosition = parentBounds.Position();
+        const auto delta = relativeBounds.delta;
 
+        const auto position = Point3D
+        {
+            parentPosition.x + delta.x,
+            parentPosition.y + delta.y,
+            parentPosition.z + delta.z
+        };
+
+        bounds.Position(position);
+    }
+
+    void BoundsCurator::CalculateRelativePosition(
+        RelativeBounds& relativeBounds, Bounds& parentBounds, const Point3D& newPosition)
+    {
+        const auto parentPosition = parentBounds.Position();
+        auto& delta = relativeBounds.delta;
+
+        delta.x = newPosition.x - parentPosition.x;
+        delta.y = newPosition.y - parentPosition.y;
+        delta.z = newPosition.z - parentPosition.z;
+    }
+
+    Bounds* BoundsCurator::RetrieveParentBounds(Arca::RelicID id)
+    {
         const auto parent = Owner().ParentOf(id);
         if (!parent)
         {
             const auto log = Logging::Log{
-                "Relics with " + Arca::TypeFor<RelativeBoundsPosition>().name + " must be parented.",
+                "Relics with " + Arca::TypeFor<RelativeBounds>().name + " must be parented.",
                 Logging::Severity::Warning,
                 { { "RelicID", id } } };
-            return { relativePosition, {} };
+            Owner().Do(log);
+            return nullptr;
         }
 
         const auto parentBounds = MutablePointer().Of<Bounds>(parent->ID());
         if (!parentBounds)
         {
             const auto log = Logging::Log{
-                "Relic parents of " + Arca::TypeFor<RelativeBoundsPosition>().name + " must have a Bounds.",
+                "Relic parents of " + Arca::TypeFor<RelativeBounds>().name + " must have a Bounds.",
                 Logging::Severity::Warning,
                 { { "RelicID", id } } };
-            return { relativePosition, {} };
+            Owner().Do(log);
+            return nullptr;
         }
 
-        return { relativePosition, parentBounds };
+        return parentBounds;
     }
 
     void BoundsCurator::UpdateChildrenRelativeBounds(const Point3D& parentPosition, Arca::RelicID id)
@@ -156,7 +191,7 @@ namespace Atmos::Spatial
         auto children = Owner().ChildrenOf(id);
         for (auto& child : children)
         {
-            const auto relativePosition = MutablePointer().Of<RelativeBoundsPosition>(child.ID());
+            const auto relativePosition = MutablePointer().Of<RelativeBounds>(child.ID());
             auto childBounds = MutablePointer().Of<Bounds>(child.ID());
             if (!relativePosition || !childBounds)
                 continue;

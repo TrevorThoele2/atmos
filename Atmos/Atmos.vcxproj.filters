@@ -444,6 +444,12 @@
     <Filter Include="Header Files\Spatial\Arca">
       <UniqueIdentifier>{7fb22f80-31ef-484c-ad60-6bdcf9d9d2de}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Time\Frame">
+      <UniqueIdentifier>{6cd9547a-3c41-4f3c-a903-ce603002f3d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Time\Frame">
+      <UniqueIdentifier>{dbd8a2d8-3eed-48d5-9ef2-8ed4a5916b74}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FieldDestination.h">
@@ -767,9 +773,6 @@
     <ClInclude Include="DebugStatistics.h">
       <Filter>Header Files\Debug</Filter>
     </ClInclude>
-    <ClInclude Include="Fps.h">
-      <Filter>Header Files\Time</Filter>
-    </ClInclude>
     <ClInclude Include="TimeInformation.h">
       <Filter>Header Files\Time</Filter>
     </ClInclude>
@@ -1057,12 +1060,6 @@
     </ClInclude>
     <ClInclude Include="Line.h">
       <Filter>Header Files\Render\Line</Filter>
-    </ClInclude>
-    <ClInclude Include="FrameStartCurator.h">
-      <Filter>Header Files\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="FrameEndCurator.h">
-      <Filter>Header Files\Engine</Filter>
     </ClInclude>
     <ClInclude Include="CurrentFieldData.h">
       <Filter>Header Files\World\Field</Filter>
@@ -1499,11 +1496,20 @@
     <ClInclude Include="ScreenPointDelta.h">
       <Filter>Header Files\Spatial\Screen</Filter>
     </ClInclude>
-    <ClInclude Include="RelativeBoundsPosition.h">
-      <Filter>Header Files\Spatial\Arca</Filter>
-    </ClInclude>
     <ClInclude Include="Pathfinder.h">
       <Filter>Header Files\Spatial\Algorithms</Filter>
+    </ClInclude>
+    <ClInclude Include="FrameStartCurator.h">
+      <Filter>Header Files\Time\Frame</Filter>
+    </ClInclude>
+    <ClInclude Include="Fps.h">
+      <Filter>Header Files\Time\Frame</Filter>
+    </ClInclude>
+    <ClInclude Include="FrameEndCurator.h">
+      <Filter>Header Files\Time\Frame</Filter>
+    </ClInclude>
+    <ClInclude Include="RelativeBounds.h">
+      <Filter>Header Files\Spatial\Arca</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1870,12 +1876,6 @@
     <ClCompile Include="TimeInformation.cpp">
       <Filter>Source Files\Time</Filter>
     </ClCompile>
-    <ClCompile Include="FrameStartCurator.cpp">
-      <Filter>Source Files\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="FrameEndCurator.cpp">
-      <Filter>Source Files\Engine</Filter>
-    </ClCompile>
     <ClCompile Include="CurrentFieldCurator.cpp">
       <Filter>Source Files\World\Field</Filter>
     </ClCompile>
@@ -2134,11 +2134,17 @@
     <ClCompile Include="ScreenPointDelta.cpp">
       <Filter>Source Files\Spatial\Screen</Filter>
     </ClCompile>
-    <ClCompile Include="RelativeBoundsPosition.cpp">
-      <Filter>Source Files\Spatial\Arca</Filter>
-    </ClCompile>
     <ClCompile Include="Pathfinder.cpp">
       <Filter>Source Files\Spatial\Algorithms</Filter>
+    </ClCompile>
+    <ClCompile Include="FrameEndCurator.cpp">
+      <Filter>Source Files\Time\Frame</Filter>
+    </ClCompile>
+    <ClCompile Include="FrameStartCurator.cpp">
+      <Filter>Source Files\Time\Frame</Filter>
+    </ClCompile>
+    <ClCompile Include="RelativeBounds.cpp">
+      <Filter>Source Files\Spatial\Arca</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -163,6 +163,7 @@
     <ClInclude Include="OctreeTests.h" />
     <ClInclude Include="RenderAlgorithmTests.h" />
     <ClInclude Include="LineRenderingTests.h" />
+    <ClInclude Include="SignalListener.h" />
     <ClInclude Include="StopwatchTests.h" />
     <ClInclude Include="WorldSerializationTests.h" />
   </ItemGroup>

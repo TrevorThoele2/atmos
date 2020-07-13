@@ -4,7 +4,7 @@
 #include <Arca/Reliquary.h>
 
 #include "Bounds.h"
-#include "RelativeBoundsPosition.h"
+#include "RelativeBounds.h"
 
 #include "MoveBoundsTo.h"
 #include "MoveBoundsBy.h"
@@ -33,9 +33,12 @@ namespace Atmos::Spatial
 
         template<class Function>
         void DoWithRequiredBounds(Arca::RelicID id, Function function);
+        static void CalculatePosition(
+            Bounds& bounds, RelativeBounds& relativeBounds, Bounds& parentBounds);
+        static void CalculateRelativePosition(
+            RelativeBounds& relativeBounds, Bounds& parentBounds, const Point3D& newPosition);
 
-        using RelativePositionAndParentBounds = std::tuple<RelativeBoundsPosition*, Bounds*>;
-        RelativePositionAndParentBounds RetrieveRelativePositionAndParentBounds(Arca::RelicID id);
+        Bounds* RetrieveParentBounds(Arca::RelicID id);
         void UpdateChildrenRelativeBounds(const Point3D& parentPosition, Arca::RelicID id);
     };
 

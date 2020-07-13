@@ -12,10 +12,10 @@ namespace Atmos::Spatial
         {
             Left,
             Up,
+            ZFarther,
             Right,
             Down,
-            ZUp,
-            ZDown
+            ZNearer
         };
 
         enum class RelativeValue : unsigned char

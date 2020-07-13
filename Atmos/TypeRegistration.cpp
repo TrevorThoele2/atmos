@@ -1,6 +1,7 @@
 #include "TypeRegistration.h"
 
 #include "BoundsCurator.h"
+#include "RelativeBounds.h"
 
 #include "FileCurator.h"
 
@@ -33,6 +34,10 @@
 #include "FrameStopwatch.h"
 #include "StopwatchStatistics.h"
 #include "StopwatchCurator.h"
+#include "FrameStartCurator.h"
+#include "FrameEndCurator.h"
+
+#include "LoggingCurator.h"
 
 #include "DebugStatistics.h"
 
@@ -57,30 +62,11 @@ namespace Atmos
         Debug::RegisterTypes(origin);
     }
 
-    namespace File
-    {
-        void RegisterTypes(Arca::ReliquaryOrigin& origin)
-        {
-            origin
-                .Register<Curator>();
-        }
-    }
-
-    namespace Spatial
-    {
-        void RegisterTypes(Arca::ReliquaryOrigin& origin)
-        {
-            origin
-                .Register<Bounds>()
-                .Register<BoundsCurator>();
-        }
-    }
-
     namespace Input
     {
         void RegisterTypes(Arca::ReliquaryOrigin& origin, Manager& manager)
         {
-            
+
         }
     }
 
@@ -123,7 +109,27 @@ namespace Atmos
     {
         void RegisterTypes(Arca::ReliquaryOrigin& origin, AudioManager& manager)
         {
-            
+
+        }
+    }
+
+    namespace Spatial
+    {
+        void RegisterTypes(Arca::ReliquaryOrigin& origin)
+        {
+            origin
+                .Register<Bounds>()
+                .Register<BoundsCurator>()
+                .Register<RelativeBounds>();
+        }
+    }
+
+    namespace File
+    {
+        void RegisterTypes(Arca::ReliquaryOrigin& origin)
+        {
+            origin
+                .Register<Curator>();
         }
     }
 
@@ -162,7 +168,32 @@ namespace Atmos
                 .Register<StopwatchStatistics>()
                 .Register<RealStopwatch>()
                 .Register<FrameStopwatch>()
-                .Register<StopwatchCurator>();
+                .Register<StopwatchCurator>()
+                .Register<FrameStartCurator>()
+                .Register<FrameEndCurator>();
+        }
+
+        Arca::Stage StartStage()
+        {
+            Arca::Stage stage;
+            stage.Add<FrameStartCurator>();
+            return stage;
+        }
+
+        Arca::Stage EndStage()
+        {
+            Arca::Stage stage;
+            stage.Add<FrameEndCurator>();
+            return stage;
+        }
+    }
+
+    namespace Logging
+    {
+        void RegisterTypes(Arca::ReliquaryOrigin& origin)
+        {
+            origin
+                .Register<Curator>();
         }
     }
 
