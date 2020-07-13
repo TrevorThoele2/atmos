@@ -1,14 +1,14 @@
 #include "Bounds.h"
 
-namespace Atmos
+namespace Atmos::Spatial
 {
     Bounds::Bounds() = default;
 
-    Bounds::Bounds(const Position3D& position, const Size2D& baseSize, const Scalers2D& scalers, const Angle& rotation) :
+    Bounds::Bounds(const Point3D& position, const Size2D& baseSize, const Scalers2D& scalers, const Angle& rotation) :
         position(position), baseSize(baseSize), scalers(scalers), rotation(rotation)
     {}
 
-    void Bounds::Position(const Position3D& to)
+    void Bounds::Position(const Point3D& to)
     {
         position = to;
     }
@@ -28,7 +28,7 @@ namespace Atmos
         rotation = to;
     }
 
-    Position3D Bounds::Position() const
+    Point3D Bounds::Position() const
     {
         return position;;
     }
@@ -56,7 +56,7 @@ namespace Atmos
 
 namespace Inscription
 {
-    void Scribe<Atmos::Bounds, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
+    void Scribe<Atmos::Spatial::Bounds, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
     {
         archive(object.position);
         archive(object.baseSize);

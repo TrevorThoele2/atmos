@@ -2,7 +2,7 @@
 
 #include <Arca/ClosedTypedRelic.h>
 
-#include "ScreenPosition.h"
+#include "ScreenPoint.h"
 
 namespace Atmos::Input
 {

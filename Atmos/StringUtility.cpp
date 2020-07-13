@@ -1,6 +1,6 @@
 #include "StringUtility.h"
 
-#include "GridPosition.h"
+#include "GridPoint.h"
 
 #include "FilePath.h"
 
@@ -176,14 +176,14 @@ namespace Atmos
         return arg.ToString();
     }
 
-    String ToString(const Grid::Position &position)
+    String ToString(const Spatial::Grid::Point &position)
     {
         return
             ToString(position.x) + "," +
             ToString(position.y) + ",";
     }
 
-    String ToString(const Position3D& position)
+    String ToString(const Spatial::Point3D& position)
     {
         return
             ToString(position.x) + "," +
@@ -191,7 +191,7 @@ namespace Atmos
             ToString(position.z);
     }
 
-    String ToString(const Size2D& size)
+    String ToString(const Spatial::Size2D& size)
     {
         return ToString(size.width) + "," + ToString(size.height);
     }

@@ -1,5 +1,7 @@
 #include "TypeRegistration.h"
 
+#include "BoundsCurator.h"
+
 #include "FileCurator.h"
 
 #include "StaticImage.h"
@@ -50,6 +52,7 @@ namespace Atmos
         Input::RegisterTypes(origin, input);
         Render::RegisterTypes(origin, graphics);
         Asset::RegisterTypes(origin);
+        Spatial::RegisterTypes(origin);
         Time::RegisterTypes(origin);
         Debug::RegisterTypes(origin);
     }
@@ -60,6 +63,16 @@ namespace Atmos
         {
             origin
                 .Register<Curator>();
+        }
+    }
+
+    namespace Spatial
+    {
+        void RegisterTypes(Arca::ReliquaryOrigin& origin)
+        {
+            origin
+                .Register<Bounds>()
+                .Register<BoundsCurator>();
         }
     }
 
@@ -76,7 +89,6 @@ namespace Atmos
         void RegisterTypes(Arca::ReliquaryOrigin& origin, GraphicsManager& manager)
         {
             origin
-                .Register<Bounds>()
                 .Register<ImageCore>()
                 .Register<StaticImage>()
                 .Register<DynamicImage>()

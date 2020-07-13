@@ -20,7 +20,7 @@ void MockSurfaceResourceImplementation::DrawFrame(Arca::Reliquary& reliquary, co
     
 }
 
-Atmos::ScreenSize MockSurfaceResourceImplementation::Size() const
+Atmos::Spatial::ScreenSize MockSurfaceResourceImplementation::Size() const
 {
     return {};
 }

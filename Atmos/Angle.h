@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Atmos
+namespace Atmos::Spatial
 {
     using Angle = float;
 }

@@ -4,14 +4,14 @@
 
 namespace Atmos::Render
 {
-    Line::Line(Init init, const std::vector<Position2D>& points, Arca::Index<Asset::Material> material) :
+    Line::Line(Init init, const std::vector<Spatial::Point2D>& points, Arca::Index<Asset::Material> material) :
         ClosedTypedRelic(init), points(points), material(material)
     {}
 
     Line::Line(
         Init init,
-        const std::vector<Position2D>& points,
-        Position2D::Value z,
+        const std::vector<Spatial::Point2D>& points,
+        Spatial::Point2D::Value z,
         Arca::Index<Asset::Material> material,
         LineWidth width,
         Color color)

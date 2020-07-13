@@ -15,22 +15,22 @@ namespace Atmos::Render
         using BaseT = Arca::ClosedTypedRelic<Derived>;
     public:
         using Index = int;
-        using BoundsT = std::conditional_t<mutableBounds, Bounds, const Bounds>;
+        using BoundsT = std::conditional_t<mutableBounds, Spatial::Bounds, const Spatial::Bounds>;
     public:
         void Asset(Arca::Index<Asset::Image> to);
         [[nodiscard]] Arca::Index<Asset::Image> Asset() const;
         void AssetIndex(Index to) const;
         [[nodiscard]] Index AssetIndex() const;
-        [[nodiscard]] AxisAlignedBox2D AssetSlice() const;
+        [[nodiscard]] Spatial::AxisAlignedBox2D AssetSlice() const;
         void Material(Arca::Index<Asset::Material> to);
         [[nodiscard]] Arca::Index<Asset::Material> Material() const;
 
         void Color(Render::Color to) const;
         [[nodiscard]] Render::Color Color() const;
 
-        [[nodiscard]] Position3D Position() const;
-        [[nodiscard]] Size2D Size() const;
-        [[nodiscard]] Angle Rotation() const;
+        [[nodiscard]] Spatial::Point3D Position() const;
+        [[nodiscard]] Spatial::Size2D Size() const;
+        [[nodiscard]] Spatial::Angle Rotation() const;
 
         [[nodiscard]] Arca::Index<ImageCore> Core() const;
         [[nodiscard]] Arca::Index<BoundsT> Bounds() const;
@@ -46,9 +46,9 @@ namespace Atmos::Render
             ImageCore::Index assetIndex,
             Arca::Index<Asset::Material> material,
             const Render::Color& color,
-            const Position3D& position,
-            const Scalers2D& scalers,
-            const Angle& rotation);
+            const Spatial::Point3D& position,
+            const Spatial::Scalers2D& scalers,
+            const Spatial::Angle& rotation);
         Image(Init init, Arca::Serialization);
 
         using BaseT::Create;
@@ -88,7 +88,7 @@ namespace Atmos::Render
     }
 
     template<class Derived, bool mutableBounds>
-    AxisAlignedBox2D Image<Derived, mutableBounds>::AssetSlice() const
+    Spatial::AxisAlignedBox2D Image<Derived, mutableBounds>::AssetSlice() const
     {
         return core->assetSlice;
     }
@@ -120,19 +120,19 @@ namespace Atmos::Render
     }
 
     template<class Derived, bool mutableBounds>
-    Position3D Image<Derived, mutableBounds>::Position() const
+    Spatial::Point3D Image<Derived, mutableBounds>::Position() const
     {
         return bounds->Position();
     }
 
     template<class Derived, bool mutableBounds>
-    Size2D Image<Derived, mutableBounds>::Size() const
+    Spatial::Size2D Image<Derived, mutableBounds>::Size() const
     {
         return bounds->Size();
     }
 
     template<class Derived, bool mutableBounds>
-    Angle Image<Derived, mutableBounds>::Rotation() const
+    Spatial::Angle Image<Derived, mutableBounds>::Rotation() const
     {
         return bounds->Rotation();
     }
@@ -156,16 +156,16 @@ namespace Atmos::Render
         ImageCore::Index assetIndex,
         Arca::Index<Asset::Material> material,
         const Render::Color& color,
-        const Position3D& position,
-        const Scalers2D& scalers,
-        const Angle& rotation)
+        const Spatial::Point3D& position,
+        const Spatial::Scalers2D& scalers,
+        const Spatial::Angle& rotation)
         :
         Arca::ClosedTypedRelic<Derived>(init)
     {
         core = Create<ImageCore>(asset, assetIndex, material, color);
         const auto baseSize = asset
             ? asset->SliceSize()
-            : Size2D{ 0, 0 };
+            : Spatial::Size2D{ 0, 0 };
         bounds = Create<BoundsT>(position, baseSize, scalers, rotation);
     }
 

@@ -1,11 +1,11 @@
 #pragma once
 
-#include "Position3D.h"
+#include "Point3D.h"
 #include "Size3D.h"
 
 #include "Serialization.h"
 
-namespace Atmos
+namespace Atmos::Spatial
 {
     class AxisAlignedBox3D
     {
@@ -13,7 +13,7 @@ namespace Atmos
         using Coordinate = float;
     public:
         AxisAlignedBox3D() = default;
-        AxisAlignedBox3D(const Position3D& center, const Size3D& size);
+        AxisAlignedBox3D(const Point3D& center, const Size3D& size);
         AxisAlignedBox3D(
             Coordinate left,
             Coordinate top,
@@ -26,12 +26,12 @@ namespace Atmos
         bool operator==(const AxisAlignedBox3D& arg) const;
         bool operator!=(const AxisAlignedBox3D& arg) const;
 
-        void Center(const Position3D& to);
+        void Center(const Point3D& to);
         void Size(const Size3D& to);
-        [[nodiscard]] Position3D Center() const;
+        [[nodiscard]] Point3D Center() const;
         [[nodiscard]] Size3D Size() const;
 
-        void Edit(const Position3D& center, const Size3D& size);
+        void Edit(const Point3D& center, const Size3D& size);
         void Edit(
             Coordinate left,
             Coordinate top,
@@ -59,11 +59,11 @@ namespace Atmos
         [[nodiscard]] Size3D::Value Height() const;
         [[nodiscard]] Size3D::Value Depth() const;
 
-        [[nodiscard]] bool Contains(const Position3D& check) const;
+        [[nodiscard]] bool Contains(const Point3D& check) const;
         [[nodiscard]] bool Contains(const AxisAlignedBox3D& box) const;
         [[nodiscard]] bool Intersects(const AxisAlignedBox3D& box) const;
     private:
-        Position3D center;
+        Point3D center;
         Size3D size;
 
         Coordinate left = 0.0f;
@@ -85,8 +85,8 @@ namespace Atmos
 namespace Inscription
 {
     template<>
-    class Scribe<::Atmos::AxisAlignedBox3D, BinaryArchive> :
-        public CompositeScribe<::Atmos::AxisAlignedBox3D, BinaryArchive>
+    class Scribe<::Atmos::Spatial::AxisAlignedBox3D, BinaryArchive> :
+        public CompositeScribe<::Atmos::Spatial::AxisAlignedBox3D, BinaryArchive>
     {
     protected:
         void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;

@@ -28,7 +28,7 @@ namespace Atmos::Render::DirectX9
         void StageRender(const LineRender& lineRender);
         void StageRender(const RegionRender& regionRender);
 
-        void DrawFrame(ScreenSize screenSize, const Color& backgroundColor);
+        void DrawFrame(Spatial::ScreenSize screenSize, const Color& backgroundColor);
 
         void OnLostDevice();
         void OnResetDevice();
@@ -72,9 +72,9 @@ namespace Atmos::Render::DirectX9
             const Asset::Shader* shader,
             float x,
             float y,
-            const AxisAlignedBox2D& imageBounds,
-            const Size2D& size,
-            const Angle& rotation,
+            const Spatial::AxisAlignedBox2D& imageBounds,
+            const Spatial::Size2D& size,
+            const Spatial::Angle& rotation,
             const Color& color);
 
         class StagedLine
@@ -84,7 +84,7 @@ namespace Atmos::Render::DirectX9
             FLOAT width;
             D3DCOLOR color;
 
-            StagedLine(const std::vector<Position2D>& points, float width, const Color& color);
+            StagedLine(const std::vector<Spatial::Point2D>& points, float width, const Color& color);
         };
     private:
         using BufferSize = unsigned short;
@@ -125,18 +125,18 @@ namespace Atmos::Render::DirectX9
             float x,
             float y,
             float z,
-            const AxisAlignedBox2D& imageBounds,
-            const Size2D& size,
-            const Angle& rotation,
+            const Spatial::AxisAlignedBox2D& imageBounds,
+            const Spatial::Size2D& size,
+            const Spatial::Angle& rotation,
             const Color& color);
 
         void StageRender(
-            const std::vector<Position2D>& points,
-            Position2D::Value z,
+            const std::vector<Spatial::Point2D>& points,
+            Spatial::Point2D::Value z,
             float width,
             const Color& color);
     private:
-        void PushAllThroughPipeline(const ScreenSize& screenSize, const Color& backgroundColor);
+        void PushAllThroughPipeline(const Spatial::ScreenSize& screenSize, const Color& backgroundColor);
 
         class Pipeline
         {
@@ -149,7 +149,7 @@ namespace Atmos::Render::DirectX9
                 LPDIRECT3DVERTEXDECLARATION9 vertexDeclaration,
                 LPD3DXLINE lineInterface,
                 D3DXMATRIX projection,
-                const ScreenSize& screenSize);
+                const Spatial::ScreenSize& screenSize);
             void Flush(Layers& layers, D3DCOLOR backgroundColor);
         private:
             GraphicsManager& manager;
@@ -168,7 +168,7 @@ namespace Atmos::Render::DirectX9
             void* indexData = nullptr;
 
             D3DXMATRIX projection;
-            ScreenSize screenSize;
+            Spatial::ScreenSize screenSize;
 
             LPDIRECT3DTEXTURE9 currentTexture = nullptr;
             const Asset::Shader* currentShader = nullptr;

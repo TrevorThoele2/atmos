@@ -9,9 +9,8 @@
 #include "RotateEntity.h"
 
 #include "Entity.h"
-#include "GeneralComponent.h"
 
-#include "GridPosition.h"
+#include "GridPoint.h"
 
 namespace Atmos::Entity
 {

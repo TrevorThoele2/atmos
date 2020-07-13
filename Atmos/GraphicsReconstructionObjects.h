@@ -14,7 +14,7 @@ namespace Atmos::Render
 
     struct GraphicsReconstructionObjects
     {
-        ScreenSize screenSize;
+        Spatial::ScreenSize screenSize;
         std::vector<Asset::Shader*> shaderAssets;
         MainSurface* mainSurface;
         std::vector<AncillarySurface*> ancillarySurfaces;

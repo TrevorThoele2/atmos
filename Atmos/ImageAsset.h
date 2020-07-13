@@ -32,8 +32,8 @@ namespace Atmos::Asset
         [[nodiscard]] GridDimension Rows() const;
         [[nodiscard]] ImageGridSize GridSize() const;
 
-        [[nodiscard]] AxisAlignedBox2D Slice(int index) const;
-        [[nodiscard]] Size2D SliceSize() const;
+        [[nodiscard]] Spatial::AxisAlignedBox2D Slice(int index) const;
+        [[nodiscard]] Spatial::Size2D SliceSize() const;
     private:
         [[nodiscard]] ImageGridSize UsableGridSize() const;
     private:

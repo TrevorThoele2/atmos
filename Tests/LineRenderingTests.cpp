@@ -3,7 +3,6 @@
 #include "LineRenderingTests.h"
 
 #include <Atmos/Line.h>
-#include <Atmos/ResizeCamera.h>
 #include <Atmos/TypeRegistration.h>
 #include <Atmos/StringUtility.h>
 #include <Atmos/Camera.h>
@@ -35,59 +34,59 @@ SCENARIO_METHOD(LineRenderingTestsFixture, "rendering lines")
         auto materialAsset = fieldReliquary.Do<Arca::Create<Asset::Material>>(
             String{}, Asset::MaterialType::Image, std::vector<Asset::Material::Pass>{});
 
-        fieldReliquary.Do<ResizeCamera>(ScreenSize(
-            std::numeric_limits<ScreenSize::Dimension>::max(),
-            std::numeric_limits<ScreenSize::Dimension>::max()));
-
         const auto camera = Arca::Index<Camera>(fieldReliquary);
+        camera->Scalers(Spatial::Scalers2D{
+            std::numeric_limits<Spatial::Scalers2D::Value>::max(),
+            std::numeric_limits<Spatial::Scalers2D::Value>::max() });
+
         const auto cameraLeft = camera->ScreenSides().Left();
         const auto cameraTop = camera->ScreenSides().Top();
 
         WHEN("creating lines")
         {
-            auto fromPositions = std::vector<Position2D>
+            auto fromPositions = std::vector<Spatial::Point2D>
             {
-                Position2D
+                Spatial::Point2D
                 {
-                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000)),
-                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000))
+                    dataGeneration.Random<Spatial::Point2D::Value>(TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000)),
+                    dataGeneration.Random<Spatial::Point2D::Value>(TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000))
                 },
-                Position2D
+                Spatial::Point2D
                 {
-                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000)),
-                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000))
+                    dataGeneration.Random<Spatial::Point2D::Value>(TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000)),
+                    dataGeneration.Random<Spatial::Point2D::Value>(TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000))
                 },
-                Position2D
+                Spatial::Point2D
                 {
-                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000)),
-                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000))
+                    dataGeneration.Random<Spatial::Point2D::Value>(TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000)),
+                    dataGeneration.Random<Spatial::Point2D::Value>(TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000))
                 }
             };
 
-            auto toPositions = std::vector<Position2D>
+            auto toPositions = std::vector<Spatial::Point2D>
             {
-                Position2D
+                Spatial::Point2D
                 {
-                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000)),
-                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000))
+                    dataGeneration.Random<Spatial::Point2D::Value>(TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000)),
+                    dataGeneration.Random<Spatial::Point2D::Value>(TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000))
                 },
-                Position2D
+                Spatial::Point2D
                 {
-                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000)),
-                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000))
+                    dataGeneration.Random<Spatial::Point2D::Value>(TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000)),
+                    dataGeneration.Random<Spatial::Point2D::Value>(TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000))
                 },
-                Position2D
+                Spatial::Point2D
                 {
-                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000)),
-                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000))
+                    dataGeneration.Random<Spatial::Point2D::Value>(TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000)),
+                    dataGeneration.Random<Spatial::Point2D::Value>(TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000))
                 }
             };
             auto line1 = fieldReliquary.Do(Arca::Create<Line>{
-                std::vector<Position2D>{ fromPositions[0], toPositions[0] }, materialAsset});
+                std::vector<Spatial::Point2D>{ fromPositions[0], toPositions[0] }, materialAsset});
             auto line2 = fieldReliquary.Do(Arca::Create<Line>{
-                std::vector<Position2D>{ fromPositions[1], toPositions[1] }, materialAsset});
+                std::vector<Spatial::Point2D>{ fromPositions[1], toPositions[1] }, materialAsset});
             auto line3 = fieldReliquary.Do(Arca::Create<Line>{
-                std::vector<Position2D>{ fromPositions[2], toPositions[2] }, materialAsset});
+                std::vector<Spatial::Point2D>{ fromPositions[2], toPositions[2] }, materialAsset});
 
             WHEN("starting engine execution")
             {
@@ -158,49 +157,49 @@ SCENARIO_METHOD(LineRenderingTestsFixture, "rendering lines")
 
         WHEN("creating lines without materials")
         {
-            auto fromPositions = std::vector<Position2D>
+            auto fromPositions = std::vector<Spatial::Point2D>
             {
-                Position2D
+                Spatial::Point2D
                 {
-                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000)),
-                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000))
+                    dataGeneration.Random<Spatial::Point2D::Value>(TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000)),
+                    dataGeneration.Random<Spatial::Point2D::Value>(TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000))
                 },
-                Position2D
+                Spatial::Point2D
                 {
-                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000)),
-                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000))
+                    dataGeneration.Random<Spatial::Point2D::Value>(TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000)),
+                    dataGeneration.Random<Spatial::Point2D::Value>(TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000))
                 },
-                Position2D
+                Spatial::Point2D
                 {
-                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000)),
-                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000))
+                    dataGeneration.Random<Spatial::Point2D::Value>(TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000)),
+                    dataGeneration.Random<Spatial::Point2D::Value>(TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000))
                 }
             };
 
-            auto toPositions = std::vector<Position2D>
+            auto toPositions = std::vector<Spatial::Point2D>
             {
-                Position2D
+                Spatial::Point2D
                 {
-                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000)),
-                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000))
+                    dataGeneration.Random<Spatial::Point2D::Value>(TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000)),
+                    dataGeneration.Random<Spatial::Point2D::Value>(TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000))
                 },
-                Position2D
+                Spatial::Point2D
                 {
-                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000)),
-                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000))
+                    dataGeneration.Random<Spatial::Point2D::Value>(TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000)),
+                    dataGeneration.Random<Spatial::Point2D::Value>(TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000))
                 },
-                Position2D
+                Spatial::Point2D
                 {
-                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000)),
-                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000))
+                    dataGeneration.Random<Spatial::Point2D::Value>(TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000)),
+                    dataGeneration.Random<Spatial::Point2D::Value>(TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000))
                 }
             };
             fieldReliquary.Do(Arca::Create<Line>{
-                std::vector<Position2D>{ fromPositions[0], toPositions[0] }, Arca::Index<Asset::Material>{}});
+                std::vector<Spatial::Point2D>{ fromPositions[0], toPositions[0] }, Arca::Index<Asset::Material>{}});
             fieldReliquary.Do(Arca::Create<Line>{
-                std::vector<Position2D>{ fromPositions[1], toPositions[1] }, Arca::Index<Asset::Material>{}});
+                std::vector<Spatial::Point2D>{ fromPositions[1], toPositions[1] }, Arca::Index<Asset::Material>{}});
             fieldReliquary.Do(Arca::Create<Line>{
-                std::vector<Position2D>{ fromPositions[2], toPositions[2] }, Arca::Index<Asset::Material>{}});
+                std::vector<Spatial::Point2D>{ fromPositions[2], toPositions[2] }, Arca::Index<Asset::Material>{}});
 
             WHEN("starting engine execution")
             {

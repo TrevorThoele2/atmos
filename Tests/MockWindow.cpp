@@ -30,7 +30,7 @@ void* MockWindow::Handle() const
 void MockWindow::SetupImpl()
 {}
 
-AxisAlignedBox2D MockWindow::AdjustWindowDimensions()
+Spatial::AxisAlignedBox2D MockWindow::AdjustWindowDimensions()
 {
     return {};
 }

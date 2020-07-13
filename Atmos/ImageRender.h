@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ImageAsset.h"
-#include "Position3D.h"
+#include "Point3D.h"
 #include "Size2D.h"
 #include "Angle.h"
 #include "AxisAlignedBox2D.h"
@@ -14,12 +14,12 @@ namespace Atmos::Render
     {
         const Asset::Image* asset;
         int assetIndex;
-        AxisAlignedBox2D assetSlice;
+        Spatial::AxisAlignedBox2D assetSlice;
         const Asset::Material* material;
 
-        Position3D position;
-        Size2D size;
-        Angle angle;
+        Spatial::Point3D position;
+        Spatial::Size2D size;
+        Spatial::Angle angle;
 
         Color color;
     };

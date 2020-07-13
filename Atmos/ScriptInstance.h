@@ -12,7 +12,7 @@ namespace Atmos::Script
 {
     class RunningScript;
 
-    class ScriptInstance final : public Arca::ClosedTypedRelic<ScriptInstance>
+    class Instance final : public Arca::ClosedTypedRelic<Instance>
     {
     public:
         using Asset = Asset::Script;
@@ -38,17 +38,17 @@ namespace Atmos::Script
 namespace Arca
 {
     template<>
-    struct Traits<::Atmos::Script::ScriptInstance>
+    struct Traits<::Atmos::Script::Instance>
     {
         static const ObjectType objectType = ObjectType::Relic;
-        static inline const TypeName typeName = "Atmos::Script::ScriptInstance";
+        static inline const TypeName typeName = "Atmos::Script::Instance";
     };
 }
 
 namespace Inscription
 {
     template<>
-    class Scribe<::Atmos::Script::ScriptInstance, BinaryArchive> final
-        : public ArcaNullScribe<::Atmos::Script::ScriptInstance, BinaryArchive>
+    class Scribe<::Atmos::Script::Instance, BinaryArchive> final
+        : public ArcaNullScribe<::Atmos::Script::Instance, BinaryArchive>
     {};
 }

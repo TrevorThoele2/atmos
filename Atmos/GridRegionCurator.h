@@ -17,15 +17,15 @@ namespace Atmos::Render
         void Work();
     private:
         using Index = Arca::Index<GridRegion>;
-        Grid::Octree<Arca::RelicID, Index> octree;
+        Spatial::Grid::Octree<Arca::RelicID, Index> octree;
 
         Arca::Index<Camera> camera;
     private:
         void OnCreated(const Arca::CreatedKnown<GridRegion>& signal);
         void OnDestroying(const Arca::DestroyingKnown<GridRegion>& signal);
     private:
-        static AxisAlignedBox3D BoxFor(const std::vector<Grid::Position>& points, Grid::Position::Value z);
-        static AxisAlignedBox3D BoxFor(const Index& index);
+        static Spatial::AxisAlignedBox3D BoxFor(const std::vector<Spatial::Grid::Point>& points, Spatial::Grid::Point::Value z);
+        static Spatial::AxisAlignedBox3D BoxFor(const Index& index);
     };
 }
 

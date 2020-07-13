@@ -1,6 +1,6 @@
 #include "Scalers2D.h"
 
-namespace Atmos
+namespace Atmos::Spatial
 {
     bool Scalers2D::operator==(const Scalers2D& arg) const
     {
@@ -15,7 +15,7 @@ namespace Atmos
 
 namespace Inscription
 {
-    void Scribe<::Atmos::Scalers2D, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
+    void Scribe<Atmos::Spatial::Scalers2D, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
     {
         archive(object.x);
         archive(object.y);

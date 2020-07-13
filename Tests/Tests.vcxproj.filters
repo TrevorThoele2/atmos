@@ -46,6 +46,9 @@
     <ClCompile Include="GridRegionRenderingTests.cpp">
       <Filter>Source Files\Tests</Filter>
     </ClCompile>
+    <ClCompile Include="BoundsTests.cpp">
+      <Filter>Source Files\Tests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneralFixture.h">
@@ -88,6 +91,9 @@
       <Filter>Header Files\Tests</Filter>
     </ClInclude>
     <ClInclude Include="GridRegionRenderingTests.h">
+      <Filter>Header Files\Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="BoundsTests.h">
       <Filter>Header Files\Tests</Filter>
     </ClInclude>
   </ItemGroup>

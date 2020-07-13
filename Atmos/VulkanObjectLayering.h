@@ -1,7 +1,7 @@
 #pragma once
 
 #include <map>
-#include "Position3D.h"
+#include "Point3D.h"
 
 namespace Atmos::Render::Vulkan
 {
@@ -9,13 +9,13 @@ namespace Atmos::Render::Vulkan
     class ObjectLayering
     {
     private:
-        using LayeredContexts = std::map<Position3D::Value, Context>;
+        using LayeredContexts = std::map<Spatial::Point3D::Value, Context>;
     public:
         using iterator = typename LayeredContexts::iterator;
         using const_iterator = typename LayeredContexts::const_iterator;
     public:
-        Context& Add(Position3D::Value key, Context&& value);
-        Context* Find(Position3D::Value value);
+        Context& Add(Spatial::Point3D::Value key, Context&& value);
+        Context* Find(Spatial::Point3D::Value value);
         void Clear();
 
         [[nodiscard]] uint32_t Count() const;
@@ -30,13 +30,13 @@ namespace Atmos::Render::Vulkan
     };
 
     template<class Context>
-    Context& ObjectLayering<Context>::Add(Position3D::Value key, Context&& value)
+    Context& ObjectLayering<Context>::Add(Spatial::Point3D::Value key, Context&& value)
     {
         return layeredContexts.emplace(key, std::move(value)).first->second;
     }
 
     template<class Context>
-    auto ObjectLayering<Context>::Find(Position3D::Value value) -> Context*
+    auto ObjectLayering<Context>::Find(Spatial::Point3D::Value value) -> Context*
     {
         auto found = layeredContexts.find(value);
         if (found == layeredContexts.end())

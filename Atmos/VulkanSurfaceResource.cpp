@@ -107,10 +107,10 @@ namespace Atmos::Render::Resource::Vulkan
     void Surface::DrawFrame(Arca::Reliquary& reliquary, const Color& backgroundColor)
     {
         const auto camera = Arca::Index<Camera>(reliquary);
-        const auto mapPosition = ScreenPosition
+        const auto mapPosition = Spatial::ScreenPoint
         {
-            ScreenPosition::Value(camera->center.x),
-            ScreenPosition::Value(camera->center.y)
+            Spatial::ScreenPoint::Value(camera->Position().x),
+            Spatial::ScreenPoint::Value(camera->Position().y)
         };
         renderer->DrawFrame(reliquary, Size(), mapPosition);
     }
@@ -120,12 +120,12 @@ namespace Atmos::Render::Resource::Vulkan
         renderer->WaitForIdle();
     }
 
-    ScreenSize Surface::Size() const
+    Spatial::ScreenSize Surface::Size() const
     {
         return
         {
-            static_cast<ScreenSize::Dimension>(swapchainExtent.width),
-            static_cast<ScreenSize::Dimension>(swapchainExtent.height)
+            static_cast<Spatial::ScreenSize::Dimension>(swapchainExtent.width),
+            static_cast<Spatial::ScreenSize::Dimension>(swapchainExtent.height)
         };
     }
 

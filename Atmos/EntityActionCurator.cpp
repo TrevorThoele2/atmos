@@ -11,30 +11,31 @@ namespace Atmos::Entity
 {
     ActionCurator::ActionCurator(Init init) :
         Curator(init),
-        actionComponents(init.owner.Batch<ActionComponent>())
+        entities(init.owner.Batch<Entity>())
     {
-        init.owner.On<World::FieldSet>([this](const World::FieldSet& signal)
+        init.owner.On<World::FieldSet>([this](const World::FieldSet&)
             {
-                for (auto& loop : actionComponents)
-                    loop.FireFieldEntered();
+                Fire<Action::Activation::EnterField>();
             });
 
-        init.owner.On<World::FieldUnset>([this](const World::FieldUnset& signal)
+        init.owner.On<World::FieldUnset>([this](const World::FieldUnset&)
             {
-                for (auto& loop : actionComponents)
-                    loop.FireFieldLeft();
+                Fire<Action::Activation::LeaveField>();
             });
     }
 
     void ActionCurator::Work()
     {
-        for (auto& loop : actionComponents)
+        for (auto& entity : entities)
         {
-            const auto runningScript = loop.script->RunningForThis();
-            if (!runningScript)
-                continue;
+            for (auto& action : entity.actions)
+            {
+                const auto runningScript = action.second.script->RunningForThis();
+                if (!runningScript)
+                    continue;
 
-            MutablePointer().Of(runningScript)->Resume();
+                MutablePointer().Of(runningScript)->Resume();
+            }
         }
     }
 }

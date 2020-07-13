@@ -20,16 +20,16 @@ namespace Atmos::Render
     public:
         void Handle(const ChangeImageCore& command);
     private:
-        using Matrix = Arca::All<ImageCore, Arca::Either<Bounds>>;
+        using Matrix = Arca::All<ImageCore, Arca::Either<Spatial::Bounds>>;
         using Index = Arca::Index<Matrix>;
-        Grid::Octree<Arca::RelicID, Index> octree;
+        Spatial::Grid::Octree<Arca::RelicID, Index> octree;
 
         Arca::Index<Camera> camera;
     private:
         void OnCreated(const Arca::MatrixFormed<Matrix>& signal);
         void OnDestroying(const Arca::MatrixDissolved<Matrix>& signal);
     private:
-        static AxisAlignedBox3D BoxFor(const Index& index);
+        static Spatial::AxisAlignedBox3D BoxFor(const Index& index);
     };
 }
 

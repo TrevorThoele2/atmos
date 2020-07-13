@@ -2,7 +2,7 @@
 
 #include "Serialization.h"
 
-namespace Atmos
+namespace Atmos::Spatial
 {
     struct Scalers3D
     {
@@ -19,7 +19,8 @@ namespace Atmos
 namespace Inscription
 {
     template<>
-    class Scribe<::Atmos::Scalers3D, BinaryArchive> final : public CompositeScribe<::Atmos::Scalers3D, BinaryArchive>
+    class Scribe<Atmos::Spatial::Scalers3D, BinaryArchive> final :
+        public CompositeScribe<Atmos::Spatial::Scalers3D, BinaryArchive>
     {
     protected:
         void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;

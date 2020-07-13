@@ -25,19 +25,19 @@ namespace Atmos::Render
         const auto cameraLeft = camera->ScreenSides().Left();
         const auto cameraTop = camera->ScreenSides().Top();
 
-        const AxisAlignedBox3D queryBox
+        const Spatial::AxisAlignedBox3D queryBox
         {
-            Position3D
+            Spatial::Point3D
             {
-                camera->center.x,
-                camera->center.y,
+                camera->Position().x,
+                camera->Position().y,
                 0
             },
-            Size3D
+            Spatial::Size3D
             {
-                static_cast<Size3D::Value>(camera->size.width),
-                static_cast<Size3D::Value>(camera->size.height),
-                std::numeric_limits<Size3D::Value>::max()
+                static_cast<Spatial::Size3D::Value>(camera->Size().width),
+                static_cast<Spatial::Size3D::Value>(camera->Size().height),
+                std::numeric_limits<Spatial::Size3D::Value>::max()
             }
         };
 
@@ -60,7 +60,7 @@ namespace Atmos::Render
                 core.assetIndex,
                 core.asset->Slice(core.assetIndex),
                 core.material.Get(),
-                Position3D
+                Spatial::Point3D
                 {
                     boundsPosition.x - cameraLeft,
                     boundsPosition.y - cameraTop,
@@ -87,8 +87,8 @@ namespace Atmos::Render
 
             const auto baseSize = core->asset
                 ? core->asset->SliceSize()
-                : Size2D{ 0, 0 };
-            auto bounds = MutablePointer().Of<Bounds>(index.ID());
+                : Spatial::Size2D{ 0, 0 };
+            auto bounds = MutablePointer().Of<Spatial::Bounds>(index.ID());
             bounds->BaseSize(baseSize);
         }
 
@@ -112,13 +112,13 @@ namespace Atmos::Render
         octree.Remove(signal.index.ID(), BoxFor(signal.index));
     }
 
-    AxisAlignedBox3D ImageCurator::BoxFor(const Index& index)
+    Spatial::AxisAlignedBox3D ImageCurator::BoxFor(const Index& index)
     {
         const auto& bounds = *std::get<1>(*index);
-        return AxisAlignedBox3D
+        return Spatial::AxisAlignedBox3D
         {
             bounds.Position(),
-            Size3D
+            Spatial::Size3D
             {
                 bounds.Size().width,
                 bounds.Size().height,

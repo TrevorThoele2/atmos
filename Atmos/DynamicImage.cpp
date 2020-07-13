@@ -1,24 +1,36 @@
 #include "DynamicImage.h"
 
-#include "MoveBounds.h"
+#include "MoveBoundsTo.h"
+#include "MoveBoundsBy.h"
+#include "MoveBoundsDirection.h"
 #include "ScaleBounds.h"
 #include "RotateBounds.h"
 
 namespace Atmos::Render
 {
-    void DynamicImage::Position(const Position3D& to) const
+    void DynamicImage::MoveTo(const Spatial::Point3D& to) const
     {
-        Owner().Do<MoveBounds>(ID(), to);
+        Owner().Do<Spatial::MoveBoundsTo>(ID(), to);
     }
 
-    void DynamicImage::Scalers(const Scalers2D& to) const
+    void DynamicImage::MoveBy(const Spatial::Point3D& by) const
     {
-        Owner().Do<ScaleBounds>(ID(), to);
+        Owner().Do<Spatial::MoveBoundsBy>(ID(), by);
     }
 
-    void DynamicImage::Rotation(const Angle& to) const
+    void DynamicImage::MoveDirection(const Spatial::Direction& direction, Spatial::Point3D::Value amount) const
     {
-        Owner().Do<RotateBounds>(ID(), to);
+        Owner().Do<Spatial::MoveBoundsDirection>(ID(), direction, amount);
+    }
+
+    void DynamicImage::Scalers(const Spatial::Scalers2D& to) const
+    {
+        Owner().Do<Spatial::ScaleBounds>(ID(), to);
+    }
+
+    void DynamicImage::Rotation(const Spatial::Angle& to) const
+    {
+        Owner().Do<Spatial::RotateBounds>(ID(), to);
     }
 
     DynamicImage::DynamicImage(
@@ -27,9 +39,9 @@ namespace Atmos::Render
         ImageCore::Index assetIndex,
         Arca::Index<Asset::Material> material,
         const Render::Color& color,
-        const Position3D& position,
-        const Scalers2D& scalers,
-        const Angle& rotation)
+        const Spatial::Point3D& position,
+        const Spatial::Scalers2D& scalers,
+        const Spatial::Angle& rotation)
         :
         Image(
             init,

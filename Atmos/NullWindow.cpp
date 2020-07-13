@@ -29,9 +29,9 @@ namespace Atmos::Window
     void NullWindow::SetupImpl()
     {}
 
-    AxisAlignedBox2D NullWindow::AdjustWindowDimensions()
+    Spatial::AxisAlignedBox2D NullWindow::AdjustWindowDimensions()
     {
-        return AxisAlignedBox2D();
+        return Spatial::AxisAlignedBox2D();
     }
 
     void NullWindow::OnSetWindowDimensions()

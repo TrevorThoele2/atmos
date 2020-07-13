@@ -2,9 +2,9 @@
 
 #include "Map.h"
 
-#include "GridPositionAlgorithms.h"
+#include "GridPointAlgorithms.h"
 
-namespace Atmos
+namespace Atmos::Spatial
 {
     /*
     Pathfinder::Path Pathfinder::FindPath(const Grid::Position& start, const Grid::Position& finish)

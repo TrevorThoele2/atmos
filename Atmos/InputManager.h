@@ -4,7 +4,7 @@
 
 #include "InputID.h"
 #include "Input.h"
-#include "ScreenPosition.h"
+#include "ScreenPoint.h"
 
 #include <Arca/Traits.h>
 
@@ -23,7 +23,7 @@ namespace Atmos::Input
         };
 
         [[nodiscard]] virtual std::vector<CreatedInput> CreateAllInputs() const = 0;
-        [[nodiscard]] virtual ScreenPosition CurrentMousePosition() const = 0;
+        [[nodiscard]] virtual Spatial::ScreenPoint CurrentMousePosition() const = 0;
         [[nodiscard]] virtual bool IsInputDown(Input& input) const = 0;
     };
 }

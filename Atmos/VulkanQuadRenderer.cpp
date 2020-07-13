@@ -4,6 +4,8 @@
 #include "VulkanImageAssetResource.h"
 #include "VulkanUtilities.h"
 
+#include "PointConversions.h"
+
 namespace Atmos::Render::Vulkan
 {
     QuadRenderer::QuadRenderer(
@@ -61,12 +63,15 @@ namespace Atmos::Render::Vulkan
 
     void QuadRenderer::StageRender(const ImageRender& imageRender)
     {
-        const auto rotate = [](const Position2D& position, const Angle& angle, const Position2D& center)
+        const auto rotate = [](
+            const Spatial::Point2D& position,
+            const Spatial::Angle& angle,
+            const Spatial::Point2D& center)
         {
             const auto sinAngle = std::sin(angle);
             const auto cosAngle = std::cos(angle);
 
-            return Position2D
+            return Spatial::Point2D
             {
                 position.x * cosAngle - position.y * sinAngle + center.x,
                 position.x * sinAngle + position.y * cosAngle + center.y
@@ -78,12 +83,13 @@ namespace Atmos::Render::Vulkan
         const auto materialAsset = imageRender.material;
         const auto color = AtmosToVulkanColor(imageRender.color);
 
+        const auto position = ToPoint2D(imageRender.position);
         const auto halfWidth = imageRender.size.width / 2;
         const auto halfHeight = imageRender.size.height / 2;
-        const auto topLeft = rotate({ -halfWidth, -halfHeight }, imageRender.angle, imageRender.position);
-        const auto topRight = rotate({ halfWidth, -halfHeight }, imageRender.angle, imageRender.position);
-        const auto bottomLeft = rotate({ -halfWidth, halfHeight }, imageRender.angle, imageRender.position);
-        const auto bottomRight = rotate({ halfWidth, halfHeight }, imageRender.angle, imageRender.position);
+        const auto topLeft = rotate({ -halfWidth, -halfHeight }, imageRender.angle, position);
+        const auto topRight = rotate({ halfWidth, -halfHeight }, imageRender.angle, position);
+        const auto bottomLeft = rotate({ -halfWidth, halfHeight }, imageRender.angle, position);
+        const auto bottomRight = rotate({ halfWidth, halfHeight }, imageRender.angle, position);
 
         const auto adjustedSliceLeft = slice.Left() / imageAsset->Width();
         const auto adjustedSliceTop = slice.Top() / imageAsset->Height();
@@ -152,7 +158,7 @@ namespace Atmos::Render::Vulkan
         return core.IsDone();
     }
 
-    Position3D::Value QuadRenderer::NextLayer() const
+    Spatial::Point3D::Value QuadRenderer::NextLayer() const
     {
         return core.NextLayer();
     }

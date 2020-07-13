@@ -7,7 +7,7 @@ namespace Atmos::Render
 {
     struct ReconstructGraphics
     {
-        ScreenSize screenSize;
+        Spatial::ScreenSize screenSize;
     };
 }
 

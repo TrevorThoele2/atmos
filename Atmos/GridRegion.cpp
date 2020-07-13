@@ -10,8 +10,8 @@ namespace Atmos::Render
 
     GridRegion::GridRegion(
         Init init,
-        const std::vector<Grid::Position>& points,
-        Grid::Position::Value z,
+        const std::vector<Spatial::Grid::Point>& points,
+        Spatial::Grid::Point::Value z,
         Arca::Index<Asset::Material> material)
         :
         ClosedTypedRelic(init), points(points), z(z), material(material)

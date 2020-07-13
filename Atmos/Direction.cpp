@@ -1,9 +1,8 @@
-
 #include "Direction.h"
 
 #include <Inscription\Scribe.h>
 
-namespace Atmos
+namespace Atmos::Spatial
 {
     Direction::Direction(Value value) : value(value)
     {}
@@ -178,7 +177,7 @@ namespace Atmos
 
 namespace Inscription
 {
-    void Scribe<::Atmos::Direction, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
+    void Scribe<Atmos::Spatial::Direction, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
     {
         archive(object.value);
     }

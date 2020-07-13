@@ -19,6 +19,6 @@ namespace Atmos::Render::Resource
 
         virtual void DrawFrame(Arca::Reliquary& reliquary, const Color& backgroundColor) = 0;
 
-        [[nodiscard]] virtual ScreenSize Size() const = 0;
+        [[nodiscard]] virtual Spatial::ScreenSize Size() const = 0;
     };
 }

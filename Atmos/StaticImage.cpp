@@ -8,9 +8,9 @@ namespace Atmos::Render
         ImageCore::Index assetIndex,
         Arca::Index<Asset::Material> material,
         const Render::Color& color,
-        const Position3D& position,
-        const Scalers2D& scalers,
-        const Angle& rotation)
+        const Spatial::Point3D& position,
+        const Spatial::Scalers2D& scalers,
+        const Spatial::Angle& rotation)
         :
         Image(
             init,

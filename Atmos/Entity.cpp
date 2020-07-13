@@ -1,15 +1,24 @@
 #include "Entity.h"
 
+#include <Inscription/UnorderedMapScribe.h>
+#include <Inscription/UnorderedSetScribe.h>
+
 namespace Atmos::Entity
 {
-    void Entity::PostConstruct()
-    {
-        general = Find<GeneralComponent>();
-    }
+    Entity::Entity(Init init) : ClosedTypedRelic(init)
+    {}
+}
 
-    void Entity::Initialize()
+namespace Inscription
+{
+    void Scribe<Atmos::Entity::Entity, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
     {
-
-        general = Create<GeneralComponent>();
+        archive(object.name);
+        archive(object.displayName);
+        archive(object.position);
+        archive(object.solid);
+        archive(object.data);
+        archive(object.actions);
+        archive(object.tags);
     }
 }

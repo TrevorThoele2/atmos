@@ -3,22 +3,22 @@
 #include <Arca/ClosedTypedRelic.h>
 
 #include "MaterialAsset.h"
-#include "GridPosition.h"
+#include "GridPoint.h"
 
 namespace Atmos::Render
 {
     class GridRegion final : public Arca::ClosedTypedRelic<GridRegion>
     {
     public:
-        std::vector<Grid::Position> points;
-        Grid::Position::Value z;
+        std::vector<Spatial::Grid::Point> points;
+        Spatial::Grid::Point::Value z;
         Arca::Index<Asset::Material> material;
     public:
         GridRegion(Init init);
         GridRegion(
             Init init,
-            const std::vector<Grid::Position>& points,
-            Grid::Position::Value z,
+            const std::vector<Spatial::Grid::Point>& points,
+            Spatial::Grid::Point::Value z,
             Arca::Index<Asset::Material> material);
     private:
         INSCRIPTION_ACCESS;

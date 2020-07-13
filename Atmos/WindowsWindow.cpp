@@ -101,14 +101,14 @@ namespace Atmos::Window
             throw WindowCreationFailed();
     }
 
-    AxisAlignedBox2D WindowsWindow::AdjustWindowDimensions()
+    Spatial::AxisAlignedBox2D WindowsWindow::AdjustWindowDimensions()
     {
         RECT rect;
         SetRect(&rect, 0, 0, ClientSize().width, ClientSize().height);
         AdjustWindowRectEx(&rect, currentStyle, false, currentExStyle);
 
-        using Coordinate = AxisAlignedBox2D::Coordinate;
-        return AxisAlignedBox2D
+        using Coordinate = Spatial::AxisAlignedBox2D::Coordinate;
+        return Spatial::AxisAlignedBox2D
         {
             static_cast<Coordinate>(rect.left),
             static_cast<Coordinate>(rect.top),

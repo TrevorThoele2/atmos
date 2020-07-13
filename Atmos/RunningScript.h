@@ -15,7 +15,7 @@ namespace Atmos::Script
     class RunningScript final : public Arca::ClosedTypedRelic<RunningScript>
     {
     public:
-        using Source = ScriptInstance;
+        using Source = Instance;
         Arca::Index<Source> source;
     public:
         Name executeName;

@@ -1,42 +1,81 @@
 #pragma once
 
 #include <Arca/Curator.h>
+#include <Arca/Reliquary.h>
 
-#include "MoveBounds.h"
+#include "Bounds.h"
+#include "RelativeBoundsPosition.h"
+
+#include "MoveBoundsTo.h"
+#include "MoveBoundsBy.h"
+#include "MoveBoundsDirection.h"
 #include "ScaleBounds.h"
 #include "RotateBounds.h"
 
-namespace Atmos
+#include "Log.h"
+
+namespace Atmos::Spatial
 {
     class BoundsCurator final : public Arca::Curator
     {
     public:
-        BoundsCurator(Init init);
+        explicit BoundsCurator(Init init);
     public:
-        void Handle(const MoveBounds& command);
+        void Handle(const MoveBoundsTo& command);
+        void Handle(const MoveBoundsBy& command);
+        void Handle(const MoveBoundsDirection& command);
         void Handle(const ScaleBounds& command);
         void Handle(const RotateBounds& command);
+    private:
+        void DoMovement(Bounds& bounds, const Point3D& to, Arca::RelicID id);
+        void DoScale(Bounds& bounds, const Scalers2D& to, Arca::RelicID id);
+        void DoRotation(Bounds& bounds, const Angle& to, Arca::RelicID id);
+
+        template<class Function>
+        void DoWithRequiredBounds(Arca::RelicID id, Function function);
+
+        using RelativePositionAndParentBounds = std::tuple<RelativeBoundsPosition*, Bounds*>;
+        RelativePositionAndParentBounds RetrieveRelativePositionAndParentBounds(Arca::RelicID id);
+        void UpdateChildrenRelativeBounds(const Point3D& parentPosition, Arca::RelicID id);
     };
+
+    template<class Function>
+    void BoundsCurator::DoWithRequiredBounds(Arca::RelicID id, Function function)
+    {
+        const auto bounds = MutablePointer().Of<Bounds>(id);
+        if (!bounds)
+        {
+            const auto log = Logging::Log{
+                "Attempted movement of relic without " + Arca::TypeFor<Bounds>().name + ".",
+                Logging::Severity::Warning,
+                { { "RelicID", id } } };
+            Owner().Do(log);
+        }
+        else
+            function(*bounds);
+    }
 }
 
 namespace Arca
 {
     template<>
-    struct Traits<Atmos::BoundsCurator>
+    struct Traits<Atmos::Spatial::BoundsCurator>
     {
         static const ObjectType objectType = ObjectType::Curator;
-        static inline const TypeName typeName = "Atmos::BoundsCurator";
+        static inline const TypeName typeName = "Atmos::Spatial::BoundsCurator";
         using HandledCommands = HandledCommands<
-            Atmos::MoveBounds,
-            Atmos::ScaleBounds,
-            Atmos::RotateBounds>;
+            Atmos::Spatial::MoveBoundsTo,
+            Atmos::Spatial::MoveBoundsBy,
+            Atmos::Spatial::MoveBoundsDirection,
+            Atmos::Spatial::ScaleBounds,
+            Atmos::Spatial::RotateBounds>;
     };
 }
 
 namespace Inscription
 {
     template<>
-    class Scribe<Atmos::BoundsCurator, BinaryArchive> final
-        : public ArcaNullScribe<Atmos::BoundsCurator, BinaryArchive>
+    class Scribe<Atmos::Spatial::BoundsCurator, BinaryArchive> final
+        : public ArcaNullScribe<Atmos::Spatial::BoundsCurator, BinaryArchive>
     {};
 }

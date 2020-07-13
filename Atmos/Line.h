@@ -3,7 +3,7 @@
 #include <Arca/ClosedTypedRelic.h>
 #include "LineWidth.h"
 
-#include "Position2D.h"
+#include "Point2D.h"
 #include "Color.h"
 #include "MaterialAsset.h"
 
@@ -12,8 +12,8 @@ namespace Atmos::Render
     class Line : public Arca::ClosedTypedRelic<Line>
     {
     public:
-        std::vector<Position2D> points;
-        Position2D::Value z = 0;
+        std::vector<Spatial::Point2D> points;
+        Spatial::Point2D::Value z = 0;
         Arca::Index<Asset::Material> material;
 
         LineWidth width = 0;
@@ -23,10 +23,10 @@ namespace Atmos::Render
         explicit Line(Init init) : ClosedTypedRelic(init)
         {}
 
-        Line(Init init, const std::vector<Position2D>& points, Arca::Index<Asset::Material> material);
+        Line(Init init, const std::vector<Spatial::Point2D>& points, Arca::Index<Asset::Material> material);
         Line(Init init,
-            const std::vector<Position2D>& points,
-            Position2D::Value z,
+            const std::vector<Spatial::Point2D>& points,
+            Spatial::Point2D::Value z,
             Arca::Index<Asset::Material> material,
             LineWidth width,
             Color color);

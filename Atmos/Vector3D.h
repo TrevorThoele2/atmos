@@ -2,7 +2,7 @@
 
 #include "Angle.h"
 
-namespace Atmos
+namespace Atmos::Spatial
 {
     struct Vector3D
     {

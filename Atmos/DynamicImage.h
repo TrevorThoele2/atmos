@@ -2,17 +2,18 @@
 
 #include "Image.h"
 
-#include "ImageCore.h"
-#include "Bounds.h"
+#include "Direction.h"
 
 namespace Atmos::Render
 {
     class DynamicImage final : public Image<DynamicImage, true>
     {
     public:
-        void Position(const Position3D& to) const;
-        void Scalers(const Scalers2D& to) const;
-        void Rotation(const Angle& to) const;
+        void MoveTo(const Spatial::Point3D& to) const;
+        void MoveBy(const Spatial::Point3D& by) const;
+        void MoveDirection(const Spatial::Direction& direction, Spatial::Point3D::Value amount) const;
+        void Scalers(const Spatial::Scalers2D& to) const;
+        void Rotation(const Spatial::Angle& to) const;
     public:
         DynamicImage(
             Init init,
@@ -20,9 +21,9 @@ namespace Atmos::Render
             ImageCore::Index assetIndex,
             Arca::Index<Asset::Material> material,
             const Render::Color& color,
-            const Position3D& position,
-            const Scalers2D& scalers,
-            const Angle& rotation);
+            const Spatial::Point3D& position,
+            const Spatial::Scalers2D& scalers,
+            const Spatial::Angle& rotation);
         DynamicImage(Init init, Arca::Serialization serialization);
     private:
         INSCRIPTION_ACCESS;

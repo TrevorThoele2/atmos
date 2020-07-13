@@ -66,7 +66,7 @@ namespace Atmos::Asset
         return gridSize;
     }
 
-    AxisAlignedBox2D Image::Slice(int index) const
+    Spatial::AxisAlignedBox2D Image::Slice(int index) const
     {
         const auto gridSize = UsableGridSize();
         const auto sliceSize = SliceSize();
@@ -74,7 +74,7 @@ namespace Atmos::Asset
         const auto column = index % gridSize.columns;
         const auto row = index / gridSize.rows;
 
-        return AxisAlignedBox2D
+        return Spatial::AxisAlignedBox2D
         {
             column * sliceSize.width,
             row * sliceSize.height,
@@ -83,14 +83,14 @@ namespace Atmos::Asset
         };
     }
 
-    Size2D Image::SliceSize() const
+    Spatial::Size2D Image::SliceSize() const
     {
         const auto gridSize = UsableGridSize();
 
         const auto indexWidth = static_cast<float>(Width() / gridSize.columns);
         const auto indexHeight = static_cast<float>(Height() / gridSize.rows);
 
-        return Size2D{ indexWidth, indexHeight };
+        return Spatial::Size2D{ indexWidth, indexHeight };
     }
 
     ImageGridSize Image::UsableGridSize() const

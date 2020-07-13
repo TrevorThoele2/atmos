@@ -3,7 +3,7 @@
 #include "TimeValue.h"
 #include "AxisAlignedBox2D.h"
 
-#include "ScreenPosition.h"
+#include "ScreenPoint.h"
 #include "ScreenSize.h"
 
 namespace Atmos::Window
@@ -11,8 +11,8 @@ namespace Atmos::Window
     class WindowBase
     {
     public:
-        using Position = ScreenPosition;
-        using Size = ScreenSize;
+        using Position = Spatial::ScreenPoint;
+        using Size = Spatial::ScreenSize;
     public:
         virtual ~WindowBase() = 0;
 
@@ -40,7 +40,7 @@ namespace Atmos::Window
 
         void SetWindowDimensions();
 
-        virtual AxisAlignedBox2D AdjustWindowDimensions() = 0;
+        virtual Spatial::AxisAlignedBox2D AdjustWindowDimensions() = 0;
         virtual void OnSetWindowDimensions() = 0;
         virtual Position GetDefaultWindowPosition() = 0;
         virtual void OnSetFullscreen() = 0;

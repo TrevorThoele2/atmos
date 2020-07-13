@@ -31,13 +31,13 @@ namespace Atmos::Render::Vulkan
         void End();
         [[nodiscard]] bool IsDone() const;
 
-        Context& AddContext(Position3D::Value z, Context&& context);
-        Context* ContextFor(Position3D::Value z);
+        Context& AddContext(Spatial::Point3D::Value z, Context&& context);
+        Context* ContextFor(Spatial::Point3D::Value z);
 
         [[nodiscard]] std::vector<Pipeline>* PipelinesFor(const Asset::Material& material);
         [[nodiscard]] vk::PipelineLayout PipelineLayout() const;
 
-        [[nodiscard]] Position3D::Value NextLayer() const;
+        [[nodiscard]] Spatial::Point3D::Value NextLayer() const;
         [[nodiscard]] size_t LayerCount() const;
     protected:
         using DescriptorSets = KeyedDescriptorSetGroup<Key>;
@@ -120,13 +120,15 @@ namespace Atmos::Render::Vulkan
     }
 
     template<class Key, class Context, class DrawContextAddition>
-    Context& RendererCoreBase<Key, Context, DrawContextAddition>::AddContext(Position3D::Value z, Context&& context)
+    Context& RendererCoreBase<Key, Context, DrawContextAddition>::AddContext(
+        Spatial::Point3D::Value z, Context&& context)
     {
         return layers.Add(z, std::move(context));
     }
 
     template<class Key, class Context, class DrawContextAddition>
-    Context* RendererCoreBase<Key, Context, DrawContextAddition>::ContextFor(Position3D::Value z)
+    Context* RendererCoreBase<Key, Context, DrawContextAddition>::ContextFor(
+        Spatial::Point3D::Value z)
     {
         return layers.Find(z);
     }
@@ -144,7 +146,7 @@ namespace Atmos::Render::Vulkan
     }
 
     template<class Key, class Context, class DrawContextAddition>
-    Position3D::Value RendererCoreBase<Key, Context, DrawContextAddition>::NextLayer() const
+    Spatial::Point3D::Value RendererCoreBase<Key, Context, DrawContextAddition>::NextLayer() const
     {
         return drawContext->currentLayer->first;
     }

@@ -1,8 +1,8 @@
 #include "AxisAlignedBox2D.h"
 
-namespace Atmos
+namespace Atmos::Spatial
 {
-    AxisAlignedBox2D::AxisAlignedBox2D(const Position2D& center, const Size2D& size) :
+    AxisAlignedBox2D::AxisAlignedBox2D(const Point2D& center, const Size2D& size) :
         center(center), size(size)
     {
         CalculateCoordinates();
@@ -24,7 +24,7 @@ namespace Atmos
         return !(*this == arg);
     }
 
-    void AxisAlignedBox2D::Center(const Position2D& to)
+    void AxisAlignedBox2D::Center(const Point2D& to)
     {
         center = to;
         CalculateCoordinates();
@@ -36,7 +36,7 @@ namespace Atmos
         CalculateCoordinates();
     }
 
-    Position2D AxisAlignedBox2D::Center() const
+    Point2D AxisAlignedBox2D::Center() const
     {
         return center;
     }
@@ -46,7 +46,7 @@ namespace Atmos
         return size;
     }
 
-    void AxisAlignedBox2D::Edit(const Position2D& center, const Size2D& size)
+    void AxisAlignedBox2D::Edit(const Point2D& center, const Size2D& size)
     {
         this->center = center;
         this->size = size;
@@ -112,7 +112,7 @@ namespace Atmos
         return size.height;
     }
 
-    bool AxisAlignedBox2D::Contains(const Position2D& check) const
+    bool AxisAlignedBox2D::Contains(const Point2D& check) const
     {
         return check.x >= left && check.x <= right && check.y >= top && check.y <= bottom;
     }
@@ -154,7 +154,7 @@ namespace Atmos
 
 namespace Inscription
 {
-    void Scribe<::Atmos::AxisAlignedBox2D, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
+    void Scribe<Atmos::Spatial::AxisAlignedBox2D, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
     {
         archive(object.center);
         archive(object.size);

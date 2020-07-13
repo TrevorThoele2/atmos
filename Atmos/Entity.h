@@ -1,17 +1,32 @@
 #pragma once
 
-#include <Arca/OpenTypedRelic.h>
-#include "GeneralComponent.h"
+#include <Arca/ClosedTypedRelic.h>
+
+#include "EntityDatum.h"
+#include "EntityAction.h"
+#include "EntityTag.h"
+
+#include "GridPoint.h"
+#include "Direction.h"
 
 namespace Atmos::Entity
 {
-    class Entity final : public Arca::OpenTypedRelic<Entity>
+    class Entity final : public Arca::ClosedTypedRelic<Entity>
     {
     public:
-        Arca::Index<GeneralComponent> general;
+        Name name;
+        Name displayName;
 
-        void PostConstruct();
-        void Initialize();
+        Spatial::Grid::Point position;
+        Spatial::Direction direction;
+
+        bool solid = false;
+
+        std::unordered_map<Name, Datum> data;
+        std::unordered_map<Name, Action> actions;
+        std::unordered_set<Tag> tags;
+    public:
+        explicit Entity(Init init);
     };
 }
 
@@ -29,6 +44,9 @@ namespace Inscription
 {
     template<>
     class Scribe<Atmos::Entity::Entity, BinaryArchive> final
-        : public ArcaNullScribe<Atmos::Entity::Entity, BinaryArchive>
-    {};
+        : public ArcaCompositeScribe<Atmos::Entity::Entity, BinaryArchive>
+    {
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
+    };
 }

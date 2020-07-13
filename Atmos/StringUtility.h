@@ -7,7 +7,7 @@
 #include "LargeInteger.h"
 #include "FixedPoint.h"
 #include "TimeValue.h"
-#include "Position3D.h"
+#include "Point3D.h"
 #include "Size2D.h"
 
 #include <Chroma/TypeIdentity.h>
@@ -16,9 +16,9 @@
 
 namespace Atmos
 {
-    namespace Grid
+    namespace Spatial::Grid
     {
-        struct Position;
+        struct Point;
     }
 
     void SpliceString(String &in, const String &check, const String &replace);
@@ -124,8 +124,8 @@ namespace Atmos
     {
         return ToString(duration.count());
     }
-    String ToString(const Grid::Position &position);
-    String ToString(const Position3D& position);
-    String ToString(const Size2D& size);
+    String ToString(const Spatial::Grid::Point &position);
+    String ToString(const Spatial::Point3D& position);
+    String ToString(const Spatial::Size2D& size);
     String ToString(const ::Agui::Resolution::Size &arg);
 }

@@ -8,7 +8,7 @@
 
 namespace Atmos::Script
 {
-    void ScriptInstance::ExecuteDeferred()
+    void Instance::ExecuteDeferred()
     {
         if (IsRunning())
             return;
@@ -16,7 +16,7 @@ namespace Atmos::Script
         CreateRunningFromThis();
     }
 
-    void ScriptInstance::ExecuteImmediately()
+    void Instance::ExecuteImmediately()
     {
         if (IsRunning())
             return;
@@ -25,7 +25,7 @@ namespace Atmos::Script
         Owner().Do<Script::ExecuteImmediately>(running);
     }
 
-    Arca::Index<RunningScript> ScriptInstance::RunningForThis() const
+    Arca::Index<RunningScript> Instance::RunningForThis() const
     {
         if (!IsRunning())
             return {};
@@ -33,15 +33,15 @@ namespace Atmos::Script
         return Arca::Index<AllRunningScripts>(Owner())->RunningScriptFor(ID());
     }
 
-    bool ScriptInstance::IsRunning() const
+    bool Instance::IsRunning() const
     {
         return Arca::Index<AllRunningScripts>(Owner())->IsRunning(ID());
     }
 
-    Arca::Index<RunningScript> ScriptInstance::CreateRunningFromThis()
+    Arca::Index<RunningScript> Instance::CreateRunningFromThis()
     {
         return Owner().Do<Arca::Create<RunningScript>>(
-            Arca::Index<ScriptInstance>(ID(), Owner()),
+            Arca::Index<Instance>(ID(), Owner()),
             executeName,
             parameters,
             persistence);
