@@ -331,6 +331,118 @@ SCENARIO_METHOD(BoundsTestsFixture, "relative bounds")
     }
 }
 
+SCENARIO_METHOD(BoundsTestsFixture, "relative bounds initialization")
+{
+    GIVEN("registered reliquary with parent")
+    {
+        Arca::ReliquaryOrigin reliquaryOrigin;
+
+        Spatial::RegisterTypes(reliquaryOrigin);
+
+        auto reliquary = reliquaryOrigin.Actualize();
+
+        const auto parentPosition = Point3D
+        {
+            dataGeneration.Random<Point3D::Value>(TestFramework::Range(-1000.0f, 1000.0f)),
+            dataGeneration.Random<Point3D::Value>(TestFramework::Range(-1000.0f, 1000.0f)),
+            dataGeneration.Random<Point3D::Value>(TestFramework::Range(-1000.0f, 1000.0f))
+        };
+
+        auto parent = reliquary->Do(Arca::Create<Arca::OpenRelic>());
+        parent->Create<Bounds>(parentPosition, Size2D{ 1, 1 }, Scalers2D{ 1, 1 }, Angle{});
+
+        WHEN("creating child relic with relative bounds last")
+        {
+            const auto relativePosition = Point3D
+            {
+                dataGeneration.Random<Point3D::Value>(TestFramework::Range(-1000.0f, 1000.0f)),
+                dataGeneration.Random<Point3D::Value>(TestFramework::Range(-1000.0f, 1000.0f)),
+                dataGeneration.Random<Point3D::Value>(TestFramework::Range(-1000.0f, 1000.0f))
+            };
+
+            auto child = reliquary->Do(Arca::CreateChild<Arca::OpenRelic>(parent));
+            auto childBounds = child->Create<Bounds>(Point3D{}, Size2D{ 1, 1 }, Scalers2D{ 1, 1 }, Angle{});
+            child->Create<RelativeBounds>(relativePosition);
+            const auto childPosition = childBounds->Position();
+
+            THEN("is at correct position")
+            {
+                const auto checkPosition = Point3D
+                {
+                    parentPosition.x + relativePosition.x,
+                    parentPosition.y + relativePosition.y,
+                    parentPosition.z + relativePosition.z,
+                };
+
+                REQUIRE(childPosition != Point3D());
+                REQUIRE(childPosition.x == checkPosition.x);
+                REQUIRE(childPosition.y == checkPosition.y);
+                REQUIRE(childPosition.z == checkPosition.z);
+            }
+
+            THEN("parent position and relative position adds up to child position")
+            {
+                const auto checkPosition = Point3D
+                {
+                    parentPosition.x + relativePosition.x,
+                    parentPosition.y + relativePosition.y,
+                    parentPosition.z + relativePosition.z
+                };
+
+                REQUIRE(childPosition != Point3D());
+                REQUIRE(childPosition.x == checkPosition.x);
+                REQUIRE(childPosition.y == checkPosition.y);
+                REQUIRE(childPosition.z == checkPosition.z);
+            }
+        }
+
+        WHEN("creating child relic with bounds last")
+        {
+            const auto relativePosition = Point3D
+            {
+                dataGeneration.Random<Point3D::Value>(TestFramework::Range(-1000.0f, 1000.0f)),
+                dataGeneration.Random<Point3D::Value>(TestFramework::Range(-1000.0f, 1000.0f)),
+                dataGeneration.Random<Point3D::Value>(TestFramework::Range(-1000.0f, 1000.0f))
+            };
+
+            auto child = reliquary->Do(Arca::CreateChild<Arca::OpenRelic>(parent));
+            child->Create<RelativeBounds>(relativePosition);
+            auto childBounds = child->Create<Bounds>(Point3D{}, Size2D{ 1, 1 }, Scalers2D{ 1, 1 }, Angle{});
+            const auto childPosition = childBounds->Position();
+
+            THEN("is at correct position")
+            {
+                const auto checkPosition = Point3D
+                {
+                    parentPosition.x + relativePosition.x,
+                    parentPosition.y + relativePosition.y,
+                    parentPosition.z + relativePosition.z,
+                };
+
+                REQUIRE(childPosition != Point3D());
+                REQUIRE(childPosition.x == checkPosition.x);
+                REQUIRE(childPosition.y == checkPosition.y);
+                REQUIRE(childPosition.z == checkPosition.z);
+            }
+
+            THEN("parent position and relative position adds up to child position")
+            {
+                const auto checkPosition = Point3D
+                {
+                    parentPosition.x + relativePosition.x,
+                    parentPosition.y + relativePosition.y,
+                    parentPosition.z + relativePosition.z
+                };
+
+                REQUIRE(childPosition != Point3D());
+                REQUIRE(childPosition.x == checkPosition.x);
+                REQUIRE(childPosition.y == checkPosition.y);
+                REQUIRE(childPosition.z == checkPosition.z);
+            }
+        }
+    }
+}
+
 SCENARIO_METHOD(BoundsTestsFixture, "relative bounds children")
 {
     GIVEN("registered reliquary")
