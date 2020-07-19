@@ -3,16 +3,16 @@
 #include <Arca/Command.h>
 #include <Arca/RelicID.h>
 
-#include "Angle.h"
+#include "Angle2D.h"
 
 namespace Atmos::Spatial
 {
     struct RotateBounds
     {
         Arca::RelicID id = 0;
-        Angle to;
+        Angle2D to;
 
-        RotateBounds(Arca::RelicID id, const Angle& to) : id(id), to(to)
+        RotateBounds(Arca::RelicID id, const Angle2D& to) : id(id), to(to)
         {}
     };
 }

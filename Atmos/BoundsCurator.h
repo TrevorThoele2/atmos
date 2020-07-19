@@ -29,7 +29,7 @@ namespace Atmos::Spatial
     private:
         void DoMovement(Bounds& bounds, const Point3D& to, Arca::RelicID id);
         void DoScale(Bounds& bounds, const Scalers2D& to, Arca::RelicID id);
-        void DoRotation(Bounds& bounds, const Angle& to, Arca::RelicID id);
+        void DoRotation(Bounds& bounds, const Angle2D& to, Arca::RelicID id);
 
         template<class Function>
         void DoWithRequiredBounds(Arca::RelicID id, Function function);

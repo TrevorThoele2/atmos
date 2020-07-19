@@ -96,7 +96,7 @@ SCENARIO_METHOD(WorldSerializationTestsFixture, "rendering after world serializa
                 Color{},
                 positions[0],
                 scalers[0],
-                Spatial::Angle{});
+                Spatial::Angle2D{});
             fields[0].Reliquary().Do<Arca::Create<StaticImage>>(
                 imageAsset,
                 0,
@@ -104,7 +104,7 @@ SCENARIO_METHOD(WorldSerializationTestsFixture, "rendering after world serializa
                 Color{},
                 positions[1],
                 scalers[1],
-                Spatial::Angle{});
+                Spatial::Angle2D{});
             fields[0].Reliquary().Do<Arca::Create<StaticImage>>(
                 imageAsset,
                 0,
@@ -112,7 +112,7 @@ SCENARIO_METHOD(WorldSerializationTestsFixture, "rendering after world serializa
                 Color{},
                 positions[2],
                 scalers[2],
-                Spatial::Angle{});
+                Spatial::Angle2D{});
 
             auto filePath = "Test." + World::Serialization::worldFileExtension;
 

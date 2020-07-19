@@ -4,7 +4,7 @@ namespace Atmos::Spatial
 {
     Bounds::Bounds() = default;
 
-    Bounds::Bounds(const Point3D& position, const Size2D& baseSize, const Scalers2D& scalers, const Angle& rotation) :
+    Bounds::Bounds(const Point3D& position, const Size2D& baseSize, const Scalers2D& scalers, const Angle2D& rotation) :
         position(position), baseSize(baseSize), scalers(scalers), rotation(rotation)
     {}
 
@@ -23,7 +23,7 @@ namespace Atmos::Spatial
         scalers = to;
     }
 
-    void Bounds::Rotation(const Angle& to)
+    void Bounds::Rotation(const Angle2D& to)
     {
         rotation = to;
     }
@@ -48,7 +48,7 @@ namespace Atmos::Spatial
         return scalers;
     }
 
-    Angle Bounds::Rotation() const
+    Angle2D Bounds::Rotation() const
     {
         return rotation;
     }

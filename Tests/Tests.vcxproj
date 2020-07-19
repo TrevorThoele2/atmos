@@ -135,6 +135,7 @@
     <ClCompile Include="AssetTests.cpp" />
     <ClCompile Include="BoundsTests.cpp" />
     <ClCompile Include="DerivedEngine.cpp" />
+    <ClCompile Include="EntityTests.cpp" />
     <ClCompile Include="GeneralFixture.cpp" />
     <ClCompile Include="GridRegionRenderingTests.cpp" />
     <ClCompile Include="ImageRenderingTests.cpp" />
@@ -153,6 +154,7 @@
     <ClInclude Include="AssetTests.h" />
     <ClInclude Include="BoundsTests.h" />
     <ClInclude Include="DerivedEngine.h" />
+    <ClInclude Include="EntityTests.h" />
     <ClInclude Include="GeneralFixture.h" />
     <ClInclude Include="GridRegionRenderingTests.h" />
     <ClInclude Include="ImageRenderingTests.h" />

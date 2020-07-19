@@ -1,23 +1,21 @@
 #pragma once
 
-#include <Arca/Signal.h>
+#include <Arca/Command.h>
 #include "Entity.h"
-#include "TimeValue.h"
 
 namespace Atmos::Entity
 {
-    struct MoveEntity
+    struct Move
     {
         Arca::Index<Entity> entity;
         Spatial::Grid::Point toPosition;
-        Time::Duration<> timeTaken;
     };
 }
 
 namespace Arca
 {
     template<>
-    struct Traits<Atmos::Entity::MoveEntity>
+    struct Traits<Atmos::Entity::Move>
     {
         static const ObjectType objectType = ObjectType::Command;
         static inline const TypeName typeName = "Atmos::Entity::MoveEntity";

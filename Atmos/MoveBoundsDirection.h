@@ -3,7 +3,7 @@
 #include <Arca/Command.h>
 #include <Arca/RelicID.h>
 
-#include "Direction.h"
+#include "Angle3D.h"
 #include "Point3D.h"
 
 namespace Atmos::Spatial
@@ -11,10 +11,10 @@ namespace Atmos::Spatial
     struct MoveBoundsDirection
     {
         Arca::RelicID id = 0;
-        Direction direction;
+        Angle3D direction;
         Point3D::Value amount;
 
-        MoveBoundsDirection(Arca::RelicID id, Direction direction, Point3D::Value amount) :
+        MoveBoundsDirection(Arca::RelicID id, Angle3D direction, Point3D::Value amount) :
             id(id), direction(direction), amount(amount)
         {}
     };

@@ -9,7 +9,7 @@
 
 #include "ShaderAsset.h"
 
-#include "Angle.h"
+#include "Angle2D.h"
 #include "Color.h"
 #include "ScreenSize.h"
 
@@ -74,7 +74,7 @@ namespace Atmos::Render::DirectX9
             float y,
             const Spatial::AxisAlignedBox2D& imageBounds,
             const Spatial::Size2D& size,
-            const Spatial::Angle& rotation,
+            const Spatial::Angle2D& rotation,
             const Color& color);
 
         class StagedLine
@@ -127,7 +127,7 @@ namespace Atmos::Render::DirectX9
             float z,
             const Spatial::AxisAlignedBox2D& imageBounds,
             const Spatial::Size2D& size,
-            const Spatial::Angle& rotation,
+            const Spatial::Angle2D& rotation,
             const Color& color);
 
         void StageRender(

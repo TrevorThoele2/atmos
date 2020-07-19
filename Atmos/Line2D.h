@@ -2,7 +2,7 @@
 
 #include <optional>
 #include "Point2D.h"
-#include "Angle.h"
+#include "Angle2D.h"
 #include "Vector2D.h"
 
 namespace Atmos::Spatial
@@ -22,8 +22,8 @@ namespace Atmos::Spatial
         [[nodiscard]] std::optional<Point2D::Value> YIntercept() const;
         [[nodiscard]] Point2D::Value Length() const;
         // Returns the angle from the positive X axis
-        [[nodiscard]] Spatial::Angle Angle() const;
-        [[nodiscard]] Spatial::Angle Angle(const Line2D& other) const;
+        [[nodiscard]] Spatial::Angle2D Angle() const;
+        [[nodiscard]] Spatial::Angle2D Angle(const Line2D& other) const;
         [[nodiscard]] Point2D::Value Dot(const Line2D& other) const;
         // Returns a 2D cross product of the lines
         [[nodiscard]] Point2D::Value Cross(const Line2D& other) const;

@@ -45,6 +45,11 @@ namespace Atmos
         void RegisterTypes(Arca::ReliquaryOrigin& origin);
     }
 
+    namespace Entity
+    {
+        void RegisterTypes(Arca::ReliquaryOrigin& origin);
+    }
+
     namespace Time
     {
         void RegisterTypes(Arca::ReliquaryOrigin& origin);

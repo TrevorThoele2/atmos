@@ -10,7 +10,7 @@ namespace Atmos::Render
         const Render::Color& color,
         const Spatial::Point3D& position,
         const Spatial::Scalers2D& scalers,
-        const Spatial::Angle& rotation)
+        const Spatial::Angle2D& rotation)
         :
         Image(
             init,

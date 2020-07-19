@@ -47,7 +47,7 @@ namespace Atmos::Render::DirectX9
             imageRender.position.z,
             imageRender.assetSlice,
             imageRender.size,
-            Spatial::Angle(),
+            Spatial::Angle2D(),
             imageRender.color);
     }
 
@@ -115,7 +115,7 @@ namespace Atmos::Render::DirectX9
         float y,
         const Spatial::AxisAlignedBox2D& imageBounds,
         const Spatial::Size2D& size,
-        const Spatial::Angle& rotation,
+        const Spatial::Angle2D& rotation,
         const Color& color)
         -> StagedObject
     {
@@ -243,7 +243,7 @@ namespace Atmos::Render::DirectX9
         float z,
         const Spatial::AxisAlignedBox2D& imageBounds,
         const Spatial::Size2D& size,
-        const Spatial::Angle& rotation,
+        const Spatial::Angle2D& rotation,
         const Color& color)
     {
         const auto layer = LayerWithZ(z);

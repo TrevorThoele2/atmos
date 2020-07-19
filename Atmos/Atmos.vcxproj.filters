@@ -234,18 +234,6 @@
     <Filter Include="Header Files\Input\Signals">
       <UniqueIdentifier>{5a00eaa9-c51e-44f5-9b57-73aa2172c699}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Entity\Curator">
-      <UniqueIdentifier>{5dd13e0f-ab59-4397-825b-335831f0a430}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Entity\Curator">
-      <UniqueIdentifier>{aa40266a-e180-4c3b-b4a8-0ac2edb5aabc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Entity\Position">
-      <UniqueIdentifier>{5af4fb77-6546-43c7-820b-7b0f97cf3731}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Entity\Position">
-      <UniqueIdentifier>{cfb940b1-17a4-466d-a0ff-bd1b6d65e0ff}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\World\Serialization\Stasis">
       <UniqueIdentifier>{c99e5890-f82d-422b-b8ad-7f196b5e01e9}</UniqueIdentifier>
     </Filter>
@@ -393,9 +381,6 @@
     <Filter Include="Header Files\Render\Region">
       <UniqueIdentifier>{97768607-a1df-4f08-abe2-458fd26b8467}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Entity\Avatar">
-      <UniqueIdentifier>{b29e869e-49a1-4200-951f-3370f8ba7a7e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Spatial">
       <UniqueIdentifier>{502175c1-0fbf-4f6b-b23d-3e1c165a09b0}</UniqueIdentifier>
     </Filter>
@@ -407,9 +392,6 @@
     </Filter>
     <Filter Include="Source Files\Spatial\Screen">
       <UniqueIdentifier>{2d650911-45b5-4629-943c-1e51ac72e563}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Spatial\Direction">
-      <UniqueIdentifier>{0e6d1164-a7a9-4467-be95-53f8245a3575}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Spatial\Algorithms">
       <UniqueIdentifier>{6cab46aa-871e-437c-b570-34716c5bf980}</UniqueIdentifier>
@@ -425,9 +407,6 @@
     </Filter>
     <Filter Include="Header Files\Spatial\Screen">
       <UniqueIdentifier>{6bf6536e-2aae-4af1-8165-58608e6c4ac5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Spatial\Direction">
-      <UniqueIdentifier>{aa56492d-8bd6-48bd-bb3e-0e0562592bd1}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Spatial\Algorithms">
       <UniqueIdentifier>{e0ea15f9-2d85-48a2-a5d4-3046dddfec8d}</UniqueIdentifier>
@@ -737,12 +716,6 @@
     <ClInclude Include="Vector3D.h">
       <Filter>Header Files\Spatial\3D</Filter>
     </ClInclude>
-    <ClInclude Include="Angle.h">
-      <Filter>Header Files\Spatial\Direction</Filter>
-    </ClInclude>
-    <ClInclude Include="Direction.h">
-      <Filter>Header Files\Spatial\Direction</Filter>
-    </ClInclude>
     <ClInclude Include="Size2D.h">
       <Filter>Header Files\Spatial\2D</Filter>
     </ClInclude>
@@ -832,15 +805,6 @@
     </ClInclude>
     <ClInclude Include="EntityCurator.h">
       <Filter>Header Files\Entity</Filter>
-    </ClInclude>
-    <ClInclude Include="EntityActionCurator.h">
-      <Filter>Header Files\Entity\Curator</Filter>
-    </ClInclude>
-    <ClInclude Include="EntityAvatarCurator.h">
-      <Filter>Header Files\Entity\Curator</Filter>
-    </ClInclude>
-    <ClInclude Include="EntityPositionCurator.h">
-      <Filter>Header Files\Entity\Curator</Filter>
     </ClInclude>
     <ClInclude Include="DivisionByZero.h">
       <Filter>Header Files\Exceptions</Filter>
@@ -947,9 +911,6 @@
     <ClInclude Include="Entity.h">
       <Filter>Header Files\Entity</Filter>
     </ClInclude>
-    <ClInclude Include="CurrentAvatar.h">
-      <Filter>Header Files\Entity</Filter>
-    </ClInclude>
     <ClInclude Include="ExecuteImmediately.h">
       <Filter>Header Files\Script</Filter>
     </ClInclude>
@@ -967,21 +928,6 @@
     </ClInclude>
     <ClInclude Include="StdVariant.h">
       <Filter>Header Files\Serialization</Filter>
-    </ClInclude>
-    <ClInclude Include="MoveEntity.h">
-      <Filter>Header Files\Entity\Position</Filter>
-    </ClInclude>
-    <ClInclude Include="MoveEntityDirection.h">
-      <Filter>Header Files\Entity\Position</Filter>
-    </ClInclude>
-    <ClInclude Include="MoveEntityInstant.h">
-      <Filter>Header Files\Entity\Position</Filter>
-    </ClInclude>
-    <ClInclude Include="PositionedEntities.h">
-      <Filter>Header Files\Entity\Position</Filter>
-    </ClInclude>
-    <ClInclude Include="RotateEntity.h">
-      <Filter>Header Files\Entity\Position</Filter>
     </ClInclude>
     <ClInclude Include="TypeRegistration.h">
       <Filter>Header Files\Engine</Filter>
@@ -1445,9 +1391,6 @@
     <ClInclude Include="EntityTag.h">
       <Filter>Header Files\Entity</Filter>
     </ClInclude>
-    <ClInclude Include="SetAvatar.h">
-      <Filter>Header Files\Entity\Avatar</Filter>
-    </ClInclude>
     <ClInclude Include="RelativeImage.h">
       <Filter>Header Files\Render\Image</Filter>
     </ClInclude>
@@ -1474,12 +1417,6 @@
     </ClInclude>
     <ClInclude Include="Point3D.h">
       <Filter>Header Files\Spatial\3D</Filter>
-    </ClInclude>
-    <ClInclude Include="Point2DAlgorithms.h">
-      <Filter>Header Files\Spatial\Algorithms</Filter>
-    </ClInclude>
-    <ClInclude Include="PointConversions.h">
-      <Filter>Header Files\Spatial\Algorithms</Filter>
     </ClInclude>
     <ClInclude Include="GridPoint.h">
       <Filter>Header Files\Spatial\Grid</Filter>
@@ -1510,6 +1447,24 @@
     </ClInclude>
     <ClInclude Include="RelativeBounds.h">
       <Filter>Header Files\Spatial\Arca</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityPrototype.h">
+      <Filter>Header Files\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="ActualizeAllEntityPrototypes.h">
+      <Filter>Header Files\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="MoveEntity.h">
+      <Filter>Header Files\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Angle2D.h">
+      <Filter>Header Files\Spatial\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Angle3D.h">
+      <Filter>Header Files\Spatial\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="SpatialAlgorithms.h">
+      <Filter>Header Files\Spatial\Algorithms</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1675,9 +1630,6 @@
     <ClCompile Include="Vector3D.cpp">
       <Filter>Source Files\Spatial\3D</Filter>
     </ClCompile>
-    <ClCompile Include="Direction.cpp">
-      <Filter>Source Files\Spatial\Direction</Filter>
-    </ClCompile>
     <ClCompile Include="EngineNotSetup.cpp">
       <Filter>Source Files\Engine</Filter>
     </ClCompile>
@@ -1734,15 +1686,6 @@
     </ClCompile>
     <ClCompile Include="DebugStatisticsCurator.cpp">
       <Filter>Source Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="EntityActionCurator.cpp">
-      <Filter>Source Files\Entity\Curator</Filter>
-    </ClCompile>
-    <ClCompile Include="EntityAvatarCurator.cpp">
-      <Filter>Source Files\Entity\Curator</Filter>
-    </ClCompile>
-    <ClCompile Include="EntityPositionCurator.cpp">
-      <Filter>Source Files\Entity\Curator</Filter>
     </ClCompile>
     <ClCompile Include="EntityCurator.cpp">
       <Filter>Source Files\Entity</Filter>
@@ -1819,14 +1762,8 @@
     <ClCompile Include="AllRunningScripts.cpp">
       <Filter>Source Files\Script</Filter>
     </ClCompile>
-    <ClCompile Include="PositionedEntities.cpp">
-      <Filter>Source Files\Entity\Position</Filter>
-    </ClCompile>
     <ClCompile Include="TypeRegistration.cpp">
       <Filter>Source Files\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="MappedEntities.cpp">
-      <Filter>Source Files\Entity</Filter>
     </ClCompile>
     <ClCompile Include="FileManagerProvider.cpp">
       <Filter>Source Files\File</Filter>
@@ -2113,12 +2050,6 @@
     <ClCompile Include="Point3D.cpp">
       <Filter>Source Files\Spatial\3D</Filter>
     </ClCompile>
-    <ClCompile Include="Point2DAlgorithms.cpp">
-      <Filter>Source Files\Spatial\Algorithms</Filter>
-    </ClCompile>
-    <ClCompile Include="PointConversions.cpp">
-      <Filter>Source Files\Spatial\Algorithms</Filter>
-    </ClCompile>
     <ClCompile Include="GridPoint.cpp">
       <Filter>Source Files\Spatial\Grid</Filter>
     </ClCompile>
@@ -2145,6 +2076,18 @@
     </ClCompile>
     <ClCompile Include="RelativeBounds.cpp">
       <Filter>Source Files\Spatial\Arca</Filter>
+    </ClCompile>
+    <ClCompile Include="EntityPrototype.cpp">
+      <Filter>Source Files\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="MappedEntities.cpp">
+      <Filter>Source Files\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Angle3D.cpp">
+      <Filter>Source Files\Spatial\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="SpatialAlgorithms.cpp">
+      <Filter>Source Files\Spatial\Algorithms</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -6,6 +6,10 @@
 #include <Arca/ReliquaryOrigin.h>
 #include <Atmos/TypeRegistration.h>
 #include <Atmos/ProcessedLog.h>
+#include <Atmos/SpatialAlgorithms.h>
+#include <Atmos/MathUtility.h>
+
+using namespace Catch::literals;
 
 SCENARIO_METHOD(BoundsTestsFixture, "bounds")
 {
@@ -18,7 +22,7 @@ SCENARIO_METHOD(BoundsTestsFixture, "bounds")
         auto reliquary = reliquaryOrigin.Actualize();
 
         auto created = reliquary->Do(Arca::Create<Arca::OpenRelic>());
-        auto bounds = created->Create<Bounds>(Point3D{}, Size2D{ 1, 1 }, Scalers2D{ 1, 1 }, Angle{});
+        auto bounds = created->Create<Bounds>(Point3D{}, Size2D{ 1, 1 }, Scalers2D{ 1, 1 }, Angle2D{});
 
         WHEN("moving bounds to position")
         {
@@ -31,10 +35,13 @@ SCENARIO_METHOD(BoundsTestsFixture, "bounds")
 
             reliquary->Do(MoveBoundsTo(bounds.ID(), position));
 
+            const auto newPosition = bounds->Position();
+
             THEN("bounds are moved")
             {
-                REQUIRE(bounds->Position() != Point3D());
-                REQUIRE(bounds->Position() == position);
+                REQUIRE(newPosition.x == Approx(position.x));
+                REQUIRE(newPosition.y == Approx(position.y));
+                REQUIRE(newPosition.z == Approx(position.z));
             }
         }
 
@@ -52,15 +59,15 @@ SCENARIO_METHOD(BoundsTestsFixture, "bounds")
             reliquary->Do(MoveBoundsTo(bounds.ID(), initialPosition));
             reliquary->Do(MoveBoundsBy(bounds.ID(), delta));
 
+            const auto newPosition = bounds->Position();
+
             THEN("bounds are moved")
             {
-                REQUIRE(bounds->Position() != initialPosition);
-                REQUIRE(bounds->Position() == Point3D
-                    {
-                        initialPosition.x + delta.x,
-                        initialPosition.y + delta.y,
-                        initialPosition.z + delta.z
-                    });
+                const auto checkPosition = initialPosition + delta;
+
+                REQUIRE(newPosition.x == Approx(checkPosition.x));
+                REQUIRE(newPosition.y == Approx(checkPosition.y));
+                REQUIRE(newPosition.z == Approx(checkPosition.z));
             }
         }
 
@@ -72,44 +79,25 @@ SCENARIO_METHOD(BoundsTestsFixture, "bounds")
                 dataGeneration.Random<Point3D::Value>(TestFramework::Range(-1000.0f, 1000.0f)),
                 dataGeneration.Random<Point3D::Value>(TestFramework::Range(-1000.0f, 1000.0f))
             };
-            const auto direction = Direction(Direction::Value(
-                dataGeneration.Random<std::underlying_type_t<Direction::Value>>(
-                    TestFramework::Range<std::underlying_type_t<Direction::Value>>(
-                        Direction::Left, Direction::ZNearer))));
+            const auto direction = Angle3D
+            {
+                dataGeneration.Random<Angle3D::Value>(TestFramework::Range(0.0f, PI<Angle3D::Value>)),
+                dataGeneration.Random<Angle3D::Value>(TestFramework::Range(0.0f, PI<Angle3D::Value>))
+            };
             const auto amount = dataGeneration.Random<Point3D::Value>(TestFramework::Range(-1000.0f, 1000.0f));
 
             reliquary->Do(MoveBoundsTo(bounds.ID(), initialPosition));
             reliquary->Do(MoveBoundsDirection(bounds.ID(), direction, amount));
 
+            const auto newPosition = bounds->Position();
+
             THEN("bounds are moved")
             {
-                auto position = initialPosition;
+                const auto checkPosition = initialPosition + ToPoint3D(direction, amount);
 
-                REQUIRE(bounds->Position() != initialPosition);
-                switch(direction.Get())
-                {
-                case Direction::Value::Left:
-                    position.x -= amount;
-                    break;
-                case Direction::Value::Up:
-                    position.y -= amount;
-                    break;
-                case Direction::Value::ZFarther:
-                    position.z -= amount;
-                    break;
-                case Direction::Value::Right:
-                    position.x += amount;
-                    break;
-                case Direction::Value::Down:
-                    position.y += amount;
-                    break;
-                case Direction::Value::ZNearer:
-                    position.z += amount;
-                    break;
-                default:
-                    FAIL_CHECK("unknown direction");
-                }
-                REQUIRE(bounds->Position() == position);
+                REQUIRE(newPosition.x == Approx(checkPosition.x));
+                REQUIRE(newPosition.y == Approx(checkPosition.y));
+                REQUIRE(newPosition.z == Approx(checkPosition.z));
             }
         }
 
@@ -137,13 +125,13 @@ SCENARIO_METHOD(BoundsTestsFixture, "bounds")
 
         WHEN("rotating bounds")
         {
-            const auto angle = dataGeneration.Random<Angle>(TestFramework::Range(-1000.0f, 1000.0f));
+            const auto angle = dataGeneration.Random<Angle2D>(TestFramework::Range(-1000.0f, 1000.0f));
 
             reliquary->Do(RotateBounds(bounds.ID(), angle));
 
             THEN("bounds are rotated")
             {
-                REQUIRE(bounds->Rotation() != Angle{});
+                REQUIRE(bounds->Rotation() != Angle2D{});
                 REQUIRE(bounds->Rotation() == angle);
             }
         }
@@ -177,10 +165,10 @@ SCENARIO_METHOD(BoundsTestsFixture, "relative bounds")
             };
 
             auto parent = reliquary->Do(Arca::Create<Arca::OpenRelic>());
-            parent->Create<Bounds>(parentPosition, Size2D{ 1, 1 }, Scalers2D{ 1, 1 }, Angle{});
+            parent->Create<Bounds>(parentPosition, Size2D{ 1, 1 }, Scalers2D{ 1, 1 }, Angle2D{});
 
             auto child = reliquary->Do(Arca::CreateChild<Arca::OpenRelic>(parent));
-            auto childBounds = child->Create<Bounds>(Point3D{}, Size2D{ 1, 1 }, Scalers2D{ 1, 1 }, Angle{});
+            auto childBounds = child->Create<Bounds>(Point3D{}, Size2D{ 1, 1 }, Scalers2D{ 1, 1 }, Angle2D{});
             auto relativeBounds = child->Create<RelativeBounds>(relativePosition);
 
             WHEN("moving child bounds to position")
@@ -201,23 +189,18 @@ SCENARIO_METHOD(BoundsTestsFixture, "relative bounds")
                     const auto checkPosition = childPosition;
 
                     REQUIRE(newChildPosition != Point3D());
-                    REQUIRE(newChildPosition.x == checkPosition.x);
-                    REQUIRE(newChildPosition.y == checkPosition.y);
-                    REQUIRE(newChildPosition.z == checkPosition.z);
+                    REQUIRE(newChildPosition.x == Approx(checkPosition.x));
+                    REQUIRE(newChildPosition.y == Approx(checkPosition.y));
+                    REQUIRE(newChildPosition.z == Approx(checkPosition.z));
                 }
 
                 THEN("parent position and new relative position adds up to child position")
                 {
-                    const auto checkPosition = Point3D
-                    {
-                        parentPosition.x + newRelativePosition.x,
-                        parentPosition.y + newRelativePosition.y,
-                        parentPosition.z + newRelativePosition.z
-                    };
+                    const auto checkPosition = parentPosition + newRelativePosition;
 
-                    REQUIRE(newChildPosition.x == checkPosition.x);
-                    REQUIRE(newChildPosition.y == checkPosition.y);
-                    REQUIRE(newChildPosition.z == checkPosition.z);
+                    REQUIRE(newChildPosition.x == Approx(checkPosition.x));
+                    REQUIRE(newChildPosition.y == Approx(checkPosition.y));
+                    REQUIRE(newChildPosition.z == Approx(checkPosition.z));
                 }
             }
 
@@ -232,41 +215,32 @@ SCENARIO_METHOD(BoundsTestsFixture, "relative bounds")
 
                 THEN("is at correct position")
                 {
-                    const auto checkPosition = Point3D
-                    {
-                        parentPosition.x + relativePosition.x + childDelta.x,
-                        parentPosition.y + relativePosition.y + childDelta.y,
-                        parentPosition.z + relativePosition.z + childDelta.z,
-                    };
+                    const auto checkPosition = parentPosition + relativePosition + childDelta;
 
                     REQUIRE(childPosition != Point3D());
-                    REQUIRE(childPosition.x == checkPosition.x);
-                    REQUIRE(childPosition.y == checkPosition.y);
-                    REQUIRE(childPosition.z == checkPosition.z);
+                    REQUIRE(childPosition.x == Approx(checkPosition.x));
+                    REQUIRE(childPosition.y == Approx(checkPosition.y));
+                    REQUIRE(childPosition.z == Approx(checkPosition.z));
                 }
 
                 THEN("parent position and new relative position adds up to child position")
                 {
-                    const auto checkPosition = Point3D
-                    {
-                        parentPosition.x + newRelativePosition.x,
-                        parentPosition.y + newRelativePosition.y,
-                        parentPosition.z + newRelativePosition.z
-                    };
+                    const auto checkPosition = parentPosition + newRelativePosition;
 
                     REQUIRE(childPosition != Point3D());
-                    REQUIRE(childPosition.x == checkPosition.x);
-                    REQUIRE(childPosition.y == checkPosition.y);
-                    REQUIRE(childPosition.z == checkPosition.z);
+                    REQUIRE(childPosition.x == Approx(checkPosition.x));
+                    REQUIRE(childPosition.y == Approx(checkPosition.y));
+                    REQUIRE(childPosition.z == Approx(checkPosition.z));
                 }
             }
 
             WHEN("moving child bounds in direction")
             {
-                const auto direction = Direction(Direction::Value(
-                    dataGeneration.Random<std::underlying_type_t<Direction::Value>>(
-                        TestFramework::Range<std::underlying_type_t<Direction::Value>>(
-                            Direction::Left, Direction::ZNearer))));
+                const auto direction = Angle3D
+                {
+                    dataGeneration.Random<Angle3D::Value>(TestFramework::Range(0.0f, PI<Angle3D::Value>)),
+                    dataGeneration.Random<Angle3D::Value>(TestFramework::Range(0.0f, PI<Angle3D::Value>))
+                };
                 const auto amount = dataGeneration.Random<Point3D::Value>(TestFramework::Range(-1000.0f, 1000.0f));
 
                 reliquary->Do(MoveBoundsDirection(childBounds.ID(), direction, amount));
@@ -275,56 +249,22 @@ SCENARIO_METHOD(BoundsTestsFixture, "relative bounds")
 
                 THEN("is at correct position")
                 {
-                    auto checkPosition = Point3D
-                    {
-                        parentPosition.x + relativePosition.x,
-                        parentPosition.y + relativePosition.y,
-                        parentPosition.z + relativePosition.z,
-                    };
-
-                    switch (direction.Get())
-                    {
-                    case Direction::Value::Left:
-                        checkPosition.x -= amount;
-                        break;
-                    case Direction::Value::Up:
-                        checkPosition.y -= amount;
-                        break;
-                    case Direction::Value::ZFarther:
-                        checkPosition.z -= amount;
-                        break;
-                    case Direction::Value::Right:
-                        checkPosition.x += amount;
-                        break;
-                    case Direction::Value::Down:
-                        checkPosition.y += amount;
-                        break;
-                    case Direction::Value::ZNearer:
-                        checkPosition.z += amount;
-                        break;
-                    default:
-                        FAIL_CHECK("unknown direction");
-                    }
+                    const auto checkPosition = parentPosition + relativePosition + ToPoint3D(direction, amount);
 
                     REQUIRE(childPosition != Point3D());
-                    REQUIRE(childPosition.x == checkPosition.x);
-                    REQUIRE(childPosition.y == checkPosition.y);
-                    REQUIRE(childPosition.z == checkPosition.z);
+                    REQUIRE(childPosition.x == Approx(checkPosition.x));
+                    REQUIRE(childPosition.y == Approx(checkPosition.y));
+                    REQUIRE(childPosition.z == Approx(checkPosition.z));
                 }
 
                 THEN("parent position and new relative position adds up to child position")
                 {
-                    const auto checkPosition = Point3D
-                    {
-                        parentPosition.x + newRelativePosition.x,
-                        parentPosition.y + newRelativePosition.y,
-                        parentPosition.z + newRelativePosition.z
-                    };
+                    const auto checkPosition = parentPosition + newRelativePosition;
 
                     REQUIRE(childPosition != Point3D());
-                    REQUIRE(childPosition.x == checkPosition.x);
-                    REQUIRE(childPosition.y == checkPosition.y);
-                    REQUIRE(childPosition.z == checkPosition.z);
+                    REQUIRE(childPosition.x == Approx(checkPosition.x));
+                    REQUIRE(childPosition.y == Approx(checkPosition.y));
+                    REQUIRE(childPosition.z == Approx(checkPosition.z));
                 }
             }
         }
@@ -349,7 +289,7 @@ SCENARIO_METHOD(BoundsTestsFixture, "relative bounds initialization")
         };
 
         auto parent = reliquary->Do(Arca::Create<Arca::OpenRelic>());
-        parent->Create<Bounds>(parentPosition, Size2D{ 1, 1 }, Scalers2D{ 1, 1 }, Angle{});
+        parent->Create<Bounds>(parentPosition, Size2D{ 1, 1 }, Scalers2D{ 1, 1 }, Angle2D{});
 
         WHEN("creating child relic with relative bounds last")
         {
@@ -361,38 +301,28 @@ SCENARIO_METHOD(BoundsTestsFixture, "relative bounds initialization")
             };
 
             auto child = reliquary->Do(Arca::CreateChild<Arca::OpenRelic>(parent));
-            auto childBounds = child->Create<Bounds>(Point3D{}, Size2D{ 1, 1 }, Scalers2D{ 1, 1 }, Angle{});
+            auto childBounds = child->Create<Bounds>(Point3D{}, Size2D{ 1, 1 }, Scalers2D{ 1, 1 }, Angle2D{});
             child->Create<RelativeBounds>(relativePosition);
             const auto childPosition = childBounds->Position();
 
             THEN("is at correct position")
             {
-                const auto checkPosition = Point3D
-                {
-                    parentPosition.x + relativePosition.x,
-                    parentPosition.y + relativePosition.y,
-                    parentPosition.z + relativePosition.z,
-                };
+                const auto checkPosition = parentPosition + relativePosition;
 
                 REQUIRE(childPosition != Point3D());
-                REQUIRE(childPosition.x == checkPosition.x);
-                REQUIRE(childPosition.y == checkPosition.y);
-                REQUIRE(childPosition.z == checkPosition.z);
+                REQUIRE(childPosition.x == Approx(checkPosition.x));
+                REQUIRE(childPosition.y == Approx(checkPosition.y));
+                REQUIRE(childPosition.z == Approx(checkPosition.z));
             }
 
             THEN("parent position and relative position adds up to child position")
             {
-                const auto checkPosition = Point3D
-                {
-                    parentPosition.x + relativePosition.x,
-                    parentPosition.y + relativePosition.y,
-                    parentPosition.z + relativePosition.z
-                };
+                const auto checkPosition = parentPosition + relativePosition;
 
                 REQUIRE(childPosition != Point3D());
-                REQUIRE(childPosition.x == checkPosition.x);
-                REQUIRE(childPosition.y == checkPosition.y);
-                REQUIRE(childPosition.z == checkPosition.z);
+                REQUIRE(childPosition.x == Approx(checkPosition.x));
+                REQUIRE(childPosition.y == Approx(checkPosition.y));
+                REQUIRE(childPosition.z == Approx(checkPosition.z));
             }
         }
 
@@ -407,37 +337,27 @@ SCENARIO_METHOD(BoundsTestsFixture, "relative bounds initialization")
 
             auto child = reliquary->Do(Arca::CreateChild<Arca::OpenRelic>(parent));
             child->Create<RelativeBounds>(relativePosition);
-            auto childBounds = child->Create<Bounds>(Point3D{}, Size2D{ 1, 1 }, Scalers2D{ 1, 1 }, Angle{});
+            auto childBounds = child->Create<Bounds>(Point3D{}, Size2D{ 1, 1 }, Scalers2D{ 1, 1 }, Angle2D{});
             const auto childPosition = childBounds->Position();
 
             THEN("is at correct position")
             {
-                const auto checkPosition = Point3D
-                {
-                    parentPosition.x + relativePosition.x,
-                    parentPosition.y + relativePosition.y,
-                    parentPosition.z + relativePosition.z,
-                };
+                const auto checkPosition = parentPosition + relativePosition;
 
                 REQUIRE(childPosition != Point3D());
-                REQUIRE(childPosition.x == checkPosition.x);
-                REQUIRE(childPosition.y == checkPosition.y);
-                REQUIRE(childPosition.z == checkPosition.z);
+                REQUIRE(childPosition.x == Approx(checkPosition.x));
+                REQUIRE(childPosition.y == Approx(checkPosition.y));
+                REQUIRE(childPosition.z == Approx(checkPosition.z));
             }
 
             THEN("parent position and relative position adds up to child position")
             {
-                const auto checkPosition = Point3D
-                {
-                    parentPosition.x + relativePosition.x,
-                    parentPosition.y + relativePosition.y,
-                    parentPosition.z + relativePosition.z
-                };
+                const auto checkPosition = parentPosition + relativePosition;
 
                 REQUIRE(childPosition != Point3D());
-                REQUIRE(childPosition.x == checkPosition.x);
-                REQUIRE(childPosition.y == checkPosition.y);
-                REQUIRE(childPosition.z == checkPosition.z);
+                REQUIRE(childPosition.x == Approx(checkPosition.x));
+                REQUIRE(childPosition.y == Approx(checkPosition.y));
+                REQUIRE(childPosition.z == Approx(checkPosition.z));
             }
         }
     }
@@ -463,10 +383,10 @@ SCENARIO_METHOD(BoundsTestsFixture, "relative bounds children")
             };
 
             auto parent = reliquary->Do(Arca::Create<Arca::OpenRelic>());
-            auto parentBounds = parent->Create<Bounds>(Point3D{}, Size2D{ 1, 1 }, Scalers2D{ 1, 1 }, Angle{});
+            auto parentBounds = parent->Create<Bounds>(Point3D{}, Size2D{ 1, 1 }, Scalers2D{ 1, 1 }, Angle2D{});
 
             auto child = reliquary->Do(Arca::CreateChild<Arca::OpenRelic>(parent));
-            auto childBounds = child->Create<Bounds>(Point3D{}, Size2D{ 1, 1 }, Scalers2D{ 1, 1 }, Angle{});
+            auto childBounds = child->Create<Bounds>(Point3D{}, Size2D{ 1, 1 }, Scalers2D{ 1, 1 }, Angle2D{});
             child->Create<RelativeBounds>(relativePosition);
 
             WHEN("moving parent bounds to position")
@@ -482,12 +402,7 @@ SCENARIO_METHOD(BoundsTestsFixture, "relative bounds children")
 
                 THEN("child bounds are moved")
                 {
-                    const auto checkPosition = Point3D
-                    {
-                        parentPosition.x + relativePosition.x,
-                        parentPosition.y + relativePosition.y,
-                        parentPosition.z + relativePosition.z
-                    };
+                    const auto checkPosition = parentPosition + relativePosition;
 
                     REQUIRE(childBounds->Position() != Point3D());
                     REQUIRE(childBounds->Position() == checkPosition);
@@ -507,19 +422,18 @@ SCENARIO_METHOD(BoundsTestsFixture, "relative bounds children")
 
                 reliquary->Do(MoveBoundsTo(parentBounds.ID(), initialParentPosition));
                 reliquary->Do(MoveBoundsBy(parentBounds.ID(), parentDelta));
+
                 const auto parentPosition = parentBounds->Position();
+                const auto childPosition = childBounds->Position();
 
                 THEN("child bounds are moved")
                 {
-                    const auto checkPosition = Point3D
-                    {
-                        parentPosition.x + relativePosition.x,
-                        parentPosition.y + relativePosition.y,
-                        parentPosition.z + relativePosition.z
-                    };
+                    const auto checkPosition = parentPosition + relativePosition;
 
-                    REQUIRE(childBounds->Position() != Point3D());
-                    REQUIRE(childBounds->Position() == checkPosition);
+                    REQUIRE(childPosition != Point3D());
+                    REQUIRE(childPosition.x == Approx(checkPosition.x));
+                    REQUIRE(childPosition.y == Approx(checkPosition.y));
+                    REQUIRE(childPosition.z == Approx(checkPosition.z));
                 }
             }
 
@@ -531,27 +445,27 @@ SCENARIO_METHOD(BoundsTestsFixture, "relative bounds children")
                     dataGeneration.Random<Point3D::Value>(TestFramework::Range(-1000.0f, 1000.0f)),
                     dataGeneration.Random<Point3D::Value>(TestFramework::Range(-1000.0f, 1000.0f))
                 };
-                const auto direction = Direction(Direction::Value(
-                    dataGeneration.Random<std::underlying_type_t<Direction::Value>>(
-                        TestFramework::Range<std::underlying_type_t<Direction::Value>>(
-                            Direction::Left, Direction::ZNearer))));
+                const auto direction = Angle3D
+                {
+                    dataGeneration.Random<Angle3D::Value>(TestFramework::Range(0.0f, PI<Angle3D::Value>)),
+                    dataGeneration.Random<Angle3D::Value>(TestFramework::Range(0.0f, PI<Angle3D::Value>))
+                };
                 const auto amount = dataGeneration.Random<Point3D::Value>(TestFramework::Range(-1000.0f, 1000.0f));
 
                 reliquary->Do(MoveBoundsTo(parentBounds.ID(), initialPosition));
                 reliquary->Do(MoveBoundsDirection(parentBounds.ID(), direction, amount));
+
                 const auto parentPosition = parentBounds->Position();
+                const auto childPosition = childBounds->Position();
 
                 THEN("child bounds are moved")
                 {
-                    const auto checkPosition = Point3D
-                    {
-                        parentPosition.x + relativePosition.x,
-                        parentPosition.y + relativePosition.y,
-                        parentPosition.z + relativePosition.z
-                    };
+                    const auto checkPosition = parentPosition + relativePosition;
 
-                    REQUIRE(childBounds->Position() != Point3D());
-                    REQUIRE(childBounds->Position() == checkPosition);
+                    REQUIRE(childPosition != Point3D());
+                    REQUIRE(childPosition.x == Approx(checkPosition.x));
+                    REQUIRE(childPosition.y == Approx(checkPosition.y));
+                    REQUIRE(childPosition.z == Approx(checkPosition.z));
                 }
             }
         }
@@ -623,10 +537,11 @@ SCENARIO_METHOD(BoundsTestsFixture, "relative bounds errors")
 
             WHEN("moving relic in direction")
             {
-                const auto direction = Direction(Direction::Value(
-                    dataGeneration.Random<std::underlying_type_t<Direction::Value>>(
-                        TestFramework::Range<std::underlying_type_t<Direction::Value>>(
-                            Direction::Left, Direction::ZNearer))));
+                const auto direction = Angle3D
+                {
+                    dataGeneration.Random<Angle3D::Value>(TestFramework::Range(0.0f, PI<Angle3D::Value>)),
+                    dataGeneration.Random<Angle3D::Value>(TestFramework::Range(0.0f, PI<Angle3D::Value>))
+                };
                 const auto amount = dataGeneration.Random<Point3D::Value>(TestFramework::Range(-1000.0f, 1000.0f));
 
                 reliquary->Do(MoveBoundsDirection(bounds.ID(), direction, amount));
@@ -699,10 +614,11 @@ SCENARIO_METHOD(BoundsTestsFixture, "relative bounds errors")
 
             WHEN("moving child in direction")
             {
-                const auto direction = Direction(Direction::Value(
-                    dataGeneration.Random<std::underlying_type_t<Direction::Value>>(
-                        TestFramework::Range<std::underlying_type_t<Direction::Value>>(
-                            Direction::Left, Direction::ZNearer))));
+                const auto direction = Angle3D
+                {
+                    dataGeneration.Random<Angle3D::Value>(TestFramework::Range(0.0f, PI<Angle3D::Value>)),
+                    dataGeneration.Random<Angle3D::Value>(TestFramework::Range(0.0f, PI<Angle3D::Value>))
+                };
                 const auto amount = dataGeneration.Random<Point3D::Value>(TestFramework::Range(-1000.0f, 1000.0f));
 
                 reliquary->Do(MoveBoundsDirection(childBounds.ID(), direction, amount));

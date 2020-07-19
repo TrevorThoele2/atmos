@@ -49,6 +49,9 @@
     <ClCompile Include="BoundsTests.cpp">
       <Filter>Source Files\Tests</Filter>
     </ClCompile>
+    <ClCompile Include="EntityTests.cpp">
+      <Filter>Source Files\Tests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneralFixture.h">
@@ -98,6 +101,9 @@
     </ClInclude>
     <ClInclude Include="SignalListener.h">
       <Filter>Header Files\Automation</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityTests.h">
+      <Filter>Header Files\Tests</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

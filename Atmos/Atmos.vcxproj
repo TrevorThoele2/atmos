@@ -33,6 +33,7 @@
     <ClInclude Include="ActionActive.h" />
     <ClInclude Include="ActionDepressed.h" />
     <ClInclude Include="ActionPressed.h" />
+    <ClInclude Include="ActualizeAllEntityPrototypes.h" />
     <ClInclude Include="AngelScriptAssetData.h" />
     <ClInclude Include="AngelScriptManager.h" />
     <ClInclude Include="Asset.h" />
@@ -49,16 +50,17 @@
     <ClInclude Include="ChangeVerticalSync.h" />
     <ClInclude Include="CreateAssetResource.h" />
     <ClInclude Include="CreateImageAssetResource.h" />
+    <ClInclude Include="Angle3D.h" />
     <ClInclude Include="EntityAction.h" />
     <ClInclude Include="EntityDatum.h" />
+    <ClInclude Include="EntityPrototype.h" />
     <ClInclude Include="EntityVariant.h" />
     <ClInclude Include="GridPointAlgorithms.h" />
     <ClInclude Include="GridPointConversion.h" />
     <ClInclude Include="LoadAsset.h" />
     <ClInclude Include="MoveBoundsBy.h" />
     <ClInclude Include="MoveBoundsDirection.h" />
-    <ClInclude Include="Point2DAlgorithms.h" />
-    <ClInclude Include="PointConversions.h" />
+    <ClInclude Include="SpatialAlgorithms.h" />
     <ClInclude Include="PruneGraphicsResources.h" />
     <ClInclude Include="GridRegion.h" />
     <ClInclude Include="GridRegionCurator.h" />
@@ -68,7 +70,6 @@
     <ClInclude Include="RenderAlgorithms.h" />
     <ClInclude Include="RenderMesh.h" />
     <ClInclude Include="RotateBounds.h" />
-    <ClInclude Include="SetAvatar.h" />
     <ClInclude Include="SetupMainSurfaceResource.h" />
     <ClInclude Include="ExternalManagers.h" />
     <ClInclude Include="FreeImageIncludes.h" />
@@ -156,7 +157,6 @@
     <ClInclude Include="ShouldCreateAsset.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="ChangeMasterVolume.h" />
-    <ClInclude Include="CurrentAvatar.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="ExecuteImmediately.h" />
     <ClInclude Include="FieldSet.h" />
@@ -185,13 +185,9 @@
     <ClInclude Include="MouseMoved.h" />
     <ClInclude Include="Bounds.h" />
     <ClInclude Include="MoveEntity.h" />
-    <ClInclude Include="MoveEntityDirection.h" />
-    <ClInclude Include="MoveEntityInstant.h" />
-    <ClInclude Include="PositionedEntities.h" />
     <ClInclude Include="ProcessedLog.h" />
     <ClInclude Include="ReconstructGraphics.h" />
     <ClInclude Include="AllRunningScripts.h" />
-    <ClInclude Include="RotateEntity.h" />
     <ClInclude Include="StasisFileExtension.h" />
     <ClInclude Include="StateRequest.h" />
     <ClInclude Include="StopwatchCore.h" />
@@ -207,7 +203,6 @@
     <ClInclude Include="LoggingDetails.h" />
     <ClInclude Include="LoggingSeverity.h" />
     <ClInclude Include="EngineNotSetup.h" />
-    <ClInclude Include="EntityActionCurator.h" />
     <ClInclude Include="AngelScriptResultVerification.h" />
     <ClInclude Include="AngelScriptEvent.h" />
     <ClInclude Include="AngelScriptRegistrationInterface.h" />
@@ -218,7 +213,7 @@
     <ClInclude Include="AngelScriptTile.h" />
     <ClInclude Include="AngelScriptUserData.h" />
     <ClInclude Include="AngelScriptUtility.h" />
-    <ClInclude Include="Angle.h" />
+    <ClInclude Include="Angle2D.h" />
     <ClInclude Include="AssetCurator.h" />
     <ClInclude Include="AudioAssetInstance.h" />
     <ClInclude Include="AxisAlignedBox3D.h" />
@@ -274,7 +269,6 @@
     <ClInclude Include="MusicCurator.h" />
     <ClInclude Include="NameValuePair.h" />
     <ClInclude Include="AudioAsset.h" />
-    <ClInclude Include="EntityPositionCurator.h" />
     <ClInclude Include="EntityCurator.h" />
     <ClInclude Include="ModulatorInterpolation.h" />
     <ClInclude Include="ModulatorInterpolationLinear.h" />
@@ -315,7 +309,6 @@
     <ClInclude Include="WindowsWindow.h" />
     <ClInclude Include="WindowsInputManager.h" />
     <ClInclude Include="AudioManager.h" />
-    <ClInclude Include="EntityAvatarCurator.h" />
     <ClInclude Include="Buffer.h" />
     <ClInclude Include="BinaryHeap.h" />
     <ClInclude Include="Bind.h" />
@@ -351,7 +344,6 @@
     <ClInclude Include="WindowsInclude.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="DebugScreen.h" />
-    <ClInclude Include="Direction.h" />
     <ClInclude Include="DirectX9GraphicsManager.h" />
     <ClInclude Include="Event.h" />
     <ClInclude Include="FieldDestination.h" />
@@ -387,6 +379,7 @@
     <ClCompile Include="Action.cpp" />
     <ClCompile Include="AngelScriptAssetData.cpp" />
     <ClCompile Include="AngelScriptManager.cpp" />
+    <ClCompile Include="Angle3D.cpp" />
     <ClCompile Include="AssetCore.cpp" />
     <ClCompile Include="AudioAssetResource.cpp" />
     <ClCompile Include="AudioAssetInstanceResource.cpp" />
@@ -395,12 +388,13 @@
     <ClCompile Include="ChangeSurfaceBackgroundColor.cpp" />
     <ClCompile Include="EntityAction.cpp" />
     <ClCompile Include="EntityDatum.cpp" />
+    <ClCompile Include="EntityPrototype.cpp" />
     <ClCompile Include="GridPointAlgorithms.cpp" />
     <ClCompile Include="GridPointConversion.cpp" />
-    <ClCompile Include="Point2DAlgorithms.cpp" />
+    <ClCompile Include="MappedEntities.cpp" />
+    <ClCompile Include="SpatialAlgorithms.cpp" />
     <ClCompile Include="GridRegion.cpp" />
     <ClCompile Include="GridRegionCurator.cpp" />
-    <ClCompile Include="PointConversions.cpp" />
     <ClCompile Include="RelativeImage.cpp" />
     <ClCompile Include="RelativeBounds.cpp" />
     <ClCompile Include="RenderAlgorithms.cpp" />
@@ -458,13 +452,10 @@
     <ClCompile Include="ImageCurator.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="InputCurator.cpp" />
-    <ClCompile Include="MappedEntities.cpp" />
     <ClCompile Include="Log.cpp" />
     <ClCompile Include="Bounds.cpp" />
-    <ClCompile Include="PositionedEntities.cpp" />
     <ClCompile Include="AllRunningScripts.cpp" />
     <ClCompile Include="EngineNotSetup.cpp" />
-    <ClCompile Include="EntityActionCurator.cpp" />
     <ClCompile Include="AngelScriptResultVerification.cpp" />
     <ClCompile Include="AngelScriptEvent.cpp" />
     <ClCompile Include="AngelScriptRegistrationInterface.cpp" />
@@ -528,7 +519,6 @@
     <ClCompile Include="MusicCurator.cpp" />
     <ClCompile Include="NameValuePair.cpp" />
     <ClCompile Include="AudioAsset.cpp" />
-    <ClCompile Include="EntityPositionCurator.cpp" />
     <ClCompile Include="EntityCurator.cpp" />
     <ClCompile Include="ModulatorInterpolation.cpp" />
     <ClCompile Include="ModulatorInterpolationLinear.cpp" />
@@ -558,7 +548,6 @@
     <ClCompile Include="WindowsWindow.cpp" />
     <ClCompile Include="WindowsInputManager.cpp" />
     <ClCompile Include="AudioManager.cpp" />
-    <ClCompile Include="EntityAvatarCurator.cpp" />
     <ClCompile Include="Buffer.cpp" />
     <ClCompile Include="FileManager.cpp" />
     <ClCompile Include="WindowsFileManager.cpp" />
@@ -577,7 +566,6 @@
     <ClCompile Include="ScriptVariant.cpp" />
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="DebugScreen.cpp" />
-    <ClCompile Include="Direction.cpp" />
     <ClCompile Include="DirectX9GraphicsManager.cpp" />
     <ClCompile Include="FieldDestination.cpp" />
     <ClCompile Include="WorldManager.cpp" />

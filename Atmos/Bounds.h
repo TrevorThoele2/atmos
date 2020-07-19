@@ -7,7 +7,7 @@
 #include "Point3D.h"
 #include "Size2D.h"
 #include "Scalers2D.h"
-#include "Angle.h"
+#include "Angle2D.h"
 
 namespace Atmos::Spatial
 {
@@ -15,23 +15,23 @@ namespace Atmos::Spatial
     {
     public:
         Bounds();
-        Bounds(const Point3D& position, const Size2D& baseSize, const Scalers2D& scalers, const Angle& rotation);
+        Bounds(const Point3D& position, const Size2D& baseSize, const Scalers2D& scalers, const Angle2D& rotation);
 
         void Position(const Point3D& to);
         void BaseSize(const Size2D& to);
         void Scalers(const Scalers2D& to);
-        void Rotation(const Angle& to);
+        void Rotation(const Angle2D& to);
 
         [[nodiscard]] Point3D Position() const;
         [[nodiscard]] Size2D BaseSize() const;
         [[nodiscard]] Size2D Size() const;
         [[nodiscard]] Scalers2D Scalers() const;
-        [[nodiscard]] Angle Rotation() const;
+        [[nodiscard]] Angle2D Rotation() const;
     private:
         Point3D position;
         Size2D baseSize;
         Scalers2D scalers;
-        Angle rotation;
+        Angle2D rotation;
     private:
         INSCRIPTION_ACCESS;
     };

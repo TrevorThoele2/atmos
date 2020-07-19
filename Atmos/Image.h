@@ -30,7 +30,7 @@ namespace Atmos::Render
 
         [[nodiscard]] Spatial::Point3D Position() const;
         [[nodiscard]] Spatial::Size2D Size() const;
-        [[nodiscard]] Spatial::Angle Rotation() const;
+        [[nodiscard]] Spatial::Angle2D Rotation() const;
 
         [[nodiscard]] Arca::Index<ImageCore> Core() const;
         [[nodiscard]] Arca::Index<BoundsT> Bounds() const;
@@ -48,7 +48,7 @@ namespace Atmos::Render
             const Render::Color& color,
             const Spatial::Point3D& position,
             const Spatial::Scalers2D& scalers,
-            const Spatial::Angle& rotation);
+            const Spatial::Angle2D& rotation);
         Image(Init init, Arca::Serialization);
 
         using BaseT::Create;
@@ -132,7 +132,7 @@ namespace Atmos::Render
     }
 
     template<class Derived, bool mutableBounds>
-    Spatial::Angle Image<Derived, mutableBounds>::Rotation() const
+    Spatial::Angle2D Image<Derived, mutableBounds>::Rotation() const
     {
         return bounds->Rotation();
     }
@@ -158,7 +158,7 @@ namespace Atmos::Render
         const Render::Color& color,
         const Spatial::Point3D& position,
         const Spatial::Scalers2D& scalers,
-        const Spatial::Angle& rotation)
+        const Spatial::Angle2D& rotation)
         :
         Arca::ClosedTypedRelic<Derived>(init)
     {

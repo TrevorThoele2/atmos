@@ -1,24 +1,102 @@
 #include "EntityCurator.h"
 
+#include "RunningScript.h"
+#include "FieldSet.h"
+#include "FieldUnset.h"
+
 #include <Arca/Reliquary.h>
 #include <Arca/Created.h>
 #include <Arca/Destroying.h>
 
 namespace Atmos::Entity
 {
-    EntityCurator::EntityCurator(Init init) :
-        Curator(init), mappedEntities(init.owner)
+    Curator::Curator(Init init) :
+        Arca::Curator(init),
+        prototypes(init.owner.Batch<Prototype>()),
+        entities(init.owner.Batch<Entity>()),
+        mappedEntities(init.owner)
     {
         Owner().On<Arca::CreatedKnown<Entity>>(
-            [](const Arca::CreatedKnown<Entity>& signal)
+            [this](const Arca::CreatedKnown<Entity>& signal)
             {
-                
+                auto mutableMappedEntities = MutablePointer().Of(mappedEntities);
+                mutableMappedEntities->nameToEntity.emplace(signal.reference->name, signal.reference);
+                mutableMappedEntities->positionToEntity.emplace(signal.reference->position, signal.reference);
             });
 
         Owner().On<Arca::DestroyingKnown<Entity>>(
-            [](const Arca::DestroyingKnown<Entity>& signal)
+            [this](const Arca::DestroyingKnown<Entity>& signal)
             {
-
+                auto mutableMappedEntities = MutablePointer().Of(mappedEntities);
+                mutableMappedEntities->nameToEntity.erase(signal.reference->name);
+                mutableMappedEntities->positionToEntity.erase(signal.reference->position);
             });
+
+        Owner().On<World::FieldSet>(
+            [this](const World::FieldSet&)
+            {
+                Fire<Action::Activation::EnterField>();
+            });
+
+        Owner().On<World::FieldUnset>(
+            [this](const World::FieldUnset&)
+            {
+                Fire<Action::Activation::LeaveField>();
+            });
+    }
+
+    void Curator::Work()
+    {
+        for (auto& entity : entities)
+        {
+            for (auto& action : entity.actions)
+            {
+                const auto runningScript = action.second.script->RunningForThis();
+                if (!runningScript)
+                    continue;
+
+                MutablePointer().Of(runningScript)->Resume();
+            }
+        }
+    }
+
+    void Curator::Handle(const ActualizeAllPrototypes&)
+    {
+        struct ToInitialize
+        {
+            Entity* entity;
+            Script::Instance* initializer;
+            ToInitialize(Entity* entity, Script::Instance* initializer) :
+                entity(entity), initializer(initializer)
+            {}
+        };
+
+        std::vector<ToInitialize> toInitialize;
+        for (auto& prototype : prototypes)
+        {
+            auto entity = MutablePointer().Of(Owner().Do(
+                Arca::Create<Entity>(prototype.name, prototype.position, prototype.direction)));
+            if (!prototype.initializer)
+                continue;
+            auto initializer = MutablePointer().Of(prototype.initializer);
+            toInitialize.emplace_back(entity, initializer);
+        }
+
+        for(auto& currentCreated : toInitialize)
+        {
+            currentCreated.initializer->ExecuteImmediately();
+        }
+
+        Owner().Do(Arca::Clear(Arca::TypeFor<Prototype>()));
+    }
+
+    void Curator::Handle(const Move& command)
+    {
+        auto mutableMappedEntities = MutablePointer().Of(mappedEntities);
+        auto mutableEntity = MutablePointer().Of(command.entity);
+
+        mutableMappedEntities->positionToEntity.erase(mutableEntity->position);
+        mutableEntity->position = command.toPosition;
+        mutableMappedEntities->positionToEntity.emplace(command.toPosition, command.entity);
     }
 }

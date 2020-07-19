@@ -2,9 +2,11 @@
 
 #include "Image.h"
 
+#include "RelativeBounds.h"
+
 namespace Atmos::Render
 {
-    class RelativeImage final : public Image<RelativeImage, false>
+    class RelativeImage final : public Image<RelativeImage, true>
     {
     public:
         RelativeImage(
@@ -13,12 +15,12 @@ namespace Atmos::Render
             ImageCore::Index assetIndex,
             Arca::Index<Asset::Material> material,
             const Render::Color& color,
-            const Spatial::Point3D& position,
+            const Spatial::Point3D& delta,
             const Spatial::Scalers2D& scalers,
-            const Spatial::Angle& rotation);
+            const Spatial::Angle2D& rotation);
         RelativeImage(Init init, Arca::Serialization serialization);
     private:
-
+        Arca::Index<Spatial::RelativeBounds> relativeBounds;
     private:
         INSCRIPTION_ACCESS;
     };
