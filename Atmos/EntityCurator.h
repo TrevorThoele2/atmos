@@ -26,26 +26,7 @@ namespace Atmos::Entity
         Arca::Batch<Entity> entities;
 
         Arca::Index<MappedEntities> mappedEntities;
-    private:
-        template<Action::Activation MatchActivation>
-        void Fire();
     };
-
-    template<Action::Activation MatchActivation>
-    void Curator::Fire()
-    {
-        for (auto& entity : entities)
-        {
-            for (auto& action : entity.actions)
-            {
-                if (action.second.activation == MatchActivation)
-                {
-                    auto mutableScript = MutablePointer().Of(action.second.script);
-                    mutableScript->ExecuteDeferred();
-                }
-            }
-        }
-    }
 }
 
 namespace Arca

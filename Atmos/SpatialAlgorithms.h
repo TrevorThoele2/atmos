@@ -13,8 +13,17 @@ namespace Atmos::Spatial
     Angle2D AngleOf(const Point2D& side1, const Point2D& middle, const Point2D& side2);
 
     Point3D operator+(const Point3D& left, const Point3D& right);
+    Point3D operator/(const Point3D& left, const Point3D& right);
 
     Point2D ToPoint2D(const Point3D& point);
     Point3D ToPoint3D(const Grid::Point& point, Point3D::Value z);
     Point3D ToPoint3D(const Angle3D& angle, Point3D::Value distance);
+
+    namespace Grid
+    {
+        Point::Value Length(const Point& position1, const Point& position2);
+
+        Point ToPoint(const Point2D& position);
+        Point ToPoint(const Point3D& position);
+    }
 }
