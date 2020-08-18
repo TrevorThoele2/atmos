@@ -51,8 +51,9 @@ namespace Atmos::Render
 
         for (auto& index : indices)
         {
-            auto& value = *index->value;
-            if (!value.material || value.points.empty())
+            const auto& value = *index->value;
+            const auto material = value.material.Get();
+            if (!material || value.points.empty())
                 continue;
 
             auto mesh = ConvertToMesh(Triangulate(value.points));
@@ -62,11 +63,13 @@ namespace Atmos::Render
                 vertex.y -= cameraTop;
             }
 
+            const auto z = value.z * Spatial::Grid::CellSize<Spatial::Point3D::Value>;
+
             const RegionRender render
             {
                 mesh,
-                value.z * Spatial::Grid::CellSize<Spatial::Point3D::Value>,
-                value.material
+                z,
+                material
             };
             mainSurface->StageRender(render);
         }

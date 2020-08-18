@@ -123,10 +123,9 @@ namespace Atmos::Render::Vulkan
                 { adjustedSliceRight, adjustedSliceBottom }
             }
         };
-        const auto imageAssetResource = imageAsset->ResourceAs<Asset::Resource::Vulkan::Image>();
         auto context = core.ContextFor(imageRender.position.z);
         if (!context)
-            context = &core.AddContext(imageRender.position.z, Context{ imageAssetResource->descriptor });
+            context = &core.AddContext(imageRender.position.z, Context{});
         auto& group = context->GroupFor(*materialAsset);
         group.ListFor(*imageAsset).emplace_back(vertices);
         core.AddKey(imageAsset);

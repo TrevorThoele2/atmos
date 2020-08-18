@@ -49,26 +49,32 @@ namespace Atmos::Render
         {
             auto& core = *std::get<0>(*index->value);
             auto& bounds = *std::get<1>(*index->value);
-            if (!core.asset || !core.material)
+            const auto asset = core.asset.Get();
+            const auto material = core.material.Get();
+            if (!asset || !material || !asset->Resource())
                 continue;
 
-            const auto boundsPosition = bounds.Position();
+            const auto assetIndex = core.assetIndex;
+            const auto position = bounds.Position();
+            const auto size = bounds.Size();
+            const auto rotation = bounds.Rotation();
+            const auto color = core.color;
 
             const ImageRender render
             {
-                core.asset.Get(),
-                core.assetIndex,
-                core.asset->Slice(core.assetIndex),
-                core.material.Get(),
+                asset,
+                assetIndex,
+                asset->Slice(assetIndex),
+                material,
                 Spatial::Point3D
                 {
-                    boundsPosition.x - cameraLeft,
-                    boundsPosition.y - cameraTop,
-                    boundsPosition.z
+                    position.x - cameraLeft,
+                    position.y - cameraTop,
+                    position.z
                 },
-                bounds.Size(),
-                bounds.Rotation(),
-                core.color
+                size,
+                rotation,
+                color
             };
             mainSurface->StageRender(render);
         }

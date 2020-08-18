@@ -13,10 +13,29 @@ namespace Atmos::Render::Vulkan
         const File::Path& inputPath,
         const File::Path& outputPath)
     {
+        DoCompile(inputPath, outputPath, { "-O" });
+    }
+
+    void ShaderCompiler::CompileWithDebugging(
+        const File::Path& inputPath,
+        const File::Path& outputPath)
+    {
+        DoCompile(inputPath, outputPath, { "-O0" });
+    }
+
+    void ShaderCompiler::DoCompile(
+        const File::Path& inputPath,
+        const File::Path& outputPath,
+        const std::vector<std::string>& additionalFlags)
+    {
+        auto path = "./Tools32/glslc.exe " + inputPath.string() + " -o " + outputPath.string();
+        for (auto& flag : additionalFlags)
+            path += " " + flag;
+
         boost::process::ipstream outStream;
         boost::process::ipstream errorStream;
         boost::process::child child(
-            "./Tools32/glslc.exe " + inputPath.string() + " -o " + outputPath.string() + " -O",
+            path,
             boost::process::std_out > outStream,
             boost::process::std_err > errorStream,
             boost::process::windows::hide);
