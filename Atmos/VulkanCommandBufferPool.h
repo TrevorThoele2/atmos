@@ -4,10 +4,10 @@
 
 namespace Atmos::Render::Vulkan
 {
-    class CommandBufferGroup
+    class CommandBufferPool
     {
     public:
-        CommandBufferGroup(vk::Device device, uint32_t queueFamily);
+        CommandBufferPool(vk::Device device, uint32_t queueFamily);
 
         [[nodiscard]] vk::CommandBuffer operator[](uint32_t index) const;
 

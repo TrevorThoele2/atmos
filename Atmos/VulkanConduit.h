@@ -1,24 +1,18 @@
 #pragma once
 
 #include "VulkanIncludes.h"
-#include "VulkanBuffer.h"
-#include "MaterialAsset.h"
-#include "VulkanUniformBufferDescriptor.h"
+#include "VulkanConduitExecutionContext.h"
 #include "VulkanVertexInput.h"
+#include "VulkanUniversalData.h"
+#include "ShaderAsset.h"
 
 namespace Atmos::Render::Vulkan
 {
-    struct Pipeline
+    class Conduit
     {
-        vk::UniquePipeline value;
-
-        std::vector<Buffer> uniformBuffers;
-        std::vector<UniformBufferDescriptor> uniformBufferDescriptors;
-
-        vk::Extent2D extent;
-
-        Pipeline() = default;
-        Pipeline(
+    public:
+        Conduit() = default;
+        Conduit(
             const Asset::Shader* vertexShader,
             const Asset::Shader* fragmentShader,
             vk::Device device,
@@ -31,13 +25,22 @@ namespace Atmos::Render::Vulkan
             vk::PrimitiveTopology primitiveTopology,
             std::vector<vk::DynamicState> dynamicStates);
 
-        Pipeline(Pipeline&& arg) noexcept = default;
-        Pipeline& operator=(Pipeline&& arg) = default;
+        Conduit(Conduit&& arg) noexcept = default;
+        Conduit& operator=(Conduit&& arg) = default;
+
+        void PrepareExecution(
+            vk::DescriptorSet descriptorSet, std::int32_t currentSwapchainImage, UniversalData universalData);
+
+        void Bind(const vk::CommandBuffer& commandBuffer);
+    private:
+        vk::UniquePipeline pipeline;
+
+        using ExecutionContext = ConduitExecutionContext;
+        std::vector<ExecutionContext> executionContexts;
+    private:
+        vk::Device device;
     private:
         [[nodiscard]] static vk::PipelineShaderStageCreateInfo ShaderStageCreateInfo(
             const Asset::Shader& shaderAsset, vk::ShaderStageFlagBits shaderType);
-
-        [[nodiscard]] static std::vector<Buffer> CreateUniformBuffers(
-            vk::Device device, vk::PhysicalDeviceMemoryProperties memoryProperties, size_t size);
     };
 }

@@ -22,7 +22,8 @@ namespace Atmos::Render::Resource::Vulkan
             vk::Queue graphicsQueue,
             vk::Queue presentQueue,
             QueueFamilyIndices queueFamilyIndices,
-            vk::PhysicalDeviceMemoryProperties memoryProperties);
+            vk::PhysicalDeviceMemoryProperties memoryProperties,
+            Arca::Reliquary& reliquary);
         ~Surface();
 
         void Reinitialize(QueueFamilyIndices queueFamilyIndices);

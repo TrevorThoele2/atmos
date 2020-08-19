@@ -12,24 +12,27 @@ namespace Atmos::Render::Vulkan
         vk::Queue graphicsQueue,
         vk::Queue presentQueue,
         uint32_t graphicsQueueIndex,
-        vk::PhysicalDeviceMemoryProperties memoryProperties)
+        vk::PhysicalDeviceMemoryProperties memoryProperties,
+        Arca::Reliquary& reliquary)
         :
         device(device),
-        quadRenderer(device, graphicsQueueIndex, graphicsQueue, memoryProperties),
-        lineRenderer(device, graphicsQueueIndex, graphicsQueue, memoryProperties),
-        regionRenderer(device, graphicsQueueIndex, graphicsQueue, memoryProperties),
         sampler(sampler),
         memoryProperties(memoryProperties),
+        graphicsQueueIndex(graphicsQueueIndex),
         graphicsQueue(graphicsQueue),
         presentQueue(presentQueue),
-        commandBuffers(*device, graphicsQueueIndex)
+        commandBuffers(*device, graphicsQueueIndex),
+        reliquary(&reliquary)
     {
         imageAvailableSemaphores = CreateSemaphores(*device, maxFramesInFlight);
         renderFinishedSemaphores = CreateSemaphores(*device, maxFramesInFlight);
 
         inFlightFences = CreateFences(*device, maxFramesInFlight);
 
-        allRenderers = { &quadRenderer, &lineRenderer, &regionRenderer };
+        reliquary.On<Arca::CreatedKnown<Asset::Material>>(
+            [this](const Arca::CreatedKnown<Asset::Material>& signal) { OnMaterialCreated(signal); });
+        reliquary.On<Arca::DestroyingKnown<Asset::Material>>(
+            [this](const Arca::DestroyingKnown<Asset::Material>& signal) { OnMaterialDestroying(signal); });
     }
 
     MasterRenderer::~MasterRenderer()
@@ -41,50 +44,62 @@ namespace Atmos::Render::Vulkan
 
     void MasterRenderer::Initialize(
         vk::SwapchainKHR swapchain,
-        std::vector<vk::Image> images,
-        std::vector<vk::ImageView> imageViews,
+        std::vector<vk::Image> swapchainImages,
+        std::vector<vk::ImageView> swapchainImageViews,
         vk::Format imageFormat,
-        vk::Extent2D extent)
+        vk::Extent2D swapchainExtent)
     {
         this->swapchain = swapchain;
-        this->images = images;
-        this->imageViews = imageViews;
-        this->extent = extent;
+        this->swapchainImages = swapchainImages;
+        this->swapchainImageViews = swapchainImageViews;
+        this->swapchainExtent = swapchainExtent;
 
         renderPass = CreateRenderPass(*device, imageFormat);
 
         framebuffers = CreateFramebuffers(
-            *device, imageViews, renderPass.get(), extent);
+            *device, swapchainImageViews, renderPass.get(), swapchainExtent);
 
-        imagesInFlight.resize(images.size(), nullptr);
+        imagesInFlight.resize(swapchainImages.size(), nullptr);
 
-        for (auto& renderer : allRenderers)
-            renderer->Initialize(images.size(), renderPass.get(), extent);
+        const auto materialBatch = reliquary->Batch<Asset::Material>();
+        std::vector<const Asset::Material*> materials;
+        materials.reserve(materialBatch.Size());
+        for (auto& material : materialBatch)
+            materials.push_back(&material);
+
+        renderers.emplace(
+            device,
+            graphicsQueue,
+            memoryProperties,
+            renderPass.get(),
+            swapchainImages.size(),
+            swapchainExtent,
+            materials);
+        iterableRenderers = renderers->AsIterable();
     }
 
     void MasterRenderer::StageRender(const ImageRender& imageRender)
     {
-        quadRenderer.StageRender(imageRender);
+        renderers->quad.StageRender(imageRender);
     }
 
     void MasterRenderer::StageRender(const LineRender& lineRender)
     {
-        lineRenderer.StageRender(lineRender);
+        renderers->line.StageRender(lineRender);
     }
 
     void MasterRenderer::StageRender(const RegionRender& regionRender)
     {
-        regionRenderer.StageRender(regionRender);
+        renderers->region.StageRender(regionRender);
     }
 
     void MasterRenderer::DrawFrame(
-        Arca::Reliquary& reliquary,
         const Spatial::ScreenSize& screenSize,
         const Spatial::ScreenPoint& mapPosition)
     {
         device->waitForFences(inFlightFences[previousFrame].get(), VK_TRUE, UINT64_MAX);
 
-        if (AllEmpty(allRenderers))
+        if (AllEmpty(iterableRenderers))
             return;
 
         auto imageIndex = device->acquireNextImageKHR(
@@ -105,14 +120,13 @@ namespace Atmos::Render::Vulkan
             device->waitForFences(1, &imagesInFlight[imageIndex.value], VK_TRUE, UINT64_MAX);
         imagesInFlight[imageIndex.value] = inFlightFences[currentFrame].get();
 
-        commandBuffers.Reserve(images.size());
+        commandBuffers.Reserve(swapchainImages.size());
 
-        std::vector<vk::CommandBuffer> usedCommandBuffers;
+        auto commandBuffer = commandBuffers.Next();
 
         const auto endFrame = [&]()
         {
-            for (auto& buffer : usedCommandBuffers)
-                commandBuffers.DoneWith(buffer);
+            commandBuffers.DoneWith(commandBuffer);
 
             previousFrame = currentFrame;
             currentFrame = (currentFrame + 1) % maxFramesInFlight;
@@ -124,7 +138,7 @@ namespace Atmos::Render::Vulkan
                 glm::vec2{ screenSize.width, screenSize.height },
                 glm::vec2{ mapPosition.x, mapPosition.y });
 
-            Draw(reliquary, usedCommandBuffers, imageIndex.value, universalData);
+            Draw(commandBuffer, imageIndex.value, universalData);
 
             vk::Semaphore waitSemaphores[] = { imageAvailableSemaphores[currentFrame].get() };
             vk::Semaphore signalSemaphores[] = { renderFinishedSemaphores[currentFrame].get() };
@@ -133,8 +147,8 @@ namespace Atmos::Render::Vulkan
                 1,
                 waitSemaphores,
                 waitStages,
-                usedCommandBuffers.size(),
-                usedCommandBuffers.data(),
+                1,
+                &commandBuffer,
                 1,
                 signalSemaphores);
 
@@ -177,7 +191,47 @@ namespace Atmos::Render::Vulkan
         device->waitForFences(fences, VK_TRUE, UINT64_MAX);
     }
 
-    bool MasterRenderer::AllEmpty(const std::vector<RendererInterface*>& check) const
+    MasterRenderer::Renderers::Renderers(
+        std::shared_ptr<vk::Device> device,
+        vk::Queue graphicsQueue,
+        vk::PhysicalDeviceMemoryProperties memoryProperties,
+        vk::RenderPass renderPass,
+        uint32_t swapchainImageCount,
+        vk::Extent2D swapchainExtent,
+        const std::vector<const Asset::Material*>& materials)
+        :
+        quad(
+            device,
+            graphicsQueue,
+            memoryProperties,
+            renderPass,
+            swapchainImageCount,
+            swapchainExtent,
+            materials),
+        line(
+            device,
+            graphicsQueue,
+            memoryProperties,
+            renderPass,
+            swapchainImageCount,
+            swapchainExtent,
+            materials),
+        region(
+            device,
+            graphicsQueue,
+            memoryProperties,
+            renderPass,
+            swapchainImageCount,
+            swapchainExtent,
+            materials)
+    {}
+
+    auto MasterRenderer::Renderers::AsIterable() -> IterableRenderers
+    {
+        return { &quad, &line, &region };
+    }
+
+    bool MasterRenderer::AllEmpty(const std::vector<RendererBase*>& check) const
     {
         for (auto& renderer : check)
             if (renderer->LayerCount() != 0)
@@ -187,44 +241,33 @@ namespace Atmos::Render::Vulkan
     }
 
     void MasterRenderer::Draw(
-        Arca::Reliquary& reliquary,
-        std::vector<vk::CommandBuffer>& usedCommandBuffers,
-        uint32_t currentImage,
+        vk::CommandBuffer commandBuffer,
+        uint32_t currentSwapchainImage,
         UniversalData universalData)
     {
-        const auto commandBuffer = commandBuffers.Next();
-        usedCommandBuffers.push_back(commandBuffer);
-
-        const auto materialBatch = reliquary.Batch<Asset::Material>();
-        std::vector<const Asset::Material*> materials;
-        materials.reserve(materialBatch.Size());
-        for (auto& material : materialBatch)
-            materials.push_back(&material);
-
-        std::vector<RendererInterface*> startedRenderers;
-        for (auto& renderer : allRenderers)
-        {
-            if (renderer->LayerCount() != 0)
-            {
-                startedRenderers.push_back(renderer);
-                renderer->Start(materials, commandBuffer);
-            }
-        }
+        const vk::CommandBufferBeginInfo beginInfo({}, nullptr);
+        commandBuffer.begin(beginInfo);
 
         const vk::ClearValue clearValue(vk::ClearColorValue(std::array<float, 4> { 0.0f, 0.0f, 0.0f, 1.0f }));
         const vk::RenderPassBeginInfo renderPassBeginInfo(
             renderPass.get(),
-            framebuffers[currentImage].get(),
-            vk::Rect2D({ 0, 0 }, extent),
+            framebuffers[currentSwapchainImage].get(),
+            vk::Rect2D({ 0, 0 }, swapchainExtent),
             1,
             &clearValue);
-
-        const vk::CommandBufferBeginInfo beginInfo({}, nullptr);
-        commandBuffer.begin(beginInfo);
-
         commandBuffer.beginRenderPass(renderPassBeginInfo, vk::SubpassContents::eInline);
 
-        const auto end = [&]()
+        std::vector<RendererBase*> startedRenderers;
+        for (auto& renderer : iterableRenderers)
+        {
+            if (renderer->LayerCount() > 0)
+            {
+                startedRenderers.push_back(renderer);
+                renderer->Start(commandBuffer, commandBuffers.Pool(), currentSwapchainImage, universalData);
+            }
+        }
+
+        const auto end = [&startedRenderers, &commandBuffer]()
         {
             for (auto& renderer : startedRenderers)
                 renderer->End();
@@ -239,7 +282,7 @@ namespace Atmos::Render::Vulkan
             auto availableRenderers = startedRenderers;
             while (true)
             {
-                AllRenderers::iterator nextRenderer;
+                IterableRenderers::iterator nextRenderer;
                 for (auto checkRenderer = startedRenderers.begin(); checkRenderer != startedRenderers.end(); ++checkRenderer)
                 {
                     if (!(*checkRenderer)->IsDone())
@@ -264,7 +307,7 @@ namespace Atmos::Render::Vulkan
                 if (availableRenderers.empty())
                     break;
 
-                (*nextRenderer)->DrawNextLayer(currentImage, universalData);
+                (*nextRenderer)->DrawNextLayer();
             }
         }
         catch(...)
@@ -366,5 +409,17 @@ namespace Atmos::Render::Vulkan
             returnValue.push_back(device.createFenceUnique(createInfo));
 
         return returnValue;
+    }
+
+    void MasterRenderer::OnMaterialCreated(const Arca::CreatedKnown<Asset::Material>& signal)
+    {
+        for (auto& renderer : iterableRenderers)
+            renderer->MaterialCreated(*signal.reference);
+    }
+
+    void MasterRenderer::OnMaterialDestroying(const Arca::DestroyingKnown<Asset::Material>& signal)
+    {
+        for (auto& renderer : iterableRenderers)
+            renderer->MaterialDestroying(*signal.reference);
     }
 }

@@ -1,8 +1,8 @@
-#include "VulkanCommandBufferGroup.h"
+#include "VulkanCommandBufferPool.h"
 
 namespace Atmos::Render::Vulkan
 {
-    CommandBufferGroup::CommandBufferGroup(vk::Device device, uint32_t queueFamily) :
+    CommandBufferPool::CommandBufferPool(vk::Device device, uint32_t queueFamily) :
         device(device)
     {
         const vk::CommandPoolCreateInfo commandPoolCreateInfo(
@@ -11,12 +11,12 @@ namespace Atmos::Render::Vulkan
         pool = device.createCommandPoolUnique(commandPoolCreateInfo);
     }
 
-    vk::CommandBuffer CommandBufferGroup::operator[](uint32_t index) const
+    vk::CommandBuffer CommandBufferPool::operator[](uint32_t index) const
     {
         return At(index);
     }
 
-    void CommandBufferGroup::Reserve(uint32_t count)
+    void CommandBufferPool::Reserve(uint32_t count)
     {
         if (count <= allBuffers.size())
             return;
@@ -32,17 +32,17 @@ namespace Atmos::Render::Vulkan
         }
     }
 
-    void CommandBufferGroup::DoneWith(vk::CommandBuffer commandBuffer)
+    void CommandBufferPool::DoneWith(vk::CommandBuffer commandBuffer)
     {
         availableBuffers.push_back(commandBuffer);
     }
 
-    vk::CommandBuffer CommandBufferGroup::At(uint32_t index) const
+    vk::CommandBuffer CommandBufferPool::At(uint32_t index) const
     {
         return allBuffers[index].get();
     }
 
-    vk::CommandBuffer CommandBufferGroup::Next()
+    vk::CommandBuffer CommandBufferPool::Next()
     {
         if (availableBuffers.empty())
             Reserve(allBuffers.size() + 1);
@@ -52,12 +52,12 @@ namespace Atmos::Render::Vulkan
         return returnValue;
     }
 
-    size_t CommandBufferGroup::Size() const
+    size_t CommandBufferPool::Size() const
     {
         return allBuffers.size();
     }
 
-    vk::CommandPool CommandBufferGroup::Pool() const
+    vk::CommandPool CommandBufferPool::Pool() const
     {
         return pool.get();
     }

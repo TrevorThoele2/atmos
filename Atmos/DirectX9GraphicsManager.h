@@ -37,9 +37,11 @@ namespace Atmos::Render::DirectX9
         [[nodiscard]] std::unique_ptr<Asset::Resource::Shader> CreateShaderResourceImpl(
             const Buffer& buffer, const Name& name) override;
         [[nodiscard]] std::unique_ptr<Resource::Surface> CreateMainSurfaceResourceImpl(
-            void* window) override;
+            void* window,
+            Arca::Reliquary& reliquary) override;
         [[nodiscard]] std::unique_ptr<Resource::Surface> CreateSurfaceResourceImpl(
-            void* window) override;
+            void* window,
+            Arca::Reliquary& reliquary) override;
 
         [[nodiscard]] bool ShouldReconstructInternals() const override;
         void ReconstructInternals(GraphicsReconstructionObjects objects) override;

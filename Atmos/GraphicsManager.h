@@ -34,9 +34,11 @@ namespace Atmos::Render
         [[nodiscard]] std::unique_ptr<Asset::Resource::Shader> CreateShaderResource(
             const Buffer& buffer, const Name& name);
         [[nodiscard]] std::unique_ptr<Resource::Surface> CreateMainSurfaceResource(
-            void* window);
+            void* window,
+            Arca::Reliquary& reliquary);
         [[nodiscard]] std::unique_ptr<Resource::Surface> CreateSurfaceResource(
-            void* window);
+            void* window,
+            Arca::Reliquary& reliquary);
 
         void ResourceDestroying(Asset::Resource::Image& resource);
         void ResourceDestroying(Asset::Resource::Shader& resource);
@@ -63,9 +65,11 @@ namespace Atmos::Render
         [[nodiscard]] virtual std::unique_ptr<Asset::Resource::Shader> CreateShaderResourceImpl(
             const Buffer& buffer, const Name& name) = 0;
         [[nodiscard]] virtual std::unique_ptr<Resource::Surface> CreateMainSurfaceResourceImpl(
-            void* window) = 0;
+            void* window,
+            Arca::Reliquary& reliquary) = 0;
         [[nodiscard]] virtual std::unique_ptr<Resource::Surface> CreateSurfaceResourceImpl(
-            void* window) = 0;
+            void* window,
+            Arca::Reliquary& reliquary) = 0;
 
         virtual void ResourceDestroyingImpl(Asset::Resource::Image& resource) {}
         virtual void ResourceDestroyingImpl(Asset::Resource::Shader& resource) {}

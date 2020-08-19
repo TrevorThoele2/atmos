@@ -61,13 +61,15 @@ namespace Atmos::Render
     }
 
     std::unique_ptr<Resource::Surface> NullGraphicsManager::CreateMainSurfaceResourceImpl(
-        void* window)
+        void* window,
+        Arca::Reliquary& reliquary)
     {
         return std::make_unique<SurfaceDataImplementation>();
     }
 
     std::unique_ptr<Resource::Surface> NullGraphicsManager::CreateSurfaceResourceImpl(
-        void* window)
+        void* window,
+        Arca::Reliquary& reliquary)
     {
         return std::make_unique<SurfaceDataImplementation>();
     }

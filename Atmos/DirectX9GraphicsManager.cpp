@@ -123,7 +123,9 @@ namespace Atmos::Render::DirectX9
         return std::make_unique<Asset::Resource::DirectX9::Shader>(effect);
     }
 
-    std::unique_ptr<Resource::Surface> GraphicsManager::CreateMainSurfaceResourceImpl(void* window)
+    std::unique_ptr<Resource::Surface> GraphicsManager::CreateMainSurfaceResourceImpl(
+        void* window,
+        Arca::Reliquary& reliquary)
     {
         LPDIRECT3DSWAPCHAIN9 swapChain;
         const auto swapChainResult = device->GetSwapChain(0, &swapChain);
@@ -143,7 +145,8 @@ namespace Atmos::Render::DirectX9
     }
 
     std::unique_ptr<Resource::Surface> GraphicsManager::CreateSurfaceResourceImpl(
-        void* window)
+        void* window,
+        Arca::Reliquary& reliquary)
     {
         D3DPRESENT_PARAMETERS presentationParameters;
         ZeroMemory(&presentationParameters, sizeof presentationParameters);
