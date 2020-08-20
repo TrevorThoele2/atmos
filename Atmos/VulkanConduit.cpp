@@ -10,8 +10,6 @@ namespace Atmos::Render::Vulkan
         const Asset::Shader* fragmentShader,
         vk::Device device,
         vk::PipelineLayout layout,
-        uint32_t swapchainImageCount,
-        vk::PhysicalDeviceMemoryProperties memoryProperties,
         vk::RenderPass renderPass,
         VertexInput vertexInput,
         vk::Extent2D swapchainExtent,
@@ -109,18 +107,6 @@ namespace Atmos::Render::Vulkan
             0);
 
         pipeline = device.createGraphicsPipelineUnique(nullptr, pipelineCreateInfo);
-
-        executionContexts.reserve(swapchainImageCount);
-        for (uint32_t i = 0; i < swapchainImageCount; ++i)
-            executionContexts.emplace_back(device, memoryProperties);
-    }
-
-    void Conduit::PrepareExecution(
-        vk::DescriptorSet descriptorSet, std::int32_t currentSwapchainImage, UniversalData universalData)
-    {
-        auto& context = executionContexts[currentSwapchainImage];
-        context.buffer.PushBytes(universalData, 0);
-        context.descriptor.Update(descriptorSet, device);
     }
 
     void Conduit::Bind(const vk::CommandBuffer& commandBuffer)

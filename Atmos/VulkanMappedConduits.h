@@ -13,11 +13,9 @@ namespace Atmos::Render::Vulkan
     public:
         MappedConduits(
             std::shared_ptr<vk::Device> device,
-            vk::PhysicalDeviceMemoryProperties memoryProperties,
             VertexInput vertexInput,
             vk::PrimitiveTopology primitiveTopology,
             vk::RenderPass renderPass,
-            uint32_t swapchainImageCount,
             vk::Extent2D swapchainExtent,
             const std::vector<vk::DescriptorSetLayout>& descriptorSetLayouts);
 
@@ -35,10 +33,8 @@ namespace Atmos::Render::Vulkan
         vk::UniquePipelineLayout layout;
         VertexInput vertexInput;
         vk::PrimitiveTopology primitiveTopology;
-        vk::PhysicalDeviceMemoryProperties memoryProperties;
 
         vk::RenderPass renderPass;
-        uint32_t swapchainImageCount;
         vk::Extent2D swapchainExtent;
     private:
         [[nodiscard]] Group CreateGroup(const Asset::Material& material) const;

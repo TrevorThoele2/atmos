@@ -13,6 +13,33 @@
 
 namespace Atmos::Render::Vulkan
 {
+    struct QuadRendererDescriptorSetKey
+    {
+        const Asset::Image* image;
+        QuadRendererDescriptorSetKey(const Asset::Image& image);
+        QuadRendererDescriptorSetKey(const QuadRendererDescriptorSetKey& arg) = default;
+        bool operator==(const QuadRendererDescriptorSetKey& arg) const;
+    };
+}
+
+namespace std
+{
+    template<>
+    struct hash<Atmos::Render::Vulkan::QuadRendererDescriptorSetKey>
+    {
+        using argument_type = Atmos::Render::Vulkan::QuadRendererDescriptorSetKey;
+        using result_type = std::size_t;
+
+        result_type operator()(const argument_type& arg) const noexcept
+        {
+            const auto first(std::hash<const Atmos::Asset::Image*>()(arg.image));
+            return first;
+        }
+    };
+}
+
+namespace Atmos::Render::Vulkan
+{
     class QuadRenderer final : public RendererBase
     {
     public:
@@ -21,26 +48,22 @@ namespace Atmos::Render::Vulkan
             vk::Queue graphicsQueue,
             vk::PhysicalDeviceMemoryProperties memoryProperties,
             vk::RenderPass renderPass,
-            uint32_t swapchainImageCount,
             vk::Extent2D swapchainExtent,
             const std::vector<const Asset::Material*>& materials);
 
         void StageRender(const ImageRender& imageRender);
 
-        void Start(
+        [[nodiscard]] std::unique_ptr<Raster> Start(
             vk::CommandBuffer commandBuffer,
             vk::CommandPool commandPool,
-            uint32_t currentSwapchainImage,
-            UniversalData universalData) override;
-        void DrawNextLayer() override;
-        void End() override;
+            const UniversalDataBuffer& universalDataBuffer) override;
 
         void MaterialCreated(const Asset::Material& material) override;
         void MaterialDestroying(const Asset::Material& material) override;
 
-        [[nodiscard]] bool IsDone() const override;
-        [[nodiscard]] Spatial::Point3D::Value NextLayer() const override;
-        [[nodiscard]] size_t LayerCount() const override;
+        [[nodiscard]] size_t RenderCount() const override;
+    private:
+        std::vector<ImageRender> stagedImageRenders;
     private:
         struct Vertex
         {
@@ -69,53 +92,50 @@ namespace Atmos::Render::Vulkan
         StagedBuffer indexBuffer;
         static const int indexStride = stride * 6;
     private:
-        using ObjectLayering = ObjectLayering<const Asset::Image*, Quad>;
-        using Layer = ObjectLayering::Layer;
-        ObjectLayering layers;
-    private:
-        DescriptorSetPool descriptorSetPool;
-        std::set<const Asset::Image*> stagedImageAssets;
-    private:
-        MappedConduits mappedConduits;
-    private:
-        struct SetupDescriptorSet
-        {
-            const Asset::Image* image;
-            uint32_t swapchainImage;
-            vk::DescriptorSet value;
-            SetupDescriptorSet(const Asset::Image* image, uint32_t swapchainImage, vk::DescriptorSet value) :
-                image(image), swapchainImage(swapchainImage), value(value)
-            {}
-        };
+        using DescriptorSetKey = QuadRendererDescriptorSetKey;
 
-        struct DrawContext
+        class Raster final : public Vulkan::Raster
         {
-            std::vector<const Asset::Material*> materials = {};
-            vk::CommandBuffer commandBuffer = {};
-            vk::CommandPool commandPool = {};
+        public:
+            Raster(
+                vk::CommandBuffer commandBuffer,
+                vk::CommandPool commandPool,
+                QuadRenderer& renderer);
+
+            void DrawNextLayer() override;
+
+            [[nodiscard]] bool IsDone() const override;
+            [[nodiscard]] Spatial::Point3D::Value NextLayer() const override;
+        private:
+            using ObjectLayering = ObjectLayering<const Asset::Image*, Quad>;
+            using Layer = ObjectLayering::Layer;
+
+            vk::CommandBuffer commandBuffer;
+            vk::CommandPool commandPool;
+
+            ObjectLayering layers;
             ObjectLayering::iterator currentLayer = {};
-            uint32_t currentSwapchainImage = 0;
-            UniversalData universalData = {};
-            std::vector<SetupDescriptorSet> setupDescriptorSets = {};
+            std::unordered_map<DescriptorSetKey, vk::DescriptorSet> setupDescriptorSets = {};
 
             std::uint32_t quadCount = 0;
+        private:
+            QuadRenderer* renderer;
+        private:
+            void Draw(Layer& layer);
+            void WriteToBuffers(const Layer::MaterialGroup& materialGroup, const Asset::Material& materialAsset);
+            void WriteToBuffers(const std::vector<Quad>& quads);
+        private:
+            friend QuadRenderer;
         };
 
-        std::optional<DrawContext> drawContext;
-
-        void Draw(Layer& layer);
-        void WriteToBuffers(
-            const Layer::MaterialGroup& materialGroup,
-            const Asset::Material& materialAsset);
-        void WriteToBuffers(
-            Conduit& conduit,
-            const std::vector<Quad>& quads,
-            const Asset::Image* imageAsset);
+        std::unordered_set<DescriptorSetKey> descriptorSetKeys;
+        void AddToRaster(const ImageRender& imageRender, Raster& raster);
+    private:
+        DescriptorSetPool descriptorSetPool;
+        MappedConduits mappedConduits;
     private:
         vk::Queue graphicsQueue;
 
         std::shared_ptr<vk::Device> device;
-
-        uint32_t swapchainImageCount = 0;
     };
 }
