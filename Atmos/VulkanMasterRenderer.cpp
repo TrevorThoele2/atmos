@@ -61,10 +61,6 @@ namespace Atmos::Render::Vulkan
         imagesInFlight.resize(swapchainImages.size(), nullptr);
 
         const auto materialBatch = reliquary->Batch<Asset::Material>();
-        std::vector<const Asset::Material*> materials;
-        materials.reserve(materialBatch.Size());
-        for (auto& material : materialBatch)
-            materials.push_back(&material);
 
         rendererGroups.clear();
         for (uint32_t i = 0; i < swapchainImages.size(); ++i)
@@ -75,7 +71,7 @@ namespace Atmos::Render::Vulkan
                 memoryProperties,
                 renderPass.get(),
                 swapchainExtent,
-                materials);
+                materialBatch);
         }
         currentRendererGroup = rendererGroups.begin();
 
@@ -209,7 +205,7 @@ namespace Atmos::Render::Vulkan
         vk::PhysicalDeviceMemoryProperties memoryProperties,
         vk::RenderPass renderPass,
         vk::Extent2D swapchainExtent,
-        const std::vector<const Asset::Material*>& materials)
+        const Arca::Batch<Asset::Material>& materials)
         :
         quad(
             device,
@@ -420,13 +416,13 @@ namespace Atmos::Render::Vulkan
     {
         for (auto& group : rendererGroups)
             for (auto& renderer : group.AsIterable())
-                renderer->MaterialCreated(*signal.reference);
+                renderer->MaterialCreated(signal.reference);
     }
 
     void MasterRenderer::OnMaterialDestroying(const Arca::DestroyingKnown<Asset::Material>& signal)
     {
         for (auto& group : rendererGroups)
             for (auto& renderer : group.AsIterable())
-                renderer->MaterialDestroying(*signal.reference);
+                renderer->MaterialDestroying(signal.reference);
     }
 }

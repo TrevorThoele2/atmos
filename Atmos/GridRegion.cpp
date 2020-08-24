@@ -1,6 +1,6 @@
 #include "GridRegion.h"
 
-#include <Inscription/VectorScribe.h>
+#include <Inscription/UnorderedSetScribe.h>
 
 namespace Atmos::Render
 {
@@ -10,7 +10,7 @@ namespace Atmos::Render
 
     GridRegion::GridRegion(
         Init init,
-        const std::vector<Spatial::Grid::Point>& points,
+        const std::unordered_set<Spatial::Grid::Point>& points,
         Spatial::Grid::Point::Value z,
         Arca::Index<Asset::Material> material)
         :

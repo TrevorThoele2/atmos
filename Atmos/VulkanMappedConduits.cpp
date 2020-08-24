@@ -1,5 +1,7 @@
 #include "VulkanMappedConduits.h"
 
+#include "VulkanInvalidConduit.h"
+
 namespace Atmos::Render::Vulkan
 {
     MappedConduits::MappedConduits(
@@ -20,19 +22,19 @@ namespace Atmos::Render::Vulkan
         layout = device->createPipelineLayoutUnique(layoutCreateInfo);
     }
 
-    void MappedConduits::Add(const Asset::Material& material)
+    void MappedConduits::Add(Arca::Index<Asset::Material> material)
     {
-        groups.emplace(&material, CreateGroup(material));
+        groups.emplace(material.ID(), CreateGroup(*material));
     }
 
-    void MappedConduits::Remove(const Asset::Material& material)
+    void MappedConduits::Remove(Arca::Index<Asset::Material> material)
     {
-        groups.erase(&material);
+        groups.erase(material.ID());
     }
 
-    auto MappedConduits::For(const Asset::Material& material) -> Group*
+    auto MappedConduits::For(Arca::RelicID id) -> Group*
     {
-        auto found = groups.find(&material);
+        auto found = groups.find(id);
         if (found == groups.end())
             return nullptr;
 
@@ -52,16 +54,21 @@ namespace Atmos::Render::Vulkan
         group.reserve(passes.size());
         for (auto& pass : passes)
         {
-            group.push_back(Conduit(
-                pass.VertexShader(),
-                pass.FragmentShader(),
-                *device,
-                layout.get(),
-                renderPass,
-                vertexInput,
-                swapchainExtent,
-                primitiveTopology,
-                {}));
+            try
+            {
+                group.push_back(Conduit(
+                    pass.VertexShader(),
+                    pass.FragmentShader(),
+                    *device,
+                    layout.get(),
+                    renderPass,
+                    vertexInput,
+                    swapchainExtent,
+                    primitiveTopology,
+                    {}));
+            }
+            catch (const InvalidConduit&)
+            { }
         }
         return group;
     }

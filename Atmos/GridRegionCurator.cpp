@@ -56,7 +56,8 @@ namespace Atmos::Render
             if (!material || value.points.empty())
                 continue;
 
-            auto mesh = ConvertToMesh(Triangulate(value.points));
+            auto points = std::vector<Spatial::Grid::Point>{ value.points.begin(), value.points.end() };
+            auto mesh = ConvertToMesh(Triangulate(points));
             for(auto& vertex : mesh.vertices)
             {
                 vertex.x -= cameraLeft;
@@ -131,6 +132,7 @@ namespace Atmos::Render
 
     Spatial::AxisAlignedBox3D GridRegionCurator::BoxFor(const Index& index)
     {
-        return BoxFor(index->points, index->z);
+        const auto points = std::vector<Spatial::Grid::Point>{ index->points.begin(), index->points.end() };
+        return BoxFor(points, index->z);
     }
 }

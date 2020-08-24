@@ -14,8 +14,8 @@ namespace Atmos::Render::Vulkan
             std::vector<MaterialGroupValue>& ListFor(const MaterialGroupKey& key);
         };
 
-        std::unordered_map<const Asset::Material*, MaterialGroup> materialGroups;
-        MaterialGroup& GroupFor(const Asset::Material& material);
+        std::unordered_map<Arca::RelicID, MaterialGroup> materialGroups;
+        MaterialGroup& GroupFor(Arca::RelicID id);
     };
 
     template<class MaterialGroupKey, class MaterialGroupValue>
@@ -30,11 +30,11 @@ namespace Atmos::Render::Vulkan
     }
 
     template<class MaterialGroupKey, class MaterialGroupValue>
-    auto Layer<MaterialGroupKey, MaterialGroupValue>::GroupFor(const Asset::Material& material) -> MaterialGroup&
+    auto Layer<MaterialGroupKey, MaterialGroupValue>::GroupFor(Arca::RelicID id) -> MaterialGroup&
     {
-        auto found = materialGroups.find(&material);
+        auto found = materialGroups.find(id);
         if (found == materialGroups.end())
-            return materialGroups.emplace(&material, MaterialGroup{}).first->second;
+            return materialGroups.emplace(id, MaterialGroup{}).first->second;
 
         return found->second;
     }
@@ -47,16 +47,16 @@ namespace Atmos::Render::Vulkan
             std::vector<MaterialGroupValue> values;
         };
 
-        std::unordered_map<const Asset::Material*, MaterialGroup> materialGroups;
-        MaterialGroup& GroupFor(const Asset::Material& material);
+        std::unordered_map<Arca::RelicID, MaterialGroup> materialGroups;
+        MaterialGroup& GroupFor(Arca::RelicID id);
     };
 
     template<class MaterialGroupValue>
-    auto Layer<void, MaterialGroupValue>::GroupFor(const Asset::Material& material) -> MaterialGroup&
+    auto Layer<void, MaterialGroupValue>::GroupFor(Arca::RelicID id) -> MaterialGroup&
     {
-        auto found = materialGroups.find(&material);
+        auto found = materialGroups.find(id);
         if (found == materialGroups.end())
-            return materialGroups.emplace(&material, MaterialGroup{}).first->second;
+            return materialGroups.emplace(id, MaterialGroup{}).first->second;
 
         return found->second;
     }

@@ -19,14 +19,14 @@ namespace Atmos::Render::Vulkan
             vk::Extent2D swapchainExtent,
             const std::vector<vk::DescriptorSetLayout>& descriptorSetLayouts);
 
-        void Add(const Asset::Material& material);
-        void Remove(const Asset::Material& material);
+        void Add(Arca::Index<Asset::Material> material);
+        void Remove(Arca::Index<Asset::Material> material);
 
-        [[nodiscard]] Group* For(const Asset::Material& material);
+        [[nodiscard]] Group* For(Arca::RelicID id);
 
         [[nodiscard]] vk::PipelineLayout PipelineLayout() const;
     private:
-        std::unordered_map<const Asset::Material*, Group> groups;
+        std::unordered_map<Arca::RelicID, Group> groups;
     private:
         std::shared_ptr<vk::Device> device;
 

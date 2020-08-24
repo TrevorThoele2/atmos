@@ -23,7 +23,7 @@ namespace Atmos::Render::Vulkan
             vk::PhysicalDeviceMemoryProperties memoryProperties,
             vk::RenderPass renderPass,
             vk::Extent2D swapchainExtent,
-            const std::vector<const Asset::Material*>& materials);
+            const Arca::Batch<Asset::Material>& materials);
 
         void StageRender(const LineRender& lineRender);
 
@@ -32,8 +32,8 @@ namespace Atmos::Render::Vulkan
             vk::CommandPool commandPool,
             const UniversalDataBuffer& universalDataBuffer) override;
 
-        void MaterialCreated(const Asset::Material& material) override;
-        void MaterialDestroying(const Asset::Material& material) override;
+        void MaterialCreated(Arca::Index<Asset::Material> material) override;
+        void MaterialDestroying(Arca::Index<Asset::Material> material) override;
 
         [[nodiscard]] size_t RenderCount() const override;
     private:
@@ -85,7 +85,7 @@ namespace Atmos::Render::Vulkan
             LineRenderer* renderer;
         private:
             void Draw(Layer& layer);
-            void WriteToBuffers(const Layer::MaterialGroup& group, const Asset::Material& materialAsset);
+            void WriteToBuffers(const Layer::MaterialGroup& materialGroup, MappedConduits::Group& conduitGroup);
             void WriteToBuffers(const std::vector<Line>& lines);
         private:
             friend LineRenderer;

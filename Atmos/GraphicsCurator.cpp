@@ -84,6 +84,11 @@ namespace Atmos::Render
         manager->PruneResources(Owner());
     }
 
+    File::Path GraphicsCurator::Handle(const CompileShader& command)
+    {
+        return manager->CompileShader(command.inputFilePath, command.outputFilePath);
+    }
+
     std::unique_ptr<Asset::Resource::Image> GraphicsCurator::Handle(const Asset::Resource::Create<Asset::Resource::Image>& command)
     {
         return manager->CreateImageResource(command.buffer, command.name, command.size);

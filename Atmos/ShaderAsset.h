@@ -8,15 +8,11 @@ namespace Atmos::Asset
     class Shader final : public AssetWithResource<Resource::Shader, Shader>
     {
     public:
-        Shader(Init init, const Atmos::Name& name, ResourcePtr&& resource, const String& entryPoint);
+        Shader(Init init, const Atmos::Name& name, ResourcePtr&& resource);
         Shader(Init init, Arca::Serialization serialization);
         Shader(Shader&& arg) noexcept;
 
         Shader& operator=(Shader&& arg) noexcept;
-
-        [[nodiscard]] const String& EntryPoint() const;
-    private:
-        String entryPoint;
     private:
         INSCRIPTION_ACCESS;
     };
@@ -32,8 +28,7 @@ namespace Arca
         static bool ShouldCreate(
             Reliquary& reliquary,
             const ::Atmos::Name& name,
-            const ::Atmos::Asset::Shader::ResourcePtr& data,
-            const ::Atmos::String& entryPoint);
+            const ::Atmos::Asset::Shader::ResourcePtr& data);
     };
 }
 

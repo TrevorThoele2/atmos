@@ -1,5 +1,6 @@
 #include "VulkanConduit.h"
 
+#include "VulkanInvalidConduit.h"
 #include "VulkanUniversalData.h"
 #include "VulkanShaderAssetResource.h"
 
@@ -23,6 +24,9 @@ namespace Atmos::Render::Vulkan
             shaderStages.push_back(ShaderStageCreateInfo(*vertexShader, vk::ShaderStageFlagBits::eVertex));
         if (fragmentShader)
             shaderStages.push_back(ShaderStageCreateInfo(*fragmentShader, vk::ShaderStageFlagBits::eFragment));
+
+        if (shaderStages.empty())
+            throw InvalidConduit();
 
         auto vertexInputCreateInfo = vertexInput.PipelineCreateInfo();
 
@@ -122,6 +126,6 @@ namespace Atmos::Render::Vulkan
             {},
             shaderType,
             fileData->Module(),
-            shaderAsset.EntryPoint().c_str());
+            "main");
     }
 }
