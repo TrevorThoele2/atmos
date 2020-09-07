@@ -5,6 +5,7 @@
 #include "GridCellSize.h"
 
 #include "MathUtility.h"
+#include "SpatialAlgorithms.h"
 
 namespace Atmos::Spatial::Grid
 {
@@ -167,7 +168,7 @@ namespace Atmos::Spatial::Grid
     {
         std::vector<const Object*> objects;
 
-        if (!BoundsFor(headCenter, headScale).Intersects(bounds))
+        if (!Intersects(BoundsFor(headCenter, headScale), bounds))
             return objects;
 
         std::vector<const Node*> nodes;
@@ -175,7 +176,7 @@ namespace Atmos::Spatial::Grid
         head.IntersectingChildren(bounds, nodes, headCenter, headScale);
         for (auto& node : nodes)
             for (auto& object : node->objects)
-                if (object.bounds.Intersects(bounds))
+                if (Intersects(object.bounds, bounds))
                     objects.push_back(&object);
 
         return objects;
@@ -221,7 +222,7 @@ namespace Atmos::Spatial::Grid
         {
             const auto childCenter = CenterForChild(parentCenter, chosenChild, childScale);
             const auto childBounds = BoundsFor(childCenter, childScale);
-            if (childBounds.Intersects(bounds))
+            if (Intersects(childBounds, bounds))
             {
                 const auto childIndex = IndexFor(chosenChild);
                 auto child = children[childIndex].get();
@@ -282,7 +283,7 @@ namespace Atmos::Spatial::Grid
     template<class T>
     void Octree<ID, Value>::AddCommon(ID id, T value, Bounds bounds)
     {
-        while (!BoundsFor(headCenter, headScale).Contains(bounds))
+        while (!Contains(BoundsFor(headCenter, headScale), bounds))
         {
             ++headScale;
 
@@ -344,7 +345,7 @@ namespace Atmos::Spatial::Grid
 
             const auto childCenter = CenterForChild(focusedCenter, *chosenChild, focusedScale);
             const auto childScale = focusedScale - 1;
-            if (BoundsFor(childCenter, childScale).Contains(bounds))
+            if (Contains(BoundsFor(childCenter, childScale), bounds))
             {
                 const auto childIndex = IndexFor(*chosenChild);
                 focusedNode = focusedNode->children[childIndex].get();
@@ -376,7 +377,7 @@ namespace Atmos::Spatial::Grid
 
             const auto childCenter = CenterForChild(focusedCenter, *chosenChild, focusedScale);
             const auto childScale = focusedScale - 1;
-            if (BoundsFor(childCenter, childScale).Contains(bounds))
+            if (Contains(BoundsFor(childCenter, childScale), bounds))
             {
                 if (!focusedNode->IsSubdivided())
                     focusedNode->Subdivide();

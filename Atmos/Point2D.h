@@ -9,7 +9,7 @@
 
 namespace Atmos::Spatial
 {
-    class AxisAlignedBox2D;
+    struct AxisAlignedBox2D;
 
     struct Point2D
     {
@@ -22,14 +22,6 @@ namespace Atmos::Spatial
 
         bool operator==(const Point2D& arg) const;
         bool operator!=(const Point2D& arg) const;
-
-        [[nodiscard]] bool Contains(Value left, Value right, Value top, Value bottom) const;
-        [[nodiscard]] bool Contains(const AxisAlignedBox2D& box) const;
-
-        static Point2D FromScreen(const Point2D& convert, const Point2D& topLeftScreen);
-        static Point2D CenterOf(const std::vector<Point2D>& container);
-        static Point2D CenterOf(const std::set<Point2D>& container);
-        static Point2D CenterOf(const Point2D& topLeft, const Point2D& bottomRight);
     };
 }
 

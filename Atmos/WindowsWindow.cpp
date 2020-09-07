@@ -2,6 +2,8 @@
 
 #include "WindowCreationFailed.h"
 
+#include "SpatialAlgorithms.h"
+
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     // Sort through and find what code to run for the message given
@@ -108,13 +110,13 @@ namespace Atmos::Window
         AdjustWindowRectEx(&rect, currentStyle, false, currentExStyle);
 
         using Coordinate = Spatial::AxisAlignedBox2D::Coordinate;
-        return Spatial::AxisAlignedBox2D
-        {
+        return Spatial::ToAxisAlignedBox2D
+        (
             static_cast<Coordinate>(rect.left),
             static_cast<Coordinate>(rect.top),
             static_cast<Coordinate>(rect.right),
             static_cast<Coordinate>(rect.bottom)
-        };
+        );
     }
 
     void WindowsWindow::OnSetWindowDimensions()

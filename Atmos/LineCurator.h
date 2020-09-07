@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Arca/Curator.h>
+#include "RenderObjectCurator.h"
 
 #include "Octree.h"
 
@@ -10,19 +10,20 @@
 
 namespace Atmos::Render
 {
-    class LineCurator final : public Arca::Curator
+    class LineCurator final : public ObjectCurator
     {
     public:
         explicit LineCurator(Init init);
-
-        void Work();
     public:
         void Handle(const MoveLine& command);
+    protected:
+        void WorkImpl(
+            Spatial::AxisAlignedBox3D cameraBox,
+            Spatial::Point2D cameraTopLeft,
+            Arca::Index<MainSurface> mainSurface) override;
     private:
         using Index = Arca::Index<Line>;
         Spatial::Grid::Octree<Arca::RelicID, Index> octree;
-
-        Arca::Index<Camera> camera;
     private:
         void OnCreated(const Arca::CreatedKnown<Line>& signal);
         void OnDestroying(const Arca::DestroyingKnown<Line>& signal);

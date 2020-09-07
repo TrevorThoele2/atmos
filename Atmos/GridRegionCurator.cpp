@@ -6,8 +6,7 @@
 
 namespace Atmos::Render
 {
-    GridRegionCurator::GridRegionCurator(Init init) :
-        Curator(init), camera(init.owner)
+    GridRegionCurator::GridRegionCurator(Init init) : ObjectCurator(init)
     {
         Owner().On<Arca::CreatedKnown<GridRegion>>(
             [this](const Arca::CreatedKnown<GridRegion>& signal)
@@ -22,32 +21,12 @@ namespace Atmos::Render
             });
     }
 
-    void GridRegionCurator::Work()
+    void GridRegionCurator::WorkImpl(
+        Spatial::AxisAlignedBox3D cameraBox,
+        Spatial::Point2D cameraTopLeft,
+        Arca::Index<MainSurface> mainSurface)
     {
-        const auto cameraLeft = camera->ScreenSides().Left();
-        const auto cameraTop = camera->ScreenSides().Top();
-        const auto cameraPosition = camera->Position();
-        const auto cameraSize = camera->Size();
-
-        const Spatial::AxisAlignedBox3D queryBox
-        {
-            Spatial::Point3D
-            {
-                cameraPosition.x,
-                cameraPosition.y,
-                0
-            },
-            Spatial::Size3D
-            {
-                static_cast<Spatial::Size3D::Value>(cameraSize.width),
-                static_cast<Spatial::Size3D::Value>(cameraSize.height),
-                std::numeric_limits<Spatial::Size3D::Value>::max()
-            }
-        };
-
-        auto indices = octree.AllWithin(queryBox);
-
-        const auto mainSurface = Arca::Index<MainSurface>(Owner());
+        auto indices = octree.AllWithin(cameraBox);
 
         for (auto& index : indices)
         {
@@ -58,10 +37,10 @@ namespace Atmos::Render
 
             auto points = std::vector<Spatial::Grid::Point>{ value.points.begin(), value.points.end() };
             auto mesh = ConvertToMesh(Triangulate(points));
-            for(auto& vertex : mesh.vertices)
+            for (auto& vertex : mesh.vertices)
             {
-                vertex.x -= cameraLeft;
-                vertex.y -= cameraTop;
+                vertex.x -= cameraTopLeft.x;
+                vertex.y -= cameraTopLeft.y;
             }
 
             const auto z = value.z * Spatial::Grid::CellSize<Spatial::Point3D::Value>;

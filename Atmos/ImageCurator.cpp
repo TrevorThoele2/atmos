@@ -1,11 +1,8 @@
 #include "ImageCurator.h"
 
-#include "MainSurface.h"
-
 namespace Atmos::Render
 {
-    ImageCurator::ImageCurator(Init init) :
-        Curator(init), camera(init.owner)
+    ImageCurator::ImageCurator(Init init) : ObjectCurator(init)
     {
         Owner().On<Arca::MatrixFormed<Matrix>>(
             [this](const Arca::MatrixFormed<Matrix>& signal)
@@ -20,30 +17,12 @@ namespace Atmos::Render
             });
     }
 
-    void ImageCurator::Work()
+    void ImageCurator::WorkImpl(
+        Spatial::AxisAlignedBox3D cameraBox,
+        Spatial::Point2D cameraTopLeft,
+        Arca::Index<MainSurface> mainSurface)
     {
-        const auto cameraLeft = camera->ScreenSides().Left();
-        const auto cameraTop = camera->ScreenSides().Top();
-
-        const Spatial::AxisAlignedBox3D queryBox
-        {
-            Spatial::Point3D
-            {
-                camera->Position().x,
-                camera->Position().y,
-                0
-            },
-            Spatial::Size3D
-            {
-                static_cast<Spatial::Size3D::Value>(camera->Size().width),
-                static_cast<Spatial::Size3D::Value>(camera->Size().height),
-                std::numeric_limits<Spatial::Size3D::Value>::max()
-            }
-        };
-
-        auto indices = octree.AllWithin(queryBox);
-
-        const auto mainSurface = Arca::Index<MainSurface>(Owner());
+        auto indices = octree.AllWithin(cameraBox);
 
         for (auto& index : indices)
         {
@@ -68,8 +47,8 @@ namespace Atmos::Render
                 material,
                 Spatial::Point3D
                 {
-                    position.x - cameraLeft,
-                    position.y - cameraTop,
+                    position.x - cameraTopLeft.x,
+                    position.y - cameraTopLeft.y,
                     position.z
                 },
                 size,

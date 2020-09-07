@@ -128,8 +128,8 @@ namespace Atmos::Render
         {
             for (auto& region : y.second)
             {
-                const auto minY = static_cast<float>(y.first)* cellSize;
-                const auto maxY = static_cast<float>(y.first)* cellSize + cellSize;
+                const auto minY = static_cast<float>(y.first) * cellSize;
+                const auto maxY = static_cast<float>(y.first) * cellSize + cellSize;
 
                 const auto minX = *region.begin() * cellSize;
                 const auto maxX = *--region.end() * cellSize + cellSize;
