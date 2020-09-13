@@ -19,6 +19,9 @@ namespace Atmos::Render::Resource
 
         virtual void DrawFrame(Arca::Reliquary& reliquary, const Color& backgroundColor) = 0;
 
+        virtual void OnMaterialCreated(const Arca::Index<Asset::Material>& material) = 0;
+        virtual void OnMaterialDestroying(const Arca::Index<Asset::Material>& material) = 0;
+
         [[nodiscard]] virtual Spatial::ScreenSize Size() const = 0;
     };
 }

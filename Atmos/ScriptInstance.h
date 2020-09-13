@@ -15,13 +15,20 @@ namespace Atmos::Script
     class Instance final : public Arca::ClosedTypedRelic<Instance>
     {
     public:
-        using Asset = Asset::Script;
-        Asset* asset;
+        Arca::Index<Asset::Script> asset;
     public:
         Name executeName;
         Parameters parameters;
         Persistence persistence;
     public:
+        Instance(
+            Init init,
+            Arca::Index<Asset::Script> asset,
+            Name executeName,
+            Parameters parameters,
+            Persistence persistence);
+        Instance(Init init, Arca::Serialization);
+
         // Will defer the execute until a certain point in the frame (probably a bit later)
         void ExecuteDeferred();
         // Will immediately execute the script
@@ -38,7 +45,7 @@ namespace Atmos::Script
 namespace Arca
 {
     template<>
-    struct Traits<::Atmos::Script::Instance>
+    struct Traits<Atmos::Script::Instance>
     {
         static const ObjectType objectType = ObjectType::Relic;
         static inline const TypeName typeName = "Atmos::Script::Instance";
@@ -47,8 +54,9 @@ namespace Arca
 
 namespace Inscription
 {
-    template<>
-    class Scribe<::Atmos::Script::Instance, BinaryArchive> final
-        : public ArcaNullScribe<::Atmos::Script::Instance, BinaryArchive>
-    {};
+    template<class Archive>
+    struct ScribeTraits<Atmos::Script::Instance, Archive> final
+    {
+        using Category = ArcaNullScribeCategory<Atmos::Script::Instance>;
+    };
 }

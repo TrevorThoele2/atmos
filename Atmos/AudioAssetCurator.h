@@ -27,8 +27,9 @@ namespace Arca
 
 namespace Inscription
 {
-    template<>
-    class Scribe<Atmos::Asset::AudioCurator, BinaryArchive> final :
-        public ArcaNullScribe<Atmos::Asset::AudioCurator, BinaryArchive>
-    {};
+    template<class Archive>
+    struct ScribeTraits<Atmos::Asset::AudioCurator, Archive> final
+    {
+        using Category = AssetScribeCategory<Atmos::Asset::AudioCurator>;
+    };
 }

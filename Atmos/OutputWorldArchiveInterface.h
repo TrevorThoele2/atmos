@@ -3,6 +3,8 @@
 #include "Field.h"
 #include "FilePath.h"
 
+#include "VersionUserContext.h"
+
 #include <Inscription/OutputBinaryArchive.h>
 
 namespace Atmos::World::Serialization
@@ -13,10 +15,12 @@ namespace Atmos::World::Serialization
         explicit OutputWorldArchiveInterface(const File::Path& filePath);
 
         void Save(std::vector<Field>& fields);
-
-        static ::Inscription::Version CurrentVersion();
     private:
-        using ArchiveT = ::Inscription::OutputBinaryArchive;
+        using ArchiveT = Inscription::OutputBinaryArchive;
         ArchiveT archive;
+
+        VersionUserContext versionUserContext;
+
+        static inline const std::string signature = "ATMOS WORLD";
     };
 }

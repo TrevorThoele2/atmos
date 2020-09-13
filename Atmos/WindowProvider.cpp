@@ -12,6 +12,7 @@ namespace Atmos::Window
     void WindowProvider::Setup(std::unique_ptr<WindowBase>&& value)
     {
         this->value = std::move(value);
+        this->value->Setup();
     }
 
     WindowBase& WindowProvider::operator*()

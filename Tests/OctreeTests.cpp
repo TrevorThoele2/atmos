@@ -53,8 +53,8 @@ SCENARIO_METHOD(OctreeTestsFixture, "empty octree", "[octree]")
             THEN("is centered at origin and 2 grid cells in size")
             {
                 auto totalBounds = octree.TotalBounds();
-                REQUIRE(totalBounds.Center() == Point3D());
-                REQUIRE(totalBounds.Size() == Size3D
+                REQUIRE(totalBounds.center == Point3D());
+                REQUIRE(totalBounds.size == Size3D
                     {
                         CellSize<Point3D::Value> * 2,
                         CellSize<Point3D::Value> * 2,
@@ -82,8 +82,8 @@ SCENARIO_METHOD(OctreeTestsFixture, "empty octree", "[octree]")
             THEN("is centered at position and 2 grid cells in size")
             {
                 auto totalBounds = octree.TotalBounds();
-                REQUIRE(totalBounds.Center() == Point3D { 100, 100, 100 });
-                REQUIRE(totalBounds.Size() == Size3D
+                REQUIRE(totalBounds.center == Point3D { 100, 100, 100 });
+                REQUIRE(totalBounds.size == Size3D
                     {
                         CellSize<Point3D::Value> * 2,
                         CellSize<Point3D::Value> * 2,
@@ -172,8 +172,8 @@ SCENARIO_METHOD(OctreeTestsFixture, "single object octree", "[octree]")
             THEN("total bounds is centered at origin and 2 grid cells in size")
             {
                 auto totalBounds = octree.TotalBounds();
-                REQUIRE(totalBounds.Center() == Point3D());
-                REQUIRE(totalBounds.Size() == Size3D
+                REQUIRE(totalBounds.center == Point3D());
+                REQUIRE(totalBounds.size == Size3D
                     {
                         CellSize<Point3D::Value> * 2,
                         CellSize<Point3D::Value> * 2,
@@ -295,8 +295,8 @@ SCENARIO_METHOD(OctreeTestsFixture, "single object octree", "[octree]")
             THEN("total bounds is centered at origin and contains bounds")
             {
                 auto totalBounds = octree.TotalBounds();
-                REQUIRE(totalBounds.Center() == Point3D());
-                REQUIRE(totalBounds.Contains(bounds));
+                REQUIRE(totalBounds.center == Point3D());
+                REQUIRE(Contains(totalBounds, bounds));
             }
 
             THEN("contains an object")
@@ -498,8 +498,8 @@ SCENARIO_METHOD(OctreeTestsFixture, "multiple objects octree", "[octree]")
             THEN("total bounds is centered at origin and 2 grid cells in size")
             {
                 auto totalBounds = octree.TotalBounds();
-                REQUIRE(totalBounds.Center() == Point3D());
-                REQUIRE(totalBounds.Size() == Size3D
+                REQUIRE(totalBounds.center == Point3D());
+                REQUIRE(totalBounds.size == Size3D
                     {
                         CellSize<Point3D::Value> * 2,
                         CellSize<Point3D::Value> * 2,
@@ -550,8 +550,8 @@ SCENARIO_METHOD(OctreeTestsFixture, "multiple objects octree", "[octree]")
                 THEN("total bounds is centered at origin and 2 grid cells in size")
                 {
                     auto totalBounds = octree.TotalBounds();
-                    REQUIRE(totalBounds.Center() == Point3D());
-                    REQUIRE(totalBounds.Size() == Size3D
+                    REQUIRE(totalBounds.center == Point3D());
+                    REQUIRE(totalBounds.size == Size3D
                         {
                             CellSize<Point3D::Value> * 2,
                             CellSize<Point3D::Value> * 2,
@@ -626,10 +626,10 @@ SCENARIO_METHOD(OctreeTestsFixture, "multiple objects octree", "[octree]")
             THEN("total bounds is centered at origin and at least distance in size")
             {
                 auto totalBounds = octree.TotalBounds();
-                REQUIRE(totalBounds.Center() == Point3D());
-                REQUIRE(totalBounds.Size().width >= distance);
-                REQUIRE(totalBounds.Size().height >= distance);
-                REQUIRE(totalBounds.Size().depth >= distance);
+                REQUIRE(totalBounds.center == Point3D());
+                REQUIRE(totalBounds.size.width >= distance);
+                REQUIRE(totalBounds.size.height >= distance);
+                REQUIRE(totalBounds.size.depth >= distance);
             }
 
             THEN("has size of 8")
@@ -675,8 +675,8 @@ SCENARIO_METHOD(OctreeTestsFixture, "multiple objects octree", "[octree]")
                 THEN("total bounds is centered at origin and 2 grid cells in size")
                 {
                     auto totalBounds = octree.TotalBounds();
-                    REQUIRE(totalBounds.Center() == Point3D());
-                    REQUIRE(totalBounds.Size() == Size3D
+                    REQUIRE(totalBounds.center == Point3D());
+                    REQUIRE(totalBounds.size == Size3D
                         {
                             CellSize<Point3D::Value> * 2,
                             CellSize<Point3D::Value> * 2,
@@ -703,15 +703,15 @@ SCENARIO_METHOD(OctreeTestsFixture, "negative dimensional octree", "[octree]")
         const auto id = dataGeneration.Random<int>();
         const auto value = dataGeneration.Random<std::string>();
 
-        const auto bounds = AxisAlignedBox3D
-        {
+        const auto bounds = ToAxisAlignedBox3D
+        (
             -1000,
             -1000,
             -1000,
             -900,
             -900,
             -900
-        };
+        );
 
         WHEN("adding an object with all negative dimensions")
         {
@@ -719,15 +719,15 @@ SCENARIO_METHOD(OctreeTestsFixture, "negative dimensional octree", "[octree]")
 
             THEN("querying slightly bigger bounds gives object")
             {
-                const auto queryBounds = AxisAlignedBox3D
-                {
+                const auto queryBounds = ToAxisAlignedBox3D
+                (
                     -1001,
                     -1001,
                     -1001,
                     -899,
                     -899,
                     -899
-                };
+                );
 
                 auto allObjects = octree.AllWithin(queryBounds);
 

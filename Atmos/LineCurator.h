@@ -45,8 +45,9 @@ namespace Arca
 
 namespace Inscription
 {
-    template<>
-    class Scribe<Atmos::Render::LineCurator, BinaryArchive> final
-        : public ArcaNullScribe<Atmos::Render::LineCurator, BinaryArchive>
-    {};
+    template<class Archive>
+    struct ScribeTraits<Atmos::Render::LineCurator, Archive> final
+    {
+        using Category = ArcaNullScribeCategory<Atmos::Render::LineCurator>;
+    };
 }

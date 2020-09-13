@@ -31,11 +31,3 @@ namespace Atmos::World
         return *reliquary;
     }
 }
-
-namespace Inscription
-{
-    void Scribe<Atmos::World::Field, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
-    {
-        archive(*object.reliquary);
-    }
-}

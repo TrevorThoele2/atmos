@@ -1,7 +1,8 @@
 #include "GraphicsCurator.h"
 
 #include "MainSurface.h"
-#include "AncillarySurface.h"
+
+#include "WindowSizeChanged.h"
 
 namespace Atmos::Render
 {
@@ -11,7 +12,7 @@ namespace Atmos::Render
     {
         Owner().On<Arca::DestroyingKnown<Asset::Image>>([this](const Arca::DestroyingKnown<Asset::Image>& signal)
             {
-                const auto resource = MutablePointer().Of(signal.reference)->Resource();
+                const auto resource = MutablePointer().Of(signal.index)->Resource();
                 if (!resource)
                     return;
 
@@ -20,7 +21,7 @@ namespace Atmos::Render
 
         Owner().On<Arca::DestroyingKnown<Asset::Shader>>([this](const Arca::DestroyingKnown<Asset::Shader>& signal)
             {
-                const auto resource = MutablePointer().Of(signal.reference)->Resource();
+                const auto resource = MutablePointer().Of(signal.index)->Resource();
                 if (!resource)
                     return;
 
@@ -29,39 +30,27 @@ namespace Atmos::Render
 
         Owner().On<Arca::DestroyingKnown<SurfaceCore>>([this](const Arca::DestroyingKnown<SurfaceCore>& signal)
             {
-                const auto& resource = MutablePointer().Of(signal.reference)->resource;
+                const auto& resource = MutablePointer().Of(signal.index)->resource;
                 if (!resource)
                     return;
 
                 this->manager->ResourceDestroying(*resource);
             });
+
+        Owner().On<Window::SizeChanged>([this](const Window::SizeChanged& signal)
+            {
+                AttemptReconstruct(signal.size);
+            });
     }
 
     void GraphicsCurator::Handle(const InitializeGraphics& command)
     {
-        manager->Initialize(Owner(), command.window);
+        manager->Initialize();
     }
 
     void GraphicsCurator::Handle(const ReconstructGraphics& command)
     {
-        if (!manager->ShouldReconstruct())
-            return;
-
-        GraphicsReconstructionObjects reconstructionObjects;
-        reconstructionObjects.screenSize = command.screenSize;
-        reconstructionObjects.shaderAssets = MutablePointersOf<Asset::Shader>();
-        reconstructionObjects.mainSurface = MutablePointer().Of<MainSurface>();
-        reconstructionObjects.ancillarySurfaces = MutablePointersOf<AncillarySurface>();
-
-        manager->Reconstruct(reconstructionObjects);
-    }
-
-    void GraphicsCurator::Handle(const Resource::SetupMainSurface& command)
-    {
-        const Arca::Index<MainSurface> mainSurface(Owner());
-
-        auto resource = manager->CreateMainSurfaceResource(command.window, Owner());
-        MutablePointer().Of<SurfaceCore>(mainSurface.ID())->resource = std::move(resource);
+        AttemptReconstruct(command.screenSize);
     }
 
     std::unique_ptr<Resource::Surface> GraphicsCurator::Handle(const Resource::CreateSurface& command)
@@ -89,13 +78,28 @@ namespace Atmos::Render
         return manager->CompileShader(command.inputFilePath, command.outputFilePath);
     }
 
-    std::unique_ptr<Asset::Resource::Image> GraphicsCurator::Handle(const Asset::Resource::Create<Asset::Resource::Image>& command)
+    std::unique_ptr<Asset::Resource::Image> GraphicsCurator::Handle(
+        const Asset::Resource::Create<Asset::Resource::Image>& command)
     {
         return manager->CreateImageResource(command.buffer, command.name, command.size);
     }
 
-    std::unique_ptr<Asset::Resource::Shader> GraphicsCurator::Handle(const Asset::Resource::Create<Asset::Resource::Shader>& command)
+    std::unique_ptr<Asset::Resource::Shader> GraphicsCurator::Handle(
+        const Asset::Resource::Create<Asset::Resource::Shader>& command)
     {
         return manager->CreateShaderResource(command.buffer, command.name);
+    }
+
+    void GraphicsCurator::AttemptReconstruct(const Spatial::ScreenSize& size)
+    {
+        if (!manager->ShouldReconstruct())
+            return;
+
+        GraphicsReconstructionObjects reconstructionObjects;
+        reconstructionObjects.screenSize = size;
+        reconstructionObjects.shaderAssets = MutablePointersOf<Asset::Shader>();
+        reconstructionObjects.mainSurface = MutablePointer().Of<MainSurface>();
+
+        manager->Reconstruct(reconstructionObjects);
     }
 }

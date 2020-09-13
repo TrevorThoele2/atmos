@@ -4,7 +4,6 @@
 #include <vector>
 #include <set>
 
-#include "Range.h"
 #include "Serialization.h"
 
 namespace Atmos::Spatial
@@ -28,11 +27,23 @@ namespace Atmos::Spatial
 namespace Inscription
 {
     template<>
-    class Scribe<::Atmos::Spatial::Point2D, BinaryArchive> final :
-        public CompositeScribe<::Atmos::Spatial::Point2D, BinaryArchive>
+    class Scribe<Atmos::Spatial::Point2D> final
     {
-    protected:
-        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
+    public:
+        using ObjectT = Atmos::Spatial::Point2D;
+    public:
+        template<class Archive>
+        void Scriven(ObjectT& object, Archive& archive)
+        {
+            archive("x", object.x);
+            archive("y", object.y);
+        }
+    };
+
+    template<class Archive>
+    struct ScribeTraits<Atmos::Spatial::Point2D, Archive> final
+    {
+        using Category = CompositeScribeCategory<Atmos::Spatial::Point2D>;
     };
 }
 
@@ -41,7 +52,7 @@ namespace std
     template<>
     struct hash<::Atmos::Spatial::Point2D>
     {
-        typedef ::Atmos::Spatial::Point2D argument_type;
+        typedef Atmos::Spatial::Point2D argument_type;
         typedef std::size_t result_type;
 
         result_type operator()(const argument_type& arg) const noexcept

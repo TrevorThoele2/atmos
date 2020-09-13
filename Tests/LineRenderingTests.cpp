@@ -21,26 +21,31 @@ SCENARIO_METHOD(LineRenderingTestsFixture, "rendering lines")
         engine.Setup();
 
         auto fieldOrigin = Arca::ReliquaryOrigin();
-        RegisterFieldTypes(fieldOrigin, *engine.nullAudioManager, *engine.nullInputManager, *engine.mockGraphicsManager);
+        RegisterFieldTypes(
+            fieldOrigin,
+            *engine.nullAudioManager,
+            *engine.nullInputManager,
+            *engine.mockGraphicsManager,
+            Spatial::ScreenSize{
+                std::numeric_limits<Spatial::ScreenSize::Dimension>::max(),
+                std::numeric_limits<Spatial::ScreenSize::Dimension>::max() },
+            nullptr);
         World::Field field(0, fieldOrigin.Actualize());
 
         auto& fieldReliquary = field.Reliquary();
 
-        engine.mockGraphicsManager->Initialize(fieldReliquary, nullptr);
+        engine.mockGraphicsManager->Initialize();
 
         const auto mainSurface = Arca::Index<MainSurface>(fieldReliquary);
-        auto mainSurfaceImplementation = mainSurface->Resource<MockSurfaceResourceImplementation>();
+        auto mainSurfaceImplementation = mainSurface->Resource<MockSurfaceResource>();
 
-        auto materialAsset = fieldReliquary.Do<Arca::Create<Asset::Material>>(
-            String{}, Asset::MaterialType::Image, std::vector<Asset::Material::Pass>{});
+        auto materialAsset = fieldReliquary.Do(Arca::Create<Asset::Material> {
+            String{}, Asset::MaterialType::Image, std::vector<Asset::Material::Pass>{} });
 
         const auto camera = Arca::Index<Camera>(fieldReliquary);
-        camera->Scalers(Spatial::Scalers2D{
-            std::numeric_limits<Spatial::Scalers2D::Value>::max(),
-            std::numeric_limits<Spatial::Scalers2D::Value>::max() });
 
-        const auto cameraLeft = camera->ScreenSides().Left();
-        const auto cameraTop = camera->ScreenSides().Top();
+        const auto cameraLeft = camera->Sides().Left();
+        const auto cameraTop = camera->Sides().Top();
 
         WHEN("creating lines")
         {
@@ -48,18 +53,24 @@ SCENARIO_METHOD(LineRenderingTestsFixture, "rendering lines")
             {
                 Spatial::Point2D
                 {
-                    dataGeneration.Random<Spatial::Point2D::Value>(TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000)),
-                    dataGeneration.Random<Spatial::Point2D::Value>(TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000))
+                    dataGeneration.Random<Spatial::Point2D::Value>(
+                        TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000)),
+                    dataGeneration.Random<Spatial::Point2D::Value>(
+                        TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000))
                 },
                 Spatial::Point2D
                 {
-                    dataGeneration.Random<Spatial::Point2D::Value>(TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000)),
-                    dataGeneration.Random<Spatial::Point2D::Value>(TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000))
+                    dataGeneration.Random<Spatial::Point2D::Value>(
+                        TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000)),
+                    dataGeneration.Random<Spatial::Point2D::Value>(
+                        TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000))
                 },
                 Spatial::Point2D
                 {
-                    dataGeneration.Random<Spatial::Point2D::Value>(TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000)),
-                    dataGeneration.Random<Spatial::Point2D::Value>(TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000))
+                    dataGeneration.Random<Spatial::Point2D::Value>(
+                        TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000)),
+                    dataGeneration.Random<Spatial::Point2D::Value>(
+                        TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000))
                 }
             };
 
@@ -67,18 +78,24 @@ SCENARIO_METHOD(LineRenderingTestsFixture, "rendering lines")
             {
                 Spatial::Point2D
                 {
-                    dataGeneration.Random<Spatial::Point2D::Value>(TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000)),
-                    dataGeneration.Random<Spatial::Point2D::Value>(TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000))
+                    dataGeneration.Random<Spatial::Point2D::Value>(
+                        TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000)),
+                    dataGeneration.Random<Spatial::Point2D::Value>(
+                        TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000))
                 },
                 Spatial::Point2D
                 {
-                    dataGeneration.Random<Spatial::Point2D::Value>(TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000)),
-                    dataGeneration.Random<Spatial::Point2D::Value>(TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000))
+                    dataGeneration.Random<Spatial::Point2D::Value>(
+                        TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000)),
+                    dataGeneration.Random<Spatial::Point2D::Value>(
+                        TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000))
                 },
                 Spatial::Point2D
                 {
-                    dataGeneration.Random<Spatial::Point2D::Value>(TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000)),
-                    dataGeneration.Random<Spatial::Point2D::Value>(TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000))
+                    dataGeneration.Random<Spatial::Point2D::Value>(
+                        TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000)),
+                    dataGeneration.Random<Spatial::Point2D::Value>(
+                        TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000))
                 }
             };
             auto line1 = fieldReliquary.Do(Arca::Create<Line>{
@@ -90,7 +107,7 @@ SCENARIO_METHOD(LineRenderingTestsFixture, "rendering lines")
 
             WHEN("starting engine execution")
             {
-                engine.UseField(std::move(field));
+                engine.UseField(std::move(field), std::filesystem::current_path() / "Assets.dat");
                 engine.StartExecution();
 
                 THEN("all lines rendered in graphics manager")
@@ -121,12 +138,12 @@ SCENARIO_METHOD(LineRenderingTestsFixture, "rendering lines")
 
             WHEN("starting engine execution, destroying lines, then starting execution")
             {
-                engine.UseField(std::move(field));
+                engine.UseField(std::move(field), std::filesystem::current_path() / "Assets.dat");
                 engine.StartExecution();
 
-                fieldReliquary.Do<Arca::Destroy<Line>>(line1.ID());
-                fieldReliquary.Do<Arca::Destroy<Line>>(line2.ID());
-                fieldReliquary.Do<Arca::Destroy<Line>>(line3.ID());
+                fieldReliquary.Do(Arca::Destroy<Line>{ line1.ID() });
+                fieldReliquary.Do(Arca::Destroy<Line>{ line2.ID() });
+                fieldReliquary.Do(Arca::Destroy<Line>{ line3.ID() });
 
                 THEN("lines were rendered only once")
                 {
@@ -161,18 +178,24 @@ SCENARIO_METHOD(LineRenderingTestsFixture, "rendering lines")
             {
                 Spatial::Point2D
                 {
-                    dataGeneration.Random<Spatial::Point2D::Value>(TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000)),
-                    dataGeneration.Random<Spatial::Point2D::Value>(TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000))
+                    dataGeneration.Random<Spatial::Point2D::Value>(
+                        TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000)),
+                    dataGeneration.Random<Spatial::Point2D::Value>(
+                        TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000))
                 },
                 Spatial::Point2D
                 {
-                    dataGeneration.Random<Spatial::Point2D::Value>(TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000)),
-                    dataGeneration.Random<Spatial::Point2D::Value>(TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000))
+                    dataGeneration.Random<Spatial::Point2D::Value>(
+                        TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000)),
+                    dataGeneration.Random<Spatial::Point2D::Value>(
+                        TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000))
                 },
                 Spatial::Point2D
                 {
-                    dataGeneration.Random<Spatial::Point2D::Value>(TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000)),
-                    dataGeneration.Random<Spatial::Point2D::Value>(TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000))
+                    dataGeneration.Random<Spatial::Point2D::Value>(
+                        TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000)),
+                    dataGeneration.Random<Spatial::Point2D::Value>(
+                        TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000))
                 }
             };
 
@@ -180,18 +203,24 @@ SCENARIO_METHOD(LineRenderingTestsFixture, "rendering lines")
             {
                 Spatial::Point2D
                 {
-                    dataGeneration.Random<Spatial::Point2D::Value>(TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000)),
-                    dataGeneration.Random<Spatial::Point2D::Value>(TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000))
+                    dataGeneration.Random<Spatial::Point2D::Value>(
+                        TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000)),
+                    dataGeneration.Random<Spatial::Point2D::Value>(
+                        TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000))
                 },
                 Spatial::Point2D
                 {
-                    dataGeneration.Random<Spatial::Point2D::Value>(TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000)),
-                    dataGeneration.Random<Spatial::Point2D::Value>(TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000))
+                    dataGeneration.Random<Spatial::Point2D::Value>(
+                        TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000)),
+                    dataGeneration.Random<Spatial::Point2D::Value>(
+                        TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000))
                 },
                 Spatial::Point2D
                 {
-                    dataGeneration.Random<Spatial::Point2D::Value>(TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000)),
-                    dataGeneration.Random<Spatial::Point2D::Value>(TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000))
+                    dataGeneration.Random<Spatial::Point2D::Value>(
+                        TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000)),
+                    dataGeneration.Random<Spatial::Point2D::Value>(
+                        TestFramework::Range<Spatial::Point2D::Value>(-1000, 1000))
                 }
             };
             fieldReliquary.Do(Arca::Create<Line>{
@@ -203,7 +232,7 @@ SCENARIO_METHOD(LineRenderingTestsFixture, "rendering lines")
 
             WHEN("starting engine execution")
             {
-                engine.UseField(std::move(field));
+                engine.UseField(std::move(field), std::filesystem::current_path() / "Assets.dat");
                 engine.StartExecution();
 
                 THEN("no lines rendered in graphics manager")

@@ -64,8 +64,9 @@ namespace Arca
 
 namespace Inscription
 {
-    template<>
-    class Scribe<Atmos::Script::RunningScript, BinaryArchive> final
-        : public ArcaNullScribe<Atmos::Script::RunningScript, BinaryArchive>
-    {};
+    template<class Archive>
+    struct ScribeTraits<Atmos::Script::RunningScript, Archive> final
+    {
+        using Category = ArcaNullScribeCategory<Atmos::Script::RunningScript>;
+    };
 }

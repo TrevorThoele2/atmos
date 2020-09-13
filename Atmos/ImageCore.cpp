@@ -14,15 +14,3 @@ namespace Atmos::Render
         color(color)
     {}
 }
-
-namespace Inscription
-{
-    void Scribe<Atmos::Render::ImageCore, BinaryArchive>::ScrivenImplementation(
-        ObjectT& object, ArchiveT& archive)
-    {
-        archive(object.asset);
-        archive(object.assetIndex);
-        archive(object.material);
-        archive(object.color);
-    }
-}

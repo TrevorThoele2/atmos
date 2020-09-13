@@ -15,14 +15,22 @@ namespace Atmos::Asset
 namespace Inscription
 {
     template<>
-    class Scribe<Atmos::Asset::ImageGridSize, BinaryArchive> final :
-        public CompositeScribe<Atmos::Asset::ImageGridSize, BinaryArchive>
+    class Scribe<Atmos::Asset::ImageGridSize> final
     {
-    protected:
-        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override
+    public:
+        using ObjectT = Atmos::Asset::ImageGridSize;
+    public:
+        template<class Archive>
+        void Scriven(ObjectT& object, Archive& archive)
         {
-            archive(object.columns);
-            archive(object.rows);
+            archive("columns", object.columns);
+            archive("rows", object.rows);
         }
+    };
+
+    template<class Archive>
+    struct ScribeTraits<Atmos::Asset::ImageGridSize, Archive> final
+    {
+        using Category = CompositeScribeCategory<Atmos::Asset::ImageGridSize>;
     };
 }

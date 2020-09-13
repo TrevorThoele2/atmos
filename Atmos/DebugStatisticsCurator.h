@@ -2,7 +2,7 @@
 
 #include <Arca/Curator.h>
 
-#include "DebugStatistics.h"
+#include "Stopwatch.h"
 
 #include "String.h"
 
@@ -12,8 +12,6 @@ namespace Atmos::Debug
     {
     public:
         explicit StatisticsCurator(Init init);
-    private:
-        Arca::Index<Statistics> statistics;
     private:
         class PageEntry
         {
@@ -131,7 +129,7 @@ namespace Atmos::Debug
         PageList pageList{};
         void BundlePages();
     private:
-        using ProfilerList = std::vector<Statistics::Profiler*>;
+        using ProfilerList = std::vector<Time::Stopwatch*>;
         ProfilerList profilerList{};
 
         void BundleProfilers();
@@ -142,8 +140,9 @@ namespace Atmos::Debug
 
 namespace Inscription
 {
-    template<>
-    class Scribe<::Atmos::Debug::StatisticsCurator, BinaryArchive> final :
-        public ArcaNullScribe<::Atmos::Debug::StatisticsCurator, BinaryArchive>
-    {};
+    template<class Archive>
+    struct ScribeTraits<Atmos::Debug::StatisticsCurator, Archive> final
+    {
+        using Category = ArcaNullScribeCategory<Atmos::Debug::StatisticsCurator>;
+    };
 }

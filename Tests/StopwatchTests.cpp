@@ -1,9 +1,6 @@
 #include <catch.hpp>
 
 #include "StopwatchTests.h"
-#include <Atmos/TypeRegistration.h>
-
-#include <Arca/ReliquaryOrigin.h>
 
 #include <thread>
 
@@ -12,43 +9,64 @@ using namespace Time;
 
 SCENARIO_METHOD(StopwatchTestsFixture, "real stopwatch", "[stopwatch][time]")
 {
-    GIVEN("registered reliquary")
+    GIVEN("real stopwatch")
     {
-        Arca::ReliquaryOrigin origin;
-        Time::RegisterTypes(origin);
-        auto reliquary = origin.Actualize();
+        auto stopwatch = CreateRealStopwatch();
 
-        WHEN("creating real stopwatch")
+        WHEN("querying is started")
         {
-            const auto stopwatch = reliquary->Do<Arca::Create<Time::RealStopwatch>>();
-
-            WHEN("querying is started")
+            THEN("is not started")
             {
-                THEN("is not started")
-                {
-                    REQUIRE(!stopwatch->IsStarted());
-                }
+                REQUIRE(!stopwatch.IsStarted());
+            }
+        }
+
+        WHEN("querying elapsed")
+        {
+            THEN("elapsed is zero")
+            {
+                const auto zero = Time::Duration<>();
+
+                REQUIRE(stopwatch.Elapsed() == zero);
+            }
+        }
+
+        WHEN("starting")
+        {
+            auto startTime = stopwatch.Start();
+
+            const auto waitFor = Milliseconds(10);
+
+            THEN("is started")
+            {
+                REQUIRE(stopwatch.IsStarted());
             }
 
-            WHEN("querying elapsed")
+            THEN("start is greater than zero")
             {
-                THEN("elapsed is zero")
-                {
-                    const auto zero = Time::Duration<>();
+                const auto zero = Time::Value<>();
 
-                    REQUIRE(stopwatch->Elapsed() == zero);
-                }
+                REQUIRE(startTime > zero);
             }
 
-            WHEN("starting")
+            THEN("elapsed is greater than the waited time")
             {
-                auto startTime = stopwatch->Start();
+                std::this_thread::sleep_for(waitFor);
 
-                const auto waitFor = Milliseconds(10);
+                auto elapsedTime = stopwatch.Elapsed();
+
+                REQUIRE(elapsedTime > waitFor);
+            }
+
+            WHEN("waiting then starting again")
+            {
+                std::this_thread::sleep_for(waitFor);
+
+                auto startTime2 = stopwatch.Start();
 
                 THEN("is started")
                 {
-                    REQUIRE(stopwatch->IsStarted());
+                    REQUIRE(stopwatch.IsStarted());
                 }
 
                 THEN("start is greater than zero")
@@ -58,46 +76,18 @@ SCENARIO_METHOD(StopwatchTestsFixture, "real stopwatch", "[stopwatch][time]")
                     REQUIRE(startTime > zero);
                 }
 
+                THEN("second start is greater than first start")
+                {
+                    REQUIRE(startTime2 > startTime);
+                }
+
                 THEN("elapsed is greater than the waited time")
                 {
                     std::this_thread::sleep_for(waitFor);
 
-                    auto elapsedTime = stopwatch->Elapsed();
+                    auto elapsedTime = stopwatch.Elapsed();
 
                     REQUIRE(elapsedTime > waitFor);
-                }
-
-                WHEN("waiting then starting again")
-                {
-                    std::this_thread::sleep_for(waitFor);
-
-                    auto startTime2 = stopwatch->Start();
-
-                    THEN("is started")
-                    {
-                        REQUIRE(stopwatch->IsStarted());
-                    }
-
-                    THEN("start is greater than zero")
-                    {
-                        const auto zero = Time::Value<>();
-
-                        REQUIRE(startTime > zero);
-                    }
-
-                    THEN("second start is greater than first start")
-                    {
-                        REQUIRE(startTime2 > startTime);
-                    }
-
-                    THEN("elapsed is greater than the waited time")
-                    {
-                        std::this_thread::sleep_for(waitFor);
-
-                        auto elapsedTime = stopwatch->Elapsed();
-
-                        REQUIRE(elapsedTime > waitFor);
-                    }
                 }
             }
         }

@@ -12,7 +12,6 @@
 namespace Atmos::Render
 {
     class MainSurface;
-    class AncillarySurface;
 
     class GraphicsManager
     {
@@ -26,18 +25,18 @@ namespace Atmos::Render
     public:
         virtual ~GraphicsManager() = 0;
 
-        void Initialize(Arca::Reliquary& reliquary, void* mainWindow);
+        void Initialize();
 
         [[nodiscard]] std::unique_ptr<Asset::Resource::Image> CreateImageResource(
-            const Buffer& buffer,
+            const DataBuffer& buffer,
             const Name& name,
             const Asset::ImageSize& size);
         [[nodiscard]] std::unique_ptr<Asset::Resource::Shader> CreateShaderResource(
-            const Buffer& buffer, const Name& name);
-        [[nodiscard]] std::unique_ptr<Resource::Surface> CreateMainSurfaceResource(
+            const DataBuffer& buffer, const Name& name);
+        [[nodiscard]] std::unique_ptr<Resource::Surface> CreateSurfaceResource(
             void* window,
             Arca::Reliquary& reliquary);
-        [[nodiscard]] std::unique_ptr<Resource::Surface> CreateSurfaceResource(
+        [[nodiscard]] std::unique_ptr<Resource::Surface> CreateMainSurfaceResource(
             void* window,
             Arca::Reliquary& reliquary);
 
@@ -47,7 +46,8 @@ namespace Atmos::Render
 
         void PruneResources(Arca::Reliquary& reliquary);
 
-        File::Path CompileShader(const File::Path& inputFilePath, const std::optional<File::Path>& outputFilePath);
+        File::Path CompileShader(
+            const File::Path& inputFilePath, const std::optional<File::Path>& outputFilePath);
 
         void Reconstruct(GraphicsReconstructionObjects objects);
         [[nodiscard]] bool ShouldReconstruct() const;
@@ -62,11 +62,11 @@ namespace Atmos::Render
         virtual void InitializeImpl() {}
 
         [[nodiscard]] virtual std::unique_ptr<Asset::Resource::Image> CreateImageResourceImpl(
-            const Buffer& buffer,
+            const DataBuffer& buffer,
             const Name& name,
             const Asset::ImageSize& size) = 0;
         [[nodiscard]] virtual std::unique_ptr<Asset::Resource::Shader> CreateShaderResourceImpl(
-            const Buffer& buffer, const Name& name) = 0;
+            const DataBuffer& buffer, const Name& name) = 0;
         [[nodiscard]] virtual std::unique_ptr<Resource::Surface> CreateMainSurfaceResourceImpl(
             void* window,
             Arca::Reliquary& reliquary) = 0;

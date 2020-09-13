@@ -3,6 +3,7 @@
 #include "WindowCreationFailed.h"
 
 #include "SpatialAlgorithms.h"
+#include <tchar.h>
 
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -24,9 +25,19 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 
 namespace Atmos::Window
 {
-    WindowsWindow::WindowsWindow(int nCmdShow, const String& className) :
+    WindowsWindow::WindowsWindow(HINSTANCE hInstance, int nCmdShow, const String& className) :
         nCmdShow(nCmdShow), className(className)
-    {}
+    {
+        windowClass.lpszClassName = className.c_str();
+        windowClass.hInstance = hInstance;
+        windowClass.style = CS_HREDRAW | CS_VREDRAW;
+        windowClass.lpfnWndProc = WindowProc;
+        windowClass.cbSize = sizeof(WNDCLASSEX);
+
+        const auto registered = RegisterClassEx(&windowClass);
+        if (registered == 0)
+            throw WindowCreationFailed(LastErrorMessage());
+    }
 
     void WindowsWindow::Show()
     {
@@ -71,94 +82,118 @@ namespace Atmos::Window
 
     void WindowsWindow::SetupImpl()
     {
-        if (IsWindowed())
-        {
-            currentStyle = windowedStyle;
-            currentExStyle = windowedStyleEx;
-        }
-        else
-        {
-            currentStyle = fullscreenStyle;
-            currentExStyle = fullscreenStyleEx;
-        }
+        ChangeStyles();
 
-        // Create the window and use the result as the handle
-        hwnd = CreateWindowEx
-        (
+        const auto center = Position();
+        const auto size = ClientSize();
+
+        hwnd = CreateWindowEx(
             currentExStyle,
-            wc.lpszClassName,
-            wc.lpszClassName,
+            windowClass.lpszClassName,
+            windowClass.lpszClassName,
             currentStyle,
-            StartPosition().x,
-            StartPosition().y,
-            Size().width,
-            Size().height,
+            center.x,
+            center.y,
+            size.width,
+            size.height,
             nullptr,
             nullptr,
-            wc.hInstance,
-            nullptr
-        );
+            windowClass.hInstance,
+            nullptr);
 
         if (hwnd == nullptr)
-            throw WindowCreationFailed();
+            throw WindowCreationFailed(LastErrorMessage());
     }
 
-    Spatial::AxisAlignedBox2D WindowsWindow::AdjustWindowDimensions()
+    auto WindowsWindow::WindowSizeFromClientSize() const -> Size
     {
-        RECT rect;
-        SetRect(&rect, 0, 0, ClientSize().width, ClientSize().height);
-        AdjustWindowRectEx(&rect, currentStyle, false, currentExStyle);
+        const auto clientSize = ClientSize();
+
+        RECT rectangle;
+        SetRect(&rectangle, 0, 0, clientSize.width, clientSize.height);
+        AdjustWindowRectEx(&rectangle, currentStyle, false, currentExStyle);
 
         using Coordinate = Spatial::AxisAlignedBox2D::Coordinate;
-        return Spatial::ToAxisAlignedBox2D
-        (
-            static_cast<Coordinate>(rect.left),
-            static_cast<Coordinate>(rect.top),
-            static_cast<Coordinate>(rect.right),
-            static_cast<Coordinate>(rect.bottom)
-        );
+        return Size{ rectangle.right - rectangle.left, rectangle.bottom - rectangle.top };
     }
 
-    void WindowsWindow::OnSetWindowDimensions()
+    auto WindowsWindow::TotalScreenSize() const -> Size
+    {
+        return Size(GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN));
+    }
+
+    void WindowsWindow::OnPositionChanged()
     {
         if (IsWindowed())
-            SetWindowPos(HWND_NOTOPMOST);
+            SetWindowPositionAndSize(HWND_NOTOPMOST);
     }
 
-    WindowsWindow::Position WindowsWindow::GetDefaultWindowPosition()
+    void WindowsWindow::OnSizeChanged()
     {
-        return Position(GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN));
+        if (IsWindowed())
+            SetWindowPositionAndSize(HWND_NOTOPMOST);
     }
 
-    void WindowsWindow::OnSetFullscreen()
+    void WindowsWindow::OnFullscreenChanged()
     {
+        ChangeStyles();
         if (IsFullscreen())
-        {
-            currentStyle = fullscreenStyle;
-            currentExStyle = fullscreenStyleEx;
-            SetWindowPos(HWND_TOPMOST);
-        }
+            SetWindowPositionAndSize(HWND_TOPMOST);
         else
-        {
-            currentStyle = windowedStyle;
-            currentExStyle = windowedStyleEx;
-            SetWindowDimensions();
-        }
+            SetWindowSize();
 
         SetWindowLongPtr(hwnd, GWL_STYLE, currentStyle);
         SetWindowLongPtr(hwnd, GWL_EXSTYLE, currentExStyle);
         Show();
     }
 
-    void WindowsWindow::SetWindowPos(HWND after)
+    void WindowsWindow::ChangeStyles()
     {
-        ::SetWindowPos(
+        if (IsFullscreen())
+        {
+            currentStyle = fullscreenStyle;
+            currentExStyle = fullscreenStyleEx;
+        }
+        else
+        {
+            currentStyle = windowedStyle;
+            currentExStyle = windowedStyleEx;
+        }
+    }
+
+    void WindowsWindow::SetWindowPositionAndSize(HWND after)
+    {
+        const auto center = Position();
+        const auto size = ClientSize();
+
+        SetWindowPos(
             hwnd,
             after,
-            StartPosition().x,
-            StartPosition().y,
-            Size().width,
-            Size().height,
+            center.x,
+            center.y,
+            size.width,
+            size.height,
             SWP_SHOWWINDOW);
+    }
+
+    String WindowsWindow::LastErrorMessage()
+    {
+        const auto error = GetLastError();
+        LPVOID messageBuffer;
+        FormatMessage(
+            FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+            nullptr,
+            error,
+            MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+            reinterpret_cast<LPTSTR>(&messageBuffer),
+            0,
+            nullptr);
+        const auto displayBuffer = static_cast<LPCTSTR>(messageBuffer);
+
+        const String errorMessage = _T(displayBuffer);
+
+        LocalFree(messageBuffer);
+
+        return errorMessage;
     }
 }

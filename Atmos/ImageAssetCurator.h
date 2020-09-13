@@ -4,8 +4,7 @@
 
 #include "FreeImageIncludes.h"
 #include "ImageAsset.h"
-#include "LoadImageAsset.h"
-#include "GraphicsManager.h"
+#include "LoadImageAssetResource.h"
 
 namespace Atmos::Asset
 {
@@ -16,9 +15,13 @@ namespace Atmos::Asset
     public:
         using Curator<Image>::Handle;
 
-        Loaded<Image> Handle(const Load<Image>& command);
+        Resource::Loaded<Resource::Image> Handle(const Resource::LoadFromFile<Resource::Image>& command);
+        Resource::Loaded<Resource::Image> Handle(const Resource::LoadFromMemory<Resource::Image>& command);
     private:
+        static Resource::Loaded<Resource::Image> ProcessBitmap(FIBITMAP* loadedBitmap, FREE_IMAGE_FORMAT format);
+
         static FREE_IMAGE_FORMAT FIFFor(const String& filePath);
+        static FREE_IMAGE_FORMAT FIFFor(FIMEMORY& memory, int size);
         static std::optional<ImageType> TypeFromFIF(FREE_IMAGE_FORMAT format);
     };
 
@@ -38,14 +41,16 @@ namespace Arca
         static inline const TypeName typeName = "Atmos::Asset::ImageCurator";
         using HandledCommands = HandledCommands<
             Atmos::Asset::Find<Atmos::Asset::Image>,
-            Atmos::Asset::Load<Atmos::Asset::Image>>;
+            Atmos::Asset::Resource::LoadFromFile<Atmos::Asset::Resource::Image>,
+            Atmos::Asset::Resource::LoadFromMemory<Atmos::Asset::Resource::Image>>;
     };
 }
 
 namespace Inscription
 {
-    template<>
-    class Scribe<Atmos::Asset::ImageCurator, BinaryArchive> final :
-        public ArcaNullScribe<Atmos::Asset::ImageCurator, BinaryArchive>
-    {};
+    template<class Archive>
+    struct ScribeTraits<Atmos::Asset::ImageCurator, Archive> final
+    {
+        using Category = AssetScribeCategory<Atmos::Asset::ImageCurator>;
+    };
 }

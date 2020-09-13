@@ -11,7 +11,7 @@ namespace Atmos::Initialization
 
     FileSection::EntryBase* FileSection::FindEntry(const String& name)
     {
-        auto found = entries.find(name);
+        const auto found = entries.find(name);
         if (found == entries.end())
             return nullptr;
 
@@ -37,7 +37,7 @@ namespace Atmos::Initialization
 
     String FileSection::FileString() const
     {
-        String fileString = header;
+        auto fileString = header;
         for (auto& loop : entries)
             fileString.append(loop.second->FileString());
         return fileString;

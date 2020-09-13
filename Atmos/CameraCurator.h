@@ -36,8 +36,9 @@ namespace Arca
 
 namespace Inscription
 {
-    template<>
-    class Scribe<::Atmos::Render::CameraCurator, BinaryArchive> final :
-        public ArcaNullScribe<::Atmos::Render::CameraCurator, BinaryArchive>
-    {};
+    template<class Archive>
+    struct ScribeTraits<Atmos::Render::CameraCurator, Archive> final
+    {
+        using Category = ArcaNullScribeCategory<Atmos::Render::CameraCurator>;
+    };
 }

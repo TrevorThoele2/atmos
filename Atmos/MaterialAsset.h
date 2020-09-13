@@ -5,6 +5,8 @@
 #include "ImageAsset.h"
 #include "ShaderAsset.h"
 
+#include <Inscription/VectorScribe.h>
+
 namespace Atmos::Asset
 {
     enum class MaterialType
@@ -70,24 +72,50 @@ namespace Arca
 
 namespace Inscription
 {
-    template<>
-    class Scribe<::Atmos::Asset::MaterialType, BinaryArchive> final :
-        public EnumScribe<Atmos::Asset::MaterialType, BinaryArchive>
-    {};
-
-    template<>
-    class Scribe<::Atmos::Asset::Material::Pass, BinaryArchive> final :
-        public CompositeScribe<::Atmos::Asset::Material::Pass, BinaryArchive>
+    template<class Archive>
+    struct ScribeTraits<Atmos::Asset::MaterialType, Archive> final
     {
-    protected:
-        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
+        using Category = EnumScribeCategory<Atmos::Asset::MaterialType>;
     };
 
     template<>
-    class Scribe<::Atmos::Asset::Material, BinaryArchive> final :
-        public ArcaCompositeScribe<::Atmos::Asset::Material, BinaryArchive>
+    class Scribe<Atmos::Asset::Material::Pass> final
     {
-    protected:
-        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
+    public:
+        using ObjectT = Atmos::Asset::Material::Pass;
+    public:
+        template<class Archive>
+        void Scriven(ObjectT& object, Archive& archive)
+        {
+            archive("vertexShader", object.vertexShader);
+            archive("fragmentShader", object.fragmentShader);
+        }
+    };
+
+    template<class Archive>
+    struct ScribeTraits<Atmos::Asset::Material::Pass, Archive> final
+    {
+        using Category = ArcaCompositeScribeCategory<Atmos::Asset::Material::Pass>;
+    };
+
+    template<>
+    class Scribe<Atmos::Asset::Material> final
+    {
+    public:
+        using ObjectT = Atmos::Asset::Material;
+    public:
+        template<class Archive>
+        void Scriven(ObjectT& object, Archive& archive)
+        {
+            BaseScriven<Atmos::Asset::Asset<Atmos::Asset::Material>>(object, archive);
+            archive("type", object.type);
+            archive("passes", object.passes);
+        }
+    };
+
+    template<class Archive>
+    struct ScribeTraits<Atmos::Asset::Material, Archive> final
+    {
+        using Category = ArcaCompositeScribeCategory<Atmos::Asset::Material>;
     };
 }

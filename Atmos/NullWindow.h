@@ -17,9 +17,11 @@ namespace Atmos::Window
     protected:
         void SetupImpl() override;
 
-        Spatial::AxisAlignedBox2D AdjustWindowDimensions() override;
-        void OnSetWindowDimensions() override;
-        Position GetDefaultWindowPosition() override;
-        void OnSetFullscreen() override;
+        void OnPositionChanged() override;
+        void OnSizeChanged() override;
+        void OnFullscreenChanged() override;
+        [[nodiscard]] Size WindowSizeFromClientSize() const override;
+
+        [[nodiscard]] Size TotalScreenSize() const override;
     };
 }

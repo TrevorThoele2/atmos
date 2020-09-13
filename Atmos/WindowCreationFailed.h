@@ -8,5 +8,8 @@ namespace Atmos::Window
     {
     public:
         WindowCreationFailed();
+        WindowCreationFailed(const String& reason);
+    private:
+        static String Message();
     };
 }

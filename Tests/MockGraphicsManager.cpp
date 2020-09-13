@@ -24,29 +24,31 @@ void MockGraphicsManager::InitializeImpl()
 {}
 
 std::unique_ptr<Asset::Resource::Image> MockGraphicsManager::CreateImageResourceImpl(
-    const Buffer& buffer,
+    const DataBuffer& buffer,
     const Name& name,
     const Asset::ImageSize& size)
 {
-    return std::make_unique<ImageAssetResourceImplementation>();
+    return std::make_unique<MockImageAssetResource>();
 }
 
 std::unique_ptr<Asset::Resource::Shader> MockGraphicsManager::CreateShaderResourceImpl(
-    const Buffer& buffer, const Name& name)
+    const DataBuffer& buffer, const Name& name)
 {
     return std::make_unique<ShaderAssetResourceImplementation>();
 }
 
 std::unique_ptr<Resource::Surface> MockGraphicsManager::CreateMainSurfaceResourceImpl(
-    void* window)
+    void* window,
+    Arca::Reliquary& reliquary)
 {
-    return std::make_unique<MockSurfaceResourceImplementation>();
+    return std::make_unique<MockSurfaceResource>();
 }
 
 std::unique_ptr<Resource::Surface> MockGraphicsManager::CreateSurfaceResourceImpl(
-    void* window)
+    void* window,
+    Arca::Reliquary& reliquary)
 {
-    return std::make_unique<MockSurfaceResourceImplementation>();
+    return std::make_unique<MockSurfaceResource>();
 }
 
 bool MockGraphicsManager::ShouldReconstructInternals() const

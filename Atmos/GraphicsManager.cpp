@@ -1,7 +1,7 @@
 #include "GraphicsManager.h"
 
 #include "MainSurface.h"
-#include "SetupMainSurfaceResource.h"
+#include "CreateSurfaceResource.h"
 
 #include "Logger.h"
 
@@ -9,14 +9,13 @@ namespace Atmos::Render
 {
     GraphicsManager::~GraphicsManager() = default;
 
-    void GraphicsManager::Initialize(Arca::Reliquary& reliquary, void* mainWindow)
+    void GraphicsManager::Initialize()
     {
         InitializeImpl();
-        reliquary.Do(Resource::SetupMainSurface{ mainWindow });
     }
 
     std::unique_ptr<Asset::Resource::Image> GraphicsManager::CreateImageResource(
-        const Buffer& buffer,
+        const DataBuffer& buffer,
         const Name& name,
         const Asset::ImageSize& size)
     {
@@ -30,16 +29,9 @@ namespace Atmos::Render
     }
 
     std::unique_ptr<Asset::Resource::Shader> GraphicsManager::CreateShaderResource(
-        const Buffer& buffer, const Name& name)
+        const DataBuffer& buffer, const Name& name)
     {
         return CreateShaderResourceImpl(buffer, name);
-    }
-
-    std::unique_ptr<Resource::Surface> GraphicsManager::CreateMainSurfaceResource(
-        void* window,
-        Arca::Reliquary& reliquary)
-    {
-        return CreateMainSurfaceResourceImpl(window, reliquary);
     }
 
     std::unique_ptr<Resource::Surface> GraphicsManager::CreateSurfaceResource(
@@ -47,6 +39,13 @@ namespace Atmos::Render
         Arca::Reliquary& reliquary)
     {
         return CreateSurfaceResourceImpl(window, reliquary);
+    }
+
+    std::unique_ptr<Resource::Surface> GraphicsManager::CreateMainSurfaceResource(
+        void* window,
+        Arca::Reliquary& reliquary)
+    {
+        return CreateMainSurfaceResourceImpl(window, reliquary);
     }
 
     void GraphicsManager::ResourceDestroying(Asset::Resource::Image& resource)

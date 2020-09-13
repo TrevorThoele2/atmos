@@ -27,7 +27,7 @@ namespace Atmos::Window
     template<class T, class... Args>
     void WindowProvider::Setup(Args&& ... args)
     {
-        value = std::make_unique<T>(std::forward<Args>(args)...);
+        Setup(std::move(std::make_unique<T>(std::forward<Args>(args)...)));
     }
 
     extern WindowProvider window;

@@ -5,7 +5,7 @@ namespace Atmos::Render
     Curator::Curator(Init init) :
         Arca::Curator(init), mainSurface(init.owner),
         debugRenderProfiler(
-            [](Debug::Statistics& statistics) -> Arca::Index<Time::RealStopwatch>&
+            [](Debug::Statistics& statistics) -> Time::Stopwatch&
             {
                 return statistics.profilers.render;
             },
@@ -16,7 +16,7 @@ namespace Atmos::Render
     {
         debugRenderProfiler.Start();
 
-        auto mutableMainPointer = MutablePointer().Of(mainSurface);
+        const auto mutableMainPointer = MutablePointer().Of(mainSurface);
         mutableMainPointer->DrawFrame();
 
         debugRenderProfiler.Calculate();

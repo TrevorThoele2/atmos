@@ -56,8 +56,9 @@ namespace Atmos
 
 namespace Inscription
 {
-    template<>
-    class Scribe<::Atmos::DebugScreen, BinaryArchive> final
-        : public ArcaNullScribe<::Atmos::DebugScreen, BinaryArchive>
-    {};
+    template<class Archive>
+    struct ScribeTraits<Atmos::DebugScreen, Archive> final
+    {
+        using Category = ArcaNullScribeCategory<Atmos::DebugScreen>;
+    };
 }

@@ -8,14 +8,12 @@
 #include "VulkanCreateImageView.h"
 #include "VulkanSwapchainSupport.h"
 
-#include "AncillarySurface.h"
 #include "MainSurface.h"
 #include "GraphicsError.h"
 
 #include "Log.h"
 
 #include "WindowProvider.h"
-#include "SimpleFile.h"
 
 #include <Arca/Reliquary.h>
 
@@ -24,8 +22,8 @@ namespace Atmos::Render::Vulkan
     GraphicsManager::GraphicsManager()
     {
 #ifndef NDEBUG
-        //instanceLayers.push_back(VK_LAYER_KHRONOS_VALIDATION_LAYER_NAME);
-        //instanceExtensions.push_back(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
+        instanceLayers.push_back(VK_LAYER_KHRONOS_VALIDATION_LAYER_NAME);
+        instanceExtensions.push_back(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
 #endif
 
         ValidateRequiredInstanceExtensions();
@@ -98,7 +96,7 @@ namespace Atmos::Render::Vulkan
             imageView.get(), sampler.get(), vk::ImageLayout::eShaderReadOnlyOptimal, 1);
 
         return std::make_unique<Asset::Resource::Vulkan::Image>(
-            image.value.release(), image.memory.release(), imageView.release(), descriptor);
+            size, image.value.release(), image.memory.release(), imageView.release(), descriptor);
     }
 
     std::unique_ptr<Asset::Resource::Shader> GraphicsManager::CreateShaderResourceImpl(
@@ -159,6 +157,17 @@ namespace Atmos::Render::Vulkan
             casted.image, casted.memory, casted.imageView, device));
     }
 
+    void GraphicsManager::PruneResourcesImpl(Arca::Reliquary& reliquary)
+    {
+        auto surfaces = reliquary.Batch<SurfaceCore>();
+        for(auto& surface : surfaces)
+        {
+            auto& casted = static_cast<Resource::Vulkan::Surface&>(*surface.resource);
+            casted.WaitForIdle();
+        }
+        storedResourceList.clear();
+    }
+
     File::Path GraphicsManager::CompileShaderImpl(
         const File::Path& inputFilePath, const std::optional<File::Path>& outputFilePath)
     {
@@ -192,17 +201,6 @@ namespace Atmos::Render::Vulkan
         return useOutputFilePath;
     }
 
-    void GraphicsManager::PruneResourcesImpl(Arca::Reliquary& reliquary)
-    {
-        auto surfaceCores = reliquary.Batch<SurfaceCore>();
-        for(auto& core : surfaceCores)
-        {
-            auto& casted = static_cast<Resource::Vulkan::Surface&>(*core.resource);
-            casted.WaitForIdle();
-        }
-        storedResourceList.clear();
-    }
-
     bool GraphicsManager::ShouldReconstructInternals() const
     {
         return false;
@@ -217,9 +215,6 @@ namespace Atmos::Render::Vulkan
         };
 
         handleSurface(*objects.mainSurface->Resource<Resource::Vulkan::Surface>());
-
-        for (auto& surface : objects.ancillarySurfaces)
-            handleSurface(*surface->Resource<Resource::Vulkan::Surface>());
     }
 
     GraphicsManager::StoredResource::~StoredResource() = default;

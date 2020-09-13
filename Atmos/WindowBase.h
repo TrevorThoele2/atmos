@@ -1,7 +1,6 @@
 #pragma once
 
 #include "TimeValue.h"
-#include "AxisAlignedBox2D.h"
 
 #include "ScreenPoint.h"
 #include "ScreenSize.h"
@@ -11,7 +10,7 @@ namespace Atmos::Window
     class WindowBase
     {
     public:
-        using Position = Spatial::ScreenPoint;
+        using Point = Spatial::ScreenPoint;
         using Size = Spatial::ScreenSize;
     public:
         virtual ~WindowBase() = 0;
@@ -24,30 +23,34 @@ namespace Atmos::Window
         virtual void Suspend(const Time::Duration<>& time) = 0;
         virtual bool OnStartFrame() = 0;
 
-        void ToggleFullscreen();
-        void SetFullscreen(bool set = true);
+        void SetFullscreen(bool set);
         [[nodiscard]] bool IsFullscreen() const;
         [[nodiscard]] bool IsWindowed() const;
 
-        [[nodiscard]] Size DefaultSize() const;
+        void CenterOnScreen();
+
+        void ChangeSize(Size clientSize);
         [[nodiscard]] Size ClientSize() const;
         [[nodiscard]] Size WindowSize() const;
-        [[nodiscard]] Position StartPosition() const;
+        [[nodiscard]] Point Position() const;
 
-        [[nodiscard]] virtual [[nodiscard]] void* Handle() const = 0;
+        [[nodiscard]] virtual void* Handle() const = 0;
     protected:
+        WindowBase() = default;
         virtual void SetupImpl() = 0;
 
-        void SetWindowDimensions();
+        void SetWindowSize();
 
-        virtual Spatial::AxisAlignedBox2D AdjustWindowDimensions() = 0;
-        virtual void OnSetWindowDimensions() = 0;
-        virtual Position GetDefaultWindowPosition() = 0;
-        virtual void OnSetFullscreen() = 0;
+        virtual void OnPositionChanged() = 0;
+        virtual void OnSizeChanged() = 0;
+        virtual void OnFullscreenChanged() = 0;
+        [[nodiscard]] virtual Size WindowSizeFromClientSize() const = 0;
+
+        [[nodiscard]] virtual Size TotalScreenSize() const = 0;
     private:
         Size clientSize;
         Size windowSize;
-        Position startPosition;
+        Point position;
     private:
         bool isFullscreen = false;
     };

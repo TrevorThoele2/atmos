@@ -20,8 +20,9 @@ namespace Arca
 
 namespace Inscription
 {
-    template<>
-    class Scribe<::Atmos::State::GameState, BinaryArchive> final :
-        public ArcaNullScribe<::Atmos::State::GameState, BinaryArchive>
-    {};
+    template<class Archive>
+    struct ScribeTraits<Atmos::State::GameState, Archive> final
+    {
+        using Category = ArcaNullScribeCategory<Atmos::State::GameState>;
+    };
 }

@@ -49,7 +49,7 @@ namespace Atmos::Initialization
 namespace Arca
 {
     template<>
-    struct Traits<::Atmos::Initialization::Information>
+    struct Traits<Atmos::Initialization::Information>
     {
         static const ObjectType objectType = ObjectType::Relic;
         static inline const TypeName typeName = "Atmos::Initialization::Information";
@@ -59,8 +59,9 @@ namespace Arca
 
 namespace Inscription
 {
-    template<>
-    class Scribe<::Atmos::Initialization::Information, BinaryArchive> final
-        : public ArcaNullScribe<::Atmos::Initialization::Information, BinaryArchive>
-    {};
+    template<class Archive>
+    struct ScribeTraits<Atmos::Initialization::Information, Archive> final
+    {
+        using Category = ArcaNullScribeCategory<Atmos::Initialization::Information>;
+    };
 }

@@ -35,8 +35,9 @@ namespace Arca
 
 namespace Inscription
 {
-    template<>
-    class Scribe<::Atmos::Script::Angel::ScriptCurator, BinaryArchive> final :
-        public ArcaNullScribe<::Atmos::Script::Angel::ScriptCurator, BinaryArchive>
-    {};
+    template<class Archive>
+    struct ScribeTraits<Atmos::Script::Angel::ScriptCurator, Archive> final
+    {
+        using Category = ArcaNullScribeCategory<Atmos::Script::Angel::ScriptCurator>;
+    };
 }

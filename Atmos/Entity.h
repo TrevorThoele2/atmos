@@ -9,6 +9,8 @@
 #include "GridPoint.h"
 #include "Angle2D.h"
 
+#include <Inscription/UnorderedMapScribe.h>
+
 namespace Atmos::Entity
 {
     class Entity final : public Arca::ClosedTypedRelic<Entity>
@@ -47,10 +49,26 @@ namespace Arca
 namespace Inscription
 {
     template<>
-    class Scribe<Atmos::Entity::Entity, BinaryArchive> final
-        : public ArcaCompositeScribe<Atmos::Entity::Entity, BinaryArchive>
+    class Scribe<Atmos::Entity::Entity> final
     {
-    protected:
-        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
+    public:
+        using ObjectT = Atmos::Entity::Entity;
+    public:
+        template<class Archive>
+        void Scriven(ObjectT& object, Archive& archive)
+        {
+            archive("name", object.name);
+            archive("displayName", object.displayName);
+            archive("position", object.position);
+            archive("solid", object.solid);
+            archive("data", object.data);
+            archive("tags", object.tags);
+        }
+    };
+
+    template<class Archive>
+    struct ScribeTraits<Atmos::Entity::Entity, Archive> final
+    {
+        using Category = ArcaCompositeScribeCategory<Atmos::Entity::Entity>;
     };
 }

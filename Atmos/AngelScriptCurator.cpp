@@ -33,10 +33,8 @@ namespace Atmos::Script::Angel
     {
         engine = asCreateScriptEngine();
         if (!engine)
-            reliquary.Do<Logging::Log>
-            (
-                "Creation of the scripting engine has failed.", Logging::Severity::Error
-            );
+            reliquary.Do(Logging::Log{
+                "Creation of the scripting engine has failed.", Logging::Severity::Error });
         engine->SetMessageCallback(asMETHOD(Interface, MessageCallback), nullptr, asCALL_THISCALL);
 
         SetAndPushUserData(owner, reliquary);
@@ -62,8 +60,7 @@ namespace Atmos::Script::Angel
         else if (messageInfo->type == asMSGTYPE_INFORMATION)
             logType = Logging::Severity::Information;
 
-        reliquary->Do<Logging::Log>
-        (
+        reliquary->Do(Logging::Log{
             messageInfo->message,
             logType,
             Logging::Details
@@ -71,8 +68,7 @@ namespace Atmos::Script::Angel
                 NameValuePair("Section", String(messageInfo->section)),
                 NameValuePair("Row", messageInfo->row),
                 NameValuePair("Column", messageInfo->col),
-            }
-        );
+            } });
     }
 
     ScriptCurator::ScriptCurator(Init init) :

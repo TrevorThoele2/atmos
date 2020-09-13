@@ -1,9 +1,5 @@
 #include "WorldManager.h"
 
-#include "FileManagerProvider.h"
-#include "DebugStatistics.h"
-#include "Log.h"
-
 #include "StringUtility.h"
 
 #include "InputWorldArchiveInterface.h"
@@ -15,20 +11,13 @@ namespace Atmos::World
 {
     const char* autosaveName = "Autosave.stasis";
 
-    WorldManager::WorldManager(ExternalManagers externalManagers) : externalManagers(externalManagers)
+    WorldManager::WorldManager()
     {
         std::filesystem::create_directory(StasisFolderFilePath());
     }
 
-    void WorldManager::Work()
-    {
-        if (currentField)
-            currentField->Reliquary().Work();
-
-        LockIn();
-    }
-
-    void WorldManager::LockIn()
+    void WorldManager::LockIn(
+        std::unique_ptr<Arca::Reliquary>&& reliquary, Inscription::LoadAssetsUserContext& loadAssetsUserContext)
     {
         if (!requested.has_value())
             return;
@@ -36,12 +25,12 @@ namespace Atmos::World
         if (std::holds_alternative<RequestedField>(*requested))
         {
             auto& request = std::get<RequestedField>(*requested);
-            ChangeField(request.id);
+            ChangeField(request.id, std::move(reliquary), loadAssetsUserContext);
         }
         else if (std::holds_alternative<RequestedFieldDestination>(*requested))
         {
             auto& request = std::get<RequestedFieldDestination>(*requested);
-            ChangeField(request.destination.id);
+            ChangeField(request.destination.id, std::move(reliquary), loadAssetsUserContext);
         }
 
         requested = {};
@@ -71,7 +60,7 @@ namespace Atmos::World
     void WorldManager::UseStasis(const File::Path& path)
     {
         stasisName = path.string();
-        utilization = WorldUtilization{ File::Path("Stasis" + path.string()) };
+        utilization = WorldUtilization{ File::Path("Stasis") / path.string() };
     }
 
     void WorldManager::Autosave()
@@ -106,7 +95,10 @@ namespace Atmos::World
 
     }
 
-    void WorldManager::ChangeField(FieldID id)
+    void WorldManager::ChangeField(
+        FieldID id,
+        std::unique_ptr<Arca::Reliquary>&& reliquary,
+        Inscription::LoadAssetsUserContext& loadAssetsUserContext)
     {
         DEBUG_ASSERT(utilization.has_value());
 
@@ -119,13 +111,14 @@ namespace Atmos::World
         }
         else
         {
-            auto inputArchiveInterface = InputArchiveInterface();
+            auto inputArchiveInterface = InputArchiveInterface(loadAssetsUserContext);
             SetFieldIDs(inputArchiveInterface->AllFieldIDs());
-            currentField = inputArchiveInterface->ExtractField(id, externalManagers);
+            currentField = inputArchiveInterface->ExtractField(id, std::move(reliquary));
         }
     }
 
-    std::unique_ptr<Serialization::InputFieldArchiveInterface> WorldManager::InputArchiveInterface() const
+    std::unique_ptr<Serialization::InputFieldArchiveInterface> WorldManager::InputArchiveInterface(
+        Inscription::LoadAssetsUserContext& loadAssetsUserContext) const
     {
         DEBUG_ASSERT(utilization.has_value());
 
@@ -134,15 +127,18 @@ namespace Atmos::World
         if (std::holds_alternative<WorldUtilization>(value))
         {
             auto& utilization = std::get<WorldUtilization>(value);
-            return std::make_unique<Serialization::InputWorldArchiveInterface>(utilization.filePath);
+            return std::make_unique<Serialization::InputWorldArchiveInterface>(
+                utilization.filePath, loadAssetsUserContext);
         }
         else if (std::holds_alternative<StasisUtilization>(value))
         {
             auto& utilization = std::get<StasisUtilization>(value);
-            return std::make_unique<Serialization::InputStasisArchiveInterface>(utilization.filePath);
+            return std::make_unique<Serialization::InputStasisArchiveInterface>(
+                utilization.filePath, loadAssetsUserContext);
         }
 
         DEBUG_ASSERT(false);
+        return {};
     }
 
     void WorldManager::SetFieldIDs(const std::vector<FieldID>& ids)

@@ -34,8 +34,9 @@ namespace Arca
 
 namespace Inscription
 {
-    template<>
-    class Scribe<Atmos::Input::Curator, BinaryArchive> final
-        : public ArcaNullScribe<Atmos::Input::Curator, BinaryArchive>
-    {};
+    template<class Archive>
+    struct ScribeTraits<Atmos::Input::Curator, Archive> final
+    {
+        using Category = ArcaNullScribeCategory<Atmos::Input::Curator>;
+    };
 }

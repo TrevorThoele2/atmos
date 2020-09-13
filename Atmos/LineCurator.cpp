@@ -74,12 +74,12 @@ namespace Atmos::Render
 
     void LineCurator::OnCreated(const Arca::CreatedKnown<Line>& signal)
     {
-        octree.Add(signal.reference.ID(), signal.reference, BoxFor(signal.reference));
+        octree.Add(signal.index.ID(), signal.index, BoxFor(signal.index));
     }
 
     void LineCurator::OnDestroying(const Arca::DestroyingKnown<Line>& signal)
     {
-        octree.Remove(signal.reference.ID(), BoxFor(signal.reference));
+        octree.Remove(signal.index.ID(), BoxFor(signal.index));
     }
 
     Spatial::AxisAlignedBox3D LineCurator::BoxFor(const std::vector<Spatial::Point2D>& points, Spatial::Point2D::Value z)

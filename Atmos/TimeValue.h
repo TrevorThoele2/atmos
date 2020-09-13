@@ -23,18 +23,13 @@ namespace Atmos::Time
 namespace Inscription
 {
     template<class Clock, class Duration>
-    class Scribe<::std::chrono::time_point<Clock, Duration>, BinaryArchive> final :
-        public CompositeScribe<::std::chrono::time_point<Clock, Duration>, BinaryArchive>
+    class Scribe<std::chrono::time_point<Clock, Duration>> final
     {
-    private:
-        using BaseT = CompositeScribe<::std::chrono::time_point<Clock, Duration>, BinaryArchive>;
     public:
-        using ObjectT = typename BaseT::ObjectT;
-        using ArchiveT = typename BaseT::ArchiveT;
-
-        using BaseT::Scriven;
-    protected:
-        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override
+        using ObjectT = std::chrono::time_point<Clock, Duration>;
+    public:
+        template<class Archive>
+        void Scriven(ObjectT& object, Archive& archive)
         {
             if (archive.IsOutput())
             {
@@ -49,5 +44,11 @@ namespace Inscription
                 object = ObjectT(ObjectT::duration(time));
             }
         }
+    };
+
+    template<class Clock, class Duration, class Archive>
+    struct ScribeTraits<std::chrono::time_point<Clock, Duration>, Archive>
+    {
+        using Category = CompositeScribeCategory<std::chrono::time_point<Clock, Duration>>;
     };
 }

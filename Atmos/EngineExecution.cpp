@@ -20,7 +20,8 @@ namespace Atmos
                 if (isFocusLost)
                     OnFocusRegain();
 
-                worldManager->Work();
+                if (worldManager->CurrentField())
+                    worldManager->CurrentField()->Reliquary().Work();
             }
             else
             {
@@ -41,8 +42,8 @@ namespace Atmos
             if (currentField)
             {
                 wasFocusedLastPass
-                    ? currentField->Reliquary().Raise<FocusLost>()
-                    : currentField->Reliquary().Raise<FocusRegained>();
+                    ? currentField->Reliquary().Raise(FocusLost())
+                    : currentField->Reliquary().Raise(FocusRegained());
             }
             wasFocusedLastPass = !wasFocusedLastPass;
         }

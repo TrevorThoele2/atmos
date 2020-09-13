@@ -65,7 +65,7 @@ namespace Atmos
         if (denominator == 0)
             return;
 
-        auto result = GCD(numerator, denominator);
+        auto result = GreatestCommonDenominator(numerator, denominator);
         numerator /= result;
         denominator /= result;
     }

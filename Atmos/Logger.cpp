@@ -26,7 +26,7 @@ namespace Atmos::Logging
         if (IsAllWhitespace(message))
             return {};
 
-        ::Inscription::OutputTextFile outFile(OutputFilePath(), true);
+        Inscription::OutputTextFile outFile(OutputFilePath(), true);
 
         // Output time and date
         auto output = CurrentTimeStamp() + ' ';
@@ -77,8 +77,7 @@ namespace Atmos::Logging
 
     void Logger::ClearFile()
     {
-        // Just open up the file without appending
-        ::Inscription::OutputTextFile outFile(OutputFilePath());
+        Inscription::OutputTextFile outFile(OutputFilePath());
     }
 
     File::Path Logger::OutputFilePath()

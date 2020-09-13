@@ -1,42 +1,25 @@
 #include "DebugStatistics.h"
 
-#include "StopwatchStatistics.h"
+#include "CreateStopwatch.h"
 
 namespace Atmos::Debug
 {
-    Statistics::Statistics(Init init) :
-        ClosedTypedRelic(init),
-        profilers(init.owner)
+    Statistics::Statistics(Init init) : ClosedTypedRelic(init)
     {}
 
-    Statistics::Profilers::Profilers(Arca::Reliquary& owner) :
-        input(CreateProfiler(owner)),
-        logic(CreateProfiler(owner)),
-        render(CreateProfiler(owner)),
-        idle(CreateProfiler(owner)),
-        misc1(CreateProfiler(owner)),
-        misc2(CreateProfiler(owner)),
-        misc3(CreateProfiler(owner))
+    Statistics::Profilers::Profilers() :
+        input(CreateProfiler()),
+        logic(CreateProfiler()),
+        render(CreateProfiler()),
+        frameTime(CreateProfiler()),
+        idle(CreateProfiler()),
+        misc1(CreateProfiler()),
+        misc2(CreateProfiler()),
+        misc3(CreateProfiler())
     {}
 
-    auto Statistics::Profilers::CreateProfiler(Arca::Reliquary& owner) -> Profiler
+    auto Statistics::Profilers::CreateProfiler() -> Time::Stopwatch
     {
-        auto created = owner.Do<Arca::Create<Profiler::ValueT>>();
-        created->Create<Time::StopwatchStatistics>();
-        return created;
-    }
-}
-
-namespace Inscription
-{
-    void Scribe<Atmos::Debug::Statistics, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
-    {
-        archive(object.profilers.input);
-        archive(object.profilers.logic);
-        archive(object.profilers.render);
-        archive(object.profilers.idle);
-        archive(object.profilers.misc1);
-        archive(object.profilers.misc2);
-        archive(object.profilers.misc3);
+        return Time::CreateRealStopwatch();
     }
 }

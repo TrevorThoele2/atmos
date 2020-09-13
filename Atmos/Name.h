@@ -4,5 +4,5 @@
 
 namespace Atmos
 {
-    typedef String Name;
+    using Name = String;
 }

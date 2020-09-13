@@ -14,8 +14,8 @@ namespace Atmos
 
         void Setup();
 
-        void UseField(World::Field&& field);
-        void LoadWorld(const File::Path& filePath);
+        void UseField(World::Field&& field, const File::Path& assetsFilePath);
+        void LoadWorld(const File::Path& filePath, const File::Path& assetsFilePath);
         World::Field* CurrentField();
 
         void StartExecution();
@@ -46,6 +46,8 @@ namespace Atmos
 
         using ExecutionContextPtr = std::unique_ptr<ExecutionContext>;
         ExecutionContextPtr executionContext;
+
+        void ChangeField(World::FieldID fieldID, const File::Path& assetsFilePath);
     private:
         struct Managers
         {

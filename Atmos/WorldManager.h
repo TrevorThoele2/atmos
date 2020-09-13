@@ -15,10 +15,10 @@ namespace Atmos::World
     class WorldManager
     {
     public:
-        explicit WorldManager(ExternalManagers externalManagers);
+        explicit WorldManager();
 
-        void Work();
-        void LockIn();
+        void LockIn(
+            std::unique_ptr<Arca::Reliquary>&& reliquary, Inscription::LoadAssetsUserContext& loadAssetsUserContext);
 
         void Request(FieldID id);
         void Request(const FieldDestination& request);
@@ -33,8 +33,6 @@ namespace Atmos::World
 
         [[nodiscard]] Field* CurrentField();
         [[nodiscard]] const Field* CurrentField() const;
-    private:
-        ExternalManagers externalManagers;
     private:
         struct RequestedField
         {
@@ -78,10 +76,14 @@ namespace Atmos::World
 
         void Autosave(FieldID worldStartFieldID);
     private:
-        void ChangeField(FieldID id);
+        void ChangeField(
+            FieldID id,
+            std::unique_ptr<Arca::Reliquary>&& reliquary,
+            Inscription::LoadAssetsUserContext& loadAssetsUserContext);
 
         using InputArchiveInterfacePtr = std::unique_ptr<Serialization::InputFieldArchiveInterface>;
-        [[nodiscard]] InputArchiveInterfacePtr InputArchiveInterface() const;
+        [[nodiscard]] InputArchiveInterfacePtr InputArchiveInterface(
+            Inscription::LoadAssetsUserContext& loadAssetsUserContext) const;
 
         void SetFieldIDs(const std::vector<FieldID>& ids);
     private:
@@ -95,8 +97,9 @@ namespace Atmos::World
 
 namespace Inscription
 {
-    template<>
-    class Scribe<::Atmos::World::WorldManager, BinaryArchive> final :
-        public NullScribe<::Atmos::World::WorldManager, BinaryArchive>
-    {};
+    template<class Archive>
+    struct ScribeTraits<Atmos::World::WorldManager, Archive> final
+    {
+        using Category = NullScribeCategory<Atmos::World::WorldManager>;
+    };
 }

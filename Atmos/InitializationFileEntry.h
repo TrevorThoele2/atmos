@@ -1,8 +1,5 @@
 #pragma once
 
-#include <functional>
-
-#include "Event.h"
 #include "String.h"
 #include "StringUtility.h"
 
@@ -14,7 +11,7 @@ namespace Atmos::Initialization
         virtual ~FileEntryBase() = 0;
 
         virtual void SetToFileString(const String& set) = 0;
-        virtual String FileString() const = 0;
+        [[nodiscard]] virtual String FileString() const = 0;
     };
 
     template<class T>
@@ -24,7 +21,7 @@ namespace Atmos::Initialization
         FileEntry(const String& name, T* value);
 
         void SetToFileString(const String& set) override;
-        String FileString() const override;
+        [[nodiscard]] String FileString() const override;
     private:
         String name;
         T* value;
@@ -57,7 +54,7 @@ namespace Atmos::Initialization
 
         count += assignmentToken.size();
         // Now, we assume that the value is here (we can attempt to remove the last character if it's a newline)
-        String retrieveFrom(set.substr(count, String::npos));
+        auto retrieveFrom = set.substr(count, String::npos);
         auto retrieveFromLoop = --retrieveFrom.end();
         while (*retrieveFromLoop == '\n')
             retrieveFromLoop = --retrieveFrom.erase(retrieveFromLoop);

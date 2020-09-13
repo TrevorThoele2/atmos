@@ -1,12 +1,7 @@
 #include "NameValuePair.h"
 
-#include "StdVariant.h"
-
 namespace Atmos
 {
-    NameValuePair::NameValuePair() : name(), value()
-    {}
-
     NameValuePair::NameValuePair(const Name& name, const Variant& value) : name(name), value(value)
     {}
 
@@ -16,7 +11,7 @@ namespace Atmos
     NameValuePair::NameValuePair(const NameValuePair& arg) : name(arg.name), value(arg.value)
     {}
 
-    NameValuePair::NameValuePair(NameValuePair&& arg) : name(std::move(arg.name)), value(std::move(arg.value))
+    NameValuePair::NameValuePair(NameValuePair&& arg) noexcept : name(std::move(arg.name)), value(std::move(arg.value))
     {}
 
     NameValuePair& NameValuePair::operator=(const NameValuePair& arg)
@@ -26,7 +21,7 @@ namespace Atmos
         return *this;
     }
 
-    NameValuePair& NameValuePair::operator=(NameValuePair&& arg)
+    NameValuePair& NameValuePair::operator=(NameValuePair&& arg) noexcept
     {
         name = std::move(arg.name);
         value = std::move(arg.value);
@@ -41,14 +36,5 @@ namespace Atmos
     bool NameValuePair::operator!=(const NameValuePair& arg) const
     {
         return !(*this == arg);
-    }
-}
-
-namespace Inscription
-{
-    void Scribe<::Atmos::NameValuePair, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
-    {
-        archive(object.name);
-        archive(object.value);
     }
 }

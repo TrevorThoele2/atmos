@@ -1,9 +1,6 @@
 #include "ShaderAsset.h"
 
-#include "CreateShaderAssetResource.h"
 #include "ShouldCreateAsset.h"
-
-#include "SimpleFile.h"
 
 namespace Atmos::Asset
 {
@@ -23,6 +20,11 @@ namespace Atmos::Asset
         AssetWithResource::operator=(std::move(arg));
         return *this;
     }
+
+    void Shader::Setup(ResourcePtr&& set)
+    {
+        SetResource(std::move(set));
+    }
 }
 
 namespace Arca
@@ -33,23 +35,5 @@ namespace Arca
         const ::Atmos::Asset::Shader::ResourcePtr& data)
     {
         return Atmos::Asset::ShouldCreate<::Atmos::Asset::Shader>(reliquary, name);
-    }
-}
-
-namespace Inscription
-{
-    void Scribe<Atmos::Asset::Shader, BinaryArchive>::ScrivenImplementation(
-        ObjectT& object, ArchiveT& archive)
-    {
-        BaseScriven<Atmos::Asset::AssetWithResource<Atmos::Asset::Resource::Shader, Atmos::Asset::Shader>>(
-            object, archive);
-        if (archive.IsInput())
-        {
-            const auto filePath = std::filesystem::current_path() / "shaders" / object.Name();
-
-            Atmos::SimpleInFile inFile(filePath);
-            const auto buffer = inFile.ReadBuffer();
-            object.resource = object.Owner().Do(Atmos::Asset::Resource::Create<Atmos::Asset::Resource::Shader>{buffer, object.Name() });
-        }
     }
 }

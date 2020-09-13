@@ -2,26 +2,20 @@
 
 #include <Arca/Curator.h>
 
-#include "RealStopwatch.h"
-#include "TimeInformation.h"
-#include "TimeSettings.h"
+#include "Stopwatch.h"
 
 #include "DebugProfiler.h"
 
-namespace Atmos
+namespace Atmos::Frame
 {
-    class FrameEndCurator final : public Arca::Curator
+    class EndCurator final : public Arca::Curator
     {
     public:
-        explicit FrameEndCurator(Init init);
+        explicit EndCurator(Init init);
 
         void Work();
     private:
-        using FpsStopwatch = Arca::Index<Time::RealStopwatch>;
-        FpsStopwatch fpsTimer;
-
-        Arca::Index<Time::Information> timeInformation;
-        Arca::Index<Time::Settings> timeSettings;
+        Time::Stopwatch framesPerSecondStopwatch;
     private:
         Debug::Profiler debugIdleProfiler;
     };
@@ -30,17 +24,18 @@ namespace Atmos
 namespace Arca
 {
     template<>
-    struct Traits<Atmos::FrameEndCurator>
+    struct Traits<Atmos::Frame::EndCurator>
     {
         static const ObjectType objectType = ObjectType::Curator;
-        static inline const TypeName typeName = "Atmos::FrameEndCurator";
+        static inline const TypeName typeName = "Atmos::Frame::EndCurator";
     };
 }
 
 namespace Inscription
 {
-    template<>
-    class Scribe<Atmos::FrameEndCurator, BinaryArchive> final
-        : public ArcaNullScribe<Atmos::FrameEndCurator, BinaryArchive>
-    {};
+    template<class Archive>
+    struct ScribeTraits<Atmos::Frame::EndCurator, Archive> final
+    {
+        using Category = ArcaNullScribeCategory<Atmos::Frame::EndCurator>;
+    };
 }

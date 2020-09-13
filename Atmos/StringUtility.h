@@ -4,15 +4,11 @@
 #include <type_traits>
 
 #include "String.h"
-#include "LargeInteger.h"
-#include "FixedPoint.h"
 #include "TimeValue.h"
 #include "Point3D.h"
 #include "Size2D.h"
 
 #include <Chroma/TypeIdentity.h>
-
-#include <AGUI/Resolution.h>
 
 namespace Atmos
 {
@@ -53,14 +49,6 @@ namespace Atmos
 
         String FromStringImpl(const String &arg, const ::Chroma::TypeIdentity<String>& t);
 
-        template<class T>
-        FixedPoint<T> FromStringImpl(const String &arg, const ::Chroma::TypeIdentity<FixedPoint<T>>& t)
-        {
-            FixedPoint<T> ret;
-            ret.FromString(arg);
-            return ret;
-        }
-
         template<class Duration>
         Time::Value<Duration> FromStringImpl(const String& arg, const ::Chroma::TypeIdentity<Time::Value<Duration>>& t)
         {
@@ -92,8 +80,6 @@ namespace Atmos
     template<> short FromString(const String &arg);
     template<> unsigned short FromString(const String &arg);
     template<> bool FromString(const String &arg);
-    template<> LargeInteger FromString(const String &arg);
-    template<> ::Agui::Resolution::Size FromString(const String &arg);
 
     template<class T>
     String ToString(T arg)
@@ -108,12 +94,6 @@ namespace Atmos
     String ToString(unsigned char arg);
     String ToString(const String &arg);
     String ToString(bool arg);
-    String ToString(LargeInteger arg);
-    template<class T>
-    String ToString(FixedPoint<T> arg)
-    {
-        return arg.ToString();
-    }
     template<class Duration>
     String ToString(Time::Value<Duration> timeValue)
     {
@@ -127,5 +107,4 @@ namespace Atmos
     String ToString(const Spatial::Grid::Point &position);
     String ToString(const Spatial::Point3D& position);
     String ToString(const Spatial::Size2D& size);
-    String ToString(const ::Agui::Resolution::Size &arg);
 }

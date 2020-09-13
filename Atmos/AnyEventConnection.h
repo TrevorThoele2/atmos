@@ -9,9 +9,9 @@ namespace Atmos
     public:
         AnyEventConnection() = default;
         template<class... Args>
-        AnyEventConnection(const ::Chroma::EventConnection<Args...>& connection);
+        AnyEventConnection(const Chroma::EventConnection<Args...>& connection);
         template<class... Args>
-        AnyEventConnection(::Chroma::EventConnection<Args...>&& connection);
+        AnyEventConnection(Chroma::EventConnection<Args...>&& connection);
         AnyEventConnection(const AnyEventConnection& arg);
         AnyEventConnection(AnyEventConnection&& arg) noexcept;
 
@@ -22,9 +22,9 @@ namespace Atmos
         bool operator!=(const AnyEventConnection& arg) const;
 
         template<class... Args>
-        void Set(const ::Chroma::EventConnection<Args...>& set);
+        void Set(const Chroma::EventConnection<Args...>& set);
         template<class... Args>
-        void Set(::Chroma::EventConnection<Args...>&& set);
+        void Set(Chroma::EventConnection<Args...>&& set);
 
         void Sever();
         [[nodiscard]] bool IsValid() const;
@@ -45,7 +45,7 @@ namespace Atmos
         class Derived : public Base
         {
         public:
-            using WrappedT = ::Chroma::EventConnection<Args...>;
+            using WrappedT = Chroma::EventConnection<Args...>;
             WrappedT wrapped;
         public:
             Derived(const WrappedT& wrapped);
@@ -98,22 +98,24 @@ namespace Atmos
     }
 
     template<class... Args>
-    AnyEventConnection::AnyEventConnection(const ::Chroma::EventConnection<Args...>& connection) : base(new Derived<Args...>(connection))
+    AnyEventConnection::AnyEventConnection(const Chroma::EventConnection<Args...>& connection) :
+        base(std::make_unique<Derived<Args...>>(connection))
     {}
 
     template<class... Args>
-    AnyEventConnection::AnyEventConnection(::Chroma::EventConnection<Args...>&& connection) : base(new Derived<Args...>(std::move(connection)))
+    AnyEventConnection::AnyEventConnection(Chroma::EventConnection<Args...>&& connection) :
+        base(std::make_unique<Derived<Args...>>(std::move(connection)))
     {}
 
     template<class... Args>
-    void AnyEventConnection::Set(const ::Chroma::EventConnection<Args...>& set)
+    void AnyEventConnection::Set(const Chroma::EventConnection<Args...>& set)
     {
-        base.reset(new Derived<Args...>(set));
+        base = std::make_unique<Derived<Args...>>(set);
     }
 
     template<class... Args>
-    void AnyEventConnection::Set(::Chroma::EventConnection<Args...>&& set)
+    void AnyEventConnection::Set(Chroma::EventConnection<Args...>&& set)
     {
-        base.reset(new Derived<Args...>(std::move(set)));
+        base = std::make_unique<Derived<Args...>>(std::move(set));
     }
 }

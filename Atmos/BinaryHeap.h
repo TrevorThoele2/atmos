@@ -11,141 +11,138 @@ namespace Atmos
     class BinaryHeap
     {
     private:
-        typedef std::vector<T> Container;
+        using Underlying = std::vector<T>;
     public:
-        typedef typename Container::iterator iterator;
-        typedef typename Container::const_iterator const_iterator;
-        typedef typename Container::reference reference;
-        typedef typename Container::const_reference const_reference;
-        typedef typename Container::size_type size_type;
-    private:
-        Container container;
-        Compare comp;
+        using iterator = typename Underlying::iterator;
+        using const_iterator = typename Underlying::const_iterator;
+        using reference = typename Underlying::reference;
+        using const_reference = typename Underlying::const_reference;
+        using size_type = typename Underlying::size_type;
     public:
-        void Push(const T &push);
-        void Push(T &&push);
+        void Push(const T& push);
+        void Push(T&& push);
         void Pop();
-        reference Top();
-        const_reference Top() const;
         void Heapify();
 
         void Erase(iterator erase);
 
-        iterator Find(const T &find);
-        const_iterator Find(const T &find) const;
+        [[nodiscard]] reference Top();
+        [[nodiscard]] const_reference Top() const;
 
-        bool IsEmpty() const;
-        size_type Size() const;
+        [[nodiscard]] iterator Find(const T &find);
+        [[nodiscard]] const_iterator Find(const T &find) const;
 
-        iterator begin();
-        iterator end();
-        const_iterator begin() const;
-        const_iterator end() const;
+        [[nodiscard]] bool IsEmpty() const;
+        [[nodiscard]] size_type Size() const;
+
+        [[nodiscard]] iterator begin();
+        [[nodiscard]] iterator end();
+        [[nodiscard]] const_iterator begin() const;
+        [[nodiscard]] const_iterator end() const;
+    private:
+        Underlying underlying;
+        Compare compare;
     };
 
     template<class T, class Compare>
-    void BinaryHeap<T, Compare>::Push(const T &push)
+    void BinaryHeap<T, Compare>::Push(const T& push)
     {
-        container.push_back(push);
-        std::push_heap(container.begin(), container.end(), comp);
+        underlying.push_back(push);
+        std::push_heap(underlying.begin(), underlying.end(), compare);
     }
 
     template<class T, class Compare>
-    void BinaryHeap<T, Compare>::Push(T &&push)
+    void BinaryHeap<T, Compare>::Push(T&& push)
     {
-        container.push_back(std::move(push));
-        std::push_heap(container.begin(), container.end(), comp);
+        underlying.push_back(std::move(push));
+        std::push_heap(underlying.begin(), underlying.end(), compare);
     }
 
     template<class T, class Compare>
     void BinaryHeap<T, Compare>::Pop()
     {
-        std::pop_heap(container.begin(), container.end(), comp);
-        container.pop_back();
-    }
-
-    template<class T, class Compare>
-    typename BinaryHeap<T, Compare>::reference BinaryHeap<T, Compare>::Top()
-    {
-        return container.front();
-    }
-
-    template<class T, class Compare>
-    typename BinaryHeap<T, Compare>::const_reference BinaryHeap<T, Compare>::Top() const
-    {
-        return container.front();
+        std::pop_heap(underlying.begin(), underlying.end(), compare);
+        underlying.pop_back();
     }
 
     template<class T, class Compare>
     void BinaryHeap<T, Compare>::Heapify()
     {
-        std::make_heap(container.begin(), container.end(), comp);
+        std::make_heap(underlying.begin(), underlying.end(), compare);
     }
 
     template<class T, class Compare>
     void BinaryHeap<T, Compare>::Erase(iterator erase)
     {
-        container.erase(erase);
+        underlying.erase(erase);
         Heapify();
+    }
+
+    template<class T, class Compare>
+    typename BinaryHeap<T, Compare>::reference BinaryHeap<T, Compare>::Top()
+    {
+        return underlying.front();
+    }
+
+    template<class T, class Compare>
+    typename BinaryHeap<T, Compare>::const_reference BinaryHeap<T, Compare>::Top() const
+    {
+        return underlying.front();
     }
 
     template<class T, class Compare>
     typename BinaryHeap<T, Compare>::iterator BinaryHeap<T, Compare>::Find(const T &find)
     {
-        for (auto loop = container.begin(); loop != container.end(); loop++)
-        {
-            if (*loop == find)
-                return loop;
-        }
+        for (auto entry = underlying.begin(); entry != underlying.end(); ++entry)
+            if (*entry == find)
+                return entry;
 
-        return container.end();
+        return underlying.end();
     }
 
     template<class T, class Compare>
     typename BinaryHeap<T, Compare>::const_iterator BinaryHeap<T, Compare>::Find(const T &find) const
     {
-        for (auto loop = container.begin(); loop != container.end(); loop++)
-        {
-            if (*loop == find)
-                return loop;
-        }
+        for (auto entry = underlying.begin(); entry != underlying.end(); ++entry)
+            if (*entry == find)
+                return entry;
 
-        return container.end();
+        return underlying.end();
     }
 
     template<class T, class Compare>
     bool BinaryHeap<T, Compare>::IsEmpty() const
     {
-        return container.empty();
+        return underlying.empty();
     }
 
     template<class T, class Compare>
     typename BinaryHeap<T, Compare>::size_type BinaryHeap<T, Compare>::Size() const
     {
-        return container.size();
+        return underlying.size();
     }
 
     template<class T, class Compare>
     typename BinaryHeap<T, Compare>::iterator BinaryHeap<T, Compare>::begin()
     {
-        return container.begin();
+        return underlying.begin();
     }
 
     template<class T, class Compare>
     typename BinaryHeap<T, Compare>::iterator BinaryHeap<T, Compare>::end()
     {
-        return container.end();
+        return underlying.end();
     }
 
     template<class T, class Compare>
     typename BinaryHeap<T, Compare>::const_iterator BinaryHeap<T, Compare>::begin() const
     {
-        return container.begin();
+        return underlying.begin();
     }
 
     template<class T, class Compare>
     typename BinaryHeap<T, Compare>::const_iterator BinaryHeap<T, Compare>::end() const
     {
-        return container.end();
+        return underlying.end();
     }
 }

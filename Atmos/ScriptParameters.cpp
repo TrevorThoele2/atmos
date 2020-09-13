@@ -1,7 +1,5 @@
 #include "ScriptParameters.h"
 
-#include "StdVariant.h"
-
 #include <Inscription/VectorScribe.h>
 
 namespace Atmos::Script
@@ -60,13 +58,5 @@ namespace Atmos::Script
     Parameters::const_iterator Parameters::end() const
     {
         return list.end();
-    }
-}
-
-namespace Inscription
-{
-    void Scribe<::Atmos::Script::Parameters, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
-    {
-        archive(object.list);
     }
 }

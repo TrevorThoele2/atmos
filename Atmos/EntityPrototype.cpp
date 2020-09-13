@@ -19,14 +19,3 @@ namespace Atmos::Entity
         direction(direction)
     {}
 }
-
-namespace Inscription
-{
-    void Scribe<Atmos::Entity::Prototype, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
-    {
-        archive(object.initializer);
-        archive(object.name);
-        archive(object.position);
-        archive(object.direction);
-    }
-}

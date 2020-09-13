@@ -57,12 +57,12 @@ namespace Atmos::Render
 
     void GridRegionCurator::OnCreated(const Arca::CreatedKnown<GridRegion>& signal)
     {
-        octree.Add(signal.reference.ID(), signal.reference, BoxFor(signal.reference));
+        octree.Add(signal.index.ID(), signal.index, BoxFor(signal.index));
     }
 
     void GridRegionCurator::OnDestroying(const Arca::DestroyingKnown<GridRegion>& signal)
     {
-        octree.Remove(signal.reference.ID(), BoxFor(signal.reference));
+        octree.Remove(signal.index.ID(), BoxFor(signal.index));
     }
 
     Spatial::AxisAlignedBox3D GridRegionCurator::BoxFor(

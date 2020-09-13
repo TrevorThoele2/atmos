@@ -20,16 +20,16 @@ namespace Atmos::Entity
             [this](const Arca::CreatedKnown<Entity>& signal)
             {
                 auto mutableMappedEntities = MutablePointer().Of(mappedEntities);
-                mutableMappedEntities->nameToEntity.emplace(signal.reference->name, signal.reference);
-                mutableMappedEntities->positionToEntity.emplace(signal.reference->position, signal.reference);
+                mutableMappedEntities->nameToEntity.emplace(signal.index->name, signal.index);
+                mutableMappedEntities->positionToEntity.emplace(signal.index->position, signal.index);
             });
 
         Owner().On<Arca::DestroyingKnown<Entity>>(
             [this](const Arca::DestroyingKnown<Entity>& signal)
             {
                 auto mutableMappedEntities = MutablePointer().Of(mappedEntities);
-                mutableMappedEntities->nameToEntity.erase(signal.reference->name);
-                mutableMappedEntities->positionToEntity.erase(signal.reference->position);
+                mutableMappedEntities->nameToEntity.erase(signal.index->name);
+                mutableMappedEntities->positionToEntity.erase(signal.index->position);
             });
     }
 

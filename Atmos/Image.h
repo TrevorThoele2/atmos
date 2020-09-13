@@ -65,7 +65,7 @@ namespace Atmos::Render
     void Image<Derived, mutableBounds>::Asset(Arca::Index<Asset::Image> to)
     {
         const auto command = CreateModificationCommand(&ChangeImageCore::asset, to);
-        Owner().Do<ChangeImageCore>(command);
+        Owner().Do(ChangeImageCore{ command });
     }
 
     template<class Derived, bool mutableBounds>
@@ -78,7 +78,7 @@ namespace Atmos::Render
     void Image<Derived, mutableBounds>::AssetIndex(Index to) const
     {
         const auto command = CreateModificationCommand(&ChangeImageCore::assetIndex, to);
-        Owner().Do<ChangeImageCore>(command);
+        Owner().Do(ChangeImageCore{ command });
     }
 
     template<class Derived, bool mutableBounds>
@@ -103,7 +103,7 @@ namespace Atmos::Render
     void Image<Derived, mutableBounds>::Material(Arca::Index<Asset::Material> to)
     {
         const auto command = CreateModificationCommand(&ChangeImageCore::material, to);
-        Owner().Do<ChangeImageCore>(command);
+        Owner().Do(ChangeImageCore{ command });
     }
 
     template<class Derived, bool mutableBounds>
@@ -116,7 +116,7 @@ namespace Atmos::Render
     void Image<Derived, mutableBounds>::Color(Render::Color to) const
     {
         const auto command = CreateModificationCommand(&ChangeImageCore::color, to);
-        Owner().Do<ChangeImageCore>(command);
+        Owner().Do(ChangeImageCore{ command });
     }
 
     template<class Derived, bool mutableBounds>

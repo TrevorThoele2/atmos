@@ -6,6 +6,11 @@ namespace Atmos::Render
     {
     public:
         ImageAssetDataImplementation() = default;
+
+        [[nodiscard]] Asset::ImageSize Size() const
+        {
+            return Asset::ImageSize();
+        }
     };
 
     class ShaderAssetDataImplementation final : public Asset::Resource::Shader
@@ -24,6 +29,12 @@ namespace Atmos::Render
         void StageRender(const RegionRender& regionRender) override {}
 
         void DrawFrame(Arca::Reliquary& reliquary, const Color& backgroundColor) override
+        {}
+
+        void OnMaterialCreated(const Arca::Index<Asset::Material>& material) override
+        {}
+
+        void OnMaterialDestroying(const Arca::Index<Asset::Material>& material) override
         {}
 
         [[nodiscard]] Spatial::ScreenSize Size() const override
@@ -47,7 +58,7 @@ namespace Atmos::Render
     {}
 
     std::unique_ptr<Asset::Resource::Image> NullGraphicsManager::CreateImageResourceImpl(
-        const Buffer& buffer,
+        const DataBuffer& buffer,
         const Name& name,
         const Asset::ImageSize& size)
     {
@@ -55,7 +66,7 @@ namespace Atmos::Render
     }
 
     std::unique_ptr<Asset::Resource::Shader> NullGraphicsManager::CreateShaderResourceImpl(
-        const Buffer& buffer, const Name& name)
+        const DataBuffer& buffer, const Name& name)
     {
         return std::make_unique<ShaderAssetDataImplementation>();
     }

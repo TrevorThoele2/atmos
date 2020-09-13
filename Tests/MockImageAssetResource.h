@@ -4,8 +4,10 @@
 
 using namespace Atmos;
 
-class ImageAssetResourceImplementation final : public Asset::Resource::Image
+class MockImageAssetResource final : public Asset::Resource::Image
 {
 public:
-    ImageAssetResourceImplementation() = default;
+    MockImageAssetResource() = default;
+
+    [[nodiscard]] Asset::ImageSize Size() const override;
 };

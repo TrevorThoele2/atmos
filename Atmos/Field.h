@@ -27,10 +27,21 @@ namespace Atmos::World
 namespace Inscription
 {
     template<>
-    class Scribe<Atmos::World::Field, BinaryArchive> final
-        : public CompositeScribe<Atmos::World::Field, BinaryArchive>
+    class Scribe<Atmos::World::Field> final
     {
-    protected:
-        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
+    public:
+        using ObjectT = Atmos::World::Field;
+    public:
+        template<class Archive>
+        void Scriven(ObjectT& object, Archive& archive)
+        {
+            archive("reliquary", *object.reliquary);
+        }
+    };
+
+    template<class Archive>
+    struct ScribeTraits<Atmos::World::Field, Archive> final
+    {
+        using Category = CompositeScribeCategory<Atmos::World::Field>;
     };
 }

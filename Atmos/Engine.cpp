@@ -5,6 +5,8 @@
 
 #include "WindowProvider.h"
 
+#include "LoadAssetsByZipUserContext.h"
+
 namespace Atmos
 {
     Engine::~Engine() = default;
@@ -16,6 +18,8 @@ namespace Atmos
 
         auto initializationProperties = CreateInitializationProperties();
         Window::window.Setup(std::move(initializationProperties.window));
+        Window::window->ChangeSize(Spatial::ScreenSize{ 1024, 768 });
+        Window::window->CenterOnScreen();
 
         managers = Managers
         {
@@ -24,27 +28,25 @@ namespace Atmos
             std::move(initializationProperties.graphicsManager)
         };
 
-        World::WorldManager worldManager({ *managers.audio, *managers.input, *managers.graphics });
+        World::WorldManager worldManager;
 
         executionContext = std::make_unique<ExecutionContext>(std::move(worldManager));
     }
 
-    void Engine::UseField(World::Field&& field)
+    void Engine::UseField(World::Field&& field, const File::Path& assetsFilePath)
     {
         SetupRequired();
 
         executionContext->worldManager.UseField(std::move(field));
-        executionContext->worldManager.Request(0);
-        executionContext->worldManager.LockIn();
+        ChangeField(0, assetsFilePath);
     }
 
-    void Engine::LoadWorld(const File::Path& filePath)
+    void Engine::LoadWorld(const File::Path& filePath, const File::Path& assetsFilePath)
     {
         SetupRequired();
 
         executionContext->worldManager.UseWorld(filePath);
-        executionContext->worldManager.Request(0);
-        executionContext->worldManager.LockIn();
+        ChangeField(0, assetsFilePath);
     }
 
     World::Field* Engine::CurrentField()
@@ -79,4 +81,26 @@ namespace Atmos
         execution(this->worldManager),
         worldManager(std::move(worldManager))
     {}
+
+    void Engine::ChangeField(World::FieldID fieldID, const File::Path& assetsFilePath)
+    {
+        Arca::ReliquaryOrigin origin;
+
+        RegisterFieldTypes(
+            origin,
+            *managers.audio,
+            *managers.input,
+            *managers.graphics,
+            Spatial::ScreenSize{ 1024, 768 },
+            Window::window->Handle());
+        RegisterFieldStages(origin);
+
+        auto reliquary = origin.Actualize();
+
+        executionContext->worldManager.Request(fieldID);
+
+        auto loadAssetsUserContext = Inscription::LoadAssetsByZipUserContext(assetsFilePath);
+
+        executionContext->worldManager.LockIn(std::move(reliquary), loadAssetsUserContext);
+    }
 }

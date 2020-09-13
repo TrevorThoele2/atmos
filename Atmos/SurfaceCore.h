@@ -2,11 +2,13 @@
 
 #include <Arca/Shard.h>
 #include "SurfaceResource.h"
-#include "Color.h"
-#include <memory>
 
 namespace Atmos::Render
 {
+    struct ImageRender;
+    struct LineRender;
+    struct RegionRender;
+
     struct SurfaceCore
     {
         using ResourceT = Resource::Surface;
@@ -16,8 +18,7 @@ namespace Atmos::Render
         Color backgroundColor;
 
         SurfaceCore() = default;
-        explicit SurfaceCore(ResourcePtr&& resource) : resource(std::move(resource))
-        {}
+        SurfaceCore(ResourcePtr&& resource);
     };
 }
 
@@ -33,8 +34,9 @@ namespace Arca
 
 namespace Inscription
 {
-    template<>
-    class Scribe<Atmos::Render::SurfaceCore, BinaryArchive> final :
-        public ArcaNullScribe<Atmos::Render::SurfaceCore, BinaryArchive>
-    {};
+    template<class Archive>
+    struct ScribeTraits<Atmos::Render::SurfaceCore, Archive> final
+    {
+        using Category = ArcaNullScribeCategory<Atmos::Render::SurfaceCore>;
+    };
 }

@@ -59,6 +59,6 @@ namespace Atmos::Script::Angel
     void RegistrationInterface::GenerateGenericReference(asIScriptGeneric* gen)
     {
         auto userData = UserDataFrom(gen);
-        *(T**)gen->GetAddressOfReturnLocation() = new T(*userData->objectManager);
+        //*(T**)gen->GetAddressOfReturnLocation() = new T(*userData->objectManager);
     }
 }

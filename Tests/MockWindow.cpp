@@ -30,18 +30,21 @@ void* MockWindow::Handle() const
 void MockWindow::SetupImpl()
 {}
 
-Spatial::AxisAlignedBox2D MockWindow::AdjustWindowDimensions()
-{
-    return {};
-}
-
-void MockWindow::OnSetWindowDimensions()
+void MockWindow::OnPositionChanged()
 {}
 
-auto MockWindow::GetDefaultWindowPosition() -> Position
+void MockWindow::OnSizeChanged()
+{}
+
+void MockWindow::OnFullscreenChanged()
+{}
+
+auto MockWindow::WindowSizeFromClientSize() const -> Size
 {
-    return {};
+    return Size{};
 }
 
-void MockWindow::OnSetFullscreen()
-{}
+auto MockWindow::TotalScreenSize() const -> Size
+{
+    return Size{};
+}

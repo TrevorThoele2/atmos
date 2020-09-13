@@ -105,6 +105,9 @@
     <ClInclude Include="EntityTests.h">
       <Filter>Header Files\Tests</Filter>
     </ClInclude>
+    <ClInclude Include="PixelBuffer.h">
+      <Filter>Header Files\Data</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">
@@ -133,6 +136,9 @@
     </Filter>
     <Filter Include="Header Files\Automation">
       <UniqueIdentifier>{8f6d63e6-6311-40de-9ef7-1354d0dd6019}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Data">
+      <UniqueIdentifier>{9897ad37-492a-4cf6-ad8f-fc18890b1c05}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

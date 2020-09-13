@@ -12,30 +12,29 @@
 
 namespace Atmos::Initialization
 {
-    FileCurator::FileCurator(Init init) :
-        Curator(init), information(init.owner)
+    FileCurator::FileCurator(Init init) : Curator(init)
     {
-        auto informationData = MutablePointer().Of(information);
+        auto mutableInformation = MutablePointer().Of<Information>();
 
-        sound.CreateEntry("Master Volume", &informationData->sound.masterVolume);
+        sound.CreateEntry("Master Volume", &mutableInformation->sound.masterVolume);
 
-        controls.CreateEntry("Move Up", &informationData->controls.actions.moveUp);
-        controls.CreateEntry("Move Right", &informationData->controls.actions.moveRight);
-        controls.CreateEntry("Move Down", &informationData->controls.actions.moveDown);
-        controls.CreateEntry("Move Left", &informationData->controls.actions.moveLeft);
-        controls.CreateEntry("Use", &informationData->controls.actions.use);
-        controls.CreateEntry("Menu Up", &informationData->controls.actions.menuUp);
-        controls.CreateEntry("Menu Right", &informationData->controls.actions.menuRight);
-        controls.CreateEntry("Menu Down", &informationData->controls.actions.menuDown);
-        controls.CreateEntry("Menu Left", &informationData->controls.actions.menuLeft);
-        controls.CreateEntry("Select Next Character", &informationData->controls.actions.selectNextCharacter);
-        controls.CreateEntry("Select Previous Character", &informationData->controls.actions.selectPreviousCharacter);
-        controls.CreateEntry("End Turn", &informationData->controls.actions.endTurn);
-        controls.CreateEntry("Attack", &informationData->controls.actions.attack);
-        controls.CreateEntry("Cancel", &informationData->controls.actions.cancel);
-        controls.CreateEntry("Inventory", &informationData->controls.actions.inventory);
-        controls.CreateEntry("Spells", &informationData->controls.actions.spells);
-        controls.CreateEntry("Stats", &informationData->controls.actions.stats);
+        controls.CreateEntry("Move Up", &mutableInformation->controls.actions.moveUp);
+        controls.CreateEntry("Move Right", &mutableInformation->controls.actions.moveRight);
+        controls.CreateEntry("Move Down", &mutableInformation->controls.actions.moveDown);
+        controls.CreateEntry("Move Left", &mutableInformation->controls.actions.moveLeft);
+        controls.CreateEntry("Use", &mutableInformation->controls.actions.use);
+        controls.CreateEntry("Menu Up", &mutableInformation->controls.actions.menuUp);
+        controls.CreateEntry("Menu Right", &mutableInformation->controls.actions.menuRight);
+        controls.CreateEntry("Menu Down", &mutableInformation->controls.actions.menuDown);
+        controls.CreateEntry("Menu Left", &mutableInformation->controls.actions.menuLeft);
+        controls.CreateEntry("Select Next Character", &mutableInformation->controls.actions.selectNextCharacter);
+        controls.CreateEntry("Select Previous Character", &mutableInformation->controls.actions.selectPreviousCharacter);
+        controls.CreateEntry("End Turn", &mutableInformation->controls.actions.endTurn);
+        controls.CreateEntry("Attack", &mutableInformation->controls.actions.attack);
+        controls.CreateEntry("Cancel", &mutableInformation->controls.actions.cancel);
+        controls.CreateEntry("Inventory", &mutableInformation->controls.actions.inventory);
+        controls.CreateEntry("Spells", &mutableInformation->controls.actions.spells);
+        controls.CreateEntry("Stats", &mutableInformation->controls.actions.stats);
 
         Load();
     }
@@ -43,7 +42,7 @@ namespace Atmos::Initialization
     void FileCurator::Save()
     {
         const auto filePath = FilePath();
-        ::Inscription::OutputTextFile file(filePath);
+        Inscription::OutputTextFile file(filePath);
         file.ClearFile();
 
         file.WriteData(graphics.FileString());
@@ -65,7 +64,7 @@ namespace Atmos::Initialization
             return;
         }
 
-        ::Inscription::InputTextFile file(filePath);
+        Inscription::InputTextFile file(filePath);
 
         FileSection* currentSection = nullptr;
         String line;
