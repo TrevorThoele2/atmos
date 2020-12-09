@@ -1,11 +1,11 @@
 #pragma once
 
-#include <Arca/ClosedTypedRelic.h>
+#include <Arca/Relic.h>
 #include "Volume.h"
 
 namespace Atmos::Audio
 {
-    class VolumeInformation final : public Arca::ClosedTypedRelic<VolumeInformation>
+    class VolumeInformation final
     {
     public:
         Volume master;

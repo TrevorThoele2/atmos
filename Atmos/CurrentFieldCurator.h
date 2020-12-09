@@ -2,6 +2,7 @@
 
 #include <Arca/Curator.h>
 
+#include "Work.h"
 #include "DebugValue.h"
 
 namespace Atmos::World
@@ -11,7 +12,7 @@ namespace Atmos::World
     public:
         explicit CurrentFieldCurator(Init init);
 
-        void Work();
+        void Handle(const Work& command);
     private:
         Debug::Value debugFieldID;
     };
@@ -24,6 +25,7 @@ namespace Arca
     {
         static const ObjectType objectType = ObjectType::Curator;
         static inline const TypeName typeName = "Atmos::World::CurrentFieldCurator";
+        using HandledCommands = HandledCommands<Atmos::Work>;
     };
 }
 

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <unordered_set>
-#include <Arca/ClosedTypedRelic.h>
+#include <Arca/Relic.h>
 
 #include "MaterialAsset.h"
 #include "GridPoint.h"
@@ -10,16 +10,15 @@
 
 namespace Atmos::Render
 {
-    class GridRegion final : public Arca::ClosedTypedRelic<GridRegion>
+    class GridRegion final
     {
     public:
         std::unordered_set<Spatial::Grid::Point> points;
         Spatial::Grid::Point::Value z;
         Arca::Index<Asset::Material> material;
     public:
-        GridRegion(Init init);
+        GridRegion() = default;
         GridRegion(
-            Init init,
             const std::unordered_set<Spatial::Grid::Point>& points,
             Spatial::Grid::Point::Value z,
             Arca::Index<Asset::Material> material);

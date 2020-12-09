@@ -5,19 +5,33 @@
 #include "InputManager.h"
 #include "GraphicsManager.h"
 #include "AudioManager.h"
+#include "ScriptManager.h"
+#include "WindowBase.h"
+#include "ImageAssetManager.h"
 
 namespace Atmos
 {
-    void RegisterCommonTypes(Arca::ReliquaryOrigin& origin);
+    void RegisterArcaTypes(Arca::ReliquaryOrigin& origin);
 
-    void RegisterFieldTypes(Arca::ReliquaryOrigin& origin);
+    void RegisterCommonTypes(
+        Arca::ReliquaryOrigin& origin,
+        Asset::ImageManager& imageAssetManager,
+        Logging::Logger& logger);
+
     void RegisterFieldTypes(
         Arca::ReliquaryOrigin& origin,
+        Asset::ImageManager& imageAssetManager,
+        Logging::Logger& logger);
+    void RegisterFieldTypes(
+        Arca::ReliquaryOrigin& origin,
+        Asset::ImageManager& imageAssetManager,
         Audio::AudioManager& audio,
         Input::Manager& input,
         Render::GraphicsManager& graphics,
+        Scripting::Manager& scripts,
         Spatial::ScreenSize screenSize,
-        void* window);
+        Window::WindowBase& window,
+        Logging::Logger& logger);
 
     void RegisterFieldStages(Arca::ReliquaryOrigin& origin);
 
@@ -43,7 +57,7 @@ namespace Atmos
 
     namespace Window
     {
-        void RegisterTypes(Arca::ReliquaryOrigin& origin);
+        void RegisterTypes(Arca::ReliquaryOrigin& origin, WindowBase& window);
     }
 
     namespace Spatial
@@ -58,7 +72,7 @@ namespace Atmos
 
     namespace Asset
     {
-        void RegisterTypes(Arca::ReliquaryOrigin& origin);
+        void RegisterTypes(Arca::ReliquaryOrigin& origin, ImageManager& manager);
     }
 
     namespace Entity
@@ -66,9 +80,11 @@ namespace Atmos
         void RegisterTypes(Arca::ReliquaryOrigin& origin);
     }
 
-    namespace Script
+    namespace Scripting
     {
         void RegisterTypes(Arca::ReliquaryOrigin& origin);
+        void RegisterTypes(Arca::ReliquaryOrigin& origin, Manager& manager);
+        Arca::Stage Stage();
     }
 
     namespace Frame
@@ -80,7 +96,7 @@ namespace Atmos
 
     namespace Logging
     {
-        void RegisterTypes(Arca::ReliquaryOrigin& origin);
+        void RegisterTypes(Arca::ReliquaryOrigin& origin, Logger& logger);
     }
 
     namespace Debug

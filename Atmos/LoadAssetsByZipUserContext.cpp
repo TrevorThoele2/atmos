@@ -2,31 +2,44 @@
 
 namespace Inscription
 {
-    LoadAssetsByZipUserContext::LoadAssetsByZipUserContext(const Atmos::File::Path& filePath) :
-        inputArchive(filePath)
+    LoadAssetsByZipUserContext::LoadAssetsByZipUserContext(
+        const Atmos::File::Path& filePath, Atmos::Logging::Logger& logger)
+        :
+        inputArchive(filePath, logger)
     {}
 
     auto LoadAssetsByZipUserContext::LoadImage(const Atmos::String& name) -> std::optional<Extracted>
     {
-        auto toExtract = Atmos::World::Serialization::InputAssetsArchiveInterface::AllToExtract{};
-        toExtract.images.emplace(name);
-        auto extracted = inputArchive.ExtractAssets(toExtract);
-
-        if (extracted.images.empty())
-            return {};
-        else
-            return Extracted{ extracted.images[0].name, std::move(extracted.images[0].memory) };
+        return Extract(name, &ArchiveInterface::AllToExtract::images, &ArchiveInterface::Extracted::images);
     }
 
     auto LoadAssetsByZipUserContext::LoadShader(const Atmos::String& name) -> std::optional<Extracted>
     {
-        auto toExtract = Atmos::World::Serialization::InputAssetsArchiveInterface::AllToExtract{};
-        toExtract.shaders.emplace(name);
-        auto extracted = inputArchive.ExtractAssets(toExtract);
+        return Extract(name, &ArchiveInterface::AllToExtract::shaders, &ArchiveInterface::Extracted::shaders);
+    }
 
-        if (extracted.shaders.empty())
+    auto LoadAssetsByZipUserContext::LoadScript(const Atmos::Name& name) -> std::optional<Extracted>
+    {
+        return Extract(name, &ArchiveInterface::AllToExtract::scripts, &ArchiveInterface::Extracted::scripts);
+    }
+
+    auto LoadAssetsByZipUserContext::Extract(
+        const Atmos::Name& name,
+        ToExtract toExtract,
+        ExtractedFromArchive extractedFromAssets)
+
+        -> std::optional<Extracted>
+    {
+        auto allToExtract = ArchiveInterface::AllToExtract{};
+        (allToExtract.*toExtract).emplace(name);
+        auto extracted = inputArchive.ExtractAssets(allToExtract);
+
+        if ((extracted.*extractedFromAssets).empty())
             return {};
         else
-            return Extracted{ extracted.shaders[0].name, std::move(extracted.shaders[0].memory) };
+        {
+            auto& item = (extracted.*extractedFromAssets)[0];
+            return Extracted{ item.name, std::move(item.memory) };
+        }
     }
 }

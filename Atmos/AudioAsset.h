@@ -5,11 +5,11 @@
 
 namespace Atmos::Asset
 {
-    class Audio : public AssetWithResource<Resource::Audio, Audio>
+    class Audio : public AssetWithResource<Resource::Audio>
     {
     public:
-        Audio(Init init, const ::Atmos::Name& name, ResourcePtr&& resource);
-        Audio(Init init, Arca::Serialization serialization);
+        Audio(Arca::RelicInit init, const Atmos::Name& name, ResourcePtr&& resource);
+        Audio(Arca::RelicInit init, Arca::Serialization serialization);
         Audio(Audio&& arg) noexcept;
 
         Audio& operator=(Audio&& arg) noexcept;
@@ -21,14 +21,14 @@ namespace Atmos::Asset
 namespace Arca
 {
     template<>
-    struct Traits<::Atmos::Asset::Audio>
+    struct Traits<Atmos::Asset::Audio>
     {
         static const ObjectType objectType = ObjectType::Relic;
         static inline const TypeName typeName = "Atmos::Asset::Audio";
         static bool ShouldCreate(
             Reliquary& reliquary,
-            const ::Atmos::Name& name,
-            const ::Atmos::Asset::Audio::ResourcePtr& data);
+            const Atmos::Name& name,
+            const Atmos::Asset::Audio::ResourcePtr& data);
     };
 }
 
@@ -43,7 +43,7 @@ namespace Inscription
         template<class Archive>
         void Scriven(ObjectT& object, Archive& archive)
         {
-            BaseScriven<Atmos::Asset::AssetWithResource<Atmos::Asset::Resource::Audio, Atmos::Asset::Audio>>(
+            BaseScriven<Atmos::Asset::AssetWithResource<Atmos::Asset::Resource::Audio>>(
                 object, archive);
         }
     };

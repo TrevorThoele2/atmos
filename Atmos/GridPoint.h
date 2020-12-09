@@ -9,14 +9,8 @@ namespace Atmos::Spatial::Grid
         using Value = int;
         Value x = 0, y = 0;
 
-        Point() = default;
-        Point(Value x, Value y);
-        Point(const Point& arg) = default;
-
-        Point& operator=(const Point& arg) = default;
-
-        bool operator==(const Point &arg) const;
-        bool operator!=(const Point &arg) const;
+        bool operator==(const Point& arg) const;
+        bool operator!=(const Point& arg) const;
     };
 }
 

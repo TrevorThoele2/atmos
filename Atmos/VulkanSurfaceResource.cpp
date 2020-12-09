@@ -15,7 +15,8 @@ namespace Atmos::Render::Resource::Vulkan
         vk::Queue presentQueue,
         QueueFamilyIndices queueFamilyIndices,
         vk::PhysicalDeviceMemoryProperties memoryProperties,
-        Arca::Reliquary& reliquary)
+        Arca::Reliquary& reliquary,
+        Logging::Logger& logger)
         :
         device(device),
         physicalDevice(physicalDevice),
@@ -29,7 +30,8 @@ namespace Atmos::Render::Resource::Vulkan
             graphicsQueue,
             presentQueue,
             queueFamilyIndices.graphicsFamily,
-            memoryProperties);
+            memoryProperties,
+            logger);
 
         Initialize(queueFamilyIndices);
 

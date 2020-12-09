@@ -11,6 +11,7 @@ namespace Atmos::Spatial
     public:
         Arca::Index<Bounds> bounds;
 
+        BoundsScaled() = default;
         explicit BoundsScaled(Arca::Index<Bounds> bounds) : bounds(std::move(bounds))
         {}
     };

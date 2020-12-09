@@ -8,7 +8,7 @@ using namespace Render;
 class MockGraphicsManager final : public GraphicsManager
 {
 public:
-    MockGraphicsManager() = default;
+    MockGraphicsManager(Logging::Logger& logger);
     MockGraphicsManager(const MockGraphicsManager& arg) = delete;
     MockGraphicsManager& operator=(const MockGraphicsManager& arg) = delete;
 

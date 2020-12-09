@@ -4,7 +4,9 @@
 
 #include "Asset.h"
 #include "MappedAssets.h"
-#include "FindAsset.h"
+#include "FindAssetByName.h"
+
+#include "Work.h"
 
 #include "DebugValue.h"
 
@@ -25,9 +27,9 @@ namespace Atmos::Asset
     public:
         explicit Curator(Init init);
 
-        void Work();
+        void Handle(const Work& command);
 
-        Arca::Index<T> Handle(const Find<T>& command);
+        Arca::Index<T> Handle(const FindByName<T>& command);
     private:
         using Traits = CuratorTraits<T>;
     private:
@@ -80,13 +82,13 @@ namespace Atmos::Asset
     }
 
     template<class T>
-    void Curator<T>::Work()
+    void Curator<T>::Handle(const Work&)
     {
         debugSizeValue.Set();
     }
 
     template<class T>
-    Arca::Index<T> Curator<T>::Handle(const Find<T>& command)
+    Arca::Index<T> Curator<T>::Handle(const FindByName<T>& command)
     {
         return mappedAssets->Find(command.name);
     }
@@ -95,9 +97,10 @@ namespace Atmos::Asset
     void Curator<T>::ConstructMap()
     {
         auto mutableMappedAssets = MutablePointer().Of(mappedAssets);
-        for (auto& asset : Owner().template Batch<T>())
+        auto batch = Owner().template Batch<T>();
+        for (auto asset = batch.begin(); asset != batch.end(); ++asset)
         {
-            const auto name = asset.Name();
+            const auto name = asset->Name();
             mutableMappedAssets->map.emplace(name, Arca::Index<T>(asset.ID(), Owner()));
         }
     }

@@ -7,6 +7,7 @@ namespace Atmos::Render
     class NullGraphicsManager final : public GraphicsManager
     {
     public:
+        NullGraphicsManager(Logging::Logger& logger);
         NullGraphicsManager(const NullGraphicsManager& arg) = delete;
         NullGraphicsManager& operator=(const NullGraphicsManager& arg) = delete;
 

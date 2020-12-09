@@ -9,6 +9,9 @@ public:
     ShaderAssetResourceImplementation() = default;
 };
 
+MockGraphicsManager::MockGraphicsManager(Logging::Logger& logger) : GraphicsManager(logger)
+{}
+
 bool MockGraphicsManager::IsOk() const
 {
     return true;
@@ -28,7 +31,7 @@ std::unique_ptr<Asset::Resource::Image> MockGraphicsManager::CreateImageResource
     const Name& name,
     const Asset::ImageSize& size)
 {
-    return std::make_unique<MockImageAssetResource>();
+    return std::make_unique<MockImageAssetResource>(size);
 }
 
 std::unique_ptr<Asset::Resource::Shader> MockGraphicsManager::CreateShaderResourceImpl(

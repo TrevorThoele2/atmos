@@ -8,14 +8,17 @@
 
 namespace Atmos::Logging
 {
-    class ProcessedLog
+    struct ProcessedLog
     {
-    public:
-        const String resultantMessage;
+        String resultantMessage;
 
-        const String originalMessage;
-        const Severity severity;
-        const std::optional<Details> details;
+        String originalMessage;
+        Severity severity = Severity::Information;
+        std::optional<Details> details;
+
+        ProcessedLog() = default;
+        ProcessedLog(
+            String resultantMessage, String originalMessage, Severity severity, std::optional<Details> details);
     };
 }
 

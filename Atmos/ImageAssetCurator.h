@@ -2,27 +2,22 @@
 
 #include "AssetCurator.h"
 
-#include "FreeImageIncludes.h"
 #include "ImageAsset.h"
-#include "LoadImageAssetResource.h"
+#include "ImageAssetManager.h"
 
 namespace Atmos::Asset
 {
     class ImageCurator : public Curator<Image>
     {
     public:
-        explicit ImageCurator(Init init);
+        explicit ImageCurator(Init init, ImageManager& manager);
     public:
         using Curator<Image>::Handle;
 
-        Resource::Loaded<Resource::Image> Handle(const Resource::LoadFromFile<Resource::Image>& command);
-        Resource::Loaded<Resource::Image> Handle(const Resource::LoadFromMemory<Resource::Image>& command);
+        Resource::Loaded<Resource::Image> Handle(const Resource::LoadDataFromFile<Resource::Image>& command);
+        Resource::Loaded<Resource::Image> Handle(const Resource::LoadDataFromMemory<Resource::Image>& command);
     private:
-        static Resource::Loaded<Resource::Image> ProcessBitmap(FIBITMAP* loadedBitmap, FREE_IMAGE_FORMAT format);
-
-        static FREE_IMAGE_FORMAT FIFFor(const String& filePath);
-        static FREE_IMAGE_FORMAT FIFFor(FIMEMORY& memory, int size);
-        static std::optional<ImageType> TypeFromFIF(FREE_IMAGE_FORMAT format);
+        ImageManager* manager;
     };
 
     template<>
@@ -40,9 +35,9 @@ namespace Arca
         static const ObjectType objectType = ObjectType::Curator;
         static inline const TypeName typeName = "Atmos::Asset::ImageCurator";
         using HandledCommands = HandledCommands<
-            Atmos::Asset::Find<Atmos::Asset::Image>,
-            Atmos::Asset::Resource::LoadFromFile<Atmos::Asset::Resource::Image>,
-            Atmos::Asset::Resource::LoadFromMemory<Atmos::Asset::Resource::Image>>;
+            Atmos::Asset::FindByName<Atmos::Asset::Image>,
+            Atmos::Asset::Resource::LoadDataFromFile<Atmos::Asset::Resource::Image>,
+            Atmos::Asset::Resource::LoadDataFromMemory<Atmos::Asset::Resource::Image>>;
     };
 }
 

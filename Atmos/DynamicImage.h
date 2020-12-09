@@ -7,17 +7,11 @@
 
 namespace Atmos::Render
 {
-    class DynamicImage final : public Image<DynamicImage, true>
+    class DynamicImage final : public Image<true>
     {
     public:
-        void MoveTo(const Spatial::Point3D& to) const;
-        void MoveBy(const Spatial::Point3D& by) const;
-        void MoveDirection(const Spatial::Angle3D& direction, Spatial::Point3D::Value amount) const;
-        void ScaleTo(const Spatial::Scalers2D& to) const;
-        void RotateTo(const Spatial::Angle2D& to) const;
-    public:
         DynamicImage(
-            Init init,
+            Arca::RelicInit init,
             Arca::Index<Asset::Image> asset,
             ImageCore::Index assetIndex,
             Arca::Index<Asset::Material> material,
@@ -25,7 +19,7 @@ namespace Atmos::Render
             const Spatial::Point3D& position,
             const Spatial::Scalers2D& scalers,
             const Spatial::Angle2D& rotation);
-        DynamicImage(Init init, Arca::Serialization serialization);
+        DynamicImage(Arca::RelicInit init, Arca::Serialization serialization);
     private:
         INSCRIPTION_ACCESS;
     };

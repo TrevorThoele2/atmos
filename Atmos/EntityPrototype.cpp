@@ -2,18 +2,13 @@
 
 namespace Atmos::Entity
 {
-    Prototype::Prototype(Init init) : ClosedTypedRelic(init)
-    {}
-
     Prototype::Prototype(
-        Init init,
-        Arca::Index<Script::Instance> initializer,
+        Arca::Index<Scripting::Script> constructor,
         Name name,
         Spatial::Grid::Point position,
         Spatial::Angle2D direction)
         :
-        ClosedTypedRelic(init),
-        initializer(initializer),
+        constructor(constructor),
         name(name),
         position(position),
         direction(direction)

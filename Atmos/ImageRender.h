@@ -15,6 +15,8 @@ namespace Atmos::Render
         const Asset::Image* asset;
         int assetIndex;
         Spatial::AxisAlignedBox2D assetSlice;
+
+        Arca::RelicID materialID;
         const Asset::Material* material;
 
         Spatial::Point3D position;

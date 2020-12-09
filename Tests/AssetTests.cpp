@@ -4,14 +4,17 @@
 #include <Arca/ReliquaryOrigin.h>
 #include <Atmos/TypeRegistration.h>
 #include <Atmos/MappedAssets.h>
+#include <Atmos/NullImageAssetManager.h>
 
-SCENARIO_METHOD(AssetTestsFixture, "assets")
+SCENARIO_METHOD(AssetTestsFixture, "assets", "[asset]")
 {
     GIVEN("registered reliquary")
     {
+        NullImageManager imageAssetManager;
+
         Arca::ReliquaryOrigin reliquaryOrigin;
 
-        RegisterTypes(reliquaryOrigin);
+        RegisterTypes(reliquaryOrigin, imageAssetManager);
 
         auto reliquary = reliquaryOrigin.Actualize();
 

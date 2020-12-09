@@ -38,8 +38,8 @@ namespace Atmos::Render::Vulkan
         graphicsQueue(graphicsQueue),
         device(device)
     {
-        for (auto& material : materials)
-            MaterialCreated(Arca::Index<Asset::Material>{material.ID(), material.Owner()});
+        for (auto material = materials.begin(); material != materials.end(); ++material)
+            MaterialCreated(Arca::Index<Asset::Material>{material.ID(), materials.Owner()});
     }
 
     void RegionRenderer::StageRender(const RegionRender& regionRender)
@@ -203,8 +203,6 @@ namespace Atmos::Render::Vulkan
         if (regionRender.mesh.vertices.empty() || regionRender.mesh.indices.empty())
             return;
 
-        const auto materialAsset = regionRender.material;
-
         std::vector<Vertex> vertices;
         for (auto& point : regionRender.mesh.vertices)
             vertices.push_back(Vertex{ { point.x, point.y } });
@@ -212,7 +210,7 @@ namespace Atmos::Render::Vulkan
         auto context = raster.layers.Find(regionRender.z);
         if (!context)
             context = &raster.layers.Add(regionRender.z, Raster::Layer{});
-        auto& group = context->GroupFor(materialAsset->ID());
+        auto& group = context->GroupFor(regionRender.materialID);
         group.values.emplace_back(vertices, regionRender.mesh.indices);
     }
 }

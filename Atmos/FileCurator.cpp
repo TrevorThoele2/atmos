@@ -14,9 +14,9 @@ namespace Atmos::File
     Buffer Curator::Handle(const ExtractFile& command)
     {
         Inscription::InputSimpleFile file(command.filePath);
-        file.Seek(0, std::ios::end);
-        const auto length = file.Tell();
-        file.Seek(0, std::ios::beg);
+        file.SeekPositionFromEnd(0);
+        const auto length = file.CurrentPosition();
+        file.SeekPositionFromBegin(0);
 
         Buffer buffer;
         buffer.resize(length);

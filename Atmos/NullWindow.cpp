@@ -26,9 +26,6 @@ namespace Atmos::Window
         return nullptr;
     }
 
-    void NullWindow::SetupImpl()
-    {}
-
     void NullWindow::OnPositionChanged()
     {}
 

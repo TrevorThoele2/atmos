@@ -1,34 +1,9 @@
 #include "Camera.h"
 
-#include "MoveBoundsTo.h"
-#include "MoveBoundsBy.h"
-#include "MoveBoundsDirection.h"
-#include "ScaleBounds.h"
-
 #include "SpatialAlgorithms.h"
 
 namespace Atmos::Render
 {
-    void Camera::MoveTo(const Spatial::Point3D& to) const
-    {
-        Owner().Do(Spatial::MoveBoundsTo{ ID(), to });
-    }
-
-    void Camera::MoveBy(const Spatial::Point3D& by) const
-    {
-        Owner().Do(Spatial::MoveBoundsBy{ ID(), by });
-    }
-
-    void Camera::MoveDirection(const Spatial::Angle3D& direction, Spatial::Point3D::Value amount) const
-    {
-        Owner().Do(Spatial::MoveBoundsDirection{ ID(), direction, amount });
-    }
-
-    void Camera::ScaleTo(const Spatial::Scalers2D& to) const
-    {
-        Owner().Do(Spatial::ScaleBounds{ ID(), to });
-    }
-
     Spatial::Point3D Camera::Position() const
     {
         return bounds->Position();
@@ -54,8 +29,7 @@ namespace Atmos::Render
         };
     }
 
-    Camera::Camera(Init init, Spatial::ScreenSize screenSize) :
-        ClosedTypedRelic(init),
+    Camera::Camera(Arca::RelicInit init, Spatial::ScreenSize screenSize) :
         bounds(init.Create<Spatial::Bounds>(
             Spatial::Point3D{},
             Spatial::Size2D{1, 1},
@@ -67,7 +41,7 @@ namespace Atmos::Render
             Spatial::Angle2D{}))
     {}
 
-    Camera::Camera(Init init, Arca::Serialization) :
-        ClosedTypedRelic(init), bounds(init.Find<Spatial::Bounds>())
+    Camera::Camera(Arca::RelicInit init, Arca::Serialization) :
+        bounds(init.Find<Spatial::Bounds>())
     {}
 }

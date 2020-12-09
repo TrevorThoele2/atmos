@@ -2,18 +2,17 @@
 
 namespace Atmos::Entity
 {
-    Entity::Entity(Init init) : ClosedTypedRelic(init)
-    {}
-
     Entity::Entity(
-        Init init,
         Name name,
+        Name displayName,
         Spatial::Grid::Point position,
-        Spatial::Angle2D direction)
+        Spatial::Angle2D direction,
+        bool isSolid)
         :
-        ClosedTypedRelic(init),
         name(name),
+        displayName(displayName),
         position(position),
-        direction(direction)
+        direction(direction),
+        isSolid(isSolid)
     {}
 }

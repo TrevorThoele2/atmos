@@ -15,7 +15,7 @@ namespace Atmos::Render::Vulkan
     class GraphicsManager final : public Render::GraphicsManager
     {
     public:
-        GraphicsManager();
+        GraphicsManager(Logging::Logger& logger);
 
         [[nodiscard]] bool IsOk() const override;
 
@@ -126,7 +126,7 @@ namespace Atmos::Render::Vulkan
 
         [[nodiscard]] static vk::UniqueSampler CreateSampler(vk::Device device);
     private:
-        Debug debug;
+        std::unique_ptr<Debug> debug;
     private:
         ShaderCompiler shaderCompiler;
     private:

@@ -9,6 +9,8 @@
 #include "Buffer.h"
 #include "FilePath.h"
 
+#include "Logger.h"
+
 namespace Atmos::Render
 {
     class MainSurface;
@@ -57,7 +59,7 @@ namespace Atmos::Render
         virtual void SetFullscreen(bool set) = 0;
         virtual void ChangeVerticalSync(bool set) = 0;
     protected:
-        GraphicsManager() = default;
+        GraphicsManager(Logging::Logger& logger);
     protected:
         virtual void InitializeImpl() {}
 
@@ -88,13 +90,17 @@ namespace Atmos::Render
 
         [[nodiscard]] virtual bool ShouldReconstructInternals() const = 0;
         virtual void ReconstructInternals(GraphicsReconstructionObjects objects) = 0;
+    protected:
+        Logging::Logger& Logger();
+    private:
+        Logging::Logger* logger;
     };
 }
 
 namespace Arca
 {
     template<>
-    struct Traits<::Atmos::Render::GraphicsManager>
+    struct Traits<Atmos::Render::GraphicsManager>
     {
         static inline const TypeName typeName = "Atmos::Render::GraphicsManager";
     };

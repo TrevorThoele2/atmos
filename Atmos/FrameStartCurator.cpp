@@ -14,7 +14,7 @@ namespace Atmos::Frame
             MutablePointer())
     {}
 
-    void StartCurator::Work()
+    void StartCurator::Handle(const Work&)
     {
         auto mutableInformation = MutablePointer().Of<Information>();
         mutableInformation->startTime = mutableInformation->stopwatch.Start();

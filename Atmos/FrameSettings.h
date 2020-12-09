@@ -1,18 +1,18 @@
 #pragma once
 
-#include <Arca/ClosedTypedRelic.h>
+#include <Arca/Relic.h>
 
 #include "FramesPerSecond.h"
 
 namespace Atmos::Frame
 {
-    class Settings final : public Arca::ClosedTypedRelic<Settings>
+    class Settings final
     {
     public:
         FramesPerSecond framesPerSecondLimit = 0;
         static inline const FramesPerSecond defaultFramesPerSecondLimit = 60;
 
-        using ClosedTypedRelic::ClosedTypedRelic;
+        Settings() = default;
     };
 }
 

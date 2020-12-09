@@ -34,7 +34,7 @@ namespace Atmos::Spatial
 
     Point2D::Value Line2D::Length() const
     {
-        return std::sqrt(std::pow(second.x - first.x, 2) + std::pow(second.y - first.y, 2));
+        return static_cast<Point2D::Value>(std::sqrt(std::pow(second.x - first.x, 2) + std::pow(second.y - first.y, 2)));
     }
 
     Spatial::Angle2D Line2D::Angle() const

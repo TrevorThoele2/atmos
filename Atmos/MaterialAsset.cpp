@@ -19,7 +19,7 @@ namespace Atmos::Asset
     }
 
     Material::Material(
-        Init init,
+        Arca::RelicInit init,
         const Atmos::Name& name,
         MaterialType type,
         std::vector<Pass> passes)
@@ -28,7 +28,7 @@ namespace Atmos::Asset
         type(type), passes(std::move(passes))
     {}
 
-    Material::Material(Init init, Arca::Serialization serialization) :
+    Material::Material(Arca::RelicInit init, Arca::Serialization serialization) :
         Asset(init, serialization)
     {}
 

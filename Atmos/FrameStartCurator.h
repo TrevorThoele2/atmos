@@ -2,6 +2,7 @@
 
 #include <Arca/Curator.h>
 
+#include "Work.h"
 #include "DebugProfiler.h"
 
 namespace Atmos::Frame
@@ -11,7 +12,7 @@ namespace Atmos::Frame
     public:
         explicit StartCurator(Init init);
 
-        void Work();
+        void Handle(const Work& command);
     private:
         Debug::Profiler debugIdleProfiler;
     };
@@ -24,6 +25,7 @@ namespace Arca
     {
         static const ObjectType objectType = ObjectType::Curator;
         static inline const TypeName typeName = "Atmos::Frame::StartCurator";
+        using HandledCommands = HandledCommands<Atmos::Work>;
     };
 }
 

@@ -8,7 +8,7 @@ namespace Atmos::Render
 
     ObjectCurator::~ObjectCurator() = default;
 
-    void ObjectCurator::Work()
+    void ObjectCurator::Handle(const Work& command)
     {
         const auto cameraLeft = camera->Sides().Left();
         const auto cameraTop = camera->Sides().Top();

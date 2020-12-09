@@ -1,13 +1,13 @@
 #pragma once
 
-#include <Arca/ClosedTypedRelic.h>
+#include <Arca/Relic.h>
 
 #include "InputID.h"
 #include "Action.h"
 
 namespace Atmos::Input
 {
-    class MappedActions final : public Arca::ClosedTypedRelic<MappedActions>
+    class MappedActions final
     {
     public:
         std::unordered_map<InputID, Action> entries;

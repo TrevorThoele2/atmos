@@ -1,31 +1,31 @@
 #pragma once
 
-#include <Arca/ClosedTypedRelic.h>
+#include <Arca/Relic.h>
 #include "Entity.h"
 
 namespace Atmos::Entity
 {
-    class MappedEntities final : public Arca::ClosedTypedRelic<MappedEntities>
+    class Mapped final
     {
     public:
         using NameToEntity = std::unordered_map<String, Arca::Index<Entity>>;
         NameToEntity nameToEntity;
 
-        using PositionToEntity = std::unordered_map<Spatial::Grid::Point, Arca::Index<Entity>>;
+        using PositionToEntity = std::unordered_map<Spatial::Grid::Point, std::set<Arca::Index<Entity>>>;
         PositionToEntity positionToEntity;
 
-        explicit MappedEntities(Init init);
-        explicit MappedEntities(MappedEntities&& arg) = default;
+        Mapped() = default;
+        explicit Mapped(Mapped&& arg) = default;
     };
 }
 
 namespace Arca
 {
     template<>
-    struct Traits<Atmos::Entity::MappedEntities>
+    struct Traits<Atmos::Entity::Mapped>
     {
         static const ObjectType objectType = ObjectType::Relic;
-        static inline const TypeName typeName = "Atmos::Entity::MappedEntities";
+        static inline const TypeName typeName = "Atmos::Entity::Mapped";
         static const Locality locality = Locality::Global;
     };
 }
@@ -33,8 +33,8 @@ namespace Arca
 namespace Inscription
 {
     template<class Archive>
-    struct ScribeTraits<Atmos::Entity::MappedEntities, Archive> final
+    struct ScribeTraits<Atmos::Entity::Mapped, Archive> final
     {
-        using Category = ArcaNullScribeCategory<Atmos::Entity::MappedEntities>;
+        using Category = ArcaNullScribeCategory<Atmos::Entity::Mapped>;
     };
 }

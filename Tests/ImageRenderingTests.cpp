@@ -2,6 +2,7 @@
 
 #include "ImageRenderingTests.h"
 
+#include <Arca/LocalRelic.h>
 #include <Atmos/StaticImage.h>
 #include <Atmos/DynamicImage.h>
 #include <Atmos/RelativeImage.h>
@@ -18,7 +19,7 @@
 using namespace Atmos;
 using namespace Spatial;
 
-SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images")
+SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
 {
     GIVEN("setup engine with field")
     {
@@ -26,15 +27,19 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images")
         engine.Setup();
 
         auto fieldOrigin = Arca::ReliquaryOrigin();
+        RegisterArcaTypes(fieldOrigin);
         RegisterFieldTypes(
             fieldOrigin,
+            *engine.mockImageAssetManager,
             *engine.nullAudioManager,
             *engine.nullInputManager,
             *engine.mockGraphicsManager,
+            *engine.mockScriptManager,
             Spatial::ScreenSize{
                 std::numeric_limits<Spatial::ScreenSize::Dimension>::max(),
                 std::numeric_limits<Spatial::ScreenSize::Dimension>::max() },
-            nullptr);
+            *engine.mockWindow,
+            engine.Logger());
         World::Field field(0, fieldOrigin.Actualize());
 
         auto& fieldReliquary = field.Reliquary();
@@ -437,7 +442,8 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images")
             };
 
             auto parent = fieldReliquary.Do(Arca::Create<Arca::OpenRelic>());
-            parent->Create<Bounds>(parentPosition, Size2D{1, 1}, Scalers2D{1, 1}, Angle2D{});
+            fieldReliquary.Do(
+                Arca::Create<Bounds>(parent, parentPosition, Size2D{1, 1}, Scalers2D{1, 1}, Angle2D{}));
 
             auto image1 = fieldReliquary.Do(Arca::CreateChild<RelativeImage> {
                 parent,
@@ -543,7 +549,8 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images")
             };
 
             auto parent = fieldReliquary.Do(Arca::Create<Arca::OpenRelic>());
-            parent->Create<Bounds>(parentPosition, Size2D{ 1, 1 }, Scalers2D{ 1, 1 }, Angle2D{});
+            fieldReliquary.Do(
+                Arca::Create<Bounds>(parent, parentPosition, Size2D{ 1, 1 }, Scalers2D{ 1, 1 }, Angle2D{}));
 
             fieldReliquary.Do(Arca::CreateChild<RelativeImage> {
                 parent,
@@ -595,7 +602,8 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images")
             };
 
             auto parent = fieldReliquary.Do(Arca::Create<Arca::OpenRelic>());
-            parent->Create<Bounds>(parentPosition, Size2D{ 1, 1 }, Scalers2D{ 1, 1 }, Angle2D{});
+            fieldReliquary.Do(
+                Arca::Create<Bounds>(parent, parentPosition, Size2D{ 1, 1 }, Scalers2D{ 1, 1 }, Angle2D{}));
 
             fieldReliquary.Do(Arca::CreateChild<RelativeImage> {
                 parent,
@@ -639,7 +647,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images")
     }
 }
 
-SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering culled images")
+SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering culled images", "[render]")
 {
     GIVEN("setup engine with field")
     {
@@ -649,13 +657,16 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering culled images")
         auto fieldOrigin = Arca::ReliquaryOrigin();
         RegisterFieldTypes(
             fieldOrigin,
+            *engine.mockImageAssetManager,
             *engine.nullAudioManager,
             *engine.nullInputManager,
             *engine.mockGraphicsManager,
+            *engine.mockScriptManager,
             Spatial::ScreenSize{
                 100,
                 100 },
-            nullptr);
+            *engine.mockWindow,
+            engine.Logger());
         World::Field field(0, fieldOrigin.Actualize());
 
         auto& fieldReliquary = field.Reliquary();

@@ -4,7 +4,7 @@
 
 namespace Atmos
 {
-    void SpliceString(String &in, const String &check, const String &replace)
+    void SpliceString(String& in, const String& check, const String& replace)
     {
         auto pos = in.find(check);
 
@@ -17,7 +17,7 @@ namespace Atmos
         }
     }
 
-    void Trim(String &trim)
+    void Trim(String& trim)
     {
         while (trim[0] == ' ' || trim[0] == '\n')
             trim.erase(0, 1);
@@ -65,14 +65,14 @@ namespace Atmos
 
     namespace Detail
     {
-        String FromStringImpl(const String &arg, const ::Chroma::TypeIdentity<String> &t)
+        String FromStringImpl(const String& arg, const ::Chroma::TypeIdentity<String>& t)
         {
             return arg;
         }
     }
 
     template<class T>
-    T FromStringCommon(const String &arg)
+    T FromStringCommon(const String& arg)
     {
         long long returned = ::std::strtoll(arg.c_str(), nullptr, 10);
         if (returned > ::std::numeric_limits<T>::max())
@@ -83,32 +83,32 @@ namespace Atmos
             return static_cast<T>(returned);
     }
 
-    template<> char FromString(const String &arg)
+    template<> char FromString(const String& arg)
     {
         return FromStringCommon<char>(arg);
     }
 
-    template<> signed char FromString(const String &arg)
+    template<> signed char FromString(const String& arg)
     {
         return FromStringCommon<signed char>(arg);
     }
 
-    template<> unsigned char FromString(const String &arg)
+    template<> unsigned char FromString(const String& arg)
     {
         return FromStringCommon<unsigned char>(arg);
     }
 
-    template<> short FromString(const String &arg)
+    template<> short FromString(const String& arg)
     {
         return FromStringCommon<short>(arg);
     }
 
-    template<> unsigned short FromString(const String &arg)
+    template<> unsigned short FromString(const String& arg)
     {
         return FromStringCommon<unsigned short>(arg);
     }
 
-    template<> bool FromString(const String &arg)
+    template<> bool FromString(const String& arg)
     {
         if (arg == "true")
             return true;
@@ -168,5 +168,25 @@ namespace Atmos
     String ToString(const Spatial::Size2D& size)
     {
         return ToString(size.width) + "," + ToString(size.height);
+    }
+
+    String ToString(const Arca::SlimHandle& handle)
+    {
+        return handle.Type().name + "," + ToString(handle.Type().isConst) + "," + ToString(handle.ID());
+    }
+
+    class ToStringImplementation
+    {
+    public:
+        template<class T>
+        String operator()(T t)
+        {
+            return ToString(t);
+        }
+    };
+
+    String ToString(const Variant& arg)
+    {
+        return std::visit(ToStringImplementation{}, arg);
     }
 }

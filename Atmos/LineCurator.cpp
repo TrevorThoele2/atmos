@@ -48,7 +48,7 @@ namespace Atmos::Render
         for (auto& index : indices)
         {
             auto& value = *index->value;
-            const auto material = value.material.Get();
+            const auto material = value.material;
             if (!material)
                 continue;
 
@@ -58,13 +58,14 @@ namespace Atmos::Render
 
             std::vector<Spatial::Point2D> adjustedPoints;
             for (auto& point : value.points)
-                adjustedPoints.emplace_back(point.x - cameraTopLeft.x, point.y - cameraTopLeft.y);
+                adjustedPoints.push_back(Spatial::Point2D{ point.x - cameraTopLeft.x, point.y - cameraTopLeft.y });
 
             const LineRender render
             {
                 adjustedPoints,
                 z,
-                material,
+                material.ID(),
+                material.Get(),
                 width,
                 color
             };

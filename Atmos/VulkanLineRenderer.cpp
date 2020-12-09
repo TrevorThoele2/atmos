@@ -41,8 +41,8 @@ namespace Atmos::Render::Vulkan
         graphicsQueue(graphicsQueue),
         device(device)
     {
-        for (auto& material : materials)
-            MaterialCreated(Arca::Index<Asset::Material>{material.ID(), material.Owner()});
+        for (auto material = materials.begin(); material != materials.end(); ++material)
+            MaterialCreated(Arca::Index<Asset::Material>{material.ID(), materials.Owner()});
     }
 
     void LineRenderer::StageRender(const LineRender& lineRender)
@@ -192,8 +192,6 @@ namespace Atmos::Render::Vulkan
         if (lineRender.points.empty())
             return;
 
-        const auto materialAsset = lineRender.material;
-
         std::vector<Vertex> points;
         for (auto& point : lineRender.points)
         {
@@ -206,7 +204,7 @@ namespace Atmos::Render::Vulkan
         auto layer = raster.layers.Find(lineRender.z);
         if (!layer)
             layer = &raster.layers.Add(lineRender.z, Raster::Layer{});
-        auto& group = layer->GroupFor(materialAsset->ID());
+        auto& group = layer->GroupFor(lineRender.materialID);
         group.ListFor(lineRender.width).emplace_back(points);
     }
 }

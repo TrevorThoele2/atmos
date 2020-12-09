@@ -1,7 +1,5 @@
 #include "Point3D.h"
 
-#include <Inscription/Scribe.h>
-
 namespace Atmos::Spatial
 {
     bool Point3D::operator==(const Point3D& arg) const

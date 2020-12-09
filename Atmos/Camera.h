@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Arca/ClosedTypedRelic.h>
+#include <Arca/Relic.h>
 
 #include "Bounds.h"
 #include "Angle3D.h"
@@ -9,21 +9,16 @@
 
 namespace Atmos::Render
 {
-    class Camera final : public Arca::ClosedTypedRelic<Camera>
+    class Camera final
     {
     public:
-        void MoveTo(const Spatial::Point3D& to) const;
-        void MoveBy(const Spatial::Point3D& by) const;
-        void MoveDirection(const Spatial::Angle3D& direction, Spatial::Point3D::Value amount) const;
-        void ScaleTo(const Spatial::Scalers2D& to) const;
-
         [[nodiscard]] Spatial::Point3D Position() const;
         [[nodiscard]] Spatial::Size2D Size() const;
 
         [[nodiscard]] Spatial::AxisAlignedBox2D Sides() const;
     public:
-        explicit Camera(Init init, Spatial::ScreenSize screenSize);
-        explicit Camera(Init init, Arca::Serialization);
+        explicit Camera(Arca::RelicInit init, Spatial::ScreenSize screenSize);
+        explicit Camera(Arca::RelicInit init, Arca::Serialization);
     private:
         Arca::Index<Spatial::Bounds> bounds;
     };

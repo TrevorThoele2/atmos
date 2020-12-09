@@ -1,20 +1,20 @@
 #pragma once
 
-#include <Arca/ClosedTypedRelic.h>
+#include <Arca/Relic.h>
 #include "FramesPerSecond.h"
 
-#include "TimeValue.h"
+#include "TimePoint.h"
 #include "Stopwatch.h"
 
 namespace Atmos::Frame
 {
-    class Information final : public Arca::ClosedTypedRelic<Information>
+    class Information final
     {
     public:
-        explicit Information(Init init);
+        Information();
 
-        Time::Value<> startTime;
-        Time::Value<> endTime;
+        Time::Point<> startTime;
+        Time::Point<> endTime;
 
         Time::Duration<> lastElapsed;
         Time::Duration<> totalElapsed;

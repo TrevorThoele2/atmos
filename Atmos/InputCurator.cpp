@@ -7,7 +7,7 @@ namespace Atmos::Input
         manager(&manager), mappedInputs(init.owner), mappedActions(init.owner)
     {}
 
-    void Curator::Work()
+    void Curator::Handle(const Work&)
     {
         
     }

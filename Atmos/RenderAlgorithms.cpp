@@ -134,12 +134,12 @@ namespace Atmos::Render
                 const auto minX = *region.begin() * cellSize;
                 const auto maxX = *--region.end() * cellSize + cellSize;
 
-                returnValue.emplace_back(minX, minY);
-                returnValue.emplace_back(maxX, minY);
-                returnValue.emplace_back(minX, maxY);
-                returnValue.emplace_back(minX, maxY);
-                returnValue.emplace_back(maxX, minY);
-                returnValue.emplace_back(maxX, maxY);
+                returnValue.push_back(Spatial::Point2D{ minX, minY });
+                returnValue.push_back(Spatial::Point2D{ maxX, minY });
+                returnValue.push_back(Spatial::Point2D{ minX, maxY });
+                returnValue.push_back(Spatial::Point2D{ minX, maxY });
+                returnValue.push_back(Spatial::Point2D{ maxX, minY });
+                returnValue.push_back(Spatial::Point2D{ maxX, maxY });
             }
         }
 

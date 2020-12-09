@@ -3,7 +3,7 @@
 namespace Atmos::Render
 {
     RelativeImage::RelativeImage(
-        Init init,
+        Arca::RelicInit init,
         Arca::Index<Asset::Image> asset,
         ImageCore::Index assetIndex,
         Arca::Index<Asset::Material> material,
@@ -24,7 +24,7 @@ namespace Atmos::Render
         relativeBounds(init.Create<Spatial::RelativeBounds>(delta))
     {}
 
-    RelativeImage::RelativeImage(Init init, Arca::Serialization serialization) :
+    RelativeImage::RelativeImage(Arca::RelicInit init, Arca::Serialization serialization) :
         Image(init, serialization),
         relativeBounds(init.Find<Spatial::RelativeBounds>())
     {}

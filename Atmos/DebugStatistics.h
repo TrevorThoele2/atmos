@@ -2,7 +2,7 @@
 
 #include <optional>
 
-#include <Arca/ClosedTypedRelic.h>
+#include <Arca/Relic.h>
 
 #include "Point2D.h"
 #include "GridPoint.h"
@@ -12,10 +12,10 @@
 
 namespace Atmos::Debug
 {
-    class Statistics final : public Arca::ClosedTypedRelic<Statistics>
+    class Statistics final
     {
     public:
-        explicit Statistics(Init init);
+        Statistics() = default;
     public:
         struct Memory
         {

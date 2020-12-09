@@ -15,6 +15,7 @@ namespace Atmos::Render
     public:
         explicit LineCurator(Init init);
     public:
+        using ObjectCurator::Handle;
         void Handle(const MoveLine& command);
     protected:
         void WorkImpl(
@@ -40,6 +41,9 @@ namespace Arca
     {
         static const ObjectType objectType = ObjectType::Curator;
         static inline const TypeName typeName = "Atmos::Render::LineCurator";
+        using HandledCommands = HandledCommands<
+            Atmos::Work,
+            Atmos::Render::MoveLine>;
     };
 }
 

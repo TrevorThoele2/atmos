@@ -2,19 +2,19 @@
 
 #include "VulkanIncludes.h"
 
+#include "Logger.h"
+
 namespace Atmos::Render::Vulkan
 {
     class Debug
     {
     public:
-        Debug() = default;
+        static Logging::Logger* logger;
+    public:
+        explicit Debug(vk::Instance instance);
         ~Debug();
 
-        void Initialize(vk::Instance instance);
-
         [[nodiscard]] VkDebugUtilsMessengerCreateInfoEXT CreateInfo();
-    private:
-        bool initialized = false;
     private:
         VkDebugUtilsMessengerEXT messenger;
 

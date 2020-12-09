@@ -5,6 +5,7 @@
 #include "Camera.h"
 
 #include "ReconstructGraphics.h"
+#include "Work.h"
 
 #include "DebugValue.h"
 
@@ -15,7 +16,7 @@ namespace Atmos::Render
     public:
         explicit CameraCurator(Init init);
 
-        void Work();
+        void Handle(const Work& command);
     private:
         Arca::Index<Camera> camera;
     private:
@@ -31,6 +32,7 @@ namespace Arca
     {
         static const ObjectType objectType = ObjectType::Curator;
         static inline const TypeName typeName = "Atmos::Render::CameraCurator";
+        using HandledCommands = HandledCommands<Atmos::Work>;
     };
 }
 

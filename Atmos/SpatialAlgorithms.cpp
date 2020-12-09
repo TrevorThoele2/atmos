@@ -4,15 +4,24 @@
 
 namespace Atmos::Spatial
 {
-    Point2D::Value Length(const Point2D& one, const Point2D& two)
+    Point2D::Value Distance(Point2D starting, Point2D destination)
     {
-        const auto distanceX = two.x - one.x;
-        const auto distanceY = two.y - one.y;
+        const auto distanceX = destination.x - starting.x;
+        const auto distanceY = destination.y - starting.y;
 
-        return sqrt(pow(distanceX, 2) + pow(distanceY, 2));
+        return static_cast<Point2D::Value>(sqrt(pow(distanceX, 2) + pow(distanceY, 2)));
     }
 
-    bool IsBetween(const Point2D& one, const Point2D& check, const Point2D& two)
+    Point3D::Value Distance(Point3D starting, Point3D destination)
+    {
+        const auto distanceX = destination.x - starting.x;
+        const auto distanceY = destination.y - starting.y;
+        const auto distanceZ = destination.z - starting.z;
+
+        return static_cast<Point3D::Value>(sqrt(pow(distanceX, 2) + pow(distanceY, 2) + pow(distanceZ, 2)));
+    }
+
+    bool IsBetween(Point2D one, Point2D check, Point2D two)
     {
         const auto crossProduct =
             (check.y - one.y) *
@@ -40,30 +49,13 @@ namespace Atmos::Spatial
         return dotProduct <= length;
     }
 
-    Angle2D AngleOf(const Point2D& side1, const Point2D& middle, const Point2D& side2)
+    Angle2D AngleOf(Point2D side1, Point2D middle, Point2D side2)
     {
         return atan2(side2.y - middle.y, side2.x - middle.x)
             - atan2(side1.y - middle.y, side1.x - middle.x);
     }
 
-    Point2D::Value Distance(const Point2D& starting, const Point2D& destination)
-    {
-        const auto distanceX = destination.x - starting.x;
-        const auto distanceY = destination.y - starting.y;
-
-        return sqrt(pow(distanceX, 2) + pow(distanceY, 2));
-    }
-
-    Point3D::Value Distance(const Point3D& starting, const Point3D& destination)
-    {
-        const auto distanceX = destination.x - starting.x;
-        const auto distanceY = destination.y - starting.y;
-        const auto distanceZ = destination.z - starting.z;
-
-        return sqrt(pow(distanceX, 2) + pow(distanceY, 2) + pow(distanceZ, 2));
-    }
-
-    bool Contains(const AxisAlignedBox2D& box, const Point2D& point)
+    bool Contains(AxisAlignedBox2D box, Point2D point)
     {
         return point.x >= box.Left()
             && point.x <= box.Right()
@@ -71,7 +63,7 @@ namespace Atmos::Spatial
             && point.y <= box.Bottom();
     }
 
-    bool Contains(const AxisAlignedBox2D& box, const AxisAlignedBox2D& other)
+    bool Contains(AxisAlignedBox2D box, AxisAlignedBox2D other)
     {
         return other.Left() >= box.Left()
             && other.Right() <= box.Right()
@@ -79,7 +71,7 @@ namespace Atmos::Spatial
             && other.Bottom() <= box.Bottom();
     }
 
-    bool Contains(const AxisAlignedBox3D& box, const Point3D& point)
+    bool Contains(AxisAlignedBox3D box, Point3D point)
     {
         return point.x >= box.Left()
             && point.x <= box.Right()
@@ -89,7 +81,7 @@ namespace Atmos::Spatial
             && point.z <= box.NearZ();
     }
 
-    bool Contains(const AxisAlignedBox3D& box, const AxisAlignedBox3D& other)
+    bool Contains(AxisAlignedBox3D box, AxisAlignedBox3D other)
     {
         return other.Left() >= box.Left()
             && other.Right() <= box.Right()
@@ -99,14 +91,14 @@ namespace Atmos::Spatial
             && other.NearZ() <= box.NearZ();
     }
 
-    bool Intersects(const AxisAlignedBox2D& one, const AxisAlignedBox2D& two)
+    bool Intersects(AxisAlignedBox2D one, AxisAlignedBox2D two)
     {
         return
             (one.Left() <= two.Right() && one.Right() >= two.Left()) &&
             (one.Top() <= two.Bottom() && one.Bottom() >= two.Top());
     }
 
-    bool Intersects(const AxisAlignedBox3D& one, const AxisAlignedBox3D& two)
+    bool Intersects(AxisAlignedBox3D one, AxisAlignedBox3D two)
     {
         return
             (one.Left() <= two.Right() && one.Right() >= two.Left()) &&
@@ -114,7 +106,7 @@ namespace Atmos::Spatial
             (one.FarZ() <= two.NearZ() && one.NearZ() >= two.FarZ());
     }
 
-    Point2D operator+(const Point2D& left, const Point2D& right)
+    Point2D operator+(Point2D left, Point2D right)
     {
         return
         {
@@ -123,7 +115,7 @@ namespace Atmos::Spatial
         };
     }
 
-    Point2D operator-(const Point2D& left, const Point2D& right)
+    Point2D operator-(Point2D left, Point2D right)
     {
         return
         {
@@ -132,7 +124,7 @@ namespace Atmos::Spatial
         };
     }
 
-    Point3D operator+(const Point3D& left, const Point3D& right)
+    Point3D operator+(Point3D left, Point3D right)
     {
         return
         {
@@ -142,7 +134,7 @@ namespace Atmos::Spatial
         };
     }
 
-    Point3D operator-(const Point3D& left, const Point3D& right)
+    Point3D operator-(Point3D left, Point3D right)
     {
         return
         {
@@ -152,7 +144,7 @@ namespace Atmos::Spatial
         };
     }
 
-    Point2D ToPoint2D(const Point3D& point)
+    Point2D ToPoint2D(Point3D point)
     {
         return
         {
@@ -161,7 +153,7 @@ namespace Atmos::Spatial
         };
     }
 
-    Point2D ToPoint2D(const Grid::Point& point)
+    Point2D ToPoint2D(Grid::Point point)
     {
         return
         {
@@ -170,7 +162,7 @@ namespace Atmos::Spatial
         };
     }
 
-    Point2D ToPoint2D(const Angle2D& angle, Point2D::Value distance)
+    Point2D ToPoint2D(Angle2D angle, Point2D::Value distance)
     {
         return
         {
@@ -179,7 +171,17 @@ namespace Atmos::Spatial
         };
     }
 
-    Point3D ToPoint3D(const Grid::Point& point, Point3D::Value z)
+    Point3D ToPoint3D(Point2D point, Point3D::Value z)
+    {
+        return
+        {
+            point.x,
+            point.y,
+            z
+        };
+    }
+
+    Point3D ToPoint3D(Grid::Point point, Point3D::Value z)
     {
         return
         {
@@ -189,7 +191,7 @@ namespace Atmos::Spatial
         };
     }
 
-    Point3D ToPoint3D(const Angle3D& angle, Point3D::Value distance)
+    Point3D ToPoint3D(Angle3D angle, Point3D::Value distance)
     {
         return
         {
@@ -247,12 +249,12 @@ namespace Atmos::Spatial
 
     namespace Grid
     {
-        Point::Value Length(const Point& position1, const Point& position2)
+        Point::Value Distance(Point starting, Point destination)
         {
-            return position2.x - position1.x + position2.y - position1.y;
+            return destination.x - starting.x + destination.y - starting.y;
         }
 
-        Point ToPoint(const Point2D& position)
+        Point ToPoint(Point2D position)
         {
             return
             {
@@ -261,7 +263,7 @@ namespace Atmos::Spatial
             };
         }
 
-        Point ToPoint(const Point3D& position)
+        Point ToPoint(Point3D position)
         {
             return
             {

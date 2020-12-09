@@ -17,7 +17,7 @@
 #include "MockImageAssetResource.h"
 #include "PixelBuffer.h"
 
-SCENARIO_METHOD(WorldSerializationTestsFixture, "rendering after world serialization")
+SCENARIO_METHOD(WorldSerializationTestsFixture, "rendering after world serialization", "[world]")
 {
     GIVEN("setup engine with field")
     {
@@ -27,13 +27,16 @@ SCENARIO_METHOD(WorldSerializationTestsFixture, "rendering after world serializa
         auto fieldOrigin = Arca::ReliquaryOrigin();
         RegisterFieldTypes(
             fieldOrigin,
+            *engine.mockImageAssetManager,
             *engine.nullAudioManager,
             *engine.nullInputManager,
             *engine.mockGraphicsManager,
+            *engine.mockScriptManager,
             Spatial::ScreenSize {
                 std::numeric_limits<Spatial::ScreenSize::Dimension>::max(),
                 std::numeric_limits<Spatial::ScreenSize::Dimension>::max() },
-            nullptr);
+            *engine.mockWindow,
+            engine.Logger());
         World::Field field(0, fieldOrigin.Actualize());
 
         auto& fieldReliquary = field.Reliquary();

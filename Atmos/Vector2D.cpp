@@ -20,7 +20,7 @@ namespace Atmos::Spatial
 
     Vector2D::Value Vector2D::Length() const
     {
-        return std::sqrt(std::pow(x, 2) + std::pow(y, 2));
+        return static_cast<Vector2D::Value>(std::sqrt(std::pow(x, 2) + std::pow(y, 2)));
     }
 
     Angle2D Vector2D::Angle(const Vector2D& other) const

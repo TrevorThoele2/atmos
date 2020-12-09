@@ -3,16 +3,19 @@
 #include <Arca/Curator.h>
 
 #include "ChangeWindowSize.h"
+#include "WindowInformation.h"
 
 namespace Atmos::Window
 {
     class Curator final : public Arca::Curator
     {
     public:
-        using Arca::Curator::Curator;
+        Curator(Init init);
     public:
         void Handle(const ChangeSize& command);
     private:
+        Arca::Index<Information> information;
+
         void ChangeWindowSize(const Spatial::ScreenSize& size);
     };
 }

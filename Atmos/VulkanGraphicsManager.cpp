@@ -11,15 +11,12 @@
 #include "MainSurface.h"
 #include "GraphicsError.h"
 
-#include "Log.h"
-
-#include "WindowProvider.h"
-
 #include <Arca/Reliquary.h>
 
 namespace Atmos::Render::Vulkan
 {
-    GraphicsManager::GraphicsManager()
+    GraphicsManager::GraphicsManager(Logging::Logger& logger) :
+        Render::GraphicsManager(logger), shaderCompiler(logger)
     {
 #ifndef NDEBUG
         instanceLayers.push_back(VK_LAYER_KHRONOS_VALIDATION_LAYER_NAME);
@@ -30,7 +27,8 @@ namespace Atmos::Render::Vulkan
         ValidateRequiredInstanceLayers();
 
         instance = CreateInstance();
-        debug.Initialize(instance);
+        debug = std::make_unique<Debug>(instance);
+        Debug::logger = &logger;
     }
 
     bool GraphicsManager::IsOk() const
@@ -255,7 +253,7 @@ namespace Atmos::Render::Vulkan
         {
             createInfo.enabledLayerCount = 0;
         }
-        auto debugCreateInfo = debug.CreateInfo();
+        auto debugCreateInfo = debug->CreateInfo();
         createInfo.pNext = &debugCreateInfo;
 
         return vk::createInstance(createInfo);
@@ -428,7 +426,8 @@ namespace Atmos::Render::Vulkan
             presentQueue,
             queueIndices,
             memoryProperties,
-            reliquary);
+            reliquary,
+            Logger());
     }
 
     vk::UniqueSurfaceKHR GraphicsManager::CreateSurface(void* window, vk::Instance instance)

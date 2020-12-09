@@ -1,17 +1,17 @@
 #pragma once
 
-#include <Arca/ClosedTypedRelic.h>
+#include <Arca/Relic.h>
 #include "FieldID.h"
 
 namespace Atmos::World
 {
-    class CurrentFieldData final : public Arca::ClosedTypedRelic<CurrentFieldData>
+    class CurrentFieldData final
     {
     public:
         FieldID fieldID = 0;
     public:
-        explicit CurrentFieldData(Init init);
-        CurrentFieldData(Init init, FieldID fieldID);
+        CurrentFieldData() = default;
+        explicit CurrentFieldData(FieldID fieldID);
     };
 }
 

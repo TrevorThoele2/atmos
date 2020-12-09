@@ -3,7 +3,7 @@
 namespace Atmos::Render
 {
     StaticImage::StaticImage(
-        Init init,
+        Arca::RelicInit init,
         Arca::Index<Asset::Image> asset,
         ImageCore::Index assetIndex,
         Arca::Index<Asset::Material> material,
@@ -23,7 +23,7 @@ namespace Atmos::Render
             rotation)
     {}
 
-    StaticImage::StaticImage(Init init, Arca::Serialization serialization) :
+    StaticImage::StaticImage(Arca::RelicInit init, Arca::Serialization serialization) :
         Image(init, serialization)
     {}
 }

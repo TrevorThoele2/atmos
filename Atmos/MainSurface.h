@@ -5,10 +5,10 @@
 
 namespace Atmos::Render
 {
-    class MainSurface final : public Surface<MainSurface>
+    class MainSurface final : public Surface
     {
     public:
-        MainSurface(Init init, GraphicsManager& manager, void* window);
+        MainSurface(Arca::RelicInit init, GraphicsManager& manager, void* window);
     };
 }
 

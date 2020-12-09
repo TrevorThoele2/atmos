@@ -3,22 +3,25 @@
 #include "AssetWithResource.h"
 #include "ScriptAssetResource.h"
 
-class asIScriptModule;
+#include "LoadAssetsUserContext.h"
+#include "CreateScriptAssetResource.h"
 
 namespace Atmos::Asset
 {
-    class Script final : public AssetWithResource<Resource::Script, Script>
+    class Script final : public AssetWithResource<Resource::Script>
     {
     public:
-        using SymbolName = Atmos::Name;
-    public:
-        Script(Init init, const Atmos::Name& name, ResourcePtr&& resource);
-        Script(Init init, Arca::Serialization serialization);
+        Script(Arca::RelicInit init, const Atmos::Name& name, ResourcePtr&& resource);
+        Script(Arca::RelicInit init, Arca::Serialization serialization);
         Script(Script&& arg) noexcept;
 
         Script& operator=(Script&& arg) noexcept;
     public:
         void Setup(ResourcePtr&& set);
+    private:
+        Arca::RelicInit init;
+    private:
+        INSCRIPTION_ACCESS;
     };
 }
 
@@ -47,8 +50,26 @@ namespace Inscription
         template<class Archive>
         void Scriven(ObjectT& object, Archive& archive)
         {
-            BaseScriven<Atmos::Asset::AssetWithResource<Atmos::Asset::Resource::Script, Atmos::Asset::Script>>(
+            BaseScriven<Atmos::Asset::AssetWithResource<Atmos::Asset::Resource::Script>>(
                 object, archive);
+
+            if (archive.IsInput())
+            {
+                auto& assetUserContext = *archive.template UserContext<LoadAssetsUserContext>();
+
+                auto extracted = assetUserContext.LoadScript(object.Name());
+                if (extracted)
+                {
+                    using CreateResource = Atmos::Asset::Resource::Create<Atmos::Asset::Resource::Script>;
+                    auto resource = object.init.owner.Do(CreateResource
+                        {
+                            extracted->memory,
+                            object.Name()
+                        });
+
+                    object.Setup(std::move(resource));
+                }
+            }
         }
     };
 

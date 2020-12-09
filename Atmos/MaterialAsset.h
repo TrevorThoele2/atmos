@@ -16,7 +16,7 @@ namespace Atmos::Asset
         Region
     };
 
-    class Material final : public Asset<Material>
+    class Material final : public Asset
     {
     public:
         class Pass
@@ -35,11 +35,11 @@ namespace Atmos::Asset
         };
     public:
         Material(
-            Init init,
+            Arca::RelicInit init,
             const Atmos::Name& name,
             MaterialType type,
             std::vector<Pass> passes);
-        Material(Init init, Arca::Serialization serialization);
+        Material(Arca::RelicInit init, Arca::Serialization serialization);
         Material(Material&& arg) noexcept;
 
         Material& operator=(Material&& arg) noexcept;
@@ -58,7 +58,7 @@ namespace Atmos::Asset
 namespace Arca
 {
     template<>
-    struct Traits<::Atmos::Asset::Material>
+    struct Traits<Atmos::Asset::Material>
     {
         static const ObjectType objectType = ObjectType::Relic;
         static inline const TypeName typeName = "Atmos::Asset::Material";
@@ -107,7 +107,7 @@ namespace Inscription
         template<class Archive>
         void Scriven(ObjectT& object, Archive& archive)
         {
-            BaseScriven<Atmos::Asset::Asset<Atmos::Asset::Material>>(object, archive);
+            BaseScriven<Atmos::Asset::Asset>(object, archive);
             archive("type", object.type);
             archive("passes", object.passes);
         }

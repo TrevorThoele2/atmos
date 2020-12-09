@@ -21,7 +21,7 @@ namespace Arca
     {
         static const ObjectType objectType = ObjectType::Curator;
         static inline const TypeName typeName = "Atmos::Asset::MaterialCurator";
-        using HandledCommands = HandledCommands<Atmos::Asset::Find<Atmos::Asset::Material>>;
+        using HandledCommands = HandledCommands<Atmos::Asset::FindByName<Atmos::Asset::Material>>;
     };
 }
 

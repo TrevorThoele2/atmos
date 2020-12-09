@@ -10,6 +10,16 @@
 
 namespace Atmos::Logging
 {
+    Logger::Logger(Severity minimumSeverity) : minimumSeverity(minimumSeverity)
+    {
+        StartSession();
+    }
+
+    Logger::~Logger()
+    {
+        StopSession();
+    }
+
     std::optional<ProcessedLog> Logger::Log(const Logging::Log& log)
     {
         return Log(log.message, log.severity, log.details);
@@ -20,45 +30,23 @@ namespace Atmos::Logging
         Severity severity,
         std::optional<Details> details)
     {
-        if (message.empty())
+        if (static_cast<int>(severity) < static_cast<int>(minimumSeverity))
             return {};
 
-        if (IsAllWhitespace(message))
-            return {};
+        const auto output =
+            CurrentTimeStamp() +
+            ' ' +
+            SeverityToString(severity) +
+            ' ' +
+            message +
+            (message.find_last_of('\n') != message.size() - 1 ? "\n" : "") +
+            DetailsToString(details);
 
-        Inscription::OutputTextFile outFile(OutputFilePath(), true);
-
-        // Output time and date
-        auto output = CurrentTimeStamp() + ' ';
-
-        // Output severity
         {
-            switch (severity)
-            {
-            case Severity::Verbose:
-                output.append("<VERBOSE>");
-                break;
-            case Severity::Information:
-                output.append("<INFO>");
-                break;
-            case Severity::Warning:
-                output.append("<WARNING>");
-                break;
-            case Severity::Error:
-                output.append("<ERROR>");
-                break;
-            }
+            Inscription::OutputTextFile outputFile(OutputFilePath(), true);
+            outputFile.WriteData(output);
         }
 
-        output.append(' ' + message);
-        if (output.find_last_of('\n') != output.size() - 1)
-            output.append(1, '\n');
-
-        if (details)
-            for (auto& loop : *details)
-                output.append("        " + loop.name + ": " + ToString(loop.value) + '\n');
-
-        outFile.WriteData(output);
         ProcessedLog processed{ output, message, severity, details };
         onLog(processed);
         return processed;
@@ -83,6 +71,33 @@ namespace Atmos::Logging
     File::Path Logger::OutputFilePath()
     {
         return std::filesystem::current_path() / "log.txt";
+    }
+
+    String Logger::SeverityToString(Severity severity)
+    {
+        switch (severity)
+        {
+        case Severity::Verbose:
+            return "<VERBOSE>";
+        case Severity::Information:
+            return "<INFO>";
+        case Severity::Warning:
+            return "<WARNING>";
+        case Severity::Error:
+            return "<ERROR>";
+        }
+
+        throw std::runtime_error("Logger does not understand severity type.");
+    }
+
+    String Logger::DetailsToString(std::optional<Details> details)
+    {
+        String output;
+        if (details)
+            for (auto& loop : *details)
+                output.append("        " + loop.name + ": " + ToString(loop.value) + '\n');
+
+        return output;
     }
 
     String Logger::CurrentTimeStamp()

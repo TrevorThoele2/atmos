@@ -17,7 +17,7 @@ namespace Atmos::Frame
             MutablePointer())
     {}
 
-    void EndCurator::Work()
+    void EndCurator::Handle(const Work&)
     {
         auto mutableInformation = MutablePointer().Of<Information>();
 
@@ -34,7 +34,7 @@ namespace Atmos::Frame
 
         ++count;
 
-        mutableInformation->endTime = Time::Value<>() + mutableInformation->stopwatch.Elapsed();
+        mutableInformation->endTime = Time::Point<>() + mutableInformation->stopwatch.Elapsed();
         mutableInformation->lastElapsed =
             std::chrono::duration_cast<Time::Seconds>(
                 mutableInformation->endTime - mutableInformation->startTime);

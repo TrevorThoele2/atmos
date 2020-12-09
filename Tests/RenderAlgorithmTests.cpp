@@ -7,7 +7,7 @@ using namespace Atmos;
 using namespace Spatial;
 using namespace Render;
 
-SCENARIO_METHOD(RenderAlgorithmTestsFixture, "simplification")
+SCENARIO_METHOD(RenderAlgorithmTestsFixture, "simplification", "[render]")
 {
     std::vector<Point2D> points;
 
@@ -26,7 +26,7 @@ SCENARIO_METHOD(RenderAlgorithmTestsFixture, "simplification")
 
     GIVEN("one point")
     {
-        points.emplace_back(0.0f, 0.0f);
+        points.push_back(Point2D{ 0.0f, 0.0f });
 
         WHEN("simplifying")
         {
@@ -42,8 +42,8 @@ SCENARIO_METHOD(RenderAlgorithmTestsFixture, "simplification")
 
     GIVEN("two points")
     {
-        points.emplace_back(0.0f, 0.0f);
-        points.emplace_back(1.0f, 1.0f);
+        points.push_back(Point2D{ 0.0f, 0.0f });
+        points.push_back(Point2D{ 1.0f, 1.0f });
 
         WHEN("simplifying")
         {
@@ -60,9 +60,9 @@ SCENARIO_METHOD(RenderAlgorithmTestsFixture, "simplification")
 
     GIVEN("three points in a line")
     {
-        points.emplace_back(0.0f, 0.0f);
-        points.emplace_back(1.0f, 1.0f);
-        points.emplace_back(2.0f, 2.0f);
+        points.push_back(Point2D{ 0.0f, 0.0f });
+        points.push_back(Point2D{ 1.0f, 1.0f });
+        points.push_back(Point2D{ 2.0f, 2.0f });
 
         WHEN("simplifying")
         {
@@ -79,25 +79,25 @@ SCENARIO_METHOD(RenderAlgorithmTestsFixture, "simplification")
 
     GIVEN("square with many redundant points")
     {
-        points.emplace_back(0.0f, 0.0f);
-        points.emplace_back(1.0f, 0.0f);
-        points.emplace_back(2.0f, 0.0f);
-        points.emplace_back(4.0f, 0.0f);
-        points.emplace_back(5.0f, 0.0f);
-        points.emplace_back(5.0f, 1.0f);
-        points.emplace_back(5.0f, 2.0f);
-        points.emplace_back(5.0f, 3.0f);
-        points.emplace_back(5.0f, 4.0f);
-        points.emplace_back(5.0f, 5.0f);
-        points.emplace_back(4.0f, 5.0f);
-        points.emplace_back(3.0f, 5.0f);
-        points.emplace_back(2.0f, 5.0f);
-        points.emplace_back(1.0f, 5.0f);
-        points.emplace_back(0.0f, 5.0f);
-        points.emplace_back(0.0f, 4.0f);
-        points.emplace_back(0.0f, 3.0f);
-        points.emplace_back(0.0f, 2.0f);
-        points.emplace_back(0.0f, 1.0f);
+        points.push_back(Point2D{ 0.0f, 0.0f });
+        points.push_back(Point2D{ 1.0f, 0.0f });
+        points.push_back(Point2D{ 2.0f, 0.0f });
+        points.push_back(Point2D{ 4.0f, 0.0f });
+        points.push_back(Point2D{ 5.0f, 0.0f });
+        points.push_back(Point2D{ 5.0f, 1.0f });
+        points.push_back(Point2D{ 5.0f, 2.0f });
+        points.push_back(Point2D{ 5.0f, 3.0f });
+        points.push_back(Point2D{ 5.0f, 4.0f });
+        points.push_back(Point2D{ 5.0f, 5.0f });
+        points.push_back(Point2D{ 4.0f, 5.0f });
+        points.push_back(Point2D{ 3.0f, 5.0f });
+        points.push_back(Point2D{ 2.0f, 5.0f });
+        points.push_back(Point2D{ 1.0f, 5.0f });
+        points.push_back(Point2D{ 0.0f, 5.0f });
+        points.push_back(Point2D{ 0.0f, 4.0f });
+        points.push_back(Point2D{ 0.0f, 3.0f });
+        points.push_back(Point2D{ 0.0f, 2.0f });
+        points.push_back(Point2D{ 0.0f, 1.0f });
 
         WHEN("simplifying")
         {
@@ -116,9 +116,9 @@ SCENARIO_METHOD(RenderAlgorithmTestsFixture, "simplification")
 
     GIVEN("three points not in a line")
     {
-        points.emplace_back(0.0f, 0.0f);
-        points.emplace_back(2.0f, 0.0f);
-        points.emplace_back(0.0f, 2.0f);
+        points.push_back(Point2D{ 0.0f, 0.0f });
+        points.push_back(Point2D{ 2.0f, 0.0f });
+        points.push_back(Point2D{ 0.0f, 2.0f });
 
         WHEN("simplifying")
         {
@@ -132,7 +132,7 @@ SCENARIO_METHOD(RenderAlgorithmTestsFixture, "simplification")
     }
 }
 
-SCENARIO_METHOD(RenderAlgorithmTestsFixture, "triangulation of Position2D")
+SCENARIO_METHOD(RenderAlgorithmTestsFixture, "triangulation of Position2D", "[render]")
 {
     std::vector<Point2D> points;
 
@@ -151,7 +151,7 @@ SCENARIO_METHOD(RenderAlgorithmTestsFixture, "triangulation of Position2D")
 
     GIVEN("one point")
     {
-        points.emplace_back(0.0f, 0.0f);
+        points.push_back(Point2D{ 0.0f, 0.0f });
 
         WHEN("triangulating")
         {
@@ -166,8 +166,8 @@ SCENARIO_METHOD(RenderAlgorithmTestsFixture, "triangulation of Position2D")
 
     GIVEN("two points")
     {
-        points.emplace_back(0.0f, 0.0f);
-        points.emplace_back(1.0f, 1.0f);
+        points.push_back(Point2D{ 0.0f, 0.0f });
+        points.push_back(Point2D{ 1.0f, 1.0f });
 
         WHEN("triangulating")
         {
@@ -182,9 +182,9 @@ SCENARIO_METHOD(RenderAlgorithmTestsFixture, "triangulation of Position2D")
 
     GIVEN("three points in a line")
     {
-        points.emplace_back(0.0f, 0.0f);
-        points.emplace_back(1.0f, 1.0f);
-        points.emplace_back(2.0f, 2.0f);
+        points.push_back(Point2D{ 0.0f, 0.0f });
+        points.push_back(Point2D{ 1.0f, 1.0f });
+        points.push_back(Point2D{ 2.0f, 2.0f });
 
         WHEN("triangulating")
         {
@@ -199,9 +199,9 @@ SCENARIO_METHOD(RenderAlgorithmTestsFixture, "triangulation of Position2D")
 
     GIVEN("three points not in a line")
     {
-        points.emplace_back(0.0f, 0.0f);
-        points.emplace_back(2.0f, 0.0f);
-        points.emplace_back(0.0f, 2.0f);
+        points.push_back(Point2D{ 0.0f, 0.0f });
+        points.push_back(Point2D{ 2.0f, 0.0f });
+        points.push_back(Point2D{ 0.0f, 2.0f });
 
         WHEN("triangulating")
         {
@@ -221,10 +221,10 @@ SCENARIO_METHOD(RenderAlgorithmTestsFixture, "triangulation of Position2D")
     {
         const auto boxDistance = 10.0f;
 
-        points.emplace_back(-boxDistance, -boxDistance);
-        points.emplace_back(boxDistance, -boxDistance);
-        points.emplace_back(boxDistance, boxDistance);
-        points.emplace_back(-boxDistance, boxDistance);
+        points.push_back(Point2D{ -boxDistance, -boxDistance });
+        points.push_back(Point2D{ boxDistance, -boxDistance });
+        points.push_back(Point2D{ boxDistance, boxDistance });
+        points.push_back(Point2D{ -boxDistance, boxDistance });
 
         WHEN("triangulating")
         {
@@ -253,14 +253,14 @@ SCENARIO_METHOD(RenderAlgorithmTestsFixture, "triangulation of Position2D")
         const auto boxDistance = 10.0f;
         const auto pointDistance = 30.0f;
 
-        points.emplace_back(0.0f, -pointDistance);
-        points.emplace_back(boxDistance, -boxDistance);
-        points.emplace_back(pointDistance, 0.0f);
-        points.emplace_back(boxDistance, boxDistance);
-        points.emplace_back(0.0f, pointDistance);
-        points.emplace_back(-boxDistance, boxDistance);
-        points.emplace_back(-pointDistance, 0.0f);
-        points.emplace_back(-boxDistance, -boxDistance);
+        points.push_back(Point2D{ 0.0f, -pointDistance });
+        points.push_back(Point2D{ boxDistance, -boxDistance });
+        points.push_back(Point2D{ pointDistance, 0.0f });
+        points.push_back(Point2D{ boxDistance, boxDistance });
+        points.push_back(Point2D{ 0.0f, pointDistance });
+        points.push_back(Point2D{ -boxDistance, boxDistance });
+        points.push_back(Point2D{ -pointDistance, 0.0f });
+        points.push_back(Point2D{ -boxDistance, -boxDistance });
 
         WHEN("triangulating")
         {
@@ -291,26 +291,26 @@ SCENARIO_METHOD(RenderAlgorithmTestsFixture, "triangulation of Position2D")
         const auto xOffset = 100.0f;
         const auto yOffset = 100.0f;
 
-        points.emplace_back(xOffset, yOffset);
-        points.emplace_back(xOffset + width, yOffset);
-        points.emplace_back(xOffset + width, yOffset + thickness);
-        points.emplace_back(xOffset + thickness, yOffset + thickness);
-        points.emplace_back(xOffset + thickness, yOffset + 2 * thickness);
-        points.emplace_back(xOffset + width, yOffset + 2 * thickness);
-        points.emplace_back(xOffset + width, yOffset + 3 * thickness);
-        points.emplace_back(xOffset + thickness, yOffset + 3 * thickness);
-        points.emplace_back(xOffset + thickness, yOffset + 4 * thickness);
-        points.emplace_back(xOffset + width, yOffset + 4 * thickness);
-        points.emplace_back(xOffset + width, yOffset + 5 * thickness);
-        points.emplace_back(xOffset + thickness, yOffset + 5 * thickness);
-        points.emplace_back(xOffset + thickness, yOffset + 6 * thickness);
-        points.emplace_back(xOffset + width, yOffset + 6 * thickness);
-        points.emplace_back(xOffset + width, yOffset + 7 * thickness);
-        points.emplace_back(xOffset + thickness, yOffset + 7 * thickness);
-        points.emplace_back(xOffset + thickness, yOffset + 8 * thickness);
-        points.emplace_back(xOffset + width, yOffset + 8 * thickness);
-        points.emplace_back(xOffset + width, yOffset + 9 * thickness);
-        points.emplace_back(xOffset, yOffset + 9 * thickness);
+        points.push_back(Point2D{ xOffset, yOffset });
+        points.push_back(Point2D{ xOffset + width, yOffset });
+        points.push_back(Point2D{ xOffset + width, yOffset + thickness });
+        points.push_back(Point2D{ xOffset + thickness, yOffset + thickness });
+        points.push_back(Point2D{ xOffset + thickness, yOffset + 2 * thickness });
+        points.push_back(Point2D{ xOffset + width, yOffset + 2 * thickness });
+        points.push_back(Point2D{ xOffset + width, yOffset + 3 * thickness });
+        points.push_back(Point2D{ xOffset + thickness, yOffset + 3 * thickness });
+        points.push_back(Point2D{ xOffset + thickness, yOffset + 4 * thickness });
+        points.push_back(Point2D{ xOffset + width, yOffset + 4 * thickness });
+        points.push_back(Point2D{ xOffset + width, yOffset + 5 * thickness });
+        points.push_back(Point2D{ xOffset + thickness, yOffset + 5 * thickness });
+        points.push_back(Point2D{ xOffset + thickness, yOffset + 6 * thickness });
+        points.push_back(Point2D{ xOffset + width, yOffset + 6 * thickness });
+        points.push_back(Point2D{ xOffset + width, yOffset + 7 * thickness });
+        points.push_back(Point2D{ xOffset + thickness, yOffset + 7 * thickness });
+        points.push_back(Point2D{ xOffset + thickness, yOffset + 8 * thickness });
+        points.push_back(Point2D{ xOffset + width, yOffset + 8 * thickness });
+        points.push_back(Point2D{ xOffset + width, yOffset + 9 * thickness });
+        points.push_back(Point2D{ xOffset, yOffset + 9 * thickness });
 
         WHEN("triangulating")
         {
@@ -335,7 +335,7 @@ SCENARIO_METHOD(RenderAlgorithmTestsFixture, "triangulation of Position2D")
     }
 }
 
-SCENARIO_METHOD(RenderAlgorithmTestsFixture, "triangulation of GridPoint")
+SCENARIO_METHOD(RenderAlgorithmTestsFixture, "triangulation of GridPoint", "[render]")
 {
     std::vector<Grid::Point> points;
 
@@ -354,7 +354,7 @@ SCENARIO_METHOD(RenderAlgorithmTestsFixture, "triangulation of GridPoint")
 
     GIVEN("one point")
     {
-        points.emplace_back(0, 0);
+        points.push_back(Grid::Point{ 0, 0 });
 
         WHEN("triangulating")
         {
@@ -369,8 +369,8 @@ SCENARIO_METHOD(RenderAlgorithmTestsFixture, "triangulation of GridPoint")
 
     GIVEN("two disconnected points")
     {
-        points.emplace_back(0, 0);
-        points.emplace_back(1, 1);
+        points.push_back(Grid::Point{ 0, 0 });
+        points.push_back(Grid::Point{ 1, 1 });
 
         WHEN("triangulating")
         {
@@ -385,9 +385,9 @@ SCENARIO_METHOD(RenderAlgorithmTestsFixture, "triangulation of GridPoint")
 
     GIVEN("three points in a line")
     {
-        points.emplace_back(0, 0);
-        points.emplace_back(1, 0);
-        points.emplace_back(2, 0);
+        points.push_back(Grid::Point{ 0, 0 });
+        points.push_back(Grid::Point{ 1, 0 });
+        points.push_back(Grid::Point{ 2, 0 });
 
         WHEN("triangulating")
         {
@@ -402,9 +402,9 @@ SCENARIO_METHOD(RenderAlgorithmTestsFixture, "triangulation of GridPoint")
 
     GIVEN("three points not in a line")
     {
-        points.emplace_back(0, 0);
-        points.emplace_back(2, 0);
-        points.emplace_back(0, 2);
+        points.push_back(Grid::Point{ 0, 0 });
+        points.push_back(Grid::Point{ 2, 0 });
+        points.push_back(Grid::Point{ 0, 2 });
 
         WHEN("triangulating")
         {

@@ -1,9 +1,11 @@
 #pragma once
 
-#include <cstdint>
 #include <variant>
-
+#include <cstdint>
 #include "String.h"
+#include <Arca/SlimHandle.h>
+
+#include <Inscription/VariantScribe.h>
 
 namespace Atmos
 {
@@ -15,11 +17,9 @@ namespace Atmos
         std::int64_t,
         std::uint8_t,
         std::uint16_t,
-        uint32_t,
+        std::uint32_t,
         std::uint64_t,
         float,
         double,
         String>;
-
-    String ToString(const Variant& arg);
 }

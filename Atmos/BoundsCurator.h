@@ -14,6 +14,8 @@
 
 #include "Log.h"
 
+#include "StringUtility.h"
+
 namespace Atmos::Spatial
 {
     class BoundsCurator final : public Arca::Curator
@@ -51,7 +53,7 @@ namespace Atmos::Spatial
             const auto log = Logging::Log{
                 "Attempted movement of relic without " + Arca::TypeFor<Bounds>().name + ".",
                 Logging::Severity::Warning,
-                { { "RelicID", id } } };
+                { { "RelicID", ToString(id) } } };
             Owner().Do(log);
         }
         else

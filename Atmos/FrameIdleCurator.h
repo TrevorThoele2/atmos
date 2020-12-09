@@ -2,6 +2,10 @@
 
 #include <Arca/Curator.h>
 
+#include "Work.h"
+
+#include "WindowInformation.h"
+
 namespace Atmos::Frame
 {
     class IdleCurator : public Arca::Curator
@@ -9,8 +13,10 @@ namespace Atmos::Frame
     public:
         explicit IdleCurator(Init init);
 
-        void Work();
+        void Handle(const Work& command);
     private:
+        Arca::Index<Window::Information> windowInformation;
+
         [[nodiscard]] bool IsDone();
     };
 }
@@ -22,5 +28,6 @@ namespace Arca
     {
         static const ObjectType objectType = ObjectType::Curator;
         static inline TypeName typeName = "Atmos::Frame::IdleCurator";
+        using HandledCommands = HandledCommands<Atmos::Work>;
     };
 }

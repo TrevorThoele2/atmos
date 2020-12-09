@@ -21,7 +21,7 @@ namespace Atmos::Render
     {
         if (size.width <= 0.0f || size.height <= 0.0f)
         {
-            Logging::logger.Log("ImageAsset's require dimensions greater than 0.");
+            logger->Log("ImageAsset's require dimensions greater than 0.");
             return {};
         }
 
@@ -85,5 +85,13 @@ namespace Atmos::Render
     bool GraphicsManager::ShouldReconstruct() const
     {
         return ShouldReconstructInternals();
+    }
+
+    GraphicsManager::GraphicsManager(Logging::Logger& logger) : logger(&logger)
+    {}
+
+    Logging::Logger& GraphicsManager::Logger()
+    {
+        return *logger;
     }
 }

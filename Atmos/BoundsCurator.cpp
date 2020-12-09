@@ -6,6 +6,8 @@
 
 #include "SpatialAlgorithms.h"
 
+#include "StringUtility.h"
+
 namespace Atmos::Spatial
 {
     BoundsCurator::BoundsCurator(Init init) : Curator(init)
@@ -141,7 +143,7 @@ namespace Atmos::Spatial
             const auto log = Logging::Log{
                 "Relics with " + Arca::TypeFor<RelativeBounds>().name + " must be parented.",
                 Logging::Severity::Warning,
-                { { "RelicID", id } } };
+                { { "RelicID", ToString(id) } } };
             Owner().Do(log);
             return nullptr;
         }
@@ -152,7 +154,7 @@ namespace Atmos::Spatial
             const auto log = Logging::Log{
                 "Relic parents of " + Arca::TypeFor<RelativeBounds>().name + " must have a Bounds.",
                 Logging::Severity::Warning,
-                { { "RelicID", id } } };
+                { { "RelicID", ToString(id) } } };
             Owner().Do(log);
             return nullptr;
         }

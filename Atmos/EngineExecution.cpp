@@ -1,14 +1,18 @@
 #include "EngineExecution.h"
 
-#include "WindowProvider.h"
+#include "Work.h"
 #include "FocusLost.h"
 #include "FocusRegained.h"
 
 #include "WorldManager.h"
 
+#include "WindowBase.h"
+#include "TimePoint.h"
+
 namespace Atmos
 {
-    EngineExecution::EngineExecution(World::WorldManager& worldManager) : worldManager(&worldManager)
+    EngineExecution::EngineExecution(World::WorldManager& worldManager, Window::WindowBase& window) :
+        window(&window), worldManager(&worldManager)
     {}
 
     void EngineExecution::Start()
@@ -21,14 +25,14 @@ namespace Atmos
                     OnFocusRegain();
 
                 if (worldManager->CurrentField())
-                    worldManager->CurrentField()->Reliquary().Work();
+                    worldManager->CurrentField()->Reliquary().Do(Work{});
             }
             else
             {
                 if (!isFocusLost)
                     OnFocusLost();
 
-                Window::window->Suspend(std::chrono::duration_cast<Time::Seconds>(Time::Milliseconds(1)));
+                window->Suspend(std::chrono::duration_cast<Time::Seconds>(Time::Milliseconds(1)));
             }
         }
     }
@@ -48,12 +52,12 @@ namespace Atmos
             wasFocusedLastPass = !wasFocusedLastPass;
         }
 
-        return Window::window->OnStartFrame();
+        return window->OnStartFrame();
     }
 
     bool EngineExecution::IsCurrentlyFocused() const
     {
-        return Window::window->IsCurrentlyFocused();
+        return window->IsCurrentlyFocused();
     }
 
     void EngineExecution::OnFocusLost()

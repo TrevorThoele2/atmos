@@ -4,11 +4,11 @@
 
 namespace Atmos::Render
 {
-    class StaticImage final : public Image<StaticImage, false>
+    class StaticImage final : public Image<false>
     {
     public:
         StaticImage(
-            Init init,
+            Arca::RelicInit init,
             Arca::Index<Asset::Image> asset,
             ImageCore::Index assetIndex,
             Arca::Index<Asset::Material> material,
@@ -16,7 +16,7 @@ namespace Atmos::Render
             const Spatial::Point3D& position,
             const Spatial::Scalers2D& scalers,
             const Spatial::Angle2D& rotation);
-        StaticImage(Init init, Arca::Serialization serialization);
+        StaticImage(Arca::RelicInit init, Arca::Serialization serialization);
     private:
         INSCRIPTION_ACCESS;
     };

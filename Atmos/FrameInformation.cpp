@@ -4,8 +4,6 @@
 
 namespace Atmos::Frame
 {
-    Information::Information(Init init) :
-        ClosedTypedRelic(init),
-        stopwatch(Time::CreateRealStopwatch())
+    Information::Information() : stopwatch(Time::CreateRealStopwatch())
     {}
 }

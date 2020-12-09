@@ -9,6 +9,8 @@ namespace Atmos::Render
     {
         Mesh mesh;
         Spatial::Point2D::Value z;
+
+        Arca::RelicID materialID;
         const Asset::Material* material;
     };
 }

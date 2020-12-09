@@ -14,7 +14,7 @@ namespace Atmos::World
             MutablePointer())
     {}
 
-    void CurrentFieldCurator::Work()
+    void CurrentFieldCurator::Handle(const Work&)
     {
 
     }

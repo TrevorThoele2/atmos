@@ -1,8 +1,6 @@
 #include "EntityCurator.h"
 
-#include "RunningScript.h"
-#include "FieldSet.h"
-#include "FieldUnset.h"
+#include "Script.h"
 
 #include <Arca/Reliquary.h>
 #include <Arca/Created.h>
@@ -14,67 +12,156 @@ namespace Atmos::Entity
         Arca::Curator(init),
         prototypes(init.owner.Batch<Prototype>()),
         entities(init.owner.Batch<Entity>()),
-        mappedEntities(init.owner)
+        mapped(init.owner)
     {
         Owner().On<Arca::CreatedKnown<Entity>>(
             [this](const Arca::CreatedKnown<Entity>& signal)
             {
-                auto mutableMappedEntities = MutablePointer().Of(mappedEntities);
-                mutableMappedEntities->nameToEntity.emplace(signal.index->name, signal.index);
-                mutableMappedEntities->positionToEntity.emplace(signal.index->position, signal.index);
+                const auto index = signal.index;
+
+                auto mutableMappedEntities = MutablePointer().Of(mapped);
+                AddEntityTo(mutableMappedEntities->nameToEntity, index->name, index);
+                AddEntityTo(mutableMappedEntities->positionToEntity, index->position, index);
             });
 
         Owner().On<Arca::DestroyingKnown<Entity>>(
             [this](const Arca::DestroyingKnown<Entity>& signal)
             {
-                auto mutableMappedEntities = MutablePointer().Of(mappedEntities);
-                mutableMappedEntities->nameToEntity.erase(signal.index->name);
-                mutableMappedEntities->positionToEntity.erase(signal.index->position);
+                const auto index = signal.index;
+
+                auto mutableMappedEntities = MutablePointer().Of(mapped);
+                RemoveEntityFrom(mutableMappedEntities->nameToEntity, index);
+                RemoveEntityFrom(mutableMappedEntities->positionToEntity, index);
             });
     }
 
-    void Curator::Work()
+    void Curator::Handle(const Work&)
     {
 
     }
 
     void Curator::Handle(const ActualizeAllPrototypes&)
     {
-        struct ToInitialize
+        struct ToConstruct
         {
             Entity* entity;
-            Script::Instance* initializer;
-            ToInitialize(Entity* entity, Script::Instance* initializer) :
-                entity(entity), initializer(initializer)
+            Arca::Index<Scripting::Script> constructor;
+            ToConstruct(Entity* entity, Arca::Index<Scripting::Script> constructor) :
+                entity(entity), constructor(constructor)
             {}
         };
 
-        std::vector<ToInitialize> toInitialize;
+        std::vector<ToConstruct> toConstruct;
         for (auto& prototype : prototypes)
         {
             auto entity = MutablePointer().Of(Owner().Do(
-                Arca::Create<Entity>(prototype.name, prototype.position, prototype.direction)));
-            if (!prototype.initializer)
+                Arca::Create<Entity>(prototype.name, "", prototype.position, prototype.direction, false)));
+            if (!prototype.constructor)
                 continue;
-            auto initializer = MutablePointer().Of(prototype.initializer);
-            toInitialize.emplace_back(entity, initializer);
-        }
-
-        for(auto& currentCreated : toInitialize)
-        {
-            currentCreated.initializer->ExecuteImmediately();
+            toConstruct.emplace_back(entity, prototype.constructor);
         }
 
         Owner().Do(Arca::Clear(Arca::TypeFor<Prototype>()));
     }
 
-    void Curator::Handle(const Move& command)
+    Arca::Index<Entity> Curator::Handle(const FindByName& command)
     {
-        auto mutableMappedEntities = MutablePointer().Of(mappedEntities);
+        const Arca::Index<Mapped> mappedEntities(Owner());
+        auto& nameToEntity = mappedEntities->nameToEntity;
+        const auto found = nameToEntity.find(command.name);
+        if (found != nameToEntity.end())
+            return found->second;
+        else
+            return {};
+    }
+
+    std::set<Arca::Index<Entity>> Curator::Handle(const FindByPosition& command)
+    {
+        const Arca::Index<Mapped> mappedEntities(Owner());
+        auto& positionToEntity = mappedEntities->positionToEntity;
+        const auto found = positionToEntity.find(command.position);
+        if (found != positionToEntity.end())
+            return found->second;
+        else
+            return {};
+    }
+
+    void Curator::Handle(const MoveTo& command)
+    {
+        auto mutableMappedEntities = MutablePointer().Of(mapped);
+
+        auto& positionToEntity = mutableMappedEntities->positionToEntity;
+        RemoveEntityFrom(positionToEntity, command.entity);
+
+        auto mutableEntity = MutablePointer().Of(command.entity);
+        mutableEntity->position = command.to;
+
+        AddEntityTo(positionToEntity, command.to, command.entity);
+    }
+
+    void Curator::Handle(const ModifyData& command)
+    {
+        auto removeSet = std::set<String>(command.remove.begin(), command.remove.end());
+        std::unordered_map<String, Variant> replaceMap;
+        for (auto& datum : command.replace)
+            replaceMap.emplace(datum.name, datum.value);
+
         auto mutableEntity = MutablePointer().Of(command.entity);
 
-        mutableMappedEntities->positionToEntity.erase(mutableEntity->position);
-        mutableEntity->position = command.toPosition;
-        mutableMappedEntities->positionToEntity.emplace(command.toPosition, command.entity);
+        for(auto element = mutableEntity->data.begin(); element != mutableEntity->data.end();)
+        {
+            if (removeSet.find(element->name) != removeSet.end())
+                element = mutableEntity->data.erase(element);
+            else
+            {
+                auto foundReplace = replaceMap.find(element->name);
+                if (foundReplace != replaceMap.end())
+                    element->value = foundReplace->second;
+                ++element;
+            }
+        }
+        mutableEntity->data.insert(mutableEntity->data.begin(), command.add.begin(), command.add.end());
+    }
+
+    void Curator::Handle(const ModifyTags& command)
+    {
+        auto removeSet = std::set<String>(command.remove.begin(), command.remove.end());
+
+        auto mutableEntity = MutablePointer().Of(command.entity);
+
+        for (auto element = mutableEntity->tags.begin(); element != mutableEntity->tags.end();)
+        {
+            if (removeSet.find(*element) != removeSet.end())
+                element = mutableEntity->tags.erase(element);
+            else
+                ++element;
+        }
+        mutableEntity->tags.insert(mutableEntity->tags.begin(), command.add.begin(), command.add.end());
+    }
+
+    void Curator::AddEntityTo(Mapped::NameToEntity& to, const String& name, Arca::Index<Entity> entity)
+    {
+        to.emplace(name, entity);
+    }
+
+    void Curator::AddEntityTo(Mapped::PositionToEntity& to, const Spatial::Grid::Point& position, Arca::Index<Entity> entity)
+    {
+        auto value = to.find(position);
+        if (value == to.end())
+            value = to.emplace(position, std::set<Arca::Index<Entity>>{}).first;
+        value->second.emplace(entity);
+    }
+
+    void Curator::RemoveEntityFrom(Mapped::NameToEntity& from, Arca::Index<Entity> entity)
+    {
+        from.erase(entity->name);
+    }
+
+    void Curator::RemoveEntityFrom(Mapped::PositionToEntity& from, Arca::Index<Entity> entity)
+    {
+        auto set = from.find(entity->position);
+        set->second.erase(entity);
+        if (set->second.empty())
+            from.erase(set);
     }
 }

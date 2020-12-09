@@ -17,7 +17,6 @@ namespace Atmos
         // Returns the position before the seek
         virtual void Seek(Position position) = 0;
         Position Tell();
-        std::streamsize Size();
     protected:
         Stream stream;
 
@@ -39,13 +38,6 @@ namespace Atmos
     auto SimpleFile<Stream>::Tell() -> Position
     {
         return Tell(stream);
-    }
-
-    template<class Stream>
-    std::streamsize SimpleFile<Stream>::Size()
-    {
-        Stream checkStream(path.c_str(), std::ios::binary | std::ios::ate);
-        return DoTell(checkStream);
     }
 
     size_t FileSize(const File::Path& path);

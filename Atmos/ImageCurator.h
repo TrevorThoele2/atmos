@@ -16,6 +16,7 @@ namespace Atmos::Render
     public:
         explicit ImageCurator(Init init);
     public:
+        using ObjectCurator::Handle;
         void Handle(const ChangeImageCore& command);
     protected:
         void WorkImpl(
@@ -41,7 +42,9 @@ namespace Arca
     {
         static const ObjectType objectType = ObjectType::Curator;
         static inline const TypeName typeName = "Atmos::Render::ImageCurator";
-        using HandledCommands = HandledCommands<Atmos::Render::ChangeImageCore>;
+        using HandledCommands = HandledCommands<
+            Atmos::Work,
+            Atmos::Render::ChangeImageCore>;
     };
 }
 

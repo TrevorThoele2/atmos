@@ -21,6 +21,8 @@
 
 #include "Event.h"
 
+#include "Logger.h"
+
 #undef CreateSemaphore
 
 namespace Atmos::Render::Vulkan
@@ -36,7 +38,8 @@ namespace Atmos::Render::Vulkan
             vk::Queue graphicsQueue,
             vk::Queue presentQueue,
             uint32_t graphicsQueueIndex,
-            vk::PhysicalDeviceMemoryProperties memoryProperties);
+            vk::PhysicalDeviceMemoryProperties memoryProperties,
+            Logging::Logger& logger);
         ~MasterRenderer();
 
         void Initialize(
@@ -130,5 +133,7 @@ namespace Atmos::Render::Vulkan
 
         [[nodiscard]] static std::vector<vk::UniqueSemaphore> CreateSemaphores(vk::Device device, size_t count);
         [[nodiscard]] static std::vector<vk::UniqueFence> CreateFences(vk::Device device, size_t count);
+    private:
+        Logging::Logger* logger;
     };
 }

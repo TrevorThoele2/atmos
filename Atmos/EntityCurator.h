@@ -5,8 +5,13 @@
 #include "Entity.h"
 #include "EntityPrototype.h"
 
+#include "Work.h"
 #include "ActualizeAllEntityPrototypes.h"
-#include "MoveEntity.h"
+#include "FindEntityByName.h"
+#include "FindEntityByPosition.h"
+#include "MoveEntityTo.h"
+#include "ModifyEntityData.h"
+#include "ModifyEntityTags.h"
 
 #include "MappedEntities.h"
 
@@ -17,15 +22,24 @@ namespace Atmos::Entity
     public:
         explicit Curator(Init init);
 
-        void Work();
+        void Handle(const Work& command);
     public:
         void Handle(const ActualizeAllPrototypes& command);
-        void Handle(const Move& command);
+        Arca::Index<Entity> Handle(const FindByName& command);
+        std::set<Arca::Index<Entity>> Handle(const FindByPosition& command);
+        void Handle(const MoveTo& command);
+        void Handle(const ModifyData& command);
+        void Handle(const ModifyTags& command);
     private:
         Arca::Batch<Prototype> prototypes;
         Arca::Batch<Entity> entities;
 
-        Arca::Index<MappedEntities> mappedEntities;
+        Arca::Index<Mapped> mapped;
+
+        static void AddEntityTo(Mapped::NameToEntity& to, const String& name, Arca::Index<Entity> entity);
+        static void AddEntityTo(Mapped::PositionToEntity& to, const Spatial::Grid::Point& position, Arca::Index<Entity> entity);
+        static void RemoveEntityFrom(Mapped::NameToEntity& from, Arca::Index<Entity> entity);
+        static void RemoveEntityFrom(Mapped::PositionToEntity& from, Arca::Index<Entity> entity);
     };
 }
 
@@ -37,8 +51,13 @@ namespace Arca
         static const ObjectType objectType = ObjectType::Curator;
         static inline const TypeName typeName = "Atmos::Entity::EntityCurator";
         using HandledCommands = HandledCommands<
+            Atmos::Work,
             Atmos::Entity::ActualizeAllPrototypes,
-            Atmos::Entity::Move>;
+            Atmos::Entity::FindByName,
+            Atmos::Entity::FindByPosition,
+            Atmos::Entity::MoveTo,
+            Atmos::Entity::ModifyData,
+            Atmos::Entity::ModifyTags>;
     };
 }
 

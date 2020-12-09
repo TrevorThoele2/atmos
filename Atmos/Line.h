@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Arca/ClosedTypedRelic.h>
+#include <Arca/Relic.h>
 #include "LineWidth.h"
 
 #include "Point2D.h"
@@ -11,7 +11,7 @@
 
 namespace Atmos::Render
 {
-    class Line : public Arca::ClosedTypedRelic<Line>
+    class Line
     {
     public:
         std::vector<Spatial::Point2D> points;
@@ -22,11 +22,9 @@ namespace Atmos::Render
 
         Color color;
     public:
-        explicit Line(Init init) : ClosedTypedRelic(init)
-        {}
-
-        Line(Init init, const std::vector<Spatial::Point2D>& points, Arca::Index<Asset::Material> material);
-        Line(Init init,
+        Line() = default;
+        Line(const std::vector<Spatial::Point2D>& points, Arca::Index<Asset::Material> material);
+        Line(
             const std::vector<Spatial::Point2D>& points,
             Spatial::Point2D::Value z,
             Arca::Index<Asset::Material> material,

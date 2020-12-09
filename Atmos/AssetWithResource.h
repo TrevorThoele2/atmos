@@ -4,19 +4,15 @@
 
 namespace Atmos::Asset
 {
-    template<class ResourceType, class Derived>
-    class AssetWithResource : public Asset<Derived>
+    template<class ResourceType>
+    class AssetWithResource : public Asset
     {
-    private:
-        using BaseT = Asset<Derived>;
     public:
         using ResourceT = ResourceType;
         using ResourcePtr = std::unique_ptr<ResourceT>;
-    protected:
-        using Init = typename BaseT::Init;
     public:
-        AssetWithResource(Init init, const Atmos::Name& name, ResourcePtr&& resource);
-        AssetWithResource(Init init, Arca::Serialization serialization);
+        AssetWithResource(Arca::RelicInit init, const Atmos::Name& name, ResourcePtr&& resource);
+        AssetWithResource(Arca::RelicInit init, Arca::Serialization serialization);
         AssetWithResource(const AssetWithResource& arg) = delete;
         AssetWithResource(AssetWithResource&& arg) noexcept = default;
 
@@ -24,10 +20,10 @@ namespace Atmos::Asset
 
         [[nodiscard]] ResourceT* Resource();
         [[nodiscard]] const ResourceT* Resource() const;
-        template<class RealFileDataT>
-        [[nodiscard]] RealFileDataT* ResourceAs();
-        template<class RealFileDataT>
-        [[nodiscard]] const RealFileDataT* ResourceAs() const;
+        template<class RealResourceT>
+        [[nodiscard]] RealResourceT* ResourceAs();
+        template<class RealResourceT>
+        [[nodiscard]] const RealResourceT* ResourceAs() const;
 
         [[nodiscard]] bool ContainsResource() const;
     protected:
@@ -38,59 +34,63 @@ namespace Atmos::Asset
         INSCRIPTION_ACCESS;
     };
 
-    template<class AssetData, class Derived>
-    AssetWithResource<AssetData, Derived>::AssetWithResource(Init init, const Atmos::Name& name, ResourcePtr&& resource) :
-        Asset<Derived>(init, name),
+    template<class AssetData>
+    AssetWithResource<AssetData>::AssetWithResource(
+        Arca::RelicInit init, const Atmos::Name& name, ResourcePtr&& resource)
+        :
+        Asset(init, name),
         resource(std::move(resource))
     {}
 
-    template<class AssetData, class Derived>
-    AssetWithResource<AssetData, Derived>::AssetWithResource(Init init, Arca::Serialization serialization) :
-        Asset<Derived>(init, serialization)
+    template<class AssetData>
+    AssetWithResource<AssetData>::AssetWithResource(
+        Arca::RelicInit init, Arca::Serialization serialization)
+        :
+        Asset(init, serialization)
     {}
 
-    template<class AssetData, class Derived>
-    AssetWithResource<AssetData, Derived>& AssetWithResource<AssetData, Derived>::operator=(AssetWithResource&& arg) noexcept
+    template<class AssetData>
+    AssetWithResource<AssetData>& AssetWithResource<AssetData>::operator=(AssetWithResource&& arg) noexcept
     {
-        Asset<Derived>::operator=(std::move(arg));
+        Asset::operator=(std::move(arg));
         resource = std::move(arg.resource);
         return *this;
     }
 
-    template<class AssetData, class Derived>
-    auto AssetWithResource<AssetData, Derived>::Resource() -> ResourceT*
+    template<class AssetData>
+    auto AssetWithResource<AssetData>::Resource() -> ResourceT*
     {
         return resource.get();
     }
 
-    template<class AssetData, class Derived>
-    auto AssetWithResource<AssetData, Derived>::Resource() const -> const ResourceT*
+    template<class AssetData>
+    auto AssetWithResource<AssetData>::Resource() const -> const ResourceT*
     {
         return resource.get();
     }
 
-    template<class AssetData, class Derived>
-    template<class RealFileDataT>
-    RealFileDataT* AssetWithResource<AssetData, Derived>::ResourceAs()
+    template<class AssetData>
+    template<class RealResourceT>
+    RealResourceT* AssetWithResource<AssetData>::ResourceAs()
     {
-        return static_cast<RealFileDataT*>(resource.get());
+        return static_cast<RealResourceT*>(resource.get());
     }
 
-    template<class AssetData, class Derived>
-    template<class RealFileDataT>
-    const RealFileDataT* AssetWithResource<AssetData, Derived>::ResourceAs() const
+    template<class AssetData>
+    template<class RealResourceT>
+    const RealResourceT* AssetWithResource<AssetData>::ResourceAs() const
     {
-        return static_cast<RealFileDataT*>(resource.get());
+        return static_cast<RealResourceT*>(resource.get());
     }
 
-    template<class AssetData, class Derived>
-    bool AssetWithResource<AssetData, Derived>::ContainsResource() const
+    template<class AssetData>
+    bool AssetWithResource<AssetData>::ContainsResource() const
     {
         return static_cast<bool>(resource);
     }
 
-    template<class AssetData, class Derived>
-    void AssetWithResource<AssetData, Derived>::SetResource(ResourcePtr&& set)
+    template<class AssetData>
+    void AssetWithResource<AssetData>::SetResource(ResourcePtr&& set)
     {
         resource = std::move(set);
     }
@@ -98,22 +98,22 @@ namespace Atmos::Asset
 
 namespace Inscription
 {
-    template<class AssetData, class Derived>
-    class Scribe<Atmos::Asset::AssetWithResource<AssetData, Derived>> final
+    template<class AssetData>
+    class Scribe<Atmos::Asset::AssetWithResource<AssetData>> final
     {
     public:
-        using ObjectT = Atmos::Asset::AssetWithResource<AssetData, Derived>;
+        using ObjectT = Atmos::Asset::AssetWithResource<AssetData>;
     public:
         template<class Archive>
         void Scriven(ObjectT& object, Archive& archive)
         {
-            Inscription::BaseScriven<Atmos::Asset::Asset<Derived>>(object, archive);
+            Inscription::BaseScriven<Atmos::Asset::Asset>(object, archive);
         }
     };
 
-    template<class AssetData, class Derived, class Archive>
-    struct ScribeTraits<Atmos::Asset::AssetWithResource<AssetData, Derived>, Archive> final
+    template<class AssetData, class Archive>
+    struct ScribeTraits<Atmos::Asset::AssetWithResource<AssetData>, Archive> final
     {
-        using Category = ArcaCompositeScribeCategory<Atmos::Asset::AssetWithResource<AssetData, Derived>>;
+        using Category = ArcaCompositeScribeCategory<Atmos::Asset::AssetWithResource<AssetData>>;
     };
 }

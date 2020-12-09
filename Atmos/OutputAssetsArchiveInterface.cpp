@@ -20,6 +20,7 @@ namespace Atmos::World::Serialization
 
         Save("images", saves.images, zip);
         Save("shaders", saves.shaders, zip);
+        Save("scripts", saves.scripts, zip);
     }
 
     void OutputAssetsArchiveInterface::Save(const String& folder, const SaveAssets& saves, wxZipOutputStream& zip)

@@ -16,9 +16,6 @@ namespace Atmos::Spatial
         Value x = 0.0f;
         Value y = 0.0f;
 
-        Point2D() = default;
-        Point2D(Value x, Value y);
-
         bool operator==(const Point2D& arg) const;
         bool operator!=(const Point2D& arg) const;
     };

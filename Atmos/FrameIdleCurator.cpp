@@ -4,17 +4,15 @@
 #include "FrameSettings.h"
 #include "FrameInformation.h"
 
-#include "WindowProvider.h"
-
 namespace Atmos::Frame
 {
-    IdleCurator::IdleCurator(Init init) : Curator(init)
+    IdleCurator::IdleCurator(Init init) : Curator(init), windowInformation(init.owner)
     {}
 
-    void IdleCurator::Work()
+    void IdleCurator::Handle(const Work&)
     {
         while (!IsDone())
-            Window::window->Suspend(Time::Duration<>(0));
+            windowInformation->window->Suspend(Time::Duration<>(0));
     }
 
     bool IdleCurator::IsDone()

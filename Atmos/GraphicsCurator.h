@@ -32,7 +32,6 @@ namespace Atmos::Render
 
         std::unique_ptr<Asset::Resource::Image> Handle(const Asset::Resource::Create<Asset::Resource::Image>& command);
         std::unique_ptr<Asset::Resource::Shader> Handle(const Asset::Resource::Create<Asset::Resource::Shader>& command);
-
     private:
         GraphicsManager* manager;
 
@@ -48,8 +47,8 @@ namespace Atmos::Render
         auto batch = Owner().Batch<T>();
         std::vector<T*> returnValue;
         returnValue.reserve(batch.Size());
-        for (auto& loop : batch)
-            returnValue.push_back(MutablePointer().Of(loop));
+        for (auto object = batch.begin(); object != batch.end(); ++object)
+            returnValue.push_back(MutablePointer().Of<T>(object.ID()));
         return returnValue;
     }
 }

@@ -1,5 +1,7 @@
 #include "Exception.h"
 
+#include "StringUtility.h"
+
 namespace Atmos
 {
     Exception::Exception(const String& message) : exception(message.c_str()), message(message)
