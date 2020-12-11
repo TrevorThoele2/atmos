@@ -16,7 +16,7 @@ namespace Atmos::Render
         [[nodiscard]] Arca::Index<Asset::Image> Asset() const;
         [[nodiscard]] Index AssetIndex() const;
         [[nodiscard]] Spatial::AxisAlignedBox2D AssetSlice() const;
-        [[nodiscard]] Arca::Index<Asset::Material> Material() const;
+        [[nodiscard]] Arca::Index<Asset::ImageMaterial> Material() const;
 
         [[nodiscard]] Render::Color Color() const;
 
@@ -31,7 +31,7 @@ namespace Atmos::Render
             Arca::RelicInit init,
             Arca::Index<Asset::Image> asset,
             ImageCore::Index assetIndex,
-            Arca::Index<Asset::Material> material,
+            Arca::Index<Asset::ImageMaterial> material,
             const Render::Color& color,
             const Spatial::Point3D& position,
             const Spatial::Scalers2D& scalers,
@@ -66,7 +66,7 @@ namespace Atmos::Render
     }
 
     template<bool mutableBounds>
-    Arca::Index<Asset::Material> Image<mutableBounds>::Material() const
+    Arca::Index<Asset::ImageMaterial> Image<mutableBounds>::Material() const
     {
         return core->material;
     }
@@ -112,7 +112,7 @@ namespace Atmos::Render
         Arca::RelicInit init,
         Arca::Index<Asset::Image> asset,
         ImageCore::Index assetIndex,
-        Arca::Index<Asset::Material> material,
+        Arca::Index<Asset::ImageMaterial> material,
         const Render::Color& color,
         const Spatial::Point3D& position,
         const Spatial::Scalers2D& scalers,

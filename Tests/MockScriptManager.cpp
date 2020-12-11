@@ -1,15 +1,5 @@
 #include "MockScriptManager.h"
 
-void MockScriptManager::Initialize(Arca::Reliquary& reliquary)
-{
-    
-}
-
-void MockScriptManager::RegisterAll()
-{
-    
-}
-
 std::unique_ptr<Atmos::Asset::Resource::Script> MockScriptManager::CreateAssetResource(
     const Atmos::DataBuffer&, Atmos::String)
 {
@@ -22,7 +12,12 @@ std::unique_ptr<Atmos::Scripting::Resource> MockScriptManager::CreateScriptResou
     return {};
 }
 
-Atmos::File::Path MockScriptManager::Compile(const Atmos::File::Path&, const std::optional<Atmos::File::Path>&)
+Atmos::DataBuffer MockScriptManager::Compile(Atmos::Scripting::Module module, std::vector<Atmos::Scripting::Module> sharedModules)
 {
     return {};
+}
+
+void MockScriptManager::InitializeImpl(Arca::Reliquary& reliquary)
+{
+
 }

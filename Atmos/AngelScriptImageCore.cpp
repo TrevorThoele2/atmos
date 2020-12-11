@@ -17,7 +17,7 @@ namespace Atmos::Scripting::Angel
         registration
             .ConstMethod(&Management::Method<&Asset>, "Atmos::Asset::Image", "Asset", {})
             .ConstMethod(&Management::Method<&AssetIndex>, "int", "AssetIndex", {})
-            .ConstMethod(&Management::Method<&Material>, "Atmos::Asset::Material", "Material", {})
+            .ConstMethod(&Management::Method<&Material>, "Atmos::Asset::ImageMaterial", "Material", {})
             .ConstMethod(&Management::Method<&Color>, "Atmos::Render::Color", "Color", {})
             .Actualize(engine);
 
@@ -35,7 +35,7 @@ namespace Atmos::Scripting::Angel
         return RequiredValue(type)->assetIndex;
     }
 
-    Arca::Index<Asset::Material> Registration<Render::ImageCore>::Material(Type type)
+    Arca::Index<Asset::ImageMaterial> Registration<Render::ImageCore>::Material(Type type)
     {
         return RequiredValue(type)->material;
     }
@@ -120,13 +120,13 @@ namespace Atmos::Scripting::Angel
             .Constructor(
                 &Management::GenerateValue<
                     &PullFromParameter<0, Arca::RelicID>,
-                    &PullFromParameter<1, Arca::Index<Asset::Material>>>,
-                { "Arca::RelicID id", "Atmos::Asset::Material to" })
+                    &PullFromParameter<1, Arca::Index<Asset::ImageMaterial>>>,
+                { "Arca::RelicID id", "Atmos::Asset::ImageMaterial to" })
             .CopyConstructor(&Management::GenerateValueFromCopy)
             .Destructor(&Management::DestructValue)
             .CopyAssignment(&Management::CopyAssign)
             .Property<&Type::id>("Arca::RelicID", "id")
-            .Property<&Type::to>("Atmos::Asset::Material", "to")
+            .Property<&Type::to>("Atmos::Asset::ImageMaterial", "to")
             .Actualize(engine);
 
         RegisterCommandHandler<&ToArca>(engine);

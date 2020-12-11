@@ -10,7 +10,9 @@
 #include "SuspendScript.h"
 #include "CompileScript.h"
 #include "ModifyScriptData.h"
+#include "ExecuteScript.h"
 #include "CreateScriptAssetResource.h"
+#include "CurrentExecutingScript.h"
 
 class asIScriptFunction;
 class asIScriptContext;
@@ -24,15 +26,26 @@ namespace Atmos::Scripting
     public:
         void Handle(const Work& command);
         void Handle(const Suspend& command);
-        File::Path Handle(const Compile& command);
+        DataBuffer Handle(const Compile& command);
         void Handle(const ModifyData& command);
+        std::optional<Result> Handle(const Execute& command);
 
         std::unique_ptr<Asset::Resource::Script> Handle(
             const Asset::Resource::Create<Asset::Resource::Script>& command);
     private:
         Manager* manager;
+    private:
+        struct RunningScript
+        {
+            Arca::RelicID id = Arca::nullRelicID;
+            const Script* script = nullptr;
+            RunningScript(Arca::RelicID id, const Script* script);
+            RunningScript(const RunningScript& arg);
+        };
 
-        std::optional<Result> DoExecute(Script* script);
+        [[nodiscard]] static std::vector<RunningScript> ScriptsToRunning(Arca::Batch<Script> batch);
+
+        std::optional<Result> DoExecute(Arca::RelicID id, CurrentExecutingScript& currentExecutingScript);
     };
 }
 
@@ -48,6 +61,7 @@ namespace Arca
             Atmos::Scripting::Suspend,
             Atmos::Scripting::Compile,
             Atmos::Scripting::ModifyData,
+            Atmos::Scripting::Execute,
             Atmos::Asset::Resource::Create<Atmos::Asset::Resource::Script>>;
     };
 }

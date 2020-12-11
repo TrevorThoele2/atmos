@@ -10,15 +10,6 @@
 
 namespace Atmos::Scripting::Angel
 {
-    void Registration<Asset::MaterialType>::RegisterTo(asIScriptEngine& engine)
-    {
-        EnumRegistration<Type>(containingNamespace, name)
-            .Value("Image", Type::Image)
-            .Value("Line", Type::Line)
-            .Value("Region", Type::Region)
-            .Actualize(engine);
-    }
-
     void Registration<Asset::Material::Pass>::RegisterTo(asIScriptEngine& engine)
     {
         ValueTypeRegistration<Type>(containingNamespace, name)
@@ -31,32 +22,64 @@ namespace Atmos::Scripting::Angel
             .Actualize(engine);
     }
 
-    void Registration<Asset::Material>::RegisterTo(asIScriptEngine& engine)
+    template<class T, auto doName, auto doPasses>
+    void DoRegister(asIScriptEngine& engine)
     {
-        ValueTypeRegistration<Type> registration(containingNamespace, name);
+        using Type = Arca::Index<T>;
+
+        ValueTypeRegistration<Type> registration(Registration<Type>::containingNamespace, Registration<Type>::name);
         RegisterArcaIndex(registration);
         registration
-            .ConstMethod(&Management::Method<&DoName>, "string", "Name", {})
-            .ConstMethod(&Management::Method<&DoType>, "MaterialType", "Type", {})
-            .ConstMethod(&Management::Method<&DoPasses>, "MaterialPass[]@", "Passes", {})
+            .ConstMethod(&ObjectManagement<Type>::template Method<doName>, "string", "Name", {})
+            .ConstMethod(&ObjectManagement<Type>::template Method<doPasses>, "MaterialPass[]@", "Passes", {})
             .Actualize(engine);
 
-        Registration<ArcaTraits<Asset::Material>>::RegisterTo(engine);
-        Registration<Arca::Batch<Asset::Material>>::RegisterTo(engine);
-        Registration<Asset::FindByName<Asset::Material>>::RegisterTo(engine);
+        Registration<ArcaTraits<T>>::RegisterTo(engine);
+        Registration<Arca::Batch<T>>::RegisterTo(engine);
+        Registration<Asset::FindByName<T>>::RegisterTo(engine);
     }
 
-    String Registration<Asset::Material>::DoName(Type type)
+    void Registration<Asset::ImageMaterial>::RegisterTo(asIScriptEngine& engine)
+    {
+        DoRegister<Asset::ImageMaterial, &DoName, &DoPasses>(engine);
+    }
+
+    String Registration<Asset::ImageMaterial>::DoName(Type type)
     {
         return RequiredValue(type)->Name();
     }
 
-    Asset::MaterialType Registration<Asset::Material>::DoType(Type type)
+    std::vector<Asset::Material::Pass> Registration<Asset::ImageMaterial>::DoPasses(Type type)
     {
-        return RequiredValue(type)->Type();
+        return RequiredValue(type)->Passes();
     }
 
-    std::vector<Asset::Material::Pass> Registration<Asset::Material>::DoPasses(Type type)
+    void Registration<Asset::LineMaterial>::RegisterTo(asIScriptEngine& engine)
+    {
+        DoRegister<Asset::LineMaterial, &DoName, &DoPasses>(engine);
+    }
+
+    String Registration<Asset::LineMaterial>::DoName(Type type)
+    {
+        return RequiredValue(type)->Name();
+    }
+
+    std::vector<Asset::Material::Pass> Registration<Asset::LineMaterial>::DoPasses(Type type)
+    {
+        return RequiredValue(type)->Passes();
+    }
+
+    void Registration<Asset::RegionMaterial>::RegisterTo(asIScriptEngine& engine)
+    {
+        DoRegister<Asset::RegionMaterial, &DoName, &DoPasses>(engine);
+    }
+
+    String Registration<Asset::RegionMaterial>::DoName(Type type)
+    {
+        return RequiredValue(type)->Name();
+    }
+
+    std::vector<Asset::Material::Pass> Registration<Asset::RegionMaterial>::DoPasses(Type type)
     {
         return RequiredValue(type)->Passes();
     }

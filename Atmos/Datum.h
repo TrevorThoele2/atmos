@@ -10,6 +10,9 @@ namespace Atmos
     {
         String name;
         Variant value;
+
+        [[nodiscard]] bool operator==(const Datum& arg) const;
+        [[nodiscard]] bool operator!=(const Datum& arg) const;
     };
 }
 

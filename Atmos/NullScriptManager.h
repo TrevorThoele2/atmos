@@ -12,8 +12,7 @@ namespace Atmos::Scripting
         [[nodiscard]] std::unique_ptr<Resource> CreateScriptResource(
             const String& scriptAssetName, const String& executeName, const Parameters& parameters) override;
     public:
-        File::Path Compile(
-            const File::Path& inputFilePath, const std::optional<File::Path>& outputFilePath) override;
+        DataBuffer Compile(Module module, std::vector<Module> sharedModules) override;
     protected:
         void InitializeImpl(Arca::Reliquary& reliquary) override;
     };

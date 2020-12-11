@@ -35,8 +35,12 @@ namespace Atmos::Render::Resource::Vulkan
 
         void DrawFrame(Arca::Reliquary& reliquary, const Color& backgroundColor) override;
 
-        void OnMaterialCreated(const Arca::Index<Asset::Material>& material) override;
-        void OnMaterialDestroying(const Arca::Index<Asset::Material>& material) override;
+        void OnMaterialCreated(const Arca::Index<Asset::ImageMaterial>& material) override;
+        void OnMaterialCreated(const Arca::Index<Asset::LineMaterial>& material) override;
+        void OnMaterialCreated(const Arca::Index<Asset::RegionMaterial>& material) override;
+        void OnMaterialDestroying(const Arca::Index<Asset::ImageMaterial>& material) override;
+        void OnMaterialDestroying(const Arca::Index<Asset::LineMaterial>& material) override;
+        void OnMaterialDestroying(const Arca::Index<Asset::RegionMaterial>& material) override;
 
         void WaitForIdle() const;
 

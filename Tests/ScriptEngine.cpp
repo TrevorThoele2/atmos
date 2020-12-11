@@ -1,5 +1,7 @@
 #include "ScriptEngine.h"
 
+ScriptEngine::ScriptEngine(Logging::Logger& logger) : Engine(logger)
+{}
 
 void ScriptEngine::SetupImplementation()
 {

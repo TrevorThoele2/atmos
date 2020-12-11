@@ -4,28 +4,25 @@
 
 namespace Atmos::Asset
 {
-    Material::Pass::Pass(Arca::Index<Shader> vertexShader, Arca::Index<Shader> fragmentShader) :
-        vertexShader(vertexShader), fragmentShader(fragmentShader)
-    {}
-
-    Arca::Index<Shader> Material::Pass::VertexShader() const
+    Material& Material::operator=(Material&& arg) noexcept
     {
-        return vertexShader;
+        Asset::operator=(std::move(arg));
+        passes = std::move(arg.passes);
+        return *this;
     }
 
-    Arca::Index<Shader> Material::Pass::FragmentShader() const
+    auto Material::Passes() const -> std::vector<Pass>
     {
-        return fragmentShader;
+        return passes;
     }
 
     Material::Material(
         Arca::RelicInit init,
         const Atmos::Name& name,
-        MaterialType type,
         std::vector<Pass> passes)
         :
         Asset(init, name),
-        type(type), passes(std::move(passes))
+        passes(std::move(passes))
     {}
 
     Material::Material(Arca::RelicInit init, Arca::Serialization serialization) :
@@ -34,36 +31,17 @@ namespace Atmos::Asset
 
     Material::Material(Material&& arg) noexcept :
         Asset(std::move(arg)),
-        type(arg.type), passes(std::move(arg.passes))
+        passes(std::move(arg.passes))
     {}
-
-    Material& Material::operator=(Material && arg) noexcept
-    {
-        Asset::operator=(std::move(arg));
-        type = arg.type;
-        passes = std::move(arg.passes);
-        return *this;
-    }
-
-    MaterialType Material::Type() const
-    {
-        return type;
-    }
-
-    auto Material::Passes() const -> std::vector<Pass>
-    {
-        return passes;
-    }
 }
 
 namespace Arca
 {
-    bool Traits<::Atmos::Asset::Material>::ShouldCreate(
+    bool Traits<Atmos::Asset::Material>::ShouldCreate(
         Reliquary& reliquary,
-        const ::Atmos::Name& name,
-        Atmos::Asset::MaterialType,
+        const Atmos::Name& name,
         const std::vector<Atmos::Asset::Material::Pass>&)
     {
-        return Atmos::Asset::ShouldCreate<::Atmos::Asset::Material>(reliquary, name);
+        return Atmos::Asset::ShouldCreate<Atmos::Asset::Material>(reliquary, name);
     }
 }

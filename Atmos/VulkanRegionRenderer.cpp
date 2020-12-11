@@ -8,7 +8,7 @@ namespace Atmos::Render::Vulkan
         vk::PhysicalDeviceMemoryProperties memoryProperties,
         vk::RenderPass renderPass,
         vk::Extent2D swapchainExtent,
-        const Arca::Batch<Asset::Material>& materials)
+        const Arca::Batch<Asset::RegionMaterial>& materials)
         :
         vertexBuffer(vertexStride * sizeof(Vertex), *device, memoryProperties, vk::BufferUsageFlagBits::eVertexBuffer),
         indexBuffer(indexStride * sizeof(Index), *device, memoryProperties, vk::BufferUsageFlagBits::eIndexBuffer),
@@ -39,7 +39,7 @@ namespace Atmos::Render::Vulkan
         device(device)
     {
         for (auto material = materials.begin(); material != materials.end(); ++material)
-            MaterialCreated(Arca::Index<Asset::Material>{material.ID(), materials.Owner()});
+            MaterialCreated(Arca::Index<Asset::RegionMaterial>{material.ID(), materials.Owner()});
     }
 
     void RegionRenderer::StageRender(const RegionRender& regionRender)
@@ -73,19 +73,13 @@ namespace Atmos::Render::Vulkan
         return raster;
     }
 
-    void RegionRenderer::MaterialCreated(Arca::Index<Asset::Material> material)
+    void RegionRenderer::MaterialCreated(Arca::Index<Asset::RegionMaterial> material)
     {
-        if (material->Type() != Asset::MaterialType::Region)
-            return;
-
         mappedConduits.Add(material);
     }
 
-    void RegionRenderer::MaterialDestroying(Arca::Index<Asset::Material> material)
+    void RegionRenderer::MaterialDestroying(Arca::Index<Asset::RegionMaterial> material)
     {
-        if (material->Type() != Asset::MaterialType::Region)
-            return;
-
         mappedConduits.Remove(material);
     }
 

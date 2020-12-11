@@ -14,8 +14,7 @@ namespace Atmos::Scripting
         return {};
     }
 
-    File::Path NullManager::Compile(
-        const File::Path& inputFilePath, const std::optional<File::Path>& outputFilePath)
+    DataBuffer NullManager::Compile(Module module, std::vector<Module> sharedModules)
     {
         return {};
     }

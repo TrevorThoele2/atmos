@@ -20,14 +20,34 @@ void MockSurfaceResource::DrawFrame(Arca::Reliquary& reliquary, const Atmos::Ren
     
 }
 
-void MockSurfaceResource::OnMaterialCreated(const Arca::Index<Atmos::Asset::Material>& material)
+void MockSurfaceResource::OnMaterialCreated(const Arca::Index<Atmos::Asset::ImageMaterial>& material)
 {
     
 }
 
-void MockSurfaceResource::OnMaterialDestroying(const Arca::Index<Atmos::Asset::Material>& material)
+void MockSurfaceResource::OnMaterialCreated(const Arca::Index<Atmos::Asset::LineMaterial>& material)
+{
+
+}
+
+void MockSurfaceResource::OnMaterialCreated(const Arca::Index<Atmos::Asset::RegionMaterial>& material)
+{
+
+}
+
+void MockSurfaceResource::OnMaterialDestroying(const Arca::Index<Atmos::Asset::ImageMaterial>& material)
 {
     
+}
+
+void MockSurfaceResource::OnMaterialDestroying(const Arca::Index<Atmos::Asset::LineMaterial>& material)
+{
+
+}
+
+void MockSurfaceResource::OnMaterialDestroying(const Arca::Index<Atmos::Asset::RegionMaterial>& material)
+{
+
 }
 
 Atmos::Spatial::ScreenSize MockSurfaceResource::Size() const

@@ -20,6 +20,8 @@ public:
     Input::NullManager* nullInputManager = nullptr;
     MockGraphicsManager* mockGraphicsManager = nullptr;
     MockScriptManager* mockScriptManager = nullptr;
+
+    DerivedEngine(Logging::Logger& logger);
 protected:
     void SetupImplementation() override;
 

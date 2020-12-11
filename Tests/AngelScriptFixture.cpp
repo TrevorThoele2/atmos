@@ -2,7 +2,6 @@
 
 #include <Atmos/LoadScriptAssetResourceData.h>
 #include <Atmos/CompileScript.h>
-#include "Atmos/CreateScriptResource.h"
 #include <Inscription/OutputTextArchive.h>
 
 using namespace Atmos;
@@ -12,20 +11,19 @@ Arca::Index<Atmos::Asset::Script> AngelScriptFixture::CompileAndCreateScriptAsse
     const Atmos::String& scriptData,
     Arca::Reliquary& reliquary)
 {
-    const auto basicScriptFilePath = std::filesystem::current_path() / name;
+    return CompileAndCreateScriptAsset(name, scriptData, {}, reliquary);
+}
 
-    {
-        auto outputArchive = Inscription::OutputTextArchive(basicScriptFilePath);
-        outputArchive.Write(scriptData);
-    }
-
-    auto compiledScriptFilePath = reliquary.Do(Scripting::Compile{ basicScriptFilePath });
-
-    auto basicScriptResourceData = reliquary.Do(
-        Asset::Resource::LoadDataFromFile<Asset::Resource::Script>{ compiledScriptFilePath });
+Arca::Index<Atmos::Asset::Script> AngelScriptFixture::CompileAndCreateScriptAsset(
+    const Atmos::String& name,
+    const Atmos::String& scriptData,
+    const std::vector<Atmos::Scripting::Module>& sharedModules,
+    Arca::Reliquary& reliquary)
+{
+    const auto compiledData = reliquary.Do(Scripting::Compile{ Scripting::Module{name, scriptData}, sharedModules });
 
     auto basicScriptResource = reliquary.Do(Asset::Resource::Create<Asset::Resource::Script>{
-        basicScriptResourceData.data,
+        compiledData,
             name });
 
     return reliquary.Do(Arca::Create<Asset::Script>{
@@ -45,6 +43,26 @@ Arca::Index<Scripting::Script> AngelScriptFixture::CompileAndCreateScript(
     Arca::Reliquary& reliquary)
 {
     const auto asset = CompileAndCreateScriptAsset(name, scriptData, reliquary);
-    auto resource = reliquary.Do(Scripting::CreateResource{ asset, "main", parameters });
-    return reliquary.Do(Arca::Create<Scripting::Script>{ std::move(resource) });
+    return reliquary.Do(Arca::Create<Scripting::Script>{ asset, "main", parameters });
+}
+
+Arca::Index<Atmos::Scripting::Script> AngelScriptFixture::CompileAndCreateScriptWithSharedModules(
+    const Atmos::String& name,
+    const Atmos::String& scriptData,
+    const std::vector<Atmos::Scripting::Module>& sharedModules,
+    Arca::Reliquary& reliquary)
+{
+    const auto asset = CompileAndCreateScriptAsset(name, scriptData, sharedModules, reliquary);
+    return reliquary.Do(Arca::Create<Scripting::Script>{ asset, "main", Scripting::Parameters{} });
+}
+
+Arca::Index<Scripting::Script> AngelScriptFixture::CompileAndCreateScriptWithSharedModules(
+    const Atmos::String& name,
+    const Atmos::String& scriptData,
+    const std::vector<Atmos::Scripting::Module>& sharedModules,
+    const Atmos::Scripting::Parameters& parameters,
+    Arca::Reliquary& reliquary)
+{
+    const auto asset = CompileAndCreateScriptAsset(name, scriptData, sharedModules, reliquary);
+    return reliquary.Do(Arca::Create<Scripting::Script>{ asset, "main", parameters });
 }

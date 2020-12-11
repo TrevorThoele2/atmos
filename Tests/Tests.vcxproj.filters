@@ -231,6 +231,9 @@
     <ClInclude Include="AngelScriptScriptTests.h">
       <Filter>Header Files\Tests\AngelScript\Script</Filter>
     </ClInclude>
+    <ClInclude Include="AngelScriptCreateObjectFixture.h">
+      <Filter>Header Files\Fixtures</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">

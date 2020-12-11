@@ -1,92 +1,11 @@
-string main(uint64)
+void main()
 
-Temps: 6, 14, 15, 22, 29, 36
+Temps: 
 
 Variables: 
- -001: uint64 boundsID
- 012: Atmos::Spatial::Bounds bounds
- 000: uint64 {noname param}
- 006: Bounds {noname}
- 014: Size2D {noname}
- 022: string {noname}
- 029: string {noname}
- 036: string {noname}
 
 
-- 3,5 -
-               VarDecl  0
-    0  36 *    SUSPEND
-               VarDecl  1
-    1  36 *    PshV8    v-1
-    2  38 *    PSF      v6
-    3  39 *    CALLSYS  295           (Bounds::Bounds(uint64))
-               ObjInfo  v6, 1
-    5  36 *    PSF      v6
-    6  37 *    PSF      v12
-    7  38 *    CALLSYS  296           (Bounds::Bounds(const Atmos::Spatial::Bounds&in))
-    9  36 *    PSF      v6
-   10  37 *    CALLSYS  297           (Bounds::~Bounds())
-- 4,5 -
-               ObjInfo  v6, 0
-               ObjInfo  v12, 1
-   12  36 *    SUSPEND
-   13  36 *    PSF      v14
-   14  37 *    PSF      v12
-   15  38 *    CALLSYS  304           (Atmos::Spatial::Size2D Bounds::Size() const)
-               ObjInfo  v14, 1
-   17  36 *    LoadVObjR v14, v0, 67108886
-   20  36 *    RDR4     v15
-   21  36 *    PshV4    v15
-   22  37 *    PSF      v22
-   23  38 *    CALLSYS  185           (string ToString(float))
-               ObjInfo  v22, 1
-   25  36 *    PSF      v14
-   26  37 *    CALLSYS  242           (Size2D::~Size2D())
-               ObjInfo  v14, 0
-   28  36 *    PGA      42961912
-   30  37 *    PSF      v29
-   31  38 *    PSF      v22
-   32  39 *    CALLSYS  26           (string string::opAdd(const string&in) const)
-               ObjInfo  v29, 1
-   34  36 *    PSF      v22
-   35  37 *    CALLSYS  21           (string::~string())
-               ObjInfo  v22, 0
-   37  36 *    PSF      v14
-   38  37 *    PSF      v12
-   39  38 *    CALLSYS  304           (Atmos::Spatial::Size2D Bounds::Size() const)
-               ObjInfo  v14, 1
-   41  36 *    LoadVObjR v14, v4, 67108886
-   44  36 *    RDR4     v15
-   45  36 *    PshV4    v15
-   46  37 *    PSF      v22
-   47  38 *    CALLSYS  185           (string ToString(float))
-               ObjInfo  v22, 1
-   49  36 *    PSF      v14
-   50  37 *    CALLSYS  242           (Size2D::~Size2D())
-               ObjInfo  v14, 0
-   52  36 *    VAR      v22
-   53  37 *    PSF      v36
-   54  38 *    PSF      v29
-   55  39 *    GETREF   2
-   56  39 *    CALLSYS  26           (string string::opAdd(const string&in) const)
-               ObjInfo  v36, 1
-   58  36 *    PSF      v29
-   59  37 *    CALLSYS  21           (string::~string())
-               ObjInfo  v29, 0
-   61  36 *    PSF      v22
-   62  37 *    CALLSYS  21           (string::~string())
-               ObjInfo  v22, 0
-   64  36 *    PSF      v36
-   65  37 *    PshVPtr  v0
-   66  38 *    CALLSYS  20           (string::string(const string&in))
-   68  36 *    PSF      v36
-   69  37 *    CALLSYS  21           (string::~string())
-               ObjInfo  v36, 0
-               ObjInfo  v0, 1
-            {
-   71  36 *    PSF      v12
-   72  37 *    CALLSYS  297           (Bounds::~Bounds())
-               ObjInfo  v12, 0
-            }
+- 3,2 -
+    0   0 *    SUSPEND
             0:
-   74  36 *    RET      3
+    1   0 *    RET      0

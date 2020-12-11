@@ -23,10 +23,9 @@ namespace Atmos::Scripting::Angel
         [[nodiscard]] std::unique_ptr<Asset::Resource::Script> CreateAssetResource(
             const DataBuffer& buffer, String name) override;
         [[nodiscard]] std::unique_ptr<Atmos::Scripting::Resource> CreateScriptResource(
-            const String& scriptAssetName, const String& executeName, const Parameters& parameters) override;
+            const String& name, const String& executeName, const Parameters& parameters) override;
     public:
-        File::Path Compile(
-            const File::Path& inputFilePath, const std::optional<File::Path>& outputFilePath) override;
+        DataBuffer Compile(Module module, std::vector<Module> sharedModules) override;
     protected:
         void InitializeImpl(Arca::Reliquary& reliquary) override;
     private:
@@ -39,10 +38,13 @@ namespace Atmos::Scripting::Angel
 
         void RegisterAll();
     private:
+        std::vector<asIScriptModule*> sharedModules;
+
         asIScriptModule& CreateModule(String name);
         [[nodiscard]] asIScriptModule& RequiredModule(String name);
 
-        void BuildModule(asIScriptModule& module, String name, String fileData);
+        void AddScriptSection(asIScriptModule& module, String name, String fileData);
+        void BuildModule(asIScriptModule& module);
         void LoadModule(asIScriptModule& module, const DataBuffer& buffer);
     private:
         asIScriptContext& CreateContext();

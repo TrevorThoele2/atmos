@@ -4,7 +4,7 @@
 
 namespace Atmos::Asset
 {
-    Script::Script(Arca::RelicInit init, const ::Atmos::Name& name, ResourcePtr&& resource) :
+    Script::Script(Arca::RelicInit init, const Atmos::Name& name, ResourcePtr&& resource) :
         AssetWithResource(init, name, std::move(resource)),
         init(init)
     {}
@@ -36,6 +36,6 @@ namespace Arca
     bool Traits<Atmos::Asset::Script>::ShouldCreate(
         Reliquary& reliquary, const Atmos::Name& name, const ::Atmos::Asset::Script::ResourcePtr& data)
     {
-        return Atmos::Asset::ShouldCreate<::Atmos::Asset::Script>(reliquary, name);
+        return Atmos::Asset::ShouldCreate<Atmos::Asset::Script>(reliquary, name);
     }
 }

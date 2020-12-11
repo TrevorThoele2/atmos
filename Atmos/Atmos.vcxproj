@@ -41,6 +41,7 @@
     <ClInclude Include="AngelScriptArcaTraits.h" />
     <ClInclude Include="AngelScriptCamera.h" />
     <ClInclude Include="AngelScriptArcaCreate.h" />
+    <ClInclude Include="AngelScriptCurrentEntity.h" />
     <ClInclude Include="AngelScriptCurrentScript.h" />
     <ClInclude Include="AngelScriptEntity.h" />
     <ClInclude Include="AngelScriptDatum.h" />
@@ -52,9 +53,16 @@
     <ClInclude Include="AngelScriptScript.h" />
     <ClInclude Include="AngelScriptScriptResult.h" />
     <ClInclude Include="AngelScriptStopwatch.h" />
+    <ClInclude Include="CurrentActualizingEntity.h" />
     <ClInclude Include="CurrentExecutingScript.h" />
+    <ClInclude Include="ExecuteScript.h" />
     <ClInclude Include="FindEntityByName.h" />
     <ClInclude Include="FindEntityByPosition.h" />
+    <ClInclude Include="ImageMaterialAsset.h" />
+    <ClInclude Include="ImageMaterialAssetCurator.h" />
+    <ClInclude Include="LineMaterialAsset.h" />
+    <ClInclude Include="LineMaterialAssetCurator.h" />
+    <ClInclude Include="MaterialAssetPass.h" />
     <ClInclude Include="ModifyEntityData.h" />
     <ClInclude Include="ModifyEntityTags.h" />
     <ClInclude Include="AngelScriptAngle2D.h" />
@@ -137,7 +145,10 @@
     <ClInclude Include="CreateStopwatch.h" />
     <ClInclude Include="Datum.h" />
     <ClInclude Include="EntityPrototype.h" />
+    <ClInclude Include="RegionMaterialAsset.h" />
+    <ClInclude Include="RegionMaterialAssetCurator.h" />
     <ClInclude Include="ScriptFunction.h" />
+    <ClInclude Include="ScriptModule.h" />
     <ClInclude Include="ScriptResource.h" />
     <ClInclude Include="Variant.h" />
     <ClInclude Include="FrameSettings.h" />
@@ -350,7 +361,6 @@
     <ClInclude Include="NullInputManager.h" />
     <ClInclude Include="Line2D.h" />
     <ClInclude Include="Line3D.h" />
-    <ClInclude Include="MaterialAssetCurator.h" />
     <ClInclude Include="Name.h" />
     <ClInclude Include="Point3D.h" />
     <ClInclude Include="MaterialAsset.h" />
@@ -434,6 +444,7 @@
     <ClCompile Include="AngelScriptBounds.cpp" />
     <ClCompile Include="AngelScriptCamera.cpp" />
     <ClCompile Include="AngelScriptColor.cpp" />
+    <ClCompile Include="AngelScriptCurrentEntity.cpp" />
     <ClCompile Include="AngelScriptCurrentScript.cpp" />
     <ClCompile Include="AngelScriptDynamicImage.cpp" />
     <ClCompile Include="AngelScriptEntity.cpp" />
@@ -472,10 +483,14 @@
     <ClCompile Include="AngelScriptUserData.cpp" />
     <ClCompile Include="Asset.cpp" />
     <ClCompile Include="AudioCurator.cpp" />
+    <ClCompile Include="Datum.cpp" />
     <ClCompile Include="FreeImageAssetManager.cpp" />
     <ClCompile Include="ImageAssetManager.cpp" />
+    <ClCompile Include="ImageMaterialAsset.cpp" />
     <ClCompile Include="InputAngelScriptBytecodeStream.cpp" />
+    <ClCompile Include="LineMaterialAsset.cpp" />
     <ClCompile Include="LoggingInformation.cpp" />
+    <ClCompile Include="MaterialAssetPass.cpp" />
     <ClCompile Include="NullImageAssetManager.cpp" />
     <ClCompile Include="OutputAngelScriptBytecodeStream.cpp" />
     <ClCompile Include="AngelScriptManager.cpp" />
@@ -500,6 +515,7 @@
     <ClCompile Include="OutputAssetsArchiveInterface.cpp" />
     <ClCompile Include="OutputSimpleFile.cpp" />
     <ClCompile Include="ProcessedLog.cpp" />
+    <ClCompile Include="RegionMaterialAsset.cpp" />
     <ClCompile Include="RenderObjectCurator.cpp" />
     <ClCompile Include="ScriptFunction.cpp" />
     <ClCompile Include="ScriptResource.cpp" />
@@ -525,7 +541,6 @@
     <ClCompile Include="VulkanImage.cpp" />
     <ClCompile Include="VulkanInvalidConduit.cpp" />
     <ClCompile Include="VulkanLineRenderer.cpp" />
-    <ClCompile Include="VulkanMappedConduits.cpp" />
     <ClCompile Include="VulkanQuadRenderer.cpp" />
     <ClCompile Include="VulkanRaster.cpp" />
     <ClCompile Include="VulkanRegionRenderer.cpp" />

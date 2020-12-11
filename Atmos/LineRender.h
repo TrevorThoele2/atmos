@@ -2,7 +2,7 @@
 
 #include "LineWidth.h"
 #include "Point2D.h"
-#include "MaterialAsset.h"
+#include "LineMaterialAsset.h"
 #include "Color.h"
 
 namespace Atmos::Render
@@ -13,7 +13,7 @@ namespace Atmos::Render
         Spatial::Point2D::Value z;
 
         Arca::RelicID materialID;
-        const Asset::Material* material;
+        const Asset::LineMaterial* material;
 
         LineWidth width;
 

@@ -23,7 +23,8 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
 {
     GIVEN("setup engine with field")
     {
-        DerivedEngine engine;
+        Logging::Logger logger(Logging::Severity::Verbose);
+        DerivedEngine engine(logger);
         engine.Setup();
 
         auto fieldOrigin = Arca::ReliquaryOrigin();
@@ -58,8 +59,8 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
         auto imageAsset = fieldReliquary.Do(Arca::Create<Asset::Image> {
             String{}, std::move(imageResource), Asset::ImageGridSize{}});
 
-        auto materialAsset = fieldReliquary.Do(Arca::Create<Asset::Material> {
-            String{}, Asset::MaterialType::Image, std::vector<Asset::Material::Pass>{}});
+        auto materialAsset = fieldReliquary.Do(Arca::Create<Asset::ImageMaterial> {
+            String{}, std::vector<Asset::ImageMaterial::Pass>{}});
 
         auto positions = std::vector<Point3D>
         {
@@ -232,7 +233,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
             fieldReliquary.Do(Arca::Create<StaticImage>{
                 imageAsset,
                 0,
-                Arca::Index<Asset::Material>{},
+                Arca::Index<Asset::ImageMaterial>{},
                 Color{},
                 positions[0],
                 scalers[0],
@@ -240,7 +241,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
             fieldReliquary.Do(Arca::Create<StaticImage> {
                 imageAsset,
                 0,
-                Arca::Index<Asset::Material>{},
+                Arca::Index<Asset::ImageMaterial>{},
                 Color{},
                 positions[1],
                 scalers[1],
@@ -248,7 +249,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
             fieldReliquary.Do(Arca::Create<StaticImage> {
                 imageAsset,
                 0,
-                Arca::Index<Asset::Material>{},
+                Arca::Index<Asset::ImageMaterial>{},
                 Color{},
                 positions[2],
                 scalers[2],
@@ -398,7 +399,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
             fieldReliquary.Do(Arca::Create<DynamicImage> {
                 imageAsset,
                 0,
-                Arca::Index<Asset::Material>{},
+                Arca::Index<Asset::ImageMaterial>{},
                 Color{},
                 positions[0],
                 scalers[0],
@@ -406,7 +407,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
             fieldReliquary.Do(Arca::Create<DynamicImage> {
                 imageAsset,
                 0,
-                Arca::Index<Asset::Material>{},
+                Arca::Index<Asset::ImageMaterial>{},
                 Color{},
                 positions[1],
                 scalers[1],
@@ -414,7 +415,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
             fieldReliquary.Do(Arca::Create<DynamicImage> {
                 imageAsset,
                 0,
-                Arca::Index<Asset::Material>{},
+                Arca::Index<Asset::ImageMaterial>{},
                 Color{},
                 positions[2],
                 scalers[2],
@@ -609,7 +610,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
                 parent,
                 imageAsset,
                 0,
-                Arca::Index<Asset::Material>{},
+                Arca::Index<Asset::ImageMaterial>{},
                 Color{},
                 positions[0],
                 scalers[0],
@@ -618,7 +619,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
                 parent,
                 imageAsset,
                 0,
-                Arca::Index<Asset::Material>{},
+                Arca::Index<Asset::ImageMaterial>{},
                 Color{},
                 positions[1],
                 scalers[1],
@@ -627,7 +628,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
                 parent,
                 imageAsset,
                 0,
-                Arca::Index<Asset::Material>{},
+                Arca::Index<Asset::ImageMaterial>{},
                 Color{},
                 positions[2],
                 scalers[2],
@@ -651,7 +652,8 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering culled images", "[render]
 {
     GIVEN("setup engine with field")
     {
-        DerivedEngine engine;
+        Logging::Logger logger(Logging::Severity::Verbose);
+        DerivedEngine engine(logger);
         engine.Setup();
 
         auto fieldOrigin = Arca::ReliquaryOrigin();
@@ -685,8 +687,8 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering culled images", "[render]
         auto imageAsset = fieldReliquary.Do(Arca::Create<Asset::Image> {
             String{}, std::move(imageResource), Asset::ImageGridSize{} });
 
-        auto materialAsset = fieldReliquary.Do(Arca::Create<Asset::Material> {
-            String{}, Asset::MaterialType::Image, std::vector<Asset::Material::Pass>{} });
+        auto materialAsset = fieldReliquary.Do(Arca::Create<Asset::ImageMaterial> {
+            String{}, std::vector<Asset::ImageMaterial::Pass>{} });
 
         WHEN("creating static images and starting execution")
         {

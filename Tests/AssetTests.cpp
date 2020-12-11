@@ -119,16 +119,15 @@ SCENARIO_METHOD(AssetTestsFixture, "assets", "[asset]")
             }
         }
 
-        WHEN("creating material asset with empty passes")
+        WHEN("creating image material asset with empty passes")
         {
             auto name = dataGeneration.Random<String>();
 
-            auto asset = reliquary->Do(Arca::Create<Material>{
+            auto asset = reliquary->Do(Arca::Create<ImageMaterial>{
                 name,
-                MaterialType::Image,
                 std::vector<Material::Pass>{}});
 
-            auto mappedAssets = Arca::Index<Atmos::Asset::Mapped<Atmos::Asset::Material>>(*reliquary);
+            auto mappedAssets = Arca::Index<Atmos::Asset::Mapped<Atmos::Asset::ImageMaterial>>(*reliquary);
 
             THEN("asset has name")
             {
@@ -150,10 +149,101 @@ SCENARIO_METHOD(AssetTestsFixture, "assets", "[asset]")
             {
                 auto newName = dataGeneration.Random<String>();
 
-                reliquary->Do(Arca::AssignMove<Atmos::Asset::Material>{
+                reliquary->Do(Arca::AssignMove<Atmos::Asset::ImageMaterial>{
                     asset.ID(),
                     newName,
-                    MaterialType::Image,
+                    std::vector<Material::Pass>{}});
+
+                THEN("mapped asset is new asset")
+                {
+                    REQUIRE(mappedAssets->Size() == 1);
+                    REQUIRE(mappedAssets->Exists(newName));
+                    REQUIRE(mappedAssets->Find(newName) == asset);
+                    REQUIRE(!mappedAssets->Exists(name));
+                    REQUIRE(mappedAssets->Find(name) == nullptr);
+                }
+            }
+        }
+
+        WHEN("creating line material asset with empty passes")
+        {
+            auto name = dataGeneration.Random<String>();
+
+            auto asset = reliquary->Do(Arca::Create<LineMaterial>{
+                name,
+                    std::vector<Material::Pass>{}});
+
+            auto mappedAssets = Arca::Index<Atmos::Asset::Mapped<Atmos::Asset::LineMaterial>>(*reliquary);
+
+            THEN("asset has name")
+            {
+                REQUIRE(asset->Name() == name);
+            }
+
+            THEN("asset has empty passes")
+            {
+                REQUIRE(asset->Passes().empty());
+            }
+
+            THEN("mapped assets contains entry")
+            {
+                REQUIRE(mappedAssets->Exists(name));
+                REQUIRE(mappedAssets->Find(name) == asset);
+            }
+
+            WHEN("reassigning asset")
+            {
+                auto newName = dataGeneration.Random<String>();
+
+                reliquary->Do(Arca::AssignMove<Atmos::Asset::LineMaterial>{
+                    asset.ID(),
+                    newName,
+                    std::vector<Material::Pass>{}});
+
+                THEN("mapped asset is new asset")
+                {
+                    REQUIRE(mappedAssets->Size() == 1);
+                    REQUIRE(mappedAssets->Exists(newName));
+                    REQUIRE(mappedAssets->Find(newName) == asset);
+                    REQUIRE(!mappedAssets->Exists(name));
+                    REQUIRE(mappedAssets->Find(name) == nullptr);
+                }
+            }
+        }
+
+        WHEN("creating region material asset with empty passes")
+        {
+            auto name = dataGeneration.Random<String>();
+
+            auto asset = reliquary->Do(Arca::Create<RegionMaterial>{
+                name,
+                    std::vector<Material::Pass>{}});
+
+            auto mappedAssets = Arca::Index<Atmos::Asset::Mapped<Atmos::Asset::RegionMaterial>>(*reliquary);
+
+            THEN("asset has name")
+            {
+                REQUIRE(asset->Name() == name);
+            }
+
+            THEN("asset has empty passes")
+            {
+                REQUIRE(asset->Passes().empty());
+            }
+
+            THEN("mapped assets contains entry")
+            {
+                REQUIRE(mappedAssets->Exists(name));
+                REQUIRE(mappedAssets->Find(name) == asset);
+            }
+
+            WHEN("reassigning asset")
+            {
+                auto newName = dataGeneration.Random<String>();
+
+                reliquary->Do(Arca::AssignMove<Atmos::Asset::RegionMaterial>{
+                    asset.ID(),
+                    newName,
                     std::vector<Material::Pass>{}});
 
                 THEN("mapped asset is new asset")

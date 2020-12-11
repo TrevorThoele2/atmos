@@ -25,7 +25,8 @@ Arca::Index<Atmos::Asset::Image> AngelScriptRenderTestsFixture::CreateImageAsset
 
 SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scripts", "[script][angelscript]")
 {
-    ScriptEngine engine;
+    Logging::Logger logger(Logging::Severity::Verbose);
+    ScriptEngine engine(logger);
     engine.Setup();
 
     auto fieldOrigin = Arca::ReliquaryOrigin();
@@ -97,7 +98,7 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
         auto createCommand = Arca::Create<DynamicImage>{
             CreateImageAsset(fieldReliquary),
             1,
-            Arca::Index<Asset::Material>{},
+            Arca::Index<Asset::ImageMaterial>{},
             Color{},
             Spatial::Point3D{},
             Spatial::Scalers2D{},
@@ -235,12 +236,11 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
             auto fragmentShaderAsset = fieldReliquary.Do(Arca::Create<Asset::Shader>{ fragmentShaderName, std::move(fragmentResource) });
 
             auto materialAssetName = dataGeneration.Random<std::string>();
-            auto materialAssetType = Asset::MaterialType::Region;
             auto materialAssetPasses = std::vector<Asset::Material::Pass>
             {
                 { vertexShaderAsset, fragmentShaderAsset }
             };
-            auto materialAsset = fieldReliquary.Do(Arca::Create<Asset::Material>{ materialAssetName, materialAssetType, materialAssetPasses });
+            auto materialAsset = fieldReliquary.Do(Arca::Create<Asset::ImageMaterial>{ materialAssetName, materialAssetPasses });
 
             GIVEN("script that sets material asset and returns material ID")
             {
@@ -248,7 +248,7 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                     "basic_script.as",
                     "Arca::RelicID main(Arca::RelicID id, Arca::RelicID materialAssetID)\n" \
                     "{\n" \
-                    "    auto materialAsset = Atmos::Asset::Material(materialAssetID);\n" \
+                    "    auto materialAsset = Atmos::Asset::ImageMaterial(materialAssetID);\n" \
                     "    Arca::Reliquary::Do(Atmos::Render::ChangeMaterialAsset(id, materialAsset));\n" \
                     "\n" \
                     "    auto image = Atmos::Render::DynamicImage(id);\n" \
@@ -481,7 +481,7 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                 "{\n" \
                 "    auto imageAsset = Atmos::Asset::Image();\n" \
                 "    auto assetIndex = 1;\n" \
-                "    auto materialAsset = Atmos::Asset::Material();\n" \
+                "    auto materialAsset = Atmos::Asset::ImageMaterial();\n" \
                 "    auto color = Atmos::Render::Color();\n" \
                 "    auto position = Atmos::Spatial::Point3D();\n" \
                 "    auto scalers = Atmos::Spatial::Scalers2D();\n" \
@@ -534,7 +534,7 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                 "{\n" \
                 "    auto imageAsset = Atmos::Asset::Image();\n" \
                 "    auto assetIndex = 1;\n" \
-                "    auto materialAsset = Atmos::Asset::Material();\n" \
+                "    auto materialAsset = Atmos::Asset::ImageMaterial();\n" \
                 "    auto color = Atmos::Render::Color();\n" \
                 "    auto position = Atmos::Spatial::Point3D();\n" \
                 "    auto scalers = Atmos::Spatial::Scalers2D();\n" \
@@ -595,7 +595,7 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                 "{\n" \
                 "    auto imageAsset = Atmos::Asset::Image();\n" \
                 "    auto assetIndex = 1;\n" \
-                "    auto materialAsset = Atmos::Asset::Material();\n" \
+                "    auto materialAsset = Atmos::Asset::ImageMaterial();\n" \
                 "    auto color = Atmos::Render::Color();\n" \
                 "    auto position = Atmos::Spatial::Point3D();\n" \
                 "    auto scalers = Atmos::Spatial::Scalers2D();\n" \
@@ -653,7 +653,7 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                 "{\n" \
                 "    auto imageAsset = Atmos::Asset::Image();\n" \
                 "    auto assetIndex = 1;\n" \
-                "    auto materialAsset = Atmos::Asset::Material();\n" \
+                "    auto materialAsset = Atmos::Asset::ImageMaterial();\n" \
                 "    auto color = Atmos::Render::Color();\n" \
                 "    auto position = Atmos::Spatial::Point3D();\n" \
                 "    auto scalers = Atmos::Spatial::Scalers2D();\n" \

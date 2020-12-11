@@ -5,7 +5,7 @@ namespace Atmos::Render
     ImageCore::ImageCore(
         Arca::Index<Asset::Image> asset,
         Index assetIndex,
-        Arca::Index<Asset::Material> material,
+        Arca::Index<Asset::ImageMaterial> material,
         Color color)
         :
         asset(asset),

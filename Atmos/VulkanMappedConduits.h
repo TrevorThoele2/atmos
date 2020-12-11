@@ -4,8 +4,11 @@
 #include "VulkanConduit.h"
 #include "MaterialAsset.h"
 
+#include "VulkanInvalidConduit.h"
+
 namespace Atmos::Render::Vulkan
 {
+    template<class MaterialT>
     class MappedConduits
     {
     public:
@@ -19,8 +22,8 @@ namespace Atmos::Render::Vulkan
             vk::Extent2D swapchainExtent,
             const std::vector<vk::DescriptorSetLayout>& descriptorSetLayouts);
 
-        void Add(Arca::Index<Asset::Material> material);
-        void Remove(Arca::Index<Asset::Material> material);
+        void Add(Arca::Index<MaterialT> material);
+        void Remove(Arca::Index<MaterialT> material);
 
         [[nodiscard]] Group* For(Arca::RelicID id);
 
@@ -37,6 +40,82 @@ namespace Atmos::Render::Vulkan
         vk::RenderPass renderPass;
         vk::Extent2D swapchainExtent;
     private:
-        [[nodiscard]] Group CreateGroup(const Asset::Material& material) const;
+        [[nodiscard]] Group CreateGroup(const MaterialT& material) const;
     };
+
+    template<class MaterialT>
+    MappedConduits<MaterialT>::MappedConduits(
+        std::shared_ptr<vk::Device> device,
+        VertexInput vertexInput,
+        vk::PrimitiveTopology primitiveTopology,
+        vk::RenderPass renderPass,
+        vk::Extent2D swapchainExtent,
+        const std::vector<vk::DescriptorSetLayout>& descriptorSetLayouts)
+        :
+        device(device),
+        vertexInput(vertexInput),
+        primitiveTopology(primitiveTopology),
+        renderPass(renderPass),
+        swapchainExtent(swapchainExtent)
+    {
+        const vk::PipelineLayoutCreateInfo layoutCreateInfo({}, descriptorSetLayouts.size(), descriptorSetLayouts.data());
+        layout = device->createPipelineLayoutUnique(layoutCreateInfo);
+    }
+
+    template<class MaterialT>
+    void MappedConduits<MaterialT>::Add(Arca::Index<MaterialT> material)
+    {
+        groups.emplace(material.ID(), CreateGroup(*material));
+    }
+
+    template<class MaterialT>
+    void MappedConduits<MaterialT>::Remove(Arca::Index<MaterialT> material)
+    {
+        groups.erase(material.ID());
+    }
+
+    template<class MaterialT>
+    auto MappedConduits<MaterialT>::For(Arca::RelicID id) -> Group*
+    {
+        auto found = groups.find(id);
+        if (found == groups.end())
+            return nullptr;
+
+        return &found->second;
+    }
+
+    template<class MaterialT>
+    vk::PipelineLayout MappedConduits<MaterialT>::PipelineLayout() const
+    {
+        return layout.get();
+    }
+
+    template<class MaterialT>
+    auto MappedConduits<MaterialT>::CreateGroup(const MaterialT& material) const -> Group
+    {
+        const auto& passes = material.Passes();
+
+        Group group;
+        group.reserve(passes.size());
+        for (auto& pass : passes)
+        {
+            try
+            {
+                group.push_back(Conduit(
+                    pass.VertexShader(),
+                    pass.FragmentShader(),
+                    *device,
+                    layout.get(),
+                    renderPass,
+                    vertexInput,
+                    swapchainExtent,
+                    primitiveTopology,
+                    {}));
+            }
+            catch (const InvalidConduit&)
+            {
+            }
+        }
+        return group;
+    }
 }

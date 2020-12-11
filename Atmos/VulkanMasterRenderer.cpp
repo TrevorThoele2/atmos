@@ -56,7 +56,9 @@ namespace Atmos::Render::Vulkan
 
         imagesInFlight.resize(swapchainImages.size(), nullptr);
 
-        const auto materialBatch = reliquary.Batch<Asset::Material>();
+        const auto imageMaterialBatch = reliquary.Batch<Asset::ImageMaterial>();
+        const auto lineMaterialBatch = reliquary.Batch<Asset::LineMaterial>();
+        const auto regionMaterialBatch = reliquary.Batch<Asset::RegionMaterial>();
 
         rendererGroups.clear();
         for (uint32_t i = 0; i < swapchainImages.size(); ++i)
@@ -67,7 +69,9 @@ namespace Atmos::Render::Vulkan
                 memoryProperties,
                 renderPass.get(),
                 swapchainExtent,
-                materialBatch);
+                imageMaterialBatch,
+                lineMaterialBatch,
+                regionMaterialBatch);
         }
         currentRendererGroup = rendererGroups.begin();
 
@@ -192,18 +196,40 @@ namespace Atmos::Render::Vulkan
         device->waitForFences(fences, VK_TRUE, UINT64_MAX);
     }
 
-    void MasterRenderer::OnMaterialCreated(const Arca::Index<Asset::Material>& material)
+    void MasterRenderer::OnMaterialCreated(const Arca::Index<Asset::ImageMaterial>& material)
     {
         for (auto& group : rendererGroups)
-            for (auto& renderer : group.AsIterable())
-                renderer->MaterialCreated(material);
+            group.quad.MaterialCreated(material);
     }
 
-    void MasterRenderer::OnMaterialDestroying(const Arca::Index<Asset::Material>& material)
+    void MasterRenderer::OnMaterialCreated(const Arca::Index<Asset::LineMaterial>& material)
     {
         for (auto& group : rendererGroups)
-            for (auto& renderer : group.AsIterable())
-                renderer->MaterialDestroying(material);
+            group.line.MaterialCreated(material);
+    }
+
+    void MasterRenderer::OnMaterialCreated(const Arca::Index<Asset::RegionMaterial>& material)
+    {
+        for (auto& group : rendererGroups)
+            group.region.MaterialCreated(material);
+    }
+
+    void MasterRenderer::OnMaterialDestroying(const Arca::Index<Asset::ImageMaterial>& material)
+    {
+        for (auto& group : rendererGroups)
+            group.quad.MaterialDestroying(material);
+    }
+
+    void MasterRenderer::OnMaterialDestroying(const Arca::Index<Asset::LineMaterial>& material)
+    {
+        for (auto& group : rendererGroups)
+            group.line.MaterialDestroying(material);
+    }
+
+    void MasterRenderer::OnMaterialDestroying(const Arca::Index<Asset::RegionMaterial>& material)
+    {
+        for (auto& group : rendererGroups)
+            group.region.MaterialDestroying(material);
     }
 
     MasterRenderer::RendererGroup::RendererGroup(
@@ -212,7 +238,9 @@ namespace Atmos::Render::Vulkan
         vk::PhysicalDeviceMemoryProperties memoryProperties,
         vk::RenderPass renderPass,
         vk::Extent2D swapchainExtent,
-        const Arca::Batch<Asset::Material>& materials)
+        const Arca::Batch<Asset::ImageMaterial>& imageMaterials,
+        const Arca::Batch<Asset::LineMaterial>& lineMaterials,
+        const Arca::Batch<Asset::RegionMaterial>& regionMaterials)
         :
         quad(
             device,
@@ -220,21 +248,21 @@ namespace Atmos::Render::Vulkan
             memoryProperties,
             renderPass,
             swapchainExtent,
-            materials),
+            imageMaterials),
         line(
             device,
             graphicsQueue,
             memoryProperties,
             renderPass,
             swapchainExtent,
-            materials),
+            lineMaterials),
         region(
             device,
             graphicsQueue,
             memoryProperties,
             renderPass,
             swapchainExtent,
-            materials)
+            regionMaterials)
     {}
 
     auto MasterRenderer::RendererGroup::AsIterable() -> IterableRenderers

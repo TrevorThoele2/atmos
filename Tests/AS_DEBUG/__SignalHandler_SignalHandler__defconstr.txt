@@ -1,0 +1,14 @@
+SignalHandler::SignalHandler()
+
+Temps: 
+
+Variables: 
+ 000: SignalHandler this
+
+
+- 3,34 -
+    0   0 *    SUSPEND
+    1   0 *    PshVPtr  v0
+    2   1 *    ADDSi    v20, 134217860
+    4   1 *    ALLOC    0xa2be78, 515             (type:BoundsScaled, {no func})
+    7   0 *    RET      1

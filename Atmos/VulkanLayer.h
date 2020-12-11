@@ -1,7 +1,7 @@
 #pragma once
 
 #include <unordered_map>
-#include "MaterialAsset.h"
+#include <Arca/RelicID.h>
 
 namespace Atmos::Render::Vulkan
 {

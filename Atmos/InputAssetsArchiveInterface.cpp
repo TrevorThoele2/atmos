@@ -48,6 +48,19 @@ namespace Atmos::World::Serialization
             return extracted;
         }
 
+        struct ExtractionSet
+        {
+            String folderName;
+            ToExtract (AllToExtract::*toExtract);
+            ExtractedAssets (Extracted::* extractedAssets);
+        };
+
+        std::vector<ExtractionSet> extractionSets = {
+            {"images", &AllToExtract::images, &Extracted::images},
+            {"shaders", &AllToExtract::shaders, &Extracted::shaders},
+            {"scripts", &AllToExtract::scripts, &Extracted::scripts}
+        };
+
         wxZipInputStream zip(*stream);
 
         std::unique_ptr<wxZipEntry> entry;
@@ -62,26 +75,14 @@ namespace Atmos::World::Serialization
             const auto folderName = splitName[splitName.size() - 2];
             const auto fileName = File::Path(splitName[splitName.size() - 1]).replace_extension().string();
 
-            if (folderName == "images")
+            for(auto& extractionSet : extractionSets)
             {
-                if (toExtract.images.find(fileName) == toExtract.images.end())
-                    continue;
-
-                extracted.images.emplace_back(fileName, ExtractData(zip));
-            }
-            else if (folderName == "shaders")
-            {
-                if (toExtract.shaders.find(fileName) == toExtract.shaders.end())
-                    continue;
-
-                extracted.shaders.emplace_back(fileName, ExtractData(zip));
-            }
-            else if (folderName == "scripts")
-            {
-                if (toExtract.scripts.find(fileName) == toExtract.scripts.end())
-                    continue;
-
-                extracted.scripts.emplace_back(fileName, ExtractData(zip));
+                auto& toExtractFrom = toExtract.*extractionSet.toExtract;
+                if (folderName == extractionSet.folderName && toExtractFrom.find(fileName) == toExtractFrom.end())
+                {
+                    (extracted.*extractionSet.extractedAssets).emplace_back(fileName, ExtractData(zip));
+                    break;
+                }
             }
         }
 

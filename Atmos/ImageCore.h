@@ -2,7 +2,8 @@
 
 #include <Arca/Shard.h>
 
-#include "MaterialAsset.h"
+#include "ImageAsset.h"
+#include "ImageMaterialAsset.h"
 #include "Color.h"
 #include "ShaderAsset.h"
 #include "AxisAlignedBox2D.h"
@@ -18,7 +19,7 @@ namespace Atmos::Render
     public:
         Arca::Index<Asset::Image> asset;
         Index assetIndex = 0;
-        Arca::Index<Asset::Material> material;
+        Arca::Index<Asset::ImageMaterial> material;
 
         Color color;
     public:
@@ -26,7 +27,7 @@ namespace Atmos::Render
         ImageCore(
             Arca::Index<Asset::Image> asset,
             Index assetIndex,
-            Arca::Index<Asset::Material> material,
+            Arca::Index<Asset::ImageMaterial> material,
             Color color);
     };
 }

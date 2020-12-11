@@ -3,7 +3,7 @@
 #include <unordered_set>
 #include <Arca/Relic.h>
 
-#include "MaterialAsset.h"
+#include "RegionMaterialAsset.h"
 #include "GridPoint.h"
 
 #include <Inscription/UnorderedSetScribe.h>
@@ -15,13 +15,13 @@ namespace Atmos::Render
     public:
         std::unordered_set<Spatial::Grid::Point> points;
         Spatial::Grid::Point::Value z;
-        Arca::Index<Asset::Material> material;
+        Arca::Index<Asset::RegionMaterial> material;
     public:
         GridRegion() = default;
         GridRegion(
             const std::unordered_set<Spatial::Grid::Point>& points,
             Spatial::Grid::Point::Value z,
-            Arca::Index<Asset::Material> material);
+            Arca::Index<Asset::RegionMaterial> material);
     private:
         INSCRIPTION_ACCESS;
     };

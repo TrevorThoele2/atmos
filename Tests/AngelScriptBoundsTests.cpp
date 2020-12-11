@@ -15,7 +15,8 @@
 
 SCENARIO_METHOD(AngelScriptBoundsTestsFixture, "running bounds AngelScript scripts", "[script][angelscript]")
 {
-    ScriptEngine engine;
+    Logging::Logger logger(Logging::Severity::Verbose);
+    ScriptEngine engine(logger);
     engine.Setup();
 
     auto fieldOrigin = Arca::ReliquaryOrigin();

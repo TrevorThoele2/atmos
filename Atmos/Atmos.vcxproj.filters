@@ -498,6 +498,24 @@
     <Filter Include="Source Files\Scripting\Commands">
       <UniqueIdentifier>{e05d5d88-3584-4d7e-88da-800746e0e1d9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Assets\Material\Image">
+      <UniqueIdentifier>{2334f54a-6e4a-43d1-bac2-bb098b62fb6e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Assets\Material\Line">
+      <UniqueIdentifier>{067190ed-5fb0-4afb-a743-bf03fb79328b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Assets\Material\Region">
+      <UniqueIdentifier>{d594d77b-4654-48df-be31-aa4e463cf343}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Assets\Material\Image">
+      <UniqueIdentifier>{bb3086fe-ab2a-468e-aa3c-db464ea1d0a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Assets\Material\Line">
+      <UniqueIdentifier>{60499bf8-4f06-438f-b83c-86ee229d8157}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Assets\Material\Region">
+      <UniqueIdentifier>{e9e49f76-9fd2-4cd1-ad43-2bdbdfd92df8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FieldDestination.h">
@@ -718,9 +736,6 @@
     </ClInclude>
     <ClInclude Include="ImageAssetCurator.h">
       <Filter>Header Files\Assets\Image</Filter>
-    </ClInclude>
-    <ClInclude Include="MaterialAssetCurator.h">
-      <Filter>Header Files\Assets\Material</Filter>
     </ClInclude>
     <ClInclude Include="ScriptAssetCurator.h">
       <Filter>Header Files\Assets\Script</Filter>
@@ -1658,6 +1673,39 @@
     <ClInclude Include="ScriptResource.h">
       <Filter>Header Files\Scripting</Filter>
     </ClInclude>
+    <ClInclude Include="ScriptModule.h">
+      <Filter>Header Files\Scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptCurrentEntity.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="CurrentActualizingEntity.h">
+      <Filter>Header Files\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="ExecuteScript.h">
+      <Filter>Header Files\Scripting\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageMaterialAsset.h">
+      <Filter>Header Files\Assets\Material\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageMaterialAssetCurator.h">
+      <Filter>Header Files\Assets\Material\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="LineMaterialAsset.h">
+      <Filter>Header Files\Assets\Material\Line</Filter>
+    </ClInclude>
+    <ClInclude Include="LineMaterialAssetCurator.h">
+      <Filter>Header Files\Assets\Material\Line</Filter>
+    </ClInclude>
+    <ClInclude Include="RegionMaterialAsset.h">
+      <Filter>Header Files\Assets\Material\Region</Filter>
+    </ClInclude>
+    <ClInclude Include="RegionMaterialAssetCurator.h">
+      <Filter>Header Files\Assets\Material\Region</Filter>
+    </ClInclude>
+    <ClInclude Include="MaterialAssetPass.h">
+      <Filter>Header Files\Assets\Material</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FieldDestination.cpp">
@@ -2116,9 +2164,6 @@
     <ClCompile Include="VulkanDescriptorSetPool.cpp">
       <Filter>Source Files\Render\Vulkan\Descriptors</Filter>
     </ClCompile>
-    <ClCompile Include="VulkanMappedConduits.cpp">
-      <Filter>Source Files\Render\Vulkan\Conduit</Filter>
-    </ClCompile>
     <ClCompile Include="VulkanRendererBase.cpp">
       <Filter>Source Files\Render\Vulkan\Renderer</Filter>
     </ClCompile>
@@ -2172,12 +2217,6 @@
     </ClCompile>
     <ClCompile Include="MainSurface.cpp">
       <Filter>Source Files\Render\Surface</Filter>
-    </ClCompile>
-    <ClCompile Include="LoadAssetsUserContext.cpp">
-      <Filter>Source Files\Serialization</Filter>
-    </ClCompile>
-    <ClCompile Include="LoadAssetsByZipUserContext.cpp">
-      <Filter>Source Files\Serialization</Filter>
     </ClCompile>
     <ClCompile Include="ChangeSurfaceBackgroundColor.cpp">
       <Filter>Source Files\Render\Surface</Filter>
@@ -2418,6 +2457,30 @@
     </ClCompile>
     <ClCompile Include="ScriptFunction.cpp">
       <Filter>Source Files\Scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadAssetsByZipUserContext.cpp">
+      <Filter>Source Files\Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadAssetsUserContext.cpp">
+      <Filter>Source Files\Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptCurrentEntity.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Datum.cpp">
+      <Filter>Source Files\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="MaterialAssetPass.cpp">
+      <Filter>Source Files\Assets\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageMaterialAsset.cpp">
+      <Filter>Source Files\Assets\Material\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="LineMaterialAsset.cpp">
+      <Filter>Source Files\Assets\Material\Line</Filter>
+    </ClCompile>
+    <ClCompile Include="RegionMaterialAsset.cpp">
+      <Filter>Source Files\Assets\Material\Region</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

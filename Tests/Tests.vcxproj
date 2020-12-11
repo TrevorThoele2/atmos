@@ -172,6 +172,7 @@
   <ItemGroup>
     <ClInclude Include="AngelScriptAssetTests.h" />
     <ClInclude Include="AngelScriptBoundsTests.h" />
+    <ClInclude Include="AngelScriptCreateObjectFixture.h" />
     <ClInclude Include="AngelScriptEntityTests.h" />
     <ClInclude Include="AngelScriptExceptionTests.h" />
     <ClInclude Include="AngelScriptFixture.h" />
