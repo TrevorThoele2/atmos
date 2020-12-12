@@ -61,7 +61,6 @@ namespace Atmos::Scripting::Angel
     {
         executionType = ExecutionType::Executing;
 
-        VerifyResult(context->Prepare(executeFunction));
         return DoExecute(*executeFunction, *context);
     }
 
