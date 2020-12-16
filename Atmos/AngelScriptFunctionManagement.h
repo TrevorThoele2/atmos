@@ -7,6 +7,8 @@
 #include "AngelScriptRegistration.h"
 #include <scriptarray.h>
 
+#include <unordered_set>
+
 namespace Atmos::Scripting::Angel
 {
     using ParameterIndex = unsigned int;
@@ -229,8 +231,12 @@ namespace Atmos::Scripting::Angel
                 generic);
             auto scriptObject = CScriptArray::Create(&typeInfo, object.size());
 
-            for (size_t i = 0; i < object.size(); ++i)
-                scriptObject->SetValue(i, &object[i]);
+            size_t i = 0;
+            for (auto& item : object)
+            {
+                scriptObject->SetValue(i, &item);
+                ++i;
+            }
 
             Dispatch<CScriptArray*>::PushToReturn(scriptObject, generic);
 
@@ -241,10 +247,59 @@ namespace Atmos::Scripting::Angel
         {
             auto pulled = Dispatch<CScriptArray*>::PullFromParameter(index, generic);
 
-            std::vector<T> returnValue;
+            Type returnValue;
             returnValue.reserve(pulled->GetSize());
             for (asUINT i = 0; i < pulled->GetSize(); ++i)
                 returnValue.push_back(*reinterpret_cast<T*>(pulled->At(i)));
+
+            pulled->Release();
+
+            return returnValue;
+        }
+
+        static Type PullFromReturn(asIScriptContext& context)
+        {
+            return reinterpret_cast<T*>(context.GetReturnObject());
+        }
+    };
+
+    template<class T>
+    struct Dispatch<std::unordered_set<T>>
+    {
+        using Type = std::unordered_set<T>;
+
+        static void PushToParameter(ParameterIndex index, Type object, asIScriptContext& context)
+        {
+            context.SetArgObject(index, object);
+        }
+
+        static void PushToReturn(Type object, asIScriptGeneric& generic)
+        {
+            auto& typeInfo = RequiredTypeInfoByDeclaration(
+                "array<" + CreateName({ Registration<T>::containingNamespace }, Registration<T>::name) + ">",
+                generic);
+            auto scriptObject = CScriptArray::Create(&typeInfo, object.size());
+
+            size_t i = 0;
+            for (auto& item : object)
+            {
+                scriptObject->SetValue(i, const_cast<T*>(&item));
+                ++i;
+            }
+
+            Dispatch<CScriptArray*>::PushToReturn(scriptObject, generic);
+
+            scriptObject->Release();
+        }
+
+        static Type PullFromParameter(ParameterIndex index, asIScriptGeneric& generic)
+        {
+            auto pulled = Dispatch<CScriptArray*>::PullFromParameter(index, generic);
+
+            Type returnValue;
+            returnValue.reserve(pulled->GetSize());
+            for (asUINT i = 0; i < pulled->GetSize(); ++i)
+                returnValue.emplace(*reinterpret_cast<T*>(pulled->At(i)));
 
             pulled->Release();
 

@@ -7,7 +7,10 @@
 
 namespace Atmos
 {
-    Engine::~Engine() = default;
+    Engine::~Engine()
+    {
+        executionContext.reset();
+    }
 
     void Engine::Setup()
     {

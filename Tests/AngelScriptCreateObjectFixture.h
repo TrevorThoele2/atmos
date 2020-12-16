@@ -8,6 +8,9 @@
 #include <Atmos/AngelScriptMaterialAsset.h>
 #include <Atmos/AngelScriptScriptAsset.h>
 #include <Atmos/AngelScriptDynamicImage.h>
+#include <Atmos/AngelScriptRelativeImage.h>
+#include <Atmos/AngelScriptLine.h>
+#include <Atmos/AngelScriptGridRegion.h>
 #include <Atmos/AngelScriptEntity.h>
 #include <Atmos/AngelScriptScript.h>
 
@@ -108,6 +111,64 @@ public:
             Atmos::Spatial::Point3D{},
             Atmos::Spatial::Scalers2D{},
             Atmos::Spatial::Angle2D{} };
+        auto index = reliquary.Do(createCommand);
+        return TupleOf<T>(index);
+    }
+
+    template<class T, std::enable_if_t<std::is_same_v<Atmos::Render::RelativeImage, T>, int> = 0>
+    CreatedObject<T> CreateObject(Arca::Reliquary& reliquary)
+    {
+        const auto imageAssetName = dataGeneration.Random<std::string>();
+
+        auto resource = reliquary.Do(Atmos::Asset::Resource::Create<Atmos::Asset::Resource::Image>{
+            Atmos::DataBuffer{}, imageAssetName, Atmos::Asset::ImageSize{ 1, 1 }});
+        const auto imageAsset = reliquary.Do(Arca::Create<Atmos::Asset::Image>{
+            imageAssetName, std::move(resource), Atmos::Asset::ImageGridSize{ 1, 1 } });
+        
+        const auto createCommand = Arca::Create<Atmos::Render::RelativeImage>{
+            imageAsset,
+            1,
+            Arca::Index<Atmos::Asset::ImageMaterial>{},
+            Atmos::Render::Color{},
+            Atmos::Spatial::Point3D{},
+            Atmos::Spatial::Scalers2D{},
+            Atmos::Spatial::Angle2D{} };
+        auto index = reliquary.Do(createCommand);
+        return TupleOf<T>(index);
+    }
+
+    template<class T, std::enable_if_t<std::is_same_v<Atmos::Render::Line, T>, int> = 0>
+    CreatedObject<T> CreateObject(Arca::Reliquary& reliquary)
+    {
+        const auto points = dataGeneration.RandomStackGroup<
+            Atmos::Spatial::Point2D, Atmos::Spatial::Point2D::Value, Atmos::Spatial::Point2D::Value>(3);
+        const auto z = dataGeneration.Random<Atmos::Spatial::Point2D::Value>();
+        const auto width = dataGeneration.Random<Atmos::Render::LineWidth>();
+        const auto color = dataGeneration.RandomStack<
+            Atmos::Render::Color, Atmos::Render::Color::Value, Atmos::Render::Color::Value, Atmos::Render::Color::Value>();
+
+        const auto createCommand = Arca::Create<Atmos::Render::Line>{
+            points,
+            z,
+            Arca::Index<Atmos::Asset::LineMaterial>{},
+            width,
+            color };
+        auto index = reliquary.Do(createCommand);
+        return TupleOf<T>(index);
+    }
+
+    template<class T, std::enable_if_t<std::is_same_v<Atmos::Render::GridRegion, T>, int> = 0>
+    CreatedObject<T> CreateObject(Arca::Reliquary& reliquary)
+    {
+        const auto pointsVector = dataGeneration.RandomStackGroup<
+            Atmos::Spatial::Grid::Point, Atmos::Spatial::Grid::Point::Value, Atmos::Spatial::Grid::Point::Value>(3);
+        const auto points = std::unordered_set<Atmos::Spatial::Grid::Point>{ pointsVector.begin(), pointsVector.end() };
+        const auto z = dataGeneration.Random<Atmos::Spatial::Grid::Point::Value>();
+
+        const auto createCommand = Arca::Create<Atmos::Render::GridRegion>{
+            points,
+            z,
+            Arca::Index<Atmos::Asset::RegionMaterial>{} };
         auto index = reliquary.Do(createCommand);
         return TupleOf<T>(index);
     }

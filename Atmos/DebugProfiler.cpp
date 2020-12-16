@@ -12,7 +12,7 @@ namespace Atmos::Debug
         if (!statistics)
             return;
 
-        statisticPicker(*statistics).Start();
+        statisticPicker(*statistics).Restart();
     }
 
     void Profiler::Calculate()

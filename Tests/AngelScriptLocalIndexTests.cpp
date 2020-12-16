@@ -22,6 +22,8 @@ TEMPLATE_TEST_CASE_METHOD(
     Asset::RegionMaterial,
     Asset::Script,
     Render::DynamicImage,
+    Render::Line,
+    Render::GridRegion,
     Entity::Entity,
     Render::ImageCore,
     Spatial::Bounds)

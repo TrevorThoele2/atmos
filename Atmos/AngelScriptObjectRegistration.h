@@ -27,19 +27,51 @@ namespace Atmos::Scripting::Angel
             DerivedT& CopyAssignment(GenericFunction function);
 
             DerivedT& Equals(GenericFunction function);
+            DerivedT& Compare(GenericFunction function);
 
             DerivedT& Add(GenericFunction function);
+            DerivedT& Add(GenericFunction function, String parameter);
             DerivedT& Subtract(GenericFunction function);
+            DerivedT& Subtract(GenericFunction function, String parameter);
+            DerivedT& Multiply(GenericFunction function);
+            DerivedT& Multiply(GenericFunction function, String parameter);
+            DerivedT& Divide(GenericFunction function);
+            DerivedT& Divide(GenericFunction function, String parameter);
+            DerivedT& Modulo(GenericFunction function);
+            DerivedT& Modulo(GenericFunction function, String parameter);
+            DerivedT& CompoundAdd(GenericFunction function);
+            DerivedT& CompoundAdd(GenericFunction function, String parameter);
+            DerivedT& CompoundSubtract(GenericFunction function);
+            DerivedT& CompoundSubtract(GenericFunction function, String parameter);
+            DerivedT& CompoundMultiply(GenericFunction function);
+            DerivedT& CompoundMultiply(GenericFunction function, String parameter);
+            DerivedT& CompoundDivide(GenericFunction function);
+            DerivedT& CompoundDivide(GenericFunction function, String parameter);
+            DerivedT& CompoundModulo(GenericFunction function);
+            DerivedT& CompoundModulo(GenericFunction function, String parameter);
+
+            DerivedT& Negation(GenericFunction function);
+            DerivedT& PrefixIncrement(GenericFunction function);
+            DerivedT& PostfixIncrement(GenericFunction function);
+            DerivedT& PrefixDecrement(GenericFunction function);
+            DerivedT& PostfixDecrement(GenericFunction function);
 
             DerivedT& Method(GenericFunction function, String returnType, String name, std::vector<String> parameters);
             DerivedT& ConstMethod(GenericFunction function, String returnType, String name, std::vector<String> parameters);
+            DerivedT& StaticMethod(GenericFunction function, String returnType, String name, std::vector<String> parameters);
+
             template<auto property>
             DerivedT& Property(String type, String name);
+            DerivedT& SetProperty(GenericFunction function, String returnType, String name, std::vector<String> parameters);
+            DerivedT& GetProperty(GenericFunction function, String returnType, String name, std::vector<String> parameters);
 
             void Actualize(asIScriptEngine& engine);
         public:
             using RegistrationItem = std::function<void(asIScriptEngine&, String)>;
             void AddItem(RegistrationItem&& item);
+
+            using StaticRegistrationItem = std::function<void(asIScriptEngine&)>;
+            void AddStaticItem(StaticRegistrationItem&& item);
         protected:
             Object(
                 std::optional<String> containingNamespace,
@@ -53,6 +85,7 @@ namespace Atmos::Scripting::Angel
             String representationName;
 
             std::vector<RegistrationItem> items;
+            std::vector<StaticRegistrationItem> staticItems;
 
             asDWORD knownFlags;
 
@@ -134,15 +167,159 @@ namespace Atmos::Scripting::Angel
         }
 
         template<class T, class DerivedT>
+        auto Object<T, DerivedT>::Compare(GenericFunction function) -> DerivedT&
+        {
+            return ConstMethod(function, "bool", "opCmp", { "const " + representationName + " &in" });
+        }
+
+        template<class T, class DerivedT>
         auto Object<T, DerivedT>::Add(GenericFunction function) -> DerivedT&
         {
-            return ConstMethod(function, representationName, "opAdd", { "const " + representationName + " &in" });
+            return Add(function, { "const " + representationName + " &in" });
+        }
+
+        template<class T, class DerivedT>
+        auto Object<T, DerivedT>::Add(GenericFunction function, String parameter) -> DerivedT&
+        {
+            return ConstMethod(function, representationName, "opAdd", { parameter });
         }
 
         template<class T, class DerivedT>
         auto Object<T, DerivedT>::Subtract(GenericFunction function) -> DerivedT&
         {
-            return ConstMethod(function, representationName, "opSub", { "const " + representationName + " &in" });
+            return Subtract(function, "const " + representationName + " &in");
+        }
+
+        template<class T, class DerivedT>
+        auto Object<T, DerivedT>::Subtract(GenericFunction function, String parameter) -> DerivedT&
+        {
+            return ConstMethod(function, representationName, "opSub", { parameter });
+        }
+
+        template<class T, class DerivedT>
+        auto Object<T, DerivedT>::Multiply(GenericFunction function) -> DerivedT&
+        {
+            return Multiply(function, { "const " + representationName + " &in" });
+        }
+
+        template<class T, class DerivedT>
+        auto Object<T, DerivedT>::Multiply(GenericFunction function, String parameter) -> DerivedT&
+        {
+            return ConstMethod(function, representationName, "opMul", { parameter });
+        }
+
+        template<class T, class DerivedT>
+        auto Object<T, DerivedT>::Divide(GenericFunction function) -> DerivedT&
+        {
+            return Divide(function, { "const " + representationName + " &in" });
+        }
+
+        template<class T, class DerivedT>
+        auto Object<T, DerivedT>::Divide(GenericFunction function, String parameter) -> DerivedT&
+        {
+            return ConstMethod(function, representationName, "opDiv", { parameter });
+        }
+
+        template<class T, class DerivedT>
+        auto Object<T, DerivedT>::Modulo(GenericFunction function) -> DerivedT&
+        {
+            return Modulo(function, { "const " + representationName + " &in" });
+        }
+
+        template<class T, class DerivedT>
+        auto Object<T, DerivedT>::Modulo(GenericFunction function, String parameter) -> DerivedT&
+        {
+            return ConstMethod(function, representationName, "opMod", { parameter });
+        }
+
+        template<class T, class DerivedT>
+        auto Object<T, DerivedT>::CompoundAdd(GenericFunction function) -> DerivedT&
+        {
+            return CompoundAdd(function, { "const " + representationName + " &in" });
+        }
+
+        template<class T, class DerivedT>
+        auto Object<T, DerivedT>::CompoundAdd(GenericFunction function, String parameter) -> DerivedT&
+        {
+            return Method(function, representationName, "opAddAssign", { parameter });
+        }
+
+        template<class T, class DerivedT>
+        auto Object<T, DerivedT>::CompoundSubtract(GenericFunction function) -> DerivedT&
+        {
+            return CompoundSubtract(function, { "const " + representationName + " &in" });
+        }
+
+        template<class T, class DerivedT>
+        auto Object<T, DerivedT>::CompoundSubtract(GenericFunction function, String parameter) -> DerivedT&
+        {
+            return Method(function, representationName, "opSubAssign", { parameter });
+        }
+
+        template<class T, class DerivedT>
+        auto Object<T, DerivedT>::CompoundMultiply(GenericFunction function) -> DerivedT&
+        {
+            return CompoundMultiply(function, { "const " + representationName + " &in" });
+        }
+
+        template<class T, class DerivedT>
+        auto Object<T, DerivedT>::CompoundMultiply(GenericFunction function, String parameter) -> DerivedT&
+        {
+            return Method(function, representationName, "opMulAssign", { parameter });
+        }
+
+        template<class T, class DerivedT>
+        auto Object<T, DerivedT>::CompoundDivide(GenericFunction function) -> DerivedT&
+        {
+            return CompoundDivide(function, { "const " + representationName + " &in" });
+        }
+
+        template<class T, class DerivedT>
+        auto Object<T, DerivedT>::CompoundDivide(GenericFunction function, String parameter) -> DerivedT&
+        {
+            return Method(function, representationName, "opDivAssign", { parameter });
+        }
+
+        template<class T, class DerivedT>
+        auto Object<T, DerivedT>::CompoundModulo(GenericFunction function) -> DerivedT&
+        {
+            return CompoundModulo(function, { "const " + representationName + " &in" });
+        }
+
+        template<class T, class DerivedT>
+        auto Object<T, DerivedT>::CompoundModulo(GenericFunction function, String parameter) -> DerivedT&
+        {
+            return Method(function, representationName, "opModAssign", { parameter });
+        }
+
+        template<class T, class DerivedT>
+        auto Object<T, DerivedT>::Negation(GenericFunction function) -> DerivedT&
+        {
+            return ConstMethod(function, representationName, "&opNeg", {});
+        }
+
+        template<class T, class DerivedT>
+        auto Object<T, DerivedT>::PrefixIncrement(GenericFunction function) -> DerivedT&
+        {
+            return Method(function, representationName, "&opPreInc", {});
+        }
+
+        template<class T, class DerivedT>
+        auto Object<T, DerivedT>::PostfixIncrement(GenericFunction function) -> DerivedT&
+        {
+            return Method(function, representationName, "&opPostInc", {});
+        }
+
+        template<class T, class DerivedT>
+        auto Object<T, DerivedT>::PrefixDecrement(GenericFunction function) -> DerivedT&
+        {
+            return Method(function, representationName, "&opPreDec", {});
+        }
+
+        template<class T, class DerivedT>
+        auto Object<T, DerivedT>::PostfixDecrement(GenericFunction function) -> DerivedT&
+        {
+            return Method(function, representationName, "&opPostDec", {});
         }
 
         template<class T, class DerivedT>
@@ -170,6 +347,24 @@ namespace Atmos::Scripting::Angel
         }
 
         template<class T, class DerivedT>
+        auto Object<T, DerivedT>::StaticMethod(
+            GenericFunction function, String returnType, String name, std::vector<String> parameters)
+            -> DerivedT&
+        {
+            const auto declaration = returnType + " " + name + "(" + Chroma::Join(", ", parameters.begin(), parameters.end()) + ")";
+
+            AddStaticItem([function, declaration](asIScriptEngine& engine)
+                {
+                    VerifyResult(engine.RegisterGlobalFunction(
+                        declaration.c_str(),
+                        asFUNCTION(function),
+                        asCALL_GENERIC));
+                });
+
+            return static_cast<DerivedT&>(*this);
+        }
+
+        template<class T, class DerivedT>
         template<auto property>
         auto Object<T, DerivedT>::Property(String type, String name) -> DerivedT&
         {
@@ -182,6 +377,26 @@ namespace Atmos::Scripting::Angel
                         declaration.c_str(),
                         (char*)&((T*)nullptr->*property) - (char*)nullptr));
                 });
+
+            return static_cast<DerivedT&>(*this);
+        }
+
+        template<class T, class DerivedT>
+        DerivedT& Object<T, DerivedT>::SetProperty(GenericFunction function, String returnType, String name, std::vector<String> parameters)
+        {
+            const auto declaration = returnType + " get_" + name + "(" + Chroma::Join(", ", parameters.begin(), parameters.end()) + ") property";
+
+            GenerateMethod(function, declaration);
+
+            return static_cast<DerivedT&>(*this);
+        }
+
+        template<class T, class DerivedT>
+        DerivedT& Object<T, DerivedT>::GetProperty(GenericFunction function, String returnType, String name, std::vector<String> parameters)
+        {
+            const auto declaration = returnType + " set_" + name + "(" + Chroma::Join(", ", parameters.begin(), parameters.end()) + ") property";
+
+            GenerateMethod(function, declaration);
 
             return static_cast<DerivedT&>(*this);
         }
@@ -214,12 +429,28 @@ namespace Atmos::Scripting::Angel
                 item(engine, representationName);
 
             UserData::RequiredFrom(engine)->registeredTypes.emplace(CreateName({ useNamespace }, registrationName));
+
+            if (!staticItems.empty())
+            {
+                const auto staticNamespace = CreateName({ containingNamespace ? *containingNamespace : "" }, registrationName);
+
+                VerifyResult(engine.SetDefaultNamespace(staticNamespace.c_str()));
+
+                for (auto& item : staticItems)
+                    item(engine);
+            }
         }
 
         template<class T, class DerivedT>
         void Object<T, DerivedT>::AddItem(RegistrationItem&& item)
         {
             items.push_back(std::move(item));
+        }
+
+        template<class T, class DerivedT>
+        void Object<T, DerivedT>::AddStaticItem(StaticRegistrationItem&& item)
+        {
+            staticItems.push_back(std::move(item));
         }
 
         template<class T, class DerivedT>

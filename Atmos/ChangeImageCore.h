@@ -12,8 +12,6 @@ namespace Atmos::Render
 
         std::optional<Arca::Index<Asset::Image>> asset;
         std::optional<ImageCore::Index> assetIndex;
-        std::optional<Color> color;
-        std::optional<Arca::Index<Asset::ImageMaterial>> material;
     };
 }
 

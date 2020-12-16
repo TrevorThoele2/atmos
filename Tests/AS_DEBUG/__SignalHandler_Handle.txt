@@ -12,11 +12,11 @@ Variables:
     0   0 *    SUSPEND
     1   0 *    PshVPtr  v-1
     2   1 *    PshVPtr  v0
-    3   2 *    ADDSi    v20, 134217860
+    3   2 *    ADDSi    v20, 134217921
     5   2 *    RDSPtr
     6   2 *    CALLSYS  519           (Atmos::Spatial::BoundsScaled& BoundsScaled::opAssign(const Atmos::Spatial::BoundsScaled&in))
 - 4,79 -
     8   0 *    SUSPEND
             0:
-    9   0 *    FREE     v-1, 10665592
+    9   0 *    FREE     v-1, 13615048
    11   0 *    RET      2

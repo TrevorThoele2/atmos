@@ -17,6 +17,7 @@
 #include "AngelScriptVariant.h"
 #include "AngelScriptDatum.h"
 #include "AngelScriptStringUtility.h"
+#include "AngelScriptMath.h"
 
 #include "AngelScriptAngle2D.h"
 #include "AngelScriptAngle3D.h"
@@ -33,6 +34,7 @@
 #include "AngelScriptGridSpatialAlgorithms.h"
 #include "AngelScriptBounds.h"
 
+#include "AngelScriptTimePoint.h"
 #include "AngelScriptStopwatch.h"
 
 #include "AngelScriptAsset.h"
@@ -48,7 +50,11 @@
 #include "AngelScriptColor.h"
 #include "AngelScriptImageCore.h"
 #include "AngelScriptDynamicImage.h"
+#include "AngelScriptRelativeImage.h"
+#include "AngelScriptLine.h"
+#include "AngelScriptGridRegion.h"
 #include "AngelScriptCamera.h"
+#include "AngelScriptChangeMaterialAsset.h"
 
 #include "AngelScriptEntity.h"
 #include "AngelScriptCurrentEntity.h"
@@ -108,6 +114,7 @@ namespace Atmos::Scripting::Angel
                 .Register<Variant>()
                 .Register<Datum>()
                 .Register<StringUtility>()
+                .Register<Math>()
 
                 .Register<Angle2D>()
                 .Register<Spatial::Angle3D>()
@@ -132,6 +139,31 @@ namespace Atmos::Scripting::Angel
                 .Register<Spatial::BoundsRotated>()
                 .Register<Spatial::BoundsScaled>()
 
+                .Register<Time::Hours>()
+                .Register<Time::Minutes>()
+                .Register<Time::Seconds>()
+                .Register<Time::Milliseconds>()
+                .Register<Time::Microseconds>()
+                .Register<Time::Nanoseconds>()
+                .Register<GenericTimePoint>()
+                .Register<Time::Point<Time::Hours>>()
+                .Register<Time::Point<Time::Minutes>>()
+                .Register<Time::Point<Time::Seconds>>()
+                .Register<Time::Point<Time::Milliseconds>>()
+                .Register<Time::Point<Time::Microseconds>>()
+                .Register<Time::Point<Time::Nanoseconds>>()
+                .Register<TimeDurationCast<Time::Hours>>()
+                .Register<TimeDurationCast<Time::Minutes>>()
+                .Register<TimeDurationCast<Time::Seconds>>()
+                .Register<TimeDurationCast<Time::Milliseconds>>()
+                .Register<TimeDurationCast<Time::Microseconds>>()
+                .Register<TimeDurationCast<Time::Nanoseconds>>()
+                .Register<TimePointCast<Time::Hours>>()
+                .Register<TimePointCast<Time::Minutes>>()
+                .Register<TimePointCast<Time::Seconds>>()
+                .Register<TimePointCast<Time::Milliseconds>>()
+                .Register<TimePointCast<Time::Microseconds>>()
+                .Register<TimePointCast<Time::Nanoseconds>>()
                 .Register<Time::Stopwatch>()
 
                 .Register<GenericAssetFindByName>()
@@ -152,11 +184,20 @@ namespace Atmos::Scripting::Angel
                 .Register<Render::Color>()
                 .Register<Render::ImageCore>()
                 .Register<Render::DynamicImage>()
+                .Register<Render::RelativeImage>()
+                .Register<Render::Line>()
+                .Register<Render::GridRegion>()
                 .Register<Render::Camera>()
                 .Register<ChangeImageAsset>()
                 .Register<ChangeAssetIndex>()
-                .Register<ChangeColor>()
-                .Register<ChangeMaterialAsset>()
+                .Register<Render::ChangeColor>()
+                .Register<ChangeLinePoints>()
+                .Register<ChangeLineZ>()
+                .Register<ChangeGridRegionPoints>()
+                .Register<ChangeGridRegionZ>()
+                .Register<Render::ChangeMaterialAsset<Asset::ImageMaterial>>()
+                .Register<Render::ChangeMaterialAsset<Asset::LineMaterial>>()
+                .Register<Render::ChangeMaterialAsset<Asset::RegionMaterial>>()
 
                 .Register<Entity::Entity>()
                 .Register<Entity::FindByName>()

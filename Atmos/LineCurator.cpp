@@ -38,6 +38,17 @@ namespace Atmos::Render
         octree.Move(index.ID(), index, BoxFor(prevPoints, prevZ), BoxFor(index));
     }
 
+    void LineCurator::Handle(const ChangeLineMaterialAsset& command)
+    {
+        const auto index = Arca::Index<Line>(command.id, Owner());
+        if (!index)
+            return;
+
+        auto data = MutablePointer().Of(index);
+
+        data->material = command.to;
+    }
+
     void LineCurator::WorkImpl(
         Spatial::AxisAlignedBox3D cameraBox,
         Spatial::Point2D cameraTopLeft,

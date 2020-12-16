@@ -6,13 +6,13 @@
 namespace Atmos
 {
     template<class T>
-    const T PI = T(3.141592653589793);
+    const T pi = T(3.141592653589793);
 
     template<class T>
-    const T FULL_CIRCLE_RADIANS = T(2 * PI<T>);
+    const T fullCircleRadians = T(2 * pi<T>);
 
     template<class T>
-    const T SQRT_2 = T(1.414213562373095);
+    const T sqrt2 = T(1.414213562373095);
 
     template<class T>
     T Floor(T arg)

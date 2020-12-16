@@ -112,6 +112,9 @@
     <ClCompile Include="AngelScriptScriptTests.cpp">
       <Filter>Source Files\Tests\AngelScript\Script</Filter>
     </ClCompile>
+    <ClCompile Include="FrameTests.cpp">
+      <Filter>Source Files\Tests\Frame</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneralFixture.h">
@@ -234,6 +237,9 @@
     <ClInclude Include="AngelScriptCreateObjectFixture.h">
       <Filter>Header Files\Fixtures</Filter>
     </ClInclude>
+    <ClInclude Include="FrameTests.h">
+      <Filter>Header Files\Tests\Frame</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">
@@ -349,6 +355,12 @@
     </Filter>
     <Filter Include="Header Files\Tests\AngelScript\Script">
       <UniqueIdentifier>{aadea1f4-1c9d-41c0-af9f-cf1f8069e767}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Tests\Frame">
+      <UniqueIdentifier>{5f06cb2f-4ee4-405f-9ff5-1aa17c93a255}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Tests\Frame">
+      <UniqueIdentifier>{d6309df0-cfa2-42c5-b00a-98c9761eea07}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

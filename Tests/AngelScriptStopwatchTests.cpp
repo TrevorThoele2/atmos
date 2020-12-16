@@ -43,14 +43,14 @@ SCENARIO_METHOD(AngelScriptStopwatchTestsFixture, "running stopwatch AngelScript
 
     GIVEN("real stopwatch")
     {
-        GIVEN("script that returns start")
+        GIVEN("script that returns restart")
         {
             CompileAndCreateScript(
                 "basic_script.as",
                 "int64 main()\n" \
                 "{\n" \
                 "    auto stopwatch = Atmos::Time::CreateRealStopwatch();\n" \
-                "    return stopwatch.Start();\n" \
+                "    return stopwatch.Restart().TimeSinceEpoch().Count();\n" \
                 "}",
                 {},
                 fieldReliquary);
@@ -63,33 +63,6 @@ SCENARIO_METHOD(AngelScriptStopwatchTestsFixture, "running stopwatch AngelScript
                 {
                     REQUIRE(finishes.size() == 1);
                     REQUIRE(std::get<long long>(std::get<Variant>(finishes[0].result)) > 0);
-                }
-            }
-        }
-    }
-
-    GIVEN("frame stopwatch")
-    {
-        GIVEN("script that returns is started")
-        {
-            CompileAndCreateScript(
-                "basic_script.as",
-                "bool main()\n" \
-                "{\n" \
-                "    auto stopwatch = Atmos::Time::CreateFrameStopwatch();\n" \
-                "    return stopwatch.IsStarted();\n" \
-                "}",
-                {},
-                fieldReliquary);
-
-            WHEN("working reliquary")
-            {
-                fieldReliquary.Do(Work{});
-
-                THEN("has correct properties")
-                {
-                    REQUIRE(finishes.size() == 1);
-                    REQUIRE(std::get<bool>(std::get<Variant>(finishes[0].result)) == false);
                 }
             }
         }

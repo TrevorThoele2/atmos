@@ -1,13 +1,11 @@
 #pragma once
 
-#include "ImageCore.h"
+#include "Line.h"
+#include "MoveLine.h"
 
-#include "ChangeImageCore.h"
-
-#include "AngelScriptIndex.h"
-#include "AngelScriptImageAsset.h"
 #include "AngelScriptMaterialAsset.h"
 
+#include "AngelScriptIndex.h"
 #include "AngelScriptObjectManagement.h"
 #include "AngelScriptRegistration.h"
 
@@ -18,50 +16,51 @@ class asIScriptGeneric;
 
 namespace Atmos::Scripting::Angel
 {
-    class ChangeImageAsset
+    class ChangeLinePoints
     {
     public:
         Arca::RelicID id = 0;
 
-        Arca::Index<Asset::Image> to;
+        std::vector<Spatial::Point2D> to;
     };
 
-    class ChangeAssetIndex
+    class ChangeLineZ
     {
     public:
         Arca::RelicID id = 0;
 
-        Render::ImageCore::Index to;
+        Spatial::Point2D::Value to;
     };
 
     template<>
-    struct Registration<Render::ImageCore>
+    struct Registration<Render::Line>
     {
-        using Type = Arca::Index<Render::ImageCore>;
+        using Type = Arca::Index<Render::Line>;
         using Management = ObjectManagement<Type>;
 
-        static inline const String name = "ImageCore";
+        static inline const String name = "Line";
         static inline const String containingNamespace = Namespaces::Atmos::Render::name;
         static const ObjectType objectType = ObjectType::Value;
 
         static void RegisterTo(asIScriptEngine& engine);
     private:
-        [[nodiscard]] static Arca::Index<Asset::Image> Asset(Type type);
-        [[nodiscard]] static Render::ImageCore::Index AssetIndex(Type type);
-        [[nodiscard]] static Arca::Index<Asset::ImageMaterial> Material(Type type);
+        [[nodiscard]] static std::vector<Spatial::Point2D> Points(Type type);
+        [[nodiscard]] static Spatial::Point2D::Value Z(Type type);
+        [[nodiscard]] static Arca::Index<Asset::LineMaterial> Material(Type type);
+        [[nodiscard]] static Render::LineWidth Width(Type type);
         [[nodiscard]] static Render::Color Color(Type type);
     };
 
     template<>
-    struct Registration<Arca::Index<Render::ImageCore>> : Registration<Render::ImageCore>
+    struct Registration<Arca::Index<Render::Line>> : Registration<Render::Line>
     {};
 
     template<>
-    struct Registration<ChangeImageAsset>
+    struct Registration<ChangeLinePoints>
     {
-        using Type = ChangeImageAsset;
+        using Type = ChangeLinePoints;
 
-        static inline const String name = "ChangeImageAsset";
+        static inline const String name = "ChangeLinePoints";
         static inline const String containingNamespace = Namespaces::Atmos::Render::name;
         static const ObjectType objectType = ObjectType::Value;
 
@@ -69,15 +68,15 @@ namespace Atmos::Scripting::Angel
 
         static void RegisterTo(asIScriptEngine& engine);
 
-        static Render::ChangeImageCore ToArca(Type fromAngelScript);
+        static Render::MoveLine ToArca(Type fromAngelScript);
     };
 
     template<>
-    struct Registration<ChangeAssetIndex>
+    struct Registration<ChangeLineZ>
     {
-        using Type = ChangeAssetIndex;
+        using Type = ChangeLineZ;
 
-        static inline const String name = "ChangeAssetIndex";
+        static inline const String name = "ChangeLineZ";
         static inline const String containingNamespace = Namespaces::Atmos::Render::name;
         static const ObjectType objectType = ObjectType::Value;
 
@@ -85,6 +84,6 @@ namespace Atmos::Scripting::Angel
 
         static void RegisterTo(asIScriptEngine& engine);
 
-        static Render::ChangeImageCore ToArca(Type fromAngelScript);
+        static Render::MoveLine ToArca(Type fromAngelScript);
     };
 }

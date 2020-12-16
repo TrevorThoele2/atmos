@@ -26,7 +26,7 @@ namespace Atmos::Frame
         static unsigned int count = 0;
         if (framesPerSecondStopwatch.Elapsed() >= Time::Milliseconds(timeSettings->framesPerSecondLimit))
         {
-            framesPerSecondStopwatch.Start();
+            framesPerSecondStopwatch.Restart();
 
             mutableInformation->framesPerSecond = count;
             count = 0;
@@ -34,10 +34,8 @@ namespace Atmos::Frame
 
         ++count;
 
-        mutableInformation->endTime = Time::Point<>() + mutableInformation->stopwatch.Elapsed();
-        mutableInformation->lastElapsed =
-            std::chrono::duration_cast<Time::Seconds>(
-                mutableInformation->endTime - mutableInformation->startTime);
+        mutableInformation->endTime = mutableInformation->stopwatch.CurrentTime();
+        mutableInformation->lastElapsed = mutableInformation->endTime - mutableInformation->startTime;
         mutableInformation->totalElapsed += mutableInformation->lastElapsed;
 
         debugIdleProfiler.Start();

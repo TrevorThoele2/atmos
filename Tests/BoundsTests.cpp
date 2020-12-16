@@ -85,8 +85,8 @@ SCENARIO_METHOD(BoundsTestsFixture, "bounds", "[spatial]")
             };
             const auto direction = Angle3D
             {
-                dataGeneration.Random<Angle3D::Value>(TestFramework::Range(0.0f, PI<Angle3D::Value>)),
-                dataGeneration.Random<Angle3D::Value>(TestFramework::Range(0.0f, PI<Angle3D::Value>))
+                dataGeneration.Random<Angle3D::Value>(TestFramework::Range(0.0f, pi<Angle3D::Value>)),
+                dataGeneration.Random<Angle3D::Value>(TestFramework::Range(0.0f, pi<Angle3D::Value>))
             };
             const auto amount = dataGeneration.Random<Point3D::Value>(TestFramework::Range(-1000.0f, 1000.0f));
 
@@ -246,8 +246,8 @@ SCENARIO_METHOD(BoundsTestsFixture, "relative bounds", "[spatial]")
             {
                 const auto direction = Angle3D
                 {
-                    dataGeneration.Random<Angle3D::Value>(TestFramework::Range(0.0f, PI<Angle3D::Value>)),
-                    dataGeneration.Random<Angle3D::Value>(TestFramework::Range(0.0f, PI<Angle3D::Value>))
+                    dataGeneration.Random<Angle3D::Value>(TestFramework::Range(0.0f, pi<Angle3D::Value>)),
+                    dataGeneration.Random<Angle3D::Value>(TestFramework::Range(0.0f, pi<Angle3D::Value>))
                 };
                 const auto amount = dataGeneration.Random<Point3D::Value>(TestFramework::Range(-1000.0f, 1000.0f));
 
@@ -463,8 +463,8 @@ SCENARIO_METHOD(BoundsTestsFixture, "relative bounds children", "[spatial]")
                 };
                 const auto direction = Angle3D
                 {
-                    dataGeneration.Random<Angle3D::Value>(TestFramework::Range(0.0f, PI<Angle3D::Value>)),
-                    dataGeneration.Random<Angle3D::Value>(TestFramework::Range(0.0f, PI<Angle3D::Value>))
+                    dataGeneration.Random<Angle3D::Value>(TestFramework::Range(0.0f, pi<Angle3D::Value>)),
+                    dataGeneration.Random<Angle3D::Value>(TestFramework::Range(0.0f, pi<Angle3D::Value>))
                 };
                 const auto amount = dataGeneration.Random<Point3D::Value>(TestFramework::Range(-1000.0f, 1000.0f));
 
@@ -558,8 +558,8 @@ SCENARIO_METHOD(BoundsTestsFixture, "relative bounds errors", "[spatial]")
             {
                 const auto direction = Angle3D
                 {
-                    dataGeneration.Random<Angle3D::Value>(TestFramework::Range(0.0f, PI<Angle3D::Value>)),
-                    dataGeneration.Random<Angle3D::Value>(TestFramework::Range(0.0f, PI<Angle3D::Value>))
+                    dataGeneration.Random<Angle3D::Value>(TestFramework::Range(0.0f, pi<Angle3D::Value>)),
+                    dataGeneration.Random<Angle3D::Value>(TestFramework::Range(0.0f, pi<Angle3D::Value>))
                 };
                 const auto amount = dataGeneration.Random<Point3D::Value>(TestFramework::Range(-1000.0f, 1000.0f));
 
@@ -635,8 +635,8 @@ SCENARIO_METHOD(BoundsTestsFixture, "relative bounds errors", "[spatial]")
             {
                 const auto direction = Angle3D
                 {
-                    dataGeneration.Random<Angle3D::Value>(TestFramework::Range(0.0f, PI<Angle3D::Value>)),
-                    dataGeneration.Random<Angle3D::Value>(TestFramework::Range(0.0f, PI<Angle3D::Value>))
+                    dataGeneration.Random<Angle3D::Value>(TestFramework::Range(0.0f, pi<Angle3D::Value>)),
+                    dataGeneration.Random<Angle3D::Value>(TestFramework::Range(0.0f, pi<Angle3D::Value>))
                 };
                 const auto amount = dataGeneration.Random<Point3D::Value>(TestFramework::Range(-1000.0f, 1000.0f));
 

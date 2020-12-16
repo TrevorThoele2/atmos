@@ -4,6 +4,7 @@
 
 #include "MainSurface.h"
 #include "Work.h"
+#include "ChangeColor.h"
 
 #include "DebugProfiler.h"
 
@@ -15,6 +16,7 @@ namespace Atmos::Render
         explicit Curator(Init init);
 
         void Handle(const Work& command);
+        void Handle(const ChangeColor& command);
     private:
         Arca::Index<MainSurface> mainSurface;
     private:
@@ -29,7 +31,9 @@ namespace Arca
     {
         static const ObjectType objectType = ObjectType::Curator;
         static inline TypeName typeName = "Atmos::Render::Curator";
-        using HandledCommands = HandledCommands<Atmos::Work>;
+        using HandledCommands = HandledCommands<
+            Atmos::Work,
+            Atmos::Render::ChangeColor>;
     };
 }
 

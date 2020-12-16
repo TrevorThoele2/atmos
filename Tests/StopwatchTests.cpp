@@ -13,34 +13,21 @@ SCENARIO_METHOD(StopwatchTestsFixture, "real stopwatch", "[time][stopwatch]")
     {
         auto stopwatch = CreateRealStopwatch();
 
-        WHEN("querying is started")
-        {
-            THEN("is not started")
-            {
-                REQUIRE(!stopwatch.IsStarted());
-            }
-        }
-
         WHEN("querying elapsed")
         {
-            THEN("elapsed is zero")
+            THEN("elapsed is not zero")
             {
                 const auto zero = Time::Duration<>();
 
-                REQUIRE(stopwatch.Elapsed() == zero);
+                REQUIRE(stopwatch.Elapsed() != zero);
             }
         }
 
-        WHEN("starting")
+        WHEN("restarting")
         {
-            auto startTime = stopwatch.Start();
+            auto startTime = stopwatch.Restart();
 
             const auto waitFor = Milliseconds(10);
-
-            THEN("is started")
-            {
-                REQUIRE(stopwatch.IsStarted());
-            }
 
             THEN("start is greater than zero")
             {
@@ -58,16 +45,11 @@ SCENARIO_METHOD(StopwatchTestsFixture, "real stopwatch", "[time][stopwatch]")
                 REQUIRE(elapsedTime > waitFor);
             }
 
-            WHEN("waiting then starting again")
+            WHEN("waiting then restarting again")
             {
                 std::this_thread::sleep_for(waitFor);
 
-                auto startTime2 = stopwatch.Start();
-
-                THEN("is started")
-                {
-                    REQUIRE(stopwatch.IsStarted());
-                }
+                auto startTime2 = stopwatch.Restart();
 
                 THEN("start is greater than zero")
                 {

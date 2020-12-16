@@ -2,7 +2,6 @@
 
 #include "AngelScriptUserData.h"
 #include "AngelScriptFunctionManagement.h"
-#include "AngelScriptFactory.h"
 #include "AngelScriptParameters.h"
 #include "AngelScriptName.h"
 
@@ -85,9 +84,44 @@ namespace Atmos::Scripting::Angel
         static void Assign(asIScriptGeneric* generic);
 
         static void Equals(asIScriptGeneric* generic);
+        static void Compare(asIScriptGeneric* generic);
 
         static void Add(asIScriptGeneric* generic);
+        template<class Arg>
+        static void Add(asIScriptGeneric* generic);
         static void Subtract(asIScriptGeneric* generic);
+        template<class Arg>
+        static void Subtract(asIScriptGeneric* generic);
+        static void Multiply(asIScriptGeneric* generic);
+        template<class Arg>
+        static void Multiply(asIScriptGeneric* generic);
+        static void Divide(asIScriptGeneric* generic);
+        template<class Arg>
+        static void Divide(asIScriptGeneric* generic);
+        static void Modulo(asIScriptGeneric* generic);
+        template<class Arg>
+        static void Modulo(asIScriptGeneric* generic);
+        static void CompoundAdd(asIScriptGeneric* generic);
+        template<class Arg>
+        static void CompoundAdd(asIScriptGeneric* generic);
+        static void CompoundSubtract(asIScriptGeneric* generic);
+        template<class Arg>
+        static void CompoundSubtract(asIScriptGeneric* generic);
+        static void CompoundMultiply(asIScriptGeneric* generic);
+        template<class Arg>
+        static void CompoundMultiply(asIScriptGeneric* generic);
+        static void CompoundDivide(asIScriptGeneric* generic);
+        template<class Arg>
+        static void CompoundDivide(asIScriptGeneric* generic);
+        static void CompoundModulo(asIScriptGeneric* generic);
+        template<class Arg>
+        static void CompoundModulo(asIScriptGeneric* generic);
+
+        static void Negation(asIScriptGeneric* generic);
+        static void PrefixIncrement(asIScriptGeneric* generic);
+        static void PostfixIncrement(asIScriptGeneric* generic);
+        static void PrefixDecrement(asIScriptGeneric* generic);
+        static void PostfixDecrement(asIScriptGeneric* generic);
 
         template<class To>
         static void Cast(asIScriptGeneric* generic);
@@ -517,9 +551,33 @@ namespace Atmos::Scripting::Angel
     }
 
     template<class T>
+    void ObjectManagement<T>::Compare(asIScriptGeneric* generic)
+    {
+        const auto arg = static_cast<T*>(generic->GetArgObject(0));
+        const auto self = static_cast<T*>(generic->GetObject());
+
+        if (*arg == *self)
+            PushToReturn(0, *generic);
+        else if (*arg < *self)
+            PushToReturn(1, *generic);
+        else
+            PushToReturn(-1, *generic);
+    }
+
+    template<class T>
     void ObjectManagement<T>::Add(asIScriptGeneric* generic)
     {
         const auto arg = static_cast<T*>(generic->GetArgObject(0));
+        const auto self = static_cast<T*>(generic->GetObject());
+        auto result = *self + *arg;
+        PushToReturn(result, *generic);
+    }
+
+    template<class T>
+    template<class Arg>
+    void ObjectManagement<T>::Add(asIScriptGeneric* generic)
+    {
+        const auto arg = static_cast<Arg*>(generic->GetArgObject(0));
         const auto self = static_cast<T*>(generic->GetObject());
         auto result = *self + *arg;
         PushToReturn(result, *generic);
@@ -531,6 +589,208 @@ namespace Atmos::Scripting::Angel
         const auto arg = static_cast<T*>(generic->GetArgObject(0));
         const auto self = static_cast<T*>(generic->GetObject());
         auto result = *self - *arg;
+        PushToReturn(result, *generic);
+    }
+
+    template<class T>
+    template<class Arg>
+    void ObjectManagement<T>::Subtract(asIScriptGeneric* generic)
+    {
+        const auto arg = static_cast<Arg*>(generic->GetArgObject(0));
+        const auto self = static_cast<T*>(generic->GetObject());
+        auto result = *self - *arg;
+        PushToReturn(result, *generic);
+    }
+
+    template<class T>
+    void ObjectManagement<T>::Multiply(asIScriptGeneric* generic)
+    {
+        const auto arg = static_cast<T*>(generic->GetArgObject(0));
+        const auto self = static_cast<T*>(generic->GetObject());
+        auto result = (*self) * (*arg);
+        PushToReturn(result, *generic);
+    }
+
+    template<class T>
+    template<class Arg>
+    void ObjectManagement<T>::Multiply(asIScriptGeneric* generic)
+    {
+        const auto arg = static_cast<Arg*>(generic->GetArgObject(0));
+        const auto self = static_cast<T*>(generic->GetObject());
+        auto result = (*self) * (*arg);
+        PushToReturn(result, *generic);
+    }
+
+    template<class T>
+    void ObjectManagement<T>::Divide(asIScriptGeneric* generic)
+    {
+        const auto arg = static_cast<T*>(generic->GetArgObject(0));
+        const auto self = static_cast<T*>(generic->GetObject());
+        auto result = *self / *arg;
+        PushToReturn(result, *generic);
+    }
+
+    template<class T>
+    template<class Arg>
+    void ObjectManagement<T>::Divide(asIScriptGeneric* generic)
+    {
+        const auto arg = static_cast<Arg*>(generic->GetArgObject(0));
+        const auto self = static_cast<T*>(generic->GetObject());
+        auto result = *self / *arg;
+        PushToReturn(result, *generic);
+    }
+
+    template<class T>
+    void ObjectManagement<T>::Modulo(asIScriptGeneric* generic)
+    {
+        const auto arg = static_cast<T*>(generic->GetArgObject(0));
+        const auto self = static_cast<T*>(generic->GetObject());
+        auto result = *self % *arg;
+        PushToReturn(result, *generic);
+    }
+
+    template<class T>
+    template<class Arg>
+    void ObjectManagement<T>::Modulo(asIScriptGeneric* generic)
+    {
+        const auto arg = static_cast<Arg*>(generic->GetArgObject(0));
+        const auto self = static_cast<T*>(generic->GetObject());
+        auto result = *self % *arg;
+        PushToReturn(result, *generic);
+    }
+
+    template<class T>
+    void ObjectManagement<T>::CompoundAdd(asIScriptGeneric* generic)
+    {
+        const auto arg = static_cast<T*>(generic->GetArgObject(0));
+        const auto self = static_cast<T*>(generic->GetObject());
+        auto result = *self += *arg;
+        PushToReturn(result, *generic);
+    }
+
+    template<class T>
+    template<class Arg>
+    void ObjectManagement<T>::CompoundAdd(asIScriptGeneric* generic)
+    {
+        const auto arg = static_cast<Arg*>(generic->GetArgObject(0));
+        const auto self = static_cast<T*>(generic->GetObject());
+        auto result = *self += *arg;
+        PushToReturn(result, *generic);
+    }
+
+    template<class T>
+    void ObjectManagement<T>::CompoundSubtract(asIScriptGeneric* generic)
+    {
+        const auto arg = static_cast<T*>(generic->GetArgObject(0));
+        const auto self = static_cast<T*>(generic->GetObject());
+        auto result = *self -= *arg;
+        PushToReturn(result, *generic);
+    }
+
+    template<class T>
+    template<class Arg>
+    void ObjectManagement<T>::CompoundSubtract(asIScriptGeneric* generic)
+    {
+        const auto arg = static_cast<Arg*>(generic->GetArgObject(0));
+        const auto self = static_cast<T*>(generic->GetObject());
+        auto result = *self -= *arg;
+        PushToReturn(result, *generic);
+    }
+
+    template<class T>
+    void ObjectManagement<T>::CompoundMultiply(asIScriptGeneric* generic)
+    {
+        const auto arg = static_cast<T*>(generic->GetArgObject(0));
+        const auto self = static_cast<T*>(generic->GetObject());
+        auto result = *self *= *arg;
+        PushToReturn(result, *generic);
+    }
+
+    template<class T>
+    template<class Arg>
+    void ObjectManagement<T>::CompoundMultiply(asIScriptGeneric* generic)
+    {
+        const auto arg = static_cast<Arg*>(generic->GetArgObject(0));
+        const auto self = static_cast<T*>(generic->GetObject());
+        auto result = *self *= *arg;
+        PushToReturn(result, *generic);
+    }
+
+    template<class T>
+    void ObjectManagement<T>::CompoundDivide(asIScriptGeneric* generic)
+    {
+        const auto arg = static_cast<T*>(generic->GetArgObject(0));
+        const auto self = static_cast<T*>(generic->GetObject());
+        auto result = *self /= *arg;
+        PushToReturn(result, *generic);
+    }
+
+    template<class T>
+    template<class Arg>
+    void ObjectManagement<T>::CompoundDivide(asIScriptGeneric* generic)
+    {
+        const auto arg = static_cast<Arg*>(generic->GetArgObject(0));
+        const auto self = static_cast<T*>(generic->GetObject());
+        auto result = *self /= *arg;
+        PushToReturn(result, *generic);
+    }
+
+    template<class T>
+    void ObjectManagement<T>::CompoundModulo(asIScriptGeneric* generic)
+    {
+        const auto arg = static_cast<T*>(generic->GetArgObject(0));
+        const auto self = static_cast<T*>(generic->GetObject());
+        auto result = *self %= *arg;
+        PushToReturn(result, *generic);
+    }
+
+    template<class T>
+    template<class Arg>
+    void ObjectManagement<T>::CompoundModulo(asIScriptGeneric* generic)
+    {
+        const auto arg = static_cast<Arg*>(generic->GetArgObject(0));
+        const auto self = static_cast<T*>(generic->GetObject());
+        auto result = *self %= *arg;
+        PushToReturn(result, *generic);
+    }
+
+    template<class T>
+    void ObjectManagement<T>::Negation(asIScriptGeneric* generic)
+    {
+        const auto self = static_cast<T*>(generic->GetObject());
+        auto result = -(*self);
+        PushToReturn(result, *generic);
+    }
+
+    template<class T>
+    void ObjectManagement<T>::PrefixIncrement(asIScriptGeneric* generic)
+    {
+        auto self = static_cast<T*>(generic->GetObject());
+        auto result = ++(*self);
+        PushToReturn(result, *generic);
+    }
+
+    template<class T>
+    void ObjectManagement<T>::PostfixIncrement(asIScriptGeneric* generic)
+    {
+        auto self = static_cast<T*>(generic->GetObject());
+        auto result = (*self)++;
+        PushToReturn(result, *generic);
+    }
+
+    template<class T>
+    void ObjectManagement<T>::PrefixDecrement(asIScriptGeneric* generic)
+    {
+        auto self = static_cast<T*>(generic->GetObject());
+        auto result = --(*self);
+        PushToReturn(result, *generic);
+    }
+
+    template<class T>
+    void ObjectManagement<T>::PostfixDecrement(asIScriptGeneric* generic)
+    {
+        auto self = static_cast<T*>(generic->GetObject());
+        auto result = (*self)--;
         PushToReturn(result, *generic);
     }
 

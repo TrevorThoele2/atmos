@@ -6,6 +6,7 @@
 #include "AngelScriptGlobalRegistration.h"
 #include "AngelScriptObjectManagement.h"
 #include "AngelScriptFunctionTraits.h"
+#include "AngelScriptPrimitive.h"
 
 #include <Arca/Reliquary.h>
 
