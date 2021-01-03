@@ -25,7 +25,7 @@ SCENARIO_METHOD(AngelScriptBoundsTestsFixture, "running bounds AngelScript scrip
         fieldOrigin,
         *engine.mockImageAssetManager,
         *engine.nullAudioManager,
-        *engine.nullInputManager,
+        *engine.mockInputManager,
         *engine.mockGraphicsManager,
         *engine.scriptManager,
         Spatial::ScreenSize{
@@ -225,7 +225,7 @@ SCENARIO_METHOD(AngelScriptBoundsTestsFixture, "running bounds AngelScript scrip
             "string main(Arca::RelicID boundsID, float setX, float setY, float setZ)\n" \
             "{\n" \
             "    SignalHandler signalHandler;\n" \
-            "    Arca::Reliquary::On(Arca::OnBoundsMoved(signalHandler.Handle));\n" \
+            "    Arca::Reliquary::On(Atmos::Spatial::OnBoundsMoved(signalHandler.Handle));\n" \
             "\n" \
             "    auto bounds = Atmos::Spatial::Bounds(boundsID);\n" \
             "    auto startingPosition = bounds.Position();\n" \
@@ -297,7 +297,7 @@ SCENARIO_METHOD(AngelScriptBoundsTestsFixture, "running bounds AngelScript scrip
             "string main(Arca::RelicID boundsID, float directionPitch, float directionYaw, float amount)\n" \
             "{\n" \
             "    SignalHandler signalHandler;\n" \
-            "    Arca::Reliquary::On(Arca::OnBoundsMoved(signalHandler.Handle));\n" \
+            "    Arca::Reliquary::On(Atmos::Spatial::OnBoundsMoved(signalHandler.Handle));\n" \
             "\n" \
             "    auto bounds = Atmos::Spatial::Bounds(boundsID);\n" \
             "    auto startingPosition = bounds.Position();\n" \
@@ -369,7 +369,7 @@ SCENARIO_METHOD(AngelScriptBoundsTestsFixture, "running bounds AngelScript scrip
             "string main(Arca::RelicID boundsID, float setX, float setY, float setZ)\n" \
             "{\n" \
             "    SignalHandler signalHandler;\n" \
-            "    Arca::Reliquary::On(Arca::OnBoundsMoved(signalHandler.Handle));\n" \
+            "    Arca::Reliquary::On(Atmos::Spatial::OnBoundsMoved(signalHandler.Handle));\n" \
             "\n" \
             "    auto bounds = Atmos::Spatial::Bounds(boundsID);\n" \
             "    auto startingPosition = bounds.Position();\n" \
@@ -441,7 +441,7 @@ SCENARIO_METHOD(AngelScriptBoundsTestsFixture, "running bounds AngelScript scrip
             "string main(Arca::RelicID boundsID, Atmos::Spatial::Angle2D angle)\n" \
             "{\n" \
             "    SignalHandler signalHandler;\n" \
-            "    Arca::Reliquary::On(Arca::OnBoundsRotated(signalHandler.Handle));\n" \
+            "    Arca::Reliquary::On(Atmos::Spatial::OnBoundsRotated(signalHandler.Handle));\n" \
             "\n" \
             "    auto bounds = Atmos::Spatial::Bounds(boundsID);\n" \
             "    auto startingRotation = bounds.Rotation();\n" \
@@ -492,7 +492,7 @@ SCENARIO_METHOD(AngelScriptBoundsTestsFixture, "running bounds AngelScript scrip
             "string main(Arca::RelicID boundsID, float scalerX, float scalerY)\n" \
             "{\n" \
             "    SignalHandler signalHandler;\n" \
-            "    Arca::Reliquary::On(Arca::OnBoundsScaled(signalHandler.Handle));\n" \
+            "    Arca::Reliquary::On(Atmos::Spatial::OnBoundsScaled(signalHandler.Handle));\n" \
             "\n" \
             "    auto bounds = Atmos::Spatial::Bounds(boundsID);\n" \
             "    auto startingScalers = bounds.Scalers();\n" \

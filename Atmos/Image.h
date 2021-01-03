@@ -23,9 +23,6 @@ namespace Atmos::Render
         [[nodiscard]] Spatial::Point3D Position() const;
         [[nodiscard]] Spatial::Size2D Size() const;
         [[nodiscard]] Spatial::Angle2D Rotation() const;
-
-        [[nodiscard]] Arca::Index<ImageCore> Core() const;
-        [[nodiscard]] Arca::Index<BoundsT> Bounds() const;
     protected:
         Image(
             Arca::RelicInit init,
@@ -93,18 +90,6 @@ namespace Atmos::Render
     Spatial::Angle2D Image<mutableBounds>::Rotation() const
     {
         return bounds->Rotation();
-    }
-
-    template<bool mutableBounds>
-    Arca::Index<ImageCore> Image<mutableBounds>::Core() const
-    {
-        return core;
-    }
-
-    template<bool mutableBounds>
-    auto Image<mutableBounds>::Bounds() const -> Arca::Index<BoundsT>
-    {
-        return bounds;
     }
 
     template<bool mutableBounds>

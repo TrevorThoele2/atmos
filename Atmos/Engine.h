@@ -22,19 +22,13 @@ namespace Atmos
 
         void StartExecution();
 
-        void Exit();
-
         [[nodiscard]] Logging::Logger& Logger();
     protected:
         using InitializationProperties = EngineInitializationProperties;
     protected:
         Engine(Logging::Logger& logger);
 
-        virtual void SetupImplementation() = 0;
-
         virtual InitializationProperties CreateInitializationProperties(Logging::Logger& logger) = 0;
-
-        virtual void DoExit() = 0;
     private:
         [[nodiscard]] bool IsSetup() const;
         void SetupRequired() const;

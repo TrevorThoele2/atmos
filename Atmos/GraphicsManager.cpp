@@ -15,7 +15,7 @@ namespace Atmos::Render
     }
 
     std::unique_ptr<Asset::Resource::Image> GraphicsManager::CreateImageResource(
-        const DataBuffer& buffer,
+        const Buffer& buffer,
         const Name& name,
         const Asset::ImageSize& size)
     {
@@ -29,7 +29,7 @@ namespace Atmos::Render
     }
 
     std::unique_ptr<Asset::Resource::Shader> GraphicsManager::CreateShaderResource(
-        const DataBuffer& buffer, const Name& name)
+        const Buffer& buffer, const Name& name)
     {
         return CreateShaderResourceImpl(buffer, name);
     }

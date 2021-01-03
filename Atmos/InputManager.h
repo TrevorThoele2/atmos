@@ -1,27 +1,25 @@
 #pragma once
 
-#include <vector>
-
-#include "InputID.h"
-#include "Input.h"
+#include "KeyStates.h"
 #include "ScreenPoint.h"
+#include "Event.h"
+#include "String.h"
 
 namespace Atmos::Input
 {
     class Manager
     {
     public:
+        struct State
+        {
+            KeyStates keyStates;
+            Spatial::ScreenPoint mousePosition;
+            std::vector<String> enteredText;
+        };
+    public:
         Manager() = default;
         virtual ~Manager() = 0;
-    public:
-        struct CreatedInput
-        {
-            InputID id;
-            Input input;
-        };
 
-        [[nodiscard]] virtual std::vector<CreatedInput> CreateAllInputs() const = 0;
-        [[nodiscard]] virtual Spatial::ScreenPoint CurrentMousePosition() const = 0;
-        [[nodiscard]] virtual bool IsInputDown(Input& input) const = 0;
+        [[nodiscard]] virtual State ReadState() const = 0;
     };
 }

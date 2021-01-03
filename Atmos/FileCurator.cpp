@@ -1,6 +1,4 @@
 #include <wx/zipstrm.h>
-#include <wx/txtstrm.h>
-#include <wx/wfstream.h>
 
 #include "FileCurator.h"
 

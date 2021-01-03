@@ -64,7 +64,7 @@ namespace Atmos::Scripting::Angel
         }
 
         template<auto function, class ParametersT, class ReturnT>
-        void RegisterCommandHandlerCommon(asIScriptEngine& engine)
+        void RegisterCommandHandlerCommon(asIScriptEngine& engine, DocumentationManager& documentationManager)
         {
             static_assert(ParametersT::count == 1, "toArca must take a single parameter.");
 
@@ -78,32 +78,35 @@ namespace Atmos::Scripting::Angel
                 ? returnNameToken + "@"
                 : returnNameToken;
 
-            GlobalRegistration(CreateName({ Namespaces::Arca::name }, "Reliquary"))
+            GlobalRegistration(CreateName({ "Arca" }, "Reliquary"))
                 .Function(function, returnName, "Do", { commandClassName + " command" })
-                .Actualize(engine);
+                .Actualize(engine, documentationManager);
         }
     }
 
     template<auto toArca>
-    void RegisterCommandHandler(asIScriptEngine& engine)
+    void RegisterCommandHandler(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         using ParameterPackT = typename FunctionTraits<toArca>::ParameterPackT;
-        Detail::RegisterCommandHandlerCommon<&Detail::OnCommand<toArca>, ParameterPackT, void>(engine);
+        Detail::RegisterCommandHandlerCommon<&Detail::OnCommand<toArca>, ParameterPackT, void>(
+            engine, documentationManager);
     }
 
     template<auto toArca, auto toReturn>
-    void RegisterCommandHandler(asIScriptEngine& engine)
+    void RegisterCommandHandler(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         using ParameterPackT = typename FunctionTraits<toArca>::ParameterPackT;
         using ReturnT = typename FunctionTraits<toReturn>::ReturnT;
-        Detail::RegisterCommandHandlerCommon<&Detail::OnCommand<toArca, toReturn>, ParameterPackT, ReturnT>(engine);
+        Detail::RegisterCommandHandlerCommon<&Detail::OnCommand<toArca, toReturn>, ParameterPackT, ReturnT>(
+            engine, documentationManager);
     }
 
     template<auto toReturn, class ArgumentT>
-    void RegisterCommandHandlerStub(asIScriptEngine& engine)
+    void RegisterCommandHandlerStub(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         using ParameterPackT = Chroma::ParameterPack<ArgumentT>;
         using ReturnT = typename FunctionTraits<toReturn>::ReturnT;
-        Detail::RegisterCommandHandlerCommon<&Detail::OnCommandStub<toReturn>, ParameterPackT, ReturnT>(engine);
+        Detail::RegisterCommandHandlerCommon<&Detail::OnCommandStub<toReturn>, ParameterPackT, ReturnT>(
+            engine, documentationManager);
     }
 }

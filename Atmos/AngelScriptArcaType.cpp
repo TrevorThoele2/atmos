@@ -5,7 +5,7 @@
 
 namespace Atmos::Scripting::Angel
 {
-    void Registration<Arca::Type>::RegisterTo(asIScriptEngine& engine)
+    void Registration<Arca::Type>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         ValueTypeRegistration<Type>(containingNamespace, name)
             .DefaultConstructor(&Management::GenerateDefaultValue)
@@ -20,6 +20,6 @@ namespace Atmos::Scripting::Angel
             .Equals(&Management::Equals)
             .Property<&Type::name>("string", "name")
             .Property<&Type::isConst>("bool", "isConst")
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
     }
 }

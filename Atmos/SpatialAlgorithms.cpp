@@ -144,6 +144,24 @@ namespace Atmos::Spatial
         };
     }
 
+    ScreenPoint operator+(ScreenPoint left, ScreenPoint right)
+    {
+        return
+        {
+            left.x + right.x,
+            left.y + right.y
+        };
+    }
+
+    ScreenPoint operator-(ScreenPoint left, ScreenPoint right)
+    {
+        return
+        {
+            left.x - right.x,
+            left.y - right.y
+        };
+    }
+
     Point2D ToPoint2D(Point3D point)
     {
         return

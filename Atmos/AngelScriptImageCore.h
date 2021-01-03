@@ -41,10 +41,11 @@ namespace Atmos::Scripting::Angel
         using Management = ObjectManagement<Type>;
 
         static inline const String name = "ImageCore";
-        static inline const String containingNamespace = Namespaces::Atmos::Render::name;
+        static inline const String containingNamespace = "Atmos::Render";
+        static inline const String documentation = "This is a shard.";
         static const ObjectType objectType = ObjectType::Value;
 
-        static void RegisterTo(asIScriptEngine& engine);
+        static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
     private:
         [[nodiscard]] static Arca::Index<Asset::Image> Asset(Type type);
         [[nodiscard]] static Render::ImageCore::Index AssetIndex(Type type);
@@ -62,12 +63,13 @@ namespace Atmos::Scripting::Angel
         using Type = ChangeImageAsset;
 
         static inline const String name = "ChangeImageAsset";
-        static inline const String containingNamespace = Namespaces::Atmos::Render::name;
+        static inline const String containingNamespace = "Atmos::Render";
+        static inline const String documentation = "This is a command.";
         static const ObjectType objectType = ObjectType::Value;
 
         using Management = ObjectManagement<Type>;
 
-        static void RegisterTo(asIScriptEngine& engine);
+        static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
 
         static Render::ChangeImageCore ToArca(Type fromAngelScript);
     };
@@ -78,12 +80,13 @@ namespace Atmos::Scripting::Angel
         using Type = ChangeAssetIndex;
 
         static inline const String name = "ChangeAssetIndex";
-        static inline const String containingNamespace = Namespaces::Atmos::Render::name;
+        static inline const String containingNamespace = "Atmos::Render";
+        static inline const String documentation = "This is a command.";
         static const ObjectType objectType = ObjectType::Value;
 
         using Management = ObjectManagement<Type>;
 
-        static void RegisterTo(asIScriptEngine& engine);
+        static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
 
         static Render::ChangeImageCore ToArca(Type fromAngelScript);
     };

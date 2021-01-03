@@ -20,10 +20,11 @@ namespace Atmos::Scripting::Angel
         using Management = ObjectManagement<Type>;
 
         static inline const String name = "Shader";
-        static inline const String containingNamespace = Namespaces::Atmos::Asset::name;
+        static inline const String containingNamespace = "Atmos::Asset";
+        static inline const String documentation = "This is a relic.";
         static const ObjectType objectType = ObjectType::Value;
 
-        static void RegisterTo(asIScriptEngine& engine);
+        static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
     private:
         [[nodiscard]] static String Name(Type type);
     };

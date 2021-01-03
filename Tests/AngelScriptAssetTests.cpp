@@ -4,6 +4,8 @@
 
 #include "ScriptEngine.h"
 
+#include <Atmos/ActionAsset.h>
+#include <Atmos/BindAction.h>
 #include <Atmos/ImageMaterialAsset.h>
 #include <Atmos/LineMaterialAsset.h>
 #include <Atmos/RegionMaterialAsset.h>
@@ -29,7 +31,7 @@ SCENARIO_METHOD(AngelScriptAssetTestsFixture, "running asset AngelScript scripts
         fieldOrigin,
         *engine.mockImageAssetManager,
         *engine.nullAudioManager,
-        *engine.nullInputManager,
+        *engine.mockInputManager,
         *engine.mockGraphicsManager,
         *engine.scriptManager,
         Spatial::ScreenSize{
@@ -49,6 +51,101 @@ SCENARIO_METHOD(AngelScriptAssetTestsFixture, "running asset AngelScript scripts
         {
             finishes.push_back(signal);
         });
+
+    GIVEN("ActionAsset")
+    {
+        auto name = dataGeneration.Random<std::string>();
+        const auto mappedKey = Input::Key::Z;
+        Asset::Action::MappedKeys mappedKeys;
+        mappedKeys.emplace(mappedKey);
+
+        auto actionAsset = fieldReliquary.Do(Arca::Create<Asset::Action>{ name, mappedKeys });
+
+        GIVEN("script that returns name")
+        {
+            CompileAndCreateScript(
+                "basic_script.as",
+                "string main(string name)\n" \
+                "{\n" \
+                "    Atmos::Asset::FindByName<Atmos::Asset::Action> command(name);\n" \
+                "    auto asset = Arca::Reliquary::Do(command);\n" \
+                "    return asset.Name();\n" \
+                "}",
+                { name },
+                fieldReliquary);
+
+            WHEN("working reliquary")
+            {
+                fieldReliquary.Do(Work{});
+
+                THEN("has correct properties")
+                {
+                    REQUIRE(finishes.size() == 1);
+                    REQUIRE(std::get<String>(std::get<Variant>(finishes[0].result)) == name);
+                }
+            }
+        }
+
+        GIVEN("script that returns mapped key")
+        {
+            CompileAndCreateScript(
+                "basic_script.as",
+                "string main(string name)\n" \
+                "{\n" \
+                "    Atmos::Asset::FindByName<Atmos::Asset::Action> command(name);\n" \
+                "    auto asset = Arca::Reliquary::Do(command);\n" \
+                "    return Atmos::ToString(asset.MappedKeys()[0]);\n" \
+                "}",
+                { name },
+                fieldReliquary);
+
+            WHEN("working reliquary")
+            {
+                fieldReliquary.Do(Work{});
+
+                THEN("has correct properties")
+                {
+                    REQUIRE(finishes.size() == 1);
+
+                    const auto expectedResult = ToString(static_cast<std::underlying_type_t<Input::Key>>(mappedKey));
+                    REQUIRE(std::get<String>(std::get<Variant>(finishes[0].result)) == expectedResult);
+                }
+            }
+        }
+
+        GIVEN("script that returns mapped key after binding action")
+        {
+            auto toMapped = Input::Key::A;
+
+            CompileAndCreateScript(
+                "basic_script.as",
+                "string main(int toMapped, string name)\n" \
+                "{\n" \
+                "    Atmos::Asset::FindByName<Atmos::Asset::Action> command(name);\n" \
+                "    auto asset = Arca::Reliquary::Do(command);\n" \
+                "\n" \
+                "    Atmos::Input::Key[] mappedKeys = { Atmos::Input::Key(toMapped) };\n" \
+                "    Arca::Reliquary::Do(Atmos::Input::BindAction(asset, mappedKeys));\n" \
+                "\n" \
+                "    return Atmos::ToString(asset.MappedKeys()[0]);\n" \
+                "}",
+                { static_cast<std::underlying_type_t<Input::Key>>(toMapped), name },
+                fieldReliquary);
+
+            WHEN("working reliquary")
+            {
+                fieldReliquary.Do(Work{});
+
+                THEN("has correct properties")
+                {
+                    REQUIRE(finishes.size() == 1);
+
+                    const auto expectedResult = ToString(static_cast<std::underlying_type_t<Input::Key>>(toMapped));
+                    REQUIRE(std::get<String>(std::get<Variant>(finishes[0].result)) == expectedResult);
+                }
+            }
+        }
+    }
 
     GIVEN("AudioAsset")
     {
@@ -93,7 +190,7 @@ SCENARIO_METHOD(AngelScriptAssetTestsFixture, "running asset AngelScript scripts
         auto columns = dataGeneration.Random<Asset::ImageGridSize::Dimension>();
         auto rows = dataGeneration.Random<Asset::ImageGridSize::Dimension>();
 
-        auto resource = fieldReliquary.Do(Asset::Resource::Create<Asset::Resource::Image>{DataBuffer{}, name, Asset::ImageSize{ width, height }});
+        auto resource = fieldReliquary.Do(Asset::Resource::Create<Asset::Resource::Image>{Buffer{}, name, Asset::ImageSize{ width, height }});
         auto imageAsset = fieldReliquary.Do(Arca::Create<Asset::Image>{ name, std::move(resource), Asset::ImageGridSize{ columns, rows } });
 
         GIVEN("script that returns name")
@@ -355,7 +452,7 @@ SCENARIO_METHOD(AngelScriptAssetTestsFixture, "running asset AngelScript scripts
     {
         auto name = dataGeneration.Random<std::string>();
 
-        auto resource = fieldReliquary.Do(Asset::Resource::Create<Asset::Resource::Shader>{DataBuffer{}, name});
+        auto resource = fieldReliquary.Do(Asset::Resource::Create<Asset::Resource::Shader>{Buffer{}, name});
         auto shaderAsset = fieldReliquary.Do(Arca::Create<Asset::Shader>{ name, std::move(resource) });
 
         GIVEN("script that returns name")
@@ -435,7 +532,7 @@ TEMPLATE_TEST_CASE_METHOD(
         fieldOrigin,
         *engine.mockImageAssetManager,
         *engine.nullAudioManager,
-        *engine.nullInputManager,
+        *engine.mockInputManager,
         *engine.mockGraphicsManager,
         *engine.scriptManager,
         Spatial::ScreenSize{

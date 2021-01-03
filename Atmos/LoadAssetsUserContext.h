@@ -12,9 +12,9 @@ namespace Inscription
         struct Extracted
         {
             Atmos::Name name;
-            Atmos::DataBuffer memory;
+            Atmos::Buffer memory;
             Extracted() = default;
-            Extracted(const Atmos::Name& name, Atmos::DataBuffer&& memory);
+            Extracted(const Atmos::Name& name, Atmos::Buffer&& memory);
         };
     public:
         virtual ~LoadAssetsUserContext() = 0;

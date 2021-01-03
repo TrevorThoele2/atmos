@@ -24,12 +24,13 @@ namespace Atmos::Scripting::Angel
         using Type = GenericTimePoint;
 
         static inline const String name = "Point<class T>";
-        static inline const String containingNamespace = Namespaces::Atmos::Time::name;
+        static inline const String containingNamespace = "Atmos::Time";
+        static inline const String documentation = "Needs to be used with explicit specializations.";
         static const ObjectType objectType = ObjectType::Value;
 
         using Management = ObjectManagement<Type>;
 
-        static void RegisterTo(asIScriptEngine& engine);
+        static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
     };
 
     template<class Units>
@@ -43,23 +44,24 @@ namespace Atmos::Scripting::Angel
         using Management = ObjectManagement<Type>;
 
         static inline const String name = "TimePointCast";
-        static inline const String containingNamespace = Namespaces::Atmos::Time::name;
+        static inline const String containingNamespace = "Atmos::Time";
+        static inline const String documentation = "";
         static const ObjectType objectType = ObjectType::Value;
 
-        static void RegisterTo(asIScriptEngine& engine);
+        static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
     private:
         template<class To, class From>
         static Time::Point<To> PointCast(From from);
     };
 
     template<class Units>
-    void Registration<TimePointCast<Units>>::RegisterTo(asIScriptEngine& engine)
+    void Registration<TimePointCast<Units>>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         using TimePoint = Time::Point<Units>;
         using RegistrationT = Registration<TimePoint>;
         const auto argumentTypeName = CreateName({ RegistrationT::containingNamespace }, RegistrationT::name);
 
-        GlobalRegistration(Namespaces::Atmos::Time::name)
+        GlobalRegistration("Atmos::Time")
             .Function(
                 &GlobalManagement::Function<&PointCast<Time::Hours, TimePoint>, &PullFromParameter<0, TimePoint>>,
                 "Atmos::Time::Point<Atmos::Time::Hours>", "ToHours", { argumentTypeName })
@@ -78,7 +80,7 @@ namespace Atmos::Scripting::Angel
             .Function(
                 &GlobalManagement::Function<&PointCast<Time::Nanoseconds, TimePoint>, &PullFromParameter<0, TimePoint>>,
                 "Atmos::Time::Point<Atmos::Time::Nanoseconds>", "ToNanoseconds", { argumentTypeName })
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
     }
 
     template<class Units>
@@ -95,14 +97,15 @@ namespace Atmos::Scripting::Angel
         using Management = ObjectManagement<Type>;
 
         static inline const String name = "Point<" + CreateName({ Registration<Units>::containingNamespace }, Registration<Units>::name) + ">";
-        static inline const String containingNamespace = Namespaces::Atmos::Time::name;
+        static inline const String containingNamespace = "Atmos::Time";
+        static inline const String documentation = "Represents a point in time.";
         static const ObjectType objectType = ObjectType::Value;
 
-        static void RegisterTo(asIScriptEngine& engine);
+        static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
     };
 
     template<class Units>
-    void Registration<Time::Point<Units>>::RegisterTo(asIScriptEngine& engine)
+    void Registration<Time::Point<Units>>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         using UnitsRegistration = Registration<Units>;
         const auto unitsName = CreateName({ UnitsRegistration::containingNamespace }, UnitsRegistration::name);
@@ -127,7 +130,7 @@ namespace Atmos::Scripting::Angel
             .CompoundAdd(&Management::template CompoundAdd<Units>, unitsName)
             .CompoundSubtract(&Management::template CompoundSubtract<Units>, unitsName)
             .ConstMethod(&Management::template Method<&Type::time_since_epoch>, unitsName, "TimeSinceEpoch", {})
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
     }
 
     template<class Units>
@@ -176,14 +179,15 @@ namespace Atmos::Scripting::Angel
         using Management = ObjectManagement<Type>;
 
         static inline const String name = TimeDurationTraits<Type>::name;
-        static inline const String containingNamespace = Namespaces::Atmos::Time::name;
+        static inline const String containingNamespace = "Atmos::Time";
+        static inline const String documentation = "Represents a duration of time.";
         static const ObjectType objectType = ObjectType::Value;
 
-        static void RegisterTo(asIScriptEngine& engine);
+        static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
     };
 
     template<class Units>
-    void Registration<Time::Duration<Units>>::RegisterTo(asIScriptEngine& engine)
+    void Registration<Time::Duration<Units>>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         ValueTypeRegistration<Type>(containingNamespace, name)
             .DefaultConstructor(&Management::GenerateDefaultValue)
@@ -208,7 +212,7 @@ namespace Atmos::Scripting::Angel
             .CompoundDivide(&Management::template CompoundDivide<long long>, "int64")
             .CompoundModulo(&Management::template CompoundModulo<long long>, "int64")
             .ConstMethod(&Management::template Method<&Type::count>, "int64", "Count", {})
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
     }
 
     template<class Units>
@@ -222,23 +226,24 @@ namespace Atmos::Scripting::Angel
         using Management = ObjectManagement<Type>;
 
         static inline const String name = "TimeDurationCast";
-        static inline const String containingNamespace = Namespaces::Atmos::Time::name;
+        static inline const String containingNamespace = "Atmos::Time";
+        static inline const String documentation = "";
         static const ObjectType objectType = ObjectType::Value;
 
-        static void RegisterTo(asIScriptEngine& engine);
+        static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
     private:
         template<class To, class From>
         static To DurationCast(From from);
     };
 
     template<class Units>
-    void Registration<TimeDurationCast<Units>>::RegisterTo(asIScriptEngine& engine)
+    void Registration<TimeDurationCast<Units>>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         using Duration = Units;
         using RegistrationT = Registration<Duration>;
         const auto argumentTypeName = CreateName({ RegistrationT::containingNamespace }, RegistrationT::name);
 
-        GlobalRegistration(Namespaces::Atmos::Time::name)
+        GlobalRegistration("Atmos::Time")
             .Function(
                 &GlobalManagement::Function<&DurationCast<Time::Hours, Duration>, &PullFromParameter<0, Duration>>,
                 "Atmos::Time::Hours", "ToHours", { argumentTypeName })
@@ -257,7 +262,7 @@ namespace Atmos::Scripting::Angel
             .Function(
                 &GlobalManagement::Function<&DurationCast<Time::Nanoseconds, Duration>, &PullFromParameter<0, Duration>>,
                 "Atmos::Time::Nanoseconds", "ToNanoseconds", { argumentTypeName })
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
     }
 
     template<class Units>

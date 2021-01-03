@@ -27,7 +27,7 @@ void MockGraphicsManager::InitializeImpl()
 {}
 
 std::unique_ptr<Asset::Resource::Image> MockGraphicsManager::CreateImageResourceImpl(
-    const DataBuffer& buffer,
+    const Buffer& buffer,
     const Name& name,
     const Asset::ImageSize& size)
 {
@@ -35,7 +35,7 @@ std::unique_ptr<Asset::Resource::Image> MockGraphicsManager::CreateImageResource
 }
 
 std::unique_ptr<Asset::Resource::Shader> MockGraphicsManager::CreateShaderResourceImpl(
-    const DataBuffer& buffer, const Name& name)
+    const Buffer& buffer, const Name& name)
 {
     return std::make_unique<ShaderAssetResourceImplementation>();
 }

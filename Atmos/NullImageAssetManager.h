@@ -10,6 +10,6 @@ namespace Atmos::Asset
         NullImageManager() = default;
 
         Resource::Loaded<Resource::Image> Load(const File::Path& filePath) override;
-        Resource::Loaded<Resource::Image> Load(const DataBuffer& memory) override;
+        Resource::Loaded<Resource::Image> Load(const Buffer& memory) override;
     };
 }

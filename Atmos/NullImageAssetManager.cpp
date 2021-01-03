@@ -7,7 +7,7 @@ namespace Atmos::Asset
         return {};
     }
 
-    Resource::Loaded<Resource::Image> NullImageManager::Load(const DataBuffer&)
+    Resource::Loaded<Resource::Image> NullImageManager::Load(const Buffer&)
     {
         return {};
     }

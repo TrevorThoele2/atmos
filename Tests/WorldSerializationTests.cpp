@@ -30,7 +30,7 @@ SCENARIO_METHOD(WorldSerializationTestsFixture, "rendering after world serializa
             fieldOrigin,
             *engine.mockImageAssetManager,
             *engine.nullAudioManager,
-            *engine.nullInputManager,
+            *engine.mockInputManager,
             *engine.mockGraphicsManager,
             *engine.mockScriptManager,
             Spatial::ScreenSize {
@@ -153,7 +153,7 @@ SCENARIO_METHOD(WorldSerializationTestsFixture, "rendering after world serializa
                 auto outputArchive = World::Serialization::OutputAssetsArchiveInterface(assetsFilePath);
 
                 World::Serialization::OutputAssetsArchiveInterface::Saves assetSaves;
-                assetSaves.images.emplace_back(Name("Pixel"), DataBuffer(pixelBuffer));
+                assetSaves.images.emplace_back(Name("Pixel"), Buffer(pixelBuffer));
                 outputArchive.Save(assetSaves);
             }
 

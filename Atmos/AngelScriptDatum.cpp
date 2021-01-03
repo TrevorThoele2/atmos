@@ -7,7 +7,7 @@
 
 namespace Atmos::Scripting::Angel
 {
-    void Registration<Datum>::RegisterTo(asIScriptEngine& engine)
+    void Registration<Datum>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         ValueTypeRegistration<Type>(containingNamespace, name)
             .DefaultConstructor(&Management::GenerateDefaultValue)
@@ -19,6 +19,6 @@ namespace Atmos::Scripting::Angel
             .CopyAssignment(&Management::CopyAssign)
             .Property<&Type::name>("string", "name")
             .Property<&Type::value>("Atmos::Variant", "value")
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
     }
 }

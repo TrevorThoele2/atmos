@@ -15,7 +15,7 @@ using namespace Atmos::Spatial;
 
 namespace Atmos::Scripting::Angel
 {
-    void Registration<SpatialAlgorithms>::RegisterTo(asIScriptEngine& engine)
+    void Registration<SpatialAlgorithms>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         GlobalRegistration(containingNamespace)
             .Function(&Management::Function<static_cast<Point2D::Value(*)(Point2D, Point2D)>(Distance)>,
@@ -54,13 +54,13 @@ namespace Atmos::Scripting::Angel
                 "AxisAlignedBox2D", "ToAxisAlignedBox2D", { "float left", "float top", "float right", "float bottom" })
             .Function(&Management::Function<&ToAxisAlignedBox3D>,
                 "AxisAlignedBox3D", "ToAxisAlignedBox3D", { "float left", "float top", "float farZ", "float right", "float bottom", "float nearZ" })
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
 
-        GlobalRegistration(Namespaces::Atmos::Spatial::Grid::name)
+        GlobalRegistration("Atmos::Spatial::Grid")
             .Function(&Management::Function<static_cast<Grid::Point(*)(Point2D)>(Grid::ToPoint)>,
                 "Point", "ToPoint", { "Point2D point" })
             .Function(&Management::Function<static_cast<Grid::Point(*)(Point3D)>(Grid::ToPoint)>,
                 "Point", "ToPoint", { "Point3D point" })
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
     }
 }

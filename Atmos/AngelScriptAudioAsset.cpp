@@ -8,17 +8,17 @@
 
 namespace Atmos::Scripting::Angel
 {
-    void Registration<Asset::Audio>::RegisterTo(asIScriptEngine& engine)
+    void Registration<Asset::Audio>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         ValueTypeRegistration<Type> registration(containingNamespace, name);
         RegisterArcaIndex(registration);
         registration
             .ConstMethod(&Management::Method<&Name>, "string", "Name", {})
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
 
-        Registration<ArcaTraits<Asset::Audio>>::RegisterTo(engine);
-        Registration<Arca::Batch<Asset::Audio>>::RegisterTo(engine);
-        Registration<Asset::FindByName<Asset::Audio>>::RegisterTo(engine);
+        Registration<ArcaTraits<Asset::Audio>>::RegisterTo(engine, documentationManager);
+        Registration<Arca::Batch<Asset::Audio>>::RegisterTo(engine, documentationManager);
+        Registration<Asset::FindByName<Asset::Audio>>::RegisterTo(engine, documentationManager);
     }
 
     String Registration<Asset::Audio>::Name(Type type)

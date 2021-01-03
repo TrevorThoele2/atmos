@@ -21,6 +21,6 @@ namespace Arca
     {
         static const ObjectType objectType = ObjectType::Command;
         static inline const TypeName typeName = "Atmos::Scripting::Compile";
-        using Result = Atmos::DataBuffer;
+        using Result = Atmos::Buffer;
     };
 }

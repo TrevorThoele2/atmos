@@ -180,9 +180,6 @@
     <Filter Include="Source Files\Render\Camera">
       <UniqueIdentifier>{70ea4b19-3a06-4276-95c3-6394d0954d9f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Provider">
-      <UniqueIdentifier>{0690f5dc-8974-4114-8155-d10c5f6fd4c1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Input\Signals">
       <UniqueIdentifier>{5a00eaa9-c51e-44f5-9b57-73aa2172c699}</UniqueIdentifier>
     </Filter>
@@ -197,12 +194,6 @@
     </Filter>
     <Filter Include="Header Files\World\Serialization\World">
       <UniqueIdentifier>{800b0608-37d4-410d-9b4e-8790474a95f8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Environment">
-      <UniqueIdentifier>{6057bb8c-16e8-4117-8949-691b35a6a40e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Environment">
-      <UniqueIdentifier>{c1ef003e-1d21-411c-a0b2-4094a426a84e}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Render\Line">
       <UniqueIdentifier>{d8ea8f81-c378-4207-962c-71362ea8727c}</UniqueIdentifier>
@@ -516,6 +507,33 @@
     <Filter Include="Source Files\Assets\Material\Region">
       <UniqueIdentifier>{e9e49f76-9fd2-4cd1-ad43-2bdbdfd92df8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Assets\Action">
+      <UniqueIdentifier>{5d8ef735-003e-4adc-99f1-93213ffa95b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Assets\Action">
+      <UniqueIdentifier>{59f4566e-c1c0-4001-b0a3-15a8e66013eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Input\Commands">
+      <UniqueIdentifier>{d7361836-1841-495d-b7c0-da204feacfdc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scripting\AngelScript\Types\Atmos\Input">
+      <UniqueIdentifier>{f14cc5a8-e149-459e-b539-4558aa4f3557}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scripting\AngelScript\Types\Atmos\Input">
+      <UniqueIdentifier>{997e9cbd-9448-4ddd-82dc-c4c051e70066}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scripting\Signals">
+      <UniqueIdentifier>{835ba6e0-ebff-4ee6-94ef-0b5357971cf5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scripting\Signals">
+      <UniqueIdentifier>{149dcea0-25d7-4dd1-89d3-9afa8db03ac3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scripting\Documentation">
+      <UniqueIdentifier>{c2d00fff-0be8-44f4-a987-257db65113da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scripting\Documentation">
+      <UniqueIdentifier>{90513c17-1fff-47a5-b0c5-00fbc55e61cb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FieldDestination.h">
@@ -611,13 +629,7 @@
     <ClInclude Include="DebugScreen.h">
       <Filter>Header Files\Debug</Filter>
     </ClInclude>
-    <ClInclude Include="WindowsInputManager.h">
-      <Filter>Header Files\Input</Filter>
-    </ClInclude>
     <ClInclude Include="WindowBase.h">
-      <Filter>Header Files\Window</Filter>
-    </ClInclude>
-    <ClInclude Include="WindowsWindow.h">
       <Filter>Header Files\Window</Filter>
     </ClInclude>
     <ClInclude Include="MaterialAsset.h">
@@ -628,15 +640,6 @@
     </ClInclude>
     <ClInclude Include="GraphicsManager.h">
       <Filter>Header Files\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="WindowsInclude.h">
-      <Filter>Header Files\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="FileManager.h">
-      <Filter>Header Files\File</Filter>
-    </ClInclude>
-    <ClInclude Include="WindowsFileManager.h">
-      <Filter>Header Files\File</Filter>
     </ClInclude>
     <ClInclude Include="AngelScriptUserData.h">
       <Filter>Header Files\Scripting\AngelScript</Filter>
@@ -661,9 +664,6 @@
     </ClInclude>
     <ClInclude Include="NullWindow.h">
       <Filter>Header Files\Window</Filter>
-    </ClInclude>
-    <ClInclude Include="NullFileManager.h">
-      <Filter>Header Files\File</Filter>
     </ClInclude>
     <ClInclude Include="AxisAlignedBox2D.h">
       <Filter>Header Files\Spatial\2D</Filter>
@@ -803,19 +803,7 @@
     <ClInclude Include="MappedAssets.h">
       <Filter>Header Files\Assets</Filter>
     </ClInclude>
-    <ClInclude Include="InputID.h">
-      <Filter>Header Files\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="MappedInputs.h">
-      <Filter>Header Files\Input</Filter>
-    </ClInclude>
     <ClInclude Include="MouseMoved.h">
-      <Filter>Header Files\Input\Signals</Filter>
-    </ClInclude>
-    <ClInclude Include="MouseClickDragged.h">
-      <Filter>Header Files\Input\Signals</Filter>
-    </ClInclude>
-    <ClInclude Include="ActionActive.h">
       <Filter>Header Files\Input\Signals</Filter>
     </ClInclude>
     <ClInclude Include="ActionPressed.h">
@@ -823,18 +811,6 @@
     </ClInclude>
     <ClInclude Include="ActionDepressed.h">
       <Filter>Header Files\Input\Signals</Filter>
-    </ClInclude>
-    <ClInclude Include="MappedActions.h">
-      <Filter>Header Files\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="Input.h">
-      <Filter>Header Files\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="Action.h">
-      <Filter>Header Files\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="MouseInformation.h">
-      <Filter>Header Files\Input</Filter>
     </ClInclude>
     <ClInclude Include="NullInputManager.h">
       <Filter>Header Files\Input</Filter>
@@ -863,9 +839,6 @@
     <ClInclude Include="MappedEntities.h">
       <Filter>Header Files\Entity</Filter>
     </ClInclude>
-    <ClInclude Include="FileManagerProvider.h">
-      <Filter>Header Files\File</Filter>
-    </ClInclude>
     <ClInclude Include="InputStasisArchiveInterface.h">
       <Filter>Header Files\World\Serialization\Stasis</Filter>
     </ClInclude>
@@ -892,21 +865,6 @@
     </ClInclude>
     <ClInclude Include="Field.h">
       <Filter>Header Files\World\Field</Filter>
-    </ClInclude>
-    <ClInclude Include="WindowsEngine.h">
-      <Filter>Header Files\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Environment.h">
-      <Filter>Header Files\Environment</Filter>
-    </ClInclude>
-    <ClInclude Include="UniqueProviderRelic.h">
-      <Filter>Header Files\Provider</Filter>
-    </ClInclude>
-    <ClInclude Include="UnownedProviderRelic.h">
-      <Filter>Header Files\Provider</Filter>
-    </ClInclude>
-    <ClInclude Include="UniqueProvider.h">
-      <Filter>Header Files\Provider</Filter>
     </ClInclude>
     <ClInclude Include="LoggingCurator.h">
       <Filter>Header Files\Logging</Filter>
@@ -1115,9 +1073,6 @@
     <ClInclude Include="VulkanQuadRenderer.h">
       <Filter>Header Files\Render\Vulkan\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="WindowsUndef.h">
-      <Filter>Header Files\Engine</Filter>
-    </ClInclude>
     <ClInclude Include="AudioAssetResource.h">
       <Filter>Header Files\Assets\Audio</Filter>
     </ClInclude>
@@ -1224,9 +1179,6 @@
       <Filter>Header Files\Spatial\Grid</Filter>
     </ClInclude>
     <ClInclude Include="ScreenPoint.h">
-      <Filter>Header Files\Spatial\Screen</Filter>
-    </ClInclude>
-    <ClInclude Include="ScreenPointDelta.h">
       <Filter>Header Files\Spatial\Screen</Filter>
     </ClInclude>
     <ClInclude Include="Pathfinder.h">
@@ -1421,9 +1373,6 @@
     <ClInclude Include="AngelScriptRegistration.h">
       <Filter>Header Files\Scripting\AngelScript\Registration</Filter>
     </ClInclude>
-    <ClInclude Include="AngelScriptNamespaces.h">
-      <Filter>Header Files\Scripting\AngelScript</Filter>
-    </ClInclude>
     <ClInclude Include="AngelScriptEnumRegistration.h">
       <Filter>Header Files\Scripting\AngelScript\Registration</Filter>
     </ClInclude>
@@ -1441,9 +1390,6 @@
     </ClInclude>
     <ClInclude Include="AngelScriptAngle2D.h">
       <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
-    </ClInclude>
-    <ClInclude Include="ScriptFinished.h">
-      <Filter>Header Files\Scripting</Filter>
     </ClInclude>
     <ClInclude Include="AngelScriptAngle3D.h">
       <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
@@ -1637,9 +1583,6 @@
     <ClInclude Include="AngelScriptScriptResult.h">
       <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Script</Filter>
     </ClInclude>
-    <ClInclude Include="AngelScriptVariant.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos</Filter>
-    </ClInclude>
     <ClInclude Include="Variant.h">
       <Filter>Header Files\Data</Filter>
     </ClInclude>
@@ -1733,6 +1676,81 @@
     <ClInclude Include="AngelScriptMath.h">
       <Filter>Header Files\Scripting\AngelScript\Types\Atmos</Filter>
     </ClInclude>
+    <ClInclude Include="SDLWindow.h">
+      <Filter>Header Files\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="SDLEngine.h">
+      <Filter>Header Files\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="SDLInputManager.h">
+      <Filter>Header Files\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="ActionAsset.h">
+      <Filter>Header Files\Assets\Action</Filter>
+    </ClInclude>
+    <ClInclude Include="ActionAssetCurator.h">
+      <Filter>Header Files\Assets\Action</Filter>
+    </ClInclude>
+    <ClInclude Include="Key.h">
+      <Filter>Header Files\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="TextEntered.h">
+      <Filter>Header Files\Input\Signals</Filter>
+    </ClInclude>
+    <ClInclude Include="KeyStates.h">
+      <Filter>Header Files\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="KeyState.h">
+      <Filter>Header Files\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Delta.h">
+      <Filter>Header Files\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptActionAsset.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptKey.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptScreenPoint.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptActionDepressed.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptActionPressed.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptMouseMoved.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptTextEntered.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptVariant.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos</Filter>
+    </ClInclude>
+    <ClInclude Include="ActionActive.h">
+      <Filter>Header Files\Input\Signals</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptActionActive.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="BindAction.h">
+      <Filter>Header Files\Input\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptBindAction.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptFinished.h">
+      <Filter>Header Files\Scripting\Signals</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptDocumentationManager.h">
+      <Filter>Header Files\Scripting\Documentation</Filter>
+    </ClInclude>
+    <ClInclude Include="NullScriptDocumentationManager.h">
+      <Filter>Header Files\Scripting\Documentation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FieldDestination.cpp">
@@ -1771,9 +1789,6 @@
     <ClCompile Include="Engine.cpp">
       <Filter>Source Files\Engine</Filter>
     </ClCompile>
-    <ClCompile Include="WindowsEngine.cpp">
-      <Filter>Source Files\Engine</Filter>
-    </ClCompile>
     <ClCompile Include="EngineExecution.cpp">
       <Filter>Source Files\Engine</Filter>
     </ClCompile>
@@ -1789,13 +1804,7 @@
     <ClCompile Include="DebugScreen.cpp">
       <Filter>Source Files\Debug</Filter>
     </ClCompile>
-    <ClCompile Include="WindowsInputManager.cpp">
-      <Filter>Source Files\Input</Filter>
-    </ClCompile>
     <ClCompile Include="WindowBase.cpp">
-      <Filter>Source Files\Window</Filter>
-    </ClCompile>
-    <ClCompile Include="WindowsWindow.cpp">
       <Filter>Source Files\Window</Filter>
     </ClCompile>
     <ClCompile Include="MaterialAsset.cpp">
@@ -1806,12 +1815,6 @@
     </ClCompile>
     <ClCompile Include="GraphicsManager.cpp">
       <Filter>Source Files\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="FileManager.cpp">
-      <Filter>Source Files\File</Filter>
-    </ClCompile>
-    <ClCompile Include="WindowsFileManager.cpp">
-      <Filter>Source Files\File</Filter>
     </ClCompile>
     <ClCompile Include="ModulatorInterpolation.cpp">
       <Filter>Source Files\Modulators\Interpolation</Filter>
@@ -1830,9 +1833,6 @@
     </ClCompile>
     <ClCompile Include="NullWindow.cpp">
       <Filter>Source Files\Window</Filter>
-    </ClCompile>
-    <ClCompile Include="NullFileManager.cpp">
-      <Filter>Source Files\File</Filter>
     </ClCompile>
     <ClCompile Include="Line2D.cpp">
       <Filter>Source Files\Spatial\2D</Filter>
@@ -1930,12 +1930,6 @@
     <ClCompile Include="AngelScriptReferenceCounted.cpp">
       <Filter>Source Files\Scripting\AngelScript\Types\Bases</Filter>
     </ClCompile>
-    <ClCompile Include="Input.cpp">
-      <Filter>Source Files\Input</Filter>
-    </ClCompile>
-    <ClCompile Include="Action.cpp">
-      <Filter>Source Files\Input</Filter>
-    </ClCompile>
     <ClCompile Include="NullInputManager.cpp">
       <Filter>Source Files\Input</Filter>
     </ClCompile>
@@ -1953,9 +1947,6 @@
     </ClCompile>
     <ClCompile Include="TypeRegistration.cpp">
       <Filter>Source Files\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="FileManagerProvider.cpp">
-      <Filter>Source Files\File</Filter>
     </ClCompile>
     <ClCompile Include="InputStasisArchiveInterface.cpp">
       <Filter>Source Files\World\Serialization\Stasis</Filter>
@@ -1977,9 +1968,6 @@
     </ClCompile>
     <ClCompile Include="InputFieldArchiveInterface.cpp">
       <Filter>Source Files\World\Serialization</Filter>
-    </ClCompile>
-    <ClCompile Include="Environment.cpp">
-      <Filter>Source Files\Environment</Filter>
     </ClCompile>
     <ClCompile Include="LoggingCurator.cpp">
       <Filter>Source Files\Logging</Filter>
@@ -2159,9 +2147,6 @@
       <Filter>Source Files\Spatial\Grid</Filter>
     </ClCompile>
     <ClCompile Include="ScreenPoint.cpp">
-      <Filter>Source Files\Spatial\Screen</Filter>
-    </ClCompile>
-    <ClCompile Include="ScreenPointDelta.cpp">
       <Filter>Source Files\Spatial\Screen</Filter>
     </ClCompile>
     <ClCompile Include="Pathfinder.cpp">
@@ -2529,6 +2514,51 @@
     </ClCompile>
     <ClCompile Include="..\..\AngelScript\sdk\add_on\scriptstdstring\scriptstdstring.cpp">
       <Filter>Source Files\Scripting\AngelScript\Addon</Filter>
+    </ClCompile>
+    <ClCompile Include="SDLWindow.cpp">
+      <Filter>Source Files\Window</Filter>
+    </ClCompile>
+    <ClCompile Include="SDLEngine.cpp">
+      <Filter>Source Files\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="SDLInputManager.cpp">
+      <Filter>Source Files\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="ActionAsset.cpp">
+      <Filter>Source Files\Assets\Action</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptActionAsset.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptKey.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptMapAction.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptScreenPoint.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptActionDepressed.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptActionPressed.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptMouseMoved.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptTextEntered.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptActionActive.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptDocumentationManager.cpp">
+      <Filter>Source Files\Scripting\Documentation</Filter>
+    </ClCompile>
+    <ClCompile Include="NullScriptDocumentationManager.cpp">
+      <Filter>Source Files\Scripting\Documentation</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

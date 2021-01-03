@@ -19,4 +19,22 @@ namespace Atmos
 
         return true;
     }
+
+    UnsignedBuffer ToUnsignedBuffer(const Buffer& buffer)
+    {
+        UnsignedBuffer returnValue;
+        returnValue.reserve(static_cast<size_t>(buffer.size()));
+        for (auto& byte : buffer)
+            returnValue.push_back(*reinterpret_cast<const unsigned char*>(&byte));
+        return returnValue;
+    }
+
+    Buffer ToBuffer(const UnsignedBuffer& unsignedBuffer)
+    {
+        Buffer returnValue;
+        returnValue.reserve(static_cast<size_t>(unsignedBuffer.size()));
+        for (auto& byte : unsignedBuffer)
+            returnValue.push_back(*reinterpret_cast<const char*>(&byte));
+        return returnValue;
+    }
 }

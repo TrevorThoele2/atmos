@@ -9,7 +9,7 @@
 
 namespace Atmos::Scripting::Angel
 {
-    void Registration<Finished>::RegisterTo(asIScriptEngine& engine)
+    void Registration<Finished>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         ValueTypeRegistration<Type>(containingNamespace, name)
             .DefaultConstructor(&Management::GenerateDefaultValue)
@@ -23,8 +23,8 @@ namespace Atmos::Scripting::Angel
             .CopyAssignment(&Management::CopyAssign)
             .Property<&Type::script>("Atmos::Scripting::Script", "script")
             .Property<&Type::result>("Atmos::Scripting::Result", "result")
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
 
-        RegisterSignalHandler<&Chroma::Identity<Type>>(engine);
+        RegisterSignalHandler<&Chroma::Identity<Type>>(engine, documentationManager);
     }
 }

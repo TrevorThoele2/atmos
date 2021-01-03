@@ -2,6 +2,7 @@
 
 #include "AngelScriptResultVerification.h"
 #include <angelscript.h>
+#include "ScriptDocumentationManager.h"
 #include "String.h"
 
 namespace Atmos::Scripting::Angel
@@ -18,7 +19,7 @@ namespace Atmos::Scripting::Angel
         GlobalRegistration& Typedef(String alias, String original);
         GlobalRegistration& Funcdef(String returnType, String name, std::vector<String> parameters);
 
-        void Actualize(asIScriptEngine& engine);
+        void Actualize(asIScriptEngine& engine, DocumentationManager& documentationManager);
     private:
         std::optional<String> containingNamespace;
 

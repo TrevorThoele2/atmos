@@ -10,7 +10,7 @@
 
 namespace Atmos::Scripting::Angel
 {
-    void Registration<Render::Color>::RegisterTo(asIScriptEngine& engine)
+    void Registration<Render::Color>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         ValueTypeRegistration<Render::Color>(containingNamespace, name)
             .DefaultConstructor(&Management::GenerateDefaultValue)
@@ -29,10 +29,10 @@ namespace Atmos::Scripting::Angel
             .Property<&Type::red>("uint8", "red")
             .Property<&Type::green>("uint8", "green")
             .Property<&Type::blue>("uint8", "blue")
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
     }
 
-    void Registration<Render::ChangeColor>::RegisterTo(asIScriptEngine& engine)
+    void Registration<Render::ChangeColor>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         ValueTypeRegistration<Type>(containingNamespace, name)
             .Constructor(
@@ -45,8 +45,8 @@ namespace Atmos::Scripting::Angel
             .CopyAssignment(&Management::CopyAssign)
             .Property<&Type::id>("Arca::RelicID", "id")
             .Property<&Type::to>("Atmos::Render::Color", "to")
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
 
-        RegisterCommandHandler<&Chroma::Identity<Type>>(engine);
+        RegisterCommandHandler<&Chroma::Identity<Type>>(engine, documentationManager);
     }
 }

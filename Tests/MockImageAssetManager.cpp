@@ -12,7 +12,7 @@ Atmos::Asset::Resource::Loaded<Atmos::Asset::Resource::Image> MockImageAssetMana
 }
 
 Atmos::Asset::Resource::Loaded<Atmos::Asset::Resource::Image> MockImageAssetManager::Load(
-    const Atmos::DataBuffer& memory)
+    const Atmos::Buffer& memory)
 {
     return
     {

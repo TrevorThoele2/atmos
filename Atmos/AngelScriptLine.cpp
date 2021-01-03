@@ -11,7 +11,7 @@
 
 namespace Atmos::Scripting::Angel
 {
-    void Registration<Render::Line>::RegisterTo(asIScriptEngine& engine)
+    void Registration<Render::Line>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         ValueTypeRegistration<Type> registration(containingNamespace, name);
         RegisterArcaIndex(registration);
@@ -21,10 +21,10 @@ namespace Atmos::Scripting::Angel
             .ConstMethod(&Management::Method<&Material>, "Atmos::Asset::LineMaterial", "Material", {})
             .ConstMethod(&Management::Method<&Width>, "float", "Width", {})
             .ConstMethod(&Management::Method<&Color>, "Atmos::Render::Color", "Color", {})
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
 
-        Registration<ArcaTraits<Render::Line>>::RegisterTo(engine);
-        Registration<Arca::Batch<Render::Line>>::RegisterTo(engine);
+        Registration<ArcaTraits<Render::Line>>::RegisterTo(engine, documentationManager);
+        Registration<Arca::Batch<Render::Line>>::RegisterTo(engine, documentationManager);
 
         RegisterArcaCreateRelic<
             Render::Line,
@@ -42,9 +42,10 @@ namespace Atmos::Scripting::Angel
                     "float width",
                     "Atmos::Render::Color color"
                 },
-                engine);
+                engine,
+                documentationManager);
 
-        RegisterArcaDestroyRelic<Render::Line>(engine);
+        RegisterArcaDestroyRelic<Render::Line>(engine, documentationManager);
     }
 
     std::vector<Spatial::Point2D> Registration<Render::Line>::Points(Type type)
@@ -72,7 +73,7 @@ namespace Atmos::Scripting::Angel
         return RequiredValue(type)->color;
     }
 
-    void Registration<ChangeLinePoints>::RegisterTo(asIScriptEngine& engine)
+    void Registration<ChangeLinePoints>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         ValueTypeRegistration<Type>(containingNamespace, name)
             .Constructor(
@@ -85,9 +86,9 @@ namespace Atmos::Scripting::Angel
             .CopyAssignment(&Management::CopyAssign)
             .Property<&Type::id>("Arca::RelicID", "id")
             .Property<&Type::to>("Atmos::Spatial::Point2D[]@", "to")
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
 
-        RegisterCommandHandler<&ToArca>(engine);
+        RegisterCommandHandler<&ToArca>(engine, documentationManager);
     }
 
     Render::MoveLine Registration<ChangeLinePoints>::ToArca(Type fromAngelScript)
@@ -95,7 +96,7 @@ namespace Atmos::Scripting::Angel
         return { fromAngelScript.id, fromAngelScript.to, {} };
     }
 
-    void Registration<ChangeLineZ>::RegisterTo(asIScriptEngine& engine)
+    void Registration<ChangeLineZ>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         ValueTypeRegistration<Type>(containingNamespace, name)
             .Constructor(
@@ -108,9 +109,9 @@ namespace Atmos::Scripting::Angel
             .CopyAssignment(&Management::CopyAssign)
             .Property<&Type::id>("Arca::RelicID", "id")
             .Property<&Type::to>("float", "to")
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
 
-        RegisterCommandHandler<&ToArca>(engine);
+        RegisterCommandHandler<&ToArca>(engine, documentationManager);
     }
 
     Render::MoveLine Registration<ChangeLineZ>::ToArca(Type fromAngelScript)

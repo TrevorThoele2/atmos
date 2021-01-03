@@ -8,11 +8,11 @@
 
 namespace Atmos::Scripting::Angel
 {
-    void Registration<CurrentEntity>::RegisterTo(asIScriptEngine& engine)
+    void Registration<CurrentEntity>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         GlobalRegistration(containingNamespace)
             .Function(&Management::Function<&Retrieve, &UserData::RequiredReliquaryFrom>, "Atmos::Entity::Entity", "CurrentEntity", {})
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
     }
 
     Arca::Index<Entity::Entity> Registration<CurrentEntity>::Retrieve(Arca::Reliquary* reliquary)

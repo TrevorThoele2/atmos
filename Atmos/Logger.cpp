@@ -2,8 +2,6 @@
 
 #include "ProcessedLog.h"
 
-#include "FileManagerProvider.h"
-
 #include "StringUtility.h"
 
 #include <Inscription/OutputTextFile.h>
@@ -15,9 +13,21 @@ namespace Atmos::Logging
         StartSession();
     }
 
+    Logger::Logger(Logger&& arg) : minimumSeverity(arg.minimumSeverity)
+    {
+        shouldSignalStopSession = false;
+    }
+
     Logger::~Logger()
     {
         StopSession();
+    }
+
+    Logger& Logger::operator=(Logger&& arg)
+    {
+        minimumSeverity = arg.minimumSeverity;
+        shouldSignalStopSession = false;
+        return *this;
     }
 
     std::optional<ProcessedLog> Logger::Log(const Logging::Log& log)
@@ -60,7 +70,8 @@ namespace Atmos::Logging
 
     void Logger::StopSession()
     {
-        Log("Session stopped.");
+        if (shouldSignalStopSession)
+            Log("Session stopped.");
     }
 
     void Logger::ClearFile()

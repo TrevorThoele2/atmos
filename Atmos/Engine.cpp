@@ -7,6 +7,9 @@
 
 namespace Atmos
 {
+    Engine::Engine(Logging::Logger& logger) : logger(&logger)
+    {}
+
     Engine::~Engine()
     {
         executionContext.reset();
@@ -65,18 +68,10 @@ namespace Atmos
         executionContext->execution.Start();
     }
 
-    void Engine::Exit()
-    {
-        DoExit();
-    }
-
     Logging::Logger& Engine::Logger()
     {
         return *logger;
     }
-
-    Engine::Engine(Logging::Logger& logger) : logger(&logger)
-    {}
 
     bool Engine::IsSetup() const
     {

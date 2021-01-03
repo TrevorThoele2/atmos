@@ -26,7 +26,7 @@ SCENARIO_METHOD(LineRenderingTestsFixture, "rendering lines", "[render]")
             fieldOrigin,
             *engine.mockImageAssetManager,
             *engine.nullAudioManager,
-            *engine.nullInputManager,
+            *engine.mockInputManager,
             *engine.mockGraphicsManager,
             *engine.mockScriptManager,
             Spatial::ScreenSize{

@@ -6,7 +6,7 @@
 
 namespace Atmos::Scripting::Angel
 {
-    void Registration<Spatial::Scalers3D>::RegisterTo(asIScriptEngine& engine)
+    void Registration<Spatial::Scalers3D>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         ValueTypeRegistration<Spatial::Scalers3D>(containingNamespace, name)
             .DefaultConstructor(&Management::GenerateDefaultValue)
@@ -23,6 +23,6 @@ namespace Atmos::Scripting::Angel
             .Property<&Type::x>("float", "x")
             .Property<&Type::y>("float", "y")
             .Property<&Type::z>("float", "z")
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
     }
 }

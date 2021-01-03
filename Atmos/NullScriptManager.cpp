@@ -3,7 +3,7 @@
 namespace Atmos::Scripting
 {
     std::unique_ptr<Asset::Resource::Script> NullManager::CreateAssetResource(
-        const DataBuffer& buffer, String name)
+        const Buffer& buffer, String name)
     {
         return {};
     }
@@ -14,7 +14,7 @@ namespace Atmos::Scripting
         return {};
     }
 
-    DataBuffer NullManager::Compile(Module module, std::vector<Module> sharedModules)
+    Buffer NullManager::Compile(Module module, std::vector<Module> sharedModules)
     {
         return {};
     }

@@ -5,7 +5,7 @@
 
 namespace Atmos::Scripting::Angel
 {
-    void Registration<StringUtility>::RegisterTo(asIScriptEngine& engine)
+    void Registration<StringUtility>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         GlobalRegistration(containingNamespace)
             .Function(&Management::Function<&Type::ToString<bool>>,
@@ -58,7 +58,7 @@ namespace Atmos::Scripting::Angel
 
             .Function(&Management::Function<&Join>, "string", "Join", { "string joiner", "string[]@ tokens" })
 
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
     }
 
     String Registration<StringUtility>::Join(String joiner, std::vector<String> tokens)

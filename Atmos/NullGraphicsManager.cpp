@@ -73,7 +73,7 @@ namespace Atmos::Render
     {}
 
     std::unique_ptr<Asset::Resource::Image> NullGraphicsManager::CreateImageResourceImpl(
-        const DataBuffer& buffer,
+        const Buffer& buffer,
         const Name& name,
         const Asset::ImageSize& size)
     {
@@ -81,7 +81,7 @@ namespace Atmos::Render
     }
 
     std::unique_ptr<Asset::Resource::Shader> NullGraphicsManager::CreateShaderResourceImpl(
-        const DataBuffer& buffer, const Name& name)
+        const Buffer& buffer, const Name& name)
     {
         return std::make_unique<ShaderAssetDataImplementation>();
     }

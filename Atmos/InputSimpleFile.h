@@ -13,7 +13,7 @@ namespace Atmos
         template<class T>
         void operator>>(T& arg);
         void Seek(Position position) override;
-        [[nodiscard]] DataBuffer ReadBuffer(std::streamsize size = std::numeric_limits<std::streamsize>::max());
+        [[nodiscard]] Buffer ReadBuffer(std::streamsize size = std::numeric_limits<std::streamsize>::max());
         [[nodiscard]] std::streamsize Size();
     private:
         Position DoTell(StreamT& stream) override;

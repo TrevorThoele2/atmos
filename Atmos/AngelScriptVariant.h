@@ -21,10 +21,12 @@ namespace Atmos::Scripting::Angel
         using Management = ObjectManagement<Type>;
 
         static inline const String name = "Variant";
-        static inline const String containingNamespace = Namespaces::Atmos::name;
+        static inline const String containingNamespace = "Atmos";
+        static inline const String documentation =
+            "Represents a general, serializable piece of data. Can only be one of its respective types at a time.";
         static const ObjectType objectType = ObjectType::Value;
 
-        static void RegisterTo(asIScriptEngine& engine);
+        static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
     private:
         [[nodiscard]] static bool AsBool(Type type);
         [[nodiscard]] static std::int64_t AsInt(Type type);

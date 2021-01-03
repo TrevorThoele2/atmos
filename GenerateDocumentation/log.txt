@@ -1,2 +1,2 @@
-<16/12/2020> (07:51:08) <INFO> Session started.
-<16/12/2020> (07:51:08) <INFO> Session stopped.
+<05/01/2021> (19:13:59) <INFO> Session started.
+<05/01/2021> (19:14:08) <INFO> Session stopped.

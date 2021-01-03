@@ -21,11 +21,11 @@ namespace Atmos::Scripting
         void Initialize(Arca::Reliquary& reliquary);
 
         [[nodiscard]] virtual std::unique_ptr<Asset::Resource::Script> CreateAssetResource(
-            const DataBuffer& buffer, String name) = 0;
+            const Buffer& buffer, String name) = 0;
         [[nodiscard]] virtual std::unique_ptr<Resource> CreateScriptResource(
             const String& name, const String& executeName, const Parameters& parameters) = 0;
     public:
-        virtual DataBuffer Compile(Module module, std::vector<Module> sharedModules) = 0;
+        virtual Buffer Compile(Module module, std::vector<Module> sharedModules) = 0;
     protected:
         virtual void InitializeImpl(Arca::Reliquary& reliquary) = 0;
     private:

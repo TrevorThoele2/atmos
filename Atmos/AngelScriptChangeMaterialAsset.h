@@ -22,19 +22,19 @@ namespace Atmos::Scripting::Angel
     template<>
     struct ChangeMaterialAssetTraits<Asset::ImageMaterial>
     {
-        static inline String nameToken = "Image";
+        static inline const String nameToken = "Image";
     };
 
     template<>
     struct ChangeMaterialAssetTraits<Asset::LineMaterial>
     {
-        static inline String nameToken = "Line";
+        static inline const String nameToken = "Line";
     };
 
     template<>
     struct ChangeMaterialAssetTraits<Asset::RegionMaterial>
     {
-        static inline String nameToken = "Region";
+        static inline const String nameToken = "Region";
     };
 
     template<class Material>
@@ -45,16 +45,17 @@ namespace Atmos::Scripting::Angel
         using Traits = ChangeMaterialAssetTraits<Material>;
 
         static inline const String name = "Change" + Traits::nameToken + "MaterialAsset";
-        static inline const String containingNamespace = Namespaces::Atmos::Render::name;
+        static inline const String containingNamespace = "Atmos::Render";
+        static inline const String documentation = "This is a command.";
         static const ObjectType objectType = ObjectType::Value;
 
         using Management = ObjectManagement<Type>;
 
-        static void RegisterTo(asIScriptEngine& engine);
+        static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
     };
 
     template<class Material>
-    void Registration<Render::ChangeMaterialAsset<Material>>::RegisterTo(asIScriptEngine& engine)
+    void Registration<Render::ChangeMaterialAsset<Material>>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         ValueTypeRegistration<Type>(containingNamespace, name)
             .Constructor(
@@ -67,8 +68,8 @@ namespace Atmos::Scripting::Angel
             .CopyAssignment(&Management::CopyAssign)
             .template Property<&Type::id>("Arca::RelicID", "id")
             .template Property<&Type::to>("Atmos::Asset::" + Traits::nameToken + "Material", "to")
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
 
-        RegisterCommandHandler<&Chroma::Identity<Type>>(engine);
+        RegisterCommandHandler<&Chroma::Identity<Type>>(engine, documentationManager);
     }
 }

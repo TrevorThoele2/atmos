@@ -9,17 +9,17 @@
 
 namespace Atmos::Scripting::Angel
 {
-    void Registration<Asset::Script>::RegisterTo(asIScriptEngine& engine)
+    void Registration<Asset::Script>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         ValueTypeRegistration<Type> registration(containingNamespace, name);
         RegisterArcaIndex(registration);
         registration
             .ConstMethod(&Management::Method<&Name>, "string", "Name", {})
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
 
-        Registration<ArcaTraits<Asset::Script>>::RegisterTo(engine);
-        Registration<Arca::Batch<Asset::Script>>::RegisterTo(engine);
-        Registration<Asset::FindByName<Asset::Script>>::RegisterTo(engine);
+        Registration<ArcaTraits<Asset::Script>>::RegisterTo(engine, documentationManager);
+        Registration<Arca::Batch<Asset::Script>>::RegisterTo(engine, documentationManager);
+        Registration<Asset::FindByName<Asset::Script>>::RegisterTo(engine, documentationManager);
     }
 
     String Registration<Asset::Script>::Name(Type type)

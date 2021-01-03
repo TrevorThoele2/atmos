@@ -2,6 +2,7 @@
 
 #include "AngelScriptFixture.h"
 
+#include <Atmos/AngelScriptActionAsset.h>
 #include <Atmos/AngelScriptAudioAsset.h>
 #include <Atmos/AngelScriptImageAsset.h>
 #include <Atmos/AngelScriptShaderAsset.h>
@@ -28,6 +29,17 @@ public:
     template<class T>
     using CreatedObject = std::tuple<Arca::Index<T>, Atmos::String>;
 public:
+    template<class T, std::enable_if_t<std::is_same_v<Atmos::Asset::Action, T>, int> = 0>
+    CreatedObject<T> CreateObject(Arca::Reliquary& reliquary)
+    {
+        const auto name = dataGeneration.Random<Atmos::String>();
+        const auto mappedKey = static_cast<Atmos::Input::Key>(dataGeneration.Random<std::underlying_type_t<Atmos::Input::Key>>());
+        Atmos::Asset::Action::MappedKeys mappedKeys = { mappedKey };
+
+        const auto index = reliquary.Do(Arca::Create<T>{ name, mappedKeys });
+        return TupleOf<T>(index);
+    }
+
     template<class T, std::enable_if_t<std::is_same_v<Atmos::Asset::Audio, T>, int> = 0>
     CreatedObject<T> CreateObject(Arca::Reliquary& reliquary)
     {
@@ -51,7 +63,7 @@ public:
         const auto rows = dataGeneration.Random<Atmos::Asset::ImageGridSize::Dimension>();
 
         auto resource = reliquary.Do(Atmos::Asset::Resource::Create<Atmos::Asset::Resource::Image>{
-            Atmos::DataBuffer{}, name, Atmos::Asset::ImageSize{ width, height }});
+            Atmos::Buffer{}, name, Atmos::Asset::ImageSize{ width, height }});
         const auto index = reliquary.Do(Arca::Create<Atmos::Asset::Image>{ name, std::move(resource), Atmos::Asset::ImageGridSize{ columns, rows } });
         return TupleOf<T>(index);
     }
@@ -61,7 +73,7 @@ public:
     {
         const auto name = dataGeneration.Random<std::string>();
 
-        auto resource = reliquary.Do(Atmos::Asset::Resource::Create<Atmos::Asset::Resource::Shader>{Atmos::DataBuffer{}, name});
+        auto resource = reliquary.Do(Atmos::Asset::Resource::Create<Atmos::Asset::Resource::Shader>{Atmos::Buffer{}, name});
         const auto index = reliquary.Do(Arca::Create<Atmos::Asset::Shader>{ name, std::move(resource) });
         return TupleOf<T>(index);
     }
@@ -99,7 +111,7 @@ public:
         const auto imageAssetName = dataGeneration.Random<std::string>();
 
         auto resource = reliquary.Do(Atmos::Asset::Resource::Create<Atmos::Asset::Resource::Image>{
-            Atmos::DataBuffer{}, imageAssetName, Atmos::Asset::ImageSize{ 1, 1 }});
+            Atmos::Buffer{}, imageAssetName, Atmos::Asset::ImageSize{ 1, 1 }});
         const auto imageAsset = reliquary.Do(Arca::Create<Atmos::Asset::Image>{
             imageAssetName, std::move(resource), Atmos::Asset::ImageGridSize{ 1, 1 } });
 
@@ -121,7 +133,7 @@ public:
         const auto imageAssetName = dataGeneration.Random<std::string>();
 
         auto resource = reliquary.Do(Atmos::Asset::Resource::Create<Atmos::Asset::Resource::Image>{
-            Atmos::DataBuffer{}, imageAssetName, Atmos::Asset::ImageSize{ 1, 1 }});
+            Atmos::Buffer{}, imageAssetName, Atmos::Asset::ImageSize{ 1, 1 }});
         const auto imageAsset = reliquary.Do(Arca::Create<Atmos::Asset::Image>{
             imageAssetName, std::move(resource), Atmos::Asset::ImageGridSize{ 1, 1 } });
         
@@ -199,16 +211,16 @@ public:
         const auto imageAssetRows = dataGeneration.Random<Atmos::Asset::ImageGridSize::Dimension>();
 
         auto imageAssetResource = reliquary.Do(Atmos::Asset::Resource::Create<Atmos::Asset::Resource::Image>{
-            Atmos::DataBuffer{}, imageAssetName, Atmos::Asset::ImageSize{ imageAssetWidth, imageAssetHeight }});
+            Atmos::Buffer{}, imageAssetName, Atmos::Asset::ImageSize{ imageAssetWidth, imageAssetHeight }});
         const auto imageAsset = reliquary.Do(Arca::Create<Atmos::Asset::Image>{
             imageAssetName, std::move(imageAssetResource), Atmos::Asset::ImageGridSize{ imageAssetColumns, imageAssetRows } });
 
         const auto vertexShaderName = dataGeneration.Random<std::string>();
-        auto vertexResource = reliquary.Do(Atmos::Asset::Resource::Create<Atmos::Asset::Resource::Shader>{Atmos::DataBuffer{}, vertexShaderName});
+        auto vertexResource = reliquary.Do(Atmos::Asset::Resource::Create<Atmos::Asset::Resource::Shader>{Atmos::Buffer{}, vertexShaderName});
         const auto vertexShaderAsset = reliquary.Do(Arca::Create<Atmos::Asset::Shader>{ vertexShaderName, std::move(vertexResource) });
 
         const auto fragmentShaderName = dataGeneration.Random<std::string>();
-        auto fragmentResource = reliquary.Do(Atmos::Asset::Resource::Create<Atmos::Asset::Resource::Shader>{Atmos::DataBuffer{}, fragmentShaderName});
+        auto fragmentResource = reliquary.Do(Atmos::Asset::Resource::Create<Atmos::Asset::Resource::Shader>{Atmos::Buffer{}, fragmentShaderName});
         const auto fragmentShaderAsset = reliquary.Do(Arca::Create<Atmos::Asset::Shader>{ fragmentShaderName, std::move(fragmentResource) });
 
         const auto materialAssetName = dataGeneration.Random<std::string>();
@@ -259,11 +271,11 @@ private:
     CreatedObject<T> CreateMaterialAsset(Arca::Reliquary& reliquary)
     {
         const auto vertexShaderName = dataGeneration.Random<std::string>();
-        auto vertexResource = reliquary.Do(Atmos::Asset::Resource::Create<Atmos::Asset::Resource::Shader>{Atmos::DataBuffer{}, vertexShaderName});
+        auto vertexResource = reliquary.Do(Atmos::Asset::Resource::Create<Atmos::Asset::Resource::Shader>{Atmos::Buffer{}, vertexShaderName});
         const auto vertexShaderAsset = reliquary.Do(Arca::Create<Atmos::Asset::Shader>{ vertexShaderName, std::move(vertexResource) });
 
         const auto fragmentShaderName = dataGeneration.Random<std::string>();
-        auto fragmentResource = reliquary.Do(Atmos::Asset::Resource::Create<Atmos::Asset::Resource::Shader>{Atmos::DataBuffer{}, fragmentShaderName});
+        auto fragmentResource = reliquary.Do(Atmos::Asset::Resource::Create<Atmos::Asset::Resource::Shader>{Atmos::Buffer{}, fragmentShaderName});
         const auto fragmentShaderAsset = reliquary.Do(Arca::Create<Atmos::Asset::Shader>{ fragmentShaderName, std::move(fragmentResource) });
 
         const auto materialAssetName = dataGeneration.Random<std::string>();

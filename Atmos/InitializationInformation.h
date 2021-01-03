@@ -2,7 +2,6 @@
 
 #include <Arca/Relic.h>
 
-#include "InputID.h"
 #include "Volume.h"
 
 namespace Atmos::Initialization
@@ -24,23 +23,6 @@ namespace Atmos::Initialization
         {
             struct Actions
             {
-                Input::InputID moveLeft;
-                Input::InputID moveUp;
-                Input::InputID moveRight;
-                Input::InputID moveDown;
-                Input::InputID use;
-                Input::InputID menuLeft;
-                Input::InputID menuUp;
-                Input::InputID menuRight;
-                Input::InputID menuDown;
-                Input::InputID selectPreviousCharacter;
-                Input::InputID selectNextCharacter;
-                Input::InputID endTurn;
-                Input::InputID attack;
-                Input::InputID cancel;
-                Input::InputID inventory;
-                Input::InputID spells;
-                Input::InputID stats;
             } actions;
         } controls{};
     };

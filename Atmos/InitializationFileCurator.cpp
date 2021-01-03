@@ -2,8 +2,6 @@
 
 #include "InitializationInformation.h"
 
-#include "FileManagerProvider.h"
-
 #include <Arca/Reliquary.h>
 
 #include "StringUtility.h"
@@ -17,24 +15,6 @@ namespace Atmos::Initialization
         auto mutableInformation = MutablePointer().Of<Information>();
 
         sound.CreateEntry("Master Volume", &mutableInformation->sound.masterVolume);
-
-        controls.CreateEntry("Move Up", &mutableInformation->controls.actions.moveUp);
-        controls.CreateEntry("Move Right", &mutableInformation->controls.actions.moveRight);
-        controls.CreateEntry("Move Down", &mutableInformation->controls.actions.moveDown);
-        controls.CreateEntry("Move Left", &mutableInformation->controls.actions.moveLeft);
-        controls.CreateEntry("Use", &mutableInformation->controls.actions.use);
-        controls.CreateEntry("Menu Up", &mutableInformation->controls.actions.menuUp);
-        controls.CreateEntry("Menu Right", &mutableInformation->controls.actions.menuRight);
-        controls.CreateEntry("Menu Down", &mutableInformation->controls.actions.menuDown);
-        controls.CreateEntry("Menu Left", &mutableInformation->controls.actions.menuLeft);
-        controls.CreateEntry("Select Next Character", &mutableInformation->controls.actions.selectNextCharacter);
-        controls.CreateEntry("Select Previous Character", &mutableInformation->controls.actions.selectPreviousCharacter);
-        controls.CreateEntry("End Turn", &mutableInformation->controls.actions.endTurn);
-        controls.CreateEntry("Attack", &mutableInformation->controls.actions.attack);
-        controls.CreateEntry("Cancel", &mutableInformation->controls.actions.cancel);
-        controls.CreateEntry("Inventory", &mutableInformation->controls.actions.inventory);
-        controls.CreateEntry("Spells", &mutableInformation->controls.actions.spells);
-        controls.CreateEntry("Stats", &mutableInformation->controls.actions.stats);
 
         Load();
     }

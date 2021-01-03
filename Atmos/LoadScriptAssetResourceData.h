@@ -18,13 +18,13 @@ namespace Atmos::Asset::Resource
     template<>
     struct LoadDataFromMemory<Script>
     {
-        DataBuffer memory;
+        Buffer memory;
     };
 
     template<>
     struct Loaded<Script>
     {
-        DataBuffer data;
+        Buffer data;
     };
 }
 

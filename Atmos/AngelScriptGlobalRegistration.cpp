@@ -44,7 +44,7 @@ namespace Atmos::Scripting::Angel
         return *this;
     }
 
-    void GlobalRegistration::Actualize(asIScriptEngine& engine)
+    void GlobalRegistration::Actualize(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         const auto useNamespace = containingNamespace
             ? *containingNamespace

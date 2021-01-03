@@ -2,6 +2,7 @@
 
 #include "Point2D.h"
 #include "Point3D.h"
+#include "ScreenPoint.h"
 #include "GridPoint.h"
 #include "Angle2D.h"
 #include "Angle3D.h"
@@ -28,6 +29,8 @@ namespace Atmos::Spatial
     [[nodiscard]] Point2D operator-(Point2D left, Point2D right);
     [[nodiscard]] Point3D operator+(Point3D left, Point3D right);
     [[nodiscard]] Point3D operator-(Point3D left, Point3D right);
+    [[nodiscard]] ScreenPoint operator+(ScreenPoint left, ScreenPoint right);
+    [[nodiscard]] ScreenPoint operator-(ScreenPoint left, ScreenPoint right);
 
     [[nodiscard]] Point2D ToPoint2D(Point3D point);
     [[nodiscard]] Point2D ToPoint2D(Grid::Point point);

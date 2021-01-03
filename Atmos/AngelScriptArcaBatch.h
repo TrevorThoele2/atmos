@@ -17,12 +17,13 @@ namespace Atmos::Scripting::Angel
         using Type = GenericArcaBatch;
 
         static inline const String name = "Batch<class T>";
-        static inline const String containingNamespace = Namespaces::Arca::name;
+        static inline const String containingNamespace = "Arca";
+        static inline const String documentation = "Needs to be used with explicit specializations.";
         static const ObjectType objectType = ObjectType::Value;
 
         using Management = ObjectManagement<Type>;
 
-        static void RegisterTo(asIScriptEngine& engine);
+        static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
     };
 
     template<class T>
@@ -31,18 +32,19 @@ namespace Atmos::Scripting::Angel
         using Type = Arca::Batch<T>;
 
         static inline const String name = "Batch<" + CreateName({ Registration<T>::containingNamespace }, Registration<T>::name) + ">";
-        static inline const String containingNamespace = Namespaces::Arca::name;
+        static inline const String containingNamespace = "Arca";
+        static inline const String documentation = "Needs to be used with explicit specializations.";
         static const ObjectType objectType = ObjectType::Value;
 
         using Management = ObjectManagement<Type>;
 
-        static void RegisterTo(asIScriptEngine& engine);
+        static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
     private:
         [[nodiscard]] static std::vector<Arca::Index<T>> Values(Type, Arca::Reliquary* reliquary);
     };
     
     template<class T>
-    void Registration<Arca::Batch<T>>::RegisterTo(asIScriptEngine& engine)
+    void Registration<Arca::Batch<T>>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         ValueTypeRegistration<Type>(containingNamespace, name)
             .DefaultConstructor(&Management::GenerateDefaultValue)
@@ -54,7 +56,7 @@ namespace Atmos::Scripting::Angel
                 CreateName({ Registration<T>::containingNamespace }, Registration<T>::name + "[]@"),
                 "Values",
                 {})
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
     }
 
     template<class T>

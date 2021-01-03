@@ -6,7 +6,7 @@
 
 namespace Atmos::Scripting::Angel
 {
-    void Registration<Spatial::Grid::Point>::RegisterTo(asIScriptEngine& engine)
+    void Registration<Spatial::Grid::Point>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         ValueTypeRegistration<Type>(containingNamespace, name)
             .DefaultConstructor(&Management::GenerateDefaultValue)
@@ -21,6 +21,6 @@ namespace Atmos::Scripting::Angel
             .Equals(&Management::Equals)
             .Property<&Type::x>("int", "x")
             .Property<&Type::y>("int", "y")
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
     }
 }

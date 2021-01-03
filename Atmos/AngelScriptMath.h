@@ -19,10 +19,11 @@ namespace Atmos::Scripting::Angel
         using Management = GlobalManagement;
 
         static inline const String name = "Math";
-        static inline const String containingNamespace = Namespaces::Atmos::name;
+        static inline const String containingNamespace = "Atmos";
+        static inline const String documentation = "";
         static const ObjectType objectType = ObjectType::Value;
 
-        static void RegisterTo(asIScriptEngine& engine);
+        static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
     private:
         template<class Value, class As>
         [[nodiscard]] static Value AbsoluteValue(Value value);

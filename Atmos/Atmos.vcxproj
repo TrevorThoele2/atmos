@@ -29,11 +29,16 @@
   <ItemGroup>
     <ClInclude Include="..\..\AngelScript\sdk\add_on\scriptarray\scriptarray.h" />
     <ClInclude Include="..\..\AngelScript\sdk\add_on\scriptstdstring\scriptstdstring.h" />
-    <ClInclude Include="Action.h" />
     <ClInclude Include="ActionActive.h" />
+    <ClInclude Include="ActionAsset.h" />
+    <ClInclude Include="ActionAssetCurator.h" />
     <ClInclude Include="ActionDepressed.h" />
     <ClInclude Include="ActionPressed.h" />
     <ClInclude Include="ActualizeAllEntityPrototypes.h" />
+    <ClInclude Include="AngelScriptActionActive.h" />
+    <ClInclude Include="AngelScriptActionAsset.h" />
+    <ClInclude Include="AngelScriptActionDepressed.h" />
+    <ClInclude Include="AngelScriptActionPressed.h" />
     <ClInclude Include="AngelScriptArcaAssign.h" />
     <ClInclude Include="AngelScriptArcaBatch.h" />
     <ClInclude Include="AngelScriptArcaDestroy.h" />
@@ -47,12 +52,17 @@
     <ClInclude Include="AngelScriptEntity.h" />
     <ClInclude Include="AngelScriptDatum.h" />
     <ClInclude Include="AngelScriptGridRegion.h" />
+    <ClInclude Include="AngelScriptKey.h" />
     <ClInclude Include="AngelScriptLine.h" />
+    <ClInclude Include="AngelScriptBindAction.h" />
     <ClInclude Include="AngelScriptMath.h" />
+    <ClInclude Include="AngelScriptMouseMoved.h" />
     <ClInclude Include="AngelScriptRelativeImage.h" />
+    <ClInclude Include="AngelScriptScreenPoint.h" />
     <ClInclude Include="AngelScriptScriptFinished.h" />
     <ClInclude Include="AngelScriptScriptFunction.h" />
     <ClInclude Include="AngelScriptSuspendScript.h" />
+    <ClInclude Include="AngelScriptTextEntered.h" />
     <ClInclude Include="AngelScriptTimePoint.h" />
     <ClInclude Include="AngelScriptVariant.h" />
     <ClInclude Include="AngelScriptHandle.h" />
@@ -63,13 +73,17 @@
     <ClInclude Include="ChangeMaterialAsset.h" />
     <ClInclude Include="CurrentActualizingEntity.h" />
     <ClInclude Include="CurrentExecutingScript.h" />
+    <ClInclude Include="Delta.h" />
     <ClInclude Include="ExecuteScript.h" />
     <ClInclude Include="FindEntityByName.h" />
     <ClInclude Include="FindEntityByPosition.h" />
     <ClInclude Include="ImageMaterialAsset.h" />
     <ClInclude Include="ImageMaterialAssetCurator.h" />
+    <ClInclude Include="KeyState.h" />
+    <ClInclude Include="KeyStates.h" />
     <ClInclude Include="LineMaterialAsset.h" />
     <ClInclude Include="LineMaterialAssetCurator.h" />
+    <ClInclude Include="BindAction.h" />
     <ClInclude Include="MaterialAssetPass.h" />
     <ClInclude Include="ModifyEntityData.h" />
     <ClInclude Include="ModifyEntityTags.h" />
@@ -98,7 +112,6 @@
     <ClInclude Include="AngelScriptLoggingSeverity.h" />
     <ClInclude Include="AngelScriptMaterialAsset.h" />
     <ClInclude Include="AngelScriptName.h" />
-    <ClInclude Include="AngelScriptNamespaces.h" />
     <ClInclude Include="AngelScriptObjectRegistration.h" />
     <ClInclude Include="AngelScriptObjectType.h" />
     <ClInclude Include="AngelScriptPoint2D.h" />
@@ -129,6 +142,7 @@
     <ClInclude Include="ModifyScriptData.h" />
     <ClInclude Include="MoveGridRegion.h" />
     <ClInclude Include="NullImageAssetManager.h" />
+    <ClInclude Include="NullScriptDocumentationManager.h" />
     <ClInclude Include="OutputAngelScriptBytecodeStream.h" />
     <ClInclude Include="AngelScriptManager.h" />
     <ClInclude Include="ArchiveHeader.h" />
@@ -156,9 +170,14 @@
     <ClInclude Include="EntityPrototype.h" />
     <ClInclude Include="RegionMaterialAsset.h" />
     <ClInclude Include="RegionMaterialAssetCurator.h" />
+    <ClInclude Include="ScriptDocumentationManager.h" />
     <ClInclude Include="ScriptFunction.h" />
     <ClInclude Include="ScriptModule.h" />
     <ClInclude Include="ScriptResource.h" />
+    <ClInclude Include="SDLEngine.h" />
+    <ClInclude Include="SDLWindow.h" />
+    <ClInclude Include="SDLInputManager.h" />
+    <ClInclude Include="TextEntered.h" />
     <ClInclude Include="Variant.h" />
     <ClInclude Include="FrameSettings.h" />
     <ClInclude Include="FramesPerSecond.h" />
@@ -233,7 +252,6 @@
     <ClInclude Include="DebugValue.h" />
     <ClInclude Include="ExtractFile.h" />
     <ClInclude Include="AssetWithResource.h" />
-    <ClInclude Include="Environment.h" />
     <ClInclude Include="FileCurator.h" />
     <ClInclude Include="FilePath.h" />
     <ClInclude Include="FindAssetByName.h" />
@@ -275,18 +293,13 @@
     <ClInclude Include="Map.h" />
     <ClInclude Include="ImageCurator.h" />
     <ClInclude Include="InitializationInformation.h" />
-    <ClInclude Include="Input.h" />
+    <ClInclude Include="Key.h" />
     <ClInclude Include="InputCurator.h" />
-    <ClInclude Include="InputID.h" />
     <ClInclude Include="Log.h" />
     <ClInclude Include="FocusLost.h" />
     <ClInclude Include="FocusRegained.h" />
-    <ClInclude Include="MappedActions.h" />
     <ClInclude Include="MappedAssets.h" />
     <ClInclude Include="MappedEntities.h" />
-    <ClInclude Include="MappedInputs.h" />
-    <ClInclude Include="MouseClickDragged.h" />
-    <ClInclude Include="MouseInformation.h" />
     <ClInclude Include="MouseMoved.h" />
     <ClInclude Include="Bounds.h" />
     <ClInclude Include="MoveEntityTo.h" />
@@ -318,18 +331,13 @@
     <ClInclude Include="DebugStatisticsCurator.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="EngineExecution.h" />
-    <ClInclude Include="NullFileManager.h" />
     <ClInclude Include="NullWindow.h" />
-    <ClInclude Include="FileManagerProvider.h" />
     <ClInclude Include="OutputStasisArchiveInterface.h" />
     <ClInclude Include="Scalers2D.h" />
     <ClInclude Include="Scalers3D.h" />
     <ClInclude Include="ScreenSize.h" />
     <ClInclude Include="ScreenPoint.h" />
     <ClInclude Include="TypeRegistration.h" />
-    <ClInclude Include="UniqueProvider.h" />
-    <ClInclude Include="UniqueProviderRelic.h" />
-    <ClInclude Include="UnownedProviderRelic.h" />
     <ClInclude Include="UnrecognizedAudioFormat.h" />
     <ClInclude Include="VolumeInformation.h" />
     <ClInclude Include="VulkanGraphicsManager.h" />
@@ -381,17 +389,10 @@
     <ClInclude Include="Tag.h" />
     <ClInclude Include="Vector2D.h" />
     <ClInclude Include="Vector3D.h" />
-    <ClInclude Include="WindowsEngine.h" />
-    <ClInclude Include="WindowsUndef.h" />
-    <ClInclude Include="WindowsWindow.h" />
-    <ClInclude Include="WindowsInputManager.h" />
     <ClInclude Include="AudioManager.h" />
     <ClInclude Include="Buffer.h" />
     <ClInclude Include="BinaryHeap.h" />
-    <ClInclude Include="FileManager.h" />
-    <ClInclude Include="WindowsFileManager.h" />
     <ClInclude Include="InputManager.h" />
-    <ClInclude Include="ScreenPointDelta.h" />
     <ClInclude Include="Music.h" />
     <ClInclude Include="NullAudioManager.h" />
     <ClInclude Include="NullGraphicsManager.h" />
@@ -410,7 +411,6 @@
     <ClInclude Include="TimePoint.h" />
     <ClInclude Include="ScriptVariant.h" />
     <ClInclude Include="Volume.h" />
-    <ClInclude Include="WindowsInclude.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="DebugScreen.h" />
     <ClInclude Include="Event.h" />
@@ -438,7 +438,11 @@
     <ClCompile Include="..\..\AngelScript\sdk\add_on\scriptdictionary\scriptdictionary.cpp" />
     <ClCompile Include="..\..\AngelScript\sdk\add_on\scripthelper\scripthelper.cpp" />
     <ClCompile Include="..\..\AngelScript\sdk\add_on\scriptstdstring\scriptstdstring.cpp" />
-    <ClCompile Include="Action.cpp" />
+    <ClCompile Include="ActionAsset.cpp" />
+    <ClCompile Include="AngelScriptActionActive.cpp" />
+    <ClCompile Include="AngelScriptActionAsset.cpp" />
+    <ClCompile Include="AngelScriptActionDepressed.cpp" />
+    <ClCompile Include="AngelScriptActionPressed.cpp" />
     <ClCompile Include="AngelScriptAngle2D.cpp" />
     <ClCompile Include="AngelScriptAngle3D.cpp" />
     <ClCompile Include="AngelScriptArcaAssign.cpp" />
@@ -461,11 +465,16 @@
     <ClCompile Include="AngelScriptEntity.cpp" />
     <ClCompile Include="AngelScriptDatum.cpp" />
     <ClCompile Include="AngelScriptGridRegion.cpp" />
+    <ClCompile Include="AngelScriptKey.cpp" />
     <ClCompile Include="AngelScriptLine.cpp" />
+    <ClCompile Include="AngelScriptMapAction.cpp" />
     <ClCompile Include="AngelScriptMath.cpp" />
+    <ClCompile Include="AngelScriptMouseMoved.cpp" />
     <ClCompile Include="AngelScriptRelativeImage.cpp" />
+    <ClCompile Include="AngelScriptScreenPoint.cpp" />
     <ClCompile Include="AngelScriptScriptFinished.cpp" />
     <ClCompile Include="AngelScriptSuspendScript.cpp" />
+    <ClCompile Include="AngelScriptTextEntered.cpp" />
     <ClCompile Include="AngelScriptTimePoint.cpp" />
     <ClCompile Include="AngelScriptVariant.cpp" />
     <ClCompile Include="AngelScriptGlobalRegistration.cpp" />
@@ -508,6 +517,7 @@
     <ClCompile Include="LoggingInformation.cpp" />
     <ClCompile Include="MaterialAssetPass.cpp" />
     <ClCompile Include="NullImageAssetManager.cpp" />
+    <ClCompile Include="NullScriptDocumentationManager.cpp" />
     <ClCompile Include="OutputAngelScriptBytecodeStream.cpp" />
     <ClCompile Include="AngelScriptManager.cpp" />
     <ClCompile Include="Angle3D.cpp" />
@@ -533,10 +543,12 @@
     <ClCompile Include="ProcessedLog.cpp" />
     <ClCompile Include="RegionMaterialAsset.cpp" />
     <ClCompile Include="RenderObjectCurator.cpp" />
+    <ClCompile Include="ScriptDocumentationManager.cpp" />
     <ClCompile Include="ScriptFunction.cpp" />
     <ClCompile Include="ScriptResource.cpp" />
     <ClCompile Include="ScriptAssetCurator.cpp" />
     <ClCompile Include="ScriptResult.cpp" />
+    <ClCompile Include="SDLEngine.cpp" />
     <ClCompile Include="ShaderAssetCurator.cpp" />
     <ClCompile Include="SpatialAlgorithms.cpp" />
     <ClCompile Include="GridRegion.cpp" />
@@ -544,6 +556,8 @@
     <ClCompile Include="RelativeImage.cpp" />
     <ClCompile Include="RelativeBounds.cpp" />
     <ClCompile Include="RenderAlgorithms.cpp" />
+    <ClCompile Include="SDLWindow.cpp" />
+    <ClCompile Include="SDLInputManager.cpp" />
     <ClCompile Include="Stopwatch.cpp" />
     <ClCompile Include="Surface.cpp" />
     <ClCompile Include="SurfaceCore.cpp" />
@@ -569,7 +583,6 @@
     <ClCompile Include="DebugStatistics.cpp" />
     <ClCompile Include="DebugValue.cpp" />
     <ClCompile Include="Entity.cpp" />
-    <ClCompile Include="Environment.cpp" />
     <ClCompile Include="Field.cpp" />
     <ClCompile Include="FileCurator.cpp" />
     <ClCompile Include="FrameEndCurator.cpp" />
@@ -592,7 +605,6 @@
     <ClCompile Include="StaticImage.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="ImageCurator.cpp" />
-    <ClCompile Include="Input.cpp" />
     <ClCompile Include="InputCurator.cpp" />
     <ClCompile Include="Log.cpp" />
     <ClCompile Include="Bounds.cpp" />
@@ -611,9 +623,7 @@
     <ClCompile Include="SurfaceCurator.cpp" />
     <ClCompile Include="SurfaceResource.cpp" />
     <ClCompile Include="FrameInformation.cpp" />
-    <ClCompile Include="NullFileManager.cpp" />
     <ClCompile Include="NullWindow.cpp" />
-    <ClCompile Include="FileManagerProvider.cpp" />
     <ClCompile Include="OutputStasisArchiveInterface.cpp" />
     <ClCompile Include="Scalers2D.cpp" />
     <ClCompile Include="Scalers3D.cpp" />
@@ -668,14 +678,8 @@
     <ClCompile Include="StringUtility.cpp" />
     <ClCompile Include="Vector2D.cpp" />
     <ClCompile Include="Vector3D.cpp" />
-    <ClCompile Include="WindowsEngine.cpp" />
-    <ClCompile Include="WindowsWindow.cpp" />
-    <ClCompile Include="WindowsInputManager.cpp" />
     <ClCompile Include="AudioManager.cpp" />
     <ClCompile Include="Buffer.cpp" />
-    <ClCompile Include="FileManager.cpp" />
-    <ClCompile Include="WindowsFileManager.cpp" />
-    <ClCompile Include="ScreenPointDelta.cpp" />
     <ClCompile Include="NullAudioManager.cpp" />
     <ClCompile Include="NullGraphicsManager.cpp" />
     <ClCompile Include="Point2D.cpp" />
@@ -781,14 +785,14 @@
     <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\Users\Trevor\Documents\ProgrammingProjects\FreeImage\Source;C:\Users\Trevor\Documents\ProgrammingProjects\function2\include;C:\Users\Trevor\Documents\ProgrammingProjects\Inscription;C:\Users\Trevor\Documents\ProgrammingProjects\Chroma;C:\Users\Trevor\Documents\ProgrammingProjects\Arca;C:\Users\Trevor\Documents\ProgrammingProjects\Ogg\libvorbis-1.3.6\include;C:\Users\Trevor\Documents\ProgrammingProjects\WxWidgets\lib\vc_lib\mswud;C:\Users\Trevor\Documents\ProgrammingProjects\WxWidgets\include;C:\Users\Trevor\Documents\ProgrammingProjects\Ogg\libogg-1.3.3\include;C:\Users\Trevor\Documents\ProgrammingProjects\glm;C:\VulkanSDK\1.2.135.0\Include;C:\Users\Trevor\Documents\ProgrammingProjects\AngelScript\sdk\angelscript\include;C:\Users\Trevor\Documents\ProgrammingProjects\Boost\boost_1_72_0;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\Trevor\Documents\ProgrammingProjects\SDL\SDL2-2.0.12\include;C:\Users\Trevor\Documents\ProgrammingProjects\FreeImage\Source;C:\Users\Trevor\Documents\ProgrammingProjects\function2\include;C:\Users\Trevor\Documents\ProgrammingProjects\Inscription;C:\Users\Trevor\Documents\ProgrammingProjects\Chroma;C:\Users\Trevor\Documents\ProgrammingProjects\Arca;C:\Users\Trevor\Documents\ProgrammingProjects\Ogg\libvorbis-1.3.6\include;C:\Users\Trevor\Documents\ProgrammingProjects\WxWidgets\lib\vc_lib\mswud;C:\Users\Trevor\Documents\ProgrammingProjects\WxWidgets\include;C:\Users\Trevor\Documents\ProgrammingProjects\Ogg\libogg-1.3.3\include;C:\Users\Trevor\Documents\ProgrammingProjects\glm;C:\VulkanSDK\1.2.135.0\Include;C:\Users\Trevor\Documents\ProgrammingProjects\AngelScript\sdk\angelscript\include;C:\Users\Trevor\Documents\ProgrammingProjects\Boost\boost_1_72_0;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>C:\Users\Trevor\Documents\Visual Studio 2015\Projects\Function;C:\Users\Trevor\Documents\Programming Projects\wxWidgets2\lib\vc_lib\mswud;C:\Users\Trevor\Documents\Programming Projects\wxWidgets2\include;C:\Program Files %28x86%29\Falcon\include;C:\Users\Trevor\Documents\Programming Projects\Affecter;C:\Users\Trevor\Documents\Programming Projects\Ogg\Built\include;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;C:\Users\Trevor\Documents\Programming Projects\AGUI;C:\Users\Trevor\Documents\Programming Projects\Inscription;$(IncludePath)</IncludePath>
     <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>C:\Users\Trevor\Documents\ProgrammingProjects\Boost\boost_1_72_0;C:\Users\Trevor\Documents\ProgrammingProjects\FreeImage\Source;C:\Users\Trevor\Documents\ProgrammingProjects\function2\include;C:\Users\Trevor\Documents\ProgrammingProjects\Inscription;C:\Users\Trevor\Documents\ProgrammingProjects\Chroma;C:\Users\Trevor\Documents\ProgrammingProjects\Arca;C:\Users\Trevor\Documents\ProgrammingProjects\Ogg\libvorbis-1.3.6\include;C:\Users\Trevor\Documents\ProgrammingProjects\WxWidgets\lib\vc_lib\mswu;C:\Users\Trevor\Documents\ProgrammingProjects\WxWidgets\include;C:\Users\Trevor\Documents\ProgrammingProjects\Ogg\libogg-1.3.3\include;C:\Users\Trevor\Documents\ProgrammingProjects\glm;C:\VulkanSDK\1.2.135.0\Include;C:\Users\Trevor\Documents\ProgrammingProjects\AngelScript\sdk\angelscript\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\Trevor\Documents\ProgrammingProjects\SDL\SDL2-2.0.12\include;C:\Users\Trevor\Documents\ProgrammingProjects\Boost\boost_1_72_0;C:\Users\Trevor\Documents\ProgrammingProjects\FreeImage\Source;C:\Users\Trevor\Documents\ProgrammingProjects\function2\include;C:\Users\Trevor\Documents\ProgrammingProjects\Inscription;C:\Users\Trevor\Documents\ProgrammingProjects\Chroma;C:\Users\Trevor\Documents\ProgrammingProjects\Arca;C:\Users\Trevor\Documents\ProgrammingProjects\Ogg\libvorbis-1.3.6\include;C:\Users\Trevor\Documents\ProgrammingProjects\WxWidgets\lib\vc_lib\mswu;C:\Users\Trevor\Documents\ProgrammingProjects\WxWidgets\include;C:\Users\Trevor\Documents\ProgrammingProjects\Ogg\libogg-1.3.3\include;C:\Users\Trevor\Documents\ProgrammingProjects\glm;C:\VulkanSDK\1.2.135.0\Include;C:\Users\Trevor\Documents\ProgrammingProjects\AngelScript\sdk\angelscript\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>C:\Users\Trevor\Documents\Visual Studio 2015\Projects\Function;C:\Users\Trevor\Documents\Programming Projects\wxWidgets2\lib\vc_lib\mswud;C:\Users\Trevor\Documents\Programming Projects\wxWidgets2\include;C:\Program Files %28x86%29\Falcon\include;C:\Users\Trevor\Documents\Programming Projects\Ogg\Built\include;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;C:\Users\Trevor\Documents\Programming Projects\Inscription;C:\Users\Trevor\Documents\Programming Projects\AGUI;C:\Users\Trevor\Documents\Programming Projects\Affecter;$(IncludePath)</IncludePath>
@@ -800,7 +804,7 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <PreprocessorDefinitions>FREEIMAGE_LIB;_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING;_CRT_SECURE_NO_WARNINGS;NOMINMAX;ATMOS_DEBUG;AS_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>FREEIMAGE_LIB;_CRT_SECURE_NO_WARNINGS;_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING;NOMINMAX;ATMOS_DEBUG;AS_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <DisableSpecificWarnings>5033;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <LanguageStandard>stdcpp17</LanguageStandard>

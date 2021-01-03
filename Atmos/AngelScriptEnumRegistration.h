@@ -2,6 +2,7 @@
 
 #include "AngelScriptResultVerification.h"
 #include <angelscript.h>
+#include "ScriptDocumentationManager.h"
 #include "String.h"
 
 namespace Atmos::Scripting::Angel
@@ -15,7 +16,7 @@ namespace Atmos::Scripting::Angel
 
         EnumRegistration& Value(const String& name, T value);
 
-        void Actualize(asIScriptEngine& engine);
+        void Actualize(asIScriptEngine& engine, DocumentationManager& documentationManager);
     private:
         std::optional<String> containingNamespace;
         String representationName;
@@ -50,7 +51,7 @@ namespace Atmos::Scripting::Angel
     }
 
     template<class T>
-    void EnumRegistration<T>::Actualize(asIScriptEngine& engine)
+    void EnumRegistration<T>::Actualize(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         const auto useNamespace = containingNamespace
             ? *containingNamespace

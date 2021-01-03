@@ -25,10 +25,11 @@ namespace Atmos::Scripting::Angel
         using Management = ObjectManagement<Type>;
 
         static inline const String name = "DynamicImage";
-        static inline const String containingNamespace = Namespaces::Atmos::Render::name;
+        static inline const String containingNamespace = "Atmos::Render";
+        static inline const String documentation = "This is a relic.";
         static const ObjectType objectType = ObjectType::Value;
 
-        static void RegisterTo(asIScriptEngine& engine);
+        static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
     private:
         [[nodiscard]] static Arca::Index<Asset::Image> Asset(Type type);
         [[nodiscard]] static Render::DynamicImage::Index AssetIndex(Type type);
@@ -39,9 +40,6 @@ namespace Atmos::Scripting::Angel
         [[nodiscard]] static Spatial::Point3D Position(Type type);
         [[nodiscard]] static Spatial::Size2D Size(Type type);
         [[nodiscard]] static Spatial::Angle2D Rotation(Type type);
-
-        [[nodiscard]] static Arca::Index<Render::ImageCore> Core(Type type);
-        [[nodiscard]] static Arca::Index<Spatial::Bounds> Bounds(Type type);
     };
 
     template<>

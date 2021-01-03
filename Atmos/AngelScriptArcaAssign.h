@@ -25,12 +25,13 @@ namespace Atmos::Scripting::Angel
         using Type = GenericArcaAssignCopy;
 
         static inline const String name = "AssignCopy<class T>";
-        static inline const String containingNamespace = Namespaces::Arca::name;
+        static inline const String containingNamespace = "Arca";
+        static inline const String documentation = "This is a command. Needs to be used with explicit specializations.";
         static const ObjectType objectType = ObjectType::Value;
 
         using Management = ObjectManagement<Type>;
 
-        static void RegisterTo(asIScriptEngine& engine);
+        static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
     };
 
     template<>
@@ -39,12 +40,13 @@ namespace Atmos::Scripting::Angel
         using Type = GenericArcaAssignMove;
 
         static inline const String name = "AssignMove<class T>";
-        static inline const String containingNamespace = Namespaces::Arca::name;
+        static inline const String containingNamespace = "Arca";
+        static inline const String documentation = "This is a command. Needs to be used with explicit specializations.";
         static const ObjectType objectType = ObjectType::Value;
 
         using Management = ObjectManagement<Type>;
 
-        static void RegisterTo(asIScriptEngine& engine);
+        static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
     };
 
     template<class T>
@@ -53,7 +55,8 @@ namespace Atmos::Scripting::Angel
         using Type = Arca::AssignCopy<T>;
 
         static inline const String name = "AssignCopy<" + CreateName({ Registration<T>::containingNamespace }, Registration<T>::name) + ">";
-        static inline const String containingNamespace = Namespaces::Arca::name;
+        static inline const String containingNamespace = "Arca";
+        static inline const String documentation = "This is a command.";
         static const ObjectType objectType = ObjectType::Value;
 
         using Management = ObjectManagement<Type>;
@@ -65,7 +68,8 @@ namespace Atmos::Scripting::Angel
         using Type = Arca::AssignMove<T>;
 
         static inline const String name = "AssignMove<" + CreateName({ Registration<T>::containingNamespace }, Registration<T>::name) + ">";
-        static inline const String containingNamespace = Namespaces::Arca::name;
+        static inline const String containingNamespace = "Arca";
+        static inline const String documentation = "This is a command.";
         static const ObjectType objectType = ObjectType::Value;
 
         using Management = ObjectManagement<Type>;
@@ -83,7 +87,7 @@ namespace Atmos::Scripting::Angel
                 .CopyConstructor(&Management::GenerateValueFromCopy)
                 .Destructor(&Management::DestructValue)
                 .CopyAssignment(&Management::CopyAssign)
-                .Actualize(engine);
+                .Actualize(engine, documentationManager);
 
             using CommandReturn = typename Registration<T>::Type;
 

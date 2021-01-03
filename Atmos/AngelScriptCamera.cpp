@@ -8,7 +8,7 @@
 
 namespace Atmos::Scripting::Angel
 {
-    void Registration<Render::Camera>::RegisterTo(asIScriptEngine& engine)
+    void Registration<Render::Camera>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         ValueTypeRegistration<Type> registration(containingNamespace, name);
         RegisterArcaIndex(registration);
@@ -16,9 +16,9 @@ namespace Atmos::Scripting::Angel
             .ConstMethod(&Management::Method<&Position>, "Atmos::Spatial::Point3D", "Position", {})
             .ConstMethod(&Management::Method<&Size>, "Atmos::Spatial::Size2D", "Size", {})
             .ConstMethod(&Management::Method<&Sides>, "Atmos::Spatial::AxisAlignedBox2D", "Sides", {})
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
 
-        Registration<ArcaTraits<Render::Camera>>::RegisterTo(engine);
+        Registration<ArcaTraits<Render::Camera>>::RegisterTo(engine, documentationManager);
     }
 
     Spatial::Point3D Registration<Render::Camera>::Position(Type type)

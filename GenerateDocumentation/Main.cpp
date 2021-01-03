@@ -8,6 +8,7 @@
 #include <angelscript.h>
 
 #include "docgen.h"
+#include "DocumentationManager.h"
 
 int main()
 {
@@ -26,7 +27,6 @@ int main()
     userData.manager = manager.get();
     userData.reliquary = reliquary.get();
     engine->SetUserData(&userData);
-    Atmos::Scripting::Angel::RegisterAll(*engine);
 
     auto documentationOptions = ScriptDocumentationOptions();
     documentationOptions.projectName = "An Extraordinary Will";
@@ -35,6 +35,8 @@ int main()
     documentationOptions.includeWeakRefInterface = false;
     auto documentationGenerator = DocumentationGenerator(engine, documentationOptions);
 
+    DocumentationManager documentationManager(documentationGenerator);
+    Atmos::Scripting::Angel::RegisterAll(*engine, documentationManager);
     documentationGenerator.Generate();
 
     return 0;

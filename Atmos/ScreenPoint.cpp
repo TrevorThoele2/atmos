@@ -7,4 +7,14 @@ namespace Atmos::Spatial
 
     ScreenPoint::ScreenPoint(Value x, Value y) : x(x), y(y)
     {}
+
+    bool ScreenPoint::operator==(const ScreenPoint& arg) const
+    {
+        return x == arg.x && y == arg.y;
+    }
+
+    bool ScreenPoint::operator!=(const ScreenPoint& arg) const
+    {
+        return !(*this == arg);
+    }
 }

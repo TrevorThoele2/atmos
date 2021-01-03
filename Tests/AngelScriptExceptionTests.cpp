@@ -22,7 +22,7 @@ SCENARIO_METHOD(AngelScriptExceptionTestsFixture, "running AngelScript scripts t
         fieldOrigin,
         *engine.mockImageAssetManager,
         *engine.nullAudioManager,
-        *engine.nullInputManager,
+        *engine.mockInputManager,
         *engine.mockGraphicsManager,
         *engine.scriptManager,
         Spatial::ScreenSize{

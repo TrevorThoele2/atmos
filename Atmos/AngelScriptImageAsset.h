@@ -20,10 +20,11 @@ namespace Atmos::Scripting::Angel
         using Management = ObjectManagement<Type>;
 
         static inline const String name = "ImageSize";
-        static inline const String containingNamespace = Namespaces::Atmos::Asset::name;
+        static inline const String containingNamespace = "Atmos::Asset";
+        static inline const String documentation = "Represents an image asset's size.";
         static const ObjectType objectType = ObjectType::Value;
 
-        static void RegisterTo(asIScriptEngine& engine);
+        static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
     };
 
     template<>
@@ -33,10 +34,11 @@ namespace Atmos::Scripting::Angel
         using Management = ObjectManagement<Type>;
 
         static inline const String name = "ImageGridSize";
-        static inline const String containingNamespace = Namespaces::Atmos::Asset::name;
+        static inline const String containingNamespace = "Atmos::Asset";
+        static inline const String documentation = "Represents an image asset's grid size (columns and rows).";
         static const ObjectType objectType = ObjectType::Value;
 
-        static void RegisterTo(asIScriptEngine& engine);
+        static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
     };
 
     template<>
@@ -46,10 +48,11 @@ namespace Atmos::Scripting::Angel
         using Management = ObjectManagement<Type>;
 
         static inline const String name = "Image";
-        static inline const String containingNamespace = Namespaces::Atmos::Asset::name;
+        static inline const String containingNamespace = "Atmos::Asset";
+        static inline const String documentation = "This is a relic.";
         static const ObjectType objectType = ObjectType::Value;
 
-        static void RegisterTo(asIScriptEngine& engine);
+        static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
     private:
         [[nodiscard]] static String Name(Type type);
 

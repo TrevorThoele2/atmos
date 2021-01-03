@@ -2,7 +2,7 @@
 
 namespace Inscription
 {
-    LoadAssetsUserContext::Extracted::Extracted(const Atmos::Name& name, Atmos::DataBuffer&& memory) :
+    LoadAssetsUserContext::Extracted::Extracted(const Atmos::Name& name, Atmos::Buffer&& memory) :
         name(name), memory(std::move(memory))
     {}
 

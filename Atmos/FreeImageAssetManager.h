@@ -13,7 +13,7 @@ namespace Atmos::Asset
         ~FreeImageManager();
 
         Resource::Loaded<Resource::Image> Load(const File::Path& filePath) override;
-        Resource::Loaded<Resource::Image> Load(const DataBuffer& memory) override;
+        Resource::Loaded<Resource::Image> Load(const Buffer& memory) override;
     private:
         static Logging::Logger* logger;
     private:

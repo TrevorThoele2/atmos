@@ -65,7 +65,7 @@ namespace Atmos::Scripting::Angel
             DerivedT& SetProperty(GenericFunction function, String returnType, String name, std::vector<String> parameters);
             DerivedT& GetProperty(GenericFunction function, String returnType, String name, std::vector<String> parameters);
 
-            void Actualize(asIScriptEngine& engine);
+            void Actualize(asIScriptEngine& engine, DocumentationManager& documentationManager);
         public:
             using RegistrationItem = std::function<void(asIScriptEngine&, String)>;
             void AddItem(RegistrationItem&& item);
@@ -78,7 +78,8 @@ namespace Atmos::Scripting::Angel
                 String registrationName,
                 String representationName,
                 std::vector<String> hiddenConstructorParameters,
-                asDWORD knownFlags);
+                asDWORD knownFlags,
+                String documentation);
         private:
             std::optional<String> containingNamespace;
             String registrationName;
@@ -95,6 +96,8 @@ namespace Atmos::Scripting::Angel
             bool hasAssignment = false;
 
             std::vector<String> hiddenConstructorParameters;
+
+            String documentation;
         private:
             void GenerateMethod(GenericFunction function, String declaration);
         };
@@ -402,7 +405,7 @@ namespace Atmos::Scripting::Angel
         }
 
         template<class T, class DerivedT>
-        void Object<T, DerivedT>::Actualize(asIScriptEngine& engine)
+        void Object<T, DerivedT>::Actualize(asIScriptEngine& engine, DocumentationManager& documentationManager)
         {
             auto flags = knownFlags;
             if (hasConstructor)
@@ -420,10 +423,15 @@ namespace Atmos::Scripting::Angel
 
             VerifyResult(engine.SetDefaultNamespace(useNamespace.c_str()));
 
-            VerifyResult(engine.RegisterObjectType(
-                registrationName.c_str(),
-                sizeof(T),
-                flags));
+            {
+                const auto result = engine.RegisterObjectType(
+                    registrationName.c_str(),
+                    sizeof(T),
+                    flags);
+                VerifyResult(result);
+                if (result > 0)
+                    documentationManager.DocumentObject(result, documentation);
+            }
 
             for (auto& item : items)
                 item(engine, representationName);
@@ -459,13 +467,15 @@ namespace Atmos::Scripting::Angel
             String registrationName,
             String representationName,
             std::vector<String> hiddenConstructorParameters,
-            asDWORD knownFlags)
+            asDWORD knownFlags,
+            String documentation)
             :
             containingNamespace(containingNamespace),
             registrationName(registrationName),
             representationName(representationName),
             knownFlags(knownFlags),
-            hiddenConstructorParameters(hiddenConstructorParameters)
+            hiddenConstructorParameters(hiddenConstructorParameters),
+            documentation(documentation)
         {}
 
         template<class T, class DerivedT>
@@ -705,7 +715,8 @@ namespace Atmos::Scripting::Angel
             name,
             name,
             {},
-            flags)
+            flags,
+            Registration<T>::documentation)
     {}
 
     template<class T>
@@ -715,7 +726,8 @@ namespace Atmos::Scripting::Angel
             name,
             name,
             {},
-            flags)
+            flags,
+            Registration<T>::documentation)
     {}
 
     template<class T>
@@ -745,7 +757,8 @@ namespace Atmos::Scripting::Angel
             CreateRegistrationName(name, templateNames),
             CreateRepresentationName(name, templateNames),
             { "int &in" },
-            flags)
+            flags,
+            Registration<T>::documentation)
     {}
 
     template <class T>
@@ -757,7 +770,8 @@ namespace Atmos::Scripting::Angel
             CreateRegistrationName(name, templateNames),
             CreateRepresentationName(name, templateNames),
             { "int &in" },
-            flags)
+            flags,
+            Registration<T>::documentation)
     {}
 
     template <class T>
@@ -797,7 +811,8 @@ namespace Atmos::Scripting::Angel
             name,
             name,
             {},
-            flags)
+            flags,
+            Registration<T>::documentation)
     {}
 
     template<class T>
@@ -807,6 +822,7 @@ namespace Atmos::Scripting::Angel
             name,
             name,
             {},
-            flags)
+            flags,
+            Registration<T>::documentation)
     {}
 }

@@ -23,7 +23,7 @@ Arca::Index<Atmos::Asset::Image> AngelScriptRenderTestsFixture::CreateImageAsset
     const auto imageAssetName = dataGeneration.Random<std::string>();
 
     auto resource = reliquary.Do(Asset::Resource::Create<Asset::Resource::Image>{
-        DataBuffer{}, imageAssetName, Asset::ImageSize{ 1, 1 }});
+        Buffer{}, imageAssetName, Asset::ImageSize{ 1, 1 }});
     return reliquary.Do(Arca::Create<Asset::Image>{
         imageAssetName, std::move(resource), Asset::ImageGridSize{ 1, 1 } });
 }
@@ -40,7 +40,7 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
         fieldOrigin,
         *engine.mockImageAssetManager,
         *engine.nullAudioManager,
-        *engine.nullInputManager,
+        *engine.mockInputManager,
         *engine.mockGraphicsManager,
         *engine.scriptManager,
         Spatial::ScreenSize{
@@ -122,7 +122,7 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
             auto imageAssetRows = dataGeneration.Random<Asset::ImageGridSize::Dimension>();
 
             auto imageAssetResource = fieldReliquary.Do(Asset::Resource::Create<Asset::Resource::Image>{
-                DataBuffer{}, imageAssetName, Asset::ImageSize{ imageAssetWidth, imageAssetHeight }});
+                Buffer{}, imageAssetName, Asset::ImageSize{ imageAssetWidth, imageAssetHeight }});
             auto imageAsset = fieldReliquary.Do(Arca::Create<Asset::Image>{
                 imageAssetName, std::move(imageAssetResource), Asset::ImageGridSize{ imageAssetColumns, imageAssetRows } });
 
@@ -195,7 +195,7 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
             auto imageAssetRows = dataGeneration.Random<Asset::ImageGridSize::Dimension>();
 
             auto imageAssetResource = fieldReliquary.Do(Asset::Resource::Create<Asset::Resource::Image>{
-                DataBuffer{}, imageAssetName, Asset::ImageSize{ imageAssetWidth, imageAssetHeight }});
+                Buffer{}, imageAssetName, Asset::ImageSize{ imageAssetWidth, imageAssetHeight }});
             auto imageAsset = fieldReliquary.Do(Arca::Create<Asset::Image>{
                 imageAssetName, std::move(imageAssetResource), Asset::ImageGridSize{ imageAssetColumns, imageAssetRows } });
 
@@ -234,11 +234,11 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
         GIVEN("material asset")
         {
             auto vertexShaderName = dataGeneration.Random<std::string>();
-            auto vertexResource = fieldReliquary.Do(Asset::Resource::Create<Asset::Resource::Shader>{DataBuffer{}, vertexShaderName});
+            auto vertexResource = fieldReliquary.Do(Asset::Resource::Create<Asset::Resource::Shader>{Buffer{}, vertexShaderName});
             auto vertexShaderAsset = fieldReliquary.Do(Arca::Create<Asset::Shader>{ vertexShaderName, std::move(vertexResource) });
 
             auto fragmentShaderName = dataGeneration.Random<std::string>();
-            auto fragmentResource = fieldReliquary.Do(Asset::Resource::Create<Asset::Resource::Shader>{DataBuffer{}, fragmentShaderName});
+            auto fragmentResource = fieldReliquary.Do(Asset::Resource::Create<Asset::Resource::Shader>{Buffer{}, fragmentShaderName});
             auto fragmentShaderAsset = fieldReliquary.Do(Arca::Create<Asset::Shader>{ fragmentShaderName, std::move(fragmentResource) });
 
             auto materialAssetName = dataGeneration.Random<std::string>();
@@ -423,58 +423,6 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                         const auto expectedResult = ToString(scalers.x) + " " + ToString(scalers.y);
                         REQUIRE(std::get<String>(std::get<Variant>(finishes[0].result)) == expectedResult);
                     }
-                }
-            }
-        }
-
-        GIVEN("script that returns core ID")
-        {
-            CompileAndCreateScript(
-                "basic_script.as",
-                "Arca::RelicID main(Arca::RelicID id)\n" \
-                "{\n" \
-                "    auto image = Atmos::Render::DynamicImage(id);\n" \
-                "    return image.Core().ID();\n"
-                "}",
-                { dynamicImage.ID() },
-                fieldReliquary);
-
-            WHEN("working reliquary")
-            {
-                fieldReliquary.Do(Work{});
-
-                THEN("has correct properties")
-                {
-                    REQUIRE(finishes.size() == 1);
-
-                    const auto expectedResult = dynamicImage.ID();
-                    REQUIRE(std::get<Arca::RelicID>(std::get<Variant>(finishes[0].result)) == expectedResult);
-                }
-            }
-        }
-
-        GIVEN("script that returns bounds ID")
-        {
-            CompileAndCreateScript(
-                "basic_script.as",
-                "Arca::RelicID main(Arca::RelicID id)\n" \
-                "{\n" \
-                "    auto image = Atmos::Render::DynamicImage(id);\n" \
-                "    return image.Bounds().ID();\n"
-                "}",
-                { dynamicImage.ID() },
-                fieldReliquary);
-
-            WHEN("working reliquary")
-            {
-                fieldReliquary.Do(Work{});
-
-                THEN("has correct properties")
-                {
-                    REQUIRE(finishes.size() == 1);
-
-                    const auto expectedResult = dynamicImage.ID();
-                    REQUIRE(std::get<Arca::RelicID>(std::get<Variant>(finishes[0].result)) == expectedResult);
                 }
             }
         }
@@ -769,7 +717,7 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
             auto imageAssetRows = dataGeneration.Random<Asset::ImageGridSize::Dimension>();
 
             auto imageAssetResource = fieldReliquary.Do(Asset::Resource::Create<Asset::Resource::Image>{
-                DataBuffer{}, imageAssetName, Asset::ImageSize{ imageAssetWidth, imageAssetHeight }});
+                Buffer{}, imageAssetName, Asset::ImageSize{ imageAssetWidth, imageAssetHeight }});
             auto imageAsset = fieldReliquary.Do(Arca::Create<Asset::Image>{
                 imageAssetName, std::move(imageAssetResource), Asset::ImageGridSize{ imageAssetColumns, imageAssetRows } });
 
@@ -842,7 +790,7 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
             auto imageAssetRows = dataGeneration.Random<Asset::ImageGridSize::Dimension>();
 
             auto imageAssetResource = fieldReliquary.Do(Asset::Resource::Create<Asset::Resource::Image>{
-                DataBuffer{}, imageAssetName, Asset::ImageSize{ imageAssetWidth, imageAssetHeight }});
+                Buffer{}, imageAssetName, Asset::ImageSize{ imageAssetWidth, imageAssetHeight }});
             auto imageAsset = fieldReliquary.Do(Arca::Create<Asset::Image>{
                 imageAssetName, std::move(imageAssetResource), Asset::ImageGridSize{ imageAssetColumns, imageAssetRows } });
 
@@ -881,11 +829,11 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
         GIVEN("material asset")
         {
             auto vertexShaderName = dataGeneration.Random<std::string>();
-            auto vertexResource = fieldReliquary.Do(Asset::Resource::Create<Asset::Resource::Shader>{DataBuffer{}, vertexShaderName});
+            auto vertexResource = fieldReliquary.Do(Asset::Resource::Create<Asset::Resource::Shader>{Buffer{}, vertexShaderName});
             auto vertexShaderAsset = fieldReliquary.Do(Arca::Create<Asset::Shader>{ vertexShaderName, std::move(vertexResource) });
 
             auto fragmentShaderName = dataGeneration.Random<std::string>();
-            auto fragmentResource = fieldReliquary.Do(Asset::Resource::Create<Asset::Resource::Shader>{DataBuffer{}, fragmentShaderName});
+            auto fragmentResource = fieldReliquary.Do(Asset::Resource::Create<Asset::Resource::Shader>{Buffer{}, fragmentShaderName});
             auto fragmentShaderAsset = fieldReliquary.Do(Arca::Create<Asset::Shader>{ fragmentShaderName, std::move(fragmentResource) });
 
             auto materialAssetName = dataGeneration.Random<std::string>();
@@ -1073,58 +1021,6 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                 }
             }
         }
-
-        GIVEN("script that returns core ID")
-        {
-            CompileAndCreateScript(
-                "basic_script.as",
-                "Arca::RelicID main(Arca::RelicID id)\n" \
-                "{\n" \
-                "    auto image = Atmos::Render::RelativeImage(id);\n" \
-                "    return image.Core().ID();\n"
-                "}",
-                { dynamicImage.ID() },
-                fieldReliquary);
-
-            WHEN("working reliquary")
-            {
-                fieldReliquary.Do(Work{});
-
-                THEN("has correct properties")
-                {
-                    REQUIRE(finishes.size() == 1);
-
-                    const auto expectedResult = dynamicImage.ID();
-                    REQUIRE(std::get<Arca::RelicID>(std::get<Variant>(finishes[0].result)) == expectedResult);
-                }
-            }
-        }
-
-        GIVEN("script that returns bounds ID")
-        {
-            CompileAndCreateScript(
-                "basic_script.as",
-                "Arca::RelicID main(Arca::RelicID id)\n" \
-                "{\n" \
-                "    auto image = Atmos::Render::RelativeImage(id);\n" \
-                "    return image.Bounds().ID();\n"
-                "}",
-                { dynamicImage.ID() },
-                fieldReliquary);
-
-            WHEN("working reliquary")
-            {
-                fieldReliquary.Do(Work{});
-
-                THEN("has correct properties")
-                {
-                    REQUIRE(finishes.size() == 1);
-
-                    const auto expectedResult = dynamicImage.ID();
-                    REQUIRE(std::get<Arca::RelicID>(std::get<Variant>(finishes[0].result)) == expectedResult);
-                }
-            }
-        }
     }
 
     GIVEN("Line")
@@ -1214,11 +1110,11 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
         GIVEN("material asset")
         {
             auto vertexShaderName = dataGeneration.Random<std::string>();
-            auto vertexResource = fieldReliquary.Do(Asset::Resource::Create<Asset::Resource::Shader>{DataBuffer{}, vertexShaderName});
+            auto vertexResource = fieldReliquary.Do(Asset::Resource::Create<Asset::Resource::Shader>{Buffer{}, vertexShaderName});
             auto vertexShaderAsset = fieldReliquary.Do(Arca::Create<Asset::Shader>{ vertexShaderName, std::move(vertexResource) });
 
             auto fragmentShaderName = dataGeneration.Random<std::string>();
-            auto fragmentResource = fieldReliquary.Do(Asset::Resource::Create<Asset::Resource::Shader>{DataBuffer{}, fragmentShaderName});
+            auto fragmentResource = fieldReliquary.Do(Asset::Resource::Create<Asset::Resource::Shader>{Buffer{}, fragmentShaderName});
             auto fragmentShaderAsset = fieldReliquary.Do(Arca::Create<Asset::Shader>{ fragmentShaderName, std::move(fragmentResource) });
 
             auto materialAssetName = dataGeneration.Random<std::string>();
@@ -1309,8 +1205,8 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
 
         GIVEN("points")
         {
-            auto point0 = dataGeneration.RandomStack<Spatial::Grid::Point, Spatial::Grid::Point::Value, Spatial::Grid::Point::Value>();
-            auto point1 = dataGeneration.RandomStack<Spatial::Grid::Point, Spatial::Grid::Point::Value, Spatial::Grid::Point::Value>();
+            const auto point0 = dataGeneration.RandomStack<Spatial::Grid::Point, Spatial::Grid::Point::Value, Spatial::Grid::Point::Value>();
+            const auto point1 = dataGeneration.RandomStack<Spatial::Grid::Point, Spatial::Grid::Point::Value, Spatial::Grid::Point::Value>();
 
             GIVEN("script that sets points and returns points")
             {
@@ -1322,12 +1218,14 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                     "    const auto point1 = Atmos::Spatial::Grid::Point(point1x, point1y);\n" \
                     "    Atmos::Spatial::Grid::Point[] points = { point0, point1 };\n" \
                     "    Arca::Reliquary::Do(Atmos::Render::ChangeGridRegionPoints(id, points));\n" \
-                    "    auto gridRegion = Atmos::Render::GridRegion(id);\n" \
+                    "    auto gridRegion = Atmos::Render::GridRegion(id);\n"
+                    "\n" \
+                    "    auto retrievedPoints = gridRegion.Points();\n" \
                     "    return \n" \
-                    "        Atmos::ToString(gridRegion.Points()[0].x) + \" \" +\n" \
-                    "        Atmos::ToString(gridRegion.Points()[0].y) + \" \" +\n" \
-                    "        Atmos::ToString(gridRegion.Points()[1].x) + \" \" +\n" \
-                    "        Atmos::ToString(gridRegion.Points()[1].y);\n" \
+                    "        Atmos::ToString(retrievedPoints[0].x) + \" \" +\n" \
+                    "        Atmos::ToString(retrievedPoints[0].y) + \" \" +\n" \
+                    "        Atmos::ToString(retrievedPoints[1].x) + \" \" +\n" \
+                    "        Atmos::ToString(retrievedPoints[1].y);\n" \
                     "}",
                     { line.ID(), point0.x, point0.y, point1.x, point1.y },
                     fieldReliquary);
@@ -1384,11 +1282,11 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
         GIVEN("material asset")
         {
             auto vertexShaderName = dataGeneration.Random<std::string>();
-            auto vertexResource = fieldReliquary.Do(Asset::Resource::Create<Asset::Resource::Shader>{DataBuffer{}, vertexShaderName});
+            auto vertexResource = fieldReliquary.Do(Asset::Resource::Create<Asset::Resource::Shader>{Buffer{}, vertexShaderName});
             auto vertexShaderAsset = fieldReliquary.Do(Arca::Create<Asset::Shader>{ vertexShaderName, std::move(vertexResource) });
 
             auto fragmentShaderName = dataGeneration.Random<std::string>();
-            auto fragmentResource = fieldReliquary.Do(Asset::Resource::Create<Asset::Resource::Shader>{DataBuffer{}, fragmentShaderName});
+            auto fragmentResource = fieldReliquary.Do(Asset::Resource::Create<Asset::Resource::Shader>{Buffer{}, fragmentShaderName});
             auto fragmentShaderAsset = fieldReliquary.Do(Arca::Create<Asset::Shader>{ fragmentShaderName, std::move(fragmentResource) });
 
             auto materialAssetName = dataGeneration.Random<std::string>();

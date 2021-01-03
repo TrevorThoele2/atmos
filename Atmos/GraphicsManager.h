@@ -30,11 +30,11 @@ namespace Atmos::Render
         void Initialize();
 
         [[nodiscard]] std::unique_ptr<Asset::Resource::Image> CreateImageResource(
-            const DataBuffer& buffer,
+            const Buffer& buffer,
             const Name& name,
             const Asset::ImageSize& size);
         [[nodiscard]] std::unique_ptr<Asset::Resource::Shader> CreateShaderResource(
-            const DataBuffer& buffer, const Name& name);
+            const Buffer& buffer, const Name& name);
         [[nodiscard]] std::unique_ptr<Resource::Surface> CreateSurfaceResource(
             void* window,
             Arca::Reliquary& reliquary);
@@ -64,11 +64,11 @@ namespace Atmos::Render
         virtual void InitializeImpl() {}
 
         [[nodiscard]] virtual std::unique_ptr<Asset::Resource::Image> CreateImageResourceImpl(
-            const DataBuffer& buffer,
+            const Buffer& buffer,
             const Name& name,
             const Asset::ImageSize& size) = 0;
         [[nodiscard]] virtual std::unique_ptr<Asset::Resource::Shader> CreateShaderResourceImpl(
-            const DataBuffer& buffer, const Name& name) = 0;
+            const Buffer& buffer, const Name& name) = 0;
         [[nodiscard]] virtual std::unique_ptr<Resource::Surface> CreateMainSurfaceResourceImpl(
             void* window,
             Arca::Reliquary& reliquary) = 0;

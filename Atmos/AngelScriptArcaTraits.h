@@ -16,12 +16,13 @@ namespace Atmos::Scripting::Angel
         using Type = GenericArcaTraits;
 
         static inline const String name = "Traits<class T>";
-        static inline const String containingNamespace = Namespaces::Arca::name;
+        static inline const String containingNamespace = "Arca";
+        static inline const String documentation = "Traits exist for every Arca relic, shard, command and signal.";
         static const ObjectType objectType = ObjectType::Value;
 
         using Management = ObjectManagement<Type>;
 
-        static void RegisterTo(asIScriptEngine& engine);
+        static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
     };
 
     template<class T>
@@ -42,16 +43,17 @@ namespace Atmos::Scripting::Angel
         using Type = ArcaTraits<T>;
 
         static inline const String name = "Traits<" + CreateName({ Registration<T>::containingNamespace }, Registration<T>::name) + ">";
-        static inline const String containingNamespace = Namespaces::Arca::name;
+        static inline const String containingNamespace = "Arca";
+        static inline const String documentation = "Traits exist for every Arca relic, shard, command and signal.";
         static const ObjectType objectType = ObjectType::Value;
 
         using Management = ObjectManagement<ArcaTraits<T>>;
 
-        static void RegisterTo(asIScriptEngine& engine);
+        static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
     };
 
     template<class T>
-    void Registration<ArcaTraits<T>>::RegisterTo(asIScriptEngine& engine)
+    void Registration<ArcaTraits<T>>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         ValueTypeRegistration<Type>(containingNamespace, name)
             .DefaultConstructor(&Management::GenerateDefaultValue)
@@ -59,6 +61,6 @@ namespace Atmos::Scripting::Angel
             .Destructor(&Management::DestructValue)
             .CopyAssignment(&Management::CopyAssign)
             .ConstMethod(&Management::template Method<&Type::Type>, "Arca::Type", "Type", {})
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
     }
 }

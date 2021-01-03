@@ -39,10 +39,11 @@ namespace Atmos::Scripting::Angel
         using Management = ObjectManagement<Type>;
 
         static inline const String name = "GridRegion";
-        static inline const String containingNamespace = Namespaces::Atmos::Render::name;
+        static inline const String containingNamespace = "Atmos::Render";
+        static inline const String documentation = "This is a relic.";
         static const ObjectType objectType = ObjectType::Value;
 
-        static void RegisterTo(asIScriptEngine& engine);
+        static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
     private:
         [[nodiscard]] static std::unordered_set<Spatial::Grid::Point> Points(Type type);
         [[nodiscard]] static Spatial::Grid::Point::Value Z(Type type);
@@ -59,12 +60,13 @@ namespace Atmos::Scripting::Angel
         using Type = ChangeGridRegionPoints;
 
         static inline const String name = "ChangeGridRegionPoints";
-        static inline const String containingNamespace = Namespaces::Atmos::Render::name;
+        static inline const String containingNamespace = "Atmos::Render";
+        static inline const String documentation = "This is a command.";
         static const ObjectType objectType = ObjectType::Value;
 
         using Management = ObjectManagement<Type>;
 
-        static void RegisterTo(asIScriptEngine& engine);
+        static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
 
         static Render::MoveGridRegion ToArca(Type fromAngelScript);
     };
@@ -75,12 +77,13 @@ namespace Atmos::Scripting::Angel
         using Type = ChangeGridRegionZ;
 
         static inline const String name = "ChangeGridRegionZ";
-        static inline const String containingNamespace = Namespaces::Atmos::Render::name;
+        static inline const String containingNamespace = "Atmos::Render";
+        static inline const String documentation = "This is a command.";
         static const ObjectType objectType = ObjectType::Value;
 
         using Management = ObjectManagement<Type>;
 
-        static void RegisterTo(asIScriptEngine& engine);
+        static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
 
         static Render::MoveGridRegion ToArca(Type fromAngelScript);
     };
