@@ -20,7 +20,7 @@ namespace Arca
     struct Traits<::Atmos::Audio::Music>
     {
         static const ObjectType objectType = ObjectType::Relic;
-        static inline const TypeName typeName = "Atmos::Audio::Music";
+        static TypeName TypeName() { return "Atmos::Audio::Music"; }
     };
 }
 

@@ -14,6 +14,6 @@ namespace Arca
     struct Traits<Atmos::Work>
     {
         static const ObjectType objectType = ObjectType::Command;
-        static inline const TypeName typeName = "Atmos::Work";
+        static TypeName TypeName() { return "Atmos::Work"; }
     };
 }

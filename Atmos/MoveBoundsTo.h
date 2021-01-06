@@ -23,6 +23,6 @@ namespace Arca
     struct Traits<Atmos::Spatial::MoveBoundsTo>
     {
         static const ObjectType objectType = ObjectType::Command;
-        static inline const TypeName typeName = "Atmos::Spatial::MoveBoundsTo";
+        static TypeName TypeName() { return "Atmos::Spatial::MoveBoundsTo"; }
     };
 }

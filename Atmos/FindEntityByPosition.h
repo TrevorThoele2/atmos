@@ -22,7 +22,7 @@ namespace Arca
     struct Traits<Atmos::Entity::FindByPosition>
     {
         static const ObjectType objectType = ObjectType::Command;
-        static inline const TypeName typeName = "Atmos::Entity::FindByPosition";
+        static TypeName TypeName() { return "Atmos::Entity::FindByPosition"; }
         using Result = std::set<Index<Atmos::Entity::Entity>>;
     };
 }

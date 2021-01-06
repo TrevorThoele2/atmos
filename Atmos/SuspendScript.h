@@ -17,6 +17,6 @@ namespace Arca
     struct Traits<Atmos::Scripting::Suspend>
     {
         static const ObjectType objectType = ObjectType::Command;
-        static inline const TypeName typeName = "Atmos::Scripting::Suspend";
+        static TypeName TypeName() { return "Atmos::Scripting::Suspend"; }
     };
 }

@@ -59,7 +59,7 @@ namespace Arca
     struct Traits<Atmos::Render::GraphicsCurator>
     {
         static const ObjectType objectType = ObjectType::Curator;
-        static inline const TypeName typeName = "Atmos::Render::GraphicsCurator";
+        static TypeName TypeName() { return "Atmos::Render::GraphicsCurator"; }
         using HandledCommands = HandledCommands<
             Atmos::Render::InitializeGraphics,
             Atmos::Render::ReconstructGraphics,

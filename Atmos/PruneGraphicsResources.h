@@ -14,6 +14,6 @@ namespace Arca
     struct Traits<Atmos::Render::PruneGraphicsResources>
     {
         static const ObjectType objectType = ObjectType::Command;
-        static inline const TypeName typeName = "Atmos::Render::PruneGraphicsResources";
+        static TypeName TypeName() { return "Atmos::Render::PruneGraphicsResources"; }
     };
 }

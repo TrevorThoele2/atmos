@@ -18,6 +18,6 @@ namespace Arca
     struct Traits<Atmos::Input::TextEntered>
     {
         static const ObjectType objectType = ObjectType::Signal;
-        static inline const TypeName typeName = "Atmos::Input::TextEntered";
+        static TypeName TypeName() { return "Atmos::Input::TextEntered"; }
     };
 }

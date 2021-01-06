@@ -20,7 +20,7 @@ namespace Arca
     struct Traits<Atmos::Window::Information>
     {
         static const ObjectType objectType = ObjectType::Relic;
-        static inline const TypeName typeName = "Atmos::Window::Information";
+        static TypeName TypeName() { return "Atmos::Window::Information"; }
         static const Locality locality = Locality::Global;
     };
 }

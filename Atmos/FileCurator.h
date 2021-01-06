@@ -21,7 +21,7 @@ namespace Arca
     struct Traits<Atmos::File::Curator>
     {
         static const ObjectType objectType = ObjectType::Curator;
-        static inline const TypeName typeName = "Atmos::File::Curator";
+        static TypeName TypeName() { return "Atmos::File::Curator"; }
         using HandledCommands = HandledCommands<Atmos::File::ExtractFile, Atmos::File::ExtractZippedFile>;
     };
 }

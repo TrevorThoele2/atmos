@@ -24,6 +24,6 @@ namespace Arca
     struct Traits<Atmos::State::Request>
     {
         static const ObjectType objectType = ObjectType::Command;
-        static inline const TypeName typeName = "Atmos::State::Request";
+        static TypeName TypeName() { return "Atmos::State::Request"; }
     };
 }

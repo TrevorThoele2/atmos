@@ -30,7 +30,7 @@ namespace Arca
     struct Traits<Atmos::Render::Curator>
     {
         static const ObjectType objectType = ObjectType::Curator;
-        static inline TypeName typeName = "Atmos::Render::Curator";
+        static TypeName TypeName() { return "Atmos::Render::Curator"; }
         using HandledCommands = HandledCommands<
             Atmos::Work,
             Atmos::Render::ChangeColor>;

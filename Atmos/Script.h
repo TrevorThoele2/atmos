@@ -54,7 +54,7 @@ namespace Arca
     struct Traits<Atmos::Scripting::Script>
     {
         static const ObjectType objectType = ObjectType::Relic;
-        static inline const TypeName typeName = "Atmos::Scripting::Script";
+        static TypeName TypeName() { return "Atmos::Scripting::Script"; }
     };
 }
 

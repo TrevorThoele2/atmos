@@ -6,6 +6,8 @@
 
 #include "ScriptFinished.h"
 
+#include "ActionPressed.h"
+
 namespace Atmos::Scripting::Angel
 {
     ScriptResource::ScriptResource(
@@ -22,14 +24,45 @@ namespace Atmos::Scripting::Angel
         executeFunction.AddRef();
     }
 
+    ScriptResource::ScriptResource(ScriptResource&& arg) noexcept :
+        parameters(std::move(arg.parameters)),
+        executeFunction(arg.executeFunction),
+        context(arg.context),
+        executionType(arg.executionType),
+        groups(std::move(arg.groups)),
+        logger(arg.logger)
+    {
+        arg.executeFunction = nullptr;
+        arg.context = nullptr;
+        arg.logger = nullptr;
+    }
+
     ScriptResource::~ScriptResource()
     {
         for (auto& group : groups)
             for(auto& function : group.second.angelScriptFunctions)
                 function->Release();
 
-        executeFunction->Release();
-        context->GetEngine()->ReturnContext(context);
+        if (executeFunction)
+            executeFunction->Release();
+        if (context)
+            context->GetEngine()->ReturnContext(context);
+    }
+
+    ScriptResource& ScriptResource::operator=(ScriptResource&& arg) noexcept
+    {
+        parameters = std::move(arg.parameters);
+        executeFunction = arg.executeFunction;
+        context = arg.context;
+        executionType = arg.executionType;
+        groups = std::move(arg.groups);
+        logger = arg.logger;
+
+        arg.executeFunction = nullptr;
+        arg.context = nullptr;
+        arg.logger = nullptr;
+
+        return *this;
     }
 
     std::optional<Result> ScriptResource::Execute()
@@ -76,6 +109,9 @@ namespace Atmos::Scripting::Angel
 
     void ScriptResource::ExecuteSecondaryAgainstStoredFunctions(const String& name, const SecondaryExecution& againstContext)
     {
+        if (name == Arca::Traits<Input::ActionPressed>::TypeName())
+            int wait = 1 + 1;
+
         auto group = groups.find(name);
         if (group == groups.end())
             return;

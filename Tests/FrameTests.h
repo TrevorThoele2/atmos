@@ -27,7 +27,7 @@ namespace Arca
     struct Traits<FrameTestsFixture::WaitCurator>
     {
         static const ObjectType objectType = ObjectType::Curator;
-        static inline const TypeName typeName = "FrameTestsFixture::WaitCurator";
+        static TypeName TypeName() { return "FrameTestsFixture::WaitCurator"; }
         using HandledCommands = HandledCommands<Atmos::Work>;
     };
 }

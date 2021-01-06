@@ -39,7 +39,7 @@ namespace Arca
     struct Traits<Atmos::Render::Line>
     {
         static const ObjectType objectType = ObjectType::Relic;
-        static inline const TypeName typeName = "Atmos::Render::Line";
+        static TypeName TypeName() { return "Atmos::Render::Line"; }
     };
 }
 

@@ -43,7 +43,7 @@ namespace Arca
     struct Traits<Atmos::Spatial::Bounds>
     {
         static const ObjectType objectType = ObjectType::Shard;
-        static inline const TypeName typeName = "Atmos::Spatial::Bounds";
+        static TypeName TypeName() { return "Atmos::Spatial::Bounds"; }
     };
 }
 

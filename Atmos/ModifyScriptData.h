@@ -20,6 +20,6 @@ namespace Arca
     struct Traits<Atmos::Scripting::ModifyData>
     {
         static const ObjectType objectType = ObjectType::Command;
-        static inline const TypeName typeName = "Atmos::Scripting::ModifyData";
+        static TypeName TypeName() { return "Atmos::Scripting::ModifyData"; }
     };
 }

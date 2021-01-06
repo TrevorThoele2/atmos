@@ -28,7 +28,7 @@ namespace Arca
     struct Traits<Atmos::Render::StaticImage>
     {
         static const ObjectType objectType = ObjectType::Relic;
-        static inline const TypeName typeName = "Atmos::Render::StaticImage";
+        static TypeName TypeName() { return "Atmos::Render::StaticImage"; }
     };
 }
 

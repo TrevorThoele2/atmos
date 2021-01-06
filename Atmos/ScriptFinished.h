@@ -21,6 +21,6 @@ namespace Arca
     struct Traits<Atmos::Scripting::Finished>
     {
         static const ObjectType objectType = ObjectType::Signal;
-        static inline const TypeName typeName = "Atmos::Scripting::Finished";
+        static TypeName TypeName() { return "Atmos::Scripting::Finished"; }
     };
 }

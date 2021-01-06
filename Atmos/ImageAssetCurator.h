@@ -33,7 +33,7 @@ namespace Arca
     struct Traits<Atmos::Asset::ImageCurator>
     {
         static const ObjectType objectType = ObjectType::Curator;
-        static inline const TypeName typeName = "Atmos::Asset::ImageCurator";
+        static TypeName TypeName() { return "Atmos::Asset::ImageCurator"; }
         using HandledCommands = HandledCommands<
             Atmos::Asset::FindByName<Atmos::Asset::Image>,
             Atmos::Asset::Resource::LoadDataFromFile<Atmos::Asset::Resource::Image>,

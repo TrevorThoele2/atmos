@@ -26,7 +26,7 @@ namespace Arca
     struct Traits<Atmos::Window::Curator>
     {
         static const ObjectType objectType = ObjectType::Curator;
-        static inline const TypeName typeName = "Atmos::Window::Curator";
+        static TypeName TypeName() { return "Atmos::Window::Curator"; }
         using HandledCommands = HandledCommands<
             Atmos::Window::ChangeSize>;
     };

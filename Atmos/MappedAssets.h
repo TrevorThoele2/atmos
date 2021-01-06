@@ -52,7 +52,7 @@ namespace Arca
     struct Traits<::Atmos::Asset::Mapped<AssetT>>
     {
         static const ObjectType objectType = ObjectType::Relic;
-        static inline const TypeName typeName = "Atmos::Asset::Mapped<"s + TypeFor<AssetT>().name + ">";
+        static TypeName TypeName() { return "Atmos::Asset::Mapped<"s + TypeFor<AssetT>().name + ">"; }
         static const Locality locality = Locality::Global;
     };
 }

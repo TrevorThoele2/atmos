@@ -14,11 +14,8 @@ namespace Atmos::Input
         [[nodiscard]] State ReadState() const override;
     private:
         void HandleTextInputEvent(SDL_TextInputEvent event, State& state) const;
-        void HandleMouseMoveEvent(SDL_MouseMotionEvent event, State& state) const;
-        template<KeyState toKeyState>
-        void HandleMouseButtonEvent(SDL_MouseButtonEvent event, State& state) const;
-        template<KeyState toKeyState>
-        void HandleKeyboardEvent(SDL_KeyboardEvent event, State& state) const;
+        void HandleMouse(State& state) const;
+        void HandleKeyboard(State& state) const;
     private:
         struct KeyMapping
         {
@@ -31,20 +28,4 @@ namespace Atmos::Input
         [[nodiscard]] const KeyMapping* FromMouse(int mouseButton) const;
         [[nodiscard]] const KeyMapping* FromKeycode(SDL_Keycode keycode) const;
     };
-
-    template<KeyState toKeyState>
-    void SDLManager::HandleMouseButtonEvent(SDL_MouseButtonEvent event, State& state) const
-    {
-        const auto keyMapping = FromMouse(event.button);
-        if (keyMapping)
-            state.keyStates.*keyMapping->toKeyStates = toKeyState;
-    }
-
-    template<KeyState toKeyState>
-    void SDLManager::HandleKeyboardEvent(SDL_KeyboardEvent event, State& state) const
-    {
-        const auto keyMapping = FromKeycode(event.keysym.sym);
-        if (keyMapping)
-            state.keyStates.*keyMapping->toKeyStates = toKeyState;
-    }
 }

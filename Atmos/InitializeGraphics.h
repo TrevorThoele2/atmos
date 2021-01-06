@@ -16,6 +16,6 @@ namespace Arca
     struct Traits<Atmos::Render::InitializeGraphics>
     {
         static const ObjectType objectType = ObjectType::Command;
-        static inline const TypeName typeName = "Atmos::Render::InitializeGraphics";
+        static TypeName TypeName() { return "Atmos::Render::InitializeGraphics"; }
     };
 }

@@ -22,7 +22,7 @@ namespace Arca
     struct Traits<Atmos::Frame::Settings>
     {
         static const ObjectType objectType = ObjectType::Relic;
-        static inline const TypeName typeName = "Atmos::Frame::Settings";
+        static TypeName TypeName() { return "Atmos::Frame::Settings"; }
         static const Locality locality = Locality::Global;
     };
 }

@@ -24,7 +24,7 @@ namespace Arca
     struct Traits<Atmos::Frame::StartCurator>
     {
         static const ObjectType objectType = ObjectType::Curator;
-        static inline const TypeName typeName = "Atmos::Frame::StartCurator";
+        static TypeName TypeName() { return "Atmos::Frame::StartCurator"; }
         using HandledCommands = HandledCommands<Atmos::Work>;
     };
 }

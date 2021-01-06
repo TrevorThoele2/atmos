@@ -31,7 +31,7 @@ namespace Arca
     struct Traits<::Atmos::Render::DynamicImage>
     {
         static const ObjectType objectType = ObjectType::Relic;
-        static inline const TypeName typeName = "Atmos::Render::DynamicImage";
+        static TypeName TypeName() { return "Atmos::Render::DynamicImage"; }
     };
 }
 

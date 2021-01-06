@@ -38,7 +38,7 @@ namespace Arca
     struct Traits<Atmos::Render::ImageCore>
     {
         static const ObjectType objectType = ObjectType::Shard;
-        static inline const TypeName typeName = "Atmos::Render::ImageCore";
+        static TypeName TypeName() { return "Atmos::Render::ImageCore"; }
     };
 }
 

@@ -17,6 +17,6 @@ namespace Arca
     struct Traits<Atmos::Window::ChangeSize>
     {
         static const ObjectType objectType = ObjectType::Command;
-        static inline const TypeName typeName = "Atmos::Window::ChangeSize";
+        static TypeName TypeName() { return "Atmos::Window::ChangeSize"; }
     };
 }

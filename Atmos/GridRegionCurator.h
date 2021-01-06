@@ -58,7 +58,7 @@ namespace Arca
     struct Traits<Atmos::Render::GridRegionCurator>
     {
         static const ObjectType objectType = ObjectType::Curator;
-        static inline const TypeName typeName = "Atmos::Render::GridRegionCurator";
+        static TypeName TypeName() { return "Atmos::Render::GridRegionCurator"; }
         using HandledCommands = HandledCommands<
             Atmos::Work,
             Atmos::Render::MoveGridRegion,
