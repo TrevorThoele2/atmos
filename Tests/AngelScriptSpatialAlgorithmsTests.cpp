@@ -931,7 +931,7 @@ SCENARIO_METHOD(AngelScriptSpatialAlgorithmsTestsFixture, "running spatial algor
             "    auto point = Arca::Reliquary::Do(Atmos::Spatial::ToWorldPoint3D(screenPoint, z));\n" \
             "    return Atmos::ToString(point.x) + \" \" + Atmos::ToString(point.y) + \" \" + Atmos::ToString(point.z);\n" \
             "}",
-            { x, y },
+            { x, y, z },
             fieldReliquary);
 
         WHEN("working reliquary")

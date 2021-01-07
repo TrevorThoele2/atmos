@@ -471,7 +471,7 @@
     <ClCompile Include="AngelScriptGridRegion.cpp" />
     <ClCompile Include="AngelScriptKey.cpp" />
     <ClCompile Include="AngelScriptLine.cpp" />
-    <ClCompile Include="AngelScriptMapAction.cpp" />
+    <ClCompile Include="AngelScriptBindAction.cpp" />
     <ClCompile Include="AngelScriptMath.cpp" />
     <ClCompile Include="AngelScriptMouseMoved.cpp" />
     <ClCompile Include="AngelScriptRelativeImage.cpp" />

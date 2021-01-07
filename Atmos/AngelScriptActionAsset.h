@@ -27,7 +27,8 @@ namespace Atmos::Scripting::Angel
         static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
     private:
         [[nodiscard]] static String DoName(Type type);
-        [[nodiscard]] static std::vector<Input::Key> MappedKeys(Type type);
+        [[nodiscard]] static Input::Key DoBoundKey(Type type);
+        [[nodiscard]] static std::vector<Input::Key> DoBoundModifiers(Type type);
     };
 
     template<>

@@ -261,7 +261,8 @@ namespace Atmos::Input
         if (!action)
             return;
 
-        action->mappedKeys = command.keys;
+        action->boundKey = command.key;
+        action->boundModifiers = command.modifiers;
     }
 
     void Curator::Handle(const Work&)
@@ -271,17 +272,21 @@ namespace Atmos::Input
         keyStates.current = inputState.keyStates;
         mousePosition.current = inputState.mousePosition;
 
+        ActiveActions currentActiveActions;
+
         const auto actions = Owner().Batch<Asset::Action>();
         for(auto action = actions.begin(); action != actions.end(); ++action)
         {
             const auto actionIndex = Arca::Index<Asset::Action>{ action.ID(), Owner() };
 
-            const auto isActive = IsActive(action->mappedKeys, keyStates.current);
+            const auto [isActive, actionDelta] =
+                CurrentActionState(action->Name(), action->boundKey, action->boundModifiers, keyStates);
             if (isActive)
+            {
                 Owner().Raise(ActionActive{ actionIndex });
-
-            const auto actionDelta = ActionDelta(action->mappedKeys, keyStates);
-
+                currentActiveActions.emplace(action->Name());
+            }
+            
             if (actionDelta == KeyState::Down)
                 Owner().Raise(ActionPressed{ actionIndex });
             else if (actionDelta == KeyState::Up)
@@ -296,43 +301,40 @@ namespace Atmos::Input
 
         keyStates.previous = keyStates.current;
         mousePosition.previous = mousePosition.current;
+        previousActiveActions = currentActiveActions;
     }
 
-    bool Curator::IsActive(std::set<Key> keys, KeyStates currentKeyStates) const
+    auto Curator::CurrentActionState(const Name& name, Key key, std::set<Key> modifiers, Delta<KeyStates> allKeyStates) const -> ActionState
     {
-        for(auto& key : keys)
+        const auto isActive = [this, key, modifiers, allKeyStates]()
         {
             const auto& keyMapping = RequiredKeyMapping(key);
-            if (currentKeyStates.*keyMapping.toKeyStates == KeyState::Up)
+            if (allKeyStates.current.*keyMapping.toKeyStates != KeyState::Down)
                 return false;
-        }
 
-        return true;
-    }
+            for (auto& modifier : modifiers)
+            {
+                const auto& modifierMapping = RequiredKeyMapping(modifier);
+                const auto previousState = allKeyStates.previous.*modifierMapping.toKeyStates;
+                const auto currentState = allKeyStates.current.*modifierMapping.toKeyStates;
+                if (previousState == KeyState::Up || currentState == KeyState::Up)
+                    return false;
+            }
 
-    std::optional<KeyState> Curator::ActionDelta(std::set<Key> keys, Delta<KeyStates> allKeyStates) const
-    {
-        if (keys.empty())
-            return {};
+            return true;
+        }();
 
-        const auto retrieveKeyDelta = [this, allKeyStates](Key key) -> std::optional<KeyState>
+        auto previouslyActive = previousActiveActions.find(name) != previousActiveActions.end();
+
+        auto delta = [isActive, previouslyActive]() -> std::optional<KeyState>
         {
-            const auto& keyMapping = RequiredKeyMapping(key);
-            const auto previousKeyState = allKeyStates.previous.*keyMapping.toKeyStates;
-            const auto currentKeyState = allKeyStates.current.*keyMapping.toKeyStates;
+            if (isActive == previouslyActive)
+                return std::optional<KeyState>{};
 
-            if (currentKeyState == previousKeyState)
-                return {};
-            else
-                return currentKeyState;
-        };
+            return isActive ? KeyState::Down : KeyState::Up;
+        }();
 
-        const auto actionDelta = retrieveKeyDelta(*keys.begin());
-        for (auto key = std::next(keys.begin()); key != keys.end(); ++key)
-            if (retrieveKeyDelta(*key) != actionDelta)
-                return {};
-
-        return actionDelta;
+        return { isActive, delta };
     }
 
     auto Curator::RequiredKeyMapping(Key key) const -> const KeyMapping&

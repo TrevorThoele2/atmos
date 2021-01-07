@@ -9,7 +9,8 @@ namespace Atmos::Input
     struct BindAction
     {
         Arca::Index<Asset::Action> action;
-        std::set<Key> keys;
+        Key key;
+        std::set<Key> modifiers;
     };
 }
 
