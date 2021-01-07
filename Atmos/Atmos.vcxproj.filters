@@ -1751,6 +1751,18 @@
     <ClInclude Include="NullScriptDocumentationManager.h">
       <Filter>Header Files\Scripting\Documentation</Filter>
     </ClInclude>
+    <ClInclude Include="AngelScriptToWorldPoint2D.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptToWorldPoint3D.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
+    </ClInclude>
+    <ClInclude Include="ToWorldPoint2D.h">
+      <Filter>Header Files\Spatial\Arca</Filter>
+    </ClInclude>
+    <ClInclude Include="ToWorldPoint3D.h">
+      <Filter>Header Files\Spatial\Arca</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FieldDestination.cpp">
@@ -2559,6 +2571,18 @@
     </ClCompile>
     <ClCompile Include="NullScriptDocumentationManager.cpp">
       <Filter>Source Files\Scripting\Documentation</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptToWorldPoint2D.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptToWorldPoint3D.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
+    </ClCompile>
+    <ClCompile Include="ToWorldPoint2D.cpp">
+      <Filter>Source Files\Spatial\Arca</Filter>
+    </ClCompile>
+    <ClCompile Include="ToWorldPoint3D.cpp">
+      <Filter>Source Files\Spatial\Arca</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

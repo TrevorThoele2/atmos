@@ -10,15 +10,21 @@ namespace Atmos::Time
 
     void Stopwatch::Pause()
     {
-        storedDuration += CurrentLegElapsed();
-        isPaused = true;
+        if (!isPaused)
+        {
+            storedDuration += CurrentLegElapsed();
+            isPaused = true;
+        }
     }
 
     Point<> Stopwatch::Resume()
     {
-        start = CurrentTime();
-        isPaused = false;
-        return start;
+        if (isPaused)
+        {
+            start = CurrentTime();
+            isPaused = false;
+            return start;
+        }
     }
 
     Point<> Stopwatch::Restart()

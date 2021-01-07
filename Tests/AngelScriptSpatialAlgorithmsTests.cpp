@@ -7,6 +7,8 @@
 #include <Atmos/Size3D.h>
 #include <Atmos/AxisAlignedBox3D.h>
 #include <Atmos/SpatialAlgorithms.h>
+#include <Atmos/ToWorldPoint2D.h>
+#include <Atmos/ToWorldPoint3D.h>
 #include <Atmos/TypeRegistration.h>
 #include <Atmos/Script.h>
 #include <Atmos/ScriptFinished.h>
@@ -878,6 +880,73 @@ SCENARIO_METHOD(AngelScriptSpatialAlgorithmsTestsFixture, "running spatial algor
                     Atmos::ToString(expectedResult.size.width) + " " +
                     Atmos::ToString(expectedResult.size.height) + " " +
                     Atmos::ToString(expectedResult.size.depth));
+            }
+        }
+    }
+
+    GIVEN("script that returns ScreenPoint ToWorldPoint2D")
+    {
+        auto x = dataGeneration.Random<Spatial::ScreenPoint::Value>();
+        auto y = dataGeneration.Random<Spatial::ScreenPoint::Value>();
+
+        CompileAndCreateScript(
+            "basic_script.as",
+            "string main(int x, int y)\n" \
+            "{\n" \
+            "    auto screenPoint = Atmos::Spatial::ScreenPoint(x, y);\n" \
+            "    auto point = Arca::Reliquary::Do(Atmos::Spatial::ToWorldPoint2D(screenPoint));\n" \
+            "    return Atmos::ToString(point.x) + \" \" + Atmos::ToString(point.y);\n" \
+            "}",
+            { x, y },
+            fieldReliquary);
+
+        WHEN("working reliquary")
+        {
+            fieldReliquary.Do(Work{});
+
+            THEN("has correct properties")
+            {
+                REQUIRE(finishes.size() == 1);
+
+                const auto expectedPoint = fieldReliquary.Do(Spatial::ToWorldPoint2D(Spatial::ScreenPoint{ x, y }));
+                const auto expectedResult = ToString(expectedPoint.x) + " " + ToString(expectedPoint.y);
+
+                const auto result = std::get<String>(std::get<Variant>(finishes[0].result));
+                REQUIRE(result == expectedResult);
+            }
+        }
+    }
+
+    GIVEN("script that returns ScreenPoint ToWorldPoint3D")
+    {
+        auto x = dataGeneration.Random<Spatial::ScreenPoint::Value>();
+        auto y = dataGeneration.Random<Spatial::ScreenPoint::Value>();
+        auto z = dataGeneration.Random<Spatial::Point3D::Value>();
+
+        CompileAndCreateScript(
+            "basic_script.as",
+            "string main(int x, int y, float z)\n" \
+            "{\n" \
+            "    auto screenPoint = Atmos::Spatial::ScreenPoint(x, y);\n" \
+            "    auto point = Arca::Reliquary::Do(Atmos::Spatial::ToWorldPoint3D(screenPoint, z));\n" \
+            "    return Atmos::ToString(point.x) + \" \" + Atmos::ToString(point.y) + \" \" + Atmos::ToString(point.z);\n" \
+            "}",
+            { x, y },
+            fieldReliquary);
+
+        WHEN("working reliquary")
+        {
+            fieldReliquary.Do(Work{});
+
+            THEN("has correct properties")
+            {
+                REQUIRE(finishes.size() == 1);
+
+                const auto expectedPoint = fieldReliquary.Do(Spatial::ToWorldPoint3D(Spatial::ScreenPoint{ x, y }, z));
+                const auto expectedResult = ToString(expectedPoint.x) + " " + ToString(expectedPoint.y) + " " + Atmos::ToString(expectedPoint.z);
+
+                const auto result = std::get<String>(std::get<Variant>(finishes[0].result));
+                REQUIRE(result == expectedResult);
             }
         }
     }
