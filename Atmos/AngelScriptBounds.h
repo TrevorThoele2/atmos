@@ -27,9 +27,9 @@ namespace Atmos::Scripting::Angel
         using Type = Arca::Index<Spatial::Bounds>;
         using Management = ObjectManagement<Type>;
 
-        static inline const String name = "Bounds";
-        static inline const String containingNamespace = "Atmos::Spatial";
-        static inline const String documentation = "This is a shard.";
+        static String Name() { return "Bounds"; }
+        static String ContainingNamespace() { return "Atmos::Spatial"; }
+        static String Documentation() { return "This is a shard."; }
         static const ObjectType objectType = ObjectType::Value;
 
         static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
@@ -51,9 +51,9 @@ namespace Atmos::Scripting::Angel
         using Type = Spatial::MoveBoundsBy;
         using Management = ObjectManagement<Type>;
 
-        static inline const String name = "MoveBoundsBy";
-        static inline const String containingNamespace = "Atmos::Spatial";
-        static inline const String documentation = "This is a command.";
+        static String Name() { return "MoveBoundsBy"; }
+        static String ContainingNamespace() { return "Atmos::Spatial"; }
+        static String Documentation() { return "This is a command."; }
         static const ObjectType objectType = ObjectType::Value;
 
         static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
@@ -65,9 +65,9 @@ namespace Atmos::Scripting::Angel
         using Type = Spatial::MoveBoundsDirection;
         using Management = ObjectManagement<Type>;
 
-        static inline const String name = "MoveBoundsDirection";
-        static inline const String containingNamespace = "Atmos::Spatial";
-        static inline const String documentation = "This is a command.";
+        static String Name() { return "MoveBoundsDirection"; }
+        static String ContainingNamespace() { return "Atmos::Spatial"; }
+        static String Documentation() { return "This is a command."; }
         static const ObjectType objectType = ObjectType::Value;
 
         static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
@@ -79,9 +79,9 @@ namespace Atmos::Scripting::Angel
         using Type = Spatial::MoveBoundsTo;
         using Management = ObjectManagement<Type>;
 
-        static inline const String name = "MoveBoundsTo";
-        static inline const String containingNamespace = "Atmos::Spatial";
-        static inline const String documentation = "This is a command.";
+        static String Name() { return "MoveBoundsTo"; }
+        static String ContainingNamespace() { return "Atmos::Spatial"; }
+        static String Documentation() { return "This is a command."; }
         static const ObjectType objectType = ObjectType::Value;
 
         static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
@@ -93,9 +93,9 @@ namespace Atmos::Scripting::Angel
         using Type = Spatial::RotateBounds;
         using Management = ObjectManagement<Type>;
 
-        static inline const String name = "RotateBounds";
-        static inline const String containingNamespace = "Atmos::Spatial";
-        static inline const String documentation = "This is a command.";
+        static String Name() { return "RotateBounds"; }
+        static String ContainingNamespace() { return "Atmos::Spatial"; }
+        static String Documentation() { return "This is a command."; }
         static const ObjectType objectType = ObjectType::Value;
 
         static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
@@ -107,9 +107,9 @@ namespace Atmos::Scripting::Angel
         using Type = Spatial::ScaleBounds;
         using Management = ObjectManagement<Type>;
 
-        static inline const String name = "ScaleBounds";
-        static inline const String containingNamespace = "Atmos::Spatial";
-        static inline const String documentation = "This is a command.";
+        static String Name() { return "ScaleBounds"; }
+        static String ContainingNamespace() { return "Atmos::Spatial"; }
+        static String Documentation() { return "This is a command."; }
         static const ObjectType objectType = ObjectType::Value;
 
         static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
@@ -121,9 +121,9 @@ namespace Atmos::Scripting::Angel
         using Type = Spatial::BoundsMoved;
         using Management = ObjectManagement<Type>;
 
-        static inline const String name = "BoundsMoved";
-        static inline const String containingNamespace = "Atmos::Spatial";
-        static inline const String documentation = "This is a signal.";
+        static String Name() { return "BoundsMoved"; }
+        static String ContainingNamespace() { return "Atmos::Spatial"; }
+        static String Documentation() { return "This is a signal."; }
         static const ObjectType objectType = ObjectType::Value;
 
         static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
@@ -135,9 +135,9 @@ namespace Atmos::Scripting::Angel
         using Type = Spatial::BoundsRotated;
         using Management = ObjectManagement<Type>;
 
-        static inline const String name = "BoundsRotated";
-        static inline const String containingNamespace = "Atmos::Spatial";
-        static inline const String documentation = "This is a signal.";
+        static String Name() { return "BoundsRotated"; }
+        static String ContainingNamespace() { return "Atmos::Spatial"; }
+        static String Documentation() { return "This is a signal."; }
         static const ObjectType objectType = ObjectType::Value;
 
         static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
@@ -149,9 +149,9 @@ namespace Atmos::Scripting::Angel
         using Type = Spatial::BoundsScaled;
         using Management = ObjectManagement<Type>;
 
-        static inline const String name = "BoundsScaled";
-        static inline const String containingNamespace = "Atmos::Spatial";
-        static inline const String documentation = "This is a signal.";
+        static String Name() { return "BoundsScaled"; }
+        static String ContainingNamespace() { return "Atmos::Spatial"; }
+        static String Documentation() { return "This is a signal."; }
         static const ObjectType objectType = ObjectType::Value;
 
         static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);

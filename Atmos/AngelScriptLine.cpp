@@ -13,7 +13,7 @@ namespace Atmos::Scripting::Angel
 {
     void Registration<Render::Line>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        ValueTypeRegistration<Type> registration(containingNamespace, name);
+        ValueTypeRegistration<Type> registration(ContainingNamespace(), Name());
         RegisterArcaIndex(registration);
         registration
             .ConstMethod(&Management::Method<&Points>, "Atmos::Spatial::Point2D[]@", "Points", {})
@@ -75,7 +75,7 @@ namespace Atmos::Scripting::Angel
 
     void Registration<ChangeLinePoints>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        ValueTypeRegistration<Type>(containingNamespace, name)
+        ValueTypeRegistration<Type>(ContainingNamespace(), Name())
             .Constructor(
                 &Management::GenerateValue<
                     &PullFromParameter<0, Arca::RelicID>,
@@ -98,7 +98,7 @@ namespace Atmos::Scripting::Angel
 
     void Registration<ChangeLineZ>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        ValueTypeRegistration<Type>(containingNamespace, name)
+        ValueTypeRegistration<Type>(ContainingNamespace(), Name())
             .Constructor(
                 &Management::GenerateValue<
                     &PullFromParameter<0, Arca::RelicID>,

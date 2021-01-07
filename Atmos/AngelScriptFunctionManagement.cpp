@@ -286,7 +286,7 @@ namespace Atmos::Scripting::Angel
         {
             using Type = std::variant_alternative_t<i, Variant>;
 
-            if (returnTypeName == Registration<Type>::name)
+            if (returnTypeName == Registration<Type>::Name())
             {
                 out = Dispatch<Type>::PullFromReturn(context);
                 return true;

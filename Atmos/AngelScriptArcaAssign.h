@@ -24,9 +24,9 @@ namespace Atmos::Scripting::Angel
     {
         using Type = GenericArcaAssignCopy;
 
-        static inline const String name = "AssignCopy<class T>";
-        static inline const String containingNamespace = "Arca";
-        static inline const String documentation = "This is a command. Needs to be used with explicit specializations.";
+        static String Name() { return "AssignCopy<class T>"; }
+        static String ContainingNamespace() { return "Arca"; }
+        static String Documentation() { return "This is a command. Needs to be used with explicit specializations."; }
         static const ObjectType objectType = ObjectType::Value;
 
         using Management = ObjectManagement<Type>;
@@ -39,9 +39,9 @@ namespace Atmos::Scripting::Angel
     {
         using Type = GenericArcaAssignMove;
 
-        static inline const String name = "AssignMove<class T>";
-        static inline const String containingNamespace = "Arca";
-        static inline const String documentation = "This is a command. Needs to be used with explicit specializations.";
+        static String Name() { return "AssignMove<class T>"; }
+        static String ContainingNamespace() { return "Arca"; }
+        static String Documentation() { return "This is a command. Needs to be used with explicit specializations."; }
         static const ObjectType objectType = ObjectType::Value;
 
         using Management = ObjectManagement<Type>;
@@ -54,9 +54,9 @@ namespace Atmos::Scripting::Angel
     {
         using Type = Arca::AssignCopy<T>;
 
-        static inline const String name = "AssignCopy<" + CreateName({ Registration<T>::containingNamespace }, Registration<T>::name) + ">";
-        static inline const String containingNamespace = "Arca";
-        static inline const String documentation = "This is a command.";
+        static String Name() { return "AssignCopy<" + CreateName({ Registration<T>::ContainingNamespace() }, Registration<T>::Name()) + ">"; }
+        static String ContainingNamespace() { return "Arca"; }
+        static String Documentation() { return "This is a command."; }
         static const ObjectType objectType = ObjectType::Value;
 
         using Management = ObjectManagement<Type>;
@@ -67,9 +67,9 @@ namespace Atmos::Scripting::Angel
     {
         using Type = Arca::AssignMove<T>;
 
-        static inline const String name = "AssignMove<" + CreateName({ Registration<T>::containingNamespace }, Registration<T>::name) + ">";
-        static inline const String containingNamespace = "Arca";
-        static inline const String documentation = "This is a command.";
+        static String Name() { return "AssignMove<" + CreateName({ Registration<T>::ContainingNamespace() }, Registration<T>::Name()) + ">"; }
+        static String ContainingNamespace() { return "Arca"; }
+        static String Documentation() { return "This is a command."; }
         static const ObjectType objectType = ObjectType::Value;
 
         using Management = ObjectManagement<Type>;
@@ -78,11 +78,12 @@ namespace Atmos::Scripting::Angel
     namespace Detail
     {
         template<class T, class CommandT, class... Args>
-        void DoRegisterArcaAssign(const std::vector<String>& constructorParameters, asIScriptEngine& engine)
+        void DoRegisterArcaAssign(
+            const std::vector<String>& constructorParameters, asIScriptEngine& engine, DocumentationManager& documentationManager)
         {
             using Management = ObjectManagement<CommandT>;
 
-            ValueTypeRegistration<CommandT>(Registration<CommandT>::containingNamespace, Registration<CommandT>::name)
+            ValueTypeRegistration<CommandT>(Registration<CommandT>::ContainingNamespace(), Registration<CommandT>::Name())
                 .Constructor(&Management::template GenerateValueBasic<Args...>, constructorParameters)
                 .CopyConstructor(&Management::GenerateValueFromCopy)
                 .Destructor(&Management::DestructValue)
@@ -102,12 +103,15 @@ namespace Atmos::Scripting::Angel
     }
 
     template<class T, class... Args>
-    void RegisterArcaAssignRelic(const std::vector<String>& constructorParameters, asIScriptEngine& engine)
+    void RegisterArcaAssignRelic(
+        const std::vector<String>& constructorParameters, asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         auto useConstructorParameters = std::vector<String>{ "Arca::RelicID id" };
         useConstructorParameters.insert(useConstructorParameters.end(), constructorParameters.begin(), constructorParameters.end());
 
-        Detail::DoRegisterArcaAssign<T, Arca::AssignCopy<T>, Arca::RelicID, Args...>(useConstructorParameters, engine);
-        Detail::DoRegisterArcaAssign<T, Arca::AssignMove<T>, Arca::RelicID, Args...>(useConstructorParameters, engine);
+        Detail::DoRegisterArcaAssign<T, Arca::AssignCopy<T>, Arca::RelicID, Args...>(
+            useConstructorParameters, engine, documentationManager);
+        Detail::DoRegisterArcaAssign<T, Arca::AssignMove<T>, Arca::RelicID, Args...>(
+            useConstructorParameters, engine, documentationManager);
     }
 }

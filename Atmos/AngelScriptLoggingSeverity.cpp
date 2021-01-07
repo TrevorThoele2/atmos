@@ -7,7 +7,7 @@ namespace Atmos::Scripting::Angel
 {
     void Registration<Logging::Severity>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        EnumRegistration<Logging::Severity>(containingNamespace, name)
+        EnumRegistration<Logging::Severity>(ContainingNamespace(), Name())
             .Value("Verbose", Logging::Severity::Verbose)
             .Value("Information", Logging::Severity::Information)
             .Value("Warning", Logging::Severity::Warning)

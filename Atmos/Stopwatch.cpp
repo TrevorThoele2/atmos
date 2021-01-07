@@ -8,9 +8,24 @@ namespace Atmos::Time
         start = CurrentTime();
     }
 
+    void Stopwatch::Pause()
+    {
+        storedDuration += CurrentLegElapsed();
+        isPaused = true;
+    }
+
+    Point<> Stopwatch::Resume()
+    {
+        start = CurrentTime();
+        isPaused = false;
+        return start;
+    }
+
     Point<> Stopwatch::Restart()
     {
         start = CurrentTime();
+        storedDuration = Duration<>::zero();
+        isPaused = false;
         return start;
     }
 
@@ -43,9 +58,7 @@ namespace Atmos::Time
 
     Duration<> Stopwatch::Elapsed() const
     {
-        const auto currentTime = CurrentTime();
-        const auto elapsed = currentTime - start;
-        return elapsed;
+        return !isPaused ? CurrentLegElapsed() + storedDuration : storedDuration;
     }
 
     Point<> Stopwatch::CurrentTime() const
@@ -61,5 +74,11 @@ namespace Atmos::Time
     Duration<> Stopwatch::Highest() const
     {
         return highest;
+    }
+
+    Duration<> Stopwatch::CurrentLegElapsed() const
+    {
+        const auto currentTime = CurrentTime();
+        return currentTime - start;
     }
 }

@@ -4,7 +4,7 @@ namespace Atmos::Scripting::Angel
 {
     void Registration<GenericArcaBatch>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        TemplateValueTypeRegistration<Type>(containingNamespace, "Batch", { "T" })
+        TemplateValueTypeRegistration<Type>(ContainingNamespace(), "Batch", { "T" })
             .TemplateCallback(&Management::RequiredSpecializationTemplateCallback)
             .DefaultConstructor(&Management::UndefinedTemplate)
             .CopyConstructor(&Management::UndefinedTemplate)

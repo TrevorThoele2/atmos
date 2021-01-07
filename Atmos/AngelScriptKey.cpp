@@ -7,7 +7,7 @@ namespace Atmos::Scripting::Angel
 {
     void Registration<Input::Key>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        EnumRegistration<Input::Key>(containingNamespace, name)
+        EnumRegistration<Input::Key>(ContainingNamespace(), Name())
             .Value("LeftMouseButton", Input::Key::LeftMouseButton)
             .Value("MiddleMouseButton", Input::Key::MiddleMouseButton)
             .Value("RightMouseButton", Input::Key::RightMouseButton)

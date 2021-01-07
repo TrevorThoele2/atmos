@@ -18,9 +18,9 @@ namespace Atmos::Scripting::Angel
         using Type = Math;
         using Management = GlobalManagement;
 
-        static inline const String name = "Math";
-        static inline const String containingNamespace = "Atmos";
-        static inline const String documentation = "";
+        static String Name() { return "Math"; }
+        static String ContainingNamespace() { return "Atmos"; }
+        static String Documentation() { return ""; }
         static const ObjectType objectType = ObjectType::Value;
 
         static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);

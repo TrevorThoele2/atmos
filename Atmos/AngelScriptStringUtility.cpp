@@ -7,7 +7,7 @@ namespace Atmos::Scripting::Angel
 {
     void Registration<StringUtility>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        GlobalRegistration(containingNamespace)
+        GlobalRegistration(ContainingNamespace())
             .Function(&Management::Function<&Type::ToString<bool>>,
                 "string", "ToString", { "bool value" })
             .Function(&Management::Function<&Type::ToString<std::int8_t>>,

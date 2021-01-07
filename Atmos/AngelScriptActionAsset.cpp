@@ -11,10 +11,10 @@ namespace Atmos::Scripting::Angel
 {
     void Registration<Asset::Action>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        ValueTypeRegistration<Type> registration(containingNamespace, name);
+        ValueTypeRegistration<Type> registration(ContainingNamespace(), Name());
         RegisterArcaIndex(registration);
         registration
-            .ConstMethod(&Management::Method<&Name>, "string", "Name", {})
+            .ConstMethod(&Management::Method<&DoName>, "string", "Name", {})
             .ConstMethod(&Management::Method<&MappedKeys>, "Atmos::Input::Key[]@", "MappedKeys", {})
             .Actualize(engine, documentationManager);
 
@@ -23,7 +23,7 @@ namespace Atmos::Scripting::Angel
         Registration<Asset::FindByName<Asset::Action>>::RegisterTo(engine, documentationManager);
     }
 
-    String Registration<Asset::Action>::Name(Type type)
+    String Registration<Asset::Action>::DoName(Type type)
     {
         return RequiredValue(type)->Name();
     }

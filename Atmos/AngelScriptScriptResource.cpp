@@ -80,7 +80,7 @@ namespace Atmos::Scripting::Angel
             ++index;
         }
 
-        return DoExecute(*executeFunction, *context);
+        return DoExecute(*context);
     }
 
     std::optional<Result> ScriptResource::Resume()
@@ -89,7 +89,7 @@ namespace Atmos::Scripting::Angel
 
         ExecuteAllStoredSecondaries();
 
-        return DoExecute(*executeFunction, *context);
+        return DoExecute(*context);
     }
 
     void ScriptResource::Suspend()
@@ -109,9 +109,6 @@ namespace Atmos::Scripting::Angel
 
     void ScriptResource::ExecuteSecondaryAgainstStoredFunctions(const String& name, const SecondaryExecution& againstContext)
     {
-        if (name == Arca::Traits<Input::ActionPressed>::TypeName())
-            int wait = 1 + 1;
-
         auto group = groups.find(name);
         if (group == groups.end())
             return;
@@ -122,7 +119,7 @@ namespace Atmos::Scripting::Angel
             group->second.secondaryExecutions.push_back(againstContext);
     }
 
-    std::optional<Result> ScriptResource::DoExecute(asIScriptFunction& function, asIScriptContext& context)
+    std::optional<Result> ScriptResource::DoExecute(asIScriptContext& context)
     {
         const auto result = context.Execute();
         if (result == asEXECUTION_FINISHED)
@@ -150,18 +147,13 @@ namespace Atmos::Scripting::Angel
 
     void ScriptResource::ExecuteAllStoredSecondaries()
     {
-        for (auto group = groups.begin(); group != groups.end();)
+        for (auto& group : groups)
         {
-            for (auto secondaryExecution = group->second.secondaryExecutions.begin(); secondaryExecution != group->second.secondaryExecutions.end();)
+            for (auto secondaryExecution = group.second.secondaryExecutions.begin(); secondaryExecution != group.second.secondaryExecutions.end();)
             {
-                DoExecuteSecondary(*secondaryExecution, group->second.angelScriptFunctions, *context->GetEngine(), *logger);
-                secondaryExecution = group->second.secondaryExecutions.erase(secondaryExecution);
+                DoExecuteSecondary(*secondaryExecution, group.second.angelScriptFunctions, *context->GetEngine(), *logger);
+                secondaryExecution = group.second.secondaryExecutions.erase(secondaryExecution);
             }
-
-            for (auto& function : group->second.angelScriptFunctions)
-                function->Release();
-
-            group = groups.erase(group);
         }
     }
 
@@ -178,7 +170,7 @@ namespace Atmos::Scripting::Angel
             VerifyResult(newContext->Prepare(storedFunction));
 
             secondaryExecution(*newContext);
-            auto result = DoExecute(*storedFunction, *newContext);
+            auto result = DoExecute(*newContext);
             if (result && std::holds_alternative<Failure>(*result) == 1)
             {
                 const auto failure = std::get<Failure>(*result);

@@ -6,7 +6,7 @@ namespace Atmos::Scripting::Angel
 {
     void Registration<Result>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        ValueTypeRegistration<Type>(containingNamespace, name)
+        ValueTypeRegistration<Type>(ContainingNamespace(), Name())
             .DefaultConstructor(&Management::GenerateDefaultValue)
             .CopyConstructor(&Management::GenerateValueFromCopy)
             .CopyAssignment(&Management::CopyAssign)

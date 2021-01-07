@@ -17,9 +17,9 @@ namespace Atmos::Scripting::Angel
     {
         using Management = GlobalManagement;
 
-        static inline const String name = "SpatialAlgorithms";
-        static inline const String containingNamespace = "Atmos::Spatial::Grid";
-        static inline const String documentation = "";
+        static String Name() { return "SpatialAlgorithms"; }
+        static String ContainingNamespace() { return "Atmos::Spatial::Grid"; }
+        static String Documentation() { return ""; }
         static const ObjectType objectType = ObjectType::Value;
 
         static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);

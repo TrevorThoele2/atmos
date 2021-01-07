@@ -12,10 +12,12 @@ namespace Atmos::Scripting::Angel
 {
     void Registration<Time::Stopwatch>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        ValueTypeRegistration<Type>(containingNamespace, name)
+        ValueTypeRegistration<Type>(ContainingNamespace(), Name())
             .CopyConstructor(&Management::GenerateValueFromCopy)
             .Destructor(&Management::DestructValue)
             .CopyAssignment(&Management::CopyAssign)
+            .Method(&Management::Method<&Type::Pause>, "void", "Pause", {})
+            .Method(&Management::Method<&Type::Resume>, "Atmos::Time::Point<Atmos::Time::Nanoseconds>", "Resume", {})
             .Method(&Management::Method<&Type::Restart>, "Atmos::Time::Point<Atmos::Time::Nanoseconds>", "Restart", {})
             .Method(&Management::Method<&Type::Calculate>, "Atmos::Time::Nanoseconds", "Calculate", {})
             .Method(&Management::Method<&Type::ResetAverage>, "void", "ResetAverage", {})
@@ -26,7 +28,7 @@ namespace Atmos::Scripting::Angel
             .ConstMethod(&Management::Method<&Type::Highest>, "Atmos::Time::Nanoseconds", "Highest", {})
             .Actualize(engine, documentationManager);
 
-        GlobalRegistration(containingNamespace)
+        GlobalRegistration(ContainingNamespace())
             .Function(
                 &GlobalManagement::Function<&Time::CreateRealStopwatch>,
                 "Atmos::Time::Stopwatch",

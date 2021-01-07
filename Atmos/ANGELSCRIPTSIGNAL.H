@@ -46,13 +46,13 @@ namespace Atmos::Scripting::Angel
 
             using Argument = typename SterilizedItem<typename ParametersT::template Parameter<0>::Type>::Type;
             using ArgumentTypeRegistration = Registration<Argument>;
-            const auto funcDefNamespace = ArgumentTypeRegistration::containingNamespace;
+            const auto funcDefNamespace = ArgumentTypeRegistration::ContainingNamespace();
             const auto funcDef =
                 Chroma::ReplaceString(
                     Chroma::ReplaceString(
-                        Chroma::ReplaceString("On" + ArgumentTypeRegistration::name, "<", ""), ">", ""), "::", "");
+                        Chroma::ReplaceString("On" + ArgumentTypeRegistration::Name(), "<", ""), ">", ""), "::", "");
             GlobalRegistration(funcDefNamespace)
-                .Funcdef("void", funcDef, { CreateName({ArgumentTypeRegistration::containingNamespace}, ArgumentTypeRegistration::name) + " signal" })
+                .Funcdef("void", funcDef, { CreateName({ArgumentTypeRegistration::ContainingNamespace()}, ArgumentTypeRegistration::Name()) + " signal" })
                 .Actualize(engine, documentationManager);
             GlobalRegistration(CreateName({ "Arca" }, "Reliquary"))
                 .Function(&RegisterOnFunction<Argument>, "void", "On", std::vector<String>{ CreateName({ funcDefNamespace }, funcDef + "@ handler") })

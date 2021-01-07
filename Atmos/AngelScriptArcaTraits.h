@@ -15,9 +15,9 @@ namespace Atmos::Scripting::Angel
     {
         using Type = GenericArcaTraits;
 
-        static inline const String name = "Traits<class T>";
-        static inline const String containingNamespace = "Arca";
-        static inline const String documentation = "Traits exist for every Arca relic, shard, command and signal.";
+        static String Name() { return "Traits<class T>"; }
+        static String ContainingNamespace() { return "Arca"; }
+        static String Documentation() { return "Traits exist for every Arca relic, shard, command and signal."; }
         static const ObjectType objectType = ObjectType::Value;
 
         using Management = ObjectManagement<Type>;
@@ -42,9 +42,9 @@ namespace Atmos::Scripting::Angel
     {
         using Type = ArcaTraits<T>;
 
-        static inline const String name = "Traits<" + CreateName({ Registration<T>::containingNamespace }, Registration<T>::name) + ">";
-        static inline const String containingNamespace = "Arca";
-        static inline const String documentation = "Traits exist for every Arca relic, shard, command and signal.";
+        static String Name() { return "Traits<" + CreateName({ Registration<T>::ContainingNamespace() }, Registration<T>::Name()) + ">"; }
+        static String ContainingNamespace() { return "Arca"; }
+        static String Documentation() { return "Traits exist for every Arca relic, shard, command and signal."; }
         static const ObjectType objectType = ObjectType::Value;
 
         using Management = ObjectManagement<ArcaTraits<T>>;
@@ -55,7 +55,7 @@ namespace Atmos::Scripting::Angel
     template<class T>
     void Registration<ArcaTraits<T>>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        ValueTypeRegistration<Type>(containingNamespace, name)
+        ValueTypeRegistration<Type>(ContainingNamespace(), Name())
             .DefaultConstructor(&Management::GenerateDefaultValue)
             .CopyConstructor(&Management::GenerateValueFromCopy)
             .Destructor(&Management::DestructValue)

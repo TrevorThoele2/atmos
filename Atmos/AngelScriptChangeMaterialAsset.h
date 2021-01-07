@@ -44,9 +44,9 @@ namespace Atmos::Scripting::Angel
 
         using Traits = ChangeMaterialAssetTraits<Material>;
 
-        static inline const String name = "Change" + Traits::nameToken + "MaterialAsset";
-        static inline const String containingNamespace = "Atmos::Render";
-        static inline const String documentation = "This is a command.";
+        static String Name() { return "Change" + Traits::nameToken + "MaterialAsset"; }
+        static String ContainingNamespace() { return "Atmos::Render"; }
+        static String Documentation() { return "This is a command."; }
         static const ObjectType objectType = ObjectType::Value;
 
         using Management = ObjectManagement<Type>;
@@ -57,7 +57,7 @@ namespace Atmos::Scripting::Angel
     template<class Material>
     void Registration<Render::ChangeMaterialAsset<Material>>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        ValueTypeRegistration<Type>(containingNamespace, name)
+        ValueTypeRegistration<Type>(ContainingNamespace(), Name())
             .Constructor(
                 &Management::template GenerateValue<
                     &PullFromParameter<0, Arca::RelicID>,

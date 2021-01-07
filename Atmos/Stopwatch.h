@@ -17,6 +17,8 @@ namespace Atmos::Time
         Stopwatch& operator=(const Stopwatch& arg) = default;
         Stopwatch& operator=(Stopwatch&& arg) noexcept = default;
 
+        void Pause();
+        Point<> Resume();
         Point<> Restart();
         Duration<> Calculate();
 
@@ -30,10 +32,14 @@ namespace Atmos::Time
         [[nodiscard]] Duration<> Highest() const;
     private:
         Point<> start;
+        Duration<> storedDuration = Duration<>::zero();
         TimeRetriever timeRetriever;
+        bool isPaused = false;
 
         Nanoseconds average{};
         Nanoseconds highest{};
+
+        [[nodiscard]] Duration<> CurrentLegElapsed() const;
     };
 }
 

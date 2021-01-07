@@ -23,9 +23,9 @@ namespace Atmos::Scripting::Angel
         using Type = Asset::Material::Pass;
         using Management = ObjectManagement<Type>;
 
-        static inline const String name = "MaterialPass";
-        static inline const String containingNamespace = "Atmos::Asset";
-        static inline const String documentation = "Represents a pass for the material asset to perform.";
+        static String Name() { return "MaterialPass"; }
+        static String ContainingNamespace() { return "Atmos::Asset"; }
+        static String Documentation() { return "Represents a pass for the material asset to perform."; }
         static const ObjectType objectType = ObjectType::Value;
 
         static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
@@ -37,9 +37,9 @@ namespace Atmos::Scripting::Angel
         using Type = Arca::Index<Asset::ImageMaterial>;
         using Management = ObjectManagement<Type>;
 
-        static inline const String name = "ImageMaterial";
-        static inline const String containingNamespace = "Atmos::Asset";
-        static inline const String documentation = "This is a relic.";
+        static String Name() { return "ImageMaterial"; }
+        static String ContainingNamespace() { return "Atmos::Asset"; }
+        static String Documentation() { return "This is a relic."; }
         static const ObjectType objectType = ObjectType::Value;
 
         static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
@@ -54,9 +54,9 @@ namespace Atmos::Scripting::Angel
         using Type = Arca::Index<Asset::LineMaterial>;
         using Management = ObjectManagement<Type>;
 
-        static inline const String name = "LineMaterial";
-        static inline const String containingNamespace = "Atmos::Asset";
-        static inline const String documentation = "This is a relic.";
+        static String Name() { return "LineMaterial"; }
+        static String ContainingNamespace() { return "Atmos::Asset"; }
+        static String Documentation() { return "This is a relic."; }
         static const ObjectType objectType = ObjectType::Value;
 
         static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
@@ -71,9 +71,9 @@ namespace Atmos::Scripting::Angel
         using Type = Arca::Index<Asset::RegionMaterial>;
         using Management = ObjectManagement<Type>;
 
-        static inline const String name = "RegionMaterial";
-        static inline const String containingNamespace = "Atmos::Asset";
-        static inline const String documentation = "This is a relic.";
+        static String Name() { return "RegionMaterial"; }
+        static String ContainingNamespace() { return "Atmos::Asset"; }
+        static String Documentation() { return "This is a relic."; }
         static const ObjectType objectType = ObjectType::Value;
 
         static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);

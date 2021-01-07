@@ -13,10 +13,10 @@ namespace Atmos::Scripting::Angel
 {
     void Registration<Entity::Entity>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        ValueTypeRegistration<Type> registration(containingNamespace, name);
+        ValueTypeRegistration<Type> registration(ContainingNamespace(), Name());
         RegisterArcaIndex(registration);
         registration
-            .ConstMethod(&Management::Method<&Name>, "string", "Name", {})
+            .ConstMethod(&Management::Method<&DoName>, "string", "Name", {})
             .ConstMethod(&Management::Method<&DisplayName>, "string", "DisplayName", {})
             .ConstMethod(&Management::Method<&Position>, "Atmos::Spatial::Grid::Point", "Position", {})
             .ConstMethod(&Management::Method<&Direction>, "Atmos::Spatial::Angle2D", "Direction", {})
@@ -48,7 +48,7 @@ namespace Atmos::Scripting::Angel
         RegisterArcaDestroyRelic<Entity::Entity>(engine, documentationManager);
     }
 
-    String Registration<Entity::Entity>::Name(Type type)
+    String Registration<Entity::Entity>::DoName(Type type)
     {
         return RequiredValue(type)->name;
     }
@@ -85,7 +85,7 @@ namespace Atmos::Scripting::Angel
 
     void Registration<Entity::FindByName>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        ValueTypeRegistration<Type>(containingNamespace, name)
+        ValueTypeRegistration<Type>(ContainingNamespace(), Name())
             .Constructor(
                 &Management::GenerateValue<
                 &PullFromParameter<0, String>>,
@@ -106,7 +106,7 @@ namespace Atmos::Scripting::Angel
 
     void Registration<Entity::FindByPosition>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        ValueTypeRegistration<Type>(containingNamespace, name)
+        ValueTypeRegistration<Type>(ContainingNamespace(), Name())
             .Constructor(
                 &Management::GenerateValue<
                 &PullFromParameter<0, Spatial::Grid::Point>>,
@@ -128,7 +128,7 @@ namespace Atmos::Scripting::Angel
 
     void Registration<Entity::MoveTo>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        ValueTypeRegistration<Type>(containingNamespace, name)
+        ValueTypeRegistration<Type>(ContainingNamespace(), Name())
             .Constructor(
                 &Management::GenerateValue<
                     &PullFromParameter<0, Arca::Index<Entity::Entity>>,
@@ -146,7 +146,7 @@ namespace Atmos::Scripting::Angel
 
     void Registration<Entity::ModifyData>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        ValueTypeRegistration<Type>(containingNamespace, name)
+        ValueTypeRegistration<Type>(ContainingNamespace(), Name())
             .Constructor(
                 &Management::GenerateValue<
                     &PullFromParameter<0, Arca::Index<Entity::Entity>>,
@@ -168,7 +168,7 @@ namespace Atmos::Scripting::Angel
 
     void Registration<Entity::ModifyTags>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        ValueTypeRegistration<Type>(containingNamespace, name)
+        ValueTypeRegistration<Type>(ContainingNamespace(), Name())
             .Constructor(
                 &Management::GenerateValue<
                     &PullFromParameter<0, Arca::Index<Entity::Entity>>,

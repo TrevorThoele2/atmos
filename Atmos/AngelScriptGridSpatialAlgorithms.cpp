@@ -10,7 +10,7 @@ namespace Atmos::Scripting::Angel
 {
     void Registration<GridSpatialAlgorithms>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        GlobalRegistration(containingNamespace)
+        GlobalRegistration(ContainingNamespace())
             .Function(&Management::Function<&Spatial::Grid::Distance>,
                 "int", "Distance", { "Point starting", "Point destination" })
             .Actualize(engine, documentationManager);

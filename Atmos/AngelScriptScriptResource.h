@@ -32,7 +32,7 @@ namespace Atmos::Scripting::Angel
         void ExecuteSecondaryAgainstStoredFunctions(const String& name, const SecondaryExecution& againstContext);
     private:
         Parameters parameters;
-        static std::optional<Result> DoExecute(asIScriptFunction& function, asIScriptContext& context);
+        static std::optional<Result> DoExecute(asIScriptContext& context);
     private:
         asIScriptFunction* executeFunction = nullptr;
         asIScriptContext* context = nullptr;

@@ -18,9 +18,9 @@ namespace Atmos::Scripting::Angel
         using Type = Suspend;
         using Management = ObjectManagement<Type>;
 
-        static inline const String name = "Suspend";
-        static inline const String containingNamespace = "Atmos::Scripting";
-        static inline const String documentation = "This is a command.";
+        static String Name() { return "Suspend"; }
+        static String ContainingNamespace() { return "Atmos::Scripting"; }
+        static String Documentation() { return "This is a command."; }
         static const ObjectType objectType = ObjectType::Value;
 
         static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);

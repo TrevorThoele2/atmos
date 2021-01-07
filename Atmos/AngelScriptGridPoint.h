@@ -17,9 +17,9 @@ namespace Atmos::Scripting::Angel
         using Type = Spatial::Grid::Point;
         using Management = ObjectManagement<Type>;
 
-        static inline const String name = "Point";
-        static inline const String containingNamespace = "Atmos::Spatial::Grid";
-        static inline const String documentation = "Represents a point in grid coordinates.";
+        static String Name() { return "Point"; }
+        static String ContainingNamespace() { return "Atmos::Spatial::Grid"; }
+        static String Documentation() { return "Represents a point in grid coordinates."; }
         static const ObjectType objectType = ObjectType::Value;
 
         static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);

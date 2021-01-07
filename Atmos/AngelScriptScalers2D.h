@@ -17,9 +17,9 @@ namespace Atmos::Scripting::Angel
         using Type = Spatial::Scalers2D;
         using Management = ObjectManagement<Type>;
 
-        static inline const String name = "Scalers2D";
-        static inline const String containingNamespace = "Atmos::Spatial";
-        static inline const String documentation = "2D scalers.";
+        static String Name() { return "Scalers2D"; }
+        static String ContainingNamespace() { return "Atmos::Spatial"; }
+        static String Documentation() { return "2D scalers."; }
         static const ObjectType objectType = ObjectType::Value;
 
         static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);

@@ -19,9 +19,9 @@ namespace Atmos::Scripting::Angel
         using Type = Arca::Index<Render::Camera>;
         using Management = ObjectManagement<Type>;
 
-        static inline const String name = "Camera";
-        static inline const String containingNamespace = "Atmos::Render";
-        static inline const String documentation = "This is a relic. Contains a Bounds.";
+        static String Name() { return "Camera"; }
+        static String ContainingNamespace() { return "Atmos::Render"; }
+        static String Documentation() { return "This is a relic. Contains a Bounds."; }
         static const ObjectType objectType = ObjectType::Value;
 
         static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);

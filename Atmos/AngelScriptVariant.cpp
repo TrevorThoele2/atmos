@@ -7,7 +7,7 @@ namespace Atmos::Scripting::Angel
 {
     void Registration<Variant>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        ValueTypeRegistration<Type>(containingNamespace, name)
+        ValueTypeRegistration<Type>(ContainingNamespace(), Name())
             .DefaultConstructor(&Management::GenerateDefaultValue)
             .Constructor(&Management::GenerateValue<&PullFromParameter<0, bool>>, { "bool value" })
             .Constructor(&Management::GenerateValue<&PullFromParameter<0, std::int8_t>>, { "int8 value" })

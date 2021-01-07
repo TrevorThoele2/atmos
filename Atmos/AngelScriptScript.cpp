@@ -14,7 +14,7 @@ namespace Atmos::Scripting::Angel
 {
     void Registration<Script>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        ValueTypeRegistration<Type> registration(containingNamespace, name);
+        ValueTypeRegistration<Type> registration(ContainingNamespace(), Name());
         RegisterArcaIndex(registration);
         registration
             .ConstMethod(&Management::Method<&Data>, "Atmos::Datum[]@", "Data", {})
@@ -44,7 +44,7 @@ namespace Atmos::Scripting::Angel
 
     void Registration<ModifyData>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        ValueTypeRegistration<Type>(containingNamespace, name)
+        ValueTypeRegistration<Type>(ContainingNamespace(), Name())
             .Constructor(
                 &Management::GenerateValue<
                     &PullFromParameter<0, Arca::Index<Script>>,

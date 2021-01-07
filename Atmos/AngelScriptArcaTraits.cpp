@@ -4,7 +4,7 @@ namespace Atmos::Scripting::Angel
 {
     void Registration<GenericArcaTraits>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        TemplateValueTypeRegistration<Type>(containingNamespace, "Traits", { "T" })
+        TemplateValueTypeRegistration<Type>(ContainingNamespace(), "Traits", { "T" })
             .TemplateCallback(&Management::RequiredSpecializationTemplateCallback)
             .DefaultConstructor(&Management::UndefinedTemplate)
             .CopyConstructor(&Management::UndefinedTemplate)

@@ -283,15 +283,9 @@ namespace Atmos::Input
             const auto actionDelta = ActionDelta(action->mappedKeys, keyStates);
 
             if (actionDelta == KeyState::Down)
-            {
-                Owner().Do(Logging::Log("Down"));
                 Owner().Raise(ActionPressed{ actionIndex });
-            }
             else if (actionDelta == KeyState::Up)
-            {
-                Owner().Do(Logging::Log("Up"));
                 Owner().Raise(ActionDepressed{ actionIndex });
-            }
         }
 
         if (mousePosition.current != mousePosition.previous)

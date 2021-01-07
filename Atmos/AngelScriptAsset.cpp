@@ -4,7 +4,7 @@ namespace Atmos::Scripting::Angel
 {
     void Registration<GenericAssetFindByName>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        TemplateValueTypeRegistration<Type>(containingNamespace, "FindByName", { "T" })
+        TemplateValueTypeRegistration<Type>(ContainingNamespace(), "FindByName", { "T" })
             .TemplateCallback(&Management::RequiredSpecializationTemplateCallback)
             .Constructor(&Management::UndefinedTemplate, { "const string &in" })
             .CopyConstructor(&Management::UndefinedTemplate)

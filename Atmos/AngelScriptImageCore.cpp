@@ -12,7 +12,7 @@ namespace Atmos::Scripting::Angel
 {
     void Registration<Render::ImageCore>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        ValueTypeRegistration<Type> registration(containingNamespace, name);
+        ValueTypeRegistration<Type> registration(ContainingNamespace(), Name());
         RegisterArcaIndex(registration);
         registration
             .ConstMethod(&Management::Method<&Asset>, "Atmos::Asset::Image", "Asset", {})
@@ -47,7 +47,7 @@ namespace Atmos::Scripting::Angel
 
     void Registration<ChangeImageAsset>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        ValueTypeRegistration<Type>(containingNamespace, name)
+        ValueTypeRegistration<Type>(ContainingNamespace(), Name())
             .Constructor(
                 &Management::GenerateValue<
                     &PullFromParameter<0, Arca::RelicID>,
@@ -70,7 +70,7 @@ namespace Atmos::Scripting::Angel
 
     void Registration<ChangeAssetIndex>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        ValueTypeRegistration<Type>(containingNamespace, name)
+        ValueTypeRegistration<Type>(ContainingNamespace(), Name())
             .Constructor(
                 &Management::GenerateValue<
                     &PullFromParameter<0, Arca::RelicID>,

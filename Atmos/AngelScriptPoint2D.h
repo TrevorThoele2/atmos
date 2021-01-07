@@ -17,9 +17,9 @@ namespace Atmos::Scripting::Angel
         using Type = Spatial::Point2D;
         using Management = ObjectManagement<Type>;
 
-        static inline const String name = "Point2D";
-        static inline const String containingNamespace = "Atmos::Spatial";
-        static inline const String documentation = "2D point.";
+        static String Name() { return "Point2D"; }
+        static String ContainingNamespace() { return "Atmos::Spatial"; }
+        static String Documentation() { return "2D point."; }
         static const ObjectType objectType = ObjectType::Value;
 
         static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);

@@ -22,6 +22,6 @@ private:
     std::tuple<Arca::Index<T>, Atmos::String> TupleOf(Arca::Index<T> index)
     {
         using Registration = Atmos::Scripting::Angel::Registration<T>;
-        return { index, Atmos::Scripting::Angel::CreateName({Registration::containingNamespace}, Registration::name) };
+        return { index, Atmos::Scripting::Angel::CreateName({Registration::ContainingNamespace()}, Registration::Name()) };
     }
 };
