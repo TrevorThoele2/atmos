@@ -51,7 +51,9 @@
     <ClInclude Include="AngelScriptCurrentScript.h" />
     <ClInclude Include="AngelScriptEntity.h" />
     <ClInclude Include="AngelScriptDatum.h" />
+    <ClInclude Include="AngelScriptFindByBox.h" />
     <ClInclude Include="AngelScriptGridRegion.h" />
+    <ClInclude Include="AngelScriptInputInformation.h" />
     <ClInclude Include="AngelScriptKey.h" />
     <ClInclude Include="AngelScriptLine.h" />
     <ClInclude Include="AngelScriptBindAction.h" />
@@ -79,8 +81,12 @@
     <ClInclude Include="ExecuteScript.h" />
     <ClInclude Include="FindEntityByName.h" />
     <ClInclude Include="FindEntityByPosition.h" />
+    <ClInclude Include="FindGridRegionsByBox.h" />
+    <ClInclude Include="FindImagesByBox.h" />
+    <ClInclude Include="FindLinesByBox.h" />
     <ClInclude Include="ImageMaterialAsset.h" />
     <ClInclude Include="ImageMaterialAssetCurator.h" />
+    <ClInclude Include="InputInformation.h" />
     <ClInclude Include="KeyState.h" />
     <ClInclude Include="KeyStates.h" />
     <ClInclude Include="LineMaterialAsset.h" />
@@ -468,7 +474,9 @@
     <ClCompile Include="AngelScriptDynamicImage.cpp" />
     <ClCompile Include="AngelScriptEntity.cpp" />
     <ClCompile Include="AngelScriptDatum.cpp" />
+    <ClCompile Include="AngelScriptFindByBox.cpp" />
     <ClCompile Include="AngelScriptGridRegion.cpp" />
+    <ClCompile Include="AngelScriptInputInformation.cpp" />
     <ClCompile Include="AngelScriptKey.cpp" />
     <ClCompile Include="AngelScriptLine.cpp" />
     <ClCompile Include="AngelScriptBindAction.cpp" />
@@ -519,6 +527,7 @@
     <ClCompile Include="ImageAssetManager.cpp" />
     <ClCompile Include="ImageMaterialAsset.cpp" />
     <ClCompile Include="InputAngelScriptBytecodeStream.cpp" />
+    <ClCompile Include="InputInformation.cpp" />
     <ClCompile Include="LineMaterialAsset.cpp" />
     <ClCompile Include="LoggingInformation.cpp" />
     <ClCompile Include="MaterialAssetPass.cpp" />

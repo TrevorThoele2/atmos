@@ -1,6 +1,7 @@
 #include "TypeRegistration.h"
 
 #include "InputCurator.h"
+#include "InputInformation.h"
 
 #include "BoundsCurator.h"
 #include "RelativeBounds.h"
@@ -140,7 +141,8 @@ namespace Atmos
     {
         void RegisterTypes(Arca::ReliquaryOrigin& origin)
         {
-
+            origin
+                .Register<Information>();
         }
 
         void RegisterTypes(Arca::ReliquaryOrigin& origin, Manager& manager)

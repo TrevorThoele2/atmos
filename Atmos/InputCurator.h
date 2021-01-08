@@ -7,7 +7,6 @@
 #include "Work.h"
 
 #include "Key.h"
-
 #include "Delta.h"
 
 namespace Atmos::Input
@@ -23,10 +22,9 @@ namespace Atmos::Input
         Manager* manager;
 
         Delta<KeyStates> keyStates;
-        Delta<Spatial::ScreenPoint> mousePosition;
 
         using ActionState = std::tuple<bool, std::optional<KeyState>>;
-        [[nodiscard]] ActionState CurrentActionState(const Name& name, Key key, std::set<Key> modifiers, Delta<KeyStates> allKeyStates) const;
+        [[nodiscard]] ActionState CurrentActionState(const Name& name, Key key, std::set<Key> modifiers, KeyStates currentKeyStates) const;
     private:
         struct KeyMapping
         {

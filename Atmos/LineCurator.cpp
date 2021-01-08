@@ -49,6 +49,16 @@ namespace Atmos::Render
         data->material = command.to;
     }
 
+    std::vector<Arca::RelicID> LineCurator::Handle(const FindLinesByBox& command) const
+    {
+        auto indices = octree.AllWithin(command.box);
+        std::vector<Arca::RelicID> returnValue;
+        returnValue.reserve(indices.size());
+        for (auto& index : indices)
+            returnValue.push_back(index->id);
+        return returnValue;
+    }
+
     void LineCurator::WorkImpl(
         Spatial::AxisAlignedBox3D cameraBox,
         Spatial::Point2D cameraTopLeft,

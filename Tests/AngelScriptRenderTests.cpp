@@ -17,6 +17,7 @@
 #include <Atmos/Work.h>
 #include <Atmos/StringUtility.h>
 #include <Arca/LocalRelic.h>
+#include <Atmos/AxisAlignedBox3D.h>
 
 Arca::Index<Atmos::Asset::Image> AngelScriptRenderTestsFixture::CreateImageAsset(Arca::Reliquary& reliquary)
 {
@@ -688,6 +689,83 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                 }
             }
         }
+
+        GIVEN("box 2D")
+        {
+            auto box = Spatial::AxisAlignedBox2D(
+                Spatial::Point2D{},
+                Spatial::Size2D
+                {
+                    std::numeric_limits<Spatial::AxisAlignedBox2D::Coordinate>::max() / 2 - 1,
+                    std::numeric_limits<Spatial::AxisAlignedBox2D::Coordinate>::max() / 2 - 1
+                });
+
+            GIVEN("script that returns FindImagesByBox with AxisAlignedBox2D")
+            {
+                CompileAndCreateScript(
+                    "basic_script.as",
+                    "Arca::RelicID main(float x, float y, float width, float height)\n" \
+                    "{\n" \
+                    "    auto box = Atmos::Spatial::AxisAlignedBox2D(Atmos::Spatial::Point2D(x, y), Atmos::Spatial::Size2D(width, height));\n" \
+                    "    auto found = Arca::Reliquary::Do(Atmos::Render::FindImagesByBox(box));\n" \
+                    "    return found[0];\n" \
+                    "}",
+                    { box.center.x, box.center.y, box.size.width, box.size.height },
+                    fieldReliquary);
+
+                WHEN("working reliquary")
+                {
+                    fieldReliquary.Do(Work{});
+
+                    THEN("has correct properties")
+                    {
+                        REQUIRE(finishes.size() == 1);
+
+                        const auto expectedResult = dynamicImage.ID();
+                        REQUIRE(std::get<Arca::RelicID>(std::get<Variant>(finishes[0].result)) == expectedResult);
+                    }
+                }
+            }
+        }
+
+        GIVEN("box 3D")
+        {
+            auto box = Spatial::AxisAlignedBox3D(
+                Spatial::Point3D{},
+                Spatial::Size3D
+                {
+                    std::numeric_limits<Spatial::AxisAlignedBox2D::Coordinate>::max() / 2 - 1,
+                    std::numeric_limits<Spatial::AxisAlignedBox2D::Coordinate>::max() / 2 - 1,
+                    std::numeric_limits<Spatial::AxisAlignedBox2D::Coordinate>::max() / 2 - 1
+                });
+
+            GIVEN("script that returns FindImagesByBox with AxisAlignedBox3D")
+            {
+                CompileAndCreateScript(
+                    "basic_script.as",
+                    "Arca::RelicID main(float x, float y, float z, float width, float height, float depth)\n" \
+                    "{\n" \
+                    "    auto box = Atmos::Spatial::AxisAlignedBox3D(Atmos::Spatial::Point3D(x, y, z), Atmos::Spatial::Size3D(width, height, depth));\n" \
+                    "    auto found = Arca::Reliquary::Do(Atmos::Render::FindImagesByBox(box));\n" \
+                    "    return found[0];\n" \
+                    "}",
+                    { box.center.x, box.center.y, box.center.z, box.size.width, box.size.height, box.size.depth },
+                    fieldReliquary);
+
+                WHEN("working reliquary")
+                {
+                    fieldReliquary.Do(Work{});
+
+                    THEN("has correct properties")
+                    {
+                        REQUIRE(finishes.size() == 1);
+
+                        const auto expectedResult = dynamicImage.ID();
+                        REQUIRE(std::get<Arca::RelicID>(std::get<Variant>(finishes[0].result)) == expectedResult);
+                    }
+                }
+            }
+        }
     }
 
     GIVEN("RelativeImage")
@@ -704,7 +782,7 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
             Spatial::Point3D{},
             Spatial::Scalers2D{},
             Spatial::Angle2D{} };
-        auto dynamicImage = fieldReliquary.Do(createCommand);
+        auto relativeImage = fieldReliquary.Do(createCommand);
 
         GIVEN("image asset")
         {
@@ -733,7 +811,7 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                     "    auto image = Atmos::Render::RelativeImage(id);\n" \
                     "    return image.Asset().ID();\n" \
                     "}",
-                    { dynamicImage.ID(), imageAsset.ID() },
+                    { relativeImage.ID(), imageAsset.ID() },
                     fieldReliquary);
 
                 WHEN("working reliquary")
@@ -763,7 +841,7 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                     "    auto image = Atmos::Render::RelativeImage(id);\n" \
                     "    return image.AssetIndex();\n" \
                     "}",
-                    { dynamicImage.ID(), assetIndex },
+                    { relativeImage.ID(), assetIndex },
                     fieldReliquary);
 
                 WHEN("working reliquary")
@@ -796,7 +874,7 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
 
             auto assetIndex = dataGeneration.Random<Render::RelativeImage::Index>();
 
-            fieldReliquary.Do(Render::ChangeImageCore{ dynamicImage.ID(), imageAsset, assetIndex });
+            fieldReliquary.Do(Render::ChangeImageCore{ relativeImage.ID(), imageAsset, assetIndex });
 
             GIVEN("script that returns asset slice")
             {
@@ -808,7 +886,7 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                     "    auto assetSlice = image.AssetSlice();\n" \
                     "    return Atmos::ToString(assetSlice.center.x) + \" \" + Atmos::ToString(assetSlice.center.y);\n" \
                     "}",
-                    { dynamicImage.ID() },
+                    { relativeImage.ID() },
                     fieldReliquary);
 
                 WHEN("working reliquary")
@@ -819,7 +897,7 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                     {
                         REQUIRE(finishes.size() == 1);
 
-                        const auto expectedResult = ToString(dynamicImage->AssetSlice().center.x) + " " + ToString(dynamicImage->AssetSlice().center.y);
+                        const auto expectedResult = ToString(relativeImage->AssetSlice().center.x) + " " + ToString(relativeImage->AssetSlice().center.y);
                         REQUIRE(std::get<String>(std::get<Variant>(finishes[0].result)) == expectedResult);
                     }
                 }
@@ -855,7 +933,7 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                     "    auto image = Atmos::Render::RelativeImage(id);\n" \
                     "    return image.Material().ID();\n" \
                     "}",
-                    { dynamicImage.ID(), materialAsset.ID() },
+                    { relativeImage.ID(), materialAsset.ID() },
                     fieldReliquary);
 
                 WHEN("working reliquary")
@@ -888,7 +966,7 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                     "    return Atmos::ToString(image.Color().alpha) + \" \" + Atmos::ToString(image.Color().red) + \" \" +\n"
                     "        Atmos::ToString(image.Color().green) + \" \" + Atmos::ToString(image.Color().blue);\n"
                     "}",
-                    { dynamicImage.ID(), color.alpha, color.red, color.green, color.blue },
+                    { relativeImage.ID(), color.alpha, color.red, color.green, color.blue },
                     fieldReliquary);
 
                 WHEN("working reliquary")
@@ -931,7 +1009,7 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                     "    return Atmos::ToString(image.Position().x) + \" \" + Atmos::ToString(image.Position().y) + \" \" +\n"
                     "        Atmos::ToString(image.Position().z);\n"
                     "}",
-                    { dynamicImage.ID(), position.x, position.y, position.z },
+                    { relativeImage.ID(), position.x, position.y, position.z },
                     fieldReliquary);
 
                 WHEN("working reliquary")
@@ -969,7 +1047,7 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                     "    auto image = Atmos::Render::RelativeImage(id);\n" \
                     "    return Atmos::ToString(image.Rotation());\n"
                     "}",
-                    { dynamicImage.ID(), rotation },
+                    { relativeImage.ID(), rotation },
                     fieldReliquary);
 
                 WHEN("working reliquary")
@@ -1004,7 +1082,7 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                     "    auto image = Atmos::Render::RelativeImage(id);\n" \
                     "    return Atmos::ToString(image.Size().width) + \" \" + Atmos::ToString(image.Size().height);\n"
                     "}",
-                    { dynamicImage.ID(), scalers.x, scalers.y },
+                    { relativeImage.ID(), scalers.x, scalers.y },
                     fieldReliquary);
 
                 WHEN("working reliquary")
@@ -1017,6 +1095,83 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
 
                         const auto expectedResult = ToString(scalers.x) + " " + ToString(scalers.y);
                         REQUIRE(std::get<String>(std::get<Variant>(finishes[0].result)) == expectedResult);
+                    }
+                }
+            }
+        }
+
+        GIVEN("box 2D")
+        {
+            auto box = Spatial::AxisAlignedBox2D(
+                Spatial::Point2D{},
+                Spatial::Size2D
+                {
+                    std::numeric_limits<Spatial::AxisAlignedBox2D::Coordinate>::max() / 2 - 1,
+                    std::numeric_limits<Spatial::AxisAlignedBox2D::Coordinate>::max() / 2 - 1
+                });
+
+            GIVEN("script that returns FindImagesByBox with AxisAlignedBox2D")
+            {
+                CompileAndCreateScript(
+                    "basic_script.as",
+                    "Arca::RelicID main(float x, float y, float width, float height)\n" \
+                    "{\n" \
+                    "    auto box = Atmos::Spatial::AxisAlignedBox2D(Atmos::Spatial::Point2D(x, y), Atmos::Spatial::Size2D(width, height));\n" \
+                    "    auto found = Arca::Reliquary::Do(Atmos::Render::FindImagesByBox(box));\n" \
+                    "    return found[0];\n" \
+                    "}",
+                    { box.center.x, box.center.y, box.size.width, box.size.height },
+                    fieldReliquary);
+
+                WHEN("working reliquary")
+                {
+                    fieldReliquary.Do(Work{});
+
+                    THEN("has correct properties")
+                    {
+                        REQUIRE(finishes.size() == 1);
+
+                        const auto expectedResult = relativeImage.ID();
+                        REQUIRE(std::get<Arca::RelicID>(std::get<Variant>(finishes[0].result)) == expectedResult);
+                    }
+                }
+            }
+        }
+
+        GIVEN("box 3D")
+        {
+            auto box = Spatial::AxisAlignedBox3D(
+                Spatial::Point3D{},
+                Spatial::Size3D
+                {
+                    std::numeric_limits<Spatial::AxisAlignedBox2D::Coordinate>::max() / 2 - 1,
+                    std::numeric_limits<Spatial::AxisAlignedBox2D::Coordinate>::max() / 2 - 1,
+                    std::numeric_limits<Spatial::AxisAlignedBox2D::Coordinate>::max() / 2 - 1
+                });
+
+            GIVEN("script that returns FindImagesByBox with AxisAlignedBox3D")
+            {
+                CompileAndCreateScript(
+                    "basic_script.as",
+                    "Arca::RelicID main(float x, float y, float z, float width, float height, float depth)\n" \
+                    "{\n" \
+                    "    auto box = Atmos::Spatial::AxisAlignedBox3D(Atmos::Spatial::Point3D(x, y, z), Atmos::Spatial::Size3D(width, height, depth));\n" \
+                    "    auto found = Arca::Reliquary::Do(Atmos::Render::FindImagesByBox(box));\n" \
+                    "    return found[0];\n" \
+                    "}",
+                    { box.center.x, box.center.y, box.center.z, box.size.width, box.size.height, box.size.depth },
+                    fieldReliquary);
+
+                WHEN("working reliquary")
+                {
+                    fieldReliquary.Do(Work{});
+
+                    THEN("has correct properties")
+                    {
+                        REQUIRE(finishes.size() == 1);
+
+                        const auto expectedResult = relativeImage.ID();
+                        REQUIRE(std::get<Arca::RelicID>(std::get<Variant>(finishes[0].result)) == expectedResult);
                     }
                 }
             }
@@ -1193,6 +1348,83 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                 }
             }
         }
+
+        GIVEN("box 2D")
+        {
+            auto box = Spatial::AxisAlignedBox2D(
+                Spatial::Point2D{},
+                Spatial::Size2D
+                {
+                    std::numeric_limits<Spatial::AxisAlignedBox2D::Coordinate>::max() / 2 - 1,
+                    std::numeric_limits<Spatial::AxisAlignedBox2D::Coordinate>::max() / 2 - 1
+                });
+
+            GIVEN("script that returns FindLinesByBox with AxisAlignedBox2D")
+            {
+                CompileAndCreateScript(
+                    "basic_script.as",
+                    "Arca::RelicID main(float x, float y, float width, float height)\n" \
+                    "{\n" \
+                    "    auto box = Atmos::Spatial::AxisAlignedBox2D(Atmos::Spatial::Point2D(x, y), Atmos::Spatial::Size2D(width, height));\n" \
+                    "    auto found = Arca::Reliquary::Do(Atmos::Render::FindLinesByBox(box));\n" \
+                    "    return found[0];\n" \
+                    "}",
+                    { box.center.x, box.center.y, box.size.width, box.size.height },
+                    fieldReliquary);
+
+                WHEN("working reliquary")
+                {
+                    fieldReliquary.Do(Work{});
+
+                    THEN("has correct properties")
+                    {
+                        REQUIRE(finishes.size() == 1);
+
+                        const auto expectedResult = line.ID();
+                        REQUIRE(std::get<Arca::RelicID>(std::get<Variant>(finishes[0].result)) == expectedResult);
+                    }
+                }
+            }
+        }
+
+        GIVEN("box 3D")
+        {
+            auto box = Spatial::AxisAlignedBox3D(
+                Spatial::Point3D{},
+                Spatial::Size3D
+                {
+                    std::numeric_limits<Spatial::AxisAlignedBox2D::Coordinate>::max() / 2 - 1,
+                    std::numeric_limits<Spatial::AxisAlignedBox2D::Coordinate>::max() / 2 - 1,
+                    std::numeric_limits<Spatial::AxisAlignedBox2D::Coordinate>::max() / 2 - 1
+                });
+
+            GIVEN("script that returns FindLinesByBox with AxisAlignedBox3D")
+            {
+                CompileAndCreateScript(
+                    "basic_script.as",
+                    "Arca::RelicID main(float x, float y, float z, float width, float height, float depth)\n" \
+                    "{\n" \
+                    "    auto box = Atmos::Spatial::AxisAlignedBox3D(Atmos::Spatial::Point3D(x, y, z), Atmos::Spatial::Size3D(width, height, depth));\n" \
+                    "    auto found = Arca::Reliquary::Do(Atmos::Render::FindLinesByBox(box));\n" \
+                    "    return found[0];\n" \
+                    "}",
+                    { box.center.x, box.center.y, box.center.z, box.size.width, box.size.height, box.size.depth },
+                    fieldReliquary);
+
+                WHEN("working reliquary")
+                {
+                    fieldReliquary.Do(Work{});
+
+                    THEN("has correct properties")
+                    {
+                        REQUIRE(finishes.size() == 1);
+
+                        const auto expectedResult = line.ID();
+                        REQUIRE(std::get<Arca::RelicID>(std::get<Variant>(finishes[0].result)) == expectedResult);
+                    }
+                }
+            }
+        }
     }
 
     GIVEN("GridRegion")
@@ -1201,7 +1433,7 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
             std::unordered_set<Spatial::Grid::Point>{Spatial::Grid::Point{0, 0}, Spatial::Grid::Point{1, 1}},
             0,
             Arca::Index<Asset::RegionMaterial>{} };
-        auto line = fieldReliquary.Do(createCommand);
+        auto gridRegion = fieldReliquary.Do(createCommand);
 
         GIVEN("points")
         {
@@ -1227,7 +1459,7 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                     "        Atmos::ToString(retrievedPoints[1].x) + \" \" +\n" \
                     "        Atmos::ToString(retrievedPoints[1].y);\n" \
                     "}",
-                    { line.ID(), point0.x, point0.y, point1.x, point1.y },
+                    { gridRegion.ID(), point0.x, point0.y, point1.x, point1.y },
                     fieldReliquary);
 
                 WHEN("working reliquary")
@@ -1263,7 +1495,7 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                     "    auto gridRegion = Atmos::Render::GridRegion(id);\n" \
                     "    return gridRegion.Z();\n" \
                     "}",
-                    { line.ID(), z },
+                    { gridRegion.ID(), z },
                     fieldReliquary);
 
                 WHEN("working reliquary")
@@ -1308,7 +1540,7 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                     "    auto gridRegion = Atmos::Render::GridRegion(id);\n" \
                     "    return gridRegion.Material().ID();\n" \
                     "}",
-                    { line.ID(), materialAsset.ID() },
+                    { gridRegion.ID(), materialAsset.ID() },
                     fieldReliquary);
 
                 WHEN("working reliquary")
@@ -1319,6 +1551,83 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                     {
                         REQUIRE(finishes.size() == 1);
                         REQUIRE(std::get<Arca::RelicID>(std::get<Variant>(finishes[0].result)) == materialAsset.ID());
+                    }
+                }
+            }
+        }
+
+        GIVEN("box 2D")
+        {
+            auto box = Spatial::AxisAlignedBox2D(
+                Spatial::Point2D{},
+                Spatial::Size2D
+                {
+                    std::numeric_limits<Spatial::AxisAlignedBox2D::Coordinate>::max() / 2 - 1,
+                    std::numeric_limits<Spatial::AxisAlignedBox2D::Coordinate>::max() / 2 - 1
+                });
+
+            GIVEN("script that returns FindGridRegionsByBox with AxisAlignedBox2D")
+            {
+                CompileAndCreateScript(
+                    "basic_script.as",
+                    "Arca::RelicID main(float x, float y, float width, float height)\n" \
+                    "{\n" \
+                    "    auto box = Atmos::Spatial::AxisAlignedBox2D(Atmos::Spatial::Point2D(x, y), Atmos::Spatial::Size2D(width, height));\n" \
+                    "    auto found = Arca::Reliquary::Do(Atmos::Render::FindGridRegionsByBox(box));\n" \
+                    "    return found[0];\n" \
+                    "}",
+                    { box.center.x, box.center.y, box.size.width, box.size.height },
+                    fieldReliquary);
+
+                WHEN("working reliquary")
+                {
+                    fieldReliquary.Do(Work{});
+
+                    THEN("has correct properties")
+                    {
+                        REQUIRE(finishes.size() == 1);
+
+                        const auto expectedResult = gridRegion.ID();
+                        REQUIRE(std::get<Arca::RelicID>(std::get<Variant>(finishes[0].result)) == expectedResult);
+                    }
+                }
+            }
+        }
+
+        GIVEN("box 3D")
+        {
+            auto box = Spatial::AxisAlignedBox3D(
+                Spatial::Point3D{},
+                Spatial::Size3D
+                {
+                    std::numeric_limits<Spatial::AxisAlignedBox2D::Coordinate>::max() / 2 - 1,
+                    std::numeric_limits<Spatial::AxisAlignedBox2D::Coordinate>::max() / 2 - 1,
+                    std::numeric_limits<Spatial::AxisAlignedBox2D::Coordinate>::max() / 2 - 1
+                });
+
+            GIVEN("script that returns FindGridRegionsByBox with AxisAlignedBox3D")
+            {
+                CompileAndCreateScript(
+                    "basic_script.as",
+                    "Arca::RelicID main(float x, float y, float z, float width, float height, float depth)\n" \
+                    "{\n" \
+                    "    auto box = Atmos::Spatial::AxisAlignedBox3D(Atmos::Spatial::Point3D(x, y, z), Atmos::Spatial::Size3D(width, height, depth));\n" \
+                    "    auto found = Arca::Reliquary::Do(Atmos::Render::FindGridRegionsByBox(box));\n" \
+                    "    return found[0];\n" \
+                    "}",
+                    { box.center.x, box.center.y, box.center.z, box.size.width, box.size.height, box.size.depth },
+                    fieldReliquary);
+
+                WHEN("working reliquary")
+                {
+                    fieldReliquary.Do(Work{});
+
+                    THEN("has correct properties")
+                    {
+                        REQUIRE(finishes.size() == 1);
+
+                        const auto expectedResult = gridRegion.ID();
+                        REQUIRE(std::get<Arca::RelicID>(std::get<Variant>(finishes[0].result)) == expectedResult);
                     }
                 }
             }

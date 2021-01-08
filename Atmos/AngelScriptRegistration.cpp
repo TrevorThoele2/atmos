@@ -43,6 +43,7 @@
 #include "AngelScriptStopwatch.h"
 
 #include "AngelScriptKey.h"
+#include "AngelScriptInputInformation.h"
 #include "AngelScriptBindAction.h"
 #include "AngelScriptActionActive.h"
 #include "AngelScriptActionDepressed.h"
@@ -69,6 +70,7 @@
 #include "AngelScriptGridRegion.h"
 #include "AngelScriptCamera.h"
 #include "AngelScriptChangeMaterialAsset.h"
+#include "AngelScriptFindByBox.h"
 
 #include "AngelScriptEntity.h"
 #include "AngelScriptCurrentEntity.h"
@@ -191,7 +193,8 @@ namespace Atmos::Scripting::Angel
                 .Register<TimePointCast<Time::Nanoseconds>>()
                 .Register<Time::Stopwatch>()
 
-                .Register<Input::Key>()            
+                .Register<Input::Key>()
+                .Register<Input::Information>()
 
                 .Register<GenericAssetFindByName>()
                 .Register<Asset::Action>()
@@ -233,6 +236,9 @@ namespace Atmos::Scripting::Angel
                 .Register<Render::ChangeMaterialAsset<Asset::ImageMaterial>>()
                 .Register<Render::ChangeMaterialAsset<Asset::LineMaterial>>()
                 .Register<Render::ChangeMaterialAsset<Asset::RegionMaterial>>()
+                .Register<Render::FindImagesByBox>()
+                .Register<Render::FindLinesByBox>()
+                .Register<Render::FindGridRegionsByBox>()
 
                 .Register<Entity::Entity>()
                 .Register<Entity::FindByName>()

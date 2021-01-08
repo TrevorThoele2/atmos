@@ -5,6 +5,7 @@
 #include "GridRegion.h"
 #include "MoveGridRegion.h"
 #include "ChangeMaterialAsset.h"
+#include "FindGridRegionsByBox.h"
 
 #include "Octree.h"
 
@@ -18,6 +19,7 @@ namespace Atmos::Render
         using ObjectCurator::Handle;
         void Handle(const MoveGridRegion& command);
         void Handle(const ChangeRegionMaterialAsset& command);
+        std::vector<Arca::RelicID> Handle(const FindGridRegionsByBox& command) const;
     protected:
         void WorkImpl(
             Spatial::AxisAlignedBox3D cameraBox,
@@ -46,7 +48,7 @@ namespace Atmos::Render
         if (!index)
             return;
 
-        auto data = MutablePointer().Of(index);
+        const auto data = MutablePointer().Of(index);
 
         function(*data);
     }
@@ -62,7 +64,8 @@ namespace Arca
         using HandledCommands = HandledCommands<
             Atmos::Work,
             Atmos::Render::MoveGridRegion,
-            Atmos::Render::ChangeRegionMaterialAsset>;
+            Atmos::Render::ChangeRegionMaterialAsset,
+            Atmos::Render::FindGridRegionsByBox>;
     };
 }
 
