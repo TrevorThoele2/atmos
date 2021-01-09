@@ -5,6 +5,7 @@
 #include <angelscript.h>
 #include "AngelScriptResultVerification.h"
 #include "AngelScriptRegistration.h"
+#include "AngelScriptName.h"
 #include <scriptarray.h>
 
 #include <unordered_set>
