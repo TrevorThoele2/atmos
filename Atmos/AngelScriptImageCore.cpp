@@ -5,6 +5,8 @@
 #include "AngelScriptHandle.h"
 #include "AngelScriptArcaTraits.h"
 #include "AngelScriptArcaBatch.h"
+#include "AngelScriptArcaCreate.h"
+#include "AngelScriptArcaDestroy.h"
 
 #include <angelscript.h>
 
@@ -23,6 +25,24 @@ namespace Atmos::Scripting::Angel
 
         Registration<ArcaTraits<Render::ImageCore>>::RegisterTo(engine, documentationManager);
         Registration<Arca::Batch<Render::ImageCore>>::RegisterTo(engine, documentationManager);
+
+        ArcaCreateShardRegistration<Type::ValueT>()
+            .Constructor<>({})
+            .Constructor<
+                Arca::Index<Asset::Image>,
+                Type::ValueT::Index,
+                Arca::Index<Asset::ImageMaterial>,
+                Render::Color>
+            ({
+                "Atmos::Asset::Image asset",
+                "int assetIndex",
+                "Atmos::Asset::ImageMaterial material",
+                "Atmos::Render::Color color"
+            })
+            .Actualize(engine, documentationManager);
+        RegisterArcaCreated<Type::ValueT>(engine, documentationManager);
+
+        RegisterArcaDestroyShard<Type::ValueT>(engine, documentationManager);
     }
 
     Arca::Index<Asset::Image> Registration<Render::ImageCore>::Asset(Type type)

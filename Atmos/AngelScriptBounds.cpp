@@ -5,6 +5,8 @@
 #include "AngelScriptHandle.h"
 #include "AngelScriptArcaTraits.h"
 #include "AngelScriptArcaBatch.h"
+#include "AngelScriptArcaCreate.h"
+#include "AngelScriptArcaDestroy.h"
 #include "AngelScriptObjectRegistration.h"
 
 #include <angelscript.h>
@@ -27,6 +29,24 @@ namespace Atmos::Scripting::Angel
 
         Registration<ArcaTraits<Spatial::Bounds>>::RegisterTo(engine, documentationManager);
         Registration<Arca::Batch<Spatial::Bounds>>::RegisterTo(engine, documentationManager);
+
+        ArcaCreateShardRegistration<Type::ValueT>()
+            .Constructor<>({})
+            .Constructor<
+                Spatial::Point3D,
+                Spatial::Size2D,
+                Spatial::Scalers2D,
+                Spatial::Angle2D>
+            ({
+                "Atmos::Spatial::Point3D position",
+                "Atmos::Spatial::Size2D baseSize",
+                "Atmos::Spatial::Scalers2D scalers",
+                "Atmos::Spatial::Angle2D rotation"
+            })
+            .Actualize(engine, documentationManager);
+        RegisterArcaCreated<Type::ValueT>(engine, documentationManager);
+
+        RegisterArcaDestroyShard<Type::ValueT>(engine, documentationManager);
     }
 
     Spatial::Point3D Registration<Spatial::Bounds>::Position(Type type)

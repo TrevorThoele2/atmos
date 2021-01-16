@@ -39,9 +39,6 @@ namespace Atmos::Render
     private:
         Arca::Index<ImageCore> core;
         Arca::Index<BoundsT> bounds;
-    private:
-        template<class CommandT, class MemberT>
-        CommandT CreateModificationCommand(std::optional<MemberT> CommandT::* member, MemberT value) const;
     };
 
     template<bool mutableBounds>
@@ -118,15 +115,4 @@ namespace Atmos::Render
         core(init.Find<ImageCore>()),
         bounds(init.Find<BoundsT>())
     {}
-
-    template<bool mutableBounds>
-    template<class CommandT, class MemberT>
-    CommandT Image<mutableBounds>::CreateModificationCommand(
-        std::optional<MemberT> CommandT::* member, MemberT value) const
-    {
-        CommandT command;
-        command.id = init.id;
-        (command.*member) = value;
-        return command;
-    }
 }

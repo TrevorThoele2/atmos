@@ -18,6 +18,9 @@
 #include <Atmos/AngelScriptImageCore.h>
 #include <Atmos/AngelScriptBounds.h>
 
+#include <Atmos/AngelScriptPositionedSound.h>
+#include <Atmos/AngelScriptUniversalSound.h>
+
 #include <Atmos/CreateAudioAssetResource.h>
 #include "AudioBuffer.h"
 
@@ -181,6 +184,48 @@ public:
             points,
             z,
             Arca::Index<Atmos::Asset::RegionMaterial>{} };
+        auto index = reliquary.Do(createCommand);
+        return TupleOf<T>(index);
+    }
+
+    template<class T, std::enable_if_t<std::is_same_v<Atmos::Audio::PositionedSound, T>, int> = 0>
+    CreatedObject<T> CreateObject(Arca::Reliquary& reliquary)
+    {
+        const auto audioAssetName = dataGeneration.Random<std::string>();
+
+        auto resource = reliquary.Do(Atmos::Asset::Resource::Create<Atmos::Asset::Resource::Audio>{
+            Atmos::Buffer{}, audioAssetName });
+        const auto audioAsset = reliquary.Do(Arca::Create<Atmos::Asset::Audio>{
+            audioAssetName, std::move(resource) });
+
+        const auto volume = dataGeneration.Random<Atmos::Audio::Volume>();
+
+        const auto position = dataGeneration.RandomStack<
+            Atmos::Spatial::Point3D, Atmos::Spatial::Point3D::Value, Atmos::Spatial::Point3D::Value, Atmos::Spatial::Point3D::Value>();
+
+        const auto createCommand = Arca::Create<Atmos::Audio::PositionedSound>{
+            audioAsset,
+            volume,
+            position };
+        auto index = reliquary.Do(createCommand);
+        return TupleOf<T>(index);
+    }
+
+    template<class T, std::enable_if_t<std::is_same_v<Atmos::Audio::UniversalSound, T>, int> = 0>
+    CreatedObject<T> CreateObject(Arca::Reliquary& reliquary)
+    {
+        const auto audioAssetName = dataGeneration.Random<std::string>();
+
+        auto resource = reliquary.Do(Atmos::Asset::Resource::Create<Atmos::Asset::Resource::Audio>{
+            Atmos::Buffer{}, audioAssetName });
+        const auto audioAsset = reliquary.Do(Arca::Create<Atmos::Asset::Audio>{
+            audioAssetName, std::move(resource) });
+
+        const auto volume = dataGeneration.Random<Atmos::Audio::Volume>();
+
+        const auto createCommand = Arca::Create<Atmos::Audio::UniversalSound>{
+            audioAsset,
+            volume };
         auto index = reliquary.Do(createCommand);
         return TupleOf<T>(index);
     }

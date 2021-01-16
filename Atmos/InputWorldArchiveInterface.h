@@ -27,11 +27,15 @@ namespace Atmos::World::Serialization
         [[nodiscard]] std::vector<FieldID> AllFieldIDs() const override;
         [[nodiscard]] bool ContainsField(FieldID fieldID) const override;
         [[nodiscard]] size_t FieldSize() const override;
+
+        [[nodiscard]] std::vector<Property> WorldProperties() const override;
     private:
         using ArchiveT = Inscription::InputBinaryArchive;
         ArchiveT archive;
 
         Inscription::InputJumpTable<FieldID, Field> fieldJumpTable;
+
+        std::vector<Property> worldProperties;
 
         VersionUserContext versionUserContext;
 

@@ -10,4 +10,6 @@ public:
     MockInputManager() = default;
 
     [[nodiscard]] State ReadState() const override;
+
+    [[nodiscard]] Atmos::String TypeName() const override;
 };

@@ -14,10 +14,15 @@ namespace Atmos::Scripting::Angel
             {
                 const auto declaration = returnType + " " + name + "(" + Chroma::Join(", ", parameters.begin(), parameters.end()) + ")";
 
-                VerifyResult(engine.RegisterGlobalFunction(
+                const auto result = engine.RegisterGlobalFunction(
                     declaration.c_str(),
                     asFUNCTION(function),
-                    asCALL_GENERIC));
+                    asCALL_GENERIC);
+                VerifyResult(
+                    result,
+                    {
+                        { "Declaration", declaration }
+                    });
             });
 
         return *this;
@@ -27,7 +32,13 @@ namespace Atmos::Scripting::Angel
     {
         AddItem([alias, original](asIScriptEngine& engine)
             {
-                VerifyResult(engine.RegisterTypedef(alias.c_str(), original.c_str()));
+                const auto result = engine.RegisterTypedef(alias.c_str(), original.c_str());
+                VerifyResult(
+                    result,
+                    {
+                        { "Alias", alias },
+                        { "Original", original }
+                    });
             });
 
         return *this;
@@ -38,7 +49,12 @@ namespace Atmos::Scripting::Angel
         AddItem([returnType, name, parameters](asIScriptEngine& engine)
             {
                 const auto declaration = returnType + " " + name + "(" + Chroma::Join(", ", parameters.begin(), parameters.end()) + ")";
-                VerifyResult(engine.RegisterFuncdef(declaration.c_str()));
+                const auto result = engine.RegisterFuncdef(declaration.c_str());
+                VerifyResult(
+                    result,
+                    {
+                        { "Declaration", declaration }
+                    });
             });
 
         return *this;
@@ -50,7 +66,12 @@ namespace Atmos::Scripting::Angel
             ? *containingNamespace
             : "";
 
-        VerifyResult(engine.SetDefaultNamespace(useNamespace.c_str()));
+        const auto result = engine.SetDefaultNamespace(useNamespace.c_str());
+        VerifyResult(
+            result,
+            {
+                { "Namespace", useNamespace }
+            });
 
         for (auto& item : items)
             item(engine);

@@ -19,21 +19,23 @@
 #include <Arca/LocalRelic.h>
 
 #include "AudioBuffer.h"
+#include "Atmos/FileLoggingSink.h"
 
 SCENARIO_METHOD(AngelScriptAssetTestsFixture, "running asset AngelScript scripts", "[script][angelscript]")
 {
     Logging::Logger logger(Logging::Severity::Verbose);
+    logger.Add<Logging::FileSink>();
     ScriptEngine engine(logger);
-    engine.Setup();
 
     auto fieldOrigin = Arca::ReliquaryOrigin();
     RegisterFieldTypes(
         fieldOrigin,
         *engine.mockImageAssetManager,
-        *engine.nullAudioManager,
+        *engine.mockAudioManager,
         *engine.mockInputManager,
         *engine.mockGraphicsManager,
         *engine.scriptManager,
+        *engine.mockWorldManager,
         Spatial::ScreenSize{
             std::numeric_limits<Spatial::ScreenSize::Dimension>::max(),
             std::numeric_limits<Spatial::ScreenSize::Dimension>::max() },
@@ -43,8 +45,6 @@ SCENARIO_METHOD(AngelScriptAssetTestsFixture, "running asset AngelScript scripts
     World::Field field(0, fieldOrigin.Actualize());
 
     auto& fieldReliquary = field.Reliquary();
-
-    engine.mockGraphicsManager->Initialize();
 
     std::vector<Scripting::Finished> finishes;
     fieldReliquary.On<Scripting::Finished>([&finishes](const Scripting::Finished& signal)
@@ -552,18 +552,19 @@ TEMPLATE_TEST_CASE_METHOD(
     Asset::RegionMaterial)
 {
     Logging::Logger logger(Logging::Severity::Verbose);
+    logger.Add<Logging::FileSink>();
     ScriptEngine engine(logger);
-    engine.Setup();
 
     auto fieldOrigin = Arca::ReliquaryOrigin();
     fieldOrigin.Register<Arca::OpenRelic>();
     RegisterFieldTypes(
         fieldOrigin,
         *engine.mockImageAssetManager,
-        *engine.nullAudioManager,
+        *engine.mockAudioManager,
         *engine.mockInputManager,
         *engine.mockGraphicsManager,
         *engine.scriptManager,
+        *engine.mockWorldManager,
         Spatial::ScreenSize{
             std::numeric_limits<Spatial::ScreenSize::Dimension>::max(),
             std::numeric_limits<Spatial::ScreenSize::Dimension>::max() },
@@ -573,8 +574,6 @@ TEMPLATE_TEST_CASE_METHOD(
     World::Field field(0, fieldOrigin.Actualize());
 
     auto& fieldReliquary = field.Reliquary();
-
-    engine.mockGraphicsManager->Initialize();
 
     std::vector<Scripting::Finished> finishes;
     fieldReliquary.On<Scripting::Finished>([&finishes](const Scripting::Finished& signal)

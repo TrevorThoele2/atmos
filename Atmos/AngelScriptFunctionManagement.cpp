@@ -4,6 +4,7 @@
 #include "AngelScriptPrimitive.h"
 #include "AngelScriptHandle.h"
 
+#include "StringUtility.h"
 #include <Chroma/Iterate.h>
 
 namespace Atmos::Scripting::Angel
@@ -14,7 +15,7 @@ namespace Atmos::Scripting::Angel
         if (found)
             return *found;
 
-        throw AngelScriptFailed(
+        throw Error(
             "Could not find object type.",
             {
                 { "Declaration", declaration }
@@ -23,7 +24,12 @@ namespace Atmos::Scripting::Angel
 
     void Dispatch<bool>::PushToParameter(ParameterIndex index, Type object, asIScriptContext& context)
     {
-        VerifyResult(context.SetArgByte(index, object));
+        const auto result = context.SetArgByte(index, object);
+        VerifyResult(
+            result,
+            {
+                { "Index", ToString(index) }
+            });
     }
 
     void Dispatch<bool>::PushToReturn(bool object, asIScriptGeneric& generic)
@@ -43,7 +49,12 @@ namespace Atmos::Scripting::Angel
 
     void Dispatch<std::int8_t>::PushToParameter(ParameterIndex index, Type object, asIScriptContext& context)
     {
-        VerifyResult(context.SetArgByte(index, object));
+        const auto result = context.SetArgByte(index, object);
+        VerifyResult(
+            result,
+            {
+                { "Index", ToString(index) }
+            });
     }
 
     void Dispatch<std::int8_t>::PushToReturn(Type object, asIScriptGeneric& generic)
@@ -63,7 +74,12 @@ namespace Atmos::Scripting::Angel
 
     void Dispatch<std::int16_t>::PushToParameter(ParameterIndex index, Type object, asIScriptContext& context)
     {
-        VerifyResult(context.SetArgWord(index, object));
+        const auto result = context.SetArgWord(index, object);
+        VerifyResult(
+            result,
+            {
+                { "Index", ToString(index) }
+            });
     }
 
     void Dispatch<std::int16_t>::PushToReturn(Type object, asIScriptGeneric& generic)
@@ -83,7 +99,12 @@ namespace Atmos::Scripting::Angel
 
     void Dispatch<std::int32_t>::PushToParameter(ParameterIndex index, Type object, asIScriptContext& context)
     {
-        VerifyResult(context.SetArgDWord(index, object));
+        const auto result = context.SetArgDWord(index, object);
+        VerifyResult(
+            result,
+            {
+                { "Index", ToString(index) }
+            });
     }
 
     void Dispatch<std::int32_t>::PushToReturn(Type object, asIScriptGeneric& generic)
@@ -103,7 +124,12 @@ namespace Atmos::Scripting::Angel
 
     void Dispatch<std::int64_t>::PushToParameter(ParameterIndex index, Type object, asIScriptContext& context)
     {
-        VerifyResult(context.SetArgQWord(index, object));
+        const auto result = context.SetArgQWord(index, object);
+        VerifyResult(
+            result,
+            {
+                { "Index", ToString(index) }
+            });
     }
 
     void Dispatch<std::int64_t>::PushToReturn(Type object, asIScriptGeneric& generic)
@@ -123,7 +149,12 @@ namespace Atmos::Scripting::Angel
 
     void Dispatch<std::uint8_t>::PushToParameter(ParameterIndex index, Type object, asIScriptContext& context)
     {
-        VerifyResult(context.SetArgByte(index, object));
+        const auto result = context.SetArgByte(index, object);
+        VerifyResult(
+            result,
+            {
+                { "Index", ToString(index) }
+            });
     }
 
     void Dispatch<std::uint8_t>::PushToReturn(Type object, asIScriptGeneric& generic)
@@ -143,7 +174,12 @@ namespace Atmos::Scripting::Angel
 
     void Dispatch<std::uint16_t>::PushToParameter(ParameterIndex index, Type object, asIScriptContext& context)
     {
-        VerifyResult(context.SetArgWord(index, object));
+        const auto result = context.SetArgWord(index, object);
+        VerifyResult(
+            result,
+            {
+                { "Index", ToString(index) }
+            });
     }
 
     void Dispatch<std::uint16_t>::PushToReturn(Type object, asIScriptGeneric& generic)
@@ -163,7 +199,12 @@ namespace Atmos::Scripting::Angel
 
     void Dispatch<std::uint32_t>::PushToParameter(ParameterIndex index, Type object, asIScriptContext& context)
     {
-        VerifyResult(context.SetArgDWord(index, object));
+        const auto result = context.SetArgDWord(index, object);
+        VerifyResult(
+            result,
+            {
+                { "Index", ToString(index) }
+            });
     }
 
     void Dispatch<std::uint32_t>::PushToReturn(Type object, asIScriptGeneric& generic)
@@ -183,7 +224,12 @@ namespace Atmos::Scripting::Angel
 
     void Dispatch<std::uint64_t>::PushToParameter(ParameterIndex index, Type object, asIScriptContext& context)
     {
-        VerifyResult(context.SetArgQWord(index, object));
+        const auto result = context.SetArgQWord(index, object);
+        VerifyResult(
+            result,
+            {
+                { "Index", ToString(index) }
+            });
     }
 
     void Dispatch<std::uint64_t>::PushToReturn(Type object, asIScriptGeneric& generic)
@@ -203,7 +249,12 @@ namespace Atmos::Scripting::Angel
 
     void Dispatch<float>::PushToParameter(ParameterIndex index, Type object, asIScriptContext& context)
     {
-        VerifyResult(context.SetArgFloat(index, object));
+        const auto result = context.SetArgFloat(index, object);
+        VerifyResult(
+            result,
+            {
+                { "Index", ToString(index) }
+            });
     }
 
     void Dispatch<float>::PushToReturn(Type object, asIScriptGeneric& generic)
@@ -223,7 +274,12 @@ namespace Atmos::Scripting::Angel
 
     void Dispatch<double>::PushToParameter(ParameterIndex index, Type object, asIScriptContext& context)
     {
-        VerifyResult(context.SetArgDouble(index, object));
+        const auto result = context.SetArgDouble(index, object);
+        VerifyResult(
+            result,
+            {
+                { "Index", ToString(index) }
+            });
     }
 
     void Dispatch<double>::PushToReturn(double object, asIScriptGeneric& generic)

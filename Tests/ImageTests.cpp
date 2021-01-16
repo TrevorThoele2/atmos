@@ -21,17 +21,17 @@ SCENARIO_METHOD(ImageTestsFixture, "images", "[render]")
     {
         Logging::Logger logger(Logging::Severity::Verbose);
         DerivedEngine engine(logger);
-        engine.Setup();
 
         auto fieldOrigin = Arca::ReliquaryOrigin();
         RegisterArcaTypes(fieldOrigin);
         RegisterFieldTypes(
             fieldOrigin,
-            *engine.mockImageAssetManager,
-            *engine.nullAudioManager,
+            *engine.mockAssetResourceManager,
+            *engine.mockAudioManager,
             *engine.mockInputManager,
             *engine.mockGraphicsManager,
             *engine.mockScriptManager,
+            *engine.worldManager,
             Spatial::ScreenSize{
                 std::numeric_limits<Spatial::ScreenSize::Dimension>::max(),
                 std::numeric_limits<Spatial::ScreenSize::Dimension>::max() },
@@ -40,8 +40,6 @@ SCENARIO_METHOD(ImageTestsFixture, "images", "[render]")
         World::Field field(0, fieldOrigin.Actualize());
 
         auto& fieldReliquary = field.Reliquary();
-
-        engine.mockGraphicsManager->Initialize();
 
         std::unique_ptr<Asset::Resource::Image> imageResource = std::make_unique<MockImageAssetResource>();
         auto imageAsset = fieldReliquary.Do(Arca::Create<Asset::Image> {

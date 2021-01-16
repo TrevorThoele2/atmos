@@ -24,22 +24,21 @@ namespace Atmos::Scripting::Angel
         Registration<ArcaTraits<Render::GridRegion>>::RegisterTo(engine, documentationManager);
         Registration<Arca::Batch<Render::GridRegion>>::RegisterTo(engine, documentationManager);
 
-        RegisterArcaCreateRelic<
-            Render::GridRegion,
-            Chroma::VariadicTemplate<
+        ArcaCreateRelicRegistration<Type::ValueT>()
+            .Constructor<
                 std::unordered_set<Spatial::Grid::Point>,
                 int,
-                Arca::Index<Asset::RegionMaterial>>>
-            (
-                {
-                    "Atmos::Spatial::Grid::Point[]@ points",
-                    "int z",
-                    "Atmos::Asset::RegionMaterial material"
-                },
-                engine,
-                documentationManager);
+                Arca::Index<Asset::RegionMaterial>>
+            ({
+                "Atmos::Spatial::Grid::Point[]@ points",
+                "int z",
+                "Atmos::Asset::RegionMaterial material"
+            })
+            .Actualize(engine, documentationManager);
+        RegisterArcaCreated<Type::ValueT>(engine, documentationManager);
 
-        RegisterArcaDestroyRelic<Render::GridRegion>(engine, documentationManager);
+        RegisterArcaDestroyRelic<Type::ValueT>(engine, documentationManager);
+        RegisterArcaDestroying<Type::ValueT>(engine, documentationManager);
     }
 
     std::unordered_set<Spatial::Grid::Point> Registration<Render::GridRegion>::Points(Type type)

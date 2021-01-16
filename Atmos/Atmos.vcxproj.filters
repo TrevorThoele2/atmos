@@ -372,12 +372,6 @@
     <Filter Include="Source Files\Frame">
       <UniqueIdentifier>{9f0dd34d-d5a3-443a-8e5d-9d8aac6de4ee}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Assets\Image\Manager">
-      <UniqueIdentifier>{ab67ec91-01c1-4896-90d4-4ce2490e3b45}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Assets\Image\Manager">
-      <UniqueIdentifier>{be26196f-d4b6-4f95-af0a-185864be9227}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Scripting">
       <UniqueIdentifier>{5d2af305-be22-493a-9f5b-95b32a24be5d}</UniqueIdentifier>
     </Filter>
@@ -534,6 +528,78 @@
     <Filter Include="Source Files\Scripting\Documentation">
       <UniqueIdentifier>{90513c17-1fff-47a5-b0c5-00fbc55e61cb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Audio\SDL">
+      <UniqueIdentifier>{aee1e63d-c7d0-4850-a7ef-11db7d7e78e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Audio\SDL">
+      <UniqueIdentifier>{9500f8cf-1ac5-457a-ade0-4bf1295cc837}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Audio\Commands">
+      <UniqueIdentifier>{87e5b406-a14c-4b8a-b23e-416e8df16301}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Audio\Signals">
+      <UniqueIdentifier>{c5f85f21-1549-40b6-ba66-07a298fd8c9b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Audio\Signals">
+      <UniqueIdentifier>{8d960d35-8bf3-4f6d-b64a-165cdc029436}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Audio\Commands">
+      <UniqueIdentifier>{14b8aa3b-3679-47c7-be0c-b876e35c486d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Audio\Sound">
+      <UniqueIdentifier>{be2df014-1c46-4049-91e8-db53f9f92339}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Audio\Sound">
+      <UniqueIdentifier>{d84e6b4c-d567-4c21-bd4b-1b2656b919a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Assets\Resource">
+      <UniqueIdentifier>{316f7818-7f99-4285-b08a-67272e92b3cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Assets\Resource">
+      <UniqueIdentifier>{408df0bd-16ad-4cfe-a57e-36b36a32ea81}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scripting\AngelScript\Types\Atmos\Audio">
+      <UniqueIdentifier>{d1442eb7-6b12-4685-9b4e-701de7d422d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scripting\AngelScript\Types\Atmos\Audio">
+      <UniqueIdentifier>{f446cffa-439c-4d56-a031-c01176bae365}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Data\Arca">
+      <UniqueIdentifier>{707321e8-4f01-4941-b97e-85837d947cd2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Data\Arca">
+      <UniqueIdentifier>{58d2bd24-38a5-4ee6-8278-8b87e007929c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scripting\AngelScript\Types\Atmos\Data">
+      <UniqueIdentifier>{c69cd98a-50b2-4866-afb8-f680602072c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scripting\AngelScript\Types\Atmos\Data">
+      <UniqueIdentifier>{512acd81-4eda-405c-b88e-a10f27bc04dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scripting\AngelScript\Types\Atmos\Logging">
+      <UniqueIdentifier>{879f471f-34b9-4952-a3da-7ca30c09fe82}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scripting\AngelScript\Types\Atmos\Logging">
+      <UniqueIdentifier>{a5baf1e3-0a2e-435a-814f-d8c2bc1fed61}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scripting\AngelScript\Types\Atmos\Math">
+      <UniqueIdentifier>{e1f1527f-d8a7-46f4-a124-624b810f4cf5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scripting\AngelScript\Types\Atmos\Math">
+      <UniqueIdentifier>{935c10c4-08d7-41e4-8b6d-95611a579e0b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scripting\AngelScript\Types\Atmos\World">
+      <UniqueIdentifier>{4274627f-377f-415f-871a-a62963c9e162}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scripting\AngelScript\Types\Atmos\World">
+      <UniqueIdentifier>{69b67337-032b-4baf-a1cc-bd47964f38c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\World\Commands">
+      <UniqueIdentifier>{45fe1c5f-ba36-4dbf-b7cf-90aa86ac0432}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\World\Commands">
+      <UniqueIdentifier>{fbc02e9b-24ac-412c-861d-1a9ee581e5ec}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FieldDestination.h">
@@ -551,9 +617,6 @@
     <ClInclude Include="Buffer.h">
       <Filter>Header Files\Data</Filter>
     </ClInclude>
-    <ClInclude Include="Music.h">
-      <Filter>Header Files\Audio</Filter>
-    </ClInclude>
     <ClInclude Include="Volume.h">
       <Filter>Header Files\Audio</Filter>
     </ClInclude>
@@ -563,14 +626,8 @@
     <ClInclude Include="StringUtility.h">
       <Filter>Header Files\Data</Filter>
     </ClInclude>
-    <ClInclude Include="ImageAsset.h">
-      <Filter>Header Files\Assets\Image</Filter>
-    </ClInclude>
     <ClInclude Include="ShaderAsset.h">
       <Filter>Header Files\Assets\Shader</Filter>
-    </ClInclude>
-    <ClInclude Include="AudioAssetInstance.h">
-      <Filter>Header Files\Assets\Audio</Filter>
     </ClInclude>
     <ClInclude Include="AudioAsset.h">
       <Filter>Header Files\Assets\Audio</Filter>
@@ -656,9 +713,6 @@
     <ClInclude Include="ModulatorInterpolationSmoothstep.h">
       <Filter>Header Files\Modulators\Interpolation</Filter>
     </ClInclude>
-    <ClInclude Include="WorldManager.h">
-      <Filter>Header Files\World</Filter>
-    </ClInclude>
     <ClInclude Include="AngelScriptReferenceCounted.h">
       <Filter>Header Files\Scripting\AngelScript\Types\Bases</Filter>
     </ClInclude>
@@ -698,17 +752,8 @@
     <ClInclude Include="EngineInitializationProperties.h">
       <Filter>Header Files\Engine</Filter>
     </ClInclude>
-    <ClInclude Include="EngineNotSetup.h">
-      <Filter>Header Files\Engine</Filter>
-    </ClInclude>
     <ClInclude Include="Color.h">
       <Filter>Header Files\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="Sound.h">
-      <Filter>Header Files\Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="DirectX9AudioManager.h">
-      <Filter>Header Files\Audio</Filter>
     </ClInclude>
     <ClInclude Include="NullAudioManager.h">
       <Filter>Header Files\Audio</Filter>
@@ -746,15 +791,6 @@
     <ClInclude Include="InitializationInformation.h">
       <Filter>Header Files\Initialization</Filter>
     </ClInclude>
-    <ClInclude Include="VolumeCurator.h">
-      <Filter>Header Files\Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="MusicCurator.h">
-      <Filter>Header Files\Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="SoundCurator.h">
-      <Filter>Header Files\Audio</Filter>
-    </ClInclude>
     <ClInclude Include="DebugStatisticsCurator.h">
       <Filter>Header Files\Debug</Filter>
     </ClInclude>
@@ -772,9 +808,6 @@
     </ClInclude>
     <ClInclude Include="CameraCurator.h">
       <Filter>Header Files\Render\Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="ProcessedLog.h">
-      <Filter>Header Files\Logging</Filter>
     </ClInclude>
     <ClInclude Include="Log.h">
       <Filter>Header Files\Logging</Filter>
@@ -826,12 +859,6 @@
     </ClInclude>
     <ClInclude Include="Entity.h">
       <Filter>Header Files\Entity</Filter>
-    </ClInclude>
-    <ClInclude Include="VolumeInformation.h">
-      <Filter>Header Files\Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="ChangeMasterVolume.h">
-      <Filter>Header Files\Audio</Filter>
     </ClInclude>
     <ClInclude Include="TypeRegistration.h">
       <Filter>Header Files\Engine</Filter>
@@ -889,9 +916,6 @@
     </ClInclude>
     <ClInclude Include="Asset.h">
       <Filter>Header Files\Assets</Filter>
-    </ClInclude>
-    <ClInclude Include="UnrecognizedAudioFormat.h">
-      <Filter>Header Files\Audio</Filter>
     </ClInclude>
     <ClInclude Include="WindowCreationFailed.h">
       <Filter>Header Files\Window</Filter>
@@ -1052,13 +1076,7 @@
     <ClInclude Include="VulkanDebug.h">
       <Filter>Header Files\Render\Vulkan</Filter>
     </ClInclude>
-    <ClInclude Include="FreeImageIncludes.h">
-      <Filter>Header Files\Assets\Image</Filter>
-    </ClInclude>
     <ClInclude Include="ReconstructGraphics.h">
-      <Filter>Header Files\Render\Commands</Filter>
-    </ClInclude>
-    <ClInclude Include="InitializeGraphics.h">
       <Filter>Header Files\Render\Commands</Filter>
     </ClInclude>
     <ClInclude Include="SetFullscreen.h">
@@ -1076,9 +1094,6 @@
     <ClInclude Include="AudioAssetResource.h">
       <Filter>Header Files\Assets\Audio</Filter>
     </ClInclude>
-    <ClInclude Include="AudioAssetInstanceResource.h">
-      <Filter>Header Files\Assets\Audio</Filter>
-    </ClInclude>
     <ClInclude Include="CreateImageAssetResource.h">
       <Filter>Header Files\Assets\Image</Filter>
     </ClInclude>
@@ -1086,9 +1101,6 @@
       <Filter>Header Files\Assets\Image</Filter>
     </ClInclude>
     <ClInclude Include="AssetWithResource.h">
-      <Filter>Header Files\Assets</Filter>
-    </ClInclude>
-    <ClInclude Include="CreateAssetResource.h">
       <Filter>Header Files\Assets</Filter>
     </ClInclude>
     <ClInclude Include="ScriptAssetResource.h">
@@ -1346,20 +1358,8 @@
     <ClInclude Include="WindowInformation.h">
       <Filter>Header Files\Window</Filter>
     </ClInclude>
-    <ClInclude Include="FreeImageAssetManager.h">
-      <Filter>Header Files\Assets\Image\Manager</Filter>
-    </ClInclude>
-    <ClInclude Include="ImageAssetManager.h">
-      <Filter>Header Files\Assets\Image\Manager</Filter>
-    </ClInclude>
-    <ClInclude Include="NullImageAssetManager.h">
-      <Filter>Header Files\Assets\Image\Manager</Filter>
-    </ClInclude>
     <ClInclude Include="LoadImageAssetResourceData.h">
       <Filter>Header Files\Assets\Image</Filter>
-    </ClInclude>
-    <ClInclude Include="LoadAssetResourceData.h">
-      <Filter>Header Files\Assets</Filter>
     </ClInclude>
     <ClInclude Include="LoadScriptAssetResourceData.h">
       <Filter>Header Files\Assets\Script</Filter>
@@ -1441,15 +1441,6 @@
     </ClInclude>
     <ClInclude Include="AngelScriptAsset.h">
       <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Assets</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptLog.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptLoggingSeverity.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptStringUtility.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos</Filter>
     </ClInclude>
     <ClInclude Include="AngelScriptPrimitive.h">
       <Filter>Header Files\Scripting\AngelScript\Types</Filter>
@@ -1547,9 +1538,6 @@
     <ClInclude Include="MoveEntityTo.h">
       <Filter>Header Files\Entity</Filter>
     </ClInclude>
-    <ClInclude Include="ModifyEntityData.h">
-      <Filter>Header Files\Entity</Filter>
-    </ClInclude>
     <ClInclude Include="ModifyEntityTags.h">
       <Filter>Header Files\Entity</Filter>
     </ClInclude>
@@ -1592,17 +1580,8 @@
     <ClInclude Include="AngelScriptSuspendScript.h">
       <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Script</Filter>
     </ClInclude>
-    <ClInclude Include="Datum.h">
-      <Filter>Header Files\Data</Filter>
-    </ClInclude>
     <ClInclude Include="Tag.h">
       <Filter>Header Files\Data</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptDatum.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos</Filter>
-    </ClInclude>
-    <ClInclude Include="ModifyScriptData.h">
-      <Filter>Header Files\Scripting\Commands</Filter>
     </ClInclude>
     <ClInclude Include="AngelScriptCurrentScript.h">
       <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Script</Filter>
@@ -1673,9 +1652,6 @@
     <ClInclude Include="AngelScriptTimePoint.h">
       <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Time</Filter>
     </ClInclude>
-    <ClInclude Include="AngelScriptMath.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos</Filter>
-    </ClInclude>
     <ClInclude Include="SDLWindow.h">
       <Filter>Header Files\Window</Filter>
     </ClInclude>
@@ -1726,9 +1702,6 @@
     </ClInclude>
     <ClInclude Include="AngelScriptTextEntered.h">
       <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptVariant.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos</Filter>
     </ClInclude>
     <ClInclude Include="ActionActive.h">
       <Filter>Header Files\Input\Signals</Filter>
@@ -1781,6 +1754,183 @@
     <ClInclude Include="AngelScriptInputInformation.h">
       <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Input</Filter>
     </ClInclude>
+    <ClInclude Include="LoadAudioAssetResourceData.h">
+      <Filter>Header Files\Assets\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="SDLAudioManager.h">
+      <Filter>Header Files\Audio\SDL</Filter>
+    </ClInclude>
+    <ClInclude Include="SDLAudioAssetResource.h">
+      <Filter>Header Files\Audio\SDL</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioError.h">
+      <Filter>Header Files\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="SDLChannel.h">
+      <Filter>Header Files\Audio\SDL</Filter>
+    </ClInclude>
+    <ClInclude Include="PositionedSound.h">
+      <Filter>Header Files\Audio\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="UniversalSound.h">
+      <Filter>Header Files\Audio\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound.h">
+      <Filter>Header Files\Audio\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundCore.h">
+      <Filter>Header Files\Audio\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundFinished.h">
+      <Filter>Header Files\Audio\Signals</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageAsset.h">
+      <Filter>Header Files\Assets\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="FreeImageIncludes.h">
+      <Filter>Header Files\Assets\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="AssetResourceManager.h">
+      <Filter>Header Files\Assets\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="NullAssetResourceManager.h">
+      <Filter>Header Files\Assets\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="RealAssetResourceManager.h">
+      <Filter>Header Files\Assets\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="CreateAssetResource.h">
+      <Filter>Header Files\Assets\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="AssetResourceTraits.h">
+      <Filter>Header Files\Assets\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadAssetResourceData.h">
+      <Filter>Header Files\Assets\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="SDLSoundResource.h">
+      <Filter>Header Files\Audio\SDL</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundResource.h">
+      <Filter>Header Files\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="CreateSoundResource.h">
+      <Filter>Header Files\Audio\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="ChangeSoundVolume.h">
+      <Filter>Header Files\Audio\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="PauseSound.h">
+      <Filter>Header Files\Audio\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="ResumeSound.h">
+      <Filter>Header Files\Audio\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptUniversalSound.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptPositionedSound.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptChangeSoundVolume.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptPauseSound.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptResumeSound.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptOpenRelic.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Arca</Filter>
+    </ClInclude>
+    <ClInclude Include="DataAlgorithms.h">
+      <Filter>Header Files\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="NullWorldManager.h">
+      <Filter>Header Files\World</Filter>
+    </ClInclude>
+    <ClInclude Include="RealWorldManager.h">
+      <Filter>Header Files\World</Filter>
+    </ClInclude>
+    <ClInclude Include="WorldManager.h">
+      <Filter>Header Files\World</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptError.h">
+      <Filter>Header Files\Scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="DataCore.h">
+      <Filter>Header Files\Data\Arca</Filter>
+    </ClInclude>
+    <ClInclude Include="DataCurator.h">
+      <Filter>Header Files\Data\Arca</Filter>
+    </ClInclude>
+    <ClInclude Include="ModifyProperties.h">
+      <Filter>Header Files\Data\Arca</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptProperty.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptModifyProperties.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptDataCore.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Property.h">
+      <Filter>Header Files\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptVariant.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptStringUtility.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptLoggingSeverity.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Logging</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptLog.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Logging</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptMath.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="WorldCurator.h">
+      <Filter>Header Files\World</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptModifyWorldProperties.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\World</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptRetrieveWorldProperties.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\World</Filter>
+    </ClInclude>
+    <ClInclude Include="ModifyWorldProperties.h">
+      <Filter>Header Files\World\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="RetrieveWorldProperties.h">
+      <Filter>Header Files\World\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="RequestField.h">
+      <Filter>Header Files\World\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptRequestField.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\World</Filter>
+    </ClInclude>
+    <ClInclude Include="LoggingSink.h">
+      <Filter>Header Files\Logging</Filter>
+    </ClInclude>
+    <ClInclude Include="FileLoggingSink.h">
+      <Filter>Header Files\Logging</Filter>
+    </ClInclude>
+    <ClInclude Include="RestartSound.h">
+      <Filter>Header Files\Audio\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptRestartSound.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptSoundFinished.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Audio</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FieldDestination.cpp">
@@ -1800,9 +1950,6 @@
     </ClCompile>
     <ClCompile Include="ShaderAsset.cpp">
       <Filter>Source Files\Assets\Shader</Filter>
-    </ClCompile>
-    <ClCompile Include="AudioAssetInstance.cpp">
-      <Filter>Source Files\Assets\Audio</Filter>
     </ClCompile>
     <ClCompile Include="AudioAsset.cpp">
       <Filter>Source Files\Assets\Audio</Filter>
@@ -1858,9 +2005,6 @@
     <ClCompile Include="ModulatorInterpolationSmoothstep.cpp">
       <Filter>Source Files\Modulators\Interpolation</Filter>
     </ClCompile>
-    <ClCompile Include="WorldManager.cpp">
-      <Filter>Source Files\World</Filter>
-    </ClCompile>
     <ClCompile Include="NullWindow.cpp">
       <Filter>Source Files\Window</Filter>
     </ClCompile>
@@ -1894,17 +2038,8 @@
     <ClCompile Include="Vector3D.cpp">
       <Filter>Source Files\Spatial\3D</Filter>
     </ClCompile>
-    <ClCompile Include="EngineNotSetup.cpp">
-      <Filter>Source Files\Engine</Filter>
-    </ClCompile>
     <ClCompile Include="Color.cpp">
       <Filter>Source Files\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="Sound.cpp">
-      <Filter>Source Files\Audio</Filter>
-    </ClCompile>
-    <ClCompile Include="DirectX9AudioManager.cpp">
-      <Filter>Source Files\Audio</Filter>
     </ClCompile>
     <ClCompile Include="NullAudioManager.cpp">
       <Filter>Source Files\Audio</Filter>
@@ -1920,15 +2055,6 @@
     </ClCompile>
     <ClCompile Include="ScriptVariant.cpp">
       <Filter>Source Files\Scripting</Filter>
-    </ClCompile>
-    <ClCompile Include="VolumeCurator.cpp">
-      <Filter>Source Files\Audio</Filter>
-    </ClCompile>
-    <ClCompile Include="MusicCurator.cpp">
-      <Filter>Source Files\Audio</Filter>
-    </ClCompile>
-    <ClCompile Include="SoundCurator.cpp">
-      <Filter>Source Files\Audio</Filter>
     </ClCompile>
     <ClCompile Include="DebugStatisticsCurator.cpp">
       <Filter>Source Files\Debug</Filter>
@@ -2013,9 +2139,6 @@
     </ClCompile>
     <ClCompile Include="AssetCore.cpp">
       <Filter>Source Files\Assets</Filter>
-    </ClCompile>
-    <ClCompile Include="UnrecognizedAudioFormat.cpp">
-      <Filter>Source Files\Audio</Filter>
     </ClCompile>
     <ClCompile Include="WindowCreationFailed.cpp">
       <Filter>Source Files\Window</Filter>
@@ -2118,9 +2241,6 @@
     </ClCompile>
     <ClCompile Include="VulkanQuadRenderer.cpp">
       <Filter>Source Files\Render\Vulkan\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="AudioAssetInstanceResource.cpp">
-      <Filter>Source Files\Assets\Audio</Filter>
     </ClCompile>
     <ClCompile Include="ImageAssetResource.cpp">
       <Filter>Source Files\Assets\Image</Filter>
@@ -2281,9 +2401,6 @@
     <ClCompile Include="Script.cpp">
       <Filter>Source Files\Scripting</Filter>
     </ClCompile>
-    <ClCompile Include="ScriptCurator.cpp">
-      <Filter>Source Files\Scripting</Filter>
-    </ClCompile>
     <ClCompile Include="NullScriptManager.cpp">
       <Filter>Source Files\Scripting</Filter>
     </ClCompile>
@@ -2305,15 +2422,6 @@
     <ClCompile Include="WindowInformation.cpp">
       <Filter>Source Files\Window</Filter>
     </ClCompile>
-    <ClCompile Include="FreeImageAssetManager.cpp">
-      <Filter>Source Files\Assets\Image\Manager</Filter>
-    </ClCompile>
-    <ClCompile Include="ImageAssetManager.cpp">
-      <Filter>Source Files\Assets\Image\Manager</Filter>
-    </ClCompile>
-    <ClCompile Include="NullImageAssetManager.cpp">
-      <Filter>Source Files\Assets\Image\Manager</Filter>
-    </ClCompile>
     <ClCompile Include="ScriptAssetCurator.cpp">
       <Filter>Source Files\Assets\Script</Filter>
     </ClCompile>
@@ -2325,9 +2433,6 @@
     </ClCompile>
     <ClCompile Include="AngelScriptRegistration.cpp">
       <Filter>Source Files\Scripting\AngelScript\Registration</Filter>
-    </ClCompile>
-    <ClCompile Include="ProcessedLog.cpp">
-      <Filter>Source Files\Logging</Filter>
     </ClCompile>
     <ClCompile Include="AngelScriptGlobalRegistration.cpp">
       <Filter>Source Files\Scripting\AngelScript\Registration</Filter>
@@ -2382,15 +2487,6 @@
     </ClCompile>
     <ClCompile Include="AngelScriptFunctionManagement.cpp">
       <Filter>Source Files\Scripting\AngelScript\Management</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptLog.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptLoggingSeverity.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptStringUtility.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos</Filter>
     </ClCompile>
     <ClCompile Include="AngelScriptAsset.cpp">
       <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Assets</Filter>
@@ -2476,17 +2572,11 @@
     <ClCompile Include="AngelScriptScriptResult.cpp">
       <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Script</Filter>
     </ClCompile>
-    <ClCompile Include="AngelScriptVariant.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos</Filter>
-    </ClCompile>
     <ClCompile Include="AngelScriptScriptFinished.cpp">
       <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Script</Filter>
     </ClCompile>
     <ClCompile Include="AngelScriptSuspendScript.cpp">
       <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Script</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptDatum.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos</Filter>
     </ClCompile>
     <ClCompile Include="AngelScriptCurrentScript.cpp">
       <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Script</Filter>
@@ -2502,9 +2592,6 @@
     </ClCompile>
     <ClCompile Include="AngelScriptCurrentEntity.cpp">
       <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Entity</Filter>
-    </ClCompile>
-    <ClCompile Include="Datum.cpp">
-      <Filter>Source Files\Data</Filter>
     </ClCompile>
     <ClCompile Include="MaterialAssetPass.cpp">
       <Filter>Source Files\Assets\Material</Filter>
@@ -2529,9 +2616,6 @@
     </ClCompile>
     <ClCompile Include="AngelScriptTimePoint.cpp">
       <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Time</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptMath.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos</Filter>
     </ClCompile>
     <ClCompile Include="..\..\AngelScript\sdk\add_on\scripthelper\scripthelper.cpp">
       <Filter>Source Files\Scripting\AngelScript\Addon</Filter>
@@ -2610,6 +2694,141 @@
     </ClCompile>
     <ClCompile Include="AngelScriptInputInformation.cpp">
       <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="SDLAudioManager.cpp">
+      <Filter>Source Files\Audio\SDL</Filter>
+    </ClCompile>
+    <ClCompile Include="SDLAudioAssetResource.cpp">
+      <Filter>Source Files\Audio\SDL</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioError.cpp">
+      <Filter>Source Files\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="PositionedSound.cpp">
+      <Filter>Source Files\Audio\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="UniversalSound.cpp">
+      <Filter>Source Files\Audio\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="Sound.cpp">
+      <Filter>Source Files\Audio\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundCore.cpp">
+      <Filter>Source Files\Audio\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="AssetResourceManager.cpp">
+      <Filter>Source Files\Assets\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="NullAssetResourceManager.cpp">
+      <Filter>Source Files\Assets\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="RealAssetResourceManager.cpp">
+      <Filter>Source Files\Assets\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="SDLSoundResource.cpp">
+      <Filter>Source Files\Audio\SDL</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundResource.cpp">
+      <Filter>Source Files\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptUniversalSound.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptPositionedSound.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptChangeSoundVolume.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptPauseSound.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptResumeSound.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptOpenRelic.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Arca</Filter>
+    </ClCompile>
+    <ClCompile Include="DataAlgorithms.cpp">
+      <Filter>Source Files\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="NullWorldManager.cpp">
+      <Filter>Source Files\World</Filter>
+    </ClCompile>
+    <ClCompile Include="RealWorldManager.cpp">
+      <Filter>Source Files\World</Filter>
+    </ClCompile>
+    <ClCompile Include="WorldManager.cpp">
+      <Filter>Source Files\World</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptError.cpp">
+      <Filter>Source Files\Scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="DataCurator.cpp">
+      <Filter>Source Files\Data\Arca</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptProperty.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptModifyProperties.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptDataCore.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Property.cpp">
+      <Filter>Source Files\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptVariant.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptStringUtility.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptLoggingSeverity.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Logging</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptLog.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Logging</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptMath.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="WorldCurator.cpp">
+      <Filter>Source Files\World</Filter>
+    </ClCompile>
+    <ClCompile Include="DataCore.cpp">
+      <Filter>Source Files\Data\Arca</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptModifyWorldProperties.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\World</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptRetrieveWorldProperties.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\World</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptRequestField.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\World</Filter>
+    </ClCompile>
+    <ClCompile Include="LoggingSink.cpp">
+      <Filter>Source Files\Logging</Filter>
+    </ClCompile>
+    <ClCompile Include="FileLoggingSink.cpp">
+      <Filter>Source Files\Logging</Filter>
+    </ClCompile>
+    <ClCompile Include="LoggingSeverity.cpp">
+      <Filter>Source Files\Logging</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioAssetCurator.cpp">
+      <Filter>Source Files\Assets\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptRestartSound.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptSoundFinished.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptCurator.cpp">
+      <Filter>Source Files\Scripting</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

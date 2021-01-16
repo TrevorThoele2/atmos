@@ -1,5 +1,6 @@
 #pragma once
 
+#include "AssetResourceTraits.h"
 #include "ImageAssetSize.h"
 
 namespace Atmos::Asset::Resource
@@ -12,5 +13,11 @@ namespace Atmos::Asset::Resource
         [[nodiscard]] virtual ImageSize Size() const = 0;
     protected:
         Image() = default;
+    };
+
+    template<>
+    struct Traits<Image>
+    {
+        static String ArcaTypeName() { return "Atmos::Asset::Resource::Image"; }
     };
 }

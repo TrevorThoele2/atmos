@@ -6,8 +6,8 @@ namespace Atmos::Window
 {
     SDLWindow::SDLWindow()
     {
-        if (SDL_Init(SDL_INIT_VIDEO) < 0)
-            throw WindowCreationFailed(SDL_GetError());
+        if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0)
+            throw WindowCreationFailed(String(SDL_GetError()));
 
         SDL_VERSION(&info.version);
 
@@ -16,10 +16,10 @@ namespace Atmos::Window
 
         underlying = SDL_CreateWindow("An Extraordinary Will", center.x, center.y, size.width, size.height, SDL_WINDOW_SHOWN);
         if (!underlying)
-            throw WindowCreationFailed(SDL_GetError());
+            throw WindowCreationFailed(String(SDL_GetError()));
 
         if (!SDL_GetWindowWMInfo(underlying, &info))
-            throw WindowCreationFailed(SDL_GetError());
+            throw WindowCreationFailed(String(SDL_GetError()));
     }
 
     SDLWindow::~SDLWindow()
@@ -66,6 +66,11 @@ namespace Atmos::Window
     void* SDLWindow::Handle() const
     {
         return info.info.win.window;
+    }
+
+    String SDLWindow::TypeName() const
+    {
+        return "SDL";
     }
 
     void SDLWindow::OnPositionChanged()

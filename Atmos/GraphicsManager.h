@@ -27,8 +27,6 @@ namespace Atmos::Render
     public:
         virtual ~GraphicsManager() = 0;
 
-        void Initialize();
-
         [[nodiscard]] std::unique_ptr<Asset::Resource::Image> CreateImageResource(
             const Buffer& buffer,
             const Name& name,
@@ -58,11 +56,11 @@ namespace Atmos::Render
 
         virtual void SetFullscreen(bool set) = 0;
         virtual void ChangeVerticalSync(bool set) = 0;
+
+        [[nodiscard]] virtual String TypeName() const = 0;
     protected:
         GraphicsManager(Logging::Logger& logger);
     protected:
-        virtual void InitializeImpl() {}
-
         [[nodiscard]] virtual std::unique_ptr<Asset::Resource::Image> CreateImageResourceImpl(
             const Buffer& buffer,
             const Name& name,

@@ -84,10 +84,10 @@ namespace Inscription
             {
                 auto& assetUserContext = *archive.template UserContext<LoadAssetsUserContext>();
 
-                auto extracted = assetUserContext.LoadImage(object.Name());
+                auto extracted = assetUserContext.LoadImageData(object.Name());
                 if (extracted)
                 {
-                    using LoadResource = Atmos::Asset::Resource::LoadDataFromMemory<Atmos::Asset::Resource::Image>;
+                    using LoadResource = Atmos::Asset::Resource::LoadData<Atmos::Asset::Resource::Image>;
                     const auto loaded = object.init.owner.Do(LoadResource
                     {
                         extracted->memory

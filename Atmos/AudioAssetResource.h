@@ -1,17 +1,20 @@
 #pragma once
 
-#include <memory>
+#include "AssetResourceTraits.h"
 
 namespace Atmos::Asset::Resource
 {
-    class AudioInstance;
-
     class Audio
     {
     public:
         virtual ~Audio() = 0;
-        [[nodiscard]] virtual std::unique_ptr<AudioInstance> CreateInstanceResource() const = 0;
     protected:
         Audio() = default;
+    };
+
+    template<>
+    struct Traits<Audio>
+    {
+        static String ArcaTypeName() { return "Atmos::Asset::Resource::Audio"; }
     };
 }

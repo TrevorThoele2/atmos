@@ -1,7 +1,5 @@
 #include "AngelScriptEntity.h"
 
-#include "AngelScriptDatum.h"
-
 #include "AngelScriptObjectRegistration.h"
 #include "AngelScriptArcaTraits.h"
 #include "AngelScriptArcaBatch.h"
@@ -21,31 +19,29 @@ namespace Atmos::Scripting::Angel
             .ConstMethod(&Management::Method<&Position>, "Atmos::Spatial::Grid::Point", "Position", {})
             .ConstMethod(&Management::Method<&Direction>, "Atmos::Spatial::Angle2D", "Direction", {})
             .ConstMethod(&Management::Method<&IsSolid>, "bool", "IsSolid", {})
-            .ConstMethod(&Management::Method<&Data>, "Atmos::Datum[]@", "Data", {})
             .ConstMethod(&Management::Method<&Tags>, "string[]@", "Tags", {})
             .Actualize(engine, documentationManager);
 
         Registration<ArcaTraits<Entity::Entity>>::RegisterTo(engine, documentationManager);
         Registration<Arca::Batch<Entity::Entity>>::RegisterTo(engine, documentationManager);
 
-        RegisterArcaCreateRelic<
-            Entity::Entity,
-            Chroma::VariadicTemplate<
+        ArcaCreateRelicRegistration<Type::ValueT>()
+            .Constructor<
                 Atmos::Name,
                 Atmos::Name,
                 Spatial::Grid::Point,
                 Spatial::Angle2D,
-                bool>>
-        (
-            {
+                bool>
+            ({
                 "string name",
                 "Atmos::Spatial::Grid::Point position",
                 "Atmos::Spatial::Angle2D direction"
-            },
-            engine,
-            documentationManager);
+            })
+            .Actualize(engine, documentationManager);
+        RegisterArcaCreated<Type::ValueT>(engine, documentationManager);
 
-        RegisterArcaDestroyRelic<Entity::Entity>(engine, documentationManager);
+        RegisterArcaDestroyRelic<Type::ValueT>(engine, documentationManager);
+        RegisterArcaDestroying<Type::ValueT>(engine, documentationManager);
     }
 
     String Registration<Entity::Entity>::DoName(Type type)
@@ -71,11 +67,6 @@ namespace Atmos::Scripting::Angel
     bool Registration<Entity::Entity>::IsSolid(Type type)
     {
         return RequiredValue(type)->isSolid;
-    }
-
-    std::vector<Datum> Registration<Entity::Entity>::Data(Type type)
-    {
-        return RequiredValue(type)->data;
     }
 
     std::vector<String> Registration<Entity::Entity>::Tags(Type type)
@@ -139,28 +130,6 @@ namespace Atmos::Scripting::Angel
             .CopyAssignment(&Management::CopyAssign)
             .Property<&Type::entity>("Atmos::Entity::Entity", "entity")
             .Property<&Type::to>("Atmos::Spatial::Grid::Point", "to")
-            .Actualize(engine, documentationManager);
-
-        RegisterCommandHandler<&Chroma::Identity<Type>>(engine, documentationManager);
-    }
-
-    void Registration<Entity::ModifyData>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
-    {
-        ValueTypeRegistration<Type>(ContainingNamespace(), Name())
-            .Constructor(
-                &Management::GenerateValue<
-                    &PullFromParameter<0, Arca::Index<Entity::Entity>>,
-                    &PullFromParameter<1, std::vector<Datum>>,
-                    &PullFromParameter<2, std::vector<String>>,
-                    &PullFromParameter<3, std::vector<Datum>>>,
-                { "Atmos::Entity::Entity entity", "Atmos::Datum[]@ add", "string[]@ remove", "Atmos::Datum[]@ replace" })
-            .CopyConstructor(&Management::GenerateValueFromCopy)
-            .Destructor(&Management::DestructValue)
-            .CopyAssignment(&Management::CopyAssign)
-            .Property<&Type::entity>("Atmos::Entity::Entity", "entity")
-            .Property<&Type::add>("Atmos::Datum[]@", "add")
-            .Property<&Type::remove>("string[]@", "remove")
-            .Property<&Type::replace>("Atmos::Datum[]@", "replace")
             .Actualize(engine, documentationManager);
 
         RegisterCommandHandler<&Chroma::Identity<Type>>(engine, documentationManager);

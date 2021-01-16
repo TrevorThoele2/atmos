@@ -23,16 +23,16 @@ SCENARIO_METHOD(WorldSerializationTestsFixture, "rendering after world serializa
     {
         Logging::Logger logger(Logging::Severity::Verbose);
         DerivedEngine engine(logger);
-        engine.Setup();
 
         auto fieldOrigin = Arca::ReliquaryOrigin();
         RegisterFieldTypes(
             fieldOrigin,
-            *engine.mockImageAssetManager,
-            *engine.nullAudioManager,
+            *engine.mockAssetResourceManager,
+            *engine.mockAudioManager,
             *engine.mockInputManager,
             *engine.mockGraphicsManager,
             *engine.mockScriptManager,
+            *engine.worldManager,
             Spatial::ScreenSize {
                 std::numeric_limits<Spatial::ScreenSize::Dimension>::max(),
                 std::numeric_limits<Spatial::ScreenSize::Dimension>::max() },
@@ -41,8 +41,6 @@ SCENARIO_METHOD(WorldSerializationTestsFixture, "rendering after world serializa
         World::Field field(0, fieldOrigin.Actualize());
 
         auto& fieldReliquary = field.Reliquary();
-
-        engine.mockGraphicsManager->Initialize();
 
         const auto camera = Arca::Index<Camera>(fieldReliquary);
 
@@ -146,7 +144,7 @@ SCENARIO_METHOD(WorldSerializationTestsFixture, "rendering after world serializa
 
             {
                 auto outputArchive = World::Serialization::OutputWorldArchiveInterface(filePath);
-                outputArchive.Save(fields);
+                outputArchive.Save(fields, {});
             }
 
             {
@@ -160,7 +158,6 @@ SCENARIO_METHOD(WorldSerializationTestsFixture, "rendering after world serializa
             engine.LoadWorld(filePath, assetsFilePath);
 
             auto& loadedFieldReliquary = engine.CurrentField()->Reliquary();
-            engine.mockGraphicsManager->Initialize();
 
             engine.StartExecution();
 

@@ -9,7 +9,7 @@ namespace Atmos::Scripting
         Arca::Curator(init),
         manager(&manager)
     {
-        this->manager->Initialize(Owner());
+        this->manager->SetReliquary(Owner());
 
         Owner().On<Arca::DestroyingKnown<Script>>(
             [this](const Arca::DestroyingKnown<Script>& signal)
@@ -41,30 +41,6 @@ namespace Atmos::Scripting
     Buffer Curator::Handle(const Compile& command)
     {
         return manager->Compile(command.module, command.sharedData);
-    }
-
-    void Curator::Handle(const ModifyData& command)
-    {
-        auto removeSet = std::set<String>(command.remove.begin(), command.remove.end());
-        std::unordered_map<String, Variant> replaceMap;
-        for (auto& datum : command.replace)
-            replaceMap.emplace(datum.name, datum.value);
-
-        auto mutableScript = MutablePointer().Of(command.script);
-
-        for (auto element = mutableScript->data.begin(); element != mutableScript->data.end();)
-        {
-            if (removeSet.find(element->name) != removeSet.end())
-                element = mutableScript->data.erase(element);
-            else
-            {
-                auto foundReplace = replaceMap.find(element->name);
-                if (foundReplace != replaceMap.end())
-                    element->value = foundReplace->second;
-                ++element;
-            }
-        }
-        mutableScript->data.insert(mutableScript->data.begin(), command.add.begin(), command.add.end());
     }
 
     std::optional<Result> Curator::Handle(const Execute& command)

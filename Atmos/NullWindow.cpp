@@ -26,6 +26,11 @@ namespace Atmos::Window
         return nullptr;
     }
 
+    String NullWindow::TypeName() const
+    {
+        return "Null";
+    }
+
     void NullWindow::OnPositionChanged()
     {}
 

@@ -1,6 +1,6 @@
 #include "DerivedEngine.h"
 
-DerivedEngine::DerivedEngine(Logging::Logger& logger) : Engine(logger)
+DerivedEngine::DerivedEngine(Logging::Logger& logger) : Engine(CreateInitializationProperties(logger), logger)
 {}
 
 auto DerivedEngine::CreateInitializationProperties(Logging::Logger& logger)
@@ -8,26 +8,29 @@ auto DerivedEngine::CreateInitializationProperties(Logging::Logger& logger)
 {
     using Properties = InitializationProperties;
 
-    auto imageAssetManager = std::make_unique<MockImageAssetManager>();
+    auto assetResourceManager = std::make_unique<MockAssetResourceManager>();
     auto window = std::make_unique<MockWindow>();
     auto input = std::make_unique<MockInputManager>();
     auto graphics = std::make_unique<MockGraphicsManager>(logger);
-    auto audio = std::make_unique<Audio::NullAudioManager>();
+    auto audio = std::make_unique<MockAudioManager>();
     auto scripts = std::make_unique<MockScriptManager>();
+    auto world = std::make_unique<World::RealManager>();
 
-    mockImageAssetManager = imageAssetManager.get();
+    mockAssetResourceManager = assetResourceManager.get();
     mockWindow = window.get();
-    nullAudioManager = audio.get();
+    mockAudioManager = audio.get();
     mockInputManager = input.get();
     mockGraphicsManager = graphics.get();
     mockScriptManager = scripts.get();
+    worldManager = world.get();
 
     Properties properties;
-    properties.imageAssetManager = std::move(imageAssetManager);
+    properties.assetResourceManager = std::move(assetResourceManager);
     properties.window = std::move(window);
     properties.inputManager = std::move(input);
     properties.graphicsManager = std::move(graphics);
     properties.audioManager = std::move(audio);
     properties.scriptManager = std::move(scripts);
+    properties.worldManager = std::move(world);
     return properties;
 }

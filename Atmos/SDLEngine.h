@@ -8,7 +8,7 @@ namespace Atmos
     {
     public:
         SDLEngine(Logging::Logger& logger);
-    protected:
-        InitializationProperties CreateInitializationProperties(Logging::Logger& logger) override;
+    private:
+        [[nodiscard]] static InitializationProperties CreateInitializationProperties(Logging::Logger& logger);
     };
 }

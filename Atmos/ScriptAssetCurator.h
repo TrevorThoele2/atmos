@@ -12,8 +12,7 @@ namespace Atmos::Asset
         using Curator::Curator;
 
         using Curator::Handle;
-        Resource::Loaded<Resource::Script> Handle(const Resource::LoadDataFromFile<Resource::Script>& command);
-        Resource::Loaded<Resource::Script> Handle(const Resource::LoadDataFromMemory<Resource::Script>& command);
+        Resource::LoadedData<Resource::Script> Handle(const Resource::LoadData<Resource::Script>& command);
     };
 
     template<>
@@ -32,8 +31,7 @@ namespace Arca
         static TypeName TypeName() { return "Atmos::Asset::ScriptCurator"; }
         using HandledCommands = HandledCommands<
             Atmos::Asset::FindByName<Atmos::Asset::Script>,
-            Atmos::Asset::Resource::LoadDataFromFile<Atmos::Asset::Resource::Script>,
-            Atmos::Asset::Resource::LoadDataFromMemory<Atmos::Asset::Resource::Script>>;
+            Atmos::Asset::Resource::LoadData<Atmos::Asset::Resource::Script>>;
     };
 }
 

@@ -71,7 +71,7 @@ namespace Atmos::Scripting::Angel
 
         ExecuteAllStoredSecondaries();
 
-        VerifyResult(context->Prepare(executeFunction));
+        VerifyResult(context->Prepare(executeFunction), {});
 
         auto index = 0;
         for (auto& parameter : parameters)
@@ -96,7 +96,7 @@ namespace Atmos::Scripting::Angel
     {
         executionType = ExecutionType::Suspended;
 
-        VerifyResult(context->Suspend());
+        VerifyResult(context->Suspend(), {});
     }
 
     void ScriptResource::StoreFunction(const String& name, asIScriptFunction& function)
@@ -167,7 +167,7 @@ namespace Atmos::Scripting::Angel
         {
             auto newContext = engine.RequestContext();
 
-            VerifyResult(newContext->Prepare(storedFunction));
+            VerifyResult(newContext->Prepare(storedFunction), {});
 
             secondaryExecution(*newContext);
             auto result = DoExecute(*newContext);

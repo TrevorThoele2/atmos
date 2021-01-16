@@ -4,7 +4,6 @@
 #include "FindEntityByName.h"
 #include "FindEntityByPosition.h"
 #include "MoveEntityTo.h"
-#include "ModifyEntityData.h"
 #include "ModifyEntityTags.h"
 
 #include "AngelScriptIndex.h"
@@ -36,7 +35,6 @@ namespace Atmos::Scripting::Angel
         [[nodiscard]] static Spatial::Grid::Point Position(Type type);
         [[nodiscard]] static Spatial::Angle2D Direction(Type type);
         [[nodiscard]] static bool IsSolid(Type type);
-        [[nodiscard]] static std::vector<Datum> Data(Type type);
         [[nodiscard]] static std::vector<String> Tags(Type type);
     };
 
@@ -83,20 +81,6 @@ namespace Atmos::Scripting::Angel
         using Management = ObjectManagement<Type>;
 
         static String Name() { return "MoveTo"; }
-        static String ContainingNamespace() { return "Atmos::Entity"; }
-        static String Documentation() { return "This is a command."; }
-        static const ObjectType objectType = ObjectType::Value;
-
-        static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
-    };
-
-    template<>
-    struct Registration<Entity::ModifyData>
-    {
-        using Type = Entity::ModifyData;
-        using Management = ObjectManagement<Type>;
-
-        static String Name() { return "ModifyData"; }
         static String ContainingNamespace() { return "Atmos::Entity"; }
         static String Documentation() { return "This is a command."; }
         static const ObjectType objectType = ObjectType::Value;

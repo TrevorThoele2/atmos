@@ -1,5 +1,8 @@
 #include "MockScriptManager.h"
 
+void MockScriptManager::SetReliquary(Arca::Reliquary& reliquary)
+{}
+
 std::unique_ptr<Atmos::Asset::Resource::Script> MockScriptManager::CreateAssetResource(
     const Atmos::Buffer&, Atmos::String)
 {
@@ -17,7 +20,7 @@ Atmos::Buffer MockScriptManager::Compile(Atmos::Scripting::Module module, std::v
     return {};
 }
 
-void MockScriptManager::InitializeImpl(Arca::Reliquary& reliquary)
+Atmos::String MockScriptManager::TypeName() const
 {
-
+    return "Mock";
 }

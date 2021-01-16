@@ -8,17 +8,22 @@ namespace Inscription
         inputArchive(filePath, logger)
     {}
 
-    auto LoadAssetsByZipUserContext::LoadImage(const Atmos::String& name) -> std::optional<Extracted>
+    auto LoadAssetsByZipUserContext::LoadAudioData(const Atmos::Name& name) -> std::optional<Extracted>
+    {
+        return Extract(name, &ArchiveInterface::AllToExtract::audio, &ArchiveInterface::Extracted::audio);
+    }
+
+    auto LoadAssetsByZipUserContext::LoadImageData(const Atmos::String& name) -> std::optional<Extracted>
     {
         return Extract(name, &ArchiveInterface::AllToExtract::images, &ArchiveInterface::Extracted::images);
     }
 
-    auto LoadAssetsByZipUserContext::LoadShader(const Atmos::String& name) -> std::optional<Extracted>
+    auto LoadAssetsByZipUserContext::LoadShaderData(const Atmos::String& name) -> std::optional<Extracted>
     {
         return Extract(name, &ArchiveInterface::AllToExtract::shaders, &ArchiveInterface::Extracted::shaders);
     }
 
-    auto LoadAssetsByZipUserContext::LoadScript(const Atmos::Name& name) -> std::optional<Extracted>
+    auto LoadAssetsByZipUserContext::LoadScriptData(const Atmos::Name& name) -> std::optional<Extracted>
     {
         return Extract(name, &ArchiveInterface::AllToExtract::scripts, &ArchiveInterface::Extracted::scripts);
     }

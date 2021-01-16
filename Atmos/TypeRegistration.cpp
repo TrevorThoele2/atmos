@@ -22,6 +22,8 @@
 #include "SurfaceCurator.h"
 #include "GraphicsSettings.h"
 
+#include "PositionedSound.h"
+#include "UniversalSound.h"
 #include "AudioCurator.h"
 
 #include "ActionAsset.h"
@@ -60,6 +62,11 @@
 #include "FrameInformation.h"
 #include "FrameSettings.h"
 
+#include "WorldCurator.h"
+
+#include "DataCore.h"
+#include "DataCurator.h"
+
 #include "LoggingCurator.h"
 #include "LoggingInformation.h"
 
@@ -84,36 +91,38 @@ namespace Atmos
 
     void RegisterCommonTypes(
         Arca::ReliquaryOrigin& origin,
-        Asset::ImageManager& imageAssetManager,
+        Asset::Resource::Manager& assetResourceManager,
         Logging::Logger& logger)
     {
-        Asset::RegisterTypes(origin, imageAssetManager);
+        Asset::RegisterTypes(origin, assetResourceManager);
         Spatial::RegisterTypes(origin);
         Entity::RegisterTypes(origin);
         Frame::RegisterTypes(origin);
+        Data::RegisterTypes(origin);
         Logging::RegisterTypes(origin, logger);
         Debug::RegisterTypes(origin);
     }
 
     void RegisterFieldTypes(
         Arca::ReliquaryOrigin& origin,
-        Asset::ImageManager& imageAssetManager,
+        Asset::Resource::Manager& assetResourceManager,
         Logging::Logger& logger)
     {
         Audio::RegisterTypes(origin);
         Input::RegisterTypes(origin);
         Render::RegisterTypes(origin);
         Scripting::RegisterTypes(origin);
-        RegisterCommonTypes(origin, imageAssetManager, logger);
+        RegisterCommonTypes(origin, assetResourceManager, logger);
     }
 
     void RegisterFieldTypes(
         Arca::ReliquaryOrigin& origin,
-        Asset::ImageManager& imageAssetManager,
-        Audio::AudioManager& audio,
+        Asset::Resource::Manager& assetResourceManager,
+        Audio::Manager& audio,
         Input::Manager& input,
         Render::GraphicsManager& graphics,
         Scripting::Manager& scripts,
+        World::Manager& world,
         Spatial::ScreenSize screenSize,
         Window::WindowBase& window,
         Logging::Logger& logger)
@@ -123,7 +132,8 @@ namespace Atmos
         Render::RegisterTypes(origin, graphics, screenSize, window.Handle());
         Scripting::RegisterTypes(origin, scripts);
         Window::RegisterTypes(origin, window);
-        RegisterCommonTypes(origin, imageAssetManager, logger);
+        World::RegisterTypes(origin, world);
+        RegisterCommonTypes(origin, assetResourceManager, logger);
     }
 
     void RegisterFieldStages(Arca::ReliquaryOrigin& origin)
@@ -133,6 +143,7 @@ namespace Atmos
         pipeline.push_back(Input::Stage());
         pipeline.push_back(Scripting::Stage());
         pipeline.push_back(Render::Stage());
+        pipeline.push_back(Audio::Stage());
         pipeline.push_back(Frame::EndStage());
         origin.CuratorCommandPipeline<Work>(pipeline);
     }
@@ -209,13 +220,25 @@ namespace Atmos
     {
         void RegisterTypes(Arca::ReliquaryOrigin& origin)
         {
-
+            origin
+                .Register<SoundCore>()
+                .Register<PositionedSound>()
+                .Register<UniversalSound>();
         }
 
-        void RegisterTypes(Arca::ReliquaryOrigin& origin, AudioManager& manager)
+        void RegisterTypes(Arca::ReliquaryOrigin& origin, Manager& manager)
         {
+            RegisterTypes(origin);
+
             origin
-                .Register<AudioCurator>(std::ref(manager));
+                .Register<Curator>(std::ref(manager));
+        }
+
+        Arca::Stage Stage()
+        {
+            Arca::Stage stage;
+            stage.Add<Curator>();
+            return stage;
         }
     }
 
@@ -251,7 +274,7 @@ namespace Atmos
 
     namespace Asset
     {
-        void RegisterTypes(Arca::ReliquaryOrigin& origin, ImageManager& manager)
+        void RegisterTypes(Arca::ReliquaryOrigin& origin, Resource::Manager& resourceManager)
         {
             origin
                 .Register<Core>()
@@ -272,8 +295,8 @@ namespace Atmos
                 .Register<Mapped<Script>>()
                 .Register<Mapped<Shader>>()
                 .Register<ActionCurator>()
-                .Register<AudioCurator>()
-                .Register<ImageCurator>(std::ref(manager))
+                .Register<AudioCurator>(std::ref(resourceManager))
+                .Register<ImageCurator>(std::ref(resourceManager))
                 .Register<ImageMaterialCurator>()
                 .Register<LineMaterialCurator>()
                 .Register<RegionMaterialCurator>()
@@ -343,6 +366,25 @@ namespace Atmos
             Arca::Stage stage;
             stage.Add<EndCurator>();
             return stage;
+        }
+    }
+
+    namespace World
+    {
+        void RegisterTypes(Arca::ReliquaryOrigin& origin, Manager& manager)
+        {
+            origin
+                .Register<Curator>(std::ref(manager));
+        }
+    }
+
+    namespace Data
+    {
+        void RegisterTypes(Arca::ReliquaryOrigin& origin)
+        {
+            origin
+                .Register<DataCore>()
+                .Register<DataCurator>();
         }
     }
 

@@ -118,12 +118,17 @@ namespace Atmos::Scripting::Angel
                     const auto declaration =
                         "void f(" + Chroma::Join(", ", useParameters.begin(), useParameters.end()) + ")";
 
-                    VerifyResult(engine.RegisterObjectBehaviour(
+                    const auto result = engine.RegisterObjectBehaviour(
                         representationName.c_str(),
                         asBEHAVE_CONSTRUCT,
                         declaration.c_str(),
                         asFUNCTION(function),
-                        asCALL_GENERIC));
+                        asCALL_GENERIC);
+                    VerifyResult(
+                        result,
+                        {
+                            { "Declaration", declaration }
+                        });
                 });
 
             return static_cast<DerivedT&>(*this);
@@ -140,12 +145,17 @@ namespace Atmos::Scripting::Angel
         {
             AddItem([function](asIScriptEngine& engine, String representationName)
                 {
-                    VerifyResult(engine.RegisterObjectBehaviour(
+                    const auto result = engine.RegisterObjectBehaviour(
                         representationName.c_str(),
                         asBEHAVE_DESTRUCT,
                         "void f()",
                         asFUNCTION(function),
-                        asCALL_GENERIC));
+                        asCALL_GENERIC);
+                    VerifyResult(
+                        result,
+                        {
+                            { "Name", representationName }
+                        });
                 });
 
             return static_cast<DerivedT&>(*this);
@@ -358,10 +368,15 @@ namespace Atmos::Scripting::Angel
 
             AddStaticItem([function, declaration](asIScriptEngine& engine)
                 {
-                    VerifyResult(engine.RegisterGlobalFunction(
+                    const auto result = engine.RegisterGlobalFunction(
                         declaration.c_str(),
                         asFUNCTION(function),
-                        asCALL_GENERIC));
+                        asCALL_GENERIC);
+                    VerifyResult(
+                        result,
+                        {
+                            { "Declaration", declaration }
+                        });
                 });
 
             return static_cast<DerivedT&>(*this);
@@ -375,10 +390,15 @@ namespace Atmos::Scripting::Angel
                 {
                     const auto declaration = type + " " + name;
 
-                    VerifyResult(engine.RegisterObjectProperty(
+                    const auto result = engine.RegisterObjectProperty(
                         representationName.c_str(),
                         declaration.c_str(),
-                        (char*)&((T*)nullptr->*property) - (char*)nullptr));
+                        (char*)&((T*)nullptr->*property) - (char*)nullptr);
+                    VerifyResult(
+                        result,
+                        {
+                            { "Declaration", declaration }
+                        });
                 });
 
             return static_cast<DerivedT&>(*this);
@@ -421,14 +441,25 @@ namespace Atmos::Scripting::Angel
                 ? *containingNamespace
                 : "";
 
-            VerifyResult(engine.SetDefaultNamespace(useNamespace.c_str()));
+            {
+                const auto result = engine.SetDefaultNamespace(useNamespace.c_str());
+                VerifyResult(
+                    result,
+                    {
+                        { "Namespace", useNamespace }
+                    });
+            }
 
             {
                 const auto result = engine.RegisterObjectType(
                     registrationName.c_str(),
                     sizeof(T),
                     flags);
-                VerifyResult(result);
+                VerifyResult(
+                    result,
+                    {
+                        { "Name", registrationName }
+                    });
                 if (result > 0)
                     documentationManager.DocumentObject(result, documentation);
             }
@@ -442,7 +473,12 @@ namespace Atmos::Scripting::Angel
             {
                 const auto staticNamespace = CreateName({ containingNamespace ? *containingNamespace : "" }, registrationName);
 
-                VerifyResult(engine.SetDefaultNamespace(staticNamespace.c_str()));
+                const auto result = engine.SetDefaultNamespace(staticNamespace.c_str());
+                VerifyResult(
+                    result,
+                    {
+                        { "Namespace", staticNamespace }
+                    });
 
                 for (auto& item : staticItems)
                     item(engine);
@@ -483,11 +519,16 @@ namespace Atmos::Scripting::Angel
         {
             AddItem([function, declaration](asIScriptEngine& engine, String representationName)
                 {
-                    VerifyResult(engine.RegisterObjectMethod(
+                    const auto result = engine.RegisterObjectMethod(
                         representationName.c_str(),
                         declaration.c_str(),
                         asFUNCTION(function),
-                        asCALL_GENERIC));
+                        asCALL_GENERIC);
+                    VerifyResult(
+                        result,
+                        {
+                            { "Declaration", declaration }
+                        });
                 });
         }
 
@@ -575,12 +616,17 @@ namespace Atmos::Scripting::Angel
         {
             Self().AddItem([function](asIScriptEngine& engine, String representationName)
                 {
-                    VerifyResult(engine.RegisterObjectBehaviour(
+                    const auto result = engine.RegisterObjectBehaviour(
                         representationName.c_str(),
                         asBEHAVE_TEMPLATE_CALLBACK,
                         "bool f(int &in, bool &out)",
                         asFUNCTION(function),
-                        asCALL_GENERIC));
+                        asCALL_GENERIC);
+                    VerifyResult(
+                        result,
+                        {
+                            { "Name", representationName }
+                        });
                 });
 
             return static_cast<DerivedT&>(*this);
@@ -618,12 +664,17 @@ namespace Atmos::Scripting::Angel
         {
             Self().AddItem([function](asIScriptEngine& engine, String representationName)
                 {
-                    VerifyResult(engine.RegisterObjectBehaviour(
+                    const auto result = engine.RegisterObjectBehaviour(
                         representationName.c_str(),
                         asBEHAVE_ADDREF,
                         "void f()",
                         asFUNCTION(function),
-                        asCALL_GENERIC));
+                        asCALL_GENERIC);
+                    VerifyResult(
+                        result,
+                        {
+                            { "Name", representationName }
+                        });
                 });
 
             return static_cast<DerivedT&>(*this);
@@ -634,12 +685,17 @@ namespace Atmos::Scripting::Angel
         {
             Self().AddItem([function](asIScriptEngine& engine, String representationName)
                 {
-                    VerifyResult(engine.RegisterObjectBehaviour(
+                    const auto result = engine.RegisterObjectBehaviour(
                         representationName.c_str(),
                         asBEHAVE_RELEASE,
                         "void f()",
                         asFUNCTION(function),
-                        asCALL_GENERIC));
+                        asCALL_GENERIC);
+                    VerifyResult(
+                        result,
+                        {
+                            { "Name", representationName }
+                        });
                 });
 
             return static_cast<DerivedT&>(*this);

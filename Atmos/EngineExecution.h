@@ -6,7 +6,7 @@ namespace Atmos
 
     namespace World
     {
-        class WorldManager;
+        class Manager;
     }
 
     namespace Window
@@ -17,16 +17,15 @@ namespace Atmos
     class EngineExecution
     {
     public:
-        EngineExecution(World::WorldManager& worldManager, Window::WindowBase& window);
+        EngineExecution(World::Manager& worldManager, Window::WindowBase& window);
 
         void Start();
     private:
         Window::WindowBase* window;
 
-        World::WorldManager* worldManager;
+        World::Manager* worldManager;
     private:
-        bool wasFocusedLastPass = false;
-        bool isFocusLost = false;
+        bool wasFocusedLastFrame = true;
     private:
         bool StartFrame();
         [[nodiscard]] bool IsCurrentlyFocused() const;

@@ -43,11 +43,6 @@ namespace Atmos::Render
             });
     }
 
-    void GraphicsCurator::Handle(const InitializeGraphics& command)
-    {
-        manager->Initialize();
-    }
-
     void GraphicsCurator::Handle(const ReconstructGraphics& command)
     {
         AttemptReconstruct(command.screenSize);

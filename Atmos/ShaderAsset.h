@@ -57,7 +57,7 @@ namespace Inscription
             {
                 auto& assetUserContext = *archive.template UserContext<LoadAssetsUserContext>();
 
-                auto extracted = assetUserContext.LoadShader(object.Name());
+                auto extracted = assetUserContext.LoadShaderData(object.Name());
                 if (extracted)
                 {
                     using CreateResource = Atmos::Asset::Resource::Create<Atmos::Asset::Resource::Shader>;

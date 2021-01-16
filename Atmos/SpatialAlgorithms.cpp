@@ -1,5 +1,6 @@
 #include "SpatialAlgorithms.h"
 
+#include "MathUtility.h"
 #include "GridCellSize.h"
 
 namespace Atmos::Spatial
@@ -217,6 +218,12 @@ namespace Atmos::Spatial
             distance * cos(angle.pitch) * cos(angle.yaw),
             distance * sin(angle.pitch)
         };
+    }
+
+    Angle2D ToDegrees(Angle2D angle)
+    {
+        const auto halfCircleDegrees = 180;
+        return halfCircleDegrees / (pi<Angle2D> *angle);
     }
 
     AxisAlignedBox2D ToAxisAlignedBox2D(

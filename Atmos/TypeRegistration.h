@@ -2,12 +2,13 @@
 
 #include <Arca/ReliquaryOrigin.h>
 
+#include "AssetResourceManager.h"
 #include "InputManager.h"
 #include "GraphicsManager.h"
 #include "AudioManager.h"
 #include "ScriptManager.h"
 #include "WindowBase.h"
-#include "ImageAssetManager.h"
+#include "WorldManager.h"
 
 namespace Atmos
 {
@@ -15,20 +16,21 @@ namespace Atmos
 
     void RegisterCommonTypes(
         Arca::ReliquaryOrigin& origin,
-        Asset::ImageManager& imageAssetManager,
+        Asset::Resource::Manager& assetResourceManager,
         Logging::Logger& logger);
 
     void RegisterFieldTypes(
         Arca::ReliquaryOrigin& origin,
-        Asset::ImageManager& imageAssetManager,
+        Asset::Resource::Manager& assetResourceManager,
         Logging::Logger& logger);
     void RegisterFieldTypes(
         Arca::ReliquaryOrigin& origin,
-        Asset::ImageManager& imageAssetManager,
-        Audio::AudioManager& audio,
+        Asset::Resource::Manager& assetResourceManager,
+        Audio::Manager& audio,
         Input::Manager& input,
         Render::GraphicsManager& graphics,
         Scripting::Manager& scripts,
+        World::Manager& world,
         Spatial::ScreenSize screenSize,
         Window::WindowBase& window,
         Logging::Logger& logger);
@@ -53,7 +55,8 @@ namespace Atmos
     namespace Audio
     {
         void RegisterTypes(Arca::ReliquaryOrigin& origin);
-        void RegisterTypes(Arca::ReliquaryOrigin& origin, AudioManager& manager);
+        void RegisterTypes(Arca::ReliquaryOrigin& origin, Manager& manager);
+        Arca::Stage Stage();
     }
 
     namespace Window
@@ -73,7 +76,7 @@ namespace Atmos
 
     namespace Asset
     {
-        void RegisterTypes(Arca::ReliquaryOrigin& origin, ImageManager& manager);
+        void RegisterTypes(Arca::ReliquaryOrigin& origin, Resource::Manager& resourceManager);
     }
 
     namespace Entity
@@ -93,6 +96,16 @@ namespace Atmos
         void RegisterTypes(Arca::ReliquaryOrigin& origin);
         Arca::Stage StartStage();
         Arca::Stage EndStage();
+    }
+
+    namespace World
+    {
+        void RegisterTypes(Arca::ReliquaryOrigin& origin, Manager& manager);
+    }
+
+    namespace Data
+    {
+        void RegisterTypes(Arca::ReliquaryOrigin& origin);
     }
 
     namespace Logging

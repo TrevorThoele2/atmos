@@ -21,5 +21,7 @@ namespace Atmos::Input
         virtual ~Manager() = 0;
 
         [[nodiscard]] virtual State ReadState() const = 0;
+
+        [[nodiscard]] virtual String TypeName() const = 0;
     };
 }

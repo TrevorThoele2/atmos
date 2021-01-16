@@ -5,6 +5,8 @@
 #include "ScreenPoint.h"
 #include "ScreenSize.h"
 
+#include "String.h"
+
 namespace Atmos::Window
 {
     class WindowBase
@@ -33,6 +35,8 @@ namespace Atmos::Window
         [[nodiscard]] Point Position() const;
 
         [[nodiscard]] virtual void* Handle() const = 0;
+
+        [[nodiscard]] virtual String TypeName() const = 0;
     protected:
         WindowBase() = default;
 

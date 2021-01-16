@@ -21,6 +21,8 @@ namespace Atmos::Render::Vulkan
 
         void SetFullscreen(bool set) override;
         void ChangeVerticalSync(bool set) override;
+
+        [[nodiscard]] String TypeName() const override;
     protected:
         [[nodiscard]] std::unique_ptr<Asset::Resource::Image> CreateImageResourceImpl(
             const Bytes& bytes,

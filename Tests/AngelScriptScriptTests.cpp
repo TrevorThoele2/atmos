@@ -8,24 +8,25 @@
 #include <Atmos/Script.h>
 #include <Atmos/ScriptFinished.h>
 #include <Atmos/Work.h>
-#include <Atmos/ModifyScriptData.h>
+#include <Atmos/ModifyProperties.h>
 
 #include <Atmos/StringUtility.h>
 
 SCENARIO_METHOD(AngelScriptScriptTestsFixture, "running script AngelScript scripts", "[script][angelscript]")
 {
     Logging::Logger logger(Logging::Severity::Verbose);
+    logger.Add<Logging::FileSink>();
     ScriptEngine engine(logger);
-    engine.Setup();
 
     auto fieldOrigin = Arca::ReliquaryOrigin();
     RegisterFieldTypes(
         fieldOrigin,
         *engine.mockImageAssetManager,
-        *engine.nullAudioManager,
+        *engine.mockAudioManager,
         *engine.mockInputManager,
         *engine.mockGraphicsManager,
         *engine.scriptManager,
+        *engine.mockWorldManager,
         Spatial::ScreenSize{
             std::numeric_limits<Spatial::ScreenSize::Dimension>::max(),
             std::numeric_limits<Spatial::ScreenSize::Dimension>::max() },
@@ -35,8 +36,6 @@ SCENARIO_METHOD(AngelScriptScriptTestsFixture, "running script AngelScript scrip
     World::Field field(0, fieldOrigin.Actualize());
 
     auto& fieldReliquary = field.Reliquary();
-
-    engine.mockGraphicsManager->Initialize();
 
     std::vector<Scripting::Finished> finishes;
     fieldReliquary.On<Scripting::Finished>([&finishes](const Scripting::Finished& signal)
@@ -57,34 +56,34 @@ SCENARIO_METHOD(AngelScriptScriptTestsFixture, "running script AngelScript scrip
 
     auto index = fieldReliquary.Do(Arca::Create<Scripting::Script>{ asset, "main", parameters });
 
-    GIVEN("modifyData")
+    GIVEN("ModifyData")
     {
         GIVEN("add")
         {
             const auto names = dataGeneration.RandomGroup<String>(3);
             const auto values = dataGeneration.RandomGroup<std::int64_t>(3);
 
-            GIVEN("script that modifies data by add")
+            GIVEN("script that modifies properties by add")
             {
                 CompileAndCreateScript(
                     "basic_script.as",
                     "string main(Arca::RelicID scriptID, string name1, int64 value1, string name2, int64 value2, string name3, int64 value3)\n" \
                     "{\n" \
-                    "    auto datum1 = Atmos::Datum(name1, value1);\n" \
-                    "    auto datum2 = Atmos::Datum(name2, value2);\n" \
-                    "    auto datum3 = Atmos::Datum(name3, value3);\n" \
-                    "    Atmos::Datum[] add = { datum1, datum2, datum3 };\n" \
+                    "    auto property1 = Atmos::Property(name1, value1);\n" \
+                    "    auto property2 = Atmos::Property(name2, value2);\n" \
+                    "    auto property3 = Atmos::Property(name3, value3);\n" \
+                    "    Atmos::Property[] add = { property1, property2, property3 };\n" \
                     "    auto script = Atmos::Scripting::Script(scriptID);\n" \
-                    "    Arca::Reliquary::Do(Atmos::Scripting::ModifyData(script, add, string[](), Atmos::Datum[]()));\n" \
+                    "    Arca::Reliquary::Do(Atmos::ModifyProperties(script.ID(), add, string[](), Atmos::Property[]()));\n" \
                     "\n" \
-                    "    auto data = script.Data();\n" \
-                    "    string[] dataAsStrings;\n" \
-                    "    for (uint i = 0; i < data.length(); ++i)\n" \
+                    "    auto properties = Atmos::DataCore(script.ID()).Properties();\n" \
+                    "    string[] propertiesAsStrings;\n" \
+                    "    for (uint i = 0; i < properties.length(); ++i)\n" \
                     "    {\n" \
-                    "        auto element = data[i];\n" \
-                    "        dataAsStrings.insertLast(element.name + \" \" + Atmos::ToString(element.value.AsInt()));\n" \
+                    "        auto element = properties[i];\n" \
+                    "        propertiesAsStrings.insertLast(element.name + \" \" + Atmos::ToString(element.value.AsInt()));\n" \
                     "    }\n" \
-                    "    return Atmos::Join(\", \", dataAsStrings);\n" \
+                    "    return Atmos::Join(\", \", propertiesAsStrings);\n" \
                     "}",
                     { index.ID(), names[0], values[0], names[1], values[1], names[2], values[2] },
                     fieldReliquary);
@@ -113,14 +112,14 @@ SCENARIO_METHOD(AngelScriptScriptTestsFixture, "running script AngelScript scrip
             const auto names = dataGeneration.RandomGroup<String>(6);
             const auto values = dataGeneration.RandomGroup<std::int64_t>(6);
 
-            std::vector<Datum> data;
-            data.reserve(names.size());
+            std::vector<Property> properties;
+            properties.reserve(names.size());
             for (size_t i = 0; i < names.size(); ++i)
-                data.push_back(Datum{ names[i], { values[i] } });
+                properties.push_back(Property{ names[i], { values[i] } });
 
-            fieldReliquary.Do(Scripting::ModifyData{ index, data, {}, {} });
+            fieldReliquary.Do(ModifyProperties{ index.ID(), properties, {}, {} });
 
-            GIVEN("script that modifies data by remove")
+            GIVEN("script that modifies properties by remove")
             {
                 CompileAndCreateScript(
                     "basic_script.as",
@@ -128,16 +127,16 @@ SCENARIO_METHOD(AngelScriptScriptTestsFixture, "running script AngelScript scrip
                     "{\n" \
                     "    string[] remove = { name1, name2, name3 };\n" \
                     "    auto script = Atmos::Scripting::Script(scriptID);\n" \
-                    "    Arca::Reliquary::Do(Atmos::Scripting::ModifyData(script, Atmos::Datum[](), remove, Atmos::Datum[]()));\n" \
+                    "    Arca::Reliquary::Do(Atmos::ModifyProperties(script.ID(), Atmos::Property[](), remove, Atmos::Property[]()));\n" \
                     "\n" \
-                    "    auto data = script.Data();\n" \
-                    "    string[] dataAsStrings;\n" \
-                    "    for (uint i = 0; i < data.length(); ++i)\n" \
+                    "    auto properties = Atmos::DataCore(script.ID()).Properties();\n" \
+                    "    string[] propertiesAsStrings;\n" \
+                    "    for (uint i = 0; i < properties.length(); ++i)\n" \
                     "    {\n" \
-                    "        auto element = data[i];\n" \
-                    "        dataAsStrings.insertLast(element.name + \" \" + Atmos::ToString(element.value.AsInt()));\n" \
+                    "        auto element = properties[i];\n" \
+                    "        propertiesAsStrings.insertLast(element.name + \" \" + Atmos::ToString(element.value.AsInt()));\n" \
                     "    }\n" \
-                    "    return Atmos::Join(\", \", dataAsStrings);\n" \
+                    "    return Atmos::Join(\", \", propertiesAsStrings);\n" \
                     "}",
                     { index.ID(), names[0], names[2], names[4] },
                     fieldReliquary);
@@ -166,34 +165,34 @@ SCENARIO_METHOD(AngelScriptScriptTestsFixture, "running script AngelScript scrip
             const auto names = dataGeneration.RandomGroup<String>(6);
             const auto values = dataGeneration.RandomGroup<std::int64_t>(9);
 
-            std::vector<Datum> data;
-            data.reserve(names.size());
+            std::vector<Property> properties;
+            properties.reserve(names.size());
             for (size_t i = 0; i < names.size(); ++i)
-                data.push_back(Datum{ names[i], { values[i] } });
+                properties.push_back(Property{ names[i], { values[i] } });
 
-            fieldReliquary.Do(Scripting::ModifyData{ index, data, {}, {} });
+            fieldReliquary.Do(ModifyProperties{ index.ID(), properties, {}, {} });
 
-            GIVEN("script that modifies data by replace")
+            GIVEN("script that modifies properties by replace")
             {
                 CompileAndCreateScript(
                     "basic_script.as",
                     "string main(Arca::RelicID scriptID, string name1, int64 value1, string name2, int64 value2, string name3, int64 value3)\n" \
                     "{\n" \
-                    "    auto datum1 = Atmos::Datum(name1, value1);\n" \
-                    "    auto datum2 = Atmos::Datum(name2, value2);\n" \
-                    "    auto datum3 = Atmos::Datum(name3, value3);\n" \
-                    "    Atmos::Datum[] replace = { datum1, datum2, datum3 };\n" \
+                    "    auto property1 = Atmos::Property(name1, value1);\n" \
+                    "    auto property2 = Atmos::Property(name2, value2);\n" \
+                    "    auto property3 = Atmos::Property(name3, value3);\n" \
+                    "    Atmos::Property[] replace = { property1, property2, property3 };\n" \
                     "    auto script = Atmos::Scripting::Script(scriptID);\n" \
-                    "    Arca::Reliquary::Do(Atmos::Scripting::ModifyData(script, Atmos::Datum[](), string[](), replace));\n" \
+                    "    Arca::Reliquary::Do(Atmos::ModifyProperties(script.ID(), Atmos::Property[](), string[](), replace));\n" \
                     "\n" \
-                    "    auto data = script.Data();\n" \
-                    "    string[] dataAsStrings;\n" \
-                    "    for (uint i = 0; i < data.length(); ++i)\n" \
+                    "    auto properties = Atmos::DataCore(script.ID()).Properties();\n" \
+                    "    string[] propertiesAsStrings;\n" \
+                    "    for (uint i = 0; i < properties.length(); ++i)\n" \
                     "    {\n" \
-                    "        auto element = data[i];\n" \
-                    "        dataAsStrings.insertLast(element.name + \" \" + Atmos::ToString(element.value.AsInt()));\n" \
+                    "        auto element = properties[i];\n" \
+                    "        propertiesAsStrings.insertLast(element.name + \" \" + Atmos::ToString(element.value.AsInt()));\n" \
                     "    }\n" \
-                    "    return Atmos::Join(\", \", dataAsStrings);\n" \
+                    "    return Atmos::Join(\", \", propertiesAsStrings);\n" \
                     "}",
                     { index.ID(), names[0], values[6], names[2], values[7], names[4], values[8] },
                     fieldReliquary);

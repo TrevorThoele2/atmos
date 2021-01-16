@@ -1,5 +1,6 @@
 #include "OutputWorldArchiveInterface.h"
 
+#include <Inscription/VectorScribe.h>
 #include <Inscription/OutputJumpTable.h>
 
 #include "ArchiveHeader.h"
@@ -10,7 +11,7 @@ namespace Atmos::World::Serialization
         archive(filePath), versionUserContext{ Inscription::currentInscriptionVersion, 1 }
     {}
 
-    void OutputWorldArchiveInterface::Save(std::vector<Field>& fields)
+    void OutputWorldArchiveInterface::Save(std::vector<Field>& fields, const std::vector<Property>& worldProperties)
     {
         SaveArchiveHeader(
             archive,
@@ -19,6 +20,8 @@ namespace Atmos::World::Serialization
             versionUserContext.clientVersion);
 
         archive.EmplaceUserContext(&versionUserContext);
+
+        archive(worldProperties);
 
         Inscription::OutputJumpTable<FieldID, Field> jumpTable;
         for (auto& field : fields)

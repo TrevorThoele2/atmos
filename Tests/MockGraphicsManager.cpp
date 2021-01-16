@@ -23,8 +23,10 @@ void MockGraphicsManager::SetFullscreen(bool set)
 void MockGraphicsManager::ChangeVerticalSync(bool set)
 {}
 
-void MockGraphicsManager::InitializeImpl()
-{}
+String MockGraphicsManager::TypeName() const
+{
+    return "Mock";
+}
 
 std::unique_ptr<Asset::Resource::Image> MockGraphicsManager::CreateImageResourceImpl(
     const Buffer& buffer,

@@ -20,16 +20,16 @@ SCENARIO_METHOD(GridRegionRenderingTestsFixture, "rendering grid regions", "[ren
     {
         Logging::Logger logger(Logging::Severity::Verbose);
         DerivedEngine engine(logger);
-        engine.Setup();
 
         auto fieldOrigin = Arca::ReliquaryOrigin();
         RegisterFieldTypes(
             fieldOrigin,
-            *engine.mockImageAssetManager,
-            *engine.nullAudioManager,
+            *engine.mockAssetResourceManager,
+            *engine.mockAudioManager,
             *engine.mockInputManager,
             *engine.mockGraphicsManager,
             *engine.mockScriptManager,
+            *engine.worldManager,
             Spatial::ScreenSize {
                 std::numeric_limits<Spatial::ScreenSize::Dimension>::max(),
                 std::numeric_limits<Spatial::ScreenSize::Dimension>::max() },
@@ -38,8 +38,6 @@ SCENARIO_METHOD(GridRegionRenderingTestsFixture, "rendering grid regions", "[ren
         World::Field field(0, fieldOrigin.Actualize());
 
         auto& fieldReliquary = field.Reliquary();
-
-        engine.mockGraphicsManager->Initialize();
 
         const auto mainSurface = Arca::Index<MainSurface>(fieldReliquary);
         auto mainSurfaceImplementation = mainSurface->Resource<MockSurfaceResource>();
@@ -66,7 +64,7 @@ SCENARIO_METHOD(GridRegionRenderingTestsFixture, "rendering grid regions", "[ren
 
             WHEN("starting engine execution")
             {
-                engine.UseField(std::move(field), std::filesystem::current_path() / "Assets.dat");
+                engine.UseField(std::move(field), {}, std::filesystem::current_path() / "Assets.dat");
                 engine.StartExecution();
 
                 THEN("region rendered in graphics manager")
@@ -106,7 +104,7 @@ SCENARIO_METHOD(GridRegionRenderingTestsFixture, "rendering grid regions", "[ren
 
             WHEN("starting engine execution, destroying grid region, then starting execution")
             {
-                engine.UseField(std::move(field), std::filesystem::current_path() / "Assets.dat");
+                engine.UseField(std::move(field), {}, std::filesystem::current_path() / "Assets.dat");
                 engine.StartExecution();
 
                 fieldReliquary.Do(Arca::Destroy<GridRegion>{ gridRegion.ID() });
@@ -132,7 +130,7 @@ SCENARIO_METHOD(GridRegionRenderingTestsFixture, "rendering grid regions", "[ren
 
             WHEN("starting engine execution")
             {
-                engine.UseField(std::move(field), std::filesystem::current_path() / "Assets.dat");
+                engine.UseField(std::move(field), {}, std::filesystem::current_path() / "Assets.dat");
                 engine.StartExecution();
 
                 THEN("no lines rendered in graphics manager")
@@ -150,7 +148,7 @@ SCENARIO_METHOD(GridRegionRenderingTestsFixture, "rendering grid regions", "[ren
 
             WHEN("starting engine execution")
             {
-                engine.UseField(std::move(field), std::filesystem::current_path() / "Assets.dat");
+                engine.UseField(std::move(field), {}, std::filesystem::current_path() / "Assets.dat");
                 engine.StartExecution();
 
                 THEN("no lines rendered in graphics manager")

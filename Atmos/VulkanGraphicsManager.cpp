@@ -46,6 +46,11 @@ namespace Atmos::Render::Vulkan
         
     }
 
+    String GraphicsManager::TypeName() const
+    {
+        return "Vulkan";
+    }
+
     std::unique_ptr<Asset::Resource::Image> GraphicsManager::CreateImageResourceImpl(
         const Bytes& bytes,
         const Name& name,

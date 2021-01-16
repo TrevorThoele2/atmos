@@ -11,17 +11,18 @@
 SCENARIO_METHOD(AngelScriptParameterTestsFixture, "running AngelScript scripts with parameters", "[script][angelscript]")
 {
     Logging::Logger logger(Logging::Severity::Verbose);
+    logger.Add<Logging::FileSink>();
     ScriptEngine engine(logger);
-    engine.Setup();
 
     auto fieldOrigin = Arca::ReliquaryOrigin();
     RegisterFieldTypes(
         fieldOrigin,
         *engine.mockImageAssetManager,
-        *engine.nullAudioManager,
+        *engine.mockAudioManager,
         *engine.mockInputManager,
         *engine.mockGraphicsManager,
         *engine.scriptManager,
+        *engine.mockWorldManager,
         Spatial::ScreenSize{
             std::numeric_limits<Spatial::ScreenSize::Dimension>::max(),
             std::numeric_limits<Spatial::ScreenSize::Dimension>::max() },
@@ -31,8 +32,6 @@ SCENARIO_METHOD(AngelScriptParameterTestsFixture, "running AngelScript scripts w
     World::Field field(0, fieldOrigin.Actualize());
 
     auto& fieldReliquary = field.Reliquary();
-
-    engine.mockGraphicsManager->Initialize();
 
     std::vector<Scripting::Finished> finishes;
     fieldReliquary.On<Scripting::Finished>([&finishes](const Scripting::Finished& signal)

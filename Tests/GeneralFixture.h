@@ -1,6 +1,7 @@
 #pragma once
 
 #include <TestFramework/DataGeneration.h>
+#include <Atmos/FileLoggingSink.h>
 
 class GeneralFixture
 {

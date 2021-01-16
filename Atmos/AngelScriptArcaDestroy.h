@@ -139,7 +139,17 @@ namespace Atmos::Scripting::Angel
     void RegisterArcaDestroyRelic(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         Detail::DoRegisterArcaDestroy<T>(engine, documentationManager);
+    }
 
+    template<class T>
+    void RegisterArcaDestroyShard(asIScriptEngine& engine, DocumentationManager& documentationManager)
+    {
+        Detail::DoRegisterArcaDestroy<T>(engine, documentationManager);
+    }
+
+    template<class T>
+    void RegisterArcaDestroying(asIScriptEngine& engine, DocumentationManager& documentationManager)
+    {
         Detail::DoRegisterArcaDestroying<T>(engine, documentationManager);
     }
 }

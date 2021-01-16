@@ -3,7 +3,6 @@
 #include <Arca/Relic.h>
 
 #include "Name.h"
-#include "Datum.h"
 #include "Tag.h"
 
 #include "GridPoint.h"
@@ -24,11 +23,11 @@ namespace Atmos::Entity
 
         bool isSolid = false;
 
-        std::vector<Datum> data;
         std::vector<Tag> tags;
     public:
-        Entity() = default;
+        Entity(Arca::RelicInit init);
         explicit Entity(
+            Arca::RelicInit init,
             Name name,
             Name displayName,
             Spatial::Grid::Point position,
@@ -62,7 +61,6 @@ namespace Inscription
             archive("displayName", object.displayName);
             archive("position", object.position);
             archive("isSolid", object.isSolid);
-            archive("data", object.data);
             archive("tags", object.tags);
         }
     };

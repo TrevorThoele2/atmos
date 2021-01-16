@@ -20,11 +20,24 @@
 namespace Atmos::Scripting::Angel
 {
     Manager::Manager(Logging::Logger& logger) : engine(&CreateEngine()), logger(&logger)
-    {}
+    {
+        engine->SetUserData(&userData);
+        Angel::RegisterAll(*engine);
+    }
 
     Manager::~Manager()
     {
-        VerifyResult(engine->ShutDownAndRelease());
+        VerifyResult(engine->ShutDownAndRelease(), {});
+    }
+
+    void Manager::SetReliquary(Arca::Reliquary& reliquary)
+    {
+        if (userData.reliquary)
+            return;
+
+        for (auto& signalToRegister : userData.signalsToRegister)
+            signalToRegister(*engine, reliquary);
+        userData.reliquary = &reliquary;
     }
 
     std::unique_ptr<Asset::Resource::Script> Manager::CreateAssetResource(
@@ -45,7 +58,7 @@ namespace Atmos::Scripting::Angel
 
         auto& context = CreateContext();
 
-        VerifyResult(context.SetExceptionCallback(asMETHOD(Manager, ContextMessageCallback), this, asCALL_THISCALL));
+        VerifyResult(context.SetExceptionCallback(asMETHOD(Manager, ContextMessageCallback), this, asCALL_THISCALL), {});
 
         return std::make_unique<ScriptResource>(parameters, function, context, *logger);
     }
@@ -63,7 +76,7 @@ namespace Atmos::Scripting::Angel
             BuildModule(createdModule);
 
             auto outputStream = OutputBytecodeStream();
-            VerifyResult(createdModule.SaveByteCode(&outputStream));
+            VerifyResult(createdModule.SaveByteCode(&outputStream), {});
             returnValue = outputStream.Buffer();
         }
         catch(...)
@@ -83,41 +96,27 @@ namespace Atmos::Scripting::Angel
         return returnValue;
     }
 
-    void Manager::InitializeImpl(Arca::Reliquary& reliquary)
+    String Manager::TypeName() const
     {
-        SetAndPushUserData(*this, reliquary);
-        RegisterAll();
+        return "AngelScript";
     }
 
     asIScriptEngine& Manager::CreateEngine()
     {
         auto engine = asCreateScriptEngine();
         if (!engine)
-            throw AngelScriptFailed("Creation of the scripting engine has failed.");
+            throw Error("Creation of the scripting engine has failed.");
 
-        VerifyResult(engine->SetMessageCallback(asMETHOD(Manager, EngineMessageCallback), this, asCALL_THISCALL));
+        VerifyResult(engine->SetMessageCallback(asMETHOD(Manager, EngineMessageCallback), this, asCALL_THISCALL), {});
 
         return *engine;
-    }
-
-    void Manager::SetAndPushUserData(Manager& owner, Arca::Reliquary& reliquary)
-    {
-        userData.reliquary = &reliquary;
-        userData.manager = &owner;
-
-        engine->SetUserData(&userData);
-    }
-
-    void Manager::RegisterAll()
-    {
-        Angel::RegisterAll(*engine);
     }
 
     asIScriptModule& Manager::CreateModule(String name)
     {
         const auto module = engine->GetModule(name.c_str(), asGM_ALWAYS_CREATE);
         if (!module)
-            throw AngelScriptFailed(
+            throw Error(
                 "Module could not be created.",
                 {
                     {"Module Name", name}
@@ -130,7 +129,7 @@ namespace Atmos::Scripting::Angel
     {
         const auto module = engine->GetModule(name.c_str(), asGM_ONLY_IF_EXISTS);
         if (!module)
-            throw AngelScriptFailed(
+            throw Error(
                 "Module could not be found.",
                 {
                     {"Module Name", name}
@@ -144,26 +143,26 @@ namespace Atmos::Scripting::Angel
         VerifyResult(module.AddScriptSection(
             name.c_str(),
             fileData.c_str(),
-            fileData.length()));
+            fileData.length()), {});
     }
 
     void Manager::BuildModule(asIScriptModule& module)
     {
-        VerifyResult(module.Build());
+        VerifyResult(module.Build(), {});
     }
 
     void Manager::LoadModule(asIScriptModule& module, const Buffer& buffer)
     {
         auto inputStream = InputBytecodeStream(buffer);
 
-        VerifyResult(module.LoadByteCode(&inputStream));
+        VerifyResult(module.LoadByteCode(&inputStream), {});
     }
 
     asIScriptContext& Manager::CreateContext()
     {
         const auto context = engine->RequestContext();
         if (!context)
-            throw AngelScriptFailed("Context could not be created.");
+            throw Error("Context could not be created.");
 
         return *context;
     }
@@ -172,7 +171,7 @@ namespace Atmos::Scripting::Angel
     {
         const auto function = module.GetFunctionByName(name.c_str());
         if (!function)
-            throw AngelScriptFailed(
+            throw Error(
                 "Function could not be found.",
                 {
                     {"Module Name", module.GetName()},

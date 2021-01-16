@@ -39,6 +39,8 @@ namespace Atmos::Spatial
     [[nodiscard]] Point3D ToPoint3D(Grid::Point point, Point3D::Value z);
     [[nodiscard]] Point3D ToPoint3D(Angle3D angle, Point3D::Value distance);
 
+    [[nodiscard]] Angle2D ToDegrees(Angle2D angle);
+
     [[nodiscard]] AxisAlignedBox2D ToAxisAlignedBox2D(
         float left,
         float top,

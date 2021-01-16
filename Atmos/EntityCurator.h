@@ -10,7 +10,6 @@
 #include "FindEntityByName.h"
 #include "FindEntityByPosition.h"
 #include "MoveEntityTo.h"
-#include "ModifyEntityData.h"
 #include "ModifyEntityTags.h"
 
 #include "MappedEntities.h"
@@ -28,7 +27,6 @@ namespace Atmos::Entity
         Arca::Index<Entity> Handle(const FindByName& command);
         std::set<Arca::Index<Entity>> Handle(const FindByPosition& command);
         void Handle(const MoveTo& command);
-        void Handle(const ModifyData& command);
         void Handle(const ModifyTags& command);
     private:
         Arca::Batch<Prototype> prototypes;
@@ -56,7 +54,6 @@ namespace Arca
             Atmos::Entity::FindByName,
             Atmos::Entity::FindByPosition,
             Atmos::Entity::MoveTo,
-            Atmos::Entity::ModifyData,
             Atmos::Entity::ModifyTags>;
     };
 }
