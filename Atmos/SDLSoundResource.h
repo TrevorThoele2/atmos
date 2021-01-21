@@ -29,10 +29,10 @@ namespace Atmos::Audio::Resource::SDL
         Mix_Chunk* chunk = nullptr;
         Channel channel = 0;
 
-        const Uint8 minMixDistance = 1;
-        const Uint8 maxMixDistance = 255;
-        const int minMixVolume = 0;
-        const int maxMixVolume = MIX_MAX_VOLUME;
+        const float minMixDistance = 1;
+        const float maxMixDistance = 255;
+        const float minMixVolume = 0;
+        const float maxMixVolume = MIX_MAX_VOLUME;
 
         void LoadChunk(SDL_RWops* ops);
         void FreeChunk();

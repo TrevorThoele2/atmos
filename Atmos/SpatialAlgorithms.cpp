@@ -222,8 +222,8 @@ namespace Atmos::Spatial
 
     Angle2D ToDegrees(Angle2D angle)
     {
-        const auto halfCircleDegrees = 180;
-        return halfCircleDegrees / (pi<Angle2D> *angle);
+        const Angle2D halfCircleDegrees = 180;
+        return halfCircleDegrees / (pi<Angle2D> * angle);
     }
 
     AxisAlignedBox2D ToAxisAlignedBox2D(
