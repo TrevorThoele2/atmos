@@ -52,6 +52,7 @@
     <ClInclude Include="AngelScriptCurrentScript.h" />
     <ClInclude Include="AngelScriptDataCore.h" />
     <ClInclude Include="AngelScriptEntity.h" />
+    <ClInclude Include="AngelScriptGenerateRandomNumber.h" />
     <ClInclude Include="AngelScriptModifyProperties.h" />
     <ClInclude Include="AngelScriptModifyWorldProperties.h" />
     <ClInclude Include="AngelScriptProperty.h" />
@@ -66,6 +67,7 @@
     <ClInclude Include="AngelScriptOpenRelic.h" />
     <ClInclude Include="AngelScriptPauseSound.h" />
     <ClInclude Include="AngelScriptPositionedSound.h" />
+    <ClInclude Include="AngelScriptRange.h" />
     <ClInclude Include="AngelScriptRelativeImage.h" />
     <ClInclude Include="AngelScriptRequestField.h" />
     <ClInclude Include="AngelScriptRestartSound.h" />
@@ -89,7 +91,13 @@
     <ClInclude Include="AssetResourceManager.h" />
     <ClInclude Include="AssetResourceTraits.h" />
     <ClInclude Include="FileLoggingSink.h" />
+    <ClInclude Include="GenerateRandomNumber.h" />
+    <ClInclude Include="PrimitiveTraits.h" />
     <ClInclude Include="LoggingSink.h" />
+    <ClInclude Include="RandomNumberGenerator.h" />
+    <ClInclude Include="RandomInformation.h" />
+    <ClInclude Include="Range.h" />
+    <ClInclude Include="RangeMinNotLessThanEqualMax.h" />
     <ClInclude Include="RequestField.h" />
     <ClInclude Include="ChangeSoundVolume.h" />
     <ClInclude Include="DataAlgorithms.h" />
@@ -503,6 +511,7 @@
     <ClCompile Include="AngelScriptDataCore.cpp" />
     <ClCompile Include="AngelScriptDynamicImage.cpp" />
     <ClCompile Include="AngelScriptEntity.cpp" />
+    <ClCompile Include="AngelScriptGenerateRandomNumber.cpp" />
     <ClCompile Include="AngelScriptModifyProperties.cpp" />
     <ClCompile Include="AngelScriptModifyWorldProperties.cpp" />
     <ClCompile Include="AngelScriptProperty.cpp" />
@@ -568,9 +577,12 @@
     <ClCompile Include="DataCore.cpp" />
     <ClCompile Include="DataCurator.cpp" />
     <ClCompile Include="FileLoggingSink.cpp" />
+    <ClCompile Include="GenerateRandomNumber.cpp" />
     <ClCompile Include="LoggingSeverity.cpp" />
     <ClCompile Include="LoggingSink.cpp" />
     <ClCompile Include="NullWorldManager.cpp" />
+    <ClCompile Include="RandomNumberGenerator.cpp" />
+    <ClCompile Include="RangeMinNotLessThanEqualMax.cpp" />
     <ClCompile Include="ScriptCurator.cpp" />
     <ClCompile Include="ScriptError.cpp" />
     <ClCompile Include="Sound.cpp" />

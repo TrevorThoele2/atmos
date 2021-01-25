@@ -80,6 +80,8 @@
 
 #include <Arca/LocalRelic.h>
 
+#include "RandomInformation.h"
+
 namespace Atmos
 {
     void RegisterArcaTypes(Arca::ReliquaryOrigin& origin)
@@ -101,6 +103,7 @@ namespace Atmos
         Data::RegisterTypes(origin);
         Logging::RegisterTypes(origin, logger);
         Debug::RegisterTypes(origin);
+        Random::RegisterTypes(origin);
     }
 
     void RegisterFieldTypes(
@@ -404,6 +407,15 @@ namespace Atmos
         {
             origin
                 .Register<Statistics>();
+        }
+    }
+
+    namespace Random
+    {
+        void RegisterTypes(Arca::ReliquaryOrigin& origin)
+        {
+            origin
+                .Register<Information>();
         }
     }
 }

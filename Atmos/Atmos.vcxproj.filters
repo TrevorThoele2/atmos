@@ -600,6 +600,18 @@
     <Filter Include="Source Files\World\Commands">
       <UniqueIdentifier>{fbc02e9b-24ac-412c-861d-1a9ee581e5ec}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Random">
+      <UniqueIdentifier>{7bdf9f60-1095-4723-bd72-7d78a50224aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Random">
+      <UniqueIdentifier>{7beeccf7-0c64-40a0-841a-9cbb9c39f542}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scripting\AngelScript\Types\Atmos\Random">
+      <UniqueIdentifier>{9fccc00f-9022-44c5-9221-46b927618a5d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scripting\AngelScript\Types\Atmos\Random">
+      <UniqueIdentifier>{6dc42f0e-86bd-4765-a27c-470b062c89c4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FieldDestination.h">
@@ -1931,6 +1943,30 @@
     <ClInclude Include="AngelScriptSoundFinished.h">
       <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Audio</Filter>
     </ClInclude>
+    <ClInclude Include="Range.h">
+      <Filter>Header Files\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="RangeMinNotLessThanEqualMax.h">
+      <Filter>Header Files\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="GenerateRandomNumber.h">
+      <Filter>Header Files\Random</Filter>
+    </ClInclude>
+    <ClInclude Include="RandomInformation.h">
+      <Filter>Header Files\Random</Filter>
+    </ClInclude>
+    <ClInclude Include="RandomNumberGenerator.h">
+      <Filter>Header Files\Random</Filter>
+    </ClInclude>
+    <ClInclude Include="PrimitiveTraits.h">
+      <Filter>Header Files\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptGenerateRandomNumber.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Random</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptRange.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Data</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FieldDestination.cpp">
@@ -2829,6 +2865,18 @@
     </ClCompile>
     <ClCompile Include="ScriptCurator.cpp">
       <Filter>Source Files\Scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="RangeMinNotLessThanEqualMax.cpp">
+      <Filter>Source Files\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="RandomNumberGenerator.cpp">
+      <Filter>Source Files\Random</Filter>
+    </ClCompile>
+    <ClCompile Include="GenerateRandomNumber.cpp">
+      <Filter>Source Files\Random</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptGenerateRandomNumber.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Random</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
