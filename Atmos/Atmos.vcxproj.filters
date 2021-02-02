@@ -2885,7 +2885,7 @@
       <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Random</Filter>
     </ClCompile>
     <ClCompile Include="AngelScriptIsSolid.cpp">
-      <Filter>Header Files\World\Commands</Filter>
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\World</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

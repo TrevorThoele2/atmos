@@ -34,8 +34,10 @@ namespace Atmos::Scripting::Angel
                 bool>
             ({
                 "string name",
+                "string displayName",
                 "Atmos::Spatial::Grid::Point position",
-                "Atmos::Spatial::Angle2D direction"
+                "Atmos::Spatial::Angle2D direction",
+                "bool isSolid"
             })
             .Actualize(engine, documentationManager);
         RegisterArcaCreated<Type::ValueT>(engine, documentationManager);
