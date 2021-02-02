@@ -3,6 +3,8 @@
 #include "CurrentActualizingEntity.h"
 #include "Script.h"
 #include "ExecuteScript.h"
+#include "IsSolid.h"
+#include "DataAlgorithms.h"
 
 #include <Arca/Reliquary.h>
 #include <Arca/Created.h>
@@ -102,6 +104,9 @@ namespace Atmos::Entity
 
     void Curator::Handle(const MoveTo& command)
     {
+        if (Owner().Do(World::IsSolid{ command.to }))
+            return;
+
         auto mutableMappedEntities = MutablePointer().Of(mapped);
 
         auto& positionToEntity = mutableMappedEntities->positionToEntity;
@@ -115,18 +120,8 @@ namespace Atmos::Entity
 
     void Curator::Handle(const ModifyTags& command)
     {
-        auto removeSet = std::set<String>(command.remove.begin(), command.remove.end());
-
-        auto mutableEntity = MutablePointer().Of(command.entity);
-
-        for (auto element = mutableEntity->tags.begin(); element != mutableEntity->tags.end();)
-        {
-            if (removeSet.find(*element) != removeSet.end())
-                element = mutableEntity->tags.erase(element);
-            else
-                ++element;
-        }
-        mutableEntity->tags.insert(mutableEntity->tags.begin(), command.add.begin(), command.add.end());
+        auto& tags = MutablePointer().Of(command.entity)->tags;
+        ApplyAddRemoveModifications(tags, command.add, command.remove);
     }
 
     void Curator::AddEntityTo(Mapped::NameToEntity& to, const String& name, Arca::Index<Entity> entity)

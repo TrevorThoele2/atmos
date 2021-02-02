@@ -3,18 +3,24 @@
 
 #include <Arca/ReliquaryOrigin.h>
 #include <Atmos/TypeRegistration.h>
+#include <Atmos/ModifyEntityBoundary.h>
+
+EntityTestsFixture::EntityTestsFixture()
+{
+    Arca::ReliquaryOrigin reliquaryOrigin;
+
+    RegisterTypes(reliquaryOrigin);
+    Data::RegisterTypes(reliquaryOrigin);
+    World::RegisterTypes(reliquaryOrigin, worldManager);
+
+    reliquary = reliquaryOrigin.Actualize();
+    mappedEntities = Arca::Index<Mapped>(*reliquary);
+}
 
 SCENARIO_METHOD(EntityTestsFixture, "entity actualization", "[entity]")
 {
     GIVEN("registered reliquary")
     {
-        Arca::ReliquaryOrigin reliquaryOrigin;
-
-        RegisterTypes(reliquaryOrigin);
-        Data::RegisterTypes(reliquaryOrigin);
-
-        auto reliquary = reliquaryOrigin.Actualize();
-
         WHEN("creating 3 prototypes")
         {
             auto names = dataGeneration.RandomGroup<Name>(3);
@@ -42,7 +48,6 @@ SCENARIO_METHOD(EntityTestsFixture, "entity actualization", "[entity]")
 
             auto entities = reliquary->Batch<Atmos::Entity::Entity>();
             auto prototypes = reliquary->Batch<Prototype>();
-            auto mappedEntities = Arca::Index<Mapped>(*reliquary);
 
             WHEN("actualizing")
             {
@@ -79,7 +84,7 @@ SCENARIO_METHOD(EntityTestsFixture, "entity actualization", "[entity]")
                 {
                     auto& nameToEntity = mappedEntities->nameToEntity;
                     REQUIRE(nameToEntity.size() == 3);
-                    for(auto entity = entities.begin(); entity != entities.end(); ++entity)
+                    for (auto entity = entities.begin(); entity != entities.end(); ++entity)
                     {
                         auto found = nameToEntity.find(entity->name);
                         REQUIRE(found != nameToEntity.end());
@@ -98,61 +103,15 @@ SCENARIO_METHOD(EntityTestsFixture, "entity actualization", "[entity]")
                         REQUIRE(found->second.begin()->ID() == entity.ID());
                     }
                 }
-
-                WHEN("moving entities")
-                {
-                    auto newPositions = dataGeneration.RandomStackGroup<
-                        Spatial::Grid::Point,
-                        Spatial::Grid::Point::Value,
-                        Spatial::Grid::Point::Value>(3);
-
-                    size_t i = 0;
-                    for (auto entity = entities.begin(); entity != entities.end(); ++entity)
-                    {
-                        reliquary->Do(
-                            MoveTo{ Arca::Index<Atmos::Entity::Entity>(entity.ID(), *reliquary), newPositions[i] });
-                        ++i;
-                    }
-
-                    THEN("entities have been updated in map")
-                    {
-                        auto& positionToEntity = mappedEntities->positionToEntity;
-                        REQUIRE(positionToEntity.size() == 3);
-                        for (auto& position : newPositions)
-                        {
-                            auto found = positionToEntity.find(position);
-                            REQUIRE(found != positionToEntity.end());
-                            auto foundEntity = std::any_of(
-                                entities.begin(),
-                                entities.end(),
-                                [position](const Atmos::Entity::Entity& entity)
-                                {
-                                    return entity.position == position;
-                                });
-                            REQUIRE(foundEntity);
-                        }
-                    }
-                }
-
-                WHEN("clearing entities")
-                {
-                    reliquary->Do(Arca::Clear(Arca::TypeFor<Atmos::Entity::Entity>()));
-
-                    THEN("no entities are mapped by name")
-                    {
-                        auto& nameToEntity = mappedEntities->nameToEntity;
-                        REQUIRE(nameToEntity.empty());
-                    }
-
-                    THEN("no entities are mapped by position")
-                    {
-                        auto& positionToEntity = mappedEntities->positionToEntity;
-                        REQUIRE(positionToEntity.empty());
-                    }
-                }
             }
         }
+    }
+}
 
+SCENARIO_METHOD(EntityTestsFixture, "creating entities", "[entity]")
+{
+    GIVEN("registered reliquary")
+    {
         WHEN("creating 3 entities")
         {
             auto names = dataGeneration.RandomGroup<Name>(3);
@@ -184,7 +143,6 @@ SCENARIO_METHOD(EntityTestsFixture, "entity actualization", "[entity]")
                 isSolids[2]));
 
             auto entities = reliquary->Batch<Atmos::Entity::Entity>();
-            auto mappedEntities = Arca::Index<Mapped>(*reliquary);
 
             THEN("entities contains correct data")
             {
@@ -226,18 +184,75 @@ SCENARIO_METHOD(EntityTestsFixture, "entity actualization", "[entity]")
                     REQUIRE(found->second.begin()->ID() == entity.ID());
                 }
             }
+        }
+    }
+}
+
+SCENARIO_METHOD(EntityTestsFixture, "clearing entities", "[entity]")
+{
+    GIVEN("registered reliquary")
+    {
+        WHEN("clearing entities")
+        {
+            reliquary->Do(Arca::Clear(Arca::TypeFor<Atmos::Entity::Entity>()));
+
+            THEN("no entities are mapped by name")
+            {
+                auto& nameToEntity = mappedEntities->nameToEntity;
+                REQUIRE(nameToEntity.empty());
+            }
+
+            THEN("no entities are mapped by position")
+            {
+                auto& positionToEntity = mappedEntities->positionToEntity;
+                REQUIRE(positionToEntity.empty());
+            }
+        }
+    }
+}
+
+SCENARIO_METHOD(EntityTestsFixture, "moving entities", "[entity]")
+{
+    GIVEN("registered reliquary")
+    {
+        WHEN("creating 3 entities")
+        {
+            auto names = dataGeneration.RandomGroup<Name>(3);
+            auto displayNames = dataGeneration.RandomGroup<Name>(3);
+            auto positions = dataGeneration.RandomStackGroup<
+                Spatial::Grid::Point,
+                Spatial::Grid::Point::Value,
+                Spatial::Grid::Point::Value>(6);
+            auto directions = dataGeneration.RandomGroup<Spatial::Angle2D>(3);
+            auto isSolids = dataGeneration.RandomGroup<bool>(3);
+
+            reliquary->Do(Arca::Create<Atmos::Entity::Entity>(
+                names[0],
+                displayNames[0],
+                positions[0],
+                directions[0],
+                isSolids[0]));
+            reliquary->Do(Arca::Create<Atmos::Entity::Entity>(
+                names[1],
+                displayNames[1],
+                positions[1],
+                directions[1],
+                isSolids[1]));
+            reliquary->Do(Arca::Create<Atmos::Entity::Entity>(
+                names[2],
+                displayNames[2],
+                positions[2],
+                directions[2],
+                isSolids[2]));
+
+            auto entities = reliquary->Batch<Atmos::Entity::Entity>();
 
             WHEN("moving entities")
             {
-                auto newPositions = dataGeneration.RandomStackGroup<
-                    Spatial::Grid::Point,
-                    Spatial::Grid::Point::Value,
-                    Spatial::Grid::Point::Value>(3);
-
-                size_t i = 0;
+                size_t i = 3;
                 for (auto entity = entities.begin(); entity != entities.end(); ++entity)
                 {
-                    reliquary->Do(MoveTo{ Arca::Index<Atmos::Entity::Entity>(entity.ID(), *reliquary), newPositions[i] });
+                    reliquary->Do(MoveTo{ Arca::Index<Atmos::Entity::Entity>(entity.ID(), *reliquary), positions[i] });
                     ++i;
                 }
 
@@ -245,37 +260,141 @@ SCENARIO_METHOD(EntityTestsFixture, "entity actualization", "[entity]")
                 {
                     auto& positionToEntity = mappedEntities->positionToEntity;
                     REQUIRE(positionToEntity.size() == 3);
-                    for (auto& position : newPositions)
+                    for (auto position = positions.begin() + 3; position != positions.end(); ++position)
                     {
-                        auto found = positionToEntity.find(position);
+                        auto found = positionToEntity.find(*position);
                         REQUIRE(found != positionToEntity.end());
                         auto foundEntity = std::any_of(
                             entities.begin(),
                             entities.end(),
                             [position](const Atmos::Entity::Entity& entity)
                             {
-                                return entity.position == position;
+                                return entity.position == *position;
                             });
                         REQUIRE(foundEntity);
                     }
                 }
             }
+        }
 
-            WHEN("clearing entities")
+        WHEN("moving solid entity into entity boundary")
+        {
+            auto names = dataGeneration.RandomGroup<Name>(2);
+            auto displayNames = dataGeneration.RandomGroup<Name>(2);
+            auto positions = dataGeneration.RandomStackGroup<
+                Spatial::Grid::Point,
+                Spatial::Grid::Point::Value,
+                Spatial::Grid::Point::Value>(2);
+            auto directions = dataGeneration.RandomGroup<Spatial::Angle2D>(2);
+
+            auto entity = reliquary->Do(Arca::Create<Atmos::Entity::Entity>(
+                names[0],
+                displayNames[0],
+                positions[0],
+                directions[0],
+                true));
+
+            reliquary->Do(World::ModifyEntityBoundary{ {positions[1]}, {} });
+
+            reliquary->Do(MoveTo{ Arca::Index<Atmos::Entity::Entity>(entity.ID(), *reliquary), positions[1] });
+
+            THEN("has not moved")
             {
-                reliquary->Do(Arca::Clear(Arca::TypeFor<Atmos::Entity::Entity>()));
+                auto& positionToEntity = mappedEntities->positionToEntity;
+                REQUIRE(positionToEntity.size() == 1);
 
-                THEN("no entities are mapped by name")
-                {
-                    auto& nameToEntity = mappedEntities->nameToEntity;
-                    REQUIRE(nameToEntity.empty());
-                }
+                auto position0Entities = positionToEntity.find(positions[0]);
+                REQUIRE(position0Entities != positionToEntity.end());
+                REQUIRE(position0Entities->second.size() == 1);
+                REQUIRE(position0Entities->second.begin()->ID() == entity.ID());
+            }
+        }
 
-                THEN("no entities are mapped by position")
+        WHEN("moving non-solid entity into other solid")
+        {
+            auto names = dataGeneration.RandomGroup<Name>(2);
+            auto displayNames = dataGeneration.RandomGroup<Name>(2);
+            auto positions = dataGeneration.RandomStackGroup<
+                Spatial::Grid::Point,
+                Spatial::Grid::Point::Value,
+                Spatial::Grid::Point::Value>(2);
+            auto directions = dataGeneration.RandomGroup<Spatial::Angle2D>(2);
+
+            auto entity0 = reliquary->Do(Arca::Create<Atmos::Entity::Entity>(
+                names[0],
+                displayNames[0],
+                positions[0],
+                directions[0],
+                true));
+            auto entity1 = reliquary->Do(Arca::Create<Atmos::Entity::Entity>(
+                names[1],
+                displayNames[1],
+                positions[1],
+                directions[1],
+                false));
+
+            reliquary->Do(MoveTo{ Arca::Index<Atmos::Entity::Entity>(entity0.ID(), *reliquary), positions[1] });
+
+            auto entities = reliquary->Batch<Atmos::Entity::Entity>();
+
+            THEN("has moved")
+            {
+                auto& positionToEntity = mappedEntities->positionToEntity;
+                REQUIRE(positionToEntity.size() == 1);
+
+                auto position1Entities = positionToEntity.find(positions[1]);
+                REQUIRE(position1Entities != positionToEntity.end());
+                REQUIRE(position1Entities->second.size() == 2);
+                for (auto entity = entities.begin(); entity != entities.end(); ++entity)
                 {
-                    auto& positionToEntity = mappedEntities->positionToEntity;
-                    REQUIRE(positionToEntity.empty());
+                    auto foundEntity = std::find_if(
+                        position1Entities->second.begin(),
+                        position1Entities->second.end(),
+                        [entity](const Arca::Index<Atmos::Entity::Entity>& checkEntity) { return checkEntity.ID() == entity.ID(); });
+                    REQUIRE(foundEntity != position1Entities->second.end());
                 }
+            }
+        }
+
+        WHEN("moving solid entity into other solid")
+        {
+            auto names = dataGeneration.RandomGroup<Name>(2);
+            auto displayNames = dataGeneration.RandomGroup<Name>(2);
+            auto positions = dataGeneration.RandomStackGroup<
+                Spatial::Grid::Point,
+                Spatial::Grid::Point::Value,
+                Spatial::Grid::Point::Value>(2);
+            auto directions = dataGeneration.RandomGroup<Spatial::Angle2D>(2);
+
+            auto entity0 = reliquary->Do(Arca::Create<Atmos::Entity::Entity>(
+                names[0],
+                displayNames[0],
+                positions[0],
+                directions[0],
+                true));
+            auto entity1 = reliquary->Do(Arca::Create<Atmos::Entity::Entity>(
+                names[1],
+                displayNames[1],
+                positions[1],
+                directions[1],
+                true));
+
+            reliquary->Do(MoveTo{ Arca::Index<Atmos::Entity::Entity>(entity0.ID(), *reliquary), positions[1] });
+
+            THEN("has not moved")
+            {
+                auto& positionToEntity = mappedEntities->positionToEntity;
+                REQUIRE(positionToEntity.size() == 2);
+
+                auto position0Entities = positionToEntity.find(positions[0]);
+                REQUIRE(position0Entities != positionToEntity.end());
+                REQUIRE(position0Entities->second.size() == 1);
+                REQUIRE(position0Entities->second.begin()->ID() == entity0.ID());
+
+                auto position1Entities = positionToEntity.find(positions[1]);
+                REQUIRE(position1Entities != positionToEntity.end());
+                REQUIRE(position1Entities->second.size() == 1);
+                REQUIRE(position1Entities->second.begin()->ID() == entity1.ID());
             }
         }
     }

@@ -1,29 +1,12 @@
 #pragma once
 
-#include "Name.h"
-#include "Variant.h"
+#include <Chroma/NameValuePair.h>
 
 #include "Serialization.h"
 
 namespace Atmos
 {
-    struct NameValuePair
-    {
-        Name name;
-        Variant value;
-
-        NameValuePair() = default;
-        NameValuePair(const Name& name, const Variant& value);
-        NameValuePair(Name&& name, Variant&& value);
-        NameValuePair(const NameValuePair& arg);
-        NameValuePair(NameValuePair&& arg) noexcept;
-
-        NameValuePair& operator=(const NameValuePair& arg);
-        NameValuePair& operator=(NameValuePair&& arg) noexcept;
-
-        [[nodiscard]] bool operator==(const NameValuePair& arg) const;
-        [[nodiscard]] bool operator!=(const NameValuePair& arg) const;
-    };
+    using NameValuePair = Chroma::NameValuePair;
 }
 
 namespace Inscription
