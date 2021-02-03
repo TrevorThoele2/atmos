@@ -25,6 +25,12 @@ namespace Atmos::Scripting::Angel
 
         static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
     private:
+        template<class Value>
+        [[nodiscard]] static Value Floor(Value value);
+        template<class Value>
+        [[nodiscard]] static Value Ceiling(Value value);
+        template<class Value>
+        [[nodiscard]] static Value Round(Value value);
         template<class Value, class As>
         [[nodiscard]] static Value AbsoluteValue(Value value);
         template<class Value>
@@ -41,6 +47,24 @@ namespace Atmos::Scripting::Angel
         [[nodiscard]] static Value Atan(Value value);
         [[nodiscard]] static double Pi();
     };
+
+    template<class Value>
+    Value Registration<Math>::Floor(Value value)
+    {
+        return std::floor(value);
+    }
+
+    template<class Value>
+    Value Registration<Math>::Ceiling(Value value)
+    {
+        return std::ceil(value);
+    }
+
+    template<class Value>
+    Value Registration<Math>::Round(Value value)
+    {
+        return std::round(value);
+    }
 
     template<class Value, class As>
     Value Registration<Math>::AbsoluteValue(Value value)

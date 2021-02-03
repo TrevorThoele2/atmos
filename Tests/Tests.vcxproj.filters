@@ -148,6 +148,9 @@
     <ClCompile Include="AngelScriptRandomTests.cpp">
       <Filter>Source Files\Tests\AngelScript\Random</Filter>
     </ClCompile>
+    <ClCompile Include="AngelScriptMathTests.cpp">
+      <Filter>Source Files\Tests\AngelScript\Math</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneralFixture.h">
@@ -306,6 +309,9 @@
     <ClInclude Include="AngelScriptRandomTests.h">
       <Filter>Header Files\Tests\AngelScript\Random</Filter>
     </ClInclude>
+    <ClInclude Include="AngelScriptMathTests.h">
+      <Filter>Header Files\Tests\AngelScript\Math</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">
@@ -451,6 +457,12 @@
     </Filter>
     <Filter Include="Header Files\Tests\AngelScript\Random">
       <UniqueIdentifier>{621017e4-cf32-4ac8-a300-b7622366c132}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Tests\AngelScript\Math">
+      <UniqueIdentifier>{2ac77de6-6b96-4db1-b1c1-3376fe2f427f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Tests\AngelScript\Math">
+      <UniqueIdentifier>{c753020b-1ef1-436f-bb93-66e48d9ebdfb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

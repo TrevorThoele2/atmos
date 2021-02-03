@@ -142,6 +142,7 @@
     <ClCompile Include="AngelScriptInputTests.cpp" />
     <ClCompile Include="AngelScriptLocalIndexTests.cpp" />
     <ClCompile Include="AngelScriptLoggingTests.cpp" />
+    <ClCompile Include="AngelScriptMathTests.cpp" />
     <ClCompile Include="AngelScriptRandomTests.cpp" />
     <ClCompile Include="AngelScriptRenderTests.cpp" />
     <ClCompile Include="AngelScriptScriptTests.cpp" />
@@ -194,6 +195,7 @@
     <ClInclude Include="AngelScriptInputTests.h" />
     <ClInclude Include="AngelScriptLocalIndexTests.h" />
     <ClInclude Include="AngelScriptLoggingTests.h" />
+    <ClInclude Include="AngelScriptMathTests.h" />
     <ClInclude Include="AngelScriptRandomTests.h" />
     <ClInclude Include="AngelScriptRenderTests.h" />
     <ClInclude Include="AngelScriptScriptTests.h" />
