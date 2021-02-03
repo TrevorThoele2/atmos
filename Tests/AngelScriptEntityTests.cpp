@@ -52,12 +52,10 @@ SCENARIO_METHOD(AngelScriptEntityTestsFixture, "running entity AngelScript scrip
     GIVEN("created entity")
     {
         const auto name = dataGeneration.Random<std::string>();
-        const auto displayName = dataGeneration.Random<std::string>();
         const auto position = dataGeneration.RandomStack<Spatial::Grid::Point, Spatial::Grid::Point::Value, Spatial::Grid::Point::Value>();
-        const auto direction = dataGeneration.Random<Spatial::Angle2D>();
         const auto isSolid = dataGeneration.Random<bool>();
 
-        auto entity = fieldReliquary.Do(Arca::Create<Entity::Entity>{ name, displayName, position, direction, isSolid });
+        auto entity = fieldReliquary.Do(Arca::Create<Entity::Entity>{ name, position, isSolid });
 
         GIVEN("script that returns name")
         {
@@ -79,30 +77,6 @@ SCENARIO_METHOD(AngelScriptEntityTestsFixture, "running entity AngelScript scrip
                 {
                     REQUIRE(finishes.size() == 1);
                     REQUIRE(std::get<String>(std::get<Variant>(finishes[0].result)) == name);
-                }
-            }
-        }
-
-        GIVEN("script that returns display name")
-        {
-            CompileAndCreateScript(
-                "basic_script.as",
-                "string main(Arca::RelicID entityID)\n" \
-                "{\n" \
-                "    auto entity = Atmos::Entity::Entity(entityID);\n" \
-                "    return entity.DisplayName();\n" \
-                "}",
-                { entity.ID() },
-                fieldReliquary);
-
-            WHEN("working reliquary")
-            {
-                fieldReliquary.Do(Work{});
-
-                THEN("has correct properties")
-                {
-                    REQUIRE(finishes.size() == 1);
-                    REQUIRE(std::get<String>(std::get<Variant>(finishes[0].result)) == displayName);
                 }
             }
         }
@@ -131,31 +105,6 @@ SCENARIO_METHOD(AngelScriptEntityTestsFixture, "running entity AngelScript scrip
 
                     const auto result = std::get<String>(std::get<Variant>(finishes[0].result));
                     REQUIRE(result == expectedResult);
-                }
-            }
-        }
-
-        GIVEN("script that returns direction")
-        {
-            CompileAndCreateScript(
-                "basic_script.as",
-                "Atmos::Spatial::Angle2D main(Arca::RelicID entityID)\n" \
-                "{\n" \
-                "    auto entity = Atmos::Entity::Entity(entityID);\n" \
-                "    return entity.Direction();\n" \
-                "}",
-                { entity.ID() },
-                fieldReliquary);
-
-            WHEN("working reliquary")
-            {
-                fieldReliquary.Do(Work{});
-
-                THEN("has correct properties")
-                {
-                    REQUIRE(finishes.size() == 1);
-
-                    REQUIRE(std::get<Spatial::Angle2D>(std::get<Variant>(finishes[0].result)) == direction);
                 }
             }
         }
@@ -534,7 +483,7 @@ SCENARIO_METHOD(AngelScriptEntityTestsFixture, "running entity AngelScript scrip
                     fieldReliquary);
 
                 fieldReliquary.Do(
-                    Arca::Create<Entity::Prototype>(script, dataGeneration.Random<String>(), position, direction));
+                    Arca::Create<Entity::Prototype>(script, dataGeneration.Random<String>(), position));
 
                 WHEN("actualizing all prototypes")
                 {
@@ -560,20 +509,18 @@ SCENARIO_METHOD(AngelScriptEntityTestsFixture, "running entity AngelScript scrip
     GIVEN("script that creates entity and returns relic ID")
     {
         const auto name = dataGeneration.Random<std::string>();
-        const auto displayName = dataGeneration.Random<std::string>();
         const auto position = dataGeneration.RandomStack<Spatial::Grid::Point, Spatial::Grid::Point::Value, Spatial::Grid::Point::Value>();
-        const auto direction = dataGeneration.Random<Spatial::Angle2D>();
         const auto isSolid = dataGeneration.Random<bool>();
 
         CompileAndCreateScript(
             "basic_script.as",
-            "Arca::RelicID main(string name, string displayName, int x, int y, float direction, bool isSolid)\n" \
+            "Arca::RelicID main(string name, int x, int y, bool isSolid)\n" \
             "{\n" \
             "    auto entity = Arca::Reliquary::Do(\n" \
-            "        Arca::Create<Atmos::Entity::Entity>(name, displayName, Atmos::Spatial::Grid::Point(x, y), direction, isSolid));\n" \
+            "        Arca::Create<Atmos::Entity::Entity>(name, Atmos::Spatial::Grid::Point(x, y), isSolid));\n" \
             "    return entity.ID();\n" \
             "}",
-            { name, displayName, position.x, position.y, direction, isSolid },
+            { name, position.x, position.y, isSolid },
             fieldReliquary);
 
         WHEN("working reliquary")

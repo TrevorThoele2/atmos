@@ -15,9 +15,7 @@ namespace Atmos::Scripting::Angel
         RegisterArcaIndex(registration);
         registration
             .ConstMethod(&Management::Method<&DoName>, "string", "Name", {})
-            .ConstMethod(&Management::Method<&DisplayName>, "string", "DisplayName", {})
             .ConstMethod(&Management::Method<&Position>, "Atmos::Spatial::Grid::Point", "Position", {})
-            .ConstMethod(&Management::Method<&Direction>, "Atmos::Spatial::Angle2D", "Direction", {})
             .ConstMethod(&Management::Method<&IsSolid>, "bool", "IsSolid", {})
             .ConstMethod(&Management::Method<&Tags>, "string[]@", "Tags", {})
             .Actualize(engine, documentationManager);
@@ -28,15 +26,11 @@ namespace Atmos::Scripting::Angel
         ArcaCreateRelicRegistration<Type::ValueT>()
             .Constructor<
                 Atmos::Name,
-                Atmos::Name,
                 Spatial::Grid::Point,
-                Spatial::Angle2D,
                 bool>
             ({
                 "string name",
-                "string displayName",
                 "Atmos::Spatial::Grid::Point position",
-                "Atmos::Spatial::Angle2D direction",
                 "bool isSolid"
             })
             .Actualize(engine, documentationManager);
@@ -51,19 +45,9 @@ namespace Atmos::Scripting::Angel
         return RequiredValue(type)->name;
     }
 
-    String Registration<Entity::Entity>::DisplayName(Type type)
-    {
-        return RequiredValue(type)->displayName;
-    }
-
     Spatial::Grid::Point Registration<Entity::Entity>::Position(Type type)
     {
         return RequiredValue(type)->position;
-    }
-
-    Spatial::Angle2D Registration<Entity::Entity>::Direction(Type type)
-    {
-        return RequiredValue(type)->direction;
     }
 
     bool Registration<Entity::Entity>::IsSolid(Type type)

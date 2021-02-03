@@ -28,23 +28,19 @@ SCENARIO_METHOD(EntityTestsFixture, "entity actualization", "[entity]")
                 Spatial::Grid::Point,
                 Spatial::Grid::Point::Value,
                 Spatial::Grid::Point::Value>(3);
-            auto directions = dataGeneration.RandomGroup<Spatial::Angle2D>(3);
 
             reliquary->Do(Arca::Create<Prototype>(
                 Arca::Index<Scripting::Script>{},
                 names[0],
-                positions[0],
-                directions[0]));
+                positions[0]));
             reliquary->Do(Arca::Create<Prototype>(
                 Arca::Index<Scripting::Script>{},
                 names[1],
-                positions[1],
-                directions[1]));
+                positions[1]));
             reliquary->Do(Arca::Create<Prototype>(
                 Arca::Index<Scripting::Script>{},
                 names[2],
-                positions[2],
-                directions[2]));
+                positions[2]));
 
             auto entities = reliquary->Batch<Atmos::Entity::Entity>();
             auto prototypes = reliquary->Batch<Prototype>();
@@ -65,9 +61,7 @@ SCENARIO_METHOD(EntityTestsFixture, "entity actualization", "[entity]")
                         size_t count = 0;
                         for (auto& entity : entities)
                         {
-                            if (entity.name == names[i]
-                                && entity.position == positions[i]
-                                && entity.direction == directions[i])
+                            if (entity.name == names[i] && entity.position == positions[i])
                                 ++count;
                         }
 
@@ -115,31 +109,23 @@ SCENARIO_METHOD(EntityTestsFixture, "creating entities", "[entity]")
         WHEN("creating 3 entities")
         {
             auto names = dataGeneration.RandomGroup<Name>(3);
-            auto displayNames = dataGeneration.RandomGroup<Name>(3);
             auto positions = dataGeneration.RandomStackGroup<
                 Spatial::Grid::Point,
                 Spatial::Grid::Point::Value,
                 Spatial::Grid::Point::Value>(3);
-            auto directions = dataGeneration.RandomGroup<Spatial::Angle2D>(3);
             auto isSolids = dataGeneration.RandomGroup<bool>(3);
 
             reliquary->Do(Arca::Create<Atmos::Entity::Entity>(
                 names[0],
-                displayNames[0],
                 positions[0],
-                directions[0],
                 isSolids[0]));
             reliquary->Do(Arca::Create<Atmos::Entity::Entity>(
                 names[1],
-                displayNames[1],
                 positions[1],
-                directions[1],
                 isSolids[1]));
             reliquary->Do(Arca::Create<Atmos::Entity::Entity>(
                 names[2],
-                displayNames[2],
                 positions[2],
-                directions[2],
                 isSolids[2]));
 
             auto entities = reliquary->Batch<Atmos::Entity::Entity>();
@@ -151,9 +137,7 @@ SCENARIO_METHOD(EntityTestsFixture, "creating entities", "[entity]")
                     size_t count = 0;
                     for (auto& entity : entities)
                     {
-                        if (entity.name == names[i]
-                            && entity.position == positions[i]
-                            && entity.direction == directions[i])
+                        if (entity.name == names[i] && entity.position == positions[i])
                             ++count;
                     }
 
@@ -192,15 +176,11 @@ SCENARIO_METHOD(EntityTestsFixture, "creating entities", "[entity]")
 
             const auto entity0 = reliquary->Do(Arca::Create<Atmos::Entity::Entity>(
                 name,
-                "",
                 Spatial::Grid::Point{},
-                0.0f,
                 false));
             const auto entity1 = reliquary->Do(Arca::Create<Atmos::Entity::Entity>(
                 name,
-                "",
                 Spatial::Grid::Point{},
-                0.0f,
                 false));
 
             THEN("did not create entity")
@@ -219,15 +199,11 @@ SCENARIO_METHOD(EntityTestsFixture, "creating entities", "[entity]")
 
             const auto entity0 = reliquary->Do(Arca::Create<Atmos::Entity::Entity>(
                 names[0],
-                "",
                 position,
-                0.0f,
                 true));
             const auto entity1 = reliquary->Do(Arca::Create<Atmos::Entity::Entity>(
                 names[1],
-                "",
                 position,
-                0.0f,
                 true));
 
             THEN("did not create entity")
@@ -268,31 +244,23 @@ SCENARIO_METHOD(EntityTestsFixture, "moving entities", "[entity]")
         WHEN("creating 3 entities")
         {
             auto names = dataGeneration.RandomGroup<Name>(3);
-            auto displayNames = dataGeneration.RandomGroup<Name>(3);
             auto positions = dataGeneration.RandomStackGroup<
                 Spatial::Grid::Point,
                 Spatial::Grid::Point::Value,
                 Spatial::Grid::Point::Value>(6);
-            auto directions = dataGeneration.RandomGroup<Spatial::Angle2D>(3);
             auto isSolids = dataGeneration.RandomGroup<bool>(3);
 
             reliquary->Do(Arca::Create<Atmos::Entity::Entity>(
                 names[0],
-                displayNames[0],
                 positions[0],
-                directions[0],
                 isSolids[0]));
             reliquary->Do(Arca::Create<Atmos::Entity::Entity>(
                 names[1],
-                displayNames[1],
                 positions[1],
-                directions[1],
                 isSolids[1]));
             reliquary->Do(Arca::Create<Atmos::Entity::Entity>(
                 names[2],
-                displayNames[2],
                 positions[2],
-                directions[2],
                 isSolids[2]));
 
             auto entities = reliquary->Batch<Atmos::Entity::Entity>();
@@ -330,18 +298,14 @@ SCENARIO_METHOD(EntityTestsFixture, "moving entities", "[entity]")
         WHEN("moving solid entity into entity boundary")
         {
             auto names = dataGeneration.RandomGroup<Name>(2);
-            auto displayNames = dataGeneration.RandomGroup<Name>(2);
             auto positions = dataGeneration.RandomStackGroup<
                 Spatial::Grid::Point,
                 Spatial::Grid::Point::Value,
                 Spatial::Grid::Point::Value>(2);
-            auto directions = dataGeneration.RandomGroup<Spatial::Angle2D>(2);
 
             auto entity = reliquary->Do(Arca::Create<Atmos::Entity::Entity>(
                 names[0],
-                displayNames[0],
                 positions[0],
-                directions[0],
                 true));
 
             reliquary->Do(World::ModifyEntityBoundary{ {positions[1]}, {} });
@@ -363,24 +327,18 @@ SCENARIO_METHOD(EntityTestsFixture, "moving entities", "[entity]")
         WHEN("moving non-solid entity into other solid")
         {
             auto names = dataGeneration.RandomGroup<Name>(2);
-            auto displayNames = dataGeneration.RandomGroup<Name>(2);
             auto positions = dataGeneration.RandomStackGroup<
                 Spatial::Grid::Point,
                 Spatial::Grid::Point::Value,
                 Spatial::Grid::Point::Value>(2);
-            auto directions = dataGeneration.RandomGroup<Spatial::Angle2D>(2);
 
             auto entity0 = reliquary->Do(Arca::Create<Atmos::Entity::Entity>(
                 names[0],
-                displayNames[0],
                 positions[0],
-                directions[0],
                 true));
             auto entity1 = reliquary->Do(Arca::Create<Atmos::Entity::Entity>(
                 names[1],
-                displayNames[1],
                 positions[1],
-                directions[1],
                 false));
 
             reliquary->Do(MoveTo{ Arca::Index<Atmos::Entity::Entity>(entity0.ID(), *reliquary), positions[1] });
@@ -409,24 +367,18 @@ SCENARIO_METHOD(EntityTestsFixture, "moving entities", "[entity]")
         WHEN("moving solid entity into other solid")
         {
             auto names = dataGeneration.RandomGroup<Name>(2);
-            auto displayNames = dataGeneration.RandomGroup<Name>(2);
             auto positions = dataGeneration.RandomStackGroup<
                 Spatial::Grid::Point,
                 Spatial::Grid::Point::Value,
                 Spatial::Grid::Point::Value>(2);
-            auto directions = dataGeneration.RandomGroup<Spatial::Angle2D>(2);
 
             auto entity0 = reliquary->Do(Arca::Create<Atmos::Entity::Entity>(
                 names[0],
-                displayNames[0],
                 positions[0],
-                directions[0],
                 true));
             auto entity1 = reliquary->Do(Arca::Create<Atmos::Entity::Entity>(
                 names[1],
-                displayNames[1],
                 positions[1],
-                directions[1],
                 true));
 
             reliquary->Do(MoveTo{ Arca::Index<Atmos::Entity::Entity>(entity0.ID(), *reliquary), positions[1] });

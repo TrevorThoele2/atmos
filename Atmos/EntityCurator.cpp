@@ -61,7 +61,7 @@ namespace Atmos::Entity
         for (auto& prototype : prototypes)
         {
             auto entity = Owner().Do(
-                Arca::Create<Entity>(prototype.name, "", prototype.position, prototype.direction, false));
+                Arca::Create<Entity>(prototype.name, prototype.position, false));
 
             if (prototype.constructor)
                 toConstruct.emplace_back(MutablePointer().Of(entity), entity.ID(), prototype.constructor);
