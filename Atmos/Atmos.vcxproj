@@ -34,7 +34,6 @@
     <ClInclude Include="ActionAssetCurator.h" />
     <ClInclude Include="ActionDepressed.h" />
     <ClInclude Include="ActionPressed.h" />
-    <ClInclude Include="ActualizeAllEntityPrototypes.h" />
     <ClInclude Include="AngelScriptActionActive.h" />
     <ClInclude Include="AngelScriptActionAsset.h" />
     <ClInclude Include="AngelScriptActionDepressed.h" />
@@ -91,6 +90,7 @@
     <ClInclude Include="AngelScriptStopwatch.h" />
     <ClInclude Include="AssetResourceManager.h" />
     <ClInclude Include="AssetResourceTraits.h" />
+    <ClInclude Include="EntityActualizationCurator.h" />
     <ClInclude Include="FileLoggingSink.h" />
     <ClInclude Include="GenerateRandomNumber.h" />
     <ClInclude Include="IsSolid.h" />
@@ -580,6 +580,7 @@
     <ClCompile Include="DataAlgorithms.cpp" />
     <ClCompile Include="DataCore.cpp" />
     <ClCompile Include="DataCurator.cpp" />
+    <ClCompile Include="EntityActualizationCurator.cpp" />
     <ClCompile Include="FileLoggingSink.cpp" />
     <ClCompile Include="GenerateRandomNumber.cpp" />
     <ClCompile Include="LoggingSeverity.cpp" />

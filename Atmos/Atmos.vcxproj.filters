@@ -1220,9 +1220,6 @@
     <ClInclude Include="EntityPrototype.h">
       <Filter>Header Files\Entity</Filter>
     </ClInclude>
-    <ClInclude Include="ActualizeAllEntityPrototypes.h">
-      <Filter>Header Files\Entity</Filter>
-    </ClInclude>
     <ClInclude Include="Angle2D.h">
       <Filter>Header Files\Spatial\2D</Filter>
     </ClInclude>
@@ -1975,6 +1972,9 @@
     </ClInclude>
     <ClInclude Include="AngelScriptIsSolid.h">
       <Filter>Header Files\Scripting\AngelScript\Types\Atmos\World</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityActualizationCurator.h">
+      <Filter>Header Files\Entity</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2886,6 +2886,9 @@
     </ClCompile>
     <ClCompile Include="AngelScriptIsSolid.cpp">
       <Filter>Source Files\Scripting\AngelScript\Types\Atmos\World</Filter>
+    </ClCompile>
+    <ClCompile Include="EntityActualizationCurator.cpp">
+      <Filter>Source Files\Entity</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

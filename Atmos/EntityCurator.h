@@ -6,7 +6,6 @@
 #include "EntityPrototype.h"
 
 #include "Work.h"
-#include "ActualizeAllEntityPrototypes.h"
 #include "FindEntityByName.h"
 #include "FindEntityByPosition.h"
 #include "MoveEntityTo.h"
@@ -20,16 +19,12 @@ namespace Atmos::Entity
     {
     public:
         explicit Curator(Init init);
-
-        void Handle(const Work& command);
     public:
-        void Handle(const ActualizeAllPrototypes& command);
         Arca::Index<Entity> Handle(const FindByName& command);
         std::set<Arca::Index<Entity>> Handle(const FindByPosition& command);
         void Handle(const MoveTo& command);
         void Handle(const ModifyTags& command);
     private:
-        Arca::Batch<Prototype> prototypes;
         Arca::Batch<Entity> entities;
 
         Arca::Index<Mapped> mapped;
@@ -47,10 +42,8 @@ namespace Arca
     struct Traits<Atmos::Entity::Curator>
     {
         static const ObjectType objectType = ObjectType::Curator;
-        static TypeName TypeName() { return "Atmos::Entity::EntityCurator"; }
+        static TypeName TypeName() { return "Atmos::Entity::Curator"; }
         using HandledCommands = HandledCommands<
-            Atmos::Work,
-            Atmos::Entity::ActualizeAllPrototypes,
             Atmos::Entity::FindByName,
             Atmos::Entity::FindByPosition,
             Atmos::Entity::MoveTo,

@@ -82,6 +82,7 @@ namespace Atmos
     namespace Entity
     {
         void RegisterTypes(Arca::ReliquaryOrigin& origin);
+        Arca::Stage ActualizationStage();
     }
 
     namespace Scripting

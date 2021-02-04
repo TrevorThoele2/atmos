@@ -5,10 +5,12 @@ namespace Atmos::Entity
     Prototype::Prototype(
         Arca::Index<Scripting::Script> constructor,
         Name name,
-        Spatial::Grid::Point position)
+        Spatial::Grid::Point position,
+        bool solid)
         :
         constructor(constructor),
         name(name),
-        position(position)
+        position(position),
+        solid(solid)
     {}
 }

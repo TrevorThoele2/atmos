@@ -4,6 +4,7 @@
 #include <Arca/ReliquaryOrigin.h>
 #include <Atmos/TypeRegistration.h>
 #include <Atmos/ModifyEntityBoundary.h>
+#include <Atmos/Work.h>
 
 EntityTestsFixture::EntityTestsFixture()
 {
@@ -32,22 +33,25 @@ SCENARIO_METHOD(EntityTestsFixture, "entity actualization", "[entity]")
             reliquary->Do(Arca::Create<Prototype>(
                 Arca::Index<Scripting::Script>{},
                 names[0],
-                positions[0]));
+                positions[0],
+                false));
             reliquary->Do(Arca::Create<Prototype>(
                 Arca::Index<Scripting::Script>{},
                 names[1],
-                positions[1]));
+                positions[1],
+                false));
             reliquary->Do(Arca::Create<Prototype>(
                 Arca::Index<Scripting::Script>{},
                 names[2],
-                positions[2]));
+                positions[2],
+                false));
 
             auto entities = reliquary->Batch<Atmos::Entity::Entity>();
             auto prototypes = reliquary->Batch<Prototype>();
 
-            WHEN("actualizing")
+            WHEN("working reliquary")
             {
-                reliquary->Do(ActualizeAllPrototypes());
+                reliquary->Do(Work{});
 
                 THEN("3 entities were created")
                 {
