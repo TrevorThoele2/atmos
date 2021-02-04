@@ -27,7 +27,7 @@ SCENARIO_METHOD(AngelScriptEntityTestsFixture, "running entity AngelScript scrip
     fieldOrigin.Register<Arca::OpenRelic>();
     RegisterFieldTypes(
         fieldOrigin,
-        *engine.mockImageAssetManager,
+        *engine.mockAssetResourceManager,
         *engine.mockAudioManager,
         *engine.mockInputManager,
         *engine.mockGraphicsManager,

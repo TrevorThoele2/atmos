@@ -36,7 +36,7 @@ TEMPLATE_TEST_CASE_METHOD(
     fieldOrigin.Register<Arca::OpenRelic>();
     RegisterFieldTypes(
         fieldOrigin,
-        *engine.mockImageAssetManager,
+        *engine.mockAssetResourceManager,
         *engine.mockAudioManager,
         *engine.mockInputManager,
         *engine.mockGraphicsManager,

@@ -25,7 +25,7 @@ SCENARIO_METHOD(AngelScriptSpatialObjectsTestsFixture, "running spatial object A
     auto fieldOrigin = Arca::ReliquaryOrigin();
     RegisterFieldTypes(
         fieldOrigin,
-        *engine.mockImageAssetManager,
+        *engine.mockAssetResourceManager,
         *engine.mockAudioManager,
         *engine.mockInputManager,
         *engine.mockGraphicsManager,

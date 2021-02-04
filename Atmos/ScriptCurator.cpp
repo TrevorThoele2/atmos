@@ -24,7 +24,7 @@ namespace Atmos::Scripting
     {
         const auto currentExecutingScript = MutablePointer().Of<CurrentExecutingScript>();
         const auto runningScripts = ScriptsToRunning(Owner().Batch<Script>());
-        for(auto& element : runningScripts)
+        for (auto& element : runningScripts)
             DoExecute(element.id, *currentExecutingScript);
     }
 
@@ -75,6 +75,14 @@ namespace Atmos::Scripting
         currentExecutingScript.id = id;
 
         auto script = MutablePointer().Of<Script>(id);
+        if (!script->asset)
+        {
+            currentExecutingScript.id = Arca::nullRelicID;
+            Owner().Do(Logging::Log("Script did not have an occupied asset. Destroying.", Logging::Severity::Warning));
+            Owner().Do(Arca::Destroy<Script>(id));
+            return Quit{};
+        }
+
         if (!script->Resource())
         {
             auto resource = manager->CreateScriptResource(script->asset->Name(), script->executeName, script->parameters);

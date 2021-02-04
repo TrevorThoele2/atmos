@@ -15,7 +15,7 @@ using namespace Atmos;
 class ScriptEngine final : public Engine
 {
 public:
-    MockAssetResourceManager* mockImageAssetManager;
+    MockAssetResourceManager* mockAssetResourceManager;
     MockWindow* mockWindow;
     MockAudioManager* mockAudioManager;
     MockInputManager* mockInputManager;
