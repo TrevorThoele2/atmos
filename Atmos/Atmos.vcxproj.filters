@@ -612,6 +612,12 @@
     <Filter Include="Source Files\Scripting\AngelScript\Types\Atmos\Random">
       <UniqueIdentifier>{6dc42f0e-86bd-4765-a27c-470b062c89c4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Scripting\AngelScript\Types\Std">
+      <UniqueIdentifier>{2732ee7f-be0c-457f-911f-20e4246ef2e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scripting\AngelScript\Types\Std">
+      <UniqueIdentifier>{417f55fe-9c52-4d85-9874-fed06cd43dd8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FieldDestination.h">
@@ -645,9 +651,6 @@
       <Filter>Header Files\Assets\Audio</Filter>
     </ClInclude>
     <ClInclude Include="..\..\AngelScript\sdk\add_on\scriptstdstring\scriptstdstring.h">
-      <Filter>Header Files\Scripting\AngelScript\Addon</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\AngelScript\sdk\add_on\scriptarray\scriptarray.h">
       <Filter>Header Files\Scripting\AngelScript\Addon</Filter>
     </ClInclude>
     <ClInclude Include="ScriptAsset.h">
@@ -1976,6 +1979,12 @@
     <ClInclude Include="EntityActualizationCurator.h">
       <Filter>Header Files\Entity</Filter>
     </ClInclude>
+    <ClInclude Include="AngelScriptNumericLimits.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Std</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\AngelScript\sdk\add_on\scriptarray\scriptarray.h">
+      <Filter>Header Files\Scripting\AngelScript\Addon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FieldDestination.cpp">
@@ -2662,12 +2671,6 @@
     <ClCompile Include="..\..\AngelScript\sdk\add_on\scripthelper\scripthelper.cpp">
       <Filter>Source Files\Scripting\AngelScript\Addon</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\AngelScript\sdk\add_on\scriptdictionary\scriptdictionary.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Addon</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\AngelScript\sdk\add_on\scriptarray\scriptarray.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Addon</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\AngelScript\sdk\add_on\scriptstdstring\scriptstdstring.cpp">
       <Filter>Source Files\Scripting\AngelScript\Addon</Filter>
     </ClCompile>
@@ -2889,6 +2892,12 @@
     </ClCompile>
     <ClCompile Include="EntityActualizationCurator.cpp">
       <Filter>Source Files\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\AngelScript\sdk\add_on\scriptarray\scriptarray.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Addon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\AngelScript\sdk\add_on\scriptdictionary\scriptdictionary.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Addon</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -55,6 +55,7 @@
     <ClInclude Include="AngelScriptIsSolid.h" />
     <ClInclude Include="AngelScriptModifyProperties.h" />
     <ClInclude Include="AngelScriptModifyWorldProperties.h" />
+    <ClInclude Include="AngelScriptNumericLimits.h" />
     <ClInclude Include="AngelScriptProperty.h" />
     <ClInclude Include="AngelScriptFindByBox.h" />
     <ClInclude Include="AngelScriptGridRegion.h" />

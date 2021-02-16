@@ -131,6 +131,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AngelScriptArcaTests.cpp" />
     <ClCompile Include="AngelScriptAssetTests.cpp" />
     <ClCompile Include="AngelScriptAudioTests.cpp" />
     <ClCompile Include="AngelScriptBoundsTests.cpp" />
@@ -143,6 +144,7 @@
     <ClCompile Include="AngelScriptLocalIndexTests.cpp" />
     <ClCompile Include="AngelScriptLoggingTests.cpp" />
     <ClCompile Include="AngelScriptMathTests.cpp" />
+    <ClCompile Include="AngelScriptNumericLimitsTests.cpp" />
     <ClCompile Include="AngelScriptRandomTests.cpp" />
     <ClCompile Include="AngelScriptRenderTests.cpp" />
     <ClCompile Include="AngelScriptScriptTests.cpp" />
@@ -184,6 +186,7 @@
     <ClCompile Include="WorldSerializationTests.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AngelScriptArcaTests.h" />
     <ClInclude Include="AngelScriptAssetTests.h" />
     <ClInclude Include="AngelScriptAudioTests.h" />
     <ClInclude Include="AngelScriptBoundsTests.h" />
@@ -197,6 +200,7 @@
     <ClInclude Include="AngelScriptLocalIndexTests.h" />
     <ClInclude Include="AngelScriptLoggingTests.h" />
     <ClInclude Include="AngelScriptMathTests.h" />
+    <ClInclude Include="AngelScriptNumericLimitsTests.h" />
     <ClInclude Include="AngelScriptRandomTests.h" />
     <ClInclude Include="AngelScriptRenderTests.h" />
     <ClInclude Include="AngelScriptScriptTests.h" />

@@ -18,6 +18,8 @@ namespace Atmos::Scripting::Angel
         GlobalRegistration& Function(GenericFunction function, String returnType, String name, std::vector<String> parameters);
         GlobalRegistration& Typedef(String alias, String original);
         GlobalRegistration& Funcdef(String returnType, String name, std::vector<String> parameters);
+        template<auto property>
+        GlobalRegistration& ConstProperty(String type, String name);
 
         void Actualize(asIScriptEngine& engine, DocumentationManager& documentationManager);
     private:
@@ -28,4 +30,21 @@ namespace Atmos::Scripting::Angel
 
         void AddItem(RegistrationItem&& item);
     };
+
+    template<auto property>
+    GlobalRegistration& GlobalRegistration::ConstProperty(String type, String name)
+    {
+        AddItem([type, name](asIScriptEngine& engine)
+            {
+                const auto declaration = "const " + type + " " + name;
+                const auto result = engine.RegisterGlobalProperty(declaration.c_str(), property);
+                VerifyResult(
+                    result,
+                    {
+                        { "Declaration", declaration }
+                    });
+            });
+
+        return *this;
+    }
 }
