@@ -4,7 +4,9 @@
 #include "FindEntityByName.h"
 #include "FindEntityByPosition.h"
 #include "MoveEntityTo.h"
+#include "CanMoveEntityTo.h"
 #include "ModifyEntityTags.h"
+#include "FindPath.h"
 
 #include "AngelScriptIndex.h"
 #include "AngelScriptObjectManagement.h"
@@ -87,6 +89,22 @@ namespace Atmos::Scripting::Angel
     };
 
     template<>
+    struct Registration<Entity::CanMoveTo>
+    {
+        using Type = Entity::CanMoveTo;
+        using Management = ObjectManagement<Type>;
+
+        static String Name() { return "CanMoveTo"; }
+        static String ContainingNamespace() { return "Atmos::Entity"; }
+        static String Documentation() { return "This is a command."; }
+        static const ObjectType objectType = ObjectType::Value;
+
+        static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
+    private:
+        static bool ToCommandReturn(Arca::command_result_t<Type> fromArca, Arca::Reliquary&);
+    };
+
+    template<>
     struct Registration<Entity::ModifyTags>
     {
         using Type = Entity::ModifyTags;
@@ -98,5 +116,21 @@ namespace Atmos::Scripting::Angel
         static const ObjectType objectType = ObjectType::Value;
 
         static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
+    };
+
+    template<>
+    struct Registration<Entity::FindPath>
+    {
+        using Type = Entity::FindPath;
+        using Management = ObjectManagement<Type>;
+
+        static String Name() { return "FindPath"; }
+        static String ContainingNamespace() { return "Atmos::Entity"; }
+        static String Documentation() { return "This is a command."; }
+        static const ObjectType objectType = ObjectType::Value;
+
+        static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
+    private:
+        static std::vector<Spatial::Grid::Point> ToCommandReturn(Arca::command_result_t<Type> fromArca, Arca::Reliquary&);
     };
 }

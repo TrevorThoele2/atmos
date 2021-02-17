@@ -1208,9 +1208,6 @@
     <ClInclude Include="ScreenPoint.h">
       <Filter>Header Files\Spatial\Screen</Filter>
     </ClInclude>
-    <ClInclude Include="Pathfinder.h">
-      <Filter>Header Files\Spatial\Algorithms</Filter>
-    </ClInclude>
     <ClInclude Include="FrameStartCurator.h">
       <Filter>Header Files\Frame</Filter>
     </ClInclude>
@@ -1970,12 +1967,6 @@
     <ClInclude Include="ModifyEntityBoundary.h">
       <Filter>Header Files\World\Commands</Filter>
     </ClInclude>
-    <ClInclude Include="IsSolid.h">
-      <Filter>Header Files\World\Commands</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptIsSolid.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\World</Filter>
-    </ClInclude>
     <ClInclude Include="EntityActualizationCurator.h">
       <Filter>Header Files\Entity</Filter>
     </ClInclude>
@@ -1984,6 +1975,21 @@
     </ClInclude>
     <ClInclude Include="..\..\AngelScript\sdk\add_on\scriptarray\scriptarray.h">
       <Filter>Header Files\Scripting\AngelScript\Addon</Filter>
+    </ClInclude>
+    <ClInclude Include="Pathfinder.h">
+      <Filter>Header Files\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="FindPath.h">
+      <Filter>Header Files\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Path.h">
+      <Filter>Header Files\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="CanMoveEntityTo.h">
+      <Filter>Header Files\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityAlgorithms.h">
+      <Filter>Header Files\Entity</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2349,9 +2355,6 @@
     </ClCompile>
     <ClCompile Include="ScreenPoint.cpp">
       <Filter>Source Files\Spatial\Screen</Filter>
-    </ClCompile>
-    <ClCompile Include="Pathfinder.cpp">
-      <Filter>Source Files\Spatial\Algorithms</Filter>
     </ClCompile>
     <ClCompile Include="RelativeBounds.cpp">
       <Filter>Source Files\Spatial\Arca</Filter>
@@ -2887,9 +2890,6 @@
     <ClCompile Include="AngelScriptGenerateRandomNumber.cpp">
       <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Random</Filter>
     </ClCompile>
-    <ClCompile Include="AngelScriptIsSolid.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\World</Filter>
-    </ClCompile>
     <ClCompile Include="EntityActualizationCurator.cpp">
       <Filter>Source Files\Entity</Filter>
     </ClCompile>
@@ -2898,6 +2898,12 @@
     </ClCompile>
     <ClCompile Include="..\..\AngelScript\sdk\add_on\scriptdictionary\scriptdictionary.cpp">
       <Filter>Source Files\Scripting\AngelScript\Addon</Filter>
+    </ClCompile>
+    <ClCompile Include="Pathfinder.cpp">
+      <Filter>Source Files\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="EntityAlgorithms.cpp">
+      <Filter>Source Files\Entity</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

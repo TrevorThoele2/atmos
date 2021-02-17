@@ -15,6 +15,7 @@
 #include <Atmos/EntityPrototype.h>
 #include <Arca/LocalRelic.h>
 #include <Atmos/DataCore.h>
+#include <Atmos/ModifyEntityBoundary.h>
 
 SCENARIO_METHOD(AngelScriptEntityTestsFixture, "running entity AngelScript scripts", "[script][angelscript]")
 {
@@ -52,7 +53,7 @@ SCENARIO_METHOD(AngelScriptEntityTestsFixture, "running entity AngelScript scrip
     GIVEN("created entity")
     {
         const auto name = dataGeneration.Random<std::string>();
-        const auto position = dataGeneration.RandomStack<Spatial::Grid::Point, Spatial::Grid::Point::Value, Spatial::Grid::Point::Value>();
+        const auto position = Spatial::Grid::Point{5, 5};
         const auto isSolid = dataGeneration.Random<bool>();
 
         auto entity = fieldReliquary.Do(Arca::Create<Entity::Entity>{ name, position, isSolid });
@@ -500,6 +501,98 @@ SCENARIO_METHOD(AngelScriptEntityTestsFixture, "running entity AngelScript scrip
                         REQUIRE(properties[0] == Atmos::Property{ names[0], values[0] });
                         REQUIRE(properties[1] == Atmos::Property{ names[1], values[1] });
                         REQUIRE(properties[2] == Atmos::Property{ names[2], values[2] });
+                    }
+                }
+            }
+        }
+
+        GIVEN("script that returns can move to")
+        {
+            const auto gridPoint = dataGeneration.RandomStack<
+                Spatial::Grid::Point,
+                Spatial::Grid::Point::Value,
+                Spatial::Grid::Point::Value>();
+
+            WHEN("is not solid")
+            {
+                CompileAndCreateScript(
+                    "basic_script.as",
+                    "bool main(Arca::RelicID entityID, int x, int y)\n" \
+                    "{\n" \
+                    "    auto entity = Atmos::Entity::Entity(entityID);\n" \
+                    "    return Arca::Reliquary::Do(Atmos::Entity::CanMoveTo(entity, Atmos::Spatial::Grid::Point(x, y)));\n" \
+                    "}",
+                    { entity.ID(), gridPoint.x, gridPoint.y },
+                    fieldReliquary);
+
+                WHEN("working reliquary")
+                {
+                    fieldReliquary.Do(Work{});
+
+                    THEN("is false")
+                    {
+                        REQUIRE(finishes.size() == 1);
+
+                        const auto result = std::get<bool>(std::get<Variant>(finishes[0].result));
+                        REQUIRE(result == true);
+                    }
+                }
+            }
+
+            WHEN("is solid")
+            {
+                fieldReliquary.Do(World::ModifyEntityBoundary{ {gridPoint}, {} });
+
+                CompileAndCreateScript(
+                    "basic_script.as",
+                    "bool main(Arca::RelicID entityID, int x, int y)\n" \
+                    "{\n" \
+                    "    auto entity = Atmos::Entity::Entity(entityID);\n" \
+                    "    return Arca::Reliquary::Do(Atmos::Entity::CanMoveTo(entity, Atmos::Spatial::Grid::Point(x, y)));\n" \
+                    "}",
+                    { entity.ID(), gridPoint.x, gridPoint.y },
+                    fieldReliquary);
+
+                WHEN("working reliquary")
+                {
+                    fieldReliquary.Do(Work{});
+
+                    THEN("is false")
+                    {
+                        REQUIRE(finishes.size() == 1);
+
+                        const auto result = std::get<bool>(std::get<Variant>(finishes[0].result));
+                        REQUIRE(result == false);
+                    }
+                }
+            }
+        }
+
+        GIVEN("FindPath")
+        {
+            const auto pathToPosition = Spatial::Grid::Point{ position.x + 1, position.y };
+
+            GIVEN("script that moves entity to and returns position")
+            {
+                CompileAndCreateScript(
+                    "basic_script.as",
+                    "int main(Arca::RelicID entityID, int pathToX, int pathToY)\n" \
+                    "{\n" \
+                    "    auto entity = Atmos::Entity::Entity(entityID);\n" \
+                    "    const auto path = Arca::Reliquary::Do(Atmos::Entity::FindPath(entity, Atmos::Spatial::Grid::Point(pathToX, pathToY)));\n" \
+                    "    return path.length();\n" \
+                    "}",
+                    { entity.ID(), pathToPosition.x, pathToPosition.y },
+                    fieldReliquary);
+
+                WHEN("working reliquary")
+                {
+                    fieldReliquary.Do(Work{});
+
+                    THEN("has correct properties")
+                    {
+                        REQUIRE(finishes.size() == 1);
+                        REQUIRE(std::get<int>(std::get<Variant>(finishes[0].result)) == 1);
                     }
                 }
             }

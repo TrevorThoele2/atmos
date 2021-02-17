@@ -1,72 +1,62 @@
-
 #pragma once
 
-#include <stack>
+#include "FindPath.h"
+
 #include <unordered_map>
 #include <memory>
-
-#include <Arca/Curator.h>
-
-#include "GridPoint.h"
 #include "BinaryHeap.h"
 
-namespace Atmos::Spatial
+namespace Atmos::Entity
 {
-    /*
-    class Pathfinder final : public Arca::Curator
+    class Pathfinder final
     {
     public:
-        using Path = std::stack<Grid::Position>;
-    public:
-        Path FindPath(const Grid::Position& start, const Grid::Position& finish);
+        [[nodiscard]] Path FindPath(
+            const Arca::Index<Entity>& entity,
+            const Spatial::Grid::Point& to,
+            Arca::Reliquary& reliquary);
     private:
         class Node
         {
         public:
-            using Cost = unsigned short;
+            Spatial::Grid::Point position;
         public:
-            Node(Cost gCost, Cost hCost, const Grid::Position& position);
-            Node(const Node& arg) = default;
-            Node(Node&& arg) noexcept;
+            using Cost = int;
 
-            Node& operator=(const Node& arg) = default;
-            Node& operator=(Node&& arg) noexcept;
-
-            bool operator>(const Node& arg) const;
-            bool operator==(const Node& arg) const;
-            bool operator!=(const Node& arg) const;
-
-            [[nodiscard]] Grid::Position Position() const;
-
-            void ChangeG(Cost to);
-            void ChangeH(Cost to);
-
-            [[nodiscard]] Cost G() const;
-            [[nodiscard]] Cost H() const;
-            [[nodiscard]] Cost F() const;
-
-            void Reparent(const Node& setTo);
-            [[nodiscard]] const Node* Parent() const;
-        private:
             // Cost from frameStartTime along best path
             Cost gCost;
             // Heuristic
             Cost hCost;
             // Gcost + heuristic
             Cost fCost;
-        private:
-            Grid::Position position;
-        private:
+        public:
             using NodePtr = std::shared_ptr<Node>;
             NodePtr parent;
+        public:
+            Node(Cost gCost, Cost hCost, const Spatial::Grid::Point& position);
+            Node(const Node& arg) = default;
+            Node(Node&& arg) noexcept;
+
+            Node& operator=(const Node& arg) = default;
+            Node& operator=(Node&& arg) noexcept;
+
+            bool operator==(const Node& arg) const;
+            bool operator!=(const Node& arg) const;
+            bool operator>(const Node& arg) const;
         };
 
         using NodeHeap = BinaryHeap<Node, std::greater<>>;
-        using NodeMap = std::unordered_map<Grid::Position, Node>;
+        using NodeMap = std::unordered_map<Spatial::Grid::Point, Node>;
     private:
-        NodeHeap::iterator FindNode(const Grid::Position& position, NodeHeap& heap) const;
+        static inline const std::vector<Spatial::Grid::Point> relativeNeighbors =
+        {
+            Spatial::Grid::Point{-1, 0},
+            Spatial::Grid::Point{0, -1},
+            Spatial::Grid::Point{1, 0},
+            Spatial::Grid::Point{0, 1}
+        };
+
+        [[nodiscard]] static NodeHeap::iterator FindNode(const Spatial::Grid::Point& position, NodeHeap& heap);
         static void ReconstructPath(Path& stack, const Node& end);
-        void ClearStack(Path& stack) const;
     };
-    */
 }

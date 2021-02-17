@@ -52,7 +52,6 @@
     <ClInclude Include="AngelScriptDataCore.h" />
     <ClInclude Include="AngelScriptEntity.h" />
     <ClInclude Include="AngelScriptGenerateRandomNumber.h" />
-    <ClInclude Include="AngelScriptIsSolid.h" />
     <ClInclude Include="AngelScriptModifyProperties.h" />
     <ClInclude Include="AngelScriptModifyWorldProperties.h" />
     <ClInclude Include="AngelScriptNumericLimits.h" />
@@ -91,11 +90,14 @@
     <ClInclude Include="AngelScriptStopwatch.h" />
     <ClInclude Include="AssetResourceManager.h" />
     <ClInclude Include="AssetResourceTraits.h" />
+    <ClInclude Include="CanMoveEntityTo.h" />
     <ClInclude Include="EntityActualizationCurator.h" />
+    <ClInclude Include="EntityAlgorithms.h" />
     <ClInclude Include="FileLoggingSink.h" />
+    <ClInclude Include="FindPath.h" />
     <ClInclude Include="GenerateRandomNumber.h" />
-    <ClInclude Include="IsSolid.h" />
     <ClInclude Include="ModifyEntityBoundary.h" />
+    <ClInclude Include="Path.h" />
     <ClInclude Include="PrimitiveTraits.h" />
     <ClInclude Include="LoggingSink.h" />
     <ClInclude Include="RandomNumberGenerator.h" />
@@ -516,7 +518,6 @@
     <ClCompile Include="AngelScriptDynamicImage.cpp" />
     <ClCompile Include="AngelScriptEntity.cpp" />
     <ClCompile Include="AngelScriptGenerateRandomNumber.cpp" />
-    <ClCompile Include="AngelScriptIsSolid.cpp" />
     <ClCompile Include="AngelScriptModifyProperties.cpp" />
     <ClCompile Include="AngelScriptModifyWorldProperties.cpp" />
     <ClCompile Include="AngelScriptProperty.cpp" />
@@ -582,6 +583,7 @@
     <ClCompile Include="DataCore.cpp" />
     <ClCompile Include="DataCurator.cpp" />
     <ClCompile Include="EntityActualizationCurator.cpp" />
+    <ClCompile Include="EntityAlgorithms.cpp" />
     <ClCompile Include="FileLoggingSink.cpp" />
     <ClCompile Include="GenerateRandomNumber.cpp" />
     <ClCompile Include="LoggingSeverity.cpp" />

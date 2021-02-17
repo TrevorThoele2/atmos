@@ -7,6 +7,8 @@
 #include "AngelScriptArcaDestroy.h"
 #include <angelscript.h>
 
+#include "AngelScriptGridPoint.h"
+
 namespace Atmos::Scripting::Angel
 {
     void Registration<Entity::Entity>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
@@ -121,6 +123,29 @@ namespace Atmos::Scripting::Angel
         RegisterCommandHandler<&Chroma::Identity<Type>>(engine, documentationManager);
     }
 
+    void Registration<Entity::CanMoveTo>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
+    {
+        ValueTypeRegistration<Type>(ContainingNamespace(), Name())
+            .Constructor(
+                &Management::GenerateValue<
+                    &PullFromParameter<0, Arca::Index<Entity::Entity>>,
+                    &PullFromParameter<1, Spatial::Grid::Point>>,
+                { "Atmos::Entity::Entity entity", "Atmos::Spatial::Grid::Point to" })
+            .CopyConstructor(&Management::GenerateValueFromCopy)
+            .Destructor(&Management::DestructValue)
+            .CopyAssignment(&Management::CopyAssign)
+            .Property<&Type::entity>("Atmos::Entity::Entity", "entity")
+            .Property<&Type::to>("Atmos::Spatial::Grid::Point", "to")
+            .Actualize(engine, documentationManager);
+
+        RegisterCommandHandler<&Chroma::Identity<Type>, &ToCommandReturn>(engine, documentationManager);
+    }
+
+    bool Registration<Entity::CanMoveTo>::ToCommandReturn(Arca::command_result_t<Type> fromArca, Arca::Reliquary&)
+    {
+        return fromArca;
+    }
+
     void Registration<Entity::ModifyTags>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         ValueTypeRegistration<Type>(ContainingNamespace(), Name())
@@ -139,5 +164,28 @@ namespace Atmos::Scripting::Angel
             .Actualize(engine, documentationManager);
 
         RegisterCommandHandler<&Chroma::Identity<Type>>(engine, documentationManager);
+    }
+
+    void Registration<Entity::FindPath>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
+    {
+        ValueTypeRegistration<Type>(ContainingNamespace(), Name())
+            .Constructor(
+                &Management::GenerateValue<
+                &PullFromParameter<0, Arca::Index<Entity::Entity>>,
+                &PullFromParameter<1, Spatial::Grid::Point>>,
+                { "Atmos::Entity::Entity entity", "Atmos::Spatial::Grid::Point to" })
+            .CopyConstructor(&Management::GenerateValueFromCopy)
+            .Destructor(&Management::DestructValue)
+            .CopyAssignment(&Management::CopyAssign)
+            .Property<&Type::entity>("Atmos::Entity::Entity", "entity")
+            .Property<&Type::to>("Atmos::Spatial::Grid::Point", "to")
+            .Actualize(engine, documentationManager);
+
+        RegisterCommandHandler<&Chroma::Identity<Type>, &ToCommandReturn>(engine, documentationManager);
+    }
+
+    std::vector<Spatial::Grid::Point> Registration<Entity::FindPath>::ToCommandReturn(Arca::command_result_t<Type> fromArca, Arca::Reliquary&)
+    {
+        return fromArca;
     }
 }

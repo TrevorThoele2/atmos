@@ -6,7 +6,6 @@
 #include "ModifyEntityBoundary.h"
 #include "ModifyWorldProperties.h"
 #include "RetrieveWorldProperties.h"
-#include "IsSolid.h"
 #include "WorldManager.h"
 
 namespace Atmos::World
@@ -20,7 +19,6 @@ namespace Atmos::World
         void Handle(const ModifyEntityBoundary& command);
         void Handle(const ModifyProperties& command);
         std::vector<Property> Handle(const RetrieveProperties& command);
-        bool Handle(const IsSolid& command);
     private:
         Manager* manager;
     };
@@ -37,8 +35,7 @@ namespace Arca
             Atmos::World::RequestField,
             Atmos::World::ModifyEntityBoundary,
             Atmos::World::ModifyProperties,
-            Atmos::World::RetrieveProperties,
-            Atmos::World::IsSolid>;
+            Atmos::World::RetrieveProperties>;
     };
 }
 
