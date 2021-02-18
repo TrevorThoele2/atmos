@@ -178,6 +178,7 @@
     <ClCompile Include="MockWindow.cpp" />
     <ClCompile Include="MockWorldManager.cpp" />
     <ClCompile Include="OctreeTests.cpp" />
+    <ClCompile Include="PathfinderTests.cpp" />
     <ClCompile Include="RenderAlgorithmTests.cpp" />
     <ClCompile Include="LineRenderingTests.cpp" />
     <ClCompile Include="ScriptEngine.cpp" />
@@ -234,6 +235,7 @@
     <ClInclude Include="MockWindow.h" />
     <ClInclude Include="MockWorldManager.h" />
     <ClInclude Include="OctreeTests.h" />
+    <ClInclude Include="PathfinderTests.h" />
     <ClInclude Include="PixelBuffer.h" />
     <ClInclude Include="RenderAlgorithmTests.h" />
     <ClInclude Include="LineRenderingTests.h" />

@@ -16,20 +16,15 @@ namespace Atmos::Entity
         if (from == to)
             return {};
 
-        Path currentPath;
-
         NodeHeap openSet;
         NodeMap closedSet;
         openSet.Push(Node(0, Distance(from, to), from));
 
         while (!openSet.IsEmpty())
         {
-            auto current = openSet.Top();
+            const auto current = openSet.Top();
             if (current.position == to)
-            {
-                ReconstructPath(currentPath, current);
-                return currentPath;
-            }
+                return ReconstructPath(current);
 
             openSet.Pop();
             closedSet.emplace(current.position, current);
@@ -37,7 +32,7 @@ namespace Atmos::Entity
             for (auto& relativeNeighbor : relativeNeighbors)
             {
                 // Don't consider tile positions that don't exist or the tile is solid
-                auto neighborPosition = Spatial::Grid::Point
+                const auto neighborPosition = Spatial::Grid::Point
                 {
                     current.position.x + relativeNeighbor.x,
                     current.position.y + relativeNeighbor.y
@@ -122,14 +117,18 @@ namespace Atmos::Entity
             });
     }
 
-    void Pathfinder::ReconstructPath(Path& stack, const Node& end)
+    Path Pathfinder::ReconstructPath(const Node& end)
     {
-        stack.push_back(end.position);
+        Path path;
+        path.push_back(end.position);
         auto parent = end.parent.get();
         while (parent->parent != nullptr)
         {
-            stack.push_back(parent->position);
+            path.push_back(parent->position);
             parent = parent->parent.get();
         }
+
+        std::reverse(path.begin(), path.end());
+        return path;
     }
 }
