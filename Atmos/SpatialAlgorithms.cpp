@@ -279,6 +279,29 @@ namespace Atmos::Spatial
             return destination.x - starting.x + destination.y - starting.y;
         }
 
+        bool Contains(AxisAlignedBox box, Point point)
+        {
+            return point.x >= box.Left()
+                && point.x <= box.Right()
+                && point.y >= box.Top()
+                && point.y <= box.Bottom();
+        }
+
+        bool Contains(AxisAlignedBox box, AxisAlignedBox other)
+        {
+            return other.Left() >= box.Left()
+                && other.Right() <= box.Right()
+                && other.Top() >= box.Top()
+                && other.Bottom() <= box.Bottom();
+        }
+
+        bool Intersects(AxisAlignedBox one, AxisAlignedBox two)
+        {
+            return
+                (one.Left() <= two.Right() && one.Right() >= two.Left()) &&
+                (one.Top() <= two.Bottom() && one.Bottom() >= two.Top());
+        }
+
         Point ToPoint(Point2D position)
         {
             return

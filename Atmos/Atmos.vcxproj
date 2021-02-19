@@ -52,6 +52,8 @@
     <ClInclude Include="AngelScriptDataCore.h" />
     <ClInclude Include="AngelScriptEntity.h" />
     <ClInclude Include="AngelScriptGenerateRandomNumber.h" />
+    <ClInclude Include="AngelScriptGridAxisAlignedBox.h" />
+    <ClInclude Include="AngelScriptGridSize.h" />
     <ClInclude Include="AngelScriptModifyProperties.h" />
     <ClInclude Include="AngelScriptModifyWorldProperties.h" />
     <ClInclude Include="AngelScriptNumericLimits.h" />
@@ -90,12 +92,14 @@
     <ClInclude Include="AngelScriptStopwatch.h" />
     <ClInclude Include="AssetResourceManager.h" />
     <ClInclude Include="AssetResourceTraits.h" />
+    <ClInclude Include="GridAxisAlignedBox.h" />
     <ClInclude Include="CanMoveEntityTo.h" />
     <ClInclude Include="EntityActualizationCurator.h" />
     <ClInclude Include="EntityAlgorithms.h" />
     <ClInclude Include="FileLoggingSink.h" />
     <ClInclude Include="FindPath.h" />
     <ClInclude Include="GenerateRandomNumber.h" />
+    <ClInclude Include="GridSize.h" />
     <ClInclude Include="ModifyEntityBoundary.h" />
     <ClInclude Include="Path.h" />
     <ClInclude Include="PrimitiveTraits.h" />
@@ -518,6 +522,8 @@
     <ClCompile Include="AngelScriptDynamicImage.cpp" />
     <ClCompile Include="AngelScriptEntity.cpp" />
     <ClCompile Include="AngelScriptGenerateRandomNumber.cpp" />
+    <ClCompile Include="AngelScriptGridAxisAlignedBox.cpp" />
+    <ClCompile Include="AngelScriptGridSize.cpp" />
     <ClCompile Include="AngelScriptModifyProperties.cpp" />
     <ClCompile Include="AngelScriptModifyWorldProperties.cpp" />
     <ClCompile Include="AngelScriptProperty.cpp" />
@@ -579,6 +585,7 @@
     <ClCompile Include="Asset.cpp" />
     <ClCompile Include="AssetResourceManager.cpp" />
     <ClCompile Include="AudioAssetCurator.cpp" />
+    <ClCompile Include="GridAxisAlignedBox.cpp" />
     <ClCompile Include="DataAlgorithms.cpp" />
     <ClCompile Include="DataCore.cpp" />
     <ClCompile Include="DataCurator.cpp" />
@@ -586,6 +593,7 @@
     <ClCompile Include="EntityAlgorithms.cpp" />
     <ClCompile Include="FileLoggingSink.cpp" />
     <ClCompile Include="GenerateRandomNumber.cpp" />
+    <ClCompile Include="GridSize.cpp" />
     <ClCompile Include="LoggingSeverity.cpp" />
     <ClCompile Include="LoggingSink.cpp" />
     <ClCompile Include="NullWorldManager.cpp" />

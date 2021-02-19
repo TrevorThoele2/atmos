@@ -1991,6 +1991,18 @@
     <ClInclude Include="EntityAlgorithms.h">
       <Filter>Header Files\Entity</Filter>
     </ClInclude>
+    <ClInclude Include="GridSize.h">
+      <Filter>Header Files\Spatial\Grid</Filter>
+    </ClInclude>
+    <ClInclude Include="GridAxisAlignedBox.h">
+      <Filter>Header Files\Spatial\Grid</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptGridSize.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Spatial\Grid</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptGridAxisAlignedBox.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Spatial\Grid</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FieldDestination.cpp">
@@ -2904,6 +2916,18 @@
     </ClCompile>
     <ClCompile Include="EntityAlgorithms.cpp">
       <Filter>Source Files\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="GridSize.cpp">
+      <Filter>Source Files\Spatial\Grid</Filter>
+    </ClCompile>
+    <ClCompile Include="GridAxisAlignedBox.cpp">
+      <Filter>Source Files\Spatial\Grid</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptGridSize.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Spatial\Grid</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptGridAxisAlignedBox.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Spatial\Grid</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
