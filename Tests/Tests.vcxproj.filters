@@ -163,6 +163,9 @@
     <ClCompile Include="PathfinderTests.cpp">
       <Filter>Source Files\Tests\Entity</Filter>
     </ClCompile>
+    <ClCompile Include="SpatialAlgorithmsTests.cpp">
+      <Filter>Source Files\Tests\Spatial</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneralFixture.h">
@@ -335,6 +338,9 @@
     </ClInclude>
     <ClInclude Include="PathfinderTests.h">
       <Filter>Header Files\Tests\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="SpatialAlgorithmsTests.h">
+      <Filter>Header Files\Tests\Spatial</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

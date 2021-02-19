@@ -42,5 +42,16 @@ SCENARIO_METHOD(PathfinderTestsFixture, "pathfinder", "[entity]")
                 REQUIRE(path[2] == Spatial::Grid::Point{ 6, 5 });
             }
         }
+
+        WHEN("finding path to top left")
+        {
+            const auto toPoint = Spatial::Grid::Point{ 0, 2 };
+            const auto path = pathfinder.FindPath(entity, toPoint, *reliquary);
+
+            THEN("path has correct size")
+            {
+                REQUIRE(path.size() == 6);
+            }
+        }
     }
 }
