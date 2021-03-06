@@ -5,6 +5,8 @@
 class MockScriptManager final : public Atmos::Scripting::Manager
 {
 public:
+    MockScriptManager(Atmos::Logging::Logger& logger);
+
     void SetReliquary(Arca::Reliquary& reliquary) override;
 
     [[nodiscard]] std::unique_ptr<Atmos::Asset::Resource::Script> CreateAssetResource(
@@ -13,6 +15,4 @@ public:
         const Atmos::String& scriptAssetName, const Atmos::String& executeName, const Atmos::Scripting::Parameters& parameters) override;
 
     Atmos::Buffer Compile(Atmos::Scripting::Module module, std::vector<Atmos::Scripting::Module> sharedModules) override;
-
-    [[nodiscard]] Atmos::String TypeName() const override;
 };

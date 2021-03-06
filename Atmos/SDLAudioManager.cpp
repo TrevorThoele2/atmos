@@ -9,7 +9,7 @@
 
 namespace Atmos::Audio::SDL
 {
-    Manager::Manager(Logging::Logger& logger) : logger(&logger)
+    Manager::Manager(Logging::Logger& logger) : Audio::Manager(logger, "SDL")
     {
         const auto initFlags = MIX_INIT_OGG;
         const auto initResult = Mix_Init(initFlags);
@@ -24,7 +24,7 @@ namespace Atmos::Audio::SDL
         const Channel maxChannels = 1024;
         const auto allocatedChannels = Mix_AllocateChannels(maxChannels - 1);
         if (allocatedChannels != maxChannels - 1)
-            this->logger->Log(
+            logger.Log(
                 "Could not allocate all audio channels.",
                 Logging::Severity::Warning,
                 Logging::Details
@@ -35,7 +35,7 @@ namespace Atmos::Audio::SDL
 
         const auto groupedChannels = Mix_GroupChannels(0, maxChannels, group);
         if (groupedChannels != maxChannels)
-            this->logger->Log(
+            logger.Log(
                 "Could not group all audio channels.",
                 Logging::Severity::Warning,
                 Logging::Details
@@ -97,11 +97,6 @@ namespace Atmos::Audio::SDL
     std::vector<Resource::Sound*> Manager::DoneResources()
     {
         return doneResources;
-    }
-
-    String Manager::TypeName() const
-    {
-        return "SDL";
     }
 
     Manager* Manager::self = nullptr;

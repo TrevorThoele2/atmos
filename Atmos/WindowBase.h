@@ -7,6 +7,8 @@
 
 #include "String.h"
 
+#include "Logger.h"
+
 namespace Atmos::Window
 {
     class WindowBase
@@ -35,10 +37,8 @@ namespace Atmos::Window
         [[nodiscard]] Point Position() const;
 
         [[nodiscard]] virtual void* Handle() const = 0;
-
-        [[nodiscard]] virtual String TypeName() const = 0;
     protected:
-        WindowBase() = default;
+        WindowBase(Logging::Logger& logger, String typeName);
 
         void SetWindowSize();
 
@@ -54,5 +54,8 @@ namespace Atmos::Window
         Point position;
     private:
         bool isFullscreen = false;
+    private:
+        String typeName;
+        Logging::Logger* logger;
     };
 }

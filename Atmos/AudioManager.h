@@ -6,6 +6,8 @@
 #include "Volume.h"
 #include "Buffer.h"
 
+#include "Logger.h"
+
 namespace Atmos::Audio
 {
     class Manager
@@ -24,9 +26,10 @@ namespace Atmos::Audio
 
         virtual void PruneDoneResources() = 0;
         [[nodiscard]] virtual std::vector<Resource::Sound*> DoneResources() = 0;
-
-        [[nodiscard]] virtual String TypeName() const = 0;
     protected:
-        Manager() = default;
+        Manager(Logging::Logger& logger, String typeName);
+    private:
+        String typeName;
+        Logging::Logger* logger;
     };
 }

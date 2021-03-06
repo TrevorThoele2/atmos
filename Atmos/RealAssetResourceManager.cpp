@@ -6,7 +6,7 @@
 
 namespace Atmos::Asset::Resource
 {
-	RealManager::RealManager(Logging::Logger& logger) : freeImageManager(logger)
+	RealManager::RealManager(Logging::Logger& logger) : Manager(logger, "Real"), freeImageManager(logger)
 	{}
 
 	LoadedData<Image> RealManager::LoadImageData(const File::Path& filePath)

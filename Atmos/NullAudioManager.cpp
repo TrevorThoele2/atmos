@@ -28,10 +28,12 @@ namespace Atmos::Audio
         void SetVolume(Volume volume) override
         {}
 
-        void SetPosition(const Spatial::Point2D & position) override
+        void SetPosition(const Spatial::Point2D& position) override
         {}
     };
 
+    NullManager::NullManager(Logging::Logger& logger) : Manager(logger, "Null")
+    {}
 
     std::unique_ptr<Asset::Resource::Audio> NullManager::CreateAssetResource(const Buffer& buffer, const Name& name)
     {
@@ -55,10 +57,5 @@ namespace Atmos::Audio
     std::vector<Resource::Sound*> NullManager::DoneResources()
     {
         return {};
-    }
-
-    String NullManager::TypeName() const
-    {
-        return "Null";
     }
 }

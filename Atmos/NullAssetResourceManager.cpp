@@ -2,6 +2,9 @@
 
 namespace Atmos::Asset::Resource
 {
+    NullManager::NullManager(Logging::Logger& logger) : Manager(logger, "Null")
+    {}
+
     LoadedData<Image> NullManager::LoadImageData(const File::Path& filePath)
     {
         return {};

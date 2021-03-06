@@ -28,8 +28,6 @@ namespace Atmos::Scripting::Angel
             const String& name, const String& executeName, const Parameters& parameters) override;
 
         Buffer Compile(Module module, std::vector<Module> sharedModules) override;
-
-        [[nodiscard]] String TypeName() const override;
     private:
         asIScriptEngine* engine = nullptr;
         UserData userData;

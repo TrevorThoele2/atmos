@@ -7,6 +7,8 @@ using namespace Atmos;
 class MockWindow final : public Window::WindowBase
 {
 public:
+    MockWindow(Logging::Logger& logger);
+
     void Show() override;
     void Exit() override;
     [[nodiscard]] bool IsCurrentlyFocused() const override;
@@ -14,8 +16,6 @@ public:
     bool OnStartFrame() override;
 
     [[nodiscard]] void* Handle() const override;
-
-    [[nodiscard]] String TypeName() const override;
 protected:
     void OnPositionChanged() override;
     void OnSizeChanged() override;

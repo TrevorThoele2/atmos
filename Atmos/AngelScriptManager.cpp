@@ -19,7 +19,8 @@
 
 namespace Atmos::Scripting::Angel
 {
-    Manager::Manager(Logging::Logger& logger) : engine(&CreateEngine()), logger(&logger)
+    Manager::Manager(Logging::Logger& logger) :
+        Scripting::Manager(logger, "AngelScript"), engine(&CreateEngine()), logger(&logger)
     {
         engine->SetUserData(&userData);
         Angel::RegisterAll(*engine);
@@ -94,11 +95,6 @@ namespace Atmos::Scripting::Angel
             { { { "Name", module.name } } });
 
         return returnValue;
-    }
-
-    String Manager::TypeName() const
-    {
-        return "AngelScript";
     }
 
     asIScriptEngine& Manager::CreateEngine()

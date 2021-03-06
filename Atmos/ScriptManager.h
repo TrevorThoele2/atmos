@@ -11,6 +11,8 @@
 
 #include <Arca/Reliquary.h>
 
+#include "Logger.h"
+
 namespace Atmos::Scripting
 {
     class Manager
@@ -26,7 +28,10 @@ namespace Atmos::Scripting
             const String& name, const String& executeName, const Parameters& parameters) = 0;
 
         virtual Buffer Compile(Module module, std::vector<Module> sharedModules) = 0;
-
-        [[nodiscard]] virtual String TypeName() const = 0;
+    protected:
+        Manager(Logging::Logger& logger, String typeName);
+    private:
+        String typeName;
+        Logging::Logger* logger;
     };
 }

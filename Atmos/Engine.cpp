@@ -48,27 +48,6 @@ namespace Atmos
             std::move(initializationProperties.worldManager)
         };
 
-        logger.Log(
-            "Using window.",
-            Logging::Severity::Information,
-            Logging::Details{ {"Type Name", managers.window->TypeName()} });
-        logger.Log(
-            "Using audio.",
-            Logging::Severity::Information,
-            Logging::Details{ {"Type Name", managers.audio->TypeName()} });
-        logger.Log(
-            "Using input.",
-            Logging::Severity::Information,
-            Logging::Details{ {"Type Name", managers.input->TypeName()} });
-        logger.Log(
-            "Using graphics.",
-            Logging::Severity::Information,
-            Logging::Details{ {"Type Name", managers.graphics->TypeName()} });
-        logger.Log(
-            "Using scripts.",
-            Logging::Severity::Information,
-            Logging::Details{ {"Type Name", managers.scripts->TypeName()} });
-
         managers.window->ChangeSize(Spatial::ScreenSize{ 1024, 768 });
         managers.window->CenterOnScreen();
 

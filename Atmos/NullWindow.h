@@ -7,6 +7,8 @@ namespace Atmos::Window
     class NullWindow final : public WindowBase
     {
     public:
+        NullWindow(Logging::Logger& logger);
+
         void Show() override;
         void Exit() override;
         [[nodiscard]] bool IsCurrentlyFocused() const override;
@@ -14,8 +16,6 @@ namespace Atmos::Window
         bool OnStartFrame() override;
 
         [[nodiscard]] void* Handle() const override;
-
-        [[nodiscard]] String TypeName() const override;
     protected:
         void OnPositionChanged() override;
         void OnSizeChanged() override;

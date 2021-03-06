@@ -2,6 +2,10 @@
 
 #include "MockSoundResource.h"
 
+MockAudioManager::MockAudioManager(Atmos::Logging::Logger& logger) :
+    Manager(logger, "Mock")
+{}
+
 std::unique_ptr<Atmos::Asset::Resource::Audio> MockAudioManager::CreateAssetResource(const Atmos::Buffer& buffer, const Atmos::Name& name)
 {
     return {};
@@ -24,9 +28,4 @@ void MockAudioManager::PruneDoneResources()
 std::vector<Atmos::Audio::Resource::Sound*> MockAudioManager::DoneResources()
 {
     return doneResources;
-}
-
-Atmos::String MockAudioManager::TypeName() const
-{
-    return "Mock";
 }

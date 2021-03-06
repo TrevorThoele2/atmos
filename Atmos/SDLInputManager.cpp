@@ -4,7 +4,7 @@
 
 namespace Atmos::Input
 {
-    SDLManager::SDLManager()
+    SDLManager::SDLManager(Logging::Logger& logger) : Manager(logger, "SDL")
     {
         SDL_StartTextInput();
 
@@ -277,11 +277,6 @@ namespace Atmos::Input
         HandleKeyboard(state);
 
         return state;
-    }
-
-    String SDLManager::TypeName() const
-    {
-        return "SDL";
     }
 
     void SDLManager::HandleTextInputEvent(SDL_TextInputEvent event, State& state) const

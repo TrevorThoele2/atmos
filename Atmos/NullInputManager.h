@@ -7,8 +7,8 @@ namespace Atmos::Input
     class NullManager final : public Manager
     {
     public:
-        [[nodiscard]] State ReadState() const override;
+        NullManager(Logging::Logger& logger);
 
-        [[nodiscard]] String TypeName() const override;
+        [[nodiscard]] State ReadState() const override;
     };
 }

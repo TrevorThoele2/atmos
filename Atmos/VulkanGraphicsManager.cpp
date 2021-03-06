@@ -16,7 +16,7 @@
 namespace Atmos::Render::Vulkan
 {
     GraphicsManager::GraphicsManager(Logging::Logger& logger) :
-        Render::GraphicsManager(logger), shaderCompiler(logger)
+        Render::GraphicsManager(logger, "Vulkan"), shaderCompiler(logger)
     {
 #ifndef NDEBUG
         instanceLayers.push_back(VK_LAYER_KHRONOS_VALIDATION_LAYER_NAME);
@@ -31,11 +31,6 @@ namespace Atmos::Render::Vulkan
         Debug::logger = &logger;
     }
 
-    bool GraphicsManager::IsOk() const
-    {
-        return true;
-    }
-
     void GraphicsManager::SetFullscreen(bool set)
     {
 
@@ -44,11 +39,6 @@ namespace Atmos::Render::Vulkan
     void GraphicsManager::ChangeVerticalSync(bool set)
     {
         
-    }
-
-    String GraphicsManager::TypeName() const
-    {
-        return "Vulkan";
     }
 
     std::unique_ptr<Asset::Resource::Image> GraphicsManager::CreateImageResourceImpl(

@@ -7,6 +7,8 @@ namespace Atmos::Scripting
     class NullManager final : public Manager
     {
     public:
+        NullManager(Logging::Logger& logger);
+
         void SetReliquary(Arca::Reliquary& reliquary) override;
 
         [[nodiscard]] std::unique_ptr<Asset::Resource::Script> CreateAssetResource(
@@ -15,7 +17,5 @@ namespace Atmos::Scripting
             const String& scriptAssetName, const String& executeName, const Parameters& parameters) override;
 
         Buffer Compile(Module module, std::vector<Module> sharedModules) override;
-
-        [[nodiscard]] String TypeName() const override;
     };
 }

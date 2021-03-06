@@ -1,5 +1,8 @@
 #include "MockWindow.h"
 
+MockWindow::MockWindow(Logging::Logger& logger) : WindowBase(logger, "Mock")
+{}
+
 void MockWindow::Show()
 {}
 
@@ -25,11 +28,6 @@ bool MockWindow::OnStartFrame()
 void* MockWindow::Handle() const
 {
     return nullptr;
-}
-
-String MockWindow::TypeName() const
-{
-    return "Mock";
 }
 
 void MockWindow::OnPositionChanged()
