@@ -8,7 +8,7 @@ auto ScriptEngine::CreateInitializationProperties(Logging::Logger& logger)
 {
     using Properties = InitializationProperties;
 
-    auto imageAssetManager = std::make_unique<MockAssetResourceManager>();
+    auto imageAssetManager = std::make_unique<MockAssetResourceManager>(logger);
     auto window = std::make_unique<MockWindow>(logger);
     auto input = std::make_unique<MockInputManager>(logger);
     auto graphics = std::make_unique<MockGraphicsManager>(logger);
