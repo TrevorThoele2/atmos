@@ -198,9 +198,9 @@ namespace Atmos::Scripting::Angel
             logType,
             Logging::Details
             {
-                NameValuePair("Section", String(messageInfo->section)),
-                NameValuePair("Row", ToString(messageInfo->row)),
-                NameValuePair("Column", ToString(messageInfo->col)),
+                NameValuePair{"Section", String(messageInfo->section)},
+                NameValuePair{"Row", ToString(messageInfo->row)},
+                NameValuePair{"Column", ToString(messageInfo->col)},
             } });
     }
 
@@ -220,9 +220,9 @@ namespace Atmos::Scripting::Angel
             Logging::Severity::Error,
             Logging::Details
             {
-                NameValuePair("Section", sectionName),
-                NameValuePair("Row", Chroma::ToString(line)),
-                NameValuePair("Column", Chroma::ToString(column)),
+                NameValuePair{"Section", sectionName},
+                NameValuePair{"Row", Chroma::ToString(line)},
+                NameValuePair{"Column", Chroma::ToString(column)},
             } });
     }
 
