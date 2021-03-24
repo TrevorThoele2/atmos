@@ -872,26 +872,22 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Debug|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>C:\Users\Trevor\Documents\Programming Projects\Reliquary;C:\Users\Trevor\Documents\Visual Studio 2015\Projects\Function;C:\Users\Trevor\Documents\Programming Projects\wxWidgets2\include;C:\Users\Trevor\Documents\Programming Projects\wxWidgets2\lib\vc_lib\mswud;C:\Program Files %28x86%29\Falcon\include;C:\Users\Trevor\Documents\Programming Projects\Ogg\Built\include;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;C:\Users\Trevor\Documents\Programming Projects\Inscription;C:\Users\Trevor\Documents\Programming Projects\AGUI;C:\Users\Trevor\Documents\Programming Projects\Affecter;$(IncludePath)</IncludePath>
-    <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Debug|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>C:\Users\Trevor\Documents\Visual Studio 2015\Projects\Function;C:\Users\Trevor\Documents\Programming Projects\wxWidgets2\include;C:\Users\Trevor\Documents\Programming Projects\wxWidgets2\lib\vc_lib\mswud;C:\Program Files %28x86%29\Falcon\include;C:\Users\Trevor\Documents\Programming Projects\Ogg\Built\include;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;C:\Users\Trevor\Documents\Programming Projects\Inscription;C:\Users\Trevor\Documents\Programming Projects\AGUI;C:\Users\Trevor\Documents\Programming Projects\Affecter;$(IncludePath)</IncludePath>
-    <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>..\..\sdl2\include;..\..\sdl_mixer\include;..\..\freeimage\Source;..\..\function2\include;..\..\inscription;..\..\chroma;..\..\arca;..\..\wxwidgets\lib\vc_lib\mswud;..\..\wxwidgets\include;..\..\glm;..\..\vulkan\Include;..\..\angelscript\add_on;..\..\angelscript\angelscript\include;..\..\boost;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>C:\Users\Trevor\Documents\Visual Studio 2015\Projects\Function;C:\Users\Trevor\Documents\Programming Projects\wxWidgets2\lib\vc_lib\mswud;C:\Users\Trevor\Documents\Programming Projects\wxWidgets2\include;C:\Program Files %28x86%29\Falcon\include;C:\Users\Trevor\Documents\Programming Projects\Affecter;C:\Users\Trevor\Documents\Programming Projects\Ogg\Built\include;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;C:\Users\Trevor\Documents\Programming Projects\AGUI;C:\Users\Trevor\Documents\Programming Projects\Inscription;$(IncludePath)</IncludePath>
-    <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>C:\Users\Trevor\Documents\ProgrammingProjects\SDL\SDL2-2.0.12\include;C:\Users\Trevor\Documents\ProgrammingProjects\SDL_mixer\SDL2_mixer-2.0.4\include;C:\Users\Trevor\Documents\ProgrammingProjects\Boost\boost_1_72_0;C:\Users\Trevor\Documents\ProgrammingProjects\FreeImage\Source;C:\Users\Trevor\Documents\ProgrammingProjects\function2\include;C:\Users\Trevor\Documents\ProgrammingProjects\Inscription;C:\Users\Trevor\Documents\ProgrammingProjects\Chroma;C:\Users\Trevor\Documents\ProgrammingProjects\Arca;C:\Users\Trevor\Documents\ProgrammingProjects\WxWidgets\lib\vc_lib\mswu;C:\Users\Trevor\Documents\ProgrammingProjects\WxWidgets\include;C:\Users\Trevor\Documents\ProgrammingProjects\glm;C:\VulkanSDK\1.2.135.0\Include;C:\Users\Trevor\Documents\ProgrammingProjects\AngelScript\sdk\angelscript\include;$(IncludePath)</IncludePath>
+    <IncludePath>..\..\sdl2\include;..\..\sdl_mixer\include;..\..\freeimage\Dist\x32;..\..\function2\include;..\..\inscription;..\..\chroma;..\..\arca;..\..\wxwidgets\lib\vc_lib\mswu;..\..\wxwidgets\include;..\..\glm;..\..\vulkan\Include;..\..\angelscript\add_on;..\..\angelscript\angelscript\include;..\..\boost;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>C:\Users\Trevor\Documents\Visual Studio 2015\Projects\Function;C:\Users\Trevor\Documents\Programming Projects\wxWidgets2\lib\vc_lib\mswud;C:\Users\Trevor\Documents\Programming Projects\wxWidgets2\include;C:\Program Files %28x86%29\Falcon\include;C:\Users\Trevor\Documents\Programming Projects\Ogg\Built\include;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;C:\Users\Trevor\Documents\Programming Projects\Inscription;C:\Users\Trevor\Documents\Programming Projects\AGUI;C:\Users\Trevor\Documents\Programming Projects\Affecter;$(IncludePath)</IncludePath>
-    <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
