@@ -147,7 +147,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="docgen.cpp" />
     <ClCompile Include="DocumentationManager.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
@@ -166,7 +165,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="docgen.h" />
     <ClInclude Include="DocumentationManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

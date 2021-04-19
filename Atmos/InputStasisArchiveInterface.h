@@ -30,7 +30,7 @@ namespace Atmos::World::Serialization
 
         [[nodiscard]] std::vector<Property> WorldProperties() const override;
     private:
-        using ArchiveT = Inscription::InputBinaryArchive;
+        using ArchiveT = Inscription::Archive::InputBinary;
         ArchiveT archive;
 
         Inscription::InputJumpTable<FieldID, Field> fieldJumpTable;

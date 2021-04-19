@@ -17,7 +17,7 @@ namespace Atmos::World::Serialization
 
         void Save(std::vector<Field>& fields, const std::vector<Property>& worldProperties);
     private:
-        using ArchiveT = Inscription::OutputBinaryArchive;
+        using ArchiveT = Inscription::Archive::OutputBinary;
         ArchiveT archive;
 
         VersionUserContext versionUserContext;

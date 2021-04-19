@@ -70,7 +70,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>..\..\angelscript\angelscript\include;..\..\angelscript\add_on;..\..\freeimage\source;..\..\catch;..\..\testframework;..\..\function2\include;..\..\inscription;..\..\chroma;..\..\arca;..\..\wxwidgets\include;..\..\wxwidgets\lib\vc_lib\mswud;..\;$(IncludePath)</IncludePath>
+    <IncludePath>..\..\angelscript\angelscript\include;..\..\angelscript\add_on;..\..\freeimage\source;..\..\catch2;..\..\testframework;..\..\function2\include;..\..\inscription;..\..\chroma;..\..\arca;..\..\wxwidgets\include;..\..\wxwidgets\lib\vc_lib\mswud;..\;$(IncludePath)</IncludePath>
     <LibraryPath>..\..\angelscript\angelscript\lib;..\..\sdl2\lib\x86;..\..\freeimage\Dist\x32;..\..\wxwidgets\lib\vc_lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
