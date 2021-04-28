@@ -27,8 +27,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\angelscript\add_on\scriptarray\scriptarray.h" />
-    <ClInclude Include="..\..\angelscript\add_on\scriptstdstring\scriptstdstring.h" />
+    <ClInclude Include="..\..\externaldependencies\angelscript\add_on\scriptarray\scriptarray.h" />
+    <ClInclude Include="..\..\externaldependencies\angelscript\add_on\scriptstdstring\scriptstdstring.h" />
     <ClInclude Include="ActionActive.h" />
     <ClInclude Include="ActionAsset.h" />
     <ClInclude Include="ActionAssetCurator.h" />
@@ -490,10 +490,10 @@
     <ClInclude Include="WrapMath.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\angelscript\add_on\scriptarray\scriptarray.cpp" />
-    <ClCompile Include="..\..\angelscript\add_on\scriptdictionary\scriptdictionary.cpp" />
-    <ClCompile Include="..\..\angelscript\add_on\scripthelper\scripthelper.cpp" />
-    <ClCompile Include="..\..\angelscript\add_on\scriptstdstring\scriptstdstring.cpp" />
+    <ClCompile Include="..\..\externaldependencies\angelscript\add_on\scriptarray\scriptarray.cpp" />
+    <ClCompile Include="..\..\externaldependencies\angelscript\add_on\scriptdictionary\scriptdictionary.cpp" />
+    <ClCompile Include="..\..\externaldependencies\angelscript\add_on\scripthelper\scripthelper.cpp" />
+    <ClCompile Include="..\..\externaldependencies\angelscript\add_on\scriptstdstring\scriptstdstring.cpp" />
     <ClCompile Include="ActionAsset.cpp" />
     <ClCompile Include="AngelScriptActionActive.cpp" />
     <ClCompile Include="AngelScriptActionAsset.cpp" />
@@ -878,13 +878,13 @@
     <IncludePath>C:\Users\Trevor\Documents\Visual Studio 2015\Projects\Function;C:\Users\Trevor\Documents\Programming Projects\wxWidgets2\include;C:\Users\Trevor\Documents\Programming Projects\wxWidgets2\lib\vc_lib\mswud;C:\Program Files %28x86%29\Falcon\include;C:\Users\Trevor\Documents\Programming Projects\Ogg\Built\include;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;C:\Users\Trevor\Documents\Programming Projects\Inscription;C:\Users\Trevor\Documents\Programming Projects\AGUI;C:\Users\Trevor\Documents\Programming Projects\Affecter;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>..\..\sdl2\include;..\..\sdl_mixer\include;..\..\freeimage\Source;..\..\function2\include;..\..\inscription;..\..\chroma;..\..\arca;..\..\wxwidgets\lib\vc_lib\mswud;..\..\wxwidgets\include;..\..\glm;..\..\vulkan\Include;..\..\angelscript\add_on;..\..\angelscript\angelscript\include;..\..\boost;$(IncludePath)</IncludePath>
+    <IncludePath>..\..\chroma;..\..\inscription;..\..\arca;..\..\externaldependencies\angelscript\angelscript\include;..\..\externaldependencies\angelscript\add_on;..\..\externaldependencies\vulkan\Include;..\..\externaldependencies\wxwidgets\include;..\..\externaldependencies\wxwidgets\lib\vc_lib\mswud;..\..\externaldependencies\sdl_mixer\include;..\..\externaldependencies\sdl2\include;..\..\externaldependencies\glm;..\..\externaldependencies\function2\include;..\..\externaldependencies\boost;..\..\externaldependencies\freeimage\Dist\x32;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>C:\Users\Trevor\Documents\Visual Studio 2015\Projects\Function;C:\Users\Trevor\Documents\Programming Projects\wxWidgets2\lib\vc_lib\mswud;C:\Users\Trevor\Documents\Programming Projects\wxWidgets2\include;C:\Program Files %28x86%29\Falcon\include;C:\Users\Trevor\Documents\Programming Projects\Affecter;C:\Users\Trevor\Documents\Programming Projects\Ogg\Built\include;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;C:\Users\Trevor\Documents\Programming Projects\AGUI;C:\Users\Trevor\Documents\Programming Projects\Inscription;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>..\..\sdl2\include;..\..\sdl_mixer\include;..\..\freeimage\Dist\x32;..\..\function2\include;..\..\inscription;..\..\chroma;..\..\arca;..\..\wxwidgets\lib\vc_lib\mswu;..\..\wxwidgets\include;..\..\glm;..\..\vulkan\Include;..\..\angelscript\add_on;..\..\angelscript\angelscript\include;..\..\boost;$(IncludePath)</IncludePath>
+    <IncludePath>..\..\chroma;..\..\inscription;..\..\arca;..\..\externaldependencies\sdl2\include;..\..\externaldependencies\sdl_mixer\include;..\..\externaldependencies\freeimage\Dist\x32;..\..\externaldependencies\function2\include;..\..\externaldependencies\wxwidgets\lib\vc_lib\mswu;..\..\externaldependencies\wxwidgets\include;..\..\externaldependencies\glm;..\..\externaldependencies\vulkan\Include;..\..\externaldependencies\angelscript\add_on;..\..\externaldependencies\angelscript\angelscript\include;..\..\externaldependencies\boost;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>C:\Users\Trevor\Documents\Visual Studio 2015\Projects\Function;C:\Users\Trevor\Documents\Programming Projects\wxWidgets2\lib\vc_lib\mswud;C:\Users\Trevor\Documents\Programming Projects\wxWidgets2\include;C:\Program Files %28x86%29\Falcon\include;C:\Users\Trevor\Documents\Programming Projects\Ogg\Built\include;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;C:\Users\Trevor\Documents\Programming Projects\Inscription;C:\Users\Trevor\Documents\Programming Projects\AGUI;C:\Users\Trevor\Documents\Programming Projects\Affecter;$(IncludePath)</IncludePath>

@@ -70,12 +70,12 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>..\..\angelscript\angelscript\include;..\..\angelscript\add_on;..\..\freeimage\source;..\..\catch2;..\..\testframework;..\..\function2\include;..\..\inscription;..\..\chroma;..\..\arca;..\..\wxwidgets\include;..\..\wxwidgets\lib\vc_lib\mswud;..\;$(IncludePath)</IncludePath>
-    <LibraryPath>..\..\angelscript\angelscript\lib;..\..\sdl2\lib\x86;..\..\freeimage\Dist\x32;..\..\wxwidgets\lib\vc_lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>..\;..\..\testframework;..\..\chroma;..\..\inscription;..\..\arca;..\..\externaldependencies\catch2;..\..\externaldependencies\function2\include;..\..\externaldependencies\angelscript\angelscript\include;..\..\externaldependencies\angelscript\add_on;..\..\externaldependencies\wxwidgets\include;..\..\externaldependencies\wxwidgets\lib\vc_lib\mswud;$(IncludePath)</IncludePath>
+    <LibraryPath>..\..\externaldependencies\angelscript\angelscript\lib;..\..\externaldependencies\sdl2\lib\x86;..\..\externaldependencies\freeimage\Dist\x32;..\..\externaldependencies\wxwidgets\lib\vc_lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>..\..\angelscript\angelscript\include;..\..\angelscript\add_on;..\..\freeimage\source;..\..\catch;..\..\testframework;..\..\function2\include;..\..\inscription;..\..\chroma;..\..\arca;..\..\wxwidgets\include;..\..\wxwidgets\lib\vc_lib\mswu;..\;$(IncludePath)</IncludePath>
-    <LibraryPath>..\..\angelscript\angelscript\lib;..\..\sdl2\lib\x86;..\..\freeimage\Dist\x32;..\..\wxwidgets\lib\vc_lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>..\;..\..\chroma;..\..\inscription;..\..\arca;..\..\testframework;..\..\externaldependencies\catch2;..\..\externaldependencies\angelscript\angelscript\include;..\..\externaldependencies\angelscript\add_on;..\..\externaldependencies\freeimage\source;..\..\externaldependencies\testframework;..\..\externaldependencies\function2\include;..\..\externaldependencies\wxwidgets\include;..\..\externaldependencies\wxwidgets\lib\vc_lib\mswu;$(IncludePath)</IncludePath>
+    <LibraryPath>..\..\externaldependencies\angelscript\angelscript\lib;..\..\externaldependencies\sdl2\lib\x86;..\..\externaldependencies\freeimage\Dist\x32;..\..\externaldependencies\wxwidgets\lib\vc_lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
