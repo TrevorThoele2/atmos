@@ -39,6 +39,7 @@ namespace Atmos
     {
         managers = Managers
         {
+            std::move(initializationProperties.system),
             std::move(initializationProperties.assetResourceManager),
             std::move(initializationProperties.window),
             std::move(initializationProperties.audioManager),

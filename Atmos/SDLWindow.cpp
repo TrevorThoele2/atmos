@@ -6,10 +6,7 @@ namespace Atmos::Window
 {
     SDLWindow::SDLWindow(Logging::Logger& logger) : WindowBase(logger, "SDL")
     {
-        if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0)
-            throw WindowCreationFailed(String(SDL_GetError()));
-
-        SDL_VERSION(&info.version);
+        SDL_VERSION(&info.version)
 
         const auto center = Position();
         const auto size = ClientSize();
@@ -35,7 +32,6 @@ namespace Atmos::Window
     void SDLWindow::Exit()
     {
         SDL_DestroyWindow(underlying);
-        SDL_Quit();
     }
 
     bool SDLWindow::IsCurrentlyFocused() const
@@ -97,8 +93,6 @@ namespace Atmos::Window
         SDL_GetWindowBordersSize(underlying, &top, &left, &bottom, &right);
 
         const auto clientSize = ClientSize();
-
-        using Coordinate = Size::Dimension;
         return Size{ clientSize.width + left + right, clientSize.height + top + bottom };
     }
 

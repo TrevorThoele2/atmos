@@ -618,6 +618,12 @@
     <Filter Include="Source Files\Scripting\AngelScript\Types\Std">
       <UniqueIdentifier>{417f55fe-9c52-4d85-9874-fed06cd43dd8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\System">
+      <UniqueIdentifier>{5b5f0dec-3e19-43cc-a29c-692f028a7a25}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\System">
+      <UniqueIdentifier>{31f8bd43-f897-4b35-9c78-7c1dc7f30c36}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FieldDestination.h">
@@ -2003,6 +2009,15 @@
     <ClInclude Include="..\..\externaldependencies\angelscript\add_on\scriptarray\scriptarray.h">
       <Filter>Header Files\Scripting\AngelScript\Addon</Filter>
     </ClInclude>
+    <ClInclude Include="SDLSystem.h">
+      <Filter>Header Files\System</Filter>
+    </ClInclude>
+    <ClInclude Include="SystemCreationFailed.h">
+      <Filter>Header Files\System</Filter>
+    </ClInclude>
+    <ClInclude Include="System.h">
+      <Filter>Header Files\System</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FieldDestination.cpp">
@@ -2928,6 +2943,15 @@
     </ClCompile>
     <ClCompile Include="..\..\externaldependencies\angelscript\add_on\scriptstdstring\scriptstdstring.cpp">
       <Filter>Source Files\Scripting\AngelScript\Addon</Filter>
+    </ClCompile>
+    <ClCompile Include="SDLSystem.cpp">
+      <Filter>Source Files\System</Filter>
+    </ClCompile>
+    <ClCompile Include="SystemCreationFailed.cpp">
+      <Filter>Source Files\System</Filter>
+    </ClCompile>
+    <ClCompile Include="System.cpp">
+      <Filter>Source Files\System</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

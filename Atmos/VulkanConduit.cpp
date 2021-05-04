@@ -85,7 +85,7 @@ namespace Atmos::Render::Vulkan
             1,
             &colorBlendAttachment,
             {});
-
+        
         vk::PipelineDynamicStateCreateInfo dynamicCreateInfo(
             {},
             dynamicStates.size(),

@@ -37,6 +37,7 @@ namespace Atmos::Render::Vulkan
             vk::PrimitiveTopology::eLineList,
             renderPass,
             swapchainExtent,
+            { vk::DynamicState::eLineWidth },
             { descriptorSetPool.DescriptorSetLayout() }),
         graphicsQueue(graphicsQueue),
         device(device)

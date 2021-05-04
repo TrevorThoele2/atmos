@@ -1,5 +1,6 @@
 #include "SDLEngine.h"
 
+#include "SDLSystem.h"
 #include "SDLWindow.h"
 #include "RealAssetResourceManager.h"
 #include "SDLInputManager.h"
@@ -18,15 +19,24 @@ namespace Atmos
     {
         using Properties = InitializationProperties;
 
+        auto system = std::unique_ptr<System::System>();
+        auto imageAssetManager = std::unique_ptr<Asset::Resource::Manager>();
+        auto window = std::unique_ptr<Window::WindowBase>();
+        auto input = std::unique_ptr<Input::Manager>();
+        auto graphics = std::unique_ptr<Render::GraphicsManager>();
+        /*
+        auto system = std::make_unique<System::SDL>();
         auto imageAssetManager = std::make_unique<Asset::Resource::RealManager>(logger);
         auto window = std::make_unique<Window::SDLWindow>(logger);
         auto input = std::make_unique<Input::SDLManager>(logger);
         auto graphics = std::make_unique<Render::Vulkan::GraphicsManager>(logger);
+        */
         auto audio = std::make_unique<Audio::SDL::Manager>(logger);
         auto scripts = std::make_unique<Scripting::Angel::Manager>(logger);
         auto world = std::make_unique<World::RealManager>();
 
         Properties properties;
+        properties.system = std::move(system);
         properties.assetResourceManager = std::move(imageAssetManager);
         properties.window = std::move(window);
         properties.inputManager = std::move(input);
