@@ -18,7 +18,7 @@ namespace Atmos::Scripting::Angel
         registration
             .ConstMethod(&Management::Method<&Points>, "Atmos::Spatial::Grid::Point[]@", "Points", {})
             .ConstMethod(&Management::Method<&Z>, "int", "Z", {})
-            .ConstMethod(&Management::Method<&Material>, "Atmos::Asset::RegionMaterial", "Material", {})
+            .ConstMethod(&Management::Method<&Material>, "Atmos::Asset::Material", "Material", {})
             .Actualize(engine, documentationManager);
 
         Registration<ArcaTraits<Render::GridRegion>>::RegisterTo(engine, documentationManager);
@@ -28,11 +28,11 @@ namespace Atmos::Scripting::Angel
             .Constructor<
                 std::unordered_set<Spatial::Grid::Point>,
                 int,
-                Arca::Index<Asset::RegionMaterial>>
+                Arca::Index<Asset::Material>>
             ({
                 "Atmos::Spatial::Grid::Point[]@ points",
                 "int z",
-                "Atmos::Asset::RegionMaterial material"
+                "Atmos::Asset::Material material"
             })
             .Actualize(engine, documentationManager);
         RegisterArcaCreated<Type::ValueT>(engine, documentationManager);
@@ -51,9 +51,9 @@ namespace Atmos::Scripting::Angel
         return RequiredValue(type)->z;
     }
 
-    Arca::Index<Asset::RegionMaterial> Registration<Render::GridRegion>::Material(Type type)
+    Arca::Index<Asset::Material> Registration<Render::GridRegion>::Material(Type type)
     {
-        return RequiredValue(type)->material;
+        return RequiredValue(type)->renderCore->material;
     }
 
     void Registration<ChangeGridRegionPoints>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)

@@ -16,6 +16,7 @@ namespace Inscription
         std::optional<Extracted> LoadAudioData(const Atmos::Name& name) override;
         std::optional<Extracted> LoadImageData(const Atmos::Name& name) override;
         std::optional<Extracted> LoadShaderData(const Atmos::Name& name) override;
+        std::optional<Extracted> LoadFontData(const Atmos::Name& name) override;
         std::optional<Extracted> LoadScriptData(const Atmos::Name& name) override;
     private:
         using ArchiveInterface = Atmos::World::Serialization::InputAssetsArchiveInterface;

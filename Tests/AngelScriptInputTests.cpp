@@ -23,11 +23,12 @@ SCENARIO_METHOD(AngelScriptInputTestsFixture, "running input AngelScript scripts
         *engine.mockAudioManager,
         *engine.mockInputManager,
         *engine.mockGraphicsManager,
+        *engine.mockTextManager,
         *engine.scriptManager,
         *engine.mockWorldManager,
-        Spatial::ScreenSize{
-            std::numeric_limits<Spatial::ScreenSize::Dimension>::max(),
-            std::numeric_limits<Spatial::ScreenSize::Dimension>::max() },
+        Spatial::Size2D{
+            std::numeric_limits<Spatial::Size2D::Value>::max(),
+            std::numeric_limits<Spatial::Size2D::Value>::max() },
             *engine.mockWindow,
             engine.Logger());
     fieldOrigin.CuratorCommandPipeline<Work>(Arca::Pipeline{ Input::Stage(), Scripting::Stage() });
@@ -56,7 +57,7 @@ SCENARIO_METHOD(AngelScriptInputTestsFixture, "running input AngelScript scripts
         WHEN("working reliquary")
         {
             const auto mousePosition =
-                dataGeneration.RandomStack<Spatial::ScreenPoint, Spatial::ScreenPoint::Value, Spatial::ScreenPoint::Value>();
+                dataGeneration.RandomStack<Spatial::Point2D, Spatial::Point2D::Value, Spatial::Point2D::Value>();
 
             engine.mockInputManager->sendState.mousePosition = mousePosition;
             fieldReliquary.Do(Work{});
@@ -86,7 +87,7 @@ SCENARIO_METHOD(AngelScriptInputTestsFixture, "running input AngelScript scripts
         WHEN("working reliquary")
         {
             const auto mousePosition =
-                dataGeneration.RandomStack<Spatial::ScreenPoint, Spatial::ScreenPoint::Value, Spatial::ScreenPoint::Value>();
+                dataGeneration.RandomStack<Spatial::Point2D, Spatial::Point2D::Value, Spatial::Point2D::Value>();
 
             engine.mockInputManager->sendState.mousePosition = mousePosition;
             fieldReliquary.Do(Work{});
@@ -107,7 +108,7 @@ SCENARIO_METHOD(AngelScriptInputTestsFixture, "running input AngelScript scripts
         auto name = dataGeneration.Random<std::string>();
         const auto boundKey = Input::Key::Z;
 
-        auto actionAsset = fieldReliquary.Do(Arca::Create<Asset::Action>{ name, boundKey, Asset::Action::Modifiers{} });
+        fieldReliquary.Do(Arca::Create<Asset::Action>{ name, boundKey, Asset::Action::Modifiers{} });
 
         CompileAndCreateScript(
             "basic_script.as",
@@ -148,7 +149,7 @@ SCENARIO_METHOD(AngelScriptInputTestsFixture, "running input AngelScript scripts
         auto name = dataGeneration.Random<std::string>();
         const auto boundKey = Input::Key::Z;
 
-        auto actionAsset = fieldReliquary.Do(Arca::Create<Asset::Action>{ name, boundKey, Asset::Action::Modifiers{} });
+        fieldReliquary.Do(Arca::Create<Asset::Action>{ name, boundKey, Asset::Action::Modifiers{} });
 
         CompileAndCreateScript(
             "basic_script.as",
@@ -190,7 +191,7 @@ SCENARIO_METHOD(AngelScriptInputTestsFixture, "running input AngelScript scripts
         auto name = dataGeneration.Random<std::string>();
         const auto boundKey = Input::Key::Z;
 
-        auto actionAsset = fieldReliquary.Do(Arca::Create<Asset::Action>{ name, boundKey, Asset::Action::Modifiers{} });
+        fieldReliquary.Do(Arca::Create<Asset::Action>{ name, boundKey, Asset::Action::Modifiers{} });
 
         CompileAndCreateScript(
             "basic_script.as",
@@ -230,9 +231,9 @@ SCENARIO_METHOD(AngelScriptInputTestsFixture, "running input AngelScript scripts
     GIVEN("script that returns mouse moved")
     {
         const auto previousMousePosition = dataGeneration.RandomStack<
-            Spatial::ScreenPoint, Spatial::ScreenPoint::Value, Spatial::ScreenPoint::Value>();
+            Spatial::Point2D, Spatial::Point2D::Value, Spatial::Point2D::Value>();
         const auto currentMousePosition = dataGeneration.RandomStack<
-            Spatial::ScreenPoint, Spatial::ScreenPoint::Value, Spatial::ScreenPoint::Value>();
+            Spatial::Point2D, Spatial::Point2D::Value, Spatial::Point2D::Value>();
 
         CompileAndCreateScript(
             "basic_script.as",

@@ -26,10 +26,7 @@ namespace Atmos::Debug
         class Page
         {
         public:
-            StatisticsCurator* owner;
-
-            Page() = delete;
-            explicit Page(StatisticsCurator& owner);
+            Page() = default;
 
             virtual ~Page() = 0;
 

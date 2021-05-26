@@ -8,6 +8,7 @@ namespace Atmos::Render
     struct ImageRender;
     struct LineRender;
     struct RegionRender;
+    struct TextRender;
 
     class Surface
     {
@@ -27,10 +28,11 @@ namespace Atmos::Render
         void StageRender(const ImageRender& imageRender) const;
         void StageRender(const LineRender& lineRender) const;
         void StageRender(const RegionRender& regionRender) const;
+        void StageRender(const TextRender& textRender) const;
 
         void DrawFrame() const;
 
-        [[nodiscard]] Spatial::ScreenSize Size() const;
+        [[nodiscard]] Spatial::Size2D Size() const;
 
         [[nodiscard]] ResourceT* Resource() const;
         template<class ResourceT>

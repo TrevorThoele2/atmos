@@ -1,7 +1,8 @@
 #include "RenderCurator.h"
 
-#include "ImageCore.h"
-#include "Line.h"
+#include "RenderCore.h"
+#include "ViewSlice.h"
+#include "ColorChanged.h"
 
 namespace Atmos::Render
 {
@@ -27,24 +28,26 @@ namespace Atmos::Render
 
     void Curator::Handle(const ChangeColor& command)
     {
-        const auto execute = [this, command](auto index)
+        auto renderCore = MutablePointer().Of<RenderCore>(command.id);
+        if (renderCore)
         {
-            auto mutableObject = MutablePointer().Of(index);
-            mutableObject->color = command.to;
-        };
-
-        const auto image = Arca::Index<ImageCore>(command.id, Owner());
-        if (image)
-        {
-            execute(image);
-            return;
+            const auto previous = renderCore->color;
+            renderCore->color = command.to;
+            Owner().Raise(ColorChanged{ command.id, previous });
         }
+    }
 
-        const auto line = Arca::Index<Line>(command.id, Owner());
-        if (line)
-        {
-            execute(line);
-            return;
-        }
+    void Curator::Handle(const ChangeMaterialAsset& command)
+    {
+        const auto renderCore = MutablePointer().Of<RenderCore>(command.id);
+        if (renderCore)
+            renderCore->material = command.to;
+    }
+
+    void Curator::Handle(const ChangeViewSlice& command)
+    {
+        const auto viewSlice = MutablePointer().Of<ViewSlice>(command.id);
+        if (viewSlice)
+            viewSlice->box = command.to;
     }
 }

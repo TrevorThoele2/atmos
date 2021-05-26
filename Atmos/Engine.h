@@ -39,6 +39,7 @@ namespace Atmos
             std::unique_ptr<Audio::Manager> audio;
             std::unique_ptr<Input::Manager> input;
             std::unique_ptr<Render::GraphicsManager> graphics;
+            std::unique_ptr<Render::TextManager> text;
             std::unique_ptr<Scripting::Manager> scripts;
             std::unique_ptr<World::Manager> world;
         };

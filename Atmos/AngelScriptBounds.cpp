@@ -1,5 +1,7 @@
 #include "AngelScriptBounds.h"
 
+#include "AngelScriptEnumRegistration.h"
+
 #include "AngelScriptCommand.h"
 #include "AngelScriptSignal.h"
 #include "AngelScriptHandle.h"
@@ -15,6 +17,14 @@
 
 namespace Atmos::Scripting::Angel
 {
+    void Registration<Spatial::BoundsSpace>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
+    {
+        EnumRegistration<Spatial::BoundsSpace>(ContainingNamespace(), Name())
+            .Value("World", Spatial::BoundsSpace::World)
+            .Value("Screen", Spatial::BoundsSpace::Screen)
+            .Actualize(engine, documentationManager);
+    }
+
     void Registration<Spatial::Bounds>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         ValueTypeRegistration<Type> registration(ContainingNamespace(), Name());
@@ -25,6 +35,7 @@ namespace Atmos::Scripting::Angel
             .ConstMethod(&Management::Method<&Size>, "Atmos::Spatial::Size2D", "Size", {})
             .ConstMethod(&Management::Method<&Scalers>, "Atmos::Spatial::Scalers2D", "Scalers", {})
             .ConstMethod(&Management::Method<&Rotation>, "Atmos::Spatial::Angle2D", "Rotation", {})
+            .ConstMethod(&Management::Method<&Space>, "Atmos::Spatial::BoundsSpace", "Space", {})
             .Actualize(engine, documentationManager);
 
         Registration<ArcaTraits<Spatial::Bounds>>::RegisterTo(engine, documentationManager);
@@ -33,11 +44,13 @@ namespace Atmos::Scripting::Angel
         ArcaCreateShardRegistration<Type::ValueT>()
             .Constructor<>({})
             .Constructor<
+                Spatial::BoundsSpace,
                 Spatial::Point3D,
                 Spatial::Size2D,
                 Spatial::Scalers2D,
                 Spatial::Angle2D>
             ({
+                "Atmos::Spatial::BoundsSpace space",
                 "Atmos::Spatial::Point3D position",
                 "Atmos::Spatial::Size2D baseSize",
                 "Atmos::Spatial::Scalers2D scalers",
@@ -74,45 +87,12 @@ namespace Atmos::Scripting::Angel
         return RequiredValue(type)->Rotation();
     }
 
-    void Registration<Spatial::MoveBoundsBy>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
+    Spatial::BoundsSpace Registration<Spatial::Bounds>::Space(Type type)
     {
-        ValueTypeRegistration<Type>(ContainingNamespace(), Name())
-            .Constructor(
-                &Management::GenerateValue<
-                    &PullFromParameter<0, Arca::RelicID>,
-                    &PullFromParameter<1, Spatial::Point3D>>,
-                { "Arca::RelicID id", "Atmos::Spatial::Point3D" })
-            .CopyConstructor(&Management::GenerateValueFromCopy)
-            .Destructor(&Management::DestructValue)
-            .CopyAssignment(&Management::CopyAssign)
-            .Property<&Type::id>("Arca::RelicID", "id")
-            .Property<&Type::delta>("Atmos::Spatial::Point3D", "delta")
-            .Actualize(engine, documentationManager);
-
-        RegisterCommandHandler<&Chroma::Identity<Type>>(engine, documentationManager);
+        return RequiredValue(type)->Space();
     }
-
-    void Registration<Spatial::MoveBoundsDirection>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
-    {
-        ValueTypeRegistration<Type>(ContainingNamespace(), Name())
-            .Constructor(
-                &Management::GenerateValue<
-                    &PullFromParameter<0, Arca::RelicID>,
-                    &PullFromParameter<1, Spatial::Angle3D>,
-                    &PullFromParameter<2, Spatial::Point3D::Value>>,
-                { "Arca::RelicID id", "Atmos::Spatial::Angle3D direction", "float amount" })
-            .CopyConstructor(&Management::GenerateValueFromCopy)
-            .Destructor(&Management::DestructValue)
-            .CopyAssignment(&Management::CopyAssign)
-            .Property<&Type::id>("Arca::RelicID", "id")
-            .Property<&Type::direction>("Atmos::Spatial::Angle3D", "direction")
-            .Property<&Type::amount>("float", "amount")
-            .Actualize(engine, documentationManager);
-
-        RegisterCommandHandler<&Chroma::Identity<Type>>(engine, documentationManager);
-    }
-
-    void Registration<Spatial::MoveBoundsTo>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
+    
+    void Registration<Spatial::MoveBounds>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         ValueTypeRegistration<Type>(ContainingNamespace(), Name())
             .Constructor(
@@ -172,12 +152,14 @@ namespace Atmos::Scripting::Angel
             .DefaultConstructor(&Management::GenerateDefaultValue)
             .Constructor(
                 &Management::GenerateValue<
-                    &PullFromParameter<0, Arca::Index<Spatial::Bounds>>>,
-                { "Atmos::Spatial::Bounds bounds" })
+                    &PullFromParameter<0, Arca::RelicID>,
+                    &PullFromParameter<1, Spatial::Point3D>>,
+                { "Arca::RelicID id", "Atmos::Spatial::Point3D previousPosition"})
             .CopyConstructor(&Management::GenerateValueFromCopy)
             .Destructor(&Management::DestructValue)
             .CopyAssignment(&Management::CopyAssign)
-            .Property<&Type::bounds>("Atmos::Spatial::Bounds", "bounds")
+            .Property<&Type::id>("Arca::RelicID", "id")
+            .Property<&Type::previousPosition>("Atmos::Spatial::Point3D", "previousPosition")
             .Actualize(engine, documentationManager);
 
         RegisterSignalHandler<&Chroma::Identity<Type>>(engine, documentationManager);
@@ -189,12 +171,14 @@ namespace Atmos::Scripting::Angel
             .DefaultConstructor(&Management::GenerateDefaultValue)
             .Constructor(
                 &Management::GenerateValue<
-                    &PullFromParameter<0, Arca::Index<Spatial::Bounds>>>,
-                { "Atmos::Spatial::Bounds bounds" })
+                    &PullFromParameter<0, Arca::RelicID>,
+                    &PullFromParameter<1, Spatial::Angle2D>>,
+                { "Arca::RelicID id", "Atmos::Spatial::Angle2D previousRotation"})
             .CopyConstructor(&Management::GenerateValueFromCopy)
             .Destructor(&Management::DestructValue)
             .CopyAssignment(&Management::CopyAssign)
-            .Property<&Type::bounds>("Atmos::Spatial::Bounds", "bounds")
+            .Property<&Type::id>("Arca::RelicID", "id")
+            .Property<&Type::previousRotation>("Atmos::Spatial::Angle2D", "previousRotation")
             .Actualize(engine, documentationManager);
 
         RegisterSignalHandler<&Chroma::Identity<Type>>(engine, documentationManager);
@@ -206,12 +190,14 @@ namespace Atmos::Scripting::Angel
             .DefaultConstructor(&Management::GenerateDefaultValue)
             .Constructor(
                 &Management::GenerateValue<
-                    &PullFromParameter<0, Arca::Index<Spatial::Bounds>>>,
-                { "Atmos::Spatial::Bounds bounds" })
+                    &PullFromParameter<0, Arca::RelicID>,
+                    &PullFromParameter<1, Spatial::Scalers2D>>,
+                { "Arca::RelicID id", "Atmos::Spatial::Scalers2D previousScalers"})
             .CopyConstructor(&Management::GenerateValueFromCopy)
             .Destructor(&Management::DestructValue)
             .CopyAssignment(&Management::CopyAssign)
-            .Property<&Type::bounds>("Atmos::Spatial::Bounds", "bounds")
+            .Property<&Type::id>("Arca::RelicID", "id")
+            .Property<&Type::previousScalers>("Atmos::Spatial::Scalers2D", "previousScalers")
             .Actualize(engine, documentationManager);
 
         RegisterSignalHandler<&Chroma::Identity<Type>>(engine, documentationManager);

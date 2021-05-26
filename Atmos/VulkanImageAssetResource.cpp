@@ -3,7 +3,7 @@
 namespace Atmos::Asset::Resource::Vulkan
 {
     Image::Image(
-        ImageSize size,
+        Spatial::Size2D size,
         vk::Image image,
         vk::DeviceMemory memory,
         vk::ImageView imageView,
@@ -13,10 +13,10 @@ namespace Atmos::Asset::Resource::Vulkan
         image(image),
         memory(memory),
         imageView(imageView),
-        descriptor(std::move(descriptor))
+        descriptor(descriptor)
     {}
 
-    ImageSize Image::Size() const
+    Spatial::Size2D Image::Size() const
     {
         return size;
     }

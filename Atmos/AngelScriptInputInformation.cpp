@@ -13,19 +13,19 @@ namespace Atmos::Scripting::Angel
         ValueTypeRegistration<Type> registration(ContainingNamespace(), Name());
         RegisterArcaIndex(registration);
         registration
-            .ConstMethod(&Management::Method<&PreviousMousePosition>, "Atmos::Spatial::ScreenPoint", "PreviousMousePosition", {})
-            .ConstMethod(&Management::Method<&CurrentMousePosition>, "Atmos::Spatial::ScreenPoint", "CurrentMousePosition", {})
+            .ConstMethod(&Management::Method<&PreviousMousePosition>, "Atmos::Spatial::Point2D", "PreviousMousePosition", {})
+            .ConstMethod(&Management::Method<&CurrentMousePosition>, "Atmos::Spatial::Point2D", "CurrentMousePosition", {})
             .Actualize(engine, documentationManager);
 
         Registration<ArcaTraits<Input::Information>>::RegisterTo(engine, documentationManager);
     }
 
-    Spatial::ScreenPoint Registration<Input::Information>::PreviousMousePosition(Type type)
+    Spatial::Point2D Registration<Input::Information>::PreviousMousePosition(Type type)
     {
         return RequiredValue(type)->mousePosition.previous;
     }
 
-    Spatial::ScreenPoint Registration<Input::Information>::CurrentMousePosition(Type type)
+    Spatial::Point2D Registration<Input::Information>::CurrentMousePosition(Type type)
     {
         return RequiredValue(type)->mousePosition.current;
     }

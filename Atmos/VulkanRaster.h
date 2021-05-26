@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Point3D.h"
+#include "VulkanObjectLayering.h"
 
 namespace Atmos::Render::Vulkan
 {
@@ -12,6 +13,6 @@ namespace Atmos::Render::Vulkan
         virtual void DrawNextLayer() = 0;
 
         [[nodiscard]] virtual bool IsDone() const = 0;
-        [[nodiscard]] virtual Spatial::Point3D::Value NextLayer() const = 0;
+        [[nodiscard]] virtual ObjectLayeringKey NextLayer() const = 0;
     };
 }

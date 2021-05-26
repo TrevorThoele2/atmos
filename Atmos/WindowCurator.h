@@ -16,7 +16,7 @@ namespace Atmos::Window
     private:
         Arca::Index<Information> information;
 
-        void ChangeWindowSize(const Spatial::ScreenSize& size);
+        void ChangeWindowSize(const Spatial::Size2D& size);
     };
 }
 

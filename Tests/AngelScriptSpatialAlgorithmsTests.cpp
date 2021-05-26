@@ -28,11 +28,12 @@ SCENARIO_METHOD(AngelScriptSpatialAlgorithmsTestsFixture, "running spatial algor
         *engine.mockAudioManager,
         *engine.mockInputManager,
         *engine.mockGraphicsManager,
+        *engine.mockTextManager,
         *engine.scriptManager,
         *engine.mockWorldManager,
-        Spatial::ScreenSize{
-            std::numeric_limits<Spatial::ScreenSize::Dimension>::max(),
-            std::numeric_limits<Spatial::ScreenSize::Dimension>::max() },
+        Spatial::Size2D{
+            std::numeric_limits<Spatial::Size2D::Value>::max(),
+            std::numeric_limits<Spatial::Size2D::Value>::max() },
             *engine.mockWindow,
             engine.Logger());
     fieldOrigin.CuratorCommandPipeline<Work>(Arca::Pipeline{ Scripting::Stage() });
@@ -1042,16 +1043,16 @@ SCENARIO_METHOD(AngelScriptSpatialAlgorithmsTestsFixture, "running spatial algor
         }
     }
 
-    GIVEN("script that returns ScreenPoint ToWorldPoint2D")
+    GIVEN("script that returns Point2D ToWorldPoint2D")
     {
-        auto x = dataGeneration.Random<Spatial::ScreenPoint::Value>();
-        auto y = dataGeneration.Random<Spatial::ScreenPoint::Value>();
+        auto x = 100.0f;
+        auto y = 200.0f;
 
         CompileAndCreateScript(
             "basic_script.as",
             "string main(int x, int y)\n" \
             "{\n" \
-            "    auto screenPoint = Atmos::Spatial::ScreenPoint(x, y);\n" \
+            "    auto screenPoint = Atmos::Spatial::Point2D(x, y);\n" \
             "    auto point = Arca::Reliquary::Do(Atmos::Spatial::ToWorldPoint2D(screenPoint));\n" \
             "    return Atmos::ToString(point.x) + \" \" + Atmos::ToString(point.y);\n" \
             "}",
@@ -1066,7 +1067,7 @@ SCENARIO_METHOD(AngelScriptSpatialAlgorithmsTestsFixture, "running spatial algor
             {
                 REQUIRE(finishes.size() == 1);
 
-                const auto expectedPoint = fieldReliquary.Do(Spatial::ToWorldPoint2D(Spatial::ScreenPoint{ x, y }));
+                const auto expectedPoint = fieldReliquary.Do(Spatial::ToWorldPoint2D(Spatial::Point2D{ x, y }));
                 const auto expectedResult = ToString(expectedPoint.x) + " " + ToString(expectedPoint.y);
 
                 const auto result = std::get<String>(std::get<Variant>(finishes[0].result));
@@ -1075,17 +1076,17 @@ SCENARIO_METHOD(AngelScriptSpatialAlgorithmsTestsFixture, "running spatial algor
         }
     }
 
-    GIVEN("script that returns ScreenPoint ToWorldPoint3D")
+    GIVEN("script that returns Point2D ToWorldPoint3D")
     {
-        auto x = dataGeneration.Random<Spatial::ScreenPoint::Value>();
-        auto y = dataGeneration.Random<Spatial::ScreenPoint::Value>();
-        auto z = dataGeneration.Random<Spatial::Point3D::Value>();
+        auto x = 100.0f;
+        auto y = 200.0f;
+        auto z = 300.0f;
 
         CompileAndCreateScript(
             "basic_script.as",
             "string main(int x, int y, float z)\n" \
             "{\n" \
-            "    auto screenPoint = Atmos::Spatial::ScreenPoint(x, y);\n" \
+            "    auto screenPoint = Atmos::Spatial::Point2D(x, y);\n" \
             "    auto point = Arca::Reliquary::Do(Atmos::Spatial::ToWorldPoint3D(screenPoint, z));\n" \
             "    return Atmos::ToString(point.x) + \" \" + Atmos::ToString(point.y) + \" \" + Atmos::ToString(point.z);\n" \
             "}",
@@ -1100,7 +1101,7 @@ SCENARIO_METHOD(AngelScriptSpatialAlgorithmsTestsFixture, "running spatial algor
             {
                 REQUIRE(finishes.size() == 1);
 
-                const auto expectedPoint = fieldReliquary.Do(Spatial::ToWorldPoint3D(Spatial::ScreenPoint{ x, y }, z));
+                const auto expectedPoint = fieldReliquary.Do(Spatial::ToWorldPoint3D(Spatial::Point2D{ x, y }, z));
                 const auto expectedResult = ToString(expectedPoint.x) + " " + ToString(expectedPoint.y) + " " + Atmos::ToString(expectedPoint.z);
 
                 const auto result = std::get<String>(std::get<Variant>(finishes[0].result));

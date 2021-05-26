@@ -11,7 +11,13 @@ namespace Atmos::Window
         const auto center = Position();
         const auto size = ClientSize();
 
-        underlying = SDL_CreateWindow("An Extraordinary Will", center.x, center.y, size.width, size.height, SDL_WINDOW_SHOWN);
+        underlying = SDL_CreateWindow(
+            "An Extraordinary Will",
+            static_cast<int>(center.x),
+            static_cast<int>(center.y),
+            static_cast<int>(size.width),
+            static_cast<int>(size.height),
+            SDL_WINDOW_SHOWN);
         if (!underlying)
             throw WindowCreationFailed(String(SDL_GetError()));
 
@@ -67,13 +73,13 @@ namespace Atmos::Window
     void SDLWindow::OnPositionChanged()
     {
         const auto center = Position();
-        SDL_SetWindowPosition(underlying, center.x, center.y);
+        SDL_SetWindowPosition(underlying, static_cast<int>(center.x), static_cast<int>(center.y));
     }
 
     void SDLWindow::OnSizeChanged()
     {
         const auto size = ClientSize();
-        SDL_SetWindowSize(underlying, size.width, size.height);
+        SDL_SetWindowSize(underlying, static_cast<int>(size.width), static_cast<int>(size.height));
     }
 
     void SDLWindow::OnFullscreenChanged()
@@ -93,13 +99,16 @@ namespace Atmos::Window
         SDL_GetWindowBordersSize(underlying, &top, &left, &bottom, &right);
 
         const auto clientSize = ClientSize();
-        return Size{ clientSize.width + left + right, clientSize.height + top + bottom };
+        return Size
+        {
+            clientSize.width + static_cast<Point::Value>(left) + static_cast<Point::Value>(right),
+            clientSize.height + static_cast<Point::Value>(top) + static_cast<Point::Value>(bottom) };
     }
 
     auto SDLWindow::TotalScreenSize() const -> Size
     {
         SDL_DisplayMode displayMode;
         SDL_GetCurrentDisplayMode(0, &displayMode);
-        return Size{ displayMode.w, displayMode.h };
+        return Size{ static_cast<Point::Value>(displayMode.w), static_cast<Point::Value>(displayMode.h) };
     }
 }

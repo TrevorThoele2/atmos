@@ -28,19 +28,20 @@ SCENARIO_METHOD(LineTestsFixture, "lines", "[render]")
             *engine.mockAudioManager,
             *engine.mockInputManager,
             *engine.mockGraphicsManager,
+            *engine.mockTextManager,
             *engine.mockScriptManager,
             *engine.worldManager,
-            ScreenSize{
-                std::numeric_limits<ScreenSize::Dimension>::max(),
-                std::numeric_limits<ScreenSize::Dimension>::max() },
+            Size2D{
+                std::numeric_limits<Size2D::Value>::max(),
+                std::numeric_limits<Size2D::Value>::max() },
                 *engine.mockWindow,
                 engine.Logger());
         World::Field field(0, fieldOrigin.Actualize());
 
         auto& fieldReliquary = field.Reliquary();
 
-        auto materialAsset = fieldReliquary.Do(Arca::Create<Asset::LineMaterial> {
-            String{}, std::vector<Asset::LineMaterial::Pass>{} });
+        auto materialAsset = fieldReliquary.Do(Arca::Create<Asset::Material> {
+            String{}, std::vector<Asset::Material::Pass>{} });
 
         WHEN("creating lines")
         {

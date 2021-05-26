@@ -21,8 +21,7 @@ namespace Atmos::Render::Vulkan
             vk::Queue graphicsQueue,
             vk::PhysicalDeviceMemoryProperties memoryProperties,
             vk::RenderPass renderPass,
-            vk::Extent2D swapchainExtent,
-            const Arca::Batch<Asset::RegionMaterial>& materials);
+            vk::Extent2D swapchainExtent);
 
         void StageRender(const RegionRender& regionRender);
 
@@ -30,9 +29,8 @@ namespace Atmos::Render::Vulkan
             vk::CommandBuffer commandBuffer,
             vk::CommandPool commandPool,
             const UniversalDataBuffer& universalDataBuffer) override;
-
-        void MaterialCreated(Arca::Index<Asset::RegionMaterial> material);
-        void MaterialDestroying(Arca::Index<Asset::RegionMaterial> material);
+        
+        void MaterialDestroying(Arca::Index<Asset::Material> material);
 
         [[nodiscard]] size_t RenderCount() const override;
     private:
@@ -64,7 +62,7 @@ namespace Atmos::Render::Vulkan
         StagedBuffer indexBuffer;
         static const int indexStride = stride * 2;
     private:
-        using MappedConduits = MappedConduits<Asset::RegionMaterial>;
+        using MappedConduits = MappedConduits<Asset::Material>;
 
         class Raster final : public Vulkan::Raster
         {
@@ -77,7 +75,7 @@ namespace Atmos::Render::Vulkan
             void DrawNextLayer() override;
 
             [[nodiscard]] bool IsDone() const override;
-            [[nodiscard]] Spatial::Point3D::Value NextLayer() const override;
+            [[nodiscard]] ObjectLayeringKey NextLayer() const override;
         private:
             using ObjectLayering = ObjectLayering<void, Region>;
             using Layer = ObjectLayering::Layer;

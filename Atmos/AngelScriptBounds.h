@@ -1,9 +1,7 @@
 #pragma once
 
 #include "Bounds.h"
-#include "MoveBoundsBy.h"
-#include "MoveBoundsDirection.h"
-#include "MoveBoundsTo.h"
+#include "MoveBounds.h"
 #include "RotateBounds.h"
 #include "ScaleBounds.h"
 #include "BoundsMoved.h"
@@ -22,6 +20,17 @@ class asIScriptGeneric;
 namespace Atmos::Scripting::Angel
 {
     template<>
+    struct Registration<Spatial::BoundsSpace>
+    {
+        static String Name() { return "BoundsSpace"; }
+        static String ContainingNamespace() { return "Atmos::Spatial"; }
+        static String Documentation() { return "Represents what space a Bounds is in."; }
+        static const ObjectType objectType = ObjectType::Value;
+
+        static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
+    };
+
+    template<>
     struct Registration<Spatial::Bounds>
     {
         using Type = Arca::Index<Spatial::Bounds>;
@@ -39,6 +48,7 @@ namespace Atmos::Scripting::Angel
         [[nodiscard]] static Spatial::Size2D Size(Type type);
         [[nodiscard]] static Spatial::Scalers2D Scalers(Type type);
         [[nodiscard]] static Spatial::Angle2D Rotation(Type type);
+        [[nodiscard]] static Spatial::BoundsSpace Space(Type type);
     };
 
     template<>
@@ -46,40 +56,12 @@ namespace Atmos::Scripting::Angel
     {};
 
     template<>
-    struct Registration<Spatial::MoveBoundsBy>
+    struct Registration<Spatial::MoveBounds>
     {
-        using Type = Spatial::MoveBoundsBy;
+        using Type = Spatial::MoveBounds;
         using Management = ObjectManagement<Type>;
 
-        static String Name() { return "MoveBoundsBy"; }
-        static String ContainingNamespace() { return "Atmos::Spatial"; }
-        static String Documentation() { return "This is a command."; }
-        static const ObjectType objectType = ObjectType::Value;
-
-        static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
-    };
-
-    template<>
-    struct Registration<Spatial::MoveBoundsDirection>
-    {
-        using Type = Spatial::MoveBoundsDirection;
-        using Management = ObjectManagement<Type>;
-
-        static String Name() { return "MoveBoundsDirection"; }
-        static String ContainingNamespace() { return "Atmos::Spatial"; }
-        static String Documentation() { return "This is a command."; }
-        static const ObjectType objectType = ObjectType::Value;
-
-        static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
-    };
-
-    template<>
-    struct Registration<Spatial::MoveBoundsTo>
-    {
-        using Type = Spatial::MoveBoundsTo;
-        using Management = ObjectManagement<Type>;
-
-        static String Name() { return "MoveBoundsTo"; }
+        static String Name() { return "MoveBounds"; }
         static String ContainingNamespace() { return "Atmos::Spatial"; }
         static String Documentation() { return "This is a command."; }
         static const ObjectType objectType = ObjectType::Value;

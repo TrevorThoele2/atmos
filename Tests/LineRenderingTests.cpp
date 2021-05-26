@@ -27,11 +27,12 @@ SCENARIO_METHOD(LineRenderingTestsFixture, "rendering lines", "[render]")
             *engine.mockAudioManager,
             *engine.mockInputManager,
             *engine.mockGraphicsManager,
+            *engine.mockTextManager,
             *engine.mockScriptManager,
             *engine.worldManager,
-            Spatial::ScreenSize{
-                std::numeric_limits<Spatial::ScreenSize::Dimension>::max(),
-                std::numeric_limits<Spatial::ScreenSize::Dimension>::max() },
+            Spatial::Size2D{
+                std::numeric_limits<Spatial::Size2D::Value>::max(),
+                std::numeric_limits<Spatial::Size2D::Value>::max() },
             *engine.mockWindow,
             engine.Logger());
         World::Field field(0, fieldOrigin.Actualize());
@@ -41,8 +42,8 @@ SCENARIO_METHOD(LineRenderingTestsFixture, "rendering lines", "[render]")
         const auto mainSurface = Arca::Index<MainSurface>(fieldReliquary);
         auto mainSurfaceImplementation = mainSurface->Resource<MockSurfaceResource>();
 
-        auto materialAsset = fieldReliquary.Do(Arca::Create<Asset::LineMaterial> {
-            String{}, std::vector<Asset::LineMaterial::Pass>{} });
+        auto materialAsset = fieldReliquary.Do(Arca::Create<Asset::Material> {
+            String{}, std::vector<Asset::Material::Pass>{} });
 
         const auto camera = Arca::Index<Camera>(fieldReliquary);
 
@@ -226,11 +227,11 @@ SCENARIO_METHOD(LineRenderingTestsFixture, "rendering lines", "[render]")
                 }
             };
             fieldReliquary.Do(Arca::Create<Line>{
-                std::vector<Spatial::Point2D>{ fromPositions[0], toPositions[0] }, Arca::Index<Asset::LineMaterial>{}});
+                std::vector<Spatial::Point2D>{ fromPositions[0], toPositions[0] }, Arca::Index<Asset::Material>{}});
             fieldReliquary.Do(Arca::Create<Line>{
-                std::vector<Spatial::Point2D>{ fromPositions[1], toPositions[1] }, Arca::Index<Asset::LineMaterial>{}});
+                std::vector<Spatial::Point2D>{ fromPositions[1], toPositions[1] }, Arca::Index<Asset::Material>{}});
             fieldReliquary.Do(Arca::Create<Line>{
-                std::vector<Spatial::Point2D>{ fromPositions[2], toPositions[2] }, Arca::Index<Asset::LineMaterial>{}});
+                std::vector<Spatial::Point2D>{ fromPositions[2], toPositions[2] }, Arca::Index<Asset::Material>{}});
 
             WHEN("starting engine execution")
             {

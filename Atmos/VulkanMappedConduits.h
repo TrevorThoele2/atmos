@@ -70,7 +70,8 @@ namespace Atmos::Render::Vulkan
     template<class MaterialT>
     void MappedConduits<MaterialT>::Add(Arca::Index<MaterialT> material)
     {
-        groups.emplace(material.ID(), CreateGroup(*material));
+        if (groups.find(material.ID()) == groups.end())
+            groups.emplace(material.ID(), CreateGroup(*material));
     }
 
     template<class MaterialT>

@@ -7,9 +7,9 @@ namespace Atmos::Render::Vulkan
 {
     struct UniversalData
     {
-        glm::mat4 model;
-        glm::mat4 view;
-        glm::mat4 projection;
+        glm::mat4 model = {};
+        glm::mat4 view = {};
+        glm::mat4 projection = {};
 
         glm::vec2 mapPosition;
         glm::vec2 screenSize;

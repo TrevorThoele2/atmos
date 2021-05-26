@@ -4,14 +4,14 @@ namespace Atmos::Render
 {
     ImageCurator::ImageCurator(Init init) : ObjectCurator(init)
     {
-        Owner().On<Arca::MatrixFormed<Matrix>>(
-            [this](const Arca::MatrixFormed<Matrix>& signal)
+        Owner().On<Arca::MatrixFormed<WorldMatrix>>(
+            [this](const Arca::MatrixFormed<WorldMatrix>& signal)
             {
                 OnCreated(signal);
             });
 
-        Owner().On<Arca::MatrixDissolved<Matrix>>(
-            [this](const Arca::MatrixDissolved<Matrix>& signal)
+        Owner().On<Arca::MatrixDissolved<WorldMatrix>>(
+            [this](const Arca::MatrixDissolved<WorldMatrix>& signal)
             {
                 OnDestroying(signal);
             });
@@ -26,35 +26,36 @@ namespace Atmos::Render
 
         for (auto& index : indices)
         {
-            auto& core = *std::get<0>(*index->value);
-            auto& bounds = *std::get<1>(*index->value);
+            auto& renderCore = *std::get<0>(*index->value);
+            auto& core = *std::get<1>(*index->value);
+            auto& bounds = *std::get<2>(*index->value);
             const auto asset = core.asset.Get();
-            const auto material = core.material;
+            const auto material = renderCore.material;
             if (!asset || !material || !asset->Resource())
                 continue;
 
+            const auto boundsSpace = bounds.Space();
             const auto assetIndex = core.assetIndex;
-            const auto position = bounds.Position();
-            const auto size = bounds.Size();
+            const auto position = ToRenderPoint(bounds.Position(), cameraTopLeft, boundsSpace);
             const auto rotation = bounds.Rotation();
-            const auto color = core.color;
+            const auto color = renderCore.color;
+
+            const auto resource = const_cast<Asset::Resource::Image*>(asset->Resource());
+
+            const auto viewSlice = Arca::Index<ViewSlice>(index->id, Owner());
+            const auto assetSlice = asset->Slice(assetIndex);
+            const auto [size, slice] = ViewSliceDependent(viewSlice, assetSlice, bounds.Size(), bounds.Scalers());
 
             const ImageRender render
             {
-                asset,
-                assetIndex,
-                asset->Slice(assetIndex),
-                material.ID(),
-                material.Get(),
-                Spatial::Point3D
-                {
-                    position.x - cameraTopLeft.x,
-                    position.y - cameraTopLeft.y,
-                    position.z
-                },
+                resource,
+                slice,
+                material,
+                position,
                 size,
                 rotation,
-                color
+                color,
+                ToRenderSpace(boundsSpace)
             };
             mainSurface->StageRender(render);
         }
@@ -75,22 +76,12 @@ namespace Atmos::Render
                 ? core->asset->SliceSize()
                 : Spatial::Size2D{ 0, 0 };
             auto bounds = MutablePointer().Of<Spatial::Bounds>(index.ID());
-            bounds->BaseSize(baseSize);
+            if (bounds)
+                bounds->BaseSize(baseSize);
         }
 
         if (command.assetIndex)
             core->assetIndex = *command.assetIndex;
-    }
-
-    void ImageCurator::Handle(const ChangeImageMaterialAsset& command)
-    {
-        const auto index = Arca::Index<ImageCore>(command.id, Owner());
-        if (!index)
-            return;
-
-        auto core = MutablePointer().Of(index);
-
-        core->material = command.to;
     }
 
     std::vector<Arca::RelicID> ImageCurator::Handle(const FindImagesByBox& command) const
@@ -103,19 +94,19 @@ namespace Atmos::Render
         return returnValue;
     }
 
-    void ImageCurator::OnCreated(const Arca::MatrixFormed<Matrix>& signal)
+    void ImageCurator::OnCreated(const Arca::MatrixFormed<WorldMatrix>& signal)
     {
         octree.Add(signal.index.ID(), signal.index, BoxFor(signal.index));
     }
 
-    void ImageCurator::OnDestroying(const Arca::MatrixDissolved<Matrix>& signal)
+    void ImageCurator::OnDestroying(const Arca::MatrixDissolved<WorldMatrix>& signal)
     {
         octree.Remove(signal.index.ID(), BoxFor(signal.index));
     }
 
-    Spatial::AxisAlignedBox3D ImageCurator::BoxFor(const Index& index)
+    Spatial::AxisAlignedBox3D ImageCurator::BoxFor(const WorldIndex& index)
     {
-        const auto& bounds = *std::get<1>(*index);
+        const auto& bounds = *std::get<2>(*index);
         return Spatial::AxisAlignedBox3D
         {
             bounds.Position(),
@@ -126,5 +117,25 @@ namespace Atmos::Render
                 1
             }
         };
+    }
+
+    std::tuple<Spatial::Size2D, Spatial::AxisAlignedBox2D> ImageCurator::ViewSliceDependent(
+        Arca::Index<ViewSlice> viewSlice,
+        const Spatial::AxisAlignedBox2D& assetSlice,
+        const Spatial::Size2D& boundsSize,
+        const Spatial::Scalers2D& scalers)
+    {
+        if (viewSlice)
+        {
+            const auto viewSliceBox = viewSlice->box;
+            const auto slice = Spatial::ToAxisAlignedBox2D(
+                std::max(assetSlice.Left(), viewSliceBox.Left() / scalers.x),
+                std::max(assetSlice.Top(), viewSliceBox.Top() / scalers.y),
+                std::min(assetSlice.Right(), viewSliceBox.Right() / scalers.x),
+                std::min(assetSlice.Bottom(), viewSliceBox.Bottom() / scalers.y));
+            return { viewSliceBox.size, slice };
+        }
+        else
+            return { boundsSize, assetSlice };
     }
 }

@@ -13,7 +13,7 @@ namespace Atmos::Asset::Resource
     {
         Buffer buffer;
         Name name;
-        ImageSize size;
+        Spatial::Size2D size;
     };
 }
 

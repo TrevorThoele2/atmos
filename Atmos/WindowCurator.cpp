@@ -18,7 +18,7 @@ namespace Atmos::Window
         Owner().Raise(SizeChanged{ command.size });
     }
 
-    void Curator::ChangeWindowSize(const Spatial::ScreenSize& size)
+    void Curator::ChangeWindowSize(const Spatial::Size2D& size)
     {
         information->window->ChangeSize(size);
 

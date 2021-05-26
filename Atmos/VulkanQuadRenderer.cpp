@@ -1,19 +1,20 @@
 #include "VulkanQuadRenderer.h"
 
 #include "VulkanImageAssetResource.h"
+#include "VulkanTextResource.h"
 #include "VulkanUtilities.h"
 
 #include "SpatialAlgorithms.h"
 
 namespace Atmos::Render::Vulkan
 {
-    QuadRendererDescriptorSetKey::QuadRendererDescriptorSetKey(const Asset::Image& image) :
-        image(&image)
+    QuadRendererDescriptorSetKey::QuadRendererDescriptorSetKey(const CombinedImageSamplerDescriptor& descriptor) :
+        descriptor(&descriptor)
     {}
 
     bool QuadRendererDescriptorSetKey::operator==(const QuadRendererDescriptorSetKey& arg) const
     {
-        return image == arg.image;
+        return descriptor == arg.descriptor;
     }
 
     QuadRenderer::QuadRenderer(
@@ -21,8 +22,7 @@ namespace Atmos::Render::Vulkan
         vk::Queue graphicsQueue,
         vk::PhysicalDeviceMemoryProperties memoryProperties,
         vk::RenderPass renderPass,
-        vk::Extent2D swapchainExtent,
-        const Arca::Batch<Asset::ImageMaterial>& materials)
+        vk::Extent2D swapchainExtent)
         :
         vertexBuffer(vertexStride * sizeof(Vertex), *device, memoryProperties, vk::BufferUsageFlagBits::eVertexBuffer),
         indexBuffer(indexStride * sizeof(Index), *device, memoryProperties, vk::BufferUsageFlagBits::eIndexBuffer),
@@ -63,14 +63,16 @@ namespace Atmos::Render::Vulkan
             { descriptorSetPool.DescriptorSetLayout() }),
         graphicsQueue(graphicsQueue),
         device(device)
-    {
-        for (auto material = materials.begin(); material != materials.end(); ++material)
-            MaterialCreated(Arca::Index<Asset::ImageMaterial>{material.ID(), materials.Owner()});
-    }
+    {}
 
     void QuadRenderer::StageRender(const ImageRender& imageRender)
     {
         stagedImageRenders.push_back(imageRender);
+    }
+
+    void QuadRenderer::StageRender(const TextRender& textRender)
+    {
+        stagedTextRenders.push_back(textRender);
     }
 
     std::unique_ptr<Raster> QuadRenderer::Start(
@@ -83,38 +85,39 @@ namespace Atmos::Render::Vulkan
 
         auto raster = std::make_unique<Raster>(commandBuffer, commandPool, *this);
 
-        for (auto stagedImageRender = stagedImageRenders.begin(); stagedImageRender != stagedImageRenders.end();)
+        for (auto& stagedImageRender : stagedImageRenders)
         {
-            AddToRaster(*stagedImageRender, *raster);
-            stagedImageRender = stagedImageRenders.erase(stagedImageRender);
+            mappedConduits.Add(stagedImageRender.material);
+            AddToRaster(stagedImageRender, *raster);
         }
+        stagedImageRenders.clear();
+
+        for (auto& stagedTextRender : stagedTextRenders)
+        {
+            mappedConduits.Add(stagedTextRender.material);
+            AddToRaster(stagedTextRender, *raster);
+        }
+        stagedTextRenders.clear();
 
         descriptorSetPool.Reset();
         descriptorSetPool.Reserve(descriptorSetKeys.size());
 
-        for (auto descriptorSetKey = descriptorSetKeys.begin(); descriptorSetKey != descriptorSetKeys.end();)
+        for (auto& descriptorSetKey : descriptorSetKeys)
         {
             const auto descriptorSet = descriptorSetPool.Next();
-            raster->setupDescriptorSets.emplace(*descriptorSetKey, descriptorSet);
-
-            const auto imageAssetResource = descriptorSetKey->image->ResourceAs<Asset::Resource::Vulkan::Image>();
-            const auto imageAssetDescriptor = imageAssetResource->descriptor;
-            imageAssetDescriptor.Update(descriptorSet, *device);
+            raster->setupDescriptorSets.emplace(descriptorSetKey, descriptorSet);
+            
+            const auto& descriptor = *descriptorSetKey.descriptor;
+            descriptor.Update(descriptorSet, *device);
             universalDataBuffer.Update(descriptorSet);
-
-            descriptorSetKey = descriptorSetKeys.erase(descriptorSetKey);
         }
+        descriptorSetKeys.clear();
 
         raster->currentLayer = raster->layers.begin();
         return raster;
     }
-
-    void QuadRenderer::MaterialCreated(Arca::Index<Asset::ImageMaterial> material)
-    {
-        mappedConduits.Add(material);
-    }
-
-    void QuadRenderer::MaterialDestroying(Arca::Index<Asset::ImageMaterial> material)
+    
+    void QuadRenderer::MaterialDestroying(Arca::Index<Asset::Material> material)
     {
         mappedConduits.Remove(material);
     }
@@ -151,7 +154,7 @@ namespace Atmos::Render::Vulkan
         return currentLayer == layers.end();
     }
 
-    Spatial::Point3D::Value QuadRenderer::Raster::NextLayer() const
+    ObjectLayeringKey QuadRenderer::Raster::NextLayer() const
     {
         return currentLayer->first;
     }
@@ -236,6 +239,68 @@ namespace Atmos::Render::Vulkan
 
     void QuadRenderer::AddToRaster(const ImageRender& imageRender, Raster& raster)
     {
+        const auto assetResource = dynamic_cast<Asset::Resource::Vulkan::Image*>(imageRender.assetResource);
+        
+        const auto vertices = ToVertices(
+            imageRender.color,
+            ToPoint2D(imageRender.position),
+            imageRender.size,
+            imageRender.rotation,
+            ToTextureSlice(imageRender.slice, assetResource->size));
+        AddToRaster(
+            imageRender.space,
+            imageRender.position.z,
+            imageRender.material.ID(),
+            assetResource->descriptor,
+            vertices,
+            raster);
+    }
+
+    void QuadRenderer::AddToRaster(const TextRender& textRender, Raster& raster)
+    {
+        auto textResource = dynamic_cast<Resource::Vulkan::Text*>(textRender.resource);
+
+        const auto vertices = ToVertices(
+            textRender.color,
+            ToPoint2D(textRender.position),
+            textRender.size,
+            textRender.rotation,
+            ToTextureSlice(textRender.slice, textResource->size));
+        AddToRaster(
+            textRender.space,
+            textRender.position.z,
+            textRender.material.ID(),
+            textResource->descriptor,
+            vertices,
+            raster);
+    }
+
+    void QuadRenderer::AddToRaster(
+        int space,
+        Spatial::Point3D::Value z,
+        Arca::RelicID materialID,
+        CombinedImageSamplerDescriptor& descriptor,
+        std::array<Vertex, 4> vertices,
+        Raster& raster)
+    {
+        const auto layerKey = ObjectLayeringKey{ space, z };
+        auto layer = raster.layers.Find(layerKey);
+        if (!layer)
+            layer = &raster.layers.Add(layerKey, Raster::Layer{});
+        auto& group = layer->GroupFor(materialID);
+        group.ListFor(&descriptor).emplace_back(vertices);
+        descriptorSetKeys.emplace(DescriptorSetKey(descriptor));
+    }
+
+    auto QuadRenderer::ToVertices(
+        Color color,
+        Spatial::Point2D position,
+        Spatial::Size2D size,
+        Spatial::Angle2D rotation,
+        Spatial::AxisAlignedBox2D texture)
+
+        -> std::array<Vertex, 4>
+    {
         const auto rotate = [](
             const Spatial::Point2D& position,
             const Spatial::Angle2D& angle,
@@ -250,56 +315,57 @@ namespace Atmos::Render::Vulkan
                 position.x * sinAngle + position.y * cosAngle + center.y
             };
         };
+        
+        const auto halfWidth = size.width / 2;
+        const auto halfHeight = size.height / 2;
+        const auto topLeft = rotate({ -halfWidth, -halfHeight }, rotation, position);
+        const auto topRight = rotate({ halfWidth, -halfHeight }, rotation, position);
+        const auto bottomLeft = rotate({ -halfWidth, halfHeight }, rotation, position);
+        const auto bottomRight = rotate({ halfWidth, halfHeight }, rotation, position);
 
-        const auto imageAsset = imageRender.asset;
-        const auto slice = imageRender.assetSlice;
-        const auto color = AtmosToVulkanColor(imageRender.color);
+        const auto useColor = AtmosToVulkanColor(color);
 
-        const auto position = ToPoint2D(imageRender.position);
-        const auto halfWidth = imageRender.size.width / 2;
-        const auto halfHeight = imageRender.size.height / 2;
-        const auto topLeft = rotate({ -halfWidth, -halfHeight }, imageRender.rotation, position);
-        const auto topRight = rotate({ halfWidth, -halfHeight }, imageRender.rotation, position);
-        const auto bottomLeft = rotate({ -halfWidth, halfHeight }, imageRender.rotation, position);
-        const auto bottomRight = rotate({ halfWidth, halfHeight }, imageRender.rotation, position);
-
-        const auto adjustedSliceLeft = slice.Left() / imageAsset->Width();
-        const auto adjustedSliceTop = slice.Top() / imageAsset->Height();
-        const auto adjustedSliceRight = slice.Right() / imageAsset->Width();
-        const auto adjustedSliceBottom = slice.Bottom() / imageAsset->Height();
-
-        const std::array<Vertex, 4> vertices
+        return std::array<Vertex, 4>
         {
             Vertex
             {
-                color,
+                useColor,
                 { topLeft.x, topLeft.y },
-                { adjustedSliceLeft, adjustedSliceTop }
+                { texture.Left(), texture.Top() }
             },
             Vertex
             {
-                color,
+                useColor,
                 { topRight.x, topRight.y },
-                { adjustedSliceRight, adjustedSliceTop }
+                { texture.Right(), texture.Top() }
             },
             Vertex
             {
-                color,
+                useColor,
                 { bottomLeft.x, bottomLeft.y },
-                { adjustedSliceLeft, adjustedSliceBottom }
+                { texture.Left(), texture.Bottom() }
             },
             Vertex
             {
-                color,
+                useColor,
                 { bottomRight.x, bottomRight.y },
-                { adjustedSliceRight, adjustedSliceBottom }
+                { texture.Right(), texture.Bottom() }
             }
         };
-        auto layer = raster.layers.Find(imageRender.position.z);
-        if (!layer)
-            layer = &raster.layers.Add(imageRender.position.z, Raster::Layer{});
-        auto& group = layer->GroupFor(imageRender.materialID);
-        group.ListFor(imageAsset).emplace_back(vertices);
-        descriptorSetKeys.emplace(DescriptorSetKey(*imageAsset));
+    }
+
+    Spatial::AxisAlignedBox2D QuadRenderer::ToTextureSlice(
+        const Spatial::AxisAlignedBox2D& inputSlice, const Spatial::Size2D& resourceSize)
+    {
+        const auto clamp = [](float input)
+        {
+            return std::clamp(input, 0.0f, 1.0f);
+        };
+
+        return Spatial::ToAxisAlignedBox2D(
+            clamp(inputSlice.Left() / resourceSize.width),
+            clamp(inputSlice.Top() / resourceSize.height),
+            clamp(inputSlice.Right() / resourceSize.width),
+            clamp(inputSlice.Bottom() / resourceSize.height));
     }
 }

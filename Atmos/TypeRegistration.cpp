@@ -3,24 +3,31 @@
 #include "InputCurator.h"
 #include "InputInformation.h"
 
+#include "Bounds.h"
 #include "BoundsCurator.h"
-#include "RelativeBounds.h"
 
 #include "FileCurator.h"
 
+#include "RenderCore.h"
 #include "StaticImage.h"
 #include "DynamicImage.h"
-#include "RelativeImage.h"
 #include "ImageCurator.h"
 #include "LineCurator.h"
 #include "GridRegion.h"
+#include "TextCore.h"
+#include "DynamicText.h"
 #include "GridRegionCurator.h"
 #include "RenderCurator.h"
 #include "GraphicsCurator.h"
 #include "Camera.h"
 #include "CameraCurator.h"
 #include "SurfaceCurator.h"
+#include "TextCurator.h"
 #include "GraphicsSettings.h"
+#include "ViewSlice.h"
+
+#include "UIImage.h"
+#include "UIText.h"
 
 #include "PositionedSound.h"
 #include "UniversalSound.h"
@@ -29,19 +36,17 @@
 #include "ActionAsset.h"
 #include "AudioAsset.h"
 #include "ImageAsset.h"
-#include "ImageMaterialAsset.h"
-#include "LineMaterialAsset.h"
-#include "RegionMaterialAsset.h"
+#include "MaterialAsset.h"
 #include "ScriptAsset.h"
+#include "FontAsset.h"
 #include "ShaderAsset.h"
 #include "MappedAssets.h"
 #include "ActionAssetCurator.h"
 #include "AudioAssetCurator.h"
 #include "ImageAssetCurator.h"
-#include "ImageMaterialAssetCurator.h"
-#include "LineMaterialAssetCurator.h"
-#include "RegionMaterialAssetCurator.h"
+#include "MaterialAssetCurator.h"
 #include "ScriptAssetCurator.h"
+#include "FontAssetCurator.h"
 #include "ShaderAssetCurator.h"
 
 #include "Entity.h"
@@ -80,7 +85,7 @@
 
 #include "Work.h"
 
-#include <Arca/LocalRelic.h>
+#include <Arca/OpenRelic.h>
 
 #include "RandomInformation.h"
 
@@ -89,8 +94,7 @@ namespace Atmos
     void RegisterArcaTypes(Arca::ReliquaryOrigin& origin)
     {
         origin
-            .Register<Arca::OpenRelic>()
-            .Register<Arca::ClosedRelic>();
+            .Register<Arca::OpenRelic>();
     }
 
     void RegisterCommonTypes(
@@ -100,6 +104,7 @@ namespace Atmos
     {
         Asset::RegisterTypes(origin, assetResourceManager);
         Spatial::RegisterTypes(origin);
+        UI::RegisterTypes(origin);
         Entity::RegisterTypes(origin);
         Frame::RegisterTypes(origin);
         Data::RegisterTypes(origin);
@@ -126,15 +131,16 @@ namespace Atmos
         Audio::Manager& audio,
         Input::Manager& input,
         Render::GraphicsManager& graphics,
+        Render::TextManager& text,
         Scripting::Manager& scripts,
         World::Manager& world,
-        Spatial::ScreenSize screenSize,
+        Spatial::Size2D screenSize,
         Window::WindowBase& window,
         Logging::Logger& logger)
     {
         Audio::RegisterTypes(origin, audio);
         Input::RegisterTypes(origin, input);
-        Render::RegisterTypes(origin, graphics, screenSize, window.Handle());
+        Render::RegisterTypes(origin, graphics, text, screenSize, window.Handle());
         Scripting::RegisterTypes(origin, scripts);
         Window::RegisterTypes(origin, window);
         World::RegisterTypes(origin, world);
@@ -183,31 +189,39 @@ namespace Atmos
         void RegisterTypes(Arca::ReliquaryOrigin& origin)
         {
             origin
+                .Register<RenderCore>()
                 .Register<ImageCore>()
                 .Register<StaticImage>()
                 .Register<DynamicImage>()
-                .Register<RelativeImage>()
                 .Register<ImageCurator>()
                 .Register<Line>()
                 .Register<LineCurator>()
                 .Register<GridRegion>()
                 .Register<GridRegionCurator>()
+                .Register<TextCore>()
+                .Register<DynamicText>()
                 .Register<CameraCurator>()
                 .Register<Curator>()
                 .Register<SurfaceCore>()
                 .Register<SurfaceCurator>()
-                .Register<GraphicsSettings>();
+                .Register<GraphicsSettings>()
+                .Register<ViewSlice>();
         }
 
         void RegisterTypes(
-            Arca::ReliquaryOrigin& origin, GraphicsManager& manager, Spatial::ScreenSize screenSize, void* window)
+            Arca::ReliquaryOrigin& origin,
+            GraphicsManager& graphicsManager,
+            TextManager& textManager,
+            Spatial::Size2D screenSize,
+            void* window)
         {
             RegisterTypes(origin);
 
             origin
-                .Register<GraphicsCurator>(std::ref(manager))
+                .Register<GraphicsCurator>(std::ref(graphicsManager))
+                .Register<TextCurator>(std::ref(textManager), std::ref(graphicsManager))
                 .Register<Camera>(screenSize)
-                .Register<MainSurface>(std::ref(manager), window);
+                .Register<MainSurface>(std::ref(graphicsManager), window);
         }
 
         Arca::Stage Stage()
@@ -216,9 +230,20 @@ namespace Atmos
             stage.Add<ImageCurator>();
             stage.Add<LineCurator>();
             stage.Add<GridRegionCurator>();
+            stage.Add<TextCurator>();
             stage.Add<CameraCurator>();
             stage.Add<Curator>();
             return stage;
+        }
+    }
+
+    namespace UI
+    {
+        void RegisterTypes(Arca::ReliquaryOrigin& origin)
+        {
+            origin
+                .Register<Image>()
+                .Register<Text>();
         }
     }
 
@@ -264,8 +289,7 @@ namespace Atmos
         {
             origin
                 .Register<Bounds>()
-                .Register<BoundsCurator>()
-                .Register<RelativeBounds>();
+                .Register<BoundsCurator>();
         }
     }
 
@@ -287,26 +311,23 @@ namespace Atmos
                 .Register<Action>()
                 .Register<Audio>()
                 .Register<Image>()
-                .Register<ImageMaterial>()
-                .Register<LineMaterial>()
-                .Register<RegionMaterial>()
+                .Register<Material>()
                 .Register<Script>()
+                .Register<Font>()
                 .Register<Shader>()
                 .Register<Mapped<Action>>()
                 .Register<Mapped<Audio>>()
                 .Register<Mapped<Image>>()
-                .Register<Mapped<ImageMaterial>>()
-                .Register<Mapped<LineMaterial>>()
-                .Register<Mapped<RegionMaterial>>()
+                .Register<Mapped<Material>>()
                 .Register<Mapped<Script>>()
+                .Register<Mapped<Font>>()
                 .Register<Mapped<Shader>>()
                 .Register<ActionCurator>()
                 .Register<AudioCurator>(std::ref(resourceManager))
                 .Register<ImageCurator>(std::ref(resourceManager))
-                .Register<ImageMaterialCurator>()
-                .Register<LineMaterialCurator>()
-                .Register<RegionMaterialCurator>()
+                .Register<MaterialCurator>()
                 .Register<ScriptCurator>()
+                .Register<FontCurator>()
                 .Register<ShaderCurator>();
         }
     }

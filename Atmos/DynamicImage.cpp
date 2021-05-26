@@ -6,7 +6,7 @@ namespace Atmos::Render
         Arca::RelicInit init,
         Arca::Index<Asset::Image> asset,
         ImageCore::Index assetIndex,
-        Arca::Index<Asset::ImageMaterial> material,
+        Arca::Index<Asset::Material> material,
         const Render::Color& color,
         const Spatial::Point3D& position,
         const Spatial::Scalers2D& scalers,
@@ -20,7 +20,8 @@ namespace Atmos::Render
             color,
             position,
             scalers,
-            rotation)
+            rotation,
+            Spatial::BoundsSpace::World)
     {}
 
     DynamicImage::DynamicImage(Arca::RelicInit init, Arca::Serialization serialization) :

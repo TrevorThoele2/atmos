@@ -35,16 +35,6 @@ namespace Atmos::Render
             });
     }
 
-    void GridRegionCurator::Handle(const ChangeRegionMaterialAsset& command)
-    {
-        AttemptChangeObject(
-            command.id,
-            [command](GridRegion& object)
-            {
-                object.material = command.to;
-            });
-    }
-
     std::vector<Arca::RelicID> GridRegionCurator::Handle(const FindGridRegionsByBox& command) const
     {
         auto indices = octree.AllWithin(command.box);
@@ -65,7 +55,7 @@ namespace Atmos::Render
         for (auto& index : indices)
         {
             const auto& value = *index->value;
-            const auto material = value.material;
+            const auto material = value.renderCore->material;
             if (!material || value.points.empty())
                 continue;
 
@@ -77,14 +67,15 @@ namespace Atmos::Render
                 vertex.y -= cameraTopLeft.y;
             }
 
-            const auto z = value.z * Spatial::Grid::CellSize<Spatial::Point3D::Value>;
+            const auto z = static_cast<Spatial::Point3D::Value>(value.z)
+                * Spatial::Grid::CellSize<Spatial::Point3D::Value>;
 
             const RegionRender render
             {
                 mesh,
                 z,
-                material.ID(),
-                material.Get()
+                material,
+                ToRenderSpace(Spatial::BoundsSpace::World)
             };
             mainSurface->StageRender(render);
         }
@@ -105,43 +96,45 @@ namespace Atmos::Render
     {
         if (points.empty())
             return {};
-
-        auto maxLeft = points.begin()->x;
-        auto maxTop = points.begin()->y;
-        auto maxRight = points.begin()->x;
-        auto maxBottom = points.begin()->y;
-
-        for (auto& point : points)
+        else
         {
-            if (point.x < maxLeft)
-                maxLeft = point.x;
-            else if (point.x > maxRight)
-                maxRight = point.x;
+            auto maxLeft = points.begin()->x;
+            auto maxTop = points.begin()->y;
+            auto maxRight = points.begin()->x;
+            auto maxBottom = points.begin()->y;
 
-            if (point.y < maxTop)
-                maxTop = point.y;
-            else if (point.y > maxBottom)
-                maxBottom = point.y;
-        }
-
-        const auto cellSize = Spatial::Grid::CellSize<Spatial::Point3D::Value>;
-        const auto width = static_cast<Spatial::Point3D::Value>(maxRight - maxLeft) * cellSize;
-        const auto height = static_cast<Spatial::Point3D::Value>(maxBottom - maxTop) * cellSize;
-        const auto depth = 1;
-
-        const auto useMaxLeft = maxLeft * cellSize;
-        const auto useMaxTop = maxTop * cellSize;
-
-        return Spatial::AxisAlignedBox3D
-        {
-            Spatial::Point3D
+            for (auto& point : points)
             {
-                useMaxLeft + width / 2,
-                useMaxTop + height / 2,
-                0.5f
-            },
-            Spatial::Size3D { width, height, depth }
-        };
+                if (point.x < maxLeft)
+                    maxLeft = point.x;
+                else if (point.x > maxRight)
+                    maxRight = point.x;
+
+                if (point.y < maxTop)
+                    maxTop = point.y;
+                else if (point.y > maxBottom)
+                    maxBottom = point.y;
+            }
+
+            const auto cellSize = Spatial::Grid::CellSize<Spatial::Point3D::Value>;
+            const auto width = static_cast<Spatial::Point3D::Value>(maxRight - maxLeft) * cellSize;
+            const auto height = static_cast<Spatial::Point3D::Value>(maxBottom - maxTop) * cellSize;
+            const auto depth = 1;
+
+            const auto useMaxLeft = maxLeft * cellSize;
+            const auto useMaxTop = maxTop * cellSize;
+
+            return Spatial::AxisAlignedBox3D
+            {
+                Spatial::Point3D
+                {
+                    useMaxLeft + width / 2,
+                    useMaxTop + height / 2,
+                    0.5f
+                },
+                Spatial::Size3D { width, height, depth }
+            };
+        }
     }
 
     Spatial::AxisAlignedBox3D GridRegionCurator::BoxFor(const Index& index)

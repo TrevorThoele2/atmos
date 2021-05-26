@@ -26,6 +26,7 @@ namespace Atmos::World::Serialization
             SaveAssets audio;
             SaveAssets images;
             SaveAssets shaders;
+            SaveAssets fonts;
             SaveAssets scripts;
         };
     public:

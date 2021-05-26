@@ -2,7 +2,7 @@
 
 #include <Arca/Relic.h>
 
-#include "ScreenPoint.h"
+#include "Point2D.h"
 
 #include "Delta.h"
 
@@ -11,7 +11,7 @@ namespace Atmos::Input
     class Information
     {
     public:
-        Delta<Spatial::ScreenPoint> mousePosition;
+        Delta<Spatial::Point2D> mousePosition;
     public:
         Information() = default;
         Information(Information&& arg) noexcept = default;

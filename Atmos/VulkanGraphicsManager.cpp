@@ -3,6 +3,7 @@
 #include "VulkanSurfaceResource.h"
 #include "VulkanImageAssetResource.h"
 #include "VulkanShaderAssetResource.h"
+#include "VulkanTextResource.h"
 
 #include "VulkanImage.h"
 #include "VulkanCreateImageView.h"
@@ -44,52 +45,11 @@ namespace Atmos::Render::Vulkan
     std::unique_ptr<Asset::Resource::Image> GraphicsManager::CreateImageResourceImpl(
         const Bytes& bytes,
         const Name& name,
-        const Asset::ImageSize& size)
+        const Spatial::Size2D& size)
     {
-        const auto width = static_cast<uint32_t>(size.width);
-        const auto height = static_cast<uint32_t>(size.height);
-        const auto extent = vk::Extent3D(width, height, 1);
-
-        const auto format = vk::Format::eR8G8B8A8Srgb;
-
-        auto image = Image(
-            format,
-            vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled,
-            extent,
-            1,
-            vk::ImageLayout::eUndefined,
-            *device,
-            memoryProperties);
-        image.TransitionLayout(vk::ImageLayout::eTransferDstOptimal, 0, 1, *device, *commandPool, graphicsQueue);
-
-        Buffer stagingBuffer(
-            vk::DeviceSize(bytes.size()),
-            vk::BufferUsageFlagBits::eTransferSrc,
-            vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent,
-            *device,
-            memoryProperties);
-        stagingBuffer.PushBytes(bytes, 0);
-
-        stagingBuffer.Copy(
-            image.value.get(),
-            0,
-            0,
-            0,
-            { 0, 0, 0 },
-            { width, height, 1 },
-            0,
-            1,
-            *commandPool,
-            graphicsQueue);
-        image.TransitionLayout(vk::ImageLayout::eShaderReadOnlyOptimal, 0, 1, *device, *commandPool, graphicsQueue);
-
-        auto imageView = CreateImageView(image.value.get(), *device, format, 0, 1);
-
-        auto descriptor = CombinedImageSamplerDescriptor(
-            imageView.get(), sampler.get(), vk::ImageLayout::eShaderReadOnlyOptimal, 1);
-
+        auto [image, memory, imageView, descriptor] = CreateImageData(bytes, size);
         return std::make_unique<Asset::Resource::Vulkan::Image>(
-            size, image.value.release(), image.memory.release(), imageView.release(), descriptor);
+            size, image.release(), memory.release(), imageView.release(), descriptor);
     }
 
     std::unique_ptr<Asset::Resource::Shader> GraphicsManager::CreateShaderResourceImpl(
@@ -143,9 +103,18 @@ namespace Atmos::Render::Vulkan
         return CreateSurfaceResourceCommon(std::move(surface), *queueIndices, graphicsQueue, presentQueue, reliquary);
     }
 
+    std::unique_ptr<Resource::Text> GraphicsManager::CreateTextResourceImpl(
+        const Bytes& bytes,
+        const Spatial::Size2D& size)
+    {
+        auto [image, memory, imageView, descriptor] = CreateImageData(bytes, size);
+        return std::make_unique<Resource::Vulkan::Text>(
+            image.release(), memory.release(), imageView.release(), descriptor, size);
+    }
+
     void GraphicsManager::ResourceDestroyingImpl(Asset::Resource::Image& resource)
     {
-        auto& casted = static_cast<Asset::Resource::Vulkan::Image&>(resource);
+        auto& casted = dynamic_cast<Asset::Resource::Vulkan::Image&>(resource);
         storedResourceList.push_back(std::make_unique<StoredImageResource>(
             casted.image, casted.memory, casted.imageView, device));
     }
@@ -155,7 +124,7 @@ namespace Atmos::Render::Vulkan
         auto surfaces = reliquary.Batch<SurfaceCore>();
         for(auto& surface : surfaces)
         {
-            auto& casted = static_cast<Resource::Vulkan::Surface&>(*surface.resource);
+            auto& casted = dynamic_cast<Resource::Vulkan::Surface&>(*surface.resource);
             casted.WaitForIdle();
         }
         storedResourceList.clear();
@@ -452,5 +421,52 @@ namespace Atmos::Render::Vulkan
             false);
 
         return device.createSamplerUnique(createInfo);
+    }
+
+    auto GraphicsManager::CreateImageData(const Bytes& bytes, Spatial::Size2D size) -> ImageData
+    {
+        const auto width = static_cast<uint32_t>(size.width);
+        const auto height = static_cast<uint32_t>(size.height);
+        const auto extent = vk::Extent3D(width, height, 1);
+
+        const auto format = vk::Format::eR8G8B8A8Srgb;
+
+        auto image = Image(
+            format,
+            vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled,
+            extent,
+            1,
+            vk::ImageLayout::eUndefined,
+            *device,
+            memoryProperties);
+        image.TransitionLayout(vk::ImageLayout::eTransferDstOptimal, 0, 1, *device, *commandPool, graphicsQueue);
+
+        Buffer stagingBuffer(
+            vk::DeviceSize(bytes.size()),
+            vk::BufferUsageFlagBits::eTransferSrc,
+            vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent,
+            *device,
+            memoryProperties);
+        stagingBuffer.PushBytes(bytes, 0);
+
+        stagingBuffer.Copy(
+            image.value.get(),
+            0,
+            0,
+            0,
+            { 0, 0, 0 },
+            { width, height, 1 },
+            0,
+            1,
+            *commandPool,
+            graphicsQueue);
+        image.TransitionLayout(vk::ImageLayout::eShaderReadOnlyOptimal, 0, 1, *device, *commandPool, graphicsQueue);
+
+        auto imageView = CreateImageView(image.value.get(), *device, format, 0, 1);
+
+        const auto descriptor = CombinedImageSamplerDescriptor(
+            imageView.get(), sampler.get(), vk::ImageLayout::eShaderReadOnlyOptimal, 1);
+
+        return { std::move(image.value), std::move(image.memory), std::move(imageView), descriptor };
     }
 }

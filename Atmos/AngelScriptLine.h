@@ -47,7 +47,7 @@ namespace Atmos::Scripting::Angel
     private:
         [[nodiscard]] static std::vector<Spatial::Point2D> Points(Type type);
         [[nodiscard]] static Spatial::Point2D::Value Z(Type type);
-        [[nodiscard]] static Arca::Index<Asset::LineMaterial> Material(Type type);
+        [[nodiscard]] static Arca::Index<Asset::Material> Material(Type type);
         [[nodiscard]] static Render::LineWidth Width(Type type);
         [[nodiscard]] static Render::Color Color(Type type);
     };

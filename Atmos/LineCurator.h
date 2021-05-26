@@ -18,8 +18,7 @@ namespace Atmos::Render
     public:
         using ObjectCurator::Handle;
         void Handle(const MoveLine& command);
-        void Handle(const ChangeLineMaterialAsset& command);
-        std::vector<Arca::RelicID> Handle(const FindLinesByBox& command) const;
+        [[nodiscard]] std::vector<Arca::RelicID> Handle(const FindLinesByBox& command) const;
     protected:
         void WorkImpl(
             Spatial::AxisAlignedBox3D cameraBox,
@@ -28,7 +27,7 @@ namespace Atmos::Render
     private:
         using Index = Arca::Index<Line>;
         Spatial::Grid::Octree<Arca::RelicID, Index> octree;
-    private:
+
         void OnCreated(const Arca::CreatedKnown<Line>& signal);
         void OnDestroying(const Arca::DestroyingKnown<Line>& signal);
     private:
@@ -47,7 +46,6 @@ namespace Arca
         using HandledCommands = HandledCommands<
             Atmos::Work,
             Atmos::Render::MoveLine,
-            Atmos::Render::ChangeLineMaterialAsset,
             Atmos::Render::FindLinesByBox>;
     };
 }

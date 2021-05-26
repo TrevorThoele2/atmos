@@ -19,7 +19,7 @@ namespace Atmos::Scripting::Angel
             .ConstMethod(&Management::Method<&Asset>, "Atmos::Asset::Image", "Asset", {})
             .ConstMethod(&Management::Method<&AssetIndex>, "int", "AssetIndex", {})
             .ConstMethod(&Management::Method<&AssetSlice>, "Atmos::Spatial::AxisAlignedBox2D", "AssetSlice", {})
-            .ConstMethod(&Management::Method<&Material>, "Atmos::Asset::ImageMaterial", "Material", {})
+            .ConstMethod(&Management::Method<&Material>, "Atmos::Asset::Material", "Material", {})
             .ConstMethod(&Management::Method<&Color>, "Atmos::Render::Color", "Color", {})
             .ConstMethod(&Management::Method<&Position>, "Atmos::Spatial::Point3D", "Position", {})
             .ConstMethod(&Management::Method<&Size>, "Atmos::Spatial::Size2D", "Size", {})
@@ -33,7 +33,7 @@ namespace Atmos::Scripting::Angel
             .Constructor<
                 Arca::Index<Asset::Image>,
                 int,
-                Arca::Index<Asset::ImageMaterial>,
+                Arca::Index<Asset::Material>,
                 Render::Color,
                 Spatial::Point3D,
                 Spatial::Scalers2D,
@@ -41,7 +41,7 @@ namespace Atmos::Scripting::Angel
             ({
                 "Atmos::Asset::Image asset",
                 "int assetIndex",
-                "Atmos::Asset::ImageMaterial material",
+                "Atmos::Asset::Material material",
                 "Atmos::Render::Color color",
                 "Atmos::Spatial::Point3D position",
                 "Atmos::Spatial::Scalers2D scalers",
@@ -69,7 +69,7 @@ namespace Atmos::Scripting::Angel
         return RequiredValue(type)->AssetSlice();
     }
 
-    Arca::Index<Asset::ImageMaterial> Registration<Render::DynamicImage>::Material(Type type)
+    Arca::Index<Asset::Material> Registration<Render::DynamicImage>::Material(Type type)
     {
         return RequiredValue(type)->Material();
     }

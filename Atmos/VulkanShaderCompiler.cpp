@@ -1,4 +1,4 @@
-#include <SDKDDKVer.h>
+#include <sdkddkver.h>
 #include <boost/process.hpp>
 #include <boost/process/windows.hpp>
 

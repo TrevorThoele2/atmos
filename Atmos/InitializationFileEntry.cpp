@@ -2,6 +2,5 @@
 
 namespace Atmos::Initialization
 {
-    FileEntryBase::~FileEntryBase()
-    {}
+    FileEntryBase::~FileEntryBase() = default;
 }

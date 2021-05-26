@@ -7,10 +7,10 @@ using namespace Atmos;
 class MockImageAssetResource final : public Asset::Resource::Image
 {
 public:
-    Asset::ImageSize size;
+    Spatial::Size2D size;
 
     MockImageAssetResource();
-    MockImageAssetResource(Asset::ImageSize size);
+    MockImageAssetResource(Spatial::Size2D size);
 
-    [[nodiscard]] Asset::ImageSize Size() const override;
+    [[nodiscard]] Spatial::Size2D Size() const override;
 };

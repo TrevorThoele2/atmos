@@ -1,8 +1,14 @@
 #pragma once
 
 #include <Arca/Relic.h>
+
+#include "RenderCore.h"
 #include "ImageCore.h"
 #include "Bounds.h"
+
+#include "Point3D.h"
+#include "Angle2D.h"
+#include "Scalers2D.h"
 
 namespace Atmos::Render
 {
@@ -16,7 +22,7 @@ namespace Atmos::Render
         [[nodiscard]] Arca::Index<Asset::Image> Asset() const;
         [[nodiscard]] Index AssetIndex() const;
         [[nodiscard]] Spatial::AxisAlignedBox2D AssetSlice() const;
-        [[nodiscard]] Arca::Index<Asset::ImageMaterial> Material() const;
+        [[nodiscard]] Arca::Index<Asset::Material> Material() const;
 
         [[nodiscard]] Render::Color Color() const;
 
@@ -28,15 +34,17 @@ namespace Atmos::Render
             Arca::RelicInit init,
             Arca::Index<Asset::Image> asset,
             ImageCore::Index assetIndex,
-            Arca::Index<Asset::ImageMaterial> material,
+            Arca::Index<Asset::Material> material,
             const Render::Color& color,
             const Spatial::Point3D& position,
             const Spatial::Scalers2D& scalers,
-            const Spatial::Angle2D& rotation);
+            const Spatial::Angle2D& rotation,
+            Spatial::BoundsSpace boundsSpace);
         Image(Arca::RelicInit init, Arca::Serialization);
     private:
         Arca::RelicInit init;
     private:
+        Arca::Index<RenderCore> renderCore;
         Arca::Index<ImageCore> core;
         Arca::Index<BoundsT> bounds;
     };
@@ -60,15 +68,15 @@ namespace Atmos::Render
     }
 
     template<bool mutableBounds>
-    Arca::Index<Asset::ImageMaterial> Image<mutableBounds>::Material() const
+    Arca::Index<Asset::Material> Image<mutableBounds>::Material() const
     {
-        return core->material;
+        return renderCore->material;
     }
 
     template<bool mutableBounds>
     Render::Color Image<mutableBounds>::Color() const
     {
-        return core->color;
+        return renderCore->color;
     }
 
     template<bool mutableBounds>
@@ -88,30 +96,33 @@ namespace Atmos::Render
     {
         return bounds->Rotation();
     }
-
+    
     template<bool mutableBounds>
     Image<mutableBounds>::Image(
         Arca::RelicInit init,
         Arca::Index<Asset::Image> asset,
         ImageCore::Index assetIndex,
-        Arca::Index<Asset::ImageMaterial> material,
+        Arca::Index<Asset::Material> material,
         const Render::Color& color,
         const Spatial::Point3D& position,
         const Spatial::Scalers2D& scalers,
-        const Spatial::Angle2D& rotation)
+        const Spatial::Angle2D& rotation,
+        Spatial::BoundsSpace boundsSpace)
         :
         init(init)
     {
-        core = init.Create<ImageCore>(asset, assetIndex, material, color);
+        renderCore = init.Create<RenderCore>(material, color);
+        core = init.Create<ImageCore>(asset, assetIndex);
         const auto baseSize = asset
             ? asset->SliceSize()
             : Spatial::Size2D{ 0, 0 };
-        bounds = init.Create<BoundsT>(position, baseSize, scalers, rotation);
+        bounds = init.Create<BoundsT>(boundsSpace, position, baseSize, scalers, rotation);
     }
 
     template<bool mutableBounds>
     Image<mutableBounds>::Image(Arca::RelicInit init, Arca::Serialization) :
         init(init),
+        renderCore(init.Find<RenderCore>()),
         core(init.Find<ImageCore>()),
         bounds(init.Find<BoundsT>())
     {}

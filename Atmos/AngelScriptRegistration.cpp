@@ -32,7 +32,6 @@
 #include "AngelScriptAngle3D.h"
 #include "AngelScriptPoint2D.h"
 #include "AngelScriptPoint3D.h"
-#include "AngelScriptScreenPoint.h"
 #include "AngelScriptGridPoint.h"
 #include "AngelScriptScalers2D.h"
 #include "AngelScriptScalers3D.h"
@@ -63,6 +62,7 @@
 #include "AngelScriptAsset.h"
 #include "AngelScriptActionAsset.h"
 #include "AngelScriptImageAsset.h"
+#include "AngelScriptFontAsset.h"
 #include "AngelScriptShaderAsset.h"
 #include "AngelScriptMaterialAsset.h"
 #include "AngelScriptAudioAsset.h"
@@ -79,15 +79,22 @@
 #include "AngelScriptResumeSound.h"
 #include "AngelScriptSoundFinished.h"
 
+#include "AngelScriptRenderCore.h"
 #include "AngelScriptColor.h"
 #include "AngelScriptImageCore.h"
 #include "AngelScriptDynamicImage.h"
-#include "AngelScriptRelativeImage.h"
+#include "AngelScriptDynamicText.h"
 #include "AngelScriptLine.h"
 #include "AngelScriptGridRegion.h"
 #include "AngelScriptCamera.h"
 #include "AngelScriptChangeMaterialAsset.h"
 #include "AngelScriptFindByBox.h"
+#include "AngelScriptChangeTextCore.h"
+#include "AngelScriptViewSlice.h"
+#include "AngelScriptChangeViewSlice.h"
+
+#include "AngelScriptUIImage.h"
+#include "AngelScriptUIText.h"
 
 #include "AngelScriptEntity.h"
 #include "AngelScriptCurrentEntity.h"
@@ -151,7 +158,7 @@ namespace Atmos::Scripting::Angel
                 .Register<std::numeric_limits<std::uint64_t>>()
                 .Register<std::numeric_limits<float>>()
                 .Register<std::numeric_limits<double>>()
-
+                
                 .Register<RelicID>()
                 .Register<NullRelicID>()
                 .Register<Arca::Type>()
@@ -193,7 +200,6 @@ namespace Atmos::Scripting::Angel
                 .Register<Spatial::Angle3D>()
                 .Register<Spatial::Point2D>()
                 .Register<Spatial::Point3D>()
-                .Register<Spatial::ScreenPoint>()
                 .Register<Spatial::Grid::Point>()
                 .Register<Spatial::Scalers2D>()
                 .Register<Spatial::Scalers3D>()
@@ -207,10 +213,9 @@ namespace Atmos::Scripting::Angel
                 .Register<GridSpatialAlgorithms>()
                 .Register<Spatial::ToWorldPoint2D>()
                 .Register<Spatial::ToWorldPoint3D>()
+                .Register<Spatial::BoundsSpace>()
                 .Register<Spatial::Bounds>()
-                .Register<Spatial::MoveBoundsBy>()
-                .Register<Spatial::MoveBoundsDirection>()
-                .Register<Spatial::MoveBoundsTo>()
+                .Register<Spatial::MoveBounds>()
                 .Register<Spatial::RotateBounds>()
                 .Register<Spatial::ScaleBounds>()
                 .Register<Spatial::BoundsMoved>()
@@ -249,14 +254,12 @@ namespace Atmos::Scripting::Angel
 
                 .Register<GenericAssetFindByName>()
                 .Register<Asset::Action>()
-                .Register<Asset::ImageSize>()
                 .Register<Asset::ImageGridSize>()
                 .Register<Asset::Image>()
+                .Register<Asset::Font>()
                 .Register<Asset::Shader>()
                 .Register<Asset::Material::Pass>()
-                .Register<Asset::ImageMaterial>()
-                .Register<Asset::LineMaterial>()
-                .Register<Asset::RegionMaterial>()
+                .Register<Asset::Material>()
                 .Register<Asset::Audio>()
                 .Register<Asset::Script>()
 
@@ -279,9 +282,10 @@ namespace Atmos::Scripting::Angel
                 .Register<Audio::SoundFinished>()
 
                 .Register<Render::Color>()
+                .Register<Render::RenderCore>()
                 .Register<Render::ImageCore>()
                 .Register<Render::DynamicImage>()
-                .Register<Render::RelativeImage>()
+                .Register<Render::DynamicText>()
                 .Register<Render::Line>()
                 .Register<Render::GridRegion>()
                 .Register<Render::Camera>()
@@ -292,12 +296,20 @@ namespace Atmos::Scripting::Angel
                 .Register<ChangeLineZ>()
                 .Register<ChangeGridRegionPoints>()
                 .Register<ChangeGridRegionZ>()
-                .Register<Render::ChangeMaterialAsset<Asset::ImageMaterial>>()
-                .Register<Render::ChangeMaterialAsset<Asset::LineMaterial>>()
-                .Register<Render::ChangeMaterialAsset<Asset::RegionMaterial>>()
+                .Register<Render::ChangeMaterialAsset>()
                 .Register<Render::FindImagesByBox>()
                 .Register<Render::FindLinesByBox>()
                 .Register<Render::FindGridRegionsByBox>()
+                .Register<ChangeTextString>()
+                .Register<ChangeFontAsset>()
+                .Register<ChangeWrapWidth>()
+                .Register<ChangeBold>()
+                .Register<ChangeItalics>()
+                .Register<Render::ViewSlice>()
+                .Register<ChangeViewSliceBox>()
+
+                .Register<UI::Image>()
+                .Register<UI::Text>()
 
                 .Register<Entity::Entity>()
                 .Register<Entity::FindByName>()

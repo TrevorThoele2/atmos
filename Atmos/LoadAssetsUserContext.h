@@ -22,6 +22,7 @@ namespace Inscription
         virtual std::optional<Extracted> LoadAudioData(const Atmos::Name& name) = 0;
         virtual std::optional<Extracted> LoadImageData(const Atmos::Name& name) = 0;
         virtual std::optional<Extracted> LoadShaderData(const Atmos::Name& name) = 0;
+        virtual std::optional<Extracted> LoadFontData(const Atmos::Name& name) = 0;
         virtual std::optional<Extracted> LoadScriptData(const Atmos::Name& name) = 0;
     };
 }

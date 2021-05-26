@@ -18,9 +18,9 @@ namespace Atmos::Render
     std::unique_ptr<Asset::Resource::Image> GraphicsManager::CreateImageResource(
         const Buffer& buffer,
         const Name& name,
-        const Asset::ImageSize& size)
+        const Spatial::Size2D& size)
     {
-        if (size.width <= 0.0f || size.height <= 0.0f)
+        if (size.width <= 0 || size.height <= 0)
         {
             logger->Log("ImageAsset's require dimensions greater than 0.");
             return {};
@@ -47,6 +47,13 @@ namespace Atmos::Render
         Arca::Reliquary& reliquary)
     {
         return CreateMainSurfaceResourceImpl(window, reliquary);
+    }
+
+    std::unique_ptr<Resource::Text> GraphicsManager::CreateTextResource(
+        const Buffer& buffer,
+        const Spatial::Size2D& size)
+    {
+        return CreateTextResourceImpl(buffer, size);
     }
 
     void GraphicsManager::ResourceDestroying(Asset::Resource::Image& resource)

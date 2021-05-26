@@ -3,10 +3,7 @@
 #include "GeneralFixture.h"
 
 #include <Atmos/Bounds.h>
-#include <Atmos/RelativeBounds.h>
-#include <Atmos/MoveBoundsTo.h>
-#include <Atmos/MoveBoundsBy.h>
-#include <Atmos/MoveBoundsDirection.h>
+#include <Atmos/MoveBounds.h>
 #include <Atmos/ScaleBounds.h>
 #include <Atmos/RotateBounds.h>
 

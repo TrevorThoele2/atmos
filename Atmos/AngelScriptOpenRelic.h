@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Arca/LocalRelic.h>
+#include <Arca/OpenRelic.h>
 
 #include "AngelScriptIndex.h"
 #include "AngelScriptObjectManagement.h"
@@ -21,7 +21,7 @@ namespace Atmos::Scripting::Angel
 
         static String Name() { return "OpenRelic"; }
         static String ContainingNamespace() { return "Arca"; }
-        static String Documentation() { return "This is a relic. Contains a Bounds."; }
+        static String Documentation() { return "This is a relic."; }
         static const ObjectType objectType = ObjectType::Value;
 
         static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);

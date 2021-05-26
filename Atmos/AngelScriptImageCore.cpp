@@ -19,8 +19,6 @@ namespace Atmos::Scripting::Angel
         registration
             .ConstMethod(&Management::Method<&Asset>, "Atmos::Asset::Image", "Asset", {})
             .ConstMethod(&Management::Method<&AssetIndex>, "int", "AssetIndex", {})
-            .ConstMethod(&Management::Method<&Material>, "Atmos::Asset::ImageMaterial", "Material", {})
-            .ConstMethod(&Management::Method<&Color>, "Atmos::Render::Color", "Color", {})
             .Actualize(engine, documentationManager);
 
         Registration<ArcaTraits<Render::ImageCore>>::RegisterTo(engine, documentationManager);
@@ -30,14 +28,10 @@ namespace Atmos::Scripting::Angel
             .Constructor<>({})
             .Constructor<
                 Arca::Index<Asset::Image>,
-                Type::ValueT::Index,
-                Arca::Index<Asset::ImageMaterial>,
-                Render::Color>
+                Type::ValueT::Index>
             ({
                 "Atmos::Asset::Image asset",
-                "int assetIndex",
-                "Atmos::Asset::ImageMaterial material",
-                "Atmos::Render::Color color"
+                "int assetIndex"
             })
             .Actualize(engine, documentationManager);
         RegisterArcaCreated<Type::ValueT>(engine, documentationManager);
@@ -54,17 +48,7 @@ namespace Atmos::Scripting::Angel
     {
         return RequiredValue(type)->assetIndex;
     }
-
-    Arca::Index<Asset::ImageMaterial> Registration<Render::ImageCore>::Material(Type type)
-    {
-        return RequiredValue(type)->material;
-    }
-
-    Render::Color Registration<Render::ImageCore>::Color(Type type)
-    {
-        return RequiredValue(type)->color;
-    }
-
+    
     void Registration<ChangeImageAsset>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         ValueTypeRegistration<Type>(ContainingNamespace(), Name())

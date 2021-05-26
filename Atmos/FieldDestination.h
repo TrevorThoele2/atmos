@@ -10,9 +10,9 @@ namespace Atmos::World
 {
     struct FieldDestination
     {
-        Spatial::Angle2D direction;
+        Spatial::Angle2D direction = 0.0f;
         Spatial::Grid::Point position;
-        FieldID id;
+        FieldID id = 0;
     };
 }
 

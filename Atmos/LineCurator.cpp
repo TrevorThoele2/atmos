@@ -22,33 +22,22 @@ namespace Atmos::Render
     void LineCurator::Handle(const MoveLine& command)
     {
         const auto index = Arca::Index<Line>(command.id, Owner());
-        if (!index)
-            return;
+        if (index)
+        {
+            const auto prevPoints = index->points;
+            const auto prevZ = index->z;
 
-        const auto prevPoints = index->points;
-        const auto prevZ = index->z;
+            auto data = MutablePointer().Of(index);
+            if (command.points)
+                data->points = *command.points;
 
-        auto data = MutablePointer().Of(index);
-        if(command.points)
-            data->points = *command.points;
+            if (command.z)
+                data->z = *command.z;
 
-        if (command.z)
-            data->z = *command.z;
-
-        octree.Move(index.ID(), index, BoxFor(prevPoints, prevZ), BoxFor(index));
+            octree.Move(index.ID(), index, BoxFor(prevPoints, prevZ), BoxFor(index));
+        }
     }
-
-    void LineCurator::Handle(const ChangeLineMaterialAsset& command)
-    {
-        const auto index = Arca::Index<Line>(command.id, Owner());
-        if (!index)
-            return;
-
-        auto data = MutablePointer().Of(index);
-
-        data->material = command.to;
-    }
-
+    
     std::vector<Arca::RelicID> LineCurator::Handle(const FindLinesByBox& command) const
     {
         auto indices = octree.AllWithin(command.box);
@@ -69,13 +58,13 @@ namespace Atmos::Render
         for (auto& index : indices)
         {
             auto& value = *index->value;
-            const auto material = value.material;
+            const auto material = value.renderCore->material;
             if (!material)
                 continue;
 
             const auto z = value.z;
             const auto width = value.width;
-            const auto color = value.color;
+            const auto color = value.renderCore->color;
 
             std::vector<Spatial::Point2D> adjustedPoints;
             for (auto& point : value.points)
@@ -85,10 +74,10 @@ namespace Atmos::Render
             {
                 adjustedPoints,
                 z,
-                material.ID(),
-                material.Get(),
+                material,
                 width,
-                color
+                color,
+                ToRenderSpace(Spatial::BoundsSpace::World)
             };
             mainSurface->StageRender(render);
         }
@@ -108,34 +97,36 @@ namespace Atmos::Render
     {
         if (points.empty())
             return {};
-
-        auto maxLeft = points[0].x;
-        auto maxTop = points[0].y;
-        auto maxRight = points[0].x;
-        auto maxBottom = points[0].y;
-
-        for(auto& point : points)
+        else
         {
-            if (point.x < maxLeft)
-                maxLeft = point.x;
-            else if (point.x > maxRight)
-                maxRight = point.x;
+            auto maxLeft = points[0].x;
+            auto maxTop = points[0].y;
+            auto maxRight = points[0].x;
+            auto maxBottom = points[0].y;
 
-            if (point.y < maxTop)
-                maxTop = point.y;
-            else if (point.y > maxBottom)
-                maxBottom = point.y;
+            for (auto& point : points)
+            {
+                if (point.x < maxLeft)
+                    maxLeft = point.x;
+                else if (point.x > maxRight)
+                    maxRight = point.x;
+
+                if (point.y < maxTop)
+                    maxTop = point.y;
+                else if (point.y > maxBottom)
+                    maxBottom = point.y;
+            }
+
+            const auto width = maxRight - maxLeft;
+            const auto height = maxBottom - maxTop;
+            const auto depth = 1;
+
+            return Spatial::AxisAlignedBox3D
+            {
+                Spatial::Point3D { maxLeft + width / 2, maxTop + height / 2, 0.5f },
+                Spatial::Size3D { width, height, depth }
+            };
         }
-
-        const auto width = maxRight - maxLeft;
-        const auto height = maxBottom - maxTop;
-        const auto depth = 1;
-
-        return Spatial::AxisAlignedBox3D
-        {
-            Spatial::Point3D { maxLeft + width / 2, maxTop + height / 2, 0.5f },
-            Spatial::Size3D { width, height, depth }
-        };
     }
 
     Spatial::AxisAlignedBox3D LineCurator::BoxFor(const Index& index)

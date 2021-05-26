@@ -7,7 +7,7 @@ namespace Atmos::Scripting::Angel
 {
     ArcaUserData* ArcaUserData::RequiredFrom(asIScriptEngine& engine)
     {
-        const auto userData = reinterpret_cast<ArcaUserData*>(engine.GetUserData());
+        const auto userData = static_cast<ArcaUserData*>(engine.GetUserData());
         if (!userData)
             throw Error("Could not find user data from script engine.");
 

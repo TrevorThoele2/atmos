@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ScreenSize.h"
+#include "Size2D.h"
 
 namespace Atmos::Asset
 {
@@ -13,7 +13,7 @@ namespace Atmos::Render
 
     struct GraphicsReconstructionObjects
     {
-        Spatial::ScreenSize screenSize;
+        Spatial::Size2D screenSize;
         std::vector<Asset::Shader*> shaderAssets;
         MainSurface* mainSurface;
     };

@@ -34,7 +34,7 @@ namespace Atmos::Scripting::Angel
         [[nodiscard]] static Arca::Index<Asset::Image> Asset(Type type);
         [[nodiscard]] static Render::DynamicImage::Index AssetIndex(Type type);
         [[nodiscard]] static Spatial::AxisAlignedBox2D AssetSlice(Type type);
-        [[nodiscard]] static Arca::Index<Asset::ImageMaterial> Material(Type type);
+        [[nodiscard]] static Arca::Index<Asset::Material> Material(Type type);
         [[nodiscard]] static Render::Color Color(Type type);
 
         [[nodiscard]] static Spatial::Point3D Position(Type type);

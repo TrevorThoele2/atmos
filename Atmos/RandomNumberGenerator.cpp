@@ -9,7 +9,7 @@ namespace Atmos::Random
 
     bool NumberGenerator::GenerateBool() const
     {
-        std::bernoulli_distribution distribution;
+        const std::bernoulli_distribution distribution;
         return distribution(randomEngine);
     }
 }

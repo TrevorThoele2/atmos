@@ -25,7 +25,7 @@ namespace Atmos
     class DynamicRatio : public Ratio<T>
     {
     public:
-        typedef Ratio<T>::Value Value;
+        typedef typename Ratio<T>::Value Value;
 
         Value numerator;
         Value denominator;
@@ -98,7 +98,7 @@ namespace Atmos
     class StaticRatio : public Ratio<T>
     {
     public:
-        using Value = Ratio<T>::Value;
+        using Value = typename Ratio<T>::Value;
     public:
         Value Numerator() const override;
         Value Denominator() const override;

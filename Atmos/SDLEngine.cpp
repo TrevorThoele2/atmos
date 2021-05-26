@@ -5,6 +5,7 @@
 #include "RealAssetResourceManager.h"
 #include "SDLInputManager.h"
 #include "VulkanGraphicsManager.h"
+#include "SDLTextManager.h"
 #include "SDLAudioManager.h"
 #include "AngelScriptManager.h"
 #include "RealWorldManager.h"
@@ -24,6 +25,7 @@ namespace Atmos
         auto window = std::make_unique<Window::SDLWindow>(logger);
         auto input = std::make_unique<Input::SDLManager>(logger);
         auto graphics = std::make_unique<Render::Vulkan::GraphicsManager>(logger);
+        auto text = std::make_unique<Render::SDL::TextManager>(logger);
         auto audio = std::make_unique<Audio::SDL::Manager>(logger);
         auto scripts = std::make_unique<Scripting::Angel::Manager>(logger);
         auto world = std::make_unique<World::RealManager>();
@@ -34,6 +36,7 @@ namespace Atmos
         properties.window = std::move(window);
         properties.inputManager = std::move(input);
         properties.graphicsManager = std::move(graphics);
+        properties.textManager = std::move(text);
         properties.audioManager = std::move(audio);
         properties.scriptManager = std::move(scripts);
         properties.worldManager = std::move(world);

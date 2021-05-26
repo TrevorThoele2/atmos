@@ -17,12 +17,17 @@ namespace Atmos::Render
         Resource()->StageRender(regionRender);
     }
 
+    void Surface::StageRender(const TextRender& textRender) const
+    {
+        Resource()->StageRender(textRender);
+    }
+
     void Surface::DrawFrame() const
     {
         Resource()->DrawFrame(init.owner, core->backgroundColor);
     }
 
-    Spatial::ScreenSize Surface::Size() const
+    Spatial::Size2D Surface::Size() const
     {
         return Resource()->Size();
     }
@@ -36,21 +41,11 @@ namespace Atmos::Render
         core(init.Create<Core>(std::move(resource))),
         init(init)
     {
-        const auto onCreated = [this](const auto& signal)
-        {
-            Resource()->OnMaterialCreated(signal.index);
-        };
-
         const auto onDestroying = [this](const auto& signal)
         {
-            Resource()->OnMaterialCreated(signal.index);
+            Resource()->OnMaterialDestroying(signal.index);
         };
-
-        init.owner.On<Arca::CreatedKnown<Asset::ImageMaterial>>(onCreated);
-        init.owner.On<Arca::CreatedKnown<Asset::LineMaterial>>(onCreated);
-        init.owner.On<Arca::CreatedKnown<Asset::RegionMaterial>>(onCreated);
-        init.owner.On<Arca::DestroyingKnown<Asset::ImageMaterial>>(onDestroying);
-        init.owner.On<Arca::DestroyingKnown<Asset::LineMaterial>>(onDestroying);
-        init.owner.On<Arca::DestroyingKnown<Asset::RegionMaterial>>(onDestroying);
+        
+        init.owner.On<Arca::DestroyingKnown<Asset::Material>>(onDestroying);
     }
 }

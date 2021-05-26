@@ -8,21 +8,20 @@
 
 namespace Atmos::Asset
 {
-    class Material : public Asset
+    class Material final : public Asset
     {
     public:
         using Pass = MaterialPass;
     public:
-        Material& operator=(Material&& arg) noexcept;
-
-        [[nodiscard]] std::vector<Pass> Passes() const;
-    protected:
         Material(
             Arca::RelicInit init,
             const Atmos::Name& name,
             std::vector<Pass> passes);
         Material(Arca::RelicInit init, Arca::Serialization serialization);
         Material(Material&& arg) noexcept;
+        Material& operator=(Material&& arg) noexcept;
+
+        [[nodiscard]] std::vector<Pass> Passes() const;
     private:
         std::vector<Pass> passes;
     private:

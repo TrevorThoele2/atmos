@@ -14,20 +14,6 @@ class asIScriptGeneric;
 namespace Atmos::Scripting::Angel
 {
     template<>
-    struct Registration<Asset::ImageSize>
-    {
-        using Type = Asset::ImageSize;
-        using Management = ObjectManagement<Type>;
-
-        static String Name() { return "ImageSize"; }
-        static String ContainingNamespace() { return "Atmos::Asset"; }
-        static String Documentation() { return "Represents an image asset's size."; }
-        static const ObjectType objectType = ObjectType::Value;
-
-        static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
-    };
-
-    template<>
     struct Registration<Asset::ImageGridSize>
     {
         using Type = Asset::ImageGridSize;
@@ -58,7 +44,7 @@ namespace Atmos::Scripting::Angel
 
         [[nodiscard]] static Type::ValueT::Dimension Width(Type type);
         [[nodiscard]] static Type::ValueT::Dimension Height(Type type);
-        [[nodiscard]] static Asset::ImageSize Size(Type type);
+        [[nodiscard]] static Spatial::Size2D Size(Type type);
 
         [[nodiscard]] static Type::ValueT::GridDimension Columns(Type type);
         [[nodiscard]] static Type::ValueT::GridDimension Rows(Type type);

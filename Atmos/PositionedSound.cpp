@@ -10,7 +10,8 @@ namespace Atmos::Audio
         :
         Sound(init, asset, volume)
     {
-        bounds = init.Create<Spatial::Bounds>(position, Spatial::Size2D{ 0, 0 }, Spatial::Scalers2D{ 0, 0 }, 0.0f);
+        bounds = init.Create<Spatial::Bounds>(
+            Spatial::BoundsSpace::World, position, Spatial::Size2D{ 0, 0 }, Spatial::Scalers2D{ 0, 0 }, 0.0f);
     }
 
     PositionedSound::PositionedSound(Arca::RelicInit init, Arca::Serialization serialization) :

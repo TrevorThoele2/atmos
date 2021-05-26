@@ -36,7 +36,7 @@ namespace Atmos::Logging
         String message;
 
         auto t = time(nullptr);
-        struct tm now;
+        struct tm now = {};
         localtime_s(&now, &t);
 
         const auto appendToMessage = [&message](auto append)

@@ -2,8 +2,8 @@
 
 #include "TimePoint.h"
 
-#include "ScreenPoint.h"
-#include "ScreenSize.h"
+#include "Point2D.h"
+#include "Size2D.h"
 
 #include "String.h"
 
@@ -14,8 +14,8 @@ namespace Atmos::Window
     class WindowBase
     {
     public:
-        using Point = Spatial::ScreenPoint;
-        using Size = Spatial::ScreenSize;
+        using Point = Spatial::Point2D;
+        using Size = Spatial::Size2D;
     public:
         virtual ~WindowBase() = 0;
 

@@ -4,7 +4,7 @@
 
 namespace Atmos::Spatial
 {
-    ToWorldPoint3D::ToWorldPoint3D(ScreenPoint from, Point3D::Value z) : from(from), z(z)
+    ToWorldPoint3D::ToWorldPoint3D(Point2D from, Point3D::Value z) : from(from), z(z)
     {}
 
     Point3D ToWorldPoint3D::Do(Arca::Reliquary& reliquary) const

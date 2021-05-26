@@ -6,9 +6,7 @@
 
 #include <Atmos/ActionAsset.h>
 #include <Atmos/BindAction.h>
-#include <Atmos/ImageMaterialAsset.h>
-#include <Atmos/LineMaterialAsset.h>
-#include <Atmos/RegionMaterialAsset.h>
+#include <Atmos/MaterialAsset.h>
 #include <Atmos/CreateImageAssetResource.h>
 #include <Atmos/CreateAudioAssetResource.h>
 #include <Atmos/TypeRegistration.h>
@@ -16,7 +14,7 @@
 #include <Atmos/ScriptFinished.h>
 #include <Atmos/Work.h>
 #include <Atmos/StringUtility.h>
-#include <Arca/LocalRelic.h>
+#include <Arca/OpenRelic.h>
 
 #include "AudioBuffer.h"
 #include "Atmos/FileLoggingSink.h"
@@ -34,11 +32,12 @@ SCENARIO_METHOD(AngelScriptAssetTestsFixture, "running asset AngelScript scripts
         *engine.mockAudioManager,
         *engine.mockInputManager,
         *engine.mockGraphicsManager,
+        *engine.mockTextManager,
         *engine.scriptManager,
         *engine.mockWorldManager,
-        Spatial::ScreenSize{
-            std::numeric_limits<Spatial::ScreenSize::Dimension>::max(),
-            std::numeric_limits<Spatial::ScreenSize::Dimension>::max() },
+        Spatial::Size2D{
+            std::numeric_limits<Spatial::Size2D::Value>::max(),
+            std::numeric_limits<Spatial::Size2D::Value>::max() },
             *engine.mockWindow,
             engine.Logger());
     fieldOrigin.CuratorCommandPipeline<Work>(Arca::Pipeline{ Scripting::Stage() });
@@ -60,7 +59,7 @@ SCENARIO_METHOD(AngelScriptAssetTestsFixture, "running asset AngelScript scripts
         Asset::Action::Modifiers boundModifiers;
         boundModifiers.emplace(boundModifier);
 
-        auto actionAsset = fieldReliquary.Do(Arca::Create<Asset::Action>{ name, boundKey, boundModifiers });
+        fieldReliquary.Do(Arca::Create<Asset::Action>{ name, boundKey, boundModifiers });
 
         GIVEN("script that returns name")
         {
@@ -181,7 +180,7 @@ SCENARIO_METHOD(AngelScriptAssetTestsFixture, "running asset AngelScript scripts
         auto name = dataGeneration.Random<std::string>();
 
         auto resource = fieldReliquary.Do(Asset::Resource::Create<Asset::Resource::Audio>{ audioBuffer, name });
-        auto audioAsset = fieldReliquary.Do(Arca::Create<Asset::Audio>{ name, std::move(resource) });
+        fieldReliquary.Do(Arca::Create<Asset::Audio>{ name, std::move(resource) });
 
         GIVEN("script that returns name")
         {
@@ -212,14 +211,14 @@ SCENARIO_METHOD(AngelScriptAssetTestsFixture, "running asset AngelScript scripts
     GIVEN("ImageAsset")
     {
         auto name = dataGeneration.Random<std::string>();
-        auto width = dataGeneration.Random<Asset::ImageSize::Dimension>(
-            TestFramework::Range<Asset::ImageSize::Dimension>{1, std::numeric_limits<Asset::ImageSize::Dimension>::max()});
-        auto height = dataGeneration.Random<Asset::ImageSize::Dimension>(
-            TestFramework::Range<Asset::ImageSize::Dimension>{1, std::numeric_limits<Asset::ImageSize::Dimension>::max()});
+        auto width = dataGeneration.Random<Spatial::Size2D::Value>(
+            TestFramework::Range<Spatial::Size2D::Value>{1, std::numeric_limits<Spatial::Size2D::Value>::max()});
+        auto height = dataGeneration.Random<Spatial::Size2D::Value>(
+            TestFramework::Range<Spatial::Size2D::Value>{1, std::numeric_limits<Spatial::Size2D::Value>::max()});
         auto columns = dataGeneration.Random<Asset::ImageGridSize::Dimension>();
         auto rows = dataGeneration.Random<Asset::ImageGridSize::Dimension>();
 
-        auto resource = fieldReliquary.Do(Asset::Resource::Create<Asset::Resource::Image>{Buffer{}, name, Asset::ImageSize{ width, height }});
+        auto resource = fieldReliquary.Do(Asset::Resource::Create<Asset::Resource::Image>{Buffer{}, name, Spatial::Size2D{ width, height }});
         auto imageAsset = fieldReliquary.Do(Arca::Create<Asset::Image>{ name, std::move(resource), Asset::ImageGridSize{ columns, rows } });
 
         GIVEN("script that returns name")
@@ -251,7 +250,7 @@ SCENARIO_METHOD(AngelScriptAssetTestsFixture, "running asset AngelScript scripts
         {
             CompileAndCreateScript(
                 "basic_script.as",
-                "int main(string name)\n" \
+                "float main(string name)\n" \
                 "{\n" \
                 "    Atmos::Asset::FindByName<Atmos::Asset::Image> command(name);\n" \
                 "    auto asset = Arca::Reliquary::Do(command);\n" \
@@ -267,7 +266,7 @@ SCENARIO_METHOD(AngelScriptAssetTestsFixture, "running asset AngelScript scripts
                 THEN("has correct properties")
                 {
                     REQUIRE(finishes.size() == 1);
-                    REQUIRE(std::get<Asset::ImageSize::Dimension>(std::get<Variant>(finishes[0].result)) == width);
+                    REQUIRE(std::get<Spatial::Size2D::Value>(std::get<Variant>(finishes[0].result)) == width);
                 }
             }
         }
@@ -276,7 +275,7 @@ SCENARIO_METHOD(AngelScriptAssetTestsFixture, "running asset AngelScript scripts
         {
             CompileAndCreateScript(
                 "basic_script.as",
-                "int main(string name)\n" \
+                "float main(string name)\n" \
                 "{\n" \
                 "    Atmos::Asset::FindByName<Atmos::Asset::Image> command(name);\n" \
                 "    auto asset = Arca::Reliquary::Do(command);\n" \
@@ -292,7 +291,7 @@ SCENARIO_METHOD(AngelScriptAssetTestsFixture, "running asset AngelScript scripts
                 THEN("has correct properties")
                 {
                     REQUIRE(finishes.size() == 1);
-                    REQUIRE(std::get<Asset::ImageSize::Dimension>(std::get<Variant>(finishes[0].result)) == height);
+                    REQUIRE(std::get<Spatial::Size2D::Value>(std::get<Variant>(finishes[0].result)) == height);
                 }
             }
         }
@@ -326,7 +325,7 @@ SCENARIO_METHOD(AngelScriptAssetTestsFixture, "running asset AngelScript scripts
         {
             CompileAndCreateScript(
                 "basic_script.as",
-                "int main(string name)\n" \
+                "float main(string name)\n" \
                 "{\n" \
                 "    Atmos::Asset::FindByName<Atmos::Asset::Image> command(name);\n" \
                 "    auto asset = Arca::Reliquary::Do(command);\n" \
@@ -342,7 +341,7 @@ SCENARIO_METHOD(AngelScriptAssetTestsFixture, "running asset AngelScript scripts
                 THEN("has correct properties")
                 {
                     REQUIRE(finishes.size() == 1);
-                    REQUIRE(std::get<Asset::ImageSize::Dimension>(std::get<Variant>(finishes[0].result)) == columns);
+                    REQUIRE(std::get<Spatial::Size2D::Value>(std::get<Variant>(finishes[0].result)) == columns);
                 }
             }
         }
@@ -351,7 +350,7 @@ SCENARIO_METHOD(AngelScriptAssetTestsFixture, "running asset AngelScript scripts
         {
             CompileAndCreateScript(
                 "basic_script.as",
-                "int main(string name)\n" \
+                "float main(string name)\n" \
                 "{\n" \
                 "    Atmos::Asset::FindByName<Atmos::Asset::Image> command(name);\n" \
                 "    auto asset = Arca::Reliquary::Do(command);\n" \
@@ -367,7 +366,7 @@ SCENARIO_METHOD(AngelScriptAssetTestsFixture, "running asset AngelScript scripts
                 THEN("has correct properties")
                 {
                     REQUIRE(finishes.size() == 1);
-                    REQUIRE(std::get<Asset::ImageSize::Dimension>(std::get<Variant>(finishes[0].result)) == rows);
+                    REQUIRE(std::get<Spatial::Size2D::Value>(std::get<Variant>(finishes[0].result)) == rows);
                 }
             }
         }
@@ -482,7 +481,7 @@ SCENARIO_METHOD(AngelScriptAssetTestsFixture, "running asset AngelScript scripts
         auto name = dataGeneration.Random<std::string>();
 
         auto resource = fieldReliquary.Do(Asset::Resource::Create<Asset::Resource::Shader>{Buffer{}, name});
-        auto shaderAsset = fieldReliquary.Do(Arca::Create<Asset::Shader>{ name, std::move(resource) });
+        fieldReliquary.Do(Arca::Create<Asset::Shader>{ name, std::move(resource) });
 
         GIVEN("script that returns name")
         {
@@ -514,7 +513,7 @@ SCENARIO_METHOD(AngelScriptAssetTestsFixture, "running asset AngelScript scripts
     {
         auto name = dataGeneration.Random<std::string>();
 
-        auto scriptAsset = CompileAndCreateScriptAsset(name, "void main(){}", fieldReliquary);
+        CompileAndCreateScriptAsset(name, "void main(){}", fieldReliquary);
 
         GIVEN("script that returns name")
         {
@@ -547,9 +546,7 @@ TEMPLATE_TEST_CASE_METHOD(
     AngelScriptMaterialAssetTestsFixture,
     "running material asset AngelScript scripts",
     "[script][angelscript][asset]",
-    Asset::ImageMaterial,
-    Asset::LineMaterial,
-    Asset::RegionMaterial)
+    Asset::Material)
 {
     Logging::Logger logger(Logging::Severity::Verbose);
     logger.Add<Logging::FileSink>();
@@ -563,11 +560,12 @@ TEMPLATE_TEST_CASE_METHOD(
         *engine.mockAudioManager,
         *engine.mockInputManager,
         *engine.mockGraphicsManager,
+        *engine.mockTextManager,
         *engine.scriptManager,
         *engine.mockWorldManager,
-        Spatial::ScreenSize{
-            std::numeric_limits<Spatial::ScreenSize::Dimension>::max(),
-            std::numeric_limits<Spatial::ScreenSize::Dimension>::max() },
+        Spatial::Size2D{
+            std::numeric_limits<Spatial::Size2D::Value>::max(),
+            std::numeric_limits<Spatial::Size2D::Value>::max() },
             *engine.mockWindow,
             engine.Logger());
     fieldOrigin.CuratorCommandPipeline<Work>(Arca::Pipeline{ Scripting::Stage() });

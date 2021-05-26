@@ -1,7 +1,7 @@
 #pragma once
 
 #include "AssetResourceTraits.h"
-#include "ImageAssetSize.h"
+#include "Size2D.h"
 
 namespace Atmos::Asset::Resource
 {
@@ -10,7 +10,7 @@ namespace Atmos::Asset::Resource
     public:
         virtual ~Image() = 0;
 
-        [[nodiscard]] virtual ImageSize Size() const = 0;
+        [[nodiscard]] virtual Spatial::Size2D Size() const = 0;
     protected:
         Image() = default;
     };

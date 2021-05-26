@@ -41,12 +41,12 @@ namespace Atmos::Debug
     public:
         struct Window
         {
-            Spatial::ScreenSize::Dimension windowWidth = 0;
-            Spatial::ScreenSize::Dimension windowHeight = 0;
-            Atmos::Window::WindowBase::Size::Dimension clientWidth = 0;
-            Atmos::Window::WindowBase::Size::Dimension clientHeight = 0;
-            Spatial::ScreenSize::Dimension startX = 0;
-            Spatial::ScreenSize::Dimension startY = 0;
+            Spatial::Size2D::Value windowWidth = 0;
+            Spatial::Size2D::Value windowHeight = 0;
+            Atmos::Window::WindowBase::Size::Value clientWidth = 0;
+            Atmos::Window::WindowBase::Size::Value clientHeight = 0;
+            Spatial::Size2D::Value startX = 0;
+            Spatial::Size2D::Value startY = 0;
 
             Spatial::Point2D::Value cameraCenterX = 0;
             Spatial::Point2D::Value cameraCenterY = 0;

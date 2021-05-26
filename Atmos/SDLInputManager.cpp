@@ -290,8 +290,8 @@ namespace Atmos::Input
         int y;
         const auto mouseState = SDL_GetMouseState(&x, &y);
 
-        state.mousePosition.x = x;
-        state.mousePosition.y = y;
+        state.mousePosition.x = static_cast<Spatial::Point2D::Value>(x);
+        state.mousePosition.y = static_cast<Spatial::Point2D::Value>(y);
 
         for(auto& [mouseButton, mapping] : mouseButtonMappings)
         {

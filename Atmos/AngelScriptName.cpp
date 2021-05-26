@@ -15,7 +15,7 @@ namespace Atmos::Scripting::Angel
         toJoin.push_back(name);
         for(auto element = toJoin.begin(); element != toJoin.end();)
         {
-            if (Chroma::Trim(*element) == "")
+            if (Chroma::Trim(*element).empty())
                 element = toJoin.erase(element);
             else
                 ++element;

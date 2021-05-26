@@ -3,10 +3,10 @@
 MockImageAssetResource::MockImageAssetResource() : size{ 1, 1 }
 {}
 
-MockImageAssetResource::MockImageAssetResource(struct Asset::ImageSize size) : size(size)
+MockImageAssetResource::MockImageAssetResource(struct Spatial::Size2D size) : size(size)
 {}
 
-Asset::ImageSize MockImageAssetResource::Size() const
+Spatial::Size2D MockImageAssetResource::Size() const
 {
     return size;
 }

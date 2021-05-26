@@ -5,7 +5,7 @@
 
 #include "Point2D.h"
 #include "Color.h"
-#include "LineMaterialAsset.h"
+#include "RenderCore.h"
 
 #include <Inscription/VectorScribe.h>
 
@@ -14,22 +14,22 @@ namespace Atmos::Render
     class Line
     {
     public:
+        Arca::Index<RenderCore> renderCore;
+
         std::vector<Spatial::Point2D> points;
         Spatial::Point2D::Value z = 0;
-        Arca::Index<Asset::LineMaterial> material;
-
         LineWidth width = 0;
-
-        Color color;
     public:
-        Line() = default;
-        Line(const std::vector<Spatial::Point2D>& points, Arca::Index<Asset::LineMaterial> material);
+        Line(Arca::RelicInit init);
+        Line(Arca::RelicInit init, const std::vector<Spatial::Point2D>& points, Arca::Index<Asset::Material> material);
         Line(
+            Arca::RelicInit init,
             const std::vector<Spatial::Point2D>& points,
             Spatial::Point2D::Value z,
-            Arca::Index<Asset::LineMaterial> material,
+            Arca::Index<Asset::Material> material,
             LineWidth width,
             Color color);
+        Line(Arca::RelicInit init, Arca::Serialization);
     };
 }
 
@@ -54,11 +54,10 @@ namespace Inscription
         template<class Archive>
         void Scriven(ObjectT& object, Archive& archive)
         {
+            archive("renderCore", object.renderCore);
             archive("points", object.points);
             archive("z", object.z);
-            archive("material", object.material);
             archive("width", object.width);
-            archive("color", object.color);
         }
     };
 

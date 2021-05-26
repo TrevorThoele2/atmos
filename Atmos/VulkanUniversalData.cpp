@@ -6,7 +6,7 @@
 namespace Atmos::Render::Vulkan
 {
     UniversalData::UniversalData(const glm::vec2& screenSize, const glm::vec2& mapPosition) :
-        screenSize(screenSize), mapPosition(mapPosition)
+        mapPosition(mapPosition), screenSize(screenSize)
     {
         const auto left = 0.0f;
         const auto top = 0.0f;

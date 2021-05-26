@@ -7,6 +7,7 @@
 #include "MockAudioManager.h"
 #include "MockInputManager.h"
 #include "MockGraphicsManager.h"
+#include "MockTextManager.h"
 #include "MockScriptManager.h"
 #include <Atmos/RealWorldManager.h>
 
@@ -20,6 +21,7 @@ public:
     MockAudioManager* mockAudioManager;
     MockInputManager* mockInputManager;
     MockGraphicsManager* mockGraphicsManager;
+    MockTextManager* mockTextManager;
     MockScriptManager* mockScriptManager;
     World::RealManager* worldManager;
 

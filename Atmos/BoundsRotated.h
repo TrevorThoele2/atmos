@@ -2,17 +2,18 @@
 
 #include <Arca/Signal.h>
 
-#include "Bounds.h"
+#include "Angle2D.h"
 
 namespace Atmos::Spatial
 {
     class BoundsRotated
     {
     public:
-        Arca::Index<Bounds> bounds;
+        Arca::RelicID id;
+        Angle2D previousRotation;
 
         BoundsRotated() = default;
-        explicit BoundsRotated(Arca::Index<Bounds> bounds) : bounds(std::move(bounds))
+        explicit BoundsRotated(Arca::RelicID id, Angle2D previousRotation) : id(id), previousRotation(previousRotation)
         {}
     };
 }

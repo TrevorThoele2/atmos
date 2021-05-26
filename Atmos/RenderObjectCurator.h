@@ -21,6 +21,12 @@ namespace Atmos::Render
             Spatial::AxisAlignedBox3D cameraBox,
             Spatial::Point2D cameraTopLeft,
             Arca::Index<MainSurface> mainSurface) = 0;
+
+        [[nodiscard]] static int ToRenderSpace(Spatial::BoundsSpace space);
+
+        [[nodiscard]] static Spatial::Point3D ToRenderPoint(Spatial::Point3D position, Spatial::Point2D cameraTopLeft, Spatial::BoundsSpace space);
+        [[nodiscard]] static Spatial::Point3D ToWorldPoint(Spatial::Point3D position, Spatial::Point2D cameraTopLeft);
+        [[nodiscard]] static Spatial::Point3D ToScreenPoint(Spatial::Point3D position);
     private:
         Arca::Index<Camera> camera;
         Arca::Index<MainSurface> mainSurface;
