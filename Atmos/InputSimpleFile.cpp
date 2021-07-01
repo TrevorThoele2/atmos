@@ -15,16 +15,21 @@ namespace Atmos
         const auto fileSize = Size();
         const auto useSize = size > fileSize ? fileSize : size;
 
-        std::vector<char> buffer;
-        buffer.resize(static_cast<size_t>(useSize));
-        stream.read(&buffer[0], useSize);
+        if (useSize != 0)
+        {
+            std::vector<char> buffer;
+            buffer.resize(static_cast<size_t>(useSize));
+            stream.read(&buffer[0], useSize);
 
-        Buffer returnBuffer;
-        returnBuffer.reserve(static_cast<size_t>(useSize));
-        for (auto& byte : buffer)
-            returnBuffer.push_back(static_cast<unsigned char>(byte));
+            Buffer returnBuffer;
+            returnBuffer.reserve(static_cast<size_t>(useSize));
+            for (auto& byte : buffer)
+                returnBuffer.push_back(static_cast<unsigned char>(byte));
 
-        return returnBuffer;
+            return returnBuffer;
+        }
+        else
+            return {};
     }
 
     auto InputSimpleFile::DoTell(StreamT& stream) -> Position

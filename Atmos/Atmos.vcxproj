@@ -52,6 +52,7 @@
     <ClInclude Include="AngelScriptCurrentEntity.h" />
     <ClInclude Include="AngelScriptCurrentScript.h" />
     <ClInclude Include="AngelScriptDataCore.h" />
+    <ClInclude Include="AngelScriptDiagnosticsStatistics.h" />
     <ClInclude Include="AngelScriptDynamicText.h" />
     <ClInclude Include="AngelScriptEntity.h" />
     <ClInclude Include="AngelScriptFontAsset.h" />
@@ -97,6 +98,11 @@
     <ClInclude Include="AngelScriptViewSlice.h" />
     <ClInclude Include="AssetResourceManager.h" />
     <ClInclude Include="AssetResourceTraits.h" />
+    <ClInclude Include="BoundsChanged.h" />
+    <ClInclude Include="DiagnosticsCurator.h" />
+    <ClInclude Include="DiagnosticsStatistics.h" />
+    <ClInclude Include="RenderEndCurator.h" />
+    <ClInclude Include="Space.h" />
     <ClInclude Include="ChangeTextCore.h" />
     <ClInclude Include="ChangeViewSlice.h" />
     <ClInclude Include="ColorChanged.h" />
@@ -107,6 +113,7 @@
     <ClInclude Include="FontAssetResource.h" />
     <ClInclude Include="MaterialAssetCurator.h" />
     <ClInclude Include="RenderCore.h" />
+    <ClInclude Include="RenderStartCurator.h" />
     <ClInclude Include="Text.h" />
     <ClInclude Include="TextCore.h" />
     <ClInclude Include="TextData.h" />
@@ -331,10 +338,7 @@
     <ClInclude Include="VulkanCreateImageView.h" />
     <ClInclude Include="CreateShaderAssetResource.h" />
     <ClInclude Include="CreateSurfaceResource.h" />
-    <ClInclude Include="CurrentFieldCurator.h" />
     <ClInclude Include="CurrentFieldData.h" />
-    <ClInclude Include="DebugProfiler.h" />
-    <ClInclude Include="DebugValue.h" />
     <ClInclude Include="ExtractFile.h" />
     <ClInclude Include="AssetWithResource.h" />
     <ClInclude Include="FileCurator.h" />
@@ -389,12 +393,10 @@
     <ClInclude Include="MoveEntityTo.h" />
     <ClInclude Include="ReconstructGraphics.h" />
     <ClInclude Include="StasisFileExtension.h" />
-    <ClInclude Include="StateRequest.h" />
     <ClInclude Include="Surface.h" />
     <ClInclude Include="SurfaceCurator.h" />
     <ClInclude Include="SurfaceResource.h" />
     <ClInclude Include="FrameInformation.h" />
-    <ClInclude Include="DebugStatistics.h" />
     <ClInclude Include="Exception.h" />
     <ClInclude Include="GraphicsSettings.h" />
     <ClInclude Include="LoggingDetails.h" />
@@ -408,8 +410,6 @@
     <ClInclude Include="Angle2D.h" />
     <ClInclude Include="AssetCurator.h" />
     <ClInclude Include="AxisAlignedBox3D.h" />
-    <ClInclude Include="CameraCurator.h" />
-    <ClInclude Include="DebugStatisticsCurator.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="EngineExecution.h" />
     <ClInclude Include="NullWindow.h" />
@@ -442,7 +442,6 @@
     <ClInclude Include="EntityCurator.h" />
     <ClInclude Include="EngineInitializationProperties.h" />
     <ClInclude Include="RenderCurator.h" />
-    <ClInclude Include="StateCurator.h" />
     <ClInclude Include="ScriptAsset.h" />
     <ClInclude Include="ScriptCurator.h" />
     <ClInclude Include="Script.h" />
@@ -481,7 +480,6 @@
     <ClInclude Include="ScriptVariant.h" />
     <ClInclude Include="Volume.h" />
     <ClInclude Include="Color.h" />
-    <ClInclude Include="DebugScreen.h" />
     <ClInclude Include="Event.h" />
     <ClInclude Include="FieldDestination.h" />
     <ClInclude Include="FieldID.h" />
@@ -490,7 +488,6 @@
     <ClInclude Include="WorldFileExtension.h" />
     <ClInclude Include="RealWorldManager.h" />
     <ClInclude Include="OutputWorldArchiveInterface.h" />
-    <ClInclude Include="GameState.h" />
     <ClInclude Include="MathUtility.h" />
     <ClInclude Include="Pathfinder.h" />
     <ClInclude Include="Point2D.h" />
@@ -537,6 +534,7 @@
     <ClCompile Include="AngelScriptCurrentEntity.cpp" />
     <ClCompile Include="AngelScriptCurrentScript.cpp" />
     <ClCompile Include="AngelScriptDataCore.cpp" />
+    <ClCompile Include="AngelScriptDiagnosticsStatistics.cpp" />
     <ClCompile Include="AngelScriptDynamicImage.cpp" />
     <ClCompile Include="AngelScriptDynamicText.cpp" />
     <ClCompile Include="AngelScriptEntity.cpp" />
@@ -607,11 +605,14 @@
     <ClCompile Include="Asset.cpp" />
     <ClCompile Include="AssetResourceManager.cpp" />
     <ClCompile Include="AudioAssetCurator.cpp" />
+    <ClCompile Include="DiagnosticsCurator.cpp" />
     <ClCompile Include="DynamicText.cpp" />
     <ClCompile Include="FontAsset.cpp" />
     <ClCompile Include="FontAssetCurator.cpp" />
     <ClCompile Include="FontAssetResource.cpp" />
     <ClCompile Include="RenderCore.cpp" />
+    <ClCompile Include="RenderEndCurator.cpp" />
+    <ClCompile Include="RenderStartCurator.cpp" />
     <ClCompile Include="Text.cpp" />
     <ClCompile Include="TextCore.cpp" />
     <ClCompile Include="TextManager.cpp" />
@@ -716,11 +717,7 @@
     <ClCompile Include="VulkanTextResource.cpp" />
     <ClCompile Include="VulkanUniversalDataBuffer.cpp" />
     <ClCompile Include="VulkanCreateImageView.cpp" />
-    <ClCompile Include="CurrentFieldCurator.cpp" />
     <ClCompile Include="CurrentFieldData.cpp" />
-    <ClCompile Include="DebugProfiler.cpp" />
-    <ClCompile Include="DebugStatistics.cpp" />
-    <ClCompile Include="DebugValue.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="Field.cpp" />
     <ClCompile Include="FileCurator.cpp" />
@@ -751,8 +748,6 @@
     <ClCompile Include="AngelScriptReferenceCounted.cpp" />
     <ClCompile Include="AngelScriptFunctionManagement.cpp" />
     <ClCompile Include="AxisAlignedBox3D.cpp" />
-    <ClCompile Include="CameraCurator.cpp" />
-    <ClCompile Include="DebugStatisticsCurator.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="EngineExecution.cpp" />
     <ClCompile Include="AnyEventConnection.cpp" />
@@ -794,7 +789,6 @@
     <ClCompile Include="ScriptAsset.cpp" />
     <ClCompile Include="Script.cpp" />
     <ClCompile Include="NullInputManager.cpp" />
-    <ClCompile Include="StateCurator.cpp" />
     <ClCompile Include="Line2D.cpp" />
     <ClCompile Include="Line3D.cpp" />
     <ClCompile Include="Point3D.cpp" />
@@ -816,11 +810,9 @@
     <ClCompile Include="InputStasisArchiveInterface.cpp" />
     <ClCompile Include="ScriptVariant.cpp" />
     <ClCompile Include="Color.cpp" />
-    <ClCompile Include="DebugScreen.cpp" />
     <ClCompile Include="FieldDestination.cpp" />
     <ClCompile Include="RealWorldManager.cpp" />
     <ClCompile Include="OutputWorldArchiveInterface.cpp" />
-    <ClCompile Include="GameState.cpp" />
     <ClCompile Include="Pathfinder.cpp" />
     <ClCompile Include="Size2D.cpp" />
     <ClCompile Include="PositionedSound.cpp" />

@@ -33,9 +33,6 @@ namespace Atmos::Scripting::Angel
 
     void Manager::SetReliquary(Arca::Reliquary& reliquary)
     {
-        if (userData.reliquary)
-            return;
-
         for (auto& signalToRegister : userData.signalsToRegister)
             signalToRegister(*engine, reliquary);
         userData.reliquary = &reliquary;

@@ -158,9 +158,8 @@ namespace Atmos::Spatial::Grid
     template<class ID, class Value>
     void Octree<ID, Value>::Move(ID id, Value value, Bounds oldBounds, Bounds newBounds)
     {
-        if (!Remove(id, oldBounds))
-            return;
-        Add(id, value, newBounds);
+        if (Remove(id, oldBounds))
+            Add(id, value, newBounds);
     }
 
     template<class ID, class Value>

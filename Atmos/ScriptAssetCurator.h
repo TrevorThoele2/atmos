@@ -14,12 +14,6 @@ namespace Atmos::Asset
         using Curator::Handle;
         Resource::LoadedData<Resource::Script> Handle(const Resource::LoadData<Resource::Script>& command);
     };
-
-    template<>
-    struct CuratorTraits<Script> : CuratorTraitsBase<Script>
-    {
-        constexpr static DebugStatisticsSize debugStatisticsSize = &Debug::Statistics::Memory::scriptAssetSize;
-    };
 }
 
 namespace Arca

@@ -57,7 +57,7 @@ SCENARIO_METHOD(AngelScriptBoundsTestsFixture, "running bounds AngelScript scrip
         auto scalers = dataGeneration.RandomStack<
             Spatial::Scalers2D, Spatial::Scalers2D::Value, Spatial::Scalers2D::Value>();
         auto rotation = dataGeneration.Random<Spatial::Angle2D>();
-        auto bounds = fieldReliquary.Do(Arca::Create<Spatial::Bounds>{openRelic, Spatial::BoundsSpace::World, position, baseSize, scalers, rotation});
+        auto bounds = fieldReliquary.Do(Arca::Create<Spatial::Bounds>{openRelic, Spatial::Space::World, position, baseSize, scalers, rotation});
 
         GIVEN("script that returns position")
         {
@@ -215,7 +215,7 @@ SCENARIO_METHOD(AngelScriptBoundsTestsFixture, "running bounds AngelScript scrip
         {
             CompileAndCreateScript(
                 "basic_script.as",
-                "Atmos::Spatial::BoundsSpace main(Arca::RelicID boundsID)\n" \
+                "Atmos::Spatial::Space main(Arca::RelicID boundsID)\n" \
                 "{\n" \
                 "    auto bounds = Atmos::Spatial::Bounds(boundsID);\n" \
                 "    return bounds.Space();\n" \
@@ -232,7 +232,7 @@ SCENARIO_METHOD(AngelScriptBoundsTestsFixture, "running bounds AngelScript scrip
                     REQUIRE(finishes.size() == 1);
                     
                     const auto result = std::get<bool>(std::get<Variant>(finishes[0].result));
-                    REQUIRE(static_cast<Spatial::BoundsSpace>(result) == bounds->Space());
+                    REQUIRE(static_cast<Spatial::Space>(result) == bounds->Space());
                 }
             }
         }
@@ -486,7 +486,7 @@ SCENARIO_METHOD(AngelScriptBoundsTestsFixture, "running bounds AngelScript scrip
             "    auto baseSize = Atmos::Spatial::Size2D();\n" \
             "    auto scalers = Atmos::Spatial::Scalers2D();\n" \
             "    auto rotation = 0.0;\n" \
-            "    auto bounds = Arca::Reliquary::Do(Arca::Create<Atmos::Spatial::Bounds>(relic.ID(), Atmos::Spatial::BoundsSpace::World, position, baseSize, scalers, rotation));\n" \
+            "    auto bounds = Arca::Reliquary::Do(Arca::Create<Atmos::Spatial::Bounds>(relic.ID(), Atmos::Spatial::Space::World, position, baseSize, scalers, rotation));\n" \
             "    return bounds.ID();\n"\
             "}",
             {},

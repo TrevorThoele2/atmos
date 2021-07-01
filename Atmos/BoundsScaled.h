@@ -11,9 +11,11 @@ namespace Atmos::Spatial
     public:
         Arca::RelicID id;
         Scalers2D previousScalers;
+        Scalers2D newScalers;
 
         BoundsScaled() = default;
-        explicit BoundsScaled(Arca::RelicID id, Scalers2D previousScalers) : id(id), previousScalers(previousScalers)
+        explicit BoundsScaled(Arca::RelicID id, Scalers2D previousScalers, Scalers2D newScalers) :
+            id(id), previousScalers(previousScalers), newScalers(newScalers)
         {}
     };
 }

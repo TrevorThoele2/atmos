@@ -17,12 +17,6 @@ namespace Atmos::Asset
     private:
         Resource::Manager* resourceManager;
     };
-
-    template<>
-    struct CuratorTraits<Audio> : CuratorTraitsBase<Audio>
-    {
-        constexpr static DebugStatisticsSize debugStatisticsSize = &Debug::Statistics::Memory::audioAssetSize;
-    };
 }
 
 namespace Arca

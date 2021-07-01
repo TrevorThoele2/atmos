@@ -8,8 +8,6 @@
 #include "ChangeMaterialAsset.h"
 #include "ChangeViewSlice.h"
 
-#include "DebugProfiler.h"
-
 namespace Atmos::Render
 {
     class Curator final : public Arca::Curator
@@ -23,8 +21,6 @@ namespace Atmos::Render
         void Handle(const ChangeViewSlice& command);
     private:
         Arca::Index<MainSurface> mainSurface;
-    private:
-        Debug::Profiler debugRenderProfiler;
     };
 }
 

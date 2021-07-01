@@ -6,12 +6,6 @@
 namespace Atmos::Asset
 {
     using ActionCurator = Curator<Action>;
-
-    template<>
-    struct CuratorTraits<Action> : CuratorTraitsBase<Action>
-    {
-        constexpr static DebugStatisticsSize debugStatisticsSize = &Debug::Statistics::Memory::materialAssetSize;
-    };
 }
 
 namespace Arca

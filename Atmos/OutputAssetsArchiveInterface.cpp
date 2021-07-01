@@ -30,7 +30,13 @@ namespace Atmos::World::Serialization
         for(auto& save : saves)
         {
             zip.PutNextEntry(folder + "/" + save.name);
-            zip.Write(&save.memory[0], save.memory.size());
+            if (save.memory.size() != 0)
+                zip.Write(&save.memory[0], save.memory.size());
+            else
+            {
+                unsigned char byte = 0;
+                zip.Write(&byte, 1);
+            }
         }
     }
 }

@@ -279,7 +279,7 @@ public:
             Atmos::Spatial::Scalers2D, Atmos::Spatial::Scalers2D::Value, Atmos::Spatial::Scalers2D::Value>();
         const auto rotation = dataGeneration.Random<Atmos::Spatial::Angle2D>();
         const auto index = reliquary.Do(Arca::Create<Atmos::Spatial::Bounds>{
-            openRelic, Atmos::Spatial::BoundsSpace::World, position, baseSize, scalers, rotation});
+            openRelic, Atmos::Spatial::Space::World, position, baseSize, scalers, rotation});
         return TupleOf<T>(index);
     }
 private:

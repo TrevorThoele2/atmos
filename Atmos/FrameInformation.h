@@ -11,8 +11,6 @@ namespace Atmos::Frame
     class Information final
     {
     public:
-        Information();
-
         Time::Point<> startTime;
         Time::Point<> endTime;
 
@@ -21,7 +19,14 @@ namespace Atmos::Frame
 
         FramesPerSecond framesPerSecond = 0;
 
-        Time::Stopwatch stopwatch;
+        struct Profilers
+        {
+            Time::Stopwatch render;
+            Time::Stopwatch frame;
+            Time::Stopwatch idle;
+
+            Profilers();
+        } profilers;
     };
 }
 

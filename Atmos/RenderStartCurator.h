@@ -4,7 +4,7 @@
 
 #include "Work.h"
 
-namespace Atmos::Frame
+namespace Atmos::Render
 {
     class StartCurator final : public Arca::Curator
     {
@@ -18,19 +18,20 @@ namespace Atmos::Frame
 namespace Arca
 {
     template<>
-    struct Traits<Atmos::Frame::StartCurator>
+    struct Traits<Atmos::Render::StartCurator>
     {
         static const ObjectType objectType = ObjectType::Curator;
-        static TypeName TypeName() { return "Atmos::Frame::StartCurator"; }
-        using HandledCommands = HandledCommands<Atmos::Work>;
+        static TypeName TypeName() { return "Atmos::Render::StartCurator"; }
+        using HandledCommands = HandledCommands<
+            Atmos::Work>;
     };
 }
 
 namespace Inscription
 {
     template<class Archive>
-    struct ScribeTraits<Atmos::Frame::StartCurator, Archive> final
+    struct ScribeTraits<Atmos::Render::StartCurator, Archive> final
     {
-        using Category = ArcaNullScribeCategory<Atmos::Frame::StartCurator>;
+        using Category = ArcaNullScribeCategory<Atmos::Render::StartCurator>;
     };
 }

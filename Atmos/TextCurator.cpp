@@ -43,28 +43,40 @@ namespace Atmos::Render
     void TextCurator::WorkImpl(
         Spatial::AxisAlignedBox3D cameraBox,
         Spatial::Point2D cameraTopLeft,
-        Arca::Index<MainSurface> mainSurface)
+        const MainSurface& mainSurface)
     {
         auto indices = Owner().Batch<Matrix>();
 
         for (auto& index : indices)
+            StageRender(
+                std::get<0>(index).ID(),
+                *std::get<0>(index),
+                *std::get<1>(index),
+                *std::get<2>(index),
+                cameraTopLeft,
+                mainSurface);
+    }
+
+    void TextCurator::StageRender(
+        Arca::RelicID id,
+        const RenderCore& renderCore,
+        const TextCore& core,
+        const Spatial::Bounds& bounds,
+        Spatial::Point2D cameraTopLeft,
+        const MainSurface& mainSurface)
+    {
+        const auto asset = core.font.Get();
+        const auto material = renderCore.material;
+        const auto resource = const_cast<Resource::Text*>(core.resource.get());
+        if (asset && material && asset->Resource() && resource)
         {
-            auto& renderCore = *std::get<0>(index);
-            auto& core = *std::get<1>(index);
-            auto& bounds = *std::get<2>(index);
-            const auto asset = core.font.Get();
-            const auto material = renderCore.material;
-            const auto resource = const_cast<Resource::Text*>(core.resource.get());
-            if (!asset || !material || !asset->Resource() || !resource)
-                continue;
-            
             const auto boundsSpace = bounds.Space();
             const auto position = ToRenderPoint(bounds.Position(), cameraTopLeft, boundsSpace);
             const auto baseSize = bounds.BaseSize();
             const auto rotation = bounds.Rotation();
             const auto color = renderCore.color;
 
-            const auto viewSlice = Arca::Index<ViewSlice>(std::get<0>(index).ID(), Owner());
+            const auto viewSlice = Arca::Index<ViewSlice>(id, Owner());
             const auto [size, slice] = ViewSliceDependent(viewSlice, baseSize, bounds.Size(), bounds.Scalers());
 
             const TextRender render
@@ -78,7 +90,7 @@ namespace Atmos::Render
                 color,
                 ToRenderSpace(boundsSpace)
             };
-            mainSurface->StageRender(render);
+            mainSurface.StageRender(render);
         }
     }
 

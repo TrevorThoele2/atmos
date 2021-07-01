@@ -51,17 +51,22 @@ namespace Atmos::Render
     void LineCurator::WorkImpl(
         Spatial::AxisAlignedBox3D cameraBox,
         Spatial::Point2D cameraTopLeft,
-        Arca::Index<MainSurface> mainSurface)
+        const MainSurface& mainSurface)
     {
         auto indices = octree.AllWithin(cameraBox);
 
         for (auto& index : indices)
-        {
-            auto& value = *index->value;
-            const auto material = value.renderCore->material;
-            if (!material)
-                continue;
+            StageRender(*index->value, cameraTopLeft, mainSurface);
+    }
 
+    void LineCurator::StageRender(
+        const Line& value,
+        Spatial::Point2D cameraTopLeft,
+        const MainSurface& mainSurface)
+    {
+        const auto material = value.renderCore->material;
+        if (material)
+        {
             const auto z = value.z;
             const auto width = value.width;
             const auto color = value.renderCore->color;
@@ -77,9 +82,9 @@ namespace Atmos::Render
                 material,
                 width,
                 color,
-                ToRenderSpace(Spatial::BoundsSpace::World)
+                ToRenderSpace(Spatial::Space::World)
             };
-            mainSurface->StageRender(render);
+            mainSurface.StageRender(render);
         }
     }
 

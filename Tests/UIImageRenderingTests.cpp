@@ -32,7 +32,7 @@ SCENARIO_METHOD(UIImageRenderingTestsFixture, "rendering UI images", "[ui]")
             *engine.mockTextManager,
             *engine.mockScriptManager,
             *engine.worldManager,
-            Spatial::Size2D{ 10000, 10000 },
+            Size2D{ 10000, 10000 },
             *engine.mockWindow,
             engine.Logger());
         World::Field field(0, fieldOrigin.Actualize());
@@ -54,7 +54,7 @@ SCENARIO_METHOD(UIImageRenderingTestsFixture, "rendering UI images", "[ui]")
         auto material = fieldReliquary.Do(Arca::Create<Asset::Material> {
             String{}, std::vector<Asset::Material::Pass>{}});
 
-        auto positions = std::vector<Point3D>
+        auto positions = std::vector
         {
             Point3D
             {
@@ -75,7 +75,7 @@ SCENARIO_METHOD(UIImageRenderingTestsFixture, "rendering UI images", "[ui]")
                 dataGeneration.Random<Point3D::Value>(TestFramework::Range<Point3D::Value>(-1000, 1000))
             }
         };
-        auto scalers = std::vector<Scalers2D>
+        auto scalers = std::vector
         {
             Scalers2D
             {

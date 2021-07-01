@@ -13,12 +13,6 @@ namespace Atmos::Asset
         using Curator::Handle;
         Resource::LoadedData<Resource::Font> Handle(const Resource::LoadData<Resource::Font>& command);
     };
-
-    template<>
-    struct CuratorTraits<Font> : CuratorTraitsBase<Font>
-    {
-        constexpr static DebugStatisticsSize debugStatisticsSize = &Debug::Statistics::Memory::materialAssetSize;
-    };
 }
 
 namespace Arca

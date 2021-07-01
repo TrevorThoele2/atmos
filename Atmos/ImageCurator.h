@@ -11,6 +11,7 @@
 #include "ChangeImageCore.h"
 #include "FindImagesByBox.h"
 #include "ViewSlice.h"
+#include "BoundsChanged.h"
 
 namespace Atmos::Render
 {
@@ -26,16 +27,26 @@ namespace Atmos::Render
         void WorkImpl(
             Spatial::AxisAlignedBox3D cameraBox,
             Spatial::Point2D cameraTopLeft,
-            Arca::Index<MainSurface> mainSurface) override;
+            const MainSurface& mainSurface) override;
     private:
-        using WorldMatrix = Arca::All<RenderCore, ImageCore, Arca::Either<Spatial::Bounds>>;
-        using WorldIndex = Arca::Index<WorldMatrix>;
-        Spatial::Grid::Octree<Arca::RelicID, WorldIndex> octree;
+        using Matrix = Arca::All<RenderCore, ImageCore, Arca::Either<Spatial::Bounds>>;
+        using Index = Arca::Index<Matrix>;
+        Spatial::Grid::Octree<Arca::RelicID, Index> worldOctree;
 
-        void OnCreated(const Arca::MatrixFormed<WorldMatrix>& signal);
-        void OnDestroying(const Arca::MatrixDissolved<WorldMatrix>& signal);
+        std::vector<Arca::Index<Matrix>> screenList;
 
-        static Spatial::AxisAlignedBox3D BoxFor(const WorldIndex& index);
+        void StageRender(
+            Arca::RelicID id,
+            const Index::ReferenceValueT& value,
+            Spatial::Point2D cameraTopLeft,
+            const MainSurface& mainSurface);
+
+        void OnCreated(const Arca::MatrixFormed<Matrix>& signal);
+        void OnDestroying(const Arca::MatrixDissolved<Matrix>& signal);
+        void OnChanged(const Spatial::BoundsChanged& signal);
+        
+        static Spatial::Bounds BoundsFor(const Index& index);
+        static Spatial::AxisAlignedBox3D BoxFor(const Spatial::Bounds& bounds);
     private:
         static std::tuple<Spatial::Size2D, Spatial::AxisAlignedBox2D> ViewSliceDependent(
             Arca::Index<ViewSlice> viewSlice,

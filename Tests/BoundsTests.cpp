@@ -22,7 +22,7 @@ SCENARIO_METHOD(BoundsTestsFixture, "bounds", "[spatial]")
         auto created = reliquary->Do(
             Arca::Create<Arca::OpenRelic>());
         auto bounds = reliquary->Do(
-            Arca::Create<Bounds>(created, BoundsSpace::World, Point3D{}, Size2D{ 1, 1 }, Scalers2D{ 1, 1 }, Angle2D{}));
+            Arca::Create<Bounds>(created, Space::World, Point3D{}, Size2D{ 1, 1 }, Scalers2D{ 1, 1 }, Angle2D{}));
 
         WHEN("moving bounds to position")
         {

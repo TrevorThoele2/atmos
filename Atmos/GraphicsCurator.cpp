@@ -87,14 +87,14 @@ namespace Atmos::Render
 
     void GraphicsCurator::AttemptReconstruct(const Spatial::Size2D& size)
     {
-        if (!manager->ShouldReconstruct())
-            return;
+        if (manager->ShouldReconstruct())
+        {
+            GraphicsReconstructionObjects reconstructionObjects;
+            reconstructionObjects.screenSize = size;
+            reconstructionObjects.shaderAssets = MutablePointersOf<Asset::Shader>();
+            reconstructionObjects.mainSurface = MutablePointer().Of<MainSurface>();
 
-        GraphicsReconstructionObjects reconstructionObjects;
-        reconstructionObjects.screenSize = size;
-        reconstructionObjects.shaderAssets = MutablePointersOf<Asset::Shader>();
-        reconstructionObjects.mainSurface = MutablePointer().Of<MainSurface>();
-
-        manager->Reconstruct(reconstructionObjects);
+            manager->Reconstruct(reconstructionObjects);
+        }
     }
 }
