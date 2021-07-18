@@ -192,6 +192,7 @@ namespace Atmos
         void RegisterTypes(Arca::ReliquaryOrigin& origin)
         {
             origin
+                .Register<StartCurator>()
                 .Register<RenderCore>()
                 .Register<ImageCore>()
                 .Register<StaticImage>()
@@ -207,7 +208,8 @@ namespace Atmos
                 .Register<SurfaceCore>()
                 .Register<SurfaceCurator>()
                 .Register<GraphicsSettings>()
-                .Register<ViewSlice>();
+                .Register<ViewSlice>()
+                .Register<EndCurator>();
         }
 
         void RegisterTypes(

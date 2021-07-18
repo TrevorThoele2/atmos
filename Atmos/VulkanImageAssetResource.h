@@ -1,26 +1,16 @@
 #pragma once
 
 #include "ImageAssetResource.h"
-#include "VulkanIncludes.h"
-#include "VulkanCombinedImageSamplerDescriptor.h"
+#include "VulkanImageResourceData.h"
 
 namespace Atmos::Asset::Resource::Vulkan
 {
     class Image final : public Resource::Image
     {
     public:
-        Spatial::Size2D size;
-        vk::Image image;
-        vk::DeviceMemory memory;
-        vk::ImageView imageView;
-        Render::Vulkan::CombinedImageSamplerDescriptor descriptor;
+        Render::Resource::Vulkan::ImageData imageData;
     public:
-        Image(
-            Spatial::Size2D size,
-            vk::Image image,
-            vk::DeviceMemory memory,
-            vk::ImageView imageView,
-            Render::Vulkan::CombinedImageSamplerDescriptor descriptor);
+        Image(const Render::Resource::Vulkan::ImageData& imageData);
 
         [[nodiscard]] Spatial::Size2D Size() const override;
     };

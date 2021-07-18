@@ -40,7 +40,7 @@ SCENARIO_METHOD(AngelScriptTestsFixture, "running AngelScript scripts", "[script
         {
             finishes.push_back(signal);
         });
-
+    
     GIVEN("empty script")
     {
         CompileAndCreateScript(
@@ -95,6 +95,37 @@ SCENARIO_METHOD(AngelScriptTestsFixture, "running AngelScript scripts", "[script
             {
                 REQUIRE(finishes.size() == 1);
                 REQUIRE(std::get<int>(std::get<Variant>(finishes[0].result)) == 123);
+            }
+        }
+    }
+
+    GIVEN("script that dereferences null")
+    {
+        CompileAndCreateScript(
+            "basic_script.as",
+            "class MyClass\n" \
+            "{\n" \
+            "    void Do() {}\n" \
+            "}\n" \
+            "\n" \
+            "void main()\n" \
+            "{\n" \
+            "    MyClass@ myClass = null;\n" \
+            "    myClass.Do();\n" \
+            "}",
+            fieldReliquary);
+
+        WHEN("working reliquary")
+        {
+            fieldReliquary.Do(Work{});
+
+            THEN("script has failed")
+            {
+                REQUIRE(finishes.size() == 1);
+
+                const auto failure = std::get<Scripting::Failure>(finishes[0].result);
+                REQUIRE(failure.function == "main");
+                REQUIRE(failure.message == "Null pointer access");
             }
         }
     }

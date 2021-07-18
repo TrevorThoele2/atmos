@@ -45,7 +45,7 @@ namespace Atmos::Render::Vulkan
     {
     public:
         QuadRenderer(
-            std::shared_ptr<vk::Device> device,
+            vk::Device device,
             vk::Queue graphicsQueue,
             vk::PhysicalDeviceMemoryProperties memoryProperties,
             vk::RenderPass renderPass,
@@ -158,6 +158,6 @@ namespace Atmos::Render::Vulkan
     private:
         vk::Queue graphicsQueue;
 
-        std::shared_ptr<vk::Device> device;
+        vk::Device device;
     };
 }

@@ -30,7 +30,7 @@ namespace Atmos::Render
         void StageRender(const RegionRender& regionRender) const;
         void StageRender(const TextRender& textRender) const;
 
-        void DrawFrame() const;
+        void DrawFrame(const Spatial::Point2D& mapPosition) const;
 
         [[nodiscard]] Spatial::Size2D Size() const;
 

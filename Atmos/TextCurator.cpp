@@ -17,21 +17,28 @@ namespace Atmos::Render
 
     void TextCurator::Handle(const ChangeTextCore& command)
     {
-        auto core = MutablePointer().Of<TextCore>(command.id);
+        bool changed = false;
+
+        const auto attemptChange = [&changed](auto& set, auto& optional)
+        {
+            if (optional && set != *optional)
+            {
+                set = *optional;
+                changed = true;
+            }
+        };
+
+        const auto core = MutablePointer().Of<TextCore>(command.id);
         if (core)
         {
-            if (command.string)
-                core->string = *command.string;
-            if (command.font)
-                core->font = *command.font;
-            if (command.wrapWidth)
-                core->wrapWidth = *command.wrapWidth;
-            if (command.bold)
-                core->bold = *command.bold;
-            if (command.italics)
-                core->italics = *command.italics;
+            attemptChange(core->string, command.string);
+            attemptChange(core->font, command.font);
+            attemptChange(core->wrapWidth, command.wrapWidth);
+            attemptChange(core->bold, command.bold);
+            attemptChange(core->italics, command.italics);
 
-            CalculateForText(command.id);
+            if (changed)
+                CalculateForText(command.id);
         }
     }
     

@@ -20,7 +20,7 @@ void MockSurfaceResource::StageRender(const Atmos::Render::TextRender& textRende
     textRenders.push_back(textRender);
 }
 
-void MockSurfaceResource::DrawFrame(Arca::Reliquary& reliquary, const Atmos::Render::Color& backgroundColor)
+void MockSurfaceResource::DrawFrame(const Atmos::Spatial::Point2D& mapPosition, const Atmos::Render::Color& backgroundColor)
 {
     
 }

@@ -6,7 +6,11 @@
 
 namespace Atmos
 {
-    Engine::~Engine() = default;
+    Engine::~Engine()
+    {
+        managers.world.reset();
+        managers.graphics.reset();
+    }
 
     void Engine::UseField(World::Field&& field, std::vector<Property>&& worldProperties, const File::Path& assetsFilePath)
     {
@@ -35,9 +39,8 @@ namespace Atmos
         return *logger;
     }
 
-    Engine::Engine(InitializationProperties&& initializationProperties, Logging::Logger& logger) : logger(&logger)
-    {
-        managers = Managers
+    Engine::Engine(InitializationProperties&& initializationProperties, Logging::Logger& logger) :
+        managers
         {
             std::move(initializationProperties.system),
             std::move(initializationProperties.assetResourceManager),
@@ -48,8 +51,9 @@ namespace Atmos
             std::move(initializationProperties.textManager),
             std::move(initializationProperties.scriptManager),
             std::move(initializationProperties.worldManager)
-        };
-
+        },
+        logger(&logger)
+    {
         managers.window->ChangeSize(Spatial::Size2D{ 1024, 768 });
         managers.window->CenterOnScreen();
 

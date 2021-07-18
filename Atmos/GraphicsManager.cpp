@@ -36,17 +36,15 @@ namespace Atmos::Render
     }
 
     std::unique_ptr<Resource::Surface> GraphicsManager::CreateSurfaceResource(
-        void* window,
-        Arca::Reliquary& reliquary)
+        void* window)
     {
-        return CreateSurfaceResourceImpl(window, reliquary);
+        return CreateSurfaceResourceImpl(window);
     }
 
     std::unique_ptr<Resource::Surface> GraphicsManager::CreateMainSurfaceResource(
-        void* window,
-        Arca::Reliquary& reliquary)
+        void* window)
     {
-        return CreateMainSurfaceResourceImpl(window, reliquary);
+        return CreateMainSurfaceResourceImpl(window);
     }
 
     std::unique_ptr<Resource::Text> GraphicsManager::CreateTextResource(
@@ -71,9 +69,14 @@ namespace Atmos::Render
         ResourceDestroyingImpl(resource);
     }
 
-    void GraphicsManager::PruneResources(Arca::Reliquary& reliquary)
+    void GraphicsManager::ResourceDestroying(Resource::Text& resource)
     {
-        PruneResourcesImpl(reliquary);
+        ResourceDestroyingImpl(resource);
+    }
+
+    void GraphicsManager::PruneResources()
+    {
+        PruneResourcesImpl();
     }
 
     File::Path GraphicsManager::CompileShader(

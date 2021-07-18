@@ -36,8 +36,30 @@ namespace Atmos::Render
         void AttemptReconstruct(const Spatial::Size2D& size);
     private:
         template<class T>
+        void OnResourceDestroying();
+        template<class T>
+        void HandleResourceOwnerDestroying(Arca::RelicID id);
+
+        template<class T>
         std::vector<T*> MutablePointersOf();
     };
+
+    template<class T>
+    void GraphicsCurator::OnResourceDestroying()
+    {
+        Owner().On<Arca::DestroyingKnown<T>>([this](const Arca::DestroyingKnown<T>& signal)
+            {
+                HandleResourceOwnerDestroying<T>(signal.index.ID());
+            });
+    }
+    
+    template<class T>
+    void GraphicsCurator::HandleResourceOwnerDestroying(Arca::RelicID id)
+    {
+        const auto resource = MutablePointer().Of<T>(id)->Resource();
+        if (resource)
+            this->manager->ResourceDestroying(*resource);
+    }
 
     template<class T>
     std::vector<T*> GraphicsCurator::MutablePointersOf()

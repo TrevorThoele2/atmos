@@ -34,15 +34,13 @@ std::unique_ptr<Asset::Resource::Shader> MockGraphicsManager::CreateShaderResour
 }
 
 std::unique_ptr<Resource::Surface> MockGraphicsManager::CreateMainSurfaceResourceImpl(
-    void* window,
-    Arca::Reliquary& reliquary)
+    void* window)
 {
     return std::make_unique<MockSurfaceResource>();
 }
 
 std::unique_ptr<Resource::Surface> MockGraphicsManager::CreateSurfaceResourceImpl(
-    void* window,
-    Arca::Reliquary& reliquary)
+    void* window)
 {
     return std::make_unique<MockSurfaceResource>();
 }

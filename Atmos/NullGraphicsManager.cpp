@@ -29,7 +29,7 @@ namespace Atmos::Render
         void StageRender(const RegionRender& regionRender) override {}
         void StageRender(const TextRender& textRender) override {}
 
-        void DrawFrame(Arca::Reliquary& reliquary, const Color& backgroundColor) override
+        void DrawFrame(const Spatial::Point2D& mapPosition, const Color& backgroundColor) override
         {}
         
         void OnMaterialDestroying(const Arca::Index<Asset::Material>& material) override
@@ -65,15 +65,13 @@ namespace Atmos::Render
     }
 
     std::unique_ptr<Resource::Surface> NullGraphicsManager::CreateMainSurfaceResourceImpl(
-        void* window,
-        Arca::Reliquary& reliquary)
+        void* window)
     {
         return std::make_unique<SurfaceDataImplementation>();
     }
 
     std::unique_ptr<Resource::Surface> NullGraphicsManager::CreateSurfaceResourceImpl(
-        void* window,
-        Arca::Reliquary& reliquary)
+        void* window)
     {
         return std::make_unique<SurfaceDataImplementation>();
     }

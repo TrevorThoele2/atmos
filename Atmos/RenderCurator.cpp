@@ -4,6 +4,8 @@
 #include "ViewSlice.h"
 #include "ColorChanged.h"
 
+#include "Camera.h"
+
 #include "CreateStopwatch.h"
 #include "DiagnosticsStatistics.h"
 
@@ -16,8 +18,15 @@ namespace Atmos::Render
     {
         auto stopwatch = Time::CreateRealStopwatch();
 
+        const auto camera = Arca::Index<Camera>(Owner());
+        const auto mapPosition = Spatial::Point2D
+        {
+            Spatial::Point2D::Value(camera->Position().x),
+            Spatial::Point2D::Value(camera->Position().y)
+        };
+
         const auto mutableMainPointer = MutablePointer().Of(mainSurface);
-        mutableMainPointer->DrawFrame();
+        mutableMainPointer->DrawFrame(mapPosition);
 
         const auto idleDuration = std::chrono::duration_cast<std::chrono::duration<double>>(stopwatch.Calculate());
         MutablePointer().Of<Diagnostics::Statistics>()->renderTime = idleDuration.count();

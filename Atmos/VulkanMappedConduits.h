@@ -15,7 +15,7 @@ namespace Atmos::Render::Vulkan
         using Group = std::vector<Conduit>;
     public:
         MappedConduits(
-            std::shared_ptr<vk::Device> device,
+            vk::Device device,
             VertexInput vertexInput,
             vk::PrimitiveTopology primitiveTopology,
             vk::RenderPass renderPass,
@@ -32,7 +32,7 @@ namespace Atmos::Render::Vulkan
     private:
         std::unordered_map<Arca::RelicID, Group> groups;
     private:
-        std::shared_ptr<vk::Device> device;
+        vk::Device device;
 
         vk::UniquePipelineLayout layout;
         VertexInput vertexInput;
@@ -48,7 +48,7 @@ namespace Atmos::Render::Vulkan
 
     template<class MaterialT>
     MappedConduits<MaterialT>::MappedConduits(
-        std::shared_ptr<vk::Device> device,
+        vk::Device device,
         VertexInput vertexInput,
         vk::PrimitiveTopology primitiveTopology,
         vk::RenderPass renderPass,
@@ -64,7 +64,7 @@ namespace Atmos::Render::Vulkan
         dynamicStates(dynamicStates)
     {
         const vk::PipelineLayoutCreateInfo layoutCreateInfo({}, descriptorSetLayouts.size(), descriptorSetLayouts.data());
-        layout = device->createPipelineLayoutUnique(layoutCreateInfo);
+        layout = device.createPipelineLayoutUnique(layoutCreateInfo);
     }
 
     template<class MaterialT>
@@ -110,7 +110,7 @@ namespace Atmos::Render::Vulkan
                 group.push_back(Conduit(
                     pass.VertexShader(),
                     pass.FragmentShader(),
-                    *device,
+                    device,
                     layout.get(),
                     renderPass,
                     vertexInput,

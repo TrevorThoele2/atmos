@@ -5,11 +5,17 @@
 #include "VulkanQueueFamilyIndices.h"
 #include "VulkanDebug.h"
 #include "VulkanShaderCompiler.h"
-#include "VulkanCombinedImageSamplerDescriptor.h"
+#include "VulkanImageResourceData.h"
+#include "VulkanStoredResource.h"
 
 #define VK_KHR_WIN32_EXTENSION_NAME "VK_KHR_win32_surface"
 #define VK_EXT_DEBUG_UTILS_EXTENSION_NAME "VK_EXT_debug_utils"
 #define VK_LAYER_KHRONOS_VALIDATION_LAYER_NAME "VK_LAYER_KHRONOS_validation"
+
+namespace Atmos::Render::Resource::Vulkan
+{
+    class BackingSurface;
+}
 
 namespace Atmos::Render::Vulkan
 {
@@ -17,6 +23,7 @@ namespace Atmos::Render::Vulkan
     {
     public:
         GraphicsManager(Logging::Logger& logger);
+        ~GraphicsManager();
 
         void SetFullscreen(bool set) override;
         void ChangeVerticalSync(bool set) override;
@@ -29,18 +36,18 @@ namespace Atmos::Render::Vulkan
             const Bytes& bytes,
             const Name& name) override;
         [[nodiscard]] std::unique_ptr<Resource::Surface> CreateMainSurfaceResourceImpl(
-            void* window,
-            Arca::Reliquary& reliquary) override;
+            void* window) override;
         [[nodiscard]] std::unique_ptr<Resource::Surface> CreateSurfaceResourceImpl(
-            void* window,
-            Arca::Reliquary& reliquary) override;
+            void* window) override;
         [[nodiscard]] std::unique_ptr<Resource::Text> CreateTextResourceImpl(
             const Bytes& bytes,
-            const Spatial::Size2D& size);
+            const Spatial::Size2D& size) override;
 
         void ResourceDestroyingImpl(Asset::Resource::Image& resource) override;
+        void ResourceDestroyingImpl(Resource::Surface& resource) override;
+        void ResourceDestroyingImpl(Resource::Text& resource) override;
 
-        void PruneResourcesImpl(Arca::Reliquary& reliquary) override;
+        void PruneResourcesImpl() override;
 
         File::Path CompileShaderImpl(
             const File::Path& inputFilePath, const std::optional<File::Path>& outputFilePath) override;
@@ -48,28 +55,11 @@ namespace Atmos::Render::Vulkan
         [[nodiscard]] bool ShouldReconstructInternals() const override;
         void ReconstructInternals(GraphicsReconstructionObjects objects) override;
     private:
-        class StoredResource
-        {
-        public:
-            virtual ~StoredResource() = 0;
-        };
-
         using StoredResourcePtr = std::unique_ptr<StoredResource>;
-        using StoredResourceList = std::list<StoredResourcePtr>;
-        StoredResourceList storedResourceList;
+        std::list<StoredResourcePtr> storedResources;
+        std::list<StoredResourcePtr> destroyedResources;
 
-        class StoredImageResource final : public StoredResource
-        {
-        public:
-            vk::Image image;
-            vk::DeviceMemory memory;
-            vk::ImageView imageView;
-            std::shared_ptr<vk::Device> device;
-
-            StoredImageResource(
-                vk::Image image, vk::DeviceMemory memory, vk::ImageView imageView, std::shared_ptr<vk::Device> device);
-            ~StoredImageResource();
-        };
+        void MoveToDestroyedResource(StoredResource& pointer);
     private:
         vk::Instance instance;
         std::vector<const char*> instanceExtensions =
@@ -97,9 +87,9 @@ namespace Atmos::Render::Vulkan
         [[nodiscard]] static bool HasRequiredDeviceExtensionProperties(
             vk::PhysicalDevice physicalDevice, const std::vector<const char*>& deviceExtensions);
     private:
-        std::shared_ptr<vk::Device> device;
+        vk::Device device;
 
-        [[nodiscard]] static std::shared_ptr<vk::Device> CreateDevice(
+        [[nodiscard]] vk::Device CreateDevice(
             vk::Instance instance,
             vk::PhysicalDevice physicalDevice,
             QueueFamilyIndices queueFamilyIndices,
@@ -116,28 +106,23 @@ namespace Atmos::Render::Vulkan
         [[nodiscard]] static std::optional<QueueFamilyIndices> SuitableQueueFamilies(
             vk::PhysicalDevice physicalDevice, vk::SurfaceKHR surface);
     private:
+        std::list<std::unique_ptr<Resource::Vulkan::BackingSurface>> surfaces;
+
         [[nodiscard]] std::unique_ptr<Resource::Surface> CreateSurfaceResourceCommon(
             vk::UniqueSurfaceKHR&& underlying,
             QueueFamilyIndices queueIndices,
             vk::Queue graphicsQueue,
-            vk::Queue presentQueue,
-            Arca::Reliquary& reliquary);
+            vk::Queue presentQueue);
 
         [[nodiscard]] static vk::UniqueSurfaceKHR CreateSurface(void* window, vk::Instance instance);
+
+        void WaitForSurfaces();
     private:
         vk::UniqueSampler sampler;
 
         [[nodiscard]] static vk::UniqueSampler CreateSampler(vk::Device device);
     private:
-        struct ImageData
-        {
-            vk::UniqueImage image;
-            vk::UniqueDeviceMemory memory;
-            vk::UniqueImageView imageView;
-            CombinedImageSamplerDescriptor descriptor;
-        };
-
-        [[nodiscard]] ImageData CreateImageData(const Bytes& bytes, Spatial::Size2D size);
+        [[nodiscard]] Resource::Vulkan::ImageData CreateImageResourceData(const Bytes& bytes, Spatial::Size2D size);
     private:
         std::unique_ptr<Debug> debug;
     private:
@@ -146,7 +131,7 @@ namespace Atmos::Render::Vulkan
         template<class Expected, class Available>
         static std::set<String> Unavailable(Expected expected, Available available);
     };
-
+    
     template<class Expected, class Available>
     std::set<String> GraphicsManager::Unavailable(Expected expected, Available available)
     {

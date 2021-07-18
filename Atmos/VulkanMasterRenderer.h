@@ -34,7 +34,7 @@ namespace Atmos::Render::Vulkan
         Event<> onOutOfDate;
     public:
         MasterRenderer(
-            std::shared_ptr<vk::Device> device,
+            vk::Device device,
             vk::Sampler sampler,
             vk::Queue graphicsQueue,
             vk::Queue presentQueue,
@@ -48,8 +48,7 @@ namespace Atmos::Render::Vulkan
             std::vector<vk::Image> swapchainImages,
             std::vector<vk::ImageView> swapchainImageViews,
             vk::Format imageFormat,
-            vk::Extent2D swapchainExtent,
-            Arca::Reliquary& reliquary);
+            vk::Extent2D swapchainExtent);
     public:
         void StageRender(const ImageRender& imageRender);
         void StageRender(const LineRender& lineRender);
@@ -64,7 +63,7 @@ namespace Atmos::Render::Vulkan
     public:
         void OnMaterialDestroying(const Arca::Index<Asset::Material>& material);
     private:
-        std::shared_ptr<vk::Device> device;
+        vk::Device device;
     private:
         static const int maxFramesInFlight = 2;
         size_t currentFrame = 0;
@@ -78,7 +77,7 @@ namespace Atmos::Render::Vulkan
             LineRenderer line;
             RegionRenderer region;
             RendererGroup(
-                std::shared_ptr<vk::Device> device,
+                vk::Device device,
                 vk::Queue graphicsQueue,
                 vk::PhysicalDeviceMemoryProperties memoryProperties,
                 vk::RenderPass renderPass,

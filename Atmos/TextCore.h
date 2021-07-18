@@ -26,6 +26,8 @@ namespace Atmos::Render
     public:
         TextCore() = default;
         TextCore(const String& string, Arca::Index<Asset::Font> asset, float wrapWidth, bool bold, bool italics);
+
+        [[nodiscard]] ResourceT* Resource();
     };
 }
 

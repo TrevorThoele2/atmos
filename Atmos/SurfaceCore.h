@@ -19,6 +19,8 @@ namespace Atmos::Render
 
         SurfaceCore() = default;
         SurfaceCore(ResourcePtr&& resource);
+
+        [[nodiscard]] ResourceT* Resource();
     };
 }
 

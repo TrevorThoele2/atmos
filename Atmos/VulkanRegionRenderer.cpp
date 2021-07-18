@@ -3,14 +3,14 @@
 namespace Atmos::Render::Vulkan
 {
     RegionRenderer::RegionRenderer(
-        std::shared_ptr<vk::Device> device,
+        vk::Device device,
         vk::Queue graphicsQueue,
         vk::PhysicalDeviceMemoryProperties memoryProperties,
         vk::RenderPass renderPass,
         vk::Extent2D swapchainExtent)
         :
-        vertexBuffer(vertexStride * sizeof(Vertex), *device, memoryProperties, vk::BufferUsageFlagBits::eVertexBuffer),
-        indexBuffer(indexStride * sizeof(Index), *device, memoryProperties, vk::BufferUsageFlagBits::eIndexBuffer),
+        vertexBuffer(vertexStride * sizeof(Vertex), device, memoryProperties, vk::BufferUsageFlagBits::eVertexBuffer),
+        indexBuffer(indexStride * sizeof(Index), device, memoryProperties, vk::BufferUsageFlagBits::eIndexBuffer),
         descriptorSetPool(
             {
                 DescriptorSetPool::Definition

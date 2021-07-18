@@ -8,7 +8,6 @@
 
 #include "LineRender.h"
 #include "LineWidth.h"
-#include "Point3D.h"
 
 #include <glm/glm.hpp>
 
@@ -18,7 +17,7 @@ namespace Atmos::Render::Vulkan
     {
     public:
         LineRenderer(
-            std::shared_ptr<vk::Device> device,
+            vk::Device device,
             vk::Queue graphicsQueue,
             vk::PhysicalDeviceMemoryProperties memoryProperties,
             vk::RenderPass renderPass,
@@ -98,7 +97,7 @@ namespace Atmos::Render::Vulkan
     private:
         vk::Queue graphicsQueue;
 
-        std::shared_ptr<vk::Device> device;
+        vk::Device device;
 
         uint32_t swapchainImageCount = 0;
     };
