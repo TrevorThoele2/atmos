@@ -113,6 +113,7 @@ namespace Atmos
     namespace World
     {
         void RegisterTypes(Arca::ReliquaryOrigin& origin, Manager& manager);
+        Arca::Stage Stage();
     }
 
     namespace Data

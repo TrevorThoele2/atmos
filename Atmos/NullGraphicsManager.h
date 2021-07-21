@@ -10,9 +10,8 @@ namespace Atmos::Render
         NullGraphicsManager(Logging::Logger& logger);
         NullGraphicsManager(const NullGraphicsManager& arg) = delete;
         NullGraphicsManager& operator=(const NullGraphicsManager& arg) = delete;
-
+        
         void SetFullscreen(bool set) override;
-
         void ChangeVerticalSync(bool set) override;
     protected:
         [[nodiscard]] std::unique_ptr<Asset::Resource::Image> CreateImageResourceImpl(

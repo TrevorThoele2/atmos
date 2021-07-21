@@ -5,6 +5,7 @@
 
 #include "WorldManager.h"
 #include "Logger.h"
+#include "LoadAssetsUserContext.h"
 
 namespace Atmos
 {
@@ -29,7 +30,10 @@ namespace Atmos
         using ExecutionPtr = std::unique_ptr<Execution>;
         ExecutionPtr execution;
 
-        void ChangeField(World::FieldID fieldID, const File::Path& assetsFilePath);
+        void ChangeField(World::FieldID fieldID);
+
+        [[nodiscard]] std::unique_ptr<Arca::Reliquary> CreateReliquary();
+        [[nodiscard]] std::unique_ptr<Inscription::LoadAssetsUserContext> CreateLoadAssetsUserContext();
     private:
         struct Managers
         {
@@ -43,7 +47,9 @@ namespace Atmos
             std::unique_ptr<Scripting::Manager> scripts;
             std::unique_ptr<World::Manager> world;
         } managers;
-
+    private:
+        File::Path assetsFilePath;
+    private:
         Logging::Logger* logger;
     };
 }

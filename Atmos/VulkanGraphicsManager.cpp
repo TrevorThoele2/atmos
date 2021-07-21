@@ -36,7 +36,7 @@ namespace Atmos::Render::Vulkan
 
     GraphicsManager::~GraphicsManager()
     {
-        WaitForSurfaces();
+        WaitForSurfacesIdle();
     }
     
     void GraphicsManager::SetFullscreen(bool set)
@@ -84,7 +84,7 @@ namespace Atmos::Render::Vulkan
         if (!queueIndices)
             throw GraphicsError("Could not create surface.");
 
-        device = CreateDevice(instance, physicalDevice, *queueIndices, deviceExtensions, instanceLayers);
+        device = CreateDevice(physicalDevice, *queueIndices, deviceExtensions, instanceLayers);
 
         sampler = CreateSampler(device);
 
@@ -147,8 +147,7 @@ namespace Atmos::Render::Vulkan
 
     void GraphicsManager::PruneResourcesImpl()
     {
-        for(auto& surface : surfaces)
-            surface->WaitForIdle();
+        WaitForSurfacesIdle();
         destroyedResources.clear();
     }
 
@@ -200,7 +199,7 @@ namespace Atmos::Render::Vulkan
 
         handleSurface(*objects.mainSurface->Resource<Resource::Vulkan::Surface>());
     }
-
+    
     void GraphicsManager::MoveToDestroyedResource(StoredResource& pointer)
     {
         for(auto storedResource = storedResources.begin(); storedResource != storedResources.end(); ++storedResource)
@@ -309,7 +308,6 @@ namespace Atmos::Render::Vulkan
     }
 
     vk::Device GraphicsManager::CreateDevice(
-        vk::Instance instance,
         vk::PhysicalDevice physicalDevice,
         QueueFamilyIndices queueFamilyIndices,
         const std::vector<const char*>& deviceExtensions,
@@ -407,7 +405,7 @@ namespace Atmos::Render::Vulkan
         return instance.createWin32SurfaceKHRUnique(createInfo);
     }
 
-    void GraphicsManager::WaitForSurfaces()
+    void GraphicsManager::WaitForSurfacesIdle()
     {
         for (auto& surface : surfaces)
             surface->WaitForIdle();

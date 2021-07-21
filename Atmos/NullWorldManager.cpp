@@ -2,9 +2,13 @@
 
 namespace Atmos::World
 {
-    void NullManager::LockIn(
-        std::unique_ptr<Arca::Reliquary>&& reliquary, Inscription::LoadAssetsUserContext& loadAssetsUserContext)
+    void NullManager::LockIn()
     {}
+
+    bool NullManager::WillLockIn() const
+    {
+        return false;
+    }
 
     void NullManager::Request(FieldID id)
     {}

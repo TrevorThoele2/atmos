@@ -1,7 +1,7 @@
 #include "WorldCurator.h"
 
 #include "Map.h"
-#include "MappedEntities.h"
+#include "FieldChanging.h"
 
 #include "DataAlgorithms.h"
 
@@ -9,6 +9,15 @@ namespace Atmos::World
 {
     Curator::Curator(Init init, Manager& manager) : Arca::Curator(init), manager(&manager)
     {}
+
+    void Curator::Handle(const Work&)
+    {
+        if (manager->WillLockIn())
+        {
+            Owner().Raise(FieldChanging{});
+            manager->LockIn();
+        }
+    }
 
     void Curator::Handle(const RequestField& command)
     {

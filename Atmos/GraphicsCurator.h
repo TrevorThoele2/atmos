@@ -10,6 +10,7 @@
 #include "ChangeVerticalSync.h"
 #include "PruneGraphicsResources.h"
 #include "CompileShader.h"
+#include "FieldChanging.h"
 
 #include "CreateImageAssetResource.h"
 #include "CreateShaderAssetResource.h"
@@ -42,6 +43,8 @@ namespace Atmos::Render
 
         template<class T>
         std::vector<T*> MutablePointersOf();
+    private:
+        void OnFieldChanging();
     };
 
     template<class T>

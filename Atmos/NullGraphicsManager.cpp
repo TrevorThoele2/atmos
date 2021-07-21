@@ -43,7 +43,7 @@ namespace Atmos::Render
 
     NullGraphicsManager::NullGraphicsManager(Logging::Logger& logger) : GraphicsManager(logger, "Null")
     {}
-
+    
     void NullGraphicsManager::SetFullscreen(bool set)
     {}
 

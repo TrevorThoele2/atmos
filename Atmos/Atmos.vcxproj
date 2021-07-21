@@ -99,6 +99,7 @@
     <ClInclude Include="AssetResourceManager.h" />
     <ClInclude Include="AssetResourceTraits.h" />
     <ClInclude Include="BoundsChanged.h" />
+    <ClInclude Include="FieldChanging.h" />
     <ClInclude Include="VulkanBackingSurfaceResource.h" />
     <ClInclude Include="VulkanImageResourceData.h" />
     <ClInclude Include="VulkanStoredImageResource.h" />

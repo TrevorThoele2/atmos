@@ -90,7 +90,6 @@ namespace Atmos::Render::Vulkan
         vk::Device device;
 
         [[nodiscard]] vk::Device CreateDevice(
-            vk::Instance instance,
             vk::PhysicalDevice physicalDevice,
             QueueFamilyIndices queueFamilyIndices,
             const std::vector<const char*>& deviceExtensions,
@@ -116,7 +115,7 @@ namespace Atmos::Render::Vulkan
 
         [[nodiscard]] static vk::UniqueSurfaceKHR CreateSurface(void* window, vk::Instance instance);
 
-        void WaitForSurfaces();
+        void WaitForSurfacesIdle();
     private:
         vk::UniqueSampler sampler;
 
