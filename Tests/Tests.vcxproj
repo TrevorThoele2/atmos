@@ -136,6 +136,7 @@
     <ClCompile Include="AngelScriptAudioTests.cpp" />
     <ClCompile Include="AngelScriptBoundsTests.cpp" />
     <ClCompile Include="AngelScriptDiagnosticsTests.cpp" />
+    <ClCompile Include="AngelScriptDurationTests.cpp" />
     <ClCompile Include="AngelScriptDynamicTextTests.cpp" />
     <ClCompile Include="AngelScriptEntityTests.cpp" />
     <ClCompile Include="AngelScriptExceptionTests.cpp" />
@@ -203,6 +204,7 @@
     <ClInclude Include="AngelScriptBoundsTests.h" />
     <ClInclude Include="AngelScriptCreateObjectFixture.h" />
     <ClInclude Include="AngelScriptDiagnosticsTests.h" />
+    <ClInclude Include="AngelScriptDurationTests.h" />
     <ClInclude Include="AngelScriptDynamicTextTests.h" />
     <ClInclude Include="AngelScriptEntityTests.h" />
     <ClInclude Include="AngelScriptExceptionTests.h" />

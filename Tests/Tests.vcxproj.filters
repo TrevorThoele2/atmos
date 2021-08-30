@@ -193,6 +193,9 @@
     <ClCompile Include="AngelScriptDiagnosticsTests.cpp">
       <Filter>Source Files\Tests\Scripting\AngelScript\Atmos\Diagnostics</Filter>
     </ClCompile>
+    <ClCompile Include="AngelScriptDurationTests.cpp">
+      <Filter>Source Files\Tests\Scripting\AngelScript\Atmos\Time</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneralFixture.h">
@@ -398,6 +401,9 @@
     </ClInclude>
     <ClInclude Include="AngelScriptDiagnosticsTests.h">
       <Filter>Header Files\Tests\Scripting\AngelScript\Atmos\Diagnostics</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptDurationTests.h">
+      <Filter>Header Files\Tests\Scripting\AngelScript\Atmos\Time</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -4,9 +4,13 @@
 #include <Arca/ReliquaryOrigin.h>
 #include <Atmos/TypeRegistration.h>
 #include <Atmos/ModifyEntityBoundary.h>
+#include <Atmos/MoveEntityTo.h>
 #include <Atmos/Work.h>
 
-EntityTestsFixture::EntityTestsFixture()
+EntityTestsFixture::EntityTestsFixture() :
+    worldManager(
+        [this]() { return std::unique_ptr<Arca::Reliquary>{}; },
+        [this]() { return std::unique_ptr<Inscription::LoadAssetsUserContext>{}; })
 {
     Arca::ReliquaryOrigin reliquaryOrigin;
 

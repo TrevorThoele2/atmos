@@ -1,8 +1,12 @@
 #include "MockWorldManager.h"
 
-void MockWorldManager::LockIn(
-    std::unique_ptr<Arca::Reliquary>&& reliquary, Inscription::LoadAssetsUserContext& loadAssetsUserContext)
+void MockWorldManager::LockIn()
 {}
+
+bool MockWorldManager::WillLockIn() const
+{
+    return false;
+}
 
 void MockWorldManager::Request(Atmos::World::FieldID id)
 {

@@ -5,7 +5,6 @@
 #include <Atmos/Entity.h>
 #include <Atmos/EntityPrototype.h>
 #include <Atmos/MappedEntities.h>
-#include <Atmos/MoveEntityTo.h>
 #include <Atmos/RealWorldManager.h>
 
 using namespace Atmos;
