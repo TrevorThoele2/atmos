@@ -182,7 +182,7 @@ namespace Atmos::Scripting::Angel
         template<class T, class DerivedT>
         auto Object<T, DerivedT>::Compare(GenericFunction function) -> DerivedT&
         {
-            return ConstMethod(function, "bool", "opCmp", { "const " + representationName + " &in" });
+            return ConstMethod(function, "int", "opCmp", { "const " + representationName + " &in" });
         }
 
         template<class T, class DerivedT>
