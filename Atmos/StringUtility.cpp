@@ -170,9 +170,9 @@ namespace Atmos
         return ToString(size.width) + "," + ToString(size.height);
     }
 
-    String ToString(const Arca::SlimHandle& handle)
+    String ToString(const Arca::Handle& handle)
     {
-        return handle.Type().name + "," + ToString(handle.Type().isConst) + "," + ToString(handle.ID());
+        return handle.type.name + "," + ToString(handle.type.isConst) + "," + ToString(handle.id);
     }
 
     class ToStringImplementation

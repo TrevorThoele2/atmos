@@ -303,13 +303,11 @@ SCENARIO_METHOD(AngelScriptScriptTestsFixture, "running script AngelScript scrip
             "{\n" \
             "    auto index = Atmos::Scripting::Script(id);\n" \
             "    auto handle = Arca::Handle(index);\n"\
-            "    return Atmos::ToString(handle.ID()) +\n" \
+            "    return Atmos::ToString(handle.id) +\n" \
             "        \" \" +\n" \
-            "        handle.Type().name +\n" \
+            "        handle.type.name +\n" \
             "        \" \" +\n" \
-            "        Atmos::ToString(handle.Type().isConst) +\n" \
-            "        \" \" +\n" \
-            "        Atmos::ToString(handle.ObjectType());\n" \
+            "        Atmos::ToString(handle.type.isConst);\n" \
             "}",
             { index.ID() },
             fieldReliquary);
@@ -324,13 +322,11 @@ SCENARIO_METHOD(AngelScriptScriptTestsFixture, "running script AngelScript scrip
 
                 Arca::Handle handle = index;
                 const auto expectedResult =
-                    ToString(handle.ID()) +
+                    ToString(handle.id) +
                     " " +
-                    handle.Type().name +
+                    handle.type.name +
                     " " +
-                    ToString(handle.Type().isConst) +
-                    " " +
-                    ToString(static_cast<std::underlying_type_t<Arca::HandleObjectType>>(handle.ObjectType()));
+                    ToString(handle.type.isConst);
 
                 REQUIRE(std::get<String>(std::get<Variant>(finishes[0].result)) == expectedResult);
             }
