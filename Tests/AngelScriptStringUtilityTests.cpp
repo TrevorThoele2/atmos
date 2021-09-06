@@ -2,45 +2,8 @@
 
 #include "AngelScriptStringUtilityTests.h"
 
-#include "ScriptEngine.h"
-
-#include <Atmos/TypeRegistration.h>
-#include <Atmos/Script.h>
-#include <Atmos/ScriptFinished.h>
-#include <Atmos/Work.h>
-
 SCENARIO_METHOD(AngelScriptStringUtilityTestsFixture, "running StringUtility AngelScript scripts", "[script][angelscript]")
 {
-    Logging::Logger logger(Logging::Severity::Verbose);
-    logger.Add<Logging::FileSink>();
-    ScriptEngine engine(logger);
-
-    auto fieldOrigin = Arca::ReliquaryOrigin();
-    RegisterFieldTypes(
-        fieldOrigin,
-        *engine.mockAssetResourceManager,
-        *engine.mockAudioManager,
-        *engine.mockInputManager,
-        *engine.mockGraphicsManager,
-        *engine.mockTextManager,
-        *engine.scriptManager,
-        *engine.mockWorldManager,
-        Spatial::Size2D{
-            std::numeric_limits<Spatial::Size2D::Value>::max(),
-            std::numeric_limits<Spatial::Size2D::Value>::max() },
-            *engine.mockWindow,
-            engine.Logger());
-    fieldOrigin.CuratorCommandPipeline<Work>(Arca::Pipeline{ Scripting::Stage() });
-    World::Field field(0, fieldOrigin.Actualize());
-
-    auto& fieldReliquary = field.Reliquary();
-
-    std::vector<Scripting::Finished> finishes;
-    fieldReliquary.On<Scripting::Finished>([&finishes](const Scripting::Finished& signal)
-        {
-            finishes.push_back(signal);
-        });
-
     GIVEN("script that converts string to bool")
     {
         auto value = dataGeneration.Random<bool>();
@@ -53,11 +16,11 @@ SCENARIO_METHOD(AngelScriptStringUtilityTestsFixture, "running StringUtility Ang
             "    return fromString;\n" \
             "}",
             { Scripting::Variant{ Chroma::ToString(value) } },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("script has executed")
             {
@@ -79,11 +42,11 @@ SCENARIO_METHOD(AngelScriptStringUtilityTestsFixture, "running StringUtility Ang
             "    return fromString;\n" \
             "}",
             { Scripting::Variant{ Chroma::ToString(value) } },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("script has executed")
             {
@@ -105,11 +68,11 @@ SCENARIO_METHOD(AngelScriptStringUtilityTestsFixture, "running StringUtility Ang
             "    return fromString;\n" \
             "}",
             { Scripting::Variant{ Chroma::ToString(value) } },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("script has executed")
             {
@@ -131,11 +94,11 @@ SCENARIO_METHOD(AngelScriptStringUtilityTestsFixture, "running StringUtility Ang
             "    return fromString;\n" \
             "}",
             { Scripting::Variant{ Chroma::ToString(value) } },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("script has executed")
             {
@@ -157,11 +120,11 @@ SCENARIO_METHOD(AngelScriptStringUtilityTestsFixture, "running StringUtility Ang
             "    return fromString;\n" \
             "}",
             { Scripting::Variant{ Chroma::ToString(value) } },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("script has executed")
             {
@@ -183,11 +146,11 @@ SCENARIO_METHOD(AngelScriptStringUtilityTestsFixture, "running StringUtility Ang
             "    return fromString;\n" \
             "}",
             { Scripting::Variant{ Chroma::ToString(value) } },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("script has executed")
             {
@@ -209,11 +172,11 @@ SCENARIO_METHOD(AngelScriptStringUtilityTestsFixture, "running StringUtility Ang
             "    return fromString;\n" \
             "}",
             { Scripting::Variant{ Chroma::ToString(value) } },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("script has executed")
             {
@@ -235,11 +198,11 @@ SCENARIO_METHOD(AngelScriptStringUtilityTestsFixture, "running StringUtility Ang
             "    return fromString;\n" \
             "}",
             { Scripting::Variant{ Chroma::ToString(value) } },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("script has executed")
             {
@@ -261,11 +224,11 @@ SCENARIO_METHOD(AngelScriptStringUtilityTestsFixture, "running StringUtility Ang
             "    return fromString;\n" \
             "}",
             { Scripting::Variant{ Chroma::ToString(value) } },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("script has executed")
             {
@@ -287,11 +250,11 @@ SCENARIO_METHOD(AngelScriptStringUtilityTestsFixture, "running StringUtility Ang
             "    return fromString;\n" \
             "}",
             { Scripting::Variant{ Chroma::ToString(value) } },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("script has executed")
             {
@@ -313,11 +276,11 @@ SCENARIO_METHOD(AngelScriptStringUtilityTestsFixture, "running StringUtility Ang
             "    return fromString;\n" \
             "}",
             { Scripting::Variant{ Chroma::ToString(value) } },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("script has executed")
             {
@@ -339,11 +302,11 @@ SCENARIO_METHOD(AngelScriptStringUtilityTestsFixture, "running StringUtility Ang
             "    return fromString;\n" \
             "}",
             { Scripting::Variant{ Chroma::ToString(value) } },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("script has executed")
             {

@@ -7,10 +7,7 @@
 #include <Atmos/MoveEntityTo.h>
 #include <Atmos/Work.h>
 
-EntityTestsFixture::EntityTestsFixture() :
-    worldManager(
-        [this]() { return std::unique_ptr<Arca::Reliquary>{}; },
-        [this]() { return std::unique_ptr<Inscription::LoadAssetsUserContext>{}; })
+EntityTestsFixture::EntityTestsFixture() : worldManager([this]() { return World::FieldInitialization{}; })
 {
     Arca::ReliquaryOrigin reliquaryOrigin;
 

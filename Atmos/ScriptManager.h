@@ -9,8 +9,6 @@
 #include "String.h"
 #include "Buffer.h"
 
-#include <Arca/Reliquary.h>
-
 #include "Logger.h"
 
 namespace Atmos::Scripting

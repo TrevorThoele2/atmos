@@ -17,12 +17,7 @@ namespace Atmos::World
     class RealManager final : public Manager
     {
     public:
-        using RetrieveReliquary = std::function<std::unique_ptr<Arca::Reliquary>()>;
-        using RetrieveLoadAssetsUserContext = std::function<std::unique_ptr<Inscription::LoadAssetsUserContext>()>;
-    public:
-        RealManager(
-            const RetrieveReliquary& retrieveReliquary,
-            const RetrieveLoadAssetsUserContext& retrieveLoadAssetsUserContext);
+        explicit RealManager(const RetrieveFieldInitialization& retrieveFieldInitialization);
 
         void LockIn() override;
         [[nodiscard]] bool WillLockIn() const override;
@@ -82,8 +77,7 @@ namespace Atmos::World
 
         File::Path worldPath;
     private:
-        RetrieveReliquary retrieveReliquary;
-        RetrieveLoadAssetsUserContext retrieveLoadAssetsUserContext;
+        RetrieveFieldInitialization retrieveFieldInitialization;
     private:
         bool ContainsField(FieldID id);
     private:
@@ -97,6 +91,11 @@ namespace Atmos::World
             Inscription::LoadAssetsUserContext& loadAssetsUserContext) const;
 
         void SetFieldIDs(const std::vector<FieldID>& ids);
+    private:
+        using FieldInitializer = std::tuple<
+            std::unique_ptr<Arca::Reliquary>,
+            std::unique_ptr<Inscription::LoadAssetsUserContext>>;
+        [[nodiscard]] FieldInitializer CreateFieldInitializer();
     private:
         [[nodiscard]] static File::Path CreateWorldFilePath(const File::Path& fileName);
         [[nodiscard]] static File::Path CreateStasisFilePath(const File::Path& fileName);

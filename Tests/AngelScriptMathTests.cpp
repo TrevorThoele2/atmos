@@ -2,48 +2,8 @@
 
 #include "AngelScriptMathTests.h"
 
-#include "ScriptEngine.h"
-
-#include <Atmos/TypeRegistration.h>
-#include <Atmos/Script.h>
-#include <Atmos/ScriptFinished.h>
-#include <Atmos/Work.h>
-#include <Atmos/ModifyProperties.h>
-
-#include <Atmos/StringUtility.h>
-
 SCENARIO_METHOD(AngelScriptMathTestsFixture, "running math AngelScript scripts", "[script][angelscript]")
 {
-    Logging::Logger logger(Logging::Severity::Verbose);
-    logger.Add<Logging::FileSink>();
-    ScriptEngine engine(logger);
-
-    auto fieldOrigin = Arca::ReliquaryOrigin();
-    RegisterFieldTypes(
-        fieldOrigin,
-        *engine.mockAssetResourceManager,
-        *engine.mockAudioManager,
-        *engine.mockInputManager,
-        *engine.mockGraphicsManager,
-        *engine.mockTextManager,
-        *engine.scriptManager,
-        *engine.mockWorldManager,
-        Spatial::Size2D{
-            std::numeric_limits<Spatial::Size2D::Value>::max(),
-            std::numeric_limits<Spatial::Size2D::Value>::max() },
-            *engine.mockWindow,
-            engine.Logger());
-    fieldOrigin.CuratorCommandPipeline<Work>(Arca::Pipeline{ Scripting::Stage() });
-    World::Field field(0, fieldOrigin.Actualize());
-
-    auto& fieldReliquary = field.Reliquary();
-
-    std::vector<Scripting::Finished> finishes;
-    fieldReliquary.On<Scripting::Finished>([&finishes](const Scripting::Finished& signal)
-        {
-            finishes.push_back(signal);
-        });
-
     GIVEN("script that returns floor with float")
     {
         this->CompileAndCreateScript(
@@ -53,11 +13,11 @@ SCENARIO_METHOD(AngelScriptMathTestsFixture, "running math AngelScript scripts",
             "    return Atmos::Floor(value);\n" \
             "}",
             { 1.5f },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("returns ID")
             {
@@ -76,11 +36,11 @@ SCENARIO_METHOD(AngelScriptMathTestsFixture, "running math AngelScript scripts",
             "    return Atmos::Floor(value);\n" \
             "}",
             { 1.5 },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("returns ID")
             {
@@ -99,11 +59,11 @@ SCENARIO_METHOD(AngelScriptMathTestsFixture, "running math AngelScript scripts",
             "    return Atmos::Ceiling(value);\n" \
             "}",
             { 1.5f },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("returns ID")
             {
@@ -122,11 +82,11 @@ SCENARIO_METHOD(AngelScriptMathTestsFixture, "running math AngelScript scripts",
             "    return Atmos::Ceiling(value);\n" \
             "}",
             { 1.5 },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("returns ID")
             {
@@ -145,11 +105,11 @@ SCENARIO_METHOD(AngelScriptMathTestsFixture, "running math AngelScript scripts",
             "    return Atmos::Round(value);\n" \
             "}",
             { 1.5f },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("returns ID")
             {
@@ -168,11 +128,11 @@ SCENARIO_METHOD(AngelScriptMathTestsFixture, "running math AngelScript scripts",
             "    return Atmos::Round(value);\n" \
             "}",
             { 1.5 },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("returns ID")
             {

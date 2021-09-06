@@ -2,13 +2,11 @@
 
 #include "TypeRegistration.h"
 
-#include "RealWorldManager.h"
-#include "LoadAssetsByZipUserContext.h"
-
 namespace Atmos
 {
     Engine::~Engine()
     {
+        managers.scripting.reset();
         managers.world.reset();
         managers.graphics.reset();
     }
@@ -42,58 +40,30 @@ namespace Atmos
         return *logger;
     }
 
-    Engine::Engine(InitializationProperties&& initializationProperties, Logging::Logger& logger) :
-        managers
-        {
-            std::move(initializationProperties.system),
-            std::move(initializationProperties.assetResourceManager),
-            std::move(initializationProperties.window),
-            std::move(initializationProperties.audioManager),
-            std::move(initializationProperties.inputManager),
-            std::move(initializationProperties.graphicsManager),
-            std::move(initializationProperties.textManager),
-            std::move(initializationProperties.scriptManager),
-            std::make_unique<World::RealManager>(
-                [this]() { return CreateReliquary(); },
-                [this]() { return CreateLoadAssetsUserContext(); })
-        },
-        logger(&logger)
+    World::Manager* Engine::WorldManager() const
     {
-        managers.window->ChangeSize(Spatial::Size2D{ 1024, 768 });
-        managers.window->CenterOnScreen();
-
-        execution = std::make_unique<Execution>(*managers.world, *managers.window);
+        return managers.world.get();
     }
-
+   
     void Engine::ChangeField(World::FieldID fieldID)
     {
         managers.world->Request(fieldID);
         managers.world->LockIn();
     }
 
-    std::unique_ptr<Arca::Reliquary> Engine::CreateReliquary()
+    World::FieldInitialization Engine::CreateFieldInitialization() const
     {
-        Arca::ReliquaryOrigin origin;
-
-        RegisterFieldTypes(
-            origin,
-            *managers.assetResourceManager,
-            *managers.audio,
-            *managers.input,
-            *managers.graphics,
-            *managers.text,
-            *managers.scripts,
-            *managers.world,
-            Spatial::Size2D{ 1024, 768 },
-            *managers.window,
-            *logger);
-        RegisterFieldStages(origin);
-
-        return origin.Actualize();
-    }
-
-    std::unique_ptr<Inscription::LoadAssetsUserContext> Engine::CreateLoadAssetsUserContext()
-    {
-        return std::make_unique<Inscription::LoadAssetsByZipUserContext>(assetsFilePath, *logger);
+        return
+        {
+            managers.assetResource.get(),
+            managers.audio.get(),
+            managers.input.get(),
+            managers.graphics.get(),
+            managers.text.get(),
+            managers.scripting.get(),
+            managers.window.get(),
+            logger,
+            assetsFilePath
+        };
     }
 }

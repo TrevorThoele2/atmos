@@ -2,17 +2,8 @@
 
 #include "AngelScriptDynamicTextTests.h"
 
-#include "ScriptEngine.h"
-
 #include <Atmos/DynamicText.h>
-#include <Atmos/Camera.h>
 #include <Atmos/MoveLine.h>
-#include <Atmos/TypeRegistration.h>
-#include <Atmos/Script.h>
-#include <Atmos/ScriptFinished.h>
-#include <Atmos/Work.h>
-#include <Atmos/StringUtility.h>
-#include <Arca/OpenRelic.h>
 #include <Atmos/AxisAlignedBox3D.h>
 
 Arca::Index<Atmos::Asset::Font> AngelScriptDynamicTextTestsFixture::CreateFontAsset(Arca::Reliquary& reliquary)
@@ -25,42 +16,11 @@ Arca::Index<Atmos::Asset::Font> AngelScriptDynamicTextTestsFixture::CreateFontAs
 
 SCENARIO_METHOD(AngelScriptDynamicTextTestsFixture, "running dynamic text AngelScript scripts", "[script][angelscript]")
 {
-    Logging::Logger logger(Logging::Severity::Verbose);
-    logger.Add<Logging::FileSink>();
-    ScriptEngine engine(logger);
-
-    auto fieldOrigin = Arca::ReliquaryOrigin();
-    fieldOrigin.Register<Arca::OpenRelic>();
-    RegisterFieldTypes(
-        fieldOrigin,
-        *engine.mockAssetResourceManager,
-        *engine.mockAudioManager,
-        *engine.mockInputManager,
-        *engine.mockGraphicsManager,
-        *engine.mockTextManager,
-        *engine.scriptManager,
-        *engine.mockWorldManager,
-        Spatial::Size2D{
-            std::numeric_limits<Spatial::Size2D::Value>::max(),
-            std::numeric_limits<Spatial::Size2D::Value>::max() },
-            *engine.mockWindow,
-            engine.Logger());
-    fieldOrigin.CuratorCommandPipeline<Work>(Arca::Pipeline{ Scripting::Stage() });
-    World::Field field(0, fieldOrigin.Actualize());
-
-    auto& fieldReliquary = field.Reliquary();
-
-    std::vector<Scripting::Finished> finishes;
-    fieldReliquary.On<Scripting::Finished>([&finishes](const Scripting::Finished& signal)
-        {
-            finishes.push_back(signal);
-        });
-
     GIVEN("Text")
     {
         auto createCommand = Arca::Create<Render::DynamicText>{
             "",
-            CreateFontAsset(fieldReliquary),
+            CreateFontAsset(*fieldReliquary),
             Arca::Index<Asset::Material>{},
             0.0f,
             false,
@@ -69,7 +29,7 @@ SCENARIO_METHOD(AngelScriptDynamicTextTestsFixture, "running dynamic text AngelS
             Spatial::Point3D{},
             Spatial::Scalers2D{},
             Spatial::Angle2D{} };
-        auto text = fieldReliquary.Do(createCommand);
+        auto text = fieldReliquary->Do(createCommand);
 
         GIVEN("string")
         {
@@ -87,11 +47,11 @@ SCENARIO_METHOD(AngelScriptDynamicTextTestsFixture, "running dynamic text AngelS
                     "    return text.String();\n" \
                     "}",
                     { text.ID(), string },
-                    fieldReliquary);
+                    *fieldReliquary);
 
                 WHEN("working reliquary")
                 {
-                    fieldReliquary.Do(Work{});
+                    fieldReliquary->Do(Work{});
 
                     THEN("has correct properties")
                     {
@@ -106,9 +66,9 @@ SCENARIO_METHOD(AngelScriptDynamicTextTestsFixture, "running dynamic text AngelS
         {
             auto fontAssetName = dataGeneration.Random<std::string>();
 
-            auto fontAssetResource = fieldReliquary.Do(Asset::Resource::Create<Asset::Resource::Font>{
+            auto fontAssetResource = fieldReliquary->Do(Asset::Resource::Create<Asset::Resource::Font>{
                 Buffer{}, fontAssetName});
-            auto fontAsset = fieldReliquary.Do(Arca::Create<Asset::Font>{
+            auto fontAsset = fieldReliquary->Do(Arca::Create<Asset::Font>{
                 fontAssetName, std::move(fontAssetResource) });
 
             GIVEN("script that sets asset and returns asset ID")
@@ -124,11 +84,11 @@ SCENARIO_METHOD(AngelScriptDynamicTextTestsFixture, "running dynamic text AngelS
                     "    return text.Font().ID();\n" \
                     "}",
                     { text.ID(), fontAsset.ID() },
-                    fieldReliquary);
+                    *fieldReliquary);
 
                 WHEN("working reliquary")
                 {
-                    fieldReliquary.Do(Work{});
+                    fieldReliquary->Do(Work{});
 
                     THEN("has correct properties")
                     {
@@ -155,11 +115,11 @@ SCENARIO_METHOD(AngelScriptDynamicTextTestsFixture, "running dynamic text AngelS
                     "    return text.WrapWidth();\n" \
                     "}",
                     { text.ID(), wrapWidth },
-                    fieldReliquary);
+                    *fieldReliquary);
 
                 WHEN("working reliquary")
                 {
-                    fieldReliquary.Do(Work{});
+                    fieldReliquary->Do(Work{});
 
                     THEN("has correct properties")
                     {
@@ -184,11 +144,11 @@ SCENARIO_METHOD(AngelScriptDynamicTextTestsFixture, "running dynamic text AngelS
                     "    return text.Bold();\n" \
                     "}",
                     { text.ID(), true },
-                    fieldReliquary);
+                    *fieldReliquary);
 
                 WHEN("working reliquary")
                 {
-                    fieldReliquary.Do(Work{});
+                    fieldReliquary->Do(Work{});
 
                     THEN("has correct properties")
                     {
@@ -213,11 +173,11 @@ SCENARIO_METHOD(AngelScriptDynamicTextTestsFixture, "running dynamic text AngelS
                     "    return text.Italics();\n" \
                     "}",
                     { text.ID(), true },
-                    fieldReliquary);
+                    *fieldReliquary);
 
                 WHEN("working reliquary")
                 {
-                    fieldReliquary.Do(Work{});
+                    fieldReliquary->Do(Work{});
 
                     THEN("has correct properties")
                     {
@@ -231,19 +191,19 @@ SCENARIO_METHOD(AngelScriptDynamicTextTestsFixture, "running dynamic text AngelS
         GIVEN("material asset")
         {
             auto vertexShaderName = dataGeneration.Random<std::string>();
-            auto vertexResource = fieldReliquary.Do(Asset::Resource::Create<Asset::Resource::Shader>{Buffer{}, vertexShaderName});
-            auto vertexShaderAsset = fieldReliquary.Do(Arca::Create<Asset::Shader>{ vertexShaderName, std::move(vertexResource) });
+            auto vertexResource = fieldReliquary->Do(Asset::Resource::Create<Asset::Resource::Shader>{Buffer{}, vertexShaderName});
+            auto vertexShaderAsset = fieldReliquary->Do(Arca::Create<Asset::Shader>{ vertexShaderName, std::move(vertexResource) });
 
             auto fragmentShaderName = dataGeneration.Random<std::string>();
-            auto fragmentResource = fieldReliquary.Do(Asset::Resource::Create<Asset::Resource::Shader>{Buffer{}, fragmentShaderName});
-            auto fragmentShaderAsset = fieldReliquary.Do(Arca::Create<Asset::Shader>{ fragmentShaderName, std::move(fragmentResource) });
+            auto fragmentResource = fieldReliquary->Do(Asset::Resource::Create<Asset::Resource::Shader>{Buffer{}, fragmentShaderName});
+            auto fragmentShaderAsset = fieldReliquary->Do(Arca::Create<Asset::Shader>{ fragmentShaderName, std::move(fragmentResource) });
 
             auto materialAssetName = dataGeneration.Random<std::string>();
             auto materialAssetPasses = std::vector<Asset::Material::Pass>
             {
                 { vertexShaderAsset, fragmentShaderAsset }
             };
-            auto materialAsset = fieldReliquary.Do(Arca::Create<Asset::Material>{ materialAssetName, materialAssetPasses });
+            auto materialAsset = fieldReliquary->Do(Arca::Create<Asset::Material>{ materialAssetName, materialAssetPasses });
 
             GIVEN("script that sets material asset and returns material ID")
             {
@@ -258,11 +218,11 @@ SCENARIO_METHOD(AngelScriptDynamicTextTestsFixture, "running dynamic text AngelS
                     "    return text.Material().ID();\n" \
                     "}",
                     { text.ID(), materialAsset.ID() },
-                    fieldReliquary);
+                    *fieldReliquary);
 
                 WHEN("working reliquary")
                 {
-                    fieldReliquary.Do(Work{});
+                    fieldReliquary->Do(Work{});
 
                     THEN("has correct properties")
                     {
@@ -291,11 +251,11 @@ SCENARIO_METHOD(AngelScriptDynamicTextTestsFixture, "running dynamic text AngelS
                     "        Atmos::ToString(text.Color().green) + \" \" + Atmos::ToString(text.Color().blue);\n"
                     "}",
                     { text.ID(), color.alpha, color.red, color.green, color.blue },
-                    fieldReliquary);
+                    *fieldReliquary);
 
                 WHEN("working reliquary")
                 {
-                    fieldReliquary.Do(Work{});
+                    fieldReliquary->Do(Work{});
 
                     THEN("has correct properties")
                     {
@@ -334,11 +294,11 @@ SCENARIO_METHOD(AngelScriptDynamicTextTestsFixture, "running dynamic text AngelS
                     "        Atmos::ToString(text.Position().z);\n"
                     "}",
                     { text.ID(), position.x, position.y, position.z },
-                    fieldReliquary);
+                    *fieldReliquary);
 
                 WHEN("working reliquary")
                 {
-                    fieldReliquary.Do(Work{});
+                    fieldReliquary->Do(Work{});
 
                     THEN("has correct properties")
                     {
@@ -372,11 +332,11 @@ SCENARIO_METHOD(AngelScriptDynamicTextTestsFixture, "running dynamic text AngelS
                     "    return Atmos::ToString(text.Rotation());\n"
                     "}",
                     { text.ID(), rotation },
-                    fieldReliquary);
+                    *fieldReliquary);
 
                 WHEN("working reliquary")
                 {
-                    fieldReliquary.Do(Work{});
+                    fieldReliquary->Do(Work{});
 
                     THEN("has correct properties")
                     {
@@ -407,11 +367,11 @@ SCENARIO_METHOD(AngelScriptDynamicTextTestsFixture, "running dynamic text AngelS
                     "    return Atmos::ToString(text.Size().width) + \" \" + Atmos::ToString(text.Size().height);\n"
                     "}",
                     { text.ID(), scalers.x, scalers.y },
-                    fieldReliquary);
+                    *fieldReliquary);
 
                 WHEN("working reliquary")
                 {
-                    fieldReliquary.Do(Work{});
+                    fieldReliquary->Do(Work{});
 
                     THEN("has correct properties")
                     {

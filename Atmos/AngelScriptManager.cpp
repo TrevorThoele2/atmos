@@ -5,6 +5,7 @@
 #include "AngelScriptScriptResource.h"
 #include "AngelScriptResultVerification.h"
 #include "AngelScriptRegistration.h"
+#include "Script.h"
 
 #include <Arca/Reliquary.h>
 
@@ -12,10 +13,8 @@
 
 #include "StringUtility.h"
 
-#include <Inscription/InputTextFile.h>
 #include "OutputAngelScriptBytecodeStream.h"
 #include "InputAngelScriptBytecodeStream.h"
-#include "AngelScriptCompiledFileExtension.h"
 
 namespace Atmos::Scripting::Angel
 {
@@ -28,14 +27,16 @@ namespace Atmos::Scripting::Angel
 
     Manager::~Manager()
     {
+        AttemptDestroyAllScripts();
         VerifyResult(engine->ShutDownAndRelease(), {});
     }
 
     void Manager::SetReliquary(Arca::Reliquary& reliquary)
     {
+        this->reliquary = &reliquary;
+        userData.reliquary = &reliquary;
         for (auto& signalToRegister : userData.signalsToRegister)
             signalToRegister(*engine, reliquary);
-        userData.reliquary = &reliquary;
     }
 
     std::unique_ptr<Asset::Resource::Script> Manager::CreateAssetResource(
@@ -227,5 +228,11 @@ namespace Atmos::Scripting::Angel
     {
         const auto foundDot = scriptAssetName.find('.');
         return scriptAssetName.substr(0, foundDot);
+    }
+
+    void Manager::AttemptDestroyAllScripts()
+    {
+        if (reliquary)
+            reliquary->Do(Arca::Clear(Chroma::TypeIdentity<Script>{}));
     }
 }

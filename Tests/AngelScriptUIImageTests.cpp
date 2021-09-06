@@ -2,18 +2,10 @@
 
 #include "AngelScriptUIImageTests.h"
 
-#include "ScriptEngine.h"
-
 #include <Atmos/UIImage.h>
 #include <Atmos/Camera.h>
 #include <Atmos/ChangeImageCore.h>
 #include <Atmos/MoveLine.h>
-#include <Atmos/TypeRegistration.h>
-#include <Atmos/Script.h>
-#include <Atmos/ScriptFinished.h>
-#include <Atmos/Work.h>
-#include <Atmos/StringUtility.h>
-#include <Arca/OpenRelic.h>
 #include <Atmos/AxisAlignedBox3D.h>
 
 Arca::Index<Atmos::Asset::Image> AngelScriptUIImageTestsFixture::CreateImageAsset(Arca::Reliquary& reliquary)
@@ -28,48 +20,17 @@ Arca::Index<Atmos::Asset::Image> AngelScriptUIImageTestsFixture::CreateImageAsse
 
 SCENARIO_METHOD(AngelScriptUIImageTestsFixture, "running UI image AngelScript scripts", "[script][angelscript]")
 {
-    Logging::Logger logger(Logging::Severity::Verbose);
-    logger.Add<Logging::FileSink>();
-    ScriptEngine engine(logger);
-
-    auto fieldOrigin = Arca::ReliquaryOrigin();
-    fieldOrigin.Register<Arca::OpenRelic>();
-    RegisterFieldTypes(
-        fieldOrigin,
-        *engine.mockAssetResourceManager,
-        *engine.mockAudioManager,
-        *engine.mockInputManager,
-        *engine.mockGraphicsManager,
-        *engine.mockTextManager,
-        *engine.scriptManager,
-        *engine.mockWorldManager,
-        Spatial::Size2D{
-            std::numeric_limits<Spatial::Size2D::Value>::max(),
-            std::numeric_limits<Spatial::Size2D::Value>::max() },
-            *engine.mockWindow,
-            engine.Logger());
-    fieldOrigin.CuratorCommandPipeline<Work>(Arca::Pipeline{ Scripting::Stage() });
-    World::Field field(0, fieldOrigin.Actualize());
-
-    auto& fieldReliquary = field.Reliquary();
-
-    std::vector<Scripting::Finished> finishes;
-    fieldReliquary.On<Scripting::Finished>([&finishes](const Scripting::Finished& signal)
-        {
-            finishes.push_back(signal);
-        });
-
     GIVEN("Image")
     {
         auto createCommand = Arca::Create<UI::Image>{
-            CreateImageAsset(fieldReliquary),
+            CreateImageAsset(*fieldReliquary),
             1,
             Arca::Index<Asset::Material>{},
             Color{},
             Spatial::Point3D{},
             Spatial::Scalers2D{},
             Spatial::Angle2D{} };
-        auto dynamicImage = fieldReliquary.Do(createCommand);
+        auto dynamicImage = fieldReliquary->Do(createCommand);
 
         GIVEN("image asset")
         {
@@ -81,9 +42,9 @@ SCENARIO_METHOD(AngelScriptUIImageTestsFixture, "running UI image AngelScript sc
             auto imageAssetColumns = dataGeneration.Random<Asset::ImageGridSize::Dimension>();
             auto imageAssetRows = dataGeneration.Random<Asset::ImageGridSize::Dimension>();
 
-            auto imageAssetResource = fieldReliquary.Do(Asset::Resource::Create<Asset::Resource::Image>{
+            auto imageAssetResource = fieldReliquary->Do(Asset::Resource::Create<Asset::Resource::Image>{
                 Buffer{}, imageAssetName, Spatial::Size2D{ imageAssetWidth, imageAssetHeight }});
-            auto imageAsset = fieldReliquary.Do(Arca::Create<Asset::Image>{
+            auto imageAsset = fieldReliquary->Do(Arca::Create<Asset::Image>{
                 imageAssetName, std::move(imageAssetResource), Asset::ImageGridSize{ imageAssetColumns, imageAssetRows } });
 
             GIVEN("script that sets asset and returns asset ID")
@@ -99,11 +60,11 @@ SCENARIO_METHOD(AngelScriptUIImageTestsFixture, "running UI image AngelScript sc
                     "    return image.Asset().ID();\n" \
                     "}",
                     { dynamicImage.ID(), imageAsset.ID() },
-                    fieldReliquary);
+                    *fieldReliquary);
 
                 WHEN("working reliquary")
                 {
-                    fieldReliquary.Do(Work{});
+                    fieldReliquary->Do(Work{});
 
                     THEN("has correct properties")
                     {
@@ -129,11 +90,11 @@ SCENARIO_METHOD(AngelScriptUIImageTestsFixture, "running UI image AngelScript sc
                     "    return image.AssetIndex();\n" \
                     "}",
                     { dynamicImage.ID(), assetIndex },
-                    fieldReliquary);
+                    *fieldReliquary);
 
                 WHEN("working reliquary")
                 {
-                    fieldReliquary.Do(Work{});
+                    fieldReliquary->Do(Work{});
 
                     THEN("has correct properties")
                     {
@@ -154,14 +115,14 @@ SCENARIO_METHOD(AngelScriptUIImageTestsFixture, "running UI image AngelScript sc
             auto imageAssetColumns = dataGeneration.Random<Asset::ImageGridSize::Dimension>();
             auto imageAssetRows = dataGeneration.Random<Asset::ImageGridSize::Dimension>();
 
-            auto imageAssetResource = fieldReliquary.Do(Asset::Resource::Create<Asset::Resource::Image>{
+            auto imageAssetResource = fieldReliquary->Do(Asset::Resource::Create<Asset::Resource::Image>{
                 Buffer{}, imageAssetName, Spatial::Size2D{ imageAssetWidth, imageAssetHeight }});
-            auto imageAsset = fieldReliquary.Do(Arca::Create<Asset::Image>{
+            auto imageAsset = fieldReliquary->Do(Arca::Create<Asset::Image>{
                 imageAssetName, std::move(imageAssetResource), Asset::ImageGridSize{ imageAssetColumns, imageAssetRows } });
 
             auto assetIndex = dataGeneration.Random<UI::Image::Index>();
 
-            fieldReliquary.Do(Render::ChangeImageCore{ dynamicImage.ID(), imageAsset, assetIndex });
+            fieldReliquary->Do(Render::ChangeImageCore{ dynamicImage.ID(), imageAsset, assetIndex });
 
             GIVEN("script that returns asset slice")
             {
@@ -174,11 +135,11 @@ SCENARIO_METHOD(AngelScriptUIImageTestsFixture, "running UI image AngelScript sc
                     "    return Atmos::ToString(assetSlice.center.x) + \" \" + Atmos::ToString(assetSlice.center.y);\n" \
                     "}",
                     { dynamicImage.ID() },
-                    fieldReliquary);
+                    *fieldReliquary);
 
                 WHEN("working reliquary")
                 {
-                    fieldReliquary.Do(Work{});
+                    fieldReliquary->Do(Work{});
 
                     THEN("has correct properties")
                     {
@@ -194,19 +155,19 @@ SCENARIO_METHOD(AngelScriptUIImageTestsFixture, "running UI image AngelScript sc
         GIVEN("material asset")
         {
             auto vertexShaderName = dataGeneration.Random<std::string>();
-            auto vertexResource = fieldReliquary.Do(Asset::Resource::Create<Asset::Resource::Shader>{Buffer{}, vertexShaderName});
-            auto vertexShaderAsset = fieldReliquary.Do(Arca::Create<Asset::Shader>{ vertexShaderName, std::move(vertexResource) });
+            auto vertexResource = fieldReliquary->Do(Asset::Resource::Create<Asset::Resource::Shader>{Buffer{}, vertexShaderName});
+            auto vertexShaderAsset = fieldReliquary->Do(Arca::Create<Asset::Shader>{ vertexShaderName, std::move(vertexResource) });
 
             auto fragmentShaderName = dataGeneration.Random<std::string>();
-            auto fragmentResource = fieldReliquary.Do(Asset::Resource::Create<Asset::Resource::Shader>{Buffer{}, fragmentShaderName});
-            auto fragmentShaderAsset = fieldReliquary.Do(Arca::Create<Asset::Shader>{ fragmentShaderName, std::move(fragmentResource) });
+            auto fragmentResource = fieldReliquary->Do(Asset::Resource::Create<Asset::Resource::Shader>{Buffer{}, fragmentShaderName});
+            auto fragmentShaderAsset = fieldReliquary->Do(Arca::Create<Asset::Shader>{ fragmentShaderName, std::move(fragmentResource) });
 
             auto materialAssetName = dataGeneration.Random<std::string>();
             auto materialAssetPasses = std::vector<Asset::Material::Pass>
             {
                 { vertexShaderAsset, fragmentShaderAsset }
             };
-            auto materialAsset = fieldReliquary.Do(Arca::Create<Asset::Material>{ materialAssetName, materialAssetPasses });
+            auto materialAsset = fieldReliquary->Do(Arca::Create<Asset::Material>{ materialAssetName, materialAssetPasses });
 
             GIVEN("script that sets material asset and returns material ID")
             {
@@ -221,11 +182,11 @@ SCENARIO_METHOD(AngelScriptUIImageTestsFixture, "running UI image AngelScript sc
                     "    return image.Material().ID();\n" \
                     "}",
                     { dynamicImage.ID(), materialAsset.ID() },
-                    fieldReliquary);
+                    *fieldReliquary);
 
                 WHEN("working reliquary")
                 {
-                    fieldReliquary.Do(Work{});
+                    fieldReliquary->Do(Work{});
 
                     THEN("has correct properties")
                     {
@@ -254,11 +215,11 @@ SCENARIO_METHOD(AngelScriptUIImageTestsFixture, "running UI image AngelScript sc
                     "        Atmos::ToString(image.Color().green) + \" \" + Atmos::ToString(image.Color().blue);\n"
                     "}",
                     { dynamicImage.ID(), color.alpha, color.red, color.green, color.blue },
-                    fieldReliquary);
+                    *fieldReliquary);
 
                 WHEN("working reliquary")
                 {
-                    fieldReliquary.Do(Work{});
+                    fieldReliquary->Do(Work{});
 
                     THEN("has correct properties")
                     {
@@ -297,11 +258,11 @@ SCENARIO_METHOD(AngelScriptUIImageTestsFixture, "running UI image AngelScript sc
                     "        Atmos::ToString(image.Position().z);\n"
                     "}",
                     { dynamicImage.ID(), position.x, position.y, position.z },
-                    fieldReliquary);
+                    *fieldReliquary);
 
                 WHEN("working reliquary")
                 {
-                    fieldReliquary.Do(Work{});
+                    fieldReliquary->Do(Work{});
 
                     THEN("has correct properties")
                     {
@@ -335,11 +296,11 @@ SCENARIO_METHOD(AngelScriptUIImageTestsFixture, "running UI image AngelScript sc
                     "    return Atmos::ToString(image.Rotation());\n"
                     "}",
                     { dynamicImage.ID(), rotation },
-                    fieldReliquary);
+                    *fieldReliquary);
 
                 WHEN("working reliquary")
                 {
-                    fieldReliquary.Do(Work{});
+                    fieldReliquary->Do(Work{});
 
                     THEN("has correct properties")
                     {
@@ -370,11 +331,11 @@ SCENARIO_METHOD(AngelScriptUIImageTestsFixture, "running UI image AngelScript sc
                     "    return Atmos::ToString(image.Size().width) + \" \" + Atmos::ToString(image.Size().height);\n"
                     "}",
                     { dynamicImage.ID(), scalers.x, scalers.y },
-                    fieldReliquary);
+                    *fieldReliquary);
 
                 WHEN("working reliquary")
                 {
-                    fieldReliquary.Do(Work{});
+                    fieldReliquary->Do(Work{});
 
                     THEN("has correct properties")
                     {

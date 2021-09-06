@@ -4,43 +4,12 @@
 
 #include "ScriptEngine.h"
 
-#include <Atmos/TypeRegistration.h>
 #include <Atmos/Script.h>
 #include <Atmos/Work.h>
 #include <Atmos/ScriptFinished.h>
 
 SCENARIO_METHOD(AngelScriptTestsFixture, "running AngelScript scripts", "[script][angelscript]")
 {
-    Logging::Logger logger(Logging::Severity::Verbose);
-    logger.Add<Logging::FileSink>();
-    ScriptEngine engine(logger);
-
-    auto fieldOrigin = Arca::ReliquaryOrigin();
-    RegisterFieldTypes(
-        fieldOrigin,
-        *engine.mockAssetResourceManager,
-        *engine.mockAudioManager,
-        *engine.mockInputManager,
-        *engine.mockGraphicsManager,
-        *engine.mockTextManager,
-        *engine.scriptManager,
-        *engine.mockWorldManager,
-        Spatial::Size2D{
-            std::numeric_limits<Spatial::Size2D::Value>::max(),
-            std::numeric_limits<Spatial::Size2D::Value>::max() },
-            *engine.mockWindow,
-            engine.Logger());
-    fieldOrigin.CuratorCommandPipeline<Work>(Arca::Pipeline{ Scripting::Stage() });
-    World::Field field(0, fieldOrigin.Actualize());
-
-    auto& fieldReliquary = field.Reliquary();
-
-    std::vector<Scripting::Finished> finishes;
-    fieldReliquary.On<Scripting::Finished>([&finishes](const Scripting::Finished& signal)
-        {
-            finishes.push_back(signal);
-        });
-    
     GIVEN("empty script")
     {
         CompileAndCreateScript(
@@ -48,20 +17,20 @@ SCENARIO_METHOD(AngelScriptTestsFixture, "running AngelScript scripts", "[script
             "void main()\n" \
             "{\n" \
             "}",
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
             THEN("no error is thrown")
             {
-                REQUIRE_NOTHROW(fieldReliquary.Do(Work{}));
+                REQUIRE_NOTHROW(fieldReliquary->Do(Work{}));
             }
 
             THEN("script is destroyed")
             {
-                fieldReliquary.Do(Work{});
+                fieldReliquary->Do(Work{});
 
-                auto scriptCount = fieldReliquary.Batch<Scripting::Script>().Size();
+                auto scriptCount = fieldReliquary->Batch<Scripting::Script>().Size();
                 
                 REQUIRE(scriptCount == 0);
             }
@@ -85,11 +54,11 @@ SCENARIO_METHOD(AngelScriptTestsFixture, "running AngelScript scripts", "[script
                     "}" \
                 }
             },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -113,11 +82,11 @@ SCENARIO_METHOD(AngelScriptTestsFixture, "running AngelScript scripts", "[script
             "    MyClass@ myClass = null;\n" \
             "    myClass.Do();\n" \
             "}",
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("script has failed")
             {

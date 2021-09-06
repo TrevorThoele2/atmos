@@ -2072,6 +2072,9 @@
     <ClInclude Include="FieldChanging.h">
       <Filter>Header Files\World\Signals</Filter>
     </ClInclude>
+    <ClInclude Include="FieldInitialization.h">
+      <Filter>Header Files\World\Field</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FieldDestination.cpp">

@@ -2,47 +2,10 @@
 
 #include "AngelScriptWorldTests.h"
 
-#include "ScriptEngine.h"
-
 #include <Atmos/ModifyWorldProperties.h>
-#include <Atmos/TypeRegistration.h>
-#include <Atmos/ScriptFinished.h>
-#include <Atmos/Work.h>
-#include <Atmos/StringUtility.h>
-#include <Atmos/ModifyEntityBoundary.h>
 
 SCENARIO_METHOD(AngelScriptWorldTestsFixture, "running world AngelScript scripts", "[script][angelscript][world]")
 {
-    Logging::Logger logger(Logging::Severity::Verbose);
-    logger.Add<Logging::FileSink>();
-    ScriptEngine engine(logger);
-
-    auto fieldOrigin = Arca::ReliquaryOrigin();
-    RegisterFieldTypes(
-        fieldOrigin,
-        *engine.mockAssetResourceManager,
-        *engine.mockAudioManager,
-        *engine.mockInputManager,
-        *engine.mockGraphicsManager,
-        *engine.mockTextManager,
-        *engine.scriptManager,
-        *engine.mockWorldManager,
-        Spatial::Size2D{
-            std::numeric_limits<Spatial::Size2D::Value>::max(),
-            std::numeric_limits<Spatial::Size2D::Value>::max() },
-            *engine.mockWindow,
-            engine.Logger());
-    fieldOrigin.CuratorCommandPipeline<Work>(Arca::Pipeline{ Input::Stage(), Scripting::Stage() });
-    World::Field field(0, fieldOrigin.Actualize());
-
-    auto& fieldReliquary = field.Reliquary();
-
-    std::vector<Scripting::Finished> finishes;
-    fieldReliquary.On<Scripting::Finished>([&finishes](const Scripting::Finished& signal)
-        {
-            finishes.push_back(signal);
-        });
-
     GIVEN("script that requests field")
     {
         const auto nextFieldID = dataGeneration.Random<World::FieldID>();
@@ -54,11 +17,11 @@ SCENARIO_METHOD(AngelScriptWorldTestsFixture, "running world AngelScript scripts
             "    Arca::Reliquary::Do(Atmos::World::RequestField(fieldID));\n" \
             "}",
             { nextFieldID },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has requested field")
             {
@@ -99,11 +62,11 @@ SCENARIO_METHOD(AngelScriptWorldTestsFixture, "running world AngelScript scripts
                     "    return Atmos::Join(\", \", propertiesAsStrings);\n" \
                     "}",
                     { names[0], values[0], names[1], values[1], names[2], values[2] },
-                    fieldReliquary);
+                    *fieldReliquary);
 
                 WHEN("working reliquary")
                 {
-                    fieldReliquary.Do(Work{});
+                    fieldReliquary->Do(Work{});
 
                     THEN("has correct properties")
                     {
@@ -130,7 +93,7 @@ SCENARIO_METHOD(AngelScriptWorldTestsFixture, "running world AngelScript scripts
             for (size_t i = 0; i < names.size(); ++i)
                 properties.push_back(Property{ names[i], { values[i] } });
 
-            fieldReliquary.Do(World::ModifyProperties{ properties, {}, {} });
+            fieldReliquary->Do(World::ModifyProperties{ properties, {}, {} });
 
             GIVEN("script that modifies properties by remove")
             {
@@ -151,11 +114,11 @@ SCENARIO_METHOD(AngelScriptWorldTestsFixture, "running world AngelScript scripts
                     "    return Atmos::Join(\", \", propertiesAsStrings);\n" \
                     "}",
                     { names[0], names[2], names[4] },
-                    fieldReliquary);
+                    *fieldReliquary);
 
                 WHEN("working reliquary")
                 {
-                    fieldReliquary.Do(Work{});
+                    fieldReliquary->Do(Work{});
 
                     THEN("has correct properties")
                     {
@@ -182,7 +145,7 @@ SCENARIO_METHOD(AngelScriptWorldTestsFixture, "running world AngelScript scripts
             for (size_t i = 0; i < names.size(); ++i)
                 properties.push_back(Property{ names[i], { values[i] } });
 
-            fieldReliquary.Do(World::ModifyProperties{ properties, {}, {} });
+            fieldReliquary->Do(World::ModifyProperties{ properties, {}, {} });
 
             GIVEN("script that modifies properties by replace")
             {
@@ -206,11 +169,11 @@ SCENARIO_METHOD(AngelScriptWorldTestsFixture, "running world AngelScript scripts
                     "    return Atmos::Join(\", \", propertiesAsStrings);\n" \
                     "}",
                     { names[0], values[6], names[2], values[7], names[4], values[8] },
-                    fieldReliquary);
+                    *fieldReliquary);
 
                 WHEN("working reliquary")
                 {
-                    fieldReliquary.Do(Work{});
+                    fieldReliquary->Do(Work{});
 
                     THEN("has correct properties")
                     {

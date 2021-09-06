@@ -2,20 +2,12 @@
 
 #include "AngelScriptRenderTests.h"
 
-#include "ScriptEngine.h"
-
 #include <Atmos/DynamicImage.h>
 #include <Atmos/Line.h>
 #include <Atmos/GridRegion.h>
 #include <Atmos/Camera.h>
 #include <Atmos/ChangeImageCore.h>
 #include <Atmos/MoveLine.h>
-#include <Atmos/TypeRegistration.h>
-#include <Atmos/Script.h>
-#include <Atmos/ScriptFinished.h>
-#include <Atmos/Work.h>
-#include <Atmos/StringUtility.h>
-#include <Arca/OpenRelic.h>
 #include <Atmos/AxisAlignedBox3D.h>
 
 Arca::Index<Atmos::Asset::Image> AngelScriptRenderTestsFixture::CreateImageAsset(Arca::Reliquary& reliquary)
@@ -30,37 +22,6 @@ Arca::Index<Atmos::Asset::Image> AngelScriptRenderTestsFixture::CreateImageAsset
 
 SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scripts", "[script][angelscript]")
 {
-    Logging::Logger logger(Logging::Severity::Verbose);
-    logger.Add<Logging::FileSink>();
-    ScriptEngine engine(logger);
-
-    auto fieldOrigin = Arca::ReliquaryOrigin();
-    fieldOrigin.Register<Arca::OpenRelic>();
-    RegisterFieldTypes(
-        fieldOrigin,
-        *engine.mockAssetResourceManager,
-        *engine.mockAudioManager,
-        *engine.mockInputManager,
-        *engine.mockGraphicsManager,
-        *engine.mockTextManager,
-        *engine.scriptManager,
-        *engine.mockWorldManager,
-        Spatial::Size2D{
-            std::numeric_limits<Spatial::Size2D::Value>::max(),
-            std::numeric_limits<Spatial::Size2D::Value>::max() },
-            *engine.mockWindow,
-            engine.Logger());
-    fieldOrigin.CuratorCommandPipeline<Work>(Arca::Pipeline{ Scripting::Stage() });
-    World::Field field(0, fieldOrigin.Actualize());
-
-    auto& fieldReliquary = field.Reliquary();
-
-    std::vector<Scripting::Finished> finishes;
-    fieldReliquary.On<Scripting::Finished>([&finishes](const Scripting::Finished& signal)
-        {
-            finishes.push_back(signal);
-        });
-
     GIVEN("color")
     {
         GIVEN("script that constructs Color")
@@ -78,11 +39,11 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                 "Atmos::ToString(color.blue);\n"
                 "}",
                 { color.alpha, color.red, color.green, color.blue },
-                fieldReliquary);
+                *fieldReliquary);
 
             WHEN("working reliquary")
             {
-                fieldReliquary.Do(Work{});
+                fieldReliquary->Do(Work{});
 
                 THEN("has correct properties")
                 {
@@ -102,14 +63,14 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
     GIVEN("DynamicImage")
     {
         auto createCommand = Arca::Create<DynamicImage>{
-            CreateImageAsset(fieldReliquary),
+            CreateImageAsset(*fieldReliquary),
             1,
             Arca::Index<Asset::Material>{},
             Color{},
             Spatial::Point3D{},
             Spatial::Scalers2D{},
             Spatial::Angle2D{} };
-        auto dynamicImage = fieldReliquary.Do(createCommand);
+        auto dynamicImage = fieldReliquary->Do(createCommand);
 
         GIVEN("image asset")
         {
@@ -121,9 +82,9 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
             auto imageAssetColumns = dataGeneration.Random<Asset::ImageGridSize::Dimension>();
             auto imageAssetRows = dataGeneration.Random<Asset::ImageGridSize::Dimension>();
 
-            auto imageAssetResource = fieldReliquary.Do(Asset::Resource::Create<Asset::Resource::Image>{
+            auto imageAssetResource = fieldReliquary->Do(Asset::Resource::Create<Asset::Resource::Image>{
                 Buffer{}, imageAssetName, Spatial::Size2D{ imageAssetWidth, imageAssetHeight }});
-            auto imageAsset = fieldReliquary.Do(Arca::Create<Asset::Image>{
+            auto imageAsset = fieldReliquary->Do(Arca::Create<Asset::Image>{
                 imageAssetName, std::move(imageAssetResource), Asset::ImageGridSize{ imageAssetColumns, imageAssetRows } });
 
             GIVEN("script that sets asset and returns asset ID")
@@ -139,11 +100,11 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                     "    return image.Asset().ID();\n" \
                     "}",
                     { dynamicImage.ID(), imageAsset.ID() },
-                    fieldReliquary);
+                    *fieldReliquary);
 
                 WHEN("working reliquary")
                 {
-                    fieldReliquary.Do(Work{});
+                    fieldReliquary->Do(Work{});
 
                     THEN("has correct properties")
                     {
@@ -169,11 +130,11 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                     "    return image.AssetIndex();\n" \
                     "}",
                     { dynamicImage.ID(), assetIndex },
-                    fieldReliquary);
+                    *fieldReliquary);
 
                 WHEN("working reliquary")
                 {
-                    fieldReliquary.Do(Work{});
+                    fieldReliquary->Do(Work{});
 
                     THEN("has correct properties")
                     {
@@ -194,14 +155,14 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
             auto imageAssetColumns = dataGeneration.Random<Asset::ImageGridSize::Dimension>();
             auto imageAssetRows = dataGeneration.Random<Asset::ImageGridSize::Dimension>();
 
-            auto imageAssetResource = fieldReliquary.Do(Asset::Resource::Create<Asset::Resource::Image>{
+            auto imageAssetResource = fieldReliquary->Do(Asset::Resource::Create<Asset::Resource::Image>{
                 Buffer{}, imageAssetName, Spatial::Size2D{ imageAssetWidth, imageAssetHeight }});
-            auto imageAsset = fieldReliquary.Do(Arca::Create<Asset::Image>{
+            auto imageAsset = fieldReliquary->Do(Arca::Create<Asset::Image>{
                 imageAssetName, std::move(imageAssetResource), Asset::ImageGridSize{ imageAssetColumns, imageAssetRows } });
 
             auto assetIndex = dataGeneration.Random<Render::DynamicImage::Index>();
 
-            fieldReliquary.Do(Render::ChangeImageCore{ dynamicImage.ID(), imageAsset, assetIndex });
+            fieldReliquary->Do(Render::ChangeImageCore{ dynamicImage.ID(), imageAsset, assetIndex });
 
             GIVEN("script that returns asset slice")
             {
@@ -214,11 +175,11 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                     "    return Atmos::ToString(assetSlice.center.x) + \" \" + Atmos::ToString(assetSlice.center.y);\n" \
                     "}",
                     { dynamicImage.ID() },
-                    fieldReliquary);
+                    *fieldReliquary);
 
                 WHEN("working reliquary")
                 {
-                    fieldReliquary.Do(Work{});
+                    fieldReliquary->Do(Work{});
 
                     THEN("has correct properties")
                     {
@@ -234,19 +195,19 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
         GIVEN("material asset")
         {
             auto vertexShaderName = dataGeneration.Random<std::string>();
-            auto vertexResource = fieldReliquary.Do(Asset::Resource::Create<Asset::Resource::Shader>{Buffer{}, vertexShaderName});
-            auto vertexShaderAsset = fieldReliquary.Do(Arca::Create<Asset::Shader>{ vertexShaderName, std::move(vertexResource) });
+            auto vertexResource = fieldReliquary->Do(Asset::Resource::Create<Asset::Resource::Shader>{Buffer{}, vertexShaderName});
+            auto vertexShaderAsset = fieldReliquary->Do(Arca::Create<Asset::Shader>{ vertexShaderName, std::move(vertexResource) });
 
             auto fragmentShaderName = dataGeneration.Random<std::string>();
-            auto fragmentResource = fieldReliquary.Do(Asset::Resource::Create<Asset::Resource::Shader>{Buffer{}, fragmentShaderName});
-            auto fragmentShaderAsset = fieldReliquary.Do(Arca::Create<Asset::Shader>{ fragmentShaderName, std::move(fragmentResource) });
+            auto fragmentResource = fieldReliquary->Do(Asset::Resource::Create<Asset::Resource::Shader>{Buffer{}, fragmentShaderName});
+            auto fragmentShaderAsset = fieldReliquary->Do(Arca::Create<Asset::Shader>{ fragmentShaderName, std::move(fragmentResource) });
 
             auto materialAssetName = dataGeneration.Random<std::string>();
             auto materialAssetPasses = std::vector<Asset::Material::Pass>
             {
                 { vertexShaderAsset, fragmentShaderAsset }
             };
-            auto materialAsset = fieldReliquary.Do(Arca::Create<Asset::Material>{ materialAssetName, materialAssetPasses });
+            auto materialAsset = fieldReliquary->Do(Arca::Create<Asset::Material>{ materialAssetName, materialAssetPasses });
 
             GIVEN("script that sets material asset and returns material ID")
             {
@@ -261,11 +222,11 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                     "    return image.Material().ID();\n" \
                     "}",
                     { dynamicImage.ID(), materialAsset.ID() },
-                    fieldReliquary);
+                    *fieldReliquary);
 
                 WHEN("working reliquary")
                 {
-                    fieldReliquary.Do(Work{});
+                    fieldReliquary->Do(Work{});
 
                     THEN("has correct properties")
                     {
@@ -294,11 +255,11 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                     "        Atmos::ToString(image.Color().green) + \" \" + Atmos::ToString(image.Color().blue);\n"
                     "}",
                     { dynamicImage.ID(), color.alpha, color.red, color.green, color.blue },
-                    fieldReliquary);
+                    *fieldReliquary);
 
                 WHEN("working reliquary")
                 {
-                    fieldReliquary.Do(Work{});
+                    fieldReliquary->Do(Work{});
 
                     THEN("has correct properties")
                     {
@@ -337,11 +298,11 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                     "        Atmos::ToString(image.Position().z);\n"
                     "}",
                     { dynamicImage.ID(), position.x, position.y, position.z },
-                    fieldReliquary);
+                    *fieldReliquary);
 
                 WHEN("working reliquary")
                 {
-                    fieldReliquary.Do(Work{});
+                    fieldReliquary->Do(Work{});
 
                     THEN("has correct properties")
                     {
@@ -375,11 +336,11 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                     "    return Atmos::ToString(image.Rotation());\n"
                     "}",
                     { dynamicImage.ID(), rotation },
-                    fieldReliquary);
+                    *fieldReliquary);
 
                 WHEN("working reliquary")
                 {
-                    fieldReliquary.Do(Work{});
+                    fieldReliquary->Do(Work{});
 
                     THEN("has correct properties")
                     {
@@ -410,11 +371,11 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                     "    return Atmos::ToString(image.Size().width) + \" \" + Atmos::ToString(image.Size().height);\n"
                     "}",
                     { dynamicImage.ID(), scalers.x, scalers.y },
-                    fieldReliquary);
+                    *fieldReliquary);
 
                 WHEN("working reliquary")
                 {
-                    fieldReliquary.Do(Work{});
+                    fieldReliquary->Do(Work{});
 
                     THEN("has correct properties")
                     {
@@ -453,14 +414,14 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                 "    return created.ID();\n" \
                 "}",
                 {},
-                fieldReliquary);
+                *fieldReliquary);
 
             WHEN("working reliquary")
             {
-                const auto preExecutionCount = fieldReliquary.Batch<DynamicImage>().Size();
-                const auto preExecutionAllIDs = fieldReliquary.AllIDs();
+                const auto preExecutionCount = fieldReliquary->Batch<DynamicImage>().Size();
+                const auto preExecutionAllIDs = fieldReliquary->AllIDs();
 
-                fieldReliquary.Do(Work{});
+                fieldReliquary->Do(Work{});
 
                 THEN("has correct properties")
                 {
@@ -468,7 +429,7 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
 
                     const auto result = std::get<Arca::RelicID>(std::get<Variant>(finishes[0].result));
 
-                    REQUIRE(preExecutionCount < fieldReliquary.Batch<DynamicImage>().Size());
+                    REQUIRE(preExecutionCount < fieldReliquary->Batch<DynamicImage>().Size());
                     REQUIRE(std::all_of(
                         preExecutionAllIDs.begin(),
                         preExecutionAllIDs.end(),
@@ -508,14 +469,14 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                 "    return created.ID();\n" \
                 "}",
                 { dynamicImage.ID() },
-                fieldReliquary);
+                *fieldReliquary);
 
             WHEN("working reliquary")
             {
-                const auto preExecutionCount = fieldReliquary.Batch<DynamicImage>().Size();
-                const auto preExecutionAllIDs = fieldReliquary.AllIDs();
+                const auto preExecutionCount = fieldReliquary->Batch<DynamicImage>().Size();
+                const auto preExecutionAllIDs = fieldReliquary->AllIDs();
 
-                fieldReliquary.Do(Work{});
+                fieldReliquary->Do(Work{});
 
                 THEN("has created relic")
                 {
@@ -523,7 +484,7 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
 
                     const auto result = std::get<Arca::RelicID>(std::get<Variant>(finishes[0].result));
 
-                    REQUIRE(preExecutionCount < fieldReliquary.Batch<DynamicImage>().Size());
+                    REQUIRE(preExecutionCount < fieldReliquary->Batch<DynamicImage>().Size());
                     REQUIRE(std::all_of(
                         preExecutionAllIDs.begin(),
                         preExecutionAllIDs.end(),
@@ -532,7 +493,7 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                             return result > checkID;
                         }));
 
-                    const auto parent = fieldReliquary.ParentOf(result);
+                    const auto parent = fieldReliquary->ParentOf(result);
                     REQUIRE(parent);
                     REQUIRE(*parent == dynamicImage);
                 }
@@ -568,14 +529,14 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                 "    return created.ID();\n" \
                 "}",
                 { newID },
-                fieldReliquary);
+                *fieldReliquary);
 
             WHEN("working reliquary")
             {
-                const auto preExecutionCount = fieldReliquary.Batch<DynamicImage>().Size();
-                const auto preExecutionAllIDs = fieldReliquary.AllIDs();
+                const auto preExecutionCount = fieldReliquary->Batch<DynamicImage>().Size();
+                const auto preExecutionAllIDs = fieldReliquary->AllIDs();
 
-                fieldReliquary.Do(Work{});
+                fieldReliquary->Do(Work{});
 
                 THEN("has created relic")
                 {
@@ -583,7 +544,7 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
 
                     const auto result = std::get<Arca::RelicID>(std::get<Variant>(finishes[0].result));
 
-                    REQUIRE(preExecutionCount < fieldReliquary.Batch<DynamicImage>().Size());
+                    REQUIRE(preExecutionCount < fieldReliquary->Batch<DynamicImage>().Size());
                     REQUIRE(std::all_of(
                         preExecutionAllIDs.begin(),
                         preExecutionAllIDs.end(),
@@ -628,14 +589,14 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                 "    return created.ID();\n" \
                 "}",
                 { newID, dynamicImage.ID() },
-                fieldReliquary);
+                *fieldReliquary);
 
             WHEN("working reliquary")
             {
-                const auto preExecutionCount = fieldReliquary.Batch<DynamicImage>().Size();
-                const auto preExecutionAllIDs = fieldReliquary.AllIDs();
+                const auto preExecutionCount = fieldReliquary->Batch<DynamicImage>().Size();
+                const auto preExecutionAllIDs = fieldReliquary->AllIDs();
 
-                fieldReliquary.Do(Work{});
+                fieldReliquary->Do(Work{});
 
                 THEN("has created relic")
                 {
@@ -643,7 +604,7 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
 
                     const auto result = std::get<Arca::RelicID>(std::get<Variant>(finishes[0].result));
 
-                    REQUIRE(preExecutionCount < fieldReliquary.Batch<DynamicImage>().Size());
+                    REQUIRE(preExecutionCount < fieldReliquary->Batch<DynamicImage>().Size());
                     REQUIRE(std::all_of(
                         preExecutionAllIDs.begin(),
                         preExecutionAllIDs.end(),
@@ -654,7 +615,7 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
 
                     REQUIRE(result == newID);
 
-                    const auto parent = fieldReliquary.ParentOf(result);
+                    const auto parent = fieldReliquary->ParentOf(result);
                     REQUIRE(parent);
                     REQUIRE(*parent == dynamicImage);
                 }
@@ -671,20 +632,20 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                 "    Arca::Reliquary::Do(command);\n" \
                 "}",
                 { dynamicImage.ID() },
-                fieldReliquary);
+                *fieldReliquary);
 
             WHEN("working reliquary")
             {
-                const auto preExecutionCount = fieldReliquary.Batch<DynamicImage>().Size();
-                const auto preExecutionAllIDs = fieldReliquary.AllIDs();
+                const auto preExecutionCount = fieldReliquary->Batch<DynamicImage>().Size();
+                const auto preExecutionAllIDs = fieldReliquary->AllIDs();
 
-                fieldReliquary.Do(Work{});
+                fieldReliquary->Do(Work{});
 
                 THEN("has created relic")
                 {
                     REQUIRE(finishes.size() == 1);
 
-                    REQUIRE(preExecutionCount > fieldReliquary.Batch<DynamicImage>().Size());
+                    REQUIRE(preExecutionCount > fieldReliquary->Batch<DynamicImage>().Size());
                 }
             }
         }
@@ -710,11 +671,11 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                     "    return found[0];\n" \
                     "}",
                     { box.center.x, box.center.y, box.size.width, box.size.height },
-                    fieldReliquary);
+                    *fieldReliquary);
 
                 WHEN("working reliquary")
                 {
-                    fieldReliquary.Do(Work{});
+                    fieldReliquary->Do(Work{});
 
                     THEN("has correct properties")
                     {
@@ -749,11 +710,11 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                     "    return found[0];\n" \
                     "}",
                     { box.center.x, box.center.y, box.center.z, box.size.width, box.size.height, box.size.depth },
-                    fieldReliquary);
+                    *fieldReliquary);
 
                 WHEN("working reliquary")
                 {
-                    fieldReliquary.Do(Work{});
+                    fieldReliquary->Do(Work{});
 
                     THEN("has correct properties")
                     {
@@ -775,7 +736,7 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
             Arca::Index<Asset::Material>{},
             1.0f,
             Color{} };
-        auto line = fieldReliquary.Do(createCommand);
+        auto line = fieldReliquary->Do(createCommand);
 
         GIVEN("points")
         {
@@ -800,11 +761,11 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                     "        Atmos::ToString(line.Points()[1].y);\n" \
                     "}",
                     { line.ID(), point0.x, point0.y, point1.x, point1.y },
-                    fieldReliquary);
+                    *fieldReliquary);
 
                 WHEN("working reliquary")
                 {
-                    fieldReliquary.Do(Work{});
+                    fieldReliquary->Do(Work{});
 
                     THEN("has correct properties")
                     {
@@ -836,11 +797,11 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                     "    return line.Z();\n" \
                     "}",
                     { line.ID(), z },
-                    fieldReliquary);
+                    *fieldReliquary);
 
                 WHEN("working reliquary")
                 {
-                    fieldReliquary.Do(Work{});
+                    fieldReliquary->Do(Work{});
 
                     THEN("has correct properties")
                     {
@@ -854,19 +815,19 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
         GIVEN("material asset")
         {
             auto vertexShaderName = dataGeneration.Random<std::string>();
-            auto vertexResource = fieldReliquary.Do(Asset::Resource::Create<Asset::Resource::Shader>{Buffer{}, vertexShaderName});
-            auto vertexShaderAsset = fieldReliquary.Do(Arca::Create<Asset::Shader>{ vertexShaderName, std::move(vertexResource) });
+            auto vertexResource = fieldReliquary->Do(Asset::Resource::Create<Asset::Resource::Shader>{Buffer{}, vertexShaderName});
+            auto vertexShaderAsset = fieldReliquary->Do(Arca::Create<Asset::Shader>{ vertexShaderName, std::move(vertexResource) });
 
             auto fragmentShaderName = dataGeneration.Random<std::string>();
-            auto fragmentResource = fieldReliquary.Do(Asset::Resource::Create<Asset::Resource::Shader>{Buffer{}, fragmentShaderName});
-            auto fragmentShaderAsset = fieldReliquary.Do(Arca::Create<Asset::Shader>{ fragmentShaderName, std::move(fragmentResource) });
+            auto fragmentResource = fieldReliquary->Do(Asset::Resource::Create<Asset::Resource::Shader>{Buffer{}, fragmentShaderName});
+            auto fragmentShaderAsset = fieldReliquary->Do(Arca::Create<Asset::Shader>{ fragmentShaderName, std::move(fragmentResource) });
 
             auto materialAssetName = dataGeneration.Random<std::string>();
             auto materialAssetPasses = std::vector<Asset::Material::Pass>
             {
                 { vertexShaderAsset, fragmentShaderAsset }
             };
-            auto materialAsset = fieldReliquary.Do(Arca::Create<Asset::Material>{ materialAssetName, materialAssetPasses });
+            auto materialAsset = fieldReliquary->Do(Arca::Create<Asset::Material>{ materialAssetName, materialAssetPasses });
 
             GIVEN("script that sets material asset and returns material ID")
             {
@@ -881,11 +842,11 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                     "    return line.Material().ID();\n" \
                     "}",
                     { line.ID(), materialAsset.ID() },
-                    fieldReliquary);
+                    *fieldReliquary);
 
                 WHEN("working reliquary")
                 {
-                    fieldReliquary.Do(Work{});
+                    fieldReliquary->Do(Work{});
 
                     THEN("has correct properties")
                     {
@@ -914,11 +875,11 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                     "        Atmos::ToString(line.Color().green) + \" \" + Atmos::ToString(line.Color().blue);\n"
                     "}",
                     { line.ID(), color.alpha, color.red, color.green, color.blue },
-                    fieldReliquary);
+                    *fieldReliquary);
 
                 WHEN("working reliquary")
                 {
-                    fieldReliquary.Do(Work{});
+                    fieldReliquary->Do(Work{});
 
                     THEN("has correct properties")
                     {
@@ -959,11 +920,11 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                     "    return found[0];\n" \
                     "}",
                     { box.center.x, box.center.y, box.size.width, box.size.height },
-                    fieldReliquary);
+                    *fieldReliquary);
 
                 WHEN("working reliquary")
                 {
-                    fieldReliquary.Do(Work{});
+                    fieldReliquary->Do(Work{});
 
                     THEN("has correct properties")
                     {
@@ -998,11 +959,11 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                     "    return found[0];\n" \
                     "}",
                     { box.center.x, box.center.y, box.center.z, box.size.width, box.size.height, box.size.depth },
-                    fieldReliquary);
+                    *fieldReliquary);
 
                 WHEN("working reliquary")
                 {
-                    fieldReliquary.Do(Work{});
+                    fieldReliquary->Do(Work{});
 
                     THEN("has correct properties")
                     {
@@ -1022,7 +983,7 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
             std::unordered_set<Spatial::Grid::Point>{Spatial::Grid::Point{0, 0}, Spatial::Grid::Point{1, 1}},
             0,
             Arca::Index<Asset::Material>{} };
-        auto gridRegion = fieldReliquary.Do(createCommand);
+        auto gridRegion = fieldReliquary->Do(createCommand);
 
         GIVEN("points")
         {
@@ -1049,11 +1010,11 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                     "        Atmos::ToString(retrievedPoints[1].y);\n" \
                     "}",
                     { gridRegion.ID(), point0.x, point0.y, point1.x, point1.y },
-                    fieldReliquary);
+                    *fieldReliquary);
 
                 WHEN("working reliquary")
                 {
-                    fieldReliquary.Do(Work{});
+                    fieldReliquary->Do(Work{});
 
                     THEN("has correct properties")
                     {
@@ -1102,11 +1063,11 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                     "    return gridRegion.Z();\n" \
                     "}",
                     { gridRegion.ID(), z },
-                    fieldReliquary);
+                    *fieldReliquary);
 
                 WHEN("working reliquary")
                 {
-                    fieldReliquary.Do(Work{});
+                    fieldReliquary->Do(Work{});
 
                     THEN("has correct properties")
                     {
@@ -1120,19 +1081,19 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
         GIVEN("material asset")
         {
             auto vertexShaderName = dataGeneration.Random<std::string>();
-            auto vertexResource = fieldReliquary.Do(Asset::Resource::Create<Asset::Resource::Shader>{Buffer{}, vertexShaderName});
-            auto vertexShaderAsset = fieldReliquary.Do(Arca::Create<Asset::Shader>{ vertexShaderName, std::move(vertexResource) });
+            auto vertexResource = fieldReliquary->Do(Asset::Resource::Create<Asset::Resource::Shader>{Buffer{}, vertexShaderName});
+            auto vertexShaderAsset = fieldReliquary->Do(Arca::Create<Asset::Shader>{ vertexShaderName, std::move(vertexResource) });
 
             auto fragmentShaderName = dataGeneration.Random<std::string>();
-            auto fragmentResource = fieldReliquary.Do(Asset::Resource::Create<Asset::Resource::Shader>{Buffer{}, fragmentShaderName});
-            auto fragmentShaderAsset = fieldReliquary.Do(Arca::Create<Asset::Shader>{ fragmentShaderName, std::move(fragmentResource) });
+            auto fragmentResource = fieldReliquary->Do(Asset::Resource::Create<Asset::Resource::Shader>{Buffer{}, fragmentShaderName});
+            auto fragmentShaderAsset = fieldReliquary->Do(Arca::Create<Asset::Shader>{ fragmentShaderName, std::move(fragmentResource) });
 
             auto materialAssetName = dataGeneration.Random<std::string>();
             auto materialAssetPasses = std::vector<Asset::Material::Pass>
             {
                 { vertexShaderAsset, fragmentShaderAsset }
             };
-            auto materialAsset = fieldReliquary.Do(Arca::Create<Asset::Material>{ materialAssetName, materialAssetPasses });
+            auto materialAsset = fieldReliquary->Do(Arca::Create<Asset::Material>{ materialAssetName, materialAssetPasses });
 
             GIVEN("script that sets material asset and returns material ID")
             {
@@ -1147,11 +1108,11 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                     "    return gridRegion.Material().ID();\n" \
                     "}",
                     { gridRegion.ID(), materialAsset.ID() },
-                    fieldReliquary);
+                    *fieldReliquary);
 
                 WHEN("working reliquary")
                 {
-                    fieldReliquary.Do(Work{});
+                    fieldReliquary->Do(Work{});
 
                     THEN("has correct properties")
                     {
@@ -1183,11 +1144,11 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                     "    return found[0];\n" \
                     "}",
                     { box.center.x, box.center.y, box.size.width, box.size.height },
-                    fieldReliquary);
+                    *fieldReliquary);
 
                 WHEN("working reliquary")
                 {
-                    fieldReliquary.Do(Work{});
+                    fieldReliquary->Do(Work{});
 
                     THEN("has correct properties")
                     {
@@ -1222,11 +1183,11 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                     "    return found[0];\n" \
                     "}",
                     { box.center.x, box.center.y, box.center.z, box.size.width, box.size.height, box.size.depth },
-                    fieldReliquary);
+                    *fieldReliquary);
 
                 WHEN("working reliquary")
                 {
-                    fieldReliquary.Do(Work{});
+                    fieldReliquary->Do(Work{});
 
                     THEN("has correct properties")
                     {
@@ -1263,11 +1224,11 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                     "        Atmos::ToString(camera.Position().z);\n"
                     "}",
                     { position.x, position.y, position.z },
-                    fieldReliquary);
+                    *fieldReliquary);
 
                 WHEN("working reliquary")
                 {
-                    fieldReliquary.Do(Work{});
+                    fieldReliquary->Do(Work{});
 
                     THEN("has correct properties")
                     {
@@ -1303,11 +1264,11 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                     "    return Atmos::ToString(camera.Size().width) + \" \" + Atmos::ToString(camera.Size().height);\n"
                     "}",
                     { scalers.x, scalers.y },
-                    fieldReliquary);
+                    *fieldReliquary);
 
                 WHEN("working reliquary")
                 {
-                    fieldReliquary.Do(Work{});
+                    fieldReliquary->Do(Work{});
 
                     THEN("has correct properties")
                     {
@@ -1338,11 +1299,11 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                     "        Atmos::ToString(camera.Sides().Bottom());\n"
                     "}",
                     { scalers.x, scalers.y },
-                    fieldReliquary);
+                    *fieldReliquary);
 
                 WHEN("working reliquary")
                 {
-                    fieldReliquary.Do(Work{});
+                    fieldReliquary->Do(Work{});
 
                     THEN("has correct properties")
                     {
@@ -1373,11 +1334,11 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
             "    return imageCore.ID();\n"\
             "}",
             {},
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -1402,11 +1363,11 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
             "    return imageCore.ID();\n"\
             "}",
             {},
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -1420,8 +1381,8 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
 
     GIVEN("ImageCore")
     {
-        auto relic = fieldReliquary.Do(Arca::Create<Arca::OpenRelic>());
-        fieldReliquary.Do(Arca::Create<ImageCore>(relic.ID(), Arca::Index<Asset::Image>{}, 1));
+        auto relic = fieldReliquary->Do(Arca::Create<Arca::OpenRelic>());
+        fieldReliquary->Do(Arca::Create<ImageCore>(relic.ID(), Arca::Index<Asset::Image>{}, 1));
 
         GIVEN("script that destroys ImageCore")
         {
@@ -1432,17 +1393,17 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                 "    Arca::Reliquary::Do(Arca::Destroy<Atmos::Render::ImageCore>(id));\n" \
                 "}",
                 { relic.ID() },
-                fieldReliquary);
+                *fieldReliquary);
 
             WHEN("working reliquary")
             {
-                fieldReliquary.Do(Work{});
+                fieldReliquary->Do(Work{});
 
                 THEN("has correct properties")
                 {
                     REQUIRE(finishes.size() == 1);
 
-                    const auto imageCores = fieldReliquary.Batch<Render::ImageCore>();
+                    const auto imageCores = fieldReliquary->Batch<Render::ImageCore>();
                     REQUIRE(imageCores.IsEmpty());
                 }
             }

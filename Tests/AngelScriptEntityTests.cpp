@@ -2,62 +2,23 @@
 
 #include "AngelScriptEntityTests.h"
 
-#include "ScriptEngine.h"
-
 #include <Atmos/AngelScriptEntity.h>
 #include <Atmos/AngelScriptModifyProperties.h>
 
 #include <Atmos/SpatialAlgorithms.h>
-#include <Atmos/TypeRegistration.h>
-#include <Atmos/ScriptFinished.h>
-#include <Atmos/Work.h>
-#include <Atmos/StringUtility.h>
 #include <Atmos/EntityPrototype.h>
-#include <Arca/OpenRelic.h>
 #include <Atmos/DataCore.h>
 #include <Atmos/ModifyEntityBoundary.h>
 
 SCENARIO_METHOD(AngelScriptEntityTestsFixture, "running entity AngelScript scripts", "[script][angelscript]")
 {
-    Logging::Logger logger(Logging::Severity::Verbose);
-    logger.Add<Logging::FileSink>();
-    ScriptEngine engine(logger);
-
-    auto fieldOrigin = Arca::ReliquaryOrigin();
-    fieldOrigin.Register<Arca::OpenRelic>();
-    RegisterFieldTypes(
-        fieldOrigin,
-        *engine.mockAssetResourceManager,
-        *engine.mockAudioManager,
-        *engine.mockInputManager,
-        *engine.mockGraphicsManager,
-        *engine.mockTextManager,
-        *engine.scriptManager,
-        *engine.mockWorldManager,
-        Spatial::Size2D{
-            std::numeric_limits<Spatial::Size2D::Value>::max(),
-            std::numeric_limits<Spatial::Size2D::Value>::max() },
-            *engine.mockWindow,
-            engine.Logger());
-    fieldOrigin.CuratorCommandPipeline<Work>(Arca::Pipeline{
-        Entity::ActualizationStage(), Scripting::Stage() });
-    World::Field field(0, fieldOrigin.Actualize());
-
-    auto& fieldReliquary = field.Reliquary();
-
-    std::vector<Scripting::Finished> finishes;
-    fieldReliquary.On<Scripting::Finished>([&finishes](const Scripting::Finished& signal)
-        {
-            finishes.push_back(signal);
-        });
-
     GIVEN("created entity")
     {
         const auto name = dataGeneration.Random<std::string>();
         const auto position = Spatial::Grid::Point{5, 5};
         const auto isSolid = dataGeneration.Random<bool>();
 
-        auto entity = fieldReliquary.Do(Arca::Create<Entity::Entity>{ name, position, isSolid });
+        auto entity = fieldReliquary->Do(Arca::Create<Entity::Entity>{ name, position, isSolid });
 
         GIVEN("script that returns name")
         {
@@ -69,11 +30,11 @@ SCENARIO_METHOD(AngelScriptEntityTestsFixture, "running entity AngelScript scrip
                 "    return entity.Name();\n" \
                 "}",
                 { entity.ID() },
-                fieldReliquary);
+                *fieldReliquary);
 
             WHEN("working reliquary")
             {
-                fieldReliquary.Do(Work{});
+                fieldReliquary->Do(Work{});
 
                 THEN("has correct properties")
                 {
@@ -93,11 +54,11 @@ SCENARIO_METHOD(AngelScriptEntityTestsFixture, "running entity AngelScript scrip
                 "    return Atmos::ToString(entity.Position().x) + \" \" + Atmos::ToString(entity.Position().y);\n" \
                 "}",
                 { entity.ID() },
-                fieldReliquary);
+                *fieldReliquary);
 
             WHEN("working reliquary")
             {
-                fieldReliquary.Do(Work{});
+                fieldReliquary->Do(Work{});
 
                 THEN("has correct properties")
                 {
@@ -121,11 +82,11 @@ SCENARIO_METHOD(AngelScriptEntityTestsFixture, "running entity AngelScript scrip
                 "    return entity.IsSolid();\n" \
                 "}",
                 { entity.ID() },
-                fieldReliquary);
+                *fieldReliquary);
 
             WHEN("working reliquary")
             {
-                fieldReliquary.Do(Work{});
+                fieldReliquary->Do(Work{});
 
                 THEN("has correct properties")
                 {
@@ -146,11 +107,11 @@ SCENARIO_METHOD(AngelScriptEntityTestsFixture, "running entity AngelScript scrip
                 "    return entity.ID();\n" \
                 "}",
                 { name },
-                fieldReliquary);
+                *fieldReliquary);
 
             WHEN("working reliquary")
             {
-                fieldReliquary.Do(Work{});
+                fieldReliquary->Do(Work{});
 
                 THEN("has correct properties")
                 {
@@ -170,11 +131,11 @@ SCENARIO_METHOD(AngelScriptEntityTestsFixture, "running entity AngelScript scrip
                 "    return entities[0].ID();\n" \
                 "}",
                 { position.x, position.y },
-                fieldReliquary);
+                *fieldReliquary);
 
             WHEN("working reliquary")
             {
-                fieldReliquary.Do(Work{});
+                fieldReliquary->Do(Work{});
 
                 THEN("has correct properties")
                 {
@@ -199,11 +160,11 @@ SCENARIO_METHOD(AngelScriptEntityTestsFixture, "running entity AngelScript scrip
                     "    return Atmos::ToString(entity.Position().x) + \" \" + Atmos::ToString(entity.Position().y);\n" \
                     "}",
                     { entity.ID(), moveTo.x, moveTo.y },
-                    fieldReliquary);
+                    *fieldReliquary);
 
                 WHEN("working reliquary")
                 {
-                    fieldReliquary.Do(Work{});
+                    fieldReliquary->Do(Work{});
 
                     THEN("has correct properties")
                     {
@@ -246,11 +207,11 @@ SCENARIO_METHOD(AngelScriptEntityTestsFixture, "running entity AngelScript scrip
                         "    return Atmos::Join(\", \", propertiesAsStrings);\n" \
                         "}",
                         { entity.ID(), names[0], values[0], names[1], values[1], names[2], values[2] },
-                        fieldReliquary);
+                        *fieldReliquary);
 
                     WHEN("working reliquary")
                     {
-                        fieldReliquary.Do(Work{});
+                        fieldReliquary->Do(Work{});
 
                         THEN("has correct properties")
                         {
@@ -277,7 +238,7 @@ SCENARIO_METHOD(AngelScriptEntityTestsFixture, "running entity AngelScript scrip
                 for (size_t i = 0; i < names.size(); ++i)
                     properties.push_back(Property{ names[i], { values[i] } });
 
-                fieldReliquary.Do(ModifyProperties{ entity.ID(), properties, {}, {} });
+                fieldReliquary->Do(ModifyProperties{ entity.ID(), properties, {}, {} });
 
                 GIVEN("script that modifies properties by remove")
                 {
@@ -299,11 +260,11 @@ SCENARIO_METHOD(AngelScriptEntityTestsFixture, "running entity AngelScript scrip
                         "    return Atmos::Join(\", \", propertiesAsStrings);\n" \
                         "}",
                         { entity.ID(), names[0], names[2], names[4] },
-                        fieldReliquary);
+                        *fieldReliquary);
 
                     WHEN("working reliquary")
                     {
-                        fieldReliquary.Do(Work{});
+                        fieldReliquary->Do(Work{});
 
                         THEN("has correct properties")
                         {
@@ -330,7 +291,7 @@ SCENARIO_METHOD(AngelScriptEntityTestsFixture, "running entity AngelScript scrip
                 for (size_t i = 0; i < names.size(); ++i)
                     properties.push_back(Property{ names[i], { values[i] } });
 
-                fieldReliquary.Do(ModifyProperties{ entity.ID(), properties, {}, {} });
+                fieldReliquary->Do(ModifyProperties{ entity.ID(), properties, {}, {} });
 
                 GIVEN("script that modifies properties by replace")
                 {
@@ -355,11 +316,11 @@ SCENARIO_METHOD(AngelScriptEntityTestsFixture, "running entity AngelScript scrip
                         "    return Atmos::Join(\", \", propertiesAsStrings);\n" \
                         "}",
                         { entity.ID(), names[0], values[6], names[2], values[7], names[4], values[8] },
-                        fieldReliquary);
+                        *fieldReliquary);
 
                     WHEN("working reliquary")
                     {
-                        fieldReliquary.Do(Work{});
+                        fieldReliquary->Do(Work{});
 
                         THEN("has correct properties")
                         {
@@ -400,11 +361,11 @@ SCENARIO_METHOD(AngelScriptEntityTestsFixture, "running entity AngelScript scrip
                         "    return Atmos::Join(\", \", tags);\n" \
                         "}",
                         { entity.ID(), values[0], values[1], values[2] },
-                        fieldReliquary);
+                        *fieldReliquary);
 
                     WHEN("working reliquary")
                     {
-                        fieldReliquary.Do(Work{});
+                        fieldReliquary->Do(Work{});
 
                         THEN("has correct properties")
                         {
@@ -425,7 +386,7 @@ SCENARIO_METHOD(AngelScriptEntityTestsFixture, "running entity AngelScript scrip
             {
                 const auto values = dataGeneration.RandomGroup<String>(6);
 
-                fieldReliquary.Do(Entity::ModifyTags{ entity, values, {} });
+                fieldReliquary->Do(Entity::ModifyTags{ entity, values, {} });
 
                 GIVEN("script that modifies tags by remove")
                 {
@@ -441,11 +402,11 @@ SCENARIO_METHOD(AngelScriptEntityTestsFixture, "running entity AngelScript scrip
                         "    return Atmos::Join(\", \", tags);\n" \
                         "}",
                         { entity.ID(), values[0], values[2], values[4] },
-                        fieldReliquary);
+                        *fieldReliquary);
 
                     WHEN("working reliquary")
                     {
-                        fieldReliquary.Do(Work{});
+                        fieldReliquary->Do(Work{});
 
                         THEN("has correct properties")
                         {
@@ -482,18 +443,18 @@ SCENARIO_METHOD(AngelScriptEntityTestsFixture, "running entity AngelScript scrip
                     "    Arca::Reliquary::Do(Atmos::ModifyProperties(entity.ID(), add, string[](), Atmos::Property[]()));\n" \
                     "}",
                     { names[0], values[0], names[1], values[1], names[2], values[2] },
-                    fieldReliquary);
+                    *fieldReliquary);
 
-                fieldReliquary.Do(
+                fieldReliquary->Do(
                     Arca::Create<Entity::Prototype>(script, dataGeneration.Random<String>(), position, false));
 
                 WHEN("working reliquary")
                 {
-                    fieldReliquary.Do(Work{});
+                    fieldReliquary->Do(Work{});
 
                     THEN("entity has been created with the correct properties")
                     {
-                        auto entities = fieldReliquary.Batch<Entity::Entity>();
+                        auto entities = fieldReliquary->Batch<Entity::Entity>();
                         REQUIRE(entities.Size() == 2);
 
                         auto entityFromPrototype = ++entities.begin();
@@ -524,11 +485,11 @@ SCENARIO_METHOD(AngelScriptEntityTestsFixture, "running entity AngelScript scrip
                     "    return Arca::Reliquary::Do(Atmos::Entity::CanMoveTo(entity, Atmos::Spatial::Grid::Point(x, y)));\n" \
                     "}",
                     { entity.ID(), gridPoint.x, gridPoint.y },
-                    fieldReliquary);
+                    *fieldReliquary);
 
                 WHEN("working reliquary")
                 {
-                    fieldReliquary.Do(Work{});
+                    fieldReliquary->Do(Work{});
 
                     THEN("is false")
                     {
@@ -542,7 +503,7 @@ SCENARIO_METHOD(AngelScriptEntityTestsFixture, "running entity AngelScript scrip
 
             WHEN("is solid")
             {
-                fieldReliquary.Do(World::ModifyEntityBoundary{ {gridPoint}, {} });
+                fieldReliquary->Do(World::ModifyEntityBoundary{ {gridPoint}, {} });
 
                 CompileAndCreateScript(
                     "basic_script.as",
@@ -552,11 +513,11 @@ SCENARIO_METHOD(AngelScriptEntityTestsFixture, "running entity AngelScript scrip
                     "    return Arca::Reliquary::Do(Atmos::Entity::CanMoveTo(entity, Atmos::Spatial::Grid::Point(x, y)));\n" \
                     "}",
                     { entity.ID(), gridPoint.x, gridPoint.y },
-                    fieldReliquary);
+                    *fieldReliquary);
 
                 WHEN("working reliquary")
                 {
-                    fieldReliquary.Do(Work{});
+                    fieldReliquary->Do(Work{});
 
                     THEN("is false")
                     {
@@ -584,11 +545,11 @@ SCENARIO_METHOD(AngelScriptEntityTestsFixture, "running entity AngelScript scrip
                     "    return path.length();\n" \
                     "}",
                     { entity.ID(), pathToPosition.x, pathToPosition.y },
-                    fieldReliquary);
+                    *fieldReliquary);
 
                 WHEN("working reliquary")
                 {
-                    fieldReliquary.Do(Work{});
+                    fieldReliquary->Do(Work{});
 
                     THEN("has correct properties")
                     {
@@ -615,11 +576,11 @@ SCENARIO_METHOD(AngelScriptEntityTestsFixture, "running entity AngelScript scrip
             "    return entity.ID();\n" \
             "}",
             { name, position.x, position.y, isSolid },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {

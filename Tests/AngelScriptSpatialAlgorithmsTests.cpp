@@ -2,51 +2,14 @@
 
 #include "AngelScriptSpatialAlgorithmsTests.h"
 
-#include "ScriptEngine.h"
-
 #include <Atmos/Size3D.h>
 #include <Atmos/AxisAlignedBox3D.h>
 #include <Atmos/SpatialAlgorithms.h>
 #include <Atmos/ToWorldPoint2D.h>
 #include <Atmos/ToWorldPoint3D.h>
-#include <Atmos/TypeRegistration.h>
-#include <Atmos/Script.h>
-#include <Atmos/ScriptFinished.h>
-#include <Atmos/Work.h>
-#include <Atmos/StringUtility.h>
 
 SCENARIO_METHOD(AngelScriptSpatialAlgorithmsTestsFixture, "running spatial algorithm AngelScript scripts", "[script][angelscript]")
 {
-    Logging::Logger logger(Logging::Severity::Verbose);
-    logger.Add<Logging::FileSink>();
-    ScriptEngine engine(logger);
-
-    auto fieldOrigin = Arca::ReliquaryOrigin();
-    RegisterFieldTypes(
-        fieldOrigin,
-        *engine.mockAssetResourceManager,
-        *engine.mockAudioManager,
-        *engine.mockInputManager,
-        *engine.mockGraphicsManager,
-        *engine.mockTextManager,
-        *engine.scriptManager,
-        *engine.mockWorldManager,
-        Spatial::Size2D{
-            std::numeric_limits<Spatial::Size2D::Value>::max(),
-            std::numeric_limits<Spatial::Size2D::Value>::max() },
-            *engine.mockWindow,
-            engine.Logger());
-    fieldOrigin.CuratorCommandPipeline<Work>(Arca::Pipeline{ Scripting::Stage() });
-    World::Field field(0, fieldOrigin.Actualize());
-
-    auto& fieldReliquary = field.Reliquary();
-
-    std::vector<Scripting::Finished> finishes;
-    fieldReliquary.On<Scripting::Finished>([&finishes](const Scripting::Finished& signal)
-        {
-            finishes.push_back(signal);
-        });
-
     GIVEN("script that returns Distance from Point2D")
     {
         auto starting = dataGeneration.RandomStack<
@@ -63,11 +26,11 @@ SCENARIO_METHOD(AngelScriptSpatialAlgorithmsTestsFixture, "running spatial algor
             "    return Atmos::Spatial::Distance(starting, destination);\n" \
             "}",
             { starting.x, starting.y, destination.x, destination.y },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -95,11 +58,11 @@ SCENARIO_METHOD(AngelScriptSpatialAlgorithmsTestsFixture, "running spatial algor
             "    return Atmos::Spatial::Distance(starting, destination);\n" \
             "}",
             { starting.x, starting.y, starting.z, destination.x, destination.y, destination.z },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -127,11 +90,11 @@ SCENARIO_METHOD(AngelScriptSpatialAlgorithmsTestsFixture, "running spatial algor
             "    return Atmos::Spatial::Grid::Distance(starting, destination);\n" \
             "}",
             { starting.x, starting.y, destination.x, destination.y },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -162,11 +125,11 @@ SCENARIO_METHOD(AngelScriptSpatialAlgorithmsTestsFixture, "running spatial algor
             "    return Atmos::Spatial::IsBetween(one, check, two);\n" \
             "}",
             { one.x, one.y, check.x, check.y, two.x, two.y },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -197,11 +160,11 @@ SCENARIO_METHOD(AngelScriptSpatialAlgorithmsTestsFixture, "running spatial algor
             "    return Atmos::Spatial::AngleOf(side1, middle, side2);\n" \
             "}",
             { side1.x, side1.y, middle.x, middle.y, side2.x, side2.y },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -234,11 +197,11 @@ SCENARIO_METHOD(AngelScriptSpatialAlgorithmsTestsFixture, "running spatial algor
             "    return Atmos::Spatial::Contains(box, point);\n" \
             "}",
             { center.x, center.y, size.width, size.height, point.x, point.y },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -293,11 +256,11 @@ SCENARIO_METHOD(AngelScriptSpatialAlgorithmsTestsFixture, "running spatial algor
                 center1.y,
                 size1.width,
                 size1.height },
-                fieldReliquary);
+                *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -333,11 +296,11 @@ SCENARIO_METHOD(AngelScriptSpatialAlgorithmsTestsFixture, "running spatial algor
             "    return Atmos::Spatial::Contains(box, point);\n" \
             "}",
             { center.x, center.y, center.z, size.width, size.height, size.depth, point.x, point.y, point.z },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -400,11 +363,11 @@ SCENARIO_METHOD(AngelScriptSpatialAlgorithmsTestsFixture, "running spatial algor
                 size1.width,
                 size1.height,
                 size1.depth },
-                fieldReliquary);
+                *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -460,11 +423,11 @@ SCENARIO_METHOD(AngelScriptSpatialAlgorithmsTestsFixture, "running spatial algor
                 center1.y,
                 size1.width,
                 size1.height },
-                fieldReliquary);
+                *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -528,11 +491,11 @@ SCENARIO_METHOD(AngelScriptSpatialAlgorithmsTestsFixture, "running spatial algor
                 size1.width,
                 size1.height,
                 size1.depth },
-                fieldReliquary);
+                *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -568,11 +531,11 @@ SCENARIO_METHOD(AngelScriptSpatialAlgorithmsTestsFixture, "running spatial algor
             "    return Atmos::Spatial::Grid::Contains(box, point);\n" \
             "}",
             { center.x, center.y, size.width, size.height, point.x, point.y },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -627,11 +590,11 @@ SCENARIO_METHOD(AngelScriptSpatialAlgorithmsTestsFixture, "running spatial algor
                 center1.y,
                 size1.width,
                 size1.height },
-                fieldReliquary);
+                *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -687,11 +650,11 @@ SCENARIO_METHOD(AngelScriptSpatialAlgorithmsTestsFixture, "running spatial algor
                 center1.y,
                 size1.width,
                 size1.height },
-                fieldReliquary);
+                *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -720,11 +683,11 @@ SCENARIO_METHOD(AngelScriptSpatialAlgorithmsTestsFixture, "running spatial algor
             "    return Atmos::ToString(point.x) + \" \" + Atmos::ToString(point.y);\n" \
             "}",
             { x, y, z },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -749,11 +712,11 @@ SCENARIO_METHOD(AngelScriptSpatialAlgorithmsTestsFixture, "running spatial algor
             "    return Atmos::ToString(point.x) + \" \" + Atmos::ToString(point.y);\n" \
             "}",
             { x, y },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -780,11 +743,11 @@ SCENARIO_METHOD(AngelScriptSpatialAlgorithmsTestsFixture, "running spatial algor
             "    return Atmos::ToString(point.x) + \" \" + Atmos::ToString(point.y);\n" \
             "}",
             { angle, distance },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -812,11 +775,11 @@ SCENARIO_METHOD(AngelScriptSpatialAlgorithmsTestsFixture, "running spatial algor
             "    return Atmos::ToString(point.x) + \" \" + Atmos::ToString(point.y) + \" \" + Atmos::ToString(point.z);\n" \
             "}",
             { x, y, z },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -844,11 +807,11 @@ SCENARIO_METHOD(AngelScriptSpatialAlgorithmsTestsFixture, "running spatial algor
             "    return Atmos::ToString(point.x) + \" \" + Atmos::ToString(point.y) + \" \" + Atmos::ToString(point.z);\n" \
             "}",
             { x, y, z },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -876,11 +839,11 @@ SCENARIO_METHOD(AngelScriptSpatialAlgorithmsTestsFixture, "running spatial algor
             "    return Atmos::ToString(point.x) + \" \" + Atmos::ToString(point.y) + \" \" + Atmos::ToString(point.z);\n" \
             "}",
             { yaw, pitch, distance },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -907,11 +870,11 @@ SCENARIO_METHOD(AngelScriptSpatialAlgorithmsTestsFixture, "running spatial algor
             "    return Atmos::ToString(point.x) + \" \" + Atmos::ToString(point.y);\n" \
             "}",
             { x, y },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -939,11 +902,11 @@ SCENARIO_METHOD(AngelScriptSpatialAlgorithmsTestsFixture, "running spatial algor
             "    return Atmos::ToString(point.x) + \" \" + Atmos::ToString(point.y);\n" \
             "}",
             { x, y },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -975,11 +938,11 @@ SCENARIO_METHOD(AngelScriptSpatialAlgorithmsTestsFixture, "running spatial algor
             "Atmos::ToString(box.size.height);\n" \
             "}",
             { left, top, right, bottom },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -1019,11 +982,11 @@ SCENARIO_METHOD(AngelScriptSpatialAlgorithmsTestsFixture, "running spatial algor
             "Atmos::ToString(box.size.depth);\n" \
             "}",
             { left, top, farZ, right, bottom, nearZ },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -1057,17 +1020,17 @@ SCENARIO_METHOD(AngelScriptSpatialAlgorithmsTestsFixture, "running spatial algor
             "    return Atmos::ToString(point.x) + \" \" + Atmos::ToString(point.y);\n" \
             "}",
             { x, y },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
                 REQUIRE(finishes.size() == 1);
 
-                const auto expectedPoint = fieldReliquary.Do(Spatial::ToWorldPoint2D(Spatial::Point2D{ x, y }));
+                const auto expectedPoint = fieldReliquary->Do(Spatial::ToWorldPoint2D(Spatial::Point2D{ x, y }));
                 const auto expectedResult = ToString(expectedPoint.x) + " " + ToString(expectedPoint.y);
 
                 const auto result = std::get<String>(std::get<Variant>(finishes[0].result));
@@ -1091,17 +1054,17 @@ SCENARIO_METHOD(AngelScriptSpatialAlgorithmsTestsFixture, "running spatial algor
             "    return Atmos::ToString(point.x) + \" \" + Atmos::ToString(point.y) + \" \" + Atmos::ToString(point.z);\n" \
             "}",
             { x, y, z },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
                 REQUIRE(finishes.size() == 1);
 
-                const auto expectedPoint = fieldReliquary.Do(Spatial::ToWorldPoint3D(Spatial::Point2D{ x, y }, z));
+                const auto expectedPoint = fieldReliquary->Do(Spatial::ToWorldPoint3D(Spatial::Point2D{ x, y }, z));
                 const auto expectedResult = ToString(expectedPoint.x) + " " + ToString(expectedPoint.y) + " " + Atmos::ToString(expectedPoint.z);
 
                 const auto result = std::get<String>(std::get<Variant>(finishes[0].result));

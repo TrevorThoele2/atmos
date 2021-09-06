@@ -2,6 +2,7 @@
 
 #include "Field.h"
 #include "FieldDestination.h"
+#include "FieldInitialization.h"
 
 #include "FilePath.h"
 #include "Property.h"
@@ -13,8 +14,10 @@ namespace Atmos::World
     class Manager
     {
     public:
+        using RetrieveFieldInitialization = std::function<FieldInitialization()>;
+    public:
         virtual ~Manager() = 0;
-
+        
         virtual void LockIn() = 0;
         [[nodiscard]] virtual bool WillLockIn() const = 0;
 

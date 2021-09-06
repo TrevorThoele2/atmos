@@ -1,5 +1,8 @@
 #include "MockWorldManager.h"
 
+MockWorldManager::MockWorldManager(const RetrieveFieldInitialization&)
+{}
+
 void MockWorldManager::LockIn()
 {}
 
@@ -32,12 +35,12 @@ Atmos::File::Path MockWorldManager::WorldPath() const
 
 Atmos::World::Field* MockWorldManager::CurrentField()
 {
-    return nullptr;
+    return field.get();
 }
 
 const Atmos::World::Field* MockWorldManager::CurrentField() const
 {
-    return nullptr;
+    return field.get();
 }
 
 void MockWorldManager::SetWorldProperties(const std::vector<Atmos::Property>& set)

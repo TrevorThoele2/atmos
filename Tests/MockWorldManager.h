@@ -8,7 +8,11 @@ public:
     std::vector<Atmos::World::FieldID> requestCalls;
 
     std::vector<Atmos::Property> properties;
+
+    std::unique_ptr<Atmos::World::Field> field;
 public:
+    explicit MockWorldManager(const RetrieveFieldInitialization& retrieveFieldInitialization);
+
     void LockIn() override;
     [[nodiscard]] bool WillLockIn() const override;
 

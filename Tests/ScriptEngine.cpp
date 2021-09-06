@@ -1,8 +1,8 @@
 #include "ScriptEngine.h"
 
 ScriptEngine::ScriptEngine(Logging::Logger& logger) :
-    Engine(CreateInitializationProperties(logger), logger),
-    mockWorldManager(std::make_unique<MockWorldManager>())
+    Engine(CreateInitializationProperties(logger), Chroma::TypeIdentity<MockWorldManager>{}, logger),
+    mockWorldManager(dynamic_cast<MockWorldManager*>(WorldManager()))
 {}
 
 auto ScriptEngine::CreateInitializationProperties(Logging::Logger& logger)
