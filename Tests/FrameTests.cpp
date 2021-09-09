@@ -53,7 +53,7 @@ SCENARIO_METHOD(FrameTestsFixture, "frame", "[frame]")
         {
             fieldReliquary.Do(Work{});
 
-            auto& information = *Arca::Index<Information>(fieldReliquary);
+            auto& information = *fieldReliquary.Find<Information>();
 
             THEN("last elapsed is positive")
             {

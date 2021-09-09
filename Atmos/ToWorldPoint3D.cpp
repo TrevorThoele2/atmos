@@ -9,7 +9,7 @@ namespace Atmos::Spatial
 
     Point3D ToWorldPoint3D::Do(Arca::Reliquary& reliquary) const
     {
-        const auto camera = Arca::Index<Render::Camera>(reliquary);
+        const auto camera = reliquary.Find<Render::Camera>();
         const auto position = camera->Position();
         const auto size = camera->Size();
         return { from.x + position.x - size.width / 2, from.y + position.y - size.height / 2, z };

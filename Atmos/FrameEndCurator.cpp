@@ -15,7 +15,7 @@ namespace Atmos::Frame
     {
         auto information = MutablePointer().Of<Information>();
 
-        const auto timeSettings = Arca::Index<Settings>(Owner());
+        const auto timeSettings = Owner().Find<Settings>();
         
         if (framesPerSecondStopwatch.Elapsed() >= Time::Milliseconds(timeSettings->framesPerSecondLimit))
         {

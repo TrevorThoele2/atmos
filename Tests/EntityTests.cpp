@@ -16,7 +16,7 @@ EntityTestsFixture::EntityTestsFixture() : worldManager([this]() { return World:
     World::RegisterTypes(reliquaryOrigin, worldManager);
 
     reliquary = reliquaryOrigin.Actualize();
-    mappedEntities = Arca::Index<Mapped>(*reliquary);
+    mappedEntities = reliquary->Find<Mapped>();
 }
 
 SCENARIO_METHOD(EntityTestsFixture, "entity actualization", "[entity]")
@@ -275,7 +275,7 @@ SCENARIO_METHOD(EntityTestsFixture, "moving entities", "[entity]")
                 size_t i = 3;
                 for (auto entity = entities.begin(); entity != entities.end(); ++entity)
                 {
-                    reliquary->Do(MoveTo{ Arca::Index<Atmos::Entity::Entity>(entity.ID(), *reliquary), positions[i] });
+                    reliquary->Do(MoveTo{ reliquary->Find<Atmos::Entity::Entity>(entity.ID()), positions[i] });
                     ++i;
                 }
 
@@ -315,7 +315,7 @@ SCENARIO_METHOD(EntityTestsFixture, "moving entities", "[entity]")
 
             reliquary->Do(World::ModifyEntityBoundary{ {positions[1]}, {} });
 
-            reliquary->Do(MoveTo{ Arca::Index<Atmos::Entity::Entity>(entity.ID(), *reliquary), positions[1] });
+            reliquary->Do(MoveTo{ reliquary->Find<Atmos::Entity::Entity>(entity.ID()), positions[1] });
 
             THEN("has not moved")
             {
@@ -346,7 +346,7 @@ SCENARIO_METHOD(EntityTestsFixture, "moving entities", "[entity]")
                 positions[1],
                 false));
 
-            reliquary->Do(MoveTo{ Arca::Index<Atmos::Entity::Entity>(entity0.ID(), *reliquary), positions[1] });
+            reliquary->Do(MoveTo{ reliquary->Find<Atmos::Entity::Entity>(entity0.ID()), positions[1] });
 
             auto entities = reliquary->Batch<Atmos::Entity::Entity>();
 
@@ -386,7 +386,7 @@ SCENARIO_METHOD(EntityTestsFixture, "moving entities", "[entity]")
                 positions[1],
                 true));
 
-            reliquary->Do(MoveTo{ Arca::Index<Atmos::Entity::Entity>(entity0.ID(), *reliquary), positions[1] });
+            reliquary->Do(MoveTo{ reliquary->Find<Atmos::Entity::Entity>(entity0.ID()), positions[1] });
 
             THEN("has not moved")
             {

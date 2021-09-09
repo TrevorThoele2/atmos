@@ -38,7 +38,7 @@ namespace Atmos::Render
 
     void ImageCurator::Handle(const ChangeImageCore& command)
     {
-        const auto index = Arca::Index<ImageCore>(command.id, Owner());
+        const auto index = Owner().Find<ImageCore>(command.id);
         if (index)
         {
             auto core = MutablePointer().Of(index);
@@ -108,7 +108,7 @@ namespace Atmos::Render
 
             const auto resource = const_cast<Asset::Resource::Image*>(asset->Resource());
 
-            const auto viewSlice = Arca::Index<ViewSlice>(id, Owner());
+            const auto viewSlice = Owner().Find<ViewSlice>(id);
             const auto assetSlice = asset->Slice(assetIndex);
             const auto [size, slice] = ViewSliceDependent(viewSlice, assetSlice, bounds.Size(), bounds.Scalers());
 
@@ -162,14 +162,14 @@ namespace Atmos::Render
 
     void ImageCurator::OnChanged(const Spatial::BoundsChanged& signal)
     {
-        const auto index = Index(signal.id, Owner());
+        const auto index = Owner().Find<Matrix>(signal.id);
         if (index)
         {
             const auto oldBounds = signal.previousBounds;
             if (oldBounds.Space() == Spatial::Space::World)
             {
                 const auto newBounds = signal.newBounds;
-                worldOctree.Move(signal.id, Arca::Index<Matrix>(signal.id, Owner()), BoxFor(oldBounds), BoxFor(newBounds));
+                worldOctree.Move(signal.id, Owner().Find<Matrix>(signal.id), BoxFor(oldBounds), BoxFor(newBounds));
             }
         }
     }

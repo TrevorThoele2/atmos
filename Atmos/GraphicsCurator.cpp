@@ -81,7 +81,7 @@ namespace Atmos::Render
 
     void GraphicsCurator::OnFieldChanging()
     {
-        const auto surface = Arca::Index<MainSurface>(Owner());
+        const auto surface = Owner().Find<MainSurface>();
         const auto resource = surface->Resource();
         manager->ResourceDestroying(*resource);
         manager->PruneResources();

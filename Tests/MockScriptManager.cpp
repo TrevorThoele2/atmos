@@ -4,7 +4,7 @@ MockScriptManager::MockScriptManager(Atmos::Logging::Logger& logger) :
     Manager(logger, "Mock")
 {}
 
-void MockScriptManager::SetReliquary(Arca::Reliquary& reliquary)
+void MockScriptManager::SetReliquary(Arca::Reliquary* reliquary)
 {}
 
 std::unique_ptr<Atmos::Asset::Resource::Script> MockScriptManager::CreateAssetResource(

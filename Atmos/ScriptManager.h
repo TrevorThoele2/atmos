@@ -18,7 +18,7 @@ namespace Atmos::Scripting
     public:
         virtual ~Manager() = 0;
 
-        virtual void SetReliquary(Arca::Reliquary& reliquary) = 0;
+        virtual void SetReliquary(Arca::Reliquary* reliquary) = 0;
 
         [[nodiscard]] virtual std::unique_ptr<Asset::Resource::Script> CreateAssetResource(
             const Buffer& buffer, String name) = 0;

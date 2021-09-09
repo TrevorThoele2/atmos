@@ -14,7 +14,7 @@ namespace Atmos::Entity
     Curator::Curator(Init init) :
         Arca::Curator(init),
         entities(init.owner.Batch<Entity>()),
-        mapped(init.owner)
+        mapped(init.owner.Find<Mapped>())
     {
         Owner().On<Arca::CreatedKnown<Entity>>(
             [this](const Arca::CreatedKnown<Entity>& signal)
@@ -39,7 +39,7 @@ namespace Atmos::Entity
 
     Arca::Index<Entity> Curator::Handle(const FindByName& command)
     {
-        const Arca::Index<Mapped> mappedEntities(Owner());
+        const auto mappedEntities = Owner().Find<Mapped>();
         auto& nameToEntity = mappedEntities->nameToEntity;
         const auto found = nameToEntity.find(command.name);
         if (found != nameToEntity.end())
@@ -50,7 +50,7 @@ namespace Atmos::Entity
 
     std::set<Arca::Index<Entity>> Curator::Handle(const FindByPosition& command)
     {
-        const Arca::Index<Mapped> mappedEntities(Owner());
+        const auto mappedEntities = Owner().Find<Mapped>();
         auto& positionToEntity = mappedEntities->positionToEntity;
         const auto found = positionToEntity.find(command.position);
         if (found != positionToEntity.end())

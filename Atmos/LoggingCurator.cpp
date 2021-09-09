@@ -11,6 +11,6 @@ namespace Atmos::Logging
 
     void Curator::Handle(const Log& log)
     {
-        Arca::Index<Information>(Owner())->logger->Log(log);
+        Owner().Find<Information>()->logger->Log(log);
     }
 }

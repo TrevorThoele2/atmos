@@ -20,7 +20,7 @@ namespace Atmos::Scripting::Angel
         Manager(Logging::Logger& logger);
         ~Manager();
 
-        void SetReliquary(Arca::Reliquary& reliquary) override;
+        void SetReliquary(Arca::Reliquary* reliquary) override;
 
         [[nodiscard]] std::unique_ptr<Asset::Resource::Script> CreateAssetResource(
             const Buffer& buffer, String name) override;

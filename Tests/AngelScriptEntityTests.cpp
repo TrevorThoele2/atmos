@@ -458,7 +458,7 @@ SCENARIO_METHOD(AngelScriptEntityTestsFixture, "running entity AngelScript scrip
                         REQUIRE(entities.Size() == 2);
 
                         auto entityFromPrototype = ++entities.begin();
-                        auto& properties = Arca::Index<DataCore>(entityFromPrototype.ID(), fieldReliquary)->properties;
+                        auto& properties = fieldReliquary->Find<DataCore>(entityFromPrototype.ID())->properties;
                         REQUIRE(properties.size() == 3);
                         REQUIRE(properties[0] == Atmos::Property{ names[0], values[0] });
                         REQUIRE(properties[1] == Atmos::Property{ names[1], values[1] });

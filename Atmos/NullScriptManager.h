@@ -9,7 +9,7 @@ namespace Atmos::Scripting
     public:
         NullManager(Logging::Logger& logger);
 
-        void SetReliquary(Arca::Reliquary& reliquary) override;
+        void SetReliquary(Arca::Reliquary* reliquary) override;
 
         [[nodiscard]] std::unique_ptr<Asset::Resource::Script> CreateAssetResource(
             const Buffer& buffer, String name) override;

@@ -14,7 +14,7 @@ public:
     template<class T, std::enable_if_t<std::is_same_v<Atmos::Render::Camera, T>, int> = 0>
     CreatedObject<T> CreateObject(Arca::Reliquary& reliquary)
     {
-        const auto index = Arca::Index<Atmos::Render::Camera>(reliquary);
+        const auto index = reliquary.Find<Atmos::Render::Camera>();
         return TupleOf<T>(index);
     }
 private:

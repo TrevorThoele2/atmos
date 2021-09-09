@@ -21,7 +21,7 @@ namespace Atmos::Render
 
     void LineCurator::Handle(const MoveLine& command)
     {
-        const auto index = Arca::Index<Line>(command.id, Owner());
+        const auto index = Owner().Find<Line>(command.id);
         if (index)
         {
             const auto prevPoints = index->points;

@@ -49,7 +49,7 @@ namespace Atmos::Render
     template<class Function>
     void GridRegionCurator::AttemptChangeObject(Arca::RelicID id, Function function)
     {
-        const auto index = Arca::Index<GridRegion>(id, Owner());
+        const auto index = Owner().Find<GridRegion>(id);
         if (index)
         {
             const auto data = MutablePointer().Of(index);

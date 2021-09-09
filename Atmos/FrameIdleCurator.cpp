@@ -6,7 +6,7 @@
 
 namespace Atmos::Frame
 {
-    IdleCurator::IdleCurator(Init init) : Curator(init), windowInformation(init.owner)
+    IdleCurator::IdleCurator(Init init) : Curator(init), windowInformation(init.owner.Find<Window::Information>())
     {}
 
     void IdleCurator::Handle(const Work&)
@@ -17,10 +17,10 @@ namespace Atmos::Frame
 
     bool IdleCurator::IsDone()
     {
-        const auto settings = Arca::Index<Settings>(Owner());
-        const auto graphicsSettings = Arca::Index<Render::GraphicsSettings>(Owner());
+        const auto settings = Owner().Find<Settings>();
+        const auto graphicsSettings = Owner().Find<Render::GraphicsSettings>();
 
-        const auto frameInformation = Arca::Index<Information>(Owner());
+        const auto frameInformation = Owner().Find<Information>();
 
         if (settings->framesPerSecondLimit == 0 || graphicsSettings->verticalSync)
             return true;

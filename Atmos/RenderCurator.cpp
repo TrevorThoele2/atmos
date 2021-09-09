@@ -11,14 +11,14 @@
 
 namespace Atmos::Render
 {
-    Curator::Curator(Init init) : Arca::Curator(init), mainSurface(init.owner)
+    Curator::Curator(Init init) : Arca::Curator(init), mainSurface(init.owner.Find<MainSurface>())
     {}
 
     void Curator::Handle(const Work&)
     {
         auto stopwatch = Time::CreateRealStopwatch();
 
-        const auto camera = Arca::Index<Camera>(Owner());
+        const auto camera = Owner().Find<Camera>();
         const auto mapPosition = Spatial::Point2D
         {
             Spatial::Point2D::Value(camera->Position().x),

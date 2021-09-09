@@ -4,7 +4,7 @@ namespace Atmos::Random
 {
     bool GenerateBool::Do(Arca::Reliquary& reliquary) const
     {
-        const auto information = Arca::Index<Information>(reliquary);
+        const auto information = reliquary.Find<Information>();
         return information->random.GenerateBool();
     }
 }

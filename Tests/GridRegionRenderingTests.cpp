@@ -40,13 +40,13 @@ SCENARIO_METHOD(GridRegionRenderingTestsFixture, "rendering grid regions", "[ren
 
         auto& fieldReliquary = field.Reliquary();
 
-        const auto mainSurface = Arca::Index<MainSurface>(fieldReliquary);
+        const auto mainSurface = fieldReliquary.Find<MainSurface>();
         auto mainSurfaceImplementation = mainSurface->Resource<MockSurfaceResource>();
 
         auto materialAsset = fieldReliquary.Do(Arca::Create<Asset::Material> {
             String{}, std::vector<Asset::Material::Pass>{} });
 
-        const auto camera = Arca::Index<Camera>(fieldReliquary);
+        const auto camera = fieldReliquary.Find<Camera>();
 
         const auto cameraLeft = camera->Sides().Left();
         const auto cameraTop = camera->Sides().Top();

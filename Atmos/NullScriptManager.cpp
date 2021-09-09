@@ -5,7 +5,7 @@ namespace Atmos::Scripting
     NullManager::NullManager(Logging::Logger& logger) : Manager(logger, "Null")
     {}
 
-    void NullManager::SetReliquary(Arca::Reliquary& reliquary)
+    void NullManager::SetReliquary(Arca::Reliquary* reliquary)
     {}
 
     std::unique_ptr<Asset::Resource::Script> NullManager::CreateAssetResource(

@@ -39,10 +39,10 @@ SCENARIO_METHOD(UIImageRenderingTestsFixture, "rendering UI images", "[ui]")
 
         auto& fieldReliquary = field.Reliquary();
 
-        auto mainSurface = Arca::Index<MainSurface>(fieldReliquary);
+        auto mainSurface = fieldReliquary.Find<MainSurface>();
         auto mainSurfaceImplementation = mainSurface->Resource<MockSurfaceResource>();
 
-        const auto camera = Arca::Index<Camera>(fieldReliquary);
+        const auto camera = fieldReliquary.Find<Camera>();
 
         const auto cameraLeft = camera->Sides().Left();
         const auto cameraTop = camera->Sides().Top();
