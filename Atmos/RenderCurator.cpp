@@ -4,6 +4,7 @@
 #include "ViewSlice.h"
 #include "ColorChanged.h"
 
+#include "MainSurface.h"
 #include "Camera.h"
 
 #include "CreateStopwatch.h"
@@ -11,7 +12,7 @@
 
 namespace Atmos::Render
 {
-    Curator::Curator(Init init) : Arca::Curator(init), mainSurface(init.owner.Find<MainSurface>())
+    Curator::Curator(Init init) : Arca::Curator(init)
     {}
 
     void Curator::Handle(const Work&)
@@ -25,6 +26,7 @@ namespace Atmos::Render
             Spatial::Point2D::Value(camera->Position().y)
         };
 
+        const auto mainSurface = Owner().Find<MainSurface>();
         const auto mutableMainPointer = MutablePointer().Of(mainSurface);
         mutableMainPointer->DrawFrame(mapPosition);
 

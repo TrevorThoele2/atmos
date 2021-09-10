@@ -6,6 +6,7 @@
 #include "GridPoint.h"
 #include "Tag.h"
 
+#include <Inscription/VectorScribe.h>
 #include <Inscription/UnorderedMapScribe.h>
 
 namespace Atmos::Entity
