@@ -135,18 +135,21 @@ namespace Atmos::Render
             const auto bold = core->bold;
             const auto italics = core->italics;
 
-            const auto data = manager->DataFor(*font->Resource(), string, wrapWidth, bold, italics);
-
-            auto bounds = MutablePointer().Of(std::get<2>(tuple));
-            bounds->BaseSize(data.size);
-
-            if (data.size.width > 0 && data.size.height > 0)
+            if (font)
             {
-                auto resource = graphicsManager->CreateTextResource(data.buffer, data.size);
-                core->resource = std::move(resource);
+                const auto data = manager->DataFor(*font->Resource(), string, wrapWidth, bold, italics);
+
+                auto bounds = MutablePointer().Of(std::get<2>(tuple));
+                bounds->BaseSize(data.size);
+
+                if (data.size.width > 0 && data.size.height > 0)
+                {
+                    auto resource = graphicsManager->CreateTextResource(data.buffer, data.size);
+                    core->resource = std::move(resource);
+                }
+                else
+                    core->resource = {};
             }
-            else
-                core->resource = {};
         }
     }
 }
