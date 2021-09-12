@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Arca/Shard.h>
+#include "ArcaShardIncludes.h"
 
 #include "Space.h"
 #include "Point3D.h"
@@ -15,6 +15,9 @@ namespace Atmos::Spatial
     public:
         Bounds();
         Bounds(Space space, const Point3D& position, const Size2D& baseSize, const Scalers2D& scalers, const Angle2D& rotation);
+
+        bool operator==(const Bounds& arg) const;
+        bool operator!=(const Bounds& arg) const;
 
         void Position(const Point3D& to);
         void BaseSize(const Size2D& to);

@@ -14,4 +14,14 @@ namespace Atmos::Render
         :
         renderCore(init.Create<RenderCore>(material, Color{})), points(points), z(z)
     {}
+
+    bool GridRegion::operator==(const GridRegion& arg) const
+    {
+        return IndexEqualsValue(renderCore, arg.renderCore) && points == arg.points && z == arg.z;
+    }
+
+    bool GridRegion::operator!=(const GridRegion& arg) const
+    {
+        return !(*this == arg);
+    }
 }

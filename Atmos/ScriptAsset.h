@@ -16,6 +16,9 @@ namespace Atmos::Asset
         Script(Script&& arg) noexcept;
 
         Script& operator=(Script&& arg) noexcept;
+
+        bool operator==(const Script& arg) const;
+        bool operator!=(const Script& arg) const;
     public:
         void Setup(ResourcePtr&& set);
     private:

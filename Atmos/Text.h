@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Arca/Relic.h>
+#include "ArcaRelicIncludes.h"
 
 #include "RenderCore.h"
 #include "TextCore.h"
@@ -32,6 +32,9 @@ namespace Atmos::Render
         [[nodiscard]] Spatial::Point3D Position() const;
         [[nodiscard]] Spatial::Size2D Size() const;
         [[nodiscard]] Spatial::Angle2D Rotation() const;
+    public:
+        bool operator==(const Text& arg) const;
+        bool operator!=(const Text& arg) const;
     protected:
         Text(
             Arca::RelicInit init,

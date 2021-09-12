@@ -14,6 +14,9 @@ namespace Atmos::Audio
         virtual ~Sound() = 0;
 
         Sound& operator=(Sound&& arg) noexcept;
+
+        bool operator==(const Sound& arg) const;
+        bool operator!=(const Sound& arg) const;
     public:
         [[nodiscard]] Arca::Index<Asset::Audio> Asset() const;
         [[nodiscard]] Volume Volume() const;

@@ -51,6 +51,16 @@ namespace Atmos::Render
     {
         return bounds->Rotation();
     }
+
+    bool Text::operator==(const Text& arg) const
+    {
+        return IndexEqualsValue(renderCore, arg.renderCore) && IndexEqualsValue(core, arg.core) && IndexEqualsValue(bounds, arg.bounds);
+    }
+
+    bool Text::operator!=(const Text& arg) const
+    {
+        return !(*this == arg);
+    }
     
     Text::Text(
         Arca::RelicInit init,

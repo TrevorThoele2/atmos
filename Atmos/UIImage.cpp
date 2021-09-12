@@ -27,4 +27,14 @@ namespace Atmos::UI
     Image::Image(Arca::RelicInit init, Arca::Serialization serialization) :
         Render::Image<true>(init, serialization)
     {}
+
+    bool Image::operator==(const Image& arg) const
+    {
+        return Render::Image<true>::operator==(arg);
+    }
+
+    bool Image::operator!=(const Image& arg) const
+    {
+        return !(*this == arg);
+    }
 }

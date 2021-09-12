@@ -4,8 +4,10 @@
 #include "AngelScriptResultVerification.h"
 #include "AngelScriptHandle.h"
 #include "AngelScriptPrimitive.h"
+#include "ArcaIndexEquality.h"
 #include <Arca/RelicIndex.h>
 #include <Arca/IsGlobal.h>
+#include <Arca/Reliquary.h>
 
 namespace Atmos::Scripting::Angel
 {
@@ -13,6 +15,14 @@ namespace Atmos::Scripting::Angel
     void RegisterArcaIndexCommon(ValueTypeRegistration<Arca::Index<T>>& registration)
     {
         using Management = typename Registration<Arca::Index<T>>::Management;
+
+        const auto equals = [](asIScriptGeneric* generic)
+        {
+            const auto arg = static_cast<Arca::Index<T>*>(generic->GetArgObject(0));
+            const auto self = static_cast<Arca::Index<T>*>(generic->GetObject());
+            const auto result = IndexEqualsValue(*self, *arg);
+            PushToReturn(result, *generic);
+        };
 
         registration
             .CopyConstructor(&Management::GenerateValueFromCopy)

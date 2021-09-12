@@ -40,6 +40,16 @@ namespace Atmos::Asset
         return *this;
     }
 
+    bool Image::operator==(const Image& arg) const
+    {
+        return AssetWithResource::operator==(arg) && size == arg.size && gridSize == arg.gridSize;
+    }
+
+    bool Image::operator!=(const Image& arg) const
+    {
+        return !(*this == arg);
+    }
+
     void Image::Setup(ResourcePtr&& set, Spatial::Size2D size)
     {
         SetResource(std::move(set));

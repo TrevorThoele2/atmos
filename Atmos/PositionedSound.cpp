@@ -30,4 +30,14 @@ namespace Atmos::Audio
         bounds = std::move(arg.bounds);
         return *this;
     }
+
+    bool PositionedSound::operator==(const PositionedSound& arg) const
+    {
+        return Sound::operator==(arg) && IndexEqualsValue(bounds, arg.bounds);
+    }
+
+    bool PositionedSound::operator!=(const PositionedSound& arg) const
+    {
+        return !(*this == arg);
+    }
 }

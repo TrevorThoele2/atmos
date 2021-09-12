@@ -18,6 +18,9 @@ namespace Atmos::Asset
 
         AssetWithResource& operator=(AssetWithResource&& arg) noexcept;
 
+        bool operator==(const AssetWithResource& arg) const;
+        bool operator!=(const AssetWithResource& arg) const;
+
         [[nodiscard]] ResourceT* Resource();
         [[nodiscard]] const ResourceT* Resource() const;
         template<class RealResourceT>
@@ -55,6 +58,18 @@ namespace Atmos::Asset
         Asset::operator=(std::move(arg));
         resource = std::move(arg.resource);
         return *this;
+    }
+
+    template<class AssetData>
+    bool AssetWithResource<AssetData>::operator==(const AssetWithResource& arg) const
+    {
+        return resource == arg.resource;
+    }
+
+    template<class AssetData>
+    bool AssetWithResource<AssetData>::operator!=(const AssetWithResource& arg) const
+    {
+        return !(*this == arg);
     }
 
     template<class AssetData>

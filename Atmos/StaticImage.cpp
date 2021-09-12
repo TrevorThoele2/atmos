@@ -27,4 +27,14 @@ namespace Atmos::Render
     StaticImage::StaticImage(Arca::RelicInit init, Arca::Serialization serialization) :
         Image(init, serialization)
     {}
+
+    bool StaticImage::operator==(const StaticImage& arg) const
+    {
+        return Image::operator==(arg);
+    }
+
+    bool StaticImage::operator!=(const StaticImage& arg) const
+    {
+        return !(*this == arg);
+    }
 }

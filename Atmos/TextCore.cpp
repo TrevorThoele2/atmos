@@ -6,6 +6,21 @@ namespace Atmos::Render
         string(string), font(asset), wrapWidth(wrapWidth), bold(bold), italics(italics)
     {}
 
+    bool TextCore::operator==(const TextCore& arg) const
+    {
+        return string == arg.string
+            && IndexEqualsValue(font, arg.font)
+            && wrapWidth == arg.wrapWidth
+            && bold == arg.bold
+            && italics == arg.italics
+            && resource == arg.resource;
+    }
+
+    bool TextCore::operator!=(const TextCore& arg) const
+    {
+        return !(*this == arg);
+    }
+
     auto TextCore::Resource() -> ResourceT*
     {
         return resource.get();

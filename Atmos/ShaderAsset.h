@@ -16,6 +16,9 @@ namespace Atmos::Asset
         Shader(Shader&& arg) noexcept;
 
         Shader& operator=(Shader&& arg) noexcept;
+
+        bool operator==(const Shader& arg) const;
+        bool operator!=(const Shader& arg) const;
     public:
         void Setup(ResourcePtr&& set);
     private:

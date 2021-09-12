@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Arca/Shard.h>
+#include "ArcaShardIncludes.h"
 
 #include "AxisAlignedBox2D.h"
 
@@ -12,6 +12,9 @@ namespace Atmos::Render
 
         ViewSlice() = default;
         ViewSlice(const Spatial::AxisAlignedBox2D& box);
+
+        bool operator==(const ViewSlice& arg) const;
+        bool operator!=(const ViewSlice& arg) const;
     };
 }
 

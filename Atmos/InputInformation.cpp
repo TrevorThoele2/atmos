@@ -7,4 +7,14 @@ namespace Atmos::Input
         mousePosition = arg.mousePosition;
         return *this;
     }
+
+    bool Information::operator==(const Information& arg) const
+    {
+        return mousePosition == arg.mousePosition;
+    }
+
+    bool Information::operator!=(const Information& arg) const
+    {
+        return !(*this == arg);
+    }
 }

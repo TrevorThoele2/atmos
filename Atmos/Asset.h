@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Arca/Relic.h>
+#include "ArcaRelicIncludes.h"
 #include "AssetCore.h"
 
 namespace Atmos::Asset
@@ -14,6 +14,9 @@ namespace Atmos::Asset
         Asset(Asset&& arg) noexcept = default;
 
         Asset& operator=(Asset&& arg) noexcept;
+
+        bool operator==(const Asset& arg) const;
+        bool operator!=(const Asset& arg) const;
 
         [[nodiscard]] Name Name() const;
         [[nodiscard]] Arca::Index<Core> Core() const;

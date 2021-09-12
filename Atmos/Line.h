@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Arca/Relic.h>
+#include "ArcaRelicIncludes.h"
 #include "LineWidth.h"
 
 #include "Point2D.h"
@@ -30,6 +30,9 @@ namespace Atmos::Render
             LineWidth width,
             Color color);
         Line(Arca::RelicInit init, Arca::Serialization);
+
+        bool operator==(const Line& arg) const;
+        bool operator!=(const Line& arg) const;
     };
 }
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Arca/Relic.h>
+#include "ArcaRelicIncludes.h"
 
 #include "Name.h"
 #include "GridPoint.h"
@@ -20,11 +20,14 @@ namespace Atmos::Entity
         std::vector<Tag> tags;
     public:
         Entity(Arca::RelicInit init, Arca::Serialization);
-        explicit Entity(
+        Entity(
             Arca::RelicInit init,
             Name name,
             Spatial::Grid::Point position,
             bool isSolid);
+
+        bool operator==(const Entity& arg) const;
+        bool operator!=(const Entity& arg) const;
     };
 }
 

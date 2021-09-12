@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Arca/Relic.h>
+#include "ArcaRelicIncludes.h"
 
 #include "Sound.h"
 
@@ -17,6 +17,9 @@ namespace Atmos::Audio
         UniversalSound(UniversalSound&& arg) noexcept;
 
         UniversalSound& operator=(UniversalSound&& arg) noexcept;
+
+        bool operator==(const UniversalSound& arg) const;
+        bool operator!=(const UniversalSound& arg) const;
     };
 }
 

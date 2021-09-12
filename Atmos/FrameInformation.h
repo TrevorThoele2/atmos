@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Arca/Relic.h>
+#include "ArcaRelicIncludes.h"
 #include "FramesPerSecond.h"
 
 #include "TimePoint.h"

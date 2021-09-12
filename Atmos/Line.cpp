@@ -24,4 +24,14 @@ namespace Atmos::Render
     Line::Line(Arca::RelicInit init, Arca::Serialization) :
         renderCore(init.Find<RenderCore>())
     {}
+
+    bool Line::operator==(const Line& arg) const
+    {
+        return IndexEqualsValue(renderCore, arg.renderCore) && points == arg.points && z == arg.z && width == arg.width;
+    }
+
+    bool Line::operator!=(const Line& arg) const
+    {
+        return !(*this == arg);
+    }
 }

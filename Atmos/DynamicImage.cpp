@@ -27,4 +27,14 @@ namespace Atmos::Render
     DynamicImage::DynamicImage(Arca::RelicInit init, Arca::Serialization serialization) :
         Image(init, serialization)
     {}
+
+    bool DynamicImage::operator==(const DynamicImage& arg) const
+    {
+        return Image::operator==(arg);
+    }
+
+    bool DynamicImage::operator!=(const DynamicImage& arg) const
+    {
+        return !(*this == arg);
+    }
 }

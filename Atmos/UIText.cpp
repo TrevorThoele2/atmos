@@ -33,4 +33,14 @@ namespace Atmos::UI
     Text::Text(Arca::RelicInit init, Arca::Serialization serialization) :
         Render::Text(init, serialization)
     {}
+
+    bool Text::operator==(const Text& arg) const
+    {
+        return Render::Text::operator==(arg);
+    }
+
+    bool Text::operator!=(const Text& arg) const
+    {
+        return !(*this == arg);
+    }
 }

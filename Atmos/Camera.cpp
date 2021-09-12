@@ -45,4 +45,14 @@ namespace Atmos::Render
     Camera::Camera(Arca::RelicInit init, Arca::Serialization) :
         bounds(init.Find<Spatial::Bounds>())
     {}
+
+    bool Camera::operator==(const Camera& arg) const
+    {
+        return IndexEqualsValue(bounds, arg.bounds);
+    }
+
+    bool Camera::operator!=(const Camera& arg) const
+    {
+        return !(*this == arg);
+    }
 }

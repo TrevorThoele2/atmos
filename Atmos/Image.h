@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Arca/Relic.h>
+#include "ArcaRelicIncludes.h"
 
 #include "RenderCore.h"
 #include "ImageCore.h"
@@ -29,6 +29,9 @@ namespace Atmos::Render
         [[nodiscard]] Spatial::Point3D Position() const;
         [[nodiscard]] Spatial::Size2D Size() const;
         [[nodiscard]] Spatial::Angle2D Rotation() const;
+    public:
+        bool operator==(const Image& arg) const;
+        bool operator!=(const Image& arg) const;
     protected:
         Image(
             Arca::RelicInit init,
@@ -95,6 +98,18 @@ namespace Atmos::Render
     Spatial::Angle2D Image<mutableBounds>::Rotation() const
     {
         return bounds->Rotation();
+    }
+
+    template<bool mutableBounds>
+    bool Image<mutableBounds>::operator==(const Image& arg) const
+    {
+        return IndexEqualsValue(renderCore, arg.renderCore) && IndexEqualsValue(core, arg.core) && IndexEqualsValue(bounds, arg.bounds);
+    }
+
+    template<bool mutableBounds>
+    bool Image<mutableBounds>::operator!=(const Image& arg) const
+    {
+        return !(*this == arg);
     }
     
     template<bool mutableBounds>

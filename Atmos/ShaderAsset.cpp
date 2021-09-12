@@ -25,6 +25,16 @@ namespace Atmos::Asset
         return *this;
     }
 
+    bool Shader::operator==(const Shader& arg) const
+    {
+        return AssetWithResource::operator==(arg);
+    }
+
+    bool Shader::operator!=(const Shader& arg) const
+    {
+        return !(*this == arg);
+    }
+
     void Shader::Setup(ResourcePtr&& set)
     {
         SetResource(std::move(set));

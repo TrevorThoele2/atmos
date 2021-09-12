@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Arca/Relic.h>
+#include "ArcaRelicIncludes.h"
 #include "Stopwatch.h"
 
 namespace Atmos::Diagnostics
@@ -12,6 +12,9 @@ namespace Atmos::Diagnostics
 
         double renderTime;
         double idleTime;
+
+        bool operator==(const Statistics& arg) const;
+        bool operator!=(const Statistics& arg) const;
     };
 }
 

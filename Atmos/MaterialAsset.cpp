@@ -29,6 +29,16 @@ namespace Atmos::Asset
         return *this;
     }
 
+    bool Material::operator==(const Material& arg) const
+    {
+        return Asset::operator==(arg) && passes == arg.passes;
+    }
+
+    bool Material::operator!=(const Material& arg) const
+    {
+        return !(*this == arg);
+    }
+
     auto Material::Passes() const -> std::vector<Pass>
     {
         return passes;

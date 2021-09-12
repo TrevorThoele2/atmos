@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Arca/Shard.h>
+#include "ArcaShardIncludes.h"
 
 #include "Name.h"
 
@@ -12,6 +12,9 @@ namespace Atmos::Asset
 
         Core() = default;
         explicit Core(const Name& name);
+
+        bool operator==(const Core& arg) const;
+        bool operator!=(const Core& arg) const;
     };
 }
 

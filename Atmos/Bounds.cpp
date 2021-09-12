@@ -10,6 +10,20 @@ namespace Atmos::Spatial
         space(space), position(position), baseSize(baseSize), scalers(scalers), rotation(rotation)
     {}
 
+    bool Bounds::operator==(const Bounds& arg) const
+    {
+        return space == arg.space
+            && position == arg.position
+            && baseSize == arg.baseSize
+            && scalers == arg.scalers
+            && rotation == arg.rotation;
+    }
+
+    bool Bounds::operator!=(const Bounds& arg) const
+    {
+        return !(*this == arg);
+    }
+
     void Bounds::Position(const Point3D& to)
     {
         position = to;

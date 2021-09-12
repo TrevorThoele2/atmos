@@ -25,6 +25,16 @@ namespace Atmos::Asset
         return *this;
     }
 
+    bool Audio::operator==(const Audio& arg) const
+    {
+        return AssetWithResource::operator==(arg);
+    }
+
+    bool Audio::operator!=(const Audio& arg) const
+    {
+        return !(*this == arg);
+    }
+
     void Audio::Setup(ResourcePtr&& set)
     {
         SetResource(std::move(set));

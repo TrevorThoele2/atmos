@@ -24,6 +24,16 @@ namespace Atmos::Entity
     {
         init.Create<DataCore>();
     }
+
+    bool Entity::operator==(const Entity& arg) const
+    {
+        return name == arg.name && position == arg.position && isSolid == arg.isSolid;
+    }
+
+    bool Entity::operator!=(const Entity& arg) const
+    {
+        return !(*this == arg);
+    }
 }
 
 namespace Arca
