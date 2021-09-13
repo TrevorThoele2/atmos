@@ -196,6 +196,9 @@
     <ClCompile Include="AngelScriptDurationTests.cpp">
       <Filter>Source Files\Tests\Scripting\AngelScript\Atmos\Time</Filter>
     </ClCompile>
+    <ClCompile Include="FileLoggingSinkTests.cpp">
+      <Filter>Source Files\Tests\Logging</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneralFixture.h">
@@ -405,6 +408,9 @@
     <ClInclude Include="AngelScriptDurationTests.h">
       <Filter>Header Files\Tests\Scripting\AngelScript\Atmos\Time</Filter>
     </ClInclude>
+    <ClInclude Include="FileLoggingSinkTests.h">
+      <Filter>Header Files\Tests\Logging</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">
@@ -592,6 +598,12 @@
     </Filter>
     <Filter Include="Source Files\Tests\Scripting\AngelScript\Atmos\Diagnostics">
       <UniqueIdentifier>{ac69036b-31b8-4d91-9b92-03f733df2d58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Tests\Logging">
+      <UniqueIdentifier>{886c2f9a-5c38-46e2-8513-630a01e9dbc6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Tests\Logging">
+      <UniqueIdentifier>{d59a92ff-2ff4-494d-8e01-b272c00a32be}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
