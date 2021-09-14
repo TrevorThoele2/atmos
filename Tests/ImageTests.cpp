@@ -14,56 +14,41 @@
 using namespace Atmos;
 using namespace Spatial;
 
+ImageTestsFixture::ImageTestsFixture() : logger(Logging::Severity::Verbose)
+{
+    DerivedEngine engine(logger);
+
+    auto fieldOrigin = Arca::ReliquaryOrigin();
+    RegisterArcaTypes(fieldOrigin);
+    RegisterFieldTypes(
+        fieldOrigin,
+        *engine.mockAssetResourceManager,
+        *engine.mockAudioManager,
+        *engine.mockInputManager,
+        *engine.mockGraphicsManager,
+        *engine.mockTextManager,
+        *engine.mockScriptManager,
+        *engine.worldManager,
+        Size2D{
+            std::numeric_limits<Size2D::Value>::max(),
+            std::numeric_limits<Size2D::Value>::max() },
+            *engine.mockWindow,
+            engine.Logger());
+    field = World::Field(0, fieldOrigin.Actualize());
+
+    fieldReliquary = &field.Reliquary();
+
+    materialAsset = fieldReliquary->Do(Arca::Create<Asset::Material> {
+        String{}, std::vector<Asset::Material::Pass>{}});
+}
+
 SCENARIO_METHOD(ImageTestsFixture, "images", "[render]")
 {
-    const auto max2D = AxisAlignedBox2D(
-        Point2D{},
-        Size2D
-        {
-            std::numeric_limits<AxisAlignedBox2D::Coordinate>::max() / 2 - 1,
-            std::numeric_limits<AxisAlignedBox2D::Coordinate>::max() / 2 - 1
-        });
-
-    const auto max3D = AxisAlignedBox3D(
-        Point3D{},
-        Size3D
-        {
-            std::numeric_limits<AxisAlignedBox2D::Coordinate>::max() / 2 - 1,
-            std::numeric_limits<AxisAlignedBox2D::Coordinate>::max() / 2 - 1,
-            std::numeric_limits<AxisAlignedBox2D::Coordinate>::max() / 2 - 1
-        });
-
-    GIVEN("setup engine with field")
+    GIVEN("image and material assets")
     {
-        Logging::Logger logger(Logging::Severity::Verbose);
-        DerivedEngine engine(logger);
-
-        auto fieldOrigin = Arca::ReliquaryOrigin();
-        RegisterArcaTypes(fieldOrigin);
-        RegisterFieldTypes(
-            fieldOrigin,
-            *engine.mockAssetResourceManager,
-            *engine.mockAudioManager,
-            *engine.mockInputManager,
-            *engine.mockGraphicsManager,
-            *engine.mockTextManager,
-            *engine.mockScriptManager,
-            *engine.worldManager,
-            Size2D{
-                std::numeric_limits<Size2D::Value>::max(),
-                std::numeric_limits<Size2D::Value>::max() },
-                *engine.mockWindow,
-                engine.Logger());
-        World::Field field(0, fieldOrigin.Actualize());
-
-        auto& fieldReliquary = field.Reliquary();
-
         std::unique_ptr<Asset::Resource::Image> imageResource = std::make_unique<MockImageAssetResource>();
-        auto imageAsset = fieldReliquary.Do(Arca::Create<Asset::Image> {
+        auto imageAsset = fieldReliquary->Do(Arca::Create<Asset::Image> {
             String{}, std::move(imageResource), Asset::ImageGridSize{}});
-
-        auto materialAsset = fieldReliquary.Do(Arca::Create<Asset::Material> {
-            String{}, std::vector<Asset::Material::Pass>{}});
 
         auto positions = std::vector
         {
@@ -107,7 +92,7 @@ SCENARIO_METHOD(ImageTestsFixture, "images", "[render]")
 
         WHEN("creating static images")
         {
-            auto image1 = fieldReliquary.Do(Arca::Create<StaticImage> {
+            auto image1 = fieldReliquary->Do(Arca::Create<StaticImage> {
                 imageAsset,
                     0,
                     materialAsset,
@@ -115,7 +100,7 @@ SCENARIO_METHOD(ImageTestsFixture, "images", "[render]")
                     positions[0],
                     scalers[0],
                     Angle2D{} });
-            auto image2 = fieldReliquary.Do(Arca::Create<StaticImage> {
+            auto image2 = fieldReliquary->Do(Arca::Create<StaticImage> {
                 imageAsset,
                     0,
                     materialAsset,
@@ -123,7 +108,7 @@ SCENARIO_METHOD(ImageTestsFixture, "images", "[render]")
                     positions[1],
                     scalers[1],
                     Angle2D{} });
-            auto image3 = fieldReliquary.Do(Arca::Create<StaticImage> {
+            auto image3 = fieldReliquary->Do(Arca::Create<StaticImage> {
                 imageAsset,
                     0,
                     materialAsset,
@@ -138,7 +123,7 @@ SCENARIO_METHOD(ImageTestsFixture, "images", "[render]")
             {
                 auto box = max2D;
 
-                auto returnedImageIDs = fieldReliquary.Do(FindImagesByBox(box, Space::World));
+                auto returnedImageIDs = fieldReliquary->Do(FindImagesByBox(box, Space::World));
 
                 THEN("all images returned")
                 {
@@ -159,7 +144,7 @@ SCENARIO_METHOD(ImageTestsFixture, "images", "[render]")
             {
                 auto box = max2D;
 
-                auto returnedImageIDs = fieldReliquary.Do(FindImagesByBox(box, Space::Screen));
+                auto returnedImageIDs = fieldReliquary->Do(FindImagesByBox(box, Space::Screen));
 
                 THEN("no images returned")
                 {
@@ -171,7 +156,7 @@ SCENARIO_METHOD(ImageTestsFixture, "images", "[render]")
             {
                 auto box = max3D;
 
-                auto returnedImageIDs = fieldReliquary.Do(FindImagesByBox(box, Space::World));
+                auto returnedImageIDs = fieldReliquary->Do(FindImagesByBox(box, Space::World));
 
                 THEN("all images returned")
                 {
@@ -192,7 +177,7 @@ SCENARIO_METHOD(ImageTestsFixture, "images", "[render]")
             {
                 auto box = max3D;
 
-                auto returnedImageIDs = fieldReliquary.Do(FindImagesByBox(box, Space::Screen));
+                auto returnedImageIDs = fieldReliquary->Do(FindImagesByBox(box, Space::Screen));
 
                 THEN("no images returned")
                 {
@@ -203,7 +188,7 @@ SCENARIO_METHOD(ImageTestsFixture, "images", "[render]")
 
         WHEN("creating dynamic images")
         {
-            auto image1 = fieldReliquary.Do(Arca::Create<DynamicImage> {
+            auto image1 = fieldReliquary->Do(Arca::Create<DynamicImage> {
                 imageAsset,
                     0,
                     materialAsset,
@@ -211,7 +196,7 @@ SCENARIO_METHOD(ImageTestsFixture, "images", "[render]")
                     positions[0],
                     scalers[0],
                     Angle2D{} });
-            auto image2 = fieldReliquary.Do(Arca::Create<DynamicImage> {
+            auto image2 = fieldReliquary->Do(Arca::Create<DynamicImage> {
                 imageAsset,
                     0,
                     materialAsset,
@@ -219,7 +204,7 @@ SCENARIO_METHOD(ImageTestsFixture, "images", "[render]")
                     positions[1],
                     scalers[1],
                     Angle2D{} });
-            auto image3 = fieldReliquary.Do(Arca::Create<DynamicImage> {
+            auto image3 = fieldReliquary->Do(Arca::Create<DynamicImage> {
                 imageAsset,
                     0,
                     materialAsset,
@@ -234,7 +219,7 @@ SCENARIO_METHOD(ImageTestsFixture, "images", "[render]")
             {
                 auto box = max2D;
 
-                auto returnedImageIDs = fieldReliquary.Do(FindImagesByBox(box, Space::World));
+                auto returnedImageIDs = fieldReliquary->Do(FindImagesByBox(box, Space::World));
 
                 THEN("all images returned")
                 {
@@ -255,7 +240,7 @@ SCENARIO_METHOD(ImageTestsFixture, "images", "[render]")
             {
                 auto box = max2D;
 
-                auto returnedImageIDs = fieldReliquary.Do(FindImagesByBox(box, Space::Screen));
+                auto returnedImageIDs = fieldReliquary->Do(FindImagesByBox(box, Space::Screen));
 
                 THEN("no images returned")
                 {
@@ -267,7 +252,7 @@ SCENARIO_METHOD(ImageTestsFixture, "images", "[render]")
             {
                 auto box = max3D;
 
-                auto returnedImageIDs = fieldReliquary.Do(FindImagesByBox(box, Space::World));
+                auto returnedImageIDs = fieldReliquary->Do(FindImagesByBox(box, Space::World));
 
                 THEN("all images returned")
                 {
@@ -288,11 +273,90 @@ SCENARIO_METHOD(ImageTestsFixture, "images", "[render]")
             {
                 auto box = max3D;
 
-                auto returnedImageIDs = fieldReliquary.Do(FindImagesByBox(box, Space::Screen));
+                auto returnedImageIDs = fieldReliquary->Do(FindImagesByBox(box, Space::Screen));
 
                 THEN("no images returned")
                 {
                     REQUIRE(returnedImageIDs.empty());
+                }
+            }
+        }
+    }
+}
+
+SCENARIO_METHOD(ImageTestsFixture, "image asset slice", "[render]")
+{
+    using Data = std::tuple<int, float, float, float, float>;
+
+    GIVEN("image asset with 2 columns and 1 row")
+    {
+        std::unique_ptr<Asset::Resource::Image> imageResource = std::make_unique<MockImageAssetResource>(Size2D{ 80, 40 });
+        const auto imageAsset = fieldReliquary->Do(Arca::Create<Asset::Image> {
+            String{}, std::move(imageResource), Asset::ImageGridSize{ 2, 1 }});
+
+        WHEN("creating static image")
+        {
+            const auto [assetIndex, left, top, right, bottom] = GENERATE(
+                Data(0, 0.0f, 0.0f, 40.0f, 40.0f),
+                Data(1, 40.0f, 0.0f, 80.0f, 40.0f));
+
+            const auto image1 = fieldReliquary->Do(Arca::Create<StaticImage> {
+                imageAsset,
+                    assetIndex,
+                    materialAsset,
+                    Color{},
+                    Point3D{},
+                    Scalers2D{},
+                    Angle2D{} });
+
+            WHEN("querying asset slice")
+            {
+                const auto assetSlice = image1->AssetSlice();
+
+                THEN("asset slice is correct")
+                {
+                    REQUIRE(assetSlice.Left() == Approx(left));
+                    REQUIRE(assetSlice.Top() == Approx(top));
+                    REQUIRE(assetSlice.Right() == Approx(right));
+                    REQUIRE(assetSlice.Bottom() == Approx(bottom));
+                }
+            }
+        }
+    }
+
+    GIVEN("image asset with 2 columns and 2 rows")
+    {
+        std::unique_ptr<Asset::Resource::Image> imageResource = std::make_unique<MockImageAssetResource>(Size2D{ 80, 80 });
+        const auto imageAsset = fieldReliquary->Do(Arca::Create<Asset::Image> {
+            String{}, std::move(imageResource), Asset::ImageGridSize{ 2, 2 }});
+
+        WHEN("creating static image")
+        {
+            const auto [assetIndex, left, top, right, bottom] = GENERATE(
+                Data(0, 0.0f, 0.0f, 40.0f, 40.0f),
+                Data(1, 40.0f, 0.0f, 80.0f, 40.0f),
+                Data(2, 0.0f, 40.0f, 40.0f, 80.0f),
+                Data(3, 40.0f, 40.0f, 80.0f, 80.0f));
+
+            const auto image1 = fieldReliquary->Do(Arca::Create<StaticImage> {
+                imageAsset,
+                    assetIndex,
+                    materialAsset,
+                    Color{},
+                    Point3D{},
+                    Scalers2D{},
+                    Angle2D{} });
+
+            WHEN("querying asset slice")
+            {
+                const auto assetSlice = image1->AssetSlice();
+
+                THEN("asset slice is correct")
+                {
+                    REQUIRE(assetSlice.Left() == Approx(left));
+                    REQUIRE(assetSlice.Top() == Approx(top));
+                    REQUIRE(assetSlice.Right() == Approx(right));
+                    REQUIRE(assetSlice.Bottom() == Approx(bottom));
                 }
             }
         }

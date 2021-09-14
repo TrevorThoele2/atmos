@@ -28,6 +28,7 @@ namespace Atmos::Scripting::Angel
     private:
         [[nodiscard]] static size_t RelicCount(Type type);
         [[nodiscard]] static size_t ShardCount(Type type);
+        [[nodiscard]] static Arca::RelicID NextRelicID(Type type);
 
         [[nodiscard]] static double RenderTime(Type type);
         [[nodiscard]] static double IdleTime(Type type);

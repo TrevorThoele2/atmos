@@ -18,6 +18,7 @@ namespace Atmos::Scripting::Angel
         registration
             .ConstMethod(&Management::Method<&RelicCount>, "uint32", "RelicCount", {})
             .ConstMethod(&Management::Method<&ShardCount>, "uint32", "ShardCount", {})
+            .ConstMethod(&Management::Method<&NextRelicID>, "Arca::RelicID", "NextRelicID", {})
             .ConstMethod(&Management::Method<&RenderTime>, "double", "RenderTime", {})
             .ConstMethod(&Management::Method<&IdleTime>, "double", "IdleTime", {})
             .Actualize(engine, documentationManager);
@@ -33,6 +34,11 @@ namespace Atmos::Scripting::Angel
     size_t Registration<Diagnostics::Statistics>::ShardCount(Type type)
     {
         return RequiredValue(type)->shardCount;
+    }
+
+    Arca::RelicID Registration<Diagnostics::Statistics>::NextRelicID(Type type)
+    {
+        return RequiredValue(type)->nextRelicID;
     }
 
     double Registration<Diagnostics::Statistics>::RenderTime(Type type)
