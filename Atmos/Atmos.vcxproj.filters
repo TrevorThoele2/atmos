@@ -2090,6 +2090,9 @@
     <ClInclude Include="ArcaShardIncludes.h">
       <Filter>Header Files\Arca</Filter>
     </ClInclude>
+    <ClInclude Include="SDLText.h">
+      <Filter>Header Files\Render\Text\SDL</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FieldDestination.cpp">
@@ -3069,6 +3072,9 @@
     </ClCompile>
     <ClCompile Include="ArcaIndexEquality.cpp">
       <Filter>Source Files\Arca</Filter>
+    </ClCompile>
+    <ClCompile Include="SDLText.cpp">
+      <Filter>Source Files\Render\Text\SDL</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

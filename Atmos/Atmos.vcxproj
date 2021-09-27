@@ -104,6 +104,7 @@
     <ClInclude Include="FieldChanging.h" />
     <ClInclude Include="FieldInitialization.h" />
     <ClInclude Include="ArcaIndexEquality.h" />
+    <ClInclude Include="SDLText.h" />
     <ClInclude Include="VulkanBackingSurfaceResource.h" />
     <ClInclude Include="VulkanImageResourceData.h" />
     <ClInclude Include="VulkanStoredImageResource.h" />
@@ -617,6 +618,7 @@
     <ClCompile Include="AudioAssetCurator.cpp" />
     <ClCompile Include="DiagnosticsStatistics.cpp" />
     <ClCompile Include="ImageAssetGridSize.cpp" />
+    <ClCompile Include="SDLText.cpp" />
     <ClCompile Include="VulkanBackingSurfaceResource.cpp" />
     <ClCompile Include="VulkanImageResourceData.cpp" />
     <ClCompile Include="VulkanStoredImageResource.cpp" />

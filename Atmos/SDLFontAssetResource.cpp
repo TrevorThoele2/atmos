@@ -1,11 +1,12 @@
 #include "SDLFontAssetResource.h"
 
 #include "GraphicsError.h"
+#include "SDLText.h"
 
 namespace Atmos::Render::SDL
 {
     FontAssetResource::FontAssetResource(const String& name, const Buffer& buffer) :
-        name(name), buffer(std::move(buffer))
+        name(name), buffer(buffer)
     {
         ops = SDL_RWFromMem(this->buffer.data(), this->buffer.size());
         if (!ops)
@@ -25,5 +26,10 @@ namespace Atmos::Render::SDL
     {
         if (font)
             TTF_CloseFont(font);
+    }
+
+    Spatial::Size2D FontAssetResource::Size(const String& string) const
+    {
+        return SDL::Size(*font, Split(string));
     }
 }
