@@ -25,6 +25,9 @@ namespace Atmos::Spatial
     [[nodiscard]] bool Intersects(AxisAlignedBox2D one, AxisAlignedBox2D two);
     [[nodiscard]] bool Intersects(AxisAlignedBox3D one, AxisAlignedBox3D two);
 
+    [[nodiscard]] AxisAlignedBox2D Envelope(std::vector<AxisAlignedBox2D> boxes);
+    [[nodiscard]] AxisAlignedBox3D Envelope(std::vector<AxisAlignedBox3D> boxes);
+
     [[nodiscard]] Point2D operator+(Point2D left, Point2D right);
     [[nodiscard]] Point2D operator-(Point2D left, Point2D right);
     [[nodiscard]] Point3D operator+(Point3D left, Point3D right);

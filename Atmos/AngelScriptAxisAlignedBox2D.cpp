@@ -21,10 +21,10 @@ namespace Atmos::Scripting::Angel
             .Equals(&Management::Equals)
             .Property<&Type::center>("Atmos::Spatial::Point2D", "center")
             .Property<&Type::size>("Atmos::Spatial::Size2D", "size")
-            .Method(&Management::Method<&Type::Left>, "float", "Left", {})
-            .Method(&Management::Method<&Type::Top>, "float", "Top", {})
-            .Method(&Management::Method<&Type::Right>, "float", "Right", {})
-            .Method(&Management::Method<&Type::Bottom>, "float", "Bottom", {})
+            .ConstMethod(&Management::Method<&Type::Left>, "float", "Left", {})
+            .ConstMethod(&Management::Method<&Type::Top>, "float", "Top", {})
+            .ConstMethod(&Management::Method<&Type::Right>, "float", "Right", {})
+            .ConstMethod(&Management::Method<&Type::Bottom>, "float", "Bottom", {})
             .Actualize(engine, documentationManager);
     }
 }
