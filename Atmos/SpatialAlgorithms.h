@@ -28,6 +28,9 @@ namespace Atmos::Spatial
     [[nodiscard]] AxisAlignedBox2D Envelope(std::vector<AxisAlignedBox2D> boxes);
     [[nodiscard]] AxisAlignedBox3D Envelope(std::vector<AxisAlignedBox3D> boxes);
 
+    [[nodiscard]] AxisAlignedBox2D Clamp(AxisAlignedBox2D box, AxisAlignedBox2D to);
+    [[nodiscard]] AxisAlignedBox3D Clamp(AxisAlignedBox3D box, AxisAlignedBox3D to);
+
     [[nodiscard]] Point2D operator+(Point2D left, Point2D right);
     [[nodiscard]] Point2D operator-(Point2D left, Point2D right);
     [[nodiscard]] Point3D operator+(Point3D left, Point3D right);

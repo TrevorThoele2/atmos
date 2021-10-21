@@ -4,6 +4,7 @@
 
 #include <Atmos/StaticImage.h>
 #include <Atmos/DynamicImage.h>
+#include <Atmos/ViewSlice.h>
 #include <Atmos/TypeRegistration.h>
 #include <Atmos/GridCellSize.h>
 #include <Atmos/Camera.h>
@@ -12,6 +13,7 @@
 #include <Atmos/ScaleBounds.h>
 #include <Atmos/RotateBounds.h>
 #include <Atmos/MathUtility.h>
+#include <Atmos/SpatialAlgorithms.h>
 
 #include "DerivedEngine.h"
 #include "MockImageAssetResource.h"
@@ -616,6 +618,116 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering culled images", "[render]
             {
                 auto& imageRenders = mainSurfaceImplementation->imageRenders;
                 REQUIRE(imageRenders.empty());
+            }
+        }
+    }
+}
+
+SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering view sliced images", "[render]")
+{
+    GIVEN("setup engine with field")
+    {
+        Logging::Logger logger(Logging::Severity::Verbose);
+        DerivedEngine engine(logger);
+
+        auto fieldOrigin = Arca::ReliquaryOrigin();
+        RegisterArcaTypes(fieldOrigin);
+        RegisterFieldTypes(
+            fieldOrigin,
+            *engine.mockAssetResourceManager,
+            *engine.mockAudioManager,
+            *engine.mockInputManager,
+            *engine.mockGraphicsManager,
+            *engine.mockTextManager,
+            *engine.mockScriptManager,
+            *engine.worldManager,
+            Size2D{ 10000, 10000 },
+            *engine.mockWindow,
+            engine.Logger());
+        World::Field field(0, fieldOrigin.Actualize());
+
+        auto& fieldReliquary = field.Reliquary();
+
+        auto mainSurface = fieldReliquary.Find<MainSurface>();
+        auto mainSurfaceImplementation = mainSurface->Resource<MockSurfaceResource>();
+
+        const auto camera = fieldReliquary.Find<Camera>();
+        
+        std::unique_ptr<Asset::Resource::Image> imageResource = std::make_unique<MockImageAssetResource>(
+            Size2D{ 100 * 2, 100 * 2 });
+        auto imageAsset = fieldReliquary.Do(Arca::Create<Asset::Image> {
+            String{}, std::move(imageResource), Asset::ImageGridSize{ 2, 2 }});
+
+        auto material = fieldReliquary.Do(Arca::Create<Asset::Material> {
+            String{}, std::vector<Asset::Material::Pass>{}});
+
+        const auto position = Point3D
+        {
+            dataGeneration.Random<Point3D::Value>(TestFramework::Range<Point3D::Value>(-1000, 1000)),
+            dataGeneration.Random<Point3D::Value>(TestFramework::Range<Point3D::Value>(-1000, 1000)),
+            dataGeneration.Random<Point3D::Value>(TestFramework::Range<Point3D::Value>(-1000, 1000))
+        };
+        const auto scalers = Scalers2D{ 100, 100 };
+
+        WHEN("creating static images with view slices and an asset index of 0")
+        {
+            auto image = fieldReliquary.Do(Arca::Create<StaticImage> {
+                imageAsset,
+                    0,
+                    material,
+                    Color{},
+                    position,
+                    scalers,
+                    Angle2D{} });
+            auto viewSlice = fieldReliquary.Do(Arca::Create<ViewSlice> {
+                image.ID(), ToAxisAlignedBox2D(20, 30, 40, 50) });
+            WHEN("starting engine execution")
+            {
+                engine.UseField(std::move(field), {}, std::filesystem::current_path() / "Assets.dat");
+                engine.StartExecution();
+
+                THEN("image rendered with correct view slice")
+                {
+                    auto& imageRenders = mainSurfaceImplementation->imageRenders;
+                    REQUIRE(imageRenders.size() == 1);
+
+                    const auto render = imageRenders[0];
+                    const auto expectedSlice = AxisAlignedBox2D{
+                        Point2D{ 30, 40 },
+                        Size2D{ 20, 20 } };
+                    REQUIRE(render.slice == expectedSlice);
+                }
+            }
+        }
+
+        WHEN("creating static images with view slices and an asset index of 3")
+        {
+            auto image = fieldReliquary.Do(Arca::Create<StaticImage> {
+                imageAsset,
+                3,
+                material,
+                Color{},
+                position,
+                scalers,
+                Angle2D{} });
+            auto viewSlice = fieldReliquary.Do(Arca::Create<ViewSlice> {
+                image.ID(), ToAxisAlignedBox2D(20, 30, 40, 50) });
+            WHEN("starting engine execution")
+            {
+                engine.UseField(std::move(field), {}, std::filesystem::current_path() / "Assets.dat");
+                engine.StartExecution();
+
+                THEN("image rendered with correct view slice")
+                {
+                    auto& imageRenders = mainSurfaceImplementation->imageRenders;
+                    REQUIRE(imageRenders.size() == 1);
+
+                    const auto render = imageRenders[0];
+                    const auto expectedSlice = AxisAlignedBox2D{
+                        Point2D{ 130, 140 },
+                        Size2D{ 20, 20 }};
+                    REQUIRE(render.slice == expectedSlice);
+                }
             }
         }
     }

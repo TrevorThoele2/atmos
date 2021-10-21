@@ -42,6 +42,10 @@ namespace Atmos::Scripting::Angel
                 "AxisAlignedBox2D", "Envelope", { "const AxisAlignedBox2D[]@ boxes" })
             .Function(&Management::Function<static_cast<AxisAlignedBox3D(*)(std::vector<AxisAlignedBox3D>)>(Envelope)>,
                 "AxisAlignedBox3D", "Envelope", { "const AxisAlignedBox3D[]@ boxes" })
+            .Function(&Management::Function<static_cast<AxisAlignedBox2D(*)(AxisAlignedBox2D, AxisAlignedBox2D)>(Clamp)>,
+                "AxisAlignedBox2D", "Clamp", { "AxisAlignedBox2D box, AxisAlignedBox2D to" })
+            .Function(&Management::Function<static_cast<AxisAlignedBox3D(*)(AxisAlignedBox3D, AxisAlignedBox3D)>(Clamp)>,
+                "AxisAlignedBox3D", "Clamp", { "AxisAlignedBox3D box, AxisAlignedBox3D to" })
             .Function(&Management::Function<static_cast<Point2D(*)(Point3D)>(ToPoint2D)>,
                 "Point2D", "ToPoint2D", { "Point3D point" })
             .Function(&Management::Function<static_cast<Point2D(*)(Grid::Point)>(ToPoint2D)>,

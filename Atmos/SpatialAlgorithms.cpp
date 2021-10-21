@@ -147,6 +147,26 @@ namespace Atmos::Spatial
         return ToAxisAlignedBox3D(left, top, farZ, right, bottom, nearZ);
     }
 
+    AxisAlignedBox2D Clamp(AxisAlignedBox2D box, AxisAlignedBox2D to)
+    {
+        return ToAxisAlignedBox2D(
+            std::clamp(box.Left(), to.Left(), to.Right()),
+            std::clamp(box.Top(), to.Top(), to.Bottom()),
+            std::clamp(box.Right(), to.Left(), to.Right()),
+            std::clamp(box.Bottom(), to.Top(), to.Bottom()));
+    }
+
+    AxisAlignedBox3D Clamp(AxisAlignedBox3D box, AxisAlignedBox3D to)
+    {
+        return ToAxisAlignedBox3D(
+            std::clamp(box.Left(), to.Left(), to.Right()),
+            std::clamp(box.Top(), to.Top(), to.Bottom()),
+            std::clamp(box.FarZ(), to.FarZ(), to.NearZ()),
+            std::clamp(box.Right(), to.Left(), to.Right()),
+            std::clamp(box.Bottom(), to.Top(), to.Bottom()),
+            std::clamp(box.NearZ(), to.FarZ(), to.NearZ()));
+    }
+
     Point2D operator+(Point2D left, Point2D right)
     {
         return
