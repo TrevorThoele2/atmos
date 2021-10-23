@@ -52,6 +52,11 @@ std::unique_ptr<Resource::Text> MockGraphicsManager::CreateTextResourceImpl(
     return std::make_unique<MockTextResource>();
 }
 
+Buffer MockGraphicsManager::CompileShaderImpl(const File::Path& filePath)
+{
+    return {};
+}
+
 bool MockGraphicsManager::ShouldReconstructInternals() const
 {
     return false;

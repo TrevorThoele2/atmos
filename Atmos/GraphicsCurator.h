@@ -27,7 +27,7 @@ namespace Atmos::Render
         void Handle(const SetFullscreen& command);
         void Handle(const ChangeVerticalSync& command);
         void Handle(const PruneGraphicsResources& command);
-        File::Path Handle(const CompileShader& command);
+        Buffer Handle(const CompileShader& command);
 
         std::unique_ptr<Asset::Resource::Image> Handle(const Asset::Resource::Create<Asset::Resource::Image>& command);
         std::unique_ptr<Asset::Resource::Shader> Handle(const Asset::Resource::Create<Asset::Resource::Shader>& command);

@@ -3,16 +3,15 @@
 #include <Arca/Command.h>
 
 #include "FilePath.h"
+#include "Buffer.h"
 
 namespace Atmos::Render
 {
     struct CompileShader
     {
-        File::Path inputFilePath;
-        std::optional<File::Path> outputFilePath;
+        File::Path filePath;
 
-        CompileShader(const File::Path& inputFilePath);
-        CompileShader(const File::Path& inputFilePath, const File::Path& outputFilePath);
+        CompileShader(const File::Path& filePath);
     };
 }
 
@@ -23,6 +22,6 @@ namespace Arca
     {
         static const ObjectType objectType = ObjectType::Command;
         static TypeName TypeName() { return "Atmos::Render::CompileShader"; }
-        using Result = Atmos::File::Path;
+        using Result = Atmos::Buffer;
     };
 }

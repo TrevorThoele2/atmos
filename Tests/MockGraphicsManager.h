@@ -30,6 +30,8 @@ protected:
         const Buffer& buffer,
         const Spatial::Size2D& size) override;
 private:
+    Buffer CompileShaderImpl(const File::Path& filePath) override;
+
     [[nodiscard]] bool ShouldReconstructInternals() const override;
     void ReconstructInternals(GraphicsReconstructionObjects objects) override;
 };

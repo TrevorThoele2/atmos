@@ -49,8 +49,7 @@ namespace Atmos::Render::Vulkan
 
         void PruneResourcesImpl() override;
 
-        File::Path CompileShaderImpl(
-            const File::Path& inputFilePath, const std::optional<File::Path>& outputFilePath) override;
+        Atmos::Buffer CompileShaderImpl(const File::Path& filePath) override;
 
         [[nodiscard]] bool ShouldReconstructInternals() const override;
         void ReconstructInternals(GraphicsReconstructionObjects objects) override;

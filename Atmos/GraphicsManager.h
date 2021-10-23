@@ -49,8 +49,7 @@ namespace Atmos::Render
 
         void PruneResources();
 
-        File::Path CompileShader(
-            const File::Path& inputFilePath, const std::optional<File::Path>& outputFilePath);
+        Buffer CompileShader(const File::Path& filePath);
 
         void Reconstruct(GraphicsReconstructionObjects objects);
         [[nodiscard]] bool ShouldReconstruct() const;
@@ -81,11 +80,7 @@ namespace Atmos::Render
 
         virtual void PruneResourcesImpl() {}
 
-        virtual File::Path CompileShaderImpl(
-            const File::Path& inputFilePath, const std::optional<File::Path>& outputFilePath)
-        {
-            return {};
-        }
+        virtual Buffer CompileShaderImpl(const File::Path& filePath) = 0;
 
         [[nodiscard]] virtual bool ShouldReconstructInternals() const = 0;
         virtual void ReconstructInternals(GraphicsReconstructionObjects objects) = 0;
