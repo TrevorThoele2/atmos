@@ -19,6 +19,6 @@ namespace Atmos::Render::SDL
         FontAssetResource(const String& name, const Buffer& buffer);
         ~FontAssetResource();
 
-        [[nodiscard]] Spatial::Size2D Size(const String& string) const override;
+        [[nodiscard]] Spatial::Size2D Size(const String& string, bool bold, bool italics) const override;
     };
 }

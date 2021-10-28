@@ -4,6 +4,16 @@
 
 namespace Atmos::Render::SDL
 {
+    int Style(bool bold, bool italics)
+    {
+        auto style = 0;
+        if (bold)
+            style |= TTF_STYLE_BOLD;
+        if (italics)
+            style |= TTF_STYLE_ITALIC;
+        return style;
+    }
+
     Spatial::Size2D Size(TTF_Font& font, const String& string)
     {
         int width = 0;
@@ -12,7 +22,11 @@ namespace Atmos::Render::SDL
         if (result < 0)
             throw GraphicsError("Could not find size of text.", { {"Reason", TTF_GetError()} });
 
-        return Spatial::Size2D{ static_cast<Spatial::Size2D::Value>(width), static_cast<Spatial::Size2D::Value>(height) };
+        return Spatial::Size2D
+        {
+            static_cast<Spatial::Size2D::Value>(width),
+            static_cast<Spatial::Size2D::Value>(height)
+        };
     }
 
     Spatial::Size2D Size(TTF_Font& font, const std::vector<String>& strings)
@@ -33,5 +47,11 @@ namespace Atmos::Render::SDL
     std::vector<String> Split(const String& string)
     {
         return Chroma::Split(string, "\n");
+    }
+
+    void SetStyle(TTF_Font& font, int style)
+    {
+        if (TTF_GetFontStyle(&font) != style)
+            TTF_SetFontStyle(&font, style);
     }
 }

@@ -28,7 +28,7 @@ namespace Atmos::Asset
     public:
         void Setup(ResourcePtr&& set);
     public:
-        [[nodiscard]] Spatial::Size2D Size(const String& string) const;
+        [[nodiscard]] Spatial::Size2D Size(const String& string, bool bold, bool italics) const;
     private:
         Arca::RelicInit init;
     private:

@@ -70,6 +70,8 @@ namespace Atmos::Render::Vulkan
             archive.Read(buffer);
         }
 
+        std::filesystem::remove(outputPath);
+
         logger->Log(
             "Compilation of shader succeeded.",
             Logging::Severity::Information,

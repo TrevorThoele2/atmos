@@ -7,7 +7,7 @@ namespace Atmos::Render
     public:
         FontAssetResourceImplementation() = default;
 
-        [[nodiscard]] Spatial::Size2D Size(const String& string) const override
+        [[nodiscard]] Spatial::Size2D Size(const String& string, bool bold, bool italics) const override
         {
             return {};
         }

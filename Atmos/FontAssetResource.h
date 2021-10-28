@@ -11,7 +11,7 @@ namespace Atmos::Asset::Resource
     public:
         virtual ~Font() = 0;
 
-        [[nodiscard]] virtual Spatial::Size2D Size(const String& string) const = 0;
+        [[nodiscard]] virtual Spatial::Size2D Size(const String& string, bool bold, bool italics) const = 0;
     protected:
         Font() = default;
     };
