@@ -69,7 +69,7 @@ namespace Atmos::Scripting::Angel
 
     Render::ChangeImageCore Registration<ChangeImageAsset>::ToArca(Type fromAngelScript)
     {
-        return { fromAngelScript.id, IsRequired(fromAngelScript.to), {} };
+        return { fromAngelScript.id, fromAngelScript.to, {} };
     }
 
     void Registration<ChangeAssetIndex>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
