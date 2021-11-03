@@ -3,6 +3,7 @@
 #include "AngelScriptImageCoreTests.h"
 
 #include <Atmos/AngelScriptImageCore.h>
+#include <Arca/Create.h>
 
 SCENARIO_METHOD(AngelScriptImageCoreTestsFixture, "running image core AngelScript scripts", "[script][angelscript]")
 {

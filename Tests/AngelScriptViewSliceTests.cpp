@@ -4,6 +4,7 @@
 
 #include <Atmos/ViewSlice.h>
 #include <Atmos/Camera.h>
+#include <Arca/Create.h>
 
 SCENARIO_METHOD(AngelScriptViewSliceTestsFixture, "running view slice AngelScript scripts", "[script][angelscript]")
 {

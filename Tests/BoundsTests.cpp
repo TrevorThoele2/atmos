@@ -3,6 +3,7 @@
 
 #include <Arca/ReliquaryOrigin.h>
 #include <Arca/OpenRelic.h>
+#include <Arca/Create.h>
 #include <Atmos/TypeRegistration.h>
 #include <Atmos/SpatialAlgorithms.h>
 

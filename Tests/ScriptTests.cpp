@@ -8,6 +8,7 @@
 #include <Atmos/Script.h>
 #include <Atmos/Work.h>
 #include <Atmos/ScriptFinished.h>
+#include <Arca/Create.h>
 
 SCENARIO_METHOD(ScriptTestsFixture, "script tests", "[script]")
 {

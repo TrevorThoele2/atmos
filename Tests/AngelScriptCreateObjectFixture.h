@@ -26,6 +26,7 @@
 #include "AudioBuffer.h"
 
 #include <Arca/OpenRelic.h>
+#include <Arca/Create.h>
 
 class AngelScriptCreateObjectFixture : public AngelScriptFixture
 {

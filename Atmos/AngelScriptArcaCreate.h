@@ -101,45 +101,6 @@ namespace Atmos::Scripting::Angel
         using Management = ObjectManagement<Type>;
     };
 
-    template<class T>
-    struct Registration<Arca::CreateChild<T>>
-    {
-        using Type = Arca::Create<T>;
-
-        static String Name() { return "CreateChild<" + CreateName({ Registration<T>::ContainingNamespace() }, Registration<T>::Name()) + ">"; }
-        static String ContainingNamespace() { return "Arca"; }
-        static String Documentation() { return "This is a command."; }
-        static const ObjectType objectType = ObjectType::Value;
-
-        using Management = ObjectManagement<Type>;
-    };
-
-    template<class T>
-    struct Registration<Arca::IdentifiedCreate<T>>
-    {
-        using Type = Arca::IdentifiedCreate<T>;
-
-        static String Name() { return "IdentifiedCreate<" + CreateName({ Registration<T>::ContainingNamespace() }, Registration<T>::Name()) + ">"; }
-        static String ContainingNamespace() { return "Arca"; }
-        static String Documentation() { return "This is a command."; }
-        static const ObjectType objectType = ObjectType::Value;
-
-        using Management = ObjectManagement<Type>;
-    };
-
-    template<class T>
-    struct Registration<Arca::IdentifiedCreateChild<T>>
-    {
-        using Type = Arca::IdentifiedCreateChild<T>;
-
-        static String Name() { return "IdentifiedCreateChild<" + CreateName({ Registration<T>::ContainingNamespace() }, Registration<T>::Name()) + ">"; }
-        static String ContainingNamespace() { return "Arca"; }
-        static String Documentation() { return "This is a command."; }
-        static const ObjectType objectType = ObjectType::Value;
-
-        using Management = ObjectManagement<Type>;
-    };
-
     template<>
     struct Registration<Arca::Created>
     {
@@ -269,15 +230,6 @@ namespace Atmos::Scripting::Angel
 
         using Create = Command<Arca::Create<T>>;
         Create create;
-
-        using CreateChild = Command<Arca::CreateChild<T>>;
-        CreateChild createChild;
-
-        using IdentifiedCreate = Command<Arca::IdentifiedCreate<T>>;
-        IdentifiedCreate identifiedCreate;
-
-        using IdentifiedCreateChild = Command<Arca::IdentifiedCreateChild<T>>;
-        IdentifiedCreateChild identifiedCreateChild;
     };
 
     template<class T>
@@ -285,44 +237,9 @@ namespace Atmos::Scripting::Angel
     ArcaCreateRelicRegistration<T>& ArcaCreateRelicRegistration<T>::Constructor(const std::vector<String>& constructorParameters)
     {
         using VariadicParameterTypes = Chroma::VariadicTemplate<ParameterTypes...>;
-
-        {
-            static constexpr auto generateValue = Create::template GenerateValue<VariadicParameterTypes>();
-            create.registration.Constructor(generateValue, constructorParameters);
-        }
-
-        {
-            using UseParameterTypes = typename VariadicParameterTypes::template Prepend<Arca::Handle>::Type;
-
-            static constexpr auto generateValue = CreateChild::template GenerateValue<UseParameterTypes>();
-
-            auto useConstructorParameters = std::vector<String>{ "Arca::Handle parent" };
-            useConstructorParameters.insert(
-                useConstructorParameters.end(), constructorParameters.begin(), constructorParameters.end());
-            createChild.registration.Constructor(generateValue, useConstructorParameters);
-        }
-
-        {
-            using UseParameterTypes = typename VariadicParameterTypes::template Prepend<Arca::RelicID>::Type;
-
-            static constexpr auto generateValue = IdentifiedCreate::template GenerateValue<UseParameterTypes>();
-
-            auto useConstructorParameters = std::vector<String>{ "Arca::RelicID id" };
-            useConstructorParameters.insert(
-                useConstructorParameters.end(), constructorParameters.begin(), constructorParameters.end());
-            identifiedCreate.registration.Constructor(generateValue, useConstructorParameters);
-        }
-
-        {
-            using UseParameterTypes = typename VariadicParameterTypes::template Prepend<Arca::RelicID, Arca::Handle>::Type;
-
-            static constexpr auto generateValue = IdentifiedCreateChild::template GenerateValue<UseParameterTypes>();
-
-            auto useConstructorParameters = std::vector<String>{ "Arca::RelicID id", "Arca::Handle parent" };
-            useConstructorParameters.insert(
-                useConstructorParameters.end(), constructorParameters.begin(), constructorParameters.end());
-            identifiedCreateChild.registration.Constructor(generateValue, useConstructorParameters);
-        }
+        
+        static constexpr auto generateValue = Create::template GenerateValue<VariadicParameterTypes>();
+        create.registration.Constructor(generateValue, constructorParameters);
 
         return *this;
     }
@@ -331,9 +248,6 @@ namespace Atmos::Scripting::Angel
     void ArcaCreateRelicRegistration<T>::Actualize(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         create.Actualize(engine, documentationManager);
-        createChild.Actualize(engine, documentationManager);
-        identifiedCreate.Actualize(engine, documentationManager);
-        identifiedCreateChild.Actualize(engine, documentationManager);
     }
 
     template<class T>

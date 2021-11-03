@@ -9,6 +9,8 @@
 
 #include "SpatialAlgorithms.h"
 
+#include <Arca/All.h>
+
 namespace Atmos::Audio
 {
     Curator::Curator(Init init, Manager& manager) : Arca::Curator(init), manager(&manager)

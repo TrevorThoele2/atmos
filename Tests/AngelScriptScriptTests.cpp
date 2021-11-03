@@ -5,6 +5,7 @@
 #include <Atmos/ModifyProperties.h>
 
 #include <Atmos/StringUtility.h>
+#include <Arca/Create.h>
 
 SCENARIO_METHOD(AngelScriptScriptTestsFixture, "running script AngelScript scripts", "[script][angelscript]")
 {

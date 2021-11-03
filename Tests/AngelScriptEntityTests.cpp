@@ -9,6 +9,7 @@
 #include <Atmos/EntityPrototype.h>
 #include <Atmos/DataCore.h>
 #include <Atmos/ModifyEntityBoundary.h>
+#include <Arca/Create.h>
 
 SCENARIO_METHOD(AngelScriptEntityTestsFixture, "running entity AngelScript scripts", "[script][angelscript]")
 {

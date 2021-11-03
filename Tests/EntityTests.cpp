@@ -2,6 +2,8 @@
 #include "EntityTests.h"
 
 #include <Arca/ReliquaryOrigin.h>
+#include <Arca/Create.h>
+#include <Arca/Clear.h>
 #include <Atmos/TypeRegistration.h>
 #include <Atmos/ModifyEntityBoundary.h>
 #include <Atmos/MoveEntityTo.h>

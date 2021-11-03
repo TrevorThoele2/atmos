@@ -1,9 +1,10 @@
 #include "catch.hpp"
 #include "PathfinderTests.h"
 
+#include <Arca/ReliquaryOrigin.h>
+#include <Arca/Create.h>
 #include <Atmos/Pathfinder.h>
 #include <Atmos/Entity.h>
-#include <Arca/ReliquaryOrigin.h>
 #include <Atmos/TypeRegistration.h>
 
 PathfinderTestsFixture::PathfinderTestsFixture() : worldManager([this]() { return World::FieldInitialization{}; })

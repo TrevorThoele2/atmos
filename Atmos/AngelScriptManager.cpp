@@ -8,6 +8,7 @@
 #include "Script.h"
 
 #include <Arca/Reliquary.h>
+#include <Arca/Clear.h>
 
 #include "Log.h"
 

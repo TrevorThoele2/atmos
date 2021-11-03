@@ -5,6 +5,7 @@
 #include <Atmos/DynamicText.h>
 #include <Atmos/MoveLine.h>
 #include <Atmos/AxisAlignedBox3D.h>
+#include <Arca/Create.h>
 
 Arca::Index<Atmos::Asset::Font> AngelScriptDynamicTextTestsFixture::CreateFontAsset(Arca::Reliquary& reliquary)
 {

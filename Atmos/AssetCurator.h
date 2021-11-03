@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Arca/Curator.h>
+#include <Arca/Assign.h>
 
 #include "Asset.h"
 #include "MappedAssets.h"

@@ -13,6 +13,9 @@
 #include "ViewSlice.h"
 #include "BoundsChanged.h"
 
+#include <Arca/All.h>
+#include <Arca/Either.h>
+
 namespace Atmos::Render
 {
     class ImageCurator final : public ObjectCurator

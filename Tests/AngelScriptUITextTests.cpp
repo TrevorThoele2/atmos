@@ -5,6 +5,7 @@
 #include <Atmos/UIText.h>
 #include <Atmos/MoveLine.h>
 #include <Atmos/AxisAlignedBox3D.h>
+#include <Arca/Create.h>
 
 Arca::Index<Atmos::Asset::Font> AngelScriptUITextTestsFixture::CreateFontAsset(Arca::Reliquary& reliquary)
 {

@@ -6,6 +6,8 @@
 #include "CreateStopwatch.h"
 #include "DiagnosticsStatistics.h"
 
+#include <Arca/Destroy.h>
+
 namespace Atmos::Scripting
 {
     Curator::Curator(Init init, Manager& manager) :

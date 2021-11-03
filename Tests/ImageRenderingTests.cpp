@@ -14,6 +14,8 @@
 #include <Atmos/RotateBounds.h>
 #include <Atmos/MathUtility.h>
 #include <Atmos/SpatialAlgorithms.h>
+#include <Arca/Create.h>
+#include <Arca/Destroy.h>
 
 #include "DerivedEngine.h"
 #include "MockImageAssetResource.h"

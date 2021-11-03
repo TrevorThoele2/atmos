@@ -6,6 +6,7 @@
 #include <Atmos/MaterialAsset.h>
 #include <Atmos/CreateImageAssetResource.h>
 #include <Atmos/CreateAudioAssetResource.h>
+#include <Arca/Create.h>
 
 #include "AudioBuffer.h"
 
