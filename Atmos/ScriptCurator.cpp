@@ -3,6 +3,9 @@
 #include "CurrentExecutingScript.h"
 #include "ScriptFinished.h"
 
+#include "CreateStopwatch.h"
+#include "DiagnosticsStatistics.h"
+
 namespace Atmos::Scripting
 {
     Curator::Curator(Init init, Manager& manager) :
@@ -22,10 +25,15 @@ namespace Atmos::Scripting
 
     void Curator::Handle(const Work&)
     {
+        auto stopwatch = Time::CreateRealStopwatch();
+
         const auto currentExecutingScript = MutablePointer().Of<CurrentExecutingScript>();
         const auto runningScripts = ScriptsToRunning(Owner().Batch<Script>());
         for (auto& element : runningScripts)
             DoExecute(element.id, *currentExecutingScript);
+
+        MutablePointer().Of<Diagnostics::Statistics>()->script.NewTime(
+            Diagnostics::CalculateStopwatch(stopwatch));
     }
 
     void Curator::Handle(const Suspend& command)

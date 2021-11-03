@@ -7,9 +7,6 @@
 #include "MainSurface.h"
 #include "Camera.h"
 
-#include "CreateStopwatch.h"
-#include "DiagnosticsStatistics.h"
-
 namespace Atmos::Render
 {
     Curator::Curator(Init init) : Arca::Curator(init)
@@ -17,8 +14,6 @@ namespace Atmos::Render
 
     void Curator::Handle(const Work&)
     {
-        auto stopwatch = Time::CreateRealStopwatch();
-
         const auto camera = Owner().Find<Camera>();
         const auto mapPosition = Spatial::Point2D
         {
@@ -28,10 +23,8 @@ namespace Atmos::Render
 
         const auto mainSurface = Owner().Find<MainSurface>();
         const auto mutableMainPointer = MutablePointer().Of(mainSurface);
-        mutableMainPointer->DrawFrame(mapPosition);
 
-        const auto idleDuration = std::chrono::duration_cast<std::chrono::duration<double>>(stopwatch.Calculate());
-        MutablePointer().Of<Diagnostics::Statistics>()->renderTime = idleDuration.count();
+        mutableMainPointer->DrawFrame(mapPosition);
     }
 
     void Curator::Handle(const ChangeColor& command)

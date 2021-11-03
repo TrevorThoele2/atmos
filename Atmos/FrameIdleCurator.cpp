@@ -20,11 +20,13 @@ namespace Atmos::Frame
         const auto settings = Owner().Find<Settings>();
         const auto graphicsSettings = Owner().Find<Render::GraphicsSettings>();
 
-        const auto frameInformation = Owner().Find<Information>();
-
         if (settings->framesPerSecondLimit == 0 || graphicsSettings->verticalSync)
             return true;
 
-        return frameInformation->profilers.frame.Elapsed() >= Time::Milliseconds(settings->framesPerSecondLimit);
+        const auto frameInformation = Owner().Find<Information>();
+        const auto elapsed = frameInformation->profilers.frame.Elapsed();
+        const auto expectedTime = std::chrono::duration_cast<Time::Nanoseconds>(Time::Seconds(1)) / settings->framesPerSecondLimit;
+
+        return elapsed >= expectedTime;
     }
 }

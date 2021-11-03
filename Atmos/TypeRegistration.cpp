@@ -66,6 +66,7 @@
 
 #include "FrameStartCurator.h"
 #include "FrameEndCurator.h"
+#include "FrameIdleCurator.h"
 #include "FrameInformation.h"
 #include "FrameSettings.h"
 
@@ -392,6 +393,7 @@ namespace Atmos
                 .Register<Information>()
                 .Register<StartCurator>()
                 .Register<EndCurator>()
+                .Register<IdleCurator>()
                 .Register<Settings>();
         }
 
@@ -406,6 +408,7 @@ namespace Atmos
         {
             Arca::Stage stage;
             stage.Add<EndCurator>();
+            stage.Add<IdleCurator>();
             return stage;
         }
     }

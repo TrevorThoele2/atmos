@@ -107,7 +107,7 @@ namespace Atmos::Render
             const auto color = renderCore.color;
 
             const auto resource = const_cast<Asset::Resource::Image*>(asset->Resource());
-
+            
             const auto viewSlice = Owner().Find<ViewSlice>(id);
             const auto assetSlice = asset->Slice(assetIndex);
             const auto [size, slice] = ViewSliceDependent(viewSlice, assetSlice, bounds.Size());
