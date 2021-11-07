@@ -11,22 +11,28 @@ namespace Atmos::Frame
 
     void IdleCurator::Handle(const Work&)
     {
-        while (!IsDone())
-            windowInformation->window->Suspend(Time::Duration<>(0));
+        auto idleFor = IdleFor();
+        while (idleFor)
+        {
+            windowInformation->window->Suspend(std::chrono::duration_cast<Time::Milliseconds>(*idleFor));
+            idleFor = IdleFor();
+        }
     }
 
-    bool IdleCurator::IsDone()
+    std::optional<Time::Nanoseconds> IdleCurator::IdleFor()
     {
         const auto settings = Owner().Find<Settings>();
         const auto graphicsSettings = Owner().Find<Render::GraphicsSettings>();
 
         if (settings->framesPerSecondLimit == 0 || graphicsSettings->verticalSync)
-            return true;
+            return {};
 
         const auto frameInformation = Owner().Find<Information>();
         const auto elapsed = frameInformation->profilers.frame.Elapsed();
         const auto expectedTime = std::chrono::duration_cast<Time::Nanoseconds>(Time::Seconds(1)) / settings->framesPerSecondLimit;
 
-        return elapsed >= expectedTime;
+        return elapsed >= expectedTime
+            ? std::optional<Time::Nanoseconds>{}
+            : std::optional<Time::Nanoseconds>{ expectedTime - elapsed };
     }
 }

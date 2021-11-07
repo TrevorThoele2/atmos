@@ -49,8 +49,8 @@ namespace Arca
     template<>
     struct Traits<Atmos::Entity::Curator>
     {
-        static const ObjectType objectType = ObjectType::Curator;
-        static TypeName TypeName() { return "Atmos::Entity::Curator"; }
+        static constexpr ObjectType objectType = ObjectType::Curator;
+        static const inline TypeName typeName = "Atmos::Entity::Curator";
         using HandledCommands = HandledCommands<
             Atmos::Entity::FindByName,
             Atmos::Entity::FindByPosition,

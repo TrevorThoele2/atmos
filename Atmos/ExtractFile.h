@@ -24,16 +24,16 @@ namespace Arca
     template<>
     struct Traits<Atmos::File::ExtractFile>
     {
-        static const ObjectType objectType = ObjectType::Command;
-        static TypeName TypeName() { return "Atmos::File::ExtractFile"; }
+        static constexpr ObjectType objectType = ObjectType::Command;
+        static const inline TypeName typeName = "Atmos::File::ExtractFile";
         using Result = Atmos::Buffer;
     };
 
     template<>
     struct Traits<Atmos::File::ExtractZippedFile>
     {
-        static const ObjectType objectType = ObjectType::Command;
-        static TypeName TypeName() { return "Atmos::File::ExtractZippedFile"; }
+        static constexpr ObjectType objectType = ObjectType::Command;
+        static const inline TypeName typeName = "Atmos::File::ExtractZippedFile";
         using Result = Atmos::Buffer;
     };
 }

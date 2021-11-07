@@ -28,7 +28,7 @@ namespace Arca
     template<>
     struct Traits<Atmos::Logging::Log>
     {
-        static const ObjectType objectType = ObjectType::Command;
-        static TypeName TypeName() { return "Atmos::Logging::Log"; }
+        static constexpr ObjectType objectType = ObjectType::Command;
+        static const inline TypeName typeName = "Atmos::Logging::Log";
     };
 }

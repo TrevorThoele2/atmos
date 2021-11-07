@@ -31,8 +31,8 @@ namespace Arca
     template<>
     struct Traits<Atmos::Frame::Information>
     {
-        static const ObjectType objectType = ObjectType::Relic;
-        static TypeName TypeName() { return "Atmos::Frame::Information"; }
+        static constexpr ObjectType objectType = ObjectType::Relic;
+        static const inline TypeName typeName = "Atmos::Frame::Information";
         static const Locality locality = Locality::Global;
     };
 }

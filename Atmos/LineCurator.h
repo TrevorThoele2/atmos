@@ -14,7 +14,7 @@ namespace Atmos::Render
     class LineCurator final : public ObjectCurator
     {
     public:
-        explicit LineCurator(Init init);
+        explicit LineCurator(Init init, GraphicsManager& graphicsManager);
     public:
         using ObjectCurator::Handle;
         void Handle(const MoveLine& command);
@@ -25,6 +25,8 @@ namespace Atmos::Render
             Spatial::Point2D cameraTopLeft,
             const MainSurface& mainSurface) override;
     private:
+        GraphicsManager* graphicsManager;
+
         using Index = Arca::Index<Line>;
         Spatial::Grid::Octree<Arca::RelicID, Index> octree;
 
@@ -46,8 +48,8 @@ namespace Arca
     template<>
     struct Traits<Atmos::Render::LineCurator>
     {
-        static const ObjectType objectType = ObjectType::Curator;
-        static TypeName TypeName() { return "Atmos::Render::LineCurator"; }
+        static constexpr ObjectType objectType = ObjectType::Curator;
+        static const inline TypeName typeName = "Atmos::Render::LineCurator";
         using HandledCommands = HandledCommands<
             Atmos::Work,
             Atmos::Render::MoveLine,

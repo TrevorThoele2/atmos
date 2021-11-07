@@ -5,8 +5,11 @@
 #include "VulkanQueueFamilyIndices.h"
 #include "VulkanDebug.h"
 #include "VulkanShaderCompiler.h"
-#include "VulkanImageResourceData.h"
+#include "VulkanImage.h"
 #include "VulkanStoredResource.h"
+#include "VulkanSurfaceResource.h"
+#include "VulkanMemoryPool.h"
+#include "GraphicsError.h"
 
 #define VK_KHR_WIN32_EXTENSION_NAME "VK_KHR_win32_surface"
 #define VK_EXT_DEBUG_UTILS_EXTENSION_NAME "VK_EXT_debug_utils"
@@ -40,25 +43,39 @@ namespace Atmos::Render::Vulkan
         [[nodiscard]] std::unique_ptr<Resource::Surface> CreateSurfaceResourceImpl(
             void* window) override;
         [[nodiscard]] std::unique_ptr<Resource::Text> CreateTextResourceImpl(
-            const Bytes& bytes,
-            const Spatial::Size2D& size) override;
+            const Atmos::Buffer& buffer, const Spatial::Size2D& size) override;
+
+        void StageImpl(const RenderImage& render) override;
+        void StageImpl(const RenderLine& render) override;
+        void StageImpl(const RenderRegion& render) override;
+        void StageImpl(const RenderText& render) override;
+
+        void StageImpl(const UpdateText& update) override;
+
+        void DrawFrameImpl(
+            Resource::Surface& surface,
+            const Spatial::Point2D& mapPosition,
+            const Color& backgroundColor,
+            Diagnostics::Statistics::Profile& profile) override;
 
         void ResourceDestroyingImpl(Asset::Resource::Image& resource) override;
+        void ResourceDestroyingImpl(Asset::Resource::Shader& resource) override;
         void ResourceDestroyingImpl(Resource::Surface& resource) override;
         void ResourceDestroyingImpl(Resource::Text& resource) override;
-
-        void PruneResourcesImpl() override;
 
         Atmos::Buffer CompileShaderImpl(const File::Path& filePath) override;
 
         [[nodiscard]] bool ShouldReconstructInternals() const override;
         void ReconstructInternals(GraphicsReconstructionObjects objects) override;
     private:
+        std::optional<MemoryPool> memoryPool;
+    private:
         using StoredResourcePtr = std::unique_ptr<StoredResource>;
         std::list<StoredResourcePtr> storedResources;
         std::list<StoredResourcePtr> destroyedResources;
 
-        void MoveToDestroyedResource(StoredResource& pointer);
+        void MoveToDestroyedResource(StoredResource& resource);
+        void PruneResourcesImpl();
     private:
         vk::Instance instance;
         std::vector<const char*> instanceExtensions =
@@ -95,6 +112,8 @@ namespace Atmos::Render::Vulkan
             const std::vector<const char*>& instanceLayers);
     private:
         vk::UniqueCommandPool commandPool;
+        vk::UniqueCommandBuffer imageCommandBuffer;
+        vk::UniqueFence imageFence;
 
         [[nodiscard]] static vk::UniqueCommandPool CreateCommandPool(
             vk::Device device, QueueFamilyIndices queueFamilyIndices);
@@ -120,15 +139,58 @@ namespace Atmos::Render::Vulkan
 
         [[nodiscard]] static vk::UniqueSampler CreateSampler(vk::Device device);
     private:
-        [[nodiscard]] Resource::Vulkan::ImageData CreateImageResourceData(const Bytes& bytes, Spatial::Size2D size);
+        struct ImageDataPrototype
+        {
+            Atmos::Buffer buffer;
+            Spatial::Size2D size;
+        };
+
+        std::unordered_map<Resource::Text*, UpdateText> textUpdates;
+
+        template<class T>
+        void StageRender(const T& render);
+
+        void UpdateTexts();
+
+        [[nodiscard]] std::vector<ImageData> CreateImageData(const std::vector<ImageDataPrototype>& prototypes);
     private:
         std::unique_ptr<Debug> debug;
     private:
         ShaderCompiler shaderCompiler;
     private:
+        template<class To, class From>
+        To& RequiredResource(From& from);
+        template<class To, class From>
+        const To& RequiredResource(const From& from);
+
         template<class Expected, class Available>
         static std::set<String> Unavailable(Expected expected, Available available);
     };
+
+    template<class T>
+    void GraphicsManager::StageRender(const T& render)
+    {
+        const auto& surface = RequiredResource<Resource::Vulkan::Surface>(*render.surface);
+        surface.backing->Stage(render);
+    }
+
+    template<class To, class From>
+    To& GraphicsManager::RequiredResource(From& from)
+    {
+        const auto casted = dynamic_cast<To*>(&from);
+        if (!casted)
+            throw GraphicsError("Unknown resource type.");
+        return *casted;
+    }
+
+    template<class To, class From>
+    const To& GraphicsManager::RequiredResource(const From& from)
+    {
+        const auto casted = dynamic_cast<const To*>(&from);
+        if (!casted)
+            throw GraphicsError("Unknown resource type.");
+        return *casted;
+    }
     
     template<class Expected, class Available>
     std::set<String> GraphicsManager::Unavailable(Expected expected, Available available)

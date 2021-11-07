@@ -2,6 +2,7 @@
 
 #include "VulkanIncludes.h"
 #include "VulkanCommandBufferPool.h"
+#include "VulkanMemoryPool.h"
 #include "VulkanUniversalDataBuffer.h"
 
 #include "VulkanQuadRenderer.h"
@@ -11,11 +12,6 @@
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-
-#include "ImageRender.h"
-#include "LineRender.h"
-#include "RegionRender.h"
-#include "TextRender.h"
 
 #include "Size2D.h"
 #include "Point2D.h"
@@ -50,11 +46,11 @@ namespace Atmos::Render::Vulkan
             vk::Format imageFormat,
             vk::Extent2D swapchainExtent);
     public:
-        void StageRender(const ImageRender& imageRender);
-        void StageRender(const LineRender& lineRender);
-        void StageRender(const RegionRender& regionRender);
-        void StageRender(const TextRender& textRender);
-
+        void StageRender(const RenderImage& imageRender);
+        void StageRender(const RenderLine& lineRender);
+        void StageRender(const RenderRegion& regionRender);
+        void StageRender(const RenderText& textRender);
+        
         void DrawFrame(
             const Spatial::Size2D& screenSize,
             const Spatial::Point2D& mapPosition);
@@ -65,7 +61,7 @@ namespace Atmos::Render::Vulkan
     private:
         vk::Device device;
     private:
-        static const int maxFramesInFlight = 2;
+        static constexpr int maxFramesInFlight = 2;
         size_t currentFrame = 0;
         size_t previousFrame = 1;
     private:
@@ -89,7 +85,7 @@ namespace Atmos::Render::Vulkan
         using RendererGroups = std::list<RendererGroup>;
         RendererGroups rendererGroups;
         RendererGroups::iterator currentRendererGroup;
-
+        
         [[nodiscard]] bool AllEmpty(const std::vector<RendererBase*>& check) const;
     private:
         std::vector<vk::CommandBuffer> usedCommandBuffers;
@@ -116,19 +112,19 @@ namespace Atmos::Render::Vulkan
 
         vk::PhysicalDeviceMemoryProperties memoryProperties;
     private:
-        uint32_t graphicsQueueIndex;
-
         vk::Queue graphicsQueue;
         vk::Queue presentQueue;
 
-        CommandBufferPool commandBuffers;
+        CommandBufferPool drawCommandBuffers;
+
+        MemoryPool memoryPool;
     private:
         UniversalDataBuffer universalDataBuffer;
     private:
         std::vector<vk::UniqueSemaphore> imageAvailableSemaphores;
         std::vector<vk::UniqueSemaphore> renderFinishedSemaphores;
         std::vector<vk::UniqueFence> inFlightFences;
-        std::vector<vk::Fence> imagesInFlight;
+        std::vector<vk::Fence> swapchainImagesInFlight;
 
         [[nodiscard]] static std::vector<vk::UniqueSemaphore> CreateSemaphores(vk::Device device, size_t count);
         [[nodiscard]] static std::vector<vk::UniqueFence> CreateFences(vk::Device device, size_t count);

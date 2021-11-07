@@ -5,10 +5,10 @@
 
 namespace Atmos::Render
 {
-    struct ImageRender;
-    struct LineRender;
-    struct RegionRender;
-    struct TextRender;
+    struct RenderImage;
+    struct RenderLine;
+    struct RenderRegion;
+    struct RenderText;
 
     class Surface
     {
@@ -24,14 +24,7 @@ namespace Atmos::Render
 
         Surface& operator=(const Surface& arg) = delete;
         Surface& operator=(Surface&& arg) = default;
-
-        void StageRender(const ImageRender& imageRender) const;
-        void StageRender(const LineRender& lineRender) const;
-        void StageRender(const RegionRender& regionRender) const;
-        void StageRender(const TextRender& textRender) const;
-
-        void DrawFrame(const Spatial::Point2D& mapPosition) const;
-
+        
         [[nodiscard]] Spatial::Size2D Size() const;
 
         [[nodiscard]] ResourceT* Resource() const;

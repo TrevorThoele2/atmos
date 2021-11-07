@@ -169,7 +169,7 @@ SCENARIO_METHOD(WorldSerializationTestsFixture, "rendering after world serializa
                 auto mainSurface = loadedFieldReliquary.Find<MainSurface>();
                 auto mainSurfaceImplementation = mainSurface->Resource<MockSurfaceResource>();
 
-                auto& imageRenders = mainSurfaceImplementation->imageRenders;
+                auto& imageRenders = engine.mockGraphicsManager->imageRenders;
                 REQUIRE(imageRenders.size() == 3);
 
                 for (auto i = 0; i < 3; ++i)
@@ -177,7 +177,7 @@ SCENARIO_METHOD(WorldSerializationTestsFixture, "rendering after world serializa
                     REQUIRE(std::any_of(
                         imageRenders.begin(),
                         imageRenders.end(),
-                        [i, &positions, &scalers, cameraLeft, cameraTop](const ImageRender& entry)
+                        [i, &positions, &scalers, cameraLeft, cameraTop](const RenderImage& entry)
                         {
                             auto expectedPosition = positions[i];
                             expectedPosition.x -= cameraLeft;

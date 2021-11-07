@@ -1,15 +1,15 @@
 #pragma once
 
 #include "TextResource.h"
-#include "VulkanImageResourceData.h"
+#include "VulkanImage.h"
 
 namespace Atmos::Render::Resource::Vulkan
 {
     class Text final : public Resource::Text
     {
     public:
-        ImageData imageData;
+        Render::Vulkan::ImageData imageData;
     public:
-        Text(const ImageData& imageData);
+        explicit Text(const Render::Vulkan::ImageData& imageData);
     };
 }

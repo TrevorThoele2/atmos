@@ -71,13 +71,13 @@ SCENARIO_METHOD(GridRegionRenderingTestsFixture, "rendering grid regions", "[ren
 
                 THEN("region rendered in graphics manager")
                 {
-                    auto& regionRenders = mainSurfaceImplementation->regionRenders;
+                    auto& regionRenders = engine.mockGraphicsManager->regionRenders;
                     REQUIRE(regionRenders.size() == 1);
 
                     REQUIRE(std::any_of(
                         regionRenders.begin(),
                         regionRenders.end(),
-                        [&positions, cameraLeft, cameraTop](const RegionRender& entry)
+                        [&positions, cameraLeft, cameraTop](const RenderRegion& entry)
                         {
                             std::vector<Spatial::Point2D> expectedVertices;
                             std::vector<Spatial::Grid::Point> expectedVertexGridPositions =
@@ -113,7 +113,7 @@ SCENARIO_METHOD(GridRegionRenderingTestsFixture, "rendering grid regions", "[ren
 
                 THEN("regions were rendered only once")
                 {
-                    auto& regionRenders = mainSurfaceImplementation->regionRenders;
+                    auto& regionRenders = engine.mockGraphicsManager->regionRenders;
                     REQUIRE(regionRenders.size() == 1);
                 }
             }
@@ -137,7 +137,7 @@ SCENARIO_METHOD(GridRegionRenderingTestsFixture, "rendering grid regions", "[ren
 
                 THEN("no lines rendered in graphics manager")
                 {
-                    auto& regionRenders = mainSurfaceImplementation->regionRenders;
+                    auto& regionRenders = engine.mockGraphicsManager->regionRenders;
                     REQUIRE(regionRenders.empty());
                 }
             }
@@ -155,7 +155,7 @@ SCENARIO_METHOD(GridRegionRenderingTestsFixture, "rendering grid regions", "[ren
 
                 THEN("no lines rendered in graphics manager")
                 {
-                    auto& regionRenders = mainSurfaceImplementation->regionRenders;
+                    auto& regionRenders = engine.mockGraphicsManager->regionRenders;
                     REQUIRE(regionRenders.empty());
                 }
             }

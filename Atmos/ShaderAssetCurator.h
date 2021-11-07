@@ -22,8 +22,8 @@ namespace Arca
     template<>
     struct Traits<Atmos::Asset::ShaderCurator>
     {
-        static const ObjectType objectType = ObjectType::Curator;
-        static TypeName TypeName() { return "Atmos::Asset::ShaderCurator"; }
+        static constexpr ObjectType objectType = ObjectType::Curator;
+        static const inline TypeName typeName = "Atmos::Asset::ShaderCurator";
         using HandledCommands = HandledCommands<
             Atmos::Asset::FindByName<Atmos::Asset::Shader>,
             Atmos::Asset::Resource::LoadData<Atmos::Asset::Resource::Shader>>;

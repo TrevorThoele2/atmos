@@ -1,8 +1,10 @@
 #include "ImageCurator.h"
 
+#include "RenderImage.h"
+
 namespace Atmos::Render
 {
-    ImageCurator::ImageCurator(Init init) : ObjectCurator(init)
+    ImageCurator::ImageCurator(Init init, GraphicsManager& graphicsManager) : ObjectCurator(init), graphicsManager(&graphicsManager)
     {
         Owner().On<Arca::MatrixFormed<Matrix>>(
             [this](const Arca::MatrixFormed<Matrix>& signal)
@@ -28,7 +30,7 @@ namespace Atmos::Render
         Spatial::Point2D cameraTopLeft,
         const MainSurface& mainSurface)
     {
-        auto indices = worldOctree.AllWithin(cameraBox);
+        const auto indices = worldOctree.AllWithin(cameraBox);
 
         for (auto& index : indices)
             StageRender(index->id, *index->value, cameraTopLeft, mainSurface);
@@ -41,7 +43,7 @@ namespace Atmos::Render
         const auto index = Owner().Find<ImageCore>(command.id);
         if (index)
         {
-            auto core = MutablePointer().Of(index);
+            const auto core = MutablePointer().Of(index);
             if (command.asset)
             {
                 core->asset = *command.asset;
@@ -49,7 +51,7 @@ namespace Atmos::Render
                 const auto baseSize = core->asset
                     ? core->asset->SliceSize()
                     : Spatial::Size2D{ 0, 0 };
-                auto bounds = MutablePointer().Of<Spatial::Bounds>(index.ID());
+                const auto bounds = MutablePointer().Of<Spatial::Bounds>(index.ID());
                 if (bounds)
                     bounds->BaseSize(baseSize);
             }
@@ -67,7 +69,7 @@ namespace Atmos::Render
         {
         case Spatial::Space::World:
         {
-            auto indices = worldOctree.AllWithin(command.box);
+            const auto indices = worldOctree.AllWithin(command.box);
             ids.reserve(indices.size());
             for (auto& index : indices)
                 ids.push_back(index->id);
@@ -112,7 +114,7 @@ namespace Atmos::Render
             const auto assetSlice = asset->Slice(assetIndex);
             const auto [size, slice] = ViewSliceDependent(viewSlice, assetSlice, bounds.Size());
 
-            const ImageRender render
+            const RenderImage render
             {
                 resource,
                 slice,
@@ -121,9 +123,10 @@ namespace Atmos::Render
                 size,
                 rotation,
                 color,
-                ToRenderSpace(boundsSpace)
+                ToRenderSpace(boundsSpace),
+                mainSurface.Resource()
             };
-            mainSurface.StageRender(render);
+            graphicsManager->Stage(render);
         }
     }
 

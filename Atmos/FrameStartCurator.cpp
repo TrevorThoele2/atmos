@@ -11,10 +11,13 @@ namespace Atmos::Frame
 
     void StartCurator::Handle(const Work&)
     {
-        auto frameInformation = MutablePointer().Of<Information>();
-        frameInformation->profilers.frame.Restart();
+        const auto information = MutablePointer().Of<Information>();
+
+        information->lastElapsed = information->profilers.frame.Elapsed();
+        information->totalElapsed += information->lastElapsed;
+
+        information->profilers.frame.Restart();
         
-        MutablePointer().Of<Diagnostics::Statistics>()->idle.NewTime(
-            Diagnostics::CalculateStopwatch(frameInformation->profilers.idle));
+        MutablePointer().Of<Diagnostics::Statistics>()->idle.NewTime(information->profilers.idle);
     }
 }

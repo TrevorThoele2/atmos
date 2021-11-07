@@ -17,7 +17,7 @@ namespace Atmos::Diagnostics
             bool operator==(const Profile& arg) const;
             bool operator!=(const Profile& arg) const;
 
-            void NewTime(double newTime);
+            void NewTime(Time::Stopwatch& stopwatch);
         };
 
         size_t relicCount = 0;
@@ -35,8 +35,6 @@ namespace Atmos::Diagnostics
         bool operator==(const Statistics& arg) const;
         bool operator!=(const Statistics& arg) const;
     };
-
-    [[nodiscard]] double CalculateStopwatch(Time::Stopwatch& stopwatch);
 }
 
 namespace Arca
@@ -44,9 +42,9 @@ namespace Arca
     template<>
     struct Traits<Atmos::Diagnostics::Statistics>
     {
-        static const ObjectType objectType = ObjectType::Relic;
-        static TypeName TypeName() { return "Atmos::Diagnostics::Statistics"; }
-        static const Locality locality = Locality::Global;
+        static constexpr ObjectType objectType = ObjectType::Relic;
+        static const inline TypeName typeName = "Atmos::Diagnostics::Statistics";
+        static constexpr Locality locality = Locality::Global;
     };
 }
 

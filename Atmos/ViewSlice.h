@@ -23,8 +23,8 @@ namespace Arca
     template<>
     struct Traits<Atmos::Render::ViewSlice>
     {
-        static const ObjectType objectType = ObjectType::Shard;
-        static TypeName TypeName() { return "Atmos::Render::ViewSlice"; }
+        static constexpr ObjectType objectType = ObjectType::Shard;
+        static const inline TypeName typeName = "Atmos::Render::ViewSlice";
     };
 }
 

@@ -22,7 +22,7 @@ namespace Atmos::Window
         virtual void Show() = 0;
         virtual void Exit() = 0;
         [[nodiscard]] virtual bool IsCurrentlyFocused() const = 0;
-        virtual void Suspend(const Time::Duration<>& time) = 0;
+        virtual void Suspend(const Time::Milliseconds& time) = 0;
         virtual bool OnStartFrame() = 0;
 
         void SetFullscreen(bool set);

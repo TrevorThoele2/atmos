@@ -18,7 +18,7 @@ namespace Arca
     template<>
     struct Traits<Atmos::Input::MouseMoved>
     {
-        static const ObjectType objectType = ObjectType::Signal;
-        static TypeName TypeName() { return "Atmos::Input::MouseMoved"; }
+        static constexpr ObjectType objectType = ObjectType::Signal;
+        static const inline TypeName typeName = "Atmos::Input::MouseMoved";
     };
 }

@@ -36,8 +36,8 @@ namespace Arca
     template<>
     struct Traits<Atmos::Entity::Entity>
     {
-        static const ObjectType objectType = ObjectType::Relic;
-        static TypeName TypeName() { return "Atmos::Entity::Entity"; }
+        static constexpr ObjectType objectType = ObjectType::Relic;
+        static const inline TypeName typeName = "Atmos::Entity::Entity";
         static bool ShouldCreate(
             Reliquary& reliquary,
             const Atmos::Name& name,

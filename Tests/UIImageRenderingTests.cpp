@@ -129,7 +129,7 @@ SCENARIO_METHOD(UIImageRenderingTestsFixture, "rendering UI images", "[ui]")
 
                 THEN("all images rendered in graphics manager")
                 {
-                    auto& imageRenders = mainSurfaceImplementation->imageRenders;
+                    auto& imageRenders = engine.mockGraphicsManager->imageRenders;
                     REQUIRE(imageRenders.size() == 3);
 
                     for (auto i = 0; i < 3; ++i)
@@ -137,7 +137,7 @@ SCENARIO_METHOD(UIImageRenderingTestsFixture, "rendering UI images", "[ui]")
                         REQUIRE(std::any_of(
                             imageRenders.begin(),
                             imageRenders.end(),
-                            [i, &positions, &scalers, cameraLeft, cameraTop](const ImageRender& entry)
+                            [i, &positions, &scalers, cameraLeft, cameraTop](const RenderImage& entry)
                             {
                                 const auto expectedPosition = positions[i];
 
@@ -159,7 +159,7 @@ SCENARIO_METHOD(UIImageRenderingTestsFixture, "rendering UI images", "[ui]")
 
                 THEN("images were rendered only once")
                 {
-                    auto& imageRenders = mainSurfaceImplementation->imageRenders;
+                    auto& imageRenders = engine.mockGraphicsManager->imageRenders;
                     REQUIRE(imageRenders.size() == 3);
 
                     for (auto i = 0; i < 3; ++i)
@@ -167,7 +167,7 @@ SCENARIO_METHOD(UIImageRenderingTestsFixture, "rendering UI images", "[ui]")
                         REQUIRE(std::any_of(
                             imageRenders.begin(),
                             imageRenders.end(),
-                            [i, &positions, &scalers, cameraLeft, cameraTop](const ImageRender& entry)
+                            [i, &positions, &scalers, cameraLeft, cameraTop](const RenderImage& entry)
                             {
                                 const auto expectedPosition = positions[i];
 
@@ -212,7 +212,7 @@ SCENARIO_METHOD(UIImageRenderingTestsFixture, "rendering UI images", "[ui]")
 
                 THEN("no images rendered in graphics manager")
                 {
-                    auto& imageRenders = mainSurfaceImplementation->imageRenders;
+                    auto& imageRenders = engine.mockGraphicsManager->imageRenders;
                     REQUIRE(imageRenders.empty());
                 }
             }
@@ -251,7 +251,7 @@ SCENARIO_METHOD(UIImageRenderingTestsFixture, "rendering UI images", "[ui]")
 
                 THEN("no images rendered in graphics manager")
                 {
-                    auto& imageRenders = mainSurfaceImplementation->imageRenders;
+                    auto& imageRenders = engine.mockGraphicsManager->imageRenders;
                     REQUIRE(imageRenders.empty());
                 }
             }

@@ -51,9 +51,9 @@ namespace Arca
     template<class AssetT>
     struct Traits<::Atmos::Asset::Mapped<AssetT>>
     {
-        static const ObjectType objectType = ObjectType::Relic;
-        static TypeName TypeName() { return "Atmos::Asset::Mapped<"s + TypeFor<AssetT>().name + ">"; }
-        static const Locality locality = Locality::Global;
+        static constexpr ObjectType objectType = ObjectType::Relic;
+        static const inline TypeName typeName = "Atmos::Asset::Mapped<"s + TypeFor<AssetT>().name + ">";
+        static constexpr Locality locality = Locality::Global;
     };
 }
 

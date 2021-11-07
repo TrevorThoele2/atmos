@@ -21,7 +21,7 @@ namespace Atmos::Render
     class ImageCurator final : public ObjectCurator
     {
     public:
-        explicit ImageCurator(Init init);
+        explicit ImageCurator(Init init, GraphicsManager& graphicsManager);
     public:
         using ObjectCurator::Handle;
         void Handle(const ChangeImageCore& command);
@@ -32,6 +32,8 @@ namespace Atmos::Render
             Spatial::Point2D cameraTopLeft,
             const MainSurface& mainSurface) override;
     private:
+        GraphicsManager* graphicsManager;
+
         using Matrix = Arca::All<RenderCore, ImageCore, Arca::Either<Spatial::Bounds>>;
         using Index = Arca::Index<Matrix>;
         Spatial::Grid::Octree<Arca::RelicID, Index> worldOctree;
@@ -63,8 +65,8 @@ namespace Arca
     template<>
     struct Traits<Atmos::Render::ImageCurator>
     {
-        static const ObjectType objectType = ObjectType::Curator;
-        static TypeName TypeName() { return "Atmos::Render::ImageCurator"; }
+        static constexpr ObjectType objectType = ObjectType::Curator;
+        static const inline TypeName typeName = "Atmos::Render::ImageCurator";
         using HandledCommands = HandledCommands<
             Atmos::Work,
             Atmos::Render::ChangeImageCore,

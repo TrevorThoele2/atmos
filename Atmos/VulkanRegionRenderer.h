@@ -5,8 +5,9 @@
 #include "VulkanDescriptorSetPool.h"
 #include "VulkanMappedConduits.h"
 #include "VulkanStagedBuffer.h"
+#include "VulkanMemoryPool.h"
 
-#include "RegionRender.h"
+#include "RenderRegion.h"
 
 #include <glm/glm.hpp>
 
@@ -22,19 +23,20 @@ namespace Atmos::Render::Vulkan
             vk::RenderPass renderPass,
             vk::Extent2D swapchainExtent);
 
-        void StageRender(const RegionRender& regionRender);
-
+        void StageRender(const RenderRegion& regionRender);
+        
         [[nodiscard]] std::unique_ptr<Raster> Start(
-            vk::CommandBuffer commandBuffer,
-            vk::CommandPool commandPool,
+            vk::CommandBuffer drawCommandBuffer,
             const UniversalDataBuffer& universalDataBuffer) override;
         
         void MaterialDestroying(Arca::Index<Asset::Material> material);
 
         [[nodiscard]] size_t RenderCount() const override;
     private:
-        std::vector<RegionRender> stagedRegionRenders;
+        std::vector<RenderRegion> stagedRegionRenders;
     private:
+        MemoryPool memoryPool;
+
         struct Vertex
         {
             alignas(8) glm::vec2 position;
@@ -53,61 +55,54 @@ namespace Atmos::Render::Vulkan
             Region(const Vertices& vertices, const Indices& indices);
         };
 
-        static const int stride = 5000;
+        static constexpr int maxVertexCount = 5000;
 
         StagedBuffer vertexBuffer;
-        static const int vertexStride = stride;
+        static constexpr int vertexStride = maxVertexCount;
 
         StagedBuffer indexBuffer;
-        static const int indexStride = stride * 2;
+        static constexpr int indexStride = maxVertexCount * 2;
     private:
         using MappedConduits = MappedConduits<Asset::Material>;
 
         class Raster final : public Vulkan::Raster
         {
         public:
-            Raster(
-                vk::CommandBuffer commandBuffer,
-                vk::CommandPool commandPool,
-                RegionRenderer& renderer);
-
-            void DrawNextLayer() override;
+            Raster(RegionRenderer& renderer);
+            
+            [[nodiscard]] std::vector<Pass> NextPasses() override;
 
             [[nodiscard]] bool IsDone() const override;
             [[nodiscard]] ObjectLayeringKey NextLayer() const override;
         private:
             using ObjectLayering = ObjectLayering<void, Region>;
             using Layer = ObjectLayering::Layer;
-
-            vk::CommandBuffer commandBuffer;
-            vk::CommandPool commandPool;
-
+            
             ObjectLayering layers;
             ObjectLayering::iterator currentLayer = {};
             vk::DescriptorSet setupDescriptorSet = {};
 
-            std::uint32_t vertexCount = 0;
-            std::uint32_t indexCount = 0;
+            std::uint32_t totalVertexCount = 0;
+            std::uint32_t totalIndexCount = 0;
             Index maxIndex = 0;
         private:
             RegionRenderer* renderer;
         private:
-            void Draw(Layer& layer);
-            void WriteToBuffers(const Layer::MaterialGroup& materialGroup, MappedConduits::Group& conduitGroup);
-            void WriteToBuffers(const std::vector<Region>& regions);
+            [[nodiscard]] std::vector<Pass> NextPasses(const Layer& layer);
+            [[nodiscard]] std::vector<Pass> NextPasses(const Layer::MaterialGroup& materialGroup, MappedConduits::Group& conduitGroup);
+            [[nodiscard]] Command WriteData(const std::vector<Region>& regions, std::uint32_t startIndexCount);
+            [[nodiscard]] Command Draw(std::uint32_t startIndexCount, std::uint32_t indexCount, Conduit& conduit);
         private:
             friend RegionRenderer;
         };
 
-        void AddToRaster(const RegionRender& regionRender, Raster& raster);
+        void AddToRaster(const RenderRegion& regionRender, Raster& raster);
     private:
         DescriptorSetPool descriptorSetPool;
         MappedConduits mappedConduits;
     private:
         vk::Queue graphicsQueue;
-
         vk::Device device;
-
         uint32_t swapchainImageCount = 0;
     };
 }

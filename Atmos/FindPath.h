@@ -22,8 +22,8 @@ namespace Arca
     template<>
     struct Traits<Atmos::Entity::FindPath>
     {
-        static const ObjectType objectType = ObjectType::Command;
-        static TypeName TypeName() { return "Atmos::Entity::FindPath"; }
+        static constexpr ObjectType objectType = ObjectType::Command;
+        static const inline TypeName typeName = "Atmos::Entity::FindPath";
         using Result = Atmos::Entity::Path;
     };
 }

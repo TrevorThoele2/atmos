@@ -1,6 +1,5 @@
 #include "GraphicsManager.h"
 
-#include "MainSurface.h"
 #include "CreateSurfaceResource.h"
 
 #include "Logger.h"
@@ -48,10 +47,39 @@ namespace Atmos::Render
     }
 
     std::unique_ptr<Resource::Text> GraphicsManager::CreateTextResource(
-        const Buffer& buffer,
-        const Spatial::Size2D& size)
+        const Buffer& buffer, const Spatial::Size2D& size)
     {
         return CreateTextResourceImpl(buffer, size);
+    }
+
+    void GraphicsManager::Stage(const RenderImage& render)
+    {
+        StageImpl(render);
+    }
+
+    void GraphicsManager::Stage(const RenderLine& render)
+    {
+        StageImpl(render);
+    }
+
+    void GraphicsManager::Stage(const RenderRegion& render)
+    {
+        StageImpl(render);
+    }
+
+    void GraphicsManager::Stage(const RenderText& render)
+    {
+        StageImpl(render);
+    }
+
+    void GraphicsManager::Stage(const UpdateText& update)
+    {
+        StageImpl(update);
+    }
+
+    void GraphicsManager::DrawFrame(Resource::Surface& surface, const Spatial::Point2D& mapPosition, const Color& backgroundColor, Diagnostics::Statistics::Profile& profile)
+    {
+        DrawFrameImpl(surface, mapPosition, backgroundColor, profile);
     }
 
     void GraphicsManager::ResourceDestroying(Asset::Resource::Image& resource)

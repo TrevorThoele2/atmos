@@ -25,8 +25,8 @@ namespace Arca
     template<>
     struct Traits<Atmos::Asset::ImageCurator>
     {
-        static const ObjectType objectType = ObjectType::Curator;
-        static TypeName TypeName() { return "Atmos::Asset::ImageCurator"; }
+        static constexpr ObjectType objectType = ObjectType::Curator;
+        static const inline TypeName typeName = "Atmos::Asset::ImageCurator";
         using HandledCommands = HandledCommands<
             Atmos::Asset::FindByName<Atmos::Asset::Image>,
             Atmos::Asset::Resource::LoadData<Atmos::Asset::Resource::Image>>;

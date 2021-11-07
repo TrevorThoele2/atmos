@@ -9,7 +9,7 @@ namespace Atmos::Render
 
     void SurfaceCurator::Handle(const ChangeMainSurfaceBackgroundColor& command)
     {
-        auto surface = MutablePointer().Of<SurfaceCore>(command.id);
+        const auto surface = MutablePointer().Of<SurfaceCore>(command.id);
         surface->backgroundColor = command.color;
     }
 }

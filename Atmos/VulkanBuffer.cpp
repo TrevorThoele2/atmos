@@ -1,21 +1,17 @@
 #include "VulkanBuffer.h"
 
-#include "VulkanMemory.h"
-#include "VulkanSingleUseCommandBuffer.h"
-#include "VulkanUtilities.h"
-#include "GraphicsError.h"
+#include "VulkanMemoryPool.h"
 
 namespace Atmos::Render::Vulkan
 {
     Buffer::Buffer(
         vk::DeviceSize size,
         vk::BufferUsageFlags usage,
-        vk::MemoryPropertyFlags properties,
+        vk::MemoryPropertyFlags flags,
         vk::Device device,
-        vk::PhysicalDeviceMemoryProperties memoryProperties)
+        MemoryPool& pool)
         :
-        size(size),
-        device(device)
+        size(size)
     {
         const vk::BufferCreateInfo createInfo(
             {},
@@ -25,54 +21,36 @@ namespace Atmos::Render::Vulkan
 
         value = device.createBufferUnique(createInfo);
 
-        const auto memoryRequirements = device.getBufferMemoryRequirements(value.get());
-
-        const vk::MemoryAllocateInfo memoryAllocationInfo(
-            memoryRequirements.size,
-            FindSuitableMemoryType(
-                memoryRequirements.memoryTypeBits,
-                properties,
-                memoryProperties));
-
-        memory = device.allocateMemoryUnique(memoryAllocationInfo);
-
-        device.bindBufferMemory(value.get(), memory.get(), 0);
+        memory = pool.Bind(value.get(), flags);
     }
 
-    void Buffer::PushBytes(Bytes bytes, vk::DeviceSize offset)
+    void Buffer::PushBytes(const Bytes& bytes, vk::DeviceSize offset)
     {
         PushBytes(bytes.data(), offset, bytes.size());
     }
 
     void Buffer::PushBytes(const void* bytes, vk::DeviceSize offset, size_t size)
     {
-        void* data;
-        if (IsError(device.mapMemory(memory.get(), offset, vk::DeviceSize(size), vk::MemoryMapFlags{}, &data)))
-            throw GraphicsError("Could not map memory in Vulkan buffer.");
-        memcpy(data, bytes, size);
-        device.unmapMemory(memory.get());
+        memory.PushBytes(bytes, offset, size);
     }
 
-    void Buffer::Copy(
+    Command Buffer::Copy(
         const Buffer& destination,
         vk::DeviceSize sourceOffset,
         vk::DeviceSize destinationOffset,
-        vk::DeviceSize size,
-        vk::CommandPool commandPool,
-        vk::Queue queue) const
+        vk::DeviceSize size) const
     {
         if (size == 0)
-            return;
-
-        SingleUseCommandBuffer(device, commandPool, queue,
-            [this, &destination, sourceOffset, destinationOffset, size](vk::CommandBuffer commandBuffer)
+            return {};
+        else
+            return [this, &destination, sourceOffset, destinationOffset, size](vk::CommandBuffer commandBuffer)
             {
                 const vk::BufferCopy copyRegion(sourceOffset, destinationOffset, size);
                 commandBuffer.copyBuffer(value.get(), destination.value.get(), copyRegion);
-            });
+            };
     }
 
-    void Buffer::Copy(
+    Command Buffer::Copy(
         vk::Image destination,
         vk::DeviceSize bufferOffset,
         uint32_t bufferRowLength,
@@ -80,36 +58,33 @@ namespace Atmos::Render::Vulkan
         vk::Offset3D imagePosition,
         vk::Extent3D imageSize,
         uint32_t layerOffset,
-        uint32_t layerCount,
-        vk::CommandPool commandPool,
-        vk::Queue queue)
+        uint32_t layerCount)
     {
-        SingleUseCommandBuffer(device, commandPool, queue,
-            [
-                this,
-                destination,
+        return [this, destination, bufferOffset, bufferRowLength, bufferImageHeight, imagePosition, imageSize, layerOffset, layerCount]
+        (vk::CommandBuffer commandBuffer)
+        {
+            const vk::ImageSubresourceLayers subresourceLayers(
+                vk::ImageAspectFlagBits::eColor, 0, layerOffset, layerCount);
+            const vk::BufferImageCopy region(
                 bufferOffset,
                 bufferRowLength,
                 bufferImageHeight,
+                subresourceLayers,
                 imagePosition,
-                imageSize,
-                layerOffset,
-                layerCount
-            ]
-                (vk::CommandBuffer commandBuffer)
-            {
-                const vk::ImageSubresourceLayers subresourceLayers(
-                    vk::ImageAspectFlagBits::eColor, 0, layerOffset, layerCount);
-                const vk::BufferImageCopy region(
-                    bufferOffset,
-                    bufferRowLength,
-                    bufferImageHeight,
-                    subresourceLayers,
-                    imagePosition,
-                    imageSize);
+                imageSize);
 
-                commandBuffer.copyBufferToImage(
-                    value.get(), destination, vk::ImageLayout::eTransferDstOptimal, region);
-            });
+            commandBuffer.copyBufferToImage(
+                value.get(), destination, vk::ImageLayout::eTransferDstOptimal, region);
+        };
+    }
+
+    vk::Buffer Buffer::Value() const
+    {
+        return value.get();
+    }
+
+    vk::DeviceSize Buffer::Size() const
+    {
+        return size;
     }
 }

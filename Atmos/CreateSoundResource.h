@@ -18,8 +18,8 @@ namespace Arca
     template<>
     struct Traits<Atmos::Audio::Resource::CreateSound>
     {
-        static const ObjectType objectType = ObjectType::Command;
-        static TypeName TypeName() { return "Atmos::Audio::Resource::CreateSound"; }
+        static constexpr ObjectType objectType = ObjectType::Command;
+        static const inline TypeName typeName = "Atmos::Audio::Resource::CreateSound";
         using Result = std::unique_ptr<Atmos::Audio::Resource::Sound>;
     };
 }

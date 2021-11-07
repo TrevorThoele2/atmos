@@ -5,10 +5,6 @@
 
 namespace Atmos::Render
 {
-    struct ImageRender;
-    struct LineRender;
-    struct RegionRender;
-
     struct SurfaceCore
     {
         using ResourceT = Resource::Surface;
@@ -29,8 +25,8 @@ namespace Arca
     template<>
     struct Traits<Atmos::Render::SurfaceCore>
     {
-        static const ObjectType objectType = ObjectType::Shard;
-        static TypeName TypeName() { return "Atmos::Render::SurfaceCore"; }
+        static constexpr ObjectType objectType = ObjectType::Shard;
+        static const inline TypeName typeName = "Atmos::Render::SurfaceCore";
     };
 }
 

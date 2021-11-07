@@ -25,7 +25,7 @@ namespace Arca
     template<>
     struct Traits<Atmos::Spatial::BoundsRotated>
     {
-        static const ObjectType objectType = ObjectType::Signal;
-        static TypeName TypeName() { return "Atmos::Spatial::BoundsRotated"; }
+        static constexpr ObjectType objectType = ObjectType::Signal;
+        static const inline TypeName typeName = "Atmos::Spatial::BoundsRotated";
     };
 }

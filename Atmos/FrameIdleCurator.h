@@ -17,7 +17,7 @@ namespace Atmos::Frame
     private:
         Arca::Index<Window::Information> windowInformation;
 
-        [[nodiscard]] bool IsDone();
+        [[nodiscard]] std::optional<Time::Nanoseconds> IdleFor();
     };
 }
 
@@ -26,8 +26,8 @@ namespace Arca
     template<>
     struct Traits<Atmos::Frame::IdleCurator>
     {
-        static const ObjectType objectType = ObjectType::Curator;
-        static TypeName TypeName() { return "Atmos::Frame::IdleCurator"; }
+        static constexpr ObjectType objectType = ObjectType::Curator;
+        static const inline TypeName typeName = "Atmos::Frame::IdleCurator";
         using HandledCommands = HandledCommands<Atmos::Work>;
     };
 }

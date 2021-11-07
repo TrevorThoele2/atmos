@@ -1,16 +1,16 @@
 #pragma once
 
 #include "ImageAssetResource.h"
-#include "VulkanImageResourceData.h"
+#include "VulkanImage.h"
 
 namespace Atmos::Asset::Resource::Vulkan
 {
     class Image final : public Resource::Image
     {
     public:
-        Render::Resource::Vulkan::ImageData imageData;
+        Render::Vulkan::ImageData imageData;
     public:
-        Image(const Render::Resource::Vulkan::ImageData& imageData);
+        Image(const Render::Vulkan::ImageData& imageData);
 
         [[nodiscard]] Spatial::Size2D Size() const override;
     };

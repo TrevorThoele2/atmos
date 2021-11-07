@@ -2,17 +2,17 @@
 
 #include "VulkanStoredResource.h"
 #include "VulkanIncludes.h"
+#include "VulkanMemory.h"
 
 namespace Atmos::Render::Vulkan
 {
     class StoredImageResource final : public StoredResource
     {
     public:
-        vk::UniqueDeviceMemory memory;
+        UniqueMemory memory;
         vk::UniqueImageView imageView;
         vk::UniqueImage image;
 
-        StoredImageResource(
-            vk::UniqueDeviceMemory&& memory, vk::UniqueImageView&& imageView, vk::UniqueImage&& image);
+        StoredImageResource(UniqueMemory&& memory, vk::UniqueImageView&& imageView, vk::UniqueImage&& image);
     };
 }

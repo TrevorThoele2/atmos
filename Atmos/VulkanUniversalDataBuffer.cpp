@@ -4,16 +4,17 @@ namespace Atmos::Render::Vulkan
 {
     UniversalDataBuffer::UniversalDataBuffer(
         uint32_t binding,
-        vk::PhysicalDeviceMemoryProperties memoryProperties,
+        MemoryPool& pool,
         vk::Device device)
         :
-        buffer(sizeof(UniversalData),
+        buffer(
+            sizeof(UniversalData),
             vk::BufferUsageFlagBits::eUniformBuffer,
             vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent,
             device,
-            memoryProperties),
+            pool),
         binding(binding),
-        bufferInfo(buffer.value.get(), 0, sizeof(UniversalData)),
+        bufferInfo(buffer.Value(), 0, sizeof(UniversalData)),
         device(device)
     {}
 

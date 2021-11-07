@@ -10,7 +10,7 @@ namespace Atmos::Render::Vulkan
     public:
         UniversalDataBuffer(
             uint32_t binding,
-            vk::PhysicalDeviceMemoryProperties memoryProperties,
+            MemoryPool& pool,
             vk::Device device);
 
         void PushBytes(UniversalData universalData);

@@ -9,8 +9,7 @@ namespace Atmos::Render
 
     void StartCurator::Handle(const Work&)
     {
-        auto frameInformation = MutablePointer().Of<Frame::Information>();
-
+        const auto frameInformation = MutablePointer().Of<Frame::Information>();
         frameInformation->profilers.render = Time::CreateRealStopwatch();
     }
 }

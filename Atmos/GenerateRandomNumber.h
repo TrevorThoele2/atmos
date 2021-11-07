@@ -42,18 +42,18 @@ namespace Arca
     template<class T>
     struct Traits<Atmos::Random::GenerateNumber<T>>
     {
-        static const ObjectType objectType = ObjectType::Command;
-        static TypeName TypeName() { return "Atmos::Random::GenerateNumber<" + Atmos::PrimitiveTraits<T>::TypeName() + ">"; }
+        static constexpr ObjectType objectType = ObjectType::Command;
+        static const inline TypeName typeName = "Atmos::Random::GenerateNumber<" + Atmos::PrimitiveTraits<T>::TypeName() + ">";
         using Result = T;
-        static const bool selfContained = true;
+        static constexpr bool selfContained = true;
     };
 
     template<>
     struct Traits<Atmos::Random::GenerateBool>
     {
-        static const ObjectType objectType = ObjectType::Command;
-        static TypeName TypeName() { return "Atmos::Random::GenerateBool"; }
+        static constexpr ObjectType objectType = ObjectType::Command;
+        static const inline TypeName typeName = "Atmos::Random::GenerateBool";
         using Result = bool;
-        static const bool selfContained = true;
+        static constexpr bool selfContained = true;
     };
 }

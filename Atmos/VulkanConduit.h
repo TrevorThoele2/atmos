@@ -2,6 +2,7 @@
 
 #include "VulkanIncludes.h"
 #include "VulkanVertexInput.h"
+#include "VulkanCommand.h"
 #include "ShaderAsset.h"
 
 namespace Atmos::Render::Vulkan
@@ -24,7 +25,7 @@ namespace Atmos::Render::Vulkan
         Conduit(Conduit&& arg) noexcept = default;
         Conduit& operator=(Conduit&& arg) = default;
 
-        void Bind(const vk::CommandBuffer& commandBuffer);
+        [[nodiscard]] Command Bind();
     private:
         vk::UniquePipeline pipeline;
     private:

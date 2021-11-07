@@ -3,10 +3,11 @@
 #include "MainSurface.h"
 
 #include "RenderAlgorithms.h"
+#include "RenderRegion.h"
 
 namespace Atmos::Render
 {
-    GridRegionCurator::GridRegionCurator(Init init) : ObjectCurator(init)
+    GridRegionCurator::GridRegionCurator(Init init, GraphicsManager& graphicsManager) : ObjectCurator(init), graphicsManager(&graphicsManager)
     {
         Owner().On<Arca::CreatedKnown<GridRegion>>(
             [this](const Arca::CreatedKnown<GridRegion>& signal)
@@ -43,7 +44,7 @@ namespace Atmos::Render
 
     std::vector<Arca::RelicID> GridRegionCurator::Handle(const FindGridRegionsByBox& command) const
     {
-        auto indices = octree.AllWithin(command.box);
+        const auto indices = octree.AllWithin(command.box);
         std::vector<Arca::RelicID> returnValue;
         returnValue.reserve(indices.size());
         for (auto& index : indices)
@@ -56,7 +57,7 @@ namespace Atmos::Render
         Spatial::Point2D cameraTopLeft,
         const MainSurface& mainSurface)
     {
-        auto indices = octree.AllWithin(cameraBox);
+        const auto indices = octree.AllWithin(cameraBox);
 
         for (auto& index : indices)
             StageRender(*index->value, cameraTopLeft, mainSurface);
@@ -81,14 +82,15 @@ namespace Atmos::Render
             const auto z = static_cast<Spatial::Point3D::Value>(value.z)
                 * Spatial::Grid::CellSize<Spatial::Point3D::Value>;
 
-            const RegionRender render
+            const RenderRegion render
             {
                 mesh,
                 z,
                 material,
-                ToRenderSpace(Spatial::Space::World)
+                ToRenderSpace(Spatial::Space::World),
+                mainSurface.Resource()
             };
-            mainSurface.StageRender(render);
+            graphicsManager->Stage(render);
         }
     }
 

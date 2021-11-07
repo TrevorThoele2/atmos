@@ -20,8 +20,8 @@ namespace Arca
     template<>
     struct Traits<Atmos::Asset::FontCurator>
     {
-        static const ObjectType objectType = ObjectType::Curator;
-        static TypeName TypeName() { return "Atmos::Asset::FontCurator"; }
+        static constexpr ObjectType objectType = ObjectType::Curator;
+        static const inline TypeName typeName = "Atmos::Asset::FontCurator";
         using HandledCommands = HandledCommands<
             Atmos::Asset::FindByName<Atmos::Asset::Font>,
             Atmos::Asset::Resource::LoadData<Atmos::Asset::Resource::Font>>;

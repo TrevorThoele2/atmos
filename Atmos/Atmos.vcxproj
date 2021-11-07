@@ -43,6 +43,7 @@
     <ClInclude Include="AngelScriptArcaDestroy.h" />
     <ClInclude Include="AngelScriptArcaType.h" />
     <ClInclude Include="AngelScriptArcaTraits.h" />
+    <ClInclude Include="AngelScriptBoxed.h" />
     <ClInclude Include="AngelScriptCamera.h" />
     <ClInclude Include="AngelScriptArcaCreate.h" />
     <ClInclude Include="AngelScriptChangeMaterialAsset.h" />
@@ -106,9 +107,14 @@
     <ClInclude Include="FieldInitialization.h" />
     <ClInclude Include="ArcaIndexEquality.h" />
     <ClInclude Include="SDLText.h" />
+    <ClInclude Include="UpdateText.h" />
     <ClInclude Include="VulkanBackingSurfaceResource.h" />
-    <ClInclude Include="VulkanImageResourceData.h" />
+    <ClInclude Include="VulkanCommand.h" />
+    <ClInclude Include="VulkanMemoryPool.h" />
+    <ClInclude Include="VulkanOperation.h" />
     <ClInclude Include="VulkanPaths.h" />
+    <ClInclude Include="VulkanRenderPass.h" />
+    <ClInclude Include="VulkanResults.h" />
     <ClInclude Include="VulkanStoredImageResource.h" />
     <ClInclude Include="VulkanStoredResource.h" />
     <ClInclude Include="DiagnosticsCurator.h" />
@@ -129,7 +135,7 @@
     <ClInclude Include="Text.h" />
     <ClInclude Include="TextCore.h" />
     <ClInclude Include="TextData.h" />
-    <ClInclude Include="TextRender.h" />
+    <ClInclude Include="RenderText.h" />
     <ClInclude Include="TextResource.h" />
     <ClInclude Include="UIImage.h" />
     <ClInclude Include="TextCurator.h" />
@@ -306,7 +312,7 @@
     <ClInclude Include="PruneGraphicsResources.h" />
     <ClInclude Include="GridRegion.h" />
     <ClInclude Include="GridRegionCurator.h" />
-    <ClInclude Include="RegionRender.h" />
+    <ClInclude Include="RenderRegion.h" />
     <ClInclude Include="RenderAlgorithms.h" />
     <ClInclude Include="RenderMesh.h" />
     <ClInclude Include="RotateBounds.h" />
@@ -343,6 +349,7 @@
     <ClInclude Include="VulkanShaderAssetResource.h" />
     <ClInclude Include="VulkanShaderCompiler.h" />
     <ClInclude Include="VulkanSwapchainSupport.h" />
+    <ClInclude Include="VulkanSynchronization.h" />
     <ClInclude Include="VulkanTextResource.h" />
     <ClInclude Include="VulkanUniversalDataBuffer.h" />
     <ClInclude Include="VulkanUniversalData.h" />
@@ -359,14 +366,14 @@
     <ClInclude Include="FrameIdleCurator.h" />
     <ClInclude Include="ImageAssetResource.h" />
     <ClInclude Include="LineCurator.h" />
-    <ClInclude Include="LineRender.h" />
+    <ClInclude Include="RenderLine.h" />
     <ClInclude Include="LineWidth.h" />
     <ClInclude Include="Logger.h" />
     <ClInclude Include="MainSurface.h" />
     <ClInclude Include="MoveBounds.h" />
     <ClInclude Include="MoveLine.h" />
     <ClInclude Include="Octree.h" />
-    <ClInclude Include="VulkanSingleUseCommandBuffer.h" />
+    <ClInclude Include="VulkanCommandBuffer.h" />
     <ClInclude Include="VulkanBuffer.h" />
     <ClInclude Include="VulkanImageAssetResource.h" />
     <ClInclude Include="VulkanMemory.h" />
@@ -386,7 +393,7 @@
     <ClInclude Include="FieldUnset.h" />
     <ClInclude Include="GraphicsCurator.h" />
     <ClInclude Include="ImageCore.h" />
-    <ClInclude Include="ImageRender.h" />
+    <ClInclude Include="RenderImage.h" />
     <ClInclude Include="StaticImage.h" />
     <ClInclude Include="InputFieldArchiveInterface.h" />
     <ClInclude Include="Map.h" />
@@ -414,7 +421,7 @@
     <ClInclude Include="LoggingSeverity.h" />
     <ClInclude Include="AngelScriptObjectManagement.h" />
     <ClInclude Include="AngelScriptGridPoint.h" />
-    <ClInclude Include="AngelScriptIndex.h" />
+    <ClInclude Include="AngelScriptArcaObject.h" />
     <ClInclude Include="AngelScriptReferenceCounted.h" />
     <ClInclude Include="AngelScriptUserData.h" />
     <ClInclude Include="AngelScriptFunctionManagement.h" />
@@ -622,8 +629,10 @@
     <ClCompile Include="ImageAssetGridSize.cpp" />
     <ClCompile Include="SDLText.cpp" />
     <ClCompile Include="VulkanBackingSurfaceResource.cpp" />
-    <ClCompile Include="VulkanImageResourceData.cpp" />
+    <ClCompile Include="VulkanMemoryPool.cpp" />
     <ClCompile Include="VulkanPaths.cpp" />
+    <ClCompile Include="VulkanRenderPass.cpp" />
+    <ClCompile Include="VulkanResults.cpp" />
     <ClCompile Include="VulkanStoredImageResource.cpp" />
     <ClCompile Include="VulkanStoredResource.cpp" />
     <ClCompile Include="DiagnosticsCurator.cpp" />
@@ -736,6 +745,7 @@
     <ClCompile Include="VulkanRegionRenderer.cpp" />
     <ClCompile Include="VulkanRendererBase.cpp" />
     <ClCompile Include="VulkanSurfaceResource.cpp" />
+    <ClCompile Include="VulkanSynchronization.cpp" />
     <ClCompile Include="VulkanTextResource.cpp" />
     <ClCompile Include="VulkanUniversalDataBuffer.cpp" />
     <ClCompile Include="VulkanCreateImageView.cpp" />
@@ -759,7 +769,7 @@
     <ClCompile Include="ShaderAssetResource.cpp" />
     <ClCompile Include="SimpleFile.cpp" />
     <ClCompile Include="VulkanShaderCompiler.cpp" />
-    <ClCompile Include="VulkanSingleUseCommandBuffer.cpp" />
+    <ClCompile Include="VulkanCommandBuffer.cpp" />
     <ClCompile Include="StaticImage.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="ImageCurator.cpp" />
@@ -864,36 +874,36 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release Debug|Win32'">
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Debug|x64'" Label="Configuration">
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -928,7 +938,7 @@
     <IncludePath>C:\Users\Trevor\Documents\Visual Studio 2015\Projects\Function;C:\Users\Trevor\Documents\Programming Projects\wxWidgets2\lib\vc_lib\mswud;C:\Users\Trevor\Documents\Programming Projects\wxWidgets2\include;C:\Program Files %28x86%29\Falcon\include;C:\Users\Trevor\Documents\Programming Projects\Affecter;C:\Users\Trevor\Documents\Programming Projects\Ogg\Built\include;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;C:\Users\Trevor\Documents\Programming Projects\AGUI;C:\Users\Trevor\Documents\Programming Projects\Inscription;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>..\..\chroma;..\..\inscription;..\..\arca;..\..\externaldependencies\sdl2\include;..\..\externaldependencies\sdl_mixer\include;..\..\externaldependencies\freeimage\Dist\x32;..\..\externaldependencies\function2\include;..\..\externaldependencies\wxwidgets\lib\vc_lib\mswu;..\..\externaldependencies\wxwidgets\include;..\..\externaldependencies\glm;..\..\externaldependencies\vulkan\Include;..\..\externaldependencies\angelscript\add_on;..\..\externaldependencies\angelscript\angelscript\include;..\..\externaldependencies\boost;..\..\externaldependencies\sdl_ttf\include;$(IncludePath)</IncludePath>
+    <IncludePath>..\..\chroma;..\..\inscription;..\..\arca;..\..\externaldependencies\sdl2\include;..\..\externaldependencies\sdl_mixer\include;..\..\externaldependencies\freeimage\Dist\x32;..\..\externaldependencies\function2\include;..\..\externaldependencies\wxwidgets\lib\vc_lib\mswu;..\..\externaldependencies\wxwidgets\include;..\..\externaldependencies\glm;..\..\externaldependencies\vulkan\Include;..\..\externaldependencies\angelscript\add_on;..\..\externaldependencies\angelscript\angelscript\include;..\..\externaldependencies\boost;..\..\externaldependencies\sdl_ttf\include;C:\Program Files %28x86%29\Intel\oneAPI\vtune\2021.9.0\sdk\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>C:\Users\Trevor\Documents\Visual Studio 2015\Projects\Function;C:\Users\Trevor\Documents\Programming Projects\wxWidgets2\lib\vc_lib\mswud;C:\Users\Trevor\Documents\Programming Projects\wxWidgets2\include;C:\Program Files %28x86%29\Falcon\include;C:\Users\Trevor\Documents\Programming Projects\Ogg\Built\include;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;C:\Users\Trevor\Documents\Programming Projects\Inscription;C:\Users\Trevor\Documents\Programming Projects\AGUI;C:\Users\Trevor\Documents\Programming Projects\Affecter;$(IncludePath)</IncludePath>

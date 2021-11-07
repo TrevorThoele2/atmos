@@ -34,8 +34,7 @@ namespace Atmos::Scripting
         for (auto& element : runningScripts)
             DoExecute(element.id, *currentExecutingScript);
 
-        MutablePointer().Of<Diagnostics::Statistics>()->script.NewTime(
-            Diagnostics::CalculateStopwatch(stopwatch));
+        MutablePointer().Of<Diagnostics::Statistics>()->script.NewTime(stopwatch);
     }
 
     void Curator::Handle(const Suspend& command)

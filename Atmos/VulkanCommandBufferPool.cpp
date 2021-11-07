@@ -1,64 +1,52 @@
 #include "VulkanCommandBufferPool.h"
 
+#include "VulkanCommandBuffer.h"
+
 namespace Atmos::Render::Vulkan
 {
-    CommandBufferPool::CommandBufferPool(vk::Device device, uint32_t queueFamily) :
+    CommandBufferPool::CommandBufferPool(vk::Device device, uint32_t queueFamily, vk::CommandPoolCreateFlags flags) :
         device(device)
     {
-        const vk::CommandPoolCreateInfo commandPoolCreateInfo(
-            vk::CommandPoolCreateFlagBits::eResetCommandBuffer,
-            queueFamily);
+        const vk::CommandPoolCreateInfo commandPoolCreateInfo(flags, queueFamily);
         pool = device.createCommandPoolUnique(commandPoolCreateInfo);
     }
-
-    vk::CommandBuffer CommandBufferPool::operator[](uint32_t index) const
-    {
-        return At(index);
-    }
-
+    
     void CommandBufferPool::Reserve(uint32_t count)
     {
-        if (count <= allBuffers.size())
-            return;
-
-        const auto allocateCount = count - allBuffers.size();
-        const vk::CommandBufferAllocateInfo allocateInfo(
-            pool.get(), vk::CommandBufferLevel::ePrimary, allocateCount);
-        auto newBuffers = device.allocateCommandBuffersUnique(allocateInfo);
-        for (auto& buffer : newBuffers)
+        if (count > all.size())
         {
-            availableBuffers.push_back(buffer.get());
-            allBuffers.push_back(std::move(buffer));
+            const auto allocateCount = count - all.size();
+            auto newBuffers = CreateCommandBuffers(device, pool.get(), vk::CommandBufferLevel::ePrimary, allocateCount);
+            for (auto& buffer : newBuffers)
+            {
+                available.push_back(buffer.get());
+                all.push_back(std::move(buffer));
+            }
         }
     }
 
-    void CommandBufferPool::DoneWith(vk::CommandBuffer commandBuffer)
+    void CommandBufferPool::Reset()
     {
-        availableBuffers.push_back(commandBuffer);
+        pool.reset();
     }
-
-    vk::CommandBuffer CommandBufferPool::At(uint32_t index) const
+    
+    vk::CommandBuffer CommandBufferPool::Checkout()
     {
-        return allBuffers[index].get();
-    }
+        if (available.empty())
+            Reserve(all.size() + 1);
 
-    vk::CommandBuffer CommandBufferPool::Next()
-    {
-        if (availableBuffers.empty())
-            Reserve(allBuffers.size() + 1);
-
-        const auto returnValue = availableBuffers[availableBuffers.size() - 1];
-        availableBuffers.pop_back();
+        const auto returnValue = available[available.size() - 1];
+        available.pop_back();
         return returnValue;
+    }
+
+    void CommandBufferPool::Return(vk::CommandBuffer commandBuffer)
+    {
+        available.push_back(commandBuffer);
     }
 
     size_t CommandBufferPool::Size() const
     {
-        return allBuffers.size();
-    }
-
-    vk::CommandPool CommandBufferPool::Pool() const
-    {
-        return pool.get();
+        return all.size();
     }
 }

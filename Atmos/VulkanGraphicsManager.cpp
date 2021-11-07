@@ -4,22 +4,31 @@
 #include "VulkanImageAssetResource.h"
 #include "VulkanShaderAssetResource.h"
 #include "VulkanTextResource.h"
+#include "VulkanMemory.h"
 
 #include "VulkanImage.h"
 #include "VulkanCreateImageView.h"
 #include "VulkanSwapchainSupport.h"
-
 #include "VulkanStoredImageResource.h"
 
+#include "VulkanSynchronization.h"
+#include "VulkanCommandBuffer.h"
+#include "VulkanResults.h"
+
+#include "UpdateText.h"
 #include "MainSurface.h"
 #include "GraphicsError.h"
+
+//DELETEME
+#include "CreateStopwatch.h"
 
 #include <Arca/Reliquary.h>
 
 namespace Atmos::Render::Vulkan
 {
     GraphicsManager::GraphicsManager(Logging::Logger& logger) :
-        Render::GraphicsManager(logger, "Vulkan"), shaderCompiler(logger)
+        Render::GraphicsManager(logger, "Vulkan"),
+        shaderCompiler(logger)
     {
 #ifndef NDEBUG
         instanceLayers.push_back(VK_LAYER_KHRONOS_VALIDATION_LAYER_NAME);
@@ -54,8 +63,8 @@ namespace Atmos::Render::Vulkan
         const Name& name,
         const Spatial::Size2D& size)
     {
-        auto image = CreateImageResourceData(bytes, size);
-        return std::make_unique<Asset::Resource::Vulkan::Image>(image);
+        auto imageData = CreateImageData({ {bytes, size} });
+        return std::make_unique<Asset::Resource::Vulkan::Image>(imageData[0]);
     }
 
     std::unique_ptr<Asset::Resource::Shader> GraphicsManager::CreateShaderResourceImpl(
@@ -74,7 +83,7 @@ namespace Atmos::Render::Vulkan
     {
         auto surface = CreateSurface(window, instance);
 
-        auto pickedPhysicalDevice = PickPhysicalDevice(surface.get(), instance, deviceExtensions);
+        const auto pickedPhysicalDevice = PickPhysicalDevice(surface.get(), instance, deviceExtensions);
         if (!pickedPhysicalDevice)
             throw GraphicsError("Could not pick a physical device.");
         physicalDevice = *pickedPhysicalDevice;
@@ -85,6 +94,7 @@ namespace Atmos::Render::Vulkan
             throw GraphicsError("Could not create surface.");
 
         device = CreateDevice(physicalDevice, *queueIndices, deviceExtensions, instanceLayers);
+        memoryPool = MemoryPool(2048000, memoryProperties, device);
 
         sampler = CreateSampler(device);
 
@@ -92,6 +102,9 @@ namespace Atmos::Render::Vulkan
         const auto presentQueue = device.getQueue(queueIndices->presentFamily, 0);
 
         commandPool = CreateCommandPool(device, *queueIndices);
+        auto commandBuffers = CreateCommandBuffers(device, commandPool.get(), vk::CommandBufferLevel::ePrimary, 1);
+        imageCommandBuffer = std::move(commandBuffers[0]);
+        imageFence = CreateFence(device, {});
 
         return CreateSurfaceResourceCommon(std::move(surface), *queueIndices, graphicsQueue, presentQueue);
     }
@@ -108,41 +121,80 @@ namespace Atmos::Render::Vulkan
     }
 
     std::unique_ptr<Resource::Text> GraphicsManager::CreateTextResourceImpl(
-        const Bytes& bytes,
-        const Spatial::Size2D& size)
+        const Atmos::Buffer& buffer, const Spatial::Size2D& size)
     {
-        auto image = CreateImageResourceData(bytes, size);
-        return std::make_unique<Resource::Vulkan::Text>(image);
+        const auto imageData = CreateImageData({ {buffer, size} });
+        return std::make_unique<Resource::Vulkan::Text>(imageData[0]);
+    }
+
+    void GraphicsManager::StageImpl(const RenderImage& render)
+    {
+        StageRender(render);
+    }
+
+    void GraphicsManager::StageImpl(const RenderLine& render)
+    {
+        StageRender(render);
+    }
+
+    void GraphicsManager::StageImpl(const RenderRegion& render)
+    {
+        StageRender(render);
+    }
+
+    void GraphicsManager::StageImpl(const RenderText& render)
+    {
+        StageRender(render);
+    }
+
+    void GraphicsManager::StageImpl(const UpdateText& update)
+    {
+        const auto found = textUpdates.find(update.text);
+        if (found == textUpdates.end())
+            textUpdates.emplace(update.text, update);
+        else
+            found->second = update;
+    }
+
+    void GraphicsManager::DrawFrameImpl(Resource::Surface& surface, const Spatial::Point2D& mapPosition, const Color& backgroundColor, Diagnostics::Statistics::Profile& profile)
+    {
+        auto stopwatch = Time::CreateRealStopwatch();
+        UpdateTexts();
+
+        profile.NewTime(stopwatch);
+
+        PruneResourcesImpl();
+
+        const auto& vulkan = RequiredResource<Resource::Vulkan::Surface>(surface);
+        vulkan.backing->DrawFrame(mapPosition, backgroundColor);
     }
 
     void GraphicsManager::ResourceDestroyingImpl(Asset::Resource::Image& resource)
     {
-        const auto vulkan = dynamic_cast<Asset::Resource::Vulkan::Image*>(&resource);
-        if (vulkan)
-            MoveToDestroyedResource(*vulkan->imageData.storedResource);
+        const auto& image = RequiredResource<Asset::Resource::Vulkan::Image>(resource);
+        MoveToDestroyedResource(*image.imageData.storedResource);
     }
+
+    void GraphicsManager::ResourceDestroyingImpl(Asset::Resource::Shader& resource)
+    {}
 
     void GraphicsManager::ResourceDestroyingImpl(Resource::Surface& resource)
     {
-        const auto vulkan = dynamic_cast<Resource::Vulkan::Surface*>(&resource);
-        if (vulkan)
+        const auto& vulkan = RequiredResource<Resource::Vulkan::Surface>(resource);
+        for (auto surface = surfaces.begin(); surface != surfaces.end(); ++surface)
         {
-            for (auto surface = surfaces.begin(); surface != surfaces.end(); ++surface)
+            if (surface->get() == vulkan.backing)
             {
-                if (surface->get() == vulkan->backing)
-                {
-                    surfaces.erase(surface);
-                    return;
-                }
+                surfaces.erase(surface);
+                return;
             }
         }
     }
 
     void GraphicsManager::ResourceDestroyingImpl(Resource::Text& resource)
     {
-        const auto vulkan = dynamic_cast<Resource::Vulkan::Text*>(&resource);
-        if (vulkan)
-            MoveToDestroyedResource(*vulkan->imageData.storedResource);
+        const auto& vulkan = RequiredResource<Resource::Vulkan::Text>(resource);
+        MoveToDestroyedResource(*vulkan.imageData.storedResource);
     }
 
     void GraphicsManager::PruneResourcesImpl()
@@ -167,20 +219,16 @@ namespace Atmos::Render::Vulkan
 
     void GraphicsManager::ReconstructInternals(GraphicsReconstructionObjects objects)
     {
-        const auto handleSurface = [&](Resource::Vulkan::Surface& resource)
-        {
-            const auto queueIndices = SuitableQueueFamilies(physicalDevice, resource.backing->Underlying());
-            resource.backing->Reinitialize(*queueIndices);
-        };
-
-        handleSurface(*objects.mainSurface->Resource<Resource::Vulkan::Surface>());
+        const auto& resource = *objects.mainSurface->Resource<Resource::Vulkan::Surface>();
+        const auto queueIndices = SuitableQueueFamilies(physicalDevice, resource.backing->Underlying());
+        resource.backing->Reinitialize(*queueIndices);
     }
     
-    void GraphicsManager::MoveToDestroyedResource(StoredResource& pointer)
+    void GraphicsManager::MoveToDestroyedResource(StoredResource& resource)
     {
         for(auto storedResource = storedResources.begin(); storedResource != storedResources.end(); ++storedResource)
         {
-            if (storedResource->get() == &pointer)
+            if (storedResource->get() == &resource)
             {
                 destroyedResources.push_back(std::move(*storedResource));
                 storedResources.erase(storedResource);
@@ -191,7 +239,7 @@ namespace Atmos::Render::Vulkan
     
     vk::Instance GraphicsManager::CreateInstance()
     {
-        vk::ApplicationInfo applicationInfo({}, {}, {}, {}, VK_API_VERSION_1_2);
+        const vk::ApplicationInfo applicationInfo({}, {}, {}, {}, VK_API_VERSION_1_2);
 
         vk::InstanceCreateInfo createInfo(
             {},
@@ -209,7 +257,7 @@ namespace Atmos::Render::Vulkan
         {
             createInfo.enabledLayerCount = 0;
         }
-        auto debugCreateInfo = debug->CreateInfo();
+        const auto debugCreateInfo = debug->CreateInfo();
         createInfo.pNext = &debugCreateInfo;
 
         return vk::createInstance(createInfo);
@@ -289,14 +337,16 @@ namespace Atmos::Render::Vulkan
         const std::vector<const char*>& deviceExtensions,
         const std::vector<const char*>& instanceLayers)
     {
-        std::vector<vk::DeviceQueueCreateInfo> queueCreateInfos;
-        std::set uniqueQueueFamilies =
+        const std::set uniqueQueueFamilies =
         {
             queueFamilyIndices.graphicsFamily,
             queueFamilyIndices.presentFamily
         };
-        auto queuePriority = 1.0f;
-        for (auto queueFamily : uniqueQueueFamilies)
+        constexpr auto queuePriority = 1.0f;
+
+        std::vector<vk::DeviceQueueCreateInfo> queueCreateInfos;
+        queueCreateInfos.reserve(uniqueQueueFamilies.size());
+        for (const auto queueFamily : uniqueQueueFamilies)
             queueCreateInfos.push_back(vk::DeviceQueueCreateInfo({}, queueFamily, 1, &queuePriority));
 
         vk::PhysicalDeviceFeatures physicalDeviceFeatures;
@@ -383,13 +433,13 @@ namespace Atmos::Render::Vulkan
 
     void GraphicsManager::WaitForSurfacesIdle()
     {
-        for (auto& surface : surfaces)
+        for (const auto& surface : surfaces)
             surface->WaitForIdle();
     }
 
     vk::UniqueSampler GraphicsManager::CreateSampler(vk::Device device)
     {
-        const vk::SamplerCreateInfo createInfo(
+        constexpr vk::SamplerCreateInfo createInfo(
             {},
             vk::Filter::eNearest,
             vk::Filter::eNearest,
@@ -410,62 +460,146 @@ namespace Atmos::Render::Vulkan
         return device.createSamplerUnique(createInfo);
     }
 
-    auto GraphicsManager::CreateImageResourceData(const Bytes& bytes, Spatial::Size2D size) -> Resource::Vulkan::ImageData
+    void GraphicsManager::UpdateTexts()
     {
-        const auto width = static_cast<uint32_t>(size.width);
-        const auto height = static_cast<uint32_t>(size.height);
-        const auto extent = vk::Extent3D(width, height, 1);
+        std::vector<ImageDataPrototype> prototypes;
+        std::vector<Resource::Vulkan::Text*> texts;
+        for (const auto& update : textUpdates)
+        {
+            prototypes.emplace_back(std::move(update.second.buffer), update.second.size);
+            texts.push_back(&RequiredResource<Resource::Vulkan::Text>(*update.second.text));
+        }
 
-        const auto format = vk::Format::eR8G8B8A8Srgb;
+        const auto imageDatas = CreateImageData(prototypes);
 
-        auto image = Image(
-            format,
-            vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled,
-            extent,
-            1,
-            vk::ImageLayout::eUndefined,
-            device,
-            memoryProperties);
-        image.TransitionLayout(vk::ImageLayout::eTransferDstOptimal, 0, 1, device, *commandPool, graphicsQueue);
+        for(size_t i = 0; i < prototypes.size(); ++i)
+        {
+            auto& text = *texts[i];
+            MoveToDestroyedResource(*text.imageData.storedResource);
+            text.imageData = imageDatas[i];
+        }
 
-        Buffer stagingBuffer(
-            vk::DeviceSize(bytes.size()),
-            vk::BufferUsageFlagBits::eTransferSrc,
-            vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent,
-            device,
-            memoryProperties);
-        stagingBuffer.PushBytes(bytes, 0);
+        textUpdates.clear();
+    }
 
-        stagingBuffer.Copy(
-            image.value.get(),
-            0,
-            0,
-            0,
-            { 0, 0, 0 },
-            { width, height, 1 },
-            0,
-            1,
-            *commandPool,
-            graphicsQueue);
-        image.TransitionLayout(vk::ImageLayout::eShaderReadOnlyOptimal, 0, 1, device, *commandPool, graphicsQueue);
+    std::vector<ImageData> GraphicsManager::CreateImageData(const std::vector<ImageDataPrototype>& prototypes)
+    {
+        struct Constructing
+        {
+            Spatial::Size2D size;
+            vk::UniqueImage image;
+            UniqueMemory memory;
+            std::optional<Buffer> stagingBuffer;
+            Atmos::Buffer bytes;
+        };
 
-        auto imageView = CreateImageView(image.value.get(), device, format, 0, 1);
+        std::vector<Constructing> allConstructing;
 
-        const auto descriptor = CombinedImageSamplerDescriptor(
-            imageView.get(), sampler.get(), vk::ImageLayout::eShaderReadOnlyOptimal, 1);
+        static constexpr auto format = vk::Format::eR8G8B8A8Srgb;
+        static constexpr auto finalImageLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
 
-        auto storedResource = std::make_unique<StoredImageResource>(
-            std::move(image.memory), std::move(imageView), std::move(image.value));
-        const auto imageData = Resource::Vulkan::ImageData{
-            size,
-            storedResource->image.get(),
-            storedResource->memory.get(),
-            storedResource->imageView.get(),
-            descriptor,
-            *storedResource };
-        
-        storedResources.push_back(std::move(storedResource));
+        RecordAndSubmit(
+            *imageCommandBuffer,
+            vk::CommandBufferUsageFlagBits::eOneTimeSubmit,
+            graphicsQueue,
+            imageFence.get(),
+            [this, &prototypes, &allConstructing](auto record)
+            {
+                for (auto& [buffer, size] : prototypes)
+                {
+                    const auto width = static_cast<uint32_t>(size.width);
+                    const auto height = static_cast<uint32_t>(size.height);
+                    const auto extent = vk::Extent3D(width, height, 1);
 
-        return imageData;
+                    constexpr auto layerCount = 1;
+
+                    auto image = device.createImageUnique(vk::ImageCreateInfo(
+                        {},
+                        vk::ImageType::e2D,
+                        format,
+                        extent,
+                        1,
+                        layerCount,
+                        vk::SampleCountFlagBits::e1,
+                        vk::ImageTiling::eOptimal,
+                        vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled,
+                        vk::SharingMode::eExclusive,
+                        {},
+                        {},
+                        vk::ImageLayout::eUndefined));
+                    
+                    auto memory = memoryPool->Bind(image.get(), vk::MemoryPropertyFlagBits::eDeviceLocal);
+
+                    record(TransitionLayout(*image, vk::ImageLayout::eUndefined, vk::ImageLayout::eTransferDstOptimal, 0, 1));
+
+                    allConstructing.push_back(Constructing{ size, std::move(image), std::move(memory), {}, std::move(buffer) });
+                }
+            });
+        if (IsError(WaitAndReset(device, imageFence.get())))
+            Logger().Log("Could not wait for Vulkan fences.");
+
+        for (auto& constructing : allConstructing)
+        {
+            const auto& bytes = constructing.bytes;
+            Buffer stagingBuffer(
+                vk::DeviceSize(bytes.size()),
+                vk::BufferUsageFlagBits::eTransferSrc,
+                vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent,
+                device,
+                *memoryPool);
+            stagingBuffer.PushBytes(bytes, 0);
+            constructing.stagingBuffer = std::move(stagingBuffer);
+        }
+
+        RecordAndSubmit(
+            *imageCommandBuffer,
+            vk::CommandBufferUsageFlagBits::eOneTimeSubmit,
+            graphicsQueue,
+            imageFence.get(),
+            [this, &allConstructing](auto record)
+            {
+                for (auto& [size, image, memory, stagingBuffer, bytes] : allConstructing)
+                {
+                    const auto width = static_cast<uint32_t>(size.width);
+                    const auto height = static_cast<uint32_t>(size.height);
+                    record(stagingBuffer->Copy(
+                        image.get(),
+                        0,
+                        0,
+                        0,
+                        { 0, 0, 0 },
+                        { width, height, 1 },
+                        0,
+                        1));
+                    record(TransitionLayout(*image, vk::ImageLayout::eTransferDstOptimal, finalImageLayout, 0, 1));
+                }
+            });
+        if (IsError(WaitAndReset(device, imageFence.get())))
+            Logger().Log("Could not wait for Vulkan fences.");
+
+        std::vector<ImageData> imageDatas;
+
+        for (auto& [size, image, memory, stagingBuffer, bytes] : allConstructing)
+        {
+            auto imageView = CreateImageView(image.get(), device, format, 0, 1);
+
+            const auto descriptor = CombinedImageSamplerDescriptor(
+                imageView.get(), sampler.get(), finalImageLayout, 1);
+
+            auto storedResource = std::make_unique<StoredImageResource>(
+                std::move(memory), std::move(imageView), std::move(image));
+            const auto imageData = ImageData{
+                size,
+                storedResource->image.get(),
+                storedResource->imageView.get(),
+                finalImageLayout,
+                descriptor,
+                *storedResource };
+
+            imageDatas.push_back(imageData);
+            storedResources.push_back(std::move(storedResource));
+        }
+
+        return imageDatas;
     }
 }

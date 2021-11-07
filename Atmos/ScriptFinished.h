@@ -20,7 +20,7 @@ namespace Arca
     template<>
     struct Traits<Atmos::Scripting::Finished>
     {
-        static const ObjectType objectType = ObjectType::Signal;
-        static TypeName TypeName() { return "Atmos::Scripting::Finished"; }
+        static constexpr ObjectType objectType = ObjectType::Signal;
+        static const inline TypeName typeName = "Atmos::Scripting::Finished";
     };
 }

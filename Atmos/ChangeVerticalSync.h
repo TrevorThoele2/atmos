@@ -15,7 +15,7 @@ namespace Arca
     template<>
     struct Traits<Atmos::Render::ChangeVerticalSync>
     {
-        static const ObjectType objectType = ObjectType::Command;
-        static TypeName TypeName() { return "Atmos::Render::ChangeVerticalSync"; }
+        static constexpr ObjectType objectType = ObjectType::Command;
+        static const inline TypeName typeName = "Atmos::Render::ChangeVerticalSync";
     };
 }

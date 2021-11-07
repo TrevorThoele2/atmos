@@ -65,7 +65,7 @@ namespace Atmos::Render::Resource::Vulkan
         swapchain = std::move(swapchainDetails.swapchain);
         swapchainExtent = swapchainDetails.extent;
 
-        auto images = device.getSwapchainImagesKHR(swapchain.get());
+        const auto images = device.getSwapchainImagesKHR(swapchain.get());
 
         imageViews.clear();
         imageViews.reserve(images.size());
@@ -89,24 +89,24 @@ namespace Atmos::Render::Resource::Vulkan
             extent);
     }
 
-    void BackingSurface::StageRender(const ImageRender& imageRender)
+    void BackingSurface::Stage(const RenderImage& render)
     {
-        renderer->StageRender(imageRender);
+        renderer->StageRender(render);
     }
 
-    void BackingSurface::StageRender(const LineRender& lineRender)
+    void BackingSurface::Stage(const RenderLine& render)
     {
-        renderer->StageRender(lineRender);
+        renderer->StageRender(render);
     }
 
-    void BackingSurface::StageRender(const RegionRender& regionRender)
+    void BackingSurface::Stage(const RenderRegion& render)
     {
-        renderer->StageRender(regionRender);
+        renderer->StageRender(render);
     }
 
-    void BackingSurface::StageRender(const TextRender& textRender)
+    void BackingSurface::Stage(const RenderText& render)
     {
-        renderer->StageRender(textRender);
+        renderer->StageRender(render);
     }
 
     void BackingSurface::DrawFrame(const Spatial::Point2D& mapPosition, const Color& backgroundColor)
@@ -176,7 +176,7 @@ namespace Atmos::Render::Resource::Vulkan
             previousSwapchain ? *previousSwapchain : nullptr);
         if (queueFamilyIndices.graphicsFamily != queueFamilyIndices.presentFamily)
         {
-            uint32_t passQueueFamilyIndices[] = { queueFamilyIndices.graphicsFamily, queueFamilyIndices.presentFamily };
+            const uint32_t passQueueFamilyIndices[] = { queueFamilyIndices.graphicsFamily, queueFamilyIndices.presentFamily };
 
             createInfo.imageSharingMode = vk::SharingMode::eConcurrent;
             createInfo.queueFamilyIndexCount = 2;

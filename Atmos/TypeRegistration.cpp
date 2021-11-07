@@ -199,14 +199,10 @@ namespace Atmos
                 .Register<ImageCore>()
                 .Register<StaticImage>()
                 .Register<DynamicImage>()
-                .Register<ImageCurator>()
                 .Register<Line>()
-                .Register<LineCurator>()
                 .Register<GridRegion>()
-                .Register<GridRegionCurator>()
                 .Register<TextCore>()
                 .Register<DynamicText>()
-                .Register<Curator>()
                 .Register<SurfaceCore>()
                 .Register<SurfaceCurator>()
                 .Register<GraphicsSettings>()
@@ -225,7 +221,11 @@ namespace Atmos
 
             origin
                 .Register<GraphicsCurator>(std::ref(graphicsManager))
+                .Register<ImageCurator>(std::ref(graphicsManager))
+                .Register<LineCurator>(std::ref(graphicsManager))
+                .Register<GridRegionCurator>(std::ref(graphicsManager))
                 .Register<TextCurator>(std::ref(textManager), std::ref(graphicsManager))
+                .Register<Curator>(std::ref(graphicsManager))
                 .Register<Camera>(screenSize)
                 .Register<MainSurface>(std::ref(graphicsManager), window);
         }

@@ -11,10 +11,10 @@ namespace Atmos::Render::Vulkan
     public:
         explicit ShaderCompiler(Logging::Logger& logger);
 
-        Buffer Compile(const File::Path& filePath);
-        Buffer CompileWithDebugging(const File::Path& filePath);
+        Atmos::Buffer Compile(const File::Path& filePath);
+        Atmos::Buffer CompileWithDebugging(const File::Path& filePath);
     private:
-        Buffer DoCompile(
+        Atmos::Buffer DoCompile(
             const File::Path& inputPath,
             const std::vector<std::string>& additionalFlags = {});
     private:

@@ -28,8 +28,8 @@ namespace Arca
     template<>
     struct Traits<Atmos::Audio::UniversalSound>
     {
-        static const ObjectType objectType = ObjectType::Relic;
-        static TypeName TypeName() { return "Atmos::Audio::UniversalSound"; }
+        static constexpr ObjectType objectType = ObjectType::Relic;
+        static const inline TypeName typeName = "Atmos::Audio::UniversalSound";
     };
 }
 

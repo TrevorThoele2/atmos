@@ -13,26 +13,27 @@ namespace Atmos::Frame
 
     void EndCurator::Handle(const Work&)
     {
-        auto information = MutablePointer().Of<Information>();
+        const auto information = MutablePointer().Of<Information>();
 
         const auto timeSettings = Owner().Find<Settings>();
+
+        CalculateFPS(*information);
         
+        information->profilers.idle = Time::CreateRealStopwatch();
+
+        MutablePointer().Of<Diagnostics::Statistics>()->frame.NewTime(information->profilers.frame);
+    }
+
+    void EndCurator::CalculateFPS(Information& information)
+    {
         if (framesPerSecondStopwatch.Elapsed() >= Time::Seconds(1))
         {
             framesPerSecondStopwatch.Restart();
 
-            information->framesPerSecond = frameCount;
+            information.framesPerSecond = frameCount;
             frameCount = 0;
         }
 
         ++frameCount;
-        
-        information->lastElapsed = information->profilers.frame.Elapsed();
-        information->totalElapsed += information->lastElapsed;
-
-        information->profilers.idle = Time::CreateRealStopwatch();
-
-        MutablePointer().Of<Diagnostics::Statistics>()->frame.NewTime(
-            Diagnostics::CalculateStopwatch(information->profilers.frame));
     }
 }

@@ -2,6 +2,8 @@
 
 #include <Arca/Curator.h>
 
+#include "FrameInformation.h"
+#include "FramesPerSecond.h"
 #include "Stopwatch.h"
 
 #include "Work.h"
@@ -16,7 +18,9 @@ namespace Atmos::Frame
         void Handle(const Work& command);
     private:
         Time::Stopwatch framesPerSecondStopwatch;
-        unsigned int frameCount = 0;
+        FramesPerSecond frameCount = 0;
+
+        void CalculateFPS(Information& information);
     };
 }
 
@@ -25,8 +29,8 @@ namespace Arca
     template<>
     struct Traits<Atmos::Frame::EndCurator>
     {
-        static const ObjectType objectType = ObjectType::Curator;
-        static TypeName TypeName() { return "Atmos::Frame::EndCurator"; }
+        static constexpr ObjectType objectType = ObjectType::Curator;
+        static const inline TypeName typeName = "Atmos::Frame::EndCurator";
         using HandledCommands = HandledCommands<Atmos::Work>;
     };
 }

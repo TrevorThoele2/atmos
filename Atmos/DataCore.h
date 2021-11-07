@@ -26,8 +26,8 @@ namespace Arca
     template<>
     struct Traits<Atmos::DataCore>
     {
-        static const ObjectType objectType = ObjectType::Shard;
-        static TypeName TypeName() { return "Atmos::DataCore"; }
+        static constexpr ObjectType objectType = ObjectType::Shard;
+        static const inline TypeName typeName = "Atmos::DataCore";
     };
 }
 
