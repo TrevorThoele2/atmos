@@ -12,8 +12,8 @@ namespace Atmos::Scripting
 
         std::optional<String> function;
 
-        int line;
-        int column;
+        String line;
+        String column;
         std::optional<String> section;
     };
 

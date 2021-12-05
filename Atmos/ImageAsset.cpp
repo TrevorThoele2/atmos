@@ -94,13 +94,7 @@ namespace Atmos::Asset
         const auto column = index % gridSize.columns;
         const auto row = index / gridSize.columns;
 
-        return Spatial::ToAxisAlignedBox2D
-        (
-            column * sliceSize.width,
-            row * sliceSize.height,
-            column * sliceSize.width + sliceSize.width,
-            row * sliceSize.height + sliceSize.height
-        );
+        return Spatial::Cell(column, row, sliceSize);
     }
 
     Spatial::Size2D Image::SliceSize() const

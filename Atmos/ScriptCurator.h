@@ -25,7 +25,7 @@ namespace Atmos::Scripting
     public:
         void Handle(const Work& command);
         void Handle(const Suspend& command);
-        Buffer Handle(const Compile& command);
+        std::vector<CompiledModule> Handle(const Compile& command);
         std::optional<Result> Handle(const Execute& command);
 
         std::unique_ptr<Asset::Resource::Script> Handle(
@@ -65,8 +65,8 @@ namespace Arca
 
 namespace Inscription
 {
-    template<class Archive>
-    struct ScribeTraits<Atmos::Scripting::Curator, Archive> final
+    template<class Format>
+    struct ScribeTraits<Atmos::Scripting::Curator, Format> final
     {
         using Category = ArcaNullScribeCategory<Atmos::Scripting::Curator>;
     };

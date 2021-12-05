@@ -1,9 +1,6 @@
-#include <sdkddkver.h>
-#include <boost/process.hpp>
-#include <boost/process/windows.hpp>
-
 #include "VulkanShaderCompiler.h"
 
+#include "Process.h"
 #include "GraphicsError.h"
 #include "Logger.h"
 
@@ -36,23 +33,12 @@ namespace Atmos::Render::Vulkan
             for (auto& flag : additionalFlags)
                 path += " " + flag;
 
-            boost::process::ipstream outStream;
-            boost::process::ipstream errorStream;
-            boost::process::child child(
-                path,
-                boost::process::std_out > outStream,
-                boost::process::std_err > errorStream,
-                boost::process::windows::hide);
+            const auto output = Process::Run(path);
 
-            while (child.running())
-            {
-                std::string errorLine;
-                if (std::getline(errorStream, errorLine) && !errorLine.empty())
-                    throw GraphicsError("Shader compilation has encountered an error.",
-                        { {"Details", errorLine } });
-            }
-
-            child.wait();
+            if (!output.error.empty())
+                throw GraphicsError(
+                    "Shader compilation has encountered an error.",
+                    { { "Details", output.error } });
         }
         catch(...)
         {
@@ -65,9 +51,11 @@ namespace Atmos::Render::Vulkan
 
         Inscription::Buffer buffer;
         {
-            Inscription::Archive::InputBinary archive(outputPath);
-            buffer.value.resize(static_cast<const unsigned int>(archive.Size()));
-            archive.Read(buffer);
+            Inscription::File::InputBinary file(outputPath);
+            Inscription::Archive::InputBinary archive(file);
+            Inscription::Format::InputBinary format(archive);
+            buffer.value.resize(static_cast<const unsigned int>(file.Size()));
+            format.Read(buffer);
         }
 
         std::filesystem::remove(outputPath);

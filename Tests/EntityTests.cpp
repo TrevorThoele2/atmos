@@ -125,15 +125,18 @@ SCENARIO_METHOD(EntityTestsFixture, "creating entities", "[entity]")
             reliquary->Do(Arca::Create<Atmos::Entity::Entity>(
                 names[0],
                 positions[0],
-                isSolids[0]));
+                isSolids[0],
+                std::vector<Tag>{}));
             reliquary->Do(Arca::Create<Atmos::Entity::Entity>(
                 names[1],
                 positions[1],
-                isSolids[1]));
+                isSolids[1],
+                std::vector<Tag>{}));
             reliquary->Do(Arca::Create<Atmos::Entity::Entity>(
                 names[2],
                 positions[2],
-                isSolids[2]));
+                isSolids[2],
+                std::vector<Tag>{}));
 
             auto entities = reliquary->Batch<Atmos::Entity::Entity>();
 
@@ -184,11 +187,13 @@ SCENARIO_METHOD(EntityTestsFixture, "creating entities", "[entity]")
             const auto entity0 = reliquary->Do(Arca::Create<Atmos::Entity::Entity>(
                 name,
                 Spatial::Grid::Point{},
-                false));
+                false,
+                std::vector<Tag>{}));
             const auto entity1 = reliquary->Do(Arca::Create<Atmos::Entity::Entity>(
                 name,
                 Spatial::Grid::Point{},
-                false));
+                false,
+                std::vector<Tag>{}));
 
             THEN("did not create entity")
             {
@@ -207,11 +212,13 @@ SCENARIO_METHOD(EntityTestsFixture, "creating entities", "[entity]")
             const auto entity0 = reliquary->Do(Arca::Create<Atmos::Entity::Entity>(
                 names[0],
                 position,
-                true));
+                true,
+                std::vector<Tag>{}));
             const auto entity1 = reliquary->Do(Arca::Create<Atmos::Entity::Entity>(
                 names[1],
                 position,
-                true));
+                true,
+                std::vector<Tag>{}));
 
             THEN("did not create entity")
             {
@@ -260,15 +267,18 @@ SCENARIO_METHOD(EntityTestsFixture, "moving entities", "[entity]")
             reliquary->Do(Arca::Create<Atmos::Entity::Entity>(
                 names[0],
                 positions[0],
-                isSolids[0]));
+                isSolids[0],
+                std::vector<Tag>{}));
             reliquary->Do(Arca::Create<Atmos::Entity::Entity>(
                 names[1],
                 positions[1],
-                isSolids[1]));
+                isSolids[1],
+                std::vector<Tag>{}));
             reliquary->Do(Arca::Create<Atmos::Entity::Entity>(
                 names[2],
                 positions[2],
-                isSolids[2]));
+                isSolids[2],
+                std::vector<Tag>{}));
 
             auto entities = reliquary->Batch<Atmos::Entity::Entity>();
 
@@ -277,7 +287,7 @@ SCENARIO_METHOD(EntityTestsFixture, "moving entities", "[entity]")
                 size_t i = 3;
                 for (auto entity = entities.begin(); entity != entities.end(); ++entity)
                 {
-                    reliquary->Do(MoveTo{ reliquary->Find<Atmos::Entity::Entity>(entity.ID()), positions[i] });
+                    reliquary->Do(MoveTo{ entity.ID(), positions[i] });
                     ++i;
                 }
 
@@ -313,11 +323,12 @@ SCENARIO_METHOD(EntityTestsFixture, "moving entities", "[entity]")
             auto entity = reliquary->Do(Arca::Create<Atmos::Entity::Entity>(
                 names[0],
                 positions[0],
-                true));
+                true,
+                std::vector<Tag>{}));
 
             reliquary->Do(World::ModifyEntityBoundary{ {positions[1]}, {} });
 
-            reliquary->Do(MoveTo{ reliquary->Find<Atmos::Entity::Entity>(entity.ID()), positions[1] });
+            reliquary->Do(MoveTo{ entity.ID(), positions[1] });
 
             THEN("has not moved")
             {
@@ -342,13 +353,15 @@ SCENARIO_METHOD(EntityTestsFixture, "moving entities", "[entity]")
             auto entity0 = reliquary->Do(Arca::Create<Atmos::Entity::Entity>(
                 names[0],
                 positions[0],
-                true));
+                true,
+                std::vector<Tag>{}));
             auto entity1 = reliquary->Do(Arca::Create<Atmos::Entity::Entity>(
                 names[1],
                 positions[1],
-                false));
+                false,
+                std::vector<Tag>{}));
 
-            reliquary->Do(MoveTo{ reliquary->Find<Atmos::Entity::Entity>(entity0.ID()), positions[1] });
+            reliquary->Do(MoveTo{ entity0.ID(), positions[1] });
 
             auto entities = reliquary->Batch<Atmos::Entity::Entity>();
 
@@ -382,13 +395,15 @@ SCENARIO_METHOD(EntityTestsFixture, "moving entities", "[entity]")
             auto entity0 = reliquary->Do(Arca::Create<Atmos::Entity::Entity>(
                 names[0],
                 positions[0],
-                true));
+                true,
+                std::vector<Tag>{}));
             auto entity1 = reliquary->Do(Arca::Create<Atmos::Entity::Entity>(
                 names[1],
                 positions[1],
-                true));
+                true,
+                std::vector<Tag>{}));
 
-            reliquary->Do(MoveTo{ reliquary->Find<Atmos::Entity::Entity>(entity0.ID()), positions[1] });
+            reliquary->Do(MoveTo{ entity0.ID(), positions[1] });
 
             THEN("has not moved")
             {

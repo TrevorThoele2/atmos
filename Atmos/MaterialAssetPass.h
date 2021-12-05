@@ -31,16 +31,16 @@ namespace Inscription
     public:
         using ObjectT = Atmos::Asset::MaterialPass;
     public:
-        template<class Archive>
-        void Scriven(ObjectT& object, Archive& archive)
+        template<class Format>
+        void Scriven(ObjectT& object, Format& format)
         {
-            archive("vertexShader", object.vertexShader);
-            archive("fragmentShader", object.fragmentShader);
+            format("vertexShader", object.vertexShader);
+            format("fragmentShader", object.fragmentShader);
         }
     };
 
-    template<class Archive>
-    struct ScribeTraits<Atmos::Asset::MaterialPass, Archive> final
+    template<class Format>
+    struct ScribeTraits<Atmos::Asset::MaterialPass, Format> final
     {
         using Category = ArcaCompositeScribeCategory<Atmos::Asset::MaterialPass>;
     };

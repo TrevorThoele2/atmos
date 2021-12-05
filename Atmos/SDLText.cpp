@@ -1,9 +1,17 @@
 #include "SDLText.h"
 
-#include "GraphicsError.h"
+#include "SDLTextError.h"
+#include <utf8.h>
+#include "MathUtility.h"
 
 namespace Atmos::Render::SDL
 {
+    void SetStyle(TTF_Font& font, int style)
+    {
+        if (TTF_GetFontStyle(&font) != style)
+            TTF_SetFontStyle(&font, style);
+    }
+
     int Style(bool bold, bool italics)
     {
         auto style = 0;
@@ -14,13 +22,14 @@ namespace Atmos::Render::SDL
         return style;
     }
 
-    Spatial::Size2D Size(TTF_Font& font, const String& string)
+    Spatial::Size2D Size(TTF_Font& font, const std::u32string& string)
     {
         int width = 0;
         int height = 0;
-        const auto result = TTF_SizeText(&font, string.c_str(), &width, &height);
-        if (result < 0)
-            throw GraphicsError("Could not find size of text.", { {"Reason", TTF_GetError()} });
+        const auto text = utf8::utf32to8(string);
+        VerifyResult(
+            TTF_SizeUTF8(&font, text.c_str(), &width, &height),
+            "Could not find size of text.");
 
         return Spatial::Size2D
         {
@@ -29,7 +38,7 @@ namespace Atmos::Render::SDL
         };
     }
 
-    Spatial::Size2D Size(TTF_Font& font, const std::vector<String>& strings)
+    Spatial::Size2D Size(TTF_Font& font, const std::vector<std::u32string>& strings)
     {
         auto width = 0.0f;
         auto height = 0.0f;
@@ -44,14 +53,18 @@ namespace Atmos::Render::SDL
         return Spatial::Size2D{ width, height };
     }
 
-    std::vector<String> Split(const String& string)
+    SDL_Color Color(const Render::Color& color)
     {
-        return Chroma::Split(string, "\n");
+        return SDL_Color{ color.red, color.green, color.blue, color.alpha };
     }
 
-    void SetStyle(TTF_Font& font, int style)
+    Uint32 ConvertWrapWidth(float wrapWidth)
     {
-        if (TTF_GetFontStyle(&font) != style)
-            TTF_SetFontStyle(&font, style);
+        return static_cast<Uint32>(ConvertRange(
+            static_cast<double>(wrapWidth),
+            static_cast<double>(std::numeric_limits<float>::lowest()),
+            static_cast<double>(std::numeric_limits<float>::max()),
+            static_cast<double>(std::numeric_limits<Uint32>::lowest()),
+            static_cast<double>(std::numeric_limits<Uint32>::max())));
     }
 }

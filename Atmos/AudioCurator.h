@@ -67,21 +67,21 @@ namespace Inscription
     public:
         using ObjectT = Atmos::Audio::Curator;
     public:
-        template<class Archive>
-        void Scriven(ObjectT& object, Archive&)
+        template<class Format>
+        void Scriven(ObjectT& object, Format&)
         {
             const auto batch = object.Owner().Batch<Atmos::Audio::SoundCore>();
             for(auto soundCore = batch.begin(); soundCore != batch.end(); ++soundCore)
             {
-                auto mutableSoundCore = object.MutablePointer().Of<Atmos::Audio::SoundCore>(soundCore.ID());
+                const auto mutableSoundCore = object.MutablePointer().Of<Atmos::Audio::SoundCore>(soundCore.ID());
                 mutableSoundCore->resource =
                     object.manager->CreateSoundResource(*mutableSoundCore->asset->Resource(), mutableSoundCore->volume);
             }
         }
     };
 
-    template<class Archive>
-    struct ScribeTraits<Atmos::Audio::Curator, Archive> final
+    template<class Format>
+    struct ScribeTraits<Atmos::Audio::Curator, Format> final
     {
         using Category = ArcaCompositeScribeCategory<Atmos::Audio::Curator>;
     };

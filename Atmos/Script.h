@@ -69,18 +69,18 @@ namespace Inscription
     public:
         using ObjectT = Atmos::Scripting::Script;
     public:
-        template<class Archive>
-        void Scriven(ObjectT& object, Archive& archive)
+        template<class Format>
+        void Scriven(ObjectT& object, Format& format)
         {
-            archive("asset", object.asset);
-            archive("executeName", object.executeName);
-            archive("parameters", object.parameters);
-            archive("isSuspended", object.isSuspended);
+            format("asset", object.asset);
+            format("executeName", object.executeName);
+            format("parameters", object.parameters);
+            format("isSuspended", object.isSuspended);
         }
     };
 
-    template<class Archive>
-    struct ScribeTraits<Atmos::Scripting::Script, Archive> final
+    template<class Format>
+    struct ScribeTraits<Atmos::Scripting::Script, Format> final
     {
         using Category = ArcaCompositeScribeCategory<Atmos::Scripting::Script>;
     };

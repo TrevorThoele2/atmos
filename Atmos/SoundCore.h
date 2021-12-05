@@ -50,16 +50,16 @@ namespace Inscription
     public:
         using ObjectT = Atmos::Audio::SoundCore;
     public:
-        template<class Archive>
-        void Scriven(ObjectT& object, Archive& archive)
+        template<class Format>
+        void Scriven(ObjectT& object, Format& format)
         {
-            archive("asset", object.asset);
-            archive("volume", object.volume);
+            format("asset", object.asset);
+            format("volume", object.volume);
         }
     };
 
-    template<class Archive>
-    struct ScribeTraits<Atmos::Audio::SoundCore, Archive> final
+    template<class Format>
+    struct ScribeTraits<Atmos::Audio::SoundCore, Format> final
     {
         using Category = ArcaCompositeScribeCategory<Atmos::Audio::SoundCore>;
     };

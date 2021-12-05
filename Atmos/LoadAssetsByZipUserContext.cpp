@@ -5,50 +5,50 @@ namespace Inscription
     LoadAssetsByZipUserContext::LoadAssetsByZipUserContext(
         const Atmos::File::Path& filePath, Atmos::Logging::Logger& logger)
         :
-        inputArchive(filePath, logger)
+        file(filePath, logger)
     {}
 
     auto LoadAssetsByZipUserContext::LoadAudioData(const Atmos::Name& name) -> std::optional<Extracted>
     {
-        return Extract(name, &ArchiveInterface::AllToExtract::audio, &ArchiveInterface::Extracted::audio);
+        return Extract(name, &File::AllToExtract::audio, &File::Extracted::audio);
     }
 
     auto LoadAssetsByZipUserContext::LoadImageData(const Atmos::String& name) -> std::optional<Extracted>
     {
-        return Extract(name, &ArchiveInterface::AllToExtract::images, &ArchiveInterface::Extracted::images);
+        return Extract(name, &File::AllToExtract::images, &File::Extracted::images);
     }
 
     auto LoadAssetsByZipUserContext::LoadShaderData(const Atmos::String& name) -> std::optional<Extracted>
     {
-        return Extract(name, &ArchiveInterface::AllToExtract::shaders, &ArchiveInterface::Extracted::shaders);
+        return Extract(name, &File::AllToExtract::shaders, &File::Extracted::shaders);
     }
 
     auto LoadAssetsByZipUserContext::LoadFontData(const Atmos::Name& name) -> std::optional<Extracted>
     {
-        return Extract(name, &ArchiveInterface::AllToExtract::fonts, &ArchiveInterface::Extracted::fonts);
+        return Extract(name, &File::AllToExtract::fonts, &File::Extracted::fonts);
     }
 
     auto LoadAssetsByZipUserContext::LoadScriptData(const Atmos::Name& name) -> std::optional<Extracted>
     {
-        return Extract(name, &ArchiveInterface::AllToExtract::scripts, &ArchiveInterface::Extracted::scripts);
+        return Extract(name, &File::AllToExtract::scripts, &File::Extracted::scripts);
     }
 
     auto LoadAssetsByZipUserContext::Extract(
         const Atmos::Name& name,
         ToExtract toExtract,
-        ExtractedFromArchive extractedFromAssets)
+        ExtractedFromFile extractedFromFile)
 
         -> std::optional<Extracted>
     {
-        auto allToExtract = ArchiveInterface::AllToExtract{};
+        auto allToExtract = File::AllToExtract{};
         (allToExtract.*toExtract).emplace(name);
-        auto extracted = inputArchive.ExtractAssets(allToExtract);
+        auto extracted = file.ExtractAssets(allToExtract);
 
-        if ((extracted.*extractedFromAssets).empty())
+        if ((extracted.*extractedFromFile).empty())
             return {};
         else
         {
-            auto& item = (extracted.*extractedFromAssets)[0];
+            auto& item = (extracted.*extractedFromFile)[0];
             return Extracted{ item.name, std::move(item.memory) };
         }
     }

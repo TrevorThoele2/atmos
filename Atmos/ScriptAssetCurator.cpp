@@ -10,12 +10,14 @@ namespace Atmos::Asset
         return std::visit(Chroma::Overloaded {
             [](File::Path filePath) -> Resource::LoadedData<Resource::Script>
             {
-                auto inputArchive = Inscription::Archive::InputBinary(filePath);
-                const auto size = inputArchive.Size();
+                auto file = Inscription::File::InputBinary(filePath);
+                auto archive = Inscription::Archive::InputBinary(file);
+                auto format = Inscription::Format::InputBinary(archive);
+                const auto size = file.Size();
 
                 Inscription::Buffer loadedBuffer;
                 loadedBuffer.value.resize(static_cast<size_t>(size));
-                inputArchive.Read(loadedBuffer);
+                format.Read(loadedBuffer);
 
                 const auto returnBuffer = Buffer(loadedBuffer.value.begin(), loadedBuffer.value.end());
 

@@ -53,7 +53,10 @@ namespace Atmos::Render::Vulkan
         {
             const auto foundReservation = FindReservation(reservation, *foundAllocation);
             if (foundReservation != foundAllocation->reservations.end())
+            {
+                foundAllocation->freedReservationIDs.emplace(foundReservation->id);
                 foundAllocation->reservations.erase(foundReservation);
+            }
         }
     }
     
@@ -71,7 +74,7 @@ namespace Atmos::Render::Vulkan
 
         constexpr auto reservationID = 1;
         const auto reservation = Reservation{ reservationID, 0, reservationSize };
-        const auto allocationID = NextID(allocations);
+        const auto allocationID = allocations.size() + 1;
         allocations.push_back(Allocation{ allocationID, std::move(memory), allocationSize, memoryType, {reservation} });
         auto& allocation = allocations.back();
         return { allocationID, reservationID, allocation.memory.get(), 0 };
@@ -98,7 +101,7 @@ namespace Atmos::Render::Vulkan
                 const auto right = rightReservation->offset;
                 if (alignedLeft < right && right - alignedLeft >= size)
                 {
-                    const auto reservationID = NextID(allocation.reservations);
+                    const auto reservationID = NextReservationID(allocation);
                     allocation.reservations.emplace_back(reservationID, alignedLeft, size);
                     return Block{ allocation.id, reservationID, allocation.memory.get(), alignedLeft };
                 }
@@ -138,5 +141,18 @@ namespace Atmos::Render::Vulkan
     UniqueMemory MemoryPool::ToMemory(const Block& block)
     {
         return { block.allocationID, block.reservationID, *this };
+    }
+
+    size_t MemoryPool::NextReservationID(Allocation& allocation)
+    {
+        if (!allocation.freedReservationIDs.empty())
+        {
+            const auto itr = allocation.freedReservationIDs.begin();
+            const auto id = *itr;
+            allocation.freedReservationIDs.erase(itr);
+            return id;
+        }
+        else
+            return allocation.reservations.size() + 1;
     }
 }

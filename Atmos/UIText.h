@@ -47,13 +47,13 @@ namespace Inscription
     public:
         using ObjectT = Atmos::UI::Text;
     public:
-        template<class Archive>
-        void Scriven(ObjectT&, Archive&)
+        template<class Format>
+        void Scriven(ObjectT&, Format&)
         {}
     };
 
-    template<class Archive>
-    struct ScribeTraits<Atmos::UI::Text, Archive> final
+    template<class Format>
+    struct ScribeTraits<Atmos::UI::Text, Format> final
     {
         using Category = ArcaCompositeScribeCategory<Atmos::UI::Text>;
     };

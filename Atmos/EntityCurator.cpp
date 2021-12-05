@@ -61,34 +61,39 @@ namespace Atmos::Entity
 
     void Curator::Handle(const MoveTo& command)
     {
-        if (!DoCanMoveTo(command.entity->isSolid, command.to, Owner()))
+        const auto entity = Owner().Find<Atmos::Entity::Entity>(command.entity);
+
+        if (!DoCanMoveTo(entity->isSolid, command.to, Owner()))
             return;
 
         auto mutableMappedEntities = MutablePointer().Of(mapped);
 
         auto& positionToEntity = mutableMappedEntities->positionToEntity;
-        RemoveEntityFrom(positionToEntity, command.entity);
+        RemoveEntityFrom(positionToEntity, entity);
 
-        auto mutableEntity = MutablePointer().Of(command.entity);
+        auto mutableEntity = MutablePointer().Of(entity);
         mutableEntity->position = command.to;
 
-        AddEntityTo(positionToEntity, command.to, command.entity);
+        AddEntityTo(positionToEntity, command.to, entity);
     }
 
     bool Curator::Handle(const CanMoveTo& command)
     {
-        return DoCanMoveTo(command.entity->isSolid, command.to, Owner());
+        const auto entity = Owner().Find<Atmos::Entity::Entity>(command.entity);
+        return DoCanMoveTo(entity->isSolid, command.to, Owner());
     }
 
     void Curator::Handle(const ModifyTags& command)
     {
-        auto& tags = MutablePointer().Of(command.entity)->tags;
+        const auto entity = Owner().Find<Atmos::Entity::Entity>(command.entity);
+        auto& tags = MutablePointer().Of(entity)->tags;
         ApplyAddRemoveModifications(tags, command.add, command.remove);
     }
 
     Path Curator::Handle(const FindPath& command)
     {
-        return pathfinder.FindPath(command.entity, command.to, Owner());
+        const auto entity = Owner().Find<Atmos::Entity::Entity>(command.entity);
+        return pathfinder.FindPath(entity, command.to, Owner());
     }
 
     void Curator::AddEntityTo(Mapped::NameToEntity& to, const String& name, Arca::Index<Entity> entity)

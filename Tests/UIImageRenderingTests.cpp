@@ -141,8 +141,7 @@ SCENARIO_METHOD(UIImageRenderingTestsFixture, "rendering UI images", "[ui]")
                             {
                                 const auto expectedPosition = positions[i];
 
-                                return entry.position == expectedPosition
-                                    && entry.size == Size2D{ scalers[i].x, scalers[i].y };
+                                return entry.position == expectedPosition;
                             }));
                     }
                 }
@@ -171,8 +170,7 @@ SCENARIO_METHOD(UIImageRenderingTestsFixture, "rendering UI images", "[ui]")
                             {
                                 const auto expectedPosition = positions[i];
 
-                                return entry.position == expectedPosition
-                                    && entry.size == Size2D{ scalers[i].x, scalers[i].y };
+                                return entry.position == expectedPosition;
                             }));
                     }
                 }

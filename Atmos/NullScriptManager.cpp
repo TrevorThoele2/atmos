@@ -15,12 +15,15 @@ namespace Atmos::Scripting
     }
 
     std::unique_ptr<Resource> NullManager::CreateScriptResource(
-        const String& scriptAssetName, const String& executeName, const Parameters& parameters)
+        const Asset::Resource::Script& asset,
+        const String& assetName,
+        const String& executeName,
+        const Parameters& parameters)
     {
         return {};
     }
 
-    Buffer NullManager::Compile(Module module, std::vector<Module> sharedModules)
+    std::vector<CompiledModule> NullManager::Compile(const std::vector<Module>& modules)
     {
         return {};
     }

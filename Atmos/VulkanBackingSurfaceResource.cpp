@@ -1,6 +1,6 @@
 #include "VulkanBackingSurfaceResource.h"
 
-#include "VulkanCreateImageView.h"
+#include "VulkanImage.h"
 
 namespace Atmos::Render::Resource::Vulkan
 {
@@ -13,6 +13,7 @@ namespace Atmos::Render::Resource::Vulkan
         vk::Queue presentQueue,
         QueueFamilyIndices queueFamilyIndices,
         vk::PhysicalDeviceMemoryProperties memoryProperties,
+        GlyphAtlas& glyphAtlas,
         Logging::Logger& logger)
         :
         device(device),
@@ -27,6 +28,7 @@ namespace Atmos::Render::Resource::Vulkan
             presentQueue,
             queueFamilyIndices.graphicsFamily,
             memoryProperties,
+            glyphAtlas,
             logger);
 
         Initialize(queueFamilyIndices);

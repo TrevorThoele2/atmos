@@ -12,17 +12,11 @@ namespace Atmos::Render
             && IndexEqualsValue(font, arg.font)
             && wrapWidth == arg.wrapWidth
             && bold == arg.bold
-            && italics == arg.italics
-            && resource == arg.resource;
+            && italics == arg.italics;
     }
 
     bool TextCore::operator!=(const TextCore& arg) const
     {
         return !(*this == arg);
-    }
-
-    auto TextCore::Resource() -> ResourceT*
-    {
-        return resource.get();
     }
 }

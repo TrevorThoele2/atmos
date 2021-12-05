@@ -30,11 +30,9 @@ namespace Atmos::Render::Vulkan
         return underlying;
     }
 
-    void RecordAndSubmit(
+    void Record(
         vk::CommandBuffer to,
         vk::CommandBufferUsageFlags flags,
-        vk::Queue queue,
-        vk::Fence fence,
         const std::function<void(CommandRecorder&)>& apply)
     {
         const vk::CommandBufferBeginInfo beginInfo(flags);
@@ -44,6 +42,13 @@ namespace Atmos::Render::Vulkan
         apply(recorder);
 
         to.end();
+    }
+
+    void Submit(
+        vk::CommandBuffer to,
+        vk::Queue queue,
+        vk::Fence fence)
+    {
         vk::SubmitInfo submitInfo(0, nullptr, nullptr, 1, &to, 0, nullptr);
         queue.submit(submitInfo, fence);
     }

@@ -6,6 +6,7 @@
 #include "MainSurface.h"
 #include "AxisAlignedBox3D.h"
 #include "Work.h"
+#include "ViewSlice.h"
 
 namespace Atmos::Render
 {
@@ -27,6 +28,10 @@ namespace Atmos::Render
         [[nodiscard]] static Spatial::Point3D ToRenderPoint(Spatial::Point3D position, Spatial::Point2D cameraTopLeft, Spatial::Space space);
         [[nodiscard]] static Spatial::Point3D ToWorldPoint(Spatial::Point3D position, Spatial::Point2D cameraTopLeft);
         [[nodiscard]] static Spatial::Point3D ToScreenPoint(Spatial::Point3D position);
+
+        [[nodiscard]] static Spatial::AxisAlignedBox2D ViewSliceClamp(
+            Arca::Index<ViewSlice> viewSlice,
+            const Spatial::AxisAlignedBox2D& text);
     private:
         Arca::Index<Camera> camera;
     };

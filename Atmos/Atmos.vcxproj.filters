@@ -342,113 +342,11 @@
     <Filter Include="Header Files\Scripting">
       <UniqueIdentifier>{5d2af305-be22-493a-9f5b-95b32a24be5d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Scripting\AngelScript">
-      <UniqueIdentifier>{bb380e76-0fdb-4c8d-96b8-8fee573af8bd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Scripting\AngelScript\Addon">
-      <UniqueIdentifier>{10f6fe88-04e4-48f9-90b3-089a5df04ba3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Scripting\AngelScript\Serialization">
-      <UniqueIdentifier>{7e2080fb-df4c-422a-8537-75087b020c2f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Scripting\AngelScript\Types">
-      <UniqueIdentifier>{2bce928d-4833-49b3-b722-4be718b382c9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Scripting\AngelScript\Types\Bases">
-      <UniqueIdentifier>{b1a10f14-f416-4dee-a889-914cefbd468d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Scripting\AngelScript\Types\Arca">
-      <UniqueIdentifier>{f6e8d698-aed1-453f-8bd8-198df9af09d2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Scripting\AngelScript\Types\Atmos">
-      <UniqueIdentifier>{9aa94812-27cc-4a8f-8561-4757381965fe}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Scripting\AngelScript\Types\Atmos\Spatial">
-      <UniqueIdentifier>{3be85008-61d1-432b-ac3a-f309a6520671}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Scripting\AngelScript\Types\Atmos\Spatial\Grid">
-      <UniqueIdentifier>{a1d9fce1-5cb7-4f22-b6f7-bdfb6976ddb2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Scripting\AngelScript\Types\Atmos\Render">
-      <UniqueIdentifier>{934a1294-283f-44b2-b5ca-ada52b28a319}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Scripting\AngelScript\Types\Atmos\Assets">
-      <UniqueIdentifier>{a8719528-2f50-447a-8d3f-b15117439033}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Scripting\AngelScript\Types\Atmos\Time">
-      <UniqueIdentifier>{6891b8c9-a8a6-434b-a90a-4a237899afb8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Scripting\AngelScript\Types\Atmos\Entity">
-      <UniqueIdentifier>{7593d61b-e416-4cc0-926b-3a0b09cfcd26}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Scripting\AngelScript\Types\Atmos\Script">
-      <UniqueIdentifier>{a342e8e8-1898-4ac7-88b3-6e96389b4c62}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Scripting\AngelScript\Registration">
-      <UniqueIdentifier>{e5569004-8f7a-4ef4-9684-b9518e1b3a2e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Scripting\AngelScript\Infrastructure">
-      <UniqueIdentifier>{416b4f02-791c-4f2f-bd30-d19af7e1ce3c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Scripting\AngelScript\Management">
-      <UniqueIdentifier>{bdfc36f6-8c58-494d-b4f1-fa986463edf7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Scripting\Commands">
       <UniqueIdentifier>{282c80a0-8126-4c38-a227-5868e1f39f58}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Scripting">
       <UniqueIdentifier>{b274c423-aba4-4c01-bb59-05857b196420}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Scripting\AngelScript">
-      <UniqueIdentifier>{510dbc17-4162-419b-bc6f-d999f3fa4ded}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Scripting\AngelScript\Addon">
-      <UniqueIdentifier>{075d222d-98d0-4c59-b8d6-b5799d513a8f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Scripting\AngelScript\Serialization">
-      <UniqueIdentifier>{74d2488d-c6ab-403a-acdd-f6b3dd59e32a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Scripting\AngelScript\Types">
-      <UniqueIdentifier>{659a8192-8154-4c6e-9295-c89d4d7592c0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Scripting\AngelScript\Types\Bases">
-      <UniqueIdentifier>{8ee3d6e5-914f-4b4a-9e2d-9c08b542d3ee}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Scripting\AngelScript\Types\Atmos">
-      <UniqueIdentifier>{bc07bcea-9dfb-4a35-bd7b-1ab179c1765b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Scripting\AngelScript\Types\Atmos\Render">
-      <UniqueIdentifier>{784954ce-9466-4d2a-b98d-2151f7f4fa8d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Scripting\AngelScript\Types\Atmos\Spatial">
-      <UniqueIdentifier>{afa5e021-1bba-4017-b49d-7397f1ff76c7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Scripting\AngelScript\Types\Atmos\Spatial\Grid">
-      <UniqueIdentifier>{c6dd3ef0-9af8-4837-aa34-0d77148bc35e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Scripting\AngelScript\Types\Atmos\Assets">
-      <UniqueIdentifier>{17811de0-59b4-4bce-9fe4-b2850446ef1e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Scripting\AngelScript\Types\Atmos\Time">
-      <UniqueIdentifier>{9aeb7e04-6a74-4d5f-9462-cc6a284fb871}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Scripting\AngelScript\Types\Atmos\Entity">
-      <UniqueIdentifier>{b784c7d4-9bd3-4a3c-986a-c590829fd71f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Scripting\AngelScript\Types\Atmos\Script">
-      <UniqueIdentifier>{341fc339-f5b7-440b-8275-41faa8709451}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Scripting\AngelScript\Types\Arca">
-      <UniqueIdentifier>{d048a6cd-667e-41d8-9ce7-e660ed3ab491}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Scripting\AngelScript\Registration">
-      <UniqueIdentifier>{918153c9-b482-41f5-a450-f93fe898561d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Scripting\AngelScript\Management">
-      <UniqueIdentifier>{9cb9dc37-6ac3-4873-8fa0-1a0aace025b3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Scripting\Commands">
-      <UniqueIdentifier>{e05d5d88-3584-4d7e-88da-800746e0e1d9}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Assets\Action">
       <UniqueIdentifier>{5d8ef735-003e-4adc-99f1-93213ffa95b6}</UniqueIdentifier>
@@ -459,17 +357,8 @@
     <Filter Include="Header Files\Input\Commands">
       <UniqueIdentifier>{d7361836-1841-495d-b7c0-da204feacfdc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Scripting\AngelScript\Types\Atmos\Input">
-      <UniqueIdentifier>{f14cc5a8-e149-459e-b539-4558aa4f3557}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Scripting\AngelScript\Types\Atmos\Input">
-      <UniqueIdentifier>{997e9cbd-9448-4ddd-82dc-c4c051e70066}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Scripting\Signals">
       <UniqueIdentifier>{835ba6e0-ebff-4ee6-94ef-0b5357971cf5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Scripting\Signals">
-      <UniqueIdentifier>{149dcea0-25d7-4dd1-89d3-9afa8db03ac3}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Scripting\Documentation">
       <UniqueIdentifier>{c2d00fff-0be8-44f4-a987-257db65113da}</UniqueIdentifier>
@@ -507,41 +396,11 @@
     <Filter Include="Source Files\Assets\Resource">
       <UniqueIdentifier>{408df0bd-16ad-4cfe-a57e-36b36a32ea81}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Scripting\AngelScript\Types\Atmos\Audio">
-      <UniqueIdentifier>{d1442eb7-6b12-4685-9b4e-701de7d422d8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Scripting\AngelScript\Types\Atmos\Audio">
-      <UniqueIdentifier>{f446cffa-439c-4d56-a031-c01176bae365}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Data\Arca">
       <UniqueIdentifier>{707321e8-4f01-4941-b97e-85837d947cd2}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Data\Arca">
       <UniqueIdentifier>{58d2bd24-38a5-4ee6-8278-8b87e007929c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Scripting\AngelScript\Types\Atmos\Data">
-      <UniqueIdentifier>{c69cd98a-50b2-4866-afb8-f680602072c1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Scripting\AngelScript\Types\Atmos\Data">
-      <UniqueIdentifier>{512acd81-4eda-405c-b88e-a10f27bc04dd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Scripting\AngelScript\Types\Atmos\Logging">
-      <UniqueIdentifier>{879f471f-34b9-4952-a3da-7ca30c09fe82}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Scripting\AngelScript\Types\Atmos\Logging">
-      <UniqueIdentifier>{a5baf1e3-0a2e-435a-814f-d8c2bc1fed61}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Scripting\AngelScript\Types\Atmos\Math">
-      <UniqueIdentifier>{e1f1527f-d8a7-46f4-a124-624b810f4cf5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Scripting\AngelScript\Types\Atmos\Math">
-      <UniqueIdentifier>{935c10c4-08d7-41e4-8b6d-95611a579e0b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Scripting\AngelScript\Types\Atmos\World">
-      <UniqueIdentifier>{4274627f-377f-415f-871a-a62963c9e162}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Scripting\AngelScript\Types\Atmos\World">
-      <UniqueIdentifier>{69b67337-032b-4baf-a1cc-bd47964f38c4}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\World\Commands">
       <UniqueIdentifier>{45fe1c5f-ba36-4dbf-b7cf-90aa86ac0432}</UniqueIdentifier>
@@ -554,18 +413,6 @@
     </Filter>
     <Filter Include="Source Files\Random">
       <UniqueIdentifier>{7beeccf7-0c64-40a0-841a-9cbb9c39f542}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Scripting\AngelScript\Types\Atmos\Random">
-      <UniqueIdentifier>{9fccc00f-9022-44c5-9221-46b927618a5d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Scripting\AngelScript\Types\Atmos\Random">
-      <UniqueIdentifier>{6dc42f0e-86bd-4765-a27c-470b062c89c4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Scripting\AngelScript\Types\Std">
-      <UniqueIdentifier>{2732ee7f-be0c-457f-911f-20e4246ef2e1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Scripting\AngelScript\Types\Std">
-      <UniqueIdentifier>{417f55fe-9c52-4d85-9874-fed06cd43dd8}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\System">
       <UniqueIdentifier>{5b5f0dec-3e19-43cc-a29c-692f028a7a25}</UniqueIdentifier>
@@ -597,12 +444,6 @@
     <Filter Include="Source Files\Render\Text\SDL">
       <UniqueIdentifier>{23560c72-1401-4141-9bf0-e73e9eae91a6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Scripting\AngelScript\Types\Atmos\UI">
-      <UniqueIdentifier>{9f422c1c-9e3a-45a9-ae3c-5ff9e82759a7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Scripting\AngelScript\Types\Atmos\UI">
-      <UniqueIdentifier>{01e95b1c-fc4a-439d-8378-f96e507b83b2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Render\Signals">
       <UniqueIdentifier>{f0b936bf-ad5f-4a4e-a51d-0fbe436f44fe}</UniqueIdentifier>
     </Filter>
@@ -611,12 +452,6 @@
     </Filter>
     <Filter Include="Source Files\Diagnostics">
       <UniqueIdentifier>{6321ca46-d10a-4e67-8100-0817b34fcf48}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Scripting\AngelScript\Types\Atmos\Diagnostics">
-      <UniqueIdentifier>{51fc5df6-3183-4d9d-ba2f-05dc6b616627}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Scripting\AngelScript\Types\Atmos\Diagnostics">
-      <UniqueIdentifier>{5ac52d61-075b-4dc4-ab0d-39e7c2f061b4}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Render\Vulkan\Resource\Stored">
       <UniqueIdentifier>{4bee8aa9-4aa3-464c-a879-a77cc4d359fa}</UniqueIdentifier>
@@ -641,6 +476,120 @@
     </Filter>
     <Filter Include="Source Files\Render\Vulkan\Synchronization">
       <UniqueIdentifier>{773bcb22-7d4f-48c8-b491-fa0a651d1ccd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Render\Vulkan\Text">
+      <UniqueIdentifier>{423ea6e9-0fe0-4c04-af56-4dfad2b8e116}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Render\Vulkan\Text">
+      <UniqueIdentifier>{123244f4-db84-49ac-9633-a93c6e969e84}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scripting\JavaScript">
+      <UniqueIdentifier>{7b4c697b-dd4f-47f0-b9e9-7a96e4084ce3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scripting\JavaScript">
+      <UniqueIdentifier>{056aa53c-27c4-4cc9-b096-1510e04428e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scripting\JavaScript\Types">
+      <UniqueIdentifier>{a65c8679-c202-4b66-b901-e3c4dceca382}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scripting\JavaScript\Types">
+      <UniqueIdentifier>{4023f722-e202-4479-bea3-1fd1c792640c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Process">
+      <UniqueIdentifier>{9e22f277-e9bd-487d-bff6-8bea2651420f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Process">
+      <UniqueIdentifier>{2d466e2d-737d-4f6e-a3df-6af858b150ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scripting\JavaScript\Types\Atmos">
+      <UniqueIdentifier>{cbee9f81-45fe-44fb-9ee8-5b7c644d89a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scripting\JavaScript\Types\Atmos">
+      <UniqueIdentifier>{6b2cc300-49f8-475b-99b3-2b08d77320f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scripting\JavaScript\Registration">
+      <UniqueIdentifier>{c13418a9-d2c4-401a-8c96-11f33b1334be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scripting\JavaScript\Registration">
+      <UniqueIdentifier>{2fa9f410-3aac-4684-9951-536c768f5f35}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scripting\JavaScript\Types\Atmos\Logging">
+      <UniqueIdentifier>{ca79b72d-e361-4416-8753-b940e26089dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scripting\JavaScript\Types\Atmos\Logging">
+      <UniqueIdentifier>{bcfb4243-e295-4966-81c7-548a14b0b401}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scripting\JavaScript\Types\Arca">
+      <UniqueIdentifier>{e3856d83-a33a-4f32-a543-77634fc5a9ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scripting\JavaScript\Types\Arca">
+      <UniqueIdentifier>{356bb25f-5844-4861-9ae4-490dd4162523}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scripting\JavaScript\Types\Atmos\Input">
+      <UniqueIdentifier>{98c70acf-1008-4643-8933-9d21898aab77}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scripting\JavaScript\Types\Atmos\Input">
+      <UniqueIdentifier>{a847ba87-4cc1-4844-9fe2-e7af243e5950}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scripting\JavaScript\Types\Atmos\Spatial">
+      <UniqueIdentifier>{f92f8c7c-7250-4ea3-a082-c00938c92d89}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scripting\JavaScript\Types\Atmos\Spatial">
+      <UniqueIdentifier>{7d45c13b-e002-447d-94c2-808082c519d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scripting\JavaScript\Types\Atmos\Asset">
+      <UniqueIdentifier>{6b850e66-64c3-444c-800f-5b0ba7117100}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scripting\JavaScript\Types\Atmos\Asset">
+      <UniqueIdentifier>{2698b0dc-5f51-4168-82fd-d7a331f3cdbc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scripting\JavaScript\Types\Atmos\Render">
+      <UniqueIdentifier>{6e87dbf4-3008-49ce-97de-0ed710d51eda}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scripting\JavaScript\Types\Atmos\Render">
+      <UniqueIdentifier>{41e1d148-7298-4d2a-af53-8a3be110b997}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scripting\JavaScript\Types\Atmos\Spatial\Grid">
+      <UniqueIdentifier>{92927c4e-ef42-4c17-b204-e30cd7d35a17}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scripting\JavaScript\Types\Atmos\Spatial\Grid">
+      <UniqueIdentifier>{c8c4f847-328c-49b0-904c-a30cf6243d20}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scripting\JavaScript\Types\Atmos\Audio">
+      <UniqueIdentifier>{820af2ab-b4fa-4077-ade7-662de27eb4a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scripting\JavaScript\Types\Atmos\Audio">
+      <UniqueIdentifier>{f3c5fd2c-eed5-4909-86ad-8eba991c1606}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scripting\JavaScript\Types\Atmos\Diagnostics">
+      <UniqueIdentifier>{960141b7-7f7d-4da1-b0de-c58aa96796f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scripting\JavaScript\Types\Atmos\Diagnostics">
+      <UniqueIdentifier>{dddd3c23-a280-4e33-98b0-a8e9217f0a32}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scripting\JavaScript\Types\Atmos\Entity">
+      <UniqueIdentifier>{3ad8eea1-24f4-4cb4-8716-9631dddc1bb1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scripting\JavaScript\Types\Atmos\Entity">
+      <UniqueIdentifier>{71feebab-e23a-46ef-ab9b-e914c8d93c2c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scripting\JavaScript\Types\Atmos\World">
+      <UniqueIdentifier>{cadd7f70-4c15-40ff-ba83-3d8ce0cc9cf1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scripting\JavaScript\Types\Atmos\World">
+      <UniqueIdentifier>{0b29aca6-eec0-4488-a484-26c7a9088286}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scripting\JavaScript\Types\Atmos\Time">
+      <UniqueIdentifier>{97ff16b3-0f3e-44ee-85c5-e3617501cfee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scripting\JavaScript\Types\Atmos\Time">
+      <UniqueIdentifier>{54263848-f44f-4f74-92c7-6f21e27d528d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scripting\JavaScript\Types\Atmos\UI">
+      <UniqueIdentifier>{6b2f1e05-1674-431a-83db-f9331eb8263c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scripting\JavaScript\Types\Atmos\UI">
+      <UniqueIdentifier>{54842779-b191-4607-bd16-d9ebc4364dc0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -695,9 +644,6 @@
     <ClInclude Include="MathUtility.h">
       <Filter>Header Files\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Ratio.h">
-      <Filter>Header Files\Math</Filter>
-    </ClInclude>
     <ClInclude Include="Engine.h">
       <Filter>Header Files\Engine</Filter>
     </ClInclude>
@@ -727,12 +673,6 @@
     </ClInclude>
     <ClInclude Include="GraphicsManager.h">
       <Filter>Header Files\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptUserData.h">
-      <Filter>Header Files\Scripting\AngelScript</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptReferenceCounted.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Bases</Filter>
     </ClInclude>
     <ClInclude Include="NullWindow.h">
       <Filter>Header Files\Window</Filter>
@@ -869,19 +809,19 @@
     <ClInclude Include="MappedEntities.h">
       <Filter>Header Files\Entity</Filter>
     </ClInclude>
-    <ClInclude Include="InputStasisArchiveInterface.h">
+    <ClInclude Include="InputStasisFile.h">
       <Filter>Header Files\World\Serialization\Stasis</Filter>
     </ClInclude>
-    <ClInclude Include="OutputStasisArchiveInterface.h">
+    <ClInclude Include="OutputStasisFile.h">
       <Filter>Header Files\World\Serialization\Stasis</Filter>
     </ClInclude>
-    <ClInclude Include="InputWorldArchiveInterface.h">
+    <ClInclude Include="InputWorldFile.h">
       <Filter>Header Files\World\Serialization\World</Filter>
     </ClInclude>
-    <ClInclude Include="OutputWorldArchiveInterface.h">
+    <ClInclude Include="OutputWorldFile.h">
       <Filter>Header Files\World\Serialization\World</Filter>
     </ClInclude>
-    <ClInclude Include="InputFieldArchiveInterface.h">
+    <ClInclude Include="InputFieldFile.h">
       <Filter>Header Files\World\Serialization</Filter>
     </ClInclude>
     <ClInclude Include="WorldFileExtension.h">
@@ -931,9 +871,6 @@
     </ClInclude>
     <ClInclude Include="ScriptManager.h">
       <Filter>Header Files\Scripting</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptManager.h">
-      <Filter>Header Files\Scripting\AngelScript</Filter>
     </ClInclude>
     <ClInclude Include="GridCellSize.h">
       <Filter>Header Files\Spatial\Grid</Filter>
@@ -991,9 +928,6 @@
     </ClInclude>
     <ClInclude Include="VulkanCommandBuffer.h">
       <Filter>Header Files\Render\Vulkan\Commands</Filter>
-    </ClInclude>
-    <ClInclude Include="VulkanCreateImageView.h">
-      <Filter>Header Files\Render\Vulkan\Image</Filter>
     </ClInclude>
     <ClInclude Include="GraphicsReconstructionObjects.h">
       <Filter>Header Files\Render</Filter>
@@ -1067,7 +1001,7 @@
     <ClInclude Include="VulkanLineRenderer.h">
       <Filter>Header Files\Render\Vulkan\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="VulkanQuadRenderer.h">
+    <ClInclude Include="VulkanImageRenderer.h">
       <Filter>Header Files\Render\Vulkan\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="AudioAssetResource.h">
@@ -1214,13 +1148,13 @@
     <ClInclude Include="InvalidSignature.h">
       <Filter>Header Files\Serialization</Filter>
     </ClInclude>
-    <ClInclude Include="ArchiveHeader.h">
+    <ClInclude Include="FileHeader.h">
       <Filter>Header Files\Serialization</Filter>
     </ClInclude>
-    <ClInclude Include="InputAssetsArchiveInterface.h">
+    <ClInclude Include="InputAssetsFile.h">
       <Filter>Header Files\World\Serialization\Assets</Filter>
     </ClInclude>
-    <ClInclude Include="OutputAssetsArchiveInterface.h">
+    <ClInclude Include="OutputAssetsFile.h">
       <Filter>Header Files\World\Serialization\Assets</Filter>
     </ClInclude>
     <ClInclude Include="AssetsFileExtension.h">
@@ -1277,9 +1211,6 @@
     <ClInclude Include="Overflow.h">
       <Filter>Header Files\Math</Filter>
     </ClInclude>
-    <ClInclude Include="AngelScriptAssetResource.h">
-      <Filter>Header Files\Scripting\AngelScript</Filter>
-    </ClInclude>
     <ClInclude Include="Script.h">
       <Filter>Header Files\Scripting</Filter>
     </ClInclude>
@@ -1291,12 +1222,6 @@
     </ClInclude>
     <ClInclude Include="CreateScriptAssetResource.h">
       <Filter>Header Files\Assets\Script</Filter>
-    </ClInclude>
-    <ClInclude Include="InputAngelScriptBytecodeStream.h">
-      <Filter>Header Files\Scripting\AngelScript\Serialization</Filter>
-    </ClInclude>
-    <ClInclude Include="OutputAngelScriptBytecodeStream.h">
-      <Filter>Header Files\Scripting\AngelScript\Serialization</Filter>
     </ClInclude>
     <ClInclude Include="Work.h">
       <Filter>Header Files\Engine</Filter>
@@ -1316,99 +1241,6 @@
     <ClInclude Include="LoadShaderAssetResourceData.h">
       <Filter>Header Files\Assets\Shader</Filter>
     </ClInclude>
-    <ClInclude Include="AngelScriptResultVerification.h">
-      <Filter>Header Files\Scripting\AngelScript</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptRegistration.h">
-      <Filter>Header Files\Scripting\AngelScript\Registration</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptEnumRegistration.h">
-      <Filter>Header Files\Scripting\AngelScript\Registration</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptObjectRegistration.h">
-      <Filter>Header Files\Scripting\AngelScript\Registration</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptGlobalRegistration.h">
-      <Filter>Header Files\Scripting\AngelScript\Registration</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptName.h">
-      <Filter>Header Files\Scripting\AngelScript</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptGridPoint.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Spatial\Grid</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptAngle2D.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptAngle3D.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptPoint2D.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptPoint3D.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptScalers2D.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptScalers3D.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptSize2D.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptSize3D.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptAxisAlignedBox2D.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptAxisAlignedBox3D.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptSpatialAlgorithms.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptGridSpatialAlgorithms.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptColor.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptImageAsset.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Assets</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptFunctionManagement.h">
-      <Filter>Header Files\Scripting\AngelScript\Management</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptGlobalManagement.h">
-      <Filter>Header Files\Scripting\AngelScript\Management</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptObjectManagement.h">
-      <Filter>Header Files\Scripting\AngelScript\Management</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptAsset.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Assets</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptPrimitive.h">
-      <Filter>Header Files\Scripting\AngelScript\Types</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptCommand.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Arca</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptShaderAsset.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Assets</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptMaterialAsset.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Assets</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptAudioAsset.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Assets</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptScriptAsset.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Assets</Filter>
-    </ClInclude>
     <ClInclude Include="ImageAssetFileType.h">
       <Filter>Header Files\Assets\Image</Filter>
     </ClInclude>
@@ -1418,71 +1250,11 @@
     <ClInclude Include="AudioCurator.h">
       <Filter>Header Files\Audio</Filter>
     </ClInclude>
-    <ClInclude Include="AngelScriptObjectType.h">
-      <Filter>Header Files\Scripting\AngelScript</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptFactory.h">
-      <Filter>Header Files\Scripting\AngelScript\Infrastructure</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptRelicID.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Arca</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptDynamicImage.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptParameters.h">
-      <Filter>Header Files\Scripting\AngelScript\Infrastructure</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptSignal.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Arca</Filter>
-    </ClInclude>
     <ClInclude Include="ScriptResult.h">
       <Filter>Header Files\Scripting</Filter>
     </ClInclude>
-    <ClInclude Include="AngelScriptArcaUserData.h">
-      <Filter>Header Files\Scripting\AngelScript</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptFunctionTraits.h">
-      <Filter>Header Files\Scripting\AngelScript\Infrastructure</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptBounds.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptArcaObject.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Arca</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptImageCore.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptCamera.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptArcaCreate.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Arca</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptHandle.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Arca</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptArcaType.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Arca</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptArcaDestroy.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Arca</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptArcaAssign.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Arca</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptStopwatch.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Time</Filter>
-    </ClInclude>
     <ClInclude Include="TimePoint.h">
       <Filter>Header Files\Time</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptEntity.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Entity</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptArcaTraits.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Arca</Filter>
     </ClInclude>
     <ClInclude Include="MoveEntityTo.h">
       <Filter>Header Files\Entity</Filter>
@@ -1499,9 +1271,6 @@
     <ClInclude Include="FindAssetByName.h">
       <Filter>Header Files\Assets</Filter>
     </ClInclude>
-    <ClInclude Include="AngelScriptArcaBatch.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Arca</Filter>
-    </ClInclude>
     <ClInclude Include="CompileScript.h">
       <Filter>Header Files\Scripting\Commands</Filter>
     </ClInclude>
@@ -1511,38 +1280,17 @@
     <ClInclude Include="CurrentExecutingScript.h">
       <Filter>Header Files\Scripting</Filter>
     </ClInclude>
-    <ClInclude Include="AngelScriptScriptResource.h">
-      <Filter>Header Files\Scripting\AngelScript</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptScript.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Script</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptScriptResult.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Script</Filter>
-    </ClInclude>
     <ClInclude Include="Variant.h">
       <Filter>Header Files\Data</Filter>
     </ClInclude>
-    <ClInclude Include="AngelScriptScriptFinished.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Script</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptSuspendScript.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Script</Filter>
-    </ClInclude>
     <ClInclude Include="Tag.h">
       <Filter>Header Files\Data</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptCurrentScript.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Script</Filter>
     </ClInclude>
     <ClInclude Include="ScriptResource.h">
       <Filter>Header Files\Scripting</Filter>
     </ClInclude>
     <ClInclude Include="ScriptModule.h">
       <Filter>Header Files\Scripting</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptCurrentEntity.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Entity</Filter>
     </ClInclude>
     <ClInclude Include="CurrentActualizingEntity.h">
       <Filter>Header Files\Entity</Filter>
@@ -1553,23 +1301,11 @@
     <ClInclude Include="MaterialAssetPass.h">
       <Filter>Header Files\Assets\Material</Filter>
     </ClInclude>
-    <ClInclude Include="AngelScriptLine.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Render</Filter>
-    </ClInclude>
     <ClInclude Include="ChangeMaterialAsset.h">
       <Filter>Header Files\Render\Commands</Filter>
     </ClInclude>
-    <ClInclude Include="AngelScriptChangeMaterialAsset.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Render</Filter>
-    </ClInclude>
     <ClInclude Include="ChangeColor.h">
       <Filter>Header Files\Render\Commands</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptGridRegion.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptTimePoint.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Time</Filter>
     </ClInclude>
     <ClInclude Include="SDLWindow.h">
       <Filter>Header Files\Window</Filter>
@@ -1601,35 +1337,11 @@
     <ClInclude Include="Delta.h">
       <Filter>Header Files\Data</Filter>
     </ClInclude>
-    <ClInclude Include="AngelScriptActionAsset.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Assets</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptKey.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptActionDepressed.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptActionPressed.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptMouseMoved.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptTextEntered.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Input</Filter>
-    </ClInclude>
     <ClInclude Include="ActionActive.h">
       <Filter>Header Files\Input\Signals</Filter>
     </ClInclude>
-    <ClInclude Include="AngelScriptActionActive.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Input</Filter>
-    </ClInclude>
     <ClInclude Include="BindAction.h">
       <Filter>Header Files\Input\Commands</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptBindAction.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Input</Filter>
     </ClInclude>
     <ClInclude Include="ScriptFinished.h">
       <Filter>Header Files\Scripting\Signals</Filter>
@@ -1640,26 +1352,14 @@
     <ClInclude Include="NullScriptDocumentationManager.h">
       <Filter>Header Files\Scripting\Documentation</Filter>
     </ClInclude>
-    <ClInclude Include="AngelScriptToWorldPoint2D.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptToWorldPoint3D.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
-    </ClInclude>
     <ClInclude Include="ToWorldPoint2D.h">
       <Filter>Header Files\Spatial\Arca</Filter>
     </ClInclude>
     <ClInclude Include="ToWorldPoint3D.h">
       <Filter>Header Files\Spatial\Arca</Filter>
     </ClInclude>
-    <ClInclude Include="AngelScriptFindByBox.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Render</Filter>
-    </ClInclude>
     <ClInclude Include="InputInformation.h">
       <Filter>Header Files\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptInputInformation.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Input</Filter>
     </ClInclude>
     <ClInclude Include="LoadAudioAssetResourceData.h">
       <Filter>Header Files\Assets\Audio</Filter>
@@ -1733,24 +1433,6 @@
     <ClInclude Include="ResumeSound.h">
       <Filter>Header Files\Audio\Commands</Filter>
     </ClInclude>
-    <ClInclude Include="AngelScriptUniversalSound.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptPositionedSound.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptChangeSoundVolume.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptPauseSound.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptResumeSound.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptOpenRelic.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Arca</Filter>
-    </ClInclude>
     <ClInclude Include="DataAlgorithms.h">
       <Filter>Header Files\Data</Filter>
     </ClInclude>
@@ -1775,41 +1457,11 @@
     <ClInclude Include="ModifyProperties.h">
       <Filter>Header Files\Data\Arca</Filter>
     </ClInclude>
-    <ClInclude Include="AngelScriptProperty.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Data</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptModifyProperties.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Data</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptDataCore.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Data</Filter>
-    </ClInclude>
     <ClInclude Include="Property.h">
       <Filter>Header Files\Data</Filter>
     </ClInclude>
-    <ClInclude Include="AngelScriptVariant.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Data</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptStringUtility.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Data</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptLoggingSeverity.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Logging</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptLog.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Logging</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptMath.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Math</Filter>
-    </ClInclude>
     <ClInclude Include="WorldCurator.h">
       <Filter>Header Files\World</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptModifyWorldProperties.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\World</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptRetrieveWorldProperties.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\World</Filter>
     </ClInclude>
     <ClInclude Include="ModifyWorldProperties.h">
       <Filter>Header Files\World\Commands</Filter>
@@ -1820,9 +1472,6 @@
     <ClInclude Include="RequestField.h">
       <Filter>Header Files\World\Commands</Filter>
     </ClInclude>
-    <ClInclude Include="AngelScriptRequestField.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\World</Filter>
-    </ClInclude>
     <ClInclude Include="LoggingSink.h">
       <Filter>Header Files\Logging</Filter>
     </ClInclude>
@@ -1831,12 +1480,6 @@
     </ClInclude>
     <ClInclude Include="RestartSound.h">
       <Filter>Header Files\Audio\Commands</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptRestartSound.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptSoundFinished.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Audio</Filter>
     </ClInclude>
     <ClInclude Include="Range.h">
       <Filter>Header Files\Math</Filter>
@@ -1856,20 +1499,11 @@
     <ClInclude Include="PrimitiveTraits.h">
       <Filter>Header Files\Data</Filter>
     </ClInclude>
-    <ClInclude Include="AngelScriptGenerateRandomNumber.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Random</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptRange.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Data</Filter>
-    </ClInclude>
     <ClInclude Include="ModifyEntityBoundary.h">
       <Filter>Header Files\World\Commands</Filter>
     </ClInclude>
     <ClInclude Include="EntityActualizationCurator.h">
       <Filter>Header Files\Entity</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptNumericLimits.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Std</Filter>
     </ClInclude>
     <ClInclude Include="Pathfinder.h">
       <Filter>Header Files\Entity</Filter>
@@ -1891,18 +1525,6 @@
     </ClInclude>
     <ClInclude Include="GridAxisAlignedBox.h">
       <Filter>Header Files\Spatial\Grid</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptGridSize.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Spatial\Grid</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptGridAxisAlignedBox.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Spatial\Grid</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\externaldependencies\angelscript\add_on\scriptstdstring\scriptstdstring.h">
-      <Filter>Header Files\Scripting\AngelScript\Addon</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\externaldependencies\angelscript\add_on\scriptarray\scriptarray.h">
-      <Filter>Header Files\Scripting\AngelScript\Addon</Filter>
     </ClInclude>
     <ClInclude Include="SDLSystem.h">
       <Filter>Header Files\System</Filter>
@@ -1937,9 +1559,6 @@
     <ClInclude Include="SDLFontAssetResource.h">
       <Filter>Header Files\Render\Text\SDL</Filter>
     </ClInclude>
-    <ClInclude Include="AngelScriptFontAsset.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Assets</Filter>
-    </ClInclude>
     <ClInclude Include="FontAssetCurator.h">
       <Filter>Header Files\Assets\Font</Filter>
     </ClInclude>
@@ -1948,9 +1567,6 @@
     </ClInclude>
     <ClInclude Include="UIImage.h">
       <Filter>Header Files\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptUIImage.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\UI</Filter>
     </ClInclude>
     <ClInclude Include="UIText.h">
       <Filter>Header Files\UI</Filter>
@@ -1970,35 +1586,17 @@
     <ClInclude Include="RenderCore.h">
       <Filter>Header Files\Render</Filter>
     </ClInclude>
-    <ClInclude Include="AngelScriptRenderCore.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="TextResource.h">
-      <Filter>Header Files\Render\Text</Filter>
-    </ClInclude>
-    <ClInclude Include="VulkanTextResource.h">
-      <Filter>Header Files\Render\Vulkan\Resource</Filter>
-    </ClInclude>
     <ClInclude Include="ChangeTextCore.h">
       <Filter>Header Files\Render\Commands</Filter>
     </ClInclude>
     <ClInclude Include="ColorChanged.h">
       <Filter>Header Files\Render\Signals</Filter>
     </ClInclude>
-    <ClInclude Include="TextData.h">
+    <ClInclude Include="LoadedGlyph.h">
       <Filter>Header Files\Render\Text</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptUIText.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptChangeTextCore.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Render</Filter>
     </ClInclude>
     <ClInclude Include="DynamicText.h">
       <Filter>Header Files\Render\Text</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptDynamicText.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Render</Filter>
     </ClInclude>
     <ClInclude Include="ChangeImageCore.h">
       <Filter>Header Files\Render\Commands</Filter>
@@ -2024,14 +1622,8 @@
     <ClInclude Include="ViewSlice.h">
       <Filter>Header Files\Render</Filter>
     </ClInclude>
-    <ClInclude Include="AngelScriptViewSlice.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Render</Filter>
-    </ClInclude>
     <ClInclude Include="ChangeViewSlice.h">
       <Filter>Header Files\Render\Commands</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptChangeViewSlice.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Render</Filter>
     </ClInclude>
     <ClInclude Include="Space.h">
       <Filter>Header Files\Spatial\Arca</Filter>
@@ -2047,9 +1639,6 @@
     </ClInclude>
     <ClInclude Include="DiagnosticsCurator.h">
       <Filter>Header Files\Diagnostics</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptDiagnosticsStatistics.h">
-      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Diagnostics</Filter>
     </ClInclude>
     <ClInclude Include="RenderStartCurator.h">
       <Filter>Header Files\Render</Filter>
@@ -2087,9 +1676,6 @@
     <ClInclude Include="VulkanPaths.h">
       <Filter>Header Files\Render\Vulkan</Filter>
     </ClInclude>
-    <ClInclude Include="AngelScriptPaths.h">
-      <Filter>Header Files\Scripting\AngelScript</Filter>
-    </ClInclude>
     <ClInclude Include="VulkanCommand.h">
       <Filter>Header Files\Render\Vulkan\Commands</Filter>
     </ClInclude>
@@ -2102,9 +1688,6 @@
     <ClInclude Include="VulkanResults.h">
       <Filter>Header Files\Render\Vulkan</Filter>
     </ClInclude>
-    <ClInclude Include="UpdateText.h">
-      <Filter>Header Files\Render\Text</Filter>
-    </ClInclude>
     <ClInclude Include="VulkanMemoryPool.h">
       <Filter>Header Files\Render\Vulkan\Memory</Filter>
     </ClInclude>
@@ -2114,8 +1697,383 @@
     <ClInclude Include="VulkanRenderPass.h">
       <Filter>Header Files\Render\Vulkan</Filter>
     </ClInclude>
-    <ClInclude Include="AngelScriptBoxed.h">
-      <Filter>Header Files\Scripting\AngelScript</Filter>
+    <ClInclude Include="SDLTextError.h">
+      <Filter>Header Files\Render\Text\SDL</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanQuad.h">
+      <Filter>Header Files\Render\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanTextRenderer.h">
+      <Filter>Header Files\Render\Vulkan\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Glyph.h">
+      <Filter>Header Files\Render\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="GlyphAlgorithms.h">
+      <Filter>Header Files\Render\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="TextBaseSize.h">
+      <Filter>Header Files\Render\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanSampler.h">
+      <Filter>Header Files\Render\Vulkan\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanGlyphAtlas.h">
+      <Filter>Header Files\Render\Vulkan\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="FontID.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptManager.h">
+      <Filter>Header Files\Scripting\JavaScript</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptScriptResource.h">
+      <Filter>Header Files\Scripting\JavaScript</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptVariant.h">
+      <Filter>Header Files\Scripting\JavaScript\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptVector.h">
+      <Filter>Header Files\Scripting\JavaScript\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptType.h">
+      <Filter>Header Files\Scripting\JavaScript\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptResult.h">
+      <Filter>Header Files\Scripting\JavaScript\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptString.h">
+      <Filter>Header Files\Scripting\JavaScript\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptNumeric.h">
+      <Filter>Header Files\Scripting\JavaScript\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptOptional.h">
+      <Filter>Header Files\Scripting\JavaScript\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="Process.h">
+      <Filter>Header Files\Process</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptAssetResource.h">
+      <Filter>Header Files\Scripting\JavaScript</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptCompiler.h">
+      <Filter>Header Files\Scripting\JavaScript</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptSymbol.h">
+      <Filter>Header Files\Scripting\JavaScript\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptModule.h">
+      <Filter>Header Files\Scripting\JavaScript</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptBool.h">
+      <Filter>Header Files\Scripting\JavaScript\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptUserData.h">
+      <Filter>Header Files\Scripting\JavaScript</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptRegisterAll.h">
+      <Filter>Header Files\Scripting\JavaScript\Registration</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptRegistrationData.h">
+      <Filter>Header Files\Scripting\JavaScript\Registration</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptPersistent.h">
+      <Filter>Header Files\Scripting\JavaScript</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptEnum.h">
+      <Filter>Header Files\Scripting\JavaScript\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptNameValuePair.h">
+      <Filter>Header Files\Scripting\JavaScript\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptObject.h">
+      <Filter>Header Files\Scripting\JavaScript</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptFunction.h">
+      <Filter>Header Files\Scripting\JavaScript</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptSyntheticModule.h">
+      <Filter>Header Files\Scripting\JavaScript</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptLogging.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Logging</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptLog.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Logging</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptReliquary.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Arca</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptTraits.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Arca</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptLoggingSeverity.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Logging</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptInput.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptSpatial.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Spatial</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptPoint2D.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Spatial</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptMouseMoved.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptActionAsset.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Asset</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptAsset.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Asset</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptKey.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptMessage.h">
+      <Filter>Header Files\Scripting\JavaScript</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptAudioAsset.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Asset</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptFontAsset.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Asset</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptImageAsset.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Asset</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptMaterialAsset.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Asset</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptScriptAsset.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Asset</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptShaderAsset.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Asset</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptPoint3D.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Spatial</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptAngle3D.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Spatial</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptAxisAlignedBox2D.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Spatial</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptAxisAlignedBox3D.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Spatial</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptSpace.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Spatial</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptBounds.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Spatial</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptSize2D.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Spatial</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptSize3D.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Spatial</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptScalers2D.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Spatial</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptScalers3D.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Spatial</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptDestroy.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Arca</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptRelicID.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Arca</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptImageAssetGridSize.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Asset</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptMaterialPass.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Asset</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptGridSize.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Spatial\Grid</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptGridPoint.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Spatial\Grid</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptGridAxisAlignedBox.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Spatial\Grid</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptToWorldPoint2D.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Spatial</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptToWorldPoint3D.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Spatial</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptGridSpatial.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Spatial\Grid</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptChangeSoundVolume.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptPauseSound.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptPositionedSound.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptResumeSound.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptRestartSound.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptSoundFinished.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptUniversalSound.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptAudio.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptDiagnosticsStatistics.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Diagnostics</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptDiagnosticsProfile.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Diagnostics</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptDiagnostics.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Diagnostics</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptEntity.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptEntityNamespace.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptFindEntityByName.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptFindEntityByPosition.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptMoveEntityTo.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptCanMoveEntityTo.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptModifyEntityTags.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptFindEntityPath.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptSet.h">
+      <Filter>Header Files\Scripting\JavaScript\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptRequestField.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\World</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptTimePoint.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptTime.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptUIImage.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptUIText.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptUI.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptColor.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptViewSlice.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptTextBaseSize.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptRenderCore.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptLine.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptImageCore.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptGridRegion.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptFindImagesByBox.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptDynamicText.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptDynamicImage.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptChangeViewSlice.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptChangeTextCore.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptChangeMaterialAsset.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptCamera.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptFindLinesByBox.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptFindGridRegionsByBox.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptMoveGridRegion.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptUnorderedSet.h">
+      <Filter>Header Files\Scripting\JavaScript\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptRender.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptChangeImageCore.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptMoveLine.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptPaths.h">
+      <Filter>Header Files\Scripting\JavaScript</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptCompiledModule.h">
+      <Filter>Header Files\Scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptFindAssetByName.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Asset</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptChangeColor.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptMoveBounds.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Spatial</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptRotateBounds.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Spatial</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptScaleBounds.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Spatial</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2236,9 +2194,6 @@
     <ClCompile Include="RenderCurator.cpp">
       <Filter>Source Files\Render</Filter>
     </ClCompile>
-    <ClCompile Include="AngelScriptReferenceCounted.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Bases</Filter>
-    </ClCompile>
     <ClCompile Include="NullInputManager.cpp">
       <Filter>Source Files\Input</Filter>
     </ClCompile>
@@ -2257,16 +2212,16 @@
     <ClCompile Include="TypeRegistration.cpp">
       <Filter>Source Files\Engine</Filter>
     </ClCompile>
-    <ClCompile Include="InputStasisArchiveInterface.cpp">
+    <ClCompile Include="InputStasisFile.cpp">
       <Filter>Source Files\World\Serialization\Stasis</Filter>
     </ClCompile>
-    <ClCompile Include="OutputStasisArchiveInterface.cpp">
+    <ClCompile Include="OutputStasisFile.cpp">
       <Filter>Source Files\World\Serialization\Stasis</Filter>
     </ClCompile>
-    <ClCompile Include="InputWorldArchiveInterface.cpp">
+    <ClCompile Include="InputWorldFile.cpp">
       <Filter>Source Files\World\Serialization\World</Filter>
     </ClCompile>
-    <ClCompile Include="OutputWorldArchiveInterface.cpp">
+    <ClCompile Include="OutputWorldFile.cpp">
       <Filter>Source Files\World\Serialization\World</Filter>
     </ClCompile>
     <ClCompile Include="InputManager.cpp">
@@ -2275,7 +2230,7 @@
     <ClCompile Include="Field.cpp">
       <Filter>Source Files\World\Field</Filter>
     </ClCompile>
-    <ClCompile Include="InputFieldArchiveInterface.cpp">
+    <ClCompile Include="InputFieldFile.cpp">
       <Filter>Source Files\World\Serialization</Filter>
     </ClCompile>
     <ClCompile Include="LoggingCurator.cpp">
@@ -2298,9 +2253,6 @@
     </ClCompile>
     <ClCompile Include="ScriptManager.cpp">
       <Filter>Source Files\Scripting</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptManager.cpp">
-      <Filter>Source Files\Scripting\AngelScript</Filter>
     </ClCompile>
     <ClCompile Include="LineCurator.cpp">
       <Filter>Source Files\Render\Line</Filter>
@@ -2331,9 +2283,6 @@
     </ClCompile>
     <ClCompile Include="VulkanStagedBuffer.cpp">
       <Filter>Source Files\Render\Vulkan\Memory</Filter>
-    </ClCompile>
-    <ClCompile Include="VulkanCreateImageView.cpp">
-      <Filter>Source Files\Render\Vulkan\Images</Filter>
     </ClCompile>
     <ClCompile Include="VulkanCommandBuffer.cpp">
       <Filter>Source Files\Render\Vulkan\Commands</Filter>
@@ -2377,7 +2326,7 @@
     <ClCompile Include="VulkanLineRenderer.cpp">
       <Filter>Source Files\Render\Vulkan\Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="VulkanQuadRenderer.cpp">
+    <ClCompile Include="VulkanImageRenderer.cpp">
       <Filter>Source Files\Render\Vulkan\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="ImageAssetResource.cpp">
@@ -2470,13 +2419,13 @@
     <ClCompile Include="VersionUserContext.cpp">
       <Filter>Source Files\Serialization</Filter>
     </ClCompile>
-    <ClCompile Include="ArchiveHeader.cpp">
+    <ClCompile Include="FileHeader.cpp">
       <Filter>Source Files\Serialization</Filter>
     </ClCompile>
-    <ClCompile Include="InputAssetsArchiveInterface.cpp">
+    <ClCompile Include="InputAssetsFile.cpp">
       <Filter>Source Files\World\Serialization\Assets</Filter>
     </ClCompile>
-    <ClCompile Include="OutputAssetsArchiveInterface.cpp">
+    <ClCompile Include="OutputAssetsFile.cpp">
       <Filter>Source Files\World\Serialization\Assets</Filter>
     </ClCompile>
     <ClCompile Include="SimpleFile.cpp">
@@ -2518,20 +2467,11 @@
     <ClCompile Include="CreateStopwatch.cpp">
       <Filter>Source Files\Time</Filter>
     </ClCompile>
-    <ClCompile Include="AngelScriptAssetResource.cpp">
-      <Filter>Source Files\Scripting\AngelScript</Filter>
-    </ClCompile>
     <ClCompile Include="Script.cpp">
       <Filter>Source Files\Scripting</Filter>
     </ClCompile>
     <ClCompile Include="NullScriptManager.cpp">
       <Filter>Source Files\Scripting</Filter>
-    </ClCompile>
-    <ClCompile Include="OutputAngelScriptBytecodeStream.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Serialization</Filter>
-    </ClCompile>
-    <ClCompile Include="InputAngelScriptBytecodeStream.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Serialization</Filter>
     </ClCompile>
     <ClCompile Include="Asset.cpp">
       <Filter>Source Files\Assets</Filter>
@@ -2551,158 +2491,14 @@
     <ClCompile Include="ShaderAssetCurator.cpp">
       <Filter>Source Files\Assets\Shader</Filter>
     </ClCompile>
-    <ClCompile Include="AngelScriptResultVerification.cpp">
-      <Filter>Source Files\Scripting\AngelScript</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptRegistration.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Registration</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptGlobalRegistration.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Registration</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptName.cpp">
-      <Filter>Source Files\Scripting\AngelScript</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptGridPoint.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Spatial\Grid</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptAngle2D.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptAngle3D.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptPoint2D.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptPoint3D.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptScalers2D.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptScalers3D.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptSize2D.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptSize3D.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptAxisAlignedBox2D.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptAxisAlignedBox3D.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptSpatialAlgorithms.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptGridSpatialAlgorithms.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptColor.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptImageAsset.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Assets</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptFunctionManagement.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Management</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptAsset.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Assets</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptUserData.cpp">
-      <Filter>Source Files\Scripting\AngelScript</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptShaderAsset.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Assets</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptMaterialAsset.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Assets</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptAudioAsset.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Assets</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptScriptAsset.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Assets</Filter>
-    </ClCompile>
     <ClCompile Include="AudioCurator.cpp">
       <Filter>Source Files\Audio</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptRelicID.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Arca</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptDynamicImage.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptArcaUserData.cpp">
-      <Filter>Source Files\Scripting\AngelScript</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptBounds.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptImageCore.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptSignal.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Arca</Filter>
     </ClCompile>
     <ClCompile Include="ScriptResult.cpp">
       <Filter>Source Files\Scripting</Filter>
     </ClCompile>
-    <ClCompile Include="AngelScriptCamera.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptArcaCreate.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Arca</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptHandle.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Arca</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptArcaType.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Arca</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptArcaDestroy.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Arca</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptArcaAssign.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Arca</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptStopwatch.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Time</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptEntity.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Entity</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptArcaTraits.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Arca</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptArcaBatch.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Arca</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptScriptResource.cpp">
-      <Filter>Source Files\Scripting\AngelScript</Filter>
-    </ClCompile>
     <ClCompile Include="ScriptResource.cpp">
       <Filter>Source Files\Scripting</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptScript.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Script</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptScriptResult.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Script</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptScriptFinished.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Script</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptSuspendScript.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Script</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptCurrentScript.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Script</Filter>
     </ClCompile>
     <ClCompile Include="LoadAssetsByZipUserContext.cpp">
       <Filter>Source Files\Assets</Filter>
@@ -2710,20 +2506,8 @@
     <ClCompile Include="LoadAssetsUserContext.cpp">
       <Filter>Source Files\Assets</Filter>
     </ClCompile>
-    <ClCompile Include="AngelScriptCurrentEntity.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Entity</Filter>
-    </ClCompile>
     <ClCompile Include="MaterialAssetPass.cpp">
       <Filter>Source Files\Assets\Material</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptLine.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptGridRegion.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptTimePoint.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Time</Filter>
     </ClCompile>
     <ClCompile Include="SDLWindow.cpp">
       <Filter>Source Files\Window</Filter>
@@ -2737,38 +2521,11 @@
     <ClCompile Include="ActionAsset.cpp">
       <Filter>Source Files\Assets\Action</Filter>
     </ClCompile>
-    <ClCompile Include="AngelScriptActionAsset.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Assets</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptKey.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Input</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptActionDepressed.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Input</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptActionPressed.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Input</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptMouseMoved.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Input</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptTextEntered.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Input</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptActionActive.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Input</Filter>
-    </ClCompile>
     <ClCompile Include="ScriptDocumentationManager.cpp">
       <Filter>Source Files\Scripting\Documentation</Filter>
     </ClCompile>
     <ClCompile Include="NullScriptDocumentationManager.cpp">
       <Filter>Source Files\Scripting\Documentation</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptToWorldPoint2D.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptToWorldPoint3D.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
     </ClCompile>
     <ClCompile Include="ToWorldPoint2D.cpp">
       <Filter>Source Files\Spatial\Arca</Filter>
@@ -2776,17 +2533,8 @@
     <ClCompile Include="ToWorldPoint3D.cpp">
       <Filter>Source Files\Spatial\Arca</Filter>
     </ClCompile>
-    <ClCompile Include="AngelScriptBindAction.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Input</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptFindByBox.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Render</Filter>
-    </ClCompile>
     <ClCompile Include="InputInformation.cpp">
       <Filter>Source Files\Input</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptInputInformation.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Input</Filter>
     </ClCompile>
     <ClCompile Include="SDLAudioManager.cpp">
       <Filter>Source Files\Audio\SDL</Filter>
@@ -2824,24 +2572,6 @@
     <ClCompile Include="SoundResource.cpp">
       <Filter>Source Files\Audio</Filter>
     </ClCompile>
-    <ClCompile Include="AngelScriptUniversalSound.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Audio</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptPositionedSound.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Audio</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptChangeSoundVolume.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Audio</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptPauseSound.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Audio</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptResumeSound.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Audio</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptOpenRelic.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Arca</Filter>
-    </ClCompile>
     <ClCompile Include="DataAlgorithms.cpp">
       <Filter>Source Files\Data</Filter>
     </ClCompile>
@@ -2860,47 +2590,14 @@
     <ClCompile Include="DataCurator.cpp">
       <Filter>Source Files\Data\Arca</Filter>
     </ClCompile>
-    <ClCompile Include="AngelScriptProperty.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Data</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptModifyProperties.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Data</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptDataCore.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Data</Filter>
-    </ClCompile>
     <ClCompile Include="Property.cpp">
       <Filter>Source Files\Data</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptVariant.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Data</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptStringUtility.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Data</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptLoggingSeverity.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Logging</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptLog.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Logging</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptMath.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Math</Filter>
     </ClCompile>
     <ClCompile Include="WorldCurator.cpp">
       <Filter>Source Files\World</Filter>
     </ClCompile>
     <ClCompile Include="DataCore.cpp">
       <Filter>Source Files\Data\Arca</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptModifyWorldProperties.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\World</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptRetrieveWorldProperties.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\World</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptRequestField.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\World</Filter>
     </ClCompile>
     <ClCompile Include="LoggingSink.cpp">
       <Filter>Source Files\Logging</Filter>
@@ -2914,12 +2611,6 @@
     <ClCompile Include="AudioAssetCurator.cpp">
       <Filter>Source Files\Assets\Audio</Filter>
     </ClCompile>
-    <ClCompile Include="AngelScriptRestartSound.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Audio</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptSoundFinished.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Audio</Filter>
-    </ClCompile>
     <ClCompile Include="ScriptCurator.cpp">
       <Filter>Source Files\Scripting</Filter>
     </ClCompile>
@@ -2931,9 +2622,6 @@
     </ClCompile>
     <ClCompile Include="GenerateRandomNumber.cpp">
       <Filter>Source Files\Random</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptGenerateRandomNumber.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Random</Filter>
     </ClCompile>
     <ClCompile Include="EntityActualizationCurator.cpp">
       <Filter>Source Files\Entity</Filter>
@@ -2949,24 +2637,6 @@
     </ClCompile>
     <ClCompile Include="GridAxisAlignedBox.cpp">
       <Filter>Source Files\Spatial\Grid</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptGridSize.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Spatial\Grid</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptGridAxisAlignedBox.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Spatial\Grid</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\externaldependencies\angelscript\add_on\scriptarray\scriptarray.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Addon</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\externaldependencies\angelscript\add_on\scriptdictionary\scriptdictionary.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Addon</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\externaldependencies\angelscript\add_on\scripthelper\scripthelper.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Addon</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\externaldependencies\angelscript\add_on\scriptstdstring\scriptstdstring.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Addon</Filter>
     </ClCompile>
     <ClCompile Include="SDLSystem.cpp">
       <Filter>Source Files\System</Filter>
@@ -2995,9 +2665,6 @@
     <ClCompile Include="SDLFontAssetResource.cpp">
       <Filter>Source Files\Render\Text\SDL</Filter>
     </ClCompile>
-    <ClCompile Include="AngelScriptFontAsset.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Assets</Filter>
-    </ClCompile>
     <ClCompile Include="FontAssetCurator.cpp">
       <Filter>Source Files\Assets\Font</Filter>
     </ClCompile>
@@ -3007,62 +2674,29 @@
     <ClCompile Include="FontAssetResource.cpp">
       <Filter>Source Files\Assets\Font</Filter>
     </ClCompile>
-    <ClCompile Include="AngelScriptUIImage.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\UI</Filter>
-    </ClCompile>
     <ClCompile Include="UIText.cpp">
       <Filter>Source Files\UI</Filter>
     </ClCompile>
     <ClCompile Include="TextCore.cpp">
       <Filter>Source Files\Render\Text</Filter>
     </ClCompile>
-    <ClCompile Include="AngelScriptChangeMaterialAsset.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Render</Filter>
-    </ClCompile>
     <ClCompile Include="RenderCore.cpp">
       <Filter>Source Files\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptRenderCore.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Render</Filter>
     </ClCompile>
     <ClCompile Include="VulkanObjectLayering.cpp">
       <Filter>Source Files\Render\Vulkan\Renderer\Layering</Filter>
     </ClCompile>
-    <ClCompile Include="TextResource.cpp">
-      <Filter>Source Files\Render\Text</Filter>
-    </ClCompile>
-    <ClCompile Include="VulkanTextResource.cpp">
-      <Filter>Source Files\Render\Vulkan\Resource</Filter>
-    </ClCompile>
     <ClCompile Include="Text.cpp">
       <Filter>Source Files\Render\Text</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptUIText.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptChangeTextCore.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Render</Filter>
     </ClCompile>
     <ClCompile Include="DynamicText.cpp">
       <Filter>Source Files\Render\Text</Filter>
     </ClCompile>
-    <ClCompile Include="AngelScriptDynamicText.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Render</Filter>
-    </ClCompile>
     <ClCompile Include="ViewSlice.cpp">
       <Filter>Source Files\Render</Filter>
     </ClCompile>
-    <ClCompile Include="AngelScriptViewSlice.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptChangeViewSlice.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Render</Filter>
-    </ClCompile>
     <ClCompile Include="DiagnosticsCurator.cpp">
       <Filter>Source Files\Diagnostics</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptDiagnosticsStatistics.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Diagnostics</Filter>
     </ClCompile>
     <ClCompile Include="RenderStartCurator.cpp">
       <Filter>Source Files\Render</Filter>
@@ -3097,9 +2731,6 @@
     <ClCompile Include="VulkanPaths.cpp">
       <Filter>Source Files\Render\Vulkan</Filter>
     </ClCompile>
-    <ClCompile Include="AngelScriptPaths.cpp">
-      <Filter>Source Files\Scripting\AngelScript</Filter>
-    </ClCompile>
     <ClCompile Include="VulkanImage.cpp">
       <Filter>Source Files\Render\Vulkan\Images</Filter>
     </ClCompile>
@@ -3115,8 +2746,338 @@
     <ClCompile Include="VulkanRenderPass.cpp">
       <Filter>Source Files\Render\Vulkan</Filter>
     </ClCompile>
-    <ClCompile Include="AngelScriptPrimitive.cpp">
-      <Filter>Source Files\Scripting\AngelScript\Types</Filter>
+    <ClCompile Include="SDLTextError.cpp">
+      <Filter>Source Files\Render\Text\SDL</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanQuad.cpp">
+      <Filter>Source Files\Render\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanTextRenderer.cpp">
+      <Filter>Source Files\Render\Vulkan\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="GlyphAlgorithms.cpp">
+      <Filter>Source Files\Render\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanSampler.cpp">
+      <Filter>Source Files\Render\Vulkan\Images</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanGlyphAtlas.cpp">
+      <Filter>Source Files\Render\Vulkan\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="FontID.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptManager.cpp">
+      <Filter>Source Files\Scripting\JavaScript</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptScriptResource.cpp">
+      <Filter>Source Files\Scripting\JavaScript</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptVariant.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptResult.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptString.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptNumeric.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="Process.cpp">
+      <Filter>Source Files\Process</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptAssetResource.cpp">
+      <Filter>Source Files\Scripting\JavaScript</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptCompiler.cpp">
+      <Filter>Source Files\Scripting\JavaScript</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptSymbol.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptModule.cpp">
+      <Filter>Source Files\Scripting\JavaScript</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptBool.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptRegisterAll.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Registration</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptNameValuePair.cpp">
+      <Filter>Source Files\Scripting\JavaScript</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptObject.cpp">
+      <Filter>Source Files\Scripting\JavaScript</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptFunction.cpp">
+      <Filter>Source Files\Scripting\JavaScript</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptSyntheticModule.cpp">
+      <Filter>Source Files\Scripting\JavaScript</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptLogging.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Logging</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptLog.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Logging</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptReliquary.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Arca</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptTraits.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Arca</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptLoggingSeverity.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Logging</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptInput.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptSpatial.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Spatial</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptPoint2D.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Spatial</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptMouseMoved.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptActionAsset.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Asset</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptAsset.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Asset</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptKey.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptMessage.cpp">
+      <Filter>Source Files\Scripting\JavaScript</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptAudioAsset.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Asset</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptFontAsset.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Asset</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptImageAsset.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Asset</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptMaterialAsset.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Asset</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptScriptAsset.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Asset</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptShaderAsset.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Asset</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptPoint3D.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Spatial</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptAngle3D.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Spatial</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptAxisAlignedBox2D.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Spatial</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptAxisAlignedBox3D.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Spatial</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptSpace.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Spatial</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptBounds.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Spatial</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptSize2D.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Spatial</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptSize3D.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Spatial</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptScalers2D.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Spatial</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptScalers3D.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Spatial</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptImageAssetGridSize.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Asset</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptMaterialPass.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Asset</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptGridSize.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Spatial\Grid</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptGridPoint.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Spatial\Grid</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptGridAxisAlignedBox.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Spatial\Grid</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptToWorldPoint2D.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Spatial</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptToWorldPoint3D.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Spatial</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptGridSpatial.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Spatial\Grid</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptChangeSoundVolume.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptPauseSound.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptRestartSound.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptResumeSound.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptSoundFinished.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptUniversalSound.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptPositionedSound.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptAudio.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptDiagnosticsStatistics.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Diagnostics</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptDiagnosticsProfile.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Diagnostics</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptDiagnostics.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Diagnostics</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptEntity.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptEntityNamespace.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptFindEntityByName.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptFindEntityByPosition.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptMoveEntityTo.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptCanMoveEntityTo.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptModifyEntityTags.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptFindEntityPath.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptRequestField.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\World</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptTimePoint.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Time</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptTime.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Time</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptUIImage.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptUIText.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptUI.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptColor.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptViewSlice.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptTextBaseSize.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptRenderCore.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptLine.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptImageCore.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptGridRegion.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptFindImagesByBox.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptDynamicText.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptDynamicImage.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptChangeViewSlice.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptChangeTextCore.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptChangeMaterialAsset.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptCamera.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptFindLinesByBox.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptFindGridRegionsByBox.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptMoveGridRegion.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptRender.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptChangeImageCore.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptMoveLine.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptPaths.cpp">
+      <Filter>Source Files\Scripting\JavaScript</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptChangeColor.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptMoveBounds.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Spatial</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptRotateBounds.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Spatial</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptScaleBounds.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Spatial</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

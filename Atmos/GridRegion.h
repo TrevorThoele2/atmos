@@ -51,17 +51,17 @@ namespace Inscription
     public:
         using ObjectT = Atmos::Render::GridRegion;
     public:
-        template<class Archive>
-        void Scriven(ObjectT& object, Archive& archive)
+        template<class Format>
+        void Scriven(ObjectT& object, Format& format)
         {
-            archive("renderCore", object.renderCore);
-            archive("points", object.points);
-            archive("z", object.z);
+            format("renderCore", object.renderCore);
+            format("points", object.points);
+            format("z", object.z);
         }
     };
 
-    template<class Archive>
-    struct ScribeTraits<Atmos::Render::GridRegion, Archive> final
+    template<class Format>
+    struct ScribeTraits<Atmos::Render::GridRegion, Format> final
     {
         using Category = ArcaCompositeScribeCategory<Atmos::Render::GridRegion>;
     };

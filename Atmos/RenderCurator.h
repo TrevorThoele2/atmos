@@ -42,8 +42,8 @@ namespace Arca
 
 namespace Inscription
 {
-    template<class Archive>
-    struct ScribeTraits<Atmos::Render::Curator, Archive> final
+    template<class Format>
+    struct ScribeTraits<Atmos::Render::Curator, Format> final
     {
         using Category = ArcaNullScribeCategory<Atmos::Render::Curator>;
     };

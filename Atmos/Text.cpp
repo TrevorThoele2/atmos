@@ -42,6 +42,11 @@ namespace Atmos::Render
         return bounds->Position();
     }
 
+    Spatial::Scalers2D Text::Scalers() const
+    {
+        return bounds->Scalers();
+    }
+
     Spatial::Size2D Text::Size() const
     {
         return bounds->Size();

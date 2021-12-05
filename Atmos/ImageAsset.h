@@ -78,15 +78,15 @@ namespace Inscription
     public:
         using ObjectT = Atmos::Asset::Image;
     public:
-        template<class Archive>
-        void Scriven(ObjectT& object, Archive& archive)
+        template<class Format>
+        void Scriven(ObjectT& object, Format& format)
         {
             BaseScriven<Atmos::Asset::AssetWithResource<Atmos::Asset::Resource::Image>>(
-                object, archive);
-            archive("gridSize", object.gridSize);
-            if (archive.IsInput())
+                object, format);
+            format("gridSize", object.gridSize);
+            if (format.IsInput())
             {
-                auto& assetUserContext = *archive.template UserContext<LoadAssetsUserContext>();
+                auto& assetUserContext = *format.template UserContext<LoadAssetsUserContext>();
 
                 auto extracted = assetUserContext.LoadImageData(object.Name());
                 if (extracted)
@@ -111,8 +111,8 @@ namespace Inscription
         }
     };
 
-    template<class Archive>
-    struct ScribeTraits<Atmos::Asset::Image, Archive> final
+    template<class Format>
+    struct ScribeTraits<Atmos::Asset::Image, Format> final
     {
         using Category = ArcaCompositeScribeCategory<Atmos::Asset::Image>;
     };

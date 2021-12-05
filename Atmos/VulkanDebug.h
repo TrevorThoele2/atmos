@@ -14,7 +14,7 @@ namespace Atmos::Render::Vulkan
         explicit Debug(vk::Instance instance);
         ~Debug();
 
-        [[nodiscard]] VkDebugUtilsMessengerCreateInfoEXT CreateInfo();
+        [[nodiscard]] static VkDebugUtilsMessengerCreateInfoEXT CreateInfo();
     private:
         VkDebugUtilsMessengerEXT messenger = {};
 
@@ -23,6 +23,9 @@ namespace Atmos::Render::Vulkan
             VkDebugUtilsMessageTypeFlagsEXT messageType,
             const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
             void* pUserData);
+    private:
+        [[nodiscard]] static bool ShouldSkip(const String& string);
+        [[nodiscard]] static Logging::Severity From(VkDebugUtilsMessageSeverityFlagBitsEXT severity);
     private:
         vk::Instance instance;
     };

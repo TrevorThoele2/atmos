@@ -7,7 +7,7 @@
 #include "FilePath.h"
 #include "Property.h"
 
-#include "InputFieldArchiveInterface.h"
+#include "InputFieldFile.h"
 
 namespace Atmos::World
 {

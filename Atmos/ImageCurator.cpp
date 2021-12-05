@@ -106,13 +106,24 @@ namespace Atmos::Render
             const auto assetIndex = core.assetIndex;
             const auto position = ToRenderPoint(bounds.Position(), cameraTopLeft, boundsSpace);
             const auto rotation = bounds.Rotation();
+            const auto scalers = bounds.Scalers();
             const auto color = renderCore.color;
 
             const auto resource = const_cast<Asset::Resource::Image*>(asset->Resource());
             
-            const auto viewSlice = Owner().Find<ViewSlice>(id);
-            const auto assetSlice = asset->Slice(assetIndex);
-            const auto [size, slice] = ViewSliceDependent(viewSlice, assetSlice, bounds.Size());
+            const auto assetSize = asset->Size();
+            const auto assetSliceCenter = asset->Slice(assetIndex).center;
+            const auto assetSliceSize = asset->SliceSize();
+            const auto assetSliceStandard = ViewSliceClamp(
+                Owner().Find<ViewSlice>(id),
+                Spatial::ToAxisAlignedBox2D(0, 0, assetSliceSize.width, assetSliceSize.height));
+            const auto assetSlice = Spatial::AxisAlignedBox2D{
+                assetSliceStandard.center + Spatial::Point2D{
+                    assetSliceCenter.x - assetSliceSize.width / 2,
+                    assetSliceCenter.y - assetSliceSize.height / 2},
+                assetSliceStandard.size };
+            const auto slice = Spatial::ScaleOf(
+                assetSlice, Spatial::ToAxisAlignedBox2D(0, 0, assetSize.width, assetSize.height));
 
             const RenderImage render
             {
@@ -120,8 +131,8 @@ namespace Atmos::Render
                 slice,
                 material,
                 position,
-                size,
                 rotation,
+                scalers,
                 color,
                 ToRenderSpace(boundsSpace),
                 mainSurface.Resource()
@@ -194,22 +205,5 @@ namespace Atmos::Render
                 1
             }
         };
-    }
-
-    std::tuple<Spatial::Size2D, Spatial::AxisAlignedBox2D> ImageCurator::ViewSliceDependent(
-        Arca::Index<ViewSlice> viewSlice,
-        const Spatial::AxisAlignedBox2D& assetSlice,
-        const Spatial::Size2D& boundsSize)
-    {
-        if (viewSlice)
-        {
-            const auto standardPosition = Spatial::Point2D{ assetSlice.size.width / 2, assetSlice.size.height / 2 };
-            const auto viewSliceBox = viewSlice->box;
-            const auto delta = viewSliceBox.center - standardPosition;
-            const auto slice = Spatial::AxisAlignedBox2D{ assetSlice.center + delta, viewSliceBox.size };
-            return { viewSliceBox.size, slice };
-        }
-        else
-            return { boundsSize, assetSlice };
     }
 }

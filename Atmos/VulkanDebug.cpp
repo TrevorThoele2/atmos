@@ -55,35 +55,37 @@ namespace Atmos::Render::Vulkan
         const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
         void* pUserData)
     {
-        Logging::Severity severity;
         if (messageSeverity < VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT)
             return VK_FALSE;
 
-        switch (messageSeverity)
-        {
-        case VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT:
-            severity = Logging::Severity::Verbose;
-            break;
-        case VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT:
-            severity = Logging::Severity::Information;
-            break;
-        case VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT:
-            severity = Logging::Severity::Warning;
-            break;
-        case VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT:
-            severity = Logging::Severity::Error;
-            break;
-        default:
-            severity = Logging::Severity::Error;
-            break;
-        }
-
         const auto message = pCallbackData->pMessage ? pCallbackData->pMessage : String("No message.");
+        if (ShouldSkip(message))
+            return VK_FALSE;
 
-        logger->Log(
-            String(message),
-            severity);
+        logger->Log(String(message), From(messageSeverity));
 
         return VK_FALSE;
+    }
+
+    bool Debug::ShouldSkip(const String& string)
+    {
+        return Chroma::Contains(string, "UNASSIGNED-CoreValidation-DrawState-InvalidImageLayout");
+    }
+
+    Logging::Severity Debug::From(VkDebugUtilsMessageSeverityFlagBitsEXT severity)
+    {
+        switch (severity)
+        {
+        case VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT:
+            return Logging::Severity::Verbose;
+        case VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT:
+            return Logging::Severity::Information;
+        case VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT:
+            return Logging::Severity::Warning;
+        case VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT:
+            return Logging::Severity::Error;
+        default:
+            return Logging::Severity::Error;
+        }
     }
 }

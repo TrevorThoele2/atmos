@@ -42,16 +42,16 @@ namespace Inscription
     public:
         using ObjectT = Atmos::Render::ImageCore;
     public:
-        template<class Archive>
-        void Scriven(ObjectT& object, Archive& archive)
+        template<class Format>
+        void Scriven(ObjectT& object, Format& format)
         {
-            archive("asset", object.asset);
-            archive("assetIndex", object.assetIndex);
+            format("asset", object.asset);
+            format("assetIndex", object.assetIndex);
         }
     };
 
-    template<class Archive>
-    struct ScribeTraits<Atmos::Render::ImageCore, Archive> final
+    template<class Format>
+    struct ScribeTraits<Atmos::Render::ImageCore, Format> final
     {
         using Category = ArcaCompositeScribeCategory<Atmos::Render::ImageCore>;
     };

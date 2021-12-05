@@ -23,6 +23,7 @@ namespace Atmos::Render::Resource::Vulkan
             vk::Queue presentQueue,
             QueueFamilyIndices queueFamilyIndices,
             vk::PhysicalDeviceMemoryProperties memoryProperties,
+            GlyphAtlas& glyphAtlas,
             Logging::Logger& logger);
         ~BackingSurface();
 

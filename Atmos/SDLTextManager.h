@@ -14,13 +14,5 @@ namespace Atmos::Render::SDL
 
         [[nodiscard]] std::unique_ptr<Asset::Resource::Font> CreateFontResource(
             const Buffer& buffer, const Name& name) const override;
-
-        [[nodiscard]] TextData DataFor(
-            Asset::Resource::Font& font, const String& string, float wrapWidth, bool bold, bool italics) override;
-    private:
-        [[nodiscard]] static SDL_Surface* Surface(
-            TTF_Font& font, const std::vector<String>& strings, const SDL_Color& color, Uint32 wrapWidth);
-        [[nodiscard]] static TextData ExtractData(SDL_Surface& surface);
-        [[nodiscard]] static SDL_Color ColorFrom(const Color& color);
     };
 }

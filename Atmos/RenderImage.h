@@ -4,6 +4,7 @@
 #include "Point3D.h"
 #include "Size2D.h"
 #include "Angle2D.h"
+#include "Scalers2D.h"
 #include "AxisAlignedBox2D.h"
 #include "Color.h"
 #include "MaterialAsset.h"
@@ -19,8 +20,8 @@ namespace Atmos::Render
         Arca::Index<Asset::Material> material;
 
         Spatial::Point3D position;
-        Spatial::Size2D size;
         Spatial::Angle2D rotation;
+        Spatial::Scalers2D scalers;
 
         Color color;
 

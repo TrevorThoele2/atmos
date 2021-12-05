@@ -109,33 +109,33 @@ namespace Inscription
     public:
         static constexpr auto requiresScribe = false;
     public:
-        template<class Archive>
-        static void Scriven(ObjectT& object, Archive& archive);
-        template<class Archive>
-        static void Scriven(const std::string& name, ObjectT& object, Archive& archive);
+        template<class Format>
+        static void Scriven(ObjectT& object, Format& format);
+        template<class Format>
+        static void Scriven(const std::string& name, ObjectT& object, Format& format);
     public:
-        template<class Archive>
-        static Type OutputType(const Archive& archive);
+        template<class Format>
+        static Type OutputType(const Format& format);
     };
 
     template<class T>
-    template<class Archive>
-    void AssetScribeCategory<T>::Scriven(ObjectT& object, Archive& archive)
+    template<class Format>
+    void AssetScribeCategory<T>::Scriven(ObjectT& object, Format& format)
     {
-        if (archive.IsInput())
+        if (format.IsInput())
             object.ConstructMap();
     }
 
     template<class T>
-    template<class Archive>
-    void AssetScribeCategory<T>::Scriven(const std::string& name, ObjectT& object, Archive& archive)
+    template<class Format>
+    void AssetScribeCategory<T>::Scriven(const std::string& name, ObjectT& object, Format& format)
     {
-        Scriven(object, archive);
+        Scriven(object, format);
     }
 
     template<class T>
-    template<class Archive>
-    Type AssetScribeCategory<T>::OutputType(const Archive&)
+    template<class Format>
+    Type AssetScribeCategory<T>::OutputType(const Format&)
     {
         return Arca::TypeFor<T>().name;
     }

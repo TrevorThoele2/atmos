@@ -53,8 +53,8 @@ namespace Arca
 
 namespace Inscription
 {
-    template<class Archive>
-    struct ScribeTraits<Atmos::Spatial::Space, Archive>
+    template<class Format>
+    struct ScribeTraits<Atmos::Spatial::Space, Format>
     {
         using Category = EnumScribeCategory<Atmos::Spatial::Space>;
     };
@@ -65,19 +65,19 @@ namespace Inscription
     public:
         using ObjectT = Atmos::Spatial::Bounds;
     public:
-        template<class Archive>
-        void Scriven(ObjectT& object, Archive& archive)
+        template<class Format>
+        void Scriven(ObjectT& object, Format& format)
         {
-            archive("space", object.space);
-            archive("position", object.position);
-            archive("baseSize", object.baseSize);
-            archive("scalers", object.scalers);
-            archive("rotation", object.rotation);
+            format("space", object.space);
+            format("position", object.position);
+            format("baseSize", object.baseSize);
+            format("scalers", object.scalers);
+            format("rotation", object.rotation);
         }
     };
 
-    template<class Archive>
-    struct ScribeTraits<Atmos::Spatial::Bounds, Archive> final
+    template<class Format>
+    struct ScribeTraits<Atmos::Spatial::Bounds, Format> final
     {
         using Category = ArcaCompositeScribeCategory<Atmos::Spatial::Bounds>;
     };

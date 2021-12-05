@@ -3,7 +3,7 @@
 #include "ImageAsset.h"
 #include "ShaderAsset.h"
 #include "SurfaceResource.h"
-#include "TextResource.h"
+#include "FontAssetResource.h"
 
 #include "GraphicsReconstructionObjects.h"
 
@@ -11,9 +11,6 @@
 #include "FilePath.h"
 
 #include "Logger.h"
-
-//DELETEME
-#include "DiagnosticsStatistics.h"
 
 namespace Atmos::Render
 {
@@ -46,22 +43,17 @@ namespace Atmos::Render
             void* window);
         [[nodiscard]] std::unique_ptr<Resource::Surface> CreateMainSurfaceResource(
             void* window);
-        [[nodiscard]] std::unique_ptr<Resource::Text> CreateTextResource(
-            const Buffer& buffer, const Spatial::Size2D& size);
 
         void Stage(const RenderImage& render);
         void Stage(const RenderLine& render);
         void Stage(const RenderRegion& render);
         void Stage(const RenderText& render);
 
-        void Stage(const UpdateText& update);
-
-        void DrawFrame(Resource::Surface& surface, const Spatial::Point2D& mapPosition, const Color& backgroundColor, Diagnostics::Statistics::Profile& profile);
+        void DrawFrame(Resource::Surface& surface, const Spatial::Point2D& mapPosition, const Color& backgroundColor);
 
         void ResourceDestroying(Asset::Resource::Image& resource);
         void ResourceDestroying(Asset::Resource::Shader& resource);
         void ResourceDestroying(Resource::Surface& resource);
-        void ResourceDestroying(Resource::Text& resource);
 
         void PruneResources();
 
@@ -72,6 +64,9 @@ namespace Atmos::Render
         
         virtual void SetFullscreen(bool set) = 0;
         virtual void ChangeVerticalSync(bool set) = 0;
+
+        [[nodiscard]] Spatial::Size2D TextBaseSize(
+            const String& string, const Asset::Resource::Font& resource, bool bold, bool italics, float wrapWidth) const;
     protected:
         GraphicsManager(Logging::Logger& logger, String typeName);
     protected:
@@ -85,22 +80,17 @@ namespace Atmos::Render
             void* window) = 0;
         [[nodiscard]] virtual std::unique_ptr<Resource::Surface> CreateSurfaceResourceImpl(
             void* window) = 0;
-        [[nodiscard]] virtual std::unique_ptr<Resource::Text> CreateTextResourceImpl(
-            const Buffer& buffer, const Spatial::Size2D& size) = 0;
 
         virtual void StageImpl(const RenderImage& render) = 0;
         virtual void StageImpl(const RenderLine& render) = 0;
         virtual void StageImpl(const RenderRegion& render) = 0;
         virtual void StageImpl(const RenderText& render) = 0;
 
-        virtual void StageImpl(const UpdateText& update) = 0;
-
-        virtual void DrawFrameImpl(Resource::Surface& surface, const Spatial::Point2D& mapPosition, const Color& backgroundColor, Diagnostics::Statistics::Profile& profile) = 0;
+        virtual void DrawFrameImpl(Resource::Surface& surface, const Spatial::Point2D& mapPosition, const Color& backgroundColor) = 0;
 
         virtual void ResourceDestroyingImpl(Asset::Resource::Image& resource) = 0;
         virtual void ResourceDestroyingImpl(Asset::Resource::Shader& resource) = 0;
         virtual void ResourceDestroyingImpl(Resource::Surface& resource) = 0;
-        virtual void ResourceDestroyingImpl(Resource::Text& resource) = 0;
 
         virtual void PruneResourcesImpl() = 0;
 
@@ -108,8 +98,11 @@ namespace Atmos::Render
 
         [[nodiscard]] virtual bool ShouldReconstructInternals() const = 0;
         virtual void ReconstructInternals(GraphicsReconstructionObjects objects) = 0;
+
+        [[nodiscard]] virtual Spatial::Size2D TextBaseSizeImpl(
+            const String& string, const Asset::Resource::Font& resource, bool bold, bool italics, float wrapWidth) const = 0;
     protected:
-        Logging::Logger& Logger();
+        Logging::Logger& Logger() const;
     private:
         String typeName;
         Logging::Logger* logger;

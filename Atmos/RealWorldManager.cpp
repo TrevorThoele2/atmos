@@ -3,8 +3,8 @@
 #include "TypeRegistration.h"
 
 #include "LoadAssetsByZipUserContext.h"
-#include "InputWorldArchiveInterface.h"
-#include "InputStasisArchiveInterface.h"
+#include "InputWorldFile.h"
+#include "InputStasisFile.h"
 
 #include <Chroma/Contract.h>
 
@@ -117,14 +117,14 @@ namespace Atmos::World
         }
         else
         {
-            auto inputArchiveInterface = InputArchiveInterface(*loadAssetsUserContext);
-            SetFieldIDs(inputArchiveInterface->AllFieldIDs());
-            currentField = inputArchiveInterface->ExtractField(id, std::move(reliquary));
-            currentProperties = inputArchiveInterface->WorldProperties();
+            auto file = InputFile(*loadAssetsUserContext);
+            SetFieldIDs(file->AllFieldIDs());
+            currentField = file->ExtractField(id, std::move(reliquary));
+            currentProperties = file->WorldProperties();
         }
     }
 
-    std::unique_ptr<Serialization::InputFieldArchiveInterface> RealManager::InputArchiveInterface(
+    std::unique_ptr<Serialization::InputFieldFile> RealManager::InputFile(
         Inscription::LoadAssetsUserContext& loadAssetsUserContext) const
     {
         DEBUG_ASSERT(utilization.has_value());
@@ -134,13 +134,13 @@ namespace Atmos::World
         if (std::holds_alternative<WorldUtilization>(value))
         {
             auto& utilization = std::get<WorldUtilization>(value);
-            return std::make_unique<Serialization::InputWorldArchiveInterface>(
+            return std::make_unique<Serialization::InputWorldFile>(
                 utilization.filePath, loadAssetsUserContext);
         }
         else if (std::holds_alternative<StasisUtilization>(value))
         {
             auto& utilization = std::get<StasisUtilization>(value);
-            return std::make_unique<Serialization::InputStasisArchiveInterface>(
+            return std::make_unique<Serialization::InputStasisFile>(
                 utilization.filePath, loadAssetsUserContext);
         }
 

@@ -33,13 +33,13 @@ namespace Inscription
     public:
         using ObjectT = Atmos::Asset::Asset;
     public:
-        template<class Archive>
-        void Scriven(ObjectT&, Archive&)
+        template<class Format>
+        void Scriven(ObjectT&, Format&)
         {}
     };
 
-    template<class Archive>
-    struct ScribeTraits<Atmos::Asset::Asset, Archive>
+    template<class Format>
+    struct ScribeTraits<Atmos::Asset::Asset, Format>
     {
         using Category = ArcaCompositeScribeCategory<Atmos::Asset::Asset>;
     };

@@ -24,7 +24,7 @@ namespace Atmos::Render
         const auto mainSurface = Owner().Find<MainSurface>();
         const auto backgroundColor = mainSurface->core->backgroundColor;
 
-        graphicsManager->DrawFrame(*mainSurface->Resource(), mapPosition, backgroundColor, MutablePointer().Of<Diagnostics::Statistics>()->misc);
+        graphicsManager->DrawFrame(*mainSurface->Resource(), mapPosition, backgroundColor);
     }
 
     void Curator::Handle(const ChangeColor& command)

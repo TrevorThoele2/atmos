@@ -119,15 +119,15 @@ namespace Inscription
     public:
         using ObjectT = Atmos::Asset::AssetWithResource<AssetData>;
     public:
-        template<class Archive>
-        void Scriven(ObjectT& object, Archive& archive)
+        template<class Format>
+        void Scriven(ObjectT& object, Format& format)
         {
-            Inscription::BaseScriven<Atmos::Asset::Asset>(object, archive);
+            Inscription::BaseScriven<Atmos::Asset::Asset>(object, format);
         }
     };
 
-    template<class AssetData, class Archive>
-    struct ScribeTraits<Atmos::Asset::AssetWithResource<AssetData>, Archive> final
+    template<class AssetData, class Format>
+    struct ScribeTraits<Atmos::Asset::AssetWithResource<AssetData>, Format> final
     {
         using Category = ArcaCompositeScribeCategory<Atmos::Asset::AssetWithResource<AssetData>>;
     };

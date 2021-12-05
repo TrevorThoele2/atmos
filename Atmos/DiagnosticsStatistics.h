@@ -50,8 +50,29 @@ namespace Arca
 
 namespace Inscription
 {
-    template<class Archive>
-    struct ScribeTraits<Atmos::Diagnostics::Statistics, Archive> final
+    template<>
+    class Scribe<Atmos::Diagnostics::Statistics::Profile> final
+    {
+    public:
+        using ObjectT = Atmos::Diagnostics::Statistics::Profile;
+    public:
+        template<class Format>
+        void Scriven(ObjectT& object, Format& format)
+        {
+            format("time", object.time);
+            format("average", object.average);
+            format("highest", object.highest);
+        }
+    };
+
+    template<class Format>
+    struct ScribeTraits<Atmos::Diagnostics::Statistics::Profile, Format> final
+    {
+        using Category = ArcaCompositeScribeCategory<Atmos::Diagnostics::Statistics::Profile>;
+    };
+
+    template<class Format>
+    struct ScribeTraits<Atmos::Diagnostics::Statistics, Format> final
     {
         using Category = ArcaNullScribeCategory<Atmos::Diagnostics::Statistics>;
     };

@@ -5,9 +5,12 @@
 #include "VulkanMemoryPool.h"
 #include "VulkanUniversalDataBuffer.h"
 
-#include "VulkanQuadRenderer.h"
+#include "VulkanImageRenderer.h"
 #include "VulkanLineRenderer.h"
 #include "VulkanRegionRenderer.h"
+#include "VulkanTextRenderer.h"
+
+#include "VulkanGlyphAtlas.h"
 
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
@@ -36,6 +39,7 @@ namespace Atmos::Render::Vulkan
             vk::Queue presentQueue,
             uint32_t graphicsQueueIndex,
             vk::PhysicalDeviceMemoryProperties memoryProperties,
+            GlyphAtlas& glyphAtlas,
             Logging::Logger& logger);
         ~MasterRenderer();
 
@@ -69,15 +73,18 @@ namespace Atmos::Render::Vulkan
 
         struct RendererGroup
         {
-            QuadRenderer quad;
+            ImageRenderer image;
             LineRenderer line;
             RegionRenderer region;
+            TextRenderer text;
+
             RendererGroup(
                 vk::Device device,
                 vk::Queue graphicsQueue,
                 vk::PhysicalDeviceMemoryProperties memoryProperties,
                 vk::RenderPass renderPass,
-                vk::Extent2D swapchainExtent);
+                vk::Extent2D swapchainExtent,
+                GlyphAtlas& glyphAtlas);
             RendererGroup(RendererGroup&& arg) noexcept = default;
 
             [[nodiscard]] IterableRenderers AsIterable();
@@ -95,7 +102,6 @@ namespace Atmos::Render::Vulkan
             UniversalData universalData,
             vk::Framebuffer framebuffer,
             vk::CommandBuffer commandBuffer);
-        static void ClearImage(vk::Image image, std::array<float, 4> color, vk::CommandBuffer commandBuffer);
     private:
         vk::SwapchainKHR swapchain;
         vk::Extent2D swapchainExtent;
@@ -128,6 +134,8 @@ namespace Atmos::Render::Vulkan
 
         [[nodiscard]] static std::vector<vk::UniqueSemaphore> CreateSemaphores(vk::Device device, size_t count);
         [[nodiscard]] static std::vector<vk::UniqueFence> CreateFences(vk::Device device, size_t count);
+    private:
+        GlyphAtlas* glyphAtlas;
     private:
         Logging::Logger* logger;
     };

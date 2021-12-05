@@ -4,7 +4,7 @@
 
 #include <Atmos/FileLoggingSink.h>
 #include <Atmos/Logger.h>
-#include <Inscription/InputTextArchive.h>
+#include <Inscription/Plaintext.h>
 
 using namespace Atmos;
 
@@ -25,8 +25,10 @@ SCENARIO_METHOD(FileLoggingSinkTestsFixture, "file logging sinks", "[logging]")
                 std::string output;
 
                 {
-                    auto archive = Inscription::Archive::InputText(std::filesystem::current_path() / "log.txt");
-                    archive.ReadSize(output);
+                    auto file = Inscription::File::InputText(std::filesystem::current_path() / "log.txt");
+                    auto archive = Inscription::Archive::InputText(file);
+                    auto format = Inscription::Format::InputPlaintext(archive);
+                    format.ReadSize(output);
                 }
                 
                 REQUIRE(output.find("<INFORMATION> \n") != std::string::npos);

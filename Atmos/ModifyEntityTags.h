@@ -7,7 +7,7 @@ namespace Atmos::Entity
 {
     struct ModifyTags
     {
-        Arca::Index<Entity> entity;
+        Arca::RelicID entity;
         std::vector<String> add;
         std::vector<String> remove;
     };

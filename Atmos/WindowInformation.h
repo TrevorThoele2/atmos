@@ -27,8 +27,8 @@ namespace Arca
 
 namespace Inscription
 {
-    template<class Archive>
-    struct ScribeTraits<Atmos::Window::Information, Archive> final
+    template<class Format>
+    struct ScribeTraits<Atmos::Window::Information, Format> final
     {
         using Category = ArcaNullScribeCategory<Atmos::Window::Information>;
     };

@@ -24,7 +24,8 @@ namespace Atmos::Entity
             Arca::RelicInit init,
             Name name,
             Spatial::Grid::Point position,
-            bool isSolid);
+            bool isSolid,
+            const std::vector<Tag>& tags);
 
         bool operator==(const Entity& arg) const;
         bool operator!=(const Entity& arg) const;
@@ -42,7 +43,8 @@ namespace Arca
             Reliquary& reliquary,
             const Atmos::Name& name,
             const Atmos::Spatial::Grid::Point& position,
-            bool isSolid);
+            bool isSolid,
+            const std::vector<Atmos::Tag>& tags);
     };
 }
 
@@ -54,18 +56,18 @@ namespace Inscription
     public:
         using ObjectT = Atmos::Entity::Entity;
     public:
-        template<class Archive>
-        void Scriven(ObjectT& object, Archive& archive)
+        template<class Format>
+        void Scriven(ObjectT& object, Format& format)
         {
-            archive("name", object.name);
-            archive("position", object.position);
-            archive("isSolid", object.isSolid);
-            archive("tags", object.tags);
+            format("name", object.name);
+            format("position", object.position);
+            format("isSolid", object.isSolid);
+            format("tags", object.tags);
         }
     };
 
-    template<class Archive>
-    struct ScribeTraits<Atmos::Entity::Entity, Archive> final
+    template<class Format>
+    struct ScribeTraits<Atmos::Entity::Entity, Format> final
     {
         using Category = ArcaCompositeScribeCategory<Atmos::Entity::Entity>;
     };

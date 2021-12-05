@@ -37,6 +37,7 @@ namespace Atmos::Render::Vulkan
             vk::DeviceSize size;
             uint32_t memoryType;
             std::vector<Reservation> reservations;
+            std::set<size_t> freedReservationIDs;
         };
         std::vector<Allocation> allocations;
 
@@ -55,28 +56,12 @@ namespace Atmos::Render::Vulkan
         [[nodiscard]] std::vector<Allocation>::iterator FindAllocation(size_t id);
         [[nodiscard]] std::vector<Reservation>::iterator FindReservation(size_t id, Allocation& allocation);
 
-        template<class T>
-        [[nodiscard]] static size_t NextID(const std::vector<T>& vector);
-
         [[nodiscard]] uint32_t SuitableMemoryType(uint32_t typeFilter, vk::MemoryPropertyFlags flags);
 
         [[nodiscard]] UniqueMemory ToMemory(const Block& block);
+
+        [[nodiscard]] static size_t NextReservationID(Allocation& allocation);
     private:
         vk::Device device;
     };
-
-    template<class T>
-    size_t MemoryPool::NextID(const std::vector<T>& vector)
-    {
-        std::set<size_t> ids;
-
-        for (auto& value : vector)
-            ids.emplace(value.id);
-
-        for (size_t nextID = 1; nextID < std::numeric_limits<size_t>::max(); ++nextID)
-            if (ids.find(nextID) == ids.end())
-                return nextID;
-
-        throw GraphicsError("Could not find next ID for memory pool.");
-    }
 }

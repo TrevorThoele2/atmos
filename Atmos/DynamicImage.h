@@ -48,13 +48,13 @@ namespace Inscription
     public:
         using ObjectT = Atmos::Render::DynamicImage;
     public:
-        template<class Archive>
-        void Scriven(ObjectT&, Archive&)
+        template<class Format>
+        void Scriven(ObjectT&, Format&)
         {}
     };
 
-    template<class Archive>
-    struct ScribeTraits<Atmos::Render::DynamicImage, Archive> final
+    template<class Format>
+    struct ScribeTraits<Atmos::Render::DynamicImage, Format> final
     {
         using Category = ArcaCompositeScribeCategory<Atmos::Render::DynamicImage>;
     };

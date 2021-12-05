@@ -50,15 +50,15 @@ namespace Inscription
     public:
         using ObjectT = Atmos::Asset::Script;
     public:
-        template<class Archive>
-        void Scriven(ObjectT& object, Archive& archive)
+        template<class Format>
+        void Scriven(ObjectT& object, Format& format)
         {
             BaseScriven<Atmos::Asset::AssetWithResource<Atmos::Asset::Resource::Script>>(
-                object, archive);
+                object, format);
 
-            if (archive.IsInput())
+            if (format.IsInput())
             {
-                auto& assetUserContext = *archive.template UserContext<LoadAssetsUserContext>();
+                auto& assetUserContext = *format.template UserContext<LoadAssetsUserContext>();
 
                 auto extracted = assetUserContext.LoadScriptData(object.Name());
                 if (extracted)
@@ -76,8 +76,8 @@ namespace Inscription
         }
     };
 
-    template<class Archive>
-    struct ScribeTraits<Atmos::Asset::Script, Archive> final
+    template<class Format>
+    struct ScribeTraits<Atmos::Asset::Script, Format> final
     {
         using Category = ArcaCompositeScribeCategory<Atmos::Asset::Script>;
     };

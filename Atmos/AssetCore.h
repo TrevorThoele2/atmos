@@ -36,15 +36,15 @@ namespace Inscription
     public:
         using ObjectT = Atmos::Asset::Core;
     public:
-        template<class Archive>
-        void Scriven(ObjectT& object, Archive& archive)
+        template<class Format>
+        void Scriven(ObjectT& object, Format& format)
         {
-            archive("name", object.name);
+            format("name", object.name);
         }
     };
 
-    template<class Archive>
-    struct ScribeTraits<Atmos::Asset::Core, Archive> final
+    template<class Format>
+    struct ScribeTraits<Atmos::Asset::Core, Format> final
     {
         using Category = ArcaCompositeScribeCategory<Atmos::Asset::Core>;
     };

@@ -29,16 +29,16 @@ namespace Inscription
     public:
         using ObjectT = Atmos::Spatial::Point2D;
     public:
-        template<class Archive>
-        void Scriven(ObjectT& object, Archive& archive)
+        template<class Format>
+        void Scriven(ObjectT& object, Format& format)
         {
-            archive("x", object.x);
-            archive("y", object.y);
+            format("x", object.x);
+            format("y", object.y);
         }
     };
 
-    template<class Archive>
-    struct ScribeTraits<Atmos::Spatial::Point2D, Archive> final
+    template<class Format>
+    struct ScribeTraits<Atmos::Spatial::Point2D, Format> final
     {
         using Category = CompositeScribeCategory<Atmos::Spatial::Point2D>;
     };

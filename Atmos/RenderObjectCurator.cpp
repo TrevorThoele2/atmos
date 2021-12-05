@@ -1,5 +1,7 @@
 #include "RenderObjectCurator.h"
 
+#include "SpatialAlgorithms.h"
+
 namespace Atmos::Render
 {
     ObjectCurator::ObjectCurator(Init init) :
@@ -76,5 +78,14 @@ namespace Atmos::Render
     Spatial::Point3D ObjectCurator::ToScreenPoint(Spatial::Point3D position)
     {
         return position;
+    }
+
+    Spatial::AxisAlignedBox2D ObjectCurator::ViewSliceClamp(
+        Arca::Index<ViewSlice> viewSlice,
+        const Spatial::AxisAlignedBox2D& box)
+    {
+        auto viewSliceValue = viewSlice.Get();
+        auto viewSliceBox = viewSliceValue ? viewSliceValue->box : box;
+        return Spatial::Clamp(box, viewSliceBox);
     }
 }

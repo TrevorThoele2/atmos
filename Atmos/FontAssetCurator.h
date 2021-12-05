@@ -30,8 +30,8 @@ namespace Arca
 
 namespace Inscription
 {
-    template<class Archive>
-    struct ScribeTraits<Atmos::Asset::FontCurator, Archive> final
+    template<class Format>
+    struct ScribeTraits<Atmos::Asset::FontCurator, Format> final
     {
         using Category = AssetScribeCategory<Atmos::Asset::FontCurator>;
     };

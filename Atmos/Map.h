@@ -37,16 +37,16 @@ namespace Inscription
     public:
         using ObjectT = Atmos::World::Map;
     public:
-        template<class Archive>
-        void Scriven(ObjectT& object, Archive& archive)
+        template<class Format>
+        void Scriven(ObjectT& object, Format& format)
         {
-            archive("terrain", object.terrain);
-            archive("entityBoundary", object.entityBoundary);
+            format("terrain", object.terrain);
+            format("entityBoundary", object.entityBoundary);
         }
     };
 
-    template<class Archive>
-    struct ScribeTraits<Atmos::World::Map, Archive> final
+    template<class Format>
+    struct ScribeTraits<Atmos::World::Map, Format> final
     {
         using Category = ArcaCompositeScribeCategory<Atmos::World::Map>;
     };

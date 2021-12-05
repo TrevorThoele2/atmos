@@ -16,11 +16,13 @@ namespace Atmos::Entity
         Arca::RelicInit init,
         Name name,
         Spatial::Grid::Point position,
-        bool isSolid)
+        bool isSolid,
+        const std::vector<Tag>& tags)
         :
         name(name),
         position(position),
-        isSolid(isSolid)
+        isSolid(isSolid),
+        tags(tags)
     {
         init.Create<DataCore>();
     }
@@ -42,7 +44,8 @@ namespace Arca
         Reliquary& reliquary,
         const Atmos::Name& name,
         const Atmos::Spatial::Grid::Point& position,
-        bool isSolid)
+        bool isSolid,
+        const std::vector<Atmos::Tag>& tags)
     {
         const auto mappedEntities = reliquary.Find<Atmos::Entity::Mapped>();
         if (mappedEntities->nameToEntity.find(name) != mappedEntities->nameToEntity.end())

@@ -330,3 +330,52 @@ SCENARIO_METHOD(SpatialAlgorithmsTestsFixture, "clamp algorithms", "[spatial]")
         }
     }
 }
+
+SCENARIO_METHOD(SpatialAlgorithmsTestsFixture, "ScaleOf", "[spatial]")
+{
+    GIVEN("2D axis aligned boxes")
+    {
+        GIVEN("overlapping box")
+        {
+            const auto box = ToAxisAlignedBox2D(5, 5, 15, 15);
+            const auto against = ToAxisAlignedBox2D(0, 0, 10, 10);
+
+            WHEN("retrieve ScaleOf")
+            {
+                const auto result = ScaleOf(box, against);
+
+                THEN("returns correct result")
+                {
+                    REQUIRE(result.Left() == Approx(0.5));
+                    REQUIRE(result.Top() == Approx(0.5));
+                    REQUIRE(result.Right() == Approx(1.5));
+                    REQUIRE(result.Bottom() == Approx(1.5));
+                }
+            }
+        }
+    }
+
+    GIVEN("3D axis aligned boxes")
+    {
+        GIVEN("overlapping box")
+        {
+            const auto box = ToAxisAlignedBox3D(5, 5, 5, 15, 15, 15);
+            const auto against = ToAxisAlignedBox3D(0, 0, 0, 10, 10, 10);
+
+            WHEN("retrieve ScaleOf")
+            {
+                const auto result = ScaleOf(box, against);
+
+                THEN("returns correct result")
+                {
+                    REQUIRE(result.Left() == Approx(0.5));
+                    REQUIRE(result.Top() == Approx(0.5));
+                    REQUIRE(result.FarZ() == Approx(0.5));
+                    REQUIRE(result.Right() == Approx(1.5));
+                    REQUIRE(result.Bottom() == Approx(1.5));
+                    REQUIRE(result.NearZ() == Approx(1.5));
+                }
+            }
+        }
+    }
+}

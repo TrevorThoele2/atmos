@@ -76,8 +76,8 @@ namespace Arca
 
 namespace Inscription
 {
-    template<class Archive>
-    struct ScribeTraits<Atmos::Render::GridRegionCurator, Archive> final
+    template<class Format>
+    struct ScribeTraits<Atmos::Render::GridRegionCurator, Format> final
     {
         using Category = ArcaNullScribeCategory<Atmos::Render::GridRegionCurator>;
     };

@@ -47,9 +47,9 @@ namespace Atmos::Scripting
         script->Resource()->Suspend();
     }
 
-    Buffer Curator::Handle(const Compile& command)
+    std::vector<CompiledModule> Curator::Handle(const Compile& command)
     {
-        return manager->Compile(command.module, command.sharedData);
+        return manager->Compile(command.modules);
     }
 
     std::optional<Result> Curator::Handle(const Execute& command)
@@ -93,7 +93,8 @@ namespace Atmos::Scripting
 
         if (!script->Resource())
         {
-            auto resource = manager->CreateScriptResource(script->asset->Name(), script->executeName, script->parameters);
+            auto resource = manager->CreateScriptResource(
+                *script->asset->Resource(), script->asset->Name(), script->executeName, script->parameters);
             script->Setup(std::move(resource));
         }
 

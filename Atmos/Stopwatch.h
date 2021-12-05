@@ -51,13 +51,13 @@ namespace Inscription
     public:
         using ObjectT = Atmos::Time::Stopwatch;
     public:
-        template<class Archive>
-        void Scriven(ObjectT&, Archive&)
+        template<class Format>
+        void Scriven(ObjectT&, Format&)
         {}
     };
 
-    template<class Archive>
-    struct ScribeTraits<Atmos::Time::Stopwatch, Archive> final
+    template<class Format>
+    struct ScribeTraits<Atmos::Time::Stopwatch, Format> final
     {
         using Category = CompositeScribeCategory<Atmos::Time::Stopwatch>;
     };
