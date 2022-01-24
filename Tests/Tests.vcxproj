@@ -152,6 +152,7 @@
     <ClCompile Include="JavaScriptGlobalRelicTests.cpp" />
     <ClCompile Include="JavaScriptInputTests.cpp" />
     <ClCompile Include="JavaScriptLoggingTests.cpp" />
+    <ClCompile Include="JavaScriptMathTests.cpp" />
     <ClCompile Include="JavaScriptParameterTests.cpp" />
     <ClCompile Include="JavaScriptLocalRelicTests.cpp" />
     <ClCompile Include="JavaScriptRenderTests.cpp" />
@@ -206,6 +207,7 @@
     <ClInclude Include="JavaScriptGlobalRelicTests.h" />
     <ClInclude Include="JavaScriptInputTests.h" />
     <ClInclude Include="JavaScriptLoggingTests.h" />
+    <ClInclude Include="JavaScriptMathTests.h" />
     <ClInclude Include="JavaScriptParameterTests.h" />
     <ClInclude Include="JavaScriptLocalRelicTests.h" />
     <ClInclude Include="JavaScriptRenderTests.h" />

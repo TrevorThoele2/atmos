@@ -30,17 +30,17 @@ namespace Atmos::Render::Vulkan
 
             return Spatial::Point2D
             {
-                rotatedX + rotationCenter.x + center.x,
-                rotatedY + rotationCenter.y + center.y
+                rotatedX + rotationCenter.x,
+                rotatedY + rotationCenter.y
             };
         };
 
         const auto halfWidth = size.width / 2;
         const auto halfHeight = size.height / 2;
-        const auto topLeft = rotateAndTranslate({ -halfWidth, -halfHeight });
-        const auto topRight = rotateAndTranslate({ halfWidth, -halfHeight });
-        const auto bottomLeft = rotateAndTranslate({ -halfWidth, halfHeight });
-        const auto bottomRight = rotateAndTranslate({ halfWidth, halfHeight });
+        const auto topLeft = rotateAndTranslate({ center.x - halfWidth, center.y - halfHeight });
+        const auto topRight = rotateAndTranslate({ center.x + halfWidth, center.y - halfHeight });
+        const auto bottomLeft = rotateAndTranslate({ center.x - halfWidth, center.y + halfHeight });
+        const auto bottomRight = rotateAndTranslate({ center.x + halfWidth, center.y + halfHeight });
 
         const auto useColor = AtmosToVulkanColor(color);
 

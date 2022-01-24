@@ -4,13 +4,37 @@
 
 namespace Atmos::Render::Vulkan
 {
-    DescriptorSetPool::DescriptorSetPool(
+    DescriptorSetPool::DescriptorSetPool(const std::vector<Definition>& definitions, vk::Device device) :
+        definitions(definitions), device(device), descriptorSetLayout(CreateDescriptorSetLayout(definitions, device))
+    {}
+
+    std::vector<vk::DescriptorSet> DescriptorSetPool::Retrieve(uint32_t count)
+    {
+        if (count > descriptorSets.size())
+            Allocate(count);
+
+        std::vector<vk::DescriptorSet> retrievedDescriptorSets;
+        for (uint32_t i = 0; i < count; ++i)
+            retrievedDescriptorSets.push_back(descriptorSets[i]);
+
+        return retrievedDescriptorSets;
+    }
+
+    size_t DescriptorSetPool::Size() const
+    {
+        return descriptorSets.size();
+    }
+
+    vk::DescriptorSetLayout DescriptorSetPool::DescriptorSetLayout() const
+    {
+        return descriptorSetLayout.get();
+    }
+
+    vk::UniqueDescriptorSetLayout DescriptorSetPool::CreateDescriptorSetLayout(
         const std::vector<Definition>& definitions, vk::Device device)
-        :
-        definitions(definitions), device(device)
     {
         if (definitions.empty())
-            throw GraphicsError("DescriptorSetGroup requires definitions.");
+            throw GraphicsError("DescriptorSetPool requires definitions.");
 
         std::vector<vk::DescriptorSetLayoutBinding> bindings;
         for (auto& definition : definitions)
@@ -22,44 +46,12 @@ namespace Atmos::Render::Vulkan
             binding.stageFlags = definition.stageFlags;
             bindings.push_back(binding);
         }
-        const vk::DescriptorSetLayoutCreateInfo descriptorSetLayoutCreateInfo({}, bindings.size(), bindings.data());
-        descriptorSetLayout = device.createDescriptorSetLayoutUnique(descriptorSetLayoutCreateInfo);
+        const auto createInfo = vk::DescriptorSetLayoutCreateInfo({}, bindings.size(), bindings.data());
+
+        return device.createDescriptorSetLayoutUnique(createInfo);
     }
 
-    void DescriptorSetPool::Reserve(uint32_t count)
-    {
-        if (count <= availableDescriptorSets.size())
-            return;
-
-        AttemptAllocate(count);
-    }
-
-    void DescriptorSetPool::Reset()
-    {
-        availableDescriptorSets = allDescriptorSets;
-    }
-
-    vk::DescriptorSet DescriptorSetPool::Next()
-    {
-        if (availableDescriptorSets.empty())
-            AttemptAllocate(allDescriptorSets.size() + 1);
-
-        const auto returnValue = availableDescriptorSets[availableDescriptorSets.size() - 1];
-        availableDescriptorSets.pop_back();
-        return returnValue;
-    }
-
-    size_t DescriptorSetPool::Size() const
-    {
-        return allDescriptorSets.size();
-    }
-
-    vk::DescriptorSetLayout DescriptorSetPool::DescriptorSetLayout() const
-    {
-        return descriptorSetLayout.get();
-    }
-
-    void DescriptorSetPool::AttemptAllocate(uint32_t count)
+    void DescriptorSetPool::Allocate(uint32_t count)
     {
         std::vector<vk::DescriptorPoolSize> poolSizes;
 
@@ -67,7 +59,7 @@ namespace Atmos::Render::Vulkan
         {
             vk::DescriptorPoolSize poolSize;
             poolSize.type = definition.type;
-            poolSize.descriptorCount = definition.count;
+            poolSize.descriptorCount = definition.count * count;
             poolSizes.push_back(poolSize);
         }
 
@@ -76,7 +68,6 @@ namespace Atmos::Render::Vulkan
 
         const std::vector layouts(count, *descriptorSetLayout);
         const vk::DescriptorSetAllocateInfo descriptorSetAllocateInfo(*descriptorPool, count, layouts.data());
-        allDescriptorSets = device.allocateDescriptorSets(descriptorSetAllocateInfo);
-        availableDescriptorSets = allDescriptorSets;
+        descriptorSets = device.allocateDescriptorSets(descriptorSetAllocateInfo);
     }
 }

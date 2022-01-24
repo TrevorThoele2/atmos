@@ -11,6 +11,7 @@
 #include "JavaScriptLogging.h"
 #include "JavaScriptEntityNamespace.h"
 #include "JavaScriptTime.h"
+#include "JavaScriptMath.h"
 
 namespace Atmos::Scripting::JavaScript
 {
@@ -29,7 +30,8 @@ namespace Atmos::Scripting::JavaScript
                     { "Logging", Type<LoggingNamespace>::Register(data) },
                     { "Reliquary", Type<ReliquaryNamespace>::Register(data) },
                     { "Entity", Type<EntityNamespace>::Register(data) },
-                    { "Time", Type<TimeNamespace>::Register(data) }
+                    { "Time", Type<TimeNamespace>::Register(data) },
+                    { "Math", Type<MathNamespace>::Register(data) }
                 });
 
             SetSyntheticModuleExport(*isolate, module, "Atmos", atmosObject);

@@ -17,7 +17,7 @@ namespace Atmos::Scripting::JavaScript
     {
         Arca::RelicID id;
         String string;
-        std::optional<FontAsset> asset;
+        std::optional<FontAsset> font;
         std::optional<MaterialAsset> material;
         float wrapWidth;
         bool bold;
@@ -41,7 +41,7 @@ namespace Atmos::Scripting::JavaScript
         {
             Property<Arca::RelicID> id;
             Property<String> string;
-            Property<std::optional<FontAsset>> asset;
+            Property<std::optional<FontAsset>> font;
             Property<std::optional<MaterialAsset>> material;
             Property<float> wrapWidth;
             Property<bool> bold;
@@ -69,7 +69,7 @@ namespace Atmos::Scripting::JavaScript
     struct CreateUIText
     {
         String string;
-        std::optional<FontAsset> asset;
+        std::optional<FontAsset> font;
         std::optional<MaterialAsset> material;
         float wrapWidth;
         bool bold;
@@ -91,7 +91,7 @@ namespace Atmos::Scripting::JavaScript
         struct Definition
         {
             Property<String> string;
-            Property<std::optional<FontAsset>> asset;
+            Property<std::optional<FontAsset>> font;
             Property<std::optional<MaterialAsset>> material;
             Property<float> wrapWidth;
             Property<bool> bold;
@@ -131,7 +131,7 @@ namespace Inscription
         {
             ScrivenRelicID("id", object.id, format);
             format("string", object.string);
-            format("asset", object.asset);
+            format("font", object.font);
             format("material", object.material);
             format("wrapWidth", object.wrapWidth);
             format("bold", object.bold);
@@ -159,7 +159,7 @@ namespace Inscription
         void Scriven(ObjectT& object, Format& format)
         {
             format("string", object.string);
-            format("asset", object.asset);
+            format("font", object.font);
             format("material", object.material);
             format("wrapWidth", object.wrapWidth);
             format("bold", object.bold);

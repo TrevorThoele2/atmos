@@ -118,8 +118,12 @@ namespace Atmos::Render::Vulkan
             std::array<QuadVertex, 4> vertices,
             Raster& raster);
     private:
-        DescriptorSetPool descriptorSetPool;
+        std::vector<DescriptorSetPool> descriptorSetPools;
+        std::vector<DescriptorSetPool>::iterator currentDescriptorSetPool;
         MappedConduits mappedConduits;
+
+        [[nodiscard]] static std::vector<DescriptorSetPool> CreateDescriptorSetPools(vk::Device device);
+        [[nodiscard]] DescriptorSetPool& NextDescriptorSetPool();
     private:
         vk::Queue graphicsQueue;
         vk::Device device;

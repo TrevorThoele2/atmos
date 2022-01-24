@@ -29,6 +29,7 @@ namespace Atmos::Render::Vulkan
             memoryRequirements.size,
             memoryRequirements.alignment,
             SuitableMemoryType(memoryRequirements.memoryTypeBits, flags));
+
         device.bindImageMemory(image, block.memory, block.offset);
         return ToMemory(block);
     }
@@ -97,7 +98,9 @@ namespace Atmos::Render::Vulkan
             for (; rightReservation != reservations.end(); ++rightReservation, ++leftReservation)
             {
                 const auto left = leftReservation->offset + leftReservation->size;
-                const auto alignedLeft = left + left % alignment;
+                const auto alignedLeft = alignment != 0
+                    ? static_cast<vk::DeviceSize>(ceil(static_cast<double>(left) / static_cast<double>(alignment)) * alignment)
+                    : left;
                 const auto right = rightReservation->offset;
                 if (alignedLeft < right && right - alignedLeft >= size)
                 {

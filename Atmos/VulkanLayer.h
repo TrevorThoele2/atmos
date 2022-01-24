@@ -23,20 +23,14 @@ namespace Atmos::Render::Vulkan
         const MaterialGroupKey& key)
     {
         auto found = values.find(key);
-        if (found == values.end())
-            return values.emplace(key, std::vector<MaterialGroupValue>{}).first->second;
-
-        return found->second;
+        return found == values.end() ? values.emplace(key, std::vector<MaterialGroupValue>{}).first->second : found->second;
     }
 
     template<class MaterialGroupKey, class MaterialGroupValue>
     auto Layer<MaterialGroupKey, MaterialGroupValue>::GroupFor(Arca::RelicID id) -> MaterialGroup&
     {
         auto found = materialGroups.find(id);
-        if (found == materialGroups.end())
-            return materialGroups.emplace(id, MaterialGroup{}).first->second;
-
-        return found->second;
+        return found == materialGroups.end() ? materialGroups.emplace(id, MaterialGroup{}).first->second : found->second;
     }
 
     template<class MaterialGroupValue>
@@ -55,9 +49,6 @@ namespace Atmos::Render::Vulkan
     auto Layer<void, MaterialGroupValue>::GroupFor(Arca::RelicID id) -> MaterialGroup&
     {
         auto found = materialGroups.find(id);
-        if (found == materialGroups.end())
-            return materialGroups.emplace(id, MaterialGroup{}).first->second;
-
-        return found->second;
+        return found == materialGroups.end() ? materialGroups.emplace(id, MaterialGroup{}).first->second : found->second;
     }
 }

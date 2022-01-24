@@ -3,6 +3,7 @@
 #include "VulkanCommandBuffer.h"
 #include "VulkanConduit.h"
 #include "VulkanUtilities.h"
+#include "VulkanMaxFramesInFlight.h"
 
 namespace Atmos::Render::Vulkan
 {
@@ -15,17 +16,8 @@ namespace Atmos::Render::Vulkan
         :
         memoryPool(0, memoryProperties, device),
         vertexBuffer(vertexStride * sizeof(Vertex), device, memoryPool, vk::BufferUsageFlagBits::eVertexBuffer),
-        descriptorSetPool(
-            {
-                DescriptorSetPool::Definition
-                {
-                    vk::DescriptorType::eUniformBuffer,
-                    0,
-                    vk::ShaderStageFlagBits::eFragment | vk::ShaderStageFlagBits::eVertex,
-                    1
-                }
-            },
-            device),
+        descriptorSetPools(CreateDescriptorSetPools(device)),
+        currentDescriptorSetPool(descriptorSetPools.begin()),
         mappedConduits(
             device,
             VertexInput(
@@ -40,7 +32,7 @@ namespace Atmos::Render::Vulkan
             renderPass,
             swapchainExtent,
             { vk::DynamicState::eLineWidth },
-            { descriptorSetPool.DescriptorSetLayout() }),
+            { descriptorSetPools[0].DescriptorSetLayout()}),
         graphicsQueue(graphicsQueue),
         device(device)
     {}
@@ -60,9 +52,8 @@ namespace Atmos::Render::Vulkan
         
         auto raster = std::make_unique<Raster>(*this);
 
-        descriptorSetPool.Reset();
-        descriptorSetPool.Reserve(1);
-        raster->setupDescriptorSet = descriptorSetPool.Next();
+        auto& descriptorSetPool = NextDescriptorSetPool();
+        raster->setupDescriptorSet = descriptorSetPool.Retrieve(1)[0];
 
         universalDataBuffer.Update(raster->setupDescriptorSet);
 
@@ -212,5 +203,34 @@ namespace Atmos::Render::Vulkan
             auto& group = layer->GroupFor(lineRender.material.ID());
             group.ListFor(lineRender.width).emplace_back(points);
         }
+    }
+
+    std::vector<DescriptorSetPool> LineRenderer::CreateDescriptorSetPools(vk::Device device)
+    {
+        std::vector<DescriptorSetPool> pools;
+        for (size_t i = 0; i < maxFramesInFlight; ++i)
+        {
+            pools.emplace_back(
+                std::vector<DescriptorSetPool::Definition>
+                {
+                    DescriptorSetPool::Definition
+                    {
+                        vk::DescriptorType::eUniformBuffer,
+                        0,
+                        vk::ShaderStageFlagBits::eFragment | vk::ShaderStageFlagBits::eVertex,
+                        1
+                    }
+                },
+                device);
+        }
+        return pools;
+    }
+
+    DescriptorSetPool& LineRenderer::NextDescriptorSetPool()
+    {
+        ++currentDescriptorSetPool;
+        if (currentDescriptorSetPool == descriptorSetPools.end())
+            currentDescriptorSetPool = descriptorSetPools.begin();
+        return *currentDescriptorSetPool;
     }
 }

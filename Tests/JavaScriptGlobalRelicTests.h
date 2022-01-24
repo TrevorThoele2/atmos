@@ -4,6 +4,7 @@
 
 #include <Atmos/JavaScriptDiagnosticsStatistics.h>
 #include <Atmos/JavaScriptCamera.h>
+#include <Atmos/JavaScriptInputInformation.h>
 
 #include <Atmos/StringUtility.h>
 #include "AudioBuffer.h"
@@ -53,5 +54,21 @@ public:
         };
 
         return { "Atmos.Traits.Render.Camera", expectations };
+    }
+
+    template<class T, std::enable_if_t<std::is_same_v<Input::Information, T>, int> = 0>
+    ScenarioT<T> Scenario(Arca::Reliquary& reliquary)
+    {
+        const auto information = reliquary.Find<Input::Information>();
+
+        const std::function<void(String)> expectations = [id = information.ID()](const String& json)
+        {
+            Scripting::JavaScript::InputInformation information;
+            Inscription::Json::FromString(information, json);
+
+            REQUIRE(information.id == id);
+        };
+
+        return { "Atmos.Traits.Input.Information", expectations };
     }
 };

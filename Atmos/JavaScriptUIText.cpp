@@ -17,7 +17,7 @@ namespace Atmos::Scripting::JavaScript
         Definition definition;
         definition.id.SetValue(isolate, value.id);
         definition.string.SetValue(isolate, value.string);
-        definition.asset.SetValue(isolate, value.asset);
+        definition.font.SetValue(isolate, value.font);
         definition.material.SetValue(isolate, value.material);
         definition.wrapWidth.SetValue(isolate, value.wrapWidth);
         definition.bold.SetValue(isolate, value.bold);
@@ -38,7 +38,7 @@ namespace Atmos::Scripting::JavaScript
             {
                 const auto id = definition.id.AtmosValue();
                 const auto string = definition.string.AtmosValue();
-                const auto asset = definition.asset.AtmosValue();
+                const auto font = definition.font.AtmosValue();
                 const auto material = definition.material.AtmosValue();
                 const auto wrapWidth = definition.wrapWidth.AtmosValue();
                 const auto bold = definition.bold.AtmosValue();
@@ -47,10 +47,10 @@ namespace Atmos::Scripting::JavaScript
                 const auto position = definition.position.AtmosValue();
                 const auto scalers = definition.scalers.AtmosValue();
                 const auto rotation = definition.rotation.AtmosValue();
-                return id && string && asset && material && wrapWidth && bold && italics &&color && position && scalers && rotation
+                return id && string && font && material && wrapWidth && bold && italics &&color && position && scalers && rotation
                     ? UIText
                     {
-                        *id, *string, *asset, *material, *wrapWidth, *bold, *italics, *color, *position, *scalers, *rotation
+                        *id, *string, *font, *material, *wrapWidth, *bold, *italics, *color, *position, *scalers, *rotation
                     }
                     : std::optional<UIText>{};
             });
@@ -59,7 +59,7 @@ namespace Atmos::Scripting::JavaScript
     Type<UIText>::Definition::Definition() :
         id("id"),
         string("string"),
-        asset("asset"),
+        font("font"),
         material("material"),
         wrapWidth("wrapWidth"),
         bold("bold"),
@@ -77,7 +77,7 @@ namespace Atmos::Scripting::JavaScript
             {
                 { id },
                 { string },
-                { asset },
+                { font },
                 { material },
                 { wrapWidth },
                 { bold },
@@ -135,7 +135,7 @@ namespace Atmos::Scripting::JavaScript
             [](const Definition& definition)
             {
                 const auto string = definition.string.AtmosValue();
-                const auto asset = definition.asset.AtmosValue();
+                const auto font = definition.font.AtmosValue();
                 const auto material = definition.material.AtmosValue();
                 const auto wrapWidth = definition.wrapWidth.AtmosValue();
                 const auto bold = definition.bold.AtmosValue();
@@ -144,17 +144,17 @@ namespace Atmos::Scripting::JavaScript
                 const auto position = definition.position.AtmosValue();
                 const auto scalers = definition.scalers.AtmosValue();
                 const auto rotation = definition.rotation.AtmosValue();
-                return string && asset && material && wrapWidth && bold && italics && color && position && scalers && rotation
+                return string && font && material && wrapWidth && bold && italics && color && position && scalers && rotation
                     ? CreateUIText
                     {
-                        *string, *asset, *material, *wrapWidth, *bold, *italics, *color, *position, *scalers, *rotation
+                        *string, *font, *material, *wrapWidth, *bold, *italics, *color, *position, *scalers, *rotation
                     }
                     : std::optional<CreateUIText>{};
             });
     }
 
     Type<CreateUIText>::Definition::Definition() :
-        asset("asset"),
+        font("font"),
         string("string"),
         material("material"),
         wrapWidth("wrapWidth"),
@@ -171,7 +171,7 @@ namespace Atmos::Scripting::JavaScript
         return
         {
             {
-                { asset },
+                { font },
                 { string },
                 { material },
                 { wrapWidth },
@@ -195,7 +195,7 @@ namespace Atmos::Scripting::JavaScript
         return command
             ? Arca::Create<UI::Text>(
                 command->string,
-                command->asset ? reliquary->Find<Asset::Font>(command->asset->id) : Arca::Index<Asset::Font>(),
+                command->font ? reliquary->Find<Asset::Font>(command->font->id) : Arca::Index<Asset::Font>(),
                 command->material ? reliquary->Find<Asset::Material>(command->material->id) : Arca::Index<Asset::Material>(),
                 command->wrapWidth,
                 command->bold,

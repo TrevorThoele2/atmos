@@ -65,7 +65,6 @@ namespace Atmos::Render::Vulkan
     private:
         vk::Device device;
     private:
-        static constexpr int maxFramesInFlight = 2;
         size_t currentFrame = 0;
         size_t previousFrame = 1;
     private:

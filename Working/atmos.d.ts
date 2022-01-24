@@ -580,7 +580,7 @@ declare module Atmos {
 
         export interface Text extends Relic {
             string: string;
-            asset: Asset.Font | null;
+            font: Asset.Font | null;
             material: Asset.Material | null;
             wrapWidth: number;
             bold: boolean;
@@ -593,7 +593,7 @@ declare module Atmos {
 
         export interface CreateText extends Command {
             string: string;
-            asset: Asset.Font | null;
+            font: Asset.Font | null;
             material: Asset.Material | null;
             wrapWidth: number;
             bold: boolean;
@@ -610,6 +610,12 @@ declare module Atmos {
 
         export interface RequestField extends Command {
             id: FieldId;
+        }
+    }
+
+    export module Math {
+        export module Float {
+            export const maximum: number;
         }
     }
 
@@ -835,9 +841,25 @@ declare module Atmos {
         }
 
         export module Input {
+            export type Information = {
+                typeName: "Atmos::Input::Information";
+                T: Atmos.Input.Information;
+            }
+
             export type MouseMoved = {
                 typeName: "Atmos::Input::MouseMoved";
                 T: Atmos.Input.MouseMoved;
+            }
+
+            export type ActionPressed = {
+                typeName: "Atmos::Input::ActionPressed";
+                T: Atmos.Input.ActionPressed;
+            }
+
+
+            export type ActionDepressed = {
+                typeName: "Atmos::Input::ActionDepressed";
+                T: Atmos.Input.ActionDepressed;
             }
         }
         
@@ -1287,8 +1309,20 @@ declare module Atmos {
         }
 
         export module Input {
+            export module Information {
+                export const typeName: "Atmos::Input::Information";
+            }
+
             export module MouseMoved {
                 export const typeName: "Atmos::Input::MouseMoved";
+            }
+
+            export module ActionPressed {
+                export const typeName: "Atmos::Input::ActionPressed";
+            }
+
+            export module ActionDepressed {
+                export const typeName: "Atmos::Input::ActionDepressed";
             }
         }
         
@@ -1564,7 +1598,9 @@ declare module Atmos {
 
     export type SignalTypeTraits =
         Atmos.TypeTraits.Audio.SoundFinished |
-        Atmos.TypeTraits.Input.MouseMoved;
+        Atmos.TypeTraits.Input.MouseMoved |
+        Atmos.TypeTraits.Input.ActionPressed |
+        Atmos.TypeTraits.Input.ActionDepressed;
 
     export type LocalRelicTypeTraits =
         Atmos.TypeTraits.Asset.Action |
@@ -1586,7 +1622,8 @@ declare module Atmos {
 
     export type GlobalRelicTypeTraits =
         Atmos.TypeTraits.Diagnostics.Statistics |
-        Atmos.TypeTraits.Render.Camera;
+        Atmos.TypeTraits.Render.Camera |
+        Atmos.TypeTraits.Input.Information;
 
     export type ShardTypeTraits =
         Atmos.TypeTraits.Spatial.Bounds |
@@ -1659,6 +1696,8 @@ declare module Atmos {
 
         [Atmos.Traits.Audio.SoundFinished.typeName]: Atmos.TypeTraits.Audio.SoundFinished;
         [Atmos.Traits.Input.MouseMoved.typeName]: Atmos.TypeTraits.Input.MouseMoved;
+        [Atmos.Traits.Input.ActionPressed.typeName]: Atmos.TypeTraits.Input.ActionPressed;
+        [Atmos.Traits.Input.ActionDepressed.typeName]: Atmos.TypeTraits.Input.ActionDepressed;
 
         [Atmos.Traits.Asset.Action.typeName]: Atmos.TypeTraits.Asset.Action;
         [Atmos.Traits.Asset.Audio.typeName]: Atmos.TypeTraits.Asset.Audio;
@@ -1679,6 +1718,7 @@ declare module Atmos {
 
         [Atmos.Traits.Diagnostics.Statistics.typeName]: Atmos.TypeTraits.Diagnostics.Statistics;
         [Atmos.Traits.Render.Camera.typeName]: Atmos.TypeTraits.Render.Camera;
+        [Atmos.Traits.Input.Information.typeName]: Atmos.TypeTraits.Input.Information;
 
         [Atmos.Traits.Spatial.Bounds.typeName]: Atmos.TypeTraits.Spatial.Bounds;
         [Atmos.Traits.Render.ImageCore.typeName]: Atmos.TypeTraits.Render.ImageCore;
@@ -1687,11 +1727,24 @@ declare module Atmos {
     }
 
     export module Input {
+        export interface Information {
+            previousMousePosition: Spatial.Point2D;
+            currentMousePosition: Spatial.Point2D;
+        }
+
         export interface MouseMoved {
             previous: Spatial.Point2D;
             current: Spatial.Point2D;
         }
         
+        export interface ActionPressed {
+            action: Atmos.Asset.Action;
+        }
+
+        export interface ActionDepressed {
+            action: Atmos.Asset.Action;
+        }
+
         export enum Key {
             LeftMouseButton = 0,
             MiddleMouseButton = 1,

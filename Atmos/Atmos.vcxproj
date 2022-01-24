@@ -42,6 +42,8 @@
     <ClInclude Include="ArcaIndexEquality.h" />
     <ClInclude Include="Glyph.h" />
     <ClInclude Include="JavaScriptActionAsset.h" />
+    <ClInclude Include="JavaScriptActionDepressed.h" />
+    <ClInclude Include="JavaScriptActionPressed.h" />
     <ClInclude Include="JavaScriptAngle3D.h" />
     <ClInclude Include="JavaScriptAsset.h" />
     <ClInclude Include="JavaScriptAssetResource.h" />
@@ -56,6 +58,8 @@
     <ClInclude Include="JavaScriptChangeColor.h" />
     <ClInclude Include="JavaScriptChangeImageCore.h" />
     <ClInclude Include="JavaScriptFindAssetByName.h" />
+    <ClInclude Include="JavaScriptInputInformation.h" />
+    <ClInclude Include="JavaScriptMath.h" />
     <ClInclude Include="JavaScriptMoveBounds.h" />
     <ClInclude Include="JavaScriptMoveGridRegion.h" />
     <ClInclude Include="JavaScriptChangeMaterialAsset.h" />
@@ -166,6 +170,7 @@
     <ClInclude Include="VulkanCommand.h" />
     <ClInclude Include="FontID.h" />
     <ClInclude Include="VulkanGlyphAtlas.h" />
+    <ClInclude Include="VulkanMaxFramesInFlight.h" />
     <ClInclude Include="VulkanMemoryPool.h" />
     <ClInclude Include="VulkanOperation.h" />
     <ClInclude Include="VulkanPaths.h" />
@@ -533,6 +538,8 @@
     <ClCompile Include="GlyphAlgorithms.cpp" />
     <ClCompile Include="ImageAssetGridSize.cpp" />
     <ClCompile Include="JavaScriptActionAsset.cpp" />
+    <ClCompile Include="JavaScriptActionDepressed.cpp" />
+    <ClCompile Include="JavaScriptActionPressed.cpp" />
     <ClCompile Include="JavaScriptAngle3D.cpp" />
     <ClCompile Include="JavaScriptAsset.cpp" />
     <ClCompile Include="JavaScriptAssetResource.cpp" />
@@ -546,6 +553,8 @@
     <ClCompile Include="JavaScriptCanMoveEntityTo.cpp" />
     <ClCompile Include="JavaScriptChangeColor.cpp" />
     <ClCompile Include="JavaScriptChangeImageCore.cpp" />
+    <ClCompile Include="JavaScriptInputInformation.cpp" />
+    <ClCompile Include="JavaScriptMath.cpp" />
     <ClCompile Include="JavaScriptMoveBounds.cpp" />
     <ClCompile Include="JavaScriptMoveGridRegion.cpp" />
     <ClCompile Include="JavaScriptChangeMaterialAsset.cpp" />

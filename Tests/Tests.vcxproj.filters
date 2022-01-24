@@ -154,6 +154,9 @@
     <ClCompile Include="JavaScriptAssetTests.cpp">
       <Filter>Source Files\Tests\Scripting\JavaScript\Atmos\Asset</Filter>
     </ClCompile>
+    <ClCompile Include="JavaScriptMathTests.cpp">
+      <Filter>Source Files\Tests\Scripting\JavaScript\Atmos\Math</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneralFixture.h">
@@ -315,6 +318,9 @@
     <ClInclude Include="JavaScriptAssetTests.h">
       <Filter>Header Files\Tests\Scripting\JavaScript\Atmos\Asset</Filter>
     </ClInclude>
+    <ClInclude Include="JavaScriptMathTests.h">
+      <Filter>Header Files\Tests\Scripting\JavaScript\Atmos\Math</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">
@@ -472,6 +478,12 @@
     </Filter>
     <Filter Include="Header Files\Tests\Scripting\JavaScript\Atmos\Asset">
       <UniqueIdentifier>{f80377b5-39ea-4cab-bde9-2727cc60a274}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Tests\Scripting\JavaScript\Atmos\Math">
+      <UniqueIdentifier>{d6ecb4c6-f359-427c-88f7-915d73a1f23d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Tests\Scripting\JavaScript\Atmos\Math">
+      <UniqueIdentifier>{cafdf9bf-901a-4d0b-a07f-729698cff52c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
