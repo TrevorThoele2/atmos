@@ -109,4 +109,32 @@ export const main = (): Atmos.Result => {
             }
         }
     }
+
+    GIVEN("script that returns null relic ID")
+    {
+        CompileAndCreateScript(
+            "basic_script.ts",
+R"V0G0N(import { Atmos } from "./atmos";
+
+export const main = (): Atmos.Result => {
+    return {
+        done: true,
+        value: Atmos.nullRelicId
+    };
+};)V0G0N",
+*fieldReliquary);
+
+        WHEN("working")
+        {
+            fieldReliquary->Do(Work{});
+
+            THEN("returned null relic ID")
+            {
+                REQUIRE(finishes.size() == 1);
+
+                const auto result = std::get<Arca::RelicID>(std::get<Variant>(finishes[0].result));
+                REQUIRE(result == Arca::nullRelicID);
+            }
+        }
+    }
 }

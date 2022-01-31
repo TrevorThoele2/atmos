@@ -167,6 +167,16 @@ namespace Atmos::Spatial
             std::clamp(box.NearZ(), to.FarZ(), to.NearZ()));
     }
 
+    Size2D ScaleBy(Size2D size, Scalers2D scalers)
+    {
+        return { size.width * scalers.x, size.height * scalers.y };
+    }
+
+    Size3D ScaleBy(Size3D size, Scalers3D scalers)
+    {
+        return { size.width * scalers.x, size.height * scalers.y, size.depth * scalers.z };
+    }
+
     AxisAlignedBox2D ScaleOf(AxisAlignedBox2D box, AxisAlignedBox2D against)
     {
         return ToAxisAlignedBox2D(

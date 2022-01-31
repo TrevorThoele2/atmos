@@ -11,6 +11,7 @@ namespace Atmos::Scripting::JavaScript
         
         const auto line = FromV8(message->GetLineNumber(context));
         const auto column = ToString(message->GetStartColumn()) + ":" + ToString(message->GetEndColumn());
-        return Failure{ messageString, {}, line ? ToString(*line) : "", column, {}};
+        const auto section = FromV8<String>(isolate, message->GetScriptResourceName());
+        return Failure{ messageString, {}, line ? ToString(*line) : "", column, section};
     }
 }

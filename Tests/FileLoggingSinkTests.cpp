@@ -8,17 +8,39 @@
 
 using namespace Atmos;
 
-SCENARIO_METHOD(FileLoggingSinkTestsFixture, "file logging sinks", "[logging]")
+SCENARIO_METHOD(FileLoggingSinkTestsFixture, "file logging sink", "[logging]")
 {
     GIVEN("logger with file sink")
     {
-        Logging::Logger logger(Logging::Severity::Verbose);
-        logger.Add<Logging::FileSink>();
+        auto logger = std::make_unique<Logging::Logger>(Logging::Severity::Verbose);
+        logger->AddSink<Logging::FileSink>();
 
-        WHEN("logging empty string then occupied string")
+        WHEN("logging empty string and occupied string then flushing logger")
         {
-            logger.Log("");
-            logger.Log("hello");
+            logger->Log("");
+            logger->Log("hello");
+            logger->Flush();
+
+            THEN("output correct strings")
+            {
+                std::string output;
+
+                {
+                    auto file = Inscription::File::InputText(std::filesystem::current_path() / "log.txt");
+                    auto archive = Inscription::Archive::InputText(file);
+                    auto format = Inscription::Format::InputPlaintext(archive);
+                    format.ReadSize(output);
+                }
+
+                REQUIRE(output.find("<INFORMATION> \n") != std::string::npos);
+            }
+        }
+
+        WHEN("logging empty string and occupied string then destroying logger")
+        {
+            logger->Log("");
+            logger->Log("hello");
+            logger.reset();
 
             THEN("output correct strings")
             {

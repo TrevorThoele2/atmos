@@ -32,6 +32,7 @@ namespace Atmos::Scripting::JavaScript
         static void OnIntersects(const v8::FunctionCallbackInfo<v8::Value>& info);
         static void OnEnvelope(const v8::FunctionCallbackInfo<v8::Value>& info);
         static void OnClamp(const v8::FunctionCallbackInfo<v8::Value>& info);
+        static void OnScaleBy(const v8::FunctionCallbackInfo<v8::Value>& info);
         static void OnScaleOf(const v8::FunctionCallbackInfo<v8::Value>& info);
         static void OnCell(const v8::FunctionCallbackInfo<v8::Value>& info);
         static void OnAdd(const v8::FunctionCallbackInfo<v8::Value>& info);

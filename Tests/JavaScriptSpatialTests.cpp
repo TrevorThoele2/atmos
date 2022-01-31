@@ -103,6 +103,20 @@ auto JavaScriptSpatialScaleOfTestsFixture::Box2D() -> ScenarioT
         Spatial::AxisAlignedBox2D{ Spatial::Point2D{50, 60}, Spatial::Size2D{70, 80} });
 }
 
+auto JavaScriptSpatialScaleByTestsFixture::Size2D() -> ScenarioT
+{
+    return CreateScenario(
+        Spatial::Size2D{ 10, 20 },
+        Spatial::Scalers2D{ 30, 40 });
+}
+
+auto JavaScriptSpatialScaleByTestsFixture::Size3D() -> ScenarioT
+{
+    return CreateScenario(
+        Spatial::Size3D{ 10, 20, 30 },
+        Spatial::Scalers3D{ 40, 50, 60 });
+}
+
 auto JavaScriptSpatialScaleOfTestsFixture::Box3D() -> ScenarioT
 {
     return CreateScenario(
@@ -1350,6 +1364,44 @@ export const main = (leftJson: string, rightJson: string): Atmos.Result => {
     return {
         done: true,
         value: JSON.stringify(clamp, (key, value) => typeof value === 'bigint' ? value.toString() : value)
+    };
+};)V0G0N",
+parameters,
+*fieldReliquary);
+
+        WHEN("working reliquary")
+        {
+            fieldReliquary->Do(Work{});
+
+            THEN("returned JSON is correct")
+            {
+                REQUIRE(finishes.size() == 1);
+
+                const auto result = std::get<String>(std::get<Variant>(finishes[0].result));
+
+                expectation(result);
+            }
+        }
+    }
+}
+
+SCENARIO_METHOD(JavaScriptSpatialScaleByTestsFixture, "running spatial ScaleBy JavaScript scripts", "[script][javascript][spatial]")
+{
+    GIVEN("setup")
+    {
+        auto [parameters, expectation] = GENERATE(Size2D(), Size3D());
+
+        CompileAndCreateScript(
+            "basic_script.ts",
+R"V0G0N(import { Atmos } from "./atmos";
+
+export const main = (leftJson: string, rightJson: string): Atmos.Result => {
+    const left = JSON.parse(leftJson);
+    const right = JSON.parse(rightJson);
+    const scaleBy = Atmos.Spatial.scaleBy(left, right);
+    return {
+        done: true,
+        value: JSON.stringify(scaleBy, (key, value) => typeof value === 'bigint' ? value.toString() : value)
     };
 };)V0G0N",
 parameters,

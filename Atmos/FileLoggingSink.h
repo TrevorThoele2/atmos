@@ -12,8 +12,9 @@ namespace Atmos::Logging
         FileSink();
 
         void Log(const Logging::Log& log) override;
+        void Flush() override;
     private:
-        void ClearFile();
+        std::vector<Logging::Log> logs;
 
         [[nodiscard]] static File::Path OutputFilePath();
     };

@@ -10,6 +10,7 @@ namespace Atmos::Logging
         virtual ~Sink() = 0;
 
         virtual void Log(const Logging::Log& log) = 0;
+        virtual void Flush() = 0;
     protected:
         Sink() = default;
 

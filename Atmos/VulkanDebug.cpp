@@ -120,7 +120,7 @@ namespace Atmos::Render::Vulkan
         return
         {
             ToString(info.objectType),
-            String(info.pObjectName)
+            info.pObjectName ? String(info.pObjectName) : String()
         };
     }
 

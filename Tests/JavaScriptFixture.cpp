@@ -10,7 +10,7 @@ using namespace Atmos;
 
 JavaScriptFixture::JavaScriptFixture() : logger(Logging::Severity::Verbose), engine(logger)
 {
-    logger.Add<Logging::FileSink>();
+    logger.AddSink<Logging::FileSink>();
 
     auto fieldOrigin = Arca::ReliquaryOrigin();
     RegisterFieldTypes(

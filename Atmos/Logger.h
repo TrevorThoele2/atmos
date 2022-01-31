@@ -19,8 +19,10 @@ namespace Atmos::Logging
             Severity severity = Severity::Information,
             std::optional<Details> details = {});
 
+        void Flush();
+
         template<class T, class... Args>
-        void Add(Args&& ... args);
+        void AddSink(Args&& ... args);
     private:
         Severity minimumSeverity;
         bool shouldSignalStopSession = true;
@@ -33,7 +35,7 @@ namespace Atmos::Logging
     };
 
     template<class T, class... Args>
-    void Logger::Add(Args&& ... args)
+    void Logger::AddSink(Args&& ... args)
     {
         sinks.push_back(std::make_unique<T>(std::forward<Args>(args)...));
 

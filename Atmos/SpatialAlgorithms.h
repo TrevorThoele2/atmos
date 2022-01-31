@@ -2,6 +2,8 @@
 
 #include "Point2D.h"
 #include "Point3D.h"
+#include "Scalers2D.h"
+#include "Scalers3D.h"
 #include "GridPoint.h"
 #include "Angle2D.h"
 #include "Angle3D.h"
@@ -30,6 +32,9 @@ namespace Atmos::Spatial
 
     [[nodiscard]] AxisAlignedBox2D Clamp(AxisAlignedBox2D box, AxisAlignedBox2D to);
     [[nodiscard]] AxisAlignedBox3D Clamp(AxisAlignedBox3D box, AxisAlignedBox3D to);
+
+    [[nodiscard]] Size2D ScaleBy(Size2D size, Scalers2D scalers);
+    [[nodiscard]] Size3D ScaleBy(Size3D size, Scalers3D scalers);
 
     [[nodiscard]] AxisAlignedBox2D ScaleOf(AxisAlignedBox2D box, AxisAlignedBox2D against);
     [[nodiscard]] AxisAlignedBox3D ScaleOf(AxisAlignedBox3D box, AxisAlignedBox3D against);

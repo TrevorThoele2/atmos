@@ -6,22 +6,25 @@ namespace Atmos::Logging
 {
     FileSink::FileSink()
     {
-        ClearFile();
+        Inscription::File::OutputText outputFile(OutputFilePath());
     }
 
     void FileSink::Log(const Logging::Log& log)
     {
-        const auto output = StandardFormattedLog(log);
-
-        {
-            Inscription::File::OutputText outputFile(OutputFilePath(), true);
-            outputFile.WriteData(output);
-        }
+        logs.push_back(log);
     }
 
-    void FileSink::ClearFile()
+    void FileSink::Flush()
     {
-        Inscription::File::OutputText outFile(OutputFilePath());
+        std::vector<String> logMessages;
+        logMessages.reserve(logs.size());
+        for (auto& log : logs)
+            logMessages.push_back(StandardFormattedLog(log));
+
+        auto data = Chroma::Join(logMessages.begin(), logMessages.end());
+
+        Inscription::File::OutputText outputFile(OutputFilePath());
+        outputFile.WriteData(data);
     }
 
     File::Path FileSink::OutputFilePath()

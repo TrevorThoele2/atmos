@@ -40,9 +40,11 @@ export const main = (loggedMessage: string): Atmos.Result => {
             { loggedMessage },
             *fieldReliquary);
 
-        WHEN("working reliquary")
+        WHEN("working reliquary then flushing logger")
         {
             fieldReliquary->Do(Work{});
+
+            logger.Flush();
 
             THEN("script has executed")
             {
