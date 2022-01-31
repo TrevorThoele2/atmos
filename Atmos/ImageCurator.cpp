@@ -111,19 +111,15 @@ namespace Atmos::Render
 
             const auto resource = const_cast<Asset::Resource::Image*>(asset->Resource());
             
-            const auto assetSize = asset->Size();
-            const auto assetSliceCenter = asset->Slice(assetIndex).center;
-            const auto assetSliceSize = asset->SliceSize();
+            const auto scaledAssetSize = Spatial::ScaleBy(asset->Size(), scalers);
+            const auto assetSlice = asset->Slice(assetIndex);
+            const auto scaledAssetSliceSize = Spatial::ScaleBy(assetSlice.size, scalers);
             const auto assetSliceStandard = ViewSliceClamp(
                 Owner().Find<ViewSlice>(id),
-                Spatial::ToAxisAlignedBox2D(0, 0, assetSliceSize.width * scalers.x, assetSliceSize.height * scalers.y));
-            const auto assetSlice = Spatial::AxisAlignedBox2D{
-                assetSliceStandard.center + Spatial::Point2D{
-                    assetSliceCenter.x - assetSliceSize.width / 2,
-                    assetSliceCenter.y - assetSliceSize.height / 2},
-                assetSliceStandard.size };
+                Spatial::ToAxisAlignedBox2D(0, 0, scaledAssetSliceSize.width, scaledAssetSliceSize.height));
             const auto slice = Spatial::ScaleOf(
-                assetSlice, Spatial::ToAxisAlignedBox2D(0, 0, assetSize.width, assetSize.height));
+                assetSliceStandard + assetSlice.center - Spatial::Point2D{ assetSlice.size.width / 2, assetSlice.size.height / 2 },
+                Spatial::ToAxisAlignedBox2D(0, 0, scaledAssetSize.width, scaledAssetSize.height));
 
             const RenderImage render
             {

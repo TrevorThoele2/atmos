@@ -199,23 +199,25 @@ public:
 public:
     static ScenarioT Point2D();
     static ScenarioT Point3D();
+    static ScenarioT Box2D();
+    static ScenarioT Box3D();
 private:
-    template<class T>
-    static ScenarioT CreateScenario(const T& point1, const T& point2)
+    template<class Left, class Right>
+    static ScenarioT CreateScenario(const Left& left, const Right& right)
     {
         std::vector<Variant> parameters =
         {
-            Inscription::Json::ToString(point1),
-            Inscription::Json::ToString(point2)
+            Inscription::Json::ToString(left),
+            Inscription::Json::ToString(right)
         };
 
-        const auto expectation = [point1, point2](const String& json)
+        const auto expectation = [left, right](const String& json)
         {
-            T returnedPoint;
-            Inscription::Json::FromString(returnedPoint, json);
+            Left returned;
+            Inscription::Json::FromString(returned, json);
 
-            const auto expectedPoint = point1 + point2;
-            REQUIRE(returnedPoint == expectedPoint);
+            const auto expectedPoint = left + right;
+            REQUIRE(returned == expectedPoint);
         };
 
         return { parameters, expectation };

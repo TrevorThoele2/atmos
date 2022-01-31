@@ -665,7 +665,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering view sliced images", "[re
             dataGeneration.Random<Point3D::Value>(TestFramework::Range<Point3D::Value>(-1000, 1000)),
             dataGeneration.Random<Point3D::Value>(TestFramework::Range<Point3D::Value>(-1000, 1000))
         };
-        const auto scalers = Scalers2D{ 100, 100 };
+        const auto scalers = Scalers2D{ 10, 10 };
 
         WHEN("creating static images with view slices and an asset index of 0")
         {
@@ -690,10 +690,10 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering view sliced images", "[re
                     REQUIRE(imageRenders.size() == 1);
 
                     const auto render = imageRenders[0];
-                    REQUIRE(render.slice.Left() == Approx(0.1));
-                    REQUIRE(render.slice.Top() == Approx(0.15));
-                    REQUIRE(render.slice.Right() == Approx(0.2));
-                    REQUIRE(render.slice.Bottom() == Approx(0.25));
+                    REQUIRE(render.slice.Left() == Approx(0.01));
+                    REQUIRE(render.slice.Top() == Approx(0.015));
+                    REQUIRE(render.slice.Right() == Approx(0.02));
+                    REQUIRE(render.slice.Bottom() == Approx(0.025));
                 }
             }
         }
@@ -721,10 +721,10 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering view sliced images", "[re
                     REQUIRE(imageRenders.size() == 1);
 
                     const auto render = imageRenders[0];
-                    REQUIRE(render.slice.Left() == Approx(0.6));
-                    REQUIRE(render.slice.Top() == Approx(0.65));
-                    REQUIRE(render.slice.Right() == Approx(0.7));
-                    REQUIRE(render.slice.Bottom() == Approx(0.75));
+                    REQUIRE(render.slice.Left() == Approx(0.06));
+                    REQUIRE(render.slice.Top() == Approx(0.065));
+                    REQUIRE(render.slice.Right() == Approx(0.07));
+                    REQUIRE(render.slice.Bottom() == Approx(0.075));
                 }
             }
         }

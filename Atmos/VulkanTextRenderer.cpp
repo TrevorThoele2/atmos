@@ -312,7 +312,7 @@ namespace Atmos::Render::Vulkan
         const auto position = Spatial::ToPoint2D(render.position);
         const auto atlasImageSize = render.atlasImageSize;
         const auto atlasCellSize = render.atlasCellSize;
-        const auto totalSize = render.totalSize;
+        const auto totalSize = Spatial::ScaleBy(render.totalSize, render.scalers);
 
         const auto topLeft = position - Spatial::Point2D{ totalSize.width / 2, totalSize.height / 2 };
 
@@ -333,7 +333,7 @@ namespace Atmos::Render::Vulkan
                 const auto height = glyph.size.height;
                 const auto advance = glyph.advance;
 
-                const auto glyphStandard = Spatial::ToAxisAlignedBox2D(x, y, (x + width) * scalers.x, (y + height) * scalers.y);
+                const auto glyphStandard = Spatial::ToAxisAlignedBox2D(x, y, x + width * scalers.x, y + height * scalers.y);
                 const auto glyphSlice = Spatial::Clamp(glyphStandard, maximumSlice);
                 const auto glyphPercentage = Spatial::ScaleOf(glyphSlice, glyphStandard);
 
@@ -357,11 +357,11 @@ namespace Atmos::Render::Vulkan
                         texture));
                 }
 
-                x += (advance * scalers.x);
+                x += advance * scalers.x;
             }
 
             x = 0;
-            y += (atlasCellSize.height * scalers.y);
+            y += atlasCellSize.height * scalers.y;
         }
 
         return quads;
