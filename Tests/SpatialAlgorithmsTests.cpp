@@ -379,3 +379,131 @@ SCENARIO_METHOD(SpatialAlgorithmsTestsFixture, "ScaleOf", "[spatial]")
         }
     }
 }
+
+SCENARIO_METHOD(SpatialAlgorithmsTestsFixture, "SideOf", "[spatial]")
+{
+    GIVEN("vertical line up")
+    {
+        const auto line = Line2D{ {0, 0}, {0, 5} };
+
+        WHEN("point is to the left")
+        {
+            const auto point = Point2D{ -5, 2 };
+
+            THEN("returns correct result")
+            {
+                const auto result = SideOf(line, point);
+                REQUIRE(result == Side::Left);
+            }
+        }
+
+        WHEN("point is to the right")
+        {
+            const auto point = Point2D{ 5, 2 };
+
+            THEN("returns correct result")
+            {
+                const auto result = SideOf(line, point);
+                REQUIRE(result == Side::Right);
+            }
+        }
+    }
+
+    GIVEN("vertical line down")
+    {
+        const auto line = Line2D{ {0, 5}, {0, 0} };
+
+        WHEN("point is to the left")
+        {
+            const auto point = Point2D{ 5, 2 };
+
+            THEN("returns correct result")
+            {
+                const auto result = SideOf(line, point);
+                REQUIRE(result == Side::Left);
+            }
+        }
+
+        WHEN("point is to the right")
+        {
+            const auto point = Point2D{ -5, 2 };
+
+            THEN("returns correct result")
+            {
+                const auto result = SideOf(line, point);
+                REQUIRE(result == Side::Right);
+            }
+        }
+    }
+}
+
+SCENARIO_METHOD(SpatialAlgorithmsTestsFixture, "Intersection", "[spatial]")
+{
+    GIVEN("vertical line up")
+    {
+        const auto verticalLine = Line2D{ {0, 0}, {0, 5} };
+
+        WHEN("finding intersection of horizontal line")
+        {
+            const auto horizontalLine = Line2D{ {-2.5, 2.5}, { 2.5, 2.5 } };
+
+            THEN("returns correct result")
+            {
+                const auto result = Intersection(verticalLine, horizontalLine);
+                REQUIRE(result.has_value());
+                REQUIRE(result->x == Approx(0));
+                REQUIRE(result->y == Approx(2.5));
+            }
+        }
+
+        WHEN("finding intersection of disjoint horizontal line")
+        {
+            const auto horizontalLine = Line2D{ {0.5, 0}, { 5, 0 } };
+
+            THEN("returns no result")
+            {
+                const auto result = Intersection(verticalLine, horizontalLine);
+                REQUIRE(!result.has_value());
+            }
+        }
+    }
+}
+
+SCENARIO_METHOD(SpatialAlgorithmsTestsFixture, "Clip", "[spatial]")
+{
+    GIVEN("rectangle")
+    {
+        const auto points = std::vector<Point2D>
+        {
+            { 0.0, 0.0 },
+            { 0.0, 5.0 },
+            { 5.0, 5.0 },
+            { 5.0, 0.0 }
+        };
+
+        WHEN("finding clip of rectangle")
+        {
+            const auto clip = std::vector<Point2D>
+            {
+                { 2.5, 2.5 },
+                { 2.5, 7.5 },
+                { 7.5, 7.5 },
+                { 7.5, 2.5 }
+            };
+
+            THEN("returns correct result")
+            {
+                const auto result = Clip(points, clip);
+                REQUIRE(result.size() == 4);
+                REQUIRE(result[0].x == Approx(2.5));
+                REQUIRE(result[0].y == Approx(2.5));
+                REQUIRE(result[1].x == Approx(2.5));
+                REQUIRE(result[1].y == Approx(5.0));
+                REQUIRE(result[2].x == Approx(5.0));
+                REQUIRE(result[2].y == Approx(5.0));
+                REQUIRE(result[3].x == Approx(5.0));
+                REQUIRE(result[3].y == Approx(2.5));
+            }
+        }
+    }
+}

@@ -692,9 +692,6 @@
     <ClInclude Include="Scalers2D.h">
       <Filter>Header Files\Spatial\2D</Filter>
     </ClInclude>
-    <ClInclude Include="Vector2D.h">
-      <Filter>Header Files\Spatial\2D</Filter>
-    </ClInclude>
     <ClInclude Include="AxisAlignedBox3D.h">
       <Filter>Header Files\Spatial\3D</Filter>
     </ClInclude>
@@ -705,9 +702,6 @@
       <Filter>Header Files\Spatial\3D</Filter>
     </ClInclude>
     <ClInclude Include="Size3D.h">
-      <Filter>Header Files\Spatial\3D</Filter>
-    </ClInclude>
-    <ClInclude Include="Vector3D.h">
       <Filter>Header Files\Spatial\3D</Filter>
     </ClInclude>
     <ClInclude Include="Size2D.h">
@@ -2096,6 +2090,12 @@
     <ClInclude Include="JavaScriptActionDepressed.h">
       <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Input</Filter>
     </ClInclude>
+    <ClInclude Include="Vector2D.h">
+      <Filter>Header Files\Spatial\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector3D.h">
+      <Filter>Header Files\Spatial\3D</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FieldDestination.cpp">
@@ -2164,9 +2164,6 @@
     <ClCompile Include="Size2D.cpp">
       <Filter>Source Files\Spatial\2D</Filter>
     </ClCompile>
-    <ClCompile Include="Vector2D.cpp">
-      <Filter>Source Files\Spatial\2D</Filter>
-    </ClCompile>
     <ClCompile Include="AxisAlignedBox3D.cpp">
       <Filter>Source Files\Spatial\3D</Filter>
     </ClCompile>
@@ -2177,9 +2174,6 @@
       <Filter>Source Files\Spatial\3D</Filter>
     </ClCompile>
     <ClCompile Include="Size3D.cpp">
-      <Filter>Source Files\Spatial\3D</Filter>
-    </ClCompile>
-    <ClCompile Include="Vector3D.cpp">
       <Filter>Source Files\Spatial\3D</Filter>
     </ClCompile>
     <ClCompile Include="Color.cpp">
@@ -3111,6 +3105,12 @@
     </ClCompile>
     <ClCompile Include="JavaScriptActionDepressed.cpp">
       <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector3D.cpp">
+      <Filter>Source Files\Spatial\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector2D.cpp">
+      <Filter>Source Files\Spatial\2D</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

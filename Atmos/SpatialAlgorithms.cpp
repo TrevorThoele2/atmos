@@ -5,6 +5,12 @@
 
 namespace Atmos::Spatial
 {
+    template<class T>
+    [[nodiscard]] T Determinant(T a, T b, T c, T d)
+    {
+        return a * d - b * c;
+    }
+
     Point2D::Value Distance(Point2D starting, Point2D destination)
     {
         const auto distanceX = destination.x - starting.x;
@@ -92,6 +98,24 @@ namespace Atmos::Spatial
             && other.NearZ() <= box.NearZ();
     }
 
+    bool Contains(Line2D line, Point2D point)
+    {
+        const auto a = line.from;
+        const auto b = point;
+        const auto c = line.to;
+
+        const auto cross = (c.y - a.y) * (b.x - a.x) - (c.x - a.x) * (b.y - a.y);
+        if (std::abs(cross) > std::numeric_limits<float>::epsilon())
+            return false;
+
+        const auto dot = (c.x - a.x) * (b.x - a.x) + (c.y - a.y) * (b.y - a.y);
+        if (dot < 0)
+            return false;
+
+        const auto squaredLength = Power(b.x - a.x, 2) + Power(b.y - a.y, 2);
+        return dot > squaredLength;
+    }
+
     bool Intersects(AxisAlignedBox2D one, AxisAlignedBox2D two)
     {
         return
@@ -105,6 +129,29 @@ namespace Atmos::Spatial
             (one.Left() <= two.Right() && one.Right() >= two.Left()) &&
             (one.Top() <= two.Bottom() && one.Bottom() >= two.Top()) &&
             (one.FarZ() <= two.NearZ() && one.NearZ() >= two.FarZ());
+    }
+
+    std::optional<Point2D> Intersection(Line2D one, Line2D two)
+    {
+        const auto oneX = one.from.x - one.to.x;
+        const auto oneY = one.from.y - one.to.y;
+        const auto twoX = two.from.x - two.to.x;
+        const auto twoY = two.from.y - two.to.y;
+
+        const auto denominator = Determinant(oneX, oneY, twoX, twoY);
+        if (denominator == 0)
+            return {};
+
+        const auto oneDeterminant = Determinant(one.from.x, one.from.y, one.to.x, one.to.y);
+        const auto twoDeterminant = Determinant(two.from.x, two.from.y, two.to.x, two.to.y);
+
+        const auto intersection = Point2D
+        {
+            Determinant(oneDeterminant, oneX, twoDeterminant, twoX) / denominator,
+            Determinant(oneDeterminant, oneY, twoDeterminant, twoY) / denominator
+        };
+
+        return intersection;
     }
 
     AxisAlignedBox2D Envelope(std::vector<AxisAlignedBox2D> boxes)
@@ -195,6 +242,53 @@ namespace Atmos::Spatial
             (box.Right() - against.Left()) / against.size.width,
             (box.Bottom() - against.Top()) / against.size.height,
             (box.NearZ() - against.FarZ()) / against.size.depth);
+    }
+
+    Side SideOf(Line2D line, Point2D point)
+    {
+        const auto [from, to] = line;
+
+        const auto value = (to.x - from.x) * (point.y - from.y) - (to.y - from.y) * (point.x - from.x);
+        if (value == 0)
+            return Side::On;
+        else if (value > 0)
+            return Side::Left;
+        else
+            return Side::Right;
+    }
+
+    std::vector<Point2D> Clip(std::vector<Point2D> points, std::vector<Point2D> clip)
+    {
+        // Sutherland-Hodgman algorithm
+        auto outputList = points;
+
+        for (int i = 0; static_cast<size_t>(i) < clip.size(); ++i)
+        {
+            const auto clipEdge = Line2D{ clip[(i - 1) % clip.size()], clip[i] };
+            
+            auto inputList = outputList;
+            outputList.clear();
+
+            for (int j = 0; static_cast<size_t>(j) < inputList.size(); ++j)
+            {
+                const auto currentPoint = inputList[j];
+                const auto previousPoint = inputList[(j - 1) % inputList.size()];
+
+                const auto intersectingPoint = Intersection(Line2D{ previousPoint, currentPoint }, clipEdge);
+                const auto currentSide = SideOf(clipEdge, currentPoint);
+                const auto previousSide = SideOf(clipEdge, previousPoint);
+                if (currentSide == Side::Right)
+                {
+                    if (previousSide == Side::Left)
+                        outputList.push_back(*intersectingPoint);
+                    outputList.push_back(currentPoint);
+                }
+                else if (previousSide == Side::Right)
+                    outputList.push_back(*intersectingPoint);
+            }
+        }
+
+        return outputList;
     }
 
     AxisAlignedBox2D Cell(int column, int row, Size2D cellSize)

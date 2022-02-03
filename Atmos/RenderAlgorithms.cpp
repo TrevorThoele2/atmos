@@ -146,6 +146,11 @@ namespace Atmos::Render
         return returnValue;
     }
 
+    std::vector<Spatial::Point2D> Clip(const std::vector<Spatial::Point2D>& points, const std::vector<Spatial::Point2D>& to)
+    {
+        return {};
+    }
+
     Mesh ConvertToMesh(const std::vector<Spatial::Point2D>& vertices)
     {
         Mesh returnValue;
