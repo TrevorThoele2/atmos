@@ -19,7 +19,7 @@ namespace Atmos::Render
             const auto index2 = (index0 + 2) % usePoints.size();
 
             if (IsBetween(usePoints[index0], usePoints[index1], usePoints[index2]))
-                usePoints.erase(usePoints.begin() + index1);
+                usePoints.erase(usePoints.begin() + static_cast<int>(index1));
             else
                 ++index0;
         }
@@ -38,7 +38,7 @@ namespace Atmos::Render
 
         size_t index0 = 0;
         const auto fullCircle = 2 * pi<float>;
-        const auto epsilon = std::numeric_limits<float>::epsilon();
+        constexpr auto epsilon = std::numeric_limits<float>::epsilon();
         while (usePoints.size() > 3)
         {
             const auto index1 = (index0 + 1) % usePoints.size();
@@ -49,8 +49,8 @@ namespace Atmos::Render
                 ? abs(calculatedAngle)
                 : fullCircle - calculatedAngle;
 
-            if (angle <= pi<float> +epsilon && angle >= pi<float> -epsilon)
-                usePoints.erase(usePoints.begin() + index1);
+            if (angle <= pi<float> + epsilon && angle >= pi<float> - epsilon)
+                usePoints.erase(usePoints.begin() + static_cast<int>(index1));
             else if (angle > pi<float>)
                 ++index0;
             else
@@ -59,7 +59,7 @@ namespace Atmos::Render
                 returnValue.emplace_back(usePoints[index1]);
                 returnValue.emplace_back(usePoints[index2]);
 
-                usePoints.erase(usePoints.begin() + index1);
+                usePoints.erase(usePoints.begin() + static_cast<int>(index1));
             }
 
             index0 %= usePoints.size();
@@ -79,15 +79,11 @@ namespace Atmos::Render
     std::vector<Spatial::Point2D> Triangulate(const std::vector<Spatial::Grid::Point>& points)
     {
         auto usePoints = points;
-        std::sort(
-            usePoints.begin(),
-            usePoints.end(), 
+        std::ranges::sort(
+            usePoints, 
             [](const Spatial::Grid::Point& left, const Spatial::Grid::Point& right)
             {
-                if (left.y != right.y)
-                    return left.y < right.y;
-
-                return left.x < right.x;
+                return left.y != right.y ? left.y < right.y : left.x < right.x;
             });
 
         using Region = std::vector<Spatial::Grid::Point::Value>;
@@ -123,7 +119,7 @@ namespace Atmos::Render
         }
 
         std::vector<Spatial::Point2D> returnValue;
-        const auto cellSize = Spatial::Grid::CellSize<Spatial::Point2D::Value>;
+        constexpr auto cellSize = Spatial::Grid::CellSize<Spatial::Point2D::Value>;
         for(auto& y : decomposition)
         {
             for (auto& region : y.second)
@@ -144,11 +140,6 @@ namespace Atmos::Render
         }
 
         return returnValue;
-    }
-
-    std::vector<Spatial::Point2D> Clip(const std::vector<Spatial::Point2D>& points, const std::vector<Spatial::Point2D>& to)
-    {
-        return {};
     }
 
     Mesh ConvertToMesh(const std::vector<Spatial::Point2D>& vertices)

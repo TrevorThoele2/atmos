@@ -11,6 +11,7 @@
 #include "PruneGraphicsResources.h"
 #include "CompileShader.h"
 #include "FieldChanging.h"
+#include "TextBaseSize.h"
 
 #include "CreateImageAssetResource.h"
 #include "CreateShaderAssetResource.h"
@@ -28,6 +29,7 @@ namespace Atmos::Render
         void Handle(const ChangeVerticalSync& command);
         void Handle(const PruneGraphicsResources& command);
         Buffer Handle(const CompileShader& command);
+        Spatial::Size2D Handle(const TextBaseSize& command);
 
         std::unique_ptr<Asset::Resource::Image> Handle(const Asset::Resource::Create<Asset::Resource::Image>& command);
         std::unique_ptr<Asset::Resource::Shader> Handle(const Asset::Resource::Create<Asset::Resource::Shader>& command);
@@ -91,7 +93,8 @@ namespace Arca
             Atmos::Render::PruneGraphicsResources,
             Atmos::Render::CompileShader,
             Atmos::Asset::Resource::Create<Atmos::Asset::Resource::Image>,
-            Atmos::Asset::Resource::Create<Atmos::Asset::Resource::Shader>>;
+            Atmos::Asset::Resource::Create<Atmos::Asset::Resource::Shader>,
+            Atmos::Render::TextBaseSize>;
     };
 }
 

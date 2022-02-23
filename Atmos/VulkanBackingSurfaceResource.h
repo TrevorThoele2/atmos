@@ -6,6 +6,7 @@
 
 #include "VulkanQueueFamilyIndices.h"
 #include "VulkanSwapchainSupport.h"
+#include "AllRenders.h"
 
 namespace Atmos::Render::Resource::Vulkan
 {
@@ -28,13 +29,8 @@ namespace Atmos::Render::Resource::Vulkan
         ~BackingSurface();
 
         void Reinitialize(QueueFamilyIndices queueFamilyIndices);
-
-        void Stage(const RenderImage& render);
-        void Stage(const RenderLine& render);
-        void Stage(const RenderRegion& render);
-        void Stage(const RenderText& render);
-
-        void DrawFrame(const Spatial::Point2D& mapPosition, const Color& backgroundColor);
+        
+        void DrawFrame(const AllRenders& allRenders, const Spatial::Point2D& mapPosition);
 
         void OnMaterialDestroying(const Arca::Index<Asset::Material>& material);
 

@@ -4,6 +4,7 @@
 #include "ShaderAsset.h"
 #include "SurfaceResource.h"
 #include "FontAssetResource.h"
+#include "AllRenders.h"
 
 #include "GraphicsReconstructionObjects.h"
 
@@ -24,13 +25,6 @@ namespace Atmos::Render
     class GraphicsManager
     {
     public:
-        using Dimension = unsigned int;
-
-        enum class RenderState
-        {
-            Stencil
-        };
-    public:
         virtual ~GraphicsManager() = 0;
 
         [[nodiscard]] std::unique_ptr<Asset::Resource::Image> CreateImageResource(
@@ -43,13 +37,8 @@ namespace Atmos::Render
             void* window);
         [[nodiscard]] std::unique_ptr<Resource::Surface> CreateMainSurfaceResource(
             void* window);
-
-        void Stage(const RenderImage& render);
-        void Stage(const RenderLine& render);
-        void Stage(const RenderRegion& render);
-        void Stage(const RenderText& render);
-
-        void DrawFrame(Resource::Surface& surface, const Spatial::Point2D& mapPosition, const Color& backgroundColor);
+        
+        void DrawFrame(const AllRenders& allRenders, const Spatial::Point2D& mapPosition);
 
         void ResourceDestroying(Asset::Resource::Image& resource);
         void ResourceDestroying(Asset::Resource::Shader& resource);
@@ -80,13 +69,8 @@ namespace Atmos::Render
             void* window) = 0;
         [[nodiscard]] virtual std::unique_ptr<Resource::Surface> CreateSurfaceResourceImpl(
             void* window) = 0;
-
-        virtual void StageImpl(const RenderImage& render) = 0;
-        virtual void StageImpl(const RenderLine& render) = 0;
-        virtual void StageImpl(const RenderRegion& render) = 0;
-        virtual void StageImpl(const RenderText& render) = 0;
-
-        virtual void DrawFrameImpl(Resource::Surface& surface, const Spatial::Point2D& mapPosition, const Color& backgroundColor) = 0;
+        
+        virtual void DrawFrameImpl(const AllRenders& allRenders, const Spatial::Point2D& mapPosition) = 0;
 
         virtual void ResourceDestroyingImpl(Asset::Resource::Image& resource) = 0;
         virtual void ResourceDestroyingImpl(Asset::Resource::Shader& resource) = 0;
@@ -102,7 +86,7 @@ namespace Atmos::Render
         [[nodiscard]] virtual Spatial::Size2D TextBaseSizeImpl(
             const String& string, const Asset::Resource::Font& resource, bool bold, bool italics, float wrapWidth) const = 0;
     protected:
-        Logging::Logger& Logger() const;
+        [[nodiscard]] Logging::Logger& Logger() const;
     private:
         String typeName;
         Logging::Logger* logger;

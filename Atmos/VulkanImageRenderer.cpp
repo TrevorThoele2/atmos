@@ -2,7 +2,6 @@
 
 #include "VulkanImageAssetResource.h"
 #include "VulkanCommandBuffer.h"
-#include "VulkanUtilities.h"
 #include "VulkanMaxFramesInFlight.h"
 
 #include "SpatialAlgorithms.h"
@@ -26,21 +25,21 @@ namespace Atmos::Render::Vulkan
         vk::Extent2D swapchainExtent)
         :
         memoryPool(0, memoryProperties, device),
-        vertexBuffer(vertexStride * sizeof(QuadVertex), device, memoryPool, vk::BufferUsageFlagBits::eVertexBuffer),
-        indexBuffer(indexStride * sizeof(QuadIndex), device, memoryPool, vk::BufferUsageFlagBits::eIndexBuffer),
+        vertexBuffer(vertexStride * sizeof(TexturedVertex), device, memoryPool, vk::BufferUsageFlagBits::eVertexBuffer),
+        indexBuffer(indexStride * sizeof(TexturedIndex), device, memoryPool, vk::BufferUsageFlagBits::eIndexBuffer),
         descriptorSetPools(CreateDescriptorSetPools(device)),
         currentDescriptorSetPool(descriptorSetPools.begin()),
         mappedConduits(
             device,
             VertexInput(
-                sizeof(QuadVertex),
+                sizeof(TexturedVertex),
                 {
                     vk::VertexInputAttributeDescription(
-                        0, 0, vk::Format::eR32G32Sfloat, offsetof(QuadVertex, position)),
+                        0, 0, vk::Format::eR32G32Sfloat, offsetof(TexturedVertex, position)),
                     vk::VertexInputAttributeDescription(
-                        1, 0, vk::Format::eR32G32Sfloat, offsetof(QuadVertex, texture)),
+                        1, 0, vk::Format::eR32G32Sfloat, offsetof(TexturedVertex, texture)),
                     vk::VertexInputAttributeDescription(
-                        2, 0, vk::Format::eR32G32B32A32Sfloat, offsetof(QuadVertex, color))
+                        2, 0, vk::Format::eR32G32B32A32Sfloat, offsetof(TexturedVertex, color))
                 }),
             vk::PrimitiveTopology::eTriangleList,
             renderPass,
@@ -50,58 +49,49 @@ namespace Atmos::Render::Vulkan
         graphicsQueue(graphicsQueue),
         device(device)
     {}
-
-    void ImageRenderer::StageRender(const RenderImage& imageRender)
-    {
-        stagedImageRenders.push_back(imageRender);
-    }
-
+    
     std::unique_ptr<Raster> ImageRenderer::Start(
+        const AllRenders& allRenders,
         vk::CommandBuffer drawCommandBuffer,
         const UniversalDataBuffer& universalDataBuffer)
     {
-        const auto totalQuadCount = stagedImageRenders.size();
-        if (totalQuadCount == 0)
-            return {};
-        
         auto raster = std::make_unique<Raster>(*this);
 
-        for (auto& stagedImageRender : stagedImageRenders)
+        for (auto& render : allRenders.images)
         {
-            mappedConduits.Add(stagedImageRender.material);
-            AddToRaster(stagedImageRender, *raster);
+            mappedConduits.Add(render.material);
+            AddToRaster(render, *raster);
         }
-        stagedImageRenders.clear();
 
-        auto& descriptorSetPool = NextDescriptorSetPool();
-        const auto descriptorSets = descriptorSetPool.Retrieve(descriptorSetKeys.size());
-
-        size_t i = 0;
-        for (auto& descriptorSetKey : descriptorSetKeys)
+        if (!raster->layers.Empty())
         {
-            const auto descriptorSet = descriptorSets[i];
-            raster->descriptorSets.emplace(descriptorSetKey, descriptorSet);
-            
-            const auto& descriptor = *descriptorSetKey.descriptor;
-            descriptor.Update(descriptorSet, device);
-            universalDataBuffer.Update(descriptorSet);
+            auto& descriptorSetPool = NextDescriptorSetPool();
+            const auto descriptorSets = descriptorSetPool.Retrieve(descriptorSetKeys.size());
 
-            ++i;
+            size_t i = 0;
+            for (auto& descriptorSetKey : descriptorSetKeys)
+            {
+                const auto descriptorSet = descriptorSets[i];
+                raster->descriptorSets.emplace(descriptorSetKey, descriptorSet);
+
+                const auto& descriptor = *descriptorSetKey.descriptor;
+                descriptor.Update(descriptorSet, device);
+                universalDataBuffer.Update(descriptorSet);
+
+                ++i;
+            }
+            descriptorSetKeys.clear();
+
+            raster->currentLayer = raster->layers.begin();
+            return raster;
         }
-        descriptorSetKeys.clear();
-
-        raster->currentLayer = raster->layers.begin();
-        return raster;
+        else
+            return {};
     }
     
     void ImageRenderer::MaterialDestroying(Arca::Index<Asset::Material> material)
     {
         mappedConduits.Remove(material);
-    }
-
-    size_t ImageRenderer::RenderCount() const
-    {
-        return stagedImageRenders.size();
     }
 
     ImageRenderer::Raster::Raster(ImageRenderer& renderer) : renderer(&renderer)
@@ -148,44 +138,50 @@ namespace Atmos::Render::Vulkan
             for (auto& value : materialGroup.values)
             {
                 const auto descriptorSet = descriptorSets.find(DescriptorSetKey(*value.first))->second;
-                
-                const auto startQuadCount = totalQuadCount;
-                const auto quads = value.second;
+
+                const auto elements = value.second;
+                const auto startVertexCount = totalVertexCount;
+                const auto startIndexCount = totalIndexCount;
+
+                std::uint32_t vertexCount = 0;
+                std::uint32_t indexCount = 0;
+                for (auto& element : elements)
+                {
+                    vertexCount += element.vertices.size();
+                    indexCount += element.indices.size();
+                }
+
                 passes.emplace_back(
-                    WriteData(quads, startQuadCount),
-                    Draw(startQuadCount, quads.size(), conduit, descriptorSet));
-                totalQuadCount += quads.size();
+                    WriteData(elements, startVertexCount, startIndexCount),
+                    Draw(vertexCount, indexCount, startIndexCount, conduit, descriptorSet));
+                for (auto& element : elements)
+                {
+                    totalVertexCount += element.vertices.size();
+                    totalIndexCount += element.indices.size();
+                }
             }
         }
         return passes;
     }
 
-    Command ImageRenderer::Raster::WriteData(const std::vector<Quad>& quads, std::uint32_t startQuadCount)
+    Command ImageRenderer::Raster::WriteData(
+        const std::vector<Textured>& elements, std::uint32_t startVertexCount, std::uint32_t startIndexCount)
     {
-        std::vector<QuadVertex> verticesToDraw;
-        std::vector<QuadIndex> indicesToDraw;
-        std::uint32_t currentQuad = 0;
-        for (auto& quad : quads)
+        std::vector<TexturedVertex> verticesToDraw;
+        std::vector<TexturedIndex> indicesToDraw;
+        auto vertexCount = startVertexCount;
+        for (auto& element : elements)
         {
-            verticesToDraw.insert(verticesToDraw.end(), quad.vertices.begin(), quad.vertices.end());
-            const auto offsetIndicesBy = (startQuadCount + currentQuad) * quadIndexIncrement;
-            const QuadIndices offsetIndices =
-            {
-                QuadIndex(offsetIndicesBy + quadIndices[0]),
-                QuadIndex(offsetIndicesBy + quadIndices[1]),
-                QuadIndex(offsetIndicesBy + quadIndices[2]),
-                QuadIndex(offsetIndicesBy + quadIndices[3]),
-                QuadIndex(offsetIndicesBy + quadIndices[4]),
-                QuadIndex(offsetIndicesBy + quadIndices[5]),
-            };
-            indicesToDraw.insert(indicesToDraw.end(), offsetIndices.begin(), offsetIndices.end());
-            ++currentQuad;
+            verticesToDraw.insert(verticesToDraw.end(), element.vertices.begin(), element.vertices.end());
+            for(auto& index : element.indices)
+                indicesToDraw.push_back(vertexCount + index);
+            vertexCount += element.vertices.size();
         }
-        
-        const auto vertexOffset = vk::DeviceSize(startQuadCount) * 4 * sizeof QuadVertex;
-        const auto vertexSize = verticesToDraw.size() * sizeof QuadVertex;
-        const auto indexOffset = vk::DeviceSize(startQuadCount) * quadIndices.size() * sizeof QuadIndex;
-        const auto indexSize = indicesToDraw.size() * sizeof QuadIndex;
+
+        const auto vertexOffset = vk::DeviceSize(startVertexCount) * sizeof TexturedVertex;
+        const auto vertexSize = verticesToDraw.size() * sizeof TexturedVertex;
+        const auto indexOffset = vk::DeviceSize(startIndexCount) * sizeof TexturedIndex;
+        const auto indexSize = indicesToDraw.size() * sizeof TexturedIndex;
 
         renderer->vertexBuffer.PushSourceBytes(verticesToDraw.data(), vertexOffset, vertexSize);
         renderer->indexBuffer.PushSourceBytes(indicesToDraw.data(), indexOffset, indexSize);
@@ -197,12 +193,13 @@ namespace Atmos::Render::Vulkan
         };
     }
 
-	Command ImageRenderer::Raster::Draw(std::uint32_t startQuadCount, std::uint32_t quadCount, Conduit& conduit, vk::DescriptorSet descriptorSet)
+	Command ImageRenderer::Raster::Draw(
+        std::uint32_t vertexCount, std::uint32_t indexCount, std::uint32_t startIndexCount, Conduit& conduit, vk::DescriptorSet descriptorSet)
     {
-        return [this, startQuadCount, quadCount, &conduit, descriptorSet](CommandRecorder record)
+        return [this, vertexCount, indexCount, startIndexCount, &conduit, descriptorSet](CommandRecorder record)
         {
             record(conduit.Bind());
-            record([this, startQuadCount, quadCount, &conduit, descriptorSet](vk::CommandBuffer commandBuffer)
+            record([this, vertexCount, indexCount, startIndexCount, &conduit, descriptorSet](vk::CommandBuffer commandBuffer)
                 {
                     const vk::Buffer vertexBuffers[] = { renderer->vertexBuffer.destination.Value() };
                     constexpr vk::DeviceSize offsets[] = { 0 };
@@ -218,7 +215,7 @@ namespace Atmos::Render::Vulkan
                         0,
                         nullptr);
 
-                    commandBuffer.drawIndexed(quadCount * quadIndices.size(), 1, startQuadCount * quadIndices.size(), 0, 0);
+                    commandBuffer.drawIndexed(indexCount, 1, startIndexCount, 0, 0);
                 });
         };
     }
@@ -227,28 +224,28 @@ namespace Atmos::Render::Vulkan
     {
         const auto assetResource = dynamic_cast<Asset::Resource::Vulkan::Image*>(imageRender.assetResource);
         const auto position = ToPoint2D(imageRender.position);
-        const auto imageSize = assetResource->imageData.size;
-        const auto slice = Spatial::Clamp(imageRender.slice, Spatial::ToAxisAlignedBox2D(0, 0, 1, 1));
-        const auto size = Spatial::Size2D
-        {
-            slice.size.width * imageSize.width * imageRender.scalers.x,
-            slice.size.height * imageSize.height * imageRender.scalers.y
-        };
+        const auto clipTo = Spatial::ToPoints(imageRender.viewSlice, 0, Spatial::Point2D{});
 
-        const auto vertices = ToQuadVertices(
+        const auto worldTopLeft = position
+            - Spatial::Point2D{ (imageRender.size.width / 2) * imageRender.scalers.x, (imageRender.size.height / 2) * imageRender.scalers.y };
+        const auto textured = ToTextured(
             imageRender.color,
-            position,
-            size,
+            worldTopLeft,
+            Spatial::Point2D{ imageRender.assetSlice.Left(), imageRender.assetSlice.Top() },
+            imageRender.size,
+            assetResource->Size(),
+            imageRender.scalers,
             imageRender.rotation,
-            position,
-            slice);
-        AddToRaster(
-            imageRender.space,
-            imageRender.position.z,
-            imageRender.material.ID(),
-            assetResource->imageData.descriptor,
-            vertices,
-            raster);
+            Spatial::Point2D{ 0.5, 0.5 },
+            clipTo);
+        if (textured)
+            AddToRaster(
+                imageRender.space,
+                imageRender.position.z,
+                imageRender.material.ID(),
+                assetResource->imageData.descriptor,
+                *textured,
+                raster);
     }
 
     void ImageRenderer::AddToRaster(
@@ -256,7 +253,7 @@ namespace Atmos::Render::Vulkan
         Spatial::Point3D::Value z,
         Arca::RelicID materialID,
         CombinedImageSamplerDescriptor& descriptor,
-        std::array<QuadVertex, 4> vertices,
+        Textured element,
         Raster& raster)
     {
         const auto layerKey = ObjectLayeringKey{ space, z };
@@ -264,7 +261,7 @@ namespace Atmos::Render::Vulkan
         if (!layer)
             layer = &raster.layers.Add(layerKey, Raster::Layer{});
         auto& group = layer->GroupFor(materialID);
-        group.ListFor(&descriptor).emplace_back(vertices);
+        group.ListFor(&descriptor).emplace_back(element);
         descriptorSetKeys.emplace(DescriptorSetKey(descriptor));
     }
     

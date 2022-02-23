@@ -983,9 +983,6 @@
     <ClInclude Include="Image.h">
       <Filter>Header Files\Render\Image</Filter>
     </ClInclude>
-    <ClInclude Include="VulkanQuadData.h">
-      <Filter>Header Files\Render\Vulkan\Structures</Filter>
-    </ClInclude>
     <ClInclude Include="VulkanDebug.h">
       <Filter>Header Files\Render\Vulkan</Filter>
     </ClInclude>
@@ -1700,7 +1697,7 @@
     <ClInclude Include="SDLTextError.h">
       <Filter>Header Files\Render\Text\SDL</Filter>
     </ClInclude>
-    <ClInclude Include="VulkanQuad.h">
+    <ClInclude Include="VulkanTextured.h">
       <Filter>Header Files\Render\Vulkan</Filter>
     </ClInclude>
     <ClInclude Include="VulkanTextRenderer.h">
@@ -2095,6 +2092,12 @@
     </ClInclude>
     <ClInclude Include="Vector3D.h">
       <Filter>Header Files\Spatial\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="StagedRenders.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="AllRenders.h">
+      <Filter>Header Files\Render</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2764,7 +2767,7 @@
     <ClCompile Include="SDLTextError.cpp">
       <Filter>Source Files\Render\Text\SDL</Filter>
     </ClCompile>
-    <ClCompile Include="VulkanQuad.cpp">
+    <ClCompile Include="VulkanTextured.cpp">
       <Filter>Source Files\Render\Vulkan</Filter>
     </ClCompile>
     <ClCompile Include="VulkanTextRenderer.cpp">

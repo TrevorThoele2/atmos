@@ -43,16 +43,8 @@ namespace Atmos::Render::Vulkan
             void* window) override;
         [[nodiscard]] std::unique_ptr<Resource::Surface> CreateSurfaceResourceImpl(
             void* window) override;
-
-        void StageImpl(const RenderImage& render) override;
-        void StageImpl(const RenderLine& render) override;
-        void StageImpl(const RenderRegion& render) override;
-        void StageImpl(const RenderText& render) override;
-
-        void DrawFrameImpl(
-            Resource::Surface& surface,
-            const Spatial::Point2D& mapPosition,
-            const Color& backgroundColor) override;
+        
+        void DrawFrameImpl(const AllRenders& allRenders, const Spatial::Point2D& mapPosition) override;
 
         void ResourceDestroyingImpl(Asset::Resource::Image& resource) override;
         void ResourceDestroyingImpl(Asset::Resource::Shader& resource) override;
@@ -147,9 +139,9 @@ namespace Atmos::Render::Vulkan
         ShaderCompiler shaderCompiler;
     private:
         template<class To, class From>
-        To& RequiredResource(From& from);
+        static To& RequiredResource(From& from);
         template<class To, class From>
-        const To& RequiredResource(const From& from);
+        static const To& RequiredResource(const From& from);
 
         template<class Expected, class Available>
         static std::set<String> Unavailable(Expected expected, Available available);
@@ -158,8 +150,6 @@ namespace Atmos::Render::Vulkan
     template<class T>
     void GraphicsManager::StageRender(const T& render)
     {
-        const auto& surface = RequiredResource<Resource::Vulkan::Surface>(*render.surface);
-        surface.backing->Stage(render);
     }
 
     template<class To, class From>
@@ -187,10 +177,7 @@ namespace Atmos::Render::Vulkan
         std::set<String> availableSet(available.begin(), available.end());
 
         std::set<String> returnValue;
-        std::set_difference(
-            expectedSet.begin(), expectedSet.end(),
-            availableSet.begin(), availableSet.end(),
-            std::inserter(returnValue, returnValue.begin()));
+        std::ranges::set_difference(expectedSet, availableSet, std::inserter(returnValue, returnValue.begin()));
         return returnValue;
     }
 }

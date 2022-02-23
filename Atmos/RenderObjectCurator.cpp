@@ -80,12 +80,15 @@ namespace Atmos::Render
         return position;
     }
 
-    Spatial::AxisAlignedBox2D ObjectCurator::ViewSliceClamp(
-        Arca::Index<ViewSlice> viewSlice,
-        const Spatial::AxisAlignedBox2D& box)
+    Spatial::AxisAlignedBox2D ObjectCurator::ViewSliceBox(Arca::Index<ViewSlice> viewSlice)
     {
         auto viewSliceValue = viewSlice.Get();
-        auto viewSliceBox = viewSliceValue ? viewSliceValue->box : box;
-        return Spatial::Clamp(box, viewSliceBox);
+        return viewSliceValue
+            ? viewSliceValue->box
+            : Spatial::AxisAlignedBox2D
+            {
+                Spatial::Point2D{},
+                Spatial::Size2D{std::numeric_limits<float>::max(), std::numeric_limits<float>::max()}
+            };
     }
 }

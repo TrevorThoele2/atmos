@@ -36,20 +36,12 @@ namespace Atmos::Render::Vulkan
         graphicsQueue(graphicsQueue),
         device(device)
     {}
-
-    void LineRenderer::StageRender(const RenderLine& lineRender)
-    {
-        stagedLineRenders.push_back(lineRender);
-    }
     
     std::unique_ptr<Raster> LineRenderer::Start(
+        const AllRenders& allRenders,
         vk::CommandBuffer drawCommandBuffer,
         const UniversalDataBuffer& universalDataBuffer)
     {
-        const auto totalLineCount = stagedLineRenders.size();
-        if (totalLineCount == 0)
-            return {};
-        
         auto raster = std::make_unique<Raster>(*this);
 
         auto& descriptorSetPool = NextDescriptorSetPool();
@@ -57,25 +49,24 @@ namespace Atmos::Render::Vulkan
 
         universalDataBuffer.Update(raster->setupDescriptorSet);
 
-        for (auto& stagedLineRender : stagedLineRenders)
+        for (auto& render : allRenders.lines)
         {
-            mappedConduits.Add(stagedLineRender.material);
-            AddToRaster(stagedLineRender, *raster);
+            mappedConduits.Add(render.material);
+            AddToRaster(render, *raster);
         }
-        stagedLineRenders.clear();
 
-        raster->currentLayer = raster->layers.begin();
-        return raster;
+        if (!raster->layers.Empty())
+        {
+            raster->currentLayer = raster->layers.begin();
+            return raster;
+        }
+        else
+            return {};
     }
 
     void LineRenderer::MaterialDestroying(Arca::Index<Asset::Material> material)
     {
         mappedConduits.Remove(material);
-    }
-
-    size_t LineRenderer::RenderCount() const
-    {
-        return stagedLineRenders.size();
     }
 
     LineRenderer::Line::Line(const std::vector<Vertex>& points) : vertices(points)
@@ -192,7 +183,7 @@ namespace Atmos::Render::Vulkan
             std::vector<Vertex> points;
             for (auto& point : lineRender.points)
             {
-                const auto color = AtmosToVulkanColor(lineRender.color);
+                const auto color = ToVulkanColor(lineRender.color);
                 points.push_back(Vertex{ color, { point.x, point.y } });
             }
 

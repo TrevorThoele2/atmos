@@ -26,6 +26,7 @@
 #include "ViewSlice.h"
 #include "RenderStartCurator.h"
 #include "RenderEndCurator.h"
+#include "StagedRenders.h"
 
 #include "UIImage.h"
 #include "UIText.h"
@@ -207,6 +208,7 @@ namespace Atmos
                 .Register<SurfaceCurator>()
                 .Register<GraphicsSettings>()
                 .Register<ViewSlice>()
+                .Register<StagedRenders>()
                 .Register<EndCurator>();
         }
 
@@ -221,10 +223,10 @@ namespace Atmos
 
             origin
                 .Register<GraphicsCurator>(std::ref(graphicsManager))
-                .Register<ImageCurator>(std::ref(graphicsManager))
-                .Register<LineCurator>(std::ref(graphicsManager))
-                .Register<GridRegionCurator>(std::ref(graphicsManager))
-                .Register<TextCurator>(std::ref(textManager), std::ref(graphicsManager))
+                .Register<ImageCurator>()
+                .Register<LineCurator>()
+                .Register<GridRegionCurator>()
+                .Register<TextCurator>(std::ref(textManager))
                 .Register<Curator>(std::ref(graphicsManager))
                 .Register<Camera>(screenSize)
                 .Register<MainSurface>(std::ref(graphicsManager), window);

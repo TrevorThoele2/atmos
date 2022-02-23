@@ -33,20 +33,12 @@ namespace Atmos::Render::Vulkan
         graphicsQueue(graphicsQueue),
         device(device)
     {}
-
-    void RegionRenderer::StageRender(const RenderRegion& regionRender)
-    {
-        stagedRegionRenders.push_back(regionRender);
-    }
     
     std::unique_ptr<Raster> RegionRenderer::Start(
+        const AllRenders& allRenders,
         vk::CommandBuffer drawCommandBuffer,
         const UniversalDataBuffer& universalDataBuffer)
     {
-        const auto totalRegionCount = stagedRegionRenders.size();
-        if (totalRegionCount == 0)
-            return {};
-        
         auto raster = std::make_unique<Raster>(*this);
 
         auto& descriptorSetPool = NextDescriptorSetPool();
@@ -54,25 +46,24 @@ namespace Atmos::Render::Vulkan
 
         universalDataBuffer.Update(raster->setupDescriptorSet);
 
-        for (const auto& stagedRegionRender : stagedRegionRenders)
+        for (const auto& render : allRenders.regions)
         {
-            mappedConduits.Add(stagedRegionRender.material);
-            AddToRaster(stagedRegionRender, *raster);
+            mappedConduits.Add(render.material);
+            AddToRaster(render, *raster);
         }
-        stagedRegionRenders.clear();
 
-        raster->currentLayer = raster->layers.begin();
-        return raster;
+        if (!raster->layers.Empty())
+        {
+            raster->currentLayer = raster->layers.begin();
+            return raster;
+        }
+        else
+            return {};
     }
     
     void RegionRenderer::MaterialDestroying(Arca::Index<Asset::Material> material)
     {
         mappedConduits.Remove(material);
-    }
-
-    size_t RegionRenderer::RenderCount() const
-    {
-        return stagedRegionRenders.size();
     }
 
     RegionRenderer::Region::Region(const Vertices& vertices, const Indices& indices) :

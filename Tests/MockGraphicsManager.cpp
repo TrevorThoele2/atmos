@@ -44,28 +44,15 @@ std::unique_ptr<Resource::Surface> MockGraphicsManager::CreateSurfaceResourceImp
     return std::make_unique<MockSurfaceResource>();
 }
 
-void MockGraphicsManager::StageImpl(const RenderImage& render)
+void MockGraphicsManager::DrawFrameImpl(
+    const AllRenders& allRenders,
+    const Spatial::Point2D& mapPosition)
 {
-    imageRenders.push_back(render);
+    imageRenders.insert(imageRenders.end(), allRenders.images.begin(), allRenders.images.end());
+    lineRenders.insert(lineRenders.end(), allRenders.lines.begin(), allRenders.lines.end());
+    textRenders.insert(textRenders.end(), allRenders.texts.begin(), allRenders.texts.end());
+    regionRenders.insert(regionRenders.end(), allRenders.regions.begin(), allRenders.regions.end());
 }
-
-void MockGraphicsManager::StageImpl(const RenderLine& render)
-{
-    lineRenders.push_back(render);
-}
-
-void MockGraphicsManager::StageImpl(const RenderRegion& render)
-{
-    regionRenders.push_back(render);
-}
-
-void MockGraphicsManager::StageImpl(const RenderText& render)
-{
-    textRenders.push_back(render);
-}
-
-void MockGraphicsManager::DrawFrameImpl(Resource::Surface& surface, const Spatial::Point2D& mapPosition, const Color& backgroundColor)
-{}
 
 void MockGraphicsManager::ResourceDestroyingImpl(Asset::Resource::Image& resource)
 {}

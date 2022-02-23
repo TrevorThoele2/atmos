@@ -690,10 +690,10 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering view sliced images", "[re
                     REQUIRE(imageRenders.size() == 1);
 
                     const auto render = imageRenders[0];
-                    REQUIRE(render.slice.Left() == Approx(0.01));
-                    REQUIRE(render.slice.Top() == Approx(0.015));
-                    REQUIRE(render.slice.Right() == Approx(0.02));
-                    REQUIRE(render.slice.Bottom() == Approx(0.025));
+                    REQUIRE(render.viewSlice.Left() == Approx(20));
+                    REQUIRE(render.viewSlice.Top() == Approx(30));
+                    REQUIRE(render.viewSlice.Right() == Approx(40));
+                    REQUIRE(render.viewSlice.Bottom() == Approx(50));
                 }
             }
         }
@@ -721,10 +721,10 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering view sliced images", "[re
                     REQUIRE(imageRenders.size() == 1);
 
                     const auto render = imageRenders[0];
-                    REQUIRE(render.slice.Left() == Approx(0.06));
-                    REQUIRE(render.slice.Top() == Approx(0.065));
-                    REQUIRE(render.slice.Right() == Approx(0.07));
-                    REQUIRE(render.slice.Bottom() == Approx(0.075));
+                    REQUIRE(render.viewSlice.Left() == Approx(20));
+                    REQUIRE(render.viewSlice.Top() == Approx(30));
+                    REQUIRE(render.viewSlice.Right() == Approx(40));
+                    REQUIRE(render.viewSlice.Bottom() == Approx(50));
                 }
             }
         }

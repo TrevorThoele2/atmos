@@ -90,30 +90,10 @@ namespace Atmos::Render::Resource::Vulkan
             imageFormat,
             extent);
     }
-
-    void BackingSurface::Stage(const RenderImage& render)
+    
+    void BackingSurface::DrawFrame(const AllRenders& allRenders, const Spatial::Point2D& mapPosition)
     {
-        renderer->StageRender(render);
-    }
-
-    void BackingSurface::Stage(const RenderLine& render)
-    {
-        renderer->StageRender(render);
-    }
-
-    void BackingSurface::Stage(const RenderRegion& render)
-    {
-        renderer->StageRender(render);
-    }
-
-    void BackingSurface::Stage(const RenderText& render)
-    {
-        renderer->StageRender(render);
-    }
-
-    void BackingSurface::DrawFrame(const Spatial::Point2D& mapPosition, const Color& backgroundColor)
-    {
-        renderer->DrawFrame(Size(), mapPosition);
+        renderer->DrawFrame(allRenders, Size(), mapPosition);
     }
 
     void BackingSurface::OnMaterialDestroying(const Arca::Index<Asset::Material>& material)

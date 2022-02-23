@@ -74,28 +74,11 @@ namespace Atmos::Render::Vulkan
                 *glyphAtlas);
         currentRendererGroup = rendererGroups.begin();
     }
-
-    void MasterRenderer::StageRender(const RenderImage& imageRender)
-    {
-        currentRendererGroup->image.StageRender(imageRender);
-    }
-
-    void MasterRenderer::StageRender(const RenderLine& lineRender)
-    {
-        currentRendererGroup->line.StageRender(lineRender);
-    }
-
-    void MasterRenderer::StageRender(const RenderRegion& regionRender)
-    {
-        currentRendererGroup->region.StageRender(regionRender);
-    }
-
-    void MasterRenderer::StageRender(const RenderText& textRender)
-    {
-        currentRendererGroup->text.StageRender(textRender);
-    }
-
-    void MasterRenderer::DrawFrame(const Spatial::Size2D& screenSize, const Spatial::Point2D& mapPosition)
+    
+    void MasterRenderer::DrawFrame(
+        const AllRenders& allRenders,
+        const Spatial::Size2D& screenSize,
+        const Spatial::Point2D& mapPosition)
     {
         if (IsError(device.waitForFences(inFlightFences[previousFrame].get(), VK_TRUE, UINT64_MAX)))
             logger->Log("Could not wait for Vulkan fences.");
@@ -144,6 +127,7 @@ namespace Atmos::Render::Vulkan
                 glm::vec2{ mapPosition.x, mapPosition.y });
 
             Draw(
+                allRenders,
                 *currentRendererGroup,
                 universalData,
                 framebuffers[currentSwapchainImage].get(),
@@ -255,17 +239,9 @@ namespace Atmos::Render::Vulkan
     {
         return { &image, &line, &region, &text };
     }
-
-    bool MasterRenderer::AllEmpty(const std::vector<RendererBase*>& check) const
-    {
-        for (auto& renderer : check)
-            if (renderer->RenderCount() != 0)
-                return false;
-
-        return true;
-    }
-
+    
     void MasterRenderer::Draw(
+        const AllRenders& allRenders,
         RendererGroup& rendererGroup,
         UniversalData universalData,
         vk::Framebuffer framebuffer,
@@ -279,8 +255,7 @@ namespace Atmos::Render::Vulkan
         using Rasters = std::vector<std::shared_ptr<Raster>>;
         Rasters rasters;
         for (const auto& renderer : rendererGroup.AsIterable())
-            if (renderer->RenderCount() > 0)
-                rasters.push_back(renderer->Start(commandBuffer, universalDataBuffer));
+            rasters.push_back(renderer->Start(allRenders, commandBuffer, universalDataBuffer));
         
         try
         {
@@ -288,7 +263,7 @@ namespace Atmos::Render::Vulkan
             std::vector<Raster::Pass> rasterPasses;
             while (true)
             {
-                std::erase_if(availableRasters, [](auto raster) { return raster->IsDone(); });
+                std::erase_if(availableRasters, [](auto raster) { return !raster || raster->IsDone(); });
                 if (availableRasters.empty())
                     break;
 

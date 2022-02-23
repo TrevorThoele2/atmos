@@ -52,10 +52,13 @@ namespace Atmos::Spatial
 
     [[nodiscard]] Side SideOf(Line2D line, Point2D point);
 
+    [[nodiscard]] AxisAlignedBox2D Clip(AxisAlignedBox2D box, AxisAlignedBox2D clip);
     [[nodiscard]] std::vector<Point2D> Clip(std::vector<Point2D> points, std::vector<Point2D> clip);
 
     [[nodiscard]] AxisAlignedBox2D Cell(int column, int row, Size2D cellSize);
     [[nodiscard]] AxisAlignedBox3D Cell(int column, int row, int depth, Size3D cellSize);
+
+    [[nodiscard]] Point2D Rotate(Point2D point, Angle2D rotation, Point2D rotationCenter);
 
     [[nodiscard]] Point2D operator+(Point2D left, Point2D right);
     [[nodiscard]] Point3D operator+(Point3D left, Point3D right);
@@ -72,6 +75,11 @@ namespace Atmos::Spatial
     [[nodiscard]] Point3D ToPoint3D(Point2D point, Point3D::Value z);
     [[nodiscard]] Point3D ToPoint3D(Grid::Point point, Point3D::Value z);
     [[nodiscard]] Point3D ToPoint3D(Angle3D angle, Point3D::Value distance);
+
+    [[nodiscard]] std::vector<Point2D> ToPoints(
+        AxisAlignedBox2D box,
+        Spatial::Angle2D rotation,
+        Spatial::Point2D rotationCenter);
 
     [[nodiscard]] Angle2D ToDegrees(Angle2D angle);
 

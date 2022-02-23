@@ -65,6 +65,21 @@ namespace Atmos::Render
         return manager->CreateShaderResource(command.buffer, command.name);
     }
 
+    Spatial::Size2D GraphicsCurator::Handle(const TextBaseSize& command)
+    {
+        const auto font = Owner().Find<Asset::Font>(command.font);
+        if (!font)
+            return {};
+
+        const auto& fontResource = *const_cast<Asset::Resource::Font*>(font->Resource());
+        return manager->TextBaseSize(
+            command.string,
+            fontResource,
+            command.bold,
+            command.italics,
+            command.wrapWidth);
+    }
+
     void GraphicsCurator::AttemptReconstruct(const Spatial::Size2D& size)
     {
         if (manager->ShouldReconstruct())

@@ -29,9 +29,7 @@ namespace Atmos::Render
         [[nodiscard]] static Spatial::Point3D ToWorldPoint(Spatial::Point3D position, Spatial::Point2D cameraTopLeft);
         [[nodiscard]] static Spatial::Point3D ToScreenPoint(Spatial::Point3D position);
 
-        [[nodiscard]] static Spatial::AxisAlignedBox2D ViewSliceClamp(
-            Arca::Index<ViewSlice> viewSlice,
-            const Spatial::AxisAlignedBox2D& text);
+        [[nodiscard]] static Spatial::AxisAlignedBox2D ViewSliceBox(Arca::Index<ViewSlice> viewSlice);
     private:
         Arca::Index<Camera> camera;
     };

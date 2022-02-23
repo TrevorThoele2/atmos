@@ -32,6 +32,7 @@
     <ClInclude Include="ActionAssetCurator.h" />
     <ClInclude Include="ActionDepressed.h" />
     <ClInclude Include="ActionPressed.h" />
+    <ClInclude Include="AllRenders.h" />
     <ClInclude Include="ArcaRelicIncludes.h" />
     <ClInclude Include="ArcaShardIncludes.h" />
     <ClInclude Include="AssetResourceManager.h" />
@@ -161,6 +162,7 @@
     <ClInclude Include="JavaScriptVector.h" />
     <ClInclude Include="JavaScriptViewSlice.h" />
     <ClInclude Include="Process.h" />
+    <ClInclude Include="StagedRenders.h" />
     <ClInclude Include="ScriptCompiledModule.h" />
     <ClInclude Include="SDLTextError.h" />
     <ClInclude Include="SDLText.h" />
@@ -176,7 +178,7 @@
     <ClInclude Include="VulkanMemoryPool.h" />
     <ClInclude Include="VulkanOperation.h" />
     <ClInclude Include="VulkanPaths.h" />
-    <ClInclude Include="VulkanQuad.h" />
+    <ClInclude Include="VulkanTextured.h" />
     <ClInclude Include="VulkanRenderPass.h" />
     <ClInclude Include="VulkanResults.h" />
     <ClInclude Include="VulkanSampler.h" />
@@ -362,7 +364,6 @@
     <ClInclude Include="VulkanImage.h" />
     <ClInclude Include="VulkanLineRenderer.h" />
     <ClInclude Include="VulkanConduit.h" />
-    <ClInclude Include="VulkanQuadData.h" />
     <ClInclude Include="VulkanImageRenderer.h" />
     <ClInclude Include="VulkanShaderAssetResource.h" />
     <ClInclude Include="VulkanShaderCompiler.h" />
@@ -653,7 +654,7 @@
     <ClCompile Include="VulkanGlyphAtlas.cpp" />
     <ClCompile Include="VulkanMemoryPool.cpp" />
     <ClCompile Include="VulkanPaths.cpp" />
-    <ClCompile Include="VulkanQuad.cpp" />
+    <ClCompile Include="VulkanTextured.cpp" />
     <ClCompile Include="VulkanRenderPass.cpp" />
     <ClCompile Include="VulkanResults.cpp" />
     <ClCompile Include="VulkanSampler.cpp" />

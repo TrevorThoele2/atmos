@@ -22,18 +22,13 @@ namespace Atmos::Render::Vulkan
             vk::PhysicalDeviceMemoryProperties memoryProperties,
             vk::RenderPass renderPass,
             vk::Extent2D swapchainExtent);
-
-        void StageRender(const RenderRegion& regionRender);
         
         [[nodiscard]] std::unique_ptr<Raster> Start(
+            const AllRenders& allRenders,
             vk::CommandBuffer drawCommandBuffer,
             const UniversalDataBuffer& universalDataBuffer) override;
         
         void MaterialDestroying(Arca::Index<Asset::Material> material);
-
-        [[nodiscard]] size_t RenderCount() const override;
-    private:
-        std::vector<RenderRegion> stagedRegionRenders;
     private:
         MemoryPool memoryPool;
 

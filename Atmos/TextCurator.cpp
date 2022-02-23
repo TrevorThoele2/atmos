@@ -1,15 +1,16 @@
 #include "TextCurator.h"
 
 #include "RenderText.h"
-
+#include "StagedRenders.h"
 #include "ColorChanged.h"
+#include "TextBaseSize.h"
 
 #include "SpatialAlgorithms.h"
 
 namespace Atmos::Render
 {
-    TextCurator::TextCurator(Init init, TextManager& manager, GraphicsManager& graphicsManager) :
-        ObjectCurator(init), manager(&manager), graphicsManager(&graphicsManager)
+    TextCurator::TextCurator(Init init, TextManager& manager) :
+        ObjectCurator(init), manager(&manager)
     {
         Owner().On<Arca::MatrixFormed<Matrix>>([this](const Arca::MatrixFormed<Matrix>& signal)
         {
@@ -65,91 +66,71 @@ namespace Atmos::Render
     {
         return manager->CreateFontResource(command.buffer, command.name);
     }
-
-    Spatial::Size2D TextCurator::Handle(const TextBaseSize& command)
-    {
-        const auto font = Owner().Find<Asset::Font>(command.font);
-        if (!font)
-            return {};
-
-        auto& fontResource = *const_cast<Asset::Resource::Font*>(font->Resource());
-        return graphicsManager->TextBaseSize(
-            command.string,
-            fontResource,
-            command.bold,
-            command.italics,
-            command.wrapWidth);
-    }
-
+    
     void TextCurator::WorkImpl(
         Spatial::AxisAlignedBox3D cameraBox,
         Spatial::Point2D cameraTopLeft,
         const MainSurface& mainSurface)
     {
+        std::vector<RenderText> renders;
+        renders.reserve(matrices.size());
         for (auto& matrix : matrices)
-            StageRender(matrix.second.ID(), *matrix.second, cameraTopLeft, mainSurface);
+        {
+            const auto render = RenderOf(matrix.second.ID(), *matrix.second, cameraTopLeft, mainSurface);
+            if (render)
+                renders.push_back(*render);
+        }
+
+        const auto stagedRenders = MutablePointer().Of<StagedRenders>();
+        stagedRenders->texts.insert(stagedRenders->texts.end(), renders.begin(), renders.end());
     }
 
-    void TextCurator::StageRender(
-        Arca::RelicID id, const Matrix::ReferenceTuple& tuple, Spatial::Point2D cameraTopLeft, const MainSurface& mainSurface)
+    std::optional<RenderText> TextCurator::RenderOf(
+        Arca::RelicID id,
+        const Matrix::ReferenceTuple& tuple,
+        Spatial::Point2D cameraTopLeft,
+        const MainSurface& mainSurface)
     {
         const auto& renderCore = *std::get<0>(tuple);
         const auto& core = *std::get<1>(tuple);
         const auto& bounds = *std::get<2>(tuple);
-
         const auto font = core.font.Get();
         const auto material = renderCore.material;
         if (font && material && font->Resource())
         {
-            const auto string = core.string;
             const auto boundsSpace = bounds.Space();
-            const auto position = ToRenderPoint(bounds.Position(), cameraTopLeft, boundsSpace);
-            const auto baseSize = bounds.BaseSize();
-            const auto rotation = bounds.Rotation();
-            const auto color = renderCore.color;
-            const auto bold = core.bold;
-            const auto italics = core.italics;
-            const auto wrapWidth = core.wrapWidth;
-
-            const auto resource = const_cast<Asset::Resource::Font*>(font->Resource());
-
-            const auto scalers = bounds.Scalers();
-            const auto size = bounds.Size();
-            const auto standardBox = Spatial::ToAxisAlignedBox2D(0, 0, size.width, size.height);
-            const auto viewSlice = ViewSliceClamp(Owner().Find<ViewSlice>(id), standardBox);
-            const auto slice = Spatial::ScaleOf(viewSlice, standardBox);
-
-            const RenderText render
+            
+            return RenderText
             {
-                string,
-                resource,
-                slice,
-                material,
-                position,
-                rotation,
-                scalers,
-                color,
-                bold,
-                italics,
-                wrapWidth,
-                ToRenderSpace(boundsSpace),
-                mainSurface.Resource()
+                .string = core.string,
+                .fontResource = const_cast<Asset::Resource::Font*>(font->Resource()),
+                .viewSlice = ViewSliceBox(Owner().Find<ViewSlice>(id)),
+                .material = material,
+                .position = ToRenderPoint(bounds.Position(), cameraTopLeft, boundsSpace),
+                .rotation = bounds.Rotation(),
+                .scalers = bounds.Scalers(),
+                .color = renderCore.color,
+                .bold = core.bold,
+                .italics = core.italics,
+                .wrapWidth = core.wrapWidth,
+                .space = ToRenderSpace(boundsSpace),
+                .surface = mainSurface.Resource()
             };
-            graphicsManager->Stage(render);
         }
+        else
+            return {};
     }
 
     void TextCurator::AttemptChangeBaseSize(const Matrix::ReferenceTuple& tuple)
     {
         const auto core = MutablePointer().Of(std::get<1>(tuple));
-        const auto font = MutablePointer().Of(core->font);
         const auto string = core->string;
         const auto wrapWidth = core->wrapWidth;
         const auto bold = core->bold;
         const auto italics = core->italics;
         const auto bounds = MutablePointer().Of(std::get<2>(tuple));
-        bounds->BaseSize(font
-            ? graphicsManager->TextBaseSize(string, *font->Resource(), bold, italics, wrapWidth)
+        bounds->BaseSize(core->font
+            ? Owner().Do(TextBaseSize(string, core->font.ID(), bold, italics, wrapWidth))
             : Spatial::Size2D{});
     }
 }

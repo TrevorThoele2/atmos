@@ -1,17 +1,13 @@
 #pragma once
 
 #include "VulkanRendererBase.h"
-#include "VulkanQuad.h"
+#include "VulkanTextured.h"
 #include "VulkanObjectLayering.h"
 #include "VulkanDescriptorSetPool.h"
 #include "VulkanMappedConduits.h"
 #include "VulkanStagedBuffer.h"
 #include "VulkanCombinedImageSamplerDescriptor.h"
 #include "VulkanMemoryPool.h"
-
-#include "RenderImage.h"
-
-#include "Logger.h"
 
 namespace Atmos::Render::Vulkan
 {
@@ -51,28 +47,23 @@ namespace Atmos::Render::Vulkan
             vk::PhysicalDeviceMemoryProperties memoryProperties,
             vk::RenderPass renderPass,
             vk::Extent2D swapchainExtent);
-
-        void StageRender(const RenderImage& imageRender);
-
+        
         [[nodiscard]] std::unique_ptr<Raster> Start(
+            const AllRenders& allRenders,
             vk::CommandBuffer drawCommandBuffer,
             const UniversalDataBuffer& universalDataBuffer) override;
         
         void MaterialDestroying(Arca::Index<Asset::Material> material);
-
-        [[nodiscard]] size_t RenderCount() const override;
-    private:
-        std::vector<RenderImage> stagedImageRenders;
     private:
         MemoryPool memoryPool;
 
-        static constexpr int maxQuadCount = 10000;
+        static constexpr int maxElementCount = 10000;
 
         StagedBuffer vertexBuffer;
-        static constexpr int vertexStride = maxQuadCount * 4;
+        static constexpr int vertexStride = maxElementCount * 4;
 
         StagedBuffer indexBuffer;
-        static constexpr int indexStride = maxQuadCount * 6;
+        static constexpr int indexStride = maxElementCount * 6;
     private:
         using MappedConduits = MappedConduits<Asset::Material>;
 
@@ -88,21 +79,26 @@ namespace Atmos::Render::Vulkan
             [[nodiscard]] bool IsDone() const override;
             [[nodiscard]] ObjectLayeringKey NextLayer() const override;
         private:
-            using ObjectLayering = ObjectLayering<const CombinedImageSamplerDescriptor*, Quad>;
+            using ObjectLayering = ObjectLayering<const CombinedImageSamplerDescriptor*, Textured>;
             using Layer = ObjectLayering::Layer;
 
             ObjectLayering layers;
             ObjectLayering::iterator currentLayer = {};
             std::unordered_map<DescriptorSetKey, vk::DescriptorSet> descriptorSets = {};
 
-            std::uint32_t totalQuadCount = 0;
+            std::uint32_t totalVertexCount = 0;
+            std::uint32_t totalIndexCount = 0;
         private:
             ImageRenderer* renderer;
         private:
-            [[nodiscard]] std::vector<Pass> NextPasses(const Layer& layer);
-            [[nodiscard]] std::vector<Pass> NextPasses(const Layer::MaterialGroup& materialGroup, MappedConduits::Group& conduitGroup);
-            [[nodiscard]] Command WriteData(const std::vector<Quad>& quads, std::uint32_t startQuadCount);
-            [[nodiscard]] Command Draw(std::uint32_t startQuadCount, std::uint32_t quadCount, Conduit& conduit, vk::DescriptorSet descriptorSet);
+            [[nodiscard]] std::vector<Pass> NextPasses(
+                const Layer& layer);
+            [[nodiscard]] std::vector<Pass> NextPasses(
+                const Layer::MaterialGroup& materialGroup, MappedConduits::Group& conduitGroup);
+            [[nodiscard]] Command WriteData(
+                const std::vector<Textured>& elements, std::uint32_t startVertexCount, std::uint32_t startIndexCount);
+            [[nodiscard]] Command Draw(
+                std::uint32_t vertexCount, std::uint32_t indexCount, std::uint32_t startIndexCount, Conduit& conduit, vk::DescriptorSet descriptorSet);
         private:
             friend ImageRenderer;
         };
@@ -115,7 +111,7 @@ namespace Atmos::Render::Vulkan
             Spatial::Point3D::Value z,
             Arca::RelicID materialID,
             CombinedImageSamplerDescriptor& descriptor,
-            std::array<QuadVertex, 4> vertices,
+            Textured element,
             Raster& raster);
     private:
         std::vector<DescriptorSetPool> descriptorSetPools;
