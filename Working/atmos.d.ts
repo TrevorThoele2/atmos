@@ -565,6 +565,20 @@ declare module Atmos {
         }
     }
 
+    export module Scripting {
+        export interface Script extends Relic {
+            asset: Asset.Script | null;
+            executeName: string;
+            parameters: Variant[];
+        }
+
+        export interface CreateScript extends Command {
+            asset: Asset.Script | null;
+            executeName: string;
+            parameters: Variant[];
+        }
+    }
+
     export module UI {
         export interface Image extends Relic {
             asset: Asset.Image | null;
@@ -1120,6 +1134,25 @@ declare module Atmos {
             }
         }
 
+        export module Scripting {
+            export type Script = {
+                typeName: "Atmos::Scripting::Script";
+                T: Atmos.Scripting.Script;
+            }
+
+            export type CreateScript = {
+                typeName: "Arca::Create<Atmos::Scripting::Script>";
+                T: Atmos.Scripting.CreateScript;
+                ReturnT: Atmos.Scripting.Script;
+            }
+
+            export type DestroyScript = {
+                typeName: "Arca::Destroy<Atmos::Scripting::Script>";
+                T: Atmos.Destroy;
+                ReturnT: void;
+            }
+        }
+
         export module UI {
             export type Image = {
                 typeName: "Atmos::UI::Image";
@@ -1508,6 +1541,20 @@ declare module Atmos {
             }
         }
 
+        export module Scripting {
+            export module Script {
+                export const typeName: "Atmos::Scripting::Script";
+            }
+
+            export module CreateScript {
+                export const typeName: "Arca::Create<Atmos::Scripting::Script>";
+            }
+
+            export module DestroyScript {
+                export const typeName: "Arca::Destroy<Atmos::Scripting::Script>";
+            }
+        }
+
         export module UI {
             export module Image {
                 export const typeName: "Atmos::UI::Image";
@@ -1598,6 +1645,8 @@ declare module Atmos {
         Atmos.TypeTraits.Spatial.ToWorldPoint3D |
         Atmos.TypeTraits.Spatial.CreateBounds |
         Atmos.TypeTraits.Spatial.DestroyBounds |
+        Atmos.TypeTraits.Scripting.CreateScript |
+        Atmos.TypeTraits.Scripting.DestroyScript |
         Atmos.TypeTraits.UI.CreateImage |
         Atmos.TypeTraits.UI.DestroyImage |
         Atmos.TypeTraits.UI.CreateText |
@@ -1626,7 +1675,8 @@ declare module Atmos {
         Atmos.TypeTraits.Render.DynamicImage |
         Atmos.TypeTraits.Render.DynamicText |
         Atmos.TypeTraits.Render.GridRegion |
-        Atmos.TypeTraits.Render.Line;
+        Atmos.TypeTraits.Render.Line |
+        Atmos.TypeTraits.Scripting.Script;
 
     export type GlobalRelicTypeTraits =
         Atmos.TypeTraits.Diagnostics.Statistics |
@@ -1696,6 +1746,8 @@ declare module Atmos {
         [Atmos.Traits.Spatial.ToWorldPoint3D.typeName]: Atmos.TypeTraits.Spatial.ToWorldPoint3D;
         [Atmos.Traits.Spatial.CreateBounds.typeName]: Atmos.TypeTraits.Spatial.CreateBounds;
         [Atmos.Traits.Spatial.DestroyBounds.typeName]: Atmos.TypeTraits.Spatial.DestroyBounds;
+        [Atmos.Traits.Scripting.CreateScript.typeName]: Atmos.TypeTraits.Scripting.CreateScript;
+        [Atmos.Traits.Scripting.DestroyScript.typeName]: Atmos.TypeTraits.Scripting.DestroyScript;
         [Atmos.Traits.UI.CreateImage.typeName]: Atmos.TypeTraits.UI.CreateImage;
         [Atmos.Traits.UI.DestroyImage.typeName]: Atmos.TypeTraits.UI.DestroyImage;
         [Atmos.Traits.UI.CreateText.typeName]: Atmos.TypeTraits.UI.CreateText;
@@ -1723,6 +1775,7 @@ declare module Atmos {
         [Atmos.Traits.Render.DynamicText.typeName]: Atmos.TypeTraits.Render.DynamicText;
         [Atmos.Traits.Render.GridRegion.typeName]: Atmos.TypeTraits.Render.GridRegion;
         [Atmos.Traits.Render.Line.typeName]: Atmos.TypeTraits.Render.Line;
+        [Atmos.Traits.Scripting.Script.typeName]: Atmos.TypeTraits.Scripting.Script;
 
         [Atmos.Traits.Diagnostics.Statistics.typeName]: Atmos.TypeTraits.Diagnostics.Statistics;
         [Atmos.Traits.Render.Camera.typeName]: Atmos.TypeTraits.Render.Camera;

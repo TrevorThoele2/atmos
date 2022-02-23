@@ -63,7 +63,8 @@ TEMPLATE_TEST_CASE_METHOD(
     Atmos::Render::DynamicImage,
     Atmos::Render::DynamicText,
     Atmos::Render::GridRegion,
-    Atmos::Render::Line)
+    Atmos::Render::Line,
+    Atmos::Scripting::Script)
 {
     GIVEN("script that creates, finds and destroys relic")
     {
@@ -93,9 +94,9 @@ export const main = (): Atmos.Result => {
 
             THEN("returned JSON is correct")
             {
-                REQUIRE(this->finishes.size() == 1);
+                REQUIRE(this->finishes.size() >= 1);
 
-                const auto result = std::get<String>(std::get<Variant>(this->finishes[0].result));
+                const auto result = std::get<String>(std::get<Variant>(this->finishes[this->finishes.size() - 1].result));
                 expectations(result, *this->fieldReliquary);
             }
         }

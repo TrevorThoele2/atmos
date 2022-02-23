@@ -63,6 +63,7 @@
 #include "JavaScriptRenderCore.h"
 #include "JavaScriptTextBaseSize.h"
 #include "JavaScriptViewSlice.h"
+#include "JavaScriptScript.h"
 #include "FindAssetByName.h"
 
 #include "JavaScriptObject.h"
@@ -164,6 +165,9 @@ namespace Atmos::Scripting::JavaScript
         RegisterFind<Atmos::Render::ViewSlice>(*userData);
         RegisterCommand<Arca::Create<Atmos::Render::ViewSlice>>(*userData);
         RegisterCommand<Arca::Destroy<Atmos::Render::ViewSlice>>(*userData);
+        RegisterFind<Atmos::Scripting::Script>(*userData);
+        RegisterCommand<Arca::Create<Atmos::Scripting::Script>>(*userData);
+        RegisterCommand<Arca::Destroy<Atmos::Scripting::Script>>(*userData);
 
         RegisterFind<Diagnostics::Statistics>(*userData);
         RegisterFind<Render::Camera>(*userData);

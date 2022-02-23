@@ -47,7 +47,6 @@ namespace Atmos::Scripting::JavaScript
         using V8T = v8::Object;
 
         [[nodiscard]] static v8::Local<V8T> ToV8(v8::Isolate& isolate, const Arca::Index<Asset::Image>& value);
-        [[nodiscard]] static std::optional<Arca::Index<Asset::Image>> FromV8(v8::Isolate& isolate, const v8::Local<v8::Value>& value);
     };
 }
 
