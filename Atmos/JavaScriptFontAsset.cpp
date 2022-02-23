@@ -59,12 +59,4 @@ namespace Atmos::Scripting::JavaScript
                 value->Name()
             });
     }
-
-    std::optional<Arca::Index<Asset::Font>> FromV8(v8::Isolate& isolate, const v8::Local<v8::Value>& value)
-    {
-        const auto userData = static_cast<UserData*>(isolate.GetData(0));
-
-        const auto from = JavaScript::FromV8<FontAsset>(isolate, value);
-        return from ? userData->reliquary->Find<Asset::Font>(from->id) : std::optional<Arca::Index<Asset::Font>>{};
-    }
 }

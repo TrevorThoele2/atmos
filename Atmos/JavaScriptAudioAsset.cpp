@@ -59,12 +59,4 @@ namespace Atmos::Scripting::JavaScript
                 value->Name()
             });
     }
-
-    std::optional<Arca::Index<Asset::Audio>> FromV8(v8::Isolate& isolate, const v8::Local<v8::Value>& value)
-    {
-        const auto userData = static_cast<UserData*>(isolate.GetData(0));
-
-        const auto from = JavaScript::FromV8<AudioAsset>(isolate, value);
-        return from ? userData->reliquary->Find<Asset::Audio>(from->id) : std::optional<Arca::Index<Asset::Audio>>{};
-    }
 }
