@@ -26,7 +26,7 @@
 #include "ViewSlice.h"
 #include "RenderStartCurator.h"
 #include "RenderEndCurator.h"
-#include "StagedRenders.h"
+#include "StagedRasters.h"
 
 #include "UIImage.h"
 #include "UIText.h"
@@ -208,7 +208,7 @@ namespace Atmos
                 .Register<SurfaceCurator>()
                 .Register<GraphicsSettings>()
                 .Register<ViewSlice>()
-                .Register<StagedRenders>()
+                .Register<StagedRasters>()
                 .Register<EndCurator>();
         }
 

@@ -1,7 +1,7 @@
 #include "ImageCurator.h"
 
-#include "RenderImage.h"
-#include "StagedRenders.h"
+#include "RenderAlgorithms.h"
+#include "StagedRasters.h"
 
 namespace Atmos::Render
 {
@@ -33,23 +33,23 @@ namespace Atmos::Render
     {
         const auto indices = worldOctree.AllWithin(cameraBox);
 
-        std::vector<RenderImage> renders;
-        renders.reserve(indices.size() + screenList.size());
+        std::vector<std::tuple<Raster::Image, Raster::Order>> rasters;
+        rasters.reserve(indices.size() + screenList.size());
         for (auto& index : indices)
         {
-            const auto render = RenderOf(index->id, *index->value, cameraTopLeft, mainSurface);
-            if (render)
-                renders.push_back(*render);
+            const auto raster = Raster(index->id, *index->value, cameraTopLeft, mainSurface);
+            if (raster)
+                rasters.push_back(*raster);
         }
         for (auto& index : screenList)
         {
-            const auto render = RenderOf(index.ID(), *index, cameraTopLeft, mainSurface);
-            if (render)
-                renders.push_back(*render);
+            const auto raster = Raster(index.ID(), *index, cameraTopLeft, mainSurface);
+            if (raster)
+                rasters.push_back(*raster);
         }
 
-        auto stagedRenders = MutablePointer().Of<StagedRenders>();
-        stagedRenders->images.insert(stagedRenders->images.end(), renders.begin(), renders.end());
+        auto stagedRasters = MutablePointer().Of<Raster::Staged>();
+        stagedRasters->images.insert(stagedRasters->images.end(), rasters.begin(), rasters.end());
     }
 
     void ImageCurator::Handle(const ChangeImageCore& command)
@@ -92,8 +92,7 @@ namespace Atmos::Render
         case Spatial::Space::Screen:
             for(auto& index : screenList)
             {
-                const auto bounds = BoundsFor(index);
-                const auto box = BoxFor(bounds);
+                const auto box = Box(Bounds(index));
                 if (Intersects(box, command.box))
                     ids.push_back(index.ID());
             }
@@ -102,8 +101,8 @@ namespace Atmos::Render
 
         return ids;
     }
-
-    std::optional<RenderImage> ImageCurator::RenderOf(
+    
+    std::optional<Raster::Ordered<Raster::Image>> ImageCurator::Raster(
         Arca::RelicID id,
         const Index::ReferenceValueT& value,
         Spatial::Point2D cameraTopLeft,
@@ -118,20 +117,28 @@ namespace Atmos::Render
         {
             const auto boundsSpace = bounds.Space();
             const auto assetSlice = asset->Slice(core.assetIndex);
+            const auto position = ToRenderPoint(bounds.Position(), cameraTopLeft, boundsSpace);
 
-            return RenderImage
+            return std::tuple
             {
-                .assetResource = const_cast<Asset::Resource::Image*>(asset->Resource()),
-                .assetSlice = assetSlice,
-                .viewSlice = ViewSliceBox(Owner().Find<ViewSlice>(id)),
-                .material = material,
-                .position = ToRenderPoint(bounds.Position(), cameraTopLeft, boundsSpace),
-                .size = assetSlice.size,
-                .rotation = bounds.Rotation(),
-                .scalers = bounds.Scalers(),
-                .color = renderCore.color,
-                .space = ToRenderSpace(boundsSpace),
-                .surface = mainSurface.Resource()
+                Raster::Image
+                {
+                    .assetResource = const_cast<Asset::Resource::Image*>(asset->Resource()),
+                    .assetSlice = assetSlice,
+                    .viewSlice = ViewSliceBox(Owner().Find<ViewSlice>(id)),
+                    .material = material,
+                    .color = renderCore.color,
+                    .surface = mainSurface.Resource(),
+                    .position = ToPoint2D(position),
+                    .size = assetSlice.size,
+                    .rotation = bounds.Rotation(),
+                    .scalers = bounds.Scalers()
+                },
+                Raster::Order
+                {
+                    .space = Ordering(boundsSpace),
+                    .z = position.z
+                }
             };
         }
         else
@@ -141,11 +148,11 @@ namespace Atmos::Render
     void ImageCurator::OnCreated(const Arca::MatrixFormed<Matrix>& signal)
     {
         const auto index = signal.index;
-        const auto bounds = BoundsFor(index);
+        const auto bounds = Bounds(index);
         switch (bounds.Space())
         {
         case Spatial::Space::World:
-            worldOctree.Add(index.ID(), index, BoxFor(bounds));
+            worldOctree.Add(index.ID(), index, Box(bounds));
             break;
         case Spatial::Space::Screen:
             screenList.push_back(index);
@@ -156,15 +163,15 @@ namespace Atmos::Render
     void ImageCurator::OnDestroying(const Arca::MatrixDissolved<Matrix>& signal)
     {
         const auto index = signal.index;
-        const auto bounds = BoundsFor(signal.index);
+        const auto bounds = Bounds(signal.index);
         switch (bounds.Space())
         {
         case Spatial::Space::World:
-            worldOctree.Remove(index.ID(), BoxFor(BoundsFor(index)));
+            worldOctree.Remove(index.ID(), Box(bounds));
             break;
         case Spatial::Space::Screen:
-            const auto iterator = std::remove_if(
-                screenList.begin(), screenList.end(), [id = index.ID()](const Index& index) { return index.ID() == id; });
+            const auto iterator = std::ranges::remove_if(
+                screenList, [id = index.ID()](const Index& x) { return x.ID() == id; }).begin();
             if (iterator != screenList.end())
                 screenList.erase(iterator);
             break;
@@ -180,17 +187,17 @@ namespace Atmos::Render
             if (oldBounds.Space() == Spatial::Space::World)
             {
                 const auto newBounds = signal.newBounds;
-                worldOctree.Move(signal.id, Owner().Find<Matrix>(signal.id), BoxFor(oldBounds), BoxFor(newBounds));
+                worldOctree.Move(signal.id, Owner().Find<Matrix>(signal.id), Box(oldBounds), Box(newBounds));
             }
         }
     }
 
-    Spatial::Bounds ImageCurator::BoundsFor(const Index& index)
+    Spatial::Bounds ImageCurator::Bounds(const Index& index)
     {
         return *std::get<2>(*index);
     }
 
-    Spatial::AxisAlignedBox3D ImageCurator::BoxFor(const Spatial::Bounds& bounds)
+    Spatial::AxisAlignedBox3D ImageCurator::Box(const Spatial::Bounds& bounds)
     {
         return Spatial::AxisAlignedBox3D
         {

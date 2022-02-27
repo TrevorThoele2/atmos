@@ -14,7 +14,7 @@ namespace Atmos::Render::Vulkan
     struct ImageRendererDescriptorSetKey
     {
         const CombinedImageSamplerDescriptor* descriptor;
-        ImageRendererDescriptorSetKey(const CombinedImageSamplerDescriptor& descriptor);
+        explicit ImageRendererDescriptorSetKey(const CombinedImageSamplerDescriptor& descriptor);
         ImageRendererDescriptorSetKey(const ImageRendererDescriptorSetKey& arg) = default;
         bool operator==(const ImageRendererDescriptorSetKey& arg) const;
     };

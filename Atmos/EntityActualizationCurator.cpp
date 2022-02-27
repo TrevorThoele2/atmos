@@ -13,7 +13,7 @@ namespace Atmos::Entity
         prototypes(init.owner.Batch<Prototype>())
     {}
 
-    void ActualizationCurator::Handle(const Work& command)
+    void ActualizationCurator::Handle(const Work&)
     {
         if (worked)
             return;
@@ -39,9 +39,9 @@ namespace Atmos::Entity
                 toConstruct.emplace_back(MutablePointer().Of(entity), entity.ID(), prototype.constructor);
         }
 
-        auto currentActualizing = MutablePointer().Of<CurrentActualizing>();
+        const auto currentActualizing = MutablePointer().Of<CurrentActualizing>();
 
-        for (auto& currentToConstruct : toConstruct)
+        for (const auto& currentToConstruct : toConstruct)
         {
             currentActualizing->entity = Owner().Find<Entity>(currentToConstruct.id);
             Owner().Do(Scripting::Execute{ currentToConstruct.constructor });

@@ -1,8 +1,8 @@
 #include "TextCurator.h"
 
-#include "RenderText.h"
-#include "StagedRenders.h"
+#include "StagedRasters.h"
 #include "ColorChanged.h"
+#include "RenderAlgorithms.h"
 #include "TextBaseSize.h"
 
 #include "SpatialAlgorithms.h"
@@ -72,20 +72,20 @@ namespace Atmos::Render
         Spatial::Point2D cameraTopLeft,
         const MainSurface& mainSurface)
     {
-        std::vector<RenderText> renders;
-        renders.reserve(matrices.size());
+        std::vector<Raster::Ordered<Raster::Text>> rasters;
+        rasters.reserve(matrices.size());
         for (auto& matrix : matrices)
         {
-            const auto render = RenderOf(matrix.second.ID(), *matrix.second, cameraTopLeft, mainSurface);
-            if (render)
-                renders.push_back(*render);
+            const auto raster = Raster(matrix.second.ID(), *matrix.second, cameraTopLeft, mainSurface);
+            if (raster)
+                rasters.push_back(*raster);
         }
 
-        const auto stagedRenders = MutablePointer().Of<StagedRenders>();
-        stagedRenders->texts.insert(stagedRenders->texts.end(), renders.begin(), renders.end());
+        const auto stagedRasters = MutablePointer().Of<Raster::Staged>();
+        stagedRasters->texts.insert(stagedRasters->texts.end(), rasters.begin(), rasters.end());
     }
 
-    std::optional<RenderText> TextCurator::RenderOf(
+    std::optional<Raster::Ordered<Raster::Text>> TextCurator::Raster(
         Arca::RelicID id,
         const Matrix::ReferenceTuple& tuple,
         Spatial::Point2D cameraTopLeft,
@@ -99,22 +99,30 @@ namespace Atmos::Render
         if (font && material && font->Resource())
         {
             const auto boundsSpace = bounds.Space();
-            
-            return RenderText
+            const auto position = ToRenderPoint(bounds.Position(), cameraTopLeft, boundsSpace);
+
+            return std::tuple
             {
-                .string = core.string,
-                .fontResource = const_cast<Asset::Resource::Font*>(font->Resource()),
-                .viewSlice = ViewSliceBox(Owner().Find<ViewSlice>(id)),
-                .material = material,
-                .position = ToRenderPoint(bounds.Position(), cameraTopLeft, boundsSpace),
-                .rotation = bounds.Rotation(),
-                .scalers = bounds.Scalers(),
-                .color = renderCore.color,
-                .bold = core.bold,
-                .italics = core.italics,
-                .wrapWidth = core.wrapWidth,
-                .space = ToRenderSpace(boundsSpace),
-                .surface = mainSurface.Resource()
+                Raster::Text
+                {
+                    .string = core.string,
+                    .fontResource = const_cast<Asset::Resource::Font*>(font->Resource()),
+                    .viewSlice = ViewSliceBox(Owner().Find<ViewSlice>(id)),
+                    .material = material,
+                    .color = renderCore.color,
+                    .bold = core.bold,
+                    .italics = core.italics,
+                    .wrapWidth = core.wrapWidth,
+                    .surface = mainSurface.Resource(),
+                    .position = ToPoint2D(position),
+                    .rotation = bounds.Rotation(),
+                    .scalers = bounds.Scalers()
+                },
+                Raster::Order
+                {
+                    .space = Ordering(boundsSpace),
+                    .z = position.z
+                }
             };
         }
         else

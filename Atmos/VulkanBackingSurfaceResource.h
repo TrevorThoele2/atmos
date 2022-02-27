@@ -1,6 +1,5 @@
 #pragma once
 
-#include "SurfaceResource.h"
 #include "VulkanMasterRenderer.h"
 #include "VulkanIncludes.h"
 

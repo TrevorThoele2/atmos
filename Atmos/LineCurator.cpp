@@ -1,9 +1,8 @@
 #include "LineCurator.h"
 
 #include "MainSurface.h"
-#include "StagedRenders.h"
-
-#include "RenderLine.h"
+#include "RenderAlgorithms.h"
+#include "StagedRasters.h"
 
 namespace Atmos::Render
 {
@@ -30,7 +29,7 @@ namespace Atmos::Render
             const auto prevPoints = index->points;
             const auto prevZ = index->z;
 
-            auto data = MutablePointer().Of(index);
+            const auto data = MutablePointer().Of(index);
             if (command.points)
                 data->points = *command.points;
 
@@ -58,20 +57,20 @@ namespace Atmos::Render
     {
         const auto indices = octree.AllWithin(cameraBox);
 
-        std::vector<RenderLine> renders;
-        renders.reserve(indices.size());
+        std::vector<Raster::Ordered<Raster::Line>> rasters;
+        rasters.reserve(indices.size());
         for (auto& index : indices)
         {
-            const auto render = RenderOf(*index->value, cameraTopLeft, mainSurface);
-            if (render)
-                renders.push_back(*render);
+            const auto raster = Raster(*index->value, cameraTopLeft, mainSurface);
+            if (raster)
+                rasters.push_back(*raster);
         }
 
-        const auto stagedRenders = MutablePointer().Of<StagedRenders>();
-        stagedRenders->lines.insert(stagedRenders->lines.end(), renders.begin(), renders.end());
+        const auto stagedRasters = MutablePointer().Of<Raster::Staged>();
+        stagedRasters->lines.insert(stagedRasters->lines.end(), rasters.begin(), rasters.end());
     }
 
-    std::optional<RenderLine> LineCurator::RenderOf(
+    std::optional<Raster::Ordered<Raster::Line>> LineCurator::Raster(
         const Line& value,
         Spatial::Point2D cameraTopLeft,
         const MainSurface& mainSurface)
@@ -83,15 +82,21 @@ namespace Atmos::Render
             for (auto& point : value.points)
                 adjustedPoints.push_back(Spatial::Point2D{ point.x - cameraTopLeft.x, point.y - cameraTopLeft.y });
 
-            return RenderLine
+            return std::tuple
             {
-                .points = adjustedPoints,
-                .z = value.z,
-                .material = material,
-                .width = value.width,
-                .color = value.renderCore->color,
-                .space = ToRenderSpace(Spatial::Space::World),
-                .surface = mainSurface.Resource()
+                Raster::Line
+                {
+                    .points = adjustedPoints,
+                    .material = material,
+                    .width = value.width,
+                    .color = value.renderCore->color,
+                    .surface = mainSurface.Resource()
+                },
+                Raster::Order
+                {
+                    .space = Ordering(Spatial::Space::World),
+                    .z = value.z
+                }
             };
         }
         else
@@ -134,7 +139,7 @@ namespace Atmos::Render
 
             const auto width = maxRight - maxLeft;
             const auto height = maxBottom - maxTop;
-            const auto depth = 1;
+            constexpr auto depth = 1;
 
             return Spatial::AxisAlignedBox3D
             {

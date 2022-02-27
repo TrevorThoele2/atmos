@@ -3,10 +3,10 @@
 #include "RenderCore.h"
 #include "ViewSlice.h"
 #include "ColorChanged.h"
-
 #include "MainSurface.h"
 #include "Camera.h"
-#include "StagedRenders.h"
+#include "StagedRasters.h"
+#include "SpatialAlgorithms.h"
 
 namespace Atmos::Render
 {
@@ -15,28 +15,34 @@ namespace Atmos::Render
 
     void Curator::Handle(const Work&)
     {
-        const auto camera = Owner().Find<Camera>();
-        const auto mapPosition = Spatial::Point2D
-        {
-            Spatial::Point2D::Value(camera->Position().x),
-            Spatial::Point2D::Value(camera->Position().y)
-        };
+        const auto cameraPosition = Owner().Find<Camera>()->Position();
         
-        const auto staged = MutablePointer().Of<StagedRenders>();
-        const auto allRenders = AllRenders
+        const auto staged = MutablePointer().Of<Raster::Staged>();
+        RasterMap rasterMap;
+        Add(staged->images, rasterMap);
+        Add(staged->lines, rasterMap);
+        Add(staged->regions, rasterMap);
+        Add(staged->texts, rasterMap);
+        const auto allRasters = Raster::All
         {
-            staged->images,
-            staged->lines,
-            staged->texts,
-            staged->regions
+            .images = staged->images,
+            .lines = staged->lines,
+            .regions = staged->regions,
+            .texts = staged->texts
         };
 
-        graphicsManager->DrawFrame(allRenders, mapPosition);
+        graphicsManager->DrawFrame(
+            allRasters,
+            Spatial::Point2D
+            {
+                Spatial::Point2D::Value(cameraPosition.x),
+                Spatial::Point2D::Value(cameraPosition.y)
+            });
 
         staged->images = {};
         staged->lines = {};
-        staged->texts = {};
         staged->regions = {};
+        staged->texts = {};
     }
 
     void Curator::Handle(const ChangeColor& command)

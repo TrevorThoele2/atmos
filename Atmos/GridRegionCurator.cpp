@@ -1,10 +1,9 @@
 #include "GridRegionCurator.h"
 
 #include "MainSurface.h"
-#include "StagedRenders.h"
+#include "StagedRasters.h"
 
 #include "RenderAlgorithms.h"
-#include "RenderRegion.h"
 
 namespace Atmos::Render
 {
@@ -60,20 +59,20 @@ namespace Atmos::Render
     {
         const auto indices = octree.AllWithin(cameraBox);
 
-        std::vector<RenderRegion> renders;
-        renders.reserve(indices.size());
+        std::vector<Raster::Ordered<Raster::Region>> rasters;
+        rasters.reserve(indices.size());
         for (auto& index : indices)
         {
-            const auto render = StageRender(*index->value, cameraTopLeft, mainSurface);
-            if (render)
-                renders.push_back(*render);
+            const auto raster = Raster(*index->value, cameraTopLeft, mainSurface);
+            if (raster)
+                rasters.push_back(*raster);
         }
         
-        const auto stagedRenders = MutablePointer().Of<StagedRenders>();
-        stagedRenders->regions.insert(stagedRenders->regions.end(), renders.begin(), renders.end());
+        const auto stagedRasters = MutablePointer().Of<Raster::Staged>();
+        stagedRasters->regions.insert(stagedRasters->regions.end(), rasters.begin(), rasters.end());
     }
 
-    std::optional<RenderRegion> GridRegionCurator::StageRender(
+    std::optional<Raster::Ordered<Raster::Region>> GridRegionCurator::Raster(
         const GridRegion& value,
         Spatial::Point2D cameraTopLeft,
         const MainSurface& mainSurface)
@@ -92,13 +91,19 @@ namespace Atmos::Render
             const auto z = static_cast<Spatial::Point3D::Value>(value.z)
                 * Spatial::Grid::CellSize<Spatial::Point3D::Value>;
 
-            return RenderRegion
+            return std::tuple
             {
-                .mesh = mesh,
-                .z = z,
-                .material = material,
-                .space = ToRenderSpace(Spatial::Space::World),
-                .surface = mainSurface.Resource()
+                Raster::Region
+                {
+                    .mesh = mesh,
+                    .surface = mainSurface.Resource(),
+                    .material = material
+                },
+                Raster::Order
+                {
+                    .space = Ordering(Spatial::Space::World),
+                    .z = z
+                }
             };
         }
         else

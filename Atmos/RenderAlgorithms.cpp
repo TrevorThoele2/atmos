@@ -9,6 +9,19 @@
 
 namespace Atmos::Render
 {
+    int Ordering(Spatial::Space space)
+    {
+        switch (space)
+        {
+        case Spatial::Space::World:
+            return 0;
+        case Spatial::Space::Screen:
+            return 1;
+        }
+
+        throw std::runtime_error("Unknown Spatial::Space value.");
+    }
+
     std::vector<Spatial::Point2D> Simplify(const std::vector<Spatial::Point2D>& points)
     {
         size_t index0 = 0;

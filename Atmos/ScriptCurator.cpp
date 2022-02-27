@@ -40,11 +40,11 @@ namespace Atmos::Scripting
     void Curator::Handle(const Suspend& command)
     {
         const auto script = MutablePointer().Of(command.script);
-        if (!script || script->isSuspended)
-            return;
-
-        script->isSuspended = true;
-        script->Resource()->Suspend();
+        if (script && !script->isSuspended)
+        {
+            script->isSuspended = true;
+            script->Resource()->Suspend();
+        }
     }
 
     std::vector<CompiledModule> Curator::Handle(const Compile& command)
@@ -83,7 +83,7 @@ namespace Atmos::Scripting
     {
         currentExecutingScript.id = id;
 
-        auto script = MutablePointer().Of<Script>(id);
+        const auto script = MutablePointer().Of<Script>(id);
         if (!script->asset)
         {
             currentExecutingScript.id = Arca::nullRelicID;

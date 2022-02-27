@@ -1,11 +1,18 @@
 #pragma once
 
+#include <map>
 #include <Arca/Curator.h>
 
 #include "Work.h"
 #include "ChangeColor.h"
 #include "ChangeMaterialAsset.h"
 #include "ChangeViewSlice.h"
+
+#include "RasterImage.h"
+#include "RasterLine.h"
+#include "RasterRegion.h"
+#include "RasterText.h"
+#include "OrderedRaster.h"
 
 namespace Atmos::Render
 {
@@ -22,7 +29,39 @@ namespace Atmos::Render
         void Handle(const ChangeViewSlice& command);
     private:
         GraphicsManager* graphicsManager;
+    private:
+        struct Rasters
+        {
+            std::vector<Raster::Image> images;
+            std::vector<Raster::Line> lines;
+            std::vector<Raster::Region> regions;
+            std::vector<Raster::Text> texts;
+        };
+
+        using RasterMap = std::map<Raster::Order, Rasters>;
+
+        template<class T>
+        void Add(const std::vector<Raster::Ordered<T>>& orderedRasters, RasterMap& map);
+        template<class T>
+        void Add(const Raster::Ordered<T>& orderedRaster, RasterMap& map);
     };
+
+    template<class T>
+    void Curator::Add(const std::vector<Raster::Ordered<T>>& orderedRasters, RasterMap& map)
+    {
+        for (auto& orderedRaster : orderedRasters)
+            Add(orderedRaster, map);
+    }
+
+    template<class T>
+    void Curator::Add(const Raster::Ordered<T>& orderedRaster, RasterMap& map)
+    {
+        const auto found = map.find(orderedRaster.order);
+        if (found == map.end())
+            found = map.emplace(orderedRaster.order, {});
+
+        found->second.push_back(orderedRaster.raster);
+    }
 }
 
 namespace Arca

@@ -12,6 +12,8 @@
 #include "FindImagesByBox.h"
 #include "ViewSlice.h"
 #include "BoundsChanged.h"
+#include "RasterImage.h"
+#include "OrderedRaster.h"
 
 #include <Arca/All.h>
 #include <Arca/Either.h>
@@ -25,7 +27,7 @@ namespace Atmos::Render
     public:
         using ObjectCurator::Handle;
         void Handle(const ChangeImageCore& command);
-        std::vector<Arca::RelicID> Handle(const FindImagesByBox& command) const;
+        [[nodiscard]] std::vector<Arca::RelicID> Handle(const FindImagesByBox& command) const;
     protected:
         void WorkImpl(
             Spatial::AxisAlignedBox3D cameraBox,
@@ -37,8 +39,8 @@ namespace Atmos::Render
         Spatial::Grid::Octree<Arca::RelicID, Index> worldOctree;
 
         std::vector<Arca::Index<Matrix>> screenList;
-
-        [[nodiscard]] std::optional<RenderImage> RenderOf(
+        
+        [[nodiscard]] std::optional<Raster::Ordered<Raster::Image>> Raster(
             Arca::RelicID id,
             const Index::ReferenceValueT& value,
             Spatial::Point2D cameraTopLeft,
@@ -48,8 +50,8 @@ namespace Atmos::Render
         void OnDestroying(const Arca::MatrixDissolved<Matrix>& signal);
         void OnChanged(const Spatial::BoundsChanged& signal);
         
-        static Spatial::Bounds BoundsFor(const Index& index);
-        static Spatial::AxisAlignedBox3D BoxFor(const Spatial::Bounds& bounds);
+        static Spatial::Bounds Bounds(const Index& index);
+        static Spatial::AxisAlignedBox3D Box(const Spatial::Bounds& bounds);
     };
 }
 

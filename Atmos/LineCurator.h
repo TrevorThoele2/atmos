@@ -6,6 +6,8 @@
 #include "MoveLine.h"
 #include "ChangeMaterialAsset.h"
 #include "FindLinesByBox.h"
+#include "RasterLine.h"
+#include "OrderedRaster.h"
 
 #include "Octree.h"
 
@@ -28,7 +30,7 @@ namespace Atmos::Render
         using Index = Arca::Index<Line>;
         Spatial::Grid::Octree<Arca::RelicID, Index> octree;
 
-        [[nodiscard]] std::optional<RenderLine> RenderOf(
+        [[nodiscard]] std::optional<Raster::Ordered<Raster::Line>> Raster(
             const Line& value,
             Spatial::Point2D cameraTopLeft,
             const MainSurface& mainSurface);

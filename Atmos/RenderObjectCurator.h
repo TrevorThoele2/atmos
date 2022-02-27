@@ -13,7 +13,7 @@ namespace Atmos::Render
     class ObjectCurator : public Arca::Curator
     {
     public:
-        ObjectCurator(Init init);
+        explicit ObjectCurator(Init init);
         virtual ~ObjectCurator() = 0;
 
         void Handle(const Work& command);
@@ -22,8 +22,6 @@ namespace Atmos::Render
             Spatial::AxisAlignedBox3D cameraBox,
             Spatial::Point2D cameraTopLeft,
             const MainSurface& mainSurface) = 0;
-
-        [[nodiscard]] static int ToRenderSpace(Spatial::Space space);
 
         [[nodiscard]] static Spatial::Point3D ToRenderPoint(Spatial::Point3D position, Spatial::Point2D cameraTopLeft, Spatial::Space space);
         [[nodiscard]] static Spatial::Point3D ToWorldPoint(Spatial::Point3D position, Spatial::Point2D cameraTopLeft);

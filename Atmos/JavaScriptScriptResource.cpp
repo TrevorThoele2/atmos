@@ -1,7 +1,5 @@
 #include "JavaScriptScriptResource.h"
 
-#include "ScriptError.h"
-
 namespace Atmos::Scripting::JavaScript
 {
     ScriptResource::ScriptResource(std::weak_ptr<Module> module, const Parameters& parameters, const String& executeFunctionName) :
@@ -17,13 +15,13 @@ namespace Atmos::Scripting::JavaScript
             Module::Destroy(*module);
     }
 
-    std::optional<Scripting::Result> ScriptResource::Execute()
+    std::optional<Result> ScriptResource::Execute()
     {
         module.lock()->Instantiate();
         return DoExecute();
     }
 
-    std::optional<Scripting::Result> ScriptResource::Resume()
+    std::optional<Result> ScriptResource::Resume()
     {
         return DoExecute();
     }
@@ -33,7 +31,7 @@ namespace Atmos::Scripting::JavaScript
 
     }
 
-    std::optional<Scripting::Result> ScriptResource::DoExecute()
+    std::optional<Result> ScriptResource::DoExecute()
     {
     	return module.lock()->Execute(parameters, executeFunctionName);
     }

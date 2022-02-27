@@ -6,16 +6,16 @@
 
 namespace Atmos::Scripting::JavaScript
 {
-    class ScriptResource final : public Atmos::Scripting::Resource
+    class ScriptResource final : public Resource
     {
     public:
         explicit ScriptResource(
             std::weak_ptr<Module> module, const Parameters& parameters, const String& executeFunctionName);
         ~ScriptResource();
 
-        std::optional<Scripting::Result> Execute() override;
+        std::optional<Result> Execute() override;
 
-        std::optional<Scripting::Result> Resume() override;
+        std::optional<Result> Resume() override;
         void Suspend() override;
     private:
         String executeFunctionName;
@@ -23,6 +23,6 @@ namespace Atmos::Scripting::JavaScript
 
         std::weak_ptr<Module> module;
 
-        std::optional<Scripting::Result> DoExecute();
+        std::optional<Result> DoExecute();
     };
 }

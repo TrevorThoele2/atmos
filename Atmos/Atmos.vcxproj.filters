@@ -255,23 +255,8 @@
     <Filter Include="Source Files\Render\Algorithms">
       <UniqueIdentifier>{28d5f623-bdf5-49c9-b52d-068ff153e4c7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Render\GridRegion">
-      <UniqueIdentifier>{06415266-1757-446f-8602-003550936030}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Render\GridRegion">
-      <UniqueIdentifier>{94a2943f-f9aa-4f8d-8bcb-1f31e1338fc6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Render\Region">
-      <UniqueIdentifier>{97768607-a1df-4f08-abe2-458fd26b8467}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Spatial">
       <UniqueIdentifier>{502175c1-0fbf-4f6b-b23d-3e1c165a09b0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Spatial\2D">
-      <UniqueIdentifier>{b49c12ba-8142-4f65-9426-b1b1fe4d5af4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Spatial\3D">
-      <UniqueIdentifier>{dc85c0ba-1c9b-4411-abbe-1c5a6d9508c1}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Spatial\Algorithms">
       <UniqueIdentifier>{6cab46aa-871e-437c-b570-34716c5bf980}</UniqueIdentifier>
@@ -279,23 +264,8 @@
     <Filter Include="Header Files\Spatial">
       <UniqueIdentifier>{8e1be9ad-62f0-41c4-9e86-7e826e445e8a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Spatial\2D">
-      <UniqueIdentifier>{86cb1bc0-1e43-4214-9fe8-ad8343543e7d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Spatial\3D">
-      <UniqueIdentifier>{02e58101-57d1-4275-8db4-73de329e621b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Spatial\Algorithms">
       <UniqueIdentifier>{e0ea15f9-2d85-48a2-a5d4-3046dddfec8d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Spatial\Grid">
-      <UniqueIdentifier>{c9671fee-8858-4697-97ab-c8ebcdb0118d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Spatial\Grid">
-      <UniqueIdentifier>{03e08cf4-496a-4af0-8620-7c590ccf3305}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Spatial\Arca">
-      <UniqueIdentifier>{574988d0-8406-4442-ba6b-b68f4ec3ac72}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Spatial\Arca">
       <UniqueIdentifier>{7fb22f80-31ef-484c-ad60-6bdcf9d9d2de}</UniqueIdentifier>
@@ -603,6 +573,27 @@
     <Filter Include="Source Files\Scripting\JavaScript\Types\Atmos\Scripting">
       <UniqueIdentifier>{37ba2f50-9450-41a3-98d6-9e926b4a4e02}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Render\Raster">
+      <UniqueIdentifier>{aa873b59-5867-4478-8328-2cfa3d4ff8f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Spatial\Data">
+      <UniqueIdentifier>{e54721b7-8bec-4edc-9846-594a26244abd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Spatial\Data">
+      <UniqueIdentifier>{ef07b3f1-5fff-4c30-b07d-0e6442211f3f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Spatial\Arca">
+      <UniqueIdentifier>{801cd51a-4710-4fe3-8a95-39d5cae9a033}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Render\Raster">
+      <UniqueIdentifier>{d913addc-abde-4ac6-a70d-ea03375a27bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Render\Region">
+      <UniqueIdentifier>{06415266-1757-446f-8602-003550936030}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Render\Region">
+      <UniqueIdentifier>{94a2943f-f9aa-4f8d-8bcb-1f31e1338fc6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FieldDestination.h">
@@ -688,30 +679,6 @@
     </ClInclude>
     <ClInclude Include="NullWindow.h">
       <Filter>Header Files\Window</Filter>
-    </ClInclude>
-    <ClInclude Include="AxisAlignedBox2D.h">
-      <Filter>Header Files\Spatial\2D</Filter>
-    </ClInclude>
-    <ClInclude Include="Line2D.h">
-      <Filter>Header Files\Spatial\2D</Filter>
-    </ClInclude>
-    <ClInclude Include="Scalers2D.h">
-      <Filter>Header Files\Spatial\2D</Filter>
-    </ClInclude>
-    <ClInclude Include="AxisAlignedBox3D.h">
-      <Filter>Header Files\Spatial\3D</Filter>
-    </ClInclude>
-    <ClInclude Include="Line3D.h">
-      <Filter>Header Files\Spatial\3D</Filter>
-    </ClInclude>
-    <ClInclude Include="Scalers3D.h">
-      <Filter>Header Files\Spatial\3D</Filter>
-    </ClInclude>
-    <ClInclude Include="Size3D.h">
-      <Filter>Header Files\Spatial\3D</Filter>
-    </ClInclude>
-    <ClInclude Include="Size2D.h">
-      <Filter>Header Files\Spatial\2D</Filter>
     </ClInclude>
     <ClInclude Include="EngineInitializationProperties.h">
       <Filter>Header Files\Engine</Filter>
@@ -878,16 +845,7 @@
     <ClInclude Include="ScriptManager.h">
       <Filter>Header Files\Scripting</Filter>
     </ClInclude>
-    <ClInclude Include="GridCellSize.h">
-      <Filter>Header Files\Spatial\Grid</Filter>
-    </ClInclude>
-    <ClInclude Include="Octree.h">
-      <Filter>Header Files\Spatial\Grid</Filter>
-    </ClInclude>
     <ClInclude Include="LineCurator.h">
-      <Filter>Header Files\Render\Line</Filter>
-    </ClInclude>
-    <ClInclude Include="RenderLine.h">
       <Filter>Header Files\Render\Line</Filter>
     </ClInclude>
     <ClInclude Include="LineWidth.h">
@@ -937,9 +895,6 @@
     </ClInclude>
     <ClInclude Include="GraphicsReconstructionObjects.h">
       <Filter>Header Files\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="RenderImage.h">
-      <Filter>Header Files\Render\Image</Filter>
     </ClInclude>
     <ClInclude Include="DynamicImage.h">
       <Filter>Header Files\Render\Image</Filter>
@@ -1058,17 +1013,11 @@
     <ClInclude Include="RenderAlgorithms.h">
       <Filter>Header Files\Render\Algorithms</Filter>
     </ClInclude>
-    <ClInclude Include="RenderRegion.h">
+    <ClInclude Include="GridRegion.h">
       <Filter>Header Files\Render\Region</Filter>
     </ClInclude>
-    <ClInclude Include="GridRegion.h">
-      <Filter>Header Files\Render\GridRegion</Filter>
-    </ClInclude>
     <ClInclude Include="GridRegionCurator.h">
-      <Filter>Header Files\Render\GridRegion</Filter>
-    </ClInclude>
-    <ClInclude Include="SparseRegion.h">
-      <Filter>Header Files\Spatial\Grid</Filter>
+      <Filter>Header Files\Render\Region</Filter>
     </ClInclude>
     <ClInclude Include="RenderMesh.h">
       <Filter>Header Files\Render</Filter>
@@ -1085,15 +1034,6 @@
     <ClInclude Include="BoundsRotated.h">
       <Filter>Header Files\Spatial\Arca</Filter>
     </ClInclude>
-    <ClInclude Include="Point2D.h">
-      <Filter>Header Files\Spatial\2D</Filter>
-    </ClInclude>
-    <ClInclude Include="Point3D.h">
-      <Filter>Header Files\Spatial\3D</Filter>
-    </ClInclude>
-    <ClInclude Include="GridPoint.h">
-      <Filter>Header Files\Spatial\Grid</Filter>
-    </ClInclude>
     <ClInclude Include="FrameStartCurator.h">
       <Filter>Header Files\Frame</Filter>
     </ClInclude>
@@ -1102,12 +1042,6 @@
     </ClInclude>
     <ClInclude Include="EntityPrototype.h">
       <Filter>Header Files\Entity</Filter>
-    </ClInclude>
-    <ClInclude Include="Angle2D.h">
-      <Filter>Header Files\Spatial\2D</Filter>
-    </ClInclude>
-    <ClInclude Include="Angle3D.h">
-      <Filter>Header Files\Spatial\3D</Filter>
     </ClInclude>
     <ClInclude Include="SpatialAlgorithms.h">
       <Filter>Header Files\Spatial\Algorithms</Filter>
@@ -1523,12 +1457,6 @@
     <ClInclude Include="EntityAlgorithms.h">
       <Filter>Header Files\Entity</Filter>
     </ClInclude>
-    <ClInclude Include="GridSize.h">
-      <Filter>Header Files\Spatial\Grid</Filter>
-    </ClInclude>
-    <ClInclude Include="GridAxisAlignedBox.h">
-      <Filter>Header Files\Spatial\Grid</Filter>
-    </ClInclude>
     <ClInclude Include="SDLSystem.h">
       <Filter>Header Files\System</Filter>
     </ClInclude>
@@ -1583,9 +1511,6 @@
     <ClInclude Include="MaterialAssetCurator.h">
       <Filter>Header Files\Assets\Material</Filter>
     </ClInclude>
-    <ClInclude Include="RenderText.h">
-      <Filter>Header Files\Render\Text</Filter>
-    </ClInclude>
     <ClInclude Include="RenderCore.h">
       <Filter>Header Files\Render</Filter>
     </ClInclude>
@@ -1627,9 +1552,6 @@
     </ClInclude>
     <ClInclude Include="ChangeViewSlice.h">
       <Filter>Header Files\Render\Commands</Filter>
-    </ClInclude>
-    <ClInclude Include="Space.h">
-      <Filter>Header Files\Spatial\Arca</Filter>
     </ClInclude>
     <ClInclude Include="BoundsChanged.h">
       <Filter>Header Files\Spatial\Arca</Filter>
@@ -2093,23 +2015,107 @@
     <ClInclude Include="JavaScriptActionDepressed.h">
       <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Input</Filter>
     </ClInclude>
-    <ClInclude Include="Vector2D.h">
-      <Filter>Header Files\Spatial\2D</Filter>
-    </ClInclude>
-    <ClInclude Include="Vector3D.h">
-      <Filter>Header Files\Spatial\3D</Filter>
-    </ClInclude>
-    <ClInclude Include="StagedRenders.h">
-      <Filter>Header Files\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="AllRenders.h">
-      <Filter>Header Files\Render</Filter>
-    </ClInclude>
     <ClInclude Include="JavaScriptScript.h">
       <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Scripting</Filter>
     </ClInclude>
     <ClInclude Include="JavaScriptScripting.h">
       <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="GridAxisAlignedBox.h">
+      <Filter>Header Files\Spatial\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="GridCellSize.h">
+      <Filter>Header Files\Spatial\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="GridPoint.h">
+      <Filter>Header Files\Spatial\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="GridSize.h">
+      <Filter>Header Files\Spatial\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Octree.h">
+      <Filter>Header Files\Spatial\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="SparseRegion.h">
+      <Filter>Header Files\Spatial\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Angle3D.h">
+      <Filter>Header Files\Spatial\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="AxisAlignedBox3D.h">
+      <Filter>Header Files\Spatial\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Line3D.h">
+      <Filter>Header Files\Spatial\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Point3D.h">
+      <Filter>Header Files\Spatial\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Scalers3D.h">
+      <Filter>Header Files\Spatial\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Size3D.h">
+      <Filter>Header Files\Spatial\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Angle2D.h">
+      <Filter>Header Files\Spatial\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="AxisAlignedBox2D.h">
+      <Filter>Header Files\Spatial\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Line2D.h">
+      <Filter>Header Files\Spatial\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Point2D.h">
+      <Filter>Header Files\Spatial\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Scalers2D.h">
+      <Filter>Header Files\Spatial\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Size2D.h">
+      <Filter>Header Files\Spatial\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Space.h">
+      <Filter>Header Files\Spatial\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="RasterImage.h">
+      <Filter>Header Files\Render\Raster</Filter>
+    </ClInclude>
+    <ClInclude Include="RasterLine.h">
+      <Filter>Header Files\Render\Raster</Filter>
+    </ClInclude>
+    <ClInclude Include="RasterRegion.h">
+      <Filter>Header Files\Render\Raster</Filter>
+    </ClInclude>
+    <ClInclude Include="RasterText.h">
+      <Filter>Header Files\Render\Raster</Filter>
+    </ClInclude>
+    <ClInclude Include="RasterOrder.h">
+      <Filter>Header Files\Render\Raster</Filter>
+    </ClInclude>
+    <ClInclude Include="OrderedRaster.h">
+      <Filter>Header Files\Render\Raster</Filter>
+    </ClInclude>
+    <ClInclude Include="StagedRasters.h">
+      <Filter>Header Files\Render\Raster</Filter>
+    </ClInclude>
+    <ClInclude Include="Shaders.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="DrawText.h">
+      <Filter>Header Files\Render\Raster</Filter>
+    </ClInclude>
+    <ClInclude Include="DrawImage.h">
+      <Filter>Header Files\Render\Raster</Filter>
+    </ClInclude>
+    <ClInclude Include="DrawLine.h">
+      <Filter>Header Files\Render\Raster</Filter>
+    </ClInclude>
+    <ClInclude Include="DrawRegion.h">
+      <Filter>Header Files\Render\Raster</Filter>
+    </ClInclude>
+    <ClInclude Include="RasterCommand.h">
+      <Filter>Header Files\Render\Raster</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2167,30 +2173,6 @@
     <ClCompile Include="NullWindow.cpp">
       <Filter>Source Files\Window</Filter>
     </ClCompile>
-    <ClCompile Include="Line2D.cpp">
-      <Filter>Source Files\Spatial\2D</Filter>
-    </ClCompile>
-    <ClCompile Include="AxisAlignedBox2D.cpp">
-      <Filter>Source Files\Spatial\2D</Filter>
-    </ClCompile>
-    <ClCompile Include="Scalers2D.cpp">
-      <Filter>Source Files\Spatial\2D</Filter>
-    </ClCompile>
-    <ClCompile Include="Size2D.cpp">
-      <Filter>Source Files\Spatial\2D</Filter>
-    </ClCompile>
-    <ClCompile Include="AxisAlignedBox3D.cpp">
-      <Filter>Source Files\Spatial\3D</Filter>
-    </ClCompile>
-    <ClCompile Include="Line3D.cpp">
-      <Filter>Source Files\Spatial\3D</Filter>
-    </ClCompile>
-    <ClCompile Include="Scalers3D.cpp">
-      <Filter>Source Files\Spatial\3D</Filter>
-    </ClCompile>
-    <ClCompile Include="Size3D.cpp">
-      <Filter>Source Files\Spatial\3D</Filter>
-    </ClCompile>
     <ClCompile Include="Color.cpp">
       <Filter>Source Files\Render</Filter>
     </ClCompile>
@@ -2232,9 +2214,6 @@
     </ClCompile>
     <ClCompile Include="GraphicsCurator.cpp">
       <Filter>Source Files\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="Bounds.cpp">
-      <Filter>Source Files\Spatial\Arca</Filter>
     </ClCompile>
     <ClCompile Include="Entity.cpp">
       <Filter>Source Files\Entity</Filter>
@@ -2347,9 +2326,6 @@
     <ClCompile Include="VulkanCombinedImageSamplerDescriptor.cpp">
       <Filter>Source Files\Render\Vulkan\Descriptors</Filter>
     </ClCompile>
-    <ClCompile Include="BoundsCurator.cpp">
-      <Filter>Source Files\Spatial\Arca</Filter>
-    </ClCompile>
     <ClCompile Include="VulkanDebug.cpp">
       <Filter>Source Files\Render\Vulkan</Filter>
     </ClCompile>
@@ -2390,28 +2366,16 @@
       <Filter>Source Files\Render\Algorithms</Filter>
     </ClCompile>
     <ClCompile Include="GridRegion.cpp">
-      <Filter>Source Files\Render\GridRegion</Filter>
+      <Filter>Source Files\Render\Region</Filter>
     </ClCompile>
     <ClCompile Include="GridRegionCurator.cpp">
-      <Filter>Source Files\Render\GridRegion</Filter>
+      <Filter>Source Files\Render\Region</Filter>
     </ClCompile>
     <ClCompile Include="VulkanUniversalData.cpp">
       <Filter>Source Files\Render\Vulkan\Structures</Filter>
     </ClCompile>
-    <ClCompile Include="Point2D.cpp">
-      <Filter>Source Files\Spatial\2D</Filter>
-    </ClCompile>
-    <ClCompile Include="Point3D.cpp">
-      <Filter>Source Files\Spatial\3D</Filter>
-    </ClCompile>
-    <ClCompile Include="GridPoint.cpp">
-      <Filter>Source Files\Spatial\Grid</Filter>
-    </ClCompile>
     <ClCompile Include="EntityPrototype.cpp">
       <Filter>Source Files\Entity</Filter>
-    </ClCompile>
-    <ClCompile Include="Angle3D.cpp">
-      <Filter>Source Files\Spatial\3D</Filter>
     </ClCompile>
     <ClCompile Include="SpatialAlgorithms.cpp">
       <Filter>Source Files\Spatial\Algorithms</Filter>
@@ -2557,12 +2521,6 @@
     <ClCompile Include="NullScriptDocumentationManager.cpp">
       <Filter>Source Files\Scripting\Documentation</Filter>
     </ClCompile>
-    <ClCompile Include="ToWorldPoint2D.cpp">
-      <Filter>Source Files\Spatial\Arca</Filter>
-    </ClCompile>
-    <ClCompile Include="ToWorldPoint3D.cpp">
-      <Filter>Source Files\Spatial\Arca</Filter>
-    </ClCompile>
     <ClCompile Include="InputInformation.cpp">
       <Filter>Source Files\Input</Filter>
     </ClCompile>
@@ -2661,12 +2619,6 @@
     </ClCompile>
     <ClCompile Include="EntityAlgorithms.cpp">
       <Filter>Source Files\Entity</Filter>
-    </ClCompile>
-    <ClCompile Include="GridSize.cpp">
-      <Filter>Source Files\Spatial\Grid</Filter>
-    </ClCompile>
-    <ClCompile Include="GridAxisAlignedBox.cpp">
-      <Filter>Source Files\Spatial\Grid</Filter>
     </ClCompile>
     <ClCompile Include="SDLSystem.cpp">
       <Filter>Source Files\System</Filter>
@@ -3121,12 +3073,6 @@
     <ClCompile Include="JavaScriptActionDepressed.cpp">
       <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Input</Filter>
     </ClCompile>
-    <ClCompile Include="Vector3D.cpp">
-      <Filter>Source Files\Spatial\3D</Filter>
-    </ClCompile>
-    <ClCompile Include="Vector2D.cpp">
-      <Filter>Source Files\Spatial\2D</Filter>
-    </ClCompile>
     <ClCompile Include="JavaScriptScripting.cpp">
       <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Scripting</Filter>
     </ClCompile>
@@ -3135,6 +3081,66 @@
     </ClCompile>
     <ClCompile Include="VulkanMappedConduits.cpp">
       <Filter>Source Files\Render\Vulkan\Conduit</Filter>
+    </ClCompile>
+    <ClCompile Include="GridAxisAlignedBox.cpp">
+      <Filter>Source Files\Spatial\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="GridPoint.cpp">
+      <Filter>Source Files\Spatial\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="GridSize.cpp">
+      <Filter>Source Files\Spatial\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Angle3D.cpp">
+      <Filter>Source Files\Spatial\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="AxisAlignedBox3D.cpp">
+      <Filter>Source Files\Spatial\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Line3D.cpp">
+      <Filter>Source Files\Spatial\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Point3D.cpp">
+      <Filter>Source Files\Spatial\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Scalers3D.cpp">
+      <Filter>Source Files\Spatial\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Size3D.cpp">
+      <Filter>Source Files\Spatial\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="AxisAlignedBox2D.cpp">
+      <Filter>Source Files\Spatial\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Line2D.cpp">
+      <Filter>Source Files\Spatial\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Point2D.cpp">
+      <Filter>Source Files\Spatial\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Scalers2D.cpp">
+      <Filter>Source Files\Spatial\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Size2D.cpp">
+      <Filter>Source Files\Spatial\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="ToWorldPoint2D.cpp">
+      <Filter>Source Files\Spatial\Arca</Filter>
+    </ClCompile>
+    <ClCompile Include="ToWorldPoint3D.cpp">
+      <Filter>Source Files\Spatial\Arca</Filter>
+    </ClCompile>
+    <ClCompile Include="Bounds.cpp">
+      <Filter>Source Files\Spatial\Arca</Filter>
+    </ClCompile>
+    <ClCompile Include="BoundsCurator.cpp">
+      <Filter>Source Files\Spatial\Arca</Filter>
+    </ClCompile>
+    <ClCompile Include="Space.cpp">
+      <Filter>Source Files\Spatial\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="RasterOrder.cpp">
+      <Filter>Source Files\Render\Raster</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

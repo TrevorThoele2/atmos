@@ -12,8 +12,6 @@ namespace Atmos::Render
 
     void ObjectCurator::Handle(const Work&)
     {
-        const auto cameraLeft = camera->Sides().Left();
-        const auto cameraTop = camera->Sides().Top();
         const auto cameraPosition = camera->Position();
         const auto cameraSize = camera->Size();
 
@@ -33,23 +31,11 @@ namespace Atmos::Render
             }
         };
 
-        const Spatial::Point2D cameraTopLeft{ cameraLeft, cameraTop };
+        const auto sides = camera->Sides();
+        const Spatial::Point2D cameraTopLeft{ sides.Left(), sides.Top() };
 
         const auto mainSurface = Owner().Find<MainSurface>();
         WorkImpl(cameraBox, cameraTopLeft, *mainSurface);
-    }
-
-    int ObjectCurator::ToRenderSpace(Spatial::Space space)
-    {
-        switch(space)
-        {
-        case Spatial::Space::World:
-            return 0;
-        case Spatial::Space::Screen:
-            return 1;
-        }
-
-        throw std::runtime_error("Unknown Spatial::Space value.");
     }
 
     Spatial::Point3D ObjectCurator::ToRenderPoint(Spatial::Point3D position, Spatial::Point2D cameraTopLeft, Spatial::Space space)
@@ -82,7 +68,7 @@ namespace Atmos::Render
 
     Spatial::AxisAlignedBox2D ObjectCurator::ViewSliceBox(Arca::Index<ViewSlice> viewSlice)
     {
-        auto viewSliceValue = viewSlice.Get();
+        const auto viewSliceValue = viewSlice.Get();
         return viewSliceValue
             ? viewSliceValue->box
             : Spatial::AxisAlignedBox2D
