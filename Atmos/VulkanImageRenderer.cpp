@@ -174,7 +174,7 @@ namespace Atmos::Render::Vulkan
         {
             verticesToDraw.insert(verticesToDraw.end(), element.vertices.begin(), element.vertices.end());
             for(auto& index : element.indices)
-                indicesToDraw.push_back(vertexCount + index);
+                indicesToDraw.push_back(static_cast<std::uint16_t>(vertexCount) + index);
             vertexCount += element.vertices.size();
         }
 

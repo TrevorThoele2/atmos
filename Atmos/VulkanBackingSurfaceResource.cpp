@@ -96,7 +96,7 @@ namespace Atmos::Render::Resource::Vulkan
         renderer->DrawFrame(allRenders, Size(), mapPosition);
     }
 
-    void BackingSurface::OnMaterialDestroying(const Arca::Index<Asset::Material>& material)
+    void BackingSurface::OnMaterialDestroying(const Asset::Material& material)
     {
         renderer->OnMaterialDestroying(material);
     }

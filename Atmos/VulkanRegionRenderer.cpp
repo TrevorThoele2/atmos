@@ -137,7 +137,7 @@ namespace Atmos::Render::Vulkan
             indicesToDraw.reserve(indicesToDraw.size() + region.indices.size());
             for (auto& index : region.indices)
             {
-                const auto useIndex = startMaxIndex + index;
+                const Index useIndex = startMaxIndex + static_cast<Index>(index);
                 indicesToDraw.push_back(useIndex);
                 maxIndex = std::max(maxIndex, Index(useIndex + 1));
             }

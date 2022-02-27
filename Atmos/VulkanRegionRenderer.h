@@ -50,18 +50,18 @@ namespace Atmos::Render::Vulkan
             Region(const Vertices& vertices, const Indices& indices);
         };
 
-        static constexpr int maxVertexCount = 5000;
+        static constexpr vk::DeviceSize maxVertexCount = 5000;
 
         StagedBuffer vertexBuffer;
-        static constexpr int vertexStride = maxVertexCount;
+        static constexpr vk::DeviceSize vertexStride = maxVertexCount;
 
         StagedBuffer indexBuffer;
-        static constexpr int indexStride = maxVertexCount * 2;
+        static constexpr vk::DeviceSize indexStride = maxVertexCount * 2;
     private:
         class Raster final : public Vulkan::Raster
         {
         public:
-            Raster(RegionRenderer& renderer);
+            explicit Raster(RegionRenderer& renderer);
             
             [[nodiscard]] std::vector<Pass> NextPasses() override;
 

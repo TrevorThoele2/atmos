@@ -58,7 +58,7 @@ namespace Atmos::Render::Vulkan
 
         void WaitForIdle() const;
     public:
-        void OnMaterialDestroying(const Arca::Index<Asset::Material>& material);
+        void OnMaterialDestroying(const Asset::Material& material);
     private:
         vk::Device device;
     private:

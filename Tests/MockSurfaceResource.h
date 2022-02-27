@@ -5,7 +5,7 @@
 class MockSurfaceResource final : public Atmos::Render::Resource::Surface
 {
 public:
-    void OnMaterialDestroying(const Arca::Index<Atmos::Asset::Material>& material) override;
+    void OnMaterialDestroying(const Atmos::Asset::Material& material) override;
 
     [[nodiscard]] Atmos::Spatial::Size2D Size() const override;
 };

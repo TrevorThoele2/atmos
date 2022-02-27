@@ -24,7 +24,7 @@ namespace Atmos::Render
     public:
         SurfaceDataImplementation() = default;
         
-        void OnMaterialDestroying(const Arca::Index<Asset::Material>& material) override
+        void OnMaterialDestroying(const Asset::Material& material) override
         {}
         
         [[nodiscard]] Spatial::Size2D Size() const override

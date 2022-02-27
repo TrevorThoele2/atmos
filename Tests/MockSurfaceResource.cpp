@@ -1,6 +1,6 @@
 #include "MockSurfaceResource.h"
 
-void MockSurfaceResource::OnMaterialDestroying(const Arca::Index<Atmos::Asset::Material>& material)
+void MockSurfaceResource::OnMaterialDestroying(const Atmos::Asset::Material& material)
 {
     
 }

@@ -2,6 +2,7 @@
 
 #include "ArcaShardIncludes.h"
 #include "SurfaceResource.h"
+#include "Color.h"
 
 namespace Atmos::Render
 {

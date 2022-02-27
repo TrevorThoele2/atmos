@@ -16,11 +16,9 @@ namespace Atmos::Render
         core(init.Create<Core>(std::move(resource))),
         init(init)
     {
-        const auto onDestroying = [this](const auto& signal)
-        {
-            Resource()->OnMaterialDestroying(signal.index);
-        };
-        
-        init.owner.On<Arca::DestroyingKnown<Asset::Material>>(onDestroying);
+        init.owner.On<Arca::DestroyingKnown<Asset::Material>>([this](const auto& signal)
+            {
+                Resource()->OnMaterialDestroying(*signal.index);
+            });
     }
 }

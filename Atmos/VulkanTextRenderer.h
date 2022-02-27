@@ -11,9 +11,6 @@
 #include "VulkanGlyphAtlas.h"
 
 #include "RenderText.h"
-#include "FontAssetResource.h"
-
-#include "Size2D.h"
 
 namespace Atmos::Render::Vulkan
 {
@@ -94,20 +91,20 @@ namespace Atmos::Render::Vulkan
     private:
         MemoryPool memoryPool;
 
-        static constexpr int maxElementCount = 10000;
+        static constexpr vk::DeviceSize maxElementCount = 10000;
 
         StagedBuffer vertexBuffer;
-        static constexpr int vertexStride = maxElementCount * 4;
+        static constexpr vk::DeviceSize vertexStride = maxElementCount * 4;
 
         StagedBuffer indexBuffer;
-        static constexpr int indexStride = maxElementCount * 6;
+        static constexpr vk::DeviceSize indexStride = maxElementCount * 6;
     private:
         using DescriptorSetKey = TextRendererDescriptorSetKey;
 
         class Raster final : public Vulkan::Raster
         {
         public:
-            Raster(TextRenderer& renderer);
+            explicit Raster(TextRenderer& renderer);
 
             [[nodiscard]] std::vector<Pass> NextPasses() override;
 

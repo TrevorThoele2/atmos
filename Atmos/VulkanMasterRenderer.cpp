@@ -189,7 +189,7 @@ namespace Atmos::Render::Vulkan
             logger->Log("Could not wait for Vulkan fences.");
     }
     
-    void MasterRenderer::OnMaterialDestroying(const Arca::Index<Asset::Material>& material)
+    void MasterRenderer::OnMaterialDestroying(const Asset::Material& material)
     {
         for (auto& group : rendererGroups)
         {

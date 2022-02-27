@@ -8,7 +8,6 @@
 #include "VulkanMemoryPool.h"
 
 #include "RenderLine.h"
-#include "LineWidth.h"
 
 #include <glm/glm.hpp>
 
@@ -46,15 +45,15 @@ namespace Atmos::Render::Vulkan
             explicit Line(const std::vector<Vertex>& points);
         };
 
-        static constexpr int maxPointCount = 5000;
+        static constexpr vk::DeviceSize maxPointCount = 5000;
 
         StagedBuffer vertexBuffer;
-        static constexpr int vertexStride = maxPointCount;
+        static constexpr vk::DeviceSize vertexStride = maxPointCount;
     private:
         class Raster final : public Vulkan::Raster
         {
         public:
-            Raster(LineRenderer& renderer);
+            explicit Raster(LineRenderer& renderer);
             
             [[nodiscard]] std::vector<Pass> NextPasses() override;
 

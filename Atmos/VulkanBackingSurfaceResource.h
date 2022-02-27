@@ -32,7 +32,7 @@ namespace Atmos::Render::Resource::Vulkan
         
         void DrawFrame(const AllRenders& allRenders, const Spatial::Point2D& mapPosition);
 
-        void OnMaterialDestroying(const Arca::Index<Asset::Material>& material);
+        void OnMaterialDestroying(const Asset::Material& material);
 
         void WaitForIdle() const;
 
