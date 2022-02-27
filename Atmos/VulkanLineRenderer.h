@@ -29,7 +29,7 @@ namespace Atmos::Render::Vulkan
             vk::CommandBuffer drawCommandBuffer,
             const UniversalDataBuffer& universalDataBuffer) override;
         
-        void MaterialDestroying(Arca::Index<Asset::Material> material);
+        void MaterialDestroying(const Asset::Material& material);
     private:
         MemoryPool memoryPool;
 
@@ -51,8 +51,6 @@ namespace Atmos::Render::Vulkan
         StagedBuffer vertexBuffer;
         static constexpr int vertexStride = maxPointCount;
     private:
-        using MappedConduits = MappedConduits<Asset::Material>;
-
         class Raster final : public Vulkan::Raster
         {
         public:

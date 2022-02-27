@@ -60,7 +60,7 @@ namespace Atmos::Render::Vulkan
             vk::CommandBuffer drawCommandBuffer,
             const UniversalDataBuffer& universalDataBuffer) override;
 
-        void MaterialDestroying(Arca::Index<Asset::Material> material);
+        void MaterialDestroying(const Asset::Material& material);
     private:
         struct StagedTextRender
         {
@@ -73,7 +73,7 @@ namespace Atmos::Render::Vulkan
             Asset::Resource::Font* fontResource;
             Spatial::AxisAlignedBox2D viewSlice;
 
-            Arca::Index<Asset::Material> material;
+            const Asset::Material* material;
 
             Spatial::Point3D position;
             Spatial::Angle2D rotation;
@@ -102,8 +102,6 @@ namespace Atmos::Render::Vulkan
         StagedBuffer indexBuffer;
         static constexpr int indexStride = maxElementCount * 6;
     private:
-        using MappedConduits = MappedConduits<Asset::Material>;
-
         using DescriptorSetKey = TextRendererDescriptorSetKey;
 
         class Raster final : public Vulkan::Raster
@@ -147,8 +145,8 @@ namespace Atmos::Render::Vulkan
         void AddToRaster(
             int space,
             Spatial::Point3D::Value z,
-            Arca::RelicID materialID,
-            Vulkan::CombinedImageSamplerDescriptor& descriptor,
+            const Asset::Material& material,
+            const CombinedImageSamplerDescriptor& descriptor,
             std::vector<Textured> elements,
             Raster& raster);
     private:

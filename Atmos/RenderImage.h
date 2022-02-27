@@ -18,7 +18,7 @@ namespace Atmos::Render
         Spatial::AxisAlignedBox2D assetSlice;
         Spatial::AxisAlignedBox2D viewSlice;
         
-        Arca::Index<Asset::Material> material;
+        const Asset::Material* material;
 
         Spatial::Point3D position;
         Spatial::Size2D size;

@@ -66,7 +66,7 @@ namespace Atmos::Render::Vulkan
 
         for (auto& render : allRenders.texts)
         {
-            mappedConduits.Add(render.material);
+            mappedConduits.Add(*render.material);
 
             const auto stagedRender = ToStagedRender(render);
             if (stagedRender)
@@ -99,7 +99,7 @@ namespace Atmos::Render::Vulkan
             return {};
     }
 
-    void TextRenderer::MaterialDestroying(Arca::Index<Asset::Material> material)
+    void TextRenderer::MaterialDestroying(const Asset::Material& material)
     {
         mappedConduits.Remove(material);
     }
@@ -159,7 +159,7 @@ namespace Atmos::Render::Vulkan
         std::vector<Pass> passes;
         for (auto& materialGroup : layer.materialGroups)
         {
-            const auto conduitGroup = renderer->mappedConduits.For(materialGroup.first);
+            const auto conduitGroup = renderer->mappedConduits.For(*materialGroup.first);
             if (conduitGroup)
             {
                 const auto nextPasses = NextPasses(materialGroup.second, *conduitGroup);
@@ -273,7 +273,7 @@ namespace Atmos::Render::Vulkan
         AddToRaster(
             render.space,
             render.position.z,
-            render.material.ID(),
+            *render.material,
             *descriptor,
             vertices,
             raster);
@@ -282,8 +282,8 @@ namespace Atmos::Render::Vulkan
     void TextRenderer::AddToRaster(
         int space,
         Spatial::Point3D::Value z,
-        Arca::RelicID materialID,
-        Vulkan::CombinedImageSamplerDescriptor& descriptor,
+        const Asset::Material& material,
+        const CombinedImageSamplerDescriptor& descriptor,
         std::vector<Textured> elements,
         Raster& raster)
     {
@@ -291,7 +291,7 @@ namespace Atmos::Render::Vulkan
         auto layer = raster.layers.Find(layerKey);
         if (!layer)
             layer = &raster.layers.Add(layerKey, Raster::Layer{});
-        auto& group = layer->GroupFor(materialID);
+        auto& group = layer->GroupFor(material);
         auto& list = group.ListFor(&descriptor);
         list.insert(list.end(), elements.begin(), elements.end());
         descriptorSetKeys.emplace(DescriptorSetKey(descriptor));
@@ -302,14 +302,13 @@ namespace Atmos::Render::Vulkan
         std::vector<Textured> elements;
 
         const auto scalers = render.scalers;
-        const auto position = Spatial::ToPoint2D(render.position);
+        const auto position = ToPoint2D(render.position);
         const auto atlasCellSize = render.atlasCellSize;
-        const auto totalSize = Spatial::ScaleBy(render.totalSize, render.scalers);
-        const auto totalBox = Spatial::ToAxisAlignedBox2D(0, 0, totalSize.width, totalSize.height);
+        const auto totalSize = ScaleBy(render.totalSize, render.scalers);
 
         const auto worldTopLeft = position - Spatial::Point2D{ totalSize.width / 2, totalSize.height / 2 };
 
-        const auto clipTo = Spatial::ToPoints(render.viewSlice, 0, Spatial::Point2D{});
+        const auto clipTo = ToPoints(render.viewSlice, 0, Spatial::Point2D{});
 
         auto x = 0.0f;
         auto y = 0.0f;

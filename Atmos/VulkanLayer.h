@@ -1,7 +1,7 @@
 #pragma once
 
 #include <unordered_map>
-#include <Arca/RelicID.h>
+#include "MaterialAsset.h"
 
 namespace Atmos::Render::Vulkan
 {
@@ -14,8 +14,8 @@ namespace Atmos::Render::Vulkan
             std::vector<MaterialGroupValue>& ListFor(const MaterialGroupKey& key);
         };
 
-        std::unordered_map<Arca::RelicID, MaterialGroup> materialGroups;
-        MaterialGroup& GroupFor(Arca::RelicID id);
+        std::unordered_map<const Asset::Material*, MaterialGroup> materialGroups;
+        MaterialGroup& GroupFor(const Asset::Material& material);
     };
 
     template<class MaterialGroupKey, class MaterialGroupValue>
@@ -27,10 +27,10 @@ namespace Atmos::Render::Vulkan
     }
 
     template<class MaterialGroupKey, class MaterialGroupValue>
-    auto Layer<MaterialGroupKey, MaterialGroupValue>::GroupFor(Arca::RelicID id) -> MaterialGroup&
+    auto Layer<MaterialGroupKey, MaterialGroupValue>::GroupFor(const Asset::Material& material) -> MaterialGroup&
     {
-        auto found = materialGroups.find(id);
-        return found == materialGroups.end() ? materialGroups.emplace(id, MaterialGroup{}).first->second : found->second;
+        auto found = materialGroups.find(&material);
+        return found == materialGroups.end() ? materialGroups.emplace(&material, MaterialGroup{}).first->second : found->second;
     }
 
     template<class MaterialGroupValue>
@@ -41,14 +41,14 @@ namespace Atmos::Render::Vulkan
             std::vector<MaterialGroupValue> values;
         };
 
-        std::unordered_map<Arca::RelicID, MaterialGroup> materialGroups;
-        MaterialGroup& GroupFor(Arca::RelicID id);
+        std::unordered_map<const Asset::Material*, MaterialGroup> materialGroups;
+        MaterialGroup& GroupFor(const Asset::Material& material);
     };
 
     template<class MaterialGroupValue>
-    auto Layer<void, MaterialGroupValue>::GroupFor(Arca::RelicID id) -> MaterialGroup&
+    auto Layer<void, MaterialGroupValue>::GroupFor(const Asset::Material& material) -> MaterialGroup&
     {
-        auto found = materialGroups.find(id);
-        return found == materialGroups.end() ? materialGroups.emplace(id, MaterialGroup{}).first->second : found->second;
+        auto found = materialGroups.find(&material);
+        return found == materialGroups.end() ? materialGroups.emplace(&material, MaterialGroup{}).first->second : found->second;
     }
 }

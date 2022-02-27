@@ -3133,5 +3133,8 @@
     <ClCompile Include="JavaScriptScript.cpp">
       <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Scripting</Filter>
     </ClCompile>
+    <ClCompile Include="VulkanMappedConduits.cpp">
+      <Filter>Source Files\Render\Vulkan\Conduit</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

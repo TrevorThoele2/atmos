@@ -13,7 +13,7 @@ namespace Atmos::Render
         std::vector<Spatial::Point2D> points;
         Spatial::Point2D::Value z;
 
-        Arca::Index<Asset::Material> material;
+        const Asset::Material* material;
 
         LineWidth width;
 

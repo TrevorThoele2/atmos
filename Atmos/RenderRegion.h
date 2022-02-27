@@ -11,7 +11,7 @@ namespace Atmos::Render
         Mesh mesh;
         Spatial::Point2D::Value z;
 
-        Arca::Index<Asset::Material> material;
+        const Asset::Material* material;
 
         int space;
 

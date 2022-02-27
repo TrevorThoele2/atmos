@@ -59,7 +59,7 @@ namespace Atmos::Render::Vulkan
 
         for (auto& render : allRenders.images)
         {
-            mappedConduits.Add(render.material);
+            mappedConduits.Add(*render.material);
             AddToRaster(render, *raster);
         }
 
@@ -89,7 +89,7 @@ namespace Atmos::Render::Vulkan
             return {};
     }
     
-    void ImageRenderer::MaterialDestroying(Arca::Index<Asset::Material> material)
+    void ImageRenderer::MaterialDestroying(const Asset::Material& material)
     {
         mappedConduits.Remove(material);
     }
@@ -120,7 +120,7 @@ namespace Atmos::Render::Vulkan
         std::vector<Pass> passes;
         for (auto& materialGroup : layer.materialGroups)
         {
-            const auto conduitGroup = renderer->mappedConduits.For(materialGroup.first);
+            const auto conduitGroup = renderer->mappedConduits.For(*materialGroup.first);
             if (conduitGroup)
             {
                 const auto nextPasses = NextPasses(materialGroup.second, *conduitGroup);
@@ -242,7 +242,7 @@ namespace Atmos::Render::Vulkan
             AddToRaster(
                 imageRender.space,
                 imageRender.position.z,
-                imageRender.material.ID(),
+                *imageRender.material,
                 assetResource->imageData.descriptor,
                 *textured,
                 raster);
@@ -251,8 +251,8 @@ namespace Atmos::Render::Vulkan
     void ImageRenderer::AddToRaster(
         int space,
         Spatial::Point3D::Value z,
-        Arca::RelicID materialID,
-        CombinedImageSamplerDescriptor& descriptor,
+        const Asset::Material& material,
+        const CombinedImageSamplerDescriptor& descriptor,
         Textured element,
         Raster& raster)
     {
@@ -260,7 +260,7 @@ namespace Atmos::Render::Vulkan
         auto layer = raster.layers.Find(layerKey);
         if (!layer)
             layer = &raster.layers.Add(layerKey, Raster::Layer{});
-        auto& group = layer->GroupFor(materialID);
+        auto& group = layer->GroupFor(material);
         group.ListFor(&descriptor).emplace_back(element);
         descriptorSetKeys.emplace(DescriptorSetKey(descriptor));
     }

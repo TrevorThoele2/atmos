@@ -656,6 +656,7 @@
     <ClCompile Include="Vector3D.cpp" />
     <ClCompile Include="VulkanBackingSurfaceResource.cpp" />
     <ClCompile Include="VulkanGlyphAtlas.cpp" />
+    <ClCompile Include="VulkanMappedConduits.cpp" />
     <ClCompile Include="VulkanMemoryPool.cpp" />
     <ClCompile Include="VulkanPaths.cpp" />
     <ClCompile Include="VulkanTextured.cpp" />

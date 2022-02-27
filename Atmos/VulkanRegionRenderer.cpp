@@ -48,7 +48,7 @@ namespace Atmos::Render::Vulkan
 
         for (const auto& render : allRenders.regions)
         {
-            mappedConduits.Add(render.material);
+            mappedConduits.Add(*render.material);
             AddToRaster(render, *raster);
         }
 
@@ -61,7 +61,7 @@ namespace Atmos::Render::Vulkan
             return {};
     }
     
-    void RegionRenderer::MaterialDestroying(Arca::Index<Asset::Material> material)
+    void RegionRenderer::MaterialDestroying(const Asset::Material& material)
     {
         mappedConduits.Remove(material);
     }
@@ -96,7 +96,7 @@ namespace Atmos::Render::Vulkan
         std::vector<Pass> passes;
         for (auto& materialGroup : layer.materialGroups)
         {
-            const auto conduitGroup = renderer->mappedConduits.For(materialGroup.first);
+            const auto conduitGroup = renderer->mappedConduits.For(*materialGroup.first);
             if (conduitGroup)
             {
                 const auto nextPasses = NextPasses(materialGroup.second, *conduitGroup);
@@ -196,7 +196,7 @@ namespace Atmos::Render::Vulkan
             auto context = raster.layers.Find(key);
             if (!context)
                 context = &raster.layers.Add(key, Raster::Layer{});
-            auto& group = context->GroupFor(regionRender.material.ID());
+            auto& group = context->GroupFor(*regionRender.material);
             group.values.emplace_back(vertices, regionRender.mesh.indices);
         }
     }

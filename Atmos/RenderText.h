@@ -19,7 +19,7 @@ namespace Atmos::Render
         Asset::Resource::Font* fontResource;
         Spatial::AxisAlignedBox2D viewSlice;
         
-        Arca::Index<Asset::Material> material;
+        const Asset::Material* material;
 
         Spatial::Point3D position;
         Spatial::Angle2D rotation;
