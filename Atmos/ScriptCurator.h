@@ -24,7 +24,6 @@ namespace Atmos::Scripting
         explicit Curator(Init init, Manager& manager);
     public:
         void Handle(const Work& command);
-        void Handle(const Suspend& command);
         std::vector<CompiledModule> Handle(const Compile& command);
         std::optional<Result> Handle(const Execute& command);
 
@@ -41,7 +40,7 @@ namespace Atmos::Scripting
             RunningScript(const RunningScript& arg);
         };
 
-        [[nodiscard]] static std::vector<RunningScript> ScriptsToRunning(Arca::Batch<Script> batch);
+        [[nodiscard]] static std::vector<RunningScript> RunningScripts(const Arca::Batch<Script>& batch);
 
         std::optional<Result> DoExecute(Arca::RelicID id, CurrentExecutingScript& currentExecutingScript);
     };
@@ -56,7 +55,6 @@ namespace Arca
         static const inline TypeName typeName = "Atmos::Scripting::Curator";
         using HandledCommands = HandledCommands<
             Atmos::Work,
-            Atmos::Scripting::Suspend,
             Atmos::Scripting::Compile,
             Atmos::Scripting::Execute,
             Atmos::Asset::Resource::Create<Atmos::Asset::Resource::Script>>;

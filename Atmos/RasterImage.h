@@ -7,8 +7,7 @@
 #include "Scalers2D.h"
 #include "AxisAlignedBox2D.h"
 #include "Color.h"
-#include "MaterialAsset.h"
-#include "SurfaceResource.h"
+#include "Material.h"
 
 namespace Atmos::Render::Raster
 {
@@ -17,9 +16,8 @@ namespace Atmos::Render::Raster
         Asset::Resource::Image* assetResource = nullptr;
         Spatial::AxisAlignedBox2D assetSlice;
         Spatial::AxisAlignedBox2D viewSlice;
-        const Asset::Material* material = nullptr;
+        Material material;
         Color color;
-        Resource::Surface* surface = nullptr;
 
         Spatial::Point2D position;
         Spatial::Size2D size;

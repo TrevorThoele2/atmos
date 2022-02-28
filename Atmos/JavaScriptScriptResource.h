@@ -16,7 +16,6 @@ namespace Atmos::Scripting::JavaScript
         std::optional<Result> Execute() override;
 
         std::optional<Result> Resume() override;
-        void Suspend() override;
     private:
         String executeFunctionName;
         Parameters parameters;

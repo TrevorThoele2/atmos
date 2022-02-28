@@ -3,14 +3,12 @@
 #include <unordered_map>
 #include "VulkanConduit.h"
 
-#include "MaterialAsset.h"
+#include "Shaders.h"
 
 namespace Atmos::Render::Vulkan
 {
     class MappedConduits
     {
-    public:
-        using Group = std::vector<Conduit>;
     public:
         MappedConduits(
             vk::Device device,
@@ -20,15 +18,11 @@ namespace Atmos::Render::Vulkan
             vk::Extent2D swapchainExtent,
             std::vector<vk::DynamicState> dynamicStates,
             const std::vector<vk::DescriptorSetLayout>& descriptorSetLayouts);
-
-        void Add(const Asset::Material& material);
-        void Remove(const Asset::Material& material);
-
-        [[nodiscard]] Group* For(const Asset::Material& material);
-
+        
+        [[nodiscard]] Conduit& For(const Shaders& shaders);
         [[nodiscard]] vk::PipelineLayout PipelineLayout() const;
     private:
-        std::unordered_map<const Asset::Material*, Group> groups;
+        std::unordered_map<Shaders, Conduit> conduits;
     private:
         vk::Device device;
 
@@ -41,6 +35,6 @@ namespace Atmos::Render::Vulkan
 
         std::vector<vk::DynamicState> dynamicStates;
     private:
-        [[nodiscard]] Group CreateGroup(const Asset::Material& material) const;
+        [[nodiscard]] Conduit Conduit(const Shaders& shaders) const;
     };
 }

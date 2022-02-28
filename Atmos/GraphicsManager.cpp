@@ -46,9 +46,9 @@ namespace Atmos::Render
         return CreateMainSurfaceResourceImpl(window);
     }
     
-    void GraphicsManager::DrawFrame(const AllRenders& allRenders, const Spatial::Point2D& mapPosition)
+    void GraphicsManager::DrawFrame(const Raster::Commands& commands, const Spatial::Point2D& mapPosition)
     {
-        DrawFrameImpl(allRenders, mapPosition);
+        DrawFrameImpl(commands, mapPosition);
     }
 
     void GraphicsManager::ResourceDestroying(Asset::Resource::Image& resource)

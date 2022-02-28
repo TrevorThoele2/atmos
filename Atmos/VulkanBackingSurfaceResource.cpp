@@ -91,16 +91,11 @@ namespace Atmos::Render::Resource::Vulkan
             extent);
     }
     
-    void BackingSurface::DrawFrame(const AllRenders& allRenders, const Spatial::Point2D& mapPosition)
+    void BackingSurface::DrawFrame(const std::vector<Raster::Command>& commands, const Spatial::Point2D& mapPosition)
     {
-        renderer->DrawFrame(allRenders, Size(), mapPosition);
+        renderer->DrawFrame(commands, Size(), mapPosition);
     }
-
-    void BackingSurface::OnMaterialDestroying(const Asset::Material& material)
-    {
-        renderer->OnMaterialDestroying(material);
-    }
-
+    
     void BackingSurface::WaitForIdle() const
     {
         renderer->WaitForIdle();

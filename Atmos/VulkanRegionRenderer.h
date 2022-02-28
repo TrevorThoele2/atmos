@@ -1,19 +1,19 @@
 #pragma once
 
-#include "VulkanRendererBase.h"
-#include "VulkanObjectLayering.h"
 #include "VulkanDescriptorSetPool.h"
 #include "VulkanMappedConduits.h"
 #include "VulkanStagedBuffer.h"
 #include "VulkanMemoryPool.h"
+#include "VulkanRendererPass.h"
+#include "VulkanUniversalDataBuffer.h"
 
-#include "RenderRegion.h"
+#include "DrawRegion.h"
 
 #include <glm/glm.hpp>
 
 namespace Atmos::Render::Vulkan
 {
-    class RegionRenderer final : public RendererBase
+    class RegionRenderer final
     {
     public:
         RegionRenderer(
@@ -22,13 +22,10 @@ namespace Atmos::Render::Vulkan
             vk::PhysicalDeviceMemoryProperties memoryProperties,
             vk::RenderPass renderPass,
             vk::Extent2D swapchainExtent);
-        
-        [[nodiscard]] std::unique_ptr<Raster> Start(
-            const AllRenders& allRenders,
-            vk::CommandBuffer drawCommandBuffer,
-            const UniversalDataBuffer& universalDataBuffer) override;
-        
-        void MaterialDestroying(const Asset::Material& material);
+
+        void Start();
+        [[nodiscard]] std::optional<RendererPass> Draw(
+            const std::vector<Raster::DrawRegion>& draws, const UniversalDataBuffer& universalDataBuffer);
     private:
         MemoryPool memoryPool;
 
@@ -42,12 +39,10 @@ namespace Atmos::Render::Vulkan
         struct Region
         {
             using Vertices = std::vector<Vertex>;
-            Vertices vertices;
+            Vertices vertices = {};
 
             using Indices = std::vector<Index>;
-            Indices indices;
-
-            Region(const Vertices& vertices, const Indices& indices);
+            Indices indices = {};
         };
 
         static constexpr vk::DeviceSize maxVertexCount = 5000;
@@ -57,40 +52,16 @@ namespace Atmos::Render::Vulkan
 
         StagedBuffer indexBuffer;
         static constexpr vk::DeviceSize indexStride = maxVertexCount * 2;
+
+        [[nodiscard]] Command WriteData(
+            const std::vector<Region>& regions, std::uint32_t startIndexCount);
+        [[nodiscard]] Command Draw(
+            std::uint32_t startIndexCount, std::uint32_t indexCount, Conduit& conduit, vk::DescriptorSet descriptorSet);
     private:
-        class Raster final : public Vulkan::Raster
-        {
-        public:
-            explicit Raster(RegionRenderer& renderer);
-            
-            [[nodiscard]] std::vector<Pass> NextPasses() override;
+        size_t totalVertices = 0;
+        size_t totalIndices = 0;
+        Index maxIndex = 0;
 
-            [[nodiscard]] bool IsDone() const override;
-            [[nodiscard]] ObjectLayeringKey NextLayer() const override;
-        private:
-            using ObjectLayering = ObjectLayering<void, Region>;
-            using Layer = ObjectLayering::Layer;
-            
-            ObjectLayering layers;
-            ObjectLayering::iterator currentLayer = {};
-            vk::DescriptorSet setupDescriptorSet = {};
-
-            std::uint32_t totalVertexCount = 0;
-            std::uint32_t totalIndexCount = 0;
-            Index maxIndex = 0;
-        private:
-            RegionRenderer* renderer;
-        private:
-            [[nodiscard]] std::vector<Pass> NextPasses(const Layer& layer);
-            [[nodiscard]] std::vector<Pass> NextPasses(const Layer::MaterialGroup& materialGroup, MappedConduits::Group& conduitGroup);
-            [[nodiscard]] Command WriteData(const std::vector<Region>& regions, std::uint32_t startIndexCount);
-            [[nodiscard]] Command Draw(std::uint32_t startIndexCount, std::uint32_t indexCount, Conduit& conduit);
-        private:
-            friend RegionRenderer;
-        };
-
-        void AddToRaster(const RenderRegion& regionRender, Raster& raster);
-    private:
         std::vector<DescriptorSetPool> descriptorSetPools;
         std::vector<DescriptorSetPool>::iterator currentDescriptorSetPool;
         MappedConduits mappedConduits;

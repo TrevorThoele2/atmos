@@ -24,7 +24,7 @@ namespace Atmos::Render
             Arca::RelicInit init,
             const std::unordered_set<Spatial::Grid::Point>& points,
             Spatial::Grid::Point::Value z,
-            Arca::Index<Asset::Material> material);
+            const Material& material);
 
         bool operator==(const GridRegion& arg) const;
         bool operator!=(const GridRegion& arg) const;

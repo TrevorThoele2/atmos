@@ -21,13 +21,13 @@ namespace Atmos::Render
         [[nodiscard]] String String() const;
 
         [[nodiscard]] Arca::Index<Asset::Font> Font() const;
-        [[nodiscard]] Arca::Index<Asset::Material> Material() const;
+        [[nodiscard]] Material Material() const;
 
         [[nodiscard]] float WrapWidth() const;
         [[nodiscard]] bool Bold() const;
         [[nodiscard]] bool Italics() const;
 
-        [[nodiscard]] Render::Color Color() const;
+        [[nodiscard]] Color Color() const;
 
         [[nodiscard]] Spatial::Point3D Position() const;
         [[nodiscard]] Spatial::Scalers2D Scalers() const;
@@ -41,7 +41,7 @@ namespace Atmos::Render
             Arca::RelicInit init,
             const Atmos::String& string,
             Arca::Index<Asset::Font> font,
-            Arca::Index<Asset::Material> material,
+            const Render::Material& material,
             float wrapWidth,
             bool bold,
             bool italics,

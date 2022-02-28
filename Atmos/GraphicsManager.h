@@ -4,7 +4,7 @@
 #include "ShaderAsset.h"
 #include "SurfaceResource.h"
 #include "FontAssetResource.h"
-#include "AllRasters.h"
+#include "RasterCommands.h"
 
 #include "GraphicsReconstructionObjects.h"
 
@@ -38,7 +38,7 @@ namespace Atmos::Render
         [[nodiscard]] std::unique_ptr<Resource::Surface> CreateMainSurfaceResource(
             void* window);
         
-        void DrawFrame(const AllRenders& allRenders, const Spatial::Point2D& mapPosition);
+        void DrawFrame(const Raster::Commands& commands, const Spatial::Point2D& mapPosition);
 
         void ResourceDestroying(Asset::Resource::Image& resource);
         void ResourceDestroying(Asset::Resource::Shader& resource);
@@ -70,7 +70,7 @@ namespace Atmos::Render
         [[nodiscard]] virtual std::unique_ptr<Resource::Surface> CreateSurfaceResourceImpl(
             void* window) = 0;
         
-        virtual void DrawFrameImpl(const AllRenders& allRenders, const Spatial::Point2D& mapPosition) = 0;
+        virtual void DrawFrameImpl(const Raster::Commands& commands, const Spatial::Point2D& mapPosition) = 0;
 
         virtual void ResourceDestroyingImpl(Asset::Resource::Image& resource) = 0;
         virtual void ResourceDestroyingImpl(Asset::Resource::Shader& resource) = 0;

@@ -31,7 +31,7 @@ namespace Atmos::Render::Vulkan
     private:
         vk::Device device;
     private:
-        [[nodiscard]] static vk::PipelineShaderStageCreateInfo ShaderStageCreateInfo(
+        [[nodiscard]] static vk::PipelineShaderStageCreateInfo CreateInfo(
             const Asset::Shader& shaderAsset, vk::ShaderStageFlagBits shaderType);
     };
 }

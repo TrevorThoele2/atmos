@@ -23,22 +23,14 @@ namespace Atmos::Render::Vulkan
         const vk::PipelineLayoutCreateInfo layoutCreateInfo({}, descriptorSetLayouts.size(), descriptorSetLayouts.data());
         layout = device.createPipelineLayoutUnique(layoutCreateInfo);
     }
-
-    void MappedConduits::Add(const Asset::Material& material)
+    
+    Conduit& MappedConduits::For(const Shaders& shaders)
     {
-        if (!groups.contains(&material))
-            groups.emplace(&material, CreateGroup(material));
-    }
+        auto found = conduits.find(shaders);
+        if (found == conduits.end())
+            found = conduits.emplace(shaders, Conduit(shaders)).first;
 
-    void MappedConduits::Remove(const Asset::Material& material)
-    {
-        groups.erase(&material);
-    }
-
-    auto MappedConduits::For(const Asset::Material& material) -> Group*
-    {
-        const auto found = groups.find(&material);
-        return found == groups.end() ? nullptr : &found->second;
+        return found->second;
     }
 
     vk::PipelineLayout MappedConduits::PipelineLayout() const
@@ -46,31 +38,19 @@ namespace Atmos::Render::Vulkan
         return layout.get();
     }
 
-    auto MappedConduits::CreateGroup(const Asset::Material& material) const -> Group
+    Conduit MappedConduits::Conduit(const Shaders& shaders) const
     {
-        const auto& passes = material.Passes();
-
-        Group group;
-        group.reserve(passes.size());
-        for (auto& pass : passes)
+        return
         {
-            try
-            {
-                group.push_back(Conduit(
-                    pass.VertexShader(),
-                    pass.FragmentShader(),
-                    device,
-                    layout.get(),
-                    renderPass,
-                    vertexInput,
-                    swapchainExtent,
-                    primitiveTopology,
-                    dynamicStates));
-            }
-            catch (const InvalidConduit&)
-            {
-            }
-        }
-        return group;
+            shaders.vertex,
+            shaders.fragment,
+            device,
+            layout.get(),
+            renderPass,
+            vertexInput,
+            swapchainExtent,
+            primitiveTopology,
+            dynamicStates
+        };
     }
 }

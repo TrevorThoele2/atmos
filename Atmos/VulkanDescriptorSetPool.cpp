@@ -5,7 +5,7 @@
 namespace Atmos::Render::Vulkan
 {
     DescriptorSetPool::DescriptorSetPool(const std::vector<Definition>& definitions, vk::Device device) :
-        definitions(definitions), device(device), descriptorSetLayout(CreateDescriptorSetLayout(definitions, device))
+        definitions(definitions), descriptorSetLayout(CreateDescriptorSetLayout(definitions, device)), device(device)
     {}
 
     std::vector<vk::DescriptorSet> DescriptorSetPool::Retrieve(uint32_t count)
@@ -55,7 +55,7 @@ namespace Atmos::Render::Vulkan
     {
         std::vector<vk::DescriptorPoolSize> poolSizes;
 
-        for(auto& definition : definitions)
+        for(const auto& definition : definitions)
         {
             vk::DescriptorPoolSize poolSize;
             poolSize.type = definition.type;

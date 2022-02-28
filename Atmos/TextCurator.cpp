@@ -72,7 +72,7 @@ namespace Atmos::Render
         Spatial::Point2D cameraTopLeft,
         const MainSurface& mainSurface)
     {
-        std::vector<Raster::Ordered<Raster::Text>> rasters;
+        std::vector<Raster::Prepared<Raster::Text>> rasters;
         rasters.reserve(matrices.size());
         for (auto& matrix : matrices)
         {
@@ -85,7 +85,7 @@ namespace Atmos::Render
         stagedRasters->texts.insert(stagedRasters->texts.end(), rasters.begin(), rasters.end());
     }
 
-    std::optional<Raster::Ordered<Raster::Text>> TextCurator::Raster(
+    std::optional<Raster::Prepared<Raster::Text>> TextCurator::Raster(
         Arca::RelicID id,
         const Matrix::ReferenceTuple& tuple,
         Spatial::Point2D cameraTopLeft,
@@ -96,7 +96,7 @@ namespace Atmos::Render
         const auto& bounds = *std::get<2>(tuple);
         const auto font = core.font.Get();
         const auto material = renderCore.material;
-        if (font && material && font->Resource())
+        if (font && material.script && font->Resource())
         {
             const auto boundsSpace = bounds.Space();
             const auto position = ToRenderPoint(bounds.Position(), cameraTopLeft, boundsSpace);
@@ -113,11 +113,11 @@ namespace Atmos::Render
                     .bold = core.bold,
                     .italics = core.italics,
                     .wrapWidth = core.wrapWidth,
-                    .surface = mainSurface.Resource(),
                     .position = ToPoint2D(position),
                     .rotation = bounds.Rotation(),
                     .scalers = bounds.Scalers()
                 },
+                mainSurface.Resource(),
                 Raster::Order
                 {
                     .space = Ordering(boundsSpace),

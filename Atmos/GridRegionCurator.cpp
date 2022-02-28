@@ -59,7 +59,7 @@ namespace Atmos::Render
     {
         const auto indices = octree.AllWithin(cameraBox);
 
-        std::vector<Raster::Ordered<Raster::Region>> rasters;
+        std::vector<Raster::Prepared<Raster::Region>> rasters;
         rasters.reserve(indices.size());
         for (auto& index : indices)
         {
@@ -72,13 +72,13 @@ namespace Atmos::Render
         stagedRasters->regions.insert(stagedRasters->regions.end(), rasters.begin(), rasters.end());
     }
 
-    std::optional<Raster::Ordered<Raster::Region>> GridRegionCurator::Raster(
+    std::optional<Raster::Prepared<Raster::Region>> GridRegionCurator::Raster(
         const GridRegion& value,
         Spatial::Point2D cameraTopLeft,
         const MainSurface& mainSurface)
     {
         const auto material = value.renderCore->material;
-        if (material && !value.points.empty())
+        if (material.script && !value.points.empty())
         {
             const auto points = std::vector<Spatial::Grid::Point>{ value.points.begin(), value.points.end() };
             auto mesh = ConvertToMesh(Triangulate(points));
@@ -96,9 +96,9 @@ namespace Atmos::Render
                 Raster::Region
                 {
                     .mesh = mesh,
-                    .surface = mainSurface.Resource(),
                     .material = material
                 },
+                mainSurface.Resource(),
                 Raster::Order
                 {
                     .space = Ordering(Spatial::Space::World),

@@ -18,21 +18,10 @@ namespace Atmos::Render
         const auto cameraPosition = Owner().Find<Camera>()->Position();
         
         const auto staged = MutablePointer().Of<Raster::Staged>();
-        RasterMap rasterMap;
-        Add(staged->images, rasterMap);
-        Add(staged->lines, rasterMap);
-        Add(staged->regions, rasterMap);
-        Add(staged->texts, rasterMap);
-        const auto allRasters = Raster::All
-        {
-            .images = staged->images,
-            .lines = staged->lines,
-            .regions = staged->regions,
-            .texts = staged->texts
-        };
-
+        const auto commands = Execute(Compose(*staged));
+        
         graphicsManager->DrawFrame(
-            allRasters,
+            commands,
             Spatial::Point2D
             {
                 Spatial::Point2D::Value(cameraPosition.x),
@@ -43,6 +32,11 @@ namespace Atmos::Render
         staged->lines = {};
         staged->regions = {};
         staged->texts = {};
+    }
+
+    void Curator::Handle(const Raster::RecordCommands& command)
+    {
+        recordedCommands.insert(recordedCommands.end(), command.commands.begin(), command.commands.end());
     }
 
     void Curator::Handle(const ChangeColor& command)
@@ -56,7 +50,7 @@ namespace Atmos::Render
         }
     }
 
-    void Curator::Handle(const ChangeMaterialAsset& command)
+    void Curator::Handle(const ChangeMaterial& command)
     {
         const auto renderCore = MutablePointer().Of<RenderCore>(command.id);
         if (renderCore)
@@ -68,5 +62,48 @@ namespace Atmos::Render
         const auto viewSlice = MutablePointer().Of<ViewSlice>(command.id);
         if (viewSlice)
             viewSlice->box = command.to;
+    }
+
+    auto Curator::Compose(const Raster::Staged& staged) -> RasterMap
+    {
+        RasterMap map;
+        const auto add = [&map](const auto& inputRasters, const auto rastersSelector)
+        {
+            for (auto& raster : inputRasters)
+                (FindRasters(raster, map).*rastersSelector).push_back(std::get<0>(raster));
+        };
+
+        add(staged.images, &Rasters::images);
+        add(staged.lines, &Rasters::lines);
+        add(staged.regions, &Rasters::regions);
+        add(staged.texts, &Rasters::texts);
+
+        return map;
+    }
+    
+    Raster::Commands Curator::Execute(const RasterMap& map)
+    {
+        Raster::Commands output;
+
+        for (auto& surfaceLayer : map)
+        {
+            const auto recordInto = output.emplace(surfaceLayer.first, std::vector<Raster::Command>{}).first;
+
+            for (auto& zLayer : surfaceLayer.second)
+            {
+                for (auto& scriptLayer : zLayer.second)
+                {
+                    // Need to hook this up to script input somehow
+                    // Likely will need the script to execute a function which returns this information
+                    scriptLayer.second.images
+
+                }
+            }
+
+            recordInto->second.insert(recordInto->second.end(), recordedCommands.begin(), recordedCommands.end());
+            recordedCommands = {};
+        }
+
+        return output;
     }
 }

@@ -6,7 +6,7 @@ namespace Atmos::Render
         Arca::RelicInit init,
         const Atmos::String& string,
         Arca::Index<Asset::Font> asset,
-        Arca::Index<Asset::Material> material,
+        const Render::Material& material,
         float wrapWidth,
         bool bold,
         bool italics,

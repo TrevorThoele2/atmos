@@ -26,7 +26,7 @@ namespace Atmos::Render::Vulkan
     class GraphicsManager final : public Render::GraphicsManager
     {
     public:
-        GraphicsManager(Logging::Logger& logger);
+        explicit GraphicsManager(Logging::Logger& logger);
         ~GraphicsManager();
 
         void SetFullscreen(bool set) override;
@@ -44,7 +44,7 @@ namespace Atmos::Render::Vulkan
         [[nodiscard]] std::unique_ptr<Resource::Surface> CreateSurfaceResourceImpl(
             void* window) override;
         
-        void DrawFrameImpl(const AllRenders& allRenders, const Spatial::Point2D& mapPosition) override;
+        void DrawFrameImpl(const Raster::Commands& commands, const Spatial::Point2D& mapPosition) override;
 
         void ResourceDestroyingImpl(Asset::Resource::Image& resource) override;
         void ResourceDestroyingImpl(Asset::Resource::Shader& resource) override;

@@ -5,7 +5,7 @@
 #include "RasterLine.h"
 #include "RasterRegion.h"
 #include "RasterText.h"
-#include "OrderedRaster.h"
+#include "PreparedRaster.h"
 
 namespace Atmos::Render::Raster
 {
@@ -13,7 +13,7 @@ namespace Atmos::Render::Raster
     {
     public:
         template<class T>
-        using Objects = std::vector<Ordered<T>>;
+        using Objects = std::vector<Prepared<T>>;
     public:
         Objects<Image> images;
         Objects<Text> texts;

@@ -4,10 +4,9 @@
 
 #include "GridRegion.h"
 #include "MoveGridRegion.h"
-#include "ChangeMaterialAsset.h"
 #include "FindGridRegionsByBox.h"
 #include "RasterRegion.h"
-#include "OrderedRaster.h"
+#include "PreparedRaster.h"
 
 #include "Octree.h"
 
@@ -30,7 +29,7 @@ namespace Atmos::Render
         using Index = Arca::Index<GridRegion>;
         Spatial::Grid::Octree<Arca::RelicID, Index> octree;
 
-        [[nodiscard]] std::optional<Raster::Ordered<Raster::Region>> Raster(
+        [[nodiscard]] std::optional<Raster::Prepared<Raster::Region>> Raster(
             const GridRegion& value,
             Spatial::Point2D cameraTopLeft,
             const MainSurface& mainSurface);

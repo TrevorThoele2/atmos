@@ -5,10 +5,9 @@
 #include "VulkanMemoryPool.h"
 #include "VulkanUniversalDataBuffer.h"
 
-#include "VulkanImageRenderer.h"
+#include "VulkanQuadRenderer.h"
 #include "VulkanLineRenderer.h"
 #include "VulkanRegionRenderer.h"
-#include "VulkanTextRenderer.h"
 
 #include "VulkanGlyphAtlas.h"
 
@@ -16,7 +15,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "AllRenders.h"
+#include "RasterCommand.h"
 #include "Size2D.h"
 #include "Point2D.h"
 
@@ -52,27 +51,22 @@ namespace Atmos::Render::Vulkan
             vk::Extent2D swapchainExtent);
     public:
         void DrawFrame(
-            const AllRenders& allRenders,
+            const std::vector<Render::Raster::Command>& commands,
             const Spatial::Size2D& screenSize,
             const Spatial::Point2D& mapPosition);
 
         void WaitForIdle() const;
-    public:
-        void OnMaterialDestroying(const Asset::Material& material);
     private:
         vk::Device device;
     private:
         size_t currentFrame = 0;
         size_t previousFrame = 1;
     private:
-        using IterableRenderers = std::vector<RendererBase*>;
-
         struct RendererGroup
         {
-            ImageRenderer image;
+            QuadRenderer quad;
             LineRenderer line;
             RegionRenderer region;
-            TextRenderer text;
 
             RendererGroup(
                 vk::Device device,
@@ -82,8 +76,6 @@ namespace Atmos::Render::Vulkan
                 vk::Extent2D swapchainExtent,
                 GlyphAtlas& glyphAtlas);
             RendererGroup(RendererGroup&& arg) noexcept = default;
-
-            [[nodiscard]] IterableRenderers AsIterable();
         };
         using RendererGroups = std::list<RendererGroup>;
         RendererGroups rendererGroups;
@@ -92,11 +84,15 @@ namespace Atmos::Render::Vulkan
         std::vector<vk::CommandBuffer> usedCommandBuffers;
 
         void Draw(
-            const AllRenders& allRenders,
+            const std::vector<Raster::Command>& commands,
             RendererGroup& rendererGroup,
             UniversalData universalData,
             vk::Framebuffer framebuffer,
             vk::CommandBuffer commandBuffer);
+
+        template<class DrawT>
+        [[nodiscard]] std::vector<DrawT> GroupDrawCommands(
+            std::vector<Raster::Command>::const_iterator& command, const std::vector<Raster::Command>& commands);
     private:
         vk::SwapchainKHR swapchain;
         vk::Extent2D swapchainExtent;
@@ -134,4 +130,17 @@ namespace Atmos::Render::Vulkan
     private:
         Logging::Logger* logger;
     };
+
+    template<class DrawT>
+    std::vector<DrawT> MasterRenderer::GroupDrawCommands(
+        std::vector<Raster::Command>::const_iterator& command, const std::vector<Raster::Command>& commands)
+    {
+        std::vector<DrawT> group;
+        while (command != commands.end() && std::holds_alternative<DrawT>(*command))
+        {
+            group.push_back(std::get<DrawT>(*command));
+            ++command;
+        }
+        return group;
+    }
 }

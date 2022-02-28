@@ -33,7 +33,7 @@ namespace Atmos::Render
     {
         const auto indices = worldOctree.AllWithin(cameraBox);
 
-        std::vector<std::tuple<Raster::Image, Raster::Order>> rasters;
+        std::vector<Raster::Prepared<Raster::Image>> rasters;
         rasters.reserve(indices.size() + screenList.size());
         for (auto& index : indices)
         {
@@ -102,7 +102,7 @@ namespace Atmos::Render
         return ids;
     }
     
-    std::optional<Raster::Ordered<Raster::Image>> ImageCurator::Raster(
+    std::optional<Raster::Prepared<Raster::Image>> ImageCurator::Raster(
         Arca::RelicID id,
         const Index::ReferenceValueT& value,
         Spatial::Point2D cameraTopLeft,
@@ -113,7 +113,7 @@ namespace Atmos::Render
         auto& bounds = *std::get<2>(value);
         const auto asset = core.asset.Get();
         const auto material = renderCore.material;
-        if (asset && material && asset->Resource())
+        if (asset && material.script && asset->Resource())
         {
             const auto boundsSpace = bounds.Space();
             const auto assetSlice = asset->Slice(core.assetIndex);
@@ -128,12 +128,12 @@ namespace Atmos::Render
                     .viewSlice = ViewSliceBox(Owner().Find<ViewSlice>(id)),
                     .material = material,
                     .color = renderCore.color,
-                    .surface = mainSurface.Resource(),
                     .position = ToPoint2D(position),
                     .size = assetSlice.size,
                     .rotation = bounds.Rotation(),
                     .scalers = bounds.Scalers()
                 },
+                mainSurface.Resource(),
                 Raster::Order
                 {
                     .space = Ordering(boundsSpace),

@@ -136,32 +136,12 @@ namespace Atmos::Render::Vulkan
         return CreateSurfaceResourceCommon(std::move(surface), *queueIndices, graphicsQueue, presentQueue);
     }
     
-    void GraphicsManager::DrawFrameImpl(const AllRenders& allRenders, const Spatial::Point2D& mapPosition)
+    void GraphicsManager::DrawFrameImpl(const Raster::Commands& commands, const Spatial::Point2D& mapPosition)
     {
         PruneResourcesImpl();
-
-        std::unordered_map<Resource::Vulkan::Surface*, AllRenders> surfaces;
-
-        const auto decomposeRenders = [&surfaces, &allRenders](auto rendersSelector)
-        {
-            for (auto& render : (allRenders.*rendersSelector))
-            {
-                auto& surface = RequiredResource<Resource::Vulkan::Surface>(*render.surface);
-                auto found = surfaces.find(&surface);
-                if (found == surfaces.end())
-                    found = surfaces.emplace(&surface, AllRenders{}).first;
-
-                (found->second.*rendersSelector).push_back(render);
-            }
-        };
-
-        decomposeRenders(&AllRenders::images);
-        decomposeRenders(&AllRenders::lines);
-        decomposeRenders(&AllRenders::regions);
-        decomposeRenders(&AllRenders::texts);
-
-        for(auto& surface : surfaces)
-            surface.first->backing->DrawFrame(surface.second, mapPosition);
+        
+        for(auto& surface : commands)
+            RequiredResource<Resource::Vulkan::Surface>(*surface.first).backing->DrawFrame(surface.second, mapPosition);
     }
 
     void GraphicsManager::ResourceDestroyingImpl(Asset::Resource::Image& resource)
@@ -235,7 +215,7 @@ namespace Atmos::Render::Vulkan
     
     vk::Instance GraphicsManager::CreateInstance()
     {
-        const vk::ApplicationInfo applicationInfo(nullptr, 0, nullptr, 0, VK_API_VERSION_1_2);
+        constexpr vk::ApplicationInfo applicationInfo(nullptr, 0, nullptr, 0, VK_API_VERSION_1_2);
 
         vk::InstanceCreateInfo createInfo(
             {},

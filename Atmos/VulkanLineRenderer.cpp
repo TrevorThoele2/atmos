@@ -36,100 +36,105 @@ namespace Atmos::Render::Vulkan
         graphicsQueue(graphicsQueue),
         device(device)
     {}
-    
-    std::unique_ptr<Raster> LineRenderer::Start(
-        const AllRenders& allRenders,
-        vk::CommandBuffer drawCommandBuffer,
-        const UniversalDataBuffer& universalDataBuffer)
+
+    void LineRenderer::Start()
     {
-        auto raster = std::make_unique<Raster>(*this);
+        totalVertexCount = 0;
+    }
+
+    std::optional<RendererPass> LineRenderer::Draw(
+        const std::vector<Raster::DrawLine>& draws, const UniversalDataBuffer& universalDataBuffer)
+    {
+        if (draws.empty())
+            return {};
+
+        struct Group
+        {
+            LineWidth width = 0;
+            Shaders shaders;
+            std::vector<Line> lines = {};
+            size_t vertexCount = 0;
+        };
+
+        std::vector<Group> groups;
+        auto currentGroup = &groups.emplace_back(
+            draws.begin()->width,
+            draws.begin()->shaders,
+            std::vector<Line> {},
+            0);
+        for (auto& draw : draws)
+        {
+            if (draw.width != currentGroup->width || draw.shaders != currentGroup->shaders)
+            {
+                currentGroup = &groups.emplace_back(
+                    draw.width,
+                    draw.shaders,
+                    std::vector<Line>{},
+                    0);
+            }
+
+            std::vector<Vertex> points;
+            for (auto& point : draw.points)
+            {
+                const auto color = ToVulkanColor(draw.color);
+                points.push_back(Vertex{ color, { point.x, point.y } });
+            }
+            
+            currentGroup->lines.push_back(Line{ points });
+            currentGroup->vertexCount += points.size();
+        }
 
         auto& descriptorSetPool = NextDescriptorSetPool();
-        raster->setupDescriptorSet = descriptorSetPool.Retrieve(1)[0];
+        const auto descriptorSet = descriptorSetPool.Retrieve(1)[0];
 
-        universalDataBuffer.Update(raster->setupDescriptorSet);
-
-        for (auto& render : allRenders.lines)
+        return RendererPass
         {
-            mappedConduits.Add(*render.material);
-            AddToRaster(render, *raster);
-        }
-
-        if (!raster->layers.Empty())
-        {
-            raster->currentLayer = raster->layers.begin();
-            return raster;
-        }
-        else
-            return {};
-    }
-
-    void LineRenderer::MaterialDestroying(const Asset::Material& material)
-    {
-        mappedConduits.Remove(material);
-    }
-
-    LineRenderer::Line::Line(const std::vector<Vertex>& points) : vertices(points)
-    {}
-
-    LineRenderer::Raster::Raster(LineRenderer& renderer) : renderer(&renderer)
-    {}
-
-    auto LineRenderer::Raster::NextPasses() -> std::vector<Pass>
-    {
-        const auto& layer = currentLayer->second;
-        auto passes = NextPasses(layer);
-        ++currentLayer;
-        return passes;
-    }
-
-    bool LineRenderer::Raster::IsDone() const
-    {
-        return currentLayer == layers.end();
-    }
-
-    ObjectLayeringKey LineRenderer::Raster::NextLayer() const
-    {
-        return currentLayer->first;
-    }
-
-    auto LineRenderer::Raster::NextPasses(const Layer& layer) -> std::vector<Pass>
-    {
-        std::vector<Pass> passes;
-        for (auto& materialGroup : layer.materialGroups)
-        {
-            const auto conduitGroup = renderer->mappedConduits.For(*materialGroup.first);
-            if (conduitGroup)
+            Command
             {
-                const auto nextPasses = NextPasses(materialGroup.second, *conduitGroup);
-                passes.insert(passes.end(), nextPasses.begin(), nextPasses.end());
-            }
-        }
-        return passes;
-    }
+                [this, groups, descriptorSet, &universalDataBuffer](CommandRecorder record)
+                {
+                    auto drawnVertices = 0;
 
-    auto LineRenderer::Raster::NextPasses(const Layer::MaterialGroup& materialGroup, MappedConduits::Group& conduitGroup) -> std::vector<Pass>
-    {
-        std::vector<Pass> passes;
-        for (auto& conduit : conduitGroup)
-        {
-            for (auto& value : materialGroup.values)
+                    size_t i = 0;
+                    for (auto& group : groups)
+                    {
+                        universalDataBuffer.Update(descriptorSet);
+
+                        record(WriteData(group.lines, totalVertexCount + drawnVertices));
+                        
+                        drawnVertices += group.vertexCount;
+                        ++i;
+                    }
+                }
+            },
+            Command
             {
-                const auto startVertexCount = totalVertexCount;
-                const auto lines = value.second;
-                std::uint32_t currentVertexCount = 0;
-                for (auto& line : lines)
-                    currentVertexCount += line.vertices.size();
-                passes.emplace_back(
-                    WriteData(value.second, startVertexCount),
-                    Draw(startVertexCount, currentVertexCount, conduit, value.first));
-                totalVertexCount += currentVertexCount;
-            }
-        }
-        return passes;
-    }
+                [this, groups, descriptorSet](CommandRecorder record)
+                {
+                    auto drawnVertices = 0;
 
-    Command LineRenderer::Raster::WriteData(const std::vector<Line>& lines, std::uint32_t startVertexCount)
+                    size_t i = 0;
+                    for (auto& group : groups)
+                    {
+                        record(Draw(
+                            group.vertexCount,
+                            totalVertexCount + drawnVertices,
+                            mappedConduits.For(group.shaders),
+                            group.width,
+                            descriptorSet));
+                        
+                        drawnVertices += group.vertexCount;
+                        ++i;
+                    }
+
+                    totalVertexCount += drawnVertices;
+                }
+            }
+        };
+    }
+    
+    Command LineRenderer::WriteData(
+        const std::vector<Line>& lines, std::uint32_t startVertexCount)
     {
         std::vector<Vertex> verticesToDraw;
         for (auto& line : lines)
@@ -141,31 +146,32 @@ namespace Atmos::Render::Vulkan
         const auto vertexOffset = vk::DeviceSize(startVertexCount) * sizeof Vertex;
         const auto vertexSize = verticesToDraw.size() * sizeof Vertex;
 
-        renderer->vertexBuffer.PushSourceBytes(verticesToDraw.data(), vertexOffset, vertexSize);
+        vertexBuffer.PushSourceBytes(verticesToDraw.data(), vertexOffset, vertexSize);
 
         return [this, vertexOffset, vertexSize](CommandRecorder record)
         {
-            record(renderer->vertexBuffer.CopyFromSourceToDestination(vertexOffset, vertexSize));
+            record(vertexBuffer.CopyFromSourceToDestination(vertexOffset, vertexSize));
         };
     }
-    
-	Command LineRenderer::Raster::Draw(std::uint32_t startVertexCount, std::uint32_t vertexCount, Conduit& conduit, LineWidth lineWidth)
+
+    Command LineRenderer::Draw(
+        std::uint32_t vertexCount, std::uint32_t startVertexCount, Conduit& conduit, LineWidth lineWidth, vk::DescriptorSet descriptorSet)
     {
-        return [this, startVertexCount, vertexCount, &conduit, lineWidth](CommandRecorder record)
+        return [this, startVertexCount, vertexCount, &conduit, lineWidth, descriptorSet](CommandRecorder record)
         {
             record(conduit.Bind());
-            record([this, startVertexCount, vertexCount, &conduit, lineWidth](vk::CommandBuffer commandBuffer)
+            record([this, startVertexCount, vertexCount, &conduit, lineWidth, descriptorSet](vk::CommandBuffer commandBuffer)
                 {
-                    const vk::Buffer vertexBuffers[] = { renderer->vertexBuffer.destination.Value() };
+                    const vk::Buffer vertexBuffers[] = { vertexBuffer.destination.Value() };
                     constexpr vk::DeviceSize offsets[] = { 0 };
                     commandBuffer.bindVertexBuffers(0, 1, vertexBuffers, offsets);
 
                     commandBuffer.bindDescriptorSets(
                         vk::PipelineBindPoint::eGraphics,
-                        renderer->mappedConduits.PipelineLayout(),
+                        mappedConduits.PipelineLayout(),
                         0,
                         1,
-                        &setupDescriptorSet,
+                        &descriptorSet,
                         0,
                         nullptr);
 
@@ -176,33 +182,13 @@ namespace Atmos::Render::Vulkan
         };
     }
 
-    void LineRenderer::AddToRaster(const RenderLine& lineRender, Raster& raster)
-    {
-        if (!lineRender.points.empty())
-        {
-            std::vector<Vertex> points;
-            for (auto& point : lineRender.points)
-            {
-                const auto color = ToVulkanColor(lineRender.color);
-                points.push_back(Vertex{ color, { point.x, point.y } });
-            }
-
-            const auto key = ObjectLayeringKey{ lineRender.space, lineRender.z };
-            auto layer = raster.layers.Find(key);
-            if (!layer)
-                layer = &raster.layers.Add(key, Raster::Layer{});
-            auto& group = layer->GroupFor(*lineRender.material);
-            group.ListFor(lineRender.width).emplace_back(points);
-        }
-    }
-
     std::vector<DescriptorSetPool> LineRenderer::CreateDescriptorSetPools(vk::Device device)
     {
         std::vector<DescriptorSetPool> pools;
         for (size_t i = 0; i < maxFramesInFlight; ++i)
         {
             pools.emplace_back(
-                std::vector<DescriptorSetPool::Definition>
+                std::vector
                 {
                     DescriptorSetPool::Definition
                     {

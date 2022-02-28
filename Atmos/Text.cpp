@@ -12,7 +12,7 @@ namespace Atmos::Render
         return core->font;
     }
 
-    Arca::Index<Asset::Material> Text::Material() const
+    Material Text::Material() const
     {
         return renderCore->material;
     }
@@ -71,7 +71,7 @@ namespace Atmos::Render
         Arca::RelicInit init,
         const Atmos::String& string,
         Arca::Index<Asset::Font> font,
-        Arca::Index<Asset::Material> material,
+        const Render::Material& material,
         float wrapWidth,
         bool bold,
         bool italics,
@@ -85,7 +85,7 @@ namespace Atmos::Render
     {
         renderCore = init.Create<RenderCore>(material, color);
         core = init.Create<TextCore>(string, font, wrapWidth, bold, italics);
-        const auto baseSize = Spatial::Size2D{ 0, 0 };
+        constexpr auto baseSize = Spatial::Size2D{ 0, 0 };
         bounds = init.Create<BoundsT>(boundsSpace, position, baseSize, scalers, rotation);
     }
 

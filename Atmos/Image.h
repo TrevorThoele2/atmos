@@ -5,6 +5,7 @@
 #include "RenderCore.h"
 #include "ImageCore.h"
 #include "Bounds.h"
+#include "Material.h"
 
 #include "Point3D.h"
 #include "Angle2D.h"
@@ -22,9 +23,9 @@ namespace Atmos::Render
         [[nodiscard]] Arca::Index<Asset::Image> Asset() const;
         [[nodiscard]] Index AssetIndex() const;
         [[nodiscard]] Spatial::AxisAlignedBox2D AssetSlice() const;
-        [[nodiscard]] Arca::Index<Asset::Material> Material() const;
+        [[nodiscard]] Material Material() const;
 
-        [[nodiscard]] Render::Color Color() const;
+        [[nodiscard]] Color Color() const;
 
         [[nodiscard]] Spatial::Point3D Position() const;
         [[nodiscard]] Spatial::Scalers2D Scalers() const;
@@ -38,7 +39,7 @@ namespace Atmos::Render
             Arca::RelicInit init,
             Arca::Index<Asset::Image> asset,
             ImageCore::Index assetIndex,
-            Arca::Index<Asset::Material> material,
+            const Render::Material& material,
             const Render::Color& color,
             const Spatial::Point3D& position,
             const Spatial::Scalers2D& scalers,
@@ -72,7 +73,7 @@ namespace Atmos::Render
     }
 
     template<bool mutableBounds>
-    Arca::Index<Asset::Material> Image<mutableBounds>::Material() const
+    Material Image<mutableBounds>::Material() const
     {
         return renderCore->material;
     }
@@ -124,7 +125,7 @@ namespace Atmos::Render
         Arca::RelicInit init,
         Arca::Index<Asset::Image> asset,
         ImageCore::Index assetIndex,
-        Arca::Index<Asset::Material> material,
+        const Render::Material& material,
         const Render::Color& color,
         const Spatial::Point3D& position,
         const Spatial::Scalers2D& scalers,

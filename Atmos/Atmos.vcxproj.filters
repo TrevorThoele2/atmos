@@ -48,9 +48,6 @@
     <Filter Include="Header Files\Assets">
       <UniqueIdentifier>{158161a2-a3fb-4b88-96e3-24663ac25821}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Assets\Material">
-      <UniqueIdentifier>{98092466-b7ad-4a17-bd38-072c4078fa75}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Assets\Audio">
       <UniqueIdentifier>{abf3f60e-a301-47d7-8391-d7398d4a6743}</UniqueIdentifier>
     </Filter>
@@ -65,9 +62,6 @@
     </Filter>
     <Filter Include="Source Files\Assets">
       <UniqueIdentifier>{84d21b76-f4c9-4c71-827f-9e3e8af80664}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Assets\Material">
-      <UniqueIdentifier>{36f8aff9-b4d8-48e5-969a-63374752e155}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Assets\Image">
       <UniqueIdentifier>{aa05f55d-413e-4708-b2dd-dc657ea531ec}</UniqueIdentifier>
@@ -275,12 +269,6 @@
     </Filter>
     <Filter Include="Source Files\Render\Vulkan\Conduit">
       <UniqueIdentifier>{a14c3d49-baeb-4249-9379-6b6158295ede}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Render\Vulkan\Renderer\Layering">
-      <UniqueIdentifier>{ea369583-c431-49b1-b4f7-91e77fb04d4b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Render\Vulkan\Renderer\Layering">
-      <UniqueIdentifier>{46a4990e-f978-4a78-bd32-455486b667bf}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Render\Commands">
       <UniqueIdentifier>{81e9891d-c340-4ef6-bdf8-cca471ae9d75}</UniqueIdentifier>
@@ -668,9 +656,6 @@
     <ClInclude Include="WindowBase.h">
       <Filter>Header Files\Window</Filter>
     </ClInclude>
-    <ClInclude Include="MaterialAsset.h">
-      <Filter>Header Files\Assets\Material</Filter>
-    </ClInclude>
     <ClInclude Include="AudioManager.h">
       <Filter>Header Files\Audio</Filter>
     </ClInclude>
@@ -959,7 +944,7 @@
     <ClInclude Include="VulkanLineRenderer.h">
       <Filter>Header Files\Render\Vulkan\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="VulkanImageRenderer.h">
+    <ClInclude Include="VulkanQuadRenderer.h">
       <Filter>Header Files\Render\Vulkan\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="AudioAssetResource.h">
@@ -1003,9 +988,6 @@
     </ClInclude>
     <ClInclude Include="VulkanRegionRenderer.h">
       <Filter>Header Files\Render\Vulkan\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="VulkanObjectLayering.h">
-      <Filter>Header Files\Render\Vulkan\Renderer\Layering</Filter>
     </ClInclude>
     <ClInclude Include="VulkanMasterRenderer.h">
       <Filter>Header Files\Render\Vulkan\Renderer</Filter>
@@ -1051,12 +1033,6 @@
     </ClInclude>
     <ClInclude Include="VulkanDescriptorSetPool.h">
       <Filter>Header Files\Render\Vulkan\Descriptors</Filter>
-    </ClInclude>
-    <ClInclude Include="VulkanLayer.h">
-      <Filter>Header Files\Render\Vulkan\Renderer\Layering</Filter>
-    </ClInclude>
-    <ClInclude Include="VulkanRendererBase.h">
-      <Filter>Header Files\Render\Vulkan\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="VulkanMappedConduits.h">
       <Filter>Header Files\Render\Vulkan\Conduit</Filter>
@@ -1211,9 +1187,6 @@
     <ClInclude Include="CompileScript.h">
       <Filter>Header Files\Scripting\Commands</Filter>
     </ClInclude>
-    <ClInclude Include="SuspendScript.h">
-      <Filter>Header Files\Scripting\Commands</Filter>
-    </ClInclude>
     <ClInclude Include="CurrentExecutingScript.h">
       <Filter>Header Files\Scripting</Filter>
     </ClInclude>
@@ -1235,10 +1208,7 @@
     <ClInclude Include="ExecuteScript.h">
       <Filter>Header Files\Scripting\Commands</Filter>
     </ClInclude>
-    <ClInclude Include="MaterialAssetPass.h">
-      <Filter>Header Files\Assets\Material</Filter>
-    </ClInclude>
-    <ClInclude Include="ChangeMaterialAsset.h">
+    <ClInclude Include="ChangeMaterial.h">
       <Filter>Header Files\Render\Commands</Filter>
     </ClInclude>
     <ClInclude Include="ChangeColor.h">
@@ -1508,9 +1478,6 @@
     <ClInclude Include="TextCore.h">
       <Filter>Header Files\Render\Text</Filter>
     </ClInclude>
-    <ClInclude Include="MaterialAssetCurator.h">
-      <Filter>Header Files\Assets\Material</Filter>
-    </ClInclude>
     <ClInclude Include="RenderCore.h">
       <Filter>Header Files\Render</Filter>
     </ClInclude>
@@ -1625,11 +1592,8 @@
     <ClInclude Include="SDLTextError.h">
       <Filter>Header Files\Render\Text\SDL</Filter>
     </ClInclude>
-    <ClInclude Include="VulkanTextured.h">
+    <ClInclude Include="VulkanQuad.h">
       <Filter>Header Files\Render\Vulkan</Filter>
-    </ClInclude>
-    <ClInclude Include="VulkanTextRenderer.h">
-      <Filter>Header Files\Render\Vulkan\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="Glyph.h">
       <Filter>Header Files\Render\Text</Filter>
@@ -2093,7 +2057,7 @@
     <ClInclude Include="RasterOrder.h">
       <Filter>Header Files\Render\Raster</Filter>
     </ClInclude>
-    <ClInclude Include="OrderedRaster.h">
+    <ClInclude Include="PreparedRaster.h">
       <Filter>Header Files\Render\Raster</Filter>
     </ClInclude>
     <ClInclude Include="StagedRasters.h">
@@ -2116,6 +2080,18 @@
     </ClInclude>
     <ClInclude Include="RasterCommand.h">
       <Filter>Header Files\Render\Raster</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="RecordRasterCommands.h">
+      <Filter>Header Files\Render\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="RasterCommands.h">
+      <Filter>Header Files\Render\Raster</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanRendererPass.h">
+      <Filter>Header Files\Render\Vulkan\Renderer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2160,9 +2136,6 @@
     </ClCompile>
     <ClCompile Include="WindowBase.cpp">
       <Filter>Source Files\Window</Filter>
-    </ClCompile>
-    <ClCompile Include="MaterialAsset.cpp">
-      <Filter>Source Files\Assets\Material</Filter>
     </ClCompile>
     <ClCompile Include="AudioManager.cpp">
       <Filter>Source Files\Audio</Filter>
@@ -2332,7 +2305,7 @@
     <ClCompile Include="VulkanLineRenderer.cpp">
       <Filter>Source Files\Render\Vulkan\Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="VulkanImageRenderer.cpp">
+    <ClCompile Include="VulkanQuadRenderer.cpp">
       <Filter>Source Files\Render\Vulkan\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="ImageAssetResource.cpp">
@@ -2385,9 +2358,6 @@
     </ClCompile>
     <ClCompile Include="VulkanDescriptorSetPool.cpp">
       <Filter>Source Files\Render\Vulkan\Descriptors</Filter>
-    </ClCompile>
-    <ClCompile Include="VulkanRendererBase.cpp">
-      <Filter>Source Files\Render\Vulkan\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="VulkanCommandBufferPool.cpp">
       <Filter>Source Files\Render\Vulkan\Commands</Filter>
@@ -2499,9 +2469,6 @@
     </ClCompile>
     <ClCompile Include="LoadAssetsUserContext.cpp">
       <Filter>Source Files\Assets</Filter>
-    </ClCompile>
-    <ClCompile Include="MaterialAssetPass.cpp">
-      <Filter>Source Files\Assets\Material</Filter>
     </ClCompile>
     <ClCompile Include="SDLWindow.cpp">
       <Filter>Source Files\Window</Filter>
@@ -2665,9 +2632,6 @@
     <ClCompile Include="RenderCore.cpp">
       <Filter>Source Files\Render</Filter>
     </ClCompile>
-    <ClCompile Include="VulkanObjectLayering.cpp">
-      <Filter>Source Files\Render\Vulkan\Renderer\Layering</Filter>
-    </ClCompile>
     <ClCompile Include="Text.cpp">
       <Filter>Source Files\Render\Text</Filter>
     </ClCompile>
@@ -2731,11 +2695,8 @@
     <ClCompile Include="SDLTextError.cpp">
       <Filter>Source Files\Render\Text\SDL</Filter>
     </ClCompile>
-    <ClCompile Include="VulkanTextured.cpp">
+    <ClCompile Include="VulkanQuad.cpp">
       <Filter>Source Files\Render\Vulkan</Filter>
-    </ClCompile>
-    <ClCompile Include="VulkanTextRenderer.cpp">
-      <Filter>Source Files\Render\Vulkan\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="GlyphAlgorithms.cpp">
       <Filter>Source Files\Render\Text</Filter>
@@ -3136,11 +3097,14 @@
     <ClCompile Include="BoundsCurator.cpp">
       <Filter>Source Files\Spatial\Arca</Filter>
     </ClCompile>
-    <ClCompile Include="Space.cpp">
-      <Filter>Source Files\Spatial\Data</Filter>
-    </ClCompile>
     <ClCompile Include="RasterOrder.cpp">
       <Filter>Source Files\Render\Raster</Filter>
+    </ClCompile>
+    <ClCompile Include="Material.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Shaders.cpp">
+      <Filter>Source Files\Render</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

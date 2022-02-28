@@ -57,7 +57,7 @@ namespace Atmos::Render
     {
         const auto indices = octree.AllWithin(cameraBox);
 
-        std::vector<Raster::Ordered<Raster::Line>> rasters;
+        std::vector<Raster::Prepared<Raster::Line>> rasters;
         rasters.reserve(indices.size());
         for (auto& index : indices)
         {
@@ -70,13 +70,13 @@ namespace Atmos::Render
         stagedRasters->lines.insert(stagedRasters->lines.end(), rasters.begin(), rasters.end());
     }
 
-    std::optional<Raster::Ordered<Raster::Line>> LineCurator::Raster(
+    std::optional<Raster::Prepared<Raster::Line>> LineCurator::Raster(
         const Line& value,
         Spatial::Point2D cameraTopLeft,
         const MainSurface& mainSurface)
     {
         const auto material = value.renderCore->material;
-        if (material)
+        if (material.script)
         {
             std::vector<Spatial::Point2D> adjustedPoints;
             for (auto& point : value.points)
@@ -89,9 +89,9 @@ namespace Atmos::Render
                     .points = adjustedPoints,
                     .material = material,
                     .width = value.width,
-                    .color = value.renderCore->color,
-                    .surface = mainSurface.Resource()
+                    .color = value.renderCore->color
                 },
+                mainSurface.Resource(),
                 Raster::Order
                 {
                     .space = Ordering(Spatial::Space::World),

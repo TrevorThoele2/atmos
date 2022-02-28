@@ -88,14 +88,14 @@ namespace Atmos::Asset
     template<class RealResourceT>
     RealResourceT* AssetWithResource<AssetData>::ResourceAs()
     {
-        return static_cast<RealResourceT*>(resource.get());
+        return dynamic_cast<RealResourceT*>(resource.get());
     }
 
     template<class AssetData>
     template<class RealResourceT>
     const RealResourceT* AssetWithResource<AssetData>::ResourceAs() const
     {
-        return static_cast<RealResourceT*>(resource.get());
+        return dynamic_cast<RealResourceT*>(resource.get());
     }
 
     template<class AssetData>

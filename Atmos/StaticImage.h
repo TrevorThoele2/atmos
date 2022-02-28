@@ -13,7 +13,7 @@ namespace Atmos::Render
             Arca::RelicInit init,
             Arca::Index<Asset::Image> asset,
             ImageCore::Index assetIndex,
-            Arca::Index<Asset::Material> material,
+            const Render::Material& material,
             const Render::Color& color,
             const Spatial::Point3D& position,
             const Spatial::Scalers2D& scalers,

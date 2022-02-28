@@ -44,7 +44,7 @@ namespace Atmos::Asset
 namespace Arca
 {
     bool Traits<Atmos::Asset::Script>::ShouldCreate(
-        Reliquary& reliquary, const Atmos::Name& name, const ::Atmos::Asset::Script::ResourcePtr& data)
+        Reliquary& reliquary, const Atmos::Name& name, const Atmos::Asset::Script::ResourcePtr&)
     {
         return Atmos::Asset::ShouldCreate<Atmos::Asset::Script>(reliquary, name);
     }

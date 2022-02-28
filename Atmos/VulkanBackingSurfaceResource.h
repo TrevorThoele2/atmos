@@ -5,7 +5,7 @@
 
 #include "VulkanQueueFamilyIndices.h"
 #include "VulkanSwapchainSupport.h"
-#include "AllRenders.h"
+#include "RasterCommand.h"
 
 namespace Atmos::Render::Resource::Vulkan
 {
@@ -29,10 +29,8 @@ namespace Atmos::Render::Resource::Vulkan
 
         void Reinitialize(QueueFamilyIndices queueFamilyIndices);
         
-        void DrawFrame(const AllRenders& allRenders, const Spatial::Point2D& mapPosition);
-
-        void OnMaterialDestroying(const Asset::Material& material);
-
+        void DrawFrame(const std::vector<Raster::Command>& commands, const Spatial::Point2D& mapPosition);
+        
         void WaitForIdle() const;
 
         [[nodiscard]] Spatial::Size2D Size() const;

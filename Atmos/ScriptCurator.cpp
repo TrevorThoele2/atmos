@@ -30,23 +30,13 @@ namespace Atmos::Scripting
         auto stopwatch = Time::CreateRealStopwatch();
 
         const auto currentExecutingScript = MutablePointer().Of<CurrentExecutingScript>();
-        const auto runningScripts = ScriptsToRunning(Owner().Batch<Script>());
+        const auto runningScripts = RunningScripts(Owner().Batch<Script>());
         for (auto& element : runningScripts)
             DoExecute(element.id, *currentExecutingScript);
 
         MutablePointer().Of<Diagnostics::Statistics>()->script.NewTime(stopwatch);
     }
-
-    void Curator::Handle(const Suspend& command)
-    {
-        const auto script = MutablePointer().Of(command.script);
-        if (script && !script->isSuspended)
-        {
-            script->isSuspended = true;
-            script->Resource()->Suspend();
-        }
-    }
-
+    
     std::vector<CompiledModule> Curator::Handle(const Compile& command)
     {
         return manager->Compile(command.modules);
@@ -70,7 +60,7 @@ namespace Atmos::Scripting
 
     Curator::RunningScript::RunningScript(const RunningScript& arg) = default;
 
-    auto Curator::ScriptsToRunning(Arca::Batch<Script> batch) -> std::vector<RunningScript>
+    auto Curator::RunningScripts(const Arca::Batch<Script>& batch) -> std::vector<RunningScript>
     {
         std::vector<RunningScript> runningScripts;
         runningScripts.reserve(batch.Size());
@@ -99,7 +89,7 @@ namespace Atmos::Scripting
         }
 
         std::optional<Result> result;
-
+        
         if (script->isSuspended)
         {
             script->isSuspended = false;
@@ -113,6 +103,8 @@ namespace Atmos::Scripting
             Owner().Raise(Finished{ Owner().Find<Script>(id), *result });
             Owner().Do(Arca::Destroy<Script>(id));
         }
+        else
+            script->isSuspended = true;
 
         currentExecutingScript.id = Arca::nullRelicID;
 

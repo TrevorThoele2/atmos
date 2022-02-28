@@ -5,23 +5,24 @@
 #include "Scalers2D.h"
 #include "AxisAlignedBox2D.h"
 #include "Color.h"
-#include "MaterialAsset.h"
 #include "SurfaceResource.h"
 #include "FontAssetResource.h"
+
+#undef DrawText;
 
 namespace Atmos::Render::Raster
 {
     struct DrawText
     {
+        Shaders shaders;
+        Resource::Surface* surface = nullptr;
         String string;
         Asset::Resource::Font* fontResource = nullptr;
         Spatial::AxisAlignedBox2D viewSlice;
-        const Asset::Material* material = nullptr;
         Color color;
         bool bold = false;
         bool italics = false;
         float wrapWidth = 0;
-        Resource::Surface* surface = nullptr;
 
         Spatial::Point2D position;
         Spatial::Angle2D rotation = 0;

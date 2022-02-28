@@ -26,11 +26,6 @@ namespace Atmos::Scripting::JavaScript
         return DoExecute();
     }
 
-    void ScriptResource::Suspend()
-    {
-
-    }
-
     std::optional<Result> ScriptResource::DoExecute()
     {
     	return module.lock()->Execute(parameters, executeFunctionName);

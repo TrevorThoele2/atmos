@@ -13,7 +13,7 @@
 #include "ViewSlice.h"
 #include "BoundsChanged.h"
 #include "RasterImage.h"
-#include "OrderedRaster.h"
+#include "PreparedRaster.h"
 
 #include <Arca/All.h>
 #include <Arca/Either.h>
@@ -40,7 +40,7 @@ namespace Atmos::Render
 
         std::vector<Arca::Index<Matrix>> screenList;
         
-        [[nodiscard]] std::optional<Raster::Ordered<Raster::Image>> Raster(
+        [[nodiscard]] std::optional<Raster::Prepared<Raster::Image>> Raster(
             Arca::RelicID id,
             const Index::ReferenceValueT& value,
             Spatial::Point2D cameraTopLeft,

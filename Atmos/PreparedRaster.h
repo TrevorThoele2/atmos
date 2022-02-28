@@ -2,9 +2,10 @@
 
 #include <tuple>
 #include "RasterOrder.h"
+#include "SurfaceResource.h"
 
 namespace Atmos::Render::Raster
 {
     template<class T>
-    using Ordered = std::tuple<T, Order>;
+    using Prepared = std::tuple<T, Resource::Surface*, Order>;
 }

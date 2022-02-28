@@ -4,15 +4,18 @@
 #include <Arca/Curator.h>
 
 #include "Work.h"
+#include "RecordRasterCommands.h"
 #include "ChangeColor.h"
-#include "ChangeMaterialAsset.h"
+#include "ChangeMaterial.h"
 #include "ChangeViewSlice.h"
 
 #include "RasterImage.h"
 #include "RasterLine.h"
 #include "RasterRegion.h"
 #include "RasterText.h"
-#include "OrderedRaster.h"
+#include "PreparedRaster.h"
+#include "StagedRasters.h"
+#include "RasterCommands.h"
 
 namespace Atmos::Render
 {
@@ -24,43 +27,50 @@ namespace Atmos::Render
         explicit Curator(Init init, GraphicsManager& graphicsManager);
 
         void Handle(const Work& command);
+        void Handle(const Raster::RecordCommands& command);
         void Handle(const ChangeColor& command);
-        void Handle(const ChangeMaterialAsset& command);
+        void Handle(const ChangeMaterial& command);
         void Handle(const ChangeViewSlice& command);
     private:
         GraphicsManager* graphicsManager;
     private:
         struct Rasters
         {
-            std::vector<Raster::Image> images;
-            std::vector<Raster::Line> lines;
-            std::vector<Raster::Region> regions;
-            std::vector<Raster::Text> texts;
+            std::vector<Raster::Image> images = {};
+            std::vector<Raster::Line> lines = {};
+            std::vector<Raster::Region> regions = {};
+            std::vector<Raster::Text> texts = {};
         };
 
-        using RasterMap = std::map<Raster::Order, Rasters>;
+        using RasterMap = std::map<Resource::Surface*, std::map<Raster::Order, std::map<Asset::Script*, Rasters>>>;
 
+        std::vector<Raster::Command> recordedCommands = {};
+
+        [[nodiscard]] static RasterMap Compose(const Raster::Staged& staged);
+        [[nodiscard]] Raster::Commands Execute(const RasterMap& map);
         template<class T>
-        void Add(const std::vector<Raster::Ordered<T>>& orderedRasters, RasterMap& map);
-        template<class T>
-        void Add(const Raster::Ordered<T>& orderedRaster, RasterMap& map);
+        [[nodiscard]] static Rasters& FindRasters(const Raster::Prepared<T>& preparedRaster, RasterMap& map);
     };
-
+    
     template<class T>
-    void Curator::Add(const std::vector<Raster::Ordered<T>>& orderedRasters, RasterMap& map)
+    auto Curator::FindRasters(const Raster::Prepared<T>& preparedRaster, RasterMap& map) -> Rasters&
     {
-        for (auto& orderedRaster : orderedRasters)
-            Add(orderedRaster, map);
-    }
+        const auto [raster, surface, order] = preparedRaster;
 
-    template<class T>
-    void Curator::Add(const Raster::Ordered<T>& orderedRaster, RasterMap& map)
-    {
-        const auto found = map.find(orderedRaster.order);
-        if (found == map.end())
-            found = map.emplace(orderedRaster.order, {});
+        const auto surfaceLayer = map.find(surface);
+        if (surfaceLayer == map.end())
+            surfaceLayer = map.emplace(surface);
+            
+        const auto zLayer = surfaceLayer->second.find(order);
+        if (zLayer == surfaceLayer->second.end())
+            zLayer = surfaceLayer->second.emplace(order, {});
 
-        found->second.push_back(orderedRaster.raster);
+        const auto script = raster.material.script;
+        const auto scriptLayer = zLayer->second.find(script);
+        if (scriptLayer == zLayer->second.end())
+            scriptLayer = map.emplace(script, {});
+
+        return scriptLayer->second;
     }
 }
 
@@ -73,8 +83,9 @@ namespace Arca
         static const inline TypeName typeName = "Atmos::Render::Curator";
         using HandledCommands = HandledCommands<
             Atmos::Work,
+            Atmos::Render::Raster::RecordCommands,
             Atmos::Render::ChangeColor,
-            Atmos::Render::ChangeMaterialAsset,
+            Atmos::Render::ChangeMaterial,
             Atmos::Render::ChangeViewSlice>;
     };
 }

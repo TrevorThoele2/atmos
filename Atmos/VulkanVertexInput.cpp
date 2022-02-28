@@ -12,11 +12,13 @@ namespace Atmos::Render::Vulkan
 
     vk::PipelineVertexInputStateCreateInfo VertexInput::PipelineCreateInfo()
     {
-        return vk::PipelineVertexInputStateCreateInfo(
+        return
+        {
             {},
             1,
             &description,
             attributes.size(),
-            attributes.data());
+            attributes.data()
+        };
     }
 }

@@ -21,9 +21,9 @@ namespace Atmos::Render::Vulkan
     {
         std::vector<vk::PipelineShaderStageCreateInfo> shaderStages;
         if (vertexShader)
-            shaderStages.push_back(ShaderStageCreateInfo(*vertexShader, vk::ShaderStageFlagBits::eVertex));
+            shaderStages.push_back(CreateInfo(*vertexShader, vk::ShaderStageFlagBits::eVertex));
         if (fragmentShader)
-            shaderStages.push_back(ShaderStageCreateInfo(*fragmentShader, vk::ShaderStageFlagBits::eFragment));
+            shaderStages.push_back(CreateInfo(*fragmentShader, vk::ShaderStageFlagBits::eFragment));
 
         if (shaderStages.empty())
             throw InvalidConduit();
@@ -121,14 +121,19 @@ namespace Atmos::Render::Vulkan
         };
     }
 
-    vk::PipelineShaderStageCreateInfo Conduit::ShaderStageCreateInfo(
+    vk::PipelineShaderStageCreateInfo Conduit::CreateInfo(
         const Asset::Shader& shaderAsset, vk::ShaderStageFlagBits shaderType)
     {
         const auto resource = shaderAsset.ResourceAs<Asset::Resource::Vulkan::Shader>();
-        return vk::PipelineShaderStageCreateInfo(
+        if (!resource)
+            throw InvalidConduit();
+
+        return
+        {
             {},
             shaderType,
             resource->Module(),
-            "main");
+            "main"
+        };
     }
 }

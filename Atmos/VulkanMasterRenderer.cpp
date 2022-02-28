@@ -76,7 +76,7 @@ namespace Atmos::Render::Vulkan
     }
     
     void MasterRenderer::DrawFrame(
-        const AllRenders& allRenders,
+        const std::vector<Render::Raster::Command>& commands,
         const Spatial::Size2D& screenSize,
         const Spatial::Point2D& mapPosition)
     {
@@ -127,7 +127,7 @@ namespace Atmos::Render::Vulkan
                 glm::vec2{ mapPosition.x, mapPosition.y });
 
             Draw(
-                allRenders,
+                commands,
                 *currentRendererGroup,
                 universalData,
                 framebuffers[currentSwapchainImage].get(),
@@ -189,17 +189,6 @@ namespace Atmos::Render::Vulkan
             logger->Log("Could not wait for Vulkan fences.");
     }
     
-    void MasterRenderer::OnMaterialDestroying(const Asset::Material& material)
-    {
-        for (auto& group : rendererGroups)
-        {
-            group.image.MaterialDestroying(material);
-            group.line.MaterialDestroying(material);
-            group.region.MaterialDestroying(material);
-            group.text.MaterialDestroying(material);
-        }
-    }
-    
     MasterRenderer::RendererGroup::RendererGroup(
         vk::Device device,
         vk::Queue graphicsQueue,
@@ -208,12 +197,13 @@ namespace Atmos::Render::Vulkan
         vk::Extent2D swapchainExtent,
         GlyphAtlas& glyphAtlas)
         :
-        image(
+        quad(
             device,
             graphicsQueue,
             memoryProperties,
             renderPass,
-            swapchainExtent),
+            swapchainExtent,
+            glyphAtlas),
         line(
             device,
             graphicsQueue,
@@ -225,67 +215,61 @@ namespace Atmos::Render::Vulkan
             graphicsQueue,
             memoryProperties,
             renderPass,
-            swapchainExtent),
-        text(
-            device,
-            graphicsQueue,
-            memoryProperties,
-            renderPass,
-            swapchainExtent,
-            glyphAtlas)
+            swapchainExtent)
     {}
-
-    auto MasterRenderer::RendererGroup::AsIterable() -> IterableRenderers
-    {
-        return { &image, &line, &region, &text };
-    }
     
     void MasterRenderer::Draw(
-        const AllRenders& allRenders,
+        const std::vector<Raster::Command>& commands,
         RendererGroup& rendererGroup,
         UniversalData universalData,
         vk::Framebuffer framebuffer,
         vk::CommandBuffer commandBuffer)
     {
+        if (commands.empty())
+            return;
+
         universalDataBuffer.PushBytes(universalData);
 
-        const vk::CommandBufferBeginInfo beginInfo({}, nullptr);
+        constexpr vk::CommandBufferBeginInfo beginInfo({}, nullptr);
         commandBuffer.begin(beginInfo);
-
-        using Rasters = std::vector<std::shared_ptr<Raster>>;
-        Rasters rasters;
-        for (const auto& renderer : rendererGroup.AsIterable())
-            rasters.push_back(renderer->Start(allRenders, commandBuffer, universalDataBuffer));
         
         try
         {
-            auto availableRasters = rasters;
-            std::vector<Raster::Pass> rasterPasses;
-            while (true)
+            std::vector<Command> writeDataCommands;
+            std::vector<Command> drawCommands;
+
+            const auto renderGroup = [&](const auto& draws, const auto rendererSelector)
             {
-                std::erase_if(availableRasters, [](auto raster) { return !raster || raster->IsDone(); });
-                if (availableRasters.empty())
-                    break;
-
-                const auto raster = *std::ranges::min_element(availableRasters, [](auto left, auto right) { return left->NextLayer() < right->NextLayer(); });
-                const auto nextRasterPasses = raster->NextPasses();
-                rasterPasses.insert(rasterPasses.end(), nextRasterPasses.begin(), nextRasterPasses.end());
+                const auto renderedCommands = (rendererGroup.*rendererSelector).Draw(draws, universalDataBuffer);
+                writeDataCommands.push_back(renderedCommands->writeData);
+                drawCommands.push_back(renderedCommands->draw);
+            };
+            
+            for (auto command = commands.begin(); command != commands.end();)
+            {
+                if (std::holds_alternative<Raster::DrawImage>(*command))
+                    renderGroup(GroupDrawCommands<Raster::DrawImage>(command, commands), &RendererGroup::quad);
+                else if (std::holds_alternative<Raster::DrawLine>(*command))
+                    renderGroup(GroupDrawCommands<Raster::DrawLine>(command, commands), &RendererGroup::line);
+                else if (std::holds_alternative<Raster::DrawRegion>(*command))
+                    renderGroup(GroupDrawCommands<Raster::DrawRegion>(command, commands), &RendererGroup::region);
+                else if (std::holds_alternative<Raster::DrawText>(*command))
+                    renderGroup(GroupDrawCommands<Raster::DrawText>(command, commands), &RendererGroup::quad);
             }
-
+            
             auto recorder = CommandRecorder(commandBuffer);
-            for (auto& rasterPass : rasterPasses)
-                recorder(rasterPass.writeData);
+            for (auto& command : writeDataCommands)
+                recorder(command);
 
             const auto clearValue = vk::ClearValue(vk::ClearColorValue(std::array{ 0.0f, 0.0f, 0.0f, 1.0f }));
             RenderPass(
                 vk::RenderPassBeginInfo(renderPass.get(), framebuffer, vk::Rect2D({ 0, 0 }, swapchainExtent), 1, &clearValue),
                 vk::SubpassContents::eInline,
                 commandBuffer,
-                [&rasterPasses, commandBuffer]
+                [&drawCommands, &recorder]
                 {
-                    auto recorder = CommandRecorder(commandBuffer);
-                    for (auto& rasterPass : rasterPasses)
-                        recorder(rasterPass.draw);
+                    for (auto& command : drawCommands)
+                        recorder(command);
                 });
         }
         catch(...)
@@ -312,7 +296,7 @@ namespace Atmos::Render::Vulkan
             vk::ImageLayout::eUndefined,
             vk::ImageLayout::ePresentSrcKHR);
 
-        const vk::AttachmentReference colorAttachmentReference(0, vk::ImageLayout::eColorAttachmentOptimal);
+        constexpr vk::AttachmentReference colorAttachmentReference(0, vk::ImageLayout::eColorAttachmentOptimal);
 
         const vk::SubpassDescription subpass(
             {},

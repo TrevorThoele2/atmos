@@ -1,19 +1,19 @@
 #pragma once
 
-#include "VulkanRendererBase.h"
-#include "VulkanObjectLayering.h"
 #include "VulkanDescriptorSetPool.h"
 #include "VulkanMappedConduits.h"
 #include "VulkanStagedBuffer.h"
 #include "VulkanMemoryPool.h"
+#include "VulkanRendererPass.h"
+#include "VulkanUniversalDataBuffer.h"
 
-#include "RenderLine.h"
+#include "DrawLine.h"
 
 #include <glm/glm.hpp>
 
 namespace Atmos::Render::Vulkan
 {
-    class LineRenderer final : public RendererBase
+    class LineRenderer final
     {
     public:
         LineRenderer(
@@ -22,13 +22,10 @@ namespace Atmos::Render::Vulkan
             vk::PhysicalDeviceMemoryProperties memoryProperties,
             vk::RenderPass renderPass,
             vk::Extent2D swapchainExtent);
-        
-        [[nodiscard]] std::unique_ptr<Raster> Start(
-            const AllRenders& allRenders,
-            vk::CommandBuffer drawCommandBuffer,
-            const UniversalDataBuffer& universalDataBuffer) override;
-        
-        void MaterialDestroying(const Asset::Material& material);
+
+        void Start();
+        [[nodiscard]] std::optional<RendererPass> Draw(
+            const std::vector<Raster::DrawLine>& draws, const UniversalDataBuffer& universalDataBuffer);
     private:
         MemoryPool memoryPool;
 
@@ -41,46 +38,21 @@ namespace Atmos::Render::Vulkan
         struct Line
         {
             using Vertices = std::vector<Vertex>;
-            Vertices vertices;
-            explicit Line(const std::vector<Vertex>& points);
+            Vertices vertices = {};
         };
 
         static constexpr vk::DeviceSize maxPointCount = 5000;
 
         StagedBuffer vertexBuffer;
         static constexpr vk::DeviceSize vertexStride = maxPointCount;
+
+        [[nodiscard]] Command WriteData(
+            const std::vector<Line>& lines, std::uint32_t startVertexCount);
+        [[nodiscard]] Command Draw(
+            std::uint32_t vertexCount, std::uint32_t startVertexCount, Conduit& conduit, LineWidth lineWidth, vk::DescriptorSet descriptorSet);
     private:
-        class Raster final : public Vulkan::Raster
-        {
-        public:
-            explicit Raster(LineRenderer& renderer);
-            
-            [[nodiscard]] std::vector<Pass> NextPasses() override;
+        size_t totalVertexCount = 0;
 
-            [[nodiscard]] bool IsDone() const override;
-            [[nodiscard]] ObjectLayeringKey NextLayer() const override;
-        private:
-            using ObjectLayering = ObjectLayering<LineWidth, Line>;
-            using Layer = ObjectLayering::Layer;
-            
-            ObjectLayering layers;
-            ObjectLayering::iterator currentLayer = {};
-            vk::DescriptorSet setupDescriptorSet = {};
-
-            std::uint32_t totalVertexCount = 0;
-        private:
-            LineRenderer* renderer;
-        private:
-            [[nodiscard]] std::vector<Pass> NextPasses(const Layer& layer);
-            [[nodiscard]] std::vector<Pass> NextPasses(const Layer::MaterialGroup& materialGroup, MappedConduits::Group& conduitGroup);
-            [[nodiscard]] Command WriteData(const std::vector<Line>& lines, std::uint32_t startVertexCount);
-            [[nodiscard]] Command Draw(std::uint32_t startVertexCount, std::uint32_t vertexCount, Conduit& conduit, LineWidth lineWidth);
-        private:
-            friend LineRenderer;
-        };
-
-        void AddToRaster(const RenderLine& lineRender, Raster& raster);
-    private:
         std::vector<DescriptorSetPool> descriptorSetPools;
         std::vector<DescriptorSetPool>::iterator currentDescriptorSetPool;
         MappedConduits mappedConduits;

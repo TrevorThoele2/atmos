@@ -8,7 +8,7 @@
 #include "Bounds.h"
 #include "ViewSlice.h"
 #include "RasterText.h"
-#include "OrderedRaster.h"
+#include "PreparedRaster.h"
 
 #include "Work.h"
 #include "ChangeTextCore.h"
@@ -40,7 +40,7 @@ namespace Atmos::Render
 
         TextManager* manager;
         
-        [[nodiscard]] std::optional<Raster::Ordered<Raster::Text>> Raster(
+        [[nodiscard]] std::optional<Raster::Prepared<Raster::Text>> Raster(
             Arca::RelicID id,
             const Matrix::ReferenceTuple& tuple,
             Spatial::Point2D cameraTopLeft,

@@ -21,12 +21,12 @@ namespace Atmos::Render
         LineWidth width = 0;
     public:
         Line(Arca::RelicInit init);
-        Line(Arca::RelicInit init, const std::vector<Spatial::Point2D>& points, Arca::Index<Asset::Material> material);
+        Line(Arca::RelicInit init, const std::vector<Spatial::Point2D>& points, const Material& material);
         Line(
             Arca::RelicInit init,
             const std::vector<Spatial::Point2D>& points,
             Spatial::Point2D::Value z,
-            Arca::Index<Asset::Material> material,
+            const Material& material,
             LineWidth width,
             Color color);
         Line(Arca::RelicInit init, Arca::Serialization);
