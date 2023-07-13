@@ -5,8 +5,7 @@ JavaScriptEngine::JavaScriptEngine(Logging::Logger& logger) :
     mockWorldManager(dynamic_cast<MockWorldManager*>(WorldManager()))
 {}
 
-auto JavaScriptEngine::CreateInitializationProperties(Logging::Logger& logger)
--> InitializationProperties
+auto JavaScriptEngine::CreateInitializationProperties(Logging::Logger& logger) -> InitializationProperties
 {
     using Properties = InitializationProperties;
 

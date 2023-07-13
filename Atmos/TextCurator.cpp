@@ -94,9 +94,9 @@ namespace Atmos::Render
         const auto& renderCore = *std::get<0>(tuple);
         const auto& core = *std::get<1>(tuple);
         const auto& bounds = *std::get<2>(tuple);
-        const auto font = core.font.Get();
+        const auto font = core.font;
         const auto material = renderCore.material;
-        if (font && material.script && font->Resource())
+        if (font && material && font->Resource())
         {
             const auto boundsSpace = bounds.Space();
             const auto position = ToRenderPoint(bounds.Position(), cameraTopLeft, boundsSpace);
@@ -105,10 +105,10 @@ namespace Atmos::Render
             {
                 Raster::Text
                 {
-                    .string = core.string,
-                    .fontResource = const_cast<Asset::Resource::Font*>(font->Resource()),
-                    .viewSlice = ViewSliceBox(Owner().Find<ViewSlice>(id)),
                     .material = material,
+                    .string = core.string,
+                    .font = font,
+                    .viewSlice = ViewSliceBox(Owner().Find<ViewSlice>(id)),
                     .color = renderCore.color,
                     .bold = core.bold,
                     .italics = core.italics,

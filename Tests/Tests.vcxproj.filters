@@ -157,6 +157,15 @@
     <ClCompile Include="JavaScriptMathTests.cpp">
       <Filter>Source Files\Tests\Scripting\JavaScript\Atmos\Math</Filter>
     </ClCompile>
+    <ClCompile Include="RenderingFixture.cpp">
+      <Filter>Source Files\Fixtures</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptAutomation.cpp">
+      <Filter>Source Files\Automation</Filter>
+    </ClCompile>
+    <ClCompile Include="RealEngine.cpp">
+      <Filter>Source Files\Objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneralFixture.h">
@@ -321,6 +330,15 @@
     <ClInclude Include="JavaScriptMathTests.h">
       <Filter>Header Files\Tests\Scripting\JavaScript\Atmos\Math</Filter>
     </ClInclude>
+    <ClInclude Include="RenderingFixture.h">
+      <Filter>Header Files\Fixtures</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptAutomation.h">
+      <Filter>Header Files\Automation</Filter>
+    </ClInclude>
+    <ClInclude Include="RealEngine.h">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">
@@ -484,6 +502,9 @@
     </Filter>
     <Filter Include="Header Files\Tests\Scripting\JavaScript\Atmos\Math">
       <UniqueIdentifier>{cafdf9bf-901a-4d0b-a07f-729698cff52c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Automation">
+      <UniqueIdentifier>{c9b4cc2b-175f-4350-b1eb-4d87028b514d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

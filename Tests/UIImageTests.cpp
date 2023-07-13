@@ -8,9 +8,8 @@
 #include <Atmos/SpatialAlgorithms.h>
 #include <Arca/Create.h>
 
-#include "DerivedEngine.h"
+#include "JavaScriptEngine.h"
 #include "MockImageAssetResource.h"
-#include "MockSurfaceResource.h"
 
 using namespace Atmos;
 using namespace Spatial;
@@ -37,7 +36,7 @@ SCENARIO_METHOD(UIImageTestsFixture, "ui images", "[ui]")
     GIVEN("setup engine with field")
     {
         Logging::Logger logger(Logging::Severity::Verbose);
-        DerivedEngine engine(logger);
+        JavaScriptEngine engine(logger);
 
         auto fieldOrigin = Arca::ReliquaryOrigin();
         RegisterArcaTypes(fieldOrigin);
@@ -48,8 +47,8 @@ SCENARIO_METHOD(UIImageTestsFixture, "ui images", "[ui]")
             *engine.mockInputManager,
             *engine.mockGraphicsManager,
             *engine.mockTextManager,
-            *engine.mockScriptManager,
-            *engine.worldManager,
+            *engine.scriptManager,
+            *engine.mockWorldManager,
             Size2D{
                 std::numeric_limits<Size2D::Value>::max(),
                 std::numeric_limits<Size2D::Value>::max() },
@@ -63,8 +62,10 @@ SCENARIO_METHOD(UIImageTestsFixture, "ui images", "[ui]")
         auto imageAsset = fieldReliquary.Do(Arca::Create<Asset::Image> {
             String{}, std::move(imageResource), Asset::ImageGridSize{}});
 
+        auto materialScriptAsset = CompileAndCreateBasicMaterialScript(fieldReliquary);
+
         auto materialAsset = fieldReliquary.Do(Arca::Create<Asset::Material> {
-            String{}, std::vector<Asset::Material::Pass>{}});
+            String{}, materialScriptAsset, "main", Scripting::Parameters{} });
 
         auto positions = std::vector
         {
@@ -110,28 +111,28 @@ SCENARIO_METHOD(UIImageTestsFixture, "ui images", "[ui]")
         {
             auto image1 = fieldReliquary.Do(Arca::Create<UI::Image> {
                 imageAsset,
-                    0,
-                    materialAsset,
-                    Color{},
-                    positions[0],
-                    scalers[0],
-                    Angle2D{} });
+                0,
+                materialAsset,
+                Color{},
+                positions[0],
+                scalers[0],
+                Angle2D{} });
             auto image2 = fieldReliquary.Do(Arca::Create<UI::Image> {
                 imageAsset,
-                    0,
-                    materialAsset,
-                    Color{},
-                    positions[1],
-                    scalers[1],
-                    Angle2D{} });
+                0,
+                materialAsset,
+                Color{},
+                positions[1],
+                scalers[1],
+                Angle2D{} });
             auto image3 = fieldReliquary.Do(Arca::Create<UI::Image> {
                 imageAsset,
-                    0,
-                    materialAsset,
-                    Color{},
-                    positions[2],
-                    scalers[2],
-                    Angle2D{} });
+                0,
+                materialAsset,
+                Color{},
+                positions[2],
+                scalers[2],
+                Angle2D{} });
 
             std::vector imageIDs = { image1.ID(), image2.ID(), image3.ID() };
 

@@ -10,7 +10,7 @@
 #include <Arca/Create.h>
 #include <Arca/Destroy.h>
 
-#include "DerivedEngine.h"
+#include "RealEngine.h"
 #include "MockSurfaceResource.h"
 
 using namespace Atmos;
@@ -20,7 +20,7 @@ SCENARIO_METHOD(GridRegionRenderingTestsFixture, "rendering grid regions", "[ren
     GIVEN("setup engine with field")
     {
         Logging::Logger logger(Logging::Severity::Verbose);
-        DerivedEngine engine(logger);
+        RealEngine engine(logger);
 
         auto fieldOrigin = Arca::ReliquaryOrigin();
         RegisterFieldTypes(
@@ -30,22 +30,24 @@ SCENARIO_METHOD(GridRegionRenderingTestsFixture, "rendering grid regions", "[ren
             *engine.mockInputManager,
             *engine.mockGraphicsManager,
             *engine.mockTextManager,
-            *engine.mockScriptManager,
+            *engine.scriptManager,
             *engine.worldManager,
             Spatial::Size2D {
                 std::numeric_limits<Spatial::Size2D::Value>::max(),
                 std::numeric_limits<Spatial::Size2D::Value>::max() },
             *engine.mockWindow,
             engine.Logger());
+        RegisterFieldStages(fieldOrigin);
         World::Field field(0, fieldOrigin.Actualize());
 
         auto& fieldReliquary = field.Reliquary();
 
         const auto mainSurface = fieldReliquary.Find<MainSurface>();
-        auto mainSurfaceImplementation = mainSurface->Resource<MockSurfaceResource>();
+
+        auto materialScriptAsset = CompileAndCreateBasicMaterialScript(fieldReliquary);
 
         auto materialAsset = fieldReliquary.Do(Arca::Create<Asset::Material> {
-            String{}, std::vector<Asset::Material::Pass>{} });
+            String{}, materialScriptAsset, "main", Scripting::Parameters{} });
 
         const auto camera = fieldReliquary.Find<Camera>();
 
@@ -54,7 +56,7 @@ SCENARIO_METHOD(GridRegionRenderingTestsFixture, "rendering grid regions", "[ren
 
         WHEN("creating grid region")
         {
-            auto positions = std::vector<Spatial::Grid::Point>
+            auto positions = std::vector
             {
                 Spatial::Grid::Point { 0, 0 },
                 Spatial::Grid::Point { 1, 0 },
@@ -62,7 +64,7 @@ SCENARIO_METHOD(GridRegionRenderingTestsFixture, "rendering grid regions", "[ren
                 Spatial::Grid::Point { 1, 1 },
             };
             auto gridRegion = fieldReliquary.Do(Arca::Create<GridRegion>{
-                std::unordered_set<Spatial::Grid::Point>(positions.begin(), positions.end()), 0, materialAsset});
+                std::unordered_set(positions.begin(), positions.end()), 0, materialAsset});
 
             WHEN("starting engine execution")
             {
@@ -71,13 +73,13 @@ SCENARIO_METHOD(GridRegionRenderingTestsFixture, "rendering grid regions", "[ren
 
                 THEN("region rendered in graphics manager")
                 {
-                    auto& regionRenders = engine.mockGraphicsManager->regionRenders;
-                    REQUIRE(regionRenders.size() == 1);
+                    auto& commands = engine.mockGraphicsManager->commands;
+                    REQUIRE(commands.size() == 1);
 
                     REQUIRE(std::any_of(
-                        regionRenders.begin(),
-                        regionRenders.end(),
-                        [&positions, cameraLeft, cameraTop](const RenderRegion& entry)
+                        commands.begin(),
+                        commands.end(),
+                        [&positions, cameraLeft, cameraTop](const Raster::Command& command)
                         {
                             std::vector<Spatial::Point2D> expectedVertices;
                             std::vector<Spatial::Grid::Point> expectedVertexGridPositions =
@@ -99,7 +101,9 @@ SCENARIO_METHOD(GridRegionRenderingTestsFixture, "rendering grid regions", "[ren
                             std::vector<std::uint16_t> expectedIndices = {
                                 0, 1, 2, 2, 1, 3, 2, 3, 4, 4, 3, 5 };
 
-                            return expectedVertices == entry.mesh.vertices && expectedIndices == entry.mesh.indices;
+                            auto drawCommand = std::get<Raster::DrawRegion>(command);
+
+                            return expectedVertices == drawCommand.mesh.vertices && expectedIndices == drawCommand.mesh.indices;
                         }));
                 }
             }
@@ -113,15 +117,15 @@ SCENARIO_METHOD(GridRegionRenderingTestsFixture, "rendering grid regions", "[ren
 
                 THEN("regions were rendered only once")
                 {
-                    auto& regionRenders = engine.mockGraphicsManager->regionRenders;
-                    REQUIRE(regionRenders.size() == 1);
+                    auto& commands = engine.mockGraphicsManager->commands;
+                    REQUIRE(commands.size() == 1);
                 }
             }
         }
 
         WHEN("creating region without material")
         {
-            auto positions = std::unordered_set<Spatial::Grid::Point>
+            auto positions = std::unordered_set
             {
                 Spatial::Grid::Point { 0, 0 },
                 Spatial::Grid::Point { 1, 0 },
@@ -137,8 +141,8 @@ SCENARIO_METHOD(GridRegionRenderingTestsFixture, "rendering grid regions", "[ren
 
                 THEN("no lines rendered in graphics manager")
                 {
-                    auto& regionRenders = engine.mockGraphicsManager->regionRenders;
-                    REQUIRE(regionRenders.empty());
+                    auto& commands = engine.mockGraphicsManager->commands;
+                    REQUIRE(commands.empty());
                 }
             }
         }
@@ -155,8 +159,8 @@ SCENARIO_METHOD(GridRegionRenderingTestsFixture, "rendering grid regions", "[ren
 
                 THEN("no lines rendered in graphics manager")
                 {
-                    auto& regionRenders = engine.mockGraphicsManager->regionRenders;
-                    REQUIRE(regionRenders.empty());
+                    auto& commands = engine.mockGraphicsManager->commands;
+                    REQUIRE(commands.empty());
                 }
             }
         }

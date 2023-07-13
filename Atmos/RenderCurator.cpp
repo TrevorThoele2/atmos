@@ -7,6 +7,8 @@
 #include "Camera.h"
 #include "StagedRasters.h"
 #include "SpatialAlgorithms.h"
+#include "ExecuteMaterial.h"
+#include "ExecutingMaterial.h"
 
 namespace Atmos::Render
 {
@@ -36,6 +38,8 @@ namespace Atmos::Render
 
     void Curator::Handle(const Raster::RecordCommands& command)
     {
+        const auto executingMaterial = MutablePointer().Of<Raster::ExecutingMaterial>();
+        auto& recordedCommands = executingMaterial->recordedCommands;
         recordedCommands.insert(recordedCommands.end(), command.commands.begin(), command.commands.end());
     }
 
@@ -50,7 +54,7 @@ namespace Atmos::Render
         }
     }
 
-    void Curator::Handle(const ChangeMaterial& command)
+    void Curator::Handle(const ChangeMaterialAsset& command)
     {
         const auto renderCore = MutablePointer().Of<RenderCore>(command.id);
         if (renderCore)
@@ -64,10 +68,10 @@ namespace Atmos::Render
             viewSlice->box = command.to;
     }
 
-    auto Curator::Compose(const Raster::Staged& staged) -> RasterMap
+    auto Curator::Compose(Raster::Staged& staged) -> RasterMap
     {
         RasterMap map;
-        const auto add = [&map](const auto& inputRasters, const auto rastersSelector)
+        const auto add = [this, &map](auto& inputRasters, const auto rastersSelector)
         {
             for (auto& raster : inputRasters)
                 (FindRasters(raster, map).*rastersSelector).push_back(std::get<0>(raster));
@@ -85,23 +89,38 @@ namespace Atmos::Render
     {
         Raster::Commands output;
 
+        const auto executingMaterial = MutablePointer().Of<Raster::ExecutingMaterial>();
+        auto& recordedCommands = executingMaterial->recordedCommands;
+
         for (auto& surfaceLayer : map)
         {
-            const auto recordInto = output.emplace(surfaceLayer.first, std::vector<Raster::Command>{}).first;
+            auto& recordInto = output.emplace(surfaceLayer.first, std::vector<Raster::Command>{}).first->second;
 
             for (auto& zLayer : surfaceLayer.second)
             {
                 for (auto& scriptLayer : zLayer.second)
                 {
-                    // Need to hook this up to script input somehow
-                    // Likely will need the script to execute a function which returns this information
-                    scriptLayer.second.images
-
+                    executingMaterial->images = scriptLayer.second.images;
+                    executingMaterial->lines = scriptLayer.second.lines;
+                    executingMaterial->regions = scriptLayer.second.regions;
+                    executingMaterial->texts = scriptLayer.second.texts;
+                    Owner().Do(Scripting::ExecuteMaterial{ scriptLayer.first });
                 }
             }
 
-            recordInto->second.insert(recordInto->second.end(), recordedCommands.begin(), recordedCommands.end());
-            recordedCommands = {};
+            recordInto.reserve(recordInto.size() + recordedCommands.size());
+            for (auto& command : recordedCommands)
+            {
+                if (std::holds_alternative<Raster::DrawImage>(command))
+                    std::get<Raster::DrawImage>(command).surface = surfaceLayer.first;
+                else if (std::holds_alternative<Raster::DrawLine>(command))
+                    std::get<Raster::DrawLine>(command).surface = surfaceLayer.first;
+                else if (std::holds_alternative<Raster::DrawRegion>(command))
+                    std::get<Raster::DrawRegion>(command).surface = surfaceLayer.first;
+                else if (std::holds_alternative<Raster::DrawText>(command))
+                    std::get<Raster::DrawText>(command).surface = surfaceLayer.first;
+                recordInto.push_back(command);
+            }
         }
 
         return output;

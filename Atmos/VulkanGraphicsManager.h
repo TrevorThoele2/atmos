@@ -57,6 +57,8 @@ namespace Atmos::Render::Vulkan
 
         [[nodiscard]] Spatial::Size2D TextBaseSizeImpl(
             const String& string, const Asset::Resource::Font& resource, bool bold, bool italics, float wrapWidth) const override;
+
+        void PruneResourcesImpl() override;
     private:
         std::optional<MemoryPool> memoryPool;
     private:
@@ -65,7 +67,6 @@ namespace Atmos::Render::Vulkan
         std::list<StoredResourcePtr> destroyedResources;
 
         void MoveToDestroyedResource(StoredResource& resource);
-        void PruneResourcesImpl();
     private:
         vk::Instance instance;
         std::vector<const char*> instanceExtensions =

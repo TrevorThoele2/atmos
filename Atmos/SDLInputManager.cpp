@@ -1,7 +1,5 @@
 #include "SDLInputManager.h"
 
-#include <SDL.h>
-
 namespace Atmos::Input
 {
     SDLManager::SDLManager(Logging::Logger& logger) : Manager(logger, "SDL")

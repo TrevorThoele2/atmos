@@ -22,7 +22,7 @@ TEMPLATE_TEST_CASE_METHOD(
     {
         auto [name, traits, expectations] = this->template Scenario<TestType>(*this->fieldReliquary);
 
-        this->CompileAndCreateScript(
+        CompileAndCreateScript(
             "basic_script.ts",
 R"V0G0N(import { Atmos } from "./atmos";
 

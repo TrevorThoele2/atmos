@@ -51,6 +51,9 @@ namespace Atmos::Scripting::JavaScript
 
     auto Type<Arca::Index<Asset::Font>>::ToV8(v8::Isolate& isolate, const Arca::Index<Asset::Font>& value) -> v8::Local<V8T>
     {
+        if (!value)
+            return v8::Null(&isolate);
+
         return JavaScript::ToV8(
             isolate,
             FontAsset

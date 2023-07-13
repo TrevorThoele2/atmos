@@ -42,7 +42,7 @@ namespace Atmos::Scripting::JavaScript
     class Type<Arca::Index<Asset::Action>>
     {
     public:
-        using V8T = v8::Object;
+        using V8T = v8::Value;
 
         [[nodiscard]] static v8::Local<V8T> ToV8(v8::Isolate& isolate, const Arca::Index<Asset::Action>& value);
     };

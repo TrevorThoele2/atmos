@@ -59,7 +59,7 @@ namespace Atmos::World::Serialization
             ExtractedAssets Extracted::* extractedAssets;
         };
 
-        std::vector<ExtractionSet> extractionSets = {
+        const std::vector<ExtractionSet> extractionSets = {
             {"audio", &AllToExtract::audio, &Extracted::audio},
             {"images", &AllToExtract::images, &Extracted::images},
             {"shaders", &AllToExtract::shaders, &Extracted::shaders},
@@ -87,7 +87,7 @@ namespace Atmos::World::Serialization
                     continue;
 
                 auto& toExtractFrom = toExtract.*extractionSet.toExtract;
-                if (toExtractFrom.find(fileName) == toExtractFrom.end())
+                if (!toExtractFrom.contains(fileName))
                     continue;
 
                 (extracted.*extractionSet.extractedAssets).emplace_back(fileName, ExtractData(zip));

@@ -22,7 +22,7 @@ TEMPLATE_TEST_CASE_METHOD(
     {
         auto [index, traits, expectations] = this->template Scenario<TestType>(*this->fieldReliquary);
 
-        this->CompileAndCreateScript(
+        CompileAndCreateScript(
             "basic_script.ts",
 R"V0G0N(import { Atmos } from "./atmos";
 
@@ -73,7 +73,7 @@ TEMPLATE_TEST_CASE_METHOD(
 
         const auto createCommandJson = Inscription::Json::ToString(createCommand);
 
-        this->CompileAndCreateScript(
+        CompileAndCreateScript(
             "basic_script.ts",
 R"V0G0N(import { Atmos } from "./atmos";
 

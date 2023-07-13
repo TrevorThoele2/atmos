@@ -10,8 +10,9 @@ namespace Atmos::Render::Raster
 {
     struct DrawLine
     {
-        Shaders shaders;
         const Resource::Surface* surface = nullptr;
+
+        Shaders shaders;
         std::vector<Spatial::Point2D> points;
         LineWidth width;
         Color color;

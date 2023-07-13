@@ -6,7 +6,7 @@ namespace Atmos::Render
         renderCore(init.Create<RenderCore>())
     {}
 
-    Line::Line(Arca::RelicInit init, const std::vector<Spatial::Point2D>& points, const Material& material) :
+    Line::Line(Arca::RelicInit init, const std::vector<Spatial::Point2D>& points, const Arca::Index<Asset::Material>& material) :
         renderCore(init.Create<RenderCore>(material, Color{})), points(points)
     {}
 
@@ -14,7 +14,7 @@ namespace Atmos::Render
         Arca::RelicInit init,
         const std::vector<Spatial::Point2D>& points,
         Spatial::Point2D::Value z,
-        const Material& material,
+        const Arca::Index<Asset::Material>& material,
         LineWidth width,
         Color color)
         :

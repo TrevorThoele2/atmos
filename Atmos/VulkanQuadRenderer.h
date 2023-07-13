@@ -9,6 +9,8 @@
 #include "VulkanRendererPass.h"
 #include "VulkanGlyphAtlas.h"
 
+#undef DrawText
+
 #include "DrawImage.h"
 #include "DrawText.h"
 

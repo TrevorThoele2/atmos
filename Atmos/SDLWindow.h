@@ -1,15 +1,14 @@
 #pragma once
 
 #include "WindowBase.h"
-#include <SDL.h>
-#include <SDL_syswm.h>
+#include "SDLIncludes.h"
 
 namespace Atmos::Window
 {
     class SDLWindow final : public WindowBase
     {
     public:
-        SDLWindow(Logging::Logger& logger);
+        explicit SDLWindow(Logging::Logger& logger);
         ~SDLWindow();
 
         void Show() override;

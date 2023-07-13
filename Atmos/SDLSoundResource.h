@@ -3,7 +3,7 @@
 #include "SoundResource.h"
 
 #include "SDLChannel.h"
-#include <SDL_mixer.h>
+#include "SDLIncludes.h"
 
 namespace Atmos::Audio::Resource::SDL
 {

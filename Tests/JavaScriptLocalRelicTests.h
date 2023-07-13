@@ -143,18 +143,23 @@ public:
     {
         const auto name = dataGeneration.Random<String>();
 
-        const auto passes = std::vector<Asset::MaterialPass>();
+        auto scriptResource = reliquary.Do(Atmos::Asset::Resource::Create<Asset::Resource::Script>{});
+        const auto scriptAsset = reliquary.Do(Arca::Create<Asset::Script>{ name, std::move(scriptResource) });
 
-        const auto index = reliquary.Do(Arca::Create<T>{ name, passes });
+        const auto executeName = dataGeneration.Random<String>();
 
-        const std::function<void(String)> expectations = [id = index.ID(), name, passes](const String& json)
+        const auto index = reliquary.Do(Arca::Create<T>{ name, scriptAsset, executeName, Scripting::Parameters{} });
+
+        const std::function<void(String)> expectations = [id = index.ID(), name, scriptAsset, executeName](const String& json)
         {
             Scripting::JavaScript::MaterialAsset asset;
             Inscription::Json::FromString(asset, json);
 
             REQUIRE(asset.id == id);
             REQUIRE(asset.name == name);
-            REQUIRE(asset.passes.empty());
+            REQUIRE(asset.asset->id == scriptAsset.ID());
+            REQUIRE(asset.executeName == executeName);
+            REQUIRE(asset.parameters.empty());
         };
 
         return { index, "Atmos.Traits.Asset.Material", expectations };

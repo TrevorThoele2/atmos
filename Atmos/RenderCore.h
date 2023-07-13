@@ -3,18 +3,18 @@
 #include "ArcaShardIncludes.h"
 
 #include <Arca/RelicIndex.h>
-#include "Material.h"
+#include "MaterialAsset.h"
 #include "Color.h"
 
 namespace Atmos::Render
 {
     struct RenderCore
     {
-        Material material;
+        Arca::Index<Asset::Material> material;
         Color color;
 
         RenderCore() = default;
-        RenderCore(const Material& material, const Color& color);
+        RenderCore(const Arca::Index<Asset::Material>& material, const Color& color);
 
         bool operator==(const RenderCore& arg) const;
         bool operator!=(const RenderCore& arg) const;

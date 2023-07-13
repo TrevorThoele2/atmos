@@ -1,7 +1,7 @@
 #include "SDLTextError.h"
 
 #include "GraphicsError.h"
-#include <SDL_ttf.h>
+#include "SDLIncludes.h"
 
 namespace Atmos::Render::SDL
 {

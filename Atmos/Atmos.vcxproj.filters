@@ -582,6 +582,21 @@
     <Filter Include="Source Files\Render\Region">
       <UniqueIdentifier>{94a2943f-f9aa-4f8d-8bcb-1f31e1338fc6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Assets\Material">
+      <UniqueIdentifier>{84050800-5269-45fe-b7e7-a5b90504e01c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Assets\Material">
+      <UniqueIdentifier>{ad6962fa-6e74-40fa-b571-cbd846619deb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\SDL">
+      <UniqueIdentifier>{061d0a07-2fd7-4e23-b9b7-96f0ab29b9b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scripting\JavaScript\Types\Atmos\Render\Raster">
+      <UniqueIdentifier>{c36012ca-d291-485f-9ed7-1d67ba6c36dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scripting\JavaScript\Types\Atmos\Render\Raster">
+      <UniqueIdentifier>{145c97f8-2aa1-47a0-8476-33b7e2f6c873}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FieldDestination.h">
@@ -1040,9 +1055,6 @@
     <ClInclude Include="VulkanCommandBufferPool.h">
       <Filter>Header Files\Render\Vulkan\Commands</Filter>
     </ClInclude>
-    <ClInclude Include="VulkanRaster.h">
-      <Filter>Header Files\Render\Vulkan\Renderer</Filter>
-    </ClInclude>
     <ClInclude Include="VulkanUniversalDataBuffer.h">
       <Filter>Header Files\Render\Vulkan\Memory</Filter>
     </ClInclude>
@@ -1187,9 +1199,6 @@
     <ClInclude Include="CompileScript.h">
       <Filter>Header Files\Scripting\Commands</Filter>
     </ClInclude>
-    <ClInclude Include="CurrentExecutingScript.h">
-      <Filter>Header Files\Scripting</Filter>
-    </ClInclude>
     <ClInclude Include="Variant.h">
       <Filter>Header Files\Data</Filter>
     </ClInclude>
@@ -1208,7 +1217,7 @@
     <ClInclude Include="ExecuteScript.h">
       <Filter>Header Files\Scripting\Commands</Filter>
     </ClInclude>
-    <ClInclude Include="ChangeMaterial.h">
+    <ClInclude Include="ChangeMaterialAsset.h">
       <Filter>Header Files\Render\Commands</Filter>
     </ClInclude>
     <ClInclude Include="ChangeColor.h">
@@ -1781,9 +1790,6 @@
     <ClInclude Include="JavaScriptImageAssetGridSize.h">
       <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Asset</Filter>
     </ClInclude>
-    <ClInclude Include="JavaScriptMaterialPass.h">
-      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Asset</Filter>
-    </ClInclude>
     <ClInclude Include="JavaScriptGridSize.h">
       <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Spatial\Grid</Filter>
     </ClInclude>
@@ -2081,9 +2087,6 @@
     <ClInclude Include="RasterCommand.h">
       <Filter>Header Files\Render\Raster</Filter>
     </ClInclude>
-    <ClInclude Include="Material.h">
-      <Filter>Header Files\Render</Filter>
-    </ClInclude>
     <ClInclude Include="RecordRasterCommands.h">
       <Filter>Header Files\Render\Commands</Filter>
     </ClInclude>
@@ -2092,6 +2095,66 @@
     </ClInclude>
     <ClInclude Include="VulkanRendererPass.h">
       <Filter>Header Files\Render\Vulkan\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="ExecutingMaterial.h">
+      <Filter>Header Files\Render\Raster</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptData.h">
+      <Filter>Header Files\Scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="ExecuteMaterial.h">
+      <Filter>Header Files\Scripting\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="MaterialAsset.h">
+      <Filter>Header Files\Assets\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="MaterialAssetCurator.h">
+      <Filter>Header Files\Assets\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="SDLIncludes.h">
+      <Filter>Header Files\SDL</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptRaster.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Render\Raster</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptExecutingMaterial.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Render\Raster</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptRasterImage.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Render\Raster</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptRasterLine.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Render\Raster</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptRasterRegion.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Render\Raster</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptRasterText.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Render\Raster</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptRenderMesh.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptDrawImage.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Render\Raster</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptDrawLine.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Render\Raster</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptDrawRegion.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Render\Raster</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptDrawText.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Render\Raster</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptShaders.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Render\Raster</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptRecordRasterCommands.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Render\Raster</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptRasterCommand.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Render\Raster</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2361,9 +2424,6 @@
     </ClCompile>
     <ClCompile Include="VulkanCommandBufferPool.cpp">
       <Filter>Source Files\Render\Vulkan\Commands</Filter>
-    </ClCompile>
-    <ClCompile Include="VulkanRaster.cpp">
-      <Filter>Source Files\Render\Vulkan\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="VulkanUniversalDataBuffer.cpp">
       <Filter>Source Files\Render\Vulkan\Memory</Filter>
@@ -2851,9 +2911,6 @@
     <ClCompile Include="JavaScriptImageAssetGridSize.cpp">
       <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Asset</Filter>
     </ClCompile>
-    <ClCompile Include="JavaScriptMaterialPass.cpp">
-      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Asset</Filter>
-    </ClCompile>
     <ClCompile Include="JavaScriptGridSize.cpp">
       <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Spatial\Grid</Filter>
     </ClCompile>
@@ -3100,11 +3157,56 @@
     <ClCompile Include="RasterOrder.cpp">
       <Filter>Source Files\Render\Raster</Filter>
     </ClCompile>
-    <ClCompile Include="Material.cpp">
-      <Filter>Source Files\Render</Filter>
-    </ClCompile>
     <ClCompile Include="Shaders.cpp">
       <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptData.cpp">
+      <Filter>Source Files\Scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="MaterialAsset.cpp">
+      <Filter>Source Files\Assets\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptRaster.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Render\Raster</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptExecutingMaterial.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Render\Raster</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptRasterImage.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Render\Raster</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptRasterLine.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Render\Raster</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptRasterRegion.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Render\Raster</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptRenderMesh.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptRasterText.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Render\Raster</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptDrawImage.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Render\Raster</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptDrawLine.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Render\Raster</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptDrawRegion.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Render\Raster</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptDrawText.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Render\Raster</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptShaders.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Render\Raster</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptRecordRasterCommands.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Render\Raster</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptRasterCommand.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Render\Raster</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

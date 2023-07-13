@@ -77,12 +77,12 @@ SCENARIO_METHOD(AssetTestsFixture, "assets", "[asset]")
 
             THEN("asset has width 0")
             {
-                REQUIRE(asset->Width() == 0);
+                REQUIRE(asset->Width() == Approx(0));
             }
 
             THEN("asset has height 0")
             {
-                REQUIRE(asset->Height() == 0);
+                REQUIRE(asset->Height() == Approx(0));
             }
 
             THEN("asset has columns")
@@ -110,52 +110,6 @@ SCENARIO_METHOD(AssetTestsFixture, "assets", "[asset]")
                     newName,
                     std::unique_ptr<Resource::Image>{},
                     ImageGridSize{ columns, rows }});
-
-                THEN("mapped asset is new asset")
-                {
-                    REQUIRE(mappedAssets->Size() == 1);
-                    REQUIRE(mappedAssets->Exists(newName));
-                    REQUIRE(mappedAssets->Find(newName) == asset);
-                    REQUIRE(!mappedAssets->Exists(name));
-                    REQUIRE(mappedAssets->Find(name) == nullptr);
-                }
-            }
-        }
-
-        WHEN("creating material asset with empty passes")
-        {
-            auto name = dataGeneration.Random<String>();
-
-            auto asset = reliquary->Do(Arca::Create<Material>{
-                name,
-                std::vector<Material::Pass>{}});
-
-            auto mappedAssets = reliquary->Find<Atmos::Asset::Mapped<Atmos::Asset::Material>>();
-
-            THEN("asset has name")
-            {
-                REQUIRE(asset->Name() == name);
-            }
-
-            THEN("asset has empty passes")
-            {
-                REQUIRE(asset->Passes().empty());
-            }
-
-            THEN("mapped assets contains entry")
-            {
-                REQUIRE(mappedAssets->Exists(name));
-                REQUIRE(mappedAssets->Find(name) == asset);
-            }
-
-            WHEN("reassigning asset")
-            {
-                auto newName = dataGeneration.Random<String>();
-
-                reliquary->Do(Arca::AssignMove<Atmos::Asset::Material>{
-                    asset.ID(),
-                    newName,
-                    std::vector<Material::Pass>{}});
 
                 THEN("mapped asset is new asset")
                 {

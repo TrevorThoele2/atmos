@@ -4,6 +4,7 @@
 #include "VulkanConduit.h"
 #include "VulkanUtilities.h"
 #include "VulkanMaxFramesInFlight.h"
+#include "RasterCommand.h"
 
 namespace Atmos::Render::Vulkan
 {
@@ -45,7 +46,7 @@ namespace Atmos::Render::Vulkan
     std::optional<RendererPass> LineRenderer::Draw(
         const std::vector<Raster::DrawLine>& draws, const UniversalDataBuffer& universalDataBuffer)
     {
-        if (draws.empty())
+        if (std::find_if(draws.begin(), draws.end(), [](const Raster::Command& command) { return std::holds_alternative<Raster::DrawLine>(command); }) == draws.end())
             return {};
 
         struct Group

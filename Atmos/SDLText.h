@@ -1,6 +1,6 @@
 #pragma once
 
-#include <SDL_ttf.h>
+#include "SDLIncludes.h"
 #include "Size2D.h"
 #include "String.h"
 #include "Color.h"

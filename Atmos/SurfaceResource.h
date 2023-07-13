@@ -11,8 +11,6 @@ namespace Atmos::Render::Resource
     public:
         virtual ~Surface() = 0;
         
-        virtual void OnMaterialDestroying(const Asset::Material& material) = 0;
-
         [[nodiscard]] virtual Spatial::Size2D Size() const = 0;
     };
 }

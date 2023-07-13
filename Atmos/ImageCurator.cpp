@@ -111,9 +111,9 @@ namespace Atmos::Render
         auto& renderCore = *std::get<0>(value);
         auto& core = *std::get<1>(value);
         auto& bounds = *std::get<2>(value);
-        const auto asset = core.asset.Get();
+        const auto asset = core.asset;
         const auto material = renderCore.material;
-        if (asset && material.script && asset->Resource())
+        if (asset && material && asset->Resource())
         {
             const auto boundsSpace = bounds.Space();
             const auto assetSlice = asset->Slice(core.assetIndex);
@@ -123,10 +123,10 @@ namespace Atmos::Render
             {
                 Raster::Image
                 {
-                    .assetResource = const_cast<Asset::Resource::Image*>(asset->Resource()),
+                    .material = material,
+                    .asset = asset,
                     .assetSlice = assetSlice,
                     .viewSlice = ViewSliceBox(Owner().Find<ViewSlice>(id)),
-                    .material = material,
                     .color = renderCore.color,
                     .position = ToPoint2D(position),
                     .size = assetSlice.size,

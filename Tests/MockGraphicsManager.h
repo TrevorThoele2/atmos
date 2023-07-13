@@ -1,10 +1,7 @@
 #pragma once
 
 #include <Atmos/GraphicsManager.h>
-#include <Atmos/RenderImage.h>
-#include <Atmos/RenderLine.h>
-#include <Atmos/RenderRegion.h>
-#include <Atmos/RenderText.h>
+#include <Atmos/RasterCommands.h>
 
 using namespace Atmos;
 using namespace Render;
@@ -12,10 +9,7 @@ using namespace Render;
 class MockGraphicsManager final : public GraphicsManager
 {
 public:
-    std::vector<Atmos::Render::RenderImage> imageRenders;
-    std::vector<Atmos::Render::RenderLine> lineRenders;
-    std::vector<Atmos::Render::RenderRegion> regionRenders;
-    std::vector<Atmos::Render::RenderText> textRenders;
+    std::vector<Raster::Command> commands;
 public:
     MockGraphicsManager(Logging::Logger& logger);
     MockGraphicsManager(const MockGraphicsManager& arg) = delete;
@@ -37,7 +31,7 @@ protected:
         void* window) override;
     
     void DrawFrameImpl(
-        const AllRenders& allRenders,
+        const Raster::Commands& commands,
         const Spatial::Point2D& mapPosition) override;
 
     void ResourceDestroyingImpl(Asset::Resource::Image& resource) override;

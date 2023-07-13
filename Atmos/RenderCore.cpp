@@ -2,7 +2,7 @@
 
 namespace Atmos::Render
 {
-    RenderCore::RenderCore(const Material& material, const Color& color) :
+    RenderCore::RenderCore(const Arca::Index<Asset::Material>& material, const Color& color) :
         material(material), color(color)
     {}
 

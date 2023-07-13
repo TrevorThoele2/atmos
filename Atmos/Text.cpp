@@ -12,7 +12,7 @@ namespace Atmos::Render
         return core->font;
     }
 
-    Material Text::Material() const
+    Arca::Index<Asset::Material> Text::Material() const
     {
         return renderCore->material;
     }
@@ -71,7 +71,7 @@ namespace Atmos::Render
         Arca::RelicInit init,
         const Atmos::String& string,
         Arca::Index<Asset::Font> font,
-        const Render::Material& material,
+        const Arca::Index<Asset::Material>& material,
         float wrapWidth,
         bool bold,
         bool italics,

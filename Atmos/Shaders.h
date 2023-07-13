@@ -6,8 +6,8 @@ namespace Atmos::Render
 {
     struct Shaders
     {
-        const Asset::Shader* vertex = nullptr;
-        const Asset::Shader* fragment = nullptr;
+        Arca::Index<Asset::Shader> vertex;
+        Arca::Index<Asset::Shader> fragment;
 
         bool operator==(const Shaders& arg) const;
         bool operator!=(const Shaders& arg) const;

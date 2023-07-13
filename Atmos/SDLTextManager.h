@@ -1,9 +1,7 @@
 #pragma once
 
 #include "TextManager.h"
-#include <SDL_ttf.h>
 #include "SDLFontAssetResource.h"
-#include "Color.h"
 
 namespace Atmos::Render::SDL
 {

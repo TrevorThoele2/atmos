@@ -1,10 +1,6 @@
 #pragma once
 
-#include <optional>
-
 #include "Point3D.h"
-#include "Angle2D.h"
-#include "Vector3D.h"
 
 namespace Atmos::Spatial
 {

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GeneralFixture.h"
+#include "RenderingFixture.h"
 
-class LineTestsFixture : public GeneralFixture
+class LineTestsFixture : public RenderingFixture
 {};

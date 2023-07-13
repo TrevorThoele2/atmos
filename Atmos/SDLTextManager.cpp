@@ -2,8 +2,6 @@
 
 #include "SDLTextError.h"
 #include "SDLText.h"
-#include <utf8.h>
-#include "GraphicsError.h"
 
 namespace Atmos::Render::SDL
 {

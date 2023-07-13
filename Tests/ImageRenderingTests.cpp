@@ -17,9 +17,8 @@
 #include <Arca/Create.h>
 #include <Arca/Destroy.h>
 
-#include "DerivedEngine.h"
+#include "RealEngine.h"
 #include "MockImageAssetResource.h"
-#include "MockSurfaceResource.h"
 
 using namespace Atmos;
 using namespace Spatial;
@@ -29,7 +28,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
     GIVEN("setup engine with field")
     {
         Logging::Logger logger(Logging::Severity::Verbose);
-        DerivedEngine engine(logger);
+        RealEngine engine(logger);
 
         auto fieldOrigin = Arca::ReliquaryOrigin();
         RegisterArcaTypes(fieldOrigin);
@@ -40,7 +39,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
             *engine.mockInputManager,
             *engine.mockGraphicsManager,
             *engine.mockTextManager,
-            *engine.mockScriptManager,
+            *engine.scriptManager,
             *engine.worldManager,
             Spatial::Size2D{ 10000, 10000 },
             *engine.mockWindow,
@@ -50,7 +49,6 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
         auto& fieldReliquary = field.Reliquary();
 
         auto mainSurface = fieldReliquary.Find<MainSurface>();
-        auto mainSurfaceImplementation = mainSurface->Resource<MockSurfaceResource>();
 
         const auto camera = fieldReliquary.Find<Camera>();
 
@@ -61,10 +59,12 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
         auto imageAsset = fieldReliquary.Do(Arca::Create<Asset::Image> {
             String{}, std::move(imageResource), Asset::ImageGridSize{}});
 
-        auto material = fieldReliquary.Do(Arca::Create<Asset::Material> {
-            String{}, std::vector<Asset::Material::Pass>{}});
+        auto materialScriptAsset = CompileAndCreateBasicMaterialScript(fieldReliquary);
 
-        auto positions = std::vector<Point3D>
+        auto materialAsset = fieldReliquary.Do(Arca::Create<Asset::Material> {
+            String{}, materialScriptAsset, "main", Scripting::Parameters{} });
+
+        auto positions = std::vector
         {
             Point3D
             {
@@ -85,7 +85,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
                 dataGeneration.Random<Point3D::Value>(TestFramework::Range<Point3D::Value>(-1000, 1000))
             }
         };
-        auto scalers = std::vector<Scalers2D>
+        auto scalers = std::vector
         {
             Scalers2D
             {
@@ -109,7 +109,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
             auto image1 = fieldReliquary.Do(Arca::Create<StaticImage> {
                 imageAsset,
                 0,
-                material,
+                materialAsset,
                 Color{},
                 positions[0],
                 scalers[0],
@@ -117,7 +117,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
             auto image2 = fieldReliquary.Do(Arca::Create<StaticImage> {
                 imageAsset,
                 0,
-                material,
+                materialAsset,
                 Color{},
                 positions[1],
                 scalers[1],
@@ -125,7 +125,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
             auto image3 = fieldReliquary.Do(Arca::Create<StaticImage> {
                 imageAsset,
                 0,
-                material,
+                materialAsset,
                 Color{},
                 positions[2],
                 scalers[2],
@@ -137,21 +137,23 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
 
                 THEN("all images rendered in graphics manager")
                 {
-                    auto& imageRenders = engine.mockGraphicsManager->imageRenders;
-                    REQUIRE(imageRenders.size() == 3);
+                    auto& commands = engine.mockGraphicsManager->commands;
+                    REQUIRE(commands.size() == 3);
 
                     for (auto i = 0; i < 3; ++i)
                     {
                         REQUIRE(std::any_of(
-                            imageRenders.begin(),
-                            imageRenders.end(),
-                            [i, &positions, &scalers, cameraLeft, cameraTop](const RenderImage& entry)
+                            commands.begin(),
+                            commands.end(),
+                            [i, &positions, &scalers, cameraLeft, cameraTop](const Raster::Command& command)
                             {
                                 auto expectedPosition = positions[i];
                                 expectedPosition.x -= cameraLeft;
                                 expectedPosition.y -= cameraTop;
 
-                                return entry.position == expectedPosition;
+                                auto drawCommand = std::get<Raster::DrawImage>(command);
+
+                                return drawCommand.position == ToPoint2D(expectedPosition);
                             }));
                     }
                 }
@@ -168,21 +170,23 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
 
                 THEN("images were rendered only once")
                 {
-                    auto& imageRenders = engine.mockGraphicsManager->imageRenders;
-                    REQUIRE(imageRenders.size() == 3);
+                    auto& commands = engine.mockGraphicsManager->commands;
+                    REQUIRE(commands.size() == 3);
 
                     for (auto i = 0; i < 3; ++i)
                     {
                         REQUIRE(std::any_of(
-                            imageRenders.begin(),
-                            imageRenders.end(),
-                            [i, &positions, &scalers, cameraLeft, cameraTop](const RenderImage& entry)
+                            commands.begin(),
+                            commands.end(),
+                            [i, &positions, &scalers, cameraLeft, cameraTop](const Raster::Command& command)
                             {
                                 auto expectedPosition = positions[i];
                                 expectedPosition.x -= cameraLeft;
                                 expectedPosition.y -= cameraTop;
 
-                                return entry.position == expectedPosition;
+                                auto drawCommand = std::get<Raster::DrawImage>(command);
+
+                                return drawCommand.position == ToPoint2D(expectedPosition);
                             }));
                     }
                 }
@@ -194,7 +198,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
             fieldReliquary.Do(Arca::Create<StaticImage>{
                 Arca::Index<Asset::Image>{},
                 0,
-                material,
+                materialAsset,
                 Color{},
                 positions[0],
                 scalers[0],
@@ -202,7 +206,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
             fieldReliquary.Do(Arca::Create<StaticImage> {
                 Arca::Index<Asset::Image>{},
                 0,
-                material,
+                materialAsset,
                 Color{},
                 positions[1],
                 scalers[1],
@@ -210,7 +214,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
             fieldReliquary.Do(Arca::Create<StaticImage> {
                 Arca::Index<Asset::Image>{},
                 0,
-                material,
+                materialAsset,
                 Color{},
                 positions[2],
                 scalers[2],
@@ -222,13 +226,13 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
 
                 THEN("no images rendered in graphics manager")
                 {
-                    auto& imageRenders = engine.mockGraphicsManager->imageRenders;
-                    REQUIRE(imageRenders.empty());
+                    auto& commands = engine.mockGraphicsManager->commands;
+                    REQUIRE(commands.empty());
                 }
             }
         }
 
-        WHEN("creating static images without material")
+        WHEN("creating static images without materialAsset")
         {
             fieldReliquary.Do(Arca::Create<StaticImage>{
                 imageAsset,
@@ -261,8 +265,8 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
 
                 THEN("no images rendered in graphics manager")
                 {
-                    auto& imageRenders = engine.mockGraphicsManager->imageRenders;
-                    REQUIRE(imageRenders.empty());
+                    auto& commands = engine.mockGraphicsManager->commands;
+                    REQUIRE(commands.empty());
                 }
             }
         }
@@ -272,7 +276,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
             auto image1 = fieldReliquary.Do(Arca::Create<DynamicImage> {
                 imageAsset,
                 0,
-                material,
+                materialAsset,
                 Color{},
                 positions[0],
                 scalers[0],
@@ -280,7 +284,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
             auto image2 = fieldReliquary.Do(Arca::Create<DynamicImage> {
                 imageAsset,
                 0,
-                material,
+                materialAsset,
                 Color{},
                 positions[1],
                 scalers[1],
@@ -288,7 +292,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
             auto image3 = fieldReliquary.Do(Arca::Create<DynamicImage> {
                 imageAsset,
                 0,
-                material,
+                materialAsset,
                 Color{},
                 positions[2],
                 scalers[2],
@@ -301,21 +305,23 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
 
                 THEN("all images rendered in graphics manager")
                 {
-                    auto& imageRenders = engine.mockGraphicsManager->imageRenders;
-                    REQUIRE(imageRenders.size() == 3);
+                    auto& commands = engine.mockGraphicsManager->commands;
+                    REQUIRE(commands.size() == 3);
 
                     for (auto i = 0; i < 3; ++i)
                     {
                         REQUIRE(std::any_of(
-                            imageRenders.begin(),
-                            imageRenders.end(),
-                            [i, &positions, &scalers, cameraLeft, cameraTop](const RenderImage& entry)
+                            commands.begin(),
+                            commands.end(),
+                            [i, &positions, &scalers, cameraLeft, cameraTop](const Raster::Command& command)
                             {
                                 auto expectedPosition = positions[i];
                                 expectedPosition.x -= cameraLeft;
                                 expectedPosition.y -= cameraTop;
 
-                                return entry.position == expectedPosition;
+                                auto drawCommand = std::get<Raster::DrawImage>(command);
+
+                                return drawCommand.position == ToPoint2D(expectedPosition);
                             }));
                     }
                 }
@@ -332,21 +338,23 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
 
                 THEN("images were rendered only once")
                 {
-                    auto& imageRenders = engine.mockGraphicsManager->imageRenders;
-                    REQUIRE(imageRenders.size() == 3);
+                    auto& commands = engine.mockGraphicsManager->commands;
+                    REQUIRE(commands.size() == 3);
 
                     for (auto i = 0; i < 3; ++i)
                     {
                         REQUIRE(std::any_of(
-                            imageRenders.begin(),
-                            imageRenders.end(),
-                            [i, &positions, &scalers, cameraLeft, cameraTop](const RenderImage& entry)
+                            commands.begin(),
+                            commands.end(),
+                            [i, &positions, &scalers, cameraLeft, cameraTop](const Raster::Command& command)
                             {
                                 auto expectedPosition = positions[i];
                                 expectedPosition.x -= cameraLeft;
                                 expectedPosition.y -= cameraTop;
 
-                                return entry.position == expectedPosition;
+                                auto drawCommand = std::get<Raster::DrawImage>(command);
+
+                                return drawCommand.position == ToPoint2D(expectedPosition);
                             }));
                     }
                 }
@@ -358,7 +366,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
             fieldReliquary.Do(Arca::Create<DynamicImage> {
                 Arca::Index<Asset::Image>{},
                 0,
-                material,
+                materialAsset,
                 Color{},
                 positions[0],
                 scalers[0],
@@ -366,7 +374,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
             fieldReliquary.Do(Arca::Create<DynamicImage> {
                 Arca::Index<Asset::Image>{},
                 0,
-                material,
+                materialAsset,
                 Color{},
                 positions[1],
                 scalers[1],
@@ -374,7 +382,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
             fieldReliquary.Do(Arca::Create<DynamicImage> {
                 Arca::Index<Asset::Image>{},
                 0,
-                material,
+                materialAsset,
                 Color{},
                 positions[2],
                 scalers[2],
@@ -386,13 +394,13 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
 
                 THEN("no images rendered in graphics manager")
                 {
-                    auto& imageRenders = engine.mockGraphicsManager->imageRenders;
-                    REQUIRE(imageRenders.empty());
+                    auto& commands = engine.mockGraphicsManager->commands;
+                    REQUIRE(commands.empty());
                 }
             }
         }
 
-        WHEN("creating dynamic images without material")
+        WHEN("creating dynamic images without materialAsset")
         {
             fieldReliquary.Do(Arca::Create<DynamicImage> {
                 imageAsset,
@@ -425,8 +433,8 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
 
                 THEN("no images rendered in graphics manager")
                 {
-                    auto& imageRenders = engine.mockGraphicsManager->imageRenders;
-                    REQUIRE(imageRenders.empty());
+                    auto& commands = engine.mockGraphicsManager->commands;
+                    REQUIRE(commands.empty());
                 }
             }
         }
@@ -438,7 +446,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering culled images", "[render]
     GIVEN("setup engine with field")
     {
         Logging::Logger logger(Logging::Severity::Verbose);
-        DerivedEngine engine(logger);
+        RealEngine engine(logger);
 
         auto fieldOrigin = Arca::ReliquaryOrigin();
         RegisterFieldTypes(
@@ -448,9 +456,9 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering culled images", "[render]
             *engine.mockInputManager,
             *engine.mockGraphicsManager,
             *engine.mockTextManager,
-            *engine.mockScriptManager,
+            *engine.scriptManager,
             *engine.worldManager,
-            Spatial::Size2D{
+            Size2D{
                 100,
                 100 },
             *engine.mockWindow,
@@ -460,7 +468,6 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering culled images", "[render]
         auto& fieldReliquary = field.Reliquary();
 
         auto mainSurface = fieldReliquary.Find<MainSurface>();
-        auto mainSurfaceImplementation = mainSurface->Resource<MockSurfaceResource>();
 
         const auto camera = fieldReliquary.Find<Camera>();
 
@@ -471,8 +478,10 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering culled images", "[render]
         auto imageAsset = fieldReliquary.Do(Arca::Create<Asset::Image> {
             String{}, std::move(imageResource), Asset::ImageGridSize{} });
 
+        auto materialScriptAsset = CompileAndCreateBasicMaterialScript(fieldReliquary);
+
         auto materialAsset = fieldReliquary.Do(Arca::Create<Asset::Material> {
-            String{}, std::vector<Asset::Material::Pass>{} });
+            String{}, materialScriptAsset, "main", Scripting::Parameters{} });
 
         WHEN("creating static images and starting execution")
         {
@@ -509,43 +518,49 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering culled images", "[render]
 
             THEN("only images inside the camera are rendered")
             {
-                auto& imageRenders = engine.mockGraphicsManager->imageRenders;
-                REQUIRE(imageRenders.size() == 2);
+                auto& commands = engine.mockGraphicsManager->commands;
+                REQUIRE(commands.size() == 2);
 
                 REQUIRE(std::any_of(
-                    imageRenders.begin(),
-                    imageRenders.end(),
-                    [&image1, cameraLeft, cameraTop](const RenderImage& entry)
+                    commands.begin(),
+                    commands.end(),
+                    [&image1, cameraLeft, cameraTop](const Raster::Command& command)
                     {
                         auto expectedPosition = image1->Position();
                         expectedPosition.x -= cameraLeft;
                         expectedPosition.y -= cameraTop;
 
-                        return entry.position == expectedPosition;
+                        auto drawCommand = std::get<Raster::DrawImage>(command);
+
+                        return drawCommand.position == ToPoint2D(expectedPosition);
                     }));
 
                 REQUIRE(!std::any_of(
-                    imageRenders.begin(),
-                    imageRenders.end(),
-                    [&image2, cameraLeft, cameraTop](const RenderImage& entry)
+                    commands.begin(),
+                    commands.end(),
+                    [&image2, cameraLeft, cameraTop](const Raster::Command& command)
                     {
                         auto expectedPosition = image2->Position();
                         expectedPosition.x -= cameraLeft;
                         expectedPosition.y -= cameraTop;
 
-                        return entry.position == expectedPosition;
+                        auto drawCommand = std::get<Raster::DrawImage>(command);
+
+                        return drawCommand.position == ToPoint2D(expectedPosition);
                     }));
 
                 REQUIRE(std::any_of(
-                    imageRenders.begin(),
-                    imageRenders.end(),
-                    [&image3, cameraLeft, cameraTop](const RenderImage& entry)
+                    commands.begin(),
+                    commands.end(),
+                    [&image3, cameraLeft, cameraTop](const Raster::Command& command)
                     {
                         auto expectedPosition = image3->Position();
                         expectedPosition.x -= cameraLeft;
                         expectedPosition.y -= cameraTop;
 
-                        return entry.position == expectedPosition;
+                        auto drawCommand = std::get<Raster::DrawImage>(command);
+
+                        return drawCommand.position == ToPoint2D(expectedPosition);
                     }));
             }
         }
@@ -568,8 +583,8 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering culled images", "[render]
 
             THEN("moving them outside the camera causes culling")
             {
-                auto& imageRenders = engine.mockGraphicsManager->imageRenders;
-                REQUIRE(imageRenders.empty());
+                auto& commands = engine.mockGraphicsManager->commands;
+                REQUIRE(commands.empty());
             }
         }
 
@@ -591,8 +606,8 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering culled images", "[render]
 
             THEN("moving them outside the camera causes culling")
             {
-                auto& imageRenders = engine.mockGraphicsManager->imageRenders;
-                REQUIRE(imageRenders.empty());
+                auto& commands = engine.mockGraphicsManager->commands;
+                REQUIRE(commands.empty());
             }
         }
 
@@ -614,8 +629,8 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering culled images", "[render]
 
             THEN("moving them outside the camera causes culling")
             {
-                auto& imageRenders = engine.mockGraphicsManager->imageRenders;
-                REQUIRE(imageRenders.empty());
+                auto& commands = engine.mockGraphicsManager->commands;
+                REQUIRE(commands.empty());
             }
         }
     }
@@ -626,7 +641,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering view sliced images", "[re
     GIVEN("setup engine with field")
     {
         Logging::Logger logger(Logging::Severity::Verbose);
-        DerivedEngine engine(logger);
+        RealEngine engine(logger);
 
         auto fieldOrigin = Arca::ReliquaryOrigin();
         RegisterArcaTypes(fieldOrigin);
@@ -637,7 +652,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering view sliced images", "[re
             *engine.mockInputManager,
             *engine.mockGraphicsManager,
             *engine.mockTextManager,
-            *engine.mockScriptManager,
+            *engine.scriptManager,
             *engine.worldManager,
             Size2D{ 10000, 10000 },
             *engine.mockWindow,
@@ -647,7 +662,6 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering view sliced images", "[re
         auto& fieldReliquary = field.Reliquary();
 
         auto mainSurface = fieldReliquary.Find<MainSurface>();
-        auto mainSurfaceImplementation = mainSurface->Resource<MockSurfaceResource>();
 
         const auto camera = fieldReliquary.Find<Camera>();
         
@@ -656,8 +670,10 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering view sliced images", "[re
         auto imageAsset = fieldReliquary.Do(Arca::Create<Asset::Image> {
             String{}, std::move(imageResource), Asset::ImageGridSize{ 2, 2 }});
 
-        auto material = fieldReliquary.Do(Arca::Create<Asset::Material> {
-            String{}, std::vector<Asset::Material::Pass>{}});
+        auto materialScriptAsset = CompileAndCreateBasicMaterialScript(fieldReliquary);
+
+        auto materialAsset = fieldReliquary.Do(Arca::Create<Asset::Material> {
+            String{}, materialScriptAsset, "main", Scripting::Parameters{} });
 
         const auto position = Point3D
         {
@@ -665,14 +681,14 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering view sliced images", "[re
             dataGeneration.Random<Point3D::Value>(TestFramework::Range<Point3D::Value>(-1000, 1000)),
             dataGeneration.Random<Point3D::Value>(TestFramework::Range<Point3D::Value>(-1000, 1000))
         };
-        const auto scalers = Scalers2D{ 10, 10 };
+        constexpr auto scalers = Scalers2D{ 10, 10 };
 
         WHEN("creating static images with view slices and an asset index of 0")
         {
             auto image = fieldReliquary.Do(Arca::Create<StaticImage> {
                 imageAsset,
                 0,
-                material,
+                materialAsset,
                 Color{},
                 position,
                 scalers,
@@ -686,14 +702,14 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering view sliced images", "[re
 
                 THEN("image rendered with correct view slice")
                 {
-                    auto& imageRenders = engine.mockGraphicsManager->imageRenders;
-                    REQUIRE(imageRenders.size() == 1);
+                    auto& commands = engine.mockGraphicsManager->commands;
+                    REQUIRE(commands.size() == 1);
 
-                    const auto render = imageRenders[0];
-                    REQUIRE(render.viewSlice.Left() == Approx(20));
-                    REQUIRE(render.viewSlice.Top() == Approx(30));
-                    REQUIRE(render.viewSlice.Right() == Approx(40));
-                    REQUIRE(render.viewSlice.Bottom() == Approx(50));
+                    const auto drawCommand = std::get<Raster::DrawImage>(commands[0]);
+                    REQUIRE(drawCommand.viewSlice.Left() == Approx(20));
+                    REQUIRE(drawCommand.viewSlice.Top() == Approx(30));
+                    REQUIRE(drawCommand.viewSlice.Right() == Approx(40));
+                    REQUIRE(drawCommand.viewSlice.Bottom() == Approx(50));
                 }
             }
         }
@@ -703,7 +719,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering view sliced images", "[re
             auto image = fieldReliquary.Do(Arca::Create<StaticImage> {
                 imageAsset,
                 3,
-                material,
+                materialAsset,
                 Color{},
                 position,
                 scalers,
@@ -717,14 +733,14 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering view sliced images", "[re
 
                 THEN("image rendered with correct view slice")
                 {
-                    auto& imageRenders = engine.mockGraphicsManager->imageRenders;
-                    REQUIRE(imageRenders.size() == 1);
+                    auto& commands = engine.mockGraphicsManager->commands;
+                    REQUIRE(commands.size() == 1);
 
-                    const auto render = imageRenders[0];
-                    REQUIRE(render.viewSlice.Left() == Approx(20));
-                    REQUIRE(render.viewSlice.Top() == Approx(30));
-                    REQUIRE(render.viewSlice.Right() == Approx(40));
-                    REQUIRE(render.viewSlice.Bottom() == Approx(50));
+                    const auto drawCommand = std::get<Raster::DrawImage>(commands[0]);
+                    REQUIRE(drawCommand.viewSlice.Left() == Approx(20));
+                    REQUIRE(drawCommand.viewSlice.Top() == Approx(30));
+                    REQUIRE(drawCommand.viewSlice.Right() == Approx(40));
+                    REQUIRE(drawCommand.viewSlice.Bottom() == Approx(50));
                 }
             }
         }

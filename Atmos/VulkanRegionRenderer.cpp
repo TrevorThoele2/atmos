@@ -3,6 +3,8 @@
 #include "VulkanCommandBuffer.h"
 #include "VulkanMaxFramesInFlight.h"
 
+#include "RasterCommand.h"
+
 namespace Atmos::Render::Vulkan
 {
     RegionRenderer::RegionRenderer(
@@ -43,7 +45,7 @@ namespace Atmos::Render::Vulkan
     std::optional<RendererPass> RegionRenderer::Draw(
         const std::vector<Raster::DrawRegion>& draws, const UniversalDataBuffer& universalDataBuffer)
     {
-        if (draws.empty())
+        if (std::find_if(draws.begin(), draws.end(), [](const Raster::Command& command) { return std::holds_alternative<Raster::DrawRegion>(command); }) == draws.end())
             return {};
 
         struct Group

@@ -4,14 +4,12 @@
 
 #include <Atmos/Line.h>
 #include <Atmos/TypeRegistration.h>
-#include <Atmos/StringUtility.h>
 #include <Atmos/Camera.h>
 #include <Atmos/MainSurface.h>
 #include <Arca/Create.h>
 #include <Arca/Destroy.h>
 
-#include "DerivedEngine.h"
-#include "MockSurfaceResource.h"
+#include "RealEngine.h"
 
 using namespace Atmos;
 
@@ -20,7 +18,7 @@ SCENARIO_METHOD(LineRenderingTestsFixture, "rendering lines", "[render]")
     GIVEN("setup engine with field")
     {
         Logging::Logger logger(Logging::Severity::Verbose);
-        DerivedEngine engine(logger);
+        RealEngine engine(logger);
 
         auto fieldOrigin = Arca::ReliquaryOrigin();
         RegisterFieldTypes(
@@ -30,7 +28,7 @@ SCENARIO_METHOD(LineRenderingTestsFixture, "rendering lines", "[render]")
             *engine.mockInputManager,
             *engine.mockGraphicsManager,
             *engine.mockTextManager,
-            *engine.mockScriptManager,
+            *engine.scriptManager,
             *engine.worldManager,
             Spatial::Size2D{
                 std::numeric_limits<Spatial::Size2D::Value>::max(),
@@ -42,10 +40,11 @@ SCENARIO_METHOD(LineRenderingTestsFixture, "rendering lines", "[render]")
         auto& fieldReliquary = field.Reliquary();
 
         const auto mainSurface = fieldReliquary.Find<MainSurface>();
-        auto mainSurfaceImplementation = mainSurface->Resource<MockSurfaceResource>();
+
+        auto materialScriptAsset = CompileAndCreateBasicMaterialScript(fieldReliquary);
 
         auto materialAsset = fieldReliquary.Do(Arca::Create<Asset::Material> {
-            String{}, std::vector<Asset::Material::Pass>{} });
+            String{}, materialScriptAsset, "main", Scripting::Parameters{} });
 
         const auto camera = fieldReliquary.Find<Camera>();
 
@@ -54,7 +53,7 @@ SCENARIO_METHOD(LineRenderingTestsFixture, "rendering lines", "[render]")
 
         WHEN("creating lines")
         {
-            auto fromPositions = std::vector<Spatial::Point2D>
+            auto fromPositions = std::vector
             {
                 Spatial::Point2D
                 {
@@ -79,7 +78,7 @@ SCENARIO_METHOD(LineRenderingTestsFixture, "rendering lines", "[render]")
                 }
             };
 
-            auto toPositions = std::vector<Spatial::Point2D>
+            auto toPositions = std::vector
             {
                 Spatial::Point2D
                 {
@@ -104,11 +103,11 @@ SCENARIO_METHOD(LineRenderingTestsFixture, "rendering lines", "[render]")
                 }
             };
             auto line1 = fieldReliquary.Do(Arca::Create<Line>{
-                std::vector<Spatial::Point2D>{ fromPositions[0], toPositions[0] }, materialAsset});
+                std::vector{ fromPositions[0], toPositions[0] }, materialAsset});
             auto line2 = fieldReliquary.Do(Arca::Create<Line>{
-                std::vector<Spatial::Point2D>{ fromPositions[1], toPositions[1] }, materialAsset});
+                std::vector{ fromPositions[1], toPositions[1] }, materialAsset});
             auto line3 = fieldReliquary.Do(Arca::Create<Line>{
-                std::vector<Spatial::Point2D>{ fromPositions[2], toPositions[2] }, materialAsset});
+                std::vector{ fromPositions[2], toPositions[2] }, materialAsset});
 
             WHEN("starting engine execution")
             {
@@ -117,16 +116,18 @@ SCENARIO_METHOD(LineRenderingTestsFixture, "rendering lines", "[render]")
 
                 THEN("all lines rendered in graphics manager")
                 {
-                    auto& lineRenders = engine.mockGraphicsManager->lineRenders;
-                    REQUIRE(lineRenders.size() == 3);
+                    auto& commands = engine.mockGraphicsManager->commands;
+                    REQUIRE(commands.size() == 3);
 
                     for (auto i = 0; i < 3; ++i)
                     {
                         REQUIRE(std::any_of(
-                            lineRenders.begin(),
-                            lineRenders.end(),
-                            [i, &fromPositions, &toPositions, cameraLeft, cameraTop](const RenderLine& entry)
+                            commands.begin(),
+                            commands.end(),
+                            [i, &fromPositions, &toPositions, cameraLeft, cameraTop](const Raster::Command& command)
                             {
+                                auto drawCommand = std::get<Raster::DrawLine>(command);
+
                                 auto expectedFromPosition = fromPositions[i];
                                 expectedFromPosition.x -= cameraLeft;
                                 expectedFromPosition.y -= cameraTop;
@@ -135,7 +136,7 @@ SCENARIO_METHOD(LineRenderingTestsFixture, "rendering lines", "[render]")
                                 expectedToPosition.x -= cameraLeft;
                                 expectedToPosition.y -= cameraTop;
 
-                                return entry.points[0] == expectedFromPosition && entry.points[1] == expectedToPosition;
+                                return drawCommand.points[0] == expectedFromPosition && drawCommand.points[1] == expectedToPosition;
                             }));
                     }
                 }
@@ -152,16 +153,18 @@ SCENARIO_METHOD(LineRenderingTestsFixture, "rendering lines", "[render]")
 
                 THEN("lines were rendered only once")
                 {
-                    auto& lineRenders = engine.mockGraphicsManager->lineRenders;
-                    REQUIRE(lineRenders.size() == 3);
+                    auto& commands = engine.mockGraphicsManager->commands;
+                    REQUIRE(commands.size() == 3);
 
                     for (auto i = 0; i < 3; ++i)
                     {
                         REQUIRE(std::any_of(
-                            lineRenders.begin(),
-                            lineRenders.end(),
-                            [i, &fromPositions, &toPositions, cameraLeft, cameraTop](const RenderLine& entry)
+                            commands.begin(),
+                            commands.end(),
+                            [i, &fromPositions, &toPositions, cameraLeft, cameraTop](const Raster::Command& command)
                             {
+                                auto drawCommand = std::get<Raster::DrawLine>(command);
+
                                 auto expectedFromPosition = fromPositions[i];
                                 expectedFromPosition.x -= cameraLeft;
                                 expectedFromPosition.y -= cameraTop;
@@ -170,7 +173,7 @@ SCENARIO_METHOD(LineRenderingTestsFixture, "rendering lines", "[render]")
                                 expectedToPosition.x -= cameraLeft;
                                 expectedToPosition.y -= cameraTop;
 
-                                return entry.points[0] == expectedFromPosition && entry.points[1] == expectedToPosition;
+                                return drawCommand.points[0] == expectedFromPosition && drawCommand.points[1] == expectedToPosition;
                             }));
                     }
                 }
@@ -179,7 +182,7 @@ SCENARIO_METHOD(LineRenderingTestsFixture, "rendering lines", "[render]")
 
         WHEN("creating lines without materials")
         {
-            auto fromPositions = std::vector<Spatial::Point2D>
+            auto fromPositions = std::vector
             {
                 Spatial::Point2D
                 {
@@ -204,7 +207,7 @@ SCENARIO_METHOD(LineRenderingTestsFixture, "rendering lines", "[render]")
                 }
             };
 
-            auto toPositions = std::vector<Spatial::Point2D>
+            auto toPositions = std::vector
             {
                 Spatial::Point2D
                 {
@@ -229,11 +232,11 @@ SCENARIO_METHOD(LineRenderingTestsFixture, "rendering lines", "[render]")
                 }
             };
             fieldReliquary.Do(Arca::Create<Line>{
-                std::vector<Spatial::Point2D>{ fromPositions[0], toPositions[0] }, Arca::Index<Asset::Material>{}});
+                std::vector{ fromPositions[0], toPositions[0] }, Arca::Index<Asset::Material>{}});
             fieldReliquary.Do(Arca::Create<Line>{
-                std::vector<Spatial::Point2D>{ fromPositions[1], toPositions[1] }, Arca::Index<Asset::Material>{}});
+                std::vector{ fromPositions[1], toPositions[1] }, Arca::Index<Asset::Material>{}});
             fieldReliquary.Do(Arca::Create<Line>{
-                std::vector<Spatial::Point2D>{ fromPositions[2], toPositions[2] }, Arca::Index<Asset::Material>{}});
+                std::vector{ fromPositions[2], toPositions[2] }, Arca::Index<Asset::Material>{}});
 
             WHEN("starting engine execution")
             {
@@ -242,8 +245,8 @@ SCENARIO_METHOD(LineRenderingTestsFixture, "rendering lines", "[render]")
 
                 THEN("no lines rendered in graphics manager")
                 {
-                    auto& lineRenders = engine.mockGraphicsManager->lineRenders;
-                    REQUIRE(lineRenders.empty());
+                    auto& commands = engine.mockGraphicsManager->commands;
+                    REQUIRE(commands.empty());
                 }
             }
         }

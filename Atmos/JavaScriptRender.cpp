@@ -22,6 +22,8 @@
 #include "JavaScriptRenderCore.h"
 #include "JavaScriptViewSlice.h"
 
+#include "JavaScriptRaster.h"
+
 #include "JavaScriptObject.h"
 #include <Arca/Destroy.h>
 
@@ -67,7 +69,9 @@ namespace Atmos::Scripting::JavaScript
                 { "DestroyRenderCore", ToV8(*isolate, ArcaTraits::From<Arca::Destroy<Render::RenderCore>>()) },
                 { "ViewSlice", ToV8(*isolate, ArcaTraits::From<Render::ViewSlice>()) },
                 { "CreateViewSlice", ToV8(*isolate, ArcaTraits::From<Arca::Create<Render::ViewSlice>>()) },
-                { "DestroyViewSlice", ToV8(*isolate, ArcaTraits::From<Arca::Destroy<Render::ViewSlice>>()) }
+                { "DestroyViewSlice", ToV8(*isolate, ArcaTraits::From<Arca::Destroy<Render::ViewSlice>>()) },
+
+                { "Raster", Type<RasterNamespace>::Traits(data) }
             });
     }
 }

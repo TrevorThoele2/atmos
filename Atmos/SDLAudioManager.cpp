@@ -3,7 +3,7 @@
 #include "SDLAudioAssetResource.h"
 #include "SDLSoundResource.h"
 #include "AudioError.h"
-#include <SDL_mixer.h>
+#include "SDLIncludes.h"
 
 #include "StringUtility.h"
 

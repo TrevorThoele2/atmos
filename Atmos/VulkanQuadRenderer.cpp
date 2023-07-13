@@ -4,6 +4,7 @@
 #include "VulkanCommandBuffer.h"
 #include "VulkanMaxFramesInFlight.h"
 
+#include "RasterCommand.h"
 #include "SpatialAlgorithms.h"
 
 namespace Atmos::Render::Vulkan
@@ -51,27 +52,27 @@ namespace Atmos::Render::Vulkan
     std::optional<RendererPass> QuadRenderer::Draw(
         const std::vector<Raster::DrawImage>& draws, const UniversalDataBuffer& universalDataBuffer)
     {
-        if (draws.empty())
+        if (std::find_if(draws.begin(), draws.end(), [](const Raster::Command& arg) { return std::holds_alternative<Raster::DrawImage>(arg) || std::holds_alternative<Raster::DrawText>(arg); }) == draws.end())
             return {};
         
         struct Group
         {
-            Asset::Resource::Image* assetResource = nullptr;
+            const Asset::Resource::Image* assetResource = nullptr;
             Shaders shaders;
             std::vector<Quad> elements = {};
         };
 
         std::vector<Group> groups;
         auto currentGroup = &groups.emplace_back(
-            draws.begin()->assetResource,
+            draws.begin()->asset->Resource(),
             draws.begin()->shaders,
             std::vector<Quad>{});
         for (auto& draw : draws)
         {
-            if (draw.assetResource != currentGroup->assetResource || draw.shaders != currentGroup->shaders)
+            if (draw.asset->Resource() != currentGroup->assetResource || draw.shaders != currentGroup->shaders)
             {
                 currentGroup = &groups.emplace_back(
-                    draw.assetResource,
+                    draw.asset->Resource(),
                     draw.shaders,
                     std::vector<Quad>{});
             }
@@ -103,7 +104,8 @@ namespace Atmos::Render::Vulkan
                     {
                         const auto descriptorSet = descriptorSets[i];
 
-                        dynamic_cast<Asset::Resource::Vulkan::Image*>(group.assetResource)->imageData.descriptor.Update(descriptorSet, device);
+                        auto& descriptor = dynamic_cast<const Asset::Resource::Vulkan::Image*>(group.assetResource)->imageData.descriptor;
+                        descriptor.Update(descriptorSet, device);
                         universalDataBuffer.Update(descriptorSet);
 
                         record(WriteData(group.elements, totalElements + drawnElements));
@@ -149,22 +151,22 @@ namespace Atmos::Render::Vulkan
 
         struct Group
         {
-            Asset::Resource::Font* fontResource = nullptr;
+            const Asset::Resource::Font* fontResource = nullptr;
             Shaders shaders;
             std::vector<Quad> elements = {};
         };
-
+        
         std::vector<Group> groups;
         auto currentGroup = &groups.emplace_back(
-            draws.begin()->fontResource,
+            draws.begin()->font->Resource(),
             draws.begin()->shaders,
             std::vector<Quad> {});
         for (auto& draw : draws)
         {
-            if (draw.fontResource != currentGroup->fontResource || draw.shaders != currentGroup->shaders)
+            if (draw.font->Resource() != currentGroup->fontResource || draw.shaders != currentGroup->shaders)
             {
                 currentGroup = &groups.emplace_back(
-                    draw.fontResource,
+                    draw.font->Resource(),
                     draw.shaders,
                     std::vector<Quad>{});
             }
@@ -189,7 +191,8 @@ namespace Atmos::Render::Vulkan
                     {
                         const auto descriptorSet = descriptorSets[i];
 
-                        dynamic_cast<Asset::Resource::Vulkan::Image*>(group.fontResource)->imageData.descriptor.Update(descriptorSet, device);
+                        auto& descriptor = dynamic_cast<const Asset::Resource::Vulkan::Image*>(group.fontResource)->imageData.descriptor;
+                        descriptor.Update(descriptorSet, device);
                         universalDataBuffer.Update(descriptorSet);
 
                         record(WriteData(group.elements, totalElements + drawnElements));
@@ -301,7 +304,7 @@ namespace Atmos::Render::Vulkan
         std::vector<Quad> quads;
 
         const auto linesResult = glyphAtlas->ToLines(
-            { draw.fontResource, draw.bold, draw.italics }, draw.string, draw.wrapWidth);
+            { draw.font->Resource(), draw.bold, draw.italics}, draw.string, draw.wrapWidth);
         if (!linesResult)
             return {};
 

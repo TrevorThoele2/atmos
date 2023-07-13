@@ -146,6 +146,7 @@
     <ClCompile Include="ImageTests.cpp" />
     <ClCompile Include="JavaScriptAssetTests.cpp" />
     <ClCompile Include="JavaScriptAudioTests.cpp" />
+    <ClCompile Include="JavaScriptAutomation.cpp" />
     <ClCompile Include="JavaScriptEngine.cpp" />
     <ClCompile Include="JavaScriptEntityTests.cpp" />
     <ClCompile Include="JavaScriptFixture.cpp" />
@@ -177,8 +178,10 @@
     <ClCompile Include="MockWorldManager.cpp" />
     <ClCompile Include="OctreeTests.cpp" />
     <ClCompile Include="PathfinderTests.cpp" />
+    <ClCompile Include="RealEngine.cpp" />
     <ClCompile Include="RenderAlgorithmTests.cpp" />
     <ClCompile Include="LineRenderingTests.cpp" />
+    <ClCompile Include="RenderingFixture.cpp" />
     <ClCompile Include="ScriptTests.cpp" />
     <ClCompile Include="SpatialAlgorithmsTests.cpp" />
     <ClCompile Include="StopwatchTests.cpp" />
@@ -201,6 +204,7 @@
     <ClInclude Include="ImageTests.h" />
     <ClInclude Include="JavaScriptAssetTests.h" />
     <ClInclude Include="JavaScriptAudioTests.h" />
+    <ClInclude Include="JavaScriptAutomation.h" />
     <ClInclude Include="JavaScriptEngine.h" />
     <ClInclude Include="JavaScriptEntityTests.h" />
     <ClInclude Include="JavaScriptFixture.h" />
@@ -232,8 +236,10 @@
     <ClInclude Include="OctreeTests.h" />
     <ClInclude Include="PathfinderTests.h" />
     <ClInclude Include="PixelBuffer.h" />
+    <ClInclude Include="RealEngine.h" />
     <ClInclude Include="RenderAlgorithmTests.h" />
     <ClInclude Include="LineRenderingTests.h" />
+    <ClInclude Include="RenderingFixture.h" />
     <ClInclude Include="ScriptTests.h" />
     <ClInclude Include="SignalListener.h" />
     <ClInclude Include="SpatialAlgorithmsTests.h" />

@@ -45,13 +45,12 @@ std::unique_ptr<Resource::Surface> MockGraphicsManager::CreateSurfaceResourceImp
 }
 
 void MockGraphicsManager::DrawFrameImpl(
-    const AllRenders& allRenders,
+    const Raster::Commands& commands,
     const Spatial::Point2D& mapPosition)
 {
-    imageRenders.insert(imageRenders.end(), allRenders.images.begin(), allRenders.images.end());
-    lineRenders.insert(lineRenders.end(), allRenders.lines.begin(), allRenders.lines.end());
-    textRenders.insert(textRenders.end(), allRenders.texts.begin(), allRenders.texts.end());
-    regionRenders.insert(regionRenders.end(), allRenders.regions.begin(), allRenders.regions.end());
+    for (auto& surface : commands)
+        for (auto& command : surface.second)
+            this->commands.push_back(command);
 }
 
 void MockGraphicsManager::ResourceDestroyingImpl(Asset::Resource::Image& resource)

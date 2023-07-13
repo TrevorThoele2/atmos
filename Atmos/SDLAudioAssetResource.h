@@ -2,7 +2,7 @@
 
 #include "AudioAssetResource.h"
 
-#include <SDL.h>
+#include "SDLIncludes.h"
 
 #include "Buffer.h"
 
@@ -15,7 +15,7 @@ namespace Atmos::Asset::Resource::SDL
 
         SDL_RWops* ops = nullptr;
     public:
-        Audio(const Buffer& buffer);
+        explicit Audio(const Buffer& buffer);
         ~Audio();
     };
 }

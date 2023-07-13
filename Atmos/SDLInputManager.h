@@ -2,14 +2,14 @@
 
 #include "InputManager.h"
 
-#include <SDL.h>
+#include "SDLIncludes.h"
 
 namespace Atmos::Input
 {
     class SDLManager final : public Manager
     {
     public:
-        SDLManager(Logging::Logger& logger);
+        explicit SDLManager(Logging::Logger& logger);
 
         [[nodiscard]] State ReadState() const override;
     private:

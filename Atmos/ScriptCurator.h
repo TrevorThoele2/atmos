@@ -7,11 +7,10 @@
 #include "ScriptResult.h"
 
 #include "Work.h"
-#include "SuspendScript.h"
 #include "CompileScript.h"
 #include "ExecuteScript.h"
+#include "ExecuteMaterial.h"
 #include "CreateScriptAssetResource.h"
-#include "CurrentExecutingScript.h"
 
 class asIScriptFunction;
 class asIScriptContext;
@@ -26,23 +25,25 @@ namespace Atmos::Scripting
         void Handle(const Work& command);
         std::vector<CompiledModule> Handle(const Compile& command);
         std::optional<Result> Handle(const Execute& command);
+        std::optional<Result> Handle(const ExecuteMaterial& command);
 
         std::unique_ptr<Asset::Resource::Script> Handle(
             const Asset::Resource::Create<Asset::Resource::Script>& command);
     private:
         Manager* manager;
     private:
+        const ScriptData* current = nullptr;
+
         struct RunningScript
         {
             Arca::RelicID id = Arca::nullRelicID;
-            const Script* script = nullptr;
-            RunningScript(Arca::RelicID id, const Script* script);
-            RunningScript(const RunningScript& arg);
+            Script* script = nullptr;
         };
 
-        [[nodiscard]] static std::vector<RunningScript> RunningScripts(const Arca::Batch<Script>& batch);
+        [[nodiscard]] std::vector<RunningScript> RunningScripts(const Arca::Batch<Script>& batch);
 
-        std::optional<Result> DoExecute(Arca::RelicID id, CurrentExecutingScript& currentExecutingScript);
+        std::optional<Result> DoExecute(ScriptData* script);
+        std::optional<Result> HandleScriptResult(const std::optional<Result>& result, Arca::RelicID id);
     };
 }
 
@@ -57,6 +58,7 @@ namespace Arca
             Atmos::Work,
             Atmos::Scripting::Compile,
             Atmos::Scripting::Execute,
+            Atmos::Scripting::ExecuteMaterial,
             Atmos::Asset::Resource::Create<Atmos::Asset::Resource::Script>>;
     };
 }

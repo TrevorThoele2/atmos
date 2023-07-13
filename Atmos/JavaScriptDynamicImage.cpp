@@ -42,10 +42,10 @@ namespace Atmos::Scripting::JavaScript
                 const auto rotation = definition.rotation.AtmosValue();
                 return id && asset && assetIndex && material && color && position && scalers && rotation
                     ? DynamicImage
-                {
-                    *id, *asset, *assetIndex, *material, *color, *position, *scalers, *rotation
-                }
-                : std::optional<DynamicImage>{};
+                    {
+                        *id, *asset, *assetIndex, *material, *color, *position, *scalers, *rotation
+                    }
+                    : std::optional<DynamicImage>{};
             });
     }
 

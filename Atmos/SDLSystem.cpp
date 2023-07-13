@@ -1,6 +1,6 @@
 #include "SDLSystem.h"
 
-#include <SDL.h>
+#include "SDLIncludes.h"
 #include "SystemCreationFailed.h"
 
 namespace Atmos::System

@@ -3,7 +3,6 @@
 #include "AssetResourceTraits.h"
 
 #include "LoadedGlyph.h"
-#include "Size2D.h"
 
 namespace Atmos::Asset::Resource
 {

@@ -2,9 +2,7 @@
 
 #include "ArcaRelicIncludes.h"
 
-#include "ScriptAsset.h"
-#include "ScriptParameters.h"
-#include "ScriptResource.h"
+#include "ScriptData.h"
 #include "FindAssetByName.h"
 
 #include <Inscription/VectorScribe.h>
@@ -16,39 +14,20 @@ namespace Atmos::Scripting
     class Script final
     {
     public:
-        using ResourceT = Resource;
-        using ResourcePtr = std::unique_ptr<ResourceT>;
+        using Data = ScriptData;
     public:
-        Arca::Index<Asset::Script> asset;
-        String executeName;
-        Parameters parameters;
-
-        bool isSuspended = false;
+        Data data;
     public:
         Script(Arca::RelicInit init, Arca::Index<Asset::Script> asset, const String& executeName, Parameters parameters);
         explicit Script(Arca::RelicInit init, Arca::Serialization);
 
         bool operator==(const Script& arg) const;
         bool operator!=(const Script& arg) const;
-
-        [[nodiscard]] Resource* Resource() const;
-        template<class ResourceT>
-        [[nodiscard]] ResourceT* Resource() const;
-    public:
-        void Setup(ResourcePtr&& set);
-    private:
-        ResourcePtr resource;
     private:
         Arca::RelicInit init;
     private:
         INSCRIPTION_ACCESS;
     };
-
-    template<class ResourceT>
-    ResourceT* Script::Resource() const
-    {
-        return static_cast<ResourceT*>(resource.get());
-    }
 }
 
 namespace Arca
@@ -72,10 +51,10 @@ namespace Inscription
         template<class Format>
         void Scriven(ObjectT& object, Format& format)
         {
-            format("asset", object.asset);
-            format("executeName", object.executeName);
-            format("parameters", object.parameters);
-            format("isSuspended", object.isSuspended);
+            format("asset", object.data.asset);
+            format("executeName", object.data.executeName);
+            format("parameters", object.data.parameters);
+            format("isSuspended", object.data.isSuspended);
         }
     };
 

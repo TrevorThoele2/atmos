@@ -9,10 +9,8 @@ namespace Atmos::Render::Resource::Vulkan
     public:
         BackingSurface* backing;
 
-        Surface(BackingSurface& backing);
+        explicit Surface(BackingSurface& backing);
         
-        void OnMaterialDestroying(const Asset::Material& material) override;
-
         [[nodiscard]] Spatial::Size2D Size() const override;
     };
 }

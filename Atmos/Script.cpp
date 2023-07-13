@@ -10,9 +10,7 @@ namespace Atmos::Scripting
         const String& executeName,
         Parameters parameters)
         :
-        asset(asset),
-        executeName(executeName),
-        parameters(parameters),
+        data(asset, executeName, parameters),
         init(init)
     {
         init.Create<DataCore>();
@@ -23,24 +21,11 @@ namespace Atmos::Scripting
 
     bool Script::operator==(const Script& arg) const
     {
-        return IndexEqualsValue(asset, arg.asset)
-            && executeName == arg.executeName
-            && parameters == arg.parameters
-            && isSuspended == arg.isSuspended;
+        return data == arg.data;
     }
 
     bool Script::operator!=(const Script& arg) const
     {
         return !(*this == arg);
-    }
-
-    Resource* Script::Resource() const
-    {
-        return resource.get();
-    }
-
-    void Script::Setup(ResourcePtr&& set)
-    {
-        resource = std::move(set);
     }
 }

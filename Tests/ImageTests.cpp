@@ -6,19 +6,17 @@
 #include <Atmos/DynamicImage.h>
 #include <Atmos/FindImagesByBox.h>
 #include <Atmos/TypeRegistration.h>
-#include <Atmos/SpatialAlgorithms.h>
 #include <Arca/Create.h>
 
-#include "DerivedEngine.h"
+#include "JavaScriptEngine.h"
 #include "MockImageAssetResource.h"
-#include "MockSurfaceResource.h"
 
 using namespace Atmos;
 using namespace Spatial;
 
 ImageTestsFixture::ImageTestsFixture() : logger(Logging::Severity::Verbose)
 {
-    DerivedEngine engine(logger);
+    JavaScriptEngine engine(logger);
 
     auto fieldOrigin = Arca::ReliquaryOrigin();
     RegisterArcaTypes(fieldOrigin);
@@ -29,8 +27,8 @@ ImageTestsFixture::ImageTestsFixture() : logger(Logging::Severity::Verbose)
         *engine.mockInputManager,
         *engine.mockGraphicsManager,
         *engine.mockTextManager,
-        *engine.mockScriptManager,
-        *engine.worldManager,
+        *engine.scriptManager,
+        *engine.mockWorldManager,
         Size2D{
             std::numeric_limits<Size2D::Value>::max(),
             std::numeric_limits<Size2D::Value>::max() },
@@ -40,8 +38,10 @@ ImageTestsFixture::ImageTestsFixture() : logger(Logging::Severity::Verbose)
 
     fieldReliquary = &field.Reliquary();
 
+    auto materialScriptAsset = CompileAndCreateBasicMaterialScript(*fieldReliquary);
+
     materialAsset = fieldReliquary->Do(Arca::Create<Asset::Material> {
-        String{}, std::vector<Asset::Material::Pass>{}});
+        String{}, materialScriptAsset, "main", Scripting::Parameters{} });
 }
 
 SCENARIO_METHOD(ImageTestsFixture, "images", "[render]")

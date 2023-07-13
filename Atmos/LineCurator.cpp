@@ -76,7 +76,7 @@ namespace Atmos::Render
         const MainSurface& mainSurface)
     {
         const auto material = value.renderCore->material;
-        if (material.script)
+        if (material)
         {
             std::vector<Spatial::Point2D> adjustedPoints;
             for (auto& point : value.points)
@@ -86,8 +86,8 @@ namespace Atmos::Render
             {
                 Raster::Line
                 {
-                    .points = adjustedPoints,
                     .material = material,
+                    .points = adjustedPoints,
                     .width = value.width,
                     .color = value.renderCore->color
                 },

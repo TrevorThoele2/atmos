@@ -15,10 +15,5 @@ namespace Atmos::Render
     Surface::Surface(Arca::RelicInit init, ResourcePtr&& resource) :
         core(init.Create<Core>(std::move(resource))),
         init(init)
-    {
-        init.owner.On<Arca::DestroyingKnown<Asset::Material>>([this](const auto& signal)
-            {
-                Resource()->OnMaterialDestroying(*signal.index);
-            });
-    }
+    {}
 }

@@ -66,7 +66,7 @@ namespace Atmos::Scripting::JavaScript
         if (!value)
             return v8::Null(&isolate);
 
-        const auto asset = value->asset;
+        const auto asset = value->data.asset;
 
         return JavaScript::ToV8(
             isolate,
@@ -80,8 +80,8 @@ namespace Atmos::Scripting::JavaScript
                         asset->Name()
                     }
                     : std::optional<ScriptAsset>(),
-                value->executeName,
-                value->parameters
+                value->data.executeName,
+                value->data.parameters
             });
     }
 

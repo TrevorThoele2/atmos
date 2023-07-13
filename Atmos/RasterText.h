@@ -5,17 +5,17 @@
 #include "Scalers2D.h"
 #include "AxisAlignedBox2D.h"
 #include "Color.h"
-#include "Material.h"
-#include "FontAssetResource.h"
+#include "MaterialAsset.h"
+#include "FontAsset.h"
 
 namespace Atmos::Render::Raster
 {
     struct Text
     {
+        Arca::Index<Asset::Material> material;
         String string;
-        Asset::Resource::Font* fontResource = nullptr;
+        Arca::Index<Asset::Font> font;
         Spatial::AxisAlignedBox2D viewSlice;
-        Material material;
         Color color;
         bool bold = false;
         bool italics = false;

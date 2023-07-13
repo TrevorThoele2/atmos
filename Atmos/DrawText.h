@@ -6,18 +6,18 @@
 #include "AxisAlignedBox2D.h"
 #include "Color.h"
 #include "SurfaceResource.h"
-#include "FontAssetResource.h"
-
-#undef DrawText;
+#include "FontAsset.h"
+#include "Shaders.h"
 
 namespace Atmos::Render::Raster
 {
     struct DrawText
     {
-        Shaders shaders;
         Resource::Surface* surface = nullptr;
+
+        Shaders shaders;
         String string;
-        Asset::Resource::Font* fontResource = nullptr;
+        Arca::Index<Asset::Font> font;
         Spatial::AxisAlignedBox2D viewSlice;
         Color color;
         bool bold = false;

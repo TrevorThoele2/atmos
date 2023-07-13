@@ -166,12 +166,6 @@ namespace Atmos::Render::Vulkan
         }
     }
 
-    void GraphicsManager::PruneResourcesImpl()
-    {
-        WaitForSurfacesIdle();
-        destroyedResources.clear();
-    }
-
     Atmos::Buffer GraphicsManager::CompileShaderImpl(const File::Path& filePath)
     {
 #ifndef NDEBUG
@@ -198,6 +192,12 @@ namespace Atmos::Render::Vulkan
     {
         const auto lines = glyphAtlas->ToLines({ &resource, bold, italics }, string, wrapWidth);
         return lines ? lines->totalSize : Spatial::Size2D{};
+    }
+
+    void GraphicsManager::PruneResourcesImpl()
+    {
+        WaitForSurfacesIdle();
+        destroyedResources.clear();
     }
     
     void GraphicsManager::MoveToDestroyedResource(StoredResource& resource)

@@ -63,6 +63,8 @@
 #include "JavaScriptRenderCore.h"
 #include "JavaScriptTextBaseSize.h"
 #include "JavaScriptViewSlice.h"
+#include "JavaScriptExecutingMaterial.h"
+#include "JavaScriptRecordRasterCommands.h"
 #include "JavaScriptScript.h"
 #include "FindAssetByName.h"
 
@@ -112,6 +114,7 @@ namespace Atmos::Scripting::JavaScript
         RegisterCommand<Atmos::Render::FindGridRegionsByBox>(*userData);
         RegisterCommand<Atmos::Render::MoveLine>(*userData);
         RegisterCommand<Atmos::Render::TextBaseSize>(*userData);
+        RegisterCommand<Atmos::Render::Raster::RecordCommands>(*userData);
 
         RegisterSignal<Input::MouseMoved>(*userData);
         RegisterSignal<Input::ActionPressed>(*userData);
@@ -171,6 +174,7 @@ namespace Atmos::Scripting::JavaScript
 
         RegisterFind<Diagnostics::Statistics>(*userData);
         RegisterFind<Render::Camera>(*userData);
+        RegisterFind<Render::Raster::ExecutingMaterial>(*userData);
         RegisterFind<Input::Information>(*userData);
 
         return CreateObject(

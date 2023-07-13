@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GeneralFixture.h"
+#include "RenderingFixture.h"
 
-class UIImageTestsFixture : public GeneralFixture
+class UIImageTestsFixture : public RenderingFixture
 {};

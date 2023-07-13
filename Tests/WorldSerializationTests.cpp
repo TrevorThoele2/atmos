@@ -11,10 +11,10 @@
 #include <Atmos/AssetsFileExtension.h>
 #include <Atmos/Camera.h>
 #include <Atmos/MainSurface.h>
+#include <Atmos/SpatialAlgorithms.h>
 #include <Arca/Create.h>
 
-#include "DerivedEngine.h"
-#include "MockSurfaceResource.h"
+#include "RealEngine.h"
 #include "MockImageAssetResource.h"
 #include "PixelBuffer.h"
 
@@ -23,7 +23,7 @@ SCENARIO_METHOD(WorldSerializationTestsFixture, "rendering after world serializa
     GIVEN("setup engine with field")
     {
         Logging::Logger logger(Logging::Severity::Verbose);
-        DerivedEngine engine(logger);
+        RealEngine engine(logger);
 
         auto fieldOrigin = Arca::ReliquaryOrigin();
         RegisterFieldTypes(
@@ -33,7 +33,7 @@ SCENARIO_METHOD(WorldSerializationTestsFixture, "rendering after world serializa
             *engine.mockInputManager,
             *engine.mockGraphicsManager,
             *engine.mockTextManager,
-            *engine.mockScriptManager,
+            *engine.scriptManager,
             *engine.worldManager,
             Spatial::Size2D {
                 std::numeric_limits<Spatial::Size2D::Value>::max(),
@@ -55,15 +55,17 @@ SCENARIO_METHOD(WorldSerializationTestsFixture, "rendering after world serializa
         auto imageAsset = fieldReliquary.Do(Arca::Create<Asset::Image> {
             imageAssetName, std::move(imageResource), Asset::ImageGridSize{} });
 
+        auto materialScriptAsset = CompileAndCreateBasicMaterialScript(fieldReliquary);
+
         auto materialAsset = fieldReliquary.Do(Arca::Create<Asset::Material> {
-            String{}, std::vector<Asset::Material::Pass>{} });
+            String{}, materialScriptAsset, "main", Scripting::Parameters{} });
 
         WHEN("creating static images and loading through world file then starting execution")
         {
             std::vector<World::Field> fields;
             fields.push_back(std::move(field));
 
-            auto positions = std::vector<Spatial::Point3D>
+            auto positions = std::vector
             {
                 Spatial::Point3D
                 {
@@ -93,7 +95,7 @@ SCENARIO_METHOD(WorldSerializationTestsFixture, "rendering after world serializa
                         TestFramework::Range<Spatial::Point3D::Value>(-1000, 1000))
                 }
             };
-            auto scalers = std::vector<Spatial::Scalers2D>
+            auto scalers = std::vector
             {
                 Spatial::Scalers2D
                 {
@@ -155,35 +157,32 @@ SCENARIO_METHOD(WorldSerializationTestsFixture, "rendering after world serializa
 
                 World::Serialization::OutputAssetsFile::Saves assetSaves;
                 assetSaves.images.emplace_back(imageAssetName, Buffer(pixelBuffer));
+                assetSaves.scripts.emplace_back("basic_script", BasicMaterialScriptBytes(fieldReliquary));
                 outputFile.Save(assetSaves);
             }
 
             engine.LoadWorld(filePath, assetsFilePath);
-
-            auto& loadedFieldReliquary = engine.CurrentField()->Reliquary();
-
             engine.StartExecution();
 
             THEN("all images rendered in graphics manager")
             {
-                auto mainSurface = loadedFieldReliquary.Find<MainSurface>();
-                auto mainSurfaceImplementation = mainSurface->Resource<MockSurfaceResource>();
-
-                auto& imageRenders = engine.mockGraphicsManager->imageRenders;
-                REQUIRE(imageRenders.size() == 3);
+                auto& commands = engine.mockGraphicsManager->commands;
+                REQUIRE(commands.size() == 3);
 
                 for (auto i = 0; i < 3; ++i)
                 {
                     REQUIRE(std::any_of(
-                        imageRenders.begin(),
-                        imageRenders.end(),
-                        [i, &positions, &scalers, cameraLeft, cameraTop](const RenderImage& entry)
+                        commands.begin(),
+                        commands.end(),
+                        [i, &positions, &scalers, cameraLeft, cameraTop](const Raster::Command& command)
                         {
+                            auto drawCommand = std::get<Raster::DrawImage>(command);
+
                             auto expectedPosition = positions[i];
                             expectedPosition.x -= cameraLeft;
                             expectedPosition.y -= cameraTop;
 
-                            return entry.position == expectedPosition;
+                            return drawCommand.position == ToPoint2D(expectedPosition);
                         }));
                 }
             }

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GeneralFixture.h"
+#include "RenderingFixture.h"
 
 #include <Atmos/Logger.h>
 #include <Atmos/Field.h>
@@ -10,7 +10,7 @@
 #include <Atmos/Size2D.h>
 #include <Atmos/Size3D.h>
 
-class ImageTestsFixture : public GeneralFixture
+class ImageTestsFixture : public RenderingFixture
 {
 public:
     Atmos::Logging::Logger logger;

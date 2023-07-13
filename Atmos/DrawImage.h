@@ -2,7 +2,7 @@
 
 #include "Shaders.h"
 #include "SurfaceResource.h"
-#include "ImageAssetResource.h"
+#include "ImageAsset.h"
 #include "Point2D.h"
 #include "Size2D.h"
 #include "Angle2D.h"
@@ -14,9 +14,10 @@ namespace Atmos::Render::Raster
 {
     struct DrawImage
     {
-        Shaders shaders;
         const Resource::Surface* surface = nullptr;
-        Asset::Resource::Image* assetResource = nullptr;
+
+        Shaders shaders;
+        Arca::Index<Asset::Image> asset;
         Spatial::AxisAlignedBox2D assetSlice;
         Spatial::AxisAlignedBox2D viewSlice;
         Color color;

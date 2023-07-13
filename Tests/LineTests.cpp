@@ -4,12 +4,10 @@
 
 #include <Atmos/Line.h>
 #include <Atmos/TypeRegistration.h>
-#include <Atmos/StringUtility.h>
 #include <Atmos/FindLinesByBox.h>
 #include <Arca/Create.h>
 
-#include "DerivedEngine.h"
-#include "MockSurfaceResource.h"
+#include "JavaScriptEngine.h"
 #include <Atmos/SpatialAlgorithms.h>
 
 using namespace Atmos;
@@ -20,7 +18,7 @@ SCENARIO_METHOD(LineTestsFixture, "lines", "[render]")
     GIVEN("setup engine with field")
     {
         Logging::Logger logger(Logging::Severity::Verbose);
-        DerivedEngine engine(logger);
+        JavaScriptEngine engine(logger);
 
         auto fieldOrigin = Arca::ReliquaryOrigin();
         RegisterFieldTypes(
@@ -30,8 +28,8 @@ SCENARIO_METHOD(LineTestsFixture, "lines", "[render]")
             *engine.mockInputManager,
             *engine.mockGraphicsManager,
             *engine.mockTextManager,
-            *engine.mockScriptManager,
-            *engine.worldManager,
+            *engine.scriptManager,
+            *engine.mockWorldManager,
             Size2D{
                 std::numeric_limits<Size2D::Value>::max(),
                 std::numeric_limits<Size2D::Value>::max() },
@@ -41,12 +39,14 @@ SCENARIO_METHOD(LineTestsFixture, "lines", "[render]")
 
         auto& fieldReliquary = field.Reliquary();
 
+        auto materialScriptAsset = CompileAndCreateBasicMaterialScript(fieldReliquary);
+
         auto materialAsset = fieldReliquary.Do(Arca::Create<Asset::Material> {
-            String{}, std::vector<Asset::Material::Pass>{} });
+            String{}, materialScriptAsset, "main", Scripting::Parameters{} });
 
         WHEN("creating lines")
         {
-            auto fromPositions = std::vector<Point2D>
+            auto fromPositions = std::vector
             {
                 Point2D
                 {
@@ -71,7 +71,7 @@ SCENARIO_METHOD(LineTestsFixture, "lines", "[render]")
                 }
             };
 
-            auto toPositions = std::vector<Point2D>
+            auto toPositions = std::vector
             {
                 Point2D
                 {
@@ -97,13 +97,13 @@ SCENARIO_METHOD(LineTestsFixture, "lines", "[render]")
             };
 
             auto line1 = fieldReliquary.Do(Arca::Create<Line>{
-                std::vector<Point2D>{ fromPositions[0], toPositions[0] }, materialAsset});
+                std::vector{ fromPositions[0], toPositions[0] }, materialAsset});
             auto line2 = fieldReliquary.Do(Arca::Create<Line>{
-                std::vector<Point2D>{ fromPositions[1], toPositions[1] }, materialAsset});
+                std::vector{ fromPositions[1], toPositions[1] }, materialAsset});
             auto line3 = fieldReliquary.Do(Arca::Create<Line>{
-                std::vector<Point2D>{ fromPositions[2], toPositions[2] }, materialAsset});
+                std::vector{ fromPositions[2], toPositions[2] }, materialAsset});
 
-            std::vector<Arca::RelicID> lineIDs = { line1.ID(), line2.ID(), line3.ID() };
+            std::vector lineIDs = { line1.ID(), line2.ID(), line3.ID() };
 
             WHEN("querying for all lines with box 2D")
             {

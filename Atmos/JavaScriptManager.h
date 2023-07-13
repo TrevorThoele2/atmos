@@ -11,7 +11,7 @@ namespace Atmos::Scripting::JavaScript
 	class Manager final : public Scripting::Manager
 	{
 	public:
-		Manager(Logging::Logger& logger);
+		explicit Manager(Logging::Logger& logger);
 		~Manager();
 
 		void SetReliquary(Arca::Reliquary* reliquary) override;

@@ -5,7 +5,9 @@
 
 #include "JavaScriptObject.h"
 #include "JavaScriptRelicID.h"
-#include "JavaScriptMaterialPass.h"
+#include "JavaScriptScriptAsset.h"
+
+#include <Inscription/OptionalScribe.h>
 
 namespace Atmos::Scripting::JavaScript
 {
@@ -13,7 +15,9 @@ namespace Atmos::Scripting::JavaScript
     {
         Arca::RelicID id;
         String name;
-        std::vector<MaterialAssetPass> passes;
+        std::optional<ScriptAsset> asset;
+        String executeName;
+        Parameters parameters;
     };
 
     template<>
@@ -29,7 +33,9 @@ namespace Atmos::Scripting::JavaScript
         {
             Property<Arca::RelicID> id;
             Property<String> name;
-            Property<std::vector<MaterialAssetPass>> passes;
+            Property<std::optional<ScriptAsset>> asset;
+            Property<String> executeName;
+            Property<Parameters> parameters;
 
             Definition();
 
@@ -41,7 +47,7 @@ namespace Atmos::Scripting::JavaScript
     class Type<Arca::Index<Asset::Material>>
     {
     public:
-        using V8T = v8::Object;
+        using V8T = v8::Value;
 
         [[nodiscard]] static v8::Local<V8T> ToV8(v8::Isolate& isolate, const Arca::Index<Asset::Material>& value);
     };
@@ -60,7 +66,9 @@ namespace Inscription
         {
             ScrivenRelicID("id", object.id, format);
             format("name", object.name);
-            format("passes", object.passes);
+            format("asset", object.asset);
+            format("executeName", object.executeName);
+            format("parameters", object.parameters);
         }
     };
 

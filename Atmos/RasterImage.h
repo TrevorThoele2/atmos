@@ -1,22 +1,22 @@
 #pragma once
 
-#include "ImageAssetResource.h"
+#include "ImageAsset.h"
 #include "Point2D.h"
 #include "Size2D.h"
 #include "Angle2D.h"
 #include "Scalers2D.h"
 #include "AxisAlignedBox2D.h"
 #include "Color.h"
-#include "Material.h"
+#include "MaterialAsset.h"
 
 namespace Atmos::Render::Raster
 {
     struct Image
     {
-        Asset::Resource::Image* assetResource = nullptr;
+        Arca::Index<Asset::Material> material;
+        Arca::Index<Asset::Image> asset;
         Spatial::AxisAlignedBox2D assetSlice;
         Spatial::AxisAlignedBox2D viewSlice;
-        Material material;
         Color color;
 
         Spatial::Point2D position;

@@ -6,12 +6,12 @@
 #include <Atmos/TypeRegistration.h>
 #include <Atmos/Camera.h>
 #include <Atmos/MainSurface.h>
+#include <Atmos/SpatialAlgorithms.h>
 #include <Arca/Create.h>
 #include <Arca/Destroy.h>
 
-#include "DerivedEngine.h"
+#include "RealEngine.h"
 #include "MockImageAssetResource.h"
-#include "MockSurfaceResource.h"
 
 using namespace Atmos;
 using namespace Spatial;
@@ -21,7 +21,7 @@ SCENARIO_METHOD(UIImageRenderingTestsFixture, "rendering UI images", "[ui]")
     GIVEN("setup engine with field")
     {
         Logging::Logger logger(Logging::Severity::Verbose);
-        DerivedEngine engine(logger);
+        RealEngine engine(logger);
 
         auto fieldOrigin = Arca::ReliquaryOrigin();
         RegisterArcaTypes(fieldOrigin);
@@ -32,7 +32,7 @@ SCENARIO_METHOD(UIImageRenderingTestsFixture, "rendering UI images", "[ui]")
             *engine.mockInputManager,
             *engine.mockGraphicsManager,
             *engine.mockTextManager,
-            *engine.mockScriptManager,
+            *engine.scriptManager,
             *engine.worldManager,
             Size2D{ 10000, 10000 },
             *engine.mockWindow,
@@ -40,10 +40,7 @@ SCENARIO_METHOD(UIImageRenderingTestsFixture, "rendering UI images", "[ui]")
         World::Field field(0, fieldOrigin.Actualize());
 
         auto& fieldReliquary = field.Reliquary();
-
-        auto mainSurface = fieldReliquary.Find<MainSurface>();
-        auto mainSurfaceImplementation = mainSurface->Resource<MockSurfaceResource>();
-
+        
         const auto camera = fieldReliquary.Find<Camera>();
 
         const auto cameraLeft = camera->Sides().Left();
@@ -53,8 +50,10 @@ SCENARIO_METHOD(UIImageRenderingTestsFixture, "rendering UI images", "[ui]")
         auto imageAsset = fieldReliquary.Do(Arca::Create<Asset::Image> {
             String{}, std::move(imageResource), Asset::ImageGridSize{}});
 
-        auto material = fieldReliquary.Do(Arca::Create<Asset::Material> {
-            String{}, std::vector<Asset::Material::Pass>{}});
+        auto materialScriptAsset = CompileAndCreateBasicMaterialScript(fieldReliquary);
+
+        auto materialAsset = fieldReliquary.Do(Arca::Create<Asset::Material> {
+            String{}, materialScriptAsset, "main", Scripting::Parameters{} });
 
         auto positions = std::vector
         {
@@ -100,28 +99,28 @@ SCENARIO_METHOD(UIImageRenderingTestsFixture, "rendering UI images", "[ui]")
         {
             auto image1 = fieldReliquary.Do(Arca::Create<UI::Image> {
                 imageAsset,
-                    0,
-                    material,
-                    Color{},
-                    positions[0],
-                    scalers[0],
-                    Angle2D{} });
+                0,
+                materialAsset,
+                Color{},
+                positions[0],
+                scalers[0],
+                Angle2D{} });
             auto image2 = fieldReliquary.Do(Arca::Create<UI::Image> {
                 imageAsset,
-                    0,
-                    material,
-                    Color{},
-                    positions[1],
-                    scalers[1],
-                    Angle2D{} });
+                0,
+                materialAsset,
+                Color{},
+                positions[1],
+                scalers[1],
+                Angle2D{} });
             auto image3 = fieldReliquary.Do(Arca::Create<UI::Image> {
                 imageAsset,
-                    0,
-                    material,
-                    Color{},
-                    positions[2],
-                    scalers[2],
-                    Angle2D{} });
+                0,
+                materialAsset,
+                Color{},
+                positions[2],
+                scalers[2],
+                Angle2D{} });
             WHEN("starting engine execution")
             {
                 engine.UseField(std::move(field), {}, std::filesystem::current_path() / "Assets.dat");
@@ -129,19 +128,21 @@ SCENARIO_METHOD(UIImageRenderingTestsFixture, "rendering UI images", "[ui]")
 
                 THEN("all images rendered in graphics manager")
                 {
-                    auto& imageRenders = engine.mockGraphicsManager->imageRenders;
-                    REQUIRE(imageRenders.size() == 3);
+                    auto& commands = engine.mockGraphicsManager->commands;
+                    REQUIRE(commands.size() == 3);
 
                     for (auto i = 0; i < 3; ++i)
                     {
                         REQUIRE(std::any_of(
-                            imageRenders.begin(),
-                            imageRenders.end(),
-                            [i, &positions, &scalers, cameraLeft, cameraTop](const RenderImage& entry)
+                            commands.begin(),
+                            commands.end(),
+                            [i, &positions, &scalers, cameraLeft, cameraTop](const Raster::Command& command)
                             {
-                                const auto expectedPosition = positions[i];
+                                auto drawCommand = std::get<Raster::DrawImage>(command);
 
-                                return entry.position == expectedPosition;
+                                const auto expectedPosition = positions[i];
+                                
+                                return drawCommand.position == ToPoint2D(expectedPosition);
                             }));
                     }
                 }
@@ -158,19 +159,21 @@ SCENARIO_METHOD(UIImageRenderingTestsFixture, "rendering UI images", "[ui]")
 
                 THEN("images were rendered only once")
                 {
-                    auto& imageRenders = engine.mockGraphicsManager->imageRenders;
-                    REQUIRE(imageRenders.size() == 3);
+                    auto& commands = engine.mockGraphicsManager->commands;
+                    REQUIRE(commands.size() == 3);
 
                     for (auto i = 0; i < 3; ++i)
                     {
                         REQUIRE(std::any_of(
-                            imageRenders.begin(),
-                            imageRenders.end(),
-                            [i, &positions, &scalers, cameraLeft, cameraTop](const RenderImage& entry)
+                            commands.begin(),
+                            commands.end(),
+                            [i, &positions, &scalers, cameraLeft, cameraTop](const Raster::Command& command)
                             {
-                                const auto expectedPosition = positions[i];
+                                auto drawCommand = std::get<Raster::DrawImage>(command);
 
-                                return entry.position == expectedPosition;
+                                const auto expectedPosition = positions[i];
+                                
+                                return drawCommand.position == ToPoint2D(expectedPosition);
                             }));
                     }
                 }
@@ -181,28 +184,28 @@ SCENARIO_METHOD(UIImageRenderingTestsFixture, "rendering UI images", "[ui]")
         {
             fieldReliquary.Do(Arca::Create<UI::Image>{
                 Arca::Index<Asset::Image>{},
-                    0,
-                    material,
-                    Color{},
-                    positions[0],
-                    scalers[0],
-                    Angle2D{} });
+                0,
+                materialAsset,
+                Color{},
+                positions[0],
+                scalers[0],
+                Angle2D{} });
             fieldReliquary.Do(Arca::Create<UI::Image> {
                 Arca::Index<Asset::Image>{},
-                    0,
-                    material,
-                    Color{},
-                    positions[1],
-                    scalers[1],
-                    Angle2D{} });
+                0,
+                materialAsset,
+                Color{},
+                positions[1],
+                scalers[1],
+                Angle2D{} });
             fieldReliquary.Do(Arca::Create<UI::Image> {
                 Arca::Index<Asset::Image>{},
-                    0,
-                    material,
-                    Color{},
-                    positions[2],
-                    scalers[2],
-                    Angle2D{} });
+                0,
+                materialAsset,
+                Color{},
+                positions[2],
+                scalers[2],
+                Angle2D{} });
             WHEN("starting engine execution")
             {
                 engine.UseField(std::move(field), {}, std::filesystem::current_path() / "Assets.dat");
@@ -210,38 +213,38 @@ SCENARIO_METHOD(UIImageRenderingTestsFixture, "rendering UI images", "[ui]")
 
                 THEN("no images rendered in graphics manager")
                 {
-                    auto& imageRenders = engine.mockGraphicsManager->imageRenders;
-                    REQUIRE(imageRenders.empty());
+                    auto& commands = engine.mockGraphicsManager->commands;
+                    REQUIRE(commands.empty());
                 }
             }
         }
 
-        WHEN("creating static images without material")
+        WHEN("creating static images without materialAsset")
         {
             fieldReliquary.Do(Arca::Create<UI::Image>{
                 imageAsset,
-                    0,
-                    Arca::Index<Asset::Material>{},
-                    Color{},
-                    positions[0],
-                    scalers[0],
-                    Angle2D{} });
+                0,
+                Arca::Index<Asset::Material>{},
+                Color{},
+                positions[0],
+                scalers[0],
+                Angle2D{} });
             fieldReliquary.Do(Arca::Create<UI::Image> {
                 imageAsset,
-                    0,
-                    Arca::Index<Asset::Material>{},
-                    Color{},
-                    positions[1],
-                    scalers[1],
-                    Angle2D{} });
+                0,
+                Arca::Index<Asset::Material>{},
+                Color{},
+                positions[1],
+                scalers[1],
+                Angle2D{} });
             fieldReliquary.Do(Arca::Create<UI::Image> {
                 imageAsset,
-                    0,
-                    Arca::Index<Asset::Material>{},
-                    Color{},
-                    positions[2],
-                    scalers[2],
-                    Angle2D{} });
+                0,
+                Arca::Index<Asset::Material>{},
+                Color{},
+                positions[2],
+                scalers[2],
+                Angle2D{} });
             WHEN("starting engine execution")
             {
                 engine.UseField(std::move(field), {}, std::filesystem::current_path() / "Assets.dat");
@@ -249,8 +252,8 @@ SCENARIO_METHOD(UIImageRenderingTestsFixture, "rendering UI images", "[ui]")
 
                 THEN("no images rendered in graphics manager")
                 {
-                    auto& imageRenders = engine.mockGraphicsManager->imageRenders;
-                    REQUIRE(imageRenders.empty());
+                    auto& commands = engine.mockGraphicsManager->commands;
+                    REQUIRE(commands.empty());
                 }
             }
         }

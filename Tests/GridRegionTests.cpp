@@ -8,8 +8,7 @@
 #include <Atmos/FindGridRegionsByBox.h>
 #include <Arca/Create.h>
 
-#include "DerivedEngine.h"
-#include "MockSurfaceResource.h"
+#include "JavaScriptEngine.h"
 #include <Atmos/SpatialAlgorithms.h>
 
 using namespace Atmos;
@@ -20,7 +19,7 @@ SCENARIO_METHOD(GridRegionTestsFixture, "grid regions", "[render]")
     GIVEN("setup engine with field")
     {
         Logging::Logger logger(Logging::Severity::Verbose);
-        DerivedEngine engine(logger);
+        JavaScriptEngine engine(logger);
 
         auto fieldOrigin = Arca::ReliquaryOrigin();
         RegisterFieldTypes(
@@ -30,23 +29,25 @@ SCENARIO_METHOD(GridRegionTestsFixture, "grid regions", "[render]")
             *engine.mockInputManager,
             *engine.mockGraphicsManager,
             *engine.mockTextManager,
-            *engine.mockScriptManager,
-            *engine.worldManager,
+            *engine.scriptManager,
+            *engine.mockWorldManager,
             Size2D{
                 std::numeric_limits<Size2D::Value>::max(),
                 std::numeric_limits<Size2D::Value>::max() },
-                *engine.mockWindow,
-                engine.Logger());
+            *engine.mockWindow,
+            engine.Logger());
         World::Field field(0, fieldOrigin.Actualize());
 
         auto& fieldReliquary = field.Reliquary();
 
+        auto materialScriptAsset = CompileAndCreateBasicMaterialScript(fieldReliquary);
+
         auto materialAsset = fieldReliquary.Do(Arca::Create<Asset::Material> {
-            String{}, std::vector<Asset::Material::Pass>{} });
+            String{}, materialScriptAsset, "main", Scripting::Parameters{} });
 
         WHEN("creating grid region")
         {
-            auto positions = std::vector<Grid::Point>
+            auto positions = std::vector
             {
                 Grid::Point { 0, 0 },
                 Grid::Point { 1, 0 },
@@ -54,9 +55,9 @@ SCENARIO_METHOD(GridRegionTestsFixture, "grid regions", "[render]")
                 Grid::Point { 1, 1 },
             };
             auto gridRegion = fieldReliquary.Do(Arca::Create<GridRegion>{
-                std::unordered_set<Grid::Point>(positions.begin(), positions.end()), 0, materialAsset});
+                std::unordered_set(positions.begin(), positions.end()), 0, materialAsset});
 
-            std::vector<Arca::RelicID> gridRegionIDs = { gridRegion.ID() };
+            std::vector gridRegionIDs = { gridRegion.ID() };
 
             WHEN("querying for all gridRegions with box 2D")
             {

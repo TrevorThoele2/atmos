@@ -22,12 +22,12 @@ namespace Atmos::World
 
             if (std::holds_alternative<RequestedField>(*requested))
             {
-                auto& request = std::get<RequestedField>(*requested);
+                const auto& request = std::get<RequestedField>(*requested);
                 ChangeField(request.id, std::move(reliquary), std::move(loadAssetsUserContext));
             }
             else if (std::holds_alternative<RequestedFieldDestination>(*requested))
             {
-                auto& request = std::get<RequestedFieldDestination>(*requested);
+                const auto& request = std::get<RequestedFieldDestination>(*requested);
                 ChangeField(request.destination.id, std::move(reliquary), std::move(loadAssetsUserContext));
             }
 
@@ -96,7 +96,7 @@ namespace Atmos::World
 
     bool RealManager::ContainsField(FieldID id)
     {
-        return fieldIDs.find(id) == fieldIDs.end();
+        return !fieldIDs.contains(id);
     }
 
     void RealManager::ChangeField(
@@ -117,7 +117,7 @@ namespace Atmos::World
         }
         else
         {
-            auto file = InputFile(*loadAssetsUserContext);
+            const auto file = InputFile(*loadAssetsUserContext);
             SetFieldIDs(file->AllFieldIDs());
             currentField = file->ExtractField(id, std::move(reliquary));
             currentProperties = file->WorldProperties();

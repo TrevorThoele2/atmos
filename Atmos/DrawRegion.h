@@ -8,8 +8,9 @@ namespace Atmos::Render::Raster
 {
     struct DrawRegion
     {
-        Shaders shaders;
         const Resource::Surface* surface = nullptr;
+
+        Shaders shaders;
         Mesh mesh;
     };
 }

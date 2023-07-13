@@ -27,6 +27,7 @@
 #include "RenderStartCurator.h"
 #include "RenderEndCurator.h"
 #include "StagedRasters.h"
+#include "ExecutingMaterial.h"
 
 #include "UIImage.h"
 #include "UIText.h"
@@ -63,7 +64,6 @@
 
 #include "Script.h"
 #include "ScriptCurator.h"
-#include "CurrentExecutingScript.h"
 
 #include "FrameStartCurator.h"
 #include "FrameEndCurator.h"
@@ -208,7 +208,8 @@ namespace Atmos
                 .Register<SurfaceCurator>()
                 .Register<GraphicsSettings>()
                 .Register<ViewSlice>()
-                .Register<StagedRasters>()
+                .Register<Raster::Staged>()
+                .Register<Raster::ExecutingMaterial>()
                 .Register<EndCurator>();
         }
 
@@ -367,8 +368,7 @@ namespace Atmos
         void RegisterTypes(Arca::ReliquaryOrigin& origin)
         {
             origin
-                .Register<Script>()
-                .Register<CurrentExecutingScript>();
+                .Register<Script>();
         }
 
         void RegisterTypes(Arca::ReliquaryOrigin& origin, Manager& manager)

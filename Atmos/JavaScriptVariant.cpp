@@ -4,7 +4,6 @@
 #include "JavaScriptNumeric.h"
 #include "JavaScriptString.h"
 #include "ScriptError.h"
-#include <Chroma/Overloaded.h>
 
 namespace Atmos::Scripting::JavaScript
 {
@@ -24,7 +23,6 @@ namespace Atmos::Scripting::JavaScript
 
     auto Type<Variant>::ToV8(v8::Isolate& isolate, const Variant& value) -> v8::Local<V8T>
     {
-        auto useIsolate = &isolate;
         return std::visit(
             [&isolate](auto value) -> v8::Local<v8::Value>
             {

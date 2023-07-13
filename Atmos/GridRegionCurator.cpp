@@ -78,7 +78,7 @@ namespace Atmos::Render
         const MainSurface& mainSurface)
     {
         const auto material = value.renderCore->material;
-        if (material.script && !value.points.empty())
+        if (material && !value.points.empty())
         {
             const auto points = std::vector<Spatial::Grid::Point>{ value.points.begin(), value.points.end() };
             auto mesh = ConvertToMesh(Triangulate(points));
@@ -95,8 +95,8 @@ namespace Atmos::Render
             {
                 Raster::Region
                 {
-                    .mesh = mesh,
-                    .material = material
+                    .material = material,
+                    .mesh = mesh
                 },
                 mainSurface.Resource(),
                 Raster::Order

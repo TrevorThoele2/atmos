@@ -8,7 +8,7 @@
 
 void JavaScriptParameterTestsFixture::CompileAndCreateScript(const Scripting::Variant& value)
 {
-    JavaScriptFixture::CompileAndCreateScript(
+    ::CompileAndCreateScript(
         "basic_script.ts",
 R"V0G0N(import { Atmos } from "./atmos";
 

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "FontAssetResource.h"
-#include <SDL_ttf.h>
+#include "SDLIncludes.h"
 #include "Buffer.h"
 
 namespace Atmos::Render::SDL

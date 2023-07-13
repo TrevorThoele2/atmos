@@ -19,12 +19,12 @@ namespace Atmos::Render
         std::unordered_set<Spatial::Grid::Point> points;
         Spatial::Grid::Point::Value z = 0;
     public:
-        GridRegion(Arca::RelicInit init);
+        explicit GridRegion(Arca::RelicInit init);
         GridRegion(
             Arca::RelicInit init,
             const std::unordered_set<Spatial::Grid::Point>& points,
             Spatial::Grid::Point::Value z,
-            const Material& material);
+            const Arca::Index<Asset::Material>& material);
 
         bool operator==(const GridRegion& arg) const;
         bool operator!=(const GridRegion& arg) const;

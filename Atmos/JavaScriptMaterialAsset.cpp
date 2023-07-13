@@ -1,8 +1,9 @@
 #include "JavaScriptMaterialAsset.h"
 
-#include "JavaScriptMaterialPass.h"
 #include "JavaScriptVector.h"
 #include "JavaScriptNumeric.h"
+#include "JavaScriptOptional.h"
+#include "JavaScriptVariant.h"
 
 #include "JavaScriptObject.h"
 #include "JavaScriptUserData.h"
@@ -14,7 +15,9 @@ namespace Atmos::Scripting::JavaScript
         Definition definition;
         definition.id.SetValue(isolate, value.id);
         definition.name.SetValue(isolate, value.name);
-        definition.passes.SetValue(isolate, value.passes);
+        definition.asset.SetValue(isolate, value.asset);
+        definition.executeName.SetValue(isolate, value.executeName);
+        definition.parameters.SetValue(isolate, value.parameters);
         return CreateObject(isolate, definition.ToAny());
     }
 
@@ -27,11 +30,13 @@ namespace Atmos::Scripting::JavaScript
             {
                 const auto id = definition.id.AtmosValue();
                 const auto name = definition.name.AtmosValue();
-                const auto passes = definition.passes.AtmosValue();
-                return id && name && passes
+                const auto asset = definition.asset.AtmosValue();
+                const auto executeName = definition.executeName.AtmosValue();
+                const auto parameters = definition.parameters.AtmosValue();
+                return id && name && asset && executeName && parameters
                     ? MaterialAsset
                     {
-                        *id, *name, *passes
+                        *id, *name, *asset, *executeName, *parameters
                     }
                     : std::optional<MaterialAsset>{};
             });
@@ -40,7 +45,9 @@ namespace Atmos::Scripting::JavaScript
     Type<MaterialAsset>::Definition::Definition() :
         id("id"),
         name("name"),
-        passes("passes")
+        asset("asset"),
+        executeName("executeName"),
+        parameters("parameters")
     {}
 
     AnyObjectDefinition Type<MaterialAsset>::Definition::ToAny()
@@ -50,28 +57,35 @@ namespace Atmos::Scripting::JavaScript
             {
                 { id },
                 { name },
-                { passes }
+                { asset },
+                { executeName },
+                { parameters }
             }
         };
     }
 
     auto Type<Arca::Index<Asset::Material>>::ToV8(v8::Isolate& isolate, const Arca::Index<Asset::Material>& value) -> v8::Local<V8T>
     {
-        std::vector<MaterialAssetPass> passes;
-        passes.reserve(value->Passes().size());
-        for (auto& pass : value->Passes())
-        {
-            const auto vertex = pass.VertexShader();
-            const auto fragment = pass.FragmentShader();
-            passes.emplace_back(ShaderAsset{ vertex.ID(), vertex->Name() }, ShaderAsset{ fragment.ID(), fragment->Name() });
-        }
+        if (!value)
+            return v8::Null(&isolate);
+
+        const auto asset = value->scriptData.asset;
+
         return JavaScript::ToV8(
             isolate,
             MaterialAsset
             {
                 value.ID(),
                 value->Name(),
-                passes
+                asset
+                    ? ScriptAsset
+                    {
+                        asset.ID(),
+                        asset->Name()
+                    }
+                    : std::optional<ScriptAsset>(),
+                value->scriptData.executeName,
+                value->scriptData.parameters
             });
     }
 

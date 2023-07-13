@@ -1,6 +1,5 @@
 #include "ScriptCurator.h"
 
-#include "CurrentExecutingScript.h"
 #include "ScriptFinished.h"
 
 #include "CreateStopwatch.h"
@@ -14,13 +13,10 @@ namespace Atmos::Scripting
         Arca::Curator(init),
         manager(&manager)
     {
-        this->manager->SetReliquary(&Owner());
-
         Owner().On<Arca::DestroyingKnown<Script>>(
             [this](const Arca::DestroyingKnown<Script>& signal)
             {
-                const auto currentExecutingScript = Owner().Find<CurrentExecutingScript>()->id;
-                if (currentExecutingScript != signal.index.ID())
+                if (&signal.index->data != current)
                     Owner().Raise(Finished{ signal.index, Quit{} });
             });
     }
@@ -28,11 +24,10 @@ namespace Atmos::Scripting
     void Curator::Handle(const Work&)
     {
         auto stopwatch = Time::CreateRealStopwatch();
-
-        const auto currentExecutingScript = MutablePointer().Of<CurrentExecutingScript>();
+        
         const auto runningScripts = RunningScripts(Owner().Batch<Script>());
         for (auto& element : runningScripts)
-            DoExecute(element.id, *currentExecutingScript);
+            HandleScriptResult(DoExecute(element.script ? &element.script->data : nullptr), element.id);
 
         MutablePointer().Of<Diagnostics::Statistics>()->script.NewTime(stopwatch);
     }
@@ -44,9 +39,14 @@ namespace Atmos::Scripting
 
     std::optional<Result> Curator::Handle(const Execute& command)
     {
-        const auto currentExecutingScript = MutablePointer().Of<CurrentExecutingScript>();
+        const auto script = command.script;
+        const auto data = script ? &MutablePointer().Of(script)->data : nullptr;
+        return HandleScriptResult(DoExecute(data), script.ID());
+    }
 
-        return DoExecute(command.script.ID(), *currentExecutingScript);
+    std::optional<Result> Curator::Handle(const ExecuteMaterial& command)
+    {
+        return DoExecute(command.data);
     }
 
     std::unique_ptr<Asset::Resource::Script> Curator::Handle(
@@ -54,59 +54,45 @@ namespace Atmos::Scripting
     {
         return manager->CreateAssetResource(command.buffer, command.name);
     }
-
-    Curator::RunningScript::RunningScript(Arca::RelicID id, const Script* script) : id(id), script(script)
-    {}
-
-    Curator::RunningScript::RunningScript(const RunningScript& arg) = default;
-
+    
     auto Curator::RunningScripts(const Arca::Batch<Script>& batch) -> std::vector<RunningScript>
     {
         std::vector<RunningScript> runningScripts;
         runningScripts.reserve(batch.Size());
         for (auto script = batch.begin(); script != batch.end(); ++script)
-            runningScripts.emplace_back(script.ID(), &*script);
+            runningScripts.emplace_back(script.ID(), MutablePointer().Of<Script>(script.ID()));
         return runningScripts;
     }
 
-    std::optional<Result> Curator::DoExecute(Arca::RelicID id, CurrentExecutingScript& currentExecutingScript)
+    std::optional<Result> Curator::DoExecute(ScriptData* script)
     {
-        currentExecutingScript.id = id;
-
-        const auto script = MutablePointer().Of<Script>(id);
         if (!script->asset)
-        {
-            currentExecutingScript.id = Arca::nullRelicID;
-            Owner().Do(Arca::Destroy<Script>(id));
             return Quit{};
-        }
 
-        if (!script->Resource())
-        {
-            auto resource = manager->CreateScriptResource(
+        manager->SetReliquary(&Owner());
+
+        if (!script->resource)
+            script->resource = manager->CreateScriptResource(
                 *script->asset->Resource(), script->asset->Name(), script->executeName, script->parameters);
-            script->Setup(std::move(resource));
-        }
 
-        std::optional<Result> result;
-        
-        if (script->isSuspended)
-        {
-            script->isSuspended = false;
-            result = script->Resource()->Resume();
-        }
-        else
-            result = script->Resource()->Execute();
+        const auto wasSuspended = script->isSuspended;
+        script->isSuspended = false;
+        auto result = wasSuspended ? script->resource->Resume() : script->resource->Execute();
+        script->isSuspended = true;
 
+        return result;
+    }
+
+    std::optional<Result> Curator::HandleScriptResult(const std::optional<Result>& result, Arca::RelicID id)
+    {
         if (result)
         {
-            Owner().Raise(Finished{ Owner().Find<Script>(id), *result });
+            const auto script = Owner().Find<Script>(id);
+            current = &script->data;
+            Owner().Raise(Finished{ script, *result });
             Owner().Do(Arca::Destroy<Script>(id));
+            current = nullptr;
         }
-        else
-            script->isSuspended = true;
-
-        currentExecutingScript.id = Arca::nullRelicID;
 
         return result;
     }

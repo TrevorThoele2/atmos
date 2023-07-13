@@ -23,7 +23,7 @@ SCENARIO_METHOD(JavaScriptAudioTestsFixture, "running audio JavaScript scripts",
 
         CompileAndCreateScript(
             "basic_script.ts",
- R"V0G0N(import { Atmos } from "./atmos";
+R"V0G0N(import { Atmos } from "./atmos";
 
 export const main = (id: Atmos.RelicId, volume: Atmos.Audio.Volume): Atmos.Result => {
     Atmos.Reliquary.send(

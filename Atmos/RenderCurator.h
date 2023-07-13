@@ -6,7 +6,7 @@
 #include "Work.h"
 #include "RecordRasterCommands.h"
 #include "ChangeColor.h"
-#include "ChangeMaterial.h"
+#include "ChangeMaterialAsset.h"
 #include "ChangeViewSlice.h"
 
 #include "RasterImage.h"
@@ -29,7 +29,7 @@ namespace Atmos::Render
         void Handle(const Work& command);
         void Handle(const Raster::RecordCommands& command);
         void Handle(const ChangeColor& command);
-        void Handle(const ChangeMaterial& command);
+        void Handle(const ChangeMaterialAsset& command);
         void Handle(const ChangeViewSlice& command);
     private:
         GraphicsManager* graphicsManager;
@@ -42,33 +42,32 @@ namespace Atmos::Render
             std::vector<Raster::Text> texts = {};
         };
 
-        using RasterMap = std::map<Resource::Surface*, std::map<Raster::Order, std::map<Asset::Script*, Rasters>>>;
+        using RasterMap = std::map<Resource::Surface*, std::map<Raster::Order, std::map<Scripting::ScriptData*, Rasters>>>;
 
-        std::vector<Raster::Command> recordedCommands = {};
-
-        [[nodiscard]] static RasterMap Compose(const Raster::Staged& staged);
+        [[nodiscard]] RasterMap Compose(Raster::Staged& staged);
         [[nodiscard]] Raster::Commands Execute(const RasterMap& map);
         template<class T>
-        [[nodiscard]] static Rasters& FindRasters(const Raster::Prepared<T>& preparedRaster, RasterMap& map);
+        [[nodiscard]] Rasters& FindRasters(Raster::Prepared<T>& preparedRaster, RasterMap& map);
     };
     
     template<class T>
-    auto Curator::FindRasters(const Raster::Prepared<T>& preparedRaster, RasterMap& map) -> Rasters&
+    auto Curator::FindRasters(Raster::Prepared<T>& preparedRaster, RasterMap& map) -> Rasters&
     {
         const auto [raster, surface, order] = preparedRaster;
 
-        const auto surfaceLayer = map.find(surface);
+        auto surfaceLayer = map.find(surface);
         if (surfaceLayer == map.end())
-            surfaceLayer = map.emplace(surface);
+            surfaceLayer = map.emplace(surface, std::map<Raster::Order, std::map<Scripting::ScriptData*, Rasters>>{}).first;
             
-        const auto zLayer = surfaceLayer->second.find(order);
+        auto zLayer = surfaceLayer->second.find(order);
         if (zLayer == surfaceLayer->second.end())
-            zLayer = surfaceLayer->second.emplace(order, {});
+            zLayer = surfaceLayer->second.emplace(order, std::map<Scripting::ScriptData*, Rasters>{}).first;
 
-        const auto script = raster.material.script;
-        const auto scriptLayer = zLayer->second.find(script);
+        const auto material = MutablePointer().Of(raster.material);
+        auto script = &material->scriptData;
+        auto scriptLayer = zLayer->second.find(script);
         if (scriptLayer == zLayer->second.end())
-            scriptLayer = map.emplace(script, {});
+            scriptLayer = zLayer->second.emplace(script, Rasters{}).first;
 
         return scriptLayer->second;
     }
@@ -85,7 +84,7 @@ namespace Arca
             Atmos::Work,
             Atmos::Render::Raster::RecordCommands,
             Atmos::Render::ChangeColor,
-            Atmos::Render::ChangeMaterial,
+            Atmos::Render::ChangeMaterialAsset,
             Atmos::Render::ChangeViewSlice>;
     };
 }

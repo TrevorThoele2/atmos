@@ -25,7 +25,7 @@ public:
     Scripting::JavaScript::Manager* scriptManager;
     MockWorldManager* mockWorldManager;
 
-    JavaScriptEngine(Logging::Logger& logger);
+    explicit JavaScriptEngine(Logging::Logger& logger);
     JavaScriptEngine(JavaScriptEngine&& arg) noexcept = default;
 private:
     [[nodiscard]] InitializationProperties CreateInitializationProperties(Logging::Logger& logger);

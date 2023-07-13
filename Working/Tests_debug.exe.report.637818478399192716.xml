@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Catch name="Tests_debug.exe" filters="Scenario: running JavaScript scripts with parameters">
+  <Group name="Tests_debug.exe">
+    <TestCase name="Scenario: running JavaScript scripts with parameters" tags="[javascript][script]" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="25">
+      <Section name="Given: script that accepts and returns bool" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="27">
+        <Section name="When: working reliquary" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="33">
+          <Section name="Then: script returns bool" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="37">
+            <Expression success="false" type="REQUIRE" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="39">
+              <Original>
+                finishes.size() == 1
+              </Original>
+              <Expanded>
+                2 == 1
+              </Expanded>
+            </Expression>
+            <OverallResults successes="0" failures="1" expectedFailures="0" durationInSeconds="1.5675"/>
+          </Section>
+          <OverallResults successes="0" failures="1" expectedFailures="0" durationInSeconds="0.017407"/>
+        </Section>
+        <OverallResults successes="0" failures="1" expectedFailures="0" durationInSeconds="0.000398"/>
+      </Section>
+      <Section name="Given: script that accepts and returns bool" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="27">
+        <Section name="When: working reliquary" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="33">
+          <OverallResults successes="0" failures="0" expectedFailures="0" durationInSeconds="0.016793"/>
+        </Section>
+        <OverallResults successes="0" failures="0" expectedFailures="0" durationInSeconds="1.44265"/>
+      </Section>
+      <Section name="Given: script that accepts and returns int8" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="45">
+        <Section name="When: working reliquary" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="51">
+          <Section name="Then: script returns int32" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="55">
+            <Expression success="false" type="REQUIRE" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="57">
+              <Original>
+                finishes.size() == 1
+              </Original>
+              <Expanded>
+                2 == 1
+              </Expanded>
+            </Expression>
+            <OverallResults successes="0" failures="1" expectedFailures="0" durationInSeconds="1.45847"/>
+          </Section>
+          <OverallResults successes="0" failures="1" expectedFailures="0" durationInSeconds="0.017257"/>
+        </Section>
+        <OverallResults successes="0" failures="1" expectedFailures="0" durationInSeconds="0.00033"/>
+      </Section>
+      <Section name="Given: script that accepts and returns int8" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="45">
+        <Section name="When: working reliquary" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="51">
+          <OverallResults successes="0" failures="0" expectedFailures="0" durationInSeconds="0.016822"/>
+        </Section>
+        <OverallResults successes="0" failures="0" expectedFailures="0" durationInSeconds="1.42759"/>
+      </Section>
+      <Section name="Given: script that accepts and returns int16" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="63">
+        <Section name="When: working reliquary" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="69">
+          <Section name="Then: script returns int32" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="73">
+            <Expression success="false" type="REQUIRE" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="75">
+              <Original>
+                finishes.size() == 1
+              </Original>
+              <Expanded>
+                2 == 1
+              </Expanded>
+            </Expression>
+            <OverallResults successes="0" failures="1" expectedFailures="0" durationInSeconds="1.4387"/>
+          </Section>
+          <OverallResults successes="0" failures="1" expectedFailures="0" durationInSeconds="0.017265"/>
+        </Section>
+        <OverallResults successes="0" failures="1" expectedFailures="0" durationInSeconds="0.000331"/>
+      </Section>
+      <Section name="Given: script that accepts and returns int16" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="63">
+        <Section name="When: working reliquary" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="69">
+          <OverallResults successes="0" failures="0" expectedFailures="0" durationInSeconds="0.016829"/>
+        </Section>
+        <OverallResults successes="0" failures="0" expectedFailures="0" durationInSeconds="1.4016"/>
+      </Section>
+      <Section name="Given: script that accepts and returns int" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="81">
+        <Section name="When: working reliquary" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="87">
+          <Section name="Then: script returns int32" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="91">
+            <Expression success="false" type="REQUIRE" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="93">
+              <Original>
+                finishes.size() == 1
+              </Original>
+              <Expanded>
+                2 == 1
+              </Expanded>
+            </Expression>
+            <OverallResults successes="0" failures="1" expectedFailures="0" durationInSeconds="1.46632"/>
+          </Section>
+          <OverallResults successes="0" failures="1" expectedFailures="0" durationInSeconds="0.017283"/>
+        </Section>
+        <OverallResults successes="0" failures="1" expectedFailures="0" durationInSeconds="0.000332"/>
+      </Section>
+      <Section name="Given: script that accepts and returns int" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="81">
+        <Section name="When: working reliquary" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="87">
+          <OverallResults successes="0" failures="0" expectedFailures="0" durationInSeconds="0.01678"/>
+        </Section>
+        <OverallResults successes="0" failures="0" expectedFailures="0" durationInSeconds="1.4245"/>
+      </Section>
+      <Section name="Given: script that accepts and returns int64" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="99">
+        <Section name="When: working reliquary" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="105">
+          <Section name="Then: script returns double" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="109">
+            <Expression success="false" type="REQUIRE" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="111">
+              <Original>
+                finishes.size() == 1
+              </Original>
+              <Expanded>
+                2 == 1
+              </Expanded>
+            </Expression>
+            <OverallResults successes="0" failures="1" expectedFailures="0" durationInSeconds="1.41178"/>
+          </Section>
+          <OverallResults successes="0" failures="1" expectedFailures="0" durationInSeconds="0.01733"/>
+        </Section>
+        <OverallResults successes="0" failures="1" expectedFailures="0" durationInSeconds="0.000384"/>
+      </Section>
+      <Section name="Given: script that accepts and returns int64" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="99">
+        <Section name="When: working reliquary" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="105">
+          <OverallResults successes="0" failures="0" expectedFailures="0" durationInSeconds="0.016783"/>
+        </Section>
+        <OverallResults successes="0" failures="0" expectedFailures="0" durationInSeconds="1.4084"/>
+      </Section>
+      <Section name="Given: script that accepts and returns uint8" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="117">
+        <Section name="When: working reliquary" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="123">
+          <Section name="Then: script returns uint8" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="127">
+            <Expression success="false" type="REQUIRE" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="129">
+              <Original>
+                finishes.size() == 1
+              </Original>
+              <Expanded>
+                2 == 1
+              </Expanded>
+            </Expression>
+            <OverallResults successes="0" failures="1" expectedFailures="0" durationInSeconds="1.4608"/>
+          </Section>
+          <OverallResults successes="0" failures="1" expectedFailures="0" durationInSeconds="0.017311"/>
+        </Section>
+        <OverallResults successes="0" failures="1" expectedFailures="0" durationInSeconds="0.000346"/>
+      </Section>
+      <Section name="Given: script that accepts and returns uint8" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="117">
+        <Section name="When: working reliquary" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="123">
+          <OverallResults successes="0" failures="0" expectedFailures="0" durationInSeconds="0.016834"/>
+        </Section>
+        <OverallResults successes="0" failures="0" expectedFailures="0" durationInSeconds="1.41168"/>
+      </Section>
+      <Section name="Given: script that accepts and returns uint16" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="135">
+        <Section name="When: working reliquary" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="141">
+          <Section name="Then: script returns uint16" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="145">
+            <Expression success="false" type="REQUIRE" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="147">
+              <Original>
+                finishes.size() == 1
+              </Original>
+              <Expanded>
+                2 == 1
+              </Expanded>
+            </Expression>
+            <OverallResults successes="0" failures="1" expectedFailures="0" durationInSeconds="1.46451"/>
+          </Section>
+          <OverallResults successes="0" failures="1" expectedFailures="0" durationInSeconds="0.017265"/>
+        </Section>
+        <OverallResults successes="0" failures="1" expectedFailures="0" durationInSeconds="0.00033"/>
+      </Section>
+      <Section name="Given: script that accepts and returns uint16" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="135">
+        <Section name="When: working reliquary" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="141">
+          <OverallResults successes="0" failures="0" expectedFailures="0" durationInSeconds="0.016797"/>
+        </Section>
+        <OverallResults successes="0" failures="0" expectedFailures="0" durationInSeconds="1.50548"/>
+      </Section>
+      <Section name="Given: script that accepts and returns uint" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="153">
+        <Section name="When: working reliquary" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="159">
+          <Section name="Then: script returns uint32" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="163">
+            <Expression success="false" type="REQUIRE" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="165">
+              <Original>
+                finishes.size() == 1
+              </Original>
+              <Expanded>
+                2 == 1
+              </Expanded>
+            </Expression>
+            <OverallResults successes="0" failures="1" expectedFailures="0" durationInSeconds="1.46578"/>
+          </Section>
+          <OverallResults successes="0" failures="1" expectedFailures="0" durationInSeconds="0.017271"/>
+        </Section>
+        <OverallResults successes="0" failures="1" expectedFailures="0" durationInSeconds="0.000338"/>
+      </Section>
+      <Section name="Given: script that accepts and returns uint" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="153">
+        <Section name="When: working reliquary" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="159">
+          <OverallResults successes="0" failures="0" expectedFailures="0" durationInSeconds="0.016869"/>
+        </Section>
+        <OverallResults successes="0" failures="0" expectedFailures="0" durationInSeconds="1.43687"/>
+      </Section>
+      <Section name="Given: script that accepts and returns uint64" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="171">
+        <Section name="When: working reliquary" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="177">
+          <Section name="Then: script returns uint64" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="181">
+            <Expression success="false" type="REQUIRE" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="183">
+              <Original>
+                finishes.size() == 1
+              </Original>
+              <Expanded>
+                2 == 1
+              </Expanded>
+            </Expression>
+            <OverallResults successes="0" failures="1" expectedFailures="0" durationInSeconds="1.42777"/>
+          </Section>
+          <OverallResults successes="0" failures="1" expectedFailures="0" durationInSeconds="0.017261"/>
+        </Section>
+        <OverallResults successes="0" failures="1" expectedFailures="0" durationInSeconds="0.000332"/>
+      </Section>
+      <Section name="Given: script that accepts and returns uint64" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="171">
+        <Section name="When: working reliquary" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="177">
+          <OverallResults successes="0" failures="0" expectedFailures="0" durationInSeconds="0.016771"/>
+        </Section>
+        <OverallResults successes="0" failures="0" expectedFailures="0" durationInSeconds="1.41255"/>
+      </Section>
+      <Section name="Given: script that accepts and returns float" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="189">
+        <Section name="When: working reliquary" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="195">
+          <Section name="Then: script returns float" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="199">
+            <Expression success="false" type="REQUIRE" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="201">
+              <Original>
+                finishes.size() == 1
+              </Original>
+              <Expanded>
+                2 == 1
+              </Expanded>
+            </Expression>
+            <OverallResults successes="0" failures="1" expectedFailures="0" durationInSeconds="1.48092"/>
+          </Section>
+          <OverallResults successes="0" failures="1" expectedFailures="0" durationInSeconds="0.017698"/>
+        </Section>
+        <OverallResults successes="0" failures="1" expectedFailures="0" durationInSeconds="0.000436"/>
+      </Section>
+      <Section name="Given: script that accepts and returns float" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="189">
+        <Section name="When: working reliquary" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="195">
+          <OverallResults successes="0" failures="0" expectedFailures="0" durationInSeconds="0.016787"/>
+        </Section>
+        <OverallResults successes="0" failures="0" expectedFailures="0" durationInSeconds="1.4333"/>
+      </Section>
+      <Section name="Given: script that accepts and returns double" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="207">
+        <Section name="When: working reliquary" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="213">
+          <Section name="Then: script returns double" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="217">
+            <Expression success="false" type="REQUIRE" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="219">
+              <Original>
+                finishes.size() == 1
+              </Original>
+              <Expanded>
+                2 == 1
+              </Expanded>
+            </Expression>
+            <OverallResults successes="0" failures="1" expectedFailures="0" durationInSeconds="1.49375"/>
+          </Section>
+          <OverallResults successes="0" failures="1" expectedFailures="0" durationInSeconds="0.017275"/>
+        </Section>
+        <OverallResults successes="0" failures="1" expectedFailures="0" durationInSeconds="0.000333"/>
+      </Section>
+      <Section name="Given: script that accepts and returns double" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="207">
+        <Section name="When: working reliquary" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="213">
+          <OverallResults successes="0" failures="0" expectedFailures="0" durationInSeconds="0.016779"/>
+        </Section>
+        <OverallResults successes="0" failures="0" expectedFailures="0" durationInSeconds="1.42966"/>
+      </Section>
+      <Section name="Given: script that accepts and returns string" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="225">
+        <Section name="When: working reliquary" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="231">
+          <Section name="Then: script returns string" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="235">
+            <Expression success="false" type="REQUIRE" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="237">
+              <Original>
+                finishes.size() == 1
+              </Original>
+              <Expanded>
+                2 == 1
+              </Expanded>
+            </Expression>
+            <OverallResults successes="0" failures="1" expectedFailures="0" durationInSeconds="1.45802"/>
+          </Section>
+          <OverallResults successes="0" failures="1" expectedFailures="0" durationInSeconds="0.017267"/>
+        </Section>
+        <OverallResults successes="0" failures="1" expectedFailures="0" durationInSeconds="0.000333"/>
+      </Section>
+      <Section name="Given: script that accepts and returns string" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="225">
+        <Section name="When: working reliquary" filename="C:\Users\lordi\Documents\ProgrammingProjects\atmos\Tests\JavaScriptParameterTests.cpp" line="231">
+          <OverallResults successes="0" failures="0" expectedFailures="0" durationInSeconds="0.016801"/>
+        </Section>
+        <OverallResults successes="0" failures="0" expectedFailures="0" durationInSeconds="1.45884"/>
+      </Section>
+      <OverallResult success="false" durationInSeconds="35.18"/>
+    </TestCase>
+    <OverallResults successes="0" failures="12" expectedFailures="0"/>
+    <OverallResultsCases successes="0" failures="1" expectedFailures="0"/>
+  </Group>
+  <OverallResults successes="0" failures="12" expectedFailures="0"/>
+  <OverallResultsCases successes="0" failures="1" expectedFailures="0"/>
+</Catch>
