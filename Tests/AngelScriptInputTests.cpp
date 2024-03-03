@@ -45,11 +45,9 @@ SCENARIO_METHOD(AngelScriptInputTestsFixture, "running input AngelScript scripts
     GIVEN("script that returns action active")
     {
         auto name = dataGeneration.Random<std::string>();
-        const auto mappedKey = Input::Key::Z;
-        Asset::Action::MappedKeys mappedKeys;
-        mappedKeys.emplace(mappedKey);
+        const auto boundKey = Input::Key::Z;
 
-        auto actionAsset = fieldReliquary.Do(Arca::Create<Asset::Action>{ name, mappedKeys });
+        auto actionAsset = fieldReliquary.Do(Arca::Create<Asset::Action>{ name, boundKey, Asset::Action::Modifiers{} });
 
         CompileAndCreateScript(
             "basic_script.as",
@@ -88,11 +86,9 @@ SCENARIO_METHOD(AngelScriptInputTestsFixture, "running input AngelScript scripts
     GIVEN("script that returns action depressed")
     {
         auto name = dataGeneration.Random<std::string>();
-        const auto mappedKey = Input::Key::Z;
-        Asset::Action::MappedKeys mappedKeys;
-        mappedKeys.emplace(mappedKey);
+        const auto boundKey = Input::Key::Z;
 
-        auto actionAsset = fieldReliquary.Do(Arca::Create<Asset::Action>{ name, mappedKeys });
+        auto actionAsset = fieldReliquary.Do(Arca::Create<Asset::Action>{ name, boundKey, Asset::Action::Modifiers{} });
 
         CompileAndCreateScript(
             "basic_script.as",
@@ -132,11 +128,9 @@ SCENARIO_METHOD(AngelScriptInputTestsFixture, "running input AngelScript scripts
     GIVEN("script that returns action pressed")
     {
         auto name = dataGeneration.Random<std::string>();
-        const auto mappedKey = Input::Key::Z;
-        Asset::Action::MappedKeys mappedKeys;
-        mappedKeys.emplace(mappedKey);
+        const auto boundKey = Input::Key::Z;
 
-        auto actionAsset = fieldReliquary.Do(Arca::Create<Asset::Action>{ name, mappedKeys });
+        auto actionAsset = fieldReliquary.Do(Arca::Create<Asset::Action>{ name, boundKey, Asset::Action::Modifiers{} });
 
         CompileAndCreateScript(
             "basic_script.as",

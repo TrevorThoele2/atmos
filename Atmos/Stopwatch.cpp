@@ -25,6 +25,8 @@ namespace Atmos::Time
             isPaused = false;
             return start;
         }
+
+        return {};
     }
 
     Point<> Stopwatch::Restart()

@@ -11,13 +11,16 @@ namespace Atmos::Asset
     class Action : public Asset
     {
     public:
-        using MappedKeys = std::set<Input::Key>;
-        MappedKeys mappedKeys;
+        Input::Key boundKey;
+
+        using Modifiers = std::set<Input::Key>;
+        Modifiers boundModifiers;
     public:
         Action(
             Arca::RelicInit init,
             const Atmos::Name& name,
-            const MappedKeys& mappedKeys);
+            Input::Key boundKey,
+            const Modifiers& boundModifiers);
         Action(Arca::RelicInit init, Arca::Serialization serialization);
         Action(Action&& arg) noexcept;
 
@@ -37,7 +40,8 @@ namespace Arca
         static bool ShouldCreate(
             Reliquary& reliquary,
             const Atmos::Name& name,
-            Atmos::Asset::Action::MappedKeys mappedKeys);
+            Atmos::Input::Key boundKey,
+            const Atmos::Asset::Action::Modifiers& boundModifiers);
     };
 }
 
@@ -53,7 +57,8 @@ namespace Inscription
         void Scriven(ObjectT& object, Archive& archive)
         {
             BaseScriven<Atmos::Asset::Asset>(object, archive);
-            archive("mappedKeys", object.mappedKeys);
+            archive("boundKey", object.boundKey);
+            archive("boundModifiers", object.boundModifiers);
         }
     };
 

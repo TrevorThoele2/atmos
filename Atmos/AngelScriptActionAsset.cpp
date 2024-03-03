@@ -15,7 +15,8 @@ namespace Atmos::Scripting::Angel
         RegisterArcaIndex(registration);
         registration
             .ConstMethod(&Management::Method<&DoName>, "string", "Name", {})
-            .ConstMethod(&Management::Method<&MappedKeys>, "Atmos::Input::Key[]@", "MappedKeys", {})
+            .ConstMethod(&Management::Method<&DoBoundKey>, "Atmos::Input::Key", "BoundKey", {})
+            .ConstMethod(&Management::Method<&DoBoundModifiers>, "Atmos::Input::Key[]@", "BoundModifiers", {})
             .Actualize(engine, documentationManager);
 
         Registration<ArcaTraits<Asset::Action>>::RegisterTo(engine, documentationManager);
@@ -28,9 +29,14 @@ namespace Atmos::Scripting::Angel
         return RequiredValue(type)->Name();
     }
 
-    std::vector<Input::Key> Registration<Asset::Action>::MappedKeys(Type type)
+    Input::Key Registration<Asset::Action>::DoBoundKey(Type type)
     {
-        const auto& mappedKeys = RequiredValue(type)->mappedKeys;
-        return std::vector<Input::Key>{mappedKeys.begin(), mappedKeys.end()};
+        return RequiredValue(type)->boundKey;
+    }
+
+    std::vector<Input::Key> Registration<Asset::Action>::DoBoundModifiers(Type type)
+    {
+        const auto& boundModifiers = RequiredValue(type)->boundModifiers;
+        return std::vector<Input::Key>{boundModifiers.begin(), boundModifiers.end()};
     }
 }

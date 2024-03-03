@@ -34,7 +34,7 @@ public:
     {
         const auto name = dataGeneration.Random<Atmos::String>();
         const auto mappedKey = static_cast<Atmos::Input::Key>(dataGeneration.Random<std::underlying_type_t<Atmos::Input::Key>>());
-        Atmos::Asset::Action::MappedKeys mappedKeys = { mappedKey };
+        Atmos::Asset::Action::Modifiers mappedKeys = { mappedKey };
 
         const auto index = reliquary.Do(Arca::Create<T>{ name, mappedKeys });
         return TupleOf<T>(index);

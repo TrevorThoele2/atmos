@@ -55,11 +55,12 @@ SCENARIO_METHOD(AngelScriptAssetTestsFixture, "running asset AngelScript scripts
     GIVEN("ActionAsset")
     {
         auto name = dataGeneration.Random<std::string>();
-        const auto mappedKey = Input::Key::Z;
-        Asset::Action::MappedKeys mappedKeys;
-        mappedKeys.emplace(mappedKey);
+        const auto boundKey = Input::Key::Z;
+        const auto boundModifier = Input::Key::LeftShift;
+        Asset::Action::Modifiers boundModifiers;
+        boundModifiers.emplace(boundModifier);
 
-        auto actionAsset = fieldReliquary.Do(Arca::Create<Asset::Action>{ name, mappedKeys });
+        auto actionAsset = fieldReliquary.Do(Arca::Create<Asset::Action>{ name, boundKey, boundModifiers });
 
         GIVEN("script that returns name")
         {
@@ -86,7 +87,7 @@ SCENARIO_METHOD(AngelScriptAssetTestsFixture, "running asset AngelScript scripts
             }
         }
 
-        GIVEN("script that returns mapped key")
+        GIVEN("script that returns bound key")
         {
             CompileAndCreateScript(
                 "basic_script.as",
@@ -94,7 +95,7 @@ SCENARIO_METHOD(AngelScriptAssetTestsFixture, "running asset AngelScript scripts
                 "{\n" \
                 "    Atmos::Asset::FindByName<Atmos::Asset::Action> command(name);\n" \
                 "    auto asset = Arca::Reliquary::Do(command);\n" \
-                "    return Atmos::ToString(asset.MappedKeys()[0]);\n" \
+                "    return Atmos::ToString(asset.BoundKey());\n" \
                 "}",
                 { name },
                 fieldReliquary);
@@ -107,29 +108,23 @@ SCENARIO_METHOD(AngelScriptAssetTestsFixture, "running asset AngelScript scripts
                 {
                     REQUIRE(finishes.size() == 1);
 
-                    const auto expectedResult = ToString(static_cast<std::underlying_type_t<Input::Key>>(mappedKey));
+                    const auto expectedResult = ToString(static_cast<std::underlying_type_t<Input::Key>>(boundKey));
                     REQUIRE(std::get<String>(std::get<Variant>(finishes[0].result)) == expectedResult);
                 }
             }
         }
 
-        GIVEN("script that returns mapped key after binding action")
+        GIVEN("script that returns bound modifier")
         {
-            auto toMapped = Input::Key::A;
-
             CompileAndCreateScript(
                 "basic_script.as",
-                "string main(int toMapped, string name)\n" \
+                "string main(string name)\n" \
                 "{\n" \
                 "    Atmos::Asset::FindByName<Atmos::Asset::Action> command(name);\n" \
                 "    auto asset = Arca::Reliquary::Do(command);\n" \
-                "\n" \
-                "    Atmos::Input::Key[] mappedKeys = { Atmos::Input::Key(toMapped) };\n" \
-                "    Arca::Reliquary::Do(Atmos::Input::BindAction(asset, mappedKeys));\n" \
-                "\n" \
-                "    return Atmos::ToString(asset.MappedKeys()[0]);\n" \
+                "    return Atmos::ToString(asset.BoundModifiers()[0]);\n" \
                 "}",
-                { static_cast<std::underlying_type_t<Input::Key>>(toMapped), name },
+                { name },
                 fieldReliquary);
 
             WHEN("working reliquary")
@@ -140,7 +135,41 @@ SCENARIO_METHOD(AngelScriptAssetTestsFixture, "running asset AngelScript scripts
                 {
                     REQUIRE(finishes.size() == 1);
 
-                    const auto expectedResult = ToString(static_cast<std::underlying_type_t<Input::Key>>(toMapped));
+                    const auto expectedResult = ToString(static_cast<std::underlying_type_t<Input::Key>>(boundModifier));
+                    REQUIRE(std::get<String>(std::get<Variant>(finishes[0].result)) == expectedResult);
+                }
+            }
+        }
+
+        GIVEN("script that returns bound modifier after binding action")
+        {
+            auto toBound = Input::Key::A;
+
+            CompileAndCreateScript(
+                "basic_script.as",
+                "string main(int key, int toBound, string name)\n" \
+                "{\n" \
+                "    Atmos::Asset::FindByName<Atmos::Asset::Action> command(name);\n" \
+                "    auto asset = Arca::Reliquary::Do(command);\n" \
+                "\n" \
+                "    auto boundKey = Atmos::Input::Key(key);\n" \
+                "    Atmos::Input::Key[] boundModifiers = { Atmos::Input::Key(toBound) };\n" \
+                "    Arca::Reliquary::Do(Atmos::Input::BindAction(asset, boundKey, boundModifiers));\n" \
+                "\n" \
+                "    return Atmos::ToString(asset.BoundModifiers()[0]);\n" \
+                "}",
+                { static_cast<std::underlying_type_t<Input::Key>>(boundKey), static_cast<std::underlying_type_t<Input::Key>>(toBound), name },
+                fieldReliquary);
+
+            WHEN("working reliquary")
+            {
+                fieldReliquary.Do(Work{});
+
+                THEN("has correct properties")
+                {
+                    REQUIRE(finishes.size() == 1);
+
+                    const auto expectedResult = ToString(static_cast<std::underlying_type_t<Input::Key>>(toBound));
                     REQUIRE(std::get<String>(std::get<Variant>(finishes[0].result)) == expectedResult);
                 }
             }

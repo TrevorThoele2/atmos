@@ -11,6 +11,7 @@ namespace Atmos::Spatial
     {
         const auto camera = Arca::Index<Render::Camera>(reliquary);
         const auto position = camera->Position();
-        return { from.x + position.x, from.y + position.y };
+        const auto size = camera->Size();
+        return { from.x + position.x - size.width / 2, from.y + position.y - size.height / 2 };
     }
 }

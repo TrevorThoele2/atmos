@@ -25,8 +25,8 @@ namespace Atmos::Input
         Delta<KeyStates> keyStates;
         Delta<Spatial::ScreenPoint> mousePosition;
 
-        [[nodiscard]] bool IsActive(std::set<Key> keys, KeyStates currentKeyStates) const;
-        [[nodiscard]] std::optional<KeyState> ActionDelta(std::set<Key> keys, Delta<KeyStates> allKeyStates) const;
+        using ActionState = std::tuple<bool, std::optional<KeyState>>;
+        [[nodiscard]] ActionState CurrentActionState(const Name& name, Key key, std::set<Key> modifiers, Delta<KeyStates> allKeyStates) const;
     private:
         struct KeyMapping
         {
@@ -36,6 +36,9 @@ namespace Atmos::Input
         std::unordered_map<Key, KeyMapping> keyMappings;
 
         [[nodiscard]] const KeyMapping& RequiredKeyMapping(Key key) const;
+    private:
+        using ActiveActions = std::unordered_set<Name>;
+        ActiveActions previousActiveActions;
     };
 }
 
