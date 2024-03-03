@@ -12,26 +12,22 @@ namespace Atmos
     template<class EnumT>
     class Flags
     {
-    private:
-        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
-        INSCRIPTION_ACCESS;
-    private:
+    public:
         typedef typename std::underlying_type<EnumT>::type Bits;
-        Bits bits;
     public:
         Flags();
         Flags(EnumT flag);
-        Flags(const std::initializer_list<EnumT> &list);
+        Flags(const std::initializer_list<EnumT>& list);
 
-        Flags<EnumT>& operator=(const Flags<EnumT> &arg);
+        Flags<EnumT>& operator=(const Flags<EnumT>& arg);
         Flags<EnumT>& operator=(EnumT arg);
-        Flags<EnumT>& operator|(const Flags<EnumT> &arg);
+        Flags<EnumT>& operator|(const Flags<EnumT>& arg);
         Flags<EnumT>& operator|(EnumT arg);
-        Flags<EnumT>& operator|=(const Flags<EnumT> &arg);
+        Flags<EnumT>& operator|=(const Flags<EnumT>& arg);
         Flags<EnumT>& operator|=(EnumT arg);
 
-        bool operator==(const Flags<EnumT> &arg) const;
-        bool operator!=(const Flags<EnumT> &arg) const;
+        bool operator==(const Flags<EnumT>& arg) const;
+        bool operator!=(const Flags<EnumT>& arg) const;
 
         void Set(EnumT flag, bool set = true);
         void Reset();
@@ -40,14 +36,13 @@ namespace Atmos
         bool Has(EnumT flag) const;
         // Checks if all of the bits are the given value
         bool CheckAll(bool value = true);
-        typename const Flags<EnumT>::Bits& GetData() const;
+        Bits GetBits() const;
+    private:
+        Bits bits;
+    private:
+        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
+        INSCRIPTION_ACCESS;
     };
-
-    template<class EnumT>
-    void Flags<EnumT>::Serialize(::Inscription::Scribe &scribe)
-    {
-        scribe(bits);
-    }
 
     template<class EnumT>
     Flags<EnumT>::Flags() : bits(0)
@@ -60,14 +55,14 @@ namespace Atmos
     }
 
     template<class EnumT>
-    Flags<EnumT>::Flags(const std::initializer_list<EnumT> &list) : bits(0)
+    Flags<EnumT>::Flags(const std::initializer_list<EnumT>& list) : bits(0)
     {
         for (auto& loop : list)
             Set(loop);
     }
 
     template<class EnumT>
-    Flags<EnumT>& Flags<EnumT>::operator=(const Flags<EnumT> &arg)
+    Flags<EnumT>& Flags<EnumT>::operator=(const Flags<EnumT>& arg)
     {
         bits = arg.bits;
 
@@ -83,7 +78,7 @@ namespace Atmos
     }
 
     template<class EnumT>
-    Flags<EnumT>& Flags<EnumT>::operator|(const Flags<EnumT> &arg)
+    Flags<EnumT>& Flags<EnumT>::operator|(const Flags<EnumT>& arg)
     {
         bits.set(arg);
     }
@@ -96,7 +91,7 @@ namespace Atmos
     }
 
     template<class EnumT>
-    Flags<EnumT>& Flags<EnumT>::operator|=(const Flags<EnumT> &arg)
+    Flags<EnumT>& Flags<EnumT>::operator|=(const Flags<EnumT>& arg)
     {
         bits.set(arg.bits);
 
@@ -110,13 +105,13 @@ namespace Atmos
     }
 
     template<class EnumT>
-    bool Flags<EnumT>::operator==(const Flags<EnumT> &arg) const
+    bool Flags<EnumT>::operator==(const Flags<EnumT>& arg) const
     {
         return bits == arg.bits;
     }
 
     template<class EnumT>
-    bool Flags<EnumT>::operator!=(const Flags<EnumT> &arg) const
+    bool Flags<EnumT>::operator!=(const Flags<EnumT>& arg) const
     {
         return !(*this == arg);
     }
@@ -162,8 +157,14 @@ namespace Atmos
     }
 
     template<class EnumT>
-    typename const Flags<EnumT>::Bits& Flags<EnumT>::GetData() const
+    typename Flags<EnumT>::Bits Flags<EnumT>::GetBits() const
     {
         return bits;
+    }
+
+    template<class EnumT>
+    void Flags<EnumT>::Serialize(::Inscription::Scribe& scribe)
+    {
+        scribe(bits);
     }
 }

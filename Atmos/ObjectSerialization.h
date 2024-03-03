@@ -71,5 +71,8 @@ namespace Atmos
 template<>                                                  \
 class Inscripter<T> : public ::Atmos::ObjectInscripter<T>
 
-#define DEFINE_OBJECT_INSCRIPTER_MEMBERS(T)     \
+#define OBJECT_INSCRIPTER_DECLARE_MEMBERS   \
+static void AddMembers(TableT& table)
+
+#define OBJECT_INSCRIPTER_DEFINE_MEMBERS(T)     \
 void Inscripter<T>::AddMembers(TableT& table)

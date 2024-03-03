@@ -1,38 +1,50 @@
 
 #include "WorldManager.h"
 
-#include "WorldScribe.h"
-#include "StasisScribe.h"
-
-#include "AvatarSystem.h"
-#include "RenderFragmentSystem.h"
-#include "nEntityPositionSystem.h"
-#include "MainGame.h"
-#include "Battle.h"
-#include "Environment.h"
-#include "StringUtility.h"
+#include "FileSystem.h"
 #include "SoundSystem.h"
+#include "DebugStatisticsSystem.h"
+#include "LoggingSystem.h"
 
-#include "AssetPackage.h"
+#include "EntityAvatarSystem.h"
+#include "EntityPositionSystem.h"
 
-#include "FileUtility.h"
-#include "Logger.h"
+#include "StringUtility.h"
+
+#include "OutputWorldScribe.h"
+#include "InputWorldScribe.h"
+#include "OutputStasisScribe.h"
+#include "InputStasisScribe.h"
 
 namespace Atmos
 {
     const char* autosaveName = "Autosave.stasis";
 
+    WorldManager::WorldManager(ObjectManager& globalObjectManager, ObjectRegistration& objectRegistration) :
+        globalObjectManager(&globalObjectManager), objectRegistration(&objectRegistration)
+    {}
+
+    WorldManager::WorldManager(const ::Inscription::Table<WorldManager>& table)
+    {}
+
+    void WorldManager::Initialize()
+    {
+        auto debugStatistics = globalObjectManager->FindSystem<DebugStatisticsSystem>();
+        debugStatistics->gamePage.fieldID.retrievalFunction = [this]() -> String
+        {
+            auto currentField = CurrentField();
+            if (currentField)
+                return ToString(currentField->id);
+            else
+                return String("None");
+        };
+
+        FindFileSystem()->Get()->MakeDirectory(StasisFolderFilePath());
+    }
+
     void WorldManager::Work()
     {
         field->objectManager.Work();
-    }
-
-    void WorldManager::Draw()
-    {
-        if (!field)
-            return;
-
-        field->objectManager.FindSystem<RenderFragmentSystem>()->DrawAll();
     }
 
     void WorldManager::LockIn()
@@ -40,40 +52,43 @@ namespace Atmos
         if (!change)
             return;
 
+        auto fileSystem = FindFileSystem()->Get();
+        auto loggingSystem = FindLoggingSystem();
+
         FieldID useFieldID = requestedFieldID;
         if (destination.IsValid())
             useFieldID = destination->id;
 
         auto prevField = field.get();
         bool hadPreviousField = prevField != nullptr;
-        if (!prevField || useFieldID != prevField->GetID() || useWorldStart)
+        if (!prevField || useFieldID != prevField->id || useWorldStart)
         {
             bool isWorld = !stasisName.IsValid();
 
-            std::unique_ptr<InScribeBase> inScribe;
+            std::unique_ptr<InputScribeBase> inputScribe;
             String noLoadError;
             String noLoadErrorFileParamName;
             String noLoadErrorFileParam;
             if (isWorld)
             {
-                inScribe.reset(new WorldScribeIn(worldPath));
+                inputScribe.reset(new InputWorldScribe(worldPath, *globalObjectManager));
                 noLoadError = "The world file was unloadable.";
                 noLoadErrorFileParamName = "World File Path";
                 noLoadErrorFileParam = worldPath.GetValue();
             }
             else
             {
-                inScribe.reset(new StasisScribeIn(stasisName.Get(), worldPath));
+                inputScribe.reset(new InputStasisScribe(CreateStasisFilePath(stasisName.Get()), worldPath, *globalObjectManager));
                 noLoadError = "The stasis file's world is not the same as the provided world.";
                 noLoadErrorFileParamName = "Stasis File Name";
                 noLoadErrorFileParam = stasisName.Get().GetValue();
             }
 
-            if (!inScribe->WillLoad())
+            if (!inputScribe->WillLoad())
             {
-                Logger::Log(std::move(noLoadError),
-                    Logger::Type::ERROR_SEVERE,
-                    Logger::NameValueVector{ NameValuePair(noLoadErrorFileParamName, noLoadErrorFileParam) });
+                FindLoggingSystem()->Log(std::move(noLoadError),
+                    LogType::ERROR_SEVERE,
+                    LogNameValueVector{ NameValuePair(noLoadErrorFileParamName, noLoadErrorFileParam) });
             }
             else
             {
@@ -81,19 +96,18 @@ namespace Atmos
 
                 // We are going to load simultaneously while saving
                 if (prevField)
-                    inScribe->Load(InScribeBase::LOAD_FIELD_PLACEHOLDERS);
+                    inputScribe->Load(InputScribeBase::LOAD_FIELD_PLACEHOLDERS);
                 else
-                    inScribe->Load();
+                    inputScribe->Load();
 
                 // Retrieve the world start and check if to use it
                 if (useWorldStart)
-                    useFieldID = inScribe->GetWorldStart().GetFieldID();
+                    useFieldID = inputScribe->worldStart.Get().fieldID;
 
                 // Retrieve the new field IDs
                 {
                     fieldIDs.clear();
-                    std::vector<FieldID> idVector;
-                    inScribe->GetIDs(idVector);
+                    auto idVector = inputScribe->AllFieldIDs();
                     for (auto& loop : idVector)
                         fieldIDs.emplace(loop);
                 }
@@ -102,7 +116,7 @@ namespace Atmos
                 eventFinalizeField(prevField);
 
                 // Create the new field
-                auto newField = inScribe->GetAsHeap(useFieldID);
+                auto newField = inputScribe->ExtractFieldAsHeap(useFieldID);
                 ATMOS_ASSERT_MESSAGE(newField, "The newly created field must exist.");
 
                 oldField.reset(field.release());
@@ -111,61 +125,62 @@ namespace Atmos
                 // Execute before-set events
                 eventBeforeFieldSet();
 
-                StasisWorldStart worldStart;
+                WorldStart worldStart;
 
                 // Save the new stasis
                 {
-                    auto &tempPath = Environment::GetFileSystem()->GetTempDirectoryPath();
+                    auto& tempPath = fileSystem->TemporaryDirectoryPath();
                     tempPath.SetFileName(autosaveName);
                     tempPath.SetExtension("temporary");
 
                     // Create the out scribe (always outputting into a stasis)
                     {
-                        StasisScribeOut outScribe(tempPath, worldPath.GetFileName(), inScribe->GetFieldCount());
+                        OutputStasisScribe outputScribe(tempPath, worldPath.GetFileName(), inputScribe->FieldCount());
 
-                        inScribe->CopyTrackersTo(outScribe);
+                        inputScribe->CopyTrackersTo(outputScribe);
 
                         // Set the world start
-                        worldStart.Set(useFieldID, worldStart.GetOutsideFieldID());
-                        worldStart.SetBattleFieldFromCurrent();
-                        worldStart.SetPlayerPartyFromCurrent();
-                        outScribe.SetWorldStart(worldStart);
+                        worldStart.fieldID = useFieldID;
+                        outputScribe.worldStart = worldStart;
 
                         // Output the fields
                         for (auto& loop : fieldIDs)
                         {
-                            if (prevField && loop == prevField->GetID())
-                                outScribe.Save(*prevField);
-                            else if (loop == newField->GetID())
-                                outScribe.Save(*newField);
+                            if (prevField && loop == prevField->id)
+                                outputScribe.Save(*prevField);
+                            else if (loop == newField->id)
+                                outputScribe.Save(*newField);
                             else
-                                outScribe.Save(loop, inScribe->GetAsBuffer(loop));
+                                outputScribe.Save(loop, inputScribe->ExtractFieldAsBuffer(loop));
                         }
                     }
                     // OutScribe has been destroyed
-                    inScribe.reset();
+                    inputScribe.reset();
                     // InScribe has been destroyed
 
-                    FilePath newPath(StasisScribeOut::MakePathFromName(autosaveName));
-                    if (!Environment::GetFileSystem()->RemoveFile(newPath))
+                    FilePath newPath(CreateStasisFilePath(autosaveName));
+                    if (!fileSystem->RemoveFile(newPath))
                     {
-                        Logger::Log("Removing a stasis from the temporary directory has encountered an error.",
-                            Logger::Type::ERROR_SEVERE,
-                            Logger::NameValueVector{ NameValuePair("Stasis Name", String(autosaveName)), NameValuePair("File Path", newPath.GetValue()) });
+                        loggingSystem->Log("Removing a stasis file from the temporary directory has encountered an error.",
+                            LogType::ERROR_SEVERE,
+                            LogNameValueVector{
+                                NameValuePair("Stasis Name", String(autosaveName)),
+                                NameValuePair("File Path", newPath.GetValue()) });
                     }
 
-                    if (!Environment::GetFileSystem()->RelocateFile(tempPath, newPath))
+                    if (!fileSystem->RelocateFile(tempPath, newPath))
                     {
-                        Logger::Log("Renaming a stasis has encountered an error.",
-                            Logger::Type::ERROR_SEVERE,
-                            Logger::NameValueVector{ NameValuePair("Stasis Name", String(autosaveName)), NameValuePair("File Path", tempPath.GetValue()), NameValuePair("Requested File Path", newPath.GetValue()) });
+                        loggingSystem->Log("Renaming a stasis file has encountered an error.",
+                            LogType::ERROR_SEVERE,
+                            LogNameValueVector{
+                                NameValuePair("Stasis Name", String(autosaveName)),
+                                NameValuePair("File Path", tempPath.GetValue()),
+                                NameValuePair("Requested File Path", newPath.GetValue()) });
                     }
 
                     // Set the stasis name to load from
                     stasisName.Set(autosaveName);
                 }
-
-                worldStart.Use();
 
                 // Execute after-set events
                 eventFieldSet(*newField);
@@ -177,10 +192,10 @@ namespace Atmos
         if (destination.IsValid())
         {
             // Finish handling destination
-            auto avatarSystem = field->objectManager.FindSystem<Ent::nEntityAvatarSystem>();
-            auto entityPositionSystem = field->objectManager.FindSystem<Ent::nEntityPositionSystem>();
-            entityPositionSystem->MoveEntityInstant(avatarSystem->Avatar(), destination->pos);
-            entityPositionSystem->SetDirection(avatarSystem->Avatar(), destination->dir);
+            auto avatarSystem = field->objectManager.FindSystem<Entity::AvatarSystem>();
+            auto entityPositionSystem = field->objectManager.FindSystem<Entity::PositionSystem>();
+            entityPositionSystem->MoveEntityInstant(avatarSystem->Avatar(), destination->position);
+            entityPositionSystem->SetDirection(avatarSystem->Avatar(), destination->direction);
 
             destination.Reset();
         }
@@ -204,7 +219,7 @@ namespace Atmos
 
     bool WorldManager::Request(FieldID id)
     {
-        if (field.get() && field->GetID() == id)
+        if (field.get() && field->id == id)
             return false;
 
         if (!HasField(id))
@@ -215,9 +230,9 @@ namespace Atmos
         return true;
     }
 
-    bool WorldManager::Request(const FieldDestination &request)
+    bool WorldManager::Request(const FieldDestination& request)
     {
-        if (field.get() && field->GetID() == request.id)
+        if (field.get() && field->id == request.id)
             return false;
 
         if (!HasField(request.id))
@@ -244,19 +259,19 @@ namespace Atmos
         useWorldStart = true;
     }
 
-    void WorldManager::UseWorld(const FilePath &path)
+    void WorldManager::UseWorld(const FilePath& path)
     {
         worldPath = path;
         StartNew();
     }
 
-    void WorldManager::UseWorld(const FileName &name)
+    void WorldManager::UseWorld(const FileName& name)
     {
-        worldPath = worldFolder + name.GetValue();
+        worldPath = "Worlds" + name.GetValue();
         StartNew();
     }
 
-    void WorldManager::UseStasis(const FileName &name)
+    void WorldManager::UseStasis(const FileName& name)
     {
         stasisName.Set(name);
         StartNew();
@@ -265,48 +280,38 @@ namespace Atmos
     void WorldManager::Autosave()
     {
         if (field)
-            Autosave(field->GetID());
+            Autosave(field->id);
     }
 
-    void WorldManager::SaveStasis(const FileName &name)
+    void WorldManager::SaveStasis(const FileName& name)
     {
         if (field)
-            SaveStasis(field->GetID(), name);
+            SaveStasis(field->id, name);
     }
 
-    const FilePath& WorldManager::GetWorldPath()
+    const FilePath& WorldManager::WorldPath()
     {
         return worldPath;
     }
 
-    Field* WorldManager::GetCurrentField()
+    Field* WorldManager::CurrentField()
     {
         return field.get();
     }
 
-    void WorldManager::OnFocusLost()
+    FileSystem* WorldManager::FindFileSystem() const
     {
-        auto soundSystem = field->objectManager.FindSystem<SoundSystem>();
-        soundSystem->PauseAll();
+        return globalObjectManager->FindSystem<FileSystem>();
     }
 
-    void WorldManager::OnFocusRegain()
+    LoggingSystem* WorldManager::FindLoggingSystem() const
     {
-        auto soundSystem = field->objectManager.FindSystem<SoundSystem>();
-        soundSystem->ResumeAll();
+        return globalObjectManager->FindSystem<LoggingSystem>();
     }
 
     bool WorldManager::HasField(FieldID id)
     {
-        if (fieldIDs.find(id) == fieldIDs.end())
-        {
-            Logger::Log("A requested field does not exist.",
-                Logger::Type::ERROR_MODERATE,
-                Logger::NameValueVector{ NameValuePair("Field ID", ToString(id)) });
-            return false;
-        }
-
-        return true;
+        return fieldIDs.find(id) == fieldIDs.end();
     }
 
     void WorldManager::Autosave(FieldID worldStartFieldID)
@@ -316,86 +321,116 @@ namespace Atmos
 
     void WorldManager::SaveStasis(FieldID worldStartFieldID, const FileName &name)
     {
-        Field *currentField = field.get();
+        auto fileSystem = globalObjectManager->FindSystem<FileSystem>()->Get();
+
+        Field* currentField = field.get();
         if (stasisName.IsValid() && stasisName == name)
         {
             // If the stasis name is valid and the same as what we're saving as, that means we're loading from an existing stasis
             // So we must use the old stasis, and just overwrite this field
             // We use two scribes - one to load in from the old stasis, and the other to output at the same time
             // We'll put the new stasis with a different name as to not overwrite as we read, and then rename
-            auto &tempPath = Environment::GetFileSystem()->GetTempDirectoryPath();
-            tempPath.SetFileName(name);
-            tempPath.SetExtension("temporary");
+            auto temporaryPath = fileSystem->TemporaryDirectoryPath();
+            temporaryPath.SetFileName(name);
+            temporaryPath.SetExtension("temporary");
 
-            // This is needed for the scribes to deconstruct themselves
+            // This scope is needed for the scribes to deconstruct themselves
             {
-                StasisScribeOut outScribe(tempPath, worldPath.GetFileName(), 0, StasisScribeOut::OpenMode::NONE);
+                OutputStasisScribe outputScribe(temporaryPath, worldPath.GetFileName(), 0, OutputStasisScribe::OpenMode::NONE);
 
-                StasisScribeIn inScribe(name, worldPath);
-                inScribe.Load(StasisScribeIn::LOAD_FIELD_PLACEHOLDERS);
-                std::vector<FieldID> ids;
-                inScribe.GetIDs(ids);
+                InputStasisScribe inputScribe(CreateStasisFilePath(name), worldPath, *globalObjectManager);
+                inputScribe.Load(InputStasisScribe::LOAD_FIELD_PLACEHOLDERS);
+                auto fieldIds = inputScribe.AllFieldIDs();
 
-                outScribe.OverwriteFieldCount(inScribe.GetFieldCount());
-                inScribe.CopyTrackersTo(outScribe);
+                outputScribe.OverwriteFieldCount(inputScribe.FieldCount());
+                inputScribe.CopyTrackersTo(outputScribe);
 
                 // Set world start
                 {
-                    StasisWorldStart worldStart;
-                    worldStart.SetFromCurrent();
-                    worldStart.Set(worldStartFieldID, worldStart.GetOutsideFieldID());
-                    outScribe.SetWorldStart(worldStart);
+                    WorldStart worldStart(worldStartFieldID);
+                    outputScribe.worldStart = worldStart;
                 }
 
                 // Now, start transferring over the fields
-                for (auto& loop : ids)
+                for (auto& loop : fieldIds)
                 {
-                    if (loop == currentField->GetID())
-                        outScribe.Save(*currentField);
+                    if (loop == currentField->id)
+                        outputScribe.Save(*currentField);
                     else
-                        outScribe.Save(loop, inScribe.GetAsBuffer(loop));
+                        outputScribe.Save(loop, inputScribe.ExtractFieldAsBuffer(loop));
                 }
             }
 
-            FilePath renamePath(StasisScribeOut::MakePathFromName(name));
+            FilePath renamePath(StasisFolderFilePath());
+            renamePath.Append(name);
             std::remove(renamePath.c_str());
             // Finish up renaming it
-            rename(tempPath, renamePath.c_str());
+            rename(temporaryPath, renamePath.c_str());
         }
         else
         {
             // If the stasis name is invalid or not the same as the one we're using, that means we're loading from a world
             // So we must use the world and overwrite this field
             // We use two scribes - one to load in from the world, and the other to output at the same time
-            StasisScribeOut outScribe(name, worldPath.GetFileName(), 0);
+            OutputStasisScribe outputScribe(CreateStasisFilePath(name), worldPath.GetFileName(), 0);
 
-            WorldScribeIn inScribe(worldPath);
+            InputWorldScribe inputScribe(worldPath, *globalObjectManager);
             if (currentField)
-                inScribe.Load(WorldScribeIn::LOAD_FIELD_PLACEHOLDERS);
+                inputScribe.Load(InputWorldScribe::LOAD_FIELD_PLACEHOLDERS);
             else
-                inScribe.Load();
+                inputScribe.Load();
 
-            std::vector<FieldID> ids;
-            inScribe.GetIDs(ids);
+            auto ids = inputScribe.AllFieldIDs();
 
-            outScribe.OverwriteFieldCount(ids.size());
-            inScribe.CopyTrackersTo(outScribe);
+            outputScribe.OverwriteFieldCount(ids.size());
+            inputScribe.CopyTrackersTo(outputScribe);
             // Set the world start for this stasis
             {
-                FieldID useID = (currentField) ? currentField->GetID() : inScribe.GetWorldStart().GetFieldID();
-                outScribe.SetWorldStart(StasisWorldStart(useID));
+                FieldID useID = (currentField) ? currentField->id.Get() : inputScribe.worldStart.Get().fieldID.Get();
+                outputScribe.worldStart = WorldStart(useID);
             }
 
             // Now, start transferring over the fields
             for (auto& loop : ids)
             {
-                if (currentField && loop == currentField->GetID())
-                    outScribe.Save(*currentField);
+                if (currentField && loop == currentField->id)
+                    outputScribe.Save(*currentField);
                 else
-                    outScribe.Save(loop, inScribe.GetAsBuffer(loop));
+                    outputScribe.Save(loop, inputScribe.ExtractFieldAsBuffer(loop));
             }
         }
 
         stasisName.Set(name);
     }
+
+    FilePath WorldManager::CreateWorldFilePath(const FileName& fileName) const
+    {
+        return WorldFolderFilePath().Append(fileName);
+    }
+
+    FilePath WorldManager::CreateStasisFilePath(const FileName& fileName) const
+    {
+        return StasisFolderFilePath().Append(fileName);
+    }
+
+    FilePath WorldManager::WorldFolderFilePath() const
+    {
+        return FindFileSystem()->Get()->ExePath().Append("Worlds").AppendSeparator();
+    }
+
+    FilePath WorldManager::StasisFolderFilePath() const
+    {
+        return FindFileSystem()->Get()->ExePath().Append("Saves").AppendSeparator();
+    }
+}
+
+namespace Inscription
+{
+    INSCRIPTION_INSCRIPTER_DEFINE_TABLE(::Atmos::WorldManager)
+    {
+        INSCRIPTION_INSCRIPTER_CREATE_TABLE;
+        INSCRIPTION_INSCRIPTER_RETURN_TABLE;
+    }
+
+    INSCRIPTION_DEFINE_SIMPLE_CLASS_NAME_RESOLVER(::Atmos::WorldManager, "WorldManager");
 }

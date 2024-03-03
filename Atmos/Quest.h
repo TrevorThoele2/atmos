@@ -18,7 +18,7 @@ namespace Atmos
         PartList parts;
         PartList::iterator curPos;
     public:
-        nQuest(const Name& name);
+        nQuest(ObjectManager& manager, const Name& name);
         nQuest(const nQuest& arg) = default;
         nQuest(const ::Inscription::Table<nQuest>& table);
 
@@ -38,6 +38,6 @@ namespace Inscription
     DECLARE_OBJECT_INSCRIPTER(::Atmos::nQuest)
     {
     public:
-        static void AddMembers(TableT& table);
+        OBJECT_INSCRIPTER_DECLARE_MEMBERS;
     };
 }

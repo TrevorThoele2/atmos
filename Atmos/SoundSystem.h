@@ -10,14 +10,27 @@ namespace Atmos
     class SoundSystem : public ObjectSystem
     {
     public:
-        SoundSystem(ObjectManager& objectManager);
+        SoundSystem(ObjectManager& manager);
+        SoundSystem(const ::Inscription::Table<SoundSystem>& table);
 
         void ResumeAll();
         void PauseAll();
     private:
-        typedef ObjectBatch<nSound> SoundBatch;
+        typedef ObjectBatch<Sound> SoundBatch;
         SoundBatch sounds;
     private:
         void OnCameraMoved();
+        void OnEngineFocusLost();
+        void OnEngineFocusRegained();
+    };
+}
+
+namespace Inscription
+{
+    INSCRIPTION_INSCRIPTER_DECLARE(::Atmos::SoundSystem)
+    {
+    public:
+        INSCRIPTION_INSCRIPTER_DECLARE_TABLE;
+        INSCRIPTION_DECLARE_CLASS_NAME_RESOLVER;
     };
 }

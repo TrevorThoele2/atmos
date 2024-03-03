@@ -6,10 +6,10 @@
 namespace Atmos
 {
     template<>
-    class ObjectFactory<nTile> : public ObjectFactoryBase
+    class ObjectFactory<Tile> : public ObjectFactoryBase
     {
     public:
-        typedef nTile Created;
+        typedef Tile Created;
     public:
         ObjectFactory(ObjectManager& manager);
 

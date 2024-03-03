@@ -3,7 +3,7 @@
 
 namespace Atmos
 {
-    nAbility::nAbility(const Name& name) : RegistryObject(name)
+    nAbility::nAbility(ObjectManager& manager, const Name& name) : RegistryObject(manager, name)
     {}
 
     nAbility::nAbility(const ::Inscription::Table<nAbility>& table) : INSCRIPTION_TABLE_GET_BASE(RegistryObject)
@@ -19,7 +19,7 @@ namespace Atmos
 
 namespace Inscription
 {
-    DEFINE_OBJECT_INSCRIPTER_MEMBERS(::Atmos::nAbility)
+    OBJECT_INSCRIPTER_DEFINE_MEMBERS(::Atmos::nAbility)
     {
 
     }

@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include <AGUI\Font.h>
+#include <AGUI/Font.h>
 
 namespace Agui
 {

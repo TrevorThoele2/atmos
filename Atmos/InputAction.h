@@ -1,30 +1,35 @@
 #pragma once
 
-#include "Input.h"
-#include "InputDefines.h"
-#include "IniID.h"
+#include "InputKeyID.h"
+#include "InputActionID.h"
+
+#include "String.h"
 
 namespace Atmos
 {
     namespace Input
     {
-        class HandlerBase;
+        class SignalBase;
+        class Manager;
+
         class Action
         {
-        private:
-            const SignalBase *mappedKey;
-
-            Action(ActionID id, const String &displayName, Ini::ID iniID, const SignalBase &defaultKey);
-            void Work();
-            friend HandlerBase;
         public:
-            void SetMappedKey(const SignalBase *set);
-            void SetMappedKey(KeyID set);
-            const SignalBase* GetMappedKey() const;
-
             const ActionID id;
             const String displayName;
-            const Ini::ID iniID;
+        public:
+            Action(Manager& owner, ActionID id, const String& displayName);
+
+            void MapToSignal(const SignalBase* set);
+            const SignalBase* MappedSignal() const;
+        private:
+            Manager* owner;
+        private:
+            const SignalBase* mappedSignal;
+        private:
+            void Work();
+        private:
+            friend class Manager;
         };
     }
 }

@@ -25,7 +25,8 @@ namespace Atmos
         scribe(growth);
     }
 
-    nCharacterClass::nCharacterClass(const Name& name) : RegistryObject(name), permanentMaxItemCount(0), temporaryMaxItemCount(0)
+    nCharacterClass::nCharacterClass(ObjectManager& manager, const Name& name) :
+        RegistryObject(manager, name), permanentMaxItemCount(0), temporaryMaxItemCount(0)
     {}
 
     nCharacterClass::nCharacterClass(const ::Inscription::Table<nCharacterClass>& table) : INSCRIPTION_TABLE_GET_BASE(RegistryObject)
@@ -87,7 +88,7 @@ namespace Atmos
 
 namespace Inscription
 {
-    DEFINE_OBJECT_INSCRIPTER_MEMBERS(::Atmos::nCharacterClass)
+    OBJECT_INSCRIPTER_DEFINE_MEMBERS(::Atmos::nCharacterClass)
     {
 
     }

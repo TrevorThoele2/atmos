@@ -1,6 +1,6 @@
 #pragma once
 
-#include "nEntityComponent.h"
+#include "EntityComponent.h"
 
 #include "ItemStack.h"
 
@@ -11,9 +11,9 @@
 
 namespace Atmos
 {
-    namespace Ent
+    namespace Entity
     {
-        class nInventoryComponent : public nEntityComponent
+        class InventoryComponent : public Component
         {
         public:
             typedef RandomAccessSequence<ItemStack> Container;
@@ -21,9 +21,9 @@ namespace Atmos
         public:
             typedef TypedObjectReference<nItem> ItemReference;
         public:
-            nInventoryComponent(EntityReference reference);
-            nInventoryComponent(const nInventoryComponent& arg) = default;
-            nInventoryComponent(const ::Inscription::Table<nInventoryComponent>& table);
+            InventoryComponent(ObjectManager& manager, EntityReference reference);
+            InventoryComponent(const InventoryComponent& arg) = default;
+            InventoryComponent(const ::Inscription::Table<InventoryComponent>& table);
 
             ItemStack* Add(ItemReference itemSource, const ItemStack::Count& count);
             ItemStack* Add(ItemStack&& add);
@@ -34,7 +34,7 @@ namespace Atmos
             bool IsEmpty() const;
             bool IsHere(ItemStack& check) const;
 
-            void Move(ItemStack& stack, TypedObjectReference<nInventoryComponent> moveTo);
+            void Move(ItemStack& stack, TypedObjectReference<InventoryComponent> moveTo);
             bool AttemptConsume(ItemStack& stack);
             bool AttemptEquip(EquipSlot slot, ItemStack& stack);
 
@@ -47,7 +47,7 @@ namespace Atmos
     }
 
     template<>
-    struct ObjectTraits<Ent::nInventoryComponent> : ObjectTraitsBase<Ent::nInventoryComponent>
+    struct ObjectTraits<Entity::InventoryComponent> : ObjectTraitsBase<Entity::InventoryComponent>
     {
         static const ObjectTypeName typeName;
     };
@@ -55,9 +55,9 @@ namespace Atmos
 
 namespace Inscription
 {
-    DECLARE_OBJECT_INSCRIPTER(::Atmos::Ent::nInventoryComponent)
+    DECLARE_OBJECT_INSCRIPTER(::Atmos::Entity::InventoryComponent)
     {
     public:
-        static void AddMembers(TableT& table);
+        OBJECT_INSCRIPTER_DECLARE_MEMBERS;
     };
 }

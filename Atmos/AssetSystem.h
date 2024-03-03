@@ -26,7 +26,7 @@ namespace Atmos
 
         ObjectBatchSizeT Size() const;
     private:
-        typedef ObjectBatch<nAsset> Batch;
+        typedef ObjectBatch<Asset> Batch;
     private:
         Batch batch;
     private:
@@ -36,7 +36,7 @@ namespace Atmos
     template<class T>
     AssetSystem<T>::AssetSystem(ObjectManager& manager) : ObjectSystem(manager)
     {
-        batch = manager.Batch<nAsset>();
+        batch = manager.Batch<Asset>();
     }
 
     template<class T>
@@ -79,6 +79,8 @@ namespace Inscription
     class Inscripter<::Atmos::AssetSystem<T>> : public InscripterBase<::Atmos::AssetSystem<T>>
     {
     public:
+        INSCRIPTION_INSCRIPTER_BASE_TYPEDEFS(::Atmos::AssetSystem<T>);
+    public:
         INSCRIPTION_INSCRIPTER_DECLARE_TABLE;
     };
 
@@ -87,6 +89,7 @@ namespace Inscription
     {
         INSCRIPTION_INSCRIPTER_CREATE_TABLE;
 
+        INSCRIPTION_TABLE_ADD_BASE(::Atmos::ObjectSystem);
         INSCRIPTION_TABLE_ADD(batch);
 
         INSCRIPTION_INSCRIPTER_RETURN_TABLE;

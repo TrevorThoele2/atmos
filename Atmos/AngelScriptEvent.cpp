@@ -1,17 +1,19 @@
 
 #include "AngelScriptEvent.h"
 
-#include "ScriptEngineManager.h"
+#include "AngelScriptRegistrationInterface.h"
+
+#include "ObjectManager.h"
+#include "AngelScriptSystem.h"
+
 #include "AngelScriptAssert.h"
 #include <angelscript.h>
-
-#include "CurrentField.h"
 
 namespace Atmos
 {
     namespace Scripting
     {
-        Event::Event()
+        Event::Event(ObjectManager& objectManager) : objectManager(&objectManager)
         {
             auto engine = Engine();
             context = engine->CreateContext();
@@ -25,16 +27,6 @@ namespace Atmos
                 loop = subscribedFunctions.erase(loop);
             }
             context->Release();
-        }
-
-        void Event::Constructor(void* memory)
-        {
-            new(memory) Event();
-        }
-
-        void Event::Destructor(void* memory)
-        {
-            static_cast<Event*>(memory)->~Event();
         }
 
         void Event::Subscribe(asIScriptFunction* function)
@@ -69,15 +61,17 @@ namespace Atmos
 
         void Event::RegisterToAngelScript(asIScriptEngine* engine)
         {
-            AngelScriptAssert(engine->RegisterFuncdef("void EventFunction()"));
+            AngelScriptAssert(engine->RegisterFuncdef(
+                "void EventFunction()"));
 
             const char* className = "Event";
 
-            AngelScriptAssert(engine->RegisterObjectType(className, sizeof(Event), asOBJ_VALUE));
+            AngelScriptAssert(engine->RegisterObjectType(
+                className, sizeof(Event), asOBJ_VALUE));
             AngelScriptAssert(engine->RegisterObjectBehaviour(
-                className, asBEHAVE_CONSTRUCT, "void f()", asFUNCTION(Event::Constructor), asCALL_CDECL_OBJLAST));
+                className, asBEHAVE_CONSTRUCT, "void f()", asFUNCTION(RegistrationInterface::GenerateGenericValue<Event>), asCALL_GENERIC));
             AngelScriptAssert(engine->RegisterObjectBehaviour(
-                className, asBEHAVE_DESTRUCT, "void f()", asFUNCTION(Event::Destructor), asCALL_CDECL_OBJLAST));
+                className, asBEHAVE_DESTRUCT, "void f()", asFUNCTION(RegistrationInterface::DestructGenericValue<Event>), asCALL_GENERIC));
             AngelScriptAssert(engine->RegisterObjectMethod(
                 className, "void Subscribe(EventFunction@ function)", asMETHOD(Event, Subscribe), asCALL_THISCALL));
             AngelScriptAssert(engine->RegisterObjectMethod(
@@ -88,7 +82,12 @@ namespace Atmos
 
         asIScriptEngine* Event::Engine()
         {
-            return GetLocalObjectManager()->FindSystem<Scripting::EngineManager>()->Engine();
+            return FindSystem()->Engine();
+        }
+
+        System* Event::FindSystem()
+        {
+            return objectManager->FindSystem<System>();
         }
     }
 }

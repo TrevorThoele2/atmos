@@ -1,59 +1,93 @@
 
 #include "State.h"
-#include "StateManager.h"
+
+#include "ObjectManager.h"
+
+#include "StateSystem.h"
 
 namespace Atmos
 {
-    StateBase::EventBound::EventBound(EventBound &&arg) : state(arg.state), base(std::move(arg.base)), connection(std::move(arg.connection))
+    State::~State()
     {}
 
-    void StateBase::Work()
+    void State::Initialize()
     {
-        WorkInternal();
+        InitializeImpl();
     }
 
-    void StateBase::OnFocusedImpl()
-    {}
-
-    void StateBase::OnUnfocused()
+    void State::Work()
     {
-        Hide();
-        OnUnfocusedImpl();
+        WorkImpl();
     }
 
-    void StateBase::OnUnfocusedImpl()
-    {}
-
-    bool StateBase::CanGotoImpl() const
+    void State::Goto()
     {
-        return true;
+        System()->Goto(*this);
     }
 
-    StateBase::StateBase()
+    bool State::CanGoto() const
     {
-        StateManager::Instance().states.push_back(this);
+        return DoCanGoto();
     }
 
-    void StateBase::Goto()
-    {
-        StateManager::Goto(*this);
-    }
-
-    bool StateBase::CanGoto() const
-    {
-        return CanGotoImpl();
-    }
-
-    void StateBase::Pop()
+    void State::PopIfTop()
     {
         if (!IsTop())
             return;
 
-        StateManager::Pop();
+        System()->Pop();
     }
 
-    bool StateBase::IsTop() const
+    bool State::IsTop() const
     {
-        return &StateManager::GetTop() == &*this;
+        return System()->Top() == this;
+    }
+
+    State::State(ObjectManager& manager) : Object(manager)
+    {}
+
+    State::State(const ::Inscription::Table<State>& table) : INSCRIPTION_TABLE_GET_BASE(Object)
+    {}
+
+    StateSystem* State::System()
+    {
+        return Manager()->FindSystem<StateSystem>();
+    }
+
+    const StateSystem* State::System() const
+    {
+        return Manager()->FindSystem<StateSystem>();
+    }
+
+    bool State::DoCanGoto() const
+    {
+        return true;
+    }
+
+    void State::OnFocused()
+    {
+        DoOnFocused();
+    }
+
+    void State::OnUnfocused()
+    {
+        Hide();
+        DoOnUnfocused();
+    }
+
+    void State::DoOnFocused()
+    {}
+
+    void State::DoOnUnfocused()
+    {}
+
+    const ObjectTypeName ObjectTraits<State>::typeName = "State";
+}
+
+namespace Inscription
+{
+    OBJECT_INSCRIPTER_DEFINE_MEMBERS(::Atmos::State)
+    {
+
     }
 }

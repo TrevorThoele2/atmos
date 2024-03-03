@@ -10,9 +10,9 @@ namespace Atmos
 {
     class ObjectTypeDescriptionGroup
     {
-    private:
-        typedef std::vector<ObjectTypeDescription> List;
     public:
+        typedef std::vector<ObjectTypeDescription> List;
+
         typedef List::iterator iterator;
         typedef List::const_iterator const_iterator;
     public:

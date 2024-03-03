@@ -6,13 +6,14 @@
 
 namespace Atmos
 {
+    FieldDestination::FieldDestination(const Direction& direction, const GridPosition& position, FieldID id) :
+        direction(direction), position(position), id(id)
+    {}
+
     INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(FieldDestination)
     {
-        scribe(dir);
-        scribe(pos);
+        scribe(direction);
+        scribe(position);
         scribe(id);
     }
-
-    FieldDestination::FieldDestination(const Direction &dir, const GridPosition &pos, FieldID id) : dir(dir), pos(pos), id(id)
-    {}
 }

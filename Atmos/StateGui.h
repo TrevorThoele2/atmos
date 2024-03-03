@@ -1,29 +1,38 @@
 
 #pragma once
 
-#include <string>
+#include "String.h"
 
-#include <AGUI\Root.h>
+#include <AGUI/Root.h>
 
 namespace Atmos
 {
+    class State;
+    class ObjectManager;
+
     class StateGui
     {
-    private:
-        std::string rootName;
-        Agui::Root *root;
-        virtual void InitImpl() = 0;
-        virtual void UpdateImpl();
-        virtual void ShowImpl();
-        virtual void HideImpl();
-    protected:
-        StateGui(const std::string &name);
     public:
-        void Init();
+        virtual ~StateGui() = 0;
+
+        void Initialize();
         void Update();
+
         void Show();
         void Hide();
 
-        Agui::Root* GetRoot();
+        Agui::Root* Root();
+    protected:
+        ObjectManager* const objectManager;
+    protected:
+        StateGui(ObjectManager& objectManager, const String& rootName);
+    private:
+        String rootName;
+        Agui::Root* root;
+    private:
+        virtual void DoInitialize() = 0;
+        virtual void DoUpdate();
+        virtual void DoShow();
+        virtual void DoHide();
     };
 }

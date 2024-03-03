@@ -12,6 +12,8 @@
 
 namespace Atmos
 {
+    class LoggingSystem;
+
     class ScriptController : public ObjectSystem
     {
     public:
@@ -19,6 +21,7 @@ namespace Atmos
         typedef ConstTypedObjectReference<ScriptInstance> ScriptInstanceReference;
     public:
         ScriptController(ObjectManager& manager);
+        ScriptController(const ::Inscription::Table<ScriptController>& table);
 
         void ExecuteImmediately(RunningScriptReference reference);
 
@@ -30,6 +33,8 @@ namespace Atmos
     public:
         RunningScriptReference RunningScriptFor(ScriptInstanceReference scriptInstance) const;
         bool IsRunning(ScriptInstanceReference scriptInstance) const;
+    private:
+        void InitializeImpl() override;
     private:
         typedef ObjectBatch<RunningScript> RunningScripts;
         typedef RunningScripts::iterator RunningIterator;
@@ -48,5 +53,17 @@ namespace Atmos
     private:
         void OnRunningScriptCreated(RunningScriptReference reference);
         void OnRunningScriptDestroyed(RunningScriptReference reference);
+    private:
+        LoggingSystem* FindLoggingSystem();
+    };
+}
+
+namespace Inscription
+{
+    INSCRIPTION_INSCRIPTER_DECLARE(::Atmos::ScriptController)
+    {
+    public:
+        INSCRIPTION_INSCRIPTER_DECLARE_TABLE;
+        INSCRIPTION_DECLARE_CLASS_NAME_RESOLVER;
     };
 }

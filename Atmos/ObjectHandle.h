@@ -6,57 +6,57 @@
 
 namespace Atmos
 {
-    template<class Handler, class Object>
+    template<class Manager, class Object>
     class ObjectHandle
     {
     private:
-        friend Handler;
+        friend Manager;
         friend Object;
     private:
-        typedef FunctionBase<Handler*, Handler*> OnChangeFunc;
+        typedef FunctionBase<Manager*, Manager*> OnChangeFunc;
     private:
-        Handler *wrapped;
+        Manager *wrapped;
         std::unique_ptr<OnChangeFunc> onChange;
 
-        ObjectHandle(Handler *handler = nullptr, OnChangeFunc *func = nullptr);
+        ObjectHandle(Manager *handler = nullptr, OnChangeFunc *func = nullptr);
         ObjectHandle(const ObjectHandle &arg, OnChangeFunc *func = nullptr);
         ObjectHandle(ObjectHandle &&arg);
         ObjectHandle& operator=(const ObjectHandle &arg);
         ObjectHandle& operator=(ObjectHandle &&arg);
 
-        ObjectHandle& operator=(Handler *arg);
+        ObjectHandle& operator=(Manager *arg);
     public:
-        operator Handler*();
-        operator Handler*() const;
-        Handler* operator->();
-        const Handler* operator->() const;
-        Handler* Get();
-        const Handler* Get() const;
+        operator Manager*();
+        operator Manager*() const;
+        Manager* operator->();
+        const Manager* operator->() const;
+        Manager* Get();
+        const Manager* Get() const;
     };
 
-    template<class Handler, class Object>
-    ObjectHandle<Handler, Object>::ObjectHandle(Handler *handler, OnChangeFunc *func) : wrapped(handler), onChange(func)
+    template<class Manager, class Object>
+    ObjectHandle<Manager, Object>::ObjectHandle(Manager *handler, OnChangeFunc *func) : wrapped(handler), onChange(func)
     {}
 
-    template<class Handler, class Object>
-    ObjectHandle<Handler, Object>::ObjectHandle(const ObjectHandle &arg, OnChangeFunc *func) : wrapped(arg.wrapped), onChange(func)
+    template<class Manager, class Object>
+    ObjectHandle<Manager, Object>::ObjectHandle(const ObjectHandle &arg, OnChangeFunc *func) : wrapped(arg.wrapped), onChange(func)
     {}
 
-    template<class Handler, class Object>
-    ObjectHandle<Handler, Object>::ObjectHandle(ObjectHandle &&arg) : wrapped(arg.wrapped), onChange(std::move(arg.onChange))
+    template<class Manager, class Object>
+    ObjectHandle<Manager, Object>::ObjectHandle(ObjectHandle &&arg) : wrapped(arg.wrapped), onChange(std::move(arg.onChange))
     {
         arg.wrapped = nullptr;
     }
 
-    template<class Handler, class Object>
-    ObjectHandle<Handler, Object>& ObjectHandle<Handler, Object>::operator=(const ObjectHandle &arg)
+    template<class Manager, class Object>
+    ObjectHandle<Manager, Object>& ObjectHandle<Manager, Object>::operator=(const ObjectHandle &arg)
     {
         wrapped = arg.wrapped;
         return *this;
     }
 
-    template<class Handler, class Object>
-    ObjectHandle<Handler, Object>& ObjectHandle<Handler, Object>::operator=(ObjectHandle &&arg)
+    template<class Manager, class Object>
+    ObjectHandle<Manager, Object>& ObjectHandle<Manager, Object>::operator=(ObjectHandle &&arg)
     {
         wrapped = std::move(arg.wrapped);
         arg.wrapped = nullptr;
@@ -64,10 +64,10 @@ namespace Atmos
         return *this;
     }
 
-    template<class Handler, class Object>
-    ObjectHandle<Handler, Object>& ObjectHandle<Handler, Object>::operator=(Handler *arg)
+    template<class Manager, class Object>
+    ObjectHandle<Manager, Object>& ObjectHandle<Manager, Object>::operator=(Manager *arg)
     {
-        Handler *prev = wrapped;
+        Manager *prev = wrapped;
         wrapped = arg;
         if (onChange)
             onChange->Execute(std::move(prev), std::move(wrapped));
@@ -75,38 +75,38 @@ namespace Atmos
         return *this;
     }
 
-    template<class Handler, class Object>
-    ObjectHandle<Handler, Object>::operator Handler*()
+    template<class Manager, class Object>
+    ObjectHandle<Manager, Object>::operator Manager*()
     {
         return wrapped;
     }
 
-    template<class Handler, class Object>
-    ObjectHandle<Handler, Object>::operator Handler*() const
+    template<class Manager, class Object>
+    ObjectHandle<Manager, Object>::operator Manager*() const
     {
         return wrapped;
     }
 
-    template<class Handler, class Object>
-    Handler* ObjectHandle<Handler, Object>::operator->()
+    template<class Manager, class Object>
+    Manager* ObjectHandle<Manager, Object>::operator->()
     {
         return wrapped;
     }
 
-    template<class Handler, class Object>
-    const Handler* ObjectHandle<Handler, Object>::operator->() const
+    template<class Manager, class Object>
+    const Manager* ObjectHandle<Manager, Object>::operator->() const
     {
         return wrapped;
     }
 
-    template<class Handler, class Object>
-    Handler* ObjectHandle<Handler, Object>::Get()
+    template<class Manager, class Object>
+    Manager* ObjectHandle<Manager, Object>::Get()
     {
         return wrapped;
     }
 
-    template<class Handler, class Object>
-    const Handler* ObjectHandle<Handler, Object>::Get() const
+    template<class Manager, class Object>
+    const Manager* ObjectHandle<Manager, Object>::Get() const
     {
         return wrapped;
     }

@@ -1,5 +1,6 @@
 #pragma once
 
+/*
 #include "RangePattern.h"
 
 namespace Atmos
@@ -157,3 +158,4 @@ namespace Atmos
         }
     }
 }
+*/

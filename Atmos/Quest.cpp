@@ -3,7 +3,7 @@
 
 namespace Atmos
 {
-    nQuest::nQuest(const Name& name) : RegistryObject(name)
+    nQuest::nQuest(ObjectManager& manager, const Name& name) : RegistryObject(manager, name)
     {}
 
     nQuest::nQuest(const ::Inscription::Table<nQuest>& table) : INSCRIPTION_TABLE_GET_BASE(RegistryObject)
@@ -19,7 +19,7 @@ namespace Atmos
 
 namespace Inscription
 {
-    DEFINE_OBJECT_INSCRIPTER_MEMBERS(::Atmos::nQuest)
+    OBJECT_INSCRIPTER_DEFINE_MEMBERS(::Atmos::nQuest)
     {
 
     }

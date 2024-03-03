@@ -14,7 +14,7 @@ namespace Atmos
     {
     public:
         typedef TypedObjectReference<nStatusEffect> StatusEffectReference;
-        typedef TypedObjectReference<Ent::nCombatComponent> CombatComponentReference;
+        typedef TypedObjectReference<Entity::CombatComponent> CombatComponentReference;
     public:
         typedef nStatusEffect::ApplicationCount ApplicationCount;
         ReadonlyProperty<ApplicationCount> applicationsLeft;

@@ -1,6 +1,5 @@
 
 #include "DXAudio.h"
-#include "Environment.h"
 
 #include "AudioAsset.h"
 #include "AudioAssetInstance.h"
@@ -10,12 +9,12 @@ namespace Atmos
     class AudioAssetInstanceDataImplementation : public AudioAssetInstanceData
     {
     public:
-        AudioAssetInstanceDataImplementation(const XAUDIO2_BUFFER& buffer, const WAVEFORMATEX& format) :
-            buffer(buffer), voice(nullptr), format(format)
+        AudioAssetInstanceDataImplementation(DX9AudioManager& owner, const XAUDIO2_BUFFER& buffer, const WAVEFORMATEX& format) :
+            owner(&owner), buffer(buffer), voice(nullptr), format(format)
         {}
 
         AudioAssetInstanceDataImplementation(const AudioAssetInstanceDataImplementation& arg) :
-            buffer(arg.buffer), voice(nullptr), format(arg.format)
+            owner(arg.owner), buffer(arg.buffer), voice(nullptr), format(arg.format)
         {}
 
         ~AudioAssetInstanceDataImplementation()
@@ -51,9 +50,11 @@ namespace Atmos
 
         void Resubmit() override
         {
-            Environment::GetAudio<DX9AudioHandler>()->CreateSourceVoice(&voice, format);
+            owner->CreateSourceVoice(&voice, format);
             voice->SubmitSourceBuffer(&buffer);
         }
+    private:
+        DX9AudioManager* owner;
     private:
         XAUDIO2_BUFFER buffer;
         IXAudio2SourceVoice* voice;
@@ -63,8 +64,8 @@ namespace Atmos
     class AudioAssetDataImplementation : public AudioAssetData
     {
     public:
-        AudioAssetDataImplementation(XAUDIO2_BUFFER&& buffer, WAVEFORMATEX&& format) :
-            buffer(std::move(buffer)), format(std::move(format))
+        AudioAssetDataImplementation(DX9AudioManager& owner, XAUDIO2_BUFFER&& buffer, WAVEFORMATEX&& format) :
+            owner(&owner), buffer(std::move(buffer)), format(std::move(format))
         {}
 
         ~AudioAssetDataImplementation()
@@ -79,14 +80,16 @@ namespace Atmos
 
         std::unique_ptr<AudioAssetInstanceData> CreateInstanceData() const override
         {
-            return std::unique_ptr<AudioAssetInstanceData>(new AudioAssetInstanceDataImplementation(buffer, format));
+            return std::unique_ptr<AudioAssetInstanceData>(new AudioAssetInstanceDataImplementation(*owner, buffer, format));
         }
+    private:
+        DX9AudioManager* owner;
     private:
         XAUDIO2_BUFFER buffer;
         WAVEFORMATEX format;
     };
 
-    DX9AudioHandler::DX9AudioHandler() : pXAudio2(nullptr), pMasterVoice(nullptr)
+    DX9AudioManager::DX9AudioManager() : pXAudio2(nullptr), pMasterVoice(nullptr)
     {
         CoInitializeEx(nullptr, COINIT_MULTITHREADED);
         // Fill the engine pointer
@@ -94,22 +97,22 @@ namespace Atmos
         CreateMasteringVoice(&pMasterVoice);
     }
 
-    DX9AudioHandler::~DX9AudioHandler()
+    DX9AudioManager::~DX9AudioManager()
     {
         pXAudio2->Release();
     }
 
-    void DX9AudioHandler::CreateSourceVoice(IXAudio2SourceVoice** voice, const WAVEFORMATEX& format)
+    void DX9AudioManager::CreateSourceVoice(IXAudio2SourceVoice** voice, const WAVEFORMATEX& format)
     {
         pXAudio2->CreateSourceVoice(voice, &format);
     }
 
-    bool DX9AudioHandler::SetMasterVolume(float setTo)
+    bool DX9AudioManager::SetMasterVolume(float setTo)
     {
         return SUCCEEDED(pMasterVoice->SetVolume(setTo));
     }
 
-    std::unique_ptr<AudioAssetData> DX9AudioHandler::CreateAudioDataImpl(ExtractedFile&& file, const FileName& name)
+    std::unique_ptr<AudioAssetData> DX9AudioManager::CreateAudioDataImpl(ExtractedFile&& file, const FileName& name)
     {
         BYTE *rawBuffer = nullptr;
         ExtractedFile::first_type::SizeT rawBufferSize = 0;
@@ -140,10 +143,10 @@ namespace Atmos
         format.wBitsPerSample = file.second.bitsPerSample;
         format.wFormatTag = file.second.formatTag;
 
-        return std::make_unique<AudioAssetDataImplementation>(std::move(buffer), std::move(format));
+        return std::make_unique<AudioAssetDataImplementation>(*this, std::move(buffer), std::move(format));
     }
 
-    void DX9AudioHandler::CreateMasteringVoice(IXAudio2MasteringVoice** voice)
+    void DX9AudioManager::CreateMasteringVoice(IXAudio2MasteringVoice** voice)
     {
         pXAudio2->CreateMasteringVoice(voice);
     }

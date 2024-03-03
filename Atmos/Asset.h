@@ -9,59 +9,59 @@
 
 namespace Atmos
 {
-    class nAsset : public Object
+    class Asset : public Object
     {
     public:
         const Name name;
     public:
-        nAsset(const Name& name);
-        nAsset(const nAsset& arg);
-        nAsset(const ::Inscription::Table<nAsset>& table);
+        Asset(ObjectManager& manager, const Name& name);
+        Asset(const Asset& arg);
+        Asset(const ::Inscription::Table<Asset>& table);
 
         ObjectTypeDescription TypeDescription() const override;
     };
 
     template<>
-    struct ObjectTraits<nAsset> : ObjectTraitsBase<nAsset>
+    struct ObjectTraits<Asset> : ObjectTraitsBase<Asset>
     {
         static const ObjectTypeName typeName;
     };
 
     class nFileAssetData;
 
-    class nFileAsset : public nAsset
+    class FileAsset : public Asset
     {
     public:
         const FileName fileName;
     public:
-        virtual ~nFileAsset() = 0;
+        virtual ~FileAsset() = 0;
 
         ObjectTypeDescription TypeDescription() const override;
     protected:
-        nFileAsset(const FileName& fileName);
-        nFileAsset(const nFileAsset& arg);
-        nFileAsset(const ::Inscription::Table<nFileAsset>& table);
+        FileAsset(ObjectManager& manager, const FileName& fileName);
+        FileAsset(const FileAsset& arg);
+        FileAsset(const ::Inscription::Table<FileAsset>& table);
     };
 
     template<>
-    struct ObjectTraits<nFileAsset> : ObjectTraitsBase<nFileAsset>
+    struct ObjectTraits<FileAsset> : ObjectTraitsBase<FileAsset>
     {
         static const ObjectTypeName typeName;
-        static constexpr ObjectTypeList<nAsset> bases = {};
+        static constexpr ObjectTypeList<Asset> bases = {};
     };
 }
 
 namespace Inscription
 {
-    DECLARE_OBJECT_INSCRIPTER(::Atmos::nAsset)
+    DECLARE_OBJECT_INSCRIPTER(::Atmos::Asset)
     {
     public:
-        static void AddMembers(TableT& table);
+        OBJECT_INSCRIPTER_DECLARE_MEMBERS;
     };
 
-    DECLARE_OBJECT_INSCRIPTER(::Atmos::nFileAsset)
+    DECLARE_OBJECT_INSCRIPTER(::Atmos::FileAsset)
     {
     public:
-        static void AddMembers(TableT& table);
+        OBJECT_INSCRIPTER_DECLARE_MEMBERS;
     };
 }

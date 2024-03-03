@@ -4,35 +4,36 @@
 
 namespace Atmos
 {
-    namespace Ent
+    namespace Entity
     {
-        nAIComponent::nAIComponent(EntityReference owner) : nEntityComponent(owner)
+        AIComponent::AIComponent(ObjectManager& manager, EntityReference owner) :
+            Component(manager, owner)
         {
             SetupScripts();
         }
 
-        nAIComponent::nAIComponent(const ::Inscription::Table<nAIComponent>& table) : INSCRIPTION_TABLE_GET_BASE(nEntityComponent)
+        AIComponent::AIComponent(const ::Inscription::Table<AIComponent>& table) : INSCRIPTION_TABLE_GET_BASE(Component)
         {
             SetupScripts();
         }
 
-        ObjectTypeDescription nAIComponent::TypeDescription() const
+        ObjectTypeDescription AIComponent::TypeDescription() const
         {
-            return ObjectTraits<nAIComponent>::TypeDescription();
+            return ObjectTraits<AIComponent>::TypeDescription();
         }
 
-        void nAIComponent::SetupScripts()
+        void AIComponent::SetupScripts()
         {
             script->owner = this;
         }
     }
 
-    const ObjectTypeName ObjectTraits<Ent::nAIComponent>::typeName = "AIComponent";
+    const ObjectTypeName ObjectTraits<Entity::AIComponent>::typeName = "AIComponent";
 }
 
 namespace Inscription
 {
-    DEFINE_OBJECT_INSCRIPTER_MEMBERS(::Atmos::Ent::nAIComponent)
+    OBJECT_INSCRIPTER_DEFINE_MEMBERS(::Atmos::Entity::AIComponent)
     {
         INSCRIPTION_TABLE_ADD(script);
     }

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <AGUI\SpriteComponent.h>
+#include <AGUI/SpriteComponent.h>
 #include "Sprite.h"
 
 #include "Serialization.h"
@@ -30,7 +30,7 @@ namespace Atmos
         AguiSpriteFactory& operator=(const AguiSpriteFactory& arg) = default;
 
         AguiSpriteFactory(const ComponentT& arg);
-        AguiSpriteFactory(TypedObjectReference<nSprite> arg);
+        AguiSpriteFactory(TypedObjectReference<Sprite> arg);
         void Set(const Agui::FileName& xVisualName,
             ComponentT::Index index = 1,
             const Agui::Color& color = Agui::Color(),
@@ -38,10 +38,10 @@ namespace Atmos
             Agui::Size::ValueT widthScaler = 1.0f,
             Agui::Size::ValueT heightScaler = 1.0f);
         void Set(const ComponentT& arg);
-        void Set(const TypedObjectReference<nSprite>& arg);
+        void Set(const TypedObjectReference<Sprite>& arg);
 
         Agui::SpriteComponent* CreateComponent(const ComponentT::NameT& name, const Agui::RelativePosition& relativePosition = Agui::RelativePosition()) const;
-        TypedObjectReference<nSprite> CreateAtmosSprite(ObjectManager& objectManager);
+        TypedObjectReference<Sprite> CreateAtmosSprite(ObjectManager& objectManager);
     private:
         INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;

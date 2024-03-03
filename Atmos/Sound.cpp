@@ -3,40 +3,40 @@
 
 namespace Atmos
 {
-    nSound::nSound()
+    Sound::Sound(ObjectManager& manager) : Sense(manager)
     {
         SubscribeToProperties();
     }
 
-    nSound::nSound(const nSound& arg) : audioAsset(arg.audioAsset)
+    Sound::Sound(const Sound& arg) : Sense(arg), audioAsset(arg.audioAsset)
     {
         SubscribeToProperties();
     }
 
-    nSound::nSound(const ::Inscription::Table<nSound>& table) : INSCRIPTION_TABLE_GET_BASE(nSense)
+    Sound::Sound(const ::Inscription::Table<Sound>& table) : INSCRIPTION_TABLE_GET_BASE(Sense)
     {}
 
-    ObjectTypeDescription nSound::TypeDescription() const
+    ObjectTypeDescription Sound::TypeDescription() const
     {
-        return ObjectTraits<nSound>::TypeDescription();
+        return ObjectTraits<Sound>::TypeDescription();
     }
 
-    void nSound::SubscribeToProperties()
+    void Sound::SubscribeToProperties()
     {
-        enabled.onValueChanged.Subscribe(&nSound::OnEnabledChanged, *this);
+        enabled.onValueChanged.Subscribe(&Sound::OnEnabledChanged, *this);
     }
 
-    void nSound::OnEnabledChanged(bool newValue)
+    void Sound::OnEnabledChanged(bool newValue)
     {
 
     }
 
-    const ObjectTypeName ObjectTraits<nSound>::typeName = "Sound";
+    const ObjectTypeName ObjectTraits<Sound>::typeName = "Sound";
 }
 
 namespace Inscription
 {
-    DEFINE_OBJECT_INSCRIPTER_MEMBERS(::Atmos::nSound)
+    OBJECT_INSCRIPTER_DEFINE_MEMBERS(::Atmos::Sound)
     {
 
     }

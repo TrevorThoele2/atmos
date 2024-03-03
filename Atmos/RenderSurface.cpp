@@ -1,68 +1,37 @@
 
 #include "RenderSurface.h"
 
-#include "Environment.h"
-
 namespace Atmos
 {
+    RenderSurface::Data::~Data()
+    {}
+
     RenderSurface* RenderSurface::Data::GetOwner() const
     {
         return owner;
     }
 
-    void RenderSurface::SetData(Data *set)
+    RenderSurface::RenderSurface(DataPtr&& data) : size(0, 0)
     {
-        data.reset(set);
-        data->owner = this;
-    }
-
-    void RenderSurface::SetData(std::unique_ptr<Data> &&set)
-    {
-        data = std::move(set);
-        data->owner = this;
-    }
-
-    void RenderSurface::SetupDimensions()
-    {
-        dimensions = std::move(data->GetDimensions());
-    }
-
-    void RenderSurface::SetAsRenderTargetImpl()
-    {
-        data->SetAsRenderTarget();
-    }
-
-    RenderSurface::RenderSurface(Data *data) : dimensions(0, 0)
-    {
-        SetData(data);
+        SetData(std::move(data));
         FitToWindow();
     }
 
-    RenderSurface::RenderSurface(RenderSurface &&arg) : dimensions(std::move(arg.dimensions))
+    RenderSurface::RenderSurface(RenderSurface&& arg) : size(std::move(arg.size))
     {
         SetData(std::move(arg.data));
     }
 
-    RenderSurface& RenderSurface::operator=(RenderSurface &&arg)
+    RenderSurface& RenderSurface::operator=(RenderSurface&& arg)
     {
         SetData(std::move(arg.data));
-        dimensions = std::move(arg.dimensions);
+        size = std::move(arg.size);
         return *this;
     }
 
     RenderSurface::Data* RenderSurface::GetData() const
     {
         return data.get();
-    }
-
-    void RenderSurface::DestroyThis()
-    {
-        Environment::GetGraphics()->DestroyRenderSurface(*this);
-    }
-
-    void RenderSurface::SetAsRenderTarget()
-    {
-        Environment::GetGraphics()->SetRenderTarget(*this);
     }
 
     void RenderSurface::Present()
@@ -83,15 +52,31 @@ namespace Atmos
 
     void RenderSurface::FitToWindow()
     {
-        if (dimensions == data->GetDimensions())
+        if (size == data->GetSize())
             return;
 
         Release();
         Reset();
     }
 
-    const RenderSurface::ScreenDimensions& RenderSurface::GetDimensions() const
+    const RenderSurface::Size& RenderSurface::GetSize() const
     {
-        return dimensions;
+        return size;
+    }
+
+    void RenderSurface::SetData(DataPtr&& set)
+    {
+        data = std::move(set);
+        data->owner = this;
+    }
+
+    void RenderSurface::SetupDimensions()
+    {
+        size = std::move(data->GetSize());
+    }
+
+    void RenderSurface::SetAsRenderTargetImpl()
+    {
+        data->SetAsRenderTarget();
     }
 }

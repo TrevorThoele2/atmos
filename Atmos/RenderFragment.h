@@ -9,12 +9,12 @@
 
 namespace Atmos
 {
-    class nRenderFragment : public nSense
+    class RenderFragment : public Sense
     {
     public:
-        nRenderFragment();
-        nRenderFragment(const nRenderFragment& arg) = default;
-        nRenderFragment(const ::Inscription::Table<nRenderFragment>& table);
+        RenderFragment(ObjectManager& manager);
+        RenderFragment(const RenderFragment& arg) = default;
+        RenderFragment(const ::Inscription::Table<RenderFragment>& table);
         
         void Draw();
 
@@ -28,18 +28,18 @@ namespace Atmos
     };
 
     template<>
-    struct ObjectTraits<nRenderFragment> : ObjectTraitsBase<nRenderFragment>
+    struct ObjectTraits<RenderFragment> : ObjectTraitsBase<RenderFragment>
     {
         static const ObjectTypeName typeName;
-        static constexpr ObjectTypeList<nSense> bases = {};
+        static constexpr ObjectTypeList<Sense> bases = {};
     };
 }
 
 namespace Inscription
 {
-    DECLARE_OBJECT_INSCRIPTER(::Atmos::nRenderFragment)
+    DECLARE_OBJECT_INSCRIPTER(::Atmos::RenderFragment)
     {
     public:
-        static void AddMembers(TableT& table);
+        OBJECT_INSCRIPTER_DECLARE_MEMBERS;
     };
 }

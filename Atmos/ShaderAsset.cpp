@@ -4,13 +4,14 @@
 
 namespace Atmos
 {
-    ShaderAsset::ShaderAsset(const FileName& fileName, DataPtr&& data) : nFileAsset(fileName), data(std::move(data))
+    ShaderAsset::ShaderAsset(ObjectManager& manager, const FileName& fileName, DataPtr&& data) :
+        FileAsset(manager, fileName), data(std::move(data))
     {}
 
-    ShaderAsset::ShaderAsset(const ShaderAsset& arg) : nFileAsset(arg), data((arg.data) ? arg.data->Clone() : nullptr)
+    ShaderAsset::ShaderAsset(const ShaderAsset& arg) : FileAsset(arg), data((arg.data) ? arg.data->Clone() : nullptr)
     {}
 
-    ShaderAsset::ShaderAsset(const ::Inscription::Table<ShaderAsset>& table) : INSCRIPTION_TABLE_GET_BASE(nFileAsset)
+    ShaderAsset::ShaderAsset(const ::Inscription::Table<ShaderAsset>& table) : INSCRIPTION_TABLE_GET_BASE(FileAsset)
     {}
 
     ShaderAsset::DataT* ShaderAsset::Data()
@@ -36,7 +37,7 @@ namespace Atmos
 
 namespace Inscription
 {
-    DEFINE_OBJECT_INSCRIPTER_MEMBERS(::Atmos::ShaderAsset)
+    OBJECT_INSCRIPTER_DEFINE_MEMBERS(::Atmos::ShaderAsset)
     {
 
     }

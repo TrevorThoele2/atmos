@@ -37,7 +37,7 @@ namespace Atmos
     private:
         class Data;
     public:
-        RunningScript(SourceReference source);
+        RunningScript(ObjectManager& manager, SourceReference source);
         RunningScript(const RunningScript& arg) = default;
         RunningScript(const ::Inscription::Table<RunningScript>& table);
 
@@ -67,6 +67,6 @@ namespace Inscription
     DECLARE_OBJECT_INSCRIPTER(::Atmos::RunningScript)
     {
     public:
-        static void AddMembers(TableT& table);
+        OBJECT_INSCRIPTER_DECLARE_MEMBERS;
     };
 }

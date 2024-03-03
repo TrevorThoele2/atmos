@@ -1,47 +1,51 @@
 
 #include "StateGui.h"
 
-#include <AGUI\System.h>
+#include <AGUI/System.h>
 
 namespace Atmos
 {
-    void StateGui::UpdateImpl()
+    StateGui::~StateGui()
     {}
 
-    void StateGui::ShowImpl()
-    {}
-
-    void StateGui::HideImpl()
-    {}
-
-    StateGui::StateGui(const std::string &name) : rootName(name), root(nullptr)
-    {}
-
-    void StateGui::Init()
+    void StateGui::Initialize()
     {
         root = Agui::System::CreateRoot(rootName);
-        InitImpl();
+        DoInitialize();
     }
 
     void StateGui::Update()
     {
-        UpdateImpl();
+        DoUpdate();
     }
 
     void StateGui::Show()
     {
         root->Show();
-        ShowImpl();
+        DoShow();
     }
 
     void StateGui::Hide()
     {
         root->Hide();
-        HideImpl();
+        DoHide();
     }
 
-    Agui::Root* StateGui::GetRoot()
+    Agui::Root* StateGui::Root()
     {
         return root;
     }
+
+    StateGui::StateGui(ObjectManager& objectManager, const String& rootName) :
+        objectManager(&objectManager), rootName(rootName), root(nullptr)
+    {}
+
+    void StateGui::DoUpdate()
+    {}
+
+    void StateGui::DoShow()
+    {}
+
+    void StateGui::DoHide()
+    {}
 }

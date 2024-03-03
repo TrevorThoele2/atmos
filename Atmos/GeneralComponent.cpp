@@ -5,20 +5,21 @@
 
 namespace Atmos
 {
-    namespace Ent
+    namespace Entity
     {
-        nGeneralComponent::nGeneralComponent(EntityReference reference) : nEntityComponent(reference), solid(false)
+        GeneralComponent::GeneralComponent(ObjectManager& manager, EntityReference reference) :
+            Component(manager, reference), solid(false)
         {}
 
-        nGeneralComponent::nGeneralComponent(const ::Inscription::Table<nGeneralComponent>& table) : INSCRIPTION_TABLE_GET_BASE(nEntityComponent)
+        GeneralComponent::GeneralComponent(const ::Inscription::Table<GeneralComponent>& table) : INSCRIPTION_TABLE_GET_BASE(Component)
         {}
 
-        void nGeneralComponent::SetPosition(const PositionT &set)
+        void GeneralComponent::SetPosition(const PositionT &set)
         {
             position = set;
         }
 
-        GridPosition nGeneralComponent::GetPositionInFront() const
+        GridPosition GeneralComponent::GetPositionInFront() const
         {
             GridPosition posInFront(position);
 
@@ -41,37 +42,37 @@ namespace Atmos
             return posInFront;
         }
 
-        void nGeneralComponent::SetSolid(bool set)
+        void GeneralComponent::SetSolid(bool set)
         {
             solid = set;
         }
 
-        bool nGeneralComponent::IsSolid() const
+        bool GeneralComponent::IsSolid() const
         {
             return solid;
         }
 
-        nGeneralComponent::StorageObject* nGeneralComponent::AddStorage(const StorageObject &add)
+        GeneralComponent::StorageObject* GeneralComponent::AddStorage(const StorageObject &add)
         {
             return &storage.emplace(add.name, add).first->second;
         }
 
-        nGeneralComponent::StorageObject* nGeneralComponent::AddStorage(StorageObject &&add)
+        GeneralComponent::StorageObject* GeneralComponent::AddStorage(StorageObject &&add)
         {
             return &storage.emplace(add.name, std::move(add)).first->second;
         }
 
-        void nGeneralComponent::RemoveStorage(const Name &remove)
+        void GeneralComponent::RemoveStorage(const Name &remove)
         {
             storage.erase(remove);
         }
 
-        void nGeneralComponent::RemoveStorage(const StorageObject &remove)
+        void GeneralComponent::RemoveStorage(const StorageObject &remove)
         {
             RemoveStorage(remove.name);
         }
 
-        nGeneralComponent::StorageObject* nGeneralComponent::FindStorage(const Name &find)
+        GeneralComponent::StorageObject* GeneralComponent::FindStorage(const Name &find)
         {
             auto found = storage.find(find);
             if (found == storage.end())
@@ -80,12 +81,12 @@ namespace Atmos
             return &found->second;
         }
 
-        nGeneralComponent::StorageObject* nGeneralComponent::FindStorage(const StorageObject &find)
+        GeneralComponent::StorageObject* GeneralComponent::FindStorage(const StorageObject &find)
         {
             return FindStorage(find.name);
         }
 
-        const nGeneralComponent::StorageObject* nGeneralComponent::FindStorage(const Name &find) const
+        const GeneralComponent::StorageObject* GeneralComponent::FindStorage(const Name &find) const
         {
             auto found = storage.find(find);
             if (found == storage.end())
@@ -94,48 +95,48 @@ namespace Atmos
             return &found->second;
         }
 
-        const nGeneralComponent::StorageObject* nGeneralComponent::FindStorage(const StorageObject &find) const
+        const GeneralComponent::StorageObject* GeneralComponent::FindStorage(const StorageObject &find) const
         {
             return FindStorage(find.name);
         }
 
-        bool nGeneralComponent::HasStorage(const Name &check) const
+        bool GeneralComponent::HasStorage(const Name &check) const
         {
             return storage.find(check) != storage.end();
         }
 
-        bool nGeneralComponent::HasStorage(const StorageObject &check) const
+        bool GeneralComponent::HasStorage(const StorageObject &check) const
         {
             return HasStorage(check.name);
         }
 
-        void nGeneralComponent::TagAs(const Tag &add)
+        void GeneralComponent::TagAs(const Tag &add)
         {
             tags.emplace(add);
         }
 
-        void nGeneralComponent::RemoveTag(const Tag &remove)
+        void GeneralComponent::RemoveTag(const Tag &remove)
         {
             tags.erase(remove);
         }
 
-        bool nGeneralComponent::IsTaggedAs(const Tag &check) const
+        bool GeneralComponent::IsTaggedAs(const Tag &check) const
         {
             return tags.find(check) != tags.end();
         }
 
-        ObjectTypeDescription nGeneralComponent::TypeDescription() const
+        ObjectTypeDescription GeneralComponent::TypeDescription() const
         {
-            return ObjectTraits<nGeneralComponent>::TypeDescription();
+            return ObjectTraits<GeneralComponent>::TypeDescription();
         }
     }
 
-    const ObjectTypeName ObjectTraits<Ent::nGeneralComponent>::typeName = "GeneralComponent";
+    const ObjectTypeName ObjectTraits<Entity::GeneralComponent>::typeName = "GeneralComponent";
 }
 
 namespace Inscription
 {
-    DEFINE_OBJECT_INSCRIPTER_MEMBERS(::Atmos::Ent::nGeneralComponent)
+    OBJECT_INSCRIPTER_DEFINE_MEMBERS(::Atmos::Entity::GeneralComponent)
     {
         INSCRIPTION_TABLE_ADD(name);
         INSCRIPTION_TABLE_ADD(niceName);
@@ -145,7 +146,7 @@ namespace Inscription
         INSCRIPTION_TABLE_ADD(tags);
     }
 
-    INSCRIPTION_INSCRIPTER_DEFINE_SERIALIZE_FUNCTION(::Atmos::Ent::nGeneralComponent)
+    INSCRIPTION_INSCRIPTER_DEFINE_SERIALIZE_FUNCTION(::Atmos::Entity::GeneralComponent)
     {
         if (scribe.IsOutput())
         {

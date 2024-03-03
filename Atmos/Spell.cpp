@@ -3,7 +3,7 @@
 
 namespace Atmos
 {
-    nSpell::nSpell(const Name& name) : RegistryObject(name)
+    nSpell::nSpell(ObjectManager& manager, const Name& name) : RegistryObject(manager, name)
     {}
 
     nSpell::nSpell(const ::Inscription::Table<nSpell>& table) : INSCRIPTION_TABLE_GET_BASE(RegistryObject)
@@ -19,7 +19,7 @@ namespace Atmos
 
 namespace Inscription
 {
-    DEFINE_OBJECT_INSCRIPTER_MEMBERS(::Atmos::nSpell)
+    OBJECT_INSCRIPTER_DEFINE_MEMBERS(::Atmos::nSpell)
     {
 
     }

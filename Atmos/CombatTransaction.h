@@ -11,6 +11,7 @@
 
 namespace Atmos
 {
+    /*
     class CombatTransactionGenerator;
     class CombatTransaction
     {
@@ -58,4 +59,5 @@ namespace Atmos
         const Name& GetStatName() const;
         const Name& GetProficiencyName() const;
     };
+    */
 }

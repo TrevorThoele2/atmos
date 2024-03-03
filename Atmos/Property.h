@@ -53,7 +53,7 @@ namespace Atmos
     public:
         Event<T> onBeforeValueChanged;
         Event<T> onValueChanged;
-    private:
+    public:
         typedef std::function<T()> Getter;
         typedef std::function<void(T)> Setter;
     public:

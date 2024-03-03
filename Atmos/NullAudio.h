@@ -1,17 +1,17 @@
 #pragma once
 
-#include "AudioHandlerBase.h"
+#include "AudioManager.h"
 
 namespace Atmos
 {
-    class NullAudioHandler : public AudioHandlerBase
+    class NullAudioManager : public AudioManager
     {
     public:
-        NullAudioHandler() = default;
+        NullAudioManager() = default;
         bool SetMasterVolume(float setTo) override;
     private:
-        NullAudioHandler(const NullAudioHandler& arg) = delete;
-        NullAudioHandler& operator=(const NullAudioHandler& arg) = delete;
+        NullAudioManager(const NullAudioManager& arg) = delete;
+        NullAudioManager& operator=(const NullAudioManager& arg) = delete;
 
         std::unique_ptr<AudioAssetData> CreateAudioDataImpl(ExtractedFile&& file, const FileName& name) override;
     };

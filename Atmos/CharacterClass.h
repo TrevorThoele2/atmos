@@ -34,7 +34,7 @@ namespace Atmos
         ItemStashSize permanentMaxItemCount;
         ItemStashSize temporaryMaxItemCount;
     public:
-        nCharacterClass(const Name& name);
+        nCharacterClass(ObjectManager& manager, const Name& name);
         nCharacterClass(const nCharacterClass& arg) = default;
         nCharacterClass(const ::Inscription::Table<nCharacterClass>& table);
 
@@ -62,6 +62,6 @@ namespace Inscription
     DECLARE_OBJECT_INSCRIPTER(::Atmos::nCharacterClass)
     {
     public:
-        static void AddMembers(TableT& table);
+        OBJECT_INSCRIPTER_DECLARE_MEMBERS;
     };
 }

@@ -4,26 +4,27 @@
 
 namespace Atmos
 {
-    namespace Ent
+    namespace Entity
     {
-        nAvatarComponent::nAvatarComponent(EntityReference owner) : nEntityComponent(owner), currency(0)
+        AvatarComponent::AvatarComponent(ObjectManager& manager, EntityReference owner) :
+            Component(manager, owner), currency(0)
         {}
 
-        nAvatarComponent::nAvatarComponent(const ::Inscription::Table<nAvatarComponent>& table) : INSCRIPTION_TABLE_GET_BASE(nEntityComponent)
+        AvatarComponent::AvatarComponent(const ::Inscription::Table<AvatarComponent>& table) : INSCRIPTION_TABLE_GET_BASE(Component)
         {}
 
-        ObjectTypeDescription nAvatarComponent::TypeDescription() const
+        ObjectTypeDescription AvatarComponent::TypeDescription() const
         {
-            return ObjectTraits<nAvatarComponent>::TypeDescription();
+            return ObjectTraits<AvatarComponent>::TypeDescription();
         }
     }
 
-    const ObjectTypeName ObjectTraits<Ent::nAvatarComponent>::typeName = "AvatarComponent";
+    const ObjectTypeName ObjectTraits<Entity::AvatarComponent>::typeName = "AvatarComponent";
 }
 
 namespace Inscription
 {
-    DEFINE_OBJECT_INSCRIPTER_MEMBERS(::Atmos::Ent::nAvatarComponent)
+    OBJECT_INSCRIPTER_DEFINE_MEMBERS(::Atmos::Entity::AvatarComponent)
     {
         INSCRIPTION_TABLE_ADD(currency);
     }

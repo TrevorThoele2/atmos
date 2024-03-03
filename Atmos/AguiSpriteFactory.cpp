@@ -3,7 +3,7 @@
 
 #include <AGUI/ImageResource.h>
 
-#include "MaterialSystem.h"
+#include "MaterialAssetSystem.h"
 
 #include <Inscription/Scribe.h>
 #include <Inscription/String.h>
@@ -26,7 +26,7 @@ namespace Atmos
         z(arg.GetZ()), widthScaler(arg.GetSize().GetXScaler()), heightScaler(arg.GetSize().GetYScaler())
     {}
 
-    AguiSpriteFactory::AguiSpriteFactory(TypedObjectReference<nSprite> arg) :
+    AguiSpriteFactory::AguiSpriteFactory(TypedObjectReference<Sprite> arg) :
         resourceName(arg->material->xVisual->fileName.c_str()), index(arg->index),
         color(Agui::Color(arg->color.Get().alpha, arg->color.Get().red, arg->color.Get().green, arg->color.Get().blue)),
         z(arg->position.z), widthScaler(arg->size.widthScaler), heightScaler(arg->size.heightScaler)
@@ -42,7 +42,7 @@ namespace Atmos
         heightScaler = arg.GetSize().GetYScaler();
     }
 
-    void AguiSpriteFactory::Set(const TypedObjectReference<nSprite>& arg)
+    void AguiSpriteFactory::Set(const TypedObjectReference<Sprite>& arg)
     {
         resourceName = arg->material->xVisual->fileName.c_str();
         index = arg->index;
@@ -76,10 +76,10 @@ namespace Atmos
         return ret;
     }
 
-    TypedObjectReference<nSprite> AguiSpriteFactory::CreateAtmosSprite(ObjectManager& objectManager)
+    TypedObjectReference<Sprite> AguiSpriteFactory::CreateAtmosSprite(ObjectManager& objectManager)
     {
-        auto ret = objectManager.CreateObject<nSprite>();
-        ret->material = objectManager.FindSystem<MaterialSystem>()->FindAsset(resourceName);
+        auto ret = objectManager.CreateObject<Sprite>();
+        ret->material = objectManager.FindSystem<MaterialAssetSystem>()->FindAsset(resourceName);
         ret->index = index;
         ret->color = Atmos::Color(color.alpha, color.red, color.green, color.blue);
         ret->size.widthScaler = widthScaler;

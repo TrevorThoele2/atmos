@@ -7,9 +7,9 @@
 
 namespace Atmos
 {
-    namespace Ent
+    namespace Entity
     {
-        class nInventoryComponent;
+        class InventoryComponent;
     }
 }
 
@@ -18,7 +18,7 @@ namespace Agui
     class ItemContextMenu : public ContextMenu
     {
     public:
-        typedef ::Atmos::TypedObjectReference<::Atmos::Ent::nInventoryComponent> InventoryReference;
+        typedef ::Atmos::TypedObjectReference<::Atmos::Entity::InventoryComponent> InventoryReference;
     private:
         Atmos::ItemStack *itemSelected;
         InventoryReference moveFrom, moveTo;

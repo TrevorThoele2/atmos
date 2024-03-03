@@ -4,6 +4,8 @@
 
 namespace Atmos
 {
+    class ObjectManager;
+
     template<class T>
     class ObjectFactory : public ObjectFactoryBase
     {
@@ -13,7 +15,7 @@ namespace Atmos
         ObjectFactory(ObjectManager& manager);
 
         template<class... Args>
-        Created* CreateObject(Args && ... args);
+        Created* CreateObject(Args&& ... args);
     };
 
     template<class T>
@@ -22,8 +24,8 @@ namespace Atmos
 
     template<class T>
     template<class... Args>
-    typename ObjectFactory<T>::Created* ObjectFactory<T>::CreateObject(Args && ... args)
+    typename ObjectFactory<T>::Created* ObjectFactory<T>::CreateObject(Args&& ... args)
     {
-        return new Created(std::forward<Args>(args)...);
+        return new Created(*Manager(), std::forward<Args>(args)...);
     }
 }

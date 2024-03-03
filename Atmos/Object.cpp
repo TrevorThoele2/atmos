@@ -7,7 +7,7 @@
 
 namespace Atmos
 {
-    Object::Object() : manager(nullptr)
+    Object::Object(ObjectManager& manager) : manager(&manager)
     {}
 
     Object::Object(const ::Inscription::Table<Object>& table) : INSCRIPTION_TABLE_GET_MEM(id), INSCRIPTION_TABLE_GET_MEM(manager)

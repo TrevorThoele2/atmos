@@ -1,6 +1,6 @@
 #pragma once
 
-#include "nEntityComponent.h"
+#include "EntityComponent.h"
 
 #include "CharacterClass.h"
 #include "Item.h"
@@ -19,9 +19,9 @@
 
 namespace Atmos
 {
-    namespace Ent
+    namespace Entity
     {
-        class nCombatComponent : public nEntityComponent
+        class CombatComponent : public Component
         {
         public:
             typedef TypedObjectReference<nCharacterClass> CharacterClassReference;
@@ -57,9 +57,9 @@ namespace Atmos
             typedef std::unordered_map<String, SpellReference> Spells;
             Spells spells;
         public:
-            nCombatComponent(EntityReference reference);
-            nCombatComponent(const nCombatComponent& arg) = default;
-            nCombatComponent(const ::Inscription::Table<nCombatComponent>& table);
+            CombatComponent(ObjectManager& manager, EntityReference reference);
+            CombatComponent(const CombatComponent& arg) = default;
+            CombatComponent(const ::Inscription::Table<CombatComponent>& table);
 
             void SetClass(CharacterClassReference set);
             bool IsDead() const;
@@ -88,7 +88,7 @@ namespace Atmos
     }
 
     template<>
-    struct ObjectTraits<Ent::nCombatComponent> : ObjectTraitsBase<Ent::nCombatComponent>
+    struct ObjectTraits<Entity::CombatComponent> : ObjectTraitsBase<Entity::CombatComponent>
     {
         static const ObjectTypeName typeName;
     };
@@ -96,10 +96,10 @@ namespace Atmos
 
 namespace Inscription
 {
-    DECLARE_OBJECT_INSCRIPTER(::Atmos::Ent::nCombatComponent)
+    DECLARE_OBJECT_INSCRIPTER(::Atmos::Entity::CombatComponent)
     {
     public:
-        static void AddMembers(TableT& table);
+        OBJECT_INSCRIPTER_DECLARE_MEMBERS;
 
         INSCRIPTION_INSCRIPTER_DECLARE_SERIALIZE_FUNCTION;
     };

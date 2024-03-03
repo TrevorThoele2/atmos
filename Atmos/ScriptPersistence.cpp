@@ -5,8 +5,6 @@
 
 #include "Optional.h"
 
-#include "StasisScribe.h"
-
 namespace Atmos
 {
     namespace Scripting

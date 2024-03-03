@@ -7,9 +7,13 @@
 #include "LargeInteger.h"
 #include "FixedPoint.h"
 #include "TimeValue.h"
-#include "GameTimer.h"
+#include "InputKeyID.h"
+#include "InputMouseKeyID.h"
+#include "InputActionID.h"
 
 #include <Chroma/Type.h>
+
+#include <AGUI/Resolution.h>
 
 namespace Atmos
 {
@@ -21,8 +25,9 @@ namespace Atmos
 
     void SpliceString(String &in, const String &check, const String &replace);
 
-    String Trim(const String &trim);
-    bool IsAllWhitespace(const String &check);
+    String Trim(const String& trim);
+    bool IsAllWhitespace(const String& check);
+    bool StartsWith(const String& check, const String& startsWith);
 
     template<class T>
     void SpliceString(String &in, const String &check, const T replace)
@@ -53,7 +58,6 @@ namespace Atmos
         }
 
         TimeValue FromStringImpl(const String &arg, const ::Chroma::Type<TimeValue> &t);
-        GameTimeValue FromStringImpl(const String &arg, const ::Chroma::Type<GameTimeValue> &t);
     }
 
     template<class T, typename ::std::enable_if<!::std::is_enum<T>::value, int>::type = 0>
@@ -75,6 +79,7 @@ namespace Atmos
     template<> unsigned short FromString(const String &arg);
     template<> bool FromString(const String &arg);
     template<> LargeInteger FromString(const String &arg);
+    template<> ::Agui::Resolution::Size FromString(const String &arg);
 
     template<class T>
     String ToString(T arg)
@@ -96,7 +101,10 @@ namespace Atmos
         return arg.ToString();
     }
     String ToString(TimeValue timeValue);
-    String ToString(GameTimeValue timeValue);
     class GridPosition;
     String ToString(const GridPosition &position);
+    String ToString(const ::Agui::Resolution::Size &arg);
+    String ToString(const Input::KeyID &arg);
+    String ToString(const Input::MouseKeyID &arg);
+    String ToString(const Input::ActionID &arg);
 }

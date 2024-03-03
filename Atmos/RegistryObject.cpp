@@ -3,7 +3,8 @@
 
 namespace Atmos
 {
-    RegistryObject::RegistryObject(const Name& name) : name(name)
+    RegistryObject::RegistryObject(ObjectManager& manager, const Name& name) :
+        Object(manager), name(name)
     {}
 
     RegistryObject::RegistryObject(const ::Inscription::Table<RegistryObject>& table) :
@@ -20,7 +21,7 @@ namespace Atmos
 
 namespace Inscription
 {
-    DEFINE_OBJECT_INSCRIPTER_MEMBERS(::Atmos::RegistryObject)
+    OBJECT_INSCRIPTER_DEFINE_MEMBERS(::Atmos::RegistryObject)
     {
         INSCRIPTION_TABLE_ADD(name);
     }

@@ -7,15 +7,15 @@
 
 namespace Atmos
 {
-    ObjectFactory<nTile>::ObjectFactory(ObjectManager& manager) : ObjectFactoryBase(manager)
+    ObjectFactory<Tile>::ObjectFactory(ObjectManager& manager) : ObjectFactoryBase(manager)
     {}
 
-    ObjectFactory<nTile>::Created* ObjectFactory<nTile>::CreateObject(const GridPosition& position)
+    ObjectFactory<Tile>::Created* ObjectFactory<Tile>::CreateObject(const GridPosition& position)
     {
         auto found = Manager()->FindSystem<TileSystem>()->FindTile(position);
         if (found)
             return nullptr;
 
-        return new Created(position);
+        return new Created(*Manager(), position);
     }
 }

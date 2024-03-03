@@ -205,19 +205,19 @@ namespace Atmos
         return underlying;
     }
 
-    PositionalObject::PositionalObject()
+    PositionalObject::PositionalObject(ObjectManager& manager) : Object(manager)
     {
         LinkAll();
         CalculateBounds();
     }
 
-    PositionalObject::PositionalObject(const PositionalObject& arg) : position(arg.position)
+    PositionalObject::PositionalObject(const PositionalObject& arg) : Object(arg), position(arg.position)
     {
         LinkAll();
         CalculateBounds();
     }
 
-    PositionalObject::PositionalObject(PositionalObject&& arg) : position(std::move(arg.position))
+    PositionalObject::PositionalObject(PositionalObject&& arg) : Object(std::move(arg)), position(std::move(arg.position))
     {
         LinkAll();
         CalculateBounds();
@@ -299,7 +299,7 @@ namespace Atmos
 
 namespace Inscription
 {
-    DEFINE_OBJECT_INSCRIPTER_MEMBERS(::Atmos::PositionalObject)
+    OBJECT_INSCRIPTER_DEFINE_MEMBERS(::Atmos::PositionalObject)
     {
         INSCRIPTION_TABLE_ADD(position);
         INSCRIPTION_TABLE_ADD(size);

@@ -34,6 +34,6 @@ namespace Inscription
     DECLARE_OBJECT_INSCRIPTER(::Atmos::Music)
     {
     public:
-        static void AddMembers(TableT& table);
+        OBJECT_INSCRIPTER_DECLARE_MEMBERS;
     };
 }

@@ -9,8 +9,9 @@ class asIScriptModule;
 namespace Atmos
 {
     class ScriptAssetData;
+    class ObjectManager;
 
-    class ScriptAsset : public nFileAsset
+    class ScriptAsset : public FileAsset
     {
     public:
         typedef Name SymbolName;
@@ -18,7 +19,7 @@ namespace Atmos
         typedef ScriptAssetData DataT;
         typedef std::unique_ptr<DataT> DataPtr;
     public:
-        ScriptAsset(const FileName& fileName, DataPtr&& data);
+        ScriptAsset(ObjectManager& manager, const FileName& fileName, DataPtr&& data);
         ScriptAsset(const ScriptAsset& arg);
         ScriptAsset(const ::Inscription::Table<ScriptAsset>& table);
 
@@ -58,13 +59,15 @@ namespace Atmos
     class ScriptAssetData
     {
     public:
-        ScriptAssetData();
+        ScriptAssetData(ObjectManager& objectManager);
 
         std::unique_ptr<ScriptAssetData> Clone() const;
 
         void Initialize(const Name& name, const FileName& fileName);
     private:
-        asIScriptModule* mod;
+        ObjectManager* objectManager;
+    private:
+        asIScriptModule* module;
         bool isInitialized;
     private:
         friend ScriptAsset;
@@ -76,6 +79,6 @@ namespace Inscription
     DECLARE_OBJECT_INSCRIPTER(::Atmos::ScriptAsset)
     {
     public:
-        static void AddMembers(TableT& table);
+        OBJECT_INSCRIPTER_DECLARE_MEMBERS;
     };
 }

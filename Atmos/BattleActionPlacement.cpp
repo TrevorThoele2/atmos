@@ -2,7 +2,6 @@
 #include "BattleActionPlacement.h"
 
 #include "Battle.h"
-#include "WorldManager.h"
 
 namespace Atmos
 {

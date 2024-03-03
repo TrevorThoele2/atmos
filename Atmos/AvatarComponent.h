@@ -1,21 +1,21 @@
 #pragma once
 
-#include "nEntityComponent.h"
-
-#include "Currency.h"
+#include "EntityComponent.h"
 
 namespace Atmos
 {
-    namespace Ent
+    namespace Entity
     {
-        class nAvatarComponent : public nEntityComponent
+        class AvatarComponent : public Component
         {
+        public:
+            typedef int Currency;
         public:
             Currency currency;
         public:
-            nAvatarComponent(EntityReference owner);
-            nAvatarComponent(const nAvatarComponent& arg) = default;
-            nAvatarComponent(const ::Inscription::Table<nAvatarComponent>& table);
+            AvatarComponent(ObjectManager& manager, EntityReference owner);
+            AvatarComponent(const AvatarComponent& arg) = default;
+            AvatarComponent(const ::Inscription::Table<AvatarComponent>& table);
 
             ObjectTypeDescription TypeDescription() const override;
         private:
@@ -24,7 +24,7 @@ namespace Atmos
     }
 
     template<>
-    struct ObjectTraits<Ent::nAvatarComponent> : ObjectTraitsBase<Ent::nAvatarComponent>
+    struct ObjectTraits<Entity::AvatarComponent> : ObjectTraitsBase<Entity::AvatarComponent>
     {
         static const ObjectTypeName typeName;
     };
@@ -32,9 +32,9 @@ namespace Atmos
 
 namespace Inscription
 {
-    DECLARE_OBJECT_INSCRIPTER(::Atmos::Ent::nAvatarComponent)
+    DECLARE_OBJECT_INSCRIPTER(::Atmos::Entity::AvatarComponent)
     {
     public:
-        static void AddMembers(TableT& table);
+        OBJECT_INSCRIPTER_DECLARE_MEMBERS;
     };
 }

@@ -12,13 +12,16 @@ namespace Atmos
 {
     class AudioAssetData;
 
-    class AudioAsset : public nFileAsset
+    class AssetPackageSystem;
+    class AudioSystem;
+
+    class AudioAsset : public FileAsset
     {
     public:
         typedef AudioAssetData DataT;
         typedef std::unique_ptr<DataT> DataPtr;
     public:
-        AudioAsset(const FileName& fileName, DataPtr&& data);
+        AudioAsset(ObjectManager& manager, const FileName& fileName, DataPtr&& data);
         AudioAsset(const AudioAsset& arg);
         AudioAsset(const ::Inscription::Table<AudioAsset>& table);
 
@@ -34,6 +37,9 @@ namespace Atmos
         DataPtr data;
        
         void SetDataFromPackage(const FileName& fileName);
+    private:
+        AssetPackageSystem* FindAssetPackageSystem();
+        AudioSystem* FindAudioSystem();
     };
 
     template<class RealDataT>
@@ -52,7 +58,7 @@ namespace Atmos
     struct ObjectTraits<AudioAsset> : ObjectTraitsBase<AudioAsset>
     {
         static const ObjectTypeName typeName;
-        static constexpr ObjectTypeList<nFileAsset> bases = {};
+        static constexpr ObjectTypeList<FileAsset> bases = {};
     };
 
     class AudioAssetInstanceData;
@@ -73,6 +79,6 @@ namespace Inscription
     DECLARE_OBJECT_INSCRIPTER(::Atmos::AudioAsset)
     {
     public:
-        static void AddMembers(TableT& table);
+        OBJECT_INSCRIPTER_DECLARE_MEMBERS;
     };
 }

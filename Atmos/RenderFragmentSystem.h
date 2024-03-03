@@ -12,13 +12,14 @@ namespace Atmos
     class RenderFragmentSystem : public ObjectSystem
     {
     public:
-        typedef TypedObjectReference<nRenderFragment> Reference;
+        typedef TypedObjectReference<RenderFragment> Reference;
     public:
         RenderFragmentSystem(ObjectManager& manager);
+        RenderFragmentSystem(const ::Inscription::Table<RenderFragmentSystem>& table);
 
         void DrawAll();
     private:
-        typedef ObjectBatch<nRenderFragment> RenderFragmentBatch;
+        typedef ObjectBatch<RenderFragment> RenderFragmentBatch;
 
         RenderFragmentBatch renderFragments;
     private:
@@ -28,10 +29,14 @@ namespace Atmos
     private:
         void OnObjectBoundsChanged(TypedObjectReference<PositionalObject> object, AxisBoundingBox3D previous);
     };
+}
 
-    template<>
-    struct ObjectSystemTraits<RenderFragmentSystem>
+namespace Inscription
+{
+    INSCRIPTION_INSCRIPTER_DECLARE(::Atmos::RenderFragmentSystem)
     {
-        static const ObjectSystemPriority priority = 0;
+    public:
+        INSCRIPTION_INSCRIPTER_DECLARE_TABLE;
+        INSCRIPTION_DECLARE_CLASS_NAME_RESOLVER;
     };
 }

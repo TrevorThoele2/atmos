@@ -2,7 +2,6 @@
 
 #include "RegistryObject.h"
 
-#include "BattlePatternHolder.h"
 #include "AttackRange.h"
 #include "Acumen.h"
 
@@ -13,11 +12,10 @@ namespace Atmos
     class nAbility : public RegistryObject
     {
     public:
-        BattlePatternHolder pattern;
         AttackRange range;
         Acumen cost;
     public:
-        nAbility(const Name& name);
+        nAbility(ObjectManager& manager, const Name& name);
         nAbility(const nAbility& arg) = default;
         nAbility(const ::Inscription::Table<nAbility>& table);
 
@@ -37,6 +35,6 @@ namespace Inscription
     DECLARE_OBJECT_INSCRIPTER(::Atmos::nAbility)
     {
     public:
-        static void AddMembers(TableT& table);
+        OBJECT_INSCRIPTER_DECLARE_MEMBERS;
     };
 }

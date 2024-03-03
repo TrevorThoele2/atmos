@@ -6,6 +6,8 @@
 #include "FieldID.h"
 #include "ObjectManager.h"
 
+#include "ReadonlyProperty.h"
+
 #include "Serialization.h"
 
 namespace Atmos
@@ -14,16 +16,15 @@ namespace Atmos
     {
     public:
         typedef FieldID ID;
+        ReadonlyProperty<ID> id;
     public:
         ObjectManager objectManager;
     public:
-        Field(ID id, ObjectManager&& objectManager);
-        Field(Field &&arg);
-        Field& operator=(Field &&arg);
-
-        ID GetID() const;
+        Field(ID id);
+        Field(Field&& arg);
+        Field& operator=(Field&& arg);
     private:
-        ID id;
+        ID _id;
     private:
         INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;

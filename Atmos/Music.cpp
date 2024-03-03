@@ -15,7 +15,7 @@ namespace Atmos
 
 namespace Inscription
 {
-    DEFINE_OBJECT_INSCRIPTER_MEMBERS(::Atmos::Music)
+    OBJECT_INSCRIPTER_DEFINE_MEMBERS(::Atmos::Music)
     {
 
     }

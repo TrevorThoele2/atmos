@@ -4,7 +4,7 @@
 #include "Object.h"
 
 #include "Sprite.h"
-#include "ObjectOffset.h"
+#include "PositionalOffsetAdapter.h"
 #include "GridPosition.h"
 
 #include "ReadonlyProperty.h"
@@ -14,13 +14,13 @@
 
 namespace Atmos
 {
-    class nTile : public Object
+    class Tile : public Object
     {
     public:
         typedef StoredReadonlyProperty<GridPosition> GridPositionProperty;
         GridPositionProperty position;
     public:
-        typedef PositionalOffsetAdapter<nSprite> OffsetSprite;
+        typedef PositionalOffsetAdapter<Sprite> OffsetSprite;
         typedef std::vector<OffsetSprite> SpriteList;
         typedef ReadonlyProperty<SpriteList&> SpriteListProperty;
         SpriteListProperty sprites;
@@ -28,9 +28,9 @@ namespace Atmos
         typedef StoredProperty<bool> SolidProperty;
         SolidProperty solid;
     public:
-        nTile(const GridPosition& position);
-        nTile(const nTile& arg) = default;
-        nTile(const ::Inscription::Table<nTile>& table);
+        Tile(ObjectManager& manager, const GridPosition& position);
+        Tile(const Tile& arg) = default;
+        Tile(const ::Inscription::Table<Tile>& table);
 
         ObjectTypeDescription TypeDescription() const override;
     private:
@@ -40,7 +40,7 @@ namespace Atmos
     };
 
     template<>
-    struct ObjectTraits<nTile> : ObjectTraitsBase<nTile>
+    struct ObjectTraits<Tile> : ObjectTraitsBase<Tile>
     {
         static const ObjectTypeName typeName;
     };
@@ -48,9 +48,9 @@ namespace Atmos
 
 namespace Inscription
 {
-    DECLARE_OBJECT_INSCRIPTER(::Atmos::nTile)
+    DECLARE_OBJECT_INSCRIPTER(::Atmos::Tile)
     {
     public:
-        static void AddMembers(TableT& table);
+        OBJECT_INSCRIPTER_DECLARE_MEMBERS;
     };
 }
