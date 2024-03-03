@@ -14,16 +14,6 @@ namespace Atmos
         Input::Manager& input,
         Render::GraphicsManager& graphics);
 
-    namespace Spatial
-    {
-        void RegisterTypes(Arca::ReliquaryOrigin& origin);
-    }
-
-    namespace File
-    {
-        void RegisterTypes(Arca::ReliquaryOrigin& origin);
-    }
-
     namespace Input
     {
         void RegisterTypes(Arca::ReliquaryOrigin& origin, Manager& manager);
@@ -40,12 +30,29 @@ namespace Atmos
         void RegisterTypes(Arca::ReliquaryOrigin& origin, AudioManager& manager);
     }
 
+    namespace Spatial
+    {
+        void RegisterTypes(Arca::ReliquaryOrigin& origin);
+    }
+
+    namespace File
+    {
+        void RegisterTypes(Arca::ReliquaryOrigin& origin);
+    }
+
     namespace Asset
     {
         void RegisterTypes(Arca::ReliquaryOrigin& origin);
     }
 
     namespace Time
+    {
+        void RegisterTypes(Arca::ReliquaryOrigin& origin);
+        Arca::Stage StartStage();
+        Arca::Stage EndStage();
+    }
+
+    namespace Logging
     {
         void RegisterTypes(Arca::ReliquaryOrigin& origin);
     }
