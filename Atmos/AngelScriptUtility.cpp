@@ -47,7 +47,7 @@ namespace Atmos::Script::Angel
             context->SetArgWord(index, value);
         }
 
-        void operator()(std::uint32_t value) const
+        void operator()(uint32_t value) const
         {
             context->SetArgDWord(index, value);
         }

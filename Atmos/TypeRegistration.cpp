@@ -6,6 +6,8 @@
 #include "DynamicImage.h"
 #include "ImageCurator.h"
 #include "LineCurator.h"
+#include "GridRegion.h"
+#include "GridRegionCurator.h"
 #include "RenderCurator.h"
 #include "GraphicsCurator.h"
 #include "Camera.h"
@@ -81,6 +83,8 @@ namespace Atmos
                 .Register<ImageCurator>()
                 .Register<Line>()
                 .Register<LineCurator>()
+                .Register<GridRegion>()
+                .Register<GridRegionCurator>()
                 .Register<Camera>()
                 .Register<CameraCurator>()
                 .Register<Curator>()
@@ -96,6 +100,7 @@ namespace Atmos
             Arca::Stage stage;
             stage.Add<ImageCurator>();
             stage.Add<LineCurator>();
+            stage.Add<GridRegionCurator>();
             stage.Add<CameraCurator>();
             stage.Add<Curator>();
             return stage;

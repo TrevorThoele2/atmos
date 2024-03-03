@@ -18,7 +18,7 @@ namespace Atmos
 {
     namespace Grid
     {
-        class Position;
+        struct Position;
     }
 
     void SpliceString(String &in, const String &check, const String &replace);

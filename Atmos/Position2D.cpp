@@ -2,10 +2,13 @@
 
 #include "Position3D.h"
 #include "AxisAlignedBox2D.h"
-#include <Inscription\Scribe.h>
+#include <Inscription/Scribe.h>
 
 namespace Atmos
 {
+    Position2D::Position2D(Value x, Value y) : x(x), y(y)
+    {}
+
     bool Position2D::operator==(const Position2D& arg) const
     {
         return x == arg.x && y == arg.y;
@@ -29,14 +32,6 @@ namespace Atmos
     Position2D Position2D::FromScreen(const Position2D& convert, const Position2D& topLeftScreen)
     {
         return Position2D{ convert.x + topLeftScreen.x, convert.y + topLeftScreen.y };
-    }
-
-    typename Position2D::Value Position2D::DistanceBetween(const Position2D& starting, const Position2D& destination)
-    {
-        auto distanceX = (destination.x - starting.x);
-        auto distanceY = (destination.y - starting.y);
-
-        return sqrt(pow(distanceX, 2) + pow(distanceY, 2));
     }
 
     Position2D Position2D::CenterOf(const std::vector<Position2D>& container)

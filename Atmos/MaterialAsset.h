@@ -10,7 +10,8 @@ namespace Atmos::Asset
     enum class MaterialType
     {
         Image,
-        Line
+        Line,
+        Region
     };
 
     class Material final : public Asset<Material>

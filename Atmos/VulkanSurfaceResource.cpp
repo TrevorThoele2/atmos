@@ -19,7 +19,7 @@ namespace Atmos::Render::Resource::Vulkan
         sampler(sampler),
         underlying(std::move(underlying))
     {
-        renderer = std::make_unique<Renderer>(
+        renderer = std::make_unique<MasterRenderer>(
             device,
             sampler,
             graphicsQueue,

@@ -6,7 +6,7 @@ namespace Atmos::Render::Vulkan
 {
     struct QueueFamilyIndices
     {
-        std::uint32_t graphicsFamily;
-        std::uint32_t presentFamily;
+        uint32_t graphicsFamily;
+        uint32_t presentFamily;
     };
 }

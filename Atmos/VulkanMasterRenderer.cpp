@@ -1,4 +1,4 @@
-#include "VulkanRenderer.h"
+#include "VulkanMasterRenderer.h"
 
 #include "VulkanUtilities.h"
 #include "GraphicsError.h"
@@ -6,7 +6,7 @@
 
 namespace Atmos::Render::Vulkan
 {
-    Renderer::Renderer(
+    MasterRenderer::MasterRenderer(
         std::shared_ptr<vk::Device> device,
         vk::Sampler sampler,
         vk::Queue graphicsQueue,
@@ -17,6 +17,7 @@ namespace Atmos::Render::Vulkan
         device(device),
         quadRenderer(device, graphicsQueueIndex, graphicsQueue, memoryProperties),
         lineRenderer(device, graphicsQueueIndex, graphicsQueue, memoryProperties),
+        regionRenderer(device, graphicsQueueIndex, graphicsQueue, memoryProperties),
         sampler(sampler),
         memoryProperties(memoryProperties),
         graphicsQueue(graphicsQueue),
@@ -28,17 +29,17 @@ namespace Atmos::Render::Vulkan
 
         inFlightFences = CreateFences(*device, maxFramesInFlight);
 
-        allRenderers = { &quadRenderer, &lineRenderer };
+        allRenderers = { &quadRenderer, &lineRenderer, &regionRenderer };
     }
 
-    Renderer::~Renderer()
+    MasterRenderer::~MasterRenderer()
     {
         device->waitIdle();
 
         inFlightFences.clear();
     }
 
-    void Renderer::Initialize(
+    void MasterRenderer::Initialize(
         vk::SwapchainKHR swapchain,
         std::vector<vk::Image> images,
         std::vector<vk::ImageView> imageViews,
@@ -57,25 +58,30 @@ namespace Atmos::Render::Vulkan
 
         imagesInFlight.resize(images.size(), nullptr);
 
-        quadRenderer.Initialize(images.size(), renderPass.get(), extent);
-        lineRenderer.Initialize(images.size(), renderPass.get(), extent);
+        for (auto& renderer : allRenderers)
+            renderer->Initialize(images.size(), renderPass.get(), extent);
     }
 
-    void Renderer::StageRender(const ImageRender& imageRender)
+    void MasterRenderer::StageRender(const ImageRender& imageRender)
     {
         quadRenderer.StageRender(imageRender);
     }
 
-    void Renderer::StageRender(const LineRender& lineRender)
+    void MasterRenderer::StageRender(const LineRender& lineRender)
     {
         lineRenderer.StageRender(lineRender);
     }
 
-    void Renderer::DrawFrame(Arca::Reliquary& reliquary, const ScreenSize& cameraSize)
+    void MasterRenderer::StageRender(const RegionRender& regionRender)
+    {
+        regionRenderer.StageRender(regionRender);
+    }
+
+    void MasterRenderer::DrawFrame(Arca::Reliquary& reliquary, const ScreenSize& cameraSize)
     {
         device->waitForFences(inFlightFences[previousFrame].get(), VK_TRUE, UINT64_MAX);
 
-        if (quadRenderer.LayerCount() == 0 && lineRenderer.LayerCount() == 0)
+        if (AllEmpty(allRenderers))
             return;
 
         auto imageIndex = device->acquireNextImageKHR(
@@ -159,7 +165,7 @@ namespace Atmos::Render::Vulkan
         endFrame();
     }
 
-    void Renderer::WaitForIdle() const
+    void MasterRenderer::WaitForIdle() const
     {
         std::vector<vk::Fence> fences;
         fences.reserve(inFlightFences.size());
@@ -168,15 +174,21 @@ namespace Atmos::Render::Vulkan
         device->waitForFences(fences, VK_TRUE, UINT64_MAX);
     }
 
-    void Renderer::Draw(
+    bool MasterRenderer::AllEmpty(const std::vector<RendererInterface*>& check) const
+    {
+        for (auto& renderer : check)
+            if (renderer->LayerCount() != 0)
+                return false;
+
+        return true;
+    }
+
+    void MasterRenderer::Draw(
         Arca::Reliquary& reliquary,
         std::vector<vk::CommandBuffer>& usedCommandBuffers,
-        std::uint32_t currentImage,
+        uint32_t currentImage,
         glm::vec2 cameraSize)
     {
-        if (quadRenderer.LayerCount() == 0 && lineRenderer.LayerCount() == 0)
-            return;
-
         const auto commandBuffer = commandBuffers.Next();
         usedCommandBuffers.push_back(commandBuffer);
 
@@ -186,8 +198,15 @@ namespace Atmos::Render::Vulkan
         for (auto& material : materialBatch)
             materials.push_back(&material);
 
-        quadRenderer.Start(materials, commandBuffer);
-        lineRenderer.Start(materials, commandBuffer);
+        std::vector<RendererInterface*> startedRenderers;
+        for (auto& renderer : allRenderers)
+        {
+            if (renderer->LayerCount() != 0)
+            {
+                startedRenderers.push_back(renderer);
+                renderer->Start(materials, commandBuffer);
+            }
+        }
 
         const vk::ClearValue clearValue(vk::ClearColorValue(std::array<float, 4> { 0.0f, 0.0f, 0.0f, 1.0f }));
         const vk::RenderPassBeginInfo renderPassBeginInfo(
@@ -204,8 +223,8 @@ namespace Atmos::Render::Vulkan
 
         const auto end = [&]()
         {
-            quadRenderer.End();
-            lineRenderer.End();
+            for (auto& renderer : startedRenderers)
+                renderer->End();
 
             commandBuffer.endRenderPass();
 
@@ -214,11 +233,11 @@ namespace Atmos::Render::Vulkan
 
         try
         {
-            auto availableRenderers = allRenderers;
+            auto availableRenderers = startedRenderers;
             while (true)
             {
                 AllRenderers::iterator nextRenderer;
-                for (auto checkRenderer = allRenderers.begin(); checkRenderer != allRenderers.end(); ++checkRenderer)
+                for (auto checkRenderer = startedRenderers.begin(); checkRenderer != startedRenderers.end(); ++checkRenderer)
                 {
                     if (!(*checkRenderer)->IsDone())
                     {
@@ -254,7 +273,7 @@ namespace Atmos::Render::Vulkan
         end();
     }
 
-    void Renderer::ClearImage(vk::Image image, std::array<float, 4> color, vk::CommandBuffer commandBuffer)
+    void MasterRenderer::ClearImage(vk::Image image, std::array<float, 4> color, vk::CommandBuffer commandBuffer)
     {
         const vk::ImageSubresourceRange subresourceRange{ vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1 };
 
@@ -262,7 +281,7 @@ namespace Atmos::Render::Vulkan
         commandBuffer.clearColorImage(image, vk::ImageLayout::eUndefined, clearColor, subresourceRange);
     }
 
-    vk::UniqueRenderPass Renderer::CreateRenderPass(
+    vk::UniqueRenderPass MasterRenderer::CreateRenderPass(
         vk::Device device, vk::Format swapchainImageFormat)
     {
         vk::AttachmentDescription colorAttachment(
@@ -299,7 +318,7 @@ namespace Atmos::Render::Vulkan
         return device.createRenderPassUnique(createInfo);
     }
 
-    std::vector<vk::UniqueFramebuffer> Renderer::CreateFramebuffers(
+    std::vector<vk::UniqueFramebuffer> MasterRenderer::CreateFramebuffers(
         vk::Device device, const std::vector<vk::ImageView>& imageViews, vk::RenderPass renderPass, vk::Extent2D extent)
     {
         std::vector<vk::UniqueFramebuffer> returnValue(imageViews.size());
@@ -324,7 +343,7 @@ namespace Atmos::Render::Vulkan
         return returnValue;
     }
 
-    std::vector<vk::UniqueSemaphore> Renderer::CreateSemaphores(vk::Device device, size_t count)
+    std::vector<vk::UniqueSemaphore> MasterRenderer::CreateSemaphores(vk::Device device, size_t count)
     {
         std::vector<vk::UniqueSemaphore> returnValue;
 
@@ -335,7 +354,7 @@ namespace Atmos::Render::Vulkan
         return returnValue;
     }
 
-    std::vector<vk::UniqueFence> Renderer::CreateFences(vk::Device device, size_t count)
+    std::vector<vk::UniqueFence> MasterRenderer::CreateFences(vk::Device device, size_t count)
     {
         std::vector<vk::UniqueFence> returnValue;
 

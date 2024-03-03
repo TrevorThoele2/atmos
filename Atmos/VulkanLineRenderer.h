@@ -1,9 +1,7 @@
 #pragma once
 
-#include <map>
 #include "VulkanRendererInterface.h"
 #include "VulkanRendererCore.h"
-#include "VulkanUniformBufferDescriptor.h"
 #include "VulkanStagedBuffer.h"
 #include "VulkanCommandBufferGroup.h"
 
@@ -24,19 +22,17 @@ namespace Atmos::Render::Vulkan
             vk::Queue graphicsQueue,
             vk::PhysicalDeviceMemoryProperties memoryProperties);
 
-        void Initialize(uint32_t swapchainImageCount, vk::RenderPass renderPass, vk::Extent2D extent);
+        void Initialize(uint32_t swapchainImageCount, vk::RenderPass renderPass, vk::Extent2D extent) override;
 
         void StageRender(const LineRender& lineRender);
 
-        void Start(const std::vector<const Asset::Material*>& materials, vk::CommandBuffer commandBuffer);
+        void Start(const std::vector<const Asset::Material*>& materials, vk::CommandBuffer commandBuffer) override;
         void DrawNextLayer(uint32_t currentImage, glm::vec2 cameraSize) override;
-        void End();
+        void End() override;
         [[nodiscard]] bool IsDone() const override;
 
         [[nodiscard]] Position3D::Value NextLayer() const override;
-        [[nodiscard]] size_t LayerCount() const;
-    private:
-        std::optional<UniformBufferDescriptor> uniformBufferDescriptor;
+        [[nodiscard]] size_t LayerCount() const override;
     private:
         struct Vertex
         {
@@ -67,22 +63,29 @@ namespace Atmos::Render::Vulkan
             std::map<const Asset::Material*, Group> groups;
             Group& GroupFor(const Asset::Material& material);
         };
+    private:
+        struct DrawContextAddition
+        {
+            std::uint32_t vertexCount = 0;
+        };
+
+        using Core = RendererCore<void, Context, DrawContextAddition>;
+        Core core;
+
+        using DrawContext = Core::DrawContext;
 
         void WriteToBuffers(
             const Context::Group& group,
             const Asset::Material* materialAsset,
-            vk::CommandBuffer commandBuffer,
-            std::uint32_t currentImage,
+            DrawContext& drawContext,
+            uint32_t currentImage,
             glm::vec2 cameraSize);
         void WriteToBuffers(
             const std::vector<Line>& lines,
             LineWidth width,
             Pipeline& pipeline,
-            vk::CommandBuffer commandBuffer,
-            std::uint32_t currentImage);
-    private:
-        using Core = RendererCore<LineWidth, Context>;
-        Core core;
+            DrawContext& drawContext,
+            uint32_t currentImage);
     private:
         vk::Queue graphicsQueue;
         CommandBufferGroup commandBuffers;

@@ -1,15 +1,17 @@
-#include "Region.h"
+#include "GridRegion.h"
+
+#include <Inscription/VectorScribe.h>
 
 namespace Atmos::Render
 {
-    Region::Region(Init init) :
+    GridRegion::GridRegion(Init init) :
         ClosedTypedRelic(init)
     {}
 
-    Region::Region(
+    GridRegion::GridRegion(
         Init init,
-        const std::vector<Position2D>& points,
-        Position2D::Value z,
+        const std::vector<Grid::Position>& points,
+        Grid::Position::Value z,
         Arca::Index<Asset::Material> material)
         :
         ClosedTypedRelic(init), points(points), z(z), material(material)
@@ -18,7 +20,7 @@ namespace Atmos::Render
 
 namespace Inscription
 {
-    void Scribe<Atmos::Render::Region, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
+    void Scribe<Atmos::Render::GridRegion, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
     {
         archive(object.points);
         archive(object.z);

@@ -1,11 +1,11 @@
 #pragma once
 
-#include "ScriptAssetData.h"
+#include "ScriptAssetResource.h"
 #include <angelscript.h>
 
 namespace Atmos::Script::Angel
 {
-    class AssetDataImplementation final : public Asset::ScriptData
+    class AssetDataImplementation final : public Asset::Resource::Script
     {
     public:
         explicit AssetDataImplementation(asIScriptModule& module);

@@ -30,7 +30,7 @@ namespace Chroma
         std::int64_t,
         std::uint8_t,
         std::uint16_t,
-        std::uint32_t,
+        uint32_t,
         std::uint64_t,
         float,
         double

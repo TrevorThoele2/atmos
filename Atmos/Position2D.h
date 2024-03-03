@@ -17,6 +17,9 @@ namespace Atmos
         Value x = 0.0f;
         Value y = 0.0f;
 
+        Position2D() = default;
+        Position2D(Value x, Value y);
+
         bool operator==(const Position2D& arg) const;
         bool operator!=(const Position2D& arg) const;
 
@@ -24,7 +27,6 @@ namespace Atmos
         [[nodiscard]] bool Contains(const AxisAlignedBox2D& box) const;
 
         static Position2D FromScreen(const Position2D& convert, const Position2D& topLeftScreen);
-        static Value DistanceBetween(const Position2D& starting, const Position2D& destination);
         static Position2D CenterOf(const std::vector<Position2D>& container);
         static Position2D CenterOf(const std::set<Position2D>& container);
         static Position2D CenterOf(const Position2D& topLeft, const Position2D& bottomRight);

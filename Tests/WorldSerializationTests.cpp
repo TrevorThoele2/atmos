@@ -96,21 +96,24 @@ SCENARIO_METHOD(WorldSerializationTestsFixture, "rendering after world serializa
                 materialAsset,
                 Color{},
                 positions[0],
-                scalers[0]);
+                scalers[0],
+                Angle{});
             fields[0].Reliquary().Do<Arca::Create<StaticImage>>(
                 imageAsset,
                 0,
                 materialAsset,
                 Color{},
                 positions[1],
-                scalers[1]);
+                scalers[1],
+                Angle{});
             fields[0].Reliquary().Do<Arca::Create<StaticImage>>(
                 imageAsset,
                 0,
                 materialAsset,
                 Color{},
                 positions[2],
-                scalers[2]);
+                scalers[2],
+                Angle{});
 
             auto filePath = "Test." + World::Serialization::worldFileExtension;
 

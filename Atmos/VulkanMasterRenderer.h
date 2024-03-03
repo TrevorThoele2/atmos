@@ -5,6 +5,7 @@
 
 #include "VulkanQuadRenderer.h"
 #include "VulkanLineRenderer.h"
+#include "VulkanRegionRenderer.h"
 
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
@@ -12,6 +13,8 @@
 
 #include "ImageRender.h"
 #include "LineRender.h"
+#include "RegionRender.h"
+
 #include "ScreenSize.h"
 
 #include "Event.h"
@@ -20,19 +23,19 @@
 
 namespace Atmos::Render::Vulkan
 {
-    class Renderer final
+    class MasterRenderer final
     {
     public:
         Event<> onOutOfDate;
     public:
-        Renderer(
+        MasterRenderer(
             std::shared_ptr<vk::Device> device,
             vk::Sampler sampler,
             vk::Queue graphicsQueue,
             vk::Queue presentQueue,
             uint32_t graphicsQueueIndex,
             vk::PhysicalDeviceMemoryProperties memoryProperties);
-        ~Renderer();
+        ~MasterRenderer();
 
         void Initialize(
             vk::SwapchainKHR swapchain,
@@ -43,6 +46,7 @@ namespace Atmos::Render::Vulkan
     public:
         void StageRender(const ImageRender& imageRender);
         void StageRender(const LineRender& lineRender);
+        void StageRender(const RegionRender& regionRender);
 
         void DrawFrame(Arca::Reliquary& reliquary, const ScreenSize& cameraSize);
 
@@ -56,14 +60,17 @@ namespace Atmos::Render::Vulkan
     private:
         QuadRenderer quadRenderer;
         LineRenderer lineRenderer;
+        RegionRenderer regionRenderer;
 
         using AllRenderers = std::vector<RendererInterface*>;
         AllRenderers allRenderers;
+
+        [[nodiscard]] bool AllEmpty(const std::vector<RendererInterface*>& check) const;
     private:
         void Draw(
             Arca::Reliquary& reliquary,
             std::vector<vk::CommandBuffer>& usedCommandBuffers,
-            std::uint32_t currentImage,
+            uint32_t currentImage,
             glm::vec2 cameraSize);
         static void ClearImage(vk::Image image, std::array<float, 4> color, vk::CommandBuffer commandBuffer);
     private:

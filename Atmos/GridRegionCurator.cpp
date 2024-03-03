@@ -1,26 +1,28 @@
-#include "RegionCurator.h"
+#include "GridRegionCurator.h"
 
 #include "MainSurface.h"
 
+#include "RenderAlgorithms.h"
+
 namespace Atmos::Render
 {
-    RegionCurator::RegionCurator(Init init) :
+    GridRegionCurator::GridRegionCurator(Init init) :
         Curator(init), camera(init.owner)
     {
-        Owner().ExecuteOn<Arca::CreatedKnown<Region>>(
-            [this](const Arca::CreatedKnown<Region>& signal)
+        Owner().ExecuteOn<Arca::CreatedKnown<GridRegion>>(
+            [this](const Arca::CreatedKnown<GridRegion>& signal)
             {
                 OnCreated(signal);
             });
 
-        Owner().ExecuteOn<Arca::DestroyingKnown<Region>>(
-            [this](const Arca::DestroyingKnown<Region>& signal)
+        Owner().ExecuteOn<Arca::DestroyingKnown<GridRegion>>(
+            [this](const Arca::DestroyingKnown<GridRegion>& signal)
             {
                 OnDestroying(signal);
             });
     }
 
-    void RegionCurator::Work()
+    void GridRegionCurator::Work()
     {
         const auto cameraLeft = camera->ScreenSides().Left();
         const auto cameraTop = camera->ScreenSides().Top();
@@ -50,44 +52,45 @@ namespace Atmos::Render
         for (auto& index : indices)
         {
             auto& value = *index->value;
-            if (!value.material)
+            if (!value.material || value.points.empty())
                 continue;
 
-            std::vector<Position2D> adjustedPoints;
-            for (auto& point : value.points)
-                adjustedPoints.push_back(Position2D{ point.x - cameraLeft, point.y - cameraTop });
+            auto mesh = ConvertToMesh(Triangulate(value.points));
+            for(auto& vertex : mesh.vertices)
+            {
+                vertex.x -= cameraLeft;
+                vertex.y -= cameraTop;
+            }
 
             const RegionRender render
             {
-                adjustedPoints,
-                value.z,
-                value.material,
-                value.width,
-                value.color
+                mesh,
+                value.z * Grid::CellSize<Position3D::Value>,
+                value.material
             };
             mainSurface->StageRender(render);
         }
     }
 
-    void RegionCurator::OnCreated(const Arca::CreatedKnown<Region>& signal)
+    void GridRegionCurator::OnCreated(const Arca::CreatedKnown<GridRegion>& signal)
     {
         octree.Add(signal.reference.ID(), signal.reference, BoxFor(signal.reference));
     }
 
-    void RegionCurator::OnDestroying(const Arca::DestroyingKnown<Region>& signal)
+    void GridRegionCurator::OnDestroying(const Arca::DestroyingKnown<GridRegion>& signal)
     {
         octree.Remove(signal.reference.ID(), BoxFor(signal.reference));
     }
 
-    AxisAlignedBox3D RegionCurator::BoxFor(const std::vector<Position2D>& points, Position2D::Value z)
+    AxisAlignedBox3D GridRegionCurator::BoxFor(const std::vector<Grid::Position>& points, Grid::Position::Value z)
     {
         if (points.empty())
             return {};
 
-        auto maxLeft = points[0].x;
-        auto maxTop = points[0].y;
-        auto maxRight = points[0].x;
-        auto maxBottom = points[0].y;
+        auto maxLeft = points.begin()->x;
+        auto maxTop = points.begin()->y;
+        auto maxRight = points.begin()->x;
+        auto maxBottom = points.begin()->y;
 
         for (auto& point : points)
         {
@@ -102,19 +105,28 @@ namespace Atmos::Render
                 maxBottom = point.y;
         }
 
-        const auto width = maxRight - maxLeft;
-        const auto height = maxBottom - maxTop;
+        const auto cellSize = Grid::CellSize<Position3D::Value>;
+        const auto width = static_cast<Position3D::Value>(maxRight - maxLeft) * cellSize;
+        const auto height = static_cast<Position3D::Value>(maxBottom - maxTop) * cellSize;
         const auto depth = 1;
+
+        const auto useMaxLeft = maxLeft * cellSize;
+        const auto useMaxTop = maxTop * cellSize;
 
         return AxisAlignedBox3D
         {
-            Position3D { maxLeft + width / 2, maxTop + height / 2, 0.5f },
+            Position3D
+            {
+                useMaxLeft + width / 2,
+                useMaxTop + height / 2,
+                0.5f
+            },
             Size3D { width, height, depth }
         };
     }
 
-    AxisAlignedBox3D RegionCurator::BoxFor(const Index& index)
+    AxisAlignedBox3D GridRegionCurator::BoxFor(const Index& index)
     {
-        return BoxFor(index->Points(), index->Z());
+        return BoxFor(index->points, index->z);
     }
 }
