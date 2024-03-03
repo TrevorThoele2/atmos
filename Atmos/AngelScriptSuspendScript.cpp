@@ -12,7 +12,7 @@ namespace Atmos::Scripting::Angel
 {
     void Registration<Suspend>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        ValueTypeRegistration<Type>(containingNamespace, name)
+        ValueTypeRegistration<Type>(ContainingNamespace(), Name())
             .Constructor(
                 &Management::GenerateValue<&PullFromParameter<0, Arca::Index<Script>>>,
                 { "Atmos::Scripting::Script script" })

@@ -17,7 +17,7 @@ namespace Atmos::Scripting::Angel
 {
     void Registration<SpatialAlgorithms>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        GlobalRegistration(containingNamespace)
+        GlobalRegistration(ContainingNamespace())
             .Function(&Management::Function<static_cast<Point2D::Value(*)(Point2D, Point2D)>(Distance)>,
                 "float", "Distance", { "Point2D starting", "Point2D destination" })
             .Function(&Management::Function<static_cast<Point3D::Value(*)(Point3D, Point3D)>(Distance)>,

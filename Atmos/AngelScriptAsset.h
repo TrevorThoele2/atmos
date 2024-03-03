@@ -20,9 +20,9 @@ namespace Atmos::Scripting::Angel
     {
         using Type = GenericAssetFindByName;
 
-        static inline const String name = "FindByName<class T>";
-        static inline const String containingNamespace = "Atmos::Asset";
-        static inline const String documentation = "This is a command. Needs to be used with explicit specializations.";
+        static String Name() { return "FindByName<class T>"; }
+        static String ContainingNamespace() { return "Atmos::Asset"; }
+        static String Documentation() { return "This is a command. Needs to be used with explicit specializations."; }
         static const ObjectType objectType = ObjectType::Value;
 
         using Management = ObjectManagement<Type>;
@@ -35,9 +35,9 @@ namespace Atmos::Scripting::Angel
     {
         using Type = Asset::FindByName<T>;
 
-        static inline const String name = "FindByName<" + CreateName({ Registration<T>::containingNamespace }, Registration<T>::name) + ">";
-        static inline const String containingNamespace = "Atmos::Asset";
-        static inline const String documentation = "This is a command.";
+        static String Name() { return "FindByName<" + CreateName({ Registration<T>::ContainingNamespace() }, Registration<T>::Name()) + ">"; }
+        static String ContainingNamespace() { return "Atmos::Asset"; }
+        static String Documentation() { return "This is a command."; }
         static const ObjectType objectType = ObjectType::Value;
 
         using Management = ObjectManagement<Type>;
@@ -51,7 +51,7 @@ namespace Atmos::Scripting::Angel
     template<class T>
     void Registration<Asset::FindByName<T>>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        ValueTypeRegistration<Type>(containingNamespace, name)
+        ValueTypeRegistration<Type>(ContainingNamespace(), Name())
             .Constructor(&Management::template GenerateValue<&PullFromParameter<0, String>>, { "const string &in" })
             .CopyConstructor(&Management::GenerateValueFromCopy)
             .Destructor(&Management::DestructValue)

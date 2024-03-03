@@ -70,10 +70,10 @@ namespace Atmos::Scripting::Angel
 
             using Argument = typename SterilizedItem<typename ParametersT::template Parameter<0>::Type>::Type;
             using ArgumentTypeRegistration = Registration<Argument>;
-            const auto commandClassName = CreateName({ ArgumentTypeRegistration::containingNamespace }, ArgumentTypeRegistration::name);
+            const auto commandClassName = CreateName({ ArgumentTypeRegistration::ContainingNamespace() }, ArgumentTypeRegistration::Name());
 
             using ReturnTypeRegistration = Registration<std::remove_pointer_t<ReturnT>>;
-            const auto returnNameToken = CreateName({ ReturnTypeRegistration::containingNamespace }, ReturnTypeRegistration::name);
+            const auto returnNameToken = CreateName({ ReturnTypeRegistration::ContainingNamespace() }, ReturnTypeRegistration::Name());
             const auto returnName = ReturnTypeRegistration::objectType == ObjectType::Handle
                 ? returnNameToken + "@"
                 : returnNameToken;

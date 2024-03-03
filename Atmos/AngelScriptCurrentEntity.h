@@ -17,9 +17,9 @@ namespace Atmos::Scripting::Angel
     template<>
     struct Registration<CurrentEntity>
     {
-        static inline const String name = "CurrentEntity";
-        static inline const String containingNamespace = "Atmos";
-        static inline const String documentation = "Represents the currently executing entity.";
+        static String Name() { return "CurrentEntity"; }
+        static String ContainingNamespace() { return "Atmos"; }
+        static String Documentation() { return "Represents the currently executing entity."; }
         static const ObjectType objectType = ObjectType::Value;
 
         using Management = GlobalManagement;

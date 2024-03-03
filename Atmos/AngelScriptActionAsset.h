@@ -19,14 +19,14 @@ namespace Atmos::Scripting::Angel
         using Type = Arca::Index<Asset::Action>;
         using Management = ObjectManagement<Type>;
 
-        static inline const String name = "Action";
-        static inline const String containingNamespace = "Atmos::Asset";
-        static inline const String documentation = "This is a relic.";
+        static String Name() { return "Action"; }
+        static String ContainingNamespace() { return "Atmos::Asset"; }
+        static String Documentation() { return "This is a relic."; }
         static const ObjectType objectType = ObjectType::Value;
 
         static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
     private:
-        [[nodiscard]] static String Name(Type type);
+        [[nodiscard]] static String DoName(Type type);
         [[nodiscard]] static std::vector<Input::Key> MappedKeys(Type type);
     };
 

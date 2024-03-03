@@ -18,9 +18,9 @@ namespace Atmos::Scripting::Angel
         using Type = Render::Color;
         using Management = ObjectManagement<Type>;
 
-        static inline const String name = "Color";
-        static inline const String containingNamespace = "Atmos::Render";
-        static inline const String documentation = "Represents a color.";
+        static String Name() { return "Color"; }
+        static String ContainingNamespace() { return "Atmos::Render"; }
+        static String Documentation() { return "Represents a color."; }
         static const ObjectType objectType = ObjectType::Value;
 
         static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
@@ -31,9 +31,9 @@ namespace Atmos::Scripting::Angel
     {
         using Type = Render::ChangeColor;
 
-        static inline const String name = "ChangeColor";
-        static inline const String containingNamespace = "Atmos::Render";
-        static inline const String documentation = "This is a command.";
+        static String Name() { return "ChangeColor"; }
+        static String ContainingNamespace() { return "Atmos::Render"; }
+        static String Documentation() { return "This is a command."; }
         static const ObjectType objectType = ObjectType::Value;
 
         using Management = ObjectManagement<Type>;

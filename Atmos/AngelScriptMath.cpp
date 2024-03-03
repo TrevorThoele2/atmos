@@ -9,7 +9,7 @@ namespace Atmos::Scripting::Angel
 {
     void Registration<Math>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        GlobalRegistration(containingNamespace)
+        GlobalRegistration(ContainingNamespace())
             .Function(&Management::Function<&AbsoluteValue<std::int8_t, long long>>,
                 "int8", "Abs", { "int8 value" })
             .Function(&Management::Function<&AbsoluteValue<std::int16_t, long long>>,

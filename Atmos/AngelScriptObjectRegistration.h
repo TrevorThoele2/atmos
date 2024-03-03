@@ -515,7 +515,7 @@ namespace Atmos::Scripting::Angel
         {
             return Self().Method<function>(
                 function,
-                CreateName({ Registration<To>::containingNamespace }, Registration<To>::name),
+                CreateName({ Registration<To>::ContainingNamespace() }, Registration<To>::Name()),
                 "opConv",
                 std::vector<String>{});
         }
@@ -526,7 +526,7 @@ namespace Atmos::Scripting::Angel
         {
             return Self().ConstMethod<function>(
                 function,
-                CreateName({ Registration<To>::containingNamespace }, Registration<To>::name),
+                CreateName({ Registration<To>::ContainingNamespace() }, Registration<To>::Name()),
                 "opConv",
                 std::vector<String>{});
         }
@@ -537,7 +537,7 @@ namespace Atmos::Scripting::Angel
         {
             return Self().Method(
                 function,
-                CreateName({ Registration<To>::containingNamespace }, Registration<To>::name),
+                CreateName({ Registration<To>::ContainingNamespace() }, Registration<To>::Name()),
                 "opImplConv",
                 std::vector<String>{});
         }
@@ -548,7 +548,7 @@ namespace Atmos::Scripting::Angel
         {
             return Self().ConstMethod(
                 function,
-                CreateName({ Registration<To>::containingNamespace }, Registration<To>::name),
+                CreateName({ Registration<To>::ContainingNamespace() }, Registration<To>::Name()),
                 "opImplConv",
                 std::vector<String>{});
         }
@@ -651,7 +651,7 @@ namespace Atmos::Scripting::Angel
         {
             return Self().Method(
                 function,
-                CreateName({ Registration<To>::containingNamespace }, Registration<To>::name),
+                CreateName({ Registration<To>::ContainingNamespace() }, Registration<To>::Name()),
                 "opCast",
                 std::vector<String>{});
         }
@@ -662,7 +662,7 @@ namespace Atmos::Scripting::Angel
         {
             return Self().ConstMethod(
                 function,
-                CreateName({ Registration<To>::containingNamespace }, Registration<To>::name),
+                CreateName({ Registration<To>::ContainingNamespace() }, Registration<To>::Name()),
                 "opCast",
                 std::vector<String>{});
         }
@@ -673,7 +673,7 @@ namespace Atmos::Scripting::Angel
         {
             return Self().Method(
                 function,
-                CreateName({ Registration<To>::containingNamespace }, Registration<To>::name),
+                CreateName({ Registration<To>::ContainingNamespace() }, Registration<To>::Name()),
                 "opImplCast",
                 std::vector<String>{});
         }
@@ -684,7 +684,7 @@ namespace Atmos::Scripting::Angel
         {
             return Self().ConstMethod(
                 function,
-                CreateName({ Registration<To>::containingNamespace }, Registration<To>::name),
+                CreateName({ Registration<To>::ContainingNamespace() }, Registration<To>::Name()),
                 "opImplCast",
                 std::vector<String>{});
         }
@@ -716,7 +716,7 @@ namespace Atmos::Scripting::Angel
             name,
             {},
             flags,
-            Registration<T>::documentation)
+            Registration<T>::Documentation())
     {}
 
     template<class T>
@@ -727,7 +727,7 @@ namespace Atmos::Scripting::Angel
             name,
             {},
             flags,
-            Registration<T>::documentation)
+            Registration<T>::Documentation())
     {}
 
     template<class T>
@@ -758,7 +758,7 @@ namespace Atmos::Scripting::Angel
             CreateRepresentationName(name, templateNames),
             { "int &in" },
             flags,
-            Registration<T>::documentation)
+            Registration<T>::Documentation())
     {}
 
     template <class T>
@@ -771,7 +771,7 @@ namespace Atmos::Scripting::Angel
             CreateRepresentationName(name, templateNames),
             { "int &in" },
             flags,
-            Registration<T>::documentation)
+            Registration<T>::Documentation())
     {}
 
     template <class T>
@@ -812,7 +812,7 @@ namespace Atmos::Scripting::Angel
             name,
             {},
             flags,
-            Registration<T>::documentation)
+            Registration<T>::Documentation())
     {}
 
     template<class T>
@@ -823,6 +823,6 @@ namespace Atmos::Scripting::Angel
             name,
             {},
             flags,
-            Registration<T>::documentation)
+            Registration<T>::Documentation())
     {}
 }

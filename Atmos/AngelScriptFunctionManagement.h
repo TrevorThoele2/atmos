@@ -227,7 +227,7 @@ namespace Atmos::Scripting::Angel
         static void PushToReturn(Type object, asIScriptGeneric& generic)
         {
             auto& typeInfo = RequiredTypeInfoByDeclaration(
-                "array<" + CreateName({ Registration<T>::containingNamespace }, Registration<T>::name) + ">",
+                "array<" + CreateName({ Registration<T>::ContainingNamespace() }, Registration<T>::Name()) + ">",
                 generic);
             auto scriptObject = CScriptArray::Create(&typeInfo, object.size());
 
@@ -276,7 +276,7 @@ namespace Atmos::Scripting::Angel
         static void PushToReturn(Type object, asIScriptGeneric& generic)
         {
             auto& typeInfo = RequiredTypeInfoByDeclaration(
-                "array<" + CreateName({ Registration<T>::containingNamespace }, Registration<T>::name) + ">",
+                "array<" + CreateName({ Registration<T>::ContainingNamespace() }, Registration<T>::Name()) + ">",
                 generic);
             auto scriptObject = CScriptArray::Create(&typeInfo, object.size());
 

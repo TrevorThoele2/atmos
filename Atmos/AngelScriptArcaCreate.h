@@ -33,9 +33,9 @@ namespace Atmos::Scripting::Angel
     {
         using Type = GenericArcaCreate;
 
-        static inline const String name = "Create<class T>";
-        static inline const String containingNamespace = "Arca";
-        static inline const String documentation = "This is a signal. Needs to be used with explicit specializations.";
+        static String Name() { return "Create<class T>"; }
+        static String ContainingNamespace() { return "Arca"; }
+        static String Documentation() { return "This is a signal. Needs to be used with explicit specializations."; }
         static const ObjectType objectType = ObjectType::Value;
 
         using Management = ObjectManagement<Type>;
@@ -48,9 +48,9 @@ namespace Atmos::Scripting::Angel
     {
         using Type = GenericArcaCreateChild;
 
-        static inline const String name = "CreateChild<class T>";
-        static inline const String containingNamespace = "Arca";
-        static inline const String documentation = "This is a command. Needs to be used with explicit specializations.";
+        static String Name() { return "CreateChild<class T>"; }
+        static String ContainingNamespace() { return "Arca"; }
+        static String Documentation() { return "This is a command. Needs to be used with explicit specializations."; }
         static const ObjectType objectType = ObjectType::Value;
 
         using Management = ObjectManagement<Type>;
@@ -63,9 +63,9 @@ namespace Atmos::Scripting::Angel
     {
         using Type = GenericArcaIdentifiedCreate;
 
-        static inline const String name = "IdentifiedCreate<class T>";
-        static inline const String containingNamespace = "Arca";
-        static inline const String documentation = "This is a command. Needs to be used with explicit specializations.";
+        static String Name() { return "IdentifiedCreate<class T>"; }
+        static String ContainingNamespace() { return "Arca"; }
+        static String Documentation() { return "This is a command. Needs to be used with explicit specializations."; }
         static const ObjectType objectType = ObjectType::Value;
 
         using Management = ObjectManagement<Type>;
@@ -78,9 +78,9 @@ namespace Atmos::Scripting::Angel
     {
         using Type = GenericArcaIdentifiedCreate;
 
-        static inline const String name = "IdentifiedCreateChild<class T>";
-        static inline const String containingNamespace = "Arca";
-        static inline const String documentation = "This is a command. Needs to be used with explicit specializations.";
+        static String Name() { return "IdentifiedCreateChild<class T>"; }
+        static String ContainingNamespace() { return "Arca"; }
+        static String Documentation() { return "This is a command. Needs to be used with explicit specializations."; }
         static const ObjectType objectType = ObjectType::Value;
 
         using Management = ObjectManagement<Type>;
@@ -93,9 +93,9 @@ namespace Atmos::Scripting::Angel
     {
         using Type = Arca::Create<T>;
 
-        static inline const String name = "Create<" + CreateName({ Registration<T>::containingNamespace }, Registration<T>::name) + ">";
-        static inline const String containingNamespace = "Arca";
-        static inline const String documentation = "This is a command.";
+        static String Name() { return "Create<" + CreateName({ Registration<T>::ContainingNamespace() }, Registration<T>::Name()) + ">"; }
+        static String ContainingNamespace() { return "Arca"; }
+        static String Documentation() { return "This is a command."; }
         static const ObjectType objectType = ObjectType::Value;
 
         using Management = ObjectManagement<Type>;
@@ -106,9 +106,9 @@ namespace Atmos::Scripting::Angel
     {
         using Type = Arca::Create<T>;
 
-        static inline const String name = "CreateChild<" + CreateName({ Registration<T>::containingNamespace }, Registration<T>::name) + ">";
-        static inline const String containingNamespace = "Arca";
-        static inline const String documentation = "This is a command.";
+        static String Name() { return "CreateChild<" + CreateName({ Registration<T>::ContainingNamespace() }, Registration<T>::Name()) + ">"; }
+        static String ContainingNamespace() { return "Arca"; }
+        static String Documentation() { return "This is a command."; }
         static const ObjectType objectType = ObjectType::Value;
 
         using Management = ObjectManagement<Type>;
@@ -119,9 +119,9 @@ namespace Atmos::Scripting::Angel
     {
         using Type = Arca::IdentifiedCreate<T>;
 
-        static inline const String name = "IdentifiedCreate<" + CreateName({ Registration<T>::containingNamespace }, Registration<T>::name) + ">";
-        static inline const String containingNamespace = "Arca";
-        static inline const String documentation = "This is a command.";
+        static String Name() { return "IdentifiedCreate<" + CreateName({ Registration<T>::ContainingNamespace() }, Registration<T>::Name()) + ">"; }
+        static String ContainingNamespace() { return "Arca"; }
+        static String Documentation() { return "This is a command."; }
         static const ObjectType objectType = ObjectType::Value;
 
         using Management = ObjectManagement<Type>;
@@ -132,9 +132,9 @@ namespace Atmos::Scripting::Angel
     {
         using Type = Arca::IdentifiedCreateChild<T>;
 
-        static inline const String name = "IdentifiedCreateChild<" + CreateName({ Registration<T>::containingNamespace }, Registration<T>::name) + ">";
-        static inline const String containingNamespace = "Arca";
-        static inline const String documentation = "This is a command.";
+        static String Name() { return "IdentifiedCreateChild<" + CreateName({ Registration<T>::ContainingNamespace() }, Registration<T>::Name()) + ">"; }
+        static String ContainingNamespace() { return "Arca"; }
+        static String Documentation() { return "This is a command."; }
         static const ObjectType objectType = ObjectType::Value;
 
         using Management = ObjectManagement<Type>;
@@ -145,9 +145,9 @@ namespace Atmos::Scripting::Angel
     {
         using Type = Arca::Created;
 
-        static inline const String name = "Created";
-        static inline const String containingNamespace = "Arca";
-        static inline const String documentation = "This is a signal.";
+        static String Name() { return "Created"; }
+        static String ContainingNamespace() { return "Arca"; }
+        static String Documentation() { return "This is a signal."; }
         static const ObjectType objectType = ObjectType::Value;
 
         using Management = ObjectManagement<Type>;
@@ -163,9 +163,9 @@ namespace Atmos::Scripting::Angel
     {
         using Type = GenericArcaIdentifiedCreate;
 
-        static inline const String name = "CreatedKnown<class T>";
-        static inline const String containingNamespace = "Arca";
-        static inline const String documentation = "This is a signal. Needs to be used with explicit specializations.";
+        static String Name() { return "CreatedKnown<class T>"; }
+        static String ContainingNamespace() { return "Arca"; }
+        static String Documentation() { return "This is a signal. Needs to be used with explicit specializations."; }
         static const ObjectType objectType = ObjectType::Value;
 
         using Management = ObjectManagement<Type>;
@@ -178,9 +178,9 @@ namespace Atmos::Scripting::Angel
     {
         using Type = Arca::CreatedKnown<T>;
 
-        static inline const String name = "CreatedKnown<" + CreateName({ Registration<T>::containingNamespace }, Registration<T>::name) + ">";
-        static inline const String containingNamespace = "Arca";
-        static inline const String documentation = "This is a signal.";
+        static String Name() { return "CreatedKnown<" + CreateName({ Registration<T>::ContainingNamespace() }, Registration<T>::Name()) + ">"; }
+        static String ContainingNamespace() { return "Arca"; }
+        static String Documentation() { return "This is a signal."; }
         static const ObjectType objectType = ObjectType::Value;
 
         using Management = ObjectManagement<Type>;
@@ -207,7 +207,7 @@ namespace Atmos::Scripting::Angel
 
             static constexpr auto generateValue = ParameterProviders::template ForwardArguments<typename GenerateValueForwarder<CommandT>::Do>::nonType;
 
-            ValueTypeRegistration<CommandT>(Registration<CommandT>::containingNamespace, Registration<CommandT>::name)
+            ValueTypeRegistration<CommandT>(Registration<CommandT>::ContainingNamespace(), Registration<CommandT>::Name())
                 .Constructor(generateValue, constructorParameters)
                 .CopyConstructor(&Management::GenerateValueFromCopy)
                 .Destructor(&Management::DestructValue)
@@ -231,7 +231,7 @@ namespace Atmos::Scripting::Angel
         {
             using Management = ObjectManagement<SignalT>;
 
-            ValueTypeRegistration<SignalT>(Registration<SignalT>::containingNamespace, Registration<SignalT>::name)
+            ValueTypeRegistration<SignalT>(Registration<SignalT>::ContainingNamespace(), Registration<SignalT>::Name())
                 .Constructor(&Management::template GenerateValue<&PullFromParameter<0, Arca::Index<T>>>, constructorParameters)
                 .CopyConstructor(&Management::GenerateValueFromCopy)
                 .Destructor(&Management::DestructValue)
@@ -283,7 +283,7 @@ namespace Atmos::Scripting::Angel
 
         {
             const auto useConstructorParameters =
-                std::vector<String>{ CreateName({ Registration<T>::containingNamespace }, Registration<T>::name) + " index" };
+                std::vector<String>{ CreateName({ Registration<T>::ContainingNamespace() }, Registration<T>::Name()) + " index" };
             Detail::DoRegisterArcaCreated<T, Arca::CreatedKnown<T>>(
                 useConstructorParameters, engine, documentationManager);
         }

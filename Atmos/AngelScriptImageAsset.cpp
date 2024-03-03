@@ -11,7 +11,7 @@ namespace Atmos::Scripting::Angel
 {
     void Registration<Asset::ImageSize>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        ValueTypeRegistration<Type>(containingNamespace, name)
+        ValueTypeRegistration<Type>(ContainingNamespace(), Name())
             .DefaultConstructor(&Management::GenerateDefaultValue)
             .Constructor(
                 &Management::GenerateValue<
@@ -28,7 +28,7 @@ namespace Atmos::Scripting::Angel
 
     void Registration<Asset::ImageGridSize>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        ValueTypeRegistration<Type>(containingNamespace, name)
+        ValueTypeRegistration<Type>(ContainingNamespace(), Name())
             .DefaultConstructor(&Management::GenerateDefaultValue)
             .Constructor(
                 &Management::GenerateValue<
@@ -45,10 +45,10 @@ namespace Atmos::Scripting::Angel
 
     void Registration<Asset::Image>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        ValueTypeRegistration<Type> registration(containingNamespace, name);
+        ValueTypeRegistration<Type> registration(ContainingNamespace(), Name());
         RegisterArcaIndex(registration);
         registration
-            .ConstMethod(&Management::Method<&Name>, "string", "Name", {})
+            .ConstMethod(&Management::Method<&DoName>, "string", "Name", {})
             .ConstMethod(&Management::Method<&Width>, "int", "Width", {})
             .ConstMethod(&Management::Method<&Height>, "int", "Height", {})
             .ConstMethod(&Management::Method<&Size>, "ImageSize", "Size", {})
@@ -64,7 +64,7 @@ namespace Atmos::Scripting::Angel
         Registration<Asset::FindByName<Asset::Image>>::RegisterTo(engine, documentationManager);
     }
 
-    String Registration<Asset::Image>::Name(Type type)
+    String Registration<Asset::Image>::DoName(Type type)
     {
         return RequiredValue(type)->Name();
     }

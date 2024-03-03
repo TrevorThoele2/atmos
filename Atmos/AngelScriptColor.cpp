@@ -12,7 +12,7 @@ namespace Atmos::Scripting::Angel
 {
     void Registration<Render::Color>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        ValueTypeRegistration<Render::Color>(containingNamespace, name)
+        ValueTypeRegistration<Render::Color>(ContainingNamespace(), Name())
             .DefaultConstructor(&Management::GenerateDefaultValue)
             .Constructor(
                 &Management::GenerateValue<
@@ -34,7 +34,7 @@ namespace Atmos::Scripting::Angel
 
     void Registration<Render::ChangeColor>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        ValueTypeRegistration<Type>(containingNamespace, name)
+        ValueTypeRegistration<Type>(ContainingNamespace(), Name())
             .Constructor(
                 &Management::GenerateValue<
                     &PullFromParameter<0, Arca::RelicID>,

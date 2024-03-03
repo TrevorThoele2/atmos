@@ -8,7 +8,7 @@ namespace Atmos::Scripting::Angel
 {
     void Registration<GenericTimePoint>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        TemplateValueTypeRegistration<Type>(containingNamespace, "Point", { "T" })
+        TemplateValueTypeRegistration<Type>(ContainingNamespace(), "Point", { "T" })
             .TemplateCallback(&Management::RequiredSpecializationTemplateCallback)
             .DefaultConstructor(&Management::UndefinedTemplate)
             .CopyConstructor(&Management::UndefinedTemplate)

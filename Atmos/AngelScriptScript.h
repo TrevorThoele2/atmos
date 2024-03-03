@@ -24,9 +24,9 @@ namespace Atmos::Scripting::Angel
         using Type = Arca::Index<Script>;
         using Management = ObjectManagement<Type>;
 
-        static inline const String name = "Script";
-        static inline const String containingNamespace = "Atmos::Scripting";
-        static inline const String documentation = "This is a relic.";
+        static String Name() { return "Script"; }
+        static String ContainingNamespace() { return "Atmos::Scripting"; }
+        static String Documentation() { return "This is a relic."; }
         static const ObjectType objectType = ObjectType::Value;
 
         static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
@@ -44,9 +44,9 @@ namespace Atmos::Scripting::Angel
         using Type = ModifyData;
         using Management = ObjectManagement<Type>;
 
-        static inline const String name = "ModifyData";
-        static inline const String containingNamespace = "Atmos::Scripting";
-        static inline const String documentation = "This is a command.";
+        static String Name() { return "ModifyData"; }
+        static String ContainingNamespace() { return "Atmos::Scripting"; }
+        static String Documentation() { return "This is a command."; }
         static const ObjectType objectType = ObjectType::Value;
 
         static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);

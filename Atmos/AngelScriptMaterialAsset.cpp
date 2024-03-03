@@ -12,7 +12,7 @@ namespace Atmos::Scripting::Angel
 {
     void Registration<Asset::Material::Pass>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        ValueTypeRegistration<Type>(containingNamespace, name)
+        ValueTypeRegistration<Type>(ContainingNamespace(), Name())
             .DefaultConstructor(&Management::GenerateDefaultValue)
             .CopyConstructor(&Management::GenerateValueFromCopy)
             .Destructor(&Management::DestructValue)
@@ -27,7 +27,7 @@ namespace Atmos::Scripting::Angel
     {
         using Type = Arca::Index<T>;
 
-        ValueTypeRegistration<Type> registration(Registration<Type>::containingNamespace, Registration<Type>::name);
+        ValueTypeRegistration<Type> registration(Registration<Type>::ContainingNamespace(), Registration<Type>::Name());
         RegisterArcaIndex(registration);
         registration
             .ConstMethod(&ObjectManagement<Type>::template Method<doName>, "string", "Name", {})

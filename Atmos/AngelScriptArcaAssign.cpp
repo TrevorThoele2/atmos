@@ -4,7 +4,7 @@ namespace Atmos::Scripting::Angel
 {
     void Registration<GenericArcaAssignCopy>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        TemplateValueTypeRegistration<Type>(containingNamespace, "AssignCopy", { "T" })
+        TemplateValueTypeRegistration<Type>(ContainingNamespace(), "AssignCopy", { "T" })
             .TemplateCallback(&Management::RequiredSpecializationTemplateCallback)
             .DefaultConstructor(&Management::UndefinedTemplate)
             .CopyConstructor(&Management::UndefinedTemplate)
@@ -15,7 +15,7 @@ namespace Atmos::Scripting::Angel
 
     void Registration<GenericArcaAssignMove>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        TemplateValueTypeRegistration<Type>(containingNamespace, "AssignMove", { "T" })
+        TemplateValueTypeRegistration<Type>(ContainingNamespace(), "AssignMove", { "T" })
             .TemplateCallback(&Management::RequiredSpecializationTemplateCallback)
             .DefaultConstructor(&Management::UndefinedTemplate)
             .CopyConstructor(&Management::UndefinedTemplate)

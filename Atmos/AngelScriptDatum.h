@@ -18,9 +18,9 @@ namespace Atmos::Scripting::Angel
         using Type = Datum;
         using Management = ObjectManagement<Type>;
 
-        static inline const String name = "Datum";
-        static inline const String containingNamespace = "Atmos";
-        static inline const String documentation = "Generic key value pair.";
+        static String Name() { return "Datum"; }
+        static String ContainingNamespace() { return "Atmos"; }
+        static String Documentation() { return "Generic key value pair."; }
         static const ObjectType objectType = ObjectType::Value;
 
         static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);

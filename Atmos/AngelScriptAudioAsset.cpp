@@ -10,10 +10,10 @@ namespace Atmos::Scripting::Angel
 {
     void Registration<Asset::Audio>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        ValueTypeRegistration<Type> registration(containingNamespace, name);
+        ValueTypeRegistration<Type> registration(ContainingNamespace(), Name());
         RegisterArcaIndex(registration);
         registration
-            .ConstMethod(&Management::Method<&Name>, "string", "Name", {})
+            .ConstMethod(&Management::Method<&DoName>, "string", "Name", {})
             .Actualize(engine, documentationManager);
 
         Registration<ArcaTraits<Asset::Audio>>::RegisterTo(engine, documentationManager);
@@ -21,7 +21,7 @@ namespace Atmos::Scripting::Angel
         Registration<Asset::FindByName<Asset::Audio>>::RegisterTo(engine, documentationManager);
     }
 
-    String Registration<Asset::Audio>::Name(Type type)
+    String Registration<Asset::Audio>::DoName(Type type)
     {
         return RequiredValue(type)->Name();
     }

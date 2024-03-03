@@ -10,7 +10,7 @@ namespace Atmos::Scripting::Angel
 {
     void Registration<CurrentScript>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        GlobalRegistration(containingNamespace)
+        GlobalRegistration(ContainingNamespace())
             .Function(&Management::Function<&Retrieve, &UserData::RequiredReliquaryFrom>, "Atmos::Scripting::Script", "CurrentScript", {})
             .Actualize(engine, documentationManager);
     }

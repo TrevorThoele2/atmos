@@ -19,9 +19,9 @@ namespace Atmos::Scripting::Angel
         using Type = Result;
         using Management = ObjectManagement<Type>;
 
-        static inline const String name = "Result";
-        static inline const String containingNamespace = "Atmos::Scripting";
-        static inline const String documentation = "Represents the result of a finished script.";
+        static String Name() { return "Result"; }
+        static String ContainingNamespace() { return "Atmos::Scripting"; }
+        static String Documentation() { return "Represents the result of a finished script."; }
         static const ObjectType objectType = ObjectType::Value;
 
         static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);

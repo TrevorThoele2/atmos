@@ -13,9 +13,9 @@ namespace Atmos::Scripting::Angel
     template<>
     struct Registration<Logging::Severity>
     {
-        static inline const String name = "Severity";
-        static inline const String containingNamespace = "Atmos::Logging";
-        static inline const String documentation = "Represents the severity of a particular log.";
+        static String Name() { return "Severity"; }
+        static String ContainingNamespace() { return "Atmos::Logging"; }
+        static String Documentation() { return "Represents the severity of a particular log."; }
         static const ObjectType objectType = ObjectType::Value;
 
         static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);

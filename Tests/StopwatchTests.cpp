@@ -73,5 +73,44 @@ SCENARIO_METHOD(StopwatchTestsFixture, "real stopwatch", "[time][stopwatch]")
                 }
             }
         }
+
+        WHEN("pausing")
+        {
+            stopwatch.Pause();
+
+            const auto firstElapsed = stopwatch.Elapsed();
+
+            const auto waitFor = Milliseconds(10);
+
+            THEN("elapsed is same as first elapsed")
+            {
+                std::this_thread::sleep_for(waitFor);
+
+                auto elapsedTime = stopwatch.Elapsed();
+
+                REQUIRE(elapsedTime == firstElapsed);
+            }
+
+            WHEN("resuming")
+            {
+                auto startTime = stopwatch.Resume();
+
+                THEN("start is greater than zero")
+                {
+                    const auto zero = Time::Point<>();
+
+                    REQUIRE(startTime > zero);
+                }
+
+                THEN("elapsed is greater than first elapsed")
+                {
+                    std::this_thread::sleep_for(waitFor);
+
+                    auto elapsedTime = stopwatch.Elapsed();
+
+                    REQUIRE(elapsedTime > firstElapsed);
+                }
+            }
+        }
     }
 }

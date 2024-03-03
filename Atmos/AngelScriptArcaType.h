@@ -18,9 +18,9 @@ namespace Atmos::Scripting::Angel
         using Type = Arca::Type;
         using Management = ObjectManagement<Type>;
 
-        static inline const String name = "Type";
-        static inline const String containingNamespace = "Arca";
-        static inline const String documentation = "Represents a type registered with Arca at runtime.";
+        static String Name() { return "Type"; }
+        static String ContainingNamespace() { return "Arca"; }
+        static String Documentation() { return "Represents a type registered with Arca at runtime."; }
         static const ObjectType objectType = ObjectType::Value;
 
         static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);

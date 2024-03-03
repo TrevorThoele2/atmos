@@ -40,9 +40,9 @@ namespace Atmos::Scripting::Angel
         using Type = Arca::Index<Render::ImageCore>;
         using Management = ObjectManagement<Type>;
 
-        static inline const String name = "ImageCore";
-        static inline const String containingNamespace = "Atmos::Render";
-        static inline const String documentation = "This is a shard.";
+        static String Name() { return "ImageCore"; }
+        static String ContainingNamespace() { return "Atmos::Render"; }
+        static String Documentation() { return "This is a shard."; }
         static const ObjectType objectType = ObjectType::Value;
 
         static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
@@ -62,9 +62,9 @@ namespace Atmos::Scripting::Angel
     {
         using Type = ChangeImageAsset;
 
-        static inline const String name = "ChangeImageAsset";
-        static inline const String containingNamespace = "Atmos::Render";
-        static inline const String documentation = "This is a command.";
+        static String Name() { return "ChangeImageAsset"; }
+        static String ContainingNamespace() { return "Atmos::Render"; }
+        static String Documentation() { return "This is a command."; }
         static const ObjectType objectType = ObjectType::Value;
 
         using Management = ObjectManagement<Type>;
@@ -79,9 +79,9 @@ namespace Atmos::Scripting::Angel
     {
         using Type = ChangeAssetIndex;
 
-        static inline const String name = "ChangeAssetIndex";
-        static inline const String containingNamespace = "Atmos::Render";
-        static inline const String documentation = "This is a command.";
+        static String Name() { return "ChangeAssetIndex"; }
+        static String ContainingNamespace() { return "Atmos::Render"; }
+        static String Documentation() { return "This is a command."; }
         static const ObjectType objectType = ObjectType::Value;
 
         using Management = ObjectManagement<Type>;

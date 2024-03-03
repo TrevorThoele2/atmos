@@ -15,7 +15,7 @@ namespace Atmos::Scripting::Angel
 {
     void Registration<Spatial::Bounds>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        ValueTypeRegistration<Type> registration(containingNamespace, name);
+        ValueTypeRegistration<Type> registration(ContainingNamespace(), Name());
         RegisterArcaIndex(registration);
         registration
             .ConstMethod(&Management::Method<&Position>, "Atmos::Spatial::Point3D", "Position", {})
@@ -56,7 +56,7 @@ namespace Atmos::Scripting::Angel
 
     void Registration<Spatial::MoveBoundsBy>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        ValueTypeRegistration<Type>(containingNamespace, name)
+        ValueTypeRegistration<Type>(ContainingNamespace(), Name())
             .Constructor(
                 &Management::GenerateValue<
                     &PullFromParameter<0, Arca::RelicID>,
@@ -74,7 +74,7 @@ namespace Atmos::Scripting::Angel
 
     void Registration<Spatial::MoveBoundsDirection>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        ValueTypeRegistration<Type>(containingNamespace, name)
+        ValueTypeRegistration<Type>(ContainingNamespace(), Name())
             .Constructor(
                 &Management::GenerateValue<
                     &PullFromParameter<0, Arca::RelicID>,
@@ -94,7 +94,7 @@ namespace Atmos::Scripting::Angel
 
     void Registration<Spatial::MoveBoundsTo>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        ValueTypeRegistration<Type>(containingNamespace, name)
+        ValueTypeRegistration<Type>(ContainingNamespace(), Name())
             .Constructor(
                 &Management::GenerateValue<
                     &PullFromParameter<0, Arca::RelicID>,
@@ -112,7 +112,7 @@ namespace Atmos::Scripting::Angel
 
     void Registration<Spatial::RotateBounds>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        ValueTypeRegistration<Type>(containingNamespace, name)
+        ValueTypeRegistration<Type>(ContainingNamespace(), Name())
             .Constructor(
                 &Management::GenerateValue<
                     &PullFromParameter<0, Arca::RelicID>,
@@ -130,7 +130,7 @@ namespace Atmos::Scripting::Angel
 
     void Registration<Spatial::ScaleBounds>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        ValueTypeRegistration<Type>(containingNamespace, name)
+        ValueTypeRegistration<Type>(ContainingNamespace(), Name())
             .Constructor(
                 &Management::GenerateValue<
                     &PullFromParameter<0, Arca::RelicID>,
@@ -148,7 +148,7 @@ namespace Atmos::Scripting::Angel
 
     void Registration<Spatial::BoundsMoved>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        ValueTypeRegistration<Type>(containingNamespace, name)
+        ValueTypeRegistration<Type>(ContainingNamespace(), Name())
             .DefaultConstructor(&Management::GenerateDefaultValue)
             .Constructor(
                 &Management::GenerateValue<
@@ -165,7 +165,7 @@ namespace Atmos::Scripting::Angel
 
     void Registration<Spatial::BoundsRotated>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        ValueTypeRegistration<Type>(containingNamespace, name)
+        ValueTypeRegistration<Type>(ContainingNamespace(), Name())
             .DefaultConstructor(&Management::GenerateDefaultValue)
             .Constructor(
                 &Management::GenerateValue<
@@ -182,7 +182,7 @@ namespace Atmos::Scripting::Angel
 
     void Registration<Spatial::BoundsScaled>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        ValueTypeRegistration<Type>(containingNamespace, name)
+        ValueTypeRegistration<Type>(ContainingNamespace(), Name())
             .DefaultConstructor(&Management::GenerateDefaultValue)
             .Constructor(
                 &Management::GenerateValue<

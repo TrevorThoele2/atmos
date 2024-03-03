@@ -24,9 +24,9 @@ namespace Atmos::Scripting::Angel
         using Type = Arca::Index<Render::DynamicImage>;
         using Management = ObjectManagement<Type>;
 
-        static inline const String name = "DynamicImage";
-        static inline const String containingNamespace = "Atmos::Render";
-        static inline const String documentation = "This is a relic.";
+        static String Name() { return "DynamicImage"; }
+        static String ContainingNamespace() { return "Atmos::Render"; }
+        static String Documentation() { return "This is a relic."; }
         static const ObjectType objectType = ObjectType::Value;
 
         static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);

@@ -16,9 +16,9 @@ namespace Atmos::Scripting::Angel
     template<>
     struct Registration<Angle2D>
     {
-        static inline const String name = "Angle2D";
-        static inline const String containingNamespace = "Atmos::Spatial";
-        static inline const String documentation = "2D angle.";
+        static String Name() { return "Angle2D"; }
+        static String ContainingNamespace() { return "Atmos::Spatial"; }
+        static String Documentation() { return "2D angle."; }
         static const ObjectType objectType = ObjectType::Value;
 
         static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);

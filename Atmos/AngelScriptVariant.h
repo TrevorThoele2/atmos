@@ -20,10 +20,12 @@ namespace Atmos::Scripting::Angel
         using Type = Variant;
         using Management = ObjectManagement<Type>;
 
-        static inline const String name = "Variant";
-        static inline const String containingNamespace = "Atmos";
-        static inline const String documentation =
-            "Represents a general, serializable piece of data. Can only be one of its respective types at a time.";
+        static String Name() { return "Variant"; }
+        static String ContainingNamespace() { return "Atmos"; }
+        static String Documentation()
+        {
+            return "Represents a general, serializable piece of data. Can only be one of its respective types at a time.";
+        }
         static const ObjectType objectType = ObjectType::Value;
 
         static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);

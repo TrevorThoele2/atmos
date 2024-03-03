@@ -4,7 +4,7 @@ namespace Atmos::Scripting::Angel
 {
     void Registration<GenericArcaDestroy>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        TemplateValueTypeRegistration<Type>(containingNamespace, "Destroy", { "T" })
+        TemplateValueTypeRegistration<Type>(ContainingNamespace(), "Destroy", { "T" })
             .TemplateCallback(&Management::RequiredSpecializationTemplateCallback)
             .DefaultConstructor(&Management::UndefinedTemplate)
             .CopyConstructor(&Management::UndefinedTemplate)
@@ -15,7 +15,7 @@ namespace Atmos::Scripting::Angel
 
     void Registration<Arca::Destroying>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        ValueTypeRegistration<Type>(containingNamespace, name)
+        ValueTypeRegistration<Type>(ContainingNamespace(), Name())
             .DefaultConstructor(&Management::GenerateDefaultValue)
             .Constructor(
                 &Management::GenerateValue<&PullFromParameter<0, Arca::Handle>>,
@@ -31,7 +31,7 @@ namespace Atmos::Scripting::Angel
 
     void Registration<GenericArcaDestroyingKnown>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        TemplateValueTypeRegistration<Type>(containingNamespace, "DestroyingKnown", { "T" })
+        TemplateValueTypeRegistration<Type>(ContainingNamespace(), "DestroyingKnown", { "T" })
             .TemplateCallback(&Management::RequiredSpecializationTemplateCallback)
             .DefaultConstructor(&Management::UndefinedTemplate)
             .CopyConstructor(&Management::UndefinedTemplate)

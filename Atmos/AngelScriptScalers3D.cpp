@@ -8,7 +8,7 @@ namespace Atmos::Scripting::Angel
 {
     void Registration<Spatial::Scalers3D>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        ValueTypeRegistration<Spatial::Scalers3D>(containingNamespace, name)
+        ValueTypeRegistration<Spatial::Scalers3D>(ContainingNamespace(), Name())
             .DefaultConstructor(&Management::GenerateDefaultValue)
             .Constructor(
                 &Management::GenerateValue<

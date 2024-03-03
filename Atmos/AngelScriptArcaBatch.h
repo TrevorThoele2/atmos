@@ -16,9 +16,9 @@ namespace Atmos::Scripting::Angel
     {
         using Type = GenericArcaBatch;
 
-        static inline const String name = "Batch<class T>";
-        static inline const String containingNamespace = "Arca";
-        static inline const String documentation = "Needs to be used with explicit specializations.";
+        static String Name() { return "Batch<class T>"; }
+        static String ContainingNamespace() { return "Arca"; }
+        static String Documentation() { return "Needs to be used with explicit specializations."; }
         static const ObjectType objectType = ObjectType::Value;
 
         using Management = ObjectManagement<Type>;
@@ -31,9 +31,9 @@ namespace Atmos::Scripting::Angel
     {
         using Type = Arca::Batch<T>;
 
-        static inline const String name = "Batch<" + CreateName({ Registration<T>::containingNamespace }, Registration<T>::name) + ">";
-        static inline const String containingNamespace = "Arca";
-        static inline const String documentation = "Needs to be used with explicit specializations.";
+        static String Name() { return "Batch<" + CreateName({ Registration<T>::ContainingNamespace() }, Registration<T>::Name()) + ">"; }
+        static String ContainingNamespace() { return "Arca"; }
+        static String Documentation() { return "Needs to be used with explicit specializations."; }
         static const ObjectType objectType = ObjectType::Value;
 
         using Management = ObjectManagement<Type>;
@@ -46,14 +46,14 @@ namespace Atmos::Scripting::Angel
     template<class T>
     void Registration<Arca::Batch<T>>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        ValueTypeRegistration<Type>(containingNamespace, name)
+        ValueTypeRegistration<Type>(ContainingNamespace(), Name())
             .DefaultConstructor(&Management::GenerateDefaultValue)
             .CopyConstructor(&Management::GenerateValueFromCopy)
             .Destructor(&Management::DestructValue)
             .CopyAssignment(&Management::CopyAssign)
             .ConstMethod(
                 &Management::template Method<&Values, &UserData::RequiredReliquaryFrom>,
-                CreateName({ Registration<T>::containingNamespace }, Registration<T>::name + "[]@"),
+                CreateName({ Registration<T>::ContainingNamespace() }, Registration<T>::Name() + "[]@"),
                 "Values",
                 {})
             .Actualize(engine, documentationManager);

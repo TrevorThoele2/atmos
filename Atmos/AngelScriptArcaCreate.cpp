@@ -4,7 +4,7 @@ namespace Atmos::Scripting::Angel
 {
     void Registration<GenericArcaCreate>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        TemplateValueTypeRegistration<Type>(containingNamespace, "Create", { "T" })
+        TemplateValueTypeRegistration<Type>(ContainingNamespace(), "Create", { "T" })
             .TemplateCallback(&Management::RequiredSpecializationTemplateCallback)
             .DefaultConstructor(&Management::UndefinedTemplate)
             .CopyConstructor(&Management::UndefinedTemplate)
@@ -15,7 +15,7 @@ namespace Atmos::Scripting::Angel
 
     void Registration<GenericArcaCreateChild>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        TemplateValueTypeRegistration<Type>(containingNamespace, "CreateChild", { "T" })
+        TemplateValueTypeRegistration<Type>(ContainingNamespace(), "CreateChild", { "T" })
             .TemplateCallback(&Management::RequiredSpecializationTemplateCallback)
             .DefaultConstructor(&Management::UndefinedTemplate)
             .CopyConstructor(&Management::UndefinedTemplate)
@@ -26,7 +26,7 @@ namespace Atmos::Scripting::Angel
 
     void Registration<GenericArcaIdentifiedCreate>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        TemplateValueTypeRegistration<Type>(containingNamespace, "IdentifiedCreate", { "T" })
+        TemplateValueTypeRegistration<Type>(ContainingNamespace(), "IdentifiedCreate", { "T" })
             .TemplateCallback(&Management::RequiredSpecializationTemplateCallback)
             .DefaultConstructor(&Management::UndefinedTemplate)
             .CopyConstructor(&Management::UndefinedTemplate)
@@ -37,7 +37,7 @@ namespace Atmos::Scripting::Angel
 
     void Registration<GenericArcaIdentifiedCreateChild>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        TemplateValueTypeRegistration<Type>(containingNamespace, "IdentifiedCreateChild", { "T" })
+        TemplateValueTypeRegistration<Type>(ContainingNamespace(), "IdentifiedCreateChild", { "T" })
             .TemplateCallback(&Management::RequiredSpecializationTemplateCallback)
             .DefaultConstructor(&Management::UndefinedTemplate)
             .CopyConstructor(&Management::UndefinedTemplate)
@@ -48,7 +48,7 @@ namespace Atmos::Scripting::Angel
 
     void Registration<Arca::Created>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        ValueTypeRegistration<Type>(containingNamespace, name)
+        ValueTypeRegistration<Type>(ContainingNamespace(), Name())
             .DefaultConstructor(&Management::GenerateDefaultValue)
             .Constructor(
                 &Management::GenerateValue<&PullFromParameter<0, Arca::Handle>>,
@@ -64,7 +64,7 @@ namespace Atmos::Scripting::Angel
 
     void Registration<GenericArcaCreatedKnown>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        TemplateValueTypeRegistration<Type>(containingNamespace, "CreatedKnown", { "T" })
+        TemplateValueTypeRegistration<Type>(ContainingNamespace(), "CreatedKnown", { "T" })
             .TemplateCallback(&Management::RequiredSpecializationTemplateCallback)
             .DefaultConstructor(&Management::UndefinedTemplate)
             .CopyConstructor(&Management::UndefinedTemplate)

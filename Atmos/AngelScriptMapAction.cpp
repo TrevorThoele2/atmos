@@ -12,7 +12,7 @@ namespace Atmos::Scripting::Angel
 {
     void Registration<Input::BindAction>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        ValueTypeRegistration<Type>(containingNamespace, name)
+        ValueTypeRegistration<Type>(ContainingNamespace(), Name())
             .Constructor(
                 &Constructor,
                 { "Atmos::Asset::Action action", "Atmos::Input::Key[]@ keys" })

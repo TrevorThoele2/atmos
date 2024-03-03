@@ -24,14 +24,14 @@ namespace Atmos::Scripting::Angel
         using Type = Arca::Index<Entity::Entity>;
         using Management = ObjectManagement<Type>;
 
-        static inline const String name = "Entity";
-        static inline const String containingNamespace = "Atmos::Entity";
-        static inline const String documentation = "This is a relic.";
+        static String Name() { return "Entity"; }
+        static String ContainingNamespace() { return "Atmos::Entity"; }
+        static String Documentation() { return "This is a relic."; }
         static const ObjectType objectType = ObjectType::Value;
 
         static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
     private:
-        [[nodiscard]] static String Name(Type type);
+        [[nodiscard]] static String DoName(Type type);
         [[nodiscard]] static String DisplayName(Type type);
         [[nodiscard]] static Spatial::Grid::Point Position(Type type);
         [[nodiscard]] static Spatial::Angle2D Direction(Type type);
@@ -50,9 +50,9 @@ namespace Atmos::Scripting::Angel
         using Type = Entity::FindByName;
         using Management = ObjectManagement<Type>;
 
-        static inline const String name = "FindByName";
-        static inline const String containingNamespace = "Atmos::Entity";
-        static inline const String documentation = "This is a command.";
+        static String Name() { return "FindByName"; }
+        static String ContainingNamespace() { return "Atmos::Entity"; }
+        static String Documentation() { return "This is a command."; }
         static const ObjectType objectType = ObjectType::Value;
 
         static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
@@ -66,9 +66,9 @@ namespace Atmos::Scripting::Angel
         using Type = Entity::FindByPosition;
         using Management = ObjectManagement<Type>;
 
-        static inline const String name = "FindByPosition";
-        static inline const String containingNamespace = "Atmos::Entity";
-        static inline const String documentation = "This is a command.";
+        static String Name() { return "FindByPosition"; }
+        static String ContainingNamespace() { return "Atmos::Entity"; }
+        static String Documentation() { return "This is a command."; }
         static const ObjectType objectType = ObjectType::Value;
 
         static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
@@ -82,9 +82,9 @@ namespace Atmos::Scripting::Angel
         using Type = Entity::MoveTo;
         using Management = ObjectManagement<Type>;
 
-        static inline const String name = "MoveTo";
-        static inline const String containingNamespace = "Atmos::Entity";
-        static inline const String documentation = "This is a command.";
+        static String Name() { return "MoveTo"; }
+        static String ContainingNamespace() { return "Atmos::Entity"; }
+        static String Documentation() { return "This is a command."; }
         static const ObjectType objectType = ObjectType::Value;
 
         static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
@@ -96,9 +96,9 @@ namespace Atmos::Scripting::Angel
         using Type = Entity::ModifyData;
         using Management = ObjectManagement<Type>;
 
-        static inline const String name = "ModifyData";
-        static inline const String containingNamespace = "Atmos::Entity";
-        static inline const String documentation = "This is a command.";
+        static String Name() { return "ModifyData"; }
+        static String ContainingNamespace() { return "Atmos::Entity"; }
+        static String Documentation() { return "This is a command."; }
         static const ObjectType objectType = ObjectType::Value;
 
         static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
@@ -110,9 +110,9 @@ namespace Atmos::Scripting::Angel
         using Type = Entity::ModifyTags;
         using Management = ObjectManagement<Type>;
 
-        static inline const String name = "ModifyTags";
-        static inline const String containingNamespace = "Atmos::Entity";
-        static inline const String documentation = "This is a command.";
+        static String Name() { return "ModifyTags"; }
+        static String ContainingNamespace() { return "Atmos::Entity"; }
+        static String Documentation() { return "This is a command."; }
         static const ObjectType objectType = ObjectType::Value;
 
         static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);

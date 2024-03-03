@@ -18,9 +18,9 @@ namespace Atmos::Scripting::Angel
         using Type = Input::TextEntered;
         using Management = ObjectManagement<Type>;
 
-        static inline const String name = "TextEntered";
-        static inline const String containingNamespace = "Atmos::Input";
-        static inline const String documentation = "This is a signal.";
+        static String Name() { return "TextEntered"; }
+        static String ContainingNamespace() { return "Atmos::Input"; }
+        static String Documentation() { return "This is a signal."; }
         static const ObjectType objectType = ObjectType::Value;
 
         static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);

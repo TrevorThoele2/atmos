@@ -17,9 +17,9 @@ namespace Atmos::Scripting::Angel
         using Type = Spatial::AxisAlignedBox2D;
         using Management = ObjectManagement<Type>;
 
-        static inline const String name = "AxisAlignedBox2D";
-        static inline const String containingNamespace = "Atmos::Spatial";
-        static inline const String documentation = "2D axis aligned bounding box.";
+        static String Name() { return "AxisAlignedBox2D"; }
+        static String ContainingNamespace() { return "Atmos::Spatial"; }
+        static String Documentation() { return "2D axis aligned bounding box."; }
         static const ObjectType objectType = ObjectType::Value;
 
         static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);

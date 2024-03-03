@@ -7,7 +7,7 @@ namespace Atmos::Scripting::Angel
 {
     void Registration<Angle2D>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        GlobalRegistration(containingNamespace)
+        GlobalRegistration(ContainingNamespace())
             .Typedef("Angle2D", "float")
             .Actualize(engine, documentationManager);
     }
