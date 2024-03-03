@@ -2,6 +2,7 @@
 
 #include <optional>
 #include "VulkanBuffer.h"
+#include "VulkanCommand.h"
 
 #include <Chroma/TypeIdentity.h>
 
@@ -16,19 +17,19 @@ namespace Atmos::Render::Vulkan
         StagedBuffer(
             vk::DeviceSize size,
             vk::Device device,
-            vk::PhysicalDeviceMemoryProperties memoryProperties);
+            MemoryPool& pool);
         StagedBuffer(
             vk::DeviceSize size,
             vk::Device device,
-            vk::PhysicalDeviceMemoryProperties memoryProperties,
+            MemoryPool& pool,
             vk::BufferUsageFlags destinationUsage);
 
         void PushSourceBytes(Bytes bytes, vk::DeviceSize offset);
         void PushSourceBytes(const void* bytes, vk::DeviceSize offset, size_t size);
         template<class T>
         void PushSourceBytes(const T& object, vk::DeviceSize offset);
-        void CopyFromSourceToDestination(vk::CommandPool commandPool, vk::Queue queue);
-        void CopyFromSourceToDestination(vk::DeviceSize offset, vk::DeviceSize size, vk::CommandPool commandPool, vk::Queue queue);
+        Command CopyFromSourceToDestination();
+        Command CopyFromSourceToDestination(vk::DeviceSize offset, vk::DeviceSize size);
     private:
         struct Internal {};
 
@@ -36,7 +37,7 @@ namespace Atmos::Render::Vulkan
             Chroma::TypeIdentity<Internal>,
             vk::DeviceSize size,
             vk::Device device,
-            vk::PhysicalDeviceMemoryProperties memoryProperties,
+            MemoryPool& pool,
             std::optional<vk::BufferUsageFlags> destinationUsage);
     };
 

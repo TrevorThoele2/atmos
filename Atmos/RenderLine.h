@@ -4,10 +4,11 @@
 #include "Point2D.h"
 #include "MaterialAsset.h"
 #include "Color.h"
+#include "SurfaceResource.h"
 
 namespace Atmos::Render
 {
-    struct LineRender
+    struct RenderLine
     {
         std::vector<Spatial::Point2D> points;
         Spatial::Point2D::Value z;
@@ -19,5 +20,7 @@ namespace Atmos::Render
         Color color;
 
         int space;
+
+        Resource::Surface* surface;
     };
 }

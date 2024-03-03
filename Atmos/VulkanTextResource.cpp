@@ -2,6 +2,6 @@
 
 namespace Atmos::Render::Resource::Vulkan
 {
-    Text::Text(const ImageData& imageData) : imageData(imageData)
+    Text::Text(const Render::Vulkan::ImageData& imageData) : imageData(imageData)
     {}
 }

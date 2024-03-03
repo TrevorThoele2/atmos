@@ -117,7 +117,7 @@ SCENARIO_METHOD(LineRenderingTestsFixture, "rendering lines", "[render]")
 
                 THEN("all lines rendered in graphics manager")
                 {
-                    auto& lineRenders = mainSurfaceImplementation->lineRenders;
+                    auto& lineRenders = engine.mockGraphicsManager->lineRenders;
                     REQUIRE(lineRenders.size() == 3);
 
                     for (auto i = 0; i < 3; ++i)
@@ -125,7 +125,7 @@ SCENARIO_METHOD(LineRenderingTestsFixture, "rendering lines", "[render]")
                         REQUIRE(std::any_of(
                             lineRenders.begin(),
                             lineRenders.end(),
-                            [i, &fromPositions, &toPositions, cameraLeft, cameraTop](const LineRender& entry)
+                            [i, &fromPositions, &toPositions, cameraLeft, cameraTop](const RenderLine& entry)
                             {
                                 auto expectedFromPosition = fromPositions[i];
                                 expectedFromPosition.x -= cameraLeft;
@@ -152,7 +152,7 @@ SCENARIO_METHOD(LineRenderingTestsFixture, "rendering lines", "[render]")
 
                 THEN("lines were rendered only once")
                 {
-                    auto& lineRenders = mainSurfaceImplementation->lineRenders;
+                    auto& lineRenders = engine.mockGraphicsManager->lineRenders;
                     REQUIRE(lineRenders.size() == 3);
 
                     for (auto i = 0; i < 3; ++i)
@@ -160,7 +160,7 @@ SCENARIO_METHOD(LineRenderingTestsFixture, "rendering lines", "[render]")
                         REQUIRE(std::any_of(
                             lineRenders.begin(),
                             lineRenders.end(),
-                            [i, &fromPositions, &toPositions, cameraLeft, cameraTop](const LineRender& entry)
+                            [i, &fromPositions, &toPositions, cameraLeft, cameraTop](const RenderLine& entry)
                             {
                                 auto expectedFromPosition = fromPositions[i];
                                 expectedFromPosition.x -= cameraLeft;
@@ -242,7 +242,7 @@ SCENARIO_METHOD(LineRenderingTestsFixture, "rendering lines", "[render]")
 
                 THEN("no lines rendered in graphics manager")
                 {
-                    auto& lineRenders = mainSurfaceImplementation->lineRenders;
+                    auto& lineRenders = engine.mockGraphicsManager->lineRenders;
                     REQUIRE(lineRenders.empty());
                 }
             }

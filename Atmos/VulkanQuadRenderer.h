@@ -6,9 +6,12 @@
 #include "VulkanMappedConduits.h"
 #include "VulkanStagedBuffer.h"
 #include "VulkanCombinedImageSamplerDescriptor.h"
+#include "VulkanMemoryPool.h"
 
-#include "ImageRender.h"
-#include "TextRender.h"
+#include "RenderImage.h"
+#include "RenderText.h"
+
+#include "Logger.h"
 
 #include <glm/glm.hpp>
 
@@ -51,21 +54,22 @@ namespace Atmos::Render::Vulkan
             vk::RenderPass renderPass,
             vk::Extent2D swapchainExtent);
 
-        void StageRender(const ImageRender& imageRender);
-        void StageRender(const TextRender& textRender);
+        void StageRender(const RenderImage& imageRender);
+        void StageRender(const RenderText& textRender);
 
         [[nodiscard]] std::unique_ptr<Raster> Start(
-            vk::CommandBuffer commandBuffer,
-            vk::CommandPool commandPool,
+            vk::CommandBuffer drawCommandBuffer,
             const UniversalDataBuffer& universalDataBuffer) override;
         
         void MaterialDestroying(Arca::Index<Asset::Material> material);
 
         [[nodiscard]] size_t RenderCount() const override;
     private:
-        std::vector<ImageRender> stagedImageRenders;
-        std::vector<TextRender> stagedTextRenders;
+        std::vector<RenderImage> stagedImageRenders;
+        std::vector<RenderText> stagedTextRenders;
     private:
+        MemoryPool memoryPool;
+
         struct Vertex
         {
             alignas(16) glm::vec4 color;
@@ -80,18 +84,18 @@ namespace Atmos::Render::Vulkan
             Quad(const Vertices& vertices);
         };
 
-        static const int stride = 10000;
+        static constexpr int maxQuadCount = 10000;
 
         using Index = uint16_t;
         using Indices = std::array<Index, 6>;
         static inline const Indices indices = { 0, 1, 2, 2, 1, 3 };
-        static inline const Index indexIncrement = 4;
+        static inline constexpr Index indexIncrement = 4;
 
         StagedBuffer vertexBuffer;
-        static const int vertexStride = stride * 4;
+        static constexpr int vertexStride = maxQuadCount * 4;
 
         StagedBuffer indexBuffer;
-        static const int indexStride = stride * 6;
+        static constexpr int indexStride = maxQuadCount * 6;
     private:
         using MappedConduits = MappedConduits<Asset::Material>;
 
@@ -100,12 +104,9 @@ namespace Atmos::Render::Vulkan
         class Raster final : public Vulkan::Raster
         {
         public:
-            Raster(
-                vk::CommandBuffer commandBuffer,
-                vk::CommandPool commandPool,
-                QuadRenderer& renderer);
+            Raster(QuadRenderer& renderer);
 
-            void DrawNextLayer() override;
+            [[nodiscard]] std::vector<Pass> NextPasses() override;
 
             [[nodiscard]] bool IsDone() const override;
             [[nodiscard]] ObjectLayeringKey NextLayer() const override;
@@ -113,27 +114,25 @@ namespace Atmos::Render::Vulkan
             using ObjectLayering = ObjectLayering<const CombinedImageSamplerDescriptor*, Quad>;
             using Layer = ObjectLayering::Layer;
 
-            vk::CommandBuffer commandBuffer;
-            vk::CommandPool commandPool;
-
             ObjectLayering layers;
             ObjectLayering::iterator currentLayer = {};
-            std::unordered_map<DescriptorSetKey, vk::DescriptorSet> setupDescriptorSets = {};
+            std::unordered_map<DescriptorSetKey, vk::DescriptorSet> descriptorSets = {};
 
-            std::uint32_t quadCount = 0;
+            std::uint32_t totalQuadCount = 0;
         private:
             QuadRenderer* renderer;
         private:
-            void Draw(Layer& layer);
-            void WriteToBuffers(const Layer::MaterialGroup& materialGroup, MappedConduits::Group& conduitGroup);
-            void WriteToBuffers(const std::vector<Quad>& quads);
+            [[nodiscard]] std::vector<Pass> NextPasses(const Layer& layer);
+            [[nodiscard]] std::vector<Pass> NextPasses(const Layer::MaterialGroup& materialGroup, MappedConduits::Group& conduitGroup);
+            [[nodiscard]] Command WriteData(const std::vector<Quad>& quads, std::uint32_t startQuadCount);
+            [[nodiscard]] Command Draw(std::uint32_t startQuadCount, std::uint32_t quadCount, Conduit& conduit, vk::DescriptorSet descriptorSet);
         private:
             friend QuadRenderer;
         };
 
         std::unordered_set<DescriptorSetKey> descriptorSetKeys;
-        void AddToRaster(const ImageRender& imageRender, Raster& raster);
-        void AddToRaster(const TextRender& textRender, Raster& raster);
+        void AddToRaster(const RenderImage& imageRender, Raster& raster);
+        void AddToRaster(const RenderText& textRender, Raster& raster);
 
         void AddToRaster(
             int space,
@@ -157,7 +156,6 @@ namespace Atmos::Render::Vulkan
         MappedConduits mappedConduits;
     private:
         vk::Queue graphicsQueue;
-
         vk::Device device;
     };
 }

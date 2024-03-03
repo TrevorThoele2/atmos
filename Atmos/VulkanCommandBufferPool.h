@@ -7,23 +7,19 @@ namespace Atmos::Render::Vulkan
     class CommandBufferPool
     {
     public:
-        CommandBufferPool(vk::Device device, uint32_t queueFamily);
-
-        [[nodiscard]] vk::CommandBuffer operator[](uint32_t index) const;
-
+        CommandBufferPool(vk::Device device, uint32_t queueFamily, vk::CommandPoolCreateFlags flags);
+        
         void Reserve(uint32_t count);
-        void DoneWith(vk::CommandBuffer commandBuffer);
-
-        [[nodiscard]] vk::CommandBuffer At(uint32_t index) const;
-        [[nodiscard]] vk::CommandBuffer Next();
+        void Reset();
+        
+        [[nodiscard]] vk::CommandBuffer Checkout();
+        void Return(vk::CommandBuffer commandBuffer);
 
         [[nodiscard]] size_t Size() const;
-
-        [[nodiscard]] vk::CommandPool Pool() const;
     private:
         vk::UniqueCommandPool pool;
-        std::vector<vk::CommandBuffer> availableBuffers;
-        std::vector<vk::UniqueCommandBuffer> allBuffers;
+        std::vector<vk::CommandBuffer> available;
+        std::vector<vk::UniqueCommandBuffer> all;
     private:
         vk::Device device;
     };

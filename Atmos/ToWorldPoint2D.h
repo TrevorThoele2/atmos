@@ -21,9 +21,9 @@ namespace Arca
     template<>
     struct Traits<Atmos::Spatial::ToWorldPoint2D>
     {
-        static const ObjectType objectType = ObjectType::Command;
-        static TypeName TypeName() { return "Atmos::Spatial::ToWorldPoint2D"; }
+        static constexpr ObjectType objectType = ObjectType::Command;
+        static const inline TypeName typeName = "Atmos::Spatial::ToWorldPoint2D";
         using Result = Atmos::Spatial::Point2D;
-        static const bool selfContained = true;
+        static constexpr bool selfContained = true;
     };
 }

@@ -113,9 +113,12 @@ namespace Atmos::Render::Vulkan
         pipeline = device.createGraphicsPipelineUnique(nullptr, pipelineCreateInfo).value;
     }
 
-    void Conduit::Bind(const vk::CommandBuffer& commandBuffer)
+    Command Conduit::Bind()
     {
-        commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, pipeline.get());
+        return [this](vk::CommandBuffer commandBuffer)
+        {
+            commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, pipeline.get());
+        };
     }
 
     vk::PipelineShaderStageCreateInfo Conduit::ShaderStageCreateInfo(

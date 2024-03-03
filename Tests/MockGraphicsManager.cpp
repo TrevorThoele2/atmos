@@ -52,6 +52,47 @@ std::unique_ptr<Resource::Text> MockGraphicsManager::CreateTextResourceImpl(
     return std::make_unique<MockTextResource>();
 }
 
+void MockGraphicsManager::StageImpl(const RenderImage& render)
+{
+    imageRenders.push_back(render);
+}
+
+void MockGraphicsManager::StageImpl(const RenderLine& render)
+{
+    lineRenders.push_back(render);
+}
+
+void MockGraphicsManager::StageImpl(const RenderRegion& render)
+{
+    regionRenders.push_back(render);
+}
+
+void MockGraphicsManager::StageImpl(const RenderText& render)
+{
+    textRenders.push_back(render);
+}
+
+void MockGraphicsManager::StageImpl(const UpdateText& update)
+{}
+
+void MockGraphicsManager::DrawFrameImpl(Resource::Surface& surface, const Spatial::Point2D& mapPosition, const Color& backgroundColor, Diagnostics::Statistics::Profile& profile)
+{}
+
+void MockGraphicsManager::ResourceDestroyingImpl(Asset::Resource::Image& resource)
+{}
+
+void MockGraphicsManager::ResourceDestroyingImpl(Asset::Resource::Shader& resource)
+{}
+
+void MockGraphicsManager::ResourceDestroyingImpl(Resource::Surface& resource)
+{}
+
+void MockGraphicsManager::ResourceDestroyingImpl(Resource::Text& resource)
+{}
+
+void MockGraphicsManager::PruneResourcesImpl()
+{}
+
 Buffer MockGraphicsManager::CompileShaderImpl(const File::Path& filePath)
 {
     return {};

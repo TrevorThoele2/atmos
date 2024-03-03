@@ -13,7 +13,7 @@ namespace Arca
     template<>
     struct Traits<Atmos::Work>
     {
-        static const ObjectType objectType = ObjectType::Command;
-        static TypeName TypeName() { return "Atmos::Work"; }
+        static constexpr ObjectType objectType = ObjectType::Command;
+        static const inline TypeName typeName = "Atmos::Work";
     };
 }

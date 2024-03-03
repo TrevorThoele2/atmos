@@ -10,10 +10,9 @@ namespace Atmos::Render::Vulkan
     {
     public:
         virtual ~RendererBase() = 0;
-
+        
         [[nodiscard]] virtual std::unique_ptr<Raster> Start(
             vk::CommandBuffer commandBuffer,
-            vk::CommandPool commandPool,
             const UniversalDataBuffer& universalDataBuffer) = 0;
 
         [[nodiscard]] virtual uint32_t RenderCount() const = 0;

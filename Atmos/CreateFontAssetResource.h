@@ -20,8 +20,8 @@ namespace Arca
     template<>
     struct Traits<Atmos::Asset::Resource::Create<Atmos::Asset::Resource::Font>>
     {
-        static const ObjectType objectType = ObjectType::Command;
-        static TypeName TypeName() { return "Atmos::Asset::Resource::Create<Atmos::Asset::Resource::Font>"; }
+        static constexpr ObjectType objectType = ObjectType::Command;
+        static const inline TypeName typeName = "Atmos::Asset::Resource::Create<Atmos::Asset::Resource::Font>";
         using Result = std::unique_ptr<Atmos::Asset::Resource::Font>;
     };
 }

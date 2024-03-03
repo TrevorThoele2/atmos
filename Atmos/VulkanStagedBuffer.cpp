@@ -5,18 +5,18 @@ namespace Atmos::Render::Vulkan
     StagedBuffer::StagedBuffer(
         vk::DeviceSize size,
         vk::Device device,
-        vk::PhysicalDeviceMemoryProperties memoryProperties)
+        MemoryPool& pool)
         :
-        StagedBuffer({}, size, device, memoryProperties, {})
+        StagedBuffer({}, size, device, pool, {})
     {}
 
     StagedBuffer::StagedBuffer(
         vk::DeviceSize size,
         vk::Device device,
-        vk::PhysicalDeviceMemoryProperties memoryProperties,
+        MemoryPool& pool,
         vk::BufferUsageFlags destinationUsage)
         :
-        StagedBuffer({}, size, device, memoryProperties, destinationUsage)
+        StagedBuffer({}, size, device, pool, destinationUsage)
     {}
 
     void StagedBuffer::PushSourceBytes(Bytes bytes, vk::DeviceSize offset)
@@ -29,22 +29,22 @@ namespace Atmos::Render::Vulkan
         source.PushBytes(bytes, offset, size);
     }
 
-    void StagedBuffer::CopyFromSourceToDestination(vk::CommandPool commandPool, vk::Queue queue)
+    Command StagedBuffer::CopyFromSourceToDestination()
     {
-        source.Copy(destination, 0, 0, source.size, commandPool, queue);
+        return source.Copy(destination, 0, 0, source.Size());
     }
 
-    void StagedBuffer::CopyFromSourceToDestination(
-        vk::DeviceSize offset, vk::DeviceSize size, vk::CommandPool commandPool, vk::Queue queue)
+    Command StagedBuffer::CopyFromSourceToDestination(
+        vk::DeviceSize offset, vk::DeviceSize size)
     {
-        source.Copy(destination, offset, offset, size, commandPool, queue);
+        return source.Copy(destination, offset, offset, size);
     }
 
     StagedBuffer::StagedBuffer(
         Chroma::TypeIdentity<Internal>,
         vk::DeviceSize size,
         vk::Device device,
-        vk::PhysicalDeviceMemoryProperties memoryProperties,
+        MemoryPool& pool,
         std::optional<vk::BufferUsageFlags> destinationUsage)
         :
         source(
@@ -52,7 +52,7 @@ namespace Atmos::Render::Vulkan
             vk::BufferUsageFlagBits::eTransferSrc,
             vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent,
             device,
-            memoryProperties),
+            pool),
         destination(
             size,
             destinationUsage
@@ -60,6 +60,6 @@ namespace Atmos::Render::Vulkan
                 : vk::BufferUsageFlagBits::eTransferDst,
             vk::MemoryPropertyFlagBits::eDeviceLocal,
             device,
-            memoryProperties)
+            pool)
     {}
 }

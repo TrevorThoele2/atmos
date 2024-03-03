@@ -14,8 +14,8 @@ namespace Arca
     template<>
     struct Traits<Atmos::World::RetrieveProperties>
     {
-        static const ObjectType objectType = ObjectType::Command;
-        static TypeName TypeName() { return "Atmos::World::RetrieveProperties"; }
+        static constexpr ObjectType objectType = ObjectType::Command;
+        static const inline TypeName typeName = "Atmos::World::RetrieveProperties";
         using Result = std::vector<Atmos::Property>;
     };
 }

@@ -2,6 +2,12 @@
 
 namespace Atmos::Diagnostics
 {
+    double CalculateStopwatch(Time::Stopwatch& stopwatch)
+    {
+        const auto duration = std::chrono::duration_cast<std::chrono::duration<double, std::milli>>(stopwatch.Calculate());
+        return duration.count();
+    }
+
     bool Statistics::Profile::operator==(const Profile& arg) const
     {
         return time == arg.time && average == arg.average && highest == arg.highest;
@@ -12,9 +18,10 @@ namespace Atmos::Diagnostics
         return !(*this == arg);
     }
 
-    void Statistics::Profile::NewTime(double newTime)
+    void Statistics::Profile::NewTime(Time::Stopwatch& stopwatch)
     {
-        const double maxAverageCount = 1000;
+        constexpr double maxAverageCount = 1000;
+        const auto newTime = CalculateStopwatch(stopwatch);
         *this =
         {
             newTime,
@@ -38,11 +45,5 @@ namespace Atmos::Diagnostics
     bool Statistics::operator!=(const Statistics& arg) const
     {
         return !(*this == arg);
-    }
-
-    double CalculateStopwatch(Time::Stopwatch& stopwatch)
-    {
-        const auto duration = std::chrono::duration_cast<std::chrono::duration<double, std::milli>>(stopwatch.Calculate());
-        return duration.count();
     }
 }

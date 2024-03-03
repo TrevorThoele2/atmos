@@ -14,17 +14,19 @@ namespace Atmos::Render
     class GridRegionCurator final : public ObjectCurator
     {
     public:
-        explicit GridRegionCurator(Init init);
+        explicit GridRegionCurator(Init init, GraphicsManager& graphicsManager);
 
         using ObjectCurator::Handle;
         void Handle(const MoveGridRegion& command);
-        std::vector<Arca::RelicID> Handle(const FindGridRegionsByBox& command) const;
+        [[nodiscard]] std::vector<Arca::RelicID> Handle(const FindGridRegionsByBox& command) const;
     protected:
         void WorkImpl(
             Spatial::AxisAlignedBox3D cameraBox,
             Spatial::Point2D cameraTopLeft,
             const MainSurface& mainSurface) override;
     private:
+        GraphicsManager* graphicsManager;
+
         using Index = Arca::Index<GridRegion>;
         Spatial::Grid::Octree<Arca::RelicID, Index> octree;
 
@@ -63,8 +65,8 @@ namespace Arca
     template<>
     struct Traits<Atmos::Render::GridRegionCurator>
     {
-        static const ObjectType objectType = ObjectType::Curator;
-        static TypeName TypeName() { return "Atmos::Render::GridRegionCurator"; }
+        static constexpr ObjectType objectType = ObjectType::Curator;
+        static const inline TypeName typeName = "Atmos::Render::GridRegionCurator";
         using HandledCommands = HandledCommands<
             Atmos::Work,
             Atmos::Render::MoveGridRegion,

@@ -213,9 +213,6 @@
     <Filter Include="Source Files\Render\Vulkan\Commands">
       <UniqueIdentifier>{399ed91a-d711-45b2-b132-d91ce07d51b3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Render\Vulkan\Images">
-      <UniqueIdentifier>{ce520213-bb07-4a70-8dcd-149efaaae638}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Render\Vulkan\Images">
       <UniqueIdentifier>{3d47f82b-39ab-43e0-b822-1acc3289b34e}</UniqueIdentifier>
     </Filter>
@@ -627,12 +624,6 @@
     <Filter Include="Source Files\Render\Vulkan\Resource\Stored">
       <UniqueIdentifier>{0a92aaab-3e39-4795-a421-ee9b4d73d45c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Render\Vulkan\Resource\Data">
-      <UniqueIdentifier>{cf4a1d4c-f786-4b93-9353-8c1c6055b9b0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Render\Vulkan\Resource\Data">
-      <UniqueIdentifier>{5974cdd5-e977-4fe4-b646-93caf7674e12}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\World\Signals">
       <UniqueIdentifier>{9418c5de-13f3-42c8-b1ce-ef6d94208fe8}</UniqueIdentifier>
     </Filter>
@@ -641,6 +632,15 @@
     </Filter>
     <Filter Include="Source Files\Arca">
       <UniqueIdentifier>{3ce42729-b2e6-41ef-9fde-d3299e369c5a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Render\Vulkan\Image">
+      <UniqueIdentifier>{ce520213-bb07-4a70-8dcd-149efaaae638}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Render\Vulkan\Synchronization">
+      <UniqueIdentifier>{1497191d-0cf6-4e01-8443-93bb733f25d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Render\Vulkan\Synchronization">
+      <UniqueIdentifier>{773bcb22-7d4f-48c8-b491-fa0a651d1ccd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -944,7 +944,7 @@
     <ClInclude Include="LineCurator.h">
       <Filter>Header Files\Render\Line</Filter>
     </ClInclude>
-    <ClInclude Include="LineRender.h">
+    <ClInclude Include="RenderLine.h">
       <Filter>Header Files\Render\Line</Filter>
     </ClInclude>
     <ClInclude Include="LineWidth.h">
@@ -989,16 +989,16 @@
     <ClInclude Include="VulkanStagedBuffer.h">
       <Filter>Header Files\Render\Vulkan\Memory</Filter>
     </ClInclude>
-    <ClInclude Include="VulkanSingleUseCommandBuffer.h">
+    <ClInclude Include="VulkanCommandBuffer.h">
       <Filter>Header Files\Render\Vulkan\Commands</Filter>
     </ClInclude>
     <ClInclude Include="VulkanCreateImageView.h">
-      <Filter>Header Files\Render\Vulkan\Images</Filter>
+      <Filter>Header Files\Render\Vulkan\Image</Filter>
     </ClInclude>
     <ClInclude Include="GraphicsReconstructionObjects.h">
       <Filter>Header Files\Render</Filter>
     </ClInclude>
-    <ClInclude Include="ImageRender.h">
+    <ClInclude Include="RenderImage.h">
       <Filter>Header Files\Render\Image</Filter>
     </ClInclude>
     <ClInclude Include="DynamicImage.h">
@@ -1048,9 +1048,6 @@
     </ClInclude>
     <ClInclude Include="Image.h">
       <Filter>Header Files\Render\Image</Filter>
-    </ClInclude>
-    <ClInclude Include="VulkanImage.h">
-      <Filter>Header Files\Render\Vulkan\Structures</Filter>
     </ClInclude>
     <ClInclude Include="VulkanQuadData.h">
       <Filter>Header Files\Render\Vulkan\Structures</Filter>
@@ -1124,7 +1121,7 @@
     <ClInclude Include="RenderAlgorithms.h">
       <Filter>Header Files\Render\Algorithms</Filter>
     </ClInclude>
-    <ClInclude Include="RegionRender.h">
+    <ClInclude Include="RenderRegion.h">
       <Filter>Header Files\Render\Region</Filter>
     </ClInclude>
     <ClInclude Include="GridRegion.h">
@@ -1451,7 +1448,7 @@
     <ClInclude Include="AngelScriptBounds.h">
       <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
     </ClInclude>
-    <ClInclude Include="AngelScriptIndex.h">
+    <ClInclude Include="AngelScriptArcaObject.h">
       <Filter>Header Files\Scripting\AngelScript\Types\Arca</Filter>
     </ClInclude>
     <ClInclude Include="AngelScriptImageCore.h">
@@ -1967,7 +1964,7 @@
     <ClInclude Include="MaterialAssetCurator.h">
       <Filter>Header Files\Assets\Material</Filter>
     </ClInclude>
-    <ClInclude Include="TextRender.h">
+    <ClInclude Include="RenderText.h">
       <Filter>Header Files\Render\Text</Filter>
     </ClInclude>
     <ClInclude Include="RenderCore.h">
@@ -2066,9 +2063,6 @@
     <ClInclude Include="VulkanStoredImageResource.h">
       <Filter>Header Files\Render\Vulkan\Resource\Stored</Filter>
     </ClInclude>
-    <ClInclude Include="VulkanImageResourceData.h">
-      <Filter>Header Files\Render\Vulkan\Resource\Data</Filter>
-    </ClInclude>
     <ClInclude Include="VulkanBackingSurfaceResource.h">
       <Filter>Header Files\Render\Vulkan\Resource</Filter>
     </ClInclude>
@@ -2094,6 +2088,33 @@
       <Filter>Header Files\Render\Vulkan</Filter>
     </ClInclude>
     <ClInclude Include="AngelScriptPaths.h">
+      <Filter>Header Files\Scripting\AngelScript</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanCommand.h">
+      <Filter>Header Files\Render\Vulkan\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanImage.h">
+      <Filter>Header Files\Render\Vulkan\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanSynchronization.h">
+      <Filter>Header Files\Render\Vulkan\Synchronization</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanResults.h">
+      <Filter>Header Files\Render\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="UpdateText.h">
+      <Filter>Header Files\Render\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanMemoryPool.h">
+      <Filter>Header Files\Render\Vulkan\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanOperation.h">
+      <Filter>Header Files\Render\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanRenderPass.h">
+      <Filter>Header Files\Render\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptBoxed.h">
       <Filter>Header Files\Scripting\AngelScript</Filter>
     </ClInclude>
   </ItemGroup>
@@ -2314,7 +2335,7 @@
     <ClCompile Include="VulkanCreateImageView.cpp">
       <Filter>Source Files\Render\Vulkan\Images</Filter>
     </ClCompile>
-    <ClCompile Include="VulkanSingleUseCommandBuffer.cpp">
+    <ClCompile Include="VulkanCommandBuffer.cpp">
       <Filter>Source Files\Render\Vulkan\Commands</Filter>
     </ClCompile>
     <ClCompile Include="DynamicImage.cpp">
@@ -2349,9 +2370,6 @@
     </ClCompile>
     <ClCompile Include="BoundsCurator.cpp">
       <Filter>Source Files\Spatial\Arca</Filter>
-    </ClCompile>
-    <ClCompile Include="VulkanImage.cpp">
-      <Filter>Source Files\Render\Vulkan\Structures</Filter>
     </ClCompile>
     <ClCompile Include="VulkanDebug.cpp">
       <Filter>Source Files\Render\Vulkan</Filter>
@@ -3058,9 +3076,6 @@
     <ClCompile Include="VulkanStoredImageResource.cpp">
       <Filter>Source Files\Render\Vulkan\Resource\Stored</Filter>
     </ClCompile>
-    <ClCompile Include="VulkanImageResourceData.cpp">
-      <Filter>Source Files\Render\Vulkan\Resource\Data</Filter>
-    </ClCompile>
     <ClCompile Include="VulkanBackingSurfaceResource.cpp">
       <Filter>Source Files\Render\Vulkan\Resource</Filter>
     </ClCompile>
@@ -3084,6 +3099,24 @@
     </ClCompile>
     <ClCompile Include="AngelScriptPaths.cpp">
       <Filter>Source Files\Scripting\AngelScript</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanImage.cpp">
+      <Filter>Source Files\Render\Vulkan\Images</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanSynchronization.cpp">
+      <Filter>Source Files\Render\Vulkan\Synchronization</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanResults.cpp">
+      <Filter>Source Files\Render\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanMemoryPool.cpp">
+      <Filter>Source Files\Render\Vulkan\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanRenderPass.cpp">
+      <Filter>Source Files\Render\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptPrimitive.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

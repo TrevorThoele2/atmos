@@ -24,8 +24,8 @@ namespace Arca
     template<>
     struct Traits<Atmos::Asset::AudioCurator>
     {
-        static const ObjectType objectType = ObjectType::Curator;
-        static TypeName TypeName() { return "Atmos::Asset::AudioCurator"; }
+        static constexpr ObjectType objectType = ObjectType::Curator;
+        static const inline TypeName typeName = "Atmos::Asset::AudioCurator";
         using HandledCommands = HandledCommands<
             Atmos::Asset::FindByName<Atmos::Asset::Audio>,
             Atmos::Asset::Resource::LoadData<Atmos::Asset::Resource::Audio>>;

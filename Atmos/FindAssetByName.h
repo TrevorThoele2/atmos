@@ -22,8 +22,8 @@ namespace Arca
     template<class T>
     struct Traits<Atmos::Asset::FindByName<T>>
     {
-        static const ObjectType objectType = ObjectType::Command;
-        static TypeName TypeName() { return "Atmos::Asset::FindByName<" + TypeFor<T>().name + ">"; }
+        static constexpr ObjectType objectType = ObjectType::Command;
+        static const inline TypeName typeName = "Atmos::Asset::FindByName<" + TypeFor<T>().name + ">";
         using Result = Index<T>;
     };
 }

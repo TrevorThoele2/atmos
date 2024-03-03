@@ -17,7 +17,7 @@ namespace Arca
     template<>
     struct Traits<Atmos::Audio::SoundFinished>
     {
-        static const ObjectType objectType = ObjectType::Signal;
-        static TypeName TypeName() { return "Atmos::Audio::SoundFinished"; }
+        static constexpr ObjectType objectType = ObjectType::Signal;
+        static const inline TypeName typeName = "Atmos::Audio::SoundFinished";
     };
 }

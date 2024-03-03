@@ -25,7 +25,7 @@ namespace Atmos
         auto window = std::make_unique<Window::SDLWindow>(logger);
         auto input = std::make_unique<Input::SDLManager>(logger);
         auto graphics = std::make_unique<Render::Vulkan::GraphicsManager>(logger);
-        auto text = std::make_unique<Render::SDL::TextManager>(logger);
+        auto text = std::make_unique<Render::SDL::TextManager>();
         auto audio = std::make_unique<Audio::SDL::Manager>(logger);
         auto scripts = std::make_unique<Scripting::Angel::Manager>(logger);
 

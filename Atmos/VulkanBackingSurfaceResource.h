@@ -11,7 +11,7 @@ namespace Atmos::Render::Resource::Vulkan
 {
     using namespace Render::Vulkan;
 
-    class BackingSurface final : public Surface
+    class BackingSurface final
     {
     public:
         BackingSurface(
@@ -28,18 +28,18 @@ namespace Atmos::Render::Resource::Vulkan
 
         void Reinitialize(QueueFamilyIndices queueFamilyIndices);
 
-        void StageRender(const ImageRender& imageRender) override;
-        void StageRender(const LineRender& lineRender) override;
-        void StageRender(const RegionRender& regionRender) override;
-        void StageRender(const TextRender& textRender) override;
+        void Stage(const RenderImage& render);
+        void Stage(const RenderLine& render);
+        void Stage(const RenderRegion& render);
+        void Stage(const RenderText& render);
 
-        void DrawFrame(const Spatial::Point2D& mapPosition, const Color& backgroundColor) override;
+        void DrawFrame(const Spatial::Point2D& mapPosition, const Color& backgroundColor);
 
-        void OnMaterialDestroying(const Arca::Index<Asset::Material>& material) override;
+        void OnMaterialDestroying(const Arca::Index<Asset::Material>& material);
 
         void WaitForIdle() const;
 
-        [[nodiscard]] Spatial::Size2D Size() const override;
+        [[nodiscard]] Spatial::Size2D Size() const;
 
         [[nodiscard]] vk::SurfaceKHR Underlying() const;
     private:

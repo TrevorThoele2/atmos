@@ -137,7 +137,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
 
                 THEN("all images rendered in graphics manager")
                 {
-                    auto& imageRenders = mainSurfaceImplementation->imageRenders;
+                    auto& imageRenders = engine.mockGraphicsManager->imageRenders;
                     REQUIRE(imageRenders.size() == 3);
 
                     for (auto i = 0; i < 3; ++i)
@@ -145,7 +145,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
                         REQUIRE(std::any_of(
                             imageRenders.begin(),
                             imageRenders.end(),
-                            [i, &positions, &scalers, cameraLeft, cameraTop](const ImageRender& entry)
+                            [i, &positions, &scalers, cameraLeft, cameraTop](const RenderImage& entry)
                             {
                                 auto expectedPosition = positions[i];
                                 expectedPosition.x -= cameraLeft;
@@ -169,7 +169,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
 
                 THEN("images were rendered only once")
                 {
-                    auto& imageRenders = mainSurfaceImplementation->imageRenders;
+                    auto& imageRenders = engine.mockGraphicsManager->imageRenders;
                     REQUIRE(imageRenders.size() == 3);
 
                     for (auto i = 0; i < 3; ++i)
@@ -177,7 +177,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
                         REQUIRE(std::any_of(
                             imageRenders.begin(),
                             imageRenders.end(),
-                            [i, &positions, &scalers, cameraLeft, cameraTop](const ImageRender& entry)
+                            [i, &positions, &scalers, cameraLeft, cameraTop](const RenderImage& entry)
                             {
                                 auto expectedPosition = positions[i];
                                 expectedPosition.x -= cameraLeft;
@@ -224,7 +224,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
 
                 THEN("no images rendered in graphics manager")
                 {
-                    auto& imageRenders = mainSurfaceImplementation->imageRenders;
+                    auto& imageRenders = engine.mockGraphicsManager->imageRenders;
                     REQUIRE(imageRenders.empty());
                 }
             }
@@ -263,7 +263,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
 
                 THEN("no images rendered in graphics manager")
                 {
-                    auto& imageRenders = mainSurfaceImplementation->imageRenders;
+                    auto& imageRenders = engine.mockGraphicsManager->imageRenders;
                     REQUIRE(imageRenders.empty());
                 }
             }
@@ -303,7 +303,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
 
                 THEN("all images rendered in graphics manager")
                 {
-                    auto& imageRenders = mainSurfaceImplementation->imageRenders;
+                    auto& imageRenders = engine.mockGraphicsManager->imageRenders;
                     REQUIRE(imageRenders.size() == 3);
 
                     for (auto i = 0; i < 3; ++i)
@@ -311,7 +311,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
                         REQUIRE(std::any_of(
                             imageRenders.begin(),
                             imageRenders.end(),
-                            [i, &positions, &scalers, cameraLeft, cameraTop](const ImageRender& entry)
+                            [i, &positions, &scalers, cameraLeft, cameraTop](const RenderImage& entry)
                             {
                                 auto expectedPosition = positions[i];
                                 expectedPosition.x -= cameraLeft;
@@ -335,7 +335,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
 
                 THEN("images were rendered only once")
                 {
-                    auto& imageRenders = mainSurfaceImplementation->imageRenders;
+                    auto& imageRenders = engine.mockGraphicsManager->imageRenders;
                     REQUIRE(imageRenders.size() == 3);
 
                     for (auto i = 0; i < 3; ++i)
@@ -343,7 +343,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
                         REQUIRE(std::any_of(
                             imageRenders.begin(),
                             imageRenders.end(),
-                            [i, &positions, &scalers, cameraLeft, cameraTop](const ImageRender& entry)
+                            [i, &positions, &scalers, cameraLeft, cameraTop](const RenderImage& entry)
                             {
                                 auto expectedPosition = positions[i];
                                 expectedPosition.x -= cameraLeft;
@@ -390,7 +390,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
 
                 THEN("no images rendered in graphics manager")
                 {
-                    auto& imageRenders = mainSurfaceImplementation->imageRenders;
+                    auto& imageRenders = engine.mockGraphicsManager->imageRenders;
                     REQUIRE(imageRenders.empty());
                 }
             }
@@ -429,7 +429,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
 
                 THEN("no images rendered in graphics manager")
                 {
-                    auto& imageRenders = mainSurfaceImplementation->imageRenders;
+                    auto& imageRenders = engine.mockGraphicsManager->imageRenders;
                     REQUIRE(imageRenders.empty());
                 }
             }
@@ -513,13 +513,13 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering culled images", "[render]
 
             THEN("only images inside the camera are rendered")
             {
-                auto& imageRenders = mainSurfaceImplementation->imageRenders;
+                auto& imageRenders = engine.mockGraphicsManager->imageRenders;
                 REQUIRE(imageRenders.size() == 2);
 
                 REQUIRE(std::any_of(
                     imageRenders.begin(),
                     imageRenders.end(),
-                    [&image1, cameraLeft, cameraTop](const ImageRender& entry)
+                    [&image1, cameraLeft, cameraTop](const RenderImage& entry)
                     {
                         auto expectedPosition = image1->Position();
                         expectedPosition.x -= cameraLeft;
@@ -531,7 +531,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering culled images", "[render]
                 REQUIRE(!std::any_of(
                     imageRenders.begin(),
                     imageRenders.end(),
-                    [&image2, cameraLeft, cameraTop](const ImageRender& entry)
+                    [&image2, cameraLeft, cameraTop](const RenderImage& entry)
                     {
                         auto expectedPosition = image2->Position();
                         expectedPosition.x -= cameraLeft;
@@ -543,7 +543,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering culled images", "[render]
                 REQUIRE(std::any_of(
                     imageRenders.begin(),
                     imageRenders.end(),
-                    [&image3, cameraLeft, cameraTop](const ImageRender& entry)
+                    [&image3, cameraLeft, cameraTop](const RenderImage& entry)
                     {
                         auto expectedPosition = image3->Position();
                         expectedPosition.x -= cameraLeft;
@@ -572,7 +572,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering culled images", "[render]
 
             THEN("moving them outside the camera causes culling")
             {
-                auto& imageRenders = mainSurfaceImplementation->imageRenders;
+                auto& imageRenders = engine.mockGraphicsManager->imageRenders;
                 REQUIRE(imageRenders.empty());
             }
         }
@@ -595,7 +595,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering culled images", "[render]
 
             THEN("moving them outside the camera causes culling")
             {
-                auto& imageRenders = mainSurfaceImplementation->imageRenders;
+                auto& imageRenders = engine.mockGraphicsManager->imageRenders;
                 REQUIRE(imageRenders.empty());
             }
         }
@@ -618,7 +618,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering culled images", "[render]
 
             THEN("moving them outside the camera causes culling")
             {
-                auto& imageRenders = mainSurfaceImplementation->imageRenders;
+                auto& imageRenders = engine.mockGraphicsManager->imageRenders;
                 REQUIRE(imageRenders.empty());
             }
         }
@@ -690,7 +690,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering view sliced images", "[re
 
                 THEN("image rendered with correct view slice")
                 {
-                    auto& imageRenders = mainSurfaceImplementation->imageRenders;
+                    auto& imageRenders = engine.mockGraphicsManager->imageRenders;
                     REQUIRE(imageRenders.size() == 1);
 
                     const auto render = imageRenders[0];
@@ -721,7 +721,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering view sliced images", "[re
 
                 THEN("image rendered with correct view slice")
                 {
-                    auto& imageRenders = mainSurfaceImplementation->imageRenders;
+                    auto& imageRenders = engine.mockGraphicsManager->imageRenders;
                     REQUIRE(imageRenders.size() == 1);
 
                     const auto render = imageRenders[0];

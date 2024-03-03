@@ -2,9 +2,11 @@
 
 #include "MainSurface.h"
 
+#include "RenderLine.h"
+
 namespace Atmos::Render
 {
-    LineCurator::LineCurator(Init init) : ObjectCurator(init)
+    LineCurator::LineCurator(Init init, GraphicsManager& graphicsManager) : ObjectCurator(init), graphicsManager(&graphicsManager)
     {
         Owner().On<Arca::CreatedKnown<Line>>(
             [this](const Arca::CreatedKnown<Line>& signal)
@@ -40,7 +42,7 @@ namespace Atmos::Render
     
     std::vector<Arca::RelicID> LineCurator::Handle(const FindLinesByBox& command) const
     {
-        auto indices = octree.AllWithin(command.box);
+        const auto indices = octree.AllWithin(command.box);
         std::vector<Arca::RelicID> returnValue;
         returnValue.reserve(indices.size());
         for (auto& index : indices)
@@ -53,7 +55,7 @@ namespace Atmos::Render
         Spatial::Point2D cameraTopLeft,
         const MainSurface& mainSurface)
     {
-        auto indices = octree.AllWithin(cameraBox);
+        const auto indices = octree.AllWithin(cameraBox);
 
         for (auto& index : indices)
             StageRender(*index->value, cameraTopLeft, mainSurface);
@@ -75,16 +77,17 @@ namespace Atmos::Render
             for (auto& point : value.points)
                 adjustedPoints.push_back(Spatial::Point2D{ point.x - cameraTopLeft.x, point.y - cameraTopLeft.y });
 
-            const LineRender render
+            const RenderLine render
             {
                 adjustedPoints,
                 z,
                 material,
                 width,
                 color,
-                ToRenderSpace(Spatial::Space::World)
+                ToRenderSpace(Spatial::Space::World),
+                mainSurface.Resource()
             };
-            mainSurface.StageRender(render);
+            graphicsManager->Stage(render);
         }
     }
 

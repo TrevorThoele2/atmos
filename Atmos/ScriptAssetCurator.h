@@ -21,8 +21,8 @@ namespace Arca
     template<>
     struct Traits<Atmos::Asset::ScriptCurator>
     {
-        static const ObjectType objectType = ObjectType::Curator;
-        static TypeName TypeName() { return "Atmos::Asset::ScriptCurator"; }
+        static constexpr ObjectType objectType = ObjectType::Curator;
+        static const inline TypeName typeName = "Atmos::Asset::ScriptCurator";
         using HandledCommands = HandledCommands<
             Atmos::Asset::FindByName<Atmos::Asset::Script>,
             Atmos::Asset::Resource::LoadData<Atmos::Asset::Resource::Script>>;

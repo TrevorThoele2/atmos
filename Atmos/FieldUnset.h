@@ -17,7 +17,7 @@ namespace Arca
     template<>
     struct Traits<Atmos::World::FieldUnset>
     {
-        static const ObjectType objectType = ObjectType::Signal;
-        static TypeName TypeName() { return "Atmos::World::FieldUnset"; }
+        static constexpr ObjectType objectType = ObjectType::Signal;
+        static const inline TypeName typeName = "Atmos::World::FieldUnset";
     };
 }

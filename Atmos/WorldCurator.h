@@ -31,8 +31,8 @@ namespace Arca
     template<>
     struct Traits<Atmos::World::Curator>
     {
-        static const ObjectType objectType = ObjectType::Curator;
-        static TypeName TypeName() { return "Atmos::World::Curator"; }
+        static constexpr ObjectType objectType = ObjectType::Curator;
+        static const inline TypeName typeName = "Atmos::World::Curator";
         using HandledCommands = HandledCommands<
             Atmos::Work,
             Atmos::World::RequestField,

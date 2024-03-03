@@ -37,8 +37,8 @@ namespace Arca
     template<>
     struct Traits<Atmos::Audio::SoundCore>
     {
-        static const ObjectType objectType = ObjectType::Shard;
-        static TypeName TypeName() { return "Atmos::Audio::SoundCore"; }
+        static constexpr ObjectType objectType = ObjectType::Shard;
+        static const inline TypeName typeName = "Atmos::Audio::SoundCore";
     };
 }
 

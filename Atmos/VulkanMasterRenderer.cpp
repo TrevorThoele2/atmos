@@ -1,6 +1,9 @@
 #include "VulkanMasterRenderer.h"
 
-#include "VulkanUtilities.h"
+#include "VulkanRenderPass.h"
+#include "VulkanSynchronization.h"
+#include "VulkanResults.h"
+
 #include "GraphicsError.h"
 #include "Logger.h"
 
@@ -18,11 +21,11 @@ namespace Atmos::Render::Vulkan
         device(device),
         sampler(sampler),
         memoryProperties(memoryProperties),
-        graphicsQueueIndex(graphicsQueueIndex),
         graphicsQueue(graphicsQueue),
         presentQueue(presentQueue),
-        commandBuffers(device, graphicsQueueIndex),
-        universalDataBuffer(0, memoryProperties, device),
+        drawCommandBuffers(device, graphicsQueueIndex, vk::CommandPoolCreateFlagBits::eResetCommandBuffer),
+        memoryPool(0, memoryProperties, device),
+        universalDataBuffer(0, memoryPool, device),
         logger(&logger)
     {
         imageAvailableSemaphores = CreateSemaphores(device, maxFramesInFlight);
@@ -53,39 +56,37 @@ namespace Atmos::Render::Vulkan
         framebuffers = CreateFramebuffers(
             device, swapchainImageViews, renderPass.get(), swapchainExtent);
 
-        imagesInFlight.resize(swapchainImages.size(), nullptr);
+        swapchainImagesInFlight.resize(swapchainImages.size(), nullptr);
+
+        drawCommandBuffers.Reserve(swapchainImages.size());
         
         rendererGroups.clear();
         for (uint32_t i = 0; i < swapchainImages.size(); ++i)
-        {
             rendererGroups.emplace_back(
                 device,
                 graphicsQueue,
                 memoryProperties,
                 renderPass.get(),
                 swapchainExtent);
-        }
         currentRendererGroup = rendererGroups.begin();
-
-        commandBuffers.Reserve(swapchainImages.size());
     }
 
-    void MasterRenderer::StageRender(const ImageRender& imageRender)
+    void MasterRenderer::StageRender(const RenderImage& imageRender)
     {
         currentRendererGroup->quad.StageRender(imageRender);
     }
 
-    void MasterRenderer::StageRender(const LineRender& lineRender)
+    void MasterRenderer::StageRender(const RenderLine& lineRender)
     {
         currentRendererGroup->line.StageRender(lineRender);
     }
 
-    void MasterRenderer::StageRender(const RegionRender& regionRender)
+    void MasterRenderer::StageRender(const RenderRegion& regionRender)
     {
         currentRendererGroup->region.StageRender(regionRender);
     }
 
-    void MasterRenderer::StageRender(const TextRender& textRender)
+    void MasterRenderer::StageRender(const RenderText& textRender)
     {
         currentRendererGroup->quad.StageRender(textRender);
     }
@@ -95,32 +96,32 @@ namespace Atmos::Render::Vulkan
         if (IsError(device.waitForFences(inFlightFences[previousFrame].get(), VK_TRUE, UINT64_MAX)))
             logger->Log("Could not wait for Vulkan fences.");
 
-        auto imageIndex = device.acquireNextImageKHR(
+        const auto swapchainImageIndex = device.acquireNextImageKHR(
             swapchain,
             UINT64_MAX,
             imageAvailableSemaphores[currentFrame].get(),
             nullptr);
-        if (imageIndex.result == vk::Result::eErrorOutOfDateKHR)
+        if (swapchainImageIndex.result == vk::Result::eErrorOutOfDateKHR)
         {
-            logger->Log("Vulkan image is out of date.");
+            logger->Log("Vulkan swapchain image is out of date.");
             onOutOfDate();
             return;
         }
-        else if (IsError(imageIndex.result) && imageIndex.result != vk::Result::eSuboptimalKHR)
+        else if (IsError(swapchainImageIndex.result) && swapchainImageIndex.result != vk::Result::eSuboptimalKHR)
             throw GraphicsError("Could not acquire next image in swapchain.");
 
-        const auto currentSwapchainImage = imageIndex.value;
+        const auto currentSwapchainImage = swapchainImageIndex.value;
 
-        if (imagesInFlight[currentSwapchainImage])
-            if (IsError(device.waitForFences(1, &imagesInFlight[currentSwapchainImage], VK_TRUE, UINT64_MAX)))
+        if (swapchainImagesInFlight[currentSwapchainImage])
+            if (IsError(device.waitForFences(1, &swapchainImagesInFlight[currentSwapchainImage], VK_TRUE, UINT64_MAX)))
                 logger->Log("Could not wait for Vulkan fences.");
-        imagesInFlight[currentSwapchainImage] = inFlightFences[currentFrame].get();
-
-        auto commandBuffer = commandBuffers.Next();
-        for (auto& usedCommandBuffer : usedCommandBuffers)
-            commandBuffers.DoneWith(usedCommandBuffer);
+        swapchainImagesInFlight[currentSwapchainImage] = inFlightFences[currentFrame].get();
+        
+        const auto drawCommandBuffer = drawCommandBuffers.Checkout();
+        for (const auto& usedCommandBuffer : usedCommandBuffers)
+            drawCommandBuffers.Return(usedCommandBuffer);
         usedCommandBuffers.clear();
-        usedCommandBuffers.push_back(commandBuffer);
+        usedCommandBuffers.push_back(drawCommandBuffer);
 
         const auto endFrame = [&]()
         {
@@ -142,28 +143,29 @@ namespace Atmos::Render::Vulkan
                 *currentRendererGroup,
                 universalData,
                 framebuffers[currentSwapchainImage].get(),
-                commandBuffer);
+                drawCommandBuffer);
 
             vk::Semaphore waitSemaphores[] = { imageAvailableSemaphores[currentFrame].get() };
             vk::Semaphore signalSemaphores[] = { renderFinishedSemaphores[currentFrame].get() };
             vk::PipelineStageFlags waitStages[] = { vk::PipelineStageFlagBits::eColorAttachmentOutput };
-            vk::SubmitInfo submitInfo(
+
+            if (IsError(device.resetFences(1, &inFlightFences[currentFrame].get())))
+                logger->Log("Could not reset Vulkan fences.");
+
+            const vk::SubmitInfo submitInfo(
                 1,
                 waitSemaphores,
                 waitStages,
                 1,
-                &commandBuffer,
+                &drawCommandBuffer,
                 1,
                 signalSemaphores);
-
-            if (IsError(device.resetFences(1, &inFlightFences[currentFrame].get())))
-                logger->Log("Could not reset Vulkan fences.");
 
             if (IsError(graphicsQueue.submit(1, &submitInfo, inFlightFences[currentFrame].get())))
                 logger->Log("Could not submit graphics queue.");
 
             const vk::SwapchainKHR swapchains[] = { swapchain };
-            vk::PresentInfoKHR presentInfo(1, signalSemaphores, 1, swapchains, &imageIndex.value, nullptr);
+            const vk::PresentInfoKHR presentInfo(1, signalSemaphores, 1, swapchains, &swapchainImageIndex.value, nullptr);
             const auto presentResult = presentQueue.presentKHR(&presentInfo);
             if (presentResult == vk::Result::eErrorOutOfDateKHR)
             {
@@ -261,69 +263,51 @@ namespace Atmos::Render::Vulkan
         const vk::CommandBufferBeginInfo beginInfo({}, nullptr);
         commandBuffer.begin(beginInfo);
 
-        const vk::ClearValue clearValue(vk::ClearColorValue(std::array<float, 4> { 0.0f, 0.0f, 0.0f, 1.0f }));
-        const vk::RenderPassBeginInfo renderPassBeginInfo(
-            renderPass.get(),
-            framebuffer,
-            vk::Rect2D({ 0, 0 }, swapchainExtent),
-            1,
-            &clearValue);
-        commandBuffer.beginRenderPass(renderPassBeginInfo, vk::SubpassContents::eInline);
-
         using Rasters = std::vector<std::shared_ptr<Raster>>;
-        Rasters startedRasters;
-        for (auto& renderer : rendererGroup.AsIterable())
+        Rasters rasters;
+        for (const auto& renderer : rendererGroup.AsIterable())
             if (renderer->RenderCount() > 0)
-                startedRasters.push_back(
-                    renderer->Start(commandBuffer, commandBuffers.Pool(), universalDataBuffer));
-
-        const auto end = [&commandBuffer]()
-        {
-            commandBuffer.endRenderPass();
-
-            commandBuffer.end();
-        };
-
+                rasters.push_back(renderer->Start(commandBuffer, universalDataBuffer));
+        
         try
         {
-            auto availableRasters = startedRasters;
+            auto availableRasters = rasters;
+            std::vector<Raster::Pass> rasterPasses;
             while (true)
             {
-                Rasters::iterator nextRaster;
-                for (auto checkRaster = startedRasters.begin(); checkRaster != startedRasters.end(); ++checkRaster)
-                {
-                    if (!(*checkRaster)->IsDone())
-                    {
-                        nextRaster = checkRaster;
-                        break;
-                    }
-                }
-
-                for(auto checkRaster = availableRasters.begin(); checkRaster != availableRasters.end();)
-                {
-                    if ((*checkRaster)->IsDone())
-                        checkRaster = availableRasters.erase(checkRaster);
-                    else 
-                    {
-                        if ((*checkRaster)->NextLayer() < (*nextRaster)->NextLayer())
-                            nextRaster = checkRaster;
-                        ++checkRaster;
-                    }
-                }
-
+                std::erase_if(availableRasters, [](auto raster) { return raster->IsDone(); });
                 if (availableRasters.empty())
                     break;
 
-                (*nextRaster)->DrawNextLayer();
+                const auto raster = *std::ranges::min_element(availableRasters, [](auto left, auto right) { return left->NextLayer() < right->NextLayer(); });
+                const auto nextRasterPasses = raster->NextPasses();
+                rasterPasses.insert(rasterPasses.end(), nextRasterPasses.begin(), nextRasterPasses.end());
             }
+
+            auto recorder = CommandRecorder(commandBuffer);
+            for (auto& rasterPass : rasterPasses)
+                recorder(rasterPass.writeData);
+
+            const auto clearValue = vk::ClearValue(vk::ClearColorValue(std::array{ 0.0f, 0.0f, 0.0f, 1.0f }));
+            RenderPass(
+                vk::RenderPassBeginInfo(renderPass.get(), framebuffer, vk::Rect2D({ 0, 0 }, swapchainExtent), 1, &clearValue),
+                vk::SubpassContents::eInline,
+                commandBuffer,
+                [&rasterPasses, commandBuffer]
+                {
+                    auto recorder = CommandRecorder(commandBuffer);
+                    for (auto& rasterPass : rasterPasses)
+                        recorder(rasterPass.draw);
+                });
         }
         catch(...)
         {
-            end();
+            commandBuffer.end();
+
             throw;
         }
 
-        end();
+        commandBuffer.end();
     }
 
     void MasterRenderer::ClearImage(vk::Image image, std::array<float, 4> color, vk::CommandBuffer commandBuffer)
@@ -337,7 +321,7 @@ namespace Atmos::Render::Vulkan
     vk::UniqueRenderPass MasterRenderer::CreateRenderPass(
         vk::Device device, vk::Format swapchainImageFormat)
     {
-        vk::AttachmentDescription colorAttachment(
+        const vk::AttachmentDescription colorAttachment(
             {},
             swapchainImageFormat,
             vk::SampleCountFlagBits::e1,
@@ -348,9 +332,9 @@ namespace Atmos::Render::Vulkan
             vk::ImageLayout::eUndefined,
             vk::ImageLayout::ePresentSrcKHR);
 
-        vk::AttachmentReference colorAttachmentReference(0, vk::ImageLayout::eColorAttachmentOptimal);
+        const vk::AttachmentReference colorAttachmentReference(0, vk::ImageLayout::eColorAttachmentOptimal);
 
-        vk::SubpassDescription subpass(
+        const vk::SubpassDescription subpass(
             {},
             vk::PipelineBindPoint::eGraphics,
             {},
@@ -358,7 +342,7 @@ namespace Atmos::Render::Vulkan
             1,
             &colorAttachmentReference);
 
-        vk::SubpassDependency dependency(
+        const vk::SubpassDependency dependency(
             VK_SUBPASS_EXTERNAL,
             0,
             vk::PipelineStageFlagBits::eColorAttachmentOutput,
@@ -399,10 +383,9 @@ namespace Atmos::Render::Vulkan
     std::vector<vk::UniqueSemaphore> MasterRenderer::CreateSemaphores(vk::Device device, size_t count)
     {
         std::vector<vk::UniqueSemaphore> returnValue;
-
-        const vk::SemaphoreCreateInfo createInfo;
+        
         for (size_t i = 0; i < count; ++i)
-            returnValue.push_back(device.createSemaphoreUnique(createInfo));
+            returnValue.push_back(CreateSemaphore(device, {}));
 
         return returnValue;
     }
@@ -410,10 +393,9 @@ namespace Atmos::Render::Vulkan
     std::vector<vk::UniqueFence> MasterRenderer::CreateFences(vk::Device device, size_t count)
     {
         std::vector<vk::UniqueFence> returnValue;
-
-        const vk::FenceCreateInfo createInfo(vk::FenceCreateFlagBits::eSignaled);
+        
         for (size_t i = 0; i < count; ++i)
-            returnValue.push_back(device.createFenceUnique(createInfo));
+            returnValue.push_back(CreateFence(device, vk::FenceCreateFlagBits::eSignaled));
 
         return returnValue;
     }

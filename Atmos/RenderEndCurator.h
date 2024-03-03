@@ -20,8 +20,8 @@ namespace Arca
     template<>
     struct Traits<Atmos::Render::EndCurator>
     {
-        static const ObjectType objectType = ObjectType::Curator;
-        static TypeName TypeName() { return "Atmos::Render::EndCurator"; }
+        static constexpr ObjectType objectType = ObjectType::Curator;
+        static const inline TypeName typeName = "Atmos::Render::EndCurator";
         using HandledCommands = HandledCommands<
             Atmos::Work>;
     };

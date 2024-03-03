@@ -46,9 +46,9 @@ namespace Atmos::Window
         return (flags & SDL_WINDOW_INPUT_FOCUS) != 0;
     }
 
-    void SDLWindow::Suspend(const Time::Duration<>& time)
+    void SDLWindow::Suspend(const Time::Milliseconds& time)
     {
-        const auto sleepFor = static_cast<DWORD>(std::chrono::duration_cast<Time::Milliseconds>(time).count());
+        const auto sleepFor = static_cast<DWORD>(time.count());
         SDL_Delay(sleepFor);
     }
 

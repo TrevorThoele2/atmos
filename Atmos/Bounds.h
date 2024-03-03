@@ -46,8 +46,8 @@ namespace Arca
     template<>
     struct Traits<Atmos::Spatial::Bounds>
     {
-        static const ObjectType objectType = ObjectType::Shard;
-        static TypeName TypeName() { return "Atmos::Spatial::Bounds"; }
+        static constexpr ObjectType objectType = ObjectType::Shard;
+        static const inline TypeName typeName = "Atmos::Spatial::Bounds";
     };
 }
 

@@ -2,31 +2,6 @@
 
 namespace Atmos::Render
 {
-    void Surface::StageRender(const ImageRender& imageRender) const
-    {
-        Resource()->StageRender(imageRender);
-    }
-
-    void Surface::StageRender(const LineRender& lineRender) const
-    {
-        Resource()->StageRender(lineRender);
-    }
-
-    void Surface::StageRender(const RegionRender& regionRender) const
-    {
-        Resource()->StageRender(regionRender);
-    }
-
-    void Surface::StageRender(const TextRender& textRender) const
-    {
-        Resource()->StageRender(textRender);
-    }
-
-    void Surface::DrawFrame(const Spatial::Point2D& mapPosition) const
-    {
-        Resource()->DrawFrame(mapPosition, core->backgroundColor);
-    }
-
     Spatial::Size2D Surface::Size() const
     {
         return Resource()->Size();

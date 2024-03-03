@@ -45,12 +45,19 @@ namespace Atmos::Scripting::Angel
             static_assert(ParametersT::count == 1, "fromArca must take a single parameter.");
 
             using Argument = typename SterilizedItem<typename ParametersT::template Parameter<0>::Type>::Type;
-            using ArgumentTypeRegistration = Registration<Argument>;
+            using ArgumentTypeRegistration = Registration<std::remove_pointer_t<std::remove_const_t<Argument>>>;
             const auto funcDefNamespace = ArgumentTypeRegistration::ContainingNamespace();
             const auto funcDef =
                 Chroma::ReplaceString(
                     Chroma::ReplaceString(
-                        Chroma::ReplaceString("On" + ArgumentTypeRegistration::Name(), "<", ""), ">", ""), "::", "");
+                        Chroma::ReplaceString(
+                            "On" + ArgumentTypeRegistration::Name(),
+                            "<",
+                            ""),
+                        ">",
+                        ""),
+                    "::",
+                    "");
             GlobalRegistration(funcDefNamespace)
                 .Funcdef(
                     "void",

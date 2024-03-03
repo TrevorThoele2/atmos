@@ -1,48 +1,35 @@
 #pragma once
 
 #include "VulkanIncludes.h"
+#include "VulkanCommand.h"
+#include "VulkanCombinedImageSamplerDescriptor.h"
+#include "VulkanStoredResource.h"
+
+#include "Size2D.h"
 
 namespace Atmos::Render::Vulkan
 {
-    class Image
+    class ImageData final
     {
     public:
-        vk::UniqueImage value;
-        vk::UniqueDeviceMemory memory;
-        vk::Format format;
-        vk::ImageLayout layout;
-
-        Image(
-            vk::Format format,
-            vk::ImageUsageFlags usage,
-            vk::Extent3D extent,
-            uint32_t layerCount,
-            vk::ImageLayout initialLayout,
-            vk::Device device,
-            vk::PhysicalDeviceMemoryProperties memoryProperties);
-
-        void TransitionLayout(
-            vk::ImageLayout newLayout,
-            uint32_t layerOffset,
-            uint32_t layerCount,
-            vk::Device device,
-            vk::CommandPool commandPool,
-            vk::Queue graphicsQueue);
-
-        void Copy(
-            Image& destination,
-            vk::Offset3D sourceOffset,
-            uint32_t sourceLayerOffset,
-            uint32_t sourceLayerCount,
-            vk::Offset3D destinationOffset,
-            uint32_t destinationLayerOffset,
-            uint32_t destinationLayerCount,
-            vk::Extent3D extent,
-            vk::Device device,
-            vk::CommandPool commandPool,
-            vk::Queue queue);
-    private:
-        static vk::AccessFlags AccessFlagsFor(vk::ImageLayout layout);
-        static vk::PipelineStageFlags PipelineStageFlagsFor(vk::ImageLayout);
+        Spatial::Size2D size;
+        vk::ImageView imageView;
+        vk::ImageLayout imageLayout;
+        vk::Image image;
+        CombinedImageSamplerDescriptor descriptor;
+        StoredResource* storedResource;
+    public:
+        ImageData(
+            Spatial::Size2D size,
+            vk::Image image,
+            vk::ImageView imageView,
+            vk::ImageLayout imageLayout,
+            CombinedImageSamplerDescriptor descriptor,
+            StoredResource& storedResource);
     };
+
+    [[nodiscard]] Command TransitionLayout(vk::Image image, vk::ImageLayout from, vk::ImageLayout to, uint32_t layerOffset, uint32_t layerCount);
+    [[nodiscard]] Command TransitionLayout(ImageData& imageData, vk::ImageLayout to, uint32_t layerOffset, uint32_t layerCount);
+    [[nodiscard]] vk::AccessFlags AccessFlags(vk::ImageLayout layout);
+    [[nodiscard]] vk::PipelineStageFlags PipelineStageFlags(vk::ImageLayout);
 }

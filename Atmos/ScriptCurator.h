@@ -52,8 +52,8 @@ namespace Arca
     template<>
     struct Traits<Atmos::Scripting::Curator>
     {
-        static const ObjectType objectType = ObjectType::Curator;
-        static TypeName TypeName() { return "Atmos::Scripting::Curator"; }
+        static constexpr ObjectType objectType = ObjectType::Curator;
+        static const inline TypeName typeName = "Atmos::Scripting::Curator";
         using HandledCommands = HandledCommands<
             Atmos::Work,
             Atmos::Scripting::Suspend,

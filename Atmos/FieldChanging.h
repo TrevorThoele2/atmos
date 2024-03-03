@@ -13,7 +13,7 @@ namespace Arca
     template<>
     struct Traits<Atmos::World::FieldChanging>
     {
-        static const ObjectType objectType = ObjectType::Signal;
-        static TypeName TypeName() { return "Atmos::World::FieldChanging"; }
+        static constexpr ObjectType objectType = ObjectType::Signal;
+        static const inline TypeName typeName = "Atmos::World::FieldChanging";
     };
 }

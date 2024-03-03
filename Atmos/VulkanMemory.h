@@ -4,6 +4,24 @@
 
 namespace Atmos::Render::Vulkan
 {
-    [[nodiscard]] uint32_t FindSuitableMemoryType(
-        uint32_t typeFilter, vk::MemoryPropertyFlags flags, vk::PhysicalDeviceMemoryProperties memoryProperties);
+    class MemoryPool;
+
+    class UniqueMemory final
+    {
+    public:
+        UniqueMemory();
+        UniqueMemory(size_t allocation, size_t reservation, MemoryPool& pool);
+        UniqueMemory(const UniqueMemory& arg) = delete;
+        UniqueMemory(UniqueMemory&& arg) noexcept;
+
+        ~UniqueMemory();
+
+        UniqueMemory& operator=(UniqueMemory&& arg) noexcept;
+        
+        void PushBytes(const void* bytes, vk::DeviceSize offset, size_t size);
+    private:
+        size_t allocation;
+        size_t reservation;
+        MemoryPool* pool;
+    };
 }

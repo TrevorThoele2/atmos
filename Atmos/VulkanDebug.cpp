@@ -1,6 +1,6 @@
 #include "VulkanDebug.h"
 
-#include "VulkanUtilities.h"
+#include "VulkanResults.h"
 
 #include "GraphicsError.h"
 #include "Logger.h"

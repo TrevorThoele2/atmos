@@ -16,7 +16,7 @@ namespace Atmos::Window
         return true;
     }
 
-    void NullWindow::Suspend(const Time::Duration<>& time)
+    void NullWindow::Suspend(const Time::Milliseconds& time)
     {}
 
     bool NullWindow::OnStartFrame()

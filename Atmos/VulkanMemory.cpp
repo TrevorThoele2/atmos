@@ -1,16 +1,43 @@
 #include "VulkanMemory.h"
 
-#include "GraphicsError.h"
+#include "VulkanMemoryPool.h"
 
 namespace Atmos::Render::Vulkan
 {
-    uint32_t FindSuitableMemoryType(
-        uint32_t typeFilter, vk::MemoryPropertyFlags flags, vk::PhysicalDeviceMemoryProperties memoryProperties)
-    {
-        for (uint32_t i = 0; i < memoryProperties.memoryTypeCount; ++i)
-            if (typeFilter & (1 << i) && (memoryProperties.memoryTypes[i].propertyFlags & flags) == flags)
-                return i;
+    UniqueMemory::UniqueMemory() : allocation(0), reservation(0), pool(nullptr)
+    {}
 
-        throw GraphicsError("Could not find suitable memory type.");
+    UniqueMemory::UniqueMemory(size_t allocation, size_t reservation, MemoryPool& pool) :
+        allocation(allocation), reservation(reservation), pool(&pool)
+    {}
+
+    UniqueMemory::UniqueMemory(UniqueMemory&& arg) noexcept :
+        allocation(arg.allocation), reservation(arg.reservation), pool(arg.pool)
+    {
+        arg.allocation = 0;
+        arg.reservation = 0;
+        arg.pool = nullptr;
+    }
+
+    UniqueMemory::~UniqueMemory()
+    {
+        if (pool)
+            pool->Return(allocation, reservation);
+    }
+
+    UniqueMemory& UniqueMemory::operator=(UniqueMemory&& arg) noexcept
+    {
+        allocation = arg.allocation;
+        reservation = arg.reservation;
+        pool = arg.pool;
+        arg.allocation = 0;
+        arg.reservation = 0;
+        arg.pool = nullptr;
+        return *this;
+    }
+    
+    void UniqueMemory::PushBytes(const void* bytes, vk::DeviceSize offset, size_t size)
+    {
+        pool->PushBytes(allocation, reservation, bytes, offset, size);
     }
 }

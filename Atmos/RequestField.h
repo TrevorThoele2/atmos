@@ -16,7 +16,7 @@ namespace Arca
     template<>
     struct Traits<Atmos::World::RequestField>
     {
-        static const ObjectType objectType = ObjectType::Command;
-        static TypeName TypeName() { return "Atmos::World::RequestField"; }
+        static constexpr ObjectType objectType = ObjectType::Command;
+        static const inline TypeName typeName = "Atmos::World::RequestField";
     };
 }

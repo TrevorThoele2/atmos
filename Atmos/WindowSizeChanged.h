@@ -17,7 +17,7 @@ namespace Arca
     template<>
     struct Traits<Atmos::Window::SizeChanged>
     {
-        static const ObjectType objectType = ObjectType::Signal;
-        static TypeName TypeName() { return "Atmos::Window::SizeChanged"; }
+        static constexpr ObjectType objectType = ObjectType::Signal;
+        static const inline TypeName typeName = "Atmos::Window::SizeChanged";
     };
 }

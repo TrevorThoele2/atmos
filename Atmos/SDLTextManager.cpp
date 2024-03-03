@@ -2,10 +2,11 @@
 
 #include "GraphicsError.h"
 #include "SDLText.h"
+#include "MathUtility.h"
 
 namespace Atmos::Render::SDL
 {
-    TextManager::TextManager(Logging::Logger& logger)
+    TextManager::TextManager()
     {
 		const auto initResult = TTF_Init();
 		if (initResult == -1)
@@ -34,7 +35,12 @@ namespace Atmos::Render::SDL
             SetStyle(*sdlFont, Style(bold, italics));
 
             const auto useColor = ColorFrom(Color{ 255, 255, 255, 255 });
-            const auto useWrapWidth = static_cast<Uint32>(wrapWidth);
+            const auto useWrapWidth = static_cast<Uint32>(ConvertRange(
+                static_cast<double>(wrapWidth),
+                static_cast<double>(std::numeric_limits<float>::lowest()),
+                static_cast<double>(std::numeric_limits<float>::max()),
+                static_cast<double>(std::numeric_limits<Uint32>::lowest()),
+                static_cast<double>(std::numeric_limits<Uint32>::max())));
             const auto strings = Split(string);
             const auto surface = Surface(*sdlFont, strings, useColor, useWrapWidth);
             auto textData = ExtractData(*surface);
@@ -79,7 +85,7 @@ namespace Atmos::Render::SDL
             firstSurface->format->Gmask,
             firstSurface->format->Bmask,
             firstSurface->format->Amask);
-        for(auto& copyFrom : surfaces)
+        for(const auto& copyFrom : surfaces)
         {
             SDL_Rect destinationRectangle{ 0, currentHeight, 0, 0 };
             SDL_BlitSurface(copyFrom, nullptr, surface, &destinationRectangle);
@@ -95,19 +101,13 @@ namespace Atmos::Render::SDL
         SDL_LockSurface(&surface);
 
         const auto pixelCount = surface.w * surface.h;
+        const auto byteCount = pixelCount * surface.format->BytesPerPixel;
 
         Buffer buffer;
-        buffer.resize(pixelCount * surface.format->BytesPerPixel);
+        buffer.resize(byteCount);
 
         const auto pixels = static_cast<char*>(surface.pixels);
-        for (auto currentPixel = 0; currentPixel < pixelCount; ++currentPixel)
-        {
-            for (auto byte = 0; byte < surface.format->BytesPerPixel; ++byte)
-            {
-                const auto currentPixelBytes = surface.format->BytesPerPixel * currentPixel + byte;
-                buffer[currentPixelBytes] = pixels[currentPixelBytes];
-            }
-        }
+        memcpy(&buffer[0], pixels, byteCount);
 
         SDL_UnlockSurface(&surface);
 

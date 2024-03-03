@@ -9,7 +9,7 @@
 
 namespace Atmos::Render
 {
-    Curator::Curator(Init init) : Arca::Curator(init)
+    Curator::Curator(Init init, GraphicsManager& graphicsManager) : Arca::Curator(init), graphicsManager(&graphicsManager)
     {}
 
     void Curator::Handle(const Work&)
@@ -22,14 +22,14 @@ namespace Atmos::Render
         };
 
         const auto mainSurface = Owner().Find<MainSurface>();
-        const auto mutableMainPointer = MutablePointer().Of(mainSurface);
+        const auto backgroundColor = mainSurface->core->backgroundColor;
 
-        mutableMainPointer->DrawFrame(mapPosition);
+        graphicsManager->DrawFrame(*mainSurface->Resource(), mapPosition, backgroundColor, MutablePointer().Of<Diagnostics::Statistics>()->misc);
     }
 
     void Curator::Handle(const ChangeColor& command)
     {
-        auto renderCore = MutablePointer().Of<RenderCore>(command.id);
+        const auto renderCore = MutablePointer().Of<RenderCore>(command.id);
         if (renderCore)
         {
             const auto previous = renderCore->color;

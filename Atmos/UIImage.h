@@ -33,8 +33,8 @@ namespace Arca
     template<>
     struct Traits<Atmos::UI::Image>
     {
-        static const ObjectType objectType = ObjectType::Relic;
-        static TypeName TypeName() { return "Atmos::UI::Image"; }
+        static constexpr ObjectType objectType = ObjectType::Relic;
+        static const inline TypeName typeName = "Atmos::UI::Image";
     };
 }
 

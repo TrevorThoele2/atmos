@@ -33,9 +33,9 @@ namespace Arca
     template<>
     struct Traits<Atmos::Initialization::Information>
     {
-        static const ObjectType objectType = ObjectType::Relic;
-        static TypeName TypeName() { return "Atmos::Initialization::Information"; }
-        static const Locality locality = Locality::Global;
+        static constexpr ObjectType objectType = ObjectType::Relic;
+        static const inline TypeName typeName = "Atmos::Initialization::Information";
+        static constexpr Locality locality = Locality::Global;
     };
 }
 

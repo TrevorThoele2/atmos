@@ -17,7 +17,7 @@ namespace Arca
     template<>
     struct Traits<Atmos::Input::TextEntered>
     {
-        static const ObjectType objectType = ObjectType::Signal;
-        static TypeName TypeName() { return "Atmos::Input::TextEntered"; }
+        static constexpr ObjectType objectType = ObjectType::Signal;
+        static const inline TypeName typeName = "Atmos::Input::TextEntered";
     };
 }

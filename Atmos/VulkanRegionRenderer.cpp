@@ -1,5 +1,7 @@
 #include "VulkanRegionRenderer.h"
 
+#include "VulkanCommandBuffer.h"
+
 namespace Atmos::Render::Vulkan
 {
     RegionRenderer::RegionRenderer(
@@ -9,8 +11,9 @@ namespace Atmos::Render::Vulkan
         vk::RenderPass renderPass,
         vk::Extent2D swapchainExtent)
         :
-        vertexBuffer(vertexStride * sizeof(Vertex), device, memoryProperties, vk::BufferUsageFlagBits::eVertexBuffer),
-        indexBuffer(indexStride * sizeof(Index), device, memoryProperties, vk::BufferUsageFlagBits::eIndexBuffer),
+        memoryPool(0, memoryProperties, device),
+        vertexBuffer(vertexStride * sizeof(Vertex), device, memoryPool, vk::BufferUsageFlagBits::eVertexBuffer),
+        indexBuffer(indexStride * sizeof(Index), device, memoryPool, vk::BufferUsageFlagBits::eIndexBuffer),
         descriptorSetPool(
             {
                 DescriptorSetPool::Definition
@@ -39,20 +42,20 @@ namespace Atmos::Render::Vulkan
         device(device)
     {}
 
-    void RegionRenderer::StageRender(const RegionRender& regionRender)
+    void RegionRenderer::StageRender(const RenderRegion& regionRender)
     {
         stagedRegionRenders.push_back(regionRender);
     }
-
+    
     std::unique_ptr<Raster> RegionRenderer::Start(
-        vk::CommandBuffer commandBuffer,
-        vk::CommandPool commandPool,
+        vk::CommandBuffer drawCommandBuffer,
         const UniversalDataBuffer& universalDataBuffer)
     {
-        if (stagedRegionRenders.empty())
+        const auto totalRegionCount = stagedRegionRenders.size();
+        if (totalRegionCount == 0)
             return {};
-
-        auto raster = std::make_unique<Raster>(commandBuffer, commandPool, *this);
+        
+        auto raster = std::make_unique<Raster>(*this);
 
         descriptorSetPool.Reset();
         descriptorSetPool.Reserve(1);
@@ -60,7 +63,7 @@ namespace Atmos::Render::Vulkan
 
         universalDataBuffer.Update(raster->setupDescriptorSet);
 
-        for (auto stagedRegionRender : stagedRegionRenders)
+        for (const auto& stagedRegionRender : stagedRegionRenders)
         {
             mappedConduits.Add(stagedRegionRender.material);
             AddToRaster(stagedRegionRender, *raster);
@@ -85,23 +88,15 @@ namespace Atmos::Render::Vulkan
         vertices(vertices), indices(indices)
     {}
 
-    RegionRenderer::Raster::Raster(
-        vk::CommandBuffer commandBuffer,
-        vk::CommandPool commandPool,
-        RegionRenderer& renderer)
-        :
-        commandBuffer(commandBuffer),
-        commandPool(commandPool),
-        renderer(&renderer)
+    RegionRenderer::Raster::Raster(RegionRenderer& renderer) : renderer(&renderer)
     {}
-
-    void RegionRenderer::Raster::DrawNextLayer()
+    
+    auto RegionRenderer::Raster::NextPasses() -> std::vector<Pass>
     {
-        auto& layer = currentLayer->second;
-
-        Draw(layer);
-
+        const auto& layer = currentLayer->second;
+        auto passes = NextPasses(layer);
         ++currentLayer;
+        return passes;
     }
 
     bool RegionRenderer::Raster::IsDone() const
@@ -113,79 +108,101 @@ namespace Atmos::Render::Vulkan
     {
         return currentLayer->first;
     }
-
-    void RegionRenderer::Raster::Draw(Layer& layer)
+    
+    auto RegionRenderer::Raster::NextPasses(const Layer& layer) -> std::vector<Pass>
     {
-        vk::Buffer vertexBuffers[] = { renderer->vertexBuffer.destination.value.get() };
-        vk::DeviceSize offsets[] = { 0 };
-        commandBuffer.bindVertexBuffers(0, 1, vertexBuffers, offsets);
-
-        commandBuffer.bindIndexBuffer(renderer->indexBuffer.destination.value.get(), 0, vk::IndexType::eUint16);
-
+        std::vector<Pass> passes;
         for (auto& materialGroup : layer.materialGroups)
         {
             const auto conduitGroup = renderer->mappedConduits.For(materialGroup.first);
-            if (!conduitGroup)
-                return;
-
-            WriteToBuffers(materialGroup.second, *conduitGroup);
+            if (conduitGroup)
+            {
+                const auto nextPasses = NextPasses(materialGroup.second, *conduitGroup);
+                passes.insert(passes.end(), nextPasses.begin(), nextPasses.end());
+            }
         }
+        return passes;
     }
 
-    void RegionRenderer::Raster::WriteToBuffers(
-        const Layer::MaterialGroup& materialGroup, MappedConduits::Group& conduitGroup)
+    auto RegionRenderer::Raster::NextPasses(const Layer::MaterialGroup& materialGroup, MappedConduits::Group& conduitGroup) -> std::vector<Pass>
     {
+        std::vector<Pass> passes;
         for (auto& conduit : conduitGroup)
         {
-            conduit.Bind(commandBuffer);
-            commandBuffer.bindDescriptorSets(
-                vk::PipelineBindPoint::eGraphics,
-                renderer->mappedConduits.PipelineLayout(),
-                0,
-                1,
-                &setupDescriptorSet,
-                0,
-                nullptr);
-            WriteToBuffers(materialGroup.values);
+            const auto startIndexCount = totalIndexCount;
+            const auto regions = materialGroup.values;
+            std::uint32_t currentIndexCount = 0;
+            for (auto& region : regions)
+                currentIndexCount += region.indices.size();
+            passes.emplace_back(WriteData(materialGroup.values, startIndexCount), Draw(startIndexCount, currentIndexCount, conduit));
+            totalIndexCount += currentIndexCount;
         }
+        return passes;
     }
 
-    void RegionRenderer::Raster::WriteToBuffers(const std::vector<Region>& regions)
+    Command RegionRenderer::Raster::WriteData(const std::vector<Region>& regions, std::uint32_t startIndexCount)
     {
-        const auto startVertexCount = vertexCount;
-        const auto startIndexCount = indexCount;
+        const auto startVertexCount = totalVertexCount;
 
-        std::vector<Vertex> drawnVertices;
-        std::vector<Index> drawnIndices;
+        std::vector<Vertex> verticesToDraw;
+        std::vector<Index> indicesToDraw;
         for (auto& region : regions)
         {
-            drawnVertices.insert(drawnVertices.end(), region.vertices.begin(), region.vertices.end());
-            vertexCount += region.vertices.size();
+            verticesToDraw.insert(verticesToDraw.end(), region.vertices.begin(), region.vertices.end());
+            totalVertexCount += region.vertices.size();
 
             const auto startMaxIndex = maxIndex;
-            drawnIndices.reserve(drawnIndices.size() + region.indices.size());
+            indicesToDraw.reserve(indicesToDraw.size() + region.indices.size());
             for (auto& index : region.indices)
             {
                 const auto useIndex = startMaxIndex + index;
-                drawnIndices.push_back(useIndex);
+                indicesToDraw.push_back(useIndex);
                 maxIndex = std::max(maxIndex, Index(useIndex + 1));
             }
-            indexCount += region.indices.size();
         }
 
         const auto vertexOffset = vk::DeviceSize(startVertexCount) * sizeof Vertex;
-        const auto vertexSize = drawnVertices.size() * sizeof Vertex;
+        const auto vertexSize = verticesToDraw.size() * sizeof Vertex;
         const auto indexOffset = vk::DeviceSize(startIndexCount) * sizeof Index;
-        const auto indexSize = drawnIndices.size() * sizeof Index;
+        const auto indexSize = indicesToDraw.size() * sizeof Index;
 
-        renderer->vertexBuffer.PushSourceBytes(drawnVertices.data(), vertexOffset, vertexSize);
-        renderer->vertexBuffer.CopyFromSourceToDestination(vertexOffset, vertexSize, commandPool, renderer->graphicsQueue);
-        renderer->indexBuffer.PushSourceBytes(drawnIndices.data(), indexOffset, indexSize);
-        renderer->indexBuffer.CopyFromSourceToDestination(indexOffset, indexSize, commandPool, renderer->graphicsQueue);
-        commandBuffer.drawIndexed(drawnIndices.size(), 1, startIndexCount, 0, 0);
+        renderer->vertexBuffer.PushSourceBytes(verticesToDraw.data(), vertexOffset, vertexSize);
+        renderer->indexBuffer.PushSourceBytes(indicesToDraw.data(), indexOffset, indexSize);
+
+        return [this, vertexOffset, vertexSize, indexOffset, indexSize](CommandRecorder record)
+        {
+            record(renderer->vertexBuffer.CopyFromSourceToDestination(vertexOffset, vertexSize));
+            record(renderer->indexBuffer.CopyFromSourceToDestination(indexOffset, indexSize));
+        };
     }
 
-    void RegionRenderer::AddToRaster(const RegionRender& regionRender, Raster& raster)
+    Command RegionRenderer::Raster::Draw(std::uint32_t startIndexCount, std::uint32_t indexCount, Conduit& conduit)
+    {
+        return [this, startIndexCount, indexCount, &conduit](CommandRecorder record)
+        {
+            record(conduit.Bind());
+            record([this, startIndexCount, indexCount, &conduit](vk::CommandBuffer commandBuffer)
+                {
+                    const vk::Buffer vertexBuffers[] = { renderer->vertexBuffer.destination.Value() };
+                    constexpr vk::DeviceSize offsets[] = { 0 };
+                    commandBuffer.bindVertexBuffers(0, 1, vertexBuffers, offsets);
+                    commandBuffer.bindIndexBuffer(renderer->indexBuffer.destination.Value(), 0, vk::IndexType::eUint16);
+
+                    commandBuffer.bindDescriptorSets(
+                        vk::PipelineBindPoint::eGraphics,
+                        renderer->mappedConduits.PipelineLayout(),
+                        0,
+                        1,
+                        &setupDescriptorSet,
+                        0,
+                        nullptr);
+
+                    commandBuffer.drawIndexed(indexCount, 1, startIndexCount, 0, 0);
+                });
+        };
+    }
+
+    void RegionRenderer::AddToRaster(const RenderRegion& regionRender, Raster& raster)
     {
         if (!regionRender.mesh.vertices.empty() && !regionRender.mesh.indices.empty())
         {

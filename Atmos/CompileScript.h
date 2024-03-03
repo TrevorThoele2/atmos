@@ -19,8 +19,8 @@ namespace Arca
     template<>
     struct Traits<Atmos::Scripting::Compile>
     {
-        static const ObjectType objectType = ObjectType::Command;
-        static TypeName TypeName() { return "Atmos::Scripting::Compile"; }
+        static constexpr ObjectType objectType = ObjectType::Command;
+        static const inline TypeName typeName = "Atmos::Scripting::Compile";
         using Result = Atmos::Buffer;
     };
 }

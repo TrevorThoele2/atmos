@@ -4,14 +4,13 @@
 #include <SDL_ttf.h>
 #include "SDLFontAssetResource.h"
 #include "Color.h"
-#include "Logger.h"
 
 namespace Atmos::Render::SDL
 {
     class TextManager final : public Render::TextManager
     {
     public:
-        TextManager(Logging::Logger& logger);
+        TextManager();
 
         [[nodiscard]] std::unique_ptr<Asset::Resource::Font> CreateFontResource(
             const Buffer& buffer, const Name& name) const override;

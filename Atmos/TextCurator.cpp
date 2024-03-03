@@ -1,6 +1,7 @@
 #include "TextCurator.h"
 
-#include "TextRender.h"
+#include "RenderText.h"
+#include "UpdateText.h"
 
 #include "ColorChanged.h"
 
@@ -11,8 +12,23 @@ namespace Atmos::Render
     TextCurator::TextCurator(Init init, TextManager& manager, GraphicsManager& graphicsManager) :
         ObjectCurator(init), manager(&manager), graphicsManager(&graphicsManager)
     {
-        Owner().On<Arca::MatrixFormed<Matrix>>([this](const Arca::MatrixFormed<Matrix>& command) { CalculateForText(command.index.ID()); });
-        Owner().On<ColorChanged>([this](const ColorChanged& command) { CalculateForText(command.id); });
+        Owner().On<Arca::MatrixFormed<Matrix>>([this](const Arca::MatrixFormed<Matrix>& signal)
+        {
+            ChangeGraphics(*signal.index.Get());
+            matrices.emplace(signal.index.ID(), signal.index);
+        });
+
+        Owner().On<Arca::MatrixDissolved<Matrix>>([this](const Arca::MatrixDissolved<Matrix>& signal)
+        {
+            matrices.erase(signal.index.ID());
+        });
+
+        Owner().On<ColorChanged>([this](const ColorChanged& signal)
+        {
+            const auto matrix = matrices.find(signal.id);
+            if (matrix != matrices.end())
+                ChangeGraphics(*matrix->second.Get());
+        });
     }
 
     void TextCurator::Handle(const ChangeTextCore& command)
@@ -38,7 +54,11 @@ namespace Atmos::Render
             attemptChange(core->italics, command.italics);
 
             if (changed)
-                CalculateForText(command.id);
+            {
+                const auto matrix = Owner().Find<Matrix>(command.id);
+                if (matrix)
+                    ChangeGraphics(*matrix.Get());
+            }
         }
     }
     
@@ -53,25 +73,18 @@ namespace Atmos::Render
         const MainSurface& mainSurface)
     {
         auto indices = Owner().Batch<Matrix>();
-
-        for (auto& index : indices)
-            StageRender(
-                std::get<0>(index).ID(),
-                *std::get<0>(index),
-                *std::get<1>(index),
-                *std::get<2>(index),
-                cameraTopLeft,
-                mainSurface);
+        
+        for (auto index = indices.begin(); index != indices.end(); ++index)
+            StageRender(index.ID(), *index, cameraTopLeft, mainSurface);
     }
 
     void TextCurator::StageRender(
-        Arca::RelicID id,
-        const RenderCore& renderCore,
-        const TextCore& core,
-        const Spatial::Bounds& bounds,
-        Spatial::Point2D cameraTopLeft,
-        const MainSurface& mainSurface)
+        Arca::RelicID id, const Matrix::ReferenceTuple& tuple, Spatial::Point2D cameraTopLeft, const MainSurface& mainSurface)
     {
+        const auto& renderCore = *std::get<0>(tuple);
+        const auto& core = *std::get<1>(tuple);
+        const auto& bounds = *std::get<2>(tuple);
+
         const auto asset = core.font.Get();
         const auto material = renderCore.material;
         const auto resource = const_cast<Resource::Text*>(core.resource.get());
@@ -86,7 +99,7 @@ namespace Atmos::Render
             const auto viewSlice = Owner().Find<ViewSlice>(id);
             const auto [size, slice] = ViewSliceDependent(viewSlice, baseSize, bounds.Size(), bounds.Scalers());
 
-            const TextRender render
+            const RenderText render
             {
                 resource,
                 slice,
@@ -95,9 +108,10 @@ namespace Atmos::Render
                 size,
                 rotation,
                 color,
-                ToRenderSpace(boundsSpace)
+                ToRenderSpace(boundsSpace),
+                mainSurface.Resource()
             };
-            mainSurface.StageRender(render);
+            graphicsManager->Stage(render);
         }
     }
 
@@ -121,35 +135,31 @@ namespace Atmos::Render
             return { boundsSize, Spatial::ToAxisAlignedBox2D(0, 0, baseSize.width, baseSize.height) };
     }
 
-    void TextCurator::CalculateForText(Arca::RelicID id)
+    void TextCurator::ChangeGraphics(const Matrix::ReferenceTuple& tuple)
     {
-        const auto text = Owner().Find<Matrix>(id);
-        if (text)
+        const auto core = MutablePointer().Of(std::get<1>(tuple));
+        const auto font = MutablePointer().Of(core->font);
+        const auto string = core->string;
+        const auto wrapWidth = core->wrapWidth;
+        const auto bold = core->bold;
+        const auto italics = core->italics;
+
+        if (font)
         {
-            const auto tuple = *text;
+            const auto [buffer, size] = manager->DataFor(*font->Resource(), string, wrapWidth, bold, italics);
 
-            const auto core = MutablePointer().Of(std::get<1>(tuple));
-            auto font = MutablePointer().Of(core->font);
-            const auto string = core->string;
-            const auto wrapWidth = core->wrapWidth;
-            const auto bold = core->bold;
-            const auto italics = core->italics;
+            const auto bounds = MutablePointer().Of(std::get<2>(tuple));
+            bounds->BaseSize(size);
 
-            if (font)
+            if (buffer.empty() || size.width == 0 || size.height == 0)
+                core->resource = {};
+            else if (!core->resource)
             {
-                const auto data = manager->DataFor(*font->Resource(), string, wrapWidth, bold, italics);
-
-                auto bounds = MutablePointer().Of(std::get<2>(tuple));
-                bounds->BaseSize(data.size);
-
-                if (data.size.width > 0 && data.size.height > 0)
-                {
-                    auto resource = graphicsManager->CreateTextResource(data.buffer, data.size);
-                    core->resource = std::move(resource);
-                }
-                else
-                    core->resource = {};
+                auto resource = graphicsManager->CreateTextResource(buffer, size);
+                core->resource = std::move(resource);
             }
+            else
+                graphicsManager->Stage(UpdateText{core->resource.get(), buffer, size});
         }
     }
 }

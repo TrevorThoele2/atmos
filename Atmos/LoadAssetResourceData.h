@@ -36,11 +36,9 @@ namespace Arca
     template<class T>
     struct Traits<Atmos::Asset::Resource::LoadData<T>>
     {
-        static const ObjectType objectType = ObjectType::Command;
-        static TypeName TypeName()
-        {
-            return "Atmos::Asset::Resource::LoadData<" + Atmos::Asset::Resource::Traits<T>::ArcaTypeName() + ">";
-        }
+        static constexpr ObjectType objectType = ObjectType::Command;
+        static const inline TypeName typeName =
+            "Atmos::Asset::Resource::LoadData<" + Atmos::Asset::Resource::Traits<T>::ArcaTypeName() + ">";
         using Result = Atmos::Asset::Resource::LoadedData<T>;
     };
 }

@@ -1,12 +1,21 @@
 #pragma once
 
 #include <Atmos/GraphicsManager.h>
+#include <Atmos/RenderImage.h>
+#include <Atmos/RenderLine.h>
+#include <Atmos/RenderRegion.h>
+#include <Atmos/RenderText.h>
 
 using namespace Atmos;
 using namespace Render;
 
 class MockGraphicsManager final : public GraphicsManager
 {
+public:
+    std::vector<Atmos::Render::RenderImage> imageRenders;
+    std::vector<Atmos::Render::RenderLine> lineRenders;
+    std::vector<Atmos::Render::RenderRegion> regionRenders;
+    std::vector<Atmos::Render::RenderText> textRenders;
 public:
     MockGraphicsManager(Logging::Logger& logger);
     MockGraphicsManager(const MockGraphicsManager& arg) = delete;
@@ -29,7 +38,23 @@ protected:
     [[nodiscard]] std::unique_ptr<Resource::Text> CreateTextResourceImpl(
         const Buffer& buffer,
         const Spatial::Size2D& size) override;
-private:
+
+    void StageImpl(const RenderImage& render) override;
+    void StageImpl(const RenderLine& render) override;
+    void StageImpl(const RenderRegion& render) override;
+    void StageImpl(const RenderText& render) override;
+
+    void StageImpl(const UpdateText& update) override;
+
+    void DrawFrameImpl(Resource::Surface& surface, const Spatial::Point2D& mapPosition, const Color& backgroundColor, Diagnostics::Statistics::Profile& profile) override;
+
+    void ResourceDestroyingImpl(Asset::Resource::Image& resource) override;
+    void ResourceDestroyingImpl(Asset::Resource::Shader& resource) override;
+    void ResourceDestroyingImpl(Resource::Surface& resource) override;
+    void ResourceDestroyingImpl(Resource::Text& resource) override;
+
+    void PruneResourcesImpl() override;
+
     Buffer CompileShaderImpl(const File::Path& filePath) override;
 
     [[nodiscard]] bool ShouldReconstructInternals() const override;
