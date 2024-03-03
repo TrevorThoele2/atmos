@@ -2,6 +2,8 @@
 
 #include "VulkanCreateImageView.h"
 
+#include "Camera.h"
+
 namespace Atmos::Render::Resource::Vulkan
 {
     Surface::Surface(
@@ -104,7 +106,13 @@ namespace Atmos::Render::Resource::Vulkan
 
     void Surface::DrawFrame(Arca::Reliquary& reliquary, const Color& backgroundColor)
     {
-        renderer->DrawFrame(reliquary, Size());
+        const auto camera = Arca::Index<Camera>(reliquary);
+        const auto mapPosition = ScreenPosition
+        {
+            ScreenPosition::Value(camera->center.x),
+            ScreenPosition::Value(camera->center.y)
+        };
+        renderer->DrawFrame(reliquary, Size(), mapPosition);
     }
 
     void Surface::WaitForIdle() const

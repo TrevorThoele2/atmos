@@ -8,8 +8,8 @@ namespace Atmos::Asset
     class Audio : public AssetWithResource<Resource::Audio, Audio>
     {
     public:
-        explicit Audio(Init init);
         Audio(Init init, const ::Atmos::Name& name, ResourcePtr&& resource);
+        Audio(Init init, Arca::Serialization serialization);
         Audio(Audio&& arg) noexcept;
 
         Audio& operator=(Audio&& arg) noexcept;

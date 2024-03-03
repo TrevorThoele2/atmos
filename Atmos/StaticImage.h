@@ -10,7 +10,6 @@ namespace Atmos::Render
     class StaticImage final : public Image<StaticImage, false>
     {
     public:
-        explicit StaticImage(Init init);
         StaticImage(
             Init init,
             Arca::Index<Asset::Image> asset,
@@ -20,6 +19,7 @@ namespace Atmos::Render
             const Position3D& position,
             const Scalers2D& scalers,
             const Angle& rotation);
+        StaticImage(Init init, Arca::Serialization serialization);
     private:
         INSCRIPTION_ACCESS;
     };

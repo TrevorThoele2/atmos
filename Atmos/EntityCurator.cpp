@@ -9,13 +9,13 @@ namespace Atmos::Entity
     EntityCurator::EntityCurator(Init init) :
         Curator(init), mappedEntities(init.owner)
     {
-        Owner().ExecuteOn<Arca::CreatedKnown<Entity>>(
+        Owner().On<Arca::CreatedKnown<Entity>>(
             [](const Arca::CreatedKnown<Entity>& signal)
             {
                 
             });
 
-        Owner().ExecuteOn<Arca::DestroyingKnown<Entity>>(
+        Owner().On<Arca::DestroyingKnown<Entity>>(
             [](const Arca::DestroyingKnown<Entity>& signal)
             {
 

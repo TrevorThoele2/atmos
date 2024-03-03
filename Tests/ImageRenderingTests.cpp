@@ -49,7 +49,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images")
             String{}, std::move(imageResource), Asset::ImageSize{ 1, 1 }, Asset::ImageGridSize{});
 
         auto materialAsset = fieldReliquary.Do<Arca::Create<Asset::Material>>(
-            String{}, Asset::MaterialType::Image, Arca::Index<Asset::Shader>{}, Arca::Index<Asset::Shader>{});
+            String{}, Asset::MaterialType::Image, std::vector<Asset::Material::Pass>{});
 
         auto positions = std::vector<Position3D>
         {
@@ -453,7 +453,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering culled images")
             String{}, std::move(imageResource), Asset::ImageSize{ 1, 1 }, Asset::ImageGridSize{});
 
         auto materialAsset = fieldReliquary.Do<Arca::Create<Asset::Material>>(
-            String{}, Asset::MaterialType::Image, Arca::Index<Asset::Shader>{}, Arca::Index<Asset::Shader>{});
+            String{}, Asset::MaterialType::Image, std::vector<Asset::Material::Pass>{});
 
         WHEN("creating static images and starting execution")
         {

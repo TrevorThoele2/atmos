@@ -15,8 +15,8 @@ namespace Atmos::Asset
     protected:
         using Init = typename BaseT::Init;
     public:
-        explicit AssetWithResource(Init init);
         AssetWithResource(Init init, const Atmos::Name& name, ResourcePtr&& resource);
+        AssetWithResource(Init init, Arca::Serialization serialization);
         AssetWithResource(const AssetWithResource& arg) = delete;
         AssetWithResource(AssetWithResource&& arg) noexcept = default;
 
@@ -37,14 +37,14 @@ namespace Atmos::Asset
     };
 
     template<class AssetData, class Derived>
-    AssetWithResource<AssetData, Derived>::AssetWithResource(Init init) :
-        Asset(init)
-    {}
-
-    template<class AssetData, class Derived>
     AssetWithResource<AssetData, Derived>::AssetWithResource(Init init, const Atmos::Name& name, ResourcePtr&& resource) :
         Asset(init, name),
         resource(std::move(resource))
+    {}
+
+    template<class AssetData, class Derived>
+    AssetWithResource<AssetData, Derived>::AssetWithResource(Init init, Arca::Serialization serialization) :
+        Asset(init, serialization)
     {}
 
     template<class AssetData, class Derived>

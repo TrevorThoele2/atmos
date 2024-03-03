@@ -33,7 +33,7 @@ SCENARIO_METHOD(LineRenderingTestsFixture, "rendering lines")
         auto mainSurfaceImplementation = mainSurface->Resource<MockSurfaceResourceImplementation>();
 
         auto materialAsset = fieldReliquary.Do<Arca::Create<Asset::Material>>(
-            String{}, Asset::MaterialType::Image, Arca::Index<Asset::Shader>{}, Arca::Index<Asset::Shader>{});
+            String{}, Asset::MaterialType::Image, std::vector<Asset::Material::Pass>{});
 
         fieldReliquary.Do<ResizeCamera>(ScreenSize(
             std::numeric_limits<ScreenSize::Dimension>::max(),

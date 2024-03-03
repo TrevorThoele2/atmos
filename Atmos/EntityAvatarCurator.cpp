@@ -25,7 +25,7 @@ namespace Atmos::Entity
 
     void AvatarCurator::Work()
     {
-        Owner().ExecuteOn<Arca::CreatedKnown<AvatarComponent>>(
+        Owner().On<Arca::CreatedKnown<AvatarComponent>>(
             [this](const Arca::CreatedKnown<AvatarComponent>& signal)
             {
                 if (currentAvatar->entity)
@@ -36,7 +36,7 @@ namespace Atmos::Entity
                 currentAvatarData->component = signal.reference;
             });
 
-        Owner().ExecuteOn<Arca::DestroyingKnown<AvatarComponent>>(
+        Owner().On<Arca::DestroyingKnown<AvatarComponent>>(
             [this](const Arca::DestroyingKnown<AvatarComponent>&)
             {
                 auto currentAvatarData = MutablePointer().Of(currentAvatar);

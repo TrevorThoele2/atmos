@@ -2,9 +2,6 @@
 
 namespace Atmos::Render
 {
-    StaticImage::StaticImage(Init init) : Image(init)
-    {}
-
     StaticImage::StaticImage(
         Init init,
         Arca::Index<Asset::Image> asset,
@@ -24,5 +21,9 @@ namespace Atmos::Render
             position,
             scalers,
             rotation)
+    {}
+
+    StaticImage::StaticImage(Init init, Arca::Serialization serialization) :
+        Image(init, serialization)
     {}
 }

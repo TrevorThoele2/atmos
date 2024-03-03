@@ -8,7 +8,7 @@ namespace Atmos::Render::Vulkan
     class PipelineGroup
     {
     private:
-        using Pipelines = std::vector<Pipeline>;
+        using Pipelines = std::unordered_map<const Asset::Material*, std::vector<Pipeline>>;
         Pipelines pipelines;
     public:
         using iterator = Pipelines::iterator;
@@ -23,11 +23,13 @@ namespace Atmos::Render::Vulkan
     public:
         void Recreate(
             const std::vector<const Asset::Material*>& materials,
-            vk::DescriptorSetLayout descriptorSetLayout,
+            const std::vector<vk::DescriptorSetLayout>& descriptorSetLayouts,
             uint32_t swapchainImageCount,
             vk::RenderPass renderPass,
             vk::Extent2D extent);
-        Pipeline* Find(const Asset::Material& material);
+        std::vector<Pipeline>* Find(const Asset::Material& material);
+
+        [[nodiscard]] vk::PipelineLayout Layout() const;
 
         [[nodiscard]] iterator begin();
         [[nodiscard]] const_iterator begin() const;
@@ -36,14 +38,15 @@ namespace Atmos::Render::Vulkan
     private:
         std::shared_ptr<vk::Device> device;
 
+        vk::UniquePipelineLayout layout;
+
         VertexInput vertexInput;
         vk::PrimitiveTopology primitiveTopology;
         vk::PhysicalDeviceMemoryProperties memoryProperties;
         Asset::MaterialType materialAssetType;
 
-        Pipeline Create(
-            const Asset::Material* material,
-            vk::DescriptorSetLayout descriptorSetLayout,
+        std::vector<Pipeline> CreatePipelines(
+            const Asset::Material& material,
             uint32_t swapchainImageCount,
             vk::RenderPass renderPass,
             vk::Extent2D extent);

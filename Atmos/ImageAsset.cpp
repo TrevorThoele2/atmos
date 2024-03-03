@@ -6,9 +6,6 @@
 
 namespace Atmos::Asset
 {
-    Image::Image(Init init) : AssetWithResource(init)
-    {}
-
     Image::Image(
         Init init,
         const ::Atmos::Name& name,
@@ -19,6 +16,10 @@ namespace Atmos::Asset
         AssetWithResource(init, name, std::move(resource)),
         size(size),
         gridSize(gridSize)
+    {}
+
+    Image::Image(Init init, Arca::Serialization serialization) :
+        AssetWithResource(init, serialization)
     {}
 
     Image::Image(Image&& arg) noexcept :

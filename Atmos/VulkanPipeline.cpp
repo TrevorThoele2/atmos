@@ -6,40 +6,12 @@
 namespace Atmos::Render::Vulkan
 {
     Pipeline::Pipeline(
-        const Asset::Material& material,
-        vk::Device device,
-        uint32_t swapchainImageCount,
-        vk::PhysicalDeviceMemoryProperties memoryProperties,
-        const std::vector<vk::DescriptorSetLayout>& descriptorSetLayouts,
-        vk::RenderPass renderPass,
-        VertexInput vertexInput,
-        vk::Extent2D swapchainExtent,
-        vk::PrimitiveTopology primitiveTopology,
-        std::vector<vk::DynamicState> dynamicStates)
-        :
-        Pipeline(
-            material.VertexShader().Get(),
-            material.FragmentShader().Get(),
-            device,
-            swapchainImageCount,
-            memoryProperties,
-            descriptorSetLayouts,
-            renderPass,
-            vertexInput,
-            swapchainExtent,
-            primitiveTopology,
-            dynamicStates)
-    {
-        this->material = &material;
-    }
-
-    Pipeline::Pipeline(
         const Asset::Shader* vertexShader,
         const Asset::Shader* fragmentShader,
         vk::Device device,
+        vk::PipelineLayout layout,
         uint32_t swapchainImageCount,
         vk::PhysicalDeviceMemoryProperties memoryProperties,
-        const std::vector<vk::DescriptorSetLayout>& descriptorSetLayouts,
         vk::RenderPass renderPass,
         VertexInput vertexInput,
         vk::Extent2D swapchainExtent,
@@ -53,9 +25,6 @@ namespace Atmos::Render::Vulkan
             shaderStages.push_back(ShaderStageCreateInfo(*vertexShader, vk::ShaderStageFlagBits::eVertex));
         if (fragmentShader)
             shaderStages.push_back(ShaderStageCreateInfo(*fragmentShader, vk::ShaderStageFlagBits::eFragment));
-
-        const vk::PipelineLayoutCreateInfo layoutCreateInfo({}, descriptorSetLayouts.size(), descriptorSetLayouts.data());
-        layout = device.createPipelineLayoutUnique(layoutCreateInfo);
 
         auto vertexInputCreateInfo = vertexInput.PipelineCreateInfo();
 
@@ -133,7 +102,7 @@ namespace Atmos::Render::Vulkan
             nullptr,
             &colorBlendCreateInfo,
             !dynamicStates.empty() ? &dynamicCreateInfo : nullptr,
-            layout.get(),
+            layout,
             renderPass,
             0,
             nullptr,

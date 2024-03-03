@@ -13,8 +13,8 @@ namespace Atmos::Asset
     protected:
         using Init = typename BaseT::Init;
     public:
-        explicit Asset(Init init);
         explicit Asset(Init init, const Name& name);
+        explicit Asset(Init init, Arca::Serialization serialization);
         Asset(const Asset& arg) = delete;
         Asset(Asset&& arg) noexcept = default;
 
@@ -27,15 +27,15 @@ namespace Atmos::Asset
     };
 
     template<class Derived>
-    Asset<Derived>::Asset(Init init) :
+    Asset<Derived>::Asset(Init init, const Atmos::Name& name) :
         Arca::ClosedTypedRelic<Derived>(init),
-        core(init.template FindOrCreate<Atmos::Asset::Core>())
+        core(init.template Create<Atmos::Asset::Core>(name))
     {}
 
     template<class Derived>
-    Asset<Derived>::Asset(Init init, const Atmos::Name& name) :
+    Asset<Derived>::Asset(Init init, Arca::Serialization) :
         Arca::ClosedTypedRelic<Derived>(init),
-        core(init.template FindOrCreate<Atmos::Asset::Core>(name))
+        core(init.template Find<Atmos::Asset::Core>())
     {}
 
     template<class Derived>

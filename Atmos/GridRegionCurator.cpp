@@ -9,13 +9,13 @@ namespace Atmos::Render
     GridRegionCurator::GridRegionCurator(Init init) :
         Curator(init), camera(init.owner)
     {
-        Owner().ExecuteOn<Arca::CreatedKnown<GridRegion>>(
+        Owner().On<Arca::CreatedKnown<GridRegion>>(
             [this](const Arca::CreatedKnown<GridRegion>& signal)
             {
                 OnCreated(signal);
             });
 
-        Owner().ExecuteOn<Arca::DestroyingKnown<GridRegion>>(
+        Owner().On<Arca::DestroyingKnown<GridRegion>>(
             [this](const Arca::DestroyingKnown<GridRegion>& signal)
             {
                 OnDestroying(signal);

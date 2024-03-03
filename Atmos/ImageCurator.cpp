@@ -7,13 +7,13 @@ namespace Atmos::Render
     ImageCurator::ImageCurator(Init init) :
         Curator(init), camera(init.owner)
     {
-        Owner().ExecuteOn<Arca::MatrixFormed<Matrix>>(
+        Owner().On<Arca::MatrixFormed<Matrix>>(
             [this](const Arca::MatrixFormed<Matrix>& signal)
             {
                 OnCreated(signal);
             });
 
-        Owner().ExecuteOn<Arca::MatrixDissolved<Matrix>>(
+        Owner().On<Arca::MatrixDissolved<Matrix>>(
             [this](const Arca::MatrixDissolved<Matrix>& signal)
             {
                 OnDestroying(signal);

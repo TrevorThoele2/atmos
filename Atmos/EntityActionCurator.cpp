@@ -4,12 +4,27 @@
 
 #include "RunningScript.h"
 
+#include "FieldSet.h"
+#include "FieldUnset.h"
+
 namespace Atmos::Entity
 {
     ActionCurator::ActionCurator(Init init) :
         Curator(init),
         actionComponents(init.owner.Batch<ActionComponent>())
-    {}
+    {
+        init.owner.On<World::FieldSet>([this](const World::FieldSet& signal)
+            {
+                for (auto& loop : actionComponents)
+                    loop.FireFieldEntered();
+            });
+
+        init.owner.On<World::FieldUnset>([this](const World::FieldUnset& signal)
+            {
+                for (auto& loop : actionComponents)
+                    loop.FireFieldLeft();
+            });
+    }
 
     void ActionCurator::Work()
     {
@@ -21,13 +36,5 @@ namespace Atmos::Entity
 
             MutablePointer().Of(runningScript)->Resume();
         }
-
-        if (!fieldSet.IsEmpty())
-            for (auto& loop : actionComponents)
-                loop.FireFieldEntered();
-
-        if (!fieldUnset.IsEmpty())
-            for (auto& loop : actionComponents)
-                loop.FireFieldLeft();
     }
 }

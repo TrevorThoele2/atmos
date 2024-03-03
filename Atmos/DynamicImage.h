@@ -14,7 +14,6 @@ namespace Atmos::Render
         void Scalers(const Scalers2D& to) const;
         void Rotation(const Angle& to) const;
     public:
-        DynamicImage(Init init);
         DynamicImage(
             Init init,
             Arca::Index<Asset::Image> asset,
@@ -24,6 +23,7 @@ namespace Atmos::Render
             const Position3D& position,
             const Scalers2D& scalers,
             const Angle& rotation);
+        DynamicImage(Init init, Arca::Serialization serialization);
     private:
         INSCRIPTION_ACCESS;
     };

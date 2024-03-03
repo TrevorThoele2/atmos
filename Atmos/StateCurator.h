@@ -2,7 +2,6 @@
 
 #include <Arca/Curator.h>
 #include <Arca/RelicBatch.h>
-#include <Arca/SignalBatch.h>
 
 #include "StateRequest.h"
 

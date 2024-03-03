@@ -2,10 +2,9 @@
 
 #include "VulkanIncludes.h"
 
+#include "VulkanUniversalData.h"
 #include "MaterialAsset.h"
 #include "Position3D.h"
-
-#include <glm/glm.hpp>
 
 namespace Atmos::Render::Vulkan
 {
@@ -17,7 +16,7 @@ namespace Atmos::Render::Vulkan
         virtual void Initialize(uint32_t swapchainImageCount, vk::RenderPass renderPass, vk::Extent2D extent) = 0;
 
         virtual void Start(const std::vector<const Asset::Material*>& materials, vk::CommandBuffer commandBuffer) = 0;
-        virtual void DrawNextLayer(uint32_t currentImage, glm::vec2 cameraSize) = 0;
+        virtual void DrawNextLayer(uint32_t currentImage, UniversalData universalData) = 0;
         virtual void End() = 0;
 
         [[nodiscard]] virtual bool IsDone() const = 0;

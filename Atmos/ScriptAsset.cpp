@@ -4,11 +4,12 @@
 
 namespace Atmos::Asset
 {
-    Script::Script(Init init) : AssetWithResource(init)
-    {}
-
     Script::Script(Init init, const ::Atmos::Name& name, ResourcePtr&& resource) :
         AssetWithResource(init, name, std::move(resource))
+    {}
+
+    Script::Script(Init init, Arca::Serialization serialization) :
+        AssetWithResource(init, serialization)
     {}
 
     Script::Script(Script&& arg) noexcept : AssetWithResource(std::move(arg))

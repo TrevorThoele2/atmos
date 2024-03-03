@@ -21,9 +21,6 @@ namespace Atmos::Render
         Owner().Do<RotateBounds>(ID(), to);
     }
 
-    DynamicImage::DynamicImage(Init init) : Image(init)
-    {}
-
     DynamicImage::DynamicImage(
         Init init,
         Arca::Index<Asset::Image> asset,
@@ -43,5 +40,9 @@ namespace Atmos::Render
             position,
             scalers,
             rotation)
+    {}
+
+    DynamicImage::DynamicImage(Init init, Arca::Serialization serialization) :
+        Image(init, serialization)
     {}
 }

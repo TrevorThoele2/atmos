@@ -121,7 +121,6 @@
     <ClInclude Include="LineRender.h" />
     <ClInclude Include="LineWidth.h" />
     <ClInclude Include="Logger.h" />
-    <ClInclude Include="LoggingTransfer.h" />
     <ClInclude Include="MainSurface.h" />
     <ClInclude Include="MoveBounds.h" />
     <ClInclude Include="MoveLine.h" />
@@ -444,7 +443,6 @@
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="LineCurator.cpp" />
     <ClCompile Include="Logger.cpp" />
-    <ClCompile Include="LoggingTransfer.cpp" />
     <ClCompile Include="MainSurface.cpp" />
     <ClCompile Include="ImageCore.cpp" />
     <ClCompile Include="ScriptAssetResource.cpp" />

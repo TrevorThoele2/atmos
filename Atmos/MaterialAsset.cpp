@@ -2,34 +2,48 @@
 
 #include "ShouldCreateAsset.h"
 
+#include <Inscription/VectorScribe.h>
+
 namespace Atmos::Asset
 {
-    Material::Material(Init init) :
-        Asset(init)
+    Material::Pass::Pass(Arca::Index<Shader> vertexShader, Arca::Index<Shader> fragmentShader) :
+        vertexShader(vertexShader), fragmentShader(fragmentShader)
     {}
+
+    Arca::Index<Shader> Material::Pass::VertexShader() const
+    {
+        return vertexShader;
+    }
+
+    Arca::Index<Shader> Material::Pass::FragmentShader() const
+    {
+        return fragmentShader;
+    }
 
     Material::Material(
         Init init,
         const Atmos::Name& name,
         MaterialType type,
-        Arca::Index<Shader> vertexShader,
-        Arca::Index<Shader> fragmentShader)
+        std::vector<Pass> passes)
         :
         Asset(init, name),
-        type(type), vertexShader(std::move(vertexShader)), fragmentShader(std::move(fragmentShader))
+        type(type), passes(std::move(passes))
+    {}
+
+    Material::Material(Init init, Arca::Serialization serialization) :
+        Asset(init, serialization)
     {}
 
     Material::Material(Material&& arg) noexcept :
         Asset(std::move(arg)),
-        type(arg.type), vertexShader(std::move(arg.vertexShader)), fragmentShader(std::move(arg.fragmentShader))
+        type(arg.type), passes(std::move(arg.passes))
     {}
 
     Material& Material::operator=(Material && arg) noexcept
     {
         Asset::operator=(std::move(arg));
         type = arg.type;
-        vertexShader = std::move(arg.vertexShader);
-        fragmentShader = std::move(arg.fragmentShader);
+        passes = std::move(arg.passes);
         return *this;
     }
 
@@ -38,14 +52,9 @@ namespace Atmos::Asset
         return type;
     }
 
-    Arca::Index<Shader> Material::VertexShader() const
+    auto Material::Passes() const -> std::vector<Pass>
     {
-        return vertexShader;
-    }
-
-    Arca::Index<Shader> Material::FragmentShader() const
-    {
-        return fragmentShader;
+        return passes;
     }
 }
 
@@ -55,8 +64,7 @@ namespace Arca
         Reliquary& reliquary,
         const ::Atmos::Name& name,
         Atmos::Asset::MaterialType,
-        Index<Atmos::Asset::Shader>,
-        Index<Atmos::Asset::Shader>)
+        const std::vector<Atmos::Asset::Material::Pass>&)
     {
         return Atmos::Asset::ShouldCreate<::Atmos::Asset::Material>(reliquary, name);
     }
@@ -64,11 +72,18 @@ namespace Arca
 
 namespace Inscription
 {
+    void Scribe<Atmos::Asset::Material::Pass, BinaryArchive>::ScrivenImplementation(
+        ObjectT& object, ArchiveT& archive)
+    {
+        archive(object.vertexShader);
+        archive(object.fragmentShader);
+    }
+
     void Scribe<Atmos::Asset::Material, BinaryArchive>::ScrivenImplementation(
         ObjectT& object, ArchiveT& archive)
     {
         BaseScriven<Atmos::Asset::Asset<Atmos::Asset::Material>>(object, archive);
-        archive(object.vertexShader);
-        archive(object.fragmentShader);
+        archive(object.type);
+        archive(object.passes);
     }
 }
