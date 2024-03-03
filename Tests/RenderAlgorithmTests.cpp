@@ -132,7 +132,7 @@ SCENARIO_METHOD(RenderAlgorithmTestsFixture, "simplification", "[render]")
     }
 }
 
-SCENARIO_METHOD(RenderAlgorithmTestsFixture, "triangulation of Position2D", "[render]")
+SCENARIO_METHOD(RenderAlgorithmTestsFixture, "triangulation of Point2D", "[render]")
 {
     std::vector<Point2D> points;
 
@@ -233,6 +233,18 @@ SCENARIO_METHOD(RenderAlgorithmTestsFixture, "triangulation of Position2D", "[re
             THEN("converts to 6 vertices")
             {
                 REQUIRE(triangulation.size() == 6);
+                REQUIRE(triangulation[0].x == Approx(-10));
+                REQUIRE(triangulation[0].y == Approx(-10));
+                REQUIRE(triangulation[1].x == Approx(10));
+                REQUIRE(triangulation[1].y == Approx(-10));
+                REQUIRE(triangulation[2].x == Approx(10));
+                REQUIRE(triangulation[2].y == Approx(10));
+                REQUIRE(triangulation[3].x == Approx(-10));
+                REQUIRE(triangulation[3].y == Approx(-10));
+                REQUIRE(triangulation[4].x == Approx(10));
+                REQUIRE(triangulation[4].y == Approx(10));
+                REQUIRE(triangulation[5].x == Approx(-10));
+                REQUIRE(triangulation[5].y == Approx(10));
             }
 
             WHEN("converting to mesh")

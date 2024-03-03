@@ -3,14 +3,10 @@
 #include "VulkanImage.h"
 #include "VulkanSampler.h"
 #include "VulkanCommandBuffer.h"
-#include "VulkanUtilities.h"
-#include "VulkanSynchronization.h"
 #include "VulkanMaxFramesInFlight.h"
 #include "GlyphAlgorithms.h"
 
 #include "SpatialAlgorithms.h"
-
-#include <utf8.h>
 
 namespace Atmos::Render::Vulkan
 {
@@ -32,21 +28,23 @@ namespace Atmos::Render::Vulkan
         GlyphAtlas& glyphAtlas)
         :
         memoryPool(0, memoryProperties, device),
-        vertexBuffer(vertexStride * sizeof(QuadVertex), device, memoryPool, vk::BufferUsageFlagBits::eVertexBuffer),
-        indexBuffer(indexStride * sizeof(QuadIndex), device, memoryPool, vk::BufferUsageFlagBits::eIndexBuffer),
+        vertexBuffer(vertexStride * sizeof(TexturedVertex), device, memoryPool, vk::BufferUsageFlagBits::eVertexBuffer),
+        indexBuffer(indexStride * sizeof(TexturedIndex), device, memoryPool, vk::BufferUsageFlagBits::eIndexBuffer),
+        sampler(CreateSampler(device)),
+        glyphAtlas(&glyphAtlas),
         descriptorSetPools(CreateDescriptorSetPools(device)),
         currentDescriptorSetPool(descriptorSetPools.begin()),
         mappedConduits(
             device,
             VertexInput(
-                sizeof(QuadVertex),
+                sizeof(TexturedVertex),
                 {
                     vk::VertexInputAttributeDescription(
-                        0, 0, vk::Format::eR32G32Sfloat, offsetof(QuadVertex, position)),
+                        0, 0, vk::Format::eR32G32Sfloat, offsetof(TexturedVertex, position)),
                     vk::VertexInputAttributeDescription(
-                        1, 0, vk::Format::eR32G32Sfloat, offsetof(QuadVertex, texture)),
+                        1, 0, vk::Format::eR32G32Sfloat, offsetof(TexturedVertex, texture)),
                     vk::VertexInputAttributeDescription(
-                        2, 0, vk::Format::eR32G32B32A32Sfloat, offsetof(QuadVertex, color))
+                        2, 0, vk::Format::eR32G32B32A32Sfloat, offsetof(TexturedVertex, color))
                 }),
             vk::PrimitiveTopology::eTriangleList,
             renderPass,
@@ -54,68 +52,58 @@ namespace Atmos::Render::Vulkan
             {},
             { descriptorSetPools[0].DescriptorSetLayout()}),
         graphicsQueue(graphicsQueue),
-        device(device),
-        glyphAtlas(&glyphAtlas),
-        sampler(CreateSampler(device))
+        device(device)
     {}
-
-    void TextRenderer::StageRender(const RenderText& textRender)
-    {
-        const auto stagedRender = ToStagedRender(textRender);
-        if (stagedRender)
-            stagedTextRenders.push_back(*stagedRender);
-    }
-
+    
     std::unique_ptr<Raster> TextRenderer::Start(
+        const AllRenders& allRenders,
         vk::CommandBuffer drawCommandBuffer,
         const UniversalDataBuffer& universalDataBuffer)
     {
-        const auto totalQuadCount = stagedTextRenders.size();
-        if (totalQuadCount == 0)
-            return {};
-
         descriptors.clear();
 
         auto raster = std::make_unique<Raster>(*this);
 
-        for (auto& stagedTextRender : stagedTextRenders)
+        for (auto& render : allRenders.texts)
         {
-            mappedConduits.Add(stagedTextRender.material);
-            AddToRaster(stagedTextRender, *raster);
+            mappedConduits.Add(render.material);
+
+            const auto stagedRender = ToStagedRender(render);
+            if (stagedRender)
+                AddToRaster(*stagedRender, *raster);
         }
-        stagedTextRenders.clear();
 
-        auto& descriptorSetPool = NextDescriptorSetPool();
-        const auto descriptorSets = descriptorSetPool.Retrieve(descriptorSetKeys.size());
-
-        size_t i = 0;
-        for (auto& descriptorSetKey : descriptorSetKeys)
+        if (!raster->layers.Empty())
         {
-            const auto descriptorSet = descriptorSets[i];
-            raster->descriptorSets.emplace(descriptorSetKey, descriptorSet);
+            auto& descriptorSetPool = NextDescriptorSetPool();
+            const auto descriptorSets = descriptorSetPool.Retrieve(descriptorSetKeys.size());
 
-            const auto& descriptor = *descriptorSetKey.descriptor;
-            descriptor.Update(descriptorSet, device);
-            universalDataBuffer.Update(descriptorSet);
+            size_t i = 0;
+            for (auto& descriptorSetKey : descriptorSetKeys)
+            {
+                const auto descriptorSet = descriptorSets[i];
+                raster->descriptorSets.emplace(descriptorSetKey, descriptorSet);
 
-            ++i;
+                const auto& descriptor = *descriptorSetKey.descriptor;
+                descriptor.Update(descriptorSet, device);
+                universalDataBuffer.Update(descriptorSet);
+
+                ++i;
+            }
+            descriptorSetKeys.clear();
+
+            raster->currentLayer = raster->layers.begin();
+            return raster;
         }
-        descriptorSetKeys.clear();
-
-        raster->currentLayer = raster->layers.begin();
-        return raster;
+        else
+            return {};
     }
 
     void TextRenderer::MaterialDestroying(Arca::Index<Asset::Material> material)
     {
         mappedConduits.Remove(material);
     }
-
-    size_t TextRenderer::RenderCount() const
-    {
-        return stagedTextRenders.size();
-    }
-
+    
     auto TextRenderer::ToStagedRender(const RenderText& render) -> std::optional<StagedTextRender>
     {
         const auto result = glyphAtlas->ToLines(
@@ -131,7 +119,7 @@ namespace Atmos::Render::Vulkan
             result->cellSize,
             result->imageView,
             render.fontResource,
-            render.slice,
+            render.viewSlice,
             render.material,
             render.position,
             render.rotation,
@@ -190,43 +178,48 @@ namespace Atmos::Render::Vulkan
             {
                 const auto descriptorSet = descriptorSets.find(DescriptorSetKey(*value.first))->second;
 
-                const auto startQuadCount = totalQuadCount;
-                const auto quads = value.second;
+                const auto elements = value.second;
+                const auto startVertexCount = totalVertexCount;
+                const auto startIndexCount = totalIndexCount;
+
+                std::uint32_t vertexCount = 0;
+                std::uint32_t indexCount = 0;
+                for (auto& element : elements)
+                {
+                    vertexCount += element.vertices.size();
+                    indexCount += element.indices.size();
+                }
+
                 passes.emplace_back(
-                    WriteData(quads, startQuadCount),
-                    Draw(startQuadCount, quads.size(), conduit, descriptorSet));
-                totalQuadCount += quads.size();
+                    WriteData(elements, startVertexCount, startIndexCount),
+                    Draw(vertexCount, indexCount, startIndexCount, conduit, descriptorSet));
+                for (auto& element : elements)
+                {
+                    totalVertexCount += element.vertices.size();
+                    totalIndexCount += element.indices.size();
+                }
             }
         }
         return passes;
     }
 
-    Command TextRenderer::Raster::WriteData(const std::vector<Quad>& quads, std::uint32_t startQuadCount)
+    Command TextRenderer::Raster::WriteData(const std::vector<Textured>& elements, std::uint32_t startVertexCount, std::uint32_t startIndexCount)
     {
-        std::vector<QuadVertex> verticesToDraw;
-        std::vector<QuadIndex> indicesToDraw;
-        std::uint32_t currentQuad = 0;
-        for (auto& quad : quads)
+        std::vector<TexturedVertex> verticesToDraw;
+        std::vector<TexturedIndex> indicesToDraw;
+        auto vertexCount = startVertexCount;
+        for (auto& element : elements)
         {
-            verticesToDraw.insert(verticesToDraw.end(), quad.vertices.begin(), quad.vertices.end());
-            const auto offsetIndicesBy = (startQuadCount + currentQuad) * quadIndexIncrement;
-            const QuadIndices offsetIndices =
-            {
-                QuadIndex(offsetIndicesBy + quadIndices[0]),
-                QuadIndex(offsetIndicesBy + quadIndices[1]),
-                QuadIndex(offsetIndicesBy + quadIndices[2]),
-                QuadIndex(offsetIndicesBy + quadIndices[3]),
-                QuadIndex(offsetIndicesBy + quadIndices[4]),
-                QuadIndex(offsetIndicesBy + quadIndices[5]),
-            };
-            indicesToDraw.insert(indicesToDraw.end(), offsetIndices.begin(), offsetIndices.end());
-            ++currentQuad;
+            verticesToDraw.insert(verticesToDraw.end(), element.vertices.begin(), element.vertices.end());
+            for (auto& index : element.indices)
+                indicesToDraw.push_back(vertexCount + index);
+            vertexCount += element.vertices.size();
         }
 
-        const auto vertexOffset = vk::DeviceSize(startQuadCount) * 4 * sizeof QuadVertex;
-        const auto vertexSize = verticesToDraw.size() * sizeof QuadVertex;
-        const auto indexOffset = vk::DeviceSize(startQuadCount) * quadIndices.size() * sizeof QuadIndex;
-        const auto indexSize = indicesToDraw.size() * sizeof QuadIndex;
+        const auto vertexOffset = vk::DeviceSize(startVertexCount) * sizeof TexturedVertex;
+        const auto vertexSize = verticesToDraw.size() * sizeof TexturedVertex;
+        const auto indexOffset = vk::DeviceSize(startIndexCount) * sizeof TexturedIndex;
+        const auto indexSize = indicesToDraw.size() * sizeof TexturedIndex;
 
         renderer->vertexBuffer.PushSourceBytes(verticesToDraw.data(), vertexOffset, vertexSize);
         renderer->indexBuffer.PushSourceBytes(indicesToDraw.data(), indexOffset, indexSize);
@@ -239,12 +232,12 @@ namespace Atmos::Render::Vulkan
     }
 
     Command TextRenderer::Raster::Draw(
-        std::uint32_t startQuadCount, std::uint32_t quadCount, Conduit& conduit, vk::DescriptorSet descriptorSet)
+        std::uint32_t vertexCount, std::uint32_t indexCount, std::uint32_t startIndexCount, Conduit& conduit, vk::DescriptorSet descriptorSet)
     {
-        return [this, startQuadCount, quadCount, &conduit, descriptorSet](CommandRecorder record)
+        return [this, vertexCount, indexCount, startIndexCount, &conduit, descriptorSet](CommandRecorder record)
         {
             record(conduit.Bind());
-            record([this, startQuadCount, quadCount, &conduit, descriptorSet](vk::CommandBuffer commandBuffer)
+            record([this, vertexCount, indexCount, startIndexCount, &conduit, descriptorSet](vk::CommandBuffer commandBuffer)
                 {
                     const vk::Buffer vertexBuffers[] = { renderer->vertexBuffer.destination.Value() };
                     constexpr vk::DeviceSize offsets[] = { 0 };
@@ -260,7 +253,7 @@ namespace Atmos::Render::Vulkan
                         0,
                         nullptr);
 
-                    commandBuffer.drawIndexed(quadCount * quadIndices.size(), 1, startQuadCount * quadIndices.size(), 0, 0);
+                    commandBuffer.drawIndexed(indexCount, 1, startIndexCount, 0, 0);
                 });
         };
     }
@@ -276,7 +269,7 @@ namespace Atmos::Render::Vulkan
                 vk::ImageLayout::eGeneral,
                 1)).first->second;
 
-        const auto vertices = ToQuads(render);
+        const auto vertices = ToElements(render);
         AddToRaster(
             render.space,
             render.position.z,
@@ -291,7 +284,7 @@ namespace Atmos::Render::Vulkan
         Spatial::Point3D::Value z,
         Arca::RelicID materialID,
         Vulkan::CombinedImageSamplerDescriptor& descriptor,
-        std::vector<Quad> quads,
+        std::vector<Textured> elements,
         Raster& raster)
     {
         const auto layerKey = ObjectLayeringKey{ space, z };
@@ -300,71 +293,52 @@ namespace Atmos::Render::Vulkan
             layer = &raster.layers.Add(layerKey, Raster::Layer{});
         auto& group = layer->GroupFor(materialID);
         auto& list = group.ListFor(&descriptor);
-        list.insert(list.end(), quads.begin(), quads.end());
+        list.insert(list.end(), elements.begin(), elements.end());
         descriptorSetKeys.emplace(DescriptorSetKey(descriptor));
     }
 
-    std::vector<Quad> TextRenderer::ToQuads(const StagedTextRender& render)
+    std::vector<Textured> TextRenderer::ToElements(const StagedTextRender& render)
     {
-        std::vector<Quad> quads;
+        std::vector<Textured> elements;
 
         const auto scalers = render.scalers;
         const auto position = Spatial::ToPoint2D(render.position);
-        const auto atlasImageSize = render.atlasImageSize;
         const auto atlasCellSize = render.atlasCellSize;
         const auto totalSize = Spatial::ScaleBy(render.totalSize, render.scalers);
+        const auto totalBox = Spatial::ToAxisAlignedBox2D(0, 0, totalSize.width, totalSize.height);
 
-        const auto topLeft = position - Spatial::Point2D{ totalSize.width / 2, totalSize.height / 2 };
+        const auto worldTopLeft = position - Spatial::Point2D{ totalSize.width / 2, totalSize.height / 2 };
 
-        const auto slice = Spatial::Clamp(render.slice, Spatial::ToAxisAlignedBox2D(0, 0, 1, 1));
-        const auto maximumSlice = Spatial::ToAxisAlignedBox2D(
-            slice.Left() * totalSize.width,
-            slice.Top() * totalSize.height,
-            slice.Right() * totalSize.width,
-            slice.Bottom() * totalSize.height);
+        const auto clipTo = Spatial::ToPoints(render.viewSlice, 0, Spatial::Point2D{});
 
         auto x = 0.0f;
         auto y = 0.0f;
-        for (auto& line : render.lines)
+        for (const auto& line : render.lines)
         {
-            for (auto& glyph : line)
+            for (const auto& glyph : line)
             {
-                const auto width = glyph.size.width;
-                const auto height = glyph.size.height;
-                const auto advance = glyph.advance;
+                const auto textured = ToTextured(
+                    render.color,
+                    worldTopLeft + Spatial::Point2D{x, y},
+                    Spatial::Point2D{ glyph.column * atlasCellSize.width, glyph.row * atlasCellSize.height },
+                    glyph.size,
+                    render.atlasImageSize,
+                    render.scalers,
+                    render.rotation,
+                    Spatial::Point2D{ totalSize.width / glyph.size.width, totalSize.height / glyph.size.height },
+                    clipTo);
 
-                const auto glyphStandard = Spatial::ToAxisAlignedBox2D(x, y, x + width * scalers.x, y + height * scalers.y);
-                const auto glyphSlice = Spatial::Clamp(glyphStandard, maximumSlice);
-                const auto glyphPercentage = Spatial::ScaleOf(glyphSlice, glyphStandard);
+                if (textured)
+                    elements.push_back(*textured);
 
-                if (glyphSlice.size.width > 0.0f && glyphSlice.size.height > 0.0f)
-                {
-                    const auto texture = Spatial::ScaleOf(
-                        Spatial::ToAxisAlignedBox2D(
-                            glyph.column * atlasCellSize.width + width * glyphPercentage.Left(),
-                            glyph.row * atlasCellSize.height + height * glyphPercentage.Top(),
-                            glyph.column * atlasCellSize.width + width * glyphPercentage.Right(),
-                            glyph.row * atlasCellSize.height + height * glyphPercentage.Bottom()),
-                        Spatial::ToAxisAlignedBox2D(0, 0, atlasImageSize.width, atlasImageSize.height));
-
-                    const auto center = glyphSlice.center + topLeft;
-                    quads.push_back(ToQuadVertices(
-                        render.color,
-                        center,
-                        glyphSlice.size,
-                        render.rotation,
-                        position,
-                        texture));
-                }
-
-                x += advance * scalers.x;
+                x += glyph.advance * scalers.x;
             }
 
             x = 0;
             y += atlasCellSize.height * scalers.y;
         }
 
-        return quads;
+        return elements;
     }
 
     std::vector<DescriptorSetPool> TextRenderer::CreateDescriptorSetPools(vk::Device device)

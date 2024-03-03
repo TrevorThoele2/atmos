@@ -14,7 +14,7 @@ namespace Atmos::Render
     class GridRegionCurator final : public ObjectCurator
     {
     public:
-        explicit GridRegionCurator(Init init, GraphicsManager& graphicsManager);
+        explicit GridRegionCurator(Init init);
 
         using ObjectCurator::Handle;
         void Handle(const MoveGridRegion& command);
@@ -25,12 +25,10 @@ namespace Atmos::Render
             Spatial::Point2D cameraTopLeft,
             const MainSurface& mainSurface) override;
     private:
-        GraphicsManager* graphicsManager;
-
         using Index = Arca::Index<GridRegion>;
         Spatial::Grid::Octree<Arca::RelicID, Index> octree;
 
-        void StageRender(
+        [[nodiscard]] std::optional<RenderRegion> StageRender(
             const GridRegion& value,
             Spatial::Point2D cameraTopLeft,
             const MainSurface& mainSurface);

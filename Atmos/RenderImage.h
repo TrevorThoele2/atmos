@@ -15,11 +15,13 @@ namespace Atmos::Render
     struct RenderImage
     {
         Asset::Resource::Image* assetResource;
-        Spatial::AxisAlignedBox2D slice;
+        Spatial::AxisAlignedBox2D assetSlice;
+        Spatial::AxisAlignedBox2D viewSlice;
         
         Arca::Index<Asset::Material> material;
 
         Spatial::Point3D position;
+        Spatial::Size2D size;
         Spatial::Angle2D rotation;
         Spatial::Scalers2D scalers;
 

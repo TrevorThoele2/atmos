@@ -35,13 +35,10 @@ protected:
         void* window) override;
     [[nodiscard]] std::unique_ptr<Resource::Surface> CreateSurfaceResourceImpl(
         void* window) override;
-
-    void StageImpl(const RenderImage& render) override;
-    void StageImpl(const RenderLine& render) override;
-    void StageImpl(const RenderRegion& render) override;
-    void StageImpl(const RenderText& render) override;
-
-    void DrawFrameImpl(Resource::Surface& surface, const Spatial::Point2D& mapPosition, const Color& backgroundColor) override;
+    
+    void DrawFrameImpl(
+        const AllRenders& allRenders,
+        const Spatial::Point2D& mapPosition) override;
 
     void ResourceDestroyingImpl(Asset::Resource::Image& resource) override;
     void ResourceDestroyingImpl(Asset::Resource::Shader& resource) override;

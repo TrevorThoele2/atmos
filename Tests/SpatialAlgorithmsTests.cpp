@@ -460,10 +460,12 @@ SCENARIO_METHOD(SpatialAlgorithmsTestsFixture, "Intersection", "[spatial]")
         {
             const auto horizontalLine = Line2D{ {0.5, 0}, { 5, 0 } };
 
-            THEN("returns no result")
+            THEN("returns correct result")
             {
                 const auto result = Intersection(verticalLine, horizontalLine);
-                REQUIRE(!result.has_value());
+                REQUIRE(result.has_value());
+                REQUIRE(result->x == Approx(0));
+                REQUIRE(result->y == Approx(0));
             }
         }
     }
@@ -471,14 +473,14 @@ SCENARIO_METHOD(SpatialAlgorithmsTestsFixture, "Intersection", "[spatial]")
 
 SCENARIO_METHOD(SpatialAlgorithmsTestsFixture, "Clip", "[spatial]")
 {
-    GIVEN("rectangle")
+    GIVEN("points in rectangle")
     {
         const auto points = std::vector<Point2D>
         {
             { 0.0, 0.0 },
-            { 0.0, 5.0 },
+            { 5.0, 0.0 },
             { 5.0, 5.0 },
-            { 5.0, 0.0 }
+            { 0.0, 5.0 }
         };
 
         WHEN("finding clip of rectangle")
@@ -486,9 +488,9 @@ SCENARIO_METHOD(SpatialAlgorithmsTestsFixture, "Clip", "[spatial]")
             const auto clip = std::vector<Point2D>
             {
                 { 2.5, 2.5 },
-                { 2.5, 7.5 },
+                { 7.5, 2.5 },
                 { 7.5, 7.5 },
-                { 7.5, 2.5 }
+                { 2.5, 7.5 }
             };
 
             THEN("returns correct result")
@@ -497,12 +499,83 @@ SCENARIO_METHOD(SpatialAlgorithmsTestsFixture, "Clip", "[spatial]")
                 REQUIRE(result.size() == 4);
                 REQUIRE(result[0].x == Approx(2.5));
                 REQUIRE(result[0].y == Approx(2.5));
-                REQUIRE(result[1].x == Approx(2.5));
-                REQUIRE(result[1].y == Approx(5.0));
+                REQUIRE(result[1].x == Approx(5.0));
+                REQUIRE(result[1].y == Approx(2.5));
                 REQUIRE(result[2].x == Approx(5.0));
                 REQUIRE(result[2].y == Approx(5.0));
+                REQUIRE(result[3].x == Approx(2.5));
+                REQUIRE(result[3].y == Approx(5.0));
+            }
+        }
+
+        WHEN("finding clip of same rectangle")
+        {
+            constexpr auto epsilon = std::numeric_limits<float>::epsilon();
+            const auto clip = points;
+
+            THEN("returns points")
+            {
+                const auto result = Clip(points, clip);
+                REQUIRE(result.size() == 4);
+                REQUIRE(result[0].x == Approx(0.0));
+                REQUIRE(result[0].y == Approx(5.0));
+                REQUIRE(result[1].x == Approx(0.0));
+                REQUIRE(result[1].y == Approx(0.0));
+                REQUIRE(result[2].x == Approx(5.0));
+                REQUIRE(result[2].y == Approx(0.0));
                 REQUIRE(result[3].x == Approx(5.0));
-                REQUIRE(result[3].y == Approx(2.5));
+                REQUIRE(result[3].y == Approx(5.0));
+            }
+        }
+    }
+
+    GIVEN("AxisAlignedBox2D")
+    {
+        const auto box = ToAxisAlignedBox2D(0.0, 0.0, 5.0, 5.0);
+
+        WHEN("finding clip of rectangle")
+        {
+            const auto clip = ToAxisAlignedBox2D(2.5, 2.5, 7.5, 7.5);
+
+            THEN("returns correct result")
+            {
+                const auto result = Clip(box, clip);
+                REQUIRE(result.Left() == Approx(2.5));
+                REQUIRE(result.Top() == Approx(2.5));
+                REQUIRE(result.Right() == Approx(5.0));
+                REQUIRE(result.Bottom() == Approx(5.0));
+            }
+        }
+    }
+}
+
+SCENARIO_METHOD(SpatialAlgorithmsTestsFixture, "ToPoints", "[spatial]")
+{
+    GIVEN("AxisAlignedBox2D and rotation")
+    {
+        const auto box = AxisAlignedBox2D
+        {
+            Point2D { 10, 20 },
+            Size2D { 30, 40 }
+        };
+
+        const auto rotation = 95.0f;
+        const auto rotationCenter = Point2D{ 50, 60 };
+
+        WHEN("finding points")
+        {
+            THEN("returns correct result")
+            {
+                const auto result = ToPoints(box, rotation, rotationCenter);
+                REQUIRE(result.size() == 4);
+                REQUIRE(result[0].x == Approx(50.8361549));
+                REQUIRE(result[0].y == Approx(-21.3898087));
+                REQUIRE(result[1].x == Approx(72.7413635));
+                REQUIRE(result[1].y == Approx(-0.891960144));
+                REQUIRE(result[2].x == Approx(45.4108963));
+                REQUIRE(result[2].y == Approx(28.3149853));
+                REQUIRE(result[3].x == Approx(23.5056877));
+                REQUIRE(result[3].y == Approx(7.81713867));
             }
         }
     }

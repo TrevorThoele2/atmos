@@ -11,7 +11,6 @@
 #include "Work.h"
 #include "ChangeTextCore.h"
 #include "CreateFontAssetResource.h"
-#include "TextBaseSize.h"
 
 #include <Arca/All.h>
 #include <Arca/Either.h>
@@ -21,13 +20,12 @@ namespace Atmos::Render
     class TextCurator final : public ObjectCurator
     {
     public:
-        explicit TextCurator(Init init, TextManager& manager, GraphicsManager& graphicsManager);
+        explicit TextCurator(Init init, TextManager& manager);
     public:
         using ObjectCurator::Handle;
 
         void Handle(const ChangeTextCore& command);
         std::unique_ptr<Asset::Resource::Font> Handle(const Asset::Resource::Create<Asset::Resource::Font>& command);
-        Spatial::Size2D Handle(const TextBaseSize& command);
     protected:
         void WorkImpl(
             Spatial::AxisAlignedBox3D cameraBox,
@@ -39,10 +37,12 @@ namespace Atmos::Render
         Matrices matrices;
 
         TextManager* manager;
-        GraphicsManager* graphicsManager;
         
-        void StageRender(
-            Arca::RelicID id, const Matrix::ReferenceTuple& tuple, Spatial::Point2D cameraTopLeft, const MainSurface& mainSurface);
+        [[nodiscard]] std::optional<RenderText> RenderOf(
+            Arca::RelicID id,
+            const Matrix::ReferenceTuple& tuple,
+            Spatial::Point2D cameraTopLeft,
+            const MainSurface& mainSurface);
     private:
         void AttemptChangeBaseSize(const Matrix::ReferenceTuple& tuple);
     private:
@@ -60,8 +60,7 @@ namespace Arca
         using HandledCommands = HandledCommands<
             Atmos::Work,
             Atmos::Render::ChangeTextCore,
-            Atmos::Asset::Resource::Create<Atmos::Asset::Resource::Font>,
-            Atmos::Render::TextBaseSize>;
+            Atmos::Asset::Resource::Create<Atmos::Asset::Resource::Font>>;
     };
 }
 

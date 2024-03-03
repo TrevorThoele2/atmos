@@ -21,7 +21,7 @@ namespace Atmos::Render
     class ImageCurator final : public ObjectCurator
     {
     public:
-        explicit ImageCurator(Init init, GraphicsManager& graphicsManager);
+        explicit ImageCurator(Init init);
     public:
         using ObjectCurator::Handle;
         void Handle(const ChangeImageCore& command);
@@ -32,15 +32,13 @@ namespace Atmos::Render
             Spatial::Point2D cameraTopLeft,
             const MainSurface& mainSurface) override;
     private:
-        GraphicsManager* graphicsManager;
-
         using Matrix = Arca::All<RenderCore, ImageCore, Arca::Either<Spatial::Bounds>>;
         using Index = Arca::Index<Matrix>;
         Spatial::Grid::Octree<Arca::RelicID, Index> worldOctree;
 
         std::vector<Arca::Index<Matrix>> screenList;
 
-        void StageRender(
+        [[nodiscard]] std::optional<RenderImage> RenderOf(
             Arca::RelicID id,
             const Index::ReferenceValueT& value,
             Spatial::Point2D cameraTopLeft,

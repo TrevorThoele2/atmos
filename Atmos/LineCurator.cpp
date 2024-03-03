@@ -1,12 +1,13 @@
 #include "LineCurator.h"
 
 #include "MainSurface.h"
+#include "StagedRenders.h"
 
 #include "RenderLine.h"
 
 namespace Atmos::Render
 {
-    LineCurator::LineCurator(Init init, GraphicsManager& graphicsManager) : ObjectCurator(init), graphicsManager(&graphicsManager)
+    LineCurator::LineCurator(Init init) : ObjectCurator(init)
     {
         Owner().On<Arca::CreatedKnown<Line>>(
             [this](const Arca::CreatedKnown<Line>& signal)
@@ -57,11 +58,20 @@ namespace Atmos::Render
     {
         const auto indices = octree.AllWithin(cameraBox);
 
+        std::vector<RenderLine> renders;
+        renders.reserve(indices.size());
         for (auto& index : indices)
-            StageRender(*index->value, cameraTopLeft, mainSurface);
+        {
+            const auto render = RenderOf(*index->value, cameraTopLeft, mainSurface);
+            if (render)
+                renders.push_back(*render);
+        }
+
+        const auto stagedRenders = MutablePointer().Of<StagedRenders>();
+        stagedRenders->lines.insert(stagedRenders->lines.end(), renders.begin(), renders.end());
     }
 
-    void LineCurator::StageRender(
+    std::optional<RenderLine> LineCurator::RenderOf(
         const Line& value,
         Spatial::Point2D cameraTopLeft,
         const MainSurface& mainSurface)
@@ -69,26 +79,23 @@ namespace Atmos::Render
         const auto material = value.renderCore->material;
         if (material)
         {
-            const auto z = value.z;
-            const auto width = value.width;
-            const auto color = value.renderCore->color;
-
             std::vector<Spatial::Point2D> adjustedPoints;
             for (auto& point : value.points)
                 adjustedPoints.push_back(Spatial::Point2D{ point.x - cameraTopLeft.x, point.y - cameraTopLeft.y });
 
-            const RenderLine render
+            return RenderLine
             {
-                adjustedPoints,
-                z,
-                material,
-                width,
-                color,
-                ToRenderSpace(Spatial::Space::World),
-                mainSurface.Resource()
+                .points = adjustedPoints,
+                .z = value.z,
+                .material = material,
+                .width = value.width,
+                .color = value.renderCore->color,
+                .space = ToRenderSpace(Spatial::Space::World),
+                .surface = mainSurface.Resource()
             };
-            graphicsManager->Stage(render);
         }
+        else
+            return {};
     }
 
     void LineCurator::OnCreated(const Arca::CreatedKnown<Line>& signal)

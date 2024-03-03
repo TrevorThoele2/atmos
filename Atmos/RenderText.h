@@ -8,6 +8,7 @@
 #include "Color.h"
 #include "MaterialAsset.h"
 #include "SurfaceResource.h"
+#include "FontAssetResource.h"
 
 namespace Atmos::Render
 {
@@ -16,7 +17,7 @@ namespace Atmos::Render
         String string;
 
         Asset::Resource::Font* fontResource;
-        Spatial::AxisAlignedBox2D slice;
+        Spatial::AxisAlignedBox2D viewSlice;
         
         Arca::Index<Asset::Material> material;
 

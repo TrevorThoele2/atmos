@@ -1,13 +1,14 @@
 #include "GridRegionCurator.h"
 
 #include "MainSurface.h"
+#include "StagedRenders.h"
 
 #include "RenderAlgorithms.h"
 #include "RenderRegion.h"
 
 namespace Atmos::Render
 {
-    GridRegionCurator::GridRegionCurator(Init init, GraphicsManager& graphicsManager) : ObjectCurator(init), graphicsManager(&graphicsManager)
+    GridRegionCurator::GridRegionCurator(Init init) : ObjectCurator(init)
     {
         Owner().On<Arca::CreatedKnown<GridRegion>>(
             [this](const Arca::CreatedKnown<GridRegion>& signal)
@@ -59,11 +60,20 @@ namespace Atmos::Render
     {
         const auto indices = octree.AllWithin(cameraBox);
 
+        std::vector<RenderRegion> renders;
+        renders.reserve(indices.size());
         for (auto& index : indices)
-            StageRender(*index->value, cameraTopLeft, mainSurface);
+        {
+            const auto render = StageRender(*index->value, cameraTopLeft, mainSurface);
+            if (render)
+                renders.push_back(*render);
+        }
+        
+        const auto stagedRenders = MutablePointer().Of<StagedRenders>();
+        stagedRenders->regions.insert(stagedRenders->regions.end(), renders.begin(), renders.end());
     }
 
-    void GridRegionCurator::StageRender(
+    std::optional<RenderRegion> GridRegionCurator::StageRender(
         const GridRegion& value,
         Spatial::Point2D cameraTopLeft,
         const MainSurface& mainSurface)
@@ -82,16 +92,17 @@ namespace Atmos::Render
             const auto z = static_cast<Spatial::Point3D::Value>(value.z)
                 * Spatial::Grid::CellSize<Spatial::Point3D::Value>;
 
-            const RenderRegion render
+            return RenderRegion
             {
-                mesh,
-                z,
-                material,
-                ToRenderSpace(Spatial::Space::World),
-                mainSurface.Resource()
+                .mesh = mesh,
+                .z = z,
+                .material = material,
+                .space = ToRenderSpace(Spatial::Space::World),
+                .surface = mainSurface.Resource()
             };
-            graphicsManager->Stage(render);
         }
+        else
+            return {};
     }
 
     void GridRegionCurator::OnCreated(const Arca::CreatedKnown<GridRegion>& signal)

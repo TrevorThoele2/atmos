@@ -1,10 +1,11 @@
 #include "ImageCurator.h"
 
 #include "RenderImage.h"
+#include "StagedRenders.h"
 
 namespace Atmos::Render
 {
-    ImageCurator::ImageCurator(Init init, GraphicsManager& graphicsManager) : ObjectCurator(init), graphicsManager(&graphicsManager)
+    ImageCurator::ImageCurator(Init init) : ObjectCurator(init)
     {
         Owner().On<Arca::MatrixFormed<Matrix>>(
             [this](const Arca::MatrixFormed<Matrix>& signal)
@@ -32,10 +33,23 @@ namespace Atmos::Render
     {
         const auto indices = worldOctree.AllWithin(cameraBox);
 
+        std::vector<RenderImage> renders;
+        renders.reserve(indices.size() + screenList.size());
         for (auto& index : indices)
-            StageRender(index->id, *index->value, cameraTopLeft, mainSurface);
+        {
+            const auto render = RenderOf(index->id, *index->value, cameraTopLeft, mainSurface);
+            if (render)
+                renders.push_back(*render);
+        }
         for (auto& index : screenList)
-            StageRender(index.ID(), *index, cameraTopLeft, mainSurface);
+        {
+            const auto render = RenderOf(index.ID(), *index, cameraTopLeft, mainSurface);
+            if (render)
+                renders.push_back(*render);
+        }
+
+        auto stagedRenders = MutablePointer().Of<StagedRenders>();
+        stagedRenders->images.insert(stagedRenders->images.end(), renders.begin(), renders.end());
     }
 
     void ImageCurator::Handle(const ChangeImageCore& command)
@@ -89,7 +103,7 @@ namespace Atmos::Render
         return ids;
     }
 
-    void ImageCurator::StageRender(
+    std::optional<RenderImage> ImageCurator::RenderOf(
         Arca::RelicID id,
         const Index::ReferenceValueT& value,
         Spatial::Point2D cameraTopLeft,
@@ -103,38 +117,25 @@ namespace Atmos::Render
         if (asset && material && asset->Resource())
         {
             const auto boundsSpace = bounds.Space();
-            const auto assetIndex = core.assetIndex;
-            const auto position = ToRenderPoint(bounds.Position(), cameraTopLeft, boundsSpace);
-            const auto rotation = bounds.Rotation();
-            const auto scalers = bounds.Scalers();
-            const auto color = renderCore.color;
+            const auto assetSlice = asset->Slice(core.assetIndex);
 
-            const auto resource = const_cast<Asset::Resource::Image*>(asset->Resource());
-            
-            const auto scaledAssetSize = Spatial::ScaleBy(asset->Size(), scalers);
-            const auto assetSlice = asset->Slice(assetIndex);
-            const auto scaledAssetSliceSize = Spatial::ScaleBy(assetSlice.size, scalers);
-            const auto assetSliceStandard = ViewSliceClamp(
-                Owner().Find<ViewSlice>(id),
-                Spatial::ToAxisAlignedBox2D(0, 0, scaledAssetSliceSize.width, scaledAssetSliceSize.height));
-            const auto slice = Spatial::ScaleOf(
-                assetSliceStandard + assetSlice.center - Spatial::Point2D{ assetSlice.size.width / 2, assetSlice.size.height / 2 },
-                Spatial::ToAxisAlignedBox2D(0, 0, scaledAssetSize.width, scaledAssetSize.height));
-
-            const RenderImage render
+            return RenderImage
             {
-                resource,
-                slice,
-                material,
-                position,
-                rotation,
-                scalers,
-                color,
-                ToRenderSpace(boundsSpace),
-                mainSurface.Resource()
+                .assetResource = const_cast<Asset::Resource::Image*>(asset->Resource()),
+                .assetSlice = assetSlice,
+                .viewSlice = ViewSliceBox(Owner().Find<ViewSlice>(id)),
+                .material = material,
+                .position = ToRenderPoint(bounds.Position(), cameraTopLeft, boundsSpace),
+                .size = assetSlice.size,
+                .rotation = bounds.Rotation(),
+                .scalers = bounds.Scalers(),
+                .color = renderCore.color,
+                .space = ToRenderSpace(boundsSpace),
+                .surface = mainSurface.Resource()
             };
-            graphicsManager->Stage(render);
         }
+        else
+            return {};
     }
 
     void ImageCurator::OnCreated(const Arca::MatrixFormed<Matrix>& signal)

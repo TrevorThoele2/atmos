@@ -14,7 +14,7 @@ namespace Atmos::Render
     class LineCurator final : public ObjectCurator
     {
     public:
-        explicit LineCurator(Init init, GraphicsManager& graphicsManager);
+        explicit LineCurator(Init init);
     public:
         using ObjectCurator::Handle;
         void Handle(const MoveLine& command);
@@ -25,12 +25,10 @@ namespace Atmos::Render
             Spatial::Point2D cameraTopLeft,
             const MainSurface& mainSurface) override;
     private:
-        GraphicsManager* graphicsManager;
-
         using Index = Arca::Index<Line>;
         Spatial::Grid::Octree<Arca::RelicID, Index> octree;
 
-        void StageRender(
+        [[nodiscard]] std::optional<RenderLine> RenderOf(
             const Line& value,
             Spatial::Point2D cameraTopLeft,
             const MainSurface& mainSurface);

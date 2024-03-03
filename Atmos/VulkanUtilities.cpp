@@ -2,7 +2,7 @@
 
 namespace Atmos::Render::Vulkan
 {
-    glm::vec4 AtmosToVulkanColor(const Color& color)
+    glm::vec4 ToVulkanColor(const Color& color)
     {
         constexpr auto converter = [](Color::Value input)
         {

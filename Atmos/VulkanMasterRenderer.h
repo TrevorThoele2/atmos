@@ -16,6 +16,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include "AllRenders.h"
 #include "Size2D.h"
 #include "Point2D.h"
 
@@ -50,12 +51,8 @@ namespace Atmos::Render::Vulkan
             vk::Format imageFormat,
             vk::Extent2D swapchainExtent);
     public:
-        void StageRender(const RenderImage& imageRender);
-        void StageRender(const RenderLine& lineRender);
-        void StageRender(const RenderRegion& regionRender);
-        void StageRender(const RenderText& textRender);
-        
         void DrawFrame(
+            const AllRenders& allRenders,
             const Spatial::Size2D& screenSize,
             const Spatial::Point2D& mapPosition);
 
@@ -91,12 +88,11 @@ namespace Atmos::Render::Vulkan
         using RendererGroups = std::list<RendererGroup>;
         RendererGroups rendererGroups;
         RendererGroups::iterator currentRendererGroup;
-        
-        [[nodiscard]] bool AllEmpty(const std::vector<RendererBase*>& check) const;
     private:
         std::vector<vk::CommandBuffer> usedCommandBuffers;
 
         void Draw(
+            const AllRenders& allRenders,
             RendererGroup& rendererGroup,
             UniversalData universalData,
             vk::Framebuffer framebuffer,

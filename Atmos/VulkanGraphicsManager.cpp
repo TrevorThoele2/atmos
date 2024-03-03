@@ -12,7 +12,6 @@
 
 #include "VulkanSynchronization.h"
 #include "VulkanCommandBuffer.h"
-#include "VulkanResults.h"
 
 #include "MainSurface.h"
 #include "GraphicsError.h"
@@ -136,33 +135,33 @@ namespace Atmos::Render::Vulkan
         const auto presentQueue = device.getQueue(queueIndices->presentFamily, 0);
         return CreateSurfaceResourceCommon(std::move(surface), *queueIndices, graphicsQueue, presentQueue);
     }
-
-    void GraphicsManager::StageImpl(const RenderImage& render)
-    {
-        StageRender(render);
-    }
-
-    void GraphicsManager::StageImpl(const RenderLine& render)
-    {
-        StageRender(render);
-    }
-
-    void GraphicsManager::StageImpl(const RenderRegion& render)
-    {
-        StageRender(render);
-    }
-
-    void GraphicsManager::StageImpl(const RenderText& render)
-    {
-        StageRender(render);
-    }
-
-    void GraphicsManager::DrawFrameImpl(Resource::Surface& surface, const Spatial::Point2D& mapPosition, const Color& backgroundColor)
+    
+    void GraphicsManager::DrawFrameImpl(const AllRenders& allRenders, const Spatial::Point2D& mapPosition)
     {
         PruneResourcesImpl();
 
-        const auto& vulkan = RequiredResource<Resource::Vulkan::Surface>(surface);
-        vulkan.backing->DrawFrame(mapPosition, backgroundColor);
+        std::unordered_map<Resource::Vulkan::Surface*, AllRenders> surfaces;
+
+        const auto decomposeRenders = [&surfaces, &allRenders](auto rendersSelector)
+        {
+            for (auto& render : (allRenders.*rendersSelector))
+            {
+                auto& surface = RequiredResource<Resource::Vulkan::Surface>(*render.surface);
+                auto found = surfaces.find(&surface);
+                if (found == surfaces.end())
+                    found = surfaces.emplace(&surface, AllRenders{}).first;
+
+                (found->second.*rendersSelector).push_back(render);
+            }
+        };
+
+        decomposeRenders(&AllRenders::images);
+        decomposeRenders(&AllRenders::lines);
+        decomposeRenders(&AllRenders::regions);
+        decomposeRenders(&AllRenders::texts);
+
+        for(auto& surface : surfaces)
+            surface.first->backing->DrawFrame(surface.second, mapPosition);
     }
 
     void GraphicsManager::ResourceDestroyingImpl(Asset::Resource::Image& resource)

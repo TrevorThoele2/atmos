@@ -45,30 +45,10 @@ namespace Atmos::Render
     {
         return CreateMainSurfaceResourceImpl(window);
     }
-
-    void GraphicsManager::Stage(const RenderImage& render)
+    
+    void GraphicsManager::DrawFrame(const AllRenders& allRenders, const Spatial::Point2D& mapPosition)
     {
-        StageImpl(render);
-    }
-
-    void GraphicsManager::Stage(const RenderLine& render)
-    {
-        StageImpl(render);
-    }
-
-    void GraphicsManager::Stage(const RenderRegion& render)
-    {
-        StageImpl(render);
-    }
-
-    void GraphicsManager::Stage(const RenderText& render)
-    {
-        StageImpl(render);
-    }
-
-    void GraphicsManager::DrawFrame(Resource::Surface& surface, const Spatial::Point2D& mapPosition, const Color& backgroundColor)
-    {
-        DrawFrameImpl(surface, mapPosition, backgroundColor);
+        DrawFrameImpl(allRenders, mapPosition);
     }
 
     void GraphicsManager::ResourceDestroying(Asset::Resource::Image& resource)

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "VulkanRendererBase.h"
-#include "VulkanQuad.h"
+#include "VulkanTextured.h"
 #include "VulkanObjectLayering.h"
 #include "VulkanDescriptorSetPool.h"
 #include "VulkanMappedConduits.h"
@@ -14,8 +14,6 @@
 #include "FontAssetResource.h"
 
 #include "Size2D.h"
-
-#include "Logger.h"
 
 namespace Atmos::Render::Vulkan
 {
@@ -56,16 +54,13 @@ namespace Atmos::Render::Vulkan
             vk::RenderPass renderPass,
             vk::Extent2D swapchainExtent,
             GlyphAtlas& glyphAtlas);
-
-        void StageRender(const RenderText& textRender);
-
+        
         [[nodiscard]] std::unique_ptr<Raster> Start(
+            const AllRenders& allRenders,
             vk::CommandBuffer drawCommandBuffer,
             const UniversalDataBuffer& universalDataBuffer) override;
 
         void MaterialDestroying(Arca::Index<Asset::Material> material);
-
-        [[nodiscard]] size_t RenderCount() const override;
     private:
         struct StagedTextRender
         {
@@ -76,7 +71,7 @@ namespace Atmos::Render::Vulkan
             vk::ImageView atlasImageView;
 
             Asset::Resource::Font* fontResource;
-            Spatial::AxisAlignedBox2D slice;
+            Spatial::AxisAlignedBox2D viewSlice;
 
             Arca::Index<Asset::Material> material;
 
@@ -94,20 +89,18 @@ namespace Atmos::Render::Vulkan
 
             Resource::Surface* surface;
         };
-
-        std::vector<StagedTextRender> stagedTextRenders;
-
+        
         [[nodiscard]] std::optional<StagedTextRender> ToStagedRender(const RenderText& render);
     private:
         MemoryPool memoryPool;
 
-        static constexpr int maxQuadCount = 10000;
+        static constexpr int maxElementCount = 10000;
 
         StagedBuffer vertexBuffer;
-        static constexpr int vertexStride = maxQuadCount * 4;
+        static constexpr int vertexStride = maxElementCount * 4;
 
         StagedBuffer indexBuffer;
-        static constexpr int indexStride = maxQuadCount * 6;
+        static constexpr int indexStride = maxElementCount * 6;
     private:
         using MappedConduits = MappedConduits<Asset::Material>;
 
@@ -123,21 +116,26 @@ namespace Atmos::Render::Vulkan
             [[nodiscard]] bool IsDone() const override;
             [[nodiscard]] ObjectLayeringKey NextLayer() const override;
         private:
-            using ObjectLayering = ObjectLayering<const CombinedImageSamplerDescriptor*, Quad>;
+            using ObjectLayering = ObjectLayering<const CombinedImageSamplerDescriptor*, Textured>;
             using Layer = ObjectLayering::Layer;
 
             ObjectLayering layers;
             ObjectLayering::iterator currentLayer = {};
             std::unordered_map<DescriptorSetKey, vk::DescriptorSet> descriptorSets = {};
 
-            std::uint32_t totalQuadCount = 0;
+            std::uint32_t totalVertexCount = 0;
+            std::uint32_t totalIndexCount = 0;
         private:
             TextRenderer* renderer;
         private:
-            [[nodiscard]] std::vector<Pass> NextPasses(const Layer& layer);
-            [[nodiscard]] std::vector<Pass> NextPasses(const Layer::MaterialGroup& materialGroup, MappedConduits::Group& conduitGroup);
-            [[nodiscard]] Command WriteData(const std::vector<Quad>& quads, std::uint32_t startQuadCount);
-            [[nodiscard]] Command Draw(std::uint32_t startQuadCount, std::uint32_t quadCount, Conduit& conduit, vk::DescriptorSet descriptorSet);
+            [[nodiscard]] std::vector<Pass> NextPasses(
+                const Layer& layer);
+            [[nodiscard]] std::vector<Pass> NextPasses(
+                const Layer::MaterialGroup& materialGroup, MappedConduits::Group& conduitGroup);
+            [[nodiscard]] Command WriteData(
+                const std::vector<Textured>& elements, std::uint32_t startVertexCount, std::uint32_t startIndexCount);
+            [[nodiscard]] Command Draw(
+                std::uint32_t vertexCount, std::uint32_t indexCount, std::uint32_t startIndexCount, Conduit& conduit, vk::DescriptorSet descriptorSet);
         private:
             friend TextRenderer;
         };
@@ -151,10 +149,10 @@ namespace Atmos::Render::Vulkan
             Spatial::Point3D::Value z,
             Arca::RelicID materialID,
             Vulkan::CombinedImageSamplerDescriptor& descriptor,
-            std::vector<Quad> vertices,
+            std::vector<Textured> elements,
             Raster& raster);
     private:
-        [[nodiscard]] static std::vector<Quad> ToQuads(const StagedTextRender& render);
+        [[nodiscard]] static std::vector<Textured> ToElements(const StagedTextRender& render);
     private:
         vk::UniqueSampler sampler;
 

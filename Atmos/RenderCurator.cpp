@@ -6,6 +6,7 @@
 
 #include "MainSurface.h"
 #include "Camera.h"
+#include "StagedRenders.h"
 
 namespace Atmos::Render
 {
@@ -20,11 +21,22 @@ namespace Atmos::Render
             Spatial::Point2D::Value(camera->Position().x),
             Spatial::Point2D::Value(camera->Position().y)
         };
+        
+        const auto staged = MutablePointer().Of<StagedRenders>();
+        const auto allRenders = AllRenders
+        {
+            staged->images,
+            staged->lines,
+            staged->texts,
+            staged->regions
+        };
 
-        const auto mainSurface = Owner().Find<MainSurface>();
-        const auto backgroundColor = mainSurface->core->backgroundColor;
+        graphicsManager->DrawFrame(allRenders, mapPosition);
 
-        graphicsManager->DrawFrame(*mainSurface->Resource(), mapPosition, backgroundColor);
+        staged->images = {};
+        staged->lines = {};
+        staged->texts = {};
+        staged->regions = {};
     }
 
     void Curator::Handle(const ChangeColor& command)

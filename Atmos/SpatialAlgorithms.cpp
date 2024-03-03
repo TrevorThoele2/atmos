@@ -139,7 +139,7 @@ namespace Atmos::Spatial
         const auto twoY = two.from.y - two.to.y;
 
         const auto denominator = Determinant(oneX, oneY, twoX, twoY);
-        if (denominator == 0)
+        if (denominator < std::numeric_limits<float>::epsilon() && denominator > -std::numeric_limits<float>::epsilon())
             return {};
 
         const auto oneDeterminant = Determinant(one.from.x, one.from.y, one.to.x, one.to.y);
@@ -249,12 +249,35 @@ namespace Atmos::Spatial
         const auto [from, to] = line;
 
         const auto value = (to.x - from.x) * (point.y - from.y) - (to.y - from.y) * (point.x - from.x);
-        if (value == 0)
+        if (value < std::numeric_limits<float>::epsilon() && value > -std::numeric_limits<float>::epsilon())
             return Side::On;
         else if (value > 0)
             return Side::Left;
         else
             return Side::Right;
+    }
+
+    AxisAlignedBox2D Clip(AxisAlignedBox2D box, AxisAlignedBox2D clip)
+    {
+        constexpr auto toPoints = [](AxisAlignedBox2D convert) -> std::vector<Point2D>
+        {
+            return std::vector<Point2D>
+            {
+                { convert.Left(), convert.Top() },
+                { convert.Right(), convert.Top() },
+                { convert.Right(), convert.Bottom() },
+                { convert.Left(), convert.Bottom() }
+            };
+        };
+
+        const auto usePoints = toPoints(box);
+        const auto useClip = toPoints(clip);
+
+        const auto result = Clip(usePoints, useClip);
+
+        return result.size() == 4
+            ? ToAxisAlignedBox2D(result[0].x, result[0].y, result[2].x, result[2].y)
+            : AxisAlignedBox2D{};
     }
 
     std::vector<Point2D> Clip(std::vector<Point2D> points, std::vector<Point2D> clip)
@@ -277,13 +300,13 @@ namespace Atmos::Spatial
                 const auto intersectingPoint = Intersection(Line2D{ previousPoint, currentPoint }, clipEdge);
                 const auto currentSide = SideOf(clipEdge, currentPoint);
                 const auto previousSide = SideOf(clipEdge, previousPoint);
-                if (currentSide == Side::Right)
+                if (currentSide == Side::Left)
                 {
-                    if (previousSide == Side::Left)
+                    if (previousSide != Side::Left)
                         outputList.push_back(*intersectingPoint);
                     outputList.push_back(currentPoint);
                 }
-                else if (previousSide == Side::Right)
+                else if (previousSide == Side::Left)
                     outputList.push_back(*intersectingPoint);
             }
         }
@@ -295,10 +318,10 @@ namespace Atmos::Spatial
     {
         return Spatial::ToAxisAlignedBox2D
         (
-            column * cellSize.width,
-            row * cellSize.height,
-            column * cellSize.width + cellSize.width,
-            row * cellSize.height + cellSize.height
+            static_cast<AxisAlignedBox3D::Coordinate>(column) * cellSize.width,
+            static_cast<AxisAlignedBox3D::Coordinate>(row) * cellSize.height,
+            static_cast<AxisAlignedBox3D::Coordinate>(column) * cellSize.width + cellSize.width,
+            static_cast<AxisAlignedBox3D::Coordinate>(row) * cellSize.height + cellSize.height
         );
     }
 
@@ -306,13 +329,31 @@ namespace Atmos::Spatial
     {
         return Spatial::ToAxisAlignedBox3D
         (
-            column * cellSize.width,
-            row * cellSize.height,
-            depth * cellSize.depth,
-            column * cellSize.width + cellSize.width,
-            row * cellSize.height + cellSize.height,
-            depth * cellSize.depth + cellSize.depth
+            static_cast<AxisAlignedBox3D::Coordinate>(column) * cellSize.width,
+            static_cast<AxisAlignedBox3D::Coordinate>(row) * cellSize.height,
+            static_cast<AxisAlignedBox3D::Coordinate>(depth) * cellSize.depth,
+            static_cast<AxisAlignedBox3D::Coordinate>(column) * cellSize.width + cellSize.width,
+            static_cast<AxisAlignedBox3D::Coordinate>(row) * cellSize.height + cellSize.height,
+            static_cast<AxisAlignedBox3D::Coordinate>(depth) * cellSize.depth + cellSize.depth
         );
+    }
+
+    Point2D Rotate(Point2D point, Angle2D rotation, Point2D rotationCenter)
+    {
+        const auto sinAngle = std::sin(rotation);
+        const auto cosAngle = std::cos(rotation);
+
+        const auto x = point.x - rotationCenter.x;
+        const auto y = point.y - rotationCenter.y;
+
+        const auto rotatedX = x * cosAngle - y * sinAngle;
+        const auto rotatedY = x * sinAngle + y * cosAngle;
+
+        return Spatial::Point2D
+        {
+            rotatedX + rotationCenter.x,
+            rotatedY + rotationCenter.y
+        };
     }
 
     Point2D operator+(Point2D left, Point2D right)
@@ -402,8 +443,8 @@ namespace Atmos::Spatial
     {
         return
         {
-            point.x * Grid::CellSize<float>,
-            point.y * Grid::CellSize<float>
+            static_cast<Point2D::Value>(point.x) * Grid::CellSize<float>,
+            static_cast<Point2D::Value>(point.y) * Grid::CellSize<float>
         };
     }
 
@@ -430,8 +471,8 @@ namespace Atmos::Spatial
     {
         return
         {
-            point.x * Grid::CellSize<float>,
-            point.y * Grid::CellSize<float>,
+            static_cast<Point3D::Value>(point.x) * Grid::CellSize<float>,
+            static_cast<Point3D::Value>(point.y) * Grid::CellSize<float>,
             z
         };
     }
@@ -446,9 +487,27 @@ namespace Atmos::Spatial
         };
     }
 
+    std::vector<Point2D> ToPoints(
+        AxisAlignedBox2D box,
+        Spatial::Angle2D rotation,
+        Spatial::Point2D rotationCenter)
+    {
+        const auto center = box.center;
+        const auto size = box.size;
+
+        const auto halfWidth = size.width / 2;
+        const auto halfHeight = size.height / 2;
+        const auto topLeft = Rotate({ center.x - halfWidth, center.y - halfHeight }, rotation, rotationCenter);
+        const auto topRight = Rotate({ center.x + halfWidth, center.y - halfHeight }, rotation, rotationCenter);
+        const auto bottomRight = Rotate({ center.x + halfWidth, center.y + halfHeight }, rotation, rotationCenter);
+        const auto bottomLeft = Rotate({ center.x - halfWidth, center.y + halfHeight }, rotation, rotationCenter);
+
+        return { topLeft, topRight, bottomRight, bottomLeft };
+    }
+
     Angle2D ToDegrees(Angle2D angle)
     {
-        const Angle2D halfCircleDegrees = 180;
+        constexpr Angle2D halfCircleDegrees = 180;
         return halfCircleDegrees / (pi<Angle2D> * angle);
     }
 
@@ -470,7 +529,7 @@ namespace Atmos::Spatial
             top + size.height / 2
         };
 
-        return AxisAlignedBox2D(center, size);
+        return { center, size };
     }
 
     AxisAlignedBox3D ToAxisAlignedBox3D(
@@ -495,7 +554,7 @@ namespace Atmos::Spatial
             farZ + size.depth / 2
         };
 
-        return AxisAlignedBox3D(center, size);
+        return { center, size };
     }
 
     namespace Grid
