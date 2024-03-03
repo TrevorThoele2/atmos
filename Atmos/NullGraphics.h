@@ -7,7 +7,7 @@ namespace Atmos
     class NullGraphicsManager : public GraphicsManager
     {
     public:
-        NullGraphicsManager() = default;
+        NullGraphicsManager(ObjectManager& objectManager);
 
         void SetFullscreen(bool set) override;
 

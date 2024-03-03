@@ -14,14 +14,12 @@
 #include "CanvasView.h"
 #include "ObjectReference.h"
 
-#include "Join.h"
+#include "Flags.h"
 
 namespace Atmos
 {
     class Position2D;
     class FilePath;
-    template<class enumT>
-    class Flags;
     class Color;
 
     class LineRender;

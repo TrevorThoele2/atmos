@@ -1,6 +1,8 @@
 
 #include "InputSystem.h"
 
+#include "NullInput.h"
+
 #include "ObjectManager.h"
 #include "InitializationFileSystem.h"
 
@@ -8,7 +10,7 @@ namespace Atmos
 {
     namespace Input
     {
-        System::System(ObjectManager& manager) : UniqueProviderSystem(manager)
+        System::System(ObjectManager& manager) : UniqueProviderSystem(manager, UniqueProviderSystem::ValuePtr(new NullManager()))
         {}
 
         System::System(const ::Inscription::Table<System>& table) :

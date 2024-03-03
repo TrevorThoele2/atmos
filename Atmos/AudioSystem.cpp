@@ -1,9 +1,12 @@
 
 #include "AudioSystem.h"
 
+#include "NullAudio.h"
+
 namespace Atmos
 {
-    AudioSystem::AudioSystem(ObjectManager& manager) : UniqueProviderSystem(manager)
+    AudioSystem::AudioSystem(ObjectManager& manager) :
+        UniqueProviderSystem(manager, UniqueProviderSystem::ValuePtr(new NullAudioManager()))
     {}
 
     AudioSystem::AudioSystem(const ::Inscription::Table<AudioSystem>& table) :

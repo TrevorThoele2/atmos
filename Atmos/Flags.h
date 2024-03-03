@@ -3,6 +3,7 @@
 
 #include <type_traits>
 #include <initializer_list>
+
 #include "Serialization.h"
 
 namespace Atmos

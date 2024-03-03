@@ -6,7 +6,8 @@
 
 #include "StringUtility.h"
 #include "FileUtility.h"
-#include <Inscription/TextFile.h>
+#include <Inscription/OutputTextFile.h>
+#include <Inscription/InputTextFile.h>
 
 namespace Atmos
 {
@@ -20,8 +21,8 @@ namespace Atmos
     void InitializationFileSystem::Save()
     {
         FilePath filePath = CreateFilePath();
-        ::Inscription::TextOutFile file(filePath);
-        file.Flush();
+        ::Inscription::OutputTextFile file(filePath);
+        file.ClearFile();
 
         file << graphics.FileString();
         file << sound.FileString();
@@ -47,7 +48,7 @@ namespace Atmos
             return;
         }
 
-        ::Inscription::TextInFile file(filePath);
+        ::Inscription::InputTextFile file(filePath);
 
         auto sectionList = FileSectionsAsList();
 
@@ -73,9 +74,9 @@ namespace Atmos
             return false;
         };
 
-        while (!file.Eof())
+        while (!file.IsAtEndOfFile())
         {
-            file.GetLine(line);
+            line = file.GetLine();
             if (IsAllWhitespace(line))
                 continue;
 
