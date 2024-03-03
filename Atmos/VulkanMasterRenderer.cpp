@@ -22,6 +22,7 @@ namespace Atmos::Render::Vulkan
         graphicsQueue(graphicsQueue),
         presentQueue(presentQueue),
         commandBuffers(*device, graphicsQueueIndex),
+        universalDataBuffer(0, memoryProperties, *device),
         reliquary(&reliquary)
     {
         imageAvailableSemaphores = CreateSemaphores(*device, maxFramesInFlight);
@@ -50,8 +51,6 @@ namespace Atmos::Render::Vulkan
         vk::Extent2D swapchainExtent)
     {
         this->swapchain = swapchain;
-        this->swapchainImages = swapchainImages;
-        this->swapchainImageViews = swapchainImageViews;
         this->swapchainExtent = swapchainExtent;
 
         renderPass = CreateRenderPass(*device, imageFormat);
@@ -67,39 +66,42 @@ namespace Atmos::Render::Vulkan
         for (auto& material : materialBatch)
             materials.push_back(&material);
 
-        renderers.emplace(
-            device,
-            graphicsQueue,
-            memoryProperties,
-            renderPass.get(),
-            swapchainImages.size(),
-            swapchainExtent,
-            materials);
-        iterableRenderers = renderers->AsIterable();
+        rendererGroups.clear();
+        for (uint32_t i = 0; i < swapchainImages.size(); ++i)
+        {
+            rendererGroups.emplace_back(
+                device,
+                graphicsQueue,
+                memoryProperties,
+                renderPass.get(),
+                swapchainExtent,
+                materials);
+        }
+        currentRendererGroup = rendererGroups.begin();
+
+        commandBuffers.Reserve(swapchainImages.size());
     }
 
     void MasterRenderer::StageRender(const ImageRender& imageRender)
     {
-        renderers->quad.StageRender(imageRender);
+        currentRendererGroup->quad.StageRender(imageRender);
     }
 
     void MasterRenderer::StageRender(const LineRender& lineRender)
     {
-        renderers->line.StageRender(lineRender);
+        currentRendererGroup->line.StageRender(lineRender);
     }
 
     void MasterRenderer::StageRender(const RegionRender& regionRender)
     {
-        renderers->region.StageRender(regionRender);
+        currentRendererGroup->region.StageRender(regionRender);
     }
 
-    void MasterRenderer::DrawFrame(
-        const Spatial::ScreenSize& screenSize,
-        const Spatial::ScreenPoint& mapPosition)
+    void MasterRenderer::DrawFrame(const Spatial::ScreenSize& screenSize, const Spatial::ScreenPoint& mapPosition)
     {
         device->waitForFences(inFlightFences[previousFrame].get(), VK_TRUE, UINT64_MAX);
 
-        if (AllEmpty(iterableRenderers))
+        if (AllEmpty(currentRendererGroup->AsIterable()))
             return;
 
         auto imageIndex = device->acquireNextImageKHR(
@@ -116,20 +118,26 @@ namespace Atmos::Render::Vulkan
         else if (IsError(imageIndex.result) && imageIndex.result != vk::Result::eSuboptimalKHR)
             throw GraphicsError("Could not acquire next image in swapchain.");
 
-        if (imagesInFlight[imageIndex.value])
-            device->waitForFences(1, &imagesInFlight[imageIndex.value], VK_TRUE, UINT64_MAX);
-        imagesInFlight[imageIndex.value] = inFlightFences[currentFrame].get();
+        const auto currentSwapchainImage = imageIndex.value;
 
-        commandBuffers.Reserve(swapchainImages.size());
+        if (imagesInFlight[currentSwapchainImage])
+            device->waitForFences(1, &imagesInFlight[currentSwapchainImage], VK_TRUE, UINT64_MAX);
+        imagesInFlight[currentSwapchainImage] = inFlightFences[currentFrame].get();
 
         auto commandBuffer = commandBuffers.Next();
+        for (auto& usedCommandBuffer : usedCommandBuffers)
+            commandBuffers.DoneWith(usedCommandBuffer);
+        usedCommandBuffers.clear();
+        usedCommandBuffers.push_back(commandBuffer);
 
         const auto endFrame = [&]()
         {
-            commandBuffers.DoneWith(commandBuffer);
-
             previousFrame = currentFrame;
             currentFrame = (currentFrame + 1) % maxFramesInFlight;
+
+            ++currentRendererGroup;
+            if (currentRendererGroup == rendererGroups.end())
+                currentRendererGroup = rendererGroups.begin();
         };
 
         try
@@ -138,7 +146,11 @@ namespace Atmos::Render::Vulkan
                 glm::vec2{ screenSize.width, screenSize.height },
                 glm::vec2{ mapPosition.x, mapPosition.y });
 
-            Draw(commandBuffer, imageIndex.value, universalData);
+            Draw(
+                *currentRendererGroup,
+                universalData,
+                framebuffers[currentSwapchainImage].get(),
+                commandBuffer);
 
             vk::Semaphore waitSemaphores[] = { imageAvailableSemaphores[currentFrame].get() };
             vk::Semaphore signalSemaphores[] = { renderFinishedSemaphores[currentFrame].get() };
@@ -191,12 +203,11 @@ namespace Atmos::Render::Vulkan
         device->waitForFences(fences, VK_TRUE, UINT64_MAX);
     }
 
-    MasterRenderer::Renderers::Renderers(
+    MasterRenderer::RendererGroup::RendererGroup(
         std::shared_ptr<vk::Device> device,
         vk::Queue graphicsQueue,
         vk::PhysicalDeviceMemoryProperties memoryProperties,
         vk::RenderPass renderPass,
-        uint32_t swapchainImageCount,
         vk::Extent2D swapchainExtent,
         const std::vector<const Asset::Material*>& materials)
         :
@@ -205,7 +216,6 @@ namespace Atmos::Render::Vulkan
             graphicsQueue,
             memoryProperties,
             renderPass,
-            swapchainImageCount,
             swapchainExtent,
             materials),
         line(
@@ -213,7 +223,6 @@ namespace Atmos::Render::Vulkan
             graphicsQueue,
             memoryProperties,
             renderPass,
-            swapchainImageCount,
             swapchainExtent,
             materials),
         region(
@@ -221,12 +230,11 @@ namespace Atmos::Render::Vulkan
             graphicsQueue,
             memoryProperties,
             renderPass,
-            swapchainImageCount,
             swapchainExtent,
             materials)
     {}
 
-    auto MasterRenderer::Renderers::AsIterable() -> IterableRenderers
+    auto MasterRenderer::RendererGroup::AsIterable() -> IterableRenderers
     {
         return { &quad, &line, &region };
     }
@@ -234,44 +242,41 @@ namespace Atmos::Render::Vulkan
     bool MasterRenderer::AllEmpty(const std::vector<RendererBase*>& check) const
     {
         for (auto& renderer : check)
-            if (renderer->LayerCount() != 0)
+            if (renderer->RenderCount() != 0)
                 return false;
 
         return true;
     }
 
     void MasterRenderer::Draw(
-        vk::CommandBuffer commandBuffer,
-        uint32_t currentSwapchainImage,
-        UniversalData universalData)
+        RendererGroup& rendererGroup,
+        UniversalData universalData,
+        vk::Framebuffer framebuffer,
+        vk::CommandBuffer commandBuffer)
     {
+        universalDataBuffer.PushBytes(universalData);
+
         const vk::CommandBufferBeginInfo beginInfo({}, nullptr);
         commandBuffer.begin(beginInfo);
 
         const vk::ClearValue clearValue(vk::ClearColorValue(std::array<float, 4> { 0.0f, 0.0f, 0.0f, 1.0f }));
         const vk::RenderPassBeginInfo renderPassBeginInfo(
             renderPass.get(),
-            framebuffers[currentSwapchainImage].get(),
+            framebuffer,
             vk::Rect2D({ 0, 0 }, swapchainExtent),
             1,
             &clearValue);
         commandBuffer.beginRenderPass(renderPassBeginInfo, vk::SubpassContents::eInline);
 
-        std::vector<RendererBase*> startedRenderers;
-        for (auto& renderer : iterableRenderers)
-        {
-            if (renderer->LayerCount() > 0)
-            {
-                startedRenderers.push_back(renderer);
-                renderer->Start(commandBuffer, commandBuffers.Pool(), currentSwapchainImage, universalData);
-            }
-        }
+        using Rasters = std::vector<std::shared_ptr<Raster>>;
+        Rasters startedRasters;
+        for (auto& renderer : rendererGroup.AsIterable())
+            if (renderer->RenderCount() > 0)
+                startedRasters.push_back(
+                    renderer->Start(commandBuffer, commandBuffers.Pool(), universalDataBuffer));
 
-        const auto end = [&startedRenderers, &commandBuffer]()
+        const auto end = [&commandBuffer]()
         {
-            for (auto& renderer : startedRenderers)
-                renderer->End();
-
             commandBuffer.endRenderPass();
 
             commandBuffer.end();
@@ -279,35 +284,35 @@ namespace Atmos::Render::Vulkan
 
         try
         {
-            auto availableRenderers = startedRenderers;
+            auto availableRasters = startedRasters;
             while (true)
             {
-                IterableRenderers::iterator nextRenderer;
-                for (auto checkRenderer = startedRenderers.begin(); checkRenderer != startedRenderers.end(); ++checkRenderer)
+                Rasters::iterator nextRaster;
+                for (auto checkRaster = startedRasters.begin(); checkRaster != startedRasters.end(); ++checkRaster)
                 {
-                    if (!(*checkRenderer)->IsDone())
+                    if (!(*checkRaster)->IsDone())
                     {
-                        nextRenderer = checkRenderer;
+                        nextRaster = checkRaster;
                         break;
                     }
                 }
 
-                for(auto checkRenderer = availableRenderers.begin(); checkRenderer != availableRenderers.end();)
+                for(auto checkRaster = availableRasters.begin(); checkRaster != availableRasters.end();)
                 {
-                    if ((*checkRenderer)->IsDone())
-                        checkRenderer = availableRenderers.erase(checkRenderer);
+                    if ((*checkRaster)->IsDone())
+                        checkRaster = availableRasters.erase(checkRaster);
                     else 
                     {
-                        if ((*checkRenderer)->NextLayer() < (*nextRenderer)->NextLayer())
-                            nextRenderer = checkRenderer;
-                        ++checkRenderer;
+                        if ((*checkRaster)->NextLayer() < (*nextRaster)->NextLayer())
+                            nextRaster = checkRaster;
+                        ++checkRaster;
                     }
                 }
 
-                if (availableRenderers.empty())
+                if (availableRasters.empty())
                     break;
 
-                (*nextRenderer)->DrawNextLayer();
+                (*nextRaster)->DrawNextLayer();
             }
         }
         catch(...)
@@ -413,13 +418,15 @@ namespace Atmos::Render::Vulkan
 
     void MasterRenderer::OnMaterialCreated(const Arca::CreatedKnown<Asset::Material>& signal)
     {
-        for (auto& renderer : iterableRenderers)
-            renderer->MaterialCreated(*signal.reference);
+        for (auto& group : rendererGroups)
+            for (auto& renderer : group.AsIterable())
+                renderer->MaterialCreated(*signal.reference);
     }
 
     void MasterRenderer::OnMaterialDestroying(const Arca::DestroyingKnown<Asset::Material>& signal)
     {
-        for (auto& renderer : iterableRenderers)
-            renderer->MaterialDestroying(*signal.reference);
+        for (auto& group : rendererGroups)
+            for (auto& renderer : group.AsIterable())
+                renderer->MaterialDestroying(*signal.reference);
     }
 }

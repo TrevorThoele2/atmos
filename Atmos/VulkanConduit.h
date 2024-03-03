@@ -1,9 +1,7 @@
 #pragma once
 
 #include "VulkanIncludes.h"
-#include "VulkanConduitExecutionContext.h"
 #include "VulkanVertexInput.h"
-#include "VulkanUniversalData.h"
 #include "ShaderAsset.h"
 
 namespace Atmos::Render::Vulkan
@@ -17,8 +15,6 @@ namespace Atmos::Render::Vulkan
             const Asset::Shader* fragmentShader,
             vk::Device device,
             vk::PipelineLayout layout,
-            uint32_t swapchainImageCount,
-            vk::PhysicalDeviceMemoryProperties memoryProperties,
             vk::RenderPass renderPass,
             VertexInput vertexInput,
             vk::Extent2D swapchainExtent,
@@ -28,15 +24,9 @@ namespace Atmos::Render::Vulkan
         Conduit(Conduit&& arg) noexcept = default;
         Conduit& operator=(Conduit&& arg) = default;
 
-        void PrepareExecution(
-            vk::DescriptorSet descriptorSet, std::int32_t currentSwapchainImage, UniversalData universalData);
-
         void Bind(const vk::CommandBuffer& commandBuffer);
     private:
         vk::UniquePipeline pipeline;
-
-        using ExecutionContext = ConduitExecutionContext;
-        std::vector<ExecutionContext> executionContexts;
     private:
         vk::Device device;
     private:

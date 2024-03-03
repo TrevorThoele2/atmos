@@ -21,26 +21,22 @@ namespace Atmos::Render::Vulkan
             vk::Queue graphicsQueue,
             vk::PhysicalDeviceMemoryProperties memoryProperties,
             vk::RenderPass renderPass,
-            uint32_t swapchainImageCount,
             vk::Extent2D swapchainExtent,
             const std::vector<const Asset::Material*>& materials);
 
         void StageRender(const RegionRender& regionRender);
 
-        void Start(
+        [[nodiscard]] std::unique_ptr<Raster> Start(
             vk::CommandBuffer commandBuffer,
             vk::CommandPool commandPool,
-            uint32_t currentSwapchainImage,
-            UniversalData universalData) override;
-        void DrawNextLayer() override;
-        void End() override;
+            const UniversalDataBuffer& universalDataBuffer) override;
 
         void MaterialCreated(const Asset::Material& material) override;
         void MaterialDestroying(const Asset::Material& material) override;
 
-        [[nodiscard]] bool IsDone() const override;
-        [[nodiscard]] Spatial::Point3D::Value NextLayer() const override;
-        [[nodiscard]] size_t LayerCount() const override;
+        [[nodiscard]] size_t RenderCount() const override;
+    private:
+        std::vector<RegionRender> stagedRegionRenders;
     private:
         struct Vertex
         {
@@ -68,46 +64,45 @@ namespace Atmos::Render::Vulkan
         StagedBuffer indexBuffer;
         static const int indexStride = stride * 2;
     private:
-        using ObjectLayering = ObjectLayering<void, Region>;
-        using Layer = ObjectLayering::Layer;
-        ObjectLayering layers;
-    private:
-        DescriptorSetPool descriptorSetPool;
-    private:
-        MappedConduits mappedConduits;
-    private:
-        struct SetupDescriptorSet
+        class Raster final : public Vulkan::Raster
         {
-            uint32_t swapchainImage;
-            vk::DescriptorSet value;
-            SetupDescriptorSet(uint32_t swapchainImage, vk::DescriptorSet value) :
-                swapchainImage(swapchainImage), value(value)
-            {}
-        };
+        public:
+            Raster(
+                vk::CommandBuffer commandBuffer,
+                vk::CommandPool commandPool,
+                RegionRenderer& renderer);
 
-        struct DrawContext
-        {
-            std::vector<const Asset::Material*> materials = {};
-            vk::CommandBuffer commandBuffer = {};
-            vk::CommandPool commandPool = {};
+            void DrawNextLayer() override;
+
+            [[nodiscard]] bool IsDone() const override;
+            [[nodiscard]] Spatial::Point3D::Value NextLayer() const override;
+        private:
+            using ObjectLayering = ObjectLayering<void, Region>;
+            using Layer = ObjectLayering::Layer;
+
+            vk::CommandBuffer commandBuffer;
+            vk::CommandPool commandPool;
+
+            ObjectLayering layers;
             ObjectLayering::iterator currentLayer = {};
-            uint32_t currentSwapchainImage = 0;
-            UniversalData universalData = {};
-            std::vector<SetupDescriptorSet> setupDescriptorSets = {};
+            vk::DescriptorSet setupDescriptorSet = {};
 
             std::uint32_t vertexCount = 0;
             std::uint32_t indexCount = 0;
+        private:
+            RegionRenderer* renderer;
+        private:
+            void Draw(Layer& layer);
+            void WriteToBuffers(const Layer::MaterialGroup& group, const Asset::Material& materialAsset);
+            void WriteToBuffers(const std::vector<Region>& regions);
+        private:
+            friend RegionRenderer;
         };
 
-        std::optional<DrawContext> drawContext;
-
-        void Draw(Layer& layer);
-        void WriteToBuffers(
-            const Layer::MaterialGroup& group,
-            const Asset::Material& materialAsset);
-        void WriteToBuffers(
-            Conduit& conduit,
-            const std::vector<Region>& regions);
+        void AddToRaster(const RegionRender& regionRender, Raster& raster);
+    private:
+        DescriptorSetPool descriptorSetPool;
+        MappedConduits mappedConduits;
     private:
         vk::Queue graphicsQueue;
 

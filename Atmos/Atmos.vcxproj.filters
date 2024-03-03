@@ -354,12 +354,6 @@
     <Filter Include="Source Files\Render\Vulkan\Resource">
       <UniqueIdentifier>{4aeba525-17c5-415f-8a91-25fa5d9248d2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Render\Vulkan\Renderer\Infrastructure">
-      <UniqueIdentifier>{ea369583-c431-49b1-b4f7-91e77fb04d4b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Render\Vulkan\Renderer\Infrastructure">
-      <UniqueIdentifier>{46a4990e-f978-4a78-bd32-455486b667bf}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Render\Algorithms">
       <UniqueIdentifier>{aec8cb75-277f-44d2-a555-dc6dcc660d9b}</UniqueIdentifier>
     </Filter>
@@ -428,6 +422,12 @@
     </Filter>
     <Filter Include="Source Files\Render\Vulkan\Conduit">
       <UniqueIdentifier>{a14c3d49-baeb-4249-9379-6b6158295ede}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Render\Vulkan\Renderer\Layering">
+      <UniqueIdentifier>{ea369583-c431-49b1-b4f7-91e77fb04d4b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Render\Vulkan\Renderer\Layering">
+      <UniqueIdentifier>{46a4990e-f978-4a78-bd32-455486b667bf}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1202,9 +1202,6 @@
     <ClInclude Include="GlobalInitializer.h">
       <Filter>Header Files\GlobalInit</Filter>
     </ClInclude>
-    <ClInclude Include="VulkanUniformBufferDescriptor.h">
-      <Filter>Header Files\Render\Vulkan\Descriptors</Filter>
-    </ClInclude>
     <ClInclude Include="VulkanCombinedImageSamplerDescriptor.h">
       <Filter>Header Files\Render\Vulkan\Descriptors</Filter>
     </ClInclude>
@@ -1329,7 +1326,7 @@
       <Filter>Header Files\Render\Vulkan\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="VulkanObjectLayering.h">
-      <Filter>Header Files\Render\Vulkan\Renderer\Infrastructure</Filter>
+      <Filter>Header Files\Render\Vulkan\Renderer\Layering</Filter>
     </ClInclude>
     <ClInclude Include="VulkanMasterRenderer.h">
       <Filter>Header Files\Render\Vulkan\Renderer</Filter>
@@ -1436,14 +1433,11 @@
     <ClInclude Include="VulkanConduit.h">
       <Filter>Header Files\Render\Vulkan\Conduit</Filter>
     </ClInclude>
-    <ClInclude Include="VulkanConduitExecutionContext.h">
-      <Filter>Header Files\Render\Vulkan\Conduit</Filter>
-    </ClInclude>
     <ClInclude Include="VulkanDescriptorSetPool.h">
       <Filter>Header Files\Render\Vulkan\Descriptors</Filter>
     </ClInclude>
     <ClInclude Include="VulkanLayer.h">
-      <Filter>Header Files\Render\Vulkan\Renderer\Infrastructure</Filter>
+      <Filter>Header Files\Render\Vulkan\Renderer\Layering</Filter>
     </ClInclude>
     <ClInclude Include="VulkanRendererBase.h">
       <Filter>Header Files\Render\Vulkan\Renderer</Filter>
@@ -1453,6 +1447,12 @@
     </ClInclude>
     <ClInclude Include="VulkanCommandBufferPool.h">
       <Filter>Header Files\Render\Vulkan\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanRaster.h">
+      <Filter>Header Files\Render\Vulkan\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanUniversalDataBuffer.h">
+      <Filter>Header Files\Render\Vulkan\Memory</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1930,9 +1930,6 @@
     <ClCompile Include="VulkanCombinedImageSamplerDescriptor.cpp">
       <Filter>Source Files\Render\Vulkan\Descriptors</Filter>
     </ClCompile>
-    <ClCompile Include="VulkanUniformBufferDescriptor.cpp">
-      <Filter>Source Files\Render\Vulkan\Descriptors</Filter>
-    </ClCompile>
     <ClCompile Include="BoundsCurator.cpp">
       <Filter>Source Files\Spatial\Arca</Filter>
     </ClCompile>
@@ -2053,9 +2050,6 @@
     <ClCompile Include="VulkanConduit.cpp">
       <Filter>Source Files\Render\Vulkan\Conduit</Filter>
     </ClCompile>
-    <ClCompile Include="VulkanConduitExecutionContext.cpp">
-      <Filter>Source Files\Render\Vulkan\Conduit</Filter>
-    </ClCompile>
     <ClCompile Include="VulkanDescriptorSetPool.cpp">
       <Filter>Source Files\Render\Vulkan\Descriptors</Filter>
     </ClCompile>
@@ -2067,6 +2061,12 @@
     </ClCompile>
     <ClCompile Include="VulkanCommandBufferPool.cpp">
       <Filter>Source Files\Render\Vulkan\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanRaster.cpp">
+      <Filter>Source Files\Render\Vulkan\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanUniversalDataBuffer.cpp">
+      <Filter>Source Files\Render\Vulkan\Memory</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

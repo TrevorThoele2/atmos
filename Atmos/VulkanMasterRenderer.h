@@ -2,6 +2,7 @@
 
 #include "VulkanIncludes.h"
 #include "VulkanCommandBufferPool.h"
+#include "VulkanUniversalDataBuffer.h"
 
 #include "VulkanQuadRenderer.h"
 #include "VulkanLineRenderer.h"
@@ -63,44 +64,43 @@ namespace Atmos::Render::Vulkan
         size_t previousFrame = 1;
     private:
         using IterableRenderers = std::vector<RendererBase*>;
-        IterableRenderers iterableRenderers;
 
-        struct Renderers
+        struct RendererGroup
         {
             QuadRenderer quad;
             LineRenderer line;
             RegionRenderer region;
-            Renderers(
+            RendererGroup(
                 std::shared_ptr<vk::Device> device,
                 vk::Queue graphicsQueue,
                 vk::PhysicalDeviceMemoryProperties memoryProperties,
                 vk::RenderPass renderPass,
-                uint32_t swapchainImageCount,
                 vk::Extent2D swapchainExtent,
                 const std::vector<const Asset::Material*>& materials);
-            Renderers(Renderers&& arg) noexcept = default;
+            RendererGroup(RendererGroup&& arg) noexcept = default;
 
             [[nodiscard]] IterableRenderers AsIterable();
         };
-        std::optional<Renderers> renderers;
+        using RendererGroups = std::list<RendererGroup>;
+        RendererGroups rendererGroups;
+        RendererGroups::iterator currentRendererGroup;
 
         [[nodiscard]] bool AllEmpty(const std::vector<RendererBase*>& check) const;
     private:
+        std::vector<vk::CommandBuffer> usedCommandBuffers;
+
         void Draw(
-            vk::CommandBuffer commandBuffer,
-            uint32_t currentSwapchainImage,
-            UniversalData universalData);
+            RendererGroup& rendererGroup,
+            UniversalData universalData,
+            vk::Framebuffer framebuffer,
+            vk::CommandBuffer commandBuffer);
         static void ClearImage(vk::Image image, std::array<float, 4> color, vk::CommandBuffer commandBuffer);
     private:
         vk::SwapchainKHR swapchain;
-
-        std::vector<vk::Image> swapchainImages;
-        std::vector<vk::ImageView> swapchainImageViews;
-
+        vk::Extent2D swapchainExtent;
         vk::UniqueRenderPass renderPass;
         std::vector<vk::UniqueFramebuffer> framebuffers;
-        vk::Extent2D swapchainExtent;
-    private:
+
         [[nodiscard]] static vk::UniqueRenderPass CreateRenderPass(
             vk::Device device, vk::Format swapchainImageFormat);
 
@@ -117,6 +117,8 @@ namespace Atmos::Render::Vulkan
         vk::Queue presentQueue;
 
         CommandBufferPool commandBuffers;
+    private:
+        UniversalDataBuffer universalDataBuffer;
     private:
         std::vector<vk::UniqueSemaphore> imageAvailableSemaphores;
         std::vector<vk::UniqueSemaphore> renderFinishedSemaphores;

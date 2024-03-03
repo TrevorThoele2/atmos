@@ -4,20 +4,16 @@ namespace Atmos::Render::Vulkan
 {
     MappedConduits::MappedConduits(
         std::shared_ptr<vk::Device> device,
-        vk::PhysicalDeviceMemoryProperties memoryProperties,
         VertexInput vertexInput,
         vk::PrimitiveTopology primitiveTopology,
         vk::RenderPass renderPass,
-        uint32_t swapchainImageCount,
         vk::Extent2D swapchainExtent,
         const std::vector<vk::DescriptorSetLayout>& descriptorSetLayouts)
         :
         device(device),
         vertexInput(vertexInput),
         primitiveTopology(primitiveTopology),
-        memoryProperties(memoryProperties),
         renderPass(renderPass),
-        swapchainImageCount(swapchainImageCount),
         swapchainExtent(swapchainExtent)
     {
         const vk::PipelineLayoutCreateInfo layoutCreateInfo({}, descriptorSetLayouts.size(), descriptorSetLayouts.data());
@@ -61,8 +57,6 @@ namespace Atmos::Render::Vulkan
                 pass.FragmentShader(),
                 *device,
                 layout.get(),
-                swapchainImageCount,
-                memoryProperties,
                 renderPass,
                 vertexInput,
                 swapchainExtent,
