@@ -7,12 +7,20 @@
 #include "GridPoint.h"
 #include "Angle2D.h"
 #include "Angle3D.h"
+#include "Line2D.h"
 #include "AxisAlignedBox2D.h"
 #include "AxisAlignedBox3D.h"
 #include "GridAxisAlignedBox.h"
 
 namespace Atmos::Spatial
 {
+    enum class Side
+    {
+        Left,
+        On,
+        Right
+    };
+
     [[nodiscard]] Point2D::Value Distance(Point2D starting, Point2D destination);
     [[nodiscard]] Point3D::Value Distance(Point3D starting, Point3D destination);
 
@@ -23,9 +31,12 @@ namespace Atmos::Spatial
     [[nodiscard]] bool Contains(AxisAlignedBox2D box, AxisAlignedBox2D other);
     [[nodiscard]] bool Contains(AxisAlignedBox3D box, Point3D point);
     [[nodiscard]] bool Contains(AxisAlignedBox3D box, AxisAlignedBox3D other);
+    [[nodiscard]] bool Contains(Line2D line, Point2D point);
 
     [[nodiscard]] bool Intersects(AxisAlignedBox2D one, AxisAlignedBox2D two);
     [[nodiscard]] bool Intersects(AxisAlignedBox3D one, AxisAlignedBox3D two);
+
+    [[nodiscard]] std::optional<Point2D> Intersection(Line2D one, Line2D two);
 
     [[nodiscard]] AxisAlignedBox2D Envelope(std::vector<AxisAlignedBox2D> boxes);
     [[nodiscard]] AxisAlignedBox3D Envelope(std::vector<AxisAlignedBox3D> boxes);
@@ -38,6 +49,10 @@ namespace Atmos::Spatial
 
     [[nodiscard]] AxisAlignedBox2D ScaleOf(AxisAlignedBox2D box, AxisAlignedBox2D against);
     [[nodiscard]] AxisAlignedBox3D ScaleOf(AxisAlignedBox3D box, AxisAlignedBox3D against);
+
+    [[nodiscard]] Side SideOf(Line2D line, Point2D point);
+
+    [[nodiscard]] std::vector<Point2D> Clip(std::vector<Point2D> points, std::vector<Point2D> clip);
 
     [[nodiscard]] AxisAlignedBox2D Cell(int column, int row, Size2D cellSize);
     [[nodiscard]] AxisAlignedBox3D Cell(int column, int row, int depth, Size3D cellSize);
