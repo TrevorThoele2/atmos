@@ -7,7 +7,7 @@ namespace Atmos::Scripting::Angel
 {
     UserData* UserData::RequiredFrom(asIScriptEngine& engine)
     {
-        const auto userData = reinterpret_cast<UserData*>(engine.GetUserData());
+        const auto userData = static_cast<UserData*>(engine.GetUserData());
         if (!userData)
             throw Error("Could not find user data from script engine.");
 

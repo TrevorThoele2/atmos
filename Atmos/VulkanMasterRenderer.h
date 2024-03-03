@@ -15,9 +15,10 @@
 #include "ImageRender.h"
 #include "LineRender.h"
 #include "RegionRender.h"
+#include "TextRender.h"
 
-#include "ScreenSize.h"
-#include "ScreenPoint.h"
+#include "Size2D.h"
+#include "Point2D.h"
 
 #include "Event.h"
 
@@ -53,19 +54,15 @@ namespace Atmos::Render::Vulkan
         void StageRender(const ImageRender& imageRender);
         void StageRender(const LineRender& lineRender);
         void StageRender(const RegionRender& regionRender);
+        void StageRender(const TextRender& textRender);
 
         void DrawFrame(
-            const Spatial::ScreenSize& screenSize,
-            const Spatial::ScreenPoint& mapPosition);
+            const Spatial::Size2D& screenSize,
+            const Spatial::Point2D& mapPosition);
 
         void WaitForIdle() const;
     public:
-        void OnMaterialCreated(const Arca::Index<Asset::ImageMaterial>& material);
-        void OnMaterialCreated(const Arca::Index<Asset::LineMaterial>& material);
-        void OnMaterialCreated(const Arca::Index<Asset::RegionMaterial>& material);
-        void OnMaterialDestroying(const Arca::Index<Asset::ImageMaterial>& material);
-        void OnMaterialDestroying(const Arca::Index<Asset::LineMaterial>& material);
-        void OnMaterialDestroying(const Arca::Index<Asset::RegionMaterial>& material);
+        void OnMaterialDestroying(const Arca::Index<Asset::Material>& material);
     private:
         std::shared_ptr<vk::Device> device;
     private:
@@ -85,10 +82,7 @@ namespace Atmos::Render::Vulkan
                 vk::Queue graphicsQueue,
                 vk::PhysicalDeviceMemoryProperties memoryProperties,
                 vk::RenderPass renderPass,
-                vk::Extent2D swapchainExtent,
-                const Arca::Batch<Asset::ImageMaterial>& imageMaterials,
-                const Arca::Batch<Asset::LineMaterial>& lineMaterials,
-                const Arca::Batch<Asset::RegionMaterial>& regionMaterials);
+                vk::Extent2D swapchainExtent);
             RendererGroup(RendererGroup&& arg) noexcept = default;
 
             [[nodiscard]] IterableRenderers AsIterable();

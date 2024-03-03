@@ -1,7 +1,7 @@
 #pragma once
 
 #include "KeyStates.h"
-#include "ScreenPoint.h"
+#include "Point2D.h"
 #include "Event.h"
 #include "String.h"
 #include "Logger.h"
@@ -14,7 +14,7 @@ namespace Atmos::Input
         struct State
         {
             KeyStates keyStates;
-            Spatial::ScreenPoint mousePosition;
+            Spatial::Point2D mousePosition;
             std::vector<String> enteredText;
         };
     public:

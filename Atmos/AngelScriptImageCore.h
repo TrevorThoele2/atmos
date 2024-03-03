@@ -6,7 +6,6 @@
 
 #include "AngelScriptIndex.h"
 #include "AngelScriptImageAsset.h"
-#include "AngelScriptMaterialAsset.h"
 
 #include "AngelScriptObjectManagement.h"
 #include "AngelScriptRegistration.h"
@@ -49,8 +48,6 @@ namespace Atmos::Scripting::Angel
     private:
         [[nodiscard]] static Arca::Index<Asset::Image> Asset(Type type);
         [[nodiscard]] static Render::ImageCore::Index AssetIndex(Type type);
-        [[nodiscard]] static Arca::Index<Asset::ImageMaterial> Material(Type type);
-        [[nodiscard]] static Render::Color Color(Type type);
     };
 
     template<>

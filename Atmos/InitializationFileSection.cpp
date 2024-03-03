@@ -20,12 +20,12 @@ namespace Atmos::Initialization
 
     void FileSection::SetTo(const ExtractedSection& extracted)
     {
-        DEBUG_PRECONDITION(header == extracted.header);
+        DEBUG_PRECONDITION(header == extracted.header)
 
-        for (auto& curLine : extracted.nameValues)
+        for (auto& line : extracted.nameValues)
         {
-            auto name = curLine.first;
-            auto value = curLine.second;
+            auto name = line.first;
+            auto value = line.second;
 
             auto found = entries.find(name);
             if (found == entries.end())

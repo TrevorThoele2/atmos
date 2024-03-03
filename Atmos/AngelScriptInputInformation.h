@@ -7,7 +7,7 @@
 #include "AngelScriptRegistration.h"
 
 #include "String.h"
-#include "ScreenPoint.h"
+#include "Point2D.h"
 
 class asIScriptEngine;
 class asIScriptGeneric;
@@ -27,8 +27,8 @@ namespace Atmos::Scripting::Angel
 
         static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
     private:
-        [[nodiscard]] static Spatial::ScreenPoint PreviousMousePosition(Type type);
-        [[nodiscard]] static Spatial::ScreenPoint CurrentMousePosition(Type type);
+        [[nodiscard]] static Spatial::Point2D PreviousMousePosition(Type type);
+        [[nodiscard]] static Spatial::Point2D CurrentMousePosition(Type type);
     };
 
     template<>

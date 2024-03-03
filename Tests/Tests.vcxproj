@@ -135,6 +135,7 @@
     <ClCompile Include="AngelScriptAssetTests.cpp" />
     <ClCompile Include="AngelScriptAudioTests.cpp" />
     <ClCompile Include="AngelScriptBoundsTests.cpp" />
+    <ClCompile Include="AngelScriptDynamicTextTests.cpp" />
     <ClCompile Include="AngelScriptEntityTests.cpp" />
     <ClCompile Include="AngelScriptExceptionTests.cpp" />
     <ClCompile Include="AngelScriptFixture.cpp" />
@@ -146,6 +147,7 @@
     <ClCompile Include="AngelScriptMathTests.cpp" />
     <ClCompile Include="AngelScriptNumericLimitsTests.cpp" />
     <ClCompile Include="AngelScriptRandomTests.cpp" />
+    <ClCompile Include="AngelScriptRenderCoreTests.cpp" />
     <ClCompile Include="AngelScriptRenderTests.cpp" />
     <ClCompile Include="AngelScriptScriptTests.cpp" />
     <ClCompile Include="AngelScriptSpatialAlgorithmsTests.cpp" />
@@ -154,6 +156,9 @@
     <ClCompile Include="AngelScriptStopwatchTests.cpp" />
     <ClCompile Include="AngelScriptStringUtilityTests.cpp" />
     <ClCompile Include="AngelScriptTests.cpp" />
+    <ClCompile Include="AngelScriptUIImageTests.cpp" />
+    <ClCompile Include="AngelScriptUITextTests.cpp" />
+    <ClCompile Include="AngelScriptViewSliceTests.cpp" />
     <ClCompile Include="AngelScriptWorldTests.cpp" />
     <ClCompile Include="AssetTests.cpp" />
     <ClCompile Include="BoundsTests.cpp" />
@@ -175,6 +180,7 @@
     <ClCompile Include="MockScriptManager.cpp" />
     <ClCompile Include="MockSoundResource.cpp" />
     <ClCompile Include="MockSurfaceResource.cpp" />
+    <ClCompile Include="MockTextManager.cpp" />
     <ClCompile Include="MockWindow.cpp" />
     <ClCompile Include="MockWorldManager.cpp" />
     <ClCompile Include="OctreeTests.cpp" />
@@ -185,6 +191,7 @@
     <ClCompile Include="ScriptTests.cpp" />
     <ClCompile Include="SpatialAlgorithmsTests.cpp" />
     <ClCompile Include="StopwatchTests.cpp" />
+    <ClCompile Include="UIImageRenderingTests.cpp" />
     <ClCompile Include="WorldSerializationTests.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -193,6 +200,7 @@
     <ClInclude Include="AngelScriptAudioTests.h" />
     <ClInclude Include="AngelScriptBoundsTests.h" />
     <ClInclude Include="AngelScriptCreateObjectFixture.h" />
+    <ClInclude Include="AngelScriptDynamicTextTests.h" />
     <ClInclude Include="AngelScriptEntityTests.h" />
     <ClInclude Include="AngelScriptExceptionTests.h" />
     <ClInclude Include="AngelScriptFixture.h" />
@@ -204,6 +212,7 @@
     <ClInclude Include="AngelScriptMathTests.h" />
     <ClInclude Include="AngelScriptNumericLimitsTests.h" />
     <ClInclude Include="AngelScriptRandomTests.h" />
+    <ClInclude Include="AngelScriptRenderCoreTests.h" />
     <ClInclude Include="AngelScriptRenderTests.h" />
     <ClInclude Include="AngelScriptScriptTests.h" />
     <ClInclude Include="AngelScriptSpatialAlgorithmsTests.h" />
@@ -212,6 +221,9 @@
     <ClInclude Include="AngelScriptStopwatchTests.h" />
     <ClInclude Include="AngelScriptStringUtilityTests.h" />
     <ClInclude Include="AngelScriptTests.h" />
+    <ClInclude Include="AngelScriptUIImageTests.h" />
+    <ClInclude Include="AngelScriptUITextTests.h" />
+    <ClInclude Include="AngelScriptViewSliceTests.h" />
     <ClInclude Include="AngelScriptWorldTests.h" />
     <ClInclude Include="AssetTests.h" />
     <ClInclude Include="AudioBuffer.h" />
@@ -233,6 +245,8 @@
     <ClInclude Include="MockScriptManager.h" />
     <ClInclude Include="MockSoundResource.h" />
     <ClInclude Include="MockSurfaceResource.h" />
+    <ClInclude Include="MockTextManager.h" />
+    <ClInclude Include="MockTextResource.h" />
     <ClInclude Include="MockWindow.h" />
     <ClInclude Include="MockWorldManager.h" />
     <ClInclude Include="OctreeTests.h" />
@@ -245,6 +259,7 @@
     <ClInclude Include="SignalListener.h" />
     <ClInclude Include="SpatialAlgorithmsTests.h" />
     <ClInclude Include="StopwatchTests.h" />
+    <ClInclude Include="UIImageRenderingTests.h" />
     <ClInclude Include="WorldSerializationTests.h" />
   </ItemGroup>
   <ItemGroup>

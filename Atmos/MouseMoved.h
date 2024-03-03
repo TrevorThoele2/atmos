@@ -2,14 +2,14 @@
 
 #include <Arca/Signal.h>
 
-#include "ScreenPoint.h"
+#include "Point2D.h"
 
 namespace Atmos::Input
 {
     struct MouseMoved
     {
-        Spatial::ScreenPoint previous;
-        Spatial::ScreenPoint current;
+        Spatial::Point2D previous;
+        Spatial::Point2D current;
     };
 }
 

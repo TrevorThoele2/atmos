@@ -3,6 +3,7 @@
 #include "ImageAsset.h"
 #include "ShaderAsset.h"
 #include "SurfaceResource.h"
+#include "TextResource.h"
 
 #include "GraphicsReconstructionObjects.h"
 
@@ -30,7 +31,7 @@ namespace Atmos::Render
         [[nodiscard]] std::unique_ptr<Asset::Resource::Image> CreateImageResource(
             const Buffer& buffer,
             const Name& name,
-            const Asset::ImageSize& size);
+            const Spatial::Size2D& size);
         [[nodiscard]] std::unique_ptr<Asset::Resource::Shader> CreateShaderResource(
             const Buffer& buffer, const Name& name);
         [[nodiscard]] std::unique_ptr<Resource::Surface> CreateSurfaceResource(
@@ -39,6 +40,9 @@ namespace Atmos::Render
         [[nodiscard]] std::unique_ptr<Resource::Surface> CreateMainSurfaceResource(
             void* window,
             Arca::Reliquary& reliquary);
+        [[nodiscard]] std::unique_ptr<Resource::Text> CreateTextResource(
+            const Buffer& buffer,
+            const Spatial::Size2D& size);
 
         void ResourceDestroying(Asset::Resource::Image& resource);
         void ResourceDestroying(Asset::Resource::Shader& resource);
@@ -60,7 +64,7 @@ namespace Atmos::Render
         [[nodiscard]] virtual std::unique_ptr<Asset::Resource::Image> CreateImageResourceImpl(
             const Buffer& buffer,
             const Name& name,
-            const Asset::ImageSize& size) = 0;
+            const Spatial::Size2D& size) = 0;
         [[nodiscard]] virtual std::unique_ptr<Asset::Resource::Shader> CreateShaderResourceImpl(
             const Buffer& buffer, const Name& name) = 0;
         [[nodiscard]] virtual std::unique_ptr<Resource::Surface> CreateMainSurfaceResourceImpl(
@@ -69,6 +73,9 @@ namespace Atmos::Render
         [[nodiscard]] virtual std::unique_ptr<Resource::Surface> CreateSurfaceResourceImpl(
             void* window,
             Arca::Reliquary& reliquary) = 0;
+        [[nodiscard]] virtual std::unique_ptr<Resource::Text> CreateTextResourceImpl(
+            const Buffer& buffer,
+            const Spatial::Size2D& size) = 0;
 
         virtual void ResourceDestroyingImpl(Asset::Resource::Image& resource) {}
         virtual void ResourceDestroyingImpl(Asset::Resource::Shader& resource) {}

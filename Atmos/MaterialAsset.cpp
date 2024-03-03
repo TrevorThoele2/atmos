@@ -4,18 +4,6 @@
 
 namespace Atmos::Asset
 {
-    Material& Material::operator=(Material&& arg) noexcept
-    {
-        Asset::operator=(std::move(arg));
-        passes = std::move(arg.passes);
-        return *this;
-    }
-
-    auto Material::Passes() const -> std::vector<Pass>
-    {
-        return passes;
-    }
-
     Material::Material(
         Arca::RelicInit init,
         const Atmos::Name& name,
@@ -33,6 +21,18 @@ namespace Atmos::Asset
         Asset(std::move(arg)),
         passes(std::move(arg.passes))
     {}
+
+    Material& Material::operator=(Material&& arg) noexcept
+    {
+        Asset::operator=(std::move(arg));
+        passes = std::move(arg.passes);
+        return *this;
+    }
+
+    auto Material::Passes() const -> std::vector<Pass>
+    {
+        return passes;
+    }
 }
 
 namespace Arca

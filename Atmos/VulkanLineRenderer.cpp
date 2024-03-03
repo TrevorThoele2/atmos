@@ -9,8 +9,7 @@ namespace Atmos::Render::Vulkan
         vk::Queue graphicsQueue,
         vk::PhysicalDeviceMemoryProperties memoryProperties,
         vk::RenderPass renderPass,
-        vk::Extent2D swapchainExtent,
-        const Arca::Batch<Asset::LineMaterial>& materials)
+        vk::Extent2D swapchainExtent)
         :
         vertexBuffer(vertexStride * sizeof(Vertex), *device, memoryProperties, vk::BufferUsageFlagBits::eVertexBuffer),
         descriptorSetPool(
@@ -41,10 +40,7 @@ namespace Atmos::Render::Vulkan
             { descriptorSetPool.DescriptorSetLayout() }),
         graphicsQueue(graphicsQueue),
         device(device)
-    {
-        for (auto material = materials.begin(); material != materials.end(); ++material)
-            MaterialCreated(Arca::Index<Asset::LineMaterial>{material.ID(), materials.Owner()});
-    }
+    {}
 
     void LineRenderer::StageRender(const LineRender& lineRender)
     {
@@ -67,22 +63,18 @@ namespace Atmos::Render::Vulkan
 
         universalDataBuffer.Update(raster->setupDescriptorSet);
 
-        for (auto stagedLineRender = stagedLineRenders.begin(); stagedLineRender != stagedLineRenders.end();)
+        for (auto& stagedLineRender : stagedLineRenders)
         {
-            AddToRaster(*stagedLineRender, *raster);
-            stagedLineRender = stagedLineRenders.erase(stagedLineRender);
+            mappedConduits.Add(stagedLineRender.material);
+            AddToRaster(stagedLineRender, *raster);
         }
+        stagedLineRenders.clear();
 
         raster->currentLayer = raster->layers.begin();
         return raster;
     }
 
-    void LineRenderer::MaterialCreated(Arca::Index<Asset::LineMaterial> material)
-    {
-        mappedConduits.Add(material);
-    }
-
-    void LineRenderer::MaterialDestroying(Arca::Index<Asset::LineMaterial> material)
+    void LineRenderer::MaterialDestroying(Arca::Index<Asset::Material> material)
     {
         mappedConduits.Remove(material);
     }
@@ -119,7 +111,7 @@ namespace Atmos::Render::Vulkan
         return currentLayer == layers.end();
     }
 
-    Spatial::Point3D::Value LineRenderer::Raster::NextLayer() const
+    ObjectLayeringKey LineRenderer::Raster::NextLayer() const
     {
         return currentLayer->first;
     }
@@ -184,22 +176,23 @@ namespace Atmos::Render::Vulkan
 
     void LineRenderer::AddToRaster(const LineRender& lineRender, Raster& raster)
     {
-        if (lineRender.points.empty())
-            return;
-
-        std::vector<Vertex> points;
-        for (auto& point : lineRender.points)
+        if (!lineRender.points.empty())
         {
-            const auto color = AtmosToVulkanColor(lineRender.color);
-            points.push_back(Vertex{
-                color,
-                { point.x, point.y } });
-        }
+            std::vector<Vertex> points;
+            for (auto& point : lineRender.points)
+            {
+                const auto color = AtmosToVulkanColor(lineRender.color);
+                points.push_back(Vertex{
+                    color,
+                    { point.x, point.y } });
+            }
 
-        auto layer = raster.layers.Find(lineRender.z);
-        if (!layer)
-            layer = &raster.layers.Add(lineRender.z, Raster::Layer{});
-        auto& group = layer->GroupFor(lineRender.materialID);
-        group.ListFor(lineRender.width).emplace_back(points);
+            const auto key = ObjectLayeringKey{ lineRender.space, lineRender.z };
+            auto layer = raster.layers.Find(key);
+            if (!layer)
+                layer = &raster.layers.Add(key, Raster::Layer{});
+            auto& group = layer->GroupFor(lineRender.material.ID());
+            group.ListFor(lineRender.width).emplace_back(points);
+        }
     }
 }

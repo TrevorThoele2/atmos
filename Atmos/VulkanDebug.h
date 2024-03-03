@@ -16,7 +16,7 @@ namespace Atmos::Render::Vulkan
 
         [[nodiscard]] VkDebugUtilsMessengerCreateInfoEXT CreateInfo();
     private:
-        VkDebugUtilsMessengerEXT messenger;
+        VkDebugUtilsMessengerEXT messenger = {};
 
         static VKAPI_ATTR VkBool32 VKAPI_CALL Callback(
             VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,

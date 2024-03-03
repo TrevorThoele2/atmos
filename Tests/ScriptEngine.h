@@ -7,6 +7,7 @@
 #include "MockAudioManager.h"
 #include "MockInputManager.h"
 #include "MockGraphicsManager.h"
+#include "MockTextManager.h"
 #include <Atmos/AngelScriptManager.h>
 #include "MockWorldManager.h"
 
@@ -20,6 +21,7 @@ public:
     MockAudioManager* mockAudioManager;
     MockInputManager* mockInputManager;
     MockGraphicsManager* mockGraphicsManager;
+    MockTextManager* mockTextManager;
     Scripting::Angel::Manager* scriptManager;
     MockWorldManager* mockWorldManager;
 

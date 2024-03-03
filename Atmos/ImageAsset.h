@@ -2,7 +2,7 @@
 
 #include "AssetWithResource.h"
 #include "ImageAssetResource.h"
-#include "ImageAssetSize.h"
+#include "Size2D.h"
 #include "ImageAssetGridSize.h"
 #include "AxisAlignedBox2D.h"
 
@@ -15,10 +15,11 @@ namespace Atmos::Asset
     class Image final : public AssetWithResource<Resource::Image>
     {
     public:
-        using Dimension = ImageSize::Dimension;
+        using Dimension = Spatial::Size2D::Value;
         using GridDimension = ImageGridSize::Dimension;
     public:
-        Image(Arca::RelicInit init,
+        Image(
+            Arca::RelicInit init,
             const Atmos::Name& name,
             ResourcePtr&& resource,
             ImageGridSize gridSize);
@@ -27,11 +28,11 @@ namespace Atmos::Asset
 
         Image& operator=(Image&& arg) noexcept;
     public:
-        void Setup(ResourcePtr&& set, ImageSize size);
+        void Setup(ResourcePtr&& set, Spatial::Size2D size);
     public:
         [[nodiscard]] Dimension Width() const;
         [[nodiscard]] Dimension Height() const;
-        [[nodiscard]] ImageSize Size() const;
+        [[nodiscard]] Spatial::Size2D Size() const;
 
         [[nodiscard]] GridDimension Columns() const;
         [[nodiscard]] GridDimension Rows() const;
@@ -44,7 +45,7 @@ namespace Atmos::Asset
     private:
         Arca::RelicInit init;
     private:
-        ImageSize size;
+        Spatial::Size2D size;
         ImageGridSize gridSize;
     private:
         INSCRIPTION_ACCESS;

@@ -55,11 +55,7 @@ namespace Atmos::Render::Vulkan
             *device, swapchainImageViews, renderPass.get(), swapchainExtent);
 
         imagesInFlight.resize(swapchainImages.size(), nullptr);
-
-        const auto imageMaterialBatch = reliquary.Batch<Asset::ImageMaterial>();
-        const auto lineMaterialBatch = reliquary.Batch<Asset::LineMaterial>();
-        const auto regionMaterialBatch = reliquary.Batch<Asset::RegionMaterial>();
-
+        
         rendererGroups.clear();
         for (uint32_t i = 0; i < swapchainImages.size(); ++i)
         {
@@ -68,10 +64,7 @@ namespace Atmos::Render::Vulkan
                 graphicsQueue,
                 memoryProperties,
                 renderPass.get(),
-                swapchainExtent,
-                imageMaterialBatch,
-                lineMaterialBatch,
-                regionMaterialBatch);
+                swapchainExtent);
         }
         currentRendererGroup = rendererGroups.begin();
 
@@ -93,7 +86,12 @@ namespace Atmos::Render::Vulkan
         currentRendererGroup->region.StageRender(regionRender);
     }
 
-    void MasterRenderer::DrawFrame(const Spatial::ScreenSize& screenSize, const Spatial::ScreenPoint& mapPosition)
+    void MasterRenderer::StageRender(const TextRender& textRender)
+    {
+        currentRendererGroup->quad.StageRender(textRender);
+    }
+
+    void MasterRenderer::DrawFrame(const Spatial::Size2D& screenSize, const Spatial::Point2D& mapPosition)
     {
         if (IsError(device->waitForFences(inFlightFences[previousFrame].get(), VK_TRUE, UINT64_MAX)))
             logger->Log("Could not wait for Vulkan fences.");
@@ -201,74 +199,42 @@ namespace Atmos::Render::Vulkan
         if (IsError(device->waitForFences(fences, VK_TRUE, UINT64_MAX)))
             logger->Log("Could not wait for Vulkan fences.");
     }
-
-    void MasterRenderer::OnMaterialCreated(const Arca::Index<Asset::ImageMaterial>& material)
+    
+    void MasterRenderer::OnMaterialDestroying(const Arca::Index<Asset::Material>& material)
     {
         for (auto& group : rendererGroups)
-            group.quad.MaterialCreated(material);
-    }
-
-    void MasterRenderer::OnMaterialCreated(const Arca::Index<Asset::LineMaterial>& material)
-    {
-        for (auto& group : rendererGroups)
-            group.line.MaterialCreated(material);
-    }
-
-    void MasterRenderer::OnMaterialCreated(const Arca::Index<Asset::RegionMaterial>& material)
-    {
-        for (auto& group : rendererGroups)
-            group.region.MaterialCreated(material);
-    }
-
-    void MasterRenderer::OnMaterialDestroying(const Arca::Index<Asset::ImageMaterial>& material)
-    {
-        for (auto& group : rendererGroups)
+        {
             group.quad.MaterialDestroying(material);
-    }
-
-    void MasterRenderer::OnMaterialDestroying(const Arca::Index<Asset::LineMaterial>& material)
-    {
-        for (auto& group : rendererGroups)
             group.line.MaterialDestroying(material);
-    }
-
-    void MasterRenderer::OnMaterialDestroying(const Arca::Index<Asset::RegionMaterial>& material)
-    {
-        for (auto& group : rendererGroups)
             group.region.MaterialDestroying(material);
+        }
     }
-
+    
     MasterRenderer::RendererGroup::RendererGroup(
         std::shared_ptr<vk::Device> device,
         vk::Queue graphicsQueue,
         vk::PhysicalDeviceMemoryProperties memoryProperties,
         vk::RenderPass renderPass,
-        vk::Extent2D swapchainExtent,
-        const Arca::Batch<Asset::ImageMaterial>& imageMaterials,
-        const Arca::Batch<Asset::LineMaterial>& lineMaterials,
-        const Arca::Batch<Asset::RegionMaterial>& regionMaterials)
+        vk::Extent2D swapchainExtent)
         :
         quad(
             device,
             graphicsQueue,
             memoryProperties,
             renderPass,
-            swapchainExtent,
-            imageMaterials),
+            swapchainExtent),
         line(
             device,
             graphicsQueue,
             memoryProperties,
             renderPass,
-            swapchainExtent,
-            lineMaterials),
+            swapchainExtent),
         region(
             device,
             graphicsQueue,
             memoryProperties,
             renderPass,
-            swapchainExtent,
-            regionMaterials)
+            swapchainExtent)
     {}
 
     auto MasterRenderer::RendererGroup::AsIterable() -> IterableRenderers

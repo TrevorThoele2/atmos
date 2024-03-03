@@ -13,7 +13,7 @@
 #include <Atmos/Work.h>
 #include <Atmos/StringUtility.h>
 #include <Atmos/EntityPrototype.h>
-#include <Arca/LocalRelic.h>
+#include <Arca/OpenRelic.h>
 #include <Atmos/DataCore.h>
 #include <Atmos/ModifyEntityBoundary.h>
 
@@ -31,11 +31,12 @@ SCENARIO_METHOD(AngelScriptEntityTestsFixture, "running entity AngelScript scrip
         *engine.mockAudioManager,
         *engine.mockInputManager,
         *engine.mockGraphicsManager,
+        *engine.mockTextManager,
         *engine.scriptManager,
         *engine.mockWorldManager,
-        Spatial::ScreenSize{
-            std::numeric_limits<Spatial::ScreenSize::Dimension>::max(),
-            std::numeric_limits<Spatial::ScreenSize::Dimension>::max() },
+        Spatial::Size2D{
+            std::numeric_limits<Spatial::Size2D::Value>::max(),
+            std::numeric_limits<Spatial::Size2D::Value>::max() },
             *engine.mockWindow,
             engine.Logger());
     fieldOrigin.CuratorCommandPipeline<Work>(Arca::Pipeline{

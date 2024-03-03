@@ -17,7 +17,7 @@ namespace Atmos
     template<class PositionT>
     size_t CopyBuffer(const void* from, void* to, size_t size, PositionT position)
     {
-        memcpy(to, &reinterpret_cast<const char*>(from)[position], size);
+        memcpy(to, &static_cast<const char*>(from)[position], size);
         return size;
     }
 

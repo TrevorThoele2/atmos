@@ -22,11 +22,12 @@ SCENARIO_METHOD(AngelScriptStringUtilityTestsFixture, "running StringUtility Ang
         *engine.mockAudioManager,
         *engine.mockInputManager,
         *engine.mockGraphicsManager,
+        *engine.mockTextManager,
         *engine.scriptManager,
         *engine.mockWorldManager,
-        Spatial::ScreenSize{
-            std::numeric_limits<Spatial::ScreenSize::Dimension>::max(),
-            std::numeric_limits<Spatial::ScreenSize::Dimension>::max() },
+        Spatial::Size2D{
+            std::numeric_limits<Spatial::Size2D::Value>::max(),
+            std::numeric_limits<Spatial::Size2D::Value>::max() },
             *engine.mockWindow,
             engine.Logger());
     fieldOrigin.CuratorCommandPipeline<Work>(Arca::Pipeline{ Scripting::Stage() });

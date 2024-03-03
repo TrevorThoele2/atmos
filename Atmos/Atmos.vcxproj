@@ -47,10 +47,14 @@
     <ClInclude Include="AngelScriptArcaCreate.h" />
     <ClInclude Include="AngelScriptChangeMaterialAsset.h" />
     <ClInclude Include="AngelScriptChangeSoundVolume.h" />
+    <ClInclude Include="AngelScriptChangeTextCore.h" />
+    <ClInclude Include="AngelScriptChangeViewSlice.h" />
     <ClInclude Include="AngelScriptCurrentEntity.h" />
     <ClInclude Include="AngelScriptCurrentScript.h" />
     <ClInclude Include="AngelScriptDataCore.h" />
+    <ClInclude Include="AngelScriptDynamicText.h" />
     <ClInclude Include="AngelScriptEntity.h" />
+    <ClInclude Include="AngelScriptFontAsset.h" />
     <ClInclude Include="AngelScriptGenerateRandomNumber.h" />
     <ClInclude Include="AngelScriptGridAxisAlignedBox.h" />
     <ClInclude Include="AngelScriptGridSize.h" />
@@ -70,28 +74,49 @@
     <ClInclude Include="AngelScriptPauseSound.h" />
     <ClInclude Include="AngelScriptPositionedSound.h" />
     <ClInclude Include="AngelScriptRange.h" />
-    <ClInclude Include="AngelScriptRelativeImage.h" />
+    <ClInclude Include="AngelScriptRenderCore.h" />
     <ClInclude Include="AngelScriptRequestField.h" />
     <ClInclude Include="AngelScriptRestartSound.h" />
     <ClInclude Include="AngelScriptResumeSound.h" />
     <ClInclude Include="AngelScriptRetrieveWorldProperties.h" />
-    <ClInclude Include="AngelScriptScreenPoint.h" />
+    <ClInclude Include="AngelScriptUIImage.h" />
     <ClInclude Include="AngelScriptScriptFinished.h" />
-    <ClInclude Include="AngelScriptScriptFunction.h" />
     <ClInclude Include="AngelScriptSoundFinished.h" />
     <ClInclude Include="AngelScriptSuspendScript.h" />
     <ClInclude Include="AngelScriptTextEntered.h" />
     <ClInclude Include="AngelScriptTimePoint.h" />
     <ClInclude Include="AngelScriptToWorldPoint2D.h" />
     <ClInclude Include="AngelScriptToWorldPoint3D.h" />
+    <ClInclude Include="AngelScriptUIText.h" />
     <ClInclude Include="AngelScriptUniversalSound.h" />
     <ClInclude Include="AngelScriptVariant.h" />
     <ClInclude Include="AngelScriptHandle.h" />
     <ClInclude Include="AngelScriptScript.h" />
     <ClInclude Include="AngelScriptScriptResult.h" />
     <ClInclude Include="AngelScriptStopwatch.h" />
+    <ClInclude Include="AngelScriptViewSlice.h" />
     <ClInclude Include="AssetResourceManager.h" />
     <ClInclude Include="AssetResourceTraits.h" />
+    <ClInclude Include="ChangeTextCore.h" />
+    <ClInclude Include="ChangeViewSlice.h" />
+    <ClInclude Include="ColorChanged.h" />
+    <ClInclude Include="CreateFontAssetResource.h" />
+    <ClInclude Include="DynamicText.h" />
+    <ClInclude Include="FontAsset.h" />
+    <ClInclude Include="FontAssetCurator.h" />
+    <ClInclude Include="FontAssetResource.h" />
+    <ClInclude Include="MaterialAssetCurator.h" />
+    <ClInclude Include="RenderCore.h" />
+    <ClInclude Include="Text.h" />
+    <ClInclude Include="TextCore.h" />
+    <ClInclude Include="TextData.h" />
+    <ClInclude Include="TextRender.h" />
+    <ClInclude Include="TextResource.h" />
+    <ClInclude Include="UIImage.h" />
+    <ClInclude Include="TextCurator.h" />
+    <ClInclude Include="TextManager.h" />
+    <ClInclude Include="SDLFontAssetResource.h" />
+    <ClInclude Include="SDLTextManager.h" />
     <ClInclude Include="GridAxisAlignedBox.h" />
     <ClInclude Include="CanMoveEntityTo.h" />
     <ClInclude Include="EntityActualizationCurator.h" />
@@ -100,7 +125,9 @@
     <ClInclude Include="FindPath.h" />
     <ClInclude Include="GenerateRandomNumber.h" />
     <ClInclude Include="GridSize.h" />
+    <ClInclude Include="LoadFontAssetResourceData.h" />
     <ClInclude Include="ModifyEntityBoundary.h" />
+    <ClInclude Include="NullTextManager.h" />
     <ClInclude Include="Path.h" />
     <ClInclude Include="PrimitiveTraits.h" />
     <ClInclude Include="LoggingSink.h" />
@@ -137,13 +164,9 @@
     <ClInclude Include="FindGridRegionsByBox.h" />
     <ClInclude Include="FindImagesByBox.h" />
     <ClInclude Include="FindLinesByBox.h" />
-    <ClInclude Include="ImageMaterialAsset.h" />
-    <ClInclude Include="ImageMaterialAssetCurator.h" />
     <ClInclude Include="InputInformation.h" />
     <ClInclude Include="KeyState.h" />
     <ClInclude Include="KeyStates.h" />
-    <ClInclude Include="LineMaterialAsset.h" />
-    <ClInclude Include="LineMaterialAssetCurator.h" />
     <ClInclude Include="BindAction.h" />
     <ClInclude Include="LoadAudioAssetResourceData.h" />
     <ClInclude Include="MaterialAssetPass.h" />
@@ -226,10 +249,7 @@
     <ClInclude Include="Property.h" />
     <ClInclude Include="EntityPrototype.h" />
     <ClInclude Include="RealAssetResourceManager.h" />
-    <ClInclude Include="RegionMaterialAsset.h" />
-    <ClInclude Include="RegionMaterialAssetCurator.h" />
     <ClInclude Include="ScriptDocumentationManager.h" />
-    <ClInclude Include="ScriptFunction.h" />
     <ClInclude Include="ScriptModule.h" />
     <ClInclude Include="ScriptResource.h" />
     <ClInclude Include="SDLAudioAssetResource.h" />
@@ -246,6 +266,7 @@
     <ClInclude Include="TextEntered.h" />
     <ClInclude Include="ToWorldPoint2D.h" />
     <ClInclude Include="ToWorldPoint3D.h" />
+    <ClInclude Include="UIText.h" />
     <ClInclude Include="Variant.h" />
     <ClInclude Include="FrameSettings.h" />
     <ClInclude Include="FramesPerSecond.h" />
@@ -256,8 +277,6 @@
     <ClInclude Include="LoadAssetsByZipUserContext.h" />
     <ClInclude Include="LoadAssetsUserContext.h" />
     <ClInclude Include="LoadImageAssetResourceData.h" />
-    <ClInclude Include="MoveBoundsBy.h" />
-    <ClInclude Include="MoveBoundsDirection.h" />
     <ClInclude Include="NullScriptManager.h" />
     <ClInclude Include="OutputAssetsArchiveInterface.h" />
     <ClInclude Include="OutputSimpleFile.h" />
@@ -270,8 +289,6 @@
     <ClInclude Include="GridRegion.h" />
     <ClInclude Include="GridRegionCurator.h" />
     <ClInclude Include="RegionRender.h" />
-    <ClInclude Include="RelativeImage.h" />
-    <ClInclude Include="RelativeBounds.h" />
     <ClInclude Include="RenderAlgorithms.h" />
     <ClInclude Include="RenderMesh.h" />
     <ClInclude Include="RotateBounds.h" />
@@ -279,13 +296,13 @@
     <ClInclude Include="Image.h" />
     <ClInclude Include="ImageAssetGridSize.h" />
     <ClInclude Include="ImageAssetPosition.h" />
-    <ClInclude Include="ImageAssetSize.h" />
     <ClInclude Include="SetFullscreen.h" />
     <ClInclude Include="SparseRegion.h" />
     <ClInclude Include="Stopwatch.h" />
     <ClInclude Include="SurfaceCore.h" />
     <ClInclude Include="SuspendScript.h" />
     <ClInclude Include="VersionUserContext.h" />
+    <ClInclude Include="ViewSlice.h" />
     <ClInclude Include="VulkanInvalidConduit.h" />
     <ClInclude Include="VulkanMappedConduits.h" />
     <ClInclude Include="VulkanLayer.h" />
@@ -308,6 +325,7 @@
     <ClInclude Include="VulkanShaderAssetResource.h" />
     <ClInclude Include="VulkanShaderCompiler.h" />
     <ClInclude Include="VulkanSwapchainSupport.h" />
+    <ClInclude Include="VulkanTextResource.h" />
     <ClInclude Include="VulkanUniversalDataBuffer.h" />
     <ClInclude Include="VulkanUniversalData.h" />
     <ClInclude Include="VulkanCreateImageView.h" />
@@ -330,7 +348,7 @@
     <ClInclude Include="LineWidth.h" />
     <ClInclude Include="Logger.h" />
     <ClInclude Include="MainSurface.h" />
-    <ClInclude Include="MoveBoundsTo.h" />
+    <ClInclude Include="MoveBounds.h" />
     <ClInclude Include="MoveLine.h" />
     <ClInclude Include="Octree.h" />
     <ClInclude Include="VulkanSingleUseCommandBuffer.h" />
@@ -398,8 +416,6 @@
     <ClInclude Include="OutputStasisArchiveInterface.h" />
     <ClInclude Include="Scalers2D.h" />
     <ClInclude Include="Scalers3D.h" />
-    <ClInclude Include="ScreenSize.h" />
-    <ClInclude Include="ScreenPoint.h" />
     <ClInclude Include="TypeRegistration.h" />
     <ClInclude Include="VulkanGraphicsManager.h" />
     <ClInclude Include="VulkanIncludes.h" />
@@ -424,10 +440,6 @@
     <ClInclude Include="NameValuePair.h" />
     <ClInclude Include="AudioAsset.h" />
     <ClInclude Include="EntityCurator.h" />
-    <ClInclude Include="ModulatorInterpolation.h" />
-    <ClInclude Include="ModulatorInterpolationLinear.h" />
-    <ClInclude Include="ModulatorInterpolationOscillation.h" />
-    <ClInclude Include="ModulatorInterpolationSmoothstep.h" />
     <ClInclude Include="EngineInitializationProperties.h" />
     <ClInclude Include="RenderCurator.h" />
     <ClInclude Include="StateCurator.h" />
@@ -517,13 +529,18 @@
     <ClCompile Include="AngelScriptAxisAlignedBox3D.cpp" />
     <ClCompile Include="AngelScriptBounds.cpp" />
     <ClCompile Include="AngelScriptCamera.cpp" />
+    <ClCompile Include="AngelScriptChangeMaterialAsset.cpp" />
     <ClCompile Include="AngelScriptChangeSoundVolume.cpp" />
+    <ClCompile Include="AngelScriptChangeTextCore.cpp" />
+    <ClCompile Include="AngelScriptChangeViewSlice.cpp" />
     <ClCompile Include="AngelScriptColor.cpp" />
     <ClCompile Include="AngelScriptCurrentEntity.cpp" />
     <ClCompile Include="AngelScriptCurrentScript.cpp" />
     <ClCompile Include="AngelScriptDataCore.cpp" />
     <ClCompile Include="AngelScriptDynamicImage.cpp" />
+    <ClCompile Include="AngelScriptDynamicText.cpp" />
     <ClCompile Include="AngelScriptEntity.cpp" />
+    <ClCompile Include="AngelScriptFontAsset.cpp" />
     <ClCompile Include="AngelScriptGenerateRandomNumber.cpp" />
     <ClCompile Include="AngelScriptGridAxisAlignedBox.cpp" />
     <ClCompile Include="AngelScriptGridSize.cpp" />
@@ -541,12 +558,12 @@
     <ClCompile Include="AngelScriptOpenRelic.cpp" />
     <ClCompile Include="AngelScriptPauseSound.cpp" />
     <ClCompile Include="AngelScriptPositionedSound.cpp" />
-    <ClCompile Include="AngelScriptRelativeImage.cpp" />
+    <ClCompile Include="AngelScriptRenderCore.cpp" />
     <ClCompile Include="AngelScriptRequestField.cpp" />
     <ClCompile Include="AngelScriptRestartSound.cpp" />
     <ClCompile Include="AngelScriptResumeSound.cpp" />
     <ClCompile Include="AngelScriptRetrieveWorldProperties.cpp" />
-    <ClCompile Include="AngelScriptScreenPoint.cpp" />
+    <ClCompile Include="AngelScriptUIImage.cpp" />
     <ClCompile Include="AngelScriptScriptFinished.cpp" />
     <ClCompile Include="AngelScriptSoundFinished.cpp" />
     <ClCompile Include="AngelScriptSuspendScript.cpp" />
@@ -554,6 +571,7 @@
     <ClCompile Include="AngelScriptTimePoint.cpp" />
     <ClCompile Include="AngelScriptToWorldPoint2D.cpp" />
     <ClCompile Include="AngelScriptToWorldPoint3D.cpp" />
+    <ClCompile Include="AngelScriptUIText.cpp" />
     <ClCompile Include="AngelScriptUniversalSound.cpp" />
     <ClCompile Include="AngelScriptVariant.cpp" />
     <ClCompile Include="AngelScriptGlobalRegistration.cpp" />
@@ -585,9 +603,20 @@
     <ClCompile Include="AngelScriptStopwatch.cpp" />
     <ClCompile Include="AngelScriptStringUtility.cpp" />
     <ClCompile Include="AngelScriptUserData.cpp" />
+    <ClCompile Include="AngelScriptViewSlice.cpp" />
     <ClCompile Include="Asset.cpp" />
     <ClCompile Include="AssetResourceManager.cpp" />
     <ClCompile Include="AudioAssetCurator.cpp" />
+    <ClCompile Include="DynamicText.cpp" />
+    <ClCompile Include="FontAsset.cpp" />
+    <ClCompile Include="FontAssetCurator.cpp" />
+    <ClCompile Include="FontAssetResource.cpp" />
+    <ClCompile Include="RenderCore.cpp" />
+    <ClCompile Include="Text.cpp" />
+    <ClCompile Include="TextCore.cpp" />
+    <ClCompile Include="TextManager.cpp" />
+    <ClCompile Include="SDLFontAssetResource.cpp" />
+    <ClCompile Include="SDLTextManager.cpp" />
     <ClCompile Include="GridAxisAlignedBox.cpp" />
     <ClCompile Include="DataAlgorithms.cpp" />
     <ClCompile Include="DataCore.cpp" />
@@ -599,6 +628,7 @@
     <ClCompile Include="GridSize.cpp" />
     <ClCompile Include="LoggingSeverity.cpp" />
     <ClCompile Include="LoggingSink.cpp" />
+    <ClCompile Include="NullTextManager.cpp" />
     <ClCompile Include="NullWorldManager.cpp" />
     <ClCompile Include="RandomNumberGenerator.cpp" />
     <ClCompile Include="RangeMinNotLessThanEqualMax.cpp" />
@@ -610,14 +640,16 @@
     <ClCompile Include="AudioCurator.cpp" />
     <ClCompile Include="AudioError.cpp" />
     <ClCompile Include="Property.cpp" />
-    <ClCompile Include="ImageMaterialAsset.cpp" />
     <ClCompile Include="InputAngelScriptBytecodeStream.cpp" />
     <ClCompile Include="InputInformation.cpp" />
-    <ClCompile Include="LineMaterialAsset.cpp" />
     <ClCompile Include="LoggingInformation.cpp" />
     <ClCompile Include="MaterialAssetPass.cpp" />
     <ClCompile Include="System.cpp" />
     <ClCompile Include="SystemCreationFailed.cpp" />
+    <ClCompile Include="TextCurator.cpp" />
+    <ClCompile Include="TextResource.cpp" />
+    <ClCompile Include="UIImage.cpp" />
+    <ClCompile Include="UIText.cpp" />
     <ClCompile Include="UniversalSound.cpp" />
     <ClCompile Include="NullAssetResourceManager.cpp" />
     <ClCompile Include="NullScriptDocumentationManager.cpp" />
@@ -643,10 +675,8 @@
     <ClCompile Include="OutputAssetsArchiveInterface.cpp" />
     <ClCompile Include="OutputSimpleFile.cpp" />
     <ClCompile Include="RealAssetResourceManager.cpp" />
-    <ClCompile Include="RegionMaterialAsset.cpp" />
     <ClCompile Include="RenderObjectCurator.cpp" />
     <ClCompile Include="ScriptDocumentationManager.cpp" />
-    <ClCompile Include="ScriptFunction.cpp" />
     <ClCompile Include="ScriptResource.cpp" />
     <ClCompile Include="ScriptAssetCurator.cpp" />
     <ClCompile Include="ScriptResult.cpp" />
@@ -659,8 +689,6 @@
     <ClCompile Include="SpatialAlgorithms.cpp" />
     <ClCompile Include="GridRegion.cpp" />
     <ClCompile Include="GridRegionCurator.cpp" />
-    <ClCompile Include="RelativeImage.cpp" />
-    <ClCompile Include="RelativeBounds.cpp" />
     <ClCompile Include="RenderAlgorithms.cpp" />
     <ClCompile Include="SDLWindow.cpp" />
     <ClCompile Include="SDLInputManager.cpp" />
@@ -670,6 +698,7 @@
     <ClCompile Include="ToWorldPoint2D.cpp" />
     <ClCompile Include="ToWorldPoint3D.cpp" />
     <ClCompile Include="VersionUserContext.cpp" />
+    <ClCompile Include="ViewSlice.cpp" />
     <ClCompile Include="VulkanCombinedImageSamplerDescriptor.cpp" />
     <ClCompile Include="ImageAssetCurator.cpp" />
     <ClCompile Include="LoadAssetError.cpp" />
@@ -679,10 +708,12 @@
     <ClCompile Include="VulkanImage.cpp" />
     <ClCompile Include="VulkanInvalidConduit.cpp" />
     <ClCompile Include="VulkanLineRenderer.cpp" />
+    <ClCompile Include="VulkanObjectLayering.cpp" />
     <ClCompile Include="VulkanQuadRenderer.cpp" />
     <ClCompile Include="VulkanRaster.cpp" />
     <ClCompile Include="VulkanRegionRenderer.cpp" />
     <ClCompile Include="VulkanRendererBase.cpp" />
+    <ClCompile Include="VulkanTextResource.cpp" />
     <ClCompile Include="VulkanUniversalDataBuffer.cpp" />
     <ClCompile Include="VulkanCreateImageView.cpp" />
     <ClCompile Include="CurrentFieldCurator.cpp" />
@@ -733,8 +764,6 @@
     <ClCompile Include="OutputStasisArchiveInterface.cpp" />
     <ClCompile Include="Scalers2D.cpp" />
     <ClCompile Include="Scalers3D.cpp" />
-    <ClCompile Include="ScreenSize.cpp" />
-    <ClCompile Include="ScreenPoint.cpp" />
     <ClCompile Include="TypeRegistration.cpp" />
     <ClCompile Include="VulkanBuffer.cpp" />
     <ClCompile Include="VulkanGraphicsManager.cpp" />
@@ -761,10 +790,6 @@
     <ClCompile Include="LoggingCurator.cpp" />
     <ClCompile Include="AudioAsset.cpp" />
     <ClCompile Include="EntityCurator.cpp" />
-    <ClCompile Include="ModulatorInterpolation.cpp" />
-    <ClCompile Include="ModulatorInterpolationLinear.cpp" />
-    <ClCompile Include="ModulatorInterpolationSmoothstep.cpp" />
-    <ClCompile Include="ModulatorInterpolationOscillation.cpp" />
     <ClCompile Include="RenderCurator.cpp" />
     <ClCompile Include="ScriptAsset.cpp" />
     <ClCompile Include="Script.cpp" />
@@ -884,13 +909,13 @@
     <IncludePath>C:\Users\Trevor\Documents\Visual Studio 2015\Projects\Function;C:\Users\Trevor\Documents\Programming Projects\wxWidgets2\include;C:\Users\Trevor\Documents\Programming Projects\wxWidgets2\lib\vc_lib\mswud;C:\Program Files %28x86%29\Falcon\include;C:\Users\Trevor\Documents\Programming Projects\Ogg\Built\include;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;C:\Users\Trevor\Documents\Programming Projects\Inscription;C:\Users\Trevor\Documents\Programming Projects\AGUI;C:\Users\Trevor\Documents\Programming Projects\Affecter;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>..\..\chroma;..\..\inscription;..\..\arca;..\..\externaldependencies\angelscript\angelscript\include;..\..\externaldependencies\angelscript\add_on;..\..\externaldependencies\vulkan\Include;..\..\externaldependencies\wxwidgets\include;..\..\externaldependencies\wxwidgets\lib\vc_lib\mswud;..\..\externaldependencies\sdl_mixer\include;..\..\externaldependencies\sdl2\include;..\..\externaldependencies\glm;..\..\externaldependencies\function2\include;..\..\externaldependencies\boost;..\..\externaldependencies\freeimage\Dist\x32;$(IncludePath)</IncludePath>
+    <IncludePath>..\..\chroma;..\..\inscription;..\..\arca;..\..\externaldependencies\angelscript\angelscript\include;..\..\externaldependencies\angelscript\add_on;..\..\externaldependencies\vulkan\Include;..\..\externaldependencies\wxwidgets\include;..\..\externaldependencies\wxwidgets\lib\vc_lib\mswud;..\..\externaldependencies\sdl_mixer\include;..\..\externaldependencies\sdl_ttf\include;..\..\externaldependencies\sdl2\include;..\..\externaldependencies\glm;..\..\externaldependencies\function2\include;..\..\externaldependencies\boost;..\..\externaldependencies\freeimage\Dist\x32;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>C:\Users\Trevor\Documents\Visual Studio 2015\Projects\Function;C:\Users\Trevor\Documents\Programming Projects\wxWidgets2\lib\vc_lib\mswud;C:\Users\Trevor\Documents\Programming Projects\wxWidgets2\include;C:\Program Files %28x86%29\Falcon\include;C:\Users\Trevor\Documents\Programming Projects\Affecter;C:\Users\Trevor\Documents\Programming Projects\Ogg\Built\include;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;C:\Users\Trevor\Documents\Programming Projects\AGUI;C:\Users\Trevor\Documents\Programming Projects\Inscription;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>..\..\chroma;..\..\inscription;..\..\arca;..\..\externaldependencies\sdl2\include;..\..\externaldependencies\sdl_mixer\include;..\..\externaldependencies\freeimage\Dist\x32;..\..\externaldependencies\function2\include;..\..\externaldependencies\wxwidgets\lib\vc_lib\mswu;..\..\externaldependencies\wxwidgets\include;..\..\externaldependencies\glm;..\..\externaldependencies\vulkan\Include;..\..\externaldependencies\angelscript\add_on;..\..\externaldependencies\angelscript\angelscript\include;..\..\externaldependencies\boost;$(IncludePath)</IncludePath>
+    <IncludePath>..\..\chroma;..\..\inscription;..\..\arca;..\..\externaldependencies\sdl2\include;..\..\externaldependencies\sdl_mixer\include;..\..\externaldependencies\freeimage\Dist\x32;..\..\externaldependencies\function2\include;..\..\externaldependencies\wxwidgets\lib\vc_lib\mswu;..\..\externaldependencies\wxwidgets\include;..\..\externaldependencies\glm;..\..\externaldependencies\vulkan\Include;..\..\externaldependencies\angelscript\add_on;..\..\externaldependencies\angelscript\angelscript\include;..\..\externaldependencies\boost;..\..\externaldependencies\sdl_ttf\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>C:\Users\Trevor\Documents\Visual Studio 2015\Projects\Function;C:\Users\Trevor\Documents\Programming Projects\wxWidgets2\lib\vc_lib\mswud;C:\Users\Trevor\Documents\Programming Projects\wxWidgets2\include;C:\Program Files %28x86%29\Falcon\include;C:\Users\Trevor\Documents\Programming Projects\Ogg\Built\include;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;C:\Users\Trevor\Documents\Programming Projects\Inscription;C:\Users\Trevor\Documents\Programming Projects\AGUI;C:\Users\Trevor\Documents\Programming Projects\Affecter;$(IncludePath)</IncludePath>

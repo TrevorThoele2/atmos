@@ -11,7 +11,7 @@ namespace Atmos::Asset
     class Action : public Asset
     {
     public:
-        Input::Key boundKey;
+        Input::Key boundKey = {};
 
         using Modifiers = std::set<Input::Key>;
         Modifiers boundModifiers;

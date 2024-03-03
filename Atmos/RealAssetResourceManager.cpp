@@ -140,7 +140,7 @@ namespace Atmos::Asset::Resource
 			{
 				std::move(buffer),
 					* TypeFromFIF(format),
-					ImageSize{ ImageSize::Dimension(width), ImageSize::Dimension(height) }
+					Spatial::Size2D{ Spatial::Size2D::Value(width), Spatial::Size2D::Value(height) }
 			};
 		}
 		catch (...)
@@ -245,7 +245,7 @@ namespace Atmos::Asset::Resource
 			return {};
 		}
 	}
-
+	
 	LoadedData<Audio> RealManager::AudioManager::Load(const File::Path& filePath)
 	{
 		auto inputArchive = Inscription::Archive::InputBinary(filePath);

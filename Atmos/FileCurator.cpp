@@ -13,7 +13,7 @@ namespace Atmos::File
     {
         Inscription::File::InputBinary file(command.filePath);
         file.SeekFromEnd(0);
-        const auto length = file.Position();
+        const auto length = static_cast<size_t>(file.Position());
         file.SeekFromBeginning(0);
 
         Buffer buffer;

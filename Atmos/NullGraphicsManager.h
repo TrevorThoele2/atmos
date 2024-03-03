@@ -18,7 +18,7 @@ namespace Atmos::Render
         [[nodiscard]] std::unique_ptr<Asset::Resource::Image> CreateImageResourceImpl(
             const Buffer& buffer,
             const Name& name,
-            const Asset::ImageSize& size) override;
+            const Spatial::Size2D& size) override;
         [[nodiscard]] std::unique_ptr<Asset::Resource::Shader> CreateShaderResourceImpl(
             const Buffer& buffer, const Name& name) override;
         [[nodiscard]] std::unique_ptr<Resource::Surface> CreateMainSurfaceResourceImpl(

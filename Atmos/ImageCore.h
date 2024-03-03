@@ -3,10 +3,6 @@
 #include <Arca/Shard.h>
 
 #include "ImageAsset.h"
-#include "ImageMaterialAsset.h"
-#include "Color.h"
-#include "ShaderAsset.h"
-#include "AxisAlignedBox2D.h"
 
 #include <Arca/Serialization.h>
 
@@ -19,16 +15,9 @@ namespace Atmos::Render
     public:
         Arca::Index<Asset::Image> asset;
         Index assetIndex = 0;
-        Arca::Index<Asset::ImageMaterial> material;
-
-        Color color;
     public:
         ImageCore() = default;
-        ImageCore(
-            Arca::Index<Asset::Image> asset,
-            Index assetIndex,
-            Arca::Index<Asset::ImageMaterial> material,
-            Color color);
+        ImageCore(Arca::Index<Asset::Image> asset, Index assetIndex);
     };
 }
 
@@ -55,8 +44,6 @@ namespace Inscription
         {
             archive("asset", object.asset);
             archive("assetIndex", object.assetIndex);
-            archive("material", object.material);
-            archive("color", object.color);
         }
     };
 

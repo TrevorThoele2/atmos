@@ -15,14 +15,14 @@ namespace Atmos::Scripting::Angel
             .DefaultConstructor(&Management::GenerateDefaultValue)
             .Constructor(
                 &Management::GenerateValue<
-                    &PullFromParameter<0, Spatial::ScreenPoint>,
-                    &PullFromParameter<1, Spatial::ScreenPoint>>,
+                    &PullFromParameter<0, Spatial::Point2D>,
+                    &PullFromParameter<1, Spatial::Point2D>>,
                 { "Atmos::Asset::Action action" })
             .CopyConstructor(&Management::GenerateValueFromCopy)
             .Destructor(&Management::DestructValue)
             .CopyAssignment(&Management::CopyAssign)
-            .Property<&Type::previous>("Atmos::Spatial::ScreenPoint", "previous")
-            .Property<&Type::current>("Atmos::Spatial::ScreenPoint", "current")
+            .Property<&Type::previous>("Atmos::Spatial::Point2D", "previous")
+            .Property<&Type::current>("Atmos::Spatial::Point2D", "current")
             .Actualize(engine, documentationManager);
 
         RegisterSignalHandler<&Chroma::Identity<Type>>(engine, documentationManager);

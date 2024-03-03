@@ -18,7 +18,6 @@ namespace Atmos::Render
 
         using ObjectCurator::Handle;
         void Handle(const MoveGridRegion& command);
-        void Handle(const ChangeRegionMaterialAsset& command);
         std::vector<Arca::RelicID> Handle(const FindGridRegionsByBox& command) const;
     protected:
         void WorkImpl(
@@ -29,13 +28,13 @@ namespace Atmos::Render
         using Index = Arca::Index<GridRegion>;
         Spatial::Grid::Octree<Arca::RelicID, Index> octree;
 
+        void OnCreated(const Arca::CreatedKnown<GridRegion>& signal);
+        void OnDestroying(const Arca::DestroyingKnown<GridRegion>& signal);
+    private:
         Arca::Index<Camera> camera;
     private:
         template<class Function>
         void AttemptChangeObject(Arca::RelicID id, Function function);
-    private:
-        void OnCreated(const Arca::CreatedKnown<GridRegion>& signal);
-        void OnDestroying(const Arca::DestroyingKnown<GridRegion>& signal);
     private:
         static Spatial::AxisAlignedBox3D BoxFor(const std::vector<Spatial::Grid::Point>& points, Spatial::Grid::Point::Value z);
         static Spatial::AxisAlignedBox3D BoxFor(const Index& index);
@@ -45,12 +44,12 @@ namespace Atmos::Render
     void GridRegionCurator::AttemptChangeObject(Arca::RelicID id, Function function)
     {
         const auto index = Arca::Index<GridRegion>(id, Owner());
-        if (!index)
-            return;
+        if (index)
+        {
+            const auto data = MutablePointer().Of(index);
 
-        const auto data = MutablePointer().Of(index);
-
-        function(*data);
+            function(*data);
+        }
     }
 }
 
@@ -64,7 +63,6 @@ namespace Arca
         using HandledCommands = HandledCommands<
             Atmos::Work,
             Atmos::Render::MoveGridRegion,
-            Atmos::Render::ChangeRegionMaterialAsset,
             Atmos::Render::FindGridRegionsByBox>;
     };
 }

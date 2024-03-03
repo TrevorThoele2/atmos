@@ -11,7 +11,7 @@
 #include <Atmos/ScriptFinished.h>
 #include <Atmos/Work.h>
 #include <Atmos/StringUtility.h>
-#include <Arca/LocalRelic.h>
+#include <Arca/OpenRelic.h>
 
 SCENARIO_METHOD(AngelScriptBoundsTestsFixture, "running bounds AngelScript scripts", "[script][angelscript]")
 {
@@ -27,11 +27,12 @@ SCENARIO_METHOD(AngelScriptBoundsTestsFixture, "running bounds AngelScript scrip
         *engine.mockAudioManager,
         *engine.mockInputManager,
         *engine.mockGraphicsManager,
+        *engine.mockTextManager,
         *engine.scriptManager,
         *engine.mockWorldManager,
-        Spatial::ScreenSize{
-            std::numeric_limits<Spatial::ScreenSize::Dimension>::max(),
-            std::numeric_limits<Spatial::ScreenSize::Dimension>::max() },
+        Spatial::Size2D{
+            std::numeric_limits<Spatial::Size2D::Value>::max(),
+            std::numeric_limits<Spatial::Size2D::Value>::max() },
             *engine.mockWindow,
             engine.Logger());
     fieldOrigin.CuratorCommandPipeline<Work>(Arca::Pipeline{ Scripting::Stage() });
@@ -56,7 +57,7 @@ SCENARIO_METHOD(AngelScriptBoundsTestsFixture, "running bounds AngelScript scrip
         auto scalers = dataGeneration.RandomStack<
             Spatial::Scalers2D, Spatial::Scalers2D::Value, Spatial::Scalers2D::Value>();
         auto rotation = dataGeneration.Random<Spatial::Angle2D>();
-        auto bounds = fieldReliquary.Do(Arca::Create<Spatial::Bounds>{openRelic, position, baseSize, scalers, rotation});
+        auto bounds = fieldReliquary.Do(Arca::Create<Spatial::Bounds>{openRelic, Spatial::BoundsSpace::World, position, baseSize, scalers, rotation});
 
         GIVEN("script that returns position")
         {
@@ -210,45 +211,16 @@ SCENARIO_METHOD(AngelScriptBoundsTestsFixture, "running bounds AngelScript scrip
             }
         }
 
-        GIVEN("script that moves bounds by delta")
+        GIVEN("script that returns space")
         {
-            const auto positionDelta = dataGeneration.RandomStack<
-                Spatial::Point3D, Spatial::Point3D::Value, Spatial::Point3D::Value, Spatial::Point3D::Value>();
-
             CompileAndCreateScript(
                 "basic_script.as",
-                "class SignalHandler\n" \
+                "Atmos::Spatial::BoundsSpace main(Arca::RelicID boundsID)\n" \
                 "{\n" \
-                "    Atmos::Spatial::BoundsMoved signal;\n" \
-                "    void Handle(Atmos::Spatial::BoundsMoved signal) { this.signal = signal; }\n" \
-                "}\n" \
-                "\n" \
-                "string main(Arca::RelicID boundsID, float setX, float setY, float setZ)\n" \
-                "{\n" \
-                "    SignalHandler signalHandler;\n" \
-                "    Arca::Reliquary::On(Atmos::Spatial::OnBoundsMoved(signalHandler.Handle));\n" \
-                "\n" \
                 "    auto bounds = Atmos::Spatial::Bounds(boundsID);\n" \
-                "    auto startingPosition = bounds.Position();\n" \
-                "\n" \
-                "    auto command = Atmos::Spatial::MoveBoundsBy(boundsID, Atmos::Spatial::Point3D(setX, setY, setZ));\n" \
-                "    Arca::Reliquary::Do(command);\n" \
-                "\n" \
-                "    return Atmos::ToString(startingPosition.x) +\n" \
-                "        \" \" +\n" \
-                "        Atmos::ToString(startingPosition.y) +\n" \
-                "        \" \" +\n" \
-                "        Atmos::ToString(startingPosition.z) +\n" \
-                "        \" \" +\n" \
-                "        Atmos::ToString(signalHandler.signal.bounds.ID()) +\n" \
-                "        \" \" +\n" \
-                "        Atmos::ToString(signalHandler.signal.bounds.Position().x) +\n" \
-                "        \" \" +\n" \
-                "        Atmos::ToString(signalHandler.signal.bounds.Position().y) +\n" \
-                "        \" \" +\n" \
-                "        Atmos::ToString(signalHandler.signal.bounds.Position().z);\n" \
+                "    return bounds.Space();\n" \
                 "}",
-                { bounds.ID(), positionDelta.x, positionDelta.y, positionDelta.z },
+                { bounds.ID() },
                 fieldReliquary);
 
             WHEN("working reliquary")
@@ -257,103 +229,14 @@ SCENARIO_METHOD(AngelScriptBoundsTestsFixture, "running bounds AngelScript scrip
 
                 THEN("has correct properties")
                 {
-                    REQUIRE(position != bounds->Position());
-
                     REQUIRE(finishes.size() == 1);
-
-                    const auto expectedResult =
-                        ToString(position.x) +
-                        " " +
-                        ToString(position.y) +
-                        " " +
-                        ToString(position.z) +
-                        " " +
-                        ToString(bounds.ID()) +
-                        " " +
-                        ToString(bounds->Position().x) +
-                        " " +
-                        ToString(bounds->Position().y) +
-                        " " +
-                        ToString(bounds->Position().z);
-
-                    const auto result = std::get<String>(std::get<Variant>(finishes[0].result));
-                    REQUIRE(result == expectedResult);
+                    
+                    const auto result = std::get<bool>(std::get<Variant>(finishes[0].result));
+                    REQUIRE(static_cast<Spatial::BoundsSpace>(result) == bounds->Space());
                 }
             }
         }
-
-        GIVEN("script that moves bounds in direction")
-        {
-            const auto direction = dataGeneration.RandomStack<Spatial::Angle3D, Spatial::Angle3D::Value, Spatial::Angle3D::Value>();
-            const auto amount = dataGeneration.Random<float>();
-
-            CompileAndCreateScript(
-                "basic_script.as",
-                "class SignalHandler\n" \
-                "{\n" \
-                "    Atmos::Spatial::BoundsMoved signal;\n" \
-                "    void Handle(Atmos::Spatial::BoundsMoved signal) { this.signal = signal; }\n" \
-                "}\n" \
-                "\n" \
-                "string main(Arca::RelicID boundsID, float directionPitch, float directionYaw, float amount)\n" \
-                "{\n" \
-                "    SignalHandler signalHandler;\n" \
-                "    Arca::Reliquary::On(Atmos::Spatial::OnBoundsMoved(signalHandler.Handle));\n" \
-                "\n" \
-                "    auto bounds = Atmos::Spatial::Bounds(boundsID);\n" \
-                "    auto startingPosition = bounds.Position();\n" \
-                "\n" \
-                "    auto command = Atmos::Spatial::MoveBoundsDirection(boundsID, Atmos::Spatial::Angle3D(directionPitch, directionYaw), amount);\n" \
-                "    Arca::Reliquary::Do(command);\n" \
-                "\n" \
-                "    return Atmos::ToString(startingPosition.x) +\n" \
-                "        \" \" +\n" \
-                "        Atmos::ToString(startingPosition.y) +\n" \
-                "        \" \" +\n" \
-                "        Atmos::ToString(startingPosition.z) +\n" \
-                "        \" \" +\n" \
-                "        Atmos::ToString(signalHandler.signal.bounds.ID()) +\n" \
-                "        \" \" +\n" \
-                "        Atmos::ToString(signalHandler.signal.bounds.Position().x) +\n" \
-                "        \" \" +\n" \
-                "        Atmos::ToString(signalHandler.signal.bounds.Position().y) +\n" \
-                "        \" \" +\n" \
-                "        Atmos::ToString(signalHandler.signal.bounds.Position().z);\n" \
-                "}",
-                { bounds.ID(), direction.pitch, direction.yaw, amount },
-                fieldReliquary);
-
-            WHEN("working reliquary")
-            {
-                fieldReliquary.Do(Work{});
-
-                THEN("has correct properties")
-                {
-                    REQUIRE(position != bounds->Position());
-
-                    REQUIRE(finishes.size() == 1);
-
-                    const auto expectedResult =
-                        ToString(position.x) +
-                        " " +
-                        ToString(position.y) +
-                        " " +
-                        ToString(position.z) +
-                        " " +
-                        ToString(bounds.ID()) +
-                        " " +
-                        ToString(bounds->Position().x) +
-                        " " +
-                        ToString(bounds->Position().y) +
-                        " " +
-                        ToString(bounds->Position().z);
-
-                    const auto result = std::get<String>(std::get<Variant>(finishes[0].result));
-                    REQUIRE(result == expectedResult);
-                }
-            }
-        }
-
+        
         GIVEN("script that moves bounds to")
         {
             const auto toPosition = dataGeneration.RandomStack<
@@ -375,7 +258,7 @@ SCENARIO_METHOD(AngelScriptBoundsTestsFixture, "running bounds AngelScript scrip
                 "    auto bounds = Atmos::Spatial::Bounds(boundsID);\n" \
                 "    auto startingPosition = bounds.Position();\n" \
                 "\n" \
-                "    auto command = Atmos::Spatial::MoveBoundsTo(boundsID, Atmos::Spatial::Point3D(setX, setY, setZ));\n" \
+                "    auto command = Atmos::Spatial::MoveBounds(boundsID, Atmos::Spatial::Point3D(setX, setY, setZ));\n" \
                 "    Arca::Reliquary::Do(command);\n" \
                 "\n" \
                 "    return Atmos::ToString(startingPosition.x) +\n" \
@@ -384,13 +267,13 @@ SCENARIO_METHOD(AngelScriptBoundsTestsFixture, "running bounds AngelScript scrip
                 "        \" \" +\n" \
                 "        Atmos::ToString(startingPosition.z) +\n" \
                 "        \" \" +\n" \
-                "        Atmos::ToString(signalHandler.signal.bounds.ID()) +\n" \
+                "        Atmos::ToString(signalHandler.signal.id) +\n" \
                 "        \" \" +\n" \
-                "        Atmos::ToString(signalHandler.signal.bounds.Position().x) +\n" \
+                "        Atmos::ToString(signalHandler.signal.previousPosition.x) +\n" \
                 "        \" \" +\n" \
-                "        Atmos::ToString(signalHandler.signal.bounds.Position().y) +\n" \
+                "        Atmos::ToString(signalHandler.signal.previousPosition.y) +\n" \
                 "        \" \" +\n" \
-                "        Atmos::ToString(signalHandler.signal.bounds.Position().z);\n" \
+                "        Atmos::ToString(signalHandler.signal.previousPosition.z);\n" \
                 "}",
                 { bounds.ID(), toPosition.x, toPosition.y, toPosition.z },
                 fieldReliquary);
@@ -415,11 +298,11 @@ SCENARIO_METHOD(AngelScriptBoundsTestsFixture, "running bounds AngelScript scrip
                         " " +
                         ToString(bounds.ID()) +
                         " " +
-                        ToString(bounds->Position().x) +
+                        ToString(position.x) +
                         " " +
-                        ToString(bounds->Position().y) +
+                        ToString(position.y) +
                         " " +
-                        ToString(bounds->Position().z);
+                        ToString(position.z);
 
                     const auto result = std::get<String>(std::get<Variant>(finishes[0].result));
                     REQUIRE(result == expectedResult);
@@ -452,9 +335,9 @@ SCENARIO_METHOD(AngelScriptBoundsTestsFixture, "running bounds AngelScript scrip
                 "\n" \
                 "    return Atmos::ToString(startingRotation) +\n" \
                 "        \" \" +\n" \
-                "        Atmos::ToString(signalHandler.signal.bounds.ID()) +\n"
+                "        Atmos::ToString(signalHandler.signal.id) +\n"
                 "        \" \" +\n" \
-                "        Atmos::ToString(signalHandler.signal.bounds.Rotation());\n" \
+                "        Atmos::ToString(signalHandler.signal.previousRotation);\n" \
                 "}",
                 { bounds.ID(), toRotation },
                 fieldReliquary);
@@ -470,7 +353,7 @@ SCENARIO_METHOD(AngelScriptBoundsTestsFixture, "running bounds AngelScript scrip
 
                     REQUIRE(finishes.size() == 1);
 
-                    const auto expectedResult = ToString(rotation) + " " + ToString(bounds.ID()) + " " + ToString(toRotation);
+                    const auto expectedResult = ToString(rotation) + " " + ToString(bounds.ID()) + " " + ToString(rotation);
 
                     const auto result = std::get<String>(std::get<Variant>(finishes[0].result));
                     REQUIRE(result == expectedResult);
@@ -505,11 +388,11 @@ SCENARIO_METHOD(AngelScriptBoundsTestsFixture, "running bounds AngelScript scrip
                 "        \" \" +\n" \
                 "        Atmos::ToString(startingScalers.y) +\n" \
                 "        \" \" +\n" \
-                "        Atmos::ToString(signalHandler.signal.bounds.ID()) +\n"
+                "        Atmos::ToString(signalHandler.signal.id) +\n"
                 "        \" \" +\n" \
-                "        Atmos::ToString(signalHandler.signal.bounds.Scalers().x) +\n" \
+                "        Atmos::ToString(signalHandler.signal.previousScalers.x) +\n" \
                 "        \" \" +\n" \
-                "        Atmos::ToString(signalHandler.signal.bounds.Scalers().y);\n" \
+                "        Atmos::ToString(signalHandler.signal.previousScalers.y);\n" \
                 "}",
                 { bounds.ID(), toScalers.x, toScalers.y },
                 fieldReliquary);
@@ -531,9 +414,9 @@ SCENARIO_METHOD(AngelScriptBoundsTestsFixture, "running bounds AngelScript scrip
                         " " +
                         ToString(bounds.ID()) +
                         " " +
-                        ToString(toScalers.x) +
+                        ToString(scalers.x) +
                         " " +
-                        ToString(toScalers.y);
+                        ToString(scalers.y);
 
                     const auto result = std::get<String>(std::get<Variant>(finishes[0].result));
                     REQUIRE(result == expectedResult);
@@ -603,7 +486,7 @@ SCENARIO_METHOD(AngelScriptBoundsTestsFixture, "running bounds AngelScript scrip
             "    auto baseSize = Atmos::Spatial::Size2D();\n" \
             "    auto scalers = Atmos::Spatial::Scalers2D();\n" \
             "    auto rotation = 0.0;\n" \
-            "    auto bounds = Arca::Reliquary::Do(Arca::Create<Atmos::Spatial::Bounds>(relic.ID(), position, baseSize, scalers, rotation));\n" \
+            "    auto bounds = Arca::Reliquary::Do(Arca::Create<Atmos::Spatial::Bounds>(relic.ID(), Atmos::Spatial::BoundsSpace::World, position, baseSize, scalers, rotation));\n" \
             "    return bounds.ID();\n"\
             "}",
             {},

@@ -2,17 +2,18 @@
 
 #include <Arca/Signal.h>
 
-#include "Bounds.h"
+#include "Point3D.h"
 
 namespace Atmos::Spatial
 {
     class BoundsMoved
     {
     public:
-        Arca::Index<Bounds> bounds;
+        Arca::RelicID id;
+        Point3D previousPosition;
 
         BoundsMoved() = default;
-        explicit BoundsMoved(Arca::Index<Bounds> bounds) : bounds(std::move(bounds))
+        explicit BoundsMoved(Arca::RelicID id, Point3D previousPosition) : id(id), previousPosition(previousPosition)
         {}
     };
 }

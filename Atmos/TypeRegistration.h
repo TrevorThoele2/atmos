@@ -5,6 +5,7 @@
 #include "AssetResourceManager.h"
 #include "InputManager.h"
 #include "GraphicsManager.h"
+#include "TextManager.h"
 #include "AudioManager.h"
 #include "ScriptManager.h"
 #include "WindowBase.h"
@@ -29,9 +30,10 @@ namespace Atmos
         Audio::Manager& audio,
         Input::Manager& input,
         Render::GraphicsManager& graphics,
+        Render::TextManager& text,
         Scripting::Manager& scripts,
         World::Manager& world,
-        Spatial::ScreenSize screenSize,
+        Spatial::Size2D screenSize,
         Window::WindowBase& window,
         Logging::Logger& logger);
 
@@ -48,8 +50,17 @@ namespace Atmos
     {
         void RegisterTypes(Arca::ReliquaryOrigin& origin);
         void RegisterTypes(
-            Arca::ReliquaryOrigin& origin, GraphicsManager& manager, Spatial::ScreenSize screenSize, void* window);
+            Arca::ReliquaryOrigin& origin,
+            GraphicsManager& graphicsManager,
+            TextManager& textManager,
+            Spatial::Size2D screenSize,
+            void* window);
         Arca::Stage Stage();
+    }
+
+    namespace UI
+    {
+        void RegisterTypes(Arca::ReliquaryOrigin& origin);
     }
 
     namespace Audio

@@ -17,7 +17,7 @@ namespace Atmos::Asset
         gridSize(gridSize)
     {
         const auto useResource = Resource();
-        size = useResource ? useResource->Size() : ImageSize{};
+        size = useResource ? useResource->Size() : Spatial::Size2D{};
     }
 
     Image::Image(Arca::RelicInit init, Arca::Serialization serialization) :
@@ -40,7 +40,7 @@ namespace Atmos::Asset
         return *this;
     }
 
-    void Image::Setup(ResourcePtr&& set, ImageSize size)
+    void Image::Setup(ResourcePtr&& set, Spatial::Size2D size)
     {
         SetResource(std::move(set));
         this->size = size;
@@ -56,7 +56,7 @@ namespace Atmos::Asset
         return size.height;
     }
 
-    ImageSize Image::Size() const
+    Spatial::Size2D Image::Size() const
     {
         return size;
     }

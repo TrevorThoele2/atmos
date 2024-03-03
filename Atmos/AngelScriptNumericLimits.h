@@ -16,7 +16,7 @@ namespace Atmos::Scripting::Angel
         using Management = GlobalManagement;
 
         static String ContainingNamespace() { return TypeString() + "Limits"; }
-        static String Documentation() { return "This is a command."; }
+        static String Documentation() { return "Traits for numerics."; }
         static const ObjectType objectType = ObjectType::Value;
 
         static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);

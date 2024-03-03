@@ -28,6 +28,7 @@ namespace Atmos::World::Serialization
             ExtractedAssets audio;
             ExtractedAssets images;
             ExtractedAssets shaders;
+            ExtractedAssets fonts;
             ExtractedAssets scripts;
         };
 
@@ -38,12 +39,14 @@ namespace Atmos::World::Serialization
             ToExtract audio;
             ToExtract images;
             ToExtract shaders;
+            ToExtract fonts;
             ToExtract scripts;
             AllToExtract() = default;
             AllToExtract(
                 const ToExtract& audio,
                 const ToExtract& images,
                 const ToExtract& shaders,
+                const ToExtract& fonts,
                 const ToExtract& scripts);
         };
     public:

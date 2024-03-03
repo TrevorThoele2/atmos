@@ -28,11 +28,12 @@ SCENARIO_METHOD(GridRegionRenderingTestsFixture, "rendering grid regions", "[ren
             *engine.mockAudioManager,
             *engine.mockInputManager,
             *engine.mockGraphicsManager,
+            *engine.mockTextManager,
             *engine.mockScriptManager,
             *engine.worldManager,
-            Spatial::ScreenSize {
-                std::numeric_limits<Spatial::ScreenSize::Dimension>::max(),
-                std::numeric_limits<Spatial::ScreenSize::Dimension>::max() },
+            Spatial::Size2D {
+                std::numeric_limits<Spatial::Size2D::Value>::max(),
+                std::numeric_limits<Spatial::Size2D::Value>::max() },
             *engine.mockWindow,
             engine.Logger());
         World::Field field(0, fieldOrigin.Actualize());
@@ -42,8 +43,8 @@ SCENARIO_METHOD(GridRegionRenderingTestsFixture, "rendering grid regions", "[ren
         const auto mainSurface = Arca::Index<MainSurface>(fieldReliquary);
         auto mainSurfaceImplementation = mainSurface->Resource<MockSurfaceResource>();
 
-        auto materialAsset = fieldReliquary.Do(Arca::Create<Asset::RegionMaterial> {
-            String{}, std::vector<Asset::RegionMaterial::Pass>{} });
+        auto materialAsset = fieldReliquary.Do(Arca::Create<Asset::Material> {
+            String{}, std::vector<Asset::Material::Pass>{} });
 
         const auto camera = Arca::Index<Camera>(fieldReliquary);
 
@@ -126,7 +127,7 @@ SCENARIO_METHOD(GridRegionRenderingTestsFixture, "rendering grid regions", "[ren
                 Spatial::Grid::Point { 0, 1 },
                 Spatial::Grid::Point { 1, 1 },
             };
-            fieldReliquary.Do(Arca::Create<GridRegion>{ positions, 0, Arca::Index<Asset::RegionMaterial>{}});
+            fieldReliquary.Do(Arca::Create<GridRegion>{ positions, 0, Arca::Index<Asset::Material>{}});
 
             WHEN("starting engine execution")
             {

@@ -8,19 +8,16 @@ public:
     std::vector<Atmos::Render::ImageRender> imageRenders;
     std::vector<Atmos::Render::LineRender> lineRenders;
     std::vector<Atmos::Render::RegionRender> regionRenders;
+    std::vector<Atmos::Render::TextRender> textRenders;
 public:
     void StageRender(const Atmos::Render::ImageRender& imageRender) override;
     void StageRender(const Atmos::Render::LineRender& lineRender) override;
     void StageRender(const Atmos::Render::RegionRender& regionRender) override;
+    void StageRender(const Atmos::Render::TextRender& textRender) override;
 
     void DrawFrame(Arca::Reliquary& reliquary, const Atmos::Render::Color& backgroundColor) override;
+    
+    void OnMaterialDestroying(const Arca::Index<Atmos::Asset::Material>& material) override;
 
-    void OnMaterialCreated(const Arca::Index<Atmos::Asset::ImageMaterial>& material) override;
-    void OnMaterialCreated(const Arca::Index<Atmos::Asset::LineMaterial>& material) override;
-    void OnMaterialCreated(const Arca::Index<Atmos::Asset::RegionMaterial>& material) override;
-    void OnMaterialDestroying(const Arca::Index<Atmos::Asset::ImageMaterial>& material) override;
-    void OnMaterialDestroying(const Arca::Index<Atmos::Asset::LineMaterial>& material) override;
-    void OnMaterialDestroying(const Arca::Index<Atmos::Asset::RegionMaterial>& material) override;
-
-    [[nodiscard]] Atmos::Spatial::ScreenSize Size() const override;
+    [[nodiscard]] Atmos::Spatial::Size2D Size() const override;
 };

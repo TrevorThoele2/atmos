@@ -23,6 +23,11 @@ namespace Inscription
         return Extract(name, &ArchiveInterface::AllToExtract::shaders, &ArchiveInterface::Extracted::shaders);
     }
 
+    auto LoadAssetsByZipUserContext::LoadFontData(const Atmos::Name& name) -> std::optional<Extracted>
+    {
+        return Extract(name, &ArchiveInterface::AllToExtract::fonts, &ArchiveInterface::Extracted::fonts);
+    }
+
     auto LoadAssetsByZipUserContext::LoadScriptData(const Atmos::Name& name) -> std::optional<Extracted>
     {
         return Extract(name, &ArchiveInterface::AllToExtract::scripts, &ArchiveInterface::Extracted::scripts);

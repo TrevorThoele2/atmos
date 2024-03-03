@@ -18,7 +18,7 @@ namespace Atmos::Scripting::Angel
         registration
             .ConstMethod(&Management::Method<&Points>, "Atmos::Spatial::Point2D[]@", "Points", {})
             .ConstMethod(&Management::Method<&Z>, "float", "Z", {})
-            .ConstMethod(&Management::Method<&Material>, "Atmos::Asset::LineMaterial", "Material", {})
+            .ConstMethod(&Management::Method<&Material>, "Atmos::Asset::Material", "Material", {})
             .ConstMethod(&Management::Method<&Width>, "float", "Width", {})
             .ConstMethod(&Management::Method<&Color>, "Atmos::Render::Color", "Color", {})
             .Actualize(engine, documentationManager);
@@ -30,13 +30,13 @@ namespace Atmos::Scripting::Angel
             .Constructor<
                 std::vector<Spatial::Point2D>,
                 float,
-                Arca::Index<Asset::LineMaterial>,
+                Arca::Index<Asset::Material>,
                 float,
                 Render::Color>
             ({
                 "Atmos::Spatial::Point2D[]@ points",
                 "float z",
-                "Atmos::Asset::LineMaterial material",
+                "Atmos::Asset::Material material",
                 "float width",
                 "Atmos::Render::Color color"
             })
@@ -57,9 +57,9 @@ namespace Atmos::Scripting::Angel
         return RequiredValue(type)->z;
     }
 
-    Arca::Index<Asset::LineMaterial> Registration<Render::Line>::Material(Type type)
+    Arca::Index<Asset::Material> Registration<Render::Line>::Material(Type type)
     {
-        return RequiredValue(type)->material;
+        return RequiredValue(type)->renderCore->material;
     }
 
     Render::LineWidth Registration<Render::Line>::Width(Type type)
@@ -69,7 +69,7 @@ namespace Atmos::Scripting::Angel
 
     Render::Color Registration<Render::Line>::Color(Type type)
     {
-        return RequiredValue(type)->color;
+        return RequiredValue(type)->renderCore->color;
     }
 
     void Registration<ChangeLinePoints>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)

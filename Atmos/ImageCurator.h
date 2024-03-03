@@ -4,12 +4,13 @@
 
 #include "Octree.h"
 
+#include "RenderCore.h"
 #include "ImageCore.h"
 #include "Bounds.h"
 #include "Camera.h"
 #include "ChangeImageCore.h"
-#include "ChangeMaterialAsset.h"
 #include "FindImagesByBox.h"
+#include "ViewSlice.h"
 
 namespace Atmos::Render
 {
@@ -20,7 +21,6 @@ namespace Atmos::Render
     public:
         using ObjectCurator::Handle;
         void Handle(const ChangeImageCore& command);
-        void Handle(const ChangeImageMaterialAsset& command);
         std::vector<Arca::RelicID> Handle(const FindImagesByBox& command) const;
     protected:
         void WorkImpl(
@@ -28,14 +28,20 @@ namespace Atmos::Render
             Spatial::Point2D cameraTopLeft,
             Arca::Index<MainSurface> mainSurface) override;
     private:
-        using Matrix = Arca::All<ImageCore, Arca::Either<Spatial::Bounds>>;
-        using Index = Arca::Index<Matrix>;
-        Spatial::Grid::Octree<Arca::RelicID, Index> octree;
+        using WorldMatrix = Arca::All<RenderCore, ImageCore, Arca::Either<Spatial::Bounds>>;
+        using WorldIndex = Arca::Index<WorldMatrix>;
+        Spatial::Grid::Octree<Arca::RelicID, WorldIndex> octree;
+
+        void OnCreated(const Arca::MatrixFormed<WorldMatrix>& signal);
+        void OnDestroying(const Arca::MatrixDissolved<WorldMatrix>& signal);
+
+        static Spatial::AxisAlignedBox3D BoxFor(const WorldIndex& index);
     private:
-        void OnCreated(const Arca::MatrixFormed<Matrix>& signal);
-        void OnDestroying(const Arca::MatrixDissolved<Matrix>& signal);
-    private:
-        static Spatial::AxisAlignedBox3D BoxFor(const Index& index);
+        static std::tuple<Spatial::Size2D, Spatial::AxisAlignedBox2D> ViewSliceDependent(
+            Arca::Index<ViewSlice> viewSlice,
+            const Spatial::AxisAlignedBox2D& assetSlice,
+            const Spatial::Size2D& boundsSize,
+            const Spatial::Scalers2D& scalers);
     };
 }
 
@@ -49,7 +55,6 @@ namespace Arca
         using HandledCommands = HandledCommands<
             Atmos::Work,
             Atmos::Render::ChangeImageCore,
-            Atmos::Render::ChangeImageMaterialAsset,
             Atmos::Render::FindImagesByBox>;
     };
 }

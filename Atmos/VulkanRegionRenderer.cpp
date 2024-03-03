@@ -7,8 +7,7 @@ namespace Atmos::Render::Vulkan
         vk::Queue graphicsQueue,
         vk::PhysicalDeviceMemoryProperties memoryProperties,
         vk::RenderPass renderPass,
-        vk::Extent2D swapchainExtent,
-        const Arca::Batch<Asset::RegionMaterial>& materials)
+        vk::Extent2D swapchainExtent)
         :
         vertexBuffer(vertexStride * sizeof(Vertex), *device, memoryProperties, vk::BufferUsageFlagBits::eVertexBuffer),
         indexBuffer(indexStride * sizeof(Index), *device, memoryProperties, vk::BufferUsageFlagBits::eIndexBuffer),
@@ -38,10 +37,7 @@ namespace Atmos::Render::Vulkan
             { descriptorSetPool.DescriptorSetLayout() }),
         graphicsQueue(graphicsQueue),
         device(device)
-    {
-        for (auto material = materials.begin(); material != materials.end(); ++material)
-            MaterialCreated(Arca::Index<Asset::RegionMaterial>{material.ID(), materials.Owner()});
-    }
+    {}
 
     void RegionRenderer::StageRender(const RegionRender& regionRender)
     {
@@ -64,22 +60,18 @@ namespace Atmos::Render::Vulkan
 
         universalDataBuffer.Update(raster->setupDescriptorSet);
 
-        for (auto stagedRegionRender = stagedRegionRenders.begin(); stagedRegionRender != stagedRegionRenders.end();)
+        for (auto stagedRegionRender : stagedRegionRenders)
         {
-            AddToRaster(*stagedRegionRender, *raster);
-            stagedRegionRender = stagedRegionRenders.erase(stagedRegionRender);
+            mappedConduits.Add(stagedRegionRender.material);
+            AddToRaster(stagedRegionRender, *raster);
         }
+        stagedRegionRenders.clear();
 
         raster->currentLayer = raster->layers.begin();
         return raster;
     }
-
-    void RegionRenderer::MaterialCreated(Arca::Index<Asset::RegionMaterial> material)
-    {
-        mappedConduits.Add(material);
-    }
-
-    void RegionRenderer::MaterialDestroying(Arca::Index<Asset::RegionMaterial> material)
+    
+    void RegionRenderer::MaterialDestroying(Arca::Index<Asset::Material> material)
     {
         mappedConduits.Remove(material);
     }
@@ -117,7 +109,7 @@ namespace Atmos::Render::Vulkan
         return currentLayer == layers.end();
     }
 
-    Spatial::Point3D::Value RegionRenderer::Raster::NextLayer() const
+    ObjectLayeringKey RegionRenderer::Raster::NextLayer() const
     {
         return currentLayer->first;
     }
@@ -195,17 +187,18 @@ namespace Atmos::Render::Vulkan
 
     void RegionRenderer::AddToRaster(const RegionRender& regionRender, Raster& raster)
     {
-        if (regionRender.mesh.vertices.empty() || regionRender.mesh.indices.empty())
-            return;
+        if (!regionRender.mesh.vertices.empty() && !regionRender.mesh.indices.empty())
+        {
+            std::vector<Vertex> vertices;
+            for (auto& point : regionRender.mesh.vertices)
+                vertices.push_back(Vertex{ { point.x, point.y } });
 
-        std::vector<Vertex> vertices;
-        for (auto& point : regionRender.mesh.vertices)
-            vertices.push_back(Vertex{ { point.x, point.y } });
-
-        auto context = raster.layers.Find(regionRender.z);
-        if (!context)
-            context = &raster.layers.Add(regionRender.z, Raster::Layer{});
-        auto& group = context->GroupFor(regionRender.materialID);
-        group.values.emplace_back(vertices, regionRender.mesh.indices);
+            const auto key = ObjectLayeringKey{ regionRender.space, regionRender.z };
+            auto context = raster.layers.Find(key);
+            if (!context)
+                context = &raster.layers.Add(key, Raster::Layer{});
+            auto& group = context->GroupFor(regionRender.material.ID());
+            group.values.emplace_back(vertices, regionRender.mesh.indices);
+        }
     }
 }

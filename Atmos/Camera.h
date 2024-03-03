@@ -5,7 +5,7 @@
 #include "Bounds.h"
 #include "Angle3D.h"
 #include "AxisAlignedBox2D.h"
-#include "ScreenSize.h"
+#include "Size2D.h"
 
 namespace Atmos::Render
 {
@@ -17,7 +17,7 @@ namespace Atmos::Render
 
         [[nodiscard]] Spatial::AxisAlignedBox2D Sides() const;
     public:
-        explicit Camera(Arca::RelicInit init, Spatial::ScreenSize screenSize);
+        explicit Camera(Arca::RelicInit init, Spatial::Size2D screenSize);
         explicit Camera(Arca::RelicInit init, Arca::Serialization);
     private:
         Arca::Index<Spatial::Bounds> bounds;

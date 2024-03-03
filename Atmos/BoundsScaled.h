@@ -2,17 +2,18 @@
 
 #include <Arca/Signal.h>
 
-#include "Bounds.h"
+#include "Scalers2D.h"
 
 namespace Atmos::Spatial
 {
     class BoundsScaled
     {
     public:
-        Arca::Index<Bounds> bounds;
+        Arca::RelicID id;
+        Scalers2D previousScalers;
 
         BoundsScaled() = default;
-        explicit BoundsScaled(Arca::Index<Bounds> bounds) : bounds(std::move(bounds))
+        explicit BoundsScaled(Arca::RelicID id, Scalers2D previousScalers) : id(id), previousScalers(previousScalers)
         {}
     };
 }

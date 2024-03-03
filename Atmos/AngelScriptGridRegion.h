@@ -47,7 +47,7 @@ namespace Atmos::Scripting::Angel
     private:
         [[nodiscard]] static std::unordered_set<Spatial::Grid::Point> Points(Type type);
         [[nodiscard]] static Spatial::Grid::Point::Value Z(Type type);
-        [[nodiscard]] static Arca::Index<Asset::RegionMaterial> Material(Type type);
+        [[nodiscard]] static Arca::Index<Asset::Material> Material(Type type);
     };
 
     template<>

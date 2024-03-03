@@ -4,7 +4,6 @@
 
 #include <Atmos/StaticImage.h>
 #include <Atmos/DynamicImage.h>
-#include <Atmos/RelativeImage.h>
 #include <Atmos/FindImagesByBox.h>
 #include <Atmos/TypeRegistration.h>
 #include "DerivedEngine.h"
@@ -30,11 +29,12 @@ SCENARIO_METHOD(ImageTestsFixture, "images", "[render]")
             *engine.mockAudioManager,
             *engine.mockInputManager,
             *engine.mockGraphicsManager,
+            *engine.mockTextManager,
             *engine.mockScriptManager,
             *engine.worldManager,
-            Spatial::ScreenSize{
-                std::numeric_limits<Spatial::ScreenSize::Dimension>::max(),
-                std::numeric_limits<Spatial::ScreenSize::Dimension>::max() },
+            Spatial::Size2D{
+                std::numeric_limits<Spatial::Size2D::Value>::max(),
+                std::numeric_limits<Spatial::Size2D::Value>::max() },
                 *engine.mockWindow,
                 engine.Logger());
         World::Field field(0, fieldOrigin.Actualize());
@@ -45,8 +45,8 @@ SCENARIO_METHOD(ImageTestsFixture, "images", "[render]")
         auto imageAsset = fieldReliquary.Do(Arca::Create<Asset::Image> {
             String{}, std::move(imageResource), Asset::ImageGridSize{}});
 
-        auto materialAsset = fieldReliquary.Do(Arca::Create<Asset::ImageMaterial> {
-            String{}, std::vector<Asset::ImageMaterial::Pass>{}});
+        auto materialAsset = fieldReliquary.Do(Arca::Create<Asset::Material> {
+            String{}, std::vector<Asset::Material::Pass>{}});
 
         auto positions = std::vector<Point3D>
         {

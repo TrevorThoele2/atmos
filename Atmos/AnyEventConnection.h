@@ -56,7 +56,7 @@ namespace Atmos
 
             [[nodiscard]] std::unique_ptr<Base> Clone() const override;
 
-            void Sever() override final;
+            void Sever() final;
             [[nodiscard]] bool IsValid() const override;
 
             [[nodiscard]] bool Compare(const AnyEventConnection& arg) const override;

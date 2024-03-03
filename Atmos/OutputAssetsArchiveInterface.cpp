@@ -21,6 +21,7 @@ namespace Atmos::World::Serialization
         Save("audio", saves.audio, zip);
         Save("images", saves.images, zip);
         Save("shaders", saves.shaders, zip);
+        Save("fonts", saves.fonts, zip);
         Save("scripts", saves.scripts, zip);
     }
 

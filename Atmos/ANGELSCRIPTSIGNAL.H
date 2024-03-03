@@ -24,7 +24,7 @@ namespace Atmos::Scripting::Angel
         template<class ArgumentT>
         void RegisterOnFunction(asIScriptGeneric* generic)
         {
-            const auto function = reinterpret_cast<asIScriptFunction*>(generic->GetArgAddress(0));
+            const auto function = static_cast<asIScriptFunction*>(generic->GetArgAddress(0));
 
             const auto currentExecutingScript = RetrieveCurrentExecuting(*UserData::RequiredReliquaryFrom(*generic));
             if (!currentExecutingScript)
@@ -52,10 +52,17 @@ namespace Atmos::Scripting::Angel
                     Chroma::ReplaceString(
                         Chroma::ReplaceString("On" + ArgumentTypeRegistration::Name(), "<", ""), ">", ""), "::", "");
             GlobalRegistration(funcDefNamespace)
-                .Funcdef("void", funcDef, { CreateName({ArgumentTypeRegistration::ContainingNamespace()}, ArgumentTypeRegistration::Name()) + " signal" })
+                .Funcdef(
+                    "void",
+                    funcDef,
+                    { CreateName({ArgumentTypeRegistration::ContainingNamespace()}, ArgumentTypeRegistration::Name()) + " signal" })
                 .Actualize(engine, documentationManager);
             GlobalRegistration(CreateName({ "Arca" }, "Reliquary"))
-                .Function(&RegisterOnFunction<Argument>, "void", "On", std::vector<String>{ CreateName({ funcDefNamespace }, funcDef + "@ handler") })
+                .Function(
+                    &RegisterOnFunction<Argument>,
+                    "void",
+                    "On",
+                    std::vector<String>{ CreateName({ funcDefNamespace }, funcDef + "@ handler") })
                 .Actualize(engine, documentationManager);
 
             auto signalsToRegister = UserData::RequiredSignalsToRegister(engine);

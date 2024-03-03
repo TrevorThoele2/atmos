@@ -7,19 +7,33 @@
 
 namespace Atmos::Render::Vulkan
 {
+    struct ObjectLayeringKey
+    {
+        int space;
+        Spatial::Point3D::Value z;
+
+        ObjectLayeringKey() = default;
+        ObjectLayeringKey(int space, Spatial::Point3D::Value z);
+
+        bool operator==(const ObjectLayeringKey& arg) const;
+        bool operator!=(const ObjectLayeringKey& arg) const;
+        bool operator<(const ObjectLayeringKey& arg) const;
+    };
+
     template<class MaterialGroupKey, class MaterialGroupValue>
     class ObjectLayering
     {
     public:
         using Layer = Layer<MaterialGroupKey, MaterialGroupValue>;
+        using Key = ObjectLayeringKey;
     private:
-        using Layers = std::map<Spatial::Point3D::Value, Layer>;
+        using Layers = std::map<Key, Layer>;
     public:
         using iterator = typename Layers::iterator;
         using const_iterator = typename Layers::const_iterator;
     public:
-        Layer& Add(Spatial::Point3D::Value key, Layer&& value);
-        Layer* Find(Spatial::Point3D::Value value);
+        Layer& Add(Key key, Layer&& value);
+        Layer* Find(Key key);
         void Clear();
 
         [[nodiscard]] uint32_t Count() const;
@@ -34,19 +48,16 @@ namespace Atmos::Render::Vulkan
     };
 
     template<class MaterialGroupKey, class MaterialGroupValue>
-    auto ObjectLayering<MaterialGroupKey, MaterialGroupValue>::Add(Spatial::Point3D::Value key, Layer&& value) -> Layer&
+    auto ObjectLayering<MaterialGroupKey, MaterialGroupValue>::Add(Key key, Layer&& value) -> Layer&
     {
         return layers.emplace(key, std::move(value)).first->second;
     }
 
     template<class MaterialGroupKey, class MaterialGroupValue>
-    auto ObjectLayering<MaterialGroupKey, MaterialGroupValue>::Find(Spatial::Point3D::Value value) -> Layer*
+    auto ObjectLayering<MaterialGroupKey, MaterialGroupValue>::Find(Key key) -> Layer*
     {
-        auto found = layers.find(value);
-        if (found == layers.end())
-            return nullptr;
-
-        return &found->second;
+        auto found = layers.find(key);
+        return found != layers.end() ? &found->second : nullptr;
     }
 
     template<class MaterialGroupKey, class MaterialGroupValue>

@@ -46,9 +46,6 @@
     <ClCompile Include="AngelScriptBoundsTests.cpp">
       <Filter>Source Files\Tests\Scripting\AngelScript\Atmos\Spatial</Filter>
     </ClCompile>
-    <ClCompile Include="AngelScriptImageCoreTests.cpp">
-      <Filter>Source Files\Tests\Scripting\AngelScript\Atmos\Spatial</Filter>
-    </ClCompile>
     <ClCompile Include="GridRegionRenderingTests.cpp">
       <Filter>Source Files\Tests\Render</Filter>
     </ClCompile>
@@ -166,6 +163,30 @@
     <ClCompile Include="SpatialAlgorithmsTests.cpp">
       <Filter>Source Files\Tests\Spatial</Filter>
     </ClCompile>
+    <ClCompile Include="MockTextManager.cpp">
+      <Filter>Source Files\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptImageCoreTests.cpp">
+      <Filter>Source Files\Tests\Scripting\AngelScript\Atmos\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptRenderCoreTests.cpp">
+      <Filter>Source Files\Tests\Scripting\AngelScript\Atmos\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptUIImageTests.cpp">
+      <Filter>Source Files\Tests\Scripting\AngelScript\Atmos\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UIImageRenderingTests.cpp">
+      <Filter>Source Files\Tests\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptUITextTests.cpp">
+      <Filter>Source Files\Tests\Scripting\AngelScript\Atmos\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptDynamicTextTests.cpp">
+      <Filter>Source Files\Tests\Scripting\AngelScript\Atmos\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptViewSliceTests.cpp">
+      <Filter>Source Files\Tests\Scripting\AngelScript\Atmos\Render</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneralFixture.h">
@@ -217,9 +238,6 @@
       <Filter>Header Files\Data</Filter>
     </ClInclude>
     <ClInclude Include="AngelScriptBoundsTests.h">
-      <Filter>Header Files\Tests\Scripting\AngelScript\Atmos\Spatial</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptImageCoreTests.h">
       <Filter>Header Files\Tests\Scripting\AngelScript\Atmos\Spatial</Filter>
     </ClInclude>
     <ClInclude Include="LineRenderingTests.h">
@@ -341,6 +359,33 @@
     </ClInclude>
     <ClInclude Include="SpatialAlgorithmsTests.h">
       <Filter>Header Files\Tests\Spatial</Filter>
+    </ClInclude>
+    <ClInclude Include="MockTextManager.h">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptImageCoreTests.h">
+      <Filter>Header Files\Tests\Scripting\AngelScript\Atmos\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptRenderCoreTests.h">
+      <Filter>Header Files\Tests\Scripting\AngelScript\Atmos\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptUIImageTests.h">
+      <Filter>Header Files\Tests\Scripting\AngelScript\Atmos\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UIImageRenderingTests.h">
+      <Filter>Header Files\Tests\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="MockTextResource.h">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptUITextTests.h">
+      <Filter>Header Files\Tests\Scripting\AngelScript\Atmos\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptDynamicTextTests.h">
+      <Filter>Header Files\Tests\Scripting\AngelScript\Atmos\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptViewSliceTests.h">
+      <Filter>Header Files\Tests\Scripting\AngelScript\Atmos\Render</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -511,6 +556,18 @@
     </Filter>
     <Filter Include="Source Files\Tests\Scripting\AngelScript\Arca">
       <UniqueIdentifier>{282fb792-7e58-496b-99ad-6eac613ab31c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Tests\Scripting\AngelScript\Atmos\UI">
+      <UniqueIdentifier>{13b2a7c4-c006-4f31-af64-649888d05e64}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Tests\Scripting\AngelScript\Atmos\UI">
+      <UniqueIdentifier>{3cf4137a-267b-4cf2-abdb-558d64cd31df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Tests\UI">
+      <UniqueIdentifier>{40cff34d-d1e6-4e3d-9962-94be9a9af4f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Tests\UI">
+      <UniqueIdentifier>{62ac569d-0293-4822-866e-c8b317fc1096}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

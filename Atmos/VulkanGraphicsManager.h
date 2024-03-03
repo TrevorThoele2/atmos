@@ -5,6 +5,7 @@
 #include "VulkanQueueFamilyIndices.h"
 #include "VulkanDebug.h"
 #include "VulkanShaderCompiler.h"
+#include "VulkanCombinedImageSamplerDescriptor.h"
 
 #define VK_KHR_WIN32_EXTENSION_NAME "VK_KHR_win32_surface"
 #define VK_EXT_DEBUG_UTILS_EXTENSION_NAME "VK_EXT_debug_utils"
@@ -23,15 +24,19 @@ namespace Atmos::Render::Vulkan
         [[nodiscard]] std::unique_ptr<Asset::Resource::Image> CreateImageResourceImpl(
             const Bytes& bytes,
             const Name& name,
-            const Asset::ImageSize& size) override;
+            const Spatial::Size2D& size) override;
         [[nodiscard]] std::unique_ptr<Asset::Resource::Shader> CreateShaderResourceImpl(
-            const Bytes& bytes, const Name& name) override;
+            const Bytes& bytes,
+            const Name& name) override;
         [[nodiscard]] std::unique_ptr<Resource::Surface> CreateMainSurfaceResourceImpl(
             void* window,
             Arca::Reliquary& reliquary) override;
         [[nodiscard]] std::unique_ptr<Resource::Surface> CreateSurfaceResourceImpl(
             void* window,
             Arca::Reliquary& reliquary) override;
+        [[nodiscard]] std::unique_ptr<Resource::Text> CreateTextResourceImpl(
+            const Bytes& bytes,
+            const Spatial::Size2D& size);
 
         void ResourceDestroyingImpl(Asset::Resource::Image& resource) override;
 
@@ -123,6 +128,16 @@ namespace Atmos::Render::Vulkan
         vk::UniqueSampler sampler;
 
         [[nodiscard]] static vk::UniqueSampler CreateSampler(vk::Device device);
+    private:
+        struct ImageData
+        {
+            vk::UniqueImage image;
+            vk::UniqueDeviceMemory memory;
+            vk::UniqueImageView imageView;
+            CombinedImageSamplerDescriptor descriptor;
+        };
+
+        [[nodiscard]] ImageData CreateImageData(const Bytes& bytes, Spatial::Size2D size);
     private:
         std::unique_ptr<Debug> debug;
     private:

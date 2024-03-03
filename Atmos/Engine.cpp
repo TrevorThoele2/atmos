@@ -45,11 +45,12 @@ namespace Atmos
             std::move(initializationProperties.audioManager),
             std::move(initializationProperties.inputManager),
             std::move(initializationProperties.graphicsManager),
+            std::move(initializationProperties.textManager),
             std::move(initializationProperties.scriptManager),
             std::move(initializationProperties.worldManager)
         };
 
-        managers.window->ChangeSize(Spatial::ScreenSize{ 1024, 768 });
+        managers.window->ChangeSize(Spatial::Size2D{ 1024, 768 });
         managers.window->CenterOnScreen();
 
         execution = std::make_unique<Execution>(*managers.world, *managers.window);
@@ -65,9 +66,10 @@ namespace Atmos
             *managers.audio,
             *managers.input,
             *managers.graphics,
+            *managers.text,
             *managers.scripts,
             *managers.world,
-            Spatial::ScreenSize{ 1024, 768 },
+            Spatial::Size2D{ 1024, 768 },
             *managers.window,
             *logger);
         RegisterFieldStages(origin);

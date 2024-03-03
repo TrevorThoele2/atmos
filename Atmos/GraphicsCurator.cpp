@@ -85,7 +85,7 @@ namespace Atmos::Render
         return manager->CreateShaderResource(command.buffer, command.name);
     }
 
-    void GraphicsCurator::AttemptReconstruct(const Spatial::ScreenSize& size)
+    void GraphicsCurator::AttemptReconstruct(const Spatial::Size2D& size)
     {
         if (!manager->ShouldReconstruct())
             return;

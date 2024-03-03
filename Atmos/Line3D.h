@@ -30,7 +30,7 @@ namespace Atmos::Spatial
         // If infinite is false, then it will not return the intersection point unless the segments intersect
         // Will return invalid Optional if the lines overlap
         // Otherwise will return the intersection point if the lines will ever intersect at some point
-        std::optional<Point3D> IntersectionPoint(const Line3D& other, bool infinite = false) const;
+        [[nodiscard]] std::optional<Point3D> IntersectionPoint(const Line3D& other, bool infinite = false) const;
 
         [[nodiscard]] Point3D::Value DeltaX() const;
         [[nodiscard]] Point3D::Value DeltaY() const;

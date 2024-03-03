@@ -9,23 +9,6 @@
 
 namespace Atmos::Scripting::Angel
 {
-    void Registration<Asset::ImageSize>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
-    {
-        ValueTypeRegistration<Type>(ContainingNamespace(), Name())
-            .DefaultConstructor(&Management::GenerateDefaultValue)
-            .Constructor(
-                &Management::GenerateValue<
-                    &PullFromParameter<0, Type::Dimension>,
-                    &PullFromParameter<1, Type::Dimension>>,
-                { "int width", "int height" })
-            .CopyConstructor(&Management::GenerateValueFromCopy)
-            .Destructor(&Management::DestructValue)
-            .CopyAssignment(&Management::CopyAssign)
-            .Property<&Type::width>("int", "width")
-            .Property<&Type::height>("int", "height")
-            .Actualize(engine, documentationManager);
-    }
-
     void Registration<Asset::ImageGridSize>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         ValueTypeRegistration<Type>(ContainingNamespace(), Name())
@@ -49,9 +32,9 @@ namespace Atmos::Scripting::Angel
         RegisterArcaIndex(registration);
         registration
             .ConstMethod(&Management::Method<&DoName>, "string", "Name", {})
-            .ConstMethod(&Management::Method<&Width>, "int", "Width", {})
-            .ConstMethod(&Management::Method<&Height>, "int", "Height", {})
-            .ConstMethod(&Management::Method<&Size>, "ImageSize", "Size", {})
+            .ConstMethod(&Management::Method<&Width>, "float", "Width", {})
+            .ConstMethod(&Management::Method<&Height>, "float", "Height", {})
+            .ConstMethod(&Management::Method<&Size>, "Atmos::Spatial::Size2D", "Size", {})
             .ConstMethod(&Management::Method<&Columns>, "int", "Columns", {})
             .ConstMethod(&Management::Method<&Rows>, "int", "Rows", {})
             .ConstMethod(&Management::Method<&GridSize>, "ImageGridSize", "GridSize", {})
@@ -79,7 +62,7 @@ namespace Atmos::Scripting::Angel
         return RequiredValue(type)->Height();
     }
 
-    Asset::ImageSize Registration<Asset::Image>::Size(Type type)
+    Spatial::Size2D Registration<Asset::Image>::Size(Type type)
     {
         return RequiredValue(type)->Size();
     }

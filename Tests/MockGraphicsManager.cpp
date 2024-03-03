@@ -2,6 +2,7 @@
 
 #include "MockSurfaceResource.h"
 #include "MockImageAssetResource.h"
+#include "MockTextResource.h"
 
 class ShaderAssetResourceImplementation final : public Asset::Resource::Shader
 {
@@ -21,7 +22,7 @@ void MockGraphicsManager::ChangeVerticalSync(bool set)
 std::unique_ptr<Asset::Resource::Image> MockGraphicsManager::CreateImageResourceImpl(
     const Buffer& buffer,
     const Name& name,
-    const Asset::ImageSize& size)
+    const Spatial::Size2D& size)
 {
     return std::make_unique<MockImageAssetResource>(size);
 }
@@ -44,6 +45,13 @@ std::unique_ptr<Resource::Surface> MockGraphicsManager::CreateSurfaceResourceImp
     Arca::Reliquary& reliquary)
 {
     return std::make_unique<MockSurfaceResource>();
+}
+
+std::unique_ptr<Resource::Text> MockGraphicsManager::CreateTextResourceImpl(
+    const Buffer& buffer,
+    const Spatial::Size2D& size)
+{
+    return std::make_unique<MockTextResource>();
 }
 
 bool MockGraphicsManager::ShouldReconstructInternals() const

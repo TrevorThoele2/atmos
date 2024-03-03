@@ -48,6 +48,6 @@ namespace Atmos::Audio
 
     Sound::Sound(Sound&& arg) noexcept :
         core(std::move(arg.core)),
-        init(std::move(arg.init))
+        init(arg.init)
     {}
 }

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "RenderMesh.h"
-#include "RegionMaterialAsset.h"
+#include "MaterialAsset.h"
 
 namespace Atmos::Render
 {
@@ -10,7 +10,8 @@ namespace Atmos::Render
         Mesh mesh;
         Spatial::Point2D::Value z;
 
-        Arca::RelicID materialID;
-        const Asset::RegionMaterial* material;
+        Arca::Index<Asset::Material> material;
+
+        int space;
     };
 }

@@ -2,13 +2,10 @@
 
 #include "ImageRenderingTests.h"
 
-#include <Arca/LocalRelic.h>
 #include <Atmos/StaticImage.h>
 #include <Atmos/DynamicImage.h>
-#include <Atmos/RelativeImage.h>
 #include <Atmos/TypeRegistration.h>
 #include <Atmos/GridCellSize.h>
-#include <Atmos/StringUtility.h>
 #include <Atmos/Camera.h>
 #include <Atmos/MainSurface.h>
 
@@ -34,11 +31,10 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
             *engine.mockAudioManager,
             *engine.mockInputManager,
             *engine.mockGraphicsManager,
+            *engine.mockTextManager,
             *engine.mockScriptManager,
             *engine.worldManager,
-            Spatial::ScreenSize{
-                std::numeric_limits<Spatial::ScreenSize::Dimension>::max(),
-                std::numeric_limits<Spatial::ScreenSize::Dimension>::max() },
+            Spatial::Size2D{ 10000, 10000 },
             *engine.mockWindow,
             engine.Logger());
         World::Field field(0, fieldOrigin.Actualize());
@@ -57,8 +53,8 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
         auto imageAsset = fieldReliquary.Do(Arca::Create<Asset::Image> {
             String{}, std::move(imageResource), Asset::ImageGridSize{}});
 
-        auto materialAsset = fieldReliquary.Do(Arca::Create<Asset::ImageMaterial> {
-            String{}, std::vector<Asset::ImageMaterial::Pass>{}});
+        auto material = fieldReliquary.Do(Arca::Create<Asset::Material> {
+            String{}, std::vector<Asset::Material::Pass>{}});
 
         auto positions = std::vector<Point3D>
         {
@@ -105,7 +101,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
             auto image1 = fieldReliquary.Do(Arca::Create<StaticImage> {
                 imageAsset,
                 0,
-                materialAsset,
+                material,
                 Color{},
                 positions[0],
                 scalers[0],
@@ -113,7 +109,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
             auto image2 = fieldReliquary.Do(Arca::Create<StaticImage> {
                 imageAsset,
                 0,
-                materialAsset,
+                material,
                 Color{},
                 positions[1],
                 scalers[1],
@@ -121,7 +117,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
             auto image3 = fieldReliquary.Do(Arca::Create<StaticImage> {
                 imageAsset,
                 0,
-                materialAsset,
+                material,
                 Color{},
                 positions[2],
                 scalers[2],
@@ -192,7 +188,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
             fieldReliquary.Do(Arca::Create<StaticImage>{
                 Arca::Index<Asset::Image>{},
                 0,
-                materialAsset,
+                material,
                 Color{},
                 positions[0],
                 scalers[0],
@@ -200,7 +196,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
             fieldReliquary.Do(Arca::Create<StaticImage> {
                 Arca::Index<Asset::Image>{},
                 0,
-                materialAsset,
+                material,
                 Color{},
                 positions[1],
                 scalers[1],
@@ -208,7 +204,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
             fieldReliquary.Do(Arca::Create<StaticImage> {
                 Arca::Index<Asset::Image>{},
                 0,
-                materialAsset,
+                material,
                 Color{},
                 positions[2],
                 scalers[2],
@@ -231,7 +227,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
             fieldReliquary.Do(Arca::Create<StaticImage>{
                 imageAsset,
                 0,
-                Arca::Index<Asset::ImageMaterial>{},
+                Arca::Index<Asset::Material>{},
                 Color{},
                 positions[0],
                 scalers[0],
@@ -239,7 +235,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
             fieldReliquary.Do(Arca::Create<StaticImage> {
                 imageAsset,
                 0,
-                Arca::Index<Asset::ImageMaterial>{},
+                Arca::Index<Asset::Material>{},
                 Color{},
                 positions[1],
                 scalers[1],
@@ -247,7 +243,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
             fieldReliquary.Do(Arca::Create<StaticImage> {
                 imageAsset,
                 0,
-                Arca::Index<Asset::ImageMaterial>{},
+                Arca::Index<Asset::Material>{},
                 Color{},
                 positions[2],
                 scalers[2],
@@ -270,7 +266,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
             auto image1 = fieldReliquary.Do(Arca::Create<DynamicImage> {
                 imageAsset,
                 0,
-                materialAsset,
+                material,
                 Color{},
                 positions[0],
                 scalers[0],
@@ -278,7 +274,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
             auto image2 = fieldReliquary.Do(Arca::Create<DynamicImage> {
                 imageAsset,
                 0,
-                materialAsset,
+                material,
                 Color{},
                 positions[1],
                 scalers[1],
@@ -286,7 +282,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
             auto image3 = fieldReliquary.Do(Arca::Create<DynamicImage> {
                 imageAsset,
                 0,
-                materialAsset,
+                material,
                 Color{},
                 positions[2],
                 scalers[2],
@@ -358,7 +354,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
             fieldReliquary.Do(Arca::Create<DynamicImage> {
                 Arca::Index<Asset::Image>{},
                 0,
-                materialAsset,
+                material,
                 Color{},
                 positions[0],
                 scalers[0],
@@ -366,7 +362,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
             fieldReliquary.Do(Arca::Create<DynamicImage> {
                 Arca::Index<Asset::Image>{},
                 0,
-                materialAsset,
+                material,
                 Color{},
                 positions[1],
                 scalers[1],
@@ -374,7 +370,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
             fieldReliquary.Do(Arca::Create<DynamicImage> {
                 Arca::Index<Asset::Image>{},
                 0,
-                materialAsset,
+                material,
                 Color{},
                 positions[2],
                 scalers[2],
@@ -397,7 +393,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
             fieldReliquary.Do(Arca::Create<DynamicImage> {
                 imageAsset,
                 0,
-                Arca::Index<Asset::ImageMaterial>{},
+                Arca::Index<Asset::Material>{},
                 Color{},
                 positions[0],
                 scalers[0],
@@ -405,7 +401,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
             fieldReliquary.Do(Arca::Create<DynamicImage> {
                 imageAsset,
                 0,
-                Arca::Index<Asset::ImageMaterial>{},
+                Arca::Index<Asset::Material>{},
                 Color{},
                 positions[1],
                 scalers[1],
@@ -413,220 +409,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
             fieldReliquary.Do(Arca::Create<DynamicImage> {
                 imageAsset,
                 0,
-                Arca::Index<Asset::ImageMaterial>{},
-                Color{},
-                positions[2],
-                scalers[2],
-                Angle2D{} });
-            WHEN("starting engine execution")
-            {
-                engine.UseField(std::move(field), {}, std::filesystem::current_path() / "Assets.dat");
-                engine.StartExecution();
-
-                THEN("no images rendered in graphics manager")
-                {
-                    auto& imageRenders = mainSurfaceImplementation->imageRenders;
-                    REQUIRE(imageRenders.empty());
-                }
-            }
-        }
-
-        WHEN("creating relative images")
-        {
-            auto parentPosition = Point3D
-            {
-                dataGeneration.Random<Point3D::Value>(TestFramework::Range<Point3D::Value>(-1000, 1000)),
-                dataGeneration.Random<Point3D::Value>(TestFramework::Range<Point3D::Value>(-1000, 1000)),
-                dataGeneration.Random<Point3D::Value>(TestFramework::Range<Point3D::Value>(-1000, 1000))
-            };
-
-            auto parent = fieldReliquary.Do(Arca::Create<Arca::OpenRelic>());
-            fieldReliquary.Do(
-                Arca::Create<Bounds>(parent, parentPosition, Size2D{1, 1}, Scalers2D{1, 1}, Angle2D{}));
-
-            auto image1 = fieldReliquary.Do(Arca::CreateChild<RelativeImage> {
-                parent,
-                imageAsset,
-                0,
-                materialAsset,
-                Color{},
-                positions[0],
-                scalers[0],
-                Angle2D{} });
-            auto image2 = fieldReliquary.Do(Arca::CreateChild<RelativeImage> {
-                parent,
-                imageAsset,
-                0,
-                materialAsset,
-                Color{},
-                positions[1],
-                scalers[1],
-                Angle2D{} });
-            auto image3 = fieldReliquary.Do(Arca::CreateChild<RelativeImage> {
-                parent,
-                imageAsset,
-                0,
-                materialAsset,
-                Color{},
-                positions[2],
-                scalers[2],
-                Angle2D{} });
-            WHEN("starting engine execution")
-            {
-                engine.UseField(std::move(field), {}, std::filesystem::current_path() / "Assets.dat");
-                engine.StartExecution();
-
-                THEN("all images rendered in graphics manager")
-                {
-                    auto& imageRenders = mainSurfaceImplementation->imageRenders;
-                    REQUIRE(imageRenders.size() == 3);
-
-                    for (auto i = 0; i < 3; ++i)
-                    {
-                        REQUIRE(std::any_of(
-                            imageRenders.begin(),
-                            imageRenders.end(),
-                            [i, &positions, &scalers, cameraLeft, cameraTop, parentPosition](const ImageRender& entry)
-                            {
-                                const auto expectedPosition = Point3D
-                                {
-                                    parentPosition.x + positions[i].x - cameraLeft,
-                                    parentPosition.y + positions[i].y - cameraTop,
-                                    parentPosition.z + positions[i].z
-                                };
-
-                                return entry.position == expectedPosition
-                                    && entry.size == Size2D{ scalers[i].x, scalers[i].y };
-                            }));
-                    }
-                }
-            }
-
-            WHEN("starting engine execution, destroying images, then starting engine execution")
-            {
-                engine.UseField(std::move(field), {}, std::filesystem::current_path() / "Assets.dat");
-                engine.StartExecution();
-
-                fieldReliquary.Do(Arca::Destroy<StaticImage>{ image1.ID() });
-                fieldReliquary.Do(Arca::Destroy<StaticImage>{ image2.ID() });
-                fieldReliquary.Do(Arca::Destroy<StaticImage>{ image3.ID() });
-
-                THEN("images were rendered only once")
-                {
-                    auto& imageRenders = mainSurfaceImplementation->imageRenders;
-                    REQUIRE(imageRenders.size() == 3);
-
-                    for (auto i = 0; i < 3; ++i)
-                    {
-                        REQUIRE(std::any_of(
-                            imageRenders.begin(),
-                            imageRenders.end(),
-                            [i, &positions, &scalers, cameraLeft, cameraTop, parentPosition](const ImageRender& entry)
-                            {
-                                const auto expectedPosition = Point3D
-                                {
-                                    parentPosition.x + positions[i].x - cameraLeft,
-                                    parentPosition.y + positions[i].y - cameraTop,
-                                    parentPosition.z + positions[i].z
-                                };
-
-                                return entry.position == expectedPosition
-                                    && entry.size == Size2D{ scalers[i].x, scalers[i].y };
-                            }));
-                    }
-                }
-            }
-        }
-
-        WHEN("creating relative images without asset")
-        {
-            auto parentPosition = Point3D
-            {
-                dataGeneration.Random<Point3D::Value>(TestFramework::Range<Point3D::Value>(-1000, 1000)),
-                dataGeneration.Random<Point3D::Value>(TestFramework::Range<Point3D::Value>(-1000, 1000)),
-                dataGeneration.Random<Point3D::Value>(TestFramework::Range<Point3D::Value>(-1000, 1000))
-            };
-
-            auto parent = fieldReliquary.Do(Arca::Create<Arca::OpenRelic>());
-            fieldReliquary.Do(
-                Arca::Create<Bounds>(parent, parentPosition, Size2D{ 1, 1 }, Scalers2D{ 1, 1 }, Angle2D{}));
-
-            fieldReliquary.Do(Arca::CreateChild<RelativeImage> {
-                parent,
-                Arca::Index<Asset::Image>{},
-                0,
-                materialAsset,
-                Color{},
-                positions[0],
-                scalers[0],
-                Angle2D{} });
-            fieldReliquary.Do(Arca::CreateChild<RelativeImage> {
-                parent,
-                Arca::Index<Asset::Image>{},
-                0,
-                materialAsset,
-                Color{},
-                positions[1],
-                scalers[1],
-                Angle2D{} });
-            fieldReliquary.Do(Arca::CreateChild<RelativeImage> {
-                parent,
-                Arca::Index<Asset::Image>{},
-                0,
-                materialAsset,
-                Color{},
-                positions[2],
-                scalers[2],
-                Angle2D{} });
-            WHEN("starting engine execution")
-            {
-                engine.UseField(std::move(field), {}, std::filesystem::current_path() / "Assets.dat");
-                engine.StartExecution();
-
-                THEN("no images rendered in graphics manager")
-                {
-                    auto& imageRenders = mainSurfaceImplementation->imageRenders;
-                    REQUIRE(imageRenders.empty());
-                }
-            }
-        }
-
-        WHEN("creating relative images without material")
-        {
-            auto parentPosition = Point3D
-            {
-                dataGeneration.Random<Point3D::Value>(TestFramework::Range<Point3D::Value>(-1000, 1000)),
-                dataGeneration.Random<Point3D::Value>(TestFramework::Range<Point3D::Value>(-1000, 1000)),
-                dataGeneration.Random<Point3D::Value>(TestFramework::Range<Point3D::Value>(-1000, 1000))
-            };
-
-            auto parent = fieldReliquary.Do(Arca::Create<Arca::OpenRelic>());
-            fieldReliquary.Do(
-                Arca::Create<Bounds>(parent, parentPosition, Size2D{ 1, 1 }, Scalers2D{ 1, 1 }, Angle2D{}));
-
-            fieldReliquary.Do(Arca::CreateChild<RelativeImage> {
-                parent,
-                imageAsset,
-                0,
-                Arca::Index<Asset::ImageMaterial>{},
-                Color{},
-                positions[0],
-                scalers[0],
-                Angle2D{} });
-            fieldReliquary.Do(Arca::CreateChild<RelativeImage> {
-                parent,
-                imageAsset,
-                0,
-                Arca::Index<Asset::ImageMaterial>{},
-                Color{},
-                positions[1],
-                scalers[1],
-                Angle2D{} });
-            fieldReliquary.Do(Arca::CreateChild<RelativeImage> {
-                parent,
-                imageAsset,
-                0,
-                Arca::Index<Asset::ImageMaterial>{},
+                Arca::Index<Asset::Material>{},
                 Color{},
                 positions[2],
                 scalers[2],
@@ -660,9 +443,10 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering culled images", "[render]
             *engine.mockAudioManager,
             *engine.mockInputManager,
             *engine.mockGraphicsManager,
+            *engine.mockTextManager,
             *engine.mockScriptManager,
             *engine.worldManager,
-            Spatial::ScreenSize{
+            Spatial::Size2D{
                 100,
                 100 },
             *engine.mockWindow,
@@ -683,8 +467,8 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering culled images", "[render]
         auto imageAsset = fieldReliquary.Do(Arca::Create<Asset::Image> {
             String{}, std::move(imageResource), Asset::ImageGridSize{} });
 
-        auto materialAsset = fieldReliquary.Do(Arca::Create<Asset::ImageMaterial> {
-            String{}, std::vector<Asset::ImageMaterial::Pass>{} });
+        auto materialAsset = fieldReliquary.Do(Arca::Create<Asset::Material> {
+            String{}, std::vector<Asset::Material::Pass>{} });
 
         WHEN("creating static images and starting execution")
         {

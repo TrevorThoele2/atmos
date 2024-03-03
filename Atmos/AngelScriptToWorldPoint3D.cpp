@@ -16,13 +16,13 @@ namespace Atmos::Scripting::Angel
         ValueTypeRegistration<Type>(ContainingNamespace(), Name())
             .Constructor(
                 &Management::GenerateValue<
-                    &PullFromParameter<0, Spatial::ScreenPoint>,
+                    &PullFromParameter<0, Spatial::Point2D>,
                     &PullFromParameter<1, Spatial::Point3D::Value>>,
-                { "Atmos::Spatial::ScreenPoint from", "float z" })
+                { "Atmos::Spatial::Point2D from", "float z" })
             .CopyConstructor(&Management::GenerateValueFromCopy)
             .Destructor(&Management::DestructValue)
             .CopyAssignment(&Management::CopyAssign)
-            .Property<&Type::from>("Atmos::Spatial::ScreenPoint", "from")
+            .Property<&Type::from>("Atmos::Spatial::Point2D", "from")
             .Property<&Type::z>("float", "z")
             .Actualize(engine, documentationManager);
 

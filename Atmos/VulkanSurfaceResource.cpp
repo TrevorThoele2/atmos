@@ -109,58 +109,38 @@ namespace Atmos::Render::Resource::Vulkan
         renderer->StageRender(regionRender);
     }
 
+    void Surface::StageRender(const TextRender& textRender)
+    {
+        renderer->StageRender(textRender);
+    }
+
     void Surface::DrawFrame(Arca::Reliquary& reliquary, const Color& backgroundColor)
     {
         const auto camera = Arca::Index<Camera>(reliquary);
-        const auto mapPosition = Spatial::ScreenPoint
+        const auto mapPosition = Spatial::Point2D
         {
-            Spatial::ScreenPoint::Value(camera->Position().x),
-            Spatial::ScreenPoint::Value(camera->Position().y)
+            Spatial::Point2D::Value(camera->Position().x),
+            Spatial::Point2D::Value(camera->Position().y)
         };
         renderer->DrawFrame(Size(), mapPosition);
     }
-
-    void Surface::OnMaterialCreated(const Arca::Index<Asset::ImageMaterial>& material)
-    {
-        renderer->OnMaterialCreated(material);
-    }
-
-    void Surface::OnMaterialCreated(const Arca::Index<Asset::LineMaterial>& material)
-    {
-        renderer->OnMaterialCreated(material);
-    }
-
-    void Surface::OnMaterialCreated(const Arca::Index<Asset::RegionMaterial>& material)
-    {
-        renderer->OnMaterialCreated(material);
-    }
-
-    void Surface::OnMaterialDestroying(const Arca::Index<Asset::ImageMaterial>& material)
+    
+    void Surface::OnMaterialDestroying(const Arca::Index<Asset::Material>& material)
     {
         renderer->OnMaterialDestroying(material);
     }
-
-    void Surface::OnMaterialDestroying(const Arca::Index<Asset::LineMaterial>& material)
-    {
-        renderer->OnMaterialDestroying(material);
-    }
-
-    void Surface::OnMaterialDestroying(const Arca::Index<Asset::RegionMaterial>& material)
-    {
-        renderer->OnMaterialDestroying(material);
-    }
-
+    
     void Surface::WaitForIdle() const
     {
         renderer->WaitForIdle();
     }
 
-    Spatial::ScreenSize Surface::Size() const
+    Spatial::Size2D Surface::Size() const
     {
         return
         {
-            static_cast<Spatial::ScreenSize::Dimension>(swapchainExtent.width),
-            static_cast<Spatial::ScreenSize::Dimension>(swapchainExtent.height)
+            static_cast<Spatial::Size2D::Value>(swapchainExtent.width),
+            static_cast<Spatial::Size2D::Value>(swapchainExtent.height)
         };
     }
 

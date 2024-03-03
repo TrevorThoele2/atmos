@@ -1,13 +1,13 @@
 #pragma once
 
 #include <Arca/Command.h>
-#include "ScreenSize.h"
+#include "Size2D.h"
 
 namespace Atmos::Window
 {
     struct ChangeSize
     {
-        Spatial::ScreenSize size;
+        Spatial::Size2D size;
     };
 }
 

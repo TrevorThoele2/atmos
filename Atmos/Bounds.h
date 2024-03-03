@@ -1,8 +1,6 @@
 #pragma once
 
 #include <Arca/Shard.h>
-#include <Arca/Reliquary.h>
-#include <Arca/Serialization.h>
 
 #include "Point3D.h"
 #include "Size2D.h"
@@ -11,11 +9,17 @@
 
 namespace Atmos::Spatial
 {
+    enum class BoundsSpace
+    {
+        World,
+        Screen
+    };
+
     class Bounds
     {
     public:
         Bounds();
-        Bounds(const Point3D& position, const Size2D& baseSize, const Scalers2D& scalers, const Angle2D& rotation);
+        Bounds(BoundsSpace space, const Point3D& position, const Size2D& baseSize, const Scalers2D& scalers, const Angle2D& rotation);
 
         void Position(const Point3D& to);
         void BaseSize(const Size2D& to);
@@ -27,11 +31,13 @@ namespace Atmos::Spatial
         [[nodiscard]] Size2D Size() const;
         [[nodiscard]] Scalers2D Scalers() const;
         [[nodiscard]] Angle2D Rotation() const;
+        [[nodiscard]] BoundsSpace Space() const;
     private:
+        BoundsSpace space = BoundsSpace::World;
         Point3D position;
         Size2D baseSize;
         Scalers2D scalers;
-        Angle2D rotation;
+        Angle2D rotation = 0.0f;
     private:
         INSCRIPTION_ACCESS;
     };
@@ -49,6 +55,12 @@ namespace Arca
 
 namespace Inscription
 {
+    template<class Archive>
+    struct ScribeTraits<Atmos::Spatial::BoundsSpace, Archive>
+    {
+        using Category = EnumScribeCategory<Atmos::Spatial::BoundsSpace>;
+    };
+
     template<>
     class Scribe<Atmos::Spatial::Bounds> final
     {
@@ -58,6 +70,7 @@ namespace Inscription
         template<class Archive>
         void Scriven(ObjectT& object, Archive& archive)
         {
+            archive("space", object.space);
             archive("position", object.position);
             archive("baseSize", object.baseSize);
             archive("scalers", object.scalers);

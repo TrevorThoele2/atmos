@@ -29,8 +29,9 @@ namespace Atmos::Render
         };
     }
 
-    Camera::Camera(Arca::RelicInit init, Spatial::ScreenSize screenSize) :
+    Camera::Camera(Arca::RelicInit init, Spatial::Size2D screenSize) :
         bounds(init.Create<Spatial::Bounds>(
+            Spatial::BoundsSpace::World,
             Spatial::Point3D{},
             Spatial::Size2D{1, 1},
             Spatial::Scalers2D

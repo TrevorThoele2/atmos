@@ -7,9 +7,9 @@ namespace Atmos::Render
     public:
         ImageAssetDataImplementation() = default;
 
-        [[nodiscard]] Asset::ImageSize Size() const
+        [[nodiscard]] Spatial::Size2D Size() const override
         {
-            return Asset::ImageSize();
+            return Spatial::Size2D();
         }
     };
 
@@ -27,29 +27,15 @@ namespace Atmos::Render
         void StageRender(const ImageRender& imageRender) override {}
         void StageRender(const LineRender& lineRender) override {}
         void StageRender(const RegionRender& regionRender) override {}
+        void StageRender(const TextRender& textRender) override {}
 
         void DrawFrame(Arca::Reliquary& reliquary, const Color& backgroundColor) override
         {}
-
-        void OnMaterialCreated(const Arca::Index<Asset::ImageMaterial>& material) override
+        
+        void OnMaterialDestroying(const Arca::Index<Asset::Material>& material) override
         {}
-
-        void OnMaterialCreated(const Arca::Index<Asset::LineMaterial>& material) override
-        {}
-
-        void OnMaterialCreated(const Arca::Index<Asset::RegionMaterial>& material) override
-        {}
-
-        void OnMaterialDestroying(const Arca::Index<Asset::ImageMaterial>& material) override
-        {}
-
-        void OnMaterialDestroying(const Arca::Index<Asset::LineMaterial>& material) override
-        {}
-
-        void OnMaterialDestroying(const Arca::Index<Asset::RegionMaterial>& material) override
-        {}
-
-        [[nodiscard]] Spatial::ScreenSize Size() const override
+        
+        [[nodiscard]] Spatial::Size2D Size() const override
         {
             return { 0, 0 };
         }
@@ -67,7 +53,7 @@ namespace Atmos::Render
     std::unique_ptr<Asset::Resource::Image> NullGraphicsManager::CreateImageResourceImpl(
         const Buffer& buffer,
         const Name& name,
-        const Asset::ImageSize& size)
+        const Spatial::Size2D& size)
     {
         return std::make_unique<ImageAssetDataImplementation>();
     }

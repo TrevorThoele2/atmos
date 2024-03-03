@@ -3,17 +3,17 @@
 #include <Arca/Command.h>
 #include <Arca/Reliquary.h>
 
-#include "ScreenPoint.h"
+#include "Point2D.h"
 #include "Point3D.h"
 
 namespace Atmos::Spatial
 {
     struct ToWorldPoint3D
     {
-        ScreenPoint from;
+        Point2D from;
         Point3D::Value z;
 
-        ToWorldPoint3D(ScreenPoint from, Point3D::Value z);
+        ToWorldPoint3D(Point2D from, Point3D::Value z);
         Point3D Do(Arca::Reliquary& reliquary) const;
     };
 }

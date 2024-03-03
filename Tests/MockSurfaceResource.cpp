@@ -15,42 +15,22 @@ void MockSurfaceResource::StageRender(const Atmos::Render::RegionRender& regionR
     regionRenders.push_back(regionRender);
 }
 
+void MockSurfaceResource::StageRender(const Atmos::Render::TextRender& textRender)
+{
+    textRenders.push_back(textRender);
+}
+
 void MockSurfaceResource::DrawFrame(Arca::Reliquary& reliquary, const Atmos::Render::Color& backgroundColor)
 {
     
 }
 
-void MockSurfaceResource::OnMaterialCreated(const Arca::Index<Atmos::Asset::ImageMaterial>& material)
+void MockSurfaceResource::OnMaterialDestroying(const Arca::Index<Atmos::Asset::Material>& material)
 {
     
 }
 
-void MockSurfaceResource::OnMaterialCreated(const Arca::Index<Atmos::Asset::LineMaterial>& material)
-{
-
-}
-
-void MockSurfaceResource::OnMaterialCreated(const Arca::Index<Atmos::Asset::RegionMaterial>& material)
-{
-
-}
-
-void MockSurfaceResource::OnMaterialDestroying(const Arca::Index<Atmos::Asset::ImageMaterial>& material)
-{
-    
-}
-
-void MockSurfaceResource::OnMaterialDestroying(const Arca::Index<Atmos::Asset::LineMaterial>& material)
-{
-
-}
-
-void MockSurfaceResource::OnMaterialDestroying(const Arca::Index<Atmos::Asset::RegionMaterial>& material)
-{
-
-}
-
-Atmos::Spatial::ScreenSize MockSurfaceResource::Size() const
+Atmos::Spatial::Size2D MockSurfaceResource::Size() const
 {
     return {};
 }

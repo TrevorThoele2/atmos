@@ -15,12 +15,12 @@ namespace Atmos::Scripting::Angel
     {
         ValueTypeRegistration<Type>(ContainingNamespace(), Name())
             .Constructor(
-                &Management::GenerateValue<&PullFromParameter<0, Spatial::ScreenPoint>>,
-                { "Atmos::Spatial::ScreenPoint from" })
+                &Management::GenerateValue<&PullFromParameter<0, Spatial::Point2D>>,
+                { "Atmos::Spatial::Point2D from" })
             .CopyConstructor(&Management::GenerateValueFromCopy)
             .Destructor(&Management::DestructValue)
             .CopyAssignment(&Management::CopyAssign)
-            .Property<&Type::from>("Atmos::Spatial::ScreenPoint", "from")
+            .Property<&Type::from>("Atmos::Spatial::Point2D", "from")
             .Actualize(engine, documentationManager);
 
         RegisterCommandHandler<&Chroma::Identity<Type>, &ToCommandReturn>(engine, documentationManager);

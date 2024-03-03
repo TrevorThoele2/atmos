@@ -33,7 +33,7 @@ namespace Atmos::Render
     private:
         GraphicsManager* manager;
 
-        void AttemptReconstruct(const Spatial::ScreenSize& size);
+        void AttemptReconstruct(const Spatial::Size2D& size);
     private:
         template<class T>
         std::vector<T*> MutablePointersOf();

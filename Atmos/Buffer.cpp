@@ -10,8 +10,8 @@ namespace Atmos
         if (!first || !second)
             return false;
 
-        const auto useFirst = reinterpret_cast<const char*>(first);
-        const auto useSecond = reinterpret_cast<const char*>(second);
+        const auto useFirst = static_cast<const char*>(first);
+        const auto useSecond = static_cast<const char*>(second);
 
         for (size_t i = 0; i != size; ++i)
             if (useFirst[i] != useSecond[i])

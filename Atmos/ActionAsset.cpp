@@ -21,14 +21,14 @@ namespace Atmos::Asset
 
     Action::Action(Action&& arg) noexcept :
         Asset(std::move(arg)),
-        boundKey(std::move(arg.boundKey)),
+        boundKey(arg.boundKey),
         boundModifiers(std::move(arg.boundModifiers))
     {}
 
     Action& Action::operator=(Action&& arg) noexcept
     {
         Asset::operator=(std::move(arg));
-        boundKey = std::move(arg.boundKey);
+        boundKey = arg.boundKey;
         boundModifiers = std::move(arg.boundModifiers);
         return *this;
     }

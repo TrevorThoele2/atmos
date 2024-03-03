@@ -11,6 +11,6 @@ namespace Atmos::Asset::Resource
     {
         Buffer buffer;
         ImageFileType fileType;
-        ImageSize size;
+        Spatial::Size2D size;
     };
 }

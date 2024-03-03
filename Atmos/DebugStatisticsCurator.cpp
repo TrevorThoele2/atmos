@@ -23,10 +23,7 @@ namespace Atmos::Debug
         String string(retrievalFunction());
         return string;
     }
-
-    StatisticsCurator::Page::Page(StatisticsCurator& owner) : owner(&owner)
-    {}
-
+    
     StatisticsCurator::Page::~Page() = default;
 
     void StatisticsCurator::Page::AddEntry(const String& label, Entry& add)
@@ -48,7 +45,7 @@ namespace Atmos::Debug
         return ret;
     }
 
-    StatisticsCurator::ProfilerPage::ProfilerPage(StatisticsCurator& owner) : Page(owner)
+    StatisticsCurator::ProfilerPage::ProfilerPage(StatisticsCurator& owner)
     {
         const auto entryAdder = [this](const String& name, const Time::Stopwatch& stopwatch, EntrySet& entrySet)
         {
@@ -90,7 +87,7 @@ namespace Atmos::Debug
         };
     }
 
-    StatisticsCurator::MemoryPage::MemoryPage(StatisticsCurator& owner) : Page(owner)
+    StatisticsCurator::MemoryPage::MemoryPage(StatisticsCurator& owner)
     {
         AddEntry("Audio Count", audioAssetSize);
         AddEntry("Image Count", imageAssetSize);
@@ -103,14 +100,14 @@ namespace Atmos::Debug
         AddEntry("Moving Entity Count", movingEntitySize);
     }
 
-    StatisticsCurator::GamePage::GamePage(StatisticsCurator& owner) : Page(owner)
+    StatisticsCurator::GamePage::GamePage(StatisticsCurator& owner)
     {
         AddEntry("Player Column", playerColumn);
         AddEntry("Player Row", playerColumn);
         AddEntry("Field ID", playerColumn);
     }
 
-    StatisticsCurator::WindowPage::WindowPage(StatisticsCurator& owner) : Page(owner)
+    StatisticsCurator::WindowPage::WindowPage(StatisticsCurator& owner)
     {
         AddEntry("Window Width", windowWidth);
         AddEntry("Window Height", windowHeight);

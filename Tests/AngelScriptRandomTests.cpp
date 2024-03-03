@@ -4,12 +4,10 @@
 
 #include "ScriptEngine.h"
 
-#include <Atmos/Script.h>
 #include <Atmos/ScriptFinished.h>
 #include <Atmos/Work.h>
 #include <Atmos/TypeRegistration.h>
-#include <Atmos/StringUtility.h>
-#include <Arca/LocalRelic.h>
+#include <Arca/OpenRelic.h>
 
 SCENARIO_METHOD(AngelScriptRandomTestsFixture, "running random AngelScript scripts", "[script][angelscript]")
 {
@@ -24,11 +22,12 @@ SCENARIO_METHOD(AngelScriptRandomTestsFixture, "running random AngelScript scrip
         *engine.mockAudioManager,
         *engine.mockInputManager,
         *engine.mockGraphicsManager,
+        *engine.mockTextManager,
         *engine.scriptManager,
         *engine.mockWorldManager,
-        Spatial::ScreenSize{
-            std::numeric_limits<Spatial::ScreenSize::Dimension>::max(),
-            std::numeric_limits<Spatial::ScreenSize::Dimension>::max() },
+        Spatial::Size2D{
+            std::numeric_limits<Spatial::Size2D::Value>::max(),
+            std::numeric_limits<Spatial::Size2D::Value>::max() },
             *engine.mockWindow,
             engine.Logger());
     fieldOrigin.CuratorCommandPipeline<Work>(Arca::Pipeline{ Scripting::Stage() });

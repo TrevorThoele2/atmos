@@ -2,31 +2,24 @@
 
 #include <Arca/Command.h>
 
-#include "ImageMaterialAsset.h"
-#include "LineMaterialAsset.h"
-#include "RegionMaterialAsset.h"
+#include "MaterialAsset.h"
 
 namespace Atmos::Render
 {
-    template<class Material>
     struct ChangeMaterialAsset
     {
         Arca::RelicID id = 0;
 
-        Arca::Index<Material> to;
+        Arca::Index<Asset::Material> to;
     };
-
-    using ChangeImageMaterialAsset = ChangeMaterialAsset<Asset::ImageMaterial>;
-    using ChangeLineMaterialAsset = ChangeMaterialAsset<Asset::LineMaterial>;
-    using ChangeRegionMaterialAsset = ChangeMaterialAsset<Asset::RegionMaterial>;
 }
 
 namespace Arca
 {
-    template<class Material>
-    struct Traits<Atmos::Render::ChangeMaterialAsset<Material>>
+    template<>
+    struct Traits<Atmos::Render::ChangeMaterialAsset>
     {
         static const ObjectType objectType = ObjectType::Command;
-        static TypeName TypeName() { return "Atmos::Render::ChangeMaterialAsset<" + Traits<Material>::TypeName() + ">"; }
+        static TypeName TypeName() { return "Atmos::Render::ChangeMaterialAsset"; }
     };
 }

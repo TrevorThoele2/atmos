@@ -152,7 +152,7 @@ namespace Atmos::Scripting::Angel
                 Chroma::FunctionTraits<decltype(function)>::isFunction &&
                 sizeof...(parameterProviders) == 0 &&
                 std::is_same_v<typename Chroma::FunctionTraits<decltype(function)>::ReturnT, void> &&
-                SkippedFunctionArgs<decltype(function)>::count - 1 == 0, int> = 0>
+                SkippedFunctionArgs<decltype(function)>::count == 0, int> = 0>
         static void HandleMethod(asIScriptGeneric* generic)
         {
             const auto memory = static_cast<T*>(generic->GetObject());
