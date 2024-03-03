@@ -64,6 +64,8 @@
     <ClInclude Include="AngelScriptSuspendScript.h" />
     <ClInclude Include="AngelScriptTextEntered.h" />
     <ClInclude Include="AngelScriptTimePoint.h" />
+    <ClInclude Include="AngelScriptToWorldPoint2D.h" />
+    <ClInclude Include="AngelScriptToWorldPoint3D.h" />
     <ClInclude Include="AngelScriptVariant.h" />
     <ClInclude Include="AngelScriptHandle.h" />
     <ClInclude Include="AngelScriptScript.h" />
@@ -178,6 +180,8 @@
     <ClInclude Include="SDLWindow.h" />
     <ClInclude Include="SDLInputManager.h" />
     <ClInclude Include="TextEntered.h" />
+    <ClInclude Include="ToWorldPoint2D.h" />
+    <ClInclude Include="ToWorldPoint3D.h" />
     <ClInclude Include="Variant.h" />
     <ClInclude Include="FrameSettings.h" />
     <ClInclude Include="FramesPerSecond.h" />
@@ -476,6 +480,8 @@
     <ClCompile Include="AngelScriptSuspendScript.cpp" />
     <ClCompile Include="AngelScriptTextEntered.cpp" />
     <ClCompile Include="AngelScriptTimePoint.cpp" />
+    <ClCompile Include="AngelScriptToWorldPoint2D.cpp" />
+    <ClCompile Include="AngelScriptToWorldPoint3D.cpp" />
     <ClCompile Include="AngelScriptVariant.cpp" />
     <ClCompile Include="AngelScriptGlobalRegistration.cpp" />
     <ClCompile Include="AngelScriptGridSpatialAlgorithms.cpp" />
@@ -561,6 +567,8 @@
     <ClCompile Include="Stopwatch.cpp" />
     <ClCompile Include="Surface.cpp" />
     <ClCompile Include="SurfaceCore.cpp" />
+    <ClCompile Include="ToWorldPoint2D.cpp" />
+    <ClCompile Include="ToWorldPoint3D.cpp" />
     <ClCompile Include="VersionUserContext.cpp" />
     <ClCompile Include="VulkanCombinedImageSamplerDescriptor.cpp" />
     <ClCompile Include="ImageAssetCurator.cpp" />

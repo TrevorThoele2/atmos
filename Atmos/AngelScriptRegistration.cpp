@@ -35,6 +35,8 @@
 #include "AngelScriptAxisAlignedBox3D.h"
 #include "AngelScriptSpatialAlgorithms.h"
 #include "AngelScriptGridSpatialAlgorithms.h"
+#include "AngelScriptToWorldPoint2D.h"
+#include "AngelScriptToWorldPoint3D.h"
 #include "AngelScriptBounds.h"
 
 #include "AngelScriptTimePoint.h"
@@ -150,6 +152,8 @@ namespace Atmos::Scripting::Angel
                 .Register<Spatial::AxisAlignedBox3D>()
                 .Register<SpatialAlgorithms>()
                 .Register<GridSpatialAlgorithms>()
+                .Register<Spatial::ToWorldPoint2D>()
+                .Register<Spatial::ToWorldPoint3D>()
                 .Register<Spatial::Bounds>()
                 .Register<Spatial::MoveBoundsBy>()
                 .Register<Spatial::MoveBoundsDirection>()
