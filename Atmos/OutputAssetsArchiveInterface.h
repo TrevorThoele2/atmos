@@ -23,6 +23,7 @@ namespace Atmos::World::Serialization
 
         struct Saves
         {
+            SaveAssets audio;
             SaveAssets images;
             SaveAssets shaders;
             SaveAssets scripts;

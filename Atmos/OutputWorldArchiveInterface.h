@@ -2,6 +2,7 @@
 
 #include "Field.h"
 #include "FilePath.h"
+#include "Property.h"
 
 #include "VersionUserContext.h"
 
@@ -14,7 +15,7 @@ namespace Atmos::World::Serialization
     public:
         explicit OutputWorldArchiveInterface(const File::Path& filePath);
 
-        void Save(std::vector<Field>& fields);
+        void Save(std::vector<Field>& fields, const std::vector<Property>& worldProperties);
     private:
         using ArchiveT = Inscription::OutputBinaryArchive;
         ArchiveT archive;

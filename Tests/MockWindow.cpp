@@ -27,6 +27,11 @@ void* MockWindow::Handle() const
     return nullptr;
 }
 
+String MockWindow::TypeName() const
+{
+    return "Mock";
+}
+
 void MockWindow::OnPositionChanged()
 {}
 

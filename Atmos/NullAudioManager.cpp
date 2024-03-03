@@ -1,56 +1,64 @@
 #include "NullAudioManager.h"
 
-#include "AudioAsset.h"
-#include "AudioAssetInstance.h"
-#include "AudioAssetInstanceResource.h"
+#include "AudioAssetResource.h"
+#include "SoundResource.h"
 
 namespace Atmos::Audio
 {
-    class AudioAssetInstanceDataImplementation final : public Asset::Resource::AudioInstance
+    class AssetResource final : public Asset::Resource::Audio
     {
     public:
-        AudioAssetInstanceDataImplementation() = default;
+        AssetResource() = default;
+    };
 
-        [[nodiscard]] std::unique_ptr<AudioInstance> Clone() const override
-        {
-            return std::make_unique<AudioAssetInstanceDataImplementation>(*this);
-        }
+    class SoundResource final : public Resource::Sound
+    {
+    public:
+        SoundResource() = default;
 
-        void Start() override
+        void Restart() override
         {}
 
-        void Stop() override
+        void Pause() override
         {}
 
-        void SetVolume(Volume set) override
+        void Resume() override
         {}
 
-        void Loop(bool set) override
+        void SetVolume(Volume volume) override
         {}
 
-        void Resubmit() override
+        void SetPosition(const Spatial::Point2D & position) override
         {}
     };
 
-    class AudioAssetDataImplementation final : public Asset::Resource::Audio
-    {
-    public:
-        AudioAssetDataImplementation() = default;
 
-        [[nodiscard]] std::unique_ptr<Asset::Resource::AudioInstance> CreateInstanceResource() const override
-        {
-            return std::make_unique<AudioAssetInstanceDataImplementation>();
-        }
-    };
-
-    bool NullAudioManager::SetMasterVolume(float set)
+    std::unique_ptr<Asset::Resource::Audio> NullManager::CreateAssetResource(const Buffer& buffer, const Name& name)
     {
-        return true;
+        return std::make_unique<AssetResource>();
     }
 
-    std::unique_ptr<Asset::Resource::Audio> NullAudioManager::CreateAudioResourceImpl(
-        const FormattedBuffer& buffer, const Name& name)
+    std::unique_ptr<Resource::Sound> NullManager::CreateSoundResource(const Asset::Resource::Audio& asset, Volume volume)
     {
-        return std::make_unique<AudioAssetDataImplementation>();
+        return std::make_unique<SoundResource>();
+    }
+
+    void NullManager::DestroyingSoundResource(Resource::Sound& resource)
+    {}
+
+    void NullManager::SetMasterVolume(Volume volume)
+    {}
+
+    void NullManager::PruneDoneResources()
+    {}
+
+    std::vector<Resource::Sound*> NullManager::DoneResources()
+    {
+        return {};
+    }
+
+    String NullManager::TypeName() const
+    {
+        return "Null";
     }
 }

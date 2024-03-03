@@ -32,18 +32,19 @@ Arca::Index<Atmos::Asset::Image> AngelScriptRenderTestsFixture::CreateImageAsset
 SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scripts", "[script][angelscript]")
 {
     Logging::Logger logger(Logging::Severity::Verbose);
+    logger.Add<Logging::FileSink>();
     ScriptEngine engine(logger);
-    engine.Setup();
 
     auto fieldOrigin = Arca::ReliquaryOrigin();
     fieldOrigin.Register<Arca::OpenRelic>();
     RegisterFieldTypes(
         fieldOrigin,
         *engine.mockImageAssetManager,
-        *engine.nullAudioManager,
+        *engine.mockAudioManager,
         *engine.mockInputManager,
         *engine.mockGraphicsManager,
         *engine.scriptManager,
+        *engine.mockWorldManager,
         Spatial::ScreenSize{
             std::numeric_limits<Spatial::ScreenSize::Dimension>::max(),
             std::numeric_limits<Spatial::ScreenSize::Dimension>::max() },
@@ -53,8 +54,6 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
     World::Field field(0, fieldOrigin.Actualize());
 
     auto& fieldReliquary = field.Reliquary();
-
-    engine.mockGraphicsManager->Initialize();
 
     std::vector<Scripting::Finished> finishes;
     fieldReliquary.On<Scripting::Finished>([&finishes](const Scripting::Finished& signal)
@@ -1455,7 +1454,7 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                     "    auto retrievedPoints = gridRegion.Points();\n" \
                     "    return \n" \
                     "        Atmos::ToString(retrievedPoints[0].x) + \" \" +\n" \
-                    "        Atmos::ToString(retrievedPoints[0].y) + \" \" +\n" \
+                    "        Atmos::ToString(retrievedPoints[0].y) + \"\\\\\" +\n" \
                     "        Atmos::ToString(retrievedPoints[1].x) + \" \" +\n" \
                     "        Atmos::ToString(retrievedPoints[1].y);\n" \
                     "}",
@@ -1470,12 +1469,29 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                     {
                         REQUIRE(finishes.size() == 1);
 
-                        const auto expectedResult =
+                        const auto result = std::get<String>(std::get<Variant>(finishes[0].result));
+                        const auto splitResult = Chroma::Split(result, "\\");
+
+                        const auto expectedResult0 =
                             Atmos::ToString(point0.x) + " " +
-                            Atmos::ToString(point0.y) + " " +
+                            Atmos::ToString(point0.y);
+                        const auto expectedResult1 =
                             Atmos::ToString(point1.x) + " " +
                             Atmos::ToString(point1.y);
-                        REQUIRE(std::get<String>(std::get<Variant>(finishes[0].result)) == expectedResult);
+                        REQUIRE(std::any_of(
+                            splitResult.begin(),
+                            splitResult.end(),
+                            [expectedResult0](const String& string)
+                            {
+                                return string == expectedResult0;
+                            }));
+                        REQUIRE(std::any_of(
+                            splitResult.begin(),
+                            splitResult.end(),
+                            [expectedResult1](const String& string)
+                            {
+                                return string == expectedResult1;
+                            }));
                     }
                 }
             }
@@ -1751,6 +1767,95 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                             ToString(camera->Sides().Bottom());
                         REQUIRE(std::get<String>(std::get<Variant>(finishes[0].result)) == expectedResult);
                     }
+                }
+            }
+        }
+    }
+
+    GIVEN("script that creates default ImageCore")
+    {
+        CompileAndCreateScript(
+            "basic_script.as",
+            "Arca::RelicID main()\n" \
+            "{\n"
+            "    auto relic = Arca::Reliquary::Do(Arca::Create<Arca::OpenRelic>());\n" \
+            "    auto imageCore = Arca::Reliquary::Do(Arca::Create<Atmos::Render::ImageCore>(relic.ID()));\n" \
+            "    return imageCore.ID();\n"\
+            "}",
+            {},
+            fieldReliquary);
+
+        WHEN("working reliquary")
+        {
+            fieldReliquary.Do(Work{});
+
+            THEN("has correct properties")
+            {
+                REQUIRE(finishes.size() == 1);
+
+                const auto result = std::get<Arca::RelicID>(std::get<Variant>(finishes[0].result));
+                REQUIRE(Arca::Index<ImageCore>(result, fieldReliquary));
+            }
+        }
+    }
+
+    GIVEN("script that creates ImageCore with arguments")
+    {
+        CompileAndCreateScript(
+            "basic_script.as",
+            "Arca::RelicID main()\n" \
+            "{\n"
+            "    auto relic = Arca::Reliquary::Do(Arca::Create<Arca::OpenRelic>());\n" \
+            "    auto imageAsset = Atmos::Asset::Image();\n" \
+            "    auto assetIndex = 1;\n" \
+            "    auto materialAsset = Atmos::Asset::ImageMaterial();\n" \
+            "    auto color = Atmos::Render::Color();\n" \
+            "    auto imageCore = Arca::Reliquary::Do(Arca::Create<Atmos::Render::ImageCore>(relic.ID(), imageAsset, assetIndex, materialAsset, color));\n" \
+            "    return imageCore.ID();\n"\
+            "}",
+            {},
+            fieldReliquary);
+
+        WHEN("working reliquary")
+        {
+            fieldReliquary.Do(Work{});
+
+            THEN("has correct properties")
+            {
+                REQUIRE(finishes.size() == 1);
+
+                const auto result = std::get<Arca::RelicID>(std::get<Variant>(finishes[0].result));
+                REQUIRE(Arca::Index<ImageCore>(result, fieldReliquary));
+            }
+        }
+    }
+
+    GIVEN("ImageCore")
+    {
+        auto relic = fieldReliquary.Do(Arca::Create<Arca::OpenRelic>());
+        fieldReliquary.Do(Arca::Create<ImageCore>(relic.ID(), Arca::Index<Asset::Image>{}, 1, Arca::Index<Asset::ImageMaterial>{}, Color{}));
+
+        GIVEN("script that destroys ImageCore")
+        {
+            CompileAndCreateScript(
+                "basic_script.as",
+                "void main(Arca::RelicID id)\n" \
+                "{\n"
+                "    Arca::Reliquary::Do(Arca::Destroy<Atmos::Render::ImageCore>(id));\n" \
+                "}",
+                { relic.ID() },
+                fieldReliquary);
+
+            WHEN("working reliquary")
+            {
+                fieldReliquary.Do(Work{});
+
+                THEN("has correct properties")
+                {
+                    REQUIRE(finishes.size() == 1);
+
+                    const auto imageCores = fieldReliquary.Batch<Render::ImageCore>();
+                    REQUIRE(imageCores.IsEmpty());
                 }
             }
         }

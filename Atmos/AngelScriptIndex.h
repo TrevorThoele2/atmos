@@ -51,7 +51,7 @@ namespace Atmos::Scripting::Angel
     Arca::Index<ArcaT> IsRequired(Arca::Index<ArcaT> index)
     {
         if (!index)
-            throw AngelScriptFailed("Required index was not occupied.");
+            throw Error("Required index was not occupied.");
 
         return index;
     }

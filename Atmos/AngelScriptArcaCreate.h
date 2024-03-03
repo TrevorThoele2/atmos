@@ -198,17 +198,34 @@ namespace Atmos::Scripting::Angel
             };
         };
 
-        template<class T, class CommandT, class ParameterTypes>
-        void DoRegisterArcaCreate(
-            const std::vector<String>& constructorParameters, asIScriptEngine& engine, DocumentationManager& documentationManager)
+        template<class T, class CommandT>
+        struct ArcaCreateCommand
+        {
+            ValueTypeRegistration<CommandT> registration;
+
+            ArcaCreateCommand();
+
+            template<class ParameterTypes>
+            static constexpr auto GenerateValue()
+            {
+                using ParameterProviders = Chroma::to_non_type_with_index<ParameterTypes, Detail::ToParameterProvidersIterator>;
+                return ParameterProviders::template ForwardArguments<typename Detail::GenerateValueForwarder<CommandT>::Do>::nonType;
+            }
+
+            void Actualize(asIScriptEngine& engine, DocumentationManager& documentationManager);
+        };
+
+        template<class T, class CommandT>
+        ArcaCreateCommand<T, CommandT>::ArcaCreateCommand() :
+            registration(Registration<CommandT>::ContainingNamespace(), Registration<CommandT>::Name())
+        {}
+
+        template<class T, class CommandT>
+        void ArcaCreateCommand<T, CommandT>::Actualize(asIScriptEngine& engine, DocumentationManager& documentationManager)
         {
             using Management = ObjectManagement<CommandT>;
-            using ParameterProviders = Chroma::to_non_type_with_index<ParameterTypes, ToParameterProvidersIterator>;
 
-            static constexpr auto generateValue = ParameterProviders::template ForwardArguments<typename GenerateValueForwarder<CommandT>::Do>::nonType;
-
-            ValueTypeRegistration<CommandT>(Registration<CommandT>::ContainingNamespace(), Registration<CommandT>::Name())
-                .Constructor(generateValue, constructorParameters)
+            registration
                 .CopyConstructor(&Management::GenerateValueFromCopy)
                 .Destructor(&Management::DestructValue)
                 .CopyAssignment(&Management::CopyAssign)
@@ -233,59 +250,139 @@ namespace Atmos::Scripting::Angel
 
             ValueTypeRegistration<SignalT>(Registration<SignalT>::ContainingNamespace(), Registration<SignalT>::Name())
                 .Constructor(&Management::template GenerateValue<&PullFromParameter<0, Arca::Index<T>>>, constructorParameters)
-                .CopyConstructor(&Management::GenerateValueFromCopy)
-                .Destructor(&Management::DestructValue)
-                .CopyAssignment(&Management::CopyAssign)
                 .Actualize(engine, documentationManager);
 
             RegisterSignalHandler<&Chroma::Identity<SignalT>>(engine, documentationManager);
         }
     }
 
-    template<class T, class ParameterTypes>
-    void RegisterArcaCreateRelic(
-        const std::vector<String>& constructorParameters, asIScriptEngine& engine, DocumentationManager& documentationManager)
+    template<class T>
+    class ArcaCreateRelicRegistration
     {
+    public:
+        template<class... ParameterTypes>
+        ArcaCreateRelicRegistration<T>& Constructor(const std::vector<String>& constructorParameters);
+        void Actualize(asIScriptEngine& engine, DocumentationManager& documentationManager);
+    private:
+        template<class CommandT>
+        using Command = Detail::ArcaCreateCommand<T, CommandT>;
+
+        using Create = Command<Arca::Create<T>>;
+        Create create;
+
+        using CreateChild = Command<Arca::CreateChild<T>>;
+        CreateChild createChild;
+
+        using IdentifiedCreate = Command<Arca::IdentifiedCreate<T>>;
+        IdentifiedCreate identifiedCreate;
+
+        using IdentifiedCreateChild = Command<Arca::IdentifiedCreateChild<T>>;
+        IdentifiedCreateChild identifiedCreateChild;
+    };
+
+    template<class T>
+    template<class... ParameterTypes>
+    ArcaCreateRelicRegistration<T>& ArcaCreateRelicRegistration<T>::Constructor(const std::vector<String>& constructorParameters)
+    {
+        using VariadicParameterTypes = Chroma::VariadicTemplate<ParameterTypes...>;
+
         {
-            Detail::DoRegisterArcaCreate<T, Arca::Create<T>, ParameterTypes>(
-                constructorParameters, engine, documentationManager);
+            static constexpr auto generateValue = Create::template GenerateValue<VariadicParameterTypes>();
+            create.registration.Constructor(generateValue, constructorParameters);
         }
 
         {
-            using UseParameterTypes = typename ParameterTypes::template Prepend<Arca::Handle>::Type;
+            using UseParameterTypes = typename VariadicParameterTypes::template Prepend<Arca::Handle>::Type;
+
+            static constexpr auto generateValue = CreateChild::template GenerateValue<UseParameterTypes>();
 
             auto useConstructorParameters = std::vector<String>{ "Arca::Handle parent" };
             useConstructorParameters.insert(
                 useConstructorParameters.end(), constructorParameters.begin(), constructorParameters.end());
-            Detail::DoRegisterArcaCreate<T, Arca::CreateChild<T>, UseParameterTypes>(
-                useConstructorParameters, engine, documentationManager);
+            createChild.registration.Constructor(generateValue, useConstructorParameters);
         }
 
         {
-            using UseParameterTypes = typename ParameterTypes::template Prepend<Arca::RelicID>::Type;
+            using UseParameterTypes = typename VariadicParameterTypes::template Prepend<Arca::RelicID>::Type;
+
+            static constexpr auto generateValue = IdentifiedCreate::template GenerateValue<UseParameterTypes>();
 
             auto useConstructorParameters = std::vector<String>{ "Arca::RelicID id" };
             useConstructorParameters.insert(
                 useConstructorParameters.end(), constructorParameters.begin(), constructorParameters.end());
-            Detail::DoRegisterArcaCreate<T, Arca::IdentifiedCreate<T>, UseParameterTypes>(
-                useConstructorParameters, engine, documentationManager);
+            identifiedCreate.registration.Constructor(generateValue, useConstructorParameters);
         }
 
         {
-            using UseParameterTypes = typename ParameterTypes::template Prepend<Arca::RelicID, Arca::Handle>::Type;
+            using UseParameterTypes = typename VariadicParameterTypes::template Prepend<Arca::RelicID, Arca::Handle>::Type;
+
+            static constexpr auto generateValue = IdentifiedCreateChild::template GenerateValue<UseParameterTypes>();
 
             auto useConstructorParameters = std::vector<String>{ "Arca::RelicID id", "Arca::Handle parent" };
             useConstructorParameters.insert(
                 useConstructorParameters.end(), constructorParameters.begin(), constructorParameters.end());
-            Detail::DoRegisterArcaCreate<T, Arca::IdentifiedCreateChild<T>, UseParameterTypes>(
-                useConstructorParameters, engine, documentationManager);
+            identifiedCreateChild.registration.Constructor(generateValue, useConstructorParameters);
         }
 
+        return *this;
+    }
+
+    template<class T>
+    void ArcaCreateRelicRegistration<T>::Actualize(asIScriptEngine& engine, DocumentationManager& documentationManager)
+    {
+        create.Actualize(engine, documentationManager);
+        createChild.Actualize(engine, documentationManager);
+        identifiedCreate.Actualize(engine, documentationManager);
+        identifiedCreateChild.Actualize(engine, documentationManager);
+    }
+
+    template<class T>
+    class ArcaCreateShardRegistration
+    {
+    public:
+        template<class... ParameterTypes>
+        ArcaCreateShardRegistration<T>& Constructor(const std::vector<String>& constructorParameters);
+        void Actualize(asIScriptEngine& engine, DocumentationManager& documentationManager);
+    private:
+        template<class CommandT>
+        using Command = Detail::ArcaCreateCommand<T, CommandT>;
+
+        using Create = Command<Arca::Create<T>>;
+        Create create;
+    };
+
+    template<class T>
+    template<class... ParameterTypes>
+    ArcaCreateShardRegistration<T>& ArcaCreateShardRegistration<T>::Constructor(const std::vector<String>& constructorParameters)
+    {
+        using VariadicParameterTypes = Chroma::VariadicTemplate<ParameterTypes...>;
+
         {
-            const auto useConstructorParameters =
-                std::vector<String>{ CreateName({ Registration<T>::ContainingNamespace() }, Registration<T>::Name()) + " index" };
-            Detail::DoRegisterArcaCreated<T, Arca::CreatedKnown<T>>(
-                useConstructorParameters, engine, documentationManager);
+            using UseParameterTypes = typename VariadicParameterTypes::template Prepend<Arca::RelicID>::Type;
+
+            static constexpr auto generateValue = Create::template GenerateValue<UseParameterTypes>();
+
+            auto useConstructorParameters = std::vector<String>{ "Arca::RelicID id" };
+            useConstructorParameters.insert(
+                useConstructorParameters.end(), constructorParameters.begin(), constructorParameters.end());
+            create.registration.Constructor(generateValue, useConstructorParameters);
         }
+
+        return *this;
+    }
+
+    template<class T>
+    void ArcaCreateShardRegistration<T>::Actualize(asIScriptEngine& engine, DocumentationManager& documentationManager)
+    {
+        create.Actualize(engine, documentationManager);
+    }
+
+    template<class T>
+    void RegisterArcaCreated(asIScriptEngine& engine, DocumentationManager& documentationManager)
+    {
+        const auto useConstructorParameters =
+            std::vector<String>{ CreateName({ Registration<T>::ContainingNamespace() }, Registration<T>::Name()) + " index" };
+        Detail::DoRegisterArcaCreated<T, Arca::CreatedKnown<T>>(
+            useConstructorParameters, engine, documentationManager);
     }
 }

@@ -20,23 +20,21 @@ namespace Atmos::Scripting::Angel
         Manager(Logging::Logger& logger);
         ~Manager();
 
+        void SetReliquary(Arca::Reliquary& reliquary) override;
+
         [[nodiscard]] std::unique_ptr<Asset::Resource::Script> CreateAssetResource(
             const Buffer& buffer, String name) override;
         [[nodiscard]] std::unique_ptr<Atmos::Scripting::Resource> CreateScriptResource(
             const String& name, const String& executeName, const Parameters& parameters) override;
-    public:
+
         Buffer Compile(Module module, std::vector<Module> sharedModules) override;
-    protected:
-        void InitializeImpl(Arca::Reliquary& reliquary) override;
+
+        [[nodiscard]] String TypeName() const override;
     private:
         asIScriptEngine* engine = nullptr;
         UserData userData;
 
         asIScriptEngine& CreateEngine();
-
-        void SetAndPushUserData(Manager& owner, Arca::Reliquary& reliquary);
-
-        void RegisterAll();
     private:
         std::vector<asIScriptModule*> sharedModules;
 

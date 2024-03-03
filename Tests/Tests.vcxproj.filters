@@ -25,9 +25,6 @@
     <ClCompile Include="MockScriptManager.cpp">
       <Filter>Source Files\Objects</Filter>
     </ClCompile>
-    <ClCompile Include="MockImageAssetManager.cpp">
-      <Filter>Source Files\Objects</Filter>
-    </ClCompile>
     <ClCompile Include="ScriptEngine.cpp">
       <Filter>Source Files\Objects</Filter>
     </ClCompile>
@@ -130,6 +127,24 @@
     <ClCompile Include="GridRegionTests.cpp">
       <Filter>Source Files\Tests\Render</Filter>
     </ClCompile>
+    <ClCompile Include="MockAssetResourceManager.cpp">
+      <Filter>Source Files\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptAudioTests.cpp">
+      <Filter>Source Files\Tests\AngelScript\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="MockSoundResource.cpp">
+      <Filter>Source Files\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="MockAudioManager.cpp">
+      <Filter>Source Files\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptWorldTests.cpp">
+      <Filter>Source Files\Tests\AngelScript\World</Filter>
+    </ClCompile>
+    <ClCompile Include="MockWorldManager.cpp">
+      <Filter>Source Files\Objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneralFixture.h">
@@ -157,9 +172,6 @@
       <Filter>Header Files\Data</Filter>
     </ClInclude>
     <ClInclude Include="MockScriptManager.h">
-      <Filter>Header Files\Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="MockImageAssetManager.h">
       <Filter>Header Files\Objects</Filter>
     </ClInclude>
     <ClInclude Include="ScriptEngine.h">
@@ -269,6 +281,24 @@
     </ClInclude>
     <ClInclude Include="GridRegionTests.h">
       <Filter>Header Files\Tests\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="MockAssetResourceManager.h">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptAudioTests.h">
+      <Filter>Header Files\Tests\AngelScript\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="MockSoundResource.h">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="MockAudioManager.h">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptWorldTests.h">
+      <Filter>Header Files\Tests\AngelScript\World</Filter>
+    </ClInclude>
+    <ClInclude Include="MockWorldManager.h">
+      <Filter>Header Files\Objects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -397,6 +427,18 @@
     </Filter>
     <Filter Include="Header Files\Tests\AngelScript\Input">
       <UniqueIdentifier>{12148342-173c-45c0-8a28-3c1c4a72d6a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Tests\AngelScript\Audio">
+      <UniqueIdentifier>{24be8757-419e-4b57-9c2e-c041cc839621}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Tests\AngelScript\Audio">
+      <UniqueIdentifier>{fe62d6fd-30c7-41e7-9482-6cecc3f12191}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Tests\AngelScript\World">
+      <UniqueIdentifier>{195d061b-ca1a-4d0c-a582-1fe48a47945c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Tests\AngelScript\World">
+      <UniqueIdentifier>{b9f146c1-33e9-4c1e-9e4b-02e3b4a2d18b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

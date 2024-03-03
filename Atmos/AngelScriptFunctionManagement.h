@@ -28,7 +28,10 @@ namespace Atmos::Scripting::Angel
 
         static void PushToReturn(Type object, asIScriptGeneric& generic)
         {
-            VerifyResult(generic.SetReturnObject(&object));
+            const auto result = generic.SetReturnObject(&object);
+            VerifyResult(
+                result,
+                {});
         }
 
         static Type PullFromParameter(ParameterIndex index, asIScriptGeneric& generic)
@@ -80,7 +83,10 @@ namespace Atmos::Scripting::Angel
 
         static void PushToReturn(Type object, asIScriptGeneric& generic)
         {
-            VerifyResult(generic.SetReturnObject(object));
+            const auto result = generic.SetReturnObject(object);
+            VerifyResult(
+                result,
+                {});
         }
 
         static Type PullFromParameter(ParameterIndex index, asIScriptGeneric& generic)

@@ -25,17 +25,17 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
     {
         Logging::Logger logger(Logging::Severity::Verbose);
         DerivedEngine engine(logger);
-        engine.Setup();
 
         auto fieldOrigin = Arca::ReliquaryOrigin();
         RegisterArcaTypes(fieldOrigin);
         RegisterFieldTypes(
             fieldOrigin,
-            *engine.mockImageAssetManager,
-            *engine.nullAudioManager,
+            *engine.mockAssetResourceManager,
+            *engine.mockAudioManager,
             *engine.mockInputManager,
             *engine.mockGraphicsManager,
             *engine.mockScriptManager,
+            *engine.worldManager,
             Spatial::ScreenSize{
                 std::numeric_limits<Spatial::ScreenSize::Dimension>::max(),
                 std::numeric_limits<Spatial::ScreenSize::Dimension>::max() },
@@ -44,8 +44,6 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
         World::Field field(0, fieldOrigin.Actualize());
 
         auto& fieldReliquary = field.Reliquary();
-
-        engine.mockGraphicsManager->Initialize();
 
         auto mainSurface = Arca::Index<MainSurface>(fieldReliquary);
         auto mainSurfaceImplementation = mainSurface->Resource<MockSurfaceResource>();
@@ -130,7 +128,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
                 Angle2D{} });
             WHEN("starting engine execution")
             {
-                engine.UseField(std::move(field), std::filesystem::current_path() / "Assets.dat");
+                engine.UseField(std::move(field), {}, std::filesystem::current_path() / "Assets.dat");
                 engine.StartExecution();
 
                 THEN("all images rendered in graphics manager")
@@ -158,7 +156,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
 
             WHEN("starting engine execution, destroying images, then starting engine execution")
             {
-                engine.UseField(std::move(field), std::filesystem::current_path() / "Assets.dat");
+                engine.UseField(std::move(field), {}, std::filesystem::current_path() / "Assets.dat");
                 engine.StartExecution();
 
                 fieldReliquary.Do(Arca::Destroy<StaticImage> { image1.ID() });
@@ -217,7 +215,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
                 Angle2D{} });
             WHEN("starting engine execution")
             {
-                engine.UseField(std::move(field), std::filesystem::current_path() / "Assets.dat");
+                engine.UseField(std::move(field), {}, std::filesystem::current_path() / "Assets.dat");
                 engine.StartExecution();
 
                 THEN("no images rendered in graphics manager")
@@ -256,7 +254,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
                 Angle2D{} });
             WHEN("starting engine execution")
             {
-                engine.UseField(std::move(field), std::filesystem::current_path() / "Assets.dat");
+                engine.UseField(std::move(field), {}, std::filesystem::current_path() / "Assets.dat");
                 engine.StartExecution();
 
                 THEN("no images rendered in graphics manager")
@@ -296,7 +294,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
 
             WHEN("starting engine execution")
             {
-                engine.UseField(std::move(field), std::filesystem::current_path() / "Assets.dat");
+                engine.UseField(std::move(field), {}, std::filesystem::current_path() / "Assets.dat");
                 engine.StartExecution();
 
                 THEN("all images rendered in graphics manager")
@@ -324,7 +322,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
 
             WHEN("starting engine execution, destroying static images, then starting execution")
             {
-                engine.UseField(std::move(field), std::filesystem::current_path() / "Assets.dat");
+                engine.UseField(std::move(field), {}, std::filesystem::current_path() / "Assets.dat");
                 engine.StartExecution();
 
                 fieldReliquary.Do(Arca::Destroy<DynamicImage>{ image1.ID() });
@@ -383,7 +381,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
                 Angle2D{} });
             WHEN("starting engine execution")
             {
-                engine.UseField(std::move(field), std::filesystem::current_path() / "Assets.dat");
+                engine.UseField(std::move(field), {}, std::filesystem::current_path() / "Assets.dat");
                 engine.StartExecution();
 
                 THEN("no images rendered in graphics manager")
@@ -422,7 +420,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
                 Angle2D{} });
             WHEN("starting engine execution")
             {
-                engine.UseField(std::move(field), std::filesystem::current_path() / "Assets.dat");
+                engine.UseField(std::move(field), {}, std::filesystem::current_path() / "Assets.dat");
                 engine.StartExecution();
 
                 THEN("no images rendered in graphics manager")
@@ -475,7 +473,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
                 Angle2D{} });
             WHEN("starting engine execution")
             {
-                engine.UseField(std::move(field), std::filesystem::current_path() / "Assets.dat");
+                engine.UseField(std::move(field), {}, std::filesystem::current_path() / "Assets.dat");
                 engine.StartExecution();
 
                 THEN("all images rendered in graphics manager")
@@ -506,7 +504,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
 
             WHEN("starting engine execution, destroying images, then starting engine execution")
             {
-                engine.UseField(std::move(field), std::filesystem::current_path() / "Assets.dat");
+                engine.UseField(std::move(field), {}, std::filesystem::current_path() / "Assets.dat");
                 engine.StartExecution();
 
                 fieldReliquary.Do(Arca::Destroy<StaticImage>{ image1.ID() });
@@ -582,7 +580,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
                 Angle2D{} });
             WHEN("starting engine execution")
             {
-                engine.UseField(std::move(field), std::filesystem::current_path() / "Assets.dat");
+                engine.UseField(std::move(field), {}, std::filesystem::current_path() / "Assets.dat");
                 engine.StartExecution();
 
                 THEN("no images rendered in graphics manager")
@@ -635,7 +633,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
                 Angle2D{} });
             WHEN("starting engine execution")
             {
-                engine.UseField(std::move(field), std::filesystem::current_path() / "Assets.dat");
+                engine.UseField(std::move(field), {}, std::filesystem::current_path() / "Assets.dat");
                 engine.StartExecution();
 
                 THEN("no images rendered in graphics manager")
@@ -654,16 +652,16 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering culled images", "[render]
     {
         Logging::Logger logger(Logging::Severity::Verbose);
         DerivedEngine engine(logger);
-        engine.Setup();
 
         auto fieldOrigin = Arca::ReliquaryOrigin();
         RegisterFieldTypes(
             fieldOrigin,
-            *engine.mockImageAssetManager,
-            *engine.nullAudioManager,
+            *engine.mockAssetResourceManager,
+            *engine.mockAudioManager,
             *engine.mockInputManager,
             *engine.mockGraphicsManager,
             *engine.mockScriptManager,
+            *engine.worldManager,
             Spatial::ScreenSize{
                 100,
                 100 },
@@ -672,8 +670,6 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering culled images", "[render]
         World::Field field(0, fieldOrigin.Actualize());
 
         auto& fieldReliquary = field.Reliquary();
-
-        engine.mockGraphicsManager->Initialize();
 
         auto mainSurface = Arca::Index<MainSurface>(fieldReliquary);
         auto mainSurfaceImplementation = mainSurface->Resource<MockSurfaceResource>();
@@ -720,7 +716,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering culled images", "[render]
                 Scalers2D{ gridCellSize, gridCellSize * 16 },
                 Angle2D{} });
 
-            engine.UseField(std::move(field), std::filesystem::current_path() / "Assets.dat");
+            engine.UseField(std::move(field), {}, std::filesystem::current_path() / "Assets.dat");
             engine.StartExecution();
 
             THEN("only images inside the camera are rendered")

@@ -12,6 +12,8 @@ namespace Atmos::Input
         SDLManager();
 
         [[nodiscard]] State ReadState() const override;
+
+        [[nodiscard]] String TypeName() const override;
     private:
         void HandleTextInputEvent(SDL_TextInputEvent event, State& state) const;
         void HandleMouse(State& state) const;

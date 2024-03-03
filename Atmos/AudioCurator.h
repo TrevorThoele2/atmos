@@ -4,38 +4,85 @@
 
 #include "AudioManager.h"
 
+#include "RestartSound.h"
+#include "PauseSound.h"
+#include "ResumeSound.h"
+#include "ChangeSoundVolume.h"
 #include "CreateAudioAssetResource.h"
+#include "CreateSoundResource.h"
+#include "SoundResource.h"
+#include "SoundCore.h"
+
+#include "Work.h"
 
 namespace Atmos::Audio
 {
-    class AudioCurator final : public Arca::Curator
+    class Curator final : public Arca::Curator
     {
     public:
-        explicit AudioCurator(Init init, AudioManager& manager);
+        explicit Curator(Init init, Manager& manager);
     public:
+        void Handle(const Work& command);
+
+        void Handle(const RestartSound& command);
+        void Handle(const PauseSound& command);
+        void Handle(const ResumeSound& command);
+        void Handle(const ChangeSoundVolume& command);
+
         std::unique_ptr<Asset::Resource::Audio> Handle(const Asset::Resource::Create<Asset::Resource::Audio>& command);
+        std::unique_ptr<Resource::Sound> Handle(const Resource::CreateSound& command);
     private:
-        AudioManager* manager;
+        Manager* manager;
+
+        void OnFocusLost();
+        void OnFocusRegained();
+    private:
+        INSCRIPTION_ACCESS;
     };
 }
 
 namespace Arca
 {
     template<>
-    struct Traits<Atmos::Audio::AudioCurator>
+    struct Traits<Atmos::Audio::Curator>
     {
         static const ObjectType objectType = ObjectType::Curator;
-        static TypeName TypeName() { return "Atmos::Audio::AudioCurator"; }
+        static TypeName TypeName() { return "Atmos::Audio::Curator"; }
         using HandledCommands = HandledCommands<
-            Atmos::Asset::Resource::Create<Atmos::Asset::Resource::Audio>>;
+            Atmos::Work,
+            Atmos::Audio::RestartSound,
+            Atmos::Audio::PauseSound,
+            Atmos::Audio::ResumeSound,
+            Atmos::Audio::ChangeSoundVolume,
+            Atmos::Asset::Resource::Create<Atmos::Asset::Resource::Audio>,
+            Atmos::Audio::Resource::CreateSound>;
     };
 }
 
 namespace Inscription
 {
-    template<class Archive>
-    struct ScribeTraits<Atmos::Audio::AudioCurator, Archive> final
+    template<>
+    class Scribe<Atmos::Audio::Curator> final
     {
-        using Category = ArcaNullScribeCategory<Atmos::Audio::AudioCurator>;
+    public:
+        using ObjectT = Atmos::Audio::Curator;
+    public:
+        template<class Archive>
+        void Scriven(ObjectT& object, Archive&)
+        {
+            const auto batch = object.Owner().Batch<Atmos::Audio::SoundCore>();
+            for(auto soundCore = batch.begin(); soundCore != batch.end(); ++soundCore)
+            {
+                auto mutableSoundCore = object.MutablePointer().Of<Atmos::Audio::SoundCore>(soundCore.ID());
+                mutableSoundCore->resource =
+                    object.manager->CreateSoundResource(*mutableSoundCore->asset->Resource(), mutableSoundCore->volume);
+            }
+        }
+    };
+
+    template<class Archive>
+    struct ScribeTraits<Atmos::Audio::Curator, Archive> final
+    {
+        using Category = ArcaCompositeScribeCategory<Atmos::Audio::Curator>;
     };
 }

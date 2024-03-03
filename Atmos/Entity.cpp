@@ -1,8 +1,16 @@
 #include "Entity.h"
 
+#include "DataCore.h"
+
 namespace Atmos::Entity
 {
+    Entity::Entity(Arca::RelicInit init)
+    {
+        init.Create<DataCore>();
+    }
+
     Entity::Entity(
+        Arca::RelicInit init,
         Name name,
         Name displayName,
         Spatial::Grid::Point position,
@@ -14,5 +22,7 @@ namespace Atmos::Entity
         position(position),
         direction(direction),
         isSolid(isSolid)
-    {}
+    {
+        init.Create<DataCore>();
+    }
 }

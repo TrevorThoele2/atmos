@@ -16,9 +16,9 @@ namespace Atmos::Render
         void SetFullscreen(bool set) override;
 
         void ChangeVerticalSync(bool set) override;
-    protected:
-        void InitializeImpl() override;
 
+        [[nodiscard]] String TypeName() const override;
+    protected:
         [[nodiscard]] std::unique_ptr<Asset::Resource::Image> CreateImageResourceImpl(
             const Buffer& buffer,
             const Name& name,

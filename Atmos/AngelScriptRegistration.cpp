@@ -15,10 +15,14 @@
 #include "AngelScriptArcaCreate.h"
 #include "AngelScriptArcaDestroy.h"
 #include "AngelScriptArcaAssign.h"
+#include "AngelScriptOpenRelic.h"
 
 #include "AngelScriptVariant.h"
-#include "AngelScriptDatum.h"
+#include "AngelScriptProperty.h"
 #include "AngelScriptStringUtility.h"
+#include "AngelScriptDataCore.h"
+#include "AngelScriptModifyProperties.h"
+
 #include "AngelScriptMath.h"
 
 #include "AngelScriptAngle2D.h"
@@ -62,6 +66,14 @@
 #include "AngelScriptLoggingSeverity.h"
 #include "AngelScriptLog.h"
 
+#include "AngelScriptPositionedSound.h"
+#include "AngelScriptUniversalSound.h"
+#include "AngelScriptChangeSoundVolume.h"
+#include "AngelScriptRestartSound.h"
+#include "AngelScriptPauseSound.h"
+#include "AngelScriptResumeSound.h"
+#include "AngelScriptSoundFinished.h"
+
 #include "AngelScriptColor.h"
 #include "AngelScriptImageCore.h"
 #include "AngelScriptDynamicImage.h"
@@ -80,6 +92,10 @@
 #include "AngelScriptSuspendScript.h"
 #include "AngelScriptScriptFinished.h"
 #include "AngelScriptCurrentScript.h"
+
+#include "AngelScriptRequestField.h"
+#include "AngelScriptModifyWorldProperties.h"
+#include "AngelScriptRetrieveWorldProperties.h"
 
 namespace Atmos::Scripting::Angel
 {
@@ -134,10 +150,14 @@ namespace Atmos::Scripting::Angel
                 .Register<GenericArcaCreatedKnown>()
                 .Register<Arca::Destroying>()
                 .Register<GenericArcaDestroyingKnown>()
+                .Register<Arca::OpenRelic>()
 
                 .Register<Variant>()
-                .Register<Datum>()
+                .Register<Property>()
                 .Register<StringUtility>()
+                .Register<DataCore>()
+                .Register<ModifyProperties>()
+
                 .Register<Math>()
 
                 .Register<Angle2D>()
@@ -219,6 +239,14 @@ namespace Atmos::Scripting::Angel
                 .Register<Logging::Severity>()
                 .Register<Logging::Log>()
 
+                .Register<Audio::PositionedSound>()
+                .Register<Audio::UniversalSound>()
+                .Register<Audio::ChangeSoundVolume>()
+                .Register<Audio::RestartSound>()
+                .Register<Audio::PauseSound>()
+                .Register<Audio::ResumeSound>()
+                .Register<Audio::SoundFinished>()
+
                 .Register<Render::Color>()
                 .Register<Render::ImageCore>()
                 .Register<Render::DynamicImage>()
@@ -244,7 +272,6 @@ namespace Atmos::Scripting::Angel
                 .Register<Entity::FindByName>()
                 .Register<Entity::FindByPosition>()
                 .Register<Entity::MoveTo>()
-                .Register<Entity::ModifyData>()
                 .Register<Entity::ModifyTags>()
                 .Register<CurrentEntity>()
 
@@ -252,8 +279,11 @@ namespace Atmos::Scripting::Angel
                 .Register<Script>()
                 .Register<Finished>()
                 .Register<Suspend>()
-                .Register<ModifyData>()
-                .Register<CurrentScript>();
+                .Register<CurrentScript>()
+
+                .Register<World::RequestField>()
+                .Register<World::ModifyProperties>()
+                .Register<World::RetrieveProperties>();
         }
     }
 }

@@ -1,38 +1,70 @@
 #pragma once
 
-#include <Arca/Relic.h>
-
-#include "Bounds.h"
-#include "AudioAssetInstance.h"
+#include "AudioAsset.h"
+#include "SoundCore.h"
 
 namespace Atmos::Audio
 {
-    class Sound final
+    class Sound
     {
     public:
-        using Asset = Asset::AudioInstance;
+        using ResourceT = SoundCore::ResourceT;
+        using ResourcePtr = SoundCore::ResourcePtr;
+    public:
+        virtual ~Sound() = 0;
+
+        Sound& operator=(Sound&& arg) noexcept;
+    public:
+        [[nodiscard]] Arca::Index<Asset::Audio> Asset() const;
+        [[nodiscard]] Volume Volume() const;
+    public:
+        [[nodiscard]] ResourceT* Resource();
+        [[nodiscard]] const ResourceT* Resource() const;
+        template<class RealResourceT>
+        [[nodiscard]] RealResourceT* ResourceAs();
+        template<class RealResourceT>
+        [[nodiscard]] const RealResourceT* ResourceAs() const;
+
+        [[nodiscard]] bool ContainsResource() const;
+    protected:
+        Sound(Arca::RelicInit init, Arca::Index<Asset::Audio> asset, Audio::Volume volume);
+        Sound(Arca::RelicInit init, Arca::Serialization serialization);
+        Sound(Sound&& arg) noexcept;
     private:
-        Arca::Index<Spatial::Bounds> bounds;
-
-        Asset asset;
+        Arca::Index<SoundCore> core;
+    private:
+        Arca::RelicInit init;
     };
-}
 
-namespace Arca
-{
-    template<>
-    struct Traits<::Atmos::Audio::Sound>
+    template<class RealResourceT>
+    RealResourceT* Sound::ResourceAs()
     {
-        static const ObjectType objectType = ObjectType::Relic;
-        static TypeName TypeName() { return "Atmos::Audio::Sound"; }
-    };
+        return static_cast<RealResourceT*>(core->resource.get());
+    }
+
+    template<class RealResourceT>
+    const RealResourceT* Sound::ResourceAs() const
+    {
+        return static_cast<RealResourceT*>(core->resource.get());
+    }
 }
 
 namespace Inscription
 {
+    template<>
+    class Scribe<Atmos::Audio::Sound> final
+    {
+    public:
+        using ObjectT = Atmos::Audio::Sound;
+    public:
+        template<class Archive>
+        void Scriven(ObjectT& object, Archive& archive)
+        {}
+    };
+
     template<class Archive>
     struct ScribeTraits<Atmos::Audio::Sound, Archive> final
     {
-        using Category = ArcaNullScribeCategory<Atmos::Audio::Sound>;
+        using Category = ArcaCompositeScribeCategory<Atmos::Audio::Sound>;
     };
 }

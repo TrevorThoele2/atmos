@@ -41,10 +41,16 @@ namespace Atmos::Scripting::Angel
     {
         AddItem([name, value](asIScriptEngine& engine, const String& representationName)
             {
-                VerifyResult(engine.RegisterEnumValue(
+                const auto registerEnumValueResult = engine.RegisterEnumValue(
                     representationName.c_str(),
                     name.c_str(),
-                    static_cast<int>(value)));
+                    static_cast<int>(value));
+                VerifyResult(
+                    registerEnumValueResult,
+                    {
+                        { "Type", representationName.c_str() },
+                        { "Name", name.c_str() }
+                    });
             });
 
         return *this;
@@ -57,9 +63,19 @@ namespace Atmos::Scripting::Angel
             ? *containingNamespace
             : "";
 
-        VerifyResult(engine.SetDefaultNamespace(useNamespace.c_str()));
+        const auto setDefaultNamespaceResult = engine.SetDefaultNamespace(useNamespace.c_str());
+        VerifyResult(
+            setDefaultNamespaceResult,
+            {
+                { "Namespace", useNamespace.c_str() }
+            });
 
-        VerifyResult(engine.RegisterEnum(representationName.c_str()));
+        const auto registerEnumResult = engine.RegisterEnum(representationName.c_str());
+        VerifyResult(
+            registerEnumResult,
+            {
+                { "Type", representationName.c_str() }
+            });
 
         for (auto& item : items)
             item(engine, representationName);

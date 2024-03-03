@@ -9,7 +9,6 @@
 #include "Work.h"
 #include "SuspendScript.h"
 #include "CompileScript.h"
-#include "ModifyScriptData.h"
 #include "ExecuteScript.h"
 #include "CreateScriptAssetResource.h"
 #include "CurrentExecutingScript.h"
@@ -27,7 +26,6 @@ namespace Atmos::Scripting
         void Handle(const Work& command);
         void Handle(const Suspend& command);
         Buffer Handle(const Compile& command);
-        void Handle(const ModifyData& command);
         std::optional<Result> Handle(const Execute& command);
 
         std::unique_ptr<Asset::Resource::Script> Handle(
@@ -60,7 +58,6 @@ namespace Arca
             Atmos::Work,
             Atmos::Scripting::Suspend,
             Atmos::Scripting::Compile,
-            Atmos::Scripting::ModifyData,
             Atmos::Scripting::Execute,
             Atmos::Asset::Resource::Create<Atmos::Asset::Resource::Script>>;
     };

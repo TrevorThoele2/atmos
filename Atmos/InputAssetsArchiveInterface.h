@@ -25,6 +25,7 @@ namespace Atmos::World::Serialization
 
         struct Extracted
         {
+            ExtractedAssets audio;
             ExtractedAssets images;
             ExtractedAssets shaders;
             ExtractedAssets scripts;
@@ -34,11 +35,16 @@ namespace Atmos::World::Serialization
 
         struct AllToExtract
         {
+            ToExtract audio;
             ToExtract images;
             ToExtract shaders;
             ToExtract scripts;
             AllToExtract() = default;
-            AllToExtract(const ToExtract& images, const ToExtract& shaders, const ToExtract& scripts);
+            AllToExtract(
+                const ToExtract& audio,
+                const ToExtract& images,
+                const ToExtract& shaders,
+                const ToExtract& scripts);
         };
     public:
         explicit InputAssetsArchiveInterface(const File::Path& filePath, Logging::Logger& logger);

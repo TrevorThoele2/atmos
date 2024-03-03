@@ -4,16 +4,23 @@
 
 namespace Atmos::Audio
 {
-    class NullAudioManager final : public AudioManager
+    class NullManager final : public Manager
     {
     public:
-        NullAudioManager() = default;
-        NullAudioManager(const NullAudioManager& arg) = delete;
-        NullAudioManager& operator=(const NullAudioManager& arg) = delete;
+        NullManager() = default;
+        NullManager(const NullManager& arg) = delete;
+        NullManager& operator=(const NullManager& arg) = delete;
 
-        bool SetMasterVolume(float set) override;
-    private:
-        std::unique_ptr<Asset::Resource::Audio> CreateAudioResourceImpl(
-            const FormattedBuffer& buffer, const Name& name) override;
+        std::unique_ptr<Asset::Resource::Audio> CreateAssetResource(const Buffer& buffer, const Name& name) override;
+        std::unique_ptr<Resource::Sound> CreateSoundResource(const Asset::Resource::Audio& asset, Volume volume) override;
+
+        void DestroyingSoundResource(Resource::Sound& resource) override;
+
+        void SetMasterVolume(Volume volume) override;
+
+        void PruneDoneResources() override;
+        [[nodiscard]] std::vector<Resource::Sound*> DoneResources() override;
+
+        [[nodiscard]] String TypeName() const override;
     };
 }

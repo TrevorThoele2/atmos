@@ -19,17 +19,18 @@ SCENARIO_METHOD(FrameTestsFixture, "frame", "[frame]")
     GIVEN("setup engine with field")
     {
         Logging::Logger logger(Logging::Severity::Verbose);
+        logger.Add<Logging::FileSink>();
         DerivedEngine engine(logger);
-        engine.Setup();
 
         auto fieldOrigin = Arca::ReliquaryOrigin();
         RegisterFieldTypes(
             fieldOrigin,
-            *engine.mockImageAssetManager,
-            *engine.nullAudioManager,
+            *engine.mockAssetResourceManager,
+            *engine.mockAudioManager,
             *engine.mockInputManager,
             *engine.mockGraphicsManager,
             *engine.mockScriptManager,
+            *engine.worldManager,
             Spatial::ScreenSize{
                 std::numeric_limits<Spatial::ScreenSize::Dimension>::max(),
                 std::numeric_limits<Spatial::ScreenSize::Dimension>::max() },
@@ -46,8 +47,6 @@ SCENARIO_METHOD(FrameTestsFixture, "frame", "[frame]")
         World::Field field(0, fieldOrigin.Actualize());
 
         auto& fieldReliquary = field.Reliquary();
-
-        engine.mockGraphicsManager->Initialize();
 
         WHEN("working field reliquary")
         {

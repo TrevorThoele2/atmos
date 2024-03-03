@@ -58,26 +58,30 @@ namespace Atmos::Scripting::Angel
                 .Function(&RegisterOnFunction<Argument>, "void", "On", std::vector<String>{ CreateName({ funcDefNamespace }, funcDef + "@ handler") })
                 .Actualize(engine, documentationManager);
 
-            UserData::RequiredFrom(engine)->reliquary->On<Argument>([&engine](const Argument& argument)
+            auto signalsToRegister = UserData::RequiredSignalsToRegister(engine);
+            signalsToRegister->push_back([](asIScriptEngine& engine, Arca::Reliquary& reliquary)
                 {
-                    const auto reliquary = UserData::RequiredFrom(engine)->reliquary;
-                    auto scripts = reliquary->Batch<Script>();
-                    for(auto& script : scripts)
-                    {
-                        auto resource = script.Resource<ScriptResource>();
-                        if (!resource)
-                            continue;
-
-                        const auto toAngelScript = fromArca(argument);
-
-                        const auto functionGroupName = Arca::TypeFor<Argument>().name;
-                        const auto prepareContext = [toAngelScript](asIScriptContext& context)
+                    reliquary.On<Argument>([&engine](const Argument& argument)
                         {
-                            PushToParameter(0, toAngelScript, context);
-                        };
+                            const auto reliquary = UserData::RequiredFrom(engine)->reliquary;
+                            auto scripts = reliquary->Batch<Script>();
+                            for (auto& script : scripts)
+                            {
+                                auto resource = script.Resource<ScriptResource>();
+                                if (!resource)
+                                    continue;
 
-                        resource->ExecuteSecondaryAgainstStoredFunctions(functionGroupName, prepareContext);
-                    }
+                                const auto toAngelScript = fromArca(argument);
+
+                                const auto functionGroupName = Arca::TypeFor<Argument>().name;
+                                const auto prepareContext = [toAngelScript](asIScriptContext& context)
+                                {
+                                    PushToParameter(0, toAngelScript, context);
+                                };
+
+                                resource->ExecuteSecondaryAgainstStoredFunctions(functionGroupName, prepareContext);
+                            }
+                        });
                 });
         }
     }

@@ -29,18 +29,16 @@ namespace Atmos::Scripting::Angel
         Registration<ArcaTraits<Render::RelativeImage>>::RegisterTo(engine, documentationManager);
         Registration<Arca::Batch<Render::RelativeImage>>::RegisterTo(engine, documentationManager);
 
-        RegisterArcaCreateRelic<
-            Render::RelativeImage,
-            Chroma::VariadicTemplate<
-            Arca::Index<Asset::Image>,
-            int,
-            Arca::Index<Asset::ImageMaterial>,
-            Render::Color,
-            Spatial::Point3D,
-            Spatial::Scalers2D,
-            Spatial::Angle2D>>
-            (
-                {
+        ArcaCreateRelicRegistration<Type::ValueT>()
+            .Constructor<
+                Arca::Index<Asset::Image>,
+                int,
+                Arca::Index<Asset::ImageMaterial>,
+                Render::Color,
+                Spatial::Point3D,
+                Spatial::Scalers2D,
+                Spatial::Angle2D>
+            ({
                     "Atmos::Asset::Image asset",
                     "int assetIndex",
                     "Atmos::Asset::ImageMaterial material",
@@ -48,11 +46,12 @@ namespace Atmos::Scripting::Angel
                     "Atmos::Spatial::Point3D position",
                     "Atmos::Spatial::Scalers2D scalers",
                     "Atmos::Spatial::Angle2D rotation"
-                },
-                engine,
-                documentationManager);
+            })
+            .Actualize(engine, documentationManager);
+        RegisterArcaCreated<Type::ValueT>(engine, documentationManager);
 
-        RegisterArcaDestroyRelic<Render::RelativeImage>(engine, documentationManager);
+        RegisterArcaDestroyRelic<Type::ValueT>(engine, documentationManager);
+        RegisterArcaDestroying<Type::ValueT>(engine, documentationManager);
     }
 
     Arca::Index<Asset::Image> Registration<Render::RelativeImage>::Asset(Type type)

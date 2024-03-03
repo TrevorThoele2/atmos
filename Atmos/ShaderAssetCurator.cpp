@@ -2,19 +2,24 @@
 
 #include "InputSimpleFile.h"
 
+#include <Chroma/Overloaded.h>
+
 namespace Atmos::Asset
 {
-    Resource::Loaded<Resource::Shader> ShaderCurator::Handle(
-        const Resource::LoadDataFromFile<Resource::Shader>& command)
+    Resource::LoadedData<Resource::Shader> ShaderCurator::Handle(
+        const Resource::LoadData<Resource::Shader>& command)
     {
-        InputSimpleFile file(command.filePath);
-        const auto returnBuffer = file.ReadBuffer();
-        return { returnBuffer };
-    }
-
-    Resource::Loaded<Resource::Shader> ShaderCurator::Handle(
-        const Resource::LoadDataFromMemory<Resource::Shader>& command)
-    {
-        return { command.memory };
+        return std::visit(Chroma::Overloaded{
+            [](File::Path filePath) -> Resource::LoadedData<Resource::Shader>
+            {
+                InputSimpleFile file(filePath);
+                const auto returnBuffer = file.ReadBuffer();
+                return { returnBuffer };
+            },
+            [](Buffer memory) -> Resource::LoadedData<Resource::Shader>
+            {
+                return { memory };
+            } },
+            command.from);
     }
 }

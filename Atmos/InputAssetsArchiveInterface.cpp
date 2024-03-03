@@ -13,9 +13,12 @@ namespace Atmos::World::Serialization
     {}
 
     InputAssetsArchiveInterface::AllToExtract::AllToExtract(
-        const ToExtract& images, const ToExtract& shaders, const ToExtract& scripts)
+        const ToExtract& audio,
+        const ToExtract& images,
+        const ToExtract& shaders,
+        const ToExtract& scripts)
         :
-        images(images), shaders(shaders), scripts(scripts)
+        audio(audio), images(images), shaders(shaders), scripts(scripts)
     {}
 
     InputAssetsArchiveInterface::InputAssetsArchiveInterface(
@@ -56,6 +59,7 @@ namespace Atmos::World::Serialization
         };
 
         std::vector<ExtractionSet> extractionSets = {
+            {"audio", &AllToExtract::audio, &Extracted::audio},
             {"images", &AllToExtract::images, &Extracted::images},
             {"shaders", &AllToExtract::shaders, &Extracted::shaders},
             {"scripts", &AllToExtract::scripts, &Extracted::scripts}

@@ -1,16 +1,11 @@
 #pragma once
 
-#include "Log.h"
-#include "ProcessedLog.h"
-#include "FilePath.h"
-#include "Event.h"
+#include "LoggingSink.h"
 
 namespace Atmos::Logging
 {
     class Logger
     {
-    public:
-        Event<const ProcessedLog&> onLog;
     public:
         explicit Logger(Severity minimumSeverity);
         Logger(Logger&& arg);
@@ -18,25 +13,32 @@ namespace Atmos::Logging
 
         Logger& operator=(Logger&& arg);
 
-        std::optional<ProcessedLog> Log(const Logging::Log& log);
-        std::optional<ProcessedLog> Log(
+        void Log(const Logging::Log& log);
+        void Log(
             const String& message,
             Severity severity = Severity::Information,
             std::optional<Details> details = {});
+
+        template<class T, class... Args>
+        void Add(Args&& ... args);
     private:
         Severity minimumSeverity;
-    private:
         bool shouldSignalStopSession = true;
 
-        void StartSession();
-        void StopSession();
-    private:
-        void ClearFile();
+        using SinkPtr = std::unique_ptr<Sink>;
+        using Sinks = std::vector<SinkPtr>;
+        Sinks sinks;
 
-        [[nodiscard]] static File::Path OutputFilePath();
-
-        [[nodiscard]] static String SeverityToString(Severity severity);
-        [[nodiscard]] static String DetailsToString(std::optional<Details> details);
-        [[nodiscard]] static String CurrentTimeStamp();
+        std::vector<Logging::Log> previousLogs;
     };
+
+    template<class T, class... Args>
+    void Logger::Add(Args&& ... args)
+    {
+        sinks.push_back(std::make_unique<T>(std::forward<Args>(args)...));
+
+        const auto newSink = sinks.back().get();
+        for (auto& log : previousLogs)
+            newSink->Log(log);
+    }
 }

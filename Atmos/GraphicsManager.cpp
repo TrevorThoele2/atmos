@@ -9,11 +9,6 @@ namespace Atmos::Render
 {
     GraphicsManager::~GraphicsManager() = default;
 
-    void GraphicsManager::Initialize()
-    {
-        InitializeImpl();
-    }
-
     std::unique_ptr<Asset::Resource::Image> GraphicsManager::CreateImageResource(
         const Buffer& buffer,
         const Name& name,

@@ -69,8 +69,10 @@ namespace Atmos::Render
     void NullGraphicsManager::ChangeVerticalSync(bool set)
     {}
 
-    void NullGraphicsManager::InitializeImpl()
-    {}
+    String GraphicsManager::TypeName() const
+    {
+        return "Null";
+    }
 
     std::unique_ptr<Asset::Resource::Image> NullGraphicsManager::CreateImageResourceImpl(
         const Buffer& buffer,

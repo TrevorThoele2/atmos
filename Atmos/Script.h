@@ -5,7 +5,6 @@
 #include "ScriptAsset.h"
 #include "ScriptParameters.h"
 #include "ScriptResource.h"
-#include "Datum.h"
 #include "FindAssetByName.h"
 
 namespace Atmos::Scripting
@@ -21,8 +20,7 @@ namespace Atmos::Scripting
         Arca::Index<Asset::Script> asset;
         String executeName;
         Parameters parameters;
-    public:
-        std::vector<Datum> data;
+
         bool isSuspended = false;
     public:
         Script(Arca::RelicInit init, Arca::Index<Asset::Script> asset, const String& executeName, Parameters parameters);
@@ -72,8 +70,6 @@ namespace Inscription
             archive("asset", object.asset);
             archive("executeName", object.executeName);
             archive("parameters", object.parameters);
-
-            archive("data", object.data);
             archive("isSuspended", object.isSuspended);
         }
     };

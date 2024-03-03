@@ -11,7 +11,7 @@
 
 namespace Atmos
 {
-    EngineExecution::EngineExecution(World::WorldManager& worldManager, Window::WindowBase& window) :
+    EngineExecution::EngineExecution(World::Manager& worldManager, Window::WindowBase& window) :
         window(&window), worldManager(&worldManager)
     {}
 
@@ -21,35 +21,27 @@ namespace Atmos
         {
             if (IsCurrentlyFocused())
             {
-                if (isFocusLost)
-                    OnFocusRegain();
-
                 if (worldManager->CurrentField())
                     worldManager->CurrentField()->Reliquary().Do(Work{});
             }
             else
-            {
-                if (!isFocusLost)
-                    OnFocusLost();
-
                 window->Suspend(std::chrono::duration_cast<Time::Seconds>(Time::Milliseconds(1)));
-            }
         }
     }
 
     bool EngineExecution::StartFrame()
     {
-        if (IsCurrentlyFocused() != wasFocusedLastPass)
+        if (IsCurrentlyFocused() != wasFocusedLastFrame)
         {
             auto currentField = worldManager->CurrentField();
 
             if (currentField)
             {
-                wasFocusedLastPass
+                wasFocusedLastFrame
                     ? currentField->Reliquary().Raise(FocusLost())
                     : currentField->Reliquary().Raise(FocusRegained());
             }
-            wasFocusedLastPass = !wasFocusedLastPass;
+            wasFocusedLastFrame = !wasFocusedLastFrame;
         }
 
         return window->OnStartFrame();
@@ -58,15 +50,5 @@ namespace Atmos
     bool EngineExecution::IsCurrentlyFocused() const
     {
         return window->IsCurrentlyFocused();
-    }
-
-    void EngineExecution::OnFocusLost()
-    {
-        isFocusLost = true;
-    }
-
-    void EngineExecution::OnFocusRegain()
-    {
-        isFocusLost = false;
     }
 }

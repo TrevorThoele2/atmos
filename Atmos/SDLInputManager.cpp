@@ -279,6 +279,11 @@ namespace Atmos::Input
         return state;
     }
 
+    String SDLManager::TypeName() const
+    {
+        return "SDL";
+    }
+
     void SDLManager::HandleTextInputEvent(SDL_TextInputEvent event, State& state) const
     {
         state.enteredText.emplace_back(event.text);

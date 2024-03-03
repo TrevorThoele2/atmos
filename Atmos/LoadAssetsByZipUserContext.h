@@ -13,9 +13,10 @@ namespace Inscription
     public:
         LoadAssetsByZipUserContext(const Atmos::File::Path& filePath, Atmos::Logging::Logger& logger);
     public:
-        std::optional<Extracted> LoadImage(const Atmos::Name& name) override;
-        std::optional<Extracted> LoadShader(const Atmos::Name& name) override;
-        std::optional<Extracted> LoadScript(const Atmos::Name& name) override;
+        std::optional<Extracted> LoadAudioData(const Atmos::Name& name) override;
+        std::optional<Extracted> LoadImageData(const Atmos::Name& name) override;
+        std::optional<Extracted> LoadShaderData(const Atmos::Name& name) override;
+        std::optional<Extracted> LoadScriptData(const Atmos::Name& name) override;
     private:
         using ArchiveInterface = Atmos::World::Serialization::InputAssetsArchiveInterface;
         ArchiveInterface inputArchive;

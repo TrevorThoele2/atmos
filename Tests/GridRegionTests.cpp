@@ -20,16 +20,16 @@ SCENARIO_METHOD(GridRegionTestsFixture, "grid regions", "[render]")
     {
         Logging::Logger logger(Logging::Severity::Verbose);
         DerivedEngine engine(logger);
-        engine.Setup();
 
         auto fieldOrigin = Arca::ReliquaryOrigin();
         RegisterFieldTypes(
             fieldOrigin,
-            *engine.mockImageAssetManager,
-            *engine.nullAudioManager,
+            *engine.mockAssetResourceManager,
+            *engine.mockAudioManager,
             *engine.mockInputManager,
             *engine.mockGraphicsManager,
             *engine.mockScriptManager,
+            *engine.worldManager,
             ScreenSize{
                 std::numeric_limits<ScreenSize::Dimension>::max(),
                 std::numeric_limits<ScreenSize::Dimension>::max() },
@@ -38,8 +38,6 @@ SCENARIO_METHOD(GridRegionTestsFixture, "grid regions", "[render]")
         World::Field field(0, fieldOrigin.Actualize());
 
         auto& fieldReliquary = field.Reliquary();
-
-        engine.mockGraphicsManager->Initialize();
 
         auto materialAsset = fieldReliquary.Do(Arca::Create<Asset::RegionMaterial> {
             String{}, std::vector<Asset::RegionMaterial::Pass>{} });

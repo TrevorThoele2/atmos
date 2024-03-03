@@ -1,5 +1,7 @@
 #include "Script.h"
 
+#include "DataCore.h"
+
 namespace Atmos::Scripting
 {
     Script::Script(
@@ -12,7 +14,9 @@ namespace Atmos::Scripting
         executeName(executeName),
         parameters(parameters),
         init(init)
-    {}
+    {
+        init.Create<DataCore>();
+    }
 
     Script::Script(Arca::RelicInit init, Arca::Serialization) : init(init)
     {}

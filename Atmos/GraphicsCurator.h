@@ -4,7 +4,6 @@
 
 #include "GraphicsManager.h"
 
-#include "InitializeGraphics.h"
 #include "ReconstructGraphics.h"
 #include "CreateSurfaceResource.h"
 #include "SetFullscreen.h"
@@ -22,7 +21,6 @@ namespace Atmos::Render
     public:
         explicit GraphicsCurator(Init init, GraphicsManager& manager);
     public:
-        void Handle(const InitializeGraphics& command);
         void Handle(const ReconstructGraphics& command);
         std::unique_ptr<Resource::Surface> Handle(const Resource::CreateSurface& command);
         void Handle(const SetFullscreen& command);
@@ -61,7 +59,6 @@ namespace Arca
         static const ObjectType objectType = ObjectType::Curator;
         static TypeName TypeName() { return "Atmos::Render::GraphicsCurator"; }
         using HandledCommands = HandledCommands<
-            Atmos::Render::InitializeGraphics,
             Atmos::Render::ReconstructGraphics,
             Atmos::Render::Resource::CreateSurface,
             Atmos::Render::SetFullscreen,

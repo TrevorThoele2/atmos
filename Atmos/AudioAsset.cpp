@@ -5,14 +5,18 @@
 namespace Atmos::Asset
 {
     Audio::Audio(Arca::RelicInit init, const ::Atmos::Name& name, ResourcePtr&& resource) :
-        AssetWithResource(init, name, std::move(resource))
+        AssetWithResource(init, name, std::move(resource)),
+        init(init)
     {}
 
     Audio::Audio(Arca::RelicInit init, Arca::Serialization serialization) :
-        AssetWithResource(init, serialization)
+        AssetWithResource(init, serialization),
+        init(init)
     {}
 
-    Audio::Audio(Audio&& arg) noexcept : AssetWithResource(std::move(arg))
+    Audio::Audio(Audio&& arg) noexcept :
+        AssetWithResource(std::move(arg)),
+        init(arg.init)
     {}
 
     Audio& Audio::operator=(Audio&& arg) noexcept

@@ -6,7 +6,6 @@
 #include <Arca/ReliquaryOrigin.h>
 #include <Arca/LocalRelic.h>
 #include <Atmos/TypeRegistration.h>
-#include <Atmos/ProcessedLog.h>
 #include <Atmos/SpatialAlgorithms.h>
 #include <Atmos/MathUtility.h>
 
@@ -493,6 +492,7 @@ SCENARIO_METHOD(BoundsTestsFixture, "relative bounds errors", "[spatial]")
     GIVEN("registered reliquary")
     {
         Logging::Logger logger(Logging::Severity::Verbose);
+        logger.Add<Logging::FileSink>();
 
         Arca::ReliquaryOrigin reliquaryOrigin;
 
@@ -501,8 +501,6 @@ SCENARIO_METHOD(BoundsTestsFixture, "relative bounds errors", "[spatial]")
         Logging::RegisterTypes(reliquaryOrigin, logger);
 
         auto reliquary = reliquaryOrigin.Actualize();
-
-        auto logs = SignalListener<Atmos::Logging::ProcessedLog>(*reliquary);
 
         WHEN("creating relic with relative bounds without parent")
         {
@@ -521,13 +519,6 @@ SCENARIO_METHOD(BoundsTestsFixture, "relative bounds errors", "[spatial]")
 
                 reliquary->Do(MoveBoundsTo(bounds.ID(), position));
 
-                THEN("logs error")
-                {
-                    REQUIRE(!logs.Executions().empty());
-                    REQUIRE(logs.Executions()[0].originalMessage
-                        == "Relics with " + Arca::TypeFor<RelativeBounds>().name + " must be parented.");
-                }
-
                 THEN("does not move")
                 {
                     REQUIRE(bounds->Position() == Point3D{});
@@ -540,13 +531,6 @@ SCENARIO_METHOD(BoundsTestsFixture, "relative bounds errors", "[spatial]")
                     dataGeneration.RandomStack<Point3D, Point3D::Value, Point3D::Value, Point3D::Value>();
 
                 reliquary->Do(MoveBoundsBy(bounds.ID(), delta));
-
-                THEN("logs error")
-                {
-                    REQUIRE(!logs.Executions().empty());
-                    REQUIRE(logs.Executions()[0].originalMessage
-                        == "Relics with " + Arca::TypeFor<RelativeBounds>().name + " must be parented.");
-                }
 
                 THEN("does not move")
                 {
@@ -564,13 +548,6 @@ SCENARIO_METHOD(BoundsTestsFixture, "relative bounds errors", "[spatial]")
                 const auto amount = dataGeneration.Random<Point3D::Value>(TestFramework::Range(-1000.0f, 1000.0f));
 
                 reliquary->Do(MoveBoundsDirection(bounds.ID(), direction, amount));
-
-                THEN("logs error")
-                {
-                    REQUIRE(!logs.Executions().empty());
-                    REQUIRE(logs.Executions()[0].originalMessage
-                        == "Relics with " + Arca::TypeFor<RelativeBounds>().name + " must be parented.");
-                }
 
                 THEN("does not move")
                 {
@@ -598,13 +575,6 @@ SCENARIO_METHOD(BoundsTestsFixture, "relative bounds errors", "[spatial]")
 
                 reliquary->Do(MoveBoundsTo(childBounds.ID(), position));
 
-                THEN("logs error")
-                {
-                    REQUIRE(!logs.Executions().empty());
-                    REQUIRE(logs.Executions()[0].originalMessage
-                        == "Relic parents of " + Arca::TypeFor<RelativeBounds>().name + " must have a Bounds.");
-                }
-
                 THEN("does not move child")
                 {
                     REQUIRE(childBounds->Position() == Point3D{});
@@ -617,13 +587,6 @@ SCENARIO_METHOD(BoundsTestsFixture, "relative bounds errors", "[spatial]")
                     dataGeneration.RandomStack<Point3D, Point3D::Value, Point3D::Value, Point3D::Value>();
 
                 reliquary->Do(MoveBoundsBy(childBounds.ID(), delta));
-
-                THEN("logs error")
-                {
-                    REQUIRE(!logs.Executions().empty());
-                    REQUIRE(logs.Executions()[0].originalMessage
-                        == "Relic parents of " + Arca::TypeFor<RelativeBounds>().name + " must have a Bounds.");
-                }
 
                 THEN("does not move child")
                 {
@@ -641,13 +604,6 @@ SCENARIO_METHOD(BoundsTestsFixture, "relative bounds errors", "[spatial]")
                 const auto amount = dataGeneration.Random<Point3D::Value>(TestFramework::Range(-1000.0f, 1000.0f));
 
                 reliquary->Do(MoveBoundsDirection(childBounds.ID(), direction, amount));
-
-                THEN("logs error")
-                {
-                    REQUIRE(!logs.Executions().empty());
-                    REQUIRE(logs.Executions()[0].originalMessage
-                        == "Relic parents of " + Arca::TypeFor<RelativeBounds>().name + " must have a Bounds.");
-                }
 
                 THEN("does not move child")
                 {

@@ -1,57 +1,16 @@
 #pragma once
 
-#include <Arca/Command.h>
 #include "LoadAssetResourceData.h"
 #include "ImageAssetResource.h"
-#include "FilePath.h"
-
-#include "Buffer.h"
 #include "ImageAssetFileType.h"
 
 namespace Atmos::Asset::Resource
 {
     template<>
-    struct LoadDataFromFile<Image>
-    {
-        File::Path filePath;
-    };
-
-    template<>
-    struct LoadDataFromMemory<Image>
-    {
-        Buffer memory;
-    };
-
-    template<>
-    struct Loaded<Image>
+    struct LoadedData<Image>
     {
         Buffer buffer;
         ImageFileType fileType;
         ImageSize size;
-    };
-}
-
-namespace Arca
-{
-    template<>
-    struct Traits<Atmos::Asset::Resource::LoadDataFromFile<Atmos::Asset::Resource::Image>>
-    {
-        static const ObjectType objectType = ObjectType::Command;
-        static TypeName TypeName()
-        {
-            return "Atmos::Asset::Resource::LoadDataFromFile<Atmos::Asset::Resource::Image>";
-        }
-        using Result = Atmos::Asset::Resource::Loaded<Atmos::Asset::Resource::Image>;
-    };
-
-    template<>
-    struct Traits<Atmos::Asset::Resource::LoadDataFromMemory<Atmos::Asset::Resource::Image>>
-    {
-        static const ObjectType objectType = ObjectType::Command;
-        static TypeName TypeName()
-        {
-            return "Atmos::Asset::Resource::LoadDataFromMemory<Atmos::Asset::Resource::Image>";
-        }
-        using Result = Atmos::Asset::Resource::Loaded<Atmos::Asset::Resource::Image>;
     };
 }

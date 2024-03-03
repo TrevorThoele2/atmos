@@ -9,7 +9,7 @@ namespace Atmos::Scripting::Angel
     {
         const auto userData = reinterpret_cast<ArcaUserData*>(engine.GetUserData());
         if (!userData)
-            throw AngelScriptFailed("Could not find user data from script engine.");
+            throw Error("Could not find user data from script engine.");
 
         return userData;
     }

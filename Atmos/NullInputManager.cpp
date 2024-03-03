@@ -6,4 +6,9 @@ namespace Atmos::Input
     {
         return {};
     }
+
+    String NullManager::TypeName() const
+    {
+        return "Null";
+    }
 }

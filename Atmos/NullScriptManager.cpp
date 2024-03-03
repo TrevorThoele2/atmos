@@ -2,6 +2,9 @@
 
 namespace Atmos::Scripting
 {
+    void NullManager::SetReliquary(Arca::Reliquary& reliquary)
+    {}
+
     std::unique_ptr<Asset::Resource::Script> NullManager::CreateAssetResource(
         const Buffer& buffer, String name)
     {
@@ -19,8 +22,8 @@ namespace Atmos::Scripting
         return {};
     }
 
-    void NullManager::InitializeImpl(Arca::Reliquary& reliquary)
+    String NullManager::TypeName() const
     {
-
+        return "Null";
     }
 }

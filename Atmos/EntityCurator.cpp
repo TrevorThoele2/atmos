@@ -113,30 +113,6 @@ namespace Atmos::Entity
         AddEntityTo(positionToEntity, command.to, command.entity);
     }
 
-    void Curator::Handle(const ModifyData& command)
-    {
-        auto removeSet = std::set<String>(command.remove.begin(), command.remove.end());
-        std::unordered_map<String, Variant> replaceMap;
-        for (auto& datum : command.replace)
-            replaceMap.emplace(datum.name, datum.value);
-
-        auto mutableEntity = MutablePointer().Of(command.entity);
-
-        for(auto element = mutableEntity->data.begin(); element != mutableEntity->data.end();)
-        {
-            if (removeSet.find(element->name) != removeSet.end())
-                element = mutableEntity->data.erase(element);
-            else
-            {
-                auto foundReplace = replaceMap.find(element->name);
-                if (foundReplace != replaceMap.end())
-                    element->value = foundReplace->second;
-                ++element;
-            }
-        }
-        mutableEntity->data.insert(mutableEntity->data.begin(), command.add.begin(), command.add.end());
-    }
-
     void Curator::Handle(const ModifyTags& command)
     {
         auto removeSet = std::set<String>(command.remove.begin(), command.remove.end());

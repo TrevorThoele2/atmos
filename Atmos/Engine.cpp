@@ -1,71 +1,33 @@
 #include "Engine.h"
 
 #include "TypeRegistration.h"
-#include "EngineNotSetup.h"
 
 #include "LoadAssetsByZipUserContext.h"
 
 namespace Atmos
 {
-    Engine::Engine(Logging::Logger& logger) : logger(&logger)
-    {}
+    Engine::~Engine() = default;
 
-    Engine::~Engine()
+    void Engine::UseField(World::Field&& field, std::vector<Property>&& worldProperties, const File::Path& assetsFilePath)
     {
-        executionContext.reset();
-    }
-
-    void Engine::Setup()
-    {
-        if (IsSetup())
-            return;
-
-        auto initializationProperties = CreateInitializationProperties(*logger);
-
-        managers = Managers
-        {
-            std::move(initializationProperties.imageAssetManager),
-            std::move(initializationProperties.window),
-            std::move(initializationProperties.audioManager),
-            std::move(initializationProperties.inputManager),
-            std::move(initializationProperties.graphicsManager),
-            std::move(initializationProperties.scriptManager)
-        };
-
-        managers.window->ChangeSize(Spatial::ScreenSize{ 1024, 768 });
-        managers.window->CenterOnScreen();
-
-        World::WorldManager worldManager;
-
-        executionContext = std::make_unique<ExecutionContext>(std::move(worldManager), *managers.window);
-    }
-
-    void Engine::UseField(World::Field&& field, const File::Path& assetsFilePath)
-    {
-        SetupRequired();
-
-        executionContext->worldManager.UseField(std::move(field));
+        managers.world->UseField(std::move(field), std::move(worldProperties));
         ChangeField(0, assetsFilePath);
     }
 
     void Engine::LoadWorld(const File::Path& filePath, const File::Path& assetsFilePath)
     {
-        SetupRequired();
-
-        executionContext->worldManager.UseWorld(filePath);
+        managers.world->UseWorld(filePath);
         ChangeField(0, assetsFilePath);
     }
 
     World::Field* Engine::CurrentField()
     {
-        return executionContext->worldManager.CurrentField();
+        return managers.world->CurrentField();
     }
 
     void Engine::StartExecution()
     {
-        SetupRequired();
-
-        executionContext->execution.Start();
+        execution->Start();
     }
 
     Logging::Logger& Engine::Logger()
@@ -73,21 +35,45 @@ namespace Atmos
         return *logger;
     }
 
-    bool Engine::IsSetup() const
+    Engine::Engine(InitializationProperties&& initializationProperties, Logging::Logger& logger) : logger(&logger)
     {
-        return executionContext != nullptr;
-    }
+        managers = Managers
+        {
+            std::move(initializationProperties.assetResourceManager),
+            std::move(initializationProperties.window),
+            std::move(initializationProperties.audioManager),
+            std::move(initializationProperties.inputManager),
+            std::move(initializationProperties.graphicsManager),
+            std::move(initializationProperties.scriptManager),
+            std::move(initializationProperties.worldManager)
+        };
 
-    void Engine::SetupRequired() const
-    {
-        if (!IsSetup())
-            throw EngineNotSetup();
-    }
+        logger.Log(
+            "Using window.",
+            Logging::Severity::Information,
+            Logging::Details{ {"Type Name", managers.window->TypeName()} });
+        logger.Log(
+            "Using audio.",
+            Logging::Severity::Information,
+            Logging::Details{ {"Type Name", managers.audio->TypeName()} });
+        logger.Log(
+            "Using input.",
+            Logging::Severity::Information,
+            Logging::Details{ {"Type Name", managers.input->TypeName()} });
+        logger.Log(
+            "Using graphics.",
+            Logging::Severity::Information,
+            Logging::Details{ {"Type Name", managers.graphics->TypeName()} });
+        logger.Log(
+            "Using scripts.",
+            Logging::Severity::Information,
+            Logging::Details{ {"Type Name", managers.scripts->TypeName()} });
 
-    Engine::ExecutionContext::ExecutionContext(World::WorldManager&& worldManager, Window::WindowBase& window) :
-        execution(this->worldManager, window),
-        worldManager(std::move(worldManager))
-    {}
+        managers.window->ChangeSize(Spatial::ScreenSize{ 1024, 768 });
+        managers.window->CenterOnScreen();
+
+        execution = std::make_unique<Execution>(*managers.world, *managers.window);
+    }
 
     void Engine::ChangeField(World::FieldID fieldID, const File::Path& assetsFilePath)
     {
@@ -95,11 +81,12 @@ namespace Atmos
 
         RegisterFieldTypes(
             origin,
-            *managers.imageAssetManager,
+            *managers.assetResourceManager,
             *managers.audio,
             *managers.input,
             *managers.graphics,
             *managers.scripts,
+            *managers.world,
             Spatial::ScreenSize{ 1024, 768 },
             *managers.window,
             *logger);
@@ -107,10 +94,10 @@ namespace Atmos
 
         auto reliquary = origin.Actualize();
 
-        executionContext->worldManager.Request(fieldID);
+        managers.world->Request(fieldID);
 
         auto loadAssetsUserContext = Inscription::LoadAssetsByZipUserContext(assetsFilePath, *logger);
 
-        executionContext->worldManager.LockIn(std::move(reliquary), loadAssetsUserContext);
+        managers.world->LockIn(std::move(reliquary), loadAssetsUserContext);
     }
 }

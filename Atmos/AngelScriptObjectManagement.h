@@ -493,7 +493,8 @@ namespace Atmos::Scripting::Angel
             ::template TransformToType<Detail::ParameterProviderToParameterType>::Type;
 
         auto args = Arguments::TupleT();
-        Chroma::IterateRange<size_t, Detail::FromParameterProvidersIterator, sizeof...(parameterProviders) - 1>(args, *generic, ArgumentsPack{});
+        if constexpr (sizeof...(parameterProviders) > 0)
+            Chroma::IterateRange<size_t, Detail::FromParameterProvidersIterator, sizeof...(parameterProviders) - 1>(args, *generic, ArgumentsPack{});
 
         const auto self = static_cast<T*>(generic->GetObject());
         BoundGenerateObjectForwarder<Arguments>::Do(self, std::move(args));
@@ -827,6 +828,6 @@ namespace Atmos::Scripting::Angel
     template<class T>
     void ObjectManagement<T>::UndefinedTemplate(asIScriptGeneric* generic)
     {
-        throw AngelScriptFailed("The general template for this type is undefined.");
+        throw Error("The general template for this type is undefined.");
     }
 }

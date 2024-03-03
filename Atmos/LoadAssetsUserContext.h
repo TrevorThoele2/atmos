@@ -19,8 +19,9 @@ namespace Inscription
     public:
         virtual ~LoadAssetsUserContext() = 0;
 
-        virtual std::optional<Extracted> LoadImage(const Atmos::Name& name) = 0;
-        virtual std::optional<Extracted> LoadShader(const Atmos::Name& name) = 0;
-        virtual std::optional<Extracted> LoadScript(const Atmos::Name& name) = 0;
+        virtual std::optional<Extracted> LoadAudioData(const Atmos::Name& name) = 0;
+        virtual std::optional<Extracted> LoadImageData(const Atmos::Name& name) = 0;
+        virtual std::optional<Extracted> LoadShaderData(const Atmos::Name& name) = 0;
+        virtual std::optional<Extracted> LoadScriptData(const Atmos::Name& name) = 0;
     };
 }

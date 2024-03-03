@@ -8,5 +8,7 @@ namespace Atmos::Input
     {
     public:
         [[nodiscard]] State ReadState() const override;
+
+        [[nodiscard]] String TypeName() const override;
     };
 }

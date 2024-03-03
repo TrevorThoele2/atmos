@@ -11,6 +11,7 @@ SCENARIO_METHOD(EntityTestsFixture, "entity actualization", "[entity]")
         Arca::ReliquaryOrigin reliquaryOrigin;
 
         RegisterTypes(reliquaryOrigin);
+        Data::RegisterTypes(reliquaryOrigin);
 
         auto reliquary = reliquaryOrigin.Actualize();
 

@@ -2,6 +2,9 @@
 
 #include "AssetWithResource.h"
 #include "AudioAssetResource.h"
+#include "LoadAudioAssetResourceData.h"
+#include "CreateAudioAssetResource.h"
+#include "LoadAssetsUserContext.h"
 
 namespace Atmos::Asset
 {
@@ -15,6 +18,10 @@ namespace Atmos::Asset
         Audio& operator=(Audio&& arg) noexcept;
     public:
         void Setup(ResourcePtr&& set);
+    private:
+        Arca::RelicInit init;
+    private:
+        INSCRIPTION_ACCESS;
     };
 }
 
@@ -45,6 +52,29 @@ namespace Inscription
         {
             BaseScriven<Atmos::Asset::AssetWithResource<Atmos::Asset::Resource::Audio>>(
                 object, archive);
+            if (archive.IsInput())
+            {
+                auto& assetUserContext = *archive.template UserContext<LoadAssetsUserContext>();
+
+                auto extracted = assetUserContext.LoadAudioData(object.Name());
+                if (extracted)
+                {
+                    using LoadResource = Atmos::Asset::Resource::LoadData<Atmos::Asset::Resource::Audio>;
+                    const auto loaded = object.init.owner.Do(LoadResource
+                        {
+                            extracted->memory
+                        });
+
+                    using CreateResource = Atmos::Asset::Resource::Create<Atmos::Asset::Resource::Audio>;
+                    auto resource = object.init.owner.Do(CreateResource
+                        {
+                            loaded.buffer,
+                            object.Name()
+                        });
+
+                    object.Setup(std::move(resource));
+                }
+            }
         }
     };
 

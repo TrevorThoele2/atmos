@@ -18,6 +18,7 @@ namespace Atmos::World::Serialization
     {
         wxZipOutputStream zip(stream);
 
+        Save("audio", saves.audio, zip);
         Save("images", saves.images, zip);
         Save("shaders", saves.shaders, zip);
         Save("scripts", saves.scripts, zip);

@@ -57,7 +57,7 @@ namespace Inscription
             {
                 auto& assetUserContext = *archive.template UserContext<LoadAssetsUserContext>();
 
-                auto extracted = assetUserContext.LoadScript(object.Name());
+                auto extracted = assetUserContext.LoadScriptData(object.Name());
                 if (extracted)
                 {
                     using CreateResource = Atmos::Asset::Resource::Create<Atmos::Asset::Resource::Script>;

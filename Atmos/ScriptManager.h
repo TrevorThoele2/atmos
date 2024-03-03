@@ -18,17 +18,15 @@ namespace Atmos::Scripting
     public:
         virtual ~Manager() = 0;
 
-        void Initialize(Arca::Reliquary& reliquary);
+        virtual void SetReliquary(Arca::Reliquary& reliquary) = 0;
 
         [[nodiscard]] virtual std::unique_ptr<Asset::Resource::Script> CreateAssetResource(
             const Buffer& buffer, String name) = 0;
         [[nodiscard]] virtual std::unique_ptr<Resource> CreateScriptResource(
             const String& name, const String& executeName, const Parameters& parameters) = 0;
-    public:
+
         virtual Buffer Compile(Module module, std::vector<Module> sharedModules) = 0;
-    protected:
-        virtual void InitializeImpl(Arca::Reliquary& reliquary) = 0;
-    private:
-        bool isInitialized = false;
+
+        [[nodiscard]] virtual String TypeName() const = 0;
     };
 }

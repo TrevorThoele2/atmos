@@ -26,26 +26,25 @@ namespace Atmos::Scripting::Angel
         Registration<ArcaTraits<Render::Line>>::RegisterTo(engine, documentationManager);
         Registration<Arca::Batch<Render::Line>>::RegisterTo(engine, documentationManager);
 
-        RegisterArcaCreateRelic<
-            Render::Line,
-            Chroma::VariadicTemplate<
+        ArcaCreateRelicRegistration<Type::ValueT>()
+            .Constructor<
                 std::vector<Spatial::Point2D>,
                 float,
                 Arca::Index<Asset::LineMaterial>,
                 float,
-                Render::Color>>
-            (
-                {
-                    "Atmos::Spatial::Point2D[]@ points",
-                    "float z",
-                    "Atmos::Asset::LineMaterial material",
-                    "float width",
-                    "Atmos::Render::Color color"
-                },
-                engine,
-                documentationManager);
+                Render::Color>
+            ({
+                "Atmos::Spatial::Point2D[]@ points",
+                "float z",
+                "Atmos::Asset::LineMaterial material",
+                "float width",
+                "Atmos::Render::Color color"
+            })
+            .Actualize(engine, documentationManager);
+        RegisterArcaCreated<Type::ValueT>(engine, documentationManager);
 
-        RegisterArcaDestroyRelic<Render::Line>(engine, documentationManager);
+        RegisterArcaDestroyRelic<Type::ValueT>(engine, documentationManager);
+        RegisterArcaDestroying<Type::ValueT>(engine, documentationManager);
     }
 
     std::vector<Spatial::Point2D> Registration<Render::Line>::Points(Type type)

@@ -2,6 +2,8 @@
 
 #include "ArchiveHeader.h"
 
+#include <Inscription/VectorScribe.h>
+
 namespace Atmos::World::Serialization
 {
     InputWorldArchiveInterface::InputWorldArchiveInterface(
@@ -46,6 +48,11 @@ namespace Atmos::World::Serialization
         return fieldJumpTable.Size();
     }
 
+    std::vector<Property> InputWorldArchiveInterface::WorldProperties() const
+    {
+        return worldProperties;
+    }
+
     void InputWorldArchiveInterface::Load()
     {
         const auto header = LoadArchiveHeader(archive, expectedSignature);
@@ -54,6 +61,8 @@ namespace Atmos::World::Serialization
         versionUserContext.clientVersion = std::get<1>(header);
 
         archive.EmplaceUserContext(&versionUserContext);
+
+        archive(worldProperties);
 
         archive(fieldJumpTable);
     }

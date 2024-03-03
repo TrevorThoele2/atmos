@@ -2,7 +2,8 @@
 #include <Atmos/AngelScriptManager.h>
 #include <Atmos/TypeRegistration.h>
 #include <Atmos/Logger.h>
-#include <Atmos/FreeImageAssetManager.h>
+#include <Atmos/FileLoggingSink.h>
+#include <Atmos/RealAssetResourceManager.h>
 #include <Arca/ReliquaryOrigin.h>
 
 #include <angelscript.h>
@@ -13,18 +14,18 @@
 int main()
 {
     Atmos::Logging::Logger logger(Atmos::Logging::Severity::Verbose);
-    auto imageAssetManager = std::make_unique<Atmos::Asset::FreeImageManager>(logger);
+    logger.Add<Atmos::Logging::FileSink>();
+    auto assetResourceManager = std::make_unique<Atmos::Asset::Resource::RealManager>(logger);
 
     Arca::ReliquaryOrigin origin;
-    Atmos::RegisterFieldTypes(origin, *imageAssetManager, logger);
+    Atmos::RegisterFieldTypes(origin, *assetResourceManager, logger);
     auto reliquary = origin.Actualize();
 
     auto manager = std::make_unique<Atmos::Scripting::Angel::Manager>(logger);
-    manager->Initialize(*reliquary);
+    manager->SetReliquary(*reliquary);
 
     const auto engine = asCreateScriptEngine();
     auto userData = Atmos::Scripting::Angel::UserData();
-    userData.manager = manager.get();
     userData.reliquary = reliquary.get();
     engine->SetUserData(&userData);
 
@@ -33,6 +34,7 @@ int main()
     documentationOptions.includeArrayInterface = true;
     documentationOptions.includeStringInterface = true;
     documentationOptions.includeWeakRefInterface = false;
+    documentationOptions.syntaxHighlight = true;
     auto documentationGenerator = DocumentationGenerator(engine, documentationOptions);
 
     DocumentationManager documentationManager(documentationGenerator);

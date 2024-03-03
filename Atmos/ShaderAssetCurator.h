@@ -13,8 +13,7 @@ namespace Atmos::Asset
         using Curator::Curator;
 
         using Curator::Handle;
-        Resource::Loaded<Resource::Shader> Handle(const Resource::LoadDataFromFile<Resource::Shader>& command);
-        Resource::Loaded<Resource::Shader> Handle(const Resource::LoadDataFromMemory<Resource::Shader>& command);
+        Resource::LoadedData<Resource::Shader> Handle(const Resource::LoadData<Resource::Shader>& command);
     };
 
     template<>
@@ -33,8 +32,7 @@ namespace Arca
         static TypeName TypeName() { return "Atmos::Asset::ShaderCurator"; }
         using HandledCommands = HandledCommands<
             Atmos::Asset::FindByName<Atmos::Asset::Shader>,
-            Atmos::Asset::Resource::LoadDataFromFile<Atmos::Asset::Resource::Shader>,
-            Atmos::Asset::Resource::LoadDataFromMemory<Atmos::Asset::Resource::Shader>>;
+            Atmos::Asset::Resource::LoadData<Atmos::Asset::Resource::Shader>>;
     };
 }
 
