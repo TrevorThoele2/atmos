@@ -16,7 +16,7 @@ auto ScriptEngine::CreateInitializationProperties(Logging::Logger& logger)
     auto scripts = std::make_unique<Scripting::Angel::Manager>(logger);
     auto world = std::make_unique<MockWorldManager>();
 
-    mockImageAssetManager = imageAssetManager.get();
+    mockAssetResourceManager = imageAssetManager.get();
     mockWindow = window.get();
     mockAudioManager = audio.get();
     mockInputManager = input.get();

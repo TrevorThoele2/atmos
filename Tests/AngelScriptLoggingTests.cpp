@@ -33,7 +33,7 @@ SCENARIO_METHOD(AngelScriptLoggingTestsFixture, "running logging AngelScript scr
     auto fieldOrigin = Arca::ReliquaryOrigin();
     RegisterFieldTypes(
         fieldOrigin,
-        *engine.mockImageAssetManager,
+        *engine.mockAssetResourceManager,
         *engine.mockAudioManager,
         *engine.mockInputManager,
         *engine.mockGraphicsManager,

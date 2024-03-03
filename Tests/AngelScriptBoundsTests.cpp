@@ -23,7 +23,7 @@ SCENARIO_METHOD(AngelScriptBoundsTestsFixture, "running bounds AngelScript scrip
     fieldOrigin.Register<Arca::OpenRelic>();
     RegisterFieldTypes(
         fieldOrigin,
-        *engine.mockImageAssetManager,
+        *engine.mockAssetResourceManager,
         *engine.mockAudioManager,
         *engine.mockInputManager,
         *engine.mockGraphicsManager,

@@ -37,7 +37,7 @@ SCENARIO_METHOD(AngelScriptAudioTestsFixture, "running audio AngelScript scripts
     fieldOrigin.Register<Arca::OpenRelic>();
     RegisterFieldTypes(
         fieldOrigin,
-        *engine.mockImageAssetManager,
+        *engine.mockAssetResourceManager,
         *engine.mockAudioManager,
         *engine.mockInputManager,
         *engine.mockGraphicsManager,

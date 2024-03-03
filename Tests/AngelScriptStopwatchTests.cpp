@@ -18,7 +18,7 @@ SCENARIO_METHOD(AngelScriptStopwatchTestsFixture, "running stopwatch AngelScript
     auto fieldOrigin = Arca::ReliquaryOrigin();
     RegisterFieldTypes(
         fieldOrigin,
-        *engine.mockImageAssetManager,
+        *engine.mockAssetResourceManager,
         *engine.mockAudioManager,
         *engine.mockInputManager,
         *engine.mockGraphicsManager,

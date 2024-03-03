@@ -179,6 +179,7 @@
     <ClCompile Include="RenderAlgorithmTests.cpp" />
     <ClCompile Include="LineRenderingTests.cpp" />
     <ClCompile Include="ScriptEngine.cpp" />
+    <ClCompile Include="ScriptTests.cpp" />
     <ClCompile Include="StopwatchTests.cpp" />
     <ClCompile Include="WorldSerializationTests.cpp" />
   </ItemGroup>
@@ -233,6 +234,7 @@
     <ClInclude Include="RenderAlgorithmTests.h" />
     <ClInclude Include="LineRenderingTests.h" />
     <ClInclude Include="ScriptEngine.h" />
+    <ClInclude Include="ScriptTests.h" />
     <ClInclude Include="SignalListener.h" />
     <ClInclude Include="StopwatchTests.h" />
     <ClInclude Include="WorldSerializationTests.h" />
