@@ -23,11 +23,9 @@ protected:
     [[nodiscard]] std::unique_ptr<Asset::Resource::Shader> CreateShaderResourceImpl(
         const Buffer& buffer, const Name& name) override;
     [[nodiscard]] std::unique_ptr<Resource::Surface> CreateMainSurfaceResourceImpl(
-        void* window,
-        Arca::Reliquary& reliquary) override;
+        void* window) override;
     [[nodiscard]] std::unique_ptr<Resource::Surface> CreateSurfaceResourceImpl(
-        void* window,
-        Arca::Reliquary& reliquary) override;
+        void* window) override;
     [[nodiscard]] std::unique_ptr<Resource::Text> CreateTextResourceImpl(
         const Buffer& buffer,
         const Spatial::Size2D& size) override;

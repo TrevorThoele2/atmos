@@ -1,7 +1,5 @@
 #pragma once
 
-#include "VulkanIncludes.h"
-
 namespace Atmos::Render::Vulkan
 {
     struct QueueFamilyIndices

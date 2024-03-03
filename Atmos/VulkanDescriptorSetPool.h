@@ -15,7 +15,7 @@ namespace Atmos::Render::Vulkan
             uint32_t count;
         };
     public:
-        DescriptorSetPool(const std::vector<Definition>& definitions, std::shared_ptr<vk::Device> device);
+        DescriptorSetPool(const std::vector<Definition>& definitions, vk::Device device);
 
         void Reserve(uint32_t count);
         void Reset();
@@ -35,6 +35,6 @@ namespace Atmos::Render::Vulkan
 
         void AttemptAllocate(uint32_t count);
     private:
-        std::shared_ptr<vk::Device> device;
+        vk::Device device;
     };
 }

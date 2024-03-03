@@ -110,13 +110,13 @@ namespace Atmos::Scripting::Angel
     void ScriptResource::ExecuteSecondaryAgainstStoredFunctions(const String& name, const SecondaryExecution& againstContext)
     {
         auto group = groups.find(name);
-        if (group == groups.end())
-            return;
-
-        if (executionType == ExecutionType::Executing)
-            DoExecuteSecondary(againstContext, group->second.angelScriptFunctions, *context->GetEngine(), *logger);
-        else
-            group->second.secondaryExecutions.push_back(againstContext);
+        if (group != groups.end())
+        {
+            if (executionType == ExecutionType::Executing)
+                DoExecuteSecondary(againstContext, group->second.angelScriptFunctions, *context->GetEngine(), *logger);
+            else
+                group->second.secondaryExecutions.push_back(againstContext);
+        }
     }
 
     std::optional<Result> ScriptResource::DoExecute(asIScriptContext& context)

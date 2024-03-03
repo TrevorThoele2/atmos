@@ -1,6 +1,7 @@
 #include "GraphicsCurator.h"
 
 #include "MainSurface.h"
+#include "TextCore.h"
 
 #include "WindowSizeChanged.h"
 
@@ -10,39 +11,17 @@ namespace Atmos::Render
         Curator(init),
         manager(&manager)
     {
-        Owner().On<Arca::DestroyingKnown<Asset::Image>>([this](const Arca::DestroyingKnown<Asset::Image>& signal)
-            {
-                const auto resource = MutablePointer().Of(signal.index)->Resource();
-                if (!resource)
-                    return;
-
-                this->manager->ResourceDestroying(*resource);
-            });
-
-        Owner().On<Arca::DestroyingKnown<Asset::Shader>>([this](const Arca::DestroyingKnown<Asset::Shader>& signal)
-            {
-                const auto resource = MutablePointer().Of(signal.index)->Resource();
-                if (!resource)
-                    return;
-
-                this->manager->ResourceDestroying(*resource);
-            });
-
-        Owner().On<Arca::DestroyingKnown<SurfaceCore>>([this](const Arca::DestroyingKnown<SurfaceCore>& signal)
-            {
-                const auto& resource = MutablePointer().Of(signal.index)->resource;
-                if (!resource)
-                    return;
-
-                this->manager->ResourceDestroying(*resource);
-            });
-
+        OnResourceDestroying<Asset::Image>();
+        OnResourceDestroying<Asset::Shader>();
+        OnResourceDestroying<SurfaceCore>();
+        OnResourceDestroying<TextCore>();
+        
         Owner().On<Window::SizeChanged>([this](const Window::SizeChanged& signal)
             {
                 AttemptReconstruct(signal.size);
             });
     }
-
+    
     void GraphicsCurator::Handle(const ReconstructGraphics& command)
     {
         AttemptReconstruct(command.screenSize);
@@ -50,7 +29,7 @@ namespace Atmos::Render
 
     std::unique_ptr<Resource::Surface> GraphicsCurator::Handle(const Resource::CreateSurface& command)
     {
-        return manager->CreateSurfaceResource(command.window, Owner());
+        return manager->CreateSurfaceResource(command.window);
     }
 
     void GraphicsCurator::Handle(const SetFullscreen& command)
@@ -65,7 +44,7 @@ namespace Atmos::Render
 
     void GraphicsCurator::Handle(const PruneGraphicsResources&)
     {
-        manager->PruneResources(Owner());
+        manager->PruneResources();
     }
 
     File::Path GraphicsCurator::Handle(const CompileShader& command)

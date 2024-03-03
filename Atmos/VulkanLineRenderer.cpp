@@ -5,13 +5,13 @@
 namespace Atmos::Render::Vulkan
 {
     LineRenderer::LineRenderer(
-        std::shared_ptr<vk::Device> device,
+        vk::Device device,
         vk::Queue graphicsQueue,
         vk::PhysicalDeviceMemoryProperties memoryProperties,
         vk::RenderPass renderPass,
         vk::Extent2D swapchainExtent)
         :
-        vertexBuffer(vertexStride * sizeof(Vertex), *device, memoryProperties, vk::BufferUsageFlagBits::eVertexBuffer),
+        vertexBuffer(vertexStride * sizeof(Vertex), device, memoryProperties, vk::BufferUsageFlagBits::eVertexBuffer),
         descriptorSetPool(
             {
                 DescriptorSetPool::Definition

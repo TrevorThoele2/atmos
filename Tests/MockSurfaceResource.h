@@ -15,7 +15,7 @@ public:
     void StageRender(const Atmos::Render::RegionRender& regionRender) override;
     void StageRender(const Atmos::Render::TextRender& textRender) override;
 
-    void DrawFrame(Arca::Reliquary& reliquary, const Atmos::Render::Color& backgroundColor) override;
+    void DrawFrame(const Atmos::Spatial::Point2D& mapPosition, const Atmos::Render::Color& backgroundColor) override;
     
     void OnMaterialDestroying(const Arca::Index<Atmos::Asset::Material>& material) override;
 

@@ -7,7 +7,7 @@
 namespace Atmos::Render::Vulkan
 {
     MasterRenderer::MasterRenderer(
-        std::shared_ptr<vk::Device> device,
+        vk::Device device,
         vk::Sampler sampler,
         vk::Queue graphicsQueue,
         vk::Queue presentQueue,
@@ -21,19 +21,19 @@ namespace Atmos::Render::Vulkan
         graphicsQueueIndex(graphicsQueueIndex),
         graphicsQueue(graphicsQueue),
         presentQueue(presentQueue),
-        commandBuffers(*device, graphicsQueueIndex),
-        universalDataBuffer(0, memoryProperties, *device),
+        commandBuffers(device, graphicsQueueIndex),
+        universalDataBuffer(0, memoryProperties, device),
         logger(&logger)
     {
-        imageAvailableSemaphores = CreateSemaphores(*device, maxFramesInFlight);
-        renderFinishedSemaphores = CreateSemaphores(*device, maxFramesInFlight);
+        imageAvailableSemaphores = CreateSemaphores(device, maxFramesInFlight);
+        renderFinishedSemaphores = CreateSemaphores(device, maxFramesInFlight);
 
-        inFlightFences = CreateFences(*device, maxFramesInFlight);
+        inFlightFences = CreateFences(device, maxFramesInFlight);
     }
 
     MasterRenderer::~MasterRenderer()
     {
-        device->waitIdle();
+        device.waitIdle();
 
         inFlightFences.clear();
     }
@@ -43,16 +43,15 @@ namespace Atmos::Render::Vulkan
         std::vector<vk::Image> swapchainImages,
         std::vector<vk::ImageView> swapchainImageViews,
         vk::Format imageFormat,
-        vk::Extent2D swapchainExtent,
-        Arca::Reliquary& reliquary)
+        vk::Extent2D swapchainExtent)
     {
         this->swapchain = swapchain;
         this->swapchainExtent = swapchainExtent;
 
-        renderPass = CreateRenderPass(*device, imageFormat);
+        renderPass = CreateRenderPass(device, imageFormat);
 
         framebuffers = CreateFramebuffers(
-            *device, swapchainImageViews, renderPass.get(), swapchainExtent);
+            device, swapchainImageViews, renderPass.get(), swapchainExtent);
 
         imagesInFlight.resize(swapchainImages.size(), nullptr);
         
@@ -93,10 +92,10 @@ namespace Atmos::Render::Vulkan
 
     void MasterRenderer::DrawFrame(const Spatial::Size2D& screenSize, const Spatial::Point2D& mapPosition)
     {
-        if (IsError(device->waitForFences(inFlightFences[previousFrame].get(), VK_TRUE, UINT64_MAX)))
+        if (IsError(device.waitForFences(inFlightFences[previousFrame].get(), VK_TRUE, UINT64_MAX)))
             logger->Log("Could not wait for Vulkan fences.");
 
-        auto imageIndex = device->acquireNextImageKHR(
+        auto imageIndex = device.acquireNextImageKHR(
             swapchain,
             UINT64_MAX,
             imageAvailableSemaphores[currentFrame].get(),
@@ -113,7 +112,7 @@ namespace Atmos::Render::Vulkan
         const auto currentSwapchainImage = imageIndex.value;
 
         if (imagesInFlight[currentSwapchainImage])
-            if (IsError(device->waitForFences(1, &imagesInFlight[currentSwapchainImage], VK_TRUE, UINT64_MAX)))
+            if (IsError(device.waitForFences(1, &imagesInFlight[currentSwapchainImage], VK_TRUE, UINT64_MAX)))
                 logger->Log("Could not wait for Vulkan fences.");
         imagesInFlight[currentSwapchainImage] = inFlightFences[currentFrame].get();
 
@@ -157,7 +156,7 @@ namespace Atmos::Render::Vulkan
                 1,
                 signalSemaphores);
 
-            if (IsError(device->resetFences(1, &inFlightFences[currentFrame].get())))
+            if (IsError(device.resetFences(1, &inFlightFences[currentFrame].get())))
                 logger->Log("Could not reset Vulkan fences.");
 
             if (IsError(graphicsQueue.submit(1, &submitInfo, inFlightFences[currentFrame].get())))
@@ -181,7 +180,7 @@ namespace Atmos::Render::Vulkan
         }
         catch(...)
         {
-            if (IsError(device->resetFences(1, &inFlightFences[currentFrame].get())))
+            if (IsError(device.resetFences(1, &inFlightFences[currentFrame].get())))
                 logger->Log("Could not reset Vulkan fences.");
             endFrame();
             throw;
@@ -196,7 +195,7 @@ namespace Atmos::Render::Vulkan
         fences.reserve(inFlightFences.size());
         for (auto& fence : inFlightFences)
             fences.push_back(fence.get());
-        if (IsError(device->waitForFences(fences, VK_TRUE, UINT64_MAX)))
+        if (IsError(device.waitForFences(fences, VK_TRUE, UINT64_MAX)))
             logger->Log("Could not wait for Vulkan fences.");
     }
     
@@ -211,7 +210,7 @@ namespace Atmos::Render::Vulkan
     }
     
     MasterRenderer::RendererGroup::RendererGroup(
-        std::shared_ptr<vk::Device> device,
+        vk::Device device,
         vk::Queue graphicsQueue,
         vk::PhysicalDeviceMemoryProperties memoryProperties,
         vk::RenderPass renderPass,

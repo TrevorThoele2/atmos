@@ -621,6 +621,18 @@
     <Filter Include="Source Files\Scripting\AngelScript\Types\Atmos\Diagnostics">
       <UniqueIdentifier>{5ac52d61-075b-4dc4-ab0d-39e7c2f061b4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Render\Vulkan\Resource\Stored">
+      <UniqueIdentifier>{4bee8aa9-4aa3-464c-a879-a77cc4d359fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Render\Vulkan\Resource\Stored">
+      <UniqueIdentifier>{0a92aaab-3e39-4795-a421-ee9b4d73d45c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Render\Vulkan\Resource\Data">
+      <UniqueIdentifier>{cf4a1d4c-f786-4b93-9353-8c1c6055b9b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Render\Vulkan\Resource\Data">
+      <UniqueIdentifier>{5974cdd5-e977-4fe4-b646-93caf7674e12}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FieldDestination.h">
@@ -2042,6 +2054,18 @@
     <ClInclude Include="RenderEndCurator.h">
       <Filter>Header Files\Render</Filter>
     </ClInclude>
+    <ClInclude Include="VulkanStoredResource.h">
+      <Filter>Header Files\Render\Vulkan\Resource\Stored</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanStoredImageResource.h">
+      <Filter>Header Files\Render\Vulkan\Resource\Stored</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanImageResourceData.h">
+      <Filter>Header Files\Render\Vulkan\Resource\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanBackingSurfaceResource.h">
+      <Filter>Header Files\Render\Vulkan\Resource</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FieldDestination.cpp">
@@ -2319,9 +2343,6 @@
     </ClCompile>
     <ClCompile Include="ShaderAssetResource.cpp">
       <Filter>Source Files\Assets\Shader</Filter>
-    </ClCompile>
-    <ClCompile Include="VulkanSurfaceResource.cpp">
-      <Filter>Source Files\Render\Vulkan\Resource</Filter>
     </ClCompile>
     <ClCompile Include="SurfaceResource.cpp">
       <Filter>Source Files\Render\Surface</Filter>
@@ -3000,6 +3021,21 @@
     </ClCompile>
     <ClCompile Include="RenderEndCurator.cpp">
       <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanStoredResource.cpp">
+      <Filter>Source Files\Render\Vulkan\Resource\Stored</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanStoredImageResource.cpp">
+      <Filter>Source Files\Render\Vulkan\Resource\Stored</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanImageResourceData.cpp">
+      <Filter>Source Files\Render\Vulkan\Resource\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanBackingSurfaceResource.cpp">
+      <Filter>Source Files\Render\Vulkan\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanSurfaceResource.cpp">
+      <Filter>Source Files\Render\Vulkan\Resource</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

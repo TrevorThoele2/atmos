@@ -18,14 +18,14 @@ namespace Atmos::Render::Vulkan
     }
 
     QuadRenderer::QuadRenderer(
-        std::shared_ptr<vk::Device> device,
+        vk::Device device,
         vk::Queue graphicsQueue,
         vk::PhysicalDeviceMemoryProperties memoryProperties,
         vk::RenderPass renderPass,
         vk::Extent2D swapchainExtent)
         :
-        vertexBuffer(vertexStride * sizeof(Vertex), *device, memoryProperties, vk::BufferUsageFlagBits::eVertexBuffer),
-        indexBuffer(indexStride * sizeof(Index), *device, memoryProperties, vk::BufferUsageFlagBits::eIndexBuffer),
+        vertexBuffer(vertexStride * sizeof(Vertex), device, memoryProperties, vk::BufferUsageFlagBits::eVertexBuffer),
+        indexBuffer(indexStride * sizeof(Index), device, memoryProperties, vk::BufferUsageFlagBits::eIndexBuffer),
         descriptorSetPool(
             {
                 DescriptorSetPool::Definition
@@ -108,7 +108,7 @@ namespace Atmos::Render::Vulkan
             raster->setupDescriptorSets.emplace(descriptorSetKey, descriptorSet);
             
             const auto& descriptor = *descriptorSetKey.descriptor;
-            descriptor.Update(descriptorSet, *device);
+            descriptor.Update(descriptorSet, device);
             universalDataBuffer.Update(descriptorSet);
         }
         descriptorSetKeys.clear();
@@ -246,12 +246,12 @@ namespace Atmos::Render::Vulkan
             ToPoint2D(imageRender.position),
             imageRender.size,
             imageRender.rotation,
-            ToTextureSlice(imageRender.slice, assetResource->size));
+            ToTextureSlice(imageRender.slice, assetResource->imageData.size));
         AddToRaster(
             imageRender.space,
             imageRender.position.z,
             imageRender.material.ID(),
-            assetResource->descriptor,
+            assetResource->imageData.descriptor,
             vertices,
             raster);
     }
@@ -265,12 +265,12 @@ namespace Atmos::Render::Vulkan
             ToPoint2D(textRender.position),
             textRender.size,
             textRender.rotation,
-            ToTextureSlice(textRender.slice, textResource->size));
+            ToTextureSlice(textRender.slice, textResource->imageData.size));
         AddToRaster(
             textRender.space,
             textRender.position.z,
             textRender.material.ID(),
-            textResource->descriptor,
+            textResource->imageData.descriptor,
             vertices,
             raster);
     }

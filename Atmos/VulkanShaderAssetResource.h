@@ -8,14 +8,10 @@ namespace Atmos::Asset::Resource::Vulkan
     class Shader final : public Resource::Shader
     {
     public:
-        Shader(
-            vk::ShaderModule module,
-            std::shared_ptr<vk::Device> device);
-        ~Shader();
+        Shader(vk::UniqueShaderModule&& module);
 
         [[nodiscard]] vk::ShaderModule Module() const;
     private:
-        vk::ShaderModule module;
-        std::shared_ptr<vk::Device> device;
+        vk::UniqueShaderModule module;
     };
 }

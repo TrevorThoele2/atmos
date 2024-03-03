@@ -99,6 +99,10 @@
     <ClInclude Include="AssetResourceManager.h" />
     <ClInclude Include="AssetResourceTraits.h" />
     <ClInclude Include="BoundsChanged.h" />
+    <ClInclude Include="VulkanBackingSurfaceResource.h" />
+    <ClInclude Include="VulkanImageResourceData.h" />
+    <ClInclude Include="VulkanStoredImageResource.h" />
+    <ClInclude Include="VulkanStoredResource.h" />
     <ClInclude Include="DiagnosticsCurator.h" />
     <ClInclude Include="DiagnosticsStatistics.h" />
     <ClInclude Include="RenderEndCurator.h" />
@@ -605,6 +609,10 @@
     <ClCompile Include="Asset.cpp" />
     <ClCompile Include="AssetResourceManager.cpp" />
     <ClCompile Include="AudioAssetCurator.cpp" />
+    <ClCompile Include="VulkanBackingSurfaceResource.cpp" />
+    <ClCompile Include="VulkanImageResourceData.cpp" />
+    <ClCompile Include="VulkanStoredImageResource.cpp" />
+    <ClCompile Include="VulkanStoredResource.cpp" />
     <ClCompile Include="DiagnosticsCurator.cpp" />
     <ClCompile Include="DynamicText.cpp" />
     <ClCompile Include="FontAsset.cpp" />
@@ -714,6 +722,7 @@
     <ClCompile Include="VulkanRaster.cpp" />
     <ClCompile Include="VulkanRegionRenderer.cpp" />
     <ClCompile Include="VulkanRendererBase.cpp" />
+    <ClCompile Include="VulkanSurfaceResource.cpp" />
     <ClCompile Include="VulkanTextResource.cpp" />
     <ClCompile Include="VulkanUniversalDataBuffer.cpp" />
     <ClCompile Include="VulkanCreateImageView.cpp" />
@@ -768,7 +777,6 @@
     <ClCompile Include="VulkanMasterRenderer.cpp" />
     <ClCompile Include="VulkanShaderAssetResource.cpp" />
     <ClCompile Include="VulkanStagedBuffer.cpp" />
-    <ClCompile Include="VulkanSurfaceResource.cpp" />
     <ClCompile Include="VulkanSwapchainSupport.cpp" />
     <ClCompile Include="VulkanUniversalData.cpp" />
     <ClCompile Include="VulkanUtilities.cpp" />

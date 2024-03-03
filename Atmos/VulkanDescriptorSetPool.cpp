@@ -1,13 +1,11 @@
 #include "VulkanDescriptorSetPool.h"
 
-#include <unordered_map>
-
 #include "GraphicsError.h"
 
 namespace Atmos::Render::Vulkan
 {
     DescriptorSetPool::DescriptorSetPool(
-        const std::vector<Definition>& definitions, std::shared_ptr<vk::Device> device)
+        const std::vector<Definition>& definitions, vk::Device device)
         :
         definitions(definitions), device(device)
     {
@@ -25,7 +23,7 @@ namespace Atmos::Render::Vulkan
             bindings.push_back(binding);
         }
         const vk::DescriptorSetLayoutCreateInfo descriptorSetLayoutCreateInfo({}, bindings.size(), bindings.data());
-        descriptorSetLayout = device->createDescriptorSetLayoutUnique(descriptorSetLayoutCreateInfo);
+        descriptorSetLayout = device.createDescriptorSetLayoutUnique(descriptorSetLayoutCreateInfo);
     }
 
     void DescriptorSetPool::Reserve(uint32_t count)
@@ -74,11 +72,11 @@ namespace Atmos::Render::Vulkan
         }
 
         const vk::DescriptorPoolCreateInfo descriptorPoolCreateInfo({}, count, poolSizes.size(), poolSizes.data());
-        descriptorPool = device->createDescriptorPoolUnique(descriptorPoolCreateInfo);
+        descriptorPool = device.createDescriptorPoolUnique(descriptorPoolCreateInfo);
 
-        const std::vector<vk::DescriptorSetLayout> layouts(count, *descriptorSetLayout);
+        const std::vector layouts(count, *descriptorSetLayout);
         const vk::DescriptorSetAllocateInfo descriptorSetAllocateInfo(*descriptorPool, count, layouts.data());
-        allDescriptorSets = device->allocateDescriptorSets(descriptorSetAllocateInfo);
+        allDescriptorSets = device.allocateDescriptorSets(descriptorSetAllocateInfo);
         availableDescriptorSets = allDescriptorSets;
     }
 }

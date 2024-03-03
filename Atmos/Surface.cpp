@@ -22,9 +22,9 @@ namespace Atmos::Render
         Resource()->StageRender(textRender);
     }
 
-    void Surface::DrawFrame() const
+    void Surface::DrawFrame(const Spatial::Point2D& mapPosition) const
     {
-        Resource()->DrawFrame(init.owner, core->backgroundColor);
+        Resource()->DrawFrame(mapPosition, core->backgroundColor);
     }
 
     Spatial::Size2D Surface::Size() const

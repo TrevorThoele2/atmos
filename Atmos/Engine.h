@@ -42,8 +42,7 @@ namespace Atmos
             std::unique_ptr<Render::TextManager> text;
             std::unique_ptr<Scripting::Manager> scripts;
             std::unique_ptr<World::Manager> world;
-        };
-        Managers managers;
+        } managers;
 
         Logging::Logger* logger;
     };

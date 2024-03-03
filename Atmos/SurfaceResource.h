@@ -21,7 +21,7 @@ namespace Atmos::Render::Resource
         virtual void StageRender(const RegionRender& regionRender) = 0;
         virtual void StageRender(const TextRender& textRender) = 0;
 
-        virtual void DrawFrame(Arca::Reliquary& reliquary, const Color& backgroundColor) = 0;
+        virtual void DrawFrame(const Spatial::Point2D& mapPosition, const Color& backgroundColor) = 0;
         
         virtual void OnMaterialDestroying(const Arca::Index<Asset::Material>& material) = 0;
 

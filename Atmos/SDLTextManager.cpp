@@ -22,33 +22,72 @@ namespace Atmos::Render::SDL
 
 	TextData TextManager::DataFor(Asset::Resource::Font& font, const String& string, float wrapWidth, bool bold, bool italics)
 	{
-        const auto sdlAsset = dynamic_cast<FontAssetResource*>(&font);
-		if (!sdlAsset)
-			throw GraphicsError("Font asset resource was not the correct type.");
+        if (!string.empty())
+        {
+            const auto sdlAsset = dynamic_cast<FontAssetResource*>(&font);
+            if (!sdlAsset)
+                throw GraphicsError("Font asset resource was not the correct type.");
 
-        const auto sdlFont = sdlAsset->font;
+            const auto sdlFont = sdlAsset->font;
 
-        const auto style = StyleFrom(bold, italics);
-        if (TTF_GetFontStyle(sdlFont) != style)
-            TTF_SetFontStyle(sdlFont, style);
+            const auto style = StyleFrom(bold, italics);
+            if (TTF_GetFontStyle(sdlFont) != style)
+                TTF_SetFontStyle(sdlFont, style);
 
-        const auto useColor = ColorFrom(Color{255, 255, 255, 255});
-        const auto useWrapWidth = static_cast<Uint32>(wrapWidth);
-        const auto surface = Surface(*sdlFont, string, useColor, useWrapWidth);
-        auto textData = ExtractData(*surface);
-        SDL_FreeSurface(surface);
+            const auto useColor = ColorFrom(Color{ 255, 255, 255, 255 });
+            const auto useWrapWidth = static_cast<Uint32>(wrapWidth);
+            const auto strings = Split(string);
+            const auto surface = Surface(*sdlFont, strings, useColor, useWrapWidth);
+            auto textData = ExtractData(*surface);
+            SDL_FreeSurface(surface);
 
-        return textData;
+            return textData;
+        }
+        else
+            return { {}, Spatial::Size2D{0, 0} };
 	}
 
-    SDL_Surface* TextManager::Surface(TTF_Font& font, const String& string, const SDL_Color& color, Uint32 wrapWidth)
+    SDL_Surface* TextManager::Surface(
+        TTF_Font& font, const std::vector<String>& strings, const SDL_Color& color, Uint32 wrapWidth)
     {
-        const auto size = Size(font, string);
-        const auto surface = static_cast<Uint32>(size.width) <= wrapWidth
-            ? TTF_RenderText_Blended(&font, string.c_str(), color)
-            : TTF_RenderText_Blended_Wrapped(&font, string.c_str(), color, wrapWidth);
-        if (!surface)
-            throw GraphicsError("Could not create surface from text.", { {"Reason", TTF_GetError()} });
+        auto width = 0;
+        auto height = 0;
+
+        std::vector<SDL_Surface*> surfaces;
+        for (auto& string : strings)
+        {
+            const auto size = Size(font, string);
+            const auto surface = static_cast<Uint32>(size.width) <= wrapWidth
+                ? TTF_RenderText_Blended(&font, string.c_str(), color)
+                : TTF_RenderText_Blended_Wrapped(&font, string.c_str(), color, wrapWidth);
+            if (!surface)
+                throw GraphicsError("Could not create surface from text.", { {"Reason", TTF_GetError()} });
+
+            width = std::max(surface->w, width);
+            height += surface->h;
+            surfaces.push_back(surface);
+        }
+
+        const auto firstSurface = surfaces[0];
+
+        auto currentHeight = 0;
+        const auto surface = SDL_CreateRGBSurface(
+            0,
+            width,
+            height,
+            firstSurface->format->BitsPerPixel,
+            firstSurface->format->Rmask,
+            firstSurface->format->Gmask,
+            firstSurface->format->Bmask,
+            firstSurface->format->Amask);
+        for(auto& copyFrom : surfaces)
+        {
+            SDL_Rect destinationRectangle{ 0, currentHeight, 0, 0 };
+            SDL_BlitSurface(copyFrom, nullptr, surface, &destinationRectangle);
+            currentHeight += copyFrom->h;
+            SDL_FreeSurface(copyFrom);
+        }
+
         return surface;
     }
 
@@ -80,6 +119,11 @@ namespace Atmos::Render::SDL
         };
 
         return { buffer, size };
+    }
+
+    std::vector<String> TextManager::Split(const String& string)
+    {
+        return Chroma::Split(string, "\n");
     }
 
     Spatial::Size2D TextManager::Size(TTF_Font& font, const String& string)
