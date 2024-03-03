@@ -11,11 +11,11 @@
 #include <Atmos/StringUtility.h>
 #include <Atmos/Camera.h>
 #include <Atmos/MainSurface.h>
-#include <Atmos/CreateImageAssetData.h>
+#include <Atmos/CreateImageAssetResource.h>
 
 #include "DerivedEngine.h"
-#include "MockImageAssetData.h"
-#include "MockSurfaceData.h"
+#include "MockImageAssetResource.h"
+#include "MockSurfaceResource.h"
 
 using namespace Atmos;
 
@@ -27,15 +27,15 @@ SCENARIO_METHOD(RenderTestsFixture, "rendering images")
         engine.Setup();
 
         auto fieldOrigin = Arca::ReliquaryOrigin();
-        RegisterFieldTypes(fieldOrigin, *engine.TheGlobalReliquary());
+        RegisterFieldTypes(fieldOrigin, *engine.nullAudioManager, *engine.nullInputManager, *engine.mockGraphicsManager);
         World::Field field(0, fieldOrigin.Actualize());
 
         auto& fieldReliquary = field.Reliquary();
 
-        Arca::Postulate<GraphicsManager*>(fieldReliquary)->Initialize(fieldReliquary, nullptr);
+        engine.mockGraphicsManager->Initialize(fieldReliquary, nullptr);
 
         auto mainSurface = Arca::Index<MainSurface>(fieldReliquary);
-        auto mainSurfaceImplementation = mainSurface->Data<MockSurfaceDataImplementation>();
+        auto mainSurfaceImplementation = mainSurface->Resource<MockSurfaceResourceImplementation>();
 
         fieldReliquary.Do<ResizeCamera>(ScreenSize(
             std::numeric_limits<ScreenSize::Dimension>::max(),
@@ -45,9 +45,12 @@ SCENARIO_METHOD(RenderTestsFixture, "rendering images")
         const auto cameraLeft = camera->ScreenSides().Left();
         const auto cameraTop = camera->ScreenSides().Top();
 
-        std::unique_ptr<Asset::ImageAssetData> imageData = std::make_unique<ImageAssetDataImplementation>();
-        auto imageAsset = engine.TheGlobalReliquary()->Do<Arca::Create<Asset::ImageAsset>>(
-            String{}, std::move(imageData), Asset::ImageAssetGridSize{});
+        std::unique_ptr<Asset::Resource::Image> imageResource = std::make_unique<ImageAssetResourceImplementation>();
+        auto imageAsset = fieldReliquary.Do<Arca::Create<Asset::Image>>(
+            String{}, std::move(imageResource), Asset::ImageSize{1, 1}, Asset::ImageGridSize{});
+
+        auto materialAsset = fieldReliquary.Do<Arca::Create<Asset::Material>>(
+            String{}, Asset::MaterialType::Image, Arca::Index<Asset::Shader>{}, Arca::Index<Asset::Shader>{});
 
         auto positions = std::vector<Position3D>
         {
@@ -94,22 +97,22 @@ SCENARIO_METHOD(RenderTestsFixture, "rendering images")
             auto image1 = fieldReliquary.Do<Arca::Create<DynamicImage>>(
                 imageAsset,
                 0,
+                materialAsset,
                 Color{},
-                Arca::Index<Asset::MaterialAsset>{},
                 positions[0],
                 scalers[0]);
             auto image2 = fieldReliquary.Do<Arca::Create<DynamicImage>>(
                 imageAsset,
                 0,
+                materialAsset,
                 Color{},
-                Arca::Index<Asset::MaterialAsset>{},
                 positions[1],
                 scalers[1]);
             auto image3 = fieldReliquary.Do<Arca::Create<DynamicImage>>(
                 imageAsset,
                 0,
+                materialAsset,
                 Color{},
-                Arca::Index<Asset::MaterialAsset>{},
                 positions[2],
                 scalers[2]);
             WHEN("starting engine execution")
@@ -178,22 +181,22 @@ SCENARIO_METHOD(RenderTestsFixture, "rendering images")
             auto image1 = fieldReliquary.Do<Arca::Create<DynamicImage>>(
                 imageAsset,
                 0,
+                materialAsset,
                 Color{},
-                Arca::Index<Asset::MaterialAsset>{},
                 positions[0],
                 scalers[0]);
             auto image2 = fieldReliquary.Do<Arca::Create<DynamicImage>>(
                 imageAsset,
                 0,
+                materialAsset,
                 Color{},
-                Arca::Index<Asset::MaterialAsset>{},
                 positions[1],
                 scalers[1]);
             auto image3 = fieldReliquary.Do<Arca::Create<DynamicImage>>(
                 imageAsset,
                 0,
+                materialAsset,
                 Color{},
-                Arca::Index<Asset::MaterialAsset>{},
                 positions[2],
                 scalers[2]);
 
@@ -268,15 +271,15 @@ SCENARIO_METHOD(RenderTestsFixture, "rendering culled images")
         engine.Setup();
 
         auto fieldOrigin = Arca::ReliquaryOrigin();
-        RegisterFieldTypes(fieldOrigin, *engine.TheGlobalReliquary());
+        RegisterFieldTypes(fieldOrigin, *engine.nullAudioManager, *engine.nullInputManager, *engine.mockGraphicsManager);
         World::Field field(0, fieldOrigin.Actualize());
 
         auto& fieldReliquary = field.Reliquary();
 
-        Arca::Postulate<GraphicsManager*>(fieldReliquary)->Initialize(fieldReliquary, nullptr);
+        engine.mockGraphicsManager->Initialize(fieldReliquary, nullptr);
 
         auto mainSurface = Arca::Index<MainSurface>(fieldReliquary);
-        auto mainSurfaceImplementation = mainSurface->Data<MockSurfaceDataImplementation>();
+        auto mainSurfaceImplementation = mainSurface->Resource<MockSurfaceResourceImplementation>();
 
         fieldReliquary.Do<ResizeCamera>(ScreenSize(100, 100));
 
@@ -284,9 +287,12 @@ SCENARIO_METHOD(RenderTestsFixture, "rendering culled images")
         const auto cameraLeft = camera->ScreenSides().Left();
         const auto cameraTop = camera->ScreenSides().Top();
 
-        std::unique_ptr<Asset::ImageAssetData> imageData = std::make_unique<ImageAssetDataImplementation>();
-        auto imageAsset = engine.TheGlobalReliquary()->Do<Arca::Create<Asset::ImageAsset>>(
-            String{}, std::move(imageData), Asset::ImageAssetGridSize{});
+        std::unique_ptr<Asset::Resource::Image> imageResource = std::make_unique<ImageAssetResourceImplementation>();
+        auto imageAsset = fieldReliquary.Do<Arca::Create<Asset::Image>>(
+            String{}, std::move(imageResource), Asset::ImageSize{1, 1}, Asset::ImageGridSize{});
+
+        auto materialAsset = fieldReliquary.Do<Arca::Create<Asset::Material>>(
+            String{}, Asset::MaterialType::Image, Arca::Index<Asset::Shader>{}, Arca::Index<Asset::Shader>{});
 
         WHEN("creating static images and starting execution")
         {
@@ -296,22 +302,22 @@ SCENARIO_METHOD(RenderTestsFixture, "rendering culled images")
             auto image1 = fieldReliquary.Do<Arca::Create<StaticImage>>(
                 imageAsset,
                 0,
+                materialAsset,
                 Color{},
-                Arca::Index<Asset::MaterialAsset>{},
                 Position3D{},
                 Scalers2D{});
             auto image2 = fieldReliquary.Do<Arca::Create<StaticImage>>(
                 imageAsset,
                 0,
+                materialAsset,
                 Color{},
-                Arca::Index<Asset::MaterialAsset>{},
                 Position3D{ gridCellSize * -16 + halfGridCellSize, halfGridCellSize, halfGridCellSize },
                 Scalers2D{ gridCellSize, gridCellSize });
             auto image3 = fieldReliquary.Do<Arca::Create<StaticImage>>(
                 imageAsset,
                 0,
+                materialAsset,
                 Color{},
-                Arca::Index<Asset::MaterialAsset>{},
                 Position3D{ gridCellSize + halfGridCellSize, gridCellSize * 4 + halfGridCellSize, halfGridCellSize },
                 Scalers2D{ gridCellSize, gridCellSize * 16 });
 
@@ -371,16 +377,18 @@ SCENARIO_METHOD(RenderTestsFixture, "rendering lines")
         engine.Setup();
 
         auto fieldOrigin = Arca::ReliquaryOrigin();
-        RegisterFieldTypes(fieldOrigin, *engine.TheGlobalReliquary());
-        Asset::RegisterTypes(fieldOrigin);
+        RegisterFieldTypes(fieldOrigin, *engine.nullAudioManager, *engine.nullInputManager, *engine.mockGraphicsManager);
         World::Field field(0, fieldOrigin.Actualize());
 
         auto& fieldReliquary = field.Reliquary();
 
-        Arca::Postulate<GraphicsManager*>(fieldReliquary)->Initialize(fieldReliquary, nullptr);
+        engine.mockGraphicsManager->Initialize(fieldReliquary, nullptr);
 
         const auto mainSurface = Arca::Index<MainSurface>(fieldReliquary);
-        auto mainSurfaceImplementation = mainSurface->Data<MockSurfaceDataImplementation>();
+        auto mainSurfaceImplementation = mainSurface->Resource<MockSurfaceResourceImplementation>();
+
+        auto materialAsset = fieldReliquary.Do<Arca::Create<Asset::Material>>(
+            String{}, Asset::MaterialType::Image, Arca::Index<Asset::Shader>{}, Arca::Index<Asset::Shader>{});
 
         fieldReliquary.Do<ResizeCamera>(ScreenSize(
             std::numeric_limits<ScreenSize::Dimension>::max(),
@@ -429,15 +437,12 @@ SCENARIO_METHOD(RenderTestsFixture, "rendering lines")
                     dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000))
                 }
             };
-            auto line1 = fieldReliquary.Do(Arca::Create<Line>{ std::vector<Position2D>{
-                fromPositions[0],
-                toPositions[0] }});
-            auto line2 = fieldReliquary.Do(Arca::Create<Line>{ std::vector<Position2D>{
-                fromPositions[1],
-                toPositions[1] }});
-            auto line3 = fieldReliquary.Do(Arca::Create<Line>{ std::vector<Position2D>{
-                fromPositions[2],
-                toPositions[2] }});
+            auto line1 = fieldReliquary.Do(Arca::Create<Line>{
+                std::vector<Position2D>{ fromPositions[0], toPositions[0] }, materialAsset});
+            auto line2 = fieldReliquary.Do(Arca::Create<Line>{
+                std::vector<Position2D>{ fromPositions[1], toPositions[1] }, materialAsset});
+            auto line3 = fieldReliquary.Do(Arca::Create<Line>{
+                std::vector<Position2D>{ fromPositions[2], toPositions[2] }, materialAsset});
 
             WHEN("starting engine execution")
             {

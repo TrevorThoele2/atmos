@@ -20,16 +20,15 @@ public:
 protected:
     void InitializeImpl() override;
 
-    [[nodiscard]] std::unique_ptr<Asset::ImageAssetData> CreateImageDataImpl(
+    [[nodiscard]] std::unique_ptr<Asset::Resource::Image> CreateImageResourceImpl(
         const Buffer& buffer,
         const Name& name,
-        const Asset::ImageAssetSize& size,
-        const Asset::ImageAssetGridSize& gridSize) override;
-    [[nodiscard]] std::unique_ptr<Asset::ShaderAssetData> CreateShaderDataImpl(
-        const Buffer& buffer, const Name& name, const String& entryPoint) override;
-    [[nodiscard]] std::unique_ptr<SurfaceData> CreateMainSurfaceDataImpl(
+        const Asset::ImageSize& size) override;
+    [[nodiscard]] std::unique_ptr<Asset::Resource::Shader> CreateShaderResourceImpl(
+        const Buffer& buffer, const Name& name) override;
+    [[nodiscard]] std::unique_ptr<Resource::Surface> CreateMainSurfaceResourceImpl(
         void* window) override;
-    [[nodiscard]] std::unique_ptr<SurfaceData> CreateSurfaceDataImpl(
+    [[nodiscard]] std::unique_ptr<Resource::Surface> CreateSurfaceResourceImpl(
         void* window) override;
 private:
     [[nodiscard]] bool ShouldReconstructInternals() const override;

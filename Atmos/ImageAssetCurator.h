@@ -18,6 +18,7 @@ namespace Atmos::Asset
 
         Loaded<Image> Handle(const Load<Image>& command);
     private:
+        static FREE_IMAGE_FORMAT FIFFor(const String& filePath);
         static std::optional<ImageType> TypeFromFIF(FREE_IMAGE_FORMAT format);
     };
 

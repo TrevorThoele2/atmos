@@ -18,7 +18,7 @@ SCENARIO_METHOD(AssetTestsFixture, "assets")
         {
             auto name = dataGeneration.Random<String>();
 
-            auto asset = reliquary->Do(Arca::Create<AudioAsset>{name, std::unique_ptr<AudioAssetData>{}});
+            auto asset = reliquary->Do(Arca::Create<Atmos::Asset::Audio>{name, std::unique_ptr<Resource::Audio>{}});
 
             THEN("asset has name")
             {
@@ -29,13 +29,14 @@ SCENARIO_METHOD(AssetTestsFixture, "assets")
         WHEN("creating image asset with null data")
         {
             auto name = dataGeneration.Random<String>();
-            auto columns = dataGeneration.Random<ImageAsset::GridDimension>();
-            auto rows = dataGeneration.Random<ImageAsset::GridDimension>();
+            auto columns = dataGeneration.Random<ImageGridSize::Dimension>();
+            auto rows = dataGeneration.Random<ImageGridSize::Dimension>();
 
-            auto asset = reliquary->Do(Arca::Create<ImageAsset>{
+            auto asset = reliquary->Do(Arca::Create<Image>{
                 name,
-                std::unique_ptr<ImageAssetData>{},
-                ImageAssetGridSize{ columns, rows }});
+                std::unique_ptr<Resource::Image>{},
+                ImageSize{},
+                ImageGridSize{ columns, rows }});
 
             THEN("asset has name")
             {
@@ -67,10 +68,11 @@ SCENARIO_METHOD(AssetTestsFixture, "assets")
         {
             auto name = dataGeneration.Random<String>();
 
-            auto asset = reliquary->Do(Arca::Create<MaterialAsset>{
+            auto asset = reliquary->Do(Arca::Create<Material>{
                 name,
-                Arca::Index<ShaderAsset>{},
-                Arca::Index<ShaderAsset>{}});
+                MaterialType::Image,
+                Arca::Index<Shader>{},
+                Arca::Index<Shader>{}});
 
             THEN("asset has name")
             {
@@ -92,7 +94,7 @@ SCENARIO_METHOD(AssetTestsFixture, "assets")
         {
             auto name = dataGeneration.Random<String>();
 
-            auto asset = reliquary->Do(Arca::Create<ScriptAsset>{name, std::unique_ptr<ScriptAssetData>{}});
+            auto asset = reliquary->Do(Arca::Create<Script>{name, std::unique_ptr<Resource::Script>{}});
 
             THEN("asset has name")
             {
@@ -104,7 +106,7 @@ SCENARIO_METHOD(AssetTestsFixture, "assets")
         {
             auto name = dataGeneration.Random<String>();
 
-            auto asset = reliquary->Do(Arca::Create<ShaderAsset>{name, std::unique_ptr<ShaderAssetData>{}});
+            auto asset = reliquary->Do(Arca::Create<Shader>{name, std::unique_ptr<Resource::Shader>{}, ""});
 
             THEN("asset has name")
             {

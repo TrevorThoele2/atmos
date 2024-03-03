@@ -28,13 +28,13 @@
     <ClCompile Include="StopwatchTests.cpp">
       <Filter>Source Files\Tests</Filter>
     </ClCompile>
-    <ClCompile Include="MockSurfaceData.cpp">
-      <Filter>Source Files\Objects</Filter>
-    </ClCompile>
     <ClCompile Include="AssetTests.cpp">
       <Filter>Source Files\Tests</Filter>
     </ClCompile>
-    <ClCompile Include="MockImageAssetData.cpp">
+    <ClCompile Include="MockImageAssetResource.cpp">
+      <Filter>Source Files\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="MockSurfaceResource.cpp">
       <Filter>Source Files\Objects</Filter>
     </ClCompile>
   </ItemGroup>
@@ -63,13 +63,13 @@
     <ClInclude Include="StopwatchTests.h">
       <Filter>Header Files\Tests</Filter>
     </ClInclude>
-    <ClInclude Include="MockSurfaceData.h">
-      <Filter>Header Files\Objects</Filter>
-    </ClInclude>
     <ClInclude Include="AssetTests.h">
       <Filter>Header Files\Tests</Filter>
     </ClInclude>
-    <ClInclude Include="MockImageAssetData.h">
+    <ClInclude Include="MockSurfaceResource.h">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="MockImageAssetResource.h">
       <Filter>Header Files\Objects</Filter>
     </ClInclude>
   </ItemGroup>

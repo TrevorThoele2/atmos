@@ -13,8 +13,8 @@
 #include <Atmos/MainSurface.h>
 
 #include "DerivedEngine.h"
-#include "MockSurfaceData.h"
-#include "MockImageAssetData.h"
+#include "MockSurfaceResource.h"
+#include "MockImageAssetResource.h"
 
 SCENARIO_METHOD(WorldSerializationTestsFixture, "rendering after world serialization")
 {
@@ -24,12 +24,12 @@ SCENARIO_METHOD(WorldSerializationTestsFixture, "rendering after world serializa
         engine.Setup();
 
         auto fieldOrigin = Arca::ReliquaryOrigin();
-        RegisterFieldTypes(fieldOrigin, *engine.TheGlobalReliquary());
+        RegisterFieldTypes(fieldOrigin, *engine.nullAudioManager, *engine.nullInputManager, *engine.mockGraphicsManager);
         World::Field field(0, fieldOrigin.Actualize());
 
         auto& fieldReliquary = field.Reliquary();
 
-        Arca::Postulate<GraphicsManager*>(fieldReliquary)->Initialize(fieldReliquary, nullptr);
+        engine.mockGraphicsManager->Initialize(fieldReliquary, nullptr);
 
         fieldReliquary.Do<ResizeCamera>(ScreenSize(
             std::numeric_limits<ScreenSize::Dimension>::max(),
@@ -39,9 +39,12 @@ SCENARIO_METHOD(WorldSerializationTestsFixture, "rendering after world serializa
         const auto cameraLeft = camera->ScreenSides().Left();
         const auto cameraTop = camera->ScreenSides().Top();
 
-        std::unique_ptr<Asset::ImageAssetData> imageData = std::make_unique<ImageAssetDataImplementation>();
-        auto imageAsset = engine.TheGlobalReliquary()->Do<Arca::Create<Asset::ImageAsset>>(
-            String{}, std::move(imageData), Asset::ImageAssetGridSize{});
+        std::unique_ptr<Asset::Resource::Image> imageResource = std::make_unique<ImageAssetResourceImplementation>();
+        auto imageAsset = fieldReliquary.Do<Arca::Create<Asset::Image>>(
+            "Pixel.png", std::move(imageResource), Asset::ImageSize{1, 1}, Asset::ImageGridSize{});
+
+        auto materialAsset = fieldReliquary.Do<Arca::Create<Asset::Material>>(
+            String{}, Asset::MaterialType::Image, Arca::Index<Asset::Shader>{}, Arca::Index<Asset::Shader>{});
 
         WHEN("creating static images and loading through world file then starting execution")
         {
@@ -90,22 +93,22 @@ SCENARIO_METHOD(WorldSerializationTestsFixture, "rendering after world serializa
             fields[0].Reliquary().Do<Arca::Create<StaticImage>>(
                 imageAsset,
                 0,
+                materialAsset,
                 Color{},
-                Arca::Index<Asset::MaterialAsset>{},
                 positions[0],
                 scalers[0]);
             fields[0].Reliquary().Do<Arca::Create<StaticImage>>(
                 imageAsset,
                 0,
+                materialAsset,
                 Color{},
-                Arca::Index<Asset::MaterialAsset>{},
                 positions[1],
                 scalers[1]);
             fields[0].Reliquary().Do<Arca::Create<StaticImage>>(
                 imageAsset,
                 0,
+                materialAsset,
                 Color{},
-                Arca::Index<Asset::MaterialAsset>{},
                 positions[2],
                 scalers[2]);
 
@@ -119,14 +122,14 @@ SCENARIO_METHOD(WorldSerializationTestsFixture, "rendering after world serializa
             engine.LoadWorld(filePath);
 
             auto& loadedFieldReliquary = engine.CurrentField()->Reliquary();
-            Arca::Postulate<GraphicsManager*>(loadedFieldReliquary)->Initialize(loadedFieldReliquary, nullptr);
+            engine.mockGraphicsManager->Initialize(loadedFieldReliquary, nullptr);
 
             engine.StartExecution();
 
             THEN("all images rendered in graphics manager")
             {
                 auto mainSurface = Arca::Index<MainSurface>(loadedFieldReliquary);
-                auto mainSurfaceImplementation = mainSurface->Data<MockSurfaceDataImplementation>();
+                auto mainSurfaceImplementation = mainSurface->Resource<MockSurfaceResourceImplementation>();
 
                 auto& imageRenders = mainSurfaceImplementation->imageRenders;
                 REQUIRE(imageRenders.size() == 3);

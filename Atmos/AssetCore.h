@@ -29,6 +29,9 @@ namespace Inscription
 {
     template<>
     class Scribe<Atmos::Asset::Core, BinaryArchive> final :
-        public ArcaNullScribe<Atmos::Asset::Core, BinaryArchive>
-    {};
+        public ArcaCompositeScribe<Atmos::Asset::Core, BinaryArchive>
+    {
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
+    };
 }
