@@ -17,7 +17,7 @@ namespace Atmos::Scripting::Angel
 
     Arca::Index<Script> Registration<CurrentScript>::Retrieve(Arca::Reliquary* reliquary)
     {
-        const auto currentExecutingScript = Arca::Index<CurrentExecutingScript>(reliquary);
-        return Arca::Index<Script>(currentExecutingScript->id, reliquary);
+        const auto currentExecutingScript = reliquary->Find<CurrentExecutingScript>();
+        return reliquary->Find<Script>(currentExecutingScript->id);
     }
 }

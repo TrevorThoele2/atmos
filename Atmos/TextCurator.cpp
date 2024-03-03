@@ -83,7 +83,7 @@ namespace Atmos::Render
             const auto rotation = bounds.Rotation();
             const auto color = renderCore.color;
 
-            const auto viewSlice = Arca::Index<ViewSlice>(id, Owner());
+            const auto viewSlice = Owner().Find<ViewSlice>(id);
             const auto [size, slice] = ViewSliceDependent(viewSlice, baseSize, bounds.Size(), bounds.Scalers());
 
             const TextRender render
@@ -123,7 +123,7 @@ namespace Atmos::Render
 
     void TextCurator::CalculateForText(Arca::RelicID id)
     {
-        const auto text = Arca::Index<Matrix>(id, Owner());
+        const auto text = Owner().Find<Matrix>(id);
         if (text)
         {
             const auto tuple = *text;

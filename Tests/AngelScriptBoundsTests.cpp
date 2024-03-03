@@ -431,7 +431,7 @@ SCENARIO_METHOD(AngelScriptBoundsTestsFixture, "running bounds AngelScript scrip
                 REQUIRE(finishes.size() == 1);
 
                 const auto result = std::get<Arca::RelicID>(std::get<Variant>(finishes[0].result));
-                REQUIRE(Arca::Index<Spatial::Bounds>(result, fieldReliquary));
+                REQUIRE(fieldReliquary->Find<Spatial::Bounds>(result));
             }
         }
     }
@@ -462,7 +462,7 @@ SCENARIO_METHOD(AngelScriptBoundsTestsFixture, "running bounds AngelScript scrip
                 REQUIRE(finishes.size() == 1);
 
                 const auto result = std::get<Arca::RelicID>(std::get<Variant>(finishes[0].result));
-                REQUIRE(Arca::Index<Spatial::Bounds>(result, fieldReliquary));
+                REQUIRE(fieldReliquary->Find<Spatial::Bounds>(result));
             }
         }
     }

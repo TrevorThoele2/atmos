@@ -23,8 +23,8 @@ namespace Atmos::Audio
         for (auto sound = positionedBatch.begin(); sound != positionedBatch.end(); ++sound)
         {
             const auto id = sound.ID();
-            const auto bounds = Arca::Index<Spatial::Bounds>(id, Owner());
-            const auto position = Spatial::ToPoint2D(bounds->Position());
+            const auto bounds = Owner().Find<Spatial::Bounds>(id);
+            const auto position = ToPoint2D(bounds->Position());
             const auto mutableSound = MutablePointer().Of<SoundCore>(id);
             mutableSound->resource->SetPosition(position);
         }
@@ -36,7 +36,7 @@ namespace Atmos::Audio
         const auto soundCoreBatch = Owner().Batch<SoundCore>();
         for (auto sound = soundCoreBatch.begin(); sound != soundCoreBatch.end(); ++sound)
         {
-            const auto soundCore = Arca::Index<SoundCore>(sound.ID(), Owner()).Get();
+            const auto soundCore = Owner().Find<SoundCore>(sound.ID()).Get();
             const auto resource = soundCore ? soundCore->resource.get() : nullptr;
             if (doneResourcesSet.find(resource) != doneResourcesSet.end())
                 Owner().Raise(SoundFinished{ sound.ID() });

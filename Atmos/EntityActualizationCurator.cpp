@@ -42,7 +42,7 @@ namespace Atmos::Entity
 
         for (auto& currentToConstruct : toConstruct)
         {
-            currentActualizing->entity = Arca::Index<Entity>(currentToConstruct.id, Owner());
+            currentActualizing->entity = Owner().Find<Entity>(currentToConstruct.id);
             Owner().Do(Scripting::Execute{ currentToConstruct.constructor });
         }
 

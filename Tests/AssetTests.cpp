@@ -25,7 +25,7 @@ SCENARIO_METHOD(AssetTestsFixture, "assets", "[asset]")
 
             auto asset = reliquary->Do(Arca::Create<Atmos::Asset::Audio>{name, std::unique_ptr<Resource::Audio>{}});
 
-            auto mappedAssets = Arca::Index<Atmos::Asset::Mapped<Atmos::Asset::Audio>>(*reliquary);
+            auto mappedAssets = reliquary->Find<Atmos::Asset::Mapped<Atmos::Asset::Audio>>();
 
             THEN("asset has name")
             {
@@ -66,7 +66,7 @@ SCENARIO_METHOD(AssetTestsFixture, "assets", "[asset]")
                 std::unique_ptr<Resource::Image>{},
                 ImageGridSize{ columns, rows }});
 
-            auto mappedAssets = Arca::Index<Atmos::Asset::Mapped<Atmos::Asset::Image>>(*reliquary);
+            auto mappedAssets = reliquary->Find<Atmos::Asset::Mapped<Atmos::Asset::Image>>();
 
             THEN("asset has name")
             {
@@ -128,7 +128,7 @@ SCENARIO_METHOD(AssetTestsFixture, "assets", "[asset]")
                 name,
                 std::vector<Material::Pass>{}});
 
-            auto mappedAssets = Arca::Index<Atmos::Asset::Mapped<Atmos::Asset::Material>>(*reliquary);
+            auto mappedAssets = reliquary->Find<Atmos::Asset::Mapped<Atmos::Asset::Material>>();
 
             THEN("asset has name")
             {
@@ -172,7 +172,7 @@ SCENARIO_METHOD(AssetTestsFixture, "assets", "[asset]")
 
             auto asset = reliquary->Do(Arca::Create<Atmos::Asset::Script>{name, std::unique_ptr<Resource::Script>{}});
 
-            auto mappedAssets = Arca::Index<Atmos::Asset::Mapped<Atmos::Asset::Script>>(*reliquary);
+            auto mappedAssets = reliquary->Find<Atmos::Asset::Mapped<Atmos::Asset::Script>>();
 
             THEN("asset has name")
             {
@@ -211,7 +211,7 @@ SCENARIO_METHOD(AssetTestsFixture, "assets", "[asset]")
 
             auto asset = reliquary->Do(Arca::Create<Shader>{name, std::unique_ptr<Resource::Shader>{}});
 
-            auto mappedAssets = Arca::Index<Atmos::Asset::Mapped<Atmos::Asset::Shader>>(*reliquary);
+            auto mappedAssets = reliquary->Find<Atmos::Asset::Mapped<Atmos::Asset::Shader>>();
 
             THEN("asset has name")
             {

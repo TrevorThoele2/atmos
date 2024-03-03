@@ -59,7 +59,7 @@ SCENARIO_METHOD(ScriptTestsFixture, "script tests", "[script]")
 
             THEN("destroys script")
             {
-                auto checkScript = Arca::Index<Scripting::Script>(script.ID(), fieldReliquary);
+                auto checkScript = fieldReliquary.Find<Scripting::Script>(script.ID());
                 REQUIRE(!checkScript);
             }
         }

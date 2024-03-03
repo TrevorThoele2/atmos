@@ -281,7 +281,7 @@ namespace Atmos::Input
         const auto actions = Owner().Batch<Asset::Action>();
         for(auto action = actions.begin(); action != actions.end(); ++action)
         {
-            const auto actionIndex = Arca::Index<Asset::Action>{ action.ID(), Owner() };
+            const auto actionIndex = Owner().Find<Asset::Action>(action.ID());
 
             const auto [isActive, actionDelta] =
                 CurrentActionState(action->Name(), action->boundKey, action->boundModifiers, keyStates.current);

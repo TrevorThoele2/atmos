@@ -1203,7 +1203,7 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
 
     GIVEN("Camera")
     {
-        auto camera = Arca::Index<Camera>(fieldReliquary);
+        auto camera = fieldReliquary->Find<Camera>();
 
         GIVEN("position")
         {
@@ -1345,7 +1345,7 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                 REQUIRE(finishes.size() == 1);
 
                 const auto result = std::get<Arca::RelicID>(std::get<Variant>(finishes[0].result));
-                REQUIRE(Arca::Index<ImageCore>(result, fieldReliquary));
+                REQUIRE(fieldReliquary->Find<ImageCore>(result));
             }
         }
     }
@@ -1374,7 +1374,7 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                 REQUIRE(finishes.size() == 1);
 
                 const auto result = std::get<Arca::RelicID>(std::get<Variant>(finishes[0].result));
-                REQUIRE(Arca::Index<ImageCore>(result, fieldReliquary));
+                REQUIRE(fieldReliquary->Find<ImageCore>(result));
             }
         }
     }

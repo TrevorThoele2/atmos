@@ -9,12 +9,12 @@ namespace Atmos::Scripting
         Arca::Curator(init),
         manager(&manager)
     {
-        this->manager->SetReliquary(Owner());
+        this->manager->SetReliquary(&Owner());
 
         Owner().On<Arca::DestroyingKnown<Script>>(
             [this](const Arca::DestroyingKnown<Script>& signal)
             {
-                const auto currentExecutingScript = Arca::Index<CurrentExecutingScript>(Owner())->id;
+                const auto currentExecutingScript = Owner().Find<CurrentExecutingScript>()->id;
                 if (currentExecutingScript != signal.index.ID())
                     Owner().Raise(Finished{ signal.index, Quit{} });
             });
@@ -100,7 +100,7 @@ namespace Atmos::Scripting
 
         if (result)
         {
-            Owner().Raise(Finished{ Arca::Index<Script>(id, Owner()), *result });
+            Owner().Raise(Finished{ Owner().Find<Script>(id), *result });
             Owner().Do(Arca::Destroy<Script>(id));
         }
 

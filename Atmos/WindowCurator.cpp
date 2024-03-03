@@ -9,7 +9,7 @@
 
 namespace Atmos::Window
 {
-    Curator::Curator(Init init) : Arca::Curator(init), information(init.owner)
+    Curator::Curator(Init init) : Arca::Curator(init), information(init.owner.Find<Information>())
     {}
 
     void Curator::Handle(const ChangeSize& command)
@@ -22,7 +22,7 @@ namespace Atmos::Window
     {
         information->window->ChangeSize(size);
 
-        const auto camera = Arca::Index<Render::Camera>(Owner());
+        const auto camera = Owner().Find<Render::Camera>();
         Owner().Do(Spatial::ScaleBounds{
             camera.ID(),
             Spatial::Scalers2D

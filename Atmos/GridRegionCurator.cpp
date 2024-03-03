@@ -36,7 +36,7 @@ namespace Atmos::Render
                     object.z = *command.z;
 
                 const auto newBox = BoxFor(object);
-                const Arca::Index<GridRegion> index(command.id, Owner());
+                const auto index = Owner().Find<GridRegion>(command.id);
                 octree.Move(command.id, index, oldBox, newBox);
             });
     }

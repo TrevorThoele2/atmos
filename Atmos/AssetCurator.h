@@ -39,7 +39,7 @@ namespace Atmos::Asset
     };
 
     template<class T>
-    Curator<T>::Curator(Init init) : Arca::Curator(init), mappedAssets(init.owner)
+    Curator<T>::Curator(Init init) : Arca::Curator(init), mappedAssets(init.owner.Find<Mapped<T>>())
     {
         init.owner.On<Arca::CreatedKnown<T>>(
             [this](const Arca::CreatedKnown<T>& signal)
@@ -80,7 +80,7 @@ namespace Atmos::Asset
         for (auto asset = batch.begin(); asset != batch.end(); ++asset)
         {
             const auto name = asset->Name();
-            mutableMappedAssets->map.emplace(name, Arca::Index<T>(asset.ID(), Owner()));
+            mutableMappedAssets->map.emplace(name, Owner().Find<T>(asset.ID()));
         }
     }
 

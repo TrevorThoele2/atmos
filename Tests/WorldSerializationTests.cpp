@@ -43,7 +43,7 @@ SCENARIO_METHOD(WorldSerializationTestsFixture, "rendering after world serializa
 
         auto& fieldReliquary = field.Reliquary();
 
-        const auto camera = Arca::Index<Camera>(fieldReliquary);
+        const auto camera = fieldReliquary.Find<Camera>();
 
         const auto cameraLeft = camera->Sides().Left();
         const auto cameraTop = camera->Sides().Top();
@@ -165,7 +165,7 @@ SCENARIO_METHOD(WorldSerializationTestsFixture, "rendering after world serializa
 
             THEN("all images rendered in graphics manager")
             {
-                auto mainSurface = Arca::Index<MainSurface>(loadedFieldReliquary);
+                auto mainSurface = loadedFieldReliquary.Find<MainSurface>();
                 auto mainSurfaceImplementation = mainSurface->Resource<MockSurfaceResource>();
 
                 auto& imageRenders = mainSurfaceImplementation->imageRenders;

@@ -3,7 +3,7 @@
 namespace Atmos::Render
 {
     ObjectCurator::ObjectCurator(Init init) :
-        Curator(init), camera(init.owner), mainSurface(init.owner)
+        Curator(init), camera(init.owner.Find<Camera>()), mainSurface(init.owner.Find<MainSurface>())
     {}
 
     ObjectCurator::~ObjectCurator() = default;

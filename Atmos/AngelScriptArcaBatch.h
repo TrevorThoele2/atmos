@@ -68,7 +68,7 @@ namespace Atmos::Scripting::Angel
         returnValue.reserve(batch.Size());
 
         for (auto element = batch.begin(); element != batch.end(); ++element)
-            returnValue.push_back({ element.ID(), reliquary });
+            returnValue.push_back(reliquary->Find<T>(element.ID()));
 
         return returnValue;
     }

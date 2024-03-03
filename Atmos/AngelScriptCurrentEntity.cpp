@@ -17,7 +17,7 @@ namespace Atmos::Scripting::Angel
 
     Arca::Index<Entity::Entity> Registration<CurrentEntity>::Retrieve(Arca::Reliquary* reliquary)
     {
-        const auto currentActualizingEntity = Arca::Index<Entity::CurrentActualizing>(reliquary);
+        const auto currentActualizingEntity = reliquary->Find<Entity::CurrentActualizing>();
         return currentActualizingEntity->entity;
     }
 }

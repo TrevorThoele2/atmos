@@ -8,9 +8,9 @@ namespace Atmos::Scripting::Angel
     {
         Arca::Index<Script> RetrieveCurrentExecuting(Arca::Reliquary& reliquary)
         {
-            const auto currentRunning = Arca::Index<CurrentExecutingScript>(reliquary);
+            const auto currentRunning = reliquary.Find<CurrentExecutingScript>();
             return currentRunning
-                ? Arca::Index<Script>(currentRunning->id, reliquary)
+                ? reliquary.Find<Script>(currentRunning->id)
                 : Arca::Index<Script>{};
         }
     }

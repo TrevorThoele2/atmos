@@ -31,12 +31,13 @@ namespace Atmos::Scripting::Angel
         VerifyResult(engine->ShutDownAndRelease(), {});
     }
 
-    void Manager::SetReliquary(Arca::Reliquary& reliquary)
+    void Manager::SetReliquary(Arca::Reliquary* reliquary)
     {
-        this->reliquary = &reliquary;
-        userData.reliquary = &reliquary;
-        for (auto& signalToRegister : userData.signalsToRegister)
-            signalToRegister(*engine, reliquary);
+        this->reliquary = reliquary;
+        userData.reliquary = reliquary;
+        if (reliquary)
+            for (auto& signalToRegister : userData.signalsToRegister)
+                signalToRegister(*engine, *reliquary);
     }
 
     std::unique_ptr<Asset::Resource::Script> Manager::CreateAssetResource(

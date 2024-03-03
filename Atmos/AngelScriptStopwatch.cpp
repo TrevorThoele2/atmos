@@ -43,7 +43,7 @@ namespace Atmos::Scripting::Angel
 
     Time::Stopwatch Registration<Time::Stopwatch>::CreateFrameStopwatch(Arca::Reliquary* reliquary)
     {
-        const auto frameInformation = Arca::Index<Frame::Information>(reliquary);
+        const auto frameInformation = reliquary->Find<Frame::Information>();
         return Time::CreateFrameStopwatch(*frameInformation);
     }
 }

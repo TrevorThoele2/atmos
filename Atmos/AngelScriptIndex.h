@@ -29,12 +29,18 @@ namespace Atmos::Scripting::Angel
     {
         using Management = typename Registration<Arca::Index<T>>::Management;
 
+        const auto constructor = [](asIScriptGeneric* generic)
+        {
+            auto id = PullFromParameter<0, Arca::RelicID>(*generic);
+            auto reliquary = UserData::RequiredReliquaryFrom(*generic);
+            auto value = reliquary->Find<T>(id);
+            new (generic->GetObject()) Arca::Index<T>{value};
+        };
+
         RegisterArcaIndexCommon(registration);
         registration
             .DefaultConstructor(&Management::GenerateDefaultValue)
-            .Constructor(
-                &Management::template GenerateValue<&PullFromParameter<0, Arca::RelicID>, &UserData::RequiredReliquaryFrom>,
-                { "Arca::RelicID id" });
+            .Constructor(constructor, { "Arca::RelicID id" });
     }
 
     template<class T, std::enable_if_t<Arca::is_global_v<T>, int> = 0>
@@ -42,9 +48,15 @@ namespace Atmos::Scripting::Angel
     {
         using Management = typename Registration<Arca::Index<T>>::Management;
 
+        const auto defaultConstructor = [](asIScriptGeneric* generic)
+        {
+            auto reliquary = UserData::RequiredReliquaryFrom(*generic);
+            auto value = reliquary->Find<T>();
+            new (generic->GetObject()) Arca::Index<T>{value};
+        };
+
         RegisterArcaIndexCommon(registration);
-        registration
-            .DefaultConstructor(&Management::template GenerateValue<&UserData::RequiredReliquaryFrom>);
+        registration.DefaultConstructor(defaultConstructor);
     }
 
     template<class ArcaT>

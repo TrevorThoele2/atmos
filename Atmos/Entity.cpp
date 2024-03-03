@@ -34,7 +34,7 @@ namespace Arca
         const Atmos::Spatial::Grid::Point& position,
         bool isSolid)
     {
-        const auto mappedEntities = Arca::Index<Atmos::Entity::Mapped>(reliquary);
+        const auto mappedEntities = reliquary.Find<Atmos::Entity::Mapped>();
         if (mappedEntities->nameToEntity.find(name) != mappedEntities->nameToEntity.end())
             return false;
 
