@@ -7,6 +7,7 @@
 
 #include "StaticImage.h"
 #include "DynamicImage.h"
+#include "RelativeImage.h"
 #include "ImageCurator.h"
 #include "LineCurator.h"
 #include "GridRegion.h"
@@ -29,6 +30,11 @@
 #include "MaterialAssetCurator.h"
 #include "ScriptAssetCurator.h"
 #include "ShaderAssetCurator.h"
+
+#include "Entity.h"
+#include "EntityCurator.h"
+#include "EntityPrototype.h"
+#include "MappedEntities.h"
 
 #include "TimeSettings.h"
 #include "FrameStopwatch.h"
@@ -59,6 +65,7 @@ namespace Atmos
         Asset::RegisterTypes(origin);
         Spatial::RegisterTypes(origin);
         Time::RegisterTypes(origin);
+        Logging::RegisterTypes(origin);
         Debug::RegisterTypes(origin);
     }
 
@@ -78,6 +85,7 @@ namespace Atmos
                 .Register<ImageCore>()
                 .Register<StaticImage>()
                 .Register<DynamicImage>()
+                .Register<RelativeImage>()
                 .Register<ImageCurator>()
                 .Register<Line>()
                 .Register<LineCurator>()
@@ -154,6 +162,18 @@ namespace Atmos
                 .Register<MaterialCurator>()
                 .Register<ScriptCurator>()
                 .Register<ShaderCurator>();
+        }
+    }
+
+    namespace Entity
+    {
+        void RegisterTypes(Arca::ReliquaryOrigin& origin)
+        {
+            origin
+                .Register<Entity>()
+                .Register<Curator>()
+                .Register<Prototype>()
+                .Register<MappedEntities>();
         }
     }
 

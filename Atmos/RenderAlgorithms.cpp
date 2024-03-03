@@ -2,7 +2,7 @@
 
 #include <map>
 
-#include "Point2DAlgorithms.h"
+#include "SpatialAlgorithms.h"
 #include "MathUtility.h"
 
 #include "GridCellSize.h"

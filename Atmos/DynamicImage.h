@@ -2,7 +2,8 @@
 
 #include "Image.h"
 
-#include "Direction.h"
+#include "Angle2D.h"
+#include "Angle3D.h"
 
 namespace Atmos::Render
 {
@@ -11,9 +12,9 @@ namespace Atmos::Render
     public:
         void MoveTo(const Spatial::Point3D& to) const;
         void MoveBy(const Spatial::Point3D& by) const;
-        void MoveDirection(const Spatial::Direction& direction, Spatial::Point3D::Value amount) const;
+        void MoveDirection(const Spatial::Angle3D& direction, Spatial::Point3D::Value amount) const;
         void Scalers(const Spatial::Scalers2D& to) const;
-        void Rotation(const Spatial::Angle& to) const;
+        void Rotation(const Spatial::Angle2D& to) const;
     public:
         DynamicImage(
             Init init,
@@ -23,7 +24,7 @@ namespace Atmos::Render
             const Render::Color& color,
             const Spatial::Point3D& position,
             const Spatial::Scalers2D& scalers,
-            const Spatial::Angle& rotation);
+            const Spatial::Angle2D& rotation);
         DynamicImage(Init init, Arca::Serialization serialization);
     private:
         INSCRIPTION_ACCESS;

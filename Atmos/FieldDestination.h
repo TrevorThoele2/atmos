@@ -2,7 +2,7 @@
 
 #include "FieldID.h"
 #include "GridPoint.h"
-#include "Direction.h"
+#include "Angle2D.h"
 
 #include "Serialization.h"
 
@@ -10,7 +10,7 @@ namespace Atmos::World
 {
     struct FieldDestination
     {
-        Spatial::Direction direction;
+        Spatial::Angle2D direction;
         Spatial::Grid::Point position;
         FieldID id;
     };

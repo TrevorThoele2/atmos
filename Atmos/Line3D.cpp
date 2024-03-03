@@ -30,7 +30,7 @@ namespace Atmos::Spatial
             std::pow(second.z - first.z, 2));
     }
 
-    Angle Line3D::Angle(const Line3D& other) const
+    Angle2D Line3D::Angle(const Line3D& other) const
     {
         // Angle = arccos(dot product / (magnitude1 * magnitude2))
         return std::acos(Dot(other) / ( Length() * other.Length()));

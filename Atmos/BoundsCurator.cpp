@@ -4,6 +4,8 @@
 #include "BoundsScaled.h"
 #include "BoundsRotated.h"
 
+#include "SpatialAlgorithms.h"
+
 namespace Atmos::Spatial
 {
     BoundsCurator::BoundsCurator(Init init) : Curator(init)
@@ -38,12 +40,7 @@ namespace Atmos::Spatial
             [this, command](Bounds& bounds)
             {
                 const auto fromPosition = bounds.Position();
-                const auto toPosition = Point3D
-                {
-                    fromPosition.x + command.delta.x,
-                    fromPosition.y + command.delta.y,
-                    fromPosition.z + command.delta.z
-                };
+                const auto toPosition = fromPosition + command.delta;
 
                 DoMovement(bounds, toPosition, command.id);
             });
@@ -56,30 +53,7 @@ namespace Atmos::Spatial
             [this, command](Bounds& bounds)
             {
                 const auto fromPosition = bounds.Position();
-                auto toPosition = fromPosition;
-                switch (command.direction.Get())
-                {
-                case Direction::Left:
-                    toPosition.x -= command.amount;
-                    break;
-                case Direction::Up:
-                    toPosition.y -= command.amount;
-                    break;
-                case Direction::ZFarther:
-                    toPosition.z -= command.amount;
-                    break;
-                case Direction::Right:
-                    toPosition.x += command.amount;
-                    break;
-                case Direction::Down:
-                    toPosition.y += command.amount;
-                    break;
-                case Direction::ZNearer:
-                    toPosition.z += command.amount;
-                    break;
-                default:
-                    break;
-                }
+                const auto toPosition = fromPosition + ToPoint3D(command.direction, command.amount);
 
                 DoMovement(bounds, toPosition, command.id);
             });
@@ -125,7 +99,7 @@ namespace Atmos::Spatial
         Owner().Raise(BoundsScaled(Arca::Index<Bounds>(id, Owner())));
     }
 
-    void BoundsCurator::DoRotation(Bounds& bounds, const Angle& to, Arca::RelicID id)
+    void BoundsCurator::DoRotation(Bounds& bounds, const Angle2D& to, Arca::RelicID id)
     {
         bounds.Rotation(to);
 

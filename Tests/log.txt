@@ -1,0 +1,48 @@
+<14/07/2020> (06:58:49) <WARNING> Relics with Atmos::Spatial::RelativeBounds must be parented.
+        RelicID: 1
+<14/07/2020> (06:58:49) <WARNING> Relics with Atmos::Spatial::RelativeBounds must be parented.
+        RelicID: 1
+<14/07/2020> (06:58:49) <WARNING> Relics with Atmos::Spatial::RelativeBounds must be parented.
+        RelicID: 1
+<14/07/2020> (06:58:49) <WARNING> Relics with Atmos::Spatial::RelativeBounds must be parented.
+        RelicID: 1
+<14/07/2020> (06:58:49) <WARNING> Relics with Atmos::Spatial::RelativeBounds must be parented.
+        RelicID: 1
+<14/07/2020> (06:58:49) <WARNING> Relics with Atmos::Spatial::RelativeBounds must be parented.
+        RelicID: 1
+<14/07/2020> (06:58:49) <WARNING> Relics with Atmos::Spatial::RelativeBounds must be parented.
+        RelicID: 1
+<14/07/2020> (06:58:49) <WARNING> Relics with Atmos::Spatial::RelativeBounds must be parented.
+        RelicID: 1
+<14/07/2020> (06:58:49) <WARNING> Relics with Atmos::Spatial::RelativeBounds must be parented.
+        RelicID: 1
+<14/07/2020> (06:58:49) <WARNING> Relics with Atmos::Spatial::RelativeBounds must be parented.
+        RelicID: 1
+<14/07/2020> (06:58:49) <WARNING> Relics with Atmos::Spatial::RelativeBounds must be parented.
+        RelicID: 1
+<14/07/2020> (06:58:49) <WARNING> Relics with Atmos::Spatial::RelativeBounds must be parented.
+        RelicID: 1
+<14/07/2020> (06:58:49) <WARNING> Relic parents of Atmos::Spatial::RelativeBounds must have a Bounds.
+        RelicID: 2
+<14/07/2020> (06:58:49) <WARNING> Relic parents of Atmos::Spatial::RelativeBounds must have a Bounds.
+        RelicID: 2
+<14/07/2020> (06:58:49) <WARNING> Relic parents of Atmos::Spatial::RelativeBounds must have a Bounds.
+        RelicID: 2
+<14/07/2020> (06:58:49) <WARNING> Relic parents of Atmos::Spatial::RelativeBounds must have a Bounds.
+        RelicID: 2
+<14/07/2020> (06:58:49) <WARNING> Relic parents of Atmos::Spatial::RelativeBounds must have a Bounds.
+        RelicID: 2
+<14/07/2020> (06:58:49) <WARNING> Relic parents of Atmos::Spatial::RelativeBounds must have a Bounds.
+        RelicID: 2
+<14/07/2020> (06:58:49) <WARNING> Relic parents of Atmos::Spatial::RelativeBounds must have a Bounds.
+        RelicID: 2
+<14/07/2020> (06:58:49) <WARNING> Relic parents of Atmos::Spatial::RelativeBounds must have a Bounds.
+        RelicID: 2
+<14/07/2020> (06:58:49) <WARNING> Relic parents of Atmos::Spatial::RelativeBounds must have a Bounds.
+        RelicID: 2
+<14/07/2020> (06:58:49) <WARNING> Relic parents of Atmos::Spatial::RelativeBounds must have a Bounds.
+        RelicID: 2
+<14/07/2020> (06:58:49) <WARNING> Relic parents of Atmos::Spatial::RelativeBounds must have a Bounds.
+        RelicID: 2
+<14/07/2020> (06:58:49) <WARNING> Relic parents of Atmos::Spatial::RelativeBounds must have a Bounds.
+        RelicID: 2

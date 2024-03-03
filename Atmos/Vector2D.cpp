@@ -23,9 +23,9 @@ namespace Atmos::Spatial
         return std::sqrt(std::pow(x, 2) + std::pow(y, 2));
     }
 
-    Angle Vector2D::Angle(const Vector2D& other) const
+    Angle2D Vector2D::Angle(const Vector2D& other) const
     {
-        return Spatial::Angle(std::atan2(y, x));
+        return Spatial::Angle2D(std::atan2(y, x));
     }
 
     Vector2D::Value Vector2D::Dot(const Vector2D& other) const

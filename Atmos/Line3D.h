@@ -3,7 +3,7 @@
 #include <optional>
 
 #include "Point3D.h"
-#include "Angle.h"
+#include "Angle2D.h"
 #include "Vector3D.h"
 
 namespace Atmos::Spatial
@@ -18,7 +18,7 @@ namespace Atmos::Spatial
         explicit operator Vector3D() const;
 
         [[nodiscard]] Point3D::Value Length() const;
-        [[nodiscard]] Angle Angle(const Line3D& other) const;
+        [[nodiscard]] Angle2D Angle(const Line3D& other) const;
         [[nodiscard]] Point3D::Value Dot(const Line3D& other) const;
         [[nodiscard]] Vector3D Cross(const Line3D& other) const;
         [[nodiscard]] Line3D TranslateToOrigin() const;

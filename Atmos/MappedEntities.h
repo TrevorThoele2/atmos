@@ -8,12 +8,14 @@ namespace Atmos::Entity
     class MappedEntities final : public Arca::ClosedTypedRelic<MappedEntities>
     {
     public:
-        [[nodiscard]] Entity* EntityWithName(const String& name);
+        using NameToEntity = std::unordered_map<String, Arca::Index<Entity>>;
+        NameToEntity nameToEntity;
 
-        [[nodiscard]] size_t Size() const;
-    private:
-        using Map = std::unordered_map<String, Entity*>;
-        Map map;
+        using PositionToEntity = std::unordered_map<Spatial::Grid::Point, Arca::Index<Entity>>;
+        PositionToEntity positionToEntity;
+
+        explicit MappedEntities(Init init);
+        explicit MappedEntities(MappedEntities&& arg) = default;
     };
 }
 
@@ -31,7 +33,7 @@ namespace Arca
 namespace Inscription
 {
     template<>
-    class Scribe<Atmos::Entity::MappedEntities, BinaryArchive> final
-        : public ArcaNullScribe<Atmos::Entity::MappedEntities, BinaryArchive>
+    class Scribe<Atmos::Entity::MappedEntities, BinaryArchive> final :
+        public ArcaNullScribe<Atmos::Entity::MappedEntities, BinaryArchive>
     {};
 }

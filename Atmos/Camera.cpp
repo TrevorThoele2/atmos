@@ -5,7 +5,7 @@
 #include "MoveBoundsDirection.h"
 #include "ScaleBounds.h"
 
-#include "PointConversions.h"
+#include "SpatialAlgorithms.h"
 
 namespace Atmos::Render
 {
@@ -19,7 +19,7 @@ namespace Atmos::Render
         Owner().Do<Spatial::MoveBoundsBy>(ID(), by);
     }
 
-    void Camera::MoveDirection(const Spatial::Direction& direction, Spatial::Point3D::Value amount) const
+    void Camera::MoveDirection(const Spatial::Angle3D& direction, Spatial::Point3D::Value amount) const
     {
         Owner().Do<Spatial::MoveBoundsDirection>(ID(), direction, amount);
     }
@@ -60,7 +60,7 @@ namespace Atmos::Render
             Spatial::Point3D{},
             Spatial::Size2D{1, 1},
             Spatial::Scalers2D{1, 1},
-            Spatial::Angle{}))
+            Spatial::Angle2D{}))
     {}
 
     Camera::Camera(Init init, Arca::Serialization) :

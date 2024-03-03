@@ -2,5 +2,5 @@
 
 namespace Atmos::Spatial
 {
-    using Angle = float;
+    using Angle2D = float;
 }

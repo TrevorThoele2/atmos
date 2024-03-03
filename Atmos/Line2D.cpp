@@ -37,12 +37,12 @@ namespace Atmos::Spatial
         return std::sqrt(std::pow(second.x - first.x, 2) + std::pow(second.y - first.y, 2));
     }
 
-    Spatial::Angle Line2D::Angle() const
+    Spatial::Angle2D Line2D::Angle() const
     {
-        return Spatial::Angle(std::atan2(DeltaY(), DeltaX()));
+        return Spatial::Angle2D(std::atan2(DeltaY(), DeltaX()));
     }
 
-    Spatial::Angle Line2D::Angle(const Line2D& other) const
+    Spatial::Angle2D Line2D::Angle(const Line2D& other) const
     {
         return other.Angle() - Angle();
     }

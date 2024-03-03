@@ -3,7 +3,7 @@
 #include <Arca/ClosedTypedRelic.h>
 
 #include "Bounds.h"
-#include "Direction.h"
+#include "Angle3D.h"
 #include "AxisAlignedBox2D.h"
 
 namespace Atmos::Render
@@ -13,7 +13,7 @@ namespace Atmos::Render
     public:
         void MoveTo(const Spatial::Point3D& to) const;
         void MoveBy(const Spatial::Point3D& by) const;
-        void MoveDirection(const Spatial::Direction& direction, Spatial::Point3D::Value amount) const;
+        void MoveDirection(const Spatial::Angle3D& direction, Spatial::Point3D::Value amount) const;
         void Scalers(const Spatial::Scalers2D& to) const;
 
         [[nodiscard]] Spatial::Point3D Position() const;

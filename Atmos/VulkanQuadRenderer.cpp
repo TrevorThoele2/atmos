@@ -4,7 +4,7 @@
 #include "VulkanImageAssetResource.h"
 #include "VulkanUtilities.h"
 
-#include "PointConversions.h"
+#include "SpatialAlgorithms.h"
 
 namespace Atmos::Render::Vulkan
 {
@@ -65,7 +65,7 @@ namespace Atmos::Render::Vulkan
     {
         const auto rotate = [](
             const Spatial::Point2D& position,
-            const Spatial::Angle& angle,
+            const Spatial::Angle2D& angle,
             const Spatial::Point2D& center)
         {
             const auto sinAngle = std::sin(angle);
@@ -86,10 +86,10 @@ namespace Atmos::Render::Vulkan
         const auto position = ToPoint2D(imageRender.position);
         const auto halfWidth = imageRender.size.width / 2;
         const auto halfHeight = imageRender.size.height / 2;
-        const auto topLeft = rotate({ -halfWidth, -halfHeight }, imageRender.angle, position);
-        const auto topRight = rotate({ halfWidth, -halfHeight }, imageRender.angle, position);
-        const auto bottomLeft = rotate({ -halfWidth, halfHeight }, imageRender.angle, position);
-        const auto bottomRight = rotate({ halfWidth, halfHeight }, imageRender.angle, position);
+        const auto topLeft = rotate({ -halfWidth, -halfHeight }, imageRender.rotation, position);
+        const auto topRight = rotate({ halfWidth, -halfHeight }, imageRender.rotation, position);
+        const auto bottomLeft = rotate({ -halfWidth, halfHeight }, imageRender.rotation, position);
+        const auto bottomRight = rotate({ halfWidth, halfHeight }, imageRender.rotation, position);
 
         const auto adjustedSliceLeft = slice.Left() / imageAsset->Width();
         const auto adjustedSliceTop = slice.Top() / imageAsset->Height();

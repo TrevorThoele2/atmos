@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Angle.h"
+#include "Angle2D.h"
 
 namespace Atmos::Spatial
 {
@@ -16,7 +16,7 @@ namespace Atmos::Spatial
 
         void Scale(Value value);
         [[nodiscard]] Value Length() const;
-        [[nodiscard]] Angle Angle(const Vector3D& other) const;
+        [[nodiscard]] Angle2D Angle(const Vector3D& other) const;
         [[nodiscard]] Value Dot(const Vector3D& other) const;
         [[nodiscard]] Vector3D Cross(const Vector3D& other) const;
     };

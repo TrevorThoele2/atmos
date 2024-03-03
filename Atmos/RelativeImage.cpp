@@ -8,9 +8,9 @@ namespace Atmos::Render
         ImageCore::Index assetIndex,
         Arca::Index<Asset::Material> material,
         const Render::Color& color,
-        const Spatial::Point3D& position,
+        const Spatial::Point3D& delta,
         const Spatial::Scalers2D& scalers,
-        const Spatial::Angle& rotation)
+        const Spatial::Angle2D& rotation)
         :
         Image(
             init,
@@ -18,12 +18,14 @@ namespace Atmos::Render
             assetIndex,
             material,
             color,
-            position,
+            Spatial::Point3D{},
             scalers,
-            rotation)
+            rotation),
+        relativeBounds(init.Create<Spatial::RelativeBounds>(delta))
     {}
 
     RelativeImage::RelativeImage(Init init, Arca::Serialization serialization) :
-        Image(init, serialization)
+        Image(init, serialization),
+        relativeBounds(init.Find<Spatial::RelativeBounds>())
     {}
 }

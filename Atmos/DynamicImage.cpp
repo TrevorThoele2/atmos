@@ -18,7 +18,7 @@ namespace Atmos::Render
         Owner().Do<Spatial::MoveBoundsBy>(ID(), by);
     }
 
-    void DynamicImage::MoveDirection(const Spatial::Direction& direction, Spatial::Point3D::Value amount) const
+    void DynamicImage::MoveDirection(const Spatial::Angle3D& direction, Spatial::Point3D::Value amount) const
     {
         Owner().Do<Spatial::MoveBoundsDirection>(ID(), direction, amount);
     }
@@ -28,7 +28,7 @@ namespace Atmos::Render
         Owner().Do<Spatial::ScaleBounds>(ID(), to);
     }
 
-    void DynamicImage::Rotation(const Spatial::Angle& to) const
+    void DynamicImage::Rotation(const Spatial::Angle2D& to) const
     {
         Owner().Do<Spatial::RotateBounds>(ID(), to);
     }
@@ -41,7 +41,7 @@ namespace Atmos::Render
         const Render::Color& color,
         const Spatial::Point3D& position,
         const Spatial::Scalers2D& scalers,
-        const Spatial::Angle& rotation)
+        const Spatial::Angle2D& rotation)
         :
         Image(
             init,

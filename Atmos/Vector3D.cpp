@@ -25,7 +25,7 @@ namespace Atmos::Spatial
         return std::sqrt(std::pow(x, 2) + std::pow(y, 2) + std::pow(z, 2));
     }
 
-    Angle Vector3D::Angle(const Vector3D& other) const
+    Angle2D Vector3D::Angle(const Vector3D& other) const
     {
         // Angle = arccos(dot product / (magnitude1 * magnitude2))
         return std::acos(Dot(other) / (Length() * other.Length()));
