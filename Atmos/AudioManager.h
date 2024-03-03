@@ -62,6 +62,6 @@ namespace Arca
     template<>
     struct Traits<::Atmos::Audio::AudioManager>
     {
-        static const TypeName typeName;
+        static inline const TypeName typeName = "AudioManager";
     };
 }

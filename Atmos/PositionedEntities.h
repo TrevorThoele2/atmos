@@ -31,7 +31,7 @@ namespace Arca
     struct Traits<Atmos::Entity::PositionedEntities>
     {
         static const ObjectType objectType = ObjectType::Relic;
-        static const TypeName typeName;
+        static inline const TypeName typeName = "PositionedEntities";
         static const Locality locality = Locality::Global;
     };
 }

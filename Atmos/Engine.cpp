@@ -4,7 +4,7 @@
 #include "EngineNotSetup.h"
 
 #include "WindowProvider.h"
-#include "UniqueProvider.h"
+#include "UniqueProviderRelic.h"
 
 namespace Atmos
 {
@@ -75,11 +75,11 @@ namespace Atmos
     void Engine::ProvideInitializationProperties(InitializationProperties&& properties)
     {
         Window::window.Setup(std::move(properties.window));
-        Arca::GlobalPtr<UniqueProvider<Input::Manager>>(*globalReliquary)->Change(
+        Arca::GlobalPtr<UniqueProviderRelic<Input::Manager>>(*globalReliquary)->Change(
             std::move(properties.inputManager));
-        Arca::GlobalPtr<UniqueProvider<Render::GraphicsManager>>(*globalReliquary)->Change(
+        Arca::GlobalPtr<UniqueProviderRelic<Render::GraphicsManager>>(*globalReliquary)->Change(
             std::move(properties.graphicsManager));
-        Arca::GlobalPtr<UniqueProvider<Audio::AudioManager>>(*globalReliquary)->Change(
+        Arca::GlobalPtr<UniqueProviderRelic<Audio::AudioManager>>(*globalReliquary)->Change(
             std::move(properties.audioManager));
     }
 }

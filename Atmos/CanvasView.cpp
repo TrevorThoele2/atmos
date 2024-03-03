@@ -22,8 +22,3 @@ namespace Atmos::Render
         return *bounds;
     }
 }
-
-namespace Arca
-{
-    const TypeName Traits<::Atmos::Render::CanvasView>::typeName = "CanvasView";
-}

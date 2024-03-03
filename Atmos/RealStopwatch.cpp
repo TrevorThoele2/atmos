@@ -16,11 +16,6 @@ namespace Atmos::Time
     }
 }
 
-namespace Arca
-{
-    const TypeName Traits<::Atmos::Time::RealStopwatch>::typeName = "RealStopwatch";
-}
-
 namespace Inscription
 {
     void Scribe<::Atmos::Time::RealStopwatch, BinaryArchive>::ScrivenImplementation(

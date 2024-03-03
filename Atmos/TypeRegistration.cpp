@@ -10,40 +10,13 @@
 #include "FrameStopwatch.h"
 #include "MaterialViewCurator.h"
 
-#include "UniqueProvider.h"
+#include "UniqueProviderRelic.h"
 #include "InputManager.h"
 #include "GraphicsManager.h"
 #include "AudioManager.h"
 
 namespace Atmos
 {
-    template<class Provider>
-    void RegisterProviderComputation(Arca::ReliquaryOrigin& origin)
-    {
-        using Value = typename Provider::Value;
-
-        origin.Type<Provider>();
-        origin.Compute<Value*>(
-            [](Arca::Reliquary& reliquary) -> Value*
-            {
-                const Arca::GlobalPtr<Provider> backing(reliquary);
-                return backing->Get();
-            });
-    }
-
-    template<class Provider>
-    void RegisterRedirectionComputation(Arca::ReliquaryOrigin& origin, Arca::Reliquary& globalReliquary)
-    {
-        using Value = typename Provider::Value;
-
-        origin.Compute<Value*>(
-            [&globalReliquary](Arca::Reliquary& reliquary) -> Value*
-            {
-                const Arca::GlobalPtr<Provider> backing(globalReliquary);
-                return backing->Get();
-            });
-    }
-
     void RegisterCommonTypes(Arca::ReliquaryOrigin& origin)
     {
         origin
@@ -63,9 +36,9 @@ namespace Atmos
             .Type<Time::RealStopwatch>()
             .Type<Time::FrameStopwatch>();
 
-        RegisterProviderComputation<UniqueProvider<Input::Manager>>(origin);
-        RegisterProviderComputation<UniqueProvider<Render::GraphicsManager>>(origin);
-        RegisterProviderComputation<UniqueProvider<Audio::AudioManager>>(origin);
+        RegisterProviderComputation<UniqueProviderRelic<Input::Manager>>(origin);
+        RegisterProviderComputation<UniqueProviderRelic<Render::GraphicsManager>>(origin);
+        RegisterProviderComputation<UniqueProviderRelic<Audio::AudioManager>>(origin);
     }
 
     void RegisterFieldTypes(Arca::ReliquaryOrigin& origin, Arca::Reliquary& globalReliquary)
@@ -80,8 +53,8 @@ namespace Atmos
             .Type<Render::MaterialViewCurator>()
             .Type<Render::Camera>();
 
-        RegisterRedirectionComputation<UniqueProvider<Input::Manager>>(origin, globalReliquary);
-        RegisterRedirectionComputation<UniqueProvider<Render::GraphicsManager>>(origin, globalReliquary);
-        RegisterRedirectionComputation<UniqueProvider<Audio::AudioManager>>(origin, globalReliquary);
+        RegisterRedirectionComputation<UniqueProviderRelic<Input::Manager>>(origin, globalReliquary);
+        RegisterRedirectionComputation<UniqueProviderRelic<Render::GraphicsManager>>(origin, globalReliquary);
+        RegisterRedirectionComputation<UniqueProviderRelic<Audio::AudioManager>>(origin, globalReliquary);
     }
 }

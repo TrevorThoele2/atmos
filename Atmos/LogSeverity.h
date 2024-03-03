@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Atmos::Log
+namespace Atmos::Logging
 {
     enum class Severity
     {

@@ -60,11 +60,11 @@ namespace Atmos::Asset
         wxFFileInputStream stream(processedPath.GetValue());
         if (!stream)
         {
-            Owner().Raise<Log::Log>
+            Owner().Raise<Logging::Log>
             (
                 "Could not open the asset file.",
-                Log::Severity::SevereError,
-                Log::NameValuePairs{ NameValuePair("File Path", processedPath.GetValue()) }
+                Logging::Severity::SevereError,
+                Logging::NameValuePairs{ NameValuePair("File Path", processedPath.GetValue()) }
             );
             return;
         }
@@ -75,11 +75,11 @@ namespace Atmos::Asset
 
         if (!zip.CanRead())
         {
-            Owner().Raise<Log::Log>
+            Owner().Raise<Logging::Log>
             (
                 "The asset file cannot be read.",
-                Log::Severity::SevereError,
-                Log::NameValuePairs{ NameValuePair("File Path", processedPath.GetValue()) }
+                Logging::Severity::SevereError,
+                Logging::NameValuePairs{ NameValuePair("File Path", processedPath.GetValue()) }
             );
             return;
         }
@@ -96,11 +96,11 @@ namespace Atmos::Asset
             auto buffer = new char[size];
             if (!zip.CanRead())
             {
-                Owner().Raise<Log::Log>
+                Owner().Raise<Logging::Log>
                 (
                     "The asset package cannot be read. There probably isn't any data available.",
-                    Log::Severity::SevereError,
-                    Log::NameValuePairs{ NameValuePair("File Name", name.GetValue()) }
+                    Logging::Severity::SevereError,
+                    Logging::NameValuePairs{ NameValuePair("File Name", name.GetValue()) }
                 );
                 continue;
             }
@@ -108,11 +108,11 @@ namespace Atmos::Asset
             zip.Read(buffer, size);
             if (zip.LastRead() < size)
             {
-                Owner().Raise<Log::Log>
+                Owner().Raise<Logging::Log>
                 (
                     "Read too little data in the asset package.",
-                    Log::Severity::SevereError,
-                    Log::NameValuePairs{ NameValuePair("File Name", name.GetValue()) }
+                    Logging::Severity::SevereError,
+                    Logging::NameValuePairs{ NameValuePair("File Name", name.GetValue()) }
                 );
                 continue;
             }

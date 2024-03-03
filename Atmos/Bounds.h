@@ -5,9 +5,9 @@
 #include <Arca/Serialization.h>
 
 #include "Position3D.h"
-#include "Size3D.h"
+#include "Size2D.h"
 #include "Scalers3D.h"
-#include "AxisAlignedBox3D.h"
+#include "AxisAlignedBox2D.h"
 
 namespace Atmos
 {
@@ -15,15 +15,15 @@ namespace Atmos
     {
     public:
         void Position(const Position3D& to);
-        void Size(const Size3D& to);
+        void Size(const Size2D& to);
 
         [[nodiscard]] Position3D Position() const;
-        [[nodiscard]] Size3D Size() const;
-        [[nodiscard]] AxisAlignedBox3D Box() const;
+        [[nodiscard]] Size2D Size() const;
+        [[nodiscard]] AxisAlignedBox2D Box() const;
     private:
         Position3D position;
-        Size3D size;
-        AxisAlignedBox3D box;
+        Size2D size;
+        AxisAlignedBox2D box;
     private:
         void CalculateBox();
     private:
@@ -37,7 +37,7 @@ namespace Arca
     struct Traits<Atmos::Bounds>
     {
         static const ObjectType objectType = ObjectType::Shard;
-        static const TypeName typeName;
+        static inline const TypeName typeName = "Bounds";
     };
 }
 

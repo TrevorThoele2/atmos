@@ -15,8 +15,3 @@ namespace Atmos::Input
         
     }
 }
-
-namespace Arca
-{
-    const TypeName Traits<Atmos::Input::Curator>::typeName = "InputCurator";
-}

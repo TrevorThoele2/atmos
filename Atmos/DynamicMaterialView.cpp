@@ -47,7 +47,7 @@ namespace Atmos::Render
         bounds->Position(to);
     }
 
-    void DynamicMaterialView::Size(const Size3D& to)
+    void DynamicMaterialView::Size(const Size2D& to)
     {
         bounds->Size(to);
     }
@@ -57,19 +57,24 @@ namespace Atmos::Render
         return bounds->Position();
     }
 
-    Size3D DynamicMaterialView::Size() const
+    Size2D DynamicMaterialView::Size() const
     {
         return bounds->Size();
     }
 
-    AxisAlignedBox3D DynamicMaterialView::Box() const
+    AxisAlignedBox2D DynamicMaterialView::Box() const
     {
         return bounds->Box();
     }
 
-    const Bounds& DynamicMaterialView::Bounds() const
+    Arca::LocalPtr<MaterialViewCore> DynamicMaterialView::Core() const
     {
-        return *bounds;
+        return core;
+    }
+
+    Arca::LocalPtr<Bounds> DynamicMaterialView::Bounds() const
+    {
+        return bounds;
     }
 
     void DynamicMaterialView::PostConstruct(ShardTuple shards)
@@ -78,13 +83,9 @@ namespace Atmos::Render
         bounds = std::get<1>(shards);
     }
 
-    void DynamicMaterialView::Initialize(const Position3D& position)
+    void DynamicMaterialView::Initialize(const Position3D& position, const Size2D& size)
     {
         bounds->Position(position);
+        bounds->Size(size);
     }
-}
-
-namespace Arca
-{
-    const TypeName Traits<::Atmos::Render::DynamicMaterialView>::typeName = "DynamicMaterialView";
 }

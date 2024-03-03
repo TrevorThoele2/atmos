@@ -34,8 +34,3 @@ namespace Atmos::Audio
         ResumeAll();
     }
 }
-
-namespace Arca
-{
-    const TypeName Traits<Atmos::Audio::SoundCurator>::typeName;
-}

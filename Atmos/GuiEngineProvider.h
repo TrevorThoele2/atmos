@@ -1,11 +1,11 @@
 #pragma once
 
-#include "UniqueProvider.h"
+#include "UniqueProviderRelic.h"
 #include <AGUI/Engine.h>
 
 namespace Atmos
 {
-    using GuiEngineProvider = UniqueProvider<Agui::Engine>;
+    using GuiEngineProvider = UniqueProviderRelic<Agui::Engine>;
 }
 
 namespace Arca
@@ -14,7 +14,7 @@ namespace Arca
     struct Traits<Atmos::GuiEngineProvider>
     {
         static const ObjectType objectType = ObjectType::Relic;
-        static const TypeName typeName;
+        static inline const TypeName typeName = "GuiEngineProvider";
         static const Locality locality = Locality::Global;
     };
 }

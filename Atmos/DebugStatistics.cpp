@@ -20,11 +20,6 @@ namespace Atmos::Debug
     }
 }
 
-namespace Arca
-{
-    const TypeName Traits<::Atmos::Debug::Statistics>::typeName = "DebugStatistics";
-}
-
 namespace Inscription
 {
     void Scribe<Atmos::Debug::Statistics, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)

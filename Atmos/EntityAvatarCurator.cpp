@@ -47,8 +47,3 @@ namespace Atmos::Entity
         debugStatistics->game.playerRow = general.position.y;
     }
 }
-
-namespace Arca
-{
-    const TypeName Traits<Atmos::Entity::AvatarCurator>::typeName = "AvatarCurator";
-}

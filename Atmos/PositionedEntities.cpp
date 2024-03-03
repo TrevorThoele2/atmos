@@ -32,8 +32,3 @@ namespace Atmos::Entity
         return movingEntities.size();
     }
 }
-
-namespace Arca
-{
-    const TypeName Traits<Atmos::Entity::PositionedEntities>::typeName = "PositionedEntities";
-}

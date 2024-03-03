@@ -1,7 +1,6 @@
 #pragma once
 
-#include <d3d9.h>
-#include <d3dx9.h>
+#include "DirectX9Includes.h"
 #pragma comment (lib, "d3d9.lib")
 #pragma comment (lib, "d3dx9.lib")
 #undef CreateFont
@@ -13,10 +12,14 @@
 #include "Size2D.h"
 #include "AxisAlignedBox2D.h"
 #include "Angle.h"
+#include "Scalers2D.h"
 
 #include "FilePath.h"
 
 #include <AGUI/Resolution.h>
+
+#include "LogSeverity.h"
+#include "LogNameValuePairs.h"
 
 namespace Atmos::File
 {
@@ -28,23 +31,23 @@ namespace Atmos::Time
     class Settings;
 }
 
-namespace Atmos::Render
+namespace Atmos::Render::DirectX9
 {
-    class DirectX9GraphicsManager final : public GraphicsManager
+    class Renderer2D;
+
+    class GraphicsManager final : public Render::GraphicsManager
     {
-    private:
-        class Renderer2D;
     public:
-        DirectX9GraphicsManager
+        GraphicsManager
         (
             Arca::Reliquary& reliquary,
             HWND hwnd,
             const ScreenDimensions& backbuffer,
             bool fullscreen
         );
-        DirectX9GraphicsManager(const DirectX9GraphicsManager& arg) = delete;
-        DirectX9GraphicsManager& operator=(const DirectX9GraphicsManager& arg) = delete;
-        ~DirectX9GraphicsManager();
+        GraphicsManager(const GraphicsManager& arg) = delete;
+        GraphicsManager& operator=(const GraphicsManager& arg) = delete;
+        ~GraphicsManager();
 
         void SetFullscreen(bool set) override;
 
@@ -66,15 +69,6 @@ namespace Atmos::Render
 
         LPDIRECT3DDEVICE9& GetDevice();
     protected:
-        struct Scalings
-        {
-            float x;
-            float y;
-
-            Scalings();
-            Scalings(float x, float y);
-        };
-    protected:
         void RenderObject
         (
             LPDIRECT3DTEXTURE9 tex,
@@ -85,13 +79,12 @@ namespace Atmos::Render
             const AxisAlignedBox2D& imageBounds,
             const Size2D& size,
             const Position2D& center,
-            const Scalings& scalings,
+            const Scalers2D& scalers,
             const Angle& rotation,
             const Color& color
-        );
+        ) const;
     private:
         HWND hwnd;
-        LPDIRECT3DDEVICE9 device;
         LPDIRECT3D9 d3d;
         D3DPRESENT_PARAMETERS presentationParameters;
 
@@ -101,6 +94,9 @@ namespace Atmos::Render
         D3DXMATRIX projection;
 
         LPDIRECT3DSURFACE9 mainSurface;
+    private:
+        LPDIRECT3DDEVICE9 device;
+        void CreateDevice();
     private:
         void ReconstructInternals() override;
         void SetMainDimensionsImpl(const ScreenDimensions& dimensions) override;
@@ -137,10 +133,18 @@ namespace Atmos::Render
         void RenderLineImpl(const Line& line) override;
 
         void SetupPresentationParameters();
-        void SetRenderStates();
+        void SetRenderStates() const;
         void SetProjectionMatrix();
         void OnResolutionChanged(const Agui::Resolution& arg);
     private:
-        Time::Settings* timeSettings;
+        static std::optional<D3DRENDERSTATETYPE> RenderStateToD3D(RenderState renderState);
+    private:
+        void LogIfError(
+            HRESULT hr,
+            const String& message,
+            Logging::Severity severity,
+            const std::optional<Logging::NameValuePairs>& nameValuePairs = {}) const;
+    private:
+        Arca::GlobalPtr<Time::Settings> timeSettings;
     };
 }

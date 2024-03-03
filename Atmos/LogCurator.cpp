@@ -13,7 +13,7 @@
 
 #include <Inscription/OutputTextFile.h>
 
-namespace Atmos::Log
+namespace Atmos::Logging
 {
     String Curator::CurrentTimeStamp()
     {
@@ -67,12 +67,12 @@ namespace Atmos::Log
                 DoLog(entryLoop->string, entryLoop->severity, entryLoop->nameValuePairs);
             entryLoop = queuedEntryList.erase(entryLoop);
         }
-    }
 
-    void Curator::WorkImplementation(Stage& stage)
-    {
-        for (auto& log : logs)
-            DoLog(log.message, log.severity, log.nameValuePairs);
+        Owner().ExecuteOn<Log>(
+            [this](const Log& log)
+            {
+                DoLog(log.message, log.severity, log.nameValuePairs);
+            });
     }
 
     void Curator::DoLog(const String& message, Severity severity, std::optional<NameValuePairs> nameValuePairs)
@@ -83,12 +83,10 @@ namespace Atmos::Log
         if (IsAllWhitespace(message))
             return;
 
-        const auto timeInformation = Arca::GlobalPtr<Time::Information>(Owner());
-
         ::Inscription::OutputTextFile outFile(OutputFilePath(), true);
 
         // Output time and date
-        auto output = ToString(timeInformation->totalElapsed) + ' ';
+        auto output = CurrentTimeStamp() + ' ';
 
         // Output severity
         {
@@ -113,14 +111,9 @@ namespace Atmos::Log
         if (output.find_last_of('\n') != output.size() - 1)
             output.append(1, '\n');
 
-        // Output nameValuePairs
-        {
-            if (nameValuePairs)
-            {
-                for (auto& loop : *nameValuePairs)
-                    output.append("        " + loop.name + ": " + ToString(loop.value) + '\n');
-            }
-        }
+        if (nameValuePairs)
+            for (auto& loop : *nameValuePairs)
+                output.append("        " + loop.name + ": " + ToString(loop.value) + '\n');
 
         outFile.WriteData(output);
         Owner().Raise<ProcessedLog>(output);

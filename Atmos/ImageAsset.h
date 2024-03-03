@@ -64,7 +64,7 @@ namespace Arca
     struct Traits<::Atmos::Asset::ImageAsset>
     {
         static const ObjectType objectType = ObjectType::Relic;
-        static const TypeName typeName;
+        static inline const TypeName typeName = "ImageAsset";
         static bool ShouldCreate(
             Reliquary& reliquary,
             const ::Atmos::File::Name& fileName,

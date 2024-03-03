@@ -20,7 +20,7 @@ namespace Arca
     struct Traits<Atmos::Entity::Entity>
     {
         static const ObjectType objectType = ObjectType::Relic;
-        static const TypeName typeName;
+        static inline const TypeName typeName = "Entity";
     };
 }
 

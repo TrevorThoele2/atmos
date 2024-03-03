@@ -5,12 +5,12 @@
 namespace Atmos
 {
     template<class T>
-    class UnownedProvider : public Arca::ClosedTypedRelicAutomation<UnownedProvider<T>>
+    class UnownedProviderRelic : public Arca::ClosedTypedRelicAutomation<UnownedProviderRelic<T>>
     {
     public:
         using Value = T;
     public:
-        UnownedProvider() = default;
+        UnownedProviderRelic() = default;
 
         Value& operator*() const;
         Value* operator->() const;
@@ -22,25 +22,25 @@ namespace Atmos
     };
 
     template<class T>
-    auto UnownedProvider<T>::operator*() const -> Value&
+    auto UnownedProviderRelic<T>::operator*() const -> Value&
     {
         return *Get();
     }
 
     template<class T>
-    auto UnownedProvider<T>::operator->() const -> Value*
+    auto UnownedProviderRelic<T>::operator->() const -> Value*
     {
         return Get();
     }
 
     template<class T>
-    void UnownedProvider<T>::Change(Value* ptr)
+    void UnownedProviderRelic<T>::Change(Value* ptr)
     {
         value = ptr;
     }
 
     template<class T>
-    auto UnownedProvider<T>::Get() const -> Value*
+    auto UnownedProviderRelic<T>::Get() const -> Value*
     {
         return value;
     }
@@ -49,21 +49,18 @@ namespace Atmos
 namespace Arca
 {
     template<class T>
-    struct Traits<Atmos::UnownedProvider<T>>
+    struct Traits<Atmos::UnownedProviderRelic<T>>
     {
         static const ObjectType objectType = ObjectType::Relic;
-        static const TypeName typeName;
+        static inline const TypeName typeName = Traits<T>::typeName + "Provider";
         static const Locality locality = Locality::Global;
     };
-
-    template<class T>
-    const TypeName Traits<Atmos::UnownedProvider<T>>::typeName = Traits<T>::typeName + "Provider";
 }
 
 namespace Inscription
 {
     template<class T>
-    class Scribe<::Atmos::UnownedProvider<T>, BinaryArchive> final :
-        public ArcaNullScribe<::Atmos::UnownedProvider<T>, BinaryArchive>
+    class Scribe<::Atmos::UnownedProviderRelic<T>, BinaryArchive> final :
+        public ArcaNullScribe<::Atmos::UnownedProviderRelic<T>, BinaryArchive>
     {};
 }

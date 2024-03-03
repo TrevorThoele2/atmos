@@ -1,4 +1,5 @@
 #include "Variant.h"
+#include "StringUtility.h"
 
 namespace Atmos
 {

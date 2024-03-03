@@ -27,7 +27,7 @@ namespace Arca
     struct Traits<Atmos::Input::Curator>
     {
         static const ObjectType objectType = ObjectType::Curator;
-        static const TypeName typeName;
+        static inline const TypeName typeName = "InputCurator";
     };
 }
 

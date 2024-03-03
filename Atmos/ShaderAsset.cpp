@@ -33,8 +33,6 @@ namespace Atmos::Asset
 
 namespace Arca
 {
-    const TypeName Traits<::Atmos::Asset::ShaderAsset>::typeName = "ShaderAsset";
-
     bool Traits<::Atmos::Asset::ShaderAsset>::ShouldCreate(
         Reliquary& reliquary, const ::Atmos::File::Name& fileName, ::Atmos::Asset::ShaderAsset::DataPtr&& data)
     {

@@ -16,8 +16,3 @@ namespace Atmos::Entity
         return map.size();
     }
 }
-
-namespace Arca
-{
-    const TypeName Traits<Atmos::Entity::MappedEntities>::typeName = "MappedEntities";
-}

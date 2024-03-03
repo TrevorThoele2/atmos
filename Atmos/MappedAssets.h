@@ -74,11 +74,23 @@ namespace Arca
     struct Traits<::Atmos::Asset::MappedAssets<AssetT>>
     {
         static const ObjectType objectType = ObjectType::Relic;
-        static const TypeName typeName;
+        static inline const TypeName typeName = "Mapped"s + TypeFor<AssetT>().name + "s";
         static const Locality locality = Locality::Global;
     };
+}
 
+namespace Inscription
+{
     template<class AssetT>
-    const TypeName Traits<::Atmos::Asset::MappedAssets<AssetT>>::typeName =
-        "Mapped"s + TypeFor<AssetT>().name + "s";
+    class Scribe<Atmos::Asset::MappedAssets<AssetT>, BinaryArchive>
+        : public ArcaNullScribe<Atmos::Asset::MappedAssets<AssetT>, BinaryArchive>
+    {
+    private:
+        using BaseT = ArcaNullScribe<Atmos::Asset::MappedAssets<AssetT>, BinaryArchive>;
+    public:
+        using BaseT::ArchiveT;
+        using BaseT::ObjectT;
+
+        using BaseT::Scriven;
+    };
 }

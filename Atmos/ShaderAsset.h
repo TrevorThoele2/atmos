@@ -68,7 +68,7 @@ namespace Arca
     struct Traits<::Atmos::Asset::ShaderAsset>
     {
         static const ObjectType objectType = ObjectType::Relic;
-        static const TypeName typeName;
+        static inline const TypeName typeName = "ShaderAsset";
         static bool ShouldCreate(
             Reliquary& reliquary,
             const ::Atmos::File::Name& fileName,

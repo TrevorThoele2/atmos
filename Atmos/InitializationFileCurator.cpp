@@ -105,8 +105,3 @@ namespace Atmos::Initialization
         }
     }
 }
-
-namespace Arca
-{
-    const TypeName Traits<Atmos::Initialization::FileCurator>::typeName = "InitializationFileCurator";
-}

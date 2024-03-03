@@ -86,8 +86,3 @@ namespace Atmos::Script
         data = std::make_unique<Data>(source);
     }
 }
-
-namespace Arca
-{
-    const TypeName Traits<::Atmos::Script::RunningScript>::typeName = "RunningScript";
-}

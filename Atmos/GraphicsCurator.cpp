@@ -22,8 +22,3 @@ namespace Atmos::Render
             });
     }
 }
-
-namespace Arca
-{
-    const TypeName Traits<Atmos::Render::GraphicsCurator>::typeName = "GraphicsCurator";
-}

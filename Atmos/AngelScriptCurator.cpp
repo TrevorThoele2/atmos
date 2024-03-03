@@ -33,9 +33,9 @@ namespace Atmos::Script::Angel
     {
         engine = asCreateScriptEngine();
         if (!engine)
-            reliquary.Raise<Log::Log>
+            reliquary.Raise<Logging::Log>
             (
-                "Creation of the scripting engine has failed.", Log::Severity::SevereError
+                "Creation of the scripting engine has failed.", Logging::Severity::SevereError
             );
         engine->SetMessageCallback(asMETHOD(Interface, MessageCallback), nullptr, asCALL_THISCALL);
 
@@ -56,17 +56,17 @@ namespace Atmos::Script::Angel
 
     void ScriptCurator::Interface::MessageCallback(const asSMessageInfo* messageInfo, void* param)
     {
-        auto logType = Log::Severity::SevereError;
+        auto logType = Logging::Severity::SevereError;
         if (messageInfo->type == asMSGTYPE_WARNING)
-            logType = Log::Severity::Warning;
+            logType = Logging::Severity::Warning;
         else if (messageInfo->type == asMSGTYPE_INFORMATION)
-            logType = Log::Severity::Information;
+            logType = Logging::Severity::Information;
 
-        reliquary->Raise<Log::Log>
+        reliquary->Raise<Logging::Log>
         (
             messageInfo->message,
             logType,
-            Log::NameValuePairs
+            Logging::NameValuePairs
             {
                 NameValuePair("Section", String(messageInfo->section)),
                 NameValuePair("Row", messageInfo->row),
@@ -84,9 +84,4 @@ namespace Atmos::Script::Angel
     {
         interface = std::make_unique<Interface>(*this, Owner());
     }
-}
-
-namespace Arca
-{
-    const TypeName Traits<Atmos::Script::Angel::ScriptCurator>::typeName = "AngelScriptCurator";
 }

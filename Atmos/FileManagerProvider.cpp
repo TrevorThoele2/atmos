@@ -12,24 +12,10 @@ namespace Atmos::File
         value = std::make_unique<NullFileManager>();
     }
 
-    FileManager& ManagerProvider::operator*()
+    void ManagerProvider::OnSetup()
     {
-        return *value.get();
-    }
-
-    const FileManager& ManagerProvider::operator*() const
-    {
-        return *value.get();
-    }
-
-    FileManager* ManagerProvider::operator->()
-    {
-        return value.get();
-    }
-
-    const FileManager* ManagerProvider::operator->() const
-    {
-        return value.get();
+        CreateDefaultDirectories();
+        SetupFilePaths();
     }
 
     void ManagerProvider::CreateDefaultDirectories()

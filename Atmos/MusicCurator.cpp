@@ -22,8 +22,3 @@ namespace Atmos::Audio
 
     }
 }
-
-namespace Arca
-{
-    const TypeName Traits<Atmos::Audio::MusicCurator>::typeName = "MusicCurator";
-}

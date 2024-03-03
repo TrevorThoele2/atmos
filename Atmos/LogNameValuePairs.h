@@ -3,7 +3,7 @@
 #include <vector>
 #include "NameValuePair.h"
 
-namespace Atmos::Log
+namespace Atmos::Logging
 {
     using NameValuePairs = std::vector<NameValuePair>;
 }

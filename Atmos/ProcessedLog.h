@@ -4,7 +4,7 @@
 
 #include "String.h"
 
-namespace Atmos::Log
+namespace Atmos::Logging
 {
     class ProcessedLog
     {
@@ -16,9 +16,9 @@ namespace Atmos::Log
 namespace Arca
 {
     template<>
-    struct Traits<Atmos::Log::ProcessedLog>
+    struct Traits<Atmos::Logging::ProcessedLog>
     {
         static const ObjectType objectType = ObjectType::Signal;
-        static const TypeName typeName;
+        static inline const TypeName typeName = "ProcessedLog";
     };
 }

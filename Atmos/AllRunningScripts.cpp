@@ -61,8 +61,3 @@ namespace Atmos::Script
         return map.end();
     }
 }
-
-namespace Arca
-{
-    const TypeName Traits<Atmos::Script::AllRunningScripts>::typeName = "RunningScriptInformation";
-}
