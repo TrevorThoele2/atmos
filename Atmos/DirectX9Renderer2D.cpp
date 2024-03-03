@@ -33,10 +33,12 @@ namespace Atmos::Render::DirectX9
         this->device = device;
         InitializeBuffers();
 
-        auto path = File::manager->ExePath() + "Shaders\\TexturedSprite.fx";
+        auto texturedSpritePath = File::manager->ExePath() + "Shaders\\TexturedSprite.fx";
 
-        auto shaderData = handler.CreateShaderData(path);
-        defaultTexturedImageViewShader = reliquary->Create<Asset::ShaderAsset>(path, std::move(shaderData));
+        auto shaderData = handler.CreateShaderData(texturedSpritePath);
+        defaultTexturedImageViewShader = reliquary->Create<Asset::ShaderAsset>(
+            texturedSpritePath,
+            std::move(shaderData));
     }
 
     void Renderer2D::Start(ObjectsSize size)

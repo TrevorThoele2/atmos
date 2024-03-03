@@ -10,6 +10,8 @@ namespace Atmos
     public:
         WindowsEngine(HINSTANCE hInstance, LPSTR lpCmdLine, int nCmdShow, String className);
     protected:
+        void SetupImplementation() override;
+
         InitializationProperties CreateInitializationProperties(Arca::Reliquary& reliquary) override;
 
         void DoExit() override;

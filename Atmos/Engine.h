@@ -27,6 +27,8 @@ namespace Atmos
     protected:
         Engine() = default;
 
+        virtual void SetupImplementation() = 0;
+
         virtual InitializationProperties CreateInitializationProperties(Arca::Reliquary& reliquary) = 0;
 
         virtual void DoExit() = 0;
