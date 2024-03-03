@@ -7,11 +7,12 @@ namespace Atmos::Diagnostics
 {
     struct Statistics
     {
-        size_t relicCount;
-        size_t shardCount;
+        size_t relicCount = 0;
+        size_t shardCount = 0;
+        Arca::RelicID nextRelicID = 0;
 
-        double renderTime;
-        double idleTime;
+        double renderTime = 0.0;
+        double idleTime = 0.0;
 
         bool operator==(const Statistics& arg) const;
         bool operator!=(const Statistics& arg) const;

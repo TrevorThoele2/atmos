@@ -12,5 +12,6 @@ namespace Atmos::Diagnostics
         const auto statistics = MutablePointer().Of<Statistics>();
         statistics->relicCount = Owner().RelicSize();
         statistics->shardCount = Owner().ShardSize();
+        statistics->nextRelicID = Owner().NextRelicID();
     }
 }
