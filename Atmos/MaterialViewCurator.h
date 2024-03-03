@@ -20,18 +20,18 @@ namespace Atmos::Render
     public:
         void Handle(const ChangeMaterialViewCore& command);
     private:
-        using MaterialMatrix = Arca::All<MaterialViewCore, Arca::Either<Bounds>>;
-        using MaterialIndex = Arca::MatrixIndex<MaterialMatrix>;
-        Grid::Octree<Arca::RelicID, MaterialIndex> octree;
+        using Matrix = Arca::All<MaterialViewCore, Arca::Either<Bounds>>;
+        using MatrixIndex = Arca::MatrixIndex<Matrix>;
+        Grid::Octree<Arca::RelicID, MatrixIndex> octree;
 
         Arca::GlobalIndex<Camera> camera;
     private:
         void CalculateMaterialSlice(MaterialViewCore& core);
     private:
-        void OnMaterialFormed(const Arca::MatrixFormed<MaterialMatrix>& matrix);
-        void OnMaterialDissolved(const Arca::MatrixDissolved<MaterialMatrix>& matrix);
+        void OnViewFormed(const Arca::MatrixFormed<Matrix>& view);
+        void OnViewDissolved(const Arca::MatrixDissolved<Matrix>& view);
     private:
-        static AxisAlignedBox3D BoxFor(const MaterialIndex& matrix);
+        static AxisAlignedBox3D BoxFor(const MatrixIndex& view);
     };
 }
 

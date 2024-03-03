@@ -6,7 +6,6 @@
 
 #include "ShaderAsset.h"
 
-#include "AxisAlignedBox2D.h"
 #include "Scalers2D.h"
 #include "Angle.h"
 #include "Color.h"
@@ -27,13 +26,13 @@ namespace Atmos::Render::DirectX9
 
         void StageRender(const MaterialRender& materialRender) override;
         void StageRender(const CanvasRender& canvasRender) override;
-        void StageRender(const Line& line) override;
+        void StageRender(const LineRender& lineRender) override;
         void RenderStaged(const SurfaceData& surface) override;
 
         void OnLostDevice();
         void OnResetDevice();
 
-        Arca::RelicIndex<Asset::ShaderAsset> DefaultTexturedImageViewShader();
+        [[nodiscard]] Arca::RelicIndex<Asset::ShaderAsset> DefaultTexturedImageViewShader() const;
     private:
         GraphicsManager& owner;
     private:
@@ -57,7 +56,6 @@ namespace Atmos::Render::DirectX9
             std::vector<Vertex> vertices;
             std::vector<Index> indices;
             unsigned int primCount = 0;
-            float z;
             LPDIRECT3DTEXTURE9 tex;
             const Asset::ShaderAsset* shader;
 
@@ -65,9 +63,8 @@ namespace Atmos::Render::DirectX9
             (
                 LPDIRECT3DTEXTURE9 tex,
                 const Asset::ShaderAsset* shader,
-                float X,
-                float Y,
-                float Z,
+                float x,
+                float y,
                 const AxisAlignedBox2D& imageBounds,
                 const Size2D& size,
                 const Position2D& center,
@@ -80,8 +77,8 @@ namespace Atmos::Render::DirectX9
         private:
             void SetupQuad
             (
-                float X,
-                float Y,
+                float x,
+                float y,
                 const Position2D& center,
                 const Scalers2D& scalers,
                 float rotation
@@ -90,21 +87,21 @@ namespace Atmos::Render::DirectX9
             (
                 float radius,
                 unsigned int polyCount,
-                float X,
-                float Y,
+                float x,
+                float y,
                 const Scalers2D& scalers,
                 float rotation,
                 const Color& color
             );
 
-            static void SetupVertexCommon
+            static void SetupVertex
             (
                 Vertex& vertex,
                 const D3DXMATRIX& matrix,
                 const D3DXVECTOR2& position,
                 const D3DXVECTOR2& center
             );
-            static void SetupVertexCommon
+            static void SetupVertex
             (
                 Vertex& vertex,
                 const D3DXMATRIX& matrix,
@@ -112,6 +109,16 @@ namespace Atmos::Render::DirectX9
                 const D3DXVECTOR2& center,
                 const Color& color
             );
+        };
+
+        class StagedLine
+        {
+        public:
+            D3DXVECTOR2 points[2];
+            FLOAT width;
+            D3DCOLOR color;
+
+            StagedLine(const Position2D& from, const Position2D& to, float width, const Color& color);
         };
     private:
         using BufferSize = unsigned short;
@@ -130,8 +137,22 @@ namespace Atmos::Render::DirectX9
 
         LPDIRECT3DSURFACE9 mainSurface = nullptr;
 
-        using Objects = std::vector<StagedObject>;
-        Objects objects{};
+        struct Layer
+        {
+            using Objects = std::vector<StagedObject>;
+            Objects objects{};
+
+            using Lines = std::vector<StagedLine>;
+            Lines lines{};
+
+            FLOAT z;
+
+            explicit Layer(FLOAT z);
+        };
+
+        using Layers = std::vector<Layer>;
+        Layers layers;
+        Layers::iterator LayerWithZ(FLOAT z);
     private:
         void InitializeBuffers();
     private:
@@ -139,9 +160,9 @@ namespace Atmos::Render::DirectX9
         (
             LPDIRECT3DTEXTURE9 tex,
             const Asset::ShaderAsset* shader,
-            float X,
-            float Y,
-            float Z,
+            float x,
+            float y,
+            float z,
             const AxisAlignedBox2D& imageBounds,
             const Size2D& size,
             const Position2D& center,
@@ -154,6 +175,7 @@ namespace Atmos::Render::DirectX9
         (
             const Position2D& from,
             const Position2D& to,
+            Position2D::Value z,
             float width,
             const Color& color
         );
@@ -170,7 +192,7 @@ namespace Atmos::Render::DirectX9
                 LPD3DXLINE lineInterface,
                 D3DXMATRIX projection,
                 const ScreenSize& screenSize);
-            void Flush(Objects& objects);
+            void Flush(Layers& layers);
         private:
             GraphicsManager& manager;
 
@@ -195,8 +217,10 @@ namespace Atmos::Render::DirectX9
             const ShaderAssetDataImplementation* currentShaderData = nullptr;
         private:
             bool Start();
-            void Sort(Objects& objects) const;
-            void HandleObject(StagedObject& object);
+            void Sort(Layers& layers) const;
+            void Sort(Layer& layer) const;
+            void Handle(StagedObject& staged);
+            void Handle(StagedLine& staged);
             void DrawPrimitives();
             void DrawEndPrimitives();
             void DrawPrimitivesCommon();

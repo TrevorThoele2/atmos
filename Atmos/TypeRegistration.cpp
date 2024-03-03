@@ -1,14 +1,16 @@
 #include "TypeRegistration.h"
 
-#include "DebugStatistics.h"
-#include "TimeSettings.h"
 #include "StaticMaterialView.h"
 #include "DynamicMaterialView.h"
+#include "MaterialViewCurator.h"
+#include "LineCurator.h"
+
+#include "DebugStatistics.h"
+#include "TimeSettings.h"
 #include "Camera.h"
 #include "CameraCurator.h"
 #include "FrameStopwatch.h"
 #include "StopwatchStatistics.h"
-#include "MaterialViewCurator.h"
 
 #include "UniqueProviderRelic.h"
 #include "InputManager.h"
@@ -45,6 +47,8 @@ namespace Atmos
             .Register<Render::StaticMaterialView>()
             .Register<Render::DynamicMaterialView>()
             .Register<Render::MaterialViewCurator>()
+            .Register<Render::Line>()
+            .Register<Render::LineCurator>()
             .Register<Render::Camera>()
             .Register<Render::CameraCurator>();
 

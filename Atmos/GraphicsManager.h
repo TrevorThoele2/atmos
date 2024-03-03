@@ -11,6 +11,7 @@
 
 #include "MaterialRender.h"
 #include "CanvasRender.h"
+#include "LineRender.h"
 
 #include "Buffer.h"
 
@@ -44,7 +45,7 @@ namespace Atmos::Render
 
         void StageRender(const MaterialRender& materialRender);
         void StageRender(const CanvasRender& canvasRender);
-        void StageRender(const Line& line);
+        void StageRender(const LineRender& lineRender);
         void RenderStaged(const SurfaceData& surface);
 
         virtual void SetFullscreen(bool set) = 0;

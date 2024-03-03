@@ -65,12 +65,12 @@ namespace Atmos::Render::DirectX9
         const auto row =
             reinterpret_cast<DWORD*>(reinterpret_cast<char*>(lockedRect.pBits)
                 + lockedRect.Pitch * position.y);
-        row[position.x] = ColorToD3D(color);
+        row[position.x] = ToDirectXColor(color);
     }
 
     void CanvasDataImplementation::Clear(const Color& color)
     {
-        std::memset(lockedRect.pBits, ColorToD3D(color), lockedRect.Pitch * canvasSize.height);
+        std::memset(lockedRect.pBits, ToDirectXColor(color), lockedRect.Pitch * canvasSize.height);
     }
 
     void CanvasDataImplementation::Release()

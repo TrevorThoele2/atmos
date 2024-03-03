@@ -1241,6 +1241,18 @@
     <ClInclude Include="Octree.h">
       <Filter>Header Files\Grid</Filter>
     </ClInclude>
+    <ClInclude Include="LineCurator.h">
+      <Filter>Header Files\Render\Line</Filter>
+    </ClInclude>
+    <ClInclude Include="MoveLine.h">
+      <Filter>Header Files\Render\Line</Filter>
+    </ClInclude>
+    <ClInclude Include="LineRender.h">
+      <Filter>Header Files\Render\Line</Filter>
+    </ClInclude>
+    <ClInclude Include="LineWidth.h">
+      <Filter>Header Files\Render\Line</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FieldDestination.cpp">
@@ -1782,6 +1794,9 @@
     </ClCompile>
     <ClCompile Include="StopwatchStatistics.cpp">
       <Filter>Source Files\Time\Stopwatch</Filter>
+    </ClCompile>
+    <ClCompile Include="LineCurator.cpp">
+      <Filter>Source Files\Render\Line</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

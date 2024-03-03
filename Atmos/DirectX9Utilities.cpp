@@ -5,7 +5,7 @@
 
 namespace Atmos::Render::DirectX9
 {
-    D3DCOLOR ColorToD3D(const Color& color)
+    D3DCOLOR ToDirectXColor(const Color& color)
     {
         return D3DCOLOR_ARGB(color.alpha, color.red, color.green, color.blue);
     }
