@@ -1,8 +1,12 @@
 #include "AngelScriptColor.h"
 
+#include "AngelScriptCommand.h"
+
 #include <angelscript.h>
 #include "AngelScriptObjectRegistration.h"
 #include "AngelScriptObjectManagement.h"
+
+#include <Chroma/Identity.h>
 
 namespace Atmos::Scripting::Angel
 {
@@ -26,5 +30,23 @@ namespace Atmos::Scripting::Angel
             .Property<&Type::green>("uint8", "green")
             .Property<&Type::blue>("uint8", "blue")
             .Actualize(engine);
+    }
+
+    void Registration<Render::ChangeColor>::RegisterTo(asIScriptEngine& engine)
+    {
+        ValueTypeRegistration<Type>(containingNamespace, name)
+            .Constructor(
+                &Management::GenerateValue<
+                    &PullFromParameter<0, Arca::RelicID>,
+                    &PullFromParameter<1, Render::Color>>,
+                { "Arca::RelicID id", "Atmos::Render::Color to" })
+            .CopyConstructor(&Management::GenerateValueFromCopy)
+            .Destructor(&Management::DestructValue)
+            .CopyAssignment(&Management::CopyAssign)
+            .Property<&Type::id>("Arca::RelicID", "id")
+            .Property<&Type::to>("Atmos::Render::Color", "to")
+            .Actualize(engine);
+
+        RegisterCommandHandler<&Chroma::Identity<Type>>(engine);
     }
 }

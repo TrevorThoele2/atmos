@@ -16,8 +16,8 @@ namespace Atmos::Frame
         Time::Point<> startTime;
         Time::Point<> endTime;
 
-        Time::Duration<> lastElapsed;
-        Time::Duration<> totalElapsed;
+        Time::Duration<> lastElapsed = Time::Duration<>{ 0 };
+        Time::Duration<> totalElapsed = Time::Duration<>{ 0 };
 
         FramesPerSecond framesPerSecond = 0;
 

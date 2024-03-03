@@ -21,6 +21,30 @@ namespace Atmos::Render
             });
     }
 
+    void GridRegionCurator::Handle(const MoveGridRegion& command)
+    {
+        AttemptChangeObject(
+            command.id,
+            [command](GridRegion& object)
+            {
+                if (command.points)
+                    object.points = *command.points;
+
+                if (command.z)
+                    object.z = *command.z;
+            });
+    }
+
+    void GridRegionCurator::Handle(const ChangeRegionMaterialAsset& command)
+    {
+        AttemptChangeObject(
+            command.id,
+            [command](GridRegion& object)
+            {
+                object.material = command.to;
+            });
+    }
+
     void GridRegionCurator::WorkImpl(
         Spatial::AxisAlignedBox3D cameraBox,
         Spatial::Point2D cameraTopLeft,

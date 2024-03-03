@@ -4,9 +4,11 @@
 namespace Atmos::Time
 {
     Stopwatch::Stopwatch(TimeRetriever timeRetriever) : timeRetriever(std::move(timeRetriever))
-    {}
+    {
+        start = CurrentTime();
+    }
 
-    Point<> Stopwatch::Start()
+    Point<> Stopwatch::Restart()
     {
         start = CurrentTime();
         return start;
@@ -14,9 +16,6 @@ namespace Atmos::Time
 
     Duration<> Stopwatch::Calculate()
     {
-        if (!IsStarted())
-            return {};
-
         const auto elapsed = Elapsed();
 
         if (elapsed > highest)
@@ -29,7 +28,7 @@ namespace Atmos::Time
             + (Nanoseconds(1'000'000'000) - alpha)
             * average.count();
 
-        return CurrentTime() - start;
+        return elapsed;
     }
 
     void Stopwatch::ResetAverage()
@@ -44,15 +43,9 @@ namespace Atmos::Time
 
     Duration<> Stopwatch::Elapsed() const
     {
-        if (!IsStarted())
-            return {};
-
-        return CurrentTime() - start;
-    }
-
-    bool Stopwatch::IsStarted() const
-    {
-        return start != Point<>();
+        const auto currentTime = CurrentTime();
+        const auto elapsed = currentTime - start;
+        return elapsed;
     }
 
     Point<> Stopwatch::CurrentTime() const

@@ -1,13 +1,11 @@
 #pragma once
 
-#include "ImageCore.h"
+#include "GridRegion.h"
+#include "MoveGridRegion.h"
 
-#include "ChangeImageCore.h"
-
-#include "AngelScriptIndex.h"
-#include "AngelScriptImageAsset.h"
 #include "AngelScriptMaterialAsset.h"
 
+#include "AngelScriptIndex.h"
 #include "AngelScriptObjectManagement.h"
 #include "AngelScriptRegistration.h"
 
@@ -18,50 +16,49 @@ class asIScriptGeneric;
 
 namespace Atmos::Scripting::Angel
 {
-    class ChangeImageAsset
+    class ChangeGridRegionPoints
     {
     public:
         Arca::RelicID id = 0;
 
-        Arca::Index<Asset::Image> to;
+        std::vector<Spatial::Grid::Point> to;
     };
 
-    class ChangeAssetIndex
+    class ChangeGridRegionZ
     {
     public:
         Arca::RelicID id = 0;
 
-        Render::ImageCore::Index to;
+        Spatial::Grid::Point::Value to;
     };
 
     template<>
-    struct Registration<Render::ImageCore>
+    struct Registration<Render::GridRegion>
     {
-        using Type = Arca::Index<Render::ImageCore>;
+        using Type = Arca::Index<Render::GridRegion>;
         using Management = ObjectManagement<Type>;
 
-        static inline const String name = "ImageCore";
+        static inline const String name = "GridRegion";
         static inline const String containingNamespace = Namespaces::Atmos::Render::name;
         static const ObjectType objectType = ObjectType::Value;
 
         static void RegisterTo(asIScriptEngine& engine);
     private:
-        [[nodiscard]] static Arca::Index<Asset::Image> Asset(Type type);
-        [[nodiscard]] static Render::ImageCore::Index AssetIndex(Type type);
-        [[nodiscard]] static Arca::Index<Asset::ImageMaterial> Material(Type type);
-        [[nodiscard]] static Render::Color Color(Type type);
+        [[nodiscard]] static std::unordered_set<Spatial::Grid::Point> Points(Type type);
+        [[nodiscard]] static Spatial::Grid::Point::Value Z(Type type);
+        [[nodiscard]] static Arca::Index<Asset::RegionMaterial> Material(Type type);
     };
 
     template<>
-    struct Registration<Arca::Index<Render::ImageCore>> : Registration<Render::ImageCore>
+    struct Registration<Arca::Index<Render::GridRegion>> : Registration<Render::GridRegion>
     {};
 
     template<>
-    struct Registration<ChangeImageAsset>
+    struct Registration<ChangeGridRegionPoints>
     {
-        using Type = ChangeImageAsset;
+        using Type = ChangeGridRegionPoints;
 
-        static inline const String name = "ChangeImageAsset";
+        static inline const String name = "ChangeGridRegionPoints";
         static inline const String containingNamespace = Namespaces::Atmos::Render::name;
         static const ObjectType objectType = ObjectType::Value;
 
@@ -69,15 +66,15 @@ namespace Atmos::Scripting::Angel
 
         static void RegisterTo(asIScriptEngine& engine);
 
-        static Render::ChangeImageCore ToArca(Type fromAngelScript);
+        static Render::MoveGridRegion ToArca(Type fromAngelScript);
     };
 
     template<>
-    struct Registration<ChangeAssetIndex>
+    struct Registration<ChangeGridRegionZ>
     {
-        using Type = ChangeAssetIndex;
+        using Type = ChangeGridRegionZ;
 
-        static inline const String name = "ChangeAssetIndex";
+        static inline const String name = "ChangeGridRegionZ";
         static inline const String containingNamespace = Namespaces::Atmos::Render::name;
         static const ObjectType objectType = ObjectType::Value;
 
@@ -85,6 +82,6 @@ namespace Atmos::Scripting::Angel
 
         static void RegisterTo(asIScriptEngine& engine);
 
-        static Render::ChangeImageCore ToArca(Type fromAngelScript);
+        static Render::MoveGridRegion ToArca(Type fromAngelScript);
     };
 }

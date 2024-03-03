@@ -24,13 +24,6 @@ namespace Atmos::Scripting::Angel
 
         static void RegisterTo(asIScriptEngine& engine);
     private:
-        [[nodiscard]] static long long Start(Type type);
-        [[nodiscard]] static long long Calculate(Type type);
-        [[nodiscard]] static long long Elapsed(Type type);
-        [[nodiscard]] static long long CurrentTime(Type type);
-        [[nodiscard]] static long long Average(Type type);
-        [[nodiscard]] static long long Highest(Type type);
-
         [[nodiscard]] static Time::Stopwatch CreateFrameStopwatch(Arca::Reliquary* reliquary);
     };
 }

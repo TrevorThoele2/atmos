@@ -80,12 +80,17 @@ namespace Atmos::Render
 
         if (command.assetIndex)
             core->assetIndex = *command.assetIndex;
+    }
 
-        if (command.color)
-            core->color = *command.color;
+    void ImageCurator::Handle(const ChangeImageMaterialAsset& command)
+    {
+        const auto index = Arca::Index<ImageCore>(command.id, Owner());
+        if (!index)
+            return;
 
-        if (command.material)
-            core->material = *command.material;
+        auto core = MutablePointer().Of(index);
+
+        core->material = command.to;
     }
 
     void ImageCurator::OnCreated(const Arca::MatrixFormed<Matrix>& signal)

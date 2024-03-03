@@ -17,14 +17,13 @@ namespace Atmos::Time
         Stopwatch& operator=(const Stopwatch& arg) = default;
         Stopwatch& operator=(Stopwatch&& arg) noexcept = default;
 
-        Point<> Start();
+        Point<> Restart();
         Duration<> Calculate();
 
         void ResetAverage();
         void ResetHighest();
 
         [[nodiscard]] Duration<> Elapsed() const;
-        [[nodiscard]] bool IsStarted() const;
         [[nodiscard]] Point<> CurrentTime() const;
 
         [[nodiscard]] Duration<> Average() const;

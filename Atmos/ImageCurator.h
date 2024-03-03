@@ -8,6 +8,7 @@
 #include "Bounds.h"
 #include "Camera.h"
 #include "ChangeImageCore.h"
+#include "ChangeMaterialAsset.h"
 
 namespace Atmos::Render
 {
@@ -18,6 +19,7 @@ namespace Atmos::Render
     public:
         using ObjectCurator::Handle;
         void Handle(const ChangeImageCore& command);
+        void Handle(const ChangeImageMaterialAsset& command);
     protected:
         void WorkImpl(
             Spatial::AxisAlignedBox3D cameraBox,
@@ -44,7 +46,8 @@ namespace Arca
         static inline const TypeName typeName = "Atmos::Render::ImageCurator";
         using HandledCommands = HandledCommands<
             Atmos::Work,
-            Atmos::Render::ChangeImageCore>;
+            Atmos::Render::ChangeImageCore,
+            Atmos::Render::ChangeImageMaterialAsset>;
     };
 }
 

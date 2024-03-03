@@ -1,5 +1,8 @@
 #include "RenderCurator.h"
 
+#include "ImageCore.h"
+#include "Line.h"
+
 namespace Atmos::Render
 {
     Curator::Curator(Init init) :
@@ -20,5 +23,28 @@ namespace Atmos::Render
         mutableMainPointer->DrawFrame();
 
         debugRenderProfiler.Calculate();
+    }
+
+    void Curator::Handle(const ChangeColor& command)
+    {
+        const auto execute = [this, command](auto index)
+        {
+            auto mutableObject = MutablePointer().Of(index);
+            mutableObject->color = command.to;
+        };
+
+        const auto image = Arca::Index<ImageCore>(command.id, Owner());
+        if (image)
+        {
+            execute(image);
+            return;
+        }
+
+        const auto line = Arca::Index<Line>(command.id, Owner());
+        if (line)
+        {
+            execute(line);
+            return;
+        }
     }
 }

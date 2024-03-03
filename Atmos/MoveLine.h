@@ -9,7 +9,7 @@ namespace Atmos::Render
 {
     struct MoveLine
     {
-        Arca::RelicID id;
+        Arca::RelicID id = Arca::nullRelicID;
 
         std::optional<std::vector<Spatial::Point2D>> points;
         std::optional<Spatial::Point2D::Value> z;

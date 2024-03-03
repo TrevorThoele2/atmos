@@ -1,8 +1,8 @@
-#include "VulkanShaderCompiler.h"
-
 #include <SDKDDKVer.h>
 #include <boost/process.hpp>
 #include <boost/process/windows.hpp>
+
+#include "VulkanShaderCompiler.h"
 
 #include "GraphicsError.h"
 #include "Logger.h"

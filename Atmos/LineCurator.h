@@ -6,7 +6,7 @@
 
 #include "Line.h"
 #include "MoveLine.h"
-#include "Camera.h"
+#include "ChangeMaterialAsset.h"
 
 namespace Atmos::Render
 {
@@ -17,6 +17,7 @@ namespace Atmos::Render
     public:
         using ObjectCurator::Handle;
         void Handle(const MoveLine& command);
+        void Handle(const ChangeLineMaterialAsset& command);
     protected:
         void WorkImpl(
             Spatial::AxisAlignedBox3D cameraBox,
@@ -43,7 +44,8 @@ namespace Arca
         static inline const TypeName typeName = "Atmos::Render::LineCurator";
         using HandledCommands = HandledCommands<
             Atmos::Work,
-            Atmos::Render::MoveLine>;
+            Atmos::Render::MoveLine,
+            Atmos::Render::ChangeLineMaterialAsset>;
     };
 }
 

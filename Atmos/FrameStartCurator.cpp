@@ -17,7 +17,7 @@ namespace Atmos::Frame
     void StartCurator::Handle(const Work&)
     {
         auto mutableInformation = MutablePointer().Of<Information>();
-        mutableInformation->startTime = mutableInformation->stopwatch.Start();
+        mutableInformation->startTime = mutableInformation->stopwatch.Restart();
 
         debugIdleProfiler.Calculate();
     }

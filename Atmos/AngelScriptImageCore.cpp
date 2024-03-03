@@ -65,7 +65,7 @@ namespace Atmos::Scripting::Angel
 
     Render::ChangeImageCore Registration<ChangeImageAsset>::ToArca(Type fromAngelScript)
     {
-        return { fromAngelScript.id, IsRequired(fromAngelScript.to), {}, {}, {} };
+        return { fromAngelScript.id, IsRequired(fromAngelScript.to), {} };
     }
 
     void Registration<ChangeAssetIndex>::RegisterTo(asIScriptEngine& engine)
@@ -88,52 +88,6 @@ namespace Atmos::Scripting::Angel
 
     Render::ChangeImageCore Registration<ChangeAssetIndex>::ToArca(Type fromAngelScript)
     {
-        return { fromAngelScript.id, {}, fromAngelScript.to, {}, {} };
-    }
-
-    void Registration<ChangeColor>::RegisterTo(asIScriptEngine& engine)
-    {
-        ValueTypeRegistration<Type>(containingNamespace, name)
-            .Constructor(
-                &Management::GenerateValue<
-                    &PullFromParameter<0, Arca::RelicID>,
-                    &PullFromParameter<1, Render::Color>>,
-                { "Arca::RelicID id", "Atmos::Render::Color to" })
-            .CopyConstructor(&Management::GenerateValueFromCopy)
-            .Destructor(&Management::DestructValue)
-            .CopyAssignment(&Management::CopyAssign)
-            .Property<&Type::id>("Arca::RelicID", "id")
-            .Property<&Type::to>("Atmos::Render::Color", "to")
-            .Actualize(engine);
-
-        RegisterCommandHandler<&ToArca>(engine);
-    }
-
-    Render::ChangeImageCore Registration<ChangeColor>::ToArca(Type fromAngelScript)
-    {
-        return { fromAngelScript.id, {}, {}, fromAngelScript.to, {} };
-    }
-
-    void Registration<ChangeMaterialAsset>::RegisterTo(asIScriptEngine& engine)
-    {
-        ValueTypeRegistration<Type>(containingNamespace, name)
-            .Constructor(
-                &Management::GenerateValue<
-                    &PullFromParameter<0, Arca::RelicID>,
-                    &PullFromParameter<1, Arca::Index<Asset::ImageMaterial>>>,
-                { "Arca::RelicID id", "Atmos::Asset::ImageMaterial to" })
-            .CopyConstructor(&Management::GenerateValueFromCopy)
-            .Destructor(&Management::DestructValue)
-            .CopyAssignment(&Management::CopyAssign)
-            .Property<&Type::id>("Arca::RelicID", "id")
-            .Property<&Type::to>("Atmos::Asset::ImageMaterial", "to")
-            .Actualize(engine);
-
-        RegisterCommandHandler<&ToArca>(engine);
-    }
-
-    Render::ChangeImageCore Registration<ChangeMaterialAsset>::ToArca(Type fromAngelScript)
-    {
-        return { fromAngelScript.id, {}, {}, {}, { IsRequired(fromAngelScript.to) } };
+        return { fromAngelScript.id, {}, fromAngelScript.to };
     }
 }

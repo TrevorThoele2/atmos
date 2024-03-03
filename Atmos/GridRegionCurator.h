@@ -2,10 +2,11 @@
 
 #include "RenderObjectCurator.h"
 
-#include "Octree.h"
-
 #include "GridRegion.h"
-#include "Camera.h"
+#include "MoveGridRegion.h"
+#include "ChangeMaterialAsset.h"
+
+#include "Octree.h"
 
 namespace Atmos::Render
 {
@@ -15,6 +16,8 @@ namespace Atmos::Render
         explicit GridRegionCurator(Init init);
 
         using ObjectCurator::Handle;
+        void Handle(const MoveGridRegion& command);
+        void Handle(const ChangeRegionMaterialAsset& command);
     protected:
         void WorkImpl(
             Spatial::AxisAlignedBox3D cameraBox,
@@ -26,12 +29,27 @@ namespace Atmos::Render
 
         Arca::Index<Camera> camera;
     private:
+        template<class Function>
+        void AttemptChangeObject(Arca::RelicID id, Function function);
+    private:
         void OnCreated(const Arca::CreatedKnown<GridRegion>& signal);
         void OnDestroying(const Arca::DestroyingKnown<GridRegion>& signal);
     private:
         static Spatial::AxisAlignedBox3D BoxFor(const std::vector<Spatial::Grid::Point>& points, Spatial::Grid::Point::Value z);
         static Spatial::AxisAlignedBox3D BoxFor(const Index& index);
     };
+
+    template<class Function>
+    void GridRegionCurator::AttemptChangeObject(Arca::RelicID id, Function function)
+    {
+        const auto index = Arca::Index<GridRegion>(id, Owner());
+        if (!index)
+            return;
+
+        auto data = MutablePointer().Of(index);
+
+        function(*data);
+    }
 }
 
 namespace Arca
@@ -42,7 +60,9 @@ namespace Arca
         static const ObjectType objectType = ObjectType::Curator;
         static inline const TypeName typeName = "Atmos::Render::GridRegionCurator";
         using HandledCommands = HandledCommands<
-            Atmos::Work>;
+            Atmos::Work,
+            Atmos::Render::MoveGridRegion,
+            Atmos::Render::ChangeRegionMaterialAsset>;
     };
 }
 

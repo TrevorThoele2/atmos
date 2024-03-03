@@ -37,7 +37,7 @@ namespace Atmos::Render
         returnValue.reserve(points.size());
 
         size_t index0 = 0;
-        const auto fullCircle = 2 * PI<float>;
+        const auto fullCircle = 2 * pi<float>;
         const auto epsilon = std::numeric_limits<float>::epsilon();
         while (usePoints.size() > 3)
         {
@@ -49,9 +49,9 @@ namespace Atmos::Render
                 ? abs(calculatedAngle)
                 : fullCircle - calculatedAngle;
 
-            if (angle <= PI<float> +epsilon && angle >= PI<float> -epsilon)
+            if (angle <= pi<float> +epsilon && angle >= pi<float> -epsilon)
                 usePoints.erase(usePoints.begin() + index1);
-            else if (angle > PI<float>)
+            else if (angle > pi<float>)
                 ++index0;
             else
             {
