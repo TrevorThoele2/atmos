@@ -34,8 +34,6 @@ namespace Atmos::Render::Vulkan
         [[nodiscard]] Spatial::Point3D::Value NextLayer() const override;
         [[nodiscard]] size_t LayerCount() const override;
     private:
-        std::optional<UniformBufferDescriptor> uniformBufferDescriptor;
-    private:
         struct Vertex
         {
             alignas(16) glm::vec4 color;
@@ -72,12 +70,6 @@ namespace Atmos::Render::Vulkan
             };
 
             std::unordered_map<const Asset::Material*, Group> groups;
-            CombinedImageSamplerDescriptor descriptor;
-
-            explicit Context(const CombinedImageSamplerDescriptor& descriptor) :
-                descriptor(descriptor)
-            {}
-
             Group& GroupFor(const Asset::Material& material);
         };
     private:

@@ -50,20 +50,25 @@ namespace Atmos::Render
         for (auto& index : indices)
         {
             auto& value = *index->value;
-            if (!value.material)
+            const auto material = value.material.Get();
+            if (!material)
                 continue;
+
+            const auto z = value.z;
+            const auto width = value.width;
+            const auto color = value.color;
 
             std::vector<Spatial::Point2D> adjustedPoints;
             for (auto& point : value.points)
-                adjustedPoints.push_back(Spatial::Point2D{ point.x - cameraLeft, point.y - cameraTop });
+                adjustedPoints.emplace_back(point.x - cameraLeft, point.y - cameraTop);
 
             const LineRender render
             {
                 adjustedPoints,
-                value.z,
-                value.material,
-                value.width,
-                value.color
+                z,
+                material,
+                width,
+                color
             };
             mainSurface->StageRender(render);
         }

@@ -50,8 +50,8 @@ namespace Atmos::Render::Vulkan
 
         void StartCommon(
             const std::vector<const Asset::Material*>& materials,
-            vk::CommandBuffer commandBuffer,
-            bool recreatePipelines);
+            vk::CommandBuffer commandBuffer);
+        void RecreatePipelines(const std::vector<const Asset::Material*>& materials);
     private:
         std::optional<DrawContext> drawContext;
 
@@ -160,12 +160,8 @@ namespace Atmos::Render::Vulkan
     template<class Key, class Context, class DrawContextAddition>
     void RendererCoreBase<Key, Context, DrawContextAddition>::StartCommon(
         const std::vector<const Asset::Material*>& materials,
-        vk::CommandBuffer commandBuffer,
-        bool recreatePipelines)
+        vk::CommandBuffer commandBuffer)
     {
-        if (recreatePipelines)
-            pipelines.Recreate(materials, { descriptorSets.Layout() }, swapchainImageCount, renderPass, extent);
-
         for (auto& pipelineGroupEntry : pipelines)
             for(auto& pipeline : pipelineGroupEntry.second)
                 for (auto& descriptorSet : descriptorSets)
@@ -176,6 +172,12 @@ namespace Atmos::Render::Vulkan
         drawContext->materials = materials;
         drawContext->commandBuffer = commandBuffer;
         drawContext->currentLayer = layers.begin();
+    }
+
+    template<class Key, class Context, class DrawContextAddition>
+    void RendererCoreBase<Key, Context, DrawContextAddition>::RecreatePipelines(const std::vector<const Asset::Material*>& materials)
+    {
+        pipelines.Recreate(materials, { descriptorSets.Layout() }, swapchainImageCount, renderPass, extent);
     }
 
     template<class Key, class Context, class DrawContextAddition>
@@ -200,6 +202,7 @@ namespace Atmos::Render::Vulkan
         using BaseT::pipelines;
         using BaseT::device;
         using BaseT::StartCommon;
+        using BaseT::RecreatePipelines;
     };
 
     template<class Key, class Context, class DrawContextAddition>
@@ -211,7 +214,9 @@ namespace Atmos::Render::Vulkan
             return;
 
         const auto recreatedDescriptorSets = descriptorSets.UpdateSets(setupKey);
-        StartCommon(materials, commandBuffer, recreatedDescriptorSets);
+        if (recreatedDescriptorSets)
+            RecreatePipelines(materials);
+        StartCommon(materials, commandBuffer);
     }
 
     template<class Key, class Context, class DrawContextAddition>
@@ -246,6 +251,7 @@ namespace Atmos::Render::Vulkan
         using BaseT::pipelines;
         using BaseT::device;
         using BaseT::StartCommon;
+        using BaseT::RecreatePipelines;
     };
 
     template<class Context, class DrawContextAddition>
@@ -256,7 +262,9 @@ namespace Atmos::Render::Vulkan
             return;
 
         const auto recreatedDescriptorSets = descriptorSets.UpdateSets();
-        StartCommon(materials, commandBuffer, recreatedDescriptorSets);
+        if (recreatedDescriptorSets)
+            RecreatePipelines(materials);
+        StartCommon(materials, commandBuffer);
     }
 
     template<class Context, class DrawContextAddition>
