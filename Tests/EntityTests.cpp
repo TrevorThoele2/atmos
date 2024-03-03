@@ -185,6 +185,56 @@ SCENARIO_METHOD(EntityTestsFixture, "creating entities", "[entity]")
                 }
             }
         }
+
+        WHEN("creating entity with same name as other entity")
+        {
+            const auto name = dataGeneration.Random<String>();
+
+            const auto entity0 = reliquary->Do(Arca::Create<Atmos::Entity::Entity>(
+                name,
+                "",
+                Spatial::Grid::Point{},
+                0.0f,
+                false));
+            const auto entity1 = reliquary->Do(Arca::Create<Atmos::Entity::Entity>(
+                name,
+                "",
+                Spatial::Grid::Point{},
+                0.0f,
+                false));
+
+            THEN("did not create entity")
+            {
+                REQUIRE(!entity1);
+            }
+        }
+
+        WHEN("creating entity with same position as other entity when both are solid")
+        {
+            const auto names = dataGeneration.RandomGroup<String>(2);
+            auto position = dataGeneration.RandomStack<
+                Spatial::Grid::Point,
+                Spatial::Grid::Point::Value,
+                Spatial::Grid::Point::Value>();
+
+            const auto entity0 = reliquary->Do(Arca::Create<Atmos::Entity::Entity>(
+                names[0],
+                "",
+                position,
+                0.0f,
+                true));
+            const auto entity1 = reliquary->Do(Arca::Create<Atmos::Entity::Entity>(
+                names[1],
+                "",
+                position,
+                0.0f,
+                true));
+
+            THEN("did not create entity")
+            {
+                REQUIRE(!entity1);
+            }
+        }
     }
 }
 

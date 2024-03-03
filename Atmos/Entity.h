@@ -25,7 +25,7 @@ namespace Atmos::Entity
 
         std::vector<Tag> tags;
     public:
-        Entity(Arca::RelicInit init);
+        Entity(Arca::RelicInit init, Arca::Serialization);
         explicit Entity(
             Arca::RelicInit init,
             Name name,
@@ -43,6 +43,13 @@ namespace Arca
     {
         static const ObjectType objectType = ObjectType::Relic;
         static TypeName TypeName() { return "Atmos::Entity::Entity"; }
+        static bool ShouldCreate(
+            Reliquary& reliquary,
+            const Atmos::Name& name,
+            const Atmos::Name& displayName,
+            const Atmos::Spatial::Grid::Point& position,
+            const Atmos::Spatial::Angle2D& direction,
+            bool isSolid);
     };
 }
 
