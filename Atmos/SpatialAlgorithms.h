@@ -44,8 +44,12 @@ namespace Atmos::Spatial
 
     [[nodiscard]] Point2D operator+(Point2D left, Point2D right);
     [[nodiscard]] Point3D operator+(Point3D left, Point3D right);
+    [[nodiscard]] AxisAlignedBox2D operator+(AxisAlignedBox2D left, Point2D right);
+    [[nodiscard]] AxisAlignedBox3D operator+(AxisAlignedBox3D left, Point3D right);
     [[nodiscard]] Point2D operator-(Point2D left, Point2D right);
     [[nodiscard]] Point3D operator-(Point3D left, Point3D right);
+    [[nodiscard]] AxisAlignedBox2D operator-(AxisAlignedBox2D left, Point2D right);
+    [[nodiscard]] AxisAlignedBox3D operator-(AxisAlignedBox3D left, Point3D right);
 
     [[nodiscard]] Point2D ToPoint2D(Point3D point);
     [[nodiscard]] Point2D ToPoint2D(Grid::Point point);

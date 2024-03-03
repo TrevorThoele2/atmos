@@ -134,6 +134,16 @@ auto JavaScriptSpatialAdditionTestsFixture::Point3D() -> ScenarioT
     return CreateScenario(Spatial::Point3D{ 10, 20, 30 }, Spatial::Point3D{ 40, 50, 60 });
 }
 
+auto JavaScriptSpatialAdditionTestsFixture::Box2D() -> ScenarioT
+{
+    return CreateScenario(Spatial::AxisAlignedBox2D{ {10, 20}, {30, 40} }, Spatial::Point2D{ 50, 60 });
+}
+
+auto JavaScriptSpatialAdditionTestsFixture::Box3D() -> ScenarioT
+{
+    return CreateScenario(Spatial::AxisAlignedBox3D{ {10, 20, 30}, {40, 50, 60} }, Spatial::Point3D{ 70, 80, 90 });
+}
+
 auto JavaScriptSpatialSubtractionTestsFixture::Point2D() -> ScenarioT
 {
     return CreateScenario(Spatial::Point2D{ 10, 20 }, Spatial::Point2D{ 30, 40 });

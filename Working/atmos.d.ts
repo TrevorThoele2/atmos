@@ -343,8 +343,12 @@ declare module Atmos {
         export function cell(column: number, row: number, depth: number, cellSize: Size3D): AxisAlignedBox3D;
         export function add(left: Point2D, right: Point2D): Point2D;
         export function add(left: Point3D, right: Point3D): Point3D;
+        export function add(left: AxisAlignedBox2D, right: Point2D): AxisAlignedBox2D;
+        export function add(left: AxisAlignedBox3D, right: Point3D): AxisAlignedBox3D;
         export function subtract(left: Point2D, right: Point2D): Point2D;
         export function subtract(left: Point3D, right: Point3D): Point3D;
+        export function subtract(left: AxisAlignedBox2D, right: Point2D): AxisAlignedBox2D;
+        export function subtract(left: AxisAlignedBox3D, right: Point3D): AxisAlignedBox3D;
         export function toPoint2D(point: Point3D): Point2D;
         export function toPoint2D(angle: Angle2D, distance: number): Point2D;
         export function toPoint3D(point: Point2D, z: number): Point3D;

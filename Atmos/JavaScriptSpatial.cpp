@@ -452,12 +452,32 @@ namespace Atmos::Scripting::JavaScript
                 *isolate,
                 String(R"(The function "add" has the following signatures: )") +
                 String(R"V0G0N((Atmos::Spatial::Point2D, Atmos::Spatial::Point2D), )V0G0N") +
-                String(R"V0G0N((Atmos::Spatial::Point3D, Atmos::Spatial::Point3D))V0G0N")));
+                String(R"V0G0N((Atmos::Spatial::Point3D, Atmos::Spatial::Point3D), )V0G0N") +
+                String(R"V0G0N((Atmos::Spatial::AxisAlignedBox2D, Atmos::Spatial::Point2D), )V0G0N") +
+                String(R"V0G0N((Atmos::Spatial::AxisAlignedBox3D, Atmos::Spatial::Point3D))V0G0N")));
         };
 
+        const auto box3D = FromV8<Spatial::AxisAlignedBox3D>(*isolate, info[0]);
+        const auto box2D = FromV8<Spatial::AxisAlignedBox2D>(*isolate, info[0]);
         const auto point3D = FromV8<Spatial::Point3D>(*isolate, info[0]);
         const auto point2D = FromV8<Spatial::Point2D>(*isolate, info[0]);
-        if (point3D)
+        if (box3D)
+        {
+            const auto otherPoint = FromV8<Spatial::Point3D>(*isolate, info[1]);
+            if (otherPoint)
+                info.GetReturnValue().Set(ToV8(*isolate, *box3D + *otherPoint));
+            else
+                throwException();
+        }
+        else if (box2D)
+        {
+            const auto otherPoint = FromV8<Spatial::Point2D>(*isolate, info[1]);
+            if (otherPoint)
+                info.GetReturnValue().Set(ToV8(*isolate, *box2D + *otherPoint));
+            else
+                throwException();
+        }
+        else if (point3D)
         {
             const auto otherPoint = FromV8<Spatial::Point3D>(*isolate, info[1]);
             if (otherPoint)

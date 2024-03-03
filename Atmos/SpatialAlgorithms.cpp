@@ -240,6 +240,24 @@ namespace Atmos::Spatial
         };
     }
 
+    AxisAlignedBox2D operator+(AxisAlignedBox2D left, Point2D right)
+    {
+        return
+        {
+            left.center + right,
+            left.size
+        };
+    }
+    
+    AxisAlignedBox3D operator+(AxisAlignedBox3D left, Point3D right)
+    {
+        return
+        {
+            left.center + right,
+            left.size
+        };
+    }
+
     Point2D operator-(Point2D left, Point2D right)
     {
         return
@@ -256,6 +274,24 @@ namespace Atmos::Spatial
             left.x - right.x,
             left.y - right.y,
             left.z - right.z
+        };
+    }
+
+    AxisAlignedBox2D operator-(AxisAlignedBox2D left, Point2D right)
+    {
+        return
+        {
+            left.center - right,
+            left.size
+        };
+    }
+
+    AxisAlignedBox3D operator-(AxisAlignedBox3D left, Point3D right)
+    {
+        return
+        {
+            left.center - right,
+            left.size
         };
     }
 
