@@ -510,6 +510,160 @@ SCENARIO_METHOD(AngelScriptSpatialAlgorithmsTestsFixture, "running spatial algor
         }
     }
 
+    GIVEN("script that returns Envelope of AxisAlignedBox2D")
+    {
+        auto center0 = dataGeneration.RandomStack<
+            Spatial::Point2D, Spatial::Point2D::Value, Spatial::Point2D::Value>();
+        auto size0 = dataGeneration.RandomStack<
+            Spatial::Size2D, Spatial::Size2D::Value, Spatial::Size2D::Value>();
+        auto center1 = dataGeneration.RandomStack<
+            Spatial::Point2D, Spatial::Point2D::Value, Spatial::Point2D::Value>();
+        auto size1 = dataGeneration.RandomStack<
+            Spatial::Size2D, Spatial::Size2D::Value, Spatial::Size2D::Value>();
+
+        CompileAndCreateScript(
+            "basic_script.as",
+            "string main(float center0X, " \
+            "float center0Y, " \
+            "float size0Width, " \
+            "float size0Height, " \
+            "float center1X, " \
+            "float center1Y, " \
+            "float size1Width, " \
+            "float size1Height)\n" \
+            "{\n" \
+            "    Atmos::Spatial::Point2D center0(center0X, center0Y);\n" \
+            "    Atmos::Spatial::Size2D size0(size0Width, size0Height);\n" \
+            "    Atmos::Spatial::AxisAlignedBox2D box0(center0, size0);\n" \
+            "\n" \
+            "    Atmos::Spatial::Point2D center1(center1X, center1Y);\n" \
+            "    Atmos::Spatial::Size2D size1(size1Width, size1Height);\n" \
+            "    Atmos::Spatial::AxisAlignedBox2D box1(center1, size1);\n" \
+            "\n" \
+            "    const array<Atmos::Spatial::AxisAlignedBox2D> boxes = { box0, box1 };\n" \
+            "    const auto envelope = Atmos::Spatial::Envelope(boxes);\n" \
+            "    return Atmos::ToString(envelope.Left())\n" \
+            "        + \" \" + Atmos::ToString(envelope.Top())\n" \
+            "        + \" \" + Atmos::ToString(envelope.Right())\n" \
+            "        + \" \" + Atmos::ToString(envelope.Bottom());\n" \
+            "}",
+            {
+                center0.x,
+                center0.y,
+                size0.width,
+                size0.height,
+                center1.x,
+                center1.y,
+                size1.width,
+                size1.height },
+                *fieldReliquary);
+
+        WHEN("working reliquary")
+        {
+            fieldReliquary->Do(Work{});
+
+            THEN("has correct properties")
+            {
+                REQUIRE(finishes.size() == 1);
+
+                const auto box0 = Spatial::AxisAlignedBox2D(center0, size0);
+                const auto box1 = Spatial::AxisAlignedBox2D(center1, size1);
+                const auto envelope = Spatial::Envelope({ box0, box1 });
+
+                const auto result = std::get<String>(std::get<Variant>(finishes[0].result));
+
+                const auto expectedResult = ToString(envelope.Left())
+                    + " " + ToString(envelope.Top())
+                    + " " + ToString(envelope.Right())
+                    + " " + ToString(envelope.Bottom());
+                REQUIRE(result == expectedResult);
+            }
+        }
+    }
+
+    GIVEN("script that returns Envelope of AxisAlignedBox3D")
+    {
+        auto center0 = dataGeneration.RandomStack<
+            Spatial::Point3D, Spatial::Point3D::Value, Spatial::Point3D::Value, Spatial::Point3D::Value>();
+        auto size0 = dataGeneration.RandomStack<
+            Spatial::Size3D, Spatial::Size3D::Value, Spatial::Size3D::Value, Spatial::Size3D::Value>();
+        auto center1 = dataGeneration.RandomStack<
+            Spatial::Point3D, Spatial::Point3D::Value, Spatial::Point3D::Value, Spatial::Point3D::Value>();
+        auto size1 = dataGeneration.RandomStack<
+            Spatial::Size3D, Spatial::Size3D::Value, Spatial::Size3D::Value, Spatial::Size3D::Value>();
+
+        CompileAndCreateScript(
+            "basic_script.as",
+            "string main(float center0X, " \
+            "float center0Y, " \
+            "float center0Z, " \
+            "float size0Width, " \
+            "float size0Height, " \
+            "float size0Depth, " \
+            "float center1X, " \
+            "float center1Y, " \
+            "float center1Z, " \
+            "float size1Width, " \
+            "float size1Height, " \
+            "float size1Depth)\n" \
+            "{\n" \
+            "    Atmos::Spatial::Point3D center0(center0X, center0Y, center0Z);\n" \
+            "    Atmos::Spatial::Size3D size0(size0Width, size0Height, size0Depth);\n" \
+            "    Atmos::Spatial::AxisAlignedBox3D box0(center0, size0);\n" \
+            "\n" \
+            "    Atmos::Spatial::Point3D center1(center1X, center1Y, center1Z);\n" \
+            "    Atmos::Spatial::Size3D size1(size1Width, size1Height, size1Depth);\n" \
+            "    Atmos::Spatial::AxisAlignedBox3D box1(center1, size1);\n" \
+            "\n" \
+            "    const array<Atmos::Spatial::AxisAlignedBox3D> boxes = { box0, box1 };\n" \
+            "    const auto envelope = Atmos::Spatial::Envelope(boxes);\n" \
+            "    return Atmos::ToString(envelope.Left())\n" \
+            "        + \" \" + Atmos::ToString(envelope.Top())\n" \
+            "        + \" \" + Atmos::ToString(envelope.FarZ())\n" \
+            "        + \" \" + Atmos::ToString(envelope.Right())\n" \
+            "        + \" \" + Atmos::ToString(envelope.Bottom())\n" \
+            "        + \" \" + Atmos::ToString(envelope.NearZ());\n" \
+            "}",
+            {
+                center0.x,
+                center0.y,
+                center0.z,
+                size0.width,
+                size0.height,
+                size0.depth,
+                center1.x,
+                center1.y,
+                center1.z,
+                size1.width,
+                size1.height,
+                size1.depth },
+                *fieldReliquary);
+
+        WHEN("working reliquary")
+        {
+            fieldReliquary->Do(Work{});
+
+            THEN("has correct properties")
+            {
+                REQUIRE(finishes.size() == 1);
+
+                const auto box0 = Spatial::AxisAlignedBox3D(center0, size0);
+                const auto box1 = Spatial::AxisAlignedBox3D(center1, size1);
+                const auto envelope = Spatial::Envelope({ box0, box1 });
+
+                const auto result = std::get<String>(std::get<Variant>(finishes[0].result));
+
+                const auto expectedResult = ToString(envelope.Left())
+                    + " " + ToString(envelope.Top())
+                    + " " + ToString(envelope.FarZ())
+                    + " " + ToString(envelope.Right())
+                    + " " + ToString(envelope.Bottom())
+                    + " " + ToString(envelope.NearZ());
+                REQUIRE(result == expectedResult);
+            }
+        }
+    }
+
     GIVEN("script that returns Contains from GridAxisAlignedBox and GridPoint")
     {
         auto center = dataGeneration.RandomStack<

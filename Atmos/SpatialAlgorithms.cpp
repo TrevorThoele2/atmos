@@ -107,6 +107,46 @@ namespace Atmos::Spatial
             (one.FarZ() <= two.NearZ() && one.NearZ() >= two.FarZ());
     }
 
+    AxisAlignedBox2D Envelope(std::vector<AxisAlignedBox2D> boxes)
+    {
+        AxisAlignedBox2D::Coordinate left = 0;
+        AxisAlignedBox2D::Coordinate top = 0;
+        AxisAlignedBox2D::Coordinate right = 0;
+        AxisAlignedBox2D::Coordinate bottom = 0;
+
+        for(auto& box : boxes)
+        {
+            left = std::min(left, box.Left());
+            top = std::min(top, box.Top());
+            right = std::max(right, box.Right());
+            bottom = std::max(bottom, box.Bottom());
+        }
+
+        return ToAxisAlignedBox2D(left, top, right, bottom);
+    }
+
+    AxisAlignedBox3D Envelope(std::vector<AxisAlignedBox3D> boxes)
+    {
+        AxisAlignedBox3D::Coordinate left = 0;
+        AxisAlignedBox3D::Coordinate top = 0;
+        AxisAlignedBox3D::Coordinate farZ = 0;
+        AxisAlignedBox3D::Coordinate right = 0;
+        AxisAlignedBox3D::Coordinate bottom = 0;
+        AxisAlignedBox3D::Coordinate nearZ = 0;
+
+        for (auto& box : boxes)
+        {
+            left = std::min(left, box.Left());
+            top = std::min(top, box.Top());
+            farZ = std::min(farZ, box.FarZ());
+            right = std::max(right, box.Right());
+            bottom = std::max(bottom, box.Bottom());
+            nearZ = std::max(nearZ, box.NearZ());
+        }
+
+        return ToAxisAlignedBox3D(left, top, farZ, right, bottom, nearZ);
+    }
+
     Point2D operator+(Point2D left, Point2D right)
     {
         return

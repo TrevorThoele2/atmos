@@ -7,6 +7,8 @@
 
 #include "ScriptDocumentationManager.h"
 
+#define AS_MAX_PORTABILITY 1
+
 class asIScriptEngine;
 
 namespace Atmos::Scripting::Angel

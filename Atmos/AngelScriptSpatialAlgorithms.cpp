@@ -38,6 +38,10 @@ namespace Atmos::Scripting::Angel
                 "bool", "Intersects", { "AxisAlignedBox2D one", "AxisAlignedBox2D two" })
             .Function(&Management::Function<static_cast<bool(*)(AxisAlignedBox3D, AxisAlignedBox3D)>(Intersects)>,
                 "bool", "Intersects", { "AxisAlignedBox3D one", "AxisAlignedBox3D two" })
+            .Function(&Management::Function<static_cast<AxisAlignedBox2D(*)(std::vector<AxisAlignedBox2D>)>(Envelope)>,
+                "AxisAlignedBox2D", "Envelope", { "const AxisAlignedBox2D[]@ boxes" })
+            .Function(&Management::Function<static_cast<AxisAlignedBox3D(*)(std::vector<AxisAlignedBox3D>)>(Envelope)>,
+                "AxisAlignedBox3D", "Envelope", { "const AxisAlignedBox3D[]@ boxes" })
             .Function(&Management::Function<static_cast<Point2D(*)(Point3D)>(ToPoint2D)>,
                 "Point2D", "ToPoint2D", { "Point3D point" })
             .Function(&Management::Function<static_cast<Point2D(*)(Grid::Point)>(ToPoint2D)>,

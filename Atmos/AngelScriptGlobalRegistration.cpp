@@ -18,6 +18,8 @@ namespace Atmos::Scripting::Angel
                     declaration.c_str(),
                     asFUNCTION(function),
                     asCALL_GENERIC);
+                if (IsError(result))
+                    const auto wait = 1 + 1;
                 VerifyResult(
                     result,
                     {
