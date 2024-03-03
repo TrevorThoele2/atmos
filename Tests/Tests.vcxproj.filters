@@ -160,6 +160,9 @@
     <ClCompile Include="AngelScriptNumericLimitsTests.cpp">
       <Filter>Source Files\Tests\Scripting\AngelScript\Atmos</Filter>
     </ClCompile>
+    <ClCompile Include="PathfinderTests.cpp">
+      <Filter>Source Files\Tests\Entity</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneralFixture.h">
@@ -329,6 +332,9 @@
     </ClInclude>
     <ClInclude Include="AngelScriptNumericLimitsTests.h">
       <Filter>Header Files\Tests\Scripting\AngelScript\Atmos</Filter>
+    </ClInclude>
+    <ClInclude Include="PathfinderTests.h">
+      <Filter>Header Files\Tests\Entity</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

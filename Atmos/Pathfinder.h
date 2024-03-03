@@ -57,6 +57,6 @@ namespace Atmos::Entity
         };
 
         [[nodiscard]] static NodeHeap::iterator FindNode(const Spatial::Grid::Point& position, NodeHeap& heap);
-        static void ReconstructPath(Path& stack, const Node& end);
+        [[nodiscard]] static Path ReconstructPath(const Node& end);
     };
 }
