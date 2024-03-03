@@ -4,9 +4,10 @@
 #include "CharacterClass.h"
 #include "FixedPoint.h"
 
-#include <Inscription\Scribe.h>
-#include <Inscription\Inscripter.h>
-#include <Inscription\ContainerSize.h>
+#include <Inscription/Scribe.h>
+#include <Inscription/Inscripter.h>
+#include <Inscription/ContainerSize.h>
+#include <Inscription/Set.h>
 
 namespace Atmos
 {
@@ -92,7 +93,7 @@ namespace Atmos
         DataStandard<StatAttributeTable>::Setup(*this);
     }
 
-    StatAttributeTable::StatAttributeTable(const RegistryObjectReference<CharacterClass> &charClass)
+    StatAttributeTable::StatAttributeTable(TypedObjectReference<nCharacterClass> charClass)
     {
         DataStandard<StatAttributeTable>::Setup(*this);
         SetCharacterClass(charClass);
@@ -108,7 +109,7 @@ namespace Atmos
         return !(*this == arg);
     }
 
-    void StatAttributeTable::SetCharacterClass(const RegistryObjectReference<CharacterClass> &charClass)
+    void StatAttributeTable::SetCharacterClass(TypedObjectReference<nCharacterClass> charClass)
     {
         for (auto& loop : charClass->stats)
             map.find(loop.first)->second.base = loop.second.base;
@@ -145,7 +146,7 @@ namespace Atmos
 
     void DataStandard<StatAttributeTable>::Setup(Object &object)
     {
-        for (auto &loop : entries)
+        for (auto& loop : entries)
             object.AddEntry(loop.first, 0);
     }
 
@@ -177,7 +178,7 @@ namespace Atmos
     std::set<Name> DataStandard<StatAttributeTable>::GetNames()
     {
         std::set<Name> ret;
-        for (auto &loop : entries)
+        for (auto& loop : entries)
             ret.emplace(loop.first);
         return ret;
     }
@@ -240,7 +241,7 @@ namespace Atmos
             ::Inscription::ContainerSize size(entries.size());
             scribe.Save(size);
 
-            for (auto &loop : entries)
+            for (auto& loop : entries)
             {
                 scribe.Save(::Inscription::RemoveConst(loop.first));
                 scribe.Save(loop.second.niceName);

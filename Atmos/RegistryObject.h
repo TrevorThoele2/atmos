@@ -1,44 +1,42 @@
 #pragma once
 
-#include "Name.h"
-#include "String.h"
+#include "Object.h"
 
-#include "Serialization.h"
+#include "Name.h"
+
+#include "StoredReadonlyProperty.h"
+
+#include "ObjectSerialization.h"
 
 namespace Atmos
 {
-    class RegistryObject
+    class RegistryObject : public Object
     {
     public:
-        typedef String Description;
-        typedef unsigned int ID;
-        static const ID nullID = 0;
-    private:
-        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
-        INSCRIPTION_ACCESS;
-    private:
-        template<class T, class Mixin>
-        friend class RegistryBase;
-    protected:
-        Name name;
-        ID id;
+        typedef StoredReadonlyProperty<Name> NameProperty;
+        NameProperty name;
     public:
-        Name niceName;
-        Description description;
+        typedef StoredReadonlyProperty<String> DescriptionProperty;
+        DescriptionProperty description;
+    public:
+        RegistryObject(const Name& name);
+        RegistryObject(const ::Inscription::Table<RegistryObject>& table);
 
-        RegistryObject() = default;
-        RegistryObject(const RegistryObject &arg) = default;
-        RegistryObject(RegistryObject &&arg);
-        RegistryObject& operator=(const RegistryObject &arg) = default;
-        RegistryObject& operator=(RegistryObject &&arg);
-        virtual ~RegistryObject() = 0 {}
+        ObjectTypeDescription TypeDescription() const override;
+    };
 
-        bool operator==(const RegistryObject &arg) const;
-        bool operator!=(const RegistryObject &arg) const;
+    template<>
+    struct ObjectTraits<RegistryObject> : ObjectTraitsBase<RegistryObject>
+    {
+        static const ObjectTypeName typeName;
+    };
+}
 
-        const Name& GetName() const;
-        ID GetID() const;
-        const Name& GetNiceName() const;
-        const Description& GetDescription() const;
+namespace Inscription
+{
+    DECLARE_OBJECT_INSCRIPTER(::Atmos::RegistryObject)
+    {
+    public:
+        static void AddMembers(TableT& table);
     };
 }

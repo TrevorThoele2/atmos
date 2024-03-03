@@ -9,8 +9,10 @@ namespace Atmos
 {
     INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(Size2D)
     {
-        scribe(width, height);
-        scribe(xScaler, yScaler);
+        scribe(width);
+        scribe(height);
+        scribe(xScaler);
+        scribe(yScaler);
         scribe(rotation);
         if (scribe.IsInput())
             Calc();
@@ -18,8 +20,8 @@ namespace Atmos
 
     void Size2D::Calc()
     {
-        auto sinT = sin(rotation.value);
-        auto cosT = cos(rotation.value);
+        auto sinT = sin(rotation.As<Radians>());
+        auto cosT = cos(rotation.As<Radians>());
 
         realWidth = width * xScaler;
         realHeight = height * yScaler;

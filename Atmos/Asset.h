@@ -1,36 +1,67 @@
 #pragma once
 
+#include "Object.h"
+
+#include "Name.h"
 #include "FilePath.h"
 
-#include "Serialization.h"
+#include "ObjectSerialization.h"
 
 namespace Atmos
 {
-    template<class T, class Store, class Key, class Mixin>
-    class AssetRegistryBase;
-
-    class Asset
+    class nAsset : public Object
     {
     public:
-        typedef unsigned int ID;
-        static const ID nullID = 0;
-    private:
-        template<class T, class Store, class Key, class Mixin>
-        friend class AssetRegistryBase;
-    private:
-        ID id;
-
-        virtual String GetStringImpl() const = 0;
+        const Name name;
     public:
-        Asset();
-        virtual ~Asset() = 0 {}
-        Asset(const Asset &arg) = default;
-        Asset& operator=(const Asset &arg) = default;
+        nAsset(const Name& name);
+        nAsset(const nAsset& arg);
+        nAsset(const ::Inscription::Table<nAsset>& table);
 
-        bool operator==(const Asset &arg) const;
-        bool operator!=(const Asset &arg) const;
+        ObjectTypeDescription TypeDescription() const override;
+    };
 
-        ID GetID() const;
-        String GetString() const;
+    template<>
+    struct ObjectTraits<nAsset> : ObjectTraitsBase<nAsset>
+    {
+        static const ObjectTypeName typeName;
+    };
+
+    class nFileAssetData;
+
+    class nFileAsset : public nAsset
+    {
+    public:
+        const FileName fileName;
+    public:
+        virtual ~nFileAsset() = 0;
+
+        ObjectTypeDescription TypeDescription() const override;
+    protected:
+        nFileAsset(const FileName& fileName);
+        nFileAsset(const nFileAsset& arg);
+        nFileAsset(const ::Inscription::Table<nFileAsset>& table);
+    };
+
+    template<>
+    struct ObjectTraits<nFileAsset> : ObjectTraitsBase<nFileAsset>
+    {
+        static const ObjectTypeName typeName;
+        static constexpr ObjectTypeList<nAsset> bases = {};
+    };
+}
+
+namespace Inscription
+{
+    DECLARE_OBJECT_INSCRIPTER(::Atmos::nAsset)
+    {
+    public:
+        static void AddMembers(TableT& table);
+    };
+
+    DECLARE_OBJECT_INSCRIPTER(::Atmos::nFileAsset)
+    {
+    public:
+        static void AddMembers(TableT& table);
     };
 }

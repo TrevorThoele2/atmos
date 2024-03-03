@@ -9,7 +9,7 @@
 #include "OperatorSelector.h"
 #include "BoundedNumber.h"
 #include "Optional.h"
-#include "RegistryObjectReference.h"
+#include "ObjectReference.h"
 
 #include "DataStandard.h"
 #include "GlobalContext.h"
@@ -18,7 +18,8 @@
 
 namespace Atmos
 {
-    class CharacterClass;
+    class nCharacterClass;
+
     class ResourceAttributeTable
     {
     public:
@@ -85,12 +86,12 @@ namespace Atmos
         const Entry& GetManaImpl() const;
     public:
         ResourceAttributeTable();
-        ResourceAttributeTable(const RegistryObjectReference<CharacterClass> &charClass);
+        ResourceAttributeTable(TypedObjectReference<nCharacterClass> charClass);
 
         bool operator==(const ResourceAttributeTable &arg) const;
         bool operator!=(const ResourceAttributeTable &arg) const;
 
-        void SetCharacterClass(const RegistryObjectReference<CharacterClass> &charClass);
+        void SetCharacterClass(TypedObjectReference<nCharacterClass> charClass);
 
         void AddModifier(const Modifier &mod);
         void RemoveModifier(const Modifier &mod);

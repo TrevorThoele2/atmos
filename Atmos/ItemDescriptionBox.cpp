@@ -10,31 +10,34 @@ namespace Agui
 
     void ItemDescriptionBox::Refresh_impl()
     {
-        if(item)
-            image->SetSprite(::Atmos::CreateAguiSpriteComponent(item->portrait, "portrait").get());
+        if (focusedItem)
+            image->SetSprite(::Atmos::CreateAguiSpriteComponent(focusedItem->portrait, "portrait").get());
     }
 
     void ItemDescriptionBox::GetNameString(std::string &string) const
     {
-        string = (!item) ? "" : item->GetName();
+        string = (!focusedItem) ? "" : focusedItem->name.Get();
     }
 
     void ItemDescriptionBox::GetDescriptionString(std::string &string) const
     {
-        string = (!item) ? "" : item->GetDescription();
+        string = (!focusedItem) ? "" : focusedItem->description;
     }
 
-    ItemDescriptionBox::ItemDescriptionBox(Object *parent, const std::string &name, const RelativePosition &pos, float z) : DescriptionBox(parent, name, pos, z), item(nullptr)
+    ItemDescriptionBox::ItemDescriptionBox(Object *parent, const std::string &name, const RelativePosition &pos, float z) :
+        DescriptionBox(parent, name, pos, z), focusedItem()
     {
         Setup();
     }
 
-    ItemDescriptionBox::ItemDescriptionBox(Object *parent, const WidgetPrototype &arg) : DescriptionBox(parent, arg), item(nullptr)
+    ItemDescriptionBox::ItemDescriptionBox(Object *parent, const WidgetPrototype &arg) :
+        DescriptionBox(parent, arg), focusedItem()
     {
         Setup();
     }
 
-    ItemDescriptionBox::ItemDescriptionBox(Object *parent, const ItemDescriptionBox &arg) : DescriptionBox(parent, arg), item(nullptr)
+    ItemDescriptionBox::ItemDescriptionBox(Object *parent, const ItemDescriptionBox &arg) :
+        DescriptionBox(parent, arg), focusedItem()
     {
         Setup();
     }
@@ -56,19 +59,19 @@ namespace Agui
 
     void ItemDescriptionBox::Set()
     {
-        item = nullptr;
+        focusedItem.Reset();
         Refresh();
     }
 
-    void ItemDescriptionBox::Set(const Atmos::Item &set)
+    void ItemDescriptionBox::Set(ItemReference set)
     {
-        this->item = &set;
+        focusedItem = set;
         Refresh();
     }
 
     void ItemDescriptionBox::Set(const Atmos::ItemStack &set)
     {
-        this->item = &*set.GetWrapped();
+        focusedItem = set.itemSource;
         Refresh();
     }
 

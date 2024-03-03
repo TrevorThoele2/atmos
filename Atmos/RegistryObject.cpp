@@ -1,55 +1,27 @@
 
 #include "RegistryObject.h"
 
-#include <Inscription/Scribe.h>
-
 namespace Atmos
 {
-    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(RegistryObject)
-    {
-        scribe(niceName);
-        scribe(description);
-    }
-
-    RegistryObject::RegistryObject(RegistryObject &&arg) : id(std::move(arg.id)), name(std::move(arg.name)), niceName(std::move(arg.niceName)), description(std::move(arg.description))
+    RegistryObject::RegistryObject(const Name& name) : name(name)
     {}
 
-    RegistryObject& RegistryObject::operator=(RegistryObject &&arg)
+    RegistryObject::RegistryObject(const ::Inscription::Table<RegistryObject>& table) :
+        INSCRIPTION_TABLE_GET_BASE(Object), INSCRIPTION_TABLE_GET_MEM(name)
+    {}
+
+    ObjectTypeDescription RegistryObject::TypeDescription() const
     {
-        id = std::move(arg.id);
-        name = std::move(arg.name);
-        niceName = std::move(arg.niceName);
-        description = std::move(arg.description);
-        return *this;
+        return ObjectTraits<RegistryObject>::TypeDescription();
     }
 
-    bool RegistryObject::operator==(const RegistryObject &arg) const
-    {
-        return id == arg.id;
-    }
+    const ObjectTypeName ObjectTraits<RegistryObject>::typeName = "RegistryObject";
+}
 
-    bool RegistryObject::operator!=(const RegistryObject &arg) const
+namespace Inscription
+{
+    DEFINE_OBJECT_INSCRIPTER_MEMBERS(::Atmos::RegistryObject)
     {
-        return !(*this == arg);
-    }
-
-    const Name& RegistryObject::GetName() const
-    {
-        return name;
-    }
-
-    RegistryObject::ID RegistryObject::GetID() const
-    {
-        return id;
-    }
-
-    const Name& RegistryObject::GetNiceName() const
-    {
-        return niceName;
-    }
-
-    const RegistryObject::Description& RegistryObject::GetDescription() const
-    {
-        return description;
+        INSCRIPTION_TABLE_ADD(name);
     }
 }

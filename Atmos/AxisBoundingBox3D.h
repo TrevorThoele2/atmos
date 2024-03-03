@@ -9,18 +9,6 @@ namespace Atmos
     {
     public:
         typedef float Coordinate;
-    private:
-        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
-        INSCRIPTION_ACCESS;
-    private:
-        Coordinate left, right, top, bottom, nearZ, farZ;
-        Coordinate realLeft, realRight, realTop, realBottom, realNearZ, realFarZ;
-        bool pixelPerfect;
-
-        Position3D center;
-
-        void Calc();
-        bool OverlappingImpl(const AxisBoundingBox3D &box) const;
     public:
         AxisBoundingBox3D(bool pixelPerfect = true);
         AxisBoundingBox3D(Coordinate left, Coordinate top, Coordinate farZ, Coordinate right, Coordinate bottom, Coordinate nearZ, bool pixelPerfect = true);
@@ -69,5 +57,17 @@ namespace Atmos
         bool Within(const AxisBoundingBox3D &box) const;
         // Returns true if the box overlaps any part of this AABB
         bool Overlapping(const AxisBoundingBox3D &box) const;
+    private:
+        Coordinate left, right, top, bottom, nearZ, farZ;
+        Coordinate realLeft, realRight, realTop, realBottom, realNearZ, realFarZ;
+        bool pixelPerfect;
+
+        Position3D center;
+
+        void Calculate();
+        bool OverlappingImpl(const AxisBoundingBox3D &box) const;
+    private:
+        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
+        INSCRIPTION_ACCESS;
     };
 }

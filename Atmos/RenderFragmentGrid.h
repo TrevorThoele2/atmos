@@ -3,29 +3,54 @@
 #include <array>
 #include <unordered_set>
 #include <memory>
+
 #include "AxisBoundingBox3D.h"
 #include "AxisBoundingBox2D.h"
 #include "GridPosition.h"
 #include "GridSize.h"
 #include "Optional.h"
 
+#include "ObjectReference.h"
+#include "ObjectMap.h"
+
+#include "PositionalObject.h"
+
 namespace Atmos
 {
-    class RenderFragment;
-    class RenderFragmentGrid
+    class Octree
     {
     public:
-        typedef std::unordered_set<RenderFragment*> SetT;
-        typedef size_t size_type;
+        typedef TypedObjectReference<PositionalObject> ItemReference;
+
+        typedef ObjectMap<PositionalObject> Map;
+        typedef size_t SizeT;
+    public:
+        Octree();
+        Octree(const Octree& arg) = delete;
+        Octree(Octree&& arg);
+        Octree& operator=(const Octree& arg) = delete;
+        Octree& operator=(Octree&& arg);
+
+        void Work();
+
+        void Add(ItemReference add);
+        void Remove(ItemReference remove);
+        void Clear();
+        void InformChanged(ItemReference changed, const AxisBoundingBox3D& previousBounds);
+
+        Map AllInside(const AxisBoundingBox3D& aabb);
+
+        bool IsEmpty() const;
+        SizeT Size() const;
     private:
         class NodeBase;
         typedef std::unique_ptr<NodeBase> NodePtr;
 
         // 0th layer is GRID_SIZE, 1st is GRID_SIZE * 2, 2nd is GRID_SIZE * 4
-        typedef unsigned char LayerT;
+        typedef unsigned char Layer;
 
-        typedef unsigned char ChildT;
-        enum Child : ChildT
+        typedef unsigned char ChildID;
+        enum Child : ChildID
         {
             // If this order is ever changed, then the child selection in Emplace will need to be changed
 
@@ -48,47 +73,75 @@ namespace Atmos
         };
 
         typedef std::array<NodePtr, 8> ChildrenArray;
+    private:
+        SizeT size;
+        ChildrenArray heads;
 
+        Map totalObjects;
+        Map toAddObjects;
+
+        // Will fabricate a LeafNode when layer == 0
+        static NodeBase* FabricateNode(Layer layer, GridPosition::ValueT layerSize, GridPosition::ValueT x, GridPosition::ValueT y, GridPosition::ValueT z);
+        void FabricateHeads(Layer layer);
+
+        void AddImpl(ItemReference add);
+        void RemoveImpl(ItemReference remove, const AxisBoundingBox3D& bounds);
+        inline AxisBoundingBox3D GetTotalBounds() const
+        {
+            return AxisBoundingBox3D(
+                heads[WNF]->GetBounds().GetLeft(),
+                heads[WNF]->GetBounds().GetTop(),
+                heads[WNF]->GetBounds().GetFarZ(),
+                heads[ESN]->GetBounds().GetRight(),
+                heads[ESN]->GetBounds().GetBottom(),
+                heads[ESN]->GetBounds().GetNearZ());
+        }
+
+        inline bool IsWithinTotal(const AxisBoundingBox3D& bounds)
+        {
+            return bounds.Within(GetTotalBounds());
+        }
+    private:
         struct ChildDetermination
         {
-            ChildT selection;
+            ChildID selection;
             GridPosition::ValueT xOffset;
             GridPosition::ValueT yOffset;
             GridPosition::ValueT zOffset;
-            ChildDetermination(ChildT selection, GridPosition::ValueT xOffset, GridPosition::ValueT yOffset, GridPosition::ValueT zOffset);
+            ChildDetermination(ChildID selection, GridPosition::ValueT xOffset, GridPosition::ValueT yOffset, GridPosition::ValueT zOffset);
         };
 
         // If the optional is invalid, that means that the box should be in this node
-        static Optional<ChildDetermination> DetermineChild(GridPosition::ValueT layerSize, const AxisBoundingBox3D &bounds, const AxisBoundingBox3D &againstBounds);
+        static Optional<ChildDetermination> DetermineChild(GridPosition::ValueT layerSize, const AxisBoundingBox3D& bounds, const AxisBoundingBox3D& againstBounds);
 
         class NodeBase
         {
         protected:
             const GridPosition::ValueT x, y, z;
-            SetT fragments;
+            Map objects;
         public:
             NodeBase(GridPosition::ValueT x, GridPosition::ValueT y, GridPosition::ValueT z);
-            NodeBase(const NodeBase &arg) = delete;
-            NodeBase(NodeBase &&arg);
-            NodeBase& operator=(const NodeBase &arg) = delete;
-            NodeBase& operator=(NodeBase &&arg);
-            virtual ~NodeBase() = 0 {}
+            NodeBase(const NodeBase& arg) = delete;
+            NodeBase(NodeBase&& arg);
+            NodeBase& operator=(const NodeBase& arg) = delete;
+            NodeBase& operator=(NodeBase&& arg);
+            virtual ~NodeBase() = 0;
 
             // Recursively will find a place for it; if it cannot find one, then it will return false
-            virtual bool Emplace(RenderFragment &fragment, const AxisBoundingBox3D &fragmentBounds) = 0;
+            virtual bool Emplace(ObjectReference emplace, const AxisBoundingBox3D& fragmentBounds) = 0;
             // Returns true if the fragment was removed successfully
-            virtual bool Remove(RenderFragment &fragment, const AxisBoundingBox3D &fragmentBounds) = 0;
-        
+            virtual bool Remove(ObjectReference remove, const AxisBoundingBox3D& fragmentBounds) = 0;
+
             virtual void Clear() = 0;
 
-            virtual void Find(const AxisBoundingBox3D &aabb, SetT &set) = 0;
+            virtual void AllInside(const AxisBoundingBox3D& aabb, Map& map) = 0;
             virtual bool IsTotalEmpty() const = 0;
             GridPosition GetPosition() const;
             virtual AxisBoundingBox3D GetBounds() const = 0;
-            virtual LayerT GetLayer() const = 0;
+            virtual Layer GetLayer() const = 0;
             virtual GridPosition::ValueT GetLayerSize() const = 0;
             // Returns the size of this set + the size of all the children
-            virtual SetT::size_type GetTotalSize() const = 0;
+            virtual Map::SizeT GetTotalSize() const = 0;
 
             virtual bool IsLeaf() const = 0;
         };
@@ -97,25 +150,25 @@ namespace Atmos
         {
         public:
             LeafNode(GridPosition::ValueT x, GridPosition::ValueT y, GridPosition::ValueT z);
-            LeafNode(const LeafNode &arg) = delete;
-            LeafNode(LeafNode &&arg);
-            LeafNode& operator=(const LeafNode &arg) = delete;
-            LeafNode& operator=(LeafNode &&arg);
+            LeafNode(const LeafNode& arg) = delete;
+            LeafNode(LeafNode&& arg);
+            LeafNode& operator=(const LeafNode& arg) = delete;
+            LeafNode& operator=(LeafNode&& arg);
 
             // Recursively will find a place for it; if it cannot find one, then it will return false
-            bool Emplace(RenderFragment &fragment, const AxisBoundingBox3D &fragmentBounds) override final;
+            bool Emplace(ObjectReference emplace, const AxisBoundingBox3D& fragmentBounds) override final;
             // Returns true if the fragment was removed successfully
-            bool Remove(RenderFragment &fragment, const AxisBoundingBox3D &fragmentBounds) override final;
+            bool Remove(ObjectReference remove, const AxisBoundingBox3D& fragmentBounds) override final;
 
             void Clear() override final;
 
-            void Find(const AxisBoundingBox3D &aabb, SetT &set) override final;
+            void AllInside(const AxisBoundingBox3D& aabb, Map& map) override final;
             bool IsTotalEmpty() const override final;
             AxisBoundingBox3D GetBounds() const override final;
-            LayerT GetLayer() const override final;
+            Layer GetLayer() const override final;
             GridPosition::ValueT GetLayerSize() const override final;
             // Returns the size of this set + the size of all the children
-            SetT::size_type GetTotalSize() const override final;
+            Map::SizeT GetTotalSize() const override final;
 
             bool IsLeaf() const override final { return true; }
         };
@@ -126,90 +179,44 @@ namespace Atmos
             ChildrenArray children;
             AxisBoundingBox3D bounds;
 
-            size_type totalSize;
+            SizeT totalSize;
 
-            LayerT layer;
+            Layer layer;
             GridPosition::ValueT layerSize;
         private:
             template<class ItrT>
             friend class IteratorBase;
-            friend RenderFragmentGrid;
+            friend Octree;
         private:
             void DeleteChildren();
         public:
-            Node(LayerT layer, GridPosition::ValueT layerSize, GridPosition::ValueT x, GridPosition::ValueT y, GridPosition::ValueT z);
-            Node(const Node &arg) = delete;
-            Node(Node &&arg);
-            Node& operator=(const Node &arg) = delete;
-            Node& operator=(Node &&arg);
+            Node(Layer layer, GridPosition::ValueT layerSize, GridPosition::ValueT x, GridPosition::ValueT y, GridPosition::ValueT z);
+            Node(const Node& arg) = delete;
+            Node(Node&& arg);
+            Node& operator=(const Node& arg) = delete;
+            Node& operator=(Node&& arg);
 
             // Recursively will find a place for it; if it cannot find one, then it will return false
-            bool Emplace(RenderFragment &fragment, const AxisBoundingBox3D &fragmentBounds) override final;
+            bool Emplace(ObjectReference emplace, const AxisBoundingBox3D& fragmentBounds) override final;
             // Returns true if the fragment was removed successfully
-            bool Remove(RenderFragment &fragment, const AxisBoundingBox3D &fragmentBounds) override final;
+            bool Remove(ObjectReference remove, const AxisBoundingBox3D& fragmentBounds) override final;
 
             // Returns true if the child was successfully added
-            bool AddChild(NodeBase *node);
+            bool AddChild(NodeBase* node);
 
             void Clear() override final;
 
-            void Find(const AxisBoundingBox3D &aabb, SetT &set) override final;
+            void AllInside(const AxisBoundingBox3D& aabb, Map& map) override final;
             bool IsTotalEmpty() const override final;
             AxisBoundingBox3D GetBounds() const override final;
-            LayerT GetLayer() const override final;
+            Layer GetLayer() const override final;
             GridPosition::ValueT GetLayerSize() const override final;
             // Returns the size of this set + the size of all the children
-            SetT::size_type GetTotalSize() const override final;
+            Map::SizeT GetTotalSize() const override final;
 
             bool IsLeaf() const override final { return false; }
 
-            static GridPosition::ValueT FabricateLayerSize(LayerT layer);
+            static GridPosition::ValueT FabricateLayerSize(Layer layer);
         };
-    private:
-        size_t size;
-        ChildrenArray heads;
-
-        SetT fragmentsInTotal;
-        SetT fragmentsToAdd;
-
-        // Will fabricate a LeafNode when layer == 0
-        static NodeBase* FabricateNode(LayerT layer, GridPosition::ValueT layerSize, GridPosition::ValueT x, GridPosition::ValueT y, GridPosition::ValueT z);
-        void FabricateHeads(LayerT layer);
-
-        void AddImpl(RenderFragment &add);
-        void RemoveImpl(RenderFragment &remove, const AxisBoundingBox3D &bounds);
-        inline AxisBoundingBox3D GetTotalBounds() const
-        {
-            return AxisBoundingBox3D(heads[WNF]->GetBounds().GetLeft(),
-                heads[WNF]->GetBounds().GetTop(),
-                heads[WNF]->GetBounds().GetFarZ(),
-                heads[ESN]->GetBounds().GetRight(),
-                heads[ESN]->GetBounds().GetBottom(),
-                heads[ESN]->GetBounds().GetNearZ());
-        }
-
-        inline bool IsWithinTotal(const AxisBoundingBox3D &bounds)
-        {
-            return bounds.Within(GetTotalBounds());
-        }
-    public:
-        RenderFragmentGrid();
-        RenderFragmentGrid(const RenderFragmentGrid &arg) = delete;
-        RenderFragmentGrid(RenderFragmentGrid &&arg);
-        RenderFragmentGrid& operator=(const RenderFragmentGrid &arg) = delete;
-        RenderFragmentGrid& operator=(RenderFragmentGrid &&arg);
-
-        void Work();
-
-        void Add(RenderFragment &add);
-        void Remove(RenderFragment &remove);
-        void Clear();
-        void InformChanged(RenderFragment &changed, const AxisBoundingBox3D &previousBounds);
-
-        // Will return all of the fragments inside of the box
-        SetT Find(const AxisBoundingBox3D &aabb);
-
-        bool IsEmpty() const;
-        size_type Size() const;
     };
 }

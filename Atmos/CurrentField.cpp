@@ -1,6 +1,7 @@
 
 #include "CurrentField.h"
 #include "WorldManager.h"
+#include "GameEnvironment.h"
 
 #define INDIVIDUAL_IMPL(handler)    \
 auto field = GetCurrentField();     \
@@ -13,42 +14,12 @@ namespace Atmos
 {
     Field* GetCurrentField()
     {
-        return WorldManager::GetCurrentField();
+        return GameEnvironment::GetWorldManager().GetCurrentField();
     }
 
-    TileHandler* GetCurrentTiles()
+    ObjectManager* GetLocalObjectManager()
     {
-        INDIVIDUAL_IMPL(tiles);
-    }
-
-    EntityManager* GetCurrentEntities()
-    {
-        INDIVIDUAL_IMPL(entities);
-    }
-
-    GroundItemHandler* GetCurrentGroundItems()
-    {
-        INDIVIDUAL_IMPL(groundItems);
-    }
-
-    RenderFragmentHandler* GetCurrentRenderFragments()
-    {
-        INDIVIDUAL_IMPL(renderFragments);
-    }
-
-    SoundHandler* GetCurrentSounds()
-    {
-        INDIVIDUAL_IMPL(sounds);
-    }
-
-    Scheduler* GetCurrentScheduler()
-    {
-        INDIVIDUAL_IMPL(scheduler);
-    }
-
-    OrphanScripts* GetCurrentOrphanScripts()
-    {
-        INDIVIDUAL_IMPL(orphanScripts);
+        INDIVIDUAL_IMPL(objectManager);
     }
 }
 

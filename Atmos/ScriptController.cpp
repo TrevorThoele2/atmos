@@ -1,260 +1,168 @@
 
 #include "ScriptController.h"
 
-#include "FalconScriptUtility.h"
-#include "Logger.h"
+#include "ScriptAsset.h"
+#include "AngelScriptUtility.h"
+#include "AngelScriptAssert.h"
+#include <angelscript.h>
 
-#include <falcon/engine.h>
+#include "ObjectManager.h"
+
+#include "Logger.h"
 
 namespace Atmos
 {
-    ScriptController::Piece::U::U() : instance(nullptr)
-    {}
-
-    ScriptController::Piece::U::U(Script::Instance *set) : instance(set)
-    {}
-
-    ScriptController::Piece::U::U(Script::Instance &&set) : owned(std::move(set))
-    {}
-
-    ScriptController::Piece::U::~U()
-    {}
-
-    ScriptController::Piece::Piece(Script::Instance &instance) : u(&instance), owns(false), justAdded(true), executedThisFrame(false), executeMain(true)
-    {}
-
-    ScriptController::Piece::Piece(Script::Instance &instance, const Script::SymbolName &executeSymbol, const Script::Instance::ItemVector &parameters) : u(&instance), owns(false), executeSymbol(executeSymbol), parameters(parameters), justAdded(true), executedThisFrame(false), executeMain(false)
-    {}
-
-    ScriptController::Piece::Piece(Script::Instance &&instance) : u(std::move(instance)), owns(true), justAdded(true), executeMain(true)
-    {}
-
-    ScriptController::Piece::Piece(Script::Instance &&instance, const Script::SymbolName &executeSymbol, const Script::Instance::ItemVector &parameters) : u(std::move(instance)), owns(true), executeSymbol(executeSymbol), parameters(parameters), justAdded(true), executedThisFrame(false), executeMain(false)
-    {}
-
-    ScriptController::Piece::Piece(Piece &&arg) : owns(std::move(arg.owns)), executeSymbol(std::move(arg.executeSymbol)), parameters(std::move(arg.parameters)), justAdded(std::move(arg.justAdded)), executedThisFrame(std::move(arg.executedThisFrame)), executeMain(std::move(arg.executeMain))
+    ScriptController::ScriptController(ObjectManager& manager) : ObjectSystem(manager)
     {
-        if (arg.owns)
-            u.owned = std::move(arg.u.owned);
-        else
-            u.instance = arg.u.instance;
+        runningScripts = manager.Batch<RunningScript>();
+        runningScripts.onCreated.Subscribe(&ScriptController::OnRunningScriptCreated, *this);
     }
 
-    ScriptController::Piece& ScriptController::Piece::operator=(Piece &&arg)
+    void ScriptController::ExecuteImmediately(RunningScriptReference reference)
     {
-        owns = std::move(arg.owns);
-        executeSymbol = std::move(arg.executeSymbol);
-        parameters = std::move(arg.parameters);
-        justAdded = std::move(arg.justAdded);
-        executedThisFrame = std::move(arg.executedThisFrame);
-        executeMain = std::move(arg.executeMain);
-        if (arg.owns)
-            u.owned = std::move(arg.u.owned);
-        else
-            u.instance = arg.u.instance;
-        return *this;
+        LaunchOrRunScript(Find(reference));
     }
 
-    Script::Instance* ScriptController::Piece::GetInstance()
+    void ScriptController::ForceQuit(RunningScriptReference reference)
     {
-        return (owns) ? &u.owned : u.instance;
+
     }
 
-    const Script::Instance* ScriptController::Piece::GetInstance() const
+    ScriptController::RunningScriptReference ScriptController::Current()
     {
-        return (owns) ? &u.owned : u.instance;
+        if (current == runningScripts.end())
+            return RunningScriptReference();
+
+        return *current;
     }
 
-    ScriptController::ScriptController() : isWorking(false)
-    {}
-
-    void ScriptController::LaunchOrRunScript(Stack::iterator current)
+    ObjectBatchSizeT ScriptController::Size() const
     {
-        bool error = false;
-        try
-        {
-            if (current->justAdded)
-            {
-                current->justAdded = false;
-                // Execute the scripts
-                if (current->executeMain)
-                    current->GetInstance()->GetVM()->launch();
-                else
-                    current->GetInstance()->GetVM()->launch(Fal::Convert(current->executeSymbol), current->parameters.size());
-            }
-            else
-                current->GetInstance()->GetVM()->run();
-        }
-        catch (Falcon::Error *err)
-        {
-            // Output an error
-            Logger::Log(String("The execution of a script has encountered an error.\n") + Falcon::AutoCString(err->toString()).c_str(),
-                Logger::Type::ERROR_MODERATE,
-                Logger::NameValueVector{ NameValuePair("Script File Name", current->GetInstance()->GetFileName().GetValue()) });
-            error = true;
-        }
-        catch (const Falcon::VMEventQuit&)
-        {
-
-        }
-
-        current->executedThisFrame = true;
-
-        if (!error)
-        {
-            if (!current->GetInstance()->IsSuspended())
-                Remove(*current->GetInstance());
-        }
-        else
-        {
-            if (current->GetInstance()->IsSuspended())
-                Remove(*current->GetInstance());
-        }
+        return runningScripts.Size();
     }
 
-    ScriptController::Stack::iterator ScriptController::Find(const Script::Instance &find)
+    ScriptController::RunningScriptReference ScriptController::RunningScriptFor(ScriptInstanceReference scriptInstance) const
     {
-        auto &stack = Instance().stack;
-        for (auto loop = stack.begin(); loop != stack.end(); ++loop)
-        {
-            if (loop->GetInstance() == &find)
-                return loop;
-        }
+        auto& found = runningScriptMap.find(scriptInstance);
+        if (found == runningScriptMap.end())
+            return RunningScriptReference();
 
-        return stack.end();
+        return found->second;
     }
 
-    ScriptController::Stack::const_iterator ScriptController::FindConst(const Script::Instance &find)
+    bool ScriptController::IsRunning(ScriptInstanceReference scriptInstance) const
     {
-        auto &stack = Instance().stack;
-        for (auto loop = stack.begin(); loop != stack.end(); ++loop)
-        {
-            if (loop->GetInstance() == &find)
-                return loop;
-        }
-
-        return stack.end();
+        return RunningScriptFor(scriptInstance).IsOccupied();
     }
 
-    ScriptController& ScriptController::Instance()
+    void ScriptController::WorkImpl()
     {
-        static ScriptController instance;
-        return instance;
-    }
-
-    void ScriptController::Add(Script::Instance &instance)
-    {
-        if (IsRunning(instance))
-            return;
-
-        Instance().stack.push_back(Piece(instance));
-    }
-
-    void ScriptController::Add(Script::Instance &instance, const Script::SymbolName &executeSymbol, const Script::Instance::ItemVector &parameters)
-    {
-        if (IsRunning(instance))
-            return;
-
-        Instance().stack.push_back(Piece(instance, executeSymbol, parameters));
-    }
-
-    void ScriptController::AddAndLaunch(Script::Instance &instance)
-    {
-        if (IsRunning(instance))
-            return;
-
-        Instance().stack.push_back(Piece(instance));
-        Instance().current = --Instance().stack.end();
-        LaunchOrRunScript(Instance().current);
-    }
-
-    void ScriptController::AddAndLaunch(Script::Instance &instance, const Script::SymbolName &executeSymbol, const Script::Instance::ItemVector &parameters)
-    {
-        if (IsRunning(instance))
-            return;
-
-        Instance().stack.push_back(Piece(instance, executeSymbol, parameters));
-        Instance().current = --Instance().stack.end();
-        LaunchOrRunScript(Instance().current);
-    }
-
-    void ScriptController::Remove(Script::Instance &instance)
-    {
-        auto &stack = Instance().stack;
-        if (stack.empty())
-            return;
-
-        auto found = Find(instance);
-        if (found == stack.end())
-            return;
-
-        if (Instance().isWorking)
-        {
-            // Push things into the deferred remove vector
-            for (auto &loop : Instance().deferredRemove)
-            {
-                if (loop == found)
-                    return;
-            }
-
-            Instance().deferredRemove.push_back(found);
-        }
-        else
-            // Remove immediately
-            stack.erase(found);
-    }
-
-    void ScriptController::Work()
-    {
-        Instance().isWorking = true;
-        auto &stack = Instance().stack;
-        auto &current = Instance().current;
+        for (auto& loop : runningScripts)
+            loop->Resume();
 
         // Resume all of the stack
-        current = stack.begin();
-        while (current != stack.end())
+        current = runningScripts.begin();
+        while (current != runningScripts.end())
         {
             auto next = current;
             ++next;
 
-            if (!current->executedThisFrame && !current->GetInstance()->IsSuspended())
+            if (!(*current)->executedThisFrame && !(*current)->IsSuspended())
             {
                 LaunchOrRunScript(current);
-                current->executedThisFrame = true;
+                (*current)->executedThisFrame = true;
             }
 
             current = next;
         }
 
-        current = stack.end();
+        current = runningScripts.end();
 
-        // Remove all scripts through deferred remove
-        auto &deferredRemove = Instance().deferredRemove;
-        for (auto &loop : deferredRemove)
-            stack.erase(loop);
-        deferredRemove.clear();
-
-        for (auto &loop : stack)
-            loop.executedThisFrame = false;
-
-        Instance().isWorking = false;
+        for (auto loop = runningScripts.begin(); loop != runningScripts.end();)
+        {
+            (*loop)->executedThisFrame = false;
+            if (!(*loop)->IsSuspended())
+                loop = runningScripts.RemoveObject(loop);
+            else
+                ++loop;
+        }
     }
 
-    size_t ScriptController::GetWorkedSize()
+    ScriptController::RunningIterator ScriptController::Find(RunningScriptReference reference)
     {
-        return Instance().stack.size();
+        for (auto loop = runningScripts.begin(); loop != runningScripts.end(); ++loop)
+            if (*loop == reference)
+                return loop;
+
+        return runningScripts.end();
     }
 
-    bool ScriptController::IsRunning(const Script::Instance &check)
+    void ScriptController::Remove(RunningIterator itr)
     {
-        return Find(check) != Instance().stack.end();
+        if (current == itr)
+            current = runningScripts.RemoveObject(itr);
+        else
+            runningScripts.RemoveObject(itr);
     }
 
-    Script::Instance* ScriptController::Current()
+    void ScriptController::LaunchOrRunScript(RunningIterator itr)
     {
-        if (Instance().current == Instance().stack.end())
-            return nullptr;
+        if ((*itr)->executedThisFrame)
+            return;
 
-        return Instance().current->GetInstance();
+        bool error = false;
+        asIScriptContext* context = (*itr)->UnderlyingContext();
+
+        if (!(*itr)->hasBeenExecuted)
+        {
+            (*itr)->hasBeenExecuted = true;
+
+            const asIScriptModule* mod = (*itr)->source->asset->UnderlyingModule();
+
+            asIScriptFunction* func = nullptr;
+            if ((*itr)->ShouldExecuteMain())
+                func = mod->GetFunctionByDecl("void Main()");
+            else
+            {
+                Scripting::ParameterIndex parameterIndex = 0;
+                for (auto& loop : (*itr)->parameters)
+                    Scripting::PushVariantToAngelScriptParameter(parameterIndex, loop, context);
+
+                func = mod->GetFunctionByDecl((*itr)->executeName.c_str());
+            }
+
+            if (!func)
+            {
+                Logger::Log(String("Cannot find the function to execute for a script.\n"),
+                    Logger::Type::ERROR_MODERATE,
+                    Logger::NameValueVector{
+                        NameValuePair("Script File Name", (*itr)->source->asset->fileName.GetValue()),
+                        NameValuePair("Execute Name", (*itr)->executeName) });
+            }
+
+            Scripting::AngelScriptAssert(context->Prepare(func));
+        }
+
+        Scripting::AngelScriptAssert(context->Execute());
+
+        (*itr)->executedThisFrame = true;
+
+        if (!error)
+        {
+            if (!(*itr)->IsSuspended())
+                Remove(itr);
+        }
+        else
+            Remove(itr);
+    }
+
+    void ScriptController::OnRunningScriptCreated(RunningScriptReference reference)
+    {
+        runningScriptMap.emplace(reference->source.Get(), reference);
+    }
+
+    void ScriptController::OnRunningScriptDestroyed(RunningScriptReference reference)
+    {
+        runningScriptMap.erase(reference->source.Get());
     }
 }

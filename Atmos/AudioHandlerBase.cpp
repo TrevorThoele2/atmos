@@ -10,16 +10,17 @@ namespace Atmos
 {
     struct OggFile
     {
-        char *currentPosition;
-        char *dataSource;
+        char* currentPosition;
+        char* dataSource;
         AudioHandlerBase::SizeT fileSize;
-        OggFile(char *dataSource, AudioHandlerBase::SizeT fileSize) : dataSource(dataSource), currentPosition(dataSource), fileSize(fileSize)
+        OggFile(char* dataSource, AudioHandlerBase::SizeT fileSize) :
+            dataSource(std::move(dataSource)), currentPosition(dataSource), fileSize(fileSize)
         {}
     };
 
-    size_t ReadOggFile(void *ptr, size_t size, size_t nmemb, void *dataSource)
+    size_t ReadOggFile(void* ptr, size_t size, size_t nmemb, void* dataSource)
     {
-        OggFile *oggFile = reinterpret_cast<OggFile*>(dataSource);
+        OggFile* oggFile = reinterpret_cast<OggFile*>(dataSource);
         size_t readCount = size * nmemb;
 
         // If going to read past the end
@@ -31,9 +32,9 @@ namespace Atmos
         return readCount;
     }
 
-    int SeekOggFile(void *dataSource, ogg_int64_t offset, int type)
+    int SeekOggFile(void* dataSource, ogg_int64_t offset, int type)
     {
-        OggFile *oggFile = reinterpret_cast<OggFile*>(dataSource);
+        OggFile* oggFile = reinterpret_cast<OggFile*>(dataSource);
 
         switch (type)
         {
@@ -65,14 +66,14 @@ namespace Atmos
         return 0;
     }
 
-    int CloseOggFile(void *datasource)
+    int CloseOggFile(void* datasource)
     {
         return 0;
     }
 
-    long TellOggFile(void *dataSource)
+    long TellOggFile(void* dataSource)
     {
-        OggFile *oggFile = reinterpret_cast<OggFile*>(dataSource);
+        OggFile* oggFile = reinterpret_cast<OggFile*>(dataSource);
         return (oggFile->currentPosition - oggFile->dataSource);
     }
 
@@ -86,15 +87,55 @@ namespace Atmos
         return callbacks;
     }
 
-    AudioHandlerBase::Data AudioHandlerBase::CreateData(Type type, void *buffer, SizeT fileSize)
+    std::unique_ptr<AudioAssetData> AudioHandlerBase::CreateAudioData(const FilePath& path)
     {
-        if (type == Type::WAV)
-            return CreateDataWAV(buffer, fileSize);
-        else // OGG
-            return CreateDataOGG(buffer, fileSize);
+        SimpleInFile file(path);
+        BufferT::SizeT fileSize = static_cast<BufferT::SizeT>(file.GetFileSize());
+
+        auto buffer = BufferT(fileSize);
+
+        file.FillBuffer(buffer.GetBytes(), fileSize);
+
+        auto typeOfBuffer = FileTypeOf(buffer, fileSize);
+        auto& createdData = ExtractFile(typeOfBuffer, std::move(buffer), fileSize);
+        auto& asset = CreateAudioDataImpl(std::move(createdData), path.GetFileName());
+
+        return std::move(asset);
     }
 
-    AudioHandlerBase::Data AudioHandlerBase::CreateDataWAV(void *buffer, SizeT fileSize)
+    std::unique_ptr<AudioAssetData> AudioHandlerBase::CreateAudioData(void* buffer, SizeT fileSize, const FileName& name)
+    {
+        BufferT madeBuffer(buffer, fileSize);
+        auto& data = ExtractFile(FileTypeOf(madeBuffer, fileSize), std::move(madeBuffer), fileSize);
+        return CreateAudioDataImpl(std::move(data), name);
+    }
+
+    bool AudioHandlerBase::CanMake(const FilePath& path)
+    {
+        SimpleInFile file(path);
+        auto fileSize = static_cast<SizeT>(file.GetFileSize());
+
+        auto buffer = BufferT(fileSize);
+        file.FillBuffer(buffer.GetBytes(), fileSize);
+
+        bool ret = FileTypeOf(buffer, fileSize) != FileType::NONE;
+        return ret;
+    }
+
+    bool AudioHandlerBase::CanMake(void* buffer, SizeT fileSize)
+    {
+        return FileTypeOf(BufferT(buffer, fileSize), fileSize) != FileType::NONE;
+    }
+
+    AudioHandlerBase::ExtractedFile AudioHandlerBase::ExtractFile(FileType fileType, BufferT&& buffer, SizeT fileSize)
+    {
+        if (fileType == FileType::WAV)
+            return ExtractFileWAV(std::move(buffer), fileSize);
+        else
+            return ExtractFileOGG(std::move(buffer), fileSize);
+    }
+
+    AudioHandlerBase::ExtractedFile AudioHandlerBase::ExtractFileWAV(BufferT&& buffer, SizeT fileSize)
     {
         Format format;
 
@@ -105,35 +146,35 @@ namespace Atmos
         size_t currentPosition = AUDIOFORMAT_POSITION;
 
         // Audio format
-        currentPosition += ReadFromBuffer(buffer, format.formatTag, currentPosition);
+        currentPosition += ReadFromBuffer(buffer.GetBytes(), format.formatTag, currentPosition);
         // Number of channels
-        currentPosition += ReadFromBuffer(buffer, format.channels, currentPosition);
+        currentPosition += ReadFromBuffer(buffer.GetBytes(), format.channels, currentPosition);
         // Sample rate
-        currentPosition += ReadFromBuffer(buffer, format.samplesPerSec, currentPosition);
+        currentPosition += ReadFromBuffer(buffer.GetBytes(), format.samplesPerSec, currentPosition);
         // Byte rate
-        currentPosition += ReadFromBuffer(buffer, format.avgBytesPerSec, currentPosition);
+        currentPosition += ReadFromBuffer(buffer.GetBytes(), format.avgBytesPerSec, currentPosition);
         // Block align
-        currentPosition += ReadFromBuffer(buffer, format.blockAlign, currentPosition);
+        currentPosition += ReadFromBuffer(buffer.GetBytes(), format.blockAlign, currentPosition);
         // Bits per sample
-        currentPosition += ReadFromBuffer(buffer, format.bitsPerSample, currentPosition);
+        currentPosition += ReadFromBuffer(buffer.GetBytes(), format.bitsPerSample, currentPosition);
 
         currentPosition = DURATION_POSITION;
 
         BufferT::SizeT retSize;
-        currentPosition += ReadFromBuffer(buffer, retSize, currentPosition);
+        currentPosition += ReadFromBuffer(buffer.GetBytes(), retSize, currentPosition);
 
         // Fill sound data
-        auto temp = new char[retSize];
-        currentPosition += ReadBufferFromBuffer(buffer, temp, retSize, currentPosition);
+        auto newBuffer = BufferT(retSize);
+        currentPosition += CopyBuffer(buffer.GetBytes(), newBuffer.GetBytes(), retSize, currentPosition);
 
-        return Data(BufferT(temp, retSize), std::move(format));
+        return ExtractedFile(std::move(newBuffer), std::move(format));
     }
 
-    AudioHandlerBase::Data AudioHandlerBase::CreateDataOGG(void *buffer, SizeT fileSize)
+    AudioHandlerBase::ExtractedFile AudioHandlerBase::ExtractFileOGG(BufferT&& buffer, SizeT fileSize)
     {
         Format format;
 
-        OggFile oggFile(reinterpret_cast<char*>(buffer), fileSize);
+        OggFile oggFile(buffer.GetBytes(), fileSize);
 
         OggVorbis_File og_file;
         ov_open_callbacks(&oggFile, &og_file, nullptr, -1, CreateOggCallbacks());
@@ -168,10 +209,10 @@ namespace Atmos
 
         ov_clear(&og_file);
 
-        return Data(BufferT(totalBuffer, byteSize), std::move(format));
+        return ExtractedFile(BufferT(totalBuffer, byteSize), std::move(format));
     }
 
-    AudioHandlerBase::Type AudioHandlerBase::GetType(void *buffer, SizeT fileSize)
+    AudioHandlerBase::FileType AudioHandlerBase::FileTypeOf(const BufferT& buffer, SizeT fileSize)
     {
         // Test WAV
         {
@@ -180,54 +221,21 @@ namespace Atmos
             // RIFF
             const char size = 4;
             const char magicString[size]{ 82, 73, 70, 70 };
-            if (CompareBuffers(buffer, &magicString, size))
-                return Type::WAV;
+            if (CompareBuffers(buffer.GetBytes(), &magicString, size))
+                return FileType::WAV;
         }
 
         // Test OGG
         {
-            OggFile oggFile(reinterpret_cast<char*>(buffer), fileSize);
+            OggFile oggFile(buffer.GetBytes(), fileSize);
 
             OggVorbis_File og_file;
             auto result = ov_test_callbacks(&oggFile, &og_file, nullptr, 0, CreateOggCallbacks());
+            ov_clear(&og_file);
             if (result >= 0)
-                return Type::OGG;
+                return FileType::OGG;
         }
 
-        return Type::NONE;
-    }
-
-    AudioAsset AudioHandlerBase::CreateAudio(const FilePath &path)
-    {
-        SimpleInFile file(path);
-        BufferT::SizeT fileSize = static_cast<BufferT::SizeT>(file.GetFileSize());
-        char *buffer = new char[static_cast<size_t>(fileSize)];
-        file.FillBuffer(buffer, fileSize);
-
-        auto &ret = CreateAudioImpl(CreateData(GetType(buffer, fileSize), buffer, fileSize), path.GetFileName());
-        delete[] buffer;
-        return std::move(ret);
-    }
-
-    AudioAsset AudioHandlerBase::CreateAudio(void *buffer, SizeT fileSize, const FileName &name)
-    {
-        return CreateAudioImpl(CreateData(GetType(buffer, fileSize), buffer, fileSize), name);
-    }
-
-    bool AudioHandlerBase::CanMake(const FilePath &path)
-    {
-        SimpleInFile file(path);
-        auto fileSize = file.GetFileSize();
-        char *buffer = new char[static_cast<size_t>(fileSize)];
-        file.FillBuffer(buffer, fileSize);
-
-        bool ret = GetType(buffer, static_cast<SizeT>(fileSize)) != Type::NONE;
-        delete[] buffer;
-        return ret;
-    }
-
-    bool AudioHandlerBase::CanMake(void *buffer, SizeT fileSize)
-    {
-        return GetType(buffer, fileSize) != Type::NONE;
+        return FileType::NONE;
     }
 }

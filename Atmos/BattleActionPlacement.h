@@ -4,6 +4,7 @@
 
 namespace Atmos
 {
+    /*
     namespace Battle
     {
         class ActionPlacement : public ActionManager
@@ -24,4 +25,5 @@ namespace Atmos
             void AddPosition(const GridPosition &add);
         };
     }
+    */
 }

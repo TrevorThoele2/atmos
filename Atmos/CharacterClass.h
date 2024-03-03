@@ -5,20 +5,16 @@
 #include "Attribute.h"
 #include "Proficiency.h"
 #include "ItemStash.h"
-#include "Optional.h"
 
-#include "Serialization.h"
+#include "ObjectSerialization.h"
 
 namespace Atmos
 {
-    class CharacterClass : public RegistryObject
+    class nCharacterClass : public RegistryObject
     {
     public:
         class AttributeEntry
         {
-        private:
-            INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
-            INSCRIPTION_ACCESS;
         public:
             typedef Attribute ValueT;
             ValueT base;
@@ -27,25 +23,20 @@ namespace Atmos
             AttributeEntry(ValueT base, ValueT growth);
             bool operator==(const AttributeEntry &arg) const;
             bool operator!=(const AttributeEntry &arg) const;
+        private:
+            INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
+            INSCRIPTION_ACCESS;
         };
-    private:
-        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
-        INSCRIPTION_ACCESS;
     public:
         std::unordered_map<Name, AttributeEntry> resources;
         std::unordered_map<Name, AttributeEntry> stats;
         std::unordered_map<Name, Proficiencies::Rating> proficiencyRatings;
         ItemStashSize permanentMaxItemCount;
         ItemStashSize temporaryMaxItemCount;
-
-        CharacterClass();
-        CharacterClass(const CharacterClass &arg) = default;
-        CharacterClass& operator=(const CharacterClass &arg) = default;
-        CharacterClass(CharacterClass &&arg);
-        CharacterClass& operator=(CharacterClass &&arg);
-        
-        bool operator==(const CharacterClass &arg) const;
-        bool operator!=(const CharacterClass &arg) const;
+    public:
+        nCharacterClass(const Name& name);
+        nCharacterClass(const nCharacterClass& arg) = default;
+        nCharacterClass(const ::Inscription::Table<nCharacterClass>& table);
 
         AttributeEntry* FindResource(const Name &name);
         AttributeEntry* FindStat(const Name &name);
@@ -54,15 +45,23 @@ namespace Atmos
         void RemoveProficiencyRating(const Name &name);
         Proficiencies::Rating* FindProficiencyRating(const Name &name);
         const Proficiencies::Rating* FindProficiencyRating(const Name &name) const;
+
+        ObjectTypeDescription TypeDescription() const override;
     };
 
     template<>
-    class Registry<CharacterClass> : public RegistryBase<CharacterClass, Registry<CharacterClass>>
+    struct ObjectTraits<nCharacterClass> : ObjectTraitsBase<nCharacterClass>
     {
-    private:
-        Registry() = default;
-        friend RegistryBase<CharacterClass, Registry<CharacterClass>>;
+        static const ObjectTypeName typeName;
+        static constexpr ObjectTypeList<RegistryObject> bases = {};
     };
+}
 
-    typedef Registry<CharacterClass> CharacterClassRegistry;
+namespace Inscription
+{
+    DECLARE_OBJECT_INSCRIPTER(::Atmos::nCharacterClass)
+    {
+    public:
+        static void AddMembers(TableT& table);
+    };
 }

@@ -187,6 +187,7 @@ namespace Atmos
         static Join2<DimensionT>& GetDefaultSize();
         static DimensionT GetClientWidth();
         static DimensionT GetClientHeight();
+        static Join2<DimensionT> GetClientSize();
         static DimensionT GetWindowWidth();
         static DimensionT GetWindowHeight();
         static DimensionT GetStartX();

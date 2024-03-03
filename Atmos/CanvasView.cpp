@@ -5,68 +5,27 @@
 
 namespace Atmos
 {
-    void CanvasView::CalculateBounds()
-    {
-        SetWidth(static_cast<float>(canvas->GetWidth()));
-        SetHeight(static_cast<float>(canvas->GetHeight()));
-    }
-
-    void CanvasView::DrawImpl() const
-    {
-        Environment::GetGraphics()->RenderCanvasView(*this);
-    }
-
-    Position3D::ValueT CanvasView::GetZHeight() const
-    {
-        return 0;
-    }
-
-    CanvasView::CanvasView() : RenderFragment(true), canvas(nullptr)
+    CanvasView::CanvasView() : nRenderFragment()
     {}
 
-    CanvasView::CanvasView(const Canvas &canvas) : RenderFragment(true), canvas(&canvas)
-    {
-        CalculateBounds();
-    }
-
-    CanvasView::CanvasView(const CanvasView &arg) : RenderFragment(arg), canvas(arg.canvas)
+    CanvasView::CanvasView(const Canvas& canvas) : nRenderFragment()
     {}
 
-    CanvasView::CanvasView(CanvasView &&arg) : RenderFragment(std::move(arg)), canvas(arg.canvas)
+    CanvasView::CanvasView(const ::Inscription::Table<CanvasView>& table) : INSCRIPTION_TABLE_GET_BASE(nRenderFragment)
     {}
 
-    CanvasView& CanvasView::operator=(const CanvasView &arg)
+    ObjectTypeDescription CanvasView::TypeDescription() const
     {
-        RenderFragment::operator=(arg);
-        canvas = arg.canvas;
-        return *this;
+        return ObjectTraits<CanvasView>::TypeDescription();
     }
 
-    CanvasView& CanvasView::operator=(CanvasView &&arg)
-    {
-        RenderFragment::operator=(std::move(arg));
-        canvas = arg.canvas;
-        return *this;
-    }
+    const ObjectTypeName ObjectTraits<CanvasView>::typeName = "CanvasView";
+}
 
-    bool CanvasView::operator==(const CanvasView &arg) const
+namespace Inscription
+{
+    DEFINE_OBJECT_INSCRIPTER_MEMBERS(::Atmos::CanvasView)
     {
-        return RenderFragment::operator==(arg) && canvas == arg.canvas;
-    }
 
-    bool CanvasView::operator!=(const CanvasView &arg) const
-    {
-        return !(*this == arg);
-    }
-
-    void CanvasView::SetCanvas(const Canvas &set)
-    {
-        canvas = &set;
-        CalculateBounds();
-    }
-
-    const Canvas& CanvasView::GetCanvas() const
-    {
-        return *canvas;
     }
 }

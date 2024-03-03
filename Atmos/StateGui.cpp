@@ -17,11 +17,6 @@ namespace Atmos
     StateGui::StateGui(const std::string &name) : rootName(name), root(nullptr)
     {}
 
-    Agui::Root* StateGui::GetRoot()
-    {
-        return root;
-    }
-
     void StateGui::Init()
     {
         root = Agui::System::CreateRoot(rootName);
@@ -43,5 +38,10 @@ namespace Atmos
     {
         root->Hide();
         HideImpl();
+    }
+
+    Agui::Root* StateGui::GetRoot()
+    {
+        return root;
     }
 }

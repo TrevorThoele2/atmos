@@ -4,92 +4,40 @@
 
 namespace Atmos
 {
-    ShaderAsset* ShaderAsset::Data::GetOwner() const
-    {
-        return owner;
-    }
+    ShaderAsset::ShaderAsset(const FileName& fileName, DataPtr&& data) : nFileAsset(fileName), data(std::move(data))
+    {}
 
-    void ShaderAsset::SetData(Data *set)
-    {
-        data.reset(set);
-        data->owner = this;
-    }
+    ShaderAsset::ShaderAsset(const ShaderAsset& arg) : nFileAsset(arg), data((arg.data) ? arg.data->Clone() : nullptr)
+    {}
 
-    void ShaderAsset::SetData(std::unique_ptr<Data> &&set)
-    {
-        data = std::move(set);
-        data->owner = this;
-    }
+    ShaderAsset::ShaderAsset(const ::Inscription::Table<ShaderAsset>& table) : INSCRIPTION_TABLE_GET_BASE(nFileAsset)
+    {}
 
-    String ShaderAsset::GetStringImpl() const
-    {
-        return name.GetValue();
-    }
-
-    ShaderAsset::ShaderAsset(Data *data, const FileName &name) : name(name)
-    {
-        SetData(data);
-    }
-
-    ShaderAsset::ShaderAsset(ShaderAsset &&arg) : name(std::move(arg.name))
-    {
-        SetData(std::move(arg.data));
-    }
-
-    ShaderAsset& ShaderAsset::operator=(ShaderAsset &&arg)
-    {
-        SetData(std::move(arg.data));
-        name = std::move(arg.name);
-        return *this;
-    }
-
-    bool ShaderAsset::operator==(const ShaderAsset &arg) const
-    {
-        return Asset::operator==(arg);
-    }
-
-    bool ShaderAsset::operator!=(const ShaderAsset &arg) const
-    {
-        return !(*this == arg);
-    }
-
-    ShaderAsset::Data* ShaderAsset::GetData() const
+    ShaderAsset::DataT* ShaderAsset::Data()
     {
         return data.get();
     }
 
-    void ShaderAsset::Reset()
+    const ShaderAsset::DataT* ShaderAsset::Data() const
     {
-        data->Reset();
+        return data.get();
     }
 
-    void ShaderAsset::Release()
+    ObjectTypeDescription ShaderAsset::TypeDescription() const
     {
-        data->Release();
+        return ObjectTraits<ShaderAsset>::TypeDescription();
     }
 
-    const FileName& ShaderAsset::GetFileName() const
-    {
-        return name;
-    }
+    const ObjectTypeName ObjectTraits<ShaderAsset>::typeName = "ShaderAsset";
 
-    ShaderAsset::PassT ShaderAsset::Begin() const
-    {
-        return data->Begin();
-    }
+    ShaderAssetData::~ShaderAssetData()
+    {}
+}
 
-    void ShaderAsset::End() const
+namespace Inscription
+{
+    DEFINE_OBJECT_INSCRIPTER_MEMBERS(::Atmos::ShaderAsset)
     {
-        data->End();
-    }
 
-    void ShaderAsset::BeginNextPass(PassT pass) const
-    {
-        data->BeginNextPass(pass);
-    }
-
-    void ShaderAsset::EndPass() const
-    {
-        data->EndPass();
     }
 }

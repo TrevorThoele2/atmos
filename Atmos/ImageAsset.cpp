@@ -1,116 +1,45 @@
 
 #include "ImageAsset.h"
 
-#include "Environment.h"
-#include "DXGraphics.h"
-
-#include <Inscription\Scribe.h>
-#include <Inscription\Inscripter.h>
-#include <Inscription\Table.h>
-#include <Inscription\String.h>
-
 namespace Atmos
 {
-    ImageAsset* ImageAsset::Data::GetOwner() const
-    {
-        return owner;
-    }
+    ImageAsset::ImageAsset(const FileName& fileName, DataPtr&& data) :
+        nFileAsset(fileName), data(std::move(data)), width(0), height(0)
+    {}
 
-    void ImageAsset::SetData(Data *set)
-    {
-        data.reset(set);
-        data->owner = this;
-    }
+    ImageAsset::ImageAsset(const ImageAsset& arg) :
+        nFileAsset(arg), data((arg.data) ? arg.data->Clone() : nullptr), width(arg.width), height(arg.height)
+    {}
 
-    void ImageAsset::SetData(std::unique_ptr<Data> &&set)
-    {
-        data = std::move(set);
-        data->owner = this;
-    }
+    ImageAsset::ImageAsset(const ::Inscription::Table<ImageAsset>& table) :
+        INSCRIPTION_TABLE_GET_BASE(nFileAsset)
+    {}
 
-    String ImageAsset::GetStringImpl() const
-    {
-        return name.GetValue();
-    }
-
-    ImageAsset::ImageAsset(Data *data, const FileName &name, GridDimension columns, GridDimension rows, Dimension width, Dimension height) : name(name), columns(columns), rows(rows), width(width), height(height)
-    {
-        SetData(data);
-    }
-
-    ImageAsset::ImageAsset(ImageAsset &&arg) : name(std::move(arg.name)), columns(arg.columns), rows(arg.rows), width(arg.width), height(arg.height)
-    {
-        SetData(std::move(arg.data));
-    }
-
-    ImageAsset& ImageAsset::operator=(ImageAsset &&arg)
-    {
-        SetData(std::move(arg.data));
-        name = std::move(arg.name);
-        columns = arg.columns;
-        rows = arg.rows;
-        width = arg.width;
-        height = arg.height;
-        return *this;
-    }
-
-    bool ImageAsset::operator==(const ImageAsset &arg) const
-    {
-        return Asset::operator==(arg);
-    }
-
-    bool ImageAsset::operator!=(const ImageAsset &arg) const
-    {
-        return !(*this == arg);
-    }
-
-    ImageAsset::Data* ImageAsset::GetData() const
+    ImageAsset::DataT* ImageAsset::Data()
     {
         return data.get();
     }
 
-    void ImageAsset::SetColumns(GridDimension set)
+    const ImageAsset::DataT* ImageAsset::Data() const
     {
-        columns = set;
+        return data.get();
     }
 
-    void ImageAsset::SetRows(GridDimension set)
+    ObjectTypeDescription ImageAsset::TypeDescription() const
     {
-        rows = set;
+        return ObjectTraits<ImageAsset>::TypeDescription();
     }
 
-    ImageAsset::GridDimension ImageAsset::GetColumns() const
-    {
-        return columns;
-    }
+    const ObjectTypeName ObjectTraits<ImageAsset>::typeName = "ImageAsset";
 
-    ImageAsset::GridDimension ImageAsset::GetRows() const
-    {
-        return rows;
-    }
+    ImageAssetData::~ImageAssetData()
+    {}
+}
 
-    ImageAsset::Dimension ImageAsset::GetWidth() const
+namespace Inscription
+{
+    DEFINE_OBJECT_INSCRIPTER_MEMBERS(::Atmos::ImageAsset)
     {
-        return width;
-    }
 
-    ImageAsset::Dimension ImageAsset::GetHeight() const
-    {
-        return height;
-    }
-
-    const FileName& ImageAsset::GetFileName() const
-    {
-        return name;
-    }
-
-    bool ImageAsset::CanMake(const FilePath &path)
-    {
-        return Environment::GetGraphics()->CanMakeImage(path);
-    }
-
-    bool ImageAsset::CanMake(void *buffer, std::int32_t size)
-    {
-        return Environment::GetGraphics()->CanMakeImage(buffer, size);
     }
 }

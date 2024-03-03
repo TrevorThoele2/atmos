@@ -1,32 +1,36 @@
 #pragma once
 
 #include "StatusEffect.h"
-#include "RegistryObjectReference.h"
+
+#include "CombatComponent.h"
+#include "ObjectReference.h"
+#include "ReadonlyProperty.h"
 
 #include "Serialization.h"
 
 namespace Atmos
 {
-    namespace Ent { class CombatComponent; }
-
     class StatusEffectInstance
     {
     public:
-        typedef StatusEffect::ApplicationCount ApplicationCount;
+        typedef TypedObjectReference<nStatusEffect> StatusEffectReference;
+        typedef TypedObjectReference<Ent::nCombatComponent> CombatComponentReference;
+    public:
+        typedef nStatusEffect::ApplicationCount ApplicationCount;
+        ReadonlyProperty<ApplicationCount> applicationsLeft;
+    public:
+        StatusEffectInstance(StatusEffectReference source);
+        StatusEffectInstance(const StatusEffectInstance& arg) = default;
+        StatusEffectInstance& operator=(const StatusEffectInstance& arg) = default;
+
+        // Returns true if this instance is done
+        bool Affect(CombatComponentReference combat);
+    private:
+        StatusEffectReference source;
+    private:
+        ApplicationCount _applicationsLeft;
     private:
         INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
-    private:
-        RegistryObjectReference<StatusEffect> wrapped;
-        ApplicationCount applications;
-    public:
-        StatusEffectInstance();
-        StatusEffectInstance(const RegistryObjectReference<StatusEffect> &wrap);
-        StatusEffectInstance(const StatusEffectInstance &arg) = default;
-        StatusEffectInstance& operator=(const StatusEffectInstance &arg) = default;
-
-        // Returns true if this instance is done
-        bool Affect(Ent::CombatComponent &combat);
-        ApplicationCount GetApplicationCount() const;
     };
 }

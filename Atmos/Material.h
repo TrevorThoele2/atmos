@@ -2,114 +2,82 @@
 
 #include "Asset.h"
 
+#include "ObjectReference.h"
+
 #include "ImageAsset.h"
-#include "Shader.h"
-#include "AssetReference.h"
-#include "Name.h"
+#include "ShaderAsset.h"
 
-#include "Optional.h"
+#include "StoredProperty.h"
+#include "StoredReadonlyProperty.h"
 
-#include "Serialization.h"
+#include "ObjectSerialization.h"
 
 namespace Atmos
 {
-    class Material : public Asset
+    class Material : public nAsset
     {
     public:
-        typedef ImageAsset::Dimension Dimension;
-        typedef ImageAsset::GridDimension GridDimension;
-    private:
-        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
-        INSCRIPTION_ACCESS;
-    private:
-        struct Side
-        {
-            AssetReference<ImageAsset> visual;
-            AssetReference<ImageAsset> normal;
-            AssetReference<ImageAsset> height;
-            Side();
-            bool operator==(const Side &arg) const;
-            bool operator!=(const Side &arg) const;
-            bool IsEmpty() const;
-        };
-    private:
-        static const Dimension invalidDim = 0;
-        static const GridDimension invalidGridDim = 0;
-
-        Name name;
-        Dimension width, height;
-        GridDimension columns, rows;
-
-        // Side you always see (front/back)
-        Side xSide;
-        // Left/right sides
-        Optional<Side> ySide;
-        // Top/bottom sides
-        Optional<Side> zSide;
-
-        AssetReference<ShaderAsset> shader;
-
-        // If yes, then this material participates in lighting
-        // Otherwise, normal and height and other sides don't affect anything at all
-        // Additional, it will not block light/shadows
-        bool lightingEnabled;
-
-        // Returns true if the image was set
-        bool SetImageCommon(Side *side, AssetReference<ImageAsset>(Side::*image), AssetReference<ImageAsset> set);
-
-        String GetStringImpl() const override final;
+        typedef int Dimension;
+        typedef int GridDimension;
     public:
-        Material(const Name &name);
-        Material(const Material &arg) = default;
-        Material& operator=(const Material &arg) = default;
+        typedef TypedObjectReference<ImageAsset> ImageAssetReference;
+        typedef TypedObjectReference<ShaderAsset> ShaderAssetReference;
 
-        bool operator==(const Material &arg) const;
-        bool operator!=(const Material &arg) const;
+        typedef StoredProperty<ImageAssetReference> ImageProperty;
+        typedef StoredProperty<ShaderAssetReference> ShaderProperty;
 
-        const Name& GetName() const;
+        typedef ReadonlyProperty<Dimension> DimensionProperty;
+        typedef StoredProperty<GridDimension> GridDimensionProperty;
+    public:
+        ImageProperty xVisual;
+        ImageProperty yVisual;
+        ImageProperty zVisual;
+        ImageProperty xNormal;
+        ImageProperty yNormal;
+        ImageProperty zNormal;
+        ImageProperty xHeight;
+        ImageProperty yHeight;
+        ImageProperty zHeight;
 
-        // All of the image assets used by this material should be the same dimensions (including the grid for it)
-        void SetXVisual(AssetReference<ImageAsset> set);
-        // All of the image assets used by this material should be the same dimensions (including the grid for it)
-        void SetXNormal(AssetReference<ImageAsset> set);
-        // All of the image assets used by this material should be the same dimensions (including the grid for it)
-        void SetXHeight(AssetReference<ImageAsset> set);
-        // All of the image assets used by this material should be the same dimensions (including the grid for it)
-        void SetYVisual(AssetReference<ImageAsset> set);
-        // All of the image assets used by this material should be the same dimensions (including the grid for it)
-        void SetYNormal(AssetReference<ImageAsset> set);
-        // All of the image assets used by this material should be the same dimensions (including the grid for it)
-        void SetYHeight(AssetReference<ImageAsset> set);
-        // All of the image assets used by this material should be the same dimensions (including the grid for it)
-        void SetZVisual(AssetReference<ImageAsset> set);
-        // All of the image assets used by this material should be the same dimensions (including the grid for it)
-        void SetZNormal(AssetReference<ImageAsset> set);
-        // All of the image assets used by this material should be the same dimensions (including the grid for it)
-        void SetZHeight(AssetReference<ImageAsset> set);
-        AssetReference<ImageAsset> GetXVisual() const;
-        AssetReference<ImageAsset> GetXNormal() const;
-        AssetReference<ImageAsset> GetXHeight() const;
-        AssetReference<ImageAsset> GetYVisual() const;
-        AssetReference<ImageAsset> GetYNormal() const;
-        AssetReference<ImageAsset> GetYHeight() const;
-        AssetReference<ImageAsset> GetZVisual() const;
-        AssetReference<ImageAsset> GetZNormal() const;
-        AssetReference<ImageAsset> GetZHeight() const;
+        ShaderProperty shader;
 
-        void SetShader(AssetReference<ShaderAsset> set);
-        AssetReference<ShaderAsset> GetShader() const;
+        DimensionProperty width;
+        DimensionProperty height;
 
-        // Assumes that all of the image assets used are the same
-        Dimension GetWidth() const;
-        // Assumes that all of the image assets used are the same
-        Dimension GetHeight() const;
+        GridDimensionProperty columns;
+        GridDimensionProperty rows;
+    public:
+        Material(const Name& name);
+        Material(const Material& arg);
+        Material(const ::Inscription::Table<Material>& table);
 
-        // Assumes that all of the image assets used are the same
-        GridDimension GetColumns() const;
-        // Assumes that all of the image assets used are the same
-        GridDimension GetRows() const;
+        ObjectTypeDescription TypeDescription() const override;
+    private:
+        Dimension _width;
+        Dimension _height;
 
-        void SetLightingEnabled(bool set = true);
-        bool IsLightingEnabled() const;
+        void CalculateDimensions();
+    private:
+        void DoOnImageProperties(std::function<void(ImageProperty&)>& func);
+        void DoOnImageProperties(std::function<void(const ImageProperty&)>& func) const;
+
+        void SubscribeToProperties();
+        void OnImagePropertyChanged(TypedObjectReference<ImageAsset> reference);
+    };
+
+    template<>
+    struct ObjectTraits<Material> : ObjectTraitsBase<Material>
+    {
+        static const ObjectTypeName typeName;
+        static constexpr ObjectTypeList<nAsset> bases = {};
+    };
+}
+
+namespace Inscription
+{
+    DECLARE_OBJECT_INSCRIPTER(::Atmos::Material)
+    {
+    public:
+        static void AddMembers(TableT& table);
     };
 }

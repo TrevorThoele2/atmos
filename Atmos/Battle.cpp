@@ -8,26 +8,45 @@
 #include "BattleActionPlacement.h"
 
 #include "GeneralComponent.h"
-#include "PlayerParty.h"
 
 #include "MainGame.h"
-#include "Camera.h"
 #include "GridSize.h"
 #include "Direction.h"
 #include "WorldManager.h"
 #include "EntityAISystem.h"
+#include "ActionSystem.h"
 #include "ScriptController.h"
 #include "StringUtility.h"
-#include "CurrentMusic.h"
 
 #include "Environment.h"
+#include "GameEnvironment.h"
 
 #include "FontDefines.h"
 
-#include <Affecter/SmoothstepType.h>
-
 namespace Atmos
 {
+    namespace Battle
+    {
+        Gui::Gui()
+        {
+            characterInfo = Agui::Textbox::Factory(mainGameState.gui.GetRoot(), "charInfo", Agui::RelativePosition(Agui::HorizontalAlignment::MID, Agui::VerticalAlignment::TOP), 0);
+            characterInfo->GetSprite()->color.Edit(150, 0, 255, 0);
+            characterInfo->SetShowWithParent(false);
+            characterInfo->GetLayout()->ChangeDimensions(768, 192);
+            characterInfo->GetLayout()->SetSelfModifySize(false);
+
+            name = &characterInfo->CreateText("name", 1, Agui::RelativePosition(), Agui::Text("", Agui::Text::Format(), *Agui::fontButton, Agui::Color(255, 0, 0, 0))).GetText();
+            name->SetAutoCalcTextSize();
+
+            health = &characterInfo->CreateText("health", 1, Agui::RelativePosition(), Agui::Text("", Agui::Text::Format(), *Agui::fontButton, Agui::Color(255, 0, 0, 0))).GetText();
+            health->SetAutoCalcTextSize();
+
+            mana = &characterInfo->CreateText("mana", 1, Agui::RelativePosition(), Agui::Text("", Agui::Text::Format(), *Agui::fontButton, Agui::Color(255, 0, 0, 0))).GetText();
+            mana->SetAutoCalcTextSize();
+        }
+    }
+
+    /*
     namespace Battle
     {
         void Gui::InitImpl()
@@ -145,6 +164,9 @@ namespace Atmos
             return spellbook.IsActive();
         }
 
+        State::TeamConnection::TeamConnection(TeamID from, TeamID to, TeamConnectionType type) : from(from), to(to), type(type)
+        {}
+
         void State::OnKeyPressed(const Input::Key &arg)
         {
             if (arg.id == Input::KeyID::HOME)
@@ -159,22 +181,22 @@ namespace Atmos
             if (IsSelectedManagerValid())
                 (*selectedManager)->OnActionActive(arg);
 
-            if (IsSelectedEntityValid())
+            if (HasSelectedEntity())
                 return;
 
             switch (arg.id)
             {
             case Input::ActionID::MOVE_UP:
-                Camera::Move(Direction::ValueT::UP, cameraMovementSpeed);
+                GameEnvironment::GetCamera().Move(Direction::ValueT::UP, cameraMovementSpeed);
                 break;
             case Input::ActionID::MOVE_DOWN:
-                Camera::Move(Direction::ValueT::DOWN, cameraMovementSpeed);
+                GameEnvironment::GetCamera().Move(Direction::ValueT::DOWN, cameraMovementSpeed);
                 break;
             case Input::ActionID::MOVE_LEFT:
-                Camera::Move(Direction::ValueT::LEFT, cameraMovementSpeed);
+                GameEnvironment::GetCamera().Move(Direction::ValueT::LEFT, cameraMovementSpeed);
                 break;
             case Input::ActionID::MOVE_RIGHT:
-                Camera::Move(Direction::ValueT::RIGHT, cameraMovementSpeed);
+                GameEnvironment::GetCamera().Move(Direction::ValueT::RIGHT, cameraMovementSpeed);
                 break;
             }
         }
@@ -210,7 +232,7 @@ namespace Atmos
             {
             case Input::MouseButton::LEFT:
                 bool selected = false;
-                auto &position = GridPosition::FromScreen(Environment::GetInput()->GetMousePosition(), 0, Camera::GetTopLeft());
+                auto &position = GridPosition::FromScreen(Environment::GetInput()->GetMousePosition(), 0, GameEnvironment::GetCamera().GetTopLeft());
                 for (auto loop = all.begin(); loop != all.end(); ++loop)
                 {
                     if (loop->GetPosition()->x == position.x && loop->GetPosition()->y == position.y)
@@ -230,33 +252,31 @@ namespace Atmos
 
         void State::OnMouseKeyDoublePressed(const Input::MouseKey &arg)
         {
-            Camera::MoveTo<::Affecter::SmoothstepType>(Environment::GetInput()->GetMousePositionInGameCoords(), FrameTimer(TimeValue(FixedPoint64(1))));
+            auto &moveTo = Environment::GetInput()->GetMousePositionInGameCoordinates();
+
+            auto &modulator = GameEnvironment::GenerateModulator(Modulator::Description::Camera);
+
+            auto &trackX = GameEnvironment::GenerateModulatorTrack(Modulator::Description::Camera, Modulator::Description::Track::PositionX);
+            auto node = trackX->CreateNode();
+            node->SetEndState(Modulator::Value(static_cast<std::int64_t>(moveTo.x)));
+            node->SetTimeTaken(TimeValue(1, TimeValue::EpochT::SECONDS));
+            modulator->AddTrack(std::move(trackX));
+
+            auto &trackY = GameEnvironment::GenerateModulatorTrack(Modulator::Description::Camera, Modulator::Description::Track::PositionY);
+            node = trackY->CreateNode();
+            node->SetEndState(Modulator::Value(static_cast<std::int64_t>(moveTo.y)));
+            node->SetTimeTaken(TimeValue(1, TimeValue::EpochT::SECONDS));
+            modulator->AddTrack(std::move(trackY));
+
+            modulator->Start(GameEnvironment::GetCamera());
         }
 
         void State::OnFieldChanged(Field &field)
         {
             worldManagerSubscriber.Unsubscribe();
 
-            // Add monsters to all and monsters
-            for (auto &loop : field.entities.GetRawMap<Ent::CharacterComponent>())
-            {
-                if (!loop.second.IsMonster())
-                    continue;
-
-                field.entities.CreateComponent<Ent::BattleComponent>(loop.first);
-                CharacterEntity made(loop.first);
-                if (!made.IsOccupied())
-                {
-                    field.entities.DestroyComponent<Ent::BattleComponent>(loop.first);
-                    continue;
-                }
-
-                all.push_back(std::move(made));
-                monsters.push_back(--all.end());
-            }
-
             selectedEntity = all.end();
-            Camera::MoveToInstant(field.tiles.GetCenterOfTiles());
+            GameEnvironment::GetCamera().MoveToInstant(field.tiles.GetCenterOfTiles());
         }
 
         void State::OnAbilitySelected(const AbilityBase &ability)
@@ -279,25 +299,27 @@ namespace Atmos
 
         void State::WorkImpl()
         {
+            Ent::ActionSystem::Work();
             LockInManager();
+            ScriptController::Work();
+            ScriptLocatorManager::Work();
+            WorldManager::Work();
 
-            if(turn == Turn::MONSTER)
-                Ent::AISystem::Work();
-
-            GetCurrentScheduler()->Work();
-            GetCurrentOrphanScripts()->Work();
-
-            if (turn == Turn::MONSTER)
+            if (HasSelectedEntity())
             {
-                for (auto &loop : monsters)
+                auto aiComponent = (*selectedEntity)->FindOther<::Atmos::Ent::AIComponent>();
+                if (aiComponent)
+                    Ent::AISystem::Execute(*aiComponent);
+                else
                 {
-                    auto ai = GetCurrentEntities()->FindComponent<Ent::AIComponent>(loop->GetEntity());
-                    if (!ai || !ai->battleAI.IsValid())
-                        loop->GetBattle()->EndTurn();
+                    if (selectedEntity->GetCharacter()->IsMonster())
+                        selectedEntity->GetBattle()->EndTurn();
                 }
             }
 
-            Camera::Work();
+            GetCurrentScheduler()->Work();
+
+            GameEnvironment::GetCamera().Work();
         }
 
         bool State::CanGotoImpl() const
@@ -312,53 +334,30 @@ namespace Atmos
 
         void State::Start()
         {
-            for (auto &loop : players)
-                loop->GetBattle()->StartTurn();
-
-            for (auto &loop : monsters)
-            {
-                loop->GetBattle()->StartTurn();
-                loop->GetBattle()->EndTurn();
-            }
+            SelectFirstTeam();
+            for (auto& loop : all)
+                loop.GetBattle()->StartTurn();
         }
 
-        void State::SetTurn(Turn set)
+        void State::SelectTeam(Teams::iterator select)
         {
-            if (set == turn)
-                return;
+            selectedTeam = select;
+            for (auto& loop : selectedTeam->second)
+                loop->GetBattle()->StartTurn();
+        }
 
-            CharacterTeamVector *start = nullptr;
-            CharacterTeamVector *end = nullptr;
+        void State::SelectFirstTeam()
+        {
+            SelectTeam(teams.begin());
+        }
 
-            if (turn == Turn::PLAYER)
-            {
-                start = &monsters;
-                end = &players;
-            }
+        void State::SelectNextTeam()
+        {
+            ++selectedTeam;
+            if (selectedTeam == teams.end())
+                SelectFirstTeam();
             else
-            {
-                start = &players;
-                end = &monsters;
-            }
-
-            turn = set;
-
-            for (auto &loop : *end)
-                loop->GetBattle()->EndTurn();
-
-            for (auto &loop : *start)
-                loop->GetBattle()->StartTurn();
-
-            if (turn == Turn::PLAYER && IsSelectedEntityPlayer())
-                RequestManager<MOVEMENT>();
-        }
-
-        void State::FlipTurn()
-        {
-            (turn == Turn::PLAYER) ? SetTurn(Turn::MONSTER) : SetTurn(Turn::PLAYER);
-            ++currentSquad;
-            if (currentSquad > Ent::PlayerParty::squadCount * 2 - 1)
-                currentSquad = 0;
+                SelectTeam(selectedTeam);
         }
 
         void State::Leave()
@@ -370,22 +369,44 @@ namespace Atmos
 
         void State::CheckDone()
         {
-            auto allCorpses = [](CharacterTeamVector &vector)
             {
-                for (auto &loop : vector)
+                bool allDead = true;
+                for (auto& loop : all)
+                    if (!loop.GetCombat()->IsDead())
+                        allDead = false;
+
+                if (allDead)
+                    Leave();
+            }
+        }
+
+        State::CharacterList::iterator State::FindEntityIterator(Entity entity)
+        {
+            for (auto loop = all.begin(); loop != all.end(); ++loop)
+                if (loop->GetEntity() == entity)
+                    return loop;
+
+            return all.end();
+        }
+
+        State::TeamConnectionList::iterator State::FindTeamConnection(TeamID from, TeamID to)
+        {
+            for (auto loop = teamConnections.begin(); loop != teamConnections.end(); ++loop)
+            {
+                if (loop->from != from && loop->from != to)
                 {
-                    auto &resources = loop->GetCombat()->resources;
-                    if (resources.GetHealth() != 0)
-                        return false;
+                    continue;
                 }
 
-                return true;
-            };
+                if (loop->to != from && loop->to != to)
+                {
+                    continue;
+                }
 
-            if (allCorpses(players))
-                Leave();
-            else if (allCorpses(monsters))
-                Leave();
+                return loop;
+            }
+
+            return teamConnections.end();
         }
 
         void State::SelectEntity(CharacterList::iterator select)
@@ -398,7 +419,7 @@ namespace Atmos
 
             selectedEntity = select;
 
-            Camera::SetFocus(&selectedEntity->GetSense()->position);
+            GameEnvironment::GetCamera().SetFocus(&selectedEntity->GetSense()->position);
 
             if (selectedEntity->GetCharacter()->IsPlayer() && !selectedEntity->GetBattle()->turnEnded)
                 RequestManager<MOVEMENT>();
@@ -426,9 +447,9 @@ namespace Atmos
             if (selectedEntity == all.end())
                 return;
 
-            Camera::SetFocus(static_cast<Position2D*>(nullptr));
+            GameEnvironment::GetCamera().ResetFocus();
             if (selectedEntity != all.end())
-                Camera::MoveToInstant(selectedEntity->GetSense()->position);
+                GameEnvironment::GetCamera().MoveToInstant(selectedEntity->GetSense()->position);
 
             selectedEntity = all.end();
             gui.OnCharacterChanged(nullptr);
@@ -445,24 +466,24 @@ namespace Atmos
             selectedEntity->GetBattle()->EndTurn();
         }
 
-        bool State::IsSelectedEntityValid() const
+        bool State::HasSelectedEntity() const
         {
             return selectedEntity != all.end();
         }
 
         bool State::IsSelectedEntityPlayer() const
         {
-            return IsSelectedEntityValid() && selectedEntity->GetCharacter()->IsPlayer();
+            return HasSelectedEntity() && selectedEntity->GetCharacter()->IsPlayer();
         }
 
         bool State::IsSelectedEntityMonster() const
         {
-            return IsSelectedEntityValid() && selectedEntity->GetCharacter()->IsNPC();
+            return HasSelectedEntity() && selectedEntity->GetCharacter()->IsNPC();
         }
 
         bool State::HasSelectedEntityTurnEnded() const
         {
-            return IsSelectedEntityValid() && selectedEntity->GetBattle()->turnEnded;
+            return HasSelectedEntity() && selectedEntity->GetBattle()->turnEnded;
         }
 
         bool State::IsSelectedManagerValid() const
@@ -484,13 +505,6 @@ namespace Atmos
             if (requestedManager == actionManagers.end())
                 return;
 
-            if (turn == Turn::MONSTER)
-            {
-                (*selectedManager)->Stop();
-                requestedManager = actionManagers.end();
-                selectedManager = actionManagers.end();
-            }
-
             // Stop the currently selected manager
             if (selectedManager != actionManagers.end())
                 (*selectedManager)->Stop();
@@ -499,29 +513,6 @@ namespace Atmos
             selectedManager = requestedManager;
             (*selectedManager)->Start();
             requestedManager = actionManagers.end();
-        }
-
-        Entity State::FindClosestImpl(const GridPosition &pos, const CharacterTeamVector &vector) const
-        {
-            if (vector.empty())
-                return Ent::nullEntity;
-
-            Entity closestEntity = (*vector.begin())->GetEntity();
-            GridPosition closestPos = (*vector.begin())->GetPosition().Get();
-            auto closestDistance = closestPos.FindDistance(pos);
-            for (auto &loop : vector)
-            {
-                auto &checkPos = loop->GetPosition().Get();
-                auto distance = checkPos.FindDistance(pos);
-                if (distance < closestDistance)
-                {
-                    closestEntity = loop->GetEntity();
-                    closestPos = checkPos;
-                    closestDistance = distance;
-                }
-            }
-
-            return closestEntity;
         }
 
         void State::AttemptEndTurn()
@@ -561,11 +552,20 @@ namespace Atmos
             requestedManager = actionManagers.end();
         }
 
-        bool State::SetupFromMonster(Entity set)
+        void State::SetupFromMonster(Entity from)
         {
             canGoto = false;
+            if (!CanSetupFromMonster(from))
+                return;
 
-            auto characterComponent = GetCurrentEntities()->FindComponent<Ent::CharacterComponent>(set);
+            worldManagerSubscriber.Subscribe();
+            canGoto = true;
+            RequestManager<PLAYER_PLACER>();
+        }
+
+        bool State::CanSetupFromMonster(Entity from)
+        {
+            auto characterComponent = GetCurrentEntities()->FindComponent<Ent::CharacterComponent>(from);
             if (!characterComponent || !characterComponent->IsMonster())
                 return false;
 
@@ -573,9 +573,6 @@ namespace Atmos
             if (!WorldManager::Request(characterComponent->GetImpl<::Atmos::Ent::CharacterComponent::Type::MONSTER>()->fieldID))
                 return false;
 
-            worldManagerSubscriber.Subscribe();
-            canGoto = true;
-            RequestManager<PLAYER_PLACER>();
             return true;
         }
 
@@ -584,51 +581,59 @@ namespace Atmos
             canGoto = true;
         }
 
+        void State::AddEntity(Entity entity, TeamID team, SquadID squad)
+        {
+            auto foundEntity = FindEntityIterator(entity);
+            if (foundEntity == all.end())
+                return;
+
+            auto &foundTeam = teams.find(team);
+            if (foundTeam == teams.end())
+                foundTeam = teams.emplace(team, CharacterReferenceList()).first;
+
+            foundTeam->second.push_back(foundEntity);
+        }
+
+        void State::ConnectTeams(TeamID from, TeamID to, TeamConnectionType connection)
+        {
+            auto found = FindTeamConnection(from, to);
+            if (found == teamConnections.end())
+                teamConnections.push_back(TeamConnection(from, to, connection));
+            else
+                found->type = connection;
+        }
+
         void State::GivePlacement(const GridPosition &add)
         {
             static_cast<ActionPlacement*>(GetManager<PLAYER_PLACER>()->get())->AddPosition(add);
         }
 
-        void State::CheckTurnEnded()
+        void State::CheckTeamDone()
         {
             CheckDone();
 
-            auto checkImpl = [](CharacterTeamVector &vector)
             {
-                for (auto &loop : vector)
+                bool hasEntityWithTurn = false;
+                for (auto &entityLoop : selectedTeam->second)
                 {
-                    if (!loop->GetBattle()->turnEnded)
-                        return false;
+                    if (entityLoop->GetBattle()->IsTurnEnded())
+                    {
+                        hasEntityWithTurn = true;
+                        break;
+                    }
                 }
-                
-                return true;
-            };
 
-            bool check = false;
-            if (turn == Turn::PLAYER)
-                check = checkImpl(players);
-            else if (turn == Turn::MONSTER)
-                check = checkImpl(monsters);
-
-            if (check)
-                FlipTurn();
+                if (!hasEntityWithTurn)
+                    SelectNextTeam();
+            }
         }
 
         FieldID State::GetOriginalFieldID() const
         {
             return originalFieldID;
         }
-
-        Entity State::FindClosestPlayer(const GridPosition &pos) const
-        {
-            return FindClosestImpl(pos, players);
-        }
-
-        Entity State::FindClosestMonster(const GridPosition &pos) const
-        {
-            return FindClosestImpl(pos, monsters);
-        }
     }
 
     Battle::State battleState;
+    */
 }

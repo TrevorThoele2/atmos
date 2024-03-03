@@ -7,7 +7,10 @@ namespace Atmos
 {
     INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(Color)
     {
-        scribe(alpha, red, green, blue);
+        scribe(alpha);
+        scribe(red);
+        scribe(green);
+        scribe(blue);
     }
 
     Color::Color(ValueT alpha, ValueT red, ValueT green, ValueT blue) : alpha(alpha), red(red), green(green), blue(blue)

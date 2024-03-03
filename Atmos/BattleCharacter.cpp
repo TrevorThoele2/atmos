@@ -3,6 +3,7 @@
 
 namespace Atmos
 {
+    /*
     namespace Battle
     {
         CharacterEntity::CharacterEntity(Entity entity) : ComponentPackageRequiredInherit(entity)
@@ -33,4 +34,5 @@ namespace Atmos
             return package.GetAt<Battle>();
         }
     }
+    */
 }

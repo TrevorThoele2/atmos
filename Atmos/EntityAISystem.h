@@ -1,32 +1,24 @@
 #pragma once
 
-#include <vector>
-#include "EntitySystem.h"
-#include "AIComponent.h"
+#include "ObjectSystem.h"
 
-#include "Script.h"
+#include "ObjectBatch.h"
+
+#include "AIComponent.h"
 
 namespace Atmos
 {
     namespace Ent
     {
-        class AISystem : public System<AISystem>
+        class nEntityAISystem : public ObjectSystem
         {
-        private:
-            typedef System<AISystem> SystemBaseT;
-            friend SystemBaseT;
-
-            typedef Script::Instance(AIComponent::*ScriptToUse);
-
-            AISystem() = default;
-            AISystem(const AISystem &arg) = delete;
-            AISystem& operator=(const AISystem &arg) = delete;
-
-            static ScriptToUse DetermineScriptToUse();
         public:
-            static void Work();
+            nEntityAISystem(ObjectManager& manager);
+        private:
+            void WorkImpl() override;
+        private:
+            typedef ObjectBatch<nAIComponent> AIBatch;
+            AIBatch aiComponents;
         };
-
-        template class System<AISystem>;
     }
 }

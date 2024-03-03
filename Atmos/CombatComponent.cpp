@@ -4,6 +4,7 @@
 #include "Battle.h"
 #include "MainGame.h"
 #include "AvatarSystem.h"
+#include "InventoryComponent.h"
 
 #include <Inscription\UnorderedMap.h>
 #include <Inscription\Memory.h>
@@ -14,144 +15,41 @@ namespace Atmos
 {
     namespace Ent
     {
-        INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(CombatComponent)
-        {
-            scribe(stats);
-            scribe(resources);
-            scribe(acumen);
-            scribe(proficiencies);
-            scribe(effectiveness);
-            scribe(charClass);
-            scribe(permanentStash);
-            scribe(equipment);
-            scribe(currentExp);
-            scribe(expToNextLevel);
-            scribe(level);
-            scribe(movementRange);
-
-            if (scribe.IsOutput())
-            {
-                ::Inscription::ContainerSize size(spells.size());
-                scribe(size);
-
-                for (auto &loop : spells)
-                    scribe.Save(loop.second);
-            }
-            else
-            {
-                ::Inscription::ContainerSize size;
-                scribe.Load(size);
-
-                while (size-- > 0)
-                {
-                    RegistryObjectReference<Spell> spell;
-                    scribe.Load(spell);
-
-                    spells.emplace(spell->GetName(), spell);
-                }
-
-                if (charClass)
-                {
-                    stats.SetCharacterClass(*charClass);
-                    resources.SetCharacterClass(*charClass);
-                }
-            }
-        }
-
-        CombatComponent::CombatComponent(CombatComponent &&arg) :
-            Component(std::move(arg)),
-            charClass(arg.charClass),
-            stats(std::move(arg.stats)),
-            resources(std::move(arg.resources)),
-            acumen(std::move(arg.acumen)),
-            proficiencies(std::move(arg.proficiencies)),
-            effectiveness(std::move(arg.effectiveness)),
-            permanentStash(std::move(arg.permanentStash)),
-            equipment(std::move(arg.equipment)),
-            currentExp(arg.currentExp), expToNextLevel(arg.expToNextLevel), level(std::move(arg.level)),
-            movementRange(arg.movementRange),
-            spells(std::move(arg.spells))
+        nCombatComponent::nCombatComponent(EntityReference reference) : nEntityComponent(reference)
         {}
 
-        CombatComponent& CombatComponent::operator=(const CombatComponent &arg)
-        {
-            Component::operator=(arg);
-            charClass = arg.charClass;
-            stats = arg.stats;
-            resources = arg.resources;
-            acumen = arg.acumen;
-            proficiencies = arg.proficiencies;
-            effectiveness = arg.effectiveness;
-            permanentStash = arg.permanentStash;
-            equipment = arg.equipment;
-            currentExp = arg.currentExp;
-            expToNextLevel = arg.expToNextLevel;
-            level = arg.level;
-            movementRange = arg.movementRange;
-            spells = arg.spells;
-            return *this;
-        }
+        nCombatComponent::nCombatComponent(const ::Inscription::Table<nCombatComponent>& table) : INSCRIPTION_TABLE_GET_BASE(nEntityComponent)
+        {}
 
-        CombatComponent& CombatComponent::operator=(CombatComponent &&arg)
-        {
-            Component::operator=(std::move(arg));
-            charClass = arg.charClass;
-            stats = std::move(arg.stats);
-            resources = std::move(arg.resources);
-            acumen = std::move(arg.acumen);
-            proficiencies = std::move(arg.proficiencies);
-            effectiveness = std::move(arg.effectiveness);
-            permanentStash = std::move(arg.permanentStash);
-            equipment = std::move(arg.equipment);
-            currentExp = arg.currentExp;
-            expToNextLevel = arg.expToNextLevel;
-            level = std::move(arg.level);
-            movementRange = arg.movementRange;
-            spells = std::move(arg.spells);
-            return *this;
-        }
-
-        bool CombatComponent::operator==(const CombatComponent &arg) const
-        {
-            return charClass == arg.charClass && stats == arg.stats && resources == arg.resources && acumen == arg.acumen && proficiencies == arg.proficiencies &&
-                effectiveness == arg.effectiveness && permanentStash == arg.permanentStash && equipment == arg.equipment && currentExp == arg.currentExp &&
-                expToNextLevel == arg.expToNextLevel && level == arg.level && movementRange == arg.movementRange && spells == arg.spells;
-        }
-
-        bool CombatComponent::operator!=(const CombatComponent &arg) const
-        {
-            return !(*this == arg);
-        }
-
-        void CombatComponent::SetClass(const RegistryObjectReference<CharacterClass> &set)
+        void nCombatComponent::SetClass(CharacterClassReference set)
         {
             ATMOS_ASSERT_MESSAGE(set.Get(), "This registry object MUST be set before-hand");
 
-            ItemStashSize prevPermItemCount = charClass->permanentMaxItemCount;
-            ItemStashSize prevTempItemCount = charClass->temporaryMaxItemCount;
+            ItemStashSize prevPermItemCount = characterClass->permanentMaxItemCount;
+            ItemStashSize prevTempItemCount = characterClass->temporaryMaxItemCount;
 
-            charClass = set;
+            characterClass = set;
             stats.SetCharacterClass(set);
 
             // Remove all items that are going to be "lost"
             // Permanent
+            auto avatarInventory = Manager()->FindSystem<Ent::nEntityAvatarSystem>()->Avatar()->Component<Ent::nInventoryComponent>();
             {
-                auto avatarInventoryComponent = AvatarSystem::GetInventory();
                 auto loop = permanentStash.rbegin();
-                while (permanentStash.size() > charClass->permanentMaxItemCount)
+                while (permanentStash.size() > characterClass->permanentMaxItemCount)
                 {
-                    avatarInventoryComponent->Add((*loop)->GetName(), ItemStack::CountT(1));
+                    avatarInventory->Add(*loop, ItemStack::Count(1));
                     permanentStash.erase(loop);
                 }
             }
         }
 
-        bool CombatComponent::IsCorpse() const
+        bool nCombatComponent::IsDead() const
         {
             return resources.GetHealth() == 0;
         }
 
-        bool CombatComponent::GiveItem(const RegistryObjectReference<Item> &item)
+        bool nCombatComponent::GiveItem(ItemReference item)
         {
             if (!HasSpaceInStash())
                 return false;
@@ -160,7 +58,7 @@ namespace Atmos
             return true;
         }
 
-        bool CombatComponent::RemoveItem(ItemStashSize pos)
+        bool nCombatComponent::RemoveItem(ItemStashSize pos)
         {
             if (permanentStash.empty() || permanentStash.size() - 1 < pos)
                 return false;
@@ -169,7 +67,7 @@ namespace Atmos
             return true;
         }
 
-        RegistryObjectReference<Item> CombatComponent::FindItem(ItemStashSize pos)
+        nCombatComponent::ItemReference nCombatComponent::FindItem(ItemStashSize pos)
         {
             auto found = permanentStash.Find(pos);
             if (found == permanentStash.end())
@@ -178,71 +76,122 @@ namespace Atmos
             return *found;
         }
 
-        bool CombatComponent::HasSpaceInStash() const
+        bool nCombatComponent::HasSpaceInStash() const
         {
-            return permanentStash.size() < charClass->permanentMaxItemCount;
+            return permanentStash.size() < characterClass->permanentMaxItemCount;
         }
 
-        void CombatComponent::Equip(EquipSlot slot, const RegistryObjectReference<Item> &item)
-        {
-
-        }
-
-        void CombatComponent::Unequip(EquipSlot slot)
+        void nCombatComponent::Equip(EquipSlot slot, ItemReference item)
         {
 
         }
 
-        RegistryObjectReference<Item> CombatComponent::GetEquipment(EquipSlot slot) const
+        void nCombatComponent::Unequip(EquipSlot slot)
+        {
+
+        }
+
+        nCombatComponent::ItemReference nCombatComponent::GetEquipment(EquipSlot slot) const
         {
             auto found = equipment.find(slot);
             if (found == equipment.end())
-                return RegistryObjectReference<Item>();
+                return ItemReference();
 
             return found->second;
         }
 
-        bool CombatComponent::CanEquip(EquipSlot slot) const
+        bool nCombatComponent::CanEquip(EquipSlot slot) const
         {
             return equipment.find(slot) == equipment.end();
         }
 
-        bool CombatComponent::LearnSpell(const RegistryObjectReference<Spell> &learn)
+        bool nCombatComponent::LearnSpell(SpellReference learn)
         {
             if (!CanLearnSpell(learn))
                 return false;
 
-            spells.emplace(learn->GetName(), learn);
+            spells.emplace(learn->name, learn);
             return true;
         }
 
-        bool CombatComponent::CanLearnSpell(const RegistryObjectReference<Spell> &test) const
+        bool nCombatComponent::CanLearnSpell(SpellReference test) const
         {
-            if (!charClass)
+            if (!characterClass)
                 return false;
 
-            return test->allowedClasses.In(*charClass);
+            auto found = std::find(test->allowedClasses.begin(), test->allowedClasses.end(), characterClass);
+            return found != test->allowedClasses.end();
         }
 
-        Defense CombatComponent::GetDefense() const
+        Defense nCombatComponent::GetDefense() const
         {
             Defense ret = 0;
             for (auto& loop : equipment)
             {
-                ATMOS_ASSERT_MESSAGE(loop.second->equippableAspect, "Everything equipped must have an equippable aspect.");
-                ret += loop.second->equippableAspect->defense;
+                //ATMOS_ASSERT_MESSAGE(loop.second->equippableAspect, "Everything equipped must have an equippable aspect.");
+                //ret += loop.second->equippableAspect->defense;
             }
 
             return ret;
         }
 
-        Element CombatComponent::GetElement() const
+        ObjectTypeDescription nCombatComponent::TypeDescription() const
         {
-            auto found = equipment.find(EquipSlot::SHARD);
-            if (found == equipment.end())
-                return GlobalContext<Element>::neutral;
-            else
-                return found->second->equippableAspect->AsShard()->element;
+            return ObjectTraits<nCombatComponent>::TypeDescription();
         }
     }
+
+    const ObjectTypeName ObjectTraits<Ent::nCombatComponent>::typeName = "CombatComponent";
+}
+
+namespace Inscription
+{
+    DEFINE_OBJECT_INSCRIPTER_MEMBERS(::Atmos::Ent::nCombatComponent)
+    {
+        INSCRIPTION_TABLE_ADD(stats);
+        INSCRIPTION_TABLE_ADD(resources);
+        INSCRIPTION_TABLE_ADD(acumen);
+        INSCRIPTION_TABLE_ADD(proficiencies);
+        INSCRIPTION_TABLE_ADD(effectiveness);
+        INSCRIPTION_TABLE_ADD(characterClass);
+        INSCRIPTION_TABLE_ADD(permanentStash);
+        INSCRIPTION_TABLE_ADD(equipment);
+        INSCRIPTION_TABLE_ADD(currentExp);
+        INSCRIPTION_TABLE_ADD(expToNextLevel);
+        INSCRIPTION_TABLE_ADD(level);
+        INSCRIPTION_TABLE_ADD(movementRange);
+    }
+
+    INSCRIPTION_INSCRIPTER_DEFINE_SERIALIZE_FUNCTION(::Atmos::Ent::nCombatComponent)
+    {
+        INSCRIPTION_INSCRIPTER_CALL_BASE_SERIALIZE_FUNCTION;
+
+        if (scribe.IsOutput())
+        {
+            ::Inscription::ContainerSize size(obj.spells.size());
+            scribe(size);
+
+            for (auto& loop : obj.spells)
+                scribe.Save(loop.second);
+        }
+        else
+        {
+            ::Inscription::ContainerSize size;
+            scribe.Load(size);
+
+            while (size-- > 0)
+            {
+                ManagedT::SpellReference spell;
+                scribe.Load(spell);
+
+                obj.spells.emplace(spell->name, spell);
+            }
+
+            if (obj.characterClass)
+            {
+                obj.stats.SetCharacterClass(*obj.characterClass);
+                obj.resources.SetCharacterClass(*obj.characterClass);
+            }
+        }
+    };
 }

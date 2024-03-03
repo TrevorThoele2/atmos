@@ -10,11 +10,6 @@ namespace Atmos
 {
     namespace Input
     {
-        bool IsKeyDownBase(int code)
-        {
-            return GetAsyncKeyState(code) & 0x8000 ? 1 : 0;
-        }
-
         class SignalBaseData : public SignalBase::Data
         {
         public:
@@ -143,8 +138,8 @@ namespace Atmos
 
         void WindowsHandler::WorkInputsImpl(InputVector &inputs)
         {
-            for (auto &loop : inputs)
-                loop->Work(IsKeyDownBase(loop->GetData<SignalBaseData>()->code));
+            for (auto& loop : inputs)
+                loop->Work(IsKeyDownBase(*loop));
         }
 
         bool WindowsHandler::ShouldAddActions() const
@@ -158,6 +153,26 @@ namespace Atmos
             GetCursorPos(&pt);
             ScreenToClient(Environment::GetModel<Windows>()->GetHwnd(), &pt);
             return MousePosition(static_cast<MousePosition::ValueT>(pt.x), static_cast<MousePosition::ValueT>(pt.y));
+        }
+
+        bool WindowsHandler::IsKeyDownBase(SignalBase &signal) const
+        {
+            if (signal.IsMouseKey() && !IsMouseWithinScreen())
+                return false;
+
+            auto signalData = signal.GetData<SignalBaseData>();
+            return GetAsyncKeyState(signalData->code) & 0x8000 ? 1 : 0;
+        }
+
+        bool WindowsHandler::IsMouseWithinScreen() const
+        {
+            auto &screenFromEnvironment = Environment::GetClientSize();
+            AxisBoundingBox2D screen(
+                0,
+                0,
+                static_cast<AxisBoundingBox2D::Coordinate>(screenFromEnvironment.first),
+                static_cast<AxisBoundingBox2D::Coordinate>(screenFromEnvironment.second));
+            return screen.IsHit(GetMousePositionImpl());
         }
     }
 }

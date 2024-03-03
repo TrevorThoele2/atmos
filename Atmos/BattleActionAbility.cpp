@@ -1,9 +1,9 @@
 
 #include "BattleActionAbility.h"
-#include "AbilityBase.h"
 
 namespace Atmos
 {
+    /*
     namespace Battle
     {
         void ActionAbility::AttackPattern::SetPiecePosition(const GridPosition &center, const RelativeGridPosition &relPos, ValueT &value)
@@ -19,29 +19,27 @@ namespace Atmos
         void ActionAbility::StartImpl()
         {
             auto ability = AbilityUsing::Current();
-            /*
-            for (auto &loop : ability->GetHitPattern())
+            for (auto& loop : ability->GetHitPattern())
                 attackPattern.AddPiece(loop.first, AttackPiece(*loop.second));
             
             auto &position = GetSelectedEntity()->GetPosition().Get();
             // Setup the range pattern
             rangePattern.SetupDiamond(position, spell->GetRange(), Sprite("overlay.png", 1, Atmos::Color(127, 0, 0, 255)));
-            for (auto &loop : rangePattern)
+            for (auto& loop : rangePattern)
                 GetCurrentRenderFragments()->Add(loop.second);
 
             // Setup the attack pattern
             attackPattern.SetPosition(position);
-            for (auto &loop : attackPattern)
+            for (auto& loop : attackPattern)
             {
                 loop.second.selectionSprite.InformPositionChange(position.z + 0.999f);
                 GetCurrentRenderFragments()->Add(loop.second.selectionSprite.Get());
             }
-            */
         }
 
         void ActionAbility::StopImpl()
         {
-            for (auto &loop : attackPattern)
+            for (auto& loop : attackPattern)
                 GetCurrentRenderFragments()->Remove(loop.second.selectionSprite);
 
             rangePattern.Clear();
@@ -107,4 +105,5 @@ namespace Atmos
         ActionAbility::ActionAbility()
         {}
     }
+    */
 }

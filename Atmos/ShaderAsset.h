@@ -1,68 +1,82 @@
 
 #pragma once
 
-#include <memory>
-
 #include "Asset.h"
 
-#include "FilePath.h"
+#include "ReadonlyProperty.h"
+
+#include "ObjectSerialization.h"
 
 namespace Atmos
 {
-    class ShaderAsset : public Asset
+    class ShaderAssetData;
+
+    class ShaderAsset : public nFileAsset
     {
-    public: typedef unsigned int PassT;
     public:
-        class Data
-        {
-        public:
-            typedef ShaderAsset::PassT PassT;
-        private:
-            ShaderAsset *owner;
-            friend ShaderAsset;
-        public:
-            virtual ~Data() = 0 {}
-            ShaderAsset* GetOwner() const;
-            virtual void Reset() = 0;
-            virtual void Release() = 0;
-            virtual PassT Begin() const = 0;
-            virtual void End() const = 0;
-            virtual void BeginNextPass(PassT pass) const = 0;
-            virtual void EndPass() const = 0;
-        };
+        typedef ShaderAssetData DataT;
+        typedef std::unique_ptr<DataT> DataPtr;
+    public:
+        ShaderAsset(const FileName& fileName, DataPtr&& data);
+        ShaderAsset(const ShaderAsset& arg);
+        ShaderAsset(const ::Inscription::Table<ShaderAsset>& table);
+
+        DataT* Data();
+        const DataT* Data() const;
+        template<class RealDataT>
+        RealDataT* DataAs();
+        template<class RealDataT>
+        const RealDataT* DataAs() const;
+
+        ObjectTypeDescription TypeDescription() const override;
     private:
-        FileName name;
-        std::unique_ptr<Data> data;
-        void SetData(Data *set);
-        void SetData(std::unique_ptr<Data> &&set);
-
-        String GetStringImpl() const override final;
-    public:
-        ShaderAsset(Data *data, const FileName &name);
-        ShaderAsset(ShaderAsset &&arg);
-        ShaderAsset& operator=(ShaderAsset &&arg);
-
-        bool operator==(const ShaderAsset &arg) const;
-        bool operator!=(const ShaderAsset &arg) const;
-
-        Data* GetData() const;
-        template<class DataT>
-        DataT* GetData() const;
-
-        void Reset();
-        void Release();
-
-        const FileName& GetFileName() const;
-
-        PassT Begin() const;
-        void End() const;
-        void BeginNextPass(PassT pass) const;
-        void EndPass() const;
+        DataPtr data;
     };
 
-    template<class DataT>
-    DataT* ShaderAsset::GetData() const
+    template<class RealDataT>
+    RealDataT* ShaderAsset::DataAs()
     {
-        return static_cast<DataT*>(data.get());
+        return static_cast<RealDataT*>(data.get());
     }
+
+    template<class RealDataT>
+    const RealDataT* ShaderAsset::DataAs() const
+    {
+        return static_cast<RealDataT*>(data.get());
+    }
+
+    template<>
+    struct ObjectTraits<ShaderAsset> : ObjectTraitsBase<ShaderAsset>
+    {
+        static const ObjectTypeName typeName;
+        static constexpr ObjectTypeList<nFileAsset> bases = {};
+    };
+
+    class ShaderAssetData
+    {
+    public:
+        typedef unsigned int PassT;
+    public:
+        virtual ~ShaderAssetData() = 0;
+
+        virtual std::unique_ptr<ShaderAssetData> Clone() const = 0;
+        
+        virtual void Reset() = 0;
+        virtual void Release() = 0;
+
+        virtual PassT Begin() const = 0;
+        virtual void End() const = 0;
+
+        virtual void BeginNextPass(PassT pass) const = 0;
+        virtual void EndPass() const = 0;
+    };
+}
+
+namespace Inscription
+{
+    DECLARE_OBJECT_INSCRIPTER(::Atmos::ShaderAsset)
+    {
+    public:
+        static void AddMembers(TableT& table);
+    };
 }

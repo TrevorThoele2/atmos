@@ -62,7 +62,7 @@ namespace Atmos
     template<class EnumT>
     Flags<EnumT>::Flags(const std::initializer_list<EnumT> &list) : bits(0)
     {
-        for (auto &loop : list)
+        for (auto& loop : list)
             Set(loop);
     }
 

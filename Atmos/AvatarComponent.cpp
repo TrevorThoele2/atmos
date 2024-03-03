@@ -6,22 +6,25 @@ namespace Atmos
 {
     namespace Ent
     {
-        INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(AvatarComponent)
-        {
-            scribe(gold);
-        }
-
-        AvatarComponent::AvatarComponent() : gold(0)
+        nAvatarComponent::nAvatarComponent(EntityReference owner) : nEntityComponent(owner), currency(0)
         {}
 
-        AvatarComponent::AvatarComponent(AvatarComponent &&arg) : Component(std::move(arg)), gold(std::move(arg.gold))
+        nAvatarComponent::nAvatarComponent(const ::Inscription::Table<nAvatarComponent>& table) : INSCRIPTION_TABLE_GET_BASE(nEntityComponent)
         {}
 
-        AvatarComponent& AvatarComponent::operator=(AvatarComponent &&arg)
+        ObjectTypeDescription nAvatarComponent::TypeDescription() const
         {
-            Component::operator=(std::move(arg));
-            gold = std::move(arg.gold);
-            return *this;
+            return ObjectTraits<nAvatarComponent>::TypeDescription();
         }
+    }
+
+    const ObjectTypeName ObjectTraits<Ent::nAvatarComponent>::typeName = "AvatarComponent";
+}
+
+namespace Inscription
+{
+    DEFINE_OBJECT_INSCRIPTER_MEMBERS(::Atmos::Ent::nAvatarComponent)
+    {
+        INSCRIPTION_TABLE_ADD(currency);
     }
 }

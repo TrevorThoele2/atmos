@@ -1,9 +1,7 @@
 
 #include "ItemContextMenu.h"
 
-#include "Entity.h"
 #include "InventoryComponent.h"
-#include "Consumable.h"
 
 #include "FontDefines.h"
 
@@ -65,14 +63,14 @@ namespace Agui
         itemSelected = &set;
     }
 
-    void ItemContextMenu::SetMoveFrom(Atmos::Ent::InventoryComponent &set)
+    void ItemContextMenu::SetMoveFrom(InventoryReference set)
     {
-        moveFrom = &set;
+        moveFrom = set;
     }
 
-    void ItemContextMenu::SetMoveTo(Atmos::Ent::InventoryComponent &set)
+    void ItemContextMenu::SetMoveTo(InventoryReference set)
     {
-        moveTo = &set;
+        moveTo = set;
     }
 
     void ItemContextMenu::FlipMoving()

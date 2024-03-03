@@ -53,8 +53,8 @@ namespace Atmos
 
             void Work(bool curValue);
             bool IsActive() const;
-            bool Pressed() const;
-            bool Depressed() const;
+            bool IsPressed() const;
+            bool IsDepressed() const;
             bool CanUseForAction() const;
 
             virtual bool IsKey() const = 0;

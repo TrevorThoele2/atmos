@@ -140,19 +140,19 @@ namespace Atmos
 
     void EventBoundSubscriberManager::Subscribe()
     {
-        for (auto &loop : subs)
+        for (auto& loop : subs)
             loop.Subscribe();
     }
 
     void EventBoundSubscriberManager::Unsubscribe()
     {
-        for (auto &loop : subs)
+        for (auto& loop : subs)
             loop.Unsubscribe();
     }
 
     bool EventBoundSubscriberManager::IsValid() const
     {
-        for (auto &loop : subs)
+        for (auto& loop : subs)
         {
             if (!loop.IsValid())
                 return false;

@@ -13,6 +13,7 @@
 #include <AGUI/System.h>
 #include <AGUI/DXGraphics.h>
 #include "WidgetSetups.h"
+#include "FontDefines.h"
 
 namespace Atmos
 {
@@ -396,6 +397,11 @@ namespace Atmos
     Environment::DimensionT Environment::GetClientHeight()
     {
         return model->GetClientHeight();
+    }
+
+    Join2<Environment::DimensionT> Environment::GetClientSize()
+    {
+        return Join2<DimensionT>(GetClientWidth(), GetClientHeight());
     }
 
     Environment::DimensionT Environment::GetWindowWidth()

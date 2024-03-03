@@ -5,42 +5,18 @@
 
 namespace Atmos
 {
-    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(Music)
+    ObjectTypeDescription Music::TypeDescription() const
     {
-        ::Inscription::BaseSerialize<SoundBase>(scribe, *this);
+        return ObjectTraits<Music>::TypeDescription();
     }
 
-    void Music::PlayImpl()
+    const ObjectTypeName ObjectTraits<Music>::typeName;
+}
+
+namespace Inscription
+{
+    DEFINE_OBJECT_INSCRIPTER_MEMBERS(::Atmos::Music)
     {
-        Resume();
-    }
 
-    void Music::StopImpl()
-    {
-        Pause();
-    }
-
-    Music::Music()
-    {}
-
-    Music::Music(const AssetReference<AudioAsset> &asset) : SoundBase(asset, true)
-    {}
-
-    Music::Music(const Music &arg) : SoundBase(arg)
-    {}
-
-    Music::Music(Music &&arg) : SoundBase(std::move(arg))
-    {}
-
-    Music& Music::operator=(const Music &arg)
-    {
-        SoundBase::operator=(arg);
-        return *this;
-    }
-
-    Music& Music::operator=(Music &&arg)
-    {
-        SoundBase::operator=(std::move(arg));
-        return *this;
     }
 }

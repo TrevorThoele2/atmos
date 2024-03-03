@@ -2,10 +2,10 @@
 #include "BattleActionManager.h"
 
 #include "Battle.h"
-#include "EntityPositionSystem.h"
 
 namespace Atmos
 {
+    /*
     namespace Battle
     {
         void ActionManager::OnKeyPressedImpl(const Input::Key &arg)
@@ -23,21 +23,13 @@ namespace Atmos
         void ActionManager::AddPlayer(CharacterEntity &add, const GridPosition &position)
         {
             battleState.all.push_back(add);
-            battleState.players.push_back(--battleState.all.end());
             ::Atmos::Ent::PositionSystem::MoveEntityInstant(add->GetEntity(), position);
-            add.GetSense()->Show();
-        }
-
-        void ActionManager::AddMonster(CharacterEntity &add, const GridPosition &position)
-        {
-            battleState.all.push_back(add);
-            battleState.monsters.push_back(--battleState.all.end());
-            ::Atmos::Ent::PositionSystem::MoveEntityInstant(add->GetEntity(), position);
+            //add.GetSense()->Show();
         }
 
         CharacterEntity ActionManager::GetSelectedEntity() const
         {
-            if (!battleState.IsSelectedEntityValid())
+            if (!battleState.HasSelectedEntity())
                 return CharacterEntity(Ent::nullEntity);
             else
                 return *battleState.selectedEntity;
@@ -45,7 +37,7 @@ namespace Atmos
 
         CharacterEntity ActionManager::FindCharacter(const GridPosition &position) const
         {
-            for (auto &loop : battleState.all)
+            for (auto& loop : battleState.all)
             {
                 if (loop->GetPosition() == position)
                     return loop;
@@ -66,7 +58,7 @@ namespace Atmos
 
         bool ActionManager::IsSelectedEntityValid() const
         {
-            return battleState.IsSelectedEntityValid();
+            return battleState.HasSelectedEntity();
         }
 
         bool ActionManager::IsSelectedEntityPlayer() const
@@ -150,4 +142,5 @@ namespace Atmos
             OnMouseKeyPressedImpl(arg);
         }
     }
+    */
 }

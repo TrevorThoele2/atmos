@@ -2,29 +2,39 @@
 
 #include "RenderFragment.h"
 
+#include "ObjectSerialization.h"
+
 namespace Atmos
 {
     class Canvas;
-    class CanvasView : public RenderFragment
+    class CanvasView : public nRenderFragment
     {
-    private:
-        const Canvas *canvas;
-        void CalculateBounds();
-
-        void DrawImpl() const override;
-        Position3D::ValueT GetZHeight() const override;
+    public:
+        typedef StoredProperty<const Canvas*> CanvasProperty;
+        CanvasProperty source;
     public:
         CanvasView();
-        CanvasView(const Canvas &canvas);
-        CanvasView(const CanvasView &arg);
-        CanvasView(CanvasView &&arg);
-        CanvasView& operator=(const CanvasView &arg);
-        CanvasView& operator=(CanvasView &&arg);
+        CanvasView(const Canvas& source);
+        CanvasView(const CanvasView& arg) = default;
+        CanvasView(const ::Inscription::Table<CanvasView>& table);
+        CanvasView& operator=(const CanvasView& arg) = default;
 
-        bool operator==(const CanvasView &arg) const;
-        bool operator!=(const CanvasView &arg) const;
+        ObjectTypeDescription TypeDescription() const override;
+    };
 
-        void SetCanvas(const Canvas &set);
-        const Canvas& GetCanvas() const;
+    template<>
+    struct ObjectTraits<CanvasView> : ObjectTraitsBase<CanvasView>
+    {
+        static const ObjectTypeName typeName;
+        static constexpr ObjectTypeList<nRenderFragment> bases = {};
+    };
+}
+
+namespace Inscription
+{
+    DECLARE_OBJECT_INSCRIPTER(::Atmos::CanvasView)
+    {
+    public:
+        static void AddMembers(TableT& table);
     };
 }

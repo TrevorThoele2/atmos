@@ -1,91 +1,80 @@
 
 #include "Shop.h"
 
-#include "Speech.h"
+#include "SpeechController.h"
 
-#include "Entity.h"
 #include "AvatarSystem.h"
 #include "AvatarComponent.h"
 #include "InventoryComponent.h"
-#include "DialogueComponent.h"
+#include "ActionComponent.h"
 
-#include "CurrentField.h"
 #include "StringUtility.h"
 
 #include "FontDefines.h"
-#include <AGUI\System.h>
-#include <AGUI\PushButton.h>
+#include <AGUI/System.h>
+#include <AGUI/PushButton.h>
 
 namespace Atmos
 {
     namespace Speech
     {
-        void Shop::Dialog::OnCountChange()
-        {
-            price = GetItemPrice(*item->GetWrapped(), ItemStack::CountT(count.Get()));
-
-            itemCountText->SetString(ToString(count.Get()));
-            priceText->SetString(ToString(price));
-        }
-
-        void Shop::Dialog::Transaction()
-        {
-            auto avatarComponent = ::Atmos::Ent::AvatarSystem::GetAvatar();
-            auto inventoryComponent = ::Atmos::Ent::AvatarSystem::GetInventory();
-            if (buying)
-            {
-                if (avatarComponent->gold >= price)
-                {
-                    avatarComponent->gold -= price;
-                    inventoryComponent->Add(item->GetName(), ItemStack::CountT(count.Get()));
-                    return;
-                }
-            }
-            else
-            {
-                avatarComponent->gold += price;
-                item->DecrementCount(ItemStack::CountT(count.Get()));
-            }
-        }
-
-        Shop::Dialog::Dialog() : active(false), item(nullptr), count(1, 1, 1), price(0)
+        Shop::Dialog::Dialog(Shop& owner) : active(false), owner(&owner), focusedItemStack(nullptr), count(1, 1, 1), price(0)
         {}
 
-        void Shop::Dialog::Init(Agui::ItemDescriptionBox &descBox)
+        void Shop::Dialog::Initialize(Agui::ItemDescriptionBox& descBox)
         {
-            textbox = Agui::Textbox::Factory(&descBox, "dialog", Agui::RelativePosition(Agui::Dimension(), Agui::Dimension(0, 64), Agui::HorizontalAlignment::MID, Agui::VerticalAlignment::BOT), 0);
+            textbox = Agui::Textbox::Factory(
+                &descBox,
+                "dialog",
+                Agui::RelativePosition(Agui::Dimension(), Agui::Dimension(0, 64), Agui::HorizontalAlignment::MID, Agui::VerticalAlignment::BOT),
+                0);
             textbox->GetSprite()->color.Edit(255, 100, 255, 100);
             textbox->ScaleTo(256, 64);
             textbox->SetShowWithParent(false);
 
-            itemCountText = &textbox->CreateText("itemCount", 1, Agui::RelativePosition(Agui::HorizontalAlignment::MID, Agui::VerticalAlignment::TOP), Agui::Size(textbox->GetScaledWidth(), 0), Agui::Text("", Agui::Text::CENTER_HORIZONTAL, *Agui::fontSlender, Agui::Color(255, 0, 0, 0))).GetText();
+            itemCountText = &textbox->CreateText(
+                "itemCount",
+                1,
+                Agui::RelativePosition(Agui::HorizontalAlignment::MID, Agui::VerticalAlignment::TOP),
+                Agui::Size(textbox->GetScaledWidth(), 0),
+                Agui::Text("", Agui::Text::CENTER_HORIZONTAL, *Agui::fontSlender, Agui::Color(255, 0, 0, 0))).GetText();
             itemCountText->SetAutoCalcTextHeight();
 
-            priceText = &textbox->CreateText("price", 1, Agui::RelativePosition(Agui::HorizontalAlignment::MID, Agui::VerticalAlignment::BOT), Agui::Size(textbox->GetScaledWidth(), 0), Agui::Text("", Agui::Text::CENTER_HORIZONTAL, *Agui::fontSlender, Agui::Color(255, 0, 0, 0))).GetText();
+            priceText = &textbox->CreateText(
+                "price",
+                1,
+                Agui::RelativePosition(Agui::HorizontalAlignment::MID, Agui::VerticalAlignment::BOT),
+                Agui::Size(textbox->GetScaledWidth(), 0),
+                Agui::Text("", Agui::Text::CENTER_HORIZONTAL, *Agui::fontSlender, Agui::Color(255, 0, 0, 0))).GetText();
             priceText->SetAutoCalcTextHeight();
 
-            playerGoldText = &textbox->CreateText("playerGold", 1, Agui::RelativePosition(Agui::HorizontalAlignment::MID, Agui::VerticalAlignment::MID), Agui::Size(textbox->GetScaledWidth(), 0), Agui::Text("", Agui::Text::CENTER_HORIZONTAL, *Agui::fontSlender, Agui::Color(255, 0, 0, 0))).GetText();
+            playerGoldText = &textbox->CreateText(
+                "playerGold",
+                1,
+                Agui::RelativePosition(Agui::HorizontalAlignment::MID, Agui::VerticalAlignment::MID),
+                Agui::Size(textbox->GetScaledWidth(), 0),
+                Agui::Text("", Agui::Text::CENTER_HORIZONTAL, *Agui::fontSlender, Agui::Color(255, 0, 0, 0))).GetText();
             playerGoldText->SetAutoCalcTextHeight();
         }
 
-        void Shop::Dialog::Activate(ItemStack &item)
+        void Shop::Dialog::Activate(ItemStack& withItem)
         {
             active = true;
 
-            this->item = &item;
+            focusedItemStack = &withItem;
 
-            auto avatarComponent = ::Atmos::Ent::AvatarSystem::GetAvatar();
-            playerGoldText->SetString(ToString(avatarComponent->gold));
+            auto avatarComponent = owner->AvatarComponent();
+            playerGoldText->SetString(ToString(avatarComponent->currency));
 
-            if (buying)
+            if (owner->isBuying)
             {
-                auto divisor = (*this->item)->GetBuyingPrice();
+                auto divisor = focusedItemStack->itemSource->buyPrice;
                 if (divisor == 0)
                     divisor = 1;
-                count.SetUpperBound(static_cast<unsigned char>(std::floor(avatarComponent->gold / divisor)));
+                count.SetUpperBound(static_cast<unsigned char>(std::floor(avatarComponent->currency / divisor)));
             }
             else
-                count.SetUpperBound(this->item->GetCount().Get());
+                count.SetUpperBound(focusedItemStack->count.Value());
 
             count.Set(1);
             OnCountChange();
@@ -96,7 +85,7 @@ namespace Atmos
         {
             active = false;
             textbox->Hide();
-            Shop::OnDialogDeactivated();
+            owner->OnDialogDeactivated();
         }
 
         bool Shop::Dialog::IsActive() const
@@ -104,7 +93,7 @@ namespace Atmos
             return active;
         }
 
-        void Shop::Dialog::OnActionPressed(const Input::Action &args)
+        void Shop::Dialog::OnActionPressed(const Input::Action& args)
         {
             if (!active)
                 return;
@@ -129,25 +118,102 @@ namespace Atmos
             }
         }
 
-        bool Shop::active = false;
-        bool Shop::buying = false;
-        Agui::Root* Shop::root = nullptr;
-        Shop::Dialog Shop::dialog;
-
-        InventoryGui Shop::inventoryGui;
-
-        Shop& Shop::Instance()
+        void Shop::Dialog::OnCountChange()
         {
-            static Shop instance;
-            return instance;
+            price = owner->ItemPrice(focusedItemStack->itemSource.Get(), ItemStack::Count(count.Value()));
+
+            itemCountText->SetString(ToString(count.Value()));
+            priceText->SetString(ToString(price));
+        }
+
+        void Shop::Dialog::Transaction()
+        {
+            auto avatarComponent = owner->AvatarComponent();
+            auto inventoryComponent = owner->AvatarInventoryComponent();
+            if (owner->isBuying)
+            {
+                if (avatarComponent->currency >= price)
+                {
+                    avatarComponent->currency -= price;
+                    inventoryComponent->Add(focusedItemStack->itemSource, ItemStack::Count(count.Value()));
+                    return;
+                }
+            }
+            else
+            {
+                avatarComponent->currency += price;
+                focusedItemStack->count -= ItemStack::Count(count.Value());
+            }
+        }
+
+        Shop::Shop(ObjectManager& manager) : ObjectSystem(manager), active(false), controller(nullptr), isBuying(false), root(nullptr), dialog(*this)
+        {
+            Environment::GetInput()->eventActionPressed.Subscribe(&Shop::OnActionPressed, *this);
+        }
+
+        bool Shop::Enter(bool buying)
+        {
+            EntityReference entity = (buying) ? controller->currentDialogue->owner : Avatar();
+            InventoryComponentReference inventory = InventoryComponent(entity);
+
+            if (!inventory || inventory->IsEmpty())
+            {
+                Logger::Log("The shop was attempted to be entered with an entity without an inventory.",
+                    Logger::Type::ERROR_LOW,
+                    Logger::NameValueVector{ NameValuePair{"Entity", entity->ID()} });
+                return false;
+            }
+
+            active = true;
+            isBuying = buying;
+            root->Show();
+
+            return true;
+        }
+
+        void Shop::Leave()
+        {
+            active = false;
+            root->Hide();
+        }
+
+        bool Shop::IsActive() const
+        {
+            return active;
+        }
+
+        void Shop::InitializeImpl()
+        {
+            controller = Manager()->FindSystem<Controller>();
+            InitializeGui();
+        }
+
+        nItem::Price Shop::ItemPrice(TypedObjectReference<nItem> item, const ItemStack::Count& count)
+        {
+            return (isBuying) ? item->buyPrice * count.Value() : item->sellPrice * count.Value();
+        }
+
+        void Shop::InitializeGui()
+        {
+            root = Agui::System::CreateRoot("shop");
+
+            // Description box
+            auto descBox = Agui::ItemDescriptionBox::Factory(
+                root,
+                "description",
+                Agui::RelativePosition(Agui::Dimension(), Agui::Dimension(0, 128), Agui::HorizontalAlignment::MID, Agui::VerticalAlignment::TOP),
+                0);
+            descBox->GetSprite()->color.Edit(255, 100, 100, 255);
+            descBox->ScaleTo(256, 256);
+
+            // Dialog
+            dialog.Initialize(*descBox);
         }
 
         void Shop::OnDialogDeactivated()
-        {
-            inventoryGui.Start();
-        }
+        {}
 
-        void Shop::OnActionPressed(const Input::Action &args)
+        void Shop::OnActionPressed(const Input::Action& args)
         {
             if (dialog.IsActive())
             {
@@ -159,8 +225,6 @@ namespace Atmos
             {
             case Input::ActionID::USE:
             {
-                dialog.Activate(*inventoryGui.GetSelected());
-                inventoryGui.Pause();
                 break;
             }
             case Input::ActionID::CANCEL:
@@ -169,69 +233,27 @@ namespace Atmos
             }
         }
 
-        Item::Price Shop::GetItemPrice(const Item &item, const ItemStack::CountT &count)
+        Shop::EntityReference Shop::Avatar()
         {
-            return (buying) ? item.GetBuyingPrice() * count.Get() : item.GetSellingPrice() * count.Get();
+            return Manager()->FindSystem<Ent::nEntityAvatarSystem>()->Avatar();
         }
 
-        void Shop::Init()
+        Shop::AvatarComponentReference Shop::AvatarComponent()
         {
-            root = Agui::System::CreateRoot("shop");
-
-            // Description box
-            auto descBox = Agui::ItemDescriptionBox::Factory(root, "description", Agui::RelativePosition(Agui::Dimension(), Agui::Dimension(0, 128), Agui::HorizontalAlignment::MID, Agui::VerticalAlignment::TOP), 0);
-            descBox->GetSprite()->color.Edit(255, 100, 100, 255);
-            descBox->ScaleTo(256, 256);
-
-            inventoryGui.Init(*root, Agui::RelativePosition(Agui::HorizontalAlignment::RIGHT, Agui::VerticalAlignment::TOP), "", *descBox, nullptr);
-            inventoryGui.GetBackground()->GetSprite()->color.Edit(255, 255, 255, 100);
-            inventoryGui.GetBackground()->ScaleTo(282, 568);
-            inventoryGui.GetMenu()->GetSprite()->color.Edit(255, 100, 100, 255);
-            inventoryGui.GetMenu()->SetPosition(Agui::RelativePosition(Agui::Dimension(), Agui::Dimension(0, 23), Agui::HorizontalAlignment::MID, Agui::VerticalAlignment::TOP));
-            inventoryGui.GetMenu()->GetLayout()->ChangeDimensions(230, 503);
-
-            // Leave button
-            auto button = Agui::PushButton::Factory(inventoryGui.GetBackground(), "leave", Agui::RelativePosition(Agui::Dimension(), Agui::Dimension(0, -5), Agui::HorizontalAlignment::MID, Agui::VerticalAlignment::BOT), 1);
-            button->ModifySprite(Agui::Sprite("Graphics/GUI/buttonSmaller.png", 1, Agui::Color()));
-            button->GetText()->SetString("LEAVE");
-            button->GetText()->color.Edit(0, 0, 0);
-            button->eventClicked.Subscribe(std::bind(&Shop::Leave));
-
-            // Dialog
-            dialog.Init(*descBox);
+            auto avatar = Avatar();
+            auto avatarComponent = avatar->Component<Ent::nAvatarComponent>();
+            return avatarComponent;
         }
 
-        bool Shop::Enter(bool buying)
+        Shop::InventoryComponentReference Shop::AvatarInventoryComponent()
         {
-            Entity entity = (buying) ? Handler::currentDialogue->GetOwnerEntity() : ::Atmos::Ent::AvatarSystem::GetEntity();
-            Ent::InventoryComponent *inventory = GetCurrentEntities()->FindComponent<Ent::InventoryComponent>(entity);
-
-            if (!inventory || inventory->IsEmpty())
-            {
-                Logger::Log("The shop was attempted to be entered with an entity without an inventory.",
-                    Logger::Type::ERROR_LOW,
-                    Logger::NameValueVector{ NameValuePair{"Entity", static_cast<size_t>(entity)} });
-                return false;
-            }
-
-            active = true;
-            Shop::buying = buying;
-            root->Show();
-
-            inventoryGui.SetList(inventory);
-            inventoryGui.Start();
-            return true;
+            auto avatar = Avatar();
+            return InventoryComponent(avatar);
         }
 
-        void Shop::Leave()
+        Shop::InventoryComponentReference Shop::InventoryComponent(EntityReference entity)
         {
-            active = false;
-            root->Hide();
-        }
-
-        bool Shop::IsActive()
-        {
-            return Instance().active;
+            return entity->Component<Ent::nInventoryComponent>();
         }
     }
 }

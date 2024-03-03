@@ -18,11 +18,12 @@ namespace Atmos
         virtual void HideImpl();
     protected:
         StateGui(const std::string &name);
-        Agui::Root* GetRoot();
     public:
         void Init();
         void Update();
         void Show();
         void Hide();
+
+        Agui::Root* GetRoot();
     };
 }

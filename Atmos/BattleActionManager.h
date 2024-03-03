@@ -5,6 +5,7 @@
 
 namespace Atmos
 {
+    /*
     namespace Battle
     {
         class ActionManager
@@ -21,7 +22,6 @@ namespace Atmos
             virtual void OnMouseKeyPressedImpl(const Input::MouseKey &arg);
         protected:
             void AddPlayer(CharacterEntity &add, const GridPosition &position);
-            void AddMonster(CharacterEntity &add, const GridPosition &position);
             CharacterEntity GetSelectedEntity() const;
             CharacterEntity FindCharacter(const GridPosition &position) const;
             void DeselectEntity();
@@ -48,4 +48,5 @@ namespace Atmos
             void OnMouseKeyPressed(const Input::MouseKey &arg);
         };
     }
+    */
 }

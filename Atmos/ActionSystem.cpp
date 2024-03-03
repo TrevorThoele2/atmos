@@ -1,27 +1,57 @@
 
 #include "ActionSystem.h"
-#include "ActionComponent.h"
+
+#include "RunningScript.h"
+
 #include "WorldManager.h"
+#include "CurrentField.h"
+#include "GameEnvironment.h"
 
 namespace Atmos
 {
     namespace Ent
     {
-        ActionSystem::ActionSystem()
+        nEntityActionSystem::nEntityActionSystem(ObjectManager& manager) : ObjectSystem(manager)
         {}
 
-        void ActionSystem::Init()
+        void nEntityActionSystem::InitializeImpl()
         {
-            SubscribeEvent(WorldManager::Instance().eventFieldSet, &ActionSystem::OnFieldSet);
+            GameEnvironment::GetWorldManager().eventFieldSet.Subscribe(&nEntityActionSystem::OnFieldSet);
+            GameEnvironment::GetWorldManager().eventFinalizeField.Subscribe(&nEntityActionSystem::OnFieldUnset);
         }
 
-        void ActionSystem::OnFieldSet(Field &field)
+        void nEntityActionSystem::WorkImpl()
         {
-            auto &actionMap = field.entities.GetMap<ActionComponent>();
-            for (auto loop : actionMap)
-                loop.second.OnFieldEntered();
+            for (auto& loop : GetLocalObjectManager()->Batch<nActionComponent>())
+            {
+                auto runningScript = loop->script->RunningForThis();
+                if (!runningScript.IsOccupied())
+                    continue;
+
+                runningScript->Resume();
+            }
         }
 
-        ENTITY_SYSTEM_FORCE_INSTANTIATION(ActionSystem);
+        void nEntityActionSystem::OnFieldSet(Field& field)
+        {
+            auto actionComponents = AllActionComponents(field);
+            for (auto& loop : actionComponents)
+                loop->FireFieldEntered();
+        }
+
+        void nEntityActionSystem::OnFieldUnset(Field* field)
+        {
+            if (!field)
+                return;
+
+            auto actionComponents = AllActionComponents(*field);
+            for (auto& loop : actionComponents)
+                loop->FireFieldLeft();
+        }
+
+        ObjectBatch<nActionComponent> nEntityActionSystem::AllActionComponents(Field& field)
+        {
+            return field.objectManager.Batch<nActionComponent>();
+        }
     }
 }

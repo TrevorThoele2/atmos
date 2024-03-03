@@ -13,7 +13,7 @@ namespace Agui
 
     void SpellContextMenu::OnCast()
     {
-        selected->Start();
+
     }
 
     SpellContextMenu::SpellContextMenu(Object *parent, const std::string &name, const RelativePosition &pos, float z) : ContextMenu(parent, name, pos, z), selected(nullptr), source(nullptr)
@@ -45,13 +45,13 @@ namespace Agui
         selected = nullptr;
     }
 
-    void SpellContextMenu::SetSelected(const Atmos::Spell &set)
+    void SpellContextMenu::SetSelected(::Atmos::TypedObjectReference<::Atmos::nSpell> set)
     {
-        selected = &set;
+        selected = set;
     }
 
-    void SpellContextMenu::SetSource(const Atmos::Ent::CombatComponent &set)
+    void SpellContextMenu::SetSource(::Atmos::TypedObjectReference<::Atmos::Ent::nCombatComponent> set)
     {
-        source = &set;
+        source = set;
     }
 }

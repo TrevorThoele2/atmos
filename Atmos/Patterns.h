@@ -12,24 +12,15 @@ namespace Atmos
 {
     class GraphicalPatternEntry
     {
-    private:
-        INSCRIPTION_TABLE_CONSTRUCTOR_SIMPLE_DECLARE(GraphicalPatternEntry, private);
     public:
-        Sprite sprite;
-
-        GraphicalPatternEntry(Sprite &&sprite);
+        typedef TypedObjectReference<nSprite> SpriteReference;
+        SpriteReference sprite;
+    public:
+        GraphicalPatternEntry(SpriteReference sprite);
         bool operator==(const GraphicalPatternEntry &arg) const;
+    private:
+        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
     };
 
     typedef RelativeRangePattern<GraphicalPatternEntry> RelativeGraphicalPattern;
-}
-
-namespace Inscription
-{
-    template<>
-    class Inscripter<::Atmos::GraphicalPatternEntry> : public InscripterBase<::Atmos::GraphicalPatternEntry>
-    {
-    public:
-        INSCRIPTION_INSCRIPTER_DECLARE_TABLE;
-    };
 }

@@ -8,14 +8,14 @@ namespace Atmos
     template<class T, class PositionT>
     size_t ReadFromBuffer(const void *buffer, T &obj, PositionT position);
     template<class PositionT>
-    size_t ReadBufferFromBuffer(const void *from, void *to, size_t size, PositionT position);
+    size_t CopyBuffer(const void *from, void *to, size_t size, PositionT position);
     bool CompareBuffers(const void *first, const void *second, size_t size);
 
     template<class Size>
     class Buffer
     {
     public:
-        typedef void* BytesT;
+        typedef char* BytesT;
         typedef Size SizeT;
     private:
         BytesT bytes;
@@ -24,7 +24,9 @@ namespace Atmos
         bool Compare(BytesT pass) const;
     public:
         Buffer();
+        Buffer(SizeT size);
         Buffer(BytesT bytes, SizeT size);
+        Buffer(void *bytes, SizeT size);
         Buffer(const Buffer &arg);
         Buffer(Buffer &&arg);
         Buffer& operator=(const Buffer &arg);
@@ -62,7 +64,15 @@ namespace Atmos
     {}
 
     template<class Size>
+    Buffer<Size>::Buffer(SizeT size) : bytes(new char[size]), size(size)
+    {}
+
+    template<class Size>
     Buffer<Size>::Buffer(BytesT bytes, SizeT size) : bytes(bytes), size(size)
+    {}
+
+    template<class Size>
+    Buffer<Size>::Buffer(void *bytes, SizeT size) : bytes(reinterpret_cast<BytesT>(bytes)), size(size)
     {}
 
     template<class Size>
@@ -96,7 +106,7 @@ namespace Atmos
     Buffer<Size>::~Buffer()
     {
         if(bytes)
-            delete[] reinterpret_cast<char*>(bytes);
+            delete[] bytes;
 
         size = 0;
     }
@@ -177,7 +187,7 @@ namespace Atmos
     template<class Size>
     typename Buffer<Size>::SizeT Buffer<Size>::ReadBufferFrom(void *to, size_t size, SizeT position) const
     {
-        return Atmos::ReadBufferFromBuffer(bytes, to, size, position);
+        return Atmos::CopyBuffer(bytes, to, size, position);
     }
 
     template<class T, class PositionT>
@@ -188,7 +198,7 @@ namespace Atmos
     }
 
     template<class PositionT>
-    size_t ReadBufferFromBuffer(const void *from, void *to, size_t size, PositionT position)
+    size_t CopyBuffer(const void *from, void *to, size_t size, PositionT position)
     {
         memcpy(to, &reinterpret_cast<const char*>(from)[position], size);
         return size;

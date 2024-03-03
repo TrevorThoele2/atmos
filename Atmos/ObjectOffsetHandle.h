@@ -77,16 +77,18 @@ namespace Atmos
         const ObjectT& Get() const;
 
         const PositionT* GetOwnerPosition() const;
-        OffsetValueT GetX() const;
-        OffsetValueT GetY() const;
-        OffsetValueT GetZ() const;
+        OffsetValueT GetXOffset() const;
+        OffsetValueT GetYOffset() const;
+        OffsetValueT GetZOffset() const;
     };
 
     template<class T, class Position>
     void ObjectOffsetHandle<T, Position>::Serialize(::Inscription::Scribe &scribe)
     {
         scribe(object);
-        scribe(x, y, z);
+        scribe(x);
+        scribe(y);
+        scribe(z);
     }
 
     template<class T, class Position>
@@ -293,19 +295,19 @@ namespace Atmos
     }
 
     template<class T, class Position>
-    typename ObjectOffsetHandle<T, Position>::OffsetValueT ObjectOffsetHandle<T, Position>::GetX() const
+    typename ObjectOffsetHandle<T, Position>::OffsetValueT ObjectOffsetHandle<T, Position>::GetXOffset() const
     {
         return x;
     }
 
     template<class T, class Position>
-    typename ObjectOffsetHandle<T, Position>::OffsetValueT ObjectOffsetHandle<T, Position>::GetY() const
+    typename ObjectOffsetHandle<T, Position>::OffsetValueT ObjectOffsetHandle<T, Position>::GetYOffset() const
     {
         return y;
     }
 
     template<class T, class Position>
-    typename ObjectOffsetHandle<T, Position>::OffsetValueT ObjectOffsetHandle<T, Position>::GetZ() const
+    typename ObjectOffsetHandle<T, Position>::OffsetValueT ObjectOffsetHandle<T, Position>::GetZOffset() const
     {
         return z;
     }

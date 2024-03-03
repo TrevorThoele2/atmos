@@ -2,14 +2,195 @@
 #include "RenderFragmentGrid.h"
 #include "RenderFragment.h"
 
+#include "MathUtility.h"
+
 #include "Assert.h"
 
 namespace Atmos
 {
-    RenderFragmentGrid::ChildDetermination::ChildDetermination(ChildT selection, GridPosition::ValueT xOffset, GridPosition::ValueT yOffset, GridPosition::ValueT zOffset) : selection(selection), xOffset(xOffset), yOffset(yOffset), zOffset(zOffset)
+    Octree::Octree() : size(0)
+    {
+        FabricateHeads(0);
+    }
+
+    Octree::Octree(Octree&& arg) :
+        size(std::move(arg.size)), heads(std::move(arg.heads)), totalObjects(std::move(arg.totalObjects)), toAddObjects(std::move(arg.toAddObjects))
     {}
 
-    Optional<RenderFragmentGrid::ChildDetermination> RenderFragmentGrid::DetermineChild(GridPosition::ValueT layerSize, const AxisBoundingBox3D &bounds, const AxisBoundingBox3D &againstBounds)
+    Octree& Octree::operator=(Octree&& arg)
+    {
+        size = std::move(arg.size);
+        heads = std::move(arg.heads);
+        totalObjects = std::move(arg.totalObjects);
+        toAddObjects = std::move(arg.toAddObjects);
+        return *this;
+    }
+
+    void Octree::Work()
+    {
+        if (totalObjects.IsEmpty())
+            return;
+
+        for (auto& loop : toAddObjects)
+            AddImpl(loop);
+
+        toAddObjects.Clear();
+    }
+
+    void Octree::Add(ItemReference add)
+    {
+        if (toAddObjects.Has(add))
+            return;
+
+        RemoveImpl(add, add->bounds);
+        toAddObjects.Add(add);
+    }
+
+    void Octree::Remove(ItemReference remove)
+    {
+        RemoveImpl(remove, remove->bounds);
+    }
+
+    void Octree::Clear()
+    {
+        FabricateHeads(0);
+        size = 0;
+        totalObjects.Clear();
+        toAddObjects.Clear();
+    }
+
+    void Octree::InformChanged(ItemReference changed, const AxisBoundingBox3D& previousBounds)
+    {
+        if (toAddObjects.Has(changed))
+            return;
+
+        RemoveImpl(changed, previousBounds);
+        toAddObjects.Add(changed);
+    }
+
+    Octree::Map Octree::AllInside(const AxisBoundingBox3D& aabb)
+    {
+        Map ret;
+        for (auto& loop : heads)
+            loop->AllInside(aabb, ret);
+
+        if (GetTotalBounds().Overlapping(aabb))
+            ret.Insert(totalObjects.begin(), totalObjects.end());
+
+        return ret;
+    }
+
+    bool Octree::IsEmpty() const
+    {
+        return Size() == 0;
+    }
+
+    Octree::SizeT Octree::Size() const
+    {
+        return size;
+    }
+
+    Octree::NodeBase* Octree::FabricateNode(Layer layer, GridPosition::ValueT layerSize, GridPosition::ValueT x, GridPosition::ValueT y, GridPosition::ValueT z)
+    {
+        if (layer == 0)
+            return new LeafNode(x, y, z);
+        else
+            return new Node(layer, layerSize, x, y, z);
+    }
+
+    void Octree::FabricateHeads(Layer layer)
+    {
+        if (layer == 0)
+        {
+            heads[WNF].reset(new LeafNode(-1, -1, -1));
+            heads[ENF].reset(new LeafNode(0, -1, -1));
+            heads[WSF].reset(new LeafNode(-1, 0, -1));
+            heads[ESF].reset(new LeafNode(0, 0, -1));
+            heads[WNN].reset(new LeafNode(-1, -1, 0));
+            heads[ENN].reset(new LeafNode(0, -1, 0));
+            heads[WSN].reset(new LeafNode(-1, 0, 0));
+            heads[ESN].reset(new LeafNode(0, 0, 0));
+        }
+        else
+        {
+            auto headCreator = [&](NodePtr& ptr, GridPosition::ValueT x, GridPosition::ValueT y, GridPosition::ValueT z)
+            {
+                auto prevHead = ptr.release();
+                ptr.reset(new Node(layer, Node::FabricateLayerSize(layer), x, y, z));
+                if (prevHead->IsTotalEmpty())
+                    delete prevHead;
+                else
+                {
+                    if (!static_cast<Node*>(ptr.get())->AddChild(prevHead))
+                    {
+                        size -= prevHead->GetTotalSize();
+                        delete prevHead;
+                    }
+                }
+            };
+
+            headCreator(heads[WNF], -1, -1, -1);
+            headCreator(heads[ENF], 0, -1, -1);
+            headCreator(heads[WSF], -1, 0, -1);
+            headCreator(heads[ESF], 0, 0, -1);
+            headCreator(heads[WNN], -1, -1, 0);
+            headCreator(heads[ENN], 0, -1, 0);
+            headCreator(heads[WSN], -1, 0, 0);
+            headCreator(heads[ESN], 0, 0, 0);
+        }
+    }
+
+    void Octree::AddImpl(ItemReference add)
+    {
+        auto attemptEmplace = [&]() -> bool
+        {
+            for (auto& loop : heads)
+            {
+                if (loop->Emplace(add, add->bounds))
+                {
+                    ++size;
+                    return true;
+                }
+            }
+
+            // Check if inside total
+            if (IsWithinTotal(add->bounds))
+            {
+                totalObjects.Add(add);
+                ++size;
+                return true;
+            }
+
+            return false;
+        };
+
+        while (!attemptEmplace())
+            FabricateHeads(heads[0]->GetLayer() + 1);
+    }
+
+    void Octree::RemoveImpl(ItemReference remove, const AxisBoundingBox3D& bounds)
+    {
+        toAddObjects.Remove(remove);
+        if (IsEmpty())
+            return;
+
+        for (auto& loop : heads)
+        {
+            if (loop->Remove(remove, bounds))
+            {
+                --size;
+                return;
+            }
+        }
+
+        if (IsWithinTotal(bounds) && totalObjects.Remove(remove))
+            --size;
+    }
+
+    Octree::ChildDetermination::ChildDetermination(ChildID selection, GridPosition::ValueT xOffset, GridPosition::ValueT yOffset, GridPosition::ValueT zOffset) : selection(selection), xOffset(xOffset), yOffset(yOffset), zOffset(zOffset)
+    {}
+
+    Optional<Octree::ChildDetermination> Octree::DetermineChild(GridPosition::ValueT layerSize, const AxisBoundingBox3D& bounds, const AxisBoundingBox3D& againstBounds)
     {
         typedef Optional<ChildDetermination> RetT;
 
@@ -64,13 +245,13 @@ namespace Atmos
         return RetT(std::move(determination));
     }
 
-    RenderFragmentGrid::NodeBase::NodeBase(GridPosition::ValueT x, GridPosition::ValueT y, GridPosition::ValueT z) : x(x), y(y), z(z)
+    Octree::NodeBase::NodeBase(GridPosition::ValueT x, GridPosition::ValueT y, GridPosition::ValueT z) : x(x), y(y), z(z)
     {}
 
-    RenderFragmentGrid::NodeBase::NodeBase(NodeBase &&arg) : x(std::move(arg.x)), y(std::move(arg.y)), z(std::move(arg.z))
+    Octree::NodeBase::NodeBase(NodeBase&& arg) : x(std::move(arg.x)), y(std::move(arg.y)), z(std::move(arg.z))
     {}
 
-    RenderFragmentGrid::NodeBase& RenderFragmentGrid::NodeBase::operator=(NodeBase &&arg)
+    Octree::NodeBase& Octree::NodeBase::operator=(NodeBase&& arg)
     {
         const_cast<GridPosition::ValueT&>(x) = std::move(arg.x);
         const_cast<GridPosition::ValueT&>(y) = std::move(arg.y);
@@ -78,58 +259,61 @@ namespace Atmos
         return *this;
     }
 
-    GridPosition RenderFragmentGrid::NodeBase::GetPosition() const
+    Octree::NodeBase::~NodeBase()
+    {}
+
+    GridPosition Octree::NodeBase::GetPosition() const
     {
         return GridPosition(x, y, z);
     }
 
-    RenderFragmentGrid::LeafNode::LeafNode(GridPosition::ValueT x, GridPosition::ValueT y, GridPosition::ValueT z) : NodeBase(x, y, z)
+    Octree::LeafNode::LeafNode(GridPosition::ValueT x, GridPosition::ValueT y, GridPosition::ValueT z) : NodeBase(x, y, z)
     {}
 
-    RenderFragmentGrid::LeafNode::LeafNode(LeafNode &&arg) : NodeBase(std::move(arg))
+    Octree::LeafNode::LeafNode(LeafNode&& arg) : NodeBase(std::move(arg))
     {}
 
-    RenderFragmentGrid::LeafNode& RenderFragmentGrid::LeafNode::operator=(LeafNode &&arg)
+    Octree::LeafNode& Octree::LeafNode::operator=(LeafNode&& arg)
     {
         NodeBase::operator=(std::move(arg));
         return *this;
     }
 
-    bool RenderFragmentGrid::LeafNode::Emplace(RenderFragment &fragment, const AxisBoundingBox3D &fragmentBounds)
+    bool Octree::LeafNode::Emplace(ObjectReference emplace, const AxisBoundingBox3D& fragmentBounds)
     {
         // Check if the fragment can fit entirely within this node
         if (!fragmentBounds.Within(GetBounds()))
             return false;
 
-        fragments.emplace(&fragment);
+        objects.Add(emplace);
         return true;
     }
 
-    bool RenderFragmentGrid::LeafNode::Remove(RenderFragment &fragment, const AxisBoundingBox3D &fragmentBounds)
+    bool Octree::LeafNode::Remove(ObjectReference remove, const AxisBoundingBox3D& fragmentBounds)
     {
-        return fragments.erase(&fragment) != 0;
+        return objects.Remove(remove);
     }
 
-    void RenderFragmentGrid::LeafNode::Clear()
+    void Octree::LeafNode::Clear()
     {
-        fragments.clear();
+        objects.Clear();
     }
 
-    void RenderFragmentGrid::LeafNode::Find(const AxisBoundingBox3D &aabb, RenderFragmentGrid::SetT &set)
+    void Octree::LeafNode::AllInside(const AxisBoundingBox3D& aabb, Octree::Map& map)
     {
         // Check if the aabb overlaps this node
         if (!aabb.Overlapping(GetBounds()))
             return;
 
-        set.insert(fragments.begin(), fragments.end());
+        map.Insert(objects.begin(), objects.end());
     }
 
-    bool RenderFragmentGrid::LeafNode::IsTotalEmpty() const
+    bool Octree::LeafNode::IsTotalEmpty() const
     {
-        return fragments.empty();
+        return objects.IsEmpty();
     }
 
-    AxisBoundingBox3D RenderFragmentGrid::LeafNode::GetBounds() const
+    AxisBoundingBox3D Octree::LeafNode::GetBounds() const
     {
         GridPosition::ValueT gridSize(GRID_SIZE<GridPosition::ValueT>);
         return AxisBoundingBox3D(static_cast<AxisBoundingBox3D::Coordinate>(x * gridSize),
@@ -140,29 +324,29 @@ namespace Atmos
             static_cast<AxisBoundingBox3D::Coordinate>(z * gridSize + gridSize));
     }
 
-    RenderFragmentGrid::LayerT RenderFragmentGrid::LeafNode::GetLayer() const
+    Octree::Layer Octree::LeafNode::GetLayer() const
     {
         return 0;
     }
 
-    GridPosition::ValueT RenderFragmentGrid::LeafNode::GetLayerSize() const
+    GridPosition::ValueT Octree::LeafNode::GetLayerSize() const
     {
         return GRID_SIZE<GridPosition::ValueT>;
     }
 
-    RenderFragmentGrid::SetT::size_type RenderFragmentGrid::LeafNode::GetTotalSize() const
+    Octree::Map::SizeT Octree::LeafNode::GetTotalSize() const
     {
-        return fragments.size();
+        return objects.Size();
     }
 
-    void RenderFragmentGrid::Node::DeleteChildren()
+    void Octree::Node::DeleteChildren()
     {
-        for (auto &loop : children)
+        for (auto& loop : children)
             loop.reset();
-        totalSize = fragments.size();
+        totalSize = objects.Size();
     }
 
-    RenderFragmentGrid::Node::Node(LayerT layer, GridPosition::ValueT layerSize, GridPosition::ValueT x, GridPosition::ValueT y, GridPosition::ValueT z) : NodeBase(x, y, z), layer(layer), layerSize(layerSize), totalSize(0),
+    Octree::Node::Node(Layer layer, GridPosition::ValueT layerSize, GridPosition::ValueT x, GridPosition::ValueT y, GridPosition::ValueT z) : NodeBase(x, y, z), layer(layer), layerSize(layerSize), totalSize(0),
         bounds(static_cast<AxisBoundingBox3D::Coordinate>(x * layerSize),
             static_cast<AxisBoundingBox3D::Coordinate>(y * layerSize),
             static_cast<AxisBoundingBox3D::Coordinate>(z * layerSize),
@@ -171,10 +355,10 @@ namespace Atmos
             static_cast<AxisBoundingBox3D::Coordinate>((z * layerSize) + layerSize))
     {}
 
-    RenderFragmentGrid::Node::Node(Node &&arg) : NodeBase(std::move(arg)), children(std::move(arg.children)), bounds(std::move(arg.bounds)), totalSize(std::move(arg.totalSize)), layer(arg.layer)
+    Octree::Node::Node(Node&& arg) : NodeBase(std::move(arg)), children(std::move(arg.children)), bounds(std::move(arg.bounds)), totalSize(std::move(arg.totalSize)), layer(arg.layer)
     {}
 
-    RenderFragmentGrid::Node& RenderFragmentGrid::Node::operator=(Node &&arg)
+    Octree::Node& Octree::Node::operator=(Node&& arg)
     {
         NodeBase::operator=(std::move(arg));
         children = std::move(arg.children);
@@ -184,19 +368,19 @@ namespace Atmos
         return *this;
     }
 
-    bool RenderFragmentGrid::Node::Emplace(RenderFragment &fragment, const AxisBoundingBox3D &fragmentBounds)
+    bool Octree::Node::Emplace(ObjectReference emplace, const AxisBoundingBox3D& fragmentBounds)
     {
         // Check if the fragment can fit entirely within this node
         if (!fragmentBounds.Within(bounds))
             return false;
 
         // Try to emplace into the children
-        for (auto &loop : children)
+        for (auto& loop : children)
         {
             if (!loop)
                 continue;
 
-            if (loop->Emplace(fragment, fragmentBounds))
+            if (loop->Emplace(emplace, fragmentBounds))
             {
                 ++totalSize;
                 return true;
@@ -207,7 +391,7 @@ namespace Atmos
         Optional<ChildDetermination> determination = DetermineChild(layerSize, bounds, fragmentBounds);
         if (!determination.IsValid())
         {
-            fragments.emplace(&fragment);
+            objects.Add(emplace);
             ++totalSize;
             return true;
         }
@@ -215,14 +399,14 @@ namespace Atmos
         NodePtr &selectedNode = children[determination->selection];
         ATMOS_ASSERT_MESSAGE(!selectedNode, "This should never be occupied.");
         selectedNode.reset(FabricateNode(layer - 1, FabricateLayerSize(layer - 1), (x * 2) + determination->xOffset, (y * 2) + determination->yOffset, (z * 2) + determination->zOffset));
-        bool emplaced = selectedNode->Emplace(fragment, fragmentBounds);
+        bool emplaced = selectedNode->Emplace(emplace, fragmentBounds);
         if (emplaced)
             ++totalSize;
 
         return emplaced;
     }
 
-    bool RenderFragmentGrid::Node::Remove(RenderFragment &fragment, const AxisBoundingBox3D &fragmentBounds)
+    bool Octree::Node::Remove(ObjectReference remove, const AxisBoundingBox3D& fragmentBounds)
     {
         // If this node is totally empty, then just leave
         if (IsTotalEmpty())
@@ -233,12 +417,12 @@ namespace Atmos
             return false;
 
         // Check all children to see if they can remove it
-        for (auto &loop : children)
+        for (auto& loop : children)
         {
             if (!loop)
                 continue;
 
-            if (loop->Remove(fragment, fragmentBounds))
+            if (loop->Remove(remove, fragmentBounds))
             {
                 // Delete the child node if it's empty
                 if (loop->IsTotalEmpty())
@@ -249,13 +433,13 @@ namespace Atmos
             }
         }
 
-        bool erased = fragments.erase(&fragment) != 0;
+        bool erased = objects.Remove(remove);
         if (erased)
             --totalSize;
         return erased;
     }
 
-    bool RenderFragmentGrid::Node::AddChild(NodeBase *node)
+    bool Octree::Node::AddChild(NodeBase* node)
     {
         Optional<ChildDetermination> determination(DetermineChild(layerSize, bounds, node->GetBounds()));
         if (!determination)
@@ -266,237 +450,59 @@ namespace Atmos
         return true;
     }
 
-    void RenderFragmentGrid::Node::Clear()
+    void Octree::Node::Clear()
     {
         DeleteChildren();
-        fragments.clear();
+        objects.Clear();
         totalSize = 0;
     }
 
-    void RenderFragmentGrid::Node::Find(const AxisBoundingBox3D &aabb, RenderFragmentGrid::SetT &set)
+    void Octree::Node::AllInside(const AxisBoundingBox3D& aabb, Octree::Map& map)
     {
         // Check if the aabb overlaps this node
         if (!aabb.Overlapping(bounds))
             return;
 
         // Insert from children
-        for (auto &loop : children)
+        for (auto& loop : children)
         {
             if (!loop)
                 continue;
 
-            loop->Find(aabb, set);
+            loop->AllInside(aabb, map);
         }
 
         // Insert fragments
-        set.insert(fragments.begin(), fragments.end());
+        map.Insert(objects.begin(), objects.end());
     }
 
-    bool RenderFragmentGrid::Node::IsTotalEmpty() const
+    bool Octree::Node::IsTotalEmpty() const
     {
         return totalSize == 0;
     }
 
-    AxisBoundingBox3D RenderFragmentGrid::Node::GetBounds() const
+    AxisBoundingBox3D Octree::Node::GetBounds() const
     {
         return bounds;
     }
 
-    RenderFragmentGrid::LayerT RenderFragmentGrid::Node::GetLayer() const
+    Octree::Layer Octree::Node::GetLayer() const
     {
         return layer;
     }
 
-    GridPosition::ValueT RenderFragmentGrid::Node::GetLayerSize() const
+    GridPosition::ValueT Octree::Node::GetLayerSize() const
     {
         return layerSize;
     }
 
-    RenderFragmentGrid::SetT::size_type RenderFragmentGrid::Node::GetTotalSize() const
+    Octree::Map::SizeT Octree::Node::GetTotalSize() const
     {
         return totalSize;
     }
 
-    GridPosition::ValueT RenderFragmentGrid::Node::FabricateLayerSize(LayerT layer)
+    GridPosition::ValueT Octree::Node::FabricateLayerSize(Layer layer)
     {
         return GRID_SIZE<GridPosition::ValueT> * PowerOfTwo(layer);
-    }
-
-    RenderFragmentGrid::NodeBase* RenderFragmentGrid::FabricateNode(LayerT layer, GridPosition::ValueT layerSize, GridPosition::ValueT x, GridPosition::ValueT y, GridPosition::ValueT z)
-    {
-        if (layer == 0)
-            return new LeafNode(x, y, z);
-        else
-            return new Node(layer, layerSize, x, y, z);
-    }
-
-    void RenderFragmentGrid::FabricateHeads(LayerT layer)
-    {
-        if (layer == 0)
-        {
-            heads[WNF].reset(new LeafNode(-1, -1, -1));
-            heads[ENF].reset(new LeafNode(0, -1, -1));
-            heads[WSF].reset(new LeafNode(-1, 0, -1));
-            heads[ESF].reset(new LeafNode(0, 0, -1));
-            heads[WNN].reset(new LeafNode(-1, -1, 0));
-            heads[ENN].reset(new LeafNode(0, -1, 0));
-            heads[WSN].reset(new LeafNode(-1, 0, 0));
-            heads[ESN].reset(new LeafNode(0, 0, 0));
-        }
-        else
-        {
-            auto headCreator = [&](NodePtr &ptr, GridPosition::ValueT x, GridPosition::ValueT y, GridPosition::ValueT z)
-            {
-                auto prevHead = ptr.release();
-                ptr.reset(new Node(layer, Node::FabricateLayerSize(layer), x, y, z));
-                if (prevHead->IsTotalEmpty())
-                    delete prevHead;
-                else
-                {
-                    if (!static_cast<Node*>(ptr.get())->AddChild(prevHead))
-                    {
-                        size -= prevHead->GetTotalSize();
-                        delete prevHead;
-                    }
-                }
-            };
-
-            headCreator(heads[WNF], -1, -1, -1);
-            headCreator(heads[ENF], 0, -1, -1);
-            headCreator(heads[WSF], -1, 0, -1);
-            headCreator(heads[ESF], 0, 0, -1);
-            headCreator(heads[WNN], -1, -1, 0);
-            headCreator(heads[ENN], 0, -1, 0);
-            headCreator(heads[WSN], -1, 0, 0);
-            headCreator(heads[ESN], 0, 0, 0);
-        }
-    }
-
-    void RenderFragmentGrid::AddImpl(RenderFragment &add)
-    {
-        auto attemptEmplace = [&]() -> bool
-        {
-            for (auto &loop : heads)
-            {
-                if (loop->Emplace(add, add.GetBounds()))
-                {
-                    ++size;
-                    return true;
-                }
-            }
-
-            // Check if inside total
-            if (IsWithinTotal(add.GetBounds()))
-            {
-                fragmentsInTotal.emplace(&add);
-                ++size;
-                return true;
-            }
-
-            return false;
-        };
-
-        while (!attemptEmplace())
-            FabricateHeads(heads[0]->GetLayer() + 1);
-    }
-
-    void RenderFragmentGrid::RemoveImpl(RenderFragment &remove, const AxisBoundingBox3D &bounds)
-    {
-        fragmentsToAdd.erase(&remove);
-        if (IsEmpty())
-            return;
-
-        for (auto &loop : heads)
-        {
-            if (loop->Remove(remove, bounds))
-            {
-                --size;
-                return;
-            }
-        }
-
-        if (IsWithinTotal(bounds) && fragmentsInTotal.erase(&remove) != 0)
-            --size;
-    }
-
-    RenderFragmentGrid::RenderFragmentGrid() : size(0)
-    {
-        FabricateHeads(0);
-    }
-
-    RenderFragmentGrid::RenderFragmentGrid(RenderFragmentGrid &&arg) : size(std::move(arg.size)), heads(std::move(arg.heads)), fragmentsInTotal(std::move(arg.fragmentsInTotal)), fragmentsToAdd(std::move(arg.fragmentsToAdd))
-    {}
-
-    RenderFragmentGrid& RenderFragmentGrid::operator=(RenderFragmentGrid &&arg)
-    {
-        size = std::move(arg.size);
-        heads = std::move(arg.heads);
-        fragmentsInTotal = std::move(arg.fragmentsInTotal);
-        fragmentsToAdd = std::move(arg.fragmentsToAdd);
-        return *this;
-    }
-
-    void RenderFragmentGrid::Work()
-    {
-        if (fragmentsToAdd.empty())
-            return;
-
-        for (auto &loop : fragmentsToAdd)
-            AddImpl(*loop);
-
-        fragmentsToAdd.clear();
-    }
-
-    void RenderFragmentGrid::Add(RenderFragment &add)
-    {
-        if (fragmentsToAdd.find(&add) != fragmentsToAdd.end())
-            return;
-
-        RemoveImpl(add, add.GetBounds());
-        fragmentsToAdd.emplace(&add);
-    }
-
-    void RenderFragmentGrid::Remove(RenderFragment &remove)
-    {
-        RemoveImpl(remove, remove.GetBounds());
-    }
-
-    void RenderFragmentGrid::Clear()
-    {
-        FabricateHeads(0);
-        size = 0;
-        fragmentsInTotal.clear();
-        fragmentsToAdd.clear();
-    }
-
-    void RenderFragmentGrid::InformChanged(RenderFragment &changed, const AxisBoundingBox3D &previousBounds)
-    {
-        if (fragmentsToAdd.find(&changed) != fragmentsToAdd.end())
-            return;
-
-        RemoveImpl(changed, previousBounds);
-        fragmentsToAdd.emplace(&changed);
-    }
-
-    RenderFragmentGrid::SetT RenderFragmentGrid::Find(const AxisBoundingBox3D &aabb)
-    {
-        SetT ret;
-        for (auto &loop : heads)
-            loop->Find(aabb, ret);
-
-        if (GetTotalBounds().Overlapping(aabb))
-            ret.insert(fragmentsInTotal.begin(), fragmentsInTotal.end());
-
-        return ret;
-    }
-
-    bool RenderFragmentGrid::IsEmpty() const
-    {
-        return Size() == 0;
-    }
-
-    RenderFragmentGrid::size_type RenderFragmentGrid::Size() const
-    {
-        return size;
     }
 }

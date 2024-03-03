@@ -4,20 +4,18 @@
 #include "Field.h"
 #include "WorldManager.h"
 #include "Environment.h"
+#include "GameEnvironment.h"
 
-// Asset registries
-#include "ImageRegistry.h"
-#include "ShaderRegistry.h"
-#include "MaterialRegistry.h"
-#include "AudioRegistry.h"
-#include "ScriptRegistry.h"
+// Asset systems
+#include "ImageSystem.h"
+#include "ShaderSystem.h"
+#include "MaterialSystem.h"
+#include "AudioSystem.h"
+#include "ScriptSystem.h"
 
 // Game data standards
 #include "ResourceAttribute.h"
 #include "StatAttribute.h"
-
-// Game data contextx
-#include "Element.h"
 
 // Game object registries
 #include "Ability.h"
@@ -68,26 +66,17 @@ namespace Atmos
         SkipSaver<ScribeT> registrySizeSaver(basicScribe);
         registrySizeSaver.SavePlaceholder();
 
-        // Save asset registries
-        basicScribe.Save(AssetRegistry<ImageAsset>::Instance());
-        basicScribe.Save(AssetRegistry<ShaderAsset>::Instance());
-        basicScribe.Save(AssetRegistry<Material>::Instance());
-        basicScribe.Save(AssetRegistry<AudioAsset>::Instance());
-        basicScribe.Save(AssetRegistry<ScriptModuleBase>::Instance());
+        // Save object type names
+        objectTypeNameSerializer.AddAll(GameEnvironment::GetLocalObjectTypeGraph().AllDescriptions());
+        objectTypeNameSerializer.AddAll(GameEnvironment::GetGlobalObjectTypeGraph().AllDescriptions());
+        objectTypeNameSerializer.SaveAll(basicScribe);
+
+        // Save global object manager
+        basicScribe.Save(GameEnvironment::GetGlobalObjectManager());
 
         // Save game data standards
         DataStandard<ResourceAttributeTable>::Serialize(basicScribe);
         DataStandard<StatAttributeTable>::Serialize(basicScribe);
-        GlobalContext<Element>::Serialize(basicScribe);
-
-        // Save registries
-        basicScribe.Save(Registry<Ability>::Instance());
-        basicScribe.Save(Registry<StatusEffect>::Instance());
-        basicScribe.Save(Registry<CharacterClass>::Instance());
-        basicScribe.Save(Registry<Spell>::Instance());
-        basicScribe.Save(Registry<Item>::Instance());
-        basicScribe.Save(Registry<ItemRecipe>::Instance());
-        basicScribe.Save(Registry<Quest>::Instance());
 
         registrySizeSaver.SaveNothing();
 
@@ -97,7 +86,7 @@ namespace Atmos
         ::Inscription::ContainerSize count(fieldSavers.size());
         basicScribe.Save(count);
 
-        for (auto &loop : fieldSavers)
+        for (auto& loop : fieldSavers)
             loop.SavePlaceholder();
         curSaver = fieldSavers.begin();
         hasOutputHeader = true;
@@ -121,7 +110,7 @@ namespace Atmos
         return basicScribe;
     }
 
-    WorldScribeOut::WorldScribeOut(const FilePath &filePath, ::Inscription::ContainerSize::ValueT fieldCount, OpenMode openMode) : filePath(GetForcedFilePath(filePath, openMode)), basicScribe(GetForcedFilePath(filePath, openMode).GetValue(), "ATMOS GAIA", 1), curSaver(fieldSavers.end()), hasOutputHeader(false)
+    WorldScribeOut::WorldScribeOut(const FilePath &filePath, ::Inscription::ContainerSize::ValueT fieldCount, OpenMode openMode) : filePath(GetForcedFilePath(filePath, openMode)), basicScribe(GetForcedFilePath(filePath, openMode).GetValue(), "ATMOS GAIA", GetCurrentVersion()), curSaver(fieldSavers.end()), hasOutputHeader(false)
     {
         fieldSavers.resize(fieldCount, FieldSaver(basicScribe));
     }
@@ -156,6 +145,11 @@ namespace Atmos
         return filePath;
     }
 
+    ::Inscription::Version WorldScribeOut::GetCurrentVersion()
+    {
+        return 1;
+    }
+
     void WorldScribeIn::FieldHandle::LoadExtra()
     {
         scribe.ReadNumeric(fieldID);
@@ -178,28 +172,17 @@ namespace Atmos
             notUsed.LoadPosition();
         }
 
-        AssetPackage::Load(filePath);
+        GameEnvironment::GetAssetPackage().Load(filePath);
 
-        // Load asset registries
-        basicScribe.Load(AssetRegistry<ImageAsset>::Instance());
-        basicScribe.Load(AssetRegistry<ShaderAsset>::Instance());
-        basicScribe.Load(AssetRegistry<Material>::Instance());
-        basicScribe.Load(AssetRegistry<AudioAsset>::Instance());
-        basicScribe.Load(AssetRegistry<ScriptModuleBase>::Instance());
+        // Load object type names
+        objectTypeNameSerializer.LoadAll(basicScribe);
+
+        // Load global object manager
+        basicScribe.Load(GameEnvironment::GetGlobalObjectManager());
 
         // Save game data standards
         DataStandard<ResourceAttributeTable>::Serialize(basicScribe);
         DataStandard<StatAttributeTable>::Serialize(basicScribe);
-        GlobalContext<Element>::Serialize(basicScribe);
-
-        // Save registries
-        basicScribe.Load(Registry<Ability>::Instance());
-        basicScribe.Load(Registry<StatusEffect>::Instance());
-        basicScribe.Load(Registry<CharacterClass>::Instance());
-        basicScribe.Load(Registry<Spell>::Instance());
-        basicScribe.Load(Registry<Item>::Instance());
-        basicScribe.Load(Registry<ItemRecipe>::Instance());
-        basicScribe.Load(Registry<Quest>::Instance());
     }
 
     void WorldScribeIn::LoadAfterGlobal()
@@ -220,16 +203,10 @@ namespace Atmos
 
     void WorldScribeIn::FillField(Field &fill, FieldHandles::iterator handle)
     {
-        // Setup the world manager to temporarily use the new field and find the field handle
-        WorldManager::State previousState = WorldManager::TemporaryUse(&fill);
-
         // Load the field while setting up a section to clear immediately after
         basicScribe.StartTrackingSection();
         handle->second.LoadObject(fill);
         basicScribe.StopTrackingSection(true);
-
-        // Now, release the field from the world manager
-        previousState.Restore();
     }
 
     FilePath WorldScribeIn::GetForcedFilePath(const FilePath &filePath, OpenMode openMode)
@@ -294,18 +271,18 @@ namespace Atmos
         if (found == fieldHandles.end())
             return Ret();
 
-        Field out(id);
+        Field out(id, GameEnvironment::MakeObjectManager());
         FillField(out, found);
         return Ret(std::move(out));
     }
 
-    Field* WorldScribeIn::GetAsHeap(FieldID id)
+    std::unique_ptr<Field> WorldScribeIn::GetAsHeap(FieldID id)
     {
         auto found = fieldHandles.find(id);
         if (found == fieldHandles.end())
             return nullptr;
 
-        auto out = new Field(id);
+        auto out = std::make_unique<Field>(id, GameEnvironment::MakeObjectManager());
         FillField(*out, found);
         return out;
     }
@@ -324,7 +301,7 @@ namespace Atmos
     void WorldScribeIn::GetIDs(std::vector<FieldID> &ids) const
     {
         ids.clear();
-        for (auto &loop : fieldHandles)
+        for (auto& loop : fieldHandles)
             ids.push_back(loop.first);
     }
 

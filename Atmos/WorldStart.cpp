@@ -4,8 +4,7 @@
 #include "AvatarSystem.h"
 #include "WorldManager.h"
 #include "Battle.h"
-
-#include "EntityNameSystem.h"
+#include "GameEnvironment.h"
 
 #include <Inscription\Scribe.h>
 #include <Inscription\String.h>
@@ -13,11 +12,6 @@
 
 namespace Atmos
 {
-    void WorldStart::Serialize(::Inscription::Scribe &scribe)
-    {
-        scribe(fieldID);
-    }
-
     WorldStart::WorldStart(FieldID fieldID) : fieldID(fieldID)
     {}
 
@@ -34,11 +28,9 @@ namespace Atmos
         return fieldID;
     }
 
-    void StasisWorldStart::Serialize(::Inscription::Scribe &scribe)
+    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(WorldStart)
     {
         scribe(fieldID);
-        scribe(outsideField);
-        scribe(playerParty);
     }
 
     StasisWorldStart::StasisWorldStart(FieldID fieldID) : fieldID(fieldID), outsideField(fieldID)
@@ -49,11 +41,7 @@ namespace Atmos
 
     void StasisWorldStart::SetFromCurrent()
     {
-        if (battleState.IsTop())
-            Set(WorldManager::GetCurrentField()->GetID());
-        else
-            Set(WorldManager::GetCurrentField()->GetID(), battleState.GetOriginalFieldID());
-
+        Set(GameEnvironment::GetWorldManager().GetCurrentField()->GetID());
         SetPlayerPartyFromCurrent();
     }
 
@@ -69,18 +57,14 @@ namespace Atmos
         this->outsideField = outsideField;
     }
 
-    void StasisWorldStart::SetPlayerParty(const PlayerParty &set)
-    {
-        playerParty = set;
-    }
-
     void StasisWorldStart::SetBattleFieldFromCurrent()
     {
-        outsideField = (battleState.IsTop()) ? battleState.GetOriginalFieldID() : fieldID;
+        //outsideField = (battleState.IsTop()) ? battleState.GetOriginalFieldID() : fieldID;
     }
 
     void StasisWorldStart::SetPlayerPartyFromCurrent()
     {
+        /*
         for (auto &squadLoop : Ent::PlayerParty::Instance().squads)
         {
             for (auto &indivSquadLoop : squadLoop)
@@ -89,6 +73,7 @@ namespace Atmos
                     thisLoop = indivSquadLoop.GetEntity();
             }
         }
+        */
     }
 
     void StasisWorldStart::Use()
@@ -96,12 +81,12 @@ namespace Atmos
         if (fieldID != outsideField)
         {
             // Inside battle field
-            battleState.ReinstateFromStasis();
-            battleState.Goto();
+            //battleState.ReinstateFromStasis();
+            //battleState.Goto();
         }
 
-        for (auto &loop : playerParty)
-            Ent::PlayerParty::Add(loop);
+        //for (auto& loop : playerParty)
+            //Ent::PlayerParty::Add(loop);
     }
 
     FieldID StasisWorldStart::GetFieldID() const
@@ -114,8 +99,9 @@ namespace Atmos
         return outsideField;
     }
 
-    const StasisWorldStart::PlayerParty& StasisWorldStart::GetPlayerParty() const
+    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(StasisWorldStart)
     {
-        return playerParty;
+        scribe(fieldID);
+        scribe(outsideField);
     }
 }

@@ -11,28 +11,39 @@ namespace Atmos
     {
     public:
         typedef Agui::SpriteComponent ComponentT;
-    private:
-        void Serialize(::Inscription::Scribe &scribe);
-        INSCRIPTION_ACCESS;
     public:
-        Agui::FileName imageName;
+        Agui::FileName resourceName;
         ComponentT::Index index;
         Agui::Color color;
         ComponentT::Z z;
-        Agui::Size::ValueT xScaler;
-        Agui::Size::ValueT yScaler;
+        Agui::Size::ValueT widthScaler;
+        Agui::Size::ValueT heightScaler;
+    public:
+        AguiSpriteFactory(
+            const Agui::FileName& xVisualName = "",
+            ComponentT::Index index = 1,
+            const Agui::Color& color = Agui::Color(),
+            ComponentT::Z z = 1.0f,
+            Agui::Size::ValueT widthScaler = 1.0f,
+            Agui::Size::ValueT heightScaler = 1.0f);
+        AguiSpriteFactory(const AguiSpriteFactory& arg) = default;
+        AguiSpriteFactory& operator=(const AguiSpriteFactory& arg) = default;
 
-        AguiSpriteFactory(const Agui::FileName &imageName = "", ComponentT::Index index = 1, const Agui::Color &color = Agui::Color(), ComponentT::Z z = 1.0f, Agui::Size::ValueT xScaler = 1.0f, Agui::Size::ValueT yScaler = 1.0f);
-        AguiSpriteFactory(const AguiSpriteFactory &arg) = default;
-        AguiSpriteFactory& operator=(const AguiSpriteFactory &arg) = default;
+        AguiSpriteFactory(const ComponentT& arg);
+        AguiSpriteFactory(TypedObjectReference<nSprite> arg);
+        void Set(const Agui::FileName& xVisualName,
+            ComponentT::Index index = 1,
+            const Agui::Color& color = Agui::Color(),
+            ComponentT::Z z = 1.0f,
+            Agui::Size::ValueT widthScaler = 1.0f,
+            Agui::Size::ValueT heightScaler = 1.0f);
+        void Set(const ComponentT& arg);
+        void Set(const TypedObjectReference<nSprite>& arg);
 
-        AguiSpriteFactory(const ComponentT &arg);
-        AguiSpriteFactory(const Sprite &arg);
-        void Set(const Agui::FileName &imageName, ComponentT::Index index = 1, const Agui::Color &color = Agui::Color(), ComponentT::Z z = 1.0f, Agui::Size::ValueT xScaler = 1.0f, Agui::Size::ValueT yScaler = 1.0f);
-        void Set(const ComponentT &arg);
-        void Set(const Sprite &arg);
-
-        Agui::SpriteComponent* CreateComponent(const ComponentT::NameT &name, const Agui::RelativePosition &relativePosition = Agui::RelativePosition()) const;
-        Sprite CreateAtmosSprite();
+        Agui::SpriteComponent* CreateComponent(const ComponentT::NameT& name, const Agui::RelativePosition& relativePosition = Agui::RelativePosition()) const;
+        TypedObjectReference<nSprite> CreateAtmosSprite(ObjectManager& objectManager);
+    private:
+        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
+        INSCRIPTION_ACCESS;
     };
 }

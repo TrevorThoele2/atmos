@@ -13,15 +13,14 @@ namespace Atmos
     {
         scribe(amount);
         scribe(positiveStatName);
-        scribe(element);
     }
 
-    CombatTransaction::CombatTransaction(Amount amount, const Name &positiveStatName, const Element &element) : amount(amount), positiveStatName(positiveStatName), element(element)
+    CombatTransaction::CombatTransaction(Amount amount, const Name &positiveStatName) : amount(amount), positiveStatName(positiveStatName)
     {}
 
     bool CombatTransaction::operator==(const CombatTransaction &arg) const
     {
-        return amount == arg.amount && positiveStatName == arg.positiveStatName && element == arg.element;
+        return amount == arg.amount && positiveStatName == arg.positiveStatName;
     }
 
     bool CombatTransaction::operator!=(const CombatTransaction &arg) const
@@ -29,9 +28,9 @@ namespace Atmos
         return !(*this == arg);
     }
 
-    void CombatTransaction::Collide(Ent::CombatComponent &target) const
+    void CombatTransaction::Collide(TypedObjectReference<Ent::nCombatComponent> target) const
     {
-        if (target.IsCorpse())
+        if (target->IsDead())
             return;
         /*
         Defense acts as the same as above
@@ -40,12 +39,18 @@ namespace Atmos
 
         typedef Amount::Split Split;
         
-        Amount defense(CalculateValueCap(Split(target.GetDefense(), 0), { Split(*target.stats.GetValue(*DataStandard<StatAttributeTable>::GetOpposing(positiveStatName)), 0) }));
+        Amount defense;
+        {
+            auto split = Split(target->GetDefense(), 0);
+            auto value = CalculateValueCap(split,
+            {
+                Split(*target->stats.GetValue(*DataStandard<StatAttributeTable>::GetOpposing(positiveStatName)), 0)
+            });
+            defense = split;
+        }
 
         // Apply elemental multiplier to attack
-        defense *= element.GetAdvantageAgainst(target.GetElement());
         // Apply elemental resistances
-        defense += Split(*target.stats.GetValue(*DataStandard<StatAttributeTable>::GetOpposing(element.Get())), 0);
         // Halve the defense
         defense *= Split(0, 5);
 
@@ -63,23 +68,26 @@ namespace Atmos
         const Split halved(0, 5);
         damage = (amount >= defense) ? Floor(amount * (one - (((defense / doubled) / amount) * halved))) : Floor(amount * ((amount / (defense / doubled)) * halved));
 
-        target.resources.AddModifier(ResourceAttributeTable::Modifier(GlobalContext<ResourceAttributeTable>::health, ResourceAttributeTable::ValueT(Round(damage)), OperatorSelector::SUBTRACT, ResourceAttributeTable::Modifier::Type::VALUE));
+        target->resources.AddModifier(
+            ResourceAttributeTable::Modifier(GlobalContext<ResourceAttributeTable>::health,
+                ResourceAttributeTable::ValueT(Round(damage)),
+                OperatorSelector::SUBTRACT,
+                ResourceAttributeTable::Modifier::Type::VALUE));
     }
 
     INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(CombatTransactionGenerator)
     {
         scribe(resourceName);
         scribe(statName);
-        scribe(element);
         scribe(proficiencyName);
     }
 
-    CombatTransactionGenerator::CombatTransactionGenerator(const Name &resourceName, const Name &statName, const Element &element, const Name &proficiencyName) : resourceName(resourceName), statName(statName), element(element), proficiencyName(proficiencyName)
+    CombatTransactionGenerator::CombatTransactionGenerator(const Name &resourceName, const Name &statName, const Name &proficiencyName) : resourceName(resourceName), statName(statName), proficiencyName(proficiencyName)
     {}
 
     bool CombatTransactionGenerator::operator==(const CombatTransactionGenerator &arg) const
     {
-        return resourceName == arg.resourceName && statName == arg.statName && element == arg.element && proficiencyName == arg.proficiencyName;
+        return resourceName == arg.resourceName && statName == arg.statName && proficiencyName == arg.proficiencyName;
     }
 
     bool CombatTransactionGenerator::operator!=(const CombatTransactionGenerator &arg) const
@@ -87,7 +95,7 @@ namespace Atmos
         return !(*this == arg);
     }
 
-    CombatTransaction CombatTransactionGenerator::Generate(const CombatTransaction::Amount &baseAmount, const Ent::CombatComponent &source) const
+    CombatTransaction CombatTransactionGenerator::Generate(const CombatTransaction::Amount &baseAmount, TypedObjectReference<Ent::nCombatComponent> source) const
     {
         /*
         Each attack stat gives +X to an attack up to 50% of the base damage of the weapon equipped.
@@ -100,14 +108,20 @@ namespace Atmos
         typedef Amount::Split Split;
 
         // Apply stat and proficiency
-        Amount amount(CalculateValueCap(baseAmount, { Split(*source.stats.GetValue(statName), 0), source.proficiencies.GetLevel(proficiencyName) / Split(2, 0) }));
+        Amount amount;
+        {
+            auto split = Split(*source->stats.GetValue(statName), 0);
+            auto value = CalculateValueCap(baseAmount,
+            {
+                split, source->proficiencies.GetLevel(proficiencyName) / Split(2, 0)
+            });
+            amount = value;
+        }
 
         // Apply elemental multiplier to attack
-        amount *= element.GetSameMultiplier(source.GetElement());
         // Apply elemental power
-        amount += Split(*source.stats.GetValue(*GlobalContext<Element>::GetStatName(element.Get())), 0);
 
-        return CombatTransaction(amount, statName, element);
+        return CombatTransaction(amount, statName);
     }
 
     void CombatTransactionGenerator::SetResourceName(const Name &set)
@@ -118,11 +132,6 @@ namespace Atmos
     void CombatTransactionGenerator::SetStatName(const Name &set)
     {
         statName = set;
-    }
-
-    void CombatTransactionGenerator::SetElement(Element set)
-    {
-        element = set;
     }
 
     void CombatTransactionGenerator::SetProficiencyName(const Name &set)
@@ -138,11 +147,6 @@ namespace Atmos
     const Name& CombatTransactionGenerator::GetStatName() const
     {
         return statName;
-    }
-
-    Element CombatTransactionGenerator::GetElement() const
-    {
-        return element;
     }
 
     const Name& CombatTransactionGenerator::GetProficiencyName() const

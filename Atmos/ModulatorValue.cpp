@@ -2,7 +2,7 @@
 #include "ModulatorValue.h"
 
 #include <Inscription/Scribe.h>
-#include "FunctionVariant.h"
+#include "ChromaVariant.h"
 
 namespace Atmos
 {
@@ -14,6 +14,9 @@ namespace Atmos
         }
 
         Value::Value() : variant(std::int64_t(0))
+        {}
+
+        Value::Value(std::int32_t i) : variant(std::int64_t(i))
         {}
 
         Value::Value(std::int64_t i) : variant(i)
@@ -40,6 +43,11 @@ namespace Atmos
             variant.Set(std::int64_t(0));
         }
 
+        void Value::Set(std::int32_t set)
+        {
+            variant.Set(std::int64_t(set));
+        }
+
         void Value::Set(std::int64_t set)
         {
             variant.Set(std::move(set));
@@ -63,7 +71,7 @@ namespace Atmos
 
         bool Value::IsNone() const
         {
-            return variant.IsInhabited();
+            return !variant.IsInhabited();
         }
 
         bool Value::IsInt() const
@@ -100,6 +108,11 @@ namespace Atmos
                 return 0;
 
             return variant.Get<float>();
+        }
+
+        std::vector<char> Value::AsBytes() const
+        {
+            return variant.GetAsBytes();
         }
     }
 }

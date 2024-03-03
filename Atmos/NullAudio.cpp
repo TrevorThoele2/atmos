@@ -1,16 +1,19 @@
 
 #include "NullAudio.h"
 
+#include "AudioAsset.h"
+#include "AudioAssetInstance.h"
+
 namespace Atmos
 {
-    class AudioAssetInstanceData : public AudioAsset::Instance::Data
+    class AudioAssetInstanceDataImplementation : public AudioAssetInstanceData
     {
     public:
-        AudioAssetInstanceData() = default;
+        AudioAssetInstanceDataImplementation() = default;
 
-        AudioAssetInstanceData* Clone() const override
+        std::unique_ptr<AudioAssetInstanceData> Clone() const override
         {
-            return new AudioAssetInstanceData(*this);
+            return std::unique_ptr<AudioAssetInstanceData>(new AudioAssetInstanceDataImplementation(*this));
         }
 
         void Start() override
@@ -19,44 +22,39 @@ namespace Atmos
         void Stop() override
         {}
 
-        void SetVolume(AudioAsset::Instance::Volume set) override
+        void SetVolume(Volume set) override
         {}
 
         void Loop(bool set) override
         {}
 
-        bool Loop() const override
-        {
-            return false;
-        }
-
-        bool IsPlaying() const override
-        {
-            return false;
-        }
-
         void Resubmit() override
         {}
     };
 
-    class AudioAssetData : public AudioAsset::Data
+    class AudioAssetDataImplementation : public AudioAssetData
     {
     public:
-        AudioAssetData() = default;
+        AudioAssetDataImplementation() = default;
 
-        AudioAsset::Instance MakeInstance(const AudioAsset &res) const override
+        std::unique_ptr<AudioAssetData> Clone() const override
         {
-            return AudioAsset::Instance(res, new AudioAssetInstanceData());
+            return std::unique_ptr<AudioAssetData>(new AudioAssetDataImplementation(*this));
+        }
+
+        std::unique_ptr<AudioAssetInstanceData> CreateInstanceData() const override
+        {
+            return std::unique_ptr<AudioAssetInstanceData>(new AudioAssetInstanceDataImplementation());
         }
     };
-
-    AudioAsset NullAudioHandler::CreateAudioImpl(Data &&data, const FileName &name)
-    {
-        return AudioAsset(new AudioAssetData(), name);
-    }
 
     bool NullAudioHandler::SetMasterVolume(float setTo)
     {
         return true;
+    }
+
+    std::unique_ptr<AudioAssetData> NullAudioHandler::CreateAudioDataImpl(ExtractedFile&& file, const FileName& name)
+    {
+        return std::make_unique<AudioAssetDataImplementation>();
     }
 }

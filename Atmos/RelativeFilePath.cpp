@@ -87,36 +87,44 @@ namespace Atmos
         return GetValue().c_str();
     }
 
-    void RelativeFilePath::SetName(const FileName &name)
+    RelativeFilePath& RelativeFilePath::SetFileName(const FileName &name)
     {
         auto found = moveDown.find_last_of(Environment::GetFileSystem()->GetFileSeparator());
         if (found == moveDown.npos)
         {
             moveDown = name;
             extension = GetFileExtension(moveDown);
-            return;
+            return *this;
         }
 
         moveDown.replace(found + 1, moveDown.npos, name);
         extension = GetFileExtension(moveDown);
+
+        return *this;
     }
 
-    void RelativeFilePath::SetExtension(const String &replace)
+    RelativeFilePath& RelativeFilePath::SetExtension(const String &replace)
     {
         moveDown = ReplaceFileExtension(moveDown, replace);
         extension = replace;
+
+        return *this;
     }
 
-    void RelativeFilePath::RemoveFileName()
+    RelativeFilePath& RelativeFilePath::RemoveFileName()
     {
         moveDown = ::Atmos::RemoveFileName(moveDown);
         extension = "";
+
+        return *this;
     }
 
-    void RelativeFilePath::RemoveExtension()
+    RelativeFilePath& RelativeFilePath::RemoveExtension()
     {
         moveDown = RemoveFileExtension(moveDown);
         extension = "";
+
+        return *this;
     }
 
     RelativeFilePath& RelativeFilePath::Up(size_t number)

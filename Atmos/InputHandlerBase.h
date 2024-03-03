@@ -120,8 +120,12 @@ namespace Atmos
 
             bool IsInputActive(KeyID id);
             bool IsInputInactive(KeyID id);
+            bool IsInputPressed(KeyID id);
+            bool IsInputDepressed(KeyID id);
             bool IsInputActive(MouseButton id);
             bool IsInputInactive(MouseButton id);
+            bool IsInputPressed(MouseButton id);
+            bool IsInputDepressed(MouseButton id);
             bool IsActionActive(ActionID id);
             bool IsActionInactive(ActionID id);
             bool IsActionPressed(ActionID id);
@@ -137,7 +141,7 @@ namespace Atmos
 
             MousePosition GetMousePosition();
             MousePosition GetMousePositionAtPress();
-            MousePosition GetMousePositionInGameCoords();
+            MousePosition GetMousePositionInGameCoordinates();
             MousePositionDelta GetMousePositionDelta();
             ActionVector& GetActions();
         };

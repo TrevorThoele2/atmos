@@ -3,11 +3,9 @@
 
 #include "InventoryComponent.h"
 
-#include <Affecter\Affecter.h>
-
 namespace Atmos
 {
-    namespace Battle
+    /*   namespace Battle
     {
         void ActionAttack::AttackPattern::SetPiecePosition(const GridPosition &center, const RelativeGridPosition &relPos, ValueT &value)
         {
@@ -21,7 +19,6 @@ namespace Atmos
 
         void ActionAttack::StartImpl()
         {
-            /*
             auto inventory = GetSelectedEntity()->FindOther<::Atmos::entity::InventoryComponent>();
             if (!inventory)
             {
@@ -36,22 +33,21 @@ namespace Atmos
             auto &position = GetSelectedEntity()->GetPosition().Get();
             // Setup the range pattern
             rangePattern.SetupDiamond(position, weapon->GetRange(), Sprite("overlay.png", 1, Atmos::Color(127, 255, 0, 0)));
-            for (auto &loop : rangePattern)
+            for (auto& loop : rangePattern)
                 GetCurrentRenderFragments()->Add(loop.second);
 
             // Setup the attack pattern
             attackPattern.Setup(position, weapon->GetHitPattern());
-            for (auto &loop : attackPattern)
+            for (auto& loop : attackPattern)
             {
                 loop.second->selectionSprite.SetZ(position.z + 0.999f);
                 GetCurrentRenderFragments()->Add(loop.second->selectionSprite);
             }
-            */
         }
 
         void ActionAttack::StopImpl()
         {
-            for (auto &loop : attackPattern)
+            for (auto& loop : attackPattern)
                 GetCurrentRenderFragments()->Remove(loop.second.selectionSprite);
 
             rangePattern.Clear();
@@ -84,7 +80,7 @@ namespace Atmos
             switch (arg.id)
             {
             case Atmos::Input::ActionID::ATTACK:
-                for (auto &loop : attackPattern)
+                for (auto& loop : attackPattern)
                 {
                     auto found = FindCharacter(GridPosition(attackPattern.GetPosition(), loop.first));
                     if (found)
@@ -118,4 +114,5 @@ namespace Atmos
         ActionAttack::ActionAttack() //: weapon(nullptr)
         {}
     }
+    */
 }

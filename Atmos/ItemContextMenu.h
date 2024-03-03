@@ -3,12 +3,13 @@
 
 #include "ContextMenu.h"
 #include "ItemStack.h"
+#include "ObjectReference.h"
 
 namespace Atmos
 {
     namespace Ent
     {
-        class InventoryComponent;
+        class nInventoryComponent;
     }
 }
 
@@ -16,9 +17,11 @@ namespace Agui
 {
     class ItemContextMenu : public ContextMenu
     {
+    public:
+        typedef ::Atmos::TypedObjectReference<::Atmos::Ent::nInventoryComponent> InventoryReference;
     private:
         Atmos::ItemStack *itemSelected;
-        Atmos::Ent::InventoryComponent *moveFrom, *moveTo;
+        InventoryReference moveFrom, moveTo;
 
         void RegisterInputs() override;
         void OnConsume();
@@ -34,8 +37,8 @@ namespace Agui
         static ItemContextMenu* Factory(Object *parent, const ItemContextMenu &arg);
         void SetSelected();
         void SetSelected(Atmos::ItemStack &set);
-        void SetMoveFrom(Atmos::Ent::InventoryComponent &set);
-        void SetMoveTo(Atmos::Ent::InventoryComponent &set);
+        void SetMoveFrom(InventoryReference set);
+        void SetMoveTo(InventoryReference set);
         void FlipMoving();
         WIDGET_COMMON_ACCESS(ItemContextMenu);
     };

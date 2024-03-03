@@ -4,8 +4,9 @@
 #include "CharacterClass.h"
 #include "FixedPoint.h"
 
-#include <Inscription\Scribe.h>
-#include <Inscription\Inscripter.h>
+#include <Inscription/Scribe.h>
+#include <Inscription/Inscripter.h>
+#include <Inscription/Set.h>
 
 namespace Atmos
 {
@@ -66,7 +67,7 @@ namespace Atmos
 
     void ResourceAttributeTable::CalculateEntries()
     {
-        for (auto &loop : modifiers)
+        for (auto& loop : modifiers)
         {
             auto& focusedEntry = map.find(loop.name)->second;
             if (loop.type == Modifier::Type::VALUE)
@@ -74,7 +75,7 @@ namespace Atmos
                 if (loop.op == OperatorSelector::ADD)
                 {
                     // Check for going past max possible
-                    if (loop.value > Entry::maxPossible - focusedEntry.value.Get())
+                    if (loop.value > Entry::maxPossible - focusedEntry.value.Value())
                         focusedEntry.value = Entry::maxPossible;
                     else
                         focusedEntry.value += loop.value;
@@ -89,7 +90,7 @@ namespace Atmos
                 }
                 else if (loop.op == OperatorSelector::MULTIPLY)
                 {
-                    FixedPoint64 entryValue(FixedPoint64::Split(focusedEntry.value.Get(), 0));
+                    FixedPoint64 entryValue(FixedPoint64::Split(focusedEntry.value.Value(), 0));
                     FixedPoint64 modValue(FixedPoint64::Split(loop.value, 0));
                     FixedPoint64 maxPossible(FixedPoint64::Split(Entry::maxPossible, 0));
                     // Check for going past max possible
@@ -108,7 +109,7 @@ namespace Atmos
                         focusedEntry.value = 0;
                     else
                     {
-                        FixedPoint64 entryValue(FixedPoint64::Split(focusedEntry.value.Get(), 0));
+                        FixedPoint64 entryValue(FixedPoint64::Split(focusedEntry.value.Value(), 0));
                         FixedPoint64 modValue(FixedPoint64::Split(loop.value, 0));
                         entryValue /= modValue;
                         entryValue.Floor();
@@ -121,26 +122,26 @@ namespace Atmos
                 if (loop.op == OperatorSelector::ADD)
                 {
                     // Check for going past max possible
-                    if (loop.value > Entry::maxPossible - focusedEntry.value.GetUpperBound())
+                    if (loop.value > Entry::maxPossible - focusedEntry.value.UpperBound())
                         focusedEntry.value.SetUpperBound(Entry::maxPossible);
                     else
-                        focusedEntry.value.SetUpperBound(focusedEntry.value.GetUpperBound() + loop.value);
+                        focusedEntry.value.SetUpperBound(focusedEntry.value.UpperBound() + loop.value);
                 }
                 else if (loop.op == OperatorSelector::SUBTRACT)
                 {
                     // Check for going past max possible
-                    if (focusedEntry.value.GetUpperBound() - loop.value > Entry::maxPossible)
+                    if (focusedEntry.value.UpperBound() - loop.value > Entry::maxPossible)
                         focusedEntry.value.SetUpperBound(Entry::maxPossible);
                     else
-                        focusedEntry.value.SetUpperBound(focusedEntry.value.GetUpperBound() - loop.value);
+                        focusedEntry.value.SetUpperBound(focusedEntry.value.UpperBound() - loop.value);
                 }
                 else if (loop.op == OperatorSelector::MULTIPLY)
                 {
                     // Check for going past max possible
-                    if (loop.value > Entry::maxPossible / focusedEntry.value.GetUpperBound())
+                    if (loop.value > Entry::maxPossible / focusedEntry.value.UpperBound())
                         focusedEntry.value.SetUpperBound(Entry::maxPossible);
                     else
-                        focusedEntry.value.SetUpperBound(focusedEntry.value.GetUpperBound() * loop.value);
+                        focusedEntry.value.SetUpperBound(focusedEntry.value.UpperBound() * loop.value);
                 }
                 else // DIVISION
                 {
@@ -152,7 +153,7 @@ namespace Atmos
                         focusedEntry.value.SetUpperBound(0);
                     else
                     {
-                        FixedPoint64 entryValue(FixedPoint64::Split(focusedEntry.value.GetUpperBound(), 0));
+                        FixedPoint64 entryValue(FixedPoint64::Split(focusedEntry.value.UpperBound(), 0));
                         FixedPoint64 modValue(FixedPoint64::Split(loop.value, 0));
                         entryValue /= modValue;
                         entryValue.Floor();
@@ -188,7 +189,7 @@ namespace Atmos
         DataStandard<ResourceAttributeTable>::Setup(*this);
     }
 
-    ResourceAttributeTable::ResourceAttributeTable(const RegistryObjectReference<CharacterClass> &charClass)
+    ResourceAttributeTable::ResourceAttributeTable(TypedObjectReference<nCharacterClass> charClass)
     {
         DataStandard<ResourceAttributeTable>::Setup(*this);
         SetCharacterClass(charClass);
@@ -204,7 +205,7 @@ namespace Atmos
         return !(*this == arg);
     }
 
-    void ResourceAttributeTable::SetCharacterClass(const RegistryObjectReference<CharacterClass> &charClass)
+    void ResourceAttributeTable::SetCharacterClass(TypedObjectReference<nCharacterClass> charClass)
     {
         for (auto& loop : charClass->resources)
             map.find(loop.first)->second.base = loop.second.base;
@@ -230,7 +231,7 @@ namespace Atmos
         if (found == map.end())
             return Ret();
 
-        return Ret(found->second.value.Get());
+        return Ret(found->second.value.Value());
     }
 
     Optional<ResourceAttributeTable::ValueT> ResourceAttributeTable::GetMax(const Name &name) const
@@ -241,7 +242,7 @@ namespace Atmos
         if (found == map.end())
             return Ret();
 
-        return Ret(found->second.value.GetUpperBound());
+        return Ret(found->second.value.UpperBound());
     }
 
     void ResourceAttributeTable::SetHealth(ValueT set)
@@ -266,22 +267,22 @@ namespace Atmos
 
     ResourceAttributeTable::ValueT ResourceAttributeTable::GetHealth() const
     {
-        return GetHealthImpl().value.Get();
+        return GetHealthImpl().value.Value();
     }
 
     ResourceAttributeTable::ValueT ResourceAttributeTable::GetMana() const
     {
-        return GetManaImpl().value.Get();
+        return GetManaImpl().value.Value();
     }
 
     ResourceAttributeTable::ValueT ResourceAttributeTable::GetMaxHealth() const
     {
-        return GetHealthImpl().value.GetUpperBound();
+        return GetHealthImpl().value.UpperBound();
     }
 
     ResourceAttributeTable::ValueT ResourceAttributeTable::GetMaxMana() const
     {
-        return GetManaImpl().value.GetUpperBound();
+        return GetManaImpl().value.UpperBound();
     }
 
     DataStandard<ResourceAttributeTable>::Entry::Entry()
@@ -292,14 +293,14 @@ namespace Atmos
 
     void DataStandard<ResourceAttributeTable>::Setup(Object &object)
     {
-        for (auto &loop : entries)
+        for (auto& loop : entries)
             object.AddEntry(loop.first, 0);
     }
 
     std::set<Name> DataStandard<ResourceAttributeTable>::GetNames()
     {
         std::set<Name> ret;
-        for (auto &loop : entries)
+        for (auto& loop : entries)
             ret.emplace(loop.first);
         return ret;
     }
@@ -329,7 +330,7 @@ namespace Atmos
             ::Inscription::ContainerSize size(entries.size());
             scribe.Save(size);
 
-            for (auto &loop : entries)
+            for (auto& loop : entries)
             {
                 scribe.Save(::Inscription::RemoveConst(loop.first));
                 scribe.Save(loop.second.niceName);

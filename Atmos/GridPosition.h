@@ -155,6 +155,7 @@ namespace Atmos
         FindPosSquarePlane(toFill, GridPosition(pos.x - 1, pos.y - 1, pos.z), 3);
     }
 
+    /*
     template<class Itr>
     Position3D FindCenterTile(Itr begin, Itr end)
     {
@@ -183,6 +184,10 @@ namespace Atmos
                 farTopLeft->z = loop->z;
         }
 
-        return Position(FindMidpoint(nearTopLeft.x, nearBottomRight.x) * TILE_WIDTH, FindMidpoint(nearTopLeft.y, nearBottomRight.y) * TILE_WIDTH, FindMidpoint(nearTopLeft.z, farTopLeft.z));
+        return Position(
+            FindMidpoint(nearTopLeft.x, nearBottomRight.x) * GRID_SIZE<,
+            FindMidpoint(nearTopLeft.y, nearBottomRight.y) * TILE_WIDTH,
+            FindMidpoint(nearTopLeft.z, farTopLeft.z));
     }
+    */
 }

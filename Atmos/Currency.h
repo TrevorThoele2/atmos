@@ -2,5 +2,5 @@
 
 namespace Atmos
 {
-    typedef unsigned int Gold;
+    typedef int Currency;
 }

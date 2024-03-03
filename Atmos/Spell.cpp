@@ -1,41 +1,26 @@
 
 #include "Spell.h"
 
-#include "Battle.h"
-
 namespace Atmos
 {
-    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(Spell)
-    {
-        ::Inscription::BaseSerialize<RegistryObject>(scribe, *this);
-        scribe(attackPattern);
-        //scribe(pieceOverworld);
-        scribe(range);
-        scribe(resourceCost);
-        scribe(allowedClasses);
-    }
-
-    Spell::Spell(Spell &&arg) : AbilityBase(std::move(arg)), attackPattern(std::move(arg.attackPattern)), pieceOverworld(std::move(arg.pieceOverworld)), range(std::move(arg.range)), resourceCost(std::move(arg.resourceCost)), allowedClasses(std::move(arg.allowedClasses))
+    nSpell::nSpell(const Name& name) : RegistryObject(name)
     {}
 
-    Spell& Spell::operator=(Spell &&arg)
+    nSpell::nSpell(const ::Inscription::Table<nSpell>& table) : INSCRIPTION_TABLE_GET_BASE(RegistryObject)
+    {}
+
+    ObjectTypeDescription nSpell::TypeDescription() const
     {
-        AbilityBase::operator=(std::move(arg));
-        attackPattern = std::move(arg.attackPattern);
-        pieceOverworld = std::move(arg.pieceOverworld);
-        range = std::move(arg.range);
-        resourceCost = std::move(arg.resourceCost);
-        allowedClasses = std::move(arg.allowedClasses);
-        return *this;
+        return ObjectTraits<nSpell>::TypeDescription();
     }
 
-    bool Spell::operator==(const Spell &arg) const
-    {
-        return RegistryObject::operator==(arg);
-    }
+    const ObjectTypeName ObjectTraits<nSpell>::typeName = "Spell";
+}
 
-    bool Spell::operator!=(const Spell &arg) const
+namespace Inscription
+{
+    DEFINE_OBJECT_INSCRIPTER_MEMBERS(::Atmos::nSpell)
     {
-        return !(*this == arg);
+
     }
 }

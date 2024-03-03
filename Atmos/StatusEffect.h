@@ -1,79 +1,69 @@
 #pragma once
 
-#include <vector>
-
 #include "RegistryObject.h"
-#include "Registry.h"
+#include "ObjectReference.h"
+
+#include "CombatComponent.h"
+#include "ScriptInstance.h"
 
 #include "FixedPoint.h"
-#include "Script.h"
-#include "AssetReference.h"
-
 #include "Name.h"
 #include "GlobalContext.h"
 
-#include "Serialization.h"
+#include "ObjectSerialization.h"
 
 namespace Atmos
 {
-    namespace Ent
-    {
-        class CombatComponent;
-        class BattleComponent;
-    }
-
-    class StatusEffectInstance;
-    class StatusEffect : public RegistryObject
+    class nStatusEffect : public RegistryObject
     {
     public:
         typedef unsigned char ApplicationCount;
         typedef FixedPoint64 Accuracy;
-    private:
-        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
-        INSCRIPTION_ACCESS;
-    private:
-        StatusEffectInstance& Attach(const Ent::CombatComponent &source, const Ent::BattleComponent &sourceBattle, Ent::CombatComponent &target, Ent::BattleComponent &targetBattle) const;
     public:
-        AssetReference<ScriptModuleBase> script;
+        typedef TypedObjectReference<Ent::nCombatComponent> CombatComponentReference;
+    public:
+        typedef TypedObjectReference<ScriptInstance> ScriptReference;
+        ScriptReference script;
         ApplicationCount applicationCount;
         Name proficiencyName;
         Accuracy accuracy;
         bool positive;
+    public:
+        nStatusEffect(const Name& name);
+        nStatusEffect(const nStatusEffect& arg) = default;
+        nStatusEffect(const ::Inscription::Table<nStatusEffect>& table);
 
-        StatusEffect();
-        StatusEffect(const StatusEffect &arg) = default;
-        StatusEffect& operator=(const StatusEffect &arg) = default;
-        StatusEffect(StatusEffect &&arg);
-        StatusEffect& operator=(StatusEffect &&arg);
+        void Apply(CombatComponentReference applyTo) const;
 
-        bool operator==(const StatusEffect &arg) const;
-        bool operator!=(const StatusEffect &arg) const;
-
-        // Returns nullptr if the status effect wasn't attached
-        StatusEffectInstance* AttemptAttach(const Ent::CombatComponent &source, const Ent::BattleComponent &sourceBattle, Ent::CombatComponent &target, Ent::BattleComponent &targetBattle) const;
-        void Apply(Ent::CombatComponent &applyTo) const;
+        ObjectTypeDescription TypeDescription() const override;
     };
 
     template<>
-    class Registry<StatusEffect> : public RegistryBase<StatusEffect, Registry<StatusEffect>>
+    struct ObjectTraits<nStatusEffect> : ObjectTraitsBase<nStatusEffect>
     {
-    private:
-        Registry() = default;
-        friend RegistryBase<StatusEffect, Registry<StatusEffect>>;
+        static const ObjectTypeName typeName;
+        static constexpr ObjectTypeList<RegistryObject> bases = {};
     };
 
-    typedef Registry<StatusEffect> StatusEffectRegistry;
-
     template<>
-    class GlobalContext<StatusEffect> : public GlobalContextBase<StatusEffect, GlobalContext<StatusEffect>>
+    class GlobalContext<nStatusEffect> : public GlobalContextBase<nStatusEffect, GlobalContext<nStatusEffect>>
     {
     private:
-        typedef GlobalContextBase<StatusEffect, GlobalContext<StatusEffect>> BaseT;
-        friend GlobalContextBase<StatusEffect, GlobalContext<StatusEffect>>;
+        typedef GlobalContextBase<nStatusEffect, GlobalContext<nStatusEffect>> BaseT;
+        friend GlobalContextBase<nStatusEffect, GlobalContext<nStatusEffect>>;
     private:
         static void SerializeImpl(::Inscription::Scribe &scribe);
     public:
         static Name accuracyStat;
         static Name resistanceStat;
+    };
+}
+
+namespace Inscription
+{
+    DECLARE_OBJECT_INSCRIPTER(::Atmos::nStatusEffect)
+    {
+    public:
+        static void AddMembers(TableT& table);
     };
 }

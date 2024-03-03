@@ -3,13 +3,16 @@
 
 #include "DescriptionBox.h"
 
-namespace Atmos { class Spell; }
+#include "ObjectReference.h"
+#include "Spell.h"
+
 namespace Agui
 {
     class SpellDescriptionBox : public DescriptionBox
     {
     private:
-        const Atmos::Spell *selected;
+        typedef ::Atmos::TypedObjectReference<::Atmos::nSpell> SpellReference;
+        ::Atmos::TypedObjectReference<::Atmos::nSpell> focusedSpell;
 
         SpellDescriptionBox(const SpellDescriptionBox &arg) = delete;
 
@@ -25,7 +28,7 @@ namespace Agui
         static SpellDescriptionBox* Factory(Object *parent, const WidgetPrototype &arg);
         static SpellDescriptionBox* Factory(Object *parent, const SpellDescriptionBox &arg);
         void Set();
-        void Set(const Atmos::Spell &set);
+        void Set(SpellReference set);
         WIDGET_COMMON_ACCESS(SpellDescriptionBox);
     };
 

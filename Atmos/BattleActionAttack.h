@@ -4,12 +4,12 @@
 #include "BattleActionManager.h"
 #include "BattlePattern.h"
 
-#include "Weapon.h"
 #include "Sprite.h"
 #include "Optional.h"
 
 namespace Atmos
 {
+    /*
     namespace Battle
     {
         class ActionAttack : public ActionManager
@@ -40,4 +40,5 @@ namespace Atmos
             ActionAttack();
         };
     }
+    */
 }

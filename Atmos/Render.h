@@ -1,8 +1,10 @@
 
 #pragma once
 
-#include "Color.h"
 #include "Flags.h"
+
+////////////////////////////
+#include "ObjectSystem.h"
 
 namespace Atmos
 {
@@ -14,13 +16,20 @@ namespace Atmos
 
     class RenderHandler
     {
-    private:
-        RenderHandler();
-        RenderHandler(const RenderHandler &arg) = delete;
-        RenderHandler& operator=(const RenderHandler &arg) = delete;
     public:
         Flags<RenderFlags> flags;
-        static RenderHandler& Instance();
-        static void Render();
+    public:
+        RenderHandler();
+        void Work();
+    };
+
+    class RenderingSystem : public ObjectSystem
+    {
+    public:
+        Flags<RenderFlags> flags;
+    public:
+        RenderingSystem(ObjectManager& manager);
+    private:
+        void WorkImpl() override;
     };
 }

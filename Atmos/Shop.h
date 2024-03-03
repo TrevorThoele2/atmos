@@ -1,69 +1,88 @@
 
 #pragma once
 
+#include "ObjectSystem.h"
+
 #include "ItemDescriptionBox.h"
 #include "ItemStack.h"
-#include "InventoryGui.h"
 #include "Input.h"
+#include "InputAction.h"
 
-#include <AGUI\Menu.h>
-#include <AGUI\Textbox.h>
+#include "AvatarComponent.h"
+#include "InventoryComponent.h"
+
+#include <AGUI/Menu.h>
+#include <AGUI/Textbox.h>
+#include <AGUI/Root.h>
 
 namespace Atmos
 {
     namespace Speech
     {
-        class Handler;
-        class Shop
+        class Controller;
+
+        class Shop : public ObjectSystem
         {
         public:
             class Dialog
             {
-            private:
-                bool active;
-                Agui::Textbox *textbox;
-                Agui::TextComponent *itemCountText, *priceText, *playerGoldText;
-
-                ItemStack *item;
-                DynamicBoundedNumber<unsigned char> count;
-                Item::Price price;
-
-                void OnCountChange();
-                void Transaction();
             public:
-                Dialog();
-                void Init(Agui::ItemDescriptionBox &descBox);
-                void Activate(ItemStack &item);
+                Dialog(Shop& owner);
+                void Initialize(Agui::ItemDescriptionBox& descBox);
+                void Activate(ItemStack& withItem);
                 void Deactivate();
                 bool IsActive() const;
 
-                void OnActionPressed(const Input::Action &args);
+                void OnActionPressed(const Input::Action& args);
+            private:
+                bool active;
+            private:
+                Shop* owner;
+            private:
+                Agui::Textbox* textbox;
+                Agui::TextComponent* itemCountText;
+                Agui::TextComponent* priceText;
+                Agui::TextComponent* playerGoldText;
+            private:
+                ItemStack* focusedItemStack;
+                DynamicBoundedNumber<unsigned char> count;
+                nItem::Price price;
+
+                void OnCountChange();
+                void Transaction();
             };
-
-        private:
-            static bool active;
-            static bool buying;
-            static Agui::Root *root;
-            static Dialog dialog;
-
-            static InventoryGui inventoryGui;
-
-            Shop() = default;
-            Shop(const Shop &arg) = delete;
-            Shop& operator=(const Shop &arg) = delete;
-
-            static Shop& Instance();
-
-            static void OnDialogDeactivated();
-            static void OnActionPressed(const Input::Action &args);
-
-            static Item::Price GetItemPrice(const Item &item, const ItemStack::CountT &count);
         public:
-            static void Init();
-            static bool Enter(bool buying);
-            static void Leave();
-            static bool IsActive();
-            friend Handler;
+            Shop(ObjectManager& manager);
+
+            bool Enter(bool buying);
+            void Leave();
+            bool IsActive() const;
+        private:
+            bool active;
+        private:
+            Controller* controller;
+        private:
+            void InitializeImpl() override;
+        private:
+            bool isBuying;
+            nItem::Price ItemPrice(TypedObjectReference<nItem> item, const ItemStack::Count& count);
+        private:
+            Agui::Root* root;
+            Dialog dialog;
+            void InitializeGui();
+        private:
+            typedef TypedObjectReference<Ent::nEntity> EntityReference;
+            typedef TypedObjectReference<Ent::nAvatarComponent> AvatarComponentReference;
+            typedef TypedObjectReference<Ent::nInventoryComponent> InventoryComponentReference;
+
+            EntityReference Avatar();
+            AvatarComponentReference AvatarComponent();
+            InventoryComponentReference AvatarInventoryComponent();
+
+            InventoryComponentReference InventoryComponent(EntityReference entity);
+        private:
+            void OnDialogDeactivated();
+            void OnActionPressed(const Input::Action& args);
         };
     }
 }

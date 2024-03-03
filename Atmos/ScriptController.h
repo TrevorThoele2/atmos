@@ -1,69 +1,52 @@
 #pragma once
 
-#include "Script.h"
+#include <unordered_map>
+
+#include "ObjectSystem.h"
+#include "ObjectBatch.h"
+#include "ObjectID.h"
+#include "ObjectReference.h"
+
+#include "RunningScript.h"
+#include "ScriptInstance.h"
 
 namespace Atmos
 {
-    class ScriptController
+    class ScriptController : public ObjectSystem
     {
-    private:
-        struct Piece
-        {
-            union U
-            {
-                Script::Instance *instance;
-                Script::Instance owned;
-                U();
-                U(Script::Instance *set);
-                U(Script::Instance &&set);
-                ~U();
-            };
-
-            U u;
-            bool owns;
-
-            Script::SymbolName executeSymbol;
-            Script::Instance::ItemVector parameters;
-
-            bool justAdded;
-            bool executedThisFrame;
-            bool executeMain;
-
-            Piece(Script::Instance &instance);
-            Piece(Script::Instance &instance, const Script::SymbolName &executeSymbol, const Script::Instance::ItemVector &parameters);
-            Piece(Script::Instance &&instance);
-            Piece(Script::Instance &&instance, const Script::SymbolName &executeSymbol, const Script::Instance::ItemVector &parameters);
-            Piece(Piece &&arg);
-            Piece& operator=(Piece &&arg);
-            Script::Instance* GetInstance();
-            const Script::Instance* GetInstance() const;
-        };
-    private:
-        bool isWorking;
-        typedef std::list<Piece> Stack;
-        Stack stack;
-        Stack::iterator current;
-        std::vector<Stack::iterator> deferredRemove;
-
-        ScriptController();
-        ScriptController(const ScriptController &arg) = delete;
-        ScriptController& operator=(const ScriptController &arg) = delete;
-
-        static void LaunchOrRunScript(Stack::iterator current);
-
-        static Stack::iterator Find(const Script::Instance &find);
-        static Stack::const_iterator FindConst(const Script::Instance &find);
     public:
-        static ScriptController& Instance();
-        static void Add(Script::Instance &instance);
-        static void Add(Script::Instance &instance, const Script::SymbolName &executeSymbol, const Script::Instance::ItemVector &parameters);
-        static void AddAndLaunch(Script::Instance &instance);
-        static void AddAndLaunch(Script::Instance &instance, const Script::SymbolName &executeSymbol, const Script::Instance::ItemVector &parameters);
-        static void Remove(Script::Instance &instance);
+        typedef TypedObjectReference<RunningScript> RunningScriptReference;
+        typedef ConstTypedObjectReference<ScriptInstance> ScriptInstanceReference;
+    public:
+        ScriptController(ObjectManager& manager);
 
-        static void Work();
-        static size_t GetWorkedSize();
-        static bool IsRunning(const Script::Instance &check);
-        static Script::Instance* Current();
+        void ExecuteImmediately(RunningScriptReference reference);
+
+        void ForceQuit(RunningScriptReference reference);
+
+        RunningScriptReference Current();
+
+        ObjectBatchSizeT Size() const;
+    public:
+        RunningScriptReference RunningScriptFor(ScriptInstanceReference scriptInstance) const;
+        bool IsRunning(ScriptInstanceReference scriptInstance) const;
+    private:
+        typedef ObjectBatch<RunningScript> RunningScripts;
+        typedef RunningScripts::iterator RunningIterator;
+        RunningScripts runningScripts;
+        RunningIterator current;
+    private:
+        typedef std::unordered_map<ScriptInstanceReference, RunningScriptReference> RunningScriptMap;
+        RunningScriptMap runningScriptMap;
+    private:
+        void WorkImpl() override;
+    private:
+        RunningIterator Find(RunningScriptReference reference);
+        void Remove(RunningIterator itr);
+
+        void LaunchOrRunScript(RunningIterator itr);
+    private:
+        void OnRunningScriptCreated(RunningScriptReference reference);
+        void OnRunningScriptDestroyed(RunningScriptReference reference);
     };
 }

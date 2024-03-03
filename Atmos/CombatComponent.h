@@ -1,39 +1,35 @@
 #pragma once
 
-#include "EntityComponent.h"
+#include "nEntityComponent.h"
 
+#include "CharacterClass.h"
+#include "Item.h"
+#include "Spell.h"
 #include "StatAttribute.h"
 #include "ResourceAttribute.h"
 #include "Acumen.h"
-#include "CharacterClass.h"
-#include "Spell.h"
-#include "Item.h"
-#include "ItemStash.h"
-#include "EquipSlot.h"
-#include "Defense.h"
-#include "Proficiency.h"
 #include "CombatEffectiveness.h"
 #include "MovementRange.h"
-#include "Element.h"
+#include "Defense.h"
+#include "EquipSlot.h"
 
 #include "RandomAccessSequence.h"
-#include "Optional.h"
-#include "ObjectMenuTraits.h"
 
-#include "Serialization.h"
+#include "ObjectSerialization.h"
 
 namespace Atmos
 {
     namespace Ent
     {
-        class CombatComponent : public Component<CombatComponent>
+        class nCombatComponent : public nEntityComponent
         {
-        private:
-            INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
-            INSCRIPTION_ACCESS;
+        public:
+            typedef TypedObjectReference<nCharacterClass> CharacterClassReference;
+            typedef TypedObjectReference<nItem> ItemReference;
+            typedef TypedObjectReference<nSpell> SpellReference;
         public:
             // Character class
-            RegistryObjectReference<CharacterClass> charClass;
+            CharacterClassReference characterClass;
 
             // Stats and resources
             StatAttributeTable stats;
@@ -46,7 +42,7 @@ namespace Atmos
             ItemStash permanentStash;
 
             // Equipment
-            std::unordered_map<EquipSlot, RegistryObjectReference<Item>> equipment;
+            std::unordered_map<EquipSlot, ItemReference> equipment;
 
             // EXP and level
             typedef unsigned int EXP;
@@ -58,47 +54,53 @@ namespace Atmos
             MovementRange movementRange;
 
             // Spells
-            typedef std::unordered_map<String, RegistryObjectReference<Spell>> Spells;
+            typedef std::unordered_map<String, SpellReference> Spells;
             Spells spells;
+        public:
+            nCombatComponent(EntityReference reference);
+            nCombatComponent(const nCombatComponent& arg) = default;
+            nCombatComponent(const ::Inscription::Table<nCombatComponent>& table);
 
-            CombatComponent() = default;
-            CombatComponent(const CombatComponent &arg) = default;
-            CombatComponent(CombatComponent &&arg);
-            CombatComponent& operator=(const CombatComponent &arg);
-            CombatComponent& operator=(CombatComponent &&arg);
-
-            bool operator==(const CombatComponent &arg) const;
-            bool operator!=(const CombatComponent &arg) const;
-
-            void SetClass(const RegistryObjectReference<CharacterClass> &set);
-            bool IsCorpse() const;
+            void SetClass(CharacterClassReference set);
+            bool IsDead() const;
 
             // Returns true if the item was given
-            bool GiveItem(const RegistryObjectReference<Item> &item);
+            bool GiveItem(ItemReference item);
             // Returns true if the item was removed
             bool RemoveItem(ItemStashSize pos);
-            RegistryObjectReference<Item> FindItem(ItemStashSize pos);
+            ItemReference FindItem(ItemStashSize pos);
             bool HasSpaceInStash() const;
 
-            void Equip(EquipSlot slot, const RegistryObjectReference<Item> &item);
+            void Equip(EquipSlot slot, ItemReference item);
             void Unequip(EquipSlot slot);
-            RegistryObjectReference<Item> GetEquipment(EquipSlot slot) const;
+            ItemReference GetEquipment(EquipSlot slot) const;
             bool CanEquip(EquipSlot slot) const;
 
-            bool LearnSpell(const RegistryObjectReference<Spell> &learn);
-            bool CanLearnSpell(const RegistryObjectReference<Spell> &test) const;
+            bool LearnSpell(SpellReference learn);
+            bool CanLearnSpell(SpellReference test) const;
 
             Defense GetDefense() const;
-            Element GetElement() const;
-        };
 
-        ENTITY_COMPONENT_MAP_DECLARE("Combat", CombatComponent)
+            ObjectTypeDescription TypeDescription() const override;
+        private:
+            INSCRIPTION_ACCESS;
+        };
     }
 
     template<>
-    struct ObjectMenuTraits<Ent::CombatComponent>
+    struct ObjectTraits<Ent::nCombatComponent> : ObjectTraitsBase<Ent::nCombatComponent>
     {
-        static Ent::CombatComponent::Spells& RetrieveContainer(Ent::CombatComponent &list) { return list.spells; }
-        static const Spell& Unpack(Ent::CombatComponent::Spells::const_iterator itr) { return *itr->second; }
+        static const ObjectTypeName typeName;
+    };
+}
+
+namespace Inscription
+{
+    DECLARE_OBJECT_INSCRIPTER(::Atmos::Ent::nCombatComponent)
+    {
+    public:
+        static void AddMembers(TableT& table);
+
+        INSCRIPTION_INSCRIPTER_DECLARE_SERIALIZE_FUNCTION;
     };
 }

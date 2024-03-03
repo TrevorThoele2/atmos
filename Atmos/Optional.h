@@ -49,7 +49,23 @@ namespace Atmos
         Optional& operator=(const Optional &arg);
         Optional& operator=(Optional &&arg);
         bool operator==(const Optional &arg) const;
+        friend bool operator==(const Optional &lhs, const ValueT &rhs)
+        {
+            return (lhs.valid) ? lhs.value == rhs : false;
+        }
+        friend bool operator==(const ValueT &lhs, const Optional &rhs)
+        {
+            return rhs == lhs;
+        }
         bool operator!=(const Optional &arg) const;
+        friend bool operator!=(const Optional &lhs, const ValueT &rhs)
+        {
+            return !(lhs == rhs);
+        }
+        friend bool operator!=(const ValueT &lhs, const Optional &rhs)
+        {
+            return !(rhs == lhs);
+        }
         ValueT* operator->();
         const ValueT* operator->() const;
         ValueT& operator*();

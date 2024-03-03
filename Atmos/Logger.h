@@ -29,10 +29,10 @@ namespace Atmos
         static void Init();
 
         // Outputs the error to a text file
-        static void Log(const String &string, Type type);
+        static void Log(const String& string, Type type);
         // Outputs the error to a test file
         // Also outputs all of the name-value pairs
-        static void Log(const String &string, Type type, NameValueVector &nvps);
+        static void Log(const String& string, Type type, NameValueVector& nvps);
         static String GetTimeValue();
         static void ClearFile();
     private:
@@ -41,7 +41,7 @@ namespace Atmos
             String string;
             Type type;
             NameValueVector nvps;
-            Entry(const String &string, Type type, const NameValueVector &nvps);
+            Entry(const String& string, Type type, const NameValueVector& nvps);
         };
     private:
         bool initialized;

@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "Serialization.h"
+#include <Inscription/ContainerSize.h>
 
 namespace Atmos
 {
@@ -11,6 +12,7 @@ namespace Atmos
     {
     public:
         typedef T ValueT;
+        typedef size_t SizeT;
     private:
         INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
@@ -60,10 +62,10 @@ namespace Atmos
         bool IsIncluded(ValueT val) const;
 
         void Clear();
-        void clear();
+
+        SizeT Size() const;
 
         bool IsEmpty() const;
-        bool empty() const;
 
         const_iterator begin() const;
         const_iterator end() const;
@@ -80,7 +82,7 @@ namespace Atmos
             ::Inscription::ContainerSize size(vector.size());
             scribe.Save(size);
 
-            for (auto &loop : vector)
+            for (auto& loop : vector)
             {
                 scribe.Save(loop.GetStart());
                 scribe.Save(loop.GetSize());
@@ -294,7 +296,7 @@ namespace Atmos
     template<class T>
     bool IntervalList<T>::IsIncluded(ValueT val) const
     {
-        for (auto &loop : vector)
+        for (auto& loop : vector)
         {
             if (loop.IsIncluded(val))
                 return true;
@@ -310,21 +312,18 @@ namespace Atmos
     }
 
     template<class T>
-    void IntervalList<T>::clear()
+    typename IntervalList<T>::SizeT IntervalList<T>::Size() const
     {
-        Clear();
+        SizeT ret = 0;
+        for (auto& loop : vector)
+            ret += loop.GetSize();
+        return ret;
     }
 
     template<class T>
     bool IntervalList<T>::IsEmpty() const
     {
         return vector.empty();
-    }
-
-    template<class T>
-    bool IntervalList<T>::empty() const
-    {
-        return IsEmpty();
     }
 
     template<class T>

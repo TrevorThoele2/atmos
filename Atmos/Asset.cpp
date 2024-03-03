@@ -3,26 +3,54 @@
 
 namespace Atmos
 {
-    Asset::Asset() : id(nullID)
+    nAsset::nAsset(const Name& name) : name(name)
     {}
 
-    bool Asset::operator==(const Asset &arg) const
+    nAsset::nAsset(const nAsset& arg)
+    {}
+
+    nAsset::nAsset(const ::Inscription::Table<nAsset>& table) : INSCRIPTION_TABLE_GET_MEM(name)
+    {}
+
+    ObjectTypeDescription nAsset::TypeDescription() const
     {
-        return id == arg.id;
+        return ObjectTraits<nAsset>::TypeDescription();
     }
 
-    bool Asset::operator!=(const Asset &arg) const
+    const ObjectTypeName ObjectTraits<nAsset>::typeName = "Asset";
+
+    nFileAsset::~nFileAsset()
+    {}
+
+    ObjectTypeDescription nFileAsset::TypeDescription() const
     {
-        return !(*this == arg);
+        return ObjectTraits<nFileAsset>::TypeDescription();
     }
 
-    Asset::ID Asset::GetID() const
+    nFileAsset::nFileAsset(const FileName& fileName) :
+        nAsset(fileName), fileName(fileName)
+    {}
+
+    nFileAsset::nFileAsset(const nFileAsset& arg) :
+        nAsset(arg), fileName(arg.fileName)
+    {}
+
+    nFileAsset::nFileAsset(const ::Inscription::Table<nFileAsset>& table) :
+        INSCRIPTION_TABLE_GET_BASE(nAsset), INSCRIPTION_TABLE_GET_MEM(fileName)
+    {}
+
+    const ObjectTypeName ObjectTraits<nFileAsset>::typeName = "FileAsset";
+}
+
+namespace Inscription
+{
+    DEFINE_OBJECT_INSCRIPTER_MEMBERS(::Atmos::nAsset)
     {
-        return id;
+        INSCRIPTION_TABLE_ADD(name);
     }
 
-    String Asset::GetString() const
+    DEFINE_OBJECT_INSCRIPTER_MEMBERS(::Atmos::nFileAsset)
     {
-        return GetStringImpl();
+        INSCRIPTION_TABLE_ADD(fileName);
     }
 }

@@ -4,13 +4,13 @@
 
 #include "Sprite.h"
 #include "Sound.h"
-#include "Particle.h"
 
 #include "ObjectOffsetHandle.h"
 #include "Position3D.h"
 
 namespace Atmos
 {
+    /*
     class AVEffect
     {
     public:
@@ -170,4 +170,5 @@ namespace Atmos
         static void Clear();
         static void Work();
     };
+    */
 }

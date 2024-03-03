@@ -5,8 +5,11 @@
 #include "Options.h"
 #include "WorldManager.h"
 #include "Environment.h"
-#include "CurrentMusic.h"
-#include "AudioRegistry.h"
+#include "GameEnvironment.h"
+
+#include "ObjectManager.h"
+#include "MusicSystem.h"
+#include "CurrentField.h"
 
 #include <AGUI\Image.h>
 #include <AGUI\Label.h>
@@ -14,6 +17,9 @@
 
 namespace Atmos
 {
+    MainMenuGui::MainMenuGui() : StateGui("mainMenu")
+    {}
+
     void MainMenuGui::InitImpl()
     {
         // Background
@@ -23,7 +29,7 @@ namespace Atmos
         Agui::CreateRootResFitter(*image);
 
         AddButton("newGame", "NEW GAME", std::bind(&MainMenuGui::OnNew, *this));
-        //AddButton("loadGame", "LOAD GAME", std::bind(&FileHandler::Load));
+        AddButton("loadGame", "LOAD GAME", std::bind(&MainMenuGui::OnLoad, *this));
         AddButton("options", "OPTIONS", std::bind(&OptionsScreen::Goto, &optionsScreen));
         AddButton("exit", "EXIT", std::bind(&Environment::Exit));
 
@@ -50,47 +56,55 @@ namespace Atmos
 
     void MainMenuGui::OnNew()
     {
-        WorldManager::StartNew();
+        GameEnvironment::GetWorldManager().StartNew();
         mainGameState.Goto();
     }
 
-    MainMenuGui::MainMenuGui() : StateGui("mainMenu")
-    {}
+    void MainMenuGui::OnLoad()
+    {
+        GameEnvironment::GetWorldManager().UseStasis("Autosave.stasis");
+    }
 
-    const FileName MainMenu::mainMenuMusic("mainmenu.ogg");
+    const FileName MainMenu::mainMenuMusicName("mainmenu.ogg");
 
     void MainMenu::AddMainMenuMusic()
     {
-        AudioRegistry::Register(GetMainMenuPath());
+        auto musicData = Environment::GetAudio()->CreateAudioData(MainMenuPath());
+        music = GetGlobalObjectManager()->CreateObject<AudioAsset>(MainMenuPath(), std::move(musicData));
     }
 
     void MainMenu::RemoveMainMenuMusic()
     {
-        AudioRegistry::Remove(mainMenuMusic);
+        GetGlobalObjectManager()->DestroyObject(music);
     }
 
-    FilePath MainMenu::GetMainMenuPath() const
+    FilePath MainMenu::MainMenuPath() const
     {
         auto &mainMenuMusicPath = Environment::GetFileSystem()->GetExePath();
         mainMenuMusicPath.Append("Sound" + Environment::GetFileSystem()->GetFileSeparator());
-        mainMenuMusicPath.SetName(mainMenuMusic);
+        mainMenuMusicPath.SetFileName(mainMenuMusicName);
         return mainMenuMusicPath;
     }
 
     void MainMenu::OnFocusedImpl()
     {
-        WorldManager::Clear();
+        GameEnvironment::GetWorldManager().Clear();
 
         AddMainMenuMusic();
 
-        CurrentMusic::ChangePlaying(mainMenuMusic);
+        RetrieveMusicSystem()->BeginPlaying(mainMenuMusicName);
     }
 
     void MainMenu::OnUnfocusedImpl()
     {
-        CurrentMusic::StopPlaying();
+        RetrieveMusicSystem()->TerminateCurrent();
 
         RemoveMainMenuMusic();
+    }
+
+    MusicSystem* MainMenu::RetrieveMusicSystem()
+    {
+        return GetLocalObjectManager()->FindSystem<MusicSystem>();
     }
 
     MainMenu mainMenu;

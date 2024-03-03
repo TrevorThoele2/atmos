@@ -8,15 +8,6 @@ namespace Atmos
         scribe(result);
     }
 
-    ItemRecipe::ItemRecipe() : result(nullptr)
+    ItemRecipe::ItemRecipe(const Name& name) : RegistryObject(name)
     {}
-
-    ItemRecipe::ItemRecipe(ItemRecipe &&arg) : result(std::move(arg.result))
-    {}
-
-    ItemRecipe& ItemRecipe::operator=(ItemRecipe &&arg)
-    {
-        result = std::move(arg.result);
-        return *this;
-    }
 }

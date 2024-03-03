@@ -1,79 +1,68 @@
 
 #include "MovementComponent.h"
 
-#include "Entity.h"
-#include "DialogueComponent.h"
-#include "BattleComponent.h"
+#include "ObjectManager.h"
 
-#include "CurrentField.h"
-
-#include <Inscription/Inscripter.h>
+#include "nEntityPositionSystem.h"
 
 namespace Atmos
 {
     namespace Ent
     {
-        INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(MovementComponent)
-        {
-            scribe(movementMod);
-            scribe(changeDirectionMod);
-        }
-
-        void MovementComponent::OnOwnerEntitySet()
-        {
-            SetScriptCallers();
-        }
-
-        void MovementComponent::SetScriptCallers()
-        {
-            movementMod.GetCaller().Set(GetOwnerEntity());
-            changeDirectionMod.GetCaller().Set(GetOwnerEntity());
-        }
-
-        MovementComponent::MovementComponent(const MovementComponent &arg) : Component(arg), movementMod(arg.movementMod), changeDirectionMod(arg.changeDirectionMod)
+        nMovementComponent::nMovementComponent(EntityReference reference) : nEntityComponent(reference)
         {}
 
-        MovementComponent::MovementComponent(MovementComponent &&arg) : Component(std::move(arg)), movementMod(std::move(arg.movementMod)), changeDirectionMod(std::move(arg.changeDirectionMod))
+        nMovementComponent::nMovementComponent(const ::Inscription::Table<nMovementComponent>& table) : INSCRIPTION_TABLE_GET_BASE(nEntityComponent)
         {}
 
-        MovementComponent& MovementComponent::operator=(const MovementComponent &arg)
+        void nMovementComponent::Enable()
         {
-            Component::operator=(arg);
-            movementMod = arg.movementMod;
-            changeDirectionMod = arg.changeDirectionMod;
-            return *this;
+            enabled = true;
         }
 
-        MovementComponent& MovementComponent::operator=(MovementComponent &&arg)
+        void nMovementComponent::Disable()
         {
-            Component::operator=(std::move(arg));
-            movementMod = std::move(arg.movementMod);
-            changeDirectionMod = std::move(arg.changeDirectionMod);
-            return *this;
+            enabled = false;
         }
 
-        bool MovementComponent::IsMoving() const
+        bool nMovementComponent::IsMoving() const
         {
-            return false;
+            return movementModulatorCreator->IsRunning() || changeDirectionModulatorCreator->IsRunning() || Manager()->FindSystem<nEntityPositionSystem>()->IsMoving(owner.Get());
         }
 
-        bool MovementComponent::CanMove() const
+        bool nMovementComponent::CanMove() const
         {
-            // Check dialogue
-            {
-                auto dialogue = GetCurrentEntities()->FindComponent<DialogueComponent>(GetOwnerEntity());
-                if (dialogue && dialogue->script.IsExecuting())
-                    return false;
-            }
-
-            // Check battle
-            {
-                auto battle = GetCurrentEntities()->FindComponent<BattleComponent>(GetOwnerEntity());
-                if (battle && battle->turnEnded)
-                    return false;
-            }
-
-            return !IsMoving();
+            return enabled && !IsMoving();
         }
+
+        ObjectTypeDescription nMovementComponent::TypeDescription() const
+        {
+            return ObjectTraits<nMovementComponent>::TypeDescription();
+        }
+
+        void nMovementComponent::SetupScripts()
+        {
+            movementModulatorCreator->owner = this;
+            changeDirectionModulatorCreator->owner = this;
+        }
+
+        INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(nMovementComponent)
+        {
+            scribe(enabled);
+            scribe(movementModulatorCreator);
+            scribe(changeDirectionModulatorCreator);
+        }
+    }
+
+    const ObjectTypeName ObjectTraits<Ent::nMovementComponent>::typeName = "MovementComponent";
+}
+
+namespace Inscription
+{
+    DEFINE_OBJECT_INSCRIPTER_MEMBERS(::Atmos::Ent::nMovementComponent)
+    {
+        INSCRIPTION_TABLE_ADD(enabled);
+        INSCRIPTION_TABLE_ADD(movementModulatorCreator);
+        INSCRIPTION_TABLE_ADD(changeDirectionModulatorCreator);
     }
 }

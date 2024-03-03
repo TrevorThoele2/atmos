@@ -1,60 +1,37 @@
 #pragma once
 
-#include "Position3D.h"
-#include "FrameTimer.h"
+#include "PositionalObject.h"
 
-#include "Serialization.h"
+#include "ObjectSerialization.h"
 
 namespace Atmos
 {
-    // A base class for things that you can sense
-    // RenderFragments and Sounds
-    class Sense
+    class nSense : public PositionalObject
     {
     public:
-        typedef Position3D PositionT;
-    private:
-        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
-        INSCRIPTION_ACCESS;
-    private:
-        Position3D center;
-
-        bool enabled;
-        bool dynamic;
-
-        virtual void OnPositionChanged() = 0;
-        virtual void OnEnabledChanged() = 0;
+        StoredProperty<bool> enabled;
     public:
-        Sense(bool enabled);
-        Sense(const Position3D &center, bool enabled);
-        Sense(const Sense &arg);
-        Sense& operator=(const Sense &arg);
-        Sense(Sense &&arg);
-        Sense& operator=(Sense &&arg);
-		virtual ~Sense() = 0 {}
+        nSense();
+        nSense(const nSense& arg) = default;
+        nSense(const ::Inscription::Table<nSense>& table);
+        virtual ~nSense() = 0;
+    public:
+        ObjectTypeDescription TypeDescription() const override;
+    };
 
-        bool operator==(const Sense &arg) const;
-        bool operator!=(const Sense &arg) const;
+    template<>
+    struct ObjectTraits<nSense> : ObjectTraitsBase<nSense>
+    {
+        static const ObjectTypeName typeName;
+        static constexpr ObjectTypeList<PositionalObject> bases = {};
+    };
+}
 
-        void SetPosition(const Position3D &set);
-        void SetX(Position3D::ValueT set);
-        void SetY(Position3D::ValueT set);
-        void SetZ(Position3D::ValueT set);
-
-        const Position3D& GetPosition() const;
-        Position3D::ValueT GetX() const;
-        Position3D::ValueT GetY() const;
-        Position3D::ValueT GetZ() const;
-
-        void SetDynamic(bool set = true);
-        void SetStatic(bool set = true);
-        bool IsDynamic() const;
-        bool IsStatic() const;
-
-        // If a Sense is enabled, then it will be rendered/sound played
-        void Enable(bool set = true);
-        void Disable();
-        void ToggleEnabled();
-        bool IsEnabled() const;
+namespace Inscription
+{
+    DECLARE_OBJECT_INSCRIPTER(::Atmos::nSense)
+    {
+    public:
+        static void AddMembers(TableT& table);
     };
 }

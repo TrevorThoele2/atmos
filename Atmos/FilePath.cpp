@@ -19,12 +19,7 @@ namespace Atmos
 
     FilePath::FilePath(const FilePath &arg, const RelativeFilePath &relative) : value(arg.value)
     {
-        RemoveFileName();
-        size_t directoryIndex = GetDirectoryCount() - 1;
-        for (size_t loop = 0; loop < relative.GetMoveUpCount(); ++loop, --directoryIndex)
-            RemoveDirectory(directoryIndex);
-
-        Append(relative.GetMoveDown());
+        Append(relative);
     }
 
     FilePath::FilePath(const FilePath &arg) : value(arg.value), extension(arg.extension)
@@ -67,57 +62,105 @@ namespace Atmos
         return value.c_str();
     }
 
-    void FilePath::Set(const String &set)
+    FilePath& FilePath::Set(const String &set)
     {
         value = set;
         extension = GetFileExtension(value);
+
+        return *this;
     }
 
-    void FilePath::SetName(const FileName &name)
+    FilePath& FilePath::SetFileName(const FileName &name)
     {
         auto found = value.find_last_of(Environment::GetFileSystem()->GetFileSeparator());
         if (found == value.npos)
         {
             value = name;
             extension = GetFileExtension(value);
-            return;
+            return *this;
         }
 
         value.replace(found + 1, value.npos, name);
         extension = GetFileExtension(value);
+
+        return *this;
     }
 
-    void FilePath::SetExtension(const String &replace)
+    FilePath& FilePath::SetExtension(const String &replace)
     {
         value = ReplaceFileExtension(value, replace);
         extension = replace;
+
+        return *this;
     }
 
-    void FilePath::RemoveFileName()
+    FilePath& FilePath::RemoveFileName()
     {
         value = ::Atmos::RemoveFileName(value);
         extension = "";
+
+        return *this;
     }
 
-    void FilePath::RemoveExtension()
+    FilePath& FilePath::RemoveExtension()
     {
         value = RemoveFileExtension(value);
         extension = "";
+
+        return *this;
     }
 
-    void FilePath::RemoveDirectory(size_t index)
+    FilePath& FilePath::RemoveDirectory(size_t index)
     {
         if (index >= GetDirectoryCount())
-            return;
+            return *this;
 
         String directoryName = GetDirectoryName(index);
         value.erase(value.find(directoryName), directoryName.size());
+
+        return *this;
     }
 
     FilePath& FilePath::Append(const String &append)
     {
         value.append(append);
         extension = GetFileExtension(value);
+        return *this;
+    }
+
+    FilePath& FilePath::Append(const FileName& append)
+    {
+        return Append(append.GetValue());
+    }
+
+    FilePath& FilePath::Append(const RelativeFilePath &append)
+    {
+        RemoveFileName();
+        size_t directoryIndex = GetDirectoryCount() - 1;
+        for (size_t loop = 0; loop < append.GetMoveUpCount(); ++loop, --directoryIndex)
+            RemoveDirectory(directoryIndex);
+
+        Append(append.GetMoveDown());
+        return *this;
+    }
+
+    FilePath& FilePath::Append(const char* append)
+    {
+        return Append(String(append));
+    }
+
+    FilePath& FilePath::AppendSeparator()
+    {
+        Append(Environment::GetFileSystem()->GetFileSeparator());
+        return *this;
+    }
+
+    FilePath& FilePath::ReplaceAllWith(const String &replace, const String &with)
+    {
+        for (size_t index = 0; index < value.length() - replace.length(); ++index)
+            if (value.substr(index, replace.length()) == replace)
+                value.replace(index, replace.length(), with);
+
         return *this;
     }
 
@@ -269,16 +312,20 @@ namespace Atmos
         return value.c_str();
     }
 
-    void FileName::Set(const String &set)
+    FileName& FileName::Set(const String &set)
     {
         value = set;
         extension = GetFileExtension(value);
+
+        return *this;
     }
 
-    void FileName::SetExtension(const String &replace)
+    FileName& FileName::SetExtension(const String &replace)
     {
         value = ReplaceFileExtension(value, replace);
         extension = replace;
+
+        return *this;
     }
 
     FileName::operator const String&() const

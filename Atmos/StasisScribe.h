@@ -77,6 +77,7 @@ namespace Atmos
         const FileName& GetFileName() const;
         static FilePath MakePathFromName(const FileName &fileName);
         static FilePath GetPath();
+        static ::Inscription::Version GetCurrentVersion();
     };
 
     // Loads the savegame
@@ -134,7 +135,7 @@ namespace Atmos
         bool WillLoad() override;
 
         Optional<Field> Get(FieldID fieldID) override;
-        Field* GetAsHeap(FieldID id) override;
+        std::unique_ptr<Field> GetAsHeap(FieldID id) override;
         ::Inscription::Buffer GetAsBuffer(FieldID id) override;
 
         StasisWorldStart& GetWorldStart() override;

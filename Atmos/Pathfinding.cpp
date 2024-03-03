@@ -1,6 +1,7 @@
 
 #include "Pathfinding.h"
 
+#include "TileSystem.h"
 #include "CurrentField.h"
 
 namespace Atmos
@@ -132,7 +133,7 @@ namespace Atmos
         if (start == finish)
             return;
 
-        auto tiles = GetCurrentTiles();
+        auto tiles = GetLocalObjectManager()->FindSystem<TileSystem>();
         if (!tiles)
             return;
 
@@ -155,8 +156,8 @@ namespace Atmos
             {
                 // Don't consider tile positions that don't exist or the tile is solid
                 auto &neighborPos = current.GetPos().FindPositionAdjacent(Direction::FromUnderlyingType(neighborLoop));
-                auto found = tiles->Find(neighborPos);
-                if (neighborPos != finish && (!found || found->IsSolid()))
+                auto found = tiles->FindTile(neighborPos);
+                if (neighborPos != finish && (!found || found->solid))
                     continue;
 
                 Node neighbor(current.GetG() + 1, neighborPos.FindDistance(finish), neighborPos);

@@ -1,113 +1,75 @@
 
 #include "InventoryComponent.h"
-#include "Entity.h"
-
-#include "Item.h"
-#include "CombatComponent.h"
-
-#include "CurrentField.h"
-
-#include <Inscription\Memory.h>
-#include <Inscription\UnorderedMap.h>
 
 namespace Atmos
 {
     namespace Ent
     {
-        INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(InventoryComponent)
-        {
-            scribe(container);
-        }
-
-        InventoryComponent::InventoryComponent(const InventoryComponent &arg) : Component(arg), container(arg.container)
+        nInventoryComponent::nInventoryComponent(EntityReference reference) : nEntityComponent(reference)
         {}
 
-        InventoryComponent::InventoryComponent(InventoryComponent &&arg) : Component(std::move(arg)), container(std::move(arg.container))
+        nInventoryComponent::nInventoryComponent(const ::Inscription::Table<nInventoryComponent>& table) : INSCRIPTION_TABLE_GET_BASE(nEntityComponent)
         {}
 
-        InventoryComponent& InventoryComponent::operator=(const InventoryComponent &arg)
-        {
-            Component::operator=(arg);
-            container = arg.container;
-            return *this;
-        }
-
-        InventoryComponent& InventoryComponent::operator=(InventoryComponent &&arg)
-        {
-            Component::operator=(std::move(arg));
-            container = std::move(arg.container);
-            return *this;
-        }
-
-        bool InventoryComponent::operator==(const InventoryComponent &arg) const
-        {
-            return container == arg.container;
-        }
-
-        bool InventoryComponent::operator!=(const InventoryComponent &arg) const
-        {
-            return !(*this == arg);
-        }
-
-        ItemStack* InventoryComponent::Add(const Name &name, const ItemStack::CountT &count)
+        ItemStack* nInventoryComponent::Add(ItemReference itemSource, const ItemStack::Count& count)
         {
             if (count == 0)
                 return nullptr;
 
-            return Add(ItemStack(*Registry<Item>::Find(name), count));
+            return Add(ItemStack(itemSource, count));
         }
 
-        ItemStack* InventoryComponent::Add(ItemStack &&add)
+        ItemStack* nInventoryComponent::Add(ItemStack&& add)
         {
             Combine(add);
-            if (add.GetCount() == 0)
+            if (add.count == 0)
                 return nullptr;
 
             container.AddBack(std::move(add));
             return &container.back();
         }
 
-        ItemStack* InventoryComponent::Find(Container::ID position)
+        ItemStack* nInventoryComponent::Find(Container::ID position)
         {
             auto found = container.Find(position);
             if (found == container.end())
                 return nullptr;
-           
+
             return &*found;
         }
 
-        void InventoryComponent::Combine(ItemStack &stack)
+        void nInventoryComponent::Combine(ItemStack& stack)
         {
-            if (stack.GetCount() == 0)
+            if (stack.count == 0)
                 return;
 
-            for (auto &loop : container)
+            for (auto& loop : container)
             {
-                if (loop.GetName() == stack.GetName() && loop.GetCount() < ItemStack::maxCount)
+                if (loop.itemSource == stack.itemSource && loop.count < ItemStack::maxCount)
                 {
-                    auto prevCount = loop.GetCount();
-                    loop.IncrementCount(stack.GetCount());
-                    stack.DecrementCount(loop.GetCount() - prevCount);
+                    auto prevCount = loop.count;
+                    loop.count += stack.count;
+                    stack.count -= loop.count - prevCount;
                 }
 
-                if (stack.GetCount() == 0)
+                if (stack.count == 0)
                     return;
             }
         }
 
-        void InventoryComponent::Remove(Container::ID index)
+        void nInventoryComponent::Remove(Container::ID index)
         {
             container.Remove(index);
         }
 
-        bool InventoryComponent::IsEmpty() const
+        bool nInventoryComponent::IsEmpty() const
         {
             return container.empty();
         }
 
-        bool InventoryComponent::IsHere(ItemStack &check) const
+        bool nInventoryComponent::IsHere(ItemStack& check) const
         {
-            for (auto &loop : container)
+            for (auto& loop : container)
             {
                 if (loop == check)
                     return true;
@@ -116,21 +78,22 @@ namespace Atmos
             return false;
         }
 
-        void InventoryComponent::Move(ItemStack &stack, InventoryComponent &moveTo)
+        void nInventoryComponent::Move(ItemStack& stack, TypedObjectReference<nInventoryComponent> moveTo)
         {
             for (auto loop = container.begin(); loop != container.end(); ++loop)
             {
                 if (&*loop == &stack)
                 {
-                    moveTo.Add(std::move(*loop));
+                    moveTo->Add(std::move(*loop));
                     container.Remove(loop);
                     return;
                 }
             }
         }
 
-        bool InventoryComponent::AttemptConsume(ItemStack &stack)
+        bool nInventoryComponent::AttemptConsume(ItemStack& stack)
         {
+            /*
             if (!stack->HasConsumableAspect())
                 return false;
 
@@ -143,10 +106,14 @@ namespace Atmos
             }
 
             return true;
+            */
+
+            return true;
         }
 
-        bool InventoryComponent::AttemptEquip(EquipSlot slot, ItemStack &stack)
+        bool nInventoryComponent::AttemptEquip(EquipSlot slot, ItemStack &stack)
         {
+            /*
             if (!stack->HasEquippableAspect())
                 return false;
 
@@ -163,16 +130,33 @@ namespace Atmos
             combat->Equip(slot, *stack);
             stack.DecrementCount();
             return true;
+            */
+            return true;
         }
 
-        size_t InventoryComponent::GetTotalCount() const
+        size_t nInventoryComponent::GetTotalCount() const
         {
             size_t ret = 0;
 
-            for (auto &loop : container)
-                ret += loop.GetCount().Get();
+            for (auto& loop : container)
+                ret += loop.count.Value();
 
             return ret;
         }
+
+        ObjectTypeDescription nInventoryComponent::TypeDescription() const
+        {
+            return ObjectTraits<nInventoryComponent>::TypeDescription();
+        }
+    }
+
+    const ObjectTypeName ObjectTraits<Ent::nInventoryComponent>::typeName = "InventoryComponent";
+}
+
+namespace Inscription
+{
+    DEFINE_OBJECT_INSCRIPTER_MEMBERS(::Atmos::Ent::nInventoryComponent)
+    {
+        INSCRIPTION_TABLE_ADD(container);
     }
 }

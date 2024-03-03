@@ -9,7 +9,10 @@ namespace Atmos
 {
     INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(AxisBoundingBox2D)
     {
-        scribe(left, right, top, bottom);
+        scribe(left);
+        scribe(right);
+        scribe(top);
+        scribe(bottom);
         scribe(pixelPerfect);
         if (scribe.IsInput())
             Calc();
@@ -175,11 +178,7 @@ namespace Atmos
 
     bool AxisBoundingBox2D::Overlapping(const AxisBoundingBox2D &box) const
     {
-        const Position2D topLeft(realLeft, realTop);
-        const Position2D topRight(realRight, realTop);
-        const Position2D bottomLeft(realLeft, realBottom);
-        const Position2D bottomRight(realRight, realBottom);
-
-        return topLeft.Within(box) || bottomRight.Within(box) || topRight.Within(box) || bottomLeft.Within(box);
+        return (realLeft <= box.realRight && realRight >= box.realLeft) &&
+               (realTop <= box.realBottom && realBottom >= box.realTop);
     }
 }

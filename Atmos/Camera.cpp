@@ -7,24 +7,9 @@
 #include "Environment.h"
 
 #include "GameEnvironment.h"
-#include <Affecter/SmoothstepType.h>
 
 namespace Atmos
 {
-    Camera::FocusU::FocusU() : two(nullptr)
-    {}
-
-    Position2D Camera::pos(0, 0, true);
-    Camera::FocusU Camera::focus;
-    Camera::FocusT Camera::focusType = Camera::FocusT::TWO;
-
-    Position2D Camera::viewOrigin;
-    Size2D Camera::size;
-    AxisBoundingBox2D Camera::sides;
-    Position2D Camera::topLeft;
-
-    Camera::Zoom Camera::zoom = 0.0f;
-
     void Camera::CalculateSides()
     {
         auto halfWidth = size.GetWidth() / 2;
@@ -38,29 +23,9 @@ namespace Atmos
         topLeft.Set(sides.GetLeft(), sides.GetTop());
     }
 
-    void Camera::SetFocusToPos()
-    {
-        if (IsFocusValid())
-            pos = GetFocusAs2D();
-
-        focus.two = &pos;
-        focusType = FocusT::TWO;
-    }
-
     bool Camera::IsFocusValid()
     {
-        return (focusType == FocusT::TWO) ? focus.two != nullptr : focus.three != nullptr;
-    }
-
-    Position2D Camera::GetFocusAs2D()
-    {
-        return (focusType == FocusT::TWO) ? *focus.two : *focus.three;
-    }
-
-    Camera& Camera::Instance()
-    {
-        static Camera instance;
-        return instance;
+        return focusedPosition != nullptr;
     }
 
     void Camera::Work()
@@ -69,11 +34,11 @@ namespace Atmos
             return;
 
         auto prevVO = viewOrigin;
-        viewOrigin = GetFocusAs2D();
+        viewOrigin = *focusedPosition;
         CalculateSides();
 
         if (prevVO != viewOrigin)
-            Instance().eventMoved();
+            eventMoved();
     }
 
     void Camera::SetSize(const Size2D &size)
@@ -82,23 +47,9 @@ namespace Atmos
         CalculateSides();
     }
 
-    void Camera::SetFocus(std::nullptr_t setTo)
+    void Camera::ResetFocus()
     {
-        focus.two = &Camera::pos;
-        focusType = FocusT::TWO;
-        Work();
-    }
-
-    void Camera::SetFocus(const Position2D *setTo)
-    {
-        if (!setTo)
-        {
-            SetFocus(nullptr);
-            return;
-        }
-
-        focus.two = setTo;
-        focusType = FocusT::TWO;
+        focusedPosition = &basePosition;
         Work();
     }
 
@@ -106,12 +57,11 @@ namespace Atmos
     {
         if (!setTo)
         {
-            SetFocus(&Camera::pos);
+            ResetFocus();
             return;
         }
 
-        focus.three = setTo;
-        focusType = FocusT::THREE;
+        focusedPosition = setTo;
         Work();
     }
 
@@ -120,75 +70,115 @@ namespace Atmos
         zoom = set;
     }
 
-    const Position2D& Camera::GetTopLeft()
+    void Camera::SetX(Position3D::ValueT set)
+    {
+        ResetFocus();
+        basePosition.SetX(set);
+    }
+
+    void Camera::SetY(Position3D::ValueT set)
+    {
+        ResetFocus();
+        basePosition.SetY(set);
+    }
+
+    void Camera::SetZ(Position3D::ValueT set)
+    {
+        ResetFocus();
+        basePosition.SetZ(set);
+    }
+
+    Position3D::ValueT Camera::GetX() const
+    {
+        return focusedPosition->GetX();
+    }
+
+    Position3D::ValueT Camera::GetY() const
+    {
+        return focusedPosition->GetY();
+    }
+
+    Position3D::ValueT Camera::GetZ() const
+    {
+        return focusedPosition->GetZ();
+    }
+
+    const Position2D& Camera::GetTopLeft() const
     {
         return topLeft;
     }
 
-    const Position2D& Camera::GetViewOrigin()
+    const Position2D& Camera::GetViewOrigin() const
     {
         return viewOrigin;
     }
 
-    Position3D Camera::GetViewOrigin3D()
+    Position3D Camera::GetViewOrigin3D() const
     {
         return Position3D(viewOrigin, zoom);
     }
 
-    const Size2D& Camera::GetSize()
+    const Size2D& Camera::GetSize() const
     {
         return size;
     }
 
-    const AxisBoundingBox2D& Camera::GetSides()
+    const AxisBoundingBox2D& Camera::GetSides() const
     {
         return sides;
     }
 
-    void Camera::Move(const Direction &dir, float distance)
+    void Camera::Move(Direction direction, Position3D::ValueT by)
     {
-        SetFocusToPos();
+        ResetFocus();
 
         auto &lastElapsed = Environment::GetTime().GetLastElapsed();
-        decltype(distance) normalizedDistance = distance * static_cast<float>(lastElapsed.ConvertValue(TimeValueEpoch::SECONDS));
+        decltype(by) normalizedDistance = by * static_cast<float>(lastElapsed.ConvertValue(TimeValueEpoch::SECONDS));
 
-        switch (dir.Get())
+        switch (direction.Get())
         {
-        case Direction::ValueT::UP:
-            pos.DecrementY(normalizedDistance);
+        case Direction::UP:
+            basePosition.DecrementY(normalizedDistance);
             break;
-        case Direction::ValueT::DOWN:
-            pos.IncrementY(normalizedDistance);
+        case Direction::DOWN:
+            basePosition.IncrementY(normalizedDistance);
             break;
-        case Direction::ValueT::LEFT:
-            pos.DecrementX(normalizedDistance);
+        case Direction::LEFT:
+            basePosition.DecrementX(normalizedDistance);
             break;
-        case Direction::ValueT::RIGHT:
-            pos.IncrementX(normalizedDistance);
+        case Direction::RIGHT:
+            basePosition.IncrementX(normalizedDistance);
             break;
         }
-    }
-
-    void Camera::MoveToInstant(const Position2D &pos)
-    {
-        Camera::pos = pos;
-        focus.two = &Camera::pos;
-        focusType = FocusT::TWO;
 
         Work();
     }
 
-    void Camera::MoveDeltaInstant(const Position2D &delta)
+    void Camera::MoveBy(Position3D::ValueT x, Position3D::ValueT y, Position3D::ValueT z)
     {
-        SetFocusToPos();
+        ResetFocus();
 
-        pos.IncrementX(delta.GetX());
-        pos.IncrementY(delta.GetY());
+        basePosition.IncrementX(x);
+        basePosition.IncrementY(y);
+        basePosition.IncrementZ(z);
+
+        Work();
     }
 
-    void Camera::MoveToFromScreenPos(const Position2D &pos, const FrameTimer &timer)
+    void Camera::MoveToInstant(const Position3D &pos)
     {
-        SetFocusToPos();
-        GameEnvironment::GetAffecterSystem().Create<::Affecter::Affecter<::Affecter::SmoothstepType, ::Affecter::MovementEngine2D>>(timer, &Position2D::operator=, Camera::pos, Camera::pos, Position2D(pos.GetX() + viewOrigin.GetX(), pos.GetY() + viewOrigin.GetY()));
+        basePosition = pos;
+        ResetFocus();
+
+        Work();
+    }
+
+    void Camera::MoveDeltaInstant(const Position3D &delta)
+    {
+        ResetFocus();
+
+        basePosition.IncrementX(delta.GetX());
+        basePosition.IncrementY(delta.GetY());
+        basePosition.IncrementZ(delta.GetZ());
     }
 }

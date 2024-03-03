@@ -42,7 +42,7 @@ namespace Atmos
             data->owner = this;
         }
 
-        SignalBase::SignalBase(Data *data, const String &displayName, bool canUseForAction) : displayName(displayName), canUseForAction(canUseForAction), active(false), previousFrame(false), doubleClickTimer(TimeValue(FixedPoint64(0, 25)))
+        SignalBase::SignalBase(Data *data, const String &displayName, bool canUseForAction) : displayName(displayName), canUseForAction(canUseForAction), active(false), previousFrame(false), doubleClickTimer(TimeValue(FixedPoint64::Split(0, FixedPoint64::Split::AdjustF(25, FixedPoint64::GetDefaultRadixPoint()))))
         {
             SetData(data);
         }
@@ -68,9 +68,9 @@ namespace Atmos
             else
                 active = false;
 
-            if (Pressed())
+            if (IsPressed())
                 Down();
-            else if (Depressed())
+            else if (IsDepressed())
                 Up();
         }
 
@@ -79,12 +79,12 @@ namespace Atmos
             return active;
         }
 
-        bool SignalBase::Pressed() const
+        bool SignalBase::IsPressed() const
         {
             return !previousFrame && active;
         }
 
-        bool SignalBase::Depressed() const
+        bool SignalBase::IsDepressed() const
         {
             return previousFrame && !active;
         }

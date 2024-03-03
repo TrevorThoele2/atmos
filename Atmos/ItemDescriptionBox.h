@@ -2,6 +2,9 @@
 #pragma once
 
 #include "DescriptionBox.h"
+
+#include "ObjectReference.h"
+#include "Item.h"
 #include "ItemStack.h"
 
 #include <AGUI\Image.h>
@@ -12,7 +15,9 @@ namespace Agui
     {
     private:
         WidgetComponent<Image> image;
-        const Atmos::Item *item;
+
+        typedef ::Atmos::TypedObjectReference<::Atmos::nItem> ItemReference;
+        ItemReference focusedItem;
 
         ItemDescriptionBox(const ItemDescriptionBox &arg) = delete;
         void Setup();
@@ -29,7 +34,7 @@ namespace Agui
         static ItemDescriptionBox* Factory(Object *parent, const WidgetPrototype &arg);
         static ItemDescriptionBox* Factory(Object *parent, const ItemDescriptionBox &arg);
         void Set();
-        void Set(const Atmos::Item &set);
+        void Set(ItemReference set);
         void Set(const Atmos::ItemStack &set);
         WIDGET_COMMON_ACCESS(ItemDescriptionBox);
     };

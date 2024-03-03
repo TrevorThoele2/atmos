@@ -1,42 +1,42 @@
 #pragma once
 
-#include "AbilityBase.h"
+#include "RegistryObject.h"
 
 #include "BattlePatternHolder.h"
 #include "AttackRange.h"
 #include "Acumen.h"
 
-#include "Serialization.h"
+#include "ObjectSerialization.h"
 
 namespace Atmos
 {
-    class Ability : public AbilityBase
+    class nAbility : public RegistryObject
     {
-    private:
-        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
-        INSCRIPTION_ACCESS;
     public:
         BattlePatternHolder pattern;
         AttackRange range;
         Acumen cost;
+    public:
+        nAbility(const Name& name);
+        nAbility(const nAbility& arg) = default;
+        nAbility(const ::Inscription::Table<nAbility>& table);
 
-        Ability();
-        Ability(const Ability &arg) = default;
-        Ability& operator=(const Ability &arg) = default;
-        Ability(Ability &&arg);
-        Ability& operator=(Ability &&arg);
-
-        bool operator==(const Ability &arg) const;
-        bool operator!=(const Ability &arg) const;
+        ObjectTypeDescription TypeDescription() const override;
     };
 
     template<>
-    class Registry<Ability> : public RegistryBase<Ability, Registry<Ability>>
+    struct ObjectTraits<nAbility> : ObjectTraitsBase<nAbility>
     {
-    private:
-        Registry() = default;
-        friend RegistryBase<Ability, Registry<Ability>>;
+        static const ObjectTypeName typeName;
+        static constexpr ObjectTypeList<RegistryObject> bases = {};
     };
+}
 
-    typedef Registry<Ability> AbilityRegistry;
+namespace Inscription
+{
+    DECLARE_OBJECT_INSCRIPTER(::Atmos::nAbility)
+    {
+    public:
+        static void AddMembers(TableT& table);
+    };
 }

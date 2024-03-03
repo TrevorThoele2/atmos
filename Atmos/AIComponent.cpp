@@ -6,35 +6,34 @@ namespace Atmos
 {
     namespace Ent
     {
-        INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(AIComponent)
+        nAIComponent::nAIComponent(EntityReference owner) : nEntityComponent(owner)
         {
-            scribe(ai);
-            scribe(battleAI);
+            SetupScripts();
         }
 
-        void AIComponent::OnOwnerEntitySet()
+        nAIComponent::nAIComponent(const ::Inscription::Table<nAIComponent>& table) : INSCRIPTION_TABLE_GET_BASE(nEntityComponent)
         {
-            SetScriptCallers();
+            SetupScripts();
         }
 
-        void AIComponent::SetScriptCallers()
+        ObjectTypeDescription nAIComponent::TypeDescription() const
         {
-            ai.GetCaller().Set(GetOwnerEntity());
-            battleAI.GetCaller().Set(GetOwnerEntity());
+            return ObjectTraits<nAIComponent>::TypeDescription();
         }
 
-        AIComponent::AIComponent()
-        {}
-
-        AIComponent::AIComponent(AIComponent &&arg) : Component(std::move(arg)), ai(std::move(arg.ai)), battleAI(std::move(arg.battleAI))
-        {}
-
-        AIComponent& AIComponent::operator=(AIComponent &&arg)
+        void nAIComponent::SetupScripts()
         {
-            Component::operator=(std::move(arg));
-            ai = std::move(arg.ai);
-            battleAI = std::move(arg.battleAI);
-            return *this;
+            script->owner = this;
         }
+    }
+
+    const ObjectTypeName ObjectTraits<Ent::nAIComponent>::typeName = "AIComponent";
+}
+
+namespace Inscription
+{
+    DEFINE_OBJECT_INSCRIPTER_MEMBERS(::Atmos::Ent::nAIComponent)
+    {
+        INSCRIPTION_TABLE_ADD(script);
     }
 }

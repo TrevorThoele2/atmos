@@ -11,7 +11,9 @@ namespace Atmos
 {
     INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(Position3D)
     {
-        scribe(X, Y, Z);
+        scribe(X);
+        scribe(Y);
+        scribe(Z);
         scribe(pixelPerfect);
         if (scribe.IsInput())
             Calc();

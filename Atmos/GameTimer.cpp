@@ -6,7 +6,8 @@ namespace Atmos
 {
     INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(GameTimeValue)
     {
-        scribe(value, epoch);
+        scribe(value);
+        scribe(epoch);
     }
 
     GameTimeValue::ValueT GameTimeValue::ConvertValueStatic(ValueT value, EpochT oldEpoch, EpochT newEpoch)

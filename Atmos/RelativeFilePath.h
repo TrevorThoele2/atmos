@@ -26,10 +26,10 @@ namespace Atmos
         operator const char*();
         const char* c_str() const;
 
-        void SetName(const FileName &name);
-        void SetExtension(const String &replace);
-        void RemoveFileName();
-        void RemoveExtension();
+        RelativeFilePath& SetFileName(const FileName &name);
+        RelativeFilePath& SetExtension(const String &replace);
+        RelativeFilePath& RemoveFileName();
+        RelativeFilePath& RemoveExtension();
 
         RelativeFilePath& Up(size_t number = 1);
         RelativeFilePath& Down(const String &down);

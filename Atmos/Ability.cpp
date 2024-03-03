@@ -3,36 +3,24 @@
 
 namespace Atmos
 {
-    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(Ability)
-    {
-        ::Inscription::BaseSerialize<AbilityBase>(scribe, *this);
-        scribe(pattern);
-        scribe(range);
-        scribe(cost);
-    }
-
-    Ability::Ability() : range(0), cost(0)
+    nAbility::nAbility(const Name& name) : RegistryObject(name)
     {}
 
-    Ability::Ability(Ability &&arg) : AbilityBase(std::move(arg)), pattern(std::move(arg.pattern)), range(std::move(arg.range)), cost(std::move(arg.cost))
+    nAbility::nAbility(const ::Inscription::Table<nAbility>& table) : INSCRIPTION_TABLE_GET_BASE(RegistryObject)
     {}
 
-    Ability& Ability::operator=(Ability &&arg)
+    ObjectTypeDescription nAbility::TypeDescription() const
     {
-        AbilityBase::operator=(std::move(arg));
-        pattern = std::move(arg.pattern);
-        range = std::move(arg.range);
-        cost = std::move(arg.cost);
-        return *this;
+        return ObjectTraits<nAbility>::TypeDescription();
     }
 
-    bool Ability::operator==(const Ability &arg) const
-    {
-        return RegistryObject::operator==(arg);
-    }
+    const ObjectTypeName ObjectTraits<nAbility>::typeName = "Ability";
+}
 
-    bool Ability::operator!=(const Ability &arg) const
+namespace Inscription
+{
+    DEFINE_OBJECT_INSCRIPTER_MEMBERS(::Atmos::nAbility)
     {
-        return !(*this == arg);
+
     }
 }
