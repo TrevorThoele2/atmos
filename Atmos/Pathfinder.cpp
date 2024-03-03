@@ -31,13 +31,12 @@ namespace Atmos::Entity
 
             for (auto& relativeNeighbor : relativeNeighbors)
             {
-                // Don't consider tile positions that don't exist or the tile is solid
                 const auto neighborPosition = Spatial::Grid::Point
                 {
                     current.position.x + relativeNeighbor.x,
                     current.position.y + relativeNeighbor.y
                 };
-                const auto canMoveTo = reliquary.Do(CanMoveTo{ entity, to });
+                const auto canMoveTo = reliquary.Do(CanMoveTo{ entity, neighborPosition });
                 if (neighborPosition != to && !canMoveTo)
                     continue;
 
@@ -46,7 +45,6 @@ namespace Atmos::Entity
                 if (closedSet.find(neighbor.position) != closedSet.end())
                     continue;
 
-                // Find if node is in the open set
                 const auto neighborInOpen = FindNode(neighbor.position, openSet);
 
                 if (neighborInOpen == openSet.end())

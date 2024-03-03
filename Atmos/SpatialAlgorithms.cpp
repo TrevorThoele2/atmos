@@ -276,7 +276,7 @@ namespace Atmos::Spatial
     {
         Point::Value Distance(Point starting, Point destination)
         {
-            return destination.x - starting.x + destination.y - starting.y;
+            return abs(destination.x - starting.x) + abs(destination.y - starting.y);
         }
 
         bool Contains(AxisAlignedBox box, Point point)
