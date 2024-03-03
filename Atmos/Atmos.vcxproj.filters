@@ -1,0 +1,1932 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\GUI">
+      <UniqueIdentifier>{316daf16-7904-45bf-b6a2-1b79de68f0c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GUI\ContextMenus">
+      <UniqueIdentifier>{95a879cf-ea12-488e-9edb-f99ec233dd97}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GUI\DescriptionBoxes">
+      <UniqueIdentifier>{519e3fc7-cb9d-4062-b475-73b853f30cd8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GUI\StatusScreen">
+      <UniqueIdentifier>{99604308-c9c3-43c6-a250-4ffb4f58b91f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Helper">
+      <UniqueIdentifier>{30d39b10-ce24-45e3-a2fa-fad751dcf569}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Input">
+      <UniqueIdentifier>{affee666-ba9e-4416-857d-24237f4daf67}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Logic">
+      <UniqueIdentifier>{aa65aac0-0011-4418-acb8-b4f72df9ba25}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Ini">
+      <UniqueIdentifier>{08744f75-03d2-46be-bc11-8e578882cd06}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Position">
+      <UniqueIdentifier>{8e1be9ad-62f0-41c4-9e86-7e826e445e8a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Time">
+      <UniqueIdentifier>{958172e1-0064-4874-81f1-521a22b7d950}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Render">
+      <UniqueIdentifier>{52e3ff53-5f40-4d5f-803d-c8e3acbfb5ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Render\Color">
+      <UniqueIdentifier>{0847696d-cf19-4511-b55c-05f1fa41c034}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Render\Lighting">
+      <UniqueIdentifier>{3b2d0703-db5b-4a3a-ba23-0249b89afde0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Sound">
+      <UniqueIdentifier>{0040e232-5328-41e8-9583-c7fda3776428}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Speech">
+      <UniqueIdentifier>{67b26b3e-4694-48de-a600-434a1b11d8b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\State">
+      <UniqueIdentifier>{28c2efb1-fa60-4a62-b3fb-46903a66adf0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GUI">
+      <UniqueIdentifier>{3ab4b2fc-65ac-48aa-bb23-0463d30884ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GUI\ContextMenus">
+      <UniqueIdentifier>{b64150cb-1b79-4325-b14a-d331710eac72}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GUI\Description Boxes">
+      <UniqueIdentifier>{8e38b703-2287-4a12-bab8-c930942c1308}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GUI\Status Screen">
+      <UniqueIdentifier>{d48822b2-9ae0-4ee0-b7fe-6bea9555eac1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Helper">
+      <UniqueIdentifier>{269d1f80-81d2-482d-893c-dfda6d31a959}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Input">
+      <UniqueIdentifier>{99300fe0-fa8f-488e-8783-158595253e34}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Ini">
+      <UniqueIdentifier>{5e1fd991-58e4-4afc-bc83-77d0724009a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Position">
+      <UniqueIdentifier>{502175c1-0fbf-4f6b-b23d-3e1c165a09b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Time">
+      <UniqueIdentifier>{42ea9f92-6b43-45bc-be88-e1d74eed9904}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Logic">
+      <UniqueIdentifier>{6403e389-2427-478a-9ed1-2e7431d8df36}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Render">
+      <UniqueIdentifier>{15d98e68-259c-4e12-a6af-e68ffb0dea67}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Render\Color">
+      <UniqueIdentifier>{a21623e9-1424-4130-8564-ced45aaecab6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Render\Lighting">
+      <UniqueIdentifier>{b99934d4-8467-402e-8619-a470fd51ff2c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Sound">
+      <UniqueIdentifier>{3ba79d1c-3516-4398-9629-abc6ee92e444}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Speech">
+      <UniqueIdentifier>{d3f8890c-1054-432d-9690-f6669cbd8b5b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\State">
+      <UniqueIdentifier>{4fffd952-579f-41fc-8769-4c667a97ef56}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Environment">
+      <UniqueIdentifier>{3389431f-dda3-43e1-b5a0-c1306c80bb74}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Environment">
+      <UniqueIdentifier>{e84325c0-81f3-4fbd-9d09-90ee53448470}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Serialization">
+      <UniqueIdentifier>{3c4fb6d2-7419-47af-99c1-074f38530e0f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Serialization">
+      <UniqueIdentifier>{3be4b79c-f407-45cc-8b0d-561a7fc1f4ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Serialization\Scribe">
+      <UniqueIdentifier>{7f5955cb-0cdd-4eb1-8c74-a6bbec398a13}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Serialization\Scribe">
+      <UniqueIdentifier>{7d048478-7a07-4338-a0cc-aa20e957a416}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Entities">
+      <UniqueIdentifier>{fb6b57fb-80b5-434b-91d3-f9912ea9f605}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Entities">
+      <UniqueIdentifier>{05d52b45-c9f5-47ab-895d-af56ebab25a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Entities\Components">
+      <UniqueIdentifier>{44b016f2-25dd-4a06-948b-c2fc9cfd8618}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Entities\Components">
+      <UniqueIdentifier>{d3c0fea4-1e46-4199-af57-1c1d3869854b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Entities\Components\Characters">
+      <UniqueIdentifier>{18d2eded-29ca-4870-9d94-76e5a663a451}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Entities\Components\Characters">
+      <UniqueIdentifier>{486d80d3-e933-484f-bb48-1faf15e0fc9e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Entities\Components\Movement">
+      <UniqueIdentifier>{a1058599-1c26-4434-87dc-79de6b4e31cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Entities\Components\Movement">
+      <UniqueIdentifier>{da4f58cd-9193-4e51-8da7-cac0357fb647}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Render\Shader">
+      <UniqueIdentifier>{38b3712a-8116-4bc4-94be-3b060b200fc9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Render\Shader">
+      <UniqueIdentifier>{63694862-f549-42f7-8e9e-0689ad1e4889}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Action">
+      <UniqueIdentifier>{5373e164-296a-48ac-9fd2-2bc8f4e99eb0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Action">
+      <UniqueIdentifier>{5e4bb58b-233b-41e4-86e9-65808238d09a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Render\Canvas">
+      <UniqueIdentifier>{23d45b18-d542-40bf-8eaa-bffdb2cb6506}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Entities\Components\General">
+      <UniqueIdentifier>{3217040b-07d0-4aaa-acc2-fa5d8fdb4040}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Entities\Components\General">
+      <UniqueIdentifier>{a44e6e79-6a94-4075-a7d5-47d258c869ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Entities\Systems">
+      <UniqueIdentifier>{aa40266a-e180-4c3b-b4a8-0ac2edb5aabc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Entities\Systems">
+      <UniqueIdentifier>{5dd13e0f-ab59-4397-825b-335831f0a430}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Entities\Components\Actions">
+      <UniqueIdentifier>{263a6048-8152-44fb-b469-3c26d003da2b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Entities\Components\Actions">
+      <UniqueIdentifier>{3192fb68-6c33-47e1-bf64-2282fdd4876c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Entities\Components\Battle">
+      <UniqueIdentifier>{f3f039d8-10c7-4bdc-8cb6-d3c46f8bf6c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Entities\Components\Battle">
+      <UniqueIdentifier>{6e5fff0c-ce16-41e6-a7f5-42066fb1cf1d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\File System">
+      <UniqueIdentifier>{319dc3b7-a4d3-4243-a2a8-0d229a4f6ab6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\State\Battle">
+      <UniqueIdentifier>{e76e2efe-4bc7-45fa-84b0-efb3470a31da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\State\Battle">
+      <UniqueIdentifier>{1ee36d0e-a89b-4848-b7b9-02c740964dbc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\File System">
+      <UniqueIdentifier>{70640439-c7dc-4f77-8805-7194c8f9047f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Game Data">
+      <UniqueIdentifier>{f8bb0ee4-de8f-4d14-9afa-55445dce0d27}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Game Data\Animation">
+      <UniqueIdentifier>{1fb5591a-329e-4b91-bee3-7cec76593b7b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Game Data\Movement">
+      <UniqueIdentifier>{44812a3a-6691-41e5-93c4-12fc2b3e408e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Game Data">
+      <UniqueIdentifier>{5a080eaa-7d96-423e-b3cb-49875a7ecccb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Game Data\Animation">
+      <UniqueIdentifier>{da3a823a-fd79-4053-a8a9-48171fc25efc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Game Data\Movement">
+      <UniqueIdentifier>{454464b4-f1e2-4947-a9fa-bfd83bbf804b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Game Data\Attributes">
+      <UniqueIdentifier>{2533610a-fd6b-4b97-ae03-38fdac11463a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Game Data\Attributes">
+      <UniqueIdentifier>{09efca32-2611-45ca-a2de-c1c4b14ad532}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\World">
+      <UniqueIdentifier>{4fb2003e-b494-4c96-a9d0-cd8eeee46466}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\World\Field">
+      <UniqueIdentifier>{f293d851-634a-4302-99aa-be00858d178a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\World">
+      <UniqueIdentifier>{50980618-27e4-402a-a131-5457f27a6904}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\World\Field">
+      <UniqueIdentifier>{4ea0e384-4f86-4eec-acfb-752af8350217}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Game Data\Combat">
+      <UniqueIdentifier>{efced4a6-15ec-449c-a0be-09a38e743dc8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Game Data\Combat">
+      <UniqueIdentifier>{70c202f2-45a9-4a24-8700-667d5c7b8d3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Registry Objects">
+      <UniqueIdentifier>{fd96fa3f-0b76-430c-bfcb-f53b902d0512}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Registry Objects\Item">
+      <UniqueIdentifier>{5af42f18-5ed3-428c-8450-7a18dbe2bbcb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Registry Objects\Item\Types">
+      <UniqueIdentifier>{989166e7-c0e6-4553-9111-1be248c6a34b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Registry Objects\Item\Types\Equipment">
+      <UniqueIdentifier>{ff7cf526-70c1-4bf6-acdf-b939321291b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Registry Objects\Item\Types\Equipment\Ammo">
+      <UniqueIdentifier>{08be4b03-61bf-43cd-856d-c17abd7057ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Registry Objects\Item\Types\Equipment\Weapon">
+      <UniqueIdentifier>{386298ff-d5ab-4f50-b35b-2419ece4e3e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Registry Objects\Item\Types\Consumables">
+      <UniqueIdentifier>{e1e1fb26-9c63-4c2d-8d2a-bdb75e712e8a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Registry Objects\Spell">
+      <UniqueIdentifier>{b4976a85-be05-463f-8992-ae37c388ea59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Registry Objects\StatusEffect">
+      <UniqueIdentifier>{86aa9798-9fcf-4477-a305-c5d76cad7a87}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Registry Objects\Character Class">
+      <UniqueIdentifier>{783ed53d-c212-48e4-b2be-7bb08efb1bb7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Registry Objects\Abilities">
+      <UniqueIdentifier>{ed36f594-7d25-4d8e-9432-90a6e7cdb392}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Registry Objects\Quests">
+      <UniqueIdentifier>{7d0f61e2-30ac-4c9c-97c8-7ff56f113d28}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Modulators">
+      <UniqueIdentifier>{673d0497-a6cc-4038-9f68-0195f133a69c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Modulators">
+      <UniqueIdentifier>{594661d8-e3f5-40bf-abc1-2c5f027d8480}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Tile">
+      <UniqueIdentifier>{03e08cf4-496a-4af0-8620-7c590ccf3305}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Tile">
+      <UniqueIdentifier>{c9671fee-8858-4697-97ab-c8ebcdb0118d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Entities\Components\Sense">
+      <UniqueIdentifier>{c92b5c86-b85d-47dc-b221-5b1d1917c909}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Entities\Components\Sense">
+      <UniqueIdentifier>{fd1fff55-4c59-421c-bb5c-45fb12f6d34c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Senses">
+      <UniqueIdentifier>{6a04c03d-c544-4be1-8dd3-1073d614040e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Senses">
+      <UniqueIdentifier>{a91e0e25-df1d-4803-aecd-948540fc9fc8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Registry Objects">
+      <UniqueIdentifier>{25b4633d-9c60-4b1b-aec9-5b647f7d15d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Registry Objects\Item">
+      <UniqueIdentifier>{303ffe23-8dbe-4c90-992d-49b15d2ea343}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Registry Objects\Item\Type">
+      <UniqueIdentifier>{7b181ade-76b5-403e-8110-2c10bc164774}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Registry Objects\Item\Type\Equipment">
+      <UniqueIdentifier>{3ad5e126-6ecb-4e50-a941-72c78bad8107}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Registry Objects\Item\Type\Equipment\Ammo">
+      <UniqueIdentifier>{4a956d71-0188-43db-b87e-38b2b061fbed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Registry Objects\Item\Type\Equipment\Weapon">
+      <UniqueIdentifier>{81552b18-c770-49e7-a1f2-c291b8a96718}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Registry Objects\Item\Type\Consumables">
+      <UniqueIdentifier>{63f337e4-b572-44a4-bf85-3064603ccb1c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Registry Objects\Spells">
+      <UniqueIdentifier>{5eeb41c7-4229-4734-8f8f-60f154f823bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Registry Objects\StatusEffect">
+      <UniqueIdentifier>{c6706985-e9f3-45a2-84b7-67e37072d392}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Registry Objects\Character Class">
+      <UniqueIdentifier>{168ef56c-bec4-4236-9601-522f0d64f7ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Registry Objects\Abilities">
+      <UniqueIdentifier>{33dab41b-e598-4724-8ddd-97c82bb59cdb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Registry Objects\Quests">
+      <UniqueIdentifier>{47d8a5b5-727a-416c-9f65-ee97a3b0671c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Assets">
+      <UniqueIdentifier>{158161a2-a3fb-4b88-96e3-24663ac25821}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Assets\Material">
+      <UniqueIdentifier>{98092466-b7ad-4a17-bd38-072c4078fa75}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Assets\Audio">
+      <UniqueIdentifier>{abf3f60e-a301-47d7-8391-d7398d4a6743}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Assets\Image">
+      <UniqueIdentifier>{61d3dfe8-913d-4b03-ac4a-28923ea29ba4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Assets\Shader">
+      <UniqueIdentifier>{ba076add-1f82-4836-b9a3-d2d52df14d10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Assets\Script">
+      <UniqueIdentifier>{db47804d-d412-44a8-b8c7-910659d6edba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Assets">
+      <UniqueIdentifier>{84d21b76-f4c9-4c71-827f-9e3e8af80664}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Assets\Material">
+      <UniqueIdentifier>{36f8aff9-b4d8-48e5-969a-63374752e155}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Assets\Audio">
+      <UniqueIdentifier>{a4825785-5055-44e3-8bda-047dab740f9a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Assets\Image">
+      <UniqueIdentifier>{aa05f55d-413e-4708-b2dd-dc657ea531ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Assets\Shader">
+      <UniqueIdentifier>{e20c75b3-5400-4448-9f12-12571feb6e9d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Assets\Script">
+      <UniqueIdentifier>{c23d82df-cd73-463f-a3c9-3b932bf382b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Exceptions">
+      <UniqueIdentifier>{f4b4a3e6-2382-4292-9edb-818241f6080e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Exceptions">
+      <UniqueIdentifier>{aa0c0163-ab17-4a3a-b00a-610d82060f65}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Battle.h">
+      <Filter>Header Files\State\Battle</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation.h">
+      <Filter>Header Files\Game Data\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Element.h">
+      <Filter>Header Files\Game Data\Combat</Filter>
+    </ClInclude>
+    <ClInclude Include="Field.h">
+      <Filter>Header Files\World\Field</Filter>
+    </ClInclude>
+    <ClInclude Include="FieldDestination.h">
+      <Filter>Header Files\World\Field</Filter>
+    </ClInclude>
+    <ClInclude Include="Ammo.h">
+      <Filter>Header Files\Registry Objects\Item\Type\Equipment\Ammo</Filter>
+    </ClInclude>
+    <ClInclude Include="ProjectileWeapon.h">
+      <Filter>Header Files\Registry Objects\Item\Type\Equipment\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="Weapon.h">
+      <Filter>Header Files\Registry Objects\Item\Type\Equipment\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="Equippable.h">
+      <Filter>Header Files\Registry Objects\Item\Type\Equipment</Filter>
+    </ClInclude>
+    <ClInclude Include="EquipSlot.h">
+      <Filter>Header Files\Registry Objects\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemDrop.h">
+      <Filter>Header Files\Registry Objects\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="Movement.h">
+      <Filter>Header Files\Game Data\Movement</Filter>
+    </ClInclude>
+    <ClInclude Include="SpellList.h">
+      <Filter>Header Files\Registry Objects\Spells</Filter>
+    </ClInclude>
+    <ClInclude Include="Tile.h">
+      <Filter>Header Files\Tile</Filter>
+    </ClInclude>
+    <ClInclude Include="TileHandler.h">
+      <Filter>Header Files\Tile</Filter>
+    </ClInclude>
+    <ClInclude Include="ContextMenu.h">
+      <Filter>Header Files\GUI\ContextMenus</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemContextMenu.h">
+      <Filter>Header Files\GUI\ContextMenus</Filter>
+    </ClInclude>
+    <ClInclude Include="SpellContextMenu.h">
+      <Filter>Header Files\GUI\ContextMenus</Filter>
+    </ClInclude>
+    <ClInclude Include="DescriptionBox.h">
+      <Filter>Header Files\GUI\DescriptionBoxes</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemDescriptionBox.h">
+      <Filter>Header Files\GUI\DescriptionBoxes</Filter>
+    </ClInclude>
+    <ClInclude Include="SpellDescriptionBox.h">
+      <Filter>Header Files\GUI\DescriptionBoxes</Filter>
+    </ClInclude>
+    <ClInclude Include="StatusScreen.h">
+      <Filter>Header Files\GUI\StatusScreen</Filter>
+    </ClInclude>
+    <ClInclude Include="Cursor.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="FontDefines.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GameDialog.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectMenu.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="WidgetSetups.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="BinaryHeap.h">
+      <Filter>Header Files\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="Bind.h">
+      <Filter>Header Files\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="BoundedNumber.h">
+      <Filter>Header Files\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="Flags.h">
+      <Filter>Header Files\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="Function.h">
+      <Filter>Header Files\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="Helper.h">
+      <Filter>Header Files\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="Math.h">
+      <Filter>Header Files\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="RandomAccessSequence.h">
+      <Filter>Header Files\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="Range.h">
+      <Filter>Header Files\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="Ratio.h">
+      <Filter>Header Files\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="InputDefines.h">
+      <Filter>Header Files\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Direction.h">
+      <Filter>Header Files\Position</Filter>
+    </ClInclude>
+    <ClInclude Include="FPS.h">
+      <Filter>Header Files\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic.h">
+      <Filter>Header Files\Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="Color.h">
+      <Filter>Header Files\Render\Color</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Render.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Speech.h">
+      <Filter>Header Files\Speech</Filter>
+    </ClInclude>
+    <ClInclude Include="State.h">
+      <Filter>Header Files\State</Filter>
+    </ClInclude>
+    <ClInclude Include="StateGui.h">
+      <Filter>Header Files\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Event.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Patterns.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Price.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Random.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RangePattern.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Environment.h">
+      <Filter>Header Files\Environment</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows.h">
+      <Filter>Header Files\Environment</Filter>
+    </ClInclude>
+    <ClInclude Include="FieldID.h">
+      <Filter>Header Files\World\Field</Filter>
+    </ClInclude>
+    <ClInclude Include="SimpleFile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Serialization.h">
+      <Filter>Header Files\Serialization</Filter>
+    </ClInclude>
+    <ClInclude Include="SkipFileHelper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Consumable.h">
+      <Filter>Header Files\Registry Objects\Item\Type\Consumables</Filter>
+    </ClInclude>
+    <ClInclude Include="ConsumableBase.h">
+      <Filter>Header Files\Registry Objects\Item\Type\Consumables</Filter>
+    </ClInclude>
+    <ClInclude Include="Scroll.h">
+      <Filter>Header Files\Registry Objects\Item\Type\Consumables</Filter>
+    </ClInclude>
+    <ClInclude Include="Shop.h">
+      <Filter>Header Files\Speech</Filter>
+    </ClInclude>
+    <ClInclude Include="SpeechUtility.h">
+      <Filter>Header Files\Speech</Filter>
+    </ClInclude>
+    <ClInclude Include="FrameTimer.h">
+      <Filter>Header Files\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="RealTimer.h">
+      <Filter>Header Files\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="ExtendedTimer.h">
+      <Filter>Header Files\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="UnpackTuple.h">
+      <Filter>Header Files\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="AccessAdapter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Singleton.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WorldScribe.h">
+      <Filter>Header Files\Serialization\Scribe</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowsInclude.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Error.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="String.h">
+      <Filter>Header Files\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="Enum.h">
+      <Filter>Header Files\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="UniqueStack.h">
+      <Filter>Header Files\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="NumericLimits.h">
+      <Filter>Header Files\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundHandler.h">
+      <Filter>Header Files\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="MasterSoundHandler.h">
+      <Filter>Header Files\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="IDSequencer.h">
+      <Filter>Header Files\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="Buffer.h">
+      <Filter>Header Files\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="DXAudio.h">
+      <Filter>Header Files\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="DXGraphics.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicsHandlerBase.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioHandlerBase.h">
+      <Filter>Header Files\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity.h">
+      <Filter>Header Files\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentTypeName.h">
+      <Filter>Header Files\Entities\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentFactoryHandler.h">
+      <Filter>Header Files\Entities\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="DialogueComponent.h">
+      <Filter>Header Files\Entities\Components\Characters</Filter>
+    </ClInclude>
+    <ClInclude Include="CharacterComponent.h">
+      <Filter>Header Files\Entities\Components\Characters</Filter>
+    </ClInclude>
+    <ClInclude Include="Currency.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EntitySystem.h">
+      <Filter>Header Files\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="MovementComponent.h">
+      <Filter>Header Files\Entities\Components\Movement</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Header Files\Render\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderFragment.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderFragmentHandler.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="CombatComponent.h">
+      <Filter>Header Files\Entities\Components\Characters</Filter>
+    </ClInclude>
+    <ClInclude Include="Action.h">
+      <Filter>Header Files\Action</Filter>
+    </ClInclude>
+    <ClInclude Include="ActionFunctions.h">
+      <Filter>Header Files\Action</Filter>
+    </ClInclude>
+    <ClInclude Include="IDManager.h">
+      <Filter>Header Files\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="InventoryGui.h">
+      <Filter>Header Files\Registry Objects\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityComponent.h">
+      <Filter>Header Files\Entities\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="AIComponent.h">
+      <Filter>Header Files\Entities\Components\Characters</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityComponentPackage.h">
+      <Filter>Header Files\Entities\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectMenuTraits.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Fraction.h">
+      <Filter>Header Files\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="FieldComponent.h">
+      <Filter>Header Files\World\Field</Filter>
+    </ClInclude>
+    <ClInclude Include="CanvasView.h">
+      <Filter>Header Files\Render\Canvas</Filter>
+    </ClInclude>
+    <ClInclude Include="Canvas.h">
+      <Filter>Header Files\Render\Canvas</Filter>
+    </ClInclude>
+    <ClInclude Include="Optional.h">
+      <Filter>Header Files\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="CharacterClassGroup.h">
+      <Filter>Header Files\Registry Objects\Character Class</Filter>
+    </ClInclude>
+    <ClInclude Include="EquipRegion.h">
+      <Filter>Header Files\Registry Objects\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="AguiSpriteFactory.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneralComponent.h">
+      <Filter>Header Files\Entities\Components\General</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerParty.h">
+      <Filter>Header Files\Entities\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityAISystem.h">
+      <Filter>Header Files\Entities\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityNameSystem.h">
+      <Filter>Header Files\Entities\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityPositionSystem.h">
+      <Filter>Header Files\Entities\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="AvatarSystem.h">
+      <Filter>Header Files\Entities\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityComponentMap.h">
+      <Filter>Header Files\Entities\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityComponentBase.h">
+      <Filter>Header Files\Entities\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="CurrentField.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Script.h">
+      <Filter>Header Files\Assets\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="ActionComponent.h">
+      <Filter>Header Files\Entities\Components\Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="ActionParameter.h">
+      <Filter>Header Files\Action</Filter>
+    </ClInclude>
+    <ClInclude Include="ActionID.h">
+      <Filter>Header Files\Action</Filter>
+    </ClInclude>
+    <ClInclude Include="BattleCharacter.h">
+      <Filter>Header Files\State\Battle</Filter>
+    </ClInclude>
+    <ClInclude Include="BattleActionManager.h">
+      <Filter>Header Files\State\Battle</Filter>
+    </ClInclude>
+    <ClInclude Include="BattleActionPlacement.h">
+      <Filter>Header Files\State\Battle</Filter>
+    </ClInclude>
+    <ClInclude Include="BattleActionAttack.h">
+      <Filter>Header Files\State\Battle</Filter>
+    </ClInclude>
+    <ClInclude Include="BattleActionMovement.h">
+      <Filter>Header Files\State\Battle</Filter>
+    </ClInclude>
+    <ClInclude Include="StasisScribe.h">
+      <Filter>Header Files\Serialization\Scribe</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityUtility.h">
+      <Filter>Header Files\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="BattleComponent.h">
+      <Filter>Header Files\Entities\Components\Battle</Filter>
+    </ClInclude>
+    <ClInclude Include="BattlePattern.h">
+      <Filter>Header Files\State\Battle</Filter>
+    </ClInclude>
+    <ClInclude Include="FilePath.h">
+      <Filter>Header Files\File System</Filter>
+    </ClInclude>
+    <ClInclude Include="ActionTraits.h">
+      <Filter>Header Files\Action</Filter>
+    </ClInclude>
+    <ClInclude Include="Music.h">
+      <Filter>Header Files\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="Volume.h">
+      <Filter>Header Files\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="ScribeBase.h">
+      <Filter>Header Files\Serialization\Scribe</Filter>
+    </ClInclude>
+    <ClInclude Include="FileSystem.h">
+      <Filter>Header Files\File System</Filter>
+    </ClInclude>
+    <ClInclude Include="FileSystemWindows.h">
+      <Filter>Header Files\File System</Filter>
+    </ClInclude>
+    <ClInclude Include="Debug.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="CancelMenu.h">
+      <Filter>Header Files\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Controls.h">
+      <Filter>Header Files\State</Filter>
+    </ClInclude>
+    <ClInclude Include="MainGame.h">
+      <Filter>Header Files\State</Filter>
+    </ClInclude>
+    <ClInclude Include="MainMenu.h">
+      <Filter>Header Files\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Options.h">
+      <Filter>Header Files\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Pathfinding.h">
+      <Filter>Header Files\Position</Filter>
+    </ClInclude>
+    <ClInclude Include="AvatarComponent.h">
+      <Filter>Header Files\Entities\Components\Characters</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityManager.h">
+      <Filter>Header Files\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityReference.h">
+      <Filter>Header Files\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="MousePosition.h">
+      <Filter>Header Files\Position</Filter>
+    </ClInclude>
+    <ClInclude Include="StateManager.h">
+      <Filter>Header Files\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Spellbook.h">
+      <Filter>Header Files\Registry Objects\Spells</Filter>
+    </ClInclude>
+    <ClInclude Include="NullGraphics.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="NullAudio.h">
+      <Filter>Header Files\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="TimerBase.h">
+      <Filter>Header Files\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeHandler.h">
+      <Filter>Header Files\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="Assert.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="InputHandlerBase.h">
+      <Filter>Header Files\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowsInput.h">
+      <Filter>Header Files\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Input.h">
+      <Filter>Header Files\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="InputAction.h">
+      <Filter>Header Files\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>Header Files\Assets\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="LightSource.h">
+      <Filter>Header Files\Render\Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectionalLight.h">
+      <Filter>Header Files\Render\Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="PointLight.h">
+      <Filter>Header Files\Render\Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="Spotlight.h">
+      <Filter>Header Files\Render\Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="LightingHandler.h">
+      <Filter>Header Files\Render\Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="Position3D.h">
+      <Filter>Header Files\Position</Filter>
+    </ClInclude>
+    <ClInclude Include="Position2D.h">
+      <Filter>Header Files\Position</Filter>
+    </ClInclude>
+    <ClInclude Include="AxisBoundingBox2D.h">
+      <Filter>Header Files\Position</Filter>
+    </ClInclude>
+    <ClInclude Include="AxisBoundingBox3D.h">
+      <Filter>Header Files\Position</Filter>
+    </ClInclude>
+    <ClInclude Include="LightFragment.h">
+      <Filter>Header Files\Render\Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="LineRender.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Line2D.h">
+      <Filter>Header Files\Position</Filter>
+    </ClInclude>
+    <ClInclude Include="Angle.h">
+      <Filter>Header Files\Position</Filter>
+    </ClInclude>
+    <ClInclude Include="Line3D.h">
+      <Filter>Header Files\Position</Filter>
+    </ClInclude>
+    <ClInclude Include="Join.h">
+      <Filter>Header Files\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector3D.h">
+      <Filter>Header Files\Position</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector2D.h">
+      <Filter>Header Files\Position</Filter>
+    </ClInclude>
+    <ClInclude Include="GridPosition.h">
+      <Filter>Header Files\Position</Filter>
+    </ClInclude>
+    <ClInclude Include="ApproximateLighting.h">
+      <Filter>Header Files\Render\Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderFragmentGrid.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="GridSize.h">
+      <Filter>Header Files\Position</Filter>
+    </ClInclude>
+    <ClInclude Include="ConsumableAspect.h">
+      <Filter>Header Files\Registry Objects\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemAspect.h">
+      <Filter>Header Files\Registry Objects\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="EquippableAspect.h">
+      <Filter>Header Files\Registry Objects\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="OffsetMovement.h">
+      <Filter>Header Files\Game Data\Movement</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectHandle.h">
+      <Filter>Header Files\Game Data</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectOffsetHandle.h">
+      <Filter>Header Files\Game Data</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectOffset.h">
+      <Filter>Header Files\Game Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Particle.h">
+      <Filter>Header Files\Game Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Ability.h">
+      <Filter>Header Files\Registry Objects\Abilities</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemStack.h">
+      <Filter>Header Files\Registry Objects\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemRecipe.h">
+      <Filter>Header Files\Registry Objects\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="Quest.h">
+      <Filter>Header Files\Registry Objects\Quests</Filter>
+    </ClInclude>
+    <ClInclude Include="GroundItemHandler.h">
+      <Filter>Header Files\Registry Objects\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemStash.h">
+      <Filter>Header Files\Registry Objects\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="MaterialRegistry.h">
+      <Filter>Header Files\Assets\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="BitConcat.h">
+      <Filter>Header Files\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="Acumen.h">
+      <Filter>Header Files\Game Data\Attributes</Filter>
+    </ClInclude>
+    <ClInclude Include="FixedPoint.h">
+      <Filter>Header Files\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="Defense.h">
+      <Filter>Header Files\Game Data\Combat</Filter>
+    </ClInclude>
+    <ClInclude Include="Proficiency.h">
+      <Filter>Header Files\Game Data\Attributes</Filter>
+    </ClInclude>
+    <ClInclude Include="Tag.h">
+      <Filter>Header Files\Game Data</Filter>
+    </ClInclude>
+    <ClInclude Include="OperatorSelector.h">
+      <Filter>Header Files\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="Overflow.h">
+      <Filter>Header Files\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="AbilityBase.h">
+      <Filter>Header Files\Registry Objects\Abilities</Filter>
+    </ClInclude>
+    <ClInclude Include="DataStandard.h">
+      <Filter>Header Files\Game Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Attribute.h">
+      <Filter>Header Files\Game Data\Attributes</Filter>
+    </ClInclude>
+    <ClInclude Include="Percentage.h">
+      <Filter>Header Files\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="GlobalContext.h">
+      <Filter>Header Files\Game Data</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceAttribute.h">
+      <Filter>Header Files\Game Data\Attributes</Filter>
+    </ClInclude>
+    <ClInclude Include="StatAttribute.h">
+      <Filter>Header Files\Game Data\Attributes</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioRegistry.h">
+      <Filter>Header Files\Assets\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageRegistry.h">
+      <Filter>Header Files\Assets\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderRegistry.h">
+      <Filter>Header Files\Assets\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Name.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CapCombatValue.h">
+      <Filter>Header Files\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="StatusEffectInstance.h">
+      <Filter>Header Files\Registry Objects\StatusEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptRegistry.h">
+      <Filter>Header Files\Assets\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptItem.h">
+      <Filter>Header Files\Assets\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptLoader.h">
+      <Filter>Header Files\Assets\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="CombatTransaction.h">
+      <Filter>Header Files\Game Data\Combat</Filter>
+    </ClInclude>
+    <ClInclude Include="CombatEffectiveness.h">
+      <Filter>Header Files\Game Data\Attributes</Filter>
+    </ClInclude>
+    <ClInclude Include="WorldStart.h">
+      <Filter>Header Files\World</Filter>
+    </ClInclude>
+    <ClInclude Include="WorldManager.h">
+      <Filter>Header Files\World</Filter>
+    </ClInclude>
+    <ClInclude Include="ActionSystem.h">
+      <Filter>Header Files\Entities\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="MovementRange.h">
+      <Filter>Header Files\Game Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Beam.h">
+      <Filter>Header Files\Game Data\Combat</Filter>
+    </ClInclude>
+    <ClInclude Include="RegistryObject.h">
+      <Filter>Header Files\Registry Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Registry.h">
+      <Filter>Header Files\Registry Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="CurrentMusic.h">
+      <Filter>Header Files\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="InventoryComponent.h">
+      <Filter>Header Files\Entities\Components\General</Filter>
+    </ClInclude>
+    <ClInclude Include="SenseComponent.h">
+      <Filter>Header Files\Entities\Components\Sense</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprite.h">
+      <Filter>Header Files\Senses</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundBase.h">
+      <Filter>Header Files\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound.h">
+      <Filter>Header Files\Senses</Filter>
+    </ClInclude>
+    <ClInclude Include="AVEffect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OffsetManagedList.h">
+      <Filter>Header Files\Game Data</Filter>
+    </ClInclude>
+    <ClInclude Include="NameValuePair.h">
+      <Filter>Header Files\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="StatusEffect.h">
+      <Filter>Header Files\Registry Objects\StatusEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="CharacterClass.h">
+      <Filter>Header Files\Registry Objects\Character Class</Filter>
+    </ClInclude>
+    <ClInclude Include="Item.h">
+      <Filter>Header Files\Registry Objects\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="RegistryObjectReference.h">
+      <Filter>Header Files\Registry Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="AttackRange.h">
+      <Filter>Header Files\Game Data\Combat</Filter>
+    </ClInclude>
+    <ClInclude Include="BattlePatternHolder.h">
+      <Filter>Header Files\Game Data\Combat</Filter>
+    </ClInclude>
+    <ClInclude Include="BattleActionAbility.h">
+      <Filter>Header Files\State\Battle</Filter>
+    </ClInclude>
+    <ClInclude Include="Scheduler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OrphanScripts.h">
+      <Filter>Header Files\Assets\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="DayCycle.h">
+      <Filter>Header Files\World</Filter>
+    </ClInclude>
+    <ClInclude Include="GameTimer.h">
+      <Filter>Header Files\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeValue.h">
+      <Filter>Header Files\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="LargeInteger.h">
+      <Filter>Header Files\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="StringUtility.h">
+      <Filter>Header Files\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="BoundedNumberWrap.h">
+      <Filter>Header Files\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="WrapMath.h">
+      <Filter>Header Files\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="Spell.h">
+      <Filter>Header Files\Registry Objects\Spells</Filter>
+    </ClInclude>
+    <ClInclude Include="FalconScriptUtility.h">
+      <Filter>Header Files\Assets\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="CombatChain.h">
+      <Filter>Header Files\Game Data\Combat</Filter>
+    </ClInclude>
+    <ClInclude Include="Asset.h">
+      <Filter>Header Files\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="AssetReference.h">
+      <Filter>Header Files\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioAsset.h">
+      <Filter>Header Files\Assets\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageAsset.h">
+      <Filter>Header Files\Assets\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="AssetRegistry.h">
+      <Filter>Header Files\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="AssetPackage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderAsset.h">
+      <Filter>Header Files\Assets\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="FileUtility.h">
+      <Filter>Header Files\File System</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderSurface.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="IntervalList.h">
+      <Filter>Header Files\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="Variant.h">
+      <Filter>Header Files\Game Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Size2D.h">
+      <Filter>Header Files\Position</Filter>
+    </ClInclude>
+    <ClInclude Include="Size3D.h">
+      <Filter>Header Files\Position</Filter>
+    </ClInclude>
+    <ClInclude Include="ScrubbedType.h">
+      <Filter>Header Files\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="Sense.h">
+      <Filter>Header Files\Senses</Filter>
+    </ClInclude>
+    <ClInclude Include="ModulatorGenerator.h">
+      <Filter>Header Files\Modulators</Filter>
+    </ClInclude>
+    <ClInclude Include="GameEnvironment.h">
+      <Filter>Header Files\Environment</Filter>
+    </ClInclude>
+    <ClInclude Include="Modulator.h">
+      <Filter>Header Files\Modulators</Filter>
+    </ClInclude>
+    <ClInclude Include="ModulatorTrack.h">
+      <Filter>Header Files\Modulators</Filter>
+    </ClInclude>
+    <ClInclude Include="ModulatorTrackNode.h">
+      <Filter>Header Files\Modulators</Filter>
+    </ClInclude>
+    <ClInclude Include="ModulatorController.h">
+      <Filter>Header Files\Modulators</Filter>
+    </ClInclude>
+    <ClInclude Include="ModulatorDelta.h">
+      <Filter>Header Files\Modulators</Filter>
+    </ClInclude>
+    <ClInclude Include="ModulatorGeneratorRoute.h">
+      <Filter>Header Files\Modulators</Filter>
+    </ClInclude>
+    <ClInclude Include="ModulatorObserver.h">
+      <Filter>Header Files\Modulators</Filter>
+    </ClInclude>
+    <ClInclude Include="ModulatorValue.h">
+      <Filter>Header Files\Modulators</Filter>
+    </ClInclude>
+    <ClInclude Include="IniManager.h">
+      <Filter>Header Files\Ini</Filter>
+    </ClInclude>
+    <ClInclude Include="DivideByZeroException.h">
+      <Filter>Header Files\Exceptions</Filter>
+    </ClInclude>
+    <ClInclude Include="InputException.h">
+      <Filter>Header Files\Exceptions</Filter>
+    </ClInclude>
+    <ClInclude Include="IniID.h">
+      <Filter>Header Files\Ini</Filter>
+    </ClInclude>
+    <ClInclude Include="IniTraits.h">
+      <Filter>Header Files\Ini</Filter>
+    </ClInclude>
+    <ClInclude Include="ModulatorDescribers.h">
+      <Filter>Header Files\Modulators</Filter>
+    </ClInclude>
+    <ClInclude Include="FunctionVariant.h">
+      <Filter>Header Files\Serialization</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptController.h">
+      <Filter>Header Files\Assets\Script</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Battle.cpp">
+      <Filter>Source Files\State\Battle</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation.cpp">
+      <Filter>Source Files\Game Data\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="Element.cpp">
+      <Filter>Source Files\Game Data\Combat</Filter>
+    </ClCompile>
+    <ClCompile Include="Field.cpp">
+      <Filter>Source Files\World\Field</Filter>
+    </ClCompile>
+    <ClCompile Include="FieldDestination.cpp">
+      <Filter>Source Files\World\Field</Filter>
+    </ClCompile>
+    <ClCompile Include="Weapon.cpp">
+      <Filter>Source Files\Registry Objects\Item\Types\Equipment\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="ProjectileWeapon.cpp">
+      <Filter>Source Files\Registry Objects\Item\Types\Equipment\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="ItemDrop.cpp">
+      <Filter>Source Files\Registry Objects\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="Movement.cpp">
+      <Filter>Source Files\Game Data\Movement</Filter>
+    </ClCompile>
+    <ClCompile Include="SpellList.cpp">
+      <Filter>Source Files\Registry Objects\Spell</Filter>
+    </ClCompile>
+    <ClCompile Include="Tile.cpp">
+      <Filter>Source Files\Tile</Filter>
+    </ClCompile>
+    <ClCompile Include="TileHandler.cpp">
+      <Filter>Source Files\Tile</Filter>
+    </ClCompile>
+    <ClCompile Include="ContextMenu.cpp">
+      <Filter>Source Files\GUI\ContextMenus</Filter>
+    </ClCompile>
+    <ClCompile Include="ItemContextMenu.cpp">
+      <Filter>Source Files\GUI\ContextMenus</Filter>
+    </ClCompile>
+    <ClCompile Include="SpellContextMenu.cpp">
+      <Filter>Source Files\GUI\ContextMenus</Filter>
+    </ClCompile>
+    <ClCompile Include="DescriptionBox.cpp">
+      <Filter>Source Files\GUI\Description Boxes</Filter>
+    </ClCompile>
+    <ClCompile Include="ItemDescriptionBox.cpp">
+      <Filter>Source Files\GUI\Description Boxes</Filter>
+    </ClCompile>
+    <ClCompile Include="SpellDescriptionBox.cpp">
+      <Filter>Source Files\GUI\Description Boxes</Filter>
+    </ClCompile>
+    <ClCompile Include="FontDefines.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GameDialog.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="WidgetSetups.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Direction.cpp">
+      <Filter>Source Files\Position</Filter>
+    </ClCompile>
+    <ClCompile Include="FPS.cpp">
+      <Filter>Source Files\Time</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic.cpp">
+      <Filter>Source Files\Logic</Filter>
+    </ClCompile>
+    <ClCompile Include="Color.cpp">
+      <Filter>Source Files\Render\Color</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Render.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Speech.cpp">
+      <Filter>Source Files\Speech</Filter>
+    </ClCompile>
+    <ClCompile Include="State.cpp">
+      <Filter>Source Files\State</Filter>
+    </ClCompile>
+    <ClCompile Include="StateGui.cpp">
+      <Filter>Source Files\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Event.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Patterns.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Random.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Environment.cpp">
+      <Filter>Source Files\Environment</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows.cpp">
+      <Filter>Source Files\Environment</Filter>
+    </ClCompile>
+    <ClCompile Include="SimpleFile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Scroll.cpp">
+      <Filter>Source Files\Registry Objects\Item\Types\Consumables</Filter>
+    </ClCompile>
+    <ClCompile Include="ConsumableBase.cpp">
+      <Filter>Source Files\Registry Objects\Item\Types\Consumables</Filter>
+    </ClCompile>
+    <ClCompile Include="Consumable.cpp">
+      <Filter>Source Files\Registry Objects\Item\Types\Consumables</Filter>
+    </ClCompile>
+    <ClCompile Include="Equippable.cpp">
+      <Filter>Source Files\Registry Objects\Item\Types\Equipment</Filter>
+    </ClCompile>
+    <ClCompile Include="Shop.cpp">
+      <Filter>Source Files\Speech</Filter>
+    </ClCompile>
+    <ClCompile Include="SpeechUtility.cpp">
+      <Filter>Source Files\Speech</Filter>
+    </ClCompile>
+    <ClCompile Include="FrameTimer.cpp">
+      <Filter>Source Files\Time</Filter>
+    </ClCompile>
+    <ClCompile Include="RealTimer.cpp">
+      <Filter>Source Files\Time</Filter>
+    </ClCompile>
+    <ClCompile Include="StatusScreen.cpp">
+      <Filter>Source Files\GUI\Status Screen</Filter>
+    </ClCompile>
+    <ClCompile Include="WorldScribe.cpp">
+      <Filter>Source Files\Serialization\Scribe</Filter>
+    </ClCompile>
+    <ClCompile Include="Error.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundHandler.cpp">
+      <Filter>Source Files\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="MasterSoundHandler.cpp">
+      <Filter>Source Files\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="DXAudio.cpp">
+      <Filter>Source Files\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="DXGraphics.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioHandlerBase.cpp">
+      <Filter>Source Files\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicsHandlerBase.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderSurface.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentFactoryHandler.cpp">
+      <Filter>Source Files\Entities\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="CharacterComponent.cpp">
+      <Filter>Source Files\Entities\Components\Characters</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>Source Files\Render\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderFragment.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderFragmentHandler.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="CombatComponent.cpp">
+      <Filter>Source Files\Entities\Components\Characters</Filter>
+    </ClCompile>
+    <ClCompile Include="Action.cpp">
+      <Filter>Source Files\Action</Filter>
+    </ClCompile>
+    <ClCompile Include="ActionFunctions.cpp">
+      <Filter>Source Files\Action</Filter>
+    </ClCompile>
+    <ClCompile Include="MovementComponent.cpp">
+      <Filter>Source Files\Entities\Components\Movement</Filter>
+    </ClCompile>
+    <ClCompile Include="InventoryGui.cpp">
+      <Filter>Source Files\Registry Objects\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="AIComponent.cpp">
+      <Filter>Source Files\Entities\Components\Characters</Filter>
+    </ClCompile>
+    <ClCompile Include="DialogueComponent.cpp">
+      <Filter>Source Files\Entities\Components\Characters</Filter>
+    </ClCompile>
+    <ClCompile Include="FieldComponent.cpp">
+      <Filter>Source Files\World\Field</Filter>
+    </ClCompile>
+    <ClCompile Include="Canvas.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="CanvasView.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="AVEffect.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CharacterClassGroup.cpp">
+      <Filter>Source Files\Registry Objects\Character Class</Filter>
+    </ClCompile>
+    <ClCompile Include="Buffer.cpp">
+      <Filter>Source Files\Helper</Filter>
+    </ClCompile>
+    <ClCompile Include="AguiSpriteFactory.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneralComponent.cpp">
+      <Filter>Source Files\Entities\Components\General</Filter>
+    </ClCompile>
+    <ClCompile Include="EntitySystem.cpp">
+      <Filter>Source Files\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="EntityPositionSystem.cpp">
+      <Filter>Source Files\Entities\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="EntityNameSystem.cpp">
+      <Filter>Source Files\Entities\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="EntityAISystem.cpp">
+      <Filter>Source Files\Entities\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerParty.cpp">
+      <Filter>Source Files\Entities\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="AvatarSystem.cpp">
+      <Filter>Source Files\Entities\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="EntityComponentBase.cpp">
+      <Filter>Source Files\Entities\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="CurrentField.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Script.cpp">
+      <Filter>Source Files\Assets\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="ActionComponent.cpp">
+      <Filter>Source Files\Entities\Components\Actions</Filter>
+    </ClCompile>
+    <ClCompile Include="ActionParameter.cpp">
+      <Filter>Source Files\Action</Filter>
+    </ClCompile>
+    <ClCompile Include="BattleCharacter.cpp">
+      <Filter>Source Files\State\Battle</Filter>
+    </ClCompile>
+    <ClCompile Include="BattleActionManager.cpp">
+      <Filter>Source Files\State\Battle</Filter>
+    </ClCompile>
+    <ClCompile Include="BattleActionAttack.cpp">
+      <Filter>Source Files\State\Battle</Filter>
+    </ClCompile>
+    <ClCompile Include="BattleActionMovement.cpp">
+      <Filter>Source Files\State\Battle</Filter>
+    </ClCompile>
+    <ClCompile Include="BattleActionPlacement.cpp">
+      <Filter>Source Files\State\Battle</Filter>
+    </ClCompile>
+    <ClCompile Include="StasisScribe.cpp">
+      <Filter>Source Files\Serialization\Scribe</Filter>
+    </ClCompile>
+    <ClCompile Include="BattleComponent.cpp">
+      <Filter>Source Files\Entities\Components\Battle</Filter>
+    </ClCompile>
+    <ClCompile Include="FilePath.cpp">
+      <Filter>Source Files\File System</Filter>
+    </ClCompile>
+    <ClCompile Include="FileUtility.cpp">
+      <Filter>Source Files\File System</Filter>
+    </ClCompile>
+    <ClCompile Include="Optional.cpp">
+      <Filter>Source Files\Helper</Filter>
+    </ClCompile>
+    <ClCompile Include="Music.cpp">
+      <Filter>Source Files\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="ScribeBase.cpp">
+      <Filter>Source Files\Serialization\Scribe</Filter>
+    </ClCompile>
+    <ClCompile Include="FileSystemWindows.cpp">
+      <Filter>Source Files\File System</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="CancelMenu.cpp">
+      <Filter>Source Files\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Controls.cpp">
+      <Filter>Source Files\State</Filter>
+    </ClCompile>
+    <ClCompile Include="MainGame.cpp">
+      <Filter>Source Files\State</Filter>
+    </ClCompile>
+    <ClCompile Include="MainMenu.cpp">
+      <Filter>Source Files\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Options.cpp">
+      <Filter>Source Files\State</Filter>
+    </ClCompile>
+    <ClCompile Include="FileSystem.cpp">
+      <Filter>Source Files\File System</Filter>
+    </ClCompile>
+    <ClCompile Include="Pathfinding.cpp">
+      <Filter>Source Files\Position</Filter>
+    </ClCompile>
+    <ClCompile Include="InputDefines.cpp">
+      <Filter>Source Files\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="AvatarComponent.cpp">
+      <Filter>Source Files\Entities\Components\Characters</Filter>
+    </ClCompile>
+    <ClCompile Include="EntityManager.cpp">
+      <Filter>Source Files\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="EntityReference.cpp">
+      <Filter>Source Files\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="MousePosition.cpp">
+      <Filter>Source Files\Position</Filter>
+    </ClCompile>
+    <ClCompile Include="StateManager.cpp">
+      <Filter>Source Files\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Spellbook.cpp">
+      <Filter>Source Files\Registry Objects\Spell</Filter>
+    </ClCompile>
+    <ClCompile Include="NullGraphics.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="NullAudio.cpp">
+      <Filter>Source Files\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="TimerBase.cpp">
+      <Filter>Source Files\Time</Filter>
+    </ClCompile>
+    <ClCompile Include="TimeHandler.cpp">
+      <Filter>Source Files\Time</Filter>
+    </ClCompile>
+    <ClCompile Include="WindowsInput.cpp">
+      <Filter>Source Files\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="InputHandlerBase.cpp">
+      <Filter>Source Files\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Input.cpp">
+      <Filter>Source Files\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="InputAction.cpp">
+      <Filter>Source Files\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Material.cpp">
+      <Filter>Source Files\Assets\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="LightSource.cpp">
+      <Filter>Source Files\Render\Lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectionalLight.cpp">
+      <Filter>Source Files\Render\Lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="PointLight.cpp">
+      <Filter>Source Files\Render\Lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="Spotlight.cpp">
+      <Filter>Source Files\Render\Lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="LightingHandler.cpp">
+      <Filter>Source Files\Render\Lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="Position2D.cpp">
+      <Filter>Source Files\Position</Filter>
+    </ClCompile>
+    <ClCompile Include="Position3D.cpp">
+      <Filter>Source Files\Position</Filter>
+    </ClCompile>
+    <ClCompile Include="AxisBoundingBox3D.cpp">
+      <Filter>Source Files\Position</Filter>
+    </ClCompile>
+    <ClCompile Include="AxisBoundingBox2D.cpp">
+      <Filter>Source Files\Position</Filter>
+    </ClCompile>
+    <ClCompile Include="LightFragment.cpp">
+      <Filter>Source Files\Render\Lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="LineRender.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Line2D.cpp">
+      <Filter>Source Files\Position</Filter>
+    </ClCompile>
+    <ClCompile Include="Angle.cpp">
+      <Filter>Source Files\Position</Filter>
+    </ClCompile>
+    <ClCompile Include="Line3D.cpp">
+      <Filter>Source Files\Position</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector3D.cpp">
+      <Filter>Source Files\Position</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector2D.cpp">
+      <Filter>Source Files\Position</Filter>
+    </ClCompile>
+    <ClCompile Include="GridPosition.cpp">
+      <Filter>Source Files\Position</Filter>
+    </ClCompile>
+    <ClCompile Include="ApproximateLighting.cpp">
+      <Filter>Source Files\Render\Lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderFragmentGrid.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="EquippableAspect.cpp">
+      <Filter>Source Files\Registry Objects\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="ConsumableAspect.cpp">
+      <Filter>Source Files\Registry Objects\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="Particle.cpp">
+      <Filter>Source Files\Registry Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Ability.cpp">
+      <Filter>Source Files\Registry Objects\Abilities</Filter>
+    </ClCompile>
+    <ClCompile Include="ItemStack.cpp">
+      <Filter>Source Files\Registry Objects\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="ItemRecipe.cpp">
+      <Filter>Source Files\Registry Objects\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="Quest.cpp">
+      <Filter>Source Files\Registry Objects\Quests</Filter>
+    </ClCompile>
+    <ClCompile Include="GroundItemHandler.cpp">
+      <Filter>Source Files\Registry Objects\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="MaterialRegistry.cpp">
+      <Filter>Source Files\Assets\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="Acumen.cpp">
+      <Filter>Source Files\Game Data\Attributes</Filter>
+    </ClCompile>
+    <ClCompile Include="Proficiency.cpp">
+      <Filter>Source Files\Game Data\Attributes</Filter>
+    </ClCompile>
+    <ClCompile Include="AbilityBase.cpp">
+      <Filter>Source Files\Registry Objects\Abilities</Filter>
+    </ClCompile>
+    <ClCompile Include="Percentage.cpp">
+      <Filter>Source Files\Helper</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceAttribute.cpp">
+      <Filter>Source Files\Game Data\Attributes</Filter>
+    </ClCompile>
+    <ClCompile Include="StatAttribute.cpp">
+      <Filter>Source Files\Game Data\Attributes</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioRegistry.cpp">
+      <Filter>Source Files\Assets\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageRegistry.cpp">
+      <Filter>Source Files\Assets\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderRegistry.cpp">
+      <Filter>Source Files\Assets\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="CapCombatValue.cpp">
+      <Filter>Source Files\Helper</Filter>
+    </ClCompile>
+    <ClCompile Include="StatusEffectInstance.cpp">
+      <Filter>Source Files\Registry Objects\StatusEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptRegistry.cpp">
+      <Filter>Source Files\Assets\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptLoader.cpp">
+      <Filter>Source Files\Assets\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="CombatTransaction.cpp">
+      <Filter>Source Files\Game Data\Combat</Filter>
+    </ClCompile>
+    <ClCompile Include="CombatEffectiveness.cpp">
+      <Filter>Source Files\Game Data\Attributes</Filter>
+    </ClCompile>
+    <ClCompile Include="WorldStart.cpp">
+      <Filter>Source Files\World</Filter>
+    </ClCompile>
+    <ClCompile Include="WorldManager.cpp">
+      <Filter>Source Files\World</Filter>
+    </ClCompile>
+    <ClCompile Include="ActionSystem.cpp">
+      <Filter>Source Files\Entities\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="Beam.cpp">
+      <Filter>Source Files\Game Data\Combat</Filter>
+    </ClCompile>
+    <ClCompile Include="RegistryObject.cpp">
+      <Filter>Source Files\Registry Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="CurrentMusic.cpp">
+      <Filter>Source Files\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="InventoryComponent.cpp">
+      <Filter>Source Files\Entities\Components\General</Filter>
+    </ClCompile>
+    <ClCompile Include="SenseComponent.cpp">
+      <Filter>Source Files\Entities\Components\Sense</Filter>
+    </ClCompile>
+    <ClCompile Include="Sprite.cpp">
+      <Filter>Source Files\Senses</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundBase.cpp">
+      <Filter>Source Files\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="Sound.cpp">
+      <Filter>Source Files\Senses</Filter>
+    </ClCompile>
+    <ClCompile Include="NameValuePair.cpp">
+      <Filter>Source Files\Helper</Filter>
+    </ClCompile>
+    <ClCompile Include="StatusEffect.cpp">
+      <Filter>Source Files\Registry Objects\StatusEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="CharacterClass.cpp">
+      <Filter>Source Files\Registry Objects\Character Class</Filter>
+    </ClCompile>
+    <ClCompile Include="Item.cpp">
+      <Filter>Source Files\Registry Objects\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="BattlePatternHolder.cpp">
+      <Filter>Source Files\Game Data\Combat</Filter>
+    </ClCompile>
+    <ClCompile Include="BattleActionAbility.cpp">
+      <Filter>Source Files\State\Battle</Filter>
+    </ClCompile>
+    <ClCompile Include="GlobalContext.cpp">
+      <Filter>Source Files\Game Data</Filter>
+    </ClCompile>
+    <ClCompile Include="DataStandard.cpp">
+      <Filter>Source Files\Game Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Scheduler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="OrphanScripts.cpp">
+      <Filter>Source Files\Assets\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="DayCycle.cpp">
+      <Filter>Source Files\World</Filter>
+    </ClCompile>
+    <ClCompile Include="GameTimer.cpp">
+      <Filter>Source Files\Time</Filter>
+    </ClCompile>
+    <ClCompile Include="LargeInteger.cpp">
+      <Filter>Source Files\Helper</Filter>
+    </ClCompile>
+    <ClCompile Include="StringUtility.cpp">
+      <Filter>Source Files\Helper</Filter>
+    </ClCompile>
+    <ClCompile Include="Spell.cpp">
+      <Filter>Source Files\Registry Objects\Spell</Filter>
+    </ClCompile>
+    <ClCompile Include="FalconScriptUtility.cpp">
+      <Filter>Source Files\Assets\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="CombatChain.cpp">
+      <Filter>Source Files\Game Data\Combat</Filter>
+    </ClCompile>
+    <ClCompile Include="Asset.cpp">
+      <Filter>Source Files\Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioAsset.cpp">
+      <Filter>Source Files\Assets\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageAsset.cpp">
+      <Filter>Source Files\Assets\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="AssetPackage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderAsset.cpp">
+      <Filter>Source Files\Assets\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Entity.cpp">
+      <Filter>Source Files\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Variant.cpp">
+      <Filter>Source Files\Game Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Size2D.cpp">
+      <Filter>Source Files\Position</Filter>
+    </ClCompile>
+    <ClCompile Include="Size3D.cpp">
+      <Filter>Source Files\Position</Filter>
+    </ClCompile>
+    <ClCompile Include="Sense.cpp">
+      <Filter>Source Files\Senses</Filter>
+    </ClCompile>
+    <ClCompile Include="TimeValue.cpp">
+      <Filter>Source Files\Time</Filter>
+    </ClCompile>
+    <ClCompile Include="FixedPoint.cpp">
+      <Filter>Source Files\Helper</Filter>
+    </ClCompile>
+    <ClCompile Include="ModulatorGenerator.cpp">
+      <Filter>Source Files\Modulators</Filter>
+    </ClCompile>
+    <ClCompile Include="GameEnvironment.cpp">
+      <Filter>Source Files\Environment</Filter>
+    </ClCompile>
+    <ClCompile Include="Modulator.cpp">
+      <Filter>Source Files\Modulators</Filter>
+    </ClCompile>
+    <ClCompile Include="ModulatorTrack.cpp">
+      <Filter>Source Files\Modulators</Filter>
+    </ClCompile>
+    <ClCompile Include="ModulatorTrackNode.cpp">
+      <Filter>Source Files\Modulators</Filter>
+    </ClCompile>
+    <ClCompile Include="ModulatorController.cpp">
+      <Filter>Source Files\Modulators</Filter>
+    </ClCompile>
+    <ClCompile Include="ModulatorGeneratorRoute.cpp">
+      <Filter>Source Files\Modulators</Filter>
+    </ClCompile>
+    <ClCompile Include="ModulatorObserver.cpp">
+      <Filter>Source Files\Modulators</Filter>
+    </ClCompile>
+    <ClCompile Include="ModulatorValue.cpp">
+      <Filter>Source Files\Modulators</Filter>
+    </ClCompile>
+    <ClCompile Include="IniManager.cpp">
+      <Filter>Source Files\Ini</Filter>
+    </ClCompile>
+    <ClCompile Include="DivideByZeroException.cpp">
+      <Filter>Source Files\Exceptions</Filter>
+    </ClCompile>
+    <ClCompile Include="InputException.cpp">
+      <Filter>Source Files\Exceptions</Filter>
+    </ClCompile>
+    <ClCompile Include="IniTraits.cpp">
+      <Filter>Source Files\Ini</Filter>
+    </ClCompile>
+    <ClCompile Include="ModulatorDescribers.cpp">
+      <Filter>Source Files\Modulators</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptController.cpp">
+      <Filter>Source Files\Assets\Script</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,274 @@
+
+#include "FilePath.h"
+#include "StringUtility.h"
+#include <Inscription\Scribe.h>
+
+namespace Atmos
+{
+    const char *worldFolder = "Worlds";
+
+    FilePath::FilePath(const String &string) : value(string), extension(GetFileExtension(string))
+    {}
+
+    FilePath::FilePath(const char *buf) : value(buf), extension(GetFileExtension(buf))
+    {}
+
+    FilePath::FilePath(const FilePath &arg) : value(arg.value), extension(arg.extension)
+    {}
+
+    FilePath::FilePath(FilePath &&arg) : value(std::move(arg.value)), extension(std::move(arg.extension))
+    {}
+
+    FilePath& FilePath::operator=(const FilePath &arg)
+    {
+        value = arg.value;
+        extension = arg.extension;
+        return *this;
+    }
+
+    FilePath& FilePath::operator=(FilePath &&arg)
+    {
+        value = std::move(arg.value);
+        extension = std::move(arg.extension);
+        return *this;
+    }
+
+    bool FilePath::operator==(const FilePath &arg) const
+    {
+        return value == arg.value;
+    }
+
+    bool FilePath::operator!=(const FilePath &arg) const
+    {
+        return !(*this == arg);
+    }
+
+    FilePath::operator const String&()
+    {
+        return value;
+    }
+
+    FilePath::operator const char*()
+    {
+        return value.c_str();
+    }
+
+    const char* FilePath::c_str() const
+    {
+        return value.c_str();
+    }
+
+    void FilePath::Set(const String &set)
+    {
+        value = set;
+        extension = GetFileExtension(value);
+    }
+
+    void FilePath::SetName(const FileName &name)
+    {
+        auto found = value.find_last_of('\\');
+        if (found == value.npos)
+        {
+            value = name;
+            extension = GetFileExtension(value);
+            return;
+        }
+
+        value.replace(found + 1, value.npos, name);
+        extension = GetFileExtension(value);
+    }
+
+    void FilePath::SetExtension(const String &replace)
+    {
+        value = ReplaceFileExtension(value, replace);
+        extension = replace;
+    }
+
+    void FilePath::RemoveFileName()
+    {
+        value = ::Atmos::RemoveFileName(value);
+        extension = "";
+    }
+
+    void FilePath::RemoveExtension()
+    {
+        value = RemoveFileExtension(value);
+        extension = "";
+    }
+
+    FilePath& FilePath::Append(const String &append)
+    {
+        value.append(append);
+        extension = GetFileExtension(value);
+        return *this;
+    }
+
+    bool FilePath::HasFolder(const String &folderName)
+    {
+        size_t curPos = 0;
+        // Retrieve folders from front to back until folderName is found or not
+        String slice;
+        while (true)
+        {
+            auto found = value.find('\\', curPos);
+            if (found == value.npos)
+                return false;
+
+            slice = value.substr(curPos, found);
+            if (slice == folderName)
+                return true;
+
+            curPos = found;
+        }
+
+        return false;
+    }
+
+    bool FilePath::FirstFolderIs(const String &folderName)
+    {
+        auto found = value.find('\\');
+        if (found == value.npos)
+            return false;
+
+        return value.substr(0, found) == folderName;
+    }
+
+    FilePath::operator const String&() const
+    {
+        return value;
+    }
+
+    const String& FilePath::GetValue() const
+    {
+        return value;
+    }
+
+    const String& FilePath::GetExtension() const
+    {
+        return extension;
+    }
+
+    String FilePath::GetWithoutExtension() const
+    {
+        return RemoveFileExtension(value);
+    }
+
+    bool FilePath::IsEmpty() const
+    {
+        return value == "";
+    }
+
+    FileName FilePath::GetFileName() const
+    {
+        auto found = value.find_last_of('\\');
+        if (found == value.npos)
+            return FileName(value);
+
+        return FileName(value.substr(found + 1));
+    }
+
+    void FilePath::Serialize(inscription::Scribe &scribe)
+    {
+        scribe(value);
+        if (scribe.IsInput())
+            extension = GetFileExtension(value);
+    }
+
+    FileName::FileName(const String &string) : value(string), extension(GetFileExtension(string))
+    {}
+
+    FileName::FileName(const char *buf) : value(buf), extension(GetFileExtension(buf))
+    {}
+
+    FileName::FileName(const FilePath &path) : value(path.GetFileName()), extension(path.GetExtension())
+    {}
+
+    FileName::FileName(const FileName &arg) : value(arg.value), extension(arg.extension)
+    {}
+
+    FileName::FileName(FileName &&arg) : value(std::move(arg.value)), extension(std::move(arg.extension))
+    {}
+
+    FileName& FileName::operator=(const FileName &arg)
+    {
+        value = arg.value;
+        extension = arg.extension;
+        return *this;
+    }
+
+    FileName& FileName::operator=(FileName &&arg)
+    {
+        value = std::move(arg.value);
+        extension = std::move(arg.extension);
+        return *this;
+    }
+
+    bool FileName::operator==(const FileName &arg) const
+    {
+        return value == arg.value;
+    }
+
+    bool FileName::operator!=(const FileName &arg) const
+    {
+        return !(*this == arg);
+    }
+
+    FileName::operator const String&()
+    {
+        return value;
+    }
+
+    FileName::operator const char*()
+    {
+        return value.c_str();
+    }
+
+    const char* FileName::c_str() const
+    {
+        return value.c_str();
+    }
+
+    void FileName::Set(const String &set)
+    {
+        value = set;
+        extension = GetFileExtension(value);
+    }
+
+    void FileName::SetExtension(const String &replace)
+    {
+        value = ReplaceFileExtension(value, replace);
+        extension = replace;
+    }
+
+    FileName::operator const String&() const
+    {
+        return value;
+    }
+
+    const String& FileName::GetValue() const
+    {
+        return value;
+    }
+
+    const String& FileName::GetExtension() const
+    {
+        return extension;
+    }
+
+    String FileName::GetWithoutExtension() const
+    {
+        return RemoveFileExtension(value);
+    }
+
+    bool FileName::IsEmpty() const
+    {
+        return value == "";
+    }
+
+    void FileName::Serialize(inscription::Scribe &scribe)
+    {
+        scribe(value);
+        if (scribe.IsInput())
+            extension = GetFileExtension(value);
+    }
+}
