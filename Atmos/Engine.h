@@ -33,6 +33,7 @@ namespace Atmos
     private:
         struct Managers
         {
+            std::unique_ptr<System::System> system;
             std::unique_ptr<Asset::Resource::Manager> assetResourceManager;
             std::unique_ptr<Window::WindowBase> window;
             std::unique_ptr<Audio::Manager> audio;

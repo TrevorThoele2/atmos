@@ -59,6 +59,7 @@ namespace Atmos::Render::Vulkan
             vk::PrimitiveTopology::eTriangleList,
             renderPass,
             swapchainExtent,
+            {},
             { descriptorSetPool.DescriptorSetLayout() }),
         graphicsQueue(graphicsQueue),
         device(device)

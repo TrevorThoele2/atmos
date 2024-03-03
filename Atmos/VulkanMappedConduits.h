@@ -20,6 +20,7 @@ namespace Atmos::Render::Vulkan
             vk::PrimitiveTopology primitiveTopology,
             vk::RenderPass renderPass,
             vk::Extent2D swapchainExtent,
+            std::vector<vk::DynamicState> dynamicStates,
             const std::vector<vk::DescriptorSetLayout>& descriptorSetLayouts);
 
         void Add(Arca::Index<MaterialT> material);
@@ -39,6 +40,8 @@ namespace Atmos::Render::Vulkan
 
         vk::RenderPass renderPass;
         vk::Extent2D swapchainExtent;
+
+        std::vector<vk::DynamicState> dynamicStates;
     private:
         [[nodiscard]] Group CreateGroup(const MaterialT& material) const;
     };
@@ -50,13 +53,15 @@ namespace Atmos::Render::Vulkan
         vk::PrimitiveTopology primitiveTopology,
         vk::RenderPass renderPass,
         vk::Extent2D swapchainExtent,
+        std::vector<vk::DynamicState> dynamicStates,
         const std::vector<vk::DescriptorSetLayout>& descriptorSetLayouts)
         :
         device(device),
         vertexInput(vertexInput),
         primitiveTopology(primitiveTopology),
         renderPass(renderPass),
-        swapchainExtent(swapchainExtent)
+        swapchainExtent(swapchainExtent),
+        dynamicStates(dynamicStates)
     {
         const vk::PipelineLayoutCreateInfo layoutCreateInfo({}, descriptorSetLayouts.size(), descriptorSetLayouts.data());
         layout = device->createPipelineLayoutUnique(layoutCreateInfo);
@@ -110,7 +115,7 @@ namespace Atmos::Render::Vulkan
                     vertexInput,
                     swapchainExtent,
                     primitiveTopology,
-                    {}));
+                    dynamicStates));
             }
             catch (const InvalidConduit&)
             {

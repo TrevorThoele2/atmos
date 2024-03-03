@@ -121,6 +121,7 @@
     <ClInclude Include="ResumeSound.h" />
     <ClInclude Include="RetrieveWorldProperties.h" />
     <ClInclude Include="ScriptError.h" />
+    <ClInclude Include="SDLSystem.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="SoundCore.h" />
     <ClInclude Include="AudioError.h" />
@@ -240,6 +241,8 @@
     <ClInclude Include="SDLInputManager.h" />
     <ClInclude Include="SoundFinished.h" />
     <ClInclude Include="SoundResource.h" />
+    <ClInclude Include="System.h" />
+    <ClInclude Include="SystemCreationFailed.h" />
     <ClInclude Include="TextEntered.h" />
     <ClInclude Include="ToWorldPoint2D.h" />
     <ClInclude Include="ToWorldPoint3D.h" />
@@ -601,6 +604,7 @@
     <ClCompile Include="RangeMinNotLessThanEqualMax.cpp" />
     <ClCompile Include="ScriptCurator.cpp" />
     <ClCompile Include="ScriptError.cpp" />
+    <ClCompile Include="SDLSystem.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="SoundCore.cpp" />
     <ClCompile Include="AudioCurator.cpp" />
@@ -612,6 +616,8 @@
     <ClCompile Include="LineMaterialAsset.cpp" />
     <ClCompile Include="LoggingInformation.cpp" />
     <ClCompile Include="MaterialAssetPass.cpp" />
+    <ClCompile Include="System.cpp" />
+    <ClCompile Include="SystemCreationFailed.cpp" />
     <ClCompile Include="UniversalSound.cpp" />
     <ClCompile Include="NullAssetResourceManager.cpp" />
     <ClCompile Include="NullScriptDocumentationManager.cpp" />
