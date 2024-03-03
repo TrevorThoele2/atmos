@@ -3,10 +3,8 @@
 #include <Arca/Relic.h>
 
 #include "Name.h"
-#include "Tag.h"
-
 #include "GridPoint.h"
-#include "Angle2D.h"
+#include "Tag.h"
 
 #include <Inscription/UnorderedMapScribe.h>
 
@@ -16,22 +14,15 @@ namespace Atmos::Entity
     {
     public:
         Name name;
-        Name displayName;
-
         Spatial::Grid::Point position;
-        Spatial::Angle2D direction = 0.0f;
-
         bool isSolid = false;
-
         std::vector<Tag> tags;
     public:
         Entity(Arca::RelicInit init, Arca::Serialization);
         explicit Entity(
             Arca::RelicInit init,
             Name name,
-            Name displayName,
             Spatial::Grid::Point position,
-            Spatial::Angle2D direction,
             bool isSolid);
     };
 }
@@ -46,9 +37,7 @@ namespace Arca
         static bool ShouldCreate(
             Reliquary& reliquary,
             const Atmos::Name& name,
-            const Atmos::Name& displayName,
             const Atmos::Spatial::Grid::Point& position,
-            const Atmos::Spatial::Angle2D& direction,
             bool isSolid);
     };
 }
@@ -65,7 +54,6 @@ namespace Inscription
         void Scriven(ObjectT& object, Archive& archive)
         {
             archive("name", object.name);
-            archive("displayName", object.displayName);
             archive("position", object.position);
             archive("isSolid", object.isSolid);
             archive("tags", object.tags);

@@ -234,13 +234,11 @@ public:
     CreatedObject<T> CreateObject(Arca::Reliquary& reliquary)
     {
         const auto name = dataGeneration.Random<std::string>();
-        const auto displayName = dataGeneration.Random<std::string>();
         const auto position = dataGeneration.RandomStack<
             Atmos::Spatial::Grid::Point, Atmos::Spatial::Grid::Point::Value, Atmos::Spatial::Grid::Point::Value>();
-        const auto direction = dataGeneration.Random<Atmos::Spatial::Angle2D>();
         const auto isSolid = dataGeneration.Random<bool>();
 
-        auto index = reliquary.Do(Arca::Create<Atmos::Entity::Entity>{ name, displayName, position, direction, isSolid });
+        auto index = reliquary.Do(Arca::Create<Atmos::Entity::Entity>{ name, position, isSolid });
         return TupleOf<T>(index);
     }
 public:

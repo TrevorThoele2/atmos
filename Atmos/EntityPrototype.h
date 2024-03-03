@@ -5,7 +5,6 @@
 #include "Script.h"
 #include "Name.h"
 #include "GridPoint.h"
-#include "Angle2D.h"
 
 namespace Atmos::Entity
 {
@@ -17,14 +16,12 @@ namespace Atmos::Entity
         Name name;
 
         Spatial::Grid::Point position;
-        Spatial::Angle2D direction = 0.0f;
     public:
         Prototype() = default;
         Prototype(
             Arca::Index<Scripting::Script> constructor,
             Name name,
-            Spatial::Grid::Point position,
-            Spatial::Angle2D direction);
+            Spatial::Grid::Point position);
     };
 }
 
@@ -52,7 +49,6 @@ namespace Inscription
             archive("constructor", object.constructor);
             archive("name", object.name);
             archive("position", object.position);
-            archive("direction", object.direction);
         }
     };
 

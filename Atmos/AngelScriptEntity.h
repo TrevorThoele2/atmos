@@ -31,9 +31,7 @@ namespace Atmos::Scripting::Angel
         static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
     private:
         [[nodiscard]] static String DoName(Type type);
-        [[nodiscard]] static String DisplayName(Type type);
         [[nodiscard]] static Spatial::Grid::Point Position(Type type);
-        [[nodiscard]] static Spatial::Angle2D Direction(Type type);
         [[nodiscard]] static bool IsSolid(Type type);
         [[nodiscard]] static std::vector<String> Tags(Type type);
     };
