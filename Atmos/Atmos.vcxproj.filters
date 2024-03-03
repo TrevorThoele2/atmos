@@ -1463,6 +1463,9 @@
     <ClInclude Include="CompileShader.h">
       <Filter>Header Files\Render\Commands</Filter>
     </ClInclude>
+    <ClInclude Include="RenderObjectCurator.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FieldDestination.cpp">
@@ -2082,6 +2085,9 @@
     </ClCompile>
     <ClCompile Include="CompileShader.cpp">
       <Filter>Source Files\Render\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderObjectCurator.cpp">
+      <Filter>Source Files\Render</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

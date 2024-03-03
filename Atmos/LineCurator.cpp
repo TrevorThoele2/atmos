@@ -4,8 +4,7 @@
 
 namespace Atmos::Render
 {
-    LineCurator::LineCurator(Init init) :
-        Curator(init), camera(init.owner)
+    LineCurator::LineCurator(Init init) : ObjectCurator(init)
     {
         Owner().On<Arca::CreatedKnown<Line>>(
             [this](const Arca::CreatedKnown<Line>& signal)
@@ -18,60 +17,6 @@ namespace Atmos::Render
             {
                 OnDestroying(signal);
             });
-    }
-
-    void LineCurator::Work()
-    {
-        const auto cameraLeft = camera->ScreenSides().Left();
-        const auto cameraTop = camera->ScreenSides().Top();
-        const auto cameraPosition = camera->Position();
-        const auto cameraSize = camera->Size();
-
-        const Spatial::AxisAlignedBox3D queryBox
-        {
-            Spatial::Point3D
-            {
-                cameraPosition.x,
-                cameraPosition.y,
-                0
-            },
-            Spatial::Size3D
-            {
-                static_cast<Spatial::Size3D::Value>(cameraSize.width),
-                static_cast<Spatial::Size3D::Value>(cameraSize.height),
-                std::numeric_limits<Spatial::Size3D::Value>::max()
-            }
-        };
-
-        auto indices = octree.AllWithin(queryBox);
-
-        const auto mainSurface = Arca::Index<MainSurface>(Owner());
-
-        for (auto& index : indices)
-        {
-            auto& value = *index->value;
-            const auto material = value.material.Get();
-            if (!material)
-                continue;
-
-            const auto z = value.z;
-            const auto width = value.width;
-            const auto color = value.color;
-
-            std::vector<Spatial::Point2D> adjustedPoints;
-            for (auto& point : value.points)
-                adjustedPoints.emplace_back(point.x - cameraLeft, point.y - cameraTop);
-
-            const LineRender render
-            {
-                adjustedPoints,
-                z,
-                material,
-                width,
-                color
-            };
-            mainSurface->StageRender(render);
-        }
     }
 
     void LineCurator::Handle(const MoveLine& command)
@@ -91,6 +36,40 @@ namespace Atmos::Render
             data->z = *command.z;
 
         octree.Move(index.ID(), index, BoxFor(prevPoints, prevZ), BoxFor(index));
+    }
+
+    void LineCurator::WorkImpl(
+        Spatial::AxisAlignedBox3D cameraBox,
+        Spatial::Point2D cameraTopLeft,
+        Arca::Index<MainSurface> mainSurface)
+    {
+        auto indices = octree.AllWithin(cameraBox);
+
+        for (auto& index : indices)
+        {
+            auto& value = *index->value;
+            const auto material = value.material.Get();
+            if (!material)
+                continue;
+
+            const auto z = value.z;
+            const auto width = value.width;
+            const auto color = value.color;
+
+            std::vector<Spatial::Point2D> adjustedPoints;
+            for (auto& point : value.points)
+                adjustedPoints.emplace_back(point.x - cameraTopLeft.x, point.y - cameraTopLeft.y);
+
+            const LineRender render
+            {
+                adjustedPoints,
+                z,
+                material,
+                width,
+                color
+            };
+            mainSurface->StageRender(render);
+        }
     }
 
     void LineCurator::OnCreated(const Arca::CreatedKnown<Line>& signal)

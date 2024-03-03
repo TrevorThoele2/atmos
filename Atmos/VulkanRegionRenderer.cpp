@@ -175,7 +175,14 @@ namespace Atmos::Render::Vulkan
             drawnVertices.insert(drawnVertices.end(), region.vertices.begin(), region.vertices.end());
             vertexCount += region.vertices.size();
 
-            drawnIndices.insert(drawnIndices.end(), region.indices.begin(), region.indices.end());
+            const auto startMaxIndex = maxIndex;
+            drawnIndices.reserve(drawnIndices.size() + region.indices.size());
+            for (auto& index : region.indices)
+            {
+                const auto useIndex = startMaxIndex + index;
+                drawnIndices.push_back(useIndex);
+                maxIndex = std::max(maxIndex, Index(useIndex + 1));
+            }
             indexCount += region.indices.size();
         }
 

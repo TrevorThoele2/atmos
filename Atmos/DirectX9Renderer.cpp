@@ -123,7 +123,7 @@ namespace Atmos::Render::DirectX9
         {
             D3DXVECTOR2 positionVector(x, y);
             D3DXVECTOR2 centerVector(0.0f, 0.0f);
-            D3DXVECTOR2 scalingVector(size.width / imageBounds.Width(), size.height / imageBounds.Height());
+            D3DXVECTOR2 scalingVector(size.width / imageBounds.size.width, size.height / imageBounds.size.height);
 
             D3DXMatrixIdentity(&matrix);
             D3DXMatrixTransformation2D(
@@ -145,19 +145,19 @@ namespace Atmos::Render::DirectX9
                 0.0f
             },
             {
-                D3DXVECTOR2(imageBounds.Width(), 0.0f),
+                D3DXVECTOR2(imageBounds.size.width, 0.0f),
                 ToDirectXColor(color),
                 1.0f,
                 0.0f
             },
             {
-                D3DXVECTOR2(0.0f, imageBounds.Height()),
+                D3DXVECTOR2(0.0f, imageBounds.size.height),
                 ToDirectXColor(color),
                 0.0f,
                 1.0f
             },
             {
-                D3DXVECTOR2(imageBounds.Width(), imageBounds.Height()),
+                D3DXVECTOR2(imageBounds.size.width, imageBounds.size.height),
                 ToDirectXColor(color),
                 1.0f,
                 1.0f

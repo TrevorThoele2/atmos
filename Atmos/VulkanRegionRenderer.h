@@ -89,6 +89,7 @@ namespace Atmos::Render::Vulkan
 
             std::uint32_t vertexCount = 0;
             std::uint32_t indexCount = 0;
+            Index maxIndex = 0;
         private:
             RegionRenderer* renderer;
         private:

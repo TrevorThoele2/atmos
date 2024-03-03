@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Arca/Curator.h>
+#include "RenderObjectCurator.h"
 
 #include "Octree.h"
 
@@ -9,12 +9,15 @@
 
 namespace Atmos::Render
 {
-    class GridRegionCurator final : public Arca::Curator
+    class GridRegionCurator final : public ObjectCurator
     {
     public:
         explicit GridRegionCurator(Init init);
-
-        void Work();
+    protected:
+        void WorkImpl(
+            Spatial::AxisAlignedBox3D cameraBox,
+            Spatial::Point2D cameraTopLeft,
+            Arca::Index<MainSurface> mainSurface) override;
     private:
         using Index = Arca::Index<GridRegion>;
         Spatial::Grid::Octree<Arca::RelicID, Index> octree;

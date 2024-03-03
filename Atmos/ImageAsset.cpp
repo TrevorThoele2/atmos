@@ -4,6 +4,8 @@
 #include "CreateImageAssetResource.h"
 #include "ShouldCreateAsset.h"
 
+#include "SpatialAlgorithms.h"
+
 namespace Atmos::Asset
 {
     Image::Image(
@@ -74,13 +76,13 @@ namespace Atmos::Asset
         const auto column = index % gridSize.columns;
         const auto row = index / gridSize.rows;
 
-        return Spatial::AxisAlignedBox2D
-        {
+        return Spatial::ToAxisAlignedBox2D
+        (
             column * sliceSize.width,
             row * sliceSize.height,
             column * sliceSize.width + sliceSize.width,
             row * sliceSize.height + sliceSize.height
-        };
+        );
     }
 
     Spatial::Size2D Image::SliceSize() const

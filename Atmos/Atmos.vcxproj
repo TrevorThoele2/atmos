@@ -58,6 +58,7 @@
     <ClInclude Include="LoadAsset.h" />
     <ClInclude Include="MoveBoundsBy.h" />
     <ClInclude Include="MoveBoundsDirection.h" />
+    <ClInclude Include="RenderObjectCurator.h" />
     <ClInclude Include="SpatialAlgorithms.h" />
     <ClInclude Include="PruneGraphicsResources.h" />
     <ClInclude Include="GridRegion.h" />
@@ -388,6 +389,7 @@
     <ClCompile Include="EntityDatum.cpp" />
     <ClCompile Include="EntityPrototype.cpp" />
     <ClCompile Include="MappedEntities.cpp" />
+    <ClCompile Include="RenderObjectCurator.cpp" />
     <ClCompile Include="SpatialAlgorithms.cpp" />
     <ClCompile Include="GridRegion.cpp" />
     <ClCompile Include="GridRegionCurator.cpp" />

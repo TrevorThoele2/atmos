@@ -12,7 +12,7 @@ namespace Atmos::World
         using Terrain = std::vector<Arca::Index<Render::StaticImage>>;
         Terrain terrain;
 
-        Spatial::Grid::SparseRegion entityRegion;
+        Spatial::Grid::SparseRegion entityBoundary;
     };
 }
 
