@@ -26,7 +26,8 @@ String AngelScriptLoggingTestsFixture::AllLogged() const
 
 SCENARIO_METHOD(AngelScriptLoggingTestsFixture, "running logging AngelScript scripts", "[script][angelscript][logging]")
 {
-    ScriptEngine engine;
+    Logging::Logger logger(Logging::Severity::Verbose);
+    ScriptEngine engine(logger);
     engine.Setup();
 
     auto fieldOrigin = Arca::ReliquaryOrigin();

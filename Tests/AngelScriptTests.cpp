@@ -6,14 +6,13 @@
 
 #include <Atmos/TypeRegistration.h>
 #include <Atmos/Script.h>
-#include <Atmos/LoadScriptAssetResourceData.h>
-#include <Atmos/ScriptFinished.h>
 #include <Atmos/Work.h>
-#include <Inscription/InputTextArchive.h>
+#include <Atmos/ScriptFinished.h>
 
 SCENARIO_METHOD(AngelScriptTestsFixture, "running AngelScript scripts", "[script][angelscript]")
 {
-    ScriptEngine engine;
+    Logging::Logger logger(Logging::Severity::Verbose);
+    ScriptEngine engine(logger);
     engine.Setup();
 
     auto fieldOrigin = Arca::ReliquaryOrigin();
@@ -35,6 +34,12 @@ SCENARIO_METHOD(AngelScriptTestsFixture, "running AngelScript scripts", "[script
     auto& fieldReliquary = field.Reliquary();
 
     engine.mockGraphicsManager->Initialize();
+
+    std::vector<Scripting::Finished> finishes;
+    fieldReliquary.On<Scripting::Finished>([&finishes](const Scripting::Finished& signal)
+        {
+            finishes.push_back(signal);
+        });
 
     GIVEN("empty script")
     {
@@ -59,6 +64,37 @@ SCENARIO_METHOD(AngelScriptTestsFixture, "running AngelScript scripts", "[script
                 auto scriptCount = fieldReliquary.Batch<Scripting::Script>().Size();
                 
                 REQUIRE(scriptCount == 0);
+            }
+        }
+    }
+
+    GIVEN("script that runs function from shared module")
+    {
+        CompileAndCreateScriptWithSharedModules(
+            "basic_script.as",
+            "int main()\n" \
+            "{\n" \
+            "    return DoThing();\n" \
+            "}",
+            std::vector<Scripting::Module>{
+                {
+                    "shared_script.as",
+                    "int DoThing()\n" \
+                    "{\n" \
+                    "    return 123;\n" \
+                    "}" \
+                }
+            },
+            fieldReliquary);
+
+        WHEN("working reliquary")
+        {
+            fieldReliquary.Do(Work{});
+
+            THEN("has correct properties")
+            {
+                REQUIRE(finishes.size() == 1);
+                REQUIRE(std::get<int>(std::get<Variant>(finishes[0].result)) == 123);
             }
         }
     }

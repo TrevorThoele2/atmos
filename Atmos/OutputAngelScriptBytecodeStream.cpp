@@ -13,10 +13,8 @@ namespace Atmos::Scripting::Angel
 
         try
         {
-            const auto castedPtr = reinterpret_cast<const char*>(ptr);
-
             buffer.resize(buffer.size() + size);
-            memcpy(&buffer[location], castedPtr, size);
+            memcpy(&buffer[location], ptr, size);
             location += size;
 
             return 0;
@@ -33,7 +31,7 @@ namespace Atmos::Scripting::Angel
         return {};
     }
 
-    Inscription::Buffer OutputBytecodeStream::Buffer() const
+    DataBuffer OutputBytecodeStream::Buffer() const
     {
         return buffer;
     }

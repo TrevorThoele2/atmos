@@ -27,9 +27,6 @@ void* MockWindow::Handle() const
     return nullptr;
 }
 
-void MockWindow::SetupImpl()
-{}
-
 void MockWindow::OnPositionChanged()
 {}
 

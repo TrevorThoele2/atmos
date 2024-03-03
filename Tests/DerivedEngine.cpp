@@ -3,6 +3,9 @@
 #include <Atmos/NullInputManager.h>
 #include <Atmos/NullAudioManager.h>
 
+DerivedEngine::DerivedEngine(Logging::Logger& logger) : Engine(logger)
+{}
+
 void DerivedEngine::SetupImplementation()
 {
     

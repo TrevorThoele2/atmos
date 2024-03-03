@@ -11,7 +11,8 @@
 
 SCENARIO_METHOD(AngelScriptStringUtilityTestsFixture, "running StringUtility AngelScript scripts", "[script][angelscript]")
 {
-    ScriptEngine engine;
+    Logging::Logger logger(Logging::Severity::Verbose);
+    ScriptEngine engine(logger);
     engine.Setup();
 
     auto fieldOrigin = Arca::ReliquaryOrigin();

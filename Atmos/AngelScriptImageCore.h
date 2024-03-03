@@ -47,7 +47,7 @@ namespace Atmos::Scripting::Angel
     public:
         Arca::RelicID id = 0;
 
-        Arca::Index<Asset::Material> to;
+        Arca::Index<Asset::ImageMaterial> to;
     };
 
     template<>
@@ -64,7 +64,7 @@ namespace Atmos::Scripting::Angel
     private:
         [[nodiscard]] static Arca::Index<Asset::Image> Asset(Type type);
         [[nodiscard]] static Render::ImageCore::Index AssetIndex(Type type);
-        [[nodiscard]] static Arca::Index<Asset::Material> Material(Type type);
+        [[nodiscard]] static Arca::Index<Asset::ImageMaterial> Material(Type type);
         [[nodiscard]] static Render::Color Color(Type type);
     };
 

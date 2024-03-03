@@ -49,7 +49,7 @@ namespace Atmos::Render::Vulkan
             vk::PhysicalDeviceMemoryProperties memoryProperties,
             vk::RenderPass renderPass,
             vk::Extent2D swapchainExtent,
-            const Arca::Batch<Asset::Material>& materials);
+            const Arca::Batch<Asset::ImageMaterial>& materials);
 
         void StageRender(const ImageRender& imageRender);
 
@@ -58,8 +58,8 @@ namespace Atmos::Render::Vulkan
             vk::CommandPool commandPool,
             const UniversalDataBuffer& universalDataBuffer) override;
 
-        void MaterialCreated(Arca::Index<Asset::Material> material) override;
-        void MaterialDestroying(Arca::Index<Asset::Material> material) override;
+        void MaterialCreated(Arca::Index<Asset::ImageMaterial> material);
+        void MaterialDestroying(Arca::Index<Asset::ImageMaterial> material);
 
         [[nodiscard]] size_t RenderCount() const override;
     private:
@@ -92,6 +92,8 @@ namespace Atmos::Render::Vulkan
         StagedBuffer indexBuffer;
         static const int indexStride = stride * 6;
     private:
+        using MappedConduits = MappedConduits<Asset::ImageMaterial>;
+
         using DescriptorSetKey = QuadRendererDescriptorSetKey;
 
         class Raster final : public Vulkan::Raster

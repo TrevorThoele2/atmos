@@ -60,8 +60,12 @@ namespace Atmos::Render::Vulkan
 
         void WaitForIdle() const;
     public:
-        void OnMaterialCreated(const Arca::Index<Asset::Material>& material);
-        void OnMaterialDestroying(const Arca::Index<Asset::Material>& material);
+        void OnMaterialCreated(const Arca::Index<Asset::ImageMaterial>& material);
+        void OnMaterialCreated(const Arca::Index<Asset::LineMaterial>& material);
+        void OnMaterialCreated(const Arca::Index<Asset::RegionMaterial>& material);
+        void OnMaterialDestroying(const Arca::Index<Asset::ImageMaterial>& material);
+        void OnMaterialDestroying(const Arca::Index<Asset::LineMaterial>& material);
+        void OnMaterialDestroying(const Arca::Index<Asset::RegionMaterial>& material);
     private:
         std::shared_ptr<vk::Device> device;
     private:
@@ -82,7 +86,9 @@ namespace Atmos::Render::Vulkan
                 vk::PhysicalDeviceMemoryProperties memoryProperties,
                 vk::RenderPass renderPass,
                 vk::Extent2D swapchainExtent,
-                const Arca::Batch<Asset::Material>& materials);
+                const Arca::Batch<Asset::ImageMaterial>& imageMaterials,
+                const Arca::Batch<Asset::LineMaterial>& lineMaterials,
+                const Arca::Batch<Asset::RegionMaterial>& regionMaterials);
             RendererGroup(RendererGroup&& arg) noexcept = default;
 
             [[nodiscard]] IterableRenderers AsIterable();

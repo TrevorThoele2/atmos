@@ -23,13 +23,17 @@
 
 #include "AudioAsset.h"
 #include "ImageAsset.h"
-#include "MaterialAsset.h"
+#include "ImageMaterialAsset.h"
+#include "LineMaterialAsset.h"
+#include "RegionMaterialAsset.h"
 #include "ScriptAsset.h"
 #include "ShaderAsset.h"
 #include "MappedAssets.h"
 #include "AudioAssetCurator.h"
 #include "ImageAssetCurator.h"
-#include "MaterialAssetCurator.h"
+#include "ImageMaterialAssetCurator.h"
+#include "LineMaterialAssetCurator.h"
+#include "RegionMaterialAssetCurator.h"
 #include "ScriptAssetCurator.h"
 #include "ShaderAssetCurator.h"
 
@@ -37,6 +41,7 @@
 #include "EntityCurator.h"
 #include "EntityPrototype.h"
 #include "MappedEntities.h"
+#include "CurrentActualizingEntity.h"
 
 #include "WindowCurator.h"
 #include "WindowInformation.h"
@@ -235,17 +240,23 @@ namespace Atmos
                 .Register<Core>()
                 .Register<Audio>()
                 .Register<Image>()
-                .Register<Material>()
+                .Register<ImageMaterial>()
+                .Register<LineMaterial>()
+                .Register<RegionMaterial>()
                 .Register<Script>()
                 .Register<Shader>()
                 .Register<Mapped<Audio>>()
                 .Register<Mapped<Image>>()
-                .Register<Mapped<Material>>()
+                .Register<Mapped<ImageMaterial>>()
+                .Register<Mapped<LineMaterial>>()
+                .Register<Mapped<RegionMaterial>>()
                 .Register<Mapped<Script>>()
                 .Register<Mapped<Shader>>()
                 .Register<AudioCurator>()
                 .Register<ImageCurator>(std::ref(manager))
-                .Register<MaterialCurator>()
+                .Register<ImageMaterialCurator>()
+                .Register<LineMaterialCurator>()
+                .Register<RegionMaterialCurator>()
                 .Register<ScriptCurator>()
                 .Register<ShaderCurator>();
         }
@@ -259,7 +270,8 @@ namespace Atmos
                 .Register<Entity>()
                 .Register<Curator>()
                 .Register<Prototype>()
-                .Register<Mapped>();
+                .Register<Mapped>()
+                .Register<CurrentActualizing>();
         }
     }
 

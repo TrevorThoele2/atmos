@@ -5,7 +5,7 @@
 
 #include "Point2D.h"
 #include "Color.h"
-#include "MaterialAsset.h"
+#include "LineMaterialAsset.h"
 
 #include <Inscription/VectorScribe.h>
 
@@ -16,18 +16,18 @@ namespace Atmos::Render
     public:
         std::vector<Spatial::Point2D> points;
         Spatial::Point2D::Value z = 0;
-        Arca::Index<Asset::Material> material;
+        Arca::Index<Asset::LineMaterial> material;
 
         LineWidth width = 0;
 
         Color color;
     public:
         Line() = default;
-        Line(const std::vector<Spatial::Point2D>& points, Arca::Index<Asset::Material> material);
+        Line(const std::vector<Spatial::Point2D>& points, Arca::Index<Asset::LineMaterial> material);
         Line(
             const std::vector<Spatial::Point2D>& points,
             Spatial::Point2D::Value z,
-            Arca::Index<Asset::Material> material,
+            Arca::Index<Asset::LineMaterial> material,
             LineWidth width,
             Color color);
     };

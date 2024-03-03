@@ -120,12 +120,32 @@ namespace Atmos::Render::Resource::Vulkan
         renderer->DrawFrame(Size(), mapPosition);
     }
 
-    void Surface::OnMaterialCreated(const Arca::Index<Asset::Material>& material)
+    void Surface::OnMaterialCreated(const Arca::Index<Asset::ImageMaterial>& material)
     {
         renderer->OnMaterialCreated(material);
     }
 
-    void Surface::OnMaterialDestroying(const Arca::Index<Asset::Material>& material)
+    void Surface::OnMaterialCreated(const Arca::Index<Asset::LineMaterial>& material)
+    {
+        renderer->OnMaterialCreated(material);
+    }
+
+    void Surface::OnMaterialCreated(const Arca::Index<Asset::RegionMaterial>& material)
+    {
+        renderer->OnMaterialCreated(material);
+    }
+
+    void Surface::OnMaterialDestroying(const Arca::Index<Asset::ImageMaterial>& material)
+    {
+        renderer->OnMaterialDestroying(material);
+    }
+
+    void Surface::OnMaterialDestroying(const Arca::Index<Asset::LineMaterial>& material)
+    {
+        renderer->OnMaterialDestroying(material);
+    }
+
+    void Surface::OnMaterialDestroying(const Arca::Index<Asset::RegionMaterial>& material)
     {
         renderer->OnMaterialDestroying(material);
     }

@@ -19,6 +19,8 @@ public:
     Input::NullManager* nullInputManager = nullptr;
     MockGraphicsManager* mockGraphicsManager = nullptr;
     Scripting::Angel::Manager* scriptManager = nullptr;
+
+    ScriptEngine(Logging::Logger& logger);
 protected:
     void SetupImplementation() override;
 

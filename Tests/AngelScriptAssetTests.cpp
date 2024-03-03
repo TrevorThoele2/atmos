@@ -4,6 +4,9 @@
 
 #include "ScriptEngine.h"
 
+#include <Atmos/ImageMaterialAsset.h>
+#include <Atmos/LineMaterialAsset.h>
+#include <Atmos/RegionMaterialAsset.h>
 #include <Atmos/CreateImageAssetResource.h>
 #include <Atmos/CreateAudioAssetResource.h>
 #include <Atmos/TypeRegistration.h>
@@ -11,12 +14,14 @@
 #include <Atmos/ScriptFinished.h>
 #include <Atmos/Work.h>
 #include <Atmos/StringUtility.h>
+#include <Arca/LocalRelic.h>
 
 #include "AudioBuffer.h"
 
 SCENARIO_METHOD(AngelScriptAssetTestsFixture, "running asset AngelScript scripts", "[script][angelscript]")
 {
-    ScriptEngine engine;
+    Logging::Logger logger(Logging::Severity::Verbose);
+    ScriptEngine engine(logger);
     engine.Setup();
 
     auto fieldOrigin = Arca::ReliquaryOrigin();
@@ -379,107 +384,6 @@ SCENARIO_METHOD(AngelScriptAssetTestsFixture, "running asset AngelScript scripts
         }
     }
 
-    GIVEN("MaterialAsset")
-    {
-        auto vertexShaderName = dataGeneration.Random<std::string>();
-        auto vertexResource = fieldReliquary.Do(Asset::Resource::Create<Asset::Resource::Shader>{DataBuffer{}, vertexShaderName});
-        auto vertexShaderAsset = fieldReliquary.Do(Arca::Create<Asset::Shader>{ vertexShaderName, std::move(vertexResource) });
-
-        auto fragmentShaderName = dataGeneration.Random<std::string>();
-        auto fragmentResource = fieldReliquary.Do(Asset::Resource::Create<Asset::Resource::Shader>{DataBuffer{}, fragmentShaderName});
-        auto fragmentShaderAsset = fieldReliquary.Do(Arca::Create<Asset::Shader>{ fragmentShaderName, std::move(fragmentResource) });
-
-        auto materialAssetName = dataGeneration.Random<std::string>();
-        auto materialAssetType = Asset::MaterialType::Region;
-        auto materialAssetPasses = std::vector<Asset::Material::Pass>
-        {
-            { vertexShaderAsset, fragmentShaderAsset }
-        };
-        auto materialAsset = fieldReliquary.Do(Arca::Create<Asset::Material>{ materialAssetName, materialAssetType, materialAssetPasses });
-
-        GIVEN("script that returns name")
-        {
-            CompileAndCreateScript(
-                "basic_script.as",
-                "string main(string name)\n" \
-                "{\n" \
-                "    Atmos::Asset::FindByName<Atmos::Asset::Material> command(name);\n" \
-                "    auto asset = Arca::Reliquary::Do(command);\n" \
-                "    return asset.Name();\n" \
-                "}",
-                { materialAssetName },
-                fieldReliquary);
-
-            WHEN("working reliquary")
-            {
-                fieldReliquary.Do(Work{});
-
-                THEN("has correct properties")
-                {
-                    REQUIRE(finishes.size() == 1);
-                    REQUIRE(std::get<String>(std::get<Variant>(finishes[0].result)) == materialAssetName);
-                }
-            }
-        }
-
-        GIVEN("script that returns type")
-        {
-            CompileAndCreateScript(
-                "basic_script.as",
-                "int main(string name)\n" \
-                "{\n" \
-                "    Atmos::Asset::FindByName<Atmos::Asset::Material> command(name);\n" \
-                "    auto asset = Arca::Reliquary::Do(command);\n" \
-                "    return asset.Type();\n" \
-                "}",
-                { materialAssetName },
-                fieldReliquary);
-
-            WHEN("working reliquary")
-            {
-                fieldReliquary.Do(Work{});
-
-                THEN("has correct properties")
-                {
-                    REQUIRE(finishes.size() == 1);
-
-                    auto finish = static_cast<Asset::MaterialType>(
-                        std::get<std::underlying_type_t<Asset::MaterialType>>(std::get<Variant>(finishes[0].result)));
-                    REQUIRE(finish == materialAssetType);
-                }
-            }
-        }
-
-        GIVEN("script that returns passes")
-        {
-            CompileAndCreateScript(
-                "basic_script.as",
-                "string main(string name)\n" \
-                "{\n" \
-                "    Atmos::Asset::FindByName<Atmos::Asset::Material> command(name);\n" \
-                "    auto asset = Arca::Reliquary::Do(command);\n" \
-                "    auto pass = asset.Passes()[0];\n" \
-                "    return pass.VertexShader().Name() + \" \" + pass.FragmentShader().Name();\n" \
-                "}",
-                { materialAssetName },
-                fieldReliquary);
-
-            WHEN("working reliquary")
-            {
-                fieldReliquary.Do(Work{});
-
-                THEN("has correct properties")
-                {
-                    REQUIRE(finishes.size() == 1);
-
-                    auto pass = materialAsset->Passes()[0];
-                    auto expectedFinish = pass.VertexShader()->Name() + " " + pass.FragmentShader()->Name();
-                    REQUIRE(std::get<String>(std::get<Variant>(finishes[0].result)) == expectedFinish);
-                }
-            }
-        }
-    }
-
     GIVEN("ScriptAsset")
     {
         auto name = dataGeneration.Random<std::string>();
@@ -507,6 +411,105 @@ SCENARIO_METHOD(AngelScriptAssetTestsFixture, "running asset AngelScript scripts
                 {
                     REQUIRE(finishes.size() == 1);
                     REQUIRE(std::get<String>(std::get<Variant>(finishes[0].result)) == name);
+                }
+            }
+        }
+    }
+}
+
+TEMPLATE_TEST_CASE_METHOD(
+    AngelScriptMaterialAssetTestsFixture,
+    "running material asset AngelScript scripts",
+    "[script][angelscript][asset]",
+    Asset::ImageMaterial,
+    Asset::LineMaterial,
+    Asset::RegionMaterial)
+{
+    Logging::Logger logger(Logging::Severity::Verbose);
+    ScriptEngine engine(logger);
+    engine.Setup();
+
+    auto fieldOrigin = Arca::ReliquaryOrigin();
+    fieldOrigin.Register<Arca::OpenRelic>();
+    RegisterFieldTypes(
+        fieldOrigin,
+        *engine.mockImageAssetManager,
+        *engine.nullAudioManager,
+        *engine.nullInputManager,
+        *engine.mockGraphicsManager,
+        *engine.scriptManager,
+        Spatial::ScreenSize{
+            std::numeric_limits<Spatial::ScreenSize::Dimension>::max(),
+            std::numeric_limits<Spatial::ScreenSize::Dimension>::max() },
+            *engine.mockWindow,
+            engine.Logger());
+    fieldOrigin.CuratorCommandPipeline<Work>(Arca::Pipeline{ Scripting::Stage() });
+    World::Field field(0, fieldOrigin.Actualize());
+
+    auto& fieldReliquary = field.Reliquary();
+
+    engine.mockGraphicsManager->Initialize();
+
+    std::vector<Scripting::Finished> finishes;
+    fieldReliquary.On<Scripting::Finished>([&finishes](const Scripting::Finished& signal)
+        {
+            finishes.push_back(signal);
+        });
+
+    GIVEN("type")
+    {
+        auto [index, angelScriptName] = this->template CreateObject<TestType>(fieldReliquary);
+
+        GIVEN("script that returns name")
+        {
+            this->CompileAndCreateScript(
+                "basic_script.as",
+                "string main(string name)\n" \
+                "{\n" \
+                "    Atmos::Asset::FindByName<" + angelScriptName + "> command(name);\n" \
+                "    auto asset = Arca::Reliquary::Do(command);\n" \
+                "    return asset.Name();\n" \
+                "}",
+                { index->Name() },
+                fieldReliquary);
+
+            WHEN("working reliquary")
+            {
+                fieldReliquary.Do(Work{});
+
+                THEN("has correct properties")
+                {
+                    REQUIRE(finishes.size() == 1);
+                    REQUIRE(std::get<String>(std::get<Variant>(finishes[0].result)) == index->Name());
+                }
+            }
+        }
+
+        GIVEN("script that returns passes")
+        {
+            this->CompileAndCreateScript(
+                "basic_script.as",
+                "string main(string name)\n" \
+                "{\n" \
+                "    Atmos::Asset::FindByName<" + angelScriptName + "> command(name);\n" \
+                "    auto asset = Arca::Reliquary::Do(command);\n" \
+                "    auto pass = asset.Passes()[0];\n" \
+                "    return pass.VertexShader().Name() + \" \" + pass.FragmentShader().Name();\n" \
+                "}",
+                { index->Name() },
+                fieldReliquary);
+
+            WHEN("working reliquary")
+            {
+                fieldReliquary.Do(Work{});
+
+                THEN("has correct properties")
+                {
+                    REQUIRE(finishes.size() == 1);
+
+                    auto pass = index->Passes()[0];
+                    auto expectedFinish = pass.VertexShader()->Name() + " " + pass.FragmentShader()->Name();
+                    REQUIRE(std::get<String>(std::get<Variant>(finishes[0].result)) == expectedFinish);
                 }
             }
         }

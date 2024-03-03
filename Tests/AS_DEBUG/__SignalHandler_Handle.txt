@@ -1,0 +1,22 @@
+void SignalHandler::Handle(Atmos::Spatial::BoundsScaled)
+
+Temps: 
+
+Variables: 
+ -001: Atmos::Spatial::BoundsScaled signal
+ 000: SignalHandler this
+
+
+- 4,56 -
+               VarDecl  0
+    0   0 *    SUSPEND
+    1   0 *    PshVPtr  v-1
+    2   1 *    PshVPtr  v0
+    3   2 *    ADDSi    v20, 134217860
+    5   2 *    RDSPtr
+    6   2 *    CALLSYS  519           (Atmos::Spatial::BoundsScaled& BoundsScaled::opAssign(const Atmos::Spatial::BoundsScaled&in))
+- 4,79 -
+    8   0 *    SUSPEND
+            0:
+    9   0 *    FREE     v-1, 10665592
+   11   0 *    RET      2

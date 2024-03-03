@@ -37,9 +37,9 @@ namespace Atmos::Scripting::Angel
     }
 
     std::unique_ptr<Atmos::Scripting::Resource> Manager::CreateScriptResource(
-        const String& scriptAssetName, const String& executeName, const Parameters& parameters)
+        const String& name, const String& executeName, const Parameters& parameters)
     {
-        const auto moduleName = ScriptAssetNameToModuleName(scriptAssetName);
+        const auto moduleName = ScriptAssetNameToModuleName(name);
         auto& module = RequiredModule(moduleName);
         auto& function = RequiredFunction(module, executeName);
 
@@ -50,55 +50,35 @@ namespace Atmos::Scripting::Angel
         return std::make_unique<ScriptResource>(parameters, function, context, *logger);
     }
 
-    File::Path Manager::Compile(const File::Path& inputFilePath, const std::optional<File::Path>& outputFilePath)
+    DataBuffer Manager::Compile(Module module, std::vector<Module> sharedModules)
     {
-        File::Path returnValue;
+        DataBuffer returnValue;
 
         try
         {
-            std::string fileData;
-            {
-                auto inputFile = Inscription::InputTextFile(inputFilePath);
-                while (!inputFile.IsAtEndOfFile())
-                    fileData += inputFile.ReadLine() + "\n";
-            }
-
-            const auto moduleName = inputFilePath.filename().replace_extension().string();
-            auto& module = CreateModule(moduleName);
-            BuildModule(module, moduleName, fileData);
-
-            File::Path useOutputFilePath;
-            if (outputFilePath)
-                useOutputFilePath = *outputFilePath;
-            else
-            {
-                useOutputFilePath = inputFilePath;
-                useOutputFilePath.replace_extension(compiledFileExtension);
-            }
+            auto& createdModule = CreateModule(module.name);
+            AddScriptSection(createdModule, module.name, module.data);
+            for (auto& sharedModule : sharedModules)
+                AddScriptSection(createdModule, sharedModule.name, sharedModule.data);
+            BuildModule(createdModule);
 
             auto outputStream = OutputBytecodeStream();
-
-            VerifyResult(module.SaveByteCode(&outputStream));
-
-            Inscription::OutputBinaryArchive outputArchive(useOutputFilePath);
-            const auto buffer = outputStream.Buffer();
-            outputArchive(buffer);
-
-            returnValue = useOutputFilePath;
+            VerifyResult(createdModule.SaveByteCode(&outputStream));
+            returnValue = outputStream.Buffer();
         }
         catch(...)
         {
             logger->Log(
                 "Compilation of script failed.",
                 Logging::Severity::Information,
-                { { { "InputPath", inputFilePath.generic_string() } } });
+                { { { "Name", module.name } } });
             throw;
         }
 
         logger->Log(
             "Compilation of script succeeded.",
             Logging::Severity::Information,
-            { { { "InputPath", inputFilePath.generic_string() } } });
+            { { { "Name", module.name } } });
 
         return returnValue;
     }
@@ -159,13 +139,16 @@ namespace Atmos::Scripting::Angel
         return *module;
     }
 
-    void Manager::BuildModule(asIScriptModule& module, String name, String fileData)
+    void Manager::AddScriptSection(asIScriptModule& module, String name, String fileData)
     {
         VerifyResult(module.AddScriptSection(
             name.c_str(),
             fileData.c_str(),
             fileData.length()));
+    }
 
+    void Manager::BuildModule(asIScriptModule& module)
+    {
         VerifyResult(module.Build());
     }
 

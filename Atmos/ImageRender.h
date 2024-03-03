@@ -6,7 +6,7 @@
 #include "Angle2D.h"
 #include "AxisAlignedBox2D.h"
 #include "Color.h"
-#include "MaterialAsset.h"
+#include "ImageMaterialAsset.h"
 
 namespace Atmos::Render
 {
@@ -17,7 +17,7 @@ namespace Atmos::Render
         Spatial::AxisAlignedBox2D assetSlice;
 
         Arca::RelicID materialID;
-        const Asset::Material* material;
+        const Asset::ImageMaterial* material;
 
         Spatial::Point3D position;
         Spatial::Size2D size;

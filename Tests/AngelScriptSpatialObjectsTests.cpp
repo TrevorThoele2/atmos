@@ -18,7 +18,8 @@
 
 SCENARIO_METHOD(AngelScriptSpatialObjectsTestsFixture, "running spatial object AngelScript scripts", "[script][angelscript]")
 {
-    ScriptEngine engine;
+    Logging::Logger logger(Logging::Severity::Verbose);
+    ScriptEngine engine(logger);
     engine.Setup();
 
     auto fieldOrigin = Arca::ReliquaryOrigin();

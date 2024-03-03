@@ -15,7 +15,8 @@
 
 SCENARIO_METHOD(AngelScriptImageCoreTestsFixture, "running image core AngelScript scripts", "[script][angelscript]")
 {
-    ScriptEngine engine;
+    Logging::Logger logger(Logging::Severity::Verbose);
+    ScriptEngine engine(logger);
     engine.Setup();
 
     auto fieldOrigin = Arca::ReliquaryOrigin();
@@ -67,12 +68,11 @@ SCENARIO_METHOD(AngelScriptImageCoreTestsFixture, "running image core AngelScrip
     auto fragmentShaderAsset = fieldReliquary.Do(Arca::Create<Asset::Shader>{ fragmentShaderName, std::move(fragmentResource) });
 
     auto materialAssetName = dataGeneration.Random<std::string>();
-    auto materialAssetType = Asset::MaterialType::Region;
     auto materialAssetPasses = std::vector<Asset::Material::Pass>
     {
         { vertexShaderAsset, fragmentShaderAsset }
     };
-    auto materialAsset = fieldReliquary.Do(Arca::Create<Asset::Material>{ materialAssetName, materialAssetType, materialAssetPasses });
+    auto materialAsset = fieldReliquary.Do(Arca::Create<Asset::ImageMaterial>{ materialAssetName, materialAssetPasses });
 
     auto assetIndex = dataGeneration.Random<ImageCore::Index>();
     auto color = dataGeneration.RandomStack<Color, Color::Value, Color::Value, Color::Value, Color::Value>();

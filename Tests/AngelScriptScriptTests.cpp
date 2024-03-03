@@ -4,7 +4,6 @@
 
 #include "ScriptEngine.h"
 
-#include <Atmos/CreateScriptResource.h>
 #include <Atmos/TypeRegistration.h>
 #include <Atmos/Script.h>
 #include <Atmos/ScriptFinished.h>
@@ -15,7 +14,8 @@
 
 SCENARIO_METHOD(AngelScriptScriptTestsFixture, "running script AngelScript scripts", "[script][angelscript]")
 {
-    ScriptEngine engine;
+    Logging::Logger logger(Logging::Severity::Verbose);
+    ScriptEngine engine(logger);
     engine.Setup();
 
     auto fieldOrigin = Arca::ReliquaryOrigin();
@@ -44,7 +44,7 @@ SCENARIO_METHOD(AngelScriptScriptTestsFixture, "running script AngelScript scrip
             finishes.push_back(signal);
         });
 
-    const auto assetName = dataGeneration.Random<std::string>();
+    const auto assetName = "script_asset.as";
     const auto asset = CompileAndCreateScriptAsset(
         assetName,
         "void main()\n" \
@@ -54,9 +54,8 @@ SCENARIO_METHOD(AngelScriptScriptTestsFixture, "running script AngelScript scrip
         fieldReliquary);
 
     const auto parameters = Scripting::Parameters{};
-    auto resource = fieldReliquary.Do(Scripting::CreateResource{ asset, "main", parameters });
 
-    auto index = fieldReliquary.Do(Arca::Create<Scripting::Script>{ std::move(resource) });
+    auto index = fieldReliquary.Do(Arca::Create<Scripting::Script>{ asset, "main", parameters });
 
     GIVEN("modifyData")
     {

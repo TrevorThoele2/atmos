@@ -18,7 +18,8 @@ SCENARIO_METHOD(GridRegionRenderingTestsFixture, "rendering grid regions", "[ren
 {
     GIVEN("setup engine with field")
     {
-        DerivedEngine engine;
+        Logging::Logger logger(Logging::Severity::Verbose);
+        DerivedEngine engine(logger);
         engine.Setup();
 
         auto fieldOrigin = Arca::ReliquaryOrigin();
@@ -43,8 +44,8 @@ SCENARIO_METHOD(GridRegionRenderingTestsFixture, "rendering grid regions", "[ren
         const auto mainSurface = Arca::Index<MainSurface>(fieldReliquary);
         auto mainSurfaceImplementation = mainSurface->Resource<MockSurfaceResource>();
 
-        auto materialAsset = fieldReliquary.Do(Arca::Create<Asset::Material> {
-            String{}, Asset::MaterialType::Image, std::vector<Asset::Material::Pass>{} });
+        auto materialAsset = fieldReliquary.Do(Arca::Create<Asset::RegionMaterial> {
+            String{}, std::vector<Asset::RegionMaterial::Pass>{} });
 
         const auto camera = Arca::Index<Camera>(fieldReliquary);
 
@@ -127,7 +128,7 @@ SCENARIO_METHOD(GridRegionRenderingTestsFixture, "rendering grid regions", "[ren
                 Spatial::Grid::Point { 0, 1 },
                 Spatial::Grid::Point { 1, 1 },
             };
-            fieldReliquary.Do(Arca::Create<GridRegion>{ positions, 0, Arca::Index<Asset::Material>{}});
+            fieldReliquary.Do(Arca::Create<GridRegion>{ positions, 0, Arca::Index<Asset::RegionMaterial>{}});
 
             WHEN("starting engine execution")
             {

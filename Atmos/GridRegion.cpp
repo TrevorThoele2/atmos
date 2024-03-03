@@ -5,7 +5,7 @@ namespace Atmos::Render
     GridRegion::GridRegion(
         const std::unordered_set<Spatial::Grid::Point>& points,
         Spatial::Grid::Point::Value z,
-        Arca::Index<Asset::Material> material)
+        Arca::Index<Asset::RegionMaterial> material)
         :
         points(points), z(z), material(material)
     {}

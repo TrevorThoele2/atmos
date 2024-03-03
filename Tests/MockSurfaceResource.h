@@ -15,8 +15,12 @@ public:
 
     void DrawFrame(Arca::Reliquary& reliquary, const Atmos::Render::Color& backgroundColor) override;
 
-    void OnMaterialCreated(const Arca::Index<Atmos::Asset::Material>& material) override;
-    void OnMaterialDestroying(const Arca::Index<Atmos::Asset::Material>& material) override;
+    void OnMaterialCreated(const Arca::Index<Atmos::Asset::ImageMaterial>& material) override;
+    void OnMaterialCreated(const Arca::Index<Atmos::Asset::LineMaterial>& material) override;
+    void OnMaterialCreated(const Arca::Index<Atmos::Asset::RegionMaterial>& material) override;
+    void OnMaterialDestroying(const Arca::Index<Atmos::Asset::ImageMaterial>& material) override;
+    void OnMaterialDestroying(const Arca::Index<Atmos::Asset::LineMaterial>& material) override;
+    void OnMaterialDestroying(const Arca::Index<Atmos::Asset::RegionMaterial>& material) override;
 
     [[nodiscard]] Atmos::Spatial::ScreenSize Size() const override;
 };

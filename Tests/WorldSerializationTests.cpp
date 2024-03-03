@@ -21,7 +21,8 @@ SCENARIO_METHOD(WorldSerializationTestsFixture, "rendering after world serializa
 {
     GIVEN("setup engine with field")
     {
-        DerivedEngine engine;
+        Logging::Logger logger(Logging::Severity::Verbose);
+        DerivedEngine engine(logger);
         engine.Setup();
 
         auto fieldOrigin = Arca::ReliquaryOrigin();
@@ -53,8 +54,8 @@ SCENARIO_METHOD(WorldSerializationTestsFixture, "rendering after world serializa
         auto imageAsset = fieldReliquary.Do(Arca::Create<Asset::Image> {
             "Pixel.png", std::move(imageResource), Asset::ImageGridSize{} });
 
-        auto materialAsset = fieldReliquary.Do(Arca::Create<Asset::Material> {
-            String{}, Asset::MaterialType::Image, std::vector<Asset::Material::Pass>{} });
+        auto materialAsset = fieldReliquary.Do(Arca::Create<Asset::ImageMaterial> {
+            String{}, std::vector<Asset::Material::Pass>{} });
 
         WHEN("creating static images and loading through world file then starting execution")
         {

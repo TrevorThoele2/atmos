@@ -11,11 +11,14 @@
 #include <Atmos/ScriptFinished.h>
 #include <Atmos/Work.h>
 #include <Atmos/StringUtility.h>
+#include <Atmos/EntityPrototype.h>
+#include <Atmos/ActualizeAllEntityPrototypes.h>
 #include <Arca/LocalRelic.h>
 
 SCENARIO_METHOD(AngelScriptEntityTestsFixture, "running entity AngelScript scripts", "[script][angelscript]")
 {
-    ScriptEngine engine;
+    Logging::Logger logger(Logging::Severity::Verbose);
+    ScriptEngine engine(logger);
     engine.Setup();
 
     auto fieldOrigin = Arca::ReliquaryOrigin();
@@ -501,6 +504,50 @@ SCENARIO_METHOD(AngelScriptEntityTestsFixture, "running entity AngelScript scrip
                         const auto result = std::get<String>(std::get<Variant>(finishes[0].result));
                         REQUIRE(result == expectedResult);
                     }
+                }
+            }
+        }
+    }
+
+    GIVEN("entity prototype")
+    {
+        const auto names = dataGeneration.RandomGroup<String>(3);
+        const auto values = dataGeneration.RandomGroup<std::int64_t>(3);
+
+        GIVEN("script that modifies data by add")
+        {
+            auto script = CompileAndCreateScript(
+                "basic_script.as",
+                "void main(string name1, int64 value1, string name2, int64 value2, string name3, int64 value3)\n" \
+                "{\n" \
+                "    auto datum1 = Atmos::Datum(name1, value1);\n" \
+                "    auto datum2 = Atmos::Datum(name2, value2);\n" \
+                "    auto datum3 = Atmos::Datum(name3, value3);\n" \
+                "    Atmos::Datum[] add = { datum1, datum2, datum3 };\n" \
+                "    auto entity = Atmos::CurrentEntity();\n" \
+                "    Arca::Reliquary::Do(Atmos::Entity::ModifyData(entity, add, string[](), Atmos::Datum[]()));\n" \
+                "}",
+                { names[0], values[0], names[1], values[1], names[2], values[2] },
+                fieldReliquary);
+
+            fieldReliquary.Do(
+                Arca::Create<Entity::Prototype>(script, dataGeneration.Random<String>(), position, direction));
+
+            WHEN("actualizing all prototypes")
+            {
+                fieldReliquary.Do(Entity::ActualizeAllPrototypes{});
+
+                THEN("entity has been created with the correct data")
+                {
+                    auto entities = fieldReliquary.Batch<Entity::Entity>();
+                    REQUIRE(entities.Size() == 2);
+
+                    auto& entityFromPrototype = *++entities.begin();
+                    auto& data = entityFromPrototype.data;
+                    REQUIRE(data.size() == 3);
+                    REQUIRE(data[0] == Atmos::Datum{ names[0], values[0] });
+                    REQUIRE(data[1] == Atmos::Datum{ names[1], values[1] });
+                    REQUIRE(data[2] == Atmos::Datum{ names[2], values[2] });
                 }
             }
         }

@@ -16,7 +16,8 @@ TEMPLATE_TEST_CASE_METHOD(
     "[script][angelscript][global][index]",
     Render::Camera)
 {
-    ScriptEngine engine;
+    Logging::Logger logger(Logging::Severity::Verbose);
+    ScriptEngine engine(logger);
     engine.Setup();
 
     auto fieldOrigin = Arca::ReliquaryOrigin();

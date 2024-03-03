@@ -22,44 +22,10 @@ namespace Atmos::Scripting
 
     void Curator::Handle(const Work&)
     {
-        struct Element
-        {
-            Arca::RelicID id;
-            const Script* script;
-            Element(Arca::RelicID id, const Script* script) : id(id), script(script)
-            {}
-            Element(const Element& arg) = default;
-        };
-
-        std::vector<Element> elements;
-        const auto batch = Owner().Batch<Script>();
-        elements.reserve(batch.Size());
-        for (auto script = batch.begin(); script != batch.end(); ++script)
-            elements.emplace_back(script.ID(), &*script);
-
         const auto currentExecutingScript = MutablePointer().Of<CurrentExecutingScript>();
-
-        for(auto& element : elements)
-        {
-            currentExecutingScript->id = element.id;
-
-            auto script = MutablePointer().Of<Script>(element.id);
-            if (!script->Resource())
-            {
-                auto resource = manager->CreateScriptResource(script->asset->Name(), script->executeName, script->parameters);
-                script->Setup(std::move(resource));
-            }
-
-            auto result = DoExecute(script);
-
-            if (result)
-            {
-                Owner().Raise(Finished{ Arca::Index<Script>(element.id, Owner()), *result });
-                Owner().Do(Arca::Destroy<Script>(element.id));
-            }
-        }
-
-        currentExecutingScript->id = Arca::nullRelicID;
+        const auto runningScripts = ScriptsToRunning(Owner().Batch<Script>());
+        for(auto& element : runningScripts)
+            DoExecute(element.id, *currentExecutingScript);
     }
 
     void Curator::Handle(const Suspend& command)
@@ -72,9 +38,9 @@ namespace Atmos::Scripting
         script->Resource()->Suspend();
     }
 
-    File::Path Curator::Handle(const Compile& command)
+    DataBuffer Curator::Handle(const Compile& command)
     {
-        return manager->Compile(command.inputFilePath, command.outputFilePath);
+        return manager->Compile(command.module, command.sharedData);
     }
 
     void Curator::Handle(const ModifyData& command)
@@ -101,20 +67,62 @@ namespace Atmos::Scripting
         mutableScript->data.insert(mutableScript->data.begin(), command.add.begin(), command.add.end());
     }
 
+    std::optional<Result> Curator::Handle(const Execute& command)
+    {
+        const auto currentExecutingScript = MutablePointer().Of<CurrentExecutingScript>();
+
+        return DoExecute(command.script.ID(), *currentExecutingScript);
+    }
+
     std::unique_ptr<Asset::Resource::Script> Curator::Handle(
         const Asset::Resource::Create<Asset::Resource::Script>& command)
     {
         return manager->CreateAssetResource(command.buffer, command.name);
     }
 
-    std::optional<Result> Curator::DoExecute(Script* script)
+    Curator::RunningScript::RunningScript(Arca::RelicID id, const Script* script) : id(id), script(script)
+    {}
+
+    Curator::RunningScript::RunningScript(const RunningScript& arg) = default;
+
+    auto Curator::ScriptsToRunning(Arca::Batch<Script> batch) -> std::vector<RunningScript>
     {
+        std::vector<RunningScript> runningScripts;
+        runningScripts.reserve(batch.Size());
+        for (auto script = batch.begin(); script != batch.end(); ++script)
+            runningScripts.emplace_back(script.ID(), &*script);
+        return runningScripts;
+    }
+
+    std::optional<Result> Curator::DoExecute(Arca::RelicID id, CurrentExecutingScript& currentExecutingScript)
+    {
+        currentExecutingScript.id = id;
+
+        auto script = MutablePointer().Of<Script>(id);
+        if (!script->Resource())
+        {
+            auto resource = manager->CreateScriptResource(script->asset->Name(), script->executeName, script->parameters);
+            script->Setup(std::move(resource));
+        }
+
+        std::optional<Result> result;
+
         if (script->isSuspended)
         {
             script->isSuspended = false;
-            return script->Resource()->Resume();
+            result = script->Resource()->Resume();
         }
         else
-            return script->Resource()->Execute();
+            result = script->Resource()->Execute();
+
+        if (result)
+        {
+            Owner().Raise(Finished{ Arca::Index<Script>(id, Owner()), *result });
+            Owner().Do(Arca::Destroy<Script>(id));
+        }
+
+        currentExecutingScript.id = Arca::nullRelicID;
+
+        return result;
     }
 }

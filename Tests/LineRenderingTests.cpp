@@ -17,7 +17,8 @@ SCENARIO_METHOD(LineRenderingTestsFixture, "rendering lines", "[render]")
 {
     GIVEN("setup engine with field")
     {
-        DerivedEngine engine;
+        Logging::Logger logger(Logging::Severity::Verbose);
+        DerivedEngine engine(logger);
         engine.Setup();
 
         auto fieldOrigin = Arca::ReliquaryOrigin();
@@ -42,8 +43,8 @@ SCENARIO_METHOD(LineRenderingTestsFixture, "rendering lines", "[render]")
         const auto mainSurface = Arca::Index<MainSurface>(fieldReliquary);
         auto mainSurfaceImplementation = mainSurface->Resource<MockSurfaceResource>();
 
-        auto materialAsset = fieldReliquary.Do(Arca::Create<Asset::Material> {
-            String{}, Asset::MaterialType::Image, std::vector<Asset::Material::Pass>{} });
+        auto materialAsset = fieldReliquary.Do(Arca::Create<Asset::LineMaterial> {
+            String{}, std::vector<Asset::LineMaterial::Pass>{} });
 
         const auto camera = Arca::Index<Camera>(fieldReliquary);
 
@@ -227,11 +228,11 @@ SCENARIO_METHOD(LineRenderingTestsFixture, "rendering lines", "[render]")
                 }
             };
             fieldReliquary.Do(Arca::Create<Line>{
-                std::vector<Spatial::Point2D>{ fromPositions[0], toPositions[0] }, Arca::Index<Asset::Material>{}});
+                std::vector<Spatial::Point2D>{ fromPositions[0], toPositions[0] }, Arca::Index<Asset::LineMaterial>{}});
             fieldReliquary.Do(Arca::Create<Line>{
-                std::vector<Spatial::Point2D>{ fromPositions[1], toPositions[1] }, Arca::Index<Asset::Material>{}});
+                std::vector<Spatial::Point2D>{ fromPositions[1], toPositions[1] }, Arca::Index<Asset::LineMaterial>{}});
             fieldReliquary.Do(Arca::Create<Line>{
-                std::vector<Spatial::Point2D>{ fromPositions[2], toPositions[2] }, Arca::Index<Asset::Material>{}});
+                std::vector<Spatial::Point2D>{ fromPositions[2], toPositions[2] }, Arca::Index<Asset::LineMaterial>{}});
 
             WHEN("starting engine execution")
             {

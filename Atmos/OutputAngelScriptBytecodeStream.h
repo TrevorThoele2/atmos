@@ -2,7 +2,7 @@
 
 #include <angelscript.h>
 
-#include <Inscription/Buffer.h>
+#include "Buffer.h"
 
 namespace Atmos::Scripting::Angel
 {
@@ -12,9 +12,9 @@ namespace Atmos::Scripting::Angel
         int Write(const void* ptr, asUINT size) override;
         int Read(void* ptr, asUINT size) override;
 
-        [[nodiscard]] Inscription::Buffer Buffer() const;
+        [[nodiscard]] DataBuffer Buffer() const;
     private:
-        Inscription::Buffer buffer;
+        DataBuffer buffer;
         asUINT location = 0;
     };
 }
