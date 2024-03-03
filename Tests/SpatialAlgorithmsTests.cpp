@@ -79,3 +79,254 @@ SCENARIO_METHOD(SpatialAlgorithmsTestsFixture, "spatial algorithms", "[spatial]"
         }
     }
 }
+
+SCENARIO_METHOD(SpatialAlgorithmsTestsFixture, "clamp algorithms", "[spatial]")
+{
+    GIVEN("2D axis aligned boxes")
+    {
+        GIVEN("overlapping box")
+        {
+            const auto box = ToAxisAlignedBox2D(5, 5, 15, 15);
+            const auto to = ToAxisAlignedBox2D(0, 0, 10, 10);
+
+            WHEN("clamping")
+            {
+                const auto clamped = Clamp(box, to);
+
+                THEN("returns correct clamp")
+                {
+                    REQUIRE(clamped.Left() == Approx(5));
+                    REQUIRE(clamped.Top() == Approx(5));
+                    REQUIRE(clamped.Right() == Approx(10));
+                    REQUIRE(clamped.Bottom() == Approx(10));
+                }
+            }
+        }
+
+        GIVEN("box to the left")
+        {
+            const auto box = ToAxisAlignedBox2D(-10, -10, -5, -5);
+            const auto to = ToAxisAlignedBox2D(10, -10, 15, -5);
+
+            WHEN("clamping")
+            {
+                const auto clamped = Clamp(box, to);
+
+                THEN("returns correct clamp")
+                {
+                    REQUIRE(clamped.Left() == Approx(10));
+                    REQUIRE(clamped.Top() == Approx(-10));
+                    REQUIRE(clamped.Right() == Approx(10));
+                    REQUIRE(clamped.Bottom() == Approx(-5));
+                }
+            }
+        }
+
+        GIVEN("box to the top")
+        {
+            const auto box = ToAxisAlignedBox2D(10, -20, 15, -15);
+            const auto to = ToAxisAlignedBox2D(10, -10, 15, -5);
+
+            WHEN("clamping")
+            {
+                const auto clamped = Clamp(box, to);
+
+                THEN("returns correct clamp")
+                {
+                    REQUIRE(clamped.Left() == Approx(10));
+                    REQUIRE(clamped.Top() == Approx(-10));
+                    REQUIRE(clamped.Right() == Approx(15));
+                    REQUIRE(clamped.Bottom() == Approx(-10));
+                }
+            }
+        }
+
+        GIVEN("box to the right")
+        {
+            const auto box = ToAxisAlignedBox2D(20, -10, 25, -5);
+            const auto to = ToAxisAlignedBox2D(10, -10, 15, -5);
+
+            WHEN("clamping")
+            {
+                const auto clamped = Clamp(box, to);
+
+                THEN("returns correct clamp")
+                {
+                    REQUIRE(clamped.Left() == Approx(15));
+                    REQUIRE(clamped.Top() == Approx(-10));
+                    REQUIRE(clamped.Right() == Approx(15));
+                    REQUIRE(clamped.Bottom() == Approx(-5));
+                }
+            }
+        }
+
+        GIVEN("box to the bottom")
+        {
+            const auto box = ToAxisAlignedBox2D(10, 20, 15, 25);
+            const auto to = ToAxisAlignedBox2D(10, 10, 15, 15);
+
+            WHEN("clamping")
+            {
+                const auto clamped = Clamp(box, to);
+
+                THEN("returns correct clamp")
+                {
+                    REQUIRE(clamped.Left() == Approx(10));
+                    REQUIRE(clamped.Top() == Approx(15));
+                    REQUIRE(clamped.Right() == Approx(15));
+                    REQUIRE(clamped.Bottom() == Approx(15));
+                }
+            }
+        }
+    }
+
+    GIVEN("3D axis aligned boxes")
+    {
+        GIVEN("overlapping box")
+        {
+            const auto box = ToAxisAlignedBox3D(5, 5, 5, 15, 15, 15);
+            const auto to = ToAxisAlignedBox3D(0, 0, 0, 10, 10, 10);
+
+            WHEN("clamping")
+            {
+                const auto clamped = Clamp(box, to);
+
+                THEN("returns correct clamp")
+                {
+                    REQUIRE(clamped.Left() == Approx(5));
+                    REQUIRE(clamped.Top() == Approx(5));
+                    REQUIRE(clamped.FarZ() == Approx(5));
+                    REQUIRE(clamped.Right() == Approx(10));
+                    REQUIRE(clamped.Bottom() == Approx(10));
+                    REQUIRE(clamped.NearZ() == Approx(10));
+                }
+            }
+        }
+
+        GIVEN("box to the left")
+        {
+            const auto box = ToAxisAlignedBox3D(-10, -10, -30, -5, -5, -25);
+            const auto to = ToAxisAlignedBox3D(10, -10, -30, 15, -5, -25);
+
+            WHEN("clamping")
+            {
+                const auto clamped = Clamp(box, to);
+
+                THEN("returns correct clamp")
+                {
+                    REQUIRE(clamped.Left() == Approx(10));
+                    REQUIRE(clamped.Top() == Approx(-10));
+                    REQUIRE(clamped.FarZ() == Approx(-30));
+                    REQUIRE(clamped.Right() == Approx(10));
+                    REQUIRE(clamped.Bottom() == Approx(-5));
+                    REQUIRE(clamped.NearZ() == Approx(-25));
+                }
+            }
+        }
+
+        GIVEN("box to the top")
+        {
+            const auto box = ToAxisAlignedBox3D(10, -20, -30, 15, -15, -25);
+            const auto to = ToAxisAlignedBox3D(10, -10, -30, 15, -5, -25);
+
+            WHEN("clamping")
+            {
+                const auto clamped = Clamp(box, to);
+
+                THEN("returns correct clamp")
+                {
+                    REQUIRE(clamped.Left() == Approx(10));
+                    REQUIRE(clamped.Top() == Approx(-10));
+                    REQUIRE(clamped.FarZ() == Approx(-30));
+                    REQUIRE(clamped.Right() == Approx(15));
+                    REQUIRE(clamped.Bottom() == Approx(-10));
+                    REQUIRE(clamped.NearZ() == Approx(-25));
+                }
+            }
+        }
+
+        GIVEN("box to the far z")
+        {
+            const auto box = ToAxisAlignedBox3D(10, -20, -50, 15, -15, -45);
+            const auto to = ToAxisAlignedBox3D(10, -10, -30, 15, -5, -25);
+
+            WHEN("clamping")
+            {
+                const auto clamped = Clamp(box, to);
+
+                THEN("returns correct clamp")
+                {
+                    REQUIRE(clamped.Left() == Approx(10));
+                    REQUIRE(clamped.Top() == Approx(-10));
+                    REQUIRE(clamped.FarZ() == Approx(-30));
+                    REQUIRE(clamped.Right() == Approx(15));
+                    REQUIRE(clamped.Bottom() == Approx(-10));
+                    REQUIRE(clamped.NearZ() == Approx(-30));
+                }
+            }
+        }
+
+        GIVEN("box to the right")
+        {
+            const auto box = ToAxisAlignedBox3D(20, -10, -30, 25, -5, -25);
+            const auto to = ToAxisAlignedBox3D(10, -10, -30, 15, -5, -25);
+
+            WHEN("clamping")
+            {
+                const auto clamped = Clamp(box, to);
+
+                THEN("returns correct clamp")
+                {
+                    REQUIRE(clamped.Left() == Approx(15));
+                    REQUIRE(clamped.Top() == Approx(-10));
+                    REQUIRE(clamped.FarZ() == Approx(-30));
+                    REQUIRE(clamped.Right() == Approx(15));
+                    REQUIRE(clamped.Bottom() == Approx(-5));
+                    REQUIRE(clamped.NearZ() == Approx(-25));
+                }
+            }
+        }
+
+        GIVEN("box to the bottom")
+        {
+            const auto box = ToAxisAlignedBox3D(10, 20, -30, 15, 25, -25);
+            const auto to = ToAxisAlignedBox3D(10, 10, -30, 15, 15, -25);
+
+            WHEN("clamping")
+            {
+                const auto clamped = Clamp(box, to);
+
+                THEN("returns correct clamp")
+                {
+                    REQUIRE(clamped.Left() == Approx(10));
+                    REQUIRE(clamped.Top() == Approx(15));
+                    REQUIRE(clamped.FarZ() == Approx(-30));
+                    REQUIRE(clamped.Right() == Approx(15));
+                    REQUIRE(clamped.Bottom() == Approx(15));
+                    REQUIRE(clamped.NearZ() == Approx(-25));
+                }
+            }
+        }
+
+        GIVEN("box to the near z")
+        {
+            const auto box = ToAxisAlignedBox3D(10, -20, 50, 15, -15, 55);
+            const auto to = ToAxisAlignedBox3D(10, -10, -30, 15, -5, -25);
+
+            WHEN("clamping")
+            {
+                const auto clamped = Clamp(box, to);
+
+                THEN("returns correct clamp")
+                {
+                    REQUIRE(clamped.Left() == Approx(10));
+                    REQUIRE(clamped.Top() == Approx(-10));
+                    REQUIRE(clamped.FarZ() == Approx(-25));
+                    REQUIRE(clamped.Right() == Approx(15));
+                    REQUIRE(clamped.Bottom() == Approx(-10));
+                    REQUIRE(clamped.NearZ() == Approx(-25));
+                }
+            }
+        }
+    }
+}

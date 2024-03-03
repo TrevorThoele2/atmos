@@ -201,12 +201,10 @@ namespace Atmos::Render
     {
         if (viewSlice)
         {
+            const auto standardPosition = Spatial::Point2D{ assetSlice.size.width / 2, assetSlice.size.height / 2 };
             const auto viewSliceBox = viewSlice->box;
-            const auto slice = Spatial::ToAxisAlignedBox2D(
-                std::max(assetSlice.Left(), viewSliceBox.Left() / scalers.x),
-                std::max(assetSlice.Top(), viewSliceBox.Top() / scalers.y),
-                std::min(assetSlice.Right(), viewSliceBox.Right() / scalers.x),
-                std::min(assetSlice.Bottom(), viewSliceBox.Bottom() / scalers.y));
+            const auto delta = viewSliceBox.center - standardPosition;
+            const auto slice = Spatial::AxisAlignedBox2D{ assetSlice.center + delta, viewSliceBox.size };
             return { viewSliceBox.size, slice };
         }
         else
