@@ -49,6 +49,7 @@
 #include "EntityPrototype.h"
 #include "MappedEntities.h"
 #include "CurrentActualizingEntity.h"
+#include "EntityActualizationCurator.h"
 
 #include "WindowCurator.h"
 #include "WindowInformation.h"
@@ -144,6 +145,7 @@ namespace Atmos
     {
         auto pipeline = Arca::Pipeline();
         pipeline.push_back(Frame::StartStage());
+        pipeline.push_back(Entity::ActualizationStage());
         pipeline.push_back(Input::Stage());
         pipeline.push_back(Scripting::Stage());
         pipeline.push_back(Render::Stage());
@@ -318,7 +320,15 @@ namespace Atmos
                 .Register<Curator>()
                 .Register<Prototype>()
                 .Register<Mapped>()
-                .Register<CurrentActualizing>();
+                .Register<CurrentActualizing>()
+                .Register<ActualizationCurator>();
+        }
+
+        Arca::Stage ActualizationStage()
+        {
+            Arca::Stage stage;
+            stage.Add<ActualizationCurator>();
+            return stage;
         }
     }
 

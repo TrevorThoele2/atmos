@@ -7,7 +7,7 @@ namespace Atmos
     struct VersionUserContext
     {
         Inscription::Version inscriptionVersion = 0;
-        Inscription::Version clientVersion = 1;
+        Inscription::Version clientVersion = 0;
 
         VersionUserContext() = default;
         VersionUserContext(Inscription::Version inscriptionVersion, Inscription::Version clientVersion);

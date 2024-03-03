@@ -1,8 +1,6 @@
 #include "EntityCurator.h"
 
 #include "CurrentActualizingEntity.h"
-#include "Script.h"
-#include "ExecuteScript.h"
 #include "IsSolid.h"
 #include "DataAlgorithms.h"
 
@@ -14,7 +12,6 @@ namespace Atmos::Entity
 {
     Curator::Curator(Init init) :
         Arca::Curator(init),
-        prototypes(init.owner.Batch<Prototype>()),
         entities(init.owner.Batch<Entity>()),
         mapped(init.owner)
     {
@@ -37,47 +34,6 @@ namespace Atmos::Entity
                 RemoveEntityFrom(mutableMappedEntities->nameToEntity, index);
                 RemoveEntityFrom(mutableMappedEntities->positionToEntity, index);
             });
-    }
-
-    void Curator::Handle(const Work&)
-    {
-
-    }
-
-    void Curator::Handle(const ActualizeAllPrototypes&)
-    {
-        struct ToConstruct
-        {
-            Entity* entity;
-            Arca::RelicID id;
-            Arca::Index<Scripting::Script> constructor;
-            ToConstruct(Entity* entity, Arca::RelicID id, Arca::Index<Scripting::Script> constructor) :
-                entity(entity), id(id), constructor(constructor)
-            {}
-        };
-
-        std::vector<ToConstruct> toConstruct;
-        toConstruct.reserve(prototypes.Size());
-        for (auto& prototype : prototypes)
-        {
-            auto entity = Owner().Do(
-                Arca::Create<Entity>(prototype.name, prototype.position, false));
-
-            if (prototype.constructor)
-                toConstruct.emplace_back(MutablePointer().Of(entity), entity.ID(), prototype.constructor);
-        }
-
-        auto currentActualizing = MutablePointer().Of<CurrentActualizing>();
-
-        for(auto& currentToConstruct : toConstruct)
-        {
-            currentActualizing->entity = Arca::Index<Entity>(currentToConstruct.id, Owner());
-            Owner().Do(Scripting::Execute{ currentToConstruct.constructor });
-        }
-
-        currentActualizing->entity = Arca::Index<Entity>();
-
-        Owner().Do(Arca::Clear(Arca::TypeFor<Prototype>()));
     }
 
     Arca::Index<Entity> Curator::Handle(const FindByName& command)

@@ -16,12 +16,15 @@ namespace Atmos::Entity
         Name name;
 
         Spatial::Grid::Point position;
+
+        bool solid;
     public:
         Prototype() = default;
         Prototype(
             Arca::Index<Scripting::Script> constructor,
             Name name,
-            Spatial::Grid::Point position);
+            Spatial::Grid::Point position,
+            bool solid);
     };
 }
 
@@ -49,6 +52,7 @@ namespace Inscription
             archive("constructor", object.constructor);
             archive("name", object.name);
             archive("position", object.position);
+            archive("solid", object.solid);
         }
     };
 

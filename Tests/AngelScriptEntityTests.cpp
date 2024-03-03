@@ -13,7 +13,6 @@
 #include <Atmos/Work.h>
 #include <Atmos/StringUtility.h>
 #include <Atmos/EntityPrototype.h>
-#include <Atmos/ActualizeAllEntityPrototypes.h>
 #include <Arca/LocalRelic.h>
 #include <Atmos/DataCore.h>
 
@@ -38,7 +37,8 @@ SCENARIO_METHOD(AngelScriptEntityTestsFixture, "running entity AngelScript scrip
             std::numeric_limits<Spatial::ScreenSize::Dimension>::max() },
             *engine.mockWindow,
             engine.Logger());
-    fieldOrigin.CuratorCommandPipeline<Work>(Arca::Pipeline{ Scripting::Stage() });
+    fieldOrigin.CuratorCommandPipeline<Work>(Arca::Pipeline{
+        Entity::ActualizationStage(), Scripting::Stage() });
     World::Field field(0, fieldOrigin.Actualize());
 
     auto& fieldReliquary = field.Reliquary();
@@ -483,11 +483,11 @@ SCENARIO_METHOD(AngelScriptEntityTestsFixture, "running entity AngelScript scrip
                     fieldReliquary);
 
                 fieldReliquary.Do(
-                    Arca::Create<Entity::Prototype>(script, dataGeneration.Random<String>(), position));
+                    Arca::Create<Entity::Prototype>(script, dataGeneration.Random<String>(), position, false));
 
-                WHEN("actualizing all prototypes")
+                WHEN("working reliquary")
                 {
-                    fieldReliquary.Do(Entity::ActualizeAllPrototypes{});
+                    fieldReliquary.Do(Work{});
 
                     THEN("entity has been created with the correct properties")
                     {
