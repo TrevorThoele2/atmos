@@ -59,12 +59,4 @@ namespace Atmos::Scripting::JavaScript
                 value->Name()
             });
     }
-
-    std::optional<Arca::Index<Asset::Shader>> FromV8(v8::Isolate& isolate, const v8::Local<v8::Value>& value)
-    {
-        const auto userData = static_cast<UserData*>(isolate.GetData(0));
-
-        const auto from = JavaScript::FromV8<ShaderAsset>(isolate, value);
-        return from ? userData->reliquary->Find<Asset::Shader>(from->id) : std::optional<Arca::Index<Asset::Shader>>{};
-    }
 }

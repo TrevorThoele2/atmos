@@ -9,6 +9,7 @@
 #include "JavaScriptRender.h"
 #include "JavaScriptSpatial.h"
 #include "JavaScriptEntityNamespace.h"
+#include "JavaScriptScripting.h"
 #include "JavaScriptUI.h"
 
 #include "JavaScriptObject.h"
@@ -30,6 +31,7 @@ namespace Atmos::Scripting::JavaScript
                 { "Diagnostics", Type<DiagnosticsNamespace>::Traits(data) },
                 { "Render", Type<RenderNamespace>::Traits(data) },
                 { "Spatial", Type<SpatialNamespace>::Traits(data) },
+                { "Scripting", Type<ScriptingNamespace>::Traits(data) },
                 { "UI", Type<UINamespace>::Traits(data) }
             });
     }

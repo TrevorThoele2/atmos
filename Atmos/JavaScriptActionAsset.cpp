@@ -71,12 +71,4 @@ namespace Atmos::Scripting::JavaScript
                 std::vector<Input::Key>{value->boundModifiers.begin(), value->boundModifiers.end()}
             });
     }
-
-    std::optional<Arca::Index<Asset::Action>> FromV8(v8::Isolate& isolate, const v8::Local<v8::Value>& value)
-    {
-        const auto userData = static_cast<UserData*>(isolate.GetData(0));
-
-        const auto from = JavaScript::FromV8<ActionAsset>(isolate, value);
-        return from ? userData->reliquary->Find<Asset::Action>(from->id) : std::optional<Arca::Index<Asset::Action>>{};
-    }
 }

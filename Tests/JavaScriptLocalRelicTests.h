@@ -19,12 +19,15 @@
 #include <Atmos/JavaScriptDynamicText.h>
 #include <Atmos/JavaScriptGridRegion.h>
 #include <Atmos/JavaScriptLine.h>
+#include <Atmos/JavaScriptScript.h>
 
 #include <Arca/Create.h>
 #include <Atmos/StringUtility.h>
 #include "AudioBuffer.h"
+#include <Atmos/CompileScript.h>
 
 #include <Inscription/Json.h>
+#include <Inscription/Plaintext.h>
 
 template<class>
 class JavaScriptLocalRelicTestsFixture : public JavaScriptFixture
@@ -553,6 +556,47 @@ public:
             REQUIRE(line.id > 0);
 
             const auto batch = reliquary.Batch<Atmos::Render::Line>();
+            REQUIRE(batch.IsEmpty());
+        };
+
+        return { createCommand, createTraits, traits, destroyTraits, expectations };
+    }
+
+    template<class T, std::enable_if_t<std::is_same_v<Atmos::Scripting::Script, T>, int> = 0>
+    ScenarioT<Atmos::Scripting::JavaScript::CreateScript> Scenario(Arca::Reliquary& reliquary)
+    {
+        const auto assetName = dataGeneration.Random<String>();
+
+        const auto source = "const executeMe = () => {};";
+        Inscription::Plaintext::ToFile(source, "test.ts");
+        const auto modules = std::vector<Scripting::Module>
+        {
+            { "test", source }
+        };
+        const auto compiledModules = reliquary.Do(Scripting::Compile{ modules });
+        auto assetResource = reliquary.Do(Asset::Resource::Create<Asset::Resource::Script>{ compiledModules[0].source, assetName });
+
+        const auto asset = reliquary.Do(Arca::Create<Asset::Script>{assetName, std::move(assetResource)});
+        
+        const auto createCommand = Atmos::Scripting::JavaScript::CreateScript
+        {
+            Atmos::Scripting::JavaScript::ScriptAsset{ asset.ID(), assetName },
+            "executeMe",
+            Scripting::Parameters{}
+        };
+
+        const auto createTraits = "Atmos.Traits.Scripting.CreateScript";
+        const auto traits = "Atmos.Traits.Scripting.Script";
+        const auto destroyTraits = "Atmos.Traits.Scripting.DestroyScript";
+
+        const std::function<void(const String&, Arca::Reliquary&)> expectations = [](const String& json, Arca::Reliquary& reliquary)
+        {
+            Scripting::JavaScript::Script script;
+            Inscription::Json::FromString(script, json);
+
+            REQUIRE(script.id > 0);
+
+            const auto batch = reliquary.Batch<Atmos::Scripting::Script>();
             REQUIRE(batch.IsEmpty());
         };
 

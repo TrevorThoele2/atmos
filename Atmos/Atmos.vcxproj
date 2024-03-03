@@ -126,7 +126,9 @@
     <ClInclude Include="JavaScriptScaleBounds.h" />
     <ClInclude Include="JavaScriptScalers2D.h" />
     <ClInclude Include="JavaScriptScalers3D.h" />
+    <ClInclude Include="JavaScriptScript.h" />
     <ClInclude Include="JavaScriptScriptAsset.h" />
+    <ClInclude Include="JavaScriptScripting.h" />
     <ClInclude Include="JavaScriptSet.h" />
     <ClInclude Include="JavaScriptShaderAsset.h" />
     <ClInclude Include="JavaScriptSize2D.h" />
@@ -622,7 +624,9 @@
     <ClCompile Include="JavaScriptScaleBounds.cpp" />
     <ClCompile Include="JavaScriptScalers2D.cpp" />
     <ClCompile Include="JavaScriptScalers3D.cpp" />
+    <ClCompile Include="JavaScriptScript.cpp" />
     <ClCompile Include="JavaScriptScriptAsset.cpp" />
+    <ClCompile Include="JavaScriptScripting.cpp" />
     <ClCompile Include="JavaScriptScriptResource.cpp" />
     <ClCompile Include="JavaScriptShaderAsset.cpp" />
     <ClCompile Include="JavaScriptSize2D.cpp" />
