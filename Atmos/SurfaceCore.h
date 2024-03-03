@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Arca/Shard.h>
-#include "SurfaceData.h"
+#include "SurfaceResource.h"
 #include "Color.h"
 #include <memory>
 
@@ -9,14 +9,14 @@ namespace Atmos::Render
 {
     struct SurfaceCore
     {
-        using DataT = SurfaceData;
-        using DataPtr = std::unique_ptr<DataT>;
-        DataPtr data;
+        using ResourceT = Resource::Surface;
+        using ResourcePtr = std::unique_ptr<ResourceT>;
+        ResourcePtr resource;
 
         Color backgroundColor;
 
         SurfaceCore() = default;
-        explicit SurfaceCore(DataPtr&& data) : data(std::move(data))
+        explicit SurfaceCore(ResourcePtr&& resource) : resource(std::move(resource))
         {}
     };
 }

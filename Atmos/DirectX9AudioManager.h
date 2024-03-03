@@ -18,7 +18,7 @@ namespace Atmos::Audio
         void CreateSourceVoice(IXAudio2SourceVoice** sourceVoice, const WAVEFORMATEX& waveFormat);
         bool SetMasterVolume(Volume set) override;
     protected:
-        std::unique_ptr<Asset::AudioAssetData> CreateAudioDataImpl(
+        std::unique_ptr<Asset::Resource::Audio> CreateAudioResourceImpl(
             const FormattedBuffer& file,
             const Name& name) override;
     private:

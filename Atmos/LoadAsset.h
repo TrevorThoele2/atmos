@@ -3,5 +3,8 @@
 namespace Atmos::Asset
 {
     template<class T>
-    struct CreateData;
+    struct Load;
+
+    template<class T>
+    struct Loaded;
 }

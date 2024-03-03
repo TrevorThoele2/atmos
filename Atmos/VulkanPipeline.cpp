@@ -1,7 +1,7 @@
 #include "VulkanPipeline.h"
 
 #include "VulkanUniversalData.h"
-#include "VulkanShaderAssetData.h"
+#include "VulkanShaderAssetResource.h"
 
 namespace Atmos::Render::Vulkan
 {
@@ -151,7 +151,7 @@ namespace Atmos::Render::Vulkan
     vk::PipelineShaderStageCreateInfo Pipeline::ShaderStageCreateInfo(
         const Asset::Shader& shaderAsset, vk::ShaderStageFlagBits shaderType)
     {
-        const auto fileData = shaderAsset.FileDataAs<ShaderAssetDataImplementation>();
+        const auto fileData = shaderAsset.ResourceAs<Asset::Resource::Vulkan::Shader>();
         return vk::PipelineShaderStageCreateInfo(
             {},
             shaderType,

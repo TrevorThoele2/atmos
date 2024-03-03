@@ -1,7 +1,7 @@
 #include "VulkanQuadRenderer.h"
 
 #include "VulkanUniversalData.h"
-#include "VulkanImageAssetData.h"
+#include "VulkanImageAssetResource.h"
 #include "VulkanUtilities.h"
 
 namespace Atmos::Render::Vulkan
@@ -97,31 +97,29 @@ namespace Atmos::Render::Vulkan
                 { adjustedSliceRight, adjustedSliceBottom }
             }
         };
-        const auto imageAssetData = imageAsset->FileDataAs<ImageAssetDataImplementation>();
+        const auto imageAssetResource = imageAsset->ResourceAs<Asset::Resource::Vulkan::Image>();
         auto context = core.ContextFor(imageRender.position.z);
         if (!context)
-            context = &core.AddContext(imageRender.position.z, Context{ imageAssetData->descriptor });
+            context = &core.AddContext(imageRender.position.z, Context{ imageAssetResource->descriptor });
         auto& group = context->GroupFor(*materialAsset);
         group.ListFor(*imageAsset).emplace_back(vertices);
-        core.allDiscriminations.emplace(imageAsset);
+        core.AddDiscriminator(imageAsset);
     }
 
     void QuadRenderer::Start(const std::vector<const Asset::Material*>& materials, vk::CommandBuffer commandBuffer)
     {
-        core.Start(materials, commandBuffer);
+        const auto setupDiscrimination = [this](const Asset::Image* discrimination, vk::DescriptorSet& descriptorSet)
+        {
+            const auto imageAssetResource = discrimination->ResourceAs<Asset::Resource::Vulkan::Image>();
+            const auto imageAssetDescriptor = imageAssetResource->descriptor;
+            imageAssetDescriptor.Update(descriptorSet, *device);
+        };
+
+        core.Start(materials, commandBuffer, setupDiscrimination);
     }
 
     void QuadRenderer::DrawNextLayer(uint32_t currentImage, glm::vec2 cameraSize)
     {
-        const auto setupDiscrimination = [this](const Asset::Image* discrimination, vk::DescriptorSet& descriptorSet)
-        {
-            const auto imageAssetData = discrimination->FileDataAs<ImageAssetDataImplementation>();
-            auto imageAssetDescriptor = imageAssetData->descriptor;
-            imageAssetDescriptor.Update(descriptorSet, *device);
-        };
-
-        core.AttemptReconstructDiscriminatedDescriptorSet(setupDiscrimination);
-
         auto drawContext = core.CurrentDrawContext();
         auto& context = drawContext->currentLayer->second;
         for (auto& group : context.groups)

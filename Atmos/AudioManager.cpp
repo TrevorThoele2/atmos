@@ -89,11 +89,11 @@ namespace Atmos::Audio
 
     AudioManager::~AudioManager() = default;
 
-    std::unique_ptr<Asset::AudioAssetData> AudioManager::CreateAudioData(
+    std::unique_ptr<Asset::Resource::Audio> AudioManager::CreateAudioResource(
         const Buffer& buffer, const Name& name)
     {
         const auto formattedBuffer = FormatBuffer(buffer, name);
-        return CreateAudioDataImpl(formattedBuffer, name);
+        return CreateAudioResourceImpl(formattedBuffer, name);
     }
 
     AudioManager::AudioManager() = default;

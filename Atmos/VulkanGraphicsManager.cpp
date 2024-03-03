@@ -1,8 +1,8 @@
 #include "VulkanGraphicsManager.h"
 
-#include "VulkanSurfaceData.h"
-#include "VulkanImageAssetData.h"
-#include "VulkanShaderAssetData.h"
+#include "VulkanSurfaceResource.h"
+#include "VulkanImageAssetResource.h"
+#include "VulkanShaderAssetResource.h"
 
 #include "VulkanImage.h"
 #include "VulkanCreateImageView.h"
@@ -50,7 +50,7 @@ namespace Atmos::Render::Vulkan
         
     }
 
-    std::unique_ptr<Asset::ImageData> GraphicsManager::CreateImageDataImpl(
+    std::unique_ptr<Asset::Resource::Image> GraphicsManager::CreateImageResourceImpl(
         const Bytes& bytes,
         const Name& name,
         const Asset::ImageSize& size)
@@ -97,11 +97,11 @@ namespace Atmos::Render::Vulkan
         auto descriptor = CombinedImageSamplerDescriptor(
             imageView.get(), sampler.get(), vk::ImageLayout::eShaderReadOnlyOptimal, 1);
 
-        return std::make_unique<ImageAssetDataImplementation>(
-            std::move(image), std::move(imageView), descriptor);
+        return std::make_unique<Asset::Resource::Vulkan::Image>(
+            image.value.release(), image.memory.release(), imageView.release(), descriptor);
     }
 
-    std::unique_ptr<Asset::ShaderData> GraphicsManager::CreateShaderDataImpl(
+    std::unique_ptr<Asset::Resource::Shader> GraphicsManager::CreateShaderResourceImpl(
         const Bytes& bytes, const Name& name)
     {
         const vk::ShaderModuleCreateInfo createInfo(
@@ -109,10 +109,10 @@ namespace Atmos::Render::Vulkan
             bytes.size(),
             reinterpret_cast<const uint32_t*>(bytes.data()));
         auto created = device->createShaderModule(createInfo);
-        return std::make_unique<ShaderAssetDataImplementation>(created, device);
+        return std::make_unique<Asset::Resource::Vulkan::Shader>(created, device);
     }
 
-    std::unique_ptr<SurfaceData> GraphicsManager::CreateMainSurfaceDataImpl(void* window)
+    std::unique_ptr<Resource::Surface> GraphicsManager::CreateMainSurfaceResourceImpl(void* window)
     {
         auto surface = CreateSurface(window, instance);
 
@@ -135,18 +135,37 @@ namespace Atmos::Render::Vulkan
 
         commandPool = CreateCommandPool(*device, *queueIndices);
 
-        return CreateSurfaceDataCommon(std::move(surface), *queueIndices, graphicsQueue, presentQueue);
+        return CreateSurfaceResourceCommon(std::move(surface), *queueIndices, graphicsQueue, presentQueue);
     }
 
-    std::unique_ptr<SurfaceData> GraphicsManager::CreateSurfaceDataImpl(void* window)
+    std::unique_ptr<Resource::Surface> GraphicsManager::CreateSurfaceResourceImpl(void* window)
     {
         auto surface = CreateSurface(window, instance);
         const auto queueIndices = SuitableQueueFamilies(physicalDevice, surface.get());
         if (!queueIndices)
             throw GraphicsError("Could not create surface.");
         const auto presentQueue = device->getQueue(queueIndices->presentFamily, 0);
-        return CreateSurfaceDataCommon(std::move(surface), *queueIndices, graphicsQueue, presentQueue);
+        return CreateSurfaceResourceCommon(std::move(surface), *queueIndices, graphicsQueue, presentQueue);
     }
+
+    void GraphicsManager::ResourceDestroyingImpl(Asset::Resource::Image& resource)
+    {
+        auto& casted = static_cast<Asset::Resource::Vulkan::Image&>(resource);
+        storedResourceList.push_back(std::make_unique<StoredImageResource>(
+            casted.image, casted.memory, casted.imageView, device));
+    }
+
+    void GraphicsManager::PruneResourcesImpl(Arca::Reliquary& reliquary)
+    {
+        auto surfaceCores = reliquary.Batch<SurfaceCore>();
+        for(auto& core : surfaceCores)
+        {
+            auto& casted = static_cast<Resource::Vulkan::Surface&>(*core.resource);
+            casted.WaitForIdle();
+        }
+        storedResourceList.clear();
+    }
+
     bool GraphicsManager::ShouldReconstructInternals() const
     {
         return false;
@@ -154,16 +173,34 @@ namespace Atmos::Render::Vulkan
 
     void GraphicsManager::ReconstructInternals(GraphicsReconstructionObjects objects)
     {
-        const auto handleSurface = [&](SurfaceDataImplementation& data)
+        const auto handleSurface = [&](Resource::Vulkan::Surface& resource)
         {
-            const auto queueIndices = SuitableQueueFamilies(physicalDevice, data.Underlying());
-            data.Reinitialize(*queueIndices);
+            const auto queueIndices = SuitableQueueFamilies(physicalDevice, resource.Underlying());
+            resource.Reinitialize(*queueIndices);
         };
 
-        handleSurface(*objects.mainSurface->Data<SurfaceDataImplementation>());
+        handleSurface(*objects.mainSurface->Resource<Resource::Vulkan::Surface>());
 
         for (auto& surface : objects.ancillarySurfaces)
-            handleSurface(*surface->Data<SurfaceDataImplementation>());
+            handleSurface(*surface->Resource<Resource::Vulkan::Surface>());
+    }
+
+    GraphicsManager::StoredResource::~StoredResource() = default;
+
+    GraphicsManager::StoredImageResource::StoredImageResource(
+        vk::Image image, vk::DeviceMemory memory, vk::ImageView imageView, std::shared_ptr<vk::Device> device)
+        :
+        image(image),
+        memory(memory),
+        imageView(imageView),
+        device(device)
+    {}
+
+    GraphicsManager::StoredImageResource::~StoredImageResource()
+    {
+        device->freeMemory(memory);
+        device->destroyImageView(imageView);
+        device->destroyImage(image);
     }
 
     vk::Instance GraphicsManager::CreateInstance()
@@ -343,13 +380,13 @@ namespace Atmos::Render::Vulkan
             : QueueFamilyIndices{};
     }
 
-    std::unique_ptr<SurfaceData> GraphicsManager::CreateSurfaceDataCommon(
+    std::unique_ptr<Resource::Surface> GraphicsManager::CreateSurfaceResourceCommon(
         vk::UniqueSurfaceKHR&& underlying,
         QueueFamilyIndices queueIndices,
         vk::Queue graphicsQueue,
         vk::Queue presentQueue)
     {
-        return std::make_unique<SurfaceDataImplementation>(
+        return std::make_unique<Resource::Vulkan::Surface>(
             device,
             physicalDevice,
             std::move(underlying),

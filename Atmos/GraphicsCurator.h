@@ -6,13 +6,14 @@
 
 #include "InitializeGraphics.h"
 #include "ReconstructGraphics.h"
-#include "SetupMainSurfaceData.h"
-#include "CreateSurfaceData.h"
+#include "SetupMainSurfaceResource.h"
+#include "CreateSurfaceResource.h"
 #include "SetFullscreen.h"
 #include "ChangeVerticalSync.h"
+#include "PruneGraphicsResources.h"
 
-#include "CreateImageAssetData.h"
-#include "CreateShaderAssetData.h"
+#include "CreateImageAssetResource.h"
+#include "CreateShaderAssetResource.h"
 
 namespace Atmos::Render
 {
@@ -23,13 +24,14 @@ namespace Atmos::Render
     public:
         void Handle(const InitializeGraphics& command);
         void Handle(const ReconstructGraphics& command);
-        void Handle(const SetupMainSurfaceData& command);
-        std::unique_ptr<SurfaceData> Handle(const CreateSurfaceData& command);
+        void Handle(const Resource::SetupMainSurface& command);
+        std::unique_ptr<Resource::Surface> Handle(const Resource::CreateSurface& command);
         void Handle(const SetFullscreen& command);
         void Handle(const ChangeVerticalSync& command);
+        void Handle(const PruneGraphicsResources& command);
 
-        std::unique_ptr<Asset::ImageData> Handle(const Asset::CreateData<Asset::ImageData>& command);
-        std::unique_ptr<Asset::ShaderData> Handle(const Asset::CreateData<Asset::ShaderData>& command);
+        std::unique_ptr<Asset::Resource::Image> Handle(const Asset::Resource::Create<Asset::Resource::Image>& command);
+        std::unique_ptr<Asset::Resource::Shader> Handle(const Asset::Resource::Create<Asset::Resource::Shader>& command);
     private:
         GraphicsManager* manager;
 
@@ -59,12 +61,13 @@ namespace Arca
         using HandledCommands = HandledCommands<
             Atmos::Render::InitializeGraphics,
             Atmos::Render::ReconstructGraphics,
-            Atmos::Render::SetupMainSurfaceData,
-            Atmos::Render::CreateSurfaceData,
+            Atmos::Render::Resource::SetupMainSurface,
+            Atmos::Render::Resource::CreateSurface,
             Atmos::Render::SetFullscreen,
             Atmos::Render::ChangeVerticalSync,
-            Atmos::Asset::CreateData<Atmos::Asset::ImageData>,
-            Atmos::Asset::CreateData<Atmos::Asset::ShaderData>>;
+            Atmos::Render::PruneGraphicsResources,
+            Atmos::Asset::Resource::Create<Atmos::Asset::Resource::Image>,
+            Atmos::Asset::Resource::Create<Atmos::Asset::Resource::Shader>>;
     };
 }
 

@@ -1,20 +1,22 @@
 #pragma once
 
 #include <Arca/Command.h>
+#include "LoadAsset.h"
 #include "FilePath.h"
 
 #include "Buffer.h"
 #include "ImageAssetType.h"
-#include "Size2D.h"
 
 namespace Atmos::Asset
 {
-    struct LoadImage
+    template<>
+    struct Load<Image>
     {
         File::Path filePath;
     };
 
-    struct LoadedImage
+    template<>
+    struct Loaded<Image>
     {
         Buffer buffer;
         ImageType type;
@@ -25,10 +27,10 @@ namespace Atmos::Asset
 namespace Arca
 {
     template<>
-    struct Traits<Atmos::Asset::LoadImage>
+    struct Traits<Atmos::Asset::Load<Atmos::Asset::Image>>
     {
         static const ObjectType objectType = ObjectType::Command;
         static inline const TypeName typeName = "LoadImageAsset";
-        using Result = Atmos::Asset::LoadedImage;
+        using Result = Atmos::Asset::Loaded<Atmos::Asset::Image>;
     };
 }

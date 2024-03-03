@@ -1,15 +1,15 @@
 #pragma once
 
-#include "FileAsset.h"
-#include "ShaderAssetData.h"
+#include "AssetWithResource.h"
+#include "ShaderAssetResource.h"
 
 namespace Atmos::Asset
 {
-    class Shader final : public FileAsset<ShaderData, Shader>
+    class Shader final : public AssetWithResource<Resource::Shader, Shader>
     {
     public:
         explicit Shader(Init init);
-        Shader(Init init, const Atmos::Name& name, DataPtr&& data, const String& entryPoint);
+        Shader(Init init, const Atmos::Name& name, ResourcePtr&& resource, const String& entryPoint);
         Shader(Shader&& arg) noexcept;
 
         Shader& operator=(Shader&& arg) noexcept;
@@ -32,7 +32,7 @@ namespace Arca
         static bool ShouldCreate(
             Reliquary& reliquary,
             const ::Atmos::Name& name,
-            const ::Atmos::Asset::Shader::DataPtr& data,
+            const ::Atmos::Asset::Shader::ResourcePtr& data,
             const ::Atmos::String& entryPoint);
     };
 }

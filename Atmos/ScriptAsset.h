@@ -1,19 +1,19 @@
 #pragma once
 
-#include "FileAsset.h"
-#include "ScriptAssetData.h"
+#include "AssetWithResource.h"
+#include "ScriptAssetResource.h"
 
 class asIScriptModule;
 
 namespace Atmos::Asset
 {
-    class Script final : public FileAsset<ScriptData, Script>
+    class Script final : public AssetWithResource<Resource::Script, Script>
     {
     public:
         using SymbolName = Atmos::Name;
     public:
         explicit Script(Init init);
-        Script(Init init, const ::Atmos::Name& name, DataPtr&& data);
+        Script(Init init, const ::Atmos::Name& name, ResourcePtr&& resource);
         Script(Script&& arg) noexcept;
 
         Script& operator=(Script&& arg) noexcept;
@@ -30,7 +30,7 @@ namespace Arca
         static bool ShouldCreate(
             Reliquary& reliquary,
             const ::Atmos::Name& name,
-            const ::Atmos::Asset::Script::DataPtr& data);
+            const ::Atmos::Asset::Script::ResourcePtr& data);
     };
 }
 

@@ -10,7 +10,7 @@ namespace Atmos::Audio
     class Sound final : public Arca::ClosedTypedRelic<Sound>
     {
     public:
-        using Asset = Asset::AudioAssetInstance;
+        using Asset = Asset::AudioInstance;
     public:
         void PostConstruct();
         void Initialize(Asset&& asset);

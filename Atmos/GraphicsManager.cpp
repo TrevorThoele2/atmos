@@ -1,7 +1,7 @@
 #include "GraphicsManager.h"
 
 #include "MainSurface.h"
-#include "SetupMainSurfaceData.h"
+#include "SetupMainSurfaceResource.h"
 
 #include "Logger.h"
 
@@ -12,10 +12,10 @@ namespace Atmos::Render
     void GraphicsManager::Initialize(Arca::Reliquary& reliquary, void* mainWindow)
     {
         InitializeImpl();
-        reliquary.Do(Render::SetupMainSurfaceData{ mainWindow });
+        reliquary.Do(Resource::SetupMainSurface{ mainWindow });
     }
 
-    std::unique_ptr<Asset::ImageData> GraphicsManager::CreateImageData(
+    std::unique_ptr<Asset::Resource::Image> GraphicsManager::CreateImageResource(
         const Buffer& buffer,
         const Name& name,
         const Asset::ImageSize& size)
@@ -26,25 +26,45 @@ namespace Atmos::Render
             return {};
         }
 
-        return CreateImageDataImpl(buffer, name, size);
+        return CreateImageResourceImpl(buffer, name, size);
     }
 
-    std::unique_ptr<Asset::ShaderData> GraphicsManager::CreateShaderData(
+    std::unique_ptr<Asset::Resource::Shader> GraphicsManager::CreateShaderResource(
         const Buffer& buffer, const Name& name)
     {
-        return CreateShaderDataImpl(buffer, name);
+        return CreateShaderResourceImpl(buffer, name);
     }
 
-    std::unique_ptr<SurfaceData> GraphicsManager::CreateMainSurfaceData(
+    std::unique_ptr<Resource::Surface> GraphicsManager::CreateMainSurfaceResource(
         void* window)
     {
-        return CreateMainSurfaceDataImpl(window);
+        return CreateMainSurfaceResourceImpl(window);
     }
 
-    std::unique_ptr<SurfaceData> GraphicsManager::CreateSurfaceData(
+    std::unique_ptr<Resource::Surface> GraphicsManager::CreateSurfaceResource(
         void* window)
     {
-        return CreateSurfaceDataImpl(window);
+        return CreateSurfaceResourceImpl(window);
+    }
+
+    void GraphicsManager::ResourceDestroying(Asset::Resource::Image& resource)
+    {
+        ResourceDestroyingImpl(resource);
+    }
+
+    void GraphicsManager::ResourceDestroying(Asset::Resource::Shader& resource)
+    {
+        ResourceDestroyingImpl(resource);
+    }
+
+    void GraphicsManager::ResourceDestroying(Resource::Surface& resource)
+    {
+        ResourceDestroyingImpl(resource);
+    }
+
+    void GraphicsManager::PruneResources(Arca::Reliquary& reliquary)
+    {
+        PruneResourcesImpl(reliquary);
     }
 
     void GraphicsManager::Reconstruct(GraphicsReconstructionObjects objects)

@@ -4,38 +4,38 @@
 
 namespace Atmos::Asset
 {
-    AudioAsset::AudioAsset(Init init) : FileAsset(init)
+    Audio::Audio(Init init) : AssetWithResource(init)
     {}
 
-    AudioAsset::AudioAsset(Init init, const ::Atmos::Name & name, DataPtr && data) :
-        FileAsset(init, name, std::move(data))
+    Audio::Audio(Init init, const ::Atmos::Name& name, ResourcePtr&& resource) :
+        AssetWithResource(init, name, std::move(resource))
     {}
 
-    AudioAsset::AudioAsset(AudioAsset&& arg) noexcept : FileAsset(std::move(arg))
+    Audio::Audio(Audio&& arg) noexcept : AssetWithResource(std::move(arg))
     {}
 
-    AudioAsset& AudioAsset::operator=(AudioAsset&& arg) noexcept
+    Audio& Audio::operator=(Audio&& arg) noexcept
     {
-        FileAsset::operator=(std::move(arg));
+        AssetWithResource::operator=(std::move(arg));
         return *this;
     }
 }
 
 namespace Arca
 {
-    bool Traits<::Atmos::Asset::AudioAsset>::ShouldCreate(
-        Reliquary& reliquary, const ::Atmos::Name& name, const ::Atmos::Asset::AudioAsset::DataPtr& data)
+    bool Traits<::Atmos::Asset::Audio>::ShouldCreate(
+        Reliquary& reliquary, const ::Atmos::Name& name, const ::Atmos::Asset::Audio::ResourcePtr& data)
     {
-        return Atmos::Asset::ShouldCreate<::Atmos::Asset::AudioAsset>(reliquary, name);
+        return Atmos::Asset::ShouldCreate<::Atmos::Asset::Audio>(reliquary, name);
     }
 }
 
 namespace Inscription
 {
-    void Scribe<::Atmos::Asset::AudioAsset, BinaryArchive>::ScrivenImplementation(
+    void Scribe<::Atmos::Asset::Audio, BinaryArchive>::ScrivenImplementation(
         ObjectT& object, ArchiveT& archive)
     {
-        BaseScriven<Atmos::Asset::FileAsset<Atmos::Asset::AudioAssetData, Atmos::Asset::AudioAsset>>(
+        BaseScriven<Atmos::Asset::AssetWithResource<Atmos::Asset::Resource::Audio, Atmos::Asset::Audio>>(
             object, archive);
     }
 }

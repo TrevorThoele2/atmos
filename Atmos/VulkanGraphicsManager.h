@@ -24,19 +24,46 @@ namespace Atmos::Render::Vulkan
         void SetFullscreen(bool set) override;
         void ChangeVerticalSync(bool set) override;
     protected:
-        [[nodiscard]] std::unique_ptr<Asset::ImageData> CreateImageDataImpl(
+        [[nodiscard]] std::unique_ptr<Asset::Resource::Image> CreateImageResourceImpl(
             const Bytes& bytes,
             const Name& name,
             const Asset::ImageSize& size) override;
-        [[nodiscard]] std::unique_ptr<Asset::ShaderData> CreateShaderDataImpl(
+        [[nodiscard]] std::unique_ptr<Asset::Resource::Shader> CreateShaderResourceImpl(
             const Bytes& bytes, const Name& name) override;
-        [[nodiscard]] std::unique_ptr<SurfaceData> CreateMainSurfaceDataImpl(
+        [[nodiscard]] std::unique_ptr<Resource::Surface> CreateMainSurfaceResourceImpl(
             void* window) override;
-        [[nodiscard]] std::unique_ptr<SurfaceData> CreateSurfaceDataImpl(
+        [[nodiscard]] std::unique_ptr<Resource::Surface> CreateSurfaceResourceImpl(
             void* window) override;
+
+        void ResourceDestroyingImpl(Asset::Resource::Image& resource) override;
+
+        void PruneResourcesImpl(Arca::Reliquary& reliquary) override;
 
         [[nodiscard]] bool ShouldReconstructInternals() const override;
         void ReconstructInternals(GraphicsReconstructionObjects objects) override;
+    private:
+        class StoredResource
+        {
+        public:
+            virtual ~StoredResource() = 0;
+        };
+
+        using StoredResourcePtr = std::unique_ptr<StoredResource>;
+        using StoredResourceList = std::list<StoredResourcePtr>;
+        StoredResourceList storedResourceList;
+
+        class StoredImageResource final : public StoredResource
+        {
+        public:
+            vk::Image image;
+            vk::DeviceMemory memory;
+            vk::ImageView imageView;
+            std::shared_ptr<vk::Device> device;
+
+            StoredImageResource(
+                vk::Image image, vk::DeviceMemory memory, vk::ImageView imageView, std::shared_ptr<vk::Device> device);
+            ~StoredImageResource();
+        };
     private:
         vk::Instance instance;
         std::vector<const char*> instanceExtensions =
@@ -83,7 +110,7 @@ namespace Atmos::Render::Vulkan
         [[nodiscard]] static std::optional<QueueFamilyIndices> SuitableQueueFamilies(
             vk::PhysicalDevice physicalDevice, vk::SurfaceKHR surface);
     private:
-        [[nodiscard]] std::unique_ptr<SurfaceData> CreateSurfaceDataCommon(
+        [[nodiscard]] std::unique_ptr<Resource::Surface> CreateSurfaceResourceCommon(
             vk::UniqueSurfaceKHR&& underlying,
             QueueFamilyIndices queueIndices,
             vk::Queue graphicsQueue,

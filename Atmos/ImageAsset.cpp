@@ -1,35 +1,35 @@
 #include "ImageAsset.h"
 
 #include "LoadImageAsset.h"
-#include "CreateImageAssetData.h"
+#include "CreateImageAssetResource.h"
 #include "ShouldCreateAsset.h"
 
 namespace Atmos::Asset
 {
-    Image::Image(Init init) : FileAsset(init)
+    Image::Image(Init init) : AssetWithResource(init)
     {}
 
     Image::Image(
         Init init,
         const ::Atmos::Name& name,
-        DataPtr&& data,
+        ResourcePtr&& resource,
         ImageSize size,
         ImageGridSize gridSize)
         :
-        FileAsset(init, name, std::move(data)),
+        AssetWithResource(init, name, std::move(resource)),
         size(size),
         gridSize(gridSize)
     {}
 
     Image::Image(Image&& arg) noexcept :
-        FileAsset(std::move(arg)),
+        AssetWithResource(std::move(arg)),
         size(arg.size),
         gridSize(arg.gridSize)
     {}
 
     Image& Image::operator=(Image&& arg) noexcept
     {
-        FileAsset::operator=(std::move(arg));
+        AssetWithResource::operator=(std::move(arg));
         size = arg.size;
         gridSize = arg.gridSize;
         return *this;
@@ -105,7 +105,7 @@ namespace Arca
     bool Traits<::Atmos::Asset::Image>::ShouldCreate(
         Reliquary& reliquary,
         const ::Atmos::Name& name,
-        const ::Atmos::Asset::Image::DataPtr&,
+        const ::Atmos::Asset::Image::ResourcePtr&,
         ::Atmos::Asset::ImageSize,
         ::Atmos::Asset::ImageGridSize)
     {
@@ -118,15 +118,15 @@ namespace Inscription
     void Scribe<Atmos::Asset::Image, BinaryArchive>::ScrivenImplementation(
         ObjectT& object, ArchiveT& archive)
     {
-        BaseScriven<Atmos::Asset::FileAsset<Atmos::Asset::ImageData, Atmos::Asset::Image>>(
+        BaseScriven<Atmos::Asset::AssetWithResource<Atmos::Asset::Resource::Image, Atmos::Asset::Image>>(
             object, archive);
         archive(object.size);
         archive(object.gridSize);
         if (archive.IsInput())
         {
             const auto filePath = std::filesystem::current_path() / "Images" / object.Name();
-            const auto loaded = object.Owner().Do(Atmos::Asset::LoadImage{ filePath });
-            object.data = object.Owner().Do(Atmos::Asset::CreateData<Atmos::Asset::ImageData>{
+            const auto loaded = object.Owner().Do(Atmos::Asset::Load<Atmos::Asset::Image>{ filePath });
+            object.resource = object.Owner().Do(Atmos::Asset::Resource::Create<Atmos::Asset::Resource::Image>{
                 loaded.buffer,
                 object.Name(),
                 loaded.size });

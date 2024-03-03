@@ -2,15 +2,16 @@
 
 #include "AudioAsset.h"
 #include "AudioAssetInstance.h"
+#include "AudioAssetInstanceResource.h"
 
 namespace Atmos::Audio
 {
-    class AudioAssetInstanceDataImplementation final : public Asset::AudioAssetInstanceData
+    class AudioAssetInstanceDataImplementation final : public Asset::Resource::AudioInstance
     {
     public:
         AudioAssetInstanceDataImplementation() = default;
 
-        [[nodiscard]] std::unique_ptr<AudioAssetInstanceData> Clone() const override
+        [[nodiscard]] std::unique_ptr<AudioInstance> Clone() const override
         {
             return std::make_unique<AudioAssetInstanceDataImplementation>(*this);
         }
@@ -31,12 +32,12 @@ namespace Atmos::Audio
         {}
     };
 
-    class AudioAssetDataImplementation final : public Asset::AudioAssetData
+    class AudioAssetDataImplementation final : public Asset::Resource::Audio
     {
     public:
         AudioAssetDataImplementation() = default;
 
-        [[nodiscard]] std::unique_ptr<Asset::AudioAssetInstanceData> CreateInstanceData() const override
+        [[nodiscard]] std::unique_ptr<Asset::Resource::AudioInstance> CreateInstanceResource() const override
         {
             return std::make_unique<AudioAssetInstanceDataImplementation>();
         }
@@ -47,7 +48,7 @@ namespace Atmos::Audio
         return true;
     }
 
-    std::unique_ptr<Asset::AudioAssetData> NullAudioManager::CreateAudioDataImpl(
+    std::unique_ptr<Asset::Resource::Audio> NullAudioManager::CreateAudioResourceImpl(
         const FormattedBuffer& buffer, const Name& name)
     {
         return std::make_unique<AudioAssetDataImplementation>();

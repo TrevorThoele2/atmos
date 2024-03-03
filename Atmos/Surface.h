@@ -16,7 +16,7 @@ namespace Atmos::Render
     protected:
         using Init = typename BaseT::Init;
     public:
-        using DataT = SurfaceData;
+        using ResourceT = Resource::Surface;
     public:
         virtual ~Surface() = 0;
 
@@ -27,13 +27,13 @@ namespace Atmos::Render
 
         [[nodiscard]] ScreenSize Size() const;
 
-        [[nodiscard]] DataT* Data() const;
-        template<class DataT>
-        [[nodiscard]] DataT* Data() const;
+        [[nodiscard]] ResourceT* Resource() const;
+        template<class ResourceT>
+        [[nodiscard]] ResourceT* Resource() const;
     protected:
-        using DataPtr = std::unique_ptr<DataT>;
+        using ResourcePtr = std::unique_ptr<ResourceT>;
     protected:
-        Surface(Init init, DataPtr&& data);
+        Surface(Init init, ResourcePtr&& resource);
 
         [[nodiscard]] Arca::Index<SurfaceCore> Core() const;
     protected:
@@ -48,44 +48,44 @@ namespace Atmos::Render
     template<class Derived>
     void Surface<Derived>::StageRender(const ImageRender& imageRender) const
     {
-        Data()->StageRender(imageRender);
+        Resource()->StageRender(imageRender);
     }
 
     template<class Derived>
     void Surface<Derived>::StageRender(const LineRender& lineRender) const
     {
-        Data()->StageRender(lineRender);
+        Resource()->StageRender(lineRender);
     }
 
     template<class Derived>
     void Surface<Derived>::DrawFrame() const
     {
-        Data()->DrawFrame(Owner(), Core()->backgroundColor);
+        Resource()->DrawFrame(Owner(), Core()->backgroundColor);
     }
 
     template<class Derived>
     ScreenSize Surface<Derived>::Size() const
     {
-        return Data()->Size();
+        return Resource()->Size();
     }
 
     template<class Derived>
-    auto Surface<Derived>::Data() const -> DataT*
+    auto Surface<Derived>::Resource() const -> ResourceT*
     {
-        return core->data.get();
+        return core->resource.get();
     }
 
     template<class Derived>
-    template<class DataT>
-    DataT* Surface<Derived>::Data() const
+    template<class ResourceT>
+    ResourceT* Surface<Derived>::Resource() const
     {
-        return static_cast<DataT*>(core->data.get());
+        return static_cast<ResourceT*>(core->resource.get());
     }
 
     template<class Derived>
-    Surface<Derived>::Surface(Init init, DataPtr&& data) :
+    Surface<Derived>::Surface(Init init, ResourcePtr&& resource) :
         Arca::ClosedTypedRelic<Derived>(init),
-        core(init.template Create<SurfaceCore>(std::move(data)))
+        core(init.template Create<SurfaceCore>(std::move(resource)))
     {}
 
     template<class Derived>

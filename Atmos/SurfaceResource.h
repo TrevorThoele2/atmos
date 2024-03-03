@@ -4,12 +4,12 @@
 #include "LineRender.h"
 #include "ScreenSize.h"
 
-namespace Atmos::Render
+namespace Atmos::Render::Resource
 {
-    class SurfaceData
+    class Surface
     {
     public:
-        virtual ~SurfaceData() = 0;
+        virtual ~Surface() = 0;
 
         virtual void StageRender(const ImageRender& imageRender) = 0;
         virtual void StageRender(const LineRender& lineRender) = 0;

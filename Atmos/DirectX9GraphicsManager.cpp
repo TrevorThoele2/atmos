@@ -3,9 +3,9 @@
 #include "WindowsInclude.h"
 int (WINAPIV * __vsnprintf)(char *, size_t, const char*, va_list) = _vsnprintf;
 
-#include "DirectX9ImageAssetData.h"
-#include "DirectX9ShaderAssetData.h"
-#include "DirectX9SurfaceData.h"
+#include "DirectX9ImageAssetResource.h"
+#include "DirectX9ShaderAssetResource.h"
+#include "DirectX9SurfaceResource.h"
 #include "DirectX9Utilities.h"
 #include "MainSurface.h"
 #include "AncillarySurface.h"
@@ -65,7 +65,7 @@ namespace Atmos::Render::DirectX9
         return device;
     }
 
-    std::unique_ptr<Asset::ImageData> GraphicsManager::CreateImageDataImpl(
+    std::unique_ptr<Asset::Resource::Image> GraphicsManager::CreateImageResourceImpl(
         const Buffer& buffer,
         const Name& name,
         const Asset::ImageSize& size)
@@ -98,10 +98,10 @@ namespace Atmos::Render::DirectX9
             throw GraphicsError("An image asset could not be created.",
                 { {"Name", name } });
 
-        return std::make_unique<ImageAssetDataImplementation>(texture);
+        return std::make_unique<Asset::Resource::DirectX9::Image>(texture);
     }
 
-    std::unique_ptr<Asset::ShaderData> GraphicsManager::CreateShaderDataImpl(
+    std::unique_ptr<Asset::Resource::Shader> GraphicsManager::CreateShaderResourceImpl(
         const Buffer& buffer, const Name& name)
     {
         LPD3DXEFFECT effect;
@@ -120,10 +120,10 @@ namespace Atmos::Render::DirectX9
             throw GraphicsError("A shader asset could not be created.",
                 { {"Name", name } });
 
-        return std::make_unique<ShaderAssetDataImplementation>(effect);
+        return std::make_unique<Asset::Resource::DirectX9::Shader>(effect);
     }
 
-    std::unique_ptr<SurfaceData> GraphicsManager::CreateMainSurfaceDataImpl(void* window)
+    std::unique_ptr<Resource::Surface> GraphicsManager::CreateMainSurfaceResourceImpl(void* window)
     {
         LPDIRECT3DSWAPCHAIN9 swapChain;
         const auto swapChainResult = device->GetSwapChain(0, &swapChain);
@@ -135,14 +135,14 @@ namespace Atmos::Render::DirectX9
         if (IsError(backBufferResult))
             throw GraphicsError("The main render surface data could not be retrieved.");
 
-        return std::make_unique<SurfaceDataImplementation>(
+        return std::make_unique<Resource::DirectX9::Surface>(
             *this,
             swapChain,
             backBuffer,
             false);
     }
 
-    std::unique_ptr<SurfaceData> GraphicsManager::CreateSurfaceDataImpl(
+    std::unique_ptr<Resource::Surface> GraphicsManager::CreateSurfaceResourceImpl(
         void* window)
     {
         D3DPRESENT_PARAMETERS presentationParameters;
@@ -169,7 +169,7 @@ namespace Atmos::Render::DirectX9
         if (IsError(createBackBufferResult))
             throw GraphicsError("A render surface could not be created.");
 
-        return std::make_unique<SurfaceDataImplementation>(
+        return std::make_unique<Resource::DirectX9::Surface>(
             *this,
             swapChain,
             backBuffer,
@@ -184,12 +184,12 @@ namespace Atmos::Render::DirectX9
     void GraphicsManager::ReconstructInternals(GraphicsReconstructionObjects objects)
     {
         for (auto& asset : objects.shaderAssets)
-            asset->FileDataAs<ShaderAssetDataImplementation>()->Release();
+            asset->ResourceAs<Asset::Resource::DirectX9::Shader>()->Release();
 
-        objects.mainSurface->Data<SurfaceDataImplementation>()->Release();
+        objects.mainSurface->Resource<Resource::DirectX9::Surface>()->Release();
 
         for (auto& surface : objects.ancillarySurfaces)
-            surface->Data<SurfaceDataImplementation>()->Release();
+            surface->Resource<Resource::DirectX9::Surface>()->Release();
 
         if (!IsDeviceNotReset())
         {
@@ -216,12 +216,12 @@ namespace Atmos::Render::DirectX9
         if (IsOk())
         {
             for (auto& asset : objects.shaderAssets)
-                asset->FileDataAs<ShaderAssetDataImplementation>()->Reset();
+                asset->ResourceAs<Asset::Resource::DirectX9::Shader>()->Reset();
 
-            objects.mainSurface->Data<SurfaceDataImplementation>()->Reset();
+            objects.mainSurface->Resource<Resource::DirectX9::Surface>()->Reset();
 
             for (auto& surface : objects.ancillarySurfaces)
-                surface->Data<SurfaceDataImplementation>()->Reset();
+                surface->Resource<Resource::DirectX9::Surface>()->Reset();
         }
     }
 

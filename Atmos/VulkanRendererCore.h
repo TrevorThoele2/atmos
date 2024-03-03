@@ -1,7 +1,6 @@
 #pragma once
 
 #include <optional>
-#include <set>
 #include <map>
 #include "VulkanIncludes.h"
 
@@ -30,10 +29,9 @@ namespace Atmos::Render::Vulkan
             Discriminator discriminator;
             std::uint32_t imageIndex;
             vk::DescriptorSet descriptorSet;
-            DiscriminatedDescriptorSet(Discriminator discriminator, std::uint32_t imageIndex, vk::DescriptorSet descriptorSet);
+            DiscriminatedDescriptorSet(
+                Discriminator discriminator, std::uint32_t imageIndex, vk::DescriptorSet descriptorSet);
         };
-    public:
-        std::set<Discriminator> allDiscriminations;
     public:
         RendererCore(
             std::shared_ptr<vk::Device> device,
@@ -44,15 +42,15 @@ namespace Atmos::Render::Vulkan
             Asset::MaterialType materialAssetType);
 
         void Initialize(uint32_t swapchainImageCount, vk::RenderPass renderPass, vk::Extent2D extent);
-
-        template<class SetupDiscrimination>
-        void AttemptReconstructDiscriminatedDescriptorSet(SetupDiscrimination setupDiscrimination);
     public:
-        void Start(const std::vector<const Asset::Material*>& materials, vk::CommandBuffer commandBuffer);
+        template<class SetupDiscrimination>
+        void Start(const std::vector<const Asset::Material*>& materials, vk::CommandBuffer commandBuffer, SetupDiscrimination setupDiscrimination);
         void End();
         [[nodiscard]] bool IsDone() const;
         [[nodiscard]] DrawContext* CurrentDrawContext();
     public:
+        void AddDiscriminator(Discriminator discriminator);
+
         template<class Predicate>
         DiscriminatedDescriptorSet* DiscriminatedDescriptorSetFor(Predicate predicate);
     public:
@@ -68,11 +66,21 @@ namespace Atmos::Render::Vulkan
         LayeredContexts layeredContexts;
     private:
         std::optional<DrawContext> drawContext;
-        std::vector<const Asset::Material*> previousMaterialAssets;
     private:
+        struct DiscriminatorSource
+        {
+            Discriminator discriminator;
+            std::uint32_t swapchainImageIndex;
+            DiscriminatorSource(Discriminator discriminator, std::uint32_t swapchainImageIndex);
+        };
+
+        std::vector<DiscriminatorSource> discriminatorSources;
         std::vector<DescriptorSetGroup::Definition> descriptorSetGroupDefinitions;
         std::optional<DescriptorSetGroup> descriptorSets;
         std::vector<DiscriminatedDescriptorSet> discriminatedDescriptorSets;
+
+        template<class SetupDiscrimination>
+        void SetupDiscriminatedDescriptorSet(SetupDiscrimination setupDiscrimination);
     private:
         VertexInput vertexInput;
         std::vector<Pipeline> pipelines;
@@ -130,56 +138,10 @@ namespace Atmos::Render::Vulkan
         descriptorSets = DescriptorSetGroup(descriptorSetGroupDefinitions, *device);
     }
 
-    template <class Discriminator, class Context>
-    template<class SetupDiscrimination>
-    void RendererCore<Discriminator, Context>::AttemptReconstructDiscriminatedDescriptorSet(
-        SetupDiscrimination setupDiscrimination)
-    {
-        const auto size = allDiscriminations.size() * swapchainImageCount;
-        if (descriptorSets->Size() < size || drawContext->materials != previousMaterialAssets)
-        {
-            pipelines.clear();
-            discriminatedDescriptorSets.clear();
-            descriptorSets->Reserve(size);
-
-            auto descriptorSetIndex = 0;
-            for (uint32_t swapchainImageIndex = 0; swapchainImageIndex < swapchainImageCount; ++swapchainImageIndex)
-            {
-                for (auto discrimination : allDiscriminations)
-                {
-                    auto descriptorSet = descriptorSets->At(descriptorSetIndex);
-
-                    setupDiscrimination(discrimination, descriptorSet);
-
-                    discriminatedDescriptorSets.emplace_back(discrimination, swapchainImageIndex, descriptorSet);
-                    ++descriptorSetIndex;
-                }
-            }
-
-            for (auto& material : drawContext->materials)
-            {
-                if (material->Type() != materialAssetType)
-                    continue;
-
-                pipelines.push_back(CreatePipeline(material, descriptorSets->DescriptorSetLayout(), extent));
-                auto& pipeline = pipelines.back();
-
-                descriptorSetIndex = 0;
-                for (uint32_t swapchainImageIndex = 0; swapchainImageIndex < swapchainImageCount; ++swapchainImageIndex)
-                {
-                    for (auto discrimination : allDiscriminations)
-                    {
-                        pipeline.uniformBufferDescriptors[swapchainImageIndex].Update(
-                            descriptorSets->At(descriptorSetIndex), *device);
-                        ++descriptorSetIndex;
-                    }
-                }
-            }
-        }
-    }
-
     template<class Discriminator, class Context>
-    void RendererCore<Discriminator, Context>::Start(const std::vector<const Asset::Material*>& materials, vk::CommandBuffer commandBuffer)
+    template<class SetupDiscrimination>
+    void RendererCore<Discriminator, Context>::Start(
+        const std::vector<const Asset::Material*>& materials, vk::CommandBuffer commandBuffer, SetupDiscrimination setupDiscrimination)
     {
         if (layeredContexts.empty())
             return;
@@ -188,17 +150,18 @@ namespace Atmos::Render::Vulkan
         drawContext->materials = materials;
         drawContext->commandBuffer = commandBuffer;
         drawContext->currentLayer = layeredContexts.begin();
+
+        SetupDiscriminatedDescriptorSet(setupDiscrimination);
     }
 
     template<class Discriminator, class Context>
     void RendererCore<Discriminator, Context>::End()
     {
         layeredContexts.clear();
-        previousMaterialAssets = drawContext->materials;
         drawContext = {};
 
         descriptorSets->Reset();
-        allDiscriminations.clear();
+        discriminatorSources.clear();
     }
 
     template<class Discriminator, class Context>
@@ -213,6 +176,17 @@ namespace Atmos::Render::Vulkan
         return drawContext
             ? &*drawContext
             : nullptr;
+    }
+
+    template<class Discriminator, class Context>
+    void RendererCore<Discriminator, Context>::AddDiscriminator(Discriminator discriminator)
+    {
+        for (auto& source : discriminatorSources)
+            if (source.discriminator == discriminator)
+                return;
+
+        for (uint32_t swapchainImageIndex = 0; swapchainImageIndex < swapchainImageCount; ++swapchainImageIndex)
+            discriminatorSources.emplace_back(discriminator, swapchainImageIndex);
     }
 
     template<class Discriminator, class Context>
@@ -265,6 +239,83 @@ namespace Atmos::Render::Vulkan
     size_t RendererCore<Discriminator, Context>::LayerCount() const
     {
         return layeredContexts.size();
+    }
+
+    template<class Discriminator, class Context>
+    RendererCore<Discriminator, Context>::DiscriminatorSource::DiscriminatorSource(
+        Discriminator discriminator, std::uint32_t swapchainImageIndex)
+        :
+        discriminator(discriminator), swapchainImageIndex(swapchainImageIndex)
+    {}
+
+    template <class Discriminator, class Context>
+    template<class SetupDiscrimination>
+    void RendererCore<Discriminator, Context>::SetupDiscriminatedDescriptorSet(
+        SetupDiscrimination setupDiscrimination)
+    {
+        const auto iterateDiscriminatorSources = [this](auto onEach)
+        {
+            for (std::uint32_t i = 0; i < discriminatorSources.size(); ++i)
+            {
+                const auto& source = discriminatorSources[i];
+                const auto descriptorSet = descriptorSets->At(i);
+                onEach(source, descriptorSet, i);
+            }
+        };
+
+        const auto updatePipeline = [this, &iterateDiscriminatorSources](Pipeline& pipeline)
+        {
+            iterateDiscriminatorSources(
+                [this, &pipeline](
+                    const DiscriminatorSource& source, vk::DescriptorSet descriptorSet, std::uint32_t)
+                {
+                    pipeline.uniformBufferDescriptors[source.swapchainImageIndex].Update(descriptorSet, *device);
+                });
+        };
+
+        const auto requiredDescriptorSetSize = discriminatorSources.size();
+        if (descriptorSets->Size() < requiredDescriptorSetSize)
+        {
+            pipelines.clear();
+            pipelines.reserve(drawContext->materials.size());
+            discriminatedDescriptorSets.clear();
+            discriminatedDescriptorSets.reserve(requiredDescriptorSetSize);
+            descriptorSets->Reserve(requiredDescriptorSetSize);
+
+            iterateDiscriminatorSources(
+                [this, setupDiscrimination](
+                    const DiscriminatorSource& source, vk::DescriptorSet descriptorSet, std::uint32_t)
+                {
+                    setupDiscrimination(source.discriminator, descriptorSet);
+                    discriminatedDescriptorSets.emplace_back(
+                        source.discriminator, source.swapchainImageIndex, descriptorSet);
+                });
+
+            for (auto& material : drawContext->materials)
+            {
+                if (material->Type() != materialAssetType)
+                    continue;
+
+                pipelines.push_back(CreatePipeline(material, descriptorSets->DescriptorSetLayout(), extent));
+                auto& pipeline = pipelines.back();
+
+                updatePipeline(pipeline);
+            }
+        }
+        else
+        {
+            iterateDiscriminatorSources(
+                [this, setupDiscrimination](
+                    const DiscriminatorSource& source, vk::DescriptorSet descriptorSet, std::uint32_t index)
+                {
+                    auto& discriminatedDescriptorSet = discriminatedDescriptorSets[index];
+                    discriminatedDescriptorSet.discriminator = source.discriminator;
+                    setupDiscrimination(discriminatedDescriptorSet.discriminator, descriptorSet);
+                });
+
+            for (auto& pipeline : pipelines)
+                updatePipeline(pipeline);
+        }
     }
 
     template<class Discriminator, class Context>

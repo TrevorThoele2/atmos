@@ -2,19 +2,19 @@
 
 namespace Atmos::Render
 {
-    class ImageAssetDataImplementation final : public Asset::ImageData
+    class ImageAssetDataImplementation final : public Asset::Resource::Image
     {
     public:
         ImageAssetDataImplementation() = default;
     };
 
-    class ShaderAssetDataImplementation final : public Asset::ShaderData
+    class ShaderAssetDataImplementation final : public Asset::Resource::Shader
     {
     public:
         ShaderAssetDataImplementation() = default;
     };
 
-    class SurfaceDataImplementation final : public SurfaceData
+    class SurfaceDataImplementation final : public Resource::Surface
     {
     public:
         SurfaceDataImplementation() = default;
@@ -45,7 +45,7 @@ namespace Atmos::Render
     void NullGraphicsManager::InitializeImpl()
     {}
 
-    std::unique_ptr<Asset::ImageData> NullGraphicsManager::CreateImageDataImpl(
+    std::unique_ptr<Asset::Resource::Image> NullGraphicsManager::CreateImageResourceImpl(
         const Buffer& buffer,
         const Name& name,
         const Asset::ImageSize& size)
@@ -53,19 +53,19 @@ namespace Atmos::Render
         return std::make_unique<ImageAssetDataImplementation>();
     }
 
-    std::unique_ptr<Asset::ShaderData> NullGraphicsManager::CreateShaderDataImpl(
+    std::unique_ptr<Asset::Resource::Shader> NullGraphicsManager::CreateShaderResourceImpl(
         const Buffer& buffer, const Name& name)
     {
         return std::make_unique<ShaderAssetDataImplementation>();
     }
 
-    std::unique_ptr<SurfaceData> NullGraphicsManager::CreateMainSurfaceDataImpl(
+    std::unique_ptr<Resource::Surface> NullGraphicsManager::CreateMainSurfaceResourceImpl(
         void* window)
     {
         return std::make_unique<SurfaceDataImplementation>();
     }
 
-    std::unique_ptr<SurfaceData> NullGraphicsManager::CreateSurfaceDataImpl(
+    std::unique_ptr<Resource::Surface> NullGraphicsManager::CreateSurfaceResourceImpl(
         void* window)
     {
         return std::make_unique<SurfaceDataImplementation>();

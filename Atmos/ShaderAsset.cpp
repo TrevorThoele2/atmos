@@ -1,6 +1,6 @@
 #include "ShaderAsset.h"
 
-#include "CreateShaderAssetData.h"
+#include "CreateShaderAssetResource.h"
 #include "ShouldCreateAsset.h"
 
 #include "SimpleFile.h"
@@ -8,20 +8,20 @@
 namespace Atmos::Asset
 {
     Shader::Shader(Init init) :
-        FileAsset(init)
+        AssetWithResource(init)
     {}
 
-    Shader::Shader(Init init, const Atmos::Name& name, DataPtr&& data, const String& entryPoint) :
-        FileAsset(init, name, std::move(data)), entryPoint(entryPoint)
+    Shader::Shader(Init init, const Atmos::Name& name, ResourcePtr&& resource, const String& entryPoint) :
+        AssetWithResource(init, name, std::move(resource)), entryPoint(entryPoint)
     {}
 
     Shader::Shader(Shader&& arg) noexcept :
-        FileAsset(std::move(arg)), entryPoint(std::move(arg.entryPoint))
+        AssetWithResource(std::move(arg)), entryPoint(std::move(arg.entryPoint))
     {}
 
     Shader& Shader::operator=(Shader&& arg) noexcept
     {
-        FileAsset::operator=(std::move(arg));
+        AssetWithResource::operator=(std::move(arg));
         entryPoint = arg.entryPoint;
         return *this;
     }
@@ -37,7 +37,7 @@ namespace Arca
     bool Traits<::Atmos::Asset::Shader>::ShouldCreate(
         Reliquary& reliquary,
         const ::Atmos::Name& name,
-        const ::Atmos::Asset::Shader::DataPtr& data,
+        const ::Atmos::Asset::Shader::ResourcePtr& data,
         const ::Atmos::String& entryPoint)
     {
         return Atmos::Asset::ShouldCreate<::Atmos::Asset::Shader>(reliquary, name);
@@ -49,7 +49,7 @@ namespace Inscription
     void Scribe<Atmos::Asset::Shader, BinaryArchive>::ScrivenImplementation(
         ObjectT& object, ArchiveT& archive)
     {
-        BaseScriven<Atmos::Asset::FileAsset<Atmos::Asset::ShaderData, Atmos::Asset::Shader>>(
+        BaseScriven<Atmos::Asset::AssetWithResource<Atmos::Asset::Resource::Shader, Atmos::Asset::Shader>>(
             object, archive);
         archive(object.entryPoint);
         if (archive.IsInput())
@@ -58,7 +58,7 @@ namespace Inscription
 
             Atmos::SimpleInFile inFile(filePath);
             const auto buffer = inFile.ReadBuffer();
-            object.data = object.Owner().Do(Atmos::Asset::CreateData<Atmos::Asset::ShaderData>{buffer, object.Name() });
+            object.resource = object.Owner().Do(Atmos::Asset::Resource::Create<Atmos::Asset::Resource::Shader>{buffer, object.Name() });
         }
     }
 }

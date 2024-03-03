@@ -1,59 +1,59 @@
 #include "AudioAssetInstance.h"
 
+#include "AudioAssetInstanceResource.h"
+
 namespace Atmos::Asset
 {
-    AudioAssetInstance::AudioAssetInstance(const AudioAsset& audioAsset, DataPtr&& data) :
-        data(std::move(data))
+    AudioInstance::AudioInstance(ResourcePtr&& resource) :
+        resource(std::move(resource))
     {}
 
-    AudioAssetInstance::AudioAssetInstance(const AudioAssetInstance& arg) :
-        data(arg.data->Clone()), volume(arg.volume), isLooping(arg.isLooping)
+    AudioInstance::AudioInstance(const AudioInstance& arg) :
+        resource(arg.resource->Clone()), volume(arg.volume), isLooping(arg.isLooping)
     {}
 
-    AudioAssetInstance& AudioAssetInstance::operator=(const AudioAssetInstance& arg)
+    AudioInstance& AudioInstance::operator=(const AudioInstance& arg)
     {
-        data = arg.data->Clone();
+        resource = arg.resource->Clone();
         volume = arg.volume;
         isLooping = arg.isLooping;
         return *this;
     }
 
-    void AudioAssetInstance::Start()
+    void AudioInstance::Start()
     {
-        data->Start();
+        resource->Start();
     }
 
-    void AudioAssetInstance::Stop()
+    void AudioInstance::Stop()
     {
-        data->Stop();
+        resource->Stop();
     }
 
-    bool AudioAssetInstance::IsPlaying() const
+    bool AudioInstance::IsPlaying() const
     {
         return isPlaying;
     }
 
-    void AudioAssetInstance::Loop(bool set)
+    void AudioInstance::Loop(bool set)
     {
         isLooping = set;
-        data->Loop(set);
+        resource->Loop(set);
     }
 
-    bool AudioAssetInstance::IsLooping() const
+    bool AudioInstance::IsLooping() const
     {
         return isLooping;
     }
 
-    void AudioAssetInstance::ChangeVolume(Audio::Volume volume)
+    void AudioInstance::ChangeVolume(Atmos::Audio::Volume volume)
     {
         this->volume = volume;
-        data->SetVolume(this->volume);
+        resource->SetVolume(this->volume);
     }
 
-    Audio::Volume AudioAssetInstance::Volume() const
+    Atmos::Audio::Volume AudioInstance::Volume() const
     {
         return volume;
     }
-
-    AudioAssetInstanceData::~AudioAssetInstanceData() = default;
 }

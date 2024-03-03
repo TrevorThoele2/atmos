@@ -58,14 +58,6 @@ namespace Atmos::Render::Vulkan
 
     void DescriptorSetGroup::AttemptAllocate(uint32_t count)
     {
-        if (descriptorPool)
-        {
-            descriptorPool.reset();
-            descriptorSetLayout.reset();
-            availableDescriptorSets.clear();
-            allDescriptorSets.clear();
-        }
-
         std::vector<vk::DescriptorPoolSize> poolSizes;
         std::vector<vk::DescriptorSetLayoutBinding> bindings;
 

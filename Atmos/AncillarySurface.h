@@ -7,7 +7,7 @@ namespace Atmos::Render
     class AncillarySurface final : public Surface<AncillarySurface>
     {
     public:
-        AncillarySurface(Init init, DataPtr&& data);
+        AncillarySurface(Init init, ResourcePtr&& resource);
     };
 }
 
