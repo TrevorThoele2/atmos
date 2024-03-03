@@ -2,7 +2,7 @@
 
 namespace Atmos::Script
 {
-    void AllRunningScripts::Add(Arca::RelicID instanceID, Arca::RelicIndex<RunningScript> runningScript)
+    void AllRunningScripts::Add(Arca::RelicID instanceID, Arca::Index<RunningScript> runningScript)
     {
         map.emplace(instanceID, runningScript);
     }
@@ -22,7 +22,7 @@ namespace Atmos::Script
         return currentRunning;
     }
 
-    Arca::RelicIndex<RunningScript> AllRunningScripts::RunningScriptFor(Arca::RelicID instanceID) const
+    Arca::Index<RunningScript> AllRunningScripts::RunningScriptFor(Arca::RelicID instanceID) const
     {
         const auto found = map.find(instanceID);
         if (found == map.end())

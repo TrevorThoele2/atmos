@@ -15,10 +15,10 @@ namespace Atmos::Input
 
         void Work();
     private:
-        Arca::ComputedIndex<Manager*> manager;
+        Arca::Postulate<Manager*> manager;
 
-        Arca::GlobalIndex<MappedInputs> mappedInputs;
-        Arca::GlobalIndex<MappedActions> mappedActions;
+        Arca::Index<MappedInputs> mappedInputs;
+        Arca::Index<MappedActions> mappedActions;
     };
 }
 

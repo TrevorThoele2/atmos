@@ -5,10 +5,7 @@
 #include "AvatarComponent.h"
 #include "CurrentAvatar.h"
 
-namespace Atmos::Debug
-{
-    class Statistics;
-}
+#include "DebugValue.h"
 
 namespace Atmos::Entity
 {
@@ -19,9 +16,10 @@ namespace Atmos::Entity
 
         void Work();
     private:
-        Arca::GlobalIndex<CurrentAvatar> currentAvatar;
+        Arca::Index<CurrentAvatar> currentAvatar;
     private:
-        Arca::GlobalIndex<Debug::Statistics> debugStatistics;
+        Debug::Value debugPlayerColumn;
+        Debug::Value debugPlayerRow;
     };
 }
 

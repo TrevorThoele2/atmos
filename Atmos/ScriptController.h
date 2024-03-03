@@ -9,11 +9,6 @@
 #include "ExecuteImmediately.h"
 #include "ForceQuit.h"
 
-namespace Atmos::Debug
-{
-    class Statistics;
-}
-
 namespace Atmos::Script
 {
     class ScriptController final : public Arca::Curator
@@ -26,11 +21,9 @@ namespace Atmos::Script
         void Handle(const ExecuteImmediately& command);
         void Handle(const ForceQuit& command);
     private:
-        Arca::GlobalIndex<AllRunningScripts> allRunningScripts;
+        Arca::Index<AllRunningScripts> allRunningScripts;
     private:
         void LaunchOrRunScript(RunningScript& script);
-    private:
-        Arca::GlobalIndex<Debug::Statistics> debugStatistics;
     };
 }
 

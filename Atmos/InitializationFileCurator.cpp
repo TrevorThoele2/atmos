@@ -16,7 +16,7 @@ namespace Atmos::Initialization
     FileCurator::FileCurator(Init init) :
         Curator(init), information(init.owner)
     {
-        auto informationData = Data(information);
+        auto informationData = MutablePointer(information);
 
         sound.CreateEntry("Master Volume", &informationData->sound.masterVolume);
 

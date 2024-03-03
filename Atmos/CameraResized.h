@@ -1,17 +1,18 @@
 #pragma once
 
 #include <Arca/Signal.h>
+#include <Arca/Index.h>
 
 namespace Atmos::Render
 {
     class Camera;
 
-    class CameraMoved
+    class CameraResized
     {
     public:
         Arca::Index<Camera> camera;
 
-        explicit CameraMoved(Arca::Index<Camera> camera) : camera(std::move(camera))
+        explicit CameraResized(Arca::Index<Camera> camera) : camera(std::move(camera))
         {}
     };
 }
@@ -19,9 +20,9 @@ namespace Atmos::Render
 namespace Arca
 {
     template<>
-    struct Traits<Atmos::Render::CameraMoved>
+    struct Traits<Atmos::Render::CameraResized>
     {
         static const ObjectType objectType = ObjectType::Signal;
-        static inline const TypeName typeName = "CameraMoved";
+        static inline const TypeName typeName = "CameraResized";
     };
 }

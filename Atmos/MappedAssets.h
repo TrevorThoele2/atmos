@@ -12,7 +12,7 @@ namespace Atmos::Asset
     class MappedAssets : public Arca::ClosedTypedRelic<MappedAssets<AssetT>>
     {
     public:
-        std::unordered_map<Name, Arca::RelicIndex<AssetT>> map{};
+        std::unordered_map<Name, Arca::Index<AssetT>> map{};
     private:
         using BaseT = Arca::ClosedTypedRelic<MappedAssets<AssetT>>;
     protected:
@@ -20,7 +20,7 @@ namespace Atmos::Asset
     public:
         explicit MappedAssets(Init init);
     public:
-        [[nodiscard]] Arca::RelicIndex<AssetT> Find(const Name& name) const;
+        [[nodiscard]] Arca::Index<AssetT> Find(const Name& name) const;
 
         [[nodiscard]] bool Exists(const Name& name) const;
 
@@ -32,7 +32,7 @@ namespace Atmos::Asset
     {}
 
     template<class AssetT>
-    Arca::RelicIndex<AssetT> MappedAssets<AssetT>::Find(const Name& name) const
+    Arca::Index<AssetT> MappedAssets<AssetT>::Find(const Name& name) const
     {
         const auto found = map.find(name);
         if (found == map.end())

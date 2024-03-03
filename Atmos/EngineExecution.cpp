@@ -2,7 +2,6 @@
 
 #include <Arca/Reliquary.h>
 #include "WindowProvider.h"
-#include "DebugStatistics.h"
 #include "FocusLost.h"
 #include "FocusRegained.h"
 

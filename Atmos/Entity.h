@@ -8,7 +8,7 @@ namespace Atmos::Entity
     class Entity final : public Arca::OpenTypedRelic<Entity>
     {
     public:
-        Arca::ShardIndex<GeneralComponent> general;
+        Arca::Index<GeneralComponent> general;
 
         void PostConstruct();
         void Initialize();

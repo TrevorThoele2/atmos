@@ -4,13 +4,16 @@
 #include "DynamicMaterialView.h"
 #include "MaterialViewCurator.h"
 #include "LineCurator.h"
-
-#include "DebugStatistics.h"
-#include "TimeSettings.h"
+#include "RenderCurator.h"
 #include "Camera.h"
 #include "CameraCurator.h"
+
+#include "TimeSettings.h"
 #include "FrameStopwatch.h"
 #include "StopwatchStatistics.h"
+#include "StopwatchCurator.h"
+
+#include "DebugStatistics.h"
 
 #include "UniqueProviderRelic.h"
 #include "InputManager.h"
@@ -25,35 +28,97 @@ namespace Atmos
         std::unique_ptr<Render::GraphicsManager>&& graphics,
         std::unique_ptr<Audio::AudioManager>&& audio)
     {
-        origin
-            .Register<Debug::Statistics>()
-            .Register<Time::Information>()
-            .Register<Time::Settings>()
-            .Register<Time::StopwatchCore>()
-            .Register<Time::StopwatchStatistics>()
-            .Register<Time::RealStopwatch>()
-            .Register<Time::FrameStopwatch>();
+        Time::RegisterTypes(origin);
+        Debug::RegisterTypes(origin);
 
-        RegisterProviderComputation<UniqueProviderRelic<Input::Manager>>(origin, std::move(input));
-        RegisterProviderComputation<UniqueProviderRelic<Render::GraphicsManager>>(origin, std::move(graphics));
-        RegisterProviderComputation<UniqueProviderRelic<Audio::AudioManager>>(origin, std::move(audio));
+        RegisterProviderPostulate<UniqueProviderRelic<Input::Manager>>(origin, std::move(input));
+        RegisterProviderPostulate<UniqueProviderRelic<Render::GraphicsManager>>(origin, std::move(graphics));
+        RegisterProviderPostulate<UniqueProviderRelic<Audio::AudioManager>>(origin, std::move(audio));
     }
 
-    void RegisterFieldTypes(Arca::ReliquaryOrigin& origin, Arca::Reliquary& globalReliquary)
+    void RegisterFieldTypes(
+        Arca::ReliquaryOrigin& origin,
+        Arca::Reliquary& globalReliquary)
     {
-        origin
-            .Register<Bounds>()
-            .Register<Render::MaterialViewCore>()
-            .Register<Render::StaticMaterialView>()
-            .Register<Render::DynamicMaterialView>()
-            .Register<Render::MaterialViewCurator>()
-            .Register<Render::Line>()
-            .Register<Render::LineCurator>()
-            .Register<Render::Camera>()
-            .Register<Render::CameraCurator>();
+        Render::RegisterTypes(origin, *Arca::Postulate<Render::GraphicsManager*>(globalReliquary));
+        Time::RegisterTypes(origin);
 
-        RegisterRedirectionComputation<UniqueProviderRelic<Input::Manager>>(origin, globalReliquary);
-        RegisterRedirectionComputation<UniqueProviderRelic<Render::GraphicsManager>>(origin, globalReliquary);
-        RegisterRedirectionComputation<UniqueProviderRelic<Audio::AudioManager>>(origin, globalReliquary);
+        Input::RegisterGlobalRedirectionTypes(origin, globalReliquary);
+        Render::RegisterGlobalRedirectionTypes(origin, globalReliquary);
+        Audio::RegisterGlobalRedirectionTypes(origin, globalReliquary);
+    }
+
+    namespace Input
+    {
+        void RegisterGlobalRedirectionTypes(Arca::ReliquaryOrigin& origin, Arca::Reliquary& globalReliquary)
+        {
+            RegisterRedirectionPostulate<UniqueProviderRelic<Manager>>(origin, globalReliquary);
+        }
+    }
+
+    namespace Render
+    {
+        void RegisterTypes(Arca::ReliquaryOrigin& origin, GraphicsManager& graphicsManager)
+        {
+            origin
+                .Register<Bounds>()
+                .Register<MaterialViewCore>()
+                .Register<StaticMaterialView>()
+                .Register<DynamicMaterialView>()
+                .Register<MaterialViewCurator>()
+                .Register<Line>()
+                .Register<LineCurator>()
+                .Register<Camera>()
+                .Register<CameraCurator>()
+                .Register<Curator>()
+                .Register<MainSurface>(graphicsManager.CreateMainSurfaceData());
+        }
+
+        void RegisterGlobalRedirectionTypes(Arca::ReliquaryOrigin& origin, Arca::Reliquary& globalReliquary)
+        {
+            RegisterRedirectionPostulate<UniqueProviderRelic<GraphicsManager>>(origin, globalReliquary);
+        }
+
+        Arca::Stage Stage()
+        {
+            Arca::Stage stage;
+            stage.Add<MaterialViewCurator>();
+            stage.Add<LineCurator>();
+            stage.Add<CameraCurator>();
+            stage.Add<Curator>();
+            return stage;
+        }
+    }
+
+    namespace Audio
+    {
+        void RegisterGlobalRedirectionTypes(Arca::ReliquaryOrigin& origin, Arca::Reliquary& globalReliquary)
+        {
+            RegisterRedirectionPostulate<UniqueProviderRelic<AudioManager>>(origin, globalReliquary);
+        }
+    }
+
+    namespace Time
+    {
+        void RegisterTypes(Arca::ReliquaryOrigin& origin)
+        {
+            origin
+                .Register<Information>()
+                .Register<Settings>()
+                .Register<StopwatchCore>()
+                .Register<StopwatchStatistics>()
+                .Register<RealStopwatch>()
+                .Register<FrameStopwatch>()
+                .Register<StopwatchCurator>();
+        }
+    }
+
+    namespace Debug
+    {
+        void RegisterTypes(Arca::ReliquaryOrigin& origin)
+        {
+            origin
+                .Register<Statistics>();
+        }
     }
 }

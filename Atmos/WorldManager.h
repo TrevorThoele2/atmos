@@ -9,8 +9,6 @@
 #include "FileName.h"
 #include "FilePath.h"
 
-#include "DebugStatistics.h"
-
 #include "InputFieldArchiveInterface.h"
 
 namespace Atmos::World
@@ -39,8 +37,6 @@ namespace Atmos::World
         const Field* CurrentField() const;
     private:
         Arca::Reliquary* globalReliquary = nullptr;
-
-        Arca::GlobalIndex<Debug::Statistics> debugStatistics;
     private:
         struct RequestedField
         {

@@ -22,7 +22,7 @@ namespace Atmos::Render
 
     void MaterialViewCurator::Work()
     {
-        auto graphics = &**Arca::ComputedIndex<GraphicsManager*>(Owner());
+        auto graphics = Arca::Postulate<GraphicsManager*>(Owner()).Get();
 
         const AxisAlignedBox3D queryBox
         {
@@ -65,11 +65,11 @@ namespace Atmos::Render
 
     void MaterialViewCurator::Handle(const ChangeMaterialViewCore& command)
     {
-        const auto index = Arca::ShardIndex<MaterialViewCore>(command.id, Owner());
+        const auto index = Arca::Index<MaterialViewCore>(command.id, Owner());
         if (!index)
             return;
 
-        auto data = Data(index);
+        auto data = MutablePointer(index);
         if (command.material)
         {
             data->material = *command.material;
@@ -134,7 +134,7 @@ namespace Atmos::Render
         octree.Remove(view.index.ID(), BoxFor(view.index));
     }
 
-    AxisAlignedBox3D MaterialViewCurator::BoxFor(const MatrixIndex& view)
+    AxisAlignedBox3D MaterialViewCurator::BoxFor(const Index& view)
     {
         const auto& bounds = *std::get<1>(*view);
         return AxisAlignedBox3D

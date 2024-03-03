@@ -6,7 +6,7 @@
 #include "TimeInformation.h"
 #include "TimeSettings.h"
 
-#include "DebugStatistics.h"
+#include "DebugProfiler.h"
 
 namespace Atmos
 {
@@ -17,13 +17,13 @@ namespace Atmos
 
         void Work();
     private:
-        using FpsStopwatch = Arca::RelicIndex<Time::RealStopwatch>;
+        using FpsStopwatch = Arca::Index<Time::RealStopwatch>;
         FpsStopwatch fpsTimer;
 
-        Arca::GlobalIndex<Time::Information> timeInformation;
-        Arca::GlobalIndex<Time::Settings> timeSettings;
+        Arca::Index<Time::Information> timeInformation;
+        Arca::Index<Time::Settings> timeSettings;
     private:
-        Arca::GlobalIndex<Debug::Statistics> debugStatistics;
+        Debug::Profiler debugIdleProfiler;
     };
 }
 

@@ -21,14 +21,14 @@ namespace Atmos::Asset
         [[nodiscard]] GridDimension Columns() const;
         [[nodiscard]] GridDimension Rows() const;
 
-        [[nodiscard]] Arca::RelicIndex<ImageAsset> Image() const;
-        [[nodiscard]] Arca::RelicIndex<ShaderAsset> Shader() const;
+        [[nodiscard]] Arca::Index<ImageAsset> Image() const;
+        [[nodiscard]] Arca::Index<ShaderAsset> Shader() const;
     private:
         GridDimension columns = 0;
         GridDimension rows = 0;
 
-        Arca::RelicIndex<ImageAsset> image;
-        Arca::RelicIndex<ShaderAsset> shader;
+        Arca::Index<ImageAsset> image;
+        Arca::Index<ShaderAsset> shader;
     private:
         INSCRIPTION_ACCESS;
     };

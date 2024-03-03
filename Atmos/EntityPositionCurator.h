@@ -13,11 +13,6 @@
 
 #include "GridPosition.h"
 
-namespace Atmos::Debug
-{
-    class Statistics;
-}
-
 namespace Atmos::Entity
 {
     class PositionCurator final : public Arca::Curator
@@ -30,9 +25,7 @@ namespace Atmos::Entity
         void Handle(const MoveEntityDirection& command);
         void Handle(const RotateEntity& command);
     private:
-        Arca::GlobalIndex<PositionedEntities> positionedEntities;
-    private:
-        Arca::GlobalIndex<Debug::Statistics> debugStatistics;
+        Arca::Index<PositionedEntities> positionedEntities;
     };
 }
 

@@ -4,6 +4,7 @@
 
 #include <Arca/Curator.h>
 
+#include "InitializationInformation.h"
 #include "InitializationFileSection.h"
 
 #include "FilePath.h"
@@ -11,8 +12,6 @@
 
 namespace Atmos::Initialization
 {
-    class Information;
-
     class FileCurator final : public Arca::Curator
     {
     public:
@@ -20,7 +19,7 @@ namespace Atmos::Initialization
 
         void Save();
     private:
-        Arca::GlobalIndex<Information> information;
+        Arca::Index<Information> information;
     private:
         FileSection graphics = FileSection("<GRAPHICS>");
         FileSection sound = FileSection("<SOUND>");

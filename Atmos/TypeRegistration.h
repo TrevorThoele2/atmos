@@ -13,32 +13,61 @@ namespace Atmos
         std::unique_ptr<Input::Manager>&& input,
         std::unique_ptr<Render::GraphicsManager>&& graphics,
         std::unique_ptr<Audio::AudioManager>&& audio);
-    void RegisterFieldTypes(Arca::ReliquaryOrigin& origin, Arca::Reliquary& globalReliquary);
+    void RegisterFieldTypes(
+        Arca::ReliquaryOrigin& origin,
+        Arca::Reliquary& globalReliquary);
 
     template<class Provider>
-    void RegisterProviderComputation(Arca::ReliquaryOrigin& origin, std::unique_ptr<typename Provider::Value>&& initialValue)
+    void RegisterProviderPostulate(Arca::ReliquaryOrigin& origin, std::unique_ptr<typename Provider::Value>&& initialValue)
     {
         using Value = typename Provider::Value;
 
         origin.Register<Provider>(std::move(initialValue));
-        origin.Compute<Value*>(
+        origin.Postulate<Value*>(
             [](Arca::Reliquary& reliquary) -> Value*
             {
-                const Arca::GlobalIndex<Provider> backing(reliquary);
+                const Arca::Index<Provider> backing(reliquary);
                 return backing->Get();
             });
     }
 
     template<class Provider>
-    void RegisterRedirectionComputation(Arca::ReliquaryOrigin& origin, Arca::Reliquary& globalReliquary)
+    void RegisterRedirectionPostulate(Arca::ReliquaryOrigin& origin, Arca::Reliquary& globalReliquary)
     {
         using Value = typename Provider::Value;
 
-        origin.Compute<Value*>(
-            [&globalReliquary](Arca::Reliquary& reliquary) -> Value*
+        origin.Postulate<Value*>(
+            [&globalReliquary](Arca::Reliquary&) -> Value*
             {
-                const Arca::GlobalIndex<Provider> backing(globalReliquary);
+                const Arca::Index<Provider> backing(globalReliquary);
                 return backing->Get();
             });
+    }
+
+    namespace Input
+    {
+        void RegisterGlobalRedirectionTypes(Arca::ReliquaryOrigin& origin, Arca::Reliquary& globalReliquary);
+    }
+
+    namespace Render
+    {
+        void RegisterTypes(Arca::ReliquaryOrigin& origin, GraphicsManager& graphicsManager);
+        void RegisterGlobalRedirectionTypes(Arca::ReliquaryOrigin& origin, Arca::Reliquary& globalReliquary);
+        Arca::Stage Stage();
+    }
+
+    namespace Audio
+    {
+        void RegisterGlobalRedirectionTypes(Arca::ReliquaryOrigin& origin, Arca::Reliquary& globalReliquary);
+    }
+
+    namespace Time
+    {
+        void RegisterTypes(Arca::ReliquaryOrigin& origin);
+    }
+
+    namespace Debug
+    {
+        void RegisterTypes(Arca::ReliquaryOrigin& origin);
     }
 }

@@ -52,7 +52,7 @@ namespace Atmos::Debug
             Position2D::Value viewOriginY = 0;
         } window;
     public:
-        using Profiler = Arca::RelicIndex<Time::RealStopwatch>;
+        using Profiler = Arca::Index<Time::RealStopwatch>;
 
         struct Profilers
         {

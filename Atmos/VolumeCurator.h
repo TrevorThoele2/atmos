@@ -17,8 +17,8 @@ namespace Atmos::Audio
     public:
         void Handle(const ChangeMasterVolume& command);
     private:
-        Arca::GlobalIndex<VolumeInformation> volumeInformation;
-        Arca::GlobalIndex<Initialization::Information> initializationInformation;
+        Arca::Index<VolumeInformation> volumeInformation;
+        Arca::Index<Initialization::Information> initializationInformation;
     };
 }
 

@@ -7,7 +7,7 @@ namespace Atmos::Entity
 {
     struct MoveEntityInstant
     {
-        Arca::RelicIndex<Entity> entity;
+        Arca::Index<Entity> entity;
         Grid::Position toPosition;
     };
 }

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <chrono>
+
 #include "Epoch.h"
 
 #include "FixedPoint.h"
@@ -8,6 +10,8 @@
 
 namespace Atmos::Time
 {
+    using Value = std::chrono::time_point<std::chrono::steady_clock>;
+
     class Value
     {
     public:

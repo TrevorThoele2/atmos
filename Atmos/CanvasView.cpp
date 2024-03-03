@@ -2,7 +2,7 @@
 
 namespace Atmos::Render
 {
-    CanvasView::CanvasView(Init init, Arca::RelicIndex<Canvas> source) :
+    CanvasView::CanvasView(Init init, Arca::Index<Canvas> source) :
         ClosedTypedRelic(init), source(std::move(source)), bounds(init.id, init.owner)
     {}
 

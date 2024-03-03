@@ -22,7 +22,7 @@ namespace Atmos::Render
 
     void LineCurator::Work()
     {
-        auto graphics = &**Arca::ComputedIndex<GraphicsManager*>(Owner());
+        auto graphics = Arca::Postulate<GraphicsManager*>(Owner()).Get();
 
         const AxisAlignedBox3D queryBox
         {
@@ -67,7 +67,7 @@ namespace Atmos::Render
 
     void LineCurator::Handle(const MoveLine& command)
     {
-        const auto index = Arca::RelicIndex<Line>(command.id, Owner());
+        const auto index = Arca::Index<Line>(command.id, Owner());
         if (!index)
             return;
 
@@ -75,7 +75,7 @@ namespace Atmos::Render
         const auto prevTo = index->to;
         const auto prevZ = index->z;
 
-        auto data = Data(index);
+        auto data = MutablePointer(index);
         if(command.from)
             data->from = *command.from;
 
@@ -90,12 +90,12 @@ namespace Atmos::Render
 
     void LineCurator::OnLineCreated(const Arca::CreatedKnown<Line>& line)
     {
-        octree.Add(line.index.ID(), line.index, BoxFor(line.index));
+        octree.Add(line.reference.ID(), line.reference, BoxFor(line.reference));
     }
 
     void LineCurator::OnLineDestroying(const Arca::DestroyingKnown<Line>& line)
     {
-        octree.Remove(line.index.ID(), BoxFor(line.index));
+        octree.Remove(line.reference.ID(), BoxFor(line.reference));
     }
 
     AxisAlignedBox3D LineCurator::BoxFor(const Position2D& from, const Position2D& to, Position2D::Value z)

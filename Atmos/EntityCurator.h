@@ -5,11 +5,6 @@
 #include "Entity.h"
 #include "MappedEntities.h"
 
-namespace Atmos::Debug
-{
-    class Statistics;
-}
-
 namespace Atmos::Entity
 {
     class EntityCurator final : public Arca::Curator
@@ -17,9 +12,7 @@ namespace Atmos::Entity
     public:
         explicit EntityCurator(Init init);
     private:
-        Arca::GlobalIndex<MappedEntities> mappedEntities;
-    private:
-        Arca::GlobalIndex<Debug::Statistics> debugStatistics;
+        Arca::Index<MappedEntities> mappedEntities;
     };
 }
 

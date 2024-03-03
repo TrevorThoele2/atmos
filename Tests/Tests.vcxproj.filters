@@ -28,6 +28,9 @@
     <ClCompile Include="OctreeTests.cpp">
       <Filter>Source Files\Tests</Filter>
     </ClCompile>
+    <ClCompile Include="StopwatchTests.cpp">
+      <Filter>Source Files\Tests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneralFixture.h">
@@ -52,6 +55,9 @@
       <Filter>Header Files\Objects</Filter>
     </ClInclude>
     <ClInclude Include="OctreeTests.h">
+      <Filter>Header Files\Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="StopwatchTests.h">
       <Filter>Header Files\Tests</Filter>
     </ClInclude>
   </ItemGroup>

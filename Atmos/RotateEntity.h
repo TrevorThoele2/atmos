@@ -8,7 +8,7 @@ namespace Atmos::Entity
 {
     struct RotateEntity
     {
-        Arca::RelicIndex<Entity> entity;
+        Arca::Index<Entity> entity;
         Direction toFace;
     };
 }

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Arca/Signal.h>
-#include <Arca/RelicIndex.h>
+#include <Arca/Index.h>
 
 #include "GameState.h"
 
@@ -13,7 +13,7 @@ namespace Atmos::State
     {
         enum Pop {};
 
-        using Value = std::variant<Arca::RelicIndex<GameState>, Pop>;
+        using Value = std::variant<Arca::Index<GameState>, Pop>;
         Value value;
     };
 }

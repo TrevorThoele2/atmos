@@ -10,8 +10,8 @@ namespace Atmos::Entity
     class CurrentAvatar final : public Arca::ClosedTypedRelic<CurrentAvatar>
     {
     public:
-        Arca::ShardIndex<AvatarComponent> component;
-        Arca::RelicIndex<Entity> entity;
+        Arca::Index<AvatarComponent> component;
+        Arca::Index<Entity> entity;
     };
 }
 

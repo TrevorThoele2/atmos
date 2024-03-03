@@ -9,17 +9,17 @@ namespace Atmos::Script
     class AllRunningScripts final : public Arca::ClosedTypedRelic<AllRunningScripts>
     {
     private:
-        using Map = std::unordered_map<Arca::RelicID, Arca::RelicIndex<RunningScript>>;
+        using Map = std::unordered_map<Arca::RelicID, Arca::Index<RunningScript>>;
     public:
         using iterator = Map::iterator;
         using const_iterator = Map::const_iterator;
     public:
-        void Add(Arca::RelicID instanceID, Arca::RelicIndex<RunningScript> runningScript);
+        void Add(Arca::RelicID instanceID, Arca::Index<RunningScript> runningScript);
         void Remove(const_iterator script);
 
         [[nodiscard]] const_iterator CurrentlyRunning() const;
 
-        [[nodiscard]] Arca::RelicIndex<RunningScript> RunningScriptFor(Arca::RelicID instanceID) const;
+        [[nodiscard]] Arca::Index<RunningScript> RunningScriptFor(Arca::RelicID instanceID) const;
         [[nodiscard]] bool IsRunning(Arca::RelicID instanceID) const;
         [[nodiscard]] size_t Size() const;
 

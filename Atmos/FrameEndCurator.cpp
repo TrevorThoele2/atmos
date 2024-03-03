@@ -1,8 +1,5 @@
 #include "FrameEndCurator.h"
 
-#include "StartStopwatch.h"
-#include "CalculateStopwatch.h"
-
 namespace Atmos
 {
     FrameEndCurator::FrameEndCurator(Init init) :
@@ -10,17 +7,22 @@ namespace Atmos
         fpsTimer(Owner().Do<Arca::Create<Time::RealStopwatch>>()),
         timeInformation(init.owner),
         timeSettings(init.owner),
-        debugStatistics(init.owner)
+        debugIdleProfiler(
+            [](Debug::Statistics& statistics) -> Arca::Index<Time::RealStopwatch>&
+            {
+                return statistics.profilers.idle;
+            },
+            init.owner)
     {}
 
     void FrameEndCurator::Work()
     {
-        auto timeInformationData = Data(timeInformation);
+        auto timeInformationData = MutablePointer(timeInformation);
 
         static unsigned int count = 0;
         if (fpsTimer->Elapsed().Get() >= Time::Value::Number(timeSettings->fpsLimit))
         {
-            Owner().Do<Time::StartStopwatch>(fpsTimer.ID());
+            fpsTimer->Start();
 
             timeInformationData->fps = count;
             count = 0;
@@ -28,12 +30,11 @@ namespace Atmos
 
         ++count;
 
-        timeInformationData->frameEndTime =
-            Owner().Do<Time::CalculateStopwatch>(timeInformationData->stopwatch.ID());
+        timeInformationData->frameEndTime = timeInformationData->stopwatch->Elapsed();
         timeInformationData->lastFrameElapsed =
             timeInformationData->frameEndTime - timeInformationData->frameStartTime;
         timeInformationData->totalElapsed += timeInformationData->lastFrameElapsed;
 
-        Owner().Do<Time::StartStopwatch>(debugStatistics->profilers.idle.ID());
+        debugIdleProfiler.Start();
     }
 }

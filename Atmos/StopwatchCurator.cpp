@@ -1,24 +1,29 @@
 #include "StopwatchCurator.h"
 
+#include <Arca/Reliquary.h>
 #include "StopwatchCore.h"
 #include "StopwatchStatistics.h"
 
 namespace Atmos::Time
 {
+    StopwatchCurator::StopwatchCurator(Init init) : Curator(init)
+    {}
+
     Value StopwatchCurator::Handle(const StartStopwatch& command)
     {
-        auto coreData = Data<StopwatchCore>(command.id);
+        auto coreData = MutablePointer<StopwatchCore>(command.id);
         coreData->start = coreData->currentTime();
         return coreData->start;
     }
 
     Value StopwatchCurator::Handle(const CalculateStopwatch& command)
     {
-        const auto coreData = Data<StopwatchCore>(command.id);
+        const auto coreData = MutablePointer<StopwatchCore>(command.id);
 
-        const auto elapsed = coreData->currentTime() - coreData->start;
+        const auto currentTime = coreData->currentTime();
+        const auto elapsed = currentTime - coreData->start;
 
-        auto statisticsData = Data<StopwatchStatistics>(command.id);
+        auto statisticsData = MutablePointer<StopwatchStatistics>(command.id);
         if (statisticsData)
         {
             if (elapsed > statisticsData->highest)
@@ -36,14 +41,14 @@ namespace Atmos::Time
 
     void StopwatchCurator::Handle(const ResetAverage& command)
     {
-        auto statisticsData = Data<StopwatchStatistics>(command.id);
+        auto statisticsData = MutablePointer<StopwatchStatistics>(command.id);
         if (statisticsData)
             statisticsData->average = Value(Value::Number(0));
     }
 
     void StopwatchCurator::Handle(const ResetHighest& command)
     {
-        auto statisticsData = Data<StopwatchStatistics>(command.id);
+        auto statisticsData = MutablePointer<StopwatchStatistics>(command.id);
         if (statisticsData)
             statisticsData->highest = Value(Value::Number(0));
     }

@@ -23,6 +23,7 @@ namespace Atmos::Render
         {}
 
         Line(Init init, Position2D from, Position2D to);
+        Line(Init init, Position2D from, Position2D to, Position2D::Value z, LineWidth width, Color color);
     };
 }
 

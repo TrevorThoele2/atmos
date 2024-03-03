@@ -21,9 +21,9 @@ namespace Atmos::Asset
         Asset& operator=(Asset&& arg) noexcept;
 
         [[nodiscard]] Name Name() const;
-        [[nodiscard]] Arca::ShardIndex<Core> Core() const;
+        [[nodiscard]] Arca::Index<Core> Core() const;
     private:
-        Arca::ShardIndex<Atmos::Asset::Core> core;
+        Arca::Index<Atmos::Asset::Core> core;
     };
 
     template<class Derived>
@@ -52,7 +52,7 @@ namespace Atmos::Asset
     }
 
     template<class Derived>
-    Arca::ShardIndex<Core> Asset<Derived>::Core() const
+    Arca::Index<Core> Asset<Derived>::Core() const
     {
         return core;
     }

@@ -5,7 +5,7 @@
 #include "Asset.h"
 #include "MappedAssets.h"
 
-#include "DebugStatistics.h"
+#include "DebugValue.h"
 
 namespace Atmos::Asset
 {
@@ -22,8 +22,8 @@ namespace Atmos::Asset
     private:
         using Traits = AssetCuratorTraits<T>;
     private:
-        Arca::GlobalIndex<MappedAssets<T>> mappedAssets;
-        Arca::GlobalIndex<Debug::Statistics> debugStatistics;
+        Arca::Index<MappedAssets<T>> mappedAssets;
+        Debug::Value<size_t> debugSizeValue;
     private:
         INSCRIPTION_ACCESS;
     };
@@ -31,13 +31,23 @@ namespace Atmos::Asset
     template<class T>
     void AssetCurator<T>::Work()
     {
-        (debugStatistics->memory.*Traits::debugStatisticsSize) = mappedAssets->Size();
+        debugSizeValue.Set();
     }
 
     template<class T>
     AssetCurator<T>::AssetCurator(Init init) :
         Curator(init),
-        mappedAssets(init.owner), debugStatistics(init.owner)
+        mappedAssets(init.owner),
+        debugSizeValue(
+            [](Debug::Statistics& statistics)
+            {
+                return statistics.memory.*Traits::debugStatisticsSize;
+            },
+            [this]()
+            {
+                return mappedAssets->Size();
+            },
+            init.owner)
     {
         init.owner.ExecuteOn<Arca::CreatedKnown<T>>(
             [this](const Arca::CreatedKnown<T>& signal)

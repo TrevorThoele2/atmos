@@ -13,13 +13,13 @@ namespace Atmos::Time
         explicit FrameStopwatch(Init init);
 
         Value Start() const;
-        [[nodiscard]] Value Elapsed() const;
+        Value Elapsed() const;
         [[nodiscard]] Value CurrentTime() const;
     private:
         using Core = StopwatchCore;
-        Arca::ShardIndex<Core> core{};
+        Arca::Index<Core> core{};
 
-        Arca::GlobalIndex<Information> timeInformation{};
+        Arca::Index<Information> timeInformation{};
     private:
         INSCRIPTION_ACCESS;
     };

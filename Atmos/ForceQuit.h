@@ -7,7 +7,7 @@ namespace Atmos::Script
 {
     struct ForceQuit
     {
-        Arca::RelicIndex<RunningScript> script;
+        Arca::Index<RunningScript> script;
     };
 }
 

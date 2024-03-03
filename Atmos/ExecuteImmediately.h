@@ -7,8 +7,8 @@ namespace Atmos::Script
 {
     struct ExecuteImmediately
     {
-        Arca::RelicIndex<RunningScript> script;
-        explicit ExecuteImmediately(Arca::RelicIndex<RunningScript> script);
+        Arca::Index<RunningScript> script;
+        explicit ExecuteImmediately(Arca::Index<RunningScript> script);
     };
 }
 

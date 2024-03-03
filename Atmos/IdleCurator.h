@@ -14,8 +14,8 @@ namespace Atmos::Time
 
         void Work();
     private:
-        Arca::GlobalIndex<Information> timeInformation;
-        Arca::GlobalIndex<Settings> timeSettings;
+        Arca::Index<Information> timeInformation;
+        Arca::Index<Settings> timeSettings;
 
         [[nodiscard]] bool IsDone() const;
     };
