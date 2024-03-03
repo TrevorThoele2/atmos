@@ -95,7 +95,8 @@ namespace Atmos::Render::Vulkan
 
     void MasterRenderer::DrawFrame(const Spatial::ScreenSize& screenSize, const Spatial::ScreenPoint& mapPosition)
     {
-        device->waitForFences(inFlightFences[previousFrame].get(), VK_TRUE, UINT64_MAX);
+        if (IsError(device->waitForFences(inFlightFences[previousFrame].get(), VK_TRUE, UINT64_MAX)))
+            logger->Log("Could not wait for Vulkan fences.");
 
         auto imageIndex = device->acquireNextImageKHR(
             swapchain,
@@ -114,7 +115,8 @@ namespace Atmos::Render::Vulkan
         const auto currentSwapchainImage = imageIndex.value;
 
         if (imagesInFlight[currentSwapchainImage])
-            device->waitForFences(1, &imagesInFlight[currentSwapchainImage], VK_TRUE, UINT64_MAX);
+            if (IsError(device->waitForFences(1, &imagesInFlight[currentSwapchainImage], VK_TRUE, UINT64_MAX)))
+                logger->Log("Could not wait for Vulkan fences.");
         imagesInFlight[currentSwapchainImage] = inFlightFences[currentFrame].get();
 
         auto commandBuffer = commandBuffers.Next();
@@ -157,9 +159,11 @@ namespace Atmos::Render::Vulkan
                 1,
                 signalSemaphores);
 
-            device->resetFences(1, &inFlightFences[currentFrame].get());
+            if (IsError(device->resetFences(1, &inFlightFences[currentFrame].get())))
+                logger->Log("Could not reset Vulkan fences.");
 
-            graphicsQueue.submit(1, &submitInfo, inFlightFences[currentFrame].get());
+            if (IsError(graphicsQueue.submit(1, &submitInfo, inFlightFences[currentFrame].get())))
+                logger->Log("Could not submit graphics queue.");
 
             const vk::SwapchainKHR swapchains[] = { swapchain };
             vk::PresentInfoKHR presentInfo(1, signalSemaphores, 1, swapchains, &imageIndex.value, nullptr);
@@ -179,7 +183,8 @@ namespace Atmos::Render::Vulkan
         }
         catch(...)
         {
-            device->resetFences(1, &inFlightFences[currentFrame].get());
+            if (IsError(device->resetFences(1, &inFlightFences[currentFrame].get())))
+                logger->Log("Could not reset Vulkan fences.");
             endFrame();
             throw;
         }
@@ -193,7 +198,8 @@ namespace Atmos::Render::Vulkan
         fences.reserve(inFlightFences.size());
         for (auto& fence : inFlightFences)
             fences.push_back(fence.get());
-        device->waitForFences(fences, VK_TRUE, UINT64_MAX);
+        if (IsError(device->waitForFences(fences, VK_TRUE, UINT64_MAX)))
+            logger->Log("Could not wait for Vulkan fences.");
     }
 
     void MasterRenderer::OnMaterialCreated(const Arca::Index<Asset::ImageMaterial>& material)

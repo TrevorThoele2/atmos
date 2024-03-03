@@ -1,5 +1,9 @@
 #include "MockAssetResourceManager.h"
 
+MockAssetResourceManager::MockAssetResourceManager(Atmos::Logging::Logger& logger) :
+    Manager(logger, "Mock")
+{}
+
 Atmos::Asset::Resource::LoadedData<Atmos::Asset::Resource::Image> MockAssetResourceManager::LoadImageData(
     const Atmos::File::Path& filePath)
 {

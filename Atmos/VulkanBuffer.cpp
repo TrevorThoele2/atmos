@@ -2,6 +2,7 @@
 
 #include "VulkanMemory.h"
 #include "VulkanSingleUseCommandBuffer.h"
+#include "VulkanUtilities.h"
 #include "GraphicsError.h"
 
 namespace Atmos::Render::Vulkan
@@ -46,7 +47,8 @@ namespace Atmos::Render::Vulkan
     void Buffer::PushBytes(const void* bytes, vk::DeviceSize offset, size_t size)
     {
         void* data;
-        device.mapMemory(memory.get(), offset, vk::DeviceSize(size), vk::MemoryMapFlags{}, &data);
+        if (IsError(device.mapMemory(memory.get(), offset, vk::DeviceSize(size), vk::MemoryMapFlags{}, &data)))
+            throw GraphicsError("Could not map memory in Vulkan buffer.");
         memcpy(data, bytes, size);
         device.unmapMemory(memory.get());
     }

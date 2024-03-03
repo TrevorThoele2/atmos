@@ -10,7 +10,8 @@ SCENARIO_METHOD(AssetTestsFixture, "assets", "[asset]")
 {
     GIVEN("registered reliquary")
     {
-        Resource::NullManager assetResourceManager;
+        Logging::Logger logger(Logging::Severity::Verbose);
+        Resource::NullManager assetResourceManager(logger);
 
         Arca::ReliquaryOrigin reliquaryOrigin;
 

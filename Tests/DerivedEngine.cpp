@@ -8,7 +8,7 @@ auto DerivedEngine::CreateInitializationProperties(Logging::Logger& logger)
 {
     using Properties = InitializationProperties;
 
-    auto assetResourceManager = std::make_unique<MockAssetResourceManager>();
+    auto assetResourceManager = std::make_unique<MockAssetResourceManager>(logger);
     auto window = std::make_unique<MockWindow>(logger);
     auto input = std::make_unique<MockInputManager>(logger);
     auto graphics = std::make_unique<MockGraphicsManager>(logger);

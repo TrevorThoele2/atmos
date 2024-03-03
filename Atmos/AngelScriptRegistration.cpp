@@ -2,10 +2,10 @@
 
 #include "NullScriptDocumentationManager.h"
 
-#include <scriptstdstring.h>
-#include <scripthelper.h>
-#include <scriptarray.h>
-#include <scriptdictionary.h>
+#include <scriptstdstring/scriptstdstring.h>
+#include <scripthelper/scripthelper.h>
+#include <scriptarray/scriptarray.h>
+#include <scriptdictionary/scriptdictionary.h>
 
 #include "AngelScriptNumericLimits.h"
 

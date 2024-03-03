@@ -110,7 +110,7 @@ namespace Atmos::Render::Vulkan
             nullptr,
             0);
 
-        pipeline = device.createGraphicsPipelineUnique(nullptr, pipelineCreateInfo);
+        pipeline = device.createGraphicsPipelineUnique(nullptr, pipelineCreateInfo).value;
     }
 
     void Conduit::Bind(const vk::CommandBuffer& commandBuffer)
