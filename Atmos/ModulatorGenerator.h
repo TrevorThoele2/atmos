@@ -119,13 +119,21 @@ namespace Atmos
         public:
             typedef std::unique_ptr<TrackBase> GenerateTrackPtrT;
         private:
+            Name name;
+
             virtual Observer GenerateImpl() const = 0;
             virtual GenerateTrackPtrT GenerateTrackImpl(const Name &name) const = 0;
         public:
+            GeneratorBase(const Name &name);
+            GeneratorBase(GeneratorBase &&arg);
+            GeneratorBase& operator=(GeneratorBase &&arg);
             virtual ~GeneratorBase() = 0 {}
+            bool operator==(const GeneratorBase &arg) const;
 
             Observer Generate() const;
             GenerateTrackPtrT GenerateTrack(const Name &name) const;
+
+            const Name& GetName() const;
         };
 
         template<class Object>
@@ -143,7 +151,7 @@ namespace Atmos
             typedef std::unique_ptr<TrackGeneratorBase> TrackGeneratorPtr;
             std::unordered_map<Name, TrackGeneratorPtr> trackGenerators;
         public:
-            Generator() = default;
+            Generator(const Name &name);
             Generator(const Generator &arg) = default;
             Generator(Generator &&arg);
             Generator& operator=(const Generator &arg) = default;
@@ -159,7 +167,7 @@ namespace Atmos
         template<class Object>
         Observer Generator<Object>::GenerateImpl() const
         {
-            return Observer(new GenerateT());
+            return Observer(new GenerateT(GetName()));
         }
 
         template<class Object>
@@ -173,12 +181,17 @@ namespace Atmos
         }
 
         template<class Object>
-        Generator<Object>::Generator(Generator &&arg) : trackGenerators(std::move(arg.trackGenerators))
+        Generator<Object>::Generator(const Name &name) : GeneratorBase(name)
+        {}
+
+        template<class Object>
+        Generator<Object>::Generator(Generator &&arg) : GeneratorBase(std::move(arg)), trackGenerators(std::move(arg.trackGenerators))
         {}
 
         template<class Object>
         Generator<Object>& Generator<Object>::operator=(Generator &&arg)
         {
+            GeneratorBase::operator=(std::move(arg));
             trackGenerators = std::move(arg.trackGenerators);
             return *this;
         }
@@ -186,7 +199,7 @@ namespace Atmos
         template<class Object>
         bool Generator<Object>::operator==(const Generator &arg) const
         {
-            return trackGenerators == arg.trackGenerators;
+            return GeneratorBase::operator=(arg) && trackGenerators == arg.trackGenerators;
         }
 
         template<class Object>

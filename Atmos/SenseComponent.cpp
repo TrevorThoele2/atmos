@@ -14,194 +14,12 @@ namespace Atmos
 {
     namespace Ent
     {
-        INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(SenseComponent::ModulatorEntry)
-        {
-            scribe(id);
-            scribe(type);
-            scribe(generatorRoute);
-        }
-
-        SenseComponent::ModulatorEntry::ModulatorEntry() : id(0), type(Type::SPRITE), generatorRoute()
-        {}
-
-        SenseComponent::ModulatorEntry::ModulatorEntry(ObjectID id, Type type, const Modulator::GeneratorRoute &generatorRoute) : id(id), type(type), generatorRoute(generatorRoute)
-        {}
-
-        SenseComponent::ModulatorEntry::ModulatorEntry(ObjectID id, Type type, Modulator::GeneratorRoute &&generatorRoute) : id(id), type(type), generatorRoute(std::move(generatorRoute))
-        {}
-
-        SenseComponent::ModulatorEntry::ModulatorEntry(ModulatorEntry &&arg) : id(std::move(arg.id)), type(std::move(arg.type)), generatorRoute(std::move(arg.generatorRoute))
-        {}
-
-        SenseComponent::ModulatorEntry& SenseComponent::ModulatorEntry::operator=(ModulatorEntry &&arg)
-        {
-            id = std::move(arg.id);
-            type = std::move(arg.type);
-            generatorRoute = std::move(arg.generatorRoute);
-            return *this;
-        }
-
-        bool SenseComponent::ModulatorEntry::operator==(const ModulatorEntry &arg) const
-        {
-            return id == arg.id && type == arg.type && generatorRoute == arg.generatorRoute;
-        }
-
-        bool SenseComponent::ModulatorEntry::operator!=(const ModulatorEntry &arg) const
-        {
-            return !(*this == arg);
-        }
-
-        Modulator::Observer SenseComponent::ModulatorEntry::Start(SenseComponent &component)
-        {
-            modulatorObserver = generatorRoute.Generate();
-
-            switch (type)
-            {
-            case ModulatorEntryType::SPRITE:
-                static_cast<SpriteModulator*>(modulatorObserver.Get())->Start(component.sprites.Find(id)->second);
-                break;
-            case ModulatorEntryType::SOUND:
-                static_cast<SoundModulator*>(modulatorObserver.Get())->Start(component.sounds.Find(id)->second);
-                break;
-            case ModulatorEntryType::AV_EFFECT:
-                static_cast<AVEffectModulator*>(modulatorObserver.Get())->Start(component.avEffects.Find(id)->second);
-                break;
-            }
-
-            return modulatorObserver;
-        }
-
-        void SenseComponent::ModulatorEntry::Stop()
-        {
-            if (!modulatorObserver.IsValid())
-                return;
-
-            modulatorObserver->Stop();
-            modulatorObserver.Reset();
-        }
-
-        bool SenseComponent::ModulatorEntry::IsWorking() const
-        {
-            if (!modulatorObserver.IsValid())
-                return false;
-            else
-                return modulatorObserver->IsWorking();
-        }
-
-        TimeValue SenseComponent::ModulatorEntry::GetSumTimeTaken() const
-        {
-            if (!modulatorObserver.IsValid())
-                return TimeValue();
-            else
-                return modulatorObserver->GetSumTimeTaken();
-        }
-
-        INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(SenseComponent::ModulatorPack)
-        {
-            scribe(entries);
-        }
-
-        SenseComponent::ModulatorPack::ModulatorPack(ModulatorPack &&arg) : entries(std::move(arg.entries))
-        {}
-
-        SenseComponent::ModulatorPack& SenseComponent::ModulatorPack::operator=(ModulatorPack &&arg)
-        {
-            entries = std::move(arg.entries);
-            return *this;
-        }
-
-        bool SenseComponent::ModulatorPack::operator==(const ModulatorPack &arg) const
-        {
-            return entries == arg.entries;
-        }
-
-        bool SenseComponent::ModulatorPack::operator!=(const ModulatorPack &arg) const
-        {
-            return !(*this == arg);
-        }
-
-        void SenseComponent::ModulatorPack::StartAll(SenseComponent &component)
-        {
-            if (IsWorking())
-                return;
-
-            for (auto &loop : entries)
-                loop.Start(component);
-        }
-
-        void SenseComponent::ModulatorPack::StopAll()
-        {
-            if (!IsWorking())
-                return;
-
-            for (auto &loop : entries)
-                loop.Stop();
-        }
-
-        bool SenseComponent::ModulatorPack::IsWorking() const
-        {
-            for (auto &loop : entries)
-            {
-                if (loop.IsWorking())
-                    return true;
-            }
-
-            return false;
-        }
-
-        TimeValue SenseComponent::ModulatorPack::GetTimeTaken() const
-        {
-            TimeValue ret;
-            for (auto &loop : entries)
-            {
-                auto checkTimeTaken = loop.GetSumTimeTaken();
-                if (checkTimeTaken > ret)
-                    ret = checkTimeTaken;
-            }
-
-            return ret;
-        }
-
-        SenseComponent::ModulatorEntry* SenseComponent::ModulatorPack::Add(EntryID id, ModulatorEntryType type)
-        {
-            return Add(ModulatorEntry(id, type, Modulator::GeneratorRoute()));
-        }
-
-        SenseComponent::ModulatorEntry* SenseComponent::ModulatorPack::Add(EntryID id, ModulatorEntryType type, const Modulator::GeneratorRoute &generatorRoute)
-        {
-            return Add(ModulatorEntry(id, type, generatorRoute));
-        }
-
-        SenseComponent::ModulatorEntry* SenseComponent::ModulatorPack::Add(EntryID id, ModulatorEntryType type, Modulator::GeneratorRoute &&generatorRoute)
-        {
-            return Add(ModulatorEntry(id, type, std::move(generatorRoute)));
-        }
-
-        SenseComponent::ModulatorEntry* SenseComponent::ModulatorPack::Add(const ModulatorEntry &add)
-        {
-            entries.push_back(add);
-            return &entries.back();
-        }
-
-        SenseComponent::ModulatorEntry* SenseComponent::ModulatorPack::Add(ModulatorEntry &&add)
-        {
-            entries.push_back(std::move(add));
-            return &entries.back();
-        }
-
-        void SenseComponent::ModulatorPack::Remove(EntryID remove)
-        {
-            entries.erase(entries.begin() + remove);
-        }
-
         INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(SenseComponent)
         {
             if (scribe.IsOutput())
             {
                 scribe.Save(position);
                 scribe.Save(sprites);
-
-                scribe.Save(modulatorPacks);
 
                 scribe.Save(show);
             }
@@ -210,8 +28,6 @@ namespace Atmos
                 scribe.Load(position);
                 scribe.Load(sprites);
                 sprites.SetOwnerPosition(&position);
-
-                scribe.Load(modulatorPacks);
 
                 scribe.Load(show);
 
@@ -222,7 +38,7 @@ namespace Atmos
         SenseComponent::SenseComponent() : show(true)
         {}
 
-        SenseComponent::SenseComponent(const SenseComponent &arg) : position(arg.position), sprites(arg.sprites, &position), sounds(arg.sounds, &position), avEffects(arg.avEffects, &position), modulatorPacks(arg.modulatorPacks), show(arg.show)
+        SenseComponent::SenseComponent(const SenseComponent &arg) : position(arg.position), sprites(arg.sprites, &position), sounds(arg.sounds, &position), avEffects(arg.avEffects, &position), show(arg.show)
         {
             SyncObjects();
         }
@@ -233,13 +49,12 @@ namespace Atmos
             sprites = arg.sprites;
             sounds = arg.sounds;
             avEffects = arg.avEffects;
-            modulatorPacks = arg.modulatorPacks;
             show = arg.show;
             SyncObjects();
             return *this;
         }
 
-        SenseComponent::SenseComponent(SenseComponent &&arg) : position(std::move(arg.position)), sprites(std::move(arg.sprites), &position), sounds(std::move(arg.sounds), &position), avEffects(std::move(arg.avEffects), &position), modulatorPacks(std::move(arg.modulatorPacks)), show(std::move(arg.show))
+        SenseComponent::SenseComponent(SenseComponent &&arg) : position(std::move(arg.position)), sprites(std::move(arg.sprites), &position), sounds(std::move(arg.sounds), &position), avEffects(std::move(arg.avEffects), &position), show(std::move(arg.show))
         {
             SyncObjects();
         }
@@ -250,7 +65,6 @@ namespace Atmos
             sprites = std::move(arg.sprites);
             sounds = std::move(arg.sounds);
             avEffects = std::move(arg.avEffects);
-            modulatorPacks = std::move(arg.modulatorPacks);
             show = arg.show;
             SyncObjects();
             return *this;
@@ -258,7 +72,7 @@ namespace Atmos
 
         bool SenseComponent::operator==(const SenseComponent &arg) const
         {
-            return position == arg.position && sprites == arg.sprites && sounds == arg.sounds && avEffects == arg.avEffects && modulatorPacks == arg.modulatorPacks && show == arg.show;
+            return position == arg.position && sprites == arg.sprites && sounds == arg.sounds && avEffects == arg.avEffects && show == arg.show;
         }
 
         bool SenseComponent::operator!=(const SenseComponent &arg) const
@@ -414,61 +228,6 @@ namespace Atmos
         const SenseComponent::AVEffectHandle* SenseComponent::FindAVEffect(AVEffectList::ID id) const
         {
             return FindImpl(id, avEffects);
-        }
-
-        SenseComponent::ModulatorPack* SenseComponent::AddModulatorPack(const Name &name)
-        {
-            auto found = modulatorPacks.find(name);
-            if (found != modulatorPacks.end())
-                return &found->second;
-
-            return &modulatorPacks.emplace(name, ModulatorPack()).first->second;
-        }
-
-        void SenseComponent::RemoveModulatorPack(const Name &name)
-        {
-            modulatorPacks.erase(name);
-        }
-
-        SenseComponent::ModulatorPack* SenseComponent::FindModulatorPack(const Name &name)
-        {
-            auto found = modulatorPacks.find(name);
-            if (found != modulatorPacks.end())
-                return &found->second;
-
-            return &found->second;
-        }
-
-        const SenseComponent::ModulatorPack* SenseComponent::FindModulatorPack(const Name &name) const
-        {
-            auto found = modulatorPacks.find(name);
-            if (found != modulatorPacks.end())
-                return &found->second;
-
-            return &found->second;
-        }
-
-        void SenseComponent::StartModulatorPack(const Name &name)
-        {
-            auto found = modulatorPacks.find(name);
-            if (found == modulatorPacks.end())
-            {
-                ErrorHandler::Log("A modulator in a sense component was attempted to be started, but was not found. Discarding.",
-                    ErrorHandler::Severity::ERROR_LOW,
-                    ErrorHandler::NameValueVector{ NameValuePair("Modulator Name", name), NameValuePair("Entity ID", *GetOwnerEntity()) });
-                return;
-            }
-
-            found->second.StartAll(*this);
-        }
-
-        void SenseComponent::StopModulatorPack(const Name &name)
-        {
-            auto found = modulatorPacks.find(name);
-            if (found == modulatorPacks.end())
-                return;
-
-            found->second.StopAll();
         }
 
         void SenseComponent::Show(bool set)

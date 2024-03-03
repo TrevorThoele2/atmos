@@ -165,7 +165,7 @@ namespace Atmos
                             current->GetInstance()->GetVM()->launch();
                         else
                         {
-                            current->GetInstance()->GetVM()->launch(falcon::Convert(current->executeSymbol), current->parameters.size());
+                            current->GetInstance()->GetVM()->launch(Fal::Convert(current->executeSymbol), current->parameters.size());
                         }
                     }
                     else

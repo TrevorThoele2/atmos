@@ -246,7 +246,7 @@ namespace Atmos
 
                 // Set the global items
                 for (auto &loop : *globalItems)
-                    falcon::SetItem(*vMachine.vm(), *vMachine->findGlobalItem(falcon::Convert(loop.GetName())), loop.GetValue());
+                    Fal::SetItem(*vMachine.vm(), *vMachine->findGlobalItem(Fal::Convert(loop.GetName())), loop.GetValue());
             }
             catch (Falcon::Error *err)
             {

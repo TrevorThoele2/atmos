@@ -1266,6 +1266,12 @@
     <ClInclude Include="ScriptController.h">
       <Filter>Header Files\Assets\Script</Filter>
     </ClInclude>
+    <ClInclude Include="FalconScriptObjects.h">
+      <Filter>Header Files\Assets\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="FalconScriptObjectPrototype.h">
+      <Filter>Header Files\Assets\Script</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Battle.cpp">
@@ -1926,6 +1932,12 @@
       <Filter>Source Files\Modulators</Filter>
     </ClCompile>
     <ClCompile Include="ScriptController.cpp">
+      <Filter>Source Files\Assets\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="FalconScriptObjects.cpp">
+      <Filter>Source Files\Assets\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="FalconScriptObjectPrototype.cpp">
       <Filter>Source Files\Assets\Script</Filter>
     </ClCompile>
   </ItemGroup>

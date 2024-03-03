@@ -26,7 +26,7 @@ namespace Falcon
 
 namespace Atmos
 {
-    namespace falcon
+    namespace Fal
     {
         Falcon::String Convert(const String &arg);
         String Convert(const Falcon::String &arg);
@@ -46,6 +46,7 @@ namespace Atmos
         struct FalconVariableTraits<bool>
         {
             typedef bool Type;
+            static const Type DefaultValue = false;
             static bool Is(Falcon::Item &item);
             static Type FromItem(Falcon::Item &item);
             static void SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set);
@@ -59,6 +60,7 @@ namespace Atmos
         struct FalconVariableTraits<std::uint8_t>
         {
             typedef std::uint8_t Type;
+            static const Type DefaultValue = 0;
             static bool Is(Falcon::Item &item);
             static Type FromItem(Falcon::Item &item);
             static void SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set);
@@ -72,6 +74,7 @@ namespace Atmos
         struct FalconVariableTraits<std::uint16_t>
         {
             typedef std::uint16_t Type;
+            static const Type DefaultValue = 0;
             static bool Is(Falcon::Item &item);
             static Type FromItem(Falcon::Item &item);
             static void SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set);
@@ -85,6 +88,7 @@ namespace Atmos
         struct FalconVariableTraits<std::uint32_t>
         {
             typedef std::uint32_t Type;
+            static const Type DefaultValue = 0;
             static bool Is(Falcon::Item &item);
             static Type FromItem(Falcon::Item &item);
             static void SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set);
@@ -98,6 +102,7 @@ namespace Atmos
         struct FalconVariableTraits<std::uint64_t>
         {
             typedef std::uint64_t Type;
+            static const Type DefaultValue = 0;
             static bool Is(Falcon::Item &item);
             static Type FromItem(Falcon::Item &item);
             static void SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set);
@@ -111,6 +116,7 @@ namespace Atmos
         struct FalconVariableTraits<std::int8_t>
         {
             typedef std::int8_t Type;
+            static const Type DefaultValue = 0;
             static bool Is(Falcon::Item &item);
             static Type FromItem(Falcon::Item &item);
             static void SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set);
@@ -124,6 +130,7 @@ namespace Atmos
         struct FalconVariableTraits<std::int16_t>
         {
             typedef std::int16_t Type;
+            static const Type DefaultValue = 0;
             static bool Is(Falcon::Item &item);
             static Type FromItem(Falcon::Item &item);
             static void SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set);
@@ -137,6 +144,7 @@ namespace Atmos
         struct FalconVariableTraits<std::int32_t>
         {
             typedef std::int32_t Type;
+            static const Type DefaultValue = 0;
             static bool Is(Falcon::Item &item);
             static Type FromItem(Falcon::Item &item);
             static void SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set);
@@ -150,6 +158,7 @@ namespace Atmos
         struct FalconVariableTraits<std::int64_t>
         {
             typedef std::int64_t Type;
+            static const Type DefaultValue = 0;
             static bool Is(Falcon::Item &item);
             static Type FromItem(Falcon::Item &item);
             static void SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set);
@@ -163,6 +172,7 @@ namespace Atmos
         struct FalconVariableTraits<double>
         {
             typedef double Type;
+            static const Type DefaultValue;
             static bool Is(Falcon::Item &item);
             static Type FromItem(Falcon::Item &item);
             static void SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set);
@@ -176,6 +186,7 @@ namespace Atmos
         struct FalconVariableTraits<String>
         {
             typedef String Type;
+            static const Type DefaultValue;
             static bool Is(Falcon::Item &item);
             static Type FromItem(Falcon::Item &item);
             static void SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set);
@@ -273,6 +284,7 @@ namespace Atmos
         struct FalconVariableTraits<GridPosition>
         {
             typedef GridPosition Type;
+            static const Type DefaultValue;
             static bool Is(Falcon::Item &item);
             static Type FromItem(Falcon::Item &item);
             static void SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set);
@@ -464,28 +476,28 @@ namespace Atmos
             return CheckedVectorConversionFromFalconAll<T>(name, vm->param(id));
         }
 
-        template<class T, class Def>
-        void CheckedItemPropertySet(Falcon::Item &set, const String &propertyName, Falcon::Item *setAs, bool(Falcon::Item::*isFunc)() const, T(Falcon::Item::*asFunc)() const, Def def)
+        template<class T, class DefaultValue>
+        void CheckedItemPropertySet(Falcon::Item &set, const String &propertyName, Falcon::Item *setAs, bool(Falcon::Item::*isFunc)() const, T(Falcon::Item::*asFunc)() const, DefaultValue defaultValue)
         {
             if (!setAs || !(setAs->*isFunc)())
-                set.setProperty(Convert(propertyName), def);
+                set.setProperty(Convert(propertyName), defaultValue);
             else
                 set.setProperty(Convert(propertyName), (setAs->*asFunc)());
         }
 
-        template<class T, class Ret, class Set, class Def>
-        void CheckedItemSet(Falcon::Item *set, Falcon::Item *setAs, bool(Falcon::Item::*isFunc)() const, T(Falcon::Item::*asFunc)() const, Ret(Falcon::Item::*setFunc)(Set), const Def &def)
+        template<class T, class Ret, class Set, class DefaultValue>
+        void CheckedItemSet(Falcon::Item *set, Falcon::Item *setAs, bool(Falcon::Item::*isFunc)() const, T(Falcon::Item::*asFunc)() const, Ret(Falcon::Item::*setFunc)(Set), const DefaultValue &defaultValue)
         {
             if (!setAs || !(setAs->*isFunc)())
-                (set->*setFunc)(def);
+                (set->*setFunc)(defaultValue);
             else
                 (set->*setFunc)((setAs->*asFunc)());
         }
 
-        template<class T, class Ret, class Set, class Def>
-        void CheckedItemSet(const String &set, const String &setAs, Falcon::VMachine *vm, bool(Falcon::Item::*isFunc)() const, T(Falcon::Item::*asFunc)() const, Ret(Falcon::Item::*setFunc)(Set), const Def &def)
+        template<class T, class Ret, class Set, class DefaultValue>
+        void CheckedItemSet(const String &set, const String &setAs, Falcon::VMachine *vm, bool(Falcon::Item::*isFunc)() const, T(Falcon::Item::*asFunc)() const, Ret(Falcon::Item::*setFunc)(Set), const DefaultValue &defaultValue)
         {
-            CheckedItemSet(RetrieveItemFromVM(set, vm), RetrieveItemFromVM(setAs, vm), isFunc, asFunc, setFunc, def);
+            CheckedItemSet(RetrieveItemFromVM(set, vm), RetrieveItemFromVM(setAs, vm), isFunc, asFunc, setFunc, defaultValue);
         }
 
         // Returns if encountering a ScriptException

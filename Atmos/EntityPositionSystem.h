@@ -61,24 +61,11 @@ namespace Atmos
         private:
             typedef Modulator::Modulator<SenseComponent> SenseModulator;
         private:
-            struct ModulatorEntry
-            {
-                Modulator::Observer moverObserver;
-                SenseComponent::ModulatorPack* sensePack;
-                ModulatorEntry(const Modulator::Observer &moverObserver, SenseComponent::ModulatorPack *sensePack);
-                ModulatorEntry(const ModulatorEntry &arg) = default;
-                ModulatorEntry& operator=(const ModulatorEntry &arg) = default;
-                bool operator==(const ModulatorEntry &arg) const;
-                bool operator!=(const ModulatorEntry &arg) const;
-
-                void Stop();
-            };
-        private:
             typedef System<PositionSystem> SystemBaseT;
             friend SystemBaseT;
 
             static std::unordered_multimap<GridPosition, Entity> map;
-            static std::unordered_map<Entity, ModulatorEntry> moving;
+            static std::unordered_set<Entity> moving;
 
             PositionSystem() = default;
             PositionSystem(const PositionSystem &arg) = delete;

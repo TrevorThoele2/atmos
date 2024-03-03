@@ -10,7 +10,7 @@
 
 namespace Atmos
 {
-    namespace falcon
+    namespace Fal
     {
         Falcon::String Convert(const String &arg)
         {
@@ -347,6 +347,8 @@ namespace Atmos
             return item;
         }
 
+        const FalconVariableTraits<double>::Type FalconVariableTraits<double>::DefaultValue = 0.0;
+
         bool FalconVariableTraits<double>::Is(Falcon::Item &item)
         {
             return item.isNumeric();
@@ -370,6 +372,8 @@ namespace Atmos
             SetItem(vm, item, set);
             return item;
         }
+
+        const FalconVariableTraits<String>::Type FalconVariableTraits<String>::DefaultValue;
 
         bool FalconVariableTraits<String>::Is(Falcon::Item &item)
         {
@@ -566,6 +570,8 @@ namespace Atmos
             return item;
         }
 
+        const FalconVariableTraits<GridPosition>::Type FalconVariableTraits<GridPosition>::DefaultValue;
+
         bool FalconVariableTraits<GridPosition>::Is(Falcon::Item &item)
         {
             return item.isObject() && item.asObject()->generator()->symbol()->name() == "atmos_GridPosition";
@@ -593,7 +599,7 @@ namespace Atmos
         }
 
         const String FalconVariableTraits<GridPosition>::typeString("GridPosition");
-        const String FalconVariableTraits<GridPosition>::falconTypeName("atmos_GridPosition");
+        const String FalconVariableTraits<GridPosition>::falconTypeName("Atmos_GridPosition");
         const String FalconVariableTraits<GridPosition>::xName("x");
         const String FalconVariableTraits<GridPosition>::yName("y");
         const String FalconVariableTraits<GridPosition>::zName("z");
@@ -625,7 +631,7 @@ namespace Atmos
 
         bool FalconVariableTraits<FrameTimer>::Is(Falcon::Item &item)
         {
-            return item.isObject() && item.asObject()->generator()->symbol()->name() == "atmos_FrameTimer";
+            return item.isObject() && item.asObject()->generator()->symbol()->name() == "Atmos_FrameTimer";
         }
 
         FalconVariableTraits<FrameTimer>::Type FalconVariableTraits<FrameTimer>::FromItem(Falcon::Item &item)
@@ -654,7 +660,7 @@ namespace Atmos
         }
 
         const String FalconVariableTraits<FrameTimer>::typeString("FrameTimer");
-        const String FalconVariableTraits<FrameTimer>::falconTypeName("atmos_FrameTimer");
+        const String FalconVariableTraits<FrameTimer>::falconTypeName("Atmos_FrameTimer");
         const String FalconVariableTraits<FrameTimer>::startName("_start");
         const String FalconVariableTraits<FrameTimer>::goalName("_goal");
 

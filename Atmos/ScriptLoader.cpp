@@ -3,6 +3,7 @@
 
 #include "ScriptController.h"
 #include "FalconScriptUtility.h"
+#include "FalconScriptObjects.h"
 
 #include "Enum.h"
 #include "Error.h"
@@ -18,12 +19,15 @@
 #include "PlayerParty.h"
 #include "EntityNameSystem.h"
 #include "EntityPositionSystem.h"
+#include "ModulatorController.h"
+#include "ModulatorDescribers.h"
+#include "GameEnvironment.h"
 
 #include <falcon/engine.h>
 
 namespace Atmos
 {
-    using namespace falcon;
+    using namespace ::Atmos::Fal;
 
     namespace GeneralScript
     {
@@ -123,25 +127,25 @@ namespace Atmos
     {
         FALCON_FUNC GetFrameTimeRaw(Falcon::VMachine *vm)
         {
-            vm->retval(CreateItem<FrameTimer>(*vm, Act::Time::GetFrameTime()));
+            vm->retval(CreateItem<::Atmos::FrameTimer>(*vm, Act::Time::GetFrameTime()));
         }
 
         FALCON_FUNC FrameTimerConstructor(Falcon::VMachine *vm)
         {
-            CheckedItemPropertySet(vm->self(), FalconVariableTraits<FrameTimer>::goalName, RetrieveItemFromVM("goal", vm), &Falcon::Item::isOrdinal, &Falcon::Item::forceNumeric, 0.0);
-            RetrieveItemFromVM(FalconVariableTraits<FrameTimer>::startName, vm)->setInteger(0);
+            CheckedItemPropertySet(vm->self(), FalconVariableTraits<::Atmos::FrameTimer>::goalName, RetrieveItemFromVM("goal", vm), &Falcon::Item::isOrdinal, &Falcon::Item::forceNumeric, 0.0);
+            RetrieveItemFromVM(FalconVariableTraits<::Atmos::FrameTimer>::startName, vm)->setInteger(0);
         }
 
         FALCON_FUNC FrameTimer_Start(Falcon::VMachine *vm)
         {
-            SetItem<FrameTimer>(*vm, *RetrieveItemFromVM(FalconVariableTraits<FrameTimer>::startName, vm), Act::Time::GetFrameTime());
+            SetItem<::Atmos::FrameTimer>(*vm, *RetrieveItemFromVM(FalconVariableTraits<::Atmos::FrameTimer>::startName, vm), Act::Time::GetFrameTime());
         }
 
         FALCON_FUNC FrameTimer_Elapsed(Falcon::VMachine *vm)
         {
             typedef FalconVariableTraits<TimeValue::ValueT> WrappedTraits;
-            auto goal = WrappedTraits::FromItem(*vm->findLocalSymbolItem(Convert(FalconVariableTraits<FrameTimer>::goalName)));
-            auto start = WrappedTraits::FromItem(*vm->findLocalSymbolItem(Convert(FalconVariableTraits<FrameTimer>::startName)));
+            auto goal = WrappedTraits::FromItem(*vm->findLocalSymbolItem(Convert(FalconVariableTraits<::Atmos::FrameTimer>::goalName)));
+            auto start = WrappedTraits::FromItem(*vm->findLocalSymbolItem(Convert(FalconVariableTraits<::Atmos::FrameTimer>::startName)));
             TimeValue now(Act::Time::GetFrameTime());
 
             vm->retval(WrappedTraits::CreateItem(*vm, (now.Get() - start) / goal));
@@ -149,14 +153,14 @@ namespace Atmos
 
         FALCON_FUNC FrameTimer_SetGoal(Falcon::VMachine *vm)
         {
-            CheckedItemSet(FalconVariableTraits<FrameTimer>::goalName, "set", vm, &Falcon::Item::isNumeric, &Falcon::Item::asNumeric, &Falcon::Item::setNumeric, 0.0);
+            CheckedItemSet(FalconVariableTraits<::Atmos::FrameTimer>::goalName, "set", vm, &Falcon::Item::isNumeric, &Falcon::Item::asNumeric, &Falcon::Item::setNumeric, 0.0);
         }
 
         FALCON_FUNC FrameTimer_HasReachedGoal(Falcon::VMachine *vm)
         {
             typedef FalconVariableTraits<TimeValue::ValueT> WrappedTraits;
-            auto goal = WrappedTraits::FromItem(*vm->findLocalSymbolItem(Convert(FalconVariableTraits<FrameTimer>::goalName)));
-            auto start = WrappedTraits::FromItem(*vm->findLocalSymbolItem(Convert(FalconVariableTraits<FrameTimer>::startName)));
+            auto goal = WrappedTraits::FromItem(*vm->findLocalSymbolItem(Convert(FalconVariableTraits<::Atmos::FrameTimer>::goalName)));
+            auto start = WrappedTraits::FromItem(*vm->findLocalSymbolItem(Convert(FalconVariableTraits<::Atmos::FrameTimer>::startName)));
             TimeValue now(Act::Time::GetFrameTime());
 
             vm->retval(WrappedTraits::CreateItem(*vm, now.Get() - start));
@@ -233,13 +237,13 @@ namespace Atmos
             catch (const ScriptException&) { return; }
 
             Falcon::Item *position = RetrieveItemFromVM("position", vm);
-            if (!position || !Is<GridPosition>(*position))
+            if (!position || !Is<::Atmos::GridPosition>(*position))
                 position = nullptr;
 
             if (!position)
                 vm->retval(::Atmos::Ent::PositionSystem::CanMove(entity));
             else
-                vm->retval(::Atmos::Ent::PositionSystem::CanMove(entity, FromItem<GridPosition>(*position)));
+                vm->retval(::Atmos::Ent::PositionSystem::CanMove(entity, FromItem<::Atmos::GridPosition>(*position)));
         }
 
         FALCON_FUNC MoveEntity(Falcon::VMachine *vm)
@@ -250,12 +254,12 @@ namespace Atmos
             // The third argument MUST be a LargeInteger
 
             Entity entity = Ent::nullEntity;
-            GridPosition position;
+            ::Atmos::GridPosition position;
             TimeValue::ValueT timeTaken;
             try
             {
                 entity = CheckedConversionFromFalcon<Entity>("entity", vm);
-                position = CheckedConversionFromFalcon<GridPosition>("position", vm);
+                position = CheckedConversionFromFalcon<::Atmos::GridPosition>("position", vm);
                 timeTaken = CheckedConversionFromFalcon<TimeValue::ValueT>("timeTaken", vm);
             }
             catch (const ScriptException&) { return; }
@@ -381,7 +385,7 @@ namespace Atmos
 
         FALCON_FUNC GetEntitiesAtPosition(Falcon::VMachine *vm)
         {
-            auto position = FromItem<GridPosition>(*vm, "position");
+            auto position = FromItem<::Atmos::GridPosition>(*vm, "position");
             if (!position)
                 return;
 
@@ -508,22 +512,22 @@ namespace Atmos
 
         FALCON_FUNC TilePosition_Distance(Falcon::VMachine *vm)
         {
-            auto other = FromItem<GridPosition>(*vm, "other");
+            auto other = FromItem<::Atmos::GridPosition>(*vm, "other");
             if (!other)
                 return;
 
-            auto &self = FromItem<GridPosition>(vm->self());
+            auto &self = FromItem<::Atmos::GridPosition>(vm->self());
 
             vm->retval(CreateItem(*vm, self.FindDistance(*other)));
         }
 
         FALCON_FUNC FindPath(Falcon::VMachine *vm)
         {
-            auto positionFrom = FromItem<GridPosition>(*vm, "positionFrom");
+            auto positionFrom = FromItem<::Atmos::GridPosition>(*vm, "positionFrom");
             if (!positionFrom)
                 return;
 
-            auto positionTo = FromItem<GridPosition>(*vm, "positionTo");
+            auto positionTo = FromItem<::Atmos::GridPosition>(*vm, "positionTo");
             if (!positionTo)
                 return;
 
@@ -540,11 +544,139 @@ namespace Atmos
         }
     }
 
+    namespace modulatorScript
+    {
+        FALCON_FUNC Create(Falcon::VMachine *vm)
+        {
+            String name;
+            try
+            {
+                name = CheckedConversionFromFalcon<String>("name", vm);
+            }
+            catch (const ScriptException&) { return; }
+
+            // Create the modulator
+            ::Atmos::Modulator::Observer madeMod(GameEnvironment::GenerateModulator(name));
+            if (!madeMod)
+            {
+                // Log error if not created
+                ErrorHandler::Log("A modulator was attempted to be created with an invalid name.",
+                    ErrorHandler::Severity::ERROR_LOW,
+                    ErrorHandler::NameValueVector{ NameValuePair("Name", name) });
+                return;
+            }
+
+            // Return the ID for the new modulator
+            vm->retval(FalconVariableTraits<::Atmos::Modulator::Controller::ID>::CreateItem(*vm, GameEnvironment::AttachModulator(madeMod)));
+        }
+
+        FALCON_FUNC CreateTrack(Falcon::VMachine *vm)
+        {
+            ::Atmos::Modulator::Controller::ID modID = 0;
+            String name;
+            try
+            {
+                modID = CheckedConversionFromFalcon<::Atmos::Modulator::Controller::ID>("id", vm);
+                name = CheckedConversionFromFalcon<String>("name", vm);
+            }
+            catch (const ScriptException&) { return; }
+
+            ::Atmos::Modulator::Observer mod(GameEnvironment::FindModulator(modID));
+            if (!mod)
+            {
+                // Log error if not found
+                ErrorHandler::Log("A modulator was attempted to be found with an invalid ID.",
+                    ErrorHandler::Severity::ERROR_LOW,
+                    ErrorHandler::NameValueVector{ NameValuePair("ID", modID) });
+                return;
+            }
+
+            auto &madeTrack = GameEnvironment::GenerateModulatorTrack(mod->GetGeneratorName(), name);
+            if (!madeTrack)
+            {
+                // Log error if not made
+                ErrorHandler::Log("A modulator track was attempted to be created with an invalid name.",
+                    ErrorHandler::Severity::ERROR_LOW,
+                    ErrorHandler::NameValueVector{ NameValuePair("Track Name", name) });
+                return;
+            }
+
+            vm->retval(FalconVariableTraits<::Atmos::Modulator::Controller::ID>::CreateItem(*vm, mod->AddTrack(std::move(madeTrack))));
+        }
+
+        FALCON_FUNC CreateTrackNode(Falcon::VMachine *vm)
+        {
+            ::Atmos::Modulator::Controller::ID modID = 0;
+            ::Atmos::Modulator::ModulatorBase::TrackID trackID = 0;
+            try
+            {
+                modID = CheckedConversionFromFalcon<::Atmos::Modulator::Controller::ID>("modID", vm);
+                trackID = CheckedConversionFromFalcon<::Atmos::Modulator::Controller::ID>("trackID", vm);
+            }
+            catch (const ScriptException&) { return; }
+
+            ::Atmos::Modulator::Observer foundMod = GameEnvironment::FindModulator(modID);
+            if (!foundMod)
+            {
+                // Log error if not found
+                ErrorHandler::Log("A modulator was attempted to be found with an invalid ID.",
+                    ErrorHandler::Severity::ERROR_LOW,
+                    ErrorHandler::NameValueVector{ NameValuePair("Mod ID", modID) });
+                return;
+            }
+
+            auto foundTrack = foundMod->FindTrack(trackID);
+            if (!foundTrack)
+            {
+                // Log error if not made
+                ErrorHandler::Log("A modulator track was attempted to be found with an invalid ID.",
+                    ErrorHandler::Severity::ERROR_LOW,
+                    ErrorHandler::NameValueVector{ NameValuePair("Track ID", trackID) });
+                return;
+            }
+
+            foundTrack->AddNode();
+        }
+
+        FALCON_FUNC ModulatorConstructor(Falcon::VMachine *vm)
+        {
+            auto setter = [](const char *name, Falcon::VMachine *vm)
+            {
+                CheckedItemPropertySet(vm->self(), name, RetrieveItemFromVM(name, vm), &Falcon::Item::isOrdinal, &Falcon::Item::forceInteger, 0);
+            };
+
+            setter("modID", vm);
+        }
+
+        FALCON_FUNC TrackConstructor(Falcon::VMachine *vm)
+        {
+            auto setter = [](const char *name, Falcon::VMachine *vm)
+            {
+                CheckedItemPropertySet(vm->self(), name, RetrieveItemFromVM(name, vm), &Falcon::Item::isOrdinal, &Falcon::Item::forceInteger, 0);
+            };
+
+            setter("modID", vm);
+            setter("trackID", vm);
+        }
+
+        FALCON_FUNC TrackNodeConstructor(Falcon::VMachine *vm)
+        {
+            auto setter = [](const char *name, Falcon::VMachine *vm)
+            {
+                CheckedItemPropertySet(vm->self(), name, RetrieveItemFromVM(name, vm), &Falcon::Item::isOrdinal, &Falcon::Item::forceInteger, 0);
+            };
+
+            setter("modID", vm);
+            setter("trackID", vm);
+            setter("nodeID", vm);
+        }
+    }
+
     namespace battleScript
     {
         FALCON_FUNC FindClosestPlayer(Falcon::VMachine *vm)
         {
-            auto position = FromItem<GridPosition>(*vm, "position");
+            auto position = FromItem<::Atmos::GridPosition>(*vm, "position");
             if (!position)
                 return;
 
@@ -553,7 +685,7 @@ namespace Atmos
 
         FALCON_FUNC FindClosestMonster(Falcon::VMachine *vm)
         {
-            auto position = FromItem<GridPosition>(*vm, "position");
+            auto position = FromItem<::Atmos::GridPosition>(*vm, "position");
             if (!position)
                 return;
 
@@ -658,33 +790,33 @@ namespace Atmos
 
         // General purpose
         {
-            mainModule->addExtFunc("atmos_Suspend", GeneralScript::Suspend);
-            mainModule->addExtFunc("atmos_InstantiateScript", GeneralScript::InstantiateScript);
+            mainModule->addExtFunc("Atmos_Suspend", GeneralScript::Suspend);
+            mainModule->addExtFunc("Atmos_InstantiateScript", GeneralScript::InstantiateScript);
         }
 
         // Error
         {
-            mainModule->addExtFunc("atmos_LogError", ErrorScript::LogError)->addParam("message");
+            mainModule->addExtFunc("Atmos_LogError", ErrorScript::LogError)->addParam("message");
         }
 
         // Random
         {
-            mainModule->addExtFunc("atmos_GetRandomBool", RandomScript::GetRandomBool)->addParam("probability");
-            mainModule->addExtFunc("atmos_GetRandomInteger", RandomScript::GetRandomInteger)->addParam("floor")->addParam("ceiling")->addParam("signed");
+            mainModule->addExtFunc("Atmos_GetRandomBool", RandomScript::GetRandomBool)->addParam("probability");
+            mainModule->addExtFunc("Atmos_GetRandomInteger", RandomScript::GetRandomInteger)->addParam("floor")->addParam("ceiling")->addParam("signed");
         }
 
         // Input
         {
-            mainModule->addExtFunc("atmos_IsActionActive", inputScript::IsActionActive)->addParam("id");
-            mainModule->addExtFunc("atmos_IsActionPressed", inputScript::IsActionPressed)->addParam("id");
-            mainModule->addExtFunc("atmos_IsActionDepressed", inputScript::IsActionDepressed)->addParam("id");
+            mainModule->addExtFunc("Atmos_IsActionActive", inputScript::IsActionActive)->addParam("id");
+            mainModule->addExtFunc("Atmos_IsActionPressed", inputScript::IsActionPressed)->addParam("id");
+            mainModule->addExtFunc("Atmos_IsActionDepressed", inputScript::IsActionDepressed)->addParam("id");
 
             auto actionAdder = [&](Falcon::Symbol *symbol, Input::ActionID id, const String &name)
             {
                 mainModule->addClassProperty(symbol, name.c_str()).setInteger(ConvertToUnderlyingType(id));
             };
 
-            Falcon::Symbol *focusedSymbol = mainModule->addClass("atmos_Action");
+            Falcon::Symbol *focusedSymbol = mainModule->addClass("Atmos_Action");
             for (auto &loop : Environment::GetInput()->GetActions())
                 actionAdder(focusedSymbol, loop->id, loop->displayName);
         }
@@ -696,13 +828,13 @@ namespace Atmos
                 mainModule->addClassProperty(symbol, name.c_str()).setInteger(ConvertToUnderlyingType(t));
             };
 
-            mainModule->addExtFunc("atmos_GetFrameTimeRaw", timeScript::GetFrameTimeRaw);
+            mainModule->addExtFunc("Atmos_GetFrameTimeRaw", timeScript::GetFrameTimeRaw);
 
             // Setup frame timer
-            auto cls = mainModule->addClass(Convert(FalconVariableTraits<FrameTimer>::falconTypeName), &timeScript::FrameTimerConstructor)
+            auto cls = mainModule->addClass(Convert(FalconVariableTraits<::Atmos::FrameTimer>::falconTypeName), &timeScript::FrameTimerConstructor)
                 ->addParam("goal");
-            mainModule->addClassProperty(cls, Convert(FalconVariableTraits<FrameTimer>::startName));
-            mainModule->addClassProperty(cls, Convert(FalconVariableTraits<FrameTimer>::goalName));
+            mainModule->addClassProperty(cls, Convert(FalconVariableTraits<::Atmos::FrameTimer>::startName));
+            mainModule->addClassProperty(cls, Convert(FalconVariableTraits<::Atmos::FrameTimer>::goalName));
             mainModule->addClassMethod(cls, "Start", &timeScript::FrameTimer_Start);
             mainModule->addClassMethod(cls, "Elapsed", &timeScript::FrameTimer_Elapsed);
             mainModule->addClassMethod(cls, "SetGoal", &timeScript::FrameTimer_SetGoal).asSymbol()->addParam("set");
@@ -711,82 +843,156 @@ namespace Atmos
 
         // Speech
         {
-            mainModule->addExtFunc("atmos_SetSpeechCharacters", speechScript::SetCharacters)->addParam("output");
-            mainModule->addExtFunc("atmos_AppendSpeechCharacters", speechScript::AppendCharacters)->addParam("output");
-            mainModule->addExtFunc("atmos_ClearSpeechCharacters", speechScript::ClearCharacters);
-            mainModule->addExtFunc("atmos_GetSpeechCharacters", speechScript::GetCharacters);
-            mainModule->addExtFunc("atmos_LeaveSpeech", speechScript::LeaveSpeech);
-            mainModule->addExtFunc("atmos_EnterShop", speechScript::EnterShop)->addParam("buying");
-            mainModule->addExtFunc("atmos_IsShopActive", speechScript::IsShopActive);
+            mainModule->addExtFunc("Atmos_SetSpeechCharacters", speechScript::SetCharacters)->addParam("output");
+            mainModule->addExtFunc("Atmos_AppendSpeechCharacters", speechScript::AppendCharacters)->addParam("output");
+            mainModule->addExtFunc("Atmos_ClearSpeechCharacters", speechScript::ClearCharacters);
+            mainModule->addExtFunc("Atmos_GetSpeechCharacters", speechScript::GetCharacters);
+            mainModule->addExtFunc("Atmos_LeaveSpeech", speechScript::LeaveSpeech);
+            mainModule->addExtFunc("Atmos_EnterShop", speechScript::EnterShop)->addParam("buying");
+            mainModule->addExtFunc("Atmos_IsShopActive", speechScript::IsShopActive);
 
-            mainModule->addExtFunc("atmos_ActivateSpeechInput", speechScript::ActivateInput)->addParam("strings");
-            mainModule->addExtFunc("atmos_DeactivateSpeechInput", speechScript::DeactivateInput);
-            mainModule->addExtFunc("atmos_GetSpeechInputPosition", speechScript::GetInputPosition);
+            mainModule->addExtFunc("Atmos_ActivateSpeechInput", speechScript::ActivateInput)->addParam("strings");
+            mainModule->addExtFunc("Atmos_DeactivateSpeechInput", speechScript::DeactivateInput);
+            mainModule->addExtFunc("Atmos_GetSpeechInputPosition", speechScript::GetInputPosition);
         }
 
         // Entities
         {
-            mainModule->addExtFunc("atmos_CanMoveEntity", entityScript::CanMoveEntity)->addParam("entity")->addParam("position");
-            mainModule->addExtFunc("atmos_MoveEntity", entityScript::MoveEntity)->addParam("entity")->addParam("position");
-            mainModule->addExtFunc("atmos_MoveEntityDirection", entityScript::MoveEntityDirection)->addParam("entity")->addParam("direction");
+            mainModule->addExtFunc("Atmos_CanMoveEntity", entityScript::CanMoveEntity)->addParam("entity")->addParam("position");
+            mainModule->addExtFunc("Atmos_MoveEntity", entityScript::MoveEntity)->addParam("entity")->addParam("position");
+            mainModule->addExtFunc("Atmos_MoveEntityDirection", entityScript::MoveEntityDirection)->addParam("entity")->addParam("direction");
 
-            mainModule->addExtFunc("atmos_GetEntityTalking", entityScript::GetEntityTalking);
+            mainModule->addExtFunc("Atmos_GetEntityTalking", entityScript::GetEntityTalking);
 
-            mainModule->addExtFunc("atmos_GetAvatarGold", entityScript::GetAvatarGold);
-            mainModule->addExtFunc("atmos_AddEntityToParty", entityScript::AddEntityToParty)->addParam("entity");
+            mainModule->addExtFunc("Atmos_GetAvatarGold", entityScript::GetAvatarGold);
+            mainModule->addExtFunc("Atmos_AddEntityToParty", entityScript::AddEntityToParty)->addParam("entity");
 
-            mainModule->addExtFunc("atmos_GetEntityName", &entityScript::GetEntityName)->addParam("entity");
-            mainModule->addExtFunc("atmos_GetEntityPosition", &entityScript::GetEntityPosition)->addParam("entity");
-            mainModule->addExtFunc("atmos_GetEntityWithName", &entityScript::GetEntityWithName)->addParam("name");
-            mainModule->addExtFunc("atmos_GetEntitiesAtPosition", &entityScript::GetEntitiesAtPosition)->addParam("position");
-            mainModule->addExtFunc("atmos_GetItemCount", entityScript::GetItemCount)->addParam("entity");
-            mainModule->addExtFunc("atmos_IsEntityInParty", entityScript::IsEntityInParty)->addParam("entity");
+            mainModule->addExtFunc("Atmos_GetEntityName", &entityScript::GetEntityName)->addParam("entity");
+            mainModule->addExtFunc("Atmos_GetEntityPosition", &entityScript::GetEntityPosition)->addParam("entity");
+            mainModule->addExtFunc("Atmos_GetEntityWithName", &entityScript::GetEntityWithName)->addParam("name");
+            mainModule->addExtFunc("Atmos_GetEntitiesAtPosition", &entityScript::GetEntitiesAtPosition)->addParam("position");
+            mainModule->addExtFunc("Atmos_GetItemCount", entityScript::GetItemCount)->addParam("entity");
+            mainModule->addExtFunc("Atmos_IsEntityInParty", entityScript::IsEntityInParty)->addParam("entity");
 
-            mainModule->addExtFunc("atmos_GetEntityPersistent", entityScript::GetPersistent)->addParam("entity")->addParam("persistentName");
-            mainModule->addExtFunc("atmos_StoreEntityPersistent", entityScript::StorePersistent)->addParam("entity")->addParam("persistentName")->addParam("value");
+            mainModule->addExtFunc("Atmos_GetEntityPersistent", entityScript::GetPersistent)->addParam("entity")->addParam("persistentName");
+            mainModule->addExtFunc("Atmos_StoreEntityPersistent", entityScript::StorePersistent)->addParam("entity")->addParam("persistentName")->addParam("value");
         }
 
         // Position
         {
-            mainModule->addExtFunc("atmos_FindPath", positionScript::FindPath)->addParam("positionFrom")->addParam("positionTo");
+            mainModule->addExtFunc("Atmos_FindPath", positionScript::FindPath)->addParam("positionFrom")->addParam("positionTo");
 
             // Setup grid position
+            Fal::GridPosition::Instance().PushAllToModule(*mainModule);
+            /*
             auto cls = mainModule->addClass(Convert(FalconVariableTraits<GridPosition>::falconTypeName), &positionScript::TilePositionConstructor)
                 ->addParam("x")
                 ->addParam("y")
                 ->addParam("z");
-            mainModule->addClassProperty(cls, Convert(FalconVariableTraits<GridPosition>::xName));
-            mainModule->addClassProperty(cls, Convert(FalconVariableTraits<GridPosition>::yName));
-            mainModule->addClassProperty(cls, Convert(FalconVariableTraits<GridPosition>::zName));
-            mainModule->addClassMethod(cls, "FindDistance", &positionScript::TilePosition_Distance).asSymbol()->addParam("other");
+            mainModule->addClassProperty(cls, "x");
+            mainModule->addClassProperty(cls, "y");
+            mainModule->addClassProperty(cls, "z");
+            */
 
             // Setup direction class
             {
                 typedef ::Atmos::Direction::ValueT Value;
-                cls = mainModule->addClass("atmos_Direction");
+                auto cls = mainModule->addClass("Atmos_Direction");
 
-                auto directionSetup = [&](const char *name, Value value)
+                auto setup = [&](const char *name, Value value)
                 {
                     mainModule->addClassProperty(cls, name).setInteger(value).setReadOnly(true);
                 };
 
-                directionSetup("Up", Value::UP);
-                directionSetup("Down", Value::DOWN);
-                directionSetup("Left", Value::LEFT);
-                directionSetup("Right", Value::RIGHT);
+                setup("Up", Value::UP);
+                setup("Down", Value::DOWN);
+                setup("Left", Value::LEFT);
+                setup("Right", Value::RIGHT);
             }
+        }
+
+        // Modulators
+        {
+            // Setup modulators strings
+            {
+                // First, do the regular modulators
+                auto cls = mainModule->addClass("Atmos_ModulatorType");
+
+                auto setup = [&](const char *name, const String &value)
+                {
+                    mainModule->addClassProperty(cls, name).setString(&Convert(value)).setReadOnly(true);
+                };
+
+                setup("Sprite", ::Atmos::Modulator::Description::Sprite.name);
+                setup("SpriteOffset", ::Atmos::Modulator::Description::SpriteOffset.name);
+                setup("Sound", ::Atmos::Modulator::Description::Sound.name);
+                setup("SoundOffset", ::Atmos::Modulator::Description::SoundOffset.name);
+                setup("AVEffect", ::Atmos::Modulator::Description::AVEffect.name);
+                setup("AVEffectOffset", ::Atmos::Modulator::Description::AVEffectOffset.name);
+                setup("SenseComponent", ::Atmos::Modulator::Description::SenseComponent.name);
+
+                // Now, do the tracks
+                cls = mainModule->addClass("Atmos_ModulatorTrackType");
+
+                setup("PositionX", ::Atmos::Modulator::Description::Track::PositionX.name);
+                setup("PositionY", ::Atmos::Modulator::Description::Track::PositionY.name);
+                setup("PositionZ", ::Atmos::Modulator::Description::Track::PositionZ.name);
+                setup("ScalingX", ::Atmos::Modulator::Description::Track::ScalingX.name);
+                setup("ScalingY", ::Atmos::Modulator::Description::Track::ScalingY.name);
+                setup("ScalingZ", ::Atmos::Modulator::Description::Track::ScalingZ.name);
+                setup("RotationX", ::Atmos::Modulator::Description::Track::RotationX.name);
+                setup("RotationY", ::Atmos::Modulator::Description::Track::RotationY.name);
+                setup("RotationZ", ::Atmos::Modulator::Description::Track::RotationZ.name);
+
+                setup("Volume", ::Atmos::Modulator::Description::Track::Volume.name);
+                setup("Index", ::Atmos::Modulator::Description::Track::Index.name);
+            }
+
+            // Setup Modulator class
+            {
+                auto cls = mainModule->addClass("Atmos_Modulator", &Fal::Modulator::constructor)
+                    ->addParam("modID");
+                mainModule->addClassProperty(cls, "modID");
+            }
+
+            // Setup Track class
+            {
+                auto cls = mainModule->addClass("Atmos_ModulatorTrack", &modulatorScript::TrackConstructor)
+                    ->addParam("modID")
+                    ->addParam("trackID");
+                mainModule->addClassProperty(cls, "modID");
+                mainModule->addClassProperty(cls, "trackID");
+            }
+
+            // Setup Track Node class
+            {
+                auto cls = mainModule->addClass("Atmos_ModulatorTrackNode", &modulatorScript::TrackNodeConstructor)
+                    ->addParam("modID")
+                    ->addParam("trackID")
+                    ->addParam("nodeID");
+                mainModule->addClassProperty(cls, "modID");
+                mainModule->addClassProperty(cls, "trackID");
+                mainModule->addClassProperty(cls, "nodeID");
+            }
+
+            // Create modulators
+            mainModule->addExtFunc("Atmos_CreateModulator", &modulatorScript::Create)->addParam("name");
+            // Create modulator tracks
+            mainModule->addExtFunc("Atmos_CreateModulatorTrack", &modulatorScript::CreateTrack)->addParam("mod")->addParam("name");
+            // Create modulator track nodes
+            mainModule->addExtFunc("Atmos_CreateModulatorTrack", &modulatorScript::CreateTrack)->addParam("track");
         }
 
         // Battle
         {
-            mainModule->addExtFunc("atmosBattle_FindClosestPlayer", &battleScript::FindClosestPlayer)->addParam("position");
-            mainModule->addExtFunc("atmosBattle_FindClosestMonster", &battleScript::FindClosestMonster)->addParam("position");
-            mainModule->addExtFunc("atmosBattle_GetStartingPosition", &battleScript::GetStartingPosition)->addParam("entity");
-            mainModule->addExtFunc("atmosBattle_GetMovementRange", &battleScript::GetMovementRange)->addParam("entity");
-            mainModule->addExtFunc("atmosBattle_IsTurnEnded", &battleScript::IsTurnEnded)->addParam("entity");
+            mainModule->addExtFunc("AtmosBattle_FindClosestPlayer", &battleScript::FindClosestPlayer)->addParam("position");
+            mainModule->addExtFunc("AtmosBattle_FindClosestMonster", &battleScript::FindClosestMonster)->addParam("position");
+            mainModule->addExtFunc("AtmosBattle_GetStartingPosition", &battleScript::GetStartingPosition)->addParam("entity");
+            mainModule->addExtFunc("AtmosBattle_GetMovementRange", &battleScript::GetMovementRange)->addParam("entity");
+            mainModule->addExtFunc("AtmosBattle_IsTurnEnded", &battleScript::IsTurnEnded)->addParam("entity");
 
-            mainModule->addExtFunc("atmosBattle_Attack", &battleScript::Attack)->addParam("source")->addParam("target");
-            mainModule->addExtFunc("atmosBattle_EndTurn", &battleScript::EndTurn)->addParam("entity");
+            mainModule->addExtFunc("AtmosBattle_Attack", &battleScript::Attack)->addParam("source")->addParam("target");
+            mainModule->addExtFunc("AtmosBattle_EndTurn", &battleScript::EndTurn)->addParam("entity");
         }
     }
 

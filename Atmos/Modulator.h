@@ -1,30 +1,27 @@
 #pragma once
 
 #include "ModulatorTrack.h"
-
-#include "RandomAccessSequence.h"
+#include "IDManager.h"
 
 namespace Atmos
 {
     namespace Modulator
     {
-        class ModulatorController;
         class ModulatorBase
         {
         public:
-            typedef size_t ID;
+            typedef size_t TrackID;
             typedef std::unique_ptr<TrackBase> TrackPtr;
         private:
-            friend ModulatorController;
-        private:
             bool working;
+            const Name *generatorName;
         private:
             virtual ModulatorBase* CloneImpl() const = 0;
 
-            virtual TrackBase* AddTrackImpl(TrackPtr &&track) = 0;
-            virtual void RemoveTrackImpl(ID id) = 0;
-            virtual TrackBase* FindTrackImpl(ID id) = 0;
-            virtual const TrackBase* FindTrackImpl(ID id) const = 0;
+            virtual TrackID AddTrackImpl(TrackPtr &&track) = 0;
+            virtual void RemoveTrackImpl(TrackID id) = 0;
+            virtual TrackBase* FindTrackImpl(TrackID id) = 0;
+            virtual const TrackBase* FindTrackImpl(TrackID id) const = 0;
 
             virtual void StopImpl() = 0;
             virtual bool WorkImpl() = 0;
@@ -32,7 +29,7 @@ namespace Atmos
         protected:
             void StartBase();
         public:
-            ModulatorBase();
+            ModulatorBase(const Name &generatorName);
             ModulatorBase(const ModulatorBase &arg) = default;
             ModulatorBase(ModulatorBase &&arg);
             ModulatorBase& operator=(const ModulatorBase &arg) = default;
@@ -41,16 +38,18 @@ namespace Atmos
 
             ModulatorBase* Clone() const;
 
-            TrackBase* AddTrack(TrackPtr &&track);
-            void RemoveTrack(ID id);
-            TrackBase* FindTrack(ID id);
-            const TrackBase* FindTrack(ID id) const;
+            TrackID AddTrack(TrackPtr &&track);
+            void RemoveTrack(TrackID id);
+            TrackBase* FindTrack(TrackID id);
+            const TrackBase* FindTrack(TrackID id) const;
 
             void Stop();
             // Returns true if the modulator is done
             bool Work();
             bool IsWorking() const;
             TimeValue GetSumTimeTaken() const;
+
+            const Name& GetGeneratorName() const;
         };
 
         template<class Object>
@@ -60,14 +59,14 @@ namespace Atmos
             typedef Object ObjectT;
             typedef Track<ObjectT> TrackT;
         private:
-            typedef RandomAccessSequence<TrackT> TrackContainer;
+            typedef IDManager<std::vector<TrackT>> TrackContainer;
         private:
             Modulator* CloneImpl() const override final;
 
-            TrackBase* AddTrackImpl(TrackPtr &&track) override final;
-            void RemoveTrackImpl(ID id) override final;
-            TrackBase* FindTrackImpl(ID id) override final;
-            const TrackBase* FindTrackImpl(ID id) const override final;
+            TrackID AddTrackImpl(TrackPtr &&track) override final;
+            void RemoveTrackImpl(TrackID id) override final;
+            TrackBase* FindTrackImpl(TrackID id) override final;
+            const TrackBase* FindTrackImpl(TrackID id) const override final;
 
             void StopImpl() override final;
             bool WorkImpl() override final;
@@ -77,7 +76,7 @@ namespace Atmos
             TrackContainer tracks;
             std::vector<TrackT*> tracksWorking;
         public:
-            Modulator();
+            Modulator(const Name &generatorName);
             Modulator(const Modulator &arg);
             Modulator(Modulator &&arg);
             Modulator& operator=(const Modulator &arg);
@@ -95,19 +94,19 @@ namespace Atmos
         }
 
         template<class Object>
-        TrackBase* Modulator<Object>::AddTrackImpl(TrackPtr &&track)
+        typename Modulator<Object>::TrackID Modulator<Object>::AddTrackImpl(TrackPtr &&track)
         {
-            return &*tracks.AddBack(*static_cast<TrackT*>(track.get()));
+            return tracks.Add(*static_cast<TrackT*>(track.get()));
         }
 
         template<class Object>
-        void Modulator<Object>::RemoveTrackImpl(ID id)
+        void Modulator<Object>::RemoveTrackImpl(TrackID id)
         {
             tracks.Remove(id);
         }
 
         template<class Object>
-        TrackBase* Modulator<Object>::FindTrackImpl(ID id)
+        TrackBase* Modulator<Object>::FindTrackImpl(TrackID id)
         {
             auto found = tracks.Find(id);
             if (found == tracks.end())
@@ -117,7 +116,7 @@ namespace Atmos
         }
 
         template<class Object>
-        const TrackBase* Modulator<Object>::FindTrackImpl(ID id) const
+        const TrackBase* Modulator<Object>::FindTrackImpl(TrackID id) const
         {
             auto found = tracks.Find(id);
             if (found == tracks.end())
@@ -164,7 +163,7 @@ namespace Atmos
         }
 
         template<class Object>
-        Modulator<Object>::Modulator() : obj(nullptr)
+        Modulator<Object>::Modulator(const Name &generatorName) : ModulatorBase(generatorName), obj(nullptr)
         {}
 
         template<class Object>
@@ -208,7 +207,7 @@ namespace Atmos
         template<class Object>
         void Modulator<Object>::Start(ObjectT &obj)
         {
-            if(tracks.empty())
+            if(IsWorking() || tracks.empty())
                 return;
 
             this->obj = &obj;
