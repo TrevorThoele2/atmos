@@ -10,14 +10,14 @@
 
 namespace Atmos
 {
-    inscription::Inscripter<SpellList::Entry>& SpellList::Entry::GetInscripter()
+    ::Inscription::Inscripter<SpellList::Entry>& SpellList::Entry::GetInscripter()
     {
         INSCRIPTION_SIMPLE_INSCRIPTER_TABLE_BEGIN(Entry)
             INSCRIPTION_TABLE_ADD(spell)
         INSCRIPTION_TABLE_END
     }
 
-    SpellList::Entry::Entry(const inscription::Table<Entry> &table) : owner(nullptr), INSCRIPTION_TABLE_GET_MEM(spell)
+    SpellList::Entry::Entry(const ::Inscription::Table<Entry> &table) : owner(nullptr), INSCRIPTION_TABLE_GET_MEM(spell)
     {}
 
     SpellList::Entry::Entry(SpellList &owner) : owner(&owner), spell(nullptr)
@@ -61,26 +61,26 @@ namespace Atmos
         return spell->GetName();
     }
 
-    inscription::Inscripter<SpellList>& SpellList::GetInscripter()
+    ::Inscription::Inscripter<SpellList>& SpellList::GetInscripter()
     {
         INSCRIPTION_INSCRIPTER_BEGIN(SpellList)
             INSCRIPTION_SERIALIZATION
             {
-                INSCRIPTION_TABLE_LINK_EX("size", inscription::ContainerSize())
+                INSCRIPTION_TABLE_LINK_EX("size", ::Inscription::ContainerSize())
                 INSCRIPTION_TABLE_SERIALIZE
                 if (scribe.IsOutput())
                 {
                     for (auto &loop : obj.map)
-                        scribe.Save(inscription::RemoveConst(loop.second));
+                        scribe.Save(::Inscription::RemoveConst(loop.second));
                 }
                 else
                 {
-                    auto &size = table.Get<inscription::ContainerSize>("size");
+                    auto &size = table.Get<::Inscription::ContainerSize>("size");
 
                     obj.map.clear();
                     while (size-- > 0)
                     {
-                        inscription::StackConstructor<Entry> entry(scribe);
+                        ::Inscription::StackConstructor<Entry> entry(scribe);
                         obj.map.emplace(entry->GetName(), std::move(*entry.Get()));
                     }
                 }
@@ -88,16 +88,16 @@ namespace Atmos
 
             INSCRIPTION_CONSTRUCTION
             {
-                INSCRIPTION_TABLE_LINK_EX("size", inscription::ContainerSize())
+                INSCRIPTION_TABLE_LINK_EX("size", ::Inscription::ContainerSize())
                 INSCRIPTION_TABLE_CONSTRUCT
             }
         INSCRIPTION_INSCRIPTER_END
         INSCRIPTION_TABLE_BEGIN
-            INSCRIPTION_TABLE_ADD_EXTERNAL_EX(inscription::ContainerSize, "size")
+            INSCRIPTION_TABLE_ADD_EXTERNAL_EX(::Inscription::ContainerSize, "size")
         INSCRIPTION_TABLE_END
     }
 
-    SpellList::SpellList(Character &owner, const inscription::Table<SpellList> &table) : owner(owner)
+    SpellList::SpellList(Character &owner, const ::Inscription::Table<SpellList> &table) : owner(owner)
     {
         for (auto &loop : map)
             loop.second.owner = this;

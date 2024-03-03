@@ -5,16 +5,14 @@
 #include "InputAction.h"
 #include <AGUI\Menu.h>
 
-namespace agui
+namespace Agui
 {
     class ContextMenu : public Widget
     {
-    public:
-        typedef Cursor<unsigned char> Cursor;
     private:
         typedef std::function<void()> Func;
     protected:
-        class Connection : agui::Connection<Menu::Connection>
+        class Connection : Agui::Connection<Menu::Connection>
         {
         private:
             Func func;

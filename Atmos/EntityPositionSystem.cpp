@@ -12,7 +12,6 @@
 
 #include "GameEnvironment.h"
 
-#include "Movement.h"
 #include "Animation.h"
 #include "ModulatorDescribers.h"
 

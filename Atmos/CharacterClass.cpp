@@ -30,7 +30,7 @@ namespace Atmos
 
     INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(CharacterClass)
     {
-        ::inscription::BaseSerialize<RegistryObject>(scribe, *this);
+        ::Inscription::BaseSerialize<RegistryObject>(scribe, *this);
         for (auto& loop : resources)
             scribe(loop.second);
         for (auto& loop : stats)

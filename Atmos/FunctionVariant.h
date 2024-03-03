@@ -2,12 +2,12 @@
 
 #include "Serialization.h"
 #include <Inscription/Array.h>
-#include <Function/Variant.h>
-#include <Function/Iterate.h>
+#include <Chroma\Variant.h>
+#include <Chroma\Iterate.h>
 
 #include <string>
 
-namespace inscription
+namespace Inscription
 {
     namespace detail
     {
@@ -24,9 +24,9 @@ namespace inscription
         struct VariantLoaderImplementation
         {
             template<class... Args>
-            static bool Check(::function::Variant<Args...> &variant, char typeId, Scribe &scribe)
+            static bool Check(::Chroma::Variant<Args...> &variant, char typeId, Scribe &scribe)
             {
-                typedef ::function::Variant<Args...> VariantT;
+                typedef ::Chroma::Variant<Args...> VariantT;
                 typedef typename VariantT::VariadicTemplateT::template Parameter<index>::Type ParameterType;
 
                 if (index == typeId)
@@ -43,9 +43,9 @@ namespace inscription
     }
 
     template<class... Args>
-    void Serialize(Scribe &scribe, ::function::Variant<Args...> &obj)
+    void Serialize(Scribe &scribe, ::Chroma::Variant<Args...> &obj)
     {
-        typedef ::function::Variant<Args...> VariantT;
+        typedef ::Chroma::Variant<Args...> VariantT;
         if (scribe.IsOutput())
         {
             scribe.Save(obj.IsInhabited());
@@ -54,7 +54,7 @@ namespace inscription
 
             scribe.Save(static_cast<char>(obj.GetTypeAsID()));
 
-            ::function::Visit<detail::VariantSaverImplementation>(obj, scribe);
+            ::Chroma::Visit<detail::VariantSaverImplementation>(obj, scribe);
         }
         else
         {
@@ -69,7 +69,7 @@ namespace inscription
             char typeAsId;
             scribe.Load(typeAsId);
 
-            ::function::IterateRangeCheckStop<char, detail::VariantLoaderImplementation, bool, VariantT::count - 1, 0>(true, obj, typeAsId, scribe);
+            ::Chroma::IterateRangeCheckStop<char, detail::VariantLoaderImplementation, bool, VariantT::count - 1, 0>(true, obj, typeAsId, scribe);
         }
     }
 }

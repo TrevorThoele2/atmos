@@ -7,7 +7,7 @@
 
 #include "CurrentField.h"
 
-#include <Function\Iterate.h>
+#include <Chroma/Iterate.h>
 
 namespace Atmos
 {
@@ -23,7 +23,7 @@ namespace Atmos
         private:
             typedef std::tuple<ComponentTs...> Tuple;
         private:
-            template<function::RangeSize I>
+            template<::Chroma::RangeSize I>
             class TupleIterator
             {
             public:
@@ -39,7 +39,7 @@ namespace Atmos
                 }
             };
 
-            template<function::RangeSize I>
+            template<::Chroma::RangeSize I>
             class TupleCheckHas
             {
             public:
@@ -107,13 +107,13 @@ namespace Atmos
         template<class... ComponentTs>
         void ComponentPackage<ComponentTs...>::SetupComponents(Entity entity)
         {
-            function::IterateRange<ID, std::tuple_size<Tuple>::value, 0>(entity);
+            ::Chroma::IterateRange<ID, std::tuple_size<Tuple>::value, 0>(entity);
         }
 
         template<class... ComponentTs>
         void ComponentPackage<ComponentTs...>::ResetComponents()
         {
-            function::IterateRange<ID, std::tuple_size<Tuple>::value, 0>(tuple);
+            ::Chroma::IterateRange<ID, std::tuple_size<Tuple>::value, 0>(tuple);
         }
 
         template<class... ComponentTs>
@@ -429,7 +429,7 @@ namespace Atmos
         template<class... ComponentTs>
         void ComponentPackageRequired<ComponentTs...>::ResetComponents()
         {
-            function::IterateRange<ID, TupleIterator, std::tuple_size<Tuple>::value, 0>(tuple);
+            ::Chroma::IterateRange<ID, TupleIterator, std::tuple_size<Tuple>::value, 0>(tuple);
         }
 
         template<class... ComponentTs>

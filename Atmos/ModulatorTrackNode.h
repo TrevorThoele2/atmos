@@ -5,8 +5,8 @@
 #include "ModulatorValue.h"
 #include "Random.h"
 #include "FrameTimer.h"
-#include <Function/Function.h>
-#include <Function/Variant.h>
+#include <Chroma/Function.h>
+#include <Chroma/Variant.h>
 
 namespace Atmos
 {
@@ -53,7 +53,7 @@ namespace Atmos
             };
         private:
             // The sequence of the types here needs to be the same as the Type enum
-            typedef ::function::Variant<Linear, Oscillation> VariantT;
+            typedef ::Chroma::Variant<Linear, Oscillation> VariantT;
         private:
             INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
             INSCRIPTION_ACCESS;

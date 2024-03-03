@@ -18,7 +18,7 @@ namespace Atmos
 
     INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(Quest)
     {
-        ::inscription::BaseSerialize<RegistryObject>(scribe, *this);
+        ::Inscription::BaseSerialize<RegistryObject>(scribe, *this);
 
         if (scribe.IsOutput())
         {

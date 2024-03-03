@@ -25,14 +25,14 @@ namespace Atmos
         class Page
         {
         private:
-            agui::Root *root;
+            Agui::Root *root;
             virtual void OnSelected() = 0;
             virtual void OnDeselected() = 0;
         protected:
-            agui::Root* GetRoot();
+            Agui::Root* GetRoot();
             bool IsSelected() const;
         public:
-            Page(const std::string &rootName, agui::Root &mainRoot);
+            Page(const std::string &rootName, Agui::Root &mainRoot);
             virtual void Update(Entity selected) = 0;
             void Select(Entity selected);
             void Deselect();
@@ -53,13 +53,13 @@ namespace Atmos
                     NAME
                 };
             private:
-                agui::TextComponent *component;
+                Agui::TextComponent *component;
                 Name attributeName;
                 Name niceName;
                 Type type;
             public:
-                Entry(agui::TextComponent &component, const Name &niceName);
-                Entry(agui::TextComponent &component, const Name &attributeName, bool isStat);
+                Entry(Agui::TextComponent &component, const Name &niceName);
+                Entry(Agui::TextComponent &component, const Name &attributeName, bool isStat);
                 void Update(const Ent::CombatComponent *selected);
             };
         private:
@@ -67,11 +67,11 @@ namespace Atmos
             void OnSelected() override {}
             void OnDeselected() override {}
             // Name entry
-            void CreateEntry(agui::Menu &menu);
+            void CreateEntry(Agui::Menu &menu);
             // Attribute entry
-            void CreateEntry(agui::Menu &menu, const Name &attributeName, bool isStat);
+            void CreateEntry(Agui::Menu &menu, const Name &attributeName, bool isStat);
         public:
-            Stats(agui::Root &mainRoot);
+            Stats(Agui::Root &mainRoot);
             void Update(Entity selected) override;
         };
 
@@ -88,7 +88,7 @@ namespace Atmos
                 SectionBase *other;
                 Atmos::InventoryGui gui;
 
-                SectionBase(agui::Root &root, const agui::RelativePosition &position, agui::ItemDescriptionBox &description, agui::ItemContextMenu &contextMenu, const std::string &labelString, Inventory &handler);
+                SectionBase(Agui::Root &root, const Agui::RelativePosition &position, Agui::ItemDescriptionBox &description, Agui::ItemContextMenu &contextMenu, const std::string &labelString, Inventory &handler);
                 virtual void Update(Entity selected) = 0;
                 virtual void Setup() = 0;
                 void Focus();
@@ -100,7 +100,7 @@ namespace Atmos
             private:
                 void OnFocus() override;
             public:
-                CharacterSection(agui::Root &root, const agui::RelativePosition &position, agui::ItemDescriptionBox &description, agui::ItemContextMenu &contextMenu, Inventory &handler);
+                CharacterSection(Agui::Root &root, const Agui::RelativePosition &position, Agui::ItemDescriptionBox &description, Agui::ItemContextMenu &contextMenu, Inventory &handler);
                 void Update(Entity selected) override;
                 void Setup() override {}
             };
@@ -110,7 +110,7 @@ namespace Atmos
             private:
                 void OnFocus() override {}
             public:
-                ReserveSection(agui::Root &oot, const agui::RelativePosition &position, agui::ItemDescriptionBox &description, agui::ItemContextMenu &contextMenu, Inventory &handler);
+                ReserveSection(Agui::Root &oot, const Agui::RelativePosition &position, Agui::ItemDescriptionBox &description, Agui::ItemContextMenu &contextMenu, Inventory &handler);
                 void Update(Entity selected) override;
                 void Setup() override;
             };
@@ -122,7 +122,7 @@ namespace Atmos
             Sections::iterator characterSection;
             Sections::iterator reserveSection;
 
-            agui::ItemContextMenu *contextMenu;
+            Agui::ItemContextMenu *contextMenu;
 
             EventBoundSubscriberManager boundSubscribers;
 
@@ -133,7 +133,7 @@ namespace Atmos
             void IncSelectedSection();
             void SelectSection(Sections::iterator select);
         public:
-            Inventory(agui::Root &mainRoot);
+            Inventory(Agui::Root &mainRoot);
             void Update(Entity selected) override;
 
             void OnActionPressed(const Input::Action &args) override;
@@ -148,7 +148,7 @@ namespace Atmos
             void OnDeselected() override;
             void OnSpellSelected(const AbilityBase &ability);
         public:
-            Spells(agui::Root &mainRoot);
+            Spells(Agui::Root &mainRoot);
             void Update(Entity selected) override;
         };
         // End pages
@@ -156,10 +156,10 @@ namespace Atmos
         class Member
         {
         public:
-            agui::Image &frame;
-            agui::Image &portrait;
+            Agui::Image &frame;
+            Agui::Image &portrait;
             Entity player;
-            Member(agui::Image &frame);
+            Member(Agui::Image &frame);
         };
     public:
         enum class PageID
@@ -169,7 +169,7 @@ namespace Atmos
             SPELLS
         };
     private:
-        static agui::Root *root;
+        static Agui::Root *root;
 
         static bool active;
 
@@ -192,7 +192,7 @@ namespace Atmos
         static void Activate();
         static void Leave();
         template<class T>
-        static T* CreatePage(PageID id, agui::Root &mainRoot);
+        static T* CreatePage(PageID id, Agui::Root &mainRoot);
     public:
         static void Init();
         static void Goto(PageID page);
@@ -201,14 +201,7 @@ namespace Atmos
     };
 
     template<class T>
-    StatusScreen::Inventory::Sections::iterator StatusScreen::Inventory::CreateSection(agui::Root &mainRoot, const agui::RelativePosition &position, agui::ItemDescriptionBox &description, agui::ItemContextMenu &contextMenu)
-    {
-        sections.push_back(SectionPtr(new T(mainRoot, position, description, contextMenu, *this)));
-        return --sections.end();
-    }
-
-    template<class T>
-    T* StatusScreen::CreatePage(PageID id, agui::Root &mainRoot)
+    T* StatusScreen::CreatePage(PageID id, Agui::Root &mainRoot)
     {
         auto made = new T(mainRoot);
         pages.emplace(id, PagePtr(made));

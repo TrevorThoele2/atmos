@@ -8,7 +8,7 @@ namespace Atmos
 {
     INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(RealTimer)
     {
-        ::inscription::BaseSerialize<TimerBase>(scribe, *this);
+        ::Inscription::BaseSerialize<TimerBase>(scribe, *this);
     }
 
     RealTimer::RealTimer(TimeValue goal) : TimerBase(goal)

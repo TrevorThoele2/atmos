@@ -3,8 +3,8 @@
 
 #include <AGUI\Font.h>
 
-namespace agui
+namespace Agui
 {
-    extern agui::Font *fontSlender;
-    extern agui::Font *fontButton;
+    extern Agui::Font *fontSlender;
+    extern Agui::Font *fontButton;
 }

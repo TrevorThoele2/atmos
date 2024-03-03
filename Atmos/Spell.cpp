@@ -7,7 +7,7 @@ namespace Atmos
 {
     INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(Spell)
     {
-        ::inscription::BaseSerialize<RegistryObject>(scribe, *this);
+        ::Inscription::BaseSerialize<RegistryObject>(scribe, *this);
         scribe(attackPattern);
         //scribe(pieceOverworld);
         scribe(range);

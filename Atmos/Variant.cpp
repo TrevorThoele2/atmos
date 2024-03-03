@@ -3,7 +3,7 @@
 #include "StringUtility.h"
 #include <Inscription\Scribe.h>
 #include <Inscription\Vector.h>
-#include <Function\Iterate.h>
+#include <Chroma/Iterate.h>
 
 namespace Atmos
 {
@@ -32,11 +32,11 @@ namespace Atmos
 
     String ToString(const Variant &arg)
     {
-        return ::function::VisitReturn<ToStringImplementation, String>(arg);
+        return ::Chroma::VisitReturn<ToStringImplementation, String>(arg);
     }
 }
 
-namespace function
+namespace Chroma
 {
     template Variant<bool, std::int8_t, std::int16_t, std::int32_t, std::int64_t, std::uint8_t, std::uint16_t, std::uint32_t, std::uint64_t, float, double, ::Atmos::FixedPoint64, ::Atmos::String, ::Atmos::GridPosition>;
 }
@@ -47,13 +47,13 @@ namespace Atmos
     template<VariantIterationTraits::UnderlyingType t>
     struct VariantSerializer
     {
-        static bool Check(inscription::Scribe &scribe, Variant &variant)
+        static bool Check(::Inscription::Scribe &scribe, Variant &variant)
         {
             constexpr Variant::Type realT = static_cast<Variant::Type>(t);
             if (variant.GetType() != realT)
                 return false;
 
-            scribe(::inscription::RemoveConst((variant.*VariantTraits<realT>::as)()));
+            scribe(::Inscription::RemoveConst((variant.*VariantTraits<realT>::as)()));
             return true;
         }
     };
@@ -61,7 +61,7 @@ namespace Atmos
     INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(Variant)
     {
         scribe(type);
-        function::IterateRangeCheckStop<VariantIterationTraits::UnderlyingType, VariantSerializer, bool, VariantIterationTraits::endU, VariantIterationTraits::beginU>(true, scribe, *this);
+        ::Chroma::IterateRangeCheckStop<VariantIterationTraits::UnderlyingType, VariantSerializer, bool, VariantIterationTraits::endU, VariantIterationTraits::beginU>(true, scribe, *this);
     }
 
     Variant::Variant() : type(Type::NONE), uint8(0)

@@ -15,20 +15,20 @@ namespace Atmos
         (scribe.IsOutput()) ? Save(scribe) : Load(scribe);
     }
 
-    void TileHandler::Save(inscription::Scribe &scribe)
+    void TileHandler::Save(::Inscription::Scribe &scribe)
     {
-        inscription::ContainerSize size(container.size());
+        ::Inscription::ContainerSize size(container.size());
         scribe.Save(size);
 
         for (auto &loop : container)
             scribe.Save(loop.second);
     }
 
-    void TileHandler::Load(inscription::Scribe &scribe)
+    void TileHandler::Load(::Inscription::Scribe &scribe)
     {
         const GridPosition tilePosition;
 
-        inscription::ContainerSize size;
+        ::Inscription::ContainerSize size;
         scribe.Load(size);
 
         container.clear();

@@ -4,14 +4,14 @@
 #include "FontDefines.h"
 #include <AGUI\TextComponent.h>
 
-namespace agui
+namespace Agui
 {
     void DescriptionBox::Setup()
     {
-        CreateComponent<TextComponent>(name, "name", 1.0f, RelativePosition(HorizontalAlignment::LEFT, VerticalAlignment::TOP), Size(), Text("", agui::Text::Format({ agui::Text::CENTER_HORIZONTAL, agui::Text::WORD_BREAK }), *fontSlender, Color(255, 0, 0, 0)));
+        CreateComponent<TextComponent>(name, "name", 1.0f, RelativePosition(HorizontalAlignment::LEFT, VerticalAlignment::TOP), Size(), Text("", Agui::Text::Format({ Agui::Text::CENTER_HORIZONTAL, Agui::Text::WORD_BREAK }), *fontSlender, Color(255, 0, 0, 0)));
         name->SetAutoCalcTextHeight();
 
-        CreateComponent<TextComponent>(description, "description", 1.0f, RelativePosition(Dimension(), Dimension(0, static_cast<float>(fontSlender->GetHeight())), HorizontalAlignment::LEFT, VerticalAlignment::TOP), Size(), Text("", agui::Text::Format({ agui::Text::CENTER_HORIZONTAL, agui::Text::WORD_BREAK }), *fontSlender, Color(255, 0, 0, 0)));
+        CreateComponent<TextComponent>(description, "description", 1.0f, RelativePosition(Dimension(), Dimension(0, static_cast<float>(fontSlender->GetHeight())), HorizontalAlignment::LEFT, VerticalAlignment::TOP), Size(), Text("", Agui::Text::Format({ Agui::Text::CENTER_HORIZONTAL, Agui::Text::WORD_BREAK }), *fontSlender, Color(255, 0, 0, 0)));
         description->SetAutoCalcTextHeight();
     }
 

@@ -3,12 +3,10 @@
 
 #include "WorldManager.h"
 #include "Fps.h"
-#include "Movement.h"
 #include "AvatarSystem.h"
 #include "Environment.h"
 
 #include "GameEnvironment.h"
-#include "Movement.h"
 #include <Affecter/SmoothstepType.h>
 
 namespace Atmos
@@ -191,6 +189,6 @@ namespace Atmos
     void Camera::MoveToFromScreenPos(const Position2D &pos, const FrameTimer &timer)
     {
         SetFocusToPos();
-        GameEnvironment::GetAffecterSystem().Create<::affecter::Affecter<::affecter::SmoothstepType, affecter::MovementEngine2D>>(timer, &Position2D::operator=, Camera::pos, Camera::pos, Position2D(pos.GetX() + viewOrigin.GetX(), pos.GetY() + viewOrigin.GetY()));
+        GameEnvironment::GetAffecterSystem().Create<::Affecter::Affecter<::Affecter::SmoothstepType, ::Affecter::MovementEngine2D>>(timer, &Position2D::operator=, Camera::pos, Camera::pos, Position2D(pos.GetX() + viewOrigin.GetX(), pos.GetY() + viewOrigin.GetY()));
     }
 }

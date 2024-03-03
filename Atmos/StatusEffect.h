@@ -71,7 +71,7 @@ namespace Atmos
         typedef GlobalContextBase<StatusEffect, GlobalContext<StatusEffect>> BaseT;
         friend GlobalContextBase<StatusEffect, GlobalContext<StatusEffect>>;
     private:
-        static void SerializeImpl(::inscription::Scribe &scribe);
+        static void SerializeImpl(::Inscription::Scribe &scribe);
     public:
         static Name accuracyStat;
         static Name resistanceStat;

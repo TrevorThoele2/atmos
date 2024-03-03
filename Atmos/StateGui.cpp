@@ -17,14 +17,14 @@ namespace Atmos
     StateGui::StateGui(const std::string &name) : rootName(name), root(nullptr)
     {}
 
-    agui::Root* StateGui::GetRoot()
+    Agui::Root* StateGui::GetRoot()
     {
         return root;
     }
 
     void StateGui::Init()
     {
-        root = agui::System::CreateRoot(rootName);
+        root = Agui::System::CreateRoot(rootName);
         InitImpl();
     }
 

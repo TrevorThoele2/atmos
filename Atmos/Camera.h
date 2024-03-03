@@ -5,12 +5,11 @@
 #include "Size2D.h"
 #include "AxisBoundingBox2D.h"
 #include "FrameTimer.h"
+#include "Movement.h"
 
 #include "Event.h"
 
 #include "GameEnvironment.h"
-#include "Movement.h"
-#include <Affecter\Affecter.h>
 
 namespace Atmos
 {
@@ -89,6 +88,6 @@ namespace Atmos
     void Camera::MoveTo(const Position2D &pos, const FrameTimer &timer)
     {
         SetFocusToPos();
-        GameEnvironment::GetAffecterSystem().Create<::affecter::Affecter<AffecterType, affecter::MovementEngine2D>>(timer, &Position2D::operator=, Camera::pos, Camera::pos, pos);
+        GameEnvironment::GetAffecterSystem().Create<::Affecter::Affecter<AffecterType, ::Affecter::MovementEngine2D>>(timer, &Position2D::operator=, Camera::pos, Camera::pos, pos);
     }
 }

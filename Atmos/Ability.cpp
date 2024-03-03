@@ -5,7 +5,7 @@ namespace Atmos
 {
     INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(Ability)
     {
-        ::inscription::BaseSerialize<AbilityBase>(scribe, *this);
+        ::Inscription::BaseSerialize<AbilityBase>(scribe, *this);
         scribe(pattern);
         scribe(range);
         scribe(cost);

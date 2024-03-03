@@ -12,29 +12,29 @@ namespace Atmos
     InventoryGui::InventoryGui() : background(nullptr), label(nullptr), moveTo(nullptr)
     {}
 
-    InventoryGui::InventoryGui(agui::Root &root, const agui::RelativePosition &pos, const std::string &labelString, DescriptionBox &description, ContextMenu *contextMenu)
+    InventoryGui::InventoryGui(Agui::Root &root, const Agui::RelativePosition &pos, const std::string &labelString, DescriptionBox &description, ContextMenu *contextMenu)
     {
         Init(root, pos, labelString, description, contextMenu);
     }
 
-    void InventoryGui::Init(agui::Root &root, const agui::RelativePosition &pos, const std::string &labelString, DescriptionBox &description, ContextMenu *contextMenu)
+    void InventoryGui::Init(Agui::Root &root, const Agui::RelativePosition &pos, const std::string &labelString, DescriptionBox &description, ContextMenu *contextMenu)
     {
         // Background
-        background = agui::Image::Factory(&root, "background", pos, 0);
+        background = Agui::Image::Factory(&root, "background", pos, 0);
         background->ScaleTo(256, 768);
         background->GetSprite()->color.Edit(255, 100, 100, 255);
 
         // Label
         if (labelString != "")
         {
-            label = agui::Label::Factory(background, "label", agui::RelativePosition(agui::Dimension(), agui::Dimension(0, 2), agui::HorizontalAlignment::MID, agui::VerticalAlignment::TOP), 0);
+            label = Agui::Label::Factory(background, "label", Agui::RelativePosition(Agui::Dimension(), Agui::Dimension(0, 2), Agui::HorizontalAlignment::MID, Agui::VerticalAlignment::TOP), 0);
             label->GetText()->SetString(labelString);
             label->GetText()->color.Edit(255, 255, 255, 255);
             label->GetText()->SetAutoCalcTextSize();
         }
 
         InitBase(*background, description, contextMenu);
-        GetMenu()->SetPosition(agui::RelativePosition(agui::Dimension(0, 24), agui::Dimension(0, 20)));
+        GetMenu()->SetPosition(Agui::RelativePosition(Agui::Dimension(0, 24), Agui::Dimension(0, 20)));
         GetMenu()->GetLayout()->ChangeDimensions(230, 738);
         GetMenu()->GetSprite()->color.Edit(255, 255, 255, 255);
     }
@@ -49,12 +49,12 @@ namespace Atmos
         moveTo = &set;
     }
 
-    agui::Image* InventoryGui::GetBackground()
+    Agui::Image* InventoryGui::GetBackground()
     {
         return background;
     }
 
-    agui::Label* InventoryGui::GetLabel()
+    Agui::Label* InventoryGui::GetLabel()
     {
         return label;
     }

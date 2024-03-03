@@ -3,10 +3,6 @@
 #include "Position3D.h"
 #include "FrameTimer.h"
 
-// Movement
-#include "Movement.h"
-#include <Affecter/Affecter.h>
-
 #include "Serialization.h"
 
 namespace Atmos
@@ -26,8 +22,6 @@ namespace Atmos
         bool enabled;
         bool dynamic;
 
-        ::affecter::Connection movementAffecter;
-
         virtual void OnPositionChanged() = 0;
         virtual void OnEnabledChanged() = 0;
     public:
@@ -37,7 +31,7 @@ namespace Atmos
         Sense& operator=(const Sense &arg);
         Sense(Sense &&arg);
         Sense& operator=(Sense &&arg);
-        virtual ~Sense() = 0;
+		virtual ~Sense() = 0 {}
 
         bool operator==(const Sense &arg) const;
         bool operator!=(const Sense &arg) const;
@@ -52,10 +46,6 @@ namespace Atmos
         Position3D::ValueT GetY() const;
         Position3D::ValueT GetZ() const;
 
-        template<class MovementType>
-        void Move(const Position3D &pos, TimeValue timeTaken);
-        bool IsMoving() const;
-
         void SetDynamic(bool set = true);
         void SetStatic(bool set = true);
         bool IsDynamic() const;
@@ -67,10 +57,4 @@ namespace Atmos
         void ToggleEnabled();
         bool IsEnabled() const;
     };
-
-    template<class MovementType>
-    void Sense::Move(const Position3D &pos, TimeValue timeTaken)
-    {
-        movementAffecter = affecterSystem.Create<::affecter::Affecter<MovementType, affecter::MovementEngine3D>>(FrameTimer(timeTaken), &Sense::SetPosition, *this, GetPosition(), pos);
-    }
 }

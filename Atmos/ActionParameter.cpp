@@ -1,7 +1,7 @@
 
 #include "ActionParameter.h"
 
-#include <Function/Iterate.h>
+#include <Chroma/Iterate.h>
 
 namespace Atmos
 {
@@ -92,7 +92,7 @@ namespace Atmos
     }
 }
 
-namespace function
+namespace Chroma
 {
     template Variant<
         bool,

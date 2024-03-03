@@ -817,7 +817,7 @@ STATIC_PROPERTY_SPLIT(ActionID, ::Atmos::Input::ActionID, varName, falconName, :
                     vm->retval(TrackNode::Scaffolding().CreateItem(*vm));
                 } METHOD_END;
                 METHOD(Track, setDefaultStartValue, "SetDefaultStartValue", false)
-                    PARAMETERS(new Parameter<::function::Variant<std::int64_t, float>>("value"))
+                    PARAMETERS(new Parameter<::Chroma::Variant<std::int64_t, float>>("value"))
                 BODY(Track)
                 {
                     SETUP_METHOD(Track, setDefaultStartValue);
@@ -834,7 +834,7 @@ STATIC_PROPERTY_SPLIT(ActionID, ::Atmos::Input::ActionID, varName, falconName, :
                         NameValuePair("Track ID", retrievedTrackID));
 
                     // Setup the default starting state
-                    auto &value = *selfMethod.GetParameter<::function::Variant<std::int64_t, float>>("value");
+                    auto &value = *selfMethod.GetParameter<::Chroma::Variant<std::int64_t, float>>("value");
 
                     ::Atmos::Modulator::Value state;
                     if (value->Is<std::int64_t>())
@@ -944,7 +944,7 @@ STATIC_PROPERTY_SPLIT(ActionID, ::Atmos::Input::ActionID, varName, falconName, :
                     node->SetInterpolation(::Atmos::Modulator::TrackNodeInterpolation(**acceleration, **rate));
                 } METHOD_END;
                 METHOD(TrackNode, setEndState, "SetEndState", false)
-                    PARAMETERS(new Parameter<::function::Variant<std::int64_t, float>>("value"))
+                    PARAMETERS(new Parameter<::Chroma::Variant<std::int64_t, float>>("value"))
                 BODY(TrackNode)
                 {
                     SETUP_METHOD(TrackNode, setEndState);
@@ -957,7 +957,7 @@ STATIC_PROPERTY_SPLIT(ActionID, ::Atmos::Input::ActionID, varName, falconName, :
                     }
 
                     // Setup the end state
-                    auto &value = selfMethod.GetParameter<::function::Variant<std::int64_t, float>>("value")->obj;
+                    auto &value = selfMethod.GetParameter<::Chroma::Variant<std::int64_t, float>>("value")->obj;
 
                     ::Atmos::Modulator::Value endState;
                     if (value.Is<std::int64_t>())

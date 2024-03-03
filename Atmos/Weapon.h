@@ -92,7 +92,7 @@ namespace Atmos
     };
 }
 
-namespace inscription
+namespace Inscription
 {
     template<>
     class Inscripter<::Atmos::Weapon::DamageComponent> : public InscripterBase<::Atmos::Weapon::DamageComponent>

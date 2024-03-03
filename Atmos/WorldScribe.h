@@ -29,13 +29,13 @@ namespace Atmos
             FORCE_EXTENSION
         };
     private:
-        typedef inscription::BinaryScribe ScribeT;
+        typedef ::Inscription::BinaryScribe ScribeT;
 
         class FieldSaver : public SkipSaver<ScribeT>
         {
         public:
             typedef FieldID IDType;
-            typedef inscription::Buffer::SizeT SizeT;
+            typedef ::Inscription::Buffer::SizeT SizeT;
         private:
             SizeT positionStart;
 
@@ -45,7 +45,7 @@ namespace Atmos
             void SaveExtra() override;
         public:
             IDType fieldID;
-            inscription::Buffer::SizeT size;
+            ::Inscription::Buffer::SizeT size;
 
             FieldSaver(ScribeT &cribe);
         };
@@ -63,14 +63,14 @@ namespace Atmos
 
         static FilePath GetForcedFilePath(const FilePath &filePath, OpenMode openMode);
     protected:
-        inscription::Scribe& GetBasicScribe() override;
-        const inscription::Scribe& GetBasicScribe() const override;
+        ::Inscription::Scribe& GetBasicScribe() override;
+        const ::Inscription::Scribe& GetBasicScribe() const override;
     public:
-        WorldScribeOut(const FilePath &filePath, inscription::ContainerSize::ValueT fieldCount, OpenMode openMode = OpenMode::FORCE_EXTENSION);
+        WorldScribeOut(const FilePath &filePath, ::Inscription::ContainerSize::ValueT fieldCount, OpenMode openMode = OpenMode::FORCE_EXTENSION);
 
         void Save(Field &field) override;
 
-        void OverwriteFieldCount(inscription::ContainerSize::ValueT set) override;
+        void OverwriteFieldCount(::Inscription::ContainerSize::ValueT set) override;
         void SetWorldStart(const WorldStart &set);
 
         const FilePath& GetFilePath() const;
@@ -85,13 +85,13 @@ namespace Atmos
             FORCE_EXTENSION
         };
     private:
-        typedef inscription::BinaryScribe ScribeT;
+        typedef ::Inscription::BinaryScribe ScribeT;
 
         class FieldHandle : public SkipHandle<ScribeT>
         {
         public:
             typedef FieldID IDType;
-            typedef inscription::Buffer::SizeT SizeT;
+            typedef ::Inscription::Buffer::SizeT SizeT;
         private:
             void LoadExtra() override;
         public:
@@ -118,8 +118,8 @@ namespace Atmos
 
         static FilePath GetForcedFilePath(const FilePath &filePath, OpenMode openMode);
     protected:
-        inscription::Scribe& GetBasicScribe() override;
-        const inscription::Scribe& GetBasicScribe() const override;
+        ::Inscription::Scribe& GetBasicScribe() override;
+        const ::Inscription::Scribe& GetBasicScribe() const override;
     public:
         // Loads from the world folder
         WorldScribeIn(const FileName &fileName, OpenMode openMode = OpenMode::FORCE_EXTENSION);
@@ -130,7 +130,7 @@ namespace Atmos
 
         Optional<Field> Get(FieldID id) override;
         Field* GetAsHeap(FieldID id) override;
-        inscription::Buffer GetAsBuffer(FieldID id) override;
+        ::Inscription::Buffer GetAsBuffer(FieldID id) override;
 
         WorldStart& GetWorldStart() override;
 

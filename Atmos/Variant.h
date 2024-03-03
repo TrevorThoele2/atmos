@@ -15,7 +15,7 @@
 
 namespace Atmos
 {
-    typedef ::function::Variant<bool, std::int8_t, std::int16_t, std::int32_t, std::int64_t, std::uint8_t, std::uint16_t, std::uint32_t, std::uint64_t, float, double, FixedPoint64, String, GridPosition> Variant;
+    typedef ::Chroma::Variant<bool, std::int8_t, std::int16_t, std::int32_t, std::int64_t, std::uint8_t, std::uint16_t, std::uint32_t, std::uint64_t, float, double, FixedPoint64, String, GridPosition> Variant;
 
     enum class VariantType : std::int32_t
     {
@@ -37,14 +37,14 @@ namespace Atmos
         NONE = Variant::uninhabitedID
     };
 
-    typedef ::function::EnumIterationTraits<Atmos::VariantType, Atmos::VariantType::BOOL, Atmos::VariantType::GRID_POSITION> VariantIterationTraits;
+    typedef ::Chroma::EnumIterationTraits<Atmos::VariantType, Atmos::VariantType::BOOL, Atmos::VariantType::GRID_POSITION> VariantIterationTraits;
 
     VariantType GetTypeFromVariantID(size_t from);
     VariantType GetTypeFromVariant(const Variant &from);
     String ToString(const Variant &arg);
 }
 
-namespace function
+namespace Chroma
 {
     extern template Variant<bool, std::int8_t, std::int16_t, std::int32_t, std::int64_t, std::uint8_t, std::uint16_t, std::uint32_t, std::uint64_t, float, double, ::Atmos::FixedPoint64, ::Atmos::String, ::Atmos::GridPosition>;
 }
@@ -287,7 +287,7 @@ namespace Atmos
         return As<VariantReverseTraits<UseType>::enumType>();
     }
 
-    typedef function::EnumIterationTraits<Variant::Type, Variant::Type::BOOL, Variant::Type::VECTOR> VariantIterationTraits;
+    typedef ::Chroma::EnumIterationTraits<Variant::Type, Variant::Type::BOOL, Variant::Type::VECTOR> VariantIterationTraits;
 
     template<Variant::Type t>
     struct VariantTraits;

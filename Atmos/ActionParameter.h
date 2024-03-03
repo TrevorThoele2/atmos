@@ -12,9 +12,9 @@ namespace Atmos
 {
     namespace Act
     {
-        typedef Variant::VariadicTemplateT::Append<NameValuePair>::Type::ForwardArguments<::function::Variant>::Type ParameterValueSingle;
+        typedef Variant::VariadicTemplateT::Append<NameValuePair>::Type::ForwardArguments<::Chroma::Variant>::Type ParameterValueSingle;
 
-        typedef ::function::Variant<
+        typedef ::Chroma::Variant<
             bool,
             std::int8_t,
             std::int16_t,
@@ -85,7 +85,7 @@ namespace Atmos
             NONE = Parameter::uninhabitedID
         };
 
-        typedef ::function::EnumIterationTraits<ParameterType, ParameterType::BOOL, ParameterType::VECTOR_SINGLE_VALUE> ParameterIterationTraits;
+        typedef ::Chroma::EnumIterationTraits<ParameterType, ParameterType::BOOL, ParameterType::VECTOR_SINGLE_VALUE> ParameterIterationTraits;
 
         ParameterType GetParameterType(size_t from);
         ParameterType GetParameterType(const Parameter &from);
@@ -98,7 +98,7 @@ namespace Atmos
     }
 }
 
-namespace function
+namespace Chroma
 {
     extern template Variant<
         bool,

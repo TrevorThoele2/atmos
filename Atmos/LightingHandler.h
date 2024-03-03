@@ -23,7 +23,7 @@ namespace Atmos
         LightingHandler(const LightingHandler &arg) = delete;
         LightingHandler& operator=(const LightingHandler &arg) = delete;
 
-        void OnResolutionChange(const agui::Resolution &res);
+        void OnResolutionChange(const Agui::Resolution &res);
     public:
         LightingHandler(Field &field);
         LightingHandler(Field &field, LightingHandler &&arg);

@@ -53,12 +53,12 @@ namespace Atmos
 
                 // Storage
                 {
-                    ::inscription::ContainerSize size(storage.size());
+                    ::Inscription::ContainerSize size(storage.size());
                     scribe.Save(size);
 
                     for (auto &loop : storage)
                     {
-                        scribe.Save(::inscription::RemoveConst(loop.first));
+                        scribe.Save(::Inscription::RemoveConst(loop.first));
                         scribe.Save(loop.second.variant);
                     }
                 }
@@ -75,7 +75,7 @@ namespace Atmos
 
                 // Storage
                 {
-                    ::inscription::ContainerSize size;
+                    ::Inscription::ContainerSize size;
                     scribe.Load(size);
 
                     while (size-- > 0)

@@ -129,17 +129,17 @@ namespace Atmos
 
     namespace Detail
     {
-        String FromStringImpl(const String &arg, const ::function::Type<String> &t)
+        String FromStringImpl(const String &arg, const ::Chroma::Type<String> &t)
         {
             return arg;
         }
 
-        TimeValue FromStringImpl(const String &arg, const ::function::Type<TimeValue> &t)
+        TimeValue FromStringImpl(const String &arg, const ::Chroma::Type<TimeValue> &t)
         {
             return FromString<TimeValue::ValueT>(arg);
         }
 
-        GameTimeValue FromStringImpl(const String &arg, const ::function::Type<GameTimeValue> &t)
+        GameTimeValue FromStringImpl(const String &arg, const ::Chroma::Type<GameTimeValue> &t)
         {
             return FromString<GameTimeValue::ValueT>(arg);
         }

@@ -3,7 +3,7 @@
 
 #include "Spell.h"
 
-namespace agui
+namespace Agui
 {
     void SpellDescriptionBox::GetNameString(::std::string &string) const
     {

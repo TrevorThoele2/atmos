@@ -10,7 +10,7 @@ namespace Atmos
 {
     INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(FrameTimer)
     {
-        ::inscription::BaseSerialize<TimerBase>(scribe, *this);
+        ::Inscription::BaseSerialize<TimerBase>(scribe, *this);
     }
 
     FrameTimer::FrameTimer(TimeValue goal) : TimerBase(goal)

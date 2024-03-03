@@ -88,7 +88,7 @@ namespace Atmos
     }
 }
 
-namespace inscription
+namespace Inscription
 {
     INSCRIPTION_INSCRIPTER_DEFINE_TABLE(::Atmos::Scroll::Stack)
         INSCRIPTION_TABLE_ADD_BASE(::Atmos::ConsumableBase::Stack)

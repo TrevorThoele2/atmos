@@ -1,6 +1,6 @@
 
 #include "Angle.h"
-#include "Math.h"
+#include "MathUtility.h"
 
 #include <Inscription/Scribe.h>
 

@@ -17,9 +17,9 @@ namespace Atmos
     private:
         static bool working;
 
-        static agui::Root *root;
-        static agui::Textbox *textbox;
-        static agui::TextComponent *output;
+        static Agui::Root *root;
+        static Agui::Textbox *textbox;
+        static Agui::TextComponent *output;
         static FrameTimer timer;
         static EventBoundSubscriber inputSub;
 

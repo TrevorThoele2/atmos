@@ -16,9 +16,9 @@ namespace Atmos
         class Entry
         {
         private:
-            static inscription::Inscripter<Entry>& GetInscripter();
+            static ::Inscription::Inscripter<Entry>& GetInscripter();
         public:
-            Entry(const inscription::Table<Entry> &table);
+            Entry(const ::Inscription::Table<Entry> &table);
             INSCRIPTION_ACCESS;
         private:
             SpellList *owner;
@@ -43,9 +43,9 @@ namespace Atmos
         typedef Map::const_iterator const_iterator;
         typedef Map::size_type Size;
     private:
-        static inscription::Inscripter<SpellList>& GetInscripter();
+        static ::Inscription::Inscripter<SpellList>& GetInscripter();
     public:
-        SpellList(Character &owner, const inscription::Table<SpellList> &table);
+        SpellList(Character &owner, const ::Inscription::Table<SpellList> &table);
         INSCRIPTION_ACCESS;
     private:
         Character &owner;

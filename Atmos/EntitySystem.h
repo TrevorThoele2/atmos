@@ -6,7 +6,7 @@
 #include "Event.h"
 #include "Optional.h"
 
-#include <Function\Any.h>
+#include <Chroma\Any.h>
 
 namespace Atmos
 {
@@ -44,22 +44,22 @@ namespace Atmos
                 class Derived
                 {
                 public:
-                    typedef ::function::Function<void, Args...> Wrapped;
+                    typedef ::Chroma::Function<void, Args...> Wrapped;
                     Wrapped wrapped;
                     Derived(Wrapped &&wrapped);
                     void Execute(Args ... args);
                 };
             private:
-                ::function::Any base;
+                ::Chroma::Any base;
             public:
                 System *system;
                 EventScopedConnection connection;
                 Optional<ApprovedStates> approvedStatesOverride;
 
                 template<class... Args>
-                EventBound(System *system, ::function::Function<void, Args...> &&wrapped);
+                EventBound(System *system, ::Chroma::Function<void, Args...> &&wrapped);
                 template<class... Args>
-                EventBound(System *system, ::function::Function<void, Args...> &&wrapped, const ApprovedStates &statesOverride);
+                EventBound(System *system, ::Chroma::Function<void, Args...> &&wrapped, const ApprovedStates &statesOverride);
                 EventBound(EventBound &&arg);
                 template<class... Args>
                 void AttemptExecute(Args ... args);
@@ -77,30 +77,30 @@ namespace Atmos
             System& operator=(const System &arg) = delete;
 
             template<class... Args>
-            eventIterator SubscribeEventCommon(function::Event<Args...> &e, EventBound &&eBound);
+            eventIterator SubscribeEventCommon(::Chroma::Event<Args...> &e, EventBound &&eBound);
         protected:
             System();
             // Will not execute the function unless the current state is an approved one
             template<class Ret, class... Args>
-            eventIterator SubscribeEvent(function::Event<Args...> &e, Ret(*func)(Args...));
+            eventIterator SubscribeEvent(::Chroma::Event<Args...> &e, Ret(*func)(Args...));
             // Will not execute the function unless the current state is an approved one
             template<class Ret, class Obj, class... Args>
-            eventIterator SubscribeEvent(function::Event<Args...> &e, Ret(Obj::*func)(Args...), Obj &obj);
+            eventIterator SubscribeEvent(::Chroma::Event<Args...> &e, Ret(Obj::*func)(Args...), Obj &obj);
             // Will not execute the function unless the current state is an approved one
             template<class Ret, class Obj, class... Args>
-            eventIterator SubscribeEvent(function::Event<Args...> &e, Ret(Obj::*func)(Args...) const, const Obj &obj);
+            eventIterator SubscribeEvent(::Chroma::Event<Args...> &e, Ret(Obj::*func)(Args...) const, const Obj &obj);
             // Will not execute the function unless the current state is an approved one
             // Overrides the approved states
             template<class Ret, class... Args>
-            eventIterator SubscribeEvent(function::Event<Args...> &e, Ret(*func)(Args...), const ApprovedStates &approvedStatesOverride);
+            eventIterator SubscribeEvent(::Chroma::Event<Args...> &e, Ret(*func)(Args...), const ApprovedStates &approvedStatesOverride);
             // Will not execute the function unless the current state is an approved one
             // Overrides the approved states
             template<class Ret, class Obj, class... Args>
-            eventIterator SubscribeEvent(function::Event<Args...> &e, Ret(Obj::*func)(Args...), Obj &obj, const ApprovedStates &approvedStatesOverride);
+            eventIterator SubscribeEvent(::Chroma::Event<Args...> &e, Ret(Obj::*func)(Args...), Obj &obj, const ApprovedStates &approvedStatesOverride);
             // Will not execute the function unless the current state is an approved one
             // Overrides the approved states
             template<class Ret, class Obj, class... Args>
-            eventIterator SubscribeEvent(function::Event<Args...> &e, Ret(Obj::*func)(Args...) const, const Obj &obj, const ApprovedStates &approvedStatesOverride);
+            eventIterator SubscribeEvent(::Chroma::Event<Args...> &e, Ret(Obj::*func)(Args...) const, const Obj &obj, const ApprovedStates &approvedStatesOverride);
         public:
             static Mixin& Instance();
         };
@@ -119,12 +119,12 @@ namespace Atmos
 
         template<class Mixin>
         template<class... Args>
-        System<Mixin>::EventBound::EventBound(System *system, function::Function<void, Args...> &&wrapped) : system(system), base(Derived<Args...>(std::move(wrapped)))
+        System<Mixin>::EventBound::EventBound(System *system, ::Chroma::Function<void, Args...> &&wrapped) : system(system), base(Derived<Args...>(std::move(wrapped)))
         {}
 
         template<class Mixin>
         template<class... Args>
-        System<Mixin>::EventBound::EventBound(System *system, function::Function<void, Args...> &&wrapped, const ApprovedStates &statesOverride) : system(system), base(Derived<Args...>(std::move(wrapped))), approvedStatesOverride(statesOverride)
+        System<Mixin>::EventBound::EventBound(System *system, ::Chroma::Function<void, Args...> &&wrapped, const ApprovedStates &statesOverride) : system(system), base(Derived<Args...>(std::move(wrapped))), approvedStatesOverride(statesOverride)
         {}
 
         template<class Mixin>
@@ -160,7 +160,7 @@ namespace Atmos
 
         template<class Mixin>
         template<class... Args>
-        typename System<Mixin>::eventIterator System<Mixin>::SubscribeEventCommon(function::Event<Args...> &e, EventBound &&eBound)
+        typename System<Mixin>::eventIterator System<Mixin>::SubscribeEventCommon(::Chroma::Event<Args...> &e, EventBound &&eBound)
         {
             events.push_back(std::move(eBound));
             auto &made = events.back();
@@ -171,44 +171,44 @@ namespace Atmos
 
         template<class Mixin>
         template<class Ret, class... Args>
-        typename System<Mixin>::eventIterator System<Mixin>::SubscribeEvent(function::Event<Args...> &e, Ret(*func)(Args...))
+        typename System<Mixin>::eventIterator System<Mixin>::SubscribeEvent(::Chroma::Event<Args...> &e, Ret(*func)(Args...))
         {
-            return SubscribeEventCommon(e, EventBound(this, function::Function<void, Args...>(func)));
+            return SubscribeEventCommon(e, EventBound(this, ::Chroma::Function<void, Args...>(func)));
         }
 
         template<class Mixin>
         template<class Ret, class Obj, class... Args>
-        typename System<Mixin>::eventIterator System<Mixin>::SubscribeEvent(function::Event<Args...> &e, Ret(Obj::*func)(Args...), Obj &obj)
+        typename System<Mixin>::eventIterator System<Mixin>::SubscribeEvent(::Chroma::Event<Args...> &e, Ret(Obj::*func)(Args...), Obj &obj)
         {
-            return SubscribeEventCommon(e, EventBound(this, function::Function<void, Args...>(func, obj)));
+            return SubscribeEventCommon(e, EventBound(this, ::Chroma::Function<void, Args...>(func, obj)));
         }
 
         template<class Mixin>
         template<class Ret, class Obj, class... Args>
-        typename System<Mixin>::eventIterator System<Mixin>::SubscribeEvent(function::Event<Args...> &e, Ret(Obj::*func)(Args...) const, const Obj &obj)
+        typename System<Mixin>::eventIterator System<Mixin>::SubscribeEvent(::Chroma::Event<Args...> &e, Ret(Obj::*func)(Args...) const, const Obj &obj)
         {
-            return SubscribeEventCommon(e, EventBound(this, function::Function<void, Args...>(func, obj)));
+            return SubscribeEventCommon(e, EventBound(this, ::Chroma::Function<void, Args...>(func, obj)));
         }
 
         template<class Mixin>
         template<class Ret, class... Args>
-        typename System<Mixin>::eventIterator System<Mixin>::SubscribeEvent(function::Event<Args...> &e, Ret(*func)(Args...), const ApprovedStates &approvedStatesOverride)
+        typename System<Mixin>::eventIterator System<Mixin>::SubscribeEvent(::Chroma::Event<Args...> &e, Ret(*func)(Args...), const ApprovedStates &approvedStatesOverride)
         {
-            return SubscribeEventCommon(e, EventBound(this, function::Function<void, Args...>(func), approvedStatesOverride));
+            return SubscribeEventCommon(e, EventBound(this, ::Chroma::Function<void, Args...>(func), approvedStatesOverride));
         }
 
         template<class Mixin>
         template<class Ret, class Obj, class... Args>
-        typename System<Mixin>::eventIterator System<Mixin>::SubscribeEvent(function::Event<Args...> &e, Ret(Obj::*func)(Args...), Obj &obj, const ApprovedStates &approvedStatesOverride)
+        typename System<Mixin>::eventIterator System<Mixin>::SubscribeEvent(::Chroma::Event<Args...> &e, Ret(Obj::*func)(Args...), Obj &obj, const ApprovedStates &approvedStatesOverride)
         {
-            return SubscribeEventCommon(e, EventBound(this, function::Function<void, Args...>(func, obj), approvedStatesOverride));
+            return SubscribeEventCommon(e, EventBound(this, ::Chroma::Function<void, Args...>(func, obj), approvedStatesOverride));
         }
 
         template<class Mixin>
         template<class Ret, class Obj, class... Args>
-        typename System<Mixin>::eventIterator System<Mixin>::SubscribeEvent(function::Event<Args...> &e, Ret(Obj::*func)(Args...) const, const Obj &obj, const ApprovedStates &approvedStatesOverride)
+        typename System<Mixin>::eventIterator System<Mixin>::SubscribeEvent(::Chroma::Event<Args...> &e, Ret(Obj::*func)(Args...) const, const Obj &obj, const ApprovedStates &approvedStatesOverride)
         {
-            return SubscribeEventCommon(e, EventBound(this, function::Function<void, Args...>(func, obj), approvedStatesOverride));
+            return SubscribeEventCommon(e, EventBound(this, ::Chroma::Function<void, Args...>(func, obj), approvedStatesOverride));
         }
 
         template<class Mixin>

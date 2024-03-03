@@ -94,7 +94,7 @@ namespace Atmos
         // Save WorldStart
         basicScribe.Save(worldStart);
 
-        inscription::ContainerSize count(fieldSavers.size());
+        ::Inscription::ContainerSize count(fieldSavers.size());
         basicScribe.Save(count);
 
         for (auto &loop : fieldSavers)
@@ -111,17 +111,17 @@ namespace Atmos
         return ret;
     }
 
-    inscription::Scribe& WorldScribeOut::GetBasicScribe()
+    ::Inscription::Scribe& WorldScribeOut::GetBasicScribe()
     {
         return basicScribe;
     }
 
-    const inscription::Scribe& WorldScribeOut::GetBasicScribe() const
+    const ::Inscription::Scribe& WorldScribeOut::GetBasicScribe() const
     {
         return basicScribe;
     }
 
-    WorldScribeOut::WorldScribeOut(const FilePath &filePath, inscription::ContainerSize::ValueT fieldCount, OpenMode openMode) : filePath(GetForcedFilePath(filePath, openMode)), basicScribe(GetForcedFilePath(filePath, openMode).GetValue(), "ATMOS GAIA", 1), curSaver(fieldSavers.end()), hasOutputHeader(false)
+    WorldScribeOut::WorldScribeOut(const FilePath &filePath, ::Inscription::ContainerSize::ValueT fieldCount, OpenMode openMode) : filePath(GetForcedFilePath(filePath, openMode)), basicScribe(GetForcedFilePath(filePath, openMode).GetValue(), "ATMOS GAIA", 1), curSaver(fieldSavers.end()), hasOutputHeader(false)
     {
         fieldSavers.resize(fieldCount, FieldSaver(basicScribe));
     }
@@ -141,7 +141,7 @@ namespace Atmos
         ++curSaver;
     }
 
-    void WorldScribeOut::OverwriteFieldCount(inscription::ContainerSize::ValueT set)
+    void WorldScribeOut::OverwriteFieldCount(::Inscription::ContainerSize::ValueT set)
     {
         fieldSavers.resize(set, FieldSaver(basicScribe));
     }
@@ -208,7 +208,7 @@ namespace Atmos
         basicScribe.Load(worldStart);
 
         // Retrieve field handles
-        inscription::ContainerSize size;
+        ::Inscription::ContainerSize size;
         basicScribe.Load(size);
         while (size-- > 0)
         {
@@ -240,12 +240,12 @@ namespace Atmos
         return ret;
     }
 
-    inscription::Scribe& WorldScribeIn::GetBasicScribe()
+    ::Inscription::Scribe& WorldScribeIn::GetBasicScribe()
     {
         return basicScribe;
     }
 
-    const inscription::Scribe& WorldScribeIn::GetBasicScribe() const
+    const ::Inscription::Scribe& WorldScribeIn::GetBasicScribe() const
     {
         return basicScribe;
     }
@@ -310,7 +310,7 @@ namespace Atmos
         return out;
     }
 
-    inscription::Buffer WorldScribeIn::GetAsBuffer(FieldID id)
+    ::Inscription::Buffer WorldScribeIn::GetAsBuffer(FieldID id)
     {
         auto found = fieldHandles.find(id);
         return found->second.LoadBuffer(found->second.size);

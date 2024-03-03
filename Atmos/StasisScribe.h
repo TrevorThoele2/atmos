@@ -17,7 +17,7 @@ namespace Atmos
     class StasisScribeOut : public OutScribeBase
     {
     public:
-        typedef inscription::Buffer BufferT;
+        typedef ::Inscription::Buffer BufferT;
 
         enum class OpenMode
         {
@@ -25,13 +25,13 @@ namespace Atmos
             FORCE_EXTENSION
         };
     private:
-        typedef inscription::BinaryScribe ScribeT;
+        typedef ::Inscription::BinaryScribe ScribeT;
 
         class FieldSaver : public SkipSaver<ScribeT>
         {
         public:
             typedef FieldID IDType;
-            typedef inscription::Buffer::SizeT SizeT;
+            typedef ::Inscription::Buffer::SizeT SizeT;
         private:
             SizeT positionStart;
 
@@ -41,7 +41,7 @@ namespace Atmos
             void SaveExtra() override;
         public:
             IDType fieldID;
-            inscription::Buffer::SizeT size;
+            ::Inscription::Buffer::SizeT size;
 
             FieldSaver(ScribeT &scribe);
         };
@@ -61,16 +61,16 @@ namespace Atmos
 
         void OutputHeader();
     protected:
-        inscription::Scribe& GetBasicScribe() override;
-        const inscription::Scribe& GetBasicScribe() const override;
+        ::Inscription::Scribe& GetBasicScribe() override;
+        const ::Inscription::Scribe& GetBasicScribe() const override;
     public:
-        StasisScribeOut(const FileName &fileName, const FileName &worldFileName, inscription::ContainerSize::ValueT fieldCount, OpenMode openMode = OpenMode::FORCE_EXTENSION);
-        StasisScribeOut(const FilePath &filePath, const FileName &worldFileName, inscription::ContainerSize::ValueT fieldCount, OpenMode openMode = OpenMode::FORCE_EXTENSION);
+        StasisScribeOut(const FileName &fileName, const FileName &worldFileName, ::Inscription::ContainerSize::ValueT fieldCount, OpenMode openMode = OpenMode::FORCE_EXTENSION);
+        StasisScribeOut(const FilePath &filePath, const FileName &worldFileName, ::Inscription::ContainerSize::ValueT fieldCount, OpenMode openMode = OpenMode::FORCE_EXTENSION);
 
         void Save(Field &save) override;
-        void Save(FieldID id, const inscription::Buffer &buffer);
+        void Save(FieldID id, const ::Inscription::Buffer &buffer);
 
-        void OverwriteFieldCount(inscription::ContainerSize::ValueT set) override;
+        void OverwriteFieldCount(::Inscription::ContainerSize::ValueT set) override;
         void SetWorldStart(const StasisWorldStart &set);
         void SetWorldStartFromCurrent();
 
@@ -89,13 +89,13 @@ namespace Atmos
             FORCE_EXTENSION
         };
     private:
-        typedef inscription::BinaryScribe ScribeT;
+        typedef ::Inscription::BinaryScribe ScribeT;
 
         class FieldHandle : public SkipHandle<ScribeT>
         {
         public:
             typedef FieldID IDType;
-            typedef inscription::Buffer::SizeT SizeT;
+            typedef ::Inscription::Buffer::SizeT SizeT;
         private:
             void LoadExtra() override;
         public:
@@ -121,8 +121,8 @@ namespace Atmos
 
         void FillField(Field &fill, FieldHandles::iterator handle);
     protected:
-        inscription::Scribe& GetBasicScribe() override;
-        const inscription::Scribe& GetBasicScribe() const override;
+        ::Inscription::Scribe& GetBasicScribe() override;
+        const ::Inscription::Scribe& GetBasicScribe() const override;
     public:
         StasisScribeIn(const FileName &fileName, const FilePath &worldPath, OpenMode openMode = OpenMode::FORCE_EXTENSION);
         StasisScribeIn(const FilePath &filePath, const FilePath &worldPath, OpenMode openMode = OpenMode::FORCE_EXTENSION);
@@ -135,7 +135,7 @@ namespace Atmos
 
         Optional<Field> Get(FieldID fieldID) override;
         Field* GetAsHeap(FieldID id) override;
-        inscription::Buffer GetAsBuffer(FieldID id) override;
+        ::Inscription::Buffer GetAsBuffer(FieldID id) override;
 
         StasisWorldStart& GetWorldStart() override;
 

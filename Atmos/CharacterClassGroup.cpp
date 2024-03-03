@@ -9,17 +9,17 @@ namespace Atmos
 {
     INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(CharacterClassGroup)
     {
-        inscription::TrackingChangerStack changer(scribe, false);
+        ::Inscription::TrackingChangerStack changer(scribe, false);
         if (scribe.IsOutput())
         {
             scribe.Save(usesAll);
             if (!usesAll)
             {
-                inscription::ContainerSize size(set.size());
+                ::Inscription::ContainerSize size(set.size());
                 scribe.Save(size);
 
                 for (auto &loop : set)
-                    scribe.Save(::inscription::RemoveConst(loop));
+                    scribe.Save(::Inscription::RemoveConst(loop));
             }
         }
         else
@@ -27,7 +27,7 @@ namespace Atmos
             scribe.Load(usesAll);
             if (!usesAll)
             {
-                inscription::ContainerSize size;
+                ::Inscription::ContainerSize size;
                 scribe.Load(size);
 
                 while (size-- > 0)

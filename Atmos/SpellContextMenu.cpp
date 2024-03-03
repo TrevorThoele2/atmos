@@ -4,11 +4,11 @@
 #include "Spell.h"
 #include "FontDefines.h"
 
-namespace agui
+namespace Agui
 {
     void SpellContextMenu::RegisterInputs()
     {
-        RegisterInput(Text("CAST", agui::Text::Format(), *agui::fontSlender, Color(255, 0, 0, 0)), RelativePosition(Dimension(0, 26), Dimension(0, 5)), std::bind(&SpellContextMenu::OnCast, this));
+        RegisterInput(Text("CAST", Agui::Text::Format(), *Agui::fontSlender, Color(255, 0, 0, 0)), RelativePosition(Dimension(0, 26), Dimension(0, 5)), std::bind(&SpellContextMenu::OnCast, this));
     }
 
     void SpellContextMenu::OnCast()

@@ -21,8 +21,8 @@ namespace Atmos
             {
             private:
                 bool active;
-                agui::Textbox *textbox;
-                agui::TextComponent *itemCountText, *priceText, *playerGoldText;
+                Agui::Textbox *textbox;
+                Agui::TextComponent *itemCountText, *priceText, *playerGoldText;
 
                 ItemStack *item;
                 DynamicBoundedNumber<unsigned char> count;
@@ -32,7 +32,7 @@ namespace Atmos
                 void Transaction();
             public:
                 Dialog();
-                void Init(agui::ItemDescriptionBox &descBox);
+                void Init(Agui::ItemDescriptionBox &descBox);
                 void Activate(ItemStack &item);
                 void Deactivate();
                 bool IsActive() const;
@@ -43,7 +43,7 @@ namespace Atmos
         private:
             static bool active;
             static bool buying;
-            static agui::Root *root;
+            static Agui::Root *root;
             static Dialog dialog;
 
             static InventoryGui inventoryGui;

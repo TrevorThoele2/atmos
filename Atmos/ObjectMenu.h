@@ -27,16 +27,16 @@ namespace Atmos
         typedef List List;
         typedef DescriptionBox DescriptionBox;
         typedef ContextMenu ContextMenu;
-        typedef agui::Menu WrappedMenuT;
+        typedef ::Agui::Menu WrappedMenuT;
     private:
         struct Entry
         {
             WrappedMenuT::Connection menuConnection;
             Obj &wrapped;
-            Entry(const agui::Menu::Connection &menuConnection, Obj &wrapped) : menuConnection(menuConnection), wrapped(wrapped) {}
+            Entry(const ::Agui::Menu::Connection &menuConnection, Obj &wrapped) : menuConnection(menuConnection), wrapped(wrapped) {}
         };
 
-        typedef agui::Cursor<unsigned short> Cursor;
+        typedef ::Agui::Cursor Cursor;
         typedef ObjectMenuTraits<List> Traits;
     private:
         bool active;
@@ -147,7 +147,7 @@ namespace Atmos
         for (auto loop = container.begin(); loop != container.end(); ++loop)
         {
             auto &unpacked = Traits::Unpack(loop);
-            auto &connection = menu->CreateText(ToString(count), 1, agui::Text(unpacked.GetName(), agui::Text::Format(), *agui::fontSlender, agui::Color(255, 255, 255, 255)));
+            auto &connection = menu->CreateText(ToString(count), 1, Agui::Text(unpacked.GetName(), Agui::Text::Format(), *Agui::fontSlender, Agui::Color(255, 255, 255, 255)));
             auto &emplaced = entries.AddBack(Entry(connection, unpacked));
             emplaced->menuConnection.GetText().SetAutoCalcTextSize();
             emplaced->menuConnection.GetText().color.Edit(0, 0, 0);
@@ -227,11 +227,11 @@ namespace Atmos
         Environment::GetInput()->eventActionPressed.Subscribe(&ObjectMenu::OnActionPressed, *this);
 
         // Menu
-        menu = agui::Menu::Factory(&root, "menu", agui::RelativePosition(), 0);
+        menu = Agui::Menu::Factory(&root, "menu", Agui::RelativePosition(), 0);
         menu->GetLayout()->SetSelfModifySize(false);
 
         // Cursor
-        cursor = Cursor::Factory(menu, "cursor", agui::RelativePosition(agui::Dimension(0, -20), agui::Dimension()), 0);
+        cursor = Cursor::Factory(menu, "cursor", Agui::RelativePosition(Agui::Dimension(0, -20), Agui::Dimension()), 0);
         cursor->SetActiveFollowsShow(false);
         cursor->Deactivate();
         cursor->eventMoved.Subscribe(std::bind(&ObjectMenu::OnCursorMoved, this));

@@ -22,11 +22,11 @@ namespace Atmos
         class Button
         {
         private:
-            agui::PushButton &widget;
+            Agui::PushButton &widget;
             const Input::SignalBase *requested;
             Input::Action &action;
         public:
-            Button(agui::PushButton &widget, Input::Action &action);
+            Button(Agui::PushButton &widget, Input::Action &action);
             Button(const Button &arg) = default;
             Button& operator=(const Button &arg) = default;
             void Request(const Input::SignalBase &request);

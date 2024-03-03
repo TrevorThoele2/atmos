@@ -18,30 +18,30 @@ namespace Atmos
         auto root = GetRoot();
 
         // Background
-        auto image = agui::Image::Factory(root, "background", agui::RelativePosition(agui::Dimension(0.5, 0), agui::Dimension(0.5, 0)), 0);
+        auto image = Agui::Image::Factory(root, "background", Agui::RelativePosition(Agui::Dimension(0.5, 0), Agui::Dimension(0.5, 0)), 0);
         image->GetSprite()->color.Edit(127, 100, 100, 255);
-        agui::CreateRootResFitter(*image);
+        Agui::CreateRootResFitter(*image);
 
         // Resume button
-        auto button = agui::PushButton::Factory(root, "resume", agui::RelativePosition(agui::Dimension(), agui::Dimension(0, -80), agui::HorizontalAlignment::MID, agui::VerticalAlignment::MID), 1);
+        auto button = Agui::PushButton::Factory(root, "resume", Agui::RelativePosition(Agui::Dimension(), Agui::Dimension(0, -80), Agui::HorizontalAlignment::MID, Agui::VerticalAlignment::MID), 1);
         button->GetText()->SetString("RESUME GAME");
         button->GetText()->color.Edit(0, 0, 0);
         button->eventClicked.Subscribe(std::bind(&StateManager::Pop));
 
         // Save game button
-        button = agui::PushButton::Factory(root, "saveGame", agui::RelativePosition(agui::HorizontalAlignment::MID, agui::VerticalAlignment::MID), 1);
+        button = Agui::PushButton::Factory(root, "saveGame", Agui::RelativePosition(Agui::HorizontalAlignment::MID, Agui::VerticalAlignment::MID), 1);
         button->GetText()->SetString("SAVE GAME");
         button->GetText()->color.Edit(0, 0, 0);
         //button->eventClicked.Subscribe(std::bind(&FileHandler::Save));
 
         // Goto options
-        button = agui::PushButton::Factory(root, "controls", agui::RelativePosition(agui::Dimension(), agui::Dimension(0, 80), agui::HorizontalAlignment::MID, agui::VerticalAlignment::MID), 1);
+        button = Agui::PushButton::Factory(root, "controls", Agui::RelativePosition(Agui::Dimension(), Agui::Dimension(0, 80), Agui::HorizontalAlignment::MID, Agui::VerticalAlignment::MID), 1);
         button->GetText()->SetString("OPTIONS");
         button->GetText()->color.Edit(0, 0, 0);
         button->eventClicked.Subscribe(std::bind(&OptionsScreen::Goto, &optionsScreen));
 
         // Exit game button
-        button = agui::PushButton::Factory(root, "exit", agui::RelativePosition(agui::Dimension(), agui::Dimension(0, 160), agui::HorizontalAlignment::MID, agui::VerticalAlignment::MID), 1);
+        button = Agui::PushButton::Factory(root, "exit", Agui::RelativePosition(Agui::Dimension(), Agui::Dimension(0, 160), Agui::HorizontalAlignment::MID, Agui::VerticalAlignment::MID), 1);
         button->GetText()->SetString("EXIT");
         button->GetText()->color.Edit(0, 0, 0);
         button->eventClicked.Subscribe(std::bind(&MainMenu::Goto, &mainMenu));

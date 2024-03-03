@@ -81,16 +81,16 @@ namespace Atmos
 
     std::unordered_map<Element, GlobalContext<Element>::Entry> GlobalContext<Element>::entries;
 
-    void GlobalContext<Element>::SerializeImpl(::inscription::Scribe &scribe)
+    void GlobalContext<Element>::SerializeImpl(::Inscription::Scribe &scribe)
     {
         if (scribe.IsOutput())
         {
-            ::inscription::ContainerSize size(entries.size());
+            ::Inscription::ContainerSize size(entries.size());
             scribe.Save(size);
 
             for (auto &loop : entries)
             {
-                scribe.Save(::inscription::RemoveConst(loop.first));
+                scribe.Save(::Inscription::RemoveConst(loop.first));
                 scribe.Save(loop.second.niceName);
                 scribe.Save(loop.second.opposing);
                 scribe.Save(loop.second.statName);
@@ -98,7 +98,7 @@ namespace Atmos
         }
         else // INPUT
         {
-            ::inscription::ContainerSize size;
+            ::Inscription::ContainerSize size;
             scribe.Load(size);
 
             while (size-- > 0)

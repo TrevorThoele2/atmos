@@ -22,43 +22,43 @@
 #include <AGUI\Textbox.h>
 #include <AGUI\Thumb.h>
 
-namespace agui
+namespace Agui
 {
     void SetupWidgets()
     {
         // CUSTOM
-        ItemDescriptionBoxSetup::Main().sprite = SpriteComponent::Factory("sprite", 0.0f, RelativePosition(), Size(), agui::Sprite("Pixel.png", 1, Color()));
+        ItemDescriptionBoxSetup::Main().sprite = SpriteComponent::Factory("sprite", 0.0f, RelativePosition(), Size(), Agui::Sprite("Pixel.png", 1, Color()));
         ItemDescriptionBoxSetup::Main().spriteFitter = true;
 
-        SpellDescriptionBoxSetup::Main().sprite = SpriteComponent::Factory("sprite", 0.0f, RelativePosition(), Size(), agui::Sprite("Pixel.png", 1, Color()));
+        SpellDescriptionBoxSetup::Main().sprite = SpriteComponent::Factory("sprite", 0.0f, RelativePosition(), Size(), Agui::Sprite("Pixel.png", 1, Color()));
         SpellDescriptionBoxSetup::Main().spriteFitter = true;
 
-        CursorSetup<unsigned char>::Main().sprite = SpriteComponent::Factory("sprite", 0.0f, agui::RelativePosition(), agui::Size(), agui::Sprite("cursor.png", 1, agui::Color()));
-        CursorSetup<unsigned short>::Main().sprite = SpriteComponent::Factory("sprite", 0.0f, agui::RelativePosition(), agui::Size(), agui::Sprite("cursor.png", 1, agui::Color()));
+        CursorSetup::Main().sprite = SpriteComponent::Factory("sprite", 0.0f, Agui::RelativePosition(), Agui::Size(), Agui::Sprite("cursor.png", 1, Agui::Color()));
+        CursorSetup::Main().sprite = SpriteComponent::Factory("sprite", 0.0f, Agui::RelativePosition(), Agui::Size(), Agui::Sprite("cursor.png", 1, Agui::Color()));
 
         // AGUI
-        BasicWidgetSetup::Main().sprite = SpriteComponent::Factory("sprite", 0.0f, RelativePosition(), Size(), agui::Sprite("Pixel.png", 1, Color()));
+        BasicWidgetSetup::Main().sprite = SpriteComponent::Factory("sprite", 0.0f, RelativePosition(), Size(), Agui::Sprite("Pixel.png", 1, Color()));
         BasicWidgetSetup::Main().spriteFitter = true;
 
-        CheckboxSetup::Main().sprite = SpriteComponent::Factory("sprite", 0.0f, RelativePosition(), Size(), agui::Sprite("check24.png", 1, Color()));
+        CheckboxSetup::Main().sprite = SpriteComponent::Factory("sprite", 0.0f, RelativePosition(), Size(), Agui::Sprite("check24.png", 1, Color()));
         CheckboxSetup::Main().spriteFitter = true;
 
         FillbarSetup::Main().frame = SpriteComponent::Factory("frame", 0.0f, RelativePosition(), Size(), Sprite("FillbarBackground.png", 1, Color()));
         FillbarSetup::Main().frameFitter = true;
         FillbarSetup::Main().filler = SpriteComponent::Factory("filler", 0.0f, RelativePosition(), Size(), Sprite("FillbarInside.png", 1, Color()));
 
-        ImageSetup::Main().sprite = SpriteComponent::Factory("sprite", 0.0f, RelativePosition(), Size(), agui::Sprite("Pixel.png", 1, Color()));
+        ImageSetup::Main().sprite = SpriteComponent::Factory("sprite", 0.0f, RelativePosition(), Size(), Agui::Sprite("Pixel.png", 1, Color()));
         ImageSetup::Main().spriteFitter = true;
 
-        LabelSetup::Main().text = TextComponent::Factory("text", 0.0f, RelativePosition(), Size(), agui::Text("", agui::Text::Format(), *fontSlender, Color()));
+        LabelSetup::Main().text = TextComponent::Factory("text", 0.0f, RelativePosition(), Size(), Agui::Text("", Agui::Text::Format(), *fontSlender, Color()));
         LabelSetup::Main().textFitter = true;
 
-        MenuSetup::Main().sprite = SpriteComponent::Factory("sprite", 0.0f, RelativePosition(), Size(), agui::Sprite("Pixel.png", 1, Color()));
+        MenuSetup::Main().sprite = SpriteComponent::Factory("sprite", 0.0f, RelativePosition(), Size(), Agui::Sprite("Pixel.png", 1, Color()));
         MenuSetup::Main().spriteFitter = true;
 
-        PushButtonSetup::Main().sprite = SpriteComponent::Factory("sprite", 0.0f, RelativePosition(), Size(), agui::Sprite("button.png", 1, Color()));
+        PushButtonSetup::Main().sprite = SpriteComponent::Factory("sprite", 0.0f, RelativePosition(), Size(), Agui::Sprite("button.png", 1, Color()));
         PushButtonSetup::Main().spriteFitter = true;
-        PushButtonSetup::Main().text = TextComponent::Factory("text", 1.0f, RelativePosition(), Size(), agui::Text("", agui::Text::Format({ agui::Text::CENTER_HORIZONTAL, agui::Text::CENTER_VERTICAL }), *fontButton, Color()));
+        PushButtonSetup::Main().text = TextComponent::Factory("text", 1.0f, RelativePosition(), Size(), Agui::Text("", Agui::Text::Format({ Agui::Text::CENTER_HORIZONTAL, Agui::Text::CENTER_VERTICAL }), *fontButton, Color()));
         PushButtonSetup::Main().textFitter = true;
 
         MenuButtonSetup::Main().menu.prototype.name = "menu";
@@ -66,10 +66,10 @@ namespace agui
         MenuButtonSetup::Main().button.prototype.name = "button";
         MenuButtonSetup::Main().button.widgetSetup = PushButtonSetup::Main();
 
-        ThumbSetup::Main().sprite = SpriteComponent::Factory("sprite", 0.0f, RelativePosition(), Size(), agui::Sprite("SliderMovable.png", 1, Color()));
+        ThumbSetup::Main().sprite = SpriteComponent::Factory("sprite", 0.0f, RelativePosition(), Size(), Agui::Sprite("SliderMovable.png", 1, Color()));
         ThumbSetup::Main().spriteFitter = true;
 
-        ScrollbarSetup::Main().sprite = SpriteComponent::Factory("sprite", 0.0f, RelativePosition(), Size(), agui::Sprite("SliderBackgroundVertical.png", 1, Color()));
+        ScrollbarSetup::Main().sprite = SpriteComponent::Factory("sprite", 0.0f, RelativePosition(), Size(), Agui::Sprite("SliderBackgroundVertical.png", 1, Color()));
         ScrollbarSetup::Main().spriteFitter = true;
         ScrollbarSetup::Main().orient = Orientation::VERTICAL;
         ScrollbarSetup::Main().thumb.prototype.name = "thumb";
@@ -86,22 +86,22 @@ namespace agui
         ScrollbarSetup::Main().decrement.widgetSetup = PushButtonSetup::Main();
         ScrollbarSetup::Main().decrement.widgetSetup.sprite->SetResource("Graphics\\GUI\\decrement.png");
 
-        SliderSetup::Main().sprite = SpriteComponent::Factory("sprite", 0.0f, RelativePosition(), Size(), agui::Sprite("SliderBackground.png", 1, Color()));
+        SliderSetup::Main().sprite = SpriteComponent::Factory("sprite", 0.0f, RelativePosition(), Size(), Agui::Sprite("SliderBackground.png", 1, Color()));
         SliderSetup::Main().spriteFitter = true;
         SliderSetup::Main().thumb.prototype.name = "thumb";
         SliderSetup::Main().thumb.widgetSetup = ThumbSetup::Main();
 
-        TextboxSetup::Main().sprite = SpriteComponent::Factory("sprite", 0.0f, RelativePosition(), Size(), agui::Sprite("Pixel.png", 1, Color()));
+        TextboxSetup::Main().sprite = SpriteComponent::Factory("sprite", 0.0f, RelativePosition(), Size(), Agui::Sprite("Pixel.png", 1, Color()));
         TextboxSetup::Main().spriteFitter = true;
 
         ItemContextMenuSetup::Main().menu.widgetSetup = MenuSetup::Main();
         ItemContextMenuSetup::Main().cursor.prototype.name = "cursor";
         ItemContextMenuSetup::Main().cursor.prototype.pos.SetX(Dimension(0, -20));
-        ItemContextMenuSetup::Main().cursor.widgetSetup = CursorSetup<unsigned char>::Main();
+        ItemContextMenuSetup::Main().cursor.widgetSetup = CursorSetup::Main();
 
         SpellContextMenuSetup::Main().menu.widgetSetup = MenuSetup::Main();
         SpellContextMenuSetup::Main().cursor.prototype.name = "cursor";
         SpellContextMenuSetup::Main().cursor.prototype.pos.SetX(Dimension(0, -20));
-        SpellContextMenuSetup::Main().cursor.widgetSetup = CursorSetup<unsigned char>::Main();
+        SpellContextMenuSetup::Main().cursor.widgetSetup = CursorSetup::Main();
     }
 }

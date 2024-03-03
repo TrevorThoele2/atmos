@@ -34,12 +34,12 @@ namespace Atmos
                 scribe.Save(idSequencer);
 
                 // Component maps
-                inscription::ContainerSize size(componentMaps.size());
+                ::Inscription::ContainerSize size(componentMaps.size());
                 scribe.Save(size);
 
                 for (auto &loop : componentMaps)
                 {
-                    scribe.Save(inscription::RemoveConst(loop.first));
+                    scribe.Save(::Inscription::RemoveConst(loop.first));
                     loop.second->Serialize(scribe);
                 }
             }
@@ -49,7 +49,7 @@ namespace Atmos
                 scribe.Load(idSequencer);
 
                 // Component maps
-                inscription::ContainerSize size;
+                ::Inscription::ContainerSize size;
                 scribe.Load(size);
 
                 while (size-- > 0)

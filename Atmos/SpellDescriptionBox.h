@@ -4,7 +4,7 @@
 #include "DescriptionBox.h"
 
 namespace Atmos { class Spell; }
-namespace agui
+namespace Agui
 {
     class SpellDescriptionBox : public DescriptionBox
     {
@@ -40,7 +40,7 @@ namespace agui
             obj.Init();
         }
     public:
-        Attribute<SpriteComponent> sprite;
+        ComponentAttribute<SpriteComponent> sprite;
         bool spriteFitter;
 
         WidgetSetup();

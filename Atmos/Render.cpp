@@ -46,7 +46,7 @@ namespace Atmos
 
         graphics->EndSprites();
 
-        agui::System::Work();
+        Agui::System::Work();
         graphics->End();
         graphics->Present();
 

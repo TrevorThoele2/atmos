@@ -20,7 +20,7 @@ namespace Atmos
     class WorldStart : public WorldStartBase
     {
     private:
-        void Serialize(inscription::Scribe &scribe);
+        void Serialize(::Inscription::Scribe &scribe);
         INSCRIPTION_ACCESS;
     private:
         FieldID fieldID;
@@ -39,7 +39,7 @@ namespace Atmos
     public:
         typedef std::array<Entity, Ent::PlayerParty::maxSize> PlayerParty;
     private:
-        void Serialize(inscription::Scribe &scribe);
+        void Serialize(::Inscription::Scribe &scribe);
         INSCRIPTION_ACCESS;
     private:
         FieldID fieldID;

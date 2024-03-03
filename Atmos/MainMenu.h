@@ -11,7 +11,7 @@ namespace Atmos
     {
     private:
         void InitImpl() override;
-        void AddButton(const std::string &name, const std::string &str, const agui::Event<agui::Object>::Callback &func);
+        void AddButton(const std::string &name, const std::string &str, const Agui::Event<Agui::Object>::Callback &func);
         void OnNew();
     public:
         MainMenuGui();

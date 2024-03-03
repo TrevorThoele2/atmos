@@ -5,7 +5,7 @@
 #include <Inscription/InscripterBase.h>
 #include <Inscription/Convenience.h>
 
-namespace inscription
+namespace Inscription
 {
     class Scribe;
     template<class T>

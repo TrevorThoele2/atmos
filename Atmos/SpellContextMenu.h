@@ -12,7 +12,7 @@ namespace Atmos
     }
 }
 
-namespace agui
+namespace Agui
 {
     class SpellContextMenu : public ContextMenu
     {
@@ -45,8 +45,8 @@ namespace agui
             SetupOptional(obj, &SpellContextMenu::SetCursor, cursor);
         }
     public:
-        Attribute<Menu> menu;
-        Attribute<SpellContextMenu::Cursor> cursor;
+        WidgetAttribute<Menu> menu;
+        WidgetAttribute<Cursor> cursor;
 
         WidgetSetup() = default;
     };

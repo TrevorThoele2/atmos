@@ -89,7 +89,7 @@ namespace Atmos
     public:
         typedef GridPosition::ValueT ValueT;
     private:
-        void Serialize(inscription::Scribe &scribe);
+        void Serialize(::Inscription::Scribe &scribe);
         INSCRIPTION_ACCESS;
     public:
         ValueT x, y, z;

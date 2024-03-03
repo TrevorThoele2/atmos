@@ -73,10 +73,10 @@ namespace Atmos
 
         void SetColor(const Color &set);
 
-        friend std::unique_ptr<agui::SpriteComponent> CreateAguiSpriteComponent(const Sprite &sprite, const agui::FileName &imageName, const agui::RelativePosition &relPosition);
-        friend Sprite FromAguiSpriteComponent(const agui::SpriteComponent &sprite);
+        friend std::unique_ptr<Agui::SpriteComponent> CreateAguiSpriteComponent(const Sprite &sprite, const Agui::FileName &imageName, const Agui::RelativePosition &relPosition);
+        friend Sprite FromAguiSpriteComponent(const Agui::SpriteComponent &sprite);
     };
 
-    std::unique_ptr<agui::SpriteComponent> CreateAguiSpriteComponent(const Sprite &sprite, const agui::FileName &imageName, const agui::RelativePosition &relPosition = agui::RelativePosition());
-    Sprite FromAguiSpriteComponent(const agui::SpriteComponent &sprite);
+    std::unique_ptr<Agui::SpriteComponent> CreateAguiSpriteComponent(const Sprite &sprite, const Agui::FileName &imageName, const Agui::RelativePosition &relPosition = Agui::RelativePosition());
+    Sprite FromAguiSpriteComponent(const Agui::SpriteComponent &sprite);
 }

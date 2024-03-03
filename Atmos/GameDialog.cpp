@@ -12,9 +12,9 @@
 namespace Atmos
 {
     bool GameDialog::working = false;
-    agui::Root* GameDialog::root = nullptr;
-    agui::Textbox* GameDialog::textbox = nullptr;
-    agui::TextComponent* GameDialog::output = nullptr;
+    Agui::Root* GameDialog::root = nullptr;
+    Agui::Textbox* GameDialog::textbox = nullptr;
+    Agui::TextComponent* GameDialog::output = nullptr;
     FrameTimer GameDialog::timer(TimeValue::ValueT(5, 0));
     EventBoundSubscriber GameDialog::inputSub;
 
@@ -53,14 +53,14 @@ namespace Atmos
         inputSub.Setup(Environment::GetInput()->eventActionPressed, &GameDialog::OnActionPressed);
         StateManager::eventNewState.Subscribe(&GameDialog::OnStateChanged);
 
-        root = agui::System::CreateRoot("gameDialogRoot");
+        root = Agui::System::CreateRoot("gameDialogRoot");
 
-        textbox = agui::Textbox::Factory(root, "gameDialog", agui::RelativePosition(agui::Dimension(), agui::Dimension(0, 128), agui::HorizontalAlignment::MID, agui::VerticalAlignment::TOP), 0);
+        textbox = Agui::Textbox::Factory(root, "gameDialog", Agui::RelativePosition(Agui::Dimension(), Agui::Dimension(0, 128), Agui::HorizontalAlignment::MID, Agui::VerticalAlignment::TOP), 0);
         textbox->GetSprite()->color.Edit(255, 100, 255, 100);
         textbox->ScaleTo(256, 128);
         textbox->SetShowWithParent(false);
 
-        output = &textbox->CreateText("output", 1, agui::RelativePosition(agui::HorizontalAlignment::MID, agui::VerticalAlignment::MID), agui::Text("", agui::Text::Format(), *agui::fontSlender, agui::Color(255, 0, 0, 0))).GetText();
+        output = &textbox->CreateText("output", 1, Agui::RelativePosition(Agui::HorizontalAlignment::MID, Agui::VerticalAlignment::MID), Agui::Text("", Agui::Text::Format(), *Agui::fontSlender, Agui::Color(255, 0, 0, 0))).GetText();
         output->SetAutoCalcTextSize();
     }
 

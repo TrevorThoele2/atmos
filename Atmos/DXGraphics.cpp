@@ -1047,7 +1047,7 @@ namespace Atmos
         D3DXMatrixOrthoOffCenterLH(&projection, 0, static_cast<FLOAT>(dimensions.first), static_cast<FLOAT>(dimensions.second), 0, 0.0f, 1.0f);
     }
 
-    void DX9GraphicsHandler::OnResolutionChanged(const agui::Resolution &arg)
+    void DX9GraphicsHandler::OnResolutionChanged(const Agui::Resolution &arg)
     {
         SetMainDimensions(ScreenDimensions(static_cast<Dimension>(arg.GetWidth()), static_cast<Dimension>(arg.GetHeight())));
         Reinitialize();
@@ -1069,7 +1069,7 @@ namespace Atmos
         SetMainDimensions(backbuffer);
         SetFullscreen(fullscreen);
         if (subscribeEvents)
-            agui::System::Instance().eventResolutionChanged.Subscribe(std::bind(&DX9GraphicsHandler::OnResolutionChanged, this, std::placeholders::_1));
+            Agui::System::Instance().eventResolutionChanged.Subscribe(std::bind(&DX9GraphicsHandler::OnResolutionChanged, this, std::placeholders::_1));
 
         // Create the Direct3D interface
         d3d = Direct3DCreate9(D3D_SDK_VERSION);

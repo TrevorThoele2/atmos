@@ -15,12 +15,12 @@ namespace Atmos
     {
         if (scribe.IsOutput())
         {
-            inscription::ContainerSize size(entries.size());
+            ::Inscription::ContainerSize size(entries.size());
             scribe.Save(size);
 
             for (auto &loop : entries)
             {
-                scribe.Save(::inscription::RemoveConst(loop.first));
+                scribe.Save(::Inscription::RemoveConst(loop.first));
                 scribe.Save(loop.second.experience);
                 scribe.Save(loop.second.level);
                 scribe.Save(loop.second.profLevelPerCharLevel);
@@ -28,7 +28,7 @@ namespace Atmos
         }
         else
         {
-            inscription::ContainerSize size;
+            ::Inscription::ContainerSize size;
             scribe.Load(size);
 
             while (size-- > 0)

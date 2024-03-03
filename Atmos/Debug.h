@@ -5,7 +5,7 @@
 #include "RealTimer.h"
 #include "ExtendedTimer.h"
 #include "String.h"
-#include <Function/Function.h>
+#include <Chroma/Function.h>
 
 #include <AGUI\Root.h>
 #include <AGUI\Textbox.h>
@@ -19,7 +19,7 @@ namespace Atmos
         class Data
         {
         public:
-            typedef ::function::Function<String> FuncT;
+            typedef ::Chroma::Function<String> FuncT;
         private:
             bool endingGap;
             FuncT func;
@@ -73,10 +73,10 @@ namespace Atmos
         std::vector<Profiler> profilers;
         ProfilerVector::iterator inputProfiler, logicProfiler, renderProfiler, idleProfiler, misc1Profiler, misc2Profiler, misc3Profiler;
 
-        agui::Root *root;
-        agui::Textbox *mainTextbox;
-        agui::TextComponent *label, *data;
-        agui::Label *fpsCounter;
+        Agui::Root *root;
+        Agui::Textbox *mainTextbox;
+        Agui::TextComponent *label, *data;
+        Agui::Label *fpsCounter;
 
         DebugScreen();
         void SetupGui();

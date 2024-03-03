@@ -61,7 +61,7 @@ namespace Atmos
         void SaveNothing();
         template<class T>
         void SaveObject(T &obj);
-        void SaveBuffer(const inscription::Buffer &buffer);
+        void SaveBuffer(const ::Inscription::Buffer &buffer);
     };
 
     template<class Scribe>
@@ -127,7 +127,7 @@ namespace Atmos
     }
 
     template<class Scribe>
-    void SkipSaver<Scribe>::SaveBuffer(const inscription::Buffer &buffer)
+    void SkipSaver<Scribe>::SaveBuffer(const ::Inscription::Buffer &buffer)
     {
         Pos currentPos = scribe.TellStream();
 
@@ -155,7 +155,7 @@ namespace Atmos
         Pos LoadPosition();
         template<class T>
         void LoadObject(T &obj);
-        inscription::Buffer LoadBuffer(inscription::Buffer::SizeT size);
+        ::Inscription::Buffer LoadBuffer(::Inscription::Buffer::SizeT size);
 
         Pos GetSkipPosition() const;
     };
@@ -199,13 +199,13 @@ namespace Atmos
     }
 
     template<class Scribe>
-    inscription::Buffer SkipHandle<Scribe>::LoadBuffer(inscription::Buffer::SizeT size)
+    ::Inscription::Buffer SkipHandle<Scribe>::LoadBuffer(::Inscription::Buffer::SizeT size)
     {
         auto currentPos = scribe.TellStream();
         scribe.SeekStream(pos);
 
         OnBeforeObjectLoad();
-        inscription::Buffer buffer(size);
+        ::Inscription::Buffer buffer(size);
         scribe.ReadBuffer(buffer);
         OnAfterObjectLoad();
 
@@ -281,7 +281,7 @@ namespace Atmos
         void LoadPlaceholder(ID &id);
         template<class T>
         void LoadObject(T &obj);
-        inscription::Buffer LoadBuffer(inscription::Buffer::SizeT size);
+        ::Inscription::Buffer LoadBuffer(::Inscription::Buffer::SizeT size);
     };
 
     template<class Scribe, class ID>
@@ -306,12 +306,12 @@ namespace Atmos
     }
 
     template<class Scribe, class ID>
-    inscription::Buffer SkipHandleExtended<Scribe, ID>::LoadBuffer(inscription::Buffer::SizeT size)
+    ::Inscription::Buffer SkipHandleExtended<Scribe, ID>::LoadBuffer(::Inscription::Buffer::SizeT size)
     {
         auto currentPos = scribe.TellStream();
         scribe.SeekStream(pos);
 
-        inscription::Buffer buffer;
+        ::Inscription::Buffer buffer;
         scribe.ReadBuffer(buffer);
         scribe.SeekStream(currentPos);
 

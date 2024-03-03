@@ -5,7 +5,7 @@
 
 #include <AGUI\SpriteWidget.h>
 
-namespace agui
+namespace Agui
 {
     class TextComponent;
     class DescriptionBox : public SpriteWidgetSync

@@ -7,7 +7,7 @@ namespace Atmos
 {
     INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(Music)
     {
-        ::inscription::BaseSerialize<SoundBase>(scribe, *this);
+        ::Inscription::BaseSerialize<SoundBase>(scribe, *this);
     }
 
     void Music::PlayImpl()

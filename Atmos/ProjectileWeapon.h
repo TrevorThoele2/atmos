@@ -45,7 +45,7 @@ namespace Atmos
     };
 }
 
-namespace inscription
+namespace Inscription
 {
     template<>
     class Inscripter<::Atmos::ProjectileWeapon::Stack> : public InscripterBase<::Atmos::ProjectileWeapon::Stack>

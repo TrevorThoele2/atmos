@@ -113,7 +113,7 @@ namespace Atmos
     }
 }
 
-namespace inscription
+namespace Inscription
 {
     INSCRIPTION_INSCRIPTER_DEFINE_TABLE(::Atmos::ProjectileWeapon::Stack)
         INSCRIPTION_TABLE_ADD_BASE(::Atmos::Weapon::Stack)

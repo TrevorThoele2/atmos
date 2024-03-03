@@ -5,7 +5,7 @@
 #include "ScriptController.h"
 #include "Logger.h"
 
-#include <Function/Iterate.h>
+#include <Chroma/Iterate.h>
 #include <falcon/engine.h>
 
 namespace Atmos
@@ -548,7 +548,7 @@ namespace Atmos
         FalconVariableTraits<Variant>::Type FalconVariableTraits<Variant>::FromItem(Falcon::VMachine &vm, Falcon::Item &item)
         {
             typedef Optional<Type> OpT;
-            auto made = ::function::IterateRangeCheckStop<VariantIterationTraits::UnderlyingType, VariantCreateConverter, OpT, VariantIterationTraits::maxU>(OpT(), item);
+            auto made = ::Chroma::IterateRangeCheckStop<VariantIterationTraits::UnderlyingType, VariantCreateConverter, OpT, VariantIterationTraits::maxU>(OpT(), item);
             if (!made)
                 return Type();
             else
@@ -562,7 +562,7 @@ namespace Atmos
 
             Falcon::Item valueProp;
             item.getProperty(Convert(valueName), valueProp);
-            ::function::IterateRangeCheckStop<VariantIterationTraits::UnderlyingType, VariantCreateConverter, bool, VariantIterationTraits::maxU>(false, set, vm, valueProp);
+            ::Chroma::IterateRangeCheckStop<VariantIterationTraits::UnderlyingType, VariantCreateConverter, bool, VariantIterationTraits::maxU>(false, set, vm, valueProp);
         }
 
         void FalconVariableTraits<Variant>::SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set)
@@ -585,7 +585,7 @@ namespace Atmos
             if (!value)
                 return OpT();
 
-            return ::function::IterateRangeCheckStop<VariantIterationTraits::UnderlyingType, VariantCreateConverter, OpT, VariantIterationTraits::maxU>(OpT(), *value);
+            return ::Chroma::IterateRangeCheckStop<VariantIterationTraits::UnderlyingType, VariantCreateConverter, OpT, VariantIterationTraits::maxU>(OpT(), *value);
         }
 
         Falcon::Item FalconVariableTraits<Variant>::CreateItem(Falcon::VMachine &vm, const Type &set)

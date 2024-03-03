@@ -99,7 +99,7 @@ namespace Atmos
     }
 }
 
-namespace inscription
+namespace Inscription
 {
     template<>
     class Inscripter<::Atmos::Animation> : public InscripterBase<::Atmos::Animation>

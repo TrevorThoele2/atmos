@@ -7,7 +7,7 @@
 
 #include <type_traits>
 
-#include "Math.h"
+#include "MathUtility.h"
 #include "NumericLimits.h"
 
 #include "DivideByZeroException.h"
@@ -953,7 +953,7 @@ namespace Atmos
             return *this;
 
         typedef int RelativeRadix;
-        RelativeRadix relativeRadix = radixPoint.Get() - set.Get();
+        RelativeRadix relativeRadix = static_cast<RelativeRadix>(radixPoint.Get() - set.Get());
         radixPoint = set;
         FixedPoint::AssertRadixPoint(radixPoint);
 
@@ -1093,27 +1093,26 @@ namespace Atmos
     template<class T>
     struct NumericLimits<FixedPoint<T>>
     {
-        typedef FixedPoint T;
-        static constexpr T min()
+        static constexpr FixedPoint<T> min()
         {
-            return T::GetMin();
+            return FixedPoint<T>::GetMin();
         }
 
-        static constexpr T lowest()
+        static constexpr FixedPoint<T> lowest()
         {
-            return T::GetLowest();
+            return FixedPoint<T>::GetLowest();
         }
 
-        static constexpr T max()
+        static constexpr FixedPoint<T> max()
         {
-            return T::GetMax();
+            return FixedPoint<T>::GetMax();
         }
 
         static constexpr int digits10()
         {
-            return NumericLimits<T>::digits10();
+            return NumericLimits<FixedPoint<T>>::digits10();
         }
 
-        static constexpr bool is_signed = NumericLimits<T>::is_signed;
+        static constexpr bool is_signed = NumericLimits<FixedPoint<T>>::is_signed;
     };
 }

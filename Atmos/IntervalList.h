@@ -74,10 +74,10 @@ namespace Atmos
     template<class T>
     INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(IntervalList<T>)
     {
-        ::inscription::TrackingChangerStack tracking(scribe, false);
+        ::Inscription::TrackingChangerStack tracking(scribe, false);
         if (scribe.IsOutput())
         {
-            ::inscription::ContainerSize size(vector.size());
+            ::Inscription::ContainerSize size(vector.size());
             scribe.Save(size);
 
             for (auto &loop : vector)
@@ -88,7 +88,7 @@ namespace Atmos
         }
         else // INPUT
         {
-            ::inscription::ContainerSize size;
+            ::Inscription::ContainerSize size;
             scribe.Load(size);
 
             while (size-- > 0)

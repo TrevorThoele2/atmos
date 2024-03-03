@@ -44,7 +44,7 @@ namespace Atmos
     };
 
     template<class EnumT>
-    void Flags<EnumT>::Serialize(::inscription::Scribe &scribe)
+    void Flags<EnumT>::Serialize(::Inscription::Scribe &scribe)
     {
         scribe(bits);
     }

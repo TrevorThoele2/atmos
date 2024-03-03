@@ -69,7 +69,7 @@ namespace Atmos
         flags.Set(Flag::FOCUS_LOST, false);
     }
 
-    void EnvironmentModel::OnResolutionChanged(const agui::Resolution &arg)
+    void EnvironmentModel::OnResolutionChanged(const Agui::Resolution &arg)
     {
         SetClientDimensions(arg.GetSize().width, arg.GetSize().height);
     }
@@ -123,7 +123,7 @@ namespace Atmos
 
         FpsHandler::Init();
 
-        agui::System::Instance().eventResolutionChanged.Subscribe(std::bind(&EnvironmentModel::OnResolutionChanged, this, std::placeholders::_1));
+        Agui::System::Instance().eventResolutionChanged.Subscribe(std::bind(&EnvironmentModel::OnResolutionChanged, this, std::placeholders::_1));
         Environment::eventFocusLost.Subscribe(&EnvironmentModel::OnFocusLost, *this);
         Environment::eventFocusRegain.Subscribe(&EnvironmentModel::OnFocusRegain, *this);
         flags.Set(Flag::WINDOWED, *Environment::GetIni().GetEntry<Ini::ID::WINDOWED>());
@@ -215,58 +215,58 @@ namespace Atmos
         MasterSoundHandler::Init();
 
         // GUI
-        agui::System::Initialize(agui::Resolution::Size(Environment::GetDefaultSize().first, Environment::GetDefaultSize().second), new agui::DX9GraphicsHandler(GetGraphics<DX9GraphicsHandler>()->GetDevice()));
+        Agui::System::Initialize(Agui::Resolution::Size(Environment::GetDefaultSize().first, Environment::GetDefaultSize().second), new Agui::DX9GraphicsHandler(GetGraphics<DX9GraphicsHandler>()->GetDevice()));
         // Image resources
-        agui::System::CreateImageResource(Environment::GetFileSystem()->GetExePath().Append("Graphics\\GUI\\Pixel.png").GetValue());
-        agui::System::CreateImageResource(Environment::GetFileSystem()->GetExePath().Append("Graphics\\GUI\\button.png").GetValue(), 3, 1);
-        agui::System::CreateImageResource(Environment::GetFileSystem()->GetExePath().Append("Graphics\\GUI\\buttonSmall.png").GetValue(), 3, 1);
-        agui::System::CreateImageResource(Environment::GetFileSystem()->GetExePath().Append("Graphics\\GUI\\buttonSmaller.png").GetValue(), 3, 1);
-        agui::System::CreateImageResource(Environment::GetFileSystem()->GetExePath().Append("Graphics\\GUI\\check24.png").GetValue(), 2, 1);
-        agui::System::CreateImageResource(Environment::GetFileSystem()->GetExePath().Append("Graphics\\GUI\\SliderBackground.png").GetValue());
-        agui::System::CreateImageResource(Environment::GetFileSystem()->GetExePath().Append("Graphics\\GUI\\SliderBackgroundVertical.png").GetValue());
-        agui::System::CreateImageResource(Environment::GetFileSystem()->GetExePath().Append("Graphics\\GUI\\SliderMovable.png").GetValue());
-        agui::System::CreateImageResource(Environment::GetFileSystem()->GetExePath().Append("Graphics\\GUI\\FillbarBackground.png").GetValue());
-        agui::System::CreateImageResource(Environment::GetFileSystem()->GetExePath().Append("Graphics\\GUI\\FillbarInside.png").GetValue());
-        agui::System::CreateImageResource(Environment::GetFileSystem()->GetExePath().Append("Graphics\\GUI\\cursor.png").GetValue());
-        agui::System::CreateImageResource(Environment::GetFileSystem()->GetExePath().Append("Graphics\\GUI\\item.png").GetValue(), 16, 16);
-        agui::System::CreateImageResource(Environment::GetFileSystem()->GetExePath().Append("Graphics\\GUI\\increment.png").GetValue(), 3, 1);
-        agui::System::CreateImageResource(Environment::GetFileSystem()->GetExePath().Append("Graphics\\GUI\\decrement.png").GetValue(), 3, 1);
-        agui::System::CreateImageResource(Environment::GetFileSystem()->GetExePath().Append("Graphics\\GUI\\statusFrame.png").GetValue(), 2, 1);
-        agui::System::CreateImageResource(Environment::GetFileSystem()->GetExePath().Append("Graphics\\GUI\\statusFrameSpell.png").GetValue());
+        Agui::System::CreateImageResource(Environment::GetFileSystem()->GetExePath().Append("Graphics\\GUI\\Pixel.png").GetValue());
+        Agui::System::CreateImageResource(Environment::GetFileSystem()->GetExePath().Append("Graphics\\GUI\\button.png").GetValue(), 3, 1);
+        Agui::System::CreateImageResource(Environment::GetFileSystem()->GetExePath().Append("Graphics\\GUI\\buttonSmall.png").GetValue(), 3, 1);
+        Agui::System::CreateImageResource(Environment::GetFileSystem()->GetExePath().Append("Graphics\\GUI\\buttonSmaller.png").GetValue(), 3, 1);
+        Agui::System::CreateImageResource(Environment::GetFileSystem()->GetExePath().Append("Graphics\\GUI\\check24.png").GetValue(), 2, 1);
+        Agui::System::CreateImageResource(Environment::GetFileSystem()->GetExePath().Append("Graphics\\GUI\\SliderBackground.png").GetValue());
+        Agui::System::CreateImageResource(Environment::GetFileSystem()->GetExePath().Append("Graphics\\GUI\\SliderBackgroundVertical.png").GetValue());
+        Agui::System::CreateImageResource(Environment::GetFileSystem()->GetExePath().Append("Graphics\\GUI\\SliderMovable.png").GetValue());
+        Agui::System::CreateImageResource(Environment::GetFileSystem()->GetExePath().Append("Graphics\\GUI\\FillbarBackground.png").GetValue());
+        Agui::System::CreateImageResource(Environment::GetFileSystem()->GetExePath().Append("Graphics\\GUI\\FillbarInside.png").GetValue());
+        Agui::System::CreateImageResource(Environment::GetFileSystem()->GetExePath().Append("Graphics\\GUI\\cursor.png").GetValue());
+        Agui::System::CreateImageResource(Environment::GetFileSystem()->GetExePath().Append("Graphics\\GUI\\item.png").GetValue(), 16, 16);
+        Agui::System::CreateImageResource(Environment::GetFileSystem()->GetExePath().Append("Graphics\\GUI\\increment.png").GetValue(), 3, 1);
+        Agui::System::CreateImageResource(Environment::GetFileSystem()->GetExePath().Append("Graphics\\GUI\\decrement.png").GetValue(), 3, 1);
+        Agui::System::CreateImageResource(Environment::GetFileSystem()->GetExePath().Append("Graphics\\GUI\\statusFrame.png").GetValue(), 2, 1);
+        Agui::System::CreateImageResource(Environment::GetFileSystem()->GetExePath().Append("Graphics\\GUI\\statusFrameSpell.png").GetValue());
 
         // Fonts
-        agui::fontSlender = agui::System::CreateFont("slender", 12, 0, 300, 1, false, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH || FF_DONTCARE, "Arial");
-        agui::fontButton = agui::System::CreateFont("button", 12, 0, 600, 1, false, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH || FF_DONTCARE, "Arial");
+        Agui::fontSlender = Agui::System::CreateFont("slender", 12, 0, 300, 1, false, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH || FF_DONTCARE, "Arial");
+        Agui::fontButton = Agui::System::CreateFont("button", 12, 0, 600, 1, false, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH || FF_DONTCARE, "Arial");
 
         // RESOLUTIONS
         // 4:3
-        agui::System::CreateRes(agui::Resolution::Size(1024, 768));
-        agui::System::CreateRes(agui::Resolution::Size(1152, 864));
-        agui::System::CreateRes(agui::Resolution::Size(1280, 960));
-        agui::System::CreateRes(agui::Resolution::Size(1400, 1050));
-        agui::System::CreateRes(agui::Resolution::Size(1440, 1080));
-        agui::System::CreateRes(agui::Resolution::Size(1600, 1200));
-        agui::System::CreateRes(agui::Resolution::Size(2048, 1536));
+        Agui::System::CreateRes(Agui::Resolution::Size(1024, 768));
+        Agui::System::CreateRes(Agui::Resolution::Size(1152, 864));
+        Agui::System::CreateRes(Agui::Resolution::Size(1280, 960));
+        Agui::System::CreateRes(Agui::Resolution::Size(1400, 1050));
+        Agui::System::CreateRes(Agui::Resolution::Size(1440, 1080));
+        Agui::System::CreateRes(Agui::Resolution::Size(1600, 1200));
+        Agui::System::CreateRes(Agui::Resolution::Size(2048, 1536));
 
         // 16:9
-        agui::System::CreateRes(agui::Resolution::Size(1024, 576));
-        agui::System::CreateRes(agui::Resolution::Size(1280, 720));
-        agui::System::CreateRes(agui::Resolution::Size(1366, 768), new agui::Resolution::AspectRatio(agui::Ratio(16, 9)));
-        agui::System::CreateRes(agui::Resolution::Size(1600, 900));
-        agui::System::CreateRes(agui::Resolution::Size(1920, 1080));
-        agui::System::CreateRes(agui::Resolution::Size(2560, 1440));
+        Agui::System::CreateRes(Agui::Resolution::Size(1024, 576));
+        Agui::System::CreateRes(Agui::Resolution::Size(1280, 720));
+        Agui::System::CreateRes(Agui::Resolution::Size(1366, 768), new Agui::Resolution::AspectRatio(Agui::Ratio(16, 9)));
+        Agui::System::CreateRes(Agui::Resolution::Size(1600, 900));
+        Agui::System::CreateRes(Agui::Resolution::Size(1920, 1080));
+        Agui::System::CreateRes(Agui::Resolution::Size(2560, 1440));
 
         // 16:10
-        agui::System::CreateRes(agui::Resolution::Size(1280, 800), new agui::Resolution::AspectRatio(agui::Ratio(16, 10), false));
-        agui::System::CreateRes(agui::Resolution::Size(1440, 900), new agui::Resolution::AspectRatio(agui::Ratio(16, 10), false));
-        agui::System::CreateRes(agui::Resolution::Size(1680, 1050), new agui::Resolution::AspectRatio(agui::Ratio(16, 10), false));
-        agui::System::CreateRes(agui::Resolution::Size(1920, 1200), new agui::Resolution::AspectRatio(agui::Ratio(16, 10), false));
-        agui::System::CreateRes(agui::Resolution::Size(2560, 1600), new agui::Resolution::AspectRatio(agui::Ratio(16, 10), false));
+        Agui::System::CreateRes(Agui::Resolution::Size(1280, 800), new Agui::Resolution::AspectRatio(Agui::Ratio(16, 10), false));
+        Agui::System::CreateRes(Agui::Resolution::Size(1440, 900), new Agui::Resolution::AspectRatio(Agui::Ratio(16, 10), false));
+        Agui::System::CreateRes(Agui::Resolution::Size(1680, 1050), new Agui::Resolution::AspectRatio(Agui::Ratio(16, 10), false));
+        Agui::System::CreateRes(Agui::Resolution::Size(1920, 1200), new Agui::Resolution::AspectRatio(Agui::Ratio(16, 10), false));
+        Agui::System::CreateRes(Agui::Resolution::Size(2560, 1600), new Agui::Resolution::AspectRatio(Agui::Ratio(16, 10), false));
 
-        agui::System::SetRes(*GetIni().GetEntry<Ini::ID::RESOLUTION>());
+        Agui::System::SetRes(*GetIni().GetEntry<Ini::ID::RESOLUTION>());
 
         // GUI defaults
-        agui::SetupWidgets();
+        Agui::SetupWidgets();
 
         GameEnvironment::Init();
     }

@@ -19,7 +19,7 @@
 
 #include "EntityUtility.h"
 
-#include <Function\Iterate.h>
+#include <Chroma/Iterate.h>
 
 #include "Serialization.h"
 
@@ -51,7 +51,7 @@ namespace Atmos
                 virtual void Clear() = 0;
                 virtual const ComponentTypeName& GetTypeName() const = 0;
 
-                virtual void Serialize(inscription::Scribe &scribe) = 0;
+                virtual void Serialize(::Inscription::Scribe &scribe) = 0;
             };
         protected:
             typedef std::unique_ptr<ComponentMapBase> ComponentMapPtr;
@@ -76,7 +76,7 @@ namespace Atmos
                 void Clear() override;
                 const ComponentTypeName& GetTypeName() const override;
 
-                void Serialize(inscription::Scribe &scribe) override;
+                void Serialize(::Inscription::Scribe &scribe) override;
             };
 
             class ComponentMapFactoryBase
@@ -266,7 +266,7 @@ namespace Atmos
         }
 
         template<class ComponentT>
-        void Manager::ComponentMapDerived<ComponentT>::Serialize(inscription::Scribe &scribe)
+        void Manager::ComponentMapDerived<ComponentT>::Serialize(::Inscription::Scribe &scribe)
         {
             scribe(map);
         }
@@ -325,7 +325,7 @@ namespace Atmos
 
             typedef MultipleComponents<ComponentTs...> TupleT;
             TupleT tuple;
-            ::function::IterateRange<std::size_t, FillTuple, componentSize - 1, 0>(componentMaps, entity, tuple);
+            ::Chroma::IterateRange<std::size_t, FillTuple, componentSize - 1, 0>(componentMaps, entity, tuple);
             return tuple;
         }
 

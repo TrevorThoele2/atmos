@@ -6,7 +6,7 @@ namespace Atmos
 {
     INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(Item)
     {
-        ::inscription::BaseSerialize<RegistryObject>(scribe, *this);
+        ::Inscription::BaseSerialize<RegistryObject>(scribe, *this);
         scribe(flags);
         scribe(consumableAspect);
         scribe(equippableAspect);

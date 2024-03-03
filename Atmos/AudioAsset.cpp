@@ -14,9 +14,9 @@
 
 namespace Atmos
 {
-    void AudioAsset::Instance::Serialize(inscription::Scribe &scribe)
+    void AudioAsset::Instance::Serialize(::Inscription::Scribe &scribe)
     {
-        scribe.AssumeExists(inscription::RemoveConst(asset));
+        scribe.AssumeExists(::Inscription::RemoveConst(asset));
         if (scribe.IsInput())
             *this = asset->MakeInstance();
     }

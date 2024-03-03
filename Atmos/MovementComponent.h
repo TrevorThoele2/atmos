@@ -24,7 +24,7 @@ namespace Atmos
 
             void SetScriptCallers();
         public:
-            ::affecter::Connection affecterConnection;
+            ::Affecter::Connection affecterConnection;
 
             Script::Instance movementMod;
             Script::Instance changeDirectionMod;

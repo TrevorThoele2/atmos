@@ -13,7 +13,7 @@
 
 namespace Atmos
 {
-    void WorldStart::Serialize(inscription::Scribe &scribe)
+    void WorldStart::Serialize(::Inscription::Scribe &scribe)
     {
         scribe(fieldID);
     }
@@ -34,7 +34,7 @@ namespace Atmos
         return fieldID;
     }
 
-    void StasisWorldStart::Serialize(inscription::Scribe &scribe)
+    void StasisWorldStart::Serialize(::Inscription::Scribe &scribe)
     {
         scribe(fieldID);
         scribe(outsideField);

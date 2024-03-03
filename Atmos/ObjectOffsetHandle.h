@@ -83,7 +83,7 @@ namespace Atmos
     };
 
     template<class T, class Position>
-    void ObjectOffsetHandle<T, Position>::Serialize(::inscription::Scribe &scribe)
+    void ObjectOffsetHandle<T, Position>::Serialize(::Inscription::Scribe &scribe)
     {
         scribe(object);
         scribe(x, y, z);
