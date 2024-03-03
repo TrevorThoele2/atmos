@@ -39,7 +39,7 @@ namespace Atmos::Render::Vulkan
         vk::Device device, uint32_t width, uint32_t height, vk::Format format, vk::ImageUsageFlags usage, InitialImageLayout layout)
     {
         if (width <= 0 || height <= 0)
-            const auto wait = 1 + 1;
+            throw GraphicsError("Dimension of image is less than or equal to zero.");
 
         return device.createImageUnique(vk::ImageCreateInfo(
             {},
@@ -52,8 +52,8 @@ namespace Atmos::Render::Vulkan
             vk::ImageTiling::eOptimal,
             usage,
             vk::SharingMode::eExclusive,
-            {},
-            {},
+            0,
+            nullptr,
             ToImageLayout(layout)));
     }
 

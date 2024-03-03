@@ -9,7 +9,8 @@ TEMPLATE_TEST_CASE_METHOD(
     "running global relic JavaScript scripts",
     "[script][javascript][local][relic]",
     Atmos::Diagnostics::Statistics,
-    Atmos::Render::Camera)
+    Atmos::Render::Camera,
+    Atmos::Input::Information)
 {
     GIVEN("script that finds relic")
     {

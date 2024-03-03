@@ -8,7 +8,10 @@
 #include "JavaScriptSize2D.h"
 #include "JavaScriptGridPoint.h"
 #include "JavaScriptLog.h"
+#include "JavaScriptInputInformation.h"
 #include "JavaScriptMouseMoved.h"
+#include "JavaScriptActionPressed.h"
+#include "JavaScriptActionDepressed.h"
 #include "JavaScriptActionAsset.h"
 #include "JavaScriptAudioAsset.h"
 #include "JavaScriptFontAsset.h"
@@ -110,6 +113,8 @@ namespace Atmos::Scripting::JavaScript
         RegisterCommand<Atmos::Render::TextBaseSize>(*userData);
 
         RegisterSignal<Input::MouseMoved>(*userData);
+        RegisterSignal<Input::ActionPressed>(*userData);
+        RegisterSignal<Input::ActionDepressed>(*userData);
         RegisterSignal<Audio::SoundFinished>(*userData);
 
         RegisterFind<Asset::Action>(*userData);
@@ -162,6 +167,7 @@ namespace Atmos::Scripting::JavaScript
 
         RegisterFind<Diagnostics::Statistics>(*userData);
         RegisterFind<Render::Camera>(*userData);
+        RegisterFind<Input::Information>(*userData);
 
         return CreateObject(
             *isolate,

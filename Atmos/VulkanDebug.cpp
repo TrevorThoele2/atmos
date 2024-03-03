@@ -62,7 +62,25 @@ namespace Atmos::Render::Vulkan
         if (ShouldSkip(message))
             return VK_FALSE;
 
-        logger->Log(String(message), From(messageSeverity));
+        const auto messageTypes = From(messageType);
+
+        const auto messageIdNumber = pCallbackData->messageIdNumber;
+        const auto messageIdName = String(pCallbackData->pMessageIdName);
+
+        Logging::Details details;
+
+        const auto typeStrings = TypeStrings(messageType);
+        if (!typeStrings.empty())
+            details.emplace_back("MessageTypes", Chroma::Join(", ", typeStrings.begin(), typeStrings.end()));
+
+        details.emplace_back("MessageIdNumber", ToString(messageIdNumber));
+        details.emplace_back("MessageIdName", messageIdName);
+
+        const auto objectStrings = ObjectStrings(*pCallbackData);
+        if (!objectStrings.empty())
+            details.emplace_back("Objects", Chroma::Join(", ", objectStrings.begin(), objectStrings.end()));
+
+        logger->Log(String(message), From(messageSeverity), details);
 
         return VK_FALSE;
     }
@@ -70,6 +88,40 @@ namespace Atmos::Render::Vulkan
     bool Debug::ShouldSkip(const String& string)
     {
         return Chroma::Contains(string, "UNASSIGNED-CoreValidation-DrawState-InvalidImageLayout");
+    }
+
+    std::vector<String> Debug::ObjectStrings(const VkDebugUtilsMessengerCallbackDataEXT& data)
+    {
+        std::vector<String> strings;
+        strings.reserve(data.objectCount);
+        for (size_t i = 0; i < data.objectCount; ++i)
+        {
+            const auto objectInfo = From(data.pObjects[i]);
+            strings.push_back(objectInfo.name + ":" + objectInfo.type);
+        }
+
+        return strings;
+    }
+
+    std::vector<String> Debug::TypeStrings(VkDebugUtilsMessageTypeFlagsEXT type)
+    {
+        const auto types = From(type);
+
+        std::vector<String> strings;
+        strings.reserve(types.size());
+        for (auto& type : types)
+            strings.push_back(From(type));
+
+        return strings;
+    }
+
+    auto Debug::From(const VkDebugUtilsObjectNameInfoEXT& info) -> ObjectInfo
+    {
+        return
+        {
+            ToString(info.objectType),
+            String(info.pObjectName)
+        };
     }
 
     Logging::Severity Debug::From(VkDebugUtilsMessageSeverityFlagBitsEXT severity)
@@ -86,6 +138,33 @@ namespace Atmos::Render::Vulkan
             return Logging::Severity::Error;
         default:
             return Logging::Severity::Error;
+        }
+    }
+
+    auto Debug::From(VkDebugUtilsMessageTypeFlagsEXT type) -> std::vector<MessageType>
+    {
+        std::vector<MessageType> types;
+        if (type & VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT)
+            types.push_back(MessageType::General);
+        if (type & VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT)
+            types.push_back(MessageType::Validation);
+        if (type & VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT)
+            types.push_back(MessageType::Performance);
+        return types;
+    }
+
+    String Debug::From(MessageType type)
+    {
+        switch (type)
+        {
+        case MessageType::General:
+            return "General";
+        case MessageType::Validation:
+            return "Validation";
+        case MessageType::Performance:
+            return "Performance";
+        default:
+            return "Unknown";
         }
     }
 }

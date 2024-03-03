@@ -3,6 +3,7 @@
 #include "VulkanRenderPass.h"
 #include "VulkanSynchronization.h"
 #include "VulkanResults.h"
+#include "VulkanMaxFramesInFlight.h"
 
 #include "GraphicsError.h"
 #include "Logger.h"

@@ -17,23 +17,22 @@ namespace Atmos::Render::Vulkan
     public:
         DescriptorSetPool(const std::vector<Definition>& definitions, vk::Device device);
 
-        void Reserve(uint32_t count);
-        void Reset();
-
-        [[nodiscard]] vk::DescriptorSet Next();
+        [[nodiscard]] std::vector<vk::DescriptorSet> Retrieve(uint32_t count);
 
         [[nodiscard]] size_t Size() const;
 
         [[nodiscard]] vk::DescriptorSetLayout DescriptorSetLayout() const;
     private:
         std::vector<Definition> definitions;
+
+        [[nodiscard]] static vk::UniqueDescriptorSetLayout CreateDescriptorSetLayout(
+            const std::vector<Definition>& definitions, vk::Device device);
     private:
         vk::UniqueDescriptorPool descriptorPool;
         vk::UniqueDescriptorSetLayout descriptorSetLayout;
-        std::vector<vk::DescriptorSet> availableDescriptorSets;
-        std::vector<vk::DescriptorSet> allDescriptorSets;
+        std::vector<vk::DescriptorSet> descriptorSets;
 
-        void AttemptAllocate(uint32_t count);
+        void Allocate(uint32_t count);
     private:
         vk::Device device;
     };

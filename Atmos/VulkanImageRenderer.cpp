@@ -3,6 +3,7 @@
 #include "VulkanImageAssetResource.h"
 #include "VulkanCommandBuffer.h"
 #include "VulkanUtilities.h"
+#include "VulkanMaxFramesInFlight.h"
 
 #include "SpatialAlgorithms.h"
 
@@ -27,24 +28,8 @@ namespace Atmos::Render::Vulkan
         memoryPool(0, memoryProperties, device),
         vertexBuffer(vertexStride * sizeof(QuadVertex), device, memoryPool, vk::BufferUsageFlagBits::eVertexBuffer),
         indexBuffer(indexStride * sizeof(QuadIndex), device, memoryPool, vk::BufferUsageFlagBits::eIndexBuffer),
-        descriptorSetPool(
-            {
-                DescriptorSetPool::Definition
-                {
-                    vk::DescriptorType::eUniformBuffer,
-                    0,
-                    vk::ShaderStageFlagBits::eFragment | vk::ShaderStageFlagBits::eVertex,
-                    1
-                },
-                DescriptorSetPool::Definition
-                {
-                    vk::DescriptorType::eCombinedImageSampler,
-                    1,
-                    vk::ShaderStageFlagBits::eFragment,
-                    1
-                }
-            },
-            device),
+        descriptorSetPools(CreateDescriptorSetPools(device)),
+        currentDescriptorSetPool(descriptorSetPools.begin()),
         mappedConduits(
             device,
             VertexInput(
@@ -61,7 +46,7 @@ namespace Atmos::Render::Vulkan
             renderPass,
             swapchainExtent,
             {},
-            { descriptorSetPool.DescriptorSetLayout() }),
+            { descriptorSetPools[0].DescriptorSetLayout()}),
         graphicsQueue(graphicsQueue),
         device(device)
     {}
@@ -88,17 +73,20 @@ namespace Atmos::Render::Vulkan
         }
         stagedImageRenders.clear();
 
-        descriptorSetPool.Reset();
-        descriptorSetPool.Reserve(descriptorSetKeys.size());
+        auto& descriptorSetPool = NextDescriptorSetPool();
+        const auto descriptorSets = descriptorSetPool.Retrieve(descriptorSetKeys.size());
 
+        size_t i = 0;
         for (auto& descriptorSetKey : descriptorSetKeys)
         {
-            const auto descriptorSet = descriptorSetPool.Next();
+            const auto descriptorSet = descriptorSets[i];
             raster->descriptorSets.emplace(descriptorSetKey, descriptorSet);
             
             const auto& descriptor = *descriptorSetKey.descriptor;
             descriptor.Update(descriptorSet, device);
             universalDataBuffer.Update(descriptorSet);
+
+            ++i;
         }
         descriptorSetKeys.clear();
 
@@ -278,5 +266,41 @@ namespace Atmos::Render::Vulkan
         auto& group = layer->GroupFor(materialID);
         group.ListFor(&descriptor).emplace_back(vertices);
         descriptorSetKeys.emplace(DescriptorSetKey(descriptor));
+    }
+    
+    std::vector<DescriptorSetPool> ImageRenderer::CreateDescriptorSetPools(vk::Device device)
+    {
+        std::vector<DescriptorSetPool> pools;
+        for (size_t i = 0; i < maxFramesInFlight; ++i)
+        {
+            pools.emplace_back(
+                std::vector<DescriptorSetPool::Definition>
+                {
+                    DescriptorSetPool::Definition
+                    {
+                        vk::DescriptorType::eUniformBuffer,
+                        0,
+                        vk::ShaderStageFlagBits::eFragment | vk::ShaderStageFlagBits::eVertex,
+                        1
+                    },
+                        DescriptorSetPool::Definition
+                    {
+                        vk::DescriptorType::eCombinedImageSampler,
+                        1,
+                        vk::ShaderStageFlagBits::eFragment,
+                        1
+                    }
+                },
+                device);
+        }
+        return pools;
+    }
+
+    DescriptorSetPool& ImageRenderer::NextDescriptorSetPool()
+    {
+        ++currentDescriptorSetPool;
+        if (currentDescriptorSetPool == descriptorSetPools.end())
+            currentDescriptorSetPool = descriptorSetPools.begin();
+        return *currentDescriptorSetPool;
     }
 }

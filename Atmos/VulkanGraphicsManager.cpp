@@ -236,36 +236,23 @@ namespace Atmos::Render::Vulkan
     
     vk::Instance GraphicsManager::CreateInstance()
     {
-        const vk::ApplicationInfo applicationInfo({}, {}, {}, {}, VK_API_VERSION_1_2);
+        const vk::ApplicationInfo applicationInfo(nullptr, 0, nullptr, 0, VK_API_VERSION_1_2);
 
         vk::InstanceCreateInfo createInfo(
             {},
             &applicationInfo,
-            {},
-            {},
-            0,
-            nullptr);
+            static_cast<uint32_t>(instanceLayers.size()),
+            !instanceLayers.empty() ? instanceLayers.data() : nullptr,
+            static_cast<uint32_t>(instanceExtensions.size()),
+            !instanceExtensions.empty() ? instanceExtensions.data() : nullptr);
 
-        if (!instanceExtensions.empty())
-        {
-            createInfo.enabledExtensionCount = static_cast<uint32_t>(instanceExtensions.size());
-            createInfo.ppEnabledExtensionNames = instanceExtensions.data();
-        }
-        else
-            createInfo.enabledExtensionCount = 0;
-
-        if (!instanceLayers.empty())
-        {
-            createInfo.enabledLayerCount = static_cast<uint32_t>(instanceLayers.size());
-            createInfo.ppEnabledLayerNames = instanceLayers.data();
-        }
-        else
-            createInfo.enabledLayerCount = 0;
-
+#ifndef NDEBUG
         const auto debugCreateInfo = Debug::CreateInfo();
         createInfo.pNext = &debugCreateInfo;
+#endif
 
         vk::Instance instance;
+
         const auto result = vk::createInstance(&createInfo, nullptr, &instance);
         if (result == vk::Result::eErrorLayerNotPresent)
             throw GraphicsError("Layer not present.");

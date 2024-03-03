@@ -591,6 +591,12 @@
     <Filter Include="Source Files\Scripting\JavaScript\Types\Atmos\UI">
       <UniqueIdentifier>{54842779-b191-4607-bd16-d9ebc4364dc0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Scripting\JavaScript\Types\Atmos\Math">
+      <UniqueIdentifier>{44839997-f4ed-4ae2-9393-53fef0487de8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scripting\JavaScript\Types\Atmos\Math">
+      <UniqueIdentifier>{49854c52-9cb1-48c2-8715-fe342ae0dc10}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FieldDestination.h">
@@ -2075,6 +2081,21 @@
     <ClInclude Include="JavaScriptScaleBounds.h">
       <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Spatial</Filter>
     </ClInclude>
+    <ClInclude Include="JavaScriptMath.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptInputInformation.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanMaxFramesInFlight.h">
+      <Filter>Header Files\Render\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptActionPressed.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptActionDepressed.h">
+      <Filter>Header Files\Scripting\JavaScript\Types\Atmos\Input</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FieldDestination.cpp">
@@ -3078,6 +3099,18 @@
     </ClCompile>
     <ClCompile Include="JavaScriptScaleBounds.cpp">
       <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Spatial</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptMath.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptInputInformation.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptActionPressed.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptActionDepressed.cpp">
+      <Filter>Source Files\Scripting\JavaScript\Types\Atmos\Input</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
