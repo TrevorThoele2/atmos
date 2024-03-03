@@ -12,7 +12,7 @@ namespace Atmos::Logging
             SeverityToString(log.severity) +
             ' ' +
             log.message +
-            (log.message.find_last_of('\n') != log.message.size() - 1 ? "\n" : "") +
+            (log.message.empty() ? "\n" : log.message.find_last_of('\n') != log.message.size() - 1 ? "\n" : "") +
             DetailsToString(log.details);
     }
 
