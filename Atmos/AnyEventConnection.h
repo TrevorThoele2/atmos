@@ -2,7 +2,7 @@
 
 #include <Chroma/EventConnection.h>
 
-namespace Creation
+namespace Atmos
 {
     class AnyEventConnection
     {
@@ -13,10 +13,10 @@ namespace Creation
         template<class... Args>
         AnyEventConnection(::Chroma::EventConnection<Args...>&& connection);
         AnyEventConnection(const AnyEventConnection& arg);
-        AnyEventConnection(AnyEventConnection&& arg);
+        AnyEventConnection(AnyEventConnection&& arg) noexcept;
 
         AnyEventConnection& operator=(const AnyEventConnection& arg);
-        AnyEventConnection& operator=(AnyEventConnection&& arg);
+        AnyEventConnection& operator=(AnyEventConnection&& arg) noexcept;
 
         bool operator==(const AnyEventConnection& arg) const;
         bool operator!=(const AnyEventConnection& arg) const;
@@ -27,25 +27,25 @@ namespace Creation
         void Set(::Chroma::EventConnection<Args...>&& set);
 
         void Sever();
-        bool IsValid() const;
+        [[nodiscard]] bool IsValid() const;
     private:
         class Base
         {
         public:
             virtual ~Base() = 0;
 
-            virtual Base* Clone() const = 0;
+            [[nodiscard]] virtual std::unique_ptr<Base> Clone() const = 0;
 
             virtual void Sever() = 0;
-            virtual bool IsValid() const = 0;
-            virtual bool Compare(const AnyEventConnection& arg) const = 0;
+            [[nodiscard]] virtual bool IsValid() const = 0;
+            [[nodiscard]] virtual bool Compare(const AnyEventConnection& arg) const = 0;
         };
 
         template<class... Args>
         class Derived : public Base
         {
         public:
-            typedef ::Chroma::EventConnection<Args...> WrappedT;
+            using WrappedT = ::Chroma::EventConnection<Args...>;
             WrappedT wrapped;
         public:
             Derived(const WrappedT& wrapped);
@@ -54,12 +54,12 @@ namespace Creation
 
             Derived& operator=(const Derived& arg) = delete;
 
-            Derived* Clone() const override;
+            [[nodiscard]] std::unique_ptr<Base> Clone() const override;
 
             void Sever() override final;
-            bool IsValid() const override;
+            [[nodiscard]] bool IsValid() const override;
 
-            bool Compare(const AnyEventConnection& arg) const override;
+            [[nodiscard]] bool Compare(const AnyEventConnection& arg) const override;
         };
     private:
         std::unique_ptr<Base> base;
@@ -74,9 +74,9 @@ namespace Creation
     {}
 
     template<class... Args>
-    AnyEventConnection::Derived<Args...>* AnyEventConnection::Derived<Args...>::Clone() const
+    auto AnyEventConnection::Derived<Args...>::Clone() const -> std::unique_ptr<Base>
     {
-        return new Derived(*this);
+        return std::make_unique<Derived<Args...>>(*this);
     }
 
     template<class... Args>

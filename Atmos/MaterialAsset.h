@@ -14,6 +14,7 @@ namespace Atmos::Asset
     public:
         explicit MaterialAsset(Init init);
         MaterialAsset(Init init, const Atmos::Name& name, GridDimension columns, GridDimension rows);
+        MaterialAsset(MaterialAsset&& arg) noexcept;
 
         MaterialAsset& operator=(MaterialAsset&& arg) noexcept;
 

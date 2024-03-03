@@ -12,7 +12,8 @@ namespace Atmos::Asset
     public:
         using SymbolName = Atmos::Name;
     public:
-        using FileAsset::FileAsset;
+        explicit ScriptAsset(Init init);
+        ScriptAsset(ScriptAsset&& arg) noexcept;
 
         ScriptAsset& operator=(ScriptAsset&& arg) noexcept;
     };

@@ -68,7 +68,7 @@ namespace Atmos::Audio
     public:
         AudioAssetDataImplementation(
             DirectX9AudioManager& owner,
-            std::shared_ptr<unsigned char>&& audioData,
+            std::vector<unsigned char>&& audioData,
             const XAUDIO2_BUFFER& buffer,
             const WAVEFORMATEX& format)
             :
@@ -90,7 +90,7 @@ namespace Atmos::Audio
     private:
         DirectX9AudioManager* owner;
     private:
-        std::shared_ptr<unsigned char> audioData;
+        std::vector<unsigned char> audioData;
         XAUDIO2_BUFFER buffer;
         WAVEFORMATEX waveFormat;
     };
@@ -121,8 +121,8 @@ namespace Atmos::Audio
     std::unique_ptr<Asset::AudioAssetData> DirectX9AudioManager::CreateAudioDataImpl(
         const FormattedBuffer& file, const Name& name)
     {
-        auto audioData = std::make_shared<unsigned char>(file.buffer.size());
-        CopyBuffer(file.buffer.data(), audioData.get(), file.buffer.size(), 0);
+        auto audioData = std::vector<unsigned char>(file.buffer.size());
+        CopyBuffer(file.buffer.data(), audioData.data(), file.buffer.size(), 0);
 
         XAUDIO2_BUFFER buffer;
         buffer.AudioBytes = file.buffer.size();
@@ -130,7 +130,7 @@ namespace Atmos::Audio
         buffer.LoopBegin = 0;
         buffer.LoopCount = 0;
         buffer.LoopLength = 0;
-        buffer.pAudioData = audioData.get();
+        buffer.pAudioData = audioData.data();
         buffer.pContext = nullptr;
         buffer.PlayBegin = 0;
         buffer.PlayLength = 0;

@@ -8,6 +8,9 @@ namespace Atmos::Asset
     class AudioAsset : public FileAsset<AudioAssetData, AudioAsset>
     {
     public:
+        explicit AudioAsset(Init init);
+        AudioAsset(AudioAsset&& arg) noexcept;
+
         AudioAsset& operator=(AudioAsset&& arg) noexcept;
     };
 }

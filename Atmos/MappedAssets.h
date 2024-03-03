@@ -13,8 +13,12 @@ namespace Atmos::Asset
     {
     public:
         std::unordered_map<Name, Arca::RelicIndex<AssetT>> map{};
+    private:
+        using BaseT = Arca::ClosedTypedRelic<MappedAssets<AssetT>>;
+    protected:
+        using Init = typename BaseT::Init;
     public:
-        using Arca::ClosedTypedRelic<MappedAssets<AssetT>>::ClosedTypedRelic;
+        explicit MappedAssets(Init init);
     public:
         [[nodiscard]] Arca::RelicIndex<AssetT> Find(const Name& name) const;
 
@@ -22,6 +26,10 @@ namespace Atmos::Asset
 
         [[nodiscard]] size_t Size() const;
     };
+
+    template<class AssetT>
+    MappedAssets<AssetT>::MappedAssets(Init init) : BaseT(init)
+    {}
 
     template<class AssetT>
     Arca::RelicIndex<AssetT> MappedAssets<AssetT>::Find(const Name& name) const

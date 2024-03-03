@@ -3,27 +3,30 @@
 #include "Log.h"
 #include "ProcessedLog.h"
 #include "FilePath.h"
+#include "Event.h"
 
 namespace Atmos::Logging
 {
     class Logger
     {
     public:
-        Logger();
-        ~Logger();
-
+        Event<const std::optional<ProcessedLog>&> onLog;
+    public:
         std::optional<ProcessedLog> Log(const Logging::Log& log);
         std::optional<ProcessedLog> Log
         (
             const String& message,
-            Severity severity,
+            Severity severity = Severity::Information,
             std::optional<Details> details = {}
         );
+
+        void StartSession();
+        void StopSession();
     private:
-        void OnExit();
+        void ClearFile();
+
         [[nodiscard]] static File::Path OutputFilePath();
 
-        static void ClearFile();
         [[nodiscard]] static String CurrentTimeStamp();
     };
 

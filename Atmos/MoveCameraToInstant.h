@@ -8,6 +8,8 @@ namespace Atmos::Render
     struct MoveCameraToInstant
     {
         Position3D toPosition;
+        explicit MoveCameraToInstant(const Position3D& toPosition) : toPosition(toPosition)
+        {}
     };
 }
 

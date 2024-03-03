@@ -4,6 +4,13 @@
 
 namespace Atmos::Asset
 {
+    ImageAsset::ImageAsset(Init init) : FileAsset(init)
+    {}
+
+    ImageAsset::ImageAsset(ImageAsset&& arg) noexcept :
+        FileAsset(std::move(arg)), width(arg.width), height(arg.height)
+    {}
+
     ImageAsset& ImageAsset::operator=(ImageAsset&& arg) noexcept
     {
         width = arg.width;

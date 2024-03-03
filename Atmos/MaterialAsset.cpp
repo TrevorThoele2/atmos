@@ -12,6 +12,10 @@ namespace Atmos::Asset
         Asset(init, name), columns(columns), rows(rows)
     {}
 
+    MaterialAsset::MaterialAsset(MaterialAsset&& arg) noexcept :
+        Asset(std::move(arg)), columns(arg.columns), rows(arg.rows)
+    {}
+
     MaterialAsset& MaterialAsset::operator=(MaterialAsset && arg) noexcept
     {
         columns = arg.columns;

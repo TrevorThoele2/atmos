@@ -20,11 +20,15 @@ namespace Atmos::Render::DirectX9
 
     Renderer::~Renderer()
     {
-        vertexBuffer->Release();
-        indexBuffer->Release();
-        vertexDeclaration->Release();
+        if (vertexBuffer)
+            vertexBuffer->Release();
+        if(indexBuffer)
+            indexBuffer->Release();
+        if(vertexDeclaration)
+            vertexDeclaration->Release();
 
-        lineInterface->Release();
+        if(lineInterface)
+            lineInterface->Release();
     }
 
     void Renderer::Initialize(LPDIRECT3DDEVICE9 device, Arca::Reliquary& reliquary)

@@ -58,10 +58,12 @@
     <ClInclude Include="Logger.h" />
     <ClInclude Include="MainSurface.h" />
     <ClInclude Include="MoveBounds.h" />
+    <ClInclude Include="Octree.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="ResetAverage.h" />
     <ClInclude Include="ResetHighest.h" />
     <ClInclude Include="ResizeBounds.h" />
+    <ClInclude Include="ResizeCamera.h" />
     <ClInclude Include="ScriptAssetData.h" />
     <ClInclude Include="ScriptManager.h" />
     <ClInclude Include="ShaderAssetData.h" />
@@ -228,7 +230,6 @@
     <ClInclude Include="AvatarComponent.h" />
     <ClInclude Include="MaterialAsset.h" />
     <ClInclude Include="RelativeFilePath.h" />
-    <ClInclude Include="Octree.h" />
     <ClInclude Include="ScriptParameters.h" />
     <ClInclude Include="ScriptPersistence.h" />
     <ClInclude Include="ScriptAssetCurator.h" />
@@ -281,7 +282,7 @@
     <ClInclude Include="AncillarySurface.h" />
     <ClInclude Include="SenseComponent.h" />
     <ClInclude Include="InputStasisArchiveInterface.h" />
-    <ClInclude Include="TileSize.h" />
+    <ClInclude Include="GridCellSize.h" />
     <ClInclude Include="TimeValue.h" />
     <ClInclude Include="UnpackTuple.h" />
     <ClInclude Include="ScriptVariant.h" />
