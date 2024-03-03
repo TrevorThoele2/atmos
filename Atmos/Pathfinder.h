@@ -7,10 +7,10 @@
 
 #include <Arca/Curator.h>
 
-#include "GridPosition.h"
+#include "GridPoint.h"
 #include "BinaryHeap.h"
 
-namespace Atmos
+namespace Atmos::Spatial
 {
     /*
     class Pathfinder final : public Arca::Curator

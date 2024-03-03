@@ -1,0 +1,29 @@
+#include "RelativeImage.h"
+
+namespace Atmos::Render
+{
+    RelativeImage::RelativeImage(
+        Init init,
+        Arca::Index<Asset::Image> asset,
+        ImageCore::Index assetIndex,
+        Arca::Index<Asset::Material> material,
+        const Render::Color& color,
+        const Spatial::Point3D& position,
+        const Spatial::Scalers2D& scalers,
+        const Spatial::Angle& rotation)
+        :
+        Image(
+            init,
+            asset,
+            assetIndex,
+            material,
+            color,
+            position,
+            scalers,
+            rotation)
+    {}
+
+    RelativeImage::RelativeImage(Init init, Arca::Serialization serialization) :
+        Image(init, serialization)
+    {}
+}

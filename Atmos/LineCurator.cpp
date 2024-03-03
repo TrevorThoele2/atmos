@@ -24,22 +24,22 @@ namespace Atmos::Render
     {
         const auto cameraLeft = camera->ScreenSides().Left();
         const auto cameraTop = camera->ScreenSides().Top();
-        const auto cameraCenter = camera->center;
-        const auto cameraSize = camera->size;
+        const auto cameraPosition = camera->Position();
+        const auto cameraSize = camera->Size();
 
-        const AxisAlignedBox3D queryBox
+        const Spatial::AxisAlignedBox3D queryBox
         {
-            Position3D
+            Spatial::Point3D
             {
-                cameraCenter.x,
-                cameraCenter.y,
+                cameraPosition.x,
+                cameraPosition.y,
                 0
             },
-            Size3D
+            Spatial::Size3D
             {
-                static_cast<Size3D::Value>(cameraSize.width),
-                static_cast<Size3D::Value>(cameraSize.height),
-                std::numeric_limits<Size3D::Value>::max()
+                static_cast<Spatial::Size3D::Value>(cameraSize.width),
+                static_cast<Spatial::Size3D::Value>(cameraSize.height),
+                std::numeric_limits<Spatial::Size3D::Value>::max()
             }
         };
 
@@ -53,9 +53,9 @@ namespace Atmos::Render
             if (!value.material)
                 continue;
 
-            std::vector<Position2D> adjustedPoints;
+            std::vector<Spatial::Point2D> adjustedPoints;
             for (auto& point : value.points)
-                adjustedPoints.push_back(Position2D{ point.x - cameraLeft, point.y - cameraTop });
+                adjustedPoints.push_back(Spatial::Point2D{ point.x - cameraLeft, point.y - cameraTop });
 
             const LineRender render
             {
@@ -98,7 +98,7 @@ namespace Atmos::Render
         octree.Remove(signal.reference.ID(), BoxFor(signal.reference));
     }
 
-    AxisAlignedBox3D LineCurator::BoxFor(const std::vector<Position2D>& points, Position2D::Value z)
+    Spatial::AxisAlignedBox3D LineCurator::BoxFor(const std::vector<Spatial::Point2D>& points, Spatial::Point2D::Value z)
     {
         if (points.empty())
             return {};
@@ -125,14 +125,14 @@ namespace Atmos::Render
         const auto height = maxBottom - maxTop;
         const auto depth = 1;
 
-        return AxisAlignedBox3D
+        return Spatial::AxisAlignedBox3D
         {
-            Position3D { maxLeft + width / 2, maxTop + height / 2, 0.5f },
-            Size3D { width, height, depth }
+            Spatial::Point3D { maxLeft + width / 2, maxTop + height / 2, 0.5f },
+            Spatial::Size3D { width, height, depth }
         };
     }
 
-    AxisAlignedBox3D LineCurator::BoxFor(const Index& index)
+    Spatial::AxisAlignedBox3D LineCurator::BoxFor(const Index& index)
     {
         return BoxFor(index->points, index->z);
     }

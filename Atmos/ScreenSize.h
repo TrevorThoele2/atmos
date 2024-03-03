@@ -2,7 +2,7 @@
 
 #include "Serialization.h"
 
-namespace Atmos
+namespace Atmos::Spatial
 {
     struct ScreenSize
     {
@@ -22,8 +22,8 @@ namespace Atmos
 namespace Inscription
 {
     template<>
-    class Scribe<Atmos::ScreenSize, BinaryArchive> final :
-        public CompositeScribe<Atmos::ScreenSize, BinaryArchive>
+    class Scribe<Atmos::Spatial::ScreenSize, BinaryArchive> final :
+        public CompositeScribe<Atmos::Spatial::ScreenSize, BinaryArchive>
     {
     protected:
         void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;

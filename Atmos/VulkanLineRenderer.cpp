@@ -89,7 +89,7 @@ namespace Atmos::Render::Vulkan
         return core.IsDone();
     }
 
-    Position3D::Value LineRenderer::NextLayer() const
+    Spatial::Point3D::Value LineRenderer::NextLayer() const
     {
         return core.NextLayer();
     }

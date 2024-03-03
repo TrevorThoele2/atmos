@@ -5,7 +5,7 @@
 
 #include "Angle.h"
 
-namespace Atmos
+namespace Atmos::Spatial
 {
     struct RotateBounds
     {
@@ -20,9 +20,9 @@ namespace Atmos
 namespace Arca
 {
     template<>
-    struct Traits<Atmos::RotateBounds>
+    struct Traits<Atmos::Spatial::RotateBounds>
     {
         static const ObjectType objectType = ObjectType::Command;
-        static inline const TypeName typeName = "Atmos::RotateBounds";
+        static inline const TypeName typeName = "Atmos::Spatial::RotateBounds";
     };
 }

@@ -9,14 +9,14 @@ namespace Atmos::Entity
     {
     public:
         [[nodiscard]] bool CanMove(const Entity& entity) const;
-        [[nodiscard]] bool CanMove(const Entity& entity, const Grid::Position& to) const;
-        [[nodiscard]] bool CanMove(const Entity& entity, const Direction& direction) const;
+        [[nodiscard]] bool CanMove(const Entity& entity, const Spatial::Grid::Point& to) const;
+        [[nodiscard]] bool CanMove(const Entity& entity, const Spatial::Direction& direction) const;
 
         [[nodiscard]] bool IsMoving(const Entity& entity) const;
 
         [[nodiscard]] size_t MovingSize() const;
     private:
-        using Map = std::unordered_map<Grid::Position, Entity*>;
+        using Map = std::unordered_map<Spatial::Grid::Point, Entity*>;
         Map map;
 
         using MovingEntities = std::vector<Entity*>;

@@ -3,7 +3,7 @@
 #include "Serialization.h"
 #include <Chroma/Enum.h>
 
-namespace Atmos
+namespace Atmos::Spatial
 {
     class Direction
     {
@@ -67,15 +67,15 @@ namespace Atmos
 namespace Inscription
 {
     template<>
-    class Scribe<::Atmos::Direction, BinaryArchive> final :
-        public CompositeScribe<::Atmos::Direction, BinaryArchive>
+    class Scribe<Atmos::Spatial::Direction, BinaryArchive> final :
+        public CompositeScribe<Atmos::Spatial::Direction, BinaryArchive>
     {
     protected:
         void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
     };
 
     template<>
-    class Scribe<::Atmos::Direction::Value, BinaryArchive> final :
-        public EnumScribe<::Atmos::Direction::Value, BinaryArchive>
+    class Scribe<Atmos::Spatial::Direction::Value, BinaryArchive> final :
+        public EnumScribe<::Atmos::Spatial::Direction::Value, BinaryArchive>
     {};
 }

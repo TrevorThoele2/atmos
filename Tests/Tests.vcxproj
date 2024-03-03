@@ -133,6 +133,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AssetTests.cpp" />
+    <ClCompile Include="BoundsTests.cpp" />
     <ClCompile Include="DerivedEngine.cpp" />
     <ClCompile Include="GeneralFixture.cpp" />
     <ClCompile Include="GridRegionRenderingTests.cpp" />
@@ -150,6 +151,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AssetTests.h" />
+    <ClInclude Include="BoundsTests.h" />
     <ClInclude Include="DerivedEngine.h" />
     <ClInclude Include="GeneralFixture.h" />
     <ClInclude Include="GridRegionRenderingTests.h" />

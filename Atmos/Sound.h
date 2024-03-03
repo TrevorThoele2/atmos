@@ -15,7 +15,7 @@ namespace Atmos::Audio
         void PostConstruct();
         void Initialize(Asset&& asset);
     private:
-        Arca::Index<Bounds> bounds;
+        Arca::Index<Spatial::Bounds> bounds;
 
         Asset asset;
     };

@@ -8,7 +8,7 @@ namespace Atmos::Render
     struct RegionRender
     {
         Mesh mesh;
-        Position2D::Value z;
+        Spatial::Point2D::Value z;
         const Asset::Material* material;
     };
 }

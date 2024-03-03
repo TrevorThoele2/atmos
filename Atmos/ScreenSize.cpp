@@ -1,6 +1,6 @@
 #include "ScreenSize.h"
 
-namespace Atmos
+namespace Atmos::Spatial
 {
     ScreenSize::ScreenSize(Dimension width, Dimension height) : width(width), height(height)
     {}
@@ -18,7 +18,7 @@ namespace Atmos
 
 namespace Inscription
 {
-    void Scribe<Atmos::ScreenSize, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
+    void Scribe<Atmos::Spatial::ScreenSize, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
     {
         archive(object.width);
         archive(object.height);

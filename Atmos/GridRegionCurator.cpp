@@ -26,22 +26,22 @@ namespace Atmos::Render
     {
         const auto cameraLeft = camera->ScreenSides().Left();
         const auto cameraTop = camera->ScreenSides().Top();
-        const auto cameraCenter = camera->center;
-        const auto cameraSize = camera->size;
+        const auto cameraPosition = camera->Position();
+        const auto cameraSize = camera->Size();
 
-        const AxisAlignedBox3D queryBox
+        const Spatial::AxisAlignedBox3D queryBox
         {
-            Position3D
+            Spatial::Point3D
             {
-                cameraCenter.x,
-                cameraCenter.y,
+                cameraPosition.x,
+                cameraPosition.y,
                 0
             },
-            Size3D
+            Spatial::Size3D
             {
-                static_cast<Size3D::Value>(cameraSize.width),
-                static_cast<Size3D::Value>(cameraSize.height),
-                std::numeric_limits<Size3D::Value>::max()
+                static_cast<Spatial::Size3D::Value>(cameraSize.width),
+                static_cast<Spatial::Size3D::Value>(cameraSize.height),
+                std::numeric_limits<Spatial::Size3D::Value>::max()
             }
         };
 
@@ -65,7 +65,7 @@ namespace Atmos::Render
             const RegionRender render
             {
                 mesh,
-                value.z * Grid::CellSize<Position3D::Value>,
+                value.z * Spatial::Grid::CellSize<Spatial::Point3D::Value>,
                 value.material
             };
             mainSurface->StageRender(render);
@@ -82,7 +82,8 @@ namespace Atmos::Render
         octree.Remove(signal.reference.ID(), BoxFor(signal.reference));
     }
 
-    AxisAlignedBox3D GridRegionCurator::BoxFor(const std::vector<Grid::Position>& points, Grid::Position::Value z)
+    Spatial::AxisAlignedBox3D GridRegionCurator::BoxFor(
+        const std::vector<Spatial::Grid::Point>& points, Spatial::Grid::Point::Value z)
     {
         if (points.empty())
             return {};
@@ -105,27 +106,27 @@ namespace Atmos::Render
                 maxBottom = point.y;
         }
 
-        const auto cellSize = Grid::CellSize<Position3D::Value>;
-        const auto width = static_cast<Position3D::Value>(maxRight - maxLeft) * cellSize;
-        const auto height = static_cast<Position3D::Value>(maxBottom - maxTop) * cellSize;
+        const auto cellSize = Spatial::Grid::CellSize<Spatial::Point3D::Value>;
+        const auto width = static_cast<Spatial::Point3D::Value>(maxRight - maxLeft) * cellSize;
+        const auto height = static_cast<Spatial::Point3D::Value>(maxBottom - maxTop) * cellSize;
         const auto depth = 1;
 
         const auto useMaxLeft = maxLeft * cellSize;
         const auto useMaxTop = maxTop * cellSize;
 
-        return AxisAlignedBox3D
+        return Spatial::AxisAlignedBox3D
         {
-            Position3D
+            Spatial::Point3D
             {
                 useMaxLeft + width / 2,
                 useMaxTop + height / 2,
                 0.5f
             },
-            Size3D { width, height, depth }
+            Spatial::Size3D { width, height, depth }
         };
     }
 
-    AxisAlignedBox3D GridRegionCurator::BoxFor(const Index& index)
+    Spatial::AxisAlignedBox3D GridRegionCurator::BoxFor(const Index& index)
     {
         return BoxFor(index->points, index->z);
     }

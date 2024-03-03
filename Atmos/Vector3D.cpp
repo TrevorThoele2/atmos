@@ -1,7 +1,7 @@
 #include "Vector3D.h"
 #include <cmath>
 
-namespace Atmos
+namespace Atmos::Spatial
 {
     bool Vector3D::operator==(const Vector3D& arg) const
     {

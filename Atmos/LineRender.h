@@ -1,7 +1,7 @@
 #pragma once
 
 #include "LineWidth.h"
-#include "Position2D.h"
+#include "Point2D.h"
 #include "MaterialAsset.h"
 #include "Color.h"
 
@@ -9,8 +9,8 @@ namespace Atmos::Render
 {
     struct LineRender
     {
-        std::vector<Position2D> points;
-        Position2D::Value z;
+        std::vector<Spatial::Point2D> points;
+        Spatial::Point2D::Value z;
         const Asset::Material* material;
 
         LineWidth width;

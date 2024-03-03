@@ -14,6 +14,11 @@ namespace Atmos
         Input::Manager& input,
         Render::GraphicsManager& graphics);
 
+    namespace Spatial
+    {
+        void RegisterTypes(Arca::ReliquaryOrigin& origin);
+    }
+
     namespace File
     {
         void RegisterTypes(Arca::ReliquaryOrigin& origin);

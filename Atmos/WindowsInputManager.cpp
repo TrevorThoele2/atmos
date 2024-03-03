@@ -149,7 +149,7 @@ namespace Atmos::Input
         return createdInputs;
     }
 
-    ScreenPosition WindowsManager::CurrentMousePosition() const
+    Spatial::ScreenPoint WindowsManager::CurrentMousePosition() const
     {
         POINT point;
         GetCursorPos(&point);

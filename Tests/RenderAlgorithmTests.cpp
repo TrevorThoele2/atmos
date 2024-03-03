@@ -5,11 +5,12 @@
 #include <Atmos/GridCellSize.h>
 
 using namespace Atmos;
+using namespace Spatial;
 using namespace Render;
 
 SCENARIO_METHOD(RenderAlgorithmTestsFixture, "simplification")
 {
-    std::vector<Position2D> points;
+    std::vector<Point2D> points;
 
     GIVEN("zero points")
     {
@@ -134,7 +135,7 @@ SCENARIO_METHOD(RenderAlgorithmTestsFixture, "simplification")
 
 SCENARIO_METHOD(RenderAlgorithmTestsFixture, "triangulation of Position2D")
 {
-    std::vector<Position2D> points;
+    std::vector<Point2D> points;
 
     GIVEN("zero points")
     {
@@ -337,7 +338,7 @@ SCENARIO_METHOD(RenderAlgorithmTestsFixture, "triangulation of Position2D")
 
 SCENARIO_METHOD(RenderAlgorithmTestsFixture, "triangulation of Grid::Position")
 {
-    std::vector<Grid::Position> points;
+    std::vector<Grid::Point> points;
 
     GIVEN("zero points")
     {

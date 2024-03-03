@@ -2,8 +2,8 @@
 
 #include <Arca/Curator.h>
 
-#include "AvatarComponent.h"
 #include "CurrentAvatar.h"
+#include "SetAvatar.h"
 
 #include "DebugValue.h"
 
@@ -15,6 +15,8 @@ namespace Atmos::Entity
         explicit AvatarCurator(Init init);
 
         void Work();
+
+        void Handle(const SetAvatar& command);
     private:
         Arca::Index<CurrentAvatar> currentAvatar;
     private:
@@ -30,6 +32,7 @@ namespace Arca
     {
         static const ObjectType objectType = ObjectType::Curator;
         static inline const TypeName typeName = "Atmos::Entity::AvatarCurator";
+        using HandledCommands = Arca::HandledCommands<Atmos::Entity::SetAvatar>;
     };
 }
 

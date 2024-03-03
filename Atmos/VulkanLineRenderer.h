@@ -7,7 +7,7 @@
 
 #include "LineRender.h"
 #include "LineWidth.h"
-#include "Position3D.h"
+#include "Point3D.h"
 
 #include <glm/glm.hpp>
 
@@ -31,7 +31,7 @@ namespace Atmos::Render::Vulkan
         void End() override;
         [[nodiscard]] bool IsDone() const override;
 
-        [[nodiscard]] Position3D::Value NextLayer() const override;
+        [[nodiscard]] Spatial::Point3D::Value NextLayer() const override;
         [[nodiscard]] size_t LayerCount() const override;
     private:
         struct Vertex

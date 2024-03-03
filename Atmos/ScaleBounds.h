@@ -5,7 +5,7 @@
 
 #include "Scalers2D.h"
 
-namespace Atmos
+namespace Atmos::Spatial
 {
     struct ScaleBounds
     {
@@ -20,9 +20,9 @@ namespace Atmos
 namespace Arca
 {
     template<>
-    struct Traits<Atmos::ScaleBounds>
+    struct Traits<Atmos::Spatial::ScaleBounds>
     {
         static const ObjectType objectType = ObjectType::Command;
-        static inline const TypeName typeName = "Atmos::ScaleBounds";
+        static inline const TypeName typeName = "Atmos::Spatial::ScaleBounds";
     };
 }

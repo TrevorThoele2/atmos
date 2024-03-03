@@ -1,7 +1,7 @@
 #pragma once
 
 #include "FieldID.h"
-#include "GridPosition.h"
+#include "GridPoint.h"
 #include "Direction.h"
 
 #include "Serialization.h"
@@ -10,8 +10,8 @@ namespace Atmos::World
 {
     struct FieldDestination
     {
-        Direction direction;
-        Grid::Position position;
+        Spatial::Direction direction;
+        Spatial::Grid::Point position;
         FieldID id;
     };
 }

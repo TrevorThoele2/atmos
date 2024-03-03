@@ -2,7 +2,6 @@
 
 #include <Arca/ClosedTypedRelic.h>
 
-#include "AvatarComponent.h"
 #include "Entity.h"
 
 namespace Atmos::Entity
@@ -10,7 +9,6 @@ namespace Atmos::Entity
     class CurrentAvatar final : public Arca::ClosedTypedRelic<CurrentAvatar>
     {
     public:
-        Arca::Index<AvatarComponent> component;
         Arca::Index<Entity> entity;
     };
 }

@@ -4,7 +4,6 @@
 
 #include <Atmos/StaticImage.h>
 #include <Atmos/DynamicImage.h>
-#include <Atmos/ResizeCamera.h>
 #include <Atmos/TypeRegistration.h>
 #include <Atmos/GridCellSize.h>
 #include <Atmos/StringUtility.h>
@@ -17,6 +16,7 @@
 #include "MockSurfaceResource.h"
 
 using namespace Atmos;
+using namespace Spatial;
 
 SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images")
 {
@@ -36,11 +36,12 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images")
         auto mainSurface = Arca::Index<MainSurface>(fieldReliquary);
         auto mainSurfaceImplementation = mainSurface->Resource<MockSurfaceResourceImplementation>();
 
-        fieldReliquary.Do<ResizeCamera>(ScreenSize(
-            std::numeric_limits<ScreenSize::Dimension>::max(),
-            std::numeric_limits<ScreenSize::Dimension>::max()));
-
         const auto camera = Arca::Index<Camera>(fieldReliquary);
+
+        camera->Scalers(Spatial::Scalers2D{
+            std::numeric_limits<Spatial::Scalers2D::Value>::max(),
+            std::numeric_limits<Spatial::Scalers2D::Value>::max() });
+
         const auto cameraLeft = camera->ScreenSides().Left();
         const auto cameraTop = camera->ScreenSides().Top();
 
@@ -51,25 +52,25 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images")
         auto materialAsset = fieldReliquary.Do<Arca::Create<Asset::Material>>(
             String{}, Asset::MaterialType::Image, std::vector<Asset::Material::Pass>{});
 
-        auto positions = std::vector<Position3D>
+        auto positions = std::vector<Point3D>
         {
-            Position3D
+            Point3D
             {
-                dataGeneration.Random<Position3D::Value>(TestFramework::Range<Position3D::Value>(-1000, 1000)),
-                dataGeneration.Random<Position3D::Value>(TestFramework::Range<Position3D::Value>(-1000, 1000)),
-                dataGeneration.Random<Position3D::Value>(TestFramework::Range<Position3D::Value>(-1000, 1000))
+                dataGeneration.Random<Point3D::Value>(TestFramework::Range<Point3D::Value>(-1000, 1000)),
+                dataGeneration.Random<Point3D::Value>(TestFramework::Range<Point3D::Value>(-1000, 1000)),
+                dataGeneration.Random<Point3D::Value>(TestFramework::Range<Point3D::Value>(-1000, 1000))
             },
-            Position3D
+            Point3D
             {
-                dataGeneration.Random<Position3D::Value>(TestFramework::Range<Position3D::Value>(-1000, 1000)),
-                dataGeneration.Random<Position3D::Value>(TestFramework::Range<Position3D::Value>(-1000, 1000)),
-                dataGeneration.Random<Position3D::Value>(TestFramework::Range<Position3D::Value>(-1000, 1000))
+                dataGeneration.Random<Point3D::Value>(TestFramework::Range<Point3D::Value>(-1000, 1000)),
+                dataGeneration.Random<Point3D::Value>(TestFramework::Range<Point3D::Value>(-1000, 1000)),
+                dataGeneration.Random<Point3D::Value>(TestFramework::Range<Point3D::Value>(-1000, 1000))
             },
-            Position3D
+            Point3D
             {
-                dataGeneration.Random<Position3D::Value>(TestFramework::Range<Position3D::Value>(-1000, 1000)),
-                dataGeneration.Random<Position3D::Value>(TestFramework::Range<Position3D::Value>(-1000, 1000)),
-                dataGeneration.Random<Position3D::Value>(TestFramework::Range<Position3D::Value>(-1000, 1000))
+                dataGeneration.Random<Point3D::Value>(TestFramework::Range<Point3D::Value>(-1000, 1000)),
+                dataGeneration.Random<Point3D::Value>(TestFramework::Range<Point3D::Value>(-1000, 1000)),
+                dataGeneration.Random<Point3D::Value>(TestFramework::Range<Point3D::Value>(-1000, 1000))
             }
         };
         auto scalers = std::vector<Scalers2D>
@@ -442,9 +443,10 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering culled images")
         auto mainSurface = Arca::Index<MainSurface>(fieldReliquary);
         auto mainSurfaceImplementation = mainSurface->Resource<MockSurfaceResourceImplementation>();
 
-        fieldReliquary.Do<ResizeCamera>(ScreenSize(100, 100));
-
         const auto camera = Arca::Index<Camera>(fieldReliquary);
+
+        camera->Scalers(Scalers2D{ 100, 100 });
+
         const auto cameraLeft = camera->ScreenSides().Left();
         const auto cameraTop = camera->ScreenSides().Top();
 
@@ -457,7 +459,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering culled images")
 
         WHEN("creating static images and starting execution")
         {
-            static constexpr auto gridCellSize = Grid::CellSize<Position3D::Value>;
+            static constexpr auto gridCellSize = Grid::CellSize<Point3D::Value>;
             static constexpr auto halfGridCellSize = gridCellSize / 2;
 
             auto image1 = fieldReliquary.Do<Arca::Create<StaticImage>>(
@@ -465,7 +467,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering culled images")
                 0,
                 materialAsset,
                 Color{},
-                Position3D{},
+                Point3D{},
                 Scalers2D{},
                 Angle{});
             auto image2 = fieldReliquary.Do<Arca::Create<StaticImage>>(
@@ -473,7 +475,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering culled images")
                 0,
                 materialAsset,
                 Color{},
-                Position3D{ gridCellSize * -16 + halfGridCellSize, halfGridCellSize, halfGridCellSize },
+                Point3D{ gridCellSize * -16 + halfGridCellSize, halfGridCellSize, halfGridCellSize },
                 Scalers2D{ gridCellSize, gridCellSize },
                 Angle{});
             auto image3 = fieldReliquary.Do<Arca::Create<StaticImage>>(
@@ -481,7 +483,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering culled images")
                 0,
                 materialAsset,
                 Color{},
-                Position3D{ gridCellSize + halfGridCellSize, gridCellSize * 4 + halfGridCellSize, halfGridCellSize },
+                Point3D{ gridCellSize + halfGridCellSize, gridCellSize * 4 + halfGridCellSize, halfGridCellSize },
                 Scalers2D{ gridCellSize, gridCellSize * 16 },
                 Angle{});
 

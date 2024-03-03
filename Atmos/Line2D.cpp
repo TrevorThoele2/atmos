@@ -1,6 +1,6 @@
 #include "Line2D.h"
 
-namespace Atmos
+namespace Atmos::Spatial
 {
     bool Line2D::operator==(const Line2D& arg) const
     {
@@ -17,42 +17,42 @@ namespace Atmos
         return Vector2D{ second.x - first.x, second.y - first.y };
     }
 
-    std::optional<Position2D::Value> Line2D::Slope() const
+    std::optional<Point2D::Value> Line2D::Slope() const
     {
-        using ReturnValue = std::optional<Position2D::Value>;
-        const Position2D::Value x = second.x - first.x;
-        const Position2D::Value y = second.y - first.y;
+        using ReturnValue = std::optional<Point2D::Value>;
+        const Point2D::Value x = second.x - first.x;
+        const Point2D::Value y = second.y - first.y;
         return (x == 0) ? ReturnValue() : (y / x);
     }
 
-    std::optional<Position2D::Value> Line2D::YIntercept() const
+    std::optional<Point2D::Value> Line2D::YIntercept() const
     {
-        using ReturnValue = std::optional<Position2D::Value>;
+        using ReturnValue = std::optional<Point2D::Value>;
         const ReturnValue slope(Slope());
         return (!slope) ? ReturnValue() : (-1 * *slope * first.x) + first.y;
     }
 
-    Position2D::Value Line2D::Length() const
+    Point2D::Value Line2D::Length() const
     {
         return std::sqrt(std::pow(second.x - first.x, 2) + std::pow(second.y - first.y, 2));
     }
 
-    ::Atmos::Angle Line2D::Angle() const
+    Spatial::Angle Line2D::Angle() const
     {
-        return ::Atmos::Angle(std::atan2(DeltaY(), DeltaX()));
+        return Spatial::Angle(std::atan2(DeltaY(), DeltaX()));
     }
 
-    ::Atmos::Angle Line2D::Angle(const Line2D& other) const
+    Spatial::Angle Line2D::Angle(const Line2D& other) const
     {
         return other.Angle() - Angle();
     }
 
-    Position2D::Value Line2D::Dot(const Line2D& other) const
+    Point2D::Value Line2D::Dot(const Line2D& other) const
     {
         return (first.x * second.x) + (first.y * second.y);
     }
 
-    Position2D::Value Line2D::Cross(const Line2D& other) const
+    Point2D::Value Line2D::Cross(const Line2D& other) const
     {
         return first.x * second.y - second.x * first.y;
     }
@@ -88,7 +88,7 @@ namespace Atmos
         return false;
     }
 
-    std::optional<Position2D> Line2D::IntersectionPoint(const Line2D& other, bool infinite) const
+    std::optional<Point2D> Line2D::IntersectionPoint(const Line2D& other, bool infinite) const
     {
         /*
         Two lines
@@ -134,12 +134,12 @@ namespace Atmos
         return {};
     }
 
-    Position2D::Value Line2D::DeltaX() const
+    Point2D::Value Line2D::DeltaX() const
     {
         return second.x - first.x;
     }
 
-    Position2D::Value Line2D::DeltaY() const
+    Point2D::Value Line2D::DeltaY() const
     {
         return second.y - first.y;
     }

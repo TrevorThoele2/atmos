@@ -1,6 +1,6 @@
 #include "Line3D.h"
 
-namespace Atmos
+namespace Atmos::Spatial
 {
     bool Line3D::operator==(const Line3D& arg) const
     {
@@ -22,7 +22,7 @@ namespace Atmos
         };
     }
 
-    Position3D::Value Line3D::Length() const
+    Point3D::Value Line3D::Length() const
     {
         return std::sqrt(
             std::pow(second.x - first.x, 2) +
@@ -36,7 +36,7 @@ namespace Atmos
         return std::acos(Dot(other) / ( Length() * other.Length()));
     }
 
-    Position3D::Value Line3D::Dot(const Line3D& other) const
+    Point3D::Value Line3D::Dot(const Line3D& other) const
     {
         const Line3D line1(TranslateToOrigin());
         const Line3D line2(other.TranslateToOrigin());
@@ -51,7 +51,7 @@ namespace Atmos
 
     Line3D Line3D::TranslateToOrigin() const
     {
-        return Line3D{ Position3D{0, 0, 0}, Position3D{second.x - first.x, second.y - first.y, second.z - first.z} };
+        return Line3D{ Point3D{0, 0, 0}, Point3D{second.x - first.x, second.y - first.y, second.z - first.z} };
     }
 
     Vector3D Line3D::Direction() const
@@ -64,7 +64,7 @@ namespace Atmos
         return true;
     }
 
-    std::optional<Position3D> Line3D::IntersectionPoint(const Line3D& other, bool infinite) const
+    std::optional<Point3D> Line3D::IntersectionPoint(const Line3D& other, bool infinite) const
     {
         // a(V1 x V2) = (P2-P1) x V2
 
@@ -99,20 +99,20 @@ namespace Atmos
             a = cross2.z / cross1.z;
 
         // P1 + aV1
-        return { Position3D{ first.x + (a * vector1.x), first.y + (a * vector1.y), first.z + (a * vector1.z) } };
+        return { Point3D{ first.x + (a * vector1.x), first.y + (a * vector1.y), first.z + (a * vector1.z) } };
     }
 
-    Position3D::Value Line3D::DeltaX() const
+    Point3D::Value Line3D::DeltaX() const
     {
         return std::abs(first.x - second.x);
     }
 
-    Position3D::Value Line3D::DeltaY() const
+    Point3D::Value Line3D::DeltaY() const
     {
         return std::abs(first.y - second.y);
     }
 
-    Position3D::Value Line3D::DeltaZ() const
+    Point3D::Value Line3D::DeltaZ() const
     {
         return std::abs(first.z - second.z);
     }

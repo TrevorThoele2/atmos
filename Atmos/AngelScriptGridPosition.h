@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GridPosition.h"
+#include "GridPoint.h"
 
 class asIScriptEngine;
 
@@ -9,7 +9,7 @@ namespace Atmos::Script::Angel
     class GridPosition
     {
     public:
-        ::Atmos::Grid::Position::Value x, y, z;
+        Atmos::Spatial::Grid::Point::Value x, y, z;
     public:
         GridPosition();
 

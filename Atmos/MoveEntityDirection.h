@@ -8,7 +8,7 @@ namespace Atmos::Entity
     struct MoveEntityDirection
     {
         Arca::Index<Entity> entity;
-        Direction direction;
+        Spatial::Direction direction;
     };
 }
 

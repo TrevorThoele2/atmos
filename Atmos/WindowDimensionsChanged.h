@@ -8,7 +8,7 @@ namespace Atmos::Window
 {
     struct DimensionsChanged
     {
-        const ScreenSize dimensions;
+        const Spatial::ScreenSize dimensions;
     };
 }
 

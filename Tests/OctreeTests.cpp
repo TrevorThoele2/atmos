@@ -16,7 +16,7 @@ SCENARIO_METHOD(OctreeTestsFixture, "empty octree", "[octree]")
                 const auto maxDimension = std::numeric_limits<Size3D::Value>::max();
                 const auto bounds = AxisAlignedBox3D
                 {
-                    Position3D { 0, 0, 0 },
+                    Point3D { 0, 0, 0 },
                     Size3D { maxDimension, maxDimension, maxDimension }
                 };
 
@@ -53,12 +53,12 @@ SCENARIO_METHOD(OctreeTestsFixture, "empty octree", "[octree]")
             THEN("is centered at origin and 2 grid cells in size")
             {
                 auto totalBounds = octree.TotalBounds();
-                REQUIRE(totalBounds.Center() == Position3D());
+                REQUIRE(totalBounds.Center() == Point3D());
                 REQUIRE(totalBounds.Size() == Size3D
                     {
-                        CellSize<Position3D::Value> * 2,
-                        CellSize<Position3D::Value> * 2,
-                        CellSize<Position3D::Value> * 2
+                        CellSize<Point3D::Value> * 2,
+                        CellSize<Point3D::Value> * 2,
+                        CellSize<Point3D::Value> * 2
                     });
             }
         }
@@ -75,19 +75,19 @@ SCENARIO_METHOD(OctreeTestsFixture, "empty octree", "[octree]")
     GIVEN("octree at different center")
     {
         using Octree = Octree<int, std::string>;
-        Octree octree(Position3D { 100, 100, 100 });
+        Octree octree(Point3D { 100, 100, 100 });
 
         WHEN("querying total bounds")
         {
             THEN("is centered at position and 2 grid cells in size")
             {
                 auto totalBounds = octree.TotalBounds();
-                REQUIRE(totalBounds.Center() == Position3D { 100, 100, 100 });
+                REQUIRE(totalBounds.Center() == Point3D { 100, 100, 100 });
                 REQUIRE(totalBounds.Size() == Size3D
                     {
-                        CellSize<Position3D::Value> * 2,
-                        CellSize<Position3D::Value> * 2,
-                        CellSize<Position3D::Value> * 2
+                        CellSize<Point3D::Value> * 2,
+                        CellSize<Point3D::Value> * 2,
+                        CellSize<Point3D::Value> * 2
                     });
             }
         }
@@ -101,54 +101,54 @@ SCENARIO_METHOD(OctreeTestsFixture, "single object octree", "[octree]")
         using Octree = Octree<int, std::string>;
         Octree octree;
 
-        static constexpr auto gridCellSize = CellSize<Position3D::Value>;
+        static constexpr auto gridCellSize = CellSize<Point3D::Value>;
         static constexpr auto halfGridCellSize = gridCellSize / 2;
 
         const auto movedToBounds = Octree::Bounds
         {
-            Position3D { 1000, 1000, 1000 },
+            Point3D { 1000, 1000, 1000 },
             Size3D{ gridCellSize, gridCellSize, gridCellSize }
         };
 
         const auto bounds = GENERATE(
             AxisAlignedBox3D
             {
-                Position3D { -halfGridCellSize, -halfGridCellSize, -halfGridCellSize },
+                Point3D { -halfGridCellSize, -halfGridCellSize, -halfGridCellSize },
                 Size3D { gridCellSize, gridCellSize, gridCellSize }
             },
             AxisAlignedBox3D
             {
-                Position3D { -halfGridCellSize, -halfGridCellSize, halfGridCellSize },
+                Point3D { -halfGridCellSize, -halfGridCellSize, halfGridCellSize },
                 Size3D { gridCellSize, gridCellSize, gridCellSize }
             },
             AxisAlignedBox3D
             {
-                Position3D { -halfGridCellSize, halfGridCellSize, -halfGridCellSize },
+                Point3D { -halfGridCellSize, halfGridCellSize, -halfGridCellSize },
                 Size3D { gridCellSize, gridCellSize, gridCellSize }
             },
             AxisAlignedBox3D
             {
-                Position3D { -halfGridCellSize, halfGridCellSize, halfGridCellSize },
+                Point3D { -halfGridCellSize, halfGridCellSize, halfGridCellSize },
                 Size3D { gridCellSize, gridCellSize, gridCellSize }
             },
             AxisAlignedBox3D
             {
-                Position3D { halfGridCellSize, -halfGridCellSize, -halfGridCellSize },
+                Point3D { halfGridCellSize, -halfGridCellSize, -halfGridCellSize },
                 Size3D { gridCellSize, gridCellSize, gridCellSize }
             },
             AxisAlignedBox3D
             {
-                Position3D { halfGridCellSize, -halfGridCellSize, halfGridCellSize },
+                Point3D { halfGridCellSize, -halfGridCellSize, halfGridCellSize },
                 Size3D { gridCellSize, gridCellSize, gridCellSize }
             },
             AxisAlignedBox3D
             {
-                Position3D { halfGridCellSize, halfGridCellSize, -halfGridCellSize },
+                Point3D { halfGridCellSize, halfGridCellSize, -halfGridCellSize },
                 Size3D { gridCellSize, gridCellSize, gridCellSize }
             },
             AxisAlignedBox3D
             {
-                Position3D { halfGridCellSize, halfGridCellSize, halfGridCellSize },
+                Point3D { halfGridCellSize, halfGridCellSize, halfGridCellSize },
                 Size3D { gridCellSize, gridCellSize, gridCellSize }
             }
         );
@@ -172,12 +172,12 @@ SCENARIO_METHOD(OctreeTestsFixture, "single object octree", "[octree]")
             THEN("total bounds is centered at origin and 2 grid cells in size")
             {
                 auto totalBounds = octree.TotalBounds();
-                REQUIRE(totalBounds.Center() == Position3D());
+                REQUIRE(totalBounds.Center() == Point3D());
                 REQUIRE(totalBounds.Size() == Size3D
                     {
-                        CellSize<Position3D::Value> * 2,
-                        CellSize<Position3D::Value> * 2,
-                        CellSize<Position3D::Value> * 2
+                        CellSize<Point3D::Value> * 2,
+                        CellSize<Point3D::Value> * 2,
+                        CellSize<Point3D::Value> * 2
                     });
             }
 
@@ -255,23 +255,23 @@ SCENARIO_METHOD(OctreeTestsFixture, "single object octree", "[octree]")
         using Octree = Octree<int, std::string>;
         Octree octree;
 
-        static constexpr auto gridCellSize = CellSize<Position3D::Value>;
+        static constexpr auto gridCellSize = CellSize<Point3D::Value>;
 
         const auto movedToBounds = Octree::Bounds
         {
-            Position3D { 1000, 1000, 1000 },
+            Point3D { 1000, 1000, 1000 },
             Size3D{ gridCellSize, gridCellSize, gridCellSize }
         };
 
         const auto bounds = GENERATE(
             AxisAlignedBox3D
             {
-                Position3D { 0, 0, 0 },
+                Point3D { 0, 0, 0 },
                 Size3D { gridCellSize, gridCellSize, gridCellSize }
             },
             AxisAlignedBox3D
             {
-                Position3D { 32, 32, 32 },
+                Point3D { 32, 32, 32 },
                 Size3D { gridCellSize, gridCellSize, gridCellSize }
             }
         );
@@ -295,7 +295,7 @@ SCENARIO_METHOD(OctreeTestsFixture, "single object octree", "[octree]")
             THEN("total bounds is centered at origin and contains bounds")
             {
                 auto totalBounds = octree.TotalBounds();
-                REQUIRE(totalBounds.Center() == Position3D());
+                REQUIRE(totalBounds.Center() == Point3D());
                 REQUIRE(totalBounds.Contains(bounds));
             }
 
@@ -373,11 +373,11 @@ SCENARIO_METHOD(OctreeTestsFixture, "single object octree", "[octree]")
         using Octree = Octree<int, std::string>;
         Octree octree;
 
-        static constexpr auto gridCellSize = CellSize<Position3D::Value>;
+        static constexpr auto gridCellSize = CellSize<Point3D::Value>;
 
         const auto bounds = AxisAlignedBox3D
         {
-            Position3D { 1000, 1000, 1000 },
+            Point3D { 1000, 1000, 1000 },
             Size3D { gridCellSize, gridCellSize, gridCellSize }
         };
 
@@ -392,7 +392,7 @@ SCENARIO_METHOD(OctreeTestsFixture, "single object octree", "[octree]")
             {
                 auto allWithin = octree.AllWithin(AxisAlignedBox3D
                     {
-                        Position3D { -1000, -1000, -1000 },
+                        Point3D { -1000, -1000, -1000 },
                         Size3D { gridCellSize, gridCellSize, gridCellSize }
                     });
 
@@ -403,7 +403,7 @@ SCENARIO_METHOD(OctreeTestsFixture, "single object octree", "[octree]")
             {
                 auto allWithin = octree.AllWithin(AxisAlignedBox3D
                     {
-                        Position3D { 10000, 10000, 10000 },
+                        Point3D { 10000, 10000, 10000 },
                         Size3D { gridCellSize, gridCellSize, gridCellSize }
                     });
 
@@ -418,7 +418,7 @@ SCENARIO_METHOD(OctreeTestsFixture, "single object octree", "[octree]")
 
             octree.Add(addedID, addedValue, Octree::Bounds
                 {
-                    Position3D { 0, 0, 0 },
+                    Point3D { 0, 0, 0 },
                     Size3D { gridCellSize, gridCellSize, gridCellSize }
                 });
 
@@ -426,7 +426,7 @@ SCENARIO_METHOD(OctreeTestsFixture, "single object octree", "[octree]")
             {
                 auto allWithin = octree.AllWithin(AxisAlignedBox3D
                     {
-                        Position3D { 10000, 10000, 10000 },
+                        Point3D { 10000, 10000, 10000 },
                         Size3D { gridCellSize, gridCellSize, gridCellSize }
                     });
 
@@ -448,10 +448,10 @@ SCENARIO_METHOD(OctreeTestsFixture, "multiple objects octree", "[octree]")
             auto ids = dataGeneration.RandomGroup<int>(8);
             auto values = dataGeneration.RandomGroup<std::string>(8);
 
-            const auto gridCellSize = CellSize<Position3D::Value>;
+            const auto gridCellSize = CellSize<Point3D::Value>;
             const auto halfGridCellSize = gridCellSize / 2;
 
-            auto addObject = [&octree, &ids, &values, gridCellSize](size_t i, const Position3D& center)
+            auto addObject = [&octree, &ids, &values, gridCellSize](size_t i, const Point3D& center)
             {
                 octree.Add(
                     ids[i],
@@ -463,20 +463,20 @@ SCENARIO_METHOD(OctreeTestsFixture, "multiple objects octree", "[octree]")
                     });
             };
 
-            addObject(0, Position3D{ -halfGridCellSize, -halfGridCellSize, -halfGridCellSize });
-            addObject(1, Position3D{ -halfGridCellSize, -halfGridCellSize, halfGridCellSize });
-            addObject(2, Position3D{ -halfGridCellSize, halfGridCellSize, -halfGridCellSize });
-            addObject(3, Position3D{ -halfGridCellSize, halfGridCellSize, halfGridCellSize });
-            addObject(4, Position3D{ halfGridCellSize, -halfGridCellSize, -halfGridCellSize });
-            addObject(5, Position3D{ halfGridCellSize, -halfGridCellSize, halfGridCellSize });
-            addObject(6, Position3D{ halfGridCellSize, halfGridCellSize, -halfGridCellSize });
-            addObject(7, Position3D{ halfGridCellSize, halfGridCellSize, halfGridCellSize });
+            addObject(0, Point3D{ -halfGridCellSize, -halfGridCellSize, -halfGridCellSize });
+            addObject(1, Point3D{ -halfGridCellSize, -halfGridCellSize, halfGridCellSize });
+            addObject(2, Point3D{ -halfGridCellSize, halfGridCellSize, -halfGridCellSize });
+            addObject(3, Point3D{ -halfGridCellSize, halfGridCellSize, halfGridCellSize });
+            addObject(4, Point3D{ halfGridCellSize, -halfGridCellSize, -halfGridCellSize });
+            addObject(5, Point3D{ halfGridCellSize, -halfGridCellSize, halfGridCellSize });
+            addObject(6, Point3D{ halfGridCellSize, halfGridCellSize, -halfGridCellSize });
+            addObject(7, Point3D{ halfGridCellSize, halfGridCellSize, halfGridCellSize });
 
             THEN("finding all within initial bounds returns all")
             {
                 const auto bounds = AxisAlignedBox3D
                 {
-                    Position3D { 0, 0, 0 },
+                    Point3D { 0, 0, 0 },
                     Size3D { gridCellSize * 2, gridCellSize * 2, gridCellSize * 2 }
                 };
 
@@ -498,12 +498,12 @@ SCENARIO_METHOD(OctreeTestsFixture, "multiple objects octree", "[octree]")
             THEN("total bounds is centered at origin and 2 grid cells in size")
             {
                 auto totalBounds = octree.TotalBounds();
-                REQUIRE(totalBounds.Center() == Position3D());
+                REQUIRE(totalBounds.Center() == Point3D());
                 REQUIRE(totalBounds.Size() == Size3D
                     {
-                        CellSize<Position3D::Value> * 2,
-                        CellSize<Position3D::Value> * 2,
-                        CellSize<Position3D::Value> * 2
+                        CellSize<Point3D::Value> * 2,
+                        CellSize<Point3D::Value> * 2,
+                        CellSize<Point3D::Value> * 2
                     });
             }
 
@@ -514,7 +514,7 @@ SCENARIO_METHOD(OctreeTestsFixture, "multiple objects octree", "[octree]")
 
             WHEN("removing all objects")
             {
-                auto removeObject = [&octree, &ids, gridCellSize](size_t i, const Position3D& center)
+                auto removeObject = [&octree, &ids, gridCellSize](size_t i, const Point3D& center)
                 {
                     octree.Remove(
                         ids[i],
@@ -525,20 +525,20 @@ SCENARIO_METHOD(OctreeTestsFixture, "multiple objects octree", "[octree]")
                         });
                 };
 
-                removeObject(0, Position3D{ -halfGridCellSize, -halfGridCellSize, -halfGridCellSize });
-                removeObject(1, Position3D{ -halfGridCellSize, -halfGridCellSize, halfGridCellSize });
-                removeObject(2, Position3D{ -halfGridCellSize, halfGridCellSize, -halfGridCellSize });
-                removeObject(3, Position3D{ -halfGridCellSize, halfGridCellSize, halfGridCellSize });
-                removeObject(4, Position3D{ halfGridCellSize, -halfGridCellSize, -halfGridCellSize });
-                removeObject(5, Position3D{ halfGridCellSize, -halfGridCellSize, halfGridCellSize });
-                removeObject(6, Position3D{ halfGridCellSize, halfGridCellSize, -halfGridCellSize });
-                removeObject(7, Position3D{ halfGridCellSize, halfGridCellSize, halfGridCellSize });
+                removeObject(0, Point3D{ -halfGridCellSize, -halfGridCellSize, -halfGridCellSize });
+                removeObject(1, Point3D{ -halfGridCellSize, -halfGridCellSize, halfGridCellSize });
+                removeObject(2, Point3D{ -halfGridCellSize, halfGridCellSize, -halfGridCellSize });
+                removeObject(3, Point3D{ -halfGridCellSize, halfGridCellSize, halfGridCellSize });
+                removeObject(4, Point3D{ halfGridCellSize, -halfGridCellSize, -halfGridCellSize });
+                removeObject(5, Point3D{ halfGridCellSize, -halfGridCellSize, halfGridCellSize });
+                removeObject(6, Point3D{ halfGridCellSize, halfGridCellSize, -halfGridCellSize });
+                removeObject(7, Point3D{ halfGridCellSize, halfGridCellSize, halfGridCellSize });
 
                 THEN("finding all within same bounds returns empty container")
                 {
                     const auto bounds = AxisAlignedBox3D
                     {
-                        Position3D { 0, 0, 0 },
+                        Point3D { 0, 0, 0 },
                         Size3D { gridCellSize * 2, gridCellSize * 2, gridCellSize * 2 }
                     };
 
@@ -550,12 +550,12 @@ SCENARIO_METHOD(OctreeTestsFixture, "multiple objects octree", "[octree]")
                 THEN("total bounds is centered at origin and 2 grid cells in size")
                 {
                     auto totalBounds = octree.TotalBounds();
-                    REQUIRE(totalBounds.Center() == Position3D());
+                    REQUIRE(totalBounds.Center() == Point3D());
                     REQUIRE(totalBounds.Size() == Size3D
                         {
-                            CellSize<Position3D::Value> * 2,
-                            CellSize<Position3D::Value> * 2,
-                            CellSize<Position3D::Value> * 2
+                            CellSize<Point3D::Value> * 2,
+                            CellSize<Point3D::Value> * 2,
+                            CellSize<Point3D::Value> * 2
                         });
                 }
 
@@ -571,10 +571,10 @@ SCENARIO_METHOD(OctreeTestsFixture, "multiple objects octree", "[octree]")
             auto ids = dataGeneration.RandomGroup<int>(8);
             auto values = dataGeneration.RandomGroup<std::string>(8);
 
-            const auto gridCellSize = CellSize<Position3D::Value>;
-            const auto distance = std::numeric_limits<Position3D::Value>::max() / 2 - gridCellSize;
+            const auto gridCellSize = CellSize<Point3D::Value>;
+            const auto distance = std::numeric_limits<Point3D::Value>::max() / 2 - gridCellSize;
 
-            auto addObject = [&octree, &ids, &values, gridCellSize](size_t i, const Position3D& center)
+            auto addObject = [&octree, &ids, &values, gridCellSize](size_t i, const Point3D& center)
             {
                 octree.Add(
                     ids[i],
@@ -586,25 +586,25 @@ SCENARIO_METHOD(OctreeTestsFixture, "multiple objects octree", "[octree]")
                     });
             };
 
-            addObject(0, Position3D{ -distance, -distance, -distance });
-            addObject(1, Position3D{ -distance, -distance, distance });
-            addObject(2, Position3D{ -distance, distance, -distance });
-            addObject(3, Position3D{ -distance, distance, distance });
-            addObject(4, Position3D{ distance, -distance, -distance });
-            addObject(5, Position3D{ distance, -distance, distance });
-            addObject(6, Position3D{ distance, distance, -distance });
-            addObject(7, Position3D{ distance, distance, distance });
+            addObject(0, Point3D{ -distance, -distance, -distance });
+            addObject(1, Point3D{ -distance, -distance, distance });
+            addObject(2, Point3D{ -distance, distance, -distance });
+            addObject(3, Point3D{ -distance, distance, distance });
+            addObject(4, Point3D{ distance, -distance, -distance });
+            addObject(5, Point3D{ distance, -distance, distance });
+            addObject(6, Point3D{ distance, distance, -distance });
+            addObject(7, Point3D{ distance, distance, distance });
 
             THEN("finding all within initial bounds returns all")
             {
                 const auto bounds = AxisAlignedBox3D
                 {
-                    Position3D { 0, 0, 0 },
+                    Point3D { 0, 0, 0 },
                     Size3D
                     {
-                        std::numeric_limits<Position3D::Value>::max(),
-                        std::numeric_limits<Position3D::Value>::max(),
-                        std::numeric_limits<Position3D::Value>::max()
+                        std::numeric_limits<Point3D::Value>::max(),
+                        std::numeric_limits<Point3D::Value>::max(),
+                        std::numeric_limits<Point3D::Value>::max()
                     }
                 };
 
@@ -626,7 +626,7 @@ SCENARIO_METHOD(OctreeTestsFixture, "multiple objects octree", "[octree]")
             THEN("total bounds is centered at origin and at least distance in size")
             {
                 auto totalBounds = octree.TotalBounds();
-                REQUIRE(totalBounds.Center() == Position3D());
+                REQUIRE(totalBounds.Center() == Point3D());
                 REQUIRE(totalBounds.Size().width >= distance);
                 REQUIRE(totalBounds.Size().height >= distance);
                 REQUIRE(totalBounds.Size().depth >= distance);
@@ -639,7 +639,7 @@ SCENARIO_METHOD(OctreeTestsFixture, "multiple objects octree", "[octree]")
 
             WHEN("removing all objects")
             {
-                auto removeObject = [&octree, &ids, gridCellSize](size_t i, const Position3D& center)
+                auto removeObject = [&octree, &ids, gridCellSize](size_t i, const Point3D& center)
                 {
                     octree.Remove(
                         ids[i],
@@ -650,20 +650,20 @@ SCENARIO_METHOD(OctreeTestsFixture, "multiple objects octree", "[octree]")
                         });
                 };
 
-                removeObject(0, Position3D{ -distance, -distance, -distance });
-                removeObject(1, Position3D{ -distance, -distance, distance });
-                removeObject(2, Position3D{ -distance, distance, -distance });
-                removeObject(3, Position3D{ -distance, distance, distance });
-                removeObject(4, Position3D{ distance, -distance, -distance });
-                removeObject(5, Position3D{ distance, -distance, distance });
-                removeObject(6, Position3D{ distance, distance, -distance });
-                removeObject(7, Position3D{ distance, distance, distance });
+                removeObject(0, Point3D{ -distance, -distance, -distance });
+                removeObject(1, Point3D{ -distance, -distance, distance });
+                removeObject(2, Point3D{ -distance, distance, -distance });
+                removeObject(3, Point3D{ -distance, distance, distance });
+                removeObject(4, Point3D{ distance, -distance, -distance });
+                removeObject(5, Point3D{ distance, -distance, distance });
+                removeObject(6, Point3D{ distance, distance, -distance });
+                removeObject(7, Point3D{ distance, distance, distance });
 
                 THEN("finding all within same bounds returns empty container")
                 {
                     const auto bounds = AxisAlignedBox3D
                     {
-                        Position3D { 0, 0, 0 },
+                        Point3D { 0, 0, 0 },
                         Size3D { gridCellSize * 2, gridCellSize * 2, gridCellSize * 2 }
                     };
 
@@ -675,12 +675,12 @@ SCENARIO_METHOD(OctreeTestsFixture, "multiple objects octree", "[octree]")
                 THEN("total bounds is centered at origin and 2 grid cells in size")
                 {
                     auto totalBounds = octree.TotalBounds();
-                    REQUIRE(totalBounds.Center() == Position3D());
+                    REQUIRE(totalBounds.Center() == Point3D());
                     REQUIRE(totalBounds.Size() == Size3D
                         {
-                            CellSize<Position3D::Value> * 2,
-                            CellSize<Position3D::Value> * 2,
-                            CellSize<Position3D::Value> * 2
+                            CellSize<Point3D::Value> * 2,
+                            CellSize<Point3D::Value> * 2,
+                            CellSize<Point3D::Value> * 2
                         });
                 }
 

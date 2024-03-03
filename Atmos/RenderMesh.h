@@ -2,13 +2,13 @@
 
 #include <vector>
 
-#include "Position2D.h"
+#include "Point2D.h"
 
 namespace Atmos::Render
 {
     struct Mesh
     {
-        std::vector<Position2D> vertices;
+        std::vector<Spatial::Point2D> vertices;
         std::vector<std::uint16_t> indices;
     };
 }

@@ -35,7 +35,7 @@ namespace Atmos::Render::Resource::Vulkan
 
         void WaitForIdle() const;
 
-        [[nodiscard]] ScreenSize Size() const override;
+        [[nodiscard]] Spatial::ScreenSize Size() const override;
 
         [[nodiscard]] vk::SurfaceKHR Underlying() const;
     private:

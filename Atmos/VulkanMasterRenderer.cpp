@@ -77,7 +77,10 @@ namespace Atmos::Render::Vulkan
         regionRenderer.StageRender(regionRender);
     }
 
-    void MasterRenderer::DrawFrame(Arca::Reliquary& reliquary, const ScreenSize& screenSize, const ScreenPosition& mapPosition)
+    void MasterRenderer::DrawFrame(
+        Arca::Reliquary& reliquary,
+        const Spatial::ScreenSize& screenSize,
+        const Spatial::ScreenPoint& mapPosition)
     {
         device->waitForFences(inFlightFences[previousFrame].get(), VK_TRUE, UINT64_MAX);
 

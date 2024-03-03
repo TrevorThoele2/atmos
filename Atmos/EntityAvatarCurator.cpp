@@ -1,9 +1,6 @@
 #include "EntityAvatarCurator.h"
 
 #include <Arca/Reliquary.h>
-#include <Arca/Actualization.h>
-
-#include "GeneralComponent.h"
 
 namespace Atmos::Entity
 {
@@ -12,39 +9,26 @@ namespace Atmos::Entity
         debugPlayerColumn(
             [this](Debug::Statistics& statistics)
             {
-                statistics.game.playerColumn = currentAvatar->entity->general->position.x;
+                statistics.game.playerColumn = currentAvatar->entity->position.x;
             },
             MutablePointer()),
         debugPlayerRow(
             [this](Debug::Statistics& statistics)
             {
-                statistics.game.playerRow = currentAvatar->entity->general->position.y;
+                statistics.game.playerRow = currentAvatar->entity->position.y;
             },
             MutablePointer())
     {}
 
     void AvatarCurator::Work()
     {
-        Owner().On<Arca::CreatedKnown<AvatarComponent>>(
-            [this](const Arca::CreatedKnown<AvatarComponent>& signal)
-            {
-                if (currentAvatar->entity)
-                    Owner().Destroy(AsHandle(*currentAvatar->entity));
-
-                auto currentAvatarData = MutablePointer().Of(currentAvatar);
-                currentAvatarData->entity = Arca::Index<Entity>(signal.reference.ID(), Owner());
-                currentAvatarData->component = signal.reference;
-            });
-
-        Owner().On<Arca::DestroyingKnown<AvatarComponent>>(
-            [this](const Arca::DestroyingKnown<AvatarComponent>&)
-            {
-                auto currentAvatarData = MutablePointer().Of(currentAvatar);
-                currentAvatarData->entity = {};
-                currentAvatarData->component = {};
-            });
-
         debugPlayerColumn.Set();
         debugPlayerRow.Set();
+    }
+
+    void AvatarCurator::Handle(const SetAvatar& command)
+    {
+        auto mutableCurrentAvatar = MutablePointer().Of(currentAvatar);
+        mutableCurrentAvatar->entity = command.setAs;
     }
 }

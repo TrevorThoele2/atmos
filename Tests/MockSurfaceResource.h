@@ -15,5 +15,5 @@ public:
 
     void DrawFrame(Arca::Reliquary& reliquary, const Atmos::Render::Color& backgroundColor) override;
 
-    [[nodiscard]] Atmos::ScreenSize Size() const override;
+    [[nodiscard]] Atmos::Spatial::ScreenSize Size() const override;
 };

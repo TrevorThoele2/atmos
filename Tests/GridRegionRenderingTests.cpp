@@ -3,7 +3,6 @@
 #include "GridRegionRenderingTests.h"
 
 #include <Atmos/GridRegion.h>
-#include <Atmos/ResizeCamera.h>
 #include <Atmos/TypeRegistration.h>
 #include <Atmos/StringUtility.h>
 #include <Atmos/Camera.h>
@@ -36,22 +35,23 @@ SCENARIO_METHOD(GridRegionRenderingTestsFixture, "rendering grid regions")
         auto materialAsset = fieldReliquary.Do<Arca::Create<Asset::Material>>(
             String{}, Asset::MaterialType::Image, std::vector<Asset::Material::Pass>{});
 
-        fieldReliquary.Do<ResizeCamera>(ScreenSize(
-            std::numeric_limits<ScreenSize::Dimension>::max(),
-            std::numeric_limits<ScreenSize::Dimension>::max()));
-
         const auto camera = Arca::Index<Camera>(fieldReliquary);
+
+        camera->Scalers(Spatial::Scalers2D{
+            std::numeric_limits<Spatial::Scalers2D::Value>::max(),
+            std::numeric_limits<Spatial::Scalers2D::Value>::max() });
+
         const auto cameraLeft = camera->ScreenSides().Left();
         const auto cameraTop = camera->ScreenSides().Top();
 
         WHEN("creating grid region")
         {
-            auto positions = std::vector<Grid::Position>
+            auto positions = std::vector<Spatial::Grid::Point>
             {
-                Grid::Position { 0, 0 },
-                Grid::Position { 1, 0 },
-                Grid::Position { 0, 1 },
-                Grid::Position { 1, 1 },
+                Spatial::Grid::Point { 0, 0 },
+                Spatial::Grid::Point { 1, 0 },
+                Spatial::Grid::Point { 0, 1 },
+                Spatial::Grid::Point { 1, 1 },
             };
             auto gridRegion = fieldReliquary.Do(Arca::Create<GridRegion>{ positions, 0, materialAsset});
 
@@ -70,8 +70,8 @@ SCENARIO_METHOD(GridRegionRenderingTestsFixture, "rendering grid regions")
                         regionRenders.end(),
                         [&positions, cameraLeft, cameraTop](const RegionRender& entry)
                         {
-                            std::vector<Position2D> expectedVertices;
-                            std::vector<Grid::Position> expectedVertexGridPositions =
+                            std::vector<Spatial::Point2D> expectedVertices;
+                            std::vector<Spatial::Grid::Point> expectedVertexGridPositions =
                             {
                                 positions[0],
                                 positions[1],
@@ -83,8 +83,8 @@ SCENARIO_METHOD(GridRegionRenderingTestsFixture, "rendering grid regions")
                             for (auto& position : expectedVertexGridPositions)
                             {
                                 expectedVertices.emplace_back(
-                                    position.x * Atmos::Grid::CellSize<float> -cameraLeft,
-                                    position.y * Atmos::Grid::CellSize<float> -cameraTop);
+                                    position.x * Atmos::Spatial::Grid::CellSize<float> -cameraLeft,
+                                    position.y * Atmos::Spatial::Grid::CellSize<float> -cameraTop);
                             }
 
                             std::vector<std::uint16_t> expectedIndices = {
@@ -112,12 +112,12 @@ SCENARIO_METHOD(GridRegionRenderingTestsFixture, "rendering grid regions")
 
         WHEN("creating region without material")
         {
-            auto positions = std::vector<Grid::Position>
+            auto positions = std::vector<Spatial::Grid::Point>
             {
-                Grid::Position { 0, 0 },
-                Grid::Position { 1, 0 },
-                Grid::Position { 0, 1 },
-                Grid::Position { 1, 1 },
+                Spatial::Grid::Point { 0, 0 },
+                Spatial::Grid::Point { 1, 0 },
+                Spatial::Grid::Point { 0, 1 },
+                Spatial::Grid::Point { 1, 1 },
             };
             fieldReliquary.Do(Arca::Create<GridRegion>{ positions, 0, Arca::Index<Asset::Material>{}});
 
@@ -136,7 +136,7 @@ SCENARIO_METHOD(GridRegionRenderingTestsFixture, "rendering grid regions")
 
         WHEN("creating region without positions")
         {
-            auto positions = std::vector<Grid::Position> {};
+            auto positions = std::vector<Spatial::Grid::Point> {};
             fieldReliquary.Do(Arca::Create<GridRegion>{ positions, 0, materialAsset});
 
             WHEN("starting engine execution")

@@ -27,7 +27,7 @@ namespace Atmos::Render
 
         void DrawFrame() const;
 
-        [[nodiscard]] ScreenSize Size() const;
+        [[nodiscard]] Spatial::ScreenSize Size() const;
 
         [[nodiscard]] ResourceT* Resource() const;
         template<class ResourceT>
@@ -72,7 +72,7 @@ namespace Atmos::Render
     }
 
     template<class Derived>
-    ScreenSize Surface<Derived>::Size() const
+    Spatial::ScreenSize Surface<Derived>::Size() const
     {
         return Resource()->Size();
     }

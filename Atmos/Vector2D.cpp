@@ -1,6 +1,6 @@
 #include "Vector2D.h"
 
-namespace Atmos
+namespace Atmos::Spatial
 {
     bool Vector2D::operator==(const Vector2D& arg) const
     {
@@ -25,7 +25,7 @@ namespace Atmos
 
     Angle Vector2D::Angle(const Vector2D& other) const
     {
-        return ::Atmos::Angle(std::atan2(y, x));
+        return Spatial::Angle(std::atan2(y, x));
     }
 
     Vector2D::Value Vector2D::Dot(const Vector2D& other) const

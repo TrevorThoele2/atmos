@@ -2,14 +2,14 @@
 
 #include <map>
 
-#include "Position2DAlgorithms.h"
+#include "Point2DAlgorithms.h"
 #include "MathUtility.h"
 
 #include "GridCellSize.h"
 
 namespace Atmos::Render
 {
-    std::vector<Position2D> Simplify(const std::vector<Position2D>& points)
+    std::vector<Spatial::Point2D> Simplify(const std::vector<Spatial::Point2D>& points)
     {
         size_t index0 = 0;
         auto usePoints = points;
@@ -27,13 +27,13 @@ namespace Atmos::Render
         return usePoints;
     }
 
-    std::vector<Position2D> Triangulate(const std::vector<Position2D>& points)
+    std::vector<Spatial::Point2D> Triangulate(const std::vector<Spatial::Point2D>& points)
     {
         if (points.size() < 3)
-            return std::vector<Position2D>{};
+            return std::vector<Spatial::Point2D>{};
 
         auto usePoints = points;
-        std::vector<Position2D> returnValue;
+        std::vector<Spatial::Point2D> returnValue;
         returnValue.reserve(points.size());
 
         size_t index0 = 0;
@@ -76,13 +76,13 @@ namespace Atmos::Render
         return returnValue;
     }
 
-    std::vector<Position2D> Triangulate(const std::vector<Grid::Position>& points)
+    std::vector<Spatial::Point2D> Triangulate(const std::vector<Spatial::Grid::Point>& points)
     {
         auto usePoints = points;
         std::sort(
             usePoints.begin(),
             usePoints.end(), 
-            [](const Grid::Position& left, const Grid::Position& right)
+            [](const Spatial::Grid::Point& left, const Spatial::Grid::Point& right)
             {
                 if (left.y != right.y)
                     return left.y < right.y;
@@ -90,8 +90,8 @@ namespace Atmos::Render
                 return left.x < right.x;
             });
 
-        using Region = std::vector<Grid::Position::Value>;
-        std::map<Grid::Position::Value, std::vector<Region>> decomposition;
+        using Region = std::vector<Spatial::Grid::Point::Value>;
+        std::map<Spatial::Grid::Point::Value, std::vector<Region>> decomposition;
         for(auto& point : usePoints)
         {
             auto yFound = decomposition.find(point.y);
@@ -122,8 +122,8 @@ namespace Atmos::Render
             }
         }
 
-        std::vector<Position2D> returnValue;
-        const auto cellSize = Grid::CellSize<Position2D::Value>;
+        std::vector<Spatial::Point2D> returnValue;
+        const auto cellSize = Spatial::Grid::CellSize<Spatial::Point2D::Value>;
         for(auto& y : decomposition)
         {
             for (auto& region : y.second)
@@ -146,14 +146,14 @@ namespace Atmos::Render
         return returnValue;
     }
 
-    Mesh ConvertToMesh(const std::vector<Position2D>& vertices)
+    Mesh ConvertToMesh(const std::vector<Spatial::Point2D>& vertices)
     {
         Mesh returnValue;
         returnValue.vertices.reserve(vertices.size());
         returnValue.indices.reserve(vertices.size());
 
         std::uint32_t nextIndex = 0;
-        std::unordered_map<Position2D, std::uint32_t> seenVertices;
+        std::unordered_map<Spatial::Point2D, std::uint32_t> seenVertices;
         for(auto& vertex : vertices)
         {
             auto found = seenVertices.find(vertex);

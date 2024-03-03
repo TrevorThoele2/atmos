@@ -5,8 +5,8 @@
 #include <Arca/ClosedTypedRelic.h>
 
 #include "RealStopwatch.h"
-#include "Position2D.h"
-#include "GridPosition.h"
+#include "Point2D.h"
+#include "GridPoint.h"
 #include "FieldID.h"
 #include "WindowBase.h"
 
@@ -33,23 +33,23 @@ namespace Atmos::Debug
     public:
         struct Game
         {
-            Grid::Position::Value playerColumn = 0;
-            Grid::Position::Value playerRow = 0;
+            Spatial::Grid::Point::Value playerColumn = 0;
+            Spatial::Grid::Point::Value playerRow = 0;
 
             std::optional<World::FieldID> fieldID;
         } game;
     public:
         struct Window
         {
-            ScreenSize::Dimension windowWidth = 0;
-            ScreenSize::Dimension windowHeight = 0;
+            Spatial::ScreenSize::Dimension windowWidth = 0;
+            Spatial::ScreenSize::Dimension windowHeight = 0;
             Atmos::Window::WindowBase::Size::Dimension clientWidth = 0;
             Atmos::Window::WindowBase::Size::Dimension clientHeight = 0;
-            ScreenSize::Dimension startX = 0;
-            ScreenSize::Dimension startY = 0;
+            Spatial::ScreenSize::Dimension startX = 0;
+            Spatial::ScreenSize::Dimension startY = 0;
 
-            Position2D::Value cameraCenterX = 0;
-            Position2D::Value cameraCenterY = 0;
+            Spatial::Point2D::Value cameraCenterX = 0;
+            Spatial::Point2D::Value cameraCenterY = 0;
         } window;
     public:
         using Profiler = Arca::Index<Time::RealStopwatch>;

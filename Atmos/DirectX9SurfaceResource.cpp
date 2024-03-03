@@ -96,11 +96,11 @@ namespace Atmos::Render::Resource::DirectX9
         renderer->OnLostDevice();
     }
 
-    ScreenSize Surface::Size() const
+    Spatial::ScreenSize Surface::Size() const
     {
         RECT rect;
         GetClientRect(presentationParameters.hDeviceWindow, &rect);
-        return ScreenSize(rect.right, rect.bottom);
+        return Spatial::ScreenSize(rect.right, rect.bottom);
     }
 
     D3DPRESENT_PARAMETERS Surface::PresentationParameters() const

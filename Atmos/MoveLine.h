@@ -3,7 +3,7 @@
 #include <Arca/Command.h>
 #include <Arca/RelicID.h>
 
-#include "Position2D.h"
+#include "Point2D.h"
 
 namespace Atmos::Render
 {
@@ -11,8 +11,8 @@ namespace Atmos::Render
     {
         Arca::RelicID id;
 
-        std::optional<std::vector<Position2D>> points;
-        std::optional<Position2D::Value> z;
+        std::optional<std::vector<Spatial::Point2D>> points;
+        std::optional<Spatial::Point2D::Value> z;
     };
 }
 

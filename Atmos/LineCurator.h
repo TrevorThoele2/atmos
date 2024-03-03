@@ -20,15 +20,15 @@ namespace Atmos::Render
         void Handle(const MoveLine& command);
     private:
         using Index = Arca::Index<Line>;
-        Grid::Octree<Arca::RelicID, Index> octree;
+        Spatial::Grid::Octree<Arca::RelicID, Index> octree;
 
         Arca::Index<Camera> camera;
     private:
         void OnCreated(const Arca::CreatedKnown<Line>& signal);
         void OnDestroying(const Arca::DestroyingKnown<Line>& signal);
     private:
-        static AxisAlignedBox3D BoxFor(const std::vector<Position2D>& points, Position2D::Value z);
-        static AxisAlignedBox3D BoxFor(const Index& index);
+        static Spatial::AxisAlignedBox3D BoxFor(const std::vector<Spatial::Point2D>& points, Spatial::Point2D::Value z);
+        static Spatial::AxisAlignedBox3D BoxFor(const Index& index);
     };
 }
 

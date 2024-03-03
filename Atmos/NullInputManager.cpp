@@ -7,7 +7,7 @@ namespace Atmos::Input
         return {};
     }
 
-    ScreenPosition NullManager::CurrentMousePosition() const
+    Spatial::ScreenPoint NullManager::CurrentMousePosition() const
     {
         return {};
     }

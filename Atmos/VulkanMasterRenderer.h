@@ -16,7 +16,7 @@
 #include "RegionRender.h"
 
 #include "ScreenSize.h"
-#include "ScreenPosition.h"
+#include "ScreenPoint.h"
 
 #include "Event.h"
 
@@ -49,7 +49,10 @@ namespace Atmos::Render::Vulkan
         void StageRender(const LineRender& lineRender);
         void StageRender(const RegionRender& regionRender);
 
-        void DrawFrame(Arca::Reliquary& reliquary, const ScreenSize& screenSize, const ScreenPosition& mapPosition);
+        void DrawFrame(
+            Arca::Reliquary& reliquary,
+            const Spatial::ScreenSize& screenSize,
+            const Spatial::ScreenPoint& mapPosition);
 
         void WaitForIdle() const;
     private:

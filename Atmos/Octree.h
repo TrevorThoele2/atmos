@@ -6,7 +6,7 @@
 
 #include "MathUtility.h"
 
-namespace Atmos::Grid
+namespace Atmos::Spatial::Grid
 {
     template<class ID, class Value>
     class Octree
@@ -27,7 +27,7 @@ namespace Atmos::Grid
             {}
         };
     public:
-        explicit Octree(Position3D center = Position3D());
+        explicit Octree(Point3D center = Point3D());
 
         void Add(ID id, const Value& value, Bounds bounds);
         void Add(ID id, Value&& value, Bounds bounds);
@@ -83,7 +83,7 @@ namespace Atmos::Grid
             void IntersectingChildren(
                 Bounds bounds,
                 std::vector<const Node*>& nodes,
-                Position3D parentCenter,
+                Point3D parentCenter,
                 Scale parentScale) const;
 
             void Subdivide();
@@ -95,7 +95,7 @@ namespace Atmos::Grid
 
         Node head;
         Scale headScale = 1;
-        Position3D headCenter;
+        Point3D headCenter;
 
         template<class T>
         void AddCommon(ID id, T value, Bounds bounds);
@@ -103,16 +103,16 @@ namespace Atmos::Grid
         [[nodiscard]] std::vector<Node*> NodeHierarchy(Bounds bounds);
         [[nodiscard]] std::vector<Node*> NodeHierarchySubdivide(Bounds bounds);
 
-        [[nodiscard]] static std::optional<ChosenChild> ChooseChild(Position3D center, Bounds bounds);
+        [[nodiscard]] static std::optional<ChosenChild> ChooseChild(Point3D center, Bounds bounds);
         [[nodiscard]] static size_t IndexFor(ChosenChild chosenChild);
-        [[nodiscard]] static Position3D CenterForChild(Position3D nodeCenter, ChosenChild chosenChild, Scale scale);
-        [[nodiscard]] static Bounds BoundsFor(Position3D center, Scale scale);
+        [[nodiscard]] static Point3D CenterForChild(Point3D nodeCenter, ChosenChild chosenChild, Scale scale);
+        [[nodiscard]] static Bounds BoundsFor(Point3D center, Scale scale);
         [[nodiscard]] static bool CanBeSubdivided(Scale scale);
-        [[nodiscard]] static Position3D::Value LengthFor(Scale scale);
+        [[nodiscard]] static Point3D::Value LengthFor(Scale scale);
     };
 
     template <class ID, class Value>
-    Octree<ID, Value>::Octree(Position3D center) : headCenter(center)
+    Octree<ID, Value>::Octree(Point3D center) : headCenter(center)
     {}
 
     template<class ID, class Value>
@@ -209,7 +209,7 @@ namespace Atmos::Grid
     void Octree<ID, Value>::Node::IntersectingChildren(
         Bounds bounds,
         std::vector<const Node*>& nodes,
-        Position3D parentCenter,
+        Point3D parentCenter,
         Scale parentScale) const
     {
         if (!IsSubdivided())
@@ -394,7 +394,7 @@ namespace Atmos::Grid
     }
 
     template<class ID, class Value>
-    auto Octree<ID, Value>::ChooseChild(Position3D center, Bounds bounds) -> std::optional<ChosenChild>
+    auto Octree<ID, Value>::ChooseChild(Point3D center, Bounds bounds) -> std::optional<ChosenChild>
     {
         ChosenChild chosenChild;
 
@@ -439,12 +439,12 @@ namespace Atmos::Grid
     }
 
     template<class ID, class Value>
-    Position3D Octree<ID, Value>::CenterForChild(Position3D nodeCenter, ChosenChild chosenChild, Scale scale)
+    Point3D Octree<ID, Value>::CenterForChild(Point3D nodeCenter, ChosenChild chosenChild, Scale scale)
     {
         const auto length = LengthFor(scale);
         const auto shiftLength = length / 2;
 
-        return Position3D
+        return Point3D
         {
             chosenChild.left ? nodeCenter.x - shiftLength : nodeCenter.x + shiftLength,
             chosenChild.top ? nodeCenter.y - shiftLength : nodeCenter.y + shiftLength,
@@ -453,7 +453,7 @@ namespace Atmos::Grid
     }
 
     template<class ID, class Value>
-    auto Octree<ID, Value>::BoundsFor(Position3D center, Scale scale) -> Bounds
+    auto Octree<ID, Value>::BoundsFor(Point3D center, Scale scale) -> Bounds
     {
         const auto length = LengthFor(scale);
         return Bounds
@@ -470,7 +470,7 @@ namespace Atmos::Grid
     }
 
     template<class ID, class Value>
-    Position3D::Value Octree<ID, Value>::LengthFor(Scale scale)
+    Point3D::Value Octree<ID, Value>::LengthFor(Scale scale)
     {
         return CellSize<Size3D::Value> * PowerOfTwo(static_cast<Size3D::Value>(scale));
     }

@@ -28,7 +28,7 @@ namespace Atmos::Render::Resource::DirectX9
         void Reset();
         void Release();
 
-        [[nodiscard]] ScreenSize Size() const override;
+        [[nodiscard]] Spatial::ScreenSize Size() const override;
 
         [[nodiscard]] D3DPRESENT_PARAMETERS PresentationParameters() const;
         [[nodiscard]] LPDIRECT3DSURFACE9 BackBuffer() const;

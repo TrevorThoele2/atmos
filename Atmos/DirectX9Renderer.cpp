@@ -47,7 +47,7 @@ namespace Atmos::Render::DirectX9
             imageRender.position.z,
             imageRender.assetSlice,
             imageRender.size,
-            Angle(),
+            Spatial::Angle(),
             imageRender.color);
     }
 
@@ -61,7 +61,7 @@ namespace Atmos::Render::DirectX9
         
     }
 
-    void Renderer::DrawFrame(ScreenSize screenSize, const Color& backgroundColor)
+    void Renderer::DrawFrame(Spatial::ScreenSize screenSize, const Color& backgroundColor)
     {
         PushAllThroughPipeline(screenSize, backgroundColor);
     }
@@ -113,9 +113,9 @@ namespace Atmos::Render::DirectX9
         const Asset::Shader* shader,
         float x,
         float y,
-        const AxisAlignedBox2D& imageBounds,
-        const Size2D& size,
-        const Angle& rotation,
+        const Spatial::AxisAlignedBox2D& imageBounds,
+        const Spatial::Size2D& size,
+        const Spatial::Angle& rotation,
         const Color& color)
         -> StagedObject
     {
@@ -180,7 +180,7 @@ namespace Atmos::Render::DirectX9
         vertices(vertices), indices(indices), primCount(primCount), texture(texture), shader(shader)
     {}
 
-    Renderer::StagedLine::StagedLine(const std::vector<Position2D>& points, float width, const Color& color) :
+    Renderer::StagedLine::StagedLine(const std::vector<Spatial::Point2D>& points, float width, const Color& color) :
         width(width),
         color(ToDirectXColor(color))
     {
@@ -241,9 +241,9 @@ namespace Atmos::Render::DirectX9
         float x,
         float y,
         float z,
-        const AxisAlignedBox2D& imageBounds,
-        const Size2D& size,
-        const Angle& rotation,
+        const Spatial::AxisAlignedBox2D& imageBounds,
+        const Spatial::Size2D& size,
+        const Spatial::Angle& rotation,
         const Color& color)
     {
         const auto layer = LayerWithZ(z);
@@ -251,8 +251,8 @@ namespace Atmos::Render::DirectX9
     }
 
     void Renderer::StageRender(
-        const std::vector<Position2D>& points,
-        Position2D::Value z,
+        const std::vector<Spatial::Point2D>& points,
+        Spatial::Point2D::Value z,
         float width,
         const Color& color)
     {
@@ -260,7 +260,7 @@ namespace Atmos::Render::DirectX9
         layer->lines.emplace_back(points, width, color);
     }
 
-    void Renderer::PushAllThroughPipeline(const ScreenSize& screenSize, const Color& backgroundColor)
+    void Renderer::PushAllThroughPipeline(const Spatial::ScreenSize& screenSize, const Color& backgroundColor)
     {
         D3DXMATRIX projection;
 
@@ -293,7 +293,7 @@ namespace Atmos::Render::DirectX9
         LPDIRECT3DVERTEXDECLARATION9 vertexDeclaration,
         LPD3DXLINE lineInterface,
         D3DXMATRIX projection,
-        const ScreenSize& screenSize)
+        const Spatial::ScreenSize& screenSize)
         :
         manager(manager),
         device(device),

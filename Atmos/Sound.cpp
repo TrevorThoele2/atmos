@@ -4,12 +4,12 @@ namespace Atmos::Audio
 {
     void Sound::PostConstruct()
     {
-        bounds = Find<Bounds>();
+        bounds = Find<Spatial::Bounds>();
     }
 
     void Sound::Initialize(Asset&& asset)
     {
-        bounds = Create<Bounds>();
+        bounds = Create<Spatial::Bounds>();
         this->asset = std::move(asset);
     }
 }

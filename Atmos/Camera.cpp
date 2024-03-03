@@ -1,30 +1,75 @@
 #include "Camera.h"
 
+#include "MoveBoundsTo.h"
+#include "MoveBoundsBy.h"
+#include "MoveBoundsDirection.h"
+#include "ScaleBounds.h"
+
+#include "PointConversions.h"
+
 namespace Atmos::Render
 {
-    Camera::Camera(Init init) : ClosedTypedRelic(init)
-    {}
-
-    AxisAlignedBox2D Camera::ScreenSides() const
+    void Camera::MoveTo(const Spatial::Point3D& to) const
     {
-        return AxisAlignedBox2D
+        Owner().Do<Spatial::MoveBoundsTo>(ID(), to);
+    }
+
+    void Camera::MoveBy(const Spatial::Point3D& by) const
+    {
+        Owner().Do<Spatial::MoveBoundsBy>(ID(), by);
+    }
+
+    void Camera::MoveDirection(const Spatial::Direction& direction, Spatial::Point3D::Value amount) const
+    {
+        Owner().Do<Spatial::MoveBoundsDirection>(ID(), direction, amount);
+    }
+
+    void Camera::Scalers(const Spatial::Scalers2D& to) const
+    {
+        Owner().Do<Spatial::ScaleBounds>(ID(), to);
+    }
+
+    Spatial::Point3D Camera::Position() const
+    {
+        return bounds->Position();
+    }
+
+    Spatial::Size2D Camera::Size() const
+    {
+        return bounds->Size();
+    }
+
+    Spatial::AxisAlignedBox2D Camera::ScreenSides() const
+    {
+        const auto size = bounds->Size();
+
+        return Spatial::AxisAlignedBox2D
         {
-            center,
-            Size2D
+            ToPoint2D(bounds->Position()),
+            Spatial::Size2D
             {
-                static_cast<Size2D::Value>(size.width),
-                static_cast<Size2D::Value>(size.height)
+                static_cast<Spatial::Size2D::Value>(size.width),
+                static_cast<Spatial::Size2D::Value>(size.height)
             }
         };
     }
+
+    Camera::Camera(Init init) :
+        ClosedTypedRelic(init),
+        bounds(init.Create<Spatial::Bounds>(
+            Spatial::Point3D{},
+            Spatial::Size2D{1, 1},
+            Spatial::Scalers2D{1, 1},
+            Spatial::Angle{}))
+    {}
+
+    Camera::Camera(Init init, Arca::Serialization) :
+        ClosedTypedRelic(init), bounds(init.Find<Spatial::Bounds>())
+    {}
 }
 
 namespace Inscription
 {
     void Scribe<::Atmos::Render::Camera, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
-    {
-        archive(object.center);
-        archive(object.size);
-        archive(object.zoom);
-    }
+    {}
 }

@@ -4,7 +4,7 @@
 
 #include "VulkanUniversalData.h"
 #include "MaterialAsset.h"
-#include "Position3D.h"
+#include "Point3D.h"
 
 namespace Atmos::Render::Vulkan
 {
@@ -20,7 +20,7 @@ namespace Atmos::Render::Vulkan
         virtual void End() = 0;
 
         [[nodiscard]] virtual bool IsDone() const = 0;
-        [[nodiscard]] virtual Position3D::Value NextLayer() const = 0;
+        [[nodiscard]] virtual Spatial::Point3D::Value NextLayer() const = 0;
         [[nodiscard]] virtual uint32_t LayerCount() const = 0;
     };
 }

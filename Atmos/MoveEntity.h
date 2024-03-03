@@ -9,7 +9,7 @@ namespace Atmos::Entity
     struct MoveEntity
     {
         Arca::Index<Entity> entity;
-        Grid::Position toPosition;
+        Spatial::Grid::Point toPosition;
         Time::Duration<> timeTaken;
     };
 }

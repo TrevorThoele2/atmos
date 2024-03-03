@@ -2,9 +2,8 @@
 
 #include <Arca/ClosedTypedRelic.h>
 
-#include "Position2D.h"
-#include "Position3D.h"
-#include "ScreenSize.h"
+#include "Bounds.h"
+#include "Direction.h"
 #include "AxisAlignedBox2D.h"
 
 namespace Atmos::Render
@@ -12,16 +11,20 @@ namespace Atmos::Render
     class Camera final : public Arca::ClosedTypedRelic<Camera>
     {
     public:
-        const Position3D* focusedPosition = nullptr;
+        void MoveTo(const Spatial::Point3D& to) const;
+        void MoveBy(const Spatial::Point3D& by) const;
+        void MoveDirection(const Spatial::Direction& direction, Spatial::Point3D::Value amount) const;
+        void Scalers(const Spatial::Scalers2D& to) const;
 
-        Position2D center;
-        ScreenSize size;
+        [[nodiscard]] Spatial::Point3D Position() const;
+        [[nodiscard]] Spatial::Size2D Size() const;
 
-        Position3D::Value zoom = 0;
-
-        [[nodiscard]] AxisAlignedBox2D ScreenSides() const;
+        [[nodiscard]] Spatial::AxisAlignedBox2D ScreenSides() const;
     public:
         explicit Camera(Init init);
+        explicit Camera(Init init, Arca::Serialization);
+    private:
+        Arca::Index<Spatial::Bounds> bounds;
     };
 }
 

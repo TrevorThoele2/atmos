@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Position2D.h"
+#include "Point2D.h"
 #include "Angle.h"
 
-namespace Atmos
+namespace Atmos::Spatial
 {
     struct Vector2D
     {

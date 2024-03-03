@@ -3,12 +3,10 @@
 #include "WorldSerializationTests.h"
 
 #include <Atmos/StaticImage.h>
-#include <Atmos/DynamicImage.h>
 #include <Atmos/TypeRegistration.h>
 
 #include <Atmos/OutputWorldArchiveInterface.h>
 #include <Atmos/WorldFileExtension.h>
-#include <Atmos/ResizeCamera.h>
 #include <Atmos/Camera.h>
 #include <Atmos/MainSurface.h>
 
@@ -31,11 +29,12 @@ SCENARIO_METHOD(WorldSerializationTestsFixture, "rendering after world serializa
 
         engine.mockGraphicsManager->Initialize(fieldReliquary, nullptr);
 
-        fieldReliquary.Do<ResizeCamera>(ScreenSize(
-            std::numeric_limits<ScreenSize::Dimension>::max(),
-            std::numeric_limits<ScreenSize::Dimension>::max()));
-
         const auto camera = Arca::Index<Camera>(fieldReliquary);
+
+        camera->Scalers(Spatial::Scalers2D{
+            std::numeric_limits<Spatial::Scalers2D::Value>::max(),
+            std::numeric_limits<Spatial::Scalers2D::Value>::max() });
+
         const auto cameraLeft = camera->ScreenSides().Left();
         const auto cameraTop = camera->ScreenSides().Top();
 
@@ -51,43 +50,43 @@ SCENARIO_METHOD(WorldSerializationTestsFixture, "rendering after world serializa
             std::vector<World::Field> fields;
             fields.push_back(std::move(field));
 
-            auto positions = std::vector<Position3D>
+            auto positions = std::vector<Spatial::Point3D>
             {
-                Position3D
+                Spatial::Point3D
                 {
-                    dataGeneration.Random<Position3D::Value>(TestFramework::Range<Position3D::Value>(-1000, 1000)),
-                    dataGeneration.Random<Position3D::Value>(TestFramework::Range<Position3D::Value>(-1000, 1000)),
-                    dataGeneration.Random<Position3D::Value>(TestFramework::Range<Position3D::Value>(-1000, 1000))
+                    dataGeneration.Random<Spatial::Point3D::Value>(TestFramework::Range<Spatial::Point3D::Value>(-1000, 1000)),
+                    dataGeneration.Random<Spatial::Point3D::Value>(TestFramework::Range<Spatial::Point3D::Value>(-1000, 1000)),
+                    dataGeneration.Random<Spatial::Point3D::Value>(TestFramework::Range<Spatial::Point3D::Value>(-1000, 1000))
                 },
-                Position3D
+                Spatial::Point3D
                 {
-                    dataGeneration.Random<Position3D::Value>(TestFramework::Range<Position3D::Value>(-1000, 1000)),
-                    dataGeneration.Random<Position3D::Value>(TestFramework::Range<Position3D::Value>(-1000, 1000)),
-                    dataGeneration.Random<Position3D::Value>(TestFramework::Range<Position3D::Value>(-1000, 1000))
+                    dataGeneration.Random<Spatial::Point3D::Value>(TestFramework::Range<Spatial::Point3D::Value>(-1000, 1000)),
+                    dataGeneration.Random<Spatial::Point3D::Value>(TestFramework::Range<Spatial::Point3D::Value>(-1000, 1000)),
+                    dataGeneration.Random<Spatial::Point3D::Value>(TestFramework::Range<Spatial::Point3D::Value>(-1000, 1000))
                 },
-                Position3D
+                Spatial::Point3D
                 {
-                    dataGeneration.Random<Position3D::Value>(TestFramework::Range<Position3D::Value>(-1000, 1000)),
-                    dataGeneration.Random<Position3D::Value>(TestFramework::Range<Position3D::Value>(-1000, 1000)),
-                    dataGeneration.Random<Position3D::Value>(TestFramework::Range<Position3D::Value>(-1000, 1000))
+                    dataGeneration.Random<Spatial::Point3D::Value>(TestFramework::Range<Spatial::Point3D::Value>(-1000, 1000)),
+                    dataGeneration.Random<Spatial::Point3D::Value>(TestFramework::Range<Spatial::Point3D::Value>(-1000, 1000)),
+                    dataGeneration.Random<Spatial::Point3D::Value>(TestFramework::Range<Spatial::Point3D::Value>(-1000, 1000))
                 }
             };
-            auto scalers = std::vector<Scalers2D>
+            auto scalers = std::vector<Spatial::Scalers2D>
             {
-                Scalers2D
+                Spatial::Scalers2D
                 {
-                    dataGeneration.Random<Scalers2D::Value>(TestFramework::Range<Scalers2D::Value>(1, 1000)),
-                    dataGeneration.Random<Scalers2D::Value>(TestFramework::Range<Scalers2D::Value>(1, 1000))
+                    dataGeneration.Random<Spatial::Scalers2D::Value>(TestFramework::Range<Spatial::Scalers2D::Value>(1, 1000)),
+                    dataGeneration.Random<Spatial::Scalers2D::Value>(TestFramework::Range<Spatial::Scalers2D::Value>(1, 1000))
                 },
-                Scalers2D
+                Spatial::Scalers2D
                 {
-                    dataGeneration.Random<Scalers2D::Value>(TestFramework::Range<Scalers2D::Value>(1, 1000)),
-                    dataGeneration.Random<Scalers2D::Value>(TestFramework::Range<Scalers2D::Value>(1, 1000))
+                    dataGeneration.Random<Spatial::Scalers2D::Value>(TestFramework::Range<Spatial::Scalers2D::Value>(1, 1000)),
+                    dataGeneration.Random<Spatial::Scalers2D::Value>(TestFramework::Range<Spatial::Scalers2D::Value>(1, 1000))
                 },
-                Scalers2D
+                Spatial::Scalers2D
                 {
-                    dataGeneration.Random<Scalers2D::Value>(TestFramework::Range<Scalers2D::Value>(1, 1000)),
-                    dataGeneration.Random<Scalers2D::Value>(TestFramework::Range<Scalers2D::Value>(1, 1000))
+                    dataGeneration.Random<Spatial::Scalers2D::Value>(TestFramework::Range<Spatial::Scalers2D::Value>(1, 1000)),
+                    dataGeneration.Random<Spatial::Scalers2D::Value>(TestFramework::Range<Spatial::Scalers2D::Value>(1, 1000))
                 }
             };
             fields[0].Reliquary().Do<Arca::Create<StaticImage>>(
@@ -97,7 +96,7 @@ SCENARIO_METHOD(WorldSerializationTestsFixture, "rendering after world serializa
                 Color{},
                 positions[0],
                 scalers[0],
-                Angle{});
+                Spatial::Angle{});
             fields[0].Reliquary().Do<Arca::Create<StaticImage>>(
                 imageAsset,
                 0,
@@ -105,7 +104,7 @@ SCENARIO_METHOD(WorldSerializationTestsFixture, "rendering after world serializa
                 Color{},
                 positions[1],
                 scalers[1],
-                Angle{});
+                Spatial::Angle{});
             fields[0].Reliquary().Do<Arca::Create<StaticImage>>(
                 imageAsset,
                 0,
@@ -113,7 +112,7 @@ SCENARIO_METHOD(WorldSerializationTestsFixture, "rendering after world serializa
                 Color{},
                 positions[2],
                 scalers[2],
-                Angle{});
+                Spatial::Angle{});
 
             auto filePath = "Test." + World::Serialization::worldFileExtension;
 
@@ -149,7 +148,7 @@ SCENARIO_METHOD(WorldSerializationTestsFixture, "rendering after world serializa
                             expectedPosition.y -= cameraTop;
 
                             return entry.position == expectedPosition
-                                && entry.size == Size2D{ scalers[i].x, scalers[i].y };
+                                && entry.size == Spatial::Size2D{ scalers[i].x, scalers[i].y };
                         }));
                 }
             }
