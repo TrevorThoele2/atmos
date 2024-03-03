@@ -110,7 +110,7 @@ namespace Atmos::Render
 
             const auto viewSlice = Owner().Find<ViewSlice>(id);
             const auto assetSlice = asset->Slice(assetIndex);
-            const auto [size, slice] = ViewSliceDependent(viewSlice, assetSlice, bounds.Size(), bounds.Scalers());
+            const auto [size, slice] = ViewSliceDependent(viewSlice, assetSlice, bounds.Size());
 
             const ImageRender render
             {
@@ -196,8 +196,7 @@ namespace Atmos::Render
     std::tuple<Spatial::Size2D, Spatial::AxisAlignedBox2D> ImageCurator::ViewSliceDependent(
         Arca::Index<ViewSlice> viewSlice,
         const Spatial::AxisAlignedBox2D& assetSlice,
-        const Spatial::Size2D& boundsSize,
-        const Spatial::Scalers2D& scalers)
+        const Spatial::Size2D& boundsSize)
     {
         if (viewSlice)
         {

@@ -51,8 +51,7 @@ namespace Atmos::Render
         static std::tuple<Spatial::Size2D, Spatial::AxisAlignedBox2D> ViewSliceDependent(
             Arca::Index<ViewSlice> viewSlice,
             const Spatial::AxisAlignedBox2D& assetSlice,
-            const Spatial::Size2D& boundsSize,
-            const Spatial::Scalers2D& scalers);
+            const Spatial::Size2D& boundsSize);
     };
 }
 

@@ -7,30 +7,29 @@
 #include "GraphicsError.h"
 #include "Logger.h"
 
+#include <Inscription/InputBinaryArchive.h>
+
 namespace Atmos::Render::Vulkan
 {
     ShaderCompiler::ShaderCompiler(Logging::Logger& logger) : logger(&logger)
     {}
 
-    void ShaderCompiler::Compile(
-        const File::Path& inputPath,
-        const File::Path& outputPath)
+    Buffer ShaderCompiler::Compile(const File::Path& filePath)
     {
-        DoCompile(inputPath, outputPath, { "-O" });
+        return DoCompile(filePath, { "-O" });
     }
 
-    void ShaderCompiler::CompileWithDebugging(
-        const File::Path& inputPath,
-        const File::Path& outputPath)
+    Buffer ShaderCompiler::CompileWithDebugging(const File::Path& filePath)
     {
-        DoCompile(inputPath, outputPath, { "-O0" });
+        return DoCompile(filePath, { "-O0" });
     }
-
-    void ShaderCompiler::DoCompile(
+    
+    Buffer ShaderCompiler::DoCompile(
         const File::Path& inputPath,
-        const File::Path& outputPath,
         const std::vector<std::string>& additionalFlags)
     {
+        const auto outputPath = File::Path(inputPath).replace_extension(
+            inputPath.extension().string() + String("_temp"));
         try
         {
             auto path = "./tools32/glslc.exe " + inputPath.string() + " -o " + outputPath.string();
@@ -64,9 +63,18 @@ namespace Atmos::Render::Vulkan
             throw;
         }
 
+        Inscription::Buffer buffer;
+        {
+            Inscription::Archive::InputBinary archive(outputPath);
+            buffer.value.resize(static_cast<const unsigned int>(archive.Size()));
+            archive.Read(buffer);
+        }
+
         logger->Log(
             "Compilation of shader succeeded.",
             Logging::Severity::Information,
             { { { "InputPath", inputPath.generic_string() } } });
+
+        return buffer.value;
     }
 }

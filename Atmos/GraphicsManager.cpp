@@ -79,10 +79,9 @@ namespace Atmos::Render
         PruneResourcesImpl();
     }
 
-    File::Path GraphicsManager::CompileShader(
-        const File::Path& inputFilePath, const std::optional<File::Path>& outputFilePath)
+    Buffer GraphicsManager::CompileShader(const File::Path& filePath)
     {
-        return CompileShaderImpl(inputFilePath, outputFilePath);
+        return CompileShaderImpl(filePath);
     }
 
     void GraphicsManager::Reconstruct(GraphicsReconstructionObjects objects)

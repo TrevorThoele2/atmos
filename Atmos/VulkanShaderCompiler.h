@@ -2,6 +2,7 @@
 
 #include "FilePath.h"
 #include "Logger.h"
+#include "Buffer.h"
 
 namespace Atmos::Render::Vulkan
 {
@@ -10,16 +11,11 @@ namespace Atmos::Render::Vulkan
     public:
         explicit ShaderCompiler(Logging::Logger& logger);
 
-        void Compile(
-            const File::Path& inputPath,
-            const File::Path& outputPath);
-        void CompileWithDebugging(
-            const File::Path& inputPath,
-            const File::Path& outputPath);
+        Buffer Compile(const File::Path& filePath);
+        Buffer CompileWithDebugging(const File::Path& filePath);
     private:
-        void DoCompile(
+        Buffer DoCompile(
             const File::Path& inputPath,
-            const File::Path& outputPath,
             const std::vector<std::string>& additionalFlags = {});
     private:
         Logging::Logger* logger;

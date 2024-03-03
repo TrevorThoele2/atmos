@@ -62,6 +62,7 @@
     <ClInclude Include="AngelScriptModifyProperties.h" />
     <ClInclude Include="AngelScriptModifyWorldProperties.h" />
     <ClInclude Include="AngelScriptNumericLimits.h" />
+    <ClInclude Include="AngelScriptPaths.h" />
     <ClInclude Include="AngelScriptProperty.h" />
     <ClInclude Include="AngelScriptFindByBox.h" />
     <ClInclude Include="AngelScriptGridRegion.h" />
@@ -107,6 +108,7 @@
     <ClInclude Include="SDLText.h" />
     <ClInclude Include="VulkanBackingSurfaceResource.h" />
     <ClInclude Include="VulkanImageResourceData.h" />
+    <ClInclude Include="VulkanPaths.h" />
     <ClInclude Include="VulkanStoredImageResource.h" />
     <ClInclude Include="VulkanStoredResource.h" />
     <ClInclude Include="DiagnosticsCurator.h" />
@@ -198,7 +200,6 @@
     <ClInclude Include="AngelScriptBounds.h" />
     <ClInclude Include="AngelScriptColor.h" />
     <ClInclude Include="AngelScriptCommand.h" />
-    <ClInclude Include="AngelScriptCompiledFileExtension.h" />
     <ClInclude Include="AngelScriptDynamicImage.h" />
     <ClInclude Include="AngelScriptEnumRegistration.h" />
     <ClInclude Include="AngelScriptFactory.h" />
@@ -554,6 +555,7 @@
     <ClCompile Include="AngelScriptGridSize.cpp" />
     <ClCompile Include="AngelScriptModifyProperties.cpp" />
     <ClCompile Include="AngelScriptModifyWorldProperties.cpp" />
+    <ClCompile Include="AngelScriptPaths.cpp" />
     <ClCompile Include="AngelScriptProperty.cpp" />
     <ClCompile Include="AngelScriptFindByBox.cpp" />
     <ClCompile Include="AngelScriptGridRegion.cpp" />
@@ -621,6 +623,7 @@
     <ClCompile Include="SDLText.cpp" />
     <ClCompile Include="VulkanBackingSurfaceResource.cpp" />
     <ClCompile Include="VulkanImageResourceData.cpp" />
+    <ClCompile Include="VulkanPaths.cpp" />
     <ClCompile Include="VulkanStoredImageResource.cpp" />
     <ClCompile Include="VulkanStoredResource.cpp" />
     <ClCompile Include="DiagnosticsCurator.cpp" />

@@ -151,37 +151,13 @@ namespace Atmos::Render::Vulkan
         destroyedResources.clear();
     }
 
-    File::Path GraphicsManager::CompileShaderImpl(
-        const File::Path& inputFilePath, const std::optional<File::Path>& outputFilePath)
+    Atmos::Buffer GraphicsManager::CompileShaderImpl(const File::Path& filePath)
     {
-        const auto useInputFilePath = inputFilePath;
-        File::Path useOutputFilePath;
-        if (outputFilePath)
-            useOutputFilePath = *outputFilePath;
-        else
-        {
-            useOutputFilePath = useInputFilePath;
-
-            const auto extension = Chroma::ReplaceString(
-                Chroma::ToString(useOutputFilePath.extension()),
-                ".",
-                "");
-            const auto oldFileName = Chroma::ToString(useOutputFilePath.filename());
-            const auto newFileName = Chroma::ReplaceString(
-                oldFileName,
-                String(".") + extension,
-                String("_") + extension + ".spv");
-
-            useOutputFilePath.replace_filename(newFileName);
-        }
-
 #ifndef NDEBUG
-        shaderCompiler.CompileWithDebugging(useInputFilePath, useOutputFilePath);
+        return shaderCompiler.CompileWithDebugging(filePath);
 #else
-        shaderCompiler.Compile(useInputFilePath, useOutputFilePath);
+        return shaderCompiler.Compile(filePath);
 #endif
-
-        return useOutputFilePath;
     }
 
     bool GraphicsManager::ShouldReconstructInternals() const

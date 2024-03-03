@@ -1295,9 +1295,6 @@
     <ClInclude Include="CreateScriptAssetResource.h">
       <Filter>Header Files\Assets\Script</Filter>
     </ClInclude>
-    <ClInclude Include="AngelScriptCompiledFileExtension.h">
-      <Filter>Header Files\Scripting\AngelScript\Serialization</Filter>
-    </ClInclude>
     <ClInclude Include="InputAngelScriptBytecodeStream.h">
       <Filter>Header Files\Scripting\AngelScript\Serialization</Filter>
     </ClInclude>
@@ -2092,6 +2089,12 @@
     </ClInclude>
     <ClInclude Include="SDLText.h">
       <Filter>Header Files\Render\Text\SDL</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanPaths.h">
+      <Filter>Header Files\Render\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptPaths.h">
+      <Filter>Header Files\Scripting\AngelScript</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -3075,6 +3078,12 @@
     </ClCompile>
     <ClCompile Include="SDLText.cpp">
       <Filter>Source Files\Render\Text\SDL</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanPaths.cpp">
+      <Filter>Source Files\Render\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptPaths.cpp">
+      <Filter>Source Files\Scripting\AngelScript</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
