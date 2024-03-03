@@ -19,7 +19,7 @@ SCENARIO_METHOD(FrameTestsFixture, "frame", "[frame]")
     GIVEN("setup engine with field")
     {
         Logging::Logger logger(Logging::Severity::Verbose);
-        logger.Add<Logging::FileSink>();
+        logger.AddSink<Logging::FileSink>();
         DerivedEngine engine(logger);
 
         auto fieldOrigin = Arca::ReliquaryOrigin();

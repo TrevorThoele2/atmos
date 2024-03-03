@@ -13,7 +13,7 @@
 SCENARIO_METHOD(ScriptTestsFixture, "script tests", "[script]")
 {
     Logging::Logger logger(Logging::Severity::Verbose);
-    logger.Add<Logging::FileSink>();
+    logger.AddSink<Logging::FileSink>();
     DerivedEngine engine(logger);
 
     auto fieldOrigin = Arca::ReliquaryOrigin();

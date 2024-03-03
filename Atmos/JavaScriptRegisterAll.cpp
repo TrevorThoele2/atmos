@@ -12,6 +12,7 @@
 #include "JavaScriptEntityNamespace.h"
 #include "JavaScriptTime.h"
 #include "JavaScriptMath.h"
+#include "JavaScriptNumeric.h"
 
 namespace Atmos::Scripting::JavaScript
 {
@@ -25,6 +26,7 @@ namespace Atmos::Scripting::JavaScript
             const auto atmosObject = CreateObject(
                 *isolate,
                 {
+                    { "nullRelicId", ToV8(*isolate, Arca::nullRelicID) },
                     { "Traits", Type<ArcaTraits>::Register(data) },
                     { "Spatial", Type<SpatialNamespace>::Register(data) },
                     { "Logging", Type<LoggingNamespace>::Register(data) },

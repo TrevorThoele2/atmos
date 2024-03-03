@@ -13,6 +13,8 @@ declare module Atmos {
 
     export type RelicId = number;
 
+    export const nullRelicId: RelicId;
+
     export interface Command {}
 
     export interface Signal {}
@@ -333,6 +335,8 @@ declare module Atmos {
         export function envelope(boxes: AxisAlignedBox3D[]): AxisAlignedBox3D;
         export function clamp(box: AxisAlignedBox2D, to: AxisAlignedBox2D): AxisAlignedBox2D;
         export function clamp(box: AxisAlignedBox3D, to: AxisAlignedBox3D): AxisAlignedBox3D;
+        export function scaleBy(size: Size2D, scalers: Scalers2D): Size2D;
+        export function scaleBy(size: Size3D, scalers: Scalers3D): Size3D;
         export function scaleOf(box: AxisAlignedBox2D, against: AxisAlignedBox2D): AxisAlignedBox2D;
         export function scaleOf(box: AxisAlignedBox3D, against: AxisAlignedBox3D): AxisAlignedBox3D;
         export function cell(column: number, row: number, cellSize: Size2D): AxisAlignedBox2D;

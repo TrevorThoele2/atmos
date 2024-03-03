@@ -16,6 +16,7 @@ namespace Atmos::Logging
     {
         if (shouldSignalStopSession)
             Log("Session stopped.");
+        Flush();
     }
 
     Logger& Logger::operator=(Logger&& arg)
@@ -43,5 +44,11 @@ namespace Atmos::Logging
         std::optional<Details> details)
     {
         Log(Logging::Log{ message, severity, details ? *details : Details{} });
+    }
+
+    void Logger::Flush()
+    {
+        for (auto& sink : sinks)
+            sink->Flush();
     }
 }

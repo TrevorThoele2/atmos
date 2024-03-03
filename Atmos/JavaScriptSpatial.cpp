@@ -14,6 +14,8 @@
 #include "JavaScriptPoint3D.h"
 #include "JavaScriptSize2D.h"
 #include "JavaScriptSize3D.h"
+#include "JavaScriptScalers2D.h"
+#include "JavaScriptScalers3D.h"
 #include "JavaScriptMoveBounds.h"
 #include "JavaScriptRotateBounds.h"
 #include "JavaScriptScaleBounds.h"
@@ -53,6 +55,7 @@ namespace Atmos::Scripting::JavaScript
                 { "intersects", CreateFunction(*isolate, data.context, &OnIntersects) },
                 { "envelope", CreateFunction(*isolate, data.context, &OnEnvelope) },
                 { "clamp", CreateFunction(*isolate, data.context, &OnClamp) },
+                { "scaleBy", CreateFunction(*isolate, data.context, &OnScaleBy) },
                 { "scaleOf", CreateFunction(*isolate, data.context, &OnScaleOf) },
                 { "cell", CreateFunction(*isolate, data.context, &OnCell) },
                 { "add", CreateFunction(*isolate, data.context, &OnAdd) },
@@ -321,6 +324,41 @@ namespace Atmos::Scripting::JavaScript
             const auto otherBox = FromV8<Spatial::AxisAlignedBox2D>(*isolate, info[1]);
             if (otherBox)
                 info.GetReturnValue().Set(ToV8(*isolate, Spatial::Clamp(*box2D, *otherBox)));
+            else
+                throwException();
+        }
+        else
+            throwException();
+    }
+
+    void Type<SpatialNamespace>::OnScaleBy(const v8::FunctionCallbackInfo<v8::Value>& info)
+    {
+        const auto isolate = info.GetIsolate();
+
+        const auto throwException = [&]
+        {
+            isolate->ThrowException(ToV8(
+                *isolate,
+                String(R"(The function "scaleOf" has the following signatures: )") +
+                String(R"V0G0N((Atmos::Spatial::Size2D, Atmos::Spatial::Scalers2D), )V0G0N") +
+                String(R"V0G0N((Atmos::Spatial::Size3D, Atmos::Spatial::Scalers3D))V0G0N")));
+        };
+
+        const auto size3D = FromV8<Spatial::Size3D>(*isolate, info[0]);
+        const auto size2D = FromV8<Spatial::Size2D>(*isolate, info[0]);
+        if (size3D)
+        {
+            const auto scalers = FromV8<Spatial::Scalers3D>(*isolate, info[1]);
+            if (scalers)
+                info.GetReturnValue().Set(ToV8(*isolate, Spatial::ScaleBy(*size3D, *scalers)));
+            else
+                throwException();
+        }
+        else if (size2D)
+        {
+            const auto scalers = FromV8<Spatial::Scalers2D>(*isolate, info[1]);
+            if (scalers)
+                info.GetReturnValue().Set(ToV8(*isolate, Spatial::ScaleBy(*size2D, *scalers)));
             else
                 throwException();
         }

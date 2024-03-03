@@ -116,7 +116,7 @@ namespace Atmos::Render
             const auto assetSliceSize = asset->SliceSize();
             const auto assetSliceStandard = ViewSliceClamp(
                 Owner().Find<ViewSlice>(id),
-                Spatial::ToAxisAlignedBox2D(0, 0, assetSliceSize.width, assetSliceSize.height));
+                Spatial::ToAxisAlignedBox2D(0, 0, assetSliceSize.width * scalers.x, assetSliceSize.height * scalers.y));
             const auto assetSlice = Spatial::AxisAlignedBox2D{
                 assetSliceStandard.center + Spatial::Point2D{
                     assetSliceCenter.x - assetSliceSize.width / 2,

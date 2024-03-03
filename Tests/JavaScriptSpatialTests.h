@@ -132,6 +132,36 @@ private:
     }
 };
 
+class JavaScriptSpatialScaleByTestsFixture : public JavaScriptFixture
+{
+public:
+    using ScenarioT = std::tuple<std::vector<Variant>, std::function<void(const String&)>>;
+public:
+    static ScenarioT Size2D();
+    static ScenarioT Size3D();
+private:
+    template<class Size, class Scalers>
+    static ScenarioT CreateScenario(const Size& size, const Scalers& scalers)
+    {
+        std::vector<Variant> parameters =
+        {
+            Inscription::Json::ToString(size),
+            Inscription::Json::ToString(scalers)
+        };
+
+        const auto expectation = [size, scalers](const String& json)
+        {
+            Size returnedSize;
+            Inscription::Json::FromString(returnedSize, json);
+
+            const auto expectedBox = Spatial::ScaleBy(size, scalers);
+            REQUIRE(returnedSize == expectedBox);
+        };
+
+        return { parameters, expectation };
+    }
+};
+
 class JavaScriptSpatialScaleOfTestsFixture : public JavaScriptFixture
 {
 public:
