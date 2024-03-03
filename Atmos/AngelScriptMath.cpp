@@ -10,6 +10,18 @@ namespace Atmos::Scripting::Angel
     void Registration<Math>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         GlobalRegistration(ContainingNamespace())
+            .Function(&Management::Function<&Floor<float>>,
+                "float", "Floor", { "float value" })
+            .Function(&Management::Function<&Floor<double>>,
+                "double", "Floor", { "double value" })
+            .Function(&Management::Function<&Ceiling<float>>,
+                "float", "Ceiling", { "float value" })
+            .Function(&Management::Function<&Floor<double>>,
+                "double", "Ceiling", { "double value" })
+            .Function(&Management::Function<&Round<float>>,
+                "float", "Round", { "float value" })
+            .Function(&Management::Function<&Round<double>>,
+                "double", "Round", { "double value" })
             .Function(&Management::Function<&AbsoluteValue<std::int8_t, long long>>,
                 "int8", "Abs", { "int8 value" })
             .Function(&Management::Function<&AbsoluteValue<std::int16_t, long long>>,
