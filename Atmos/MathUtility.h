@@ -132,16 +132,16 @@ namespace Atmos
         return !IsDivisibleBy(t, 2);
     }
 
-    template<class From, class To>
-    inline To ConvertRange(From fromValue, From fromMin, From fromMax, To toMin, To toMax)
+    template<class T>
+    inline T ConvertRange(T fromValue, T fromMin, T fromMax, T toMin, T toMax)
     {
-        const auto fromRange = static_cast<To>(fromMax - fromMin);
+        const auto fromRange = fromMax - fromMin;
         if (fromRange == 0)
-            return static_cast<To>(fromMin);
+            return fromMin;
         else
         {
             const auto toRange = toMax - toMin;
-            return (static_cast<To>((fromValue - fromMin) * toRange) / fromRange) + toMin;
+            return (((fromValue - fromMin) * toRange) / fromRange) + toMin;
         }
     }
 }

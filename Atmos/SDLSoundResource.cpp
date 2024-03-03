@@ -94,7 +94,7 @@ namespace Atmos::Audio::Resource::SDL
     void Sound::SetChunkVolume(Volume volume)
     {
         const auto clampedVolume = std::clamp(volume, 0.0f, 1.0f);
-        const auto mixVolume = ConvertRange(clampedVolume, 0.0f, 1.0f, minMixVolume, maxMixVolume);
+        const auto mixVolume = static_cast<int>(ConvertRange(clampedVolume, 0.0f, 1.0f, minMixVolume, maxMixVolume));
 
         Mix_VolumeChunk(chunk, mixVolume);
     }
@@ -106,12 +106,19 @@ namespace Atmos::Audio::Resource::SDL
         const auto standardPosition = Spatial::Point2D{ 0, max };
         const auto origin = Spatial::Point2D{ 0, 0 };
         const auto angle = Spatial::AngleOf(standardPosition, origin, position);
-        const auto angleInDegrees = static_cast<Uint16>(Spatial::ToDegrees(angle));
+
+        const auto fullCircle = pi<Spatial::Angle2D> * 2;
+        auto passAngle = angle;
+        while (passAngle < 0)
+            passAngle += fullCircle;
+        while (passAngle > fullCircle)
+            passAngle -= fullCircle;
+        const auto mixAngle = static_cast<Uint16>(Spatial::ToDegrees(passAngle));
 
         const auto distance = Spatial::Distance(origin, position);
-        const auto clampedDistance = std::max(distance, maxDistance);
-        const auto mixDistance = ConvertRange(clampedDistance, 0.0f, maxDistance, minMixDistance, maxMixDistance);
+        const auto clampedDistance = std::min(distance, maxDistance);
+        const auto mixDistance = static_cast<Uint8>(ConvertRange(clampedDistance, 0.0f, maxDistance, minMixDistance, maxMixDistance));
 
-        Mix_SetPosition(channel, angleInDegrees, mixDistance);
+        Mix_SetPosition(channel, mixAngle, mixDistance);
     }
 }
