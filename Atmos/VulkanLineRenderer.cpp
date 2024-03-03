@@ -7,16 +7,17 @@ namespace Atmos::Render::Vulkan
 {
     LineRenderer::LineRenderer(
         std::shared_ptr<vk::Device> device,
-        uint32_t graphicsQueueIndex,
         vk::Queue graphicsQueue,
-        vk::PhysicalDeviceMemoryProperties memoryProperties)
+        vk::PhysicalDeviceMemoryProperties memoryProperties,
+        vk::RenderPass renderPass,
+        uint32_t swapchainImageCount,
+        vk::Extent2D swapchainExtent,
+        const std::vector<const Asset::Material*>& materials)
         :
         vertexBuffer(vertexStride * sizeof(Vertex), *device, memoryProperties, vk::BufferUsageFlagBits::eVertexBuffer),
-        core(
-            device,
-            memoryProperties,
+        descriptorSetPool(
             {
-                DescriptorSetGroup::Definition
+                DescriptorSetPool::Definition
                 {
                     vk::DescriptorType::eUniformBuffer,
                     0,
@@ -24,6 +25,10 @@ namespace Atmos::Render::Vulkan
                     1
                 }
             },
+            device),
+        mappedConduits(
+            device,
+            memoryProperties,
             VertexInput(
                 sizeof(Vertex),
                 {
@@ -33,19 +38,16 @@ namespace Atmos::Render::Vulkan
                         1, 0, vk::Format::eR32G32B32A32Sfloat, offsetof(Vertex, color))
                 }),
             vk::PrimitiveTopology::eLineList,
-            Asset::MaterialType::Line,
-            [this](Context& context, DrawContext& drawContext, uint32_t currentImage, UniversalData universalData)
-            {
-                Draw(context, drawContext, currentImage, universalData);
-            }),
+            renderPass,
+            swapchainImageCount,
+            swapchainExtent,
+            { descriptorSetPool.DescriptorSetLayout() }),
         graphicsQueue(graphicsQueue),
-        commandBuffers(*device, graphicsQueueIndex),
-        device(device)
-    {}
-
-    void LineRenderer::Initialize(uint32_t swapchainImageCount, vk::RenderPass renderPass, vk::Extent2D extent)
+        device(device),
+        swapchainImageCount(swapchainImageCount)
     {
-        core.Initialize(swapchainImageCount, renderPass, extent);
+        for (auto& material : materials)
+            MaterialCreated(*material);
     }
 
     void LineRenderer::StageRender(const LineRender& lineRender)
@@ -62,132 +64,138 @@ namespace Atmos::Render::Vulkan
                 { point.x, point.y } });
         }
 
-        auto context = core.ContextFor(lineRender.z);
-        if (!context)
-            context = &core.AddContext(lineRender.z, Context{});
-        auto& group = context->GroupFor(*lineRender.material);
+        auto layer = layers.Find(lineRender.z);
+        if (!layer)
+            layer = &layers.Add(lineRender.z, Layer{});
+        auto& group = layer->GroupFor(*lineRender.material);
         group.ListFor(lineRender.width).emplace_back(points);
     }
 
-    void LineRenderer::Start(const std::vector<const Asset::Material*>& materials, vk::CommandBuffer commandBuffer)
+    void LineRenderer::Start(
+        vk::CommandBuffer commandBuffer,
+        vk::CommandPool commandPool,
+        uint32_t currentSwapchainImage,
+        UniversalData universalData)
     {
-        core.Start(materials, commandBuffer);
+        if (layers.Empty())
+            return;
+
+        drawContext = DrawContext{};
+        drawContext->currentSwapchainImage = currentSwapchainImage;
+        drawContext->universalData = universalData;
+        drawContext->currentLayer = layers.begin();
+        drawContext->commandBuffer = commandBuffer;
+        drawContext->commandPool = commandPool;
+
+        descriptorSetPool.Reserve(swapchainImageCount);
+
+        for (uint32_t i = 0; i < swapchainImageCount; ++i)
+            drawContext->setupDescriptorSets.emplace_back(i, descriptorSetPool.Next());
     }
 
-    void LineRenderer::DrawNextLayer(uint32_t currentImage, UniversalData universalData)
+    void LineRenderer::DrawNextLayer()
     {
-        core.DrawNextLayer(currentImage, universalData);
+        auto& layer = drawContext->currentLayer->second;
+
+        Draw(layer);
+
+        ++drawContext->currentLayer;
     }
 
     void LineRenderer::End()
     {
-        core.End();
+        drawContext.reset();
+
+        layers.Clear();
+        descriptorSetPool.Reset();
+    }
+
+    void LineRenderer::MaterialCreated(const Asset::Material& material)
+    {
+        if (material.Type() != Asset::MaterialType::Line)
+            return;
+
+        mappedConduits.Add(material);
+    }
+
+    void LineRenderer::MaterialDestroying(const Asset::Material& material)
+    {
+        if (material.Type() != Asset::MaterialType::Line)
+            return;
+
+        mappedConduits.Remove(material);
     }
 
     bool LineRenderer::IsDone() const
     {
-        return core.IsDone();
+        return !drawContext || drawContext->currentLayer == layers.end();
     }
 
     Spatial::Point3D::Value LineRenderer::NextLayer() const
     {
-        return core.NextLayer();
+        return drawContext->currentLayer->first;
     }
 
     size_t LineRenderer::LayerCount() const
     {
-        return core.LayerCount();
+        return layers.Count();
     }
 
     LineRenderer::Line::Line(const std::vector<Vertex>& points) : vertices(points)
     {}
 
-    auto LineRenderer::Context::Group::ListFor(LineWidth width) -> std::vector<Line>&
+    void LineRenderer::Draw(Layer& layer)
     {
-        auto found = lines.find(width);
-        if (found == lines.end())
-            return lines.emplace(width, std::vector<Line>{}).first->second;
-
-        return found->second;
-    }
-
-    auto LineRenderer::Context::GroupFor(const Asset::Material& material) -> Group&
-    {
-        auto found = groups.find(&material);
-        if (found == groups.end())
-            return groups.emplace(&material, Group{}).first->second;
-
-        return found->second;
-    }
-
-    void LineRenderer::Draw(
-        Context& context,
-        DrawContext& drawContext,
-        uint32_t currentImage,
-        UniversalData universalData)
-    {
-        const auto& commandBuffer = drawContext.commandBuffer;
+        const auto& commandBuffer = drawContext->commandBuffer;
 
         vk::Buffer vertexBuffers[] = { vertexBuffer.destination.value.get() };
         vk::DeviceSize offsets[] = { 0 };
         commandBuffer.bindVertexBuffers(0, 1, vertexBuffers, offsets);
 
-        for (auto& group : context.groups)
-        {
-            WriteToBuffers(
-                group.second,
-                *group.first,
-                drawContext,
-                currentImage,
-                universalData);
-        }
+        for (auto& group : layer.materialGroups)
+            WriteToBuffers(group.second, *group.first);
     }
 
     void LineRenderer::WriteToBuffers(
-        const Context::Group& group,
-        const Asset::Material& materialAsset,
-        DrawContext& drawContext,
-        uint32_t currentImage,
-        UniversalData universalData)
+        const Layer::MaterialGroup& group,
+        const Asset::Material& materialAsset)
     {
-        auto& pipelines = *core.PipelinesFor(materialAsset);
-        for (auto& pipeline : pipelines)
-        {
-            pipeline.uniformBuffers[currentImage].PushBytes(universalData, 0);
-
-            for (auto& object : group.lines)
-                WriteToBuffers(
-                    object.second,
-                    object.first,
-                    pipeline,
-                    drawContext,
-                    currentImage);
-        }
+        auto& conduits = *mappedConduits.For(materialAsset);
+        for (auto& conduit : conduits)
+            for (auto& value : group.values)
+                WriteToBuffers(conduit, value.second, value.first);
     }
 
     void LineRenderer::WriteToBuffers(
+        Conduit& conduit,
         const std::vector<Line>& lines,
-        LineWidth width,
-        Pipeline& pipeline,
-        DrawContext& drawContext,
-        uint32_t currentImage)
+        LineWidth width)
     {
-        const auto& commandBuffer = drawContext.commandBuffer;
-        const auto startVertexCount = drawContext.addition.vertexCount;
+        const auto& commandBuffer = drawContext->commandBuffer;
+        const auto startVertexCount = drawContext->vertexCount;
 
         std::vector<Vertex> drawnVertices;
         for (auto& line : lines)
         {
             drawnVertices.insert(drawnVertices.begin(), line.vertices.begin(), line.vertices.end());
-            drawContext.addition.vertexCount += line.vertices.size();
+            drawContext->vertexCount += line.vertices.size();
         }
 
-        commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, pipeline.value.get());
-
-        auto currentDescriptorSet = core.KeyedSetFor(currentImage)->descriptorSet;
+        auto currentDescriptorSet = std::find_if(
+            drawContext->setupDescriptorSets.begin(),
+            drawContext->setupDescriptorSets.end(),
+            [this](const SetupDescriptorSet& set)
+            {
+                return set.swapchainImage == drawContext->currentSwapchainImage;
+            })->value;
+        conduit.PrepareExecution(
+            currentDescriptorSet,
+            drawContext->currentSwapchainImage,
+            drawContext->universalData);
+        conduit.Bind(commandBuffer);
         commandBuffer.bindDescriptorSets(
             vk::PipelineBindPoint::eGraphics,
-            core.PipelineLayout(),
+            mappedConduits.PipelineLayout(),
             0,
             1,
             &currentDescriptorSet,
@@ -200,7 +208,7 @@ namespace Atmos::Render::Vulkan
         const auto lineVertexSize = drawnVertices.size() * sizeof Vertex;
 
         vertexBuffer.PushSourceBytes(drawnVertices.data(), lineVertexOffset, lineVertexSize);
-        vertexBuffer.CopyFromSourceToDestination(lineVertexOffset, lineVertexSize, commandBuffers.Pool(), graphicsQueue);
-        drawContext.commandBuffer.draw(drawnVertices.size(), 1, startVertexCount, 0);
+        vertexBuffer.CopyFromSourceToDestination(lineVertexOffset, lineVertexSize, drawContext->commandPool, graphicsQueue);
+        drawContext->commandBuffer.draw(drawnVertices.size(), 1, startVertexCount, 0);
     }
 }

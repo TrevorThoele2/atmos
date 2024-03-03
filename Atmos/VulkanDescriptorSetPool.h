@@ -4,7 +4,7 @@
 
 namespace Atmos::Render::Vulkan
 {
-    class DescriptorSetGroup
+    class DescriptorSetPool
     {
     public:
         struct Definition
@@ -15,14 +15,11 @@ namespace Atmos::Render::Vulkan
             uint32_t count;
         };
     public:
-        DescriptorSetGroup(const std::vector<Definition>& definitions, vk::Device device);
-
-        [[nodiscard]] vk::DescriptorSet operator[](uint32_t index) const;
+        DescriptorSetPool(const std::vector<Definition>& definitions, std::shared_ptr<vk::Device> device);
 
         void Reserve(uint32_t count);
         void Reset();
 
-        [[nodiscard]] vk::DescriptorSet At(uint32_t index) const;
         [[nodiscard]] vk::DescriptorSet Next();
 
         [[nodiscard]] size_t Size() const;
@@ -38,6 +35,6 @@ namespace Atmos::Render::Vulkan
 
         void AttemptAllocate(uint32_t count);
     private:
-        vk::Device device;
+        std::shared_ptr<vk::Device> device;
     };
 }

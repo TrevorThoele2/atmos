@@ -1,11 +1,11 @@
-#include "VulkanPipeline.h"
+#include "VulkanConduit.h"
 
 #include "VulkanUniversalData.h"
 #include "VulkanShaderAssetResource.h"
 
 namespace Atmos::Render::Vulkan
 {
-    Pipeline::Pipeline(
+    Conduit::Conduit(
         const Asset::Shader* vertexShader,
         const Asset::Shader* fragmentShader,
         vk::Device device,
@@ -18,7 +18,7 @@ namespace Atmos::Render::Vulkan
         vk::PrimitiveTopology primitiveTopology,
         std::vector<vk::DynamicState> dynamicStates)
         :
-        extent(swapchainExtent)
+        device(device)
     {
         std::vector<vk::PipelineShaderStageCreateInfo> shaderStages;
         if (vertexShader)
@@ -108,16 +108,27 @@ namespace Atmos::Render::Vulkan
             nullptr,
             0);
 
-        value = device.createGraphicsPipelineUnique(nullptr, pipelineCreateInfo);
+        pipeline = device.createGraphicsPipelineUnique(nullptr, pipelineCreateInfo);
 
-        uniformBuffers = CreateUniformBuffers(device, memoryProperties, swapchainImageCount);
-
-        uniformBufferDescriptors.reserve(this->uniformBuffers.size());
-        for (auto& buffer : this->uniformBuffers)
-            uniformBufferDescriptors.emplace_back(buffer.value.get(), 0, sizeof(UniversalData), 0);
+        executionContexts.reserve(swapchainImageCount);
+        for (uint32_t i = 0; i < swapchainImageCount; ++i)
+            executionContexts.emplace_back(device, memoryProperties);
     }
 
-    vk::PipelineShaderStageCreateInfo Pipeline::ShaderStageCreateInfo(
+    void Conduit::PrepareExecution(
+        vk::DescriptorSet descriptorSet, std::int32_t currentSwapchainImage, UniversalData universalData)
+    {
+        auto& context = executionContexts[currentSwapchainImage];
+        context.buffer.PushBytes(universalData, 0);
+        context.descriptor.Update(descriptorSet, device);
+    }
+
+    void Conduit::Bind(const vk::CommandBuffer& commandBuffer)
+    {
+        commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, pipeline.get());
+    }
+
+    vk::PipelineShaderStageCreateInfo Conduit::ShaderStageCreateInfo(
         const Asset::Shader& shaderAsset, vk::ShaderStageFlagBits shaderType)
     {
         const auto fileData = shaderAsset.ResourceAs<Asset::Resource::Vulkan::Shader>();
@@ -126,20 +137,5 @@ namespace Atmos::Render::Vulkan
             shaderType,
             fileData->Module(),
             shaderAsset.EntryPoint().c_str());
-    }
-
-    std::vector<Buffer> Pipeline::CreateUniformBuffers(
-        vk::Device device, vk::PhysicalDeviceMemoryProperties memoryProperties, size_t size)
-    {
-        std::vector<Buffer> returnValue;
-        returnValue.reserve(size);
-        for (size_t i = 0; i < size; ++i)
-            returnValue.emplace_back(
-                sizeof(Vulkan::UniversalData),
-                vk::BufferUsageFlagBits::eUniformBuffer,
-                vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent,
-                device,
-                memoryProperties);
-        return returnValue;
     }
 }

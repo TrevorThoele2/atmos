@@ -36,15 +36,17 @@ namespace Atmos::Render
     }
 
     std::unique_ptr<Resource::Surface> GraphicsManager::CreateMainSurfaceResource(
-        void* window)
+        void* window,
+        Arca::Reliquary& reliquary)
     {
-        return CreateMainSurfaceResourceImpl(window);
+        return CreateMainSurfaceResourceImpl(window, reliquary);
     }
 
     std::unique_ptr<Resource::Surface> GraphicsManager::CreateSurfaceResource(
-        void* window)
+        void* window,
+        Arca::Reliquary& reliquary)
     {
-        return CreateSurfaceResourceImpl(window);
+        return CreateSurfaceResourceImpl(window, reliquary);
     }
 
     void GraphicsManager::ResourceDestroying(Asset::Resource::Image& resource)

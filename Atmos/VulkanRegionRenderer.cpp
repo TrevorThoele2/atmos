@@ -6,17 +6,18 @@ namespace Atmos::Render::Vulkan
 {
     RegionRenderer::RegionRenderer(
         std::shared_ptr<vk::Device> device,
-        uint32_t graphicsQueueIndex,
         vk::Queue graphicsQueue,
-        vk::PhysicalDeviceMemoryProperties memoryProperties)
+        vk::PhysicalDeviceMemoryProperties memoryProperties,
+        vk::RenderPass renderPass,
+        uint32_t swapchainImageCount,
+        vk::Extent2D swapchainExtent,
+        const std::vector<const Asset::Material*>& materials)
         :
         vertexBuffer(vertexStride * sizeof(Vertex), *device, memoryProperties, vk::BufferUsageFlagBits::eVertexBuffer),
         indexBuffer(indexStride * sizeof(Index), *device, memoryProperties, vk::BufferUsageFlagBits::eIndexBuffer),
-        core(
-            device,
-            memoryProperties,
+        descriptorSetPool(
             {
-                DescriptorSetGroup::Definition
+                DescriptorSetPool::Definition
                 {
                     vk::DescriptorType::eUniformBuffer,
                     0,
@@ -24,26 +25,27 @@ namespace Atmos::Render::Vulkan
                     1
                 }
             },
+            device),
+        mappedConduits(
+            device,
+            memoryProperties,
             VertexInput(
                 sizeof(Vertex),
                 {
                     vk::VertexInputAttributeDescription(
                         0, 0, vk::Format::eR32G32Sfloat, offsetof(Vertex, position))
                 }),
-            vk::PrimitiveTopology::eTriangleList,
-            Asset::MaterialType::Region,
-            [this](Context& context, DrawContext& drawContext, uint32_t currentImage, UniversalData universalData)
-            {
-                Draw(context, drawContext, currentImage, universalData);
-            }),
+            vk::PrimitiveTopology::eLineList,
+            renderPass,
+            swapchainImageCount,
+            swapchainExtent,
+            { descriptorSetPool.DescriptorSetLayout() }),
         graphicsQueue(graphicsQueue),
-        commandBuffers(*device, graphicsQueueIndex),
-        device(device)
-    {}
-
-    void RegionRenderer::Initialize(uint32_t swapchainImageCount, vk::RenderPass renderPass, vk::Extent2D extent)
+        device(device),
+        swapchainImageCount(swapchainImageCount)
     {
-        core.Initialize(swapchainImageCount, renderPass, extent);
+        for (auto& material : materials)
+            MaterialCreated(*material);
     }
 
     void RegionRenderer::StageRender(const RegionRender& regionRender)
@@ -55,63 +57,90 @@ namespace Atmos::Render::Vulkan
         for (auto& point : regionRender.mesh.vertices)
             vertices.push_back(Vertex{ { point.x, point.y } });
 
-        auto context = core.ContextFor(regionRender.z);
+        auto context = layers.Find(regionRender.z);
         if (!context)
-            context = &core.AddContext(regionRender.z, Context{});
+            context = &layers.Add(regionRender.z, Layer{});
         auto& group = context->GroupFor(*regionRender.material);
-        group.regions.emplace_back(vertices, regionRender.mesh.indices);
+        group.values.emplace_back(vertices, regionRender.mesh.indices);
     }
 
-    void RegionRenderer::Start(const std::vector<const Asset::Material*>& materials, vk::CommandBuffer commandBuffer)
+    void RegionRenderer::Start(
+        vk::CommandBuffer commandBuffer,
+        vk::CommandPool commandPool,
+        uint32_t currentSwapchainImage,
+        UniversalData universalData)
     {
-        core.Start(materials, commandBuffer);
+        if (layers.Empty())
+            return;
+
+        drawContext = DrawContext{};
+        drawContext->currentSwapchainImage = currentSwapchainImage;
+        drawContext->universalData = universalData;
+        drawContext->currentLayer = layers.begin();
+        drawContext->commandBuffer = commandBuffer;
+        drawContext->commandPool = commandPool;
+
+        descriptorSetPool.Reserve(swapchainImageCount);
+
+        for (uint32_t i = 0; i < swapchainImageCount; ++i)
+            drawContext->setupDescriptorSets.emplace_back(i, descriptorSetPool.Next());
     }
 
-    void RegionRenderer::DrawNextLayer(uint32_t currentImage, UniversalData universalData)
+    void RegionRenderer::DrawNextLayer()
     {
-        core.DrawNextLayer(currentImage, universalData);
+        auto& layer = drawContext->currentLayer->second;
+
+        Draw(layer);
+
+        ++drawContext->currentLayer;
     }
 
     void RegionRenderer::End()
     {
-        core.End();
+        drawContext.reset();
+
+        layers.Clear();
+        descriptorSetPool.Reset();
+    }
+
+    void RegionRenderer::MaterialCreated(const Asset::Material& material)
+    {
+        if (material.Type() != Asset::MaterialType::Region)
+            return;
+
+        mappedConduits.Add(material);
+    }
+
+    void RegionRenderer::MaterialDestroying(const Asset::Material& material)
+    {
+        if (material.Type() != Asset::MaterialType::Region)
+            return;
+
+        mappedConduits.Remove(material);
     }
 
     bool RegionRenderer::IsDone() const
     {
-        return core.IsDone();
+        return !drawContext || drawContext->currentLayer == layers.end();
     }
 
     Spatial::Point3D::Value RegionRenderer::NextLayer() const
     {
-        return core.NextLayer();
+        return drawContext->currentLayer->first;
     }
 
     size_t RegionRenderer::LayerCount() const
     {
-        return core.LayerCount();
+        return layers.Count();
     }
 
     RegionRenderer::Region::Region(const Vertices& vertices, const Indices& indices) :
         vertices(vertices), indices(indices)
     {}
 
-    auto RegionRenderer::Context::GroupFor(const Asset::Material& material) -> Group&
+    void RegionRenderer::Draw(Layer& layer)
     {
-        auto found = groups.find(&material);
-        if (found == groups.end())
-            return groups.emplace(&material, Group{}).first->second;
-
-        return found->second;
-    }
-
-    void RegionRenderer::Draw(
-        Context& context,
-        DrawContext& drawContext,
-        uint32_t currentImage,
-        UniversalData universalData)
-    {
-        const auto& commandBuffer = drawContext.commandBuffer;
+        const auto& commandBuffer = drawContext->commandBuffer;
 
         vk::Buffer vertexBuffers[] = { vertexBuffer.destination.value.get() };
         vk::DeviceSize offsets[] = { 0 };
@@ -119,65 +148,54 @@ namespace Atmos::Render::Vulkan
 
         commandBuffer.bindIndexBuffer(indexBuffer.destination.value.get(), 0, vk::IndexType::eUint16);
 
-        for (auto& group : context.groups)
-        {
-            WriteToBuffers(
-                group.second,
-                *group.first,
-                drawContext,
-                currentImage,
-                universalData);
-        }
+        for (auto& group : layer.materialGroups)
+            WriteToBuffers(group.second, *group.first);
     }
 
     void RegionRenderer::WriteToBuffers(
-        const Context::Group& group,
-        const Asset::Material& materialAsset,
-        DrawContext& drawContext,
-        uint32_t currentImage,
-        UniversalData universalData)
+        const Layer::MaterialGroup& group,
+        const Asset::Material& materialAsset)
     {
-        auto& pipelines = *core.PipelinesFor(materialAsset);
-        for (auto& pipeline : pipelines)
-        {
-            pipeline.uniformBuffers[currentImage].PushBytes(universalData, 0);
-
-            WriteToBuffers(
-                group.regions,
-                pipeline,
-                drawContext,
-                currentImage);
-        }
+        auto& conduits = *mappedConduits.For(materialAsset);
+        for (auto& conduit : conduits)
+            WriteToBuffers(conduit, group.values);
     }
 
     void RegionRenderer::WriteToBuffers(
-        const std::vector<Region>& regions,
-        Pipeline& pipeline,
-        DrawContext& drawContext,
-        uint32_t currentImage)
+        Conduit& conduit,
+        const std::vector<Region>& regions)
     {
-        const auto& commandBuffer = drawContext.commandBuffer;
+        const auto& commandBuffer = drawContext->commandBuffer;
 
-        const auto startVertexCount = drawContext.addition.vertexCount;
-        const auto startIndexCount = drawContext.addition.indexCount;
+        const auto startVertexCount = drawContext->vertexCount;
+        const auto startIndexCount = drawContext->indexCount;
 
         std::vector<Vertex> drawnVertices;
         std::vector<Index> drawnIndices;
         for (auto& region : regions)
         {
             drawnVertices.insert(drawnVertices.end(), region.vertices.begin(), region.vertices.end());
-            drawContext.addition.vertexCount += region.vertices.size();
+            drawContext->vertexCount += region.vertices.size();
 
             drawnIndices.insert(drawnIndices.end(), region.indices.begin(), region.indices.end());
-            drawContext.addition.indexCount += region.indices.size();
+            drawContext->indexCount += region.indices.size();
         }
 
-        commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, pipeline.value.get());
-
-        auto currentDescriptorSet = core.KeyedSetFor(currentImage)->descriptorSet;
+        auto currentDescriptorSet = std::find_if(
+            drawContext->setupDescriptorSets.begin(),
+            drawContext->setupDescriptorSets.end(),
+            [this](const SetupDescriptorSet& set)
+            {
+                return set.swapchainImage == drawContext->currentSwapchainImage;
+            })->value;
+        conduit.PrepareExecution(
+            currentDescriptorSet,
+            drawContext->currentSwapchainImage,
+            drawContext->universalData);
+        conduit.Bind(commandBuffer);
         commandBuffer.bindDescriptorSets(
             vk::PipelineBindPoint::eGraphics,
-            core.PipelineLayout(),
+            mappedConduits.PipelineLayout(),
             0,
             1,
             &currentDescriptorSet,
@@ -190,9 +208,9 @@ namespace Atmos::Render::Vulkan
         const auto indexSize = drawnIndices.size() * sizeof Index;
 
         vertexBuffer.PushSourceBytes(drawnVertices.data(), vertexOffset, vertexSize);
-        vertexBuffer.CopyFromSourceToDestination(vertexOffset, vertexSize, commandBuffers.Pool(), graphicsQueue);
+        vertexBuffer.CopyFromSourceToDestination(vertexOffset, vertexSize, drawContext->commandPool, graphicsQueue);
         indexBuffer.PushSourceBytes(drawnIndices.data(), indexOffset, indexSize);
-        indexBuffer.CopyFromSourceToDestination(indexOffset, indexSize, commandBuffers.Pool(), graphicsQueue);
-        drawContext.commandBuffer.drawIndexed(drawnIndices.size(), 1, startIndexCount, 0, 0);
+        indexBuffer.CopyFromSourceToDestination(indexOffset, indexSize, drawContext->commandPool, graphicsQueue);
+        drawContext->commandBuffer.drawIndexed(drawnIndices.size(), 1, startIndexCount, 0, 0);
     }
 }

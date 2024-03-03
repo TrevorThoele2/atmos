@@ -14,7 +14,8 @@ namespace Atmos::Render::Resource::Vulkan
         vk::Queue graphicsQueue,
         vk::Queue presentQueue,
         QueueFamilyIndices queueFamilyIndices,
-        vk::PhysicalDeviceMemoryProperties memoryProperties)
+        vk::PhysicalDeviceMemoryProperties memoryProperties,
+        Arca::Reliquary& reliquary)
         :
         device(device),
         physicalDevice(physicalDevice),
@@ -27,7 +28,8 @@ namespace Atmos::Render::Resource::Vulkan
             graphicsQueue,
             presentQueue,
             queueFamilyIndices.graphicsFamily,
-            memoryProperties);
+            memoryProperties,
+            reliquary);
 
         Initialize(queueFamilyIndices);
 
@@ -112,7 +114,7 @@ namespace Atmos::Render::Resource::Vulkan
             Spatial::ScreenPoint::Value(camera->Position().x),
             Spatial::ScreenPoint::Value(camera->Position().y)
         };
-        renderer->DrawFrame(reliquary, Size(), mapPosition);
+        renderer->DrawFrame(Size(), mapPosition);
     }
 
     void Surface::WaitForIdle() const

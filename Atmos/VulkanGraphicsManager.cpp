@@ -112,7 +112,9 @@ namespace Atmos::Render::Vulkan
         return std::make_unique<Asset::Resource::Vulkan::Shader>(created, device);
     }
 
-    std::unique_ptr<Resource::Surface> GraphicsManager::CreateMainSurfaceResourceImpl(void* window)
+    std::unique_ptr<Resource::Surface> GraphicsManager::CreateMainSurfaceResourceImpl(
+        void* window,
+        Arca::Reliquary& reliquary)
     {
         auto surface = CreateSurface(window, instance);
 
@@ -135,17 +137,19 @@ namespace Atmos::Render::Vulkan
 
         commandPool = CreateCommandPool(*device, *queueIndices);
 
-        return CreateSurfaceResourceCommon(std::move(surface), *queueIndices, graphicsQueue, presentQueue);
+        return CreateSurfaceResourceCommon(std::move(surface), *queueIndices, graphicsQueue, presentQueue, reliquary);
     }
 
-    std::unique_ptr<Resource::Surface> GraphicsManager::CreateSurfaceResourceImpl(void* window)
+    std::unique_ptr<Resource::Surface> GraphicsManager::CreateSurfaceResourceImpl(
+        void* window,
+        Arca::Reliquary& reliquary)
     {
         auto surface = CreateSurface(window, instance);
         const auto queueIndices = SuitableQueueFamilies(physicalDevice, surface.get());
         if (!queueIndices)
             throw GraphicsError("Could not create surface.");
         const auto presentQueue = device->getQueue(queueIndices->presentFamily, 0);
-        return CreateSurfaceResourceCommon(std::move(surface), *queueIndices, graphicsQueue, presentQueue);
+        return CreateSurfaceResourceCommon(std::move(surface), *queueIndices, graphicsQueue, presentQueue, reliquary);
     }
 
     void GraphicsManager::ResourceDestroyingImpl(Asset::Resource::Image& resource)
@@ -384,7 +388,8 @@ namespace Atmos::Render::Vulkan
         vk::UniqueSurfaceKHR&& underlying,
         QueueFamilyIndices queueIndices,
         vk::Queue graphicsQueue,
-        vk::Queue presentQueue)
+        vk::Queue presentQueue,
+        Arca::Reliquary& reliquary)
     {
         return std::make_unique<Resource::Vulkan::Surface>(
             device,
@@ -394,7 +399,8 @@ namespace Atmos::Render::Vulkan
             graphicsQueue,
             presentQueue,
             queueIndices,
-            memoryProperties);
+            memoryProperties,
+            reliquary);
     }
 
     vk::UniqueSurfaceKHR GraphicsManager::CreateSurface(void* window, vk::Instance instance)

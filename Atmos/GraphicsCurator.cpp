@@ -60,13 +60,13 @@ namespace Atmos::Render
     {
         const Arca::Index<MainSurface> mainSurface(Owner());
 
-        auto resource = manager->CreateMainSurfaceResource(command.window);
+        auto resource = manager->CreateMainSurfaceResource(command.window, Owner());
         MutablePointer().Of<SurfaceCore>(mainSurface.ID())->resource = std::move(resource);
     }
 
     std::unique_ptr<Resource::Surface> GraphicsCurator::Handle(const Resource::CreateSurface& command)
     {
-        return manager->CreateSurfaceResource(command.window);
+        return manager->CreateSurfaceResource(command.window, Owner());
     }
 
     void GraphicsCurator::Handle(const SetFullscreen& command)

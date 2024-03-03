@@ -1,7 +1,7 @@
 #pragma once
 
 #include "VulkanIncludes.h"
-#include "VulkanCommandBufferGroup.h"
+#include "VulkanCommandBufferPool.h"
 
 #include "VulkanQuadRenderer.h"
 #include "VulkanLineRenderer.h"
@@ -35,22 +35,22 @@ namespace Atmos::Render::Vulkan
             vk::Queue graphicsQueue,
             vk::Queue presentQueue,
             uint32_t graphicsQueueIndex,
-            vk::PhysicalDeviceMemoryProperties memoryProperties);
+            vk::PhysicalDeviceMemoryProperties memoryProperties,
+            Arca::Reliquary& reliquary);
         ~MasterRenderer();
 
         void Initialize(
             vk::SwapchainKHR swapchain,
-            std::vector<vk::Image> images,
-            std::vector<vk::ImageView> imageViews,
+            std::vector<vk::Image> swapchainImages,
+            std::vector<vk::ImageView> swapchainImageViews,
             vk::Format imageFormat,
-            vk::Extent2D extent);
+            vk::Extent2D swapchainExtent);
     public:
         void StageRender(const ImageRender& imageRender);
         void StageRender(const LineRender& lineRender);
         void StageRender(const RegionRender& regionRender);
 
         void DrawFrame(
-            Arca::Reliquary& reliquary,
             const Spatial::ScreenSize& screenSize,
             const Spatial::ScreenPoint& mapPosition);
 
@@ -62,30 +62,44 @@ namespace Atmos::Render::Vulkan
         size_t currentFrame = 0;
         size_t previousFrame = 1;
     private:
-        QuadRenderer quadRenderer;
-        LineRenderer lineRenderer;
-        RegionRenderer regionRenderer;
+        using IterableRenderers = std::vector<RendererBase*>;
+        IterableRenderers iterableRenderers;
 
-        using AllRenderers = std::vector<RendererInterface*>;
-        AllRenderers allRenderers;
+        struct Renderers
+        {
+            QuadRenderer quad;
+            LineRenderer line;
+            RegionRenderer region;
+            Renderers(
+                std::shared_ptr<vk::Device> device,
+                vk::Queue graphicsQueue,
+                vk::PhysicalDeviceMemoryProperties memoryProperties,
+                vk::RenderPass renderPass,
+                uint32_t swapchainImageCount,
+                vk::Extent2D swapchainExtent,
+                const std::vector<const Asset::Material*>& materials);
+            Renderers(Renderers&& arg) noexcept = default;
 
-        [[nodiscard]] bool AllEmpty(const std::vector<RendererInterface*>& check) const;
+            [[nodiscard]] IterableRenderers AsIterable();
+        };
+        std::optional<Renderers> renderers;
+
+        [[nodiscard]] bool AllEmpty(const std::vector<RendererBase*>& check) const;
     private:
         void Draw(
-            Arca::Reliquary& reliquary,
-            std::vector<vk::CommandBuffer>& usedCommandBuffers,
-            uint32_t currentImage,
+            vk::CommandBuffer commandBuffer,
+            uint32_t currentSwapchainImage,
             UniversalData universalData);
         static void ClearImage(vk::Image image, std::array<float, 4> color, vk::CommandBuffer commandBuffer);
     private:
         vk::SwapchainKHR swapchain;
 
-        std::vector<vk::Image> images;
-        std::vector<vk::ImageView> imageViews;
+        std::vector<vk::Image> swapchainImages;
+        std::vector<vk::ImageView> swapchainImageViews;
 
         vk::UniqueRenderPass renderPass;
         std::vector<vk::UniqueFramebuffer> framebuffers;
-        vk::Extent2D extent;
+        vk::Extent2D swapchainExtent;
     private:
         [[nodiscard]] static vk::UniqueRenderPass CreateRenderPass(
             vk::Device device, vk::Format swapchainImageFormat);
@@ -97,10 +111,12 @@ namespace Atmos::Render::Vulkan
 
         vk::PhysicalDeviceMemoryProperties memoryProperties;
     private:
+        uint32_t graphicsQueueIndex;
+
         vk::Queue graphicsQueue;
         vk::Queue presentQueue;
 
-        CommandBufferGroup commandBuffers;
+        CommandBufferPool commandBuffers;
     private:
         std::vector<vk::UniqueSemaphore> imageAvailableSemaphores;
         std::vector<vk::UniqueSemaphore> renderFinishedSemaphores;
@@ -109,5 +125,9 @@ namespace Atmos::Render::Vulkan
 
         [[nodiscard]] static std::vector<vk::UniqueSemaphore> CreateSemaphores(vk::Device device, size_t count);
         [[nodiscard]] static std::vector<vk::UniqueFence> CreateFences(vk::Device device, size_t count);
+    private:
+        Arca::Reliquary* reliquary;
+        void OnMaterialCreated(const Arca::CreatedKnown<Asset::Material>& signal);
+        void OnMaterialDestroying(const Arca::DestroyingKnown<Asset::Material>& signal);
     };
 }

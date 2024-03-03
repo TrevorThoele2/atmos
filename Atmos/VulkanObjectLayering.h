@@ -1,21 +1,25 @@
 #pragma once
 
 #include <map>
+
+#include "VulkanLayer.h"
 #include "Point3D.h"
 
 namespace Atmos::Render::Vulkan
 {
-    template<class Context>
+    template<class MaterialGroupKey, class MaterialGroupValue>
     class ObjectLayering
     {
+    public:
+        using Layer = Layer<MaterialGroupKey, MaterialGroupValue>;
     private:
-        using LayeredContexts = std::map<Spatial::Point3D::Value, Context>;
+        using Layers = std::map<Spatial::Point3D::Value, Layer>;
     public:
-        using iterator = typename LayeredContexts::iterator;
-        using const_iterator = typename LayeredContexts::const_iterator;
+        using iterator = typename Layers::iterator;
+        using const_iterator = typename Layers::const_iterator;
     public:
-        Context& Add(Spatial::Point3D::Value key, Context&& value);
-        Context* Find(Spatial::Point3D::Value value);
+        Layer& Add(Spatial::Point3D::Value key, Layer&& value);
+        Layer* Find(Spatial::Point3D::Value value);
         void Clear();
 
         [[nodiscard]] uint32_t Count() const;
@@ -26,64 +30,64 @@ namespace Atmos::Render::Vulkan
         [[nodiscard]] iterator end();
         [[nodiscard]] const_iterator end() const;
     private:
-        LayeredContexts layeredContexts;
+        Layers layers;
     };
 
-    template<class Context>
-    Context& ObjectLayering<Context>::Add(Spatial::Point3D::Value key, Context&& value)
+    template<class MaterialGroupKey, class MaterialGroupValue>
+    auto ObjectLayering<MaterialGroupKey, MaterialGroupValue>::Add(Spatial::Point3D::Value key, Layer&& value) -> Layer&
     {
-        return layeredContexts.emplace(key, std::move(value)).first->second;
+        return layers.emplace(key, std::move(value)).first->second;
     }
 
-    template<class Context>
-    auto ObjectLayering<Context>::Find(Spatial::Point3D::Value value) -> Context*
+    template<class MaterialGroupKey, class MaterialGroupValue>
+    auto ObjectLayering<MaterialGroupKey, MaterialGroupValue>::Find(Spatial::Point3D::Value value) -> Layer*
     {
-        auto found = layeredContexts.find(value);
-        if (found == layeredContexts.end())
+        auto found = layers.find(value);
+        if (found == layers.end())
             return nullptr;
 
         return &found->second;
     }
 
-    template<class Context>
-    void ObjectLayering<Context>::Clear()
+    template<class MaterialGroupKey, class MaterialGroupValue>
+    void ObjectLayering<MaterialGroupKey, MaterialGroupValue>::Clear()
     {
-        layeredContexts.clear();
+        layers.clear();
     }
 
-    template<class Context>
-    uint32_t ObjectLayering<Context>::Count() const
+    template<class MaterialGroupKey, class MaterialGroupValue>
+    uint32_t ObjectLayering<MaterialGroupKey, MaterialGroupValue>::Count() const
     {
-        return layeredContexts.size();
+        return layers.size();
     }
 
-    template<class Context>
-    bool ObjectLayering<Context>::Empty() const
+    template<class MaterialGroupKey, class MaterialGroupValue>
+    bool ObjectLayering<MaterialGroupKey, MaterialGroupValue>::Empty() const
     {
-        return layeredContexts.empty();
+        return layers.empty();
     }
 
-    template<class Context>
-    auto ObjectLayering<Context>::begin() -> iterator
+    template<class MaterialGroupKey, class MaterialGroupValue>
+    auto ObjectLayering<MaterialGroupKey, MaterialGroupValue>::begin() -> iterator
     {
-        return layeredContexts.begin();
+        return layers.begin();
     }
 
-    template<class Context>
-    auto ObjectLayering<Context>::begin() const -> const_iterator
+    template<class MaterialGroupKey, class MaterialGroupValue>
+    auto ObjectLayering<MaterialGroupKey, MaterialGroupValue>::begin() const -> const_iterator
     {
-        return layeredContexts.begin();
+        return layers.begin();
     }
 
-    template<class Context>
-    auto ObjectLayering<Context>::end() -> iterator
+    template<class MaterialGroupKey, class MaterialGroupValue>
+    auto ObjectLayering<MaterialGroupKey, MaterialGroupValue>::end() -> iterator
     {
-        return layeredContexts.end();
+        return layers.end();
     }
 
-    template<class Context>
-    auto ObjectLayering<Context>::end() const -> const_iterator
+    template<class MaterialGroupKey, class MaterialGroupValue>
+    auto ObjectLayering<MaterialGroupKey, MaterialGroupValue>::end() const -> const_iterator
     {
-        return layeredContexts.end();
+        return layers.end();
     }
 }

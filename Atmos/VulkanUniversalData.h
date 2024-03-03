@@ -14,6 +14,7 @@ namespace Atmos::Render::Vulkan
         glm::vec2 mapPosition;
         glm::vec2 screenSize;
 
+        UniversalData() = default;
         UniversalData(const glm::vec2& screenSize, const glm::vec2& mapPosition);
     };
 }

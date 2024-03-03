@@ -1,9 +1,10 @@
 #pragma once
 
-#include "VulkanRendererInterface.h"
-#include "VulkanRendererCore.h"
+#include "VulkanRendererBase.h"
+#include "VulkanObjectLayering.h"
+#include "VulkanDescriptorSetPool.h"
+#include "VulkanMappedConduits.h"
 #include "VulkanStagedBuffer.h"
-#include "VulkanCommandBufferGroup.h"
 
 #include "RegionRender.h"
 #include "Point3D.h"
@@ -12,24 +13,32 @@
 
 namespace Atmos::Render::Vulkan
 {
-    class RegionRenderer final : public RendererInterface
+    class RegionRenderer final : public RendererBase
     {
     public:
         RegionRenderer(
             std::shared_ptr<vk::Device> device,
-            uint32_t graphicsQueueIndex,
             vk::Queue graphicsQueue,
-            vk::PhysicalDeviceMemoryProperties memoryProperties);
-
-        void Initialize(uint32_t swapchainImageCount, vk::RenderPass renderPass, vk::Extent2D extent) override;
+            vk::PhysicalDeviceMemoryProperties memoryProperties,
+            vk::RenderPass renderPass,
+            uint32_t swapchainImageCount,
+            vk::Extent2D swapchainExtent,
+            const std::vector<const Asset::Material*>& materials);
 
         void StageRender(const RegionRender& regionRender);
 
-        void Start(const std::vector<const Asset::Material*>& materials, vk::CommandBuffer commandBuffer) override;
-        void DrawNextLayer(uint32_t currentImage, UniversalData universalData) override;
+        void Start(
+            vk::CommandBuffer commandBuffer,
+            vk::CommandPool commandPool,
+            uint32_t currentSwapchainImage,
+            UniversalData universalData) override;
+        void DrawNextLayer() override;
         void End() override;
-        [[nodiscard]] bool IsDone() const override;
 
+        void MaterialCreated(const Asset::Material& material) override;
+        void MaterialDestroying(const Asset::Material& material) override;
+
+        [[nodiscard]] bool IsDone() const override;
         [[nodiscard]] Spatial::Point3D::Value NextLayer() const override;
         [[nodiscard]] size_t LayerCount() const override;
     private:
@@ -58,49 +67,52 @@ namespace Atmos::Render::Vulkan
 
         StagedBuffer indexBuffer;
         static const int indexStride = stride * 2;
-
-        struct Context
-        {
-            struct Group
-            {
-                std::vector<Region> regions;
-            };
-
-            std::map<const Asset::Material*, Group> groups;
-            Group& GroupFor(const Asset::Material& material);
-        };
     private:
-        struct DrawContextAddition
+        using ObjectLayering = ObjectLayering<void, Region>;
+        using Layer = ObjectLayering::Layer;
+        ObjectLayering layers;
+    private:
+        DescriptorSetPool descriptorSetPool;
+    private:
+        MappedConduits mappedConduits;
+    private:
+        struct SetupDescriptorSet
         {
+            uint32_t swapchainImage;
+            vk::DescriptorSet value;
+            SetupDescriptorSet(uint32_t swapchainImage, vk::DescriptorSet value) :
+                swapchainImage(swapchainImage), value(value)
+            {}
+        };
+
+        struct DrawContext
+        {
+            std::vector<const Asset::Material*> materials = {};
+            vk::CommandBuffer commandBuffer = {};
+            vk::CommandPool commandPool = {};
+            ObjectLayering::iterator currentLayer = {};
+            uint32_t currentSwapchainImage = 0;
+            UniversalData universalData = {};
+            std::vector<SetupDescriptorSet> setupDescriptorSets = {};
+
             std::uint32_t vertexCount = 0;
             std::uint32_t indexCount = 0;
         };
 
-        using Core = RendererCore<void, Context, DrawContextAddition>;
-        Core core;
+        std::optional<DrawContext> drawContext;
 
-        using DrawContext = Core::DrawContext;
-
-        void Draw(
-            Context& context,
-            DrawContext& drawContext,
-            uint32_t currentImage,
-            UniversalData universalData);
+        void Draw(Layer& layer);
         void WriteToBuffers(
-            const Context::Group& group,
-            const Asset::Material& materialAsset,
-            DrawContext& drawContext,
-            uint32_t currentImage,
-            UniversalData universalData);
+            const Layer::MaterialGroup& group,
+            const Asset::Material& materialAsset);
         void WriteToBuffers(
-            const std::vector<Region>& regions,
-            Pipeline& pipeline,
-            DrawContext& drawContext,
-            uint32_t currentImage);
+            Conduit& conduit,
+            const std::vector<Region>& regions);
     private:
         vk::Queue graphicsQueue;
-        CommandBufferGroup commandBuffers;
 
         std::shared_ptr<vk::Device> device;
+
+        uint32_t swapchainImageCount = 0;
     };
 }

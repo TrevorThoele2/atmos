@@ -10,24 +10,25 @@ namespace Atmos::Render::Vulkan
 {
     QuadRenderer::QuadRenderer(
         std::shared_ptr<vk::Device> device,
-        uint32_t graphicsQueueIndex,
         vk::Queue graphicsQueue,
-        vk::PhysicalDeviceMemoryProperties memoryProperties)
+        vk::PhysicalDeviceMemoryProperties memoryProperties,
+        vk::RenderPass renderPass,
+        uint32_t swapchainImageCount,
+        vk::Extent2D swapchainExtent,
+        const std::vector<const Asset::Material*>& materials)
         :
         vertexBuffer(vertexStride * sizeof(Vertex), *device, memoryProperties, vk::BufferUsageFlagBits::eVertexBuffer),
         indexBuffer(indexStride * sizeof(Index), *device, memoryProperties, vk::BufferUsageFlagBits::eIndexBuffer),
-        core(
-            device,
-            memoryProperties,
+        descriptorSetPool(
             {
-                DescriptorSetGroup::Definition
+                DescriptorSetPool::Definition
                 {
                     vk::DescriptorType::eUniformBuffer,
                     0,
                     vk::ShaderStageFlagBits::eFragment | vk::ShaderStageFlagBits::eVertex,
                     1
                 },
-                DescriptorSetGroup::Definition
+                DescriptorSetPool::Definition
                 {
                     vk::DescriptorType::eCombinedImageSampler,
                     1,
@@ -35,6 +36,10 @@ namespace Atmos::Render::Vulkan
                     1
                 }
             },
+            device),
+        mappedConduits(
+            device,
+            memoryProperties,
             VertexInput(
                 sizeof(Vertex),
                 {
@@ -46,19 +51,16 @@ namespace Atmos::Render::Vulkan
                         2, 0, vk::Format::eR32G32B32A32Sfloat, offsetof(Vertex, color))
                 }),
             vk::PrimitiveTopology::eTriangleList,
-            Asset::MaterialType::Image,
-            [this](Context& context, DrawContext& drawContext, uint32_t currentImage, UniversalData universalData)
-            {
-                Draw(context, drawContext, currentImage, universalData);
-            }),
+            renderPass,
+            swapchainImageCount,
+            swapchainExtent,
+            { descriptorSetPool.DescriptorSetLayout() }),
         graphicsQueue(graphicsQueue),
-        commandBuffers(*device, graphicsQueueIndex),
-        device(device)
-    {}
-
-    void QuadRenderer::Initialize(uint32_t swapchainImageCount, vk::RenderPass renderPass, vk::Extent2D extent)
+        device(device),
+        swapchainImageCount(swapchainImageCount)
     {
-        core.Initialize(swapchainImageCount, renderPass, extent);
+        for (auto& material : materials)
+            MaterialCreated(*material);
     }
 
     void QuadRenderer::StageRender(const ImageRender& imageRender)
@@ -123,78 +125,100 @@ namespace Atmos::Render::Vulkan
                 { adjustedSliceRight, adjustedSliceBottom }
             }
         };
-        auto context = core.ContextFor(imageRender.position.z);
-        if (!context)
-            context = &core.AddContext(imageRender.position.z, Context{});
-        auto& group = context->GroupFor(*materialAsset);
-        group.ListFor(*imageAsset).emplace_back(vertices);
-        core.AddKey(imageAsset);
+        auto layer = layers.Find(imageRender.position.z);
+        if (!layer)
+            layer = &layers.Add(imageRender.position.z, Layer{});
+        auto& group = layer->GroupFor(*materialAsset);
+        group.ListFor(imageAsset).emplace_back(vertices);
+        stagedImageAssets.emplace(imageAsset);
     }
 
-    void QuadRenderer::Start(const std::vector<const Asset::Material*>& materials, vk::CommandBuffer commandBuffer)
+    void QuadRenderer::Start(
+        vk::CommandBuffer commandBuffer,
+        vk::CommandPool commandPool,
+        uint32_t currentSwapchainImage,
+        UniversalData universalData)
     {
-        const auto setupKey = [this](const Asset::Image* key, vk::DescriptorSet& descriptorSet)
+        if (layers.Empty())
+            return;
+
+        drawContext = DrawContext{};
+        drawContext->currentSwapchainImage = currentSwapchainImage;
+        drawContext->universalData = universalData;
+        drawContext->currentLayer = layers.begin();
+        drawContext->commandBuffer = commandBuffer;
+        drawContext->commandPool = commandPool;
+
+        descriptorSetPool.Reserve(stagedImageAssets.size() * swapchainImageCount);
+
+        for (auto& imageAsset : stagedImageAssets)
         {
-            const auto imageAssetResource = key->ResourceAs<Asset::Resource::Vulkan::Image>();
-            const auto imageAssetDescriptor = imageAssetResource->descriptor;
-            imageAssetDescriptor.Update(descriptorSet, *device);
-        };
-        core.Start(materials, commandBuffer, setupKey);
+            for (uint32_t i = 0; i < swapchainImageCount; ++i)
+            {
+                drawContext->setupDescriptorSets.emplace_back(imageAsset, i, descriptorSetPool.Next());
+                auto& emplaced = drawContext->setupDescriptorSets.back();
+                const auto imageAssetResource = imageAsset->ResourceAs<Asset::Resource::Vulkan::Image>();
+                const auto imageAssetDescriptor = imageAssetResource->descriptor;
+                imageAssetDescriptor.Update(emplaced.value, *device);
+            }
+        }
     }
 
-    void QuadRenderer::DrawNextLayer(uint32_t currentImage, UniversalData universalData)
+    void QuadRenderer::DrawNextLayer()
     {
-        core.DrawNextLayer(currentImage, universalData);
+        auto& layer = drawContext->currentLayer->second;
+
+        Draw(layer);
+
+        ++drawContext->currentLayer;
     }
 
     void QuadRenderer::End()
     {
-        core.End();
+        drawContext.reset();
+
+        layers.Clear();
+        descriptorSetPool.Reset();
+        stagedImageAssets.clear();
+    }
+
+    void QuadRenderer::MaterialCreated(const Asset::Material& material)
+    {
+        if (material.Type() != Asset::MaterialType::Image)
+            return;
+
+        mappedConduits.Add(material);
+    }
+
+    void QuadRenderer::MaterialDestroying(const Asset::Material& material)
+    {
+        if (material.Type() != Asset::MaterialType::Image)
+            return;
+
+        mappedConduits.Remove(material);
     }
 
     bool QuadRenderer::IsDone() const
     {
-        return core.IsDone();
+        return !drawContext || drawContext->currentLayer == layers.end();
     }
 
     Spatial::Point3D::Value QuadRenderer::NextLayer() const
     {
-        return core.NextLayer();
+        return drawContext->currentLayer->first;
     }
 
     size_t QuadRenderer::LayerCount() const
     {
-        return core.LayerCount();
+        return layers.Count();
     }
 
     QuadRenderer::Quad::Quad(const Vertices& vertices) : vertices(vertices)
     {}
 
-    auto QuadRenderer::Context::Group::ListFor(const Asset::Image& image) -> std::vector<Quad>&
+    void QuadRenderer::Draw(Layer& layer)
     {
-        auto found = quads.find(&image);
-        if (found == quads.end())
-            return quads.emplace(&image, std::vector<Quad>{}).first->second;
-
-        return found->second;
-    }
-
-    auto QuadRenderer::Context::GroupFor(const Asset::Material& material) -> Group&
-    {
-        auto found = groups.find(&material);
-        if (found == groups.end())
-            return groups.emplace(&material, Group{}).first->second;
-
-        return found->second;
-    }
-
-    void QuadRenderer::Draw(
-        Context& context,
-        DrawContext& drawContext,
-        uint32_t currentImage,
-        UniversalData universalData)
-    {
-        const auto& commandBuffer = drawContext.commandBuffer;
+        const auto& commandBuffer = drawContext->commandBuffer;
 
         vk::Buffer vertexBuffers[] = { vertexBuffer.destination.value.get() };
         vk::DeviceSize offsets[] = { 0 };
@@ -202,56 +226,35 @@ namespace Atmos::Render::Vulkan
 
         commandBuffer.bindIndexBuffer(indexBuffer.destination.value.get(), 0, vk::IndexType::eUint16);
 
-        for (auto& group : context.groups)
-        {
-            WriteToBuffers(
-                group.second,
-                *group.first,
-                drawContext,
-                currentImage,
-                universalData);
-        }
+        for (auto& group : layer.materialGroups)
+            WriteToBuffers(group.second, *group.first);
     }
 
     void QuadRenderer::WriteToBuffers(
-        const Context::Group& group,
-        const Asset::Material& materialAsset,
-        DrawContext& drawContext,
-        uint32_t currentImage,
-        UniversalData universalData)
+        const Layer::MaterialGroup& materialGroup,
+        const Asset::Material& materialAsset)
     {
-        auto& pipelines = *core.PipelinesFor(materialAsset);
-        for (auto& pipeline : pipelines)
-        {
-            pipeline.uniformBuffers[currentImage].PushBytes(universalData, 0);
-
-            for (auto& object : group.quads)
-                WriteToBuffers(
-                    object.second,
-                    object.first,
-                    pipeline,
-                    drawContext,
-                    currentImage);
-        }
+        auto& conduits = *mappedConduits.For(materialAsset);
+        for (auto& conduit : conduits)
+            for (auto& value : materialGroup.values)
+                WriteToBuffers(conduit, value.second, value.first);
     }
 
     void QuadRenderer::WriteToBuffers(
+        Conduit& conduit,
         const std::vector<Quad>& quads,
-        const Asset::Image* imageAsset,
-        Pipeline& pipeline,
-        DrawContext& drawContext,
-        uint32_t currentImage)
+        const Asset::Image* imageAsset)
     {
-        const auto& commandBuffer = drawContext.commandBuffer;
+        const auto& commandBuffer = drawContext->commandBuffer;
 
-        const auto startQuadCount = drawContext.addition.quadCount;
+        const auto startQuadCount = drawContext->quadCount;
 
         std::vector<Vertex> drawnVertices;
         std::vector<Index> drawnIndices;
         for (auto& quad : quads)
         {
             drawnVertices.insert(drawnVertices.end(), quad.vertices.begin(), quad.vertices.end());
-            const auto offsetQuadIndicesBy = drawContext.addition.quadCount * indexIncrement;
+            const auto offsetQuadIndicesBy = drawContext->quadCount * indexIncrement;
             const Indices offsetQuadIndices =
             {
                 Index(offsetQuadIndicesBy + indices[0]),
@@ -262,15 +265,24 @@ namespace Atmos::Render::Vulkan
                 Index(offsetQuadIndicesBy + indices[5]),
             };
             drawnIndices.insert(drawnIndices.end(), offsetQuadIndices.begin(), offsetQuadIndices.end());
-            ++drawContext.addition.quadCount;
+            ++drawContext->quadCount;
         }
 
-        commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, pipeline.value.get());
-
-        auto currentDescriptorSet = core.KeyedSetFor(imageAsset, currentImage)->descriptorSet;
+        auto currentDescriptorSet = std::find_if(
+            drawContext->setupDescriptorSets.begin(),
+            drawContext->setupDescriptorSets.end(),
+            [this, imageAsset](const SetupDescriptorSet& set)
+            {
+                return set.image == imageAsset && set.swapchainImage == drawContext->currentSwapchainImage;
+            })->value;
+        conduit.PrepareExecution(
+            currentDescriptorSet,
+            drawContext->currentSwapchainImage,
+            drawContext->universalData);
+        conduit.Bind(commandBuffer);
         commandBuffer.bindDescriptorSets(
             vk::PipelineBindPoint::eGraphics,
-            core.PipelineLayout(),
+            mappedConduits.PipelineLayout(),
             0,
             1,
             &currentDescriptorSet,
@@ -283,9 +295,9 @@ namespace Atmos::Render::Vulkan
         const auto indexSize = drawnIndices.size() * sizeof Index;
 
         vertexBuffer.PushSourceBytes(drawnVertices.data(), vertexOffset, vertexSize);
-        vertexBuffer.CopyFromSourceToDestination(vertexOffset, vertexSize, commandBuffers.Pool(), graphicsQueue);
+        vertexBuffer.CopyFromSourceToDestination(vertexOffset, vertexSize, drawContext->commandPool, graphicsQueue);
         indexBuffer.PushSourceBytes(drawnIndices.data(), indexOffset, indexSize);
-        indexBuffer.CopyFromSourceToDestination(indexOffset, indexSize, commandBuffers.Pool(), graphicsQueue);
-        drawContext.commandBuffer.drawIndexed(quads.size() * indices.size(), 1, startQuadCount * indices.size(), 0, 0);
+        indexBuffer.CopyFromSourceToDestination(indexOffset, indexSize, drawContext->commandPool, graphicsQueue);
+        drawContext->commandBuffer.drawIndexed(quads.size() * indices.size(), 1, startQuadCount * indices.size(), 0, 0);
     }
 }

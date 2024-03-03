@@ -31,9 +31,11 @@ namespace Atmos::Render::Vulkan
         [[nodiscard]] std::unique_ptr<Asset::Resource::Shader> CreateShaderResourceImpl(
             const Bytes& bytes, const Name& name) override;
         [[nodiscard]] std::unique_ptr<Resource::Surface> CreateMainSurfaceResourceImpl(
-            void* window) override;
+            void* window,
+            Arca::Reliquary& reliquary) override;
         [[nodiscard]] std::unique_ptr<Resource::Surface> CreateSurfaceResourceImpl(
-            void* window) override;
+            void* window,
+            Arca::Reliquary& reliquary) override;
 
         void ResourceDestroyingImpl(Asset::Resource::Image& resource) override;
 
@@ -114,7 +116,8 @@ namespace Atmos::Render::Vulkan
             vk::UniqueSurfaceKHR&& underlying,
             QueueFamilyIndices queueIndices,
             vk::Queue graphicsQueue,
-            vk::Queue presentQueue);
+            vk::Queue presentQueue,
+            Arca::Reliquary& reliquary);
 
         [[nodiscard]] static vk::UniqueSurfaceKHR CreateSurface(void* window, vk::Instance instance);
     private:
