@@ -248,7 +248,7 @@ namespace Atmos::Asset::Resource
 
 	LoadedData<Audio> RealManager::AudioManager::Load(const File::Path& filePath)
 	{
-		auto inputArchive = Inscription::InputBinaryArchive(filePath);
+		auto inputArchive = Inscription::Archive::InputBinary(filePath);
 		const auto size = inputArchive.Size();
 
 		Inscription::Buffer loadedBuffer;

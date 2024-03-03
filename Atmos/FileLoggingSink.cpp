@@ -14,14 +14,14 @@ namespace Atmos::Logging
         const auto output = StandardFormattedLog(log);
 
         {
-            Inscription::OutputTextFile outputFile(OutputFilePath(), true);
+            Inscription::File::OutputText outputFile(OutputFilePath(), true);
             outputFile.WriteData(output);
         }
     }
 
     void FileSink::ClearFile()
     {
-        Inscription::OutputTextFile outFile(OutputFilePath());
+        Inscription::File::OutputText outFile(OutputFilePath());
     }
 
     File::Path FileSink::OutputFilePath()

@@ -16,9 +16,9 @@ String AngelScriptLoggingTestsFixture::AllLogged() const
     String allLogged;
     {
         const auto filePath = std::filesystem::current_path() / "log.txt";
-        auto file = Inscription::InputTextFile(filePath);
+        auto file = Inscription::File::InputText(filePath);
 
-        while (!file.IsAtEndOfFile())
+        while (!file.IsAtEnd())
             allLogged += file.ReadLine() + "\n";
     }
     return allLogged;
@@ -74,9 +74,9 @@ SCENARIO_METHOD(AngelScriptLoggingTestsFixture, "running logging AngelScript scr
                     String allLogged;
                     {
                         const auto filePath = std::filesystem::current_path() / "log.txt";
-                        auto file = Inscription::InputTextFile(filePath);
+                        auto file = Inscription::File::InputText(filePath);
 
-                        while (!file.IsAtEndOfFile())
+                        while (!file.IsAtEnd())
                             allLogged += file.ReadLine() + "\n";
                     }
 

@@ -2,7 +2,7 @@
 
 #include "FileCurator.h"
 
-#include <Inscription/InputSimpleFile.h>
+#include <Inscription/InputBinaryFile.h>
 
 namespace Atmos::File
 {
@@ -11,14 +11,14 @@ namespace Atmos::File
 
     Buffer Curator::Handle(const ExtractFile& command)
     {
-        Inscription::InputSimpleFile file(command.filePath);
-        file.SeekPositionFromEnd(0);
-        const auto length = file.CurrentPosition();
-        file.SeekPositionFromBegin(0);
+        Inscription::File::InputBinary file(command.filePath);
+        file.SeekFromEnd(0);
+        const auto length = file.Position();
+        file.SeekFromBeginning(0);
 
         Buffer buffer;
         buffer.resize(length);
-        file.FillBuffer(&buffer[0], length);
+        file.ReadData(buffer, length);
         return buffer;
     }
 

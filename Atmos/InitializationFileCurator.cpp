@@ -22,7 +22,7 @@ namespace Atmos::Initialization
     void FileCurator::Save()
     {
         const auto filePath = FilePath();
-        Inscription::OutputTextFile file(filePath);
+        Inscription::File::OutputText file(filePath);
         file.ClearFile();
 
         file.WriteData(graphics.FileString());
@@ -44,7 +44,7 @@ namespace Atmos::Initialization
             return;
         }
 
-        Inscription::InputTextFile file(filePath);
+        Inscription::File::InputText file(filePath);
 
         FileSection* currentSection = nullptr;
         String line;
@@ -68,7 +68,7 @@ namespace Atmos::Initialization
             return false;
         };
 
-        while (!file.IsAtEndOfFile())
+        while (!file.IsAtEnd())
         {
             line = file.ReadLine();
             if (IsAllWhitespace(line))

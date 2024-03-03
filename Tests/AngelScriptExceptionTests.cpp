@@ -59,9 +59,9 @@ SCENARIO_METHOD(AngelScriptExceptionTestsFixture, "running AngelScript scripts t
                     String allLogged;
                     {
                         const auto filePath = std::filesystem::current_path() / "log.txt";
-                        auto file = Inscription::InputTextFile(filePath);
+                        auto file = Inscription::File::InputText(filePath);
 
-                        while (!file.IsAtEndOfFile())
+                        while (!file.IsAtEnd())
                             allLogged += file.ReadLine() + "\n";
                     }
 

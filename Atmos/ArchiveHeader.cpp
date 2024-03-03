@@ -5,7 +5,7 @@
 namespace Atmos
 {
     void SaveArchiveHeader(
-        Inscription::BinaryArchive& archive,
+        Inscription::Archive::Binary& archive,
         const std::string& signature,
         Inscription::Version inscriptionVersion,
         Inscription::Version clientVersion)
@@ -18,7 +18,7 @@ namespace Atmos
     }
 
     std::tuple<Inscription::Version, Inscription::Version> LoadArchiveHeader(
-        Inscription::BinaryArchive& archive, const std::string& expectedSignature)
+        Inscription::Archive::Binary& archive, const std::string& expectedSignature)
     {
         const auto size = expectedSignature.size();
         std::string loadedSignature(size, '\000');
@@ -43,7 +43,8 @@ namespace Atmos
         return { inscriptionVersion, clientVersion };
     }
 
-    void SaveArchiveHeader(Inscription::JsonArchive& archive,
+    void SaveArchiveHeader(
+        Inscription::Archive::Json& archive,
         Inscription::Version inscriptionVersion,
         Inscription::Version clientVersion)
     {
@@ -51,7 +52,7 @@ namespace Atmos
         archive("clientVersion", clientVersion);
     }
 
-    std::tuple<Inscription::Version, Inscription::Version> LoadArchiveHeader(Inscription::JsonArchive& archive)
+    std::tuple<Inscription::Version, Inscription::Version> LoadArchiveHeader(Inscription::Archive::Json& archive)
     {
         Inscription::Version inscriptionVersion;
         Inscription::Version clientVersion;

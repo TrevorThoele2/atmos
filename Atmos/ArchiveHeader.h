@@ -9,18 +9,18 @@
 namespace Atmos
 {
     void SaveArchiveHeader(
-        Inscription::BinaryArchive& archive,
+        Inscription::Archive::Binary& archive,
         const std::string& signature,
         Inscription::Version inscriptionVersion,
         Inscription::Version clientVersion);
     std::tuple<Inscription::Version, Inscription::Version> LoadArchiveHeader(
-        Inscription::BinaryArchive& archive,
+        Inscription::Archive::Binary& archive,
         const std::string& expectedSignature);
 
     void SaveArchiveHeader(
-        Inscription::JsonArchive& archive,
+        Inscription::Archive::Json& archive,
         Inscription::Version inscriptionVersion,
         Inscription::Version clientVersion);
     std::tuple<Inscription::Version, Inscription::Version> LoadArchiveHeader(
-        Inscription::JsonArchive& archive);
+        Inscription::Archive::Json& archive);
 }
