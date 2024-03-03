@@ -3,7 +3,6 @@
 #include "EngineInitializationProperties.h"
 #include "EngineExecution.h"
 
-#include <Arca/Reliquary.h>
 #include "WorldManager.h"
 
 namespace Atmos
@@ -32,25 +31,28 @@ namespace Atmos
         virtual InitializationProperties CreateInitializationProperties() = 0;
 
         virtual void DoExit() = 0;
-    protected:
-        [[nodiscard]] Arca::Reliquary* GlobalReliquary();
-        [[nodiscard]] const Arca::Reliquary* GlobalReliquary() const;
     private:
         [[nodiscard]] bool IsSetup() const;
         void SetupRequired() const;
     private:
-        std::unique_ptr<Arca::Reliquary> globalReliquary;
-
         class ExecutionContext
         {
         public:
             EngineExecution execution;
             World::WorldManager worldManager;
         public:
-            ExecutionContext(Engine& owner, World::WorldManager&& worldManager);
+            ExecutionContext(World::WorldManager&& worldManager);
         };
 
         using ExecutionContextPtr = std::unique_ptr<ExecutionContext>;
         ExecutionContextPtr executionContext;
+    private:
+        struct Managers
+        {
+            std::unique_ptr<Audio::AudioManager> audio;
+            std::unique_ptr<Input::Manager> input;
+            std::unique_ptr<Render::GraphicsManager> graphics;
+        };
+        Managers managers;
     };
 }

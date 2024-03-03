@@ -5,12 +5,11 @@
 
 namespace Atmos::Render::Vulkan
 {
-    class ShaderAssetDataImplementation final : public Asset::ShaderAssetData
+    class ShaderAssetDataImplementation final : public Asset::ShaderData
     {
     public:
         ShaderAssetDataImplementation(
             vk::ShaderModule module,
-            const String& entryPoint,
             std::shared_ptr<vk::Device> device);
         ~ShaderAssetDataImplementation();
 

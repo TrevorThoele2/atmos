@@ -4,7 +4,7 @@
 
 namespace Atmos::Script::Angel
 {
-    std::unique_ptr<Asset::ScriptAssetData> Manager::CreateAssetData(String name, String fileData)
+    std::unique_ptr<Asset::ScriptData> Manager::CreateAssetData(String name, String fileData)
     {
         auto module = engine->GetModule(name.c_str(), asGM_ALWAYS_CREATE);
 

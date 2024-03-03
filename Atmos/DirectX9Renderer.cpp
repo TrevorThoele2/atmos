@@ -11,14 +11,10 @@
 namespace Atmos::Render::DirectX9
 {
     Renderer::Renderer(
-        GraphicsManager& owner,
-        Arca::Index<Asset::ShaderAsset> defaultTexturedMaterialShader,
-        Arca::Reliquary& reliquary)
+        GraphicsManager& owner)
         :
         owner(owner),
-        reliquary(&reliquary),
-        device(owner.Device()),
-        defaultTexturedMaterialShader(defaultTexturedMaterialShader)
+        device(owner.Device())
     {
         InitializeBuffers();
 
@@ -45,9 +41,7 @@ namespace Atmos::Render::DirectX9
 
         StageRender(
             imageRender.asset->FileDataAs<ImageAssetDataImplementation>()->Texture(),
-            imageRender.material->VertexShader()
-                ? &*imageRender.material->VertexShader()
-                : DefaultTexturedMaterialShader(),
+            imageRender.material->VertexShader(),
             imageRender.position.x,
             imageRender.position.y,
             imageRender.position.z,
@@ -81,9 +75,6 @@ namespace Atmos::Render::DirectX9
             indexBuffer = nullptr;
         }
 
-        if (defaultTexturedMaterialShader)
-            defaultTexturedMaterialShader->FileDataAs<ShaderAssetDataImplementation>()->Effect()->OnLostDevice();
-
         if (lineInterface)
         {
             LogIfError(
@@ -97,8 +88,6 @@ namespace Atmos::Render::DirectX9
     void Renderer::OnResetDevice()
     {
         InitializeBuffers();
-        if (defaultTexturedMaterialShader)
-            defaultTexturedMaterialShader->FileDataAs<ShaderAssetDataImplementation>()->Effect()->OnResetDevice();
 
         if (lineInterface)
         {
@@ -110,18 +99,13 @@ namespace Atmos::Render::DirectX9
         }
     }
 
-    Arca::Index<Asset::ShaderAsset> Renderer::DefaultTexturedMaterialShader() const
-    {
-        return defaultTexturedMaterialShader;
-    }
-
     Renderer::Vertex::Vertex(const D3DXVECTOR2& position, D3DCOLOR color, FLOAT u, FLOAT v) :
         position(position), color(color)
     {}
 
     auto Renderer::CreateQuad(
         LPDIRECT3DTEXTURE9 texture,
-        const Asset::ShaderAsset* shader,
+        const Asset::Shader* shader,
         float x,
         float y,
         const AxisAlignedBox2D& imageBounds,
@@ -186,7 +170,7 @@ namespace Atmos::Render::DirectX9
         std::vector<Index>&& indices,
         unsigned int primCount,
         LPDIRECT3DTEXTURE9 texture,
-        const Asset::ShaderAsset* shader)
+        const Asset::Shader* shader)
         :
         vertices(vertices), indices(indices), primCount(primCount), texture(texture), shader(shader)
     {}
@@ -248,7 +232,7 @@ namespace Atmos::Render::DirectX9
 
     void Renderer::StageRender(
         LPDIRECT3DTEXTURE9 texture,
-        const Asset::ShaderAsset* shader,
+        const Asset::Shader* shader,
         float x,
         float y,
         float z,
@@ -553,7 +537,7 @@ namespace Atmos::Render::DirectX9
             currentShaderData->Effect()->SetTexture("g_Texture", currentTexture);
     }
 
-    void Renderer::Pipeline::SetShader(const Asset::ShaderAsset* set)
+    void Renderer::Pipeline::SetShader(const Asset::Shader* set)
     {
         currentShader = set;
         currentShaderData = currentShader->FileDataAs<ShaderAssetDataImplementation>();

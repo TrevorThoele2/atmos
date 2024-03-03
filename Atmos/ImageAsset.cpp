@@ -1,84 +1,135 @@
 #include "ImageAsset.h"
 
+#include "LoadImageAsset.h"
+#include "CreateImageAssetData.h"
 #include "ShouldCreateAsset.h"
 
 namespace Atmos::Asset
 {
-    ImageAsset::ImageAsset(Init init) : FileAsset(init)
+    Image::Image(Init init) : FileAsset(init)
     {}
 
-    ImageAsset::ImageAsset(
+    Image::Image(
         Init init,
         const ::Atmos::Name& name,
         DataPtr&& data,
-        GridDimension columns,
-        GridDimension rows)
+        ImageSize size,
+        ImageGridSize gridSize)
         :
         FileAsset(init, name, std::move(data)),
-        columns(columns),
-        rows(rows)
+        size(size),
+        gridSize(gridSize)
     {}
 
-    ImageAsset::ImageAsset(ImageAsset&& arg) noexcept :
+    Image::Image(Image&& arg) noexcept :
         FileAsset(std::move(arg)),
-        columns(arg.columns),
-        rows(arg.rows)
+        size(arg.size),
+        gridSize(arg.gridSize)
     {}
 
-    ImageAsset& ImageAsset::operator=(ImageAsset&& arg) noexcept
+    Image& Image::operator=(Image&& arg) noexcept
     {
         FileAsset::operator=(std::move(arg));
-        columns = arg.columns;
-        rows = arg.rows;
+        size = arg.size;
+        gridSize = arg.gridSize;
         return *this;
     }
 
-    auto ImageAsset::Width() const -> Dimension
+    auto Image::Width() const -> Dimension
     {
-        if (!HasFileData())
-            return 0;
-
-        return FileData()->Width();
+        return size.width;
     }
 
-    auto ImageAsset::Height() const -> Dimension
+    auto Image::Height() const -> Dimension
     {
-        if (!HasFileData())
-            return 0;
-
-        return FileData()->Height();
+        return size.height;
     }
 
-    auto ImageAsset::Columns() const -> GridDimension
+    ImageSize Image::Size() const
     {
-        return columns;
+        return size;
     }
 
-    auto ImageAsset::Rows() const -> GridDimension
+    auto Image::Columns() const -> GridDimension
     {
-        return rows;
+        return gridSize.columns;
+    }
+
+    auto Image::Rows() const -> GridDimension
+    {
+        return gridSize.rows;
+    }
+
+    ImageGridSize Image::GridSize() const
+    {
+        return gridSize;
+    }
+
+    AxisAlignedBox2D Image::Slice(int index) const
+    {
+        const auto gridSize = UsableGridSize();
+        const auto sliceSize = SliceSize();
+
+        const auto column = index % gridSize.columns;
+        const auto row = index / gridSize.rows;
+
+        return AxisAlignedBox2D
+        {
+            column * sliceSize.width,
+            row * sliceSize.height,
+            column * sliceSize.width + sliceSize.width,
+            row * sliceSize.height + sliceSize.height
+        };
+    }
+
+    Size2D Image::SliceSize() const
+    {
+        const auto gridSize = UsableGridSize();
+
+        const auto indexWidth = static_cast<float>(Width() / gridSize.columns);
+        const auto indexHeight = static_cast<float>(Height() / gridSize.rows);
+
+        return Size2D{ indexWidth, indexHeight };
+    }
+
+    ImageGridSize Image::UsableGridSize() const
+    {
+        const auto columns = Columns() > 0 ? Columns() : 1;
+        const auto rows = Rows() ? Rows() : 1;
+        return ImageGridSize{ columns, rows };
     }
 }
 
 namespace Arca
 {
-    bool Traits<::Atmos::Asset::ImageAsset>::ShouldCreate(
+    bool Traits<::Atmos::Asset::Image>::ShouldCreate(
         Reliquary& reliquary,
         const ::Atmos::Name& name,
-        ::Atmos::Asset::ImageAsset::DataPtr&&,
-        ::Atmos::Asset::ImageAsset::GridDimension,
-        ::Atmos::Asset::ImageAsset::GridDimension)
+        const ::Atmos::Asset::Image::DataPtr&,
+        ::Atmos::Asset::ImageSize,
+        ::Atmos::Asset::ImageGridSize)
     {
-        return Atmos::Asset::ShouldCreateAsset<::Atmos::Asset::ImageAsset>(reliquary, name);
+        return Atmos::Asset::ShouldCreate<::Atmos::Asset::Image>(reliquary, name);
     }
 }
 
 namespace Inscription
 {
-    void Scribe<Atmos::Asset::ImageAsset, BinaryArchive>::ScrivenImplementation(
+    void Scribe<Atmos::Asset::Image, BinaryArchive>::ScrivenImplementation(
         ObjectT& object, ArchiveT& archive)
     {
-        BaseScriven<Atmos::Asset::FileAsset<Atmos::Asset::ImageAssetData, Atmos::Asset::ImageAsset>>(
+        BaseScriven<Atmos::Asset::FileAsset<Atmos::Asset::ImageData, Atmos::Asset::Image>>(
             object, archive);
+        archive(object.size);
+        archive(object.gridSize);
+        if (archive.IsInput())
+        {
+            const auto filePath = std::filesystem::current_path() / "Images" / object.Name();
+            const auto loaded = object.Owner().Do(Atmos::Asset::LoadImage{ filePath });
+            object.data = object.Owner().Do(Atmos::Asset::CreateData<Atmos::Asset::ImageData>{
+                loaded.buffer,
+                object.Name(),
+                loaded.size });
+        }
     }
 }

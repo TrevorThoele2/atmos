@@ -27,8 +27,8 @@ namespace Atmos::Render::Vulkan
         void PushSourceBytes(const void* bytes, vk::DeviceSize offset, size_t size);
         template<class T>
         void PushSourceBytes(const T& object, vk::DeviceSize offset);
-        void CopyFromSourceToDestination(vk::DeviceSize size, vk::CommandPool commandPool, vk::Queue queue);
         void CopyFromSourceToDestination(vk::CommandPool commandPool, vk::Queue queue);
+        void CopyFromSourceToDestination(vk::DeviceSize offset, vk::DeviceSize size, vk::CommandPool commandPool, vk::Queue queue);
     private:
         struct Internal {};
 

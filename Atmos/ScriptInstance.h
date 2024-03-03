@@ -15,7 +15,7 @@ namespace Atmos::Script
     class ScriptInstance final : public Arca::ClosedTypedRelic<ScriptInstance>
     {
     public:
-        using Asset = Asset::ScriptAsset;
+        using Asset = Asset::Script;
         Asset* asset;
     public:
         Name executeName;

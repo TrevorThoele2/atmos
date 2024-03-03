@@ -5,10 +5,10 @@
 
 namespace Atmos::Render::DirectX9
 {
-    class ImageAssetDataImplementation final : public Asset::ImageAssetData
+    class ImageAssetDataImplementation final : public Asset::ImageData
     {
     public:
-        explicit ImageAssetDataImplementation(LPDIRECT3DTEXTURE9 texture, Dimension width, Dimension height);
+        explicit ImageAssetDataImplementation(LPDIRECT3DTEXTURE9 texture);
         ~ImageAssetDataImplementation();
 
         [[nodiscard]] LPDIRECT3DTEXTURE9 Texture() const;

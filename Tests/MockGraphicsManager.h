@@ -14,22 +14,23 @@ public:
 
     [[nodiscard]] bool IsOk() const override;
 
-    [[nodiscard]] std::unique_ptr<Asset::ImageAssetData> CreateImageData(
-        const Buffer& buffer, const Name& name, const Size2D& size) override;
-    [[nodiscard]] std::unique_ptr<Asset::ShaderAssetData> CreateShaderData(
-        const Buffer& buffer, const Name& name, const String& entryPoint) override;
-    [[nodiscard]] std::unique_ptr<SurfaceData> CreateMainSurfaceData(
-        void* window) override;
-    [[nodiscard]] std::unique_ptr<SurfaceData> CreateSurfaceData(
-        void* window) override;
-    [[nodiscard]] std::unique_ptr<CanvasData> CreateCanvasData(
-        const ScreenSize& size) override;
-
     void SetFullscreen(bool set) override;
 
     void ChangeVerticalSync(bool set) override;
 protected:
     void InitializeImpl() override;
+
+    [[nodiscard]] std::unique_ptr<Asset::ImageAssetData> CreateImageDataImpl(
+        const Buffer& buffer,
+        const Name& name,
+        const Asset::ImageAssetSize& size,
+        const Asset::ImageAssetGridSize& gridSize) override;
+    [[nodiscard]] std::unique_ptr<Asset::ShaderAssetData> CreateShaderDataImpl(
+        const Buffer& buffer, const Name& name, const String& entryPoint) override;
+    [[nodiscard]] std::unique_ptr<SurfaceData> CreateMainSurfaceDataImpl(
+        void* window) override;
+    [[nodiscard]] std::unique_ptr<SurfaceData> CreateSurfaceDataImpl(
+        void* window) override;
 private:
     [[nodiscard]] bool ShouldReconstructInternals() const override;
     void ReconstructInternals(GraphicsReconstructionObjects objects) override;

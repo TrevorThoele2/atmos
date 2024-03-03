@@ -35,8 +35,24 @@ namespace Atmos::Render::Vulkan
         void PushBytes(const void* bytes, vk::DeviceSize offset, size_t size);
         template<class T>
         void PushBytes(const T& object, vk::DeviceSize offset);
-        void Copy(const Buffer& destination, vk::DeviceSize size, vk::CommandPool commandPool, vk::Queue queue) const;
-        void Copy(vk::Image destination, uint32_t width, uint32_t height, vk::CommandPool commandPool, vk::Queue queue);
+        void Copy(
+            const Buffer& destination,
+            vk::DeviceSize sourceOffset,
+            vk::DeviceSize destinationOffset,
+            vk::DeviceSize size,
+            vk::CommandPool commandPool,
+            vk::Queue queue) const;
+        void Copy(
+            vk::Image destination,
+            vk::DeviceSize bufferOffset,
+            uint32_t bufferRowLength,
+            uint32_t bufferImageHeight,
+            vk::Offset3D imagePosition,
+            vk::Extent3D imageSize,
+            uint32_t layerOffset,
+            uint32_t layerCount,
+            vk::CommandPool commandPool,
+            vk::Queue queue);
     private:
         vk::Device device;
     };

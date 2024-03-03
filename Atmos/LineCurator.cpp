@@ -50,6 +50,8 @@ namespace Atmos::Render
         for (auto& index : lines)
         {
             auto& line = *index->value;
+            if (!line.material)
+                continue;
 
             std::vector<Position2D> adjustedPoints;
             for (auto& point : line.points)
@@ -59,6 +61,7 @@ namespace Atmos::Render
             {
                 adjustedPoints,
                 line.z,
+                line.material,
                 line.width,
                 line.color
             };

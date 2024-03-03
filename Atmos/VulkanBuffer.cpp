@@ -51,27 +51,60 @@ namespace Atmos::Render::Vulkan
         device.unmapMemory(memory.get());
     }
 
-    void Buffer::Copy(const Buffer& destination, vk::DeviceSize size, vk::CommandPool commandPool, vk::Queue queue) const
+    void Buffer::Copy(
+        const Buffer& destination,
+        vk::DeviceSize sourceOffset,
+        vk::DeviceSize destinationOffset,
+        vk::DeviceSize size,
+        vk::CommandPool commandPool,
+        vk::Queue queue) const
     {
         if (size == 0)
             return;
 
         SingleUseCommandBuffer(device, commandPool, queue,
-            [this, &destination, size](vk::CommandBuffer commandBuffer)
+            [this, &destination, sourceOffset, destinationOffset, size](vk::CommandBuffer commandBuffer)
             {
-                const vk::BufferCopy copyRegion(0, 0, size);
+                const vk::BufferCopy copyRegion(sourceOffset, destinationOffset, size);
                 commandBuffer.copyBuffer(value.get(), destination.value.get(), copyRegion);
             });
     }
 
-    void Buffer::Copy(vk::Image destination, uint32_t width, uint32_t height, vk::CommandPool commandPool, vk::Queue queue)
+    void Buffer::Copy(
+        vk::Image destination,
+        vk::DeviceSize bufferOffset,
+        uint32_t bufferRowLength,
+        uint32_t bufferImageHeight,
+        vk::Offset3D imagePosition,
+        vk::Extent3D imageSize,
+        uint32_t layerOffset,
+        uint32_t layerCount,
+        vk::CommandPool commandPool,
+        vk::Queue queue)
     {
         SingleUseCommandBuffer(device, commandPool, queue,
-            [this, destination, width, height](vk::CommandBuffer commandBuffer)
+            [
+                this,
+                destination,
+                bufferOffset,
+                bufferRowLength,
+                bufferImageHeight,
+                imagePosition,
+                imageSize,
+                layerOffset,
+                layerCount
+            ]
+                (vk::CommandBuffer commandBuffer)
             {
-                const vk::ImageSubresourceLayers subresourceLayers(vk::ImageAspectFlagBits::eColor, 0, 0, 1);
+                const vk::ImageSubresourceLayers subresourceLayers(
+                    vk::ImageAspectFlagBits::eColor, 0, layerOffset, layerCount);
                 const vk::BufferImageCopy region(
-                    {}, {}, {}, subresourceLayers, { 0, 0, 0 }, { width, height, 1 });
+                    bufferOffset,
+                    bufferRowLength,
+                    bufferImageHeight,
+                    subresourceLayers,
+                    imagePosition,
+                    imageSize);
 
                 commandBuffer.copyBufferToImage(
                     value.get(), destination, vk::ImageLayout::eTransferDstOptimal, region);

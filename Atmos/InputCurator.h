@@ -11,11 +11,11 @@ namespace Atmos::Input
     class Curator final : public Arca::Curator
     {
     public:
-        explicit Curator(Init init);
+        explicit Curator(Init init, Manager& manager);
 
         void Work();
     private:
-        Arca::Postulate<Manager*> manager;
+        Manager* manager;
 
         Arca::Index<MappedInputs> mappedInputs;
         Arca::Index<MappedActions> mappedActions;

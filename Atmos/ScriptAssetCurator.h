@@ -5,10 +5,10 @@
 
 namespace Atmos::Asset
 {
-    using ScriptAssetCurator = AssetCurator<ScriptAsset>;
+    using ScriptCurator = Curator<Script>;
 
     template<>
-    struct AssetCuratorTraits<ScriptAsset> : AssetCuratorTraitsBase<ScriptAsset>
+    struct CuratorTraits<Script> : CuratorTraitsBase<Script>
     {
         constexpr static DebugStatisticsSize debugStatisticsSize = &Debug::Statistics::Memory::scriptAssetSize;
     };
@@ -17,18 +17,18 @@ namespace Atmos::Asset
 namespace Arca
 {
     template<>
-    struct Traits<Atmos::Asset::ScriptAssetCurator>
+    struct Traits<Atmos::Asset::ScriptCurator>
     {
         static const ObjectType objectType = ObjectType::Curator;
         static inline const TypeName typeName = "ScriptAssetCurator";
-        using HandledCommands = HandledCommands<Atmos::Asset::FindAsset<Atmos::Asset::ScriptAsset>>;
+        using HandledCommands = HandledCommands<Atmos::Asset::Find<Atmos::Asset::Script>>;
     };
 }
 
 namespace Inscription
 {
     template<>
-    class Scribe<Atmos::Asset::ScriptAssetCurator, BinaryArchive> final :
-        public ArcaNullScribe<Atmos::Asset::ScriptAssetCurator, BinaryArchive>
+    class Scribe<Atmos::Asset::ScriptCurator, BinaryArchive> final :
+        public ArcaNullScribe<Atmos::Asset::ScriptCurator, BinaryArchive>
     {};
 }

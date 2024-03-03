@@ -17,17 +17,16 @@ namespace Atmos
         auto initializationProperties = CreateInitializationProperties();
         Window::window.Setup(std::move(initializationProperties.window));
 
-        Arca::ReliquaryOrigin origin;
-        RegisterGlobalTypes(
-            origin,
+        managers = Managers
+        {
+            std::move(initializationProperties.audioManager),
             std::move(initializationProperties.inputManager),
-            std::move(initializationProperties.graphicsManager),
-            std::move(initializationProperties.audioManager));
-        globalReliquary = origin.Actualize();
+            std::move(initializationProperties.graphicsManager)
+        };
 
-        World::WorldManager worldManager(*globalReliquary);
+        World::WorldManager worldManager({ *managers.audio, *managers.input, *managers.graphics });
 
-        executionContext = std::make_unique<ExecutionContext>(*this, std::move(worldManager));
+        executionContext = std::make_unique<ExecutionContext>(std::move(worldManager));
     }
 
     void Engine::UseField(World::Field&& field)
@@ -65,16 +64,6 @@ namespace Atmos
         DoExit();
     }
 
-    Arca::Reliquary* Engine::GlobalReliquary()
-    {
-        return globalReliquary.get();
-    }
-
-    const Arca::Reliquary* Engine::GlobalReliquary() const
-    {
-        return globalReliquary.get();
-    }
-
     bool Engine::IsSetup() const
     {
         return executionContext != nullptr;
@@ -86,8 +75,8 @@ namespace Atmos
             throw EngineNotSetup();
     }
 
-    Engine::ExecutionContext::ExecutionContext(Engine& owner, World::WorldManager&& worldManager) :
-        execution(EngineExecution(*owner.globalReliquary, this->worldManager)),
+    Engine::ExecutionContext::ExecutionContext(World::WorldManager&& worldManager) :
+        execution(this->worldManager),
         worldManager(std::move(worldManager))
     {}
 }

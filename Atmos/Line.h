@@ -5,6 +5,7 @@
 
 #include "Position2D.h"
 #include "Color.h"
+#include "MaterialAsset.h"
 
 namespace Atmos::Render
 {
@@ -13,6 +14,7 @@ namespace Atmos::Render
     public:
         std::vector<Position2D> points;
         Position2D::Value z = 0;
+        Arca::Index<Asset::Material> material;
 
         LineWidth width = 0;
 
@@ -22,7 +24,12 @@ namespace Atmos::Render
         {}
 
         Line(Init init, const std::vector<Position2D>& points);
-        Line(Init init, const std::vector<Position2D>& points, Position2D::Value z, LineWidth width, Color color);
+        Line(Init init,
+            const std::vector<Position2D>& points,
+            Position2D::Value z,
+            Arca::Index<Asset::Material> material,
+            LineWidth width,
+            Color color);
     };
 }
 

@@ -3,8 +3,8 @@
 #include "GraphicsManager.h"
 #include "VulkanIncludes.h"
 #include "VulkanShaderCompiler.h"
-#include "VulkanLineShaders.h"
 #include "VulkanQueueFamilyIndices.h"
+#include "VulkanDebug.h"
 
 #define VK_KHR_WIN32_EXTENSION_NAME "VK_KHR_win32_surface"
 #define VK_EXT_DEBUG_UTILS_EXTENSION_NAME "VK_EXT_debug_utils"
@@ -17,20 +17,21 @@ namespace Atmos::Render::Vulkan
     public:
         ShaderCompiler shaderCompiler;
     public:
-        GraphicsManager() = default;
-        ~GraphicsManager();
+        GraphicsManager();
 
         [[nodiscard]] bool IsOk() const override;
 
         void SetFullscreen(bool set) override;
         void ChangeVerticalSync(bool set) override;
     protected:
-        void InitializeImpl() override;
+        void SetupDefaultsImpl(Arca::Reliquary& reliquary) override;
 
-        [[nodiscard]] std::unique_ptr<Asset::ImageAssetData> CreateImageDataImpl(
-            const Bytes& bytes, const Name& name, const Size2D& size) override;
-        [[nodiscard]] std::unique_ptr<Asset::ShaderAssetData> CreateShaderDataImpl(
-            const Bytes& bytes, const Name& name, const String& entryPoint) override;
+        [[nodiscard]] std::unique_ptr<Asset::ImageData> CreateImageDataImpl(
+            const Bytes& bytes,
+            const Name& name,
+            const Asset::ImageSize& size) override;
+        [[nodiscard]] std::unique_ptr<Asset::ShaderData> CreateShaderDataImpl(
+            const Bytes& bytes, const Name& name) override;
         [[nodiscard]] std::unique_ptr<SurfaceData> CreateMainSurfaceDataImpl(
             void* window) override;
         [[nodiscard]] std::unique_ptr<SurfaceData> CreateSurfaceDataImpl(
@@ -38,23 +39,6 @@ namespace Atmos::Render::Vulkan
 
         [[nodiscard]] bool ShouldReconstructInternals() const override;
         void ReconstructInternals(GraphicsReconstructionObjects objects) override;
-    private:
-        struct ShaderCreateDescriptor
-        {
-            String inputName;
-            String outputName;
-            String entryPoint;
-        };
-
-        Arca::Index<Asset::MaterialAsset> defaultTexturedImageMaterial;
-
-        LineShaders lineShaders;
-
-        Arca::Index<Asset::ShaderAsset> CreateShader(ShaderCreateDescriptor descriptor);
-        Arca::Index<Asset::MaterialAsset> CreateMaterial(
-            ShaderCreateDescriptor vertex,
-            ShaderCreateDescriptor fragment,
-            const String& materialName);
     private:
         vk::Instance instance;
         std::vector<const char*> instanceExtensions =
@@ -112,29 +96,8 @@ namespace Atmos::Render::Vulkan
         vk::UniqueSampler sampler;
 
         [[nodiscard]] static vk::UniqueSampler CreateSampler(vk::Device device);
-
-        void TransitionImageLayout(
-            vk::Image image, vk::Format format, vk::ImageLayout oldLayout, vk::ImageLayout newLayout);
     private:
-        struct DebugCallbackData
-        {
-            Arca::Reliquary* reliquary;
-        };
-
-        VkDebugUtilsMessengerEXT debugMessenger;
-        DebugCallbackData debugCallbackData;
-
-        [[nodiscard]] static VkDebugUtilsMessengerEXT CreateDebugMessenger(
-            vk::Instance instance, DebugCallbackData& debugCallbackData);
-        void DestroyDebugMessenger();
-        [[nodiscard]] static VkDebugUtilsMessengerCreateInfoEXT DebugMessengerCreateInfo(
-            DebugCallbackData& debugCallbackData);
-
-        static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(
-            VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
-            VkDebugUtilsMessageTypeFlagsEXT messageType,
-            const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
-            void* pUserData);
+        Debug debug;
     private:
         template<class Expected, class Available>
         static std::set<String> Unavailable(Expected expected, Available available);

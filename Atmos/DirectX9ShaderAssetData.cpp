@@ -4,8 +4,7 @@
 
 namespace Atmos::Render::DirectX9
 {
-    ShaderAssetDataImplementation::ShaderAssetDataImplementation(LPD3DXEFFECT effect, const String& entryPoint) :
-        ShaderAssetData(entryPoint), effect(effect)
+    ShaderAssetDataImplementation::ShaderAssetDataImplementation(LPD3DXEFFECT effect) : effect(effect)
     {}
 
     ShaderAssetDataImplementation::~ShaderAssetDataImplementation()

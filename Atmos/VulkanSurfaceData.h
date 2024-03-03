@@ -5,7 +5,6 @@
 #include "VulkanIncludes.h"
 
 #include "VulkanPipeline.h"
-#include "VulkanLineShaders.h"
 #include "VulkanQueueFamilyIndices.h"
 #include "VulkanSwapchainSupport.h"
 
@@ -19,13 +18,10 @@ namespace Atmos::Render::Vulkan
             vk::PhysicalDevice physicalDevice,
             vk::UniqueSurfaceKHR&& underlying,
             vk::Sampler sampler,
-            LineShaders lineShaders,
             vk::Queue graphicsQueue,
             vk::Queue presentQueue,
-            vk::CommandPool commandPool,
             QueueFamilyIndices queueFamilyIndices,
-            vk::PhysicalDeviceMemoryProperties memoryProperties,
-            Arca::Reliquary& reliquary);
+            vk::PhysicalDeviceMemoryProperties memoryProperties);
         ~SurfaceDataImplementation();
 
         void Reinitialize(QueueFamilyIndices queueFamilyIndices);
@@ -33,7 +29,7 @@ namespace Atmos::Render::Vulkan
         void StageRender(const ImageRender& imageRender) override;
         void StageRender(const LineRender& lineRender) override;
 
-        void DrawFrame(const Color& backgroundColor) override;
+        void DrawFrame(Arca::Reliquary& reliquary, const Color& backgroundColor) override;
 
         [[nodiscard]] ScreenSize Size() const override;
 
@@ -51,8 +47,6 @@ namespace Atmos::Render::Vulkan
         vk::Extent2D swapchainExtent;
         std::vector<vk::UniqueImageView> imageViews;
         std::vector<vk::ImageView> nonUniqueImageViews;
-
-        vk::CommandPool commandPool;
     private:
         struct SwapchainDetails
         {

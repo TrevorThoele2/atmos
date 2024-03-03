@@ -10,20 +10,20 @@ namespace Atmos::World::Serialization
         Load();
     }
 
-    std::optional<Field> InputStasisArchiveInterface::ExtractField(FieldID id, Arca::Reliquary& globalReliquary)
+    std::optional<Field> InputStasisArchiveInterface::ExtractField(FieldID id, ExternalManagers externalManagers)
     {
         Arca::ReliquaryOrigin origin;
-        RegisterFieldTypes(origin, globalReliquary);
+        RegisterFieldTypes(origin, *externalManagers.audio, *externalManagers.input, *externalManagers.graphics);
 
         Field out{ id, origin.Actualize() };
         fieldJumpTable.FillObject(id, out, archive);
         return std::move(out);
     }
 
-    std::unique_ptr<Field> InputStasisArchiveInterface::ExtractFieldAsHeap(FieldID id, Arca::Reliquary& globalReliquary)
+    std::unique_ptr<Field> InputStasisArchiveInterface::ExtractFieldAsHeap(FieldID id, ExternalManagers externalManagers)
     {
         Arca::ReliquaryOrigin origin;
-        RegisterFieldTypes(origin, globalReliquary);
+        RegisterFieldTypes(origin, *externalManagers.audio, *externalManagers.input, *externalManagers.graphics);
 
         auto out = std::make_unique<Field>(id, origin.Actualize());
         fieldJumpTable.FillObject(id, *out, archive);

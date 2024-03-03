@@ -26,7 +26,7 @@ namespace Arca
         static bool ShouldCreate(
             Reliquary& reliquary,
             const ::Atmos::Name& name,
-            ::Atmos::Asset::AudioAsset::DataPtr&& data);
+            const ::Atmos::Asset::AudioAsset::DataPtr& data);
     };
 }
 

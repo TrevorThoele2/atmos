@@ -4,7 +4,7 @@
 
 namespace Atmos::Asset
 {
-    class ShaderAsset;
+    class Shader;
 }
 
 namespace Atmos::Render
@@ -15,7 +15,7 @@ namespace Atmos::Render
     struct GraphicsReconstructionObjects
     {
         ScreenSize screenSize;
-        std::vector<Asset::ShaderAsset*> shaderAssets;
+        std::vector<Asset::Shader*> shaderAssets;
         MainSurface* mainSurface;
         std::vector<AncillarySurface*> ancillarySurfaces;
     };

@@ -7,24 +7,35 @@
 
 namespace Atmos::Asset
 {
-    class MaterialAsset final : public Asset<MaterialAsset>
+    enum class MaterialType
+    {
+        Image,
+        Line
+    };
+
+    class Material final : public Asset<Material>
     {
     public:
-        explicit MaterialAsset(Init init);
-        MaterialAsset(
+        explicit Material(Init init);
+        Material(
             Init init,
             const Atmos::Name& name,
-            Arca::Index<ShaderAsset> vertexShader,
-            Arca::Index<ShaderAsset> fragmentShader);
-        MaterialAsset(MaterialAsset&& arg) noexcept;
+            MaterialType type,
+            Arca::Index<Shader> vertexShader,
+            Arca::Index<Shader> fragmentShader);
+        Material(Material&& arg) noexcept;
 
-        MaterialAsset& operator=(MaterialAsset&& arg) noexcept;
+        Material& operator=(Material&& arg) noexcept;
 
-        [[nodiscard]] Arca::Index<ShaderAsset> VertexShader() const;
-        [[nodiscard]] Arca::Index<ShaderAsset> FragmentShader() const;
+        [[nodiscard]] MaterialType Type() const;
+
+        [[nodiscard]] Arca::Index<Shader> VertexShader() const;
+        [[nodiscard]] Arca::Index<Shader> FragmentShader() const;
     private:
-        Arca::Index<ShaderAsset> vertexShader;
-        Arca::Index<ShaderAsset> fragmentShader;
+        MaterialType type;
+
+        Arca::Index<Shader> vertexShader;
+        Arca::Index<Shader> fragmentShader;
     private:
         INSCRIPTION_ACCESS;
     };
@@ -33,23 +44,29 @@ namespace Atmos::Asset
 namespace Arca
 {
     template<>
-    struct Traits<::Atmos::Asset::MaterialAsset>
+    struct Traits<::Atmos::Asset::Material>
     {
         static const ObjectType objectType = ObjectType::Relic;
         static inline const TypeName typeName = "MaterialAsset";
         static bool ShouldCreate(
             Reliquary& reliquary,
             const Atmos::Name& name,
-            Index<Atmos::Asset::ShaderAsset> vertexShader,
-            Index<Atmos::Asset::ShaderAsset> fragmentShader);
+            Atmos::Asset::MaterialType type,
+            Index<Atmos::Asset::Shader> vertexShader,
+            Index<Atmos::Asset::Shader> fragmentShader);
     };
 }
 
 namespace Inscription
 {
     template<>
-    class Scribe<::Atmos::Asset::MaterialAsset, BinaryArchive> final :
-        public ArcaCompositeScribe<::Atmos::Asset::MaterialAsset, BinaryArchive>
+    class Scribe<::Atmos::Asset::MaterialType, BinaryArchive> final :
+        public EnumScribe<Atmos::Asset::MaterialType, BinaryArchive>
+    {};
+
+    template<>
+    class Scribe<::Atmos::Asset::Material, BinaryArchive> final :
+        public ArcaCompositeScribe<::Atmos::Asset::Material, BinaryArchive>
     {
     protected:
         void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;

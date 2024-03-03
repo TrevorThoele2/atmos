@@ -2,18 +2,16 @@
 
 namespace Atmos::Render
 {
-    class ImageAssetDataImplementation final : public Asset::ImageAssetData
+    class ImageAssetDataImplementation final : public Asset::ImageData
     {
     public:
-        ImageAssetDataImplementation() : ImageAssetData(0, 0)
-        {}
+        ImageAssetDataImplementation() = default;
     };
 
-    class ShaderAssetDataImplementation final : public Asset::ShaderAssetData
+    class ShaderAssetDataImplementation final : public Asset::ShaderData
     {
     public:
-        ShaderAssetDataImplementation() : ShaderAssetData("")
-        {}
+        ShaderAssetDataImplementation() = default;
     };
 
     class SurfaceDataImplementation final : public SurfaceData
@@ -24,7 +22,7 @@ namespace Atmos::Render
         void StageRender(const ImageRender& imageRender) override {}
         void StageRender(const LineRender& lineRender) override {}
 
-        void DrawFrame(const Color& backgroundColor) override
+        void DrawFrame(Arca::Reliquary& reliquary, const Color& backgroundColor) override
         {}
 
         [[nodiscard]] ScreenSize Size() const override
@@ -47,14 +45,16 @@ namespace Atmos::Render
     void NullGraphicsManager::InitializeImpl()
     {}
 
-    std::unique_ptr<Asset::ImageAssetData> NullGraphicsManager::CreateImageDataImpl(
-        const Buffer & buffer, const Name & name, const Size2D & size)
+    std::unique_ptr<Asset::ImageData> NullGraphicsManager::CreateImageDataImpl(
+        const Buffer& buffer,
+        const Name& name,
+        const Asset::ImageSize& size)
     {
         return std::make_unique<ImageAssetDataImplementation>();
     }
 
-    std::unique_ptr<Asset::ShaderAssetData> NullGraphicsManager::CreateShaderDataImpl(
-        const Buffer & buffer, const Name & name, const String & entryPoint)
+    std::unique_ptr<Asset::ShaderData> NullGraphicsManager::CreateShaderDataImpl(
+        const Buffer& buffer, const Name& name)
     {
         return std::make_unique<ShaderAssetDataImplementation>();
     }

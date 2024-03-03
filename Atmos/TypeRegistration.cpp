@@ -32,45 +32,24 @@
 
 #include "DebugStatistics.h"
 
-#include "UniqueProviderRelic.h"
 #include "InputManager.h"
 #include "GraphicsManager.h"
 #include "AudioManager.h"
 
 namespace Atmos
 {
-    void RegisterGlobalTypes(
-        Arca::ReliquaryOrigin& origin,
-        std::unique_ptr<Input::Manager>&& input,
-        std::unique_ptr<Render::GraphicsManager>&& graphics,
-        std::unique_ptr<Audio::AudioManager>&& audio)
-    {
-        Time::RegisterTypes(origin);
-        Debug::RegisterTypes(origin);
-
-        RegisterProviderPostulate<UniqueProviderRelic<Input::Manager>>(origin, std::move(input));
-        RegisterProviderPostulate<UniqueProviderRelic<Render::GraphicsManager>>(origin, std::move(graphics));
-        RegisterProviderPostulate<UniqueProviderRelic<Audio::AudioManager>>(origin, std::move(audio));
-    }
-
     void RegisterFieldTypes(
         Arca::ReliquaryOrigin& origin,
-        Arca::Reliquary& globalReliquary)
+        Audio::AudioManager& audio,
+        Input::Manager& input,
+        Render::GraphicsManager& graphics)
     {
-        Render::RegisterTypes(origin);
+        Audio::RegisterTypes(origin, audio);
+        Input::RegisterTypes(origin, input);
+        Render::RegisterTypes(origin, graphics);
+        Asset::RegisterTypes(origin);
         Time::RegisterTypes(origin);
-
-        Input::RegisterGlobalRedirectionTypes(origin, globalReliquary);
-        Render::RegisterGlobalRedirectionTypes(origin, globalReliquary);
-        Audio::RegisterGlobalRedirectionTypes(origin, globalReliquary);
-    }
-
-    namespace Input
-    {
-        void RegisterGlobalRedirectionTypes(Arca::ReliquaryOrigin& origin, Arca::Reliquary& globalReliquary)
-        {
-            RegisterRedirectionPostulate<UniqueProviderRelic<Manager>>(origin, globalReliquary);
-        }
+        Debug::RegisterTypes(origin);
     }
 
     namespace File
@@ -82,9 +61,17 @@ namespace Atmos
         }
     }
 
+    namespace Input
+    {
+        void RegisterTypes(Arca::ReliquaryOrigin& origin, Manager& manager)
+        {
+            
+        }
+    }
+
     namespace Render
     {
-        void RegisterTypes(Arca::ReliquaryOrigin& origin)
+        void RegisterTypes(Arca::ReliquaryOrigin& origin, GraphicsManager& manager)
         {
             origin
                 .Register<Bounds>()
@@ -97,16 +84,11 @@ namespace Atmos
                 .Register<Camera>()
                 .Register<CameraCurator>()
                 .Register<Curator>()
-                .Register<GraphicsCurator>()
+                .Register<GraphicsCurator>(std::ref(manager))
                 .Register<SurfaceCore>()
                 .Register<MainSurface>()
                 .Register<AncillarySurface>()
                 .Register<SurfaceCurator>();
-        }
-
-        void RegisterGlobalRedirectionTypes(Arca::ReliquaryOrigin& origin, Arca::Reliquary& globalReliquary)
-        {
-            RegisterRedirectionPostulate<UniqueProviderRelic<GraphicsManager>>(origin, globalReliquary);
         }
 
         Arca::Stage Stage()
@@ -122,9 +104,9 @@ namespace Atmos
 
     namespace Audio
     {
-        void RegisterGlobalRedirectionTypes(Arca::ReliquaryOrigin& origin, Arca::Reliquary& globalReliquary)
+        void RegisterTypes(Arca::ReliquaryOrigin& origin, AudioManager& manager)
         {
-            RegisterRedirectionPostulate<UniqueProviderRelic<AudioManager>>(origin, globalReliquary);
+            
         }
     }
 
@@ -135,20 +117,20 @@ namespace Atmos
             origin
                 .Register<Core>()
                 .Register<AudioAsset>()
-                .Register<ImageAsset>()
-                .Register<MaterialAsset>()
-                .Register<ScriptAsset>()
-                .Register<ShaderAsset>()
-                .Register<MappedAssets<AudioAsset>>()
-                .Register<MappedAssets<ImageAsset>>()
-                .Register<MappedAssets<MaterialAsset>>()
-                .Register<MappedAssets<ScriptAsset>>()
-                .Register<MappedAssets<ShaderAsset>>()
+                .Register<Image>()
+                .Register<Material>()
+                .Register<Script>()
+                .Register<Shader>()
+                .Register<Mapped<AudioAsset>>()
+                .Register<Mapped<Image>>()
+                .Register<Mapped<Material>>()
+                .Register<Mapped<Script>>()
+                .Register<Mapped<Shader>>()
                 .Register<AudioAssetCurator>()
-                .Register<ImageAssetCurator>()
-                .Register<MaterialAssetCurator>()
-                .Register<ScriptAssetCurator>()
-                .Register<ShaderAssetCurator>();
+                .Register<ImageCurator>()
+                .Register<MaterialCurator>()
+                .Register<ScriptCurator>()
+                .Register<ShaderCurator>();
         }
     }
 

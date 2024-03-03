@@ -6,7 +6,7 @@
 
 #include "Position3D.h"
 #include "Size2D.h"
-#include "Scalers3D.h"
+#include "Scalers2D.h"
 #include "AxisAlignedBox2D.h"
 
 namespace Atmos
@@ -15,20 +15,21 @@ namespace Atmos
     {
     public:
         Bounds();
-        Bounds(const Position3D& position, const Size2D& size);
+        Bounds(const Position3D& position, const Size2D& baseSize, const Scalers2D& scalers);
 
         void Position(const Position3D& to);
-        void Size(const Size2D& to);
+        void BaseSize(const Size2D& to);
+        void Scalers(const Scalers2D& to);
 
         [[nodiscard]] Position3D Position() const;
+        [[nodiscard]] Size2D BaseSize() const;
         [[nodiscard]] Size2D Size() const;
+        [[nodiscard]] Scalers2D Scalers() const;
         [[nodiscard]] AxisAlignedBox2D Box() const;
     private:
         Position3D position;
-        Size2D size;
-        AxisAlignedBox2D box;
-    private:
-        void CalculateBox();
+        Size2D baseSize;
+        Scalers2D scalers;
     private:
         INSCRIPTION_ACCESS;
     };

@@ -9,26 +9,26 @@
 
 namespace Atmos::Asset
 {
-    struct LoadImageAsset
+    struct LoadImage
     {
         File::Path filePath;
     };
 
-    struct LoadedImageAsset
+    struct LoadedImage
     {
         Buffer buffer;
-        ImageAssetType type;
-        Size2D size;
+        ImageType type;
+        ImageSize size;
     };
 }
 
 namespace Arca
 {
     template<>
-    struct Traits<Atmos::Asset::LoadImageAsset>
+    struct Traits<Atmos::Asset::LoadImage>
     {
         static const ObjectType objectType = ObjectType::Command;
         static inline const TypeName typeName = "LoadImageAsset";
-        using Result = Atmos::Asset::LoadedImageAsset;
+        using Result = Atmos::Asset::LoadedImage;
     };
 }

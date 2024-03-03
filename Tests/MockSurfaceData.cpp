@@ -5,11 +5,6 @@ void MockSurfaceDataImplementation::StageRender(const Atmos::Render::ImageRender
     imageRenders.push_back(imageRender);
 }
 
-void MockSurfaceDataImplementation::StageRender(const Atmos::Render::CanvasRender& canvasRender)
-{
-    canvasRenders.push_back(canvasRender);
-}
-
 void MockSurfaceDataImplementation::StageRender(const Atmos::Render::LineRender& lineRender)
 {
     lineRenders.push_back(lineRender);

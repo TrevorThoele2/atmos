@@ -1,6 +1,6 @@
 #include "DirectX9GraphicsManager.h"
 
-#include <Windows.h>
+#include "WindowsInclude.h"
 int (WINAPIV * __vsnprintf)(char *, size_t, const char*, va_list) = _vsnprintf;
 
 #include "DirectX9ImageAssetData.h"
@@ -65,23 +65,10 @@ namespace Atmos::Render::DirectX9
         return device;
     }
 
-    void GraphicsManager::InitializeImpl()
-    {
-        const auto texturedMaterialViewPath = std::filesystem::current_path() / "Shaders" / "TexturedImage.fx";
-
-        SimpleInFile inFile(texturedMaterialViewPath);
-        const auto texturedMaterialViewBuffer = inFile.ReadBuffer();
-
-        auto shaderData = CreateShaderData(texturedMaterialViewBuffer, "TexturedImage", "");
-        defaultTexturedMaterialShader = Reliquary().Do<Arca::Create<Asset::ShaderAsset>>(
-            "TexturedImage",
-            std::move(shaderData));
-        if (!defaultTexturedMaterialShader)
-            throw GraphicsError("Could not construct default textured material shader.");
-    }
-
-    std::unique_ptr<Asset::ImageAssetData> GraphicsManager::CreateImageDataImpl(
-        const Buffer& buffer, const Name& name, const Size2D& size)
+    std::unique_ptr<Asset::ImageData> GraphicsManager::CreateImageDataImpl(
+        const Buffer& buffer,
+        const Name& name,
+        const Asset::ImageSize& size)
     {
         D3DXIMAGE_INFO info;
         const auto imageInfoResult = D3DXGetImageInfoFromFileInMemory(buffer.data(), buffer.size(), &info);
@@ -111,11 +98,11 @@ namespace Atmos::Render::DirectX9
             throw GraphicsError("An image asset could not be created.",
                 { {"Name", name } });
 
-        return std::make_unique<ImageAssetDataImplementation>(texture, info.Width, info.Height);
+        return std::make_unique<ImageAssetDataImplementation>(texture);
     }
 
-    std::unique_ptr<Asset::ShaderAssetData> GraphicsManager::CreateShaderDataImpl(
-        const Buffer& buffer, const Name& name, const String& entryPoint)
+    std::unique_ptr<Asset::ShaderData> GraphicsManager::CreateShaderDataImpl(
+        const Buffer& buffer, const Name& name)
     {
         LPD3DXEFFECT effect;
         const auto createShaderResult = D3DXCreateEffect(
@@ -133,7 +120,7 @@ namespace Atmos::Render::DirectX9
             throw GraphicsError("A shader asset could not be created.",
                 { {"Name", name } });
 
-        return std::make_unique<ShaderAssetDataImplementation>(effect, entryPoint);
+        return std::make_unique<ShaderAssetDataImplementation>(effect);
     }
 
     std::unique_ptr<SurfaceData> GraphicsManager::CreateMainSurfaceDataImpl(void* window)
@@ -152,9 +139,7 @@ namespace Atmos::Render::DirectX9
             *this,
             swapChain,
             backBuffer,
-            defaultTexturedMaterialShader,
-            false,
-            Reliquary());
+            false);
     }
 
     std::unique_ptr<SurfaceData> GraphicsManager::CreateSurfaceDataImpl(
@@ -188,9 +173,7 @@ namespace Atmos::Render::DirectX9
             *this,
             swapChain,
             backBuffer,
-            defaultTexturedMaterialShader,
-            true,
-            Reliquary());
+            true);
     }
 
     bool GraphicsManager::ShouldReconstructInternals() const

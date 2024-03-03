@@ -10,10 +10,10 @@ namespace Atmos::Render
     {
         Arca::RelicID id = 0;
 
-        std::optional<Arca::Index<Asset::ImageAsset>> asset;
+        std::optional<Arca::Index<Asset::Image>> asset;
         std::optional<ImageCore::Index> assetIndex;
         std::optional<Color> color;
-        std::optional<Arca::Index<Asset::MaterialAsset>> material;
+        std::optional<Arca::Index<Asset::Material>> material;
     };
 }
 

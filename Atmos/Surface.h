@@ -3,8 +3,6 @@
 #include <Arca/ClosedTypedRelic.h>
 #include "SurfaceCore.h"
 
-#include "Camera.h"
-
 namespace Atmos::Render
 {
     struct ImageRender;
@@ -62,7 +60,7 @@ namespace Atmos::Render
     template<class Derived>
     void Surface<Derived>::DrawFrame() const
     {
-        Data()->DrawFrame(Core()->backgroundColor);
+        Data()->DrawFrame(Owner(), Core()->backgroundColor);
     }
 
     template<class Derived>

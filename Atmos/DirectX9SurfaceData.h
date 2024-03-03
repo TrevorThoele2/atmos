@@ -13,16 +13,14 @@ namespace Atmos::Render::DirectX9
             GraphicsManager& owner,
             LPDIRECT3DSWAPCHAIN9 swapChain,
             LPDIRECT3DSURFACE9 backBuffer,
-            Arca::Index<Asset::ShaderAsset> defaultTexturedMaterialShader,
-            bool setAsRenderTarget,
-            Arca::Reliquary& reliquary);
+            bool setAsRenderTarget);
 
         ~SurfaceDataImplementation();
 
         void StageRender(const ImageRender& imageRender) override;
         void StageRender(const LineRender& lineRender) override;
 
-        void DrawFrame(const Color& backgroundColor) override;
+        void DrawFrame(Arca::Reliquary& reliquary, const Color& backgroundColor) override;
 
         void Reset();
         void Release();

@@ -1,9 +1,9 @@
 #include "GraphicsManager.h"
 
 #include "MainSurface.h"
-#include "CreateMainSurfaceData.h"
+#include "SetupMainSurfaceData.h"
 
-#include "Log.h"
+#include "Logger.h"
 
 namespace Atmos::Render
 {
@@ -11,27 +11,33 @@ namespace Atmos::Render
 
     void GraphicsManager::Initialize(Arca::Reliquary& reliquary, void* mainWindow)
     {
-        this->reliquary = &reliquary;
         InitializeImpl();
-        reliquary.Do(Render::CreateMainSurfaceData{ mainWindow });
+        reliquary.Do(Render::SetupMainSurfaceData{ mainWindow });
     }
 
-    std::unique_ptr<Asset::ImageAssetData> GraphicsManager::CreateImageData(
-        const Buffer& buffer, const Name& name, const Size2D& size)
+    void GraphicsManager::SetupDefaults(Arca::Reliquary& reliquary)
+    {
+        SetupDefaultsImpl(reliquary);
+    }
+
+    std::unique_ptr<Asset::ImageData> GraphicsManager::CreateImageData(
+        const Buffer& buffer,
+        const Name& name,
+        const Asset::ImageSize& size)
     {
         if (size.width <= 0.0f || size.height <= 0.0f)
         {
-            reliquary->Do(Logging::Log("ImageAsset's require dimensions greater than 0."));
+            Logging::logger.Log("ImageAsset's require dimensions greater than 0.");
             return {};
         }
 
         return CreateImageDataImpl(buffer, name, size);
     }
 
-    std::unique_ptr<Asset::ShaderAssetData> GraphicsManager::CreateShaderData(
-        const Buffer& buffer, const Name& name, const String& entryPoint)
+    std::unique_ptr<Asset::ShaderData> GraphicsManager::CreateShaderData(
+        const Buffer& buffer, const Name& name)
     {
-        return CreateShaderDataImpl(buffer, name, entryPoint);
+        return CreateShaderDataImpl(buffer, name);
     }
 
     std::unique_ptr<SurfaceData> GraphicsManager::CreateMainSurfaceData(
@@ -57,15 +63,5 @@ namespace Atmos::Render
     bool GraphicsManager::ShouldReconstruct() const
     {
         return ShouldReconstructInternals();
-    }
-
-    Arca::Reliquary& GraphicsManager::Reliquary()
-    {
-        return *reliquary;
-    }
-
-    const Arca::Reliquary& GraphicsManager::Reliquary() const
-    {
-        return *reliquary;
     }
 }

@@ -1,6 +1,5 @@
 #include "EngineExecution.h"
 
-#include <Arca/Reliquary.h>
 #include "WindowProvider.h"
 #include "FocusLost.h"
 #include "FocusRegained.h"
@@ -9,8 +8,7 @@
 
 namespace Atmos
 {
-    EngineExecution::EngineExecution(Arca::Reliquary& globalReliquary, World::WorldManager& worldManager) :
-        globalReliquary(&globalReliquary), worldManager(&worldManager)
+    EngineExecution::EngineExecution(World::WorldManager& worldManager) : worldManager(&worldManager)
     {}
 
     void EngineExecution::Start()
@@ -38,9 +36,14 @@ namespace Atmos
     {
         if (IsCurrentlyFocused() != wasFocusedLastPass)
         {
-            wasFocusedLastPass ?
-                globalReliquary->Raise<FocusLost>() :
-                globalReliquary->Raise<FocusRegained>();
+            auto currentField = worldManager->CurrentField();
+
+            if (currentField)
+            {
+                wasFocusedLastPass
+                    ? currentField->Reliquary().Raise<FocusLost>()
+                    : currentField->Reliquary().Raise<FocusRegained>();
+            }
             wasFocusedLastPass = !wasFocusedLastPass;
         }
 

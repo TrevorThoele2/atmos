@@ -10,12 +10,10 @@ namespace Atmos::Render::DirectX9
         GraphicsManager& owner,
         LPDIRECT3DSWAPCHAIN9 swapChain,
         LPDIRECT3DSURFACE9 backBuffer,
-        Arca::Index<Asset::ShaderAsset> defaultTexturedMaterialShader,
-        bool setAsRenderTarget,
-        Arca::Reliquary& reliquary)
+        bool setAsRenderTarget)
         :
         owner(&owner),
-        renderer(std::make_unique<Renderer>(owner, defaultTexturedMaterialShader, reliquary)),
+        renderer(std::make_unique<Renderer>(owner)),
         swapChain(swapChain),
         backBuffer(backBuffer),
         setAsRenderTarget(setAsRenderTarget)
@@ -38,7 +36,7 @@ namespace Atmos::Render::DirectX9
         renderer->StageRender(lineRender);
     }
 
-    void SurfaceDataImplementation::DrawFrame(const Color& backgroundColor)
+    void SurfaceDataImplementation::DrawFrame(Arca::Reliquary& reliquary, const Color& backgroundColor)
     {
         if (!setAsRenderTarget)
             DrawFrameNormal(backgroundColor);

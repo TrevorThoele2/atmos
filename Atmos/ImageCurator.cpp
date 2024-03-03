@@ -7,12 +7,6 @@ namespace Atmos::Render
     ImageCurator::ImageCurator(Init init) :
         Curator(init), camera(init.owner)
     {
-        Owner().ExecuteOn<Arca::CreatedKnown<ImageCore>>(
-            [this](const Arca::CreatedKnown<ImageCore>& signal)
-            {
-                OnCoreCreated(signal);
-            });
-
         Owner().ExecuteOn<Arca::MatrixFormed<Matrix>>(
             [this](const Arca::MatrixFormed<Matrix>& signal)
             {
@@ -55,13 +49,17 @@ namespace Atmos::Render
         {
             auto& core = *std::get<0>(*index->value);
             auto& bounds = *std::get<1>(*index->value);
+            if (!core.asset || !core.material)
+                continue;
 
             const auto boundsPosition = bounds.Position();
 
             const ImageRender render
             {
                 core.asset.Get(),
-                core.assetSlice,
+                core.assetIndex,
+                core.asset->Slice(core.assetIndex),
+                core.material.Get(),
                 Position3D
                 {
                     boundsPosition.x - cameraLeft,
@@ -69,8 +67,7 @@ namespace Atmos::Render
                     boundsPosition.z
                 },
                 bounds.Size(),
-                core.color,
-                core.material.Get()
+                core.color
             };
             mainSurface->StageRender(render);
         }
@@ -86,61 +83,22 @@ namespace Atmos::Render
         if (command.asset)
         {
             core->asset = *command.asset;
-            CalculateAssetSlice(*core);
+
+            const auto baseSize = core->asset
+                ? core->asset->SliceSize()
+                : Size2D{ 0, 0 };
+            auto bounds = MutablePointer().Of<Bounds>(index.ID());
+            bounds->BaseSize(baseSize);
         }
 
         if (command.assetIndex)
-        {
             core->assetIndex = *command.assetIndex;
-            CalculateAssetSlice(*core);
-        }
 
         if (command.color)
             core->color = *command.color;
 
         if (command.material)
             core->material = *command.material;
-    }
-
-    void ImageCurator::OnCoreCreated(const Arca::CreatedKnown<ImageCore>& created)
-    {
-        const auto index = MutablePointer().Of(created.reference);
-        CalculateAssetSlice(*index);
-    }
-
-    void ImageCurator::CalculateAssetSlice(ImageCore& core)
-    {
-        auto& asset = core.asset;
-        auto& assetSlice = core.assetSlice;
-        auto& assetIndex = core.assetIndex;
-
-        if (!asset)
-        {
-            assetSlice.Top(0);
-            assetSlice.Bottom(0);
-            assetSlice.Left(0);
-            assetSlice.Right(0);
-            return;
-        }
-
-        const auto columns = asset->Columns() > 0 ? asset->Columns() : 1;
-        const auto rows = asset->Rows() ? asset->Rows() : 1;
-
-        auto column = assetIndex % columns;
-        if (column == 0)
-            column = columns;
-        --column;
-
-        auto row = static_cast<int>(std::ceil(static_cast<float>(assetIndex) / static_cast<float>(columns)));
-        --row;
-
-        const auto indexWidth = static_cast<float>(asset->Width() / columns);
-        const auto indexHeight = static_cast<float>(asset->Height() / rows);
-
-        assetSlice.Top(row * indexHeight);
-        assetSlice.Bottom(row * indexHeight + indexHeight);
-        assetSlice.Left(column * indexWidth);
-        assetSlice.Right(column * indexWidth + indexWidth);
     }
 
     void ImageCurator::OnViewFormed(const Arca::MatrixFormed<Matrix>& view)

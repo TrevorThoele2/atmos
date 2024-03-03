@@ -9,9 +9,15 @@ namespace Atmos::Render
     {}
 
     Line::Line(
-        Init init, const std::vector<Position2D>& points, Position2D::Value z, LineWidth width, Color color)
+        Init init,
+        const std::vector<Position2D>& points,
+        Position2D::Value z,
+        Arca::Index<Asset::Material> material,
+        LineWidth width,
+        Color color)
         :
-        ClosedTypedRelic(init), points(points), z(z), width(width), color(color)
+        ClosedTypedRelic(init),
+        points(points), z(z), material(material), width(width), color(color)
     {}
 }
 
@@ -21,6 +27,7 @@ namespace Inscription
     {
         archive(object.points);
         archive(object.z);
+        archive(object.material);
         archive(object.width);
         archive(object.color);
     }

@@ -1,18 +1,12 @@
 #pragma once
 
-#include "String.h"
-
 namespace Atmos::Asset
 {
-    class ShaderAssetData
+    class ShaderData
     {
     public:
-        virtual ~ShaderAssetData() = 0;
-
-        [[nodiscard]] const String& EntryPoint() const;
+        virtual ~ShaderData() = 0;
     protected:
-        ShaderAssetData(const String& entryPoint);
-    private:
-        String entryPoint;
+        ShaderData() = default;
     };
 }

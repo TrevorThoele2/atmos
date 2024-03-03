@@ -1,10 +1,5 @@
 #pragma once
 
-namespace Arca
-{
-    class Reliquary;
-}
-
 namespace Atmos
 {
     class EngineProvider;
@@ -22,12 +17,10 @@ namespace Atmos
     class EngineExecution
     {
     public:
-        EngineExecution(Arca::Reliquary& globalReliquary, World::WorldManager& worldManager);
+        EngineExecution(World::WorldManager& worldManager);
 
         void Start();
     private:
-        Arca::Reliquary* globalReliquary;
-
         World::WorldManager* worldManager;
     private:
         bool wasFocusedLastPass = false;

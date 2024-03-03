@@ -2,13 +2,15 @@
 
 #include "AssetCurator.h"
 #include "ShaderAsset.h"
+#include "CreateShaderAssetData.h"
+#include "GraphicsManager.h"
 
 namespace Atmos::Asset
 {
-    using ShaderAssetCurator = AssetCurator<ShaderAsset>;
+    using ShaderCurator = Curator<Shader>;
 
     template<>
-    struct AssetCuratorTraits<ShaderAsset> : AssetCuratorTraitsBase<ShaderAsset>
+    struct CuratorTraits<Shader> : CuratorTraitsBase<Shader>
     {
         constexpr static DebugStatisticsSize debugStatisticsSize = &Debug::Statistics::Memory::shaderAssetSize;
     };
@@ -17,18 +19,19 @@ namespace Atmos::Asset
 namespace Arca
 {
     template<>
-    struct Traits<Atmos::Asset::ShaderAssetCurator>
+    struct Traits<Atmos::Asset::ShaderCurator>
     {
         static const ObjectType objectType = ObjectType::Curator;
         static inline const TypeName typeName = "ShaderAssetCurator";
-        using HandledCommands = HandledCommands<Atmos::Asset::FindAsset<Atmos::Asset::ShaderAsset>>;
+        using HandledCommands = HandledCommands<
+            Atmos::Asset::Find<Atmos::Asset::Shader>>;
     };
 }
 
 namespace Inscription
 {
     template<>
-    class Scribe<Atmos::Asset::ShaderAssetCurator, BinaryArchive> final :
-        public ArcaNullScribe<Atmos::Asset::ShaderAssetCurator, BinaryArchive>
+    class Scribe<Atmos::Asset::ShaderCurator, BinaryArchive> final :
+        public ArcaNullScribe<Atmos::Asset::ShaderCurator, BinaryArchive>
     {};
 }

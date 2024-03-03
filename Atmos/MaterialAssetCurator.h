@@ -5,10 +5,10 @@
 
 namespace Atmos::Asset
 {
-    using MaterialAssetCurator = AssetCurator<MaterialAsset>;
+    using MaterialCurator = Curator<Material>;
 
     template<>
-    struct AssetCuratorTraits<MaterialAsset> : AssetCuratorTraitsBase<MaterialAsset>
+    struct CuratorTraits<Material> : CuratorTraitsBase<Material>
     {
         constexpr static DebugStatisticsSize debugStatisticsSize = &Debug::Statistics::Memory::materialAssetSize;
     };
@@ -17,18 +17,18 @@ namespace Atmos::Asset
 namespace Arca
 {
     template<>
-    struct Traits<Atmos::Asset::MaterialAssetCurator>
+    struct Traits<Atmos::Asset::MaterialCurator>
     {
         static const ObjectType objectType = ObjectType::Curator;
         static inline const TypeName typeName = "MaterialAssetCurator";
-        using HandledCommands = HandledCommands<Atmos::Asset::FindAsset<Atmos::Asset::MaterialAsset>>;
+        using HandledCommands = HandledCommands<Atmos::Asset::Find<Atmos::Asset::Material>>;
     };
 }
 
 namespace Inscription
 {
     template<>
-    class Scribe<Atmos::Asset::MaterialAssetCurator, BinaryArchive> final :
-        public ArcaNullScribe<Atmos::Asset::MaterialAssetCurator, BinaryArchive>
+    class Scribe<Atmos::Asset::MaterialCurator, BinaryArchive> final :
+        public ArcaNullScribe<Atmos::Asset::MaterialCurator, BinaryArchive>
     {};
 }

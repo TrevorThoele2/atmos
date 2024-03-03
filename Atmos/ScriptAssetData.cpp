@@ -2,5 +2,5 @@
 
 namespace Atmos::Asset
 {
-    ScriptAssetData::~ScriptAssetData() = default;
+    ScriptData::~ScriptData() = default;
 }

@@ -11,14 +11,14 @@ namespace Atmos::Render
 {
     struct ImageRender
     {
-        const Asset::ImageAsset* asset;
+        const Asset::Image* asset;
+        int assetIndex;
         AxisAlignedBox2D assetSlice;
+        const Asset::Material* material;
 
         Position3D position;
         Size2D size;
 
         Color color;
-
-        const Asset::MaterialAsset* material;
     };
 }

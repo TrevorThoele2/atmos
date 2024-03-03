@@ -30,12 +30,12 @@ namespace Atmos::Render::DirectX9
 
         [[nodiscard]] LPDIRECT3DDEVICE9 Device() const;
     protected:
-        void InitializeImpl() override;
-
-        [[nodiscard]] std::unique_ptr<Asset::ImageAssetData> CreateImageDataImpl(
-            const Buffer& buffer, const Name& name, const Size2D& size) override;
-        [[nodiscard]] std::unique_ptr<Asset::ShaderAssetData> CreateShaderDataImpl(
-            const Buffer& buffer, const Name& name, const String& entryPoint) override;
+        [[nodiscard]] std::unique_ptr<Asset::ImageData> CreateImageDataImpl(
+            const Buffer& buffer,
+            const Name& name,
+            const Asset::ImageSize& size) override;
+        [[nodiscard]] std::unique_ptr<Asset::ShaderData> CreateShaderDataImpl(
+            const Buffer& buffer, const Name& name) override;
         [[nodiscard]] std::unique_ptr<SurfaceData> CreateMainSurfaceDataImpl(
             void* window) override;
         [[nodiscard]] std::unique_ptr<SurfaceData> CreateSurfaceDataImpl(
@@ -56,8 +56,6 @@ namespace Atmos::Render::DirectX9
         [[nodiscard]] bool IsDeviceOk() const;
         [[nodiscard]] bool IsDeviceLost() const;
         [[nodiscard]] bool IsDeviceNotReset() const;
-    private:
-        Arca::Index<Asset::ShaderAsset> defaultTexturedMaterialShader{};
     private:
         static std::optional<D3DRENDERSTATETYPE> RenderStateToD3D(RenderState renderState);
     };

@@ -2,11 +2,11 @@
 
 namespace Atmos::Asset
 {
-    LoadAssetError::LoadAssetError(const String& message) :
+    LoadError::LoadError(const String& message) :
         Exception(message)
     {}
 
-    LoadAssetError::LoadAssetError(const String& message, const NameValuePairs& details) :
+    LoadError::LoadError(const String& message, const NameValuePairs& details) :
         Exception(message, details)
     {}
 }

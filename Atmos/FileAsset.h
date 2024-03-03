@@ -32,6 +32,8 @@ namespace Atmos::Asset
         [[nodiscard]] bool HasFileData() const;
     private:
         DataPtr data;
+    private:
+        INSCRIPTION_ACCESS;
     };
 
     template<class AssetData, class Derived>

@@ -11,5 +11,7 @@ namespace Atmos::Asset
     public:
         virtual ~AudioAssetData() = 0;
         [[nodiscard]] virtual std::unique_ptr<AudioAssetInstanceData> CreateInstanceData() const = 0;
+    protected:
+        AudioAssetData() = default;
     };
 }
