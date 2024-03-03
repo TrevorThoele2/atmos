@@ -1,11 +1,10 @@
 #include <ctime>
 
-#include "LogCurator.h"
+#include "LoggingCurator.h"
 
 #include "ProcessedLog.h"
 
 #include <Arca/Reliquary.h>
-#include "TimeInformation.h"
 #include "FileManagerProvider.h"
 
 #include "FileName.h"
@@ -61,21 +60,21 @@ namespace Atmos::Logging
         auto entryLoop = queuedEntryList.begin();
         while (entryLoop != queuedEntryList.end())
         {
-            if (entryLoop->nameValuePairs.empty())
+            if (entryLoop->details.empty())
                 DoLog(entryLoop->string, entryLoop->severity);
             else
-                DoLog(entryLoop->string, entryLoop->severity, entryLoop->nameValuePairs);
+                DoLog(entryLoop->string, entryLoop->severity, entryLoop->details);
             entryLoop = queuedEntryList.erase(entryLoop);
         }
 
         Owner().ExecuteOn<Log>(
             [this](const Log& log)
             {
-                DoLog(log.message, log.severity, log.nameValuePairs);
+                DoLog(log.message, log.severity, log.details);
             });
     }
 
-    void Curator::DoLog(const String& message, Severity severity, std::optional<NameValuePairs> nameValuePairs)
+    void Curator::DoLog(const String& message, Severity severity, std::optional<Details> details)
     {
         if (message.empty())
             return;
@@ -111,8 +110,8 @@ namespace Atmos::Logging
         if (output.find_last_of('\n') != output.size() - 1)
             output.append(1, '\n');
 
-        if (nameValuePairs)
-            for (auto& loop : *nameValuePairs)
+        if (details)
+            for (auto& loop : *details)
                 output.append("        " + loop.name + ": " + ToString(loop.value) + '\n');
 
         outFile.WriteData(output);

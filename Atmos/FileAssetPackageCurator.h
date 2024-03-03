@@ -114,14 +114,10 @@ namespace Atmos::Asset
         if (found != map.end())
             return Optional<Buffer>(found->second);
 
-        const Log::Log log
-        {
+        Owner().Raise<Logging::Log>(
             "A requested " + StringFor<AssetT>() + " was not found in the asset package. Discarding.",
-            Log::Severity::SevereError,
-            Log::NameValuePairs{ NameValuePair("File Name", fileName.GetValue()) }
-        };
-
-        Owner().Raise(log);
+            Logging::Severity::SevereError,
+            Logging::Details{ {"File Name", fileName.GetValue()} });
 
         return {};
     }

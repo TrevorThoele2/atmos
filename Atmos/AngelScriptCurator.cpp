@@ -66,7 +66,7 @@ namespace Atmos::Script::Angel
         (
             messageInfo->message,
             logType,
-            Logging::NameValuePairs
+            Logging::Details
             {
                 NameValuePair("Section", String(messageInfo->section)),
                 NameValuePair("Row", messageInfo->row),

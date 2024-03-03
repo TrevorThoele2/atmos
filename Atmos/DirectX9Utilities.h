@@ -6,8 +6,8 @@
 
 #include "Color.h"
 
-#include "LogSeverity.h"
-#include "LogNameValuePairs.h"
+#include "LoggingSeverity.h"
+#include "LoggingDetails.h"
 
 #include "String.h"
 
@@ -23,6 +23,6 @@ namespace Atmos::Render::DirectX9
         Arca::Reliquary& reliquary,
         const String& message,
         Logging::Severity severity,
-        const std::optional<Logging::NameValuePairs>& nameValuePairs = {}
+        const std::optional<Logging::Details>& details = {}
     );
 }

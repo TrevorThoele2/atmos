@@ -764,12 +764,6 @@
     <ClInclude Include="Octree.h">
       <Filter>Header Files\Grid</Filter>
     </ClInclude>
-    <ClInclude Include="LogSeverity.h">
-      <Filter>Header Files\Logging</Filter>
-    </ClInclude>
-    <ClInclude Include="LogNameValuePairs.h">
-      <Filter>Header Files\Logging</Filter>
-    </ClInclude>
     <ClInclude Include="Exception.h">
       <Filter>Header Files\Exceptions</Filter>
     </ClInclude>
@@ -859,9 +853,6 @@
     </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>Header Files\Render\Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="LogCurator.h">
-      <Filter>Header Files\Logging</Filter>
     </ClInclude>
     <ClInclude Include="CameraCurator.h">
       <Filter>Header Files\Render\Camera</Filter>
@@ -1117,6 +1108,15 @@
     </ClInclude>
     <ClInclude Include="UniqueProvider.h">
       <Filter>Header Files\Provider</Filter>
+    </ClInclude>
+    <ClInclude Include="LoggingCurator.h">
+      <Filter>Header Files\Logging</Filter>
+    </ClInclude>
+    <ClInclude Include="LoggingDetails.h">
+      <Filter>Header Files\Logging</Filter>
+    </ClInclude>
+    <ClInclude Include="LoggingSeverity.h">
+      <Filter>Header Files\Logging</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1447,9 +1447,6 @@
     <ClCompile Include="Camera.cpp">
       <Filter>Source Files\Render\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="LogCurator.cpp">
-      <Filter>Source Files\Logging</Filter>
-    </ClCompile>
     <ClCompile Include="CameraCurator.cpp">
       <Filter>Source Files\Render\Camera</Filter>
     </ClCompile>
@@ -1590,6 +1587,9 @@
     </ClCompile>
     <ClCompile Include="DirectX9Renderer2D.cpp">
       <Filter>Source Files\Render\DirectX9</Filter>
+    </ClCompile>
+    <ClCompile Include="LoggingCurator.cpp">
+      <Filter>Source Files\Logging</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

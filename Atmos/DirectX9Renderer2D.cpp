@@ -503,8 +503,8 @@ namespace Atmos::Render::DirectX9
         HRESULT hr,
         const String& message,
         Logging::Severity severity,
-        const std::optional<Logging::NameValuePairs>& nameValuePairs) const
+        const std::optional<Logging::Details>& details) const
     {
-        DirectX9::LogIfError(hr, *reliquary, message, severity, nameValuePairs);
+        DirectX9::LogIfError(hr, *reliquary, message, severity, details);
     }
 }
