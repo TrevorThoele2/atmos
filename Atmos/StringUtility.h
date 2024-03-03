@@ -10,7 +10,7 @@
 #include "Variant.h"
 
 #include <Chroma/TypeIdentity.h>
-#include <Arca/SlimHandle.h>
+#include <Arca/Handle.h>
 
 namespace Atmos
 {
@@ -109,6 +109,6 @@ namespace Atmos
     String ToString(const Spatial::Grid::Point& position);
     String ToString(const Spatial::Point3D& position);
     String ToString(const Spatial::Size2D& size);
-    String ToString(const Arca::SlimHandle& handle);
+    String ToString(const Arca::Handle& handle);
     String ToString(const Variant& arg);
 }

@@ -27,8 +27,4 @@ namespace Atmos::Scripting::Angel
     public:
         static inline std::optional<int> typeID = {};
     };
-
-    template<>
-    struct Registration<Arca::SlimHandle> : Registration<Arca::Handle>
-    {};
 }
