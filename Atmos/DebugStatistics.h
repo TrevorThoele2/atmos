@@ -4,11 +4,11 @@
 
 #include <Arca/ClosedTypedRelic.h>
 
-#include "RealStopwatch.h"
 #include "Point2D.h"
 #include "GridPoint.h"
 #include "FieldID.h"
 #include "WindowBase.h"
+#include "Stopwatch.h"
 
 namespace Atmos::Debug
 {
@@ -52,22 +52,20 @@ namespace Atmos::Debug
             Spatial::Point2D::Value cameraCenterY = 0;
         } window;
     public:
-        using Profiler = Arca::Index<Time::RealStopwatch>;
-
         struct Profilers
         {
-            Profiler input;
-            Profiler logic;
-            Profiler render;
-            Profiler frameTime;
-            Profiler idle;
-            Profiler misc1;
-            Profiler misc2;
-            Profiler misc3;
+            Time::Stopwatch input;
+            Time::Stopwatch logic;
+            Time::Stopwatch render;
+            Time::Stopwatch frameTime;
+            Time::Stopwatch idle;
+            Time::Stopwatch misc1;
+            Time::Stopwatch misc2;
+            Time::Stopwatch misc3;
 
-            explicit Profilers(Arca::Reliquary& owner);
+            explicit Profilers();
         private:
-            static Profiler CreateProfiler(Arca::Reliquary& owner);
+            static Time::Stopwatch CreateProfiler();
         } profilers;
     };
 }
@@ -85,11 +83,9 @@ namespace Arca
 
 namespace Inscription
 {
-    template<>
-    class Scribe<Atmos::Debug::Statistics, BinaryArchive> final
-        : public ArcaCompositeScribe<Atmos::Debug::Statistics, BinaryArchive>
+    template<class Archive>
+    struct ScribeTraits<Atmos::Debug::Statistics, Archive> final
     {
-    protected:
-        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
+        using Category = ArcaNullScribeCategory<Atmos::Debug::Statistics>;
     };
 }

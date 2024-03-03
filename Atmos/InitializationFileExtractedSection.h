@@ -13,6 +13,6 @@ namespace Atmos::Initialization
         using NameToValue = std::unordered_map<String, String>;
         NameToValue nameValues;
 
-        bool IsOccupied() const;
+        [[nodiscard]] bool IsOccupied() const;
     };
 }

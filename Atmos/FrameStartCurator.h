@@ -1,20 +1,17 @@
 #pragma once
 
 #include <Arca/Curator.h>
-#include "TimeInformation.h"
 
 #include "DebugProfiler.h"
 
-namespace Atmos
+namespace Atmos::Frame
 {
-    class FrameStartCurator final : public Arca::Curator
+    class StartCurator final : public Arca::Curator
     {
     public:
-        explicit FrameStartCurator(Init init);
+        explicit StartCurator(Init init);
 
         void Work();
-    private:
-        Arca::Index<Time::Information> timeInformation;
     private:
         Debug::Profiler debugIdleProfiler;
     };
@@ -23,17 +20,18 @@ namespace Atmos
 namespace Arca
 {
     template<>
-    struct Traits<Atmos::FrameStartCurator>
+    struct Traits<Atmos::Frame::StartCurator>
     {
         static const ObjectType objectType = ObjectType::Curator;
-        static inline const TypeName typeName = "Atmos::FrameStartCurator";
+        static inline const TypeName typeName = "Atmos::Frame::StartCurator";
     };
 }
 
 namespace Inscription
 {
-    template<>
-    class Scribe<Atmos::FrameStartCurator, BinaryArchive> final
-        : public ArcaNullScribe<Atmos::FrameStartCurator, BinaryArchive>
-    {};
+    template<class Archive>
+    struct ScribeTraits<Atmos::Frame::StartCurator, Archive> final
+    {
+        using Category = ArcaNullScribeCategory<Atmos::Frame::StartCurator>;
+    };
 }

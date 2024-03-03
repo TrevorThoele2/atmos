@@ -1,7 +1,6 @@
 #pragma once
 
 #include "FilePath.h"
-#include "String.h"
 
 #include "Serialization.h"
 
@@ -20,8 +19,9 @@ namespace Atmos::File
 
 namespace Inscription
 {
-    template<>
-    class Scribe<::Atmos::File::FileManager, BinaryArchive> final :
-        public CompositeScribe<::Atmos::File::FileManager, BinaryArchive>
-    {};
+    template<class Archive>
+    struct ScribeTraits<Atmos::File::FileManager, Archive> final
+    {
+        using Category = NullScribeCategory<Atmos::File::FileManager>;
+    };
 }

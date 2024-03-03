@@ -7,6 +7,8 @@
 #include "Color.h"
 #include "MaterialAsset.h"
 
+#include <Inscription/VectorScribe.h>
+
 namespace Atmos::Render
 {
     class Line : public Arca::ClosedTypedRelic<Line>
@@ -46,10 +48,25 @@ namespace Arca
 namespace Inscription
 {
     template<>
-    class Scribe<Atmos::Render::Line, BinaryArchive> final :
-        public ArcaCompositeScribe<Atmos::Render::Line, BinaryArchive>
+    class Scribe<Atmos::Render::Line> final
     {
-    protected:
-        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
+    public:
+        using ObjectT = Atmos::Render::Line;
+    public:
+        template<class Archive>
+        void Scriven(ObjectT& object, Archive& archive)
+        {
+            archive("points", object.points);
+            archive("z", object.z);
+            archive("material", object.material);
+            archive("width", object.width);
+            archive("color", object.color);
+        }
+    };
+
+    template<class Archive>
+    struct ScribeTraits<Atmos::Render::Line, Archive>
+    {
+        using Category = ArcaCompositeScribeCategory<Atmos::Render::Line>;
     };
 }

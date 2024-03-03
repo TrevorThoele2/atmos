@@ -32,8 +32,9 @@ namespace Arca
 
 namespace Inscription
 {
-    template<>
-    class Scribe<Atmos::Entity::MappedEntities, BinaryArchive> final :
-        public ArcaNullScribe<Atmos::Entity::MappedEntities, BinaryArchive>
-    {};
+    template<class Archive>
+    struct ScribeTraits<Atmos::Entity::MappedEntities, Archive> final
+    {
+        using Category = ArcaNullScribeCategory<Atmos::Entity::MappedEntities>;
+    };
 }

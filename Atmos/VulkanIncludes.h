@@ -8,5 +8,5 @@
 
 namespace Atmos::Render::Vulkan
 {
-    using Bytes = Buffer;
+    using Bytes = DataBuffer;
 }

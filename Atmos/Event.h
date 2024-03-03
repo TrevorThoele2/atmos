@@ -6,5 +6,5 @@
 namespace Atmos
 {
     template<class... Args>
-    using Event = ::Chroma::Event<Args...>;
+    using Event = Chroma::Event<Args...>;
 }

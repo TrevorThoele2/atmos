@@ -1,31 +1,32 @@
 #include "InputWorldArchiveInterface.h"
 
-#include "TypeRegistration.h"
+#include "ArchiveHeader.h"
 
 namespace Atmos::World::Serialization
 {
-    InputWorldArchiveInterface::InputWorldArchiveInterface(const File::Path& filePath) :
-        archive(filePath, "ATMOS WORLD")
+    InputWorldArchiveInterface::InputWorldArchiveInterface(
+        const File::Path& filePath,
+        Inscription::LoadAssetsUserContext& loadAssetsUserContext)
+        :
+        archive(filePath)
     {
+        archive.EmplaceUserContext(&loadAssetsUserContext);
+
         Load();
     }
 
-    std::optional<Field> InputWorldArchiveInterface::ExtractField(FieldID id, ExternalManagers externalManagers)
+    std::optional<Field> InputWorldArchiveInterface::ExtractField(
+        FieldID id, std::unique_ptr<Arca::Reliquary>&& reliquary)
     {
-        Arca::ReliquaryOrigin origin;
-        RegisterFieldTypes(origin, *externalManagers.audio, *externalManagers.input, *externalManagers.graphics);
-
-        Field out(id, origin.Actualize());
+        Field out(id, std::move(reliquary));
         fieldJumpTable.FillObject(id, out, archive);
         return std::move(out);
     }
 
-    std::unique_ptr<Field> InputWorldArchiveInterface::ExtractFieldAsHeap(FieldID id, ExternalManagers externalManagers)
+    std::unique_ptr<Field> InputWorldArchiveInterface::ExtractFieldAsHeap(
+        FieldID id, std::unique_ptr<Arca::Reliquary>&& reliquary)
     {
-        Arca::ReliquaryOrigin origin;
-        RegisterFieldTypes(origin, *externalManagers.audio, *externalManagers.input, *externalManagers.graphics);
-
-        auto out = std::make_unique<Field>(id, origin.Actualize());
+        auto out = std::make_unique<Field>(id, std::move(reliquary));
         fieldJumpTable.FillObject(id, *out, archive);
         return out;
     }
@@ -47,6 +48,13 @@ namespace Atmos::World::Serialization
 
     void InputWorldArchiveInterface::Load()
     {
+        const auto header = LoadArchiveHeader(archive, expectedSignature);
+
+        versionUserContext.inscriptionVersion = std::get<0>(header);
+        versionUserContext.clientVersion = std::get<1>(header);
+
+        archive.EmplaceUserContext(&versionUserContext);
+
         archive(fieldJumpTable);
     }
 }

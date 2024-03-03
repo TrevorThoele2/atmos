@@ -1,5 +1,4 @@
 #include "SurfaceCurator.h"
-#include "SurfaceCore.h"
 
 #include "MainSurface.h"
 
@@ -8,10 +7,9 @@ namespace Atmos::Render
     SurfaceCurator::SurfaceCurator(Init init) : Curator(init)
     {}
 
-    void SurfaceCurator::Handle(const ChangeSurfaceBackgroundColor& command)
+    void SurfaceCurator::Handle(const ChangeMainSurfaceBackgroundColor& command)
     {
-        auto surfaceCore = MutablePointer().Of<SurfaceCore>(command.id);
-
-        surfaceCore->backgroundColor = command.color;
+        auto surface = MutablePointer().Of<SurfaceCore>(command.id);
+        surface->backgroundColor = command.color;
     }
 }

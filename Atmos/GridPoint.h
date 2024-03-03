@@ -23,11 +23,23 @@ namespace Atmos::Spatial::Grid
 namespace Inscription
 {
     template<>
-    class Scribe<Atmos::Spatial::Grid::Point, BinaryArchive> final :
-        public CompositeScribe<Atmos::Spatial::Grid::Point, BinaryArchive>
+    class Scribe<Atmos::Spatial::Grid::Point> final
     {
-    protected:
-        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
+    public:
+        using ObjectT = Atmos::Spatial::Grid::Point;
+    public:
+        template<class Archive>
+        void Scriven(ObjectT& object, Archive& archive)
+        {
+            archive("x", object.x);
+            archive("y", object.y);
+        }
+    };
+
+    template<class Archive>
+    struct ScribeTraits<Atmos::Spatial::Grid::Point, Archive> final
+    {
+        using Category = CompositeScribeCategory<Atmos::Spatial::Grid::Point>;
     };
 }
 

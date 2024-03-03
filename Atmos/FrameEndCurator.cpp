@@ -1,40 +1,44 @@
 #include "FrameEndCurator.h"
 
-namespace Atmos
+#include "FrameSettings.h"
+
+#include "CreateStopwatch.h"
+
+namespace Atmos::Frame
 {
-    FrameEndCurator::FrameEndCurator(Init init) :
+    EndCurator::EndCurator(Init init) :
         Curator(init),
-        fpsTimer(Owner().Do<Arca::Create<Time::RealStopwatch>>()),
-        timeInformation(init.owner),
-        timeSettings(init.owner),
+        framesPerSecondStopwatch(Time::CreateRealStopwatch()),
         debugIdleProfiler(
-            [](Debug::Statistics& statistics) -> Arca::Index<Time::RealStopwatch>&
+            [](Debug::Statistics& statistics) -> Time::Stopwatch&
             {
                 return statistics.profilers.idle;
             },
             MutablePointer())
     {}
 
-    void FrameEndCurator::Work()
+    void EndCurator::Work()
     {
-        auto timeInformationData = MutablePointer().Of(timeInformation);
+        auto mutableInformation = MutablePointer().Of<Information>();
+
+        const auto timeSettings = Arca::Index<Settings>(Owner());
 
         static unsigned int count = 0;
-        if (fpsTimer->Elapsed() >= Time::Milliseconds(timeSettings->fpsLimit))
+        if (framesPerSecondStopwatch.Elapsed() >= Time::Milliseconds(timeSettings->framesPerSecondLimit))
         {
-            fpsTimer->Start();
+            framesPerSecondStopwatch.Start();
 
-            timeInformationData->fps = count;
+            mutableInformation->framesPerSecond = count;
             count = 0;
         }
 
         ++count;
 
-        timeInformationData->frameEndTime = Time::Value<>() + timeInformationData->stopwatch->Elapsed();
-        timeInformationData->lastFrameElapsed =
+        mutableInformation->endTime = Time::Value<>() + mutableInformation->stopwatch.Elapsed();
+        mutableInformation->lastElapsed =
             std::chrono::duration_cast<Time::Seconds>(
-                timeInformationData->frameEndTime - timeInformationData->frameStartTime);
-        timeInformationData->totalElapsed += timeInformationData->lastFrameElapsed;
+                mutableInformation->endTime - mutableInformation->startTime);
+        mutableInformation->totalElapsed += mutableInformation->lastElapsed;
 
         debugIdleProfiler.Start();
     }

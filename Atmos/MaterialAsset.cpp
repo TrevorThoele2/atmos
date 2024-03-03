@@ -2,8 +2,6 @@
 
 #include "ShouldCreateAsset.h"
 
-#include <Inscription/VectorScribe.h>
-
 namespace Atmos::Asset
 {
     Material::Pass::Pass(Arca::Index<Shader> vertexShader, Arca::Index<Shader> fragmentShader) :
@@ -67,23 +65,5 @@ namespace Arca
         const std::vector<Atmos::Asset::Material::Pass>&)
     {
         return Atmos::Asset::ShouldCreate<::Atmos::Asset::Material>(reliquary, name);
-    }
-}
-
-namespace Inscription
-{
-    void Scribe<Atmos::Asset::Material::Pass, BinaryArchive>::ScrivenImplementation(
-        ObjectT& object, ArchiveT& archive)
-    {
-        archive(object.vertexShader);
-        archive(object.fragmentShader);
-    }
-
-    void Scribe<Atmos::Asset::Material, BinaryArchive>::ScrivenImplementation(
-        ObjectT& object, ArchiveT& archive)
-    {
-        BaseScriven<Atmos::Asset::Asset<Atmos::Asset::Material>>(object, archive);
-        archive(object.type);
-        archive(object.passes);
     }
 }

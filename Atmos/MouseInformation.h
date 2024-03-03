@@ -27,8 +27,9 @@ namespace Arca
 
 namespace Inscription
 {
-    template<>
-    class Scribe<Atmos::Input::MouseInformation, BinaryArchive> final
-        : public ArcaNullScribe<Atmos::Input::MouseInformation, BinaryArchive>
-    {};
+    template<class Archive>
+    struct ScribeTraits<Atmos::Input::MouseInformation, Archive> final
+    {
+        using Category = ArcaNullScribeCategory<Atmos::Input::MouseInformation>;
+    };
 }

@@ -28,9 +28,3 @@ namespace Atmos::Script
         return true;
     }
 }
-
-namespace Inscription
-{
-    void Scribe<::Atmos::Script::Persistence, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
-    {}
-}

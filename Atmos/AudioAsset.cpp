@@ -20,6 +20,11 @@ namespace Atmos::Asset
         AssetWithResource::operator=(std::move(arg));
         return *this;
     }
+
+    void Audio::Setup(ResourcePtr&& set)
+    {
+        SetResource(std::move(set));
+    }
 }
 
 namespace Arca
@@ -28,15 +33,5 @@ namespace Arca
         Reliquary& reliquary, const ::Atmos::Name& name, const ::Atmos::Asset::Audio::ResourcePtr& data)
     {
         return Atmos::Asset::ShouldCreate<::Atmos::Asset::Audio>(reliquary, name);
-    }
-}
-
-namespace Inscription
-{
-    void Scribe<::Atmos::Asset::Audio, BinaryArchive>::ScrivenImplementation(
-        ObjectT& object, ArchiveT& archive)
-    {
-        BaseScriven<Atmos::Asset::AssetWithResource<Atmos::Asset::Resource::Audio, Atmos::Asset::Audio>>(
-            object, archive);
     }
 }

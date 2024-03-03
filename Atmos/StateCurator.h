@@ -1,7 +1,6 @@
 #pragma once
 
 #include <Arca/Curator.h>
-#include <Arca/RelicBatch.h>
 
 #include "StateRequest.h"
 
@@ -9,9 +8,11 @@
 
 namespace Atmos::State
 {
-    class StateCurator final : public Arca::Curator
+    class Curator final : public Arca::Curator
     {
     public:
+        using Arca::Curator::Curator;
+
         void Handle(const Request& command);
     private:
         using Stack = std::vector<const GameState*>;
@@ -25,18 +26,19 @@ namespace Atmos::State
 namespace Arca
 {
     template<>
-    struct Traits<Atmos::State::StateCurator>
+    struct Traits<Atmos::State::Curator>
     {
         static const ObjectType objectType = ObjectType::Curator;
-        static inline TypeName typeName = "Atmos::State::StateCurator";
+        static inline TypeName typeName = "Atmos::State::Curator";
         using HandledCommands = HandledCommands<Atmos::State::Request>;
     };
 }
 
 namespace Inscription
 {
-    template<>
-    class Scribe<::Atmos::State::StateCurator, BinaryArchive> final :
-        public ArcaNullScribe<::Atmos::State::StateCurator, BinaryArchive>
-    {};
+    template<class Archive>
+    struct ScribeTraits<Atmos::State::Curator, Archive> final
+    {
+        using Category = ArcaNullScribeCategory<Atmos::State::Curator>;
+    };
 }

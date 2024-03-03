@@ -6,13 +6,14 @@ namespace Atmos
     {}
 
     Exception::Exception(const String& message, NameValuePairs details) :
-        exception([message, details]()
-        {
-            String output;
-            for (auto& loop : details)
-                output.append("        " + loop.name + ": " + ToString(loop.value) + '\n');
-            return output;
-        }().c_str()),
+        exception(
+            [message, details]()
+            {
+                String output = message;
+                for (auto& loop : details)
+                    output.append("\n        " + loop.name + ": " + ToString(loop.value));
+                return output;
+            }().c_str()),
         message(message),
         details(details)
     {}

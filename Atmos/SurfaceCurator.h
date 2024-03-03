@@ -11,7 +11,7 @@ namespace Atmos::Render
     public:
         explicit SurfaceCurator(Init init);
 
-        void Handle(const ChangeSurfaceBackgroundColor& command);
+        void Handle(const ChangeMainSurfaceBackgroundColor& command);
     };
 }
 
@@ -23,14 +23,15 @@ namespace Arca
         static const ObjectType objectType = ObjectType::Curator;
         static inline const TypeName typeName = "Atmos::Render::SurfaceCurator";
         using HandledCommands = HandledCommands<
-            Atmos::Render::ChangeSurfaceBackgroundColor>;
+            Atmos::Render::ChangeMainSurfaceBackgroundColor>;
     };
 }
 
 namespace Inscription
 {
-    template<>
-    class Scribe<Atmos::Render::SurfaceCurator, BinaryArchive> final :
-        public ArcaNullScribe<Atmos::Render::SurfaceCurator, BinaryArchive>
-    {};
+    template<class Archive>
+    struct ScribeTraits<Atmos::Render::SurfaceCurator, Archive> final
+    {
+        using Category = ArcaNullScribeCategory<Atmos::Render::SurfaceCurator>;
+    };
 }

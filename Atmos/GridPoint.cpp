@@ -17,13 +17,3 @@ namespace Atmos::Spatial::Grid
         return !(*this == arg);
     }
 }
-
-namespace Inscription
-{
-    void Scribe<Atmos::Spatial::Grid::Point, BinaryArchive>::ScrivenImplementation(
-        ObjectT& object, ArchiveT& archive)
-    {
-        archive(object.x);
-        archive(object.y);
-    }
-}

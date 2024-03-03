@@ -1,7 +1,5 @@
 #include "GridRegion.h"
 
-#include <Inscription/UnorderedSetScribe.h>
-
 namespace Atmos::Render
 {
     GridRegion::GridRegion(Init init) :
@@ -16,14 +14,4 @@ namespace Atmos::Render
         :
         ClosedTypedRelic(init), points(points), z(z), material(material)
     {}
-}
-
-namespace Inscription
-{
-    void Scribe<Atmos::Render::GridRegion, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
-    {
-        archive(object.points);
-        archive(object.z);
-        archive(object.material);
-    }
 }

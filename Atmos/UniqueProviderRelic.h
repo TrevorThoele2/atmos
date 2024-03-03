@@ -76,8 +76,9 @@ namespace Arca
 
 namespace Inscription
 {
-    template<class T>
-    class Scribe<::Atmos::UniqueProviderRelic<T>, BinaryArchive> final :
-        public ArcaNullScribe<::Atmos::UniqueProviderRelic<T>, BinaryArchive>
-    {};
+    template<class T, class Archive>
+    struct ScribeTraits<Atmos::UniqueProviderRelic<T>, Archive> final
+    {
+        using Category = ArcaNullScribeCategory<Atmos::UniqueProviderRelic<T>>;
+    };
 }

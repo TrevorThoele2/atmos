@@ -11,7 +11,7 @@ namespace Atmos::Asset::Resource
     template<>
     struct Create<Image>
     {
-        Buffer buffer;
+        DataBuffer buffer;
         Name name;
         ImageSize size;
     };

@@ -2,9 +2,9 @@
 
 #include "GraphicsManager.h"
 #include "VulkanIncludes.h"
-#include "VulkanShaderCompiler.h"
 #include "VulkanQueueFamilyIndices.h"
 #include "VulkanDebug.h"
+#include "VulkanShaderCompiler.h"
 
 #define VK_KHR_WIN32_EXTENSION_NAME "VK_KHR_win32_surface"
 #define VK_EXT_DEBUG_UTILS_EXTENSION_NAME "VK_EXT_debug_utils"
@@ -37,10 +37,10 @@ namespace Atmos::Render::Vulkan
 
         void ResourceDestroyingImpl(Asset::Resource::Image& resource) override;
 
+        void PruneResourcesImpl(Arca::Reliquary& reliquary) override;
+
         File::Path CompileShaderImpl(
             const File::Path& inputFilePath, const std::optional<File::Path>& outputFilePath) override;
-
-        void PruneResourcesImpl(Arca::Reliquary& reliquary) override;
 
         [[nodiscard]] bool ShouldReconstructInternals() const override;
         void ReconstructInternals(GraphicsReconstructionObjects objects) override;
@@ -126,9 +126,9 @@ namespace Atmos::Render::Vulkan
 
         [[nodiscard]] static vk::UniqueSampler CreateSampler(vk::Device device);
     private:
-        ShaderCompiler shaderCompiler;
-    private:
         Debug debug;
+    private:
+        ShaderCompiler shaderCompiler;
     private:
         template<class Expected, class Available>
         static std::set<String> Unavailable(Expected expected, Available available);

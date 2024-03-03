@@ -8,6 +8,23 @@
 
 namespace Atmos::Script
 {
+    Instance::Instance(
+        Init init,
+        Arca::Index<Asset::Script> asset,
+        Name executeName,
+        Parameters parameters,
+        Persistence persistence)
+        :
+        ClosedTypedRelic(init),
+        asset(asset),
+        executeName(executeName),
+        parameters(parameters),
+        persistence(persistence)
+    {}
+
+    Instance::Instance(Init init, Arca::Serialization) : ClosedTypedRelic(init)
+    {}
+
     void Instance::ExecuteDeferred()
     {
         if (IsRunning())
@@ -22,7 +39,7 @@ namespace Atmos::Script
             return;
 
         auto running = CreateRunningFromThis();
-        Owner().Do<Script::ExecuteImmediately>(running);
+        Owner().Do(Script::ExecuteImmediately{ running });
     }
 
     Arca::Index<RunningScript> Instance::RunningForThis() const
@@ -40,10 +57,10 @@ namespace Atmos::Script
 
     Arca::Index<RunningScript> Instance::CreateRunningFromThis()
     {
-        return Owner().Do<Arca::Create<RunningScript>>(
+        return Owner().Do(Arca::Create<RunningScript> {
             Arca::Index<Instance>(ID(), Owner()),
             executeName,
             parameters,
-            persistence);
+            persistence });
     }
 }

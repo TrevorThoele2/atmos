@@ -30,10 +30,22 @@ namespace Arca
 namespace Inscription
 {
     template<>
-    class Scribe<Atmos::World::Map, BinaryArchive> final
-        : public ArcaCompositeScribe<Atmos::World::Map, BinaryArchive>
+    class Scribe<Atmos::World::Map> final
     {
-    protected:
-        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
+    public:
+        using ObjectT = Atmos::World::Map;
+    public:
+        template<class Archive>
+        void Scriven(ObjectT& object, Archive& archive)
+        {
+            archive("terrain", object.terrain);
+            archive("entityBoundary", object.entityBoundary);
+        }
+    };
+
+    template<class Archive>
+    struct ScribeTraits<Atmos::World::Map, Archive> final
+    {
+        using Category = ArcaCompositeScribeCategory<Atmos::World::Map>;
     };
 }

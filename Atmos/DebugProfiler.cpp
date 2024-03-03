@@ -12,7 +12,7 @@ namespace Atmos::Debug
         if (!statistics)
             return;
 
-        statisticPicker(*statistics)->Start();
+        statisticPicker(*statistics).Start();
     }
 
     void Profiler::Calculate()
@@ -20,7 +20,7 @@ namespace Atmos::Debug
         if (!statistics)
             return;
 
-        statisticPicker(*statistics)->Elapsed();
+        statisticPicker(*statistics).Calculate();
     }
 
     Statistics* Profiler::StatisticsFrom(Arca::MutablePointer mutablePointer)

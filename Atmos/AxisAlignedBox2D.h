@@ -31,10 +31,22 @@ namespace Atmos::Spatial
 namespace Inscription
 {
     template<>
-    class Scribe<::Atmos::Spatial::AxisAlignedBox2D, BinaryArchive> final :
-        public CompositeScribe<::Atmos::Spatial::AxisAlignedBox2D, BinaryArchive>
+    class Scribe<Atmos::Spatial::AxisAlignedBox2D> final
     {
-    protected:
-        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
+    public:
+        using ObjectT = Atmos::Spatial::AxisAlignedBox2D;
+    public:
+        template<class Archive>
+        void Scriven(ObjectT& object, Archive& archive)
+        {
+            archive("center", object.center);
+            archive("size", object.size);
+        }
+    };
+
+    template<class Archive>
+    struct ScribeTraits<Atmos::Spatial::AxisAlignedBox2D, Archive> final
+    {
+        using Category = CompositeScribeCategory<Atmos::Spatial::AxisAlignedBox2D>;
     };
 }

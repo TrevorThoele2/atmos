@@ -13,6 +13,8 @@ namespace Atmos::Asset
         Audio(Audio&& arg) noexcept;
 
         Audio& operator=(Audio&& arg) noexcept;
+    public:
+        void Setup(ResourcePtr&& set);
     };
 }
 
@@ -33,10 +35,22 @@ namespace Arca
 namespace Inscription
 {
     template<>
-    class Scribe<Atmos::Asset::Audio, BinaryArchive> final :
-        public ArcaCompositeScribe<Atmos::Asset::Audio, BinaryArchive>
+    class Scribe<Atmos::Asset::Audio> final
     {
-    protected:
-        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
+    public:
+        using ObjectT = Atmos::Asset::Audio;
+    public:
+        template<class Archive>
+        void Scriven(ObjectT& object, Archive& archive)
+        {
+            BaseScriven<Atmos::Asset::AssetWithResource<Atmos::Asset::Resource::Audio, Atmos::Asset::Audio>>(
+                object, archive);
+        }
+    };
+
+    template<class Archive>
+    struct ScribeTraits<Atmos::Asset::Audio, Archive> final
+    {
+        using Category = ArcaCompositeScribeCategory<Atmos::Asset::Audio>;
     };
 }

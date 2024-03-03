@@ -23,16 +23,16 @@ namespace Atmos::Script
         void Add(const Value& add);
         void Remove(size_t index);
 
-        Value* Find(size_t index);
-        const Value* Find(size_t index) const;
+        [[nodiscard]] Value* Find(size_t index);
+        [[nodiscard]] const Value* Find(size_t index) const;
 
-        SizeT Size() const;
-        bool IsEmpty() const;
+        [[nodiscard]] SizeT Size() const;
+        [[nodiscard]] bool IsEmpty() const;
 
-        iterator begin();
-        const_iterator begin() const;
-        iterator end();
-        const_iterator end() const;
+        [[nodiscard]] iterator begin();
+        [[nodiscard]] const_iterator begin() const;
+        [[nodiscard]] iterator end();
+        [[nodiscard]] const_iterator end() const;
     private:
         List list;
     private:
@@ -43,10 +43,21 @@ namespace Atmos::Script
 namespace Inscription
 {
     template<>
-    class Scribe<::Atmos::Script::Parameters, BinaryArchive> :
-        public CompositeScribe<::Atmos::Script::Parameters, BinaryArchive>
+    class Scribe<Atmos::Script::Parameters>
     {
-    protected:
-        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
+    public:
+        using ObjectT = Atmos::Script::Parameters;
+    public:
+        template<class Archive>
+        void Scriven(ObjectT& object, Archive& archive)
+        {
+            archive("list", object.list);
+        }
+    };
+
+    template<class Archive>
+    struct ScribeTraits<Atmos::Script::Parameters, Archive> final
+    {
+        using Category = CompositeScribeCategory<Atmos::Script::Parameters>;
     };
 }

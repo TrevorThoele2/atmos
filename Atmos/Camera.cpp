@@ -11,22 +11,22 @@ namespace Atmos::Render
 {
     void Camera::MoveTo(const Spatial::Point3D& to) const
     {
-        Owner().Do<Spatial::MoveBoundsTo>(ID(), to);
+        Owner().Do(Spatial::MoveBoundsTo{ ID(), to });
     }
 
     void Camera::MoveBy(const Spatial::Point3D& by) const
     {
-        Owner().Do<Spatial::MoveBoundsBy>(ID(), by);
+        Owner().Do(Spatial::MoveBoundsBy{ ID(), by });
     }
 
     void Camera::MoveDirection(const Spatial::Angle3D& direction, Spatial::Point3D::Value amount) const
     {
-        Owner().Do<Spatial::MoveBoundsDirection>(ID(), direction, amount);
+        Owner().Do(Spatial::MoveBoundsDirection{ ID(), direction, amount });
     }
 
     void Camera::ScaleTo(const Spatial::Scalers2D& to) const
     {
-        Owner().Do<Spatial::ScaleBounds>(ID(), to);
+        Owner().Do(Spatial::ScaleBounds{ ID(), to });
     }
 
     Spatial::Point3D Camera::Position() const
@@ -39,7 +39,7 @@ namespace Atmos::Render
         return bounds->Size();
     }
 
-    Spatial::AxisAlignedBox2D Camera::ScreenSides() const
+    Spatial::AxisAlignedBox2D Camera::Sides() const
     {
         const auto size = bounds->Size();
 
@@ -54,22 +54,20 @@ namespace Atmos::Render
         };
     }
 
-    Camera::Camera(Init init) :
+    Camera::Camera(Init init, Spatial::ScreenSize screenSize) :
         ClosedTypedRelic(init),
         bounds(init.Create<Spatial::Bounds>(
             Spatial::Point3D{},
             Spatial::Size2D{1, 1},
-            Spatial::Scalers2D{1, 1},
+            Spatial::Scalers2D
+            {
+                static_cast<Spatial::Scalers2D::Value>(screenSize.width),
+                static_cast<Spatial::Scalers2D::Value>(screenSize.height)
+            },
             Spatial::Angle2D{}))
     {}
 
     Camera::Camera(Init init, Arca::Serialization) :
         ClosedTypedRelic(init), bounds(init.Find<Spatial::Bounds>())
-    {}
-}
-
-namespace Inscription
-{
-    void Scribe<::Atmos::Render::Camera, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
     {}
 }

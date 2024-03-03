@@ -14,13 +14,3 @@ namespace Atmos::Spatial
         return !(*this == arg);
     }
 }
-
-namespace Inscription
-{
-    void Scribe<Atmos::Spatial::Point3D, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
-    {
-        archive(object.x);
-        archive(object.y);
-        archive(object.z);
-    }
-}

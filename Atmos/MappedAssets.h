@@ -67,16 +67,9 @@ namespace Arca
 
 namespace Inscription
 {
-    template<class AssetT>
-    class Scribe<Atmos::Asset::Mapped<AssetT>, BinaryArchive>
-        : public ArcaNullScribe<Atmos::Asset::Mapped<AssetT>, BinaryArchive>
+    template<class AssetT, class Archive>
+    struct ScribeTraits<Atmos::Asset::Mapped<AssetT>, Archive> final
     {
-    private:
-        using BaseT = ArcaNullScribe<Atmos::Asset::Mapped<AssetT>, BinaryArchive>;
-    public:
-        using BaseT::ArchiveT;
-        using BaseT::ObjectT;
-
-        using BaseT::Scriven;
+        using Category = ArcaNullScribeCategory<Atmos::Asset::Mapped<AssetT>>;
     };
 }

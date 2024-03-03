@@ -19,10 +19,23 @@ namespace Atmos::Spatial
 namespace Inscription
 {
     template<>
-    class Scribe<Atmos::Spatial::Scalers3D, BinaryArchive> final :
-        public CompositeScribe<Atmos::Spatial::Scalers3D, BinaryArchive>
+    class Scribe<Atmos::Spatial::Scalers3D> final
     {
-    protected:
-        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
+    public:
+        using ObjectT = Atmos::Spatial::Scalers3D;
+    public:
+        template<class Archive>
+        void Scriven(ObjectT& object, Archive& archive)
+        {
+            archive("x", object.x);
+            archive("y", object.y);
+            archive("z", object.z);
+        }
+    };
+
+    template<class Archive>
+    struct ScribeTraits<Atmos::Spatial::Scalers3D, Archive> final
+    {
+        using Category = CompositeScribeCategory<Atmos::Spatial::Scalers3D>;
     };
 }

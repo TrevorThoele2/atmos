@@ -121,11 +121,11 @@ namespace Atmos::Render::Vulkan
     vk::PipelineShaderStageCreateInfo Conduit::ShaderStageCreateInfo(
         const Asset::Shader& shaderAsset, vk::ShaderStageFlagBits shaderType)
     {
-        const auto fileData = shaderAsset.ResourceAs<Asset::Resource::Vulkan::Shader>();
+        const auto resource = shaderAsset.ResourceAs<Asset::Resource::Vulkan::Shader>();
         return vk::PipelineShaderStageCreateInfo(
             {},
             shaderType,
-            fileData->Module(),
+            resource->Module(),
             "main");
     }
 }

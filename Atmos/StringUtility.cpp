@@ -2,8 +2,6 @@
 
 #include "GridPoint.h"
 
-#include "FilePath.h"
-
 namespace Atmos
 {
     void SpliceString(String &in, const String &check, const String &replace)
@@ -118,25 +116,6 @@ namespace Atmos
             return false;
     }
 
-    template<> LargeInteger FromString(const String &arg)
-    {
-        LargeInteger ret;
-        ret.FromString(arg);
-        return ret;
-    }
-
-    template<> ::Agui::Resolution::Size FromString(const String &arg)
-    {
-        ::Agui::Resolution::Size size;
-        const auto pivot = arg.find_first_of("x");
-        const auto left = arg.substr(0, pivot);
-        const auto right = arg.substr(pivot + 1);
-
-        size.width = FromString<::Agui::Resolution::Size::Value>(left);
-        size.height = FromString<::Agui::Resolution::Size::Value>(right);
-        return size;
-    }
-
     template<class T>
     String ToStringCharCommon(T arg)
     {
@@ -171,11 +150,6 @@ namespace Atmos
             return "false";
     }
 
-    String ToString(LargeInteger arg)
-    {
-        return arg.ToString();
-    }
-
     String ToString(const Spatial::Grid::Point &position)
     {
         return
@@ -194,10 +168,5 @@ namespace Atmos
     String ToString(const Spatial::Size2D& size)
     {
         return ToString(size.width) + "," + ToString(size.height);
-    }
-
-    String ToString(const ::Agui::Resolution::Size &arg)
-    {
-        return ToString(arg.width) + "x" + ToString(arg.height);
     }
 }

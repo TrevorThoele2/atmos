@@ -6,6 +6,8 @@
 #include "MaterialAsset.h"
 #include "GridPoint.h"
 
+#include <Inscription/UnorderedSetScribe.h>
+
 namespace Atmos::Render
 {
     class GridRegion final : public Arca::ClosedTypedRelic<GridRegion>
@@ -39,10 +41,23 @@ namespace Arca
 namespace Inscription
 {
     template<>
-    class Scribe<Atmos::Render::GridRegion, BinaryArchive> final :
-        public ArcaCompositeScribe<Atmos::Render::GridRegion, BinaryArchive>
+    class Scribe<Atmos::Render::GridRegion> final
     {
-    protected:
-        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
+    public:
+        using ObjectT = Atmos::Render::GridRegion;
+    public:
+        template<class Archive>
+        void Scriven(ObjectT& object, Archive& archive)
+        {
+            archive("points", object.points);
+            archive("z", object.z);
+            archive("material", object.material);
+        }
+    };
+
+    template<class Archive>
+    struct ScribeTraits<Atmos::Render::GridRegion, Archive> final
+    {
+        using Category = ArcaCompositeScribeCategory<Atmos::Render::GridRegion>;
     };
 }

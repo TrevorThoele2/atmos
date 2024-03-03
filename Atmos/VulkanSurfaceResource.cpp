@@ -20,7 +20,8 @@ namespace Atmos::Render::Resource::Vulkan
         device(device),
         physicalDevice(physicalDevice),
         sampler(sampler),
-        underlying(std::move(underlying))
+        underlying(std::move(underlying)),
+        reliquary(&reliquary)
     {
         renderer = std::make_unique<MasterRenderer>(
             device,
@@ -28,8 +29,7 @@ namespace Atmos::Render::Resource::Vulkan
             graphicsQueue,
             presentQueue,
             queueFamilyIndices.graphicsFamily,
-            memoryProperties,
-            reliquary);
+            memoryProperties);
 
         Initialize(queueFamilyIndices);
 
@@ -88,7 +88,8 @@ namespace Atmos::Render::Resource::Vulkan
             images,
             nonUniqueImageViews,
             imageFormat,
-            extent);
+            extent,
+            *reliquary);
     }
 
     void Surface::StageRender(const ImageRender& imageRender)
@@ -115,6 +116,16 @@ namespace Atmos::Render::Resource::Vulkan
             Spatial::ScreenPoint::Value(camera->Position().y)
         };
         renderer->DrawFrame(Size(), mapPosition);
+    }
+
+    void Surface::OnMaterialCreated(const Arca::Index<Asset::Material>& material)
+    {
+        renderer->OnMaterialCreated(material);
+    }
+
+    void Surface::OnMaterialDestroying(const Arca::Index<Asset::Material>& material)
+    {
+        renderer->OnMaterialDestroying(material);
     }
 
     void Surface::WaitForIdle() const

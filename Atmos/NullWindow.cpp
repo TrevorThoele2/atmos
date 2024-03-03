@@ -29,19 +29,22 @@ namespace Atmos::Window
     void NullWindow::SetupImpl()
     {}
 
-    Spatial::AxisAlignedBox2D NullWindow::AdjustWindowDimensions()
-    {
-        return Spatial::AxisAlignedBox2D();
-    }
-
-    void NullWindow::OnSetWindowDimensions()
+    void NullWindow::OnPositionChanged()
     {}
 
-    NullWindow::Position NullWindow::GetDefaultWindowPosition()
+    void NullWindow::OnSizeChanged()
+    {}
+
+    void NullWindow::OnFullscreenChanged()
+    {}
+
+    auto NullWindow::WindowSizeFromClientSize() const -> Size
     {
-        return Position();
+        return Size();
     }
 
-    void NullWindow::OnSetFullscreen()
-    {}
+    auto NullWindow::TotalScreenSize() const -> Size
+    {
+        return Size();
+    }
 }

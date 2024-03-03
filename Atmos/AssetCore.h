@@ -28,10 +28,21 @@ namespace Arca
 namespace Inscription
 {
     template<>
-    class Scribe<Atmos::Asset::Core, BinaryArchive> final :
-        public ArcaCompositeScribe<Atmos::Asset::Core, BinaryArchive>
+    class Scribe<Atmos::Asset::Core> final
     {
-    protected:
-        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
+    public:
+        using ObjectT = Atmos::Asset::Core;
+    public:
+        template<class Archive>
+        void Scriven(ObjectT& object, Archive& archive)
+        {
+            archive("name", object.name);
+        }
+    };
+
+    template<class Archive>
+    struct ScribeTraits<Atmos::Asset::Core, Archive> final
+    {
+        using Category = ArcaCompositeScribeCategory<Atmos::Asset::Core>;
     };
 }

@@ -12,12 +12,3 @@ namespace Atmos::Spatial
         return !(*this == arg);
     }
 }
-
-namespace Inscription
-{
-    void Scribe<Atmos::Spatial::Scalers2D, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
-    {
-        archive(object.x);
-        archive(object.y);
-    }
-}

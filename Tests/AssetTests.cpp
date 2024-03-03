@@ -60,7 +60,6 @@ SCENARIO_METHOD(AssetTestsFixture, "assets")
             auto asset = reliquary->Do(Arca::Create<Image>{
                 name,
                 std::unique_ptr<Resource::Image>{},
-                ImageSize{},
                 ImageGridSize{ columns, rows }});
 
             auto mappedAssets = Arca::Index<Atmos::Asset::Mapped<Atmos::Asset::Image>>(*reliquary);
@@ -104,7 +103,6 @@ SCENARIO_METHOD(AssetTestsFixture, "assets")
                     asset.ID(),
                     newName,
                     std::unique_ptr<Resource::Image>{},
-                    ImageSize{},
                     ImageGridSize{ columns, rows }});
 
                 THEN("mapped asset is new asset")
@@ -170,7 +168,7 @@ SCENARIO_METHOD(AssetTestsFixture, "assets")
         {
             auto name = dataGeneration.Random<String>();
 
-            auto asset = reliquary->Do(Arca::Create<Script>{name, std::unique_ptr<Resource::Script>{}});
+            auto asset = reliquary->Do(Arca::Create<Atmos::Asset::Script>{name, std::unique_ptr<Resource::Script>{}});
 
             auto mappedAssets = Arca::Index<Atmos::Asset::Mapped<Atmos::Asset::Script>>(*reliquary);
 
@@ -209,7 +207,7 @@ SCENARIO_METHOD(AssetTestsFixture, "assets")
         {
             auto name = dataGeneration.Random<String>();
 
-            auto asset = reliquary->Do(Arca::Create<Shader>{name, std::unique_ptr<Resource::Shader>{}, ""});
+            auto asset = reliquary->Do(Arca::Create<Shader>{name, std::unique_ptr<Resource::Shader>{}});
 
             auto mappedAssets = Arca::Index<Atmos::Asset::Mapped<Atmos::Asset::Shader>>(*reliquary);
 
@@ -231,8 +229,7 @@ SCENARIO_METHOD(AssetTestsFixture, "assets")
                 reliquary->Do(Arca::AssignMove<Atmos::Asset::Shader>{
                     asset.ID(),
                     newName,
-                    std::unique_ptr<Resource::Shader>{},
-                    ""});
+                    std::unique_ptr<Resource::Shader>{}});
 
                 THEN("mapped asset is new asset")
                 {

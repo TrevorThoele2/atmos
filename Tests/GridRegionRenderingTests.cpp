@@ -22,27 +22,31 @@ SCENARIO_METHOD(GridRegionRenderingTestsFixture, "rendering grid regions")
         engine.Setup();
 
         auto fieldOrigin = Arca::ReliquaryOrigin();
-        RegisterFieldTypes(fieldOrigin, *engine.nullAudioManager, *engine.nullInputManager, *engine.mockGraphicsManager);
+        RegisterFieldTypes(
+            fieldOrigin,
+            *engine.nullAudioManager,
+            *engine.nullInputManager,
+            *engine.mockGraphicsManager,
+            Spatial::ScreenSize {
+                std::numeric_limits<Spatial::ScreenSize::Dimension>::max(),
+                std::numeric_limits<Spatial::ScreenSize::Dimension>::max() },
+            nullptr);
         World::Field field(0, fieldOrigin.Actualize());
 
         auto& fieldReliquary = field.Reliquary();
 
-        engine.mockGraphicsManager->Initialize(fieldReliquary, nullptr);
+        engine.mockGraphicsManager->Initialize();
 
         const auto mainSurface = Arca::Index<MainSurface>(fieldReliquary);
-        auto mainSurfaceImplementation = mainSurface->Resource<MockSurfaceResourceImplementation>();
+        auto mainSurfaceImplementation = mainSurface->Resource<MockSurfaceResource>();
 
-        auto materialAsset = fieldReliquary.Do<Arca::Create<Asset::Material>>(
-            String{}, Asset::MaterialType::Image, std::vector<Asset::Material::Pass>{});
+        auto materialAsset = fieldReliquary.Do(Arca::Create<Asset::Material> {
+            String{}, Asset::MaterialType::Image, std::vector<Asset::Material::Pass>{} });
 
         const auto camera = Arca::Index<Camera>(fieldReliquary);
 
-        camera->Scalers(Spatial::Scalers2D{
-            std::numeric_limits<Spatial::Scalers2D::Value>::max(),
-            std::numeric_limits<Spatial::Scalers2D::Value>::max() });
-
-        const auto cameraLeft = camera->ScreenSides().Left();
-        const auto cameraTop = camera->ScreenSides().Top();
+        const auto cameraLeft = camera->Sides().Left();
+        const auto cameraTop = camera->Sides().Top();
 
         WHEN("creating grid region")
         {
@@ -53,11 +57,12 @@ SCENARIO_METHOD(GridRegionRenderingTestsFixture, "rendering grid regions")
                 Spatial::Grid::Point { 0, 1 },
                 Spatial::Grid::Point { 1, 1 },
             };
-            auto gridRegion = fieldReliquary.Do(Arca::Create<GridRegion>{ positions, 0, materialAsset});
+            auto gridRegion = fieldReliquary.Do(Arca::Create<GridRegion>{
+                std::unordered_set<Spatial::Grid::Point>(positions.begin(), positions.end()), 0, materialAsset});
 
             WHEN("starting engine execution")
             {
-                engine.UseField(std::move(field));
+                engine.UseField(std::move(field), std::filesystem::current_path() / "Assets.dat");
                 engine.StartExecution();
 
                 THEN("region rendered in graphics manager")
@@ -97,10 +102,10 @@ SCENARIO_METHOD(GridRegionRenderingTestsFixture, "rendering grid regions")
 
             WHEN("starting engine execution, destroying grid region, then starting execution")
             {
-                engine.UseField(std::move(field));
+                engine.UseField(std::move(field), std::filesystem::current_path() / "Assets.dat");
                 engine.StartExecution();
 
-                fieldReliquary.Do<Arca::Destroy<GridRegion>>(gridRegion.ID());
+                fieldReliquary.Do(Arca::Destroy<GridRegion>{ gridRegion.ID() });
 
                 THEN("regions were rendered only once")
                 {
@@ -112,7 +117,7 @@ SCENARIO_METHOD(GridRegionRenderingTestsFixture, "rendering grid regions")
 
         WHEN("creating region without material")
         {
-            auto positions = std::vector<Spatial::Grid::Point>
+            auto positions = std::unordered_set<Spatial::Grid::Point>
             {
                 Spatial::Grid::Point { 0, 0 },
                 Spatial::Grid::Point { 1, 0 },
@@ -123,7 +128,7 @@ SCENARIO_METHOD(GridRegionRenderingTestsFixture, "rendering grid regions")
 
             WHEN("starting engine execution")
             {
-                engine.UseField(std::move(field));
+                engine.UseField(std::move(field), std::filesystem::current_path() / "Assets.dat");
                 engine.StartExecution();
 
                 THEN("no lines rendered in graphics manager")
@@ -136,12 +141,12 @@ SCENARIO_METHOD(GridRegionRenderingTestsFixture, "rendering grid regions")
 
         WHEN("creating region without positions")
         {
-            auto positions = std::vector<Spatial::Grid::Point> {};
+            auto positions = std::unordered_set<Spatial::Grid::Point> {};
             fieldReliquary.Do(Arca::Create<GridRegion>{ positions, 0, materialAsset});
 
             WHEN("starting engine execution")
             {
-                engine.UseField(std::move(field));
+                engine.UseField(std::move(field), std::filesystem::current_path() / "Assets.dat");
                 engine.StartExecution();
 
                 THEN("no lines rendered in graphics manager")

@@ -5,6 +5,7 @@
 namespace Atmos
 {
     using Buffer = std::vector<char>;
+    using DataBuffer = std::vector<unsigned char>;
 
     template<class T, class PositionT>
     size_t ReadFromBuffer(const char* buffer, T& obj, PositionT position)

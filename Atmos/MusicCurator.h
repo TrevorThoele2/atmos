@@ -33,8 +33,9 @@ namespace Arca
 
 namespace Inscription
 {
-    template<>
-    class Scribe<::Atmos::Audio::MusicCurator, BinaryArchive> final :
-        public ArcaNullScribe<::Atmos::Audio::MusicCurator, BinaryArchive>
-    {};
+    template<class Archive>
+    struct ScribeTraits<Atmos::Audio::MusicCurator, Archive> final
+    {
+        using Category = ArcaNullScribeCategory<Atmos::Audio::MusicCurator>;
+    };
 }

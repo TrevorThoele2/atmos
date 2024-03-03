@@ -16,8 +16,8 @@
 #include "GraphicsCurator.h"
 #include "Camera.h"
 #include "CameraCurator.h"
-#include "AncillarySurface.h"
 #include "SurfaceCurator.h"
+#include "GraphicsSettings.h"
 
 #include "AudioAsset.h"
 #include "ImageAsset.h"
@@ -36,12 +36,12 @@
 #include "EntityPrototype.h"
 #include "MappedEntities.h"
 
-#include "TimeSettings.h"
-#include "FrameStopwatch.h"
-#include "StopwatchStatistics.h"
-#include "StopwatchCurator.h"
+#include "WindowCurator.h"
+
 #include "FrameStartCurator.h"
 #include "FrameEndCurator.h"
+#include "FrameInformation.h"
+#include "FrameSettings.h"
 
 #include "LoggingCurator.h"
 
@@ -53,24 +53,56 @@
 
 namespace Atmos
 {
-    void RegisterFieldTypes(
-        Arca::ReliquaryOrigin& origin,
-        Audio::AudioManager& audio,
-        Input::Manager& input,
-        Render::GraphicsManager& graphics)
+    void RegisterCommonTypes(Arca::ReliquaryOrigin& origin)
     {
-        Audio::RegisterTypes(origin, audio);
-        Input::RegisterTypes(origin, input);
-        Render::RegisterTypes(origin, graphics);
         Asset::RegisterTypes(origin);
         Spatial::RegisterTypes(origin);
-        Time::RegisterTypes(origin);
+        Entity::RegisterTypes(origin);
+        Script::RegisterTypes(origin);
+        Frame::RegisterTypes(origin);
         Logging::RegisterTypes(origin);
         Debug::RegisterTypes(origin);
     }
 
+    void RegisterFieldTypes(Arca::ReliquaryOrigin& origin)
+    {
+        Audio::RegisterTypes(origin);
+        Input::RegisterTypes(origin);
+        Render::RegisterTypes(origin);
+        RegisterCommonTypes(origin);
+    }
+
+    void RegisterFieldTypes(
+        Arca::ReliquaryOrigin& origin,
+        Audio::AudioManager& audio,
+        Input::Manager& input,
+        Render::GraphicsManager& graphics,
+        Spatial::ScreenSize screenSize,
+        void* window)
+    {
+        Audio::RegisterTypes(origin, audio);
+        Input::RegisterTypes(origin, input);
+        Render::RegisterTypes(origin, graphics, screenSize, window);
+        Window::RegisterTypes(origin);
+        RegisterCommonTypes(origin);
+    }
+
+    void RegisterFieldStages(Arca::ReliquaryOrigin& origin)
+    {
+        auto pipeline = Arca::Pipeline();
+        pipeline.push_back(Frame::StartStage());
+        pipeline.push_back(Render::Stage());
+        pipeline.push_back(Frame::EndStage());
+        origin.CuratorPipeline(pipeline);
+    }
+
     namespace Input
     {
+        void RegisterTypes(Arca::ReliquaryOrigin& origin)
+        {
+
+        }
+
         void RegisterTypes(Arca::ReliquaryOrigin& origin, Manager& manager)
         {
 
@@ -79,7 +111,7 @@ namespace Atmos
 
     namespace Render
     {
-        void RegisterTypes(Arca::ReliquaryOrigin& origin, GraphicsManager& manager)
+        void RegisterTypes(Arca::ReliquaryOrigin& origin)
         {
             origin
                 .Register<ImageCore>()
@@ -91,14 +123,22 @@ namespace Atmos
                 .Register<LineCurator>()
                 .Register<GridRegion>()
                 .Register<GridRegionCurator>()
-                .Register<Camera>()
                 .Register<CameraCurator>()
                 .Register<Curator>()
-                .Register<GraphicsCurator>(std::ref(manager))
                 .Register<SurfaceCore>()
-                .Register<MainSurface>()
-                .Register<AncillarySurface>()
-                .Register<SurfaceCurator>();
+                .Register<SurfaceCurator>()
+                .Register<GraphicsSettings>();
+        }
+
+        void RegisterTypes(
+            Arca::ReliquaryOrigin& origin, GraphicsManager& manager, Spatial::ScreenSize screenSize, void* window)
+        {
+            RegisterTypes(origin);
+
+            origin
+                .Register<GraphicsCurator>(std::ref(manager))
+                .Register<Camera>(screenSize)
+                .Register<MainSurface>(std::ref(manager), window);
         }
 
         Arca::Stage Stage()
@@ -115,9 +155,23 @@ namespace Atmos
 
     namespace Audio
     {
+        void RegisterTypes(Arca::ReliquaryOrigin& origin)
+        {
+
+        }
+
         void RegisterTypes(Arca::ReliquaryOrigin& origin, AudioManager& manager)
         {
 
+        }
+    }
+
+    namespace Window
+    {
+        void RegisterTypes(Arca::ReliquaryOrigin& origin)
+        {
+            origin
+                .Register<Curator>();
         }
     }
 
@@ -177,33 +231,37 @@ namespace Atmos
         }
     }
 
-    namespace Time
+    namespace Script
+    {
+        void RegisterTypes(Arca::ReliquaryOrigin& origin)
+        {
+            origin
+                .Register<Instance>();
+        }
+    }
+
+    namespace Frame
     {
         void RegisterTypes(Arca::ReliquaryOrigin& origin)
         {
             origin
                 .Register<Information>()
-                .Register<Settings>()
-                .Register<StopwatchCore>()
-                .Register<StopwatchStatistics>()
-                .Register<RealStopwatch>()
-                .Register<FrameStopwatch>()
-                .Register<StopwatchCurator>()
-                .Register<FrameStartCurator>()
-                .Register<FrameEndCurator>();
+                .Register<StartCurator>()
+                .Register<EndCurator>()
+                .Register<Settings>();
         }
 
         Arca::Stage StartStage()
         {
             Arca::Stage stage;
-            stage.Add<FrameStartCurator>();
+            stage.Add<StartCurator>();
             return stage;
         }
 
         Arca::Stage EndStage()
         {
             Arca::Stage stage;
-            stage.Add<FrameEndCurator>();
+            stage.Add<EndCurator>();
             return stage;
         }
     }

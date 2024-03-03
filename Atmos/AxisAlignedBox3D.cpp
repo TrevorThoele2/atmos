@@ -46,12 +46,3 @@ namespace Atmos::Spatial
         return center.z + size.depth / 2;
     }
 }
-
-namespace Inscription
-{
-    void Scribe<Atmos::Spatial::AxisAlignedBox3D, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
-    {
-        archive(object.center);
-        archive(object.size);
-    }
-}

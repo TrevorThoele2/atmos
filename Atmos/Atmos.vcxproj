@@ -36,28 +36,42 @@
     <ClInclude Include="ActualizeAllEntityPrototypes.h" />
     <ClInclude Include="AngelScriptAssetData.h" />
     <ClInclude Include="AngelScriptManager.h" />
+    <ClInclude Include="ArchiveHeader.h" />
     <ClInclude Include="Asset.h" />
     <ClInclude Include="AssetCore.h" />
+    <ClInclude Include="AssetsFileExtension.h" />
     <ClInclude Include="AudioAssetInstanceResource.h" />
     <ClInclude Include="AudioAssetResource.h" />
     <ClInclude Include="BoundsCurator.h" />
     <ClInclude Include="BoundsMoved.h" />
     <ClInclude Include="BoundsRotated.h" />
     <ClInclude Include="BoundsScaled.h" />
-    <ClInclude Include="CalculateStopwatch.h" />
     <ClInclude Include="ChangeImageCore.h" />
     <ClInclude Include="ChangeSurfaceBackgroundColor.h" />
     <ClInclude Include="ChangeVerticalSync.h" />
+    <ClInclude Include="ChangeWindowSize.h" />
     <ClInclude Include="CompileShader.h" />
     <ClInclude Include="CreateAssetResource.h" />
     <ClInclude Include="CreateImageAssetResource.h" />
     <ClInclude Include="Angle3D.h" />
+    <ClInclude Include="CreateStopwatch.h" />
     <ClInclude Include="EntityDatum.h" />
     <ClInclude Include="EntityPrototype.h" />
     <ClInclude Include="EntityVariant.h" />
-    <ClInclude Include="LoadAsset.h" />
+    <ClInclude Include="FrameSettings.h" />
+    <ClInclude Include="FramesPerSecond.h" />
+    <ClInclude Include="InputAssetsArchiveInterface.h" />
+    <ClInclude Include="InputSimpleFile.h" />
+    <ClInclude Include="InvalidSignature.h" />
+    <ClInclude Include="LoadAssetResource.h" />
+    <ClInclude Include="LoadAssetsByZipUserContext.h" />
+    <ClInclude Include="LoadAssetsUserContext.h" />
+    <ClInclude Include="LoadImageAssetResource.h" />
     <ClInclude Include="MoveBoundsBy.h" />
     <ClInclude Include="MoveBoundsDirection.h" />
+    <ClInclude Include="OutputAssetsArchiveInterface.h" />
+    <ClInclude Include="OutputSimpleFile.h" />
+    <ClInclude Include="Overflow.h" />
     <ClInclude Include="RenderObjectCurator.h" />
     <ClInclude Include="SpatialAlgorithms.h" />
     <ClInclude Include="PruneGraphicsResources.h" />
@@ -69,8 +83,6 @@
     <ClInclude Include="RenderAlgorithms.h" />
     <ClInclude Include="RenderMesh.h" />
     <ClInclude Include="RotateBounds.h" />
-    <ClInclude Include="SetupMainSurfaceResource.h" />
-    <ClInclude Include="ExternalManagers.h" />
     <ClInclude Include="FreeImageIncludes.h" />
     <ClInclude Include="Image.h" />
     <ClInclude Include="ImageAssetGridSize.h" />
@@ -79,6 +91,9 @@
     <ClInclude Include="InitializeGraphics.h" />
     <ClInclude Include="SetFullscreen.h" />
     <ClInclude Include="SparseRegion.h" />
+    <ClInclude Include="Stopwatch.h" />
+    <ClInclude Include="SurfaceCore.h" />
+    <ClInclude Include="VersionUserContext.h" />
     <ClInclude Include="VulkanInvalidConduit.h" />
     <ClInclude Include="VulkanMappedConduits.h" />
     <ClInclude Include="VulkanLayer.h" />
@@ -90,7 +105,6 @@
     <ClInclude Include="GlobalInitializer.h" />
     <ClInclude Include="ImageAssetType.h" />
     <ClInclude Include="LoadAssetError.h" />
-    <ClInclude Include="LoadImageAsset.h" />
     <ClInclude Include="GraphicsReconstructionObjects.h" />
     <ClInclude Include="VulkanCommandBufferPool.h" />
     <ClInclude Include="VulkanDebug.h" />
@@ -112,20 +126,14 @@
     <ClInclude Include="CurrentFieldData.h" />
     <ClInclude Include="DebugProfiler.h" />
     <ClInclude Include="DebugValue.h" />
-    <ClInclude Include="DirectX9ImageAssetResource.h" />
-    <ClInclude Include="DirectX9ShaderAssetResource.h" />
-    <ClInclude Include="DirectX9SurfaceResource.h" />
     <ClInclude Include="ExtractFile.h" />
     <ClInclude Include="AssetWithResource.h" />
-    <ClInclude Include="DirectX9Includes.h" />
-    <ClInclude Include="DirectX9Renderer.h" />
-    <ClInclude Include="DirectX9Utilities.h" />
     <ClInclude Include="Environment.h" />
     <ClInclude Include="FileCurator.h" />
     <ClInclude Include="FilePath.h" />
     <ClInclude Include="FindAsset.h" />
     <ClInclude Include="GraphicsError.h" />
-    <ClInclude Include="IdleCurator.h" />
+    <ClInclude Include="FrameIdleCurator.h" />
     <ClInclude Include="ImageAssetResource.h" />
     <ClInclude Include="LineCurator.h" />
     <ClInclude Include="LineRender.h" />
@@ -140,16 +148,11 @@
     <ClInclude Include="VulkanImageAssetResource.h" />
     <ClInclude Include="VulkanMemory.h" />
     <ClInclude Include="VulkanQueueFamilyIndices.h" />
-    <ClInclude Include="ResetAverage.h" />
-    <ClInclude Include="ResetHighest.h" />
     <ClInclude Include="ScaleBounds.h" />
     <ClInclude Include="ScriptAssetResource.h" />
     <ClInclude Include="ScriptManager.h" />
     <ClInclude Include="ShaderAssetResource.h" />
     <ClInclude Include="SimpleFile.h" />
-    <ClInclude Include="StartStopwatch.h" />
-    <ClInclude Include="StopwatchCurator.h" />
-    <ClInclude Include="StopwatchStatistics.h" />
     <ClInclude Include="Field.h" />
     <ClInclude Include="FrameEndCurator.h" />
     <ClInclude Include="FrameStartCurator.h" />
@@ -189,16 +192,13 @@
     <ClInclude Include="AllRunningScripts.h" />
     <ClInclude Include="StasisFileExtension.h" />
     <ClInclude Include="StateRequest.h" />
-    <ClInclude Include="StopwatchCore.h" />
     <ClInclude Include="Surface.h" />
-    <ClInclude Include="SurfaceCore.h" />
     <ClInclude Include="SurfaceCurator.h" />
     <ClInclude Include="SurfaceResource.h" />
-    <ClInclude Include="TimeInformation.h" />
+    <ClInclude Include="FrameInformation.h" />
     <ClInclude Include="DebugStatistics.h" />
     <ClInclude Include="Exception.h" />
-    <ClInclude Include="Fps.h" />
-    <ClInclude Include="TimeSettings.h" />
+    <ClInclude Include="GraphicsSettings.h" />
     <ClInclude Include="LoggingDetails.h" />
     <ClInclude Include="LoggingSeverity.h" />
     <ClInclude Include="EngineNotSetup.h" />
@@ -216,10 +216,7 @@
     <ClInclude Include="AssetCurator.h" />
     <ClInclude Include="AudioAssetInstance.h" />
     <ClInclude Include="AxisAlignedBox3D.h" />
-    <ClInclude Include="BitConcatenator.h" />
-    <ClInclude Include="BoundedNumberWrap.h" />
     <ClInclude Include="CameraCurator.h" />
-    <ClInclude Include="ContainerUtility.h" />
     <ClInclude Include="DebugStatisticsCurator.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="EngineExecution.h" />
@@ -246,23 +243,16 @@
     <ClInclude Include="VulkanUtilities.h" />
     <ClInclude Include="VulkanVertexInput.h" />
     <ClInclude Include="WindowCreationFailed.h" />
-    <ClInclude Include="WindowDimensionsChanged.h" />
+    <ClInclude Include="WindowCurator.h" />
+    <ClInclude Include="WindowSizeChanged.h" />
     <ClInclude Include="WindowProvider.h" />
-    <ClInclude Include="GuiEngineProvider.h" />
-    <ClInclude Include="StdVariant.h" />
     <ClInclude Include="AnyEventConnection.h" />
     <ClInclude Include="WindowBase.h" />
     <ClInclude Include="DivisionByZero.h" />
-    <ClInclude Include="FixedPoint.h" />
-    <ClInclude Include="HasEqualityComparison.h" />
     <ClInclude Include="InitializationFileEntry.h" />
     <ClInclude Include="InitializationFileExtractedSection.h" />
     <ClInclude Include="InitializationFileSection.h" />
     <ClInclude Include="InitializationFileCurator.h" />
-    <ClInclude Include="IntervalList.h" />
-    <ClInclude Include="IsList.h" />
-    <ClInclude Include="IsSameRuntimeType.h" />
-    <ClInclude Include="LargeInteger.h" />
     <ClInclude Include="LoggingCurator.h" />
     <ClInclude Include="VolumeCurator.h" />
     <ClInclude Include="MusicCurator.h" />
@@ -285,21 +275,15 @@
     <ClInclude Include="Line3D.h" />
     <ClInclude Include="MaterialAssetCurator.h" />
     <ClInclude Include="Name.h" />
-    <ClInclude Include="OperatorSelector.h" />
-    <ClInclude Include="Overflow.h" />
-    <ClInclude Include="Percentage.h" />
     <ClInclude Include="Point3D.h" />
-    <ClInclude Include="AccessAdapter.h" />
     <ClInclude Include="MaterialAsset.h" />
     <ClInclude Include="ScriptParameters.h" />
     <ClInclude Include="ScriptPersistence.h" />
     <ClInclude Include="ScriptAssetCurator.h" />
-    <ClInclude Include="ScrubbedType.h" />
     <ClInclude Include="Size3D.h" />
     <ClInclude Include="SoundCurator.h" />
     <ClInclude Include="StringUtility.h" />
     <ClInclude Include="EntityTag.h" />
-    <ClInclude Include="DifferentiatableInherit.h" />
     <ClInclude Include="Variant.h" />
     <ClInclude Include="Vector2D.h" />
     <ClInclude Include="Vector3D.h" />
@@ -310,10 +294,8 @@
     <ClInclude Include="AudioManager.h" />
     <ClInclude Include="Buffer.h" />
     <ClInclude Include="BinaryHeap.h" />
-    <ClInclude Include="Bind.h" />
     <ClInclude Include="FileManager.h" />
     <ClInclude Include="WindowsFileManager.h" />
-    <ClInclude Include="Fraction.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="ScreenPointDelta.h" />
     <ClInclude Include="Music.h" />
@@ -322,51 +304,35 @@
     <ClInclude Include="ImageAsset.h" />
     <ClInclude Include="ImageAssetCurator.h" />
     <ClInclude Include="AxisAlignedBox2D.h" />
-    <ClInclude Include="BoundedNumber.h" />
     <ClInclude Include="DirectX9AudioManager.h" />
-    <ClInclude Include="Enum.h" />
     <ClInclude Include="GraphicsManager.h" />
-    <ClInclude Include="IDSequencer.h" />
     <ClInclude Include="Line.h" />
-    <ClInclude Include="NumericLimits.h" />
     <ClInclude Include="Serialization.h" />
     <ClInclude Include="ShaderAssetCurator.h" />
     <ClInclude Include="ShaderAsset.h" />
     <ClInclude Include="AudioAssetCurator.h" />
-    <ClInclude Include="AncillarySurface.h" />
     <ClInclude Include="InputStasisArchiveInterface.h" />
     <ClInclude Include="GridCellSize.h" />
     <ClInclude Include="TimeValue.h" />
-    <ClInclude Include="UnpackTuple.h" />
     <ClInclude Include="ScriptVariant.h" />
     <ClInclude Include="Volume.h" />
     <ClInclude Include="WindowsInclude.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="DebugScreen.h" />
-    <ClInclude Include="DirectX9GraphicsManager.h" />
     <ClInclude Include="Event.h" />
     <ClInclude Include="FieldDestination.h" />
     <ClInclude Include="FieldID.h" />
     <ClInclude Include="WorldFileExtension.h" />
     <ClInclude Include="WorldManager.h" />
     <ClInclude Include="OutputWorldArchiveInterface.h" />
-    <ClInclude Include="Flags.h" />
-    <ClInclude Include="FontDefines.h" />
-    <ClInclude Include="FrameStopwatch.h" />
-    <ClInclude Include="Function.h" />
     <ClInclude Include="GameState.h" />
     <ClInclude Include="MathUtility.h" />
     <ClInclude Include="Pathfinder.h" />
-    <ClInclude Include="RealStopwatch.h" />
     <ClInclude Include="Point2D.h" />
-    <ClInclude Include="Random.h" />
-    <ClInclude Include="RandomAccessSequence.h" />
-    <ClInclude Include="Range.h" />
     <ClInclude Include="Ratio.h" />
     <ClInclude Include="Size2D.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="DynamicImage.h" />
-    <ClInclude Include="UniqueStack.h" />
     <ClInclude Include="String.h" />
     <ClInclude Include="GridPoint.h" />
     <ClInclude Include="InputWorldArchiveInterface.h" />
@@ -379,6 +345,7 @@
     <ClCompile Include="AngelScriptAssetData.cpp" />
     <ClCompile Include="AngelScriptManager.cpp" />
     <ClCompile Include="Angle3D.cpp" />
+    <ClCompile Include="ArchiveHeader.cpp" />
     <ClCompile Include="AssetCore.cpp" />
     <ClCompile Include="AudioAssetResource.cpp" />
     <ClCompile Include="AudioAssetInstanceResource.cpp" />
@@ -386,9 +353,18 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="ChangeSurfaceBackgroundColor.cpp" />
     <ClCompile Include="CompileShader.cpp" />
+    <ClCompile Include="CreateStopwatch.cpp" />
     <ClCompile Include="EntityDatum.cpp" />
     <ClCompile Include="EntityPrototype.cpp" />
+    <ClCompile Include="InputAssetsArchiveInterface.cpp" />
+    <ClCompile Include="InputSimpleFile.cpp" />
+    <ClCompile Include="InvalidSignature.cpp" />
+    <ClCompile Include="LoadAssetsByZipUserContext.cpp" />
+    <ClCompile Include="LoadAssetsUserContext.cpp" />
+    <ClCompile Include="MainSurface.cpp" />
     <ClCompile Include="MappedEntities.cpp" />
+    <ClCompile Include="OutputAssetsArchiveInterface.cpp" />
+    <ClCompile Include="OutputSimpleFile.cpp" />
     <ClCompile Include="RenderObjectCurator.cpp" />
     <ClCompile Include="SpatialAlgorithms.cpp" />
     <ClCompile Include="GridRegion.cpp" />
@@ -396,6 +372,9 @@
     <ClCompile Include="RelativeImage.cpp" />
     <ClCompile Include="RelativeBounds.cpp" />
     <ClCompile Include="RenderAlgorithms.cpp" />
+    <ClCompile Include="Stopwatch.cpp" />
+    <ClCompile Include="SurfaceCore.cpp" />
+    <ClCompile Include="VersionUserContext.cpp" />
     <ClCompile Include="VulkanCombinedImageSamplerDescriptor.cpp" />
     <ClCompile Include="GlobalInitializer.cpp" />
     <ClCompile Include="ImageAssetCurator.cpp" />
@@ -418,11 +397,6 @@
     <ClCompile Include="DebugProfiler.cpp" />
     <ClCompile Include="DebugStatistics.cpp" />
     <ClCompile Include="DebugValue.cpp" />
-    <ClCompile Include="DirectX9ImageAssetResource.cpp" />
-    <ClCompile Include="DirectX9Renderer.cpp" />
-    <ClCompile Include="DirectX9ShaderAssetResource.cpp" />
-    <ClCompile Include="DirectX9SurfaceResource.cpp" />
-    <ClCompile Include="DirectX9Utilities.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="Environment.cpp" />
     <ClCompile Include="ExecuteImmediately.cpp" />
@@ -432,13 +406,12 @@
     <ClCompile Include="FrameStartCurator.cpp" />
     <ClCompile Include="GraphicsCurator.cpp" />
     <ClCompile Include="GraphicsError.cpp" />
-    <ClCompile Include="IdleCurator.cpp" />
+    <ClCompile Include="FrameIdleCurator.cpp" />
     <ClCompile Include="ImageAssetResource.cpp" />
     <ClCompile Include="InputFieldArchiveInterface.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="LineCurator.cpp" />
     <ClCompile Include="Logger.cpp" />
-    <ClCompile Include="MainSurface.cpp" />
     <ClCompile Include="ImageCore.cpp" />
     <ClCompile Include="ScriptAssetResource.cpp" />
     <ClCompile Include="ScriptManager.cpp" />
@@ -472,13 +445,9 @@
     <ClCompile Include="EngineExecution.cpp" />
     <ClCompile Include="AnyEventConnection.cpp" />
     <ClCompile Include="Exception.cpp" />
-    <ClCompile Include="StopwatchCore.cpp" />
-    <ClCompile Include="StopwatchCurator.cpp" />
-    <ClCompile Include="StopwatchStatistics.cpp" />
     <ClCompile Include="SurfaceCurator.cpp" />
     <ClCompile Include="SurfaceResource.cpp" />
-    <ClCompile Include="TimeInformation.cpp" />
-    <ClCompile Include="TimeSettings.cpp" />
+    <ClCompile Include="FrameInformation.cpp" />
     <ClCompile Include="NullFileManager.cpp" />
     <ClCompile Include="NullWindow.cpp" />
     <ClCompile Include="FileManagerProvider.cpp" />
@@ -503,16 +472,14 @@
     <ClCompile Include="VulkanUtilities.cpp" />
     <ClCompile Include="VulkanVertexInput.cpp" />
     <ClCompile Include="WindowCreationFailed.cpp" />
+    <ClCompile Include="WindowCurator.cpp" />
     <ClCompile Include="WindowProvider.cpp" />
-    <ClCompile Include="GuiEngineProvider.cpp" />
-    <ClCompile Include="FixedPoint.cpp" />
     <ClCompile Include="WindowBase.cpp" />
     <ClCompile Include="DivisionByZero.cpp" />
     <ClCompile Include="InitializationFileEntry.cpp" />
     <ClCompile Include="InitializationFileExtractedSection.cpp" />
     <ClCompile Include="InitializationFileSection.cpp" />
     <ClCompile Include="InitializationFileCurator.cpp" />
-    <ClCompile Include="LargeInteger.cpp" />
     <ClCompile Include="LoggingCurator.cpp" />
     <ClCompile Include="VolumeCurator.cpp" />
     <ClCompile Include="MusicCurator.cpp" />
@@ -536,7 +503,6 @@
     <ClCompile Include="Variant.cpp" />
     <ClCompile Include="Line2D.cpp" />
     <ClCompile Include="Line3D.cpp" />
-    <ClCompile Include="Percentage.cpp" />
     <ClCompile Include="Point3D.cpp" />
     <ClCompile Include="MaterialAsset.cpp" />
     <ClCompile Include="Size3D.cpp" />
@@ -560,26 +526,31 @@
     <ClCompile Include="DirectX9AudioManager.cpp" />
     <ClCompile Include="Line.cpp" />
     <ClCompile Include="ShaderAsset.cpp" />
-    <ClCompile Include="AncillarySurface.cpp" />
     <ClCompile Include="InputStasisArchiveInterface.cpp" />
     <ClCompile Include="ScriptVariant.cpp" />
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="DebugScreen.cpp" />
-    <ClCompile Include="DirectX9GraphicsManager.cpp" />
     <ClCompile Include="FieldDestination.cpp" />
     <ClCompile Include="WorldManager.cpp" />
     <ClCompile Include="OutputWorldArchiveInterface.cpp" />
-    <ClCompile Include="FontDefines.cpp" />
-    <ClCompile Include="FrameStopwatch.cpp" />
     <ClCompile Include="GameState.cpp" />
     <ClCompile Include="Pathfinder.cpp" />
-    <ClCompile Include="RealStopwatch.cpp" />
-    <ClCompile Include="Random.cpp" />
     <ClCompile Include="Size2D.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="DynamicImage.cpp" />
     <ClCompile Include="GridPoint.cpp" />
     <ClCompile Include="InputWorldArchiveInterface.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Arca\Arca\Arca.vcxproj">
+      <Project>{56692cfb-b693-404e-9d98-a379d1370664}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Chroma\Chroma\Chroma.vcxproj">
+      <Project>{11d859bd-185b-40e3-9eba-0fa17d6fd187}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Inscription\Inscription\Inscription.vcxproj">
+      <Project>{93a2633a-46a4-4a08-aa6a-2c4dd75990b5}</Project>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{0E94289D-72E8-4A52-B32A-7B26C1A9FF0C}</ProjectGuid>
@@ -651,14 +622,14 @@
     <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\Users\Trevor\Documents\ProgrammingProjects\FreeImage\Dist\x32;C:\Users\Trevor\Documents\ProgrammingProjects\function2\include;C:\Users\Trevor\Documents\ProgrammingProjects\AGUI;C:\Users\Trevor\Documents\ProgrammingProjects\Inscription;C:\Users\Trevor\Documents\ProgrammingProjects\Chroma;C:\Users\Trevor\Documents\ProgrammingProjects\Arca;C:\Users\Trevor\Documents\ProgrammingProjects\Ogg\libvorbis-1.3.6\include;C:\Users\Trevor\Documents\ProgrammingProjects\wxWidgets2\lib\vc_lib\mswud;C:\Users\Trevor\Documents\ProgrammingProjects\wxWidgets2\include;C:\Users\Trevor\Documents\ProgrammingProjects\Ogg\libogg-1.3.3\include;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;C:\Users\Trevor\Documents\ProgrammingProjects\glm;C:\VulkanSDK\1.2.135.0\Include;C:\Users\Trevor\Documents\ProgrammingProjects\AngelScript\sdk\angelscript\include;C:\Users\Trevor\Documents\ProgrammingProjects\Boost\boost_1_72_0;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\Trevor\Documents\ProgrammingProjects\FreeImage\Source;C:\Users\Trevor\Documents\ProgrammingProjects\function2\include;C:\Users\Trevor\Documents\ProgrammingProjects\Inscription;C:\Users\Trevor\Documents\ProgrammingProjects\Chroma;C:\Users\Trevor\Documents\ProgrammingProjects\Arca;C:\Users\Trevor\Documents\ProgrammingProjects\Ogg\libvorbis-1.3.6\include;C:\Users\Trevor\Documents\ProgrammingProjects\WxWidgets\lib\vc_lib\mswud;C:\Users\Trevor\Documents\ProgrammingProjects\WxWidgets\include;C:\Users\Trevor\Documents\ProgrammingProjects\Ogg\libogg-1.3.3\include;C:\Users\Trevor\Documents\ProgrammingProjects\glm;C:\VulkanSDK\1.2.135.0\Include;C:\Users\Trevor\Documents\ProgrammingProjects\AngelScript\sdk\angelscript\include;C:\Users\Trevor\Documents\ProgrammingProjects\Boost\boost_1_72_0;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>C:\Users\Trevor\Documents\Visual Studio 2015\Projects\Function;C:\Users\Trevor\Documents\Programming Projects\wxWidgets2\lib\vc_lib\mswud;C:\Users\Trevor\Documents\Programming Projects\wxWidgets2\include;C:\Program Files %28x86%29\Falcon\include;C:\Users\Trevor\Documents\Programming Projects\Affecter;C:\Users\Trevor\Documents\Programming Projects\Ogg\Built\include;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;C:\Users\Trevor\Documents\Programming Projects\AGUI;C:\Users\Trevor\Documents\Programming Projects\Inscription;$(IncludePath)</IncludePath>
     <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>C:\Users\Trevor\Documents\Programming Projects\Affecter;C:\Users\Trevor\Documents\Programming Projects\AGUI;C:\Users\Trevor\Documents\Programming Projects\Inscription;C:\Users\Trevor\Documents\Programming Projects\Chroma;C:\Users\Trevor\Documents\Programming Projects\Reliquary;C:\Users\Trevor\Documents\Programming Projects\Ogg\libogg-1.3.3\include;C:\Users\Trevor\Documents\Programming Projects\Ogg\libvorbis-1.3.6\include;C:\Users\Trevor\Documents\Programming Projects\AngelScript\sdk\angelscript\include;C:\Users\Trevor\Documents\Programming Projects\wxWidgets2\include;C:\Users\Trevor\Documents\Programming Projects\wxWidgets2\lib\vc_lib\mswud;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\Trevor\Documents\ProgrammingProjects\FreeImage\Source;C:\Users\Trevor\Documents\ProgrammingProjects\function2\include;C:\Users\Trevor\Documents\ProgrammingProjects\Inscription;C:\Users\Trevor\Documents\ProgrammingProjects\Chroma;C:\Users\Trevor\Documents\ProgrammingProjects\Arca;C:\Users\Trevor\Documents\ProgrammingProjects\Ogg\libvorbis-1.3.6\include;C:\Users\Trevor\Documents\ProgrammingProjects\WxWidgets\lib\vc_lib\mswu;C:\Users\Trevor\Documents\ProgrammingProjects\WxWidgets\include;C:\Users\Trevor\Documents\ProgrammingProjects\Ogg\libogg-1.3.3\include;C:\Users\Trevor\Documents\ProgrammingProjects\glm;C:\VulkanSDK\1.2.135.0\Include;C:\Users\Trevor\Documents\ProgrammingProjects\AngelScript\sdk\angelscript\include;C:\Users\Trevor\Documents\ProgrammingProjects\Boost\boost_1_72_0;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>C:\Users\Trevor\Documents\Visual Studio 2015\Projects\Function;C:\Users\Trevor\Documents\Programming Projects\wxWidgets2\lib\vc_lib\mswud;C:\Users\Trevor\Documents\Programming Projects\wxWidgets2\include;C:\Program Files %28x86%29\Falcon\include;C:\Users\Trevor\Documents\Programming Projects\Ogg\Built\include;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;C:\Users\Trevor\Documents\Programming Projects\Inscription;C:\Users\Trevor\Documents\Programming Projects\AGUI;C:\Users\Trevor\Documents\Programming Projects\Affecter;$(IncludePath)</IncludePath>
@@ -670,7 +641,7 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <PreprocessorDefinitions>FREEIMAGE_LIB;_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING;NOMINMAX;ATMOS_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>FREEIMAGE_LIB;_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING;_CRT_SECURE_NO_WARNINGS;NOMINMAX;ATMOS_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <DisableSpecificWarnings>5033;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -713,7 +684,9 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>NDEBUG; NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;NOMINMAX;_CRT_SECURE_NO_WARNINGS;_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

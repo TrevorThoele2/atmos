@@ -10,8 +10,8 @@ namespace Atmos::Render
 
     void ObjectCurator::Work()
     {
-        const auto cameraLeft = camera->ScreenSides().Left();
-        const auto cameraTop = camera->ScreenSides().Top();
+        const auto cameraLeft = camera->Sides().Left();
+        const auto cameraTop = camera->Sides().Top();
         const auto cameraPosition = camera->Position();
         const auto cameraSize = camera->Size();
 

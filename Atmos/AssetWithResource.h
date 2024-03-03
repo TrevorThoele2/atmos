@@ -30,6 +30,8 @@ namespace Atmos::Asset
         [[nodiscard]] const RealFileDataT* ResourceAs() const;
 
         [[nodiscard]] bool ContainsResource() const;
+    protected:
+        void SetResource(ResourcePtr&& set);
     private:
         ResourcePtr resource;
     private:
@@ -38,13 +40,13 @@ namespace Atmos::Asset
 
     template<class AssetData, class Derived>
     AssetWithResource<AssetData, Derived>::AssetWithResource(Init init, const Atmos::Name& name, ResourcePtr&& resource) :
-        Asset(init, name),
+        Asset<Derived>(init, name),
         resource(std::move(resource))
     {}
 
     template<class AssetData, class Derived>
     AssetWithResource<AssetData, Derived>::AssetWithResource(Init init, Arca::Serialization serialization) :
-        Asset(init, serialization)
+        Asset<Derived>(init, serialization)
     {}
 
     template<class AssetData, class Derived>
@@ -86,25 +88,32 @@ namespace Atmos::Asset
     {
         return static_cast<bool>(resource);
     }
+
+    template<class AssetData, class Derived>
+    void AssetWithResource<AssetData, Derived>::SetResource(ResourcePtr&& set)
+    {
+        resource = std::move(set);
+    }
 }
 
 namespace Inscription
 {
     template<class AssetData, class Derived>
-    class Scribe<::Atmos::Asset::AssetWithResource<AssetData, Derived>, BinaryArchive> final :
-        public ArcaCompositeScribe<::Atmos::Asset::AssetWithResource<AssetData, Derived>, BinaryArchive>
+    class Scribe<Atmos::Asset::AssetWithResource<AssetData, Derived>> final
     {
-    private:
-        using BaseT = ArcaCompositeScribe<::Atmos::Asset::AssetWithResource<AssetData, Derived>, BinaryArchive>;
     public:
-        using ObjectT = typename BaseT::ObjectT;
-        using ArchiveT = typename BaseT::ArchiveT;
-
-        using BaseT::Scriven;
-    protected:
-        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override
+        using ObjectT = Atmos::Asset::AssetWithResource<AssetData, Derived>;
+    public:
+        template<class Archive>
+        void Scriven(ObjectT& object, Archive& archive)
         {
             Inscription::BaseScriven<Atmos::Asset::Asset<Derived>>(object, archive);
         }
+    };
+
+    template<class AssetData, class Derived, class Archive>
+    struct ScribeTraits<Atmos::Asset::AssetWithResource<AssetData, Derived>, Archive> final
+    {
+        using Category = ArcaCompositeScribeCategory<Atmos::Asset::AssetWithResource<AssetData, Derived>>;
     };
 }

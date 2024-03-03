@@ -29,10 +29,19 @@ namespace Atmos::Script
 namespace Inscription
 {
     template<>
-    class Scribe<::Atmos::Script::Persistence, BinaryArchive> :
-        public CompositeScribe<::Atmos::Script::Persistence, BinaryArchive>
+    class Scribe<Atmos::Script::Persistence> final
     {
-    protected:
-        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
+    public:
+        using ObjectT = Atmos::Script::Persistence;
+    public:
+        template<class Archive>
+        void Scriven(ObjectT&, Archive&)
+        {}
+    };
+
+    template<class Archive>
+    struct ScribeTraits<Atmos::Script::Persistence, Archive> final
+    {
+        using Category = CompositeScribeCategory<Atmos::Script::Persistence>;
     };
 }

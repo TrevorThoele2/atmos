@@ -8,6 +8,12 @@
 
 #include "DebugValue.h"
 
+namespace Inscription
+{
+    template<class T>
+    class AssetScribeCategory;
+}
+
 namespace Atmos::Asset
 {
     template<class T>
@@ -28,10 +34,13 @@ namespace Atmos::Asset
         Arca::Index<Mapped<T>> mappedAssets;
         Debug::Value debugSizeValue;
 
+        void ConstructMap();
         void AddToMap(Arca::Index<T> index);
         void RemoveFromMap(const String& name);
     private:
         INSCRIPTION_ACCESS;
+        template<class U>
+        friend class Inscription::AssetScribeCategory;
     };
 
     template<class T>
@@ -48,25 +57,25 @@ namespace Atmos::Asset
         init.owner.On<Arca::CreatedKnown<T>>(
             [this](const Arca::CreatedKnown<T>& signal)
             {
-                AddToMap(signal.reference);
+                AddToMap(signal.index);
             });
 
         init.owner.On<Arca::DestroyingKnown<T>>(
             [this](const Arca::DestroyingKnown<T>& signal)
             {
-                RemoveFromMap(signal.reference->Name());
+                RemoveFromMap(signal.index->Name());
             });
 
         init.owner.On<Arca::AssigningKnown<T>>(
             [this](const Arca::AssigningKnown<T>& signal)
             {
-                RemoveFromMap(signal.reference->Name());
+                RemoveFromMap(signal.index->Name());
             });
 
         init.owner.On<Arca::AssignedKnown<T>>(
             [this](const Arca::AssignedKnown<T>& signal)
             {
-                AddToMap(signal.reference);
+                AddToMap(signal.index);
             });
     }
 
@@ -80,6 +89,17 @@ namespace Atmos::Asset
     Arca::Index<T> Curator<T>::Handle(const Find<T>& command)
     {
         return mappedAssets->Find(command.name);
+    }
+
+    template<class T>
+    void Curator<T>::ConstructMap()
+    {
+        auto mutableMappedAssets = MutablePointer().Of(mappedAssets);
+        for (auto& asset : Owner().template Batch<T>())
+        {
+            const auto name = asset.Name();
+            mutableMappedAssets->map.emplace(name, Arca::Index<T>(asset.ID(), Owner()));
+        }
     }
 
     template<class T>
@@ -105,15 +125,41 @@ namespace Atmos::Asset
 namespace Inscription
 {
     template<class T>
-    class Scribe<::Atmos::Asset::Curator<T>, BinaryArchive> :
-        public ArcaNullScribe<::Atmos::Asset::Curator<T>, BinaryArchive>
+    class AssetScribeCategory final
     {
-    private:
-        using BaseT = ArcaNullScribe<::Atmos::Asset::Curator<T>, BinaryArchive>;
     public:
-        using ObjectT = typename BaseT::ObjectT;
-        using ArchiveT = typename BaseT::ArchiveT;
-        
-        using BaseT::Scriven;
+        using ObjectT = T;
+    public:
+        static constexpr auto requiresScribe = false;
+    public:
+        template<class Archive>
+        static void Scriven(ObjectT& object, Archive& archive);
+        template<class Archive>
+        static void Scriven(const std::string& name, ObjectT& object, Archive& archive);
+    public:
+        template<class Archive>
+        static Type OutputType(const Archive& archive);
     };
+
+    template<class T>
+    template<class Archive>
+    void AssetScribeCategory<T>::Scriven(ObjectT& object, Archive& archive)
+    {
+        if (archive.IsInput())
+            object.ConstructMap();
+    }
+
+    template<class T>
+    template<class Archive>
+    void AssetScribeCategory<T>::Scriven(const std::string& name, ObjectT& object, Archive& archive)
+    {
+        Scriven(object, archive);
+    }
+
+    template<class T>
+    template<class Archive>
+    Type AssetScribeCategory<T>::OutputType(const Archive&)
+    {
+        return Arca::TypeFor<T>().name;
+    }
 }

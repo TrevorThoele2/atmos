@@ -1,26 +1,36 @@
 #include "MockSurfaceResource.h"
 
-void MockSurfaceResourceImplementation::StageRender(const Atmos::Render::ImageRender& imageRender)
+void MockSurfaceResource::StageRender(const Atmos::Render::ImageRender& imageRender)
 {
     imageRenders.push_back(imageRender);
 }
 
-void MockSurfaceResourceImplementation::StageRender(const Atmos::Render::LineRender& lineRender)
+void MockSurfaceResource::StageRender(const Atmos::Render::LineRender& lineRender)
 {
     lineRenders.push_back(lineRender);
 }
 
-void MockSurfaceResourceImplementation::StageRender(const Atmos::Render::RegionRender& regionRender)
+void MockSurfaceResource::StageRender(const Atmos::Render::RegionRender& regionRender)
 {
     regionRenders.push_back(regionRender);
 }
 
-void MockSurfaceResourceImplementation::DrawFrame(Arca::Reliquary& reliquary, const Atmos::Render::Color& backgroundColor)
+void MockSurfaceResource::DrawFrame(Arca::Reliquary& reliquary, const Atmos::Render::Color& backgroundColor)
 {
     
 }
 
-Atmos::Spatial::ScreenSize MockSurfaceResourceImplementation::Size() const
+void MockSurfaceResource::OnMaterialCreated(const Arca::Index<Atmos::Asset::Material>& material)
+{
+    
+}
+
+void MockSurfaceResource::OnMaterialDestroying(const Arca::Index<Atmos::Asset::Material>& material)
+{
+    
+}
+
+Atmos::Spatial::ScreenSize MockSurfaceResource::Size() const
 {
     return {};
 }

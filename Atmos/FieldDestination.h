@@ -19,10 +19,23 @@ namespace Atmos::World
 namespace Inscription
 {
     template<>
-    class Scribe<::Atmos::World::FieldDestination, BinaryArchive> final :
-        public CompositeScribe<::Atmos::World::FieldDestination, BinaryArchive>
+    class Scribe<Atmos::World::FieldDestination> final
     {
-    protected:
-        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
+    public:
+        using ObjectT = Atmos::World::FieldDestination;
+    public:
+        template<class Archive>
+        void Scriven(ObjectT& object, Archive& archive)
+        {
+            archive("direction", object.direction);
+            archive("position", object.position);
+            archive("id", object.id);
+        }
+    };
+
+    template<class Archive>
+    struct ScribeTraits<Atmos::World::FieldDestination, Archive> final
+    {
+        using Category = CompositeScribeCategory<Atmos::World::FieldDestination>;
     };
 }

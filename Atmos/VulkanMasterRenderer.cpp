@@ -12,8 +12,7 @@ namespace Atmos::Render::Vulkan
         vk::Queue graphicsQueue,
         vk::Queue presentQueue,
         uint32_t graphicsQueueIndex,
-        vk::PhysicalDeviceMemoryProperties memoryProperties,
-        Arca::Reliquary& reliquary)
+        vk::PhysicalDeviceMemoryProperties memoryProperties)
         :
         device(device),
         sampler(sampler),
@@ -22,18 +21,12 @@ namespace Atmos::Render::Vulkan
         graphicsQueue(graphicsQueue),
         presentQueue(presentQueue),
         commandBuffers(*device, graphicsQueueIndex),
-        universalDataBuffer(0, memoryProperties, *device),
-        reliquary(&reliquary)
+        universalDataBuffer(0, memoryProperties, *device)
     {
         imageAvailableSemaphores = CreateSemaphores(*device, maxFramesInFlight);
         renderFinishedSemaphores = CreateSemaphores(*device, maxFramesInFlight);
 
         inFlightFences = CreateFences(*device, maxFramesInFlight);
-
-        reliquary.On<Arca::CreatedKnown<Asset::Material>>(
-            [this](const Arca::CreatedKnown<Asset::Material>& signal) { OnMaterialCreated(signal); });
-        reliquary.On<Arca::DestroyingKnown<Asset::Material>>(
-            [this](const Arca::DestroyingKnown<Asset::Material>& signal) { OnMaterialDestroying(signal); });
     }
 
     MasterRenderer::~MasterRenderer()
@@ -48,7 +41,8 @@ namespace Atmos::Render::Vulkan
         std::vector<vk::Image> swapchainImages,
         std::vector<vk::ImageView> swapchainImageViews,
         vk::Format imageFormat,
-        vk::Extent2D swapchainExtent)
+        vk::Extent2D swapchainExtent,
+        Arca::Reliquary& reliquary)
     {
         this->swapchain = swapchain;
         this->swapchainExtent = swapchainExtent;
@@ -60,7 +54,7 @@ namespace Atmos::Render::Vulkan
 
         imagesInFlight.resize(swapchainImages.size(), nullptr);
 
-        const auto materialBatch = reliquary->Batch<Asset::Material>();
+        const auto materialBatch = reliquary.Batch<Asset::Material>();
 
         rendererGroups.clear();
         for (uint32_t i = 0; i < swapchainImages.size(); ++i)
@@ -96,9 +90,6 @@ namespace Atmos::Render::Vulkan
     void MasterRenderer::DrawFrame(const Spatial::ScreenSize& screenSize, const Spatial::ScreenPoint& mapPosition)
     {
         device->waitForFences(inFlightFences[previousFrame].get(), VK_TRUE, UINT64_MAX);
-
-        if (AllEmpty(currentRendererGroup->AsIterable()))
-            return;
 
         auto imageIndex = device->acquireNextImageKHR(
             swapchain,
@@ -197,6 +188,20 @@ namespace Atmos::Render::Vulkan
         for (auto& fence : inFlightFences)
             fences.push_back(fence.get());
         device->waitForFences(fences, VK_TRUE, UINT64_MAX);
+    }
+
+    void MasterRenderer::OnMaterialCreated(const Arca::Index<Asset::Material>& material)
+    {
+        for (auto& group : rendererGroups)
+            for (auto& renderer : group.AsIterable())
+                renderer->MaterialCreated(material);
+    }
+
+    void MasterRenderer::OnMaterialDestroying(const Arca::Index<Asset::Material>& material)
+    {
+        for (auto& group : rendererGroups)
+            for (auto& renderer : group.AsIterable())
+                renderer->MaterialDestroying(material);
     }
 
     MasterRenderer::RendererGroup::RendererGroup(
@@ -410,19 +415,5 @@ namespace Atmos::Render::Vulkan
             returnValue.push_back(device.createFenceUnique(createInfo));
 
         return returnValue;
-    }
-
-    void MasterRenderer::OnMaterialCreated(const Arca::CreatedKnown<Asset::Material>& signal)
-    {
-        for (auto& group : rendererGroups)
-            for (auto& renderer : group.AsIterable())
-                renderer->MaterialCreated(signal.reference);
-    }
-
-    void MasterRenderer::OnMaterialDestroying(const Arca::DestroyingKnown<Asset::Material>& signal)
-    {
-        for (auto& group : rendererGroups)
-            for (auto& renderer : group.AsIterable())
-                renderer->MaterialDestroying(signal.reference);
     }
 }

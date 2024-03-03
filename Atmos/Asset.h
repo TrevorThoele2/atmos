@@ -62,21 +62,19 @@ namespace Atmos::Asset
 namespace Inscription
 {
     template<class Derived>
-    class Scribe<Atmos::Asset::Asset<Derived>, BinaryArchive> final :
-        public CompositeScribe<Atmos::Asset::Asset<Derived>, BinaryArchive>
+    class Scribe<Atmos::Asset::Asset<Derived>> final
     {
-    private:
-        using BaseT = CompositeScribe<Atmos::Asset::Asset<Derived>, BinaryArchive>;
     public:
-        using ObjectT = typename BaseT::ObjectT;
-        using ArchiveT = typename BaseT::ArchiveT;
-
-        using BaseT::Scriven;
-    protected:
-        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
+        using ObjectT = Atmos::Asset::Asset<Derived>;
+    public:
+        template<class Archive>
+        void Scriven(ObjectT&, Archive&)
+        {}
     };
 
-    template<class Derived>
-    void Scribe<Atmos::Asset::Asset<Derived>, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
-    {}
+    template<class Derived, class Archive>
+    struct ScribeTraits<Atmos::Asset::Asset<Derived>, Archive>
+    {
+        using Category = ArcaCompositeScribeCategory<Atmos::Asset::Asset<Derived>>;
+    };
 }

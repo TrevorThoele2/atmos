@@ -7,7 +7,7 @@ namespace Atmos::Asset
 	ImageCurator::ImageCurator(Init init) : Curator(init)
 	{}
 
-    Loaded<Image> ImageCurator::Handle(const Load<Image>& command)
+	Resource::Loaded<Resource::Image> ImageCurator::Handle(const Resource::LoadFromFile<Resource::Image>& command)
     {
         const auto filePath = command.filePath.string();
 		const auto format = FIFFor(filePath);
@@ -19,37 +19,7 @@ namespace Atmos::Asset
 			if (!FreeImage_HasPixels(loadedBitmap))
 				throw LoadError("Attempted load of an image asset without pixels.", { {"FilePath", filePath } });
 
-			const auto bitmap = FreeImage_ConvertTo32Bits(loadedBitmap);
-
-			try
-			{
-				FreeImage_Unload(loadedBitmap);
-
-				FreeImage_FlipVertical(bitmap);
-
-				SwapRedBlue32(bitmap);
-
-				const auto width = FreeImage_GetWidth(bitmap);
-				const auto height = FreeImage_GetHeight(bitmap);
-				const auto bitsPerPixel = FreeImage_GetBPP(bitmap);
-				const auto bits = FreeImage_GetBits(bitmap);
-
-				const auto byteSize = bitsPerPixel / CHAR_BIT * width * height;
-				Buffer buffer;
-				buffer.insert(buffer.begin(), bits, bits + byteSize);
-
-				FreeImage_Unload(bitmap);
-
-				return Loaded<Image>{
-					std::move(buffer),
-					*TypeFromFIF(format),
-					ImageSize{ ImageSize::Dimension(width), ImageSize::Dimension(height) } };
-			}
-			catch(...)
-			{
-				FreeImage_Unload(bitmap);
-				throw;
-			}
+			return ProcessBitmap(loadedBitmap, format);
 		}
 		catch (...)
 		{
@@ -58,12 +28,87 @@ namespace Atmos::Asset
 		}
     }
 
+	Resource::Loaded<Resource::Image> ImageCurator::Handle(const Resource::LoadFromMemory<Resource::Image>& command)
+	{
+	    auto memory = command.memory;
+		const auto size = memory.size();
+
+	    const auto freeImageMemory = FreeImage_OpenMemory(memory.data(), size);
+		try
+		{
+			const auto format = FIFFor(*freeImageMemory, 0);
+			if (format == FIF_UNKNOWN)
+				throw LoadError("Loading an image asset has encountered an error.");
+
+			const auto loadedBitmap = FreeImage_LoadFromMemory(format, freeImageMemory);
+			try
+			{
+				if (!FreeImage_HasPixels(loadedBitmap))
+					throw LoadError("Attempted load of an image asset without pixels.");
+
+				return ProcessBitmap(loadedBitmap, format);
+			}
+			catch (...)
+			{
+				FreeImage_Unload(loadedBitmap);
+				throw;
+			}
+		}
+		catch(...)
+		{
+			FreeImage_CloseMemory(freeImageMemory);
+			throw;
+		}
+	}
+
+	Resource::Loaded<Resource::Image> ImageCurator::ProcessBitmap(FIBITMAP* loadedBitmap, FREE_IMAGE_FORMAT format)
+	{
+		const auto bitmap = FreeImage_ConvertTo32Bits(loadedBitmap);
+
+		try
+		{
+			FreeImage_Unload(loadedBitmap);
+
+			FreeImage_FlipVertical(bitmap);
+
+			SwapRedBlue32(bitmap);
+
+			const auto width = FreeImage_GetWidth(bitmap);
+			const auto height = FreeImage_GetHeight(bitmap);
+			const auto bitsPerPixel = FreeImage_GetBPP(bitmap);
+			const auto bits = FreeImage_GetBits(bitmap);
+
+			const auto byteSize = bitsPerPixel / CHAR_BIT * width * height;
+			DataBuffer buffer;
+			buffer.insert(buffer.begin(), bits, bits + byteSize);
+
+			FreeImage_Unload(bitmap);
+
+			return Resource::Loaded<Resource::Image>
+		    {
+				std::move(buffer),
+				*TypeFromFIF(format),
+				ImageSize{ ImageSize::Dimension(width), ImageSize::Dimension(height) }
+		    };
+		}
+		catch (...)
+		{
+			FreeImage_Unload(bitmap);
+			throw;
+		}
+	}
+
     FREE_IMAGE_FORMAT ImageCurator::FIFFor(const String& filePath)
 	{
 		const auto format = FreeImage_GetFileType(filePath.c_str());
 		return format != FIF_UNKNOWN
 		    ? format
 			: FreeImage_GetFIFFromFilename(filePath.c_str());
+	}
+
+    FREE_IMAGE_FORMAT ImageCurator::FIFFor(FIMEMORY& memory, int size)
+	{
+		return FreeImage_GetFileTypeFromMemory(&memory, size);
 	}
 
     std::optional<ImageType> ImageCurator::TypeFromFIF(FREE_IMAGE_FORMAT format)

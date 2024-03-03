@@ -47,8 +47,9 @@ namespace Arca
 
 namespace Inscription
 {
-    template<>
-    class Scribe<Atmos::Render::ImageCurator, BinaryArchive> final
-        : public ArcaNullScribe<Atmos::Render::ImageCurator, BinaryArchive>
-    {};
+    template<class Archive>
+    struct ScribeTraits<Atmos::Render::ImageCurator, Archive> final
+    {
+        using Category = ArcaNullScribeCategory<Atmos::Render::ImageCurator>;
+    };
 }

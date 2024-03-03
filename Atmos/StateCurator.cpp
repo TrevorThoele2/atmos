@@ -6,7 +6,7 @@
 
 namespace Atmos::State
 {
-    void StateCurator::Handle(const Request& command)
+    void Curator::Handle(const Request& command)
     {
         switch (command.value.index())
         {
@@ -21,12 +21,12 @@ namespace Atmos::State
         }
     }
 
-    void StateCurator::Push(const GameState& state)
+    void Curator::Push(const GameState& state)
     {
         stack.push_back(&state);
     }
 
-    void StateCurator::Pop()
+    void Curator::Pop()
     {
         if (stack.empty())
             return;

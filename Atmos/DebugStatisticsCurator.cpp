@@ -1,17 +1,15 @@
 #include "DebugStatisticsCurator.h"
 
+#include "DebugStatistics.h"
+
 #include <Arca/Reliquary.h>
-#include "TimeInformation.h"
-#include "StopwatchStatistics.h"
-#include "ResetAverage.h"
-#include "ResetHighest.h"
+#include "FrameInformation.h"
 
 #include "StringUtility.h"
 
 namespace Atmos::Debug
 {
-    StatisticsCurator::StatisticsCurator(Init init) :
-        Curator(init), statistics(init.owner)
+    StatisticsCurator::StatisticsCurator(Init init) : Curator(init)
     {
         BundlePages();
         BundleProfilers();
@@ -55,32 +53,28 @@ namespace Atmos::Debug
 
     void StatisticsCurator::ProfilerPage::Initialize()
     {
-        const auto entryAdder = [this](const String& name, const Statistics::Profiler& profiler, EntrySet& entrySet)
+        const auto entryAdder = [this](const String& name, const Time::Stopwatch& stopwatch, EntrySet& entrySet)
         {
             AddEntry(name + " time", entrySet.time);
-            entrySet.time.retrievalFunction = [&profiler]() -> String
+            entrySet.time.retrievalFunction = [&stopwatch]() -> String
             {
-                return ToString(std::chrono::duration_cast<Time::Milliseconds>(profiler->Elapsed()));
+                return ToString(std::chrono::duration_cast<Time::Milliseconds>(stopwatch.Elapsed()));
             };
 
             AddEntry(name + " average", entrySet.average);
-            entrySet.average.retrievalFunction = [&profiler]() -> String
+            entrySet.average.retrievalFunction = [&stopwatch]() -> String
             {
-                return ToString(
-                    std::chrono::duration_cast<Time::Milliseconds>(
-                        profiler->Find<Time::StopwatchStatistics>()->average));
+                return ToString(std::chrono::duration_cast<Time::Milliseconds>(stopwatch.Average()));
             };
 
             AddEntry(name + " highest", entrySet.highest);
-            entrySet.highest.retrievalFunction = [&profiler]() -> String
+            entrySet.highest.retrievalFunction = [&stopwatch]() -> String
             {
-                return ToString(
-                    std::chrono::duration_cast<Time::Milliseconds>(
-                        profiler->Find<Time::StopwatchStatistics>()->highest));
+                return ToString(std::chrono::duration_cast<Time::Milliseconds>(stopwatch.Highest()));
             };
         };
 
-        const auto statistics = owner.statistics;
+        const auto statistics = Arca::Index<Statistics>(owner.Owner());
 
         entryAdder("Input", statistics->profilers.input, input);
         entryAdder("Logic", statistics->profilers.logic, logic);
@@ -92,10 +86,10 @@ namespace Atmos::Debug
         entryAdder("Misc3", statistics->profilers.misc3, misc3);
 
         AddEntry("Total Elapsed", totalElapsed);
-        auto timeInformation = Arca::Index<Time::Information>(owner.Owner());
-        totalElapsed.retrievalFunction = [&timeInformation]() -> String
+        auto frameInformation = Arca::Index<Frame::Information>(owner.Owner());
+        totalElapsed.retrievalFunction = [&frameInformation]() -> String
         {
-            return ToString(timeInformation->totalElapsed);
+            return ToString(frameInformation->totalElapsed);
         };
     }
 
@@ -143,26 +137,26 @@ namespace Atmos::Debug
 
     void StatisticsCurator::BundleProfilers()
     {
-        auto statisticsData = MutablePointer().Of(statistics);
-        profilerList.push_back(&statisticsData->profilers.input);
-        profilerList.push_back(&statisticsData->profilers.logic);
-        profilerList.push_back(&statisticsData->profilers.render);
-        profilerList.push_back(&statisticsData->profilers.frameTime);
-        profilerList.push_back(&statisticsData->profilers.idle);
-        profilerList.push_back(&statisticsData->profilers.misc1);
-        profilerList.push_back(&statisticsData->profilers.misc2);
-        profilerList.push_back(&statisticsData->profilers.misc3);
+        auto mutableStatistics = MutablePointer().Of<Statistics>();
+        profilerList.push_back(&mutableStatistics->profilers.input);
+        profilerList.push_back(&mutableStatistics->profilers.logic);
+        profilerList.push_back(&mutableStatistics->profilers.render);
+        profilerList.push_back(&mutableStatistics->profilers.frameTime);
+        profilerList.push_back(&mutableStatistics->profilers.idle);
+        profilerList.push_back(&mutableStatistics->profilers.misc1);
+        profilerList.push_back(&mutableStatistics->profilers.misc2);
+        profilerList.push_back(&mutableStatistics->profilers.misc3);
     }
 
     void StatisticsCurator::ResetProfilerAverage()
     {
-        for (auto& loop : profilerList)
-            Owner().Do<Time::ResetAverage>(loop->ID());
+        for (auto& profiler : profilerList)
+            profiler->ResetAverage();
     }
 
     void StatisticsCurator::ResetProfilerHighest()
     {
-        for (auto& loop : profilerList)
-            Owner().Do<Time::ResetHighest>(loop->ID());
+        for (auto& profiler : profilerList)
+            profiler->ResetHighest();
     }
 }

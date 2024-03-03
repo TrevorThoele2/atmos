@@ -21,14 +21,3 @@ namespace Atmos::Render
         return !(*this == arg);
     }
 }
-
-namespace Inscription
-{
-    void Scribe<::Atmos::Render::Color, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
-    {
-        archive(object.alpha);
-        archive(object.red);
-        archive(object.green);
-        archive(object.blue);
-    }
-}

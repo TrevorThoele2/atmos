@@ -3,13 +3,14 @@
 #include <functional>
 
 #include "DebugStatistics.h"
+#include "Stopwatch.h"
 
 namespace Atmos::Debug
 {
     class Profiler
     {
     public:
-        using Statistic = Arca::Index<Time::RealStopwatch>;
+        using Statistic = Time::Stopwatch;
         using StatisticPicker = std::function<Statistic&(Statistics&)>;
     public:
         Profiler(StatisticPicker statisticPicker, Arca::MutablePointer mutablePointer);

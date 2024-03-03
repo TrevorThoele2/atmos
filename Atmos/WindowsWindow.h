@@ -11,7 +11,7 @@ namespace Atmos::Window
     class WindowsWindow final : public WindowBase
     {
     public:
-        WindowsWindow(int nCmdShow, const String& className);
+        WindowsWindow(HINSTANCE hInstance, int nCmdShow, const String& className);
 
         void Show() override;
         void Exit() override;
@@ -23,16 +23,18 @@ namespace Atmos::Window
     protected:
         void SetupImpl() override;
 
-        Spatial::AxisAlignedBox2D AdjustWindowDimensions() override;
-        void OnSetWindowDimensions() override;
-        Position GetDefaultWindowPosition() override;
-        void OnSetFullscreen() override;
+        void OnPositionChanged() override;
+        void OnSizeChanged() override;
+        void OnFullscreenChanged() override;
+        [[nodiscard]] Size WindowSizeFromClientSize() const override;
+
+        [[nodiscard]] Size TotalScreenSize() const override;
     private:
         HWND hwnd = nullptr;
         int nCmdShow;
         String className;
     private:
-        WNDCLASSEX wc{};
+        WNDCLASSEX windowClass{};
         DWORD currentStyle = 0;
         DWORD currentExStyle = 0;
     private:
@@ -41,6 +43,9 @@ namespace Atmos::Window
         const DWORD fullscreenStyle = WS_POPUP;
         const DWORD fullscreenStyleEx = WS_EX_TOPMOST;
     private:
-        void SetWindowPos(HWND after);
+        void ChangeStyles();
+        void SetWindowPositionAndSize(HWND after);
+    private:
+        static String LastErrorMessage();
     };
 }

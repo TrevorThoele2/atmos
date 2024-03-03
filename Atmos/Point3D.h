@@ -21,10 +21,23 @@ namespace Atmos::Spatial
 namespace Inscription
 {
     template<>
-    class Scribe<Atmos::Spatial::Point3D, BinaryArchive> final :
-        public CompositeScribe<Atmos::Spatial::Point3D, BinaryArchive>
+    class Scribe<Atmos::Spatial::Point3D> final
     {
-    protected:
-        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
+    public:
+        using ObjectT = Atmos::Spatial::Point3D;
+    public:
+        template<class Archive>
+        void Scriven(ObjectT& object, Archive& archive)
+        {
+            archive("x", object.x);
+            archive("y", object.y);
+            archive("z", object.z);
+        }
+    };
+
+    template<class Archive>
+    struct ScribeTraits<Atmos::Spatial::Point3D, Archive> final
+    {
+        using Category = CompositeScribeCategory<Atmos::Spatial::Point3D>;
     };
 }

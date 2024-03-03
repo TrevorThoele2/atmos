@@ -16,10 +16,22 @@ namespace Atmos::Spatial
 namespace Inscription
 {
     template<>
-    class Scribe<Atmos::Spatial::Angle3D, BinaryArchive> final :
-        public CompositeScribe<Atmos::Spatial::Angle3D, BinaryArchive>
+    class Scribe<Atmos::Spatial::Angle3D> final
     {
-    protected:
-        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
+    public:
+        using ObjectT = Atmos::Spatial::Angle3D;
+    public:
+        template<class Archive>
+        void Scriven(ObjectT& object, Archive& archive)
+        {
+            archive("yaw", object.yaw);
+            archive("pitch", object.pitch);
+        }
+    };
+
+    template<class Archive>
+    struct ScribeTraits<Atmos::Spatial::Angle3D, Archive> final
+    {
+        using Category = CompositeScribeCategory<Atmos::Spatial::Angle3D>;
     };
 }

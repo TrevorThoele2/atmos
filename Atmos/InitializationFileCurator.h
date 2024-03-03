@@ -1,11 +1,10 @@
 #pragma once
 
-#include <vector>
-
 #include <Arca/Curator.h>
 
-#include "InitializationInformation.h"
 #include "InitializationFileSection.h"
+
+#include <vector>
 
 #include "FilePath.h"
 
@@ -17,8 +16,6 @@ namespace Atmos::Initialization
         explicit FileCurator(Init init);
 
         void Save();
-    private:
-        Arca::Index<Information> information;
     private:
         FileSection graphics = FileSection("<GRAPHICS>");
         FileSection sound = FileSection("<SOUND>");
@@ -48,8 +45,9 @@ namespace Arca
 
 namespace Inscription
 {
-    template<>
-    class Scribe<::Atmos::Initialization::FileCurator, BinaryArchive> final :
-        public ArcaNullScribe<::Atmos::Initialization::FileCurator, BinaryArchive>
-    {};
+    template<class Archive>
+    struct ScribeTraits<Atmos::Initialization::FileCurator, Archive> final
+    {
+        using Category = ArcaNullScribeCategory<Atmos::Initialization::FileCurator>;
+    };
 }

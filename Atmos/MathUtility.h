@@ -5,14 +5,12 @@
 
 namespace Atmos
 {
-    // Trig constants
     template<class T>
     const T PI = T(3.141592653589793);
 
     template<class T>
     const T FULL_CIRCLE_RADIANS = T(2 * PI<T>);
 
-    // Square root constants
     template<class T>
     const T SQRT_2 = T(1.414213562373095);
 
@@ -72,16 +70,16 @@ namespace Atmos
     }
 
     template<class T>
-    T GCD(T num, T den)
+    T GreatestCommonDenominator(T num, T den)
     {
         if (den == 0)
             return num;
         else
-            return GCD(den, num % den);
+            return GreatestCommonDenominator(den, num % den);
     }
 
     template<class T>
-    T GetPercentage(T toConvert, T first, T second)
+    T Percentage(T toConvert, T first, T second)
     {
         T range;
         if (second > first)
@@ -93,7 +91,7 @@ namespace Atmos
     }
 
     template<class T>
-    T GetMidpoint(T left, T right)
+    T Midpoint(T left, T right)
     {
         return (right + left) / 2;
     }

@@ -36,8 +36,7 @@ namespace Atmos::Render::Vulkan
             vk::Queue graphicsQueue,
             vk::Queue presentQueue,
             uint32_t graphicsQueueIndex,
-            vk::PhysicalDeviceMemoryProperties memoryProperties,
-            Arca::Reliquary& reliquary);
+            vk::PhysicalDeviceMemoryProperties memoryProperties);
         ~MasterRenderer();
 
         void Initialize(
@@ -45,7 +44,8 @@ namespace Atmos::Render::Vulkan
             std::vector<vk::Image> swapchainImages,
             std::vector<vk::ImageView> swapchainImageViews,
             vk::Format imageFormat,
-            vk::Extent2D swapchainExtent);
+            vk::Extent2D swapchainExtent,
+            Arca::Reliquary& reliquary);
     public:
         void StageRender(const ImageRender& imageRender);
         void StageRender(const LineRender& lineRender);
@@ -56,6 +56,9 @@ namespace Atmos::Render::Vulkan
             const Spatial::ScreenPoint& mapPosition);
 
         void WaitForIdle() const;
+    public:
+        void OnMaterialCreated(const Arca::Index<Asset::Material>& material);
+        void OnMaterialDestroying(const Arca::Index<Asset::Material>& material);
     private:
         std::shared_ptr<vk::Device> device;
     private:
@@ -127,9 +130,5 @@ namespace Atmos::Render::Vulkan
 
         [[nodiscard]] static std::vector<vk::UniqueSemaphore> CreateSemaphores(vk::Device device, size_t count);
         [[nodiscard]] static std::vector<vk::UniqueFence> CreateFences(vk::Device device, size_t count);
-    private:
-        Arca::Reliquary* reliquary;
-        void OnMaterialCreated(const Arca::CreatedKnown<Asset::Material>& signal);
-        void OnMaterialDestroying(const Arca::DestroyingKnown<Asset::Material>& signal);
     };
 }

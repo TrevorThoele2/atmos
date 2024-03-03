@@ -30,10 +30,24 @@ namespace Atmos::Render
 namespace Inscription
 {
     template<>
-    class Scribe<::Atmos::Render::Color, BinaryArchive> final :
-        public CompositeScribe<::Atmos::Render::Color, BinaryArchive>
+    class Scribe<Atmos::Render::Color> final
     {
-    protected:
-        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
+    public:
+        using ObjectT = Atmos::Render::Color;
+    public:
+        template<class Archive>
+        void Scriven(ObjectT& object, Archive& archive)
+        {
+            archive("alpha", object.alpha);
+            archive("red", object.red);
+            archive("green", object.green);
+            archive("blue", object.blue);
+        }
+    };
+
+    template<class Archive>
+    struct ScribeTraits<Atmos::Render::Color, Archive> final
+    {
+        using Category = CompositeScribeCategory<Atmos::Render::Color>;
     };
 }

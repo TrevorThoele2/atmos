@@ -19,16 +19,16 @@ namespace Atmos::Initialization
 
         using ExtractedSection = FileExtractedSection;
     public:
-        FileSection(const String& header);
+        explicit FileSection(const String& header);
 
         template<class T>
         Entry<T>* CreateEntry(const String& name, T* value);
-        EntryBase* FindEntry(const String& name);
+        [[nodiscard]] EntryBase* FindEntry(const String& name);
 
         void SetTo(const ExtractedSection& extracted);
-        String FileString() const;
+        [[nodiscard]] String FileString() const;
 
-        String Header() const;
+        [[nodiscard]] String Header() const;
     private:
         String header;
 

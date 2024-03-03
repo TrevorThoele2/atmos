@@ -3,8 +3,8 @@
 
 #include "WindowsWindow.h"
 #include "WindowsInputManager.h"
-#include "DirectX9GraphicsManager.h"
-#include "DirectX9AudioManager.h"
+#include "VulkanGraphicsManager.h"
+#include "NullAudioManager.h"
 
 #include "Environment.h"
 #include "FileManagerProvider.h"
@@ -26,14 +26,11 @@ namespace Atmos
     {
         using Properties = InitializationProperties;
 
-        auto window = std::make_unique<Window::WindowsWindow>(nCmdShow, className);
+        auto window = std::make_unique<Window::WindowsWindow>(hInstance, nCmdShow, className);
         auto input = std::make_unique<Input::WindowsManager>(HWND(window->Handle()));
-        auto graphics = std::make_unique<Render::DirectX9::GraphicsManager>
-        (
-            HWND(window->Handle()),
-            window->IsFullscreen()
-        );
-        auto audio = std::make_unique<Audio::DirectX9AudioManager>();
+        auto graphics = std::make_unique<Render::Vulkan::GraphicsManager>();
+        auto shaderCompiler = std::make_unique<Render::Vulkan::ShaderCompiler>();
+        auto audio = std::make_unique<Audio::NullAudioManager>();
 
         Properties properties;
         properties.window = std::move(window);

@@ -1,21 +1,23 @@
 #include "FrameStartCurator.h"
 
-namespace Atmos
+#include "FrameInformation.h"
+
+namespace Atmos::Frame
 {
-    FrameStartCurator::FrameStartCurator(Init init) :
-        Curator(init), timeInformation(init.owner),
+    StartCurator::StartCurator(Init init) :
+        Curator(init),
         debugIdleProfiler(
-            [](Debug::Statistics& statistics) -> Arca::Index<Time::RealStopwatch>&
+            [](Debug::Statistics& statistics) -> Time::Stopwatch&
             {
                 return statistics.profilers.idle;
             },
             MutablePointer())
     {}
 
-    void FrameStartCurator::Work()
+    void StartCurator::Work()
     {
-        auto timeInformationData = MutablePointer().Of(timeInformation);
-        timeInformationData->frameStartTime = timeInformationData->stopwatch->Start();
+        auto mutableInformation = MutablePointer().Of<Information>();
+        mutableInformation->startTime = mutableInformation->stopwatch.Start();
 
         debugIdleProfiler.Calculate();
     }

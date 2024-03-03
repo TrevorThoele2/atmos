@@ -1,14 +1,14 @@
 #pragma once
 
 #include "Surface.h"
+#include "GraphicsManager.h"
 
 namespace Atmos::Render
 {
     class MainSurface final : public Surface<MainSurface>
     {
     public:
-        MainSurface(Init init);
-        MainSurface(MainSurface&& arg) noexcept = default;
+        MainSurface(Init init, GraphicsManager& manager, void* window);
     };
 }
 
@@ -25,8 +25,9 @@ namespace Arca
 
 namespace Inscription
 {
-    template<>
-    class Scribe<Atmos::Render::MainSurface, BinaryArchive> final :
-        public ArcaNullScribe<Atmos::Render::MainSurface, BinaryArchive>
-    {};
+    template<class Archive>
+    struct ScribeTraits<Atmos::Render::MainSurface, Archive> final
+    {
+        using Category = ArcaNullScribeCategory<Atmos::Render::MainSurface>;
+    };
 }

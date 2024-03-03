@@ -77,8 +77,9 @@ namespace Arca
 
 namespace Inscription
 {
-    template<>
-    class Scribe<Atmos::Spatial::BoundsCurator, BinaryArchive> final
-        : public ArcaNullScribe<Atmos::Spatial::BoundsCurator, BinaryArchive>
-    {};
+    template<class Archive>
+    struct ScribeTraits<Atmos::Spatial::BoundsCurator, Archive> final
+    {
+        using Category = ArcaNullScribeCategory<Atmos::Spatial::BoundsCurator>;
+    };
 }

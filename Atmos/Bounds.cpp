@@ -53,14 +53,3 @@ namespace Atmos::Spatial
         return rotation;
     }
 }
-
-namespace Inscription
-{
-    void Scribe<Atmos::Spatial::Bounds, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
-    {
-        archive(object.position);
-        archive(object.baseSize);
-        archive(object.scalers);
-        archive(object.rotation);
-    }
-}

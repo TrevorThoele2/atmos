@@ -3,6 +3,9 @@
 #include "AssetWithResource.h"
 #include "ShaderAssetResource.h"
 
+#include "LoadAssetsUserContext.h"
+#include "CreateShaderAssetResource.h"
+
 namespace Atmos::Asset
 {
     class Shader final : public AssetWithResource<Resource::Shader, Shader>
@@ -13,32 +16,62 @@ namespace Atmos::Asset
         Shader(Shader&& arg) noexcept;
 
         Shader& operator=(Shader&& arg) noexcept;
-    private:
-        INSCRIPTION_ACCESS;
+    public:
+        void Setup(ResourcePtr&& set);
     };
 }
 
 namespace Arca
 {
     template<>
-    struct Traits<::Atmos::Asset::Shader>
+    struct Traits<Atmos::Asset::Shader>
     {
         static const ObjectType objectType = ObjectType::Relic;
         static inline const TypeName typeName = "Atmos::Asset::Shader";
         static bool ShouldCreate(
             Reliquary& reliquary,
-            const ::Atmos::Name& name,
-            const ::Atmos::Asset::Shader::ResourcePtr& data);
+            const Atmos::Name& name,
+            const Atmos::Asset::Shader::ResourcePtr& data);
     };
 }
 
 namespace Inscription
 {
     template<>
-    class Scribe<::Atmos::Asset::Shader, BinaryArchive> final :
-        public ArcaCompositeScribe<::Atmos::Asset::Shader, BinaryArchive>
+    class Scribe<Atmos::Asset::Shader> final
     {
-    protected:
-        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
+    public:
+        using ObjectT = Atmos::Asset::Shader;
+    public:
+        template<class Archive>
+        void Scriven(ObjectT& object, Archive& archive)
+        {
+            BaseScriven<Atmos::Asset::AssetWithResource<Atmos::Asset::Resource::Shader, Atmos::Asset::Shader>>(
+                object, archive);
+
+            if (archive.IsInput())
+            {
+                auto& assetUserContext = *archive.template UserContext<LoadAssetsUserContext>();
+
+                auto extracted = assetUserContext.LoadShader(object.Name());
+                if (extracted)
+                {
+                    using CreateResource = Atmos::Asset::Resource::Create<Atmos::Asset::Resource::Shader>;
+                    auto resource = object.Owner().Do(CreateResource
+                    {
+                        extracted->memory,
+                        object.Name()
+                    });
+
+                    object.Setup(std::move(resource));
+                }
+            }
+        }
+    };
+
+    template<class Archive>
+    struct ScribeTraits<Atmos::Asset::Shader, Archive> final
+    {
+        using Category = ArcaCompositeScribeCategory<Atmos::Asset::Shader>;
     };
 }

@@ -8,26 +8,42 @@
 
 namespace Atmos
 {
+    void RegisterCommonTypes(Arca::ReliquaryOrigin& origin);
+
+    void RegisterFieldTypes(Arca::ReliquaryOrigin& origin);
     void RegisterFieldTypes(
         Arca::ReliquaryOrigin& origin,
         Audio::AudioManager& audio,
         Input::Manager& input,
-        Render::GraphicsManager& graphics);
+        Render::GraphicsManager& graphics,
+        Spatial::ScreenSize screenSize,
+        void* window);
+
+    void RegisterFieldStages(Arca::ReliquaryOrigin& origin);
 
     namespace Input
     {
+        void RegisterTypes(Arca::ReliquaryOrigin& origin);
         void RegisterTypes(Arca::ReliquaryOrigin& origin, Manager& manager);
     }
 
     namespace Render
     {
-        void RegisterTypes(Arca::ReliquaryOrigin& origin, GraphicsManager& manager);
+        void RegisterTypes(Arca::ReliquaryOrigin& origin);
+        void RegisterTypes(
+            Arca::ReliquaryOrigin& origin, GraphicsManager& manager, Spatial::ScreenSize screenSize, void* window);
         Arca::Stage Stage();
     }
 
     namespace Audio
     {
+        void RegisterTypes(Arca::ReliquaryOrigin& origin);
         void RegisterTypes(Arca::ReliquaryOrigin& origin, AudioManager& manager);
+    }
+
+    namespace Window
+    {
+        void RegisterTypes(Arca::ReliquaryOrigin& origin);
     }
 
     namespace Spatial
@@ -50,7 +66,12 @@ namespace Atmos
         void RegisterTypes(Arca::ReliquaryOrigin& origin);
     }
 
-    namespace Time
+    namespace Script
+    {
+        void RegisterTypes(Arca::ReliquaryOrigin& origin);
+    }
+
+    namespace Frame
     {
         void RegisterTypes(Arca::ReliquaryOrigin& origin);
         Arca::Stage StartStage();

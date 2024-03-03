@@ -9,17 +9,27 @@ namespace Atmos::Render
     struct LineRender;
     struct RegionRender;
 
-    template<class Derived>
-    class Surface : public Arca::ClosedTypedRelic<Derived>
+    template<class DerivedT>
+    class Surface : public Arca::ClosedTypedRelic<DerivedT>
     {
     private:
-        using BaseT = Arca::ClosedTypedRelic<Derived>;
-    protected:
+        using BaseT = Arca::ClosedTypedRelic<DerivedT>;
+    public:
         using Init = typename BaseT::Init;
+    protected:
+        using BaseT::Owner;
     public:
-        using ResourceT = Resource::Surface;
+        using ResourceT = SurfaceCore::ResourceT;
+        using ResourcePtr = SurfaceCore::ResourcePtr;
+
+        using Core = SurfaceCore;
+        Arca::Index<Core> core;
     public:
-        virtual ~Surface() = 0;
+        Surface(const Surface& arg) = delete;
+        Surface(Surface&& arg) noexcept = default;
+
+        Surface& operator=(const Surface& arg) = delete;
+        Surface& operator=(Surface&& arg) = default;
 
         void StageRender(const ImageRender& imageRender) const;
         void StageRender(const LineRender& lineRender) const;
@@ -33,72 +43,66 @@ namespace Atmos::Render
         template<class ResourceT>
         [[nodiscard]] ResourceT* Resource() const;
     protected:
-        using ResourcePtr = std::unique_ptr<ResourceT>;
-    protected:
         Surface(Init init, ResourcePtr&& resource);
-
-        [[nodiscard]] Arca::Index<SurfaceCore> Core() const;
-    protected:
-        using BaseT::Owner;
-    private:
-        Arca::Index<SurfaceCore> core;
     };
 
-    template<class Derived>
-    Surface<Derived>::~Surface() = default;
-
-    template<class Derived>
-    void Surface<Derived>::StageRender(const ImageRender& imageRender) const
+    template<class DerivedT>
+    void Surface<DerivedT>::StageRender(const ImageRender& imageRender) const
     {
         Resource()->StageRender(imageRender);
     }
 
-    template<class Derived>
-    void Surface<Derived>::StageRender(const LineRender& lineRender) const
+    template<class DerivedT>
+    void Surface<DerivedT>::StageRender(const LineRender& lineRender) const
     {
         Resource()->StageRender(lineRender);
     }
 
-    template<class Derived>
-    void Surface<Derived>::StageRender(const RegionRender& regionRender) const
+    template<class DerivedT>
+    void Surface<DerivedT>::StageRender(const RegionRender& regionRender) const
     {
         Resource()->StageRender(regionRender);
     }
 
-    template<class Derived>
-    void Surface<Derived>::DrawFrame() const
+    template<class DerivedT>
+    void Surface<DerivedT>::DrawFrame() const
     {
-        Resource()->DrawFrame(Owner(), Core()->backgroundColor);
+        Resource()->DrawFrame(Owner(), core->backgroundColor);
     }
 
-    template<class Derived>
-    Spatial::ScreenSize Surface<Derived>::Size() const
+    template<class DerivedT>
+    Spatial::ScreenSize Surface<DerivedT>::Size() const
     {
         return Resource()->Size();
     }
 
-    template<class Derived>
-    auto Surface<Derived>::Resource() const -> ResourceT*
+    template<class DerivedT>
+    auto Surface<DerivedT>::Resource() const -> ResourceT*
     {
         return core->resource.get();
     }
 
-    template<class Derived>
+    template<class DerivedT>
     template<class ResourceT>
-    ResourceT* Surface<Derived>::Resource() const
+    ResourceT* Surface<DerivedT>::Resource() const
     {
         return static_cast<ResourceT*>(core->resource.get());
     }
 
-    template<class Derived>
-    Surface<Derived>::Surface(Init init, ResourcePtr&& resource) :
-        Arca::ClosedTypedRelic<Derived>(init),
-        core(init.template Create<SurfaceCore>(std::move(resource)))
-    {}
-
-    template<class Derived>
-    Arca::Index<SurfaceCore> Surface<Derived>::Core() const
+    template<class DerivedT>
+    Surface<DerivedT>::Surface(Init init, ResourcePtr&& resource) :
+        Arca::ClosedTypedRelic<DerivedT>(init),
+        core(init.template Create<Core>(std::move(resource)))
     {
-        return core;
+        Owner().template On<Arca::CreatedKnown<Asset::Material>>(
+            [this](const Arca::CreatedKnown<Asset::Material>& signal)
+            {
+                Resource()->OnMaterialCreated(signal.index);
+            });
+        Owner().template On<Arca::DestroyingKnown<Asset::Material>>(
+            [this](const Arca::DestroyingKnown<Asset::Material>& signal)
+            {
+                Resource()->OnMaterialDestroying(signal.index);
+            });
     }
 }

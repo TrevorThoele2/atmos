@@ -34,6 +34,9 @@ namespace Atmos::Render::Resource::Vulkan
 
         void DrawFrame(Arca::Reliquary& reliquary, const Color& backgroundColor) override;
 
+        void OnMaterialCreated(const Arca::Index<Asset::Material>& material) override;
+        void OnMaterialDestroying(const Arca::Index<Asset::Material>& material) override;
+
         void WaitForIdle() const;
 
         [[nodiscard]] Spatial::ScreenSize Size() const override;
@@ -73,5 +76,7 @@ namespace Atmos::Render::Resource::Vulkan
             const std::vector<vk::SurfaceFormatKHR>& surfaceFormats);
         [[nodiscard]] static vk::PresentModeKHR ChooseSwapChainPresentMode(
             const std::vector<vk::PresentModeKHR>& surfacePresentModes);
+    private:
+        Arca::Reliquary* reliquary;
     };
 }

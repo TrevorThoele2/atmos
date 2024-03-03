@@ -44,10 +44,24 @@ namespace Arca
 namespace Inscription
 {
     template<>
-    class Scribe<Atmos::Render::ImageCore, BinaryArchive> final
-        : public ArcaCompositeScribe<Atmos::Render::ImageCore, BinaryArchive>
+    class Scribe<Atmos::Render::ImageCore> final
     {
-    protected:
-        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
+    public:
+        using ObjectT = Atmos::Render::ImageCore;
+    public:
+        template<class Archive>
+        void Scriven(ObjectT& object, Archive& archive)
+        {
+            archive("asset", object.asset);
+            archive("assetIndex", object.assetIndex);
+            archive("material", object.material);
+            archive("color", object.color);
+        }
+    };
+
+    template<class Archive>
+    struct ScribeTraits<Atmos::Render::ImageCore, Archive> final
+    {
+        using Category = ArcaCompositeScribeCategory<Atmos::Render::ImageCore>;
     };
 }

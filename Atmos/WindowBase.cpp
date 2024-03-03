@@ -1,7 +1,5 @@
 #include "WindowBase.h"
 
-#include "WindowDimensionsChanged.h"
-
 namespace Atmos::Window
 {
     WindowBase::~WindowBase() = default;
@@ -11,18 +9,13 @@ namespace Atmos::Window
         SetupImpl();
     }
 
-    void WindowBase::ToggleFullscreen()
-    {
-        SetFullscreen(!IsFullscreen());
-    }
-
     void WindowBase::SetFullscreen(bool set)
     {
         if (IsFullscreen() == set)
             return;
 
         isFullscreen = set;
-        OnSetFullscreen();
+        OnFullscreenChanged();
         SetFullscreen(isFullscreen);
     }
 
@@ -36,9 +29,18 @@ namespace Atmos::Window
         return !isFullscreen;
     }
 
-    WindowBase::Size WindowBase::DefaultSize() const
+    void WindowBase::CenterOnScreen()
     {
-        return Size(1024, 768);
+        const auto totalScreenSize = TotalScreenSize();
+        position.x = (totalScreenSize.width - windowSize.width) / 2;
+        position.y = (totalScreenSize.height - windowSize.height) / 2;
+        OnPositionChanged();
+    }
+
+    void WindowBase::ChangeSize(Size clientSize)
+    {
+        this->clientSize = clientSize;
+        SetWindowSize();
     }
 
     WindowBase::Size WindowBase::ClientSize() const
@@ -51,26 +53,17 @@ namespace Atmos::Window
         return windowSize;
     }
 
-    WindowBase::Position WindowBase::StartPosition() const
+    WindowBase::Point WindowBase::Position() const
     {
-        return startPosition;
+        return position;
     }
 
-    void WindowBase::SetWindowDimensions()
+    void WindowBase::SetWindowSize()
     {
-        // Set lengths
-        {
-            const auto box = AdjustWindowDimensions();
-            windowSize.width = static_cast<Size::Dimension>(abs(box.Left()) + abs(box.Right()));
-            windowSize.height = static_cast<Size::Dimension>(abs(box.Top()) + abs(box.Bottom()));
-        }
+        const auto size = WindowSizeFromClientSize();
+        windowSize.width = size.width;
+        windowSize.height = size.height;
 
-        // Set default position
-        {
-            const auto defaultPosition = GetDefaultWindowPosition();
-            startPosition = defaultPosition;
-        }
-
-        OnSetWindowDimensions();
+        OnSizeChanged();
     }
 }

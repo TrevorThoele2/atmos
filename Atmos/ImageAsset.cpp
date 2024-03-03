@@ -1,7 +1,5 @@
 #include "ImageAsset.h"
 
-#include "LoadImageAsset.h"
-#include "CreateImageAssetResource.h"
 #include "ShouldCreateAsset.h"
 
 #include "SpatialAlgorithms.h"
@@ -10,15 +8,16 @@ namespace Atmos::Asset
 {
     Image::Image(
         Init init,
-        const ::Atmos::Name& name,
+        const Atmos::Name& name,
         ResourcePtr&& resource,
-        ImageSize size,
         ImageGridSize gridSize)
         :
         AssetWithResource(init, name, std::move(resource)),
-        size(size),
         gridSize(gridSize)
-    {}
+    {
+        const auto useResource = Resource();
+        size = useResource ? useResource->Size() : ImageSize{};
+    }
 
     Image::Image(Init init, Arca::Serialization serialization) :
         AssetWithResource(init, serialization)
@@ -36,6 +35,12 @@ namespace Atmos::Asset
         size = arg.size;
         gridSize = arg.gridSize;
         return *this;
+    }
+
+    void Image::Setup(ResourcePtr&& set, ImageSize size)
+    {
+        SetResource(std::move(set));
+        this->size = size;
     }
 
     auto Image::Width() const -> Dimension
@@ -107,32 +112,10 @@ namespace Arca
 {
     bool Traits<::Atmos::Asset::Image>::ShouldCreate(
         Reliquary& reliquary,
-        const ::Atmos::Name& name,
-        const ::Atmos::Asset::Image::ResourcePtr&,
-        ::Atmos::Asset::ImageSize,
-        ::Atmos::Asset::ImageGridSize)
+        const Atmos::Name& name,
+        const Atmos::Asset::Image::ResourcePtr&,
+        Atmos::Asset::ImageGridSize)
     {
-        return Atmos::Asset::ShouldCreate<::Atmos::Asset::Image>(reliquary, name);
-    }
-}
-
-namespace Inscription
-{
-    void Scribe<Atmos::Asset::Image, BinaryArchive>::ScrivenImplementation(
-        ObjectT& object, ArchiveT& archive)
-    {
-        BaseScriven<Atmos::Asset::AssetWithResource<Atmos::Asset::Resource::Image, Atmos::Asset::Image>>(
-            object, archive);
-        archive(object.size);
-        archive(object.gridSize);
-        if (archive.IsInput())
-        {
-            const auto filePath = std::filesystem::current_path() / "images" / object.Name();
-            const auto loaded = object.Owner().Do(Atmos::Asset::Load<Atmos::Asset::Image>{ filePath });
-            object.resource = object.Owner().Do(Atmos::Asset::Resource::Create<Atmos::Asset::Resource::Image>{
-                loaded.buffer,
-                object.Name(),
-                loaded.size });
-        }
+        return Atmos::Asset::ShouldCreate<Atmos::Asset::Image>(reliquary, name);
     }
 }

@@ -50,10 +50,24 @@ namespace Arca
 namespace Inscription
 {
     template<>
-    class Scribe<Atmos::Spatial::Bounds, BinaryArchive> final
-        : public ArcaCompositeScribe<Atmos::Spatial::Bounds, BinaryArchive>
+    class Scribe<Atmos::Spatial::Bounds> final
     {
-    protected:
-        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
+    public:
+        using ObjectT = Atmos::Spatial::Bounds;
+    public:
+        template<class Archive>
+        void Scriven(ObjectT& object, Archive& archive)
+        {
+            archive("position", object.position);
+            archive("baseSize", object.baseSize);
+            archive("scalers", object.scalers);
+            archive("rotation", object.rotation);
+        }
+    };
+
+    template<class Archive>
+    struct ScribeTraits<Atmos::Spatial::Bounds, Archive> final
+    {
+        using Category = ArcaCompositeScribeCategory<Atmos::Spatial::Bounds>;
     };
 }

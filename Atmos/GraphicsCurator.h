@@ -6,7 +6,6 @@
 
 #include "InitializeGraphics.h"
 #include "ReconstructGraphics.h"
-#include "SetupMainSurfaceResource.h"
 #include "CreateSurfaceResource.h"
 #include "SetFullscreen.h"
 #include "ChangeVerticalSync.h"
@@ -25,7 +24,6 @@ namespace Atmos::Render
     public:
         void Handle(const InitializeGraphics& command);
         void Handle(const ReconstructGraphics& command);
-        void Handle(const Resource::SetupMainSurface& command);
         std::unique_ptr<Resource::Surface> Handle(const Resource::CreateSurface& command);
         void Handle(const SetFullscreen& command);
         void Handle(const ChangeVerticalSync& command);
@@ -34,9 +32,12 @@ namespace Atmos::Render
 
         std::unique_ptr<Asset::Resource::Image> Handle(const Asset::Resource::Create<Asset::Resource::Image>& command);
         std::unique_ptr<Asset::Resource::Shader> Handle(const Asset::Resource::Create<Asset::Resource::Shader>& command);
+
     private:
         GraphicsManager* manager;
 
+        void AttemptReconstruct(const Spatial::ScreenSize& size);
+    private:
         template<class T>
         std::vector<T*> MutablePointersOf();
     };
@@ -63,7 +64,6 @@ namespace Arca
         using HandledCommands = HandledCommands<
             Atmos::Render::InitializeGraphics,
             Atmos::Render::ReconstructGraphics,
-            Atmos::Render::Resource::SetupMainSurface,
             Atmos::Render::Resource::CreateSurface,
             Atmos::Render::SetFullscreen,
             Atmos::Render::ChangeVerticalSync,
@@ -76,8 +76,9 @@ namespace Arca
 
 namespace Inscription
 {
-    template<>
-    class Scribe<Atmos::Render::GraphicsCurator, BinaryArchive> final
-        : public ArcaNullScribe<Atmos::Render::GraphicsCurator, BinaryArchive>
-    {};
+    template<class Archive>
+    struct ScribeTraits<Atmos::Render::GraphicsCurator, Archive> final
+    {
+        using Category = ArcaNullScribeCategory<Atmos::Render::GraphicsCurator>;
+    };
 }

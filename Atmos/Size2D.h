@@ -18,10 +18,22 @@ namespace Atmos::Spatial
 namespace Inscription
 {
     template<>
-    class Scribe<::Atmos::Spatial::Size2D, BinaryArchive> final :
-        public CompositeScribe<::Atmos::Spatial::Size2D, BinaryArchive>
+    class Scribe<Atmos::Spatial::Size2D> final
     {
-    protected:
-        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
+    public:
+        using ObjectT = Atmos::Spatial::Size2D;
+    public:
+        template<class Archive>
+        void Scriven(ObjectT& object, Archive& archive)
+        {
+            archive("width", object.width);
+            archive("height", object.height);
+        }
+    };
+
+    template<class Archive>
+    struct ScribeTraits<Atmos::Spatial::Size2D, Archive> final
+    {
+        using Category = CompositeScribeCategory<Atmos::Spatial::Size2D>;
     };
 }

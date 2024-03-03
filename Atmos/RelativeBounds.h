@@ -29,10 +29,21 @@ namespace Arca
 namespace Inscription
 {
     template<>
-    class Scribe<Atmos::Spatial::RelativeBounds, BinaryArchive> final :
-        public ArcaCompositeScribe<Atmos::Spatial::RelativeBounds, BinaryArchive>
+    class Scribe<Atmos::Spatial::RelativeBounds> final
     {
-    protected:
-        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
+    public:
+        using ObjectT = Atmos::Spatial::RelativeBounds;
+    public:
+        template<class Archive>
+        void Scriven(ObjectT& object, Archive& archive)
+        {
+            archive("delta", object.delta);
+        }
+    };
+
+    template<class Archive>
+    struct ScribeTraits<Atmos::Spatial::RelativeBounds, Archive> final
+    {
+        using Category = ArcaCompositeScribeCategory<Atmos::Spatial::RelativeBounds>;
     };
 }

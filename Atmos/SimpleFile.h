@@ -1,8 +1,6 @@
 #pragma once
 
-#include <fstream>
 #include "FilePath.h"
-#include "Buffer.h"
 
 namespace Atmos
 {
@@ -48,41 +46,6 @@ namespace Atmos
     {
         Stream checkStream(path.c_str(), std::ios::binary | std::ios::ate);
         return DoTell(checkStream);
-    }
-
-    class SimpleInFile final : public SimpleFile<std::ifstream>
-    {
-    public:
-        explicit SimpleInFile(const File::Path& path);
-        template<class T>
-        void operator>>(T& arg);
-        void Seek(Position position) override;
-        [[nodiscard]] Buffer ReadBuffer(std::streamsize size = std::numeric_limits<std::streamsize>::max());
-    private:
-        Position DoTell(StreamT& stream) override;
-    };
-
-    template<class T>
-    void SimpleInFile::operator>>(T& arg)
-    {
-        stream.read(reinterpret_cast<char*>(&arg), sizeof(arg));
-    }
-
-    class SimpleOutFile final : public SimpleFile<std::ofstream>
-    {
-    public:
-        explicit SimpleOutFile(const File::Path& path);
-        template<class T>
-        void operator<<(const T& arg);
-        void Seek(Position position) override;
-    private:
-        Position DoTell(StreamT& stream) override;
-    };
-
-    template<class T>
-    void SimpleOutFile::operator<<(const T& arg)
-    {
-        stream.write(reinterpret_cast<const char*>(&arg), sizeof(arg));
     }
 
     size_t FileSize(const File::Path& path);
