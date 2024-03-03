@@ -687,3 +687,49 @@ SCENARIO_METHOD(OctreeTestsFixture, "multiple objects octree", "[octree]")
         }
     }
 }
+
+SCENARIO_METHOD(OctreeTestsFixture, "negative dimensional octree", "[octree]")
+{
+    GIVEN("octree at origin")
+    {
+        using Octree = Octree<int, std::string>;
+        Octree octree;
+
+        const auto id = dataGeneration.Random<int>();
+        const auto value = dataGeneration.Random<std::string>();
+
+        const auto bounds = AxisAlignedBox3D
+        {
+            -1000,
+            -1000,
+            -1000,
+            -900,
+            -900,
+            -900
+        };
+
+        WHEN("adding an object with all negative dimensions")
+        {
+            octree.Add(id, value, bounds);
+
+            THEN("querying slightly bigger bounds gives object")
+            {
+                const auto queryBounds = AxisAlignedBox3D
+                {
+                    -1001,
+                    -1001,
+                    -1001,
+                    -899,
+                    -899,
+                    -899
+                };
+
+                auto allObjects = octree.AllWithin(queryBounds);
+
+                REQUIRE(allObjects.size() == 1);
+                REQUIRE(allObjects[0]->id == id);
+                REQUIRE(allObjects[0]->value == value);
+            }
+        }
+    }
+}

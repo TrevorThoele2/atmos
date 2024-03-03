@@ -14,5 +14,6 @@ public:
     void StageRender(const MaterialRender& materialRender) override;
     void StageRender(const CanvasRender& canvasRender) override;
     void StageRender(const LineRender& lineRender) override;
-    void RenderStaged(const SurfaceData& surface) override;
+    void RenderStaged(const ScreenSize& screenSize, const Color& backgroundColor) override;
+    void RenderStaged(const SurfaceData& surface, const Color& backgroundColor) override;
 };

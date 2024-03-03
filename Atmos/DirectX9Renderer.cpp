@@ -104,17 +104,11 @@ namespace Atmos::Render::DirectX9
 
     void Renderer::RenderStaged(const ScreenSize& screenSize, const Color& backgroundColor)
     {
-        if (layers.empty())
-            return;
-
         PushThroughPipeline(screenSize, backgroundColor);
     }
 
     void Renderer::RenderStaged(const SurfaceData& surface, const Color& backgroundColor)
     {
-        if (layers.empty())
-            return;
-
         LPDIRECT3DSURFACE9 previousRenderSurface;
         device->GetRenderTarget(0, &previousRenderSurface);
         device->SetRenderTarget(0, dynamic_cast<const SurfaceDataImplementation&>(surface).BackBuffer());
