@@ -3,23 +3,23 @@
 #include <Windows.h>
 int (WINAPIV * __vsnprintf)(char *, size_t, const char*, va_list) = _vsnprintf;
 
-#include "DirectX9Renderer.h"
 #include "DirectX9ImageAssetData.h"
 #include "DirectX9ShaderAssetData.h"
-#include "DirectX9CanvasData.h"
 #include "DirectX9SurfaceData.h"
 #include "DirectX9Utilities.h"
+#include "MainSurface.h"
+#include "AncillarySurface.h"
+#include "GraphicsError.h"
 
 #include "FileManagerProvider.h"
 
 #include "TimeSettings.h"
 
-#include <Chroma/Contract.h>
+#include "SimpleFile.h"
 
 namespace Atmos::Render::DirectX9
 {
-    GraphicsManager::GraphicsManager(HWND hwnd, bool fullscreen) :
-        Render::GraphicsManager(std::make_unique<DirectX9::Renderer>(*this)), hwnd(hwnd)
+    GraphicsManager::GraphicsManager(HWND hwnd, bool fullscreen) : hwnd(hwnd)
     {
         ZeroMemory(&presentationParameters, sizeof presentationParameters);
         SetupPresentationParameters();
@@ -41,81 +41,123 @@ namespace Atmos::Render::DirectX9
             device->Release();
     }
 
-    void GraphicsManager::Initialize(Arca::Reliquary& reliquary)
-    {
-        Renderer<DirectX9::Renderer>().Initialize(device, reliquary);
-    }
-
     bool GraphicsManager::IsOk() const
     {
         return IsDeviceOk();
     }
 
-    std::unique_ptr<Asset::ImageAssetData> GraphicsManager::CreateImageData(
-        const Buffer& buffer, const Name& name)
+    void GraphicsManager::SetFullscreen(bool set)
+    {
+        presentationParameters.Windowed = set
+            ? false
+            : true;
+    }
+
+    void GraphicsManager::ChangeVerticalSync(bool set)
+    {
+        presentationParameters.PresentationInterval = set
+            ? D3DPRESENT_INTERVAL_DEFAULT
+            : D3DPRESENT_INTERVAL_IMMEDIATE;
+    }
+
+    LPDIRECT3DDEVICE9 GraphicsManager::Device() const
+    {
+        return device;
+    }
+
+    void GraphicsManager::InitializeImpl()
+    {
+        const auto texturedMaterialViewPath = std::filesystem::current_path() / "Shaders" / "TexturedImage.fx";
+
+        SimpleInFile inFile(texturedMaterialViewPath);
+        const auto texturedMaterialViewBuffer = inFile.ReadBuffer();
+
+        auto shaderData = CreateShaderData(texturedMaterialViewBuffer, "TexturedImage", "");
+        defaultTexturedMaterialShader = Reliquary().Do<Arca::Create<Asset::ShaderAsset>>(
+            "TexturedImage",
+            std::move(shaderData));
+        if (!defaultTexturedMaterialShader)
+            throw GraphicsError("Could not construct default textured material shader.");
+    }
+
+    std::unique_ptr<Asset::ImageAssetData> GraphicsManager::CreateImageDataImpl(
+        const Buffer& buffer, const Name& name, const Size2D& size)
     {
         D3DXIMAGE_INFO info;
-        LogIfError(
-            D3DXGetImageInfoFromFileInMemory(buffer.data(), buffer.size(), &info),
-            [name]() { return Logging::Log(
-                "An image asset could not be created.",
-                Logging::Severity::SevereError,
-                Logging::Details{ {"Name", name} }); });
+        const auto imageInfoResult = D3DXGetImageInfoFromFileInMemory(buffer.data(), buffer.size(), &info);
+        if (IsError(imageInfoResult))
+            throw GraphicsError("An image asset could not be created.",
+                { {"Name", name } });
 
-        LPDIRECT3DTEXTURE9 tex;
-        LogIfError(
-            D3DXCreateTextureFromFileInMemoryEx
-            (
-                device,
-                buffer.data(),
-                buffer.size(),
-                info.Width,
-                info.Height,
-                D3DX_DEFAULT,
-                0,
-                D3DFMT_A8R8G8B8,
-                D3DPOOL_MANAGED,
-                D3DX_DEFAULT,
-                D3DX_DEFAULT,
-                0,
-                nullptr,
-                nullptr,
-                &tex
-            ),
-            [name]() { return Logging::Log(
-                "An image asset could not be created.",
-                Logging::Severity::SevereError,
-                Logging::Details{ {"Name", name} }); });
+        LPDIRECT3DTEXTURE9 texture;
+        const auto createTextureResult = D3DXCreateTextureFromFileInMemoryEx(
+            device,
+            buffer.data(),
+            buffer.size(),
+            info.Width,
+            info.Height,
+            D3DX_DEFAULT,
+            0,
+            D3DFMT_A8R8G8B8,
+            D3DPOOL_MANAGED,
+            D3DX_DEFAULT,
+            D3DX_DEFAULT,
+            0,
+            nullptr,
+            nullptr,
+            &texture);
 
-        return std::make_unique<ImageAssetDataImplementation>(tex);
+        if (IsError(createTextureResult))
+            throw GraphicsError("An image asset could not be created.",
+                { {"Name", name } });
+
+        return std::make_unique<ImageAssetDataImplementation>(texture, info.Width, info.Height);
     }
 
-    std::unique_ptr<Asset::ShaderAssetData> GraphicsManager::CreateShaderData(
-        const Buffer& buffer, const Name& name)
+    std::unique_ptr<Asset::ShaderAssetData> GraphicsManager::CreateShaderDataImpl(
+        const Buffer& buffer, const Name& name, const String& entryPoint)
     {
         LPD3DXEFFECT effect;
-        LogIfError(
-            D3DXCreateEffect
-            (
-                device,
-                buffer.data(),
-                buffer.size(),
-                nullptr,
-                nullptr,
-                D3DXFX_NOT_CLONEABLE | D3DXSHADER_NO_PRESHADER,
-                nullptr,
-                &effect,
-                nullptr
-            ),
-            [name]() { return Logging::Log(
-                "A shader asset could not be created.",
-                Logging::Severity::SevereError,
-                Logging::Details{ {"Name", name} }); });
+        const auto createShaderResult = D3DXCreateEffect(
+            device,
+            buffer.data(),
+            buffer.size(),
+            nullptr,
+            nullptr,
+            D3DXFX_NOT_CLONEABLE | D3DXSHADER_NO_PRESHADER,
+            nullptr,
+            &effect,
+            nullptr);
 
-        return std::make_unique<ShaderAssetDataImplementation>(effect);
+        if (IsError(createShaderResult))
+            throw GraphicsError("A shader asset could not be created.",
+                { {"Name", name } });
+
+        return std::make_unique<ShaderAssetDataImplementation>(effect, entryPoint);
     }
 
-    std::unique_ptr<SurfaceData> GraphicsManager::CreateSurfaceData(
+    std::unique_ptr<SurfaceData> GraphicsManager::CreateMainSurfaceDataImpl(void* window)
+    {
+        LPDIRECT3DSWAPCHAIN9 swapChain;
+        const auto swapChainResult = device->GetSwapChain(0, &swapChain);
+        if (IsError(swapChainResult))
+            throw GraphicsError("The main render surface data could not be retrieved.");
+
+        LPDIRECT3DSURFACE9 backBuffer;
+        const auto backBufferResult = swapChain->GetBackBuffer(0, D3DBACKBUFFER_TYPE_MONO, &backBuffer);
+        if (IsError(backBufferResult))
+            throw GraphicsError("The main render surface data could not be retrieved.");
+
+        return std::make_unique<SurfaceDataImplementation>(
+            *this,
+            swapChain,
+            backBuffer,
+            defaultTexturedMaterialShader,
+            false,
+            Reliquary());
+    }
+
+    std::unique_ptr<SurfaceData> GraphicsManager::CreateSurfaceDataImpl(
         void* window)
     {
         D3DPRESENT_PARAMETERS presentationParameters;
@@ -133,102 +175,22 @@ namespace Atmos::Render::DirectX9
         presentationParameters.MultiSampleQuality = 0;
 
         LPDIRECT3DSWAPCHAIN9 swapChain;
-        LogIfError(
-            device->CreateAdditionalSwapChain(&presentationParameters, &swapChain),
-            []() { return Logging::Log(
-                "A render surface could not be created.",
-                Logging::Severity::SevereError); });
+        const auto createSwapChainResult = device->CreateAdditionalSwapChain(&presentationParameters, &swapChain);
+        if (IsError(createSwapChainResult))
+            throw GraphicsError("A render surface could not be created.");
 
         LPDIRECT3DSURFACE9 backBuffer;
-        LogIfError(
-            swapChain->GetBackBuffer(0, D3DBACKBUFFER_TYPE_MONO, &backBuffer),
-            []() { return Logging::Log(
-                "A render surface could not be created.",
-                Logging::Severity::SevereError); });
+        const auto createBackBufferResult = swapChain->GetBackBuffer(0, D3DBACKBUFFER_TYPE_MONO, &backBuffer);
+        if (IsError(createBackBufferResult))
+            throw GraphicsError("A render surface could not be created.");
 
-        return std::make_unique<SurfaceDataImplementation>(*this, swapChain, backBuffer);
-    }
-
-    std::unique_ptr<SurfaceData> GraphicsManager::CreateMainSurfaceData()
-    {
-        LPDIRECT3DSWAPCHAIN9 swapChain;
-        LogIfError(
-            device->GetSwapChain(0, &swapChain),
-            []() { return Logging::Log(
-                "The main render surface data could not be retrieved.",
-                Logging::Severity::SevereError); });
-
-        LPDIRECT3DSURFACE9 backBuffer;
-        LogIfError(
-            swapChain->GetBackBuffer(0, D3DBACKBUFFER_TYPE_MONO, &backBuffer),
-            []() { return Logging::Log(
-                "The main render surface data could not be retrieved.",
-                Logging::Severity::SevereError); });
-
-        return std::make_unique<SurfaceDataImplementation>(*this, swapChain, backBuffer);
-    }
-
-    std::unique_ptr<CanvasData> GraphicsManager::CreateCanvasData(
-        const ScreenSize& size)
-    {
-        LPDIRECT3DTEXTURE9 texture;
-        LogIfError(
-            D3DXCreateTexture
-            (
-                device,
-                size.width,
-                size.height,
-                D3DX_DEFAULT,
-                0,
-                D3DFMT_X8R8G8B8,
-                D3DPOOL_MANAGED,
-                &texture
-            ),
-            []() { return Logging::Log(
-                "A canvas could not be created.",
-                Logging::Severity::SevereError); });
-
-        return std::make_unique<CanvasDataImplementation>(*this, size, texture);
-    }
-
-    void GraphicsManager::SetFullscreen(bool set)
-    {
-        presentationParameters.Windowed = set
-            ? false
-            : true;
-    }
-
-    void GraphicsManager::ClearStencil(const Color& color)
-    {
-        LogIfError(
-            device->Clear(0, nullptr, D3DCLEAR_STENCIL, ToDirectXColor(color), 1.0f, 0),
-            []() { return Logging::Log(
-                "Could not clear stencil buffer.",
-                Logging::Severity::SevereError); });
-    }
-
-    void GraphicsManager::SetRenderState(RenderState state, bool set)
-    {
-        const auto stateType = RenderStateToD3D(state);
-        DEBUG_ASSERT(stateType);
-
-        const DWORD stateValue = set
-            ? TRUE
-            : FALSE;
-
-        device->SetRenderState(*stateType, stateValue);
-    }
-
-    void GraphicsManager::ChangeVerticalSync(bool set)
-    {
-        presentationParameters.PresentationInterval = set
-            ? D3DPRESENT_INTERVAL_DEFAULT
-            : D3DPRESENT_INTERVAL_IMMEDIATE;
-    }
-
-    LPDIRECT3DDEVICE9 GraphicsManager::Device() const
-    {
-        return device;
+        return std::make_unique<SurfaceDataImplementation>(
+            *this,
+            swapChain,
+            backBuffer,
+            defaultTexturedMaterialShader,
+            true,
+            Reliquary());
     }
 
     bool GraphicsManager::ShouldReconstructInternals() const
@@ -236,15 +198,21 @@ namespace Atmos::Render::DirectX9
         return !IsDeviceLost();
     }
 
-    void GraphicsManager::ReconstructInternals(const ScreenSize& screenSize)
+    void GraphicsManager::ReconstructInternals(GraphicsReconstructionObjects objects)
     {
+        for (auto& asset : objects.shaderAssets)
+            asset->FileDataAs<ShaderAssetDataImplementation>()->Release();
+
+        objects.mainSurface->Data<SurfaceDataImplementation>()->Release();
+
+        for (auto& surface : objects.ancillarySurfaces)
+            surface->Data<SurfaceDataImplementation>()->Release();
+
         if (!IsDeviceNotReset())
         {
             SetupPresentationParameters();
-            presentationParameters.BackBufferWidth = screenSize.width;
-            presentationParameters.BackBufferHeight = screenSize.height;
-
-            Renderer<DirectX9::Renderer>().OnLostDevice();
+            presentationParameters.BackBufferWidth = objects.screenSize.width;
+            presentationParameters.BackBufferHeight = objects.screenSize.height;
         }
 
         {
@@ -255,32 +223,39 @@ namespace Atmos::Render::DirectX9
                     hr,
                     []() { return Logging::Log(
                         "The DirectX device failed when resetting.",
-                        Logging::Severity::SevereError); });
+                        Logging::Severity::Error); });
                 return;
             }
         }
 
-        Renderer<DirectX9::Renderer>().OnResetDevice();
-
         SetRenderStates();
+
+        if (IsOk())
+        {
+            for (auto& asset : objects.shaderAssets)
+                asset->FileDataAs<ShaderAssetDataImplementation>()->Reset();
+
+            objects.mainSurface->Data<SurfaceDataImplementation>()->Reset();
+
+            for (auto& surface : objects.ancillarySurfaces)
+                surface->Data<SurfaceDataImplementation>()->Reset();
+        }
     }
 
     LPDIRECT3DDEVICE9 GraphicsManager::CreateDevice()
     {
         LPDIRECT3DDEVICE9 device;
-        LogIfError(
-            d3d->CreateDevice
-            (
-                D3DADAPTER_DEFAULT,
-                D3DDEVTYPE_HAL,
-                hwnd,
-                D3DCREATE_HARDWARE_VERTEXPROCESSING,
-                &presentationParameters,
-                &device
-            ),
-            []() { return Logging::Log(
-                "The Direct3D device could not be created.",
-                Logging::Severity::SevereError); });
+        const auto result = d3d->CreateDevice
+        (
+            D3DADAPTER_DEFAULT,
+            D3DDEVTYPE_HAL,
+            hwnd,
+            D3DCREATE_HARDWARE_VERTEXPROCESSING,
+            &presentationParameters,
+            &device
+        );
+        if (IsError(result))
+            throw GraphicsError("The Direct3D device could not be created.");
         return device;
     }
 
@@ -299,27 +274,27 @@ namespace Atmos::Render::DirectX9
             device->SetRenderState(D3DRS_ZENABLE, false),
             []() { return Logging::Log(
                 "DirectX9 Z buffer couldn't be set to false.",
-                Logging::Severity::SevereError); });
+                Logging::Severity::Error); });
         LogIfError(
             device->SetRenderState(D3DRS_LIGHTING, false),
             []() { return Logging::Log(
                 "DirectX9 lighting couldn't be set to false.",
-                Logging::Severity::SevereError); });
+                Logging::Severity::Error); });
         LogIfError(
             device->SetRenderState(D3DRS_ALPHABLENDENABLE, true),
             []() { return Logging::Log(
                 "DirectX9 alpha blend couldn't be set to true.",
-                Logging::Severity::SevereError); });
+                Logging::Severity::Error); });
         LogIfError(
             device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA),
             []() { return Logging::Log(
                 "DirectX9 source blend couldn't be set to source alpha.",
-                Logging::Severity::SevereError); });
+                Logging::Severity::Error); });
         LogIfError(
             device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA),
             []() { return Logging::Log(
                 "DirectX9 destination blend couldn't be set to inverse source alpha.",
-                Logging::Severity::SevereError); });
+                Logging::Severity::Error); });
     }
 
     bool GraphicsManager::IsDeviceOk() const

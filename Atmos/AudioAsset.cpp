@@ -7,6 +7,10 @@ namespace Atmos::Asset
     AudioAsset::AudioAsset(Init init) : FileAsset(init)
     {}
 
+    AudioAsset::AudioAsset(Init init, const ::Atmos::Name & name, DataPtr && data) :
+        FileAsset(init, name, std::move(data))
+    {}
+
     AudioAsset::AudioAsset(AudioAsset&& arg) noexcept : FileAsset(std::move(arg))
     {}
 

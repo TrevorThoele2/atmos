@@ -4,6 +4,7 @@
 
 #include "Asset.h"
 #include "MappedAssets.h"
+#include "FindAsset.h"
 
 #include "DebugValue.h"
 
@@ -16,17 +17,43 @@ namespace Atmos::Asset
     class AssetCurator : public Arca::Curator
     {
     public:
-        void Work();
-    protected:
         explicit AssetCurator(Init init);
+
+        void Work();
+
+        Arca::Index<T> Handle(const FindAsset<T>& command);
     private:
         using Traits = AssetCuratorTraits<T>;
     private:
         Arca::Index<MappedAssets<T>> mappedAssets;
-        Debug::Value<size_t> debugSizeValue;
+        Debug::Value debugSizeValue;
     private:
         INSCRIPTION_ACCESS;
     };
+
+    template<class T>
+    AssetCurator<T>::AssetCurator(Init init) :
+        Curator(init),
+        mappedAssets(init.owner),
+        debugSizeValue(
+            [this](Debug::Statistics& statistics)
+            {
+                statistics.memory.*Traits::debugStatisticsSize = mappedAssets->Size();
+            },
+                MutablePointer())
+    {
+        init.owner.ExecuteOn<Arca::CreatedKnown<T>>(
+            [this](const Arca::CreatedKnown<T>& signal)
+            {
+                MutablePointer().Of(mappedAssets)->map.emplace(signal.reference->Name(), signal.reference);
+            });
+
+        init.owner.ExecuteOn<Arca::DestroyingKnown<T>>(
+            [this](const Arca::DestroyingKnown<T>& signal)
+            {
+                MutablePointer().Of(mappedAssets)->map.erase(signal.reference->Name());
+            });
+    }
 
     template<class T>
     void AssetCurator<T>::Work()
@@ -35,31 +62,9 @@ namespace Atmos::Asset
     }
 
     template<class T>
-    AssetCurator<T>::AssetCurator(Init init) :
-        Curator(init),
-        mappedAssets(init.owner),
-        debugSizeValue(
-            [](Debug::Statistics& statistics)
-            {
-                return statistics.memory.*Traits::debugStatisticsSize;
-            },
-            [this]()
-            {
-                return mappedAssets->Size();
-            },
-            init.owner)
+    Arca::Index<T> AssetCurator<T>::Handle(const FindAsset<T>& command)
     {
-        init.owner.ExecuteOn<Arca::CreatedKnown<T>>(
-            [this](const Arca::CreatedKnown<T>& signal)
-            {
-                mappedAssets->map.emplace(signal.index->Name(), signal.index);
-            });
-
-        init.owner.ExecuteOn<Arca::DestroyingKnown<T>>(
-            [this](const Arca::DestroyingKnown<T>& signal)
-            {
-                mappedAssets->map.erase(signal.index->Name());
-            });
+        return mappedAssets->Find(command.name);
     }
 
     template<class T>

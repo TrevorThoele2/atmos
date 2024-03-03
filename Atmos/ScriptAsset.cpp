@@ -7,6 +7,10 @@ namespace Atmos::Asset
     ScriptAsset::ScriptAsset(Init init) : FileAsset(init)
     {}
 
+    ScriptAsset::ScriptAsset(Init init, const ::Atmos::Name& name, DataPtr&& data) :
+        FileAsset(init, name, std::move(data))
+    {}
+
     ScriptAsset::ScriptAsset(ScriptAsset&& arg) noexcept : FileAsset(std::move(arg))
     {}
 

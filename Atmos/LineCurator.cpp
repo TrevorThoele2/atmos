@@ -1,6 +1,6 @@
 #include "LineCurator.h"
 
-#include "GraphicsManager.h"
+#include "MainSurface.h"
 
 namespace Atmos::Render
 {
@@ -22,50 +22,47 @@ namespace Atmos::Render
 
     void LineCurator::Work()
     {
+        const auto cameraLeft = camera->ScreenSides().Left();
+        const auto cameraTop = camera->ScreenSides().Top();
+        const auto cameraCenter = camera->center;
+        const auto cameraSize = camera->size;
+
         const AxisAlignedBox3D queryBox
         {
             Position3D
             {
-                camera->center.x,
-                camera->center.y,
+                cameraCenter.x,
+                cameraCenter.y,
                 0
             },
             Size3D
             {
-                static_cast<Size3D::Value>(camera->size.width),
-                static_cast<Size3D::Value>(camera->size.height),
+                static_cast<Size3D::Value>(cameraSize.width),
+                static_cast<Size3D::Value>(cameraSize.height),
                 std::numeric_limits<Size3D::Value>::max()
             }
         };
 
-        const auto cameraLeft = camera->ScreenSides().Left();
-        const auto cameraTop = camera->ScreenSides().Top();
-
         auto lines = octree.AllWithin(queryBox);
 
-        auto graphics = Arca::Postulate<GraphicsManager*>(Owner()).Get();
+        const auto mainSurface = Arca::Index<MainSurface>(Owner());
 
         for (auto& index : lines)
         {
             auto& line = *index->value;
 
+            std::vector<Position2D> adjustedPoints;
+            for (auto& point : line.points)
+                adjustedPoints.push_back(Position2D{ point.x - cameraLeft, point.y - cameraTop });
+
             const LineRender render
             {
-                Position2D
-                {
-                    line.from.x - cameraLeft,
-                    line.from.y - cameraTop
-                },
-                Position2D
-                {
-                    line.to.x - cameraLeft,
-                    line.to.y - cameraTop
-                },
+                adjustedPoints,
                 line.z,
                 line.width,
                 line.color
             };
-            graphics->StageRender(render);
+            mainSurface->StageRender(render);
         }
     }
 
@@ -75,21 +72,17 @@ namespace Atmos::Render
         if (!index)
             return;
 
-        const auto prevFrom = index->from;
-        const auto prevTo = index->to;
+        const auto prevPoints = index->points;
         const auto prevZ = index->z;
 
         auto data = MutablePointer().Of(index);
-        if(command.from)
-            data->from = *command.from;
-
-        if(command.to)
-            data->to = *command.to;
+        if(command.points)
+            data->points = *command.points;
 
         if (command.z)
             data->z = *command.z;
 
-        octree.Move(index.ID(), index, BoxFor(prevFrom, prevTo, prevZ), BoxFor(index));
+        octree.Move(index.ID(), index, BoxFor(prevPoints, prevZ), BoxFor(index));
     }
 
     void LineCurator::OnLineCreated(const Arca::CreatedKnown<Line>& line)
@@ -102,21 +95,42 @@ namespace Atmos::Render
         octree.Remove(line.reference.ID(), BoxFor(line.reference));
     }
 
-    AxisAlignedBox3D LineCurator::BoxFor(const Position2D& from, const Position2D& to, Position2D::Value z)
+    AxisAlignedBox3D LineCurator::BoxFor(const std::vector<Position2D>& points, Position2D::Value z)
     {
-        const auto width = std::abs(from.x - to.x);
-        const auto height = std::abs(from.y - to.y);
+        if (points.empty())
+            return {};
+
+        auto maxLeft = points[0].x;
+        auto maxTop = points[0].y;
+        auto maxRight = points[0].x;
+        auto maxBottom = points[0].y;
+
+        for(auto& point : points)
+        {
+            if (point.x < maxLeft)
+                maxLeft = point.x;
+            else if (point.x > maxRight)
+                maxRight = point.x;
+
+            if (point.y < maxTop)
+                maxTop = point.y;
+            else if (point.y > maxBottom)
+                maxBottom = point.y;
+        }
+
+        const auto width = maxRight - maxLeft;
+        const auto height = maxBottom - maxTop;
         const auto depth = 1;
 
         return AxisAlignedBox3D
         {
-            Position3D { width / 2, height / 2, 0.5f },
+            Position3D { maxLeft + width / 2, maxTop + height / 2, 0.5f },
             Size3D { width, height, depth }
         };
     }
 
     AxisAlignedBox3D LineCurator::BoxFor(const LineIndex& line)
     {
-        return BoxFor(line->from, line->to, line->z);
+        return BoxFor(line->points, line->z);
     }
 }

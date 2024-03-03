@@ -8,17 +8,27 @@ namespace Atmos::Asset
     class ImageAsset final : public FileAsset<ImageAssetData, ImageAsset>
     {
     public:
+        using Dimension = int;
+        using GridDimension = int;
+    public:
         explicit ImageAsset(Init init);
+        ImageAsset(Init init,
+            const ::Atmos::Name& name,
+            DataPtr&& data,
+            GridDimension columns,
+            GridDimension rows);
         ImageAsset(ImageAsset&& arg) noexcept;
 
         ImageAsset& operator=(ImageAsset&& arg) noexcept;
     public:
-        using Dimension = int;
         [[nodiscard]] Dimension Width() const;
         [[nodiscard]] Dimension Height() const;
+
+        [[nodiscard]] GridDimension Columns() const;
+        [[nodiscard]] GridDimension Rows() const;
     private:
-        Dimension width = 0;
-        Dimension height = 0;
+        GridDimension columns = 0;
+        GridDimension rows = 0;
     private:
         INSCRIPTION_ACCESS;
     };
@@ -33,8 +43,10 @@ namespace Arca
         static inline const TypeName typeName = "ImageAsset";
         static bool ShouldCreate(
             Reliquary& reliquary,
-            const ::Atmos::Name& fileName,
-            ::Atmos::Asset::ImageAsset::DataPtr&& data);
+            const ::Atmos::Name& name,
+            ::Atmos::Asset::ImageAsset::DataPtr&& data,
+            ::Atmos::Asset::ImageAsset::GridDimension columns,
+            ::Atmos::Asset::ImageAsset::GridDimension rows);
     };
 }
 

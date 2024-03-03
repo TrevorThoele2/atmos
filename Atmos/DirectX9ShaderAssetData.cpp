@@ -4,17 +4,13 @@
 
 namespace Atmos::Render::DirectX9
 {
-    ShaderAssetDataImplementation::ShaderAssetDataImplementation(LPD3DXEFFECT effect) : effect(effect)
+    ShaderAssetDataImplementation::ShaderAssetDataImplementation(LPD3DXEFFECT effect, const String& entryPoint) :
+        ShaderAssetData(entryPoint), effect(effect)
     {}
 
     ShaderAssetDataImplementation::~ShaderAssetDataImplementation()
     {
         effect->Release();
-    }
-
-    std::unique_ptr<Asset::ShaderAssetData> ShaderAssetDataImplementation::Clone() const
-    {
-        return std::make_unique<ShaderAssetDataImplementation>(*this);
     }
 
     void ShaderAssetDataImplementation::Reset()
@@ -23,7 +19,7 @@ namespace Atmos::Render::DirectX9
             effect->OnResetDevice(),
             []() { return Logging::Log(
                 "Resetting shader failed.",
-                Logging::Severity::SevereError); });
+                Logging::Severity::Error); });
     }
 
     void ShaderAssetDataImplementation::Release()
@@ -32,7 +28,7 @@ namespace Atmos::Render::DirectX9
             effect->OnLostDevice(),
             []() { return Logging::Log(
                 "Releasing shader failed.",
-                Logging::Severity::SevereError); });
+                Logging::Severity::Error); });
     }
 
     auto ShaderAssetDataImplementation::Begin() const -> PassCount

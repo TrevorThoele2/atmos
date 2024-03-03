@@ -27,10 +27,10 @@ namespace Atmos
         using Properties = InitializationProperties;
 
         auto window = std::make_unique<Window::WindowsWindow>(nCmdShow, className);
-        auto input = std::make_unique<Input::WindowsManager>(window->Hwnd());
+        auto input = std::make_unique<Input::WindowsManager>(HWND(window->Handle()));
         auto graphics = std::make_unique<Render::DirectX9::GraphicsManager>
         (
-            window->Hwnd(),
+            HWND(window->Handle()),
             window->IsFullscreen()
         );
         auto audio = std::make_unique<Audio::DirectX9AudioManager>();

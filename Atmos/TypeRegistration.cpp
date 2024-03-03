@@ -1,15 +1,16 @@
 #include "TypeRegistration.h"
 
-#include "StaticMaterialView.h"
-#include "DynamicMaterialView.h"
-#include "MaterialViewCurator.h"
+#include "FileCurator.h"
+
+#include "StaticImage.h"
+#include "DynamicImage.h"
+#include "ImageCurator.h"
 #include "LineCurator.h"
 #include "RenderCurator.h"
 #include "GraphicsCurator.h"
 #include "Camera.h"
 #include "CameraCurator.h"
 #include "AncillarySurface.h"
-#include "Canvas.h"
 #include "SurfaceCurator.h"
 
 #include "AudioAsset.h"
@@ -18,6 +19,11 @@
 #include "ScriptAsset.h"
 #include "ShaderAsset.h"
 #include "MappedAssets.h"
+#include "AudioAssetCurator.h"
+#include "ImageAssetCurator.h"
+#include "MaterialAssetCurator.h"
+#include "ScriptAssetCurator.h"
+#include "ShaderAssetCurator.h"
 
 #include "TimeSettings.h"
 #include "FrameStopwatch.h"
@@ -51,7 +57,7 @@ namespace Atmos
         Arca::ReliquaryOrigin& origin,
         Arca::Reliquary& globalReliquary)
     {
-        Render::RegisterTypes(origin, *Arca::Postulate<Render::GraphicsManager*>(globalReliquary));
+        Render::RegisterTypes(origin);
         Time::RegisterTypes(origin);
 
         Input::RegisterGlobalRedirectionTypes(origin, globalReliquary);
@@ -67,16 +73,25 @@ namespace Atmos
         }
     }
 
+    namespace File
+    {
+        void RegisterTypes(Arca::ReliquaryOrigin& origin)
+        {
+            origin
+                .Register<Curator>();
+        }
+    }
+
     namespace Render
     {
-        void RegisterTypes(Arca::ReliquaryOrigin& origin, GraphicsManager& graphicsManager)
+        void RegisterTypes(Arca::ReliquaryOrigin& origin)
         {
             origin
                 .Register<Bounds>()
-                .Register<MaterialViewCore>()
-                .Register<StaticMaterialView>()
-                .Register<DynamicMaterialView>()
-                .Register<MaterialViewCurator>()
+                .Register<ImageCore>()
+                .Register<StaticImage>()
+                .Register<DynamicImage>()
+                .Register<ImageCurator>()
                 .Register<Line>()
                 .Register<LineCurator>()
                 .Register<Camera>()
@@ -84,9 +99,8 @@ namespace Atmos
                 .Register<Curator>()
                 .Register<GraphicsCurator>()
                 .Register<SurfaceCore>()
-                .Register<MainSurface>(graphicsManager.CreateMainSurfaceData())
+                .Register<MainSurface>()
                 .Register<AncillarySurface>()
-                .Register<Canvas>()
                 .Register<SurfaceCurator>();
         }
 
@@ -98,7 +112,7 @@ namespace Atmos
         Arca::Stage Stage()
         {
             Arca::Stage stage;
-            stage.Add<MaterialViewCurator>();
+            stage.Add<ImageCurator>();
             stage.Add<LineCurator>();
             stage.Add<CameraCurator>();
             stage.Add<Curator>();
@@ -129,7 +143,12 @@ namespace Atmos
                 .Register<MappedAssets<ImageAsset>>()
                 .Register<MappedAssets<MaterialAsset>>()
                 .Register<MappedAssets<ScriptAsset>>()
-                .Register<MappedAssets<ShaderAsset>>();
+                .Register<MappedAssets<ShaderAsset>>()
+                .Register<AudioAssetCurator>()
+                .Register<ImageAssetCurator>()
+                .Register<MaterialAssetCurator>()
+                .Register<ScriptAssetCurator>()
+                .Register<ShaderAssetCurator>();
         }
     }
 

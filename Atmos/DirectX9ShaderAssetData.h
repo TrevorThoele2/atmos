@@ -2,26 +2,25 @@
 
 #include "ShaderAssetData.h"
 #include "DirectX9Includes.h"
-#include "DirectX9GraphicsManager.h"
 
 namespace Atmos::Render::DirectX9
 {
     class ShaderAssetDataImplementation final : public Asset::ShaderAssetData
     {
     public:
-        explicit ShaderAssetDataImplementation(LPD3DXEFFECT effect);
+        using PassCount = unsigned int;
+    public:
+        explicit ShaderAssetDataImplementation(LPD3DXEFFECT effect, const String& entryPoint);
         ~ShaderAssetDataImplementation();
 
-        [[nodiscard]] std::unique_ptr<ShaderAssetData> Clone() const override;
+        void Reset();
+        void Release();
 
-        void Reset() override;
-        void Release() override;
+        PassCount Begin() const;
+        void End() const;
 
-        PassCount Begin() const override;
-        void End() const override;
-
-        void BeginNextPass(PassCount pass) const override;
-        void EndPass() const override;
+        void BeginNextPass(PassCount pass) const;
+        void EndPass() const;
 
         [[nodiscard]] LPD3DXEFFECT Effect() const;
     private:

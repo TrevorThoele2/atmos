@@ -21,6 +21,11 @@ namespace Atmos::Window
         return true;
     }
 
+    void* NullWindow::Handle() const
+    {
+        return nullptr;
+    }
+
     void NullWindow::SetupImpl()
     {}
 

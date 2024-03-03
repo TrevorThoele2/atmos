@@ -1,5 +1,7 @@
 #pragma once
 
+#include "ImageRender.h"
+#include "LineRender.h"
 #include "ScreenSize.h"
 
 namespace Atmos::Render
@@ -9,10 +11,10 @@ namespace Atmos::Render
     public:
         virtual ~SurfaceData() = 0;
 
-        virtual void Present() = 0;
+        virtual void StageRender(const ImageRender& imageRender) = 0;
+        virtual void StageRender(const LineRender& lineRender) = 0;
 
-        virtual void Reset() = 0;
-        virtual void Release() = 0;
+        virtual void DrawFrame(const Color& backgroundColor) = 0;
 
         [[nodiscard]] virtual ScreenSize Size() const = 0;
     };

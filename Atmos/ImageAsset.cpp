@@ -7,35 +7,69 @@ namespace Atmos::Asset
     ImageAsset::ImageAsset(Init init) : FileAsset(init)
     {}
 
+    ImageAsset::ImageAsset(
+        Init init,
+        const ::Atmos::Name& name,
+        DataPtr&& data,
+        GridDimension columns,
+        GridDimension rows)
+        :
+        FileAsset(init, name, std::move(data)),
+        columns(columns),
+        rows(rows)
+    {}
+
     ImageAsset::ImageAsset(ImageAsset&& arg) noexcept :
-        FileAsset(std::move(arg)), width(arg.width), height(arg.height)
+        FileAsset(std::move(arg)),
+        columns(arg.columns),
+        rows(arg.rows)
     {}
 
     ImageAsset& ImageAsset::operator=(ImageAsset&& arg) noexcept
     {
-        width = arg.width;
-        height = arg.height;
         FileAsset::operator=(std::move(arg));
+        columns = arg.columns;
+        rows = arg.rows;
         return *this;
     }
 
     auto ImageAsset::Width() const -> Dimension
     {
-        return width;
+        if (!HasFileData())
+            return 0;
+
+        return FileData()->Width();
     }
 
     auto ImageAsset::Height() const -> Dimension
     {
-        return height;
+        if (!HasFileData())
+            return 0;
+
+        return FileData()->Height();
+    }
+
+    auto ImageAsset::Columns() const -> GridDimension
+    {
+        return columns;
+    }
+
+    auto ImageAsset::Rows() const -> GridDimension
+    {
+        return rows;
     }
 }
 
 namespace Arca
 {
     bool Traits<::Atmos::Asset::ImageAsset>::ShouldCreate(
-        Reliquary& reliquary, const ::Atmos::Name& fileName, ::Atmos::Asset::ImageAsset::DataPtr&& data)
+        Reliquary& reliquary,
+        const ::Atmos::Name& name,
+        ::Atmos::Asset::ImageAsset::DataPtr&&,
+        ::Atmos::Asset::ImageAsset::GridDimension,
+        ::Atmos::Asset::ImageAsset::GridDimension)
     {
-        return Atmos::Asset::ShouldCreateAsset<::Atmos::Asset::ImageAsset>(reliquary, fileName);
+        return Atmos::Asset::ShouldCreateAsset<::Atmos::Asset::ImageAsset>(reliquary, name);
     }
 }
 
@@ -46,7 +80,5 @@ namespace Inscription
     {
         BaseScriven<Atmos::Asset::FileAsset<Atmos::Asset::ImageAssetData, Atmos::Asset::ImageAsset>>(
             object, archive);
-        archive(object.width);
-        archive(object.height);
     }
 }

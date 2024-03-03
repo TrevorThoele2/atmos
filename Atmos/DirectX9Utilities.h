@@ -19,7 +19,6 @@ namespace Atmos::Render::DirectX9
     D3DCOLOR ToDirectXColor(const Color& color);
 
     bool IsSuccess(HRESULT hr);
-
     bool IsError(HRESULT hr);
 
     template<class Function>

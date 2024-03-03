@@ -9,6 +9,7 @@ namespace Atmos::Asset
     {
     public:
         explicit AudioAsset(Init init);
+        AudioAsset(Init init, const ::Atmos::Name& name, DataPtr&& data);
         AudioAsset(AudioAsset&& arg) noexcept;
 
         AudioAsset& operator=(AudioAsset&& arg) noexcept;

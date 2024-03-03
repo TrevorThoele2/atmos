@@ -78,11 +78,6 @@ namespace Atmos::Audio
             waveFormat(format)
         {}
 
-        [[nodiscard]] std::unique_ptr<AudioAssetData> Clone() const override
-        {
-            return std::unique_ptr<AudioAssetData>(std::make_unique<AudioAssetDataImplementation>(*this));
-        }
-
         [[nodiscard]] std::unique_ptr<Asset::AudioAssetInstanceData> CreateInstanceData() const override
         {
             return std::make_unique<AudioAssetInstanceDataImplementation>(*owner, buffer, waveFormat);

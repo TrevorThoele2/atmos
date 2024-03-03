@@ -11,8 +11,7 @@ namespace Atmos::Render
     {
         Arca::RelicID id;
 
-        std::optional<Position2D> from;
-        std::optional<Position2D> to;
+        std::optional<std::vector<Position2D>> points;
         std::optional<Position2D::Value> z;
     };
 }

@@ -1,65 +1,19 @@
 #include "MockGraphicsManager.h"
 
+#include "MockSurfaceData.h"
+
 class ImageAssetDataImplementation final : public Asset::ImageAssetData
 {
 public:
-    ImageAssetDataImplementation() = default;
-
-    [[nodiscard]] std::unique_ptr<ImageAssetData> Clone() const override
-    {
-        return std::make_unique<ImageAssetDataImplementation>(*this);
-    }
+    ImageAssetDataImplementation() : ImageAssetData(0, 0)
+    {}
 };
 
 class ShaderAssetDataImplementation final : public Asset::ShaderAssetData
 {
 public:
-    ShaderAssetDataImplementation() = default;
-
-    [[nodiscard]] std::unique_ptr<ShaderAssetData> Clone() const override
-    {
-        return std::make_unique<ShaderAssetDataImplementation>(*this);
-    }
-
-    void Reset() override
+    ShaderAssetDataImplementation() : ShaderAssetData("")
     {}
-
-    void Release() override
-    {}
-
-    PassCount Begin() const override
-    {
-        return 0;
-    }
-
-    void End() const override
-    {}
-
-    void BeginNextPass(PassCount pass) const override
-    {}
-
-    void EndPass() const override
-    {}
-};
-
-class SurfaceDataImplementation final : public SurfaceData
-{
-public:
-    SurfaceDataImplementation() = default;
-
-    void Present() override
-    {}
-
-    void Reset() override
-    {}
-
-    void Release() override
-    {}
-
-    [[nodiscard]] ScreenSize Size() const override
-    {
-        return { 0, 0 };
-    }
 };
 
 class CanvasDataImplementation final : public CanvasData
@@ -84,20 +38,7 @@ public:
 
     void Clear(const Color& color) override
     {}
-
-    void Release() override
-    {}
-
-    void Reset(ScreenSize size) override
-    {}
 };
-
-MockGraphicsManager::MockGraphicsManager() :
-    GraphicsManager(std::make_unique<MockRenderer>()), renderer(dynamic_cast<MockRenderer&>(Renderer()))
-{}
-
-void MockGraphicsManager::Initialize(Arca::Reliquary& reliquary)
-{}
 
 bool MockGraphicsManager::IsOk() const
 {
@@ -105,26 +46,27 @@ bool MockGraphicsManager::IsOk() const
 }
 
 std::unique_ptr<Asset::ImageAssetData> MockGraphicsManager::CreateImageData(
-    const Buffer& buffer, const Name& name)
+    const Buffer& buffer, const Name& name, const Size2D& size)
 {
     return std::make_unique<ImageAssetDataImplementation>();
 }
 
 std::unique_ptr<Asset::ShaderAssetData> MockGraphicsManager::CreateShaderData(
-    const Buffer& buffer, const Name& name)
+    const Buffer& buffer, const Name& name, const String& entryPoint)
 {
     return std::make_unique<ShaderAssetDataImplementation>();
 }
 
-std::unique_ptr<SurfaceData> MockGraphicsManager::CreateMainSurfaceData()
+std::unique_ptr<SurfaceData> MockGraphicsManager::CreateMainSurfaceData(
+    void* window)
 {
-    return std::make_unique<SurfaceDataImplementation>();
+    return std::make_unique<MockSurfaceDataImplementation>();
 }
 
 std::unique_ptr<SurfaceData> MockGraphicsManager::CreateSurfaceData(
     void* window)
 {
-    return std::make_unique<SurfaceDataImplementation>();
+    return std::make_unique<MockSurfaceDataImplementation>();
 }
 
 std::unique_ptr<CanvasData> MockGraphicsManager::CreateCanvasData(
@@ -136,13 +78,10 @@ std::unique_ptr<CanvasData> MockGraphicsManager::CreateCanvasData(
 void MockGraphicsManager::SetFullscreen(bool set)
 {}
 
-void MockGraphicsManager::ClearStencil(const Color& color)
-{}
-
-void MockGraphicsManager::SetRenderState(RenderState state, bool set)
-{}
-
 void MockGraphicsManager::ChangeVerticalSync(bool set)
+{}
+
+void MockGraphicsManager::InitializeImpl()
 {}
 
 bool MockGraphicsManager::ShouldReconstructInternals() const
@@ -150,5 +89,5 @@ bool MockGraphicsManager::ShouldReconstructInternals() const
     return false;
 }
 
-void MockGraphicsManager::ReconstructInternals(const ScreenSize& screenSize)
+void MockGraphicsManager::ReconstructInternals(GraphicsReconstructionObjects objects)
 {}

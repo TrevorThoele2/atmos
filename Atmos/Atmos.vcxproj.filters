@@ -57,9 +57,6 @@
     <Filter Include="Source Files\Serialization">
       <UniqueIdentifier>{3be4b79c-f407-45cc-8b0d-561a7fc1f4ff}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Render\Canvas">
-      <UniqueIdentifier>{23d45b18-d542-40bf-8eaa-bffdb2cb6506}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\World">
       <UniqueIdentifier>{4fb2003e-b494-4c96-a9d0-cd8eeee46466}</UniqueIdentifier>
     </Filter>
@@ -213,9 +210,6 @@
     <Filter Include="Header Files\World\Serialization">
       <UniqueIdentifier>{44efc06a-e12c-4150-9914-519b00d8e8e2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Render\Canvas">
-      <UniqueIdentifier>{39e2655d-4c18-448f-8d79-53c15bf8a058}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Entity">
       <UniqueIdentifier>{fb6b57fb-80b5-434b-91d3-f9912ea9f605}</UniqueIdentifier>
     </Filter>
@@ -318,12 +312,6 @@
     <Filter Include="Header Files\World\Serialization\World">
       <UniqueIdentifier>{800b0608-37d4-410d-9b4e-8790474a95f8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Render\MaterialView">
-      <UniqueIdentifier>{e25e5bfa-b747-4420-ab7e-45c86acd0195}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Render\MaterialView">
-      <UniqueIdentifier>{bdbf69b8-7408-4c63-b60b-5e8426251269}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Render\DirectX9">
       <UniqueIdentifier>{18b9970d-ad36-46b7-9423-3eb34cb43db6}</UniqueIdentifier>
     </Filter>
@@ -363,6 +351,66 @@
     <Filter Include="Source Files\World\Map">
       <UniqueIdentifier>{40b208f4-b183-40ed-ad68-e21106ffe219}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Render\Vulkan">
+      <UniqueIdentifier>{79b28eaf-dc4d-48da-a369-337db5813159}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Render\Vulkan">
+      <UniqueIdentifier>{3a303106-4c53-4a2e-b0f3-47a8167172bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Render\Vulkan\Data">
+      <UniqueIdentifier>{d516b839-6a19-45e8-bda1-1f9f5115a3f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Render\Vulkan\Data">
+      <UniqueIdentifier>{4aeba525-17c5-415f-8a91-25fa5d9248d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Render\Vulkan\Structures">
+      <UniqueIdentifier>{fcebf7ad-4ec0-4b45-bdf6-53c9be308fbe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Render\Vulkan\Structures">
+      <UniqueIdentifier>{f3c88a05-525a-4d4a-901d-86476b2fd082}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Render\Vulkan\Memory">
+      <UniqueIdentifier>{d6cef97a-cfc9-454b-85a9-c141f92da0f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Render\Vulkan\Memory">
+      <UniqueIdentifier>{b2462a96-7462-4859-bf70-e1e12a95327e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Render\Vulkan\Commands">
+      <UniqueIdentifier>{31823ae8-d26c-4246-9a89-6fb7dbedc4c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Render\Vulkan\Commands">
+      <UniqueIdentifier>{399ed91a-d711-45b2-b132-d91ce07d51b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Render\Vulkan\Images">
+      <UniqueIdentifier>{ce520213-bb07-4a70-8dcd-149efaaae638}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Render\Vulkan\Images">
+      <UniqueIdentifier>{3d47f82b-39ab-43e0-b822-1acc3289b34e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Render\Image">
+      <UniqueIdentifier>{e25e5bfa-b747-4420-ab7e-45c86acd0195}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Render\Image">
+      <UniqueIdentifier>{bdbf69b8-7408-4c63-b60b-5e8426251269}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Render\Vulkan\Swapchain">
+      <UniqueIdentifier>{0f581245-d8c8-42f3-8a6b-b620909f0141}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Render\Vulkan\Swapchain">
+      <UniqueIdentifier>{66ffd2e6-d80a-4b50-853d-b3523056f545}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GlobalInit">
+      <UniqueIdentifier>{e7e37447-60d3-402c-a51d-d5764888c4c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GlobalInit">
+      <UniqueIdentifier>{069a4c72-99af-4bef-9f36-ed9729ba7423}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Render\Vulkan\Descriptors">
+      <UniqueIdentifier>{8599f520-55ff-42e1-911a-33240b2eeb63}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Render\Descriptors">
+      <UniqueIdentifier>{0dea2241-bcac-4e8e-ae45-c7908ac859da}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FieldDestination.h">
@@ -400,12 +448,6 @@
     </ClInclude>
     <ClInclude Include="Buffer.h">
       <Filter>Header Files\Helper</Filter>
-    </ClInclude>
-    <ClInclude Include="CanvasView.h">
-      <Filter>Header Files\Render\Canvas</Filter>
-    </ClInclude>
-    <ClInclude Include="Canvas.h">
-      <Filter>Header Files\Render\Canvas</Filter>
     </ClInclude>
     <ClInclude Include="Music.h">
       <Filter>Header Files\Audio</Filter>
@@ -929,9 +971,6 @@
     <ClInclude Include="GraphicsCurator.h">
       <Filter>Header Files\Render</Filter>
     </ClInclude>
-    <ClInclude Include="CanvasViewCurator.h">
-      <Filter>Header Files\Render\Canvas</Filter>
-    </ClInclude>
     <ClInclude Include="Bounds.h">
       <Filter>Header Files\Position\Object</Filter>
     </ClInclude>
@@ -1010,24 +1049,6 @@
     <ClInclude Include="SparseRegion.h">
       <Filter>Header Files\Grid</Filter>
     </ClInclude>
-    <ClInclude Include="MaterialViewCurator.h">
-      <Filter>Header Files\Render\MaterialView</Filter>
-    </ClInclude>
-    <ClInclude Include="StaticMaterialView.h">
-      <Filter>Header Files\Render\MaterialView</Filter>
-    </ClInclude>
-    <ClInclude Include="DynamicMaterialView.h">
-      <Filter>Header Files\Render\MaterialView</Filter>
-    </ClInclude>
-    <ClInclude Include="MaterialViewCore.h">
-      <Filter>Header Files\Render\MaterialView</Filter>
-    </ClInclude>
-    <ClInclude Include="MaterialRender.h">
-      <Filter>Header Files\Render\MaterialView</Filter>
-    </ClInclude>
-    <ClInclude Include="CanvasRender.h">
-      <Filter>Header Files\Render\Canvas</Filter>
-    </ClInclude>
     <ClInclude Include="WorldFileExtension.h">
       <Filter>Header Files\World\Serialization\World</Filter>
     </ClInclude>
@@ -1079,9 +1100,6 @@
     <ClInclude Include="Line.h">
       <Filter>Header Files\Render\Line</Filter>
     </ClInclude>
-    <ClInclude Include="ChangeMaterialViewCore.h">
-      <Filter>Header Files\Render\MaterialView</Filter>
-    </ClInclude>
     <ClInclude Include="FrameStartCurator.h">
       <Filter>Header Files\Engine</Filter>
     </ClInclude>
@@ -1122,12 +1140,6 @@
       <Filter>Header Files\Assets</Filter>
     </ClInclude>
     <ClInclude Include="Asset.h">
-      <Filter>Header Files\Assets</Filter>
-    </ClInclude>
-    <ClInclude Include="AssetFileCurator.h">
-      <Filter>Header Files\Assets</Filter>
-    </ClInclude>
-    <ClInclude Include="ExtractAsset.h">
       <Filter>Header Files\Assets</Filter>
     </ClInclude>
     <ClInclude Include="UnrecognizedAudioFormat.h">
@@ -1172,9 +1184,6 @@
     <ClInclude Include="DirectX9SurfaceData.h">
       <Filter>Header Files\Render\DirectX9\Data</Filter>
     </ClInclude>
-    <ClInclude Include="DirectX9CanvasData.h">
-      <Filter>Header Files\Render\DirectX9\Data</Filter>
-    </ClInclude>
     <ClInclude Include="DirectX9ShaderAssetData.h">
       <Filter>Header Files\Render\DirectX9\Data</Filter>
     </ClInclude>
@@ -1192,12 +1201,6 @@
     </ClInclude>
     <ClInclude Include="ShaderAssetData.h">
       <Filter>Header Files\Assets\Shader</Filter>
-    </ClInclude>
-    <ClInclude Include="CanvasData.h">
-      <Filter>Header Files\Render\Canvas</Filter>
-    </ClInclude>
-    <ClInclude Include="Renderer.h">
-      <Filter>Header Files\Render</Filter>
     </ClInclude>
     <ClInclude Include="AngelScriptAssetData.h">
       <Filter>Header Files\Script\AngelScript</Filter>
@@ -1255,6 +1258,135 @@
     </ClInclude>
     <ClInclude Include="FilePath.h">
       <Filter>Header Files\File</Filter>
+    </ClInclude>
+    <ClInclude Include="CreateSurfaceData.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicsError.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="ExtractFile.h">
+      <Filter>Header Files\File</Filter>
+    </ClInclude>
+    <ClInclude Include="FileCurator.h">
+      <Filter>Header Files\File</Filter>
+    </ClInclude>
+    <ClInclude Include="FindAsset.h">
+      <Filter>Header Files\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanGraphicsManager.h">
+      <Filter>Header Files\Render\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanRenderer.h">
+      <Filter>Header Files\Render\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanUtilities.h">
+      <Filter>Header Files\Render\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanSurfaceData.h">
+      <Filter>Header Files\Render\Vulkan\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanIncludes.h">
+      <Filter>Header Files\Render\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanImageAssetData.h">
+      <Filter>Header Files\Render\Vulkan\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanQueueFamilyIndices.h">
+      <Filter>Header Files\Render\Vulkan\Structures</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanMemory.h">
+      <Filter>Header Files\Render\Vulkan\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanBuffer.h">
+      <Filter>Header Files\Render\Vulkan\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanStagedBuffer.h">
+      <Filter>Header Files\Render\Vulkan\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanSingleUseCommandBuffer.h">
+      <Filter>Header Files\Render\Vulkan\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanCreateImageView.h">
+      <Filter>Header Files\Render\Vulkan\Images</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanShaderAssetData.h">
+      <Filter>Header Files\Render\Vulkan\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanPipeline.h">
+      <Filter>Header Files\Render\Vulkan\Structures</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicsReconstructionObjects.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageRender.h">
+      <Filter>Header Files\Render\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="ChangeImageCore.h">
+      <Filter>Header Files\Render\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="DynamicImage.h">
+      <Filter>Header Files\Render\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageCore.h">
+      <Filter>Header Files\Render\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageCurator.h">
+      <Filter>Header Files\Render\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticImage.h">
+      <Filter>Header Files\Render\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="CreateMainSurfaceData.h">
+      <Filter>Header Files\Render\Surface</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanShaderCompiler.h">
+      <Filter>Header Files\Render\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanSwapchainSupportDetails.h">
+      <Filter>Header Files\Render\Vulkan\Swapchain</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanSwapchainSupport.h">
+      <Filter>Header Files\Render\Vulkan\Swapchain</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanLineShaders.h">
+      <Filter>Header Files\Render\Vulkan\Structures</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanUniversalData.h">
+      <Filter>Header Files\Render\Vulkan\Structures</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanVertexInput.h">
+      <Filter>Header Files\Render\Vulkan\Structures</Filter>
+    </ClInclude>
+    <ClInclude Include="CreateImageAssetData.h">
+      <Filter>Header Files\Assets\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="CreateShaderAssetData.h">
+      <Filter>Header Files\Assets\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadImageAsset.h">
+      <Filter>Header Files\Assets\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageAssetType.h">
+      <Filter>Header Files\Assets\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadAssetError.h">
+      <Filter>Header Files\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="GlobalInitializer.h">
+      <Filter>Header Files\GlobalInit</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanPipelineAssembly.h">
+      <Filter>Header Files\Render\Vulkan\Structures</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanPipelineAssemblyOrigin.h">
+      <Filter>Header Files\Render\Vulkan\Structures</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanUniformBufferDescriptor.h">
+      <Filter>Header Files\Render\Vulkan\Descriptors</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanCombinedImageSamplerDescriptor.h">
+      <Filter>Header Files\Render\Vulkan\Descriptors</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1465,12 +1597,6 @@
     <ClCompile Include="NullAudioManager.cpp">
       <Filter>Source Files\Audio</Filter>
     </ClCompile>
-    <ClCompile Include="Canvas.cpp">
-      <Filter>Source Files\Render\Canvas</Filter>
-    </ClCompile>
-    <ClCompile Include="CanvasView.cpp">
-      <Filter>Source Files\Render\Canvas</Filter>
-    </ClCompile>
     <ClCompile Include="NullGraphicsManager.cpp">
       <Filter>Source Files\Render</Filter>
     </ClCompile>
@@ -1612,9 +1738,6 @@
     <ClCompile Include="GraphicsCurator.cpp">
       <Filter>Source Files\Render</Filter>
     </ClCompile>
-    <ClCompile Include="CanvasViewCurator.cpp">
-      <Filter>Source Files\Render\Canvas</Filter>
-    </ClCompile>
     <ClCompile Include="Bounds.cpp">
       <Filter>Source Files\Position\Object</Filter>
     </ClCompile>
@@ -1653,18 +1776,6 @@
     </ClCompile>
     <ClCompile Include="GuiEngineProvider.cpp">
       <Filter>Source Files\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="MaterialViewCurator.cpp">
-      <Filter>Source Files\Render\MaterialView</Filter>
-    </ClCompile>
-    <ClCompile Include="StaticMaterialView.cpp">
-      <Filter>Source Files\Render\MaterialView</Filter>
-    </ClCompile>
-    <ClCompile Include="DynamicMaterialView.cpp">
-      <Filter>Source Files\Render\MaterialView</Filter>
-    </ClCompile>
-    <ClCompile Include="MaterialViewCore.cpp">
-      <Filter>Source Files\Render\MaterialView</Filter>
     </ClCompile>
     <ClCompile Include="InputManager.cpp">
       <Filter>Source Files\Input</Filter>
@@ -1717,9 +1828,6 @@
     <ClCompile Include="AssetCore.cpp">
       <Filter>Source Files\Assets</Filter>
     </ClCompile>
-    <ClCompile Include="AssetFileCurator.cpp">
-      <Filter>Source Files\Assets</Filter>
-    </ClCompile>
     <ClCompile Include="UnrecognizedAudioFormat.cpp">
       <Filter>Source Files\Audio</Filter>
     </ClCompile>
@@ -1747,9 +1855,6 @@
     <ClCompile Include="SurfaceData.cpp">
       <Filter>Source Files\Render\Surface</Filter>
     </ClCompile>
-    <ClCompile Include="DirectX9CanvasData.cpp">
-      <Filter>Source Files\Render\DirectX9\Data</Filter>
-    </ClCompile>
     <ClCompile Include="DirectX9SurfaceData.cpp">
       <Filter>Source Files\Render\DirectX9\Data</Filter>
     </ClCompile>
@@ -1770,12 +1875,6 @@
     </ClCompile>
     <ClCompile Include="ShaderAssetData.cpp">
       <Filter>Source Files\Assets\Shader</Filter>
-    </ClCompile>
-    <ClCompile Include="CanvasData.cpp">
-      <Filter>Source Files\Render\Canvas</Filter>
-    </ClCompile>
-    <ClCompile Include="Renderer.cpp">
-      <Filter>Source Files\Render</Filter>
     </ClCompile>
     <ClCompile Include="AngelScriptAssetData.cpp">
       <Filter>Source Files\Script\AngelScript</Filter>
@@ -1809,6 +1908,90 @@
     </ClCompile>
     <ClCompile Include="Map.cpp">
       <Filter>Source Files\World\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicsError.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="FileCurator.cpp">
+      <Filter>Source Files\File</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanGraphicsManager.cpp">
+      <Filter>Source Files\Render\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanRenderer.cpp">
+      <Filter>Source Files\Render\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanUtilities.cpp">
+      <Filter>Source Files\Render\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanSurfaceData.cpp">
+      <Filter>Source Files\Render\Vulkan\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanImageAssetData.cpp">
+      <Filter>Source Files\Render\Vulkan\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanMemory.cpp">
+      <Filter>Source Files\Render\Vulkan\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanBuffer.cpp">
+      <Filter>Source Files\Render\Vulkan\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanStagedBuffer.cpp">
+      <Filter>Source Files\Render\Vulkan\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanCreateImageView.cpp">
+      <Filter>Source Files\Render\Vulkan\Images</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanShaderAssetData.cpp">
+      <Filter>Source Files\Render\Vulkan\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanPipeline.cpp">
+      <Filter>Source Files\Render\Vulkan\Structures</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanSingleUseCommandBuffer.cpp">
+      <Filter>Source Files\Render\Vulkan\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="DynamicImage.cpp">
+      <Filter>Source Files\Render\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageCore.cpp">
+      <Filter>Source Files\Render\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageCurator.cpp">
+      <Filter>Source Files\Render\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="StaticImage.cpp">
+      <Filter>Source Files\Render\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanShaderCompiler.cpp">
+      <Filter>Source Files\Render\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanSwapchainSupport.cpp">
+      <Filter>Source Files\Render\Vulkan\Swapchain</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanUniversalData.cpp">
+      <Filter>Source Files\Render\Vulkan\Structures</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanVertexInput.cpp">
+      <Filter>Source Files\Render\Vulkan\Structures</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageAssetCurator.cpp">
+      <Filter>Source Files\Assets\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadAssetError.cpp">
+      <Filter>Source Files\Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="GlobalInitializer.cpp">
+      <Filter>Source Files\GlobalInit</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanPipelineAssemblyOrigin.cpp">
+      <Filter>Source Files\Render\Vulkan\Structures</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanCombinedImageSamplerDescriptor.cpp">
+      <Filter>Source Files\Render\Descriptors</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanUniformBufferDescriptor.cpp">
+      <Filter>Source Files\Render\Descriptors</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

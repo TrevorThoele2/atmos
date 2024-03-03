@@ -2,20 +2,22 @@
 
 #include "RenderTests.h"
 
-#include <Atmos/StaticMaterialView.h>
-#include <Atmos/DynamicMaterialView.h>
+#include <Atmos/StaticImage.h>
+#include <Atmos/DynamicImage.h>
 #include <Atmos/Line.h>
 #include <Atmos/ResizeCamera.h>
 #include <Atmos/TypeRegistration.h>
 #include <Atmos/GridCellSize.h>
 #include <Atmos/StringUtility.h>
 #include <Atmos/Camera.h>
+#include <Atmos/MainSurface.h>
 
 #include "DerivedEngine.h"
+#include "MockSurfaceData.h"
 
 using namespace Atmos;
 
-SCENARIO_METHOD(RenderTestsFixture, "rendering material views")
+SCENARIO_METHOD(RenderTestsFixture, "rendering images")
 {
     GIVEN("setup engine with field")
     {
@@ -26,6 +28,9 @@ SCENARIO_METHOD(RenderTestsFixture, "rendering material views")
         RegisterFieldTypes(fieldOrigin, *engine.TheGlobalReliquary());
         World::Field field(0, fieldOrigin.Actualize());
 
+        auto mainSurface = Arca::Index<MainSurface>(field.Reliquary());
+        auto mainSurfaceImplementation = mainSurface->Data<MockSurfaceDataImplementation>();
+
         field.Reliquary().Do<ResizeCamera>(ScreenSize(
             std::numeric_limits<ScreenSize::Dimension>::max(),
             std::numeric_limits<ScreenSize::Dimension>::max()));
@@ -34,7 +39,7 @@ SCENARIO_METHOD(RenderTestsFixture, "rendering material views")
         const auto cameraLeft = camera->ScreenSides().Left();
         const auto cameraTop = camera->ScreenSides().Top();
 
-        WHEN("creating static material views and starting execution")
+        WHEN("creating static images and starting execution")
         {
             auto positions = std::vector<Position3D>
             {
@@ -75,24 +80,24 @@ SCENARIO_METHOD(RenderTestsFixture, "rendering material views")
                     dataGeneration.Random<Size2D::Value>(TestFramework::Range<Size2D::Value>(1, 1000))
                 }
             };
-            field.Reliquary().Do<Arca::Create<StaticMaterialView>>(positions[0], sizes[0]);
-            field.Reliquary().Do<Arca::Create<StaticMaterialView>>(positions[1], sizes[1]);
-            field.Reliquary().Do<Arca::Create<StaticMaterialView>>(positions[2], sizes[2]);
+            field.Reliquary().Do<Arca::Create<StaticImage>>(positions[0], sizes[0]);
+            field.Reliquary().Do<Arca::Create<StaticImage>>(positions[1], sizes[1]);
+            field.Reliquary().Do<Arca::Create<StaticImage>>(positions[2], sizes[2]);
 
             engine.UseField(std::move(field));
             engine.StartExecution();
 
-            THEN("all materials rendered in graphics manager")
+            THEN("all images rendered in graphics manager")
             {
-                auto& materialRenders = engine.mockGraphicsManager->renderer.materialRenders;
-                REQUIRE(materialRenders.size() == 3);
+                auto& imageRenders = mainSurfaceImplementation->imageRenders;
+                REQUIRE(imageRenders.size() == 3);
 
                 for (auto i = 0; i < 3; ++i)
                 {
                     REQUIRE(std::any_of(
-                        materialRenders.begin(),
-                        materialRenders.end(),
-                        [i, &positions, &sizes, cameraLeft, cameraTop](const MaterialRender& entry)
+                        imageRenders.begin(),
+                        imageRenders.end(),
+                        [i, &positions, &sizes, cameraLeft, cameraTop](const ImageRender& entry)
                         {
                             auto expectedPosition = positions[i];
                             expectedPosition.x -= cameraLeft;
@@ -104,7 +109,7 @@ SCENARIO_METHOD(RenderTestsFixture, "rendering material views")
             }
         }
 
-        WHEN("creating dynamic material views and starting execution")
+        WHEN("creating dynamic images and starting execution")
         {
             auto positions = std::vector<Position3D>
             {
@@ -145,24 +150,24 @@ SCENARIO_METHOD(RenderTestsFixture, "rendering material views")
                     dataGeneration.Random<Size2D::Value>(TestFramework::Range<Size2D::Value>(1, 1000))
                 }
             };
-            field.Reliquary().Do<Arca::Create<DynamicMaterialView>>(positions[0], sizes[0]);
-            field.Reliquary().Do<Arca::Create<DynamicMaterialView>>(positions[1], sizes[1]);
-            field.Reliquary().Do<Arca::Create<DynamicMaterialView>>(positions[2], sizes[2]);
+            field.Reliquary().Do<Arca::Create<DynamicImage>>(positions[0], sizes[0]);
+            field.Reliquary().Do<Arca::Create<DynamicImage>>(positions[1], sizes[1]);
+            field.Reliquary().Do<Arca::Create<DynamicImage>>(positions[2], sizes[2]);
 
             engine.UseField(std::move(field));
             engine.StartExecution();
 
-            THEN("all materials rendered in graphics manager")
+            THEN("all images rendered in graphics manager")
             {
-                auto& materialRenders = engine.mockGraphicsManager->renderer.materialRenders;
-                REQUIRE(materialRenders.size() == 3);
+                auto& imageRenders = mainSurfaceImplementation->imageRenders;
+                REQUIRE(imageRenders.size() == 3);
 
                 for (auto i = 0; i < 3; ++i)
                 {
                     REQUIRE(std::any_of(
-                        materialRenders.begin(),
-                        materialRenders.end(),
-                        [i, &positions, &sizes, cameraLeft, cameraTop](const MaterialRender& entry)
+                        imageRenders.begin(),
+                        imageRenders.end(),
+                        [i, &positions, &sizes, cameraLeft, cameraTop](const ImageRender& entry)
                         {
                             auto expectedPosition = positions[i];
                             expectedPosition.x -= cameraLeft;
@@ -187,6 +192,9 @@ SCENARIO_METHOD(RenderTestsFixture, "rendering lines")
         RegisterFieldTypes(fieldOrigin, *engine.TheGlobalReliquary());
         World::Field field(0, fieldOrigin.Actualize());
 
+        const auto mainSurface = Arca::Index<MainSurface>(field.Reliquary());
+        auto mainSurfaceImplementation = mainSurface->Data<MockSurfaceDataImplementation>();
+
         field.Reliquary().Do<ResizeCamera>(ScreenSize(
             std::numeric_limits<ScreenSize::Dimension>::max(),
             std::numeric_limits<ScreenSize::Dimension>::max()));
@@ -197,59 +205,53 @@ SCENARIO_METHOD(RenderTestsFixture, "rendering lines")
 
         WHEN("creating lines and starting execution")
         {
-            auto fromPositions = std::vector<Position3D>
+            auto fromPositions = std::vector<Position2D>
             {
-                Position3D
+                Position2D
                 {
-                    dataGeneration.Random<Position3D::Value>(TestFramework::Range<Position3D::Value>(-1000, 1000)),
-                    dataGeneration.Random<Position3D::Value>(TestFramework::Range<Position3D::Value>(-1000, 1000)),
-                    dataGeneration.Random<Position3D::Value>(TestFramework::Range<Position3D::Value>(-1000, 1000))
+                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000)),
+                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000))
                 },
-                Position3D
+                Position2D
                 {
-                    dataGeneration.Random<Position3D::Value>(TestFramework::Range<Position3D::Value>(-1000, 1000)),
-                    dataGeneration.Random<Position3D::Value>(TestFramework::Range<Position3D::Value>(-1000, 1000)),
-                    dataGeneration.Random<Position3D::Value>(TestFramework::Range<Position3D::Value>(-1000, 1000))
+                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000)),
+                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000))
                 },
-                Position3D
+                Position2D
                 {
-                    dataGeneration.Random<Position3D::Value>(TestFramework::Range<Position3D::Value>(-1000, 1000)),
-                    dataGeneration.Random<Position3D::Value>(TestFramework::Range<Position3D::Value>(-1000, 1000)),
-                    dataGeneration.Random<Position3D::Value>(TestFramework::Range<Position3D::Value>(-1000, 1000))
+                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000)),
+                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000))
                 }
             };
 
-            auto toPositions = std::vector<Position3D>
+            auto toPositions = std::vector<Position2D>
             {
-                Position3D
+                Position2D
                 {
-                    dataGeneration.Random<Position3D::Value>(TestFramework::Range<Position3D::Value>(-1000, 1000)),
-                    dataGeneration.Random<Position3D::Value>(TestFramework::Range<Position3D::Value>(-1000, 1000)),
-                    dataGeneration.Random<Position3D::Value>(TestFramework::Range<Position3D::Value>(-1000, 1000))
+                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000)),
+                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000))
                 },
-                Position3D
+                Position2D
                 {
-                    dataGeneration.Random<Position3D::Value>(TestFramework::Range<Position3D::Value>(-1000, 1000)),
-                    dataGeneration.Random<Position3D::Value>(TestFramework::Range<Position3D::Value>(-1000, 1000)),
-                    dataGeneration.Random<Position3D::Value>(TestFramework::Range<Position3D::Value>(-1000, 1000))
+                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000)),
+                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000))
                 },
-                Position3D
+                Position2D
                 {
-                    dataGeneration.Random<Position3D::Value>(TestFramework::Range<Position3D::Value>(-1000, 1000)),
-                    dataGeneration.Random<Position3D::Value>(TestFramework::Range<Position3D::Value>(-1000, 1000)),
-                    dataGeneration.Random<Position3D::Value>(TestFramework::Range<Position3D::Value>(-1000, 1000))
+                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000)),
+                    dataGeneration.Random<Position2D::Value>(TestFramework::Range<Position2D::Value>(-1000, 1000))
                 }
             };
-            field.Reliquary().Do<Arca::Create<Line>>(fromPositions[0], toPositions[0]);
-            field.Reliquary().Do<Arca::Create<Line>>(fromPositions[1], toPositions[1]);
-            field.Reliquary().Do<Arca::Create<Line>>(fromPositions[2], toPositions[2]);
+            field.Reliquary().Do(Arca::Create<Line>{ std::vector<Position2D>{fromPositions[0], toPositions[0] }});
+            field.Reliquary().Do(Arca::Create<Line>{ std::vector<Position2D>{fromPositions[1], toPositions[1] }});
+            field.Reliquary().Do(Arca::Create<Line>{ std::vector<Position2D>{fromPositions[2], toPositions[2] }});
 
             engine.UseField(std::move(field));
             engine.StartExecution();
 
             THEN("all lines rendered in graphics manager")
             {
-                auto& lineRenders = engine.mockGraphicsManager->renderer.lineRenders;
+                auto& lineRenders = mainSurfaceImplementation->lineRenders;
                 REQUIRE(lineRenders.size() == 3);
 
                 for (auto i = 0; i < 3; ++i)
@@ -267,7 +269,7 @@ SCENARIO_METHOD(RenderTestsFixture, "rendering lines")
                             expectedToPosition.x -= cameraLeft;
                             expectedToPosition.y -= cameraTop;
 
-                            return entry.from == expectedFromPosition && entry.to == expectedToPosition;
+                            return entry.points[0] == expectedFromPosition && entry.points[1] == expectedToPosition;
                         }));
                 }
             }
@@ -275,7 +277,7 @@ SCENARIO_METHOD(RenderTestsFixture, "rendering lines")
     }
 }
 
-SCENARIO_METHOD(RenderTestsFixture, "rendering culled material views")
+SCENARIO_METHOD(RenderTestsFixture, "rendering culled images")
 {
     GIVEN("setup engine with field")
     {
@@ -286,39 +288,42 @@ SCENARIO_METHOD(RenderTestsFixture, "rendering culled material views")
         RegisterFieldTypes(fieldOrigin, *engine.TheGlobalReliquary());
         World::Field field(0, fieldOrigin.Actualize());
 
+        auto mainSurface = Arca::Index<MainSurface>(field.Reliquary());
+        auto mainSurfaceImplementation = mainSurface->Data<MockSurfaceDataImplementation>();
+
         field.Reliquary().Do<ResizeCamera>(ScreenSize(100, 100));
 
         const auto camera = Arca::Index<Camera>(field.Reliquary());
         const auto cameraLeft = camera->ScreenSides().Left();
         const auto cameraTop = camera->ScreenSides().Top();
 
-        WHEN("creating static material views and starting execution")
+        WHEN("creating static images and starting execution")
         {
             static constexpr auto gridCellSize = Grid::CellSize<Position3D::Value>;
             static constexpr auto halfGridCellSize = gridCellSize / 2;
 
-            auto materialView1 = field.Reliquary().Do<Arca::Create<StaticMaterialView>>();
-            auto materialView2 = field.Reliquary().Do<Arca::Create<StaticMaterialView>>(
+            auto image1 = field.Reliquary().Do<Arca::Create<StaticImage>>();
+            auto image2 = field.Reliquary().Do<Arca::Create<StaticImage>>(
                 Position3D{ gridCellSize * -16 + halfGridCellSize, halfGridCellSize, halfGridCellSize },
                 Size2D{ gridCellSize, gridCellSize });
-            auto materialView3 = field.Reliquary().Do<Arca::Create<StaticMaterialView>>(
+            auto image3 = field.Reliquary().Do<Arca::Create<StaticImage>>(
                 Position3D{ gridCellSize + halfGridCellSize, gridCellSize * 4 + halfGridCellSize, halfGridCellSize },
                 Size2D{ gridCellSize, gridCellSize * 16 });
 
             engine.UseField(std::move(field));
             engine.StartExecution();
 
-            THEN("only material views inside the camera are rendered")
+            THEN("only images inside the camera are rendered")
             {
-                auto& materialRenders = engine.mockGraphicsManager->renderer.materialRenders;
-                REQUIRE(materialRenders.size() == 2);
+                auto& imageRenders = mainSurfaceImplementation->imageRenders;
+                REQUIRE(imageRenders.size() == 2);
 
                 REQUIRE(std::any_of(
-                    materialRenders.begin(),
-                    materialRenders.end(),
-                    [&materialView1, cameraLeft, cameraTop](const MaterialRender& entry)
+                    imageRenders.begin(),
+                    imageRenders.end(),
+                    [&image1, cameraLeft, cameraTop](const ImageRender& entry)
                     {
-                        auto expectedPosition = materialView1->Position();
+                        auto expectedPosition = image1->Position();
                         expectedPosition.x -= cameraLeft;
                         expectedPosition.y -= cameraTop;
 
@@ -326,11 +331,11 @@ SCENARIO_METHOD(RenderTestsFixture, "rendering culled material views")
                     }));
 
                 REQUIRE(!std::any_of(
-                    materialRenders.begin(),
-                    materialRenders.end(),
-                    [&materialView2, cameraLeft, cameraTop](const MaterialRender& entry)
+                    imageRenders.begin(),
+                    imageRenders.end(),
+                    [&image2, cameraLeft, cameraTop](const ImageRender& entry)
                     {
-                        auto expectedPosition = materialView2->Position();
+                        auto expectedPosition = image2->Position();
                         expectedPosition.x -= cameraLeft;
                         expectedPosition.y -= cameraTop;
 
@@ -338,11 +343,11 @@ SCENARIO_METHOD(RenderTestsFixture, "rendering culled material views")
                     }));
 
                 REQUIRE(std::any_of(
-                    materialRenders.begin(),
-                    materialRenders.end(),
-                    [&materialView3, cameraLeft, cameraTop](const MaterialRender& entry)
+                    imageRenders.begin(),
+                    imageRenders.end(),
+                    [&image3, cameraLeft, cameraTop](const ImageRender& entry)
                     {
-                        auto expectedPosition = materialView3->Position();
+                        auto expectedPosition = image3->Position();
                         expectedPosition.x -= cameraLeft;
                         expectedPosition.y -= cameraTop;
 

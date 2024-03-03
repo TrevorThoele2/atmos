@@ -22,6 +22,11 @@ bool MockWindow::OnStartFrame()
     return true;
 }
 
+void* MockWindow::Handle() const
+{
+    return nullptr;
+}
+
 void MockWindow::SetupImpl()
 {}
 

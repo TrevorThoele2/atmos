@@ -3,7 +3,11 @@
 #include <Arca/Curator.h>
 
 #include "GraphicsManager.h"
+
 #include "ReconstructGraphics.h"
+#include "CreateImageAssetData.h"
+#include "CreateShaderAssetData.h"
+#include "CreateSurfaceData.h"
 
 namespace Atmos::Render
 {
@@ -13,6 +17,9 @@ namespace Atmos::Render
         explicit GraphicsCurator(Init init);
     public:
         void Handle(const ReconstructGraphics& command);
+        std::unique_ptr<Asset::ImageAssetData> Handle(const Asset::CreateImageAssetData& command);
+        std::unique_ptr<Asset::ShaderAssetData> Handle(const Asset::CreateShaderAssetData& command);
+        std::unique_ptr<SurfaceData> Handle(const CreateSurfaceData& command);
     private:
         Arca::Postulate<GraphicsManager*> manager;
 
@@ -39,7 +46,11 @@ namespace Arca
     {
         static const ObjectType objectType = ObjectType::Curator;
         static inline const TypeName typeName = "GraphicsCurator";
-        using HandledCommands = HandledCommands<Atmos::Render::ReconstructGraphics>;
+        using HandledCommands = HandledCommands<
+            Atmos::Render::ReconstructGraphics,
+            Atmos::Asset::CreateImageAssetData,
+            Atmos::Asset::CreateShaderAssetData,
+            Atmos::Render::CreateSurfaceData>;
     };
 }
 

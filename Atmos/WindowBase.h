@@ -33,6 +33,8 @@ namespace Atmos::Window
         [[nodiscard]] Size ClientSize() const;
         [[nodiscard]] Size WindowSize() const;
         [[nodiscard]] Position StartPosition() const;
+
+        [[nodiscard]] virtual [[nodiscard]] void* Handle() const = 0;
     protected:
         virtual void SetupImpl() = 0;
 
