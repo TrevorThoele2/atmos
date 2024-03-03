@@ -26,6 +26,6 @@ namespace Atmos::Render
 
         void ChangeVerticalSync(bool set) override;
     private:
-        void ReconstructInternals() override;
+        void ReconstructInternals(const ScreenSize& screenSize) override;
     };
 }

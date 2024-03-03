@@ -11,6 +11,7 @@
 
 #include "ResizeCamera.h"
 #include "CameraResized.h"
+#include "ReconstructGraphics.h"
 
 #include "DebugValue.h"
 
@@ -59,7 +60,10 @@ namespace Atmos::Render
         const auto previousSize = camera->size;
         function();
         if (previousSize != camera->size)
+        {
             Owner().Raise<CameraResized>(camera);
+            Owner().Do<ReconstructGraphics>();
+        }
     }
 }
 

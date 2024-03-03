@@ -15,7 +15,21 @@ namespace Atmos::Render
         void Handle(const ReconstructGraphics& command);
     private:
         Arca::Postulate<GraphicsManager*> manager;
+
+        template<class T>
+        std::vector<T*> MutablePointersOf();
     };
+
+    template<class T>
+    std::vector<T*> GraphicsCurator::MutablePointersOf()
+    {
+        auto batch = Owner().Batch<T>();
+        std::vector<T*> returnValue;
+        returnValue.reserve(batch.Size());
+        for (auto& loop : batch)
+            returnValue.push_back(MutablePointer().Of(loop));
+        return returnValue;
+    }
 }
 
 namespace Arca

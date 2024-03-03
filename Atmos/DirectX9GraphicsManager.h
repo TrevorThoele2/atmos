@@ -26,6 +26,8 @@ namespace Atmos::Render::DirectX9
 
         void Initialize(Arca::Reliquary& reliquary) override;
 
+        [[nodiscard]] bool IsOk() const override;
+
         [[nodiscard]] std::unique_ptr<Asset::ImageAssetData> CreateImageData(
             const Buffer& buffer, const Name& name) override;
         [[nodiscard]] std::unique_ptr<Asset::ShaderAssetData> CreateShaderData(
@@ -44,6 +46,9 @@ namespace Atmos::Render::DirectX9
         void ChangeVerticalSync(bool set) override;
 
         [[nodiscard]] LPDIRECT3DDEVICE9 Device() const;
+    protected:
+        [[nodiscard]] bool ShouldReconstructInternals() const override;
+        void ReconstructInternals(const ScreenSize& screenSize) override;
     private:
         HWND hwnd;
         LPDIRECT3D9 d3d;
@@ -51,11 +56,12 @@ namespace Atmos::Render::DirectX9
     private:
         LPDIRECT3DDEVICE9 device;
         [[nodiscard]] LPDIRECT3DDEVICE9 CreateDevice();
-    private:
-        void ReconstructInternals() override;
-
         void SetupPresentationParameters();
         void SetRenderStates() const;
+
+        [[nodiscard]] bool IsDeviceOk() const;
+        [[nodiscard]] bool IsDeviceLost() const;
+        [[nodiscard]] bool IsDeviceNotReset() const;
     private:
         static std::optional<D3DRENDERSTATETYPE> RenderStateToD3D(RenderState renderState);
     };

@@ -16,8 +16,8 @@ namespace Atmos::Render
     {
         debugRenderProfiler.Start();
 
-        auto mainSurfaceData = MutablePointer().Of(mainSurface);
-        mainSurfaceData->RenderStaged();
+        auto mutableMainPointer = MutablePointer().Of(mainSurface);
+        mutableMainPointer->RenderStaged();
 
         debugRenderProfiler.Calculate();
     }

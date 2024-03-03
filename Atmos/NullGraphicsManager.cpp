@@ -127,6 +127,6 @@ namespace Atmos::Render
     void NullGraphicsManager::ChangeVerticalSync(bool set)
     {}
 
-    void NullGraphicsManager::ReconstructInternals()
+    void NullGraphicsManager::ReconstructInternals(const ScreenSize& screenSize)
     {}
 }

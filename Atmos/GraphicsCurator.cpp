@@ -10,30 +10,41 @@ namespace Atmos::Render
         manager(init.owner)
     {}
 
-    void GraphicsCurator::Handle(const ReconstructGraphics&)
+    void GraphicsCurator::Handle(const ReconstructGraphics& reconstructGraphics)
     {
-        auto shaderAssetBatch = Owner().Batch<Asset::ShaderAsset>();
-        for (auto& loop : shaderAssetBatch)
-            MutablePointer().Of(loop)->FileData()->Release();
+        if (!manager->ShouldReconstruct())
+            return;
 
+        auto shaderAssets = MutablePointersOf<Asset::ShaderAsset>();
         auto mainSurface = MutablePointer().Of<MainSurface>();
+        auto ancillarySurfaces = MutablePointersOf<AncillarySurface>();
+        auto canvases = MutablePointersOf<Canvas>();
+
+        for (auto& asset : shaderAssets)
+            asset->FileData()->Release();
+
         mainSurface->Release();
-        for (auto& loop : Owner().Batch<AncillarySurface>())
-            MutablePointer().Of(loop)->Release();
 
-        for (auto& loop : Owner().Batch<Canvas>())
-            MutablePointer().Of(loop)->Release();
+        for (auto& surface : ancillarySurfaces)
+            surface->Release();
 
-        manager->Reconstruct();
+        for (auto& canvas : canvases)
+            canvas->Release();
 
-        for (auto& loop : shaderAssetBatch)
-            MutablePointer().Of(loop)->FileData()->Reset();
+        manager->Reconstruct(reconstructGraphics.screenSize);
 
-        mainSurface->Reset();
-        for (auto& loop : Owner().Batch<AncillarySurface>())
-            MutablePointer().Of(loop)->Reset();
+        if (manager->IsOk())
+        {
+            for (auto& asset : shaderAssets)
+                asset->FileData()->Reset();
 
-        for (auto& loop : Owner().Batch<Canvas>())
-            MutablePointer().Of(loop)->Reset();
+            mainSurface->Reset();
+
+            for (auto& surface : ancillarySurfaces)
+                surface->Reset();
+
+            for (auto& canvas : canvases)
+                canvas->Reset();
+        }
     }
 }

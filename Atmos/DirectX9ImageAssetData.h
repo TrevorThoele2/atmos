@@ -2,7 +2,6 @@
 
 #include "ImageAssetData.h"
 #include "DirectX9Includes.h"
-#include "DirectX9GraphicsManager.h"
 
 namespace Atmos::Render::DirectX9
 {
@@ -14,7 +13,7 @@ namespace Atmos::Render::DirectX9
 
         [[nodiscard]] std::unique_ptr<ImageAssetData> Clone() const override;
 
-        LPDIRECT3DTEXTURE9 Texture() const;
+        [[nodiscard]] LPDIRECT3DTEXTURE9 Texture() const;
     private:
         LPDIRECT3DTEXTURE9 texture;
     };

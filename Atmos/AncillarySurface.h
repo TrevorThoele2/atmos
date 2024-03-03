@@ -4,12 +4,12 @@
 
 namespace Atmos::Render
 {
-    class AncillarySurface : public Surface<AncillarySurface>
+    class AncillarySurface final : public Surface<AncillarySurface>
     {
     public:
         AncillarySurface(Init init, DataPtr&& data);
-
-        void Present();
+    protected:
+        void RenderStagedImpl(GraphicsManager& graphicsManager) override;
     };
 }
 

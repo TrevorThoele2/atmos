@@ -24,8 +24,9 @@ namespace Atmos::Render::DirectX9
     {
         LogIfError(
             swapChain->Present(nullptr, nullptr, nullptr, nullptr, 0),
-            "A swap chain failed when presenting.",
-            Logging::Severity::SevereError);
+            []() { return Logging::Log(
+                "A swap chain failed when presenting.",
+                Logging::Severity::SevereError); });
     }
 
     void SurfaceDataImplementation::Reset()
@@ -40,25 +41,36 @@ namespace Atmos::Render::DirectX9
                 &presentationParameters,
                 &swapChain
             ),
-            "A DirectX device could not create an additional swap chain.",
-            Logging::Severity::SevereError
+            []() { return Logging::Log(
+                "A DirectX device could not create an additional swap chain.",
+                Logging::Severity::SevereError); }
         );
 
-        LogIfError
-        (
-            swapChain->GetBackBuffer(0, D3DBACKBUFFER_TYPE_MONO, &backBuffer),
-            "A DirectX device could not retrieve the back buffer from a swap chain.",
-            Logging::Severity::SevereError
-        );
+        if (swapChain)
+        {
+            LogIfError
+            (
+                swapChain->GetBackBuffer(0, D3DBACKBUFFER_TYPE_MONO, &backBuffer),
+                []() { return Logging::Log(
+                    "A DirectX device could not retrieve the back buffer from a swap chain.",
+                    Logging::Severity::SevereError); }
+            );
+        }
     }
 
     void SurfaceDataImplementation::Release()
     {
-        backBuffer->Release();
-        backBuffer = nullptr;
+        if (backBuffer)
+        {
+            backBuffer->Release();
+            backBuffer = nullptr;
+        }
 
-        swapChain->Release();
-        swapChain = nullptr;
+        if (swapChain)
+        {
+            swapChain->Release();
+            swapChain = nullptr;
+        }
     }
 
     ScreenSize SurfaceDataImplementation::Size() const

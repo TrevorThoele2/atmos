@@ -1,11 +1,14 @@
 #pragma once
 
-#include <Arca/Signal.h>
+#include <Arca/Command.h>
+#include "ScreenSize.h"
 
 namespace Atmos::Render
 {
     struct ReconstructGraphics
-    {};
+    {
+        ScreenSize screenSize;
+    };
 }
 
 namespace Arca

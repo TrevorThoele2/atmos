@@ -47,8 +47,6 @@ namespace Atmos::Render::DirectX9
             std::move(shaderData));
 
         D3DXCreateLine(device, &lineInterface);
-
-        device->GetRenderTarget(0, &mainSurface);
     }
 
     void Renderer::StageRender(const MaterialRender& materialRender)
@@ -104,6 +102,14 @@ namespace Atmos::Render::DirectX9
         StageRender(lineRender.from, lineRender.to, lineRender.z, lineRender.width, lineRender.color);
     }
 
+    void Renderer::RenderStaged(const ScreenSize& screenSize, const Color& backgroundColor)
+    {
+        if (layers.empty())
+            return;
+
+        PushThroughPipeline(screenSize, backgroundColor);
+    }
+
     void Renderer::RenderStaged(const SurfaceData& surface, const Color& backgroundColor)
     {
         if (layers.empty())
@@ -113,62 +119,52 @@ namespace Atmos::Render::DirectX9
         device->GetRenderTarget(0, &previousRenderSurface);
         device->SetRenderTarget(0, dynamic_cast<const SurfaceDataImplementation&>(surface).BackBuffer());
 
-        {
-            D3DXMATRIX projection;
-
-            const auto size(surface.Size());
-            D3DXMatrixOrthoOffCenterLH
-            (
-                &projection,
-                0,
-                static_cast<FLOAT>(size.width),
-                static_cast<FLOAT>(size.height),
-                0,
-                0.0f,
-                1.0f
-            );
-
-            Pipeline pipeline(
-                owner,
-                device,
-                vertexBuffer,
-                indexBuffer,
-                vertexDeclaration,
-                lineInterface,
-                projection,
-                surface.Size());
-            pipeline.Flush(layers, ToDirectXColor(backgroundColor));
-        }
+        PushThroughPipeline(surface.Size(), backgroundColor);
 
         device->SetRenderTarget(0, previousRenderSurface);
-
-        LogIfError(
-            device->Present(nullptr, nullptr, nullptr, nullptr),
-            "The frame is not presentable.",
-            Logging::Severity::SevereError);
     }
 
     void Renderer::OnLostDevice()
     {
-        vertexBuffer->Release();
-        indexBuffer->Release();
-        defaultTexturedImageViewShader->FileDataAs<ShaderAssetDataImplementation>()->Effect()->OnLostDevice();
+        if (vertexBuffer)
+        {
+            vertexBuffer->Release();
+            vertexBuffer = nullptr;
+        }
 
-        LogIfError(
-            lineInterface->OnLostDevice(),
-            "The DirectX line interface was not able to be released.",
-            Logging::Severity::SevereError);
+        if (indexBuffer)
+        {
+            indexBuffer->Release();
+            indexBuffer = nullptr;
+        }
+
+        if (defaultTexturedImageViewShader)
+            defaultTexturedImageViewShader->FileDataAs<ShaderAssetDataImplementation>()->Effect()->OnLostDevice();
+
+        if (lineInterface)
+        {
+            LogIfError(
+                lineInterface->OnLostDevice(),
+                []() { return Logging::Log(
+                    "The DirectX line interface was not able to be released.",
+                    Logging::Severity::SevereError); });
+        }
     }
 
     void Renderer::OnResetDevice()
     {
         InitializeBuffers();
-        defaultTexturedImageViewShader->FileDataAs<ShaderAssetDataImplementation>()->Effect()->OnResetDevice();
+        if (defaultTexturedImageViewShader)
+            defaultTexturedImageViewShader->FileDataAs<ShaderAssetDataImplementation>()->Effect()->OnResetDevice();
 
-        LogIfError(
-            lineInterface->OnResetDevice(),
-            "The DirectX line interface was not able to be reset.",
-            Logging::Severity::SevereError);
+        if (lineInterface)
+        {
+            LogIfError(
+                lineInterface->OnResetDevice(),
+                []() { return Logging::Log(
+                    "The DirectX line interface was not able to be reset.",
+                    Logging::Severity::SevereError); });
+        }
     }
 
     Arca::Index<Asset::ShaderAsset> Renderer::DefaultTexturedImageViewShader() const
@@ -467,6 +463,34 @@ namespace Atmos::Render::DirectX9
         layer->lines.emplace_back(from, to, width, color);
     }
 
+    void Renderer::PushThroughPipeline(const ScreenSize& screenSize, const Color& backgroundColor)
+    {
+        D3DXMATRIX projection;
+
+        const auto size(screenSize);
+        D3DXMatrixOrthoOffCenterLH
+        (
+            &projection,
+            0,
+            static_cast<FLOAT>(size.width),
+            static_cast<FLOAT>(size.height),
+            0,
+            0.0f,
+            1.0f
+        );
+
+        Pipeline pipeline(
+            owner,
+            device,
+            vertexBuffer,
+            indexBuffer,
+            vertexDeclaration,
+            lineInterface,
+            projection,
+            screenSize);
+        pipeline.Flush(layers, ToDirectXColor(backgroundColor));
+    }
+
     Renderer::Pipeline::Pipeline(
         GraphicsManager& manager,
         LPDIRECT3DDEVICE9 device,
@@ -506,25 +530,32 @@ namespace Atmos::Render::DirectX9
         for (auto& layer : layers)
         {
             auto& objects = layer.objects;
-            SetShader(objects.begin()->shader);
-            SetTexture(objects.begin()->tex);
+            if (!objects.empty())
+            {
+                SetShader(objects.begin()->shader);
+                SetTexture(objects.begin()->tex);
 
-            vertexBuffer->Lock(0, 0, &vertexData, D3DLOCK_DISCARD);
-            indexBuffer->Lock(0, 0, &indexData, D3DLOCK_DISCARD);
+                vertexBuffer->Lock(0, 0, &vertexData, D3DLOCK_DISCARD);
+                indexBuffer->Lock(0, 0, &indexData, D3DLOCK_DISCARD);
 
-            for (auto& object : objects)
-                Handle(object);
+                for (auto& object : objects)
+                    Handle(object);
 
-            vertexBuffer->Unlock();
-            indexBuffer->Unlock();
+                vertexBuffer->Unlock();
+                indexBuffer->Unlock();
+            }
 
-            for (auto& line : layer.lines)
-                Handle(line);
+            auto& lines = layer.lines;
+            if (!lines.empty())
+            {
+                lineInterface->Begin();
+                for (auto& line : layer.lines)
+                    Handle(line);
+                lineInterface->End();
+            }
         }
 
         layers.clear();
-        if (vertexCount == 0)
-            return;
 
         DrawEndPrimitives();
 
@@ -535,17 +566,10 @@ namespace Atmos::Render::DirectX9
     {
         const auto cooperativeLevel = device->TestCooperativeLevel();
 
-        // Device is lost but can't reset it
-        if (cooperativeLevel == D3DERR_DEVICELOST)
+        if (cooperativeLevel == D3DERR_DEVICELOST || cooperativeLevel == D3DERR_DEVICENOTRESET)
             return false;
 
-        // Device is lost, and can reset
-        if (cooperativeLevel == D3DERR_DEVICENOTRESET)
-            manager.Reconstruct();
-
         device->BeginScene();
-
-        lineInterface->Begin();
 
         return true;
     }
@@ -554,8 +578,9 @@ namespace Atmos::Render::DirectX9
     {
         LogIfError(
             device->Clear(0, nullptr, D3DCLEAR_TARGET, color, 1.0f, 0),
-            "Could not set background color.",
-            Logging::Severity::SevereError);
+            []() { return Logging::Log(
+                "Could not set background color.",
+                Logging::Severity::SevereError); });
     }
 
     void Renderer::Pipeline::Sort(Layers& layers) const
@@ -678,6 +703,9 @@ namespace Atmos::Render::DirectX9
 
     void Renderer::Pipeline::DrawEndPrimitives()
     {
+        if (vertexCount == 0)
+            return;
+
         DrawPrimitivesCommon();
     }
 
@@ -704,9 +732,13 @@ namespace Atmos::Render::DirectX9
 
     void Renderer::Pipeline::End()
     {
-        lineInterface->End();
-
         device->EndScene();
+
+        LogIfError(
+            device->Present(nullptr, nullptr, nullptr, nullptr),
+            []() { return Logging::Log(
+                "The frame is not presentable.",
+                Logging::Severity::SevereError); });
     }
 
     void Renderer::Pipeline::SetTexture(LPDIRECT3DTEXTURE9 set)

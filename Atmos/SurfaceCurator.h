@@ -9,6 +9,8 @@ namespace Atmos::Render
     class SurfaceCurator : public Arca::Curator
     {
     public:
+        explicit SurfaceCurator(Init init);
+
         void Handle(const ChangeSurfaceBackgroundColor& command);
     };
 }
@@ -20,6 +22,7 @@ namespace Arca
     {
         static const ObjectType objectType = ObjectType::Curator;
         static inline const TypeName typeName = "SurfaceCurator";
+        using HandledCommands = HandledCommands<Atmos::Render::ChangeSurfaceBackgroundColor>;
     };
 }
 

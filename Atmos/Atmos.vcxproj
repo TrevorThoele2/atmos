@@ -339,6 +339,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CanvasData.cpp" />
     <ClCompile Include="CanvasViewCurator.cpp" />
+    <ClCompile Include="ChangeSurfaceBackgroundColor.cpp" />
     <ClCompile Include="CurrentFieldCurator.cpp" />
     <ClCompile Include="CurrentFieldData.cpp" />
     <ClCompile Include="DebugProfiler.cpp" />

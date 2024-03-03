@@ -11,6 +11,7 @@ namespace Atmos::Render
     {
         Arca::RelicID id;
         Color color;
+        ChangeSurfaceBackgroundColor(Arca::RelicID id, Color color);
     };
 }
 

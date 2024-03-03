@@ -1,5 +1,7 @@
 #include "DirectX9ShaderAssetData.h"
 
+#include "DirectX9Utilities.h"
+
 namespace Atmos::Render::DirectX9
 {
     ShaderAssetDataImplementation::ShaderAssetDataImplementation(LPD3DXEFFECT effect) : effect(effect)
@@ -17,12 +19,20 @@ namespace Atmos::Render::DirectX9
 
     void ShaderAssetDataImplementation::Reset()
     {
-        effect->OnResetDevice();
+        LogIfError(
+            effect->OnResetDevice(),
+            []() { return Logging::Log(
+                "Resetting shader failed.",
+                Logging::Severity::SevereError); });
     }
 
     void ShaderAssetDataImplementation::Release()
     {
-        effect->OnLostDevice();
+        LogIfError(
+            effect->OnLostDevice(),
+            []() { return Logging::Log(
+                "Releasing shader failed.",
+                Logging::Severity::SevereError); });
     }
 
     auto ShaderAssetDataImplementation::Begin() const -> PassCount

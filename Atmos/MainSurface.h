@@ -4,11 +4,13 @@
 
 namespace Atmos::Render
 {
-    class MainSurface : public Surface<MainSurface>
+    class MainSurface final : public Surface<MainSurface>
     {
     public:
         MainSurface(Init init, DataPtr&& data);
         MainSurface(MainSurface&& arg) noexcept = default;
+    protected:
+        void RenderStagedImpl(GraphicsManager& graphicsManager) override;
     };
 }
 
