@@ -259,7 +259,7 @@ namespace Atmos::Render::Vulkan
         const auto available = vk::enumerateInstanceExtensionProperties();
         std::set<String> availableNames;
         for (auto& properties : available)
-            availableNames.emplace(properties.extensionName);
+            availableNames.emplace(ToString(properties.extensionName));
 
         const auto unavailableSet = Unavailable(instanceExtensions, availableNames);
         if (!unavailableSet.empty())
@@ -272,7 +272,7 @@ namespace Atmos::Render::Vulkan
         const auto available = vk::enumerateInstanceLayerProperties();
         std::set<String> availableNames;
         for (auto& properties : available)
-            availableNames.emplace(properties.layerName);
+            availableNames.emplace(ToString(properties.layerName));
 
         const auto unavailableSet = Unavailable(instanceLayers, availableNames);
         if (!unavailableSet.empty())
@@ -316,7 +316,7 @@ namespace Atmos::Render::Vulkan
         const auto available = physicalDevice.enumerateDeviceExtensionProperties();
         std::set<String> availableNames;
         for (auto& properties : available)
-            availableNames.emplace(properties.extensionName);
+            availableNames.emplace(ToString(properties.extensionName));
 
         const auto unavailableSet = Unavailable(deviceExtensions, availableNames);
         return unavailableSet.empty();
