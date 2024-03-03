@@ -5,6 +5,8 @@
 
 #include "WorldManager.h"
 
+#include "Logger.h"
+
 namespace Atmos
 {
     class Engine
@@ -21,14 +23,16 @@ namespace Atmos
         void StartExecution();
 
         void Exit();
+
+        [[nodiscard]] Logging::Logger& Logger();
     protected:
         using InitializationProperties = EngineInitializationProperties;
     protected:
-        Engine() = default;
+        Engine(Logging::Logger& logger);
 
         virtual void SetupImplementation() = 0;
 
-        virtual InitializationProperties CreateInitializationProperties() = 0;
+        virtual InitializationProperties CreateInitializationProperties(Logging::Logger& logger) = 0;
 
         virtual void DoExit() = 0;
     private:
@@ -41,7 +45,7 @@ namespace Atmos
             EngineExecution execution;
             World::WorldManager worldManager;
         public:
-            ExecutionContext(World::WorldManager&& worldManager);
+            ExecutionContext(World::WorldManager&& worldManager, Window::WindowBase& window);
         };
 
         using ExecutionContextPtr = std::unique_ptr<ExecutionContext>;
@@ -51,10 +55,15 @@ namespace Atmos
     private:
         struct Managers
         {
+            std::unique_ptr<Asset::ImageManager> imageAssetManager;
+            std::unique_ptr<Window::WindowBase> window;
             std::unique_ptr<Audio::AudioManager> audio;
             std::unique_ptr<Input::Manager> input;
             std::unique_ptr<Render::GraphicsManager> graphics;
+            std::unique_ptr<Scripting::Manager> scripts;
         };
         Managers managers;
+    private:
+        Logging::Logger* logger;
     };
 }

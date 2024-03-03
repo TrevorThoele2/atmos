@@ -1,6 +1,6 @@
 #pragma once
 
-#include "TimeValue.h"
+#include "TimePoint.h"
 
 #include "ScreenPoint.h"
 #include "ScreenSize.h"
@@ -14,8 +14,6 @@ namespace Atmos::Window
         using Size = Spatial::ScreenSize;
     public:
         virtual ~WindowBase() = 0;
-
-        void Setup();
 
         virtual void Show() = 0;
         virtual void Exit() = 0;
@@ -37,7 +35,6 @@ namespace Atmos::Window
         [[nodiscard]] virtual void* Handle() const = 0;
     protected:
         WindowBase() = default;
-        virtual void SetupImpl() = 0;
 
         void SetWindowSize();
 

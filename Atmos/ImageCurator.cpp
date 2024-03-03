@@ -29,7 +29,7 @@ namespace Atmos::Render
             auto& core = *std::get<0>(*index->value);
             auto& bounds = *std::get<1>(*index->value);
             const auto asset = core.asset.Get();
-            const auto material = core.material.Get();
+            const auto material = core.material;
             if (!asset || !material || !asset->Resource())
                 continue;
 
@@ -44,7 +44,8 @@ namespace Atmos::Render
                 asset,
                 assetIndex,
                 asset->Slice(assetIndex),
-                material,
+                material.ID(),
+                material.Get(),
                 Spatial::Point3D
                 {
                     position.x - cameraTopLeft.x,

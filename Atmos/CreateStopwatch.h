@@ -6,5 +6,5 @@
 namespace Atmos::Time
 {
     Stopwatch CreateRealStopwatch();
-    Stopwatch CreateFrameStopwatch(Frame::Information& information);
+    Stopwatch CreateFrameStopwatch(const Frame::Information& information);
 }

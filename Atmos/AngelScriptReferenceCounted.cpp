@@ -1,12 +1,11 @@
 #include "AngelScriptReferenceCounted.h"
 
-namespace Atmos::Script::Angel
+namespace Atmos::Scripting::Angel
 {
     ReferenceCounted::ReferenceCounted() : refCount(1)
     {}
 
-    ReferenceCounted::~ReferenceCounted()
-    {}
+    ReferenceCounted::~ReferenceCounted() = default;
 
     void ReferenceCounted::AddRef()
     {

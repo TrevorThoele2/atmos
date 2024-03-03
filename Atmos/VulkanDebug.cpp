@@ -7,24 +7,10 @@
 
 namespace Atmos::Render::Vulkan
 {
-    Debug::~Debug()
+    Logging::Logger* Debug::logger = nullptr;
+
+    Debug::Debug(vk::Instance instance) : instance(instance)
     {
-        if (!initialized)
-            return;
-
-        const auto destroyDebugUtilsMessenger = reinterpret_cast<PFN_vkDestroyDebugUtilsMessengerEXT>(
-            instance.getProcAddr("vkDestroyDebugUtilsMessengerEXT"));
-        if (destroyDebugUtilsMessenger != nullptr)
-            destroyDebugUtilsMessenger(static_cast<VkInstance>(instance), messenger, nullptr);
-
-        initialized = false;
-    }
-
-    void Debug::Initialize(vk::Instance instance)
-    {
-        if (initialized)
-            return;
-
         const auto createInfo = CreateInfo();
         const auto createDebugUtilsMessenger = reinterpret_cast<PFN_vkCreateDebugUtilsMessengerEXT>(
             instance.getProcAddr("vkCreateDebugUtilsMessengerEXT"));
@@ -33,9 +19,14 @@ namespace Atmos::Render::Vulkan
 
         if (IsError(createDebugUtilsMessenger(static_cast<VkInstance>(instance), &createInfo, nullptr, &messenger)))
             throw GraphicsError("Could not create debug messenger.");
+    }
 
-        this->instance = instance;
-        initialized = true;
+    Debug::~Debug()
+    {
+        const auto destroyDebugUtilsMessenger = reinterpret_cast<PFN_vkDestroyDebugUtilsMessengerEXT>(
+            instance.getProcAddr("vkDestroyDebugUtilsMessengerEXT"));
+        if (destroyDebugUtilsMessenger != nullptr)
+            destroyDebugUtilsMessenger(static_cast<VkInstance>(instance), messenger, nullptr);
     }
 
     VkDebugUtilsMessengerCreateInfoEXT Debug::CreateInfo()
@@ -89,7 +80,7 @@ namespace Atmos::Render::Vulkan
 
         const auto message = pCallbackData->pMessage ? pCallbackData->pMessage : String("No message.");
 
-        Logging::logger.Log(
+        logger->Log(
             String(message),
             severity);
 

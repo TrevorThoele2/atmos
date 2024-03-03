@@ -4,6 +4,8 @@
 
 #include "Stopwatch.h"
 
+#include "Work.h"
+
 #include "DebugProfiler.h"
 
 namespace Atmos::Frame
@@ -13,7 +15,7 @@ namespace Atmos::Frame
     public:
         explicit EndCurator(Init init);
 
-        void Work();
+        void Handle(const Work& command);
     private:
         Time::Stopwatch framesPerSecondStopwatch;
     private:
@@ -28,6 +30,7 @@ namespace Arca
     {
         static const ObjectType objectType = ObjectType::Curator;
         static inline const TypeName typeName = "Atmos::Frame::EndCurator";
+        using HandledCommands = HandledCommands<Atmos::Work>;
     };
 }
 

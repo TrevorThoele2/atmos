@@ -10,13 +10,12 @@
 
 namespace Atmos::Logging
 {
-    class Log
+    struct Log
     {
-    public:
-        const String message;
-        const Severity severity;
-        const std::optional<Details> details;
-    public:
+        String message;
+        Severity severity;
+        std::optional<Details> details;
+
         explicit Log(String message);
         Log(String message, Severity severity);
         Log(String message, const Details& details);

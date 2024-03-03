@@ -4,26 +4,16 @@
 
 namespace Atmos::Render
 {
-    class Color
+    struct Color
     {
-    public:
         using Value = unsigned char;
-
-        Value alpha;
-        Value red;
-        Value green;
-        Value blue;
-    public:
-        Color();
-        Color(Value alpha, Value red, Value green, Value blue);
-        Color(const Color& arg) = default;
-
-        Color& operator=(const Color& arg) = default;
+        Value alpha = 255;
+        Value red = 255;
+        Value green = 255;
+        Value blue = 255;
 
         bool operator==(const Color& arg) const;
         bool operator!=(const Color& arg) const;
-    private:
-        INSCRIPTION_ACCESS;
     };
 }
 

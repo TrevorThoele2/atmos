@@ -4,23 +4,25 @@ namespace Atmos
 {
     class EngineProvider;
 
-    namespace Window
-    {
-        class WindowProvider;
-    }
-
     namespace World
     {
         class WorldManager;
     }
 
+    namespace Window
+    {
+        class WindowBase;
+    }
+
     class EngineExecution
     {
     public:
-        EngineExecution(World::WorldManager& worldManager);
+        EngineExecution(World::WorldManager& worldManager, Window::WindowBase& window);
 
         void Start();
     private:
+        Window::WindowBase* window;
+
         World::WorldManager* worldManager;
     private:
         bool wasFocusedLastPass = false;

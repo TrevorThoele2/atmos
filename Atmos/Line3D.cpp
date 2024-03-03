@@ -24,10 +24,10 @@ namespace Atmos::Spatial
 
     Point3D::Value Line3D::Length() const
     {
-        return std::sqrt(
+        return static_cast<Point3D::Value>(std::sqrt(
             std::pow(second.x - first.x, 2) +
             std::pow(second.y - first.y, 2) +
-            std::pow(second.z - first.z, 2));
+            std::pow(second.z - first.z, 2)));
     }
 
     Angle2D Line3D::Angle(const Line3D& other) const

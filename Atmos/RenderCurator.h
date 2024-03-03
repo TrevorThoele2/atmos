@@ -3,6 +3,7 @@
 #include <Arca/Curator.h>
 
 #include "MainSurface.h"
+#include "Work.h"
 
 #include "DebugProfiler.h"
 
@@ -13,7 +14,7 @@ namespace Atmos::Render
     public:
         explicit Curator(Init init);
 
-        void Work();
+        void Handle(const Work& command);
     private:
         Arca::Index<MainSurface> mainSurface;
     private:
@@ -28,6 +29,7 @@ namespace Arca
     {
         static const ObjectType objectType = ObjectType::Curator;
         static inline TypeName typeName = "Atmos::Render::Curator";
+        using HandledCommands = HandledCommands<Atmos::Work>;
     };
 }
 

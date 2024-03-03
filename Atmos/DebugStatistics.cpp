@@ -4,9 +4,6 @@
 
 namespace Atmos::Debug
 {
-    Statistics::Statistics(Init init) : ClosedTypedRelic(init)
-    {}
-
     Statistics::Profilers::Profilers() :
         input(CreateProfiler()),
         logic(CreateProfiler()),

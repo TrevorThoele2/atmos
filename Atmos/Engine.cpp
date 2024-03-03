@@ -3,8 +3,6 @@
 #include "TypeRegistration.h"
 #include "EngineNotSetup.h"
 
-#include "WindowProvider.h"
-
 #include "LoadAssetsByZipUserContext.h"
 
 namespace Atmos
@@ -16,21 +14,24 @@ namespace Atmos
         if (IsSetup())
             return;
 
-        auto initializationProperties = CreateInitializationProperties();
-        Window::window.Setup(std::move(initializationProperties.window));
-        Window::window->ChangeSize(Spatial::ScreenSize{ 1024, 768 });
-        Window::window->CenterOnScreen();
+        auto initializationProperties = CreateInitializationProperties(*logger);
 
         managers = Managers
         {
+            std::move(initializationProperties.imageAssetManager),
+            std::move(initializationProperties.window),
             std::move(initializationProperties.audioManager),
             std::move(initializationProperties.inputManager),
-            std::move(initializationProperties.graphicsManager)
+            std::move(initializationProperties.graphicsManager),
+            std::move(initializationProperties.scriptManager)
         };
+
+        managers.window->ChangeSize(Spatial::ScreenSize{ 1024, 768 });
+        managers.window->CenterOnScreen();
 
         World::WorldManager worldManager;
 
-        executionContext = std::make_unique<ExecutionContext>(std::move(worldManager));
+        executionContext = std::make_unique<ExecutionContext>(std::move(worldManager), *managers.window);
     }
 
     void Engine::UseField(World::Field&& field, const File::Path& assetsFilePath)
@@ -66,6 +67,14 @@ namespace Atmos
         DoExit();
     }
 
+    Logging::Logger& Engine::Logger()
+    {
+        return *logger;
+    }
+
+    Engine::Engine(Logging::Logger& logger) : logger(&logger)
+    {}
+
     bool Engine::IsSetup() const
     {
         return executionContext != nullptr;
@@ -77,8 +86,8 @@ namespace Atmos
             throw EngineNotSetup();
     }
 
-    Engine::ExecutionContext::ExecutionContext(World::WorldManager&& worldManager) :
-        execution(this->worldManager),
+    Engine::ExecutionContext::ExecutionContext(World::WorldManager&& worldManager, Window::WindowBase& window) :
+        execution(this->worldManager, window),
         worldManager(std::move(worldManager))
     {}
 
@@ -88,18 +97,21 @@ namespace Atmos
 
         RegisterFieldTypes(
             origin,
+            *managers.imageAssetManager,
             *managers.audio,
             *managers.input,
             *managers.graphics,
+            *managers.scripts,
             Spatial::ScreenSize{ 1024, 768 },
-            Window::window->Handle());
+            *managers.window,
+            *logger);
         RegisterFieldStages(origin);
 
         auto reliquary = origin.Actualize();
 
         executionContext->worldManager.Request(fieldID);
 
-        auto loadAssetsUserContext = Inscription::LoadAssetsByZipUserContext(assetsFilePath);
+        auto loadAssetsUserContext = Inscription::LoadAssetsByZipUserContext(assetsFilePath, *logger);
 
         executionContext->worldManager.LockIn(std::move(reliquary), loadAssetsUserContext);
     }

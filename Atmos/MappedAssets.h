@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Arca/ClosedTypedRelic.h>
+#include <Arca/Relic.h>
 #include "Name.h"
 
 #include "StringUtility.h"
@@ -9,16 +9,12 @@ using namespace std::string_literals;
 namespace Atmos::Asset
 {
     template<class AssetT>
-    class Mapped : public Arca::ClosedTypedRelic<Mapped<AssetT>>
+    class Mapped
     {
     public:
         std::unordered_map<Name, Arca::Index<AssetT>> map{};
-    private:
-        using BaseT = Arca::ClosedTypedRelic<Mapped<AssetT>>;
-    protected:
-        using Init = typename BaseT::Init;
     public:
-        explicit Mapped(Init init);
+        Mapped() = default;
     public:
         [[nodiscard]] Arca::Index<AssetT> Find(const Name& name) const;
 
@@ -26,10 +22,6 @@ namespace Atmos::Asset
 
         [[nodiscard]] size_t Size() const;
     };
-
-    template<class AssetT>
-    Mapped<AssetT>::Mapped(Init init) : BaseT(init)
-    {}
 
     template<class AssetT>
     Arca::Index<AssetT> Mapped<AssetT>::Find(const Name& name) const

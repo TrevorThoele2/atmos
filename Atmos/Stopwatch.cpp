@@ -6,7 +6,7 @@ namespace Atmos::Time
     Stopwatch::Stopwatch(TimeRetriever timeRetriever) : timeRetriever(std::move(timeRetriever))
     {}
 
-    Value<> Stopwatch::Start()
+    Point<> Stopwatch::Start()
     {
         start = CurrentTime();
         return start;
@@ -52,10 +52,10 @@ namespace Atmos::Time
 
     bool Stopwatch::IsStarted() const
     {
-        return start != Value<>();
+        return start != Point<>();
     }
 
-    Value<> Stopwatch::CurrentTime() const
+    Point<> Stopwatch::CurrentTime() const
     {
         return timeRetriever();
     }

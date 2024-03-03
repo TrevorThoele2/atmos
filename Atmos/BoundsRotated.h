@@ -11,6 +11,7 @@ namespace Atmos::Spatial
     public:
         Arca::Index<Bounds> bounds;
 
+        BoundsRotated() = default;
         explicit BoundsRotated(Arca::Index<Bounds> bounds) : bounds(std::move(bounds))
         {}
     };

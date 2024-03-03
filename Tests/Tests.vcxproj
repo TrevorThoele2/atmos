@@ -70,11 +70,11 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\Users\Trevor\Documents\ProgrammingProjects\FreeImage\Source;C:\Users\Trevor\Documents\ProgrammingProjects\Catch;C:\Users\Trevor\Documents\ProgrammingProjects\TestFramework;C:\Users\Trevor\Documents\ProgrammingProjects\function2\include;C:\Users\Trevor\Documents\ProgrammingProjects\Inscription;C:\Users\Trevor\Documents\ProgrammingProjects\Chroma;C:\Users\Trevor\Documents\ProgrammingProjects\Arca;C:\Users\Trevor\Documents\ProgrammingProjects\Ogg\Built\include;C:\Users\Trevor\Documents\ProgrammingProjects\AngelScript\sdk\angelscript\include;C:\Users\Trevor\Documents\ProgrammingProjects\WxWidgets\include;C:\Users\Trevor\Documents\ProgrammingProjects\WxWidgets\lib\vc_lib\mswud;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;C:\Users\Trevor\Documents\ProgrammingProjects\Atmos;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\Trevor\Documents\ProgrammingProjects\AngelScript\sdk\angelscript\include;C:\Users\Trevor\Documents\ProgrammingProjects\FreeImage\Source;C:\Users\Trevor\Documents\ProgrammingProjects\Catch;C:\Users\Trevor\Documents\ProgrammingProjects\TestFramework;C:\Users\Trevor\Documents\ProgrammingProjects\function2\include;C:\Users\Trevor\Documents\ProgrammingProjects\Inscription;C:\Users\Trevor\Documents\ProgrammingProjects\Chroma;C:\Users\Trevor\Documents\ProgrammingProjects\Arca;C:\Users\Trevor\Documents\ProgrammingProjects\Ogg\Built\include;C:\Users\Trevor\Documents\ProgrammingProjects\WxWidgets\include;C:\Users\Trevor\Documents\ProgrammingProjects\WxWidgets\lib\vc_lib\mswud;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;C:\Users\Trevor\Documents\ProgrammingProjects\Atmos;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Users\Trevor\Documents\ProgrammingProjects\FreeImage\Dist\x32;C:\Users\Trevor\Documents\ProgrammingProjects\AngelScript\sdk\angelscript\lib;C:\Users\Trevor\Documents\ProgrammingProjects\Ogg\libvorbis-1.3.6\win32\VS2010\Win32\Debug;C:\Users\Trevor\Documents\ProgrammingProjects\Ogg\libogg-1.3.3\win32\VS2015\Win32\Debug;C:\Users\Trevor\Documents\ProgrammingProjects\WxWidgets\lib\vc_lib;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>C:\Users\Trevor\Documents\ProgrammingProjects\FreeImage\Source;C:\Users\Trevor\Documents\ProgrammingProjects\Catch;C:\Users\Trevor\Documents\ProgrammingProjects\TestFramework;C:\Users\Trevor\Documents\ProgrammingProjects\function2\include;C:\Users\Trevor\Documents\ProgrammingProjects\Inscription;C:\Users\Trevor\Documents\ProgrammingProjects\Chroma;C:\Users\Trevor\Documents\ProgrammingProjects\Arca;C:\Users\Trevor\Documents\ProgrammingProjects\Ogg\Built\include;C:\Users\Trevor\Documents\ProgrammingProjects\AngelScript\sdk\angelscript\include;C:\Users\Trevor\Documents\ProgrammingProjects\WxWidgets\include;C:\Users\Trevor\Documents\ProgrammingProjects\WxWidgets\lib\vc_lib\mswu;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;C:\Users\Trevor\Documents\ProgrammingProjects\Atmos;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\Trevor\Documents\ProgrammingProjects\AngelScript\sdk\angelscript\include;C:\Users\Trevor\Documents\ProgrammingProjects\FreeImage\Source;C:\Users\Trevor\Documents\ProgrammingProjects\Catch;C:\Users\Trevor\Documents\ProgrammingProjects\TestFramework;C:\Users\Trevor\Documents\ProgrammingProjects\function2\include;C:\Users\Trevor\Documents\ProgrammingProjects\Inscription;C:\Users\Trevor\Documents\ProgrammingProjects\Chroma;C:\Users\Trevor\Documents\ProgrammingProjects\Arca;C:\Users\Trevor\Documents\ProgrammingProjects\Ogg\Built\include;C:\Users\Trevor\Documents\ProgrammingProjects\WxWidgets\include;C:\Users\Trevor\Documents\ProgrammingProjects\WxWidgets\lib\vc_lib\mswu;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;C:\Users\Trevor\Documents\ProgrammingProjects\Atmos;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Users\Trevor\Documents\ProgrammingProjects\FreeImage\Dist\x32;C:\Users\Trevor\Documents\ProgrammingProjects\AngelScript\sdk\angelscript\lib;C:\Users\Trevor\Documents\ProgrammingProjects\Ogg\libvorbis-1.3.6\win32\VS2010\Win32\Release;C:\Users\Trevor\Documents\ProgrammingProjects\Ogg\libogg-1.3.3\win32\VS2015\Win32\Release;C:\Users\Trevor\Documents\ProgrammingProjects\WxWidgets\lib\vc_lib;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -83,7 +83,6 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -91,7 +90,6 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <AdditionalDependencies>angelscriptd.lib;libogg_static.lib;libvorbis_static.lib;libvorbisfile_static.lib;freeimagelibd.lib;wxmsw31ud_core.lib;wxbase31ud.lib;wxmsw31ud_aui.lib;wxtiffd.lib;wxjpegd.lib;wxpngd.lib;wxzlibd.lib;wxregexud.lib;wxexpatd.lib;winmm.lib;comctl32.lib;rpcrt4.lib;wsock32.lib;wininet.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalOptions>/NODEFAULTLIB:libcmtd.lib %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -115,7 +113,7 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>libogg_static.lib;libvorbis_static.lib;libvorbisfile_static.lib;freeimagelib.lib;wxmsw31u_core.lib;wxbase31u.lib;wxmsw31u_aui.lib;wxtiff.lib;wxjpeg.lib;wxpng.lib;wxzlib.lib;wxregexu.lib;wxexpat.lib;winmm.lib;comctl32.lib;rpcrt4.lib;wsock32.lib;wininet.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>angelscript.lib;libogg_static.lib;libvorbis_static.lib;libvorbisfile_static.lib;freeimagelib.lib;wxmsw31u_core.lib;wxbase31u.lib;wxmsw31u_aui.lib;wxtiff.lib;wxjpeg.lib;wxpng.lib;wxzlib.lib;wxregexu.lib;wxexpat.lib;winmm.lib;comctl32.lib;rpcrt4.lib;wsock32.lib;wininet.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -133,6 +131,23 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AngelScriptAssetTests.cpp" />
+    <ClCompile Include="AngelScriptBoundsTests.cpp" />
+    <ClCompile Include="AngelScriptEntityTests.cpp" />
+    <ClCompile Include="AngelScriptExceptionTests.cpp" />
+    <ClCompile Include="AngelScriptFixture.cpp" />
+    <ClCompile Include="AngelScriptGlobalIndexTests.cpp" />
+    <ClCompile Include="AngelScriptImageCoreTests.cpp" />
+    <ClCompile Include="AngelScriptLocalIndexTests.cpp" />
+    <ClCompile Include="AngelScriptLoggingTests.cpp" />
+    <ClCompile Include="AngelScriptRenderTests.cpp" />
+    <ClCompile Include="AngelScriptScriptTests.cpp" />
+    <ClCompile Include="AngelScriptSpatialAlgorithmsTests.cpp" />
+    <ClCompile Include="AngelScriptSpatialObjectsTests.cpp" />
+    <ClCompile Include="AngelScriptParameterTests.cpp" />
+    <ClCompile Include="AngelScriptStopwatchTests.cpp" />
+    <ClCompile Include="AngelScriptStringUtilityTests.cpp" />
+    <ClCompile Include="AngelScriptTests.cpp" />
     <ClCompile Include="AssetTests.cpp" />
     <ClCompile Include="BoundsTests.cpp" />
     <ClCompile Include="DerivedEngine.cpp" />
@@ -142,17 +157,38 @@
     <ClCompile Include="ImageRenderingTests.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MockGraphicsManager.cpp" />
+    <ClCompile Include="MockImageAssetManager.cpp" />
     <ClCompile Include="MockImageAssetResource.cpp" />
+    <ClCompile Include="MockScriptManager.cpp" />
     <ClCompile Include="MockSurfaceResource.cpp" />
     <ClCompile Include="MockWindow.cpp" />
     <ClCompile Include="OctreeTests.cpp" />
     <ClCompile Include="RenderAlgorithmTests.cpp" />
     <ClCompile Include="LineRenderingTests.cpp" />
+    <ClCompile Include="ScriptEngine.cpp" />
     <ClCompile Include="StopwatchTests.cpp" />
     <ClCompile Include="WorldSerializationTests.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AngelScriptAssetTests.h" />
+    <ClInclude Include="AngelScriptBoundsTests.h" />
+    <ClInclude Include="AngelScriptEntityTests.h" />
+    <ClInclude Include="AngelScriptExceptionTests.h" />
+    <ClInclude Include="AngelScriptFixture.h" />
+    <ClInclude Include="AngelScriptGlobalIndexTests.h" />
+    <ClInclude Include="AngelScriptImageCoreTests.h" />
+    <ClInclude Include="AngelScriptLocalIndexTests.h" />
+    <ClInclude Include="AngelScriptLoggingTests.h" />
+    <ClInclude Include="AngelScriptRenderTests.h" />
+    <ClInclude Include="AngelScriptScriptTests.h" />
+    <ClInclude Include="AngelScriptSpatialAlgorithmsTests.h" />
+    <ClInclude Include="AngelScriptSpatialObjectsTests.h" />
+    <ClInclude Include="AngelScriptParameterTests.h" />
+    <ClInclude Include="AngelScriptStopwatchTests.h" />
+    <ClInclude Include="AngelScriptStringUtilityTests.h" />
+    <ClInclude Include="AngelScriptTests.h" />
     <ClInclude Include="AssetTests.h" />
+    <ClInclude Include="AudioBuffer.h" />
     <ClInclude Include="BoundsTests.h" />
     <ClInclude Include="DerivedEngine.h" />
     <ClInclude Include="EntityTests.h" />
@@ -160,13 +196,16 @@
     <ClInclude Include="GridRegionRenderingTests.h" />
     <ClInclude Include="ImageRenderingTests.h" />
     <ClInclude Include="MockGraphicsManager.h" />
+    <ClInclude Include="MockImageAssetManager.h" />
     <ClInclude Include="MockImageAssetResource.h" />
+    <ClInclude Include="MockScriptManager.h" />
     <ClInclude Include="MockSurfaceResource.h" />
     <ClInclude Include="MockWindow.h" />
     <ClInclude Include="OctreeTests.h" />
     <ClInclude Include="PixelBuffer.h" />
     <ClInclude Include="RenderAlgorithmTests.h" />
     <ClInclude Include="LineRenderingTests.h" />
+    <ClInclude Include="ScriptEngine.h" />
     <ClInclude Include="SignalListener.h" />
     <ClInclude Include="StopwatchTests.h" />
     <ClInclude Include="WorldSerializationTests.h" />

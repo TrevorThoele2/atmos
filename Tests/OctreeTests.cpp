@@ -2,7 +2,7 @@
 
 #include "OctreeTests.h"
 
-SCENARIO_METHOD(OctreeTestsFixture, "empty octree", "[octree]")
+SCENARIO_METHOD(OctreeTestsFixture, "empty octree", "[spatial][octree]")
 {
     GIVEN("octree at origin")
     {
@@ -94,7 +94,7 @@ SCENARIO_METHOD(OctreeTestsFixture, "empty octree", "[octree]")
     }
 }
 
-SCENARIO_METHOD(OctreeTestsFixture, "single object octree", "[octree]")
+SCENARIO_METHOD(OctreeTestsFixture, "single object octree", "[spatial][octree]")
 {
     GIVEN("octree at origin and grid-fitting bounds")
     {
@@ -436,7 +436,7 @@ SCENARIO_METHOD(OctreeTestsFixture, "single object octree", "[octree]")
     }
 }
 
-SCENARIO_METHOD(OctreeTestsFixture, "multiple objects octree", "[octree]")
+SCENARIO_METHOD(OctreeTestsFixture, "multiple objects octree", "[spatial][octree]")
 {
     GIVEN("octree at origin")
     {
@@ -693,7 +693,7 @@ SCENARIO_METHOD(OctreeTestsFixture, "multiple objects octree", "[octree]")
     }
 }
 
-SCENARIO_METHOD(OctreeTestsFixture, "negative dimensional octree", "[octree]")
+SCENARIO_METHOD(OctreeTestsFixture, "negative dimensional octree", "[spatial][octree]")
 {
     GIVEN("octree at origin")
     {

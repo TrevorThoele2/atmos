@@ -1,0 +1,541 @@
+#include <catch.hpp>
+
+#include "AngelScriptBoundsTests.h"
+
+#include "ScriptEngine.h"
+
+#include <Atmos/AngelScriptBounds.h>
+
+#include <Atmos/SpatialAlgorithms.h>
+#include <Atmos/TypeRegistration.h>
+#include <Atmos/ScriptFinished.h>
+#include <Atmos/Work.h>
+#include <Atmos/StringUtility.h>
+#include <Arca/LocalRelic.h>
+
+SCENARIO_METHOD(AngelScriptBoundsTestsFixture, "running bounds AngelScript scripts", "[script][angelscript]")
+{
+    ScriptEngine engine;
+    engine.Setup();
+
+    auto fieldOrigin = Arca::ReliquaryOrigin();
+    fieldOrigin.Register<Arca::OpenRelic>();
+    RegisterFieldTypes(
+        fieldOrigin,
+        *engine.mockImageAssetManager,
+        *engine.nullAudioManager,
+        *engine.nullInputManager,
+        *engine.mockGraphicsManager,
+        *engine.scriptManager,
+        Spatial::ScreenSize{
+            std::numeric_limits<Spatial::ScreenSize::Dimension>::max(),
+            std::numeric_limits<Spatial::ScreenSize::Dimension>::max() },
+            *engine.mockWindow,
+            engine.Logger());
+    fieldOrigin.CuratorCommandPipeline<Work>(Arca::Pipeline{ Scripting::Stage() });
+    World::Field field(0, fieldOrigin.Actualize());
+
+    auto& fieldReliquary = field.Reliquary();
+
+    engine.mockGraphicsManager->Initialize();
+
+    std::vector<Scripting::Finished> finishes;
+    fieldReliquary.On<Scripting::Finished>([&finishes](const Scripting::Finished& signal)
+        {
+            finishes.push_back(signal);
+        });
+
+    auto openRelic = fieldReliquary.Do(Arca::Create<Arca::OpenRelic>());
+
+    auto position = dataGeneration.RandomStack<
+        Spatial::Point3D, Spatial::Point3D::Value, Spatial::Point3D::Value, Spatial::Point3D::Value>();
+    auto baseSize = dataGeneration.RandomStack<
+        Spatial::Size2D, Spatial::Size2D::Value, Spatial::Size2D::Value>();
+    auto scalers = dataGeneration.RandomStack<
+        Spatial::Scalers2D, Spatial::Scalers2D::Value, Spatial::Scalers2D::Value>();
+    auto rotation = dataGeneration.Random<Spatial::Angle2D>();
+    auto bounds = fieldReliquary.Do(Arca::Create<Spatial::Bounds>{openRelic, position, baseSize, scalers, rotation});
+
+    GIVEN("script that returns position")
+    {
+        CompileAndCreateScript(
+            "basic_script.as",
+            "string main(Arca::RelicID boundsID)\n" \
+            "{\n" \
+            "    auto bounds = Atmos::Spatial::Bounds(boundsID);\n" \
+            "    return Atmos::ToString(bounds.Position().x) + \" \" + Atmos::ToString(bounds.Position().y) + \" \" + Atmos::ToString(bounds.Position().z);\n" \
+            "}",
+            { bounds.ID() },
+            fieldReliquary);
+
+        WHEN("working reliquary")
+        {
+            fieldReliquary.Do(Work{});
+
+            THEN("has correct properties")
+            {
+                REQUIRE(finishes.size() == 1);
+
+                const auto expectedResult =
+                    ToString(position.x) +
+                    " " +
+                    ToString(position.y) +
+                    " " +
+                    ToString(position.z);
+
+                const auto result = std::get<String>(std::get<Variant>(finishes[0].result));
+                REQUIRE(result == expectedResult);
+            }
+        }
+    }
+
+    GIVEN("script that returns base size")
+    {
+        CompileAndCreateScript(
+            "basic_script.as",
+            "string main(Arca::RelicID boundsID)\n" \
+            "{\n" \
+            "    auto bounds = Atmos::Spatial::Bounds(boundsID);\n" \
+            "    return Atmos::ToString(bounds.BaseSize().width) + \" \" + Atmos::ToString(bounds.BaseSize().height);\n" \
+            "}",
+            { bounds.ID() },
+            fieldReliquary);
+
+        WHEN("working reliquary")
+        {
+            fieldReliquary.Do(Work{});
+
+            THEN("has correct properties")
+            {
+                REQUIRE(finishes.size() == 1);
+
+                const auto expectedResult =
+                    ToString(baseSize.width) +
+                    " " +
+                    ToString(baseSize.height);
+
+                const auto result = std::get<String>(std::get<Variant>(finishes[0].result));
+                REQUIRE(result == expectedResult);
+            }
+        }
+    }
+
+    GIVEN("script that returns size")
+    {
+        CompileAndCreateScript(
+            "basic_script.as",
+            "string main(Arca::RelicID boundsID)\n" \
+            "{\n" \
+            "    auto bounds = Atmos::Spatial::Bounds(boundsID);\n" \
+            "    return Atmos::ToString(bounds.Size().width) + \" \" + Atmos::ToString(bounds.Size().height);\n" \
+            "}",
+            { bounds.ID() },
+            fieldReliquary);
+
+        WHEN("working reliquary")
+        {
+            fieldReliquary.Do(Work{});
+
+            THEN("has correct properties")
+            {
+                REQUIRE(finishes.size() == 1);
+
+                const auto expectedResult =
+                    ToString(bounds->Size().width) +
+                    " " +
+                    ToString(bounds->Size().height);
+
+                const auto result = std::get<String>(std::get<Variant>(finishes[0].result));
+                REQUIRE(result == expectedResult);
+            }
+        }
+    }
+
+    GIVEN("script that returns scalers")
+    {
+        CompileAndCreateScript(
+            "basic_script.as",
+            "string main(Arca::RelicID boundsID)\n" \
+            "{\n" \
+            "    auto bounds = Atmos::Spatial::Bounds(boundsID);\n" \
+            "    return Atmos::ToString(bounds.Scalers().x) + \" \" + Atmos::ToString(bounds.Scalers().y);\n" \
+            "}",
+            { bounds.ID() },
+            fieldReliquary);
+
+        WHEN("working reliquary")
+        {
+            fieldReliquary.Do(Work{});
+
+            THEN("has correct properties")
+            {
+                REQUIRE(finishes.size() == 1);
+
+                const auto expectedResult =
+                    ToString(bounds->Scalers().x) +
+                    " " +
+                    ToString(bounds->Scalers().y);
+
+                const auto result = std::get<String>(std::get<Variant>(finishes[0].result));
+                REQUIRE(result == expectedResult);
+            }
+        }
+    }
+
+    GIVEN("script that returns rotation")
+    {
+        CompileAndCreateScript(
+            "basic_script.as",
+            "Atmos::Spatial::Angle2D main(Arca::RelicID boundsID)\n" \
+            "{\n" \
+            "    auto bounds = Atmos::Spatial::Bounds(boundsID);\n" \
+            "    return bounds.Rotation();\n" \
+            "}",
+            { bounds.ID() },
+            fieldReliquary);
+
+        WHEN("working reliquary")
+        {
+            fieldReliquary.Do(Work{});
+
+            THEN("has correct properties")
+            {
+                REQUIRE(finishes.size() == 1);
+
+                const auto result = std::get<Spatial::Angle2D>(std::get<Variant>(finishes[0].result));
+                REQUIRE(result == bounds->Rotation());
+            }
+        }
+    }
+
+    GIVEN("script that moves bounds by delta")
+    {
+        const auto positionDelta = dataGeneration.RandomStack<
+            Spatial::Point3D, Spatial::Point3D::Value, Spatial::Point3D::Value, Spatial::Point3D::Value>();
+
+        CompileAndCreateScript(
+            "basic_script.as",
+            "class SignalHandler\n" \
+            "{\n" \
+            "    Atmos::Spatial::BoundsMoved signal;\n" \
+            "    void Handle(Atmos::Spatial::BoundsMoved signal) { this.signal = signal; }\n" \
+            "}\n" \
+            "\n" \
+            "string main(Arca::RelicID boundsID, float setX, float setY, float setZ)\n" \
+            "{\n" \
+            "    SignalHandler signalHandler;\n" \
+            "    Arca::Reliquary::On(Arca::OnBoundsMoved(signalHandler.Handle));\n" \
+            "\n" \
+            "    auto bounds = Atmos::Spatial::Bounds(boundsID);\n" \
+            "    auto startingPosition = bounds.Position();\n" \
+            "\n" \
+            "    auto command = Atmos::Spatial::MoveBoundsBy(boundsID, Atmos::Spatial::Point3D(setX, setY, setZ));\n" \
+            "    Arca::Reliquary::Do(command);\n" \
+            "\n" \
+            "    return Atmos::ToString(startingPosition.x) +\n" \
+            "        \" \" +\n" \
+            "        Atmos::ToString(startingPosition.y) +\n" \
+            "        \" \" +\n" \
+            "        Atmos::ToString(startingPosition.z) +\n" \
+            "        \" \" +\n" \
+            "        Atmos::ToString(signalHandler.signal.bounds.ID()) +\n" \
+            "        \" \" +\n" \
+            "        Atmos::ToString(signalHandler.signal.bounds.Position().x) +\n" \
+            "        \" \" +\n" \
+            "        Atmos::ToString(signalHandler.signal.bounds.Position().y) +\n" \
+            "        \" \" +\n" \
+            "        Atmos::ToString(signalHandler.signal.bounds.Position().z);\n" \
+            "}",
+            { bounds.ID(), positionDelta.x, positionDelta.y, positionDelta.z },
+            fieldReliquary);
+
+        WHEN("working reliquary")
+        {
+            fieldReliquary.Do(Work{});
+
+            THEN("has correct properties")
+            {
+                REQUIRE(position != bounds->Position());
+
+                REQUIRE(finishes.size() == 1);
+
+                const auto expectedResult =
+                    ToString(position.x) +
+                    " " +
+                    ToString(position.y) +
+                    " " +
+                    ToString(position.z) +
+                    " " +
+                    ToString(bounds.ID()) +
+                    " " +
+                    ToString(bounds->Position().x) +
+                    " " +
+                    ToString(bounds->Position().y) +
+                    " " +
+                    ToString(bounds->Position().z);
+
+                const auto result = std::get<String>(std::get<Variant>(finishes[0].result));
+                REQUIRE(result == expectedResult);
+            }
+        }
+    }
+
+    GIVEN("script that moves bounds in direction")
+    {
+        const auto direction = dataGeneration.RandomStack<Spatial::Angle3D, Spatial::Angle3D::Value, Spatial::Angle3D::Value>();
+        const auto amount = dataGeneration.Random<float>();
+
+        CompileAndCreateScript(
+            "basic_script.as",
+            "class SignalHandler\n" \
+            "{\n" \
+            "    Atmos::Spatial::BoundsMoved signal;\n" \
+            "    void Handle(Atmos::Spatial::BoundsMoved signal) { this.signal = signal; }\n" \
+            "}\n" \
+            "\n" \
+            "string main(Arca::RelicID boundsID, float directionPitch, float directionYaw, float amount)\n" \
+            "{\n" \
+            "    SignalHandler signalHandler;\n" \
+            "    Arca::Reliquary::On(Arca::OnBoundsMoved(signalHandler.Handle));\n" \
+            "\n" \
+            "    auto bounds = Atmos::Spatial::Bounds(boundsID);\n" \
+            "    auto startingPosition = bounds.Position();\n" \
+            "\n" \
+            "    auto command = Atmos::Spatial::MoveBoundsDirection(boundsID, Atmos::Spatial::Angle3D(directionPitch, directionYaw), amount);\n" \
+            "    Arca::Reliquary::Do(command);\n" \
+            "\n" \
+            "    return Atmos::ToString(startingPosition.x) +\n" \
+            "        \" \" +\n" \
+            "        Atmos::ToString(startingPosition.y) +\n" \
+            "        \" \" +\n" \
+            "        Atmos::ToString(startingPosition.z) +\n" \
+            "        \" \" +\n" \
+            "        Atmos::ToString(signalHandler.signal.bounds.ID()) +\n" \
+            "        \" \" +\n" \
+            "        Atmos::ToString(signalHandler.signal.bounds.Position().x) +\n" \
+            "        \" \" +\n" \
+            "        Atmos::ToString(signalHandler.signal.bounds.Position().y) +\n" \
+            "        \" \" +\n" \
+            "        Atmos::ToString(signalHandler.signal.bounds.Position().z);\n" \
+            "}",
+            { bounds.ID(), direction.pitch, direction.yaw, amount },
+            fieldReliquary);
+
+        WHEN("working reliquary")
+        {
+            fieldReliquary.Do(Work{});
+
+            THEN("has correct properties")
+            {
+                REQUIRE(position != bounds->Position());
+
+                REQUIRE(finishes.size() == 1);
+
+                const auto expectedResult =
+                    ToString(position.x) +
+                    " " +
+                    ToString(position.y) +
+                    " " +
+                    ToString(position.z) +
+                    " " +
+                    ToString(bounds.ID()) +
+                    " " +
+                    ToString(bounds->Position().x) +
+                    " " +
+                    ToString(bounds->Position().y) +
+                    " " +
+                    ToString(bounds->Position().z);
+
+                const auto result = std::get<String>(std::get<Variant>(finishes[0].result));
+                REQUIRE(result == expectedResult);
+            }
+        }
+    }
+
+    GIVEN("script that moves bounds to")
+    {
+        const auto toPosition = dataGeneration.RandomStack<
+            Spatial::Point3D, Spatial::Point3D::Value, Spatial::Point3D::Value, Spatial::Point3D::Value>();
+
+        CompileAndCreateScript(
+            "basic_script.as",
+            "class SignalHandler\n" \
+            "{\n" \
+            "    Atmos::Spatial::BoundsMoved signal;\n" \
+            "    void Handle(Atmos::Spatial::BoundsMoved signal) { this.signal = signal; }\n" \
+            "}\n" \
+            "\n" \
+            "string main(Arca::RelicID boundsID, float setX, float setY, float setZ)\n" \
+            "{\n" \
+            "    SignalHandler signalHandler;\n" \
+            "    Arca::Reliquary::On(Arca::OnBoundsMoved(signalHandler.Handle));\n" \
+            "\n" \
+            "    auto bounds = Atmos::Spatial::Bounds(boundsID);\n" \
+            "    auto startingPosition = bounds.Position();\n" \
+            "\n" \
+            "    auto command = Atmos::Spatial::MoveBoundsTo(boundsID, Atmos::Spatial::Point3D(setX, setY, setZ));\n" \
+            "    Arca::Reliquary::Do(command);\n" \
+            "\n" \
+            "    return Atmos::ToString(startingPosition.x) +\n" \
+            "        \" \" +\n" \
+            "        Atmos::ToString(startingPosition.y) +\n" \
+            "        \" \" +\n" \
+            "        Atmos::ToString(startingPosition.z) +\n" \
+            "        \" \" +\n" \
+            "        Atmos::ToString(signalHandler.signal.bounds.ID()) +\n" \
+            "        \" \" +\n" \
+            "        Atmos::ToString(signalHandler.signal.bounds.Position().x) +\n" \
+            "        \" \" +\n" \
+            "        Atmos::ToString(signalHandler.signal.bounds.Position().y) +\n" \
+            "        \" \" +\n" \
+            "        Atmos::ToString(signalHandler.signal.bounds.Position().z);\n" \
+            "}",
+            { bounds.ID(), toPosition.x, toPosition.y, toPosition.z },
+            fieldReliquary);
+
+        WHEN("working reliquary")
+        {
+            fieldReliquary.Do(Work{});
+
+            THEN("has correct properties")
+            {
+                REQUIRE(position != bounds->Position());
+                REQUIRE(bounds->Position() == toPosition);
+
+                REQUIRE(finishes.size() == 1);
+
+                const auto expectedResult =
+                    ToString(position.x) +
+                    " " +
+                    ToString(position.y) +
+                    " " +
+                    ToString(position.z) +
+                    " " +
+                    ToString(bounds.ID()) +
+                    " " +
+                    ToString(bounds->Position().x) +
+                    " " +
+                    ToString(bounds->Position().y) +
+                    " " +
+                    ToString(bounds->Position().z);
+
+                const auto result = std::get<String>(std::get<Variant>(finishes[0].result));
+                REQUIRE(result == expectedResult);
+            }
+        }
+    }
+
+    GIVEN("script that rotates bounds")
+    {
+        const auto toRotation = dataGeneration.Random<Spatial::Angle2D>();
+
+        CompileAndCreateScript(
+            "basic_script.as",
+            "class SignalHandler\n" \
+            "{\n" \
+            "    Atmos::Spatial::BoundsRotated signal;\n" \
+            "    void Handle(Atmos::Spatial::BoundsRotated signal) { this.signal = signal; }\n" \
+            "}\n" \
+            "\n" \
+            "string main(Arca::RelicID boundsID, Atmos::Spatial::Angle2D angle)\n" \
+            "{\n" \
+            "    SignalHandler signalHandler;\n" \
+            "    Arca::Reliquary::On(Arca::OnBoundsRotated(signalHandler.Handle));\n" \
+            "\n" \
+            "    auto bounds = Atmos::Spatial::Bounds(boundsID);\n" \
+            "    auto startingRotation = bounds.Rotation();\n" \
+            "\n" \
+            "    auto command = Atmos::Spatial::RotateBounds(boundsID, angle);\n" \
+            "    Arca::Reliquary::Do(command);\n" \
+            "\n" \
+            "    return Atmos::ToString(startingRotation) +\n" \
+            "        \" \" +\n" \
+            "        Atmos::ToString(signalHandler.signal.bounds.ID()) +\n"
+            "        \" \" +\n" \
+            "        Atmos::ToString(signalHandler.signal.bounds.Rotation());\n" \
+            "}",
+            { bounds.ID(), toRotation },
+            fieldReliquary);
+
+        WHEN("working reliquary")
+        {
+            fieldReliquary.Do(Work{});
+
+            THEN("has correct properties")
+            {
+                REQUIRE(rotation != bounds->Rotation());
+                REQUIRE(bounds->Rotation() == toRotation);
+
+                REQUIRE(finishes.size() == 1);
+
+                const auto expectedResult = ToString(rotation) + " " + ToString(bounds.ID()) + " " + ToString(toRotation);
+
+                const auto result = std::get<String>(std::get<Variant>(finishes[0].result));
+                REQUIRE(result == expectedResult);
+            }
+        }
+    }
+
+    GIVEN("script that scales bounds")
+    {
+        const auto toScalers = dataGeneration.RandomStack<Spatial::Scalers2D, Spatial::Scalers2D::Value, Spatial::Scalers2D::Value>();
+
+        CompileAndCreateScript(
+            "basic_script.as",
+            "class SignalHandler\n" \
+            "{\n" \
+            "    Atmos::Spatial::BoundsScaled signal;\n" \
+            "    void Handle(Atmos::Spatial::BoundsScaled signal) { this.signal = signal; }\n" \
+            "}\n" \
+            "\n" \
+            "string main(Arca::RelicID boundsID, float scalerX, float scalerY)\n" \
+            "{\n" \
+            "    SignalHandler signalHandler;\n" \
+            "    Arca::Reliquary::On(Arca::OnBoundsScaled(signalHandler.Handle));\n" \
+            "\n" \
+            "    auto bounds = Atmos::Spatial::Bounds(boundsID);\n" \
+            "    auto startingScalers = bounds.Scalers();\n" \
+            "\n" \
+            "    auto command = Atmos::Spatial::ScaleBounds(boundsID, Atmos::Spatial::Scalers2D(scalerX, scalerY));\n" \
+            "    Arca::Reliquary::Do(command);\n" \
+            "\n" \
+            "    return Atmos::ToString(startingScalers.x) +\n" \
+            "        \" \" +\n" \
+            "        Atmos::ToString(startingScalers.y) +\n" \
+            "        \" \" +\n" \
+            "        Atmos::ToString(signalHandler.signal.bounds.ID()) +\n"
+            "        \" \" +\n" \
+            "        Atmos::ToString(signalHandler.signal.bounds.Scalers().x) +\n" \
+            "        \" \" +\n" \
+            "        Atmos::ToString(signalHandler.signal.bounds.Scalers().y);\n" \
+            "}",
+            { bounds.ID(), toScalers.x, toScalers.y },
+            fieldReliquary);
+
+        WHEN("working reliquary")
+        {
+            fieldReliquary.Do(Work{});
+
+            THEN("has correct properties")
+            {
+                REQUIRE(scalers != bounds->Scalers());
+                REQUIRE(bounds->Scalers() == toScalers);
+
+                REQUIRE(finishes.size() == 1);
+
+                const auto expectedResult = ToString(scalers.x) +
+                    " " +
+                    ToString(scalers.y) +
+                    " " +
+                    ToString(bounds.ID()) +
+                    " " +
+                    ToString(toScalers.x) +
+                    " " +
+                    ToString(toScalers.y);
+
+                const auto result = std::get<String>(std::get<Variant>(finishes[0].result));
+                REQUIRE(result == expectedResult);
+            }
+        }
+    }
+}

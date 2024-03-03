@@ -1,28 +1,27 @@
 #pragma once
 
-#include <Arca/ClosedTypedRelic.h>
+#include <Arca/Relic.h>
 
-#include "ScriptInstance.h"
+#include "Script.h"
 #include "Name.h"
 #include "GridPoint.h"
 #include "Angle2D.h"
 
 namespace Atmos::Entity
 {
-    class Prototype final : public Arca::ClosedTypedRelic<Prototype>
+    class Prototype final
     {
     public:
-        Arca::Index<Script::Instance> initializer;
+        Arca::Index<Scripting::Script> constructor;
 
         Name name;
 
         Spatial::Grid::Point position;
-        Spatial::Angle2D direction;
+        Spatial::Angle2D direction = 0.0f;
     public:
-        explicit Prototype(Init init);
-        explicit Prototype(
-            Init init,
-            Arca::Index<Script::Instance> initializer,
+        Prototype() = default;
+        Prototype(
+            Arca::Index<Scripting::Script> constructor,
             Name name,
             Spatial::Grid::Point position,
             Spatial::Angle2D direction);
@@ -50,7 +49,7 @@ namespace Inscription
         template<class Archive>
         void Scriven(ObjectT& object, Archive& archive)
         {
-            archive("initializer", object.initializer);
+            archive("constructor", object.constructor);
             archive("name", object.name);
             archive("position", object.position);
             archive("direction", object.direction);

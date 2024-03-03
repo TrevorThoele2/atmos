@@ -21,5 +21,6 @@ namespace Inscription
 
         virtual std::optional<Extracted> LoadImage(const Atmos::Name& name) = 0;
         virtual std::optional<Extracted> LoadShader(const Atmos::Name& name) = 0;
+        virtual std::optional<Extracted> LoadScript(const Atmos::Name& name) = 0;
     };
 }

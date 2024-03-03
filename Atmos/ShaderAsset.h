@@ -8,16 +8,20 @@
 
 namespace Atmos::Asset
 {
-    class Shader final : public AssetWithResource<Resource::Shader, Shader>
+    class Shader final : public AssetWithResource<Resource::Shader>
     {
     public:
-        Shader(Init init, const Atmos::Name& name, ResourcePtr&& resource);
-        Shader(Init init, Arca::Serialization serialization);
+        Shader(Arca::RelicInit init, const Atmos::Name& name, ResourcePtr&& resource);
+        Shader(Arca::RelicInit init, Arca::Serialization serialization);
         Shader(Shader&& arg) noexcept;
 
         Shader& operator=(Shader&& arg) noexcept;
     public:
         void Setup(ResourcePtr&& set);
+    private:
+        Arca::RelicInit init;
+    private:
+        INSCRIPTION_ACCESS;
     };
 }
 
@@ -46,7 +50,7 @@ namespace Inscription
         template<class Archive>
         void Scriven(ObjectT& object, Archive& archive)
         {
-            BaseScriven<Atmos::Asset::AssetWithResource<Atmos::Asset::Resource::Shader, Atmos::Asset::Shader>>(
+            BaseScriven<Atmos::Asset::AssetWithResource<Atmos::Asset::Resource::Shader>>(
                 object, archive);
 
             if (archive.IsInput())
@@ -57,7 +61,7 @@ namespace Inscription
                 if (extracted)
                 {
                     using CreateResource = Atmos::Asset::Resource::Create<Atmos::Asset::Resource::Shader>;
-                    auto resource = object.Owner().Do(CreateResource
+                    auto resource = object.init.owner.Do(CreateResource
                     {
                         extracted->memory,
                         object.Name()

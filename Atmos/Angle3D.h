@@ -10,6 +10,9 @@ namespace Atmos::Spatial
 
         Value yaw;
         Value pitch;
+
+        [[nodiscard]] bool operator==(const Angle3D& arg) const;
+        [[nodiscard]] bool operator!=(const Angle3D& arg) const;
     };
 }
 

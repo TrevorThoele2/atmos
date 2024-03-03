@@ -31,7 +31,7 @@ namespace Atmos::Render
         for (auto& index : indices)
         {
             const auto& value = *index->value;
-            const auto material = value.material.Get();
+            const auto material = value.material;
             if (!material || value.points.empty())
                 continue;
 
@@ -49,7 +49,8 @@ namespace Atmos::Render
             {
                 mesh,
                 z,
-                material
+                material.ID(),
+                material.Get()
             };
             mainSurface->StageRender(render);
         }

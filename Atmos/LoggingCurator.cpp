@@ -1,5 +1,6 @@
 #include "LoggingCurator.h"
-#include "Logger.h"
+
+#include "LoggingInformation.h"
 
 #include <Arca/Reliquary.h>
 
@@ -10,7 +11,7 @@ namespace Atmos::Logging
 
     void Curator::Handle(const Log& log)
     {
-        auto processedLog = logger.Log(log);
+        auto processedLog = Arca::Index<Information>(Owner())->logger->Log(log);
         if (processedLog)
             Owner().Raise(*processedLog);
     }

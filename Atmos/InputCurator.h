@@ -5,6 +5,7 @@
 #include "MappedInputs.h"
 #include "MappedActions.h"
 #include "InputManager.h"
+#include "Work.h"
 
 namespace Atmos::Input
 {
@@ -13,7 +14,7 @@ namespace Atmos::Input
     public:
         explicit Curator(Init init, Manager& manager);
 
-        void Work();
+        void Handle(const Work& command);
     private:
         Manager* manager;
 
@@ -29,6 +30,7 @@ namespace Arca
     {
         static const ObjectType objectType = ObjectType::Curator;
         static inline const TypeName typeName = "Atmos::Input::Curator";
+        using HandledCommands = HandledCommands<Atmos::Work>;
     };
 }
 

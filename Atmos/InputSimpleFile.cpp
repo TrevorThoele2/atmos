@@ -12,7 +12,8 @@ namespace Atmos
 
     DataBuffer InputSimpleFile::ReadBuffer(std::streamsize size)
     {
-        const auto useSize = size > Size() ? Size() : size;
+        const auto fileSize = Size();
+        const auto useSize = size > fileSize ? fileSize : size;
 
         Buffer buffer;
         buffer.resize(static_cast<size_t>(useSize));
@@ -29,5 +30,15 @@ namespace Atmos
     auto InputSimpleFile::DoTell(StreamT& stream) -> Position
     {
         return stream.tellg();
+    }
+
+    std::streamsize InputSimpleFile::Size()
+    {
+        const auto currentPosition = DoTell(stream);
+        stream.ignore(std::numeric_limits<std::streamsize>::max());
+        const auto size = stream.gcount();
+        stream.clear();
+        Seek(currentPosition);
+        return size;
     }
 }

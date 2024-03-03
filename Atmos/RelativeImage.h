@@ -6,11 +6,11 @@
 
 namespace Atmos::Render
 {
-    class RelativeImage final : public Image<RelativeImage, true>
+    class RelativeImage final : public Image<true>
     {
     public:
         RelativeImage(
-            Init init,
+            Arca::RelicInit init,
             Arca::Index<Asset::Image> asset,
             ImageCore::Index assetIndex,
             Arca::Index<Asset::Material> material,
@@ -18,7 +18,7 @@ namespace Atmos::Render
             const Spatial::Point3D& delta,
             const Spatial::Scalers2D& scalers,
             const Spatial::Angle2D& rotation);
-        RelativeImage(Init init, Arca::Serialization serialization);
+        RelativeImage(Arca::RelicInit init, Arca::Serialization serialization);
     private:
         Arca::Index<Spatial::RelativeBounds> relativeBounds;
     private:

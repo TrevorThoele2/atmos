@@ -4,15 +4,19 @@
 
 namespace Atmos::Asset
 {
-    Script::Script(Init init, const ::Atmos::Name& name, ResourcePtr&& resource) :
-        AssetWithResource(init, name, std::move(resource))
+    Script::Script(Arca::RelicInit init, const ::Atmos::Name& name, ResourcePtr&& resource) :
+        AssetWithResource(init, name, std::move(resource)),
+        init(init)
     {}
 
-    Script::Script(Init init, Arca::Serialization serialization) :
-        AssetWithResource(init, serialization)
+    Script::Script(Arca::RelicInit init, Arca::Serialization serialization) :
+        AssetWithResource(init, serialization),
+        init(init)
     {}
 
-    Script::Script(Script&& arg) noexcept : AssetWithResource(std::move(arg))
+    Script::Script(Script&& arg) noexcept :
+        AssetWithResource(std::move(arg)),
+        init(arg.init)
     {}
 
     Script& Script::operator=(Script&& arg) noexcept

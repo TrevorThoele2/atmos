@@ -7,9 +7,6 @@
     <ClCompile Include="GeneralFixture.cpp">
       <Filter>Source Files\Fixtures</Filter>
     </ClCompile>
-    <ClCompile Include="WorldSerializationTests.cpp">
-      <Filter>Source Files\Tests</Filter>
-    </ClCompile>
     <ClCompile Include="DerivedEngine.cpp">
       <Filter>Source Files\Objects</Filter>
     </ClCompile>
@@ -19,46 +16,106 @@
     <ClCompile Include="MockGraphicsManager.cpp">
       <Filter>Source Files\Objects</Filter>
     </ClCompile>
-    <ClCompile Include="OctreeTests.cpp">
-      <Filter>Source Files\Tests</Filter>
-    </ClCompile>
-    <ClCompile Include="StopwatchTests.cpp">
-      <Filter>Source Files\Tests</Filter>
-    </ClCompile>
-    <ClCompile Include="AssetTests.cpp">
-      <Filter>Source Files\Tests</Filter>
-    </ClCompile>
     <ClCompile Include="MockImageAssetResource.cpp">
       <Filter>Source Files\Objects</Filter>
     </ClCompile>
     <ClCompile Include="MockSurfaceResource.cpp">
       <Filter>Source Files\Objects</Filter>
     </ClCompile>
-    <ClCompile Include="RenderAlgorithmTests.cpp">
-      <Filter>Source Files\Tests</Filter>
+    <ClCompile Include="MockScriptManager.cpp">
+      <Filter>Source Files\Objects</Filter>
     </ClCompile>
-    <ClCompile Include="ImageRenderingTests.cpp">
-      <Filter>Source Files\Tests</Filter>
+    <ClCompile Include="MockImageAssetManager.cpp">
+      <Filter>Source Files\Objects</Filter>
     </ClCompile>
-    <ClCompile Include="LineRenderingTests.cpp">
-      <Filter>Source Files\Tests</Filter>
+    <ClCompile Include="ScriptEngine.cpp">
+      <Filter>Source Files\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptFixture.cpp">
+      <Filter>Source Files\Fixtures</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptParameterTests.cpp">
+      <Filter>Source Files\Tests\AngelScript</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptStringUtilityTests.cpp">
+      <Filter>Source Files\Tests\AngelScript</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptTests.cpp">
+      <Filter>Source Files\Tests\AngelScript</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptExceptionTests.cpp">
+      <Filter>Source Files\Tests\AngelScript</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptSpatialAlgorithmsTests.cpp">
+      <Filter>Source Files\Tests\AngelScript\Spatial</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptSpatialObjectsTests.cpp">
+      <Filter>Source Files\Tests\AngelScript\Spatial</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptRenderTests.cpp">
+      <Filter>Source Files\Tests\AngelScript\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptAssetTests.cpp">
+      <Filter>Source Files\Tests\AngelScript\Asset</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptBoundsTests.cpp">
+      <Filter>Source Files\Tests\AngelScript\Spatial</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptImageCoreTests.cpp">
+      <Filter>Source Files\Tests\AngelScript\Spatial</Filter>
     </ClCompile>
     <ClCompile Include="GridRegionRenderingTests.cpp">
-      <Filter>Source Files\Tests</Filter>
+      <Filter>Source Files\Tests\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageRenderingTests.cpp">
+      <Filter>Source Files\Tests\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="LineRenderingTests.cpp">
+      <Filter>Source Files\Tests\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderAlgorithmTests.cpp">
+      <Filter>Source Files\Tests\Render</Filter>
     </ClCompile>
     <ClCompile Include="BoundsTests.cpp">
-      <Filter>Source Files\Tests</Filter>
+      <Filter>Source Files\Tests\Spatial</Filter>
+    </ClCompile>
+    <ClCompile Include="OctreeTests.cpp">
+      <Filter>Source Files\Tests\Spatial</Filter>
     </ClCompile>
     <ClCompile Include="EntityTests.cpp">
-      <Filter>Source Files\Tests</Filter>
+      <Filter>Source Files\Tests\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="AssetTests.cpp">
+      <Filter>Source Files\Tests\Asset</Filter>
+    </ClCompile>
+    <ClCompile Include="StopwatchTests.cpp">
+      <Filter>Source Files\Tests\Time</Filter>
+    </ClCompile>
+    <ClCompile Include="WorldSerializationTests.cpp">
+      <Filter>Source Files\Tests\World</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptStopwatchTests.cpp">
+      <Filter>Source Files\Tests\AngelScript\Time</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptLocalIndexTests.cpp">
+      <Filter>Source Files\Tests\AngelScript</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptGlobalIndexTests.cpp">
+      <Filter>Source Files\Tests\AngelScript</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptEntityTests.cpp">
+      <Filter>Source Files\Tests\AngelScript\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptLoggingTests.cpp">
+      <Filter>Source Files\Tests\AngelScript\Logging</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptScriptTests.cpp">
+      <Filter>Source Files\Tests\AngelScript\Script</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneralFixture.h">
       <Filter>Header Files\Fixtures</Filter>
-    </ClInclude>
-    <ClInclude Include="WorldSerializationTests.h">
-      <Filter>Header Files\Tests</Filter>
     </ClInclude>
     <ClInclude Include="DerivedEngine.h">
       <Filter>Header Files\Objects</Filter>
@@ -69,44 +126,110 @@
     <ClInclude Include="MockGraphicsManager.h">
       <Filter>Header Files\Objects</Filter>
     </ClInclude>
-    <ClInclude Include="OctreeTests.h">
-      <Filter>Header Files\Tests</Filter>
-    </ClInclude>
-    <ClInclude Include="StopwatchTests.h">
-      <Filter>Header Files\Tests</Filter>
-    </ClInclude>
-    <ClInclude Include="AssetTests.h">
-      <Filter>Header Files\Tests</Filter>
-    </ClInclude>
     <ClInclude Include="MockSurfaceResource.h">
       <Filter>Header Files\Objects</Filter>
     </ClInclude>
     <ClInclude Include="MockImageAssetResource.h">
       <Filter>Header Files\Objects</Filter>
     </ClInclude>
-    <ClInclude Include="RenderAlgorithmTests.h">
-      <Filter>Header Files\Tests</Filter>
-    </ClInclude>
-    <ClInclude Include="ImageRenderingTests.h">
-      <Filter>Header Files\Tests</Filter>
-    </ClInclude>
-    <ClInclude Include="LineRenderingTests.h">
-      <Filter>Header Files\Tests</Filter>
-    </ClInclude>
-    <ClInclude Include="GridRegionRenderingTests.h">
-      <Filter>Header Files\Tests</Filter>
-    </ClInclude>
-    <ClInclude Include="BoundsTests.h">
-      <Filter>Header Files\Tests</Filter>
-    </ClInclude>
     <ClInclude Include="SignalListener.h">
       <Filter>Header Files\Automation</Filter>
     </ClInclude>
-    <ClInclude Include="EntityTests.h">
-      <Filter>Header Files\Tests</Filter>
-    </ClInclude>
     <ClInclude Include="PixelBuffer.h">
       <Filter>Header Files\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="MockScriptManager.h">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="MockImageAssetManager.h">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptEngine.h">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptFixture.h">
+      <Filter>Header Files\Fixtures</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptParameterTests.h">
+      <Filter>Header Files\Tests\AngelScript</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptStringUtilityTests.h">
+      <Filter>Header Files\Tests\AngelScript</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptTests.h">
+      <Filter>Header Files\Tests\AngelScript</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptExceptionTests.h">
+      <Filter>Header Files\Tests\AngelScript</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptSpatialAlgorithmsTests.h">
+      <Filter>Header Files\Tests\AngelScript\Spatial</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptSpatialObjectsTests.h">
+      <Filter>Header Files\Tests\AngelScript\Spatial</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptRenderTests.h">
+      <Filter>Header Files\Tests\AngelScript\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptAssetTests.h">
+      <Filter>Header Files\Tests\AngelScript\Asset</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioBuffer.h">
+      <Filter>Header Files\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptBoundsTests.h">
+      <Filter>Header Files\Tests\AngelScript\Spatial</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptImageCoreTests.h">
+      <Filter>Header Files\Tests\AngelScript\Spatial</Filter>
+    </ClInclude>
+    <ClInclude Include="LineRenderingTests.h">
+      <Filter>Header Files\Tests\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="GridRegionRenderingTests.h">
+      <Filter>Header Files\Tests\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageRenderingTests.h">
+      <Filter>Header Files\Tests\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderAlgorithmTests.h">
+      <Filter>Header Files\Tests\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="OctreeTests.h">
+      <Filter>Header Files\Tests\Spatial</Filter>
+    </ClInclude>
+    <ClInclude Include="BoundsTests.h">
+      <Filter>Header Files\Tests\Spatial</Filter>
+    </ClInclude>
+    <ClInclude Include="AssetTests.h">
+      <Filter>Header Files\Tests\Asset</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityTests.h">
+      <Filter>Header Files\Tests\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="WorldSerializationTests.h">
+      <Filter>Header Files\Tests\World</Filter>
+    </ClInclude>
+    <ClInclude Include="StopwatchTests.h">
+      <Filter>Header Files\Tests\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptStopwatchTests.h">
+      <Filter>Header Files\Tests\AngelScript\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptLocalIndexTests.h">
+      <Filter>Header Files\Tests\AngelScript</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptGlobalIndexTests.h">
+      <Filter>Header Files\Tests\AngelScript</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptEntityTests.h">
+      <Filter>Header Files\Tests\AngelScript\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptLoggingTests.h">
+      <Filter>Header Files\Tests\AngelScript\Logging</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptScriptTests.h">
+      <Filter>Header Files\Tests\AngelScript\Script</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -139,6 +262,90 @@
     </Filter>
     <Filter Include="Header Files\Data">
       <UniqueIdentifier>{9897ad37-492a-4cf6-ad8f-fc18890b1c05}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Tests\AngelScript">
+      <UniqueIdentifier>{33da28d7-0d60-4929-af86-fcd6384fe1f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Tests\AngelScript">
+      <UniqueIdentifier>{12275338-63de-4a1a-8eb2-f777bf45a62a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Tests\AngelScript\Spatial">
+      <UniqueIdentifier>{e75c6beb-6d90-4360-b85c-f57d9e51c0ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Tests\AngelScript\Spatial">
+      <UniqueIdentifier>{20d00ae6-1b6b-4955-a1eb-040afefee4b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Tests\AngelScript\Render">
+      <UniqueIdentifier>{527e77c9-4bb2-406b-886f-7e26d6f59cb3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Tests\AngelScript\Render">
+      <UniqueIdentifier>{08831dd6-6a48-4147-8b2d-76a08a66a086}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Tests\AngelScript\Asset">
+      <UniqueIdentifier>{e1422eb6-1573-4a1d-b5c6-28af6ea06778}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Tests\AngelScript\Asset">
+      <UniqueIdentifier>{31993633-9a61-4be6-bcbc-b441c4b93b2e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Tests\Render">
+      <UniqueIdentifier>{b1ccc2a4-ab57-48e0-87b3-a132af8da1b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Tests\Render">
+      <UniqueIdentifier>{a0904bfd-96c5-4aea-afe2-1a872d8873c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Tests\Spatial">
+      <UniqueIdentifier>{cf925efa-d2c1-4389-9a00-2aafd3cee393}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Tests\Spatial">
+      <UniqueIdentifier>{5482df11-d92f-4969-8604-9fd8cb97f7f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Tests\Entity">
+      <UniqueIdentifier>{e6670034-edc4-43cc-93fd-c68c1bee1140}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Tests\Asset">
+      <UniqueIdentifier>{1a982fa4-9840-48ef-9b0d-8a5e7a8169a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Tests\Time">
+      <UniqueIdentifier>{58f0886d-18e4-41d7-8ee1-69d6e72aa56f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Tests\World">
+      <UniqueIdentifier>{1938c53c-3fd8-4c74-8fe7-e391378a389a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Tests\Asset">
+      <UniqueIdentifier>{49b785d6-9846-487c-9ff0-6714e86ba163}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Tests\Entity">
+      <UniqueIdentifier>{54efc1d0-2f1b-44c2-b759-e5fb96955299}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Tests\World">
+      <UniqueIdentifier>{e25c251f-904a-4189-b2c3-e95d099f311d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Tests\Time">
+      <UniqueIdentifier>{b289ba1e-a078-4224-a2ef-97544eeff1cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Tests\AngelScript\Time">
+      <UniqueIdentifier>{9b0e2143-830a-4d1a-8dbc-33e445d9fd7e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Tests\AngelScript\Time">
+      <UniqueIdentifier>{ee3eee92-476f-4f97-b0c4-d2f9681387f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Tests\AngelScript\Entity">
+      <UniqueIdentifier>{0ab3da50-db17-4974-a403-c4ad4eabdfbc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Tests\AngelScript\Entity">
+      <UniqueIdentifier>{7cfc0573-2b1d-4369-8683-6a54ff63b76d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Tests\AngelScript\Logging">
+      <UniqueIdentifier>{471466bd-8adb-4eaf-afaf-e9f96209bf4d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Tests\AngelScript\Logging">
+      <UniqueIdentifier>{bf0bcae7-477c-4113-a257-a55cdf8abb32}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Tests\AngelScript\Script">
+      <UniqueIdentifier>{0735853d-3c01-41ba-b4d9-c069fd5ad86d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Tests\AngelScript\Script">
+      <UniqueIdentifier>{aadea1f4-1c9d-41c0-af9f-cf1f8069e767}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

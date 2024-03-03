@@ -7,24 +7,27 @@
 namespace Atmos::Asset
 {
     Image::Image(
-        Init init,
+        Arca::RelicInit init,
         const Atmos::Name& name,
         ResourcePtr&& resource,
         ImageGridSize gridSize)
         :
         AssetWithResource(init, name, std::move(resource)),
+        init(init),
         gridSize(gridSize)
     {
         const auto useResource = Resource();
         size = useResource ? useResource->Size() : ImageSize{};
     }
 
-    Image::Image(Init init, Arca::Serialization serialization) :
-        AssetWithResource(init, serialization)
+    Image::Image(Arca::RelicInit init, Arca::Serialization serialization) :
+        AssetWithResource(init, serialization),
+        init(init)
     {}
 
     Image::Image(Image&& arg) noexcept :
         AssetWithResource(std::move(arg)),
+        init(arg.init),
         size(arg.size),
         gridSize(arg.gridSize)
     {}
@@ -94,8 +97,8 @@ namespace Atmos::Asset
     {
         const auto gridSize = UsableGridSize();
 
-        const auto indexWidth = static_cast<float>(Width() / gridSize.columns);
-        const auto indexHeight = static_cast<float>(Height() / gridSize.rows);
+        const auto indexWidth = static_cast<float>(Width()) / gridSize.columns;
+        const auto indexHeight = static_cast<float>(Height()) / gridSize.rows;
 
         return Spatial::Size2D{ indexWidth, indexHeight };
     }

@@ -13,6 +13,8 @@ namespace Atmos::Render
     {
     public:
         explicit GridRegionCurator(Init init);
+
+        using ObjectCurator::Handle;
     protected:
         void WorkImpl(
             Spatial::AxisAlignedBox3D cameraBox,
@@ -39,6 +41,8 @@ namespace Arca
     {
         static const ObjectType objectType = ObjectType::Curator;
         static inline const TypeName typeName = "Atmos::Render::GridRegionCurator";
+        using HandledCommands = HandledCommands<
+            Atmos::Work>;
     };
 }
 

@@ -1,17 +1,38 @@
 #pragma once
 
+#include <set>
+#include <map>
+#include <memory>
+#include "String.h"
+
+class asIScriptEngine;
+class asIScriptGeneric;
+
 namespace Arca
 {
     class Reliquary;
 }
 
-namespace Atmos::Script::Angel
+namespace Atmos::Scripting::Angel
 {
-    class ScriptCurator;
+    class Manager;
+
+    struct PerScriptUserData
+    {
+        
+    };
 
     struct UserData
     {
         Arca::Reliquary* reliquary = nullptr;
-        ScriptCurator* curator = nullptr;
+        Manager* manager = nullptr;
+        std::set<String> registeredTypes;
+
+        using PerScriptUserDataPtr = std::unique_ptr<PerScriptUserData>;
+        std::map<size_t, PerScriptUserDataPtr> perScripts;
+
+        static UserData* RequiredFrom(asIScriptEngine& engine);
+        static UserData* RequiredFrom(asIScriptGeneric& generic);
+        static Arca::Reliquary* RequiredReliquaryFrom(asIScriptGeneric& generic);
     };
 }

@@ -2,7 +2,7 @@
 
 namespace Atmos::Render
 {
-    MainSurface::MainSurface(Init init, GraphicsManager& manager, void* window) :
+    MainSurface::MainSurface(Arca::RelicInit init, GraphicsManager& manager, void* window) :
         Surface(init, manager.CreateMainSurfaceResource(window, init.owner))
     {}
 }

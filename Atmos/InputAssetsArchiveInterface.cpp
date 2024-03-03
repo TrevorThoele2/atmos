@@ -12,12 +12,17 @@ namespace Atmos::World::Serialization
         name(name), memory(std::move(memory))
     {}
 
-    InputAssetsArchiveInterface::AllToExtract::AllToExtract(const ToExtract& images, const ToExtract& shaders) :
-        images(images), shaders(shaders)
+    InputAssetsArchiveInterface::AllToExtract::AllToExtract(
+        const ToExtract& images, const ToExtract& shaders, const ToExtract& scripts)
+        :
+        images(images), shaders(shaders), scripts(scripts)
     {}
 
-    InputAssetsArchiveInterface::InputAssetsArchiveInterface(const File::Path& filePath) :
-        filePath(filePath)
+    InputAssetsArchiveInterface::InputAssetsArchiveInterface(
+        const File::Path& filePath, Logging::Logger& logger)
+        :
+        filePath(filePath),
+        logger(&logger)
     {
         if (!std::filesystem::exists(filePath))
             return;
@@ -36,7 +41,7 @@ namespace Atmos::World::Serialization
 
         if (!stream || !stream->IsOk())
         {
-            Logging::logger.Log(
+            logger->Log(
                 "Could not open file to assets file.",
                 Logging::Severity::Error,
                 Logging::Details{ { "FilePath", filePath.string() } });
@@ -55,28 +60,35 @@ namespace Atmos::World::Serialization
                 continue;
 
             const auto folderName = splitName[splitName.size() - 2];
-            const auto fileName = splitName[splitName.size() - 1];
+            const auto fileName = File::Path(splitName[splitName.size() - 1]).replace_extension().string();
 
             if (folderName == "images")
             {
                 if (toExtract.images.find(fileName) == toExtract.images.end())
                     continue;
 
-                extracted.images.emplace_back(fileName, ExtractImage(zip));
+                extracted.images.emplace_back(fileName, ExtractData(zip));
             }
             else if (folderName == "shaders")
             {
                 if (toExtract.shaders.find(fileName) == toExtract.shaders.end())
                     continue;
 
-                extracted.shaders.emplace_back(fileName, ExtractImage(zip));
+                extracted.shaders.emplace_back(fileName, ExtractData(zip));
+            }
+            else if (folderName == "scripts")
+            {
+                if (toExtract.scripts.find(fileName) == toExtract.scripts.end())
+                    continue;
+
+                extracted.scripts.emplace_back(fileName, ExtractData(zip));
             }
         }
 
         return extracted;
     }
 
-    auto InputAssetsArchiveInterface::ExtractImage(wxZipInputStream& zip) -> DataBuffer
+    auto InputAssetsArchiveInterface::ExtractData(wxZipInputStream& zip) -> DataBuffer
     {
         wxMemoryOutputStream outputStream;
 

@@ -1,16 +1,37 @@
-#include <cstdlib>
-
 #include "AngelScriptResultVerification.h"
 
-#include <Chroma/Contract.h>
-
-namespace Atmos::Script::Angel
+namespace Atmos::Scripting::Angel
 {
-    void VerifyResult(int result)
+    bool IsSuccess(int result)
     {
-        SOFT_PRECONDITION(result >= 0, AngelScriptFailed());
+        return result >= 0;
     }
 
-    AngelScriptFailed::AngelScriptFailed() : Exception("A method from AngelScript has failed verification.")
+    bool IsError(int result)
+    {
+        return result < 0;
+    }
+
+    void VerifyResult(int result)
+    {
+        if (IsError(result))
+            throw AngelScriptFailed();
+    }
+
+    AngelScriptFailed::AngelScriptFailed() :
+        Exception(BaseMessage())
     {}
+
+    AngelScriptFailed::AngelScriptFailed(const String& message) :
+        Exception(message)
+    {}
+
+    AngelScriptFailed::AngelScriptFailed(const String& message, const NameValuePairs& details) :
+        Exception(message, details)
+    {}
+
+    String AngelScriptFailed::BaseMessage()
+    {
+        return "A method from AngelScript has failed verification.";
+    }
 }

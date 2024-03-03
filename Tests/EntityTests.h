@@ -6,7 +6,7 @@
 #include <Atmos/EntityPrototype.h>
 #include <Atmos/ActualizeAllEntityPrototypes.h>
 #include <Atmos/MappedEntities.h>
-#include <Atmos/MoveEntity.h>
+#include <Atmos/MoveEntityTo.h>
 
 using namespace Atmos;
 using namespace Entity;

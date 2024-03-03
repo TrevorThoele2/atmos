@@ -7,8 +7,8 @@ namespace Atmos::Time
         return Stopwatch([]() { return std::chrono::high_resolution_clock::now(); });
     }
 
-    Stopwatch CreateFrameStopwatch(Frame::Information& information)
+    Stopwatch CreateFrameStopwatch(const Frame::Information& information)
     {
-        return Stopwatch([&information]() { return Time::Value<>() + information.totalElapsed; });
+        return Stopwatch([&information]() { return Time::Point<>() + information.totalElapsed; });
     }
 }

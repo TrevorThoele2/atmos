@@ -13,7 +13,7 @@
 
 using namespace Atmos;
 
-SCENARIO_METHOD(LineRenderingTestsFixture, "rendering lines")
+SCENARIO_METHOD(LineRenderingTestsFixture, "rendering lines", "[render]")
 {
     GIVEN("setup engine with field")
     {
@@ -23,13 +23,16 @@ SCENARIO_METHOD(LineRenderingTestsFixture, "rendering lines")
         auto fieldOrigin = Arca::ReliquaryOrigin();
         RegisterFieldTypes(
             fieldOrigin,
+            *engine.mockImageAssetManager,
             *engine.nullAudioManager,
             *engine.nullInputManager,
             *engine.mockGraphicsManager,
+            *engine.mockScriptManager,
             Spatial::ScreenSize{
                 std::numeric_limits<Spatial::ScreenSize::Dimension>::max(),
                 std::numeric_limits<Spatial::ScreenSize::Dimension>::max() },
-            nullptr);
+            *engine.mockWindow,
+            engine.Logger());
         World::Field field(0, fieldOrigin.Actualize());
 
         auto& fieldReliquary = field.Reliquary();

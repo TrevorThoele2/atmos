@@ -3,7 +3,6 @@
 #include <Arca/Curator.h>
 
 #include "Log.h"
-#include "LoggingDetails.h"
 
 namespace Atmos::Logging
 {
@@ -13,8 +12,6 @@ namespace Atmos::Logging
         explicit Curator(Init init);
     public:
         void Handle(const Log& log);
-    private:
-        INSCRIPTION_ACCESS;
     };
 }
 

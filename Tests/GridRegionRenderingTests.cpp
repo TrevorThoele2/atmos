@@ -14,7 +14,7 @@
 
 using namespace Atmos;
 
-SCENARIO_METHOD(GridRegionRenderingTestsFixture, "rendering grid regions")
+SCENARIO_METHOD(GridRegionRenderingTestsFixture, "rendering grid regions", "[render]")
 {
     GIVEN("setup engine with field")
     {
@@ -24,13 +24,16 @@ SCENARIO_METHOD(GridRegionRenderingTestsFixture, "rendering grid regions")
         auto fieldOrigin = Arca::ReliquaryOrigin();
         RegisterFieldTypes(
             fieldOrigin,
+            *engine.mockImageAssetManager,
             *engine.nullAudioManager,
             *engine.nullInputManager,
             *engine.mockGraphicsManager,
+            *engine.mockScriptManager,
             Spatial::ScreenSize {
                 std::numeric_limits<Spatial::ScreenSize::Dimension>::max(),
                 std::numeric_limits<Spatial::ScreenSize::Dimension>::max() },
-            nullptr);
+            *engine.mockWindow,
+            engine.Logger());
         World::Field field(0, fieldOrigin.Actualize());
 
         auto& fieldReliquary = field.Reliquary();
@@ -87,9 +90,9 @@ SCENARIO_METHOD(GridRegionRenderingTestsFixture, "rendering grid regions")
                             };
                             for (auto& position : expectedVertexGridPositions)
                             {
-                                expectedVertices.emplace_back(
+                                expectedVertices.push_back(Spatial::Point2D{
                                     position.x * Atmos::Spatial::Grid::CellSize<float> -cameraLeft,
-                                    position.y * Atmos::Spatial::Grid::CellSize<float> -cameraTop);
+                                    position.y * Atmos::Spatial::Grid::CellSize<float> -cameraTop });
                             }
 
                             std::vector<std::uint16_t> expectedIndices = {

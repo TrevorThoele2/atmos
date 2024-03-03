@@ -1,19 +1,16 @@
 #pragma once
 
-#include <Arca/ClosedTypedRelic.h>
+#include <Arca/Relic.h>
 
 #include "Bounds.h"
 #include "AudioAssetInstance.h"
 
 namespace Atmos::Audio
 {
-    class Sound final : public Arca::ClosedTypedRelic<Sound>
+    class Sound final
     {
     public:
         using Asset = Asset::AudioInstance;
-    public:
-        void PostConstruct();
-        void Initialize(Asset&& asset);
     private:
         Arca::Index<Spatial::Bounds> bounds;
 

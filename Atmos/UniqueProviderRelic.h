@@ -1,23 +1,19 @@
 #pragma once
 
 #include <memory>
-#include <Arca/ClosedTypedRelic.h>
+#include <Arca/Relic.h>
 
 namespace Atmos
 {
     template<class T>
-    class UniqueProviderRelic : public Arca::ClosedTypedRelic<UniqueProviderRelic<T>>
+    class UniqueProviderRelic
     {
     public:
         using Value = T;
         using ValuePtr = std::unique_ptr<Value>;
-    private:
-        using BaseT = Arca::ClosedTypedRelic<UniqueProviderRelic<T>>;
-    protected:
-        using Init = typename BaseT::Init;
     public:
-        explicit UniqueProviderRelic(Init init);
-        UniqueProviderRelic(Init init, ValuePtr&& initialValue);
+        UniqueProviderRelic() = default;
+        explicit UniqueProviderRelic(ValuePtr&& initialValue);
 
         Value& operator*() const;
         Value* operator->() const;
@@ -29,13 +25,8 @@ namespace Atmos
     };
 
     template<class T>
-    UniqueProviderRelic<T>::UniqueProviderRelic(Init init) :
-        Arca::ClosedTypedRelic(init)
-    {}
-
-    template<class T>
-    UniqueProviderRelic<T>::UniqueProviderRelic(Init init, ValuePtr&& initialValue) :
-        Arca::ClosedTypedRelic<UniqueProviderRelic<T>>(init), value(std::move(initialValue))
+    UniqueProviderRelic<T>::UniqueProviderRelic(ValuePtr&& initialValue) :
+        value(std::move(initialValue))
     {}
 
     template<class T>

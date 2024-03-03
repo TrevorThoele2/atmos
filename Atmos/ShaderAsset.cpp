@@ -4,15 +4,19 @@
 
 namespace Atmos::Asset
 {
-    Shader::Shader(Init init, const Atmos::Name& name, ResourcePtr&& resource) :
-        AssetWithResource(init, name, std::move(resource))
+    Shader::Shader(Arca::RelicInit init, const Atmos::Name& name, ResourcePtr&& resource) :
+        AssetWithResource(init, name, std::move(resource)),
+        init(init)
     {}
 
-    Shader::Shader(Init init, Arca::Serialization serialization) :
-        AssetWithResource(init, serialization)
+    Shader::Shader(Arca::RelicInit init, Arca::Serialization serialization) :
+        AssetWithResource(init, serialization),
+        init(init)
     {}
 
-    Shader::Shader(Shader&& arg) noexcept : AssetWithResource(std::move(arg))
+    Shader::Shader(Shader&& arg) noexcept :
+        AssetWithResource(std::move(arg)),
+        init(arg.init)
     {}
 
     Shader& Shader::operator=(Shader&& arg) noexcept
@@ -31,8 +35,8 @@ namespace Arca
 {
     bool Traits<::Atmos::Asset::Shader>::ShouldCreate(
         Reliquary& reliquary,
-        const ::Atmos::Name& name,
-        const ::Atmos::Asset::Shader::ResourcePtr& data)
+        const Atmos::Name& name,
+        const Atmos::Asset::Shader::ResourcePtr& data)
     {
         return Atmos::Asset::ShouldCreate<::Atmos::Asset::Shader>(reliquary, name);
     }

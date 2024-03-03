@@ -20,7 +20,7 @@ namespace Atmos::Render
             MutablePointer())
     {}
 
-    void CameraCurator::Work()
+    void CameraCurator::Handle(const Work&)
     {
         debugCenterX.Set();
         debugCenterY.Set();

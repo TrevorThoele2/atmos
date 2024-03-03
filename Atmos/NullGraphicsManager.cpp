@@ -43,6 +43,9 @@ namespace Atmos::Render
         }
     };
 
+    NullGraphicsManager::NullGraphicsManager(Logging::Logger& logger) : GraphicsManager(logger)
+    {}
+
     bool NullGraphicsManager::IsOk() const
     {
         return true;

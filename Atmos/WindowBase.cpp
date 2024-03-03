@@ -4,11 +4,6 @@ namespace Atmos::Window
 {
     WindowBase::~WindowBase() = default;
 
-    void WindowBase::Setup()
-    {
-        SetupImpl();
-    }
-
     void WindowBase::SetFullscreen(bool set)
     {
         if (IsFullscreen() == set)

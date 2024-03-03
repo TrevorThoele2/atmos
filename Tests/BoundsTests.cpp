@@ -4,6 +4,7 @@
 #include "SignalListener.h"
 
 #include <Arca/ReliquaryOrigin.h>
+#include <Arca/LocalRelic.h>
 #include <Atmos/TypeRegistration.h>
 #include <Atmos/ProcessedLog.h>
 #include <Atmos/SpatialAlgorithms.h>
@@ -11,18 +12,21 @@
 
 using namespace Catch::literals;
 
-SCENARIO_METHOD(BoundsTestsFixture, "bounds")
+SCENARIO_METHOD(BoundsTestsFixture, "bounds", "[spatial]")
 {
     GIVEN("registered reliquary")
     {
         Arca::ReliquaryOrigin reliquaryOrigin;
 
+        RegisterArcaTypes(reliquaryOrigin);
         Spatial::RegisterTypes(reliquaryOrigin);
 
         auto reliquary = reliquaryOrigin.Actualize();
 
-        auto created = reliquary->Do(Arca::Create<Arca::OpenRelic>());
-        auto bounds = created->Create<Bounds>(Point3D{}, Size2D{ 1, 1 }, Scalers2D{ 1, 1 }, Angle2D{});
+        auto created = reliquary->Do(
+            Arca::Create<Arca::OpenRelic>());
+        auto bounds = reliquary->Do(
+            Arca::Create<Bounds>(created, Point3D{}, Size2D{ 1, 1 }, Scalers2D{ 1, 1 }, Angle2D{}));
 
         WHEN("moving bounds to position")
         {
@@ -138,12 +142,13 @@ SCENARIO_METHOD(BoundsTestsFixture, "bounds")
     }
 }
 
-SCENARIO_METHOD(BoundsTestsFixture, "relative bounds")
+SCENARIO_METHOD(BoundsTestsFixture, "relative bounds", "[spatial]")
 {
     GIVEN("registered reliquary")
     {
         Arca::ReliquaryOrigin reliquaryOrigin;
 
+        RegisterArcaTypes(reliquaryOrigin);
         Spatial::RegisterTypes(reliquaryOrigin);
 
         auto reliquary = reliquaryOrigin.Actualize();
@@ -165,11 +170,14 @@ SCENARIO_METHOD(BoundsTestsFixture, "relative bounds")
             };
 
             auto parent = reliquary->Do(Arca::Create<Arca::OpenRelic>());
-            parent->Create<Bounds>(parentPosition, Size2D{ 1, 1 }, Scalers2D{ 1, 1 }, Angle2D{});
+            reliquary->Do(
+                Arca::Create<Bounds>(parent, parentPosition, Size2D{ 1, 1 }, Scalers2D{ 1, 1 }, Angle2D{}));
 
             auto child = reliquary->Do(Arca::CreateChild<Arca::OpenRelic>(parent));
-            auto childBounds = child->Create<Bounds>(Point3D{}, Size2D{ 1, 1 }, Scalers2D{ 1, 1 }, Angle2D{});
-            auto relativeBounds = child->Create<RelativeBounds>(relativePosition);
+            auto childBounds = reliquary->Do(
+                Arca::Create<Bounds>(child, Point3D{}, Size2D{ 1, 1 }, Scalers2D{ 1, 1 }, Angle2D{}));
+            auto relativeBounds = reliquary->Do(
+                Arca::Create<RelativeBounds>(child, relativePosition));
 
             WHEN("moving child bounds to position")
             {
@@ -271,12 +279,13 @@ SCENARIO_METHOD(BoundsTestsFixture, "relative bounds")
     }
 }
 
-SCENARIO_METHOD(BoundsTestsFixture, "relative bounds initialization")
+SCENARIO_METHOD(BoundsTestsFixture, "relative bounds initialization", "[spatial]")
 {
     GIVEN("registered reliquary with parent")
     {
         Arca::ReliquaryOrigin reliquaryOrigin;
 
+        RegisterArcaTypes(reliquaryOrigin);
         Spatial::RegisterTypes(reliquaryOrigin);
 
         auto reliquary = reliquaryOrigin.Actualize();
@@ -289,7 +298,7 @@ SCENARIO_METHOD(BoundsTestsFixture, "relative bounds initialization")
         };
 
         auto parent = reliquary->Do(Arca::Create<Arca::OpenRelic>());
-        parent->Create<Bounds>(parentPosition, Size2D{ 1, 1 }, Scalers2D{ 1, 1 }, Angle2D{});
+        reliquary->Do(Arca::Create<Bounds>(parent, parentPosition, Size2D{ 1, 1 }, Scalers2D{ 1, 1 }, Angle2D{}));
 
         WHEN("creating child relic with relative bounds last")
         {
@@ -301,8 +310,10 @@ SCENARIO_METHOD(BoundsTestsFixture, "relative bounds initialization")
             };
 
             auto child = reliquary->Do(Arca::CreateChild<Arca::OpenRelic>(parent));
-            auto childBounds = child->Create<Bounds>(Point3D{}, Size2D{ 1, 1 }, Scalers2D{ 1, 1 }, Angle2D{});
-            child->Create<RelativeBounds>(relativePosition);
+            auto childBounds = reliquary->Do(
+                Arca::Create<Bounds>(child, Point3D{}, Size2D{ 1, 1 }, Scalers2D{ 1, 1 }, Angle2D{}));
+            reliquary->Do(
+                Arca::Create<RelativeBounds>(child, relativePosition));
             const auto childPosition = childBounds->Position();
 
             THEN("is at correct position")
@@ -336,8 +347,9 @@ SCENARIO_METHOD(BoundsTestsFixture, "relative bounds initialization")
             };
 
             auto child = reliquary->Do(Arca::CreateChild<Arca::OpenRelic>(parent));
-            child->Create<RelativeBounds>(relativePosition);
-            auto childBounds = child->Create<Bounds>(Point3D{}, Size2D{ 1, 1 }, Scalers2D{ 1, 1 }, Angle2D{});
+            reliquary->Do(Arca::Create<RelativeBounds>(child, relativePosition));
+            auto childBounds = reliquary->Do(
+                Arca::Create<Bounds>(child, Point3D{}, Size2D{ 1, 1 }, Scalers2D{ 1, 1 }, Angle2D{}));
             const auto childPosition = childBounds->Position();
 
             THEN("is at correct position")
@@ -363,12 +375,13 @@ SCENARIO_METHOD(BoundsTestsFixture, "relative bounds initialization")
     }
 }
 
-SCENARIO_METHOD(BoundsTestsFixture, "relative bounds children")
+SCENARIO_METHOD(BoundsTestsFixture, "relative bounds children", "[spatial]")
 {
     GIVEN("registered reliquary")
     {
         Arca::ReliquaryOrigin reliquaryOrigin;
 
+        RegisterArcaTypes(reliquaryOrigin);
         Spatial::RegisterTypes(reliquaryOrigin);
 
         auto reliquary = reliquaryOrigin.Actualize();
@@ -383,11 +396,14 @@ SCENARIO_METHOD(BoundsTestsFixture, "relative bounds children")
             };
 
             auto parent = reliquary->Do(Arca::Create<Arca::OpenRelic>());
-            auto parentBounds = parent->Create<Bounds>(Point3D{}, Size2D{ 1, 1 }, Scalers2D{ 1, 1 }, Angle2D{});
+            auto parentBounds = reliquary->Do(
+                Arca::Create<Bounds>(parent, Point3D{}, Size2D{ 1, 1 }, Scalers2D{ 1, 1 }, Angle2D{}));
 
             auto child = reliquary->Do(Arca::CreateChild<Arca::OpenRelic>(parent));
-            auto childBounds = child->Create<Bounds>(Point3D{}, Size2D{ 1, 1 }, Scalers2D{ 1, 1 }, Angle2D{});
-            child->Create<RelativeBounds>(relativePosition);
+            auto childBounds = reliquary->Do(
+                Arca::Create<Bounds>(child, Point3D{}, Size2D{ 1, 1 }, Scalers2D{ 1, 1 }, Angle2D{}));
+            reliquary->Do(
+                Arca::Create<RelativeBounds>(child, relativePosition));
 
             WHEN("moving parent bounds to position")
             {
@@ -472,14 +488,17 @@ SCENARIO_METHOD(BoundsTestsFixture, "relative bounds children")
     }
 }
 
-SCENARIO_METHOD(BoundsTestsFixture, "relative bounds errors")
+SCENARIO_METHOD(BoundsTestsFixture, "relative bounds errors", "[spatial]")
 {
     GIVEN("registered reliquary")
     {
+        Logging::Logger logger(Logging::Severity::Verbose);
+
         Arca::ReliquaryOrigin reliquaryOrigin;
 
+        RegisterArcaTypes(reliquaryOrigin);
         Spatial::RegisterTypes(reliquaryOrigin);
-        Logging::RegisterTypes(reliquaryOrigin);
+        Logging::RegisterTypes(reliquaryOrigin, logger);
 
         auto reliquary = reliquaryOrigin.Actualize();
 
@@ -488,8 +507,8 @@ SCENARIO_METHOD(BoundsTestsFixture, "relative bounds errors")
         WHEN("creating relic with relative bounds without parent")
         {
             auto relic = reliquary->Do(Arca::Create<Arca::OpenRelic>());
-            auto bounds = relic->Create<Bounds>();
-            relic->Create<RelativeBounds>();
+            auto bounds = reliquary->Do(Arca::Create<Bounds>(relic));
+            reliquary->Do(Arca::Create<RelativeBounds>(relic));
 
             WHEN("moving relic to position")
             {
@@ -565,8 +584,8 @@ SCENARIO_METHOD(BoundsTestsFixture, "relative bounds errors")
             auto parent = reliquary->Do(Arca::Create<Arca::OpenRelic>());
 
             auto child = reliquary->Do(Arca::CreateChild<Arca::OpenRelic>(parent));
-            auto childBounds = child->Create<Bounds>();
-            child->Create<RelativeBounds>();
+            auto childBounds = reliquary->Do(Arca::Create<Bounds>(child));
+            reliquary->Do(Arca::Create<RelativeBounds>(child));
 
             WHEN("moving child to position")
             {

@@ -7,12 +7,11 @@
 
 namespace Atmos
 {
-    class NameValuePair
+    struct NameValuePair
     {
-    public:
         Name name;
         Variant value;
-    public:
+
         NameValuePair() = default;
         NameValuePair(const Name& name, const Variant& value);
         NameValuePair(Name&& name, Variant&& value);

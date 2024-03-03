@@ -25,6 +25,7 @@ namespace Atmos::World::Serialization
         {
             SaveAssets images;
             SaveAssets shaders;
+            SaveAssets scripts;
         };
     public:
         explicit OutputAssetsArchiveInterface(const File::Path& filePath);

@@ -15,8 +15,6 @@ namespace Atmos::Window
 
         [[nodiscard]] void* Handle() const override;
     protected:
-        void SetupImpl() override;
-
         void OnPositionChanged() override;
         void OnSizeChanged() override;
         void OnFullscreenChanged() override;

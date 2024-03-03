@@ -6,6 +6,7 @@
 #include "FilePath.h"
 #include "Name.h"
 #include "Buffer.h"
+#include "Logger.h"
 
 namespace Atmos::World::Serialization
 {
@@ -26,6 +27,7 @@ namespace Atmos::World::Serialization
         {
             ExtractedAssets images;
             ExtractedAssets shaders;
+            ExtractedAssets scripts;
         };
 
         using ToExtract = std::set<Name>;
@@ -34,17 +36,20 @@ namespace Atmos::World::Serialization
         {
             ToExtract images;
             ToExtract shaders;
+            ToExtract scripts;
             AllToExtract() = default;
-            AllToExtract(const ToExtract& images, const ToExtract& shaders);
+            AllToExtract(const ToExtract& images, const ToExtract& shaders, const ToExtract& scripts);
         };
     public:
-        explicit InputAssetsArchiveInterface(const File::Path& filePath);
+        explicit InputAssetsArchiveInterface(const File::Path& filePath, Logging::Logger& logger);
 
         [[nodiscard]] Extracted ExtractAssets(const AllToExtract& toExtract);
     private:
         std::unique_ptr<wxFileInputStream> stream;
         File::Path filePath;
     private:
-        [[nodiscard]] static DataBuffer ExtractImage(wxZipInputStream& zip);
+        [[nodiscard]] static DataBuffer ExtractData(wxZipInputStream& zip);
+    private:
+        Logging::Logger* logger;
     };
 }

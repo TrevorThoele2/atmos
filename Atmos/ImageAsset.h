@@ -8,21 +8,21 @@
 
 #include "LoadAssetsUserContext.h"
 #include "CreateImageAssetResource.h"
-#include "LoadImageAssetResource.h"
+#include "LoadImageAssetResourceData.h"
 
 namespace Atmos::Asset
 {
-    class Image final : public AssetWithResource<Resource::Image, Image>
+    class Image final : public AssetWithResource<Resource::Image>
     {
     public:
         using Dimension = ImageSize::Dimension;
         using GridDimension = ImageGridSize::Dimension;
     public:
-        Image(Init init,
+        Image(Arca::RelicInit init,
             const Atmos::Name& name,
             ResourcePtr&& resource,
             ImageGridSize gridSize);
-        Image(Init init, Arca::Serialization serialization);
+        Image(Arca::RelicInit init, Arca::Serialization serialization);
         Image(Image&& arg) noexcept;
 
         Image& operator=(Image&& arg) noexcept;
@@ -41,6 +41,8 @@ namespace Atmos::Asset
         [[nodiscard]] Spatial::Size2D SliceSize() const;
     private:
         [[nodiscard]] ImageGridSize UsableGridSize() const;
+    private:
+        Arca::RelicInit init;
     private:
         ImageSize size;
         ImageGridSize gridSize;
@@ -75,7 +77,7 @@ namespace Inscription
         template<class Archive>
         void Scriven(ObjectT& object, Archive& archive)
         {
-            BaseScriven<Atmos::Asset::AssetWithResource<Atmos::Asset::Resource::Image, Atmos::Asset::Image>>(
+            BaseScriven<Atmos::Asset::AssetWithResource<Atmos::Asset::Resource::Image>>(
                 object, archive);
             archive("gridSize", object.gridSize);
             if (archive.IsInput())
@@ -85,14 +87,14 @@ namespace Inscription
                 auto extracted = assetUserContext.LoadImage(object.Name());
                 if (extracted)
                 {
-                    using LoadResource = Atmos::Asset::Resource::LoadFromMemory<Atmos::Asset::Resource::Image>;
-                    const auto loaded = object.Owner().Do(LoadResource
+                    using LoadResource = Atmos::Asset::Resource::LoadDataFromMemory<Atmos::Asset::Resource::Image>;
+                    const auto loaded = object.init.owner.Do(LoadResource
                     {
                         extracted->memory
                     });
 
                     using CreateResource = Atmos::Asset::Resource::Create<Atmos::Asset::Resource::Image>;
-                    auto resource = object.Owner().Do(CreateResource
+                    auto resource = object.init.owner.Do(CreateResource
                     {
                         loaded.buffer,
                         object.Name(),

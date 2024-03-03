@@ -1,12 +1,12 @@
 #pragma once
 
-#include <Arca/ClosedTypedRelic.h>
+#include <Arca/Relic.h>
 #include "StaticImage.h"
 #include "SparseRegion.h"
 
 namespace Atmos::World
 {
-    class Map final : public Arca::ClosedTypedRelic<Map>
+    class Map final
     {
     public:
         using Terrain = std::vector<Arca::Index<Render::StaticImage>>;

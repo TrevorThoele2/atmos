@@ -5,11 +5,13 @@
 #include <boost/process/windows.hpp>
 
 #include "GraphicsError.h"
-#include "Log.h"
 #include "Logger.h"
 
 namespace Atmos::Render::Vulkan
 {
+    ShaderCompiler::ShaderCompiler(Logging::Logger& logger) : logger(&logger)
+    {}
+
     void ShaderCompiler::Compile(
         const File::Path& inputPath,
         const File::Path& outputPath)
@@ -29,11 +31,6 @@ namespace Atmos::Render::Vulkan
         const File::Path& outputPath,
         const std::vector<std::string>& additionalFlags)
     {
-        Logging::logger.Log(
-            "Starting compilation of shader.",
-            Logging::Severity::Information,
-            { { { "InputPath", inputPath.generic_string() } } });
-
         try
         {
             auto path = "./tools32/glslc.exe " + inputPath.string() + " -o " + outputPath.string();
@@ -60,14 +57,14 @@ namespace Atmos::Render::Vulkan
         }
         catch(...)
         {
-            Logging::logger.Log(
+            logger->Log(
                 "Compilation of shader failed.",
                 Logging::Severity::Information,
                 { { { "InputPath", inputPath.generic_string() } } });
             throw;
         }
 
-        Logging::logger.Log(
+        logger->Log(
             "Compilation of shader succeeded.",
             Logging::Severity::Information,
             { { { "InputPath", inputPath.generic_string() } } });

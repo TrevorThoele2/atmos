@@ -63,8 +63,8 @@ namespace Atmos::Render::Vulkan
         graphicsQueue(graphicsQueue),
         device(device)
     {
-        for (auto& material : materials)
-            MaterialCreated(Arca::Index<Asset::Material>{material.ID(), material.Owner()});
+        for (auto material = materials.begin(); material != materials.end(); ++material)
+            MaterialCreated(Arca::Index<Asset::Material>{material.ID(), materials.Owner()});
     }
 
     void QuadRenderer::StageRender(const ImageRender& imageRender)
@@ -258,7 +258,6 @@ namespace Atmos::Render::Vulkan
 
         const auto imageAsset = imageRender.asset;
         const auto slice = imageRender.assetSlice;
-        const auto materialAsset = imageRender.material;
         const auto color = AtmosToVulkanColor(imageRender.color);
 
         const auto position = ToPoint2D(imageRender.position);
@@ -304,7 +303,7 @@ namespace Atmos::Render::Vulkan
         auto layer = raster.layers.Find(imageRender.position.z);
         if (!layer)
             layer = &raster.layers.Add(imageRender.position.z, Raster::Layer{});
-        auto& group = layer->GroupFor(materialAsset->ID());
+        auto& group = layer->GroupFor(imageRender.materialID);
         group.ListFor(imageAsset).emplace_back(vertices);
         descriptorSetKeys.emplace(DescriptorSetKey(*imageAsset));
     }

@@ -37,6 +37,28 @@ namespace Atmos::Window
         const auto registered = RegisterClassEx(&windowClass);
         if (registered == 0)
             throw WindowCreationFailed(LastErrorMessage());
+
+        ChangeStyles();
+
+        const auto center = Position();
+        const auto size = ClientSize();
+
+        hwnd = CreateWindowEx(
+            currentExStyle,
+            windowClass.lpszClassName,
+            windowClass.lpszClassName,
+            currentStyle,
+            center.x,
+            center.y,
+            size.width,
+            size.height,
+            nullptr,
+            nullptr,
+            windowClass.hInstance,
+            nullptr);
+
+        if (hwnd == nullptr)
+            throw WindowCreationFailed(LastErrorMessage());
     }
 
     void WindowsWindow::Show()
@@ -78,31 +100,6 @@ namespace Atmos::Window
     void* WindowsWindow::Handle() const
     {
         return hwnd;
-    }
-
-    void WindowsWindow::SetupImpl()
-    {
-        ChangeStyles();
-
-        const auto center = Position();
-        const auto size = ClientSize();
-
-        hwnd = CreateWindowEx(
-            currentExStyle,
-            windowClass.lpszClassName,
-            windowClass.lpszClassName,
-            currentStyle,
-            center.x,
-            center.y,
-            size.width,
-            size.height,
-            nullptr,
-            nullptr,
-            windowClass.hInstance,
-            nullptr);
-
-        if (hwnd == nullptr)
-            throw WindowCreationFailed(LastErrorMessage());
     }
 
     auto WindowsWindow::WindowSizeFromClientSize() const -> Size

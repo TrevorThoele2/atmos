@@ -1,15 +1,15 @@
 #pragma once
 
-#include <Arca/ClosedTypedRelic.h>
+#include <Arca/Relic.h>
 
 namespace Atmos::Render
 {
-    class GraphicsSettings final : public Arca::ClosedTypedRelic<GraphicsSettings>
+    class GraphicsSettings final
     {
     public:
         bool verticalSync = false;
 
-        using ClosedTypedRelic::ClosedTypedRelic;
+        GraphicsSettings() = default;
     };
 }
 

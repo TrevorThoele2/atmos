@@ -1,10 +1,10 @@
 #pragma once
 
-#include <Arca/ClosedTypedRelic.h>
+#include <Arca/Relic.h>
 
 #include "Name.h"
-#include "EntityDatum.h"
-#include "EntityTag.h"
+#include "Datum.h"
+#include "Tag.h"
 
 #include "GridPoint.h"
 #include "Angle2D.h"
@@ -13,26 +13,27 @@
 
 namespace Atmos::Entity
 {
-    class Entity final : public Arca::ClosedTypedRelic<Entity>
+    class Entity final
     {
     public:
         Name name;
         Name displayName;
 
         Spatial::Grid::Point position;
-        Spatial::Angle2D direction;
+        Spatial::Angle2D direction = 0.0f;
 
-        bool solid = false;
+        bool isSolid = false;
 
-        std::unordered_map<Name, Datum> data;
-        std::unordered_set<Tag> tags;
+        std::vector<Datum> data;
+        std::vector<Tag> tags;
     public:
-        explicit Entity(Init init);
+        Entity() = default;
         explicit Entity(
-            Init init,
             Name name,
+            Name displayName,
             Spatial::Grid::Point position,
-            Spatial::Angle2D direction);
+            Spatial::Angle2D direction,
+            bool isSolid);
     };
 }
 
@@ -60,7 +61,7 @@ namespace Inscription
             archive("name", object.name);
             archive("displayName", object.displayName);
             archive("position", object.position);
-            archive("solid", object.solid);
+            archive("isSolid", object.isSolid);
             archive("data", object.data);
             archive("tags", object.tags);
         }

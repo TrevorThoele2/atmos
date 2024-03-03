@@ -12,7 +12,7 @@ namespace Atmos::Render
             MutablePointer())
     {}
 
-    void Curator::Work()
+    void Curator::Handle(const Work&)
     {
         debugRenderProfiler.Start();
 

@@ -8,11 +8,11 @@ namespace Atmos
     class WindowsEngine final : public Engine
     {
     public:
-        WindowsEngine(HINSTANCE hInstance, LPSTR lpCmdLine, int nCmdShow, String className);
+        WindowsEngine(HINSTANCE hInstance, LPSTR lpCmdLine, int nCmdShow, String className, Logging::Logger& logger);
     protected:
         void SetupImplementation() override;
 
-        InitializationProperties CreateInitializationProperties() override;
+        InitializationProperties CreateInitializationProperties(Logging::Logger& logger) override;
 
         void DoExit() override;
     private:

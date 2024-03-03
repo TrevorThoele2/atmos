@@ -12,7 +12,8 @@ namespace Atmos::Render::Vulkan
         vk::Queue graphicsQueue,
         vk::Queue presentQueue,
         uint32_t graphicsQueueIndex,
-        vk::PhysicalDeviceMemoryProperties memoryProperties)
+        vk::PhysicalDeviceMemoryProperties memoryProperties,
+        Logging::Logger& logger)
         :
         device(device),
         sampler(sampler),
@@ -21,7 +22,8 @@ namespace Atmos::Render::Vulkan
         graphicsQueue(graphicsQueue),
         presentQueue(presentQueue),
         commandBuffers(*device, graphicsQueueIndex),
-        universalDataBuffer(0, memoryProperties, *device)
+        universalDataBuffer(0, memoryProperties, *device),
+        logger(&logger)
     {
         imageAvailableSemaphores = CreateSemaphores(*device, maxFramesInFlight);
         renderFinishedSemaphores = CreateSemaphores(*device, maxFramesInFlight);
@@ -98,7 +100,7 @@ namespace Atmos::Render::Vulkan
             nullptr);
         if (imageIndex.result == vk::Result::eErrorOutOfDateKHR)
         {
-            Logging::logger.Log("Vulkan image is out of date.");
+            logger->Log("Vulkan image is out of date.");
             onOutOfDate();
             return;
         }
@@ -160,12 +162,12 @@ namespace Atmos::Render::Vulkan
             const auto presentResult = presentQueue.presentKHR(&presentInfo);
             if (presentResult == vk::Result::eErrorOutOfDateKHR)
             {
-                Logging::logger.Log("Vulkan presentation is out of date.", Logging::Severity::Verbose);
+                logger->Log("Vulkan presentation is out of date.", Logging::Severity::Verbose);
                 onOutOfDate();
             }
             else if (presentResult == vk::Result::eSuboptimalKHR)
             {
-                Logging::logger.Log("Vulkan presentation is suboptimal.", Logging::Severity::Verbose);
+                logger->Log("Vulkan presentation is suboptimal.", Logging::Severity::Verbose);
                 onOutOfDate();
             }
             else if (IsError(presentResult))

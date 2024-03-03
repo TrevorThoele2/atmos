@@ -26,7 +26,7 @@ namespace Atmos::Debug
         class Page
         {
         public:
-            StatisticsCurator& owner;
+            StatisticsCurator* owner;
 
             Page() = delete;
             explicit Page(StatisticsCurator& owner);
@@ -35,8 +35,6 @@ namespace Atmos::Debug
 
             using Entry = PageEntry;
             void AddEntry(const String& label, Entry& add);
-        public:
-            virtual void Initialize() = 0;
         public:
             [[nodiscard]] String LabelString() const;
             [[nodiscard]] String DataString() const;
@@ -66,9 +64,7 @@ namespace Atmos::Debug
 
             Entry totalElapsed;
         public:
-            using Page::Page;
-
-            void Initialize() override;
+            explicit ProfilerPage(StatisticsCurator& owner);
         };
 
         class MemoryPage final : public Page
@@ -84,9 +80,7 @@ namespace Atmos::Debug
             Entry workingScriptSize;
             Entry movingEntitySize;
         public:
-            using Page::Page;
-
-            void Initialize() override;
+            explicit MemoryPage(StatisticsCurator& owner);
         };
 
         class GamePage final : public Page
@@ -96,9 +90,7 @@ namespace Atmos::Debug
             Entry playerRow;
             Entry fieldID;
         public:
-            using Page::Page;
-
-            void Initialize() override;
+            explicit GamePage(StatisticsCurator& owner);
         };
 
         class WindowPage final : public Page
@@ -115,9 +107,7 @@ namespace Atmos::Debug
             Entry viewOriginX;
             Entry viewOriginY;
         public:
-            using Page::Page;
-
-            void Initialize() override;
+            explicit WindowPage(StatisticsCurator& owner);
         };
 
         ProfilerPage profilerPage{ *this };

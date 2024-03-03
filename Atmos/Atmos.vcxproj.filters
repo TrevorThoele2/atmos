@@ -174,30 +174,6 @@
     <Filter Include="Source Files\Audio">
       <UniqueIdentifier>{3ba79d1c-3516-4398-9629-abc6ee92e444}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Script">
-      <UniqueIdentifier>{5d2af305-be22-493a-9f5b-95b32a24be5d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Script\AngelScript">
-      <UniqueIdentifier>{bb380e76-0fdb-4c8d-96b8-8fee573af8bd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Script\AngelScript\Addon">
-      <UniqueIdentifier>{10f6fe88-04e4-48f9-90b3-089a5df04ba3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Script\AngelScript\Registration">
-      <UniqueIdentifier>{2bce928d-4833-49b3-b722-4be718b382c9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Script\AngelScript\Registration\Bases">
-      <UniqueIdentifier>{b1a10f14-f416-4dee-a889-914cefbd468d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Script">
-      <UniqueIdentifier>{b274c423-aba4-4c01-bb59-05857b196420}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Script\AngelScript">
-      <UniqueIdentifier>{510dbc17-4162-419b-bc6f-d999f3fa4ded}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Script\AngelScript\Addon">
-      <UniqueIdentifier>{075d222d-98d0-4c59-b8d6-b5799d513a8f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Render\Camera">
       <UniqueIdentifier>{6ed31266-b6a3-401d-9405-60f4aa43e8d4}</UniqueIdentifier>
     </Filter>
@@ -206,12 +182,6 @@
     </Filter>
     <Filter Include="Header Files\Provider">
       <UniqueIdentifier>{0690f5dc-8974-4114-8155-d10c5f6fd4c1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Script\AngelScript\Registration">
-      <UniqueIdentifier>{659a8192-8154-4c6e-9295-c89d4d7592c0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Script\AngelScript\Registration\Bases">
-      <UniqueIdentifier>{8ee3d6e5-914f-4b4a-9e2d-9c08b542d3ee}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Input\Signals">
       <UniqueIdentifier>{5a00eaa9-c51e-44f5-9b57-73aa2172c699}</UniqueIdentifier>
@@ -411,11 +381,122 @@
     <Filter Include="Source Files\Frame">
       <UniqueIdentifier>{9f0dd34d-d5a3-443a-8e5d-9d8aac6de4ee}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\GlobalInitializer">
-      <UniqueIdentifier>{e7e37447-60d3-402c-a51d-d5764888c4c9}</UniqueIdentifier>
+    <Filter Include="Header Files\Assets\Image\Manager">
+      <UniqueIdentifier>{ab67ec91-01c1-4896-90d4-4ce2490e3b45}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\GlobalInitializer">
-      <UniqueIdentifier>{069a4c72-99af-4bef-9f36-ed9729ba7423}</UniqueIdentifier>
+    <Filter Include="Source Files\Assets\Image\Manager">
+      <UniqueIdentifier>{be26196f-d4b6-4f95-af0a-185864be9227}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scripting">
+      <UniqueIdentifier>{5d2af305-be22-493a-9f5b-95b32a24be5d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scripting\AngelScript">
+      <UniqueIdentifier>{bb380e76-0fdb-4c8d-96b8-8fee573af8bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scripting\AngelScript\Addon">
+      <UniqueIdentifier>{10f6fe88-04e4-48f9-90b3-089a5df04ba3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scripting\AngelScript\Serialization">
+      <UniqueIdentifier>{7e2080fb-df4c-422a-8537-75087b020c2f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scripting\AngelScript\Types">
+      <UniqueIdentifier>{2bce928d-4833-49b3-b722-4be718b382c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scripting\AngelScript\Types\Bases">
+      <UniqueIdentifier>{b1a10f14-f416-4dee-a889-914cefbd468d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scripting\AngelScript\Types\Arca">
+      <UniqueIdentifier>{f6e8d698-aed1-453f-8bd8-198df9af09d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scripting\AngelScript\Types\Atmos">
+      <UniqueIdentifier>{9aa94812-27cc-4a8f-8561-4757381965fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scripting\AngelScript\Types\Atmos\Spatial">
+      <UniqueIdentifier>{3be85008-61d1-432b-ac3a-f309a6520671}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scripting\AngelScript\Types\Atmos\Spatial\Grid">
+      <UniqueIdentifier>{a1d9fce1-5cb7-4f22-b6f7-bdfb6976ddb2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scripting\AngelScript\Types\Atmos\Render">
+      <UniqueIdentifier>{934a1294-283f-44b2-b5ca-ada52b28a319}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scripting\AngelScript\Types\Atmos\Assets">
+      <UniqueIdentifier>{a8719528-2f50-447a-8d3f-b15117439033}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scripting\AngelScript\Types\Atmos\Time">
+      <UniqueIdentifier>{6891b8c9-a8a6-434b-a90a-4a237899afb8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scripting\AngelScript\Types\Atmos\Entity">
+      <UniqueIdentifier>{7593d61b-e416-4cc0-926b-3a0b09cfcd26}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scripting\AngelScript\Types\Atmos\Script">
+      <UniqueIdentifier>{a342e8e8-1898-4ac7-88b3-6e96389b4c62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scripting\AngelScript\Registration">
+      <UniqueIdentifier>{e5569004-8f7a-4ef4-9684-b9518e1b3a2e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scripting\AngelScript\Infrastructure">
+      <UniqueIdentifier>{416b4f02-791c-4f2f-bd30-d19af7e1ce3c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scripting\AngelScript\Management">
+      <UniqueIdentifier>{bdfc36f6-8c58-494d-b4f1-fa986463edf7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scripting\Commands">
+      <UniqueIdentifier>{282c80a0-8126-4c38-a227-5868e1f39f58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scripting">
+      <UniqueIdentifier>{b274c423-aba4-4c01-bb59-05857b196420}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scripting\AngelScript">
+      <UniqueIdentifier>{510dbc17-4162-419b-bc6f-d999f3fa4ded}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scripting\AngelScript\Addon">
+      <UniqueIdentifier>{075d222d-98d0-4c59-b8d6-b5799d513a8f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scripting\AngelScript\Serialization">
+      <UniqueIdentifier>{74d2488d-c6ab-403a-acdd-f6b3dd59e32a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scripting\AngelScript\Types">
+      <UniqueIdentifier>{659a8192-8154-4c6e-9295-c89d4d7592c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scripting\AngelScript\Types\Bases">
+      <UniqueIdentifier>{8ee3d6e5-914f-4b4a-9e2d-9c08b542d3ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scripting\AngelScript\Types\Atmos">
+      <UniqueIdentifier>{bc07bcea-9dfb-4a35-bd7b-1ab179c1765b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scripting\AngelScript\Types\Atmos\Render">
+      <UniqueIdentifier>{784954ce-9466-4d2a-b98d-2151f7f4fa8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scripting\AngelScript\Types\Atmos\Spatial">
+      <UniqueIdentifier>{afa5e021-1bba-4017-b49d-7397f1ff76c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scripting\AngelScript\Types\Atmos\Spatial\Grid">
+      <UniqueIdentifier>{c6dd3ef0-9af8-4837-aa34-0d77148bc35e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scripting\AngelScript\Types\Atmos\Assets">
+      <UniqueIdentifier>{17811de0-59b4-4bce-9fe4-b2850446ef1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scripting\AngelScript\Types\Atmos\Time">
+      <UniqueIdentifier>{9aeb7e04-6a74-4d5f-9462-cc6a284fb871}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scripting\AngelScript\Types\Atmos\Entity">
+      <UniqueIdentifier>{b784c7d4-9bd3-4a3c-986a-c590829fd71f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scripting\AngelScript\Types\Atmos\Script">
+      <UniqueIdentifier>{341fc339-f5b7-440b-8275-41faa8709451}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scripting\AngelScript\Types\Arca">
+      <UniqueIdentifier>{d048a6cd-667e-41d8-9ce7-e660ed3ab491}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scripting\AngelScript\Registration">
+      <UniqueIdentifier>{918153c9-b482-41f5-a450-f93fe898561d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scripting\AngelScript\Management">
+      <UniqueIdentifier>{9cb9dc37-6ac3-4873-8fa0-1a0aace025b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scripting\Commands">
+      <UniqueIdentifier>{e05d5d88-3584-4d7e-88da-800746e0e1d9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -443,9 +524,6 @@
     <ClInclude Include="NameValuePair.h">
       <Filter>Header Files\Data</Filter>
     </ClInclude>
-    <ClInclude Include="TimeValue.h">
-      <Filter>Header Files\Time</Filter>
-    </ClInclude>
     <ClInclude Include="StringUtility.h">
       <Filter>Header Files\Data</Filter>
     </ClInclude>
@@ -462,16 +540,13 @@
       <Filter>Header Files\Assets\Audio</Filter>
     </ClInclude>
     <ClInclude Include="..\..\AngelScript\sdk\add_on\scriptstdstring\scriptstdstring.h">
-      <Filter>Header Files\Script\AngelScript\Addon</Filter>
+      <Filter>Header Files\Scripting\AngelScript\Addon</Filter>
     </ClInclude>
     <ClInclude Include="..\..\AngelScript\sdk\add_on\scriptarray\scriptarray.h">
-      <Filter>Header Files\Script\AngelScript\Addon</Filter>
+      <Filter>Header Files\Scripting\AngelScript\Addon</Filter>
     </ClInclude>
     <ClInclude Include="ScriptAsset.h">
       <Filter>Header Files\Assets\Script</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptUtility.h">
-      <Filter>Header Files\Script\AngelScript</Filter>
     </ClInclude>
     <ClInclude Include="Event.h">
       <Filter>Header Files\Event</Filter>
@@ -546,10 +621,7 @@
       <Filter>Header Files\File</Filter>
     </ClInclude>
     <ClInclude Include="AngelScriptUserData.h">
-      <Filter>Header Files\Script\AngelScript</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptRegistrationInterface.h">
-      <Filter>Header Files\Script\AngelScript</Filter>
+      <Filter>Header Files\Scripting\AngelScript</Filter>
     </ClInclude>
     <ClInclude Include="ModulatorInterpolation.h">
       <Filter>Header Files\Modulators\Interpolation</Filter>
@@ -566,17 +638,8 @@
     <ClInclude Include="WorldManager.h">
       <Filter>Header Files\World</Filter>
     </ClInclude>
-    <ClInclude Include="AngelScriptTile.h">
-      <Filter>Header Files\Script\AngelScript\Registration</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptGridPosition.h">
-      <Filter>Header Files\Script\AngelScript\Registration</Filter>
-    </ClInclude>
     <ClInclude Include="AngelScriptReferenceCounted.h">
-      <Filter>Header Files\Script\AngelScript\Registration\Bases</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptEvent.h">
-      <Filter>Header Files\Script\AngelScript\Registration</Filter>
+      <Filter>Header Files\Scripting\AngelScript\Types\Bases</Filter>
     </ClInclude>
     <ClInclude Include="NullWindow.h">
       <Filter>Header Files\Window</Filter>
@@ -641,23 +704,11 @@
     <ClInclude Include="DebugStatistics.h">
       <Filter>Header Files\Debug</Filter>
     </ClInclude>
-    <ClInclude Include="RunningScript.h">
-      <Filter>Header Files\Script</Filter>
-    </ClInclude>
-    <ClInclude Include="ScriptController.h">
-      <Filter>Header Files\Script</Filter>
-    </ClInclude>
-    <ClInclude Include="ScriptInstance.h">
-      <Filter>Header Files\Script</Filter>
-    </ClInclude>
-    <ClInclude Include="ScriptPersistence.h">
-      <Filter>Header Files\Script</Filter>
-    </ClInclude>
     <ClInclude Include="ScriptVariant.h">
-      <Filter>Header Files\Script</Filter>
+      <Filter>Header Files\Scripting</Filter>
     </ClInclude>
     <ClInclude Include="ScriptParameters.h">
-      <Filter>Header Files\Script</Filter>
+      <Filter>Header Files\Scripting</Filter>
     </ClInclude>
     <ClInclude Include="AssetCurator.h">
       <Filter>Header Files\Assets</Filter>
@@ -716,20 +767,11 @@
     <ClInclude Include="RenderCurator.h">
       <Filter>Header Files\Render</Filter>
     </ClInclude>
-    <ClInclude Include="AngelScriptCurator.h">
-      <Filter>Header Files\Script\AngelScript</Filter>
-    </ClInclude>
     <ClInclude Include="StateCurator.h">
       <Filter>Header Files\State</Filter>
     </ClInclude>
     <ClInclude Include="StateRequest.h">
       <Filter>Header Files\State</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptRelic.h">
-      <Filter>Header Files\Script\AngelScript\Registration</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptResultVerification.h">
-      <Filter>Header Files\Script\AngelScript</Filter>
     </ClInclude>
     <ClInclude Include="FocusLost.h">
       <Filter>Header Files\Engine</Filter>
@@ -785,9 +827,6 @@
     <ClInclude Include="InputCurator.h">
       <Filter>Header Files\Input</Filter>
     </ClInclude>
-    <ClInclude Include="WindowProvider.h">
-      <Filter>Header Files\Window</Filter>
-    </ClInclude>
     <ClInclude Include="GraphicsCurator.h">
       <Filter>Header Files\Render</Filter>
     </ClInclude>
@@ -796,15 +835,6 @@
     </ClInclude>
     <ClInclude Include="Entity.h">
       <Filter>Header Files\Entity</Filter>
-    </ClInclude>
-    <ClInclude Include="ExecuteImmediately.h">
-      <Filter>Header Files\Script</Filter>
-    </ClInclude>
-    <ClInclude Include="ForceQuit.h">
-      <Filter>Header Files\Script</Filter>
-    </ClInclude>
-    <ClInclude Include="AllRunningScripts.h">
-      <Filter>Header Files\Script</Filter>
     </ClInclude>
     <ClInclude Include="VolumeInformation.h">
       <Filter>Header Files\Audio</Filter>
@@ -905,14 +935,11 @@
     <ClInclude Include="Surface.h">
       <Filter>Header Files\Render\Surface</Filter>
     </ClInclude>
-    <ClInclude Include="AngelScriptAssetData.h">
-      <Filter>Header Files\Script\AngelScript</Filter>
-    </ClInclude>
     <ClInclude Include="ScriptManager.h">
-      <Filter>Header Files\Script</Filter>
+      <Filter>Header Files\Scripting</Filter>
     </ClInclude>
     <ClInclude Include="AngelScriptManager.h">
-      <Filter>Header Files\Script\AngelScript</Filter>
+      <Filter>Header Files\Scripting\AngelScript</Filter>
     </ClInclude>
     <ClInclude Include="GridCellSize.h">
       <Filter>Header Files\Spatial\Grid</Filter>
@@ -955,9 +982,6 @@
     </ClInclude>
     <ClInclude Include="FileCurator.h">
       <Filter>Header Files\File</Filter>
-    </ClInclude>
-    <ClInclude Include="FindAsset.h">
-      <Filter>Header Files\Assets</Filter>
     </ClInclude>
     <ClInclude Include="VulkanGraphicsManager.h">
       <Filter>Header Files\Render\Vulkan</Filter>
@@ -1022,14 +1046,8 @@
     <ClInclude Include="VulkanVertexInput.h">
       <Filter>Header Files\Render\Vulkan\Structures</Filter>
     </ClInclude>
-    <ClInclude Include="ImageAssetType.h">
-      <Filter>Header Files\Assets\Image</Filter>
-    </ClInclude>
     <ClInclude Include="LoadAssetError.h">
       <Filter>Header Files\Assets</Filter>
-    </ClInclude>
-    <ClInclude Include="GlobalInitializer.h">
-      <Filter>Header Files\GlobalInitializer</Filter>
     </ClInclude>
     <ClInclude Include="VulkanCombinedImageSamplerDescriptor.h">
       <Filter>Header Files\Render\Vulkan\Descriptors</Filter>
@@ -1160,18 +1178,6 @@
     <ClInclude Include="RenderMesh.h">
       <Filter>Header Files\Render</Filter>
     </ClInclude>
-    <ClInclude Include="EntityDatum.h">
-      <Filter>Header Files\Entity</Filter>
-    </ClInclude>
-    <ClInclude Include="EntityVariant.h">
-      <Filter>Header Files\Entity</Filter>
-    </ClInclude>
-    <ClInclude Include="Variant.h">
-      <Filter>Header Files\Data</Filter>
-    </ClInclude>
-    <ClInclude Include="EntityTag.h">
-      <Filter>Header Files\Entity</Filter>
-    </ClInclude>
     <ClInclude Include="RelativeImage.h">
       <Filter>Header Files\Render\Image</Filter>
     </ClInclude>
@@ -1224,9 +1230,6 @@
       <Filter>Header Files\Entity</Filter>
     </ClInclude>
     <ClInclude Include="ActualizeAllEntityPrototypes.h">
-      <Filter>Header Files\Entity</Filter>
-    </ClInclude>
-    <ClInclude Include="MoveEntity.h">
       <Filter>Header Files\Entity</Filter>
     </ClInclude>
     <ClInclude Include="Angle2D.h">
@@ -1316,12 +1319,6 @@
     <ClInclude Include="LoadAssetsByZipUserContext.h">
       <Filter>Header Files\Assets</Filter>
     </ClInclude>
-    <ClInclude Include="LoadImageAssetResource.h">
-      <Filter>Header Files\Assets\Image</Filter>
-    </ClInclude>
-    <ClInclude Include="LoadAssetResource.h">
-      <Filter>Header Files\Assets</Filter>
-    </ClInclude>
     <ClInclude Include="ChangeSurfaceBackgroundColor.h">
       <Filter>Header Files\Render\Surface</Filter>
     </ClInclude>
@@ -1348,6 +1345,318 @@
     </ClInclude>
     <ClInclude Include="Overflow.h">
       <Filter>Header Files\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptAssetResource.h">
+      <Filter>Header Files\Scripting\AngelScript</Filter>
+    </ClInclude>
+    <ClInclude Include="Script.h">
+      <Filter>Header Files\Scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptCurator.h">
+      <Filter>Header Files\Scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="NullScriptManager.h">
+      <Filter>Header Files\Scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="CreateScriptAssetResource.h">
+      <Filter>Header Files\Assets\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptCompiledFileExtension.h">
+      <Filter>Header Files\Scripting\AngelScript\Serialization</Filter>
+    </ClInclude>
+    <ClInclude Include="InputAngelScriptBytecodeStream.h">
+      <Filter>Header Files\Scripting\AngelScript\Serialization</Filter>
+    </ClInclude>
+    <ClInclude Include="OutputAngelScriptBytecodeStream.h">
+      <Filter>Header Files\Scripting\AngelScript\Serialization</Filter>
+    </ClInclude>
+    <ClInclude Include="Work.h">
+      <Filter>Header Files\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="LoggingInformation.h">
+      <Filter>Header Files\Logging</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowInformation.h">
+      <Filter>Header Files\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="FreeImageAssetManager.h">
+      <Filter>Header Files\Assets\Image\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageAssetManager.h">
+      <Filter>Header Files\Assets\Image\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="NullImageAssetManager.h">
+      <Filter>Header Files\Assets\Image\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadImageAssetResourceData.h">
+      <Filter>Header Files\Assets\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadAssetResourceData.h">
+      <Filter>Header Files\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadScriptAssetResourceData.h">
+      <Filter>Header Files\Assets\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadShaderAssetResourceData.h">
+      <Filter>Header Files\Assets\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptResultVerification.h">
+      <Filter>Header Files\Scripting\AngelScript</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptRegistration.h">
+      <Filter>Header Files\Scripting\AngelScript\Registration</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptNamespaces.h">
+      <Filter>Header Files\Scripting\AngelScript</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptEnumRegistration.h">
+      <Filter>Header Files\Scripting\AngelScript\Registration</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptObjectRegistration.h">
+      <Filter>Header Files\Scripting\AngelScript\Registration</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptGlobalRegistration.h">
+      <Filter>Header Files\Scripting\AngelScript\Registration</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptName.h">
+      <Filter>Header Files\Scripting\AngelScript</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptGridPoint.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Spatial\Grid</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptAngle2D.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptFinished.h">
+      <Filter>Header Files\Scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptAngle3D.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptPoint2D.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptPoint3D.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptScalers2D.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptScalers3D.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptSize2D.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptSize3D.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptAxisAlignedBox2D.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptAxisAlignedBox3D.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptSpatialAlgorithms.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptGridSpatialAlgorithms.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptColor.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptImageAsset.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptFunctionManagement.h">
+      <Filter>Header Files\Scripting\AngelScript\Management</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptGlobalManagement.h">
+      <Filter>Header Files\Scripting\AngelScript\Management</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptObjectManagement.h">
+      <Filter>Header Files\Scripting\AngelScript\Management</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptAsset.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptLog.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptLoggingSeverity.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptStringUtility.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptPrimitive.h">
+      <Filter>Header Files\Scripting\AngelScript\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptCommand.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Arca</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptShaderAsset.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptMaterialAsset.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptAudioAsset.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptScriptAsset.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageAssetFileType.h">
+      <Filter>Header Files\Assets\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="CreateAudioAssetResource.h">
+      <Filter>Header Files\Assets\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioCurator.h">
+      <Filter>Header Files\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptObjectType.h">
+      <Filter>Header Files\Scripting\AngelScript</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptFactory.h">
+      <Filter>Header Files\Scripting\AngelScript\Infrastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptRelicID.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Arca</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptDynamicImage.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptParameters.h">
+      <Filter>Header Files\Scripting\AngelScript\Infrastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptSignal.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Arca</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptResult.h">
+      <Filter>Header Files\Scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptArcaUserData.h">
+      <Filter>Header Files\Scripting\AngelScript</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptFunctionTraits.h">
+      <Filter>Header Files\Scripting\AngelScript\Infrastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptBounds.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptIndex.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Arca</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptImageCore.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptCamera.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptArcaCreate.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Arca</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptHandle.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Arca</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptArcaType.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Arca</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptArcaDestroy.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Arca</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptArcaAssign.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Arca</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptStopwatch.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="TimePoint.h">
+      <Filter>Header Files\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptEntity.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptArcaTraits.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Arca</Filter>
+    </ClInclude>
+    <ClInclude Include="MoveEntityTo.h">
+      <Filter>Header Files\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="ModifyEntityData.h">
+      <Filter>Header Files\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="ModifyEntityTags.h">
+      <Filter>Header Files\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="FindEntityByName.h">
+      <Filter>Header Files\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="FindEntityByPosition.h">
+      <Filter>Header Files\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="FindAssetByName.h">
+      <Filter>Header Files\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptArcaBatch.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Arca</Filter>
+    </ClInclude>
+    <ClInclude Include="CompileScript.h">
+      <Filter>Header Files\Scripting\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="SuspendScript.h">
+      <Filter>Header Files\Scripting\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="CurrentExecutingScript.h">
+      <Filter>Header Files\Scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptScriptResource.h">
+      <Filter>Header Files\Scripting\AngelScript</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptScript.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptScriptResult.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptVariant.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos</Filter>
+    </ClInclude>
+    <ClInclude Include="Variant.h">
+      <Filter>Header Files\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptScriptFinished.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptSuspendScript.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Datum.h">
+      <Filter>Header Files\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Tag.h">
+      <Filter>Header Files\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptDatum.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos</Filter>
+    </ClInclude>
+    <ClInclude Include="ModifyScriptData.h">
+      <Filter>Header Files\Scripting\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptCurrentScript.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptFunction.h">
+      <Filter>Header Files\Scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptScriptFunction.h">
+      <Filter>Header Files\Scripting\AngelScript</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptResource.h">
+      <Filter>Header Files\Scripting</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1376,16 +1685,13 @@
       <Filter>Source Files\Assets\Audio</Filter>
     </ClCompile>
     <ClCompile Include="..\..\AngelScript\sdk\add_on\scriptstdstring\scriptstdstring.cpp">
-      <Filter>Source Files\Script\AngelScript\Addon</Filter>
+      <Filter>Source Files\Scripting\AngelScript\Addon</Filter>
     </ClCompile>
     <ClCompile Include="..\..\AngelScript\sdk\add_on\scriptarray\scriptarray.cpp">
-      <Filter>Source Files\Script\AngelScript\Addon</Filter>
+      <Filter>Source Files\Scripting\AngelScript\Addon</Filter>
     </ClCompile>
     <ClCompile Include="ScriptAsset.cpp">
       <Filter>Source Files\Assets\Script</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptUtility.cpp">
-      <Filter>Source Files\Script\AngelScript</Filter>
     </ClCompile>
     <ClCompile Include="AnyEventConnection.cpp">
       <Filter>Source Files\Event</Filter>
@@ -1437,9 +1743,6 @@
     </ClCompile>
     <ClCompile Include="WindowsFileManager.cpp">
       <Filter>Source Files\File</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptRegistrationInterface.cpp">
-      <Filter>Source Files\Script\AngelScript</Filter>
     </ClCompile>
     <ClCompile Include="ModulatorInterpolation.cpp">
       <Filter>Source Files\Modulators\Interpolation</Filter>
@@ -1516,23 +1819,8 @@
     <ClCompile Include="DebugStatistics.cpp">
       <Filter>Source Files\Debug</Filter>
     </ClCompile>
-    <ClCompile Include="RunningScript.cpp">
-      <Filter>Source Files\Script</Filter>
-    </ClCompile>
-    <ClCompile Include="ScriptController.cpp">
-      <Filter>Source Files\Script</Filter>
-    </ClCompile>
-    <ClCompile Include="ScriptInstance.cpp">
-      <Filter>Source Files\Script</Filter>
-    </ClCompile>
-    <ClCompile Include="ScriptParameters.cpp">
-      <Filter>Source Files\Script</Filter>
-    </ClCompile>
     <ClCompile Include="ScriptVariant.cpp">
-      <Filter>Source Files\Script</Filter>
-    </ClCompile>
-    <ClCompile Include="ScriptPersistence.cpp">
-      <Filter>Source Files\Script</Filter>
+      <Filter>Source Files\Scripting</Filter>
     </ClCompile>
     <ClCompile Include="VolumeCurator.cpp">
       <Filter>Source Files\Audio</Filter>
@@ -1567,29 +1855,11 @@
     <ClCompile Include="RenderCurator.cpp">
       <Filter>Source Files\Render</Filter>
     </ClCompile>
-    <ClCompile Include="AngelScriptCurator.cpp">
-      <Filter>Source Files\Script\AngelScript</Filter>
-    </ClCompile>
     <ClCompile Include="StateCurator.cpp">
       <Filter>Source Files\State</Filter>
     </ClCompile>
     <ClCompile Include="AngelScriptReferenceCounted.cpp">
-      <Filter>Source Files\Script\AngelScript\Registration\Bases</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptTile.cpp">
-      <Filter>Source Files\Script\AngelScript\Registration</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptGridPosition.cpp">
-      <Filter>Source Files\Script\AngelScript\Registration</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptEvent.cpp">
-      <Filter>Source Files\Script\AngelScript\Registration</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptRelic.cpp">
-      <Filter>Source Files\Script\AngelScript\Registration</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptResultVerification.cpp">
-      <Filter>Source Files\Script\AngelScript</Filter>
+      <Filter>Source Files\Scripting\AngelScript\Types\Bases</Filter>
     </ClCompile>
     <ClCompile Include="Input.cpp">
       <Filter>Source Files\Input</Filter>
@@ -1603,9 +1873,6 @@
     <ClCompile Include="InputCurator.cpp">
       <Filter>Source Files\Input</Filter>
     </ClCompile>
-    <ClCompile Include="WindowProvider.cpp">
-      <Filter>Source Files\Window</Filter>
-    </ClCompile>
     <ClCompile Include="GraphicsCurator.cpp">
       <Filter>Source Files\Render</Filter>
     </ClCompile>
@@ -1614,12 +1881,6 @@
     </ClCompile>
     <ClCompile Include="Entity.cpp">
       <Filter>Source Files\Entity</Filter>
-    </ClCompile>
-    <ClCompile Include="ExecuteImmediately.cpp">
-      <Filter>Source Files\Script</Filter>
-    </ClCompile>
-    <ClCompile Include="AllRunningScripts.cpp">
-      <Filter>Source Files\Script</Filter>
     </ClCompile>
     <ClCompile Include="TypeRegistration.cpp">
       <Filter>Source Files\Engine</Filter>
@@ -1678,14 +1939,11 @@
     <ClCompile Include="ScreenSize.cpp">
       <Filter>Source Files\Spatial\Screen</Filter>
     </ClCompile>
-    <ClCompile Include="AngelScriptAssetData.cpp">
-      <Filter>Source Files\Script\AngelScript</Filter>
-    </ClCompile>
     <ClCompile Include="ScriptManager.cpp">
-      <Filter>Source Files\Script</Filter>
+      <Filter>Source Files\Scripting</Filter>
     </ClCompile>
     <ClCompile Include="AngelScriptManager.cpp">
-      <Filter>Source Files\Script\AngelScript</Filter>
+      <Filter>Source Files\Scripting\AngelScript</Filter>
     </ClCompile>
     <ClCompile Include="LineCurator.cpp">
       <Filter>Source Files\Render\Line</Filter>
@@ -1756,9 +2014,6 @@
     <ClCompile Include="LoadAssetError.cpp">
       <Filter>Source Files\Assets</Filter>
     </ClCompile>
-    <ClCompile Include="GlobalInitializer.cpp">
-      <Filter>Source Files\GlobalInitializer</Filter>
-    </ClCompile>
     <ClCompile Include="VulkanCombinedImageSamplerDescriptor.cpp">
       <Filter>Source Files\Render\Vulkan\Descriptors</Filter>
     </ClCompile>
@@ -1822,12 +2077,6 @@
     <ClCompile Include="VulkanUniversalData.cpp">
       <Filter>Source Files\Render\Vulkan\Structures</Filter>
     </ClCompile>
-    <ClCompile Include="Variant.cpp">
-      <Filter>Source Files\Data</Filter>
-    </ClCompile>
-    <ClCompile Include="EntityDatum.cpp">
-      <Filter>Source Files\Entity</Filter>
-    </ClCompile>
     <ClCompile Include="RelativeImage.cpp">
       <Filter>Source Files\Render\Image</Filter>
     </ClCompile>
@@ -1853,9 +2102,6 @@
       <Filter>Source Files\Spatial\Arca</Filter>
     </ClCompile>
     <ClCompile Include="EntityPrototype.cpp">
-      <Filter>Source Files\Entity</Filter>
-    </ClCompile>
-    <ClCompile Include="MappedEntities.cpp">
       <Filter>Source Files\Entity</Filter>
     </ClCompile>
     <ClCompile Include="Angle3D.cpp">
@@ -1953,6 +2199,225 @@
     </ClCompile>
     <ClCompile Include="CreateStopwatch.cpp">
       <Filter>Source Files\Time</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptAssetResource.cpp">
+      <Filter>Source Files\Scripting\AngelScript</Filter>
+    </ClCompile>
+    <ClCompile Include="Script.cpp">
+      <Filter>Source Files\Scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptCurator.cpp">
+      <Filter>Source Files\Scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="NullScriptManager.cpp">
+      <Filter>Source Files\Scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="OutputAngelScriptBytecodeStream.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Serialization</Filter>
+    </ClCompile>
+    <ClCompile Include="InputAngelScriptBytecodeStream.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Serialization</Filter>
+    </ClCompile>
+    <ClCompile Include="Asset.cpp">
+      <Filter>Source Files\Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="Surface.cpp">
+      <Filter>Source Files\Render\Surface</Filter>
+    </ClCompile>
+    <ClCompile Include="LoggingInformation.cpp">
+      <Filter>Source Files\Logging</Filter>
+    </ClCompile>
+    <ClCompile Include="WindowInformation.cpp">
+      <Filter>Source Files\Window</Filter>
+    </ClCompile>
+    <ClCompile Include="FreeImageAssetManager.cpp">
+      <Filter>Source Files\Assets\Image\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageAssetManager.cpp">
+      <Filter>Source Files\Assets\Image\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="NullImageAssetManager.cpp">
+      <Filter>Source Files\Assets\Image\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptAssetCurator.cpp">
+      <Filter>Source Files\Assets\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderAssetCurator.cpp">
+      <Filter>Source Files\Assets\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptResultVerification.cpp">
+      <Filter>Source Files\Scripting\AngelScript</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptRegistration.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Registration</Filter>
+    </ClCompile>
+    <ClCompile Include="ProcessedLog.cpp">
+      <Filter>Source Files\Logging</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptGlobalRegistration.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Registration</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptName.cpp">
+      <Filter>Source Files\Scripting\AngelScript</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptGridPoint.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Spatial\Grid</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptAngle2D.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptAngle3D.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptPoint2D.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptPoint3D.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptScalers2D.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptScalers3D.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptSize2D.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptSize3D.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptAxisAlignedBox2D.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptAxisAlignedBox3D.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptSpatialAlgorithms.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptGridSpatialAlgorithms.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptColor.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptImageAsset.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptFunctionManagement.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Management</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptLog.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptLoggingSeverity.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptStringUtility.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptAsset.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptUserData.cpp">
+      <Filter>Source Files\Scripting\AngelScript</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptShaderAsset.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptMaterialAsset.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptAudioAsset.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptScriptAsset.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioCurator.cpp">
+      <Filter>Source Files\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptRelicID.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Arca</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptDynamicImage.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptArcaUserData.cpp">
+      <Filter>Source Files\Scripting\AngelScript</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptBounds.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Spatial</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptImageCore.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptSignal.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Arca</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptResult.cpp">
+      <Filter>Source Files\Scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptCamera.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptArcaCreate.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Arca</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptHandle.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Arca</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptArcaType.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Arca</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptArcaDestroy.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Arca</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptArcaAssign.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Arca</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptStopwatch.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Time</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptEntity.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptArcaTraits.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Arca</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptArcaBatch.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Arca</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptScriptResource.cpp">
+      <Filter>Source Files\Scripting\AngelScript</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptResource.cpp">
+      <Filter>Source Files\Scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptScript.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptScriptResult.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptVariant.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptScriptFinished.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptSuspendScript.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptDatum.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptCurrentScript.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptFunction.cpp">
+      <Filter>Source Files\Scripting</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

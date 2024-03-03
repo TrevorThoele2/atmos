@@ -5,6 +5,7 @@
 #include "Camera.h"
 #include "AxisAlignedBox3D.h"
 #include "MainSurface.h"
+#include "Work.h"
 
 namespace Atmos::Render
 {
@@ -14,7 +15,7 @@ namespace Atmos::Render
         ObjectCurator(Init init);
         virtual ~ObjectCurator() = 0;
 
-        void Work();
+        void Handle(const Work& command);
     protected:
         virtual void WorkImpl(
             Spatial::AxisAlignedBox3D cameraBox,

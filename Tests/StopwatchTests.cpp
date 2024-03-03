@@ -7,7 +7,7 @@
 using namespace Atmos;
 using namespace Time;
 
-SCENARIO_METHOD(StopwatchTestsFixture, "real stopwatch", "[stopwatch][time]")
+SCENARIO_METHOD(StopwatchTestsFixture, "real stopwatch", "[time][stopwatch]")
 {
     GIVEN("real stopwatch")
     {
@@ -44,7 +44,7 @@ SCENARIO_METHOD(StopwatchTestsFixture, "real stopwatch", "[stopwatch][time]")
 
             THEN("start is greater than zero")
             {
-                const auto zero = Time::Value<>();
+                const auto zero = Time::Point<>();
 
                 REQUIRE(startTime > zero);
             }
@@ -71,7 +71,7 @@ SCENARIO_METHOD(StopwatchTestsFixture, "real stopwatch", "[stopwatch][time]")
 
                 THEN("start is greater than zero")
                 {
-                    const auto zero = Time::Value<>();
+                    const auto zero = Time::Point<>();
 
                     REQUIRE(startTime > zero);
                 }

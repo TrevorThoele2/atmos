@@ -10,31 +10,31 @@
 
 namespace Atmos::Spatial
 {
-    [[nodiscard]] Point2D::Value Length(const Point2D& one, const Point2D& two);
-    [[nodiscard]] bool IsBetween(const Point2D& one, const Point2D& check, const Point2D& two);
-    [[nodiscard]] Angle2D AngleOf(const Point2D& side1, const Point2D& middle, const Point2D& side2);
+    [[nodiscard]] Point2D::Value Distance(Point2D starting, Point2D destination);
+    [[nodiscard]] Point3D::Value Distance(Point3D starting, Point3D destination);
 
-    [[nodiscard]] Point2D::Value Distance(const Point2D& starting, const Point2D& destination);
-    [[nodiscard]] Point3D::Value Distance(const Point3D& starting, const Point3D& destination);
+    [[nodiscard]] bool IsBetween(Point2D one, Point2D check, Point2D two);
+    [[nodiscard]] Angle2D AngleOf(Point2D side1, Point2D middle, Point2D side2);
 
-    [[nodiscard]] bool Contains(const AxisAlignedBox2D& box, const Point2D& point);
-    [[nodiscard]] bool Contains(const AxisAlignedBox2D& box, const AxisAlignedBox2D& other);
-    [[nodiscard]] bool Contains(const AxisAlignedBox3D& box, const Point3D& point);
-    [[nodiscard]] bool Contains(const AxisAlignedBox3D& box, const AxisAlignedBox3D& other);
+    [[nodiscard]] bool Contains(AxisAlignedBox2D box, Point2D point);
+    [[nodiscard]] bool Contains(AxisAlignedBox2D box, AxisAlignedBox2D other);
+    [[nodiscard]] bool Contains(AxisAlignedBox3D box, Point3D point);
+    [[nodiscard]] bool Contains(AxisAlignedBox3D box, AxisAlignedBox3D other);
 
-    [[nodiscard]] bool Intersects(const AxisAlignedBox2D& one, const AxisAlignedBox2D& two);
-    [[nodiscard]] bool Intersects(const AxisAlignedBox3D& one, const AxisAlignedBox3D& two);
+    [[nodiscard]] bool Intersects(AxisAlignedBox2D one, AxisAlignedBox2D two);
+    [[nodiscard]] bool Intersects(AxisAlignedBox3D one, AxisAlignedBox3D two);
 
-    [[nodiscard]] Point2D operator+(const Point2D& left, const Point2D& right);
-    [[nodiscard]] Point2D operator-(const Point2D& left, const Point2D& right);
-    [[nodiscard]] Point3D operator+(const Point3D& left, const Point3D& right);
-    [[nodiscard]] Point3D operator-(const Point3D& left, const Point3D& right);
+    [[nodiscard]] Point2D operator+(Point2D left, Point2D right);
+    [[nodiscard]] Point2D operator-(Point2D left, Point2D right);
+    [[nodiscard]] Point3D operator+(Point3D left, Point3D right);
+    [[nodiscard]] Point3D operator-(Point3D left, Point3D right);
 
-    [[nodiscard]] Point2D ToPoint2D(const Point3D& point);
-    [[nodiscard]] Point2D ToPoint2D(const Grid::Point& point);
-    [[nodiscard]] Point2D ToPoint2D(const Angle2D& angle, Point2D::Value distance);
-    [[nodiscard]] Point3D ToPoint3D(const Grid::Point& point, Point3D::Value z);
-    [[nodiscard]] Point3D ToPoint3D(const Angle3D& angle, Point3D::Value distance);
+    [[nodiscard]] Point2D ToPoint2D(Point3D point);
+    [[nodiscard]] Point2D ToPoint2D(Grid::Point point);
+    [[nodiscard]] Point2D ToPoint2D(Angle2D angle, Point2D::Value distance);
+    [[nodiscard]] Point3D ToPoint3D(Point2D point, Point3D::Value z);
+    [[nodiscard]] Point3D ToPoint3D(Grid::Point point, Point3D::Value z);
+    [[nodiscard]] Point3D ToPoint3D(Angle3D angle, Point3D::Value distance);
 
     [[nodiscard]] AxisAlignedBox2D ToAxisAlignedBox2D(
         float left,
@@ -51,9 +51,9 @@ namespace Atmos::Spatial
 
     namespace Grid
     {
-        [[nodiscard]] Point::Value Length(const Point& position1, const Point& position2);
+        [[nodiscard]] Point::Value Distance(Point starting, Point destination);
 
-        [[nodiscard]] Point ToPoint(const Point2D& position);
-        [[nodiscard]] Point ToPoint(const Point3D& position);
+        [[nodiscard]] Point ToPoint(Point2D position);
+        [[nodiscard]] Point ToPoint(Point3D position);
     }
 }

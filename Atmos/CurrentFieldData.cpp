@@ -2,11 +2,6 @@
 
 namespace Atmos::World
 {
-    CurrentFieldData::CurrentFieldData(Init init)
-        : ClosedTypedRelic(init)
-    {}
-
-    CurrentFieldData::CurrentFieldData(Init init, FieldID fieldID)
-        : ClosedTypedRelic(init), fieldID(fieldID)
+    CurrentFieldData::CurrentFieldData(FieldID fieldID) : fieldID(fieldID)
     {}
 }

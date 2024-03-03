@@ -11,6 +11,8 @@ namespace Atmos::Render
     {
         std::vector<Spatial::Point2D> points;
         Spatial::Point2D::Value z;
+
+        Arca::RelicID materialID;
         const Asset::Material* material;
 
         LineWidth width;

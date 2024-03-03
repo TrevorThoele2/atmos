@@ -19,6 +19,8 @@
 #include "SurfaceCurator.h"
 #include "GraphicsSettings.h"
 
+#include "AudioCurator.h"
+
 #include "AudioAsset.h"
 #include "ImageAsset.h"
 #include "MaterialAsset.h"
@@ -37,6 +39,11 @@
 #include "MappedEntities.h"
 
 #include "WindowCurator.h"
+#include "WindowInformation.h"
+
+#include "Script.h"
+#include "ScriptCurator.h"
+#include "CurrentExecutingScript.h"
 
 #include "FrameStartCurator.h"
 #include "FrameEndCurator.h"
@@ -44,6 +51,7 @@
 #include "FrameSettings.h"
 
 #include "LoggingCurator.h"
+#include "LoggingInformation.h"
 
 #include "DebugStatistics.h"
 
@@ -51,49 +59,71 @@
 #include "GraphicsManager.h"
 #include "AudioManager.h"
 
+#include "Work.h"
+
+#include <Arca/LocalRelic.h>
+
 namespace Atmos
 {
-    void RegisterCommonTypes(Arca::ReliquaryOrigin& origin)
+    void RegisterArcaTypes(Arca::ReliquaryOrigin& origin)
     {
-        Asset::RegisterTypes(origin);
-        Spatial::RegisterTypes(origin);
-        Entity::RegisterTypes(origin);
-        Script::RegisterTypes(origin);
-        Frame::RegisterTypes(origin);
-        Logging::RegisterTypes(origin);
-        Debug::RegisterTypes(origin);
+        origin
+            .Register<Arca::OpenRelic>()
+            .Register<Arca::ClosedRelic>();
     }
 
-    void RegisterFieldTypes(Arca::ReliquaryOrigin& origin)
+    void RegisterCommonTypes(
+        Arca::ReliquaryOrigin& origin,
+        Asset::ImageManager& imageAssetManager,
+        Logging::Logger& logger)
     {
-        Audio::RegisterTypes(origin);
-        Input::RegisterTypes(origin);
-        Render::RegisterTypes(origin);
-        RegisterCommonTypes(origin);
+        Asset::RegisterTypes(origin, imageAssetManager);
+        Spatial::RegisterTypes(origin);
+        Entity::RegisterTypes(origin);
+        Frame::RegisterTypes(origin);
+        Logging::RegisterTypes(origin, logger);
+        Debug::RegisterTypes(origin);
     }
 
     void RegisterFieldTypes(
         Arca::ReliquaryOrigin& origin,
+        Asset::ImageManager& imageAssetManager,
+        Logging::Logger& logger)
+    {
+        Audio::RegisterTypes(origin);
+        Input::RegisterTypes(origin);
+        Render::RegisterTypes(origin);
+        Scripting::RegisterTypes(origin);
+        RegisterCommonTypes(origin, imageAssetManager, logger);
+    }
+
+    void RegisterFieldTypes(
+        Arca::ReliquaryOrigin& origin,
+        Asset::ImageManager& imageAssetManager,
         Audio::AudioManager& audio,
         Input::Manager& input,
         Render::GraphicsManager& graphics,
+        Scripting::Manager& scripts,
         Spatial::ScreenSize screenSize,
-        void* window)
+        Window::WindowBase& window,
+        Logging::Logger& logger)
     {
         Audio::RegisterTypes(origin, audio);
         Input::RegisterTypes(origin, input);
-        Render::RegisterTypes(origin, graphics, screenSize, window);
-        Window::RegisterTypes(origin);
-        RegisterCommonTypes(origin);
+        Render::RegisterTypes(origin, graphics, screenSize, window.Handle());
+        Scripting::RegisterTypes(origin, scripts);
+        Window::RegisterTypes(origin, window);
+        RegisterCommonTypes(origin, imageAssetManager, logger);
     }
 
     void RegisterFieldStages(Arca::ReliquaryOrigin& origin)
     {
         auto pipeline = Arca::Pipeline();
         pipeline.push_back(Frame::StartStage());
+        pipeline.push_back(Scripting::Stage());
         pipeline.push_back(Render::Stage());
         pipeline.push_back(Frame::EndStage());
-        origin.CuratorPipeline(pipeline);
+        origin.CuratorCommandPipeline<Work>(pipeline);
     }
 
     namespace Input
@@ -162,16 +192,18 @@ namespace Atmos
 
         void RegisterTypes(Arca::ReliquaryOrigin& origin, AudioManager& manager)
         {
-
+            origin
+                .Register<AudioCurator>(std::ref(manager));
         }
     }
 
     namespace Window
     {
-        void RegisterTypes(Arca::ReliquaryOrigin& origin)
+        void RegisterTypes(Arca::ReliquaryOrigin& origin, WindowBase& window)
         {
             origin
-                .Register<Curator>();
+                .Register<Curator>()
+                .Register<Information>(std::ref(window));
         }
     }
 
@@ -197,7 +229,7 @@ namespace Atmos
 
     namespace Asset
     {
-        void RegisterTypes(Arca::ReliquaryOrigin& origin)
+        void RegisterTypes(Arca::ReliquaryOrigin& origin, ImageManager& manager)
         {
             origin
                 .Register<Core>()
@@ -212,7 +244,7 @@ namespace Atmos
                 .Register<Mapped<Script>>()
                 .Register<Mapped<Shader>>()
                 .Register<AudioCurator>()
-                .Register<ImageCurator>()
+                .Register<ImageCurator>(std::ref(manager))
                 .Register<MaterialCurator>()
                 .Register<ScriptCurator>()
                 .Register<ShaderCurator>();
@@ -227,16 +259,32 @@ namespace Atmos
                 .Register<Entity>()
                 .Register<Curator>()
                 .Register<Prototype>()
-                .Register<MappedEntities>();
+                .Register<Mapped>();
         }
     }
 
-    namespace Script
+    namespace Scripting
     {
         void RegisterTypes(Arca::ReliquaryOrigin& origin)
         {
             origin
-                .Register<Instance>();
+                .Register<Script>()
+                .Register<CurrentExecutingScript>();
+        }
+
+        void RegisterTypes(Arca::ReliquaryOrigin& origin, Manager& manager)
+        {
+            RegisterTypes(origin);
+
+            origin
+                .Register<Curator>(std::ref(manager));
+        }
+
+        Arca::Stage Stage()
+        {
+            Arca::Stage stage;
+            stage.Add<Curator>();
+            return stage;
         }
     }
 
@@ -268,10 +316,11 @@ namespace Atmos
 
     namespace Logging
     {
-        void RegisterTypes(Arca::ReliquaryOrigin& origin)
+        void RegisterTypes(Arca::ReliquaryOrigin& origin, Logger& logger)
         {
             origin
-                .Register<Curator>();
+                .Register<Curator>()
+                .Register<Information>(std::ref(logger));
         }
     }
 

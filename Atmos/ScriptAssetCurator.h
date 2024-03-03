@@ -2,10 +2,19 @@
 
 #include "AssetCurator.h"
 #include "ScriptAsset.h"
+#include "LoadScriptAssetResourceData.h"
 
 namespace Atmos::Asset
 {
-    using ScriptCurator = Curator<Script>;
+    class ScriptCurator final : public Curator<Script>
+    {
+    public:
+        using Curator::Curator;
+
+        using Curator::Handle;
+        Resource::Loaded<Resource::Script> Handle(const Resource::LoadDataFromFile<Resource::Script>& command);
+        Resource::Loaded<Resource::Script> Handle(const Resource::LoadDataFromMemory<Resource::Script>& command);
+    };
 
     template<>
     struct CuratorTraits<Script> : CuratorTraitsBase<Script>
@@ -21,7 +30,10 @@ namespace Arca
     {
         static const ObjectType objectType = ObjectType::Curator;
         static inline const TypeName typeName = "Atmos::Asset::ScriptCurator";
-        using HandledCommands = HandledCommands<Atmos::Asset::Find<Atmos::Asset::Script>>;
+        using HandledCommands = HandledCommands<
+            Atmos::Asset::FindByName<Atmos::Asset::Script>,
+            Atmos::Asset::Resource::LoadDataFromFile<Atmos::Asset::Resource::Script>,
+            Atmos::Asset::Resource::LoadDataFromMemory<Atmos::Asset::Resource::Script>>;
     };
 }
 
