@@ -133,6 +133,16 @@ SCENARIO_METHOD(UIImageTestsFixture, "ui images", "[ui]")
 
             std::vector imageIDs = { image1.ID(), image2.ID(), image3.ID() };
 
+            WHEN("retrieving image size")
+            {
+                THEN("correct image size returned")
+                {
+                    REQUIRE(image1->Size() == Size2D{ scalers[0].x, scalers[0].y });
+                    REQUIRE(image2->Size() == Size2D{ scalers[1].x, scalers[1].y });
+                    REQUIRE(image3->Size() == Size2D{ scalers[2].x, scalers[2].y });
+                }
+            }
+
             WHEN("querying for all world images with box 2D")
             {
                 auto box = max2D;

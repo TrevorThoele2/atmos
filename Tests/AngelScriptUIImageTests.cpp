@@ -18,6 +18,24 @@ Arca::Index<Atmos::Asset::Image> AngelScriptUIImageTestsFixture::CreateImageAsse
         imageAssetName, std::move(resource), Asset::ImageGridSize{ 1, 1 } });
 }
 
+Arca::Index<Atmos::Asset::Material> AngelScriptUIImageTestsFixture::CreateMaterialAsset(Arca::Reliquary& reliquary)
+{
+    const auto vertexShaderName = dataGeneration.Random<std::string>();
+    auto vertexResource = reliquary.Do(Asset::Resource::Create<Asset::Resource::Shader>{Buffer{}, vertexShaderName});
+    const auto vertexShaderAsset = reliquary.Do(Arca::Create<Asset::Shader>{ vertexShaderName, std::move(vertexResource) });
+
+    const auto fragmentShaderName = dataGeneration.Random<std::string>();
+    auto fragmentResource = reliquary.Do(Asset::Resource::Create<Asset::Resource::Shader>{Buffer{}, fragmentShaderName});
+    const auto fragmentShaderAsset = reliquary.Do(Arca::Create<Asset::Shader>{ fragmentShaderName, std::move(fragmentResource) });
+
+    const auto materialAssetName = dataGeneration.Random<std::string>();
+    const auto materialAssetPasses = std::vector<Asset::Material::Pass>
+    {
+        { vertexShaderAsset, fragmentShaderAsset }
+    };
+    return reliquary.Do(Arca::Create<Asset::Material>{ materialAssetName, materialAssetPasses });
+}
+
 SCENARIO_METHOD(AngelScriptUIImageTestsFixture, "running UI image AngelScript scripts", "[script][angelscript]")
 {
     GIVEN("Image")
@@ -154,20 +172,7 @@ SCENARIO_METHOD(AngelScriptUIImageTestsFixture, "running UI image AngelScript sc
 
         GIVEN("material asset")
         {
-            auto vertexShaderName = dataGeneration.Random<std::string>();
-            auto vertexResource = fieldReliquary->Do(Asset::Resource::Create<Asset::Resource::Shader>{Buffer{}, vertexShaderName});
-            auto vertexShaderAsset = fieldReliquary->Do(Arca::Create<Asset::Shader>{ vertexShaderName, std::move(vertexResource) });
-
-            auto fragmentShaderName = dataGeneration.Random<std::string>();
-            auto fragmentResource = fieldReliquary->Do(Asset::Resource::Create<Asset::Resource::Shader>{Buffer{}, fragmentShaderName});
-            auto fragmentShaderAsset = fieldReliquary->Do(Arca::Create<Asset::Shader>{ fragmentShaderName, std::move(fragmentResource) });
-
-            auto materialAssetName = dataGeneration.Random<std::string>();
-            auto materialAssetPasses = std::vector<Asset::Material::Pass>
-            {
-                { vertexShaderAsset, fragmentShaderAsset }
-            };
-            auto materialAsset = fieldReliquary->Do(Arca::Create<Asset::Material>{ materialAssetName, materialAssetPasses });
+            auto materialAsset = CreateMaterialAsset(*fieldReliquary);
 
             GIVEN("script that sets material asset and returns material ID")
             {
@@ -345,6 +350,40 @@ SCENARIO_METHOD(AngelScriptUIImageTestsFixture, "running UI image AngelScript sc
                         REQUIRE(std::get<String>(std::get<Variant>(finishes[0].result)) == expectedResult);
                     }
                 }
+            }
+        }
+    }
+    
+    GIVEN("script that creates image and returns size")
+    {
+        auto imageAsset = CreateImageAsset(*fieldReliquary);
+        auto materialAsset = CreateMaterialAsset(*fieldReliquary);
+        
+        CompileAndCreateScript(
+            "basic_script.as",
+            "string main(Arca::RelicID assetID, Arca::RelicID materialID)\n" \
+            "{\n" \
+            "    auto image = Arca::Reliquary::Do(Arca::Create<Atmos::UI::Image>(\n" \
+            "       Atmos::Asset::Image(assetID),\n" \
+            "       0,\n" \
+            "       Atmos::Asset::Material(assetID),\n" \
+            "       Atmos::Render::Color(255, 255, 255, 255),\n" \
+            "       Atmos::Spatial::Point3D(),\n"\
+            "       Atmos::Spatial::Scalers2D(10, 10),\n" \
+            "       0));\n" \
+            "    return Atmos::ToString(image.Size().width) + \",\" + Atmos::ToString(image.Size().height);\n" \
+            "}",
+            { imageAsset.ID(), materialAsset.ID() },
+            *fieldReliquary);
+
+        WHEN("working reliquary")
+        {
+            fieldReliquary->Do(Work{});
+
+            THEN("has correct properties")
+            {
+                REQUIRE(finishes.size() == 1);
+                REQUIRE(std::get<std::string>(std::get<Variant>(finishes[0].result)) == "10,10");
             }
         }
     }
