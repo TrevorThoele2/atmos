@@ -30,7 +30,6 @@ namespace Inscription
         archive(object.position);
         archive(object.solid);
         archive(object.data);
-        archive(object.actions);
         archive(object.tags);
     }
 }

@@ -10,7 +10,7 @@ public:
 public:
     explicit SignalListener(Arca::Reliquary& reliquary);
 
-    const ExecutionList& Executions() const;
+    [[nodiscard]] const ExecutionList& Executions() const;
 private:
     ExecutionList executions;
 

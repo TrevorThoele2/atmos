@@ -2,8 +2,8 @@
 
 #include <Arca/ClosedTypedRelic.h>
 
+#include "Name.h"
 #include "EntityDatum.h"
-#include "EntityAction.h"
 #include "EntityTag.h"
 
 #include "GridPoint.h"
@@ -23,7 +23,6 @@ namespace Atmos::Entity
         bool solid = false;
 
         std::unordered_map<Name, Datum> data;
-        std::unordered_map<Name, Action> actions;
         std::unordered_set<Tag> tags;
     public:
         explicit Entity(Init init);

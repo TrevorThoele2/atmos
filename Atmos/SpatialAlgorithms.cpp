@@ -80,8 +80,34 @@ namespace Atmos::Spatial
         return
         {
             distance * cos(angle.pitch) * sin(angle.yaw),
-            distance* cos(angle.pitch) * cos(angle.yaw),
-            distance* sin(angle.pitch)
+            distance * cos(angle.pitch) * cos(angle.yaw),
+            distance * sin(angle.pitch)
         };
+    }
+
+    namespace Grid
+    {
+        Point::Value Length(const Point& position1, const Point& position2)
+        {
+            return position2.x - position1.x + position2.y - position1.y;
+        }
+
+        Point ToPoint(const Point2D& position)
+        {
+            return
+            {
+                static_cast<Point::Value>(std::floor(position.x / CellSize<Point2D::Value>)),
+                static_cast<Point::Value>(std::floor(position.y / CellSize<Point2D::Value>))
+            };
+        }
+
+        Point ToPoint(const Point3D& position)
+        {
+            return
+            {
+                static_cast<Point::Value>(std::floor(position.x / CellSize<Point3D::Value>)),
+                static_cast<Point::Value>(std::floor(position.y / CellSize<Point3D::Value>))
+            };
+        }
     }
 }

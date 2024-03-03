@@ -2,8 +2,6 @@
 
 #include "Map.h"
 
-#include "GridPointAlgorithms.h"
-
 namespace Atmos::Spatial
 {
     /*

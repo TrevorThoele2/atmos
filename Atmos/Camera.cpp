@@ -24,7 +24,7 @@ namespace Atmos::Render
         Owner().Do<Spatial::MoveBoundsDirection>(ID(), direction, amount);
     }
 
-    void Camera::Scalers(const Spatial::Scalers2D& to) const
+    void Camera::ScaleTo(const Spatial::Scalers2D& to) const
     {
         Owner().Do<Spatial::ScaleBounds>(ID(), to);
     }

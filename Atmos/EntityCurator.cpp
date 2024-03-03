@@ -31,33 +31,11 @@ namespace Atmos::Entity
                 mutableMappedEntities->nameToEntity.erase(signal.reference->name);
                 mutableMappedEntities->positionToEntity.erase(signal.reference->position);
             });
-
-        Owner().On<World::FieldSet>(
-            [this](const World::FieldSet&)
-            {
-                Fire<Action::Activation::EnterField>();
-            });
-
-        Owner().On<World::FieldUnset>(
-            [this](const World::FieldUnset&)
-            {
-                Fire<Action::Activation::LeaveField>();
-            });
     }
 
     void Curator::Work()
     {
-        for (auto& entity : entities)
-        {
-            for (auto& action : entity.actions)
-            {
-                const auto runningScript = action.second.script->RunningForThis();
-                if (!runningScript)
-                    continue;
 
-                MutablePointer().Of(runningScript)->Resume();
-            }
-        }
     }
 
     void Curator::Handle(const ActualizeAllPrototypes&)

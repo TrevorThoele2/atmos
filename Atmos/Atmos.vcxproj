@@ -51,12 +51,9 @@
     <ClInclude Include="CreateAssetResource.h" />
     <ClInclude Include="CreateImageAssetResource.h" />
     <ClInclude Include="Angle3D.h" />
-    <ClInclude Include="EntityAction.h" />
     <ClInclude Include="EntityDatum.h" />
     <ClInclude Include="EntityPrototype.h" />
     <ClInclude Include="EntityVariant.h" />
-    <ClInclude Include="GridPointAlgorithms.h" />
-    <ClInclude Include="GridPointConversion.h" />
     <ClInclude Include="LoadAsset.h" />
     <ClInclude Include="MoveBoundsBy.h" />
     <ClInclude Include="MoveBoundsDirection.h" />
@@ -386,11 +383,8 @@
     <ClCompile Include="BoundsCurator.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="ChangeSurfaceBackgroundColor.cpp" />
-    <ClCompile Include="EntityAction.cpp" />
     <ClCompile Include="EntityDatum.cpp" />
     <ClCompile Include="EntityPrototype.cpp" />
-    <ClCompile Include="GridPointAlgorithms.cpp" />
-    <ClCompile Include="GridPointConversion.cpp" />
     <ClCompile Include="MappedEntities.cpp" />
     <ClCompile Include="SpatialAlgorithms.cpp" />
     <ClCompile Include="GridRegion.cpp" />

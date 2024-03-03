@@ -23,12 +23,12 @@ namespace Atmos::Render
         Owner().Do<Spatial::MoveBoundsDirection>(ID(), direction, amount);
     }
 
-    void DynamicImage::Scalers(const Spatial::Scalers2D& to) const
+    void DynamicImage::ScaleTo(const Spatial::Scalers2D& to) const
     {
         Owner().Do<Spatial::ScaleBounds>(ID(), to);
     }
 
-    void DynamicImage::Rotation(const Spatial::Angle2D& to) const
+    void DynamicImage::RotateTo(const Spatial::Angle2D& to) const
     {
         Owner().Do<Spatial::RotateBounds>(ID(), to);
     }
