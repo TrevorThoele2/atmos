@@ -2,21 +2,41 @@
 
 #include "ArcaRelicIncludes.h"
 #include "Stopwatch.h"
+#include "FramesPerSecond.h"
 
 namespace Atmos::Diagnostics
 {
     struct Statistics
     {
+        struct Profile
+        {
+            double time = 0.0;
+            double average = 0.0;
+            double highest = 0.0;
+
+            bool operator==(const Profile& arg) const;
+            bool operator!=(const Profile& arg) const;
+
+            void NewTime(double newTime);
+        };
+
         size_t relicCount = 0;
         size_t shardCount = 0;
         Arca::RelicID nextRelicID = 0;
 
-        double renderTime = 0.0;
-        double idleTime = 0.0;
+        Profile script;
+        Profile render;
+        Profile frame;
+        Profile idle;
+        Profile misc;
+
+        Frame::FramesPerSecond framesPerSecond = 0;
 
         bool operator==(const Statistics& arg) const;
         bool operator!=(const Statistics& arg) const;
     };
+
+    [[nodiscard]] double CalculateStopwatch(Time::Stopwatch& stopwatch);
 }
 
 namespace Arca

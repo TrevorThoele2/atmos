@@ -9,7 +9,7 @@ namespace Atmos::Frame
     class Settings final
     {
     public:
-        FramesPerSecond framesPerSecondLimit = 0;
+        FramesPerSecond framesPerSecondLimit = defaultFramesPerSecondLimit;
         static inline const FramesPerSecond defaultFramesPerSecondLimit = 60;
 
         Settings() = default;

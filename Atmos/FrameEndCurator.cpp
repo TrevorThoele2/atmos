@@ -17,20 +17,22 @@ namespace Atmos::Frame
 
         const auto timeSettings = Owner().Find<Settings>();
         
-        if (framesPerSecondStopwatch.Elapsed() >= Time::Milliseconds(timeSettings->framesPerSecondLimit))
+        if (framesPerSecondStopwatch.Elapsed() >= Time::Seconds(1))
         {
             framesPerSecondStopwatch.Restart();
 
-            information->framesPerSecond = count;
-            count = 0;
+            information->framesPerSecond = frameCount;
+            frameCount = 0;
         }
 
-        ++count;
-
-        information->endTime = information->profilers.frame.CurrentTime();
-        information->lastElapsed = information->endTime - information->startTime;
+        ++frameCount;
+        
+        information->lastElapsed = information->profilers.frame.Elapsed();
         information->totalElapsed += information->lastElapsed;
 
         information->profilers.idle = Time::CreateRealStopwatch();
+
+        MutablePointer().Of<Diagnostics::Statistics>()->frame.NewTime(
+            Diagnostics::CalculateStopwatch(information->profilers.frame));
     }
 }

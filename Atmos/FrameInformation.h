@@ -1,9 +1,8 @@
 #pragma once
 
 #include "ArcaRelicIncludes.h"
-#include "FramesPerSecond.h"
 
-#include "TimePoint.h"
+#include "FramesPerSecond.h"
 #include "Stopwatch.h"
 
 namespace Atmos::Frame
@@ -11,9 +10,6 @@ namespace Atmos::Frame
     class Information final
     {
     public:
-        Time::Point<> startTime;
-        Time::Point<> endTime;
-
         Time::Duration<> lastElapsed = Time::Duration<>{ 0 };
         Time::Duration<> totalElapsed = Time::Duration<>{ 0 };
 

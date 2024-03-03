@@ -16,7 +16,7 @@ namespace Atmos::Frame
         void Handle(const Work& command);
     private:
         Time::Stopwatch framesPerSecondStopwatch;
-        unsigned int count = 0;
+        unsigned int frameCount = 0;
     };
 }
 

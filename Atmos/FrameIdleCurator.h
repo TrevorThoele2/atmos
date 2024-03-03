@@ -27,7 +27,16 @@ namespace Arca
     struct Traits<Atmos::Frame::IdleCurator>
     {
         static const ObjectType objectType = ObjectType::Curator;
-        static inline TypeName typeName = "Atmos::Frame::IdleCurator";
+        static TypeName TypeName() { return "Atmos::Frame::IdleCurator"; }
         using HandledCommands = HandledCommands<Atmos::Work>;
+    };
+}
+
+namespace Inscription
+{
+    template<class Archive>
+    struct ScribeTraits<Atmos::Frame::IdleCurator, Archive> final
+    {
+        using Category = ArcaNullScribeCategory<Atmos::Frame::IdleCurator>;
     };
 }

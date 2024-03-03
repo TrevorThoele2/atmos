@@ -344,6 +344,7 @@ namespace Atmos::Scripting::Angel
                 .Register<Random::GenerateNumber<float>>()
                 .Register<Random::GenerateNumber<double>>()
 
+                .Register<Diagnostics::Statistics::Profile>()
                 .Register<Diagnostics::Statistics>();
         }
     }
