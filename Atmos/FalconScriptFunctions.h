@@ -56,6 +56,11 @@ namespace Atmos
                 extern Prototype Add;
                 extern Prototype IsEntityIn;
             }
+
+            namespace Entity
+            {
+                extern Prototype GetAvatar;
+            }
         }
     }
 }

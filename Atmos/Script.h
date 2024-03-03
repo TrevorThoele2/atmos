@@ -124,7 +124,6 @@ namespace Atmos
         private:
             std::shared_ptr<Instance::Impl> impl;
             bool suspended;
-            bool manualPaused;
 
             ItemVector globalItems;
 
@@ -134,6 +133,8 @@ namespace Atmos
             ScriptCaller caller;
 
             void InitializeImpl();
+            void SetupForCleanExecution();
+            void SetupForResumingExecution();
         public:
             Instance();
             Instance(const Script &script);
@@ -175,8 +176,6 @@ namespace Atmos
             // NOTE: Suspension has no effect on this
             bool IsExecuting() const;
             bool IsSuspended() const;
-            // Pauses the script until unpaused manually
-            void Pause(bool pause = true);
 
             Falcon::VMachineWrapper& GetVM();
 

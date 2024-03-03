@@ -61,8 +61,12 @@ namespace Atmos
         PositionSystem::StagedPosition::StagedPosition(const GridPosition &position, Direction direction, Entity entity) : position(position), direction(direction), entity(entity)
         {}
 
+        PositionSystem::StagedDirection::StagedDirection(Direction direction, Entity entity) : direction(direction), entity(entity)
+        {}
+
         std::unordered_multimap<GridPosition, Entity> PositionSystem::map;
         Optional<PositionSystem::StagedPosition> PositionSystem::stagedPosition;
+        Optional<PositionSystem::StagedDirection> PositionSystem::stagedDirection;
         std::unordered_map<Entity, PositionSystem::SenseModulator*> PositionSystem::movingEntities;
 
         void PositionSystem::Init()
@@ -265,40 +269,36 @@ namespace Atmos
             auto senseComponent = std::get<1>(components);
             auto movementComponent = std::get<2>(components);
 
-            // Figure out animate piece
-            Script::Instance *modPicked = nullptr;
-            switch (direction.Get())
-            {
-            case Direction::UP:
-                modPicked = &movementComponent->upMod;
-                break;
-            case Direction::DOWN:
-                modPicked = &movementComponent->downMod;
-                break;
-            case Direction::LEFT:
-                modPicked = &movementComponent->leftMod;
-                break;
-            case Direction::RIGHT:
-                modPicked = &movementComponent->rightMod;
-                break;
-            }
-
             GridPosition &position = ::Atmos::GetCurrentEntities()->GetPosition(entity).Get();
             auto &moveTo = position.FindPositionAdjacent(direction);
 
-            if (!CanMove(*movementComponent, moveTo))
+            if (!CanMove(*movementComponent))
                 return false;
 
-            // Move render component
-            // Move immediately if the modulator picked is invalid
-            if (!modPicked->IsValid())
+            // If we're colliding, then just change the direction with the modulator
+            if (CheckCollision(*movementComponent, moveTo) != CollisionType::NONE)
+            {
+                if (!movementComponent->changeDirectionMod.IsValid())
+                    return false;
+
+                stagedDirection.Set(StagedDirection(direction, entity));
+                movementComponent->changeDirectionMod.ExecuteImmediately();
+                stagedDirection.Reset();
+                return false;
+            }
+
+            if(!CanMove(*movementComponent, moveTo))
+                return false;
+
+            // Move immediately if the modulator is invalid
+            if (!movementComponent->movementMod.IsValid())
             {
                 MoveEntityInstant(entity, moveTo);
                 return true;
             }
 
             stagedPosition.Set(StagedPosition(moveTo, direction, entity));
-            modPicked->ExecuteImmediately();
+            movementComponent->movementMod.ExecuteImmediately();
             stagedPosition.Reset();
             return true;
         }
@@ -479,6 +479,18 @@ namespace Atmos
                 return RetT();
 
             return stagedPosition;
+        }
+
+        Optional<PositionSystem::StagedDirection> PositionSystem::GetStagedDirection(Entity entity)
+        {
+            typedef Optional<StagedDirection> RetT;
+            if (!stagedDirection)
+                return RetT();
+
+            if (stagedDirection->entity != entity)
+                return RetT();
+
+            return stagedDirection;
         }
 
         ENTITY_SYSTEM_FORCE_INSTANTIATION(PositionSystem);

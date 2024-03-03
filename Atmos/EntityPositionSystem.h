@@ -60,6 +60,13 @@ namespace Atmos
                 Entity entity;
                 StagedPosition(const GridPosition &position, Direction direction, Entity entity);
             };
+
+            struct StagedDirection
+            {
+                Direction direction;
+                Entity entity;
+                StagedDirection(Direction direction, Entity entity);
+            };
         private:
             enum class CollisionType
             {
@@ -75,6 +82,7 @@ namespace Atmos
 
             static std::unordered_multimap<GridPosition, Entity> map;
             static Optional<StagedPosition> stagedPosition;
+            static Optional<StagedDirection> stagedDirection;
             static std::unordered_map<Entity, SenseModulator*> movingEntities;
 
             PositionSystem() = default;
@@ -117,6 +125,7 @@ namespace Atmos
             static size_t GetWorkedSize();
 
             static Optional<StagedPosition> GetStagedPosition(Entity entity);
+            static Optional<StagedDirection> GetStagedDirection(Entity entity);
         };
     }
 }

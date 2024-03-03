@@ -130,6 +130,7 @@
     <ClInclude Include="ScriptCaller.h" />
     <ClInclude Include="ScriptItem.h" />
     <ClInclude Include="ScriptLoader.h" />
+    <ClInclude Include="ScriptLocator.h" />
     <ClInclude Include="ScriptRegistry.h" />
     <ClInclude Include="ScriptController.h" />
     <ClInclude Include="ScrubbedType.h" />
@@ -232,7 +233,6 @@
     <ClInclude Include="SkipFileHelper.h" />
     <ClInclude Include="SoundHandler.h" />
     <ClInclude Include="AudioRegistry.h" />
-    <ClInclude Include="SpeechUtility.h" />
     <ClInclude Include="RenderSurface.h" />
     <ClInclude Include="SenseComponent.h" />
     <ClInclude Include="OffsetManagedList.h" />
@@ -407,6 +407,7 @@
     <ClCompile Include="Scheduler.cpp" />
     <ClCompile Include="ScriptCaller.cpp" />
     <ClCompile Include="ScriptLoader.cpp" />
+    <ClCompile Include="ScriptLocator.cpp" />
     <ClCompile Include="ScriptRegistry.cpp" />
     <ClCompile Include="ScriptController.cpp" />
     <ClCompile Include="Sense.cpp" />
@@ -486,7 +487,6 @@
     <ClCompile Include="SimpleFile.cpp" />
     <ClCompile Include="SoundHandler.cpp" />
     <ClCompile Include="AudioRegistry.cpp" />
-    <ClCompile Include="SpeechUtility.cpp" />
     <ClCompile Include="RenderSurface.cpp" />
     <ClCompile Include="StasisScribe.cpp" />
     <ClCompile Include="RenderFragmentHandler.cpp" />

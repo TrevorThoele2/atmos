@@ -25,12 +25,6 @@ namespace Atmos
         typedef std::vector<T, Alloc> ContainerT;
         typedef T ObjectT;
 
-        static typename ContainerT::iterator Add(ContainerT &cont, IDManagerBase::ID id, const ObjectT &add)
-        {
-            cont.push_back(add);
-            return --cont.end();
-        }
-
         static typename ContainerT::iterator Add(ContainerT &cont, IDManagerBase::ID id, ObjectT &&add)
         {
             cont.push_back(std::move(add));
@@ -51,11 +45,6 @@ namespace Atmos
     {
         typedef std::unordered_map<IDManagerBase::ID, T, Hasher, KeyEq, Alloc> ContainerT;
         typedef T ObjectT;
-
-        static typename ContainerT::iterator Add(ContainerT &cont, IDManagerBase::ID id, const T &add)
-        {
-            return cont.emplace(id, add).first;
-        }
 
         static typename ContainerT::iterator Add(ContainerT &cont, IDManagerBase::ID id, T &&add)
         {

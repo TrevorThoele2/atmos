@@ -164,5 +164,15 @@ namespace Atmos
             stack.DecrementCount();
             return true;
         }
+
+        size_t InventoryComponent::GetTotalCount() const
+        {
+            size_t ret = 0;
+
+            for (auto &loop : container)
+                ret += loop.GetCount().Get();
+
+            return ret;
+        }
     }
 }

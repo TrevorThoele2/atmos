@@ -63,11 +63,17 @@ Atmos::Fal::Classes::Prototype::Method* AddMethodReturner(Atmos::Fal::Classes::P
 #define CONSTRUCTOR(classT)                                         \
     classT::Constructor classT::constructor(classT::Scaffolding(),
 
-#define SETUP_METHOD(className, func)                     \
+#define SETUP_METHOD(className, func)                       \
 auto &selfMethod = func;                                    \
-if (!selfMethod.Setup(*vm))                                 \
+if (!selfMethod.SetupParameters(*vm))                       \
     return;                                                 \
-auto self = static_cast<className*>(selfMethod.prototype);
+auto self = static_cast<className*>(selfMethod.prototype);  \
+self->FromItem(*vm, vm->self());
+
+#define SETUP_STATIC_METHOD(className, func)                \
+auto &selfMethod = func;                                    \
+if (!selfMethod.SetupParameters(*vm))                       \
+    return;
 
 #define SETUP_CONSTRUCTOR(className)                        \
 auto &selfMethod = className::constructor;                  \
@@ -151,6 +157,33 @@ className& className::operator=(className &&arg)                                
 
 namespace Atmos
 {
+    class SenseComponentSpriteLocator : public ScriptLocator
+    {
+    public:
+        typedef ::Atmos::Ent::SenseComponent::SpriteList::ID SpriteID;
+        typedef Ent::SenseComponent::SpriteHandle TypeLocating;
+    private:
+        void* FindImpl() override final
+        {
+            auto senseComponent = GetCurrentEntities()->FindComponent<Ent::SenseComponent>(entity);
+            if (!senseComponent)
+                return nullptr;
+
+            return senseComponent->FindSprite(spriteID);
+        }
+
+        std::type_index GetTypeImpl() override final
+        {
+            return typeid(TypeLocating);
+        }
+    public:
+        Entity entity;
+        SpriteID spriteID;
+
+        SenseComponentSpriteLocator(Entity entity, SpriteID spriteID, Script::Instance &owner) : ScriptLocator(owner), entity(entity), spriteID(spriteID)
+        {}
+    };
+
     namespace Fal
     {
         namespace Classes
@@ -162,6 +195,8 @@ namespace Atmos
                     NO_PARAMETERS
                 BODY(Caller)
                 {
+                    SETUP_STATIC_METHOD(Caller, isEmpty);
+
                     auto script = ScriptController::Current();
                     if (!script)
                         vm->retval(false);
@@ -172,6 +207,8 @@ namespace Atmos
                     NO_PARAMETERS
                 BODY(Caller)
                 {
+                    SETUP_STATIC_METHOD(Caller, isEntity);
+
                     auto script = ScriptController::Current();
                     if (!script)
                         vm->retval(false);
@@ -182,6 +219,8 @@ namespace Atmos
                     NO_PARAMETERS
                 BODY(Caller)
                 {
+                    SETUP_STATIC_METHOD(Caller, getEntity);
+
                     auto script = ScriptController::Current();
                     if (!script || !script->GetCaller().IsEntity())
                         vm->retnil();
@@ -205,17 +244,119 @@ namespace Atmos
                     SETUP_CONSTRUCTOR(FixedPoint);
                     self->value.SetPropertyTo(*vm, vm->self(), selfMethod.GetParameter<std::int64_t>("value")->obj);
                 } BODY_END;
+                METHOD(FixedPoint, add, "__add", false)
+                    PARAMETERS(new Parameter<Falcon::Item>("other"))
+                BODY(FixedPoint)
+                {
+                    SETUP_METHOD(FixedPoint, add);
+
+                    auto &other = **selfMethod.GetParameter<Falcon::Item>("other");
+                    if (!other.isOrdinal() && !FalconVariableTraitsClassPrototype<FixedPoint>::Is(other))
+                    {
+                        Falcon::String otherString;
+                        other.toString(otherString);
+                        Logger::Log(AddTracebackToString(*vm, "The fixed point can only have arithmetic against number-like objects."),
+                            Logger::Type::ERROR_MODERATE,
+                            Logger::NameValueVector{ NameValuePair("Other", Convert(otherString)) });
+                    }
+
+                    FixedPoint64 newValue(self->value.Retrieve(), ::Atmos::FixedPoint64::Radix(0));
+                    if (other.isOrdinal())
+                        newValue += FixedPoint64(other.asInteger(), ::Atmos::FixedPoint64::Radix(0));
+                    else
+                        newValue += FixedPoint64(FalconVariableTraitsClassPrototype<FixedPoint>::FromItem(*vm, other).value.Retrieve(), ::Atmos::FixedPoint64::Radix(0));
+                    self->value.SetPropertyTo(*vm, vm->self(), newValue.GetRawValue());
+                } METHOD_END;
+                METHOD(FixedPoint, subtract, "__subtract", false)
+                    PARAMETERS(new Parameter<Falcon::Item>("other"))
+                BODY(FixedPoint)
+                {
+                    SETUP_METHOD(FixedPoint, subtract);
+
+                    auto &other = **selfMethod.GetParameter<Falcon::Item>("other");
+                    if (!other.isOrdinal() && !FalconVariableTraitsClassPrototype<FixedPoint>::Is(other))
+                    {
+                        Falcon::String otherString;
+                        other.toString(otherString);
+                        Logger::Log(AddTracebackToString(*vm, "The fixed point can only have arithmetic against number-like objects."),
+                            Logger::Type::ERROR_MODERATE,
+                            Logger::NameValueVector{ NameValuePair("Other", Convert(otherString)) });
+                    }
+
+                    FixedPoint64 newValue(self->value.Retrieve(), ::Atmos::FixedPoint64::Radix(0));
+                    if (other.isOrdinal())
+                        newValue -= FixedPoint64(other.asInteger(), ::Atmos::FixedPoint64::Radix(0));
+                    else
+                        newValue -= FixedPoint64(FalconVariableTraitsClassPrototype<FixedPoint>::FromItem(*vm, other).value.Retrieve(), ::Atmos::FixedPoint64::Radix(0));
+                    self->value.SetPropertyTo(*vm, vm->self(), newValue.GetRawValue());
+                } METHOD_END;
+                METHOD(FixedPoint, multiply, "__mul", false)
+                    PARAMETERS(new Parameter<Falcon::Item>("other"))
+                BODY(FixedPoint)
+                {
+                    SETUP_METHOD(FixedPoint, multiply);
+
+                    auto &other = **selfMethod.GetParameter<Falcon::Item>("other");
+                    if (!other.isOrdinal() && !FalconVariableTraitsClassPrototype<FixedPoint>::Is(other))
+                    {
+                        Falcon::String otherString;
+                        other.toString(otherString);
+                        Logger::Log(AddTracebackToString(*vm, "The fixed point can only have arithmetic against number-like objects."),
+                            Logger::Type::ERROR_MODERATE,
+                            Logger::NameValueVector{ NameValuePair("Other", Convert(otherString)) });
+                    }
+
+                    FixedPoint64 newValue(self->value.Retrieve(), ::Atmos::FixedPoint64::Radix(0));
+                    if (other.isOrdinal())
+                        newValue *= FixedPoint64(other.asInteger(), ::Atmos::FixedPoint64::Radix(0));
+                    else
+                        newValue *= FixedPoint64(FalconVariableTraitsClassPrototype<FixedPoint>::FromItem(*vm, other).value.Retrieve(), ::Atmos::FixedPoint64::Radix(0));
+                    self->value.SetPropertyTo(*vm, vm->self(), newValue.GetRawValue());
+                } METHOD_END;
+                METHOD(FixedPoint, divide, "__div", false)
+                    PARAMETERS(new Parameter<Falcon::Item>("other"))
+                BODY(FixedPoint)
+                {
+                    SETUP_METHOD(FixedPoint, divide);
+
+                    auto &other = **selfMethod.GetParameter<Falcon::Item>("other");
+                    if (!other.isOrdinal() && !FalconVariableTraitsClassPrototype<FixedPoint>::Is(other))
+                    {
+                        Falcon::String otherString;
+                        other.toString(otherString);
+                        Logger::Log(AddTracebackToString(*vm, "The fixed point can only have arithmetic against number-like objects."),
+                            Logger::Type::ERROR_MODERATE,
+                            Logger::NameValueVector{ NameValuePair("Other", Convert(otherString)) });
+                    }
+
+                    FixedPoint64 newValue(self->value.Retrieve(), ::Atmos::FixedPoint64::Radix(0));
+                    if (other.isOrdinal())
+                        newValue /= FixedPoint64(other.asInteger(), ::Atmos::FixedPoint64::Radix(0));
+                    else
+                        newValue /= FixedPoint64(FalconVariableTraitsClassPrototype<FixedPoint>::FromItem(*vm, other).value.Retrieve(), ::Atmos::FixedPoint64::Radix(0));
+                    self->value.SetPropertyTo(*vm, vm->self(), newValue.GetRawValue());
+                } METHOD_END;
                 METHOD(FixedPoint, fromDecimal, "FromDecimal", true)
                     PARAMETERS(new Parameter<double>("from"))
                 BODY(FixedPoint)
                 {
-                    SETUP_METHOD(FixedPoint, fromDecimal);
+                    SETUP_STATIC_METHOD(FixedPoint, fromDecimal);
 
                     auto from = selfMethod.GetParameter<double>("from");
 
                     ::Atmos::FixedPoint64 fixedPoint(from->obj);
                     General::FixedPoint::Scaffolding().value.Set(fixedPoint.GetRawValue());
                     vm->retval(General::FixedPoint::Scaffolding().CreateItem(*vm));
+                } METHOD_END;
+                METHOD(FixedPoint, toDecimal, "ToDecimal", false)
+                    NO_PARAMETERS
+                BODY(FixedPoint)
+                {
+                    SETUP_METHOD(FixedPoint, toDecimal);
+
+                    ::Atmos::FixedPoint64 fixedPoint(self->value.Retrieve(), ::Atmos::FixedPoint64::Radix(0));
+                    fixedPoint.SetRadixPoint(::Atmos::FixedPoint64::Radix(9), false);
+                    vm->retval(static_cast<double>(fixedPoint));
                 } METHOD_END;
 
                 FixedPoint::FixedPoint() : value(*this, "value")
@@ -248,7 +389,7 @@ namespace Atmos
 
             namespace Position
             {
-                CLASS_NAME(GridPosition, "Atmos_GridPosition");
+                CLASS_NAME(GridPosition, "AtmosPosition_GridPosition");
                 // GridPosition constructor
                 CONSTRUCTOR(GridPosition)
                     PARAMETERS(new Parameter<::Atmos::GridPosition::ValueT>("x"), new Parameter<::Atmos::GridPosition::ValueT>("y"), new Parameter<::Atmos::GridPosition::ValueT>("z"))
@@ -267,10 +408,21 @@ namespace Atmos
                     SETUP_METHOD(GridPosition, distance);
 
                     auto &other = selfMethod.GetParameter<GridPosition>("other")->obj;
-                    vm->retval(
-                        std::abs(other.x.Retrieve() - self->x.Retrieve()) +
-                        std::abs(other.y.Retrieve() - self->x.Retrieve()) +
-                        std::abs(other.z.Retrieve() - self->x.Retrieve()));
+                    vm->retval(std::abs(other.x.Retrieve() - self->x.Retrieve()) +
+                               std::abs(other.y.Retrieve() - self->x.Retrieve()) +
+                               std::abs(other.z.Retrieve() - self->x.Retrieve()));
+                } METHOD_END;
+                METHOD(GridPosition, directionTo, "DirectionTo", false)
+                    PARAMETERS(new Parameter<GridPosition>("to"))
+                BODY(GridPosition)
+                {
+                    SETUP_METHOD(GridPosition, directionTo);
+
+                    ::Atmos::GridPosition from(self->x.Retrieve(), self->y.Retrieve(), self->z.Retrieve());
+                    ::Atmos::GridPosition other((*selfMethod.GetParameter<GridPosition>("to"))->x.Retrieve(),
+                                                (*selfMethod.GetParameter<GridPosition>("to"))->y.Retrieve(),
+                                                (*selfMethod.GetParameter<GridPosition>("to"))->z.Retrieve());
+                    vm->retval(static_cast<::Falcon::int64>(from.DetermineDirection(other).Get()));
                 } METHOD_END;
                 METHOD(GridPosition, convertToPosition3D, "ConvertToPosition3D", false)
                     NO_PARAMETERS
@@ -285,7 +437,7 @@ namespace Atmos
                 } METHOD_END;
                 DEFINE_CONSTRUCTOR_3_PROPERTIES(GridPosition, x, y, z);
 
-                CLASS_NAME(Position3D, "Atmos_Position3D");
+                CLASS_NAME(Position3D, "AtmosPosition_Position3D");
                 // GridPosition constructor
                 CONSTRUCTOR(Position3D)
                     PARAMETERS(new Parameter<::Atmos::Position3D::ValueT>("x"), new Parameter<::Atmos::Position3D::ValueT>("y"), new Parameter<::Atmos::Position3D::ValueT>("z"))
@@ -296,7 +448,6 @@ namespace Atmos
                     self->y.SetPropertyTo(*vm, vm->self(), selfMethod.GetParameter<::Atmos::Position3D::ValueT>("y")->obj);
                     self->z.SetPropertyTo(*vm, vm->self(), selfMethod.GetParameter<::Atmos::Position3D::ValueT>("z")->obj);
                 } BODY_END;
-                // Distance method
                 METHOD(Position3D, distance, "Distance", false)
                     PARAMETERS(new Parameter<Position3D>("other"))
                     BODY(Position3D)
@@ -304,10 +455,9 @@ namespace Atmos
                     SETUP_METHOD(Position3D, distance);
 
                     auto &other = selfMethod.GetParameter<Position3D>("other")->obj;
-                    vm->retval(
-                        std::abs(other.x.Retrieve() - self->x.Retrieve()) +
-                        std::abs(other.y.Retrieve() - self->x.Retrieve()) +
-                        std::abs(other.z.Retrieve() - self->x.Retrieve()));
+                    vm->retval(std::abs(other.x.Retrieve() - self->x.Retrieve()) +
+                               std::abs(other.y.Retrieve() - self->x.Retrieve()) +
+                               std::abs(other.z.Retrieve() - self->x.Retrieve()));
                 } METHOD_END;
                 METHOD(Position3D, convertToGridPosition, "ConvertToGridPosition", false)
                     NO_PARAMETERS
@@ -322,7 +472,7 @@ namespace Atmos
                 } METHOD_END;
                 DEFINE_CONSTRUCTOR_3_PROPERTIES(Position3D, x, y, z);
 
-                CLASS_NAME(Direction, "Atmos_Direction");
+                CLASS_NAME(Direction, "AtmosPosition_Direction");
                     STATIC_PROPERTY_SPLIT(Direction, ::Atmos::Direction::ValueT, left, "Left", ::Atmos::Direction::ValueT::LEFT, Readonly(true));
                     STATIC_PROPERTY_SPLIT(Direction, ::Atmos::Direction::ValueT, up, "Up", ::Atmos::Direction::ValueT::UP, Readonly(true));
                     STATIC_PROPERTY_SPLIT(Direction, ::Atmos::Direction::ValueT, right, "Right", ::Atmos::Direction::ValueT::RIGHT, Readonly(true));
@@ -385,7 +535,7 @@ STATIC_PROPERTY_SPLIT(ActionID, ::Atmos::Input::ActionID, varName, falconName, :
                     SETUP_CONSTRUCTOR(FrameTimer);
 
                     // Set is running
-                    self->isRunning.Set(false);
+                    self->isRunning.SetPropertyTo(*vm, vm->self(), false);
 
                     auto epochPass = selfMethod.GetParameter<::Atmos::TimeValueEpoch>("epoch");
 
@@ -394,14 +544,20 @@ STATIC_PROPERTY_SPLIT(ActionID, ::Atmos::Input::ActionID, varName, falconName, :
                     // Set epoch
                     self->epoch.SetPropertyTo(*vm, vm->self(), useEpoch);
 
+                    // Set start
+                    TimeValue::Scaffolding().epoch.Set(useEpoch);
+                    General::FixedPoint::Scaffolding().value.Set(0);
+                    TimeValue::Scaffolding().value.Set(General::FixedPoint::Scaffolding());
+                    self->startValue.SetPropertyTo(*vm, vm->self(), TimeValue::Scaffolding());
+
                     // Set goal
                     // Use the previous epoch
                     TimeValue::Scaffolding().epoch.Set(useEpoch);
                     auto goalPass = selfMethod.GetParameter<TimeValue>("goal");
 
-                    if (!goalPass->WasSet())
-                        // Set the fixed point value of the time value
-                        TimeValue::Scaffolding().value.Retrieve().value.Set(0);
+                    // Set the fixed point value of the time value
+                    General::FixedPoint::Scaffolding().value.Set((goalPass->WasSet()) ? goalPass->obj.value.Retrieve().value.Retrieve() : 0);
+                    TimeValue::Scaffolding().value.Set(General::FixedPoint::Scaffolding());
                     // Set goal to a time value
                     self->goal.SetPropertyTo(*vm, vm->self(), TimeValue::Scaffolding());
                 } BODY_END;
@@ -412,7 +568,7 @@ STATIC_PROPERTY_SPLIT(ActionID, ::Atmos::Input::ActionID, varName, falconName, :
                     SETUP_METHOD(FrameTimer, start);
 
                     // Set the is running
-                    self->isRunning.Set(true);
+                    self->isRunning.SetPropertyTo(*vm, vm->self(), true);
 
                     // Set the starting point
                     auto epochSelf = self->epoch.Retrieve();
@@ -421,9 +577,10 @@ STATIC_PROPERTY_SPLIT(ActionID, ::Atmos::Input::ActionID, varName, falconName, :
 
                     // Set the scaffolding of the TimeValue's epoch and value
                     TimeValue::Scaffolding().epoch.Set(epochSelf);
-                    TimeValue::Scaffolding().value.Retrieve().value.Set(timeValue.Get().GetRawValue());
+                    General::FixedPoint::Scaffolding().value.Set(timeValue.Get().GetRawValue());
+                    TimeValue::Scaffolding().value.Set(General::FixedPoint::Scaffolding());
                     // Set the start value to an instance of the TimeValue
-                    self->startValue.Set(TimeValue::Scaffolding());
+                    self->startValue.SetPropertyTo(*vm, vm->self(), TimeValue::Scaffolding());
                 } METHOD_END;
                 METHOD(FrameTimer, stop, "Stop", false)
                     NO_PARAMETERS
@@ -432,14 +589,15 @@ STATIC_PROPERTY_SPLIT(ActionID, ::Atmos::Input::ActionID, varName, falconName, :
                     SETUP_METHOD(FrameTimer, stop);
 
                     // Set the is running
-                    self->isRunning.Set(false);
+                    self->isRunning.SetPropertyTo(*vm, vm->self(), false);
 
                     // Set the starting point
                     // Set the scaffolding of the TimeValue's epoch and value
                     TimeValue::Scaffolding().epoch.Set(self->epoch.Retrieve());
-                    TimeValue::Scaffolding().value.Retrieve().value.Set(0);
+                    General::FixedPoint::Scaffolding().value.Set(0);
+                    TimeValue::Scaffolding().value.Set(General::FixedPoint::Scaffolding());
                     // Set the start value to an instance of the TimeValue
-                    self->startValue.Set(TimeValue::Scaffolding());
+                    self->startValue.SetPropertyTo(*vm, vm->self(), TimeValue::Scaffolding());
                 } METHOD_END;
                 METHOD(FrameTimer, isActive, "IsActive", false)
                     NO_PARAMETERS
@@ -466,7 +624,8 @@ STATIC_PROPERTY_SPLIT(ActionID, ::Atmos::Input::ActionID, varName, falconName, :
 
                     // Push the elapsed
                     TimeValue::Scaffolding().epoch.Set(epochUse);
-                    TimeValue::Scaffolding().value.Retrieve().value.Set(endingRawValue - startingRawValue);
+                    General::FixedPoint::Scaffolding().value.Set(endingRawValue - startingRawValue);
+                    TimeValue::Scaffolding().value.Set(General::FixedPoint::Scaffolding());
                     vm->retval(TimeValue::Scaffolding().CreateItem(*vm));
                 } METHOD_END;
                 METHOD(FrameTimer, hasReachedGoal, "HasReachedGoal", false)
@@ -492,7 +651,7 @@ STATIC_PROPERTY_SPLIT(ActionID, ::Atmos::Input::ActionID, varName, falconName, :
                     vm->retval(elapsed >= goalRawValue);
                 } METHOD_END;
 
-                FrameTimer::FrameTimer() : PROPERTY_SPLIT(isRunning, "_isRunning"), PROPERTY_SPLIT(startValue, "_start"), PROPERTY_SPLIT(goal, "_goal"), PROPERTY_SPLIT(epoch, "_epoch")
+                FrameTimer::FrameTimer() : PROPERTY_SPLIT(isRunning, "_isRunning"), PROPERTY_SPLIT(startValue, "_start"), PROPERTY_SPLIT(goal, "goal"), PROPERTY_SPLIT(epoch, "_epoch")
                 {}
 
                 FrameTimer::FrameTimer(const FrameTimer &arg) : COPY_PROPERTY(isRunning), COPY_PROPERTY(startValue), COPY_PROPERTY(goal), COPY_PROPERTY(epoch)
@@ -500,6 +659,16 @@ STATIC_PROPERTY_SPLIT(ActionID, ::Atmos::Input::ActionID, varName, falconName, :
 
                 FrameTimer::FrameTimer(FrameTimer &&arg) : MOVE_PROPERTY(isRunning), MOVE_PROPERTY(startValue), MOVE_PROPERTY(goal), MOVE_PROPERTY(epoch)
                 {}
+
+                FrameTimer& FrameTimer::operator=(FrameTimer &&arg)
+                {
+                    Definition::operator=(std::move(arg));
+                    isRunning = std::move(arg.isRunning);
+                    start = std::move(arg.start);
+                    goal = std::move(arg.goal);
+                    epoch = std::move(arg.epoch);
+                    return *this;
+                }
             }
 
             namespace Modulator
@@ -862,6 +1031,119 @@ STATIC_PROPERTY_SPLIT(ActionID, ::Atmos::Input::ActionID, varName, falconName, :
                 DEFINE_CONSTRUCTOR_3_PROPERTIES(TrackNode, modID, trackID, nodeID);
             }
 
+            namespace Sense
+            {
+                CLASS_NAME(Sprite, "AtmosSense_Sprite")
+                CONSTRUCTOR(Sprite)
+                    PARAMETERS(new Parameter<ScriptLocatorManager::ID>("locator"))
+                BODY(Sprite)
+                {
+                    SETUP_CONSTRUCTOR(Sprite);
+                    self->locator.SetPropertyTo(*vm, vm->self(), selfMethod.GetParameter<ScriptLocatorManager::ID>("locator")->obj);
+                } BODY_END;
+                METHOD(Sprite, setIndex, "SetIndex", false)
+                    PARAMETERS(new Parameter<::Atmos::Sprite::Index>("set"))
+                BODY(Sprite)
+                {
+                    SETUP_METHOD(Sprite, setIndex);
+
+                    auto foundSprite = ScriptLocatorManager::Find<SenseComponentSpriteLocator::TypeLocating>(self->locator.Retrieve());
+                    if (!foundSprite)
+                    {
+                        Logger::Log(AddTracebackToString(*vm, "A sprite was required but wasn't found."),
+                            Logger::Type::ERROR_MODERATE);
+                        return;
+                    }
+
+                    auto setIndex = selfMethod.GetParameter<::Atmos::Sprite::Index>("set");
+                    foundSprite->Get().SetIndex(**setIndex);
+                } METHOD_END;
+                METHOD(Sprite, getIndex, "GetIndex", false)
+                    PARAMETERS(new Parameter<::Atmos::Sprite::Index>("set"))
+                BODY(Sprite)
+                {
+                    SETUP_METHOD(Sprite, getIndex);
+
+                    auto foundSprite = ScriptLocatorManager::Find<SenseComponentSpriteLocator::TypeLocating>(self->locator.Retrieve());
+                    if (!foundSprite)
+                    {
+                        Logger::Log(AddTracebackToString(*vm, "A sprite was required but wasn't found."),
+                            Logger::Type::ERROR_MODERATE);
+                        return;
+                    }
+
+                    vm->retval(foundSprite->Get().GetIndex());
+                } METHOD_END;
+                METHOD(Sprite, startModulatorWith, "StartModulatorWith", false)
+                    PARAMETERS(new Parameter<Modulator::Modulator>("start"), new Parameter<bool>("force", false, false))
+                BODY(Sprite)
+                {
+                    SETUP_METHOD(Sprite, startModulatorWith);
+
+                    auto start = selfMethod.GetParameter<Modulator::Modulator>("start");
+                    auto force = selfMethod.GetParameter<bool>("force");
+
+                    auto foundSprite = ScriptLocatorManager::Find<SenseComponentSpriteLocator::TypeLocating>(self->locator.Retrieve());
+                    if (!foundSprite)
+                    {
+                        Logger::Log(AddTracebackToString(*vm, "A sprite was required but wasn't found."),
+                            Logger::Type::ERROR_MODERATE);
+                        return;
+                    }
+
+                    // Get modulator
+                    auto modID = (*start)->modID.Retrieve();
+                    auto modulator = ::Atmos::GameEnvironment::GetModulatorController().Find(modID);
+                    if (!modulator)
+                    {
+                        Logger::Log(AddTracebackToString(*vm, "A modulator was required but wasn't found."),
+                            Logger::Type::ERROR_MODERATE,
+                            Logger::NameValueVector{ NameValuePair("Modulator ID", modID) });
+                        return;
+                    }
+
+                    // Make sure modulator is the right type
+                    if (modulator->GetGeneratorName() != ::Atmos::Modulator::Description::SpriteOffset.name)
+                    {
+                        Logger::Log(AddTracebackToString(*vm, "The modulator is the incorrect type."),
+                            Logger::Type::ERROR_MODERATE,
+                            Logger::NameValueVector{ NameValuePair("Modulator ID", modID),
+                            NameValuePair("Required Type", ::Atmos::Modulator::Description::SpriteOffset.name),
+                            NameValuePair("Actual Type", modulator->GetGeneratorName()) });
+                        return;
+                    }
+
+                    // If forcing wasn't set...
+                    if (!force->WasSet() || !force->obj)
+                    {
+                        // And there's a modulator working the object
+                        if (GameEnvironment::GetModulatorController().IsModulatorWorkingObject(foundSprite))
+                            // Return silently
+                            return;
+                    }
+
+                    // Finally, attach the modulator
+                    auto castedModulator = static_cast<decltype(::Atmos::Modulator::Description::SpriteOffset)::ModulatorT*>(modulator.Get());
+                    castedModulator->Start(*foundSprite);
+                } METHOD_END;
+
+                Sprite::Sprite() : PROPERTY_SPLIT(locator, "_locator")
+                {}
+
+                Sprite::Sprite(const Sprite &arg) : COPY_PROPERTY(locator)
+                {}
+
+                Sprite::Sprite(Sprite &&arg) : MOVE_PROPERTY(locator)
+                {}
+
+                Sprite& Sprite::operator=(Sprite &&arg)
+                {
+                    Definition::operator=(std::move(arg));
+                    locator = std::move(arg.locator);
+                    return *this;
+                }
+            }
+
             namespace Ent
             {
                 CLASS_NAME(ComponentType, "AtmosEntity_ComponentType");
@@ -919,6 +1201,22 @@ STATIC_PROPERTY_SPLIT(ActionID, ::Atmos::Input::ActionID, varName, falconName, :
                     SETUP_CONSTRUCTOR(AvatarComponent);
                     self->entity.SetPropertyTo(*vm, vm->self(), selfMethod.GetParameter<::Atmos::Entity::ValueT>("entity")->obj);
                 } BODY_END;
+                METHOD(AvatarComponent, getGold, "GetGold", false)
+                    NO_PARAMETERS
+                BODY(AvatarComponent)
+                {
+                    SETUP_METHOD(AvatarComponent, getGold);
+
+                    // Get entity
+                    auto &entity = self->entity.Retrieve();
+
+                    // Get avatar component
+                    auto avatarComponent = GetCurrentEntities()->FindComponent<::Atmos::Ent::AvatarComponent>(entity);
+                    if (!avatarComponent)
+                        vm->retval(0);
+
+                    vm->retval(static_cast<std::int64_t>(avatarComponent->gold));
+                } METHOD_END;
                 DEFINE_CONSTRUCTOR_1_PROPERTIES(AvatarComponent, entity);
 
                 // CharacterComponent
@@ -974,6 +1272,22 @@ STATIC_PROPERTY_SPLIT(ActionID, ::Atmos::Input::ActionID, varName, falconName, :
                     SETUP_CONSTRUCTOR(InventoryComponent);
                     self->entity.SetPropertyTo(*vm, vm->self(), selfMethod.GetParameter<::Atmos::Entity::ValueT>("entity")->obj);
                 } BODY_END;
+                METHOD(InventoryComponent, getTotalItemCount, "GetTotalItemCount", false)
+                    NO_PARAMETERS
+                BODY(InventoryComponent)
+                {
+                    SETUP_METHOD(InventoryComponent, getTotalItemCount);
+
+                    // Get entity
+                    auto &entity = self->entity.Retrieve();
+
+                    // Get inventory component
+                    auto inventoryComponent = GetCurrentEntities()->FindComponent<::Atmos::Ent::InventoryComponent>(entity);
+                    if (!inventoryComponent)
+                        vm->retval(0);
+
+                    vm->retval(static_cast<std::int64_t>(inventoryComponent->GetTotalCount()));
+                } METHOD_END;
                 DEFINE_CONSTRUCTOR_1_PROPERTIES(InventoryComponent, entity);
 
                 // MovementComponent
@@ -1136,74 +1450,6 @@ STATIC_PROPERTY_SPLIT(ActionID, ::Atmos::Input::ActionID, varName, falconName, :
                     SETUP_CONSTRUCTOR(SenseComponent);
                     self->entity.SetPropertyTo(*vm, vm->self(), selfMethod.GetParameter<::Atmos::Entity::ValueT>("entity")->obj);
                 } BODY_END;
-                // Attach modulator to sprite
-                METHOD(SenseComponent, startModulatorWithSprite, "StartModulatorWithSprite", false)
-                    PARAMETERS(new Parameter<Modulator::Modulator>("start"), new Parameter<::Atmos::Ent::SenseComponent::SpriteList::ID>("spriteID"), new Parameter<bool>("force", false, false))
-                BODY(SenseComponent)
-                {
-                    SETUP_METHOD(SenseComponent, startModulatorWithSprite);
-
-                    auto start = selfMethod.GetParameter<Modulator::Modulator>("start");
-                    auto spriteID = selfMethod.GetParameter<::Atmos::Ent::SenseComponent::SpriteList::ID>("spriteID");
-                    auto force = selfMethod.GetParameter<bool>("force");
-
-                    // Get modulator
-                    auto modID = (*start)->modID.Retrieve();
-                    auto modulator = ::Atmos::GameEnvironment::GetModulatorController().Find(modID);
-                    if (!modulator)
-                    {
-                        Logger::Log(AddTracebackToString(*vm, "A modulator was required but wasn't found."),
-                            Logger::Type::ERROR_MODERATE,
-                            Logger::NameValueVector{ NameValuePair("Modulator ID", modID) });
-                        return;
-                    }
-                    
-                    // Make sure modulator is the right type
-                    if (modulator->GetGeneratorName() != ::Atmos::Modulator::Description::SpriteOffset.name)
-                    {
-                        Logger::Log(AddTracebackToString(*vm, "The modulator is the incorrect type."),
-                            Logger::Type::ERROR_MODERATE,
-                            Logger::NameValueVector{ NameValuePair("Modulator ID", modID),
-                                                     NameValuePair("Required Type", ::Atmos::Modulator::Description::SpriteOffset.name),
-                                                     NameValuePair("Actual Type", modulator->GetGeneratorName()) });
-                        return;
-                    }
-
-                    // Get entity
-                    auto &entity = self->entity.Retrieve();
-                    // Get sense component
-                    auto senseComponent = GetCurrentEntities()->FindComponent<::Atmos::Ent::SenseComponent>(entity);
-                    if (!senseComponent)
-                    {
-                        Logger::Log(AddTracebackToString(*vm, "A sense component was required but wasn't found."),
-                            Logger::Type::ERROR_MODERATE,
-                            Logger::NameValueVector{ NameValuePair("Entity", static_cast<size_t>(entity)) });
-                        return;
-                    }
-
-                    // Get the sprite out of the sense component
-                    auto foundSprite = senseComponent->FindSprite(**spriteID);
-                    if (!foundSprite)
-                    {
-                        Logger::Log(AddTracebackToString(*vm, "A sense component did not have a required sprite."),
-                            Logger::Type::ERROR_MODERATE,
-                            Logger::NameValueVector{ NameValuePair("Entity", static_cast<size_t>(entity)),
-                                                     NameValuePair("Sprite ID", **spriteID) });
-                    }
-
-                    // If forcing wasn't set...
-                    if (!force->WasSet() || !force->obj)
-                    {
-                        // And there's a modulator working the object
-                        if(GameEnvironment::GetModulatorController().IsModulatorWorkingObject(foundSprite))
-                            // Return silently
-                            return;
-                    }
-
-                    // Finally, attach the modulator
-                    auto castedModulator = static_cast<decltype(::Atmos::Modulator::Description::SpriteOffset)::ModulatorT*>(modulator.Get());
-                    castedModulator->Start(*foundSprite);
-                } METHOD_END;
                 METHOD(SenseComponent, getPosition, "GetPosition", false)
                     NO_PARAMETERS
                 BODY(SenseComponent)
@@ -1227,6 +1473,35 @@ STATIC_PROPERTY_SPLIT(ActionID, ::Atmos::Input::ActionID, varName, falconName, :
                     Position::Position3D::Scaffolding().z.Set(senseComponent->position.GetZ());
                     vm->retval(Position::Position3D::Scaffolding().CreateItem(*vm));
                 } METHOD_END;
+                METHOD(SenseComponent, getSprite, "GetSprite", false)
+                    PARAMETERS(new Parameter<::Atmos::Ent::SenseComponent::SpriteList::ID>("ID"))
+                BODY(SenseComponent)
+                {
+                    SETUP_METHOD(SenseComponent, getSprite);
+
+                    // Get entity
+                    auto &entity = self->entity.Retrieve();
+                    // Get sense component
+                    auto senseComponent = GetCurrentEntities()->FindComponent<::Atmos::Ent::SenseComponent>(entity);
+                    if (!senseComponent)
+                    {
+                        Logger::Log(AddTracebackToString(*vm, "A sense component was required but wasn't found."),
+                            Logger::Type::ERROR_MODERATE,
+                            Logger::NameValueVector{ NameValuePair("Entity", static_cast<size_t>(entity)) });
+                        return;
+                    }
+
+                    auto id = selfMethod.GetParameter<::Atmos::Ent::SenseComponent::SpriteList::ID>("ID");
+                    auto foundSprite = senseComponent->FindSprite(**id);
+                    if (!foundSprite)
+                    {
+                        vm->retnil();
+                        return;
+                    }
+
+                    Sense::Sprite::Scaffolding().locator.Set(ScriptLocatorManager::Add(*new SenseComponentSpriteLocator(entity, **id, *ScriptController::Current())));
+                    vm->retval(Sense::Sprite::Scaffolding().CreateItem(*vm));
+                } METHOD_END;
                 METHOD(SenseComponent, getStagedPosition, "GetStagedPosition", false)
                     NO_PARAMETERS
                 BODY(SenseComponent)
@@ -1246,11 +1521,101 @@ STATIC_PROPERTY_SPLIT(ActionID, ::Atmos::Input::ActionID, varName, falconName, :
                     }
 
                     Optional<::Atmos::Ent::PositionSystem::StagedPosition> stagedPosition = ::Atmos::Ent::PositionSystem::GetStagedPosition(entity);
+                    if (!stagedPosition)
+                    {
+                        Logger::Log(AddTracebackToString(*vm, "There is no staged position."),
+                            Logger::Type::ERROR_MODERATE);
+                        return;
+                    }
 
                     Position::Position3D::Scaffolding().x.Set(::Atmos::GridPosition::DimensionToPosition(stagedPosition->position.GetX()));
                     Position::Position3D::Scaffolding().y.Set(::Atmos::GridPosition::DimensionToPosition(stagedPosition->position.GetY()));
                     Position::Position3D::Scaffolding().z.Set(::Atmos::GridPosition::DimensionToPosition(stagedPosition->position.GetZ()));
                     vm->retval(Position::Position3D::Scaffolding().CreateItem(*vm));
+                } METHOD_END;
+                METHOD(SenseComponent, getStagedDirection, "GetStagedDirection", false)
+                    NO_PARAMETERS
+                BODY(SenseComponent)
+                {
+                    SETUP_METHOD(SenseComponent, getStagedDirection);
+
+                    // Get entity
+                    auto &entity = self->entity.Retrieve();
+                    // Get sense component
+                    auto senseComponent = GetCurrentEntities()->FindComponent<::Atmos::Ent::SenseComponent>(entity);
+                    if (!senseComponent)
+                    {
+                        Logger::Log(AddTracebackToString(*vm, "A sense component was required but wasn't found."),
+                            Logger::Type::ERROR_MODERATE,
+                            Logger::NameValueVector{ NameValuePair("Entity", static_cast<size_t>(entity)) });
+                        return;
+                    }
+
+                    Optional<::Atmos::Ent::PositionSystem::StagedPosition> stagedPosition = ::Atmos::Ent::PositionSystem::GetStagedPosition(entity);
+                    if (stagedPosition)
+                    {
+                        vm->retval(FalconVariableTraitsEnum<Direction::ValueT>::CreateItem(*vm, stagedPosition->direction.Get()));
+                        return;
+                    }
+
+                    Optional<::Atmos::Ent::PositionSystem::StagedDirection> stagedDirection = ::Atmos::Ent::PositionSystem::GetStagedDirection(entity);
+                    if (!stagedDirection)
+                    {
+                        Logger::Log(AddTracebackToString(*vm, "There is no staged direction."),
+                            Logger::Type::ERROR_MODERATE);
+                        return;
+                    }
+
+                    vm->retval(FalconVariableTraitsEnum<Direction::ValueT>::CreateItem(*vm, stagedDirection->direction.Get()));
+                } METHOD_END;
+                METHOD(SenseComponent, hasStagedPosition, "HasStagedPosition", false)
+                    NO_PARAMETERS
+                BODY(SenseComponent)
+                {
+                    SETUP_METHOD(SenseComponent, hasStagedPosition);
+
+                    // Get entity
+                    auto &entity = self->entity.Retrieve();
+                    // Get sense component
+                    auto senseComponent = GetCurrentEntities()->FindComponent<::Atmos::Ent::SenseComponent>(entity);
+                    if (!senseComponent)
+                    {
+                        Logger::Log(AddTracebackToString(*vm, "A sense component was required but wasn't found."),
+                            Logger::Type::ERROR_MODERATE,
+                            Logger::NameValueVector{ NameValuePair("Entity", static_cast<size_t>(entity)) });
+                        return;
+                    }
+
+                    Optional<::Atmos::Ent::PositionSystem::StagedPosition> stagedPosition = ::Atmos::Ent::PositionSystem::GetStagedPosition(entity);
+                    vm->retval(stagedPosition.IsValid());
+                } METHOD_END;
+                METHOD(SenseComponent, hasStagedDirection, "HasStagedDirection", false)
+                    NO_PARAMETERS
+                BODY(SenseComponent)
+                {
+                    SETUP_METHOD(SenseComponent, hasStagedDirection);
+
+                    // Get entity
+                    auto &entity = self->entity.Retrieve();
+                    // Get sense component
+                    auto senseComponent = GetCurrentEntities()->FindComponent<::Atmos::Ent::SenseComponent>(entity);
+                    if (!senseComponent)
+                    {
+                        Logger::Log(AddTracebackToString(*vm, "A sense component was required but wasn't found."),
+                            Logger::Type::ERROR_MODERATE,
+                            Logger::NameValueVector{ NameValuePair("Entity", static_cast<size_t>(entity)) });
+                        return;
+                    }
+
+                    Optional<::Atmos::Ent::PositionSystem::StagedPosition> stagedPosition = ::Atmos::Ent::PositionSystem::GetStagedPosition(entity);
+                    if (stagedPosition)
+                    {
+                        vm->retval(true);
+                        return;
+                    }
+
+                    Optional<::Atmos::Ent::PositionSystem::StagedDirection> stagedDirection = ::Atmos::Ent::PositionSystem::GetStagedDirection(entity);
+                    vm->retval(stagedDirection.IsValid());
                 } METHOD_END;
                 DEFINE_CONSTRUCTOR_1_PROPERTIES(SenseComponent, entity);
 
@@ -1326,7 +1691,40 @@ if (AttemptCreateComponent<ComponentClassT>(entity, **typeName, ::Atmos::Ent::Co
 #undef ATTEMPT_CREATE_COMPONENT
 
                 } METHOD_END;
+                METHOD(Entity, setDirection, "SetDirection", false)
+                    PARAMETERS(new Parameter<::Atmos::Direction::ValueT>("set"))
+                BODY(Entity)
+                {
+                    SETUP_METHOD(Entity, setDirection);
 
+                    // Get value
+                    auto &entity = self->value.Retrieve();
+
+                    auto foundDirection = GetCurrentEntities()->GetDirection(entity);
+                    if (!foundDirection)
+                        return;
+
+                    auto set = selfMethod.GetParameter<::Atmos::Direction::ValueT>("set");
+                    GetCurrentEntities()->FindComponent<::Atmos::Ent::GeneralComponent>(entity)->direction = **set;
+                } METHOD_END;
+                METHOD(Entity, getDirection, "GetDirection", false)
+                    NO_PARAMETERS
+                BODY(Entity)
+                {
+                    SETUP_METHOD(Entity, getDirection);
+
+                    // Get value
+                    auto &entity = self->value.Retrieve();
+
+                    auto foundDirection = GetCurrentEntities()->GetDirection(entity);
+                    if (!foundDirection)
+                    {
+                        vm->retnil();
+                        return;
+                    }
+
+                    vm->retval(static_cast<std::int64_t>(foundDirection->Get()));
+                } METHOD_END;
                 METHOD(Entity, getPosition, "GetPosition", false)
                     NO_PARAMETERS
                 BODY(Entity)

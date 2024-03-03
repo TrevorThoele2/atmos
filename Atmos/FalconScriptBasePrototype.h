@@ -150,12 +150,7 @@ namespace Atmos
                 {
                     bool found = RetrieveItemFromVMImpl(vm, use);
                     if (!found)
-                    {
                         use.setNil();
-                        wasSet = false;
-                    }
-                    else
-                        wasSet = true;
                 }
 
                 return FromItem(vm, use);
@@ -164,24 +159,32 @@ namespace Atmos
             template<class T, class InheritFrom>
             bool ValueJoin<T, InheritFrom>::FromItem(Falcon::VMachine &vm, Falcon::Item &item)
             {
-                if (strictType && !TraitsT<T>::Is(item))
+                if (!TraitsT<T>::Is(item))
                 {
-                    String message(InheritFrom::InvalidTypeString() + "\n");
-                    // Add traceback to the string
-                    message = AddTracebackToString(vm, message);
-                    // Create the content string
-                    Falcon::String contentString;
-                    item.toString(contentString);
-                    Logger::Log(message,
-                        Logger::Type::ERROR_MODERATE,
-                        Logger::NameValueVector{ NameValuePair("Property Name", name),
-                        NameValuePair("Expected Type", TraitsT<T>::GetTypeString()),
-                        NameValuePair("Content (Falcon)", Convert(contentString)) });
-                    return false;
-                }
+                    wasSet = false;
 
-                if (!item.isNil())
-                    obj = std::move(TraitsT<T>::FromItem(vm, item));
+                    if (strictType)
+                    {
+                        String message(InheritFrom::InvalidTypeString() + "\n");
+                        // Add traceback to the string
+                        message = AddTracebackToString(vm, message);
+                        // Create the content string
+                        Falcon::String contentString;
+                        item.toString(contentString);
+                        Logger::Log(message,
+                            Logger::Type::ERROR_MODERATE,
+                            Logger::NameValueVector{ NameValuePair("Property Name", name),
+                            NameValuePair("Expected Type", TraitsT<T>::GetTypeString()),
+                            NameValuePair("Content (Falcon)", Convert(contentString)) });
+                        return false;
+                    }
+                }
+                else
+                {
+                    wasSet = true;
+                    if (!item.isNil())
+                        obj = std::move(TraitsT<T>::FromItem(vm, item));
+                }
                 return true;
             }
 

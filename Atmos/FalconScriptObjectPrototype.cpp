@@ -47,33 +47,10 @@ namespace Atmos
                 return *this;
             }
 
-            bool Prototype::MethodBase::Setup(Falcon::VMachine &vm)
-            {
-                if (!SetupSelf(vm))
-                    return false;
-
-                if (!SetupParameters(vm))
-                    return false;
-
-                return true;
-            }
-
             bool Prototype::MethodBase::SetupParameters(Falcon::VMachine &vm)
             {
                 for (auto &loop : parameters)
                     if (!loop->FromItem(vm))
-                        return false;
-
-                return true;
-            }
-
-            bool Prototype::MethodBase::SetupSelf(Falcon::VMachine &vm)
-            {
-                if (!ShouldSetupSelf())
-                    return true;
-
-                for (auto &loop : prototype->GetProperties())
-                    if (!loop->IsReadonly() && !loop->FromItem(vm))
                         return false;
 
                 return true;

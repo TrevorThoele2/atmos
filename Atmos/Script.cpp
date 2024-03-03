@@ -296,22 +296,33 @@ namespace Atmos
             impl->Init();
     }
 
-    Script::Instance::Instance() : suspended(false), manualPaused(false)
+    void Script::Instance::SetupForCleanExecution()
+    {
+        impl->vMachine->reset();
+        impl->vMachine->breakRequest(false);
+    }
+
+    void Script::Instance::SetupForResumingExecution()
+    {
+        impl->vMachine->breakRequest(false);
+    }
+
+    Script::Instance::Instance() : suspended(false)
     {}
 
-    Script::Instance::Instance(const Script &script) : impl(new Impl(*script.impl->module, script.GetFileName())), suspended(false), manualPaused(false)
+    Script::Instance::Instance(const Script &script) : impl(new Impl(*script.impl->module, script.GetFileName())), suspended(false)
     {
         impl->dependencies = &script.dependencies;
         impl->globalItems = &globalItems;
         InitializeImpl();
     }
 
-    Script::Instance::Instance(const Instance &arg) : impl((arg.impl) ? new Impl(*arg.impl) : nullptr), suspended(false), manualPaused(false), globalItems(arg.globalItems), executeName(arg.executeName), parameters(arg.parameters)
+    Script::Instance::Instance(const Instance &arg) : impl((arg.impl) ? new Impl(*arg.impl) : nullptr), suspended(false), globalItems(arg.globalItems), executeName(arg.executeName), parameters(arg.parameters)
     {
         InitializeImpl();
     }
 
-    Script::Instance::Instance(Instance &&arg) : impl(std::move(arg.impl)), suspended(std::move(arg.suspended)), manualPaused(std::move(arg.manualPaused)), caller(std::move(arg.caller))
+    Script::Instance::Instance(Instance &&arg) : impl(std::move(arg.impl)), suspended(std::move(arg.suspended)), caller(std::move(arg.caller))
     {
         InitializeImpl();
     }
@@ -351,7 +362,6 @@ namespace Atmos
     {
         impl.reset();
         suspended = false;
-        manualPaused = false;
     }
 
     void Script::Instance::Set(const Script &script)
@@ -360,7 +370,6 @@ namespace Atmos
         impl->dependencies = &script.dependencies;
         impl->globalItems = &globalItems;
         suspended = false;
-        manualPaused = false;
         InitializeImpl();
     }
 
@@ -384,6 +393,7 @@ namespace Atmos
         if (!IsValid())
             return;
 
+        SetupForCleanExecution();
         (executeName.empty()) ? ScriptController::Add(*this) : ScriptController::Add(*this, executeName, parameters);
     }
 
@@ -392,6 +402,7 @@ namespace Atmos
         if (!IsValid())
             return;
 
+        SetupForCleanExecution();
         (executeName.empty()) ? ScriptController::Add(*this) : ScriptController::Add(*this, overrideExecuteName, overrideParameters);
     }
 
@@ -400,6 +411,7 @@ namespace Atmos
         if (!IsValid())
             return;
 
+        SetupForCleanExecution();
         (executeName.empty()) ? ScriptController::AddAndLaunch(*this) : ScriptController::AddAndLaunch(*this, executeName, parameters);
     }
 
@@ -408,6 +420,7 @@ namespace Atmos
         if (!IsValid())
             return;
 
+        SetupForCleanExecution();
         (executeName.empty()) ? ScriptController::AddAndLaunch(*this) : ScriptController::AddAndLaunch(*this, overrideExecuteName, overrideParameters);
     }
 
@@ -415,6 +428,8 @@ namespace Atmos
     {
         if (!IsValid())
             return;
+
+        SetupForResumingExecution();
 
         if (!suspended)
             ExecuteDeferred();
@@ -453,13 +468,6 @@ namespace Atmos
     bool Script::Instance::IsSuspended() const
     {
         return suspended;
-    }
-
-    void Script::Instance::Pause(bool pause)
-    {
-        manualPaused = pause;
-        if (!suspended)
-            Suspend();
     }
 
     Falcon::VMachineWrapper& Script::Instance::GetVM()
@@ -856,8 +864,16 @@ namespace Atmos
 
     void ScriptCompiler::OutputGeneralCompilationError(const String &err)
     {
-        Logger::Log(String("Script compilation has encountered an error.\n") + err,
-            Logger::Type::ERROR_MODERATE,
-            Logger::NameValueVector{ NameValuePair("File Name", inFocus->GetFileName().GetValue()) });
+        if (inFocus)
+        {
+            Logger::Log(String("Script compilation has encountered an error.\n") + err,
+                Logger::Type::ERROR_MODERATE,
+                Logger::NameValueVector{ NameValuePair("File Name", inFocus->GetFileName().GetValue()) });
+        }
+        else
+        {
+            Logger::Log(String("Script compilation has encountered an error.\n") + err,
+                Logger::Type::ERROR_MODERATE);
+        }
     }
 }
