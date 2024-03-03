@@ -7,28 +7,21 @@
 
 namespace Atmos::Asset
 {
-    Shader::Shader(Init init, const Atmos::Name& name, ResourcePtr&& resource, const String& entryPoint) :
-        AssetWithResource(init, name, std::move(resource)), entryPoint(entryPoint)
+    Shader::Shader(Init init, const Atmos::Name& name, ResourcePtr&& resource) :
+        AssetWithResource(init, name, std::move(resource))
     {}
 
     Shader::Shader(Init init, Arca::Serialization serialization) :
         AssetWithResource(init, serialization)
     {}
 
-    Shader::Shader(Shader&& arg) noexcept :
-        AssetWithResource(std::move(arg)), entryPoint(std::move(arg.entryPoint))
+    Shader::Shader(Shader&& arg) noexcept : AssetWithResource(std::move(arg))
     {}
 
     Shader& Shader::operator=(Shader&& arg) noexcept
     {
         AssetWithResource::operator=(std::move(arg));
-        entryPoint = arg.entryPoint;
         return *this;
-    }
-
-    const String& Shader::EntryPoint() const
-    {
-        return entryPoint;
     }
 }
 
@@ -37,8 +30,7 @@ namespace Arca
     bool Traits<::Atmos::Asset::Shader>::ShouldCreate(
         Reliquary& reliquary,
         const ::Atmos::Name& name,
-        const ::Atmos::Asset::Shader::ResourcePtr& data,
-        const ::Atmos::String& entryPoint)
+        const ::Atmos::Asset::Shader::ResourcePtr& data)
     {
         return Atmos::Asset::ShouldCreate<::Atmos::Asset::Shader>(reliquary, name);
     }
@@ -51,10 +43,9 @@ namespace Inscription
     {
         BaseScriven<Atmos::Asset::AssetWithResource<Atmos::Asset::Resource::Shader, Atmos::Asset::Shader>>(
             object, archive);
-        archive(object.entryPoint);
         if (archive.IsInput())
         {
-            const auto filePath = std::filesystem::current_path() / "Shaders" / object.Name();
+            const auto filePath = std::filesystem::current_path() / "shaders" / object.Name();
 
             Atmos::SimpleInFile inFile(filePath);
             const auto buffer = inFile.ReadBuffer();

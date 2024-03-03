@@ -22,7 +22,7 @@ namespace Atmos::Render::Vulkan
         vk::PhysicalDeviceMemoryProperties memoryProperties,
         vk::RenderPass renderPass,
         vk::Extent2D swapchainExtent,
-        const std::vector<const Asset::Material*>& materials)
+        const Arca::Batch<Asset::Material>& materials)
         :
         vertexBuffer(vertexStride * sizeof(Vertex), *device, memoryProperties, vk::BufferUsageFlagBits::eVertexBuffer),
         indexBuffer(indexStride * sizeof(Index), *device, memoryProperties, vk::BufferUsageFlagBits::eIndexBuffer),
@@ -64,7 +64,7 @@ namespace Atmos::Render::Vulkan
         device(device)
     {
         for (auto& material : materials)
-            MaterialCreated(*material);
+            MaterialCreated(Arca::Index<Asset::Material>{material.ID(), material.Owner()});
     }
 
     void QuadRenderer::StageRender(const ImageRender& imageRender)
@@ -108,17 +108,17 @@ namespace Atmos::Render::Vulkan
         return raster;
     }
 
-    void QuadRenderer::MaterialCreated(const Asset::Material& material)
+    void QuadRenderer::MaterialCreated(Arca::Index<Asset::Material> material)
     {
-        if (material.Type() != Asset::MaterialType::Image)
+        if (material->Type() != Asset::MaterialType::Image)
             return;
 
         mappedConduits.Add(material);
     }
 
-    void QuadRenderer::MaterialDestroying(const Asset::Material& material)
+    void QuadRenderer::MaterialDestroying(Arca::Index<Asset::Material> material)
     {
-        if (material.Type() != Asset::MaterialType::Image)
+        if (material->Type() != Asset::MaterialType::Image)
             return;
 
         mappedConduits.Remove(material);
@@ -169,16 +169,20 @@ namespace Atmos::Render::Vulkan
 
         commandBuffer.bindIndexBuffer(renderer->indexBuffer.destination.value.get(), 0, vk::IndexType::eUint16);
 
-        for (auto& group : layer.materialGroups)
-            WriteToBuffers(group.second, *group.first);
+        for (auto& materialGroup : layer.materialGroups)
+        {
+            const auto conduitGroup = renderer->mappedConduits.For(materialGroup.first);
+            if (!conduitGroup)
+                return;
+
+            WriteToBuffers(materialGroup.second, *conduitGroup);
+        }
     }
 
     void QuadRenderer::Raster::WriteToBuffers(
-        const Layer::MaterialGroup& materialGroup,
-        const Asset::Material& materialAsset)
+        const Layer::MaterialGroup& materialGroup, MappedConduits::Group& conduitGroup)
     {
-        auto& conduits = *renderer->mappedConduits.For(materialAsset);
-        for (auto& conduit : conduits)
+        for (auto& conduit : conduitGroup)
         {
             for (auto& value : materialGroup.values)
             {
@@ -300,7 +304,7 @@ namespace Atmos::Render::Vulkan
         auto layer = raster.layers.Find(imageRender.position.z);
         if (!layer)
             layer = &raster.layers.Add(imageRender.position.z, Raster::Layer{});
-        auto& group = layer->GroupFor(*materialAsset);
+        auto& group = layer->GroupFor(materialAsset->ID());
         group.ListFor(imageAsset).emplace_back(vertices);
         descriptorSetKeys.emplace(DescriptorSetKey(*imageAsset));
     }

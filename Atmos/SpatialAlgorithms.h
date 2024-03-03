@@ -16,6 +16,7 @@ namespace Atmos::Spatial
     Point3D operator/(const Point3D& left, const Point3D& right);
 
     Point2D ToPoint2D(const Point3D& point);
+    Point2D ToPoint2D(const Grid::Point& point);
     Point3D ToPoint3D(const Grid::Point& point, Point3D::Value z);
     Point3D ToPoint3D(const Angle3D& angle, Point3D::Value distance);
 

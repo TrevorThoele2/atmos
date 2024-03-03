@@ -11,6 +11,7 @@
 #include "SetFullscreen.h"
 #include "ChangeVerticalSync.h"
 #include "PruneGraphicsResources.h"
+#include "CompileShader.h"
 
 #include "CreateImageAssetResource.h"
 #include "CreateShaderAssetResource.h"
@@ -29,6 +30,7 @@ namespace Atmos::Render
         void Handle(const SetFullscreen& command);
         void Handle(const ChangeVerticalSync& command);
         void Handle(const PruneGraphicsResources& command);
+        File::Path Handle(const CompileShader& command);
 
         std::unique_ptr<Asset::Resource::Image> Handle(const Asset::Resource::Create<Asset::Resource::Image>& command);
         std::unique_ptr<Asset::Resource::Shader> Handle(const Asset::Resource::Create<Asset::Resource::Shader>& command);
@@ -66,6 +68,7 @@ namespace Arca
             Atmos::Render::SetFullscreen,
             Atmos::Render::ChangeVerticalSync,
             Atmos::Render::PruneGraphicsResources,
+            Atmos::Render::CompileShader,
             Atmos::Asset::Resource::Create<Atmos::Asset::Resource::Image>,
             Atmos::Asset::Resource::Create<Atmos::Asset::Resource::Shader>>;
     };

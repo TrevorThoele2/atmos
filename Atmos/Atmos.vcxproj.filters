@@ -429,6 +429,9 @@
     <Filter Include="Source Files\Render\Vulkan\Renderer\Layering">
       <UniqueIdentifier>{46a4990e-f978-4a78-bd32-455486b667bf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Render\Commands">
+      <UniqueIdentifier>{81e9891d-c340-4ef6-bdf8-cca471ae9d75}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FieldDestination.h">
@@ -1454,6 +1457,12 @@
     <ClInclude Include="VulkanUniversalDataBuffer.h">
       <Filter>Header Files\Render\Vulkan\Memory</Filter>
     </ClInclude>
+    <ClInclude Include="VulkanInvalidConduit.h">
+      <Filter>Header Files\Render\Vulkan\Conduit</Filter>
+    </ClInclude>
+    <ClInclude Include="CompileShader.h">
+      <Filter>Header Files\Render\Commands</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FieldDestination.cpp">
@@ -2067,6 +2076,12 @@
     </ClCompile>
     <ClCompile Include="VulkanUniversalDataBuffer.cpp">
       <Filter>Source Files\Render\Vulkan\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanInvalidConduit.cpp">
+      <Filter>Source Files\Render\Vulkan\Conduit</Filter>
+    </ClCompile>
+    <ClCompile Include="CompileShader.cpp">
+      <Filter>Source Files\Render\Commands</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

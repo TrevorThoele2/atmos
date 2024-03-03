@@ -10,7 +10,7 @@ namespace Atmos::Render::Vulkan
         vk::PhysicalDeviceMemoryProperties memoryProperties,
         vk::RenderPass renderPass,
         vk::Extent2D swapchainExtent,
-        const std::vector<const Asset::Material*>& materials)
+        const Arca::Batch<Asset::Material>& materials)
         :
         vertexBuffer(vertexStride * sizeof(Vertex), *device, memoryProperties, vk::BufferUsageFlagBits::eVertexBuffer),
         descriptorSetPool(
@@ -39,11 +39,10 @@ namespace Atmos::Render::Vulkan
             swapchainExtent,
             { descriptorSetPool.DescriptorSetLayout() }),
         graphicsQueue(graphicsQueue),
-        device(device),
-        swapchainImageCount(swapchainImageCount)
+        device(device)
     {
         for (auto& material : materials)
-            MaterialCreated(*material);
+            MaterialCreated(Arca::Index<Asset::Material>{material.ID(), material.Owner()});
     }
 
     void LineRenderer::StageRender(const LineRender& lineRender)
@@ -77,17 +76,17 @@ namespace Atmos::Render::Vulkan
         return raster;
     }
 
-    void LineRenderer::MaterialCreated(const Asset::Material& material)
+    void LineRenderer::MaterialCreated(Arca::Index<Asset::Material> material)
     {
-        if (material.Type() != Asset::MaterialType::Line)
+        if (material->Type() != Asset::MaterialType::Line)
             return;
 
         mappedConduits.Add(material);
     }
 
-    void LineRenderer::MaterialDestroying(const Asset::Material& material)
+    void LineRenderer::MaterialDestroying(Arca::Index<Asset::Material> material)
     {
-        if (material.Type() != Asset::MaterialType::Line)
+        if (material->Type() != Asset::MaterialType::Line)
             return;
 
         mappedConduits.Remove(material);
@@ -136,16 +135,20 @@ namespace Atmos::Render::Vulkan
         vk::DeviceSize offsets[] = { 0 };
         commandBuffer.bindVertexBuffers(0, 1, vertexBuffers, offsets);
 
-        for (auto& group : layer.materialGroups)
-            WriteToBuffers(group.second, *group.first);
+        for (auto& materialGroup : layer.materialGroups)
+        {
+            const auto conduitGroup = renderer->mappedConduits.For(materialGroup.first);
+            if (!conduitGroup)
+                return;
+
+            WriteToBuffers(materialGroup.second, *conduitGroup);
+        }
     }
 
     void LineRenderer::Raster::WriteToBuffers(
-        const Layer::MaterialGroup& group,
-        const Asset::Material& materialAsset)
+        const Layer::MaterialGroup& materialGroup, MappedConduits::Group& conduitGroup)
     {
-        auto& conduits = *renderer->mappedConduits.For(materialAsset);
-        for (auto& conduit : conduits)
+        for (auto& conduit : conduitGroup)
         {
             conduit.Bind(commandBuffer);
             commandBuffer.bindDescriptorSets(
@@ -157,7 +160,7 @@ namespace Atmos::Render::Vulkan
                 0,
                 nullptr);
 
-            for (auto& value : group.values)
+            for (auto& value : materialGroup.values)
             {
                 commandBuffer.setLineWidth(value.first);
                 WriteToBuffers(value.second);
@@ -203,7 +206,7 @@ namespace Atmos::Render::Vulkan
         auto layer = raster.layers.Find(lineRender.z);
         if (!layer)
             layer = &raster.layers.Add(lineRender.z, Raster::Layer{});
-        auto& group = layer->GroupFor(*materialAsset);
+        auto& group = layer->GroupFor(materialAsset->ID());
         group.ListFor(lineRender.width).emplace_back(points);
     }
 }

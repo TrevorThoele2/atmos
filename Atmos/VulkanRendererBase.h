@@ -18,8 +18,8 @@ namespace Atmos::Render::Vulkan
             vk::CommandPool commandPool,
             const UniversalDataBuffer& universalDataBuffer) = 0;
 
-        virtual void MaterialCreated(const Asset::Material& material) = 0;
-        virtual void MaterialDestroying(const Asset::Material& material) = 0;
+        virtual void MaterialCreated(Arca::Index<Asset::Material> material) = 0;
+        virtual void MaterialDestroying(Arca::Index<Asset::Material> material) = 0;
 
         [[nodiscard]] virtual uint32_t RenderCount() const = 0;
     };

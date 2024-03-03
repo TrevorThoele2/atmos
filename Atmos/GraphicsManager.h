@@ -7,6 +7,7 @@
 #include "GraphicsReconstructionObjects.h"
 
 #include "Buffer.h"
+#include "FilePath.h"
 
 namespace Atmos::Render
 {
@@ -46,6 +47,8 @@ namespace Atmos::Render
 
         void PruneResources(Arca::Reliquary& reliquary);
 
+        File::Path CompileShader(const File::Path& inputFilePath, const std::optional<File::Path>& outputFilePath);
+
         void Reconstruct(GraphicsReconstructionObjects objects);
         [[nodiscard]] bool ShouldReconstruct() const;
 
@@ -76,6 +79,12 @@ namespace Atmos::Render
         virtual void ResourceDestroyingImpl(Resource::Surface& resource) {}
 
         virtual void PruneResourcesImpl(Arca::Reliquary& reliquary) {}
+
+        virtual File::Path CompileShaderImpl(
+            const File::Path& inputFilePath, const std::optional<File::Path>& outputFilePath)
+        {
+            return {};
+        }
 
         [[nodiscard]] virtual bool ShouldReconstructInternals() const = 0;
         virtual void ReconstructInternals(GraphicsReconstructionObjects objects) = 0;

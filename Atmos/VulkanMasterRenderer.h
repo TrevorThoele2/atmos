@@ -76,7 +76,7 @@ namespace Atmos::Render::Vulkan
                 vk::PhysicalDeviceMemoryProperties memoryProperties,
                 vk::RenderPass renderPass,
                 vk::Extent2D swapchainExtent,
-                const std::vector<const Asset::Material*>& materials);
+                const Arca::Batch<Asset::Material>& materials);
             RendererGroup(RendererGroup&& arg) noexcept = default;
 
             [[nodiscard]] IterableRenderers AsIterable();

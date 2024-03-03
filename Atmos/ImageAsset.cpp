@@ -125,7 +125,7 @@ namespace Inscription
         archive(object.gridSize);
         if (archive.IsInput())
         {
-            const auto filePath = std::filesystem::current_path() / "Images" / object.Name();
+            const auto filePath = std::filesystem::current_path() / "images" / object.Name();
             const auto loaded = object.Owner().Do(Atmos::Asset::Load<Atmos::Asset::Image>{ filePath });
             object.resource = object.Owner().Do(Atmos::Asset::Resource::Create<Atmos::Asset::Resource::Image>{
                 loaded.buffer,

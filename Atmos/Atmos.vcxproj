@@ -48,6 +48,7 @@
     <ClInclude Include="ChangeImageCore.h" />
     <ClInclude Include="ChangeSurfaceBackgroundColor.h" />
     <ClInclude Include="ChangeVerticalSync.h" />
+    <ClInclude Include="CompileShader.h" />
     <ClInclude Include="CreateAssetResource.h" />
     <ClInclude Include="CreateImageAssetResource.h" />
     <ClInclude Include="Angle3D.h" />
@@ -77,6 +78,7 @@
     <ClInclude Include="InitializeGraphics.h" />
     <ClInclude Include="SetFullscreen.h" />
     <ClInclude Include="SparseRegion.h" />
+    <ClInclude Include="VulkanInvalidConduit.h" />
     <ClInclude Include="VulkanMappedConduits.h" />
     <ClInclude Include="VulkanLayer.h" />
     <ClInclude Include="VulkanObjectLayering.h" />
@@ -382,6 +384,7 @@
     <ClCompile Include="BoundsCurator.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="ChangeSurfaceBackgroundColor.cpp" />
+    <ClCompile Include="CompileShader.cpp" />
     <ClCompile Include="EntityDatum.cpp" />
     <ClCompile Include="EntityPrototype.cpp" />
     <ClCompile Include="MappedEntities.cpp" />
@@ -399,6 +402,7 @@
     <ClCompile Include="VulkanDebug.cpp" />
     <ClCompile Include="VulkanDescriptorSetPool.cpp" />
     <ClCompile Include="VulkanImage.cpp" />
+    <ClCompile Include="VulkanInvalidConduit.cpp" />
     <ClCompile Include="VulkanLineRenderer.cpp" />
     <ClCompile Include="VulkanMappedConduits.cpp" />
     <ClCompile Include="VulkanQuadRenderer.cpp" />

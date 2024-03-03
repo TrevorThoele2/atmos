@@ -65,6 +65,15 @@ namespace Atmos::Spatial
         };
     }
 
+    Point2D ToPoint2D(const Grid::Point& point)
+    {
+        return
+        {
+            point.x * Grid::CellSize<float>,
+            point.y * Grid::CellSize<float>
+        };
+    }
+
     Point3D ToPoint3D(const Grid::Point& point, Point3D::Value z)
     {
         return

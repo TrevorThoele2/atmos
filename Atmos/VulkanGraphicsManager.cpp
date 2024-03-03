@@ -24,8 +24,8 @@ namespace Atmos::Render::Vulkan
     GraphicsManager::GraphicsManager()
     {
 #ifndef NDEBUG
-        instanceLayers.push_back(VK_LAYER_KHRONOS_VALIDATION_LAYER_NAME);
-        instanceExtensions.push_back(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
+        //instanceLayers.push_back(VK_LAYER_KHRONOS_VALIDATION_LAYER_NAME);
+        //instanceExtensions.push_back(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
 #endif
 
         ValidateRequiredInstanceExtensions();
@@ -157,6 +157,39 @@ namespace Atmos::Render::Vulkan
         auto& casted = static_cast<Asset::Resource::Vulkan::Image&>(resource);
         storedResourceList.push_back(std::make_unique<StoredImageResource>(
             casted.image, casted.memory, casted.imageView, device));
+    }
+
+    File::Path GraphicsManager::CompileShaderImpl(
+        const File::Path& inputFilePath, const std::optional<File::Path>& outputFilePath)
+    {
+        const auto useInputFilePath = inputFilePath;
+        File::Path useOutputFilePath;
+        if (outputFilePath)
+            useOutputFilePath = *outputFilePath;
+        else
+        {
+            useOutputFilePath = useInputFilePath;
+
+            const auto extension = Chroma::ReplaceString(
+                Chroma::ToString(useOutputFilePath.extension()),
+                ".",
+                "");
+            const auto oldFileName = Chroma::ToString(useOutputFilePath.filename());
+            const auto newFileName = Chroma::ReplaceString(
+                oldFileName,
+                String(".") + extension,
+                String("_") + extension + ".spv");
+
+            useOutputFilePath.replace_filename(newFileName);
+        }
+
+#ifndef NDEBUG
+        shaderCompiler.CompileWithDebugging(useInputFilePath, useOutputFilePath);
+#else
+        shaderCompiler.Compile(useInputFilePath, useOutputFilePath);
+#endif
+
+        return useOutputFilePath;
     }
 
     void GraphicsManager::PruneResourcesImpl(Arca::Reliquary& reliquary)

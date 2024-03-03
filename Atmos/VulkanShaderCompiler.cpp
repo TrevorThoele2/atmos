@@ -28,7 +28,7 @@ namespace Atmos::Render::Vulkan
         const File::Path& outputPath,
         const std::vector<std::string>& additionalFlags)
     {
-        auto path = "./Tools32/glslc.exe " + inputPath.string() + " -o " + outputPath.string();
+        auto path = "./tools32/glslc.exe " + inputPath.string() + " -o " + outputPath.string();
         for (auto& flag : additionalFlags)
             path += " " + flag;
 

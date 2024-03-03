@@ -15,8 +15,6 @@ namespace Atmos::Render::Vulkan
     class GraphicsManager final : public Render::GraphicsManager
     {
     public:
-        ShaderCompiler shaderCompiler;
-    public:
         GraphicsManager();
 
         [[nodiscard]] bool IsOk() const override;
@@ -38,6 +36,9 @@ namespace Atmos::Render::Vulkan
             Arca::Reliquary& reliquary) override;
 
         void ResourceDestroyingImpl(Asset::Resource::Image& resource) override;
+
+        File::Path CompileShaderImpl(
+            const File::Path& inputFilePath, const std::optional<File::Path>& outputFilePath) override;
 
         void PruneResourcesImpl(Arca::Reliquary& reliquary) override;
 
@@ -124,6 +125,8 @@ namespace Atmos::Render::Vulkan
         vk::UniqueSampler sampler;
 
         [[nodiscard]] static vk::UniqueSampler CreateSampler(vk::Device device);
+    private:
+        ShaderCompiler shaderCompiler;
     private:
         Debug debug;
     private:
