@@ -633,6 +633,9 @@
     <Filter Include="Source Files\Render\Vulkan\Resource\Data">
       <UniqueIdentifier>{5974cdd5-e977-4fe4-b646-93caf7674e12}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\World\Signals">
+      <UniqueIdentifier>{9418c5de-13f3-42c8-b1ce-ef6d94208fe8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FieldDestination.h">
@@ -2065,6 +2068,9 @@
     </ClInclude>
     <ClInclude Include="VulkanBackingSurfaceResource.h">
       <Filter>Header Files\Render\Vulkan\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="FieldChanging.h">
+      <Filter>Header Files\World\Signals</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

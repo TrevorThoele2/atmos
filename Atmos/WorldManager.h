@@ -7,7 +7,6 @@
 #include "Property.h"
 
 #include "InputFieldArchiveInterface.h"
-#include "LoadAssetsUserContext.h"
 
 namespace Atmos::World
 {
@@ -16,8 +15,8 @@ namespace Atmos::World
     public:
         virtual ~Manager() = 0;
 
-        virtual void LockIn(
-            std::unique_ptr<Arca::Reliquary>&& reliquary, Inscription::LoadAssetsUserContext& loadAssetsUserContext) = 0;
+        virtual void LockIn() = 0;
+        [[nodiscard]] virtual bool WillLockIn() const = 0;
 
         virtual void Request(FieldID id) = 0;
         virtual void Request(const FieldDestination& request) = 0;

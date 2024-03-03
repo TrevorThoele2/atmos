@@ -28,7 +28,6 @@ namespace Atmos
         auto text = std::make_unique<Render::SDL::TextManager>(logger);
         auto audio = std::make_unique<Audio::SDL::Manager>(logger);
         auto scripts = std::make_unique<Scripting::Angel::Manager>(logger);
-        auto world = std::make_unique<World::RealManager>();
 
         Properties properties;
         properties.system = std::move(system);
@@ -39,7 +38,6 @@ namespace Atmos
         properties.textManager = std::move(text);
         properties.audioManager = std::move(audio);
         properties.scriptManager = std::move(scripts);
-        properties.worldManager = std::move(world);
         return properties;
     }
 }

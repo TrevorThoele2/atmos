@@ -158,6 +158,7 @@ namespace Atmos
         pipeline.push_back(Scripting::Stage());
         pipeline.push_back(Render::Stage());
         pipeline.push_back(Audio::Stage());
+        pipeline.push_back(World::Stage());
         pipeline.push_back(Diagnostics::Stage());
         pipeline.push_back(Frame::EndStage());
         origin.CuratorCommandPipeline<Work>(pipeline);
@@ -416,6 +417,13 @@ namespace Atmos
             origin
                 .Register<Map>()
                 .Register<Curator>(std::ref(manager));
+        }
+
+        Arca::Stage Stage()
+        {
+            Arca::Stage stage;
+            stage.Add<Curator>();
+            return stage;
         }
     }
 

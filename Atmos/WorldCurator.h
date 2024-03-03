@@ -7,6 +7,7 @@
 #include "ModifyWorldProperties.h"
 #include "RetrieveWorldProperties.h"
 #include "WorldManager.h"
+#include "Work.h"
 
 namespace Atmos::World
 {
@@ -15,6 +16,7 @@ namespace Atmos::World
     public:
         Curator(Init init, Manager& manager);
 
+        void Handle(const Work&);
         void Handle(const RequestField& command);
         void Handle(const ModifyEntityBoundary& command);
         void Handle(const ModifyProperties& command);
@@ -32,6 +34,7 @@ namespace Arca
         static const ObjectType objectType = ObjectType::Curator;
         static TypeName TypeName() { return "Atmos::World::Curator"; }
         using HandledCommands = HandledCommands<
+            Atmos::Work,
             Atmos::World::RequestField,
             Atmos::World::ModifyEntityBoundary,
             Atmos::World::ModifyProperties,

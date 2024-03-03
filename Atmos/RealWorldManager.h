@@ -17,8 +17,15 @@ namespace Atmos::World
     class RealManager final : public Manager
     {
     public:
-        void LockIn(
-            std::unique_ptr<Arca::Reliquary>&& reliquary, Inscription::LoadAssetsUserContext& loadAssetsUserContext) override;
+        using RetrieveReliquary = std::function<std::unique_ptr<Arca::Reliquary>()>;
+        using RetrieveLoadAssetsUserContext = std::function<std::unique_ptr<Inscription::LoadAssetsUserContext>()>;
+    public:
+        RealManager(
+            const RetrieveReliquary& retrieveReliquary,
+            const RetrieveLoadAssetsUserContext& retrieveLoadAssetsUserContext);
+
+        void LockIn() override;
+        [[nodiscard]] bool WillLockIn() const override;
 
         void Request(FieldID id) override;
         void Request(const FieldDestination& request) override;
@@ -75,12 +82,15 @@ namespace Atmos::World
 
         File::Path worldPath;
     private:
+        RetrieveReliquary retrieveReliquary;
+        RetrieveLoadAssetsUserContext retrieveLoadAssetsUserContext;
+    private:
         bool ContainsField(FieldID id);
     private:
         void ChangeField(
             FieldID id,
             std::unique_ptr<Arca::Reliquary>&& reliquary,
-            Inscription::LoadAssetsUserContext& loadAssetsUserContext);
+            std::unique_ptr<Inscription::LoadAssetsUserContext>&& loadAssetsUserContext);
 
         using InputArchiveInterfacePtr = std::unique_ptr<Serialization::InputFieldArchiveInterface>;
         [[nodiscard]] InputArchiveInterfacePtr InputArchiveInterface(

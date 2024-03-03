@@ -54,7 +54,7 @@ namespace Atmos::Render
 
         void Reconstruct(GraphicsReconstructionObjects objects);
         [[nodiscard]] bool ShouldReconstruct() const;
-
+        
         virtual void SetFullscreen(bool set) = 0;
         virtual void ChangeVerticalSync(bool set) = 0;
     protected:

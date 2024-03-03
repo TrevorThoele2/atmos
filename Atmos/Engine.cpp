@@ -2,6 +2,7 @@
 
 #include "TypeRegistration.h"
 
+#include "RealWorldManager.h"
 #include "LoadAssetsByZipUserContext.h"
 
 namespace Atmos
@@ -14,14 +15,16 @@ namespace Atmos
 
     void Engine::UseField(World::Field&& field, std::vector<Property>&& worldProperties, const File::Path& assetsFilePath)
     {
+        this->assetsFilePath = assetsFilePath;
         managers.world->UseField(std::move(field), std::move(worldProperties));
-        ChangeField(0, assetsFilePath);
+        ChangeField(0);
     }
 
     void Engine::LoadWorld(const File::Path& filePath, const File::Path& assetsFilePath)
     {
+        this->assetsFilePath = assetsFilePath;
         managers.world->UseWorld(filePath);
-        ChangeField(0, assetsFilePath);
+        ChangeField(0);
     }
 
     World::Field* Engine::CurrentField()
@@ -50,7 +53,9 @@ namespace Atmos
             std::move(initializationProperties.graphicsManager),
             std::move(initializationProperties.textManager),
             std::move(initializationProperties.scriptManager),
-            std::move(initializationProperties.worldManager)
+            std::make_unique<World::RealManager>(
+                [this]() { return CreateReliquary(); },
+                [this]() { return CreateLoadAssetsUserContext(); })
         },
         logger(&logger)
     {
@@ -60,7 +65,13 @@ namespace Atmos
         execution = std::make_unique<Execution>(*managers.world, *managers.window);
     }
 
-    void Engine::ChangeField(World::FieldID fieldID, const File::Path& assetsFilePath)
+    void Engine::ChangeField(World::FieldID fieldID)
+    {
+        managers.world->Request(fieldID);
+        managers.world->LockIn();
+    }
+
+    std::unique_ptr<Arca::Reliquary> Engine::CreateReliquary()
     {
         Arca::ReliquaryOrigin origin;
 
@@ -78,12 +89,11 @@ namespace Atmos
             *logger);
         RegisterFieldStages(origin);
 
-        auto reliquary = origin.Actualize();
+        return origin.Actualize();
+    }
 
-        managers.world->Request(fieldID);
-
-        auto loadAssetsUserContext = Inscription::LoadAssetsByZipUserContext(assetsFilePath, *logger);
-
-        managers.world->LockIn(std::move(reliquary), loadAssetsUserContext);
+    std::unique_ptr<Inscription::LoadAssetsUserContext> Engine::CreateLoadAssetsUserContext()
+    {
+        return std::make_unique<Inscription::LoadAssetsByZipUserContext>(assetsFilePath, *logger);
     }
 }

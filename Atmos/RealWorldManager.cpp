@@ -9,24 +9,36 @@
 
 namespace Atmos::World
 {
-    void RealManager::LockIn(
-        std::unique_ptr<Arca::Reliquary>&& reliquary, Inscription::LoadAssetsUserContext& loadAssetsUserContext)
+    RealManager::RealManager(
+        const RetrieveReliquary& retrieveReliquary,
+        const RetrieveLoadAssetsUserContext& retrieveLoadAssetsUserContext)
+        :
+        retrieveReliquary(retrieveReliquary),
+        retrieveLoadAssetsUserContext(retrieveLoadAssetsUserContext)
+    {}
+    
+    void RealManager::LockIn()
     {
-        if (!requested.has_value())
-            return;
-
-        if (std::holds_alternative<RequestedField>(*requested))
+        if (WillLockIn())
         {
-            auto& request = std::get<RequestedField>(*requested);
-            ChangeField(request.id, std::move(reliquary), loadAssetsUserContext);
-        }
-        else if (std::holds_alternative<RequestedFieldDestination>(*requested))
-        {
-            auto& request = std::get<RequestedFieldDestination>(*requested);
-            ChangeField(request.destination.id, std::move(reliquary), loadAssetsUserContext);
-        }
+            if (std::holds_alternative<RequestedField>(*requested))
+            {
+                auto& request = std::get<RequestedField>(*requested);
+                ChangeField(request.id, retrieveReliquary(), retrieveLoadAssetsUserContext());
+            }
+            else if (std::holds_alternative<RequestedFieldDestination>(*requested))
+            {
+                auto& request = std::get<RequestedFieldDestination>(*requested);
+                ChangeField(request.destination.id, retrieveReliquary(), retrieveLoadAssetsUserContext());
+            }
 
-        requested = {};
+            requested = {};
+        }
+    }
+
+    bool RealManager::WillLockIn() const
+    {
+        return requested.has_value();
     }
 
     void RealManager::Request(FieldID id)
@@ -91,7 +103,7 @@ namespace Atmos::World
     void RealManager::ChangeField(
         FieldID id,
         std::unique_ptr<Arca::Reliquary>&& reliquary,
-        Inscription::LoadAssetsUserContext& loadAssetsUserContext)
+        std::unique_ptr<Inscription::LoadAssetsUserContext>&& loadAssetsUserContext)
     {
         DEBUG_ASSERT(utilization.has_value());
 
@@ -106,7 +118,7 @@ namespace Atmos::World
         }
         else
         {
-            auto inputArchiveInterface = InputArchiveInterface(loadAssetsUserContext);
+            auto inputArchiveInterface = InputArchiveInterface(*loadAssetsUserContext);
             SetFieldIDs(inputArchiveInterface->AllFieldIDs());
             currentField = inputArchiveInterface->ExtractField(id, std::move(reliquary));
             currentProperties = inputArchiveInterface->WorldProperties();

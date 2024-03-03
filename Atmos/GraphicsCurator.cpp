@@ -20,6 +20,8 @@ namespace Atmos::Render
             {
                 AttemptReconstruct(signal.size);
             });
+
+        Owner().On<World::FieldChanging>([this](const World::FieldChanging&) { OnFieldChanging(); });
     }
     
     void GraphicsCurator::Handle(const ReconstructGraphics& command)
@@ -51,7 +53,7 @@ namespace Atmos::Render
     {
         return manager->CompileShader(command.inputFilePath, command.outputFilePath);
     }
-
+    
     std::unique_ptr<Asset::Resource::Image> GraphicsCurator::Handle(
         const Asset::Resource::Create<Asset::Resource::Image>& command)
     {
@@ -75,5 +77,13 @@ namespace Atmos::Render
 
             manager->Reconstruct(reconstructionObjects);
         }
+    }
+
+    void GraphicsCurator::OnFieldChanging()
+    {
+        const auto surface = Arca::Index<MainSurface>(Owner());
+        const auto resource = surface->Resource();
+        manager->ResourceDestroying(*resource);
+        manager->PruneResources();
     }
 }

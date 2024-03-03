@@ -7,8 +7,8 @@ namespace Atmos::World
     class NullManager final : public Manager
     {
     public:
-        void LockIn(
-            std::unique_ptr<Arca::Reliquary>&& reliquary, Inscription::LoadAssetsUserContext& loadAssetsUserContext) override;
+        void LockIn() override;
+        [[nodiscard]] bool WillLockIn() const override;
 
         void Request(FieldID id) override;
         void Request(const FieldDestination& request) override;
