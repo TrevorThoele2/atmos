@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Arca/Shard.h>
+#include "ArcaShardIncludes.h"
 
 #include <Arca/RelicIndex.h>
 #include "MaterialAsset.h"
@@ -15,6 +15,9 @@ namespace Atmos::Render
 
         RenderCore() = default;
         RenderCore(Arca::Index<Asset::Material> material, const Color& color);
+
+        bool operator==(const RenderCore& arg) const;
+        bool operator!=(const RenderCore& arg) const;
     };
 }
 

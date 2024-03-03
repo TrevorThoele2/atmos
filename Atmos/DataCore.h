@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Arca/Shard.h>
+#include "ArcaShardIncludes.h"
 
 #include "Property.h"
 
@@ -15,6 +15,9 @@ namespace Atmos
 
         DataCore() = default;
         DataCore(const std::vector<Property>& properties);
+
+        bool operator==(const DataCore& arg) const;
+        bool operator!=(const DataCore& arg) const;
     };
 }
 

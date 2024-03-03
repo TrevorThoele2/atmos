@@ -12,6 +12,16 @@ namespace Atmos::Audio
         return *this;
     }
 
+    bool Sound::operator==(const Sound& arg) const
+    {
+        return IndexEqualsValue(core, arg.core);
+    }
+
+    bool Sound::operator!=(const Sound& arg) const
+    {
+        return !(*this == arg);
+    }
+
     Arca::Index<Asset::Audio> Sound::Asset() const
     {
         return core->asset;

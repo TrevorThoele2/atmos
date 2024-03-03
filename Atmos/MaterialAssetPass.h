@@ -10,6 +10,9 @@ namespace Atmos::Asset
         MaterialPass() = default;
         MaterialPass(Arca::Index<Shader> vertexShader, Arca::Index<Shader> fragmentShader);
 
+        bool operator==(const MaterialPass& arg) const;
+        bool operator!=(const MaterialPass& arg) const;
+
         [[nodiscard]] Arca::Index<Shader> VertexShader() const;
         [[nodiscard]] Arca::Index<Shader> FragmentShader() const;
     private:

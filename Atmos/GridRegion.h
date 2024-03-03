@@ -1,7 +1,7 @@
 #pragma once
 
 #include <unordered_set>
-#include <Arca/Relic.h>
+#include "ArcaRelicIncludes.h"
 
 #include "RenderCore.h"
 
@@ -25,6 +25,9 @@ namespace Atmos::Render
             const std::unordered_set<Spatial::Grid::Point>& points,
             Spatial::Grid::Point::Value z,
             Arca::Index<Asset::Material> material);
+
+        bool operator==(const GridRegion& arg) const;
+        bool operator!=(const GridRegion& arg) const;
     private:
         INSCRIPTION_ACCESS;
     };

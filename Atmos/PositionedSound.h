@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Arca/Relic.h>
+#include "ArcaRelicIncludes.h"
 
 #include "Sound.h"
 #include "Bounds.h"
@@ -19,6 +19,9 @@ namespace Atmos::Audio
         PositionedSound(PositionedSound&& arg) noexcept;
 
         PositionedSound& operator=(PositionedSound&& arg) noexcept;
+
+        bool operator==(const PositionedSound& arg) const;
+        bool operator!=(const PositionedSound& arg) const;
     private:
         Arca::Index<Spatial::Bounds> bounds;
     };

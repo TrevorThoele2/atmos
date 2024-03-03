@@ -16,6 +16,9 @@ namespace Atmos::Asset
         Audio(Audio&& arg) noexcept;
 
         Audio& operator=(Audio&& arg) noexcept;
+
+        bool operator==(const Audio& arg) const;
+        bool operator!=(const Audio& arg) const;
     public:
         void Setup(ResourcePtr&& set);
     private:

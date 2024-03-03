@@ -25,6 +25,16 @@ namespace Atmos::Asset
         return *this;
     }
 
+    bool Script::operator==(const Script& arg) const
+    {
+        return AssetWithResource::operator==(arg);
+    }
+
+    bool Script::operator!=(const Script& arg) const
+    {
+        return !(*this == arg);
+    }
+
     void Script::Setup(ResourcePtr&& set)
     {
         SetResource(std::move(set));

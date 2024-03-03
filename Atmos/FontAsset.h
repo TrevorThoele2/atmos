@@ -20,6 +20,9 @@ namespace Atmos::Asset
         Font(Font&& arg) noexcept;
 
         Font& operator=(Font&& arg) noexcept;
+
+        bool operator==(const Font& arg) const;
+        bool operator!=(const Font& arg) const;
     public:
         void Setup(ResourcePtr&& set);
     private:

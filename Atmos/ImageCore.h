@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Arca/Shard.h>
+#include "ArcaShardIncludes.h"
 
 #include "ImageAsset.h"
 
@@ -18,6 +18,9 @@ namespace Atmos::Render
     public:
         ImageCore() = default;
         ImageCore(Arca::Index<Asset::Image> asset, Index assetIndex);
+
+        bool operator==(const ImageCore& arg) const;
+        bool operator!=(const ImageCore& arg) const;
     };
 }
 

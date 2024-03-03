@@ -20,6 +20,9 @@ namespace Atmos::UI
             const Spatial::Scalers2D& scalers,
             const Spatial::Angle2D& rotation);
         Image(Arca::RelicInit init, Arca::Serialization serialization);
+
+        bool operator==(const Image& arg) const;
+        bool operator!=(const Image& arg) const;
     private:
         INSCRIPTION_ACCESS;
     };
@@ -31,7 +34,7 @@ namespace Arca
     struct Traits<Atmos::UI::Image>
     {
         static const ObjectType objectType = ObjectType::Relic;
-        static TypeName TypeName() { return "Atmos::UI::ScreenImage"; }
+        static TypeName TypeName() { return "Atmos::UI::Image"; }
     };
 }
 

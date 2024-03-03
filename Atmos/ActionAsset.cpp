@@ -32,6 +32,16 @@ namespace Atmos::Asset
         boundModifiers = std::move(arg.boundModifiers);
         return *this;
     }
+
+    bool Action::operator==(const Action& arg) const
+    {
+        return Asset::operator==(arg) && boundKey == arg.boundKey && boundModifiers == arg.boundModifiers;
+    }
+
+    bool Action::operator!=(const Action& arg) const
+    {
+        return !(*this == arg);
+    }
 }
 
 namespace Arca

@@ -96,11 +96,14 @@
     <ClInclude Include="AngelScriptScriptResult.h" />
     <ClInclude Include="AngelScriptStopwatch.h" />
     <ClInclude Include="AngelScriptViewSlice.h" />
+    <ClInclude Include="ArcaRelicIncludes.h" />
+    <ClInclude Include="ArcaShardIncludes.h" />
     <ClInclude Include="AssetResourceManager.h" />
     <ClInclude Include="AssetResourceTraits.h" />
     <ClInclude Include="BoundsChanged.h" />
     <ClInclude Include="FieldChanging.h" />
     <ClInclude Include="FieldInitialization.h" />
+    <ClInclude Include="ArcaIndexEquality.h" />
     <ClInclude Include="VulkanBackingSurfaceResource.h" />
     <ClInclude Include="VulkanImageResourceData.h" />
     <ClInclude Include="VulkanStoredImageResource.h" />
@@ -608,9 +611,12 @@
     <ClCompile Include="AngelScriptStringUtility.cpp" />
     <ClCompile Include="AngelScriptUserData.cpp" />
     <ClCompile Include="AngelScriptViewSlice.cpp" />
+    <ClCompile Include="ArcaIndexEquality.cpp" />
     <ClCompile Include="Asset.cpp" />
     <ClCompile Include="AssetResourceManager.cpp" />
     <ClCompile Include="AudioAssetCurator.cpp" />
+    <ClCompile Include="DiagnosticsStatistics.cpp" />
+    <ClCompile Include="ImageAssetGridSize.cpp" />
     <ClCompile Include="VulkanBackingSurfaceResource.cpp" />
     <ClCompile Include="VulkanImageResourceData.cpp" />
     <ClCompile Include="VulkanStoredImageResource.cpp" />

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Arca/Shard.h>
+#include "ArcaShardIncludes.h"
 
 #include "SoundResource.h"
 #include "AudioAsset.h"
@@ -26,6 +26,9 @@ namespace Atmos::Audio
         SoundCore(SoundCore&& arg) noexcept;
 
         SoundCore& operator=(SoundCore&& arg) noexcept;
+
+        bool operator==(const SoundCore& arg) const;
+        bool operator!=(const SoundCore& arg) const;
     };
 }
 

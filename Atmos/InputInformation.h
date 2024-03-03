@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Arca/Relic.h>
+#include "ArcaRelicIncludes.h"
 
 #include "Point2D.h"
 
@@ -17,6 +17,9 @@ namespace Atmos::Input
         Information(Information&& arg) noexcept = default;
 
         Information& operator=(Information&& arg) noexcept;
+
+        bool operator==(const Information& arg) const;
+        bool operator!=(const Information& arg) const;
     private:
         INSCRIPTION_ACCESS;
     };

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Arca/Shard.h>
+#include "ArcaShardIncludes.h"
 
 #include "FontAsset.h"
 #include "TextResource.h"
@@ -26,6 +26,9 @@ namespace Atmos::Render
     public:
         TextCore() = default;
         TextCore(const String& string, Arca::Index<Asset::Font> asset, float wrapWidth, bool bold, bool italics);
+
+        bool operator==(const TextCore& arg) const;
+        bool operator!=(const TextCore& arg) const;
 
         [[nodiscard]] ResourceT* Resource();
     };

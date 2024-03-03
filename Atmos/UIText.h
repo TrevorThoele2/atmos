@@ -21,6 +21,9 @@ namespace Atmos::UI
             const Spatial::Scalers2D& scalers,
             const Spatial::Angle2D& rotation);
         Text(Arca::RelicInit init, Arca::Serialization serialization);
+
+        bool operator==(const Text& arg) const;
+        bool operator!=(const Text& arg) const;
     private:
         INSCRIPTION_ACCESS;
     };

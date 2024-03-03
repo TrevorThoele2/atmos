@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Arca/Relic.h>
+#include "ArcaRelicIncludes.h"
 
 #include "Bounds.h"
 #include "Angle3D.h"
@@ -19,6 +19,9 @@ namespace Atmos::Render
     public:
         explicit Camera(Arca::RelicInit init, Spatial::Size2D screenSize);
         explicit Camera(Arca::RelicInit init, Arca::Serialization);
+
+        bool operator==(const Camera& arg) const;
+        bool operator!=(const Camera& arg) const;
     private:
         Arca::Index<Spatial::Bounds> bounds;
     };

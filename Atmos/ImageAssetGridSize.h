@@ -9,6 +9,9 @@ namespace Atmos::Asset
         using Dimension = int;
         Dimension columns = 0;
         Dimension rows = 0;
+
+        bool operator==(const ImageGridSize& arg) const;
+        bool operator!=(const ImageGridSize& arg) const;
     };
 }
 

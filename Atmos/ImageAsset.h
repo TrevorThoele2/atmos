@@ -27,6 +27,9 @@ namespace Atmos::Asset
         Image(Image&& arg) noexcept;
 
         Image& operator=(Image&& arg) noexcept;
+
+        bool operator==(const Image& arg) const;
+        bool operator!=(const Image& arg) const;
     public:
         void Setup(ResourcePtr&& set, Spatial::Size2D size);
     public:

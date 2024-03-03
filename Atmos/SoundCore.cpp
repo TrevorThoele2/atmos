@@ -6,7 +6,7 @@ namespace Atmos::Audio
         asset(asset), volume(volume), resource(std::move(resource))
     {}
 
-    SoundCore::SoundCore(Arca::Serialization serialization)
+    SoundCore::SoundCore(Arca::Serialization)
     {}
 
     SoundCore::SoundCore(SoundCore&& arg) noexcept :
@@ -21,5 +21,15 @@ namespace Atmos::Audio
         asset = std::move(arg.asset);
         volume = arg.volume;
         return *this;
+    }
+
+    bool SoundCore::operator==(const SoundCore& arg) const
+    {
+        return resource == arg.resource && IndexEqualsValue(asset, arg.asset) && volume == arg.volume;
+    }
+
+    bool SoundCore::operator!=(const SoundCore& arg) const
+    {
+        return !(*this == arg);
     }
 }

@@ -22,6 +22,9 @@ namespace Atmos::Render
             const Spatial::Scalers2D& scalers,
             const Spatial::Angle2D& rotation);
         DynamicImage(Arca::RelicInit init, Arca::Serialization serialization);
+
+        bool operator==(const DynamicImage& arg) const;
+        bool operator!=(const DynamicImage& arg) const;
     private:
         INSCRIPTION_ACCESS;
     };

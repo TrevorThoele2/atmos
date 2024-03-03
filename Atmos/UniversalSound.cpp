@@ -23,4 +23,14 @@ namespace Atmos::Audio
         Sound::operator=(std::move(arg));
         return *this;
     }
+
+    bool UniversalSound::operator==(const UniversalSound& arg) const
+    {
+        return Sound::operator==(arg);
+    }
+
+    bool UniversalSound::operator!=(const UniversalSound& arg) const
+    {
+        return !(*this == arg);
+    }
 }

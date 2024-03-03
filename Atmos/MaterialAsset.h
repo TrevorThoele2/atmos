@@ -19,7 +19,11 @@ namespace Atmos::Asset
             std::vector<Pass> passes);
         Material(Arca::RelicInit init, Arca::Serialization serialization);
         Material(Material&& arg) noexcept;
+
         Material& operator=(Material&& arg) noexcept;
+
+        bool operator==(const Material& arg) const;
+        bool operator!=(const Material& arg) const;
 
         [[nodiscard]] std::vector<Pass> Passes() const;
     private:

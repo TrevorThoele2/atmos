@@ -16,6 +16,16 @@ namespace Atmos::Asset
         return *this;
     }
 
+    bool Asset::operator==(const Asset& arg) const
+    {
+        return IndexEqualsValue(core, arg.core);
+    }
+
+    bool Asset::operator!=(const Asset& arg) const
+    {
+        return !(*this == arg);
+    }
+
     Atmos::Name Asset::Name() const
     {
         return core->name;

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Arca/Relic.h>
+#include "ArcaRelicIncludes.h"
 
 #include "ScriptAsset.h"
 #include "ScriptParameters.h"
@@ -27,6 +27,9 @@ namespace Atmos::Scripting
     public:
         Script(Arca::RelicInit init, Arca::Index<Asset::Script> asset, const String& executeName, Parameters parameters);
         explicit Script(Arca::RelicInit init, Arca::Serialization);
+
+        bool operator==(const Script& arg) const;
+        bool operator!=(const Script& arg) const;
 
         [[nodiscard]] Resource* Resource() const;
         template<class ResourceT>

@@ -29,6 +29,16 @@ namespace Atmos::Asset
         return *this;
     }
 
+    bool Font::operator==(const Font& arg) const
+    {
+        return AssetWithResource::operator==(arg);
+    }
+
+    bool Font::operator!=(const Font& arg) const
+    {
+        return !(*this == arg);
+    }
+
     void Font::Setup(ResourcePtr&& set)
     {
         SetResource(std::move(set));

@@ -25,6 +25,9 @@ namespace Atmos::Asset
         Action(Action&& arg) noexcept;
 
         Action& operator=(Action&& arg) noexcept;
+
+        bool operator==(const Action& arg) const;
+        bool operator!=(const Action& arg) const;
     private:
         INSCRIPTION_ACCESS;
     };
