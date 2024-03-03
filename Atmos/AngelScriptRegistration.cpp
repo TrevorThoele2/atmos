@@ -38,8 +38,10 @@
 #include "AngelScriptScalers3D.h"
 #include "AngelScriptSize2D.h"
 #include "AngelScriptSize3D.h"
+#include "AngelScriptGridSize.h"
 #include "AngelScriptAxisAlignedBox2D.h"
 #include "AngelScriptAxisAlignedBox3D.h"
+#include "AngelScriptGridAxisAlignedBox.h"
 #include "AngelScriptSpatialAlgorithms.h"
 #include "AngelScriptGridSpatialAlgorithms.h"
 #include "AngelScriptToWorldPoint2D.h"
@@ -197,8 +199,10 @@ namespace Atmos::Scripting::Angel
                 .Register<Spatial::Scalers3D>()
                 .Register<Spatial::Size2D>()
                 .Register<Spatial::Size3D>()
+                .Register<Spatial::Grid::Size>()
                 .Register<Spatial::AxisAlignedBox2D>()
                 .Register<Spatial::AxisAlignedBox3D>()
+                .Register<Spatial::Grid::AxisAlignedBox>()
                 .Register<SpatialAlgorithms>()
                 .Register<GridSpatialAlgorithms>()
                 .Register<Spatial::ToWorldPoint2D>()

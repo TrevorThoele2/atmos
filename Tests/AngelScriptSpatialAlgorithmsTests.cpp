@@ -546,6 +546,165 @@ SCENARIO_METHOD(AngelScriptSpatialAlgorithmsTestsFixture, "running spatial algor
         }
     }
 
+    GIVEN("script that returns Contains from GridAxisAlignedBox and GridPoint")
+    {
+        auto center = dataGeneration.RandomStack<
+            Spatial::Grid::Point, Spatial::Grid::Point::Value, Spatial::Grid::Point::Value>();
+        auto size = dataGeneration.RandomStack<
+            Spatial::Grid::Size, Spatial::Grid::Size::Value, Spatial::Grid::Size::Value>();
+        auto point = dataGeneration.RandomStack<
+            Spatial::Grid::Point, Spatial::Grid::Point::Value, Spatial::Grid::Point::Value>();
+
+        CompileAndCreateScript(
+            "basic_script.as",
+            "bool main(int centerX, int centerY, int sizeWidth, int sizeHeight, int pointX, int pointY)\n" \
+            "{\n" \
+            "    Atmos::Spatial::Grid::Point center(centerX, centerY);\n" \
+            "    Atmos::Spatial::Grid::Size size(sizeWidth, sizeHeight);\n" \
+            "    Atmos::Spatial::Grid::AxisAlignedBox box(center, size);\n" \
+            "\n" \
+            "    Atmos::Spatial::Grid::Point point(pointX, pointY);\n" \
+            "    return Atmos::Spatial::Grid::Contains(box, point);\n" \
+            "}",
+            { center.x, center.y, size.width, size.height, point.x, point.y },
+            fieldReliquary);
+
+        WHEN("working reliquary")
+        {
+            fieldReliquary.Do(Work{});
+
+            THEN("has correct properties")
+            {
+                REQUIRE(finishes.size() == 1);
+
+                const auto box = Spatial::Grid::AxisAlignedBox(center, size);
+
+                const auto result = std::get<bool>(std::get<Variant>(finishes[0].result));
+                REQUIRE(result == Spatial::Grid::Contains(box, point));
+            }
+        }
+    }
+
+    GIVEN("script that returns Contains from GridAxisAlignedBox and GridAxisAlignedBox")
+    {
+        auto center0 = dataGeneration.RandomStack<
+            Spatial::Grid::Point, Spatial::Grid::Point::Value, Spatial::Grid::Point::Value>();
+        auto size0 = dataGeneration.RandomStack<
+            Spatial::Grid::Size, Spatial::Grid::Size::Value, Spatial::Grid::Size::Value>();
+        auto center1 = dataGeneration.RandomStack<
+            Spatial::Grid::Point, Spatial::Grid::Point::Value, Spatial::Grid::Point::Value>();
+        auto size1 = dataGeneration.RandomStack<
+            Spatial::Grid::Size, Spatial::Grid::Size::Value, Spatial::Grid::Size::Value>();
+
+        CompileAndCreateScript(
+            "basic_script.as",
+            "bool main(int center0X, " \
+            "int center0Y, " \
+            "int size0Width, " \
+            "int size0Height, " \
+            "int center1X, " \
+            "int center1Y, " \
+            "int size1Width, " \
+            "int size1Height)\n" \
+            "{\n" \
+            "    Atmos::Spatial::Grid::Point center0(center0X, center0Y);\n" \
+            "    Atmos::Spatial::Grid::Size size0(size0Width, size0Height);\n" \
+            "    Atmos::Spatial::Grid::AxisAlignedBox box0(center0, size0);\n" \
+            "\n" \
+            "    Atmos::Spatial::Grid::Point center1(center1X, center1Y);\n" \
+            "    Atmos::Spatial::Grid::Size size1(size1Width, size1Height);\n" \
+            "    Atmos::Spatial::Grid::AxisAlignedBox box1(center1, size1);\n" \
+            "\n" \
+            "    return Atmos::Spatial::Grid::Contains(box0, box1);\n" \
+            "}",
+            {
+                center0.x,
+                center0.y,
+                size0.width,
+                size0.height,
+                center1.x,
+                center1.y,
+                size1.width,
+                size1.height },
+                fieldReliquary);
+
+        WHEN("working reliquary")
+        {
+            fieldReliquary.Do(Work{});
+
+            THEN("has correct properties")
+            {
+                REQUIRE(finishes.size() == 1);
+
+                const auto box0 = Spatial::Grid::AxisAlignedBox(center0, size0);
+                const auto box1 = Spatial::Grid::AxisAlignedBox(center1, size1);
+
+                const auto result = std::get<bool>(std::get<Variant>(finishes[0].result));
+                REQUIRE(result == Spatial::Grid::Contains(box0, box1));
+            }
+        }
+    }
+
+    GIVEN("script that returns Intersects from GridAxisAlignedBox and GridAxisAlignedBox")
+    {
+        auto center0 = dataGeneration.RandomStack<
+            Spatial::Grid::Point, Spatial::Grid::Point::Value, Spatial::Grid::Point::Value>();
+        auto size0 = dataGeneration.RandomStack<
+            Spatial::Grid::Size, Spatial::Grid::Size::Value, Spatial::Grid::Size::Value>();
+        auto center1 = dataGeneration.RandomStack<
+            Spatial::Grid::Point, Spatial::Grid::Point::Value, Spatial::Grid::Point::Value>();
+        auto size1 = dataGeneration.RandomStack<
+            Spatial::Grid::Size, Spatial::Grid::Size::Value, Spatial::Grid::Size::Value>();
+
+        CompileAndCreateScript(
+            "basic_script.as",
+            "bool main(int center0X, " \
+            "int center0Y, " \
+            "int size0Width, " \
+            "int size0Height, " \
+            "int center1X, " \
+            "int center1Y, " \
+            "int size1Width, " \
+            "int size1Height)\n" \
+            "{\n" \
+            "    Atmos::Spatial::Grid::Point center0(center0X, center0Y);\n" \
+            "    Atmos::Spatial::Grid::Size size0(size0Width, size0Height);\n" \
+            "    Atmos::Spatial::Grid::AxisAlignedBox box0(center0, size0);\n" \
+            "\n" \
+            "    Atmos::Spatial::Grid::Point center1(center1X, center1Y);\n" \
+            "    Atmos::Spatial::Grid::Size size1(size1Width, size1Height);\n" \
+            "    Atmos::Spatial::Grid::AxisAlignedBox box1(center1, size1);\n" \
+            "\n" \
+            "    return Atmos::Spatial::Grid::Intersects(box0, box1);\n" \
+            "}",
+            {
+                center0.x,
+                center0.y,
+                size0.width,
+                size0.height,
+                center1.x,
+                center1.y,
+                size1.width,
+                size1.height },
+                fieldReliquary);
+
+        WHEN("working reliquary")
+        {
+            fieldReliquary.Do(Work{});
+
+            THEN("has correct properties")
+            {
+                REQUIRE(finishes.size() == 1);
+
+                const auto box0 = Spatial::Grid::AxisAlignedBox(center0, size0);
+                const auto box1 = Spatial::Grid::AxisAlignedBox(center1, size1);
+
+                const auto result = std::get<bool>(std::get<Variant>(finishes[0].result));
+                REQUIRE(result == Spatial::Grid::Intersects(box0, box1));
+            }
+        }
+    }
+
     GIVEN("script that returns ToPoint2D from Point3D")
     {
         auto x = dataGeneration.Random<Spatial::Point3D::Value>();

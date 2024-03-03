@@ -8,6 +8,7 @@
 #include "Angle3D.h"
 #include "AxisAlignedBox2D.h"
 #include "AxisAlignedBox3D.h"
+#include "GridAxisAlignedBox.h"
 
 namespace Atmos::Spatial
 {
@@ -57,6 +58,10 @@ namespace Atmos::Spatial
     namespace Grid
     {
         [[nodiscard]] Point::Value Distance(Point starting, Point destination);
+
+        [[nodiscard]] bool Contains(AxisAlignedBox box, Point point);
+        [[nodiscard]] bool Contains(AxisAlignedBox box, AxisAlignedBox other);
+        [[nodiscard]] bool Intersects(AxisAlignedBox one, AxisAlignedBox two);
 
         [[nodiscard]] Point ToPoint(Point2D position);
         [[nodiscard]] Point ToPoint(Point3D position);

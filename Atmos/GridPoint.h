@@ -7,7 +7,8 @@ namespace Atmos::Spatial::Grid
     struct Point
     {
         using Value = int;
-        Value x = 0, y = 0;
+        Value x = 0;
+        Value y = 0;
 
         bool operator==(const Point& arg) const;
         bool operator!=(const Point& arg) const;
