@@ -28,8 +28,9 @@ namespace Atmos::Render::SDL
             TTF_CloseFont(font);
     }
 
-    Spatial::Size2D FontAssetResource::Size(const String& string) const
+    Spatial::Size2D FontAssetResource::Size(const String& string, bool bold, bool italics) const
     {
+        SetStyle(*font, Style(bold, italics));
         return SDL::Size(*font, Split(string));
     }
 }

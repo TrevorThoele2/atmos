@@ -26,7 +26,7 @@ namespace Atmos::Scripting::Angel
 
         static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
     private:
-        [[nodiscard]] static Spatial::Size2D Size(Type type, String string);
+        [[nodiscard]] static Spatial::Size2D Size(Type type, String string, bool bold, bool italics);
     };
 
     template<>

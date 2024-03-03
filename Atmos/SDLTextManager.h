@@ -22,7 +22,6 @@ namespace Atmos::Render::SDL
         [[nodiscard]] static SDL_Surface* Surface(
             TTF_Font& font, const std::vector<String>& strings, const SDL_Color& color, Uint32 wrapWidth);
         [[nodiscard]] static TextData ExtractData(SDL_Surface& surface);
-        [[nodiscard]] static int StyleFrom(bool bold, bool italics);
         [[nodiscard]] static SDL_Color ColorFrom(const Color& color);
     };
 }

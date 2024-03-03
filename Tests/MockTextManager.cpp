@@ -3,7 +3,7 @@
 class MockFontAssetResource final : public Atmos::Asset::Resource::Font
 {
 public:
-    [[nodiscard]] Atmos::Spatial::Size2D Size(const Atmos::String& string) const override
+    [[nodiscard]] Atmos::Spatial::Size2D Size(const Atmos::String& string, bool bold, bool italics) const override
     {
         return {};
     }

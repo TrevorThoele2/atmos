@@ -44,9 +44,9 @@ namespace Atmos::Asset
         SetResource(std::move(set));
     }
 
-    Spatial::Size2D Font::Size(const String& string) const
+    Spatial::Size2D Font::Size(const String& string, bool bold, bool italics) const
     {
-        return ContainsResource() ? Resource()->Size(string) : Spatial::Size2D{};
+        return ContainsResource() ? Resource()->Size(string, bold, italics) : Spatial::Size2D{};
     }
 }
 

@@ -516,7 +516,8 @@ SCENARIO_METHOD(AngelScriptAssetTestsFixture, "running asset AngelScript scripts
                 "{\n" \
                 "    Atmos::Asset::FindByName<Atmos::Asset::Font> command(name);\n" \
                 "    auto asset = Arca::Reliquary::Do(command);\n" \
-                "    return Atmos::ToString(asset.Size(\"a\").width) + \" \" + Atmos::ToString(asset.Size(\"a\").height);\n" \
+                "    const auto size = asset.Size(\"a\", false, false);\n" \
+                "    return Atmos::ToString(size.width) + \" \" + Atmos::ToString(size.height);\n" \
                 "}",
                 { name },
                 *fieldReliquary);
@@ -529,7 +530,7 @@ SCENARIO_METHOD(AngelScriptAssetTestsFixture, "running asset AngelScript scripts
                 {
                     REQUIRE(finishes.size() == 1);
 
-                    const auto size = fontAsset->Size("a");
+                    const auto size = fontAsset->Size("a", false, false);
                     REQUIRE(std::get<String>(std::get<Variant>(finishes[0].result)) == Atmos::ToString(size.width) + " " + Atmos::ToString(size.height));
                 }
             }

@@ -13,7 +13,11 @@ namespace Atmos::Scripting::Angel
         ValueTypeRegistration<Type> registration(ContainingNamespace(), Name());
         RegisterArcaIndex(registration);
         registration
-            .ConstMethod(&Management::Method<&Size>, "Atmos::Spatial::Size2D", "Size", { "string value" })
+            .ConstMethod(
+                &Management::Method<&Size, &PullFromParameter<0, String>, &PullFromParameter<1, bool>, &PullFromParameter<2, bool>>,
+                "Atmos::Spatial::Size2D",
+                "Size",
+                { "string value", "bool bold", "bool italics" })
             .Actualize(engine, documentationManager);
 
         Registration<ArcaTraits<Asset::Font>>::RegisterTo(engine, documentationManager);
@@ -21,8 +25,8 @@ namespace Atmos::Scripting::Angel
         Registration<Asset::FindByName<Asset::Font>>::RegisterTo(engine, documentationManager);
     }
 
-    Spatial::Size2D Registration<Asset::Font>::Size(Type type, String string)
+    Spatial::Size2D Registration<Asset::Font>::Size(Type type, String string, bool bold, bool italics)
     {
-        return RequiredValue(type)->Size(string);
+        return RequiredValue(type)->Size(string, bold, italics);
     }
 }

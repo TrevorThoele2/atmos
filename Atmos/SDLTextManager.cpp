@@ -30,10 +30,8 @@ namespace Atmos::Render::SDL
                 throw GraphicsError("Font asset resource was not the correct type.");
 
             const auto sdlFont = sdlAsset->font;
-
-            const auto style = StyleFrom(bold, italics);
-            if (TTF_GetFontStyle(sdlFont) != style)
-                TTF_SetFontStyle(sdlFont, style);
+            
+            SetStyle(*sdlFont, Style(bold, italics));
 
             const auto useColor = ColorFrom(Color{ 255, 255, 255, 255 });
             const auto useWrapWidth = static_cast<Uint32>(wrapWidth);
@@ -120,16 +118,6 @@ namespace Atmos::Render::SDL
         };
 
         return { buffer, size };
-    }
-    
-    int TextManager::StyleFrom(bool bold, bool italics)
-    {
-        auto style = 0;
-        if (bold)
-            style |= TTF_STYLE_BOLD;
-        if (italics)
-            style |= TTF_STYLE_ITALIC;
-        return style;
     }
 
     SDL_Color TextManager::ColorFrom(const Color& color)
