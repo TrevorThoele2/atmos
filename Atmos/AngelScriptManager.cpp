@@ -79,8 +79,6 @@ namespace Atmos::Scripting::Angel
         }
         catch(...)
         {
-            auto test = std::current_exception();
-
             logger->Log(
                 "Compilation of script failed.",
                 Logging::Severity::Information,

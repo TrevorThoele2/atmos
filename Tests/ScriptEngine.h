@@ -23,9 +23,10 @@ public:
     MockGraphicsManager* mockGraphicsManager;
     MockTextManager* mockTextManager;
     Scripting::Angel::Manager* scriptManager;
-    MockWorldManager* mockWorldManager;
+    std::unique_ptr<MockWorldManager> mockWorldManager;
 
     ScriptEngine(Logging::Logger& logger);
+    ScriptEngine(ScriptEngine&& arg) noexcept = default;
 private:
     [[nodiscard]] InitializationProperties CreateInitializationProperties(Logging::Logger& logger);
 };

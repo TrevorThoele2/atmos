@@ -45,6 +45,7 @@ namespace Atmos::Scripting::Angel
             .CopyConstructor(&Management::GenerateValueFromCopy)
             .Destructor(&Management::DestructValue)
             .CopyAssignment(&Management::CopyAssign)
+            .Equals(&Management::Equals)
             .template Property<&Type::min>(typeString, "min")
             .template Property<&Type::max>(typeString, "max")
             .Actualize(engine, documentationManager);

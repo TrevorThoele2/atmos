@@ -23,9 +23,10 @@ public:
     MockGraphicsManager* mockGraphicsManager;
     MockTextManager* mockTextManager;
     MockScriptManager* mockScriptManager;
-    World::RealManager* worldManager;
+    std::unique_ptr<World::RealManager> worldManager;
 
     DerivedEngine(Logging::Logger& logger);
+    DerivedEngine(DerivedEngine&& arg) noexcept = default;
 private:
     [[nodiscard]] InitializationProperties CreateInitializationProperties(Logging::Logger& logger);
 };

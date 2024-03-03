@@ -9,8 +9,8 @@ public:
 
     std::vector<Atmos::Property> properties;
 public:
-    void LockIn(
-        std::unique_ptr<Arca::Reliquary>&& reliquary, Inscription::LoadAssetsUserContext& loadAssetsUserContext) override;
+    void LockIn() override;
+    [[nodiscard]] bool WillLockIn() const override;
 
     void Request(Atmos::World::FieldID id) override;
     void Request(const Atmos::World::FieldDestination& request) override;

@@ -25,6 +25,7 @@ namespace Atmos
         using InitializationProperties = EngineInitializationProperties;
 
         Engine(InitializationProperties&& initializationProperties, Logging::Logger& logger);
+        Engine(Engine&& arg) noexcept = default;
     private:
         using Execution = EngineExecution;
         using ExecutionPtr = std::unique_ptr<Execution>;
