@@ -5,7 +5,7 @@
 int (WINAPIV * __vsnprintf)(char *, size_t, const char*, va_list) = _vsnprintf;
 #pragma comment(lib, "dxerr.lib")
 
-#include "DirectX9Renderer2D.h"
+#include "DirectX9Renderer.h"
 #include "DirectX9Data.h"
 #include "DirectX9Utilities.h"
 
@@ -31,7 +31,7 @@ namespace Atmos::Render::DirectX9
     ) :
         Render::GraphicsManager(reliquary),
         hwnd(hwnd),
-        renderer2D(std::make_unique<Renderer2D>(reliquary)),
+        renderer(std::make_unique<Renderer>(reliquary)),
         timeSettings(reliquary)
     {
         ZeroMemory(&presentationParameters, sizeof presentationParameters);
@@ -45,8 +45,7 @@ namespace Atmos::Render::DirectX9
 
         CreateDevice();
 
-        renderer2D->Initialize(*this, device);
-        D3DXCreateLine(device, &lineInterface);
+        renderer->Initialize(*this, device);
 
         SetRenderStates();
 
@@ -57,7 +56,6 @@ namespace Atmos::Render::DirectX9
     {
         d3d->Release();
         device->Release();
-        lineInterface->Release();
     }
 
     void GraphicsManager::SetFullscreen(bool set)
@@ -93,7 +91,7 @@ namespace Atmos::Render::DirectX9
 
     void GraphicsManager::Flush()
     {
-        renderer2D->Flush(projection);
+        renderer->Flush(projection);
     }
 
     void GraphicsManager::SetRenderState(RenderState state, bool set)
@@ -124,29 +122,32 @@ namespace Atmos::Render::DirectX9
         return true;
     }
 
-    void GraphicsManager::End()
+    void GraphicsManager::Stop()
     {
         device->EndScene();
     }
 
-    void GraphicsManager::StartSprites(size_t spriteCount)
+    void GraphicsManager::StartObjects(size_t spriteCount)
     {
-        renderer2D->Start(spriteCount);
+        renderer->StartObjects(spriteCount);
     }
 
-    void GraphicsManager::EndSprites()
+    void GraphicsManager::StopObjects()
     {
-        renderer2D->Stop(&projection);
+        if (projection)
+            renderer->Flush(projection);
+
+        renderer->StopObjects();
     }
 
     void GraphicsManager::StartLines()
     {
-        lineInterface->Begin();
+        renderer->StartLines();
     }
 
-    void GraphicsManager::EndLines()
+    void GraphicsManager::StopLines()
     {
-        lineInterface->End();
+        renderer->StopLines();
     }
 
     void GraphicsManager::StartStencil()
@@ -170,7 +171,7 @@ namespace Atmos::Render::DirectX9
         device->SetRenderState(D3DRS_STENCILWRITEMASK, 0);
     }
 
-    LPDIRECT3DDEVICE9& GraphicsManager::GetDevice()
+    LPDIRECT3DDEVICE9& GraphicsManager::Device()
     {
         return device;
     }
@@ -190,9 +191,9 @@ namespace Atmos::Render::DirectX9
         const Color& color
     ) const {
         if (!shader)
-            shader = renderer2D->DefaultTexturedImageViewShader();
+            shader = renderer->DefaultTexturedImageViewShader();
 
-        renderer2D->Draw(tex, &*shader, X, Y, Z, imageBounds, size, center, scalers, rotation, color);
+        renderer->Draw(tex, &*shader, X, Y, Z, imageBounds, size, center, scalers, rotation, color);
     }
 
     void GraphicsManager::CreateDevice()
@@ -216,12 +217,7 @@ namespace Atmos::Render::DirectX9
         SetupPresentationParameters();
 
         // Destroy interfaces
-        renderer2D->OnLostDevice();
-
-        LogIfError(
-            lineInterface->OnLostDevice(),
-            "The DirectX line interface was not able to be released.",
-            Logging::Severity::SevereError);
+        renderer->OnLostDevice();
 
         // Reset
         {
@@ -236,11 +232,7 @@ namespace Atmos::Render::DirectX9
         }
 
         // Recreate interfaces
-        renderer2D->OnResetDevice();
-        LogIfError(
-            lineInterface->OnResetDevice(),
-            "The DirectX line interface was not able to be reset.",
-            Logging::Severity::SevereError);
+        renderer->OnResetDevice();
 
         // Reset render states
         SetRenderStates();
@@ -542,7 +534,7 @@ namespace Atmos::Render::DirectX9
         RenderObject
         (
             canvasRender.canvas.GetData<CanvasData>()->tex,
-            renderer2D->DefaultTexturedImageViewShader(),
+            renderer->DefaultTexturedImageViewShader(),
             position.x,
             position.y,
             position.z,
@@ -557,20 +549,7 @@ namespace Atmos::Render::DirectX9
 
     void GraphicsManager::RenderLineImpl(const Line& line)
     {
-        if (line.width != lineInterface->GetWidth())
-        {
-            EndLines();
-            lineInterface->SetWidth(line.width);
-            StartLines();
-        }
-
-        D3DXVECTOR2 points[] =
-        {
-            D3DXVECTOR2(static_cast<float>(line.from.x), static_cast<float>(line.from.y)),
-            D3DXVECTOR2(static_cast<float>(line.to.x), static_cast<float>(line.to.y))
-        };
-        lineInterface->SetWidth(line.width);
-        lineInterface->Draw(points, 2, ColorToD3D(line.color));
+        renderer->Draw(line.from, line.to, line.width, line.color);
     }
 
     void GraphicsManager::SetupPresentationParameters()
@@ -581,9 +560,9 @@ namespace Atmos::Render::DirectX9
         presentationParameters.MultiSampleType = D3DMULTISAMPLE_NONE;
         presentationParameters.MultiSampleQuality = 0;
 
-        presentationParameters.PresentationInterval = timeSettings->verticalSync ?
-            D3DPRESENT_INTERVAL_DEFAULT :
-            D3DPRESENT_INTERVAL_IMMEDIATE;
+        presentationParameters.PresentationInterval = timeSettings->verticalSync
+            ? D3DPRESENT_INTERVAL_DEFAULT
+            : D3DPRESENT_INTERVAL_IMMEDIATE;
     }
 
     void GraphicsManager::SetRenderStates() const

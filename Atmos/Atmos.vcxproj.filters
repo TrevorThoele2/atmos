@@ -342,6 +342,12 @@
     <Filter Include="Source Files\Environment">
       <UniqueIdentifier>{c1ef003e-1d21-411c-a0b2-4094a426a84e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Render\Line">
+      <UniqueIdentifier>{d8ea8f81-c378-4207-962c-71362ea8727c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Render\Line">
+      <UniqueIdentifier>{3a4cef86-3e3d-432c-afc2-251ccc4dc8d7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FieldDestination.h">
@@ -709,9 +715,6 @@
     </ClInclude>
     <ClInclude Include="Stopwatch.h">
       <Filter>Header Files\Time\Stopwatch</Filter>
-    </ClInclude>
-    <ClInclude Include="Line.h">
-      <Filter>Header Files\Render</Filter>
     </ClInclude>
     <ClInclude Include="Color.h">
       <Filter>Header Files\Render</Filter>
@@ -1097,9 +1100,6 @@
     <ClInclude Include="Environment.h">
       <Filter>Header Files\Environment</Filter>
     </ClInclude>
-    <ClInclude Include="DirectX9Renderer2D.h">
-      <Filter>Header Files\Render\DirectX9</Filter>
-    </ClInclude>
     <ClInclude Include="UniqueProviderRelic.h">
       <Filter>Header Files\Provider</Filter>
     </ClInclude>
@@ -1117,6 +1117,12 @@
     </ClInclude>
     <ClInclude Include="LoggingSeverity.h">
       <Filter>Header Files\Logging</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectX9Renderer.h">
+      <Filter>Header Files\Render\DirectX9</Filter>
+    </ClInclude>
+    <ClInclude Include="Line.h">
+      <Filter>Header Files\Render\Line</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1332,9 +1338,6 @@
     </ClCompile>
     <ClCompile Include="Stopwatch.cpp">
       <Filter>Source Files\Time\Stopwatch</Filter>
-    </ClCompile>
-    <ClCompile Include="Line.cpp">
-      <Filter>Source Files\Render</Filter>
     </ClCompile>
     <ClCompile Include="Color.cpp">
       <Filter>Source Files\Render</Filter>
@@ -1585,11 +1588,14 @@
     <ClCompile Include="Environment.cpp">
       <Filter>Source Files\Environment</Filter>
     </ClCompile>
-    <ClCompile Include="DirectX9Renderer2D.cpp">
-      <Filter>Source Files\Render\DirectX9</Filter>
-    </ClCompile>
     <ClCompile Include="LoggingCurator.cpp">
       <Filter>Source Files\Logging</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectX9Renderer.cpp">
+      <Filter>Source Files\Render\DirectX9</Filter>
+    </ClCompile>
+    <ClCompile Include="Line.cpp">
+      <Filter>Source Files\Render\Line</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

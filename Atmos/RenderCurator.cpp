@@ -26,11 +26,10 @@ namespace Atmos::Render
             return;
         }
 
-        useGraphics.StartSprites();
-        {
-            using Target = GraphicsManager::Target;
-            useGraphics.ClearTarget(Flags<Target>({ Target::Main }), Color(0, 255, 0, 0));
-        }
+        useGraphics.StartObjects();
+        useGraphics.ClearTarget(
+            Flags<GraphicsManager::Target>({ GraphicsManager::Target::Main }),
+            Color(0, 255, 0, 0));
 
         if (flags.Get(Flag::Draw))
         {
@@ -39,9 +38,9 @@ namespace Atmos::Render
 
         useGraphics.Flush();
 
-        useGraphics.EndSprites();
+        useGraphics.StopObjects();
 
-        useGraphics.End();
+        useGraphics.Stop();
         useGraphics.Present();
 
         debugStatistics->profilers.render.Calculate();

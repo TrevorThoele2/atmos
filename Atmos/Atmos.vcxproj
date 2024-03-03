@@ -35,7 +35,7 @@
     <ClInclude Include="ActionPressed.h" />
     <ClInclude Include="DirectX9Data.h" />
     <ClInclude Include="DirectX9Includes.h" />
-    <ClInclude Include="DirectX9Renderer2D.h" />
+    <ClInclude Include="DirectX9Renderer.h" />
     <ClInclude Include="DirectX9Utilities.h" />
     <ClInclude Include="Environment.h" />
     <ClInclude Include="Field.h" />
@@ -294,7 +294,7 @@
     <ClCompile Include="CanvasViewCurator.cpp" />
     <ClCompile Include="DebugStatistics.cpp" />
     <ClCompile Include="DirectX9Data.cpp" />
-    <ClCompile Include="DirectX9Renderer2D.cpp" />
+    <ClCompile Include="DirectX9Renderer.cpp" />
     <ClCompile Include="DirectX9Utilities.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="Environment.cpp" />
