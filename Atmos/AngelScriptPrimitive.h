@@ -3,6 +3,7 @@
 #include <angelscript.h>
 #include "AngelScriptRegistration.h"
 #include "String.h"
+#include <vector>
 
 namespace Atmos::Scripting::Angel
 {

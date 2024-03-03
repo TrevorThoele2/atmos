@@ -4,7 +4,6 @@
 #include "EngineExecution.h"
 
 #include "WorldManager.h"
-
 #include "Logger.h"
 
 namespace Atmos
@@ -43,7 +42,7 @@ namespace Atmos
             std::unique_ptr<World::Manager> world;
         };
         Managers managers;
-    private:
+
         Logging::Logger* logger;
     };
 }

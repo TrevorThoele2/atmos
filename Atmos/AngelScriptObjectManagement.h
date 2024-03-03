@@ -815,7 +815,8 @@ namespace Atmos::Scripting::Angel
     void ObjectManagement<T>::RequiredSpecializationTemplateCallback(asIScriptGeneric* generic)
     {
         const auto typeInfo = PullFromParameter<0, asITypeInfo*>(*generic);
-        const auto subTypeInfo = generic->GetEngine()->GetTypeInfoById(typeInfo->GetSubTypeId());
+        const auto subTypeID = typeInfo->GetSubTypeId();
+        const auto subTypeInfo = generic->GetEngine()->GetTypeInfoById(subTypeID);
         const auto subTypeName = CreateName({ subTypeInfo->GetNamespace() }, subTypeInfo->GetName());
 
         auto userData = UserData::RequiredFrom(*generic);

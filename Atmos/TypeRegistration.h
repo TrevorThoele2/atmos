@@ -117,4 +117,9 @@ namespace Atmos
     {
         void RegisterTypes(Arca::ReliquaryOrigin& origin);
     }
+
+    namespace Random
+    {
+        void RegisterTypes(Arca::ReliquaryOrigin& origin);
+    }
 }

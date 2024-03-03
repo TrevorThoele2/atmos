@@ -17,6 +17,7 @@
 #include "AngelScriptArcaAssign.h"
 #include "AngelScriptOpenRelic.h"
 
+#include "AngelScriptRange.h"
 #include "AngelScriptVariant.h"
 #include "AngelScriptProperty.h"
 #include "AngelScriptStringUtility.h"
@@ -97,6 +98,8 @@
 #include "AngelScriptModifyWorldProperties.h"
 #include "AngelScriptRetrieveWorldProperties.h"
 
+#include "AngelScriptGenerateRandomNumber.h"
+
 namespace Atmos::Scripting::Angel
 {
     class RegistrationHandler
@@ -152,6 +155,16 @@ namespace Atmos::Scripting::Angel
                 .Register<GenericArcaDestroyingKnown>()
                 .Register<Arca::OpenRelic>()
 
+                .Register<Range<std::int8_t>>()
+                .Register<Range<std::int16_t>>()
+                .Register<Range<std::int32_t>>()
+                .Register<Range<std::int64_t>>()
+                .Register<Range<std::uint8_t>>()
+                .Register<Range<std::uint16_t>>()
+                .Register<Range<std::uint32_t>>()
+                .Register<Range<std::uint64_t>>()
+                .Register<Range<float>>()
+                .Register<Range<double>>()
                 .Register<Variant>()
                 .Register<Property>()
                 .Register<StringUtility>()
@@ -283,7 +296,19 @@ namespace Atmos::Scripting::Angel
 
                 .Register<World::RequestField>()
                 .Register<World::ModifyProperties>()
-                .Register<World::RetrieveProperties>();
+                .Register<World::RetrieveProperties>()
+
+                .Register<Random::GenerateBool>()
+                .Register<Random::GenerateNumber<std::int8_t>>()
+                .Register<Random::GenerateNumber<std::int16_t>>()
+                .Register<Random::GenerateNumber<std::int32_t>>()
+                .Register<Random::GenerateNumber<std::int64_t>>()
+                .Register<Random::GenerateNumber<std::uint8_t>>()
+                .Register<Random::GenerateNumber<std::uint16_t>>()
+                .Register<Random::GenerateNumber<std::uint32_t>>()
+                .Register<Random::GenerateNumber<std::uint64_t>>()
+                .Register<Random::GenerateNumber<float>>()
+                .Register<Random::GenerateNumber<double>>();
         }
     }
 }

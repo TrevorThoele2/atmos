@@ -145,6 +145,9 @@
     <ClCompile Include="MockWorldManager.cpp">
       <Filter>Source Files\Objects</Filter>
     </ClCompile>
+    <ClCompile Include="AngelScriptRandomTests.cpp">
+      <Filter>Source Files\Tests\AngelScript\Random</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneralFixture.h">
@@ -300,6 +303,9 @@
     <ClInclude Include="MockWorldManager.h">
       <Filter>Header Files\Objects</Filter>
     </ClInclude>
+    <ClInclude Include="AngelScriptRandomTests.h">
+      <Filter>Header Files\Tests\AngelScript\Random</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">
@@ -439,6 +445,12 @@
     </Filter>
     <Filter Include="Source Files\Tests\AngelScript\World">
       <UniqueIdentifier>{b9f146c1-33e9-4c1e-9e4b-02e3b4a2d18b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Tests\AngelScript\Random">
+      <UniqueIdentifier>{ff70b359-fbf0-4f61-82a8-c9f8147f360b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Tests\AngelScript\Random">
+      <UniqueIdentifier>{621017e4-cf32-4ac8-a300-b7622366c132}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
