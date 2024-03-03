@@ -32,7 +32,7 @@ namespace Arca
     struct Traits<::Atmos::Time::FrameStopwatch>
     {
         static const ObjectType objectType = ObjectType::Relic;
-        static inline const TypeName typeName = "FrameStopwatch";
+        static inline const TypeName typeName = "Atmos::Time::FrameStopwatch";
     };
 }
 

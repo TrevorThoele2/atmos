@@ -97,6 +97,11 @@ namespace Atmos::Render::Resource::Vulkan
         renderer->StageRender(lineRender);
     }
 
+    void Surface::StageRender(const RegionRender& regionRender)
+    {
+        renderer->StageRender(regionRender);
+    }
+
     void Surface::DrawFrame(Arca::Reliquary& reliquary, const Color& backgroundColor)
     {
         renderer->DrawFrame(reliquary, Size());

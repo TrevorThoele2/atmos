@@ -49,6 +49,10 @@
     <ClInclude Include="CreateImageAssetResource.h" />
     <ClInclude Include="LoadAsset.h" />
     <ClInclude Include="PruneGraphicsResources.h" />
+    <ClInclude Include="Region.h" />
+    <ClInclude Include="RegionCurator.h" />
+    <ClInclude Include="RegionRender.h" />
+    <ClInclude Include="RotateBounds.h" />
     <ClInclude Include="SetupMainSurfaceResource.h" />
     <ClInclude Include="ExternalManagers.h" />
     <ClInclude Include="FreeImageIncludes.h" />
@@ -58,6 +62,8 @@
     <ClInclude Include="ImageAssetSize.h" />
     <ClInclude Include="InitializeGraphics.h" />
     <ClInclude Include="SetFullscreen.h" />
+    <ClInclude Include="VulkanKeyedDescriptorSetGroup.h" />
+    <ClInclude Include="VulkanRegionRenderer.h" />
     <ClInclude Include="VulkanRendererCore.h" />
     <ClInclude Include="VulkanRendererInterface.h" />
     <ClInclude Include="VulkanCombinedImageSamplerDescriptor.h" />
@@ -200,9 +206,6 @@
     <ClInclude Include="AngelScriptUserData.h" />
     <ClInclude Include="AngelScriptUtility.h" />
     <ClInclude Include="Angle.h" />
-    <ClInclude Include="AngleConversion.h" />
-    <ClInclude Include="AngleUnits.h" />
-    <ClInclude Include="AngleUnitsTypeValidation.h" />
     <ClInclude Include="AssetCurator.h" />
     <ClInclude Include="AudioAssetInstance.h" />
     <ClInclude Include="AxisAlignedBox3D.h" />
@@ -211,7 +214,6 @@
     <ClInclude Include="CameraCurator.h" />
     <ClInclude Include="ContainerUtility.h" />
     <ClInclude Include="DebugStatisticsCurator.h" />
-    <ClInclude Include="Degrees.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="EngineExecution.h" />
     <ClInclude Include="NullFileManager.h" />
@@ -273,7 +275,6 @@
     <ClInclude Include="ScriptController.h" />
     <ClInclude Include="ScriptInstance.h" />
     <ClInclude Include="NullInputManager.h" />
-    <ClInclude Include="Radians.h" />
     <ClInclude Include="Line2D.h" />
     <ClInclude Include="Line3D.h" />
     <ClInclude Include="MaterialAssetCurator.h" />
@@ -386,6 +387,8 @@
     <ClCompile Include="BoundsCurator.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="ChangeSurfaceBackgroundColor.cpp" />
+    <ClCompile Include="Region.cpp" />
+    <ClCompile Include="RegionCurator.cpp" />
     <ClCompile Include="VulkanCombinedImageSamplerDescriptor.cpp" />
     <ClCompile Include="GlobalInitializer.cpp" />
     <ClCompile Include="ImageAssetCurator.cpp" />
@@ -393,9 +396,11 @@
     <ClCompile Include="VulkanCommandBufferGroup.cpp" />
     <ClCompile Include="VulkanDebug.cpp" />
     <ClCompile Include="VulkanDescriptorSetGroup.cpp" />
+    <ClCompile Include="VulkanDiscriminatedDescriptorSetGroup.cpp" />
     <ClCompile Include="VulkanImage.cpp" />
     <ClCompile Include="VulkanLineRenderer.cpp" />
     <ClCompile Include="VulkanQuadRenderer.cpp" />
+    <ClCompile Include="VulkanRegionRenderer.cpp" />
     <ClCompile Include="VulkanRendererInterface.cpp" />
     <ClCompile Include="VulkanUniformBufferDescriptor.cpp" />
     <ClCompile Include="VulkanCreateImageView.cpp" />
@@ -454,13 +459,10 @@
     <ClCompile Include="AngelScriptReferenceCounted.cpp" />
     <ClCompile Include="AngelScriptTile.cpp" />
     <ClCompile Include="AngelScriptUtility.cpp" />
-    <ClCompile Include="Angle.cpp" />
-    <ClCompile Include="AngleConversion.cpp" />
     <ClCompile Include="AudioAssetInstance.cpp" />
     <ClCompile Include="AxisAlignedBox3D.cpp" />
     <ClCompile Include="CameraCurator.cpp" />
     <ClCompile Include="DebugStatisticsCurator.cpp" />
-    <ClCompile Include="Degrees.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="EngineExecution.cpp" />
     <ClCompile Include="AnyEventConnection.cpp" />
@@ -528,7 +530,6 @@
     <ClCompile Include="SoundCurator.cpp" />
     <ClCompile Include="StateCurator.cpp" />
     <ClCompile Include="Variant.cpp" />
-    <ClCompile Include="Radians.cpp" />
     <ClCompile Include="Line2D.cpp" />
     <ClCompile Include="Line3D.cpp" />
     <ClCompile Include="Percentage.cpp" />

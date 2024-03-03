@@ -30,6 +30,6 @@ namespace Arca
     struct Traits<Atmos::Logging::Log>
     {
         static const ObjectType objectType = ObjectType::Command;
-        static inline const TypeName typeName = "Log";
+        static inline const TypeName typeName = "Atmos::Logging::Log";
     };
 }

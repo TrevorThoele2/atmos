@@ -23,7 +23,7 @@ namespace Arca
     struct Traits<Atmos::World::CurrentFieldCurator>
     {
         static const ObjectType objectType = ObjectType::Curator;
-        static inline const TypeName typeName = "CurrentFieldCurator";
+        static inline const TypeName typeName = "Atmos::World::CurrentFieldCurator";
     };
 }
 

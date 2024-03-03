@@ -1,5 +1,5 @@
 #include "Vector3D.h"
-#include "Math.h"
+#include <cmath>
 
 namespace Atmos
 {
@@ -28,7 +28,7 @@ namespace Atmos
     Angle Vector3D::Angle(const Vector3D& other) const
     {
         // Angle = arccos(dot product / (magnitude1 * magnitude2))
-        return ::Atmos::Angle(Radians(std::acos(Dot(other) / (Length() * other.Length()))));
+        return std::acos(Dot(other) / (Length() * other.Length()));
     }
 
     Vector3D::Value Vector3D::Dot(const Vector3D& other) const

@@ -17,6 +17,6 @@ namespace Arca
     struct Traits<Atmos::Script::ForceQuit>
     {
         static const ObjectType objectType = ObjectType::Command;
-        static inline const TypeName typeName = "ScriptForceQuit";
+        static inline const TypeName typeName = "Atmos::Script::ForceQuit";
     };
 }

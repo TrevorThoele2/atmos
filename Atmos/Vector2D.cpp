@@ -25,7 +25,7 @@ namespace Atmos
 
     Angle Vector2D::Angle(const Vector2D& other) const
     {
-        return ::Atmos::Angle(Radians(std::atan2(y, x)));
+        return ::Atmos::Angle(std::atan2(y, x));
     }
 
     Vector2D::Value Vector2D::Dot(const Vector2D& other) const

@@ -127,7 +127,7 @@ namespace Atmos::Render::DirectX9
                 0.0f,
                 &scalingVector,
                 &centerVector,
-                rotation.As<Radians>(),
+                rotation,
                 &positionVector);
         }
 

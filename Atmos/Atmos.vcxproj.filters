@@ -426,6 +426,12 @@
     <Filter Include="Source Files\Render\Vulkan\Resource">
       <UniqueIdentifier>{4aeba525-17c5-415f-8a91-25fa5d9248d2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Render\Region">
+      <UniqueIdentifier>{06415266-1757-446f-8602-003550936030}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Render\Region">
+      <UniqueIdentifier>{94a2943f-f9aa-4f8d-8bcb-1f31e1338fc6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FieldDestination.h">
@@ -732,21 +738,6 @@
       <Filter>Header Files\Position\Screen</Filter>
     </ClInclude>
     <ClInclude Include="Angle.h">
-      <Filter>Header Files\Position\Direction</Filter>
-    </ClInclude>
-    <ClInclude Include="AngleConversion.h">
-      <Filter>Header Files\Position\Direction</Filter>
-    </ClInclude>
-    <ClInclude Include="AngleUnits.h">
-      <Filter>Header Files\Position\Direction</Filter>
-    </ClInclude>
-    <ClInclude Include="AngleUnitsTypeValidation.h">
-      <Filter>Header Files\Position\Direction</Filter>
-    </ClInclude>
-    <ClInclude Include="Degrees.h">
-      <Filter>Header Files\Position\Direction</Filter>
-    </ClInclude>
-    <ClInclude Include="Radians.h">
       <Filter>Header Files\Position\Direction</Filter>
     </ClInclude>
     <ClInclude Include="Direction.h">
@@ -1466,6 +1457,24 @@
     <ClInclude Include="VulkanCommandBufferGroup.h">
       <Filter>Header Files\Render\Vulkan\Commands</Filter>
     </ClInclude>
+    <ClInclude Include="RotateBounds.h">
+      <Filter>Header Files\Position\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Region.h">
+      <Filter>Header Files\Render\Region</Filter>
+    </ClInclude>
+    <ClInclude Include="RegionCurator.h">
+      <Filter>Header Files\Render\Region</Filter>
+    </ClInclude>
+    <ClInclude Include="RegionRender.h">
+      <Filter>Header Files\Render\Region</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanRegionRenderer.h">
+      <Filter>Header Files\Render\Vulkan\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanKeyedDescriptorSetGroup.h">
+      <Filter>Header Files\Render\Vulkan\Descriptors</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FieldDestination.cpp">
@@ -1645,19 +1654,7 @@
     <ClCompile Include="ScreenPosition.cpp">
       <Filter>Source Files\Position\Screen</Filter>
     </ClCompile>
-    <ClCompile Include="Angle.cpp">
-      <Filter>Source Files\Position\Direction</Filter>
-    </ClCompile>
-    <ClCompile Include="AngleConversion.cpp">
-      <Filter>Source Files\Position\Direction</Filter>
-    </ClCompile>
-    <ClCompile Include="Degrees.cpp">
-      <Filter>Source Files\Position\Direction</Filter>
-    </ClCompile>
     <ClCompile Include="Direction.cpp">
-      <Filter>Source Files\Position\Direction</Filter>
-    </ClCompile>
-    <ClCompile Include="Radians.cpp">
       <Filter>Source Files\Position\Direction</Filter>
     </ClCompile>
     <ClCompile Include="EngineNotSetup.cpp">
@@ -2094,6 +2091,18 @@
     </ClCompile>
     <ClCompile Include="VulkanShaderAssetResource.cpp">
       <Filter>Source Files\Render\Vulkan\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Region.cpp">
+      <Filter>Source Files\Render\Region</Filter>
+    </ClCompile>
+    <ClCompile Include="RegionCurator.cpp">
+      <Filter>Source Files\Render\Region</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanRegionRenderer.cpp">
+      <Filter>Source Files\Render\Vulkan\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanDiscriminatedDescriptorSetGroup.cpp">
+      <Filter>Source Files\Render\Vulkan\Descriptors</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

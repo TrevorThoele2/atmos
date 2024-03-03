@@ -39,7 +39,7 @@ namespace Atmos
 
     ::Atmos::Angle Line2D::Angle() const
     {
-        return ::Atmos::Angle(Radians(std::atan2(DeltaY(), DeltaX())));
+        return ::Atmos::Angle(std::atan2(DeltaY(), DeltaX()));
     }
 
     ::Atmos::Angle Line2D::Angle(const Line2D& other) const

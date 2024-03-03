@@ -18,7 +18,8 @@ namespace Atmos::Render
             Arca::Index<Asset::Material> material,
             const Render::Color& color,
             const Position3D& position,
-            const Scalers2D& scalers);
+            const Scalers2D& scalers,
+            const Angle& rotation);
     private:
         INSCRIPTION_ACCESS;
     };
@@ -30,7 +31,7 @@ namespace Arca
     struct Traits<Atmos::Render::StaticImage>
     {
         static const ObjectType objectType = ObjectType::Relic;
-        static inline const TypeName typeName = "StaticImage";
+        static inline const TypeName typeName = "Atmos::Render::StaticImage";
     };
 }
 

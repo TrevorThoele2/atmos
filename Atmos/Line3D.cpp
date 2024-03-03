@@ -33,7 +33,7 @@ namespace Atmos
     Angle Line3D::Angle(const Line3D& other) const
     {
         // Angle = arccos(dot product / (magnitude1 * magnitude2))
-        return ::Atmos::Angle(Radians(std::acos(Dot(other) / ( Length() * other.Length()))));
+        return std::acos(Dot(other) / ( Length() * other.Length()));
     }
 
     Position3D::Value Line3D::Dot(const Line3D& other) const

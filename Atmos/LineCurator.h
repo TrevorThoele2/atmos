@@ -19,16 +19,16 @@ namespace Atmos::Render
     public:
         void Handle(const MoveLine& command);
     private:
-        using LineIndex = Arca::Index<Line>;
-        Grid::Octree<Arca::RelicID, LineIndex> octree;
+        using Index = Arca::Index<Line>;
+        Grid::Octree<Arca::RelicID, Index> octree;
 
         Arca::Index<Camera> camera;
     private:
-        void OnLineCreated(const Arca::CreatedKnown<Line>& line);
-        void OnLineDestroying(const Arca::DestroyingKnown<Line>& line);
+        void OnCreated(const Arca::CreatedKnown<Line>& signal);
+        void OnDestroying(const Arca::DestroyingKnown<Line>& signal);
     private:
         static AxisAlignedBox3D BoxFor(const std::vector<Position2D>& points, Position2D::Value z);
-        static AxisAlignedBox3D BoxFor(const LineIndex& line);
+        static AxisAlignedBox3D BoxFor(const Index& index);
     };
 }
 
@@ -38,7 +38,7 @@ namespace Arca
     struct Traits<Atmos::Render::LineCurator>
     {
         static const ObjectType objectType = ObjectType::Curator;
-        static inline const TypeName typeName = "LineCurator";
+        static inline const TypeName typeName = "Atmos::Render::LineCurator";
     };
 }
 

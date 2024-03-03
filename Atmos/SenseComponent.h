@@ -33,7 +33,7 @@ namespace Arca
     struct Traits<::Atmos::Entity::SenseComponent>
     {
         static const ObjectType objectType = ObjectType::Shard;
-        static inline const TypeName typeName = "SenseComponent";
+        static inline const TypeName typeName = "Atmos::Entity::SenseComponent";
     };
 }
 

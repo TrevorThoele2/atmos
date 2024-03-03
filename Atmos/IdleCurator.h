@@ -27,6 +27,6 @@ namespace Arca
     struct Traits<Atmos::Time::IdleCurator>
     {
         static const ObjectType objectType = ObjectType::Curator;
-        static inline TypeName typeName = "IdleCurator";
+        static inline TypeName typeName = "Atmos::Time::IdleCurator";
     };
 }

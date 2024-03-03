@@ -63,7 +63,7 @@ namespace Arca
     struct Traits<::Atmos::Entity::GeneralComponent>
     {
         static const ObjectType objectType = ObjectType::Shard;
-        static inline const TypeName typeName = "GeneralComponent";
+        static inline const TypeName typeName = "Atmos::Entity::GeneralComponent";
     };
 }
 

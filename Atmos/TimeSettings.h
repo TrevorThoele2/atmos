@@ -27,7 +27,7 @@ namespace Arca
     struct Traits<::Atmos::Time::Settings>
     {
         static const ObjectType objectType = ObjectType::Relic;
-        static inline const TypeName typeName = "TimeSettings";
+        static inline const TypeName typeName = "Atmos::Time::Settings";
         static const Locality locality = Locality::Global;
     };
 }

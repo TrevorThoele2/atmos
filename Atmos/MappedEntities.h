@@ -23,7 +23,7 @@ namespace Arca
     struct Traits<Atmos::Entity::MappedEntities>
     {
         static const ObjectType objectType = ObjectType::Relic;
-        static inline const TypeName typeName = "MappedEntities";
+        static inline const TypeName typeName = "Atmos::Entity::MappedEntities";
         static const Locality locality = Locality::Global;
     };
 }

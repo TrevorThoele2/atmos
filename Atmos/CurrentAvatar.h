@@ -21,7 +21,7 @@ namespace Arca
     struct Traits<Atmos::Entity::CurrentAvatar>
     {
         static const ObjectType objectType = ObjectType::Relic;
-        static inline const TypeName typeName = "CurrentAvatar";
+        static inline const TypeName typeName = "Atmos::Entity::CurrentAvatar";
         static const Locality locality = Locality::Global;
     };
 }

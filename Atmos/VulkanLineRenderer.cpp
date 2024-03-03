@@ -33,7 +33,8 @@ namespace Atmos::Render::Vulkan
                 }
             },
             vk::PrimitiveTopology::eLineList,
-            Asset::MaterialType::Line),
+            Asset::MaterialType::Line,
+            LineWidth(0)),
         graphicsQueue(graphicsQueue),
         commandBuffers(*device, graphicsQueueIndex),
         device(device)
@@ -63,7 +64,6 @@ namespace Atmos::Render::Vulkan
             context = &core.AddContext(lineRender.z, Context{});
         auto& group = context->GroupFor(*lineRender.material);
         group.ListFor(lineRender.width).emplace_back(points);
-        core.AddDiscriminator(lineRender.width);
     }
 
     void LineRenderer::Start(const std::vector<const Asset::Material*>& materials, vk::CommandBuffer commandBuffer)
@@ -176,9 +176,9 @@ namespace Atmos::Render::Vulkan
         commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, pipeline.value.get());
 
         auto currentDescriptorSet = core.DiscriminatedDescriptorSetFor(
-            [width, currentImage](const Core::DiscriminatedDescriptorSet& descriptorSet)
+            [currentImage](const Core::DiscriminatedDescriptorSet& descriptorSet)
             {
-                return width == descriptorSet.discriminator && currentImage == descriptorSet.imageIndex;
+                return currentImage == descriptorSet.imageIndex;
             })->descriptorSet;
         commandBuffer.bindDescriptorSets(
             vk::PipelineBindPoint::eGraphics,

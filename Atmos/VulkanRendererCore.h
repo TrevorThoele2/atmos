@@ -39,7 +39,8 @@ namespace Atmos::Render::Vulkan
             VertexInput vertexInput,
             const std::vector<DescriptorSetGroup::Definition>& descriptorSetGroupDefinitions,
             vk::PrimitiveTopology primitiveTopology,
-            Asset::MaterialType materialAssetType);
+            Asset::MaterialType materialAssetType,
+            std::optional<Discriminator> onlyDiscrimination = {});
 
         void Initialize(uint32_t swapchainImageCount, vk::RenderPass renderPass, vk::Extent2D extent);
     public:
@@ -79,6 +80,8 @@ namespace Atmos::Render::Vulkan
         std::optional<DescriptorSetGroup> descriptorSets;
         std::vector<DiscriminatedDescriptorSet> discriminatedDescriptorSets;
 
+        std::optional<Discriminator> onlyDiscrimination;
+
         template<class SetupDiscrimination>
         void SetupDiscriminatedDescriptorSet(SetupDiscrimination setupDiscrimination);
     private:
@@ -117,9 +120,11 @@ namespace Atmos::Render::Vulkan
         VertexInput vertexInput,
         const std::vector<DescriptorSetGroup::Definition>& descriptorSetGroupDefinitions,
         vk::PrimitiveTopology primitiveTopology,
-        Asset::MaterialType materialAssetType)
+        Asset::MaterialType materialAssetType,
+        std::optional<Discriminator> onlyDiscrimination)
         :
         descriptorSetGroupDefinitions(descriptorSetGroupDefinitions),
+        onlyDiscrimination(onlyDiscrimination),
         vertexInput(vertexInput),
         primitiveTopology(primitiveTopology),
         device(device),
@@ -136,6 +141,13 @@ namespace Atmos::Render::Vulkan
         this->extent = extent;
 
         descriptorSets = DescriptorSetGroup(descriptorSetGroupDefinitions, *device);
+
+        if (onlyDiscrimination)
+        {
+            discriminatorSources.clear();
+            for (uint32_t swapchainImageIndex = 0; swapchainImageIndex < swapchainImageCount; ++swapchainImageIndex)
+                discriminatorSources.emplace_back(*onlyDiscrimination, swapchainImageIndex);
+        }
     }
 
     template<class Discriminator, class Context>
@@ -161,7 +173,8 @@ namespace Atmos::Render::Vulkan
         drawContext = {};
 
         descriptorSets->Reset();
-        discriminatorSources.clear();
+        if (!onlyDiscrimination)
+            discriminatorSources.clear();
     }
 
     template<class Discriminator, class Context>

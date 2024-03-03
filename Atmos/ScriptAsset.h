@@ -26,7 +26,7 @@ namespace Arca
     struct Traits<::Atmos::Asset::Script>
     {
         static const ObjectType objectType = ObjectType::Relic;
-        static inline const TypeName typeName = "ScriptAsset";
+        static inline const TypeName typeName = "Atmos::Asset::Script";
         static bool ShouldCreate(
             Reliquary& reliquary,
             const ::Atmos::Name& name,

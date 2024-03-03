@@ -21,6 +21,6 @@ namespace Arca
     struct Traits<Atmos::Render::ChangeSurfaceBackgroundColor>
     {
         static const ObjectType objectType = ObjectType::Command;
-        static inline TypeName typeName = "ChangeSurfaceBackgroundColor";
+        static inline TypeName typeName = "Atmos::Render::ChangeSurfaceBackgroundColor";
     };
 }

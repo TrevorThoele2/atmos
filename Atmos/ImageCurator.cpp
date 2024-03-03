@@ -10,13 +10,13 @@ namespace Atmos::Render
         Owner().ExecuteOn<Arca::MatrixFormed<Matrix>>(
             [this](const Arca::MatrixFormed<Matrix>& signal)
             {
-                OnViewFormed(signal);
+                OnCreated(signal);
             });
 
         Owner().ExecuteOn<Arca::MatrixDissolved<Matrix>>(
             [this](const Arca::MatrixDissolved<Matrix>& signal)
             {
-                OnViewDissolved(signal);
+                OnDestroying(signal);
             });
     }
 
@@ -41,11 +41,11 @@ namespace Atmos::Render
             }
         };
 
-        auto images = octree.AllWithin(queryBox);
+        auto indices = octree.AllWithin(queryBox);
 
         const auto mainSurface = Arca::Index<MainSurface>(Owner());
 
-        for (auto& index : images)
+        for (auto& index : indices)
         {
             auto& core = *std::get<0>(*index->value);
             auto& bounds = *std::get<1>(*index->value);
@@ -67,6 +67,7 @@ namespace Atmos::Render
                     boundsPosition.z
                 },
                 bounds.Size(),
+                bounds.Rotation(),
                 core.color
             };
             mainSurface->StageRender(render);
@@ -101,14 +102,14 @@ namespace Atmos::Render
             core->material = *command.material;
     }
 
-    void ImageCurator::OnViewFormed(const Arca::MatrixFormed<Matrix>& view)
+    void ImageCurator::OnCreated(const Arca::MatrixFormed<Matrix>& signal)
     {
-        octree.Add(view.index.ID(), view.index, BoxFor(view.index));
+        octree.Add(signal.index.ID(), signal.index, BoxFor(signal.index));
     }
 
-    void ImageCurator::OnViewDissolved(const Arca::MatrixDissolved<Matrix>& view)
+    void ImageCurator::OnDestroying(const Arca::MatrixDissolved<Matrix>& signal)
     {
-        octree.Remove(view.index.ID(), BoxFor(view.index));
+        octree.Remove(signal.index.ID(), BoxFor(signal.index));
     }
 
     AxisAlignedBox3D ImageCurator::BoxFor(const Index& index)

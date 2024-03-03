@@ -1,11 +1,11 @@
 #pragma once
 
-#include <Arca/ClosedTypedRelicAutomation.h>
+#include <Arca/ClosedTypedRelic.h>
 
 namespace Atmos
 {
     template<class T>
-    class UnownedProviderRelic : public Arca::ClosedTypedRelicAutomation<UnownedProviderRelic<T>>
+    class UnownedProviderRelic : public Arca::ClosedTypedRelic<UnownedProviderRelic<T>>
     {
     public:
         using Value = T;
@@ -52,7 +52,7 @@ namespace Arca
     struct Traits<Atmos::UnownedProviderRelic<T>>
     {
         static const ObjectType objectType = ObjectType::Relic;
-        static inline const TypeName typeName = Traits<T>::typeName + "Provider";
+        static inline const TypeName typeName = "Atmos::UnownedProvider<" + Traits<T>::typeName + ">";
         static const Locality locality = Locality::Global;
     };
 }

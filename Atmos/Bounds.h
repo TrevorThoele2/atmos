@@ -7,7 +7,7 @@
 #include "Position3D.h"
 #include "Size2D.h"
 #include "Scalers2D.h"
-#include "AxisAlignedBox2D.h"
+#include "Angle.h"
 
 namespace Atmos
 {
@@ -15,21 +15,23 @@ namespace Atmos
     {
     public:
         Bounds();
-        Bounds(const Position3D& position, const Size2D& baseSize, const Scalers2D& scalers);
+        Bounds(const Position3D& position, const Size2D& baseSize, const Scalers2D& scalers, const Angle& rotation);
 
         void Position(const Position3D& to);
         void BaseSize(const Size2D& to);
         void Scalers(const Scalers2D& to);
+        void Rotation(const Angle& to);
 
         [[nodiscard]] Position3D Position() const;
         [[nodiscard]] Size2D BaseSize() const;
         [[nodiscard]] Size2D Size() const;
         [[nodiscard]] Scalers2D Scalers() const;
-        [[nodiscard]] AxisAlignedBox2D Box() const;
+        [[nodiscard]] Angle Rotation() const;
     private:
         Position3D position;
         Size2D baseSize;
         Scalers2D scalers;
+        Angle rotation;
     private:
         INSCRIPTION_ACCESS;
     };
@@ -41,7 +43,7 @@ namespace Arca
     struct Traits<Atmos::Bounds>
     {
         static const ObjectType objectType = ObjectType::Shard;
-        static inline const TypeName typeName = "Bounds";
+        static inline const TypeName typeName = "Atmos::Bounds";
     };
 }
 

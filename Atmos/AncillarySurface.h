@@ -17,7 +17,7 @@ namespace Arca
     struct Traits<Atmos::Render::AncillarySurface>
     {
         static const ObjectType objectType = ObjectType::Relic;
-        static inline const TypeName typeName = "AncillaryRenderSurface";
+        static inline const TypeName typeName = "Atmos::Render::AncillarySurface";
     };
 }
 

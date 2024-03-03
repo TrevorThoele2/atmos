@@ -29,7 +29,7 @@ namespace Arca
     struct Traits<::Atmos::Time::RealStopwatch>
     {
         static const ObjectType objectType = ObjectType::Relic;
-        static inline const TypeName typeName = "RealStopwatch";
+        static inline const TypeName typeName = "Atmos::Time::RealStopwatch";
     };
 }
 

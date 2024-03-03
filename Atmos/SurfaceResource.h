@@ -2,6 +2,8 @@
 
 #include "ImageRender.h"
 #include "LineRender.h"
+#include "RegionRender.h"
+
 #include "ScreenSize.h"
 
 namespace Atmos::Render::Resource
@@ -13,6 +15,7 @@ namespace Atmos::Render::Resource
 
         virtual void StageRender(const ImageRender& imageRender) = 0;
         virtual void StageRender(const LineRender& lineRender) = 0;
+        virtual void StageRender(const RegionRender& regionRender) = 0;
 
         virtual void DrawFrame(Arca::Reliquary& reliquary, const Color& backgroundColor) = 0;
 

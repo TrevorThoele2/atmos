@@ -23,7 +23,7 @@ namespace Arca
     struct Traits<Atmos::Time::StopwatchCore>
     {
         static const ObjectType objectType = ObjectType::Shard;
-        static inline const TypeName typeName = "StopwatchCore";
+        static inline const TypeName typeName = "Atmos::Time::StopwatchCore";
     };
 }
 

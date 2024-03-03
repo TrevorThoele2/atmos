@@ -18,7 +18,7 @@ namespace Arca
     struct Traits<Atmos::Audio::VolumeInformation>
     {
         static const ObjectType objectType = ObjectType::Relic;
-        static inline const TypeName typeName = "VolumeInformation";
+        static inline const TypeName typeName = "Atmos::Audio::VolumeInformation";
         static const Locality locality = Locality::Global;
     };
 }

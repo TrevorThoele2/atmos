@@ -20,7 +20,7 @@ namespace Arca
     struct Traits<Atmos::Input::MappedActions>
     {
         static const ObjectType objectType = ObjectType::Relic;
-        static inline const TypeName typeName = "MappedActions";
+        static inline const TypeName typeName = "Atmos::Input::MappedActions";
         static const Locality locality = Locality::Global;
     };
 }

@@ -21,7 +21,7 @@ namespace Arca
     struct Traits<::Atmos::Entity::AIComponent>
     {
         static const ObjectType objectType = ObjectType::Shard;
-        static inline const TypeName typeName = "AIComponent";
+        static inline const TypeName typeName = "Atmos::Entity::AIComponent";
     };
 }
 

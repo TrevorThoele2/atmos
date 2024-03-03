@@ -10,13 +10,13 @@ namespace Atmos::Render
         Owner().ExecuteOn<Arca::CreatedKnown<Line>>(
             [this](const Arca::CreatedKnown<Line>& signal)
             {
-                OnLineCreated(signal);
+                OnCreated(signal);
             });
 
         Owner().ExecuteOn<Arca::DestroyingKnown<Line>>(
             [this](const Arca::DestroyingKnown<Line>& signal)
             {
-                OnLineDestroying(signal);
+                OnDestroying(signal);
             });
     }
 
@@ -43,27 +43,27 @@ namespace Atmos::Render
             }
         };
 
-        auto lines = octree.AllWithin(queryBox);
+        auto indices = octree.AllWithin(queryBox);
 
         const auto mainSurface = Arca::Index<MainSurface>(Owner());
 
-        for (auto& index : lines)
+        for (auto& index : indices)
         {
-            auto& line = *index->value;
-            if (!line.material)
+            auto& value = *index->value;
+            if (!value.material)
                 continue;
 
             std::vector<Position2D> adjustedPoints;
-            for (auto& point : line.points)
+            for (auto& point : value.points)
                 adjustedPoints.push_back(Position2D{ point.x - cameraLeft, point.y - cameraTop });
 
             const LineRender render
             {
                 adjustedPoints,
-                line.z,
-                line.material,
-                line.width,
-                line.color
+                value.z,
+                value.material,
+                value.width,
+                value.color
             };
             mainSurface->StageRender(render);
         }
@@ -88,14 +88,14 @@ namespace Atmos::Render
         octree.Move(index.ID(), index, BoxFor(prevPoints, prevZ), BoxFor(index));
     }
 
-    void LineCurator::OnLineCreated(const Arca::CreatedKnown<Line>& line)
+    void LineCurator::OnCreated(const Arca::CreatedKnown<Line>& signal)
     {
-        octree.Add(line.reference.ID(), line.reference, BoxFor(line.reference));
+        octree.Add(signal.reference.ID(), signal.reference, BoxFor(signal.reference));
     }
 
-    void LineCurator::OnLineDestroying(const Arca::DestroyingKnown<Line>& line)
+    void LineCurator::OnDestroying(const Arca::DestroyingKnown<Line>& signal)
     {
-        octree.Remove(line.reference.ID(), BoxFor(line.reference));
+        octree.Remove(signal.reference.ID(), BoxFor(signal.reference));
     }
 
     AxisAlignedBox3D LineCurator::BoxFor(const std::vector<Position2D>& points, Position2D::Value z)
@@ -132,8 +132,8 @@ namespace Atmos::Render
         };
     }
 
-    AxisAlignedBox3D LineCurator::BoxFor(const LineIndex& line)
+    AxisAlignedBox3D LineCurator::BoxFor(const Index& index)
     {
-        return BoxFor(line->points, line->z);
+        return BoxFor(index->points, index->z);
     }
 }

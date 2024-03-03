@@ -33,7 +33,7 @@ namespace Arca
     struct Traits<Atmos::FrameEndCurator>
     {
         static const ObjectType objectType = ObjectType::Curator;
-        static inline const TypeName typeName = "FrameEndCurator";
+        static inline const TypeName typeName = "Atmos::FrameEndCurator";
     };
 }
 

@@ -27,7 +27,7 @@ namespace Arca
     struct Traits<Atmos::Audio::MusicCurator>
     {
         static const ObjectType objectType = ObjectType::Curator;
-        static inline const TypeName typeName = "MusicCurator";
+        static inline const TypeName typeName = "Atmos::Audio::MusicCurator";
     };
 }
 

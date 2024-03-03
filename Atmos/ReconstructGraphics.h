@@ -17,6 +17,6 @@ namespace Arca
     struct Traits<Atmos::Render::ReconstructGraphics>
     {
         static const ObjectType objectType = ObjectType::Command;
-        static inline const TypeName typeName = "ReconstructGraphics";
+        static inline const TypeName typeName = "Atmos::Render::ReconstructGraphics";
     };
 }

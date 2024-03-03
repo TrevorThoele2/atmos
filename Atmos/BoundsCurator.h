@@ -4,6 +4,7 @@
 
 #include "MoveBounds.h"
 #include "ScaleBounds.h"
+#include "RotateBounds.h"
 
 namespace Atmos
 {
@@ -14,6 +15,7 @@ namespace Atmos
     public:
         void Handle(const MoveBounds& command);
         void Handle(const ScaleBounds& command);
+        void Handle(const RotateBounds& command);
     };
 }
 
@@ -23,10 +25,11 @@ namespace Arca
     struct Traits<Atmos::BoundsCurator>
     {
         static const ObjectType objectType = ObjectType::Curator;
-        static inline const TypeName typeName = "BoundsCurator";
+        static inline const TypeName typeName = "Atmos::BoundsCurator";
         using HandledCommands = HandledCommands<
             Atmos::MoveBounds,
-            Atmos::ScaleBounds>;
+            Atmos::ScaleBounds,
+            Atmos::RotateBounds>;
     };
 }
 

@@ -18,6 +18,6 @@ namespace Arca
     struct Traits<Atmos::World::FieldUnset>
     {
         static const ObjectType objectType = ObjectType::Signal;
-        static inline const TypeName typeName = "FieldUnset";
+        static inline const TypeName typeName = "Atmos::World::FieldUnset";
     };
 }

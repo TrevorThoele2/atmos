@@ -23,6 +23,6 @@ namespace Arca
     struct Traits<Atmos::Render::CameraResized>
     {
         static const ObjectType objectType = ObjectType::Signal;
-        static inline const TypeName typeName = "CameraResized";
+        static inline const TypeName typeName = "Atmos::Render::CameraResized";
     };
 }

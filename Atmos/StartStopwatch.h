@@ -21,7 +21,7 @@ namespace Arca
     struct Traits<Atmos::Time::StartStopwatch>
     {
         static const ObjectType objectType = ObjectType::Command;
-        static inline const TypeName typeName = "StartStopwatch";
+        static inline const TypeName typeName = "Atmos::Time::StartStopwatch";
         using Result = Atmos::Time::Value<>;
     };
 }
