@@ -17,8 +17,8 @@ namespace Atmos::Time
     protected:
         void InitializeImplementation() override;
     private:
-        Arca::Ptr<Information> timeInformation;
-        Arca::Ptr<Settings> timeSettings;
+        Arca::GlobalPtr<Information> timeInformation;
+        Arca::GlobalPtr<Settings> timeSettings;
 
         using FpsStopwatch = ExtendedStopwatchAdapter<FrameStopwatch>;
         FpsStopwatch fpsTimer;

@@ -59,8 +59,8 @@ namespace Atmos::Render
         void PresentImpl() override;
         void PresentImpl(void* windowOverride) override;
 
-        void RenderMaterialViewImpl(MaterialRender& materialRender, float x, float y) override;
-        void RenderCanvasViewImpl(CanvasRender& canvasRender, float x, float y) override;
+        void RenderMaterialViewImpl(MaterialRender& materialRender) override;
+        void RenderCanvasViewImpl(CanvasRender& canvasRender) override;
         void RenderLineImpl(const Line& line) override;
     };
 }

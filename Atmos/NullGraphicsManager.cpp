@@ -216,10 +216,10 @@ namespace Atmos::Render
     void NullGraphicsManager::PresentImpl(void* windowOverride)
     {}
 
-    void NullGraphicsManager::RenderMaterialViewImpl(MaterialRender& materialRender, float x, float y)
+    void NullGraphicsManager::RenderMaterialViewImpl(MaterialRender& materialRender)
     {}
 
-    void NullGraphicsManager::RenderCanvasViewImpl(CanvasRender& canvasRender, float x, float y)
+    void NullGraphicsManager::RenderCanvasViewImpl(CanvasRender& canvasRender)
     {}
 
     void NullGraphicsManager::RenderLineImpl(const Line& line)

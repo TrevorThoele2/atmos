@@ -332,9 +332,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Field.h">
-      <Filter>Header Files\World\Field</Filter>
-    </ClInclude>
     <ClInclude Include="FieldDestination.h">
       <Filter>Header Files\World\Field</Filter>
     </ClInclude>
@@ -917,15 +914,6 @@
     <ClInclude Include="UnownedProvider.h">
       <Filter>Header Files\Provider</Filter>
     </ClInclude>
-    <ClInclude Include="GraphicsManagerProvider.h">
-      <Filter>Header Files\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="AudioManagerProvider.h">
-      <Filter>Header Files\Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="WorldManagerProvider.h">
-      <Filter>Header Files\World</Filter>
-    </ClInclude>
     <ClInclude Include="InputID.h">
       <Filter>Header Files\Input</Filter>
     </ClInclude>
@@ -963,9 +951,6 @@
       <Filter>Header Files\Position\Screen</Filter>
     </ClInclude>
     <ClInclude Include="NullInputManager.h">
-      <Filter>Header Files\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="InputManagerProvider.h">
       <Filter>Header Files\Input</Filter>
     </ClInclude>
     <ClInclude Include="InputCurator.h">
@@ -1061,9 +1046,6 @@
     <ClInclude Include="OutputWorldArchiveInterface.h">
       <Filter>Header Files\World\Serialization\World</Filter>
     </ClInclude>
-    <ClInclude Include="ArchiveInterface.h">
-      <Filter>Header Files\World\Serialization</Filter>
-    </ClInclude>
     <ClInclude Include="InputFieldArchiveInterface.h">
       <Filter>Header Files\World\Serialization</Filter>
     </ClInclude>
@@ -1102,6 +1084,9 @@
     </ClInclude>
     <ClInclude Include="ShouldCreateAsset.h">
       <Filter>Header Files\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="Field.h">
+      <Filter>Header Files\World\Field</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1495,15 +1480,6 @@
     <ClCompile Include="CameraMoved.cpp">
       <Filter>Source Files\Render\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="GraphicsManagerProvider.cpp">
-      <Filter>Source Files\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="AudioManagerProvider.cpp">
-      <Filter>Source Files\Audio</Filter>
-    </ClCompile>
-    <ClCompile Include="WorldManagerProvider.cpp">
-      <Filter>Source Files\World</Filter>
-    </ClCompile>
     <ClCompile Include="MappedInputs.cpp">
       <Filter>Source Files\Input</Filter>
     </ClCompile>
@@ -1523,9 +1499,6 @@
       <Filter>Source Files\Position\Screen</Filter>
     </ClCompile>
     <ClCompile Include="NullInputManager.cpp">
-      <Filter>Source Files\Input</Filter>
-    </ClCompile>
-    <ClCompile Include="InputManagerProvider.cpp">
       <Filter>Source Files\Input</Filter>
     </ClCompile>
     <ClCompile Include="InputCurator.cpp">
@@ -1615,9 +1588,6 @@
     <ClCompile Include="FileManagerProvider.cpp">
       <Filter>Source Files\File</Filter>
     </ClCompile>
-    <ClCompile Include="Field.cpp">
-      <Filter>Source Files\World\Field</Filter>
-    </ClCompile>
     <ClCompile Include="InputStasisArchiveInterface.cpp">
       <Filter>Source Files\World\Serialization\Stasis</Filter>
     </ClCompile>
@@ -1629,9 +1599,6 @@
     </ClCompile>
     <ClCompile Include="OutputWorldArchiveInterface.cpp">
       <Filter>Source Files\World\Serialization\World</Filter>
-    </ClCompile>
-    <ClCompile Include="ArchiveInterface.cpp">
-      <Filter>Source Files\World\Serialization</Filter>
     </ClCompile>
     <ClCompile Include="StateRequest.cpp">
       <Filter>Source Files\State</Filter>
@@ -1656,6 +1623,12 @@
     </ClCompile>
     <ClCompile Include="InputManager.cpp">
       <Filter>Source Files\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Field.cpp">
+      <Filter>Source Files\World\Field</Filter>
+    </ClCompile>
+    <ClCompile Include="InputFieldArchiveInterface.cpp">
+      <Filter>Source Files\World\Serialization</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

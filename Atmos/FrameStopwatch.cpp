@@ -21,7 +21,7 @@ namespace Atmos::Time
 
     void FrameStopwatch::PostConstruct()
     {
-        timeInformation = Arca::Ptr<Information>(Owner());
+        timeInformation = Arca::GlobalPtr<Information>(Owner());
     }
 }
 
@@ -36,7 +36,7 @@ namespace Inscription
         ObjectT& object, ArchiveT& archive)
     {
         if (archive.IsInput())
-            object.timeInformation = Arca::Ptr<Atmos::Time::Information>(object.Owner());
+            object.timeInformation = Arca::GlobalPtr<Atmos::Time::Information>(object.Owner());
 
         BaseScriven<Atmos::Time::Stopwatch>(object, archive);
     }

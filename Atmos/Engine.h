@@ -16,6 +16,7 @@ namespace Atmos
 
         void Setup();
 
+        void UseField(World::Field&& field);
         void LoadWorld(const File::Path& filePath);
 
         void StartExecution();
@@ -33,7 +34,7 @@ namespace Atmos
         [[nodiscard]] bool IsSetup() const;
         void SetupRequired() const;
     private:
-        std::unique_ptr<Arca::Reliquary> reliquary;
+        std::unique_ptr<Arca::Reliquary> globalReliquary;
 
         class ExecutionContext
         {

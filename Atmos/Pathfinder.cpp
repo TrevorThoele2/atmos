@@ -10,7 +10,7 @@ namespace Atmos
         if (start == finish)
             return createdStack;
 
-        const auto map = Owner().Find<World::Map>();
+        const auto map = Arca::GlobalPtr<World::Map>(Owner());
         if (!map)
             return createdStack;
 

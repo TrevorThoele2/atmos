@@ -4,10 +4,10 @@ namespace Atmos::Input
 {
     void Curator::InitializeImplementation()
     {
-        managerProvider = Owner().Find<ManagerProvider>();
+        manager = Arca::ComputedPtr<Manager*>(Owner());
 
-        mappedInputs = Owner().Find<MappedInputs>();
-        mappedActions = Owner().Find<MappedActions>();
+        mappedInputs = Arca::GlobalPtr<MappedInputs>(Owner());
+        mappedActions = Arca::GlobalPtr<MappedActions>(Owner());
     }
 
     void Curator::WorkImplementation(Stage& stage)

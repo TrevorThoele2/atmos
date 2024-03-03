@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Arca/SignalTraits.h>
+#include <Arca/Signal.h>
 #include "Entity.h"
 #include "TimeValue.h"
 
@@ -8,7 +8,7 @@ namespace Atmos::Entity
 {
     struct MoveEntity
     {
-        Entity* entity = nullptr;
+        Arca::LocalPtr<Entity> entity;
         Grid::Position toPosition;
         Time::Value timeTaken;
     };

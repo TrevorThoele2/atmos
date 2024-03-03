@@ -1,13 +1,13 @@
 #pragma once
 
-#include <Arca/SignalTraits.h>
+#include <Arca/Signal.h>
 #include "RunningScript.h"
 
 namespace Atmos::Script
 {
     struct ForceQuit
     {
-        RunningScript& script;
+        Arca::LocalPtr<RunningScript> script;
     };
 }
 

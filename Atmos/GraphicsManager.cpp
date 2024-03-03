@@ -8,11 +8,6 @@ namespace Atmos::Render
 {
     GraphicsManager::~GraphicsManager() = default;
 
-    void GraphicsManager::Initialize()
-    {
-        camera = Arca::Ptr<Camera>(*reliquary);
-    }
-
     void GraphicsManager::ReconstructAll()
     {
         // Focused render surface
@@ -116,7 +111,6 @@ namespace Atmos::Render
 
         currentSurface = foundSurface;
         SetRenderTargetImpl(*currentSurface);
-        SetCameraSizeToCurrentDimensions();
         currentSurface->SetAsRenderTargetImpl();
     }
 
@@ -124,7 +118,6 @@ namespace Atmos::Render
     {
         currentSurface = surfaces.end();
         SetRenderTargetToMainImpl();
-        SetCameraSizeToCurrentDimensions();
     }
 
     const Surface* GraphicsManager::GetCurrentRenderTarget() const
@@ -135,105 +128,14 @@ namespace Atmos::Render
             return &*currentSurface;
     }
 
-    void GraphicsManager::RenderMaterialView(MaterialRender& materialRender, bool offsetWithCamera)
+    void GraphicsManager::RenderMaterialView(MaterialRender& materialRender)
     {
-        offsetWithCamera ?
-            RenderMaterialViewCameraOffset
-            (
-                materialRender,
-                materialRender.position.x,
-                materialRender.position.y
-            )
-            :
-            RenderMaterialViewImpl
-            (
-                materialRender,
-                materialRender.position.x,
-                materialRender.position.y
-            );
+        RenderMaterialViewImpl(materialRender);
     }
 
-    void GraphicsManager::RenderMaterialView(MaterialRender& materialRender, float x, float y, bool offsetWithCamera)
+    void GraphicsManager::RenderCanvasView(CanvasRender& canvasRender)
     {
-        offsetWithCamera ?
-            RenderMaterialViewCameraOffset
-            (
-                materialRender,
-                x,
-                y
-            )
-            :
-            RenderMaterialViewImpl
-            (
-                materialRender,
-                x,
-                y
-            );
-    }
-
-    void GraphicsManager::RenderMaterialView(MaterialRender& materialRender, const Position2D& position, bool offsetWithCamera)
-    {
-        offsetWithCamera ?
-            RenderMaterialViewCameraOffset(
-                materialRender,
-                position.x,
-                position.y)
-            :
-            RenderMaterialViewImpl(
-                materialRender,
-                position.x,
-                position.y);
-    }
-
-    void GraphicsManager::RenderCanvasView(CanvasRender& canvasRender, bool offsetWithCamera)
-    {
-        (offsetWithCamera) ?
-            RenderCanvasViewCameraOffset
-            (
-                canvasRender,
-                canvasRender.position.x,
-                canvasRender.position.y
-            ) :
-            RenderCanvasViewImpl
-            (
-                canvasRender,
-                canvasRender.position.x,
-                canvasRender.position.y
-            );
-    }
-
-    void GraphicsManager::RenderCanvasView(CanvasRender& canvasRender, float x, float y, bool offsetWithCamera)
-    {
-        (offsetWithCamera) ?
-            RenderCanvasViewCameraOffset
-            (
-                canvasRender,
-                x,
-                y
-            ) :
-            RenderCanvasViewImpl
-            (
-                canvasRender,
-                x,
-                y
-            );
-    }
-
-    void GraphicsManager::RenderCanvasView(CanvasRender& canvasRender, const Position2D& position, bool offsetWithCamera)
-    {
-        (offsetWithCamera) ?
-            RenderCanvasViewCameraOffset
-            (
-                canvasRender,
-                position.x,
-                position.y
-            ) :
-            RenderCanvasViewImpl
-            (
-                canvasRender,
-                position.x,
-                position.y
-            );
+        RenderCanvasViewImpl(canvasRender);
     }
 
     void GraphicsManager::RenderLine(const Line& line)
@@ -247,10 +149,6 @@ namespace Atmos::Render
         {
             dimensions = set;
             SetMainDimensionsImpl(this->dimensions);
-            camera->Size({
-                static_cast<Size2D::Value>(set.width),
-                static_cast<Size2D::Value>(set.height) }
-            );
         }
     }
 
@@ -291,26 +189,6 @@ namespace Atmos::Render
         return currentSurface != surfaces.end();
     }
 
-    void GraphicsManager::RenderMaterialViewCameraOffset(MaterialRender& materialRender, float x, float y)
-    {
-        RenderMaterialViewImpl
-        (
-            materialRender,
-            x - camera->ScreenSides().Left(),
-            y - camera->ScreenSides().Top()
-        );
-    }
-
-    void GraphicsManager::RenderCanvasViewCameraOffset(CanvasRender& canvasRender, float x, float y)
-    {
-        RenderCanvasViewImpl
-        (
-            canvasRender,
-            x - camera->ScreenSides().Left(),
-            y - camera->ScreenSides().Top()
-        );
-    }
-
     GraphicsManager::SurfaceList::iterator GraphicsManager::FindSurface(Surface& surface)
     {
         for (auto loop = surfaces.begin(); loop != surfaces.end(); ++loop)
@@ -321,14 +199,9 @@ namespace Atmos::Render
 
         return surfaces.end();
     }
+}
 
-    void GraphicsManager::SetCameraSizeToCurrentDimensions()
-    {
-        const auto currentDimensions = CurrentDimensions();
-        camera->Size
-        ({
-            static_cast<Size2D::Value>(currentDimensions.width),
-            static_cast<Size2D::Value>(currentDimensions.height) }
-        );
-    }
+namespace Arca
+{
+    const TypeName Traits<Atmos::Render::GraphicsManager>::typeName = "GraphicsManager";
 }

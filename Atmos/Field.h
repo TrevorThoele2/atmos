@@ -1,22 +1,26 @@
 #pragma once
 
-#include <memory>
-
 #include "FieldID.h"
-#include <Arca/Reliquary.h>
+#include "Arca/Reliquary.h"
 
 namespace Atmos::World
 {
-    struct Field
+    class Field
     {
-        FieldID id = 0;
-        Arca::Reliquary* reliquary = nullptr;
-
+    public:
         Field() = default;
-        explicit Field(FieldID id);
-        Field(FieldID id, Arca::Reliquary& reliquary);
-        Field(Field&& arg) noexcept = default;
+        Field(FieldID id, std::unique_ptr<Arca::Reliquary>&& reliquary);
+        Field(Field&& arg) noexcept;
         Field& operator=(Field&& arg) noexcept;
+
+        [[nodiscard]] FieldID ID() const;
+        [[nodiscard]] Arca::Reliquary& Reliquary();
+        [[nodiscard]] const Arca::Reliquary& Reliquary() const;
+    private:
+        FieldID id = 0;
+        std::unique_ptr<Arca::Reliquary> reliquary;
+    private:
+        INSCRIPTION_ACCESS;
     };
 }
 

@@ -2,7 +2,7 @@
 
 #include <Arca/Curator.h>
 
-#include "GraphicsManagerProvider.h"
+#include "GraphicsManager.h"
 
 namespace Atmos::Render
 {
@@ -11,7 +11,7 @@ namespace Atmos::Render
     protected:
         void InitializeImplementation() override;
     private:
-        GraphicsManagerProvider* manager = nullptr;
+        Arca::ComputedPtr<GraphicsManager*> manager;
     };
 }
 

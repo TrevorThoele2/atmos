@@ -1,22 +1,21 @@
 #pragma once
 
-#include "ArchiveInterface.h"
-
-#include "FieldID.h"
 #include "Field.h"
 
 namespace Atmos::World::Serialization
 {
-    class InputFieldArchiveInterface : public ArchiveInterface
+    class InputFieldArchiveInterface
     {
     public:
-        [[nodiscard]] virtual std::optional<Field> ExtractField(FieldID id, Arca::Reliquary& reliquary) = 0;
-        [[nodiscard]] virtual std::unique_ptr<Field> ExtractFieldAsHeap(FieldID id, Arca::Reliquary& reliquary) = 0;
+        virtual ~InputFieldArchiveInterface() = 0;
+
+        [[nodiscard]] virtual std::optional<Field> ExtractField(FieldID id, Arca::Reliquary& globalReliquary) = 0;
+        [[nodiscard]] virtual std::unique_ptr<Field> ExtractFieldAsHeap(FieldID id, Arca::Reliquary& globalReliquary) = 0;
 
         [[nodiscard]] virtual std::vector<FieldID> AllFieldIDs() const = 0;
         [[nodiscard]] virtual bool ContainsField(FieldID fieldID) const = 0;
         [[nodiscard]] virtual size_t FieldSize() const = 0;
     protected:
-        using ArchiveInterface::ArchiveInterface;
+        InputFieldArchiveInterface() = default;
     };
 }

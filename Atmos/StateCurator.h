@@ -16,12 +16,12 @@ namespace Atmos::State
         void InitializeImplementation() override;
         void WorkImplementation(Stage& stage) override;
     private:
-        using Stack = std::vector<State*>;
+        using Stack = std::vector<GameState*>;
         Stack stack;
 
         Arca::Batch<Request> requests;
 
-        void Push(State& state);
+        void Push(GameState& state);
         void Pop();
     };
 }

@@ -15,15 +15,12 @@ namespace Atmos::World::Serialization
     public:
         explicit InputStasisArchiveInterface(const File::Path& filePath);
 
-        [[nodiscard]] std::optional<Field> ExtractField(FieldID id, Arca::Reliquary& reliquary) override;
-        [[nodiscard]] std::unique_ptr<Field> ExtractFieldAsHeap(FieldID id, Arca::Reliquary& reliquary) override;
+        [[nodiscard]] std::optional<Field> ExtractField(FieldID id, Arca::Reliquary& globalReliquary) override;
+        [[nodiscard]] std::unique_ptr<Field> ExtractFieldAsHeap(FieldID id, Arca::Reliquary& globalReliquary) override;
 
         [[nodiscard]] std::vector<FieldID> AllFieldIDs() const override;
         [[nodiscard]] bool ContainsField(FieldID iD) const override;
         [[nodiscard]] size_t FieldSize() const override;
-    protected:
-        [[nodiscard]] ::Inscription::BinaryArchive& Archive() override;
-        [[nodiscard]] const ::Inscription::BinaryArchive& Archive() const override;
     private:
         using ArchiveT = ::Inscription::InputBinaryArchive;
         ArchiveT archive;

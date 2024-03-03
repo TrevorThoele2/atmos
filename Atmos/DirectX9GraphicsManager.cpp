@@ -421,7 +421,7 @@ namespace Atmos::Render
         LPDIRECT3DVERTEXBUFFER9 vertexBuffer;
         LPDIRECT3DINDEXBUFFER9 indexBuffer;
         LPDIRECT3DVERTEXDECLARATION9 vertexDecl;
-        Arca::Ptr<Asset::ShaderAsset> defaultTexturedImageViewShader;
+        Arca::LocalPtr<Asset::ShaderAsset> defaultTexturedImageViewShader;
 
         using Objects = std::vector<Object3D>;
         Objects objects;
@@ -493,7 +493,7 @@ namespace Atmos::Render
             std::sort(objects.begin(), objects.end(), sorter);
         }
 
-        auto camera = reliquary->Find<Camera>();
+        auto camera = Arca::GlobalPtr<Camera>(*reliquary);
 
         device->SetVertexDeclaration(vertexDecl);
         device->SetStreamSource(0, vertexBuffer, 0, sizeof(Vertex));
@@ -1372,7 +1372,7 @@ namespace Atmos::Render
             LogError(hr, *reliquary, "The frame was not presentable.", Log::Severity::SevereError);
     }
 
-    void DirectX9GraphicsManager::RenderMaterialViewImpl(MaterialRender& materialRender, float x, float y)
+    void DirectX9GraphicsManager::RenderMaterialViewImpl(MaterialRender& materialRender)
     {
         if (!materialRender.material)
             return;
@@ -1381,13 +1381,14 @@ namespace Atmos::Render
         auto image = material->Image();
         const auto materialSlice = materialRender.materialSlice;
         const auto size = materialRender.size;
+        const auto position = materialRender.position;
 
         RenderObject
         (
             image->DataAs<ImageAssetDataImplementation>()->tex,
             materialRender.patchShader ? materialRender.patchShader : material->Shader(),
-            x,
-            y,
+            position.x,
+            position.y,
             materialRender.position.z,
             materialSlice,
             materialSlice.Size(),
@@ -1398,7 +1399,7 @@ namespace Atmos::Render
         );
     }
 
-    void DirectX9GraphicsManager::RenderCanvasViewImpl(CanvasRender& canvasRender, float x, float y)
+    void DirectX9GraphicsManager::RenderCanvasViewImpl(CanvasRender& canvasRender)
     {
         const auto position = canvasRender.position;
         const auto size = canvasRender.size;
@@ -1407,8 +1408,8 @@ namespace Atmos::Render
         (
             canvasRender.canvas.GetData<CanvasData>()->tex,
             renderer2D->DefaultTexturedImageViewShader(),
-            x,
-            y,
+            position.x,
+            position.y,
             position.z,
             AxisAlignedBox2D{ 0.0f, 0.0f, 1.0f, 1.0f },
             Size2D{ size.width, size.height },

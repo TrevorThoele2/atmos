@@ -4,7 +4,7 @@
 
 #include "Flags.h"
 
-#include "GraphicsManagerProvider.h"
+#include "GraphicsManager.h"
 
 namespace Atmos::Debug
 {
@@ -28,9 +28,9 @@ namespace Atmos::Render
         void InitializeImplementation() override;
         void WorkImplementation(Stage& stage) override;
     private:
-        GraphicsManagerProvider* graphics = nullptr;
+        Arca::ComputedPtr<GraphicsManager*> graphics;
     private:
-        Debug::Statistics* debugStatistics = nullptr;
+        Arca::GlobalPtr<Debug::Statistics> debugStatistics;
     };
 }
 

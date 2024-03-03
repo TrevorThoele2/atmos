@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Arca/ShardTraits.h>
+#include <Arca/Shard.h>
 
 #include "ScriptInstance.h"
 

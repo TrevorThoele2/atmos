@@ -5,6 +5,7 @@
 
 #include "MaterialViewCore.h"
 #include "Bounds.h"
+#include "Camera.h"
 
 namespace Atmos::Render
 {
@@ -15,6 +16,7 @@ namespace Atmos::Render
         void WorkImplementation(Stage& stage) override;
     private:
         Arca::Batch<Arca::All<MaterialViewCore, Arca::Either<Bounds>>> toRender;
+        Arca::GlobalPtr<Camera> camera;
     };
 }
 

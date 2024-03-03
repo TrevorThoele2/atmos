@@ -22,8 +22,8 @@ namespace Atmos::Time
 
     void TimeCurator::InitializeImplementation()
     {
-        timeInformation = Owner().Find<Information>();
-        timeSettings = Owner().Find<Settings>();
+        timeInformation = Arca::GlobalPtr<Information>(Owner());
+        timeSettings = Arca::GlobalPtr<Settings>(Owner());
 
         fpsTimer = FpsStopwatch{ Owner().Create<FpsStopwatch::SourceT>(Value(Value::Number(1, 0))) };
     }
@@ -76,7 +76,7 @@ namespace Inscription
             archive(fpsTimerId);
 
             const auto reliquary = archive.UserContext<Arca::Reliquary>();
-            object.fpsTimer.Source(reliquary->Find<ObjectT::FpsStopwatch::SourceT>(fpsTimerId));
+            object.fpsTimer.Source(Arca::LocalPtr<ObjectT::FpsStopwatch::SourceT>(fpsTimerId, object.Owner()));
         }
     }
 }

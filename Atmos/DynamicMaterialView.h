@@ -5,11 +5,10 @@
 #include "MaterialViewCore.h"
 #include "Bounds.h"
 
-#include "Serialization.h"
-
 namespace Atmos::Render
 {
-    class MaterialView final : public Arca::ClosedTypedRelicAutomation<MaterialView, MaterialViewCore, Bounds>
+    class DynamicMaterialView final :
+        public Arca::ClosedTypedRelicAutomation<DynamicMaterialView, MaterialViewCore, Bounds>
     {
     public:
         using Index = int;
@@ -18,10 +17,10 @@ namespace Atmos::Render
         [[nodiscard]] Index MaterialIndex() const;
         void Color(Color to);
         [[nodiscard]] Render::Color Color() const;
-        void PatchShader(Arca::Ptr<Asset::ShaderAsset> to);
-        [[nodiscard]] Arca::Ptr<Asset::ShaderAsset> PatchShader() const;
+        void PatchShader(Arca::LocalPtr<Asset::ShaderAsset> to);
+        [[nodiscard]] Arca::LocalPtr<Asset::ShaderAsset> PatchShader() const;
 
-        [[nodiscard]] Arca::Ptr<Asset::MaterialAsset> Material() const;
+        [[nodiscard]] Arca::LocalPtr<Asset::MaterialAsset> Material() const;
         [[nodiscard]] AxisAlignedBox2D MaterialSlice() const;
 
         void Position(const Position3D& to);
@@ -36,8 +35,8 @@ namespace Atmos::Render
         void PostConstruct(ShardTuple shards);
         void Initialize(const Position3D& position);
     private:
-        Arca::Ptr<MaterialViewCore> core;
-        Arca::Ptr<Atmos::Bounds> bounds;
+        Arca::LocalPtr<MaterialViewCore> core;
+        Arca::LocalPtr<Atmos::Bounds> bounds;
     private:
         INSCRIPTION_ACCESS;
     };
@@ -46,7 +45,7 @@ namespace Atmos::Render
 namespace Arca
 {
     template<>
-    struct Traits<::Atmos::Render::MaterialView>
+    struct Traits<::Atmos::Render::DynamicMaterialView>
     {
         static const ObjectType objectType = ObjectType::Relic;
         static const TypeName typeName;
@@ -56,7 +55,10 @@ namespace Arca
 namespace Inscription
 {
     template<>
-    class Scribe<::Atmos::Render::MaterialView, BinaryArchive> final :
-        public ArcaNullScribe<::Atmos::Render::MaterialView, BinaryArchive>
-    {};
+    class Scribe<::Atmos::Render::DynamicMaterialView, BinaryArchive> final :
+        public ArcaCompositeScribe<::Atmos::Render::DynamicMaterialView, BinaryArchive>
+    {
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override {}
+    };
 }

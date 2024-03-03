@@ -4,5 +4,6 @@
 
 namespace Atmos
 {
-    void RegisterTypes(Arca::ReliquaryOrigin& origin);
+    void RegisterGlobalTypes(Arca::ReliquaryOrigin& origin);
+    void RegisterFieldTypes(Arca::ReliquaryOrigin& origin, Arca::Reliquary& globalReliquary);
 }

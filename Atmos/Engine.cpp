@@ -4,9 +4,7 @@
 #include "EngineNotSetup.h"
 
 #include "WindowProvider.h"
-#include "InputManagerProvider.h"
-#include "GraphicsManagerProvider.h"
-#include "AudioManagerProvider.h"
+#include "UniqueProvider.h"
 
 namespace Atmos
 {
@@ -18,14 +16,23 @@ namespace Atmos
             return;
 
         Arca::ReliquaryOrigin origin;
-        RegisterTypes(origin);
-        reliquary = origin.Actualize();
+        RegisterGlobalTypes(origin);
+        globalReliquary = origin.Actualize();
 
-        ProvideInitializationProperties(CreateInitializationProperties(*reliquary));
+        ProvideInitializationProperties(CreateInitializationProperties(*globalReliquary));
 
-        World::WorldManager worldManager(*reliquary);
+        World::WorldManager worldManager(*globalReliquary);
 
         executionContext = std::make_unique<ExecutionContext>(*this, std::move(worldManager));
+    }
+
+    void Engine::UseField(World::Field&& field)
+    {
+        SetupRequired();
+
+        executionContext->worldManager.UseField(std::move(field));
+        executionContext->worldManager.Request(0);
+        executionContext->worldManager.LockIn();
     }
 
     void Engine::LoadWorld(const File::Path& filePath)
@@ -61,15 +68,18 @@ namespace Atmos
     }
 
     Engine::ExecutionContext::ExecutionContext(Engine& owner, World::WorldManager&& worldManager) :
-        execution(EngineExecution(*owner.reliquary, this->worldManager)),
+        execution(EngineExecution(*owner.globalReliquary, this->worldManager)),
         worldManager(std::move(worldManager))
     {}
 
     void Engine::ProvideInitializationProperties(InitializationProperties&& properties)
     {
         Window::window.Setup(std::move(properties.window));
-        reliquary->Find<Input::ManagerProvider>()->Change(std::move(properties.inputManager));
-        reliquary->Find<Render::GraphicsManagerProvider>()->Change(std::move(properties.graphicsManager));
-        reliquary->Find<Audio::AudioManagerProvider>()->Change(std::move(properties.audioManager));
+        Arca::GlobalPtr<UniqueProvider<Input::Manager>>(*globalReliquary)->Change(
+            std::move(properties.inputManager));
+        Arca::GlobalPtr<UniqueProvider<Render::GraphicsManager>>(*globalReliquary)->Change(
+            std::move(properties.graphicsManager));
+        Arca::GlobalPtr<UniqueProvider<Audio::AudioManager>>(*globalReliquary)->Change(
+            std::move(properties.audioManager));
     }
 }

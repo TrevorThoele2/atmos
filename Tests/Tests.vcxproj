@@ -132,13 +132,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="DerivedEngine.cpp" />
     <ClCompile Include="GeneralFixture.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="MockGraphicsManager.cpp" />
+    <ClCompile Include="MockWindow.cpp" />
     <ClCompile Include="RenderTests.cpp" />
+    <ClCompile Include="WorldSerializationTests.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DerivedEngine.h" />
     <ClInclude Include="GeneralFixture.h" />
+    <ClInclude Include="MockGraphicsManager.h" />
+    <ClInclude Include="MockWindow.h" />
     <ClInclude Include="RenderTests.h" />
+    <ClInclude Include="WorldSerializationTests.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\AGUI\AGUI\AGUI.vcxproj">

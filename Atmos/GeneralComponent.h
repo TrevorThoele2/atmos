@@ -2,7 +2,7 @@
 
 #include <unordered_set>
 
-#include <Arca/ShardTraits.h>
+#include <Arca/Shard.h>
 #include <Arca/NullScribe.h>
 
 #include "NameValuePair.h"

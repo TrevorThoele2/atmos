@@ -30,12 +30,12 @@ namespace Atmos::Script
         if (!IsRunning())
             return nullptr;
 
-        return Owner().Find<AllRunningScripts>()->RunningScriptFor(*this);
+        return Arca::GlobalPtr<AllRunningScripts>(Owner())->RunningScriptFor(*this);
     }
 
     bool ScriptInstance::IsRunning() const
     {
-        return Owner().Find<AllRunningScripts>()->IsRunning(*this);
+        return Arca::GlobalPtr<AllRunningScripts>(Owner())->IsRunning(*this);
     }
 
     RunningScript& ScriptInstance::CreateRunningFromThis()

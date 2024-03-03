@@ -33,9 +33,9 @@ namespace Atmos::Script
                 //allRunningScripts->Remove(actualized);
             });
 
-        allRunningScripts = Owner().Find<AllRunningScripts>();
+        allRunningScripts = Arca::GlobalPtr<AllRunningScripts>(Owner());
 
-        debugStatistics = Owner().Find<Debug::Statistics>();
+        debugStatistics = Arca::GlobalPtr<Debug::Statistics>(Owner());
     }
 
     void ScriptController::WorkImplementation(Stage& stage)

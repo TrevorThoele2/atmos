@@ -7,7 +7,6 @@
 #include "ShaderAsset.h"
 #include "Surface.h"
 #include "Canvas.h"
-#include "Camera.h"
 
 #include "ScreenDimensions.h"
 
@@ -40,8 +39,6 @@ namespace Atmos::Render
     public:
         virtual ~GraphicsManager() = 0;
 
-        void Initialize();
-
         void ReconstructAll();
 
         [[nodiscard]] std::unique_ptr<Asset::ImageAssetData> CreateImageData(
@@ -68,12 +65,8 @@ namespace Atmos::Render
         void SetRenderTargetToMain();
         [[nodiscard]] const Surface* GetCurrentRenderTarget() const;
 
-        void RenderMaterialView(MaterialRender& materialRender, bool offsetWithCamera = true);
-        void RenderMaterialView(MaterialRender& materialRender, float x, float y, bool offsetWithCamera = false);
-        void RenderMaterialView(MaterialRender& materialRender, const Position2D& position, bool offsetWithCamera = false);
-        void RenderCanvasView(CanvasRender& canvasRender, bool offsetWithCamera = true);
-        void RenderCanvasView(CanvasRender& canvasRender, float x, float y, bool offsetWithCamera = false);
-        void RenderCanvasView(CanvasRender& canvasRender, const Position2D& position, bool offsetWithCamera = false);
+        void RenderMaterialView(MaterialRender& materialRender);
+        void RenderCanvasView(CanvasRender& canvasRender);
         void RenderLine(const Line& line);
 
         virtual void SetFullscreen(bool set) = 0;
@@ -146,15 +139,19 @@ namespace Atmos::Render
         virtual void PresentImpl() = 0;
         virtual void PresentImpl(void* windowOverride) = 0;
 
-        void RenderMaterialViewCameraOffset(MaterialRender& materialRender, float x, float y);
-        virtual void RenderMaterialViewImpl(MaterialRender& materialRender, float x, float y) = 0;
-        void RenderCanvasViewCameraOffset(CanvasRender& canvasRender, float x, float y);
-        virtual void RenderCanvasViewImpl(CanvasRender& canvasRender, float x, float y) = 0;
+        virtual void RenderMaterialViewImpl(MaterialRender& materialRender) = 0;
+        virtual void RenderCanvasViewImpl(CanvasRender& canvasRender) = 0;
         virtual void RenderLineImpl(const Line& line) = 0;
 
         SurfaceList::iterator FindSurface(Surface& surface);
-        void SetCameraSizeToCurrentDimensions();
-    private:
-        Arca::Ptr<Camera> camera;
+    };
+}
+
+namespace Arca
+{
+    template<>
+    struct Traits<::Atmos::Render::GraphicsManager>
+    {
+        static const TypeName typeName;
     };
 }
