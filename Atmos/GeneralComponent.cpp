@@ -49,6 +49,7 @@ namespace Atmos
                 scribe.Save(niceName);
                 scribe.Save(position);
                 scribe.Save(direction);
+                scribe.Save(solid);
 
                 // Storage
                 {
@@ -70,6 +71,7 @@ namespace Atmos
                 scribe.Load(niceName);
                 scribe.Load(position);
                 scribe.Load(direction);
+                scribe.Load(solid);
 
                 // Storage
                 {

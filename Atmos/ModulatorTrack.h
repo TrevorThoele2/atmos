@@ -6,6 +6,7 @@
 
 #include "Variant.h"
 #include "FrameTimer.h"
+#include "Optional.h"
 
 namespace Atmos
 {
@@ -52,6 +53,9 @@ namespace Atmos
         private:
             virtual TrackBase* CloneImpl() const = 0;
 
+            virtual void SetDefaultStartValueImpl(const Value &set) = 0;
+            virtual void ResetDefaultStartValueImpl() = 0;
+
             virtual NodeID AddNodeImpl() = 0;
             virtual void RemoveNodeImpl(NodeID id) = 0;
             virtual TrackNode* FindNodeImpl(NodeID id) = 0;
@@ -64,6 +68,9 @@ namespace Atmos
             virtual ~TrackBase() = 0;
 
             TrackBase* Clone() const;
+
+            void SetDefaultStartValue(const Value &set);
+            void ResetDefaultStartValue();
 
             NodeID AddNode();
             void RemoveNode(NodeID id);
@@ -89,6 +96,9 @@ namespace Atmos
         private:
             TrackBase* CloneImpl() const override final;
 
+            void SetDefaultStartValueImpl(const Value &set) override final;
+            void ResetDefaultStartValueImpl() override final;
+
             NodeID AddNodeImpl() override final;
             void RemoveNodeImpl(NodeID id) override final;
             NodeT* FindNodeImpl(NodeID id) override final;
@@ -102,6 +112,7 @@ namespace Atmos
             ModifierT modifier;
             GetCurrentValueT getCurrentValue;
 
+            Optional<Value> defaultStartValue;
             NodeContainer nodes;
             typename NodeContainer::iterator curPos;
             NodeID curPosID;
@@ -129,6 +140,18 @@ namespace Atmos
         TrackBase* Track<Object>::CloneImpl() const
         {
             return new Track(*this);
+        }
+
+        template<class Object>
+        void Track<Object>::SetDefaultStartValueImpl(const Value &set)
+        {
+            defaultStartValue.Set(set);
+        }
+
+        template<class Object>
+        void Track<Object>::ResetDefaultStartValueImpl()
+        {
+            defaultStartValue.Reset();
         }
 
         template<class Object>
@@ -277,7 +300,11 @@ namespace Atmos
 
             curPos = nodes.begin();
             curPosID = startingID;
-            startValue = getCurrentValue(object);
+            // Retrieve the start value
+            if (defaultStartValue.IsValid())
+                startValue = *defaultStartValue;
+            else
+                startValue = getCurrentValue(object);
             timer.SetGoal(curPos->GetTimeTaken());
             timer.Start();
         }

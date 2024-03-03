@@ -153,6 +153,7 @@ namespace Atmos
         Modulator::Observer PositionSystem::GenerateSenseComponentMover(const GeneralComponent::PositionT &curPosition, const GeneralComponent::PositionT &moveToPosition, const TimeValue &timeTaken)
         {
             auto observer = GameEnvironment::GenerateModulator(Modulator::Description::SenseComponent.name);
+            /*
             // Setup X part of the modulator if needed
             if (curPosition.GetX() != moveToPosition.GetX())
             {
@@ -188,6 +189,7 @@ namespace Atmos
                 endState.SetNormal(Modulator::Value(std::int64_t(moveToPosition.GetZ())));
                 node->SetEndState(endState);
             }
+            */
 
             return observer;
         }
@@ -417,6 +419,13 @@ namespace Atmos
 
         PositionSystem::CollisionType PositionSystem::CheckCollision(const MovementComponent &movement, const GridPosition &destination)
         {
+            Entity focusedEntity = movement.GetOwnerEntity();
+            // If the focused entity is not solid, then there is no collision
+            auto focusedEntityGeneral = GetCurrentEntities()->FindComponent<GeneralComponent>(focusedEntity);
+            ATMOS_ASSERT_MESSAGE(focusedEntityGeneral, "The general component for the entity must exist.");
+            if (!focusedEntityGeneral->IsSolid())
+                return CollisionType::NONE;
+
             // If the tile going to does not exist, collision
             // If the tile is solid, collision
             {
@@ -428,12 +437,12 @@ namespace Atmos
             // Check solidity on entities
             // If any entity we're moving into is solid, collision
             {
-                Entity entity = movement.GetOwnerEntity();
+                
                 auto &foundEntityGroup = FindEntities(destination);
                 for (auto &loop : foundEntityGroup)
                 {
-                    auto found = GetCurrentEntities()->FindComponent<GeneralComponent>(entity);
-                    if (found && found->IsSolid())
+                    auto foundLoopGeneralComponent = GetCurrentEntities()->FindComponent<GeneralComponent>(loop);
+                    if (foundLoopGeneralComponent && foundLoopGeneralComponent->IsSolid())
                         return CollisionType::ENTITY;
                 }
             }

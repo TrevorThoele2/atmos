@@ -25,7 +25,6 @@ namespace Atmos
 
             virtual void StopImpl() = 0;
             virtual bool WorkImpl() = 0;
-            virtual TimeValue GetSumTimeTakenImpl() const = 0;
 
             virtual bool IsWorkingObjectImpl(void *obj) const = 0;
             virtual std::type_index GetObjectTypeImpl() const = 0;
@@ -50,7 +49,6 @@ namespace Atmos
             // Returns true if the modulator is done
             bool Work();
             bool IsWorking() const;
-            TimeValue GetSumTimeTaken() const;
 
             const Name& GetGeneratorName() const;
 
@@ -76,7 +74,6 @@ namespace Atmos
 
             void StopImpl() override final;
             bool WorkImpl() override final;
-            TimeValue GetSumTimeTakenImpl() const override final;
 
             bool IsWorkingObjectImpl(void *obj) const override final;
             std::type_index GetObjectTypeImpl() const override final;
@@ -160,20 +157,6 @@ namespace Atmos
             }
 
             return tracksWorking.empty();
-        }
-
-        template<class Object>
-        TimeValue Modulator<Object>::GetSumTimeTakenImpl() const
-        {
-            TimeValue ret;
-            for (auto &loop : tracks)
-            {
-                TimeValue checkAgainst = loop.second.GetSumTimeTaken();
-                if (ret < checkAgainst)
-                    ret = checkAgainst;
-            }
-
-            return ret;
         }
 
         template<class Object>

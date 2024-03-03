@@ -101,142 +101,7 @@ namespace Atmos
             return static_cast<Type>(variant.GetTypeAsID());
         }
 
-        INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(TrackNodeEndState::Normal)
-        {
-            scribe(end);
-        }
-
-        TrackNodeEndState::Normal::Normal() : end(std::int64_t(0))
-        {}
-
-        TrackNodeEndState::Normal::Normal(Value end) : end(end)
-        {}
-
-        bool TrackNodeEndState::Normal::operator==(const Normal &arg) const
-        {
-            return end == arg.end;
-        }
-
-        bool TrackNodeEndState::Normal::operator!=(const Normal &arg) const
-        {
-            return !(*this == arg);
-        }
-
-        INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(TrackNodeEndState::Random)
-        {
-            scribe(range);
-        }
-
-        TrackNodeEndState::Random::Random() : pickedValue(Value(std::int64_t(0))), range(Value(std::int64_t(0)), Value(std::int64_t(0)))
-        {}
-
-        TrackNodeEndState::Random::Random(const RangeT &range) : pickedValue(Value(std::int64_t(0))), range(range)
-        {}
-
-        bool TrackNodeEndState::Random::operator==(const Random &arg) const
-        {
-            return range == arg.range;
-        }
-
-        bool TrackNodeEndState::Random::operator!=(const Random &arg) const
-        {
-            return !(*this == arg);
-        }
-
-        INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(TrackNodeEndState)
-        {
-            scribe(variant);
-        }
-
-        TrackNodeEndState::TrackNodeEndState(Value::Type variantType) : variantType(variantType)
-        {}
-
-        TrackNodeEndState::TrackNodeEndState(const TrackNodeEndState &arg) : variantType(arg.variantType), variant(arg.variant)
-        {}
-
-        TrackNodeEndState::TrackNodeEndState(TrackNodeEndState &&arg) : variantType(std::move(arg.variantType)), variant(std::move(arg.variant))
-        {}
-
-        TrackNodeEndState& TrackNodeEndState::operator=(const TrackNodeEndState &arg)
-        {
-            variantType = arg.variantType;
-            variant = arg.variant;
-            return *this;
-        }
-
-        TrackNodeEndState& TrackNodeEndState::operator=(TrackNodeEndState &&arg)
-        {
-            variantType = std::move(arg.variantType);
-            variant = std::move(arg.variant);
-            return *this;
-        }
-
-        bool TrackNodeEndState::operator==(const TrackNodeEndState &arg) const
-        {
-            return variantType == arg.variantType && variant == arg.variant;
-        }
-
-        bool TrackNodeEndState::operator!=(const TrackNodeEndState &arg) const
-        {
-            return !(*this == arg);
-        }
-
-        void TrackNodeEndState::SetNormal(Value end)
-        {
-            end.Convert(variantType);
-            variant.Set(Normal(end));
-        }
-
-        void TrackNodeEndState::SetRandom(const RangeT &range)
-        {
-            RangeT use(range);
-            use.begin.Convert(variantType);
-            use.end.Convert(variantType);
-            variant.Set(Random(use));
-        }
-
-        Value TrackNodeEndState::GetEnding() const
-        {
-            if (!variant.IsInhabited())
-                return Value();
-
-            struct Getter
-            {
-                static Value DoReturn(const Normal &normal, Value::Type variantType)
-                {
-                    return normal.end;
-                }
-
-                static Value DoReturn(const Random &random, Value::Type variantType)
-                {
-                    switch (variantType)
-                    {
-                    case Value::Type::INT:
-                        random.pickedValue = Value(::Atmos::Random::Generate<ValueTraits<Value::Type::INT>::T>(random.range.begin.AsInt(), random.range.end.AsInt()));
-                        return random.pickedValue;
-                    case Value::Type::FLOAT:
-                        random.pickedValue = Value(::Atmos::Random::Generate<ValueTraits<Value::Type::FLOAT>::T>(random.range.begin.AsFloat(), random.range.end.AsFloat()));
-                        return random.pickedValue;
-                    }
-
-                    return Value();
-                }
-            };
-
-            return ::function::VisitReturn<Getter, Value>(variant, variantType);
-        }
-
-        TrackNodeEndState::Type TrackNodeEndState::GetType() const
-        {
-            return static_cast<Type>(variant.GetTypeAsID());
-        }
-
-        Value::Type TrackNodeEndState::GetVariantType() const
-        {
-            return variantType;
-        }
-
-        TrackNode::TrackNode(Value::Type variantType) : variantType(variantType), endState(variantType)
+        TrackNode::TrackNode(Value::Type variantType) : variantType(variantType)
         {}
 
         TrackNode::TrackNode(TrackNode &&arg) : variantType(std::move(arg.variantType)), endState(std::move(arg.endState)), interpolation(std::move(arg.interpolation)), timeTaken(std::move(arg.timeTaken))
@@ -261,9 +126,9 @@ namespace Atmos
             return !(*this == arg);
         }
 
-        void TrackNode::SetEndState(const EndStateT &set)
+        void TrackNode::SetEndState(const Value &set)
         {
-            if (set.GetVariantType() != variantType)
+            if (set.GetType() != variantType)
                 return;
 
             endState = set;
@@ -281,7 +146,7 @@ namespace Atmos
 
         Value TrackNode::GetEndValue() const
         {
-            return endState.GetEnding();
+            return endState;
         }
 
         void TrackNode::SetTimeTaken(const TimeValue &set)
@@ -292,11 +157,6 @@ namespace Atmos
         const TimeValue& TrackNode::GetTimeTaken() const
         {
             return timeTaken;
-        }
-
-        TrackNode::EndStateT TrackNode::PrototypeEndState() const
-        {
-            return EndStateT(variantType);
         }
     }
 }

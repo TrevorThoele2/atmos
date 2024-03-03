@@ -78,11 +78,6 @@ namespace Atmos
             return working;
         }
 
-        TimeValue ModulatorBase::GetSumTimeTaken() const
-        {
-            return TimeValue();
-        }
-
         const Name& ModulatorBase::GetGeneratorName() const
         {
             return *generatorName;

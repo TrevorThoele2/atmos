@@ -117,7 +117,9 @@ namespace Atmos
             public:
                 Prototype() = default;
                 Prototype(const Prototype &arg);
+                Prototype(Prototype &&arg);
                 Prototype& operator=(const Prototype &arg);
+                Prototype& operator=(Prototype &&arg);
 
                 // Expects heap memory
                 void AddProperty(PropertyBase *add);
@@ -246,7 +248,7 @@ namespace Atmos
             private:
                 const Name& GetClsName() const override final;
             public:
-                static Mixin& Instance();
+                static Mixin& Scaffolding();
                 static const Name& ClsName();
 
                 static void PushAllToModule(Falcon::Module &pushTo);
@@ -271,7 +273,7 @@ namespace Atmos
             }
 
             template<class Mixin>
-            Mixin& Definition<Mixin>::Instance()
+            Mixin& Definition<Mixin>::Scaffolding()
             {
                 static Mixin instance;
                 return instance;
@@ -286,12 +288,149 @@ namespace Atmos
             template<class Mixin>
             void Definition<Mixin>::PushAllToModule(Falcon::Module &pushTo)
             {
-                auto clsName = Instance().GetClsName();
+                auto clsName = Scaffolding().GetClsName();
                 auto cls = CreateClassSymbol(clsName, pushTo, std::integral_constant<bool, HasConstructor<Mixin>::value>{});
-                for (auto &loop : Instance().GetProperties())
+                for (auto &loop : Scaffolding().GetProperties())
                     loop->PushToFalcon(cls, pushTo);
-                for (auto &loop : Instance().GetMethods())
+                for (auto &loop : Scaffolding().GetMethods())
                     loop->PushToFalcon(cls, pushTo);
+            }
+
+            template<class T>
+            class PropertyPrototype
+            {
+            private:
+                // Storing as void to avoid intellisense being horrible in Visual Studio
+                void *cls;
+                Name name;
+            public:
+                PropertyPrototype(Prototype &cls, const Name &name, const Readonly &readonly = Readonly(), const StrictType &strictType = StrictType());
+                PropertyPrototype(Prototype &cls, const Name &name, const T &obj, const Readonly &readonly = Readonly(), const StrictType &strictType = StrictType());
+                PropertyPrototype(Prototype &cls, const Name &name, T &&obj, const Readonly &readonly = Readonly(), const StrictType &strictType = StrictType());
+                PropertyPrototype(Prototype &cls, const PropertyPrototype &arg);
+                PropertyPrototype(Prototype &cls, PropertyPrototype &&arg);
+                PropertyPrototype& operator=(const PropertyPrototype &arg);
+                PropertyPrototype& operator=(PropertyPrototype &&arg);
+
+                void Set(const T &obj);
+                void Set(T &&obj);
+                void SetPropertyTo(Falcon::VMachine &vm, Falcon::Item &self, const T &set);
+                void SetPropertyTo(Falcon::VMachine &vm, Falcon::Item &self, T &&set);
+                // Retrieves the actual value behind the property
+                // Make sure that this will actually exist
+                T& Retrieve();
+                const T& Retrieve() const;
+                Prototype::Property<T>* RetrieveProperty();
+                const Prototype::Property<T>* RetrieveProperty() const;
+            };
+
+            template<class T>
+            PropertyPrototype<T>::PropertyPrototype(Prototype &cls, const Name &name, const Readonly &readonly, const StrictType &strictType) : cls(&cls), name(name)
+            {
+                cls.AddProperty(new Prototype::Property<T>(name, readonly, strictType));
+            }
+
+            template<class T>
+            PropertyPrototype<T>::PropertyPrototype(Prototype &cls, const Name &name, const T &obj, const Readonly &readonly, const StrictType &strictType) : cls(&cls), name(name)
+            {
+                cls.AddProperty(new Prototype::Property<T>(name, obj, readonly, strictType));
+            }
+
+            template<class T>
+            PropertyPrototype<T>::PropertyPrototype(Prototype &cls, const Name &name, T &&obj, const Readonly &readonly, const StrictType &strictType) : cls(&cls), name(name)
+            {
+                cls.AddProperty(new Prototype::Property<T>(name, std::move(obj), readonly, strictType));
+            }
+
+            template<class T>
+            PropertyPrototype<T>::PropertyPrototype(Prototype &cls, const PropertyPrototype &arg) : cls(&cls), name(arg.name)
+            {
+                cls.AddProperty(arg.RetrieveProperty()->Clone());
+            }
+
+            template<class T>
+            PropertyPrototype<T>::PropertyPrototype(Prototype &cls, PropertyPrototype &&arg) : cls(&cls)
+            {
+                cls.AddProperty(arg.RetrieveProperty()->Clone());
+                name = std::move(arg.name);
+            }
+
+            template<class T>
+            PropertyPrototype<T>& PropertyPrototype<T>::operator=(const PropertyPrototype &arg)
+            {
+                name = arg.name;
+                return *this;
+            }
+
+            template<class T>
+            PropertyPrototype<T>& PropertyPrototype<T>::operator=(PropertyPrototype &&arg)
+            {
+                name = std::move(arg.name);
+                return *this;
+            }
+
+            template<class T>
+            void PropertyPrototype<T>::Set(const T &obj)
+            {
+                auto got = RetrieveProperty();
+                if (!got)
+                    return;
+
+                got->obj = obj;
+            }
+
+            template<class T>
+            void PropertyPrototype<T>::Set(T &&obj)
+            {
+                auto got = RetrieveProperty();
+                if (!got)
+                    return;
+
+                got->obj = std::move(obj);
+            }
+
+            template<class T>
+            void PropertyPrototype<T>::SetPropertyTo(Falcon::VMachine &vm, Falcon::Item &self, const T &set)
+            {
+                auto got = RetrieveProperty();
+                if (!got)
+                    return;
+
+                got->SetPropertyTo(vm, self, set);
+            }
+
+            template<class T>
+            void PropertyPrototype<T>::SetPropertyTo(Falcon::VMachine &vm, Falcon::Item &self, T &&set)
+            {
+                auto got = RetrieveProperty();
+                if (!got)
+                    return;
+
+                got->SetPropertyTo(vm, self, std::move(set));
+            }
+
+            template<class T>
+            T& PropertyPrototype<T>::Retrieve()
+            {
+                return **RetrieveProperty();
+            }
+
+            template<class T>
+            const T& PropertyPrototype<T>::Retrieve() const
+            {
+                return **RetrieveProperty();
+            }
+
+            template<class T>
+            Prototype::Property<T>* PropertyPrototype<T>::RetrieveProperty()
+            {
+                return static_cast<Prototype*>(cls)->GetProperty<T>(name);
+            }
+
+            template<class T>
+            const Prototype::Property<T>* PropertyPrototype<T>::RetrieveProperty() const
+            {
+                return static_cast<Prototype*>(cls)->GetProperty<T>(name);
             }
         }
     }

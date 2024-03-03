@@ -26,6 +26,10 @@ namespace Atmos
                 const TrackDescriberBase<Angle::ValueT> RotationX("RotationX", Value::Type::FLOAT);
                 const TrackDescriberBase<Angle::ValueT> RotationY("RotationY", Value::Type::FLOAT);
                 const TrackDescriberBase<Angle::ValueT> RotationZ("RotationZ", Value::Type::FLOAT);
+                const TrackDescriberBase<Color::ValueT> ColorA("ColorA", Value::Type::INT);
+                const TrackDescriberBase<Color::ValueT> ColorR("ColorR", Value::Type::INT);
+                const TrackDescriberBase<Color::ValueT> ColorG("ColorG", Value::Type::INT);
+                const TrackDescriberBase<Color::ValueT> ColorB("ColorB", Value::Type::INT);
 
                 const TrackDescriberBase<::Atmos::Sound::Volume> Volume("Volume", Value::Type::FLOAT);
                 const TrackDescriberBase<::Atmos::Sprite::Index> Index("Index", Value::Type::INT);

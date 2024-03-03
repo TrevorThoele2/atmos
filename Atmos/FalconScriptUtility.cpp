@@ -97,7 +97,7 @@ namespace Atmos
             String ret(string);
             Falcon::SyntaxError error;
             vm.fillErrorContext(&error);
-            ret.append(Falcon::AutoCString(error.toString()).c_str());
+            ret.append(String("\n") + Falcon::AutoCString(error.toString()).c_str());
             return ret;
         }
 
@@ -458,12 +458,15 @@ namespace Atmos
 
         bool FalconVariableTraits<double>::Is(Falcon::Item &item)
         {
-            return item.isNumeric();
+            return item.isNumeric() || item.isInteger();
         }
 
         FalconVariableTraits<double>::Type FalconVariableTraits<double>::FromItem(Falcon::VMachine &vm, Falcon::Item &item)
         {
-            return item.asNumeric();
+            if (item.isNumeric())
+                return item.asNumeric();
+            else
+                return item.asInteger();
         }
 
         void FalconVariableTraits<double>::SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set)

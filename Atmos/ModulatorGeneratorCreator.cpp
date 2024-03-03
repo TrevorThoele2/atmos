@@ -103,6 +103,38 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
                 END_MODIFIER { return Value(object.GetZRotation().AsRadians()); }
                 END_TRACK_GENERATOR;
 
+                // Color A
+                START_TRACK_GENERATOR(Description::Track::ColorA)
+                {
+                    args.object.color.SetAlpha(args.current.AsInt());
+                }
+                END_MODIFIER{ return Value(std::int64_t(object.color.GetAlpha())); }
+                END_TRACK_GENERATOR;
+
+                // Color R
+                START_TRACK_GENERATOR(Description::Track::ColorR)
+                {
+                    args.object.color.SetRed(args.current.AsInt());
+                }
+                END_MODIFIER{ return Value(std::int64_t(object.color.GetRed())); }
+                END_TRACK_GENERATOR;
+
+                // Color G
+                START_TRACK_GENERATOR(Description::Track::ColorG)
+                {
+                    args.object.color.SetGreen(args.current.AsInt());
+                }
+                END_MODIFIER{ return Value(std::int64_t(object.color.GetGreen())); }
+                END_TRACK_GENERATOR;
+
+                // Color B
+                START_TRACK_GENERATOR(Description::Track::ColorB)
+                {
+                    args.object.color.SetBlue(args.current.AsInt());
+                }
+                END_MODIFIER{ return Value(std::int64_t(object.color.GetBlue())); }
+                END_TRACK_GENERATOR;
+
                 // Index
                 START_TRACK_GENERATOR(Description::Track::Index)
                 {
@@ -187,6 +219,38 @@ gen->AddTrackGenerator(describer.name, describer.variantType,                   
                     args.object.Get().SetZRotation(Angle(Angle::RADIANS, args.current.AsFloat()));
                 }
                 END_MODIFIER { return Value(object.Get().GetZRotation().AsRadians()); }
+                END_TRACK_GENERATOR;
+
+                // Color A
+                START_TRACK_GENERATOR(Description::Track::ColorA)
+                {
+                    args.object.Get().color.SetAlpha(args.current.AsInt());
+                }
+                END_MODIFIER{ return Value(std::int64_t(object.Get().color.GetAlpha())); }
+                END_TRACK_GENERATOR;
+
+                // Color R
+                START_TRACK_GENERATOR(Description::Track::ColorR)
+                {
+                    args.object.Get().color.SetRed(args.current.AsInt());
+                }
+                END_MODIFIER{ return Value(std::int64_t(object.Get().color.GetRed())); }
+                END_TRACK_GENERATOR;
+
+                // Color G
+                START_TRACK_GENERATOR(Description::Track::ColorG)
+                {
+                    args.object.Get().color.SetGreen(args.current.AsInt());
+                }
+                END_MODIFIER{ return Value(std::int64_t(object.Get().color.GetGreen())); }
+                END_TRACK_GENERATOR;
+
+                // Color B
+                START_TRACK_GENERATOR(Description::Track::ColorB)
+                {
+                    args.object.Get().color.SetBlue(args.current.AsInt());
+                }
+                END_MODIFIER{ return Value(std::int64_t(object.Get().color.GetBlue())); }
                 END_TRACK_GENERATOR;
 
                 // Index

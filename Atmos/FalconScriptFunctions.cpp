@@ -107,11 +107,11 @@ namespace Atmos
                 {
                     SETUP_FUNCTION(FindPath);
 
-                    auto from = selfFunc.GetParameter<Classes::Position::GridPosition>("from");
-                    auto to = selfFunc.GetParameter<Classes::Position::GridPosition>("to");
+                    auto &from = selfFunc.GetParameter<Classes::Position::GridPosition>("from")->obj;
+                    auto &to = selfFunc.GetParameter<Classes::Position::GridPosition>("to")->obj;
 
-                    ::Atmos::GridPosition atmosFrom(*from->obj.x, *from->obj.y, *from->obj.z);
-                    ::Atmos::GridPosition atmosTo(*to->obj.x, *to->obj.y, *to->obj.z);
+                    ::Atmos::GridPosition atmosFrom(from.x.Retrieve(), from.y.Retrieve(), from.z.Retrieve());
+                    ::Atmos::GridPosition atmosTo(to.x.Retrieve(), to.y.Retrieve(), to.z.Retrieve());
 
                     auto &path = ::Atmos::Act::Position::FindPath(atmosFrom, atmosTo);
 
@@ -119,10 +119,10 @@ namespace Atmos
                     while (!path.empty())
                     {
                         auto &top = path.top();
-                        Classes::Position::GridPosition::x.obj = top.GetX();
-                        Classes::Position::GridPosition::y.obj = top.GetY();
-                        Classes::Position::GridPosition::z.obj = top.GetZ();
-                        sendPath->append(Classes::Position::GridPosition::Instance().CreateItem(*vm));
+                        Classes::Position::GridPosition::Scaffolding().x.Set(top.GetX());
+                        Classes::Position::GridPosition::Scaffolding().y.Set(top.GetY());
+                        Classes::Position::GridPosition::Scaffolding().z.Set(top.GetZ());
+                        sendPath->append(Classes::Position::GridPosition::Scaffolding().CreateItem(*vm));
                         path.pop();
                     }
 
@@ -186,8 +186,8 @@ namespace Atmos
                     }
 
                     // Return the ID for the new modulator
-                    Classes::Modulator::Modulator::modID.obj = GameEnvironment::GetModulatorController().Attach(madeMod);
-                    vm->retval(Classes::Modulator::Modulator::Instance().CreateItem(*vm));
+                    Classes::Modulator::Modulator::Scaffolding().modID.Set(GameEnvironment::GetModulatorController().Attach(madeMod));
+                    vm->retval(Classes::Modulator::Modulator::Scaffolding().CreateItem(*vm));
                 } BODY_END;
             }
 
