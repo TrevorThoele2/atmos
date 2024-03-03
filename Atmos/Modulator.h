@@ -10,7 +10,7 @@ namespace Atmos
         class ModulatorBase
         {
         public:
-            typedef size_t TrackID;
+            typedef IDManagerBase::ID TrackID;
             typedef std::unique_ptr<TrackBase> TrackPtr;
         private:
             bool working;
@@ -26,6 +26,8 @@ namespace Atmos
             virtual void StopImpl() = 0;
             virtual bool WorkImpl() = 0;
             virtual TimeValue GetSumTimeTakenImpl() const = 0;
+
+            virtual bool IsWorkingObjectImpl(void *obj) const = 0;
         protected:
             void StartBase();
         public:
@@ -50,6 +52,8 @@ namespace Atmos
             TimeValue GetSumTimeTaken() const;
 
             const Name& GetGeneratorName() const;
+
+            bool IsWorkingObject(void *obj) const;
         };
 
         template<class Object>
@@ -59,7 +63,7 @@ namespace Atmos
             typedef Object ObjectT;
             typedef Track<ObjectT> TrackT;
         private:
-            typedef IDManager<std::vector<TrackT>> TrackContainer;
+            typedef IDManager<std::unordered_map<TrackID, TrackT>> TrackContainer;
         private:
             Modulator* CloneImpl() const override final;
 
@@ -71,6 +75,8 @@ namespace Atmos
             void StopImpl() override final;
             bool WorkImpl() override final;
             TimeValue GetSumTimeTakenImpl() const override final;
+
+            bool IsWorkingObjectImpl(void *obj) const override final;
         private:
             ObjectT *obj;
             TrackContainer tracks;
@@ -113,7 +119,7 @@ namespace Atmos
             if (found == tracks.end())
                 return nullptr;
 
-            return &*found;
+            return &found->second;
         }
 
         template<class Object>
@@ -123,12 +129,13 @@ namespace Atmos
             if (found == tracks.end())
                 return nullptr;
 
-            return &*found;
+            return &found->second;
         }
 
         template<class Object>
         void Modulator<Object>::StopImpl()
         {
+            obj = nullptr;
             tracksWorking.clear();
         }
 
@@ -155,12 +162,18 @@ namespace Atmos
             TimeValue ret;
             for (auto &loop : tracks)
             {
-                TimeValue checkAgainst = loop.GetSumTimeTaken();
+                TimeValue checkAgainst = loop.second.GetSumTimeTaken();
                 if (ret < checkAgainst)
                     ret = checkAgainst;
             }
 
             return ret;
+        }
+
+        template<class Object>
+        bool Modulator<Object>::IsWorkingObjectImpl(void *obj) const
+        {
+            return this->obj == obj;
         }
 
         template<class Object>
@@ -219,7 +232,7 @@ namespace Atmos
 
             this->obj = &obj;
             for (auto &loop : tracks)
-                tracksWorking.push_back(&loop);
+                tracksWorking.push_back(&loop.second);
 
             StartBase();
         }

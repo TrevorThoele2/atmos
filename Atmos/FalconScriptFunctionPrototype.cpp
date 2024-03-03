@@ -9,23 +9,31 @@ namespace Atmos
     {
         namespace Functions
         {
-            Prototype::ParameterBase::ParameterBase(const Name &name) : name(name)
+            Prototype::ParameterBase::ParameterBase(const Name &name, bool strictType) : name(name), strictType(strictType), wasSet(false)
             {}
 
             void Prototype::ParameterBase::SetItem(Falcon::VMachine &vm)
             {
-                auto found = vm.findGlobalItem(Convert(name));
+                auto found = RetrieveItemFromVM(name, &vm);
                 if (!found)
                     return;
 
                 SetItem(vm, *found);
             }
 
+            bool Prototype::ParameterBase::WasSet() const
+            {
+                return wasSet;
+            }
+
             Prototype::Prototype(const Name &functionName, FalconFuncT falconFunc) : functionName(functionName), falconFunc(falconFunc)
             {}
 
-            Prototype::Prototype(const Name &functionName, std::vector<ParameterBase*> &&parameters, FalconFuncT falconFunc) : functionName(functionName), parameters(std::move(parameters)), falconFunc(falconFunc)
-            {}
+            Prototype::Prototype(const Name &functionName, std::vector<ParameterBase*> &&parameters, FalconFuncT falconFunc) : functionName(functionName), falconFunc(falconFunc)
+            {
+                for (auto &loop : parameters)
+                    this->parameters.underlying.push_back(ParameterPtr(loop));
+            }
 
             bool Prototype::Setup(Falcon::VMachine &vm)
             {
@@ -41,14 +49,15 @@ namespace Atmos
                 return functionName;
             }
 
-            typename Prototype::List<Prototype::ParameterBase*> Prototype::GetParameters()
+            typename Prototype::List<Prototype::ParameterPtr>& Prototype::GetParameters()
             {
                 return parameters;
             }
 
             void Prototype::PushAllToModule(Falcon::Module &pushTo)
             {
-                Falcon::Symbol *func = pushTo.addExtFunc(*pushTo.addString(Convert(functionName)), falconFunc);
+                Falcon::Symbol *func = pushTo.addExtFunc(Convert(functionName), falconFunc);
+                auto def = func->getExtFuncDef();
                 for(auto &loop : parameters)
                    loop->PushToFalcon(func, pushTo);
             }

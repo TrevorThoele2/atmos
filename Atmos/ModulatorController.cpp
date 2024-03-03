@@ -10,7 +10,7 @@ namespace Atmos
         bool Controller::IsIn(const Observer &check) const
         {
             for (auto &loop : observers)
-                if (loop == check)
+                if (loop.second == check)
                     return true;
 
             return false;
@@ -33,7 +33,7 @@ namespace Atmos
         {
             for (auto loop = observers.begin(); loop != observers.end(); ++loop)
             {
-                if (detach == *loop)
+                if (detach == loop->second)
                 {
                     observers.Remove(loop);
                     return;
@@ -45,7 +45,7 @@ namespace Atmos
         {
             for (auto loop = observers.begin(); loop != observers.end(); ++loop)
             {
-                if (&detach == loop->Get())
+                if (&detach == loop->second.Get())
                 {
                     observers.Remove(loop);
                     return;
@@ -59,18 +59,29 @@ namespace Atmos
             if (found == observers.end())
                 return Observer();
 
-            return *found;
+            return found->second;
         }
 
         void Controller::Work()
         {
             for (auto loop = observers.begin(); loop != observers.end();)
             {
-                if ((*loop)->Work())
+                if (loop->second->Work())
                     loop = observers.Remove(loop);
                 else
                     ++loop;
             }
+        }
+
+        bool Controller::IsModulatorWorkingObject(void *obj) const
+        {
+            for (auto &loop : observers)
+            {
+                if (loop.second->IsWorkingObject(obj))
+                    return true;
+            }
+
+            return false;
         }
     }
 }

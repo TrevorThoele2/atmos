@@ -59,6 +59,7 @@ namespace Atmos
         }
 
         CombatComponent::CombatComponent(CombatComponent &&arg) :
+            Component(std::move(arg)),
             charClass(arg.charClass),
             stats(std::move(arg.stats)),
             resources(std::move(arg.resources)),
@@ -74,6 +75,7 @@ namespace Atmos
 
         CombatComponent& CombatComponent::operator=(const CombatComponent &arg)
         {
+            Component::operator=(arg);
             charClass = arg.charClass;
             stats = arg.stats;
             resources = arg.resources;
@@ -86,12 +88,13 @@ namespace Atmos
             expToNextLevel = arg.expToNextLevel;
             level = arg.level;
             movementRange = arg.movementRange;
-            spells = std::move(arg.spells);
+            spells = arg.spells;
             return *this;
         }
 
         CombatComponent& CombatComponent::operator=(CombatComponent &&arg)
         {
+            Component::operator=(std::move(arg));
             charClass = arg.charClass;
             stats = std::move(arg.stats);
             resources = std::move(arg.resources);

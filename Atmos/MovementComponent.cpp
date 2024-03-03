@@ -21,14 +21,28 @@ namespace Atmos
             scribe(rightMod);
         }
 
-        MovementComponent::MovementComponent(const MovementComponent &arg) : upMod(arg.upMod), downMod(arg.downMod), leftMod(arg.leftMod), rightMod(arg.rightMod)
+        void MovementComponent::OnOwnerEntitySet()
+        {
+            SetScriptCallers();
+        }
+
+        void MovementComponent::SetScriptCallers()
+        {
+            upMod.GetCaller().Set(GetOwnerEntity());
+            downMod.GetCaller().Set(GetOwnerEntity());
+            leftMod.GetCaller().Set(GetOwnerEntity());
+            rightMod.GetCaller().Set(GetOwnerEntity());
+        }
+
+        MovementComponent::MovementComponent(const MovementComponent &arg) : Component(arg), upMod(arg.upMod), downMod(arg.downMod), leftMod(arg.leftMod), rightMod(arg.rightMod)
         {}
 
-        MovementComponent::MovementComponent(MovementComponent &&arg) : upMod(std::move(arg.upMod)), downMod(std::move(arg.downMod)), leftMod(std::move(arg.leftMod)), rightMod(std::move(arg.rightMod))
+        MovementComponent::MovementComponent(MovementComponent &&arg) : Component(std::move(arg)), upMod(std::move(arg.upMod)), downMod(std::move(arg.downMod)), leftMod(std::move(arg.leftMod)), rightMod(std::move(arg.rightMod))
         {}
 
         MovementComponent& MovementComponent::operator=(const MovementComponent &arg)
         {
+            Component::operator=(arg);
             upMod = arg.upMod;
             downMod = arg.downMod;
             leftMod = arg.leftMod;
@@ -38,6 +52,7 @@ namespace Atmos
 
         MovementComponent& MovementComponent::operator=(MovementComponent &&arg)
         {
+            Component::operator=(std::move(arg));
             upMod = std::move(arg.upMod);
             downMod = std::move(arg.downMod);
             leftMod = std::move(arg.leftMod);

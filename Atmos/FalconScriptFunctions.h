@@ -20,11 +20,6 @@ namespace Atmos
             {
                 extern Prototype Create;
             }
-
-            namespace Entity
-            {
-                extern Prototype GetSenseComponent;
-            }
         }
     }
 }

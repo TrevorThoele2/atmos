@@ -51,6 +51,7 @@ namespace Atmos
         static void DetachModulator(const Modulator::Observer &detach);
         static void DetachModulator(const Modulator::ModulatorBase &detach);
         static Modulator::Observer FindModulator(Modulator::Controller::ID find);
+        static bool IsModulatorWorkingObject(void *obj);
 
         static ::affecter::System& GetAffecterSystem();
     };

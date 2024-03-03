@@ -16,6 +16,9 @@ namespace Atmos
             friend class ComponentMapBase;
 
             Entity ownerEntity;
+            void SetOwnerEntity(Entity set);
+
+            virtual void OnOwnerEntitySet() {}
             virtual void PostLoad() {}
         protected:
             ComponentBase();

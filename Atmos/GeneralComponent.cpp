@@ -98,11 +98,12 @@ namespace Atmos
         GeneralComponent::GeneralComponent(const Name &name, const PositionT &position, const DirectionT &direction, Manager *manager) : name(name), niceName(name), position(position), direction(direction), handler(manager), solid(false)
         {}
 
-        GeneralComponent::GeneralComponent(GeneralComponent &&arg) : name(std::move(arg.name)), niceName(std::move(arg.niceName)), position(std::move(arg.position)), direction(std::move(arg.direction)), solid(std::move(arg.solid)), tags(std::move(arg.tags)), handler(std::move(arg.handler))
+        GeneralComponent::GeneralComponent(GeneralComponent &&arg) : Component(std::move(arg)), name(std::move(arg.name)), niceName(std::move(arg.niceName)), position(std::move(arg.position)), direction(std::move(arg.direction)), solid(std::move(arg.solid)), tags(std::move(arg.tags)), handler(std::move(arg.handler))
         {}
 
         GeneralComponent& GeneralComponent::operator=(GeneralComponent &&arg)
         {
+            Component::operator=(std::move(arg));
             name = std::move(arg.name);
             niceName = std::move(arg.niceName);
             position = std::move(arg.position);

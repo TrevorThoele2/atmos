@@ -127,6 +127,7 @@
     <ClInclude Include="AssetReference.h" />
     <ClInclude Include="AssetRegistry.h" />
     <ClInclude Include="Scheduler.h" />
+    <ClInclude Include="ScriptCaller.h" />
     <ClInclude Include="ScriptItem.h" />
     <ClInclude Include="ScriptLoader.h" />
     <ClInclude Include="ScriptRegistry.h" />
@@ -402,6 +403,7 @@
     <ClCompile Include="RenderFragmentGrid.cpp" />
     <ClCompile Include="Asset.cpp" />
     <ClCompile Include="Scheduler.cpp" />
+    <ClCompile Include="ScriptCaller.cpp" />
     <ClCompile Include="ScriptLoader.cpp" />
     <ClCompile Include="ScriptRegistry.cpp" />
     <ClCompile Include="ScriptController.cpp" />

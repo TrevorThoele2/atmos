@@ -59,14 +59,15 @@ namespace Atmos
         CharacterComponent::CharacterComponent(Type type) : type(type)
         {}
 
-        CharacterComponent::CharacterComponent(const CharacterComponent &arg) : type(arg.type), impl((arg.impl) ? arg.impl->Clone() : nullptr)
+        CharacterComponent::CharacterComponent(const CharacterComponent &arg) : Component(arg), type(arg.type), impl((arg.impl) ? arg.impl->Clone() : nullptr)
         {}
 
-        CharacterComponent::CharacterComponent(CharacterComponent &&arg) : type(std::move(arg.type)), impl(std::move(arg.impl))
+        CharacterComponent::CharacterComponent(CharacterComponent &&arg) : Component(std::move(arg)), type(std::move(arg.type)), impl(std::move(arg.impl))
         {}
 
         CharacterComponent& CharacterComponent::operator=(const CharacterComponent &arg)
         {
+            Component::operator=(arg);
             type = arg.type;
             impl.reset(arg.impl->Clone());
             return *this;
@@ -74,6 +75,7 @@ namespace Atmos
 
         CharacterComponent& CharacterComponent::operator=(CharacterComponent &&arg)
         {
+            Component::operator=(std::move(arg));
             type = std::move(arg.type);
             impl = std::move(arg.impl);
             return *this;

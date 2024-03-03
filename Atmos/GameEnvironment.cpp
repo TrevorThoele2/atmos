@@ -180,6 +180,11 @@ namespace Atmos
         return Instance().modulatorController.Find(find);
     }
 
+    bool GameEnvironment::IsModulatorWorkingObject(void *obj)
+    {
+        return Instance().modulatorController.IsModulatorWorkingObject(obj);
+    }
+
     ::affecter::System& GameEnvironment::GetAffecterSystem()
     {
         return Instance().affecterSystem;

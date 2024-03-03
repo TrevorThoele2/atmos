@@ -83,5 +83,10 @@ namespace Atmos
         {
             return *generatorName;
         }
+
+        bool ModulatorBase::IsWorkingObject(void *obj) const
+        {
+            return IsWorkingObjectImpl(obj);
+        }
     }
 }

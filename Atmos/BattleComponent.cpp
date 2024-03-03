@@ -27,11 +27,12 @@ namespace Atmos
         BattleComponent::BattleComponent() : acumen(0), isAlly(false)
         {}
 
-        BattleComponent::BattleComponent(BattleComponent &&arg) : startingPos(std::move(arg.startingPos)), movementRangeLeft(std::move(arg.movementRangeLeft)), turnEnded(std::move(arg.turnEnded)), temporaryStash(std::move(arg.temporaryStash)), statusEffects(std::move(arg.statusEffects)), acumen(std::move(arg.acumen)), isAlly(std::move(arg.isAlly))
+        BattleComponent::BattleComponent(BattleComponent &&arg) : Component(std::move(arg)), startingPos(std::move(arg.startingPos)), movementRangeLeft(std::move(arg.movementRangeLeft)), turnEnded(std::move(arg.turnEnded)), temporaryStash(std::move(arg.temporaryStash)), statusEffects(std::move(arg.statusEffects)), acumen(std::move(arg.acumen)), isAlly(std::move(arg.isAlly))
         {}
 
         BattleComponent& BattleComponent::operator=(BattleComponent &&arg)
         {
+            Component::operator=(std::move(arg));
             startingPos = std::move(arg.startingPos);
             movementRangeLeft = std::move(arg.movementRangeLeft);
             turnEnded = std::move(arg.turnEnded);

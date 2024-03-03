@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vector>
 #include "FalconScriptBasePrototype.h"
 #include "FalconScriptUtility.h"
 
@@ -14,9 +15,12 @@ namespace Atmos
             public:
                 class ParameterBase
                 {
+                protected:
+                    bool wasSet;
                 public:
                     const Name name;
-                    ParameterBase(const Name &name);
+                    const bool strictType;
+                    ParameterBase(const Name &name, bool strictType);
                     virtual ParameterBase* Clone(Falcon::Item &item) const = 0;
                     virtual void SetParameter(Falcon::VMachine &vm, Falcon::Item &obj) = 0;
                     void SetItem(Falcon::VMachine &vm);
@@ -24,6 +28,8 @@ namespace Atmos
                     // Returns true if it could make the item
                     virtual bool FromItem(Prototype &owner, Falcon::VMachine &vm) = 0;
                     virtual void PushToFalcon(Falcon::Symbol *func, Falcon::Module &pushTo) = 0;
+                    // Is true if this was actually set from Falcon
+                    bool WasSet() const;
                 };
 
                 typedef std::unique_ptr<ParameterBase> ParameterPtr;
@@ -35,9 +41,9 @@ namespace Atmos
                     typedef T Type;
                 public:
                     T value;
-                    Parameter(const Name &name);
-                    Parameter(const Name &name, const T &value);
-                    Parameter(const Name &name, T &&value);
+                    Parameter(const Name &name, bool strictType = true);
+                    Parameter(const Name &name, const T &value, bool strictType = true);
+                    Parameter(const Name &name, T &&value, bool strictType = true);
                     Parameter* Clone(Falcon::Item &item) const override final;
                     void SetParameter(Falcon::VMachine &vm, Falcon::Item &obj) override final;
                     void SetItem(Falcon::VMachine &vm, Falcon::Item &obj) override final;
@@ -57,10 +63,10 @@ namespace Atmos
                     typedef typename UnderlyingT::iterator iterator;
                     typedef typename UnderlyingT::const_iterator const_iterator;
                 public:
-                    std::vector<T> underlying;
+                    UnderlyingT underlying;
 
                     List() = default;
-                    List(std::vector<T> &&underlying);
+                    List(UnderlyingT &&underlying);
 
                     T* Get(const Name &name);
                     template<class As>
@@ -97,7 +103,7 @@ namespace Atmos
                 using TraitsT = typename TraitsRetriever<T, HasSpecialization<FalconVariableTraits<T>>::value, std::is_enum<T>::value>::TraitsT;
             private:
                 FalconFuncT falconFunc;
-                List<ParameterBase*> parameters;
+                List<ParameterPtr> parameters;
             public:
                 const Name functionName;
 
@@ -112,21 +118,21 @@ namespace Atmos
                 Parameter<T>* GetParameter(const Name &name);
                 template<class T>
                 Parameter<T>* GetParameter(Parameter<T> &prop);
-                List<ParameterBase*> GetParameters();
+                List<ParameterPtr>& GetParameters();
 
                 void PushAllToModule(Falcon::Module &pushTo);
             };
 
             template<class T>
-            Prototype::Parameter<T>::Parameter(const Name &name) : ParameterBase(name)
+            Prototype::Parameter<T>::Parameter(const Name &name, bool strictType) : ParameterBase(name, strictType)
             {}
 
             template<class T>
-            Prototype::Parameter<T>::Parameter(const Name &name, const T &value) : ParameterBase(name), value(value)
+            Prototype::Parameter<T>::Parameter(const Name &name, const T &value, bool strictType) : ParameterBase(name, strictType), value(value)
             {}
 
             template<class T>
-            Prototype::Parameter<T>::Parameter(const Name &name, T &&value) : ParameterBase(name), value(std::move(arg.value))
+            Prototype::Parameter<T>::Parameter(const Name &name, T &&value, bool strictType) : ParameterBase(name, strictType), value(std::move(arg.value))
             {}
 
             template<class T>
@@ -152,34 +158,51 @@ namespace Atmos
             template<class T>
             bool Prototype::Parameter<T>::FromItem(Prototype &owner, Falcon::VMachine &vm)
             {
-                auto found = RetrieveItemFromVM(name, &vm);
-                ATMOS_ASSERT_MESSAGE(found, "This object must exist.");
-
-                if (!TraitsT<T>::Is(*found))
+                Falcon::Item use;
                 {
+                    auto found = RetrieveItemFromVM(name, &vm);
+                    if (!found)
+                    {
+                        use.setNil();
+                        wasSet = false;
+                    }
+                    else
+                    {
+                        use = *found;
+                        wasSet = true;
+                    }
+                }
+
+                if (strictType && !TraitsT<T>::Is(use))
+                {
+                    String message("A parameter for a function was not the type expected.");
+                    // Add traceback to the string
+                    AddTracebackToString(vm, message);
+                    // Create the content string
                     Falcon::String contentString;
-                    found->toString(contentString);
-                    Logger::Log("A parameter for a function was not the type expected.",
+                    use.toString(contentString);
+                    Logger::Log(message,
                         Logger::Type::ERROR_MODERATE,
                         Logger::NameValueVector{ NameValuePair("Function Name", owner.GetFunctionName()),
-                                                       NameValuePair("Parameter Name", name),
-                                                       NameValuePair("Expected Type", TraitsT<T>::GetTypeString()),
-                                                       NameValuePair("Content (Falcon)", Convert(contentString)) });
+                                                 NameValuePair("Parameter Name", name),
+                                                 NameValuePair("Expected Type", TraitsT<T>::GetTypeString()),
+                                                 NameValuePair("Content (Falcon)", Convert(contentString)) });
                     return false;
                 }
 
-                value = TraitsT<T>::FromItem(*found);
+                if(!use.isNil())
+                    value = TraitsT<T>::FromItem(use);
                 return true;
             }
 
             template<class T>
             void Prototype::Parameter<T>::PushToFalcon(Falcon::Symbol *func, Falcon::Module &pushTo)
             {
-                func->addParam(*pushTo.addString(Convert(name)));
+                func->addParam(Convert(name));
             }
 
             template<class T>
-            Prototype::List<T>::List(std::vector<T> &&underlying) : underlying(std::move(underlying))
+            Prototype::List<T>::List(UnderlyingT &&underlying) : underlying(std::move(underlying))
             {}
 
             template<class T>
@@ -211,7 +234,7 @@ namespace Atmos
             template<class U>
             typename Prototype::Parameter<U>* Prototype::List<T>::GetParameter(const Name &name)
             {
-                return Get<Parameter<U>*>(name);
+                return static_cast<Parameter<U>*>(Get(name)->get());
             }
 
             template<class T>

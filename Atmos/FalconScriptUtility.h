@@ -32,7 +32,7 @@ namespace Atmos
         String Convert(const Falcon::String &arg);
 
         Falcon::Item* RetrieveItemFromVM(const std::string &name, Falcon::VMachine *vm);
-        String& AddTracebackToString(Script::Instance &instance, String &string);
+        String& AddTracebackToString(Falcon::VMachine &vm, String &string);
 
         void FatalScriptError(Script::Instance &instance, String &&string, Logger::Type severity, Logger::NameValueVector &nameValueVector);
         void FatalScriptErrorParameterNotExist(Script::Instance &instance, const String &name);
