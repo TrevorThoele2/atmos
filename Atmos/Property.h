@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Variant.h"
+#include "String.h"
 
 #include "Serialization.h"
 

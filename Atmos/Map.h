@@ -4,6 +4,8 @@
 #include "StaticImage.h"
 #include "SparseRegion.h"
 
+#include <Inscription/UnorderedSetScribe.h>
+
 namespace Atmos::World
 {
     class Map final

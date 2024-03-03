@@ -3,8 +3,10 @@
 #include <Arca/Curator.h>
 
 #include "RequestField.h"
+#include "ModifyEntityBoundary.h"
 #include "ModifyWorldProperties.h"
 #include "RetrieveWorldProperties.h"
+#include "IsSolid.h"
 #include "WorldManager.h"
 
 namespace Atmos::World
@@ -15,8 +17,10 @@ namespace Atmos::World
         Curator(Init init, Manager& manager);
 
         void Handle(const RequestField& command);
+        void Handle(const ModifyEntityBoundary& command);
         void Handle(const ModifyProperties& command);
         std::vector<Property> Handle(const RetrieveProperties& command);
+        bool Handle(const IsSolid& command);
     private:
         Manager* manager;
     };
@@ -31,8 +35,10 @@ namespace Arca
         static TypeName TypeName() { return "Atmos::World::Curator"; }
         using HandledCommands = HandledCommands<
             Atmos::World::RequestField,
+            Atmos::World::ModifyEntityBoundary,
             Atmos::World::ModifyProperties,
-            Atmos::World::RetrieveProperties>;
+            Atmos::World::RetrieveProperties,
+            Atmos::World::IsSolid>;
     };
 }
 

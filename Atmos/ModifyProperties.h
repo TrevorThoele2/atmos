@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Arca/Command.h>
+#include <Arca/RelicID.h>
 #include "Property.h"
 
 namespace Atmos

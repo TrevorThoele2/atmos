@@ -62,6 +62,7 @@
 #include "FrameInformation.h"
 #include "FrameSettings.h"
 
+#include "Map.h"
 #include "WorldCurator.h"
 
 #include "DataCore.h"
@@ -377,6 +378,7 @@ namespace Atmos
         void RegisterTypes(Arca::ReliquaryOrigin& origin, Manager& manager)
         {
             origin
+                .Register<Map>()
                 .Register<Curator>(std::ref(manager));
         }
     }

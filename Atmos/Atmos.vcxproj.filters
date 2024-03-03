@@ -1967,15 +1967,21 @@
     <ClInclude Include="AngelScriptRange.h">
       <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Data</Filter>
     </ClInclude>
+    <ClInclude Include="ModifyEntityBoundary.h">
+      <Filter>Header Files\World\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="IsSolid.h">
+      <Filter>Header Files\World\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptIsSolid.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\World</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FieldDestination.cpp">
       <Filter>Source Files\World\Field</Filter>
     </ClCompile>
     <ClCompile Include="Buffer.cpp">
-      <Filter>Source Files\Data</Filter>
-    </ClCompile>
-    <ClCompile Include="NameValuePair.cpp">
       <Filter>Source Files\Data</Filter>
     </ClCompile>
     <ClCompile Include="StringUtility.cpp">
@@ -2877,6 +2883,9 @@
     </ClCompile>
     <ClCompile Include="AngelScriptGenerateRandomNumber.cpp">
       <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Random</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptIsSolid.cpp">
+      <Filter>Header Files\World\Commands</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

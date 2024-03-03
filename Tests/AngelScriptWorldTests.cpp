@@ -9,6 +9,7 @@
 #include <Atmos/ScriptFinished.h>
 #include <Atmos/Work.h>
 #include <Atmos/StringUtility.h>
+#include <Atmos/ModifyEntityBoundary.h>
 
 SCENARIO_METHOD(AngelScriptWorldTestsFixture, "running world AngelScript scripts", "[script][angelscript][world]")
 {
@@ -224,6 +225,66 @@ SCENARIO_METHOD(AngelScriptWorldTestsFixture, "running world AngelScript scripts
                         const auto result = std::get<String>(std::get<Variant>(finishes[0].result));
                         REQUIRE(result == expectedResult);
                     }
+                }
+            }
+        }
+    }
+
+    GIVEN("script that returns is solid")
+    {
+        const auto gridPoint = dataGeneration.RandomStack<
+            Spatial::Grid::Point,
+            Spatial::Grid::Point::Value,
+            Spatial::Grid::Point::Value>();
+
+        WHEN("is not solid")
+        {
+            CompileAndCreateScript(
+                "basic_script.as",
+                "bool main(int x, int y)\n" \
+                "{\n" \
+                "    return Arca::Reliquary::Do(Atmos::World::IsSolid(Atmos::Spatial::Grid::Point(x, y)));\n" \
+                "}",
+                { gridPoint.x, gridPoint.y },
+                fieldReliquary);
+
+            WHEN("working reliquary")
+            {
+                fieldReliquary.Do(Work{});
+
+                THEN("is false")
+                {
+                    REQUIRE(finishes.size() == 1);
+
+                    const auto result = std::get<bool>(std::get<Variant>(finishes[0].result));
+                    REQUIRE(result == false);
+                }
+            }
+        }
+
+        WHEN("is solid")
+        {
+            fieldReliquary.Do(World::ModifyEntityBoundary{ {gridPoint}, {} });
+
+            CompileAndCreateScript(
+                "basic_script.as",
+                "bool main(int x, int y)\n" \
+                "{\n" \
+                "    return Arca::Reliquary::Do(Atmos::World::IsSolid(Atmos::Spatial::Grid::Point(x, y)));\n" \
+                "}",
+                { gridPoint.x, gridPoint.y },
+                fieldReliquary);
+
+            WHEN("working reliquary")
+            {
+                fieldReliquary.Do(Work{});
+
+                THEN("is true")
+                {
+                    REQUIRE(finishes.size() == 1);
+
+                    const auto result = std::get<bool>(std::get<Variant>(finishes[0].result));
+                    REQUIRE(result == true);
                 }
             }
         }
