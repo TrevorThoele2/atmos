@@ -49,8 +49,9 @@ SCENARIO_METHOD(WorldSerializationTestsFixture, "rendering after world serializa
 
         std::unique_ptr<Asset::Resource::Image> imageResource =
             std::make_unique<MockImageAssetResource>();
+        const Name imageAssetName = "Pixel";
         auto imageAsset = fieldReliquary.Do(Arca::Create<Asset::Image> {
-            "Pixel", std::move(imageResource), Asset::ImageGridSize{} });
+            imageAssetName, std::move(imageResource), Asset::ImageGridSize{} });
 
         auto materialAsset = fieldReliquary.Do(Arca::Create<Asset::ImageMaterial> {
             String{}, std::vector<Asset::Material::Pass>{} });
@@ -151,7 +152,7 @@ SCENARIO_METHOD(WorldSerializationTestsFixture, "rendering after world serializa
                 auto outputArchive = World::Serialization::OutputAssetsArchiveInterface(assetsFilePath);
 
                 World::Serialization::OutputAssetsArchiveInterface::Saves assetSaves;
-                assetSaves.images.emplace_back(Name("Pixel"), Buffer(pixelBuffer));
+                assetSaves.images.emplace_back(imageAssetName, Buffer(pixelBuffer));
                 outputArchive.Save(assetSaves);
             }
 

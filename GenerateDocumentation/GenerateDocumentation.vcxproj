@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -73,12 +73,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>..\..\freeimage\Source;..\..\function2\include;..\..\inscription;..\..\chroma;..\..\arca;..\..\atmos;..\..\angelscript\angelscript\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(LibraryPath)</LibraryPath>
+    <LibraryPath>..\..\angelscript\angelscript\lib;..\..\freeimage\Dist\x32;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\Users\Trevor\Documents\ProgrammingProjects\FreeImage\Source;C:\Users\Trevor\Documents\ProgrammingProjects\function2\include;C:\Users\Trevor\Documents\ProgrammingProjects\Inscription;C:\Users\Trevor\Documents\ProgrammingProjects\Chroma;C:\Users\Trevor\Documents\ProgrammingProjects\Arca;C:\Users\Trevor\Documents\ProgrammingProjects\AngelScript\sdk\angelscript\include;C:\Users\Trevor\Documents\ProgrammingProjects\Atmos\;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\Trevor\Documents\ProgrammingProjects\FreeImage\Dist\x32;C:\Users\Trevor\Documents\ProgrammingProjects\AngelScript\sdk\angelscript\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>..\;..\..\angelscript\angelscript\include;..\..\chroma;..\..\inscription;..\..\function2\include;..\..\arca;..\..\freeimage\Dist\x32;$(IncludePath)</IncludePath>
+    <LibraryPath>..\..\angelscript\angelscript\lib;..\..\freeimage\Dist\x32;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
