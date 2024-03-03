@@ -1,15 +1,14 @@
 #pragma once
 
 #include <Arca/Command.h>
-#include "Position3D.h"
+#include "Position2D.h"
 
 namespace Atmos::Render
 {
     struct MoveCameraBy
     {
-        Position3D::Value x;
-        Position3D::Value y;
-        Position3D::Value z;
+        Position2D::Value x;
+        Position2D::Value y;
     };
 }
 

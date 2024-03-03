@@ -9,14 +9,14 @@ namespace Atmos::Render
             {
                 return statistics.profilers.render;
             },
-            init.owner)
+            MutablePointer())
     {}
 
     void Curator::Work()
     {
         debugRenderProfiler.Start();
 
-        auto mainSurfaceData = MutablePointer(mainSurface);
+        auto mainSurfaceData = MutablePointer().Of(mainSurface);
         mainSurfaceData->FullColor(Color{ 255, 255, 0, 0 });
         mainSurfaceData->RenderStaged();
 

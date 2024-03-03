@@ -9,9 +9,9 @@ namespace Atmos::World
         debugFieldID(
             [this](Debug::Statistics& statistics)
             {
-                statistics.game.fieldID = MutablePointer<CurrentFieldData>()->fieldID;
+                statistics.game.fieldID = MutablePointer().Of<CurrentFieldData>()->fieldID;
             },
-            init.owner)
+            MutablePointer())
     {}
 
     void CurrentFieldCurator::Work()

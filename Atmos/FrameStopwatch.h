@@ -13,6 +13,7 @@ namespace Atmos::Time
         explicit FrameStopwatch(Init init);
 
         Value<> Start() const;
+        [[nodiscard]] bool IsStarted() const;
         Duration<> Elapsed() const;
         [[nodiscard]] Value<> CurrentTime() const;
     private:

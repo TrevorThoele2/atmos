@@ -14,13 +14,13 @@ namespace Atmos::Entity
             {
                 statistics.game.playerColumn = currentAvatar->entity->general->position.x;
             },
-            init.owner),
+            MutablePointer()),
         debugPlayerRow(
             [this](Debug::Statistics& statistics)
             {
                 statistics.game.playerRow = currentAvatar->entity->general->position.y;
             },
-            init.owner)
+            MutablePointer())
     {}
 
     void AvatarCurator::Work()
@@ -31,7 +31,7 @@ namespace Atmos::Entity
                 if (currentAvatar->entity)
                     Owner().Destroy(AsHandle(*currentAvatar->entity));
 
-                auto currentAvatarData = MutablePointer(currentAvatar);
+                auto currentAvatarData = MutablePointer().Of(currentAvatar);
                 currentAvatarData->entity = Arca::Index<Entity>(signal.reference.ID(), Owner());
                 currentAvatarData->component = signal.reference;
             });
@@ -39,7 +39,7 @@ namespace Atmos::Entity
         Owner().ExecuteOn<Arca::DestroyingKnown<AvatarComponent>>(
             [this](const Arca::DestroyingKnown<AvatarComponent>&)
             {
-                auto currentAvatarData = MutablePointer(currentAvatar);
+                auto currentAvatarData = MutablePointer().Of(currentAvatar);
                 currentAvatarData->entity = {};
                 currentAvatarData->component = {};
             });

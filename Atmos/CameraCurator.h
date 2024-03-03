@@ -3,11 +3,14 @@
 #include <Arca/Curator.h>
 
 #include "Camera.h"
+
 #include "MoveCamera.h"
 #include "MoveCameraBy.h"
-#include "MoveCameraToInstant.h"
-#include "MoveCameraDeltaInstant.h"
+#include "MoveCameraTo.h"
+#include "CameraMoved.h"
+
 #include "ResizeCamera.h"
+#include "CameraResized.h"
 
 #include "DebugValue.h"
 
@@ -22,29 +25,42 @@ namespace Atmos::Render
     public:
         void Handle(const MoveCamera& command);
         void Handle(const MoveCameraBy& command);
-        void Handle(const MoveCameraToInstant& command);
-        void Handle(const MoveCameraDeltaInstant& command);
+        void Handle(const MoveCameraTo& command);
         void Handle(const ResizeCamera& command);
     private:
         Arca::Index<Camera> camera;
-
-        // Holder for any potential positions that aren't stored elsewhere (just looking somewhere, etc)
-        Position3D basePosition;
     private:
         void Move(Direction direction, Position3D::Value by);
-        void MoveBy(Position3D::Value x, Position3D::Value y, Position3D::Value z);
-        void MoveToInstant(const Position3D& pos);
-        void MoveDeltaInstant(Position3D::Value x, Position3D::Value y, Position3D::Value z);
-        void Resize(const ScreenSize& size);
-    private:
-        void ResetFocus();
+        void MoveBy(Position3D::Value x, Position3D::Value y);
+        void MoveTo(const Position3D& position);
+        template<class Function>
+        void DoMove(Function function);
 
-        void CalculateSides();
-        bool IsFocusValid();
+        void Resize(const ScreenSize& size);
+        template<class Function>
+        void DoResize(Function function);
     private:
-        Debug::Value debugViewOriginX;
-        Debug::Value debugViewOriginY;
+        Debug::Value debugCenterX;
+        Debug::Value debugCenterY;
     };
+
+    template<class Function>
+    void CameraCurator::DoMove(Function function)
+    {
+        const auto previousCenter = camera->center;
+        function();
+        if (previousCenter != camera->center)
+            Owner().Raise<CameraMoved>(camera);
+    }
+
+    template<class Function>
+    void CameraCurator::DoResize(Function function)
+    {
+        const auto previousSize = camera->size;
+        function();
+        if (previousSize != camera->size)
+            Owner().Raise<CameraResized>(camera);
+    }
 }
 
 namespace Arca
@@ -57,8 +73,7 @@ namespace Arca
         using HandledCommands = Arca::HandledCommands<
             Atmos::Render::MoveCamera,
             Atmos::Render::MoveCameraBy,
-            Atmos::Render::MoveCameraDeltaInstant,
-            Atmos::Render::MoveCameraToInstant,
+            Atmos::Render::MoveCameraTo,
             Atmos::Render::ResizeCamera>;
     };
 }

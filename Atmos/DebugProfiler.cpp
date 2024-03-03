@@ -2,9 +2,9 @@
 
 namespace Atmos::Debug
 {
-    Profiler::Profiler(StatisticPicker statisticPicker, Arca::Reliquary& reliquary) :
+    Profiler::Profiler(StatisticPicker statisticPicker, Arca::MutablePointer mutablePointer) :
         statisticPicker(std::move(statisticPicker)),
-        statistics(StatisticsFrom(reliquary))
+        statistics(StatisticsFrom(mutablePointer))
     {}
 
     void Profiler::Start()
@@ -23,13 +23,14 @@ namespace Atmos::Debug
         statisticPicker(*statistics)->Elapsed();
     }
 
-    Statistics* Profiler::StatisticsFrom(Arca::Reliquary& reliquary)
+    Statistics* Profiler::StatisticsFrom(Arca::MutablePointer mutablePointer)
     {
         try
         {
-            return Arca::Postulate<Statistics*>(reliquary).Get();
+            const Arca::Postulate<Statistics*> postulate(mutablePointer.Reliquary());
+            return mutablePointer.Of(*postulate);
         }
-        catch (std::exception&)
+        catch(Arca::NotRegistered&)
         {
             return nullptr;
         }

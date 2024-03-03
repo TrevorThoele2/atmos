@@ -69,5 +69,6 @@ namespace Atmos
     namespace Debug
     {
         void RegisterTypes(Arca::ReliquaryOrigin& origin);
+        void RegisterGlobalRedirectionTypes(Arca::ReliquaryOrigin& origin, Arca::Reliquary& globalReliquary);
     }
 }

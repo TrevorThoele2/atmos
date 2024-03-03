@@ -5,10 +5,10 @@
 
 namespace Atmos::Render
 {
-    struct MoveCameraToInstant
+    struct MoveCameraTo
     {
         Position3D toPosition;
-        explicit MoveCameraToInstant(const Position3D& toPosition) : toPosition(toPosition)
+        explicit MoveCameraTo(const Position3D& toPosition) : toPosition(toPosition)
         {}
     };
 }
@@ -16,9 +16,9 @@ namespace Atmos::Render
 namespace Arca
 {
     template<>
-    struct Traits<Atmos::Render::MoveCameraToInstant>
+    struct Traits<Atmos::Render::MoveCameraTo>
     {
         static const ObjectType objectType = ObjectType::Command;
-        static inline const TypeName typeName = "MoveCameraToInstant";
+        static inline const TypeName typeName = "MoveCameraTo";
     };
 }

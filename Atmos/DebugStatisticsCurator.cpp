@@ -143,7 +143,7 @@ namespace Atmos::Debug
 
     void StatisticsCurator::BundleProfilers()
     {
-        auto statisticsData = MutablePointer(statistics);
+        auto statisticsData = MutablePointer().Of(statistics);
         profilerList.push_back(&statisticsData->profilers.input);
         profilerList.push_back(&statisticsData->profilers.logic);
         profilerList.push_back(&statisticsData->profilers.render);

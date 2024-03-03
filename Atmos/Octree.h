@@ -296,6 +296,7 @@ namespace Atmos::Grid
                     auto& headChild = head.children[headChildIndex];
                     headChild->Subdivide();
                     headChild->children[setChildIndex] = std::move(previousChildren[previousChildIndex]);
+                    headChild->totalSize = headChild->children[setChildIndex]->totalSize;
                 };
 
                 childSetter(0, 7, 0);

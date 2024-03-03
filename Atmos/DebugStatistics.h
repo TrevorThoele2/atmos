@@ -48,8 +48,8 @@ namespace Atmos::Debug
             ScreenSize::Dimension startX = 0;
             ScreenSize::Dimension startY = 0;
 
-            Position2D::Value viewOriginX = 0;
-            Position2D::Value viewOriginY = 0;
+            Position2D::Value cameraCenterX = 0;
+            Position2D::Value cameraCenterY = 0;
         } window;
     public:
         using Profiler = Arca::Index<Time::RealStopwatch>;

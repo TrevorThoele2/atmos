@@ -18,7 +18,7 @@ namespace Atmos::Entity
             if (!running)
                 continue;
 
-            MutablePointer(running)->Resume();
+            MutablePointer().Of(running)->Resume();
         }
     }
 }

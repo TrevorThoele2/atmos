@@ -11,19 +11,21 @@ namespace Atmos::Time
 
     Value<> StopwatchCurator::Handle(const StartStopwatch& command)
     {
-        auto coreData = MutablePointer<StopwatchCore>(command.id);
+        auto coreData = MutablePointer().Of<StopwatchCore>(command.id);
         coreData->start = coreData->currentTime();
         return coreData->start;
     }
 
     Duration<> StopwatchCurator::Handle(const CalculateStopwatch& command)
     {
-        const auto coreData = MutablePointer<StopwatchCore>(command.id);
+        const auto coreData = MutablePointer().Of<StopwatchCore>(command.id);
+        if (!coreData->IsStarted())
+            return Duration<>();
 
         const auto currentTime = coreData->currentTime();
         const auto elapsed = currentTime - coreData->start;
 
-        auto statisticsData = MutablePointer<StopwatchStatistics>(command.id);
+        auto statisticsData = MutablePointer().Of<StopwatchStatistics>(command.id);
         if (statisticsData)
         {
             if (elapsed > statisticsData->highest)
@@ -42,14 +44,14 @@ namespace Atmos::Time
 
     void StopwatchCurator::Handle(const ResetAverage& command)
     {
-        auto statisticsData = MutablePointer<StopwatchStatistics>(command.id);
+        auto statisticsData = MutablePointer().Of<StopwatchStatistics>(command.id);
         if (statisticsData)
             statisticsData->average = Seconds();
     }
 
     void StopwatchCurator::Handle(const ResetHighest& command)
     {
-        auto statisticsData = MutablePointer<StopwatchStatistics>(command.id);
+        auto statisticsData = MutablePointer().Of<StopwatchStatistics>(command.id);
         if (statisticsData)
             statisticsData->highest = Seconds();
     }

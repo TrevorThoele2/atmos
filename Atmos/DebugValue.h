@@ -11,7 +11,7 @@ namespace Atmos::Debug
     public:
         using StatisticSetter = std::function<void(Statistics&)>;
     public:
-        Value(StatisticSetter statisticSetter, Arca::Reliquary& reliquary);
+        Value(StatisticSetter statisticSetter, Arca::MutablePointer mutablePointer);
 
         void Set();
     private:
@@ -19,6 +19,6 @@ namespace Atmos::Debug
 
         Statistics* statistics;
 
-        static Statistics* StatisticsFrom(Arca::Reliquary& reliquary);
+        static Statistics* StatisticsFrom(Arca::MutablePointer mutablePointer);
     };
 }

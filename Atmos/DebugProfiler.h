@@ -12,7 +12,7 @@ namespace Atmos::Debug
         using Statistic = Arca::Index<Time::RealStopwatch>;
         using StatisticPicker = std::function<Statistic&(Statistics&)>;
     public:
-        Profiler(StatisticPicker statisticPicker, Arca::Reliquary& reliquary);
+        Profiler(StatisticPicker statisticPicker, Arca::MutablePointer mutablePointer);
 
         void Start();
         void Calculate();
@@ -21,6 +21,6 @@ namespace Atmos::Debug
 
         Statistics* statistics;
 
-        static Statistics* StatisticsFrom(Arca::Reliquary& reliquary);
+        static Statistics* StatisticsFrom(Arca::MutablePointer mutablePointer);
     };
 }

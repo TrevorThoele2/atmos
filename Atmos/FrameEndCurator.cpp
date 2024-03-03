@@ -12,12 +12,12 @@ namespace Atmos
             {
                 return statistics.profilers.idle;
             },
-            init.owner)
+            MutablePointer())
     {}
 
     void FrameEndCurator::Work()
     {
-        auto timeInformationData = MutablePointer(timeInformation);
+        auto timeInformationData = MutablePointer().Of(timeInformation);
 
         static unsigned int count = 0;
         if (fpsTimer->Elapsed() >= Time::Milliseconds(timeSettings->fpsLimit))

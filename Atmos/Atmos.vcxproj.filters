@@ -956,12 +956,6 @@
     <ClInclude Include="MoveCameraBy.h">
       <Filter>Header Files\Render\Camera</Filter>
     </ClInclude>
-    <ClInclude Include="MoveCameraDeltaInstant.h">
-      <Filter>Header Files\Render\Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="MoveCameraToInstant.h">
-      <Filter>Header Files\Render\Camera</Filter>
-    </ClInclude>
     <ClInclude Include="CurrentAvatar.h">
       <Filter>Header Files\Entity</Filter>
     </ClInclude>
@@ -1258,6 +1252,9 @@
     </ClInclude>
     <ClInclude Include="DebugProfiler.h">
       <Filter>Header Files\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="MoveCameraTo.h">
+      <Filter>Header Files\Render\Camera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

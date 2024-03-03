@@ -251,6 +251,19 @@ namespace Atmos
             ToString(position.GetZ());
     }
 
+    String ToString(const Position3D& position)
+    {
+        return
+            ToString(position.x) + "," +
+            ToString(position.y) + "," +
+            ToString(position.z);
+    }
+
+    String ToString(const Size2D& size)
+    {
+        return ToString(size.width) + "," + ToString(size.height);
+    }
+
     String ToString(const ::Agui::Resolution::Size &arg)
     {
         return ToString(arg.width) + "x" + ToString(arg.height);
