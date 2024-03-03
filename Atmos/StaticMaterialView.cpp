@@ -22,17 +22,17 @@ namespace Atmos::Render
         return core->Color();
     }
 
-    void StaticMaterialView::PatchShader(Arca::LocalPtr<Asset::ShaderAsset> to)
+    void StaticMaterialView::PatchShader(Arca::RelicIndex<Asset::ShaderAsset> to)
     {
         core->PatchShader(to);
     }
 
-    Arca::LocalPtr<Asset::ShaderAsset> StaticMaterialView::PatchShader() const
+    Arca::RelicIndex<Asset::ShaderAsset> StaticMaterialView::PatchShader() const
     {
         return core->PatchShader();
     }
 
-    Arca::LocalPtr<Asset::MaterialAsset> StaticMaterialView::Material() const
+    Arca::RelicIndex<Asset::MaterialAsset> StaticMaterialView::Material() const
     {
         return core->Material();
     }
@@ -57,25 +57,25 @@ namespace Atmos::Render
         return bounds->Box();
     }
 
-    Arca::LocalPtr<MaterialViewCore> StaticMaterialView::Core() const
+    Arca::ShardIndex<MaterialViewCore> StaticMaterialView::Core() const
     {
         return core;
     }
 
-    Arca::LocalPtr<const Bounds> StaticMaterialView::Bounds() const
+    Arca::ShardIndex<const Bounds> StaticMaterialView::Bounds() const
     {
         return bounds;
     }
 
-    void StaticMaterialView::PostConstruct(ShardTuple shards)
+    void StaticMaterialView::PostConstruct()
     {
-        core = std::get<0>(shards);
-        bounds = std::get<1>(shards);
+        core = Create<MaterialViewCore>();
+        bounds = Create<const Atmos::Bounds>();
     }
 
     void StaticMaterialView::Initialize(const Position3D& position, const Size2D& size)
     {
-        auto mutableBounds = const_cast<Atmos::Bounds&>(*bounds);
+        auto& mutableBounds = const_cast<Atmos::Bounds&>(*bounds);
         mutableBounds.Position(position);
         mutableBounds.Size(size);
     }

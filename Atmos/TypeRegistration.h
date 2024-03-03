@@ -12,11 +12,11 @@ namespace Atmos
     {
         using Value = typename Provider::Value;
 
-        origin.Type<Provider>();
+        origin.Register<Provider>();
         origin.Compute<Value*>(
             [](Arca::Reliquary& reliquary) -> Value*
             {
-                const Arca::GlobalPtr<Provider> backing(reliquary);
+                const Arca::GlobalIndex<Provider> backing(reliquary);
                 return backing->Get();
             });
     }
@@ -29,7 +29,7 @@ namespace Atmos
         origin.Compute<Value*>(
             [&globalReliquary](Arca::Reliquary& reliquary) -> Value*
             {
-                const Arca::GlobalPtr<Provider> backing(globalReliquary);
+                const Arca::GlobalIndex<Provider> backing(globalReliquary);
                 return backing->Get();
             });
     }

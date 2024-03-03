@@ -143,6 +143,6 @@ namespace Atmos::Render::DirectX9
             Logging::Severity severity,
             const std::optional<Logging::Details>& details = {}) const;
     private:
-        Arca::GlobalPtr<Time::Settings> timeSettings;
+        Arca::GlobalIndex<Time::Settings> timeSettings;
     };
 }

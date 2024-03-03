@@ -14,6 +14,8 @@ public:
     MockWindow* mockWindow = nullptr;
     MockGraphicsManager* mockGraphicsManager = nullptr;
 protected:
+    void SetupImplementation() override;
+
     InitializationProperties CreateInitializationProperties(Arca::Reliquary& reliquary) override;
 
     void DoExit() override;

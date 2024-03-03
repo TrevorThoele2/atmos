@@ -8,9 +8,9 @@ namespace Atmos::Render
 {
     void RenderCurator::InitializeImplementation()
     {
-        graphics = Arca::ComputedPtr<GraphicsManager*>(Owner());
+        graphics = Arca::ComputedIndex<GraphicsManager*>(Owner());
 
-        debugStatistics = Arca::GlobalPtr<Debug::Statistics>(Owner());
+        debugStatistics = Arca::GlobalIndex<Debug::Statistics>(Owner());
     }
 
     void RenderCurator::WorkImplementation(Stage& stage)

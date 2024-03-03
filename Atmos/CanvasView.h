@@ -6,10 +6,10 @@
 
 namespace Atmos::Render
 {
-    class CanvasView final : public Arca::ClosedTypedRelicAutomation<CanvasView, Bounds>
+    class CanvasView final : public Arca::ClosedTypedRelicAutomation<CanvasView>
     {
     public:
-        void PostConstruct(ShardTuple shards);
+        void PostConstruct();
         void Initialize(Canvas& source);
 
         [[nodiscard]] const Canvas& Source() const;
@@ -17,7 +17,7 @@ namespace Atmos::Render
         [[nodiscard]] const Bounds& Bounds() const;
     private:
         Canvas* source = nullptr;
-        Atmos::Bounds* bounds = nullptr;
+        Arca::ShardIndex<Atmos::Bounds> bounds;
     };
 }
 

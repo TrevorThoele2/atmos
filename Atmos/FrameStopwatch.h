@@ -21,7 +21,7 @@ namespace Atmos::Time
     public:
         void PostConstruct();
     private:
-        Arca::GlobalPtr<Information> timeInformation;
+        Arca::GlobalIndex<Information> timeInformation;
     private:
         INSCRIPTION_ACCESS;
     };

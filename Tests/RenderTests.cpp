@@ -26,9 +26,13 @@ SCENARIO_METHOD(RenderTestsFixture, "rendering material views")
                 Position3D::Value,
                 Position3D::Value,
                 Position3D::Value>(3);
-            field.Reliquary().Create<StaticMaterialView>(positions[0]);
-            field.Reliquary().Create<StaticMaterialView>(positions[1]);
-            field.Reliquary().Create<StaticMaterialView>(positions[2]);
+            auto sizes = dataGeneration.RandomStackGroup<
+                Size2D,
+                Size2D::Value,
+                Size2D::Value>(3);
+            field.Reliquary().Create<StaticMaterialView>(positions[0], sizes[0]);
+            field.Reliquary().Create<StaticMaterialView>(positions[1], sizes[1]);
+            field.Reliquary().Create<StaticMaterialView>(positions[2], sizes[2]);
 
             engine.UseField(std::move(field));
             engine.StartExecution();
@@ -43,23 +47,27 @@ SCENARIO_METHOD(RenderTestsFixture, "rendering material views")
                     materialRenders.end(),
                     [&positions](const MaterialRender& entry)
                     {
-                        return entry.position.x == positions[0].x && entry.position.y == positions[0].y;
+                        return std::any_of(
+                            positions.begin(),
+                            positions.end(),
+                            [&entry](const Position3D& position)
+                            {
+                                return entry.position == position;
+                            });
                     }));
 
                 REQUIRE(std::any_of(
                     materialRenders.begin(),
                     materialRenders.end(),
-                    [&positions](const MaterialRender& entry)
+                    [&sizes](const MaterialRender& entry)
                     {
-                        return entry.position.x == positions[1].x && entry.position.y == positions[1].y;
-                    }));
-
-                REQUIRE(std::any_of(
-                    materialRenders.begin(),
-                    materialRenders.end(),
-                    [&positions](const MaterialRender& entry)
-                    {
-                        return entry.position.x == positions[2].x && entry.position.y == positions[2].y;
+                        return std::any_of(
+                            sizes.begin(),
+                            sizes.end(),
+                            [&entry](const Size2D& size)
+                            {
+                                return entry.size == size;
+                            });
                     }));
             }
         }
@@ -71,9 +79,13 @@ SCENARIO_METHOD(RenderTestsFixture, "rendering material views")
                 Position3D::Value,
                 Position3D::Value,
                 Position3D::Value>(3);
-            field.Reliquary().Create<DynamicMaterialView>(positions[0]);
-            field.Reliquary().Create<DynamicMaterialView>(positions[1]);
-            field.Reliquary().Create<DynamicMaterialView>(positions[2]);
+            auto sizes = dataGeneration.RandomStackGroup<
+                Size2D,
+                Size2D::Value,
+                Size2D::Value>(3);
+            field.Reliquary().Create<DynamicMaterialView>(positions[0], sizes[0]);
+            field.Reliquary().Create<DynamicMaterialView>(positions[1], sizes[1]);
+            field.Reliquary().Create<DynamicMaterialView>(positions[2], sizes[2]);
 
             engine.UseField(std::move(field));
             engine.StartExecution();
@@ -88,23 +100,27 @@ SCENARIO_METHOD(RenderTestsFixture, "rendering material views")
                     materialRenders.end(),
                     [&positions](const MaterialRender& entry)
                     {
-                        return entry.position.x == positions[0].x && entry.position.y == positions[0].y;
+                        return std::any_of(
+                            positions.begin(),
+                            positions.end(),
+                            [&entry](const Position3D& position)
+                            {
+                                return entry.position == position;
+                            });
                     }));
 
                 REQUIRE(std::any_of(
                     materialRenders.begin(),
                     materialRenders.end(),
-                    [&positions](const MaterialRender& entry)
+                    [&sizes](const MaterialRender& entry)
                     {
-                        return entry.position.x == positions[1].x && entry.position.y == positions[1].y;
-                    }));
-
-                REQUIRE(std::any_of(
-                    materialRenders.begin(),
-                    materialRenders.end(),
-                    [&positions](const MaterialRender& entry)
-                    {
-                        return entry.position.x == positions[2].x && entry.position.y == positions[2].y;
+                        return std::any_of(
+                            sizes.begin(),
+                            sizes.end(),
+                            [&entry](const Size2D& size)
+                            {
+                                return entry.size == size;
+                            });
                     }));
             }
         }

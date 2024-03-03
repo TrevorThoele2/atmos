@@ -16,8 +16,8 @@ namespace Atmos::Render
     public:
         using Index = int;
 
-        void Material(Arca::LocalPtr<Asset::MaterialAsset> to);
-        Arca::LocalPtr<Asset::MaterialAsset> Material() const;
+        void Material(Arca::RelicIndex<Asset::MaterialAsset> to);
+        Arca::RelicIndex<Asset::MaterialAsset> Material() const;
         void MaterialIndex(Index to);
         [[nodiscard]] Index MaterialIndex() const;
         [[nodiscard]] AxisAlignedBox2D MaterialSlice() const;
@@ -25,16 +25,16 @@ namespace Atmos::Render
         void Color(Color to);
         [[nodiscard]] Render::Color Color() const;
 
-        void PatchShader(Arca::LocalPtr<Asset::ShaderAsset> to);
-        [[nodiscard]] Arca::LocalPtr<Asset::ShaderAsset> PatchShader() const;
+        void PatchShader(Arca::RelicIndex<Asset::ShaderAsset> to);
+        [[nodiscard]] Arca::RelicIndex<Asset::ShaderAsset> PatchShader() const;
     private:
-        Arca::LocalPtr<Asset::MaterialAsset> material;
+        Arca::RelicIndex<Asset::MaterialAsset> material;
         Index materialIndex = 0;
         AxisAlignedBox2D materialSlice;
 
         Render::Color color;
 
-        Arca::LocalPtr<Asset::ShaderAsset> patchShader;
+        Arca::RelicIndex<Asset::ShaderAsset> patchShader;
     private:
         void CalculateMaterialSlice();
     };

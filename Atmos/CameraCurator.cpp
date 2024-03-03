@@ -34,7 +34,7 @@ namespace Atmos::Render
                 MoveDeltaInstant(signal.x, signal.y, signal.z);
             });
 
-        debugStatistics = Arca::GlobalPtr<Debug::Statistics>(Owner());
+        debugStatistics = Arca::GlobalIndex<Debug::Statistics>(Owner());
     }
 
     void CameraCurator::WorkImplementation(Stage& stage)
@@ -58,7 +58,7 @@ namespace Atmos::Render
     {
         ResetFocus();
 
-        auto& lastFrameElapsed = Arca::GlobalPtr<Time::Information>(Owner())->lastFrameElapsed;
+        auto& lastFrameElapsed = Arca::GlobalIndex<Time::Information>(Owner())->lastFrameElapsed;
         const auto normalizedDistance =
             by * static_cast<float>(lastFrameElapsed.GetAs(Time::Epoch::Seconds));
 

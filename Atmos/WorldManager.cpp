@@ -18,7 +18,7 @@ namespace Atmos::World
 
     WorldManager::WorldManager(Arca::Reliquary& globalReliquary) : globalReliquary(&globalReliquary)
     {
-        debugStatistics = Arca::GlobalPtr<Debug::Statistics>(globalReliquary);
+        debugStatistics = Arca::GlobalIndex<Debug::Statistics>(globalReliquary);
 
         File::manager->MakeDirectory(StasisFolderFilePath());
     }

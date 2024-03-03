@@ -116,19 +116,19 @@ bool MockGraphicsManager::Start()
     return false;
 }
 
-void MockGraphicsManager::End()
+void MockGraphicsManager::Stop()
 {}
 
-void MockGraphicsManager::StartSprites(size_t spriteCount)
+void MockGraphicsManager::StartObjects(size_t count)
 {}
 
-void MockGraphicsManager::EndSprites()
+void MockGraphicsManager::StopObjects()
 {}
 
 void MockGraphicsManager::StartLines()
 {}
 
-void MockGraphicsManager::EndLines()
+void MockGraphicsManager::StopLines()
 {}
 
 void MockGraphicsManager::StartStencil()

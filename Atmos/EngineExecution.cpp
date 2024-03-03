@@ -18,7 +18,7 @@ namespace Atmos
     void EngineExecution::Start()
     {
         auto& timeCurator = globalReliquary->Find<Time::TimeCurator>();
-        auto debugStatistics = Arca::GlobalPtr<Debug::Statistics>(*globalReliquary);
+        auto debugStatistics = Arca::GlobalIndex<Debug::Statistics>(*globalReliquary);
 
         while (StartFrame())
         {

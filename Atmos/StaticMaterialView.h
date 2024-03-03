@@ -8,7 +8,7 @@
 namespace Atmos::Render
 {
     class StaticMaterialView final :
-        public Arca::ClosedTypedRelicAutomation<StaticMaterialView, MaterialViewCore, const Bounds>
+        public Arca::ClosedTypedRelicAutomation<StaticMaterialView>
     {
     public:
         using Index = int;
@@ -17,24 +17,24 @@ namespace Atmos::Render
         [[nodiscard]] Index MaterialIndex() const;
         void Color(Color to);
         [[nodiscard]] Render::Color Color() const;
-        void PatchShader(Arca::LocalPtr<Asset::ShaderAsset> to);
-        [[nodiscard]] Arca::LocalPtr<Asset::ShaderAsset> PatchShader() const;
+        void PatchShader(Arca::RelicIndex<Asset::ShaderAsset> to);
+        [[nodiscard]] Arca::RelicIndex<Asset::ShaderAsset> PatchShader() const;
 
-        [[nodiscard]] Arca::LocalPtr<Asset::MaterialAsset> Material() const;
+        [[nodiscard]] Arca::RelicIndex<Asset::MaterialAsset> Material() const;
         [[nodiscard]] AxisAlignedBox2D MaterialSlice() const;
 
         [[nodiscard]] Position3D Position() const;
         [[nodiscard]] Size2D Size() const;
         [[nodiscard]] AxisAlignedBox2D Box() const;
 
-        [[nodiscard]] Arca::LocalPtr<MaterialViewCore> Core() const;
-        [[nodiscard]] Arca::LocalPtr<const Bounds> Bounds() const;
+        [[nodiscard]] Arca::ShardIndex<MaterialViewCore> Core() const;
+        [[nodiscard]] Arca::ShardIndex<const Bounds> Bounds() const;
     public:
-        void PostConstruct(ShardTuple shards);
+        void PostConstruct();
         void Initialize(const Position3D& position, const Size2D& size);
     private:
-        Arca::LocalPtr<MaterialViewCore> core;
-        Arca::LocalPtr<const Atmos::Bounds> bounds;
+        Arca::ShardIndex<MaterialViewCore> core;
+        Arca::ShardIndex<const Atmos::Bounds> bounds;
     private:
         INSCRIPTION_ACCESS;
     };

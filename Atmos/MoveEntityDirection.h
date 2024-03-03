@@ -7,7 +7,7 @@ namespace Atmos::Entity
 {
     struct MoveEntityDirection
     {
-        Arca::LocalPtr<Entity> entity;
+        Arca::RelicIndex<Entity> entity;
         Direction direction;
     };
 }

@@ -27,8 +27,8 @@ namespace Atmos::Entity
                     return;
             });
 
-        mappedEntities = Arca::GlobalPtr<MappedEntities>(Owner());
+        mappedEntities = Arca::GlobalIndex<MappedEntities>(Owner());
 
-        debugStatistics = Arca::GlobalPtr<Debug::Statistics>(Owner());
+        debugStatistics = Arca::GlobalIndex<Debug::Statistics>(Owner());
     }
 }

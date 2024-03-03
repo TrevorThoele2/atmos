@@ -24,6 +24,8 @@ namespace Atmos::Time
 
         using Stopwatch = ExtendedStopwatchAdapter<RealStopwatch>;
         Stopwatch stopwatch;
+    public:
+        void PostConstruct();
     };
 }
 

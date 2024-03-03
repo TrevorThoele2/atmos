@@ -22,17 +22,17 @@ namespace Atmos::Render
         return core->Color();
     }
 
-    void DynamicMaterialView::PatchShader(Arca::LocalPtr<Asset::ShaderAsset> to)
+    void DynamicMaterialView::PatchShader(Arca::RelicIndex<Asset::ShaderAsset> to)
     {
         core->PatchShader(to);
     }
 
-    Arca::LocalPtr<Asset::ShaderAsset> DynamicMaterialView::PatchShader() const
+    Arca::RelicIndex<Asset::ShaderAsset> DynamicMaterialView::PatchShader() const
     {
         return core->PatchShader();
     }
 
-    Arca::LocalPtr<Asset::MaterialAsset> DynamicMaterialView::Material() const
+    Arca::RelicIndex<Asset::MaterialAsset> DynamicMaterialView::Material() const
     {
         return core->Material();
     }
@@ -67,20 +67,20 @@ namespace Atmos::Render
         return bounds->Box();
     }
 
-    Arca::LocalPtr<MaterialViewCore> DynamicMaterialView::Core() const
+    Arca::ShardIndex<MaterialViewCore> DynamicMaterialView::Core() const
     {
         return core;
     }
 
-    Arca::LocalPtr<Bounds> DynamicMaterialView::Bounds() const
+    Arca::ShardIndex<Bounds> DynamicMaterialView::Bounds() const
     {
         return bounds;
     }
 
-    void DynamicMaterialView::PostConstruct(ShardTuple shards)
+    void DynamicMaterialView::PostConstruct()
     {
-        core = std::get<0>(shards);
-        bounds = std::get<1>(shards);
+        core = Create<MaterialViewCore>();
+        bounds = Create<Atmos::Bounds>();
     }
 
     void DynamicMaterialView::Initialize(const Position3D& position, const Size2D& size)

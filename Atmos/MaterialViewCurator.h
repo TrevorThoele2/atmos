@@ -1,7 +1,8 @@
 #pragma once
 
 #include <Arca/Curator.h>
-#include <Arca/CompositeShardBatch.h>
+
+#include "Octree.h"
 
 #include "MaterialViewCore.h"
 #include "Bounds.h"
@@ -15,8 +16,16 @@ namespace Atmos::Render
         void PostConstructImplementation() override;
         void WorkImplementation(Stage& stage) override;
     private:
-        Arca::Batch<Arca::All<MaterialViewCore, Arca::Either<Bounds>>> toRender;
-        Arca::GlobalPtr<Camera> camera;
+        using MaterialMatrix = Arca::All<MaterialViewCore, Arca::Either<Bounds>>;
+        using MaterialIndex = Arca::MatrixIndex<MaterialMatrix>;
+        Grid::Octree<Arca::RelicID, MaterialIndex> octree;
+
+        Arca::GlobalIndex<Camera> camera;
+    private:
+        void OnMaterialFormed(const Arca::MatrixFormed<MaterialMatrix>& matrix);
+        void OnMaterialDissolved(const Arca::MatrixDissolved<MaterialMatrix>& matrix);
+    private:
+        static AxisAlignedBox3D BoxFor(const MaterialIndex& matrix);
     };
 }
 

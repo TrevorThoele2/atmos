@@ -22,12 +22,12 @@ public:
     void SetRenderState(RenderState state, bool set) override;
 
     bool Start() override;
-    void End() override;
+    void Stop() override;
 
-    void StartSprites(size_t spriteCount = 0) override;
-    void EndSprites() override;
+    void StartObjects(size_t count = 0) override;
+    void StopObjects() override;
     void StartLines() override;
-    void EndLines() override;
+    void StopLines() override;
 
     void StartStencil() override;
     void StopStencil() override;

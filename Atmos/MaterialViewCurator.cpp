@@ -6,19 +6,45 @@ namespace Atmos::Render
 {
     void MaterialViewCurator::PostConstructImplementation()
     {
-        toRender = Owner().Batch<Arca::All<MaterialViewCore, Arca::Either<Bounds>>>();
+        Owner().ExecuteOn<Arca::MatrixFormed<MaterialMatrix>>(
+            [this](const Arca::MatrixFormed<MaterialMatrix>& signal)
+            {
+                OnMaterialFormed(signal);
+            });
 
-        camera = Arca::GlobalPtr<Camera>(Owner());
+        Owner().ExecuteOn<Arca::MatrixDissolved<MaterialMatrix>>(
+            [this](const Arca::MatrixDissolved<MaterialMatrix>& signal)
+            {
+                OnMaterialDissolved(signal);
+            });
+
+        camera = Arca::GlobalIndex<Camera>(Owner());
     }
 
     void MaterialViewCurator::WorkImplementation(Stage& stage)
     {
-        auto graphics = &**Arca::ComputedPtr<GraphicsManager*>(Owner());
+        auto graphics = &**Arca::ComputedIndex<GraphicsManager*>(Owner());
 
-        for (auto& loop : toRender)
+        const AxisAlignedBox3D queryBox
         {
-            auto& core = *std::get<0>(loop);
-            auto& bounds = *std::get<1>(loop);
+            Position3D
+            {
+                camera->ViewOrigin().x,
+                camera->ViewOrigin().y,
+                0
+            },
+            Size3D
+            {
+                camera->Size().width,
+                camera->Size().height,
+                std::numeric_limits<Size3D::Value>::max()
+            }
+        };
+
+        for(auto& index : octree.AllInside(queryBox))
+        {
+            auto& core = *std::get<0>(*index.value);
+            auto& bounds = *std::get<1>(*index.value);
 
             auto position = bounds.Position();
             position.x -= camera->ScreenSides().Left();
@@ -35,5 +61,30 @@ namespace Atmos::Render
             };
             graphics->RenderMaterialView(render);
         }
+    }
+
+    void MaterialViewCurator::OnMaterialFormed(const Arca::MatrixFormed<MaterialMatrix>& matrix)
+    {
+        octree.Add(matrix.index.ID(), matrix.index, BoxFor(matrix.index));
+    }
+
+    void MaterialViewCurator::OnMaterialDissolved(const Arca::MatrixDissolved<MaterialMatrix>& matrix)
+    {
+        octree.Remove(matrix.index.ID(), BoxFor(matrix.index));
+    }
+
+    AxisAlignedBox3D MaterialViewCurator::BoxFor(const MaterialIndex& matrix)
+    {
+        const auto& bounds = *std::get<1>(*matrix);
+        return AxisAlignedBox3D
+        {
+            bounds.Position(),
+            Size3D
+            {
+                bounds.Size().width,
+                bounds.Size().height,
+                1
+            }
+        };
     }
 }

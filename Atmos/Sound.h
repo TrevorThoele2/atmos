@@ -7,15 +7,15 @@
 
 namespace Atmos::Audio
 {
-    class Sound final : public Arca::ClosedTypedRelicAutomation<Sound, Bounds>
+    class Sound final : public Arca::ClosedTypedRelicAutomation<Sound>
     {
     public:
         using Asset = Asset::AudioAssetInstance;
     public:
-        void PostConstruct(ShardTuple shards);
+        void PostConstruct();
         void Initialize(Asset&& asset);
     private:
-        Arca::LocalPtr<Bounds> bounds;
+        Arca::ShardIndex<Bounds> bounds;
 
         Asset asset;
     };

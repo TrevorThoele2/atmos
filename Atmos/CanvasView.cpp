@@ -2,9 +2,9 @@
 
 namespace Atmos::Render
 {
-    void CanvasView::PostConstruct(ShardTuple shards)
+    void CanvasView::PostConstruct()
     {
-        bounds = std::get<0>(shards);
+        bounds = Create<Atmos::Bounds>();
     }
 
     void CanvasView::Initialize(Canvas& source)

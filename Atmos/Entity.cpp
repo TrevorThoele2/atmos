@@ -2,8 +2,8 @@
 
 namespace Atmos::Entity
 {
-    void Entity::PostConstruct(ShardTuple shards)
+    void Entity::PostConstruct()
     {
-        general = std::get<0>(shards);
+        general = Create<GeneralComponent>();
     }
 }

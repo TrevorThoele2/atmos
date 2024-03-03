@@ -9,7 +9,7 @@ namespace Atmos::Render
 {
     void GraphicsCurator::InitializeImplementation()
     {
-        manager = Arca::ComputedPtr<GraphicsManager*>(Owner());
+        manager = Arca::ComputedIndex<GraphicsManager*>(Owner());
 
         Owner().ExecuteOn<ReconstructGraphics>([this](const ReconstructGraphics&)
             {

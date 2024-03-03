@@ -75,11 +75,11 @@ namespace Atmos
     void Engine::ProvideInitializationProperties(InitializationProperties&& properties)
     {
         Window::window.Setup(std::move(properties.window));
-        Arca::GlobalPtr<UniqueProviderRelic<Input::Manager>>(*globalReliquary)->Change(
+        Arca::GlobalIndex<UniqueProviderRelic<Input::Manager>>(*globalReliquary)->Change(
             std::move(properties.inputManager));
-        Arca::GlobalPtr<UniqueProviderRelic<Render::GraphicsManager>>(*globalReliquary)->Change(
+        Arca::GlobalIndex<UniqueProviderRelic<Render::GraphicsManager>>(*globalReliquary)->Change(
             std::move(properties.graphicsManager));
-        Arca::GlobalPtr<UniqueProviderRelic<Audio::AudioManager>>(*globalReliquary)->Change(
+        Arca::GlobalIndex<UniqueProviderRelic<Audio::AudioManager>>(*globalReliquary)->Change(
             std::move(properties.audioManager));
     }
 }
