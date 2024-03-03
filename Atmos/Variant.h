@@ -10,11 +10,48 @@
 #include "Position3D.h"
 #include "GridPosition.h"
 
-#include <Function/Enum.h>
-#include "Serialization.h"
+#include "StringUtility.h"
+#include "FunctionVariant.h"
 
 namespace Atmos
 {
+    typedef ::function::Variant<bool, std::int8_t, std::int16_t, std::int32_t, std::int64_t, std::uint8_t, std::uint16_t, std::uint32_t, std::uint64_t, float, double, FixedPoint64, String, GridPosition> Variant;
+
+    enum class VariantType : std::int32_t
+    {
+        BOOL,
+        INT_8,
+        INT_16,
+        INT_32,
+        INT_64,
+        UINT_8,
+        UINT_16,
+        UINT_32,
+        UINT_64,
+        FLOAT,
+        DOUBLE,
+        FIXED_64,
+        STRING,
+        GRID_POSITION,
+
+        NONE = Variant::uninhabitedID
+    };
+
+    typedef ::function::EnumIterationTraits<Atmos::VariantType, Atmos::VariantType::BOOL, Atmos::VariantType::GRID_POSITION> VariantIterationTraits;
+
+    VariantType GetTypeFromVariantID(size_t from);
+    VariantType GetTypeFromVariant(const Variant &from);
+    String ToString(const Variant &arg);
+}
+
+namespace function
+{
+    extern template Variant<bool, std::int8_t, std::int16_t, std::int32_t, std::int64_t, std::uint8_t, std::uint16_t, std::uint32_t, std::uint64_t, float, double, ::Atmos::FixedPoint64, ::Atmos::String, ::Atmos::GridPosition>;
+}
+
+namespace Atmos
+{
+    /*
     template<class T>
     struct VariantReverseTraits;
 
@@ -42,7 +79,6 @@ namespace Atmos
             FIXED_64,
 
             STRING,
-            POSITION_2D,
             POSITION_3D,
             GRID_POSITION,
 
@@ -68,7 +104,6 @@ namespace Atmos
             FixedPoint64 fixed64;
 
             String string;
-            Position2D position2D;
             Position3D position3D;
             GridPosition gridPosition;
 
@@ -107,7 +142,6 @@ namespace Atmos
         Variant(double set);
         Variant(FixedPoint64 set);
         Variant(const String &set);
-        Variant(const Position2D &set);
         Variant(const Position3D &set);
         Variant(const GridPosition &set);
         Variant(const std::vector<Variant> &set);
@@ -133,7 +167,6 @@ namespace Atmos
         void Set(double set);
         void Set(FixedPoint64 set);
         void Set(const String &set);
-        void Set(const Position2D &set);
         void Set(const Position3D &set);
         void Set(const GridPosition &set);
         void Set(const std::vector<Variant> &set);
@@ -154,7 +187,6 @@ namespace Atmos
         bool IsDouble() const;
         bool IsFixed64() const;
         bool IsString() const;
-        bool IsPosition2D() const;
         bool IsPosition3D() const;
         bool IsGridPosition() const;
         bool IsVector() const;
@@ -178,7 +210,6 @@ namespace Atmos
         double AsDouble() const;
         FixedPoint64 AsFixed64() const;
         const String& AsString() const;
-        const Position2D& AsPosition2D() const;
         const Position3D& AsPosition3D() const;
         const GridPosition& AsGridPosition() const;
         const std::vector<Variant>& AsVector() const;
@@ -472,20 +503,6 @@ namespace Atmos
     };
 
     template<>
-    struct VariantTraits<Variant::Type::POSITION_2D>
-    {
-        typedef Position2D T;
-        typedef const Position2D& ReferenceT;
-
-        static constexpr Variant::Type enumType = Variant::Type::POSITION_2D;
-        static const T defaultValue;
-
-        static constexpr T(Variant::*mem) = &Variant::position2D;
-        static constexpr bool(Variant::*is)() const = &Variant::IsPosition2D;
-        static constexpr ReferenceT(Variant::*as)() const = &Variant::AsPosition2D;
-    };
-
-    template<>
     struct VariantTraits<Variant::Type::POSITION_3D>
     {
         typedef Position3D T;
@@ -632,14 +649,6 @@ namespace Atmos
     };
 
     template<>
-    struct VariantReverseTraits<Position2D>
-    {
-        typedef Position2D T;
-        static constexpr Variant::Type enumType = Variant::Type::POSITION_2D;
-        static const T defaultValue;
-    };
-
-    template<>
     struct VariantReverseTraits<Position3D>
     {
         typedef Position3D T;
@@ -670,4 +679,5 @@ namespace Atmos
         static constexpr Variant::Type enumType = Variant::Type::VECTOR;
         static const T defaultValue;
     };
+    */
 }

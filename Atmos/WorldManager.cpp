@@ -399,7 +399,7 @@ namespace Atmos
         requestedFieldID = 0;
 
         CheckReleaseField();
-        if(destroyField)
+        if (destroyField)
             Instance().field.reset();
 
         destination.Set();

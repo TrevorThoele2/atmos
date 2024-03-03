@@ -308,7 +308,7 @@ namespace Atmos
     template<class Obj, class List, class DescriptionBox, class ContextMenu>
     Obj* ObjectMenu<Obj, List, DescriptionBox, ContextMenu>::GetSelected()
     {
-        auto found = entries.Find(cursor->GetCurrentEntry());
+        auto found = entries.Find(cursor->GetCurrentEntry() - 1);
         if (found == entries.end())
             return nullptr;
 

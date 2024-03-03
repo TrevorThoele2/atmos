@@ -30,9 +30,8 @@ namespace Atmos
 
     Entity ScriptCaller::GetEntity()
     {
-        auto got = variant.GetAsRaw<Entity>();
-        if (!got)
+        if (!variant.Is<Entity>())
             return Ent::nullEntity;
-        return *got;
+        return variant.Get<Entity>();
     }
 }

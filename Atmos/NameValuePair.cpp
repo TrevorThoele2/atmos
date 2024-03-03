@@ -3,6 +3,12 @@
 
 namespace Atmos
 {
+    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(NameValuePair)
+    {
+        scribe(name);
+        scribe(value);
+    }
+
     NameValuePair::NameValuePair(const Name &name, const Variant &value) : name(name), value(value)
     {}
 

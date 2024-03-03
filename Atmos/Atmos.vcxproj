@@ -29,6 +29,7 @@
   <ItemGroup>
     <ClInclude Include="Ability.h" />
     <ClInclude Include="AbilityBase.h" />
+    <ClInclude Include="ActionException.h" />
     <ClInclude Include="ActionSystem.h" />
     <ClInclude Include="Acumen.h" />
     <ClInclude Include="Angle.h" />
@@ -122,6 +123,7 @@
     <ClInclude Include="Proficiency.h" />
     <ClInclude Include="Quest.h" />
     <ClInclude Include="RegistryObjectReference.h" />
+    <ClInclude Include="RelativeFilePath.h" />
     <ClInclude Include="RenderFragmentGrid.h" />
     <ClInclude Include="Asset.h" />
     <ClInclude Include="AssetReference.h" />
@@ -402,6 +404,7 @@
     <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="Proficiency.cpp" />
     <ClCompile Include="Quest.cpp" />
+    <ClCompile Include="RelativeFilePath.cpp" />
     <ClCompile Include="RenderFragmentGrid.cpp" />
     <ClCompile Include="Asset.cpp" />
     <ClCompile Include="Scheduler.cpp" />
@@ -656,6 +659,9 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <PreprocessorDefinitions>NOMINMAX;ATMOS_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ShowIncludes>false</ShowIncludes>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

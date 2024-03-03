@@ -63,7 +63,6 @@ namespace Atmos
         protected:
             ApprovedStates GetApprovedStates() const override;
         public:
-            // This will force this entity to be global
             static void SetEntity(Entity set);
             static Entity GetEntity();
             static bool IsValid();

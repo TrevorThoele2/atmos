@@ -66,19 +66,28 @@ Atmos::Fal::Classes::Prototype::Method* AddMethodReturner(Atmos::Fal::Classes::P
 #define SETUP_METHOD(className, func)                       \
 auto &selfMethod = func;                                    \
 if (!selfMethod.SetupParameters(*vm))                       \
+{                                                           \
+    ScriptController::Current()->ForceQuit();               \
     return;                                                 \
+}                                                           \
 auto self = static_cast<className*>(selfMethod.prototype);  \
 self->FromItem(*vm, vm->self());
 
 #define SETUP_STATIC_METHOD(className, func)                \
 auto &selfMethod = func;                                    \
 if (!selfMethod.SetupParameters(*vm))                       \
-    return;
+{                                                           \
+    ScriptController::Current()->ForceQuit();               \
+    return;                                                 \
+}
 
 #define SETUP_CONSTRUCTOR(className)                        \
 auto &selfMethod = className::constructor;                  \
 if (!selfMethod.SetupParameters(*vm))                       \
+{                                                           \
+    ScriptController::Current()->ForceQuit();               \
     return;                                                 \
+}                                                           \
 auto self = static_cast<className*>(selfMethod.prototype);
 
 #define DEFINE_CONSTRUCTOR_1_PROPERTIES(className, one)         \
@@ -153,6 +162,24 @@ className& className::operator=(className &&arg)                                
     three = std::move(arg.three);                                                                                               \
     four = std::move(arg.four);                                                                                                 \
     return *this;                                                                                                               \
+}
+
+#define SCRIPT_FATAL_ASSERT(errorCheck, message, severity, ...)     \
+if (errorCheck)                                                     \
+{                                                                   \
+    FatalScriptError(message,                                       \
+        severity,                                                   \
+        Logger::NameValueVector{ __VA_ARGS__ });                    \
+    return;                                                         \
+}
+
+#define SCRIPT_FATAL_ASSERT_RET(errorCheck, ret, message, severity, ...)    \
+if (errorCheck)                                                             \
+{                                                                           \
+    FatalScriptError(message,                                               \
+        severity,                                                           \
+        Logger::NameValueVector{ __VA_ARGS__ });                            \
+    return ret;                                                             \
 }
 
 namespace Atmos
@@ -255,9 +282,10 @@ namespace Atmos
                     {
                         Falcon::String otherString;
                         other.toString(otherString);
-                        Logger::Log(AddTracebackToString(*vm, "The fixed point can only have arithmetic against number-like objects."),
+                        FatalScriptError("The fixed point can only have arithmetic against number-like objects.",
                             Logger::Type::ERROR_MODERATE,
                             Logger::NameValueVector{ NameValuePair("Other", Convert(otherString)) });
+                        return;
                     }
 
                     FixedPoint64 newValue(self->value.Retrieve(), ::Atmos::FixedPoint64::Radix(0));
@@ -278,9 +306,10 @@ namespace Atmos
                     {
                         Falcon::String otherString;
                         other.toString(otherString);
-                        Logger::Log(AddTracebackToString(*vm, "The fixed point can only have arithmetic against number-like objects."),
+                        FatalScriptError("The fixed point can only have arithmetic against number-like objects.",
                             Logger::Type::ERROR_MODERATE,
                             Logger::NameValueVector{ NameValuePair("Other", Convert(otherString)) });
+                        return;
                     }
 
                     FixedPoint64 newValue(self->value.Retrieve(), ::Atmos::FixedPoint64::Radix(0));
@@ -301,9 +330,10 @@ namespace Atmos
                     {
                         Falcon::String otherString;
                         other.toString(otherString);
-                        Logger::Log(AddTracebackToString(*vm, "The fixed point can only have arithmetic against number-like objects."),
+                        FatalScriptError("The fixed point can only have arithmetic against number-like objects.",
                             Logger::Type::ERROR_MODERATE,
                             Logger::NameValueVector{ NameValuePair("Other", Convert(otherString)) });
+                        return;
                     }
 
                     FixedPoint64 newValue(self->value.Retrieve(), ::Atmos::FixedPoint64::Radix(0));
@@ -324,9 +354,10 @@ namespace Atmos
                     {
                         Falcon::String otherString;
                         other.toString(otherString);
-                        Logger::Log(AddTracebackToString(*vm, "The fixed point can only have arithmetic against number-like objects."),
+                        FatalScriptError("The fixed point can only have arithmetic against number-like objects.",
                             Logger::Type::ERROR_MODERATE,
                             Logger::NameValueVector{ NameValuePair("Other", Convert(otherString)) });
+                        return;
                     }
 
                     FixedPoint64 newValue(self->value.Retrieve(), ::Atmos::FixedPoint64::Radix(0));
@@ -572,7 +603,7 @@ STATIC_PROPERTY_SPLIT(ActionID, ::Atmos::Input::ActionID, varName, falconName, :
 
                     // Set the starting point
                     auto epochSelf = self->epoch.Retrieve();
-                    auto timeValue = ::Atmos::Act::Time::GetFrameTime();
+                    auto timeValue = Environment::GetTime().GetLastElapsed();
                     timeValue.Convert(epochSelf);
 
                     // Set the scaffolding of the TimeValue's epoch and value
@@ -615,7 +646,7 @@ STATIC_PROPERTY_SPLIT(ActionID, ::Atmos::Input::ActionID, varName, falconName, :
 
                     // Get the raw ending time value
                     auto epochUse = self->epoch.Retrieve();
-                    auto timeValue = ::Atmos::Act::Time::GetFrameTime();
+                    auto timeValue = Environment::GetTime().GetLastElapsed();
                     timeValue.Convert(epochUse);
                     auto endingRawValue = timeValue.Get().GetRawValue();
 
@@ -636,7 +667,7 @@ STATIC_PROPERTY_SPLIT(ActionID, ::Atmos::Input::ActionID, varName, falconName, :
 
                     // Get the raw ending time value
                     auto epochUse = self->epoch.Retrieve();
-                    auto timeValue = ::Atmos::Act::Time::GetFrameTime();
+                    auto timeValue = Environment::GetTime().GetLastElapsed();
                     timeValue.Convert(epochUse);
                     auto endingRawValue = timeValue.Get().GetRawValue();
 
@@ -720,24 +751,12 @@ STATIC_PROPERTY_SPLIT(ActionID, ::Atmos::Input::ActionID, varName, falconName, :
                     auto &retrievedModID = self->modID.Retrieve();
 
                     ::Atmos::Modulator::Observer mod(GameEnvironment::GetModulatorController().Find(retrievedModID));
-                    if (!mod)
-                    {
-                        // Log error if not found
-                        Logger::Log(AddTracebackToString(*vm, "A modulator was attempted to be found with an invalid ID."),
-                            Logger::Type::ERROR_LOW,
-                            Logger::NameValueVector{ NameValuePair("ID", retrievedModID) });
-                        return;
-                    }
+                    SCRIPT_FATAL_ASSERT(!mod, "A modulator was attempted to be found with an invalid ID.", Logger::Type::ERROR_MODERATE,
+                        NameValuePair("ID", retrievedModID));
 
                     auto &madeTrack = GameEnvironment::GenerateModulatorTrack(mod->GetGeneratorName(), **name);
-                    if (!madeTrack)
-                    {
-                        // Log error if not made
-                        Logger::Log(AddTracebackToString(*vm, "A modulator track was attempted to be created with an invalid name."),
-                            Logger::Type::ERROR_LOW,
-                            Logger::NameValueVector{ NameValuePair("Track Name", name->obj) });
-                        return;
-                    }
+                    SCRIPT_FATAL_ASSERT(!madeTrack, "A modulator track was attempted to be created with an invalid name.", Logger::Type::ERROR_MODERATE,
+                        NameValuePair("Track Name", name->obj));
 
                     // Make track
                     auto madeTrackID = mod->AddTrack(std::move(madeTrack));
@@ -755,14 +774,8 @@ STATIC_PROPERTY_SPLIT(ActionID, ::Atmos::Input::ActionID, varName, falconName, :
                     auto &retrievedModID = self->modID.Retrieve();
 
                     ::Atmos::Modulator::Observer mod(GameEnvironment::GetModulatorController().Find(retrievedModID));
-                    if (!mod)
-                    {
-                        // Log error if not found
-                        Logger::Log(AddTracebackToString(*vm, "A modulator was attempted to be found with an invalid ID."),
-                            Logger::Type::ERROR_LOW,
-                            Logger::NameValueVector{ NameValuePair("ID", retrievedModID) });
-                        return;
-                    }
+                    SCRIPT_FATAL_ASSERT(!mod, "A modulator was attempted to be found with an invalid ID.", Logger::Type::ERROR_MODERATE,
+                        NameValuePair("ID", retrievedModID));
 
                     GameEnvironment::GetModulatorController().ForceStop(mod);
                 } METHOD_END;
@@ -788,24 +801,12 @@ STATIC_PROPERTY_SPLIT(ActionID, ::Atmos::Input::ActionID, varName, falconName, :
                     auto &retrievedTrackID = self->trackID.Retrieve();
 
                     ::Atmos::Modulator::Observer foundMod = GameEnvironment::GetModulatorController().Find(retrievedModID);
-                    if (!foundMod)
-                    {
-                        // Log error if not found
-                        Logger::Log(AddTracebackToString(*vm, "A modulator was attempted to be found with an invalid ID."),
-                            Logger::Type::ERROR_LOW,
-                            Logger::NameValueVector{ NameValuePair("Mod ID", retrievedModID) });
-                        return;
-                    }
+                    SCRIPT_FATAL_ASSERT(!foundMod, "A modulator was attempted to be found with an invalid ID.", Logger::Type::ERROR_MODERATE,
+                        NameValuePair("Modulator ID", retrievedModID));
 
                     auto foundTrack = foundMod->FindTrack(retrievedTrackID);
-                    if (!foundTrack)
-                    {
-                        // Log error if not made
-                        Logger::Log(AddTracebackToString(*vm, "A modulator track was attempted to be found with an invalid ID."),
-                            Logger::Type::ERROR_LOW,
-                            Logger::NameValueVector{ NameValuePair("Track ID", retrievedTrackID) });
-                        return;
-                    }
+                    SCRIPT_FATAL_ASSERT(!foundTrack, "A modulator track was attempted to be found with an invalid ID.", Logger::Type::ERROR_MODERATE,
+                        NameValuePair("Track ID", retrievedTrackID));
 
                     // Make node
                     auto madeNodeID = foundTrack->AddNode();
@@ -825,24 +826,12 @@ STATIC_PROPERTY_SPLIT(ActionID, ::Atmos::Input::ActionID, varName, falconName, :
                     auto &retrievedTrackID = self->trackID.Retrieve();
 
                     ::Atmos::Modulator::Observer foundMod = GameEnvironment::GetModulatorController().Find(retrievedModID);
-                    if (!foundMod)
-                    {
-                        // Log error if not found
-                        Logger::Log(AddTracebackToString(*vm, "A modulator was attempted to be found with an invalid ID."),
-                            Logger::Type::ERROR_LOW,
-                            Logger::NameValueVector{ NameValuePair("Mod ID", retrievedModID) });
-                        return;
-                    }
+                    SCRIPT_FATAL_ASSERT(!foundMod, "A modulator was attempted to be found with an invalid ID.", Logger::Type::ERROR_MODERATE,
+                        NameValuePair("Modulator ID", retrievedModID));
 
                     auto foundTrack = foundMod->FindTrack(retrievedTrackID);
-                    if (!foundTrack)
-                    {
-                        // Log error if not made
-                        Logger::Log(AddTracebackToString(*vm, "A modulator track was attempted to be found with an invalid ID."),
-                            Logger::Type::ERROR_LOW,
-                            Logger::NameValueVector{ NameValuePair("Track ID", retrievedTrackID) });
-                        return;
-                    }
+                    SCRIPT_FATAL_ASSERT(!foundTrack, "A modulator track was attempted to be found with an invalid ID.", Logger::Type::ERROR_MODERATE,
+                        NameValuePair("Track ID", retrievedTrackID));
 
                     // Setup the default starting state
                     auto &value = *selfMethod.GetParameter<::function::Variant<std::int64_t, float>>("value");
@@ -864,24 +853,12 @@ STATIC_PROPERTY_SPLIT(ActionID, ::Atmos::Input::ActionID, varName, falconName, :
                     auto &retrievedTrackID = self->trackID.Retrieve();
 
                     ::Atmos::Modulator::Observer foundMod = GameEnvironment::GetModulatorController().Find(retrievedModID);
-                    if (!foundMod)
-                    {
-                        // Log error if not found
-                        Logger::Log(AddTracebackToString(*vm, "A modulator was attempted to be found with an invalid ID."),
-                            Logger::Type::ERROR_LOW,
-                            Logger::NameValueVector{ NameValuePair("Mod ID", retrievedModID) });
-                        return;
-                    }
+                    SCRIPT_FATAL_ASSERT(!foundMod, "A modulator was attempted to be found with an invalid ID.", Logger::Type::ERROR_MODERATE,
+                        NameValuePair("Modulator ID", retrievedModID));
 
                     auto foundTrack = foundMod->FindTrack(retrievedTrackID);
-                    if (!foundTrack)
-                    {
-                        // Log error if not made
-                        Logger::Log(AddTracebackToString(*vm, "A modulator track was attempted to be found with an invalid ID."),
-                            Logger::Type::ERROR_LOW,
-                            Logger::NameValueVector{ NameValuePair("Track ID", retrievedTrackID) });
-                        return;
-                    }
+                    SCRIPT_FATAL_ASSERT(!foundTrack, "A modulator track was attempted to be found with an invalid ID.", Logger::Type::ERROR_MODERATE,
+                        NameValuePair("Track ID", retrievedTrackID));
 
                     // Reset the default starting value
                     foundTrack->ResetDefaultStartValue();
@@ -892,34 +869,16 @@ STATIC_PROPERTY_SPLIT(ActionID, ::Atmos::Input::ActionID, varName, falconName, :
                 bool RetrieveNode(Falcon::VMachine &vm, ::Atmos::Modulator::TrackNode *&out, ::Atmos::Modulator::Controller::ID modID, ::Atmos::Modulator::ModulatorBase::TrackID trackID, ::Atmos::Modulator::TrackBase::NodeID nodeID)
                 {
                     auto foundMod = GameEnvironment::GetModulatorController().Find(modID);
-                    if (!foundMod)
-                    {
-                        // Log error if not found
-                        Logger::Log(AddTracebackToString(vm, "A modulator was attempted to be found with an invalid ID."),
-                            Logger::Type::ERROR_LOW,
-                            Logger::NameValueVector{ NameValuePair("ID", modID) });
-                        return false;
-                    }
+                    SCRIPT_FATAL_ASSERT_RET(!foundMod, false, "A modulator was attempted to be found with an invalid ID.", Logger::Type::ERROR_MODERATE,
+                        NameValuePair("Modulator ID", modID));
 
                     auto foundTrack = foundMod->FindTrack(trackID);
-                    if (!foundTrack)
-                    {
-                        // Log error if not made
-                        Logger::Log(AddTracebackToString(vm, "A modulator track was attempted to be found with an invalid ID."),
-                            Logger::Type::ERROR_LOW,
-                            Logger::NameValueVector{ NameValuePair("Track ID", trackID) });
-                        return false;
-                    }
+                    SCRIPT_FATAL_ASSERT_RET(!foundTrack, false, "A modulator track was attempted to be found with an invalid ID.", Logger::Type::ERROR_MODERATE,
+                        NameValuePair("Track ID", trackID));
 
                     auto foundNode = foundTrack->FindNode(nodeID);
-                    if (!foundTrack)
-                    {
-                        // Log error if not made
-                        Logger::Log(AddTracebackToString(vm, "A modulator track node was attempted to be found with an invalid ID."),
-                            Logger::Type::ERROR_LOW,
-                            Logger::NameValueVector{ NameValuePair("Node ID", nodeID) });
-                        return false;
-                    }
+                    SCRIPT_FATAL_ASSERT_RET(!foundNode, false, "A modulator track node was attempted to be found with an invalid ID.", Logger::Type::ERROR_MODERATE,
+                        NameValuePair("Node ID", nodeID));
 
                     out = foundNode;
                     return true;
@@ -1048,12 +1007,7 @@ STATIC_PROPERTY_SPLIT(ActionID, ::Atmos::Input::ActionID, varName, falconName, :
                     SETUP_METHOD(Sprite, setIndex);
 
                     auto foundSprite = ScriptLocatorManager::Find<SenseComponentSpriteLocator::TypeLocating>(self->locator.Retrieve());
-                    if (!foundSprite)
-                    {
-                        Logger::Log(AddTracebackToString(*vm, "A sprite was required but wasn't found."),
-                            Logger::Type::ERROR_MODERATE);
-                        return;
-                    }
+                    SCRIPT_FATAL_ASSERT(!foundSprite, "A sprite was required but wasn't found.", Logger::Type::ERROR_MODERATE);
 
                     auto setIndex = selfMethod.GetParameter<::Atmos::Sprite::Index>("set");
                     foundSprite->Get().SetIndex(**setIndex);
@@ -1065,12 +1019,7 @@ STATIC_PROPERTY_SPLIT(ActionID, ::Atmos::Input::ActionID, varName, falconName, :
                     SETUP_METHOD(Sprite, getIndex);
 
                     auto foundSprite = ScriptLocatorManager::Find<SenseComponentSpriteLocator::TypeLocating>(self->locator.Retrieve());
-                    if (!foundSprite)
-                    {
-                        Logger::Log(AddTracebackToString(*vm, "A sprite was required but wasn't found."),
-                            Logger::Type::ERROR_MODERATE);
-                        return;
-                    }
+                    SCRIPT_FATAL_ASSERT(!foundSprite, "A sprite was required but wasn't found.", Logger::Type::ERROR_MODERATE);
 
                     vm->retval(foundSprite->Get().GetIndex());
                 } METHOD_END;
@@ -1084,34 +1033,20 @@ STATIC_PROPERTY_SPLIT(ActionID, ::Atmos::Input::ActionID, varName, falconName, :
                     auto force = selfMethod.GetParameter<bool>("force");
 
                     auto foundSprite = ScriptLocatorManager::Find<SenseComponentSpriteLocator::TypeLocating>(self->locator.Retrieve());
-                    if (!foundSprite)
-                    {
-                        Logger::Log(AddTracebackToString(*vm, "A sprite was required but wasn't found."),
-                            Logger::Type::ERROR_MODERATE);
-                        return;
-                    }
+                    SCRIPT_FATAL_ASSERT(!foundSprite, "A sprite was required but wasn't found.", Logger::Type::ERROR_MODERATE);
 
                     // Get modulator
                     auto modID = (*start)->modID.Retrieve();
                     auto modulator = ::Atmos::GameEnvironment::GetModulatorController().Find(modID);
-                    if (!modulator)
-                    {
-                        Logger::Log(AddTracebackToString(*vm, "A modulator was required but wasn't found."),
-                            Logger::Type::ERROR_MODERATE,
-                            Logger::NameValueVector{ NameValuePair("Modulator ID", modID) });
-                        return;
-                    }
+                    SCRIPT_FATAL_ASSERT(!foundSprite, "A sprite was required but wasn't found.", Logger::Type::ERROR_MODERATE,
+                        NameValuePair("Modulator ID", modID));
 
                     // Make sure modulator is the right type
-                    if (modulator->GetGeneratorName() != ::Atmos::Modulator::Description::SpriteOffset.name)
-                    {
-                        Logger::Log(AddTracebackToString(*vm, "The modulator is the incorrect type."),
-                            Logger::Type::ERROR_MODERATE,
-                            Logger::NameValueVector{ NameValuePair("Modulator ID", modID),
-                            NameValuePair("Required Type", ::Atmos::Modulator::Description::SpriteOffset.name),
-                            NameValuePair("Actual Type", modulator->GetGeneratorName()) });
-                        return;
-                    }
+                    SCRIPT_FATAL_ASSERT(modulator->GetGeneratorName() != ::Atmos::Modulator::Description::SpriteOffset.name,
+                        "The modulator is the incorrect type.", Logger::Type::ERROR_MODERATE,
+                        NameValuePair("Modulator ID", modID),
+                        NameValuePair("Required Type", ::Atmos::Modulator::Description::SpriteOffset.name),
+                        NameValuePair("Actual Type", modulator->GetGeneratorName()));
 
                     // If forcing wasn't set...
                     if (!force->WasSet() || !force->obj)
@@ -1312,13 +1247,8 @@ STATIC_PROPERTY_SPLIT(ActionID, ::Atmos::Input::ActionID, varName, falconName, :
 
                     // Get movement component
                     auto movementComponent = GetCurrentEntities()->FindComponent<::Atmos::Ent::MovementComponent>(entity);
-                    if (!movementComponent)
-                    {
-                        Logger::Log(AddTracebackToString(*vm, "A movement component was required but wasn't found."),
-                            Logger::Type::ERROR_MODERATE,
-                            Logger::NameValueVector{ NameValuePair("Entity", static_cast<size_t>(entity)) });
-                        return;
-                    }
+                    SCRIPT_FATAL_ASSERT(!movementComponent, "A movement component was required but wasn't found.", Logger::Type::ERROR_MODERATE,
+                        NameValuePair("Entity", static_cast<size_t>(entity)));
 
                     ::Atmos::Ent::PositionSystem::MoveEntity(entity, direction->obj);
                 } METHOD_END;
@@ -1335,13 +1265,8 @@ STATIC_PROPERTY_SPLIT(ActionID, ::Atmos::Input::ActionID, varName, falconName, :
 
                     // Get movement component
                     auto movementComponent = GetCurrentEntities()->FindComponent<::Atmos::Ent::MovementComponent>(entity);
-                    if (!movementComponent)
-                    {
-                        Logger::Log(AddTracebackToString(*vm, "A movement component was required but wasn't found."),
-                            Logger::Type::ERROR_MODERATE,
-                            Logger::NameValueVector{ NameValuePair("Entity", static_cast<size_t>(entity)) });
-                        return;
-                    }
+                    SCRIPT_FATAL_ASSERT(!movementComponent, "A movement component was required but wasn't found.", Logger::Type::ERROR_MODERATE,
+                        NameValuePair("Entity", static_cast<size_t>(entity)));
 
                     ::Atmos::GridPosition giveToPositionSystem((*position)->x.Retrieve(), (*position)->y.Retrieve(), (*position)->z.Retrieve());
                     ::Atmos::Ent::PositionSystem::MoveEntityInstant(entity, giveToPositionSystem);
@@ -1359,13 +1284,8 @@ STATIC_PROPERTY_SPLIT(ActionID, ::Atmos::Input::ActionID, varName, falconName, :
 
                     // Get movement component
                     auto movementComponent = GetCurrentEntities()->FindComponent<::Atmos::Ent::MovementComponent>(entity);
-                    if (!movementComponent)
-                    {
-                        Logger::Log(AddTracebackToString(*vm, "A movement component was required but wasn't found."),
-                            Logger::Type::ERROR_MODERATE,
-                            Logger::NameValueVector{ NameValuePair("Entity", static_cast<size_t>(entity)) });
-                        return;
-                    }
+                    SCRIPT_FATAL_ASSERT(!movementComponent, "A movement component was required but wasn't found.", Logger::Type::ERROR_MODERATE,
+                        NameValuePair("Entity", static_cast<size_t>(entity)));
 
                     if (!position->WasSet())
                         vm->retval(::Atmos::Ent::PositionSystem::CanMove(*movementComponent));
@@ -1389,13 +1309,8 @@ STATIC_PROPERTY_SPLIT(ActionID, ::Atmos::Input::ActionID, varName, falconName, :
 
                     // Get movement component
                     auto movementComponent = GetCurrentEntities()->FindComponent<::Atmos::Ent::MovementComponent>(entity);
-                    if (!movementComponent)
-                    {
-                        Logger::Log(AddTracebackToString(*vm, "A movement component was required but wasn't found."),
-                            Logger::Type::ERROR_MODERATE,
-                            Logger::NameValueVector{ NameValuePair("Entity", static_cast<size_t>(entity)) });
-                        return;
-                    }
+                    SCRIPT_FATAL_ASSERT(!movementComponent, "A movement component was required but wasn't found.", Logger::Type::ERROR_MODERATE,
+                        NameValuePair("Entity", static_cast<size_t>(entity)));
 
                     // Get modulator
                     auto modID = (*modulatorPass)->modID.Retrieve();
@@ -1408,15 +1323,11 @@ STATIC_PROPERTY_SPLIT(ActionID, ::Atmos::Input::ActionID, varName, falconName, :
                     }
 
                     // Make sure modulator is the right type
-                    if (modulator->GetGeneratorName() != ::Atmos::Modulator::Description::SenseComponent.name)
-                    {
-                        Logger::Log(AddTracebackToString(*vm, "The modulator is the incorrect type."),
-                            Logger::Type::ERROR_MODERATE,
-                            Logger::NameValueVector{ NameValuePair("Modulator ID", modID),
-                            NameValuePair("Required Type", ::Atmos::Modulator::Description::SenseComponent.name),
-                            NameValuePair("Actual Type", modulator->GetGeneratorName()) });
-                        return;
-                    }
+                    SCRIPT_FATAL_ASSERT(modulator->GetGeneratorName() != ::Atmos::Modulator::Description::SenseComponent.name,
+                        "The modulator is the incorrect type.", Logger::Type::ERROR_MODERATE,
+                        NameValuePair("Modulator ID", modID),
+                        NameValuePair("Required Type", ::Atmos::Modulator::Description::SenseComponent.name),
+                        NameValuePair("Actual Type", modulator->GetGeneratorName()));
 
                     // Get sense component
                     auto senseComponent = GetCurrentEntities()->FindComponent<::Atmos::Ent::SenseComponent>(entity);
@@ -1460,13 +1371,8 @@ STATIC_PROPERTY_SPLIT(ActionID, ::Atmos::Input::ActionID, varName, falconName, :
                     auto &entity = self->entity.Retrieve();
                     // Get sense component
                     auto senseComponent = GetCurrentEntities()->FindComponent<::Atmos::Ent::SenseComponent>(entity);
-                    if (!senseComponent)
-                    {
-                        Logger::Log(AddTracebackToString(*vm, "A sense component was required but wasn't found."),
-                            Logger::Type::ERROR_MODERATE,
-                            Logger::NameValueVector{ NameValuePair("Entity", static_cast<size_t>(entity)) });
-                        return;
-                    }
+                    SCRIPT_FATAL_ASSERT(!senseComponent, "A sense component was required but wasn't found.", Logger::Type::ERROR_MODERATE,
+                        NameValuePair("Entity", static_cast<size_t>(entity)));
 
                     Position::Position3D::Scaffolding().x.Set(senseComponent->position.GetX());
                     Position::Position3D::Scaffolding().y.Set(senseComponent->position.GetY());
@@ -1483,13 +1389,8 @@ STATIC_PROPERTY_SPLIT(ActionID, ::Atmos::Input::ActionID, varName, falconName, :
                     auto &entity = self->entity.Retrieve();
                     // Get sense component
                     auto senseComponent = GetCurrentEntities()->FindComponent<::Atmos::Ent::SenseComponent>(entity);
-                    if (!senseComponent)
-                    {
-                        Logger::Log(AddTracebackToString(*vm, "A sense component was required but wasn't found."),
-                            Logger::Type::ERROR_MODERATE,
-                            Logger::NameValueVector{ NameValuePair("Entity", static_cast<size_t>(entity)) });
-                        return;
-                    }
+                    SCRIPT_FATAL_ASSERT(!senseComponent, "A sense component was required but wasn't found.", Logger::Type::ERROR_MODERATE,
+                        NameValuePair("Entity", static_cast<size_t>(entity)));
 
                     auto id = selfMethod.GetParameter<::Atmos::Ent::SenseComponent::SpriteList::ID>("ID");
                     auto foundSprite = senseComponent->FindSprite(**id);
@@ -1512,19 +1413,13 @@ STATIC_PROPERTY_SPLIT(ActionID, ::Atmos::Input::ActionID, varName, falconName, :
                     auto &entity = self->entity.Retrieve();
                     // Get sense component
                     auto senseComponent = GetCurrentEntities()->FindComponent<::Atmos::Ent::SenseComponent>(entity);
-                    if (!senseComponent)
-                    {
-                        Logger::Log(AddTracebackToString(*vm, "A sense component was required but wasn't found."),
-                            Logger::Type::ERROR_MODERATE,
-                            Logger::NameValueVector{ NameValuePair("Entity", static_cast<size_t>(entity)) });
-                        return;
-                    }
+                    SCRIPT_FATAL_ASSERT(!senseComponent, "A sense component was required but wasn't found.", Logger::Type::ERROR_MODERATE,
+                        NameValuePair("Entity", static_cast<size_t>(entity)));
 
                     Optional<::Atmos::Ent::PositionSystem::StagedPosition> stagedPosition = ::Atmos::Ent::PositionSystem::GetStagedPosition(entity);
                     if (!stagedPosition)
                     {
-                        Logger::Log(AddTracebackToString(*vm, "There is no staged position."),
-                            Logger::Type::ERROR_MODERATE);
+                        vm->retnil();
                         return;
                     }
 
@@ -1543,13 +1438,8 @@ STATIC_PROPERTY_SPLIT(ActionID, ::Atmos::Input::ActionID, varName, falconName, :
                     auto &entity = self->entity.Retrieve();
                     // Get sense component
                     auto senseComponent = GetCurrentEntities()->FindComponent<::Atmos::Ent::SenseComponent>(entity);
-                    if (!senseComponent)
-                    {
-                        Logger::Log(AddTracebackToString(*vm, "A sense component was required but wasn't found."),
-                            Logger::Type::ERROR_MODERATE,
-                            Logger::NameValueVector{ NameValuePair("Entity", static_cast<size_t>(entity)) });
-                        return;
-                    }
+                    SCRIPT_FATAL_ASSERT(!senseComponent, "A sense component was required but wasn't found.", Logger::Type::ERROR_MODERATE,
+                        NameValuePair("Entity", static_cast<size_t>(entity)));
 
                     Optional<::Atmos::Ent::PositionSystem::StagedPosition> stagedPosition = ::Atmos::Ent::PositionSystem::GetStagedPosition(entity);
                     if (stagedPosition)
@@ -1561,8 +1451,7 @@ STATIC_PROPERTY_SPLIT(ActionID, ::Atmos::Input::ActionID, varName, falconName, :
                     Optional<::Atmos::Ent::PositionSystem::StagedDirection> stagedDirection = ::Atmos::Ent::PositionSystem::GetStagedDirection(entity);
                     if (!stagedDirection)
                     {
-                        Logger::Log(AddTracebackToString(*vm, "There is no staged direction."),
-                            Logger::Type::ERROR_MODERATE);
+                        vm->retnil();
                         return;
                     }
 
@@ -1578,13 +1467,8 @@ STATIC_PROPERTY_SPLIT(ActionID, ::Atmos::Input::ActionID, varName, falconName, :
                     auto &entity = self->entity.Retrieve();
                     // Get sense component
                     auto senseComponent = GetCurrentEntities()->FindComponent<::Atmos::Ent::SenseComponent>(entity);
-                    if (!senseComponent)
-                    {
-                        Logger::Log(AddTracebackToString(*vm, "A sense component was required but wasn't found."),
-                            Logger::Type::ERROR_MODERATE,
-                            Logger::NameValueVector{ NameValuePair("Entity", static_cast<size_t>(entity)) });
-                        return;
-                    }
+                    SCRIPT_FATAL_ASSERT(!senseComponent, "A sense component was required but wasn't found.", Logger::Type::ERROR_MODERATE,
+                        NameValuePair("Entity", static_cast<size_t>(entity)));
 
                     Optional<::Atmos::Ent::PositionSystem::StagedPosition> stagedPosition = ::Atmos::Ent::PositionSystem::GetStagedPosition(entity);
                     vm->retval(stagedPosition.IsValid());
@@ -1599,13 +1483,8 @@ STATIC_PROPERTY_SPLIT(ActionID, ::Atmos::Input::ActionID, varName, falconName, :
                     auto &entity = self->entity.Retrieve();
                     // Get sense component
                     auto senseComponent = GetCurrentEntities()->FindComponent<::Atmos::Ent::SenseComponent>(entity);
-                    if (!senseComponent)
-                    {
-                        Logger::Log(AddTracebackToString(*vm, "A sense component was required but wasn't found."),
-                            Logger::Type::ERROR_MODERATE,
-                            Logger::NameValueVector{ NameValuePair("Entity", static_cast<size_t>(entity)) });
-                        return;
-                    }
+                    SCRIPT_FATAL_ASSERT(!senseComponent, "A sense component was required but wasn't found.", Logger::Type::ERROR_MODERATE,
+                        NameValuePair("Entity", static_cast<size_t>(entity)));
 
                     Optional<::Atmos::Ent::PositionSystem::StagedPosition> stagedPosition = ::Atmos::Ent::PositionSystem::GetStagedPosition(entity);
                     if (stagedPosition)

@@ -7,6 +7,9 @@ namespace Atmos
 {
     class NameValuePair
     {
+    private:
+        INSCRIPTION_ACCESS;
+        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
     public:
         Name name;
         Variant value;

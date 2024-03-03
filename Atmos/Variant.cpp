@@ -7,6 +7,43 @@
 
 namespace Atmos
 {
+    VariantType GetTypeFromVariantID(size_t from)
+    {
+        return static_cast<VariantType>(from);
+    }
+
+    VariantType GetTypeFromVariant(const Variant &from)
+    {
+        if (!from.IsInhabited())
+            return VariantType::NONE;
+
+        return GetTypeFromVariantID(from.GetTypeAsID());
+    }
+
+    class ToStringImplementation
+    {
+    public:
+        template<class T>
+        static String DoReturn(T& t)
+        {
+            return ToString(t);
+        }
+    };
+
+    String ToString(const Variant &arg)
+    {
+        return ::function::VisitReturn<ToStringImplementation, String>(arg);
+    }
+}
+
+namespace function
+{
+    template Variant<bool, std::int8_t, std::int16_t, std::int32_t, std::int64_t, std::uint8_t, std::uint16_t, std::uint32_t, std::uint64_t, float, double, ::Atmos::FixedPoint64, ::Atmos::String, ::Atmos::GridPosition>;
+}
+
+namespace Atmos
+{
+    /*
     template<VariantIterationTraits::UnderlyingType t>
     struct VariantSerializer
     {
@@ -24,7 +61,7 @@ namespace Atmos
     INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(Variant)
     {
         scribe(type);
-        function::IterateRangeCheckStop<VariantIterationTraits::UnderlyingType, VariantSerializer, bool, VariantIterationTraits::endU, VariantIterationTraits::beginU>(false, scribe, *this);
+        function::IterateRangeCheckStop<VariantIterationTraits::UnderlyingType, VariantSerializer, bool, VariantIterationTraits::endU, VariantIterationTraits::beginU>(true, scribe, *this);
     }
 
     Variant::Variant() : type(Type::NONE), uint8(0)
@@ -70,9 +107,6 @@ namespace Atmos
     {}
 
     Variant::Variant(const String &set) : type(Type::STRING), string(set)
-    {}
-
-    Variant::Variant(const Position2D &set) : type(Type::POSITION_2D), position2D(set)
     {}
 
     Variant::Variant(const Position3D &set) : type(Type::POSITION_3D), position3D(set)
@@ -138,9 +172,6 @@ namespace Atmos
         case Type::STRING:
             InitImpl(arg.string);
             break;
-        case Type::POSITION_2D:
-            InitImpl(arg.position2D);
-            break;
         case Type::POSITION_3D:
             InitImpl(arg.position3D);
             break;
@@ -202,9 +233,6 @@ namespace Atmos
         case Type::STRING:
             InitImpl(std::move(arg.string));
             break;
-        case Type::POSITION_2D:
-            InitImpl(std::move(arg.position2D));
-            break;
         case Type::POSITION_3D:
             InitImpl(std::move(arg.position3D));
             break;
@@ -243,9 +271,6 @@ namespace Atmos
             break;
         case Type::STRING:
             string.~basic_string();
-            break;
-        case Type::POSITION_2D:
-            position2D.~Position2D();
             break;
         case Type::POSITION_3D:
             position3D.~Position3D();
@@ -307,9 +332,6 @@ namespace Atmos
             break;
         case Type::STRING:
             SetImpl(arg.string);
-            break;
-        case Type::POSITION_2D:
-            SetImpl(arg.position2D);
             break;
         case Type::POSITION_3D:
             SetImpl(arg.position3D);
@@ -373,9 +395,6 @@ namespace Atmos
             break;
         case Type::STRING:
             SetImpl(std::move(arg.string));
-            break;
-        case Type::POSITION_2D:
-            SetImpl(std::move(arg.position2D));
             break;
         case Type::POSITION_3D:
             SetImpl(std::move(arg.position3D));
@@ -467,11 +486,6 @@ namespace Atmos
         SetImpl(set);
     }
 
-    void Variant::Set(const Position2D &set)
-    {
-        SetImpl(set);
-    }
-
     void Variant::Set(const Position3D &set)
     {
         SetImpl(set);
@@ -536,9 +550,6 @@ namespace Atmos
             break;
         case Type::STRING:
             string = VariantTraits<Type::STRING>::defaultValue;
-            break;
-        case Type::POSITION_2D:
-            position2D = VariantTraits<Type::POSITION_2D>::defaultValue;
             break;
         case Type::POSITION_3D:
             position3D = VariantTraits<Type::POSITION_3D>::defaultValue;
@@ -625,11 +636,6 @@ namespace Atmos
     bool Variant::IsString() const
     {
         return type == Type::STRING;
-    }
-
-    bool Variant::IsPosition2D() const
-    {
-        return type == Type::POSITION_2D;
     }
 
     bool Variant::IsPosition3D() const
@@ -722,11 +728,6 @@ namespace Atmos
         return string;
     }
 
-    const Position2D& Variant::AsPosition2D() const
-    {
-        return position2D;
-    }
-
     const Position3D& Variant::AsPosition3D() const
     {
         return position3D;
@@ -782,8 +783,6 @@ namespace Atmos
 
         case Type::STRING:
             return string == arg.string;
-        case Type::POSITION_2D:
-            return position2D == arg.position2D;
         case Type::POSITION_3D:
             return position3D == arg.position3D;
         case Type::GRID_POSITION:
@@ -843,8 +842,6 @@ namespace Atmos
 
         case Type::STRING:
             return string;
-        case Type::POSITION_2D:
-            return String(::Atmos::ToString(position2D.GetX()) + ::Atmos::ToString(position2D.GetY()));
         case Type::POSITION_3D:
             return String(::Atmos::ToString(position3D.GetX()) + ::Atmos::ToString(position3D.GetY()) + ::Atmos::ToString(position3D.GetZ()));
         case Type::GRID_POSITION:
@@ -869,14 +866,13 @@ namespace Atmos
     }
 
     const VariantTraits<Variant::Type::STRING>::T VariantTraits<Variant::Type::STRING>::defaultValue("");
-    const VariantTraits<Variant::Type::POSITION_2D>::T VariantTraits<Variant::Type::POSITION_2D>::defaultValue;
     const VariantTraits<Variant::Type::POSITION_3D>::T VariantTraits<Variant::Type::POSITION_3D>::defaultValue;
     const VariantTraits<Variant::Type::GRID_POSITION>::T VariantTraits<Variant::Type::GRID_POSITION>::defaultValue;
     const VariantTraits<Variant::Type::VECTOR>::T VariantTraits<Variant::Type::VECTOR>::defaultValue;
 
     const VariantReverseTraits<String>::T VariantReverseTraits<String>::defaultValue = VariantTraits<enumType>::defaultValue;
-    const VariantReverseTraits<Position2D>::T VariantReverseTraits<Position2D>::defaultValue = VariantTraits<enumType>::defaultValue;
     const VariantReverseTraits<Position3D>::T VariantReverseTraits<Position3D>::defaultValue = VariantTraits<enumType>::defaultValue;
     const VariantReverseTraits<GridPosition>::T VariantReverseTraits<GridPosition>::defaultValue = VariantTraits<enumType>::defaultValue;
     const VariantReverseTraits<std::vector<Variant>>::T VariantReverseTraits<std::vector<Variant>>::defaultValue = VariantTraits<enumType>::defaultValue;
+    */
 }

@@ -388,6 +388,9 @@ namespace Atmos
             if (!CanMove(movement))
                 return false;
 
+            if (!GetCurrentTiles()->Find(destination))
+                return false;
+
             // If this will collide, then don't move
             if (CheckCollision(movement, destination) != CollisionType::NONE)
                 return false;

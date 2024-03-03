@@ -7,85 +7,59 @@
 
 namespace Atmos
 {
-    void DoLog(const String &string, Logger::Type type, Logger::NameValueVector *nvps = nullptr)
+    void DoLog(const String &message, Logger::Type type, Logger::NameValueVector *nvps = nullptr)
     {
-        if (string.empty())
+        if (message.empty())
             return;
         
-        String message;
-        // Check if the whole thing is spaces or new lines
+        String output;
         {
-            bool leave = true;
-            auto loop = string.begin();
-            for (auto &loop : string)
-            {
-                if (loop == '\n' || loop == ' ')
-                    continue;
-
-                leave = false;
-                break;
-            }
-
-            if (leave)
+            if (IsAllWhitespace(message))
                 return;
         }
 
         inscription::TextOutFile outFile(Environment::GetFileSystem()->GetExePath().Append("errorLog.txt").GetValue(), true);
 
         // Output time and date
-        message = Logger::GetTimeValue() + "\n";
+        output = Logger::GetTimeValue() + ' ';
 
         // Output severity
         {
             switch (type)
             {
             case Logger::Type::ERROR_SEVERE:
-                message.append("Type: Severe Error\n");
+                output.append("<SEVERE>");
                 break;
             case Logger::Type::ERROR_MODERATE:
-                message.append("Type: Moderate Error\n");
+                output.append("<MODERATE>");
                 break;
             case Logger::Type::ERROR_LOW:
-                message.append("Type: Low Error\n");
+                output.append("<LOW>");
                 break;
             case Logger::Type::WARNING:
-                message.append("Type: Warning\n");
+                output.append("<WARNING>");
                 break;
             case Logger::Type::INFORMATION:
+                output.append("<INFO>");
                 break;
             }
         }
+
+        output.append(' ' + message);
+        if (message.find_last_of('\n') != message.size() - 1)
+            output.append(1, '\n');
 
         // Output nvps
         {
             if (nvps)
             {
                 for (auto &loop : *nvps)
-                    message.append(loop.name + ": " + loop.value.ToString() + "\n");
+                    output.append("        " + loop.name + ": " + ToString(loop.value) + '\n');
             }
         }
 
-        auto placeNewLines = [](const String &check, String &change)
-        {
-            // If it already has one endline, push another at the back
-            if (check.front() == '\n')
-                change.push_back('\n');
-            else
-            {
-                // Else push two to the back
-                change.push_back('\n');
-                change.push_back('\n');
-            }
-        };
-
-        message.append(string);
-        if (string.size() == 1 || string.size() == 2)
-            placeNewLines(string, message);
-        else
-            placeNewLines(string.substr(string.size() - 2), message);
-
-        outFile << message;
-        Logger::Instance().onLogged(message);
+        outFile << output;
+        Logger::Instance().onLogged(output);
     }
 
     void Logger::Log(const String &string, Type type)

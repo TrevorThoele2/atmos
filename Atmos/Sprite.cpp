@@ -254,6 +254,9 @@ namespace Atmos
     // Returns heap memory. Make sure to delete it if not giving it to AGUI
     std::unique_ptr<agui::SpriteComponent> CreateAguiSpriteComponent(const Sprite &sprite, const agui::FileName &imageName, const agui::RelativePosition &relPosition)
     {
+        if (!sprite.GetMaterial() || !sprite.GetMaterial()->GetXVisual())
+            return std::unique_ptr<agui::SpriteComponent>();
+
         AguiSpriteFactory factory(sprite);
         return std::unique_ptr<agui::SpriteComponent>(factory.CreateComponent(imageName, relPosition));
     }

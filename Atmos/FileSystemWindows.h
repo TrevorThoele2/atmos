@@ -12,10 +12,11 @@ namespace Atmos
         private:
             static constexpr size_t maxPathLength = MAX_PATH * sizeof(TCHAR) + sizeof(TCHAR);
         public:
-            FilePath GetExePath() const override;
-            FilePath GetDataPath() const override;
-            FilePath GetTempDirectoryPath() const override;
-            size_t GetMaxPathLength() const override;
+            FilePath GetExePath() const override final;
+            FilePath GetDataPath() const override final;
+            FilePath GetTempDirectoryPath() const override final;
+            size_t GetMaxPathLength() const override final;
+            String GetFileSeparator() const override final;
         };
     }
 }

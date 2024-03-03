@@ -241,7 +241,6 @@ namespace Atmos
         static_cast<Derived<Args...>*>(base.get())->wrapped.Execute(std::forward<Args>(args)...);
     }
 
-    // Manages a group of auto slots
     class EventScopedConnectionManager
     {
     private:

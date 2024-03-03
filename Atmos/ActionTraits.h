@@ -10,24 +10,23 @@ namespace Atmos
     namespace Act
     {
         template<ID idGiven, class T, T func>
-        class TraitsBase
+        class TraitsCommon
         {
+        private:
+            typedef ::function::FunctionTraits<T> TraitsBase;
         protected:
-            TraitsBase() = default;
+            TraitsCommon() = default;
             static void Instantiate();
         public:
             static constexpr ::Atmos::Act::ID id = idGiven;
 
-            // Utility types
-            typedef function::ParameterIndex ParameterIndex;
+            typedef ::function::ParameterIndex ParameterIndex;
 
-            // Function
-            typedef typename function::FunctionTraits<T>::Type FunctionT;
+            typedef typename TraitsBase::Type FunctionT;
             static constexpr FunctionT wrapped = func;
 
-            // Return/parameters
-            typedef typename function::FunctionTraits<T>::ReturnT ReturnT;
-            typedef typename function::FunctionTraits<T>::ParameterPackT ParameterPackT;
+            typedef typename TraitsBase::ReturnT ReturnT;
+            typedef typename TraitsBase::ParameterPackT ParameterPackT;
             static constexpr ParameterIndex parameterCount = ParameterPackT::count;
         };
 
@@ -36,57 +35,58 @@ namespace Atmos
 
 #define TRAITS_BASE_PASS(passT) decltype(passT), passT
 #define TRAITS_INSTANTIATE Traits() { Instantiate(); }
+
         template<>
-        class Traits<1> : public TraitsBase<1, TRAITS_BASE_PASS(&Speech::StartSpeech)>
+        class Traits<1> : public TraitsCommon<1, TRAITS_BASE_PASS(&Script::CreateAndStart)>
         {
         private:
             TRAITS_INSTANTIATE;
         };
 
         template<>
-        class Traits<2> : public TraitsBase<2, TRAITS_BASE_PASS(&Music::Change)>
+        class Traits<2> : public TraitsCommon<2, TRAITS_BASE_PASS(&Script::CreateAndStartGlobal)>
         {
         private:
             TRAITS_INSTANTIATE;
         };
 
         template<>
-        class Traits<3> : public TraitsBase<3, TRAITS_BASE_PASS(&Battle::GivePlacement)>
+        class Traits<3> : public TraitsCommon<3, TRAITS_BASE_PASS(&Script::CreateAndStartExternal)>
         {
         private:
             TRAITS_INSTANTIATE;
         };
 
         template<>
-        class Traits<4> : public TraitsBase<4, TRAITS_BASE_PASS(&Scheduler::Schedule)>
+        class Traits<4> : public TraitsCommon<4, TRAITS_BASE_PASS(&Script::CreateAndStartGlobalExternal)>
         {
         private:
             TRAITS_INSTANTIATE;
         };
 
         template<>
-        class Traits<5> : public TraitsBase<5, TRAITS_BASE_PASS(&Script::CreateAndStart)>
+        class Traits<5> : public TraitsCommon<5, TRAITS_BASE_PASS(&Speech::StartSpeech)>
         {
         private:
             TRAITS_INSTANTIATE;
         };
 
         template<>
-        class Traits<6> : public TraitsBase<6, TRAITS_BASE_PASS(&Script::CreateAndStartGlobal)>
+        class Traits<6> : public TraitsCommon<6, TRAITS_BASE_PASS(&Music::Change)>
         {
         private:
             TRAITS_INSTANTIATE;
         };
 
         template<>
-        class Traits<7> : public TraitsBase<7, TRAITS_BASE_PASS(&Script::CreateAndStartExternal)>
+        class Traits<7> : public TraitsCommon<7, TRAITS_BASE_PASS(&Scheduler::Schedule)>
         {
         private:
             TRAITS_INSTANTIATE;
         };
 
         template<>
-        class Traits<8> : public TraitsBase<8, TRAITS_BASE_PASS(&Script::CreateAndStartGlobalExternal)>
+        class Traits<8> : public TraitsCommon<8, TRAITS_BASE_PASS(&Field::Change)>
         {
         private:
             TRAITS_INSTANTIATE;

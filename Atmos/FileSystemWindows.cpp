@@ -14,7 +14,7 @@ namespace Atmos
             GetModuleFileName(nullptr, full_path, maxPathLength);
             FilePath path(full_path);
             path.RemoveFileName();
-            path.Append("\\");
+            path.Append(GetFileSeparator());
 
             return path;
         }
@@ -26,7 +26,7 @@ namespace Atmos
             PWSTR path;
             SHGetKnownFolderPath(FOLDERID_RoamingAppData, 0, nullptr, &path);
             FilePath ret(converter.to_bytes(path));
-            ret.Append("\\Without\\");
+            ret.Append(GetFileSeparator() + "Without" + GetFileSeparator());
             return ret;
         }
 
@@ -43,6 +43,11 @@ namespace Atmos
         size_t WindowsHandler::GetMaxPathLength() const
         {
             return maxPathLength;
+        }
+
+        String WindowsHandler::GetFileSeparator() const
+        {
+            return String("\\");
         }
     }
 }
