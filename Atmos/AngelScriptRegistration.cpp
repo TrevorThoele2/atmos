@@ -99,7 +99,6 @@
 #include "AngelScriptRequestField.h"
 #include "AngelScriptModifyWorldProperties.h"
 #include "AngelScriptRetrieveWorldProperties.h"
-#include "AngelScriptIsSolid.h"
 
 #include "AngelScriptGenerateRandomNumber.h"
 
@@ -300,7 +299,9 @@ namespace Atmos::Scripting::Angel
                 .Register<Entity::FindByName>()
                 .Register<Entity::FindByPosition>()
                 .Register<Entity::MoveTo>()
+                .Register<Entity::CanMoveTo>()
                 .Register<Entity::ModifyTags>()
+                .Register<Entity::FindPath>()
                 .Register<CurrentEntity>()
 
                 .Register<Result>()
@@ -312,7 +313,6 @@ namespace Atmos::Scripting::Angel
                 .Register<World::RequestField>()
                 .Register<World::ModifyProperties>()
                 .Register<World::RetrieveProperties>()
-                .Register<World::IsSolid>()
 
                 .Register<Random::GenerateBool>()
                 .Register<Random::GenerateNumber<std::int8_t>>()

@@ -1,7 +1,8 @@
 #include "EntityCurator.h"
 
+#include "EntityAlgorithms.h"
 #include "CurrentActualizingEntity.h"
-#include "IsSolid.h"
+#include "Map.h"
 #include "DataAlgorithms.h"
 
 #include <Arca/Reliquary.h>
@@ -60,7 +61,7 @@ namespace Atmos::Entity
 
     void Curator::Handle(const MoveTo& command)
     {
-        if (Owner().Do(World::IsSolid{ command.to }))
+        if (!DoCanMoveTo(command.entity->isSolid, command.to, Owner()))
             return;
 
         auto mutableMappedEntities = MutablePointer().Of(mapped);
@@ -74,10 +75,20 @@ namespace Atmos::Entity
         AddEntityTo(positionToEntity, command.to, command.entity);
     }
 
+    bool Curator::Handle(const CanMoveTo& command)
+    {
+        return DoCanMoveTo(command.entity->isSolid, command.to, Owner());
+    }
+
     void Curator::Handle(const ModifyTags& command)
     {
         auto& tags = MutablePointer().Of(command.entity)->tags;
         ApplyAddRemoveModifications(tags, command.add, command.remove);
+    }
+
+    Path Curator::Handle(const FindPath& command)
+    {
+        return pathfinder.FindPath(command.entity, command.to, Owner());
     }
 
     void Curator::AddEntityTo(Mapped::NameToEntity& to, const String& name, Arca::Index<Entity> entity)

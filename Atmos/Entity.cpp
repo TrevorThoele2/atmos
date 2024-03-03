@@ -3,7 +3,7 @@
 #include "DataCore.h"
 
 #include "MappedEntities.h"
-#include "IsSolid.h"
+#include "EntityAlgorithms.h"
 
 namespace Atmos::Entity
 {
@@ -38,7 +38,7 @@ namespace Arca
         if (mappedEntities->nameToEntity.find(name) != mappedEntities->nameToEntity.end())
             return false;
 
-        if (isSolid && reliquary.Do(Atmos::World::IsSolid{ position }))
+        if (!Atmos::Entity::DoCanMoveTo(isSolid, position, reliquary))
             return false;
 
         return true;

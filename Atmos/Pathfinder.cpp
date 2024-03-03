@@ -1,88 +1,97 @@
 #include "Pathfinder.h"
 
-#include "Map.h"
+#include "SpatialAlgorithms.h"
 
-namespace Atmos::Spatial
+#include "CanMoveEntityTo.h"
+#include <Arca/Reliquary.h>
+
+namespace Atmos::Entity
 {
-    /*
-    Pathfinder::Path Pathfinder::FindPath(const Grid::Position& start, const Grid::Position& finish)
+    Path Pathfinder::FindPath(
+        const Arca::Index<Entity>& entity,
+        const Spatial::Grid::Point& to,
+        Arca::Reliquary& reliquary)
     {
-        Path createdStack;
-        if (start == finish)
-            return createdStack;
+        const auto from = entity->position;
+        if (from == to)
+            return {};
 
-        const auto map = Arca::Index<World::Map>(Owner());
-        if (!map)
-            return createdStack;
+        Path currentPath;
 
         NodeHeap openSet;
         NodeMap closedSet;
-        openSet.Push(Node(0, Length(start, finish), start));
+        openSet.Push(Node(0, Distance(from, to), from));
 
         while (!openSet.IsEmpty())
         {
-            // Get current
-            Node current = openSet.Top();
-            if (current.Position() == finish)
+            auto current = openSet.Top();
+            if (current.position == to)
             {
-                ReconstructPath(createdStack, current);
-                return createdStack;
+                ReconstructPath(currentPath, current);
+                return currentPath;
             }
 
             openSet.Pop();
-            closedSet.emplace(current.Position(), current);
+            closedSet.emplace(current.position, current);
 
-            // Find all neighbors
-            for (int neighborLoop = DirectionIterationTraits::begin; neighborLoop <= DirectionIterationTraits::end; ++neighborLoop)
+            for (auto& relativeNeighbor : relativeNeighbors)
             {
                 // Don't consider tile positions that don't exist or the tile is solid
-                auto neighborPosition = current.Position().FindPositionAdjacent(Direction::FromUnderlyingType(neighborLoop));
-                const auto foundTile = map->entityRegion.find(neighborPosition);
-                if (neighborPosition != finish && foundTile == map->entityRegion.end())
+                auto neighborPosition = Spatial::Grid::Point
+                {
+                    current.position.x + relativeNeighbor.x,
+                    current.position.y + relativeNeighbor.y
+                };
+                const auto canMoveTo = reliquary.Do(CanMoveTo{ entity, to });
+                if (neighborPosition != to && !canMoveTo)
                     continue;
 
-                Node neighbor(current.G() + 1, neighborPosition.FindDistance(finish), neighborPosition);
+                Node neighbor(current.gCost + 1, Distance(neighborPosition, to), neighborPosition);
 
-                if (closedSet.find(neighbor.Position()) != closedSet.end())
+                if (closedSet.find(neighbor.position) != closedSet.end())
                     continue;
 
                 // Find if node is in the open set
-                const auto neighborInOpen = FindNode(neighbor.Position(), openSet);
+                const auto neighborInOpen = FindNode(neighbor.position, openSet);
 
                 if (neighborInOpen == openSet.end())
                 {
-                    neighbor.Reparent(current);
+                    neighbor.parent = std::make_shared<Node>(current);
                     openSet.Push(neighbor);
                 }
-                else if (neighbor.G() < neighborInOpen->G())
+                else if (neighbor.gCost < neighborInOpen->gCost)
                 {
                     *neighborInOpen = neighbor;
-                    neighborInOpen->Reparent(current);
+                    neighborInOpen->parent = std::make_shared<Node>(current);
                     openSet.Heapify();
                 }
             }
         }
 
-        // No path
-        return createdStack;
+        return {};
     }
 
-    Pathfinder::Node::Node(Cost gCost, Cost hCost, const Grid::Position& position) :
-        gCost(gCost), hCost(hCost), fCost(gCost + hCost),
-        position(position), parent(nullptr)
+    Pathfinder::Node::Node(Cost gCost, Cost hCost, const Spatial::Grid::Point& position) :
+        position(position),
+        gCost(gCost),
+        hCost(hCost),
+        fCost(gCost + hCost)
     {}
 
     Pathfinder::Node::Node(Node&& arg) noexcept :
-        gCost(arg.gCost), hCost(arg.hCost), fCost(arg.fCost),
-        position(arg.position), parent(std::move(arg.parent))
+        position(arg.position),
+        gCost(arg.gCost),
+        hCost(arg.hCost),
+        fCost(arg.fCost),
+        parent(std::move(arg.parent))
     {}
 
     Pathfinder::Node& Pathfinder::Node::operator=(Node&& arg) noexcept
     {
+        position = arg.position;
         gCost = arg.gCost;
         hCost = arg.hCost;
         fCost = arg.fCost;
-        position = arg.position;
         parent = std::move(arg.parent);
         return *this;
     }
@@ -102,72 +111,25 @@ namespace Atmos::Spatial
         return !(*this == arg);
     }
 
-    Grid::Position Pathfinder::Node::Position() const
+    Pathfinder::NodeHeap::iterator Pathfinder::FindNode(const Spatial::Grid::Point& position, NodeHeap& heap)
     {
-        return position;
-    }
-
-    void Pathfinder::Node::ChangeG(Cost to)
-    {
-        gCost = to;
-        fCost = gCost + hCost;
-    }
-
-    void Pathfinder::Node::ChangeH(Cost to)
-    {
-        hCost = to;
-        fCost = gCost + hCost;
-    }
-
-    Pathfinder::Node::Cost Pathfinder::Node::G() const
-    {
-        return gCost;
-    }
-
-    Pathfinder::Node::Cost Pathfinder::Node::H() const
-    {
-        return hCost;
-    }
-
-    Pathfinder::Node::Cost Pathfinder::Node::F() const
-    {
-        return fCost;
-    }
-
-    void Pathfinder::Node::Reparent(const Node& setTo)
-    {
-        parent = std::make_unique<Node>(setTo);
-    }
-
-    const Pathfinder::Node* Pathfinder::Node::Parent() const
-    {
-        return parent.get();
-    }
-
-    Pathfinder::NodeHeap::iterator Pathfinder::FindNode(const Grid::Position& position, NodeHeap& heap) const
-    {
-        return std::find_if(heap.begin(), heap.end(),
+        return std::find_if(
+            heap.begin(),
+            heap.end(),
             [position](const Node& node)
-        {
-            return node.Position() == position;
-        });
+            {
+                return node.position == position;
+            });
     }
 
     void Pathfinder::ReconstructPath(Path& stack, const Node& end)
     {
-        stack.push(end.Position());
-        auto parent = end.Parent();
-        while (parent->Parent() != nullptr)
+        stack.push_back(end.position);
+        auto parent = end.parent.get();
+        while (parent->parent != nullptr)
         {
-            stack.push(parent->Position());
-            parent = parent->Parent();
+            stack.push_back(parent->position);
+            parent = parent->parent.get();
         }
     }
-
-    void Pathfinder::ClearStack(Path& stack) const
-    {
-        Path empty;
-        std::swap(stack, empty);
-    }
-    */
 }

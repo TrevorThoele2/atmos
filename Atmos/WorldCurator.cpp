@@ -32,25 +32,4 @@ namespace Atmos::World
     {
         return manager->CurrentWorldProperties();
     }
-
-    bool Curator::Handle(const IsSolid& command)
-    {
-        auto& entities = *Arca::Index<Entity::Mapped>(Owner());
-        const auto possibleEntities = entities.positionToEntity.find(command.point);
-        if (possibleEntities != entities.positionToEntity.end())
-        {
-            const auto anyAreSolid = std::any_of(
-                possibleEntities->second.begin(),
-                possibleEntities->second.end(),
-                [](const Arca::Index<Entity::Entity>& entity) { return entity->isSolid; });
-            if (anyAreSolid)
-                return true;
-        }
-
-        auto& map = *Arca::Index<Map>(Owner());
-        if (map.entityBoundary.find(command.point) != map.entityBoundary.end())
-            return true;
-
-        return false;
-    }
 }
