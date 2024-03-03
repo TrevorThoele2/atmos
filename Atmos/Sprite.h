@@ -13,7 +13,6 @@
 #include "FilePath.h"
 
 #include "Serialization.h"
-#include <AGUI/SpriteComponent.h>
 
 namespace Atmos
 {
@@ -40,7 +39,7 @@ namespace Atmos
     public:
         Sprite(ObjectManager& manager);
         Sprite(const Sprite& arg);
-        Sprite(const ::Inscription::Table<Sprite>& table);
+        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(Sprite);
 
         ObjectTypeDescription TypeDescription() const override;
     private:
@@ -62,11 +61,6 @@ namespace Atmos
         static const ObjectTypeName typeName;
         static constexpr ObjectTypeList<RenderFragment> bases = {};
     };
-
-    std::unique_ptr<Agui::SpriteComponent> CreateAguiSpriteComponent(
-        const TypedObjectReference<Sprite> sprite,
-        const Agui::FileName& imageName,
-        const Agui::RelativePosition& relPosition = Agui::RelativePosition());
 }
 
 namespace Inscription

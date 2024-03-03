@@ -3,6 +3,7 @@
 #include <memory>
 
 #include "FilePath.h"
+#include "String.h"
 
 namespace Atmos
 {

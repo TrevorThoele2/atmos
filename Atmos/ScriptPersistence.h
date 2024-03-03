@@ -24,7 +24,7 @@ namespace Atmos
             SizeT Size() const;
             bool IsEmpty() const;
         private:
-            INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
+            INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
             INSCRIPTION_ACCESS;
         };
     }

@@ -6,8 +6,6 @@
 
 #include "InputKey.h"
 
-#include <AGUI/Textbox.h>
-
 namespace Atmos
 {
     namespace Input

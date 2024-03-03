@@ -15,7 +15,7 @@ namespace Atmos
     public:
         typedef T ValueT;
     private:
-        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
+        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
     private:
         ValueT number;
@@ -44,7 +44,7 @@ namespace Atmos
     };
 
     template<class T>
-    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(BoundedNumberBase<T>)
+    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE_BINARY(BoundedNumberBase<T>)
     {
         scribe(number);
     }
@@ -197,7 +197,7 @@ namespace Atmos
     class DynamicBoundedNumber : public BoundedNumberBase<T>
     {
     private:
-        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
+        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
     private:
         ValueT lowerBound;
@@ -299,7 +299,7 @@ namespace Atmos
     };
 
     template<class T>
-    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(DynamicBoundedNumber<T>)
+    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE_BINARY(DynamicBoundedNumber<T>)
     {
         ::Inscription::BaseSerialize<BoundedNumberBase<T>>(scribe, *this);
     }
@@ -541,7 +541,7 @@ namespace Atmos
     class StaticBoundedNumber : public BoundedNumberBase<T>
     {
     private:
-        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
+        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
     private:
         ValueT UpperBoundImpl() const override;

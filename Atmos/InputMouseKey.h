@@ -2,13 +2,12 @@
 
 #include "InputSignal.h"
 #include "InputMouseKeyID.h"
-#include <AGUI/Input.h>
 
 namespace Atmos
 {
     namespace Input
     {
-        class MouseKey : public Signal<MouseKeyID, Agui::MouseKeyID>
+        class MouseKey : public Signal<MouseKeyID>
         {
         public:
             MouseKey(MouseKey&& arg);
@@ -18,7 +17,7 @@ namespace Atmos
                 ObjectManager& objectManager,
                 DataPtr&& data,
                 MouseKeyID id,
-                Agui::MouseKeyID guiID,
+                ::Agui::Input::Signal* guiSignal,
                 const String& displayName);
 
             void DoActiveImpl() override;

@@ -3,6 +3,7 @@
 #include "Object.h"
 
 #include "Name.h"
+#include "FileName.h"
 #include "FilePath.h"
 
 #include "ObjectSerialization.h"
@@ -16,7 +17,7 @@ namespace Atmos
     public:
         Asset(ObjectManager& manager, const Name& name);
         Asset(const Asset& arg);
-        Asset(const ::Inscription::Table<Asset>& table);
+        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(Asset);
 
         ObjectTypeDescription TypeDescription() const override;
     };
@@ -40,7 +41,7 @@ namespace Atmos
     protected:
         FileAsset(ObjectManager& manager, const FileName& fileName);
         FileAsset(const FileAsset& arg);
-        FileAsset(const ::Inscription::Table<FileAsset>& table);
+        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(FileAsset);
     };
 
     template<>

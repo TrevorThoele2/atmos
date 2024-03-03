@@ -20,7 +20,7 @@ namespace Atmos
         DescriptionProperty description;
     public:
         RegistryObject(ObjectManager& manager, const Name& name);
-        RegistryObject(const ::Inscription::Table<RegistryObject>& table);
+        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(RegistryObject);
 
         ObjectTypeDescription TypeDescription() const override;
     };

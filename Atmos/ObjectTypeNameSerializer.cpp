@@ -27,7 +27,7 @@ namespace Atmos
         entries.clear();
     }
 
-    void ObjectTypeNameSerializer::SaveAll(::Inscription::Scribe& scribe)
+    void ObjectTypeNameSerializer::SaveAll(::Inscription::BinaryScribe& scribe)
     {
         ::Inscription::ContainerSize size(entries.size());
         scribe.Save(size);
@@ -39,7 +39,7 @@ namespace Atmos
         }
     }
 
-    void ObjectTypeNameSerializer::LoadAll(::Inscription::Scribe& scribe)
+    void ObjectTypeNameSerializer::LoadAll(::Inscription::BinaryScribe& scribe)
     {
         ::Inscription::ContainerSize size;
         scribe.Load(size);
@@ -56,7 +56,7 @@ namespace Atmos
         }
     }
 
-    void ObjectTypeNameSerializer::Save(const ObjectTypeName& typeName, ::Inscription::Scribe& scribe)
+    void ObjectTypeNameSerializer::Save(const ObjectTypeName& typeName, ::Inscription::BinaryScribe& scribe)
     {
         auto found = std::find_if(entries.begin(), entries.end(), [&typeName](const Entry& entry) { return entry.typeName == typeName; });
         ATMOS_ASSERT(found != entries.end());
@@ -64,7 +64,7 @@ namespace Atmos
         scribe.Save(found->id);
     }
 
-    void ObjectTypeNameSerializer::Load(ObjectTypeName& typeName, ::Inscription::Scribe& scribe)
+    void ObjectTypeNameSerializer::Load(ObjectTypeName& typeName, ::Inscription::BinaryScribe& scribe)
     {
         ID id;
         scribe.Load(id);

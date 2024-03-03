@@ -18,7 +18,7 @@ namespace Atmos
     public:
         Sound(ObjectManager& manager);
         Sound(const Sound& arg);
-        Sound(const ::Inscription::Table<Sound>& table);
+        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(Sound);
 
         ObjectTypeDescription TypeDescription() const override;
     private:

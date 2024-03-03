@@ -17,7 +17,7 @@ namespace Atmos
     private:
         Stored stored;
     private:
-        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
+        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
     };
 
@@ -42,7 +42,7 @@ namespace Atmos
     {}
 
     template<class Stored, class Interface>
-    void StoredReadonlyProperty<Stored, Interface>::Serialize(::Inscription::Scribe& scribe)
+    void StoredReadonlyProperty<Stored, Interface>::Serialize(::Inscription::BinaryScribe& scribe)
     {
         scribe(stored);
     }

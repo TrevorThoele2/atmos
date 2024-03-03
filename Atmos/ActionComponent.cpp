@@ -11,7 +11,7 @@ namespace Atmos
             SetupScripts();
         }
 
-        ActionComponent::ActionComponent(const ::Inscription::Table<ActionComponent>& table) : INSCRIPTION_TABLE_GET_BASE(Component)
+        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(ActionComponent) : INSCRIPTION_TABLE_GET_BASE(Component)
         {
             SetupScripts();
         }

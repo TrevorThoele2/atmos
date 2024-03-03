@@ -11,7 +11,7 @@ namespace Atmos
         timeSystem = Manager()->FindSystem<TimeSystem>();
     }
 
-    FrameStopwatch::FrameStopwatch(const ::Inscription::Table<FrameStopwatch>& table) : INSCRIPTION_TABLE_GET_BASE(StopwatchBase)
+    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(FrameStopwatch) : INSCRIPTION_TABLE_GET_BASE(StopwatchBase)
     {
         timeSystem = Manager()->FindSystem<TimeSystem>();
     }

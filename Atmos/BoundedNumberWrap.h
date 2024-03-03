@@ -15,7 +15,7 @@ namespace Atmos
     public:
         typedef typename WrappedT::ValueT ValueT;
     private:
-        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
+        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
     private:
         WrappedT wrapped;
@@ -96,7 +96,7 @@ namespace Atmos
     };
 
     template<class T>
-    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(DynamicBoundedNumberWrap<T>)
+    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE_BINARY(DynamicBoundedNumberWrap<T>)
     {
         scribe(wrapped);
     }

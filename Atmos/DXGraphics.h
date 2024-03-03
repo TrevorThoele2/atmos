@@ -54,6 +54,14 @@ namespace Atmos
         // Retrieval
         LPDIRECT3DDEVICE9& GetDevice();
     protected:
+        struct Scalings
+        {
+            float x;
+            float y;
+            Scalings();
+            Scalings(float x, float y);
+        };
+    protected:
         void RenderObject(
             LPDIRECT3DTEXTURE9 tex,
             TypedObjectReference<ShaderAsset> shader,
@@ -63,7 +71,7 @@ namespace Atmos
             const AxisBoundingBox2D& imageBounds,
             const Size2D& size,
             const Position2D& center,
-            const Join2<float>& scaling,
+            const Scalings& scalings,
             const Angle& rotation,
             const Color& color);
     private:

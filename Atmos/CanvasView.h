@@ -15,7 +15,7 @@ namespace Atmos
     public:
         CanvasView(ObjectManager& manager, const Canvas* source);
         CanvasView(const CanvasView& arg) = default;
-        CanvasView(const ::Inscription::Table<CanvasView>& table);
+        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(CanvasView);
         CanvasView& operator=(const CanvasView& arg) = default;
 
         ObjectTypeDescription TypeDescription() const override;

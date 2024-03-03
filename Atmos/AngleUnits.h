@@ -41,7 +41,7 @@ namespace Atmos
         Mixin& ThisToMixin();
         const Mixin& ThisToMixin() const;
     private:
-        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
+        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
     };
 
@@ -187,7 +187,7 @@ namespace Atmos
     }
 
     template<class Mixin>
-    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(AngleUnits<Mixin>)
+    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(AngleUnits<Mixin>)
     {
         scribe(value);
     }

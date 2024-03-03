@@ -13,7 +13,7 @@ namespace Atmos
             Component(manager, reference)
         {}
 
-        MovementComponent::MovementComponent(const ::Inscription::Table<MovementComponent>& table) :
+        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(MovementComponent) :
             INSCRIPTION_TABLE_GET_BASE(Component)
         {}
 
@@ -46,13 +46,6 @@ namespace Atmos
         {
             movementModulatorCreator->owner = this;
             changeDirectionModulatorCreator->owner = this;
-        }
-
-        INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(MovementComponent)
-        {
-            scribe(enabled);
-            scribe(movementModulatorCreator);
-            scribe(changeDirectionModulatorCreator);
         }
     }
 

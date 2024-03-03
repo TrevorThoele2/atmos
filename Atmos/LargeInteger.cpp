@@ -4,7 +4,7 @@
 
 namespace Atmos
 {
-    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(LargeInteger)
+    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(LargeInteger)
     {
         scribe(low);
         scribe(high);

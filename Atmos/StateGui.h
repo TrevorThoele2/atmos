@@ -3,8 +3,6 @@
 
 #include "String.h"
 
-#include <AGUI/Root.h>
-
 namespace Atmos
 {
     class State;
@@ -20,15 +18,12 @@ namespace Atmos
 
         void Show();
         void Hide();
-
-        Agui::Root* Root();
     protected:
         ObjectManager* const objectManager;
     protected:
         StateGui(ObjectManager& objectManager, const String& rootName);
     private:
         String rootName;
-        Agui::Root* root;
     private:
         virtual void DoInitialize() = 0;
         virtual void DoUpdate();

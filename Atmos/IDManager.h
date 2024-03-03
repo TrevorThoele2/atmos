@@ -69,7 +69,7 @@ namespace Atmos
         BasicIterator Unwrap(iterator itr);
         ConstBasicIterator Unwrap(const_iterator itr) const;
     private:
-        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
+        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
     private:
         static_assert(std::is_signed<IdentifierT>::value, "IDs are required to be signed in an IDManager");
@@ -276,7 +276,7 @@ namespace Atmos
     }
 
     template<class ID, class T>
-    void IDManager<ID, T>::Serialize(::Inscription::Scribe& scribe)
+    void IDManager<ID, T>::Serialize(::Inscription::BinaryScribe& scribe)
     {
         scribe(values);
 

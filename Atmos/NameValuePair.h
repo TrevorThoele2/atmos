@@ -26,6 +26,6 @@ namespace Atmos
         bool operator!=(const NameValuePair& arg) const;
     private:
         INSCRIPTION_ACCESS;
-        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
+        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
     };
 }

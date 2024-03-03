@@ -1,11 +1,14 @@
 #pragma once
 
+#include <unordered_set>
+
 #include "Field.h"
 #include "FieldDestination.h"
 
 #include "ObjectRegistration.h"
 
 #include "Event.h"
+#include "FileName.h"
 #include "FilePath.h"
 #include "Optional.h"
 
@@ -18,12 +21,12 @@ namespace Atmos
     {
     public:
         Event<Field&> eventFieldSet;
-        NullEvent eventBeforeFieldSet;
+        Event<> eventBeforeFieldSet;
         // This will be called right before a new field is made to replace the current one
         Event<Field*> eventFinalizeField;
     public:
         WorldManager(ObjectManager& globalObjectManager, ObjectRegistration& objectRegistration);
-        WorldManager(const ::Inscription::Table<WorldManager>& table);
+        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(WorldManager);
 
         void Initialize();
 
@@ -90,7 +93,7 @@ namespace Inscription
     INSCRIPTION_INSCRIPTER_DECLARE(::Atmos::WorldManager)
     {
     public:
-        INSCRIPTION_INSCRIPTER_DECLARE_TABLE;
-        INSCRIPTION_DECLARE_CLASS_NAME_RESOLVER;
+        INSCRIPTION_BINARY_INSCRIPTER_DECLARE_TABLE;
+        INSCRIPTION_BINARY_DECLARE_CLASS_NAME_RESOLVER;
     };
 }

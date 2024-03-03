@@ -1,7 +1,7 @@
 
 #include "ScribeBase.h"
 
-#include <Inscription/Scribe.h>
+#include <Inscription/BinaryScribe.h>
 
 namespace Atmos
 {
@@ -13,7 +13,7 @@ namespace Atmos
         UnderlyingScribe().CopyTrackersTo(scribe.UnderlyingScribe());
     }
 
-    void ScribeBase::CopyTrackersTo(::Inscription::Scribe& scribe) const
+    void ScribeBase::CopyTrackersTo(::Inscription::BinaryScribe& scribe) const
     {
         UnderlyingScribe().CopyTrackersTo(scribe);
     }
@@ -23,7 +23,7 @@ namespace Atmos
         UnderlyingScribe().MoveTrackersTo(scribe.UnderlyingScribe());
     }
 
-    void ScribeBase::MoveTrackersTo(::Inscription::Scribe& scribe)
+    void ScribeBase::MoveTrackersTo(::Inscription::BinaryScribe& scribe)
     {
         UnderlyingScribe().MoveTrackersTo(scribe);
     }

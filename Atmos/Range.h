@@ -10,9 +10,6 @@ namespace Atmos
     {
     public:
         typedef T ValueT;
-    private:
-        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
-        INSCRIPTION_ACCESS;
     public:
         ValueT begin, end;
 
@@ -25,14 +22,10 @@ namespace Atmos
         void SetEnd(const ValueT &set);
         const ValueT& GetBegin() const;
         const ValueT& GetEnd() const;
+    private:
+        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
+        INSCRIPTION_ACCESS;
     };
-
-    template<class T>
-    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(Range<T>)
-    {
-        scribe(begin);
-        scribe(end);
-    }
 
     template<class T>
     Range<T>::Range(const ValueT &begin, const ValueT &end) : begin(begin), end(end)
@@ -74,5 +67,12 @@ namespace Atmos
     typename const Range<T>::ValueT& Range<T>::GetEnd() const
     {
         return end;
+    }
+
+    template<class T>
+    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(Range<T>)
+    {
+        scribe(begin);
+        scribe(end);
     }
 }

@@ -9,7 +9,7 @@
 
 namespace Atmos
 {
-    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(Position3D)
+    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(Position3D)
     {
         scribe(X);
         scribe(Y);

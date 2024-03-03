@@ -67,11 +67,11 @@ namespace Inscription
     public:
         INSCRIPTION_INSCRIPTER_BASE_TYPEDEFS(::Atmos::RegistryObjectSystem<T>);
     public:
-        INSCRIPTION_INSCRIPTER_DECLARE_TABLE;
+        INSCRIPTION_BINARY_INSCRIPTER_DECLARE_TABLE;
     };
 
     template<class T>
-    typename Inscripter<::Atmos::RegistryObjectSystem<T>>::TableT Inscripter<::Atmos::RegistryObjectSystem<T>>::CreateTable(Scribe& scribe)
+    typename Inscripter<::Atmos::RegistryObjectSystem<T>>::TableT Inscripter<::Atmos::RegistryObjectSystem<T>>::CreateTable(BinaryScribe& scribe)
     {
         INSCRIPTION_INSCRIPTER_CREATE_TABLE;
 

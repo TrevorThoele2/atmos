@@ -12,7 +12,7 @@ namespace Atmos
     {
     public:
         FrameStopwatch(ObjectManager& manager, TimeValue goal = TimeValue());
-        FrameStopwatch(const ::Inscription::Table<FrameStopwatch>& table);
+        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(FrameStopwatch);
 
         bool operator==(const FrameStopwatch& arg) const;
         bool operator!=(const FrameStopwatch& arg) const;

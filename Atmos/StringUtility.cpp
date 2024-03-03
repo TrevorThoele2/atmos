@@ -207,8 +207,8 @@ namespace Atmos
         auto left = arg.substr(0, pivot);
         auto right = arg.substr(pivot + 1);
 
-        size.width = FromString<::Agui::Resolution::Size::ValueT>(left);
-        size.height = FromString<::Agui::Resolution::Size::ValueT>(right);
+        size.width = FromString<::Agui::Resolution::Size::Value>(left);
+        size.height = FromString<::Agui::Resolution::Size::Value>(right);
         return size;
     }
 

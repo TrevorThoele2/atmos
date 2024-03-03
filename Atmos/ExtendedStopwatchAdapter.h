@@ -19,7 +19,7 @@ namespace Atmos
     {
     public:
         ExtendedStopwatchAdapter(ObjectManager& manager, TimeValue goal = TimeValue());
-        ExtendedStopwatchAdapter(const ::Inscription::Table<ExtendedStopwatchAdapter>& table);
+        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(ExtendedStopwatchAdapter);
 
         bool operator==(const ExtendedStopwatchAdapter& arg) const;
 
@@ -55,7 +55,7 @@ namespace Atmos
     {}
 
     template<class Stopwatch>
-    ExtendedStopwatchAdapter<Stopwatch>::ExtendedStopwatchAdapter(const ::Inscription::Table<ExtendedStopwatchAdapter>& table) :
+    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE_TEMPLATE(ExtendedStopwatchAdapter, ExtendedStopwatchAdapter<Stopwatch>) :
         INSCRIPTION_TABLE_GET_MEM(stopwatch),
         INSCRIPTION_TABLE_GET_MEM(elapsed), INSCRIPTION_TABLE_GET_MEM(average), INSCRIPTION_TABLE_GET_MEM(highest)
     {}
@@ -156,15 +156,15 @@ namespace Inscription
     class Inscripter<::Atmos::ExtendedStopwatchAdapter<Stopwatch>> : public InscripterBase<::Atmos::ExtendedStopwatchAdapter<Stopwatch>>
     {
     public:
-        typedef typename InscripterBase<::Atmos::ExtendedStopwatchAdapter<Stopwatch>>::TableT TableT;
-    public:
-        static TableT CreateTable(::Inscription::Scribe& scribe);
+        INSCRIPTION_INSCRIPTER_BASE_TYPEDEFS(::Atmos::ExtendedStopwatchAdapter<Stopwatch>);
+
+        INSCRIPTION_BINARY_INSCRIPTER_DECLARE_TABLE;
     };
 
     template<class Stopwatch>
-    INSCRIPTION_INSCRIPTER_DEFINE_TABLE(::Atmos::ExtendedStopwatchAdapter<Stopwatch>)
+    INSCRIPTION_BINARY_INSCRIPTER_DEFINE_TABLE(::Atmos::ExtendedStopwatchAdapter<Stopwatch>)
     {
-        INSCRIPTION_INSCRIPTER_CREATE_TABLE;
+        INSCRIPTION_BINARY_INSCRIPTER_CREATE_TABLE;
 
         INSCRIPTION_TABLE_ADD(stopwatch);
         INSCRIPTION_TABLE_ADD(elapsed);

@@ -3,8 +3,6 @@
 
 #include "InputManager.h"
 
-#include <AGUI/System.h>
-
 namespace Atmos
 {
     namespace Input
@@ -17,29 +15,26 @@ namespace Atmos
             ObjectManager& objectManager,
             DataPtr&& data,
             KeyID id,
-            Agui::KeyID guiID,
+            ::Agui::Input::Signal* guiSignal,
             const String& displayName,
             bool canUseForAction) :
 
-            Signal(owner, objectManager, std::move(data), id, guiID, displayName, canUseForAction)
+            Signal(owner, objectManager, std::move(data), id, guiSignal, displayName, canUseForAction)
         {}
 
         void Key::DoActiveImpl()
         {
             Owner()->eventKeys.active(*this);
-            Agui::System::InjectInputActive(guiId);
         }
 
         void Key::DoUpImpl()
         {
             Owner()->eventKeys.pressed(*this);
-            ::Agui::System::InjectInputUp(guiId);
         }
 
         void Key::DoDownImpl()
         {
             Owner()->eventKeys.depressed(*this);
-            ::Agui::System::InjectInputDown(guiId);
         }
 
         void Key::DoDoubleDownImpl()

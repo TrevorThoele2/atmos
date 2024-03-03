@@ -81,7 +81,7 @@ namespace Atmos
         onValueChanged(underlying);
     }
 
-    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(PositionalObject::Position)
+    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(PositionalObject::Position)
     {
         scribe(x);
         scribe(y);
@@ -182,7 +182,7 @@ namespace Atmos
         zRotation.onValueChanged.Subscribe(&Size::OnPropertyChanged<AngleT>, *this);
     }
 
-    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(PositionalObject::Size)
+    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(PositionalObject::Size)
     {
         scribe(width);
         scribe(height);
@@ -223,7 +223,7 @@ namespace Atmos
         CalculateBounds();
     }
 
-    PositionalObject::PositionalObject(const ::Inscription::Table<PositionalObject>& table) :
+    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(PositionalObject) :
         INSCRIPTION_TABLE_GET_BASE(Object), INSCRIPTION_TABLE_GET_MEM(position)
     {
         LinkAll();
@@ -305,7 +305,7 @@ namespace Inscription
         INSCRIPTION_TABLE_ADD(size);
     }
 
-    INSCRIPTION_INSCRIPTER_DEFINE_SERIALIZE_FUNCTION(::Atmos::PositionalObject)
+    INSCRIPTION_BINARY_INSCRIPTER_DEFINE_SERIALIZE_FUNCTION(::Atmos::PositionalObject)
     {
         INSCRIPTION_INSCRIPTER_CALL_BASE_SERIALIZE_FUNCTION;
         obj.position.Calculate();

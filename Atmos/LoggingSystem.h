@@ -30,7 +30,7 @@ namespace Atmos
         Event<const String&> onLogged;
     public:
         LoggingSystem(ObjectManager& manager);
-        LoggingSystem(const ::Inscription::Table<LoggingSystem>& table);
+        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(LoggingSystem);
 
         void Log(const String& string, Type type);
         void Log(const String& string, Type type, NameValueVector& nvps);
@@ -64,7 +64,7 @@ namespace Inscription
     INSCRIPTION_INSCRIPTER_DECLARE(::Atmos::LoggingSystem)
     {
     public:
-        INSCRIPTION_INSCRIPTER_DECLARE_TABLE;
-        INSCRIPTION_DECLARE_CLASS_NAME_RESOLVER;
+        INSCRIPTION_BINARY_INSCRIPTER_DECLARE_TABLE;
+        INSCRIPTION_BINARY_DECLARE_CLASS_NAME_RESOLVER;
     };
 }

@@ -9,7 +9,7 @@
 #include "FilePath.h"
 
 #include "SkipFileHandle.h"
-#include <Inscription/BinaryScribe.h>
+#include <Inscription/InputBinaryScribe.h>
 
 namespace Atmos
 {
@@ -42,10 +42,10 @@ namespace Atmos
 
         const FilePath& GetFilePath() const;
     protected:
-        ::Inscription::Scribe& UnderlyingScribe() override;
-        const ::Inscription::Scribe& UnderlyingScribe() const override;
+        ::Inscription::BinaryScribe& UnderlyingScribe() override;
+        const ::Inscription::BinaryScribe& UnderlyingScribe() const override;
     private:
-        typedef ::Inscription::BinaryScribe Underlying;
+        typedef ::Inscription::InputBinaryScribe Underlying;
 
         class FieldHandle : public SkipFileHandle<Underlying>
         {

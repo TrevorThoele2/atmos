@@ -87,9 +87,9 @@ namespace Atmos
 
 namespace Inscription
 {
-    typename Inscripter<::Atmos::Scripting::System>::TableT Inscripter<::Atmos::Scripting::System>::CreateTable(Scribe& scribe)
+    INSCRIPTION_BINARY_INSCRIPTER_DEFINE_TABLE(::Atmos::Scripting::System)
     {
-        INSCRIPTION_INSCRIPTER_CREATE_TABLE;
+        INSCRIPTION_BINARY_INSCRIPTER_CREATE_TABLE;
 
         INSCRIPTION_TABLE_ADD_BASE(::Atmos::ObjectSystem);
 

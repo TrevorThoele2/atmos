@@ -16,9 +16,9 @@ namespace Atmos
 
         typedef ::Inscription::InscripterBase<T> BaseT;
     public:
-        typedef typename BaseT::TableT TableT;
+        typedef typename BaseT::template Table<::Inscription::BinaryScribe> TableT;
     public:
-        static TableT CreateTable(::Inscription::Scribe& scribe)
+        static TableT CreateTable(::Inscription::BinaryScribe& scribe)
         {
             TableT table;
 
@@ -29,7 +29,7 @@ namespace Atmos
             return table;
         }
 
-        static ::Inscription::ClassNameResolver classNameResolver;
+        static ::Inscription::ClassNameResolver<::Inscription::BinaryScribe> classNameResolver;
     private:
         template<::Chroma::VariadicTemplateSize i>
         struct BaseIterator
@@ -61,7 +61,7 @@ namespace Atmos
     };
 
     template<class T>
-    ::Inscription::ClassNameResolver ObjectInscripter<T>::classNameResolver([](::Inscription::Scribe& scribe)
+    ::Inscription::ClassNameResolver<::Inscription::BinaryScribe> ObjectInscripter<T>::classNameResolver([](::Inscription::BinaryScribe& scribe)
     {
         return TypeNameFor<T>();
     });
@@ -72,7 +72,7 @@ template<>                                                  \
 class Inscripter<T> : public ::Atmos::ObjectInscripter<T>
 
 #define OBJECT_INSCRIPTER_DECLARE_MEMBERS   \
-static void AddMembers(TableT& table)
+static void AddMembers(Table<::Inscription::BinaryScribe>& table)
 
 #define OBJECT_INSCRIPTER_DEFINE_MEMBERS(T)     \
-void Inscripter<T>::AddMembers(TableT& table)
+void Inscripter<T>::AddMembers(Table<::Inscription::BinaryScribe>& table)

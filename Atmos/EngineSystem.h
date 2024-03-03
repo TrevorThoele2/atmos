@@ -11,11 +11,11 @@ namespace Atmos
     class EngineSystem : public UnownedProviderSystem<Engine>
     {
     public:
-        NullEvent onFocusLost;
-        NullEvent onFocusRegained;
+        Event<> onFocusLost;
+        Event<> onFocusRegained;
     public:
         EngineSystem(ObjectManager& manager);
-        EngineSystem(const ::Inscription::Table<EngineSystem>& table);
+        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(EngineSystem);
     };
 }
 
@@ -24,7 +24,7 @@ namespace Inscription
     INSCRIPTION_INSCRIPTER_DECLARE(::Atmos::EngineSystem)
     {
     public:
-        INSCRIPTION_INSCRIPTER_DECLARE_TABLE;
-        INSCRIPTION_DECLARE_CLASS_NAME_RESOLVER;
+        INSCRIPTION_BINARY_INSCRIPTER_DECLARE_TABLE;
+        INSCRIPTION_BINARY_DECLARE_CLASS_NAME_RESOLVER;
     };
 }

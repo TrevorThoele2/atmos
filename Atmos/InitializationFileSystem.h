@@ -7,6 +7,7 @@
 #include "InitializationFileSection.h"
 
 #include "FilePath.h"
+#include "FileName.h"
 
 namespace Atmos
 {
@@ -22,7 +23,7 @@ namespace Atmos
         FileSection controls = FileSection("<CONTROLS>");
     public:
         InitializationFileSystem(ObjectManager& manager);
-        InitializationFileSystem(const ::Inscription::Table<InitializationFileSystem>& table);
+        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(InitializationFileSystem);
 
         void Save();
     private:
@@ -54,7 +55,7 @@ namespace Inscription
     INSCRIPTION_INSCRIPTER_DECLARE(::Atmos::InitializationFileSystem)
     {
     public:
-        INSCRIPTION_INSCRIPTER_DECLARE_TABLE;
-        INSCRIPTION_DECLARE_CLASS_NAME_RESOLVER;
+        INSCRIPTION_BINARY_INSCRIPTER_DECLARE_TABLE;
+        INSCRIPTION_BINARY_DECLARE_CLASS_NAME_RESOLVER;
     };
 }

@@ -3,8 +3,6 @@
 
 #include "Angle.h"
 
-#include "Join.h"
-
 #include "Serialization.h"
 
 namespace Atmos
@@ -13,6 +11,12 @@ namespace Atmos
     {
     public:
         typedef float ValueT;
+    public:
+        struct Scalers
+        {
+            ValueT x;
+            ValueT y;
+        };
     public:
         Size2D(ValueT width = 0.0f, ValueT height = 0.0f, ValueT xScaler = 1.0f, ValueT yScaler = 1.0f, const Angle& rotation = Angle());
         Size2D(const Size2D &arg);
@@ -33,7 +37,7 @@ namespace Atmos
         void SetXScaler(ValueT setTo);
         void SetYScaler(ValueT setTo);
 
-        Join2<ValueT> GetScalers() const;
+        Scalers GetScalers() const;
         ValueT GetXScaler() const;
         ValueT GetYScaler() const;
 
@@ -46,7 +50,7 @@ namespace Atmos
 
         void Calculate();
     private:
-        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
+        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
     };
 }

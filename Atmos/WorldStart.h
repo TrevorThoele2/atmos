@@ -18,7 +18,7 @@ namespace Atmos
         WorldStart(const WorldStart& arg);
         WorldStart& operator=(const WorldStart& arg);
     private:
-        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
+        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
     };
 }

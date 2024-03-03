@@ -10,7 +10,7 @@ namespace Atmos
     public:
         typedef unsigned char ValueT;
     private:
-        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
+        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
     private:
         static const ValueT defaultValue = 255;

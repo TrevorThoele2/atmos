@@ -16,10 +16,10 @@ namespace Atmos
 
         void Clear();
     public:
-        void SaveAll(::Inscription::Scribe& scribe);
-        void LoadAll(::Inscription::Scribe& scribe);
-        void Save(const ObjectTypeName& typeName, ::Inscription::Scribe& scribe);
-        void Load(ObjectTypeName& typeName, ::Inscription::Scribe& scribe);
+        void SaveAll(::Inscription::BinaryScribe& scribe);
+        void LoadAll(::Inscription::BinaryScribe& scribe);
+        void Save(const ObjectTypeName& typeName, ::Inscription::BinaryScribe& scribe);
+        void Load(ObjectTypeName& typeName, ::Inscription::BinaryScribe& scribe);
     private:
         typedef size_t ID;
 

@@ -12,7 +12,7 @@ namespace Atmos
         position(position), sprites([this]() -> SpriteList& { return _spriteList; }), solid(false)
     {}
 
-    Tile::Tile(const ::Inscription::Table<Tile>& table) :
+    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(Tile) :
         INSCRIPTION_TABLE_GET_BASE(Object), INSCRIPTION_TABLE_GET_MEM(position),
         INSCRIPTION_TABLE_GET_MEM(_spriteList), INSCRIPTION_TABLE_GET_MEM(solid),
         sprites([this]() -> SpriteList& { return _spriteList; })

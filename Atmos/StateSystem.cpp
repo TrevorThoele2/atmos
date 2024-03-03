@@ -9,8 +9,7 @@ namespace Atmos
         stack(Stack::FunctionPtr(Stack::MakeFunction(&State::OnUnfocused)), Stack::FunctionPtr(Stack::MakeFunction(&State::OnFocused)))
     {}
 
-
-    StateSystem::StateSystem(const ::Inscription::Table<StateSystem>& table) :
+    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(StateSystem) :
         INSCRIPTION_TABLE_GET_BASE(ObjectSystem)
     {}
 
@@ -112,14 +111,14 @@ namespace Atmos
 
 namespace Inscription
 {
-    INSCRIPTION_INSCRIPTER_DEFINE_TABLE(::Atmos::StateSystem)
+    INSCRIPTION_BINARY_INSCRIPTER_DEFINE_TABLE(::Atmos::StateSystem)
     {
-        INSCRIPTION_INSCRIPTER_CREATE_TABLE;
+        INSCRIPTION_BINARY_INSCRIPTER_CREATE_TABLE;
 
         INSCRIPTION_TABLE_ADD_BASE(::Atmos::ObjectSystem);
 
         INSCRIPTION_INSCRIPTER_RETURN_TABLE;
     }
 
-    INSCRIPTION_DEFINE_SIMPLE_CLASS_NAME_RESOLVER(::Atmos::StateSystem, "StateSystem");
+    INSCRIPTION_BINARY_DEFINE_SIMPLE_CLASS_NAME_RESOLVER(::Atmos::StateSystem, "StateSystem");
 }

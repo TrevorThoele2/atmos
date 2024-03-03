@@ -7,7 +7,7 @@
 
 namespace Atmos
 {
-    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(AxisBoundingBox2D)
+    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(AxisBoundingBox2D)
     {
         scribe(left);
         scribe(right);

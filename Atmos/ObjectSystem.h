@@ -12,7 +12,7 @@ namespace Atmos
     {
     public:
         ObjectSystem(ObjectManager& manager);
-        ObjectSystem(const ::Inscription::Table<ObjectSystem>& table);
+        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(ObjectSystem);
         virtual ~ObjectSystem() = 0;
 
         void Initialize();
@@ -47,6 +47,6 @@ namespace Inscription
     INSCRIPTION_INSCRIPTER_DECLARE(::Atmos::ObjectSystem)
     {
     public:
-        INSCRIPTION_INSCRIPTER_DECLARE_TABLE;
+        INSCRIPTION_BINARY_INSCRIPTER_DECLARE_TABLE;
     };
 }

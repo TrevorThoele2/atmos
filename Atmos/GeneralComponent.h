@@ -1,5 +1,7 @@
 #pragma once
 
+#include <unordered_set>
+
 #include "EntityComponent.h"
 
 #include "NameValuePair.h"
@@ -41,7 +43,7 @@ namespace Atmos
         public:
             GeneralComponent(ObjectManager& manager, EntityReference reference);
             GeneralComponent(const GeneralComponent& arg) = default;
-            GeneralComponent(const ::Inscription::Table<GeneralComponent>& table);
+            INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(GeneralComponent);
 
             void SetPosition(const PositionT &set);
             GridPosition GetPositionInFront() const;
@@ -85,6 +87,6 @@ namespace Inscription
     public:
         OBJECT_INSCRIPTER_DECLARE_MEMBERS;
 
-        INSCRIPTION_INSCRIPTER_DECLARE_SERIALIZE_FUNCTION;
+        INSCRIPTION_BINARY_INSCRIPTER_DECLARE_SERIALIZE_FUNCTION;
     };
 }

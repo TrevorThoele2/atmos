@@ -40,8 +40,8 @@ namespace Inscription
     INSCRIPTION_INSCRIPTER_DECLARE(::Atmos::ObjectBatchSourceBase)
     {
     public:
-        INSCRIPTION_INSCRIPTER_DECLARE_TABLE;
-        INSCRIPTION_DECLARE_CLASS_NAME_RESOLVER;
+        INSCRIPTION_BINARY_INSCRIPTER_DECLARE_TABLE;
+        INSCRIPTION_BINARY_DECLARE_CLASS_NAME_RESOLVER;
     };
 }
 
@@ -59,14 +59,14 @@ namespace Atmos
         typedef typename List::iterator iterator;
         typedef typename List::const_iterator const_iterator;
     public:
-        NullEvent onInvalidated;
+        Event<> onInvalidated;
 
         Event<Reference> onCreated;
 
         Event<Reference> onBeforeDestroyed;
     public:
         ObjectBatchSource(ObjectManager& manager);
-        ObjectBatchSource(const ::Inscription::Table<ObjectBatchSource>& table);
+        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(ObjectBatchSource);
         ~ObjectBatchSource();
 
         iterator RemoveObject(iterator itr);
@@ -120,9 +120,9 @@ namespace Inscription
     public:
         INSCRIPTION_INSCRIPTER_BASE_TYPEDEFS(::Atmos::ObjectBatchSource<T>);
     public:
-        INSCRIPTION_INSCRIPTER_TABLE
+        INSCRIPTION_BINARY_INSCRIPTER_TABLE
         {
-            INSCRIPTION_INSCRIPTER_CREATE_TABLE
+            INSCRIPTION_BINARY_INSCRIPTER_CREATE_TABLE
 
             INSCRIPTION_TABLE_ADD_BASE(::Atmos::ObjectBatchSourceBase)
 
@@ -131,18 +131,19 @@ namespace Inscription
             INSCRIPTION_INSCRIPTER_RETURN_TABLE
         };
 
-        INSCRIPTION_INSCRIPTER_SERIALIZE_FUNCTION
+        INSCRIPTION_BINARY_INSCRIPTER_SERIALIZE_FUNCTION
         {
             if (scribe.IsInput())
                 obj.referenceCount = 0;
             INSCRIPTION_INSCRIPTER_CALL_BASE_SERIALIZE_FUNCTION;
         };
 
-        INSCRIPTION_DECLARE_CLASS_NAME_RESOLVER;
+        INSCRIPTION_BINARY_DECLARE_CLASS_NAME_RESOLVER;
     };
 
     template<class T>
-    ::Inscription::ClassNameResolver Inscripter<::Atmos::ObjectBatchSource<T>>::classNameResolver([](Scribe& scribe) -> ClassName
+    ::Inscription::ClassNameResolver<::Inscription::BinaryScribe>
+        Inscripter<::Atmos::ObjectBatchSource<T>>::classNameResolver([](Scribe& scribe) -> ClassName
     {
         ClassName baseName("ObjectBatchSource");
         ClassName objectName(::Atmos::TypeNameFor<T>());

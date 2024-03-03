@@ -79,7 +79,7 @@ namespace Atmos
         void StopPainting() override
         {}
 
-        void PaintPixel(const Canvas::PositionT& position, const Color& color, Canvas::Dimension height) override
+        void PaintPixel(const Canvas::Position& position, const Color& color, Canvas::DimensionValue height) override
         {}
 
         void Clear(const Color& color) override
@@ -88,7 +88,7 @@ namespace Atmos
         void Release() override
         {}
 
-        void Reset(Canvas::Dimension width, Canvas::Dimension height) override
+        void Reset(Canvas::DimensionValue width, Canvas::DimensionValue height) override
         {}
     };
 
@@ -174,7 +174,7 @@ namespace Atmos
 
     Canvas NullGraphicsManager::CreateCanvasImpl(const ScreenDimensions& dimensions)
     {
-        return Canvas(new CanvasData(), dimensions.width, dimensions.height);
+        return Canvas(Canvas::DataPtr(new CanvasData()), dimensions.width, dimensions.height);
     }
 
     bool NullGraphicsManager::CanMakeImageImpl(const FilePath& path) const

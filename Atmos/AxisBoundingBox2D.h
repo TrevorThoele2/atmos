@@ -13,7 +13,7 @@ namespace Atmos
     public:
         typedef float Coordinate;
     private:
-        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
+        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
     private:
         Coordinate left, right, top, bottom;

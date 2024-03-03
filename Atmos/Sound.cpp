@@ -13,7 +13,7 @@ namespace Atmos
         SubscribeToProperties();
     }
 
-    Sound::Sound(const ::Inscription::Table<Sound>& table) : INSCRIPTION_TABLE_GET_BASE(Sense)
+    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(Sound) : INSCRIPTION_TABLE_GET_BASE(Sense)
     {}
 
     ObjectTypeDescription Sound::TypeDescription() const

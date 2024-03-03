@@ -12,7 +12,7 @@ namespace Atmos
     {
     public:
         StopwatchBase(ObjectManager& manager, TimeValue goal = TimeValue());
-        StopwatchBase(const ::Inscription::Table<StopwatchBase>& table);
+        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(StopwatchBase);
 
         virtual ~StopwatchBase() = 0;
 
@@ -54,6 +54,6 @@ namespace Inscription
     {
     public:
         OBJECT_INSCRIPTER_DECLARE_MEMBERS;
-        INSCRIPTION_INSCRIPTER_DECLARE_SERIALIZE_FUNCTION;
+        INSCRIPTION_BINARY_INSCRIPTER_DECLARE_SERIALIZE_FUNCTION;
     };
 }

@@ -10,7 +10,7 @@ namespace Atmos
         direction(direction), position(position), id(id)
     {}
 
-    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(FieldDestination)
+    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(FieldDestination)
     {
         scribe(direction);
         scribe(position);

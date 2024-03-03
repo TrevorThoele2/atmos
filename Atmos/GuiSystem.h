@@ -1,14 +1,15 @@
 #pragma once
 
-#include "ObjectSystem.h"
+#include "UniqueProviderSystem.h"
+
+#include <AGUI/Engine.h>
 
 namespace Atmos
 {
-    class GuiSystem : public ObjectSystem
+    class GuiSystem : public UniqueProviderSystem<Agui::Engine>
     {
     public:
         GuiSystem(ObjectManager& manager);
-        GuiSystem(const ::Inscription::Table<GuiSystem>& table);
     private:
         void InitializeImpl() override;
     };
@@ -19,7 +20,9 @@ namespace Inscription
     INSCRIPTION_INSCRIPTER_DECLARE(::Atmos::GuiSystem)
     {
     public:
-        INSCRIPTION_INSCRIPTER_DECLARE_TABLE;
-        INSCRIPTION_DECLARE_CLASS_NAME_RESOLVER;
+        INSCRIPTION_BINARY_INSCRIPTER_DECLARE_SERIALIZE_FUNCTION;
+        INSCRIPTION_BINARY_INSCRIPTER_DECLARE_CONSTRUCT_OBJECT_FUNCTION;
+
+        INSCRIPTION_BINARY_DECLARE_CLASS_NAME_RESOLVER;
     };
 }

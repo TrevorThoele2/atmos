@@ -62,7 +62,7 @@ namespace Atmos
         private:
             friend PositionalOffsetAdapter;
         private:
-            INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
+            INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
             INSCRIPTION_ACCESS;
         };
     public:
@@ -90,7 +90,7 @@ namespace Atmos
     private:
         friend Position;
     private:
-        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
+        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
     private:
         static_assert(std::is_base_of<PositionalObject, T>::value, "This must be derived from PositionalObject");
@@ -203,7 +203,7 @@ namespace Atmos
     }
 
     template<class T>
-    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(PositionalOffsetAdapter<T>::Position)
+    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(PositionalOffsetAdapter<T>::Position)
     {
         scribe(xOffset);
         scribe(yOffset);
@@ -282,7 +282,7 @@ namespace Atmos
     }
 
     template<class T>
-    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(PositionalOffsetAdapter<T>)
+    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(PositionalOffsetAdapter<T>)
     {
         scribe(source);
     }

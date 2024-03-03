@@ -11,7 +11,7 @@ namespace Atmos
         FileAsset(arg), data((arg.data) ? arg.data->Clone() : nullptr), width(arg.width), height(arg.height)
     {}
 
-    ImageAsset::ImageAsset(const ::Inscription::Table<ImageAsset>& table) :
+    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(ImageAsset) :
         INSCRIPTION_TABLE_GET_BASE(FileAsset)
     {}
 

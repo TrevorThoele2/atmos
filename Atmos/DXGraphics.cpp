@@ -21,8 +21,6 @@ int (WINAPIV * __vsnprintf)(char *, size_t, const char*, va_list) = _vsnprintf;
 #include "FileSystem.h"
 #include "LoggingSystem.h"
 
-#include <AGUI/System.h>
-
 namespace Atmos
 {
     D3DCOLOR ColorToD3D(const Color &col)
@@ -220,10 +218,10 @@ namespace Atmos
                     LogType::ERROR_LOW);
         }
 
-        void PaintPixel(const Canvas::PositionT& position, const Color& color, Canvas::Dimension height) override
+        void PaintPixel(const Canvas::Position& position, const Color& color, Canvas::DimensionValue height) override
         {
-            DWORD *row = reinterpret_cast<DWORD*>(reinterpret_cast<char*>(lockedRect.pBits) + lockedRect.Pitch * position.second);
-            row[position.first] = ColorToD3D(color);
+            DWORD *row = reinterpret_cast<DWORD*>(reinterpret_cast<char*>(lockedRect.pBits) + lockedRect.Pitch * position.y);
+            row[position.x] = ColorToD3D(color);
         }
 
         void Clear(const Color &color) override
@@ -236,7 +234,7 @@ namespace Atmos
             tex->Release();
         }
 
-        void Reset(Canvas::Dimension width, Canvas::Dimension height) override
+        void Reset(Canvas::DimensionValue width, Canvas::DimensionValue height) override
         {
             D3DXCreateTexture(
                 owner->GetDevice(),
@@ -275,7 +273,7 @@ namespace Atmos
             const AxisBoundingBox2D& imageBounds,
             const Size2D& size,
             const Position2D& center,
-            const Join2<float>& scaling,
+            const Scalings& scalings,
             const Angle& rotation,
             const Color& color);
 
@@ -320,19 +318,24 @@ namespace Atmos
                 const AxisBoundingBox2D& imageBounds,
                 const Size2D& size,
                 const Position2D& center,
-                const Join2<float>& scaling,
+                const Scalings& scalings,
                 const Angle& rotation,
                 const Color& color);
             Object3D(Object3D&& arg);
             Object3D& operator=(Object3D&& arg);
         private:
-            void SetupQuad(float X, float Y, const Position2D& center, const Join2<float>& scaling, float rotation);
+            void SetupQuad(
+                float X,
+                float Y,
+                const Position2D& center,
+                const Scalings& scaling,
+                float rotation);
             void SetupRegularPolygon(
                 float radius,
                 unsigned int polyCount,
                 float X,
                 float Y,
-                const Join2<float>& scaling,
+                const Scalings& scalings,
                 float rotation,
                 const Color& color);
 
@@ -577,11 +580,11 @@ namespace Atmos
         const AxisBoundingBox2D& imageBounds,
         const Size2D& size,
         const Position2D& center,
-        const Join2<float>& scaling,
+        const Scalings& scalings,
         const Angle& rotation,
         const Color& color)
     {
-        objects.push_back(Object3D(tex, shader, X, Y, Z, imageBounds, size, center, scaling, rotation, color));
+        objects.push_back(Object3D(tex, shader, X, Y, Z, imageBounds, size, center, scalings, rotation, color));
     }
 
     void DX9GraphicsManager::Renderer2D::OnLostDevice()
@@ -611,7 +614,7 @@ namespace Atmos
         const AxisBoundingBox2D& imageBounds,
         const Size2D& size,
         const Position2D& center,
-        const Join2<float>& scaling,
+        const Scalings& scalings,
         const Angle& rotation,
         const Color& color) :
 
@@ -636,7 +639,7 @@ namespace Atmos
             imageBounds.GetBottom())
     }
     {
-        SetupQuad(X, Y, center, scaling, rotation.As<Radians>());
+        SetupQuad(X, Y, center, scalings, rotation.As<Radians>());
     }
 
     DX9GraphicsManager::Renderer2D::Object3D::Object3D(Object3D&& arg) :
@@ -659,7 +662,7 @@ namespace Atmos
         float X,
         float Y,
         const Position2D& center,
-        const Join2<float>& scaling,
+        const Scalings& scalings,
         float rotation)
     {
         // Setup matrix and center
@@ -668,7 +671,7 @@ namespace Atmos
         {
             D3DXVECTOR2 centerVector(center.GetX(), center.GetY());
             D3DXVECTOR2 positionVector(X, Y);
-            D3DXVECTOR2 scalingVector(scaling.first, scaling.second);
+            D3DXVECTOR2 scalingVector(scalings.x, scalings.y);
 
             D3DXMatrixIdentity(&matrix);
             D3DXMatrixTransformation2D(&matrix, nullptr, 0.0f, &scalingVector, &centerVector, rotation, &positionVector);
@@ -703,7 +706,7 @@ namespace Atmos
         unsigned int polyCount,
         float X,
         float Y,
-        const Join2<float>& scaling,
+        const Scalings& scalings,
         float rotation,
         const Color& color)
     {
@@ -716,7 +719,7 @@ namespace Atmos
         {
             D3DXVECTOR2 centerVector(useRadius, useRadius);
             D3DXVECTOR2 positionVector(X - useRadius, Y - useRadius);
-            D3DXVECTOR2 scalingVector(scaling.first, scaling.second);
+            D3DXVECTOR2 scalingVector(scalings.x, scalings.y);
 
             D3DXMatrixIdentity(&matrix);
             D3DXMatrixTransformation2D(&matrix, &centerVector, 0.0f, &scalingVector, &centerVector, rotation, &positionVector);
@@ -822,8 +825,6 @@ namespace Atmos
 
         SetMainDimensions(backbuffer);
         SetFullscreen(fullscreen);
-        Agui::System::Instance().eventResolutionChanged.Subscribe(
-            std::bind(&DX9GraphicsManager::OnResolutionChanged, this, std::placeholders::_1));
 
         // Create the Direct3D interface
         d3d = Direct3DCreate9(D3D_SDK_VERSION);
@@ -960,6 +961,12 @@ namespace Atmos
         return device;
     }
 
+    DX9GraphicsManager::Scalings::Scalings() : x(0.0f), y(0.0f)
+    {}
+
+    DX9GraphicsManager::Scalings::Scalings(float x, float y) : x(x), y(y)
+    {}
+
     void DX9GraphicsManager::RenderObject(
         LPDIRECT3DTEXTURE9 tex,
         TypedObjectReference<ShaderAsset> shader,
@@ -969,14 +976,14 @@ namespace Atmos
         const AxisBoundingBox2D& imageBounds,
         const Size2D& size,
         const Position2D& center,
-        const Join2<float>& scaling,
+        const Scalings& scalings,
         const Angle& rotation,
         const Color& color)
     {
         if (!shader)
             shader = renderer2D->GetDefaultTexturedSpriteShader();
 
-        renderer2D->Draw(tex, shader, X, Y, Z, imageBounds, size, center, scaling, rotation, color);
+        renderer2D->Draw(tex, shader, X, Y, Z, imageBounds, size, center, scalings, rotation, color);
     }
 
     void DX9GraphicsManager::ReinitializeImpl()
@@ -1177,7 +1184,7 @@ namespace Atmos
             FindLoggingSystem()->Log("A canvas could not be created.",
                 LogType::ERROR_SEVERE);
 
-        return Canvas(new CanvasData(*this, *FindLoggingSystem(), tex), dimensions.width, dimensions.height);
+        return Canvas(Canvas::DataPtr(new CanvasData(*this, *FindLoggingSystem(), tex)), dimensions.width, dimensions.height);
     }
 
     bool DX9GraphicsManager::CanMakeImageImpl(const FilePath& path) const
@@ -1272,7 +1279,7 @@ namespace Atmos
                 false),
             sprite->primaryAssetSlice.Get().GetSize(),
             sprite->primaryAssetSlice.Get().GetCenter(),
-            Join2<float>(sprite->size.widthScaler, sprite->size.heightScaler),
+            Scalings(sprite->size.widthScaler, sprite->size.heightScaler),
             sprite->size.xRotation.Get(),
             sprite->color);
     }
@@ -1288,7 +1295,7 @@ namespace Atmos
             AxisBoundingBox2D(0.0f, 0.0f, 1.0f, 1.0f),
             Size2D(view->size.width, view->size.height),
             Position2D(view->size.width.Get() / 2, view->size.height.Get() / 2),
-            Join2<float>(view->size.widthScaler, view->size.heightScaler),
+            Scalings(view->size.widthScaler, view->size.heightScaler),
             view->size.xRotation.Get(),
             Color(255, 255, 255, 255));
     }

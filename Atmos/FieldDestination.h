@@ -22,7 +22,7 @@ namespace Atmos
 
         FieldDestination& operator=(const FieldDestination& arg) = default;
     private:
-        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
+        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
     };
 }

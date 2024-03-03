@@ -14,7 +14,7 @@ namespace Atmos
     AssetPackageSystem::AssetPackageSystem(ObjectManager& manager) : ObjectSystem(manager)
     {}
 
-    AssetPackageSystem::AssetPackageSystem(const ::Inscription::Table<AssetPackageSystem>& table) :
+    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(AssetPackageSystem) :
         INSCRIPTION_TABLE_GET_BASE(ObjectSystem)
     {}
 
@@ -185,9 +185,9 @@ namespace Atmos
 
 namespace Inscription
 {
-    INSCRIPTION_INSCRIPTER_DEFINE_TABLE(::Atmos::AssetPackageSystem)
+    INSCRIPTION_BINARY_INSCRIPTER_DEFINE_TABLE(::Atmos::AssetPackageSystem)
     {
-        INSCRIPTION_INSCRIPTER_CREATE_TABLE;
+        INSCRIPTION_BINARY_INSCRIPTER_CREATE_TABLE;
 
         INSCRIPTION_TABLE_ADD_BASE(::Atmos::ObjectSystem);
 

@@ -7,9 +7,10 @@
 #include "ReadonlyProperty.h"
 
 #include "FilePath.h"
+#include "FileName.h"
 
 #include "SkipFileHandle.h"
-#include <Inscription/BinaryScribe.h>
+#include <Inscription/InputBinaryScribe.h>
 
 namespace Atmos
 {
@@ -46,10 +47,10 @@ namespace Atmos
 
         const FileName& GetFileName() const;
     protected:
-        ::Inscription::Scribe& UnderlyingScribe() override;
-        const ::Inscription::Scribe& UnderlyingScribe() const override;
+        ::Inscription::BinaryScribe& UnderlyingScribe() override;
+        const ::Inscription::BinaryScribe& UnderlyingScribe() const override;
     private:
-        typedef ::Inscription::BinaryScribe Underlying;
+        typedef ::Inscription::InputBinaryScribe Underlying;
         Underlying underlyingScribe;
     private:
         class FieldHandle : public SkipFileHandle<Underlying>

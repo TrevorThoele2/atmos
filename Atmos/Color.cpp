@@ -5,7 +5,7 @@
 
 namespace Atmos
 {
-    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(Color)
+    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(Color)
     {
         scribe(alpha);
         scribe(red);

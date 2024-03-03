@@ -82,7 +82,7 @@ namespace Atmos
         return underlying >= arg.underlying;
     }
 
-    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(Angle)
+    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(Angle)
     {
         if (scribe.IsOutput())
         {

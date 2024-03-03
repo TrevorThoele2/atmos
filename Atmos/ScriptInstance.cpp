@@ -11,7 +11,7 @@ namespace Atmos
     ScriptInstance::ScriptInstance(ObjectManager& manager) : Object(manager)
     {}
 
-    ScriptInstance::ScriptInstance(const ::Inscription::Table<ScriptInstance>& table) : INSCRIPTION_TABLE_GET_BASE(Object)
+    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(ScriptInstance) : INSCRIPTION_TABLE_GET_BASE(Object)
     {}
 
     void ScriptInstance::ExecuteDeferred()
@@ -60,17 +60,6 @@ namespace Atmos
         return running;
     }
 
-    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(ScriptInstance)
-    {
-        scribe(asset);
-
-        scribe(executeName);
-        scribe(parameters);
-
-        scribe(globalItems);
-        scribe(persistence);
-    }
-
     const ObjectTypeName ObjectTraits<ScriptInstance>::typeName = "ScriptInstance";
 }
 
@@ -78,6 +67,12 @@ namespace Inscription
 {
     OBJECT_INSCRIPTER_DEFINE_MEMBERS(::Atmos::ScriptInstance)
     {
+        INSCRIPTION_TABLE_ADD(asset);
 
+        INSCRIPTION_TABLE_ADD(executeName);
+        INSCRIPTION_TABLE_ADD(parameters);
+
+        INSCRIPTION_TABLE_ADD(globalItems);
+        INSCRIPTION_TABLE_ADD(persistence);
     }
 }

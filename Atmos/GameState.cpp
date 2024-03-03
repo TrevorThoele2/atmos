@@ -1,10 +1,7 @@
 
 #include "GameState.h"
 
-#include "CancelMenuState.h"
-
 #include "StateSystem.h"
-#include "SpeechController.h"
 #include "InputSystem.h"
 
 namespace Atmos
@@ -29,8 +26,7 @@ namespace Atmos
         {
             if (CanNewMenu())
             {
-                auto stateSystem = Manager()->FindSystem<StateSystem>();
-                stateSystem->Goto<CancelMenuState>();
+
             }
 
             return;
@@ -74,8 +70,7 @@ namespace Atmos
 
     bool GameState::AnyTertiaryOpen() const
     {
-        bool isSpeechWorking = Manager()->FindSystem<Speech::Controller>()->IsActive();
-        return isSpeechWorking; //|| StatusScreen::IsActive();
+        return false;
     }
 
     const ObjectTypeName ObjectTraits<GameState>::typeName = "GameState";

@@ -34,7 +34,7 @@ namespace Atmos
         public:
             SenseComponent(ObjectManager& manager, EntityReference reference);
             SenseComponent(const SenseComponent& arg) = default;
-            SenseComponent(const ::Inscription::Table<SenseComponent>& table);
+            INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(SenseComponent);
 
             void Enable(bool enable = true);
             void Disable();
@@ -46,7 +46,7 @@ namespace Atmos
 
             ObjectTypeDescription TypeDescription() const override;
         private:
-            INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
+            INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
             INSCRIPTION_ACCESS;
         };
     }
@@ -65,6 +65,6 @@ namespace Inscription
     public:
         OBJECT_INSCRIPTER_DECLARE_MEMBERS;
 
-        INSCRIPTION_INSCRIPTER_DECLARE_SERIALIZE_FUNCTION;
+        INSCRIPTION_BINARY_INSCRIPTER_DECLARE_SERIALIZE_FUNCTION;
     };
 }

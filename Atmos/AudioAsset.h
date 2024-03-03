@@ -23,7 +23,7 @@ namespace Atmos
     public:
         AudioAsset(ObjectManager& manager, const FileName& fileName, DataPtr&& data);
         AudioAsset(const AudioAsset& arg);
-        AudioAsset(const ::Inscription::Table<AudioAsset>& table);
+        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(AudioAsset);
 
         DataT* Data();
         const DataT* Data() const;

@@ -18,7 +18,7 @@ namespace Atmos
             entities.onBeforeDestroyed.Subscribe(&PositionSystem::OnEntityDestroyed, *this);
         }
 
-        PositionSystem::PositionSystem(const ::Inscription::Table<PositionSystem>& table) : INSCRIPTION_TABLE_GET_BASE(ObjectSystem)
+        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(PositionSystem) : INSCRIPTION_TABLE_GET_BASE(ObjectSystem)
         {}
 
         void PositionSystem::SetDirection(EntityReference entity, const Direction& direction)
@@ -106,14 +106,14 @@ namespace Atmos
 
 namespace Inscription
 {
-    INSCRIPTION_INSCRIPTER_DEFINE_TABLE(::Atmos::Entity::PositionSystem)
+    INSCRIPTION_BINARY_INSCRIPTER_DEFINE_TABLE(::Atmos::Entity::PositionSystem)
     {
-        INSCRIPTION_INSCRIPTER_CREATE_TABLE;
+        INSCRIPTION_BINARY_INSCRIPTER_CREATE_TABLE;
 
         INSCRIPTION_TABLE_ADD_BASE(::Atmos::ObjectSystem);
 
         INSCRIPTION_INSCRIPTER_RETURN_TABLE;
     }
 
-    INSCRIPTION_DEFINE_SIMPLE_CLASS_NAME_RESOLVER(::Atmos::Entity::PositionSystem, "EntityPositionSystem");
+    INSCRIPTION_BINARY_DEFINE_SIMPLE_CLASS_NAME_RESOLVER(::Atmos::Entity::PositionSystem, "EntityPositionSystem");
 }

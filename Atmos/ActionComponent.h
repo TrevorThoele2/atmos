@@ -30,7 +30,7 @@ namespace Atmos
 
             ActionComponent(ObjectManager& manager, EntityReference owner);
             ActionComponent(const ActionComponent& arg) = default;
-            ActionComponent(const ::Inscription::Table<ActionComponent>& table);
+            INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(ActionComponent);
 
             void FireMovedInto();
             void FireAttemptMovedInto();

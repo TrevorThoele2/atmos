@@ -73,7 +73,7 @@ namespace Atmos
     private:
         T* obj;
     private:
-        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
+        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
     };
 
@@ -225,7 +225,7 @@ namespace Atmos
     }
 
     template<class T>
-    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(TypedObjectReference<T>)
+    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(TypedObjectReference<T>)
     {
         scribe.UnowningPointer(obj);
     }
@@ -278,7 +278,7 @@ namespace Atmos
     private:
         const T* obj;
     private:
-        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
+        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
     };
 
@@ -395,7 +395,7 @@ namespace Atmos
     }
 
     template<class T>
-    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(ConstTypedObjectReference<T>)
+    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(ConstTypedObjectReference<T>)
     {
         scribe.UnowningPointer(obj);
     }

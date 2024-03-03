@@ -12,7 +12,7 @@ namespace Atmos
 
     OutputWorldScribe::OutputWorldScribe(
         const FilePath& filePath,
-        ::Inscription::ContainerSize::ValueT fieldCount,
+        ::Inscription::ContainerSize fieldCount,
         ObjectManager& globalObjectManager,
         OpenMode openMode) :
 
@@ -39,7 +39,7 @@ namespace Atmos
         ++curSaver;
     }
 
-    void OutputWorldScribe::OverwriteFieldCount(::Inscription::ContainerSize::ValueT set)
+    void OutputWorldScribe::OverwriteFieldCount(::Inscription::ContainerSize set)
     {
         fieldSavers.resize(set, FieldSaver(underlyingScribe));
     }
@@ -54,12 +54,12 @@ namespace Atmos
         return 1;
     }
 
-    ::Inscription::Scribe& OutputWorldScribe::UnderlyingScribe()
+    ::Inscription::BinaryScribe& OutputWorldScribe::UnderlyingScribe()
     {
         return underlyingScribe;
     }
 
-    const ::Inscription::Scribe& OutputWorldScribe::UnderlyingScribe() const
+    const ::Inscription::BinaryScribe& OutputWorldScribe::UnderlyingScribe() const
     {
         return underlyingScribe;
     }

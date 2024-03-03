@@ -5,9 +5,6 @@
 
 #include "GraphicsSystem.h"
 
-#include "AguiSpriteFactory.h"
-#include <AGUI/ImageResource.h>
-
 #include <Inscription\Scribe.h>
 #include <Inscription\Inscripter.h>
 #include <Inscription\Table.h>
@@ -29,7 +26,7 @@ namespace Atmos
         SubscribeToProperties();
     }
 
-    Sprite::Sprite(const ::Inscription::Table<Sprite>& table) :
+    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(Sprite) :
         INSCRIPTION_TABLE_GET_BASE(RenderFragment),
         INSCRIPTION_TABLE_GET_MEM(material),
         INSCRIPTION_TABLE_GET_MEM(patchShader),
@@ -114,18 +111,6 @@ namespace Atmos
     }
 
     const ObjectTypeName ObjectTraits<Sprite>::typeName = "Sprite";
-
-    std::unique_ptr<Agui::SpriteComponent> CreateAguiSpriteComponent(
-        const TypedObjectReference<Sprite> sprite,
-        const Agui::FileName& imageName,
-        const Agui::RelativePosition& relPosition)
-    {
-        if (!sprite->material.Get() || !sprite->material->xVisual.Get())
-            return std::unique_ptr<Agui::SpriteComponent>();
-
-        AguiSpriteFactory factory(sprite);
-        return std::unique_ptr<Agui::SpriteComponent>(factory.CreateComponent(imageName, relPosition));
-    }
 }
 
 namespace Inscription

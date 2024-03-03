@@ -72,7 +72,7 @@ namespace Atmos
         void OnCreated(Reference reference);
         void OnBeforeDestroyed(Reference reference);
     private:
-        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
+        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
     private:
         STATIC_ASSERT_TYPE_DERIVED_FROM_OBJECT(T);
@@ -266,7 +266,7 @@ namespace Atmos
     }
 
     template<class T>
-    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(ObjectBatch<T>)
+    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(ObjectBatch<T>)
     {
         scribe.UnowningPointer(source);
         if(scribe.IsInput())

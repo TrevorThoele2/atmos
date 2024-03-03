@@ -10,7 +10,7 @@ namespace Atmos
         SubscribeToProperties();
     }
 
-    RenderFragment::RenderFragment(const ::Inscription::Table<RenderFragment>& table) : INSCRIPTION_TABLE_GET_BASE(Sense)
+    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(RenderFragment) : INSCRIPTION_TABLE_GET_BASE(Sense)
     {
         SubscribeToProperties();
     }

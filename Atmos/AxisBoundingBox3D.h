@@ -67,7 +67,7 @@ namespace Atmos
         void Calculate();
         bool OverlappingImpl(const AxisBoundingBox3D &box) const;
     private:
-        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
+        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
     };
 }

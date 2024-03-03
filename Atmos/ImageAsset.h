@@ -26,7 +26,7 @@ namespace Atmos
     public:
         ImageAsset(ObjectManager& manager, const FileName& fileName, DataPtr&& data);
         ImageAsset(const ImageAsset& arg);
-        ImageAsset(const ::Inscription::Table<ImageAsset>& table);
+        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(ImageAsset);
 
         DataT* Data();
         const DataT* Data() const;

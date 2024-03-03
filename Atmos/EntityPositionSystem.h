@@ -20,7 +20,7 @@ namespace Atmos
             typedef ConstTypedObjectReference<Entity> ConstEntityReference;
         public:
             PositionSystem(ObjectManager& manager);
-            PositionSystem(const ::Inscription::Table<PositionSystem>& table);
+            INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(PositionSystem);
 
             void SetDirection(EntityReference entity, const Direction& direction);
 
@@ -63,7 +63,7 @@ namespace Inscription
     INSCRIPTION_INSCRIPTER_DECLARE(::Atmos::Entity::PositionSystem)
     {
     public:
-        INSCRIPTION_INSCRIPTER_DECLARE_TABLE;
-        INSCRIPTION_DECLARE_CLASS_NAME_RESOLVER;
+        INSCRIPTION_BINARY_INSCRIPTER_DECLARE_TABLE;
+        INSCRIPTION_BINARY_DECLARE_CLASS_NAME_RESOLVER;
     };
 }

@@ -14,7 +14,7 @@ namespace Atmos
     public:
         typedef float ValueT;
     private:
-        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
+        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
     private:
         ValueT realX, realY, realZ;

@@ -3,7 +3,7 @@
 #include <stdexcept>
 
 #include "Serialization.h"
-#include <Inscription/StackConstructor.h>
+#include <Inscription/ScopedConstructor.h>
 
 namespace Atmos
 {
@@ -17,52 +17,32 @@ namespace Atmos
     {
     public:
         typedef T ValueT;
-    private:
-        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
-        INSCRIPTION_ACCESS;
-    private:
-        bool valid;
-
-        union
-        {
-            T value;
-        };
-
-        void ConstructValue(const ValueT &arg);
-        void ConstructValue(ValueT &&arg);
-        template<class... Args>
-        void ConstructValue(Args ... args);
-        void DeleteValue();
-
-        ValueT& GetValue();
-        const ValueT& GetValue() const;
-        ValueT GetValueMove();
     public:
         Optional();
-        Optional(const ValueT &value);
-        Optional(ValueT &&value);
-        Optional(const Optional &arg);
-        Optional(Optional &&arg);
+        Optional(const ValueT& value);
+        Optional(ValueT&& value);
+        Optional(const Optional& arg);
+        Optional(Optional&& arg);
         template<class... Args>
-        explicit Optional(Args && ... args);
+        explicit Optional(Args&& ... args);
         ~Optional();
-        Optional& operator=(const Optional &arg);
-        Optional& operator=(Optional &&arg);
-        bool operator==(const Optional &arg) const;
-        friend bool operator==(const Optional &lhs, const ValueT &rhs)
+        Optional& operator=(const Optional& arg);
+        Optional& operator=(Optional&& arg);
+        bool operator==(const Optional& arg) const;
+        friend bool operator==(const Optional& lhs, const ValueT& rhs)
         {
             return (lhs.valid) ? lhs.value == rhs : false;
         }
-        friend bool operator==(const ValueT &lhs, const Optional &rhs)
+        friend bool operator==(const ValueT& lhs, const Optional& rhs)
         {
             return rhs == lhs;
         }
-        bool operator!=(const Optional &arg) const;
-        friend bool operator!=(const Optional &lhs, const ValueT &rhs)
+        bool operator!=(const Optional& arg) const;
+        friend bool operator!=(const Optional& lhs, const ValueT& rhs)
         {
             return !(lhs == rhs);
         }
-        friend bool operator!=(const ValueT &lhs, const Optional &rhs)
+        friend bool operator!=(const ValueT& lhs, const Optional& rhs)
         {
             return !(rhs == lhs);
         }
@@ -76,8 +56,8 @@ namespace Atmos
 
         // Same thing as Reset()
         void Set();
-        void Set(const ValueT &set);
-        void Set(ValueT &&set);
+        void Set(const ValueT& set);
+        void Set(ValueT&& set);
         template<class... Args>
         void Set(Args ... args);
         ValueT& Get();
@@ -91,115 +71,53 @@ namespace Atmos
         void Reset();
 
         bool IsValid() const;
+    private:
+        bool valid;
+
+        union
+        {
+            T value;
+        };
+    private:
+        void ConstructValue(const ValueT& arg);
+        void ConstructValue(ValueT&& arg);
+        template<class... Args>
+        void ConstructValue(Args ... args);
+        void DeleteValue();
+
+        ValueT& GetValue();
+        const ValueT& GetValue() const;
+        ValueT GetValueMove();
+    private:
+        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
+        INSCRIPTION_ACCESS;
     };
-
-    template<class T>
-    INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(Optional<T>)
-    {
-        if (scribe.IsOutput())
-        {
-            scribe.Save(valid);
-            if(valid)
-                scribe.Save(value);
-        }
-        else
-        {
-            DeleteValue();
-            bool thisValid;
-            scribe.ReadNumeric(thisValid);
-            if (thisValid)
-            {
-                ::Inscription::StackConstructor<T> constructor(scribe);
-                ConstructValue(std::move(constructor.GetMove()));
-            }
-
-            valid = thisValid;
-        }
-    }
-
-    template<class T>
-    void Optional<T>::ConstructValue(const ValueT &arg)
-    {
-        new (&value) T(arg);
-    }
-
-    template<class T>
-    void Optional<T>::ConstructValue(ValueT &&arg)
-    {
-        new (&value) T(std::move(arg));
-    }
-
-    template<class T>
-    template<class... Args>
-    void Optional<T>::ConstructValue(Args ... args)
-    {
-        new (&value) T(std::forward<Args>(args)...);
-    }
-
-    template<class T>
-    void Optional<T>::DeleteValue()
-    {
-        if (valid)
-        {
-            value.~T();
-            valid = false;
-        }
-    }
-
-    template<class T>
-    typename Optional<T>::ValueT& Optional<T>::GetValue()
-    {
-        if (!valid)
-            throw OptionalException();
-
-        return value;
-    }
-
-    template<class T>
-    typename const Optional<T>::ValueT& Optional<T>::GetValue() const
-    {
-        if (!valid)
-            throw OptionalException();
-
-        return value;
-    }
-
-    template<class T>
-    typename Optional<T>::ValueT Optional<T>::GetValueMove()
-    {
-        if (!valid)
-            throw OptionalException();
-
-        T ret(std::move(value));
-        DeleteValue();
-        return std::move(ret);
-    }
 
     template<class T>
     Optional<T>::Optional() : valid(false)
     {}
 
     template<class T>
-    Optional<T>::Optional(const ValueT &value) : valid(true)
+    Optional<T>::Optional(const ValueT& value) : valid(true)
     {
         ConstructValue(value);
     }
 
     template<class T>
-    Optional<T>::Optional(ValueT &&value) : valid(true)
+    Optional<T>::Optional(ValueT&& value) : valid(true)
     {
         ConstructValue(std::move(value));
     }
 
     template<class T>
-    Optional<T>::Optional(const Optional &arg) : valid(arg.valid)
+    Optional<T>::Optional(const Optional& arg) : valid(arg.valid)
     {
         if (valid)
             ConstructValue(arg.value);
     }
 
     template<class T>
-    Optional<T>::Optional(Optional &&arg) : valid(arg.valid)
+    Optional<T>::Optional(Optional&& arg) : valid(arg.valid)
     {
         if (valid)
         {
@@ -210,7 +128,7 @@ namespace Atmos
 
     template<class T>
     template<class... Args>
-    Optional<T>::Optional(Args && ... args) : valid(true)
+    Optional<T>::Optional(Args&& ... args) : valid(true)
     {
         ConstructValue(std::forward<Args>(args)...);
     }
@@ -222,7 +140,7 @@ namespace Atmos
     }
 
     template<class T>
-    Optional<T>& Optional<T>::operator=(const Optional &arg)
+    Optional<T>& Optional<T>::operator=(const Optional& arg)
     {
         valid = arg.valid;
         if (valid)
@@ -232,7 +150,7 @@ namespace Atmos
     }
 
     template<class T>
-    Optional<T>& Optional<T>::operator=(Optional &&arg)
+    Optional<T>& Optional<T>::operator=(Optional&& arg)
     {
         valid = arg.valid;
         if (valid)
@@ -245,13 +163,13 @@ namespace Atmos
     }
 
     template<class T>
-    bool Optional<T>::operator==(const Optional &arg) const
+    bool Optional<T>::operator==(const Optional& arg) const
     {
         return (valid) ? valid == arg.valid && value == arg.value : valid == arg.valid;
     }
 
     template<class T>
-    bool Optional<T>::operator!=(const Optional &arg) const
+    bool Optional<T>::operator!=(const Optional& arg) const
     {
         return !(*this == arg);
     }
@@ -305,7 +223,7 @@ namespace Atmos
     }
 
     template<class T>
-    void Optional<T>::Set(const ValueT &set)
+    void Optional<T>::Set(const ValueT& set)
     {
         DeleteValue();
         valid = true;
@@ -313,7 +231,7 @@ namespace Atmos
     }
 
     template<class T>
-    void Optional<T>::Set(ValueT &&set)
+    void Optional<T>::Set(ValueT&& set)
     {
         DeleteValue();
         valid = true;
@@ -375,5 +293,87 @@ namespace Atmos
     bool Optional<T>::IsValid() const
     {
         return valid;
+    }
+
+    template<class T>
+    void Optional<T>::ConstructValue(const ValueT& arg)
+    {
+        new (&value) T(arg);
+    }
+
+    template<class T>
+    void Optional<T>::ConstructValue(ValueT&& arg)
+    {
+        new (&value) T(std::move(arg));
+    }
+
+    template<class T>
+    template<class... Args>
+    void Optional<T>::ConstructValue(Args ... args)
+    {
+        new (&value) T(std::forward<Args>(args)...);
+    }
+
+    template<class T>
+    void Optional<T>::DeleteValue()
+    {
+        if (valid)
+        {
+            value.~T();
+            valid = false;
+        }
+    }
+
+    template<class T>
+    typename Optional<T>::ValueT& Optional<T>::GetValue()
+    {
+        if (!valid)
+            throw OptionalException();
+
+        return value;
+    }
+
+    template<class T>
+    typename const Optional<T>::ValueT& Optional<T>::GetValue() const
+    {
+        if (!valid)
+            throw OptionalException();
+
+        return value;
+    }
+
+    template<class T>
+    typename Optional<T>::ValueT Optional<T>::GetValueMove()
+    {
+        if (!valid)
+            throw OptionalException();
+
+        T ret(std::move(value));
+        DeleteValue();
+        return std::move(ret);
+    }
+
+    template<class T>
+    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(Optional<T>)
+    {
+        if (scribe.IsOutput())
+        {
+            scribe.Save(valid);
+            if (valid)
+                scribe.Save(value);
+        }
+        else
+        {
+            DeleteValue();
+            bool thisValid;
+            scribe.ReadNumeric(thisValid);
+            if (thisValid)
+            {
+                ::Inscription::ScopedConstructor<T> constructor(scribe);
+                ConstructValue(std::move(constructor.GetMove()));
+            }
+
+            valid = thisValid;
+        }
     }
 }

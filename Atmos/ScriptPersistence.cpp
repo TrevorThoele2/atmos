@@ -33,7 +33,7 @@ namespace Atmos
             return true;
         }
 
-        INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(Persistence)
+        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(Persistence)
         {
 
         }

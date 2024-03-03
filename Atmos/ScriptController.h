@@ -21,7 +21,7 @@ namespace Atmos
         typedef ConstTypedObjectReference<ScriptInstance> ScriptInstanceReference;
     public:
         ScriptController(ObjectManager& manager);
-        ScriptController(const ::Inscription::Table<ScriptController>& table);
+        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(ScriptController);
 
         void ExecuteImmediately(RunningScriptReference reference);
 
@@ -63,7 +63,7 @@ namespace Inscription
     INSCRIPTION_INSCRIPTER_DECLARE(::Atmos::ScriptController)
     {
     public:
-        INSCRIPTION_INSCRIPTER_DECLARE_TABLE;
-        INSCRIPTION_DECLARE_CLASS_NAME_RESOLVER;
+        INSCRIPTION_BINARY_INSCRIPTER_DECLARE_TABLE;
+        INSCRIPTION_BINARY_DECLARE_CLASS_NAME_RESOLVER;
     };
 }

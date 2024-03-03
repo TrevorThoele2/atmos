@@ -17,7 +17,7 @@ namespace Atmos
     public:
         typedef int ValueT;
     private:
-        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
+        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
     public:
         ValueT x, y, z;
@@ -88,9 +88,6 @@ namespace Atmos
     {
     public:
         typedef GridPosition::ValueT ValueT;
-    private:
-        void Serialize(::Inscription::Scribe &scribe);
-        INSCRIPTION_ACCESS;
     public:
         ValueT x, y, z;
 
@@ -99,6 +96,9 @@ namespace Atmos
         bool operator==(const RelativeGridPosition &arg) const;
         bool operator!=(const RelativeGridPosition &arg) const;
         void Edit(ValueT x = 0, ValueT y = 0, ValueT z = 0);
+    private:
+        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
+        INSCRIPTION_ACCESS;
     };
 }
 

@@ -18,12 +18,11 @@ namespace Atmos
 
         ObjectTypeDescription();
         ObjectTypeDescription(const ObjectTypeName& typeName, const BaseTypeList& baseTypes = BaseTypeList());
-        ObjectTypeDescription(const ::Inscription::Table<ObjectTypeDescription>& table);
 
         bool operator==(const ObjectTypeDescription& arg) const;
         bool operator!=(const ObjectTypeDescription& arg) const;
     private:
-        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
+        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
     };
 }

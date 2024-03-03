@@ -21,7 +21,7 @@ namespace Atmos
         public:
             Component(ObjectManager& manager, EntityReference owner);
             Component(const Component& arg);
-            Component(const ::Inscription::Table<Component>& table);
+            INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(Component);
             ObjectTypeDescription TypeDescription() const override;
         };
     }

@@ -121,7 +121,7 @@ namespace Atmos
         template<KeyID id>
         Key* Manager::CreateKey(SignalDataPtr&& data)
         {
-            Key key(*this, *objectManager, std::move(data), id, KeyTraits<id>::aguiID, KeyTraits<id>::displayName, KeyTraits<id>::canUseForAction);
+            Key key(*this, *objectManager, std::move(data), id, nullptr, KeyTraits<id>::displayName, KeyTraits<id>::canUseForAction);
             auto emplaced = &keyMap.emplace(id, std::move(key)).first->second;
             signalList.push_back(emplaced);
             return emplaced;
@@ -130,7 +130,7 @@ namespace Atmos
         template<MouseKeyID id>
         MouseKey* Manager::CreateMouseKey(SignalDataPtr&& data)
         {
-            MouseKey mouseKey(*this, *objectManager, std::move(data), id, MouseTraits<id>::aguiID, MouseTraits<id>::displayName);
+            MouseKey mouseKey(*this, *objectManager, std::move(data), id, nullptr, MouseTraits<id>::displayName);
             auto emplaced = &mouseKeyMap.emplace(id, std::move(mouseKey)).first->second;
             signalList.push_back(emplaced);
             return emplaced;

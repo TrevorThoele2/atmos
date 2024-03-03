@@ -11,7 +11,7 @@ namespace Atmos
         {
         public:
             System(ObjectManager& manager);
-            System(const ::Inscription::Table<System>& table);
+            INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(System);
         private:
             void InitializeImpl() override;
         };
@@ -23,7 +23,7 @@ namespace Inscription
     INSCRIPTION_INSCRIPTER_DECLARE(::Atmos::Input::System)
     {
     public:
-        INSCRIPTION_INSCRIPTER_DECLARE_TABLE;
-        INSCRIPTION_DECLARE_CLASS_NAME_RESOLVER;
+        INSCRIPTION_BINARY_INSCRIPTER_DECLARE_TABLE;
+        INSCRIPTION_BINARY_DECLARE_CLASS_NAME_RESOLVER;
     };
 }

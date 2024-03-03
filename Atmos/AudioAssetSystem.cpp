@@ -10,7 +10,7 @@ namespace Atmos
     AudioAssetSystem::AudioAssetSystem(ObjectManager& manager) : AssetSystem(manager)
     {}
 
-    AudioAssetSystem::AudioAssetSystem(const ::Inscription::Table<AudioAssetSystem>& table) : INSCRIPTION_TABLE_GET_BASE(AssetSystem)
+    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(AudioAssetSystem) : INSCRIPTION_TABLE_GET_BASE(AssetSystem)
     {}
 
     void AudioAssetSystem::InitializeImpl()
@@ -25,14 +25,14 @@ namespace Atmos
 
 namespace Inscription
 {
-    INSCRIPTION_INSCRIPTER_DEFINE_TABLE(::Atmos::AudioAssetSystem)
+    INSCRIPTION_BINARY_INSCRIPTER_DEFINE_TABLE(::Atmos::AudioAssetSystem)
     {
-        INSCRIPTION_INSCRIPTER_CREATE_TABLE;
+        INSCRIPTION_BINARY_INSCRIPTER_CREATE_TABLE;
 
         INSCRIPTION_TABLE_ADD_BASE(::Atmos::AssetSystem<::Atmos::AudioAsset>);
 
         INSCRIPTION_INSCRIPTER_RETURN_TABLE;
     }
 
-    INSCRIPTION_DEFINE_SIMPLE_CLASS_NAME_RESOLVER(::Atmos::AudioAssetSystem, "AudioAssetSystem");
+    INSCRIPTION_BINARY_DEFINE_SIMPLE_CLASS_NAME_RESOLVER(::Atmos::AudioAssetSystem, "AudioAssetSystem");
 }

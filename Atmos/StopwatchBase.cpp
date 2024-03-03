@@ -10,7 +10,7 @@ namespace Atmos
         Object(manager), goal(goal), start()
     {}
 
-    StopwatchBase::StopwatchBase(const ::Inscription::Table<StopwatchBase>& table) :
+    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(StopwatchBase) :
         INSCRIPTION_TABLE_GET_BASE(Object), INSCRIPTION_TABLE_GET_MEM(goal)
     {}
 
@@ -83,7 +83,7 @@ namespace Inscription
         INSCRIPTION_TABLE_ADD(goal);
     }
 
-    INSCRIPTION_INSCRIPTER_DEFINE_SERIALIZE_FUNCTION(::Atmos::StopwatchBase)
+    INSCRIPTION_BINARY_INSCRIPTER_DEFINE_SERIALIZE_FUNCTION(::Atmos::StopwatchBase)
     {
         INSCRIPTION_INSCRIPTER_CALL_BASE_SERIALIZE_FUNCTION;
         if (scribe.IsOutput())

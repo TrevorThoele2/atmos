@@ -42,7 +42,7 @@ namespace Atmos
     public:
         ScriptInstance(ObjectManager& manager);
         ScriptInstance(const ScriptInstance& arg) = default;
-        ScriptInstance(const ::Inscription::Table<ScriptInstance>& table);
+        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(ScriptInstance);
 
         // Executes the script standardly
         // Will defer the execute until a certain point in the frame (probably a bit later)
@@ -58,9 +58,6 @@ namespace Atmos
         ObjectTypeDescription TypeDescription() const override;
     private:
         TypedObjectReference<RunningScript> CreateRunningFromThis();
-    private:
-        INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
-        INSCRIPTION_ACCESS;
     };
 
     template<>

@@ -21,7 +21,7 @@ namespace Atmos
         Event<State&> eventTopChanged;
     public:
         StateSystem(ObjectManager& manager);
-        StateSystem(const ::Inscription::Table<StateSystem>& table);
+        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(StateSystem);
 
         void RegisterState(StatePtr&& state);
         void InitializeStates();
@@ -82,7 +82,7 @@ namespace Inscription
     INSCRIPTION_INSCRIPTER_DECLARE(::Atmos::StateSystem)
     {
     public:
-        INSCRIPTION_INSCRIPTER_DECLARE_TABLE;
-        INSCRIPTION_DECLARE_CLASS_NAME_RESOLVER;
+        INSCRIPTION_BINARY_INSCRIPTER_DECLARE_TABLE;
+        INSCRIPTION_BINARY_DECLARE_CLASS_NAME_RESOLVER;
     };
 }

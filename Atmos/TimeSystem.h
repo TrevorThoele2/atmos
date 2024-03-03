@@ -12,7 +12,7 @@ namespace Atmos
     {
     public:
         TimeSystem(ObjectManager& manager);
-        TimeSystem(const ::Inscription::Table<TimeSystem>& table);
+        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(TimeSystem);
 
         void OnFrameEnd();
         TimeValue GetTotalElapsed() const;
@@ -35,7 +35,7 @@ namespace Inscription
     INSCRIPTION_INSCRIPTER_DECLARE(::Atmos::TimeSystem)
     {
     public:
-        INSCRIPTION_INSCRIPTER_DECLARE_TABLE;
-        INSCRIPTION_DECLARE_CLASS_NAME_RESOLVER;
+        INSCRIPTION_BINARY_INSCRIPTER_DECLARE_TABLE;
+        INSCRIPTION_BINARY_DECLARE_CLASS_NAME_RESOLVER;
     };
 }

@@ -64,7 +64,7 @@ namespace Atmos
             return list.end();
         }
 
-        INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(Parameters)
+        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(Parameters)
         {
             scribe(list);
         }

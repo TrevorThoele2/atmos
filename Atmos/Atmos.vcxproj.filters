@@ -12,15 +12,6 @@
     <Filter Include="Header Files\GUI">
       <UniqueIdentifier>{316daf16-7904-45bf-b6a2-1b79de68f0c5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\GUI\ContextMenus">
-      <UniqueIdentifier>{95a879cf-ea12-488e-9edb-f99ec233dd97}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\GUI\DescriptionBoxes">
-      <UniqueIdentifier>{519e3fc7-cb9d-4062-b475-73b853f30cd8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\GUI\StatusScreen">
-      <UniqueIdentifier>{99604308-c9c3-43c6-a250-4ffb4f58b91f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Helper">
       <UniqueIdentifier>{30d39b10-ce24-45e3-a2fa-fad751dcf569}</UniqueIdentifier>
     </Filter>
@@ -42,23 +33,11 @@
     <Filter Include="Header Files\Sound">
       <UniqueIdentifier>{0040e232-5328-41e8-9583-c7fda3776428}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Speech">
-      <UniqueIdentifier>{67b26b3e-4694-48de-a600-434a1b11d8b7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\State">
       <UniqueIdentifier>{28c2efb1-fa60-4a62-b3fb-46903a66adf0}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\GUI">
       <UniqueIdentifier>{3ab4b2fc-65ac-48aa-bb23-0463d30884ba}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\GUI\ContextMenus">
-      <UniqueIdentifier>{b64150cb-1b79-4325-b14a-d331710eac72}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\GUI\Description Boxes">
-      <UniqueIdentifier>{8e38b703-2287-4a12-bab8-c930942c1308}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\GUI\Status Screen">
-      <UniqueIdentifier>{d48822b2-9ae0-4ee0-b7fe-6bea9555eac1}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Helper">
       <UniqueIdentifier>{269d1f80-81d2-482d-893c-dfda6d31a959}</UniqueIdentifier>
@@ -80,9 +59,6 @@
     </Filter>
     <Filter Include="Source Files\Sound">
       <UniqueIdentifier>{3ba79d1c-3516-4398-9629-abc6ee92e444}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Speech">
-      <UniqueIdentifier>{d3f8890c-1054-432d-9690-f6669cbd8b5b}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\State">
       <UniqueIdentifier>{4fffd952-579f-41fc-8769-4c667a97ef56}</UniqueIdentifier>
@@ -113,12 +89,6 @@
     </Filter>
     <Filter Include="Header Files\Entities\Systems">
       <UniqueIdentifier>{5dd13e0f-ab59-4397-825b-335831f0a430}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\State\Battle">
-      <UniqueIdentifier>{e76e2efe-4bc7-45fa-84b0-efb3470a31da}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\State\Battle">
-      <UniqueIdentifier>{1ee36d0e-a89b-4848-b7b9-02c740964dbc}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\World">
       <UniqueIdentifier>{4fb2003e-b494-4c96-a9d0-cd8eeee46466}</UniqueIdentifier>
@@ -231,44 +201,11 @@
     <Filter Include="Source Files\Events">
       <UniqueIdentifier>{f26dda75-50ec-40a4-8541-f6a6664fdb61}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\RegistryObjects">
-      <UniqueIdentifier>{fd96fa3f-0b76-430c-bfcb-f53b902d0512}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\RegistryObjects\Item">
-      <UniqueIdentifier>{5af42f18-5ed3-428c-8450-7a18dbe2bbcb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\RegistryObjects\Spell">
-      <UniqueIdentifier>{b4976a85-be05-463f-8992-ae37c388ea59}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\RegistryObjects\StatusEffect">
-      <UniqueIdentifier>{86aa9798-9fcf-4477-a305-c5d76cad7a87}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\RegistryObjects\Character Class">
-      <UniqueIdentifier>{783ed53d-c212-48e4-b2be-7bb08efb1bb7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\RegistryObjects\Abilities">
-      <UniqueIdentifier>{ed36f594-7d25-4d8e-9432-90a6e7cdb392}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\RegistryObjects\Quests">
-      <UniqueIdentifier>{7d0f61e2-30ac-4c9c-97c8-7ff56f113d28}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\GameData">
       <UniqueIdentifier>{5a080eaa-7d96-423e-b3cb-49875a7ecccb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\GameData\Attributes">
-      <UniqueIdentifier>{09efca32-2611-45ca-a2de-c1c4b14ad532}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\GameData\Combat">
-      <UniqueIdentifier>{70c202f2-45a9-4a24-8700-667d5c7b8d3b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\GameData">
       <UniqueIdentifier>{f8bb0ee4-de8f-4d14-9afa-55445dce0d27}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\GameData\Attributes">
-      <UniqueIdentifier>{2533610a-fd6b-4b97-ae03-38fdac11463a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\GameData\Combat">
-      <UniqueIdentifier>{efced4a6-15ec-449c-a0be-09a38e743dc8}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Math">
       <UniqueIdentifier>{8809c779-b0fc-4fb7-a722-1966a93f45f2}</UniqueIdentifier>
@@ -348,27 +285,6 @@
     <Filter Include="Header Files\Positional Objects">
       <UniqueIdentifier>{7fb22f80-31ef-484c-ad60-6bdcf9d9d2de}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Registry Objects">
-      <UniqueIdentifier>{25b4633d-9c60-4b1b-aec9-5b647f7d15d8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Registry Objects\Item">
-      <UniqueIdentifier>{303ffe23-8dbe-4c90-992d-49b15d2ea343}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Registry Objects\Spells">
-      <UniqueIdentifier>{5eeb41c7-4229-4734-8f8f-60f154f823bd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Registry Objects\StatusEffect">
-      <UniqueIdentifier>{c6706985-e9f3-45a2-84b7-67e37072d392}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Registry Objects\Character Class">
-      <UniqueIdentifier>{168ef56c-bec4-4236-9601-522f0d64f7ac}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Registry Objects\Abilities">
-      <UniqueIdentifier>{33dab41b-e598-4724-8ddd-97c82bb59cdb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Registry Objects\Quests">
-      <UniqueIdentifier>{47d8a5b5-727a-416c-9f65-ee97a3b0671c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Time\Stopwatches">
       <UniqueIdentifier>{534fe9e6-2447-4a7b-9f14-ee71be4e826f}</UniqueIdentifier>
     </Filter>
@@ -383,52 +299,16 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Battle.h">
-      <Filter>Header Files\State\Battle</Filter>
-    </ClInclude>
     <ClInclude Include="Field.h">
       <Filter>Header Files\World\Field</Filter>
     </ClInclude>
     <ClInclude Include="FieldDestination.h">
       <Filter>Header Files\World\Field</Filter>
     </ClInclude>
-    <ClInclude Include="EquipSlot.h">
-      <Filter>Header Files\Registry Objects\Item</Filter>
-    </ClInclude>
-    <ClInclude Include="ItemDrop.h">
-      <Filter>Header Files\Registry Objects\Item</Filter>
-    </ClInclude>
     <ClInclude Include="Tile.h">
       <Filter>Header Files\Tile</Filter>
     </ClInclude>
-    <ClInclude Include="ContextMenu.h">
-      <Filter>Header Files\GUI\ContextMenus</Filter>
-    </ClInclude>
-    <ClInclude Include="ItemContextMenu.h">
-      <Filter>Header Files\GUI\ContextMenus</Filter>
-    </ClInclude>
-    <ClInclude Include="SpellContextMenu.h">
-      <Filter>Header Files\GUI\ContextMenus</Filter>
-    </ClInclude>
-    <ClInclude Include="DescriptionBox.h">
-      <Filter>Header Files\GUI\DescriptionBoxes</Filter>
-    </ClInclude>
-    <ClInclude Include="ItemDescriptionBox.h">
-      <Filter>Header Files\GUI\DescriptionBoxes</Filter>
-    </ClInclude>
-    <ClInclude Include="SpellDescriptionBox.h">
-      <Filter>Header Files\GUI\DescriptionBoxes</Filter>
-    </ClInclude>
-    <ClInclude Include="StatusScreen.h">
-      <Filter>Header Files\GUI\StatusScreen</Filter>
-    </ClInclude>
-    <ClInclude Include="Cursor.h">
-      <Filter>Header Files\GUI</Filter>
-    </ClInclude>
     <ClInclude Include="FontDefines.h">
-      <Filter>Header Files\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="WidgetSetups.h">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
     <ClInclude Include="Bind.h">
@@ -457,9 +337,6 @@
     </ClInclude>
     <ClInclude Include="Serialization.h">
       <Filter>Header Files\Serialization</Filter>
-    </ClInclude>
-    <ClInclude Include="Shop.h">
-      <Filter>Header Files\Speech</Filter>
     </ClInclude>
     <ClInclude Include="UnpackTuple.h">
       <Filter>Header Files\Helper</Filter>
@@ -491,32 +368,8 @@
     <ClInclude Include="Optional.h">
       <Filter>Header Files\Helper</Filter>
     </ClInclude>
-    <ClInclude Include="EquipRegion.h">
-      <Filter>Header Files\Registry Objects\Item</Filter>
-    </ClInclude>
-    <ClInclude Include="AguiSpriteFactory.h">
-      <Filter>Header Files\GUI</Filter>
-    </ClInclude>
     <ClInclude Include="EntityAISystem.h">
       <Filter>Header Files\Entities\Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="BattleCharacter.h">
-      <Filter>Header Files\State\Battle</Filter>
-    </ClInclude>
-    <ClInclude Include="BattleActionManager.h">
-      <Filter>Header Files\State\Battle</Filter>
-    </ClInclude>
-    <ClInclude Include="BattleActionPlacement.h">
-      <Filter>Header Files\State\Battle</Filter>
-    </ClInclude>
-    <ClInclude Include="BattleActionAttack.h">
-      <Filter>Header Files\State\Battle</Filter>
-    </ClInclude>
-    <ClInclude Include="BattleActionMovement.h">
-      <Filter>Header Files\State\Battle</Filter>
-    </ClInclude>
-    <ClInclude Include="BattlePattern.h">
-      <Filter>Header Files\State\Battle</Filter>
     </ClInclude>
     <ClInclude Include="FilePath.h">
       <Filter>Header Files\File</Filter>
@@ -563,9 +416,6 @@
     <ClInclude Include="Line3D.h">
       <Filter>Header Files\Position</Filter>
     </ClInclude>
-    <ClInclude Include="Join.h">
-      <Filter>Header Files\Helper</Filter>
-    </ClInclude>
     <ClInclude Include="Vector3D.h">
       <Filter>Header Files\Position</Filter>
     </ClInclude>
@@ -581,71 +431,14 @@
     <ClInclude Include="GridSize.h">
       <Filter>Header Files\Position</Filter>
     </ClInclude>
-    <ClInclude Include="ObjectHandle.h">
-      <Filter>Header Files\GameData</Filter>
-    </ClInclude>
-    <ClInclude Include="Ability.h">
-      <Filter>Header Files\Registry Objects\Abilities</Filter>
-    </ClInclude>
-    <ClInclude Include="ItemStack.h">
-      <Filter>Header Files\Registry Objects\Item</Filter>
-    </ClInclude>
-    <ClInclude Include="ItemRecipe.h">
-      <Filter>Header Files\Registry Objects\Item</Filter>
-    </ClInclude>
-    <ClInclude Include="Quest.h">
-      <Filter>Header Files\Registry Objects\Quests</Filter>
-    </ClInclude>
-    <ClInclude Include="ItemStash.h">
-      <Filter>Header Files\Registry Objects\Item</Filter>
-    </ClInclude>
-    <ClInclude Include="Acumen.h">
-      <Filter>Header Files\GameData\Attributes</Filter>
-    </ClInclude>
-    <ClInclude Include="Defense.h">
-      <Filter>Header Files\GameData\Combat</Filter>
-    </ClInclude>
-    <ClInclude Include="Proficiency.h">
-      <Filter>Header Files\GameData\Attributes</Filter>
-    </ClInclude>
     <ClInclude Include="Tag.h">
       <Filter>Header Files\GameData</Filter>
     </ClInclude>
     <ClInclude Include="OperatorSelector.h">
       <Filter>Header Files\Helper</Filter>
     </ClInclude>
-    <ClInclude Include="DataStandard.h">
-      <Filter>Header Files\GameData</Filter>
-    </ClInclude>
-    <ClInclude Include="Attribute.h">
-      <Filter>Header Files\GameData\Attributes</Filter>
-    </ClInclude>
-    <ClInclude Include="GlobalContext.h">
-      <Filter>Header Files\GameData</Filter>
-    </ClInclude>
-    <ClInclude Include="ResourceAttribute.h">
-      <Filter>Header Files\GameData\Attributes</Filter>
-    </ClInclude>
-    <ClInclude Include="StatAttribute.h">
-      <Filter>Header Files\GameData\Attributes</Filter>
-    </ClInclude>
-    <ClInclude Include="StatusEffectInstance.h">
-      <Filter>Header Files\Registry Objects\StatusEffect</Filter>
-    </ClInclude>
-    <ClInclude Include="CombatTransaction.h">
-      <Filter>Header Files\GameData\Combat</Filter>
-    </ClInclude>
-    <ClInclude Include="CombatEffectiveness.h">
-      <Filter>Header Files\GameData\Attributes</Filter>
-    </ClInclude>
     <ClInclude Include="WorldStart.h">
       <Filter>Header Files\World</Filter>
-    </ClInclude>
-    <ClInclude Include="MovementRange.h">
-      <Filter>Header Files\GameData</Filter>
-    </ClInclude>
-    <ClInclude Include="Beam.h">
-      <Filter>Header Files\GameData\Combat</Filter>
     </ClInclude>
     <ClInclude Include="Sprite.h">
       <Filter>Header Files\Senses</Filter>
@@ -656,29 +449,11 @@
     <ClInclude Include="NameValuePair.h">
       <Filter>Header Files\Helper</Filter>
     </ClInclude>
-    <ClInclude Include="StatusEffect.h">
-      <Filter>Header Files\Registry Objects\StatusEffect</Filter>
-    </ClInclude>
-    <ClInclude Include="CharacterClass.h">
-      <Filter>Header Files\Registry Objects\Character Class</Filter>
-    </ClInclude>
-    <ClInclude Include="Item.h">
-      <Filter>Header Files\Registry Objects\Item</Filter>
-    </ClInclude>
-    <ClInclude Include="AttackRange.h">
-      <Filter>Header Files\GameData\Combat</Filter>
-    </ClInclude>
-    <ClInclude Include="BattleActionAbility.h">
-      <Filter>Header Files\State\Battle</Filter>
-    </ClInclude>
     <ClInclude Include="TimeValue.h">
       <Filter>Header Files\Time</Filter>
     </ClInclude>
     <ClInclude Include="StringUtility.h">
       <Filter>Header Files\Helper</Filter>
-    </ClInclude>
-    <ClInclude Include="Spell.h">
-      <Filter>Header Files\Registry Objects\Spells</Filter>
     </ClInclude>
     <ClInclude Include="Asset.h">
       <Filter>Header Files\Assets</Filter>
@@ -716,12 +491,6 @@
     <ClInclude Include="RelativeFilePath.h">
       <Filter>Header Files\File</Filter>
     </ClInclude>
-    <ClInclude Include="BattleTeamID.h">
-      <Filter>Header Files\State\Battle</Filter>
-    </ClInclude>
-    <ClInclude Include="BattleSquadID.h">
-      <Filter>Header Files\State\Battle</Filter>
-    </ClInclude>
     <ClInclude Include="ActionComponent.h">
       <Filter>Header Files\Entities\Components\Derived</Filter>
     </ClInclude>
@@ -731,13 +500,7 @@
     <ClInclude Include="AvatarComponent.h">
       <Filter>Header Files\Entities\Components\Derived</Filter>
     </ClInclude>
-    <ClInclude Include="CombatComponent.h">
-      <Filter>Header Files\Entities\Components\Derived</Filter>
-    </ClInclude>
     <ClInclude Include="GeneralComponent.h">
-      <Filter>Header Files\Entities\Components\Derived</Filter>
-    </ClInclude>
-    <ClInclude Include="InventoryComponent.h">
       <Filter>Header Files\Entities\Components\Derived</Filter>
     </ClInclude>
     <ClInclude Include="MovementComponent.h">
@@ -890,9 +653,6 @@
     <ClInclude Include="SenseComponent.h">
       <Filter>Header Files\Entities\Components\Derived</Filter>
     </ClInclude>
-    <ClInclude Include="QuestPart.h">
-      <Filter>Header Files\Registry Objects\Quests</Filter>
-    </ClInclude>
     <ClInclude Include="ObjectFactory.h">
       <Filter>Header Files\Object</Filter>
     </ClInclude>
@@ -944,54 +704,6 @@
     <ClInclude Include="MusicSystem.h">
       <Filter>Header Files\Sound</Filter>
     </ClInclude>
-    <ClInclude Include="SpeechController.h">
-      <Filter>Header Files\Speech</Filter>
-    </ClInclude>
-    <ClInclude Include="RegistryObject.h">
-      <Filter>Header Files\Registry Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="RegistryObjectFactory.h">
-      <Filter>Header Files\Registry Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="RegistryObjectSystem.h">
-      <Filter>Header Files\Registry Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="AbilityFactory.h">
-      <Filter>Header Files\Registry Objects\Abilities</Filter>
-    </ClInclude>
-    <ClInclude Include="AbilitySystem.h">
-      <Filter>Header Files\Registry Objects\Abilities</Filter>
-    </ClInclude>
-    <ClInclude Include="CharacterClassFactory.h">
-      <Filter>Header Files\Registry Objects\Character Class</Filter>
-    </ClInclude>
-    <ClInclude Include="CharacterClassSystem.h">
-      <Filter>Header Files\Registry Objects\Character Class</Filter>
-    </ClInclude>
-    <ClInclude Include="ItemFactory.h">
-      <Filter>Header Files\Registry Objects\Item</Filter>
-    </ClInclude>
-    <ClInclude Include="ItemSystem.h">
-      <Filter>Header Files\Registry Objects\Item</Filter>
-    </ClInclude>
-    <ClInclude Include="QuestFactory.h">
-      <Filter>Header Files\Registry Objects\Quests</Filter>
-    </ClInclude>
-    <ClInclude Include="QuestSystem.h">
-      <Filter>Header Files\Registry Objects\Quests</Filter>
-    </ClInclude>
-    <ClInclude Include="SpellFactory.h">
-      <Filter>Header Files\Registry Objects\Spells</Filter>
-    </ClInclude>
-    <ClInclude Include="SpellSystem.h">
-      <Filter>Header Files\Registry Objects\Spells</Filter>
-    </ClInclude>
-    <ClInclude Include="StatusEffectFactory.h">
-      <Filter>Header Files\Registry Objects\StatusEffect</Filter>
-    </ClInclude>
-    <ClInclude Include="StatusEffectSystem.h">
-      <Filter>Header Files\Registry Objects\StatusEffect</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\AngelScript\sdk\add_on\scriptstdstring\scriptstdstring.h">
       <Filter>Header Files\AngelScript\Addon</Filter>
     </ClInclude>
@@ -1035,18 +747,6 @@
       <Filter>Header Files\Events</Filter>
     </ClInclude>
     <ClInclude Include="GameState.h">
-      <Filter>Header Files\State</Filter>
-    </ClInclude>
-    <ClInclude Include="CancelMenuState.h">
-      <Filter>Header Files\State</Filter>
-    </ClInclude>
-    <ClInclude Include="ControlsState.h">
-      <Filter>Header Files\State</Filter>
-    </ClInclude>
-    <ClInclude Include="MainMenuState.h">
-      <Filter>Header Files\State</Filter>
-    </ClInclude>
-    <ClInclude Include="OptionsState.h">
       <Filter>Header Files\State</Filter>
     </ClInclude>
     <ClInclude Include="ObjectManagerFactory.h">
@@ -1313,9 +1013,6 @@
     <ClInclude Include="Pathfinder.h">
       <Filter>Header Files\Position</Filter>
     </ClInclude>
-    <ClInclude Include="GameDialogSystem.h">
-      <Filter>Header Files\GUI</Filter>
-    </ClInclude>
     <ClInclude Include="ModulatorInterpolation.h">
       <Filter>Header Files\Modulators\Interpolation</Filter>
     </ClInclude>
@@ -1436,45 +1133,21 @@
     <ClInclude Include="NullFileManager.h">
       <Filter>Header Files\File</Filter>
     </ClInclude>
+    <ClInclude Include="FileName.h">
+      <Filter>Header Files\File</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Battle.cpp">
-      <Filter>Source Files\State\Battle</Filter>
-    </ClCompile>
     <ClCompile Include="Field.cpp">
       <Filter>Source Files\World\Field</Filter>
     </ClCompile>
     <ClCompile Include="FieldDestination.cpp">
       <Filter>Source Files\World\Field</Filter>
     </ClCompile>
-    <ClCompile Include="ItemDrop.cpp">
-      <Filter>Source Files\RegistryObjects\Item</Filter>
-    </ClCompile>
     <ClCompile Include="Tile.cpp">
       <Filter>Source Files\Tile</Filter>
     </ClCompile>
-    <ClCompile Include="ContextMenu.cpp">
-      <Filter>Source Files\GUI\ContextMenus</Filter>
-    </ClCompile>
-    <ClCompile Include="ItemContextMenu.cpp">
-      <Filter>Source Files\GUI\ContextMenus</Filter>
-    </ClCompile>
-    <ClCompile Include="SpellContextMenu.cpp">
-      <Filter>Source Files\GUI\ContextMenus</Filter>
-    </ClCompile>
-    <ClCompile Include="DescriptionBox.cpp">
-      <Filter>Source Files\GUI\Description Boxes</Filter>
-    </ClCompile>
-    <ClCompile Include="ItemDescriptionBox.cpp">
-      <Filter>Source Files\GUI\Description Boxes</Filter>
-    </ClCompile>
-    <ClCompile Include="SpellDescriptionBox.cpp">
-      <Filter>Source Files\GUI\Description Boxes</Filter>
-    </ClCompile>
     <ClCompile Include="FontDefines.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="WidgetSetups.cpp">
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
     <ClCompile Include="Direction.cpp">
@@ -1485,12 +1158,6 @@
     </ClCompile>
     <ClCompile Include="StateGui.cpp">
       <Filter>Source Files\State</Filter>
-    </ClCompile>
-    <ClCompile Include="Shop.cpp">
-      <Filter>Source Files\Speech</Filter>
-    </ClCompile>
-    <ClCompile Include="StatusScreen.cpp">
-      <Filter>Source Files\GUI\Status Screen</Filter>
     </ClCompile>
     <ClCompile Include="DXAudio.cpp">
       <Filter>Source Files\Sound</Filter>
@@ -1513,26 +1180,8 @@
     <ClCompile Include="Buffer.cpp">
       <Filter>Source Files\Helper</Filter>
     </ClCompile>
-    <ClCompile Include="AguiSpriteFactory.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
     <ClCompile Include="EntityAISystem.cpp">
       <Filter>Source Files\Entities\Systems</Filter>
-    </ClCompile>
-    <ClCompile Include="BattleCharacter.cpp">
-      <Filter>Source Files\State\Battle</Filter>
-    </ClCompile>
-    <ClCompile Include="BattleActionManager.cpp">
-      <Filter>Source Files\State\Battle</Filter>
-    </ClCompile>
-    <ClCompile Include="BattleActionAttack.cpp">
-      <Filter>Source Files\State\Battle</Filter>
-    </ClCompile>
-    <ClCompile Include="BattleActionMovement.cpp">
-      <Filter>Source Files\State\Battle</Filter>
-    </ClCompile>
-    <ClCompile Include="BattleActionPlacement.cpp">
-      <Filter>Source Files\State\Battle</Filter>
     </ClCompile>
     <ClCompile Include="FilePath.cpp">
       <Filter>Source Files\File</Filter>
@@ -1594,47 +1243,8 @@
     <ClCompile Include="RenderFragmentGrid.cpp">
       <Filter>Source Files\Render</Filter>
     </ClCompile>
-    <ClCompile Include="Ability.cpp">
-      <Filter>Source Files\RegistryObjects\Abilities</Filter>
-    </ClCompile>
-    <ClCompile Include="ItemStack.cpp">
-      <Filter>Source Files\RegistryObjects\Item</Filter>
-    </ClCompile>
-    <ClCompile Include="ItemRecipe.cpp">
-      <Filter>Source Files\RegistryObjects\Item</Filter>
-    </ClCompile>
-    <ClCompile Include="Quest.cpp">
-      <Filter>Source Files\RegistryObjects\Quests</Filter>
-    </ClCompile>
-    <ClCompile Include="Acumen.cpp">
-      <Filter>Source Files\GameData\Attributes</Filter>
-    </ClCompile>
-    <ClCompile Include="Proficiency.cpp">
-      <Filter>Source Files\GameData\Attributes</Filter>
-    </ClCompile>
-    <ClCompile Include="ResourceAttribute.cpp">
-      <Filter>Source Files\GameData\Attributes</Filter>
-    </ClCompile>
-    <ClCompile Include="StatAttribute.cpp">
-      <Filter>Source Files\GameData\Attributes</Filter>
-    </ClCompile>
-    <ClCompile Include="StatusEffectInstance.cpp">
-      <Filter>Source Files\RegistryObjects\StatusEffect</Filter>
-    </ClCompile>
-    <ClCompile Include="CombatTransaction.cpp">
-      <Filter>Source Files\GameData\Combat</Filter>
-    </ClCompile>
-    <ClCompile Include="CombatEffectiveness.cpp">
-      <Filter>Source Files\GameData\Attributes</Filter>
-    </ClCompile>
     <ClCompile Include="WorldStart.cpp">
       <Filter>Source Files\World</Filter>
-    </ClCompile>
-    <ClCompile Include="Beam.cpp">
-      <Filter>Source Files\GameData\Combat</Filter>
-    </ClCompile>
-    <ClCompile Include="RegistryObject.cpp">
-      <Filter>Source Files\RegistryObjects</Filter>
     </ClCompile>
     <ClCompile Include="Sprite.cpp">
       <Filter>Source Files\Senses</Filter>
@@ -1645,29 +1255,8 @@
     <ClCompile Include="NameValuePair.cpp">
       <Filter>Source Files\Helper</Filter>
     </ClCompile>
-    <ClCompile Include="StatusEffect.cpp">
-      <Filter>Source Files\RegistryObjects\StatusEffect</Filter>
-    </ClCompile>
-    <ClCompile Include="CharacterClass.cpp">
-      <Filter>Source Files\RegistryObjects\Character Class</Filter>
-    </ClCompile>
-    <ClCompile Include="Item.cpp">
-      <Filter>Source Files\RegistryObjects\Item</Filter>
-    </ClCompile>
-    <ClCompile Include="BattleActionAbility.cpp">
-      <Filter>Source Files\State\Battle</Filter>
-    </ClCompile>
-    <ClCompile Include="GlobalContext.cpp">
-      <Filter>Source Files\GameData</Filter>
-    </ClCompile>
-    <ClCompile Include="DataStandard.cpp">
-      <Filter>Source Files\GameData</Filter>
-    </ClCompile>
     <ClCompile Include="StringUtility.cpp">
       <Filter>Source Files\Helper</Filter>
-    </ClCompile>
-    <ClCompile Include="Spell.cpp">
-      <Filter>Source Files\RegistryObjects\Spell</Filter>
     </ClCompile>
     <ClCompile Include="Asset.cpp">
       <Filter>Source Files\Assets</Filter>
@@ -1699,9 +1288,6 @@
     <ClCompile Include="RelativeFilePath.cpp">
       <Filter>Source Files\File</Filter>
     </ClCompile>
-    <ClCompile Include="Cursor.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
     <ClCompile Include="SenseComponent.cpp">
       <Filter>Source Files\Entities\Components\Derived</Filter>
     </ClCompile>
@@ -1711,16 +1297,10 @@
     <ClCompile Include="GeneralComponent.cpp">
       <Filter>Source Files\Entities\Components\Derived</Filter>
     </ClCompile>
-    <ClCompile Include="InventoryComponent.cpp">
-      <Filter>Source Files\Entities\Components\Derived</Filter>
-    </ClCompile>
     <ClCompile Include="AIComponent.cpp">
       <Filter>Source Files\Entities\Components\Derived</Filter>
     </ClCompile>
     <ClCompile Include="AvatarComponent.cpp">
-      <Filter>Source Files\Entities\Components\Derived</Filter>
-    </ClCompile>
-    <ClCompile Include="CombatComponent.cpp">
       <Filter>Source Files\Entities\Components\Derived</Filter>
     </ClCompile>
     <ClCompile Include="ActionComponent.cpp">
@@ -1783,9 +1363,6 @@
     <ClCompile Include="ScriptPersistence.cpp">
       <Filter>Source Files\Assets\Script</Filter>
     </ClCompile>
-    <ClCompile Include="QuestPart.cpp">
-      <Filter>Source Files\RegistryObjects\Quests</Filter>
-    </ClCompile>
     <ClCompile Include="ObjectFactoryBase.cpp">
       <Filter>Source Files\Object</Filter>
     </ClCompile>
@@ -1818,45 +1395,6 @@
     </ClCompile>
     <ClCompile Include="MusicSystem.cpp">
       <Filter>Source Files\Sound</Filter>
-    </ClCompile>
-    <ClCompile Include="SpeechController.cpp">
-      <Filter>Source Files\Speech</Filter>
-    </ClCompile>
-    <ClCompile Include="AbilityFactory.cpp">
-      <Filter>Source Files\RegistryObjects\Abilities</Filter>
-    </ClCompile>
-    <ClCompile Include="AbilitySystem.cpp">
-      <Filter>Source Files\RegistryObjects\Abilities</Filter>
-    </ClCompile>
-    <ClCompile Include="CharacterClassFactory.cpp">
-      <Filter>Source Files\RegistryObjects\Character Class</Filter>
-    </ClCompile>
-    <ClCompile Include="CharacterClassSystem.cpp">
-      <Filter>Source Files\RegistryObjects\Character Class</Filter>
-    </ClCompile>
-    <ClCompile Include="ItemFactory.cpp">
-      <Filter>Source Files\RegistryObjects\Item</Filter>
-    </ClCompile>
-    <ClCompile Include="ItemSystem.cpp">
-      <Filter>Source Files\RegistryObjects\Item</Filter>
-    </ClCompile>
-    <ClCompile Include="QuestFactory.cpp">
-      <Filter>Source Files\RegistryObjects\Quests</Filter>
-    </ClCompile>
-    <ClCompile Include="QuestSystem.cpp">
-      <Filter>Source Files\RegistryObjects\Quests</Filter>
-    </ClCompile>
-    <ClCompile Include="SpellFactory.cpp">
-      <Filter>Source Files\RegistryObjects\Spell</Filter>
-    </ClCompile>
-    <ClCompile Include="SpellSystem.cpp">
-      <Filter>Source Files\RegistryObjects\Spell</Filter>
-    </ClCompile>
-    <ClCompile Include="StatusEffectFactory.cpp">
-      <Filter>Source Files\RegistryObjects\StatusEffect</Filter>
-    </ClCompile>
-    <ClCompile Include="StatusEffectSystem.cpp">
-      <Filter>Source Files\RegistryObjects\StatusEffect</Filter>
     </ClCompile>
     <ClCompile Include="AngelScriptEvent.cpp">
       <Filter>Source Files\AngelScript</Filter>
@@ -1912,19 +1450,7 @@
     <ClCompile Include="BoundEventSubscriberList.cpp">
       <Filter>Source Files\Events</Filter>
     </ClCompile>
-    <ClCompile Include="CancelMenuState.cpp">
-      <Filter>Source Files\State</Filter>
-    </ClCompile>
-    <ClCompile Include="ControlsState.cpp">
-      <Filter>Source Files\State</Filter>
-    </ClCompile>
     <ClCompile Include="GameState.cpp">
-      <Filter>Source Files\State</Filter>
-    </ClCompile>
-    <ClCompile Include="MainMenuState.cpp">
-      <Filter>Source Files\State</Filter>
-    </ClCompile>
-    <ClCompile Include="OptionsState.cpp">
       <Filter>Source Files\State</Filter>
     </ClCompile>
     <ClCompile Include="ObjectManagerFactory.cpp">
@@ -2104,9 +1630,6 @@
     <ClCompile Include="Pathfinder.cpp">
       <Filter>Source Files\Position</Filter>
     </ClCompile>
-    <ClCompile Include="GameDialogSystem.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
     <ClCompile Include="ModulatorInterpolation.cpp">
       <Filter>Source Files\Modulators\Interpolation</Filter>
     </ClCompile>
@@ -2195,6 +1718,9 @@
       <Filter>Source Files\Window</Filter>
     </ClCompile>
     <ClCompile Include="NullFileManager.cpp">
+      <Filter>Source Files\File</Filter>
+    </ClCompile>
+    <ClCompile Include="FileName.cpp">
       <Filter>Source Files\File</Filter>
     </ClCompile>
   </ItemGroup>

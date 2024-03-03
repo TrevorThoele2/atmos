@@ -14,7 +14,7 @@ namespace Atmos
     InitializationFileSystem::InitializationFileSystem(ObjectManager& manager) : ObjectSystem(manager)
     {}
 
-    InitializationFileSystem::InitializationFileSystem(const ::Inscription::Table<InitializationFileSystem>& table) :
+    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(InitializationFileSystem) :
         INSCRIPTION_TABLE_GET_BASE(ObjectSystem)
     {}
 
@@ -24,9 +24,9 @@ namespace Atmos
         ::Inscription::OutputTextFile file(filePath);
         file.ClearFile();
 
-        file << graphics.FileString();
-        file << sound.FileString();
-        file << controls.FileString();
+        file.WriteData(graphics.FileString());
+        file.WriteData(sound.FileString());
+        file.WriteData(controls.FileString());
     }
 
     FilePath InitializationFileSystem::CreateFilePath() const
@@ -76,7 +76,7 @@ namespace Atmos
 
         while (!file.IsAtEndOfFile())
         {
-            line = file.GetLine();
+            line = file.ReadLine();
             if (IsAllWhitespace(line))
                 continue;
 
@@ -109,14 +109,14 @@ namespace Atmos
 
 namespace Inscription
 {
-    INSCRIPTION_INSCRIPTER_DEFINE_TABLE(::Atmos::InitializationFileSystem)
+    INSCRIPTION_BINARY_INSCRIPTER_DEFINE_TABLE(::Atmos::InitializationFileSystem)
     {
-        INSCRIPTION_INSCRIPTER_CREATE_TABLE;
+        INSCRIPTION_BINARY_INSCRIPTER_CREATE_TABLE;
 
         INSCRIPTION_TABLE_ADD_BASE(::Atmos::ObjectSystem);
 
         INSCRIPTION_INSCRIPTER_RETURN_TABLE;
     }
 
-    INSCRIPTION_DEFINE_SIMPLE_CLASS_NAME_RESOLVER(::Atmos::InitializationFileSystem, "InitializationFileSystem");
+    INSCRIPTION_BINARY_DEFINE_SIMPLE_CLASS_NAME_RESOLVER(::Atmos::InitializationFileSystem, "InitializationFileSystem");
 }
