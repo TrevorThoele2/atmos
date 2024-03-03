@@ -5,7 +5,7 @@ namespace Inscription
     class BinaryArchive;
 }
 
-namespace Atmos
+namespace Atmos::World::Serialization
 {
     class ArchiveBase
     {

@@ -8,10 +8,13 @@
 
 #include "Serialization.h"
 
-namespace Atmos
+namespace Atmos::Time
 {
     class TimeSystem;
+}
 
+namespace Atmos
+{
     class DebugStatisticsSystem : public ObjectSystem
     {
     public:
@@ -128,7 +131,7 @@ namespace Atmos
             void Start();
             void Calculate();
         private:
-            typedef ExtendedStopwatchAdapter<RealStopwatch> Stopwatch;
+            typedef Time::ExtendedStopwatchAdapter<Time::RealStopwatch> Stopwatch;
             Stopwatch stopwatch;
         private:
             Profiler(ObjectManager& objectManager);
@@ -136,9 +139,9 @@ namespace Atmos
             void ResetAverage();
             void ResetHighest();
 
-            TimeValue QueryElapsed() const;
-            TimeValue GetAverage() const;
-            TimeValue GetHighest() const;
+            Time::Value QueryElapsed() const;
+            Time::Value GetAverage() const;
+            Time::Value GetHighest() const;
         private:
             friend DebugStatisticsSystem;
         };
@@ -163,7 +166,7 @@ namespace Atmos
         void ResetProfilerHighest();
 
         const PageList& GetPageList() const;
-        FpsSystem::Fps Fps();
+        Time::FpsSystem::Fps Fps();
     private:
         void Setup();
     private:
@@ -174,8 +177,8 @@ namespace Atmos
         ProfilerList profilerList;
         void BundleProfilers();
     private:
-        FpsSystem* FindFpsSystem();
-        TimeSystem* FindTimeSystem();
+        Time::FpsSystem* FindFpsSystem();
+        Time::TimeSystem* FindTimeSystem();
     };
 
     template<>
@@ -191,7 +194,7 @@ namespace Inscription
     class Scribe<::Atmos::DebugStatisticsSystem, BinaryArchive> :
         public ObjectSystemScribe<::Atmos::DebugStatisticsSystem, BinaryArchive>
     {
-    public:
-        static void Scriven(ObjectT& object, ArchiveT& archive);
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
     };
 }

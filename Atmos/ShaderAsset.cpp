@@ -2,9 +2,9 @@
 #include "ShaderAsset.h"
 #include <fstream>
 
-namespace Atmos
+namespace Atmos::Asset
 {
-    ShaderAsset::ShaderAsset(ObjectManager& manager, const FileName& fileName, DataPtr&& data) :
+    ShaderAsset::ShaderAsset(ObjectManager& manager, const File::Name& fileName, DataPtr&& data) :
         FileAsset(manager, fileName), data(std::move(data))
     {}
 
@@ -30,8 +30,11 @@ namespace Atmos
         return ObjectTraits<ShaderAsset>::TypeDescription();
     }
 
-    const ObjectTypeName ObjectTraits<ShaderAsset>::typeName = "ShaderAsset";
-
     ShaderAssetData::~ShaderAssetData()
     {}
+}
+
+namespace Atmos
+{
+    const ObjectTypeName ObjectTraits<Asset::ShaderAsset>::typeName = "ShaderAsset";
 }

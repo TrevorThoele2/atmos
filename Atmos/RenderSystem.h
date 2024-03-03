@@ -6,13 +6,14 @@
 
 namespace Atmos
 {
-    class GraphicsSystem;
-    class FragmentSystem;
     class DebugStatisticsSystem;
 }
 
 namespace Atmos::Render
 {
+    class GraphicsSystem;
+    class RenderFragmentSystem;
+
     class RenderSystem : public ObjectSystem
     {
     public:
@@ -25,11 +26,11 @@ namespace Atmos::Render
         Flags<Flag> flags;
     public:
         RenderSystem(ObjectManager& manager);
-    private:
+    protected:
         void WorkImpl() override;
     private:
         GraphicsSystem* FindGraphicsSystem();
-        FragmentSystem* FindRenderFragmentSystem();
+        RenderFragmentSystem* FindRenderFragmentSystem();
         DebugStatisticsSystem* FindDebugStatisticsSystem();
     };
 }
@@ -40,7 +41,7 @@ namespace Inscription
     class Scribe<::Atmos::Render::RenderSystem, BinaryArchive> :
         public ObjectSystemScribe<::Atmos::Render::RenderSystem, BinaryArchive>
     {
-    public:
-        static void Scriven(ObjectT& object, ArchiveT& archive);
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
     };
 }

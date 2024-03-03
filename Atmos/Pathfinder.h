@@ -17,18 +17,18 @@ namespace Atmos
     class Pathfinder : public ObjectSystem
     {
     public:
-        typedef std::stack<GridPosition> TileStack;
+        typedef std::stack<Grid::Position> TileStack;
     public:
         Pathfinder(ObjectManager& manager);
 
-        TileStack FindPath(const GridPosition& start, const GridPosition& finish);
+        TileStack FindPath(const Grid::Position& start, const Grid::Position& finish);
     private:
         class Node
         {
         public:
             typedef unsigned short Cost;
         public:
-            Node(Cost gCost, Cost hCost, const GridPosition& position);
+            Node(Cost gCost, Cost hCost, const Grid::Position& position);
             Node(const Node& arg);
             Node(Node&& arg);
 
@@ -39,7 +39,7 @@ namespace Atmos
             bool operator==(const Node& arg) const;
             bool operator!=(const Node& arg) const;
 
-            const GridPosition& Position() const;
+            const Grid::Position& Position() const;
 
             void ChangeG(Cost to);
             void ChangeH(Cost to);
@@ -58,16 +58,16 @@ namespace Atmos
             // Gcost + heuristic
             Cost fCost;
         private:
-            GridPosition position;
+            Grid::Position position;
         private:
             typedef std::shared_ptr<Node> NodePtr;
             NodePtr parent;
         };
 
         typedef BinaryHeap<Node, std::greater<Node>> NodeHeap;
-        typedef std::unordered_map<GridPosition, Node> NodeMap;
+        typedef std::unordered_map<Grid::Position, Node> NodeMap;
     private:
-        NodeHeap::iterator FindNode(const GridPosition& position, NodeHeap& heap);
+        NodeHeap::iterator FindNode(const Grid::Position& position, NodeHeap& heap);
         void ReconstructPath(TileStack& stack, const Node& end);
         void ClearStack(TileStack& stack);
     };

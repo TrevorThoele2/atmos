@@ -1,6 +1,6 @@
 #include "GraphicsSystem.h"
 
-#include "NullGraphics.h"
+#include "NullGraphicsManager.h"
 
 namespace Atmos::Render
 {
@@ -11,7 +11,7 @@ namespace Atmos::Render
 
 namespace Inscription
 {
-    void Scribe<::Atmos::GraphicsSystem, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
+    void Scribe<::Atmos::Render::GraphicsSystem, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
     {
         BaseScriven<::Atmos::ObjectSystem>(object, archive);
     }

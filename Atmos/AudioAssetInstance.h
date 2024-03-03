@@ -4,7 +4,7 @@
 
 #include "Volume.h"
 
-namespace Atmos
+namespace Atmos::Asset
 {
     class AudioAsset;
     class AudioAssetInstanceData;
@@ -12,7 +12,7 @@ namespace Atmos
     class AudioAssetInstance
     {
     public:
-        typedef StoredProperty<Volume> VolumeProperty;
+        typedef StoredProperty<Audio::Volume> VolumeProperty;
         VolumeProperty volume;
     public:
         typedef StoredProperty<bool> LoopProperty;
@@ -34,7 +34,7 @@ namespace Atmos
     private:
         void SubscribeToProperties();
     private:
-        void OnVolumeChanged(Volume newValue);
+        void OnVolumeChanged(Audio::Volume newValue);
         void OnLoopChanged(bool newValue);
     };
 
@@ -46,7 +46,7 @@ namespace Atmos
         virtual std::unique_ptr<AudioAssetInstanceData> Clone() const = 0;
         virtual void Start() = 0;
         virtual void Stop() = 0;
-        virtual void SetVolume(Volume set) = 0;
+        virtual void SetVolume(Audio::Volume set) = 0;
         virtual void Loop(bool set) = 0;
         virtual void Resubmit() = 0;
     private:

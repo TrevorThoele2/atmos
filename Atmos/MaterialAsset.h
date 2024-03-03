@@ -12,7 +12,7 @@
 
 #include "ObjectScribe.h"
 
-namespace Atmos
+namespace Atmos::Asset
 {
     class MaterialAsset : public Asset
     {
@@ -64,24 +64,28 @@ namespace Atmos
         void SubscribeToProperties();
         void OnImagePropertyChanged(TypedObjectReference<ImageAsset> reference);
     };
+}
 
+namespace Atmos
+{
     template<>
-    struct ObjectTraits<MaterialAsset> : ObjectTraitsBase<MaterialAsset>
+    struct ObjectTraits<Asset::MaterialAsset> : ObjectTraitsBase<Asset::MaterialAsset>
     {
         static const ObjectTypeName typeName;
-        static constexpr ObjectTypeList<Asset> bases = {};
+        static constexpr ObjectTypeList<Asset::Asset> bases = {};
     };
 }
 
 namespace Inscription
 {
     template<>
-    struct TableData<::Atmos::MaterialAsset, BinaryArchive> :
-        public ObjectTableDataBase<::Atmos::MaterialAsset, BinaryArchive>
+    struct TableData<::Atmos::Asset::MaterialAsset, BinaryArchive> :
+        public ObjectTableDataBase<::Atmos::Asset::MaterialAsset, BinaryArchive>
     {};
 
     template<>
-    class Scribe<::Atmos::MaterialAsset, BinaryArchive> : public ObjectScribe<::Atmos::MaterialAsset, BinaryArchive>
+    class Scribe<::Atmos::Asset::MaterialAsset, BinaryArchive> :
+        public ObjectScribe<::Atmos::Asset::MaterialAsset, BinaryArchive>
     {
     public:
         class Table : public TableBase

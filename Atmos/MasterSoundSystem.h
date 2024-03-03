@@ -4,7 +4,7 @@
 
 #include "Volume.h"
 
-namespace Atmos
+namespace Atmos::Audio
 {
     class MasterSoundSystem : public ObjectSystem
     {
@@ -14,20 +14,20 @@ namespace Atmos
         // Value between 0 and 100
         void SetMasterVolume(Volume set);
         Volume GetMasterVolume();
+    protected:
+        void InitializeImpl() override;
     private:
         Volume masterVolume;
-    private:
-        void InitializeImpl() override;
     };
 }
 
 namespace Inscription
 {
     template<>
-    class Scribe<::Atmos::MasterSoundSystem, BinaryArchive> :
-        public ObjectSystemScribe<::Atmos::MasterSoundSystem, BinaryArchive>
+    class Scribe<::Atmos::Audio::MasterSoundSystem, BinaryArchive> :
+        public ObjectSystemScribe<::Atmos::Audio::MasterSoundSystem, BinaryArchive>
     {
-    public:
-        static void Scriven(ObjectT& object, ArchiveT& archive);
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
     };
 }

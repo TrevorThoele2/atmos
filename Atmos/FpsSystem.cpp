@@ -1,4 +1,3 @@
-
 #include "FpsSystem.h"
 
 #include "ObjectManager.h"
@@ -7,7 +6,7 @@
 
 #include "FrameStopwatch.h"
 
-namespace Atmos
+namespace Atmos::Time
 {
     FpsSystem::FpsSystem(ObjectManager& manager) : ObjectSystem(manager), stopwatch(manager)
     {}
@@ -16,9 +15,9 @@ namespace Atmos
     {
         currentFpsLimit = fps;
         if (currentFpsLimit == 0)
-            stopwatch.SetGoal(TimeValue::Value(0));
+            stopwatch.SetGoal(Value::Number(0));
         else
-            stopwatch.SetGoal(TimeValue::Value(1) / TimeValue::Value(currentFpsLimit));
+            stopwatch.SetGoal(Value::Number(1) / Value::Number(currentFpsLimit));
     }
 
     FpsSystem::Fps FpsSystem::GetFpsLimit()
@@ -63,17 +62,17 @@ namespace Atmos
         return stopwatch;
     }
 
-    TimeValue FpsSystem::GetFrameStart()
+    Value FpsSystem::GetFrameStart()
     {
         return start;
     }
 
-    TimeValue FpsSystem::GetFrameEnd()
+    Value FpsSystem::GetFrameEnd()
     {
         return end;
     }
 
-    TimeValue FpsSystem::GetLastFrameTime()
+    Value FpsSystem::GetLastFrameTime()
     {
         return stopwatch.QueryElapsed();
     }
@@ -117,7 +116,7 @@ namespace Atmos
     {
         typedef ExtendedStopwatchAdapter<FrameStopwatch> FpsStopwatch;
         // All time values are in nanoseconds, so this needs to initialize from a seconds time value
-        static FpsStopwatch fpsTimer(*Manager(), TimeValue(TimeValue::Value(1, 0)));
+        static FpsStopwatch fpsTimer(*Manager(), Value(Value::Number(1, 0)));
         static unsigned int count = 0;
 
         if (fpsTimer.HasReachedGoal())
@@ -137,7 +136,7 @@ namespace Atmos
 
 namespace Inscription
 {
-    void Scribe<::Atmos::FpsSystem, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
+    void Scribe<::Atmos::Time::FpsSystem, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
     {
         BaseScriven<::Atmos::ObjectSystem>(object, archive);
         archive(object.stopwatch);

@@ -42,11 +42,16 @@ namespace Atmos
 
 namespace Inscription
 {
-    void Scribe<::Atmos::Size2D, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
+    void Scribe<::Atmos::Size2D, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
     {
         archive(object.baseWidth);
         archive(object.baseHeight);
         archive(object.widthScaler);
         archive(object.heightScaler);
+    }
+
+    void Scribe<::Atmos::Size2D, BinaryArchive>::ConstructImplementation(ObjectT* storage, ArchiveT& archive)
+    {
+        DoBasicConstruction(storage, archive);
     }
 }

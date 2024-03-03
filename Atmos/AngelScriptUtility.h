@@ -4,7 +4,7 @@
 
 class asIScriptContext;
 
-namespace Atmos::Scripting
+namespace Atmos::Script
 {
     typedef unsigned int ParameterIndex;
 

@@ -5,21 +5,38 @@
 #include "FilePath.h"
 #include "String.h"
 
-namespace Atmos
+#include "Serialization.h"
+
+namespace Atmos::File
 {
     class FileManager
     {
     public:
         virtual ~FileManager() = 0;
 
-        virtual void MakeDirectory(const FilePath& path) = 0;
-        virtual bool RelocateFile(const FilePath& from, const FilePath& to) = 0;
-        virtual bool RemoveFile(const FilePath& remove) = 0;
+        virtual void MakeDirectory(const Path& path) = 0;
+        virtual bool RelocateFile(const Path& from, const Path& to) = 0;
+        virtual bool RemoveFile(const Path& remove) = 0;
 
-        virtual FilePath ExePath() const = 0;
-        virtual FilePath DataPath() const = 0;
-        virtual FilePath TemporaryDirectoryPath() const = 0;
+        virtual Path ExePath() const = 0;
+        virtual Path DataPath() const = 0;
+        virtual Path TemporaryDirectoryPath() const = 0;
         virtual size_t MaxPathLength() const = 0;
         virtual String FileSeparator() const = 0;
+    };
+}
+
+namespace Inscription
+{
+    template<>
+    class Scribe<::Atmos::File::FileManager, BinaryArchive> :
+        public TableScribe<::Atmos::File::FileManager, BinaryArchive>
+    {
+    public:
+        class Table : public TableBase
+        {
+        protected:
+            void ConstructImplementation(ObjectT* storage, ArchiveT& archive) override;
+        };
     };
 }

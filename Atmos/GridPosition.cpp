@@ -1,142 +1,145 @@
 #include <functional>
 
 #include "GridPosition.h"
-#include "GridSize.h"
+#include "TileSize.h"
 #include "Math.h"
 
 #include <Inscription\Scribe.h>
 
-namespace Atmos
+namespace Atmos::Grid
 {
-    GridPosition::GridPosition(Value x, Value y, Value z) :
+    Position::Position(Value x, Value y, Value z) :
         x(x), y(y), z(z)
     {}
 
-    GridPosition::GridPosition(const GridPosition& source, const RelativeGridPosition& offset) :
+    Position::Position(const Position& source, const RelativePosition& offset) :
         x(source.x + offset.x), y(source.y + offset.y), z(source.z + offset.z)
     {}
 
-    GridPosition::GridPosition(const Position2D& arg, Value z) :
+    Position::Position(const Position2D& arg, Value z) :
         x(DimensionFromPosition(arg.x)), y(DimensionFromPosition(arg.y)), z(z)
     {}
 
-    GridPosition::GridPosition(const Position3D& pos) :
+    Position::Position(const Position3D& pos) :
         x(DimensionFromPosition(pos.x)), y(DimensionFromPosition(pos.y)), z(DimensionFromPosition(pos.z))
     {}
 
-    bool GridPosition::operator==(const GridPosition& arg) const
+    bool Position::operator==(const Position& arg) const
     {
         return x == arg.x && y == arg.y && z == arg.z;
     }
 
-    bool GridPosition::operator!=(const GridPosition& arg) const
+    bool Position::operator!=(const Position& arg) const
     {
         return !(*this == arg);
     }
 
-    void GridPosition::Edit(Value x, Value y, Value z)
+    void Position::Edit(Value x, Value y, Value z)
     {
         this->x = x;
         this->y = y;
         this->z = z;
     }
 
-    void GridPosition::Edit(const RelativeGridPosition& offset)
+    void Position::Edit(const RelativePosition& offset)
     {
         x += offset.x;
         y += offset.y;
         z += offset.z;
     }
 
-    void GridPosition::Edit(const GridPosition& source, const RelativeGridPosition& offset)
+    void Position::Edit(const Position& source, const RelativePosition& offset)
     {
         x = source.x + offset.x;
         y = source.y + offset.y;
         z = source.z + offset.z;
     }
 
-    void GridPosition::Edit(const Position2D& pos, Value z)
+    void Position::Edit(const Position2D& pos, Value z)
     {
         x = DimensionFromPosition(pos.x);
         y = DimensionFromPosition(pos.y);
         this->z = z;
     }
 
-    void GridPosition::Edit(const Position3D& pos)
+    void Position::Edit(const Position3D& pos)
     {
         x = DimensionFromPosition(pos.x);
         y = DimensionFromPosition(pos.y);
         z = DimensionFromPosition(pos.z);
     }
 
-    void GridPosition::SetX(Value set)
+    void Position::SetX(Value set)
     {
         x = set;
     }
 
-    void GridPosition::SetY(Value set)
+    void Position::SetY(Value set)
     {
         y = set;
     }
 
-    void GridPosition::SetZ(Value set)
+    void Position::SetZ(Value set)
     {
         z = set;
     }
 
-    GridPosition::operator Position2D() const
+    Position::operator Position2D() const
     {
         return Position2D(DimensionToPosition(x), DimensionToPosition(y));
     }
 
-    GridPosition::operator Position3D() const
+    Position::operator Position3D() const
     {
         return Position3D(DimensionToPosition(x), DimensionToPosition(y), DimensionToPosition(z));
     }
 
-    GridPosition::Value GridPosition::GetX() const
+    Position::Value Position::GetX() const
     {
         return x;
     }
 
-    GridPosition::Value GridPosition::GetY() const
+    Position::Value Position::GetY() const
     {
         return y;
     }
 
-    GridPosition::Value GridPosition::GetZ() const
+    Position::Value Position::GetZ() const
     {
         return z;
     }
 
-    GridPosition GridPosition::FindOffset(const RelativeGridPosition& offset) const
+    Position Position::FindOffset(const RelativePosition& offset) const
     {
-        GridPosition ret;
+        Position ret;
         ret.Edit(*this, offset);
         return ret;
     }
 
-    GridPosition::Value GridPosition::FindXDistance(const GridPosition& destination) const
+    Position::Value Position::FindXDistance(const Position& destination) const
     {
         return destination.x - x;
     }
 
-    GridPosition::Value GridPosition::FindYDistance(const GridPosition& destination) const
+    Position::Value Position::FindYDistance(const Position& destination) const
     {
         return destination.y - y;
     }
 
-    GridPosition::Value GridPosition::FindZDistance(const GridPosition& destination) const
+    Position::Value Position::FindZDistance(const Position& destination) const
     {
         return destination.z - z;
     }
 
-    unsigned int GridPosition::FindDistance(const GridPosition& destination) const
+    unsigned int Position::FindDistance(const Position& destination) const
     {
-        return std::abs(FindXDistance(destination)) + std::abs(FindYDistance(destination)) + std::abs(FindZDistance(destination));
+        return
+            std::abs(FindXDistance(destination)) +
+            std::abs(FindYDistance(destination)) +
+            std::abs(FindZDistance(destination));
     }
 
-    Direction GridPosition::DetermineDirection(const GridPosition& ending) const
+    Direction Position::DetermineDirection(const Position& ending) const
     {
         if (ending.x < x)
             return Direction::Value::LEFT;
@@ -152,7 +155,7 @@ namespace Atmos
             return Direction::Value::Z_DOWN;
     }
 
-    bool GridPosition::IsCloser(const GridPosition& first, const GridPosition& second) const
+    bool Position::IsCloser(const Position& first, const Position& second) const
     {
         auto thisDist = FindDistance(first);
         auto argDist = FindDistance(second);
@@ -160,9 +163,9 @@ namespace Atmos
         return argDist >= thisDist;
     }
 
-    GridPosition GridPosition::FindPositionAdjacent(const Direction& dir) const
+    Position Position::FindPositionAdjacent(const Direction& dir) const
     {
-        GridPosition newPos(*this);
+        Position newPos(*this);
 
         switch (dir.Get())
         {
@@ -189,56 +192,60 @@ namespace Atmos
         return newPos;
     }
 
-    RelativeGridPosition GridPosition::Difference(const GridPosition& against) const
+    RelativePosition Position::Difference(const Position& against) const
     {
-        return RelativeGridPosition(against.x - x, against.y - y, against.z - z);
+        return RelativePosition(against.x - x, against.y - y, against.z - z);
     }
 
-    GridPosition GridPosition::FromScreen(const Position2D& position, Value z, const Position2D& topLeftScreen)
+    Position Position::FromScreen(const Position2D& position, Value z, const Position2D& topLeftScreen)
     {
-        return GridPosition(
+        return Position(
             DimensionFromPosition(position.x + topLeftScreen.x),
             DimensionFromPosition(position.y + topLeftScreen.y),
             z);
     }
 
-    GridPosition GridPosition::FromScreen(const Position3D& position, const Position2D& topLeftScreen)
+    Position Position::FromScreen(const Position3D& position, const Position2D& topLeftScreen)
     {
-        return GridPosition(
+        return Position(
             DimensionFromPosition(position.x + topLeftScreen.x),
             DimensionFromPosition(position.y + topLeftScreen.y),
             DimensionFromPosition(position.z));
     }
 
-    GridPosition::Value GridPosition::DimensionFromPosition(Position2D::Value dim)
+    Position::Value Position::DimensionFromPosition(Position2D::Value dim)
     {
-        return static_cast<GridPosition::Value>(std::floor(dim / GRID_SIZE<Position3D::Value>));
+        return static_cast<Position::Value>(std::floor(dim / TileSize<Position3D::Value>));
     }
 
-    Position2D::Value GridPosition::DimensionToPosition(Value dim)
+    Position2D::Value Position::DimensionToPosition(Value dim)
     {
-        return static_cast<Position2D::Value>((dim * GRID_SIZE<Value>) + (GRID_SIZE<Value> / 2));
+        return static_cast<Position2D::Value>((dim * TileSize<Value>) + (TileSize<Value> / 2));
     }
 
-    RelativeGridPosition::RelativeGridPosition(ValueT x, ValueT y, ValueT z) :
+    RelativePosition::RelativePosition() :
+        x(0), y(0), z(0)
+    {}
+
+    RelativePosition::RelativePosition(Value x, Value y, Value z) :
         x(x), y(y), z(z)
     {}
 
-    RelativeGridPosition::RelativeGridPosition(const GridPosition& source, const GridPosition& destination) :
+    RelativePosition::RelativePosition(const Position& source, const Position& destination) :
         x(destination.x - source.x), y(destination.y - source.y), z(destination.z - source.z)
     {}
 
-    bool RelativeGridPosition::operator==(const RelativeGridPosition& arg) const
+    bool RelativePosition::operator==(const RelativePosition& arg) const
     {
         return x == arg.x && y == arg.y && z == arg.z;
     }
 
-    bool RelativeGridPosition::operator!=(const RelativeGridPosition& arg) const
+    bool RelativePosition::operator!=(const RelativePosition& arg) const
     {
         return !(*this == arg);
     }
 
-    void RelativeGridPosition::Edit(ValueT x, ValueT y, ValueT z)
+    void RelativePosition::Edit(Value x, Value y, Value z)
     {
         this->x = x;
         this->y = y;
@@ -248,17 +255,31 @@ namespace Atmos
 
 namespace Inscription
 {
-    void Scribe<::Atmos::GridPosition, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
+    void Scribe<::Atmos::Grid::Position, BinaryArchive>::ScrivenImplementation(
+        ObjectT& object, ArchiveT& archive)
     {
         archive(object.x);
         archive(object.y);
         archive(object.z);
     }
 
-    void Scribe<::Atmos::RelativeGridPosition, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
+    void Scribe<::Atmos::Grid::Position, BinaryArchive>::ConstructImplementation(
+        ObjectT* storage, ArchiveT& archive)
+    {
+        DoBasicConstruction(storage, archive);
+    }
+
+    void Scribe<::Atmos::Grid::RelativePosition, BinaryArchive>::ScrivenImplementation(
+        ObjectT& object, ArchiveT& archive)
     {
         archive(object.x);
         archive(object.y);
         archive(object.z);
+    }
+
+    void Scribe<::Atmos::Grid::RelativePosition, BinaryArchive>::ConstructImplementation(
+        ObjectT* storage, ArchiveT& archive)
+    {
+        DoBasicConstruction(storage, archive);
     }
 }

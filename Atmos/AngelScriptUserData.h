@@ -5,15 +5,15 @@ namespace Atmos
     class ObjectManager;
 }
 
-namespace Atmos::Scripting
+namespace Atmos::Script
 {
-    class System;
+    class ScriptSystem;
 
     class UserData
     {
     public:
         ObjectManager* objectManager;
-        System* system;
+        ScriptSystem* system;
         UserData();
     };
 }

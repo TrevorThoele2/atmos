@@ -9,6 +9,7 @@ namespace Atmos
 {
     class Position2D;
     class AxisAlignedBox3D;
+
     class Position3D
     {
     public:
@@ -45,7 +46,8 @@ namespace Inscription
     template<>
     class Scribe<::Atmos::Position3D, BinaryArchive> : public CompositeScribe<::Atmos::Position3D, BinaryArchive>
     {
-    public:
-        static void Scriven(ObjectT& object, ArchiveT& archive);
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
+        void ConstructImplementation(ObjectT* storage, ArchiveT& archive) override;
     };
 }

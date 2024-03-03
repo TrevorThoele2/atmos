@@ -9,12 +9,12 @@ namespace Atmos
     class ObjectManager;
 }
 
-namespace Atmos::Scripting
+namespace Atmos::Script
 {
     class GridPosition
     {
     public:
-        ::Atmos::GridPosition::Value x, y, z;
+        ::Atmos::Grid::Position::Value x, y, z;
     public:
         GridPosition();
 

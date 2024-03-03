@@ -11,38 +11,37 @@
 
 namespace Atmos::Entity
 {
-    class System : public ObjectSystem
+    class EntitySystem : public ObjectSystem
     {
     public:
-        typedef TypedObjectReference<Entity> EntityReference;
+        using EntityReference = TypedObjectReference<Entity>;
     public:
-        System(ObjectManager& manager);
+        EntitySystem(ObjectManager& manager);
 
         EntityReference EntityWithName(const Name& name) const;
 
         ObjectBatchSizeT Size() const;
-    private:
+    protected:
         void InitializeImpl() override;
     private:
         ObjectBatch<Entity> entityBatch;
-    private:
         ObjectBatch<GeneralComponent> generalBatch;
     private:
-        typedef TypedObjectReference<Component> EntityComponentReference;
+        using ComponentReference = TypedObjectReference<Component>;
         ObjectBatch<Component> componentBatch;
 
-        void OnEntityComponentCreated(EntityComponentReference created);
-        void OnEntityComponentDestroyed(EntityComponentReference destroyed);
+        void OnEntityComponentCreated(ComponentReference created);
+        void OnEntityComponentDestroyed(ComponentReference destroyed);
     };
 }
 
 namespace Inscription
 {
     template<>
-    class Scribe<::Atmos::Entity::System, BinaryArchive> :
-        public ObjectSystemScribe<::Atmos::Entity::System, BinaryArchive>
+    class Scribe<::Atmos::Entity::EntitySystem, BinaryArchive> :
+        public ObjectSystemScribe<::Atmos::Entity::EntitySystem, BinaryArchive>
     {
-    public:
-        static void Scriven(ObjectT& object, ArchiveT& archive);
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
     };
 }

@@ -5,27 +5,35 @@
 namespace Atmos
 {
     class ObjectManager;
-    class WorldManager;
-    class WindowSystem;
     class EngineSystem;
+
+    namespace Window
+    {
+        class WindowSystem;
+    }
+
+    namespace World
+    {
+        class WorldManager;
+    }
 
     class EngineExecution
     {
     public:
-        EngineExecution(ObjectManager& globalObjectManager, WorldManager& worldManager);
+        EngineExecution(ObjectManager& globalObjectManager, World::WorldManager& worldManager);
 
         void Start();
     private:
         ObjectManager* globalObjectManager;
         EngineSystem* engineSystem;
 
-        WorldManager* worldManager;
+        World::WorldManager* worldManager;
     private:
         bool wasFocusedLastPass;
         bool isFocusLost;
     private:
-        bool StartFrame(WindowSystem* windowSystem);
-        bool IsCurrentlyFocused(WindowSystem* windowSystem) const;
+        bool StartFrame(Window::WindowSystem* windowSystem);
+        bool IsCurrentlyFocused(Window::WindowSystem* windowSystem) const;
 
         void OnFocusLost();
         void OnFocusRegain();

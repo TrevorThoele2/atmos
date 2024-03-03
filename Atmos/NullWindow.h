@@ -2,7 +2,7 @@
 
 #include "WindowBase.h"
 
-namespace Atmos
+namespace Atmos::Window
 {
     class NullWindow : public WindowBase
     {
@@ -14,7 +14,7 @@ namespace Atmos
         void Show() override;
         void Exit() override;
         bool IsCurrentlyFocused() const override;
-        void Suspend(const TimeValue& time) override;
+        void Suspend(const Time::Value& time) override;
         bool OnStartFrame() override;
     protected:
         AxisAlignedBox2D AdjustWindowDimensions() override;

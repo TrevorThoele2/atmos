@@ -6,7 +6,7 @@
 #include "AngelScriptAssert.h"
 #include <angelscript.h>
 
-namespace Atmos::Scripting
+namespace Atmos::Script
 {
     GridPosition::GridPosition() : x(0), y(0), z(0)
     {}

@@ -4,20 +4,20 @@
 
 #include "ObjectScribe.h"
 
-namespace Atmos
+namespace Atmos::Time
 {
     class TimeSystem;
 
     class FrameStopwatch : public Stopwatch
     {
     public:
-        FrameStopwatch(ObjectManager& manager, TimeValue goal = TimeValue());
+        FrameStopwatch(ObjectManager& manager, Value goal = Value());
         FrameStopwatch(const ::Inscription::BinaryTableData<FrameStopwatch>& data);
 
         bool operator==(const FrameStopwatch& arg) const;
         bool operator!=(const FrameStopwatch& arg) const;
 
-        TimeValue CurrentTime() const override;
+        Value CurrentTime() const override;
 
         ObjectTypeDescription TypeDescription() const override;
     private:
@@ -25,25 +25,28 @@ namespace Atmos
     private:
         INSCRIPTION_ACCESS;
     };
+}
 
+namespace Atmos
+{
     template<>
-    struct ObjectTraits<FrameStopwatch> : ObjectTraitsBase<FrameStopwatch>
+    struct ObjectTraits<Time::FrameStopwatch> : ObjectTraitsBase<Time::FrameStopwatch>
     {
         static const ObjectTypeName typeName;
-        static constexpr ObjectTypeList<Stopwatch> bases = {};
+        static constexpr ObjectTypeList<Time::Stopwatch> bases = {};
     };
 }
 
 namespace Inscription
 {
     template<>
-    struct TableData<::Atmos::FrameStopwatch, BinaryArchive> :
-        public ObjectTableDataBase<::Atmos::FrameStopwatch, BinaryArchive>
+    struct TableData<::Atmos::Time::FrameStopwatch, BinaryArchive> :
+        public ObjectTableDataBase<::Atmos::Time::FrameStopwatch, BinaryArchive>
     {};
 
     template<>
-    class Scribe<::Atmos::FrameStopwatch, BinaryArchive> :
-        public ObjectScribe<::Atmos::FrameStopwatch, BinaryArchive>
+    class Scribe<::Atmos::Time::FrameStopwatch, BinaryArchive> :
+        public ObjectScribe<::Atmos::Time::FrameStopwatch, BinaryArchive>
     {
     public:
         class Table : public TableBase

@@ -4,19 +4,19 @@
 
 #include "ObjectScribe.h"
 
-namespace Atmos
+namespace Atmos::Time
 {
     class TimeSystem;
 
     class RealStopwatch : public Stopwatch
     {
     public:
-        RealStopwatch(ObjectManager& manager, TimeValue goal = TimeValue());
+        RealStopwatch(ObjectManager& manager, Value goal = Value());
         RealStopwatch(const ::Inscription::BinaryTableData<RealStopwatch>& data);
 
         bool operator==(const RealStopwatch& arg) const;
 
-        TimeValue CurrentTime() const override;
+        Value CurrentTime() const override;
 
         ObjectTypeDescription TypeDescription() const override;
     private:
@@ -24,24 +24,28 @@ namespace Atmos
     private:
         INSCRIPTION_ACCESS;
     };
+}
 
+namespace Atmos
+{
     template<>
-    struct ObjectTraits<RealStopwatch> : ObjectTraitsBase<RealStopwatch>
+    struct ObjectTraits<Time::RealStopwatch> : ObjectTraitsBase<Time::RealStopwatch>
     {
         static const ObjectTypeName typeName;
-        static constexpr ObjectTypeList<Stopwatch> bases = {};
+        static constexpr ObjectTypeList<Time::Stopwatch> bases = {};
     };
 }
 
 namespace Inscription
 {
     template<>
-    struct TableData<::Atmos::RealStopwatch, BinaryArchive> :
-        public ObjectTableDataBase<::Atmos::RealStopwatch, BinaryArchive>
+    struct TableData<::Atmos::Time::RealStopwatch, BinaryArchive> :
+        public ObjectTableDataBase<::Atmos::Time::RealStopwatch, BinaryArchive>
     {};
 
     template<>
-    class Scribe<::Atmos::RealStopwatch, BinaryArchive> : public ObjectScribe<::Atmos::RealStopwatch, BinaryArchive>
+    class Scribe<::Atmos::Time::RealStopwatch, BinaryArchive> :
+        public ObjectScribe<::Atmos::Time::RealStopwatch, BinaryArchive>
     {
     public:
         class Table : public TableBase

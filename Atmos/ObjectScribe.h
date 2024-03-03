@@ -55,6 +55,10 @@ namespace Inscription
         ObjectTableBase();
     protected:
         using DataEntry = typename BaseT::DataEntry;
+    protected:
+        void ConstructImplementation(ObjectT* storage, ArchiveT& archive);
+
+        using BaseT::DoBasicConstruction;
     private:
         using Bases = typename DataT::Bases;
         constexpr static bool baseCount = std::tuple_size<Bases>::value;
@@ -83,6 +87,12 @@ namespace Inscription
     }
 
     template<class T, class Archive>
+    void ObjectTableBase<T, Archive>::ConstructImplementation(ObjectT* storage, ArchiveT& archive)
+    {
+        DoBasicConstruction(storage, archive);
+    }
+
+    template<class T, class Archive>
     class ObjectScribe : public TableScribe<T, Archive>
     {
     private:
@@ -95,11 +105,15 @@ namespace Inscription
         using DataBase = ObjectTableDataBase<ObjectT, ArchiveT>;
         using TableBase = ObjectTableBase<ObjectT, ArchiveT>;
     public:
+        using BaseT::Scriven;
+        using BaseT::Construct;
+    public:
         static const ClassNameResolver classNameResolver;
     };
 
     template<class T, class Archive>
-    typename const ObjectScribe<T, Archive>::ClassNameResolver ObjectScribe<T, Archive>::classNameResolver([](ArchiveT& archive)
+    typename const ObjectScribe<T, Archive>::ClassNameResolver
+        ObjectScribe<T, Archive>::classNameResolver([](ArchiveT& archive)
     {
         return ::Atmos::TypeNameFor<T>();
     });

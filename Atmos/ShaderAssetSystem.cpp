@@ -1,11 +1,10 @@
-
 #include "ShaderAssetSystem.h"
 
 #include "DebugStatisticsSystem.h"
 
 #include "StringUtility.h"
 
-namespace Atmos
+namespace Atmos::Asset
 {
     ShaderAssetSystem::ShaderAssetSystem(ObjectManager& manager) : AssetSystem(manager)
     {}
@@ -22,8 +21,8 @@ namespace Atmos
 
 namespace Inscription
 {
-    void Scribe<::Atmos::ShaderAssetSystem, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
+    void Scribe<::Atmos::Asset::ShaderAssetSystem, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
     {
-        BaseScriven<::Atmos::AssetSystem<::Atmos::ShaderAsset>>(object, archive);
+        BaseScriven<::Atmos::Asset::AssetSystem<::Atmos::Asset::ShaderAsset>>(object, archive);
     }
 }

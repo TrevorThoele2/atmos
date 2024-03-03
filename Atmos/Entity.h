@@ -11,8 +11,8 @@ namespace Atmos::Entity
     class Entity : public Object
     {
     public:
-        typedef TypedObjectReference<Component> EntityComponentReference;
-        std::vector<EntityComponentReference> componentList;
+        using ComponentReference = TypedObjectReference<Component>;
+        std::vector<ComponentReference> componentList;
     public:
         Entity(ObjectManager& manager);
         Entity(const Entity& arg);

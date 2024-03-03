@@ -3,13 +3,13 @@
 #include "UniqueProviderSystem.h"
 #include "FileManager.h"
 
-namespace Atmos
+namespace Atmos::File
 {
     class FileSystem : public UniqueProviderSystem<FileManager>
     {
     public:
         FileSystem(ObjectManager& manager);
-    private:
+    protected:
         void InitializeImpl() override;
     private:
         void CreateDefaultDirectories();
@@ -20,10 +20,10 @@ namespace Atmos
 namespace Inscription
 {
     template<>
-    class Scribe<::Atmos::FileSystem, BinaryArchive> :
-        public ObjectSystemScribe<::Atmos::FileSystem, BinaryArchive>
+    class Scribe<::Atmos::File::FileSystem, BinaryArchive> :
+        public ObjectSystemScribe<::Atmos::File::FileSystem, BinaryArchive>
     {
-    public:
-        static void Scriven(ObjectT& object, ArchiveT& archive);
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
     };
 }

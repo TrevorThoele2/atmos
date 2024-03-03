@@ -6,7 +6,7 @@
 
 #include <Chroma/Variant.h>
 
-namespace Atmos::Scripting
+namespace Atmos::Script
 {
     typedef ::Chroma::Variant<
         bool,
@@ -24,5 +24,5 @@ namespace Atmos::Scripting
 
 namespace Atmos
 {
-    String ToString(const Scripting::VariantT &arg);
+    String ToString(const Script::VariantT &arg);
 }

@@ -1,6 +1,6 @@
 #include "WorldSystem.h"
 
-namespace Atmos
+namespace Atmos::World
 {
     WorldSystem::WorldSystem(ObjectManager& manager) : UnownedProviderSystem(manager)
     {}
@@ -8,7 +8,7 @@ namespace Atmos
 
 namespace Inscription
 {
-    void Scribe<::Atmos::WorldSystem, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
+    void Scribe<::Atmos::World::WorldSystem, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
     {
         BaseScriven<::Atmos::ObjectSystem>(object, archive);
     }

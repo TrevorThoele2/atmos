@@ -1,17 +1,16 @@
-
 #include "SoundSystem.h"
 
 #include "ObjectManager.h"
 #include "CameraSystem.h"
 #include "EngineSystem.h"
 
-namespace Atmos
+namespace Atmos::Audio
 {
     SoundSystem::SoundSystem(ObjectManager& manager) : ObjectSystem(manager)
     {
         sounds = Manager()->Batch<Sound>();
 
-        auto cameraSystem = Manager()->FindSystem<CameraSystem>();
+        auto cameraSystem = Manager()->FindSystem<Render::CameraSystem>();
         cameraSystem->eventMoved.Subscribe(&SoundSystem::OnCameraMoved, *this);
 
         auto engineSystem = Manager()->FindSystem<EngineSystem>();
@@ -47,7 +46,7 @@ namespace Atmos
 
 namespace Inscription
 {
-    void Scribe<::Atmos::SoundSystem, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
+    void Scribe<::Atmos::Audio::SoundSystem, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
     {
         BaseScriven<::Atmos::ObjectSystem>(object, archive);
     }

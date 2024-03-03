@@ -1,11 +1,10 @@
-
 #include "MasterSoundSystem.h"
 
 #include "ObjectManager.h"
 #include "AudioSystem.h"
 #include "InitializationFileSystem.h"
 
-namespace Atmos
+namespace Atmos::Audio
 {
     MasterSoundSystem::MasterSoundSystem(ObjectManager& manager) : ObjectSystem(manager)
     {}
@@ -37,7 +36,7 @@ namespace Atmos
 
 namespace Inscription
 {
-    void Scribe<::Atmos::MasterSoundSystem, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
+    void Scribe<::Atmos::Audio::MasterSoundSystem, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
     {
         BaseScriven<::Atmos::ObjectSystem>(object, archive);
     }

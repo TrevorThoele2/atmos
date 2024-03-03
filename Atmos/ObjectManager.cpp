@@ -8,8 +8,9 @@ namespace Atmos
     ObjectManager::ObjectManager()
     {}
 
-    ObjectManager::ObjectManager(ObjectManager&& arg) : typeGraph(std::move(arg.typeGraph)), objects(std::move(arg.objects)),
-        factories(std::move(arg.factories)), systems(std::move(arg.systems)), batchSources(std::move(arg.batchSources))
+    ObjectManager::ObjectManager(ObjectManager&& arg) : typeGraph(std::move(arg.typeGraph)),
+        objects(std::move(arg.objects)), factories(std::move(arg.factories)), systems(std::move(arg.systems)),
+        batchSources(std::move(arg.batchSources))
     {}
 
     ObjectManager& ObjectManager::operator=(ObjectManager&& arg)
@@ -127,10 +128,49 @@ namespace Atmos
 
 namespace Inscription
 {
-    void Scribe<::Atmos::ObjectManager, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
+    void Scribe<::Atmos::ObjectManager, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
     {
         archive(object.objects);
         archive(object.batchSources);
         archive(object.systems);
+    }
+
+    void Scribe<::Atmos::ObjectManager, BinaryArchive>::ConstructImplementation(ObjectT* storage, ArchiveT& archive)
+    {
+        DoBasicConstruction(storage, archive);
+    }
+
+    void Scribe<::Atmos::ObjectManager::ObjectSystemHandle, BinaryArchive>::ScrivenImplementation(
+        ObjectT& storage, ArchiveT& archive)
+    {}
+
+    void Scribe<::Atmos::ObjectManager::ObjectSystemHandle, BinaryArchive>::ConstructImplementation(
+        ObjectT* storage, ArchiveT& archive)
+    {
+        DoBasicConstruction(storage, archive);
+    }
+
+    void Scribe<::Atmos::ObjectManager::OwnedObjectSystemHandle, BinaryArchive>::ScrivenImplementation(
+        ObjectT& object, ArchiveT& archive)
+    {
+        archive(object.ptr);
+    }
+
+    void Scribe<::Atmos::ObjectManager::OwnedObjectSystemHandle, BinaryArchive>::ConstructImplementation(
+        ObjectT* storage, ArchiveT& archive)
+    {
+        DoBasicConstruction(storage, archive);
+    }
+
+    void Scribe<::Atmos::ObjectManager::UnownedObjectSystemHandle, BinaryArchive>::ScrivenImplementation(
+        ObjectT& object, ArchiveT& archive)
+    {
+        archive(object.ptr);
+    }
+
+    void Scribe<::Atmos::ObjectManager::UnownedObjectSystemHandle, BinaryArchive>::ConstructImplementation(
+        ObjectT* storage, ArchiveT& archive)
+    {
+        DoBasicConstruction(storage, archive);
     }
 }

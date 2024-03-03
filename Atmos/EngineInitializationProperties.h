@@ -13,11 +13,11 @@ namespace Atmos
     class EngineInitializationProperties
     {
     public:
-        typedef std::unique_ptr<WindowBase> Window;
+        typedef std::unique_ptr<Window::WindowBase> Window;
         typedef std::unique_ptr<Input::Manager> InputManager;
-        typedef std::unique_ptr<GraphicsManager> GraphicsManager;
-        typedef std::unique_ptr<AudioManager> AudioManager;
-        typedef std::unique_ptr<FileManager> FileManager;
+        typedef std::unique_ptr<Render::GraphicsManager> GraphicsManager;
+        typedef std::unique_ptr<Audio::AudioManager> AudioManager;
+        typedef std::unique_ptr<File::FileManager> FileManager;
 
         Window window;
         InputManager inputManager;

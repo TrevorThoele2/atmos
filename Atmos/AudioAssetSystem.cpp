@@ -5,7 +5,7 @@
 
 #include "StringUtility.h"
 
-namespace Atmos
+namespace Atmos::Asset
 {
     AudioAssetSystem::AudioAssetSystem(ObjectManager& manager) : AssetSystem(manager)
     {}
@@ -22,8 +22,8 @@ namespace Atmos
 
 namespace Inscription
 {
-    void Scribe<::Atmos::AudioAssetSystem, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
+    void Scribe<::Atmos::Asset::AudioAssetSystem, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
     {
-        BaseScriven<::Atmos::AssetSystem<::Atmos::AudioAsset>>(object, archive);
+        BaseScriven<::Atmos::Asset::AssetSystem<::Atmos::Asset::AudioAsset>>(object, archive);
     }
 }

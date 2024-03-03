@@ -3,6 +3,6 @@
 
 namespace Atmos
 {
-    ObjectFactory<MaterialAsset>::ObjectFactory(ObjectManager& manager) : AssetFactory(manager)
+    ObjectFactory<Asset::MaterialAsset>::ObjectFactory(ObjectManager& manager) : AssetFactory(manager)
     {}
 }

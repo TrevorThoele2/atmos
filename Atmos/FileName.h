@@ -1,8 +1,9 @@
 #pragma once
 
 #include <Chroma/FileName.h>
+#include <Inscription/FileNameScribe.h>
 
-namespace Atmos
+namespace Atmos::File
 {
-    using ::Chroma::FileName;
+    using Name = ::Chroma::FileName;
 }

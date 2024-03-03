@@ -3,7 +3,7 @@
 #include "StateSystem.h"
 #include "InputSystem.h"
 
-namespace Atmos
+namespace Atmos::State
 {
     GameStateGui::GameStateGui(ObjectManager& objectManager) : StateGui(objectManager, "mainGame")
     {}
@@ -59,7 +59,7 @@ namespace Atmos
 
     void GameState::DoInitialize()
     {
-        auto inputSystem = Manager()->FindSystem<Input::System>();
+        auto inputSystem = Manager()->FindSystem<Input::InputSystem>();
         ExecuteWhenTop(inputSystem->Get()->eventKeys.pressed, &GameState::OnKeyPressed, *this);
         ExecuteWhenTop(inputSystem->Get()->eventActionPressed, &GameState::OnActionPressed, *this);
     }
@@ -71,6 +71,9 @@ namespace Atmos
     {
         return false;
     }
+}
 
-    const ObjectTypeName ObjectTraits<GameState>::typeName = "GameState";
+namespace Atmos
+{
+    const ObjectTypeName ObjectTraits<State::GameState>::typeName = "GameState";
 }

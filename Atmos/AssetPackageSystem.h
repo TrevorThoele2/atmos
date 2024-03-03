@@ -17,39 +17,42 @@
 #include "Optional.h"
 #include "SimpleFile.h"
 
-namespace Atmos
+namespace Atmos::File
 {
     class FileSystem;
+}
 
+namespace Atmos::Asset
+{
     class AssetPackageSystem : public ObjectSystem
     {
     public:
         typedef std::pair<void*, std::int32_t> Buffer;
-        typedef std::unordered_map<FileName, Buffer> BufferMap;
+        typedef std::unordered_map<File::Name, Buffer> BufferMap;
     public:
         AssetPackageSystem(ObjectManager& manager);
 
         template<class AssetT, typename std::enable_if<std::is_base_of_v<FileAsset, AssetT>, int>::type = 0>
-        void Add(const FilePath& path);
+        void Add(const File::Path& path);
         template<class AssetT, typename std::enable_if<std::is_base_of_v<FileAsset, AssetT>, int>::type = 0>
-        void Remove(const FileName& name);
+        void Remove(const File::Name& name);
         template<class AssetT, typename std::enable_if<std::is_base_of_v<FileAsset, AssetT>, int>::type = 0>
-        Optional<Buffer> RetrieveBuffer(const FileName& name);
+        Optional<Buffer> RetrieveBuffer(const File::Name& name);
         template<class AssetT, typename std::enable_if<std::is_base_of_v<FileAsset, AssetT>, int>::type = 0>
         BufferMap RetrieveBufferMap();
 
         void Clear();
 
         // The path given should be for the world file
-        void Save(const FilePath& path);
+        void Save(const File::Path& path);
         // The name given should be for the world file
-        void SaveWorldFolder(const FileName& name);
+        void SaveWorldFolder(const File::Name& name);
 
         // The path given should be for the world file
-        void Load(const FilePath& path);
+        void Load(const File::Path& path);
         // The name given should be for the world file
         // Searches the world folder
-        void LoadWorldFolder(const FileName& name);
+        void LoadWorldFolder(const File::Name& name);
 
         static String FileExtension();
     private:
@@ -83,14 +86,14 @@ namespace Atmos
         void ClearMap(BufferMap& map);
         void ClearAll();
     private:
-        FilePath WorldFilePath(const FileName& fileName) const;
+        File::Path WorldFilePath(const File::Name& fileName) const;
     private:
         LoggingSystem* FindLoggingSystem();
-        FileSystem* FindFileSystem();
+        File::FileSystem* FindFileSystem();
     };
 
     template<class AssetT, typename std::enable_if<std::is_base_of_v<FileAsset, AssetT>, int>::type>
-    void AssetPackageSystem::Add(const FilePath& path)
+    void AssetPackageSystem::Add(const File::Path& path)
     {
         if (path.IsEmpty())
             return;
@@ -100,14 +103,14 @@ namespace Atmos
     }
 
     template<class AssetT, typename std::enable_if<std::is_base_of_v<FileAsset, AssetT>, int>::type>
-    void AssetPackageSystem::Remove(const FileName& name)
+    void AssetPackageSystem::Remove(const File::Name& name)
     {
         auto& map = ModifiableBufferMap<AssetT>();
         return map.erase(name) != 0;
     }
 
     template<class AssetT, typename std::enable_if<std::is_base_of_v<FileAsset, AssetT>, int>::type>
-    Optional<AssetPackageSystem::Buffer> AssetPackageSystem::RetrieveBuffer(const FileName& name)
+    Optional<AssetPackageSystem::Buffer> AssetPackageSystem::RetrieveBuffer(const File::Name& name)
     {
         typedef Optional<Buffer> RetT;
 
@@ -182,10 +185,10 @@ namespace Atmos
 namespace Inscription
 {
     template<>
-    class Scribe<::Atmos::AssetPackageSystem, BinaryArchive> :
-        public ObjectSystemScribe<::Atmos::AssetPackageSystem, BinaryArchive>
+    class Scribe<::Atmos::Asset::AssetPackageSystem, BinaryArchive> :
+        public ObjectSystemScribe<::Atmos::Asset::AssetPackageSystem, BinaryArchive>
     {
-    public:
-        static void Scriven(ObjectT& object, ArchiveT& archive);
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
     };
 }

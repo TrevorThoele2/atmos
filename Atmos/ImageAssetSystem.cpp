@@ -1,11 +1,10 @@
-
 #include "ImageAssetSystem.h"
 
 #include "DebugStatisticsSystem.h"
 
 #include "StringUtility.h"
 
-namespace Atmos
+namespace Atmos::Asset
 {
     ImageAssetSystem::ImageAssetSystem(ObjectManager& manager) : AssetSystem(manager)
     {}
@@ -22,8 +21,8 @@ namespace Atmos
 
 namespace Inscription
 {
-    void Scribe<::Atmos::ImageAssetSystem, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
+    void Scribe<::Atmos::Asset::ImageAssetSystem, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
     {
-        BaseScriven<::Atmos::AssetSystem<::Atmos::ImageAsset>>(object, archive);
+        BaseScriven<::Atmos::Asset::AssetSystem<::Atmos::Asset::ImageAsset>>(object, archive);
     }
 }

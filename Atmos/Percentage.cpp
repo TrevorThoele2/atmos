@@ -475,8 +475,13 @@ namespace Atmos
 
 namespace Inscription
 {
-    void Scribe<::Atmos::Percentage, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
+    void Scribe<::Atmos::Percentage, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
     {
         archive(object.wrapped);
+    }
+
+    void Scribe<::Atmos::Percentage, BinaryArchive>::ConstructImplementation(ObjectT* storage, ArchiveT& archive)
+    {
+        DoBasicConstruction(storage, archive);
     }
 }

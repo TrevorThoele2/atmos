@@ -13,7 +13,10 @@
 namespace Atmos
 {
     class LoggingSystem;
+}
 
+namespace Atmos::Script
+{
     class ScriptController : public ObjectSystem
     {
     public:
@@ -32,8 +35,9 @@ namespace Atmos
     public:
         RunningScriptReference RunningScriptFor(ScriptInstanceReference scriptInstance) const;
         bool IsRunning(ScriptInstanceReference scriptInstance) const;
-    private:
+    protected:
         void InitializeImpl() override;
+        void WorkImpl() override;
     private:
         typedef ObjectBatch<RunningScript> RunningScripts;
         typedef RunningScripts::iterator RunningIterator;
@@ -42,8 +46,6 @@ namespace Atmos
     private:
         typedef std::unordered_map<ScriptInstanceReference, RunningScriptReference> RunningScriptMap;
         RunningScriptMap runningScriptMap;
-    private:
-        void WorkImpl() override;
     private:
         RunningIterator Find(RunningScriptReference reference);
         void Remove(RunningIterator itr);
@@ -60,10 +62,10 @@ namespace Atmos
 namespace Inscription
 {
     template<>
-    class Scribe<::Atmos::ScriptController, BinaryArchive> :
-        public ObjectSystemScribe<::Atmos::ScriptController, BinaryArchive>
+    class Scribe<::Atmos::Script::ScriptController, BinaryArchive> :
+        public ObjectSystemScribe<::Atmos::Script::ScriptController, BinaryArchive>
     {
-    public:
-        static void Scriven(ObjectT& object, ArchiveT& archive);
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
     };
 }

@@ -92,7 +92,8 @@ namespace Atmos
         }
     }
 
-    void LoggingSystem::DoLog(const String& message, LoggingSystem::Type type, Optional<LoggingSystem::NameValueVector> nvps)
+    void LoggingSystem::DoLog(
+        const String& message, LoggingSystem::Type type, Optional<LoggingSystem::NameValueVector> nvps)
     {
         if (message.empty())
             return;
@@ -105,7 +106,7 @@ namespace Atmos
         ::Inscription::OutputTextFile outFile(OutputFilePath(), true);
 
         // Output time and date
-        output = ToString(TimeValue()) + ' ';
+        output = ToString(Time::Value()) + ' ';
 
         // Output severity
         {
@@ -148,20 +149,21 @@ namespace Atmos
         DoLog("Session stop.", LoggingSystem::Type::INFORMATION);
     }
 
-    FilePath LoggingSystem::OutputFilePath() const
+    File::Path LoggingSystem::OutputFilePath() const
     {
-        const FileName fileName("log.txt");
-        auto fileManager = Manager()->FindSystem<FileSystem>()->Get();
+        const File::Name fileName("log.txt");
+        auto fileManager = Manager()->FindSystem<File::FileSystem>()->Get();
         return fileManager->ExePath().SetFileName(fileName).GetValue();
     }
 
-    LoggingSystem::Entry::Entry(const String& string, Type type, const NameValueVector& nvps) : string(string), type(type), nvps(nvps)
+    LoggingSystem::Entry::Entry(const String& string, Type type, const NameValueVector& nvps) :
+        string(string), type(type), nvps(nvps)
     {}
 }
 
 namespace Inscription
 {
-    void Scribe<::Atmos::LoggingSystem, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
+    void Scribe<::Atmos::LoggingSystem, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
     {
         BaseScriven<::Atmos::ObjectSystem>(object, archive);
     }

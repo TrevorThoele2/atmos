@@ -10,7 +10,7 @@ namespace Atmos::Entity
     {}
 
     GeneralComponent::GeneralComponent(const ::Inscription::BinaryTableData<GeneralComponent>& data) :
-        Component(std::get<0>(data.bases)), name(data.name), niceName(data.niceName), position(data.position),
+        Component(std::get<0>(data.bases)), name(data.name), displayName(data.displayName), position(data.position),
         direction(data.direction), solid(data.solid), tags(data.tags)
     {}
 
@@ -19,9 +19,9 @@ namespace Atmos::Entity
         position = set;
     }
 
-    GridPosition GeneralComponent::GetPositionInFront() const
+    Grid::Position GeneralComponent::GetPositionInFront() const
     {
-        GridPosition posInFront(position);
+        Grid::Position posInFront(position);
 
         switch (direction.Get())
         {
@@ -142,7 +142,7 @@ namespace Inscription
     {
         MergeDataEntries({
             DataEntry::Auto(&ObjectT::name, &DataT::name),
-            DataEntry::Auto(&ObjectT::niceName, &DataT::niceName),
+            DataEntry::Auto(&ObjectT::displayName, &DataT::displayName),
             DataEntry::Auto(&ObjectT::position, &DataT::position),
             DataEntry::Auto(&ObjectT::direction, &DataT::direction),
             DataEntry::Auto(&ObjectT::solid, &DataT::solid),

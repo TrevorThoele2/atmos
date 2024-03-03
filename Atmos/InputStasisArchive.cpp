@@ -6,13 +6,13 @@
 
 #include <Inscription/FileNameScribe.h>
 
-namespace Atmos
+namespace Atmos::World::Serialization
 {
     const char* const InputStasisArchive::defaultExtension = "stasis";
 
     InputStasisArchive::InputStasisArchive(
-        const FilePath& filePath,
-        const FilePath& worldFilePath,
+        const File::Path& filePath,
+        const File::Path& worldFilePath,
         ObjectManager& globalObjectManager,
         OpenMode openMode) :
 
@@ -101,7 +101,7 @@ namespace Atmos
         return fieldHandles.size();
     }
 
-    const FileName& InputStasisArchive::GetFileName() const
+    const File::Name& InputStasisArchive::GetFileName() const
     {
         return fileName;
     }
@@ -127,7 +127,7 @@ namespace Atmos
 
     bool InputStasisArchive::LoadBeforeGlobal()
     {
-        FileName worldFileName;
+        File::Name worldFileName;
 
         // Load base world name
         underlyingArchive(worldFileName);
@@ -161,9 +161,6 @@ namespace Atmos
 
     void InputStasisArchive::FillField(Field& fill, FieldHandles::iterator handle)
     {
-        // Load the field while setting up a section to clear immediately after
-        underlyingArchive.StartTrackingSection();
         handle->second.LoadObject(fill);
-        underlyingArchive.StopTrackingSection(true);
     }
 }

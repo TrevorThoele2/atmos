@@ -2,7 +2,7 @@
 
 #include "AudioManager.h"
 
-namespace Atmos
+namespace Atmos::Audio
 {
     class NullAudioManager : public AudioManager
     {
@@ -13,6 +13,7 @@ namespace Atmos
         NullAudioManager(const NullAudioManager& arg) = delete;
         NullAudioManager& operator=(const NullAudioManager& arg) = delete;
 
-        std::unique_ptr<AudioAssetData> CreateAudioDataImpl(ExtractedFile&& file, const FileName& name) override;
+        std::unique_ptr<Asset::AudioAssetData> CreateAudioDataImpl(
+            ExtractedFile&& file, const File::Name& name) override;
     };
 }

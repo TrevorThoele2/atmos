@@ -1,11 +1,10 @@
-
 #include "WindowBase.h"
 
 #include "ObjectManager.h"
 #include "GraphicsSystem.h"
 #include "LoggingSystem.h"
 
-namespace Atmos
+namespace Atmos::Window
 {
     WindowBase::~WindowBase()
     {}
@@ -95,8 +94,17 @@ namespace Atmos
         return objectManager->FindSystem<LoggingSystem>();
     }
 
-    GraphicsSystem* WindowBase::FindGraphicsSystem()
+    Render::GraphicsSystem* WindowBase::FindGraphicsSystem()
     {
-        return objectManager->FindSystem<GraphicsSystem>();
+        return objectManager->FindSystem<Render::GraphicsSystem>();
+    }
+}
+
+namespace Inscription
+{
+    void Scribe<::Atmos::Window::WindowBase, BinaryArchive>::Table::ConstructImplementation(
+        ObjectT* storage, ArchiveT& archive)
+    {
+        DoBasicConstruction(storage, archive);
     }
 }

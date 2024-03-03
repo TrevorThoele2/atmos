@@ -8,7 +8,7 @@ namespace Atmos::Render
 {
     class Canvas;
 
-    class CanvasView : public Fragment
+    class CanvasView : public RenderFragment
     {
     public:
         typedef StoredProperty<const Canvas*> CanvasProperty;
@@ -21,25 +21,28 @@ namespace Atmos::Render
 
         ObjectTypeDescription TypeDescription() const override;
     };
+}
 
+namespace Atmos
+{
     template<>
-    struct ObjectTraits<CanvasView> : ObjectTraitsBase<CanvasView>
+    struct ObjectTraits<Render::CanvasView> : ObjectTraitsBase<Render::CanvasView>
     {
         static const ObjectTypeName typeName;
-        static constexpr ObjectTypeList<Fragment> bases = {};
+        static constexpr ObjectTypeList<Render::RenderFragment> bases = {};
     };
 }
 
 namespace Inscription
 {
     template<>
-    struct TableData<::Atmos::CanvasView, BinaryArchive> :
-        public ObjectTableDataBase<::Atmos::CanvasView, BinaryArchive>
+    struct TableData<::Atmos::Render::CanvasView, BinaryArchive> :
+        public ObjectTableDataBase<::Atmos::Render::CanvasView, BinaryArchive>
     {};
 
     template<>
-    class Scribe<::Atmos::CanvasView, BinaryArchive> :
-        public ObjectScribe<::Atmos::CanvasView, BinaryArchive>
+    class Scribe<::Atmos::Render::CanvasView, BinaryArchive> :
+        public ObjectScribe<::Atmos::Render::CanvasView, BinaryArchive>
     {
     public:
         class Table : public TableBase

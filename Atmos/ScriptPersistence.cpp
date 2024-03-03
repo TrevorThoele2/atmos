@@ -4,7 +4,7 @@
 
 #include "Optional.h"
 
-namespace Atmos::Scripting
+namespace Atmos::Script
 {
     Persistence::Persistence()
     {}
@@ -33,6 +33,11 @@ namespace Atmos::Scripting
 
 namespace Inscription
 {
-    void Scribe<::Atmos::Scripting::Persistence, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
+    void Scribe<::Atmos::Script::Persistence, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
     {}
+
+    void Scribe<::Atmos::Script::Persistence, BinaryArchive>::ConstructImplementation(ObjectT* storage, ArchiveT& archive)
+    {
+        DoBasicConstruction(storage, archive);
+    }
 }

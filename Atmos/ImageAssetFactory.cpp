@@ -1,8 +1,7 @@
-
 #include "ImageAssetFactory.h"
 
 namespace Atmos
 {
-    ObjectFactory<ImageAsset>::ObjectFactory(ObjectManager& manager) : FileAssetFactory(manager)
+    ObjectFactory<Asset::ImageAsset>::ObjectFactory(ObjectManager& manager) : FileAssetFactory(manager)
     {}
 }

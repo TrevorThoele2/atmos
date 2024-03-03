@@ -1,12 +1,11 @@
-
 #include "FrameStopwatch.h"
 
 #include "ObjectManager.h"
 #include "TimeSystem.h"
 
-namespace Atmos
+namespace Atmos::Time
 {
-    FrameStopwatch::FrameStopwatch(ObjectManager& manager, TimeValue goal) : Stopwatch(manager, goal)
+    FrameStopwatch::FrameStopwatch(ObjectManager& manager, Value goal) : Stopwatch(manager, goal)
     {
         timeSystem = Manager()->FindSystem<TimeSystem>();
     }
@@ -27,7 +26,7 @@ namespace Atmos
         return !(*this == arg);
     }
 
-    TimeValue FrameStopwatch::CurrentTime() const
+    Value FrameStopwatch::CurrentTime() const
     {
         return timeSystem->GetTotalElapsed();
     }
@@ -36,6 +35,9 @@ namespace Atmos
     {
         return ObjectTraits<FrameStopwatch>::TypeDescription();
     }
+}
 
-    const ObjectTypeName ObjectTraits<FrameStopwatch>::typeName = "FrameStopwatch";
+namespace Atmos
+{
+    const ObjectTypeName ObjectTraits<Time::FrameStopwatch>::typeName = "FrameStopwatch";
 }

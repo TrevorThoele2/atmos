@@ -8,7 +8,7 @@ namespace Atmos
     class ObjectManager;
 }
 
-namespace Atmos::Scripting
+namespace Atmos::Script
 {
     class Tile : public Object
     {

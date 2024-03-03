@@ -35,42 +35,41 @@ namespace Atmos
 {
     void RegisterGlobalTypes(TypeRegistration::Group& to)
     {
-        to.Register<Asset>();
-        to.Register<FileAsset>();
-        to.Register<AudioAsset>();
-        to.Register<ImageAsset>();
-        to.Register<MaterialAsset>();
-        to.Register<ShaderAsset>();
+        to.Register<Asset::Asset>();
+        to.Register<Asset::FileAsset>();
+        to.Register<Asset::AudioAsset>();
+        to.Register<Asset::ImageAsset>();
+        to.Register<Asset::MaterialAsset>();
+        to.Register<Asset::ShaderAsset>();
 
-        to.Register<AudioAssetSystem>();
-        to.Register<ImageAssetSystem>();
-        to.Register<MaterialAssetSystem>();
-        to.Register<ScriptAssetSystem>();
-        to.Register<ShaderAssetSystem>();
+        to.Register<Asset::AudioAssetSystem>();
+        to.Register<Asset::ImageAssetSystem>();
+        to.Register<Asset::MaterialAssetSystem>();
+        to.Register<Asset::ScriptAssetSystem>();
+        to.Register<Asset::ShaderAssetSystem>();
     }
 
     void RegisterLocalTypes(TypeRegistration::Group& to)
     {
-        to.Register<Tile>();
+        to.Register<Grid::Tile>();
 
         to.Register<Entity::Entity>();
         to.Register<Entity::Component>();
         to.Register<Entity::ActionComponent>();
 
         to.Register<AxisAlignedObject>();
-        to.Register<Fragment>();
-        to.Register<Sense>();
-        to.Register<Sprite>();
+        to.Register<Render::RenderFragment>();
+        to.Register<Render::Sprite>();
 
         to.Register<Entity::ActionSystem>();
         to.Register<Entity::AvatarSystem>();
         to.Register<Entity::AISystem>();
         to.Register<Entity::PositionSystem>();
 
-        to.Register<TileSystem>();
-        to.Register<FragmentSystem>();
-        to.Register<SoundSystem>();
-        to.Register<MusicSystem>();
+        to.Register<Grid::TileSystem>();
+        to.Register<Render::RenderFragmentSystem>();
+        to.Register<Audio::SoundSystem>();
+        to.Register<Audio::MusicSystem>();
     }
 
     void RegisterInfrastructureTypes(TypeRegistration::Group& to)

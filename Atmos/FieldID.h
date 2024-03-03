@@ -1,7 +1,6 @@
-
 #pragma once
 
-namespace Atmos
+namespace Atmos::World
 {
-    typedef unsigned int FieldID;
+    using FieldID = unsigned int;
 }

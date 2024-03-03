@@ -11,7 +11,7 @@ namespace Atmos::Entity
     class MovementComponent : public Component
     {
     public:
-        typedef TypedObjectReference<ScriptInstance> ScriptInstance;
+        typedef TypedObjectReference<Script::ScriptInstance> ScriptInstance;
     public:
         bool enabled;
     public:

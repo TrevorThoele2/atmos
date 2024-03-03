@@ -20,7 +20,7 @@ namespace Atmos::Entity
 
         EntityReference Avatar();
         AvatarComponentReference Component();
-    private:
+    protected:
         void InitializeImpl() override;
     private:
         EntityReference avatar;
@@ -37,7 +37,7 @@ namespace Inscription
     class Scribe<::Atmos::Entity::AvatarSystem, BinaryArchive> :
         public ObjectSystemScribe<::Atmos::Entity::AvatarSystem, BinaryArchive>
     {
-    public:
-        static void Scriven(ObjectT& object, ArchiveT& archive);
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
     };
 }

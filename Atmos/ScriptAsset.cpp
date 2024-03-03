@@ -1,4 +1,3 @@
-
 #include "ScriptAsset.h"
 
 #include "ObjectManager.h"
@@ -9,9 +8,9 @@
 
 #include <Inscription/InputTextFile.h>
 
-namespace Atmos
+namespace Atmos::Asset
 {
-    ScriptAsset::ScriptAsset(ObjectManager& manager, const FileName& fileName, DataPtr&& data) :
+    ScriptAsset::ScriptAsset(ObjectManager& manager, const File::Name& fileName, DataPtr&& data) :
         FileAsset(manager, fileName), data(std::move(data))
     {
         data->Initialize(name, fileName);
@@ -50,9 +49,8 @@ namespace Atmos
         return ObjectTraits<ScriptAsset>::TypeDescription();
     }
 
-    const ObjectTypeName ObjectTraits<ScriptAsset>::typeName = "ScriptAsset";
-
-    ScriptAssetData::ScriptAssetData(ObjectManager& objectManager) : objectManager(&objectManager), module(nullptr), isInitialized(false)
+    ScriptAssetData::ScriptAssetData(ObjectManager& objectManager) :
+        objectManager(&objectManager), module(nullptr), isInitialized(false)
     {}
 
     std::unique_ptr<ScriptAssetData> ScriptAssetData::Clone() const
@@ -60,12 +58,12 @@ namespace Atmos
         return std::make_unique<ScriptAssetData>(*this);
     }
 
-    void ScriptAssetData::Initialize(const Name& name, const FileName& fileName)
+    void ScriptAssetData::Initialize(const Name& name, const File::Name& fileName)
     {
         if (isInitialized)
             return;
 
-        auto engine = objectManager->FindSystem<Scripting::System>()->Engine();
+        auto engine = objectManager->FindSystem<Script::ScriptSystem>()->Engine();
 
         ::Inscription::InputTextFile file(fileName.GetValue());
         String fileAsString;
@@ -73,10 +71,18 @@ namespace Atmos
 
         module = engine->GetModule(fileName.GetWithoutExtension().c_str(), asGM_ALWAYS_CREATE);
 
-        Scripting::AngelScriptAssert(module->AddScriptSection(name.c_str(), fileAsString.c_str(), fileAsString.length()));
+        Script::AngelScriptAssert(
+            module->AddScriptSection(name.c_str(),
+                fileAsString.c_str(),
+                fileAsString.length()));
 
         module->Build();
 
         isInitialized = true;
     }
+}
+
+namespace Atmos
+{
+    const ObjectTypeName ObjectTraits<Asset::ScriptAsset>::typeName = "ScriptAsset";
 }

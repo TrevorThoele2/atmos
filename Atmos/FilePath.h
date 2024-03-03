@@ -1,8 +1,9 @@
 #pragma once
 
 #include <Chroma/FilePath.h>
+#include <Inscription/FilePathScribe.h>
 
-namespace Atmos
+namespace Atmos::File
 {
-    using ::Chroma::FilePath;
+    using Path = ::Chroma::FilePath;
 }

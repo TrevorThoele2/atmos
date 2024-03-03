@@ -8,6 +8,7 @@ namespace Atmos
         _y = arg.y;
         _z = arg.z;
         Calculate();
+        SignalOwnerThisChanged();
         return *this;
     }
 
@@ -60,6 +61,7 @@ namespace Atmos
     {
         value = to;
         Calculate();
+        SignalOwnerThisChanged();
     }
 
     void AxisAlignedObject::Position::Calculate()
@@ -67,8 +69,11 @@ namespace Atmos
         real.x = _x;
         real.y = _y;
         real.z = _z;
+    }
 
-        if(owner)
+    void AxisAlignedObject::Position::SignalOwnerThisChanged()
+    {
+        if (owner)
             owner->PositionHasChanged(real);
     }
 
@@ -81,6 +86,7 @@ namespace Atmos
         _heightScaler = arg.heightScaler;
         _depthScaler = arg.depthScaler;
         Calculate();
+        SignalOwnerThisChanged();
         return *this;
     }
 
@@ -108,8 +114,10 @@ namespace Atmos
     }
 
     AxisAlignedObject::Size::Size(Size&& arg) :
-        _baseWidth(std::move(arg._baseWidth)), _baseHeight(std::move(arg._baseHeight)), _baseDepth(std::move(arg._baseDepth)),
-        _widthScaler(std::move(arg._widthScaler)), _heightScaler(std::move(arg._heightScaler)), _depthScaler(std::move(arg._depthScaler))
+        _baseWidth(std::move(arg._baseWidth)), _baseHeight(std::move(arg._baseHeight)),
+        _baseDepth(std::move(arg._baseDepth)),
+        _widthScaler(std::move(arg._widthScaler)), _heightScaler(std::move(arg._heightScaler)),
+        _depthScaler(std::move(arg._depthScaler))
     {
         Calculate();
     }
@@ -146,7 +154,10 @@ namespace Atmos
         real.widthScaler = _widthScaler;
         real.heightScaler = _heightScaler;
         real.depthScaler = _depthScaler;
+    }
 
+    void AxisAlignedObject::Size::SignalOwnerThisChanged()
+    {
         if (owner)
             owner->SizeHasChanged(real);
     }
@@ -155,12 +166,14 @@ namespace Atmos
     {
         scalerValue = to;
         Calculate();
+        SignalOwnerThisChanged();
     }
 
     void AxisAlignedObject::Size::SetScalerFromValue(Value newValue, Value baseSizeValue, ScalerValue& scalerValue)
     {
         scalerValue = newValue / baseSizeValue;
         Calculate();
+        SignalOwnerThisChanged();
     }
 
     void AxisAlignedObject::Size::BaseSizeChanged(Value width, Value height, Value depth)
@@ -168,7 +181,6 @@ namespace Atmos
         real.baseWidth = width;
         real.baseHeight = height;
         real.baseDepth = depth;
-
         Calculate();
     }
 
@@ -275,7 +287,8 @@ namespace Atmos
 
 namespace Inscription
 {
-    void Scribe<::Atmos::AxisAlignedObject::Position, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
+    void Scribe<::Atmos::AxisAlignedObject::Position, BinaryArchive>::ScrivenImplementation(
+        ObjectT& object, ArchiveT& archive)
     {
         archive(object._x);
         archive(object._y);
@@ -284,7 +297,14 @@ namespace Inscription
             object.Calculate();
     }
 
-    void Scribe<::Atmos::AxisAlignedObject::Size, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
+    void Scribe<::Atmos::AxisAlignedObject::Position, BinaryArchive>::ConstructImplementation(
+        ObjectT* storage, ArchiveT& archive)
+    {
+        DoBasicConstruction(storage, archive);
+    }
+
+    void Scribe<::Atmos::AxisAlignedObject::Size, BinaryArchive>::ScrivenImplementation(
+        ObjectT& object, ArchiveT& archive)
     {
         archive(object._baseWidth);
         archive(object._baseHeight);
@@ -296,6 +316,12 @@ namespace Inscription
             object.Calculate();
     }
 
+    void Scribe<::Atmos::AxisAlignedObject::Size, BinaryArchive>::ConstructImplementation(
+        ObjectT* storage, ArchiveT& archive)
+    {
+        DoBasicConstruction(storage, archive);
+    }
+
     Scribe<::Atmos::AxisAlignedObject, BinaryArchive>::Table::Table()
     {
         MergeDataEntries({
@@ -303,7 +329,8 @@ namespace Inscription
             DataEntry::Auto(&ObjectT::size, &DataT::size) });
     }
 
-    void Scribe<::Atmos::AxisAlignedObject, BinaryArchive>::Table::ObjectScrivenImplementation(ObjectT& object, ArchiveT& archive)
+    void Scribe<::Atmos::AxisAlignedObject, BinaryArchive>::Table::ObjectScrivenImplementation(
+        ObjectT& object, ArchiveT& archive)
     {
         if (archive.IsInput())
         {

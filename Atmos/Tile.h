@@ -10,19 +10,21 @@
 
 #include "ObjectScribe.h"
 
-namespace Atmos
+namespace Atmos::Grid
 {
     class Tile : public Object
     {
     public:
-        using Position = GridPosition;
+        using Position = Position;
         using PositionProperty = ReadonlyProperty<Position>;
-        PositionProperty position = PositionProperty([this]() -> Position& { return _position; });
+        PositionProperty position = PositionProperty(
+            [this]() -> Position& { return _position; });
     public:
-        using OffsetSprite = PositionalOffsetAdapter<Sprite>;
+        using OffsetSprite = PositionalOffsetAdapter<Render::Sprite>;
         using SpriteList = std::vector<OffsetSprite>;
         using SpriteListProperty = ReadonlyProperty<SpriteList&>;
-        SpriteListProperty sprites = SpriteListProperty([this]() -> SpriteList& { return _spriteList; });
+        SpriteListProperty sprites = SpriteListProperty(
+            [this]() -> SpriteList& { return _spriteList; });
     public:
         using SolidProperty = StoredProperty<bool>;
         SolidProperty solid;
@@ -38,9 +40,12 @@ namespace Atmos
     private:
         INSCRIPTION_ACCESS;
     };
+}
 
+namespace Atmos
+{
     template<>
-    struct ObjectTraits<Tile> : ObjectTraitsBase<Tile>
+    struct ObjectTraits<Grid::Tile> : ObjectTraitsBase<Grid::Tile>
     {
         static const ObjectTypeName typeName;
     };
@@ -49,8 +54,8 @@ namespace Atmos
 namespace Inscription
 {
     template<>
-    struct TableData<::Atmos::Tile, BinaryArchive> :
-        public ObjectTableDataBase<::Atmos::Tile, BinaryArchive>
+    struct TableData<::Atmos::Grid::Tile, BinaryArchive> :
+        public ObjectTableDataBase<::Atmos::Grid::Tile, BinaryArchive>
     {
         ObjectT::Position position;
         ObjectT::SpriteList spriteList;
@@ -58,7 +63,7 @@ namespace Inscription
     };
 
     template<>
-    class Scribe<::Atmos::Tile, BinaryArchive> : public ObjectScribe<::Atmos::Tile, BinaryArchive>
+    class Scribe<::Atmos::Grid::Tile, BinaryArchive> : public ObjectScribe<::Atmos::Grid::Tile, BinaryArchive>
     {
     public:
         class Table : public TableBase

@@ -20,10 +20,10 @@ namespace Atmos::Entity
     public:
         // Name
         Name name;
-        Name niceName;
+        Name displayName;
 
         // Position
-        typedef GridPosition Position;
+        typedef Grid::Position Position;
         Position position;
 
         // Direction
@@ -44,7 +44,7 @@ namespace Atmos::Entity
         GeneralComponent(const ::Inscription::BinaryTableData<GeneralComponent>& data);
 
         void SetPosition(const Position &set);
-        GridPosition GetPositionInFront() const;
+        Grid::Position GetPositionInFront() const;
 
         void SetSolid(bool set);
         bool IsSolid() const;
@@ -88,7 +88,7 @@ namespace Inscription
         public ObjectTableDataBase<::Atmos::Entity::GeneralComponent, BinaryArchive>
     {
         ::Atmos::Name name;
-        ::Atmos::Name niceName;
+        ::Atmos::Name displayName;
         ObjectT::Position position;
         ObjectT::Direction direction;
         bool solid;

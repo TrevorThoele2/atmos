@@ -1,64 +1,56 @@
 #pragma once
 
+#include "Epoch.h"
+
 #include "FixedPoint.h"
 
 #include "Serialization.h"
 
-namespace Atmos
+namespace Atmos::Time
 {
-    enum class TimeValueEpoch
-    {
-        MINUTES,
-        SECONDS,
-        MILLISECONDS,
-        MICROSECONDS,
-        NANOSECONDS
-    };
-
-    class TimeValue
+    class Value
     {
     public:
-        typedef TimeValueEpoch EpochT;
-        typedef FixedPoint64 Value;
-        typedef Value::Radix Radix;
+        typedef FixedPoint64 Number;
+        typedef Number::Radix Radix;
     public:
-        TimeValue(Value value = Value(), EpochT epoch = EpochT::SECONDS);
-        TimeValue(Value::Value value, EpochT epoch);
-        TimeValue(const TimeValue& arg) = default;
+        Value(Number number = Number(), Epoch epoch = Epoch::SECONDS);
+        Value(Number::Value number, Epoch epoch);
+        Value(const Value& arg) = default;
 
-        TimeValue& operator=(const TimeValue& arg) = default;
+        Value& operator=(const Value& arg) = default;
 
-        bool operator==(const TimeValue& arg) const;
-        bool operator!=(const TimeValue& arg) const;
-        bool operator<(const TimeValue& arg) const;
-        bool operator<=(const TimeValue& arg) const;
-        bool operator>(const TimeValue& arg) const;
-        bool operator>=(const TimeValue& arg) const;
+        bool operator==(const Value& arg) const;
+        bool operator!=(const Value& arg) const;
+        bool operator<(const Value& arg) const;
+        bool operator<=(const Value& arg) const;
+        bool operator>(const Value& arg) const;
+        bool operator>=(const Value& arg) const;
 
-        TimeValue operator+(const TimeValue& arg) const;
-        TimeValue& operator+=(const TimeValue& arg);
-        TimeValue operator-(const TimeValue& arg) const;
-        TimeValue& operator-=(const TimeValue& arg);
-        TimeValue operator*(const TimeValue& arg) const;
-        TimeValue& operator*=(const TimeValue& arg);
-        TimeValue operator/(const TimeValue& arg) const;
-        TimeValue& operator/=(const TimeValue& arg);
+        Value operator+(const Value& arg) const;
+        Value& operator+=(const Value& arg);
+        Value operator-(const Value& arg) const;
+        Value& operator-=(const Value& arg);
+        Value operator*(const Value& arg) const;
+        Value& operator*=(const Value& arg);
+        Value operator/(const Value& arg) const;
+        Value& operator/=(const Value& arg);
 
         explicit operator double() const;
 
-        explicit operator Value() const;
-        Value Get() const;
+        explicit operator Number() const;
+        Number Get() const;
+        Number GetAs(Epoch epoch) const;
         Radix GetRadixPoint() const;
-        static Radix GetRadixPoint(EpochT epoch);
+        static Radix GetRadixPoint(Epoch epoch);
 
-        void Convert(EpochT epoch);
-        Value ConvertValue(EpochT epoch) const;
-        EpochT GetEpoch() const;
+        void ConvertTo(Epoch epoch);
+        Epoch GetEpoch() const;
     private:
-        Value value;
-        EpochT epoch;
+        Number number;
+        Epoch epoch;
     private:
-        static Value ConvertValueStatic(Value value, EpochT oldEpoch, EpochT newEpoch, bool manipulateValue = false);
+        static Number ConvertNumberStatic(Number number, Epoch oldEpoch, Epoch newEpoch, bool manipulateValue = false);
     private:
         INSCRIPTION_ACCESS;
     };
@@ -67,15 +59,16 @@ namespace Atmos
 namespace Inscription
 {
     template<>
-    class Scribe<::Atmos::TimeValue, BinaryArchive> :
-        public CompositeScribe<::Atmos::TimeValue, BinaryArchive>
+    class Scribe<::Atmos::Time::Value, BinaryArchive> :
+        public CompositeScribe<::Atmos::Time::Value, BinaryArchive>
     {
-    public:
-        static void Scriven(ObjectT& object, ArchiveT& archive);
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
+        void ConstructImplementation(ObjectT* storage, ArchiveT& archive) override;
     };
 
     template<>
-    class Scribe<::Atmos::TimeValueEpoch, BinaryArchive> :
-        public EnumScribe<::Atmos::TimeValueEpoch, BinaryArchive>
+    class Scribe<::Atmos::Time::Epoch, BinaryArchive> :
+        public EnumScribe<::Atmos::Time::Epoch, BinaryArchive>
     {};
 }

@@ -1,4 +1,3 @@
-
 #include <XAudio2.h>
 #include <vorbis/vorbisfile.h>
 
@@ -7,7 +6,7 @@
 #include "Buffer.h"
 #include "SimpleFile.h"
 
-namespace Atmos
+namespace Atmos::Audio
 {
     struct OggFile
     {
@@ -91,7 +90,7 @@ namespace Atmos
     AudioManager::~AudioManager()
     {}
 
-    std::unique_ptr<AudioAssetData> AudioManager::CreateAudioData(const FilePath& path)
+    std::unique_ptr<Asset::AudioAssetData> AudioManager::CreateAudioData(const File::Path& path)
     {
         SimpleInFile file(path);
         BufferT::SizeT fileSize = static_cast<BufferT::SizeT>(file.GetFileSize());
@@ -107,14 +106,15 @@ namespace Atmos
         return std::move(asset);
     }
 
-    std::unique_ptr<AudioAssetData> AudioManager::CreateAudioData(void* buffer, SizeT fileSize, const FileName& name)
+    std::unique_ptr<Asset::AudioAssetData> AudioManager::CreateAudioData(
+        void* buffer, SizeT fileSize, const File::Name& name)
     {
         BufferT madeBuffer(buffer, fileSize);
         auto& data = ExtractFile(FileTypeOf(madeBuffer, fileSize), std::move(madeBuffer), fileSize);
         return CreateAudioDataImpl(std::move(data), name);
     }
 
-    bool AudioManager::CanMake(const FilePath& path)
+    bool AudioManager::CanMake(const File::Path& path)
     {
         SimpleInFile file(path);
         auto fileSize = static_cast<SizeT>(file.GetFileSize());
@@ -244,5 +244,14 @@ namespace Atmos
         }
 
         return FileType::NONE;
+    }
+}
+
+namespace Inscription
+{
+    void Scribe<::Atmos::Audio::AudioManager, BinaryArchive>::Table::ConstructImplementation(
+        ObjectT* storage, ArchiveT& archive)
+    {
+        DoBasicConstruction(storage, archive);
     }
 }

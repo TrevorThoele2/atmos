@@ -1,13 +1,13 @@
 #pragma once
 
-#include "Asset.h"
+#include "FileAsset.h"
 
 #include "ReadonlyProperty.h"
 #include "StoredReadonlyProperty.h"
 
 #include "ObjectScribe.h"
 
-namespace Atmos
+namespace Atmos::Asset
 {
     class ImageAssetData;
 
@@ -23,7 +23,7 @@ namespace Atmos
         typedef ImageAssetData DataT;
         typedef std::unique_ptr<DataT> DataPtr;
     public:
-        ImageAsset(ObjectManager& manager, const FileName& fileName, DataPtr&& data);
+        ImageAsset(ObjectManager& manager, const File::Name& fileName, DataPtr&& data);
         ImageAsset(const ImageAsset& arg);
         ImageAsset(const ::Inscription::BinaryTableData<ImageAsset>& data);
 
@@ -51,14 +51,6 @@ namespace Atmos
         return static_cast<RealDataT*>(data.get());
     }
 
-    template<>
-    struct ObjectTraits<ImageAsset> :
-        public ObjectTraitsBase<ImageAsset>
-    {
-        static const ObjectTypeName typeName;
-        static constexpr ObjectTypeList<FileAsset> bases = {};
-    };
-
     class ImageAssetData
     {
     public:
@@ -68,15 +60,26 @@ namespace Atmos
     };
 }
 
+namespace Atmos
+{
+    template<>
+    struct ObjectTraits<Asset::ImageAsset> : public ObjectTraitsBase<Asset::ImageAsset>
+    {
+        static const ObjectTypeName typeName;
+        static constexpr ObjectTypeList<Asset::FileAsset> bases = {};
+    };
+}
+
 namespace Inscription
 {
     template<>
-    struct TableData<::Atmos::ImageAsset, BinaryArchive> :
-        public ObjectTableDataBase<::Atmos::ImageAsset, BinaryArchive>
+    struct TableData<::Atmos::Asset::ImageAsset, BinaryArchive> :
+        public ObjectTableDataBase<::Atmos::Asset::ImageAsset, BinaryArchive>
     {};
 
     template<>
-    class Scribe<::Atmos::ImageAsset, BinaryArchive> : public ObjectScribe<::Atmos::ImageAsset, BinaryArchive>
+    class Scribe<::Atmos::Asset::ImageAsset, BinaryArchive> :
+        public ObjectScribe<::Atmos::Asset::ImageAsset, BinaryArchive>
     {
     public:
         class Table : public TableBase

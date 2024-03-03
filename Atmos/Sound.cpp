@@ -1,20 +1,19 @@
-
 #include "Sound.h"
 
-namespace Atmos
+namespace Atmos::Audio
 {
-    Sound::Sound(ObjectManager& manager) : Sense(manager)
+    Sound::Sound(ObjectManager& manager) : AxisAlignedObject(manager)
     {
         SubscribeToProperties();
     }
 
-    Sound::Sound(const Sound& arg) : Sense(arg), audioAsset(arg.audioAsset)
+    Sound::Sound(const Sound& arg) : AxisAlignedObject(arg), audioAsset(arg.audioAsset)
     {
         SubscribeToProperties();
     }
 
     Sound::Sound(const ::Inscription::BinaryTableData<Sound>& data) :
-        Sense(std::get<0>(data.bases))
+        AxisAlignedObject(std::get<0>(data.bases))
     {}
 
     ObjectTypeDescription Sound::TypeDescription() const
@@ -31,6 +30,9 @@ namespace Atmos
     {
 
     }
+}
 
-    const ObjectTypeName ObjectTraits<Sound>::typeName = "Sound";
+namespace Atmos
+{
+    const ObjectTypeName ObjectTraits<Audio::Sound>::typeName = "Sound";
 }

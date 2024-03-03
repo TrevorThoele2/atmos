@@ -1,9 +1,9 @@
-
 #include "AudioAssetInstance.h"
 
-namespace Atmos
+namespace Atmos::Asset
 {
-    AudioAssetInstance::AudioAssetInstance(const AudioAsset& audioAsset, DataPtr&& data) : data(std::move(data)), isPlaying(false)
+    AudioAssetInstance::AudioAssetInstance(const AudioAsset& audioAsset, DataPtr&& data) :
+        data(std::move(data)), isPlaying(false)
     {
         SubscribeToProperties();
     }
@@ -30,11 +30,18 @@ namespace Atmos
 
     void AudioAssetInstance::SubscribeToProperties()
     {
-        volume.onValueChanged.Subscribe([this](Volume newValue) { this->OnVolumeChanged(newValue); });
-        volume.onValueChanged.Subscribe([this](bool newValue) { this->OnLoopChanged(newValue); });
+        volume.onValueChanged.Subscribe([this](Audio::Volume newValue)
+        {
+            this->OnVolumeChanged(newValue);
+        });
+
+        volume.onValueChanged.Subscribe([this](bool newValue)
+        {
+            this->OnLoopChanged(newValue);
+        });
     }
 
-    void AudioAssetInstance::OnVolumeChanged(Volume newValue)
+    void AudioAssetInstance::OnVolumeChanged(Audio::Volume newValue)
     {
         data->SetVolume(newValue);
     }

@@ -27,9 +27,6 @@
     <Filter Include="Header Files\Render">
       <UniqueIdentifier>{52e3ff53-5f40-4d5f-803d-c8e3acbfb5ec}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Sound">
-      <UniqueIdentifier>{0040e232-5328-41e8-9583-c7fda3776428}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\State">
       <UniqueIdentifier>{28c2efb1-fa60-4a62-b3fb-46903a66adf0}</UniqueIdentifier>
     </Filter>
@@ -51,12 +48,6 @@
     <Filter Include="Source Files\Render">
       <UniqueIdentifier>{15d98e68-259c-4e12-a6af-e68ffb0dea67}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Render\Color">
-      <UniqueIdentifier>{a21623e9-1424-4130-8564-ced45aaecab6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Sound">
-      <UniqueIdentifier>{3ba79d1c-3516-4398-9629-abc6ee92e444}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\State">
       <UniqueIdentifier>{4fffd952-579f-41fc-8769-4c667a97ef56}</UniqueIdentifier>
     </Filter>
@@ -66,26 +57,8 @@
     <Filter Include="Source Files\Serialization">
       <UniqueIdentifier>{3be4b79c-f407-45cc-8b0d-561a7fc1f4ff}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Entities">
-      <UniqueIdentifier>{fb6b57fb-80b5-434b-91d3-f9912ea9f605}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Entities">
-      <UniqueIdentifier>{05d52b45-c9f5-47ab-895d-af56ebab25a9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Entities\Components">
-      <UniqueIdentifier>{44b016f2-25dd-4a06-948b-c2fc9cfd8618}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Entities\Components">
-      <UniqueIdentifier>{d3c0fea4-1e46-4199-af57-1c1d3869854b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Render\Canvas">
       <UniqueIdentifier>{23d45b18-d542-40bf-8eaa-bffdb2cb6506}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Entities\Systems">
-      <UniqueIdentifier>{aa40266a-e180-4c3b-b4a8-0ac2edb5aabc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Entities\Systems">
-      <UniqueIdentifier>{5dd13e0f-ab59-4397-825b-335831f0a430}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\World">
       <UniqueIdentifier>{4fb2003e-b494-4c96-a9d0-cd8eeee46466}</UniqueIdentifier>
@@ -104,18 +77,6 @@
     </Filter>
     <Filter Include="Source Files\Modulators">
       <UniqueIdentifier>{594661d8-e3f5-40bf-abc1-2c5f027d8480}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Tile">
-      <UniqueIdentifier>{03e08cf4-496a-4af0-8620-7c590ccf3305}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Tile">
-      <UniqueIdentifier>{c9671fee-8858-4697-97ab-c8ebcdb0118d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Senses">
-      <UniqueIdentifier>{6a04c03d-c544-4be1-8dd3-1073d614040e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Senses">
-      <UniqueIdentifier>{a91e0e25-df1d-4803-aecd-948540fc9fc8}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Assets">
       <UniqueIdentifier>{158161a2-a3fb-4b88-96e3-24663ac25821}</UniqueIdentifier>
@@ -165,12 +126,6 @@
     <Filter Include="Source Files\Logging">
       <UniqueIdentifier>{7948401a-5e4c-432a-989e-e2e9008b9b65}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Entities\Components\Derived">
-      <UniqueIdentifier>{fe721556-12cc-4f6e-9ed7-806bf89129ff}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Entities\Components\Derived">
-      <UniqueIdentifier>{0f3b484e-0a78-4dda-9806-1f194c3f0366}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Object">
       <UniqueIdentifier>{7555968d-fb2f-416c-895f-4be21b8be312}</UniqueIdentifier>
     </Filter>
@@ -188,12 +143,6 @@
     </Filter>
     <Filter Include="Header Files\Modulators\Interpolation">
       <UniqueIdentifier>{d69c911e-ebbf-4317-b890-2e1195c00491}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Events">
-      <UniqueIdentifier>{b2a38337-e2b1-42ad-8dbc-88a7c4980b02}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Events">
-      <UniqueIdentifier>{f26dda75-50ec-40a4-8541-f6a6664fdb61}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\GameData">
       <UniqueIdentifier>{5a080eaa-7d96-423e-b3cb-49875a7ecccb}</UniqueIdentifier>
@@ -279,17 +228,11 @@
     <Filter Include="Source Files\Position\Screen">
       <UniqueIdentifier>{2d650911-45b5-4629-943c-1e51ac72e563}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Position\Grid">
-      <UniqueIdentifier>{06b37bc2-8427-4db0-95eb-fcc1f8838c27}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Position\Direction">
       <UniqueIdentifier>{aa56492d-8bd6-48bd-bb3e-0e0562592bd1}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Position\Direction">
       <UniqueIdentifier>{0e6d1164-a7a9-4467-be95-53f8245a3575}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Position\Grid">
-      <UniqueIdentifier>{027583d5-556a-47cb-8995-d1533dd3925a}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\PositionalObject">
       <UniqueIdentifier>{7fb22f80-31ef-484c-ad60-6bdcf9d9d2de}</UniqueIdentifier>
@@ -306,24 +249,6 @@
     <Filter Include="Header Files\Serialization\SkipFile">
       <UniqueIdentifier>{5947c944-570c-4310-b74c-617d1cc6d664}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Serialization\Archive">
-      <UniqueIdentifier>{92588c19-f4bd-4e27-9c6c-3439682def1c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Serialization\Archive">
-      <UniqueIdentifier>{44efc06a-e12c-4150-9914-519b00d8e8e2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\World\StasisArchive">
-      <UniqueIdentifier>{10a08c38-184f-47c4-955e-548481570820}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\World\WorldArchive">
-      <UniqueIdentifier>{800b0608-37d4-410d-9b4e-8790474a95f8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\World\StasisArchive">
-      <UniqueIdentifier>{c99e5890-f82d-422b-b8ad-7f196b5e01e9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\World\WorldArchive">
-      <UniqueIdentifier>{67ba23ad-074b-4810-8907-9d18cd1ed2a5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Time\Stopwatch">
       <UniqueIdentifier>{534fe9e6-2447-4a7b-9f14-ee71be4e826f}</UniqueIdentifier>
     </Filter>
@@ -339,6 +264,69 @@
     <Filter Include="Header Files\Object\Traits">
       <UniqueIdentifier>{4a519250-2083-4dc5-91be-7752f82ab189}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\World\Serialization">
+      <UniqueIdentifier>{92588c19-f4bd-4e27-9c6c-3439682def1c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\World\Serialization\StasisArchive">
+      <UniqueIdentifier>{c99e5890-f82d-422b-b8ad-7f196b5e01e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\World\Serialization\WorldArchive">
+      <UniqueIdentifier>{67ba23ad-074b-4810-8907-9d18cd1ed2a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\World\Serialization">
+      <UniqueIdentifier>{44efc06a-e12c-4150-9914-519b00d8e8e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\World\Serialization\StasisArchive">
+      <UniqueIdentifier>{10a08c38-184f-47c4-955e-548481570820}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\World\Serialization\WorldArchive">
+      <UniqueIdentifier>{800b0608-37d4-410d-9b4e-8790474a95f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Render\Canvas">
+      <UniqueIdentifier>{39e2655d-4c18-448f-8d79-53c15bf8a058}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Entity">
+      <UniqueIdentifier>{fb6b57fb-80b5-434b-91d3-f9912ea9f605}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Event">
+      <UniqueIdentifier>{f26dda75-50ec-40a4-8541-f6a6664fdb61}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Entity">
+      <UniqueIdentifier>{05d52b45-c9f5-47ab-895d-af56ebab25a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Event">
+      <UniqueIdentifier>{b2a38337-e2b1-42ad-8dbc-88a7c4980b02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Audio">
+      <UniqueIdentifier>{0040e232-5328-41e8-9583-c7fda3776428}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Audio">
+      <UniqueIdentifier>{3ba79d1c-3516-4398-9629-abc6ee92e444}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Entity\Component">
+      <UniqueIdentifier>{44b016f2-25dd-4a06-948b-c2fc9cfd8618}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Entity\Component\Infrastructure">
+      <UniqueIdentifier>{ca149a3d-75e9-4af8-ba4c-ef3e86f9775f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Entity\System">
+      <UniqueIdentifier>{5dd13e0f-ab59-4397-825b-335831f0a430}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Entity\Component">
+      <UniqueIdentifier>{d3c0fea4-1e46-4199-af57-1c1d3869854b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Entity\Component\Infrastructure">
+      <UniqueIdentifier>{ed64c241-d852-4659-bc38-1fc64159d603}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Entity\System">
+      <UniqueIdentifier>{aa40266a-e180-4c3b-b4a8-0ac2edb5aabc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Grid">
+      <UniqueIdentifier>{03e08cf4-496a-4af0-8620-7c590ccf3305}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Grid">
+      <UniqueIdentifier>{c9671fee-8858-4697-97ab-c8ebcdb0118d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Field.h">
@@ -348,7 +336,7 @@
       <Filter>Header Files\World\Field</Filter>
     </ClInclude>
     <ClInclude Include="Tile.h">
-      <Filter>Header Files\Tile</Filter>
+      <Filter>Header Files\Grid</Filter>
     </ClInclude>
     <ClInclude Include="FontDefines.h">
       <Filter>Header Files\GUI</Filter>
@@ -386,12 +374,6 @@
     <ClInclude Include="Buffer.h">
       <Filter>Header Files\Helper</Filter>
     </ClInclude>
-    <ClInclude Include="DXAudio.h">
-      <Filter>Header Files\Sound</Filter>
-    </ClInclude>
-    <ClInclude Include="DXGraphics.h">
-      <Filter>Header Files\Render</Filter>
-    </ClInclude>
     <ClInclude Include="RenderFragment.h">
       <Filter>Header Files\Render</Filter>
     </ClInclude>
@@ -405,22 +387,16 @@
       <Filter>Header Files\Helper</Filter>
     </ClInclude>
     <ClInclude Include="EntityAISystem.h">
-      <Filter>Header Files\Entities\Systems</Filter>
+      <Filter>Header Files\Entity\System</Filter>
     </ClInclude>
     <ClInclude Include="FilePath.h">
       <Filter>Header Files\File</Filter>
     </ClInclude>
     <ClInclude Include="Music.h">
-      <Filter>Header Files\Sound</Filter>
+      <Filter>Header Files\Audio</Filter>
     </ClInclude>
     <ClInclude Include="Volume.h">
-      <Filter>Header Files\Sound</Filter>
-    </ClInclude>
-    <ClInclude Include="NullGraphics.h">
-      <Filter>Header Files\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="NullAudio.h">
-      <Filter>Header Files\Sound</Filter>
+      <Filter>Header Files\Audio</Filter>
     </ClInclude>
     <ClInclude Include="InputAction.h">
       <Filter>Header Files\Input</Filter>
@@ -433,12 +409,6 @@
     </ClInclude>
     <ClInclude Include="WorldStart.h">
       <Filter>Header Files\World</Filter>
-    </ClInclude>
-    <ClInclude Include="Sprite.h">
-      <Filter>Header Files\Senses</Filter>
-    </ClInclude>
-    <ClInclude Include="Sound.h">
-      <Filter>Header Files\Senses</Filter>
     </ClInclude>
     <ClInclude Include="NameValuePair.h">
       <Filter>Header Files\Helper</Filter>
@@ -461,14 +431,8 @@
     <ClInclude Include="FileUtility.h">
       <Filter>Header Files\File</Filter>
     </ClInclude>
-    <ClInclude Include="RenderSurface.h">
-      <Filter>Header Files\Render</Filter>
-    </ClInclude>
     <ClInclude Include="ScrubbedType.h">
       <Filter>Header Files\Helper</Filter>
-    </ClInclude>
-    <ClInclude Include="Sense.h">
-      <Filter>Header Files\Senses</Filter>
     </ClInclude>
     <ClInclude Include="DivideByZeroException.h">
       <Filter>Header Files\Exceptions</Filter>
@@ -478,21 +442,6 @@
     </ClInclude>
     <ClInclude Include="RelativeFilePath.h">
       <Filter>Header Files\File</Filter>
-    </ClInclude>
-    <ClInclude Include="ActionComponent.h">
-      <Filter>Header Files\Entities\Components\Derived</Filter>
-    </ClInclude>
-    <ClInclude Include="AIComponent.h">
-      <Filter>Header Files\Entities\Components\Derived</Filter>
-    </ClInclude>
-    <ClInclude Include="AvatarComponent.h">
-      <Filter>Header Files\Entities\Components\Derived</Filter>
-    </ClInclude>
-    <ClInclude Include="GeneralComponent.h">
-      <Filter>Header Files\Entities\Components\Derived</Filter>
-    </ClInclude>
-    <ClInclude Include="MovementComponent.h">
-      <Filter>Header Files\Entities\Components\Derived</Filter>
     </ClInclude>
     <ClInclude Include="ObjectBatch.h">
       <Filter>Header Files\Object</Filter>
@@ -546,7 +495,7 @@
       <Filter>Header Files\Object</Filter>
     </ClInclude>
     <ClInclude Include="TileSystem.h">
-      <Filter>Header Files\Tile</Filter>
+      <Filter>Header Files\Grid</Filter>
     </ClInclude>
     <ClInclude Include="RenderFragmentSystem.h">
       <Filter>Header Files\Render</Filter>
@@ -611,9 +560,6 @@
     <ClInclude Include="ScriptPersistence.h">
       <Filter>Header Files\Assets\Script</Filter>
     </ClInclude>
-    <ClInclude Include="SenseComponent.h">
-      <Filter>Header Files\Entities\Components\Derived</Filter>
-    </ClInclude>
     <ClInclude Include="ObjectFactory.h">
       <Filter>Header Files\Object</Filter>
     </ClInclude>
@@ -621,7 +567,7 @@
       <Filter>Header Files\Object</Filter>
     </ClInclude>
     <ClInclude Include="TileFactory.h">
-      <Filter>Header Files\Tile</Filter>
+      <Filter>Header Files\Grid</Filter>
     </ClInclude>
     <ClInclude Include="AssetFactory.h">
       <Filter>Header Files\Assets</Filter>
@@ -654,10 +600,10 @@
       <Filter>Header Files\Assets\Script</Filter>
     </ClInclude>
     <ClInclude Include="SoundSystem.h">
-      <Filter>Header Files\Sound</Filter>
+      <Filter>Header Files\Audio</Filter>
     </ClInclude>
     <ClInclude Include="MusicSystem.h">
-      <Filter>Header Files\Sound</Filter>
+      <Filter>Header Files\Audio</Filter>
     </ClInclude>
     <ClInclude Include="..\..\AngelScript\sdk\add_on\scriptstdstring\scriptstdstring.h">
       <Filter>Header Files\AngelScript\Addon</Filter>
@@ -684,22 +630,22 @@
       <Filter>Header Files\AngelScript</Filter>
     </ClInclude>
     <ClInclude Include="Event.h">
-      <Filter>Header Files\Events</Filter>
+      <Filter>Header Files\Event</Filter>
     </ClInclude>
     <ClInclude Include="AnyEventConnection.h">
-      <Filter>Header Files\Events</Filter>
+      <Filter>Header Files\Event</Filter>
     </ClInclude>
     <ClInclude Include="ScopedEventConnection.h">
-      <Filter>Header Files\Events</Filter>
+      <Filter>Header Files\Event</Filter>
     </ClInclude>
     <ClInclude Include="BoundEventSubscriber.h">
-      <Filter>Header Files\Events</Filter>
+      <Filter>Header Files\Event</Filter>
     </ClInclude>
     <ClInclude Include="BoundEventSubscriberList.h">
-      <Filter>Header Files\Events</Filter>
+      <Filter>Header Files\Event</Filter>
     </ClInclude>
     <ClInclude Include="ScopedEventConnectionList.h">
-      <Filter>Header Files\Events</Filter>
+      <Filter>Header Files\Event</Filter>
     </ClInclude>
     <ClInclude Include="GameState.h">
       <Filter>Header Files\State</Filter>
@@ -852,7 +798,7 @@
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
     <ClInclude Include="MasterSoundSystem.h">
-      <Filter>Header Files\Sound</Filter>
+      <Filter>Header Files\Audio</Filter>
     </ClInclude>
     <ClInclude Include="FileSystem.h">
       <Filter>Header Files\File</Filter>
@@ -894,7 +840,7 @@
       <Filter>Header Files\Input</Filter>
     </ClInclude>
     <ClInclude Include="AudioManager.h">
-      <Filter>Header Files\Sound</Filter>
+      <Filter>Header Files\Audio</Filter>
     </ClInclude>
     <ClInclude Include="GraphicsManager.h">
       <Filter>Header Files\Render</Filter>
@@ -942,7 +888,7 @@
       <Filter>Header Files\Assets\Shader</Filter>
     </ClInclude>
     <ClInclude Include="AudioSystem.h">
-      <Filter>Header Files\Sound</Filter>
+      <Filter>Header Files\Audio</Filter>
     </ClInclude>
     <ClInclude Include="AngelScriptSystem.h">
       <Filter>Header Files\AngelScript</Filter>
@@ -966,16 +912,13 @@
       <Filter>Header Files\Modulators\Interpolation</Filter>
     </ClInclude>
     <ClInclude Include="EntitySystem.h">
-      <Filter>Header Files\Entities</Filter>
+      <Filter>Header Files\Entity</Filter>
     </ClInclude>
     <ClInclude Include="Entity.h">
-      <Filter>Header Files\Entities</Filter>
-    </ClInclude>
-    <ClInclude Include="EntityComponent.h">
-      <Filter>Header Files\Entities\Components</Filter>
+      <Filter>Header Files\Entity</Filter>
     </ClInclude>
     <ClInclude Include="EntityPositionSystem.h">
-      <Filter>Header Files\Entities\Systems</Filter>
+      <Filter>Header Files\Entity\System</Filter>
     </ClInclude>
     <ClInclude Include="WorldManager.h">
       <Filter>Header Files\World</Filter>
@@ -993,10 +936,10 @@
       <Filter>Header Files\Serialization\SkipFile</Filter>
     </ClInclude>
     <ClInclude Include="EntityAvatarSystem.h">
-      <Filter>Header Files\Entities\Systems</Filter>
+      <Filter>Header Files\Entity\System</Filter>
     </ClInclude>
     <ClInclude Include="EntityActionSystem.h">
-      <Filter>Header Files\Entities\Systems</Filter>
+      <Filter>Header Files\Entity\System</Filter>
     </ClInclude>
     <ClInclude Include="WorldSystem.h">
       <Filter>Header Files\World</Filter>
@@ -1106,12 +1049,6 @@
     <ClInclude Include="Radians.h">
       <Filter>Header Files\Position\Direction</Filter>
     </ClInclude>
-    <ClInclude Include="GridPosition.h">
-      <Filter>Header Files\Position\Grid</Filter>
-    </ClInclude>
-    <ClInclude Include="GridSize.h">
-      <Filter>Header Files\Position\Grid</Filter>
-    </ClInclude>
     <ClInclude Include="Direction.h">
       <Filter>Header Files\Position\Direction</Filter>
     </ClInclude>
@@ -1137,25 +1074,25 @@
       <Filter>Header Files\Engine</Filter>
     </ClInclude>
     <ClInclude Include="InputArchiveBase.h">
-      <Filter>Header Files\Serialization\Archive</Filter>
+      <Filter>Header Files\World\Serialization</Filter>
     </ClInclude>
     <ClInclude Include="OutputArchiveBase.h">
-      <Filter>Header Files\Serialization\Archive</Filter>
+      <Filter>Header Files\World\Serialization</Filter>
     </ClInclude>
     <ClInclude Include="ArchiveBase.h">
-      <Filter>Header Files\Serialization\Archive</Filter>
+      <Filter>Header Files\World\Serialization</Filter>
     </ClInclude>
     <ClInclude Include="InputStasisArchive.h">
-      <Filter>Header Files\World\StasisArchive</Filter>
+      <Filter>Header Files\World\Serialization\StasisArchive</Filter>
     </ClInclude>
     <ClInclude Include="OutputStasisArchive.h">
-      <Filter>Header Files\World\StasisArchive</Filter>
+      <Filter>Header Files\World\Serialization\StasisArchive</Filter>
     </ClInclude>
     <ClInclude Include="InputWorldArchive.h">
-      <Filter>Header Files\World\WorldArchive</Filter>
+      <Filter>Header Files\World\Serialization\WorldArchive</Filter>
     </ClInclude>
     <ClInclude Include="OutputWorldArchive.h">
-      <Filter>Header Files\World\WorldArchive</Filter>
+      <Filter>Header Files\World\Serialization\WorldArchive</Filter>
     </ClInclude>
     <ClInclude Include="ObjectSystemScribe.h">
       <Filter>Header Files\Object\Scribe</Filter>
@@ -1184,14 +1121,68 @@
     <ClInclude Include="Line.h">
       <Filter>Header Files\Render</Filter>
     </ClInclude>
-    <ClInclude Include="CameraSystem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Color.h">
       <Filter>Header Files\Render</Filter>
     </ClInclude>
+    <ClInclude Include="Sprite.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound.h">
+      <Filter>Header Files\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectX9AudioManager.h">
+      <Filter>Header Files\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="NullAudioManager.h">
+      <Filter>Header Files\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraSystem.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectX9GraphicsManager.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="NullGraphicsManager.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Surface.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="FileAsset.h">
+      <Filter>Header Files\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="Epoch.h">
+      <Filter>Header Files\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="SenseComponent.h">
+      <Filter>Header Files\Entity\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="ActionComponent.h">
+      <Filter>Header Files\Entity\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="AIComponent.h">
+      <Filter>Header Files\Entity\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="AvatarComponent.h">
+      <Filter>Header Files\Entity\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneralComponent.h">
+      <Filter>Header Files\Entity\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="MovementComponent.h">
+      <Filter>Header Files\Entity\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityComponent.h">
+      <Filter>Header Files\Entity\Component\Infrastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="GridPosition.h">
+      <Filter>Header Files\Grid</Filter>
+    </ClInclude>
+    <ClInclude Include="TileSize.h">
+      <Filter>Header Files\Grid</Filter>
+    </ClInclude>
     <ClInclude Include="Octree.h">
-      <Filter>Header Files\PositionalObject</Filter>
+      <Filter>Header Files\Grid</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1202,7 +1193,7 @@
       <Filter>Source Files\World\Field</Filter>
     </ClCompile>
     <ClCompile Include="Tile.cpp">
-      <Filter>Source Files\Tile</Filter>
+      <Filter>Source Files\Grid</Filter>
     </ClCompile>
     <ClCompile Include="FontDefines.cpp">
       <Filter>Source Files\GUI</Filter>
@@ -1210,53 +1201,26 @@
     <ClCompile Include="StateGui.cpp">
       <Filter>Source Files\State</Filter>
     </ClCompile>
-    <ClCompile Include="DXAudio.cpp">
-      <Filter>Source Files\Sound</Filter>
-    </ClCompile>
-    <ClCompile Include="DXGraphics.cpp">
-      <Filter>Source Files\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="RenderSurface.cpp">
-      <Filter>Source Files\Render</Filter>
-    </ClCompile>
     <ClCompile Include="RenderFragment.cpp">
-      <Filter>Source Files\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="Canvas.cpp">
-      <Filter>Source Files\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="CanvasView.cpp">
       <Filter>Source Files\Render</Filter>
     </ClCompile>
     <ClCompile Include="Buffer.cpp">
       <Filter>Source Files\Helper</Filter>
     </ClCompile>
     <ClCompile Include="EntityAISystem.cpp">
-      <Filter>Source Files\Entities\Systems</Filter>
+      <Filter>Source Files\Entity\System</Filter>
     </ClCompile>
     <ClCompile Include="FileUtility.cpp">
       <Filter>Source Files\File</Filter>
     </ClCompile>
     <ClCompile Include="Music.cpp">
-      <Filter>Source Files\Sound</Filter>
-    </ClCompile>
-    <ClCompile Include="NullGraphics.cpp">
-      <Filter>Source Files\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="NullAudio.cpp">
-      <Filter>Source Files\Sound</Filter>
+      <Filter>Source Files\Audio</Filter>
     </ClCompile>
     <ClCompile Include="InputAction.cpp">
       <Filter>Source Files\Input</Filter>
     </ClCompile>
     <ClCompile Include="WorldStart.cpp">
       <Filter>Source Files\World</Filter>
-    </ClCompile>
-    <ClCompile Include="Sprite.cpp">
-      <Filter>Source Files\Senses</Filter>
-    </ClCompile>
-    <ClCompile Include="Sound.cpp">
-      <Filter>Source Files\Senses</Filter>
     </ClCompile>
     <ClCompile Include="NameValuePair.cpp">
       <Filter>Source Files\Helper</Filter>
@@ -1273,9 +1237,6 @@
     <ClCompile Include="ShaderAsset.cpp">
       <Filter>Source Files\Assets\Shader</Filter>
     </ClCompile>
-    <ClCompile Include="Sense.cpp">
-      <Filter>Source Files\Senses</Filter>
-    </ClCompile>
     <ClCompile Include="TimeValue.cpp">
       <Filter>Source Files\Time</Filter>
     </ClCompile>
@@ -1284,24 +1245,6 @@
     </ClCompile>
     <ClCompile Include="InputException.cpp">
       <Filter>Source Files\Exceptions</Filter>
-    </ClCompile>
-    <ClCompile Include="SenseComponent.cpp">
-      <Filter>Source Files\Entities\Components\Derived</Filter>
-    </ClCompile>
-    <ClCompile Include="MovementComponent.cpp">
-      <Filter>Source Files\Entities\Components\Derived</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneralComponent.cpp">
-      <Filter>Source Files\Entities\Components\Derived</Filter>
-    </ClCompile>
-    <ClCompile Include="AIComponent.cpp">
-      <Filter>Source Files\Entities\Components\Derived</Filter>
-    </ClCompile>
-    <ClCompile Include="AvatarComponent.cpp">
-      <Filter>Source Files\Entities\Components\Derived</Filter>
-    </ClCompile>
-    <ClCompile Include="ActionComponent.cpp">
-      <Filter>Source Files\Entities\Components\Derived</Filter>
     </ClCompile>
     <ClCompile Include="Object.cpp">
       <Filter>Source Files\Object</Filter>
@@ -1328,7 +1271,7 @@
       <Filter>Source Files\Object</Filter>
     </ClCompile>
     <ClCompile Include="TileSystem.cpp">
-      <Filter>Source Files\Tile</Filter>
+      <Filter>Source Files\Grid</Filter>
     </ClCompile>
     <ClCompile Include="RenderFragmentSystem.cpp">
       <Filter>Source Files\Render</Filter>
@@ -1349,7 +1292,7 @@
       <Filter>Source Files\Object</Filter>
     </ClCompile>
     <ClCompile Include="TileFactory.cpp">
-      <Filter>Source Files\Tile</Filter>
+      <Filter>Source Files\Grid</Filter>
     </ClCompile>
     <ClCompile Include="ObjectTypeNameSerializer.cpp">
       <Filter>Source Files\Object</Filter>
@@ -1361,7 +1304,7 @@
       <Filter>Source Files\Input</Filter>
     </ClCompile>
     <ClCompile Include="SoundSystem.cpp">
-      <Filter>Source Files\Sound</Filter>
+      <Filter>Source Files\Audio</Filter>
     </ClCompile>
     <ClCompile Include="AudioAsset.cpp">
       <Filter>Source Files\Assets\Audio</Filter>
@@ -1376,7 +1319,7 @@
       <Filter>Source Files\Assets\Script</Filter>
     </ClCompile>
     <ClCompile Include="MusicSystem.cpp">
-      <Filter>Source Files\Sound</Filter>
+      <Filter>Source Files\Audio</Filter>
     </ClCompile>
     <ClCompile Include="AngelScriptEvent.cpp">
       <Filter>Source Files\AngelScript</Filter>
@@ -1415,19 +1358,19 @@
       <Filter>Source Files\AngelScript</Filter>
     </ClCompile>
     <ClCompile Include="AnyEventConnection.cpp">
-      <Filter>Source Files\Events</Filter>
+      <Filter>Source Files\Event</Filter>
     </ClCompile>
     <ClCompile Include="ScopedEventConnection.cpp">
-      <Filter>Source Files\Events</Filter>
+      <Filter>Source Files\Event</Filter>
     </ClCompile>
     <ClCompile Include="ScopedEventConnectionList.cpp">
-      <Filter>Source Files\Events</Filter>
+      <Filter>Source Files\Event</Filter>
     </ClCompile>
     <ClCompile Include="BoundEventSubscriber.cpp">
-      <Filter>Source Files\Events</Filter>
+      <Filter>Source Files\Event</Filter>
     </ClCompile>
     <ClCompile Include="BoundEventSubscriberList.cpp">
-      <Filter>Source Files\Events</Filter>
+      <Filter>Source Files\Event</Filter>
     </ClCompile>
     <ClCompile Include="GameState.cpp">
       <Filter>Source Files\State</Filter>
@@ -1505,7 +1448,7 @@
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
     <ClCompile Include="MasterSoundSystem.cpp">
-      <Filter>Source Files\Sound</Filter>
+      <Filter>Source Files\Audio</Filter>
     </ClCompile>
     <ClCompile Include="FileSystem.cpp">
       <Filter>Source Files\File</Filter>
@@ -1541,7 +1484,7 @@
       <Filter>Source Files\Input</Filter>
     </ClCompile>
     <ClCompile Include="AudioManager.cpp">
-      <Filter>Source Files\Sound</Filter>
+      <Filter>Source Files\Audio</Filter>
     </ClCompile>
     <ClCompile Include="GraphicsManager.cpp">
       <Filter>Source Files\Render</Filter>
@@ -1586,7 +1529,7 @@
       <Filter>Source Files\Assets\Shader</Filter>
     </ClCompile>
     <ClCompile Include="AudioSystem.cpp">
-      <Filter>Source Files\Sound</Filter>
+      <Filter>Source Files\Audio</Filter>
     </ClCompile>
     <ClCompile Include="AngelScriptSystem.cpp">
       <Filter>Source Files\AngelScript</Filter>
@@ -1610,16 +1553,13 @@
       <Filter>Source Files\Modulators\Interpolation</Filter>
     </ClCompile>
     <ClCompile Include="EntitySystem.cpp">
-      <Filter>Source Files\Entities</Filter>
+      <Filter>Source Files\Entity</Filter>
     </ClCompile>
     <ClCompile Include="Entity.cpp">
-      <Filter>Source Files\Entities</Filter>
+      <Filter>Source Files\Entity</Filter>
     </ClCompile>
     <ClCompile Include="EntityPositionSystem.cpp">
-      <Filter>Source Files\Entities\Systems</Filter>
-    </ClCompile>
-    <ClCompile Include="EntityComponent.cpp">
-      <Filter>Source Files\Entities\Components</Filter>
+      <Filter>Source Files\Entity\System</Filter>
     </ClCompile>
     <ClCompile Include="WorldManager.cpp">
       <Filter>Source Files\World</Filter>
@@ -1628,10 +1568,10 @@
       <Filter>Source Files\Object</Filter>
     </ClCompile>
     <ClCompile Include="EntityAvatarSystem.cpp">
-      <Filter>Source Files\Entities\Systems</Filter>
+      <Filter>Source Files\Entity\System</Filter>
     </ClCompile>
     <ClCompile Include="EntityActionSystem.cpp">
-      <Filter>Source Files\Entities\Systems</Filter>
+      <Filter>Source Files\Entity\System</Filter>
     </ClCompile>
     <ClCompile Include="WorldSystem.cpp">
       <Filter>Source Files\World</Filter>
@@ -1717,9 +1657,6 @@
     <ClCompile Include="Radians.cpp">
       <Filter>Source Files\Position\Direction</Filter>
     </ClCompile>
-    <ClCompile Include="GridPosition.cpp">
-      <Filter>Source Files\Position\Grid</Filter>
-    </ClCompile>
     <ClCompile Include="AxisAlignedObject.cpp">
       <Filter>Source Files\PositionalObject</Filter>
     </ClCompile>
@@ -1736,25 +1673,25 @@
       <Filter>Source Files\Engine</Filter>
     </ClCompile>
     <ClCompile Include="InputArchiveBase.cpp">
-      <Filter>Source Files\Serialization\Archive</Filter>
+      <Filter>Source Files\World\Serialization</Filter>
     </ClCompile>
     <ClCompile Include="OutputArchiveBase.cpp">
-      <Filter>Source Files\Serialization\Archive</Filter>
+      <Filter>Source Files\World\Serialization</Filter>
     </ClCompile>
     <ClCompile Include="ArchiveBase.cpp">
-      <Filter>Source Files\Serialization\Archive</Filter>
+      <Filter>Source Files\World\Serialization</Filter>
     </ClCompile>
     <ClCompile Include="InputStasisArchive.cpp">
-      <Filter>Source Files\World\StasisArchive</Filter>
+      <Filter>Source Files\World\Serialization\StasisArchive</Filter>
     </ClCompile>
     <ClCompile Include="OutputStasisArchive.cpp">
-      <Filter>Source Files\World\StasisArchive</Filter>
+      <Filter>Source Files\World\Serialization\StasisArchive</Filter>
     </ClCompile>
     <ClCompile Include="InputWorldArchive.cpp">
-      <Filter>Source Files\World\WorldArchive</Filter>
+      <Filter>Source Files\World\Serialization\WorldArchive</Filter>
     </ClCompile>
     <ClCompile Include="OutputWorldArchive.cpp">
-      <Filter>Source Files\World\WorldArchive</Filter>
+      <Filter>Source Files\World\Serialization\WorldArchive</Filter>
     </ClCompile>
     <ClCompile Include="Stopwatch.cpp">
       <Filter>Source Files\Time\Stopwatch</Filter>
@@ -1765,14 +1702,68 @@
     <ClCompile Include="Line.cpp">
       <Filter>Source Files\Render</Filter>
     </ClCompile>
-    <ClCompile Include="CameraSystem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Color.cpp">
       <Filter>Source Files\Render</Filter>
     </ClCompile>
+    <ClCompile Include="Sprite.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Sound.cpp">
+      <Filter>Source Files\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectX9AudioManager.cpp">
+      <Filter>Source Files\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="NullAudioManager.cpp">
+      <Filter>Source Files\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraSystem.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Canvas.cpp">
+      <Filter>Source Files\Render\Canvas</Filter>
+    </ClCompile>
+    <ClCompile Include="CanvasView.cpp">
+      <Filter>Source Files\Render\Canvas</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectX9GraphicsManager.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="NullGraphicsManager.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Surface.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="FileAsset.cpp">
+      <Filter>Source Files\Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="ActionComponent.cpp">
+      <Filter>Source Files\Entity\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="AIComponent.cpp">
+      <Filter>Source Files\Entity\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="AvatarComponent.cpp">
+      <Filter>Source Files\Entity\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneralComponent.cpp">
+      <Filter>Source Files\Entity\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="MovementComponent.cpp">
+      <Filter>Source Files\Entity\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="SenseComponent.cpp">
+      <Filter>Source Files\Entity\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="EntityComponent.cpp">
+      <Filter>Source Files\Entity\Component\Infrastructure</Filter>
+    </ClCompile>
+    <ClCompile Include="GridPosition.cpp">
+      <Filter>Source Files\Grid</Filter>
+    </ClCompile>
     <ClCompile Include="Octree.cpp">
-      <Filter>Source Files\PositionalObject</Filter>
+      <Filter>Source Files\Grid</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

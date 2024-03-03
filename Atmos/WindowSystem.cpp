@@ -1,4 +1,3 @@
-
 #include "WindowSystem.h"
 
 #include "NullWindow.h"
@@ -9,7 +8,7 @@
 
 #include "StringUtility.h"
 
-namespace Atmos
+namespace Atmos::Window
 {
     WindowSystem::WindowSystem(ObjectManager& manager) :
         UniqueProviderSystem(manager, UniqueProviderSystem::ValuePtr(new NullWindow(manager)))
@@ -56,8 +55,8 @@ namespace Atmos
 
 namespace Inscription
 {
-    void Scribe<::Atmos::WindowSystem, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
+    void Scribe<::Atmos::Window::WindowSystem, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
     {
-        BaseScriven<::Atmos::UniqueProviderSystem<::Atmos::WindowBase>>(object, archive);
+        BaseScriven<::Atmos::UniqueProviderSystem<::Atmos::Window::WindowBase>>(object, archive);
     }
 }

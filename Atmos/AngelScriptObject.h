@@ -4,7 +4,7 @@
 
 #include "ObjectID.h"
 
-namespace Atmos::Scripting
+namespace Atmos::Script
 {
     class Object : public ReferenceCounted
     {

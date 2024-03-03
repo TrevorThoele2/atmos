@@ -1,29 +1,33 @@
 #pragma once
 
 #include "Object.h"
-
 #include "ObjectReference.h"
+#include "ObjectScribe.h"
 
 #include "AudioAssetInstance.h"
 
 #include "StoredProperty.h"
 
-#include "ObjectScribe.h"
-
-namespace Atmos
+namespace Atmos::Audio
 {
     class Music : public Object
     {
     public:
-        typedef TypedObjectReference<AudioAssetInstance> AssetReference;
+        typedef TypedObjectReference<Asset::AudioAssetInstance> AssetReference;
         typedef StoredProperty<AssetReference> AssetProperty;
         AssetProperty audioAsset;
     public:
+        Music(ObjectManager& manager);
+        Music(const ::Inscription::BinaryTableData<Music>& data);
+
         ObjectTypeDescription TypeDescription() const override;
     };
+}
 
+namespace Atmos
+{
     template<>
-    struct ObjectTraits<Music> : ObjectTraitsBase<Music>
+    struct ObjectTraits<Audio::Music> : ObjectTraitsBase<Audio::Music>
     {
         static const ObjectTypeName typeName;
     };
@@ -32,13 +36,13 @@ namespace Atmos
 namespace Inscription
 {
     template<>
-    struct TableData<::Atmos::Music, BinaryArchive> :
-        public ObjectTableDataBase<::Atmos::Music, BinaryArchive>
+    struct TableData<::Atmos::Audio::Music, BinaryArchive> :
+        public ObjectTableDataBase<::Atmos::Audio::Music, BinaryArchive>
     {};
 
     template<>
-    class Scribe<::Atmos::Music, BinaryArchive> :
-        public ObjectScribe<::Atmos::Music, BinaryArchive>
+    class Scribe<::Atmos::Audio::Music, BinaryArchive> :
+        public ObjectScribe<::Atmos::Audio::Music, BinaryArchive>
     {
     public:
         class Table : public TableBase

@@ -4,14 +4,14 @@
 
 #include "FileName.h"
 
-namespace Atmos
+namespace Atmos::Audio
 {
     class MusicSystem : public ObjectSystem
     {
     public:
         MusicSystem(ObjectManager& manager);
 
-        void BeginPlaying(const FileName& fileName);
+        void BeginPlaying(const File::Name& fileName);
         void TerminateCurrent();
 
         void ResumeCurrent();
@@ -22,10 +22,10 @@ namespace Atmos
 namespace Inscription
 {
     template<>
-    class Scribe<::Atmos::MusicSystem, BinaryArchive> :
-        public ObjectSystemScribe<::Atmos::MusicSystem, BinaryArchive>
+    class Scribe<::Atmos::Audio::MusicSystem, BinaryArchive> :
+        public ObjectSystemScribe<::Atmos::Audio::MusicSystem, BinaryArchive>
     {
-    public:
-        static void Scriven(ObjectT& object, ArchiveT& archive);
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
     };
 }

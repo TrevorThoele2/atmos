@@ -1,12 +1,13 @@
-
 #include "StateSystem.h"
 
-namespace Atmos
+namespace Atmos::State
 {
     StateSystem::StateSystem(ObjectManager& manager) :
         ObjectSystem(manager),
         pop(false), requested(nullptr),
-        stack(Stack::FunctionPtr(Stack::MakeFunction(&State::OnUnfocused)), Stack::FunctionPtr(Stack::MakeFunction(&State::OnFocused)))
+        stack(
+            Stack::FunctionPtr(Stack::MakeFunction(&State::OnUnfocused)),
+            Stack::FunctionPtr(Stack::MakeFunction(&State::OnFocused)))
     {}
 
     void StateSystem::RegisterState(StatePtr&& state)
@@ -107,7 +108,7 @@ namespace Atmos
 
 namespace Inscription
 {
-    void Scribe<::Atmos::StateSystem, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
+    void Scribe<::Atmos::State::StateSystem, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
     {
         BaseScriven<::Atmos::ObjectSystem>(object, archive);
     }

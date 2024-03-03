@@ -11,7 +11,7 @@
 #include "SkipFileSaver.h"
 #include <Inscription/OutputBinaryArchive.h>
 
-namespace Atmos
+namespace Atmos::World::Serialization
 {
     class OutputStasisArchive : public OutputArchiveBase
     {
@@ -27,8 +27,8 @@ namespace Atmos
         static const char* const defaultExtension;
     public:
         OutputStasisArchive(
-            const FilePath& filePath,
-            const FileName& worldFileName,
+            const File::Path& filePath,
+            const File::Name& worldFileName,
             ::Inscription::ContainerSize fieldCount,
             OpenMode openMode = OpenMode::FORCE_EXTENSION);
 
@@ -37,7 +37,7 @@ namespace Atmos
 
         void OverwriteFieldCount(::Inscription::ContainerSize set) override;
 
-        const FileName& GetFileName() const;
+        const File::Name& GetFileName() const;
 
         static ::Inscription::Version CurrentVersion();
     protected:
@@ -70,8 +70,8 @@ namespace Atmos
     private:
         Underlying underlyingArchive;
 
-        FileName fileName;
-        FileName worldFileName;
+        File::Name fileName;
+        File::Name worldFileName;
     private:
         bool hasOutputHeader;
         void OutputHeader();

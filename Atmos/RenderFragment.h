@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Sense.h"
+#include "AxisAlignedObject.h"
 
 #include "Position3D.h"
 #include "StoredProperty.h"
@@ -9,12 +9,14 @@
 
 namespace Atmos::Render
 {
-    class Fragment : public Sense
+    class RenderFragment : public AxisAlignedObject
     {
     public:
-        Fragment(ObjectManager& manager);
-        Fragment(const Fragment& arg) = default;
-        Fragment(const ::Inscription::BinaryTableData<Fragment>& data);
+        StoredProperty<bool> enabled;
+    public:
+        RenderFragment(ObjectManager& manager);
+        RenderFragment(const RenderFragment& arg) = default;
+        RenderFragment(const ::Inscription::BinaryTableData<RenderFragment>& data);
 
         void Draw();
 
@@ -31,23 +33,23 @@ namespace Atmos::Render
 namespace Atmos
 {
     template<>
-    struct ObjectTraits<Render::Fragment> : ObjectTraitsBase<Render::Fragment>
+    struct ObjectTraits<Render::RenderFragment> : ObjectTraitsBase<Render::RenderFragment>
     {
         static const ObjectTypeName typeName;
-        static constexpr ObjectTypeList<Sense> bases = {};
+        static constexpr ObjectTypeList<AxisAlignedObject> bases = {};
     };
 }
 
 namespace Inscription
 {
     template<>
-    struct TableData<::Atmos::Render::Fragment, BinaryArchive> :
-        public ObjectTableDataBase<::Atmos::Render::Fragment, BinaryArchive>
+    struct TableData<::Atmos::Render::RenderFragment, BinaryArchive> :
+        public ObjectTableDataBase<::Atmos::Render::RenderFragment, BinaryArchive>
     {};
 
     template<>
-    class Scribe<::Atmos::Render::Fragment, BinaryArchive> :
-        public ObjectScribe<::Atmos::Render::Fragment, BinaryArchive>
+    class Scribe<::Atmos::Render::RenderFragment, BinaryArchive> :
+        public ObjectScribe<::Atmos::Render::RenderFragment, BinaryArchive>
     {
     public:
         class Table : public TableBase

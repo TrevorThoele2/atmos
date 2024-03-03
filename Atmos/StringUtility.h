@@ -17,6 +17,11 @@
 
 namespace Atmos
 {
+    namespace Grid
+    {
+        class Position;
+    }
+
     String GetFileName(const String &filePath);
     String GetFileExtension(const String &filePath);
     String RemoveFileExtension(const String &string);
@@ -57,7 +62,7 @@ namespace Atmos
             return ret;
         }
 
-        TimeValue FromStringImpl(const String &arg, const ::Chroma::Type<TimeValue> &t);
+        Time::Value FromStringImpl(const String &arg, const ::Chroma::Type<Time::Value> &t);
     }
 
     template<class T, typename ::std::enable_if<!::std::is_enum<T>::value, int>::type = 0>
@@ -100,9 +105,8 @@ namespace Atmos
     {
         return arg.ToString();
     }
-    String ToString(TimeValue timeValue);
-    class GridPosition;
-    String ToString(const GridPosition &position);
+    String ToString(Time::Value timeValue);
+    String ToString(const Grid::Position &position);
     String ToString(const ::Agui::Resolution::Size &arg);
     String ToString(const Input::KeyID &arg);
     String ToString(const Input::MouseKeyID &arg);

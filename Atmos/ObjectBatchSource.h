@@ -33,6 +33,21 @@ namespace Atmos
     };
 }
 
+namespace Inscription
+{
+    template<>
+    class Scribe<::Atmos::ObjectBatchSourceBase, BinaryArchive> :
+        public CompositeScribe<::Atmos::ObjectBatchSourceBase, BinaryArchive>
+    {
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override
+        {}
+
+        void ConstructImplementation(ObjectT* storage, ArchiveT& archive) override
+        {}
+    };
+}
+
 namespace Atmos
 {
     template<class T>
@@ -111,34 +126,38 @@ namespace Inscription
         using ArchiveT = typename BaseT::ArchiveT;
 
         using ClassNameResolver = typename BaseT::ClassNameResolver;
+
+        using BaseT::Scriven;
+        using BaseT::Construct;
     public:
-        static void Scriven(ObjectT& object, ArchiveT& archive)
+        static const ClassNameResolver classNameResolver;
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override
         {
             archive(object.manager);
             if (archive.IsInput())
                 object.referenceCount = 0;
         }
-
-        static void Construct(ObjectT*& object, ArchiveT& archive)
+        
+        void ConstructImplementation(ObjectT* storage, ArchiveT& archive) override
         {
             ::Atmos::ObjectManager* manager;
             archive(manager);
 
-            object = new ObjectT(*manager);
+            new (storage) ObjectT(*manager);
 
             if (archive.IsInput())
-                object->referenceCount = 0;
+                storage->referenceCount = 0;
         }
-
-        static const ClassNameResolver classNameResolver;
     };
     
     template<class T>
     typename const Scribe<::Atmos::ObjectBatchSource<T>, BinaryArchive>::ClassNameResolver
-        Scribe<::Atmos::ObjectBatchSource<T>, BinaryArchive>::classNameResolver = ClassNameResolver([](ArchiveT& archive) -> ClassName
+        Scribe<::Atmos::ObjectBatchSource<T>, BinaryArchive>::classNameResolver =
+        ClassNameResolver([](ArchiveT& archive) -> ClassName
     {
         ClassName baseName("ObjectBatchSource");
         ClassName objectName(::Atmos::TypeNameFor<T>());
-        return baseName + objectName;
+        return baseName + "<" + objectName + ">";
     });
 }

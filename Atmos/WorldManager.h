@@ -14,9 +14,17 @@
 
 namespace Atmos
 {
-    class FileSystem;
+    class ObjectManager;
     class LoggingSystem;
+}
 
+namespace Atmos::File
+{
+    class FileSystem;
+}
+
+namespace Atmos::World
+{
     class WorldManager
     {
     public:
@@ -43,19 +51,19 @@ namespace Atmos
         bool IsTransitioning();
 
         void StartNew();
-        void UseWorld(const FilePath& path);
-        void UseWorld(const FileName& name);
-        void UseStasis(const FileName& name);
+        void UseWorld(const File::Path& path);
+        void UseWorld(const File::Name& name);
+        void UseStasis(const File::Name& name);
 
         void Autosave();
-        void SaveStasis(const FileName& name);
+        void SaveStasis(const File::Name& name);
 
-        const FilePath& WorldPath();
+        const File::Path& WorldPath();
 
         Field* CurrentField();
     private:
         ObjectManager* globalObjectManager;
-        FileSystem* FindFileSystem() const;
+        File::FileSystem* FindFileSystem() const;
         LoggingSystem* FindLoggingSystem() const;
 
         ObjectManagerFactory* objectManagerFactory;
@@ -67,33 +75,34 @@ namespace Atmos
         FieldID requestedFieldID;
         typedef Optional<FieldDestination> DestinationT;
         DestinationT destination;
-        typedef Optional<FileName> StasisNameT;
+        typedef Optional<File::Name> StasisNameT;
         StasisNameT stasisName;
         std::unordered_set<FieldID> fieldIDs;
         bool useWorldStart;
 
-        FilePath worldPath;
+        File::Path worldPath;
     private:
         bool HasField(FieldID id);
 
         void Autosave(FieldID worldStartFieldID);
-        void SaveStasis(FieldID worldStartFieldID, const FileName& name);
+        void SaveStasis(FieldID worldStartFieldID, const File::Name& name);
     private:
-        FilePath CreateWorldFilePath(const FileName& fileName) const;
-        FilePath CreateStasisFilePath(const FileName& fileName) const;
+        File::Path CreateWorldFilePath(const File::Name& fileName) const;
+        File::Path CreateStasisFilePath(const File::Name& fileName) const;
 
-        FilePath WorldFolderFilePath() const;
-        FilePath StasisFolderFilePath() const;
+        File::Path WorldFolderFilePath() const;
+        File::Path StasisFolderFilePath() const;
     };
 }
 
 namespace Inscription
 {
     template<>
-    class Scribe<::Atmos::WorldManager, BinaryArchive> :
-        public CompositeScribe<::Atmos::WorldManager, BinaryArchive>
+    class Scribe<::Atmos::World::WorldManager, BinaryArchive> :
+        public CompositeScribe<::Atmos::World::WorldManager, BinaryArchive>
     {
-    public:
-        static void Scriven(ObjectT& object, ArchiveT& archive);
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
+        void ConstructImplementation(ObjectT* storage, ArchiveT& archive) override;
     };
 }

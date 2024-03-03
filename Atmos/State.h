@@ -6,7 +6,7 @@
 
 #include "ObjectScribe.h"
 
-namespace Atmos
+namespace Atmos::State
 {
     class StateSystem;
 
@@ -94,9 +94,12 @@ namespace Atmos
         auto newConnection = e.Subscribe(std::move(madeFunction));
         eventConnections.Add(std::move(newConnection));
     }
+}
 
+namespace Atmos
+{
     template<>
-    struct ObjectTraits<State> : ObjectTraitsBase<State>
+    struct ObjectTraits<State::State> : ObjectTraitsBase<State::State>
     {
         static const ObjectTypeName typeName;
     };
@@ -105,13 +108,13 @@ namespace Atmos
 namespace Inscription
 {
     template<>
-    struct TableData<::Atmos::State, BinaryArchive> :
-        public ObjectTableDataBase<::Atmos::State, BinaryArchive>
+    struct TableData<::Atmos::State::State, BinaryArchive> :
+        public ObjectTableDataBase<::Atmos::State::State, BinaryArchive>
     {};
 
     template<>
-    class Scribe<::Atmos::State, BinaryArchive> :
-        public ObjectScribe<::Atmos::State, BinaryArchive>
+    class Scribe<::Atmos::State::State, BinaryArchive> :
+        public ObjectScribe<::Atmos::State::State, BinaryArchive>
     {
     public:
         class Table : public TableBase

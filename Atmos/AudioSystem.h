@@ -3,16 +3,19 @@
 #include "UniqueProviderSystem.h"
 #include "AudioManager.h"
 
-namespace Atmos
+namespace Atmos::Audio
 {
     class AudioSystem : public UniqueProviderSystem<AudioManager>
     {
     public:
         AudioSystem(ObjectManager& manager);
     };
+}
 
+namespace Atmos
+{
     template<>
-    struct ObjectSystemTraits<AudioSystem>
+    struct ObjectSystemTraits<Audio::AudioSystem>
     {
         static const ObjectSystemPriority priority = 0;
     };
@@ -21,10 +24,10 @@ namespace Atmos
 namespace Inscription
 {
     template<>
-    class Scribe<::Atmos::AudioSystem, BinaryArchive> :
-        public ObjectSystemScribe<::Atmos::AudioSystem, BinaryArchive>
+    class Scribe<::Atmos::Audio::AudioSystem, BinaryArchive> :
+        public ObjectSystemScribe<::Atmos::Audio::AudioSystem, BinaryArchive>
     {
-    public:
-        static void Scriven(ObjectT& object, ArchiveT& archive);
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
     };
 }

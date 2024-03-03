@@ -5,7 +5,7 @@
 
 #include "StringUtility.h"
 
-namespace Atmos
+namespace Atmos::Asset
 {
     ScriptAssetSystem::ScriptAssetSystem(ObjectManager& manager) : AssetSystem(manager)
     {}
@@ -22,8 +22,8 @@ namespace Atmos
 
 namespace Inscription
 {
-    void Scribe<::Atmos::ScriptAssetSystem, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
+    void Scribe<::Atmos::Asset::ScriptAssetSystem, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
     {
-        BaseScriven<::Atmos::AssetSystem<::Atmos::ScriptAsset>>(object, archive);
+        BaseScriven<::Atmos::Asset::AssetSystem<::Atmos::Asset::ScriptAsset>>(object, archive);
     }
 }

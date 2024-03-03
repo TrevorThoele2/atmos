@@ -1,12 +1,11 @@
-
 #include "RealStopwatch.h"
 
 #include "ObjectManager.h"
 #include "TimeSystem.h"
 
-namespace Atmos
+namespace Atmos::Time
 {
-    RealStopwatch::RealStopwatch(ObjectManager& manager, TimeValue goal) :
+    RealStopwatch::RealStopwatch(ObjectManager& manager, Value goal) :
         Stopwatch(manager, goal)
     {
         timeSystem = manager.FindSystem<TimeSystem>();
@@ -21,7 +20,7 @@ namespace Atmos
         return Stopwatch::operator==(arg);
     }
 
-    TimeValue RealStopwatch::CurrentTime() const
+    Value RealStopwatch::CurrentTime() const
     {
         return timeSystem->CurrentTime();
     }
@@ -30,6 +29,9 @@ namespace Atmos
     {
         return ObjectTraits<RealStopwatch>::TypeDescription();
     }
+}
 
-    const ObjectTypeName ObjectTraits<RealStopwatch>::typeName = "RealStopwatch";
+namespace Atmos
+{
+    const ObjectTypeName ObjectTraits<Time::RealStopwatch>::typeName = "RealStopwatch";
 }

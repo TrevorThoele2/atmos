@@ -1,4 +1,3 @@
-
 #include "InputManager.h"
 
 #include "ObjectManager.h"
@@ -184,9 +183,9 @@ namespace Atmos::Input
         return objectManager;
     }
 
-    CameraSystem* Manager::FindCameraSystem() const
+    Render::CameraSystem* Manager::FindCameraSystem() const
     {
-        return GetObjectManager()->FindSystem<CameraSystem>();
+        return GetObjectManager()->FindSystem<Render::CameraSystem>();
     }
 
     DebugStatisticsSystem* Manager::FindDebugStatisticsSystem() const

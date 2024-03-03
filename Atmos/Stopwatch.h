@@ -6,12 +6,12 @@
 
 #include "ObjectScribe.h"
 
-namespace Atmos
+namespace Atmos::Time
 {
     class Stopwatch : public Object
     {
     public:
-        Stopwatch(ObjectManager& manager, TimeValue goal = TimeValue());
+        Stopwatch(ObjectManager& manager, Value goal = Value());
         Stopwatch(const ::Inscription::BinaryTableData<Stopwatch>& data);
 
         virtual ~Stopwatch() = 0;
@@ -19,30 +19,33 @@ namespace Atmos
         bool operator==(const Stopwatch& arg) const;
         bool operator!=(const Stopwatch& arg) const;
 
-        TimeValue Start();
-        void SetStart(const TimeValue& set);
-        TimeValue GetStart() const;
+        Value Start();
+        void SetStart(const Value& set);
+        Value GetStart() const;
 
-        void SetGoal(TimeValue set);
-        TimeValue GetGoal() const;
+        void SetGoal(Value set);
+        Value GetGoal() const;
         bool HasReachedGoal() const;
 
-        TimeValue Elapsed() const;
+        Value Elapsed() const;
         // Instead of 0% - 100%, it's 0 - 1 (but you probably already knew that didn't you?)
-        TimeValue PercentageElapsed() const;
+        Value PercentageElapsed() const;
 
-        virtual TimeValue CurrentTime() const = 0;
+        virtual Value CurrentTime() const = 0;
 
         ObjectTypeDescription TypeDescription() const override;
     private:
-        TimeValue start;
-        TimeValue goal;
+        Value start;
+        Value goal;
     private:
         INSCRIPTION_ACCESS;
     };
+}
 
+namespace Atmos
+{
     template<>
-    struct ObjectTraits<Stopwatch> : ObjectTraitsBase<Stopwatch>
+    struct ObjectTraits<Time::Stopwatch> : ObjectTraitsBase<Time::Stopwatch>
     {
         static const ObjectTypeName typeName;
     };
@@ -51,14 +54,15 @@ namespace Atmos
 namespace Inscription
 {
     template<>
-    struct TableData<::Atmos::Stopwatch, BinaryArchive> :
-        public ObjectTableDataBase<::Atmos::Stopwatch, BinaryArchive>
+    struct TableData<::Atmos::Time::Stopwatch, BinaryArchive> :
+        public ObjectTableDataBase<::Atmos::Time::Stopwatch, BinaryArchive>
     {
-        ::Atmos::TimeValue goal;
+        ::Atmos::Time::Value goal;
     };
 
     template<>
-    class Scribe<::Atmos::Stopwatch, BinaryArchive> : public ObjectScribe<::Atmos::Stopwatch, BinaryArchive>
+    class Scribe<::Atmos::Time::Stopwatch, BinaryArchive> :
+        public ObjectScribe<::Atmos::Time::Stopwatch, BinaryArchive>
     {
     public:
         class Table : public TableBase

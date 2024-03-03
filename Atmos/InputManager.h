@@ -15,8 +15,12 @@
 namespace Atmos
 {
     class ObjectManager;
-    class CameraSystem;
     class DebugStatisticsSystem;
+}
+
+namespace Atmos::Render
+{
+    class CameraSystem;
 }
 
 namespace Atmos::Input
@@ -86,7 +90,7 @@ namespace Atmos::Input
         MouseKey* CreateMouseKey(SignalDataPtr&& data);
     protected:
         ObjectManager* GetObjectManager() const;
-        CameraSystem* FindCameraSystem() const;
+        Render::CameraSystem* FindCameraSystem() const;
         DebugStatisticsSystem* FindDebugStatisticsSystem() const;
     private:
         SignalList signalList;

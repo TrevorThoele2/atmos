@@ -15,7 +15,7 @@
 
 class asIScriptContext;
 
-namespace Atmos
+namespace Atmos::Script
 {
     class RunningScript : public Object
     {
@@ -26,10 +26,10 @@ namespace Atmos
         SourceProperty source;
 
         Name executeName;
-        Scripting::Parameters parameters;
+        Parameters parameters;
         ObjectReference owner;
 
-        Scripting::Persistence persistence;
+        Persistence persistence;
     public:
         bool hasBeenExecuted;
         bool executedThisFrame;
@@ -53,9 +53,12 @@ namespace Atmos
         std::unique_ptr<Data> data;
         bool suspended;
     };
+}
 
+namespace Atmos
+{
     template<>
-    struct ObjectTraits<RunningScript> : ObjectTraitsBase<RunningScript>
+    struct ObjectTraits<Script::RunningScript> : ObjectTraitsBase<Script::RunningScript>
     {
         static const ObjectTypeName typeName;
     };
@@ -64,12 +67,13 @@ namespace Atmos
 namespace Inscription
 {
     template<>
-    struct TableData<::Atmos::RunningScript, BinaryArchive> :
-        public ObjectTableDataBase<::Atmos::RunningScript, BinaryArchive>
+    struct TableData<::Atmos::Script::RunningScript, BinaryArchive> :
+        public ObjectTableDataBase<::Atmos::Script::RunningScript, BinaryArchive>
     {};
 
     template<>
-    class Scribe<::Atmos::RunningScript, BinaryArchive> : public ObjectScribe<::Atmos::RunningScript, BinaryArchive>
+    class Scribe<::Atmos::Script::RunningScript, BinaryArchive> :
+        public ObjectScribe<::Atmos::Script::RunningScript, BinaryArchive>
     {
     public:
         class Table : public TableBase

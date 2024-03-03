@@ -1,7 +1,7 @@
 
 #include "OutputArchiveBase.h"
 
-namespace Atmos
+namespace Atmos::World::Serialization
 {
     OutputArchiveBase::~OutputArchiveBase()
     {}

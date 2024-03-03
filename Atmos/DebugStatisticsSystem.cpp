@@ -1,4 +1,3 @@
-
 #include "DebugStatisticsSystem.h"
 
 #include "ObjectManager.h"
@@ -51,19 +50,19 @@ namespace Atmos
             AddEntry(name + " time", entrySet.time);
             entrySet.time.retrievalFunction = [&stopwatch]() -> String
             {
-                return ToString(stopwatch.QueryElapsed().ConvertValue(TimeValueEpoch::MILLISECONDS));
+                return ToString(stopwatch.QueryElapsed().GetAs(Time::Epoch::MILLISECONDS));
             };
 
             AddEntry(name + " average", entrySet.average);
             entrySet.average.retrievalFunction = [&stopwatch]() -> String
             {
-                return ToString(stopwatch.GetAverage().ConvertValue(TimeValueEpoch::MILLISECONDS));
+                return ToString(stopwatch.GetAverage().GetAs(Time::Epoch::MILLISECONDS));
             };
 
             AddEntry(name + " highest", entrySet.highest);
             entrySet.highest.retrievalFunction = [&stopwatch]() -> String
             {
-                return ToString(stopwatch.GetHighest().ConvertValue(TimeValueEpoch::MILLISECONDS));
+                return ToString(stopwatch.GetHighest().GetAs(Time::Epoch::MILLISECONDS));
             };
         };
 
@@ -113,8 +112,8 @@ namespace Atmos
         AddEntry("Window Height", windowHeight);
         AddEntry("Client Width", clientWidth);
         AddEntry("Client Height", clientHeight);
-        AddEntry("Start X", startX);
-        AddEntry("Start Y", startY);
+        AddEntry("WorldStart X", startX);
+        AddEntry("WorldStart Y", startY);
         AddEntry("Resolution Width", resolutionWidth);
         AddEntry("Resolution Height", resolutionHeight);
         AddEntry("View Origin X", viewOriginX);
@@ -145,17 +144,17 @@ namespace Atmos
         stopwatch.ResetHighest();
     }
 
-    TimeValue DebugStatisticsSystem::Profiler::QueryElapsed() const
+    Time::Value DebugStatisticsSystem::Profiler::QueryElapsed() const
     {
         return stopwatch.QueryElapsed();
     }
 
-    TimeValue DebugStatisticsSystem::Profiler::GetAverage() const
+    Time::Value DebugStatisticsSystem::Profiler::GetAverage() const
     {
         return stopwatch.GetAverage();
     }
 
-    TimeValue DebugStatisticsSystem::Profiler::GetHighest() const
+    Time::Value DebugStatisticsSystem::Profiler::GetHighest() const
     {
         return stopwatch.GetHighest();
     }
@@ -177,9 +176,9 @@ namespace Atmos
         return pageList;
     }
 
-    FpsSystem::Fps DebugStatisticsSystem::Fps()
+    Time::FpsSystem::Fps DebugStatisticsSystem::Fps()
     {
-        return Manager()->FindSystem<FpsSystem>()->GetFps();
+        return Manager()->FindSystem<Time::FpsSystem>()->GetFps();
     }
 
     void DebugStatisticsSystem::Setup()
@@ -207,20 +206,20 @@ namespace Atmos
         profilerList.push_back(&misc3Profiler);
     }
 
-    FpsSystem* DebugStatisticsSystem::FindFpsSystem()
+    Time::FpsSystem* DebugStatisticsSystem::FindFpsSystem()
     {
-        return Manager()->FindSystem<FpsSystem>();
+        return Manager()->FindSystem<Time::FpsSystem>();
     }
 
-    TimeSystem* DebugStatisticsSystem::FindTimeSystem()
+    Time::TimeSystem* DebugStatisticsSystem::FindTimeSystem()
     {
-        return Manager()->FindSystem<TimeSystem>();
+        return Manager()->FindSystem<Time::TimeSystem>();
     }
 }
 
 namespace Inscription
 {
-    void Scribe<::Atmos::DebugStatisticsSystem, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
+    void Scribe<::Atmos::DebugStatisticsSystem, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
     {
         BaseScriven<::Atmos::ObjectSystem>(object, archive);
     }

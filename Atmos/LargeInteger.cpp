@@ -526,9 +526,14 @@ namespace Atmos
 
 namespace Inscription
 {
-    void Scribe<::Atmos::LargeInteger, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
+    void Scribe<::Atmos::LargeInteger, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
     {
         archive(object.low);
         archive(object.high);
+    }
+
+    void Scribe<::Atmos::LargeInteger, BinaryArchive>::ConstructImplementation(ObjectT* storage, ArchiveT& archive)
+    {
+        DoBasicConstruction(storage, archive);
     }
 }

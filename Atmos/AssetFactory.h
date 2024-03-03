@@ -27,7 +27,8 @@ namespace Atmos
 
     template<class Asset>
     template<class DataT>
-    typename AssetFactory<Asset>::Created* AssetFactory<Asset>::CreateObject(const Name& name, std::unique_ptr<DataT>&& data)
+    typename AssetFactory<Asset>::Created* AssetFactory<Asset>::CreateObject(
+        const Name& name, std::unique_ptr<DataT>&& data)
     {
         if (Manager()->FindSystem<AssetSystem>()->Exists(name))
             return nullptr;
@@ -43,7 +44,7 @@ namespace Atmos
     public:
         FileAssetFactory(ObjectManager& manager);
 
-        Created* CreateObject(const FileName& fileName);
+        Created* CreateObject(const File::Name& fileName);
     };
 
     template<class Asset>
@@ -51,7 +52,7 @@ namespace Atmos
     {}
 
     template<class Asset>
-    typename FileAssetFactory<Asset>::Created* FileAssetFactory<Asset>::CreateObject(const FileName& fileName)
+    typename FileAssetFactory<Asset>::Created* FileAssetFactory<Asset>::CreateObject(const File::Name& fileName)
     {
         if (Manager()->FindSystem<AssetSystem>()->Exists(fileName.GetValue()))
             return nullptr;

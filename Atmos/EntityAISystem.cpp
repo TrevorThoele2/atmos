@@ -27,7 +27,7 @@ namespace Atmos::Entity
 
 namespace Inscription
 {
-    void Scribe<::Atmos::Entity::AISystem, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
+    void Scribe<::Atmos::Entity::AISystem, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
     {
         BaseScriven<::Atmos::ObjectSystem>(object, archive);
     }

@@ -8,7 +8,7 @@ namespace Atmos
         return tell.tellg();
     }
 
-    SimpleInFile::SimpleInFile(const FilePath &path) : SimpleFile(path, std::ios::in | std::ios::binary)
+    SimpleInFile::SimpleInFile(const File::Path &path) : SimpleFile(path, std::ios::in | std::ios::binary)
     {}
 
     void SimpleInFile::Seek(Pos pos)
@@ -26,7 +26,7 @@ namespace Atmos
         return tell.tellp();
     }
 
-    SimpleOutFile::SimpleOutFile(const FilePath &path) : SimpleFile(path, std::ios::out | std::ios::binary)
+    SimpleOutFile::SimpleOutFile(const File::Path &path) : SimpleFile(path, std::ios::out | std::ios::binary)
     {}
 
     void SimpleOutFile::Seek(Pos pos)
@@ -34,13 +34,13 @@ namespace Atmos
         stream.seekp(pos);
     }
 
-    size_t GetFileSize(const FilePath &path)
+    size_t GetFileSize(const File::Path &path)
     {
         std::ifstream stream(path.GetValue(), std::ios::in | std::ios::app | std::ios::ate);
         return static_cast<size_t>(stream.tellg());
     }
 
-    std::pair<void*, size_t> ReadFileIntoBuffer(const FilePath &path)
+    std::pair<void*, size_t> ReadFileIntoBuffer(const File::Path &path)
     {
         std::ifstream file(path, std::ios::in | std::ios::ate | std::ios::binary);
         size_t fileSize = static_cast<size_t>(file.tellg());

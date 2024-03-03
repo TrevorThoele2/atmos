@@ -1,9 +1,7 @@
 #include "MaterialAsset.h"
 
-namespace Atmos
+namespace Atmos::Asset
 {
-    const ObjectTypeName ObjectTraits<MaterialAsset>::typeName = "Material";
-
     MaterialAsset::MaterialAsset(ObjectManager& manager, const Name& name) :
         Asset(manager, name), columns(0), rows(0)
     {
@@ -87,4 +85,9 @@ namespace Atmos
     {
         CalculateDimensions();
     }
+}
+
+namespace Atmos
+{
+    const ObjectTypeName ObjectTraits<Asset::MaterialAsset>::typeName = "Material";
 }

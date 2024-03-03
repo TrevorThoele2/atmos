@@ -10,8 +10,15 @@ namespace Atmos
 {
     class ObjectManager;
     class LoggingSystem;
-    class GraphicsSystem;
 
+    namespace Render
+    {
+        class GraphicsSystem;
+    }
+}
+
+namespace Atmos::Window
+{
     class WindowBase
     {
     public:
@@ -25,7 +32,7 @@ namespace Atmos
         virtual void Show() = 0;
         virtual void Exit() = 0;
         virtual bool IsCurrentlyFocused() const = 0;
-        virtual void Suspend(const TimeValue& time) = 0;
+        virtual void Suspend(const Time::Value& time) = 0;
         virtual bool OnStartFrame() = 0;
 
         void ToggleFullscreen();
@@ -59,6 +66,21 @@ namespace Atmos
         bool isFullscreen;
     private:
         ObjectManager* objectManager;
-        GraphicsSystem* FindGraphicsSystem();
+        Render::GraphicsSystem* FindGraphicsSystem();
+    };
+}
+
+namespace Inscription
+{
+    template<>
+    class Scribe<::Atmos::Window::WindowBase, BinaryArchive> :
+        public TableScribe<::Atmos::Window::WindowBase, BinaryArchive>
+    {
+    public:
+        class Table : public TableBase
+        {
+        protected:
+            void ConstructImplementation(ObjectT* storage, ArchiveT& archive) override;
+        };
     };
 }

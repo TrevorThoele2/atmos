@@ -13,7 +13,7 @@ namespace Atmos::Entity
 
     void ActionSystem::InitializeImpl()
     {
-        auto worldSystem = Manager()->FindSystem<WorldSystem>();
+        auto worldSystem = Manager()->FindSystem<World::WorldSystem>();
         worldSystem->Get()->eventFieldSet.Subscribe(&ActionSystem::OnFieldSet, *this);
         worldSystem->Get()->eventFinalizeField.Subscribe(&ActionSystem::OnFieldUnset, *this);
     }
@@ -30,13 +30,13 @@ namespace Atmos::Entity
         }
     }
 
-    void ActionSystem::OnFieldSet(Field& field)
+    void ActionSystem::OnFieldSet(World::Field& field)
     {
         for (auto& loop : actionComponents)
             loop->FireFieldEntered();
     }
 
-    void ActionSystem::OnFieldUnset(Field* field)
+    void ActionSystem::OnFieldUnset(World::Field* field)
     {
         if (!field)
             return;
@@ -48,7 +48,7 @@ namespace Atmos::Entity
 
 namespace Inscription
 {
-    void Scribe<::Atmos::Entity::ActionSystem, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
+    void Scribe<::Atmos::Entity::ActionSystem, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
     {
         BaseScriven<::Atmos::ObjectSystem>(object, archive);
     }

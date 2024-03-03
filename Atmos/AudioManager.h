@@ -5,7 +5,7 @@
 #include "FilePath.h"
 #include "Buffer.h"
 
-namespace Atmos
+namespace Atmos::Audio
 {
     class AudioManager
     {
@@ -14,11 +14,11 @@ namespace Atmos
     public:
         virtual ~AudioManager() = 0;
 
-        std::unique_ptr<AudioAssetData> CreateAudioData(const FilePath& path);
-        std::unique_ptr<AudioAssetData> CreateAudioData(void* buffer, SizeT fileSize, const FileName& name);
+        std::unique_ptr<Asset::AudioAssetData> CreateAudioData(const File::Path& path);
+        std::unique_ptr<Asset::AudioAssetData> CreateAudioData(void* buffer, SizeT fileSize, const File::Name& name);
         virtual bool SetMasterVolume(float setTo) = 0;
 
-        static bool CanMake(const FilePath& path);
+        static bool CanMake(const File::Path& path);
         static bool CanMake(void* buffer, SizeT fileSize);
     protected:
         AudioManager();
@@ -53,6 +53,22 @@ namespace Atmos
 
         static FileType FileTypeOf(const BufferT& buffer, SizeT fileSize);
     private:
-        virtual std::unique_ptr<AudioAssetData> CreateAudioDataImpl(ExtractedFile&& extracted, const FileName& name) = 0;
+        virtual std::unique_ptr<Asset::AudioAssetData> CreateAudioDataImpl(
+            ExtractedFile&& extracted, const File::Name& name) = 0;
+    };
+}
+
+namespace Inscription
+{
+    template<>
+    class Scribe<::Atmos::Audio::AudioManager, BinaryArchive> :
+        public TableScribe<::Atmos::Audio::AudioManager, BinaryArchive>
+    {
+    public:
+        class Table : public TableBase
+        {
+        protected:
+            void ConstructImplementation(ObjectT* storage, ArchiveT& archive) override;
+        };
     };
 }

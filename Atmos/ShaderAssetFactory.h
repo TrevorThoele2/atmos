@@ -7,7 +7,7 @@
 namespace Atmos
 {
     template<>
-    class ObjectFactory<ShaderAsset> : public FileAssetFactory<ShaderAsset>
+    class ObjectFactory<Asset::ShaderAsset> : public FileAssetFactory<Asset::ShaderAsset>
     {
     public:
         ObjectFactory(ObjectManager& manager);

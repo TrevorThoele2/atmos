@@ -10,9 +10,12 @@ namespace Atmos::Render
     public:
         GraphicsSystem(ObjectManager& manager);
     };
+}
 
+namespace Atmos
+{
     template<>
-    struct ObjectSystemTraits<GraphicsSystem>
+    struct ObjectSystemTraits<Render::GraphicsSystem>
     {
         static const ObjectSystemPriority priority = 0;
     };
@@ -21,10 +24,10 @@ namespace Atmos::Render
 namespace Inscription
 {
     template<>
-    class Scribe<::Atmos::GraphicsSystem, BinaryArchive> :
-        public ObjectSystemScribe<::Atmos::GraphicsSystem, BinaryArchive>
+    class Scribe<::Atmos::Render::GraphicsSystem, BinaryArchive> :
+        public ObjectSystemScribe<::Atmos::Render::GraphicsSystem, BinaryArchive>
     {
-    public:
-        static void Scriven(ObjectT& object, ArchiveT& archive);
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
     };
 }

@@ -41,15 +41,19 @@ namespace Inscription
     }
 
     template<class... Args>
-    class Scribe<::Chroma::Variant<Args...>, BinaryArchive> : public CompositeScribe<::Chroma::Variant<Args...>, BinaryArchive>
+    class Scribe<::Chroma::Variant<Args...>, BinaryArchive> :
+        public CompositeScribe<::Chroma::Variant<Args...>, BinaryArchive>
     {
     private:
         using BaseT = CompositeScribe<::Chroma::Variant<Args...>, BinaryArchive>;
     public:
         using ObjectT = typename BaseT::ObjectT;
         using ArchiveT = typename BaseT::ArchiveT;
-    public:
-        static void Scriven(ObjectT& object, BinaryArchive& archive)
+
+        using BaseT::Scriven;
+        using BaseT::Construct;
+    protected:
+        void ScrivenImplementation(ObjectT& object, BinaryArchive& archive) override
         {
             typedef ::Chroma::Variant<Args...> VariantT;
             if (archive.IsOutput())
@@ -85,5 +89,12 @@ namespace Inscription
                 >(true, object, typeAsId, *archive.AsInput());
             }
         }
+
+        void ConstructImplementation(ObjectT* storage, ArchiveT& archive) override
+        {
+            DoBasicConstruction(storage, archive);
+        }
+
+        using BaseT::DoBasicConstruction;
     };
 }

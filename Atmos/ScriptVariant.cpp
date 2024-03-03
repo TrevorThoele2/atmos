@@ -15,7 +15,7 @@ namespace Atmos
         }
     };
 
-    String ToString(const Scripting::VariantT& arg)
+    String ToString(const Script::VariantT& arg)
     {
         return ::Chroma::VisitReturn<ToStringImplementation, String>(arg);
     }

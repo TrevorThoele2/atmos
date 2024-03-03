@@ -1,7 +1,6 @@
-
 #include "NullWindow.h"
 
-namespace Atmos
+namespace Atmos::Window
 {
     NullWindow::NullWindow(ObjectManager& objectManager) : WindowBase(objectManager)
     {}
@@ -20,7 +19,7 @@ namespace Atmos
         return true;
     }
 
-    void NullWindow::Suspend(const TimeValue& time)
+    void NullWindow::Suspend(const Time::Value& time)
     {}
 
     bool NullWindow::OnStartFrame()

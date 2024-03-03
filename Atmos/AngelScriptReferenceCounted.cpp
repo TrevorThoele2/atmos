@@ -1,7 +1,7 @@
 
 #include "AngelScriptReferenceCounted.h"
 
-namespace Atmos::Scripting
+namespace Atmos::Script
 {
     ReferenceCounted::ReferenceCounted() : refCount(1)
     {}

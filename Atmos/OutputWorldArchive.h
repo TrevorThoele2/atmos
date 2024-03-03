@@ -11,9 +11,16 @@
 
 namespace Atmos
 {
-    class Field;
     class ObjectManager;
+}
 
+namespace Atmos::World
+{
+    class Field;
+}
+
+namespace Atmos::World::Serialization
+{
     class OutputWorldArchive : public OutputArchiveBase
     {
     public:
@@ -28,7 +35,7 @@ namespace Atmos
         WorldStart worldStart;
     public:
         OutputWorldArchive(
-            const FilePath& filePath,
+            const File::Path& filePath,
             ::Inscription::ContainerSize fieldCount,
             ObjectManager& globalObjectManager,
             OpenMode openMode = OpenMode::FORCE_EXTENSION);
@@ -37,7 +44,7 @@ namespace Atmos
 
         void OverwriteFieldCount(::Inscription::ContainerSize set) override;
 
-        const FilePath& GetFilePath() const;
+        const File::Path& GetFilePath() const;
 
         static ::Inscription::Version CurrentVersion();
     protected:
@@ -70,13 +77,13 @@ namespace Atmos
         FieldSaversVector::iterator curSaver;
     private:
         Underlying underlyingArchive;
-        FilePath filePath;
+        File::Path filePath;
     private:
         ObjectManager* globalObjectManager;
         bool hasOutputHeader;
 
         void OutputHeader();
     private:
-        static FilePath GetForcedFilePath(const FilePath& filePath, OpenMode openMode);
+        static File::Path GetForcedFilePath(const File::Path& filePath, OpenMode openMode);
     };
 }

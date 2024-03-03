@@ -8,14 +8,14 @@
 
 class asIScriptEngine;
 
-namespace Atmos::Scripting
+namespace Atmos::Script
 {
-    class System : public ObjectSystem
+    class ScriptSystem : public ObjectSystem
     {
     private:
         class Interface;
     public:
-        System(ObjectManager& manager);
+        ScriptSystem(ObjectManager& manager);
 
         asIScriptEngine* Engine();
     private:
@@ -27,10 +27,10 @@ namespace Atmos::Scripting
 namespace Inscription
 {
     template<>
-    class Scribe<::Atmos::Scripting::System, BinaryArchive> :
-        public CompositeScribe<::Atmos::Scripting::System, BinaryArchive>
+    class Scribe<::Atmos::Script::ScriptSystem, BinaryArchive> :
+        public CompositeScribe<::Atmos::Script::ScriptSystem, BinaryArchive>
     {
     public:
-        static void Scriven(ObjectT& object, ArchiveT& archive);
+        static void ScrivenImplementation(ObjectT& object, ArchiveT& archive);
     };
 }

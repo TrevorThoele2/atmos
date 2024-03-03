@@ -1,5 +1,5 @@
 #include <array>
-#include "DXGraphics.h"
+#include "DirectX9GraphicsManager.h"
 
 #include <Windows.h>
 #include <stdio.h>
@@ -10,7 +10,7 @@ int (WINAPIV * __vsnprintf)(char *, size_t, const char*, va_list) = _vsnprintf;
 #include "ImageAsset.h"
 
 #include "CanvasView.h"
-#include "LineRender.h"
+#include "Line.h"
 
 #include "Flags.h"
 #include "SimpleFile.h"
@@ -27,7 +27,7 @@ namespace Atmos::Render
         return D3DCOLOR_ARGB(col.alpha, col.red, col.green, col.blue);
     }
 
-    class ImageAssetDataImplementation : public ImageAssetData
+    class ImageAssetDataImplementation : public Asset::ImageAssetData
     {
     public:
         LPDIRECT3DTEXTURE9 tex;
@@ -46,7 +46,7 @@ namespace Atmos::Render
         }
     };
 
-    class ShaderAssetDataImplementation : public ShaderAssetData
+    class ShaderAssetDataImplementation : public Asset::ShaderAssetData
     {
     public:
         LPD3DXEFFECT effect;
@@ -103,20 +103,20 @@ namespace Atmos::Render
         }
     };
 
-    class RenderSurfaceData : public Surface::Data
+    class SurfaceData : public Surface::Data
     {
     public:
-        RenderSurfaceData(DX9GraphicsManager& owner, LoggingSystem& loggingSystem, LPDIRECT3DSURFACE9 backBuffer) :
+        SurfaceData(DirectX9GraphicsManager& owner, LoggingSystem& loggingSystem, LPDIRECT3DSURFACE9 backBuffer) :
             owner(&owner), loggingSystem(&loggingSystem), swapChain(nullptr), backBuffer(backBuffer)
         {}
 
-        RenderSurfaceData(DX9GraphicsManager& owner, LoggingSystem& loggingSystem, LPDIRECT3DSWAPCHAIN9 swapChain, LPDIRECT3DSURFACE9 backBuffer) :
+        SurfaceData(DirectX9GraphicsManager& owner, LoggingSystem& loggingSystem, LPDIRECT3DSWAPCHAIN9 swapChain, LPDIRECT3DSURFACE9 backBuffer) :
             owner(&owner), loggingSystem(&loggingSystem), swapChain(swapChain), backBuffer(backBuffer)
         {
             swapChain->GetPresentParameters(&presentationParameters);
         }
 
-        ~RenderSurfaceData()
+        ~SurfaceData()
         {
             Release();
         }
@@ -173,7 +173,7 @@ namespace Atmos::Render
             return presentationParameters;
         }
     private:
-        DX9GraphicsManager* owner;
+        DirectX9GraphicsManager* owner;
         LoggingSystem* loggingSystem;
     private:
         D3DPRESENT_PARAMETERS presentationParameters;
@@ -184,7 +184,7 @@ namespace Atmos::Render
     class CanvasData : public Canvas::Data
     {
     public:
-        DX9GraphicsManager* owner;
+        DirectX9GraphicsManager* owner;
         LoggingSystem* loggingSystem;
 
         LPDIRECT3DTEXTURE9 tex;
@@ -192,7 +192,7 @@ namespace Atmos::Render
 
         D3DLOCKED_RECT lockedRect;
 
-        CanvasData(DX9GraphicsManager& owner, LoggingSystem& loggingSystem, LPDIRECT3DTEXTURE9 tex) :
+        CanvasData(DirectX9GraphicsManager& owner, LoggingSystem& loggingSystem, LPDIRECT3DTEXTURE9 tex) :
             owner(&owner), loggingSystem(&loggingSystem), tex(tex)
         {
             this->tex->GetSurfaceLevel(0, &backBuffer);
@@ -248,7 +248,7 @@ namespace Atmos::Render
         }
     };
 
-    class DX9GraphicsManager::Renderer2D
+    class DirectX9GraphicsManager::Renderer2D
     {
     public:
         typedef size_t ObjectsSize;
@@ -256,7 +256,7 @@ namespace Atmos::Render
         Renderer2D(ObjectManager& objectManager);
 
         ~Renderer2D();
-        void Initialize(DX9GraphicsManager& handler, LPDIRECT3DDEVICE9 device);
+        void Initialize(DirectX9GraphicsManager& handler, LPDIRECT3DDEVICE9 device);
 
         void Start(ObjectsSize size);
         // If the projection exists, then this will flush the sprites
@@ -265,7 +265,7 @@ namespace Atmos::Render
 
         void Draw(
             LPDIRECT3DTEXTURE9 tex,
-            TypedObjectReference<ShaderAsset> shader,
+            TypedObjectReference<Asset::ShaderAsset> shader,
             float X,
             float Y,
             float Z,
@@ -279,7 +279,7 @@ namespace Atmos::Render
         void OnLostDevice();
         void OnResetDevice();
 
-        TypedObjectReference<ShaderAsset> GetDefaultTexturedSpriteShader();
+        TypedObjectReference<Asset::ShaderAsset> GetDefaultTexturedSpriteShader();
     private:
         struct Vertex
         {
@@ -306,11 +306,11 @@ namespace Atmos::Render
             unsigned int primCount;
             float z;
             LPDIRECT3DTEXTURE9 tex;
-            TypedObjectReference<ShaderAsset> shader;
+            TypedObjectReference<Asset::ShaderAsset> shader;
 
             Object3D(
                 LPDIRECT3DTEXTURE9 tex,
-                TypedObjectReference<ShaderAsset> shader,
+                TypedObjectReference<Asset::ShaderAsset> shader,
                 float X,
                 float Y,
                 float Z,
@@ -360,29 +360,29 @@ namespace Atmos::Render
         LPDIRECT3DVERTEXBUFFER9 vertexBuffer;
         LPDIRECT3DINDEXBUFFER9 indexBuffer;
         LPDIRECT3DVERTEXDECLARATION9 vertexDecl;
-        TypedObjectReference<ShaderAsset> defaultTexturedSpriteShader;
+        TypedObjectReference<Asset::ShaderAsset> defaultTexturedSpriteShader;
 
         typedef std::vector<Object3D> Objects;
         Objects objects;
     private:
         ObjectManager* objectManager;
         CameraSystem* FindCameraSystem() const;
-        FileSystem* FindFileSystem() const;
+        File::FileSystem* FindFileSystem() const;
     private:
         void InitializeBuffers();
     };
 
-    DX9GraphicsManager::Renderer2D::Renderer2D(ObjectManager& objectManager) : objectManager(&objectManager)
+    DirectX9GraphicsManager::Renderer2D::Renderer2D(ObjectManager& objectManager) : objectManager(&objectManager)
     {}
 
-    DX9GraphicsManager::Renderer2D::~Renderer2D()
+    DirectX9GraphicsManager::Renderer2D::~Renderer2D()
     {
         vertexBuffer->Release();
         indexBuffer->Release();
         vertexDecl->Release();
     }
 
-    void DX9GraphicsManager::Renderer2D::Initialize(DX9GraphicsManager& handler, LPDIRECT3DDEVICE9 device)
+    void DirectX9GraphicsManager::Renderer2D::Initialize(DirectX9GraphicsManager& handler, LPDIRECT3DDEVICE9 device)
     {
         this->device = device;
         InitializeBuffers();
@@ -390,16 +390,16 @@ namespace Atmos::Render
         auto path = FindFileSystem()->Get()->ExePath().Append("Shaders\\TexturedSprite.fx").GetValue();
 
         auto shaderData = handler.CreateShaderData(path);
-        defaultTexturedSpriteShader = objectManager->CreateObject<ShaderAsset>(path, std::move(shaderData));
+        defaultTexturedSpriteShader = objectManager->CreateObject<Asset::ShaderAsset>(path, std::move(shaderData));
     }
 
-    void DX9GraphicsManager::Renderer2D::Start(ObjectsSize size)
+    void DirectX9GraphicsManager::Renderer2D::Start(ObjectsSize size)
     {
         if (size != 0)
             objects.reserve(size);
     }
 
-    void DX9GraphicsManager::Renderer2D::Stop(const D3DXMATRIX* projection)
+    void DirectX9GraphicsManager::Renderer2D::Stop(const D3DXMATRIX* projection)
     {
         if (projection)
             Flush(*projection);
@@ -407,7 +407,7 @@ namespace Atmos::Render
         objects.clear();
     }
 
-    void DX9GraphicsManager::Renderer2D::Flush(const D3DXMATRIX& projection)
+    void DirectX9GraphicsManager::Renderer2D::Flush(const D3DXMATRIX& projection)
     {
         if (objects.empty())
             return;
@@ -442,7 +442,7 @@ namespace Atmos::Render
         device->SetIndices(indexBuffer);
 
         LPDIRECT3DTEXTURE9 focusedTex = nullptr;
-        TypedObjectReference<ShaderAsset> focusedShader;
+        TypedObjectReference<Asset::ShaderAsset> focusedShader;
         const ShaderAssetDataImplementation* focusedShaderImpl = nullptr;
 
         auto setTexture = [&](LPDIRECT3DTEXTURE9 set)
@@ -452,7 +452,7 @@ namespace Atmos::Render
                 focusedShaderImpl->effect->SetTexture("g_Texture", focusedTex);
         };
 
-        auto setShader = [&](TypedObjectReference<ShaderAsset> set)
+        auto setShader = [&](TypedObjectReference<Asset::ShaderAsset> set)
         {
             focusedShader = set;
             focusedShaderImpl = focusedShader->DataAs<ShaderAssetDataImplementation>();
@@ -483,8 +483,8 @@ namespace Atmos::Render
             vertexBuffer->Unlock();
             indexBuffer->Unlock();
 
-            const ShaderAssetData::PassT passCount = focusedShaderImpl->Begin();
-            ShaderAssetData::PassT passCountCurrent = 0;
+            const Asset::ShaderAssetData::PassT passCount = focusedShaderImpl->Begin();
+            Asset::ShaderAssetData::PassT passCountCurrent = 0;
 
             do
             {
@@ -514,7 +514,7 @@ namespace Atmos::Render
             const size_t loopIndiciesSize = loop->indicies.size();
 
             LPDIRECT3DTEXTURE9 loopTexture = loop->tex;
-            TypedObjectReference<ShaderAsset> loopShader = loop->shader;
+            TypedObjectReference<Asset::ShaderAsset> loopShader = loop->shader;
 
             // Check if the sprint is done
             if ((vertexCount + loopVerticesSize) >= maxVertexSprint || (indexCount + loopIndiciesSize) >= maxIndexSprint)
@@ -570,9 +570,9 @@ namespace Atmos::Render
         drawPrims(true);
     }
 
-    void DX9GraphicsManager::Renderer2D::Draw(
+    void DirectX9GraphicsManager::Renderer2D::Draw(
         LPDIRECT3DTEXTURE9 tex,
-        TypedObjectReference<ShaderAsset> shader,
+        TypedObjectReference<Asset::ShaderAsset> shader,
         float X,
         float Y,
         float Z,
@@ -586,27 +586,27 @@ namespace Atmos::Render
         objects.push_back(Object3D(tex, shader, X, Y, Z, imageBounds, size, center, scalings, rotation, color));
     }
 
-    void DX9GraphicsManager::Renderer2D::OnLostDevice()
+    void DirectX9GraphicsManager::Renderer2D::OnLostDevice()
     {
         vertexBuffer->Release();
         indexBuffer->Release();
         defaultTexturedSpriteShader->DataAs<ShaderAssetDataImplementation>()->effect->OnLostDevice();
     }
 
-    void DX9GraphicsManager::Renderer2D::OnResetDevice()
+    void DirectX9GraphicsManager::Renderer2D::OnResetDevice()
     {
         InitializeBuffers();
         defaultTexturedSpriteShader->DataAs<ShaderAssetDataImplementation>()->effect->OnResetDevice();
     }
 
-    TypedObjectReference<ShaderAsset> DX9GraphicsManager::Renderer2D::GetDefaultTexturedSpriteShader()
+    TypedObjectReference<Asset::ShaderAsset> DirectX9GraphicsManager::Renderer2D::GetDefaultTexturedSpriteShader()
     {
         return defaultTexturedSpriteShader;
     }
 
-    DX9GraphicsManager::Renderer2D::Object3D::Object3D(
+    DirectX9GraphicsManager::Renderer2D::Object3D::Object3D(
         LPDIRECT3DTEXTURE9 tex,
-        TypedObjectReference<ShaderAsset> shader,
+        TypedObjectReference<Asset::ShaderAsset> shader,
         float X,
         float Y,
         float Z,
@@ -641,12 +641,12 @@ namespace Atmos::Render
         SetupQuad(X, Y, center, scalings, rotation.As<Radians>());
     }
 
-    DX9GraphicsManager::Renderer2D::Object3D::Object3D(Object3D&& arg) :
+    DirectX9GraphicsManager::Renderer2D::Object3D::Object3D(Object3D&& arg) :
         vertices(std::move(arg.vertices)), indicies(std::move(arg.indicies)), primCount(std::move(arg.primCount)),
         z(std::move(arg.z)), tex(std::move(arg.tex)), shader(std::move(arg.shader))
     {}
 
-    DX9GraphicsManager::Renderer2D::Object3D& DX9GraphicsManager::Renderer2D::Object3D::operator=(Object3D&& arg)
+    DirectX9GraphicsManager::Renderer2D::Object3D& DirectX9GraphicsManager::Renderer2D::Object3D::operator=(Object3D&& arg)
     {
         vertices = std::move(arg.vertices);
         indicies = std::move(arg.indicies);
@@ -657,7 +657,7 @@ namespace Atmos::Render
         return *this;
     }
 
-    void DX9GraphicsManager::Renderer2D::Object3D::SetupQuad(
+    void DirectX9GraphicsManager::Renderer2D::Object3D::SetupQuad(
         float X,
         float Y,
         const Position2D& center,
@@ -700,7 +700,7 @@ namespace Atmos::Render
         primCount = 2;
     }
 
-    void DX9GraphicsManager::Renderer2D::Object3D::SetupRegularPolygon(
+    void DirectX9GraphicsManager::Renderer2D::Object3D::SetupRegularPolygon(
         float radius,
         unsigned int polyCount,
         float X,
@@ -757,7 +757,7 @@ namespace Atmos::Render
         primCount = polyCount;
     }
 
-    void DX9GraphicsManager::Renderer2D::Object3D::SetupVertexCommon(
+    void DirectX9GraphicsManager::Renderer2D::Object3D::SetupVertexCommon(
         Vertex& vertex,
         const D3DXMATRIX& matrix,
         const D3DXVECTOR2& position,
@@ -768,7 +768,7 @@ namespace Atmos::Render
         vertex.center = center;
     }
 
-    void DX9GraphicsManager::Renderer2D::Object3D::SetupVertexCommon(
+    void DirectX9GraphicsManager::Renderer2D::Object3D::SetupVertexCommon(
         Vertex& vertex,
         const D3DXMATRIX& matrix,
         const D3DXVECTOR2& position,
@@ -780,17 +780,17 @@ namespace Atmos::Render
         vertex.color = ColorToD3D(color);
     }
 
-    CameraSystem* DX9GraphicsManager::Renderer2D::FindCameraSystem() const
+    CameraSystem* DirectX9GraphicsManager::Renderer2D::FindCameraSystem() const
     {
         return objectManager->FindSystem<CameraSystem>();
     }
 
-    FileSystem* DX9GraphicsManager::Renderer2D::FindFileSystem() const
+    File::FileSystem* DirectX9GraphicsManager::Renderer2D::FindFileSystem() const
     {
-        return objectManager->FindSystem<FileSystem>();
+        return objectManager->FindSystem<File::FileSystem>();
     }
 
-    void DX9GraphicsManager::Renderer2D::InitializeBuffers()
+    void DirectX9GraphicsManager::Renderer2D::InitializeBuffers()
     {
         device->CreateVertexBuffer(
             maxVertexSprint * sizeof(Vertex),
@@ -817,7 +817,7 @@ namespace Atmos::Render
         device->CreateVertexDeclaration(vElements, &vertexDecl);
     }
 
-    DX9GraphicsManager::DX9GraphicsManager(ObjectManager& objectManager, HWND hwnd, const ScreenDimensions& backbuffer, bool fullscreen) :
+    DirectX9GraphicsManager::DirectX9GraphicsManager(ObjectManager& objectManager, HWND hwnd, const ScreenDimensions& backbuffer, bool fullscreen) :
         GraphicsManager(objectManager), hwnd(hwnd), renderer2D(new Renderer2D(objectManager))
     {
         ZeroMemory(&presentationParameters, sizeof(presentationParameters));
@@ -839,19 +839,19 @@ namespace Atmos::Render
         device->GetRenderTarget(0, &mainSurface);
     }
 
-    DX9GraphicsManager::~DX9GraphicsManager()
+    DirectX9GraphicsManager::~DirectX9GraphicsManager()
     {
         d3d->Release();
         device->Release();
         lineInterface->Release();
     }
 
-    void DX9GraphicsManager::SetFullscreen(bool set)
+    void DirectX9GraphicsManager::SetFullscreen(bool set)
     {
         (set) ? presentationParameters.Windowed = false : presentationParameters.Windowed = true;
     }
 
-    void DX9GraphicsManager::ClearTarget(const Flags<Target>& target)
+    void DirectX9GraphicsManager::ClearTarget(const Flags<Target>& target)
     {
         DWORD pass = 0;
         if (target.Get(Target::MAIN))
@@ -863,7 +863,7 @@ namespace Atmos::Render
         device->Clear(0, nullptr, pass, 0, 1.0f, 0);
     }
 
-    void DX9GraphicsManager::ClearTarget(const Flags<Target>& target, const Color& color)
+    void DirectX9GraphicsManager::ClearTarget(const Flags<Target>& target, const Color& color)
     {
         DWORD pass = 0;
         if (target.Get(Target::MAIN))
@@ -875,12 +875,12 @@ namespace Atmos::Render
         device->Clear(0, nullptr, pass, ColorToD3D(color), 1.0f, 0);
     }
 
-    void DX9GraphicsManager::Flush()
+    void DirectX9GraphicsManager::Flush()
     {
         renderer2D->Flush(projection);
     }
 
-    void DX9GraphicsManager::SetRenderState(RenderState state, bool set)
+    void DirectX9GraphicsManager::SetRenderState(RenderState state, bool set)
     {
         D3DRENDERSTATETYPE pass;
 
@@ -893,7 +893,7 @@ namespace Atmos::Render
         device->SetRenderState(pass, tf);
     }
 
-    bool DX9GraphicsManager::Start()
+    bool DirectX9GraphicsManager::Start()
     {
         HRESULT hr = device->TestCooperativeLevel();
 
@@ -909,32 +909,32 @@ namespace Atmos::Render
         return true;
     }
 
-    void DX9GraphicsManager::End()
+    void DirectX9GraphicsManager::End()
     {
         device->EndScene();
     }
 
-    void DX9GraphicsManager::StartSprites(size_t spriteCount)
+    void DirectX9GraphicsManager::StartSprites(size_t spriteCount)
     {
         renderer2D->Start(spriteCount);
     }
 
-    void DX9GraphicsManager::EndSprites()
+    void DirectX9GraphicsManager::EndSprites()
     {
         renderer2D->Stop(&projection);
     }
 
-    void DX9GraphicsManager::StartLines()
+    void DirectX9GraphicsManager::StartLines()
     {
         lineInterface->Begin();
     }
 
-    void DX9GraphicsManager::EndLines()
+    void DirectX9GraphicsManager::EndLines()
     {
         lineInterface->End();
     }
 
-    void DX9GraphicsManager::StartStencil()
+    void DirectX9GraphicsManager::StartStencil()
     {
         device->SetRenderState(D3DRS_STENCILENABLE, TRUE);
         device->SetRenderState(D3DRS_STENCILFUNC, D3DCMP_NEVER);
@@ -944,7 +944,7 @@ namespace Atmos::Render
         device->SetRenderState(D3DRS_STENCILWRITEMASK, 0xFFFFFFFF);
     }
 
-    void DX9GraphicsManager::StopStencil()
+    void DirectX9GraphicsManager::StopStencil()
     {
         Flush();
 
@@ -955,20 +955,20 @@ namespace Atmos::Render
         device->SetRenderState(D3DRS_STENCILWRITEMASK, 0);
     }
 
-    LPDIRECT3DDEVICE9& DX9GraphicsManager::GetDevice()
+    LPDIRECT3DDEVICE9& DirectX9GraphicsManager::GetDevice()
     {
         return device;
     }
 
-    DX9GraphicsManager::Scalings::Scalings() : x(0.0f), y(0.0f)
+    DirectX9GraphicsManager::Scalings::Scalings() : x(0.0f), y(0.0f)
     {}
 
-    DX9GraphicsManager::Scalings::Scalings(float x, float y) : x(x), y(y)
+    DirectX9GraphicsManager::Scalings::Scalings(float x, float y) : x(x), y(y)
     {}
 
-    void DX9GraphicsManager::RenderObject(
+    void DirectX9GraphicsManager::RenderObject(
         LPDIRECT3DTEXTURE9 tex,
-        TypedObjectReference<ShaderAsset> shader,
+        TypedObjectReference<Asset::ShaderAsset> shader,
         float X,
         float Y,
         float Z,
@@ -985,7 +985,7 @@ namespace Atmos::Render
         renderer2D->Draw(tex, shader, X, Y, Z, imageBounds, size, center, scalings, rotation, color);
     }
 
-    void DX9GraphicsManager::ReinitializeImpl()
+    void DirectX9GraphicsManager::ReinitializeImpl()
     {
         SetupPresentationParameters();
 
@@ -1016,19 +1016,20 @@ namespace Atmos::Render
         SetRenderStates();
     }
 
-    void DX9GraphicsManager::SetMainDimensionsImpl(const ScreenDimensions& dimensions)
+    void DirectX9GraphicsManager::SetMainDimensionsImpl(const ScreenDimensions& dimensions)
     {
         presentationParameters.BackBufferWidth = dimensions.width;
         presentationParameters.BackBufferHeight = dimensions.height;
         SetProjectionMatrix();
     }
 
-    ScreenDimensions DX9GraphicsManager::GetMainDimensionsImpl() const
+    ScreenDimensions DirectX9GraphicsManager::GetMainDimensionsImpl() const
     {
         return ScreenDimensions(presentationParameters.BackBufferWidth, presentationParameters.BackBufferHeight);
     }
 
-    std::unique_ptr<ImageAssetData> DX9GraphicsManager::CreateImageDataImpl(const FilePath& path)
+    std::unique_ptr<Asset::ImageAssetData> DirectX9GraphicsManager::CreateImageDataImpl(
+        const File::Path& path)
     {
         D3DXIMAGE_INFO info;
         HRESULT hr = D3DXGetImageInfoFromFile(path.c_str(), &info);
@@ -1061,7 +1062,8 @@ namespace Atmos::Render
         return std::make_unique<ImageAssetDataImplementation>(tex);
     }
 
-    std::unique_ptr<ImageAssetData> DX9GraphicsManager::CreateImageDataImpl(void* buffer, std::int32_t size, const FileName& name)
+    std::unique_ptr<Asset::ImageAssetData> DirectX9GraphicsManager::CreateImageDataImpl(
+        void* buffer, std::int32_t size, const File::Name& name)
     {
         D3DXIMAGE_INFO info;
         HRESULT hr = D3DXGetImageInfoFromFileInMemory(buffer, size, &info);
@@ -1095,7 +1097,8 @@ namespace Atmos::Render
         return std::make_unique<ImageAssetDataImplementation>(tex);
     }
 
-    std::unique_ptr<ShaderAssetData> DX9GraphicsManager::CreateShaderDataImpl(const FilePath& path)
+    std::unique_ptr<Asset::ShaderAssetData> DirectX9GraphicsManager::CreateShaderDataImpl(
+        const File::Path& path)
     {
         LPD3DXEFFECT effect;
         HRESULT hr = D3DXCreateEffectFromFile(
@@ -1115,7 +1118,8 @@ namespace Atmos::Render
         return std::make_unique<ShaderAssetDataImplementation>(effect);
     }
 
-    std::unique_ptr<ShaderAssetData> DX9GraphicsManager::CreateShaderDataImpl(void* buffer, std::int32_t size, const FileName& name)
+    std::unique_ptr<Asset::ShaderAssetData> DirectX9GraphicsManager::CreateShaderDataImpl(
+        void* buffer, std::int32_t size, const File::Name& name)
     {
         LPD3DXEFFECT effect;
         HRESULT hr = D3DXCreateEffect(
@@ -1136,7 +1140,8 @@ namespace Atmos::Render
         return std::make_unique<ShaderAssetDataImplementation>(effect);
     }
 
-    Surface DX9GraphicsManager::CreateRenderSurfaceImpl(void* window)
+    Surface DirectX9GraphicsManager::CreateSurfaceImpl(
+        void* window)
     {
         D3DPRESENT_PARAMETERS pp;
         ZeroMemory(&pp, sizeof(pp));
@@ -1164,10 +1169,11 @@ namespace Atmos::Render
             FindLoggingSystem()->Log("A render surface could not be created.",
                 LogType::ERROR_SEVERE);
 
-        return Surface(Surface::DataPtr(new RenderSurfaceData(*this, *FindLoggingSystem(), swapChain, backBuffer)));
+        return Surface(Surface::DataPtr(new SurfaceData(*this, *FindLoggingSystem(), swapChain, backBuffer)));
     }
 
-    Canvas DX9GraphicsManager::CreateCanvasImpl(const ScreenDimensions& dimensions)
+    Canvas DirectX9GraphicsManager::CreateCanvasImpl(
+        const ScreenDimensions& dimensions)
     {
         LPDIRECT3DTEXTURE9 tex;
         HRESULT hr = D3DXCreateTexture(
@@ -1186,19 +1192,19 @@ namespace Atmos::Render
         return Canvas(Canvas::DataPtr(new CanvasData(*this, *FindLoggingSystem(), tex)), dimensions.width, dimensions.height);
     }
 
-    bool DX9GraphicsManager::CanMakeImageImpl(const FilePath& path) const
+    bool DirectX9GraphicsManager::CanMakeImageImpl(const File::Path& path) const
     {
         D3DXIMAGE_INFO info;
         return D3DXGetImageInfoFromFile(path.c_str(), &info) == S_OK;
     }
 
-    bool DX9GraphicsManager::CanMakeImageImpl(void* buffer, std::int32_t size) const
+    bool DirectX9GraphicsManager::CanMakeImageImpl(void* buffer, std::int32_t size) const
     {
         D3DXIMAGE_INFO info;
         return D3DXGetImageInfoFromFileInMemory(buffer, size, &info) == S_OK;
     }
 
-    void DX9GraphicsManager::ResizeCanvasImpl(Canvas& canvas, const ScreenDimensions& dimensions)
+    void DirectX9GraphicsManager::ResizeCanvasImpl(Canvas& canvas, const ScreenDimensions& dimensions)
     {
         LPDIRECT3DTEXTURE9 tex;
         HRESULT hr = D3DXCreateTexture(
@@ -1218,23 +1224,23 @@ namespace Atmos::Render
         canvas.GetData<CanvasData>()->tex = tex;
     }
 
-    void DX9GraphicsManager::SetRenderTargetImpl(Surface& set)
+    void DirectX9GraphicsManager::SetRenderTargetImpl(Surface& set)
     {
         SetProjectionMatrix();
     }
 
-    void DX9GraphicsManager::SetRenderTargetToMainImpl()
+    void DirectX9GraphicsManager::SetRenderTargetToMainImpl()
     {
         device->SetRenderTarget(0, mainSurface);
         SetProjectionMatrix();
     }
 
-    void DX9GraphicsManager::ReleaseMainRenderTarget()
+    void DirectX9GraphicsManager::ReleaseMainRenderTarget()
     {
         mainSurface->Release();
     }
 
-    void DX9GraphicsManager::ResetMainRenderTarget()
+    void DirectX9GraphicsManager::ResetMainRenderTarget()
     {
         HRESULT hr = device->GetRenderTarget(0, &mainSurface);
         if (hr != S_OK)
@@ -1242,7 +1248,7 @@ namespace Atmos::Render
                 LogType::ERROR_SEVERE);
     }
 
-    void DX9GraphicsManager::PresentImpl()
+    void DirectX9GraphicsManager::PresentImpl()
     {
         HRESULT hr = device->Present(nullptr, nullptr, nullptr, nullptr);
         if (hr != S_OK)
@@ -1250,7 +1256,7 @@ namespace Atmos::Render
                 LogType::ERROR_SEVERE);
     }
 
-    void DX9GraphicsManager::PresentImpl(void* windowOverride)
+    void DirectX9GraphicsManager::PresentImpl(void* windowOverride)
     {
         HRESULT hr = device->Present(nullptr, nullptr, static_cast<HWND>(windowOverride), nullptr);
         if (hr != S_OK)
@@ -1258,7 +1264,7 @@ namespace Atmos::Render
                 LogType::ERROR_SEVERE);
     }
 
-    void DX9GraphicsManager::RenderSpriteImpl(SpriteReference sprite, float X, float Y)
+    void DirectX9GraphicsManager::RenderSpriteImpl(SpriteReference sprite, float X, float Y)
     {
         auto material = sprite->material;
         if (!material)
@@ -1282,7 +1288,7 @@ namespace Atmos::Render
             sprite->color);
     }
 
-    void DX9GraphicsManager::RenderCanvasViewImpl(CanvasViewReference view, float X, float Y)
+    void DirectX9GraphicsManager::RenderCanvasViewImpl(CanvasViewReference view, float X, float Y)
     {
         RenderObject(
             view->source->GetData<CanvasData>()->tex,
@@ -1298,28 +1304,28 @@ namespace Atmos::Render
             Color(255, 255, 255, 255));
     }
 
-    void DX9GraphicsManager::RenderUnknownFragmentImpl(RenderFragmentReference fragment, float X, float Y)
+    void DirectX9GraphicsManager::RenderUnknownFragmentImpl(RenderFragmentReference fragment, float X, float Y)
     {}
 
-    void DX9GraphicsManager::RenderLineImpl(const Line& line)
+    void DirectX9GraphicsManager::RenderLineImpl(const Line& line)
     {
-        if (line.GetWidth() != lineInterface->GetWidth())
+        if (line.width != lineInterface->GetWidth())
         {
             EndLines();
-            lineInterface->SetWidth(line.GetWidth());
+            lineInterface->SetWidth(line.width);
             StartLines();
         }
 
         D3DXVECTOR2 points[] =
         {
-            D3DXVECTOR2(static_cast<float>(line.GetFrom().x), static_cast<float>(line.GetFrom().y)),
-            D3DXVECTOR2(static_cast<float>(line.GetTo().x), static_cast<float>(line.GetTo().y))
+            D3DXVECTOR2(static_cast<float>(line.from.x), static_cast<float>(line.from.y)),
+            D3DXVECTOR2(static_cast<float>(line.to.x), static_cast<float>(line.to.y))
         };
-        lineInterface->SetWidth(line.GetWidth());
+        lineInterface->SetWidth(line.width);
         lineInterface->Draw(points, 2, ColorToD3D(line.color));
     }
 
-    void DX9GraphicsManager::SetupPresentationParameters()
+    void DirectX9GraphicsManager::SetupPresentationParameters()
     {
         // Discard old frames
         presentationParameters.SwapEffect = D3DSWAPEFFECT_DISCARD;
@@ -1337,7 +1343,7 @@ namespace Atmos::Render
             presentationParameters.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
     }
 
-    void DX9GraphicsManager::SetRenderStates()
+    void DirectX9GraphicsManager::SetRenderStates()
     {
         HRESULT hr = device->SetRenderState(D3DRS_ZENABLE, false);
         if (hr != S_OK)
@@ -1361,24 +1367,33 @@ namespace Atmos::Render
                 LogType::ERROR_SEVERE);
     }
 
-    void DX9GraphicsManager::SetProjectionMatrix()
+    void DirectX9GraphicsManager::SetProjectionMatrix()
     {
         ScreenDimensions dimensions(GetCurrentDimensions());
-        D3DXMatrixOrthoOffCenterLH(&projection, 0, static_cast<FLOAT>(dimensions.width), static_cast<FLOAT>(dimensions.height), 0, 0.0f, 1.0f);
+        D3DXMatrixOrthoOffCenterLH(
+            &projection,
+            0,
+            static_cast<FLOAT>(dimensions.width),
+            static_cast<FLOAT>(dimensions.height),
+            0,
+            0.0f,
+            1.0f);
     }
 
-    void DX9GraphicsManager::OnResolutionChanged(const Agui::Resolution& arg)
+    void DirectX9GraphicsManager::OnResolutionChanged(const Agui::Resolution& arg)
     {
-        SetMainDimensions(ScreenDimensions(static_cast<Dimension>(arg.GetWidth()), static_cast<Dimension>(arg.GetHeight())));
+        SetMainDimensions(ScreenDimensions(
+            static_cast<Dimension>(arg.GetWidth()),
+            static_cast<Dimension>(arg.GetHeight())));
         Reinitialize();
     }
 
-    FpsSystem* DX9GraphicsManager::FindFpsSystem() const
+    Time::FpsSystem* DirectX9GraphicsManager::FindFpsSystem() const
     {
-        return objectManager->FindSystem<FpsSystem>();
+        return objectManager->FindSystem<Time::FpsSystem>();
     }
 
-    LoggingSystem* DX9GraphicsManager::FindLoggingSystem() const
+    LoggingSystem* DirectX9GraphicsManager::FindLoggingSystem() const
     {
         return objectManager->FindSystem<LoggingSystem>();
     }

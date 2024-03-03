@@ -86,7 +86,8 @@ namespace Inscription
     template<>
     class Scribe<::Atmos::Angle, BinaryArchive> : public CompositeScribe<::Atmos::Angle, BinaryArchive>
     {
-    public:
-        static void Scriven(ObjectT& object, ArchiveT& archive);
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
+        void ConstructImplementation(ObjectT* storage, ArchiveT& archive) override;
     };
 }

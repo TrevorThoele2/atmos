@@ -9,12 +9,12 @@
 #include "ObjectManager.h"
 #include "FileSystem.h"
 
-namespace Atmos
+namespace Atmos::Asset
 {
     AssetPackageSystem::AssetPackageSystem(ObjectManager& manager) : ObjectSystem(manager)
     {}
 
-    String ProcessWorldFilePath(const FilePath& worldFilePath)
+    String ProcessWorldFilePath(const File::Path& worldFilePath)
     {
         return ReplaceFileExtension(worldFilePath, AssetPackageSystem::FileExtension());
     }
@@ -24,7 +24,7 @@ namespace Atmos
         ClearAll();
     }
 
-    void AssetPackageSystem::Save(const FilePath& filePath)
+    void AssetPackageSystem::Save(const File::Path& filePath)
     {
         wxFileOutputStream stream(ProcessWorldFilePath(filePath));
         wxZipOutputStream zip(stream);
@@ -32,7 +32,7 @@ namespace Atmos
         auto saver = [&](const char *sub, BufferMap& map)
         {
             String nextEntry(sub);
-            nextEntry.append(FilePath::fileSeparator);
+            nextEntry.append(File::Path::fileSeparator);
             if (map.empty())
             {
                 zip.PutNextEntry(nextEntry);
@@ -52,16 +52,16 @@ namespace Atmos
         saver(shaderSub, shaders);
     }
 
-    void AssetPackageSystem::SaveWorldFolder(const FileName& name)
+    void AssetPackageSystem::SaveWorldFolder(const File::Name& name)
     {
         Save(WorldFilePath(name));
     }
 
-    void AssetPackageSystem::Load(const FilePath& path)
+    void AssetPackageSystem::Load(const File::Path& path)
     {
         ClearAll();
 
-        Atmos::FilePath processedPath(ProcessWorldFilePath(path));
+        Atmos::File::Path processedPath(ProcessWorldFilePath(path));
         wxFFileInputStream stream(processedPath.GetValue());
         if (!stream)
         {
@@ -88,8 +88,8 @@ namespace Atmos
         {
             // Get size
             auto size = entry->GetSize();
-            Atmos::FilePath path(entry->GetName());
-            Atmos::FileName name(path);
+            Atmos::File::Path path(entry->GetName());
+            Atmos::File::Name name(path);
 
             // Read buffer
             auto buffer = new char[size];
@@ -127,7 +127,7 @@ namespace Atmos
         }
     }
 
-    void AssetPackageSystem::LoadWorldFolder(const FileName& name)
+    void AssetPackageSystem::LoadWorldFolder(const File::Name& name)
     {
         Load(WorldFilePath(name));
     }
@@ -160,9 +160,9 @@ namespace Atmos
         ClearMap(shaders);
     }
 
-    FilePath AssetPackageSystem::WorldFilePath(const FileName& fileName) const
+    File::Path AssetPackageSystem::WorldFilePath(const File::Name& fileName) const
     {
-        auto filePath = FilePath("Worlds");
+        auto filePath = File::Path("Worlds");
         filePath.AppendSeparator();
         filePath.Append(fileName);
         return filePath;
@@ -173,15 +173,15 @@ namespace Atmos
         return Manager()->FindSystem<LoggingSystem>();
     }
 
-    FileSystem* AssetPackageSystem::FindFileSystem()
+    File::FileSystem* AssetPackageSystem::FindFileSystem()
     {
-        return Manager()->FindSystem<FileSystem>();
+        return Manager()->FindSystem<File::FileSystem>();
     }
 }
 
 namespace Inscription
 {
-    void Scribe<::Atmos::AssetPackageSystem, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
+    void Scribe<::Atmos::Asset::AssetPackageSystem, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
     {
         BaseScriven<::Atmos::ObjectSystem>(object, archive);
     }

@@ -13,15 +13,15 @@ namespace Atmos:: Entity
     public:
         enum class Activator : std::int32_t
         {
-            ENTER_TILE,
-            ATTEMPT_ENTER_TILE,
-            USE_ON,
-            USE_INTO,
-            ENTER_FIELD,
-            LEAVE_FIELD
+            EnterTile,
+            AttemptEnterTile,
+            UseOn,
+            UseInto,
+            EnterField,
+            LeaveField
         };
     public:
-        typedef TypedObjectReference<ScriptInstance> ScriptInstanceReference;
+        typedef TypedObjectReference<Script::ScriptInstance> ScriptInstanceReference;
     public:
         Activator activator;
         ScriptInstanceReference script;

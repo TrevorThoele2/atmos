@@ -11,7 +11,7 @@
 
 #include "ObjectScribe.h"
 
-namespace Atmos
+namespace Atmos::Time
 {
     template<class Stopwatch>
     class ExtendedStopwatchAdapter;
@@ -20,64 +20,64 @@ namespace Atmos
 namespace Inscription
 {
     template<class Stopwatch>
-    struct TableData<::Atmos::ExtendedStopwatchAdapter<Stopwatch>, BinaryArchive> :
-        public TableDataBase<::Atmos::ExtendedStopwatchAdapter<Stopwatch>, BinaryArchive>
+    struct TableData<::Atmos::Time::ExtendedStopwatchAdapter<Stopwatch>, BinaryArchive> :
+        public TableDataBase<::Atmos::Time::ExtendedStopwatchAdapter<Stopwatch>, BinaryArchive>
     {
-        using ObjectT = ::Atmos::ExtendedStopwatchAdapter<Stopwatch>;
+        using ObjectT = ::Atmos::Time::ExtendedStopwatchAdapter<Stopwatch>;
 
         using StopwatchReference = typename ObjectT::StopwatchReference;
         StopwatchReference stopwatch;
 
-        ::Atmos::TimeValue elapsed;
-        ::Atmos::TimeValue average;
-        ::Atmos::TimeValue highest;
+        ::Atmos::Time::Value elapsed;
+        ::Atmos::Time::Value average;
+        ::Atmos::Time::Value highest;
     };
 }
 
-namespace Atmos
+namespace Atmos::Time
 {
     template<class Stopwatch>
     class ExtendedStopwatchAdapter
     {
     public:
         ExtendedStopwatchAdapter(
-            ObjectManager& manager, TimeValue goal = TimeValue());
+            ObjectManager& manager, Value goal = Value());
         ExtendedStopwatchAdapter(
             typename const ::Inscription::BinaryTableData<ExtendedStopwatchAdapter<Stopwatch>>& data);
 
         bool operator==(const ExtendedStopwatchAdapter& arg) const;
 
-        TimeValue Start();
-        void SetGoal(TimeValue set);
-        TimeValue GetGoal() const;
+        Value Start();
+        void SetGoal(Value set);
+        Value GetGoal() const;
         bool HasReachedGoal() const;
-        TimeValue Calculate();
-        TimeValue Checkpoint();
+        Value Calculate();
+        Value Checkpoint();
         // Doesn't calculate anything
-        TimeValue QueryElapsed() const;
-        TimeValue CurrentTime() const;
+        Value QueryElapsed() const;
+        Value CurrentTime() const;
 
         void ResetAverage();
-        TimeValue GetAverage() const;
+        Value GetAverage() const;
         void ResetHighest();
-        TimeValue GetHighest() const;
+        Value GetHighest() const;
     private:
         typedef TypedObjectReference<Stopwatch> StopwatchReference;
         StopwatchReference stopwatch;
     private:
-        TimeValue elapsed;
-        TimeValue average;
-        TimeValue highest;
+        Value elapsed;
+        Value average;
+        Value highest;
     private:
         INSCRIPTION_TABLE_ACCESS;
     };
 
     template<class Stopwatch>
     ExtendedStopwatchAdapter<Stopwatch>::ExtendedStopwatchAdapter(
-        ObjectManager& manager, TimeValue goal) :
+        ObjectManager& manager, Value goal) :
 
         stopwatch(manager.CreateObject<Stopwatch>(goal)),
-        elapsed(TimeValue::Value(0)), average(TimeValue::Value(0)), highest(TimeValue::Value(0))
+        elapsed(Value::Number(0)), average(Value::Number(0)), highest(Value::Number(0))
     {}
 
     template<class Stopwatch>
@@ -85,7 +85,7 @@ namespace Atmos
         typename const ::Inscription::BinaryTableData<ExtendedStopwatchAdapter<Stopwatch>>& data) :
 
         stopwatch(data.stopwatch),
-        stopwatch(data.elapsed, data.average, data.highest)
+        elapsed(data.elapsed), average(data.average), highest(data.highest)
     {}
 
     template<class Stopwatch>
@@ -95,19 +95,19 @@ namespace Atmos
     }
 
     template<class Stopwatch>
-    TimeValue ExtendedStopwatchAdapter<Stopwatch>::Start()
+    Value ExtendedStopwatchAdapter<Stopwatch>::Start()
     {
         return stopwatch->Start();
     }
 
     template<class Stopwatch>
-    void ExtendedStopwatchAdapter<Stopwatch>::SetGoal(TimeValue set)
+    void ExtendedStopwatchAdapter<Stopwatch>::SetGoal(Value set)
     {
         stopwatch->SetGoal(set);
     }
 
     template<class Stopwatch>
-    TimeValue ExtendedStopwatchAdapter<Stopwatch>::GetGoal() const
+    Value ExtendedStopwatchAdapter<Stopwatch>::GetGoal() const
     {
         return stopwatch->GetGoal();
     }
@@ -119,7 +119,7 @@ namespace Atmos
     }
 
     template<class Stopwatch>
-    TimeValue ExtendedStopwatchAdapter<Stopwatch>::Calculate()
+    Value ExtendedStopwatchAdapter<Stopwatch>::Calculate()
     {
         elapsed = stopwatch->Elapsed();
 
@@ -129,28 +129,28 @@ namespace Atmos
 
         // Calculate average
         // accumulator = (alpha * new_value) + (1.0 - alpha) * accumulator
-        const TimeValue::Value alpha(0.001, elapsed.GetRadixPoint());
-        average = static_cast<TimeValue::Value>(
+        const Value::Number alpha(0.001, elapsed.GetRadixPoint());
+        average = static_cast<Value::Number>(
             (alpha * elapsed.Get()) +
-            (TimeValue::Value(1, 0, elapsed.GetRadixPoint()) - alpha) * average.Get());
+            (Value::Number(1, 0, elapsed.GetRadixPoint()) - alpha) * average.Get());
 
         return elapsed;
     }
 
     template<class Stopwatch>
-    TimeValue ExtendedStopwatchAdapter<Stopwatch>::Checkpoint()
+    Value ExtendedStopwatchAdapter<Stopwatch>::Checkpoint()
     {
         return stopwatch->CurrentTime();
     }
 
     template<class Stopwatch>
-    TimeValue ExtendedStopwatchAdapter<Stopwatch>::QueryElapsed() const
+    Value ExtendedStopwatchAdapter<Stopwatch>::QueryElapsed() const
     {
         return elapsed;
     }
 
     template<class Stopwatch>
-    TimeValue ExtendedStopwatchAdapter<Stopwatch>::CurrentTime() const
+    Value ExtendedStopwatchAdapter<Stopwatch>::CurrentTime() const
     {
         return stopwatch->CurrentTime();
     }
@@ -158,11 +158,11 @@ namespace Atmos
     template<class Stopwatch>
     void ExtendedStopwatchAdapter<Stopwatch>::ResetAverage()
     {
-        average = TimeValue(TimeValue::Value(0));
+        average = Value(Value::Number(0));
     }
 
     template<class Stopwatch>
-    TimeValue ExtendedStopwatchAdapter<Stopwatch>::GetAverage() const
+    Value ExtendedStopwatchAdapter<Stopwatch>::GetAverage() const
     {
         return average;
     }
@@ -170,11 +170,11 @@ namespace Atmos
     template<class Stopwatch>
     void ExtendedStopwatchAdapter<Stopwatch>::ResetHighest()
     {
-        highest = TimeValue(TimeValue::Value(0));
+        highest = Value(Value::Number(0));
     }
 
     template<class Stopwatch>
-    TimeValue ExtendedStopwatchAdapter<Stopwatch>::GetHighest() const
+    Value ExtendedStopwatchAdapter<Stopwatch>::GetHighest() const
     {
         return highest;
     }
@@ -183,15 +183,18 @@ namespace Atmos
 namespace Inscription
 {
     template<class Stopwatch>
-    class Scribe<::Atmos::ExtendedStopwatchAdapter<Stopwatch>, BinaryArchive> :
-        public TableScribe<::Atmos::ExtendedStopwatchAdapter<Stopwatch>, BinaryArchive>
+    class Scribe<::Atmos::Time::ExtendedStopwatchAdapter<Stopwatch>, BinaryArchive> :
+        public TableScribe<::Atmos::Time::ExtendedStopwatchAdapter<Stopwatch>, BinaryArchive>
     {
     private:
-        using BaseT = TableScribe<::Atmos::ExtendedStopwatchAdapter<Stopwatch>, BinaryArchive>;
+        using BaseT = TableScribe<::Atmos::Time::ExtendedStopwatchAdapter<Stopwatch>, BinaryArchive>;
     public:
         using ObjectT = typename BaseT::ObjectT;
         using ArchiveT = typename BaseT::ArchiveT;
         using ClassNameResolver = typename BaseT::ClassNameResolver;
+
+        using BaseT::Scriven;
+        using BaseT::Construct;
     public:
         using TableBase = typename BaseT::TableBase;
     public:
@@ -206,6 +209,13 @@ namespace Inscription
                     DataEntry::Auto(&ObjectT::average, &DataT::average),
                     DataEntry::Auto(&ObjectT::highest, &DataT::highest) });
             }
+        protected:
+            void ConstructImplementation(ObjectT* storage, ArchiveT& archive) override
+            {
+                DoBasicConstruction(storage, archive);
+            }
+
+            using TableBase::DoBasicConstruction;
         };
     };
 }

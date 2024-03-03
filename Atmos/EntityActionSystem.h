@@ -13,14 +13,14 @@ namespace Atmos::Entity
     {
     public:
         ActionSystem(ObjectManager& manager);
-    private:
+    protected:
         void InitializeImpl() override;
         void WorkImpl() override;
     private:
         ObjectBatch<ActionComponent> actionComponents;
     private:
-        void OnFieldSet(Field& field);
-        void OnFieldUnset(Field* field);
+        void OnFieldSet(World::Field& field);
+        void OnFieldUnset(World::Field* field);
     };
 }
 
@@ -30,7 +30,7 @@ namespace Inscription
     class Scribe<::Atmos::Entity::ActionSystem, BinaryArchive> :
         public ObjectSystemScribe<::Atmos::Entity::ActionSystem, BinaryArchive>
     {
-    public:
-        static void Scriven(ObjectT& object, ArchiveT& archive);
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
     };
 }

@@ -22,18 +22,26 @@
 namespace Atmos
 {
     class LoggingSystem;
+}
+
+namespace Atmos::Time
+{
     class FpsSystem;
 }
 
 namespace Atmos::Render
 {
-    class DX9GraphicsManager : public GraphicsManager
+    class DirectX9GraphicsManager : public GraphicsManager
     {
     private:
         class Renderer2D;
     public:
-        DX9GraphicsManager(ObjectManager& objectManager, HWND hwnd, const ScreenDimensions& backbuffer, bool fullscreen);
-        ~DX9GraphicsManager();
+        DirectX9GraphicsManager(
+            ObjectManager& objectManager,
+            HWND hwnd,
+            const ScreenDimensions& backbuffer,
+            bool fullscreen);
+        ~DirectX9GraphicsManager();
 
         // Setting
         void SetFullscreen(bool set) override;
@@ -68,7 +76,7 @@ namespace Atmos::Render
     protected:
         void RenderObject(
             LPDIRECT3DTEXTURE9 tex,
-            TypedObjectReference<ShaderAsset> shader,
+            TypedObjectReference<Asset::ShaderAsset> shader,
             float X,
             float Y,
             float Z,
@@ -91,21 +99,27 @@ namespace Atmos::Render
 
         LPDIRECT3DSURFACE9 mainSurface;
     private:
-        DX9GraphicsManager(const DX9GraphicsManager& arg) = delete;
-        DX9GraphicsManager& operator=(const DX9GraphicsManager& arg) = delete;
+        DirectX9GraphicsManager(const DirectX9GraphicsManager& arg) = delete;
+        DirectX9GraphicsManager& operator=(const DirectX9GraphicsManager& arg) = delete;
 
         void ReinitializeImpl() override;
         void SetMainDimensionsImpl(const ScreenDimensions& dimensions) override;
         ScreenDimensions GetMainDimensionsImpl() const override;
 
-        std::unique_ptr<ImageAssetData> CreateImageDataImpl(const FilePath& path) override;
-        std::unique_ptr<ImageAssetData> CreateImageDataImpl(void* buffer, std::int32_t size, const FileName& name) override;
-        std::unique_ptr<ShaderAssetData> CreateShaderDataImpl(const FilePath& path) override;
-        std::unique_ptr<ShaderAssetData> CreateShaderDataImpl(void* buffer, std::int32_t size, const FileName& name) override;
-        Surface CreateRenderSurfaceImpl(void* window) override;
-        Canvas CreateCanvasImpl(const ScreenDimensions& dimensions) override;
+        std::unique_ptr<Asset::ImageAssetData> CreateImageDataImpl(
+            const File::Path& path) override;
+        std::unique_ptr<Asset::ImageAssetData> CreateImageDataImpl(
+            void* buffer, std::int32_t size, const File::Name& name) override;
+        std::unique_ptr<Asset::ShaderAssetData> CreateShaderDataImpl(
+            const File::Path& path) override;
+        std::unique_ptr<Asset::ShaderAssetData> CreateShaderDataImpl(
+            void* buffer, std::int32_t size, const File::Name& name) override;
+        Surface CreateSurfaceImpl(
+            void* window) override;
+        Canvas CreateCanvasImpl(
+            const ScreenDimensions& dimensions) override;
 
-        bool CanMakeImageImpl(const FilePath& path) const override;
+        bool CanMakeImageImpl(const File::Path& path) const override;
         bool CanMakeImageImpl(void* buffer, std::int32_t size) const override;
 
         void ResizeCanvasImpl(Canvas& canvas, const ScreenDimensions& dimensions) override;
@@ -128,7 +142,7 @@ namespace Atmos::Render
         void SetProjectionMatrix();
         void OnResolutionChanged(const Agui::Resolution& arg);
     private:
-        FpsSystem* FindFpsSystem() const;
+        Time::FpsSystem* FindFpsSystem() const;
         LoggingSystem* FindLoggingSystem() const;
     };
 }

@@ -3,6 +3,6 @@
 
 namespace Atmos
 {
-    ObjectFactory<AudioAsset>::ObjectFactory(ObjectManager& manager) : FileAssetFactory(manager)
+    ObjectFactory<Asset::AudioAsset>::ObjectFactory(ObjectManager& manager) : FileAssetFactory(manager)
     {}
 }

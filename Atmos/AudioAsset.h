@@ -2,18 +2,21 @@
 
 #include "Object.h"
 
-#include "Asset.h"
+#include "FileAsset.h"
 
 #include "ReadonlyProperty.h"
 
 #include "ObjectScribe.h"
 
-namespace Atmos
+namespace Atmos::Audio
+{
+    class AudioSystem;
+}
+
+namespace Atmos::Asset
 {
     class AudioAssetData;
-
     class AssetPackageSystem;
-    class AudioSystem;
 
     class AudioAsset : public FileAsset
     {
@@ -21,7 +24,7 @@ namespace Atmos
         typedef AudioAssetData DataT;
         typedef std::unique_ptr<DataT> DataPtr;
     public:
-        AudioAsset(ObjectManager& manager, const FileName& fileName, DataPtr&& data);
+        AudioAsset(ObjectManager& manager, const File::Name& fileName, DataPtr&& data);
         AudioAsset(const AudioAsset& arg);
         AudioAsset(const ::Inscription::BinaryTableData<AudioAsset>& data);
 
@@ -36,10 +39,10 @@ namespace Atmos
     private:
         DataPtr data;
        
-        void SetDataFromPackage(const FileName& fileName);
+        void SetDataFromPackage(const File::Name& fileName);
     private:
         AssetPackageSystem* FindAssetPackageSystem();
-        AudioSystem* FindAudioSystem();
+        Audio::AudioSystem* FindAudioSystem();
     };
 
     template<class RealDataT>
@@ -54,13 +57,6 @@ namespace Atmos
         return static_cast<RealDataT*>(data.get());
     }
 
-    template<>
-    struct ObjectTraits<AudioAsset> : ObjectTraitsBase<AudioAsset>
-    {
-        static const ObjectTypeName typeName;
-        static constexpr ObjectTypeList<FileAsset> bases = {};
-    };
-
     class AudioAssetInstanceData;
 
     class AudioAssetData
@@ -74,15 +70,26 @@ namespace Atmos
     };
 }
 
+namespace Atmos
+{
+    template<>
+    struct ObjectTraits<Asset::AudioAsset> : ObjectTraitsBase<Asset::AudioAsset>
+    {
+        static const ObjectTypeName typeName;
+        static constexpr ObjectTypeList<Asset::FileAsset> bases = {};
+    };
+}
+
 namespace Inscription
 {
     template<>
-    struct TableData<::Atmos::AudioAsset, BinaryArchive> :
-        public ObjectTableDataBase<::Atmos::AudioAsset, BinaryArchive>
+    struct TableData<::Atmos::Asset::AudioAsset, BinaryArchive> :
+        public ObjectTableDataBase<::Atmos::Asset::AudioAsset, BinaryArchive>
     {};
 
     template<>
-    class Scribe<::Atmos::AudioAsset, BinaryArchive> : public ObjectScribe<::Atmos::AudioAsset, BinaryArchive>
+    class Scribe<::Atmos::Asset::AudioAsset, BinaryArchive> :
+        public ObjectScribe<::Atmos::Asset::AudioAsset, BinaryArchive>
     {
     public:
         class Table : public TableBase

@@ -4,7 +4,7 @@
 
 #include "Serialization.h"
 
-namespace Atmos::Scripting
+namespace Atmos::Script
 {
     class Persistence
     {
@@ -29,10 +29,11 @@ namespace Atmos::Scripting
 namespace Inscription
 {
     template<>
-    class Scribe<::Atmos::Scripting::Persistence, BinaryArchive> :
-        public CompositeScribe<::Atmos::Scripting::Persistence, BinaryArchive>
+    class Scribe<::Atmos::Script::Persistence, BinaryArchive> :
+        public CompositeScribe<::Atmos::Script::Persistence, BinaryArchive>
     {
-    public:
-        static void Scriven(ObjectT& object, ArchiveT& archive);
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
+        void ConstructImplementation(ObjectT* storage, ArchiveT& archive) override;
     };
 }

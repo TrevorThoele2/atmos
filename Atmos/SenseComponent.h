@@ -17,8 +17,8 @@ namespace Atmos::Entity
     class SenseComponent : public Component
     {
     public:
-        typedef PositionalOffsetAdapter<Sprite> SpriteOffset;
-        typedef PositionalOffsetAdapter<Sound> SoundOffset;
+        typedef PositionalOffsetAdapter<Render::Sprite> SpriteOffset;
+        typedef PositionalOffsetAdapter<Audio::Sound> SoundOffset;
 
         typedef std::vector<SpriteOffset> SpriteList;
         typedef std::vector<SoundOffset> SoundList;
