@@ -36,9 +36,4 @@ namespace Inscription
     {
         archive(object.value);
     }
-
-    void Scribe<::Atmos::RadixPoint, BinaryArchive>::ConstructImplementation(ObjectT* storage, ArchiveT& archive)
-    {
-        DoBasicConstruction(storage, archive);
-    }
 }

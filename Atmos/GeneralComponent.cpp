@@ -1,45 +1,35 @@
 #include "GeneralComponent.h"
 
-#include <Inscription/ContainerSize.h>
-#include <Inscription/UnorderedSetScribe.h>
-
 namespace Atmos::Entity
 {
-    GeneralComponent::GeneralComponent(ObjectManager& manager, EntityReference reference) :
-        Component(manager, reference), solid(false)
-    {}
-
-    GeneralComponent::GeneralComponent(const ::Inscription::BinaryTableData<GeneralComponent>& data) :
-        Component(std::get<0>(data.bases)), name(data.name), displayName(data.displayName), position(data.position),
-        direction(data.direction), solid(data.solid), tags(data.tags)
-    {}
-
     void GeneralComponent::SetPosition(const Position &set)
     {
         position = set;
     }
 
-    Grid::Position GeneralComponent::GetPositionInFront() const
+    Grid::Position GeneralComponent::PositionInFront() const
     {
-        Grid::Position posInFront(position);
+        auto positionInFront(position);
 
         switch (direction.Get())
         {
-        case Direction::Value::UP:
-            --posInFront.y;
+        case Direction::Value::Up:
+            --positionInFront.y;
             break;
-        case Direction::Value::DOWN:
-            ++posInFront.y;
+        case Direction::Value::Down:
+            ++positionInFront.y;
             break;
-        case Direction::Value::LEFT:
-            --posInFront.x;
+        case Direction::Value::Left:
+            --positionInFront.x;
             break;
-        case Direction::Value::RIGHT:
-            ++posInFront.x;
+        case Direction::Value::Right:
+            ++positionInFront.x;
+            break;
+        default:
             break;
         }
 
-        return posInFront;
+        return positionInFront;
     }
 
     void GeneralComponent::SetSolid(bool set)
@@ -81,11 +71,6 @@ namespace Atmos::Entity
         return &found->second;
     }
 
-    GeneralComponent::StorageObject* GeneralComponent::FindStorage(const StorageObject &find)
-    {
-        return FindStorage(find.name);
-    }
-
     const GeneralComponent::StorageObject* GeneralComponent::FindStorage(const Name &find) const
     {
         auto found = storage.find(find);
@@ -93,11 +78,6 @@ namespace Atmos::Entity
             return nullptr;
 
         return &found->second;
-    }
-
-    const GeneralComponent::StorageObject* GeneralComponent::FindStorage(const StorageObject &find) const
-    {
-        return FindStorage(find.name);
     }
 
     bool GeneralComponent::HasStorage(const Name &check) const
@@ -124,54 +104,9 @@ namespace Atmos::Entity
     {
         return tags.find(check) != tags.end();
     }
-
-    ObjectTypeDescription GeneralComponent::TypeDescription() const
-    {
-        return ObjectTraits<GeneralComponent>::TypeDescription();
-    }
 }
 
-namespace Atmos
+namespace Arca
 {
-    const ObjectTypeName ObjectTraits<Entity::GeneralComponent>::typeName = "GeneralComponent";
-}
-
-namespace Inscription
-{
-    Scribe<::Atmos::Entity::GeneralComponent, BinaryArchive>::Table::Table()
-    {
-        MergeDataEntries({
-            DataEntry::Auto(&ObjectT::name, &DataT::name),
-            DataEntry::Auto(&ObjectT::displayName, &DataT::displayName),
-            DataEntry::Auto(&ObjectT::position, &DataT::position),
-            DataEntry::Auto(&ObjectT::direction, &DataT::direction),
-            DataEntry::Auto(&ObjectT::solid, &DataT::solid),
-            DataEntry::Auto(&ObjectT::tags, &DataT::tags) });
-    }
-
-    void Scribe<::Atmos::Entity::GeneralComponent, BinaryArchive>::Table::ObjectScrivenImplementation(
-        ObjectT& object, ArchiveT& archive)
-    {
-        if (archive.IsOutput())
-        {
-            ContainerSize size(object.storage.size());
-            archive(size);
-
-            for (auto& loop : object.storage)
-                archive(loop.second);
-        }
-        else // INPUT
-        {
-            ContainerSize size;
-            archive(size);
-
-            while (size-- > 0)
-            {
-                ObjectT::StorageObject storageObject;
-                archive(storageObject);
-
-                object.storage.emplace(storageObject.name, std::move(storageObject));
-            }
-        }
-    }
+    const TypeName Traits<::Atmos::Entity::GeneralComponent>::typeName = "GeneralComponent";
 }

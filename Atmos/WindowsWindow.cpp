@@ -1,6 +1,7 @@
 #include "WindowsWindow.h"
 
-#include "LoggingSystem.h"
+#include <Arca/Reliquary.h>
+#include "Log.h"
 
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -12,6 +13,8 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
         // Close the application entirely
         PostQuitMessage(0);
         return 0;
+    default:
+        break;
     }
 
     // Handle any messages the switch statement didn't
@@ -20,55 +23,6 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 
 namespace Atmos::Window
 {
-    WindowsWindowBase::WindowsWindowBase(ObjectManager& objectManager) : WindowBase(objectManager)
-    {}
-
-    WindowsWindow::WindowsWindow(
-        ObjectManager& objectManager,
-        HINSTANCE hInstance,
-        LPSTR lpCmdLine,
-        int nCmdShow,
-        const String& className) :
-
-        WindowsWindowBase(objectManager),
-        nCmdShow(nCmdShow), className(className + "Client"),
-        windowedStyle(WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_OVERLAPPED), windowedStyleEx(0),
-        fullscreenStyle(WS_POPUP), fullscreenStyleEx(WS_EX_TOPMOST)
-    {}
-
-    void WindowsWindow::Setup()
-    {
-        if (IsWindowed())
-        {
-            style = windowedStyle;
-            exStyle = windowedStyleEx;
-        }
-        else
-        {
-            style = fullscreenStyle;
-            exStyle = fullscreenStyleEx;
-        }
-
-        // Create the window and use the result as the handle
-        hwnd = CreateWindowEx(
-            exStyle,
-            wc.lpszClassName,
-            wc.lpszClassName,
-            style,
-            StartPosition().x,
-            StartPosition().y,
-            Size().width,
-            Size().height,
-            nullptr,
-            nullptr,
-            wc.hInstance,
-            nullptr);
-
-        if (hwnd == nullptr)
-            FindLoggingSystem()->Log("Window creation failed.",
-                LogType::ERROR_SEVERE);
-    }
-
     void WindowsWindow::Show()
     {
         ShowWindow(hwnd, nCmdShow);
@@ -86,7 +40,7 @@ namespace Atmos::Window
 
     void WindowsWindow::Suspend(const Time::Value &time)
     {
-        auto sleepFor = static_cast<unsigned int>(time.GetAs(Time::Epoch::MILLISECONDS));
+        const auto sleepFor = static_cast<unsigned int>(time.GetAs(Time::Epoch::Milliseconds));
         Sleep(sleepFor);
     }
 
@@ -105,9 +59,43 @@ namespace Atmos::Window
         return true;
     }
 
-    HWND WindowsWindow::GetHwnd()
+    HWND WindowsWindow::Hwnd() const
     {
         return hwnd;
+    }
+
+    void WindowsWindow::SetupImpl()
+    {
+        if (IsWindowed())
+        {
+            style = windowedStyle;
+            exStyle = windowedStyleEx;
+        }
+        else
+        {
+            style = fullscreenStyle;
+            exStyle = fullscreenStyleEx;
+        }
+
+        // Create the window and use the result as the handle
+        hwnd = CreateWindowEx
+        (
+            exStyle,
+            wc.lpszClassName,
+            wc.lpszClassName,
+            style,
+            StartPosition().x,
+            StartPosition().y,
+            Size().width,
+            Size().height,
+            nullptr,
+            nullptr,
+            wc.hInstance,
+            nullptr
+        );
+
+        if (hwnd == nullptr)
+            Reliquary().Raise<Log::Log>("Window creation failed.", Log::Severity::SevereError);
     }
 
     AxisAlignedBox2D WindowsWindow::AdjustWindowDimensions()
@@ -116,12 +104,14 @@ namespace Atmos::Window
         SetRect(&rect, 0, 0, ClientSize().width, ClientSize().height);
         AdjustWindowRectEx(&rect, style, false, exStyle);
 
-        typedef AxisAlignedBox2D::Coordinate Coordinate;
-        return AxisAlignedBox2D(
+        using Coordinate = AxisAlignedBox2D::Coordinate;
+        return AxisAlignedBox2D
+        {
             static_cast<Coordinate>(rect.left),
             static_cast<Coordinate>(rect.top),
             static_cast<Coordinate>(rect.right),
-            static_cast<Coordinate>(rect.bottom));
+            static_cast<Coordinate>(rect.bottom)
+        };
     }
 
     void WindowsWindow::OnSetWindowDimensions()
@@ -132,9 +122,7 @@ namespace Atmos::Window
 
     WindowsWindow::Position WindowsWindow::GetDefaultWindowPosition()
     {
-        return Position(
-            static_cast<Position::Dimension>(GetSystemMetrics(SM_CXSCREEN)),
-            static_cast<Position::Dimension>(GetSystemMetrics(SM_CYSCREEN)));
+        return Position(GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN));
     }
 
     void WindowsWindow::OnSetFullscreen()

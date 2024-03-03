@@ -2,74 +2,44 @@
 
 namespace Atmos::Entity
 {
-    ActionComponent::ActionComponent(ObjectManager& manager, EntityReference owner) :
-        Component(manager, owner), activator(Activator::UseOn)
+    void ActionComponent::FireMovedInto() const
     {
-        SetupScripts();
-    }
-
-    ActionComponent::ActionComponent(const ::Inscription::BinaryTableData<ActionComponent>& data) :
-        Component(std::get<0>(data.bases)), activator(data.activator)
-    {
-        SetupScripts();
-    }
-
-    void ActionComponent::FireMovedInto()
-    {
-        if (activator == Activator::EnterTile)
+        if (activation == Activation::EnterTile)
             script->ExecuteDeferred();
     }
 
-    void ActionComponent::FireAttemptMovedInto()
+    void ActionComponent::FireAttemptMovedInto() const
     {
-        if (activator == Activator::AttemptEnterTile)
+        if (activation == Activation::AttemptEnterTile)
             script->ExecuteDeferred();
     }
 
-    void ActionComponent::FireUseOn()
+    void ActionComponent::FireUseOn() const
     {
-        if (activator == Activator::UseOn)
+        if (activation == Activation::UseOn)
             script->ExecuteDeferred();
     }
 
-    void ActionComponent::FireUseInto()
+    void ActionComponent::FireUseInto() const
     {
-        if (activator == Activator::UseInto)
+        if (activation == Activation::UseInto)
             script->ExecuteDeferred();
     }
 
-    void ActionComponent::FireFieldEntered()
+    void ActionComponent::FireFieldEntered() const
     {
-        if (activator == Activator::EnterField)
+        if (activation == Activation::EnterField)
             script->ExecuteDeferred();
     }
 
-    void ActionComponent::FireFieldLeft()
+    void ActionComponent::FireFieldLeft() const
     {
-        if (activator == Activator::LeaveField)
+        if (activation == Activation::LeaveField)
             script->ExecuteDeferred();
-    }
-
-    ObjectTypeDescription ActionComponent::TypeDescription() const
-    {
-        return ObjectTraits<ActionComponent>::TypeDescription();
-    }
-
-    void ActionComponent::SetupScripts()
-    {
-        script->owner = this;
     }
 }
 
-namespace Atmos
+namespace Arca
 {
-    const ObjectTypeName ObjectTraits<Entity::ActionComponent>::typeName = "ActionComponent";
-}
-
-namespace Inscription
-{
-    Scribe<::Atmos::Entity::ActionComponent, BinaryArchive>::Table::Table()
-    {
-        AddDataEntry(DataEntry::Auto(&ObjectT::activator, &DataT::activator));
-    }
+    const TypeName Traits<::Atmos::Entity::ActionComponent>::typeName = "ActionComponent";
 }

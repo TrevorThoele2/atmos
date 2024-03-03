@@ -6,7 +6,7 @@ namespace Atmos
 {
     namespace Modulator
     {
-        InterpolationSmoothstep::InterpolationSmoothstep() : Interpolation(Type::LINEAR)
+        InterpolationSmoothstep::InterpolationSmoothstep() : Interpolation(Severity::LINEAR)
         {}
 
         InterpolationSmoothstep* InterpolationSmoothstep::Clone() const

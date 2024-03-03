@@ -3,14 +3,14 @@
 #include <unordered_map>
 #include "String.h"
 
-namespace Atmos
+namespace Atmos::Initialization
 {
-    class InitializationFileExtractedSection
+    class FileExtractedSection
     {
     public:
         String header;
 
-        typedef std::unordered_map<String, String> NameToValue;
+        using NameToValue = std::unordered_map<String, String>;
         NameToValue nameValues;
 
         bool IsOccupied() const;

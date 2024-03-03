@@ -6,7 +6,7 @@ namespace Atmos
 {
     namespace Modulator
     {
-        InterpolationLinear::InterpolationLinear() : Interpolation(Type::LINEAR)
+        InterpolationLinear::InterpolationLinear() : Interpolation(Severity::LINEAR)
         {}
 
         InterpolationLinear* InterpolationLinear::Clone() const

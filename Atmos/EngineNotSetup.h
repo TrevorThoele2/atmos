@@ -4,7 +4,7 @@
 
 namespace Atmos
 {
-    class EngineNotSetup : public std::runtime_error
+    class EngineNotSetup final : public std::runtime_error
     {
     public:
         EngineNotSetup();

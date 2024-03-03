@@ -9,7 +9,6 @@
 #include "GraphicsManager.h"
 
 #include "ShaderAsset.h"
-#include "ObjectReference.h"
 
 #include "Size2D.h"
 #include "AxisAlignedBox2D.h"
@@ -19,31 +18,34 @@
 
 #include <AGUI/Resolution.h>
 
-namespace Atmos
+namespace Atmos::File
 {
-    class LoggingSystem;
+    class ManagerProvider;
 }
 
 namespace Atmos::Time
 {
-    class FpsSystem;
+    class Settings;
 }
 
 namespace Atmos::Render
 {
-    class DirectX9GraphicsManager : public GraphicsManager
+    class DirectX9GraphicsManager final : public GraphicsManager
     {
     private:
         class Renderer2D;
     public:
-        DirectX9GraphicsManager(
-            ObjectManager& objectManager,
+        DirectX9GraphicsManager
+        (
+            Arca::Reliquary& reliquary,
             HWND hwnd,
             const ScreenDimensions& backbuffer,
-            bool fullscreen);
+            bool fullscreen
+        );
+        DirectX9GraphicsManager(const DirectX9GraphicsManager& arg) = delete;
+        DirectX9GraphicsManager& operator=(const DirectX9GraphicsManager& arg) = delete;
         ~DirectX9GraphicsManager();
 
-        // Setting
         void SetFullscreen(bool set) override;
 
         void ClearTarget(const Flags<Target>& target) override;
@@ -59,24 +61,24 @@ namespace Atmos::Render
         void StartLines() override;
         void EndLines() override;
 
-        // Stencil
         void StartStencil() override;
         void StopStencil() override;
 
-        // Retrieval
         LPDIRECT3DDEVICE9& GetDevice();
     protected:
         struct Scalings
         {
             float x;
             float y;
+
             Scalings();
             Scalings(float x, float y);
         };
     protected:
-        void RenderObject(
+        void RenderObject
+        (
             LPDIRECT3DTEXTURE9 tex,
-            TypedObjectReference<Asset::ShaderAsset> shader,
+            Asset::ShaderAsset* shader,
             float X,
             float Y,
             float Z,
@@ -85,7 +87,8 @@ namespace Atmos::Render
             const Position2D& center,
             const Scalings& scalings,
             const Angle& rotation,
-            const Color& color);
+            const Color& color
+        );
     private:
         HWND hwnd;
         LPDIRECT3DDEVICE9 device;
@@ -99,28 +102,25 @@ namespace Atmos::Render
 
         LPDIRECT3DSURFACE9 mainSurface;
     private:
-        DirectX9GraphicsManager(const DirectX9GraphicsManager& arg) = delete;
-        DirectX9GraphicsManager& operator=(const DirectX9GraphicsManager& arg) = delete;
-
-        void ReinitializeImpl() override;
+        void ReconstructInternals() override;
         void SetMainDimensionsImpl(const ScreenDimensions& dimensions) override;
-        ScreenDimensions GetMainDimensionsImpl() const override;
+        [[nodiscard]] ScreenDimensions MainDimensionsImpl() const override;
 
-        std::unique_ptr<Asset::ImageAssetData> CreateImageDataImpl(
+        [[nodiscard]] std::unique_ptr<Asset::ImageAssetData> CreateImageDataImpl(
             const File::Path& path) override;
-        std::unique_ptr<Asset::ImageAssetData> CreateImageDataImpl(
+        [[nodiscard]] std::unique_ptr<Asset::ImageAssetData> CreateImageDataImpl(
             void* buffer, std::int32_t size, const File::Name& name) override;
-        std::unique_ptr<Asset::ShaderAssetData> CreateShaderDataImpl(
+        [[nodiscard]] std::unique_ptr<Asset::ShaderAssetData> CreateShaderDataImpl(
             const File::Path& path) override;
-        std::unique_ptr<Asset::ShaderAssetData> CreateShaderDataImpl(
+        [[nodiscard]] std::unique_ptr<Asset::ShaderAssetData> CreateShaderDataImpl(
             void* buffer, std::int32_t size, const File::Name& name) override;
-        Surface CreateSurfaceImpl(
+        [[nodiscard]] Surface CreateSurfaceImpl(
             void* window) override;
-        Canvas CreateCanvasImpl(
+        [[nodiscard]] Canvas CreateCanvasImpl(
             const ScreenDimensions& dimensions) override;
 
-        bool CanMakeImageImpl(const File::Path& path) const override;
-        bool CanMakeImageImpl(void* buffer, std::int32_t size) const override;
+        [[nodiscard]] bool CanMakeImageImpl(const File::Path& path) const override;
+        [[nodiscard]] bool CanMakeImageImpl(void* buffer, std::int32_t size) const override;
 
         void ResizeCanvasImpl(Canvas& canvas, const ScreenDimensions& dimensions) override;
 
@@ -132,9 +132,8 @@ namespace Atmos::Render
         void PresentImpl() override;
         void PresentImpl(void* windowOverride) override;
 
-        void RenderSpriteImpl(SpriteReference sprite, float X, float Y) override;
-        void RenderCanvasViewImpl(CanvasViewReference view, float X, float Y) override;
-        void RenderUnknownFragmentImpl(RenderFragmentReference fragment, float X, float Y) override;
+        void RenderMaterialViewImpl(MaterialRender& materialRender, float x, float y) override;
+        void RenderCanvasViewImpl(CanvasRender& canvasRender, float x, float y) override;
         void RenderLineImpl(const Line& line) override;
 
         void SetupPresentationParameters();
@@ -142,7 +141,6 @@ namespace Atmos::Render
         void SetProjectionMatrix();
         void OnResolutionChanged(const Agui::Resolution& arg);
     private:
-        Time::FpsSystem* FindFpsSystem() const;
-        LoggingSystem* FindLoggingSystem() const;
+        Time::Settings* timeSettings;
     };
 }

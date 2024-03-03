@@ -1,21 +1,9 @@
 #include "FrameStopwatch.h"
 
-#include "ObjectManager.h"
-#include "TimeSystem.h"
+#include <Arca/Reliquary.h>
 
 namespace Atmos::Time
 {
-    FrameStopwatch::FrameStopwatch(ObjectManager& manager, Value goal) : Stopwatch(manager, goal)
-    {
-        timeSystem = Manager()->FindSystem<TimeSystem>();
-    }
-
-    FrameStopwatch::FrameStopwatch(const ::Inscription::BinaryTableData<FrameStopwatch>& data) :
-        Stopwatch(std::get<0>(data.bases))
-    {
-        timeSystem = Manager()->FindSystem<TimeSystem>();
-    }
-
     bool FrameStopwatch::operator==(const FrameStopwatch& arg) const
     {
         return Stopwatch::operator==(arg);
@@ -28,16 +16,28 @@ namespace Atmos::Time
 
     Value FrameStopwatch::CurrentTime() const
     {
-        return timeSystem->GetTotalElapsed();
+        return timeInformation->totalElapsed;
     }
 
-    ObjectTypeDescription FrameStopwatch::TypeDescription() const
+    void FrameStopwatch::PostConstruct()
     {
-        return ObjectTraits<FrameStopwatch>::TypeDescription();
+        timeInformation = Arca::Ptr<Information>(Owner());
     }
 }
 
-namespace Atmos
+namespace Arca
 {
-    const ObjectTypeName ObjectTraits<Time::FrameStopwatch>::typeName = "FrameStopwatch";
+    const TypeName Traits<::Atmos::Time::FrameStopwatch>::typeName = "FrameStopwatch";
+}
+
+namespace Inscription
+{
+    void Scribe<::Atmos::Time::FrameStopwatch, BinaryArchive>::ScrivenImplementation(
+        ObjectT& object, ArchiveT& archive)
+    {
+        if (archive.IsInput())
+            object.timeInformation = Arca::Ptr<Atmos::Time::Information>(object.Owner());
+
+        BaseScriven<Atmos::Time::Stopwatch>(object, archive);
+    }
 }

@@ -2,37 +2,9 @@
 
 #include "Stopwatch.h"
 
-#include "ObjectReference.h"
-
 #include "TimeValue.h"
 
-#include "Fraction.h"
 #include "Ratio.h"
-
-#include "ObjectScribe.h"
-
-namespace Atmos::Time
-{
-    template<class Stopwatch>
-    class ExtendedStopwatchAdapter;
-}
-
-namespace Inscription
-{
-    template<class Stopwatch>
-    struct TableData<::Atmos::Time::ExtendedStopwatchAdapter<Stopwatch>, BinaryArchive> :
-        public TableDataBase<::Atmos::Time::ExtendedStopwatchAdapter<Stopwatch>, BinaryArchive>
-    {
-        using ObjectT = ::Atmos::Time::ExtendedStopwatchAdapter<Stopwatch>;
-
-        using StopwatchReference = typename ObjectT::StopwatchReference;
-        StopwatchReference stopwatch;
-
-        ::Atmos::Time::Value elapsed;
-        ::Atmos::Time::Value average;
-        ::Atmos::Time::Value highest;
-    };
-}
 
 namespace Atmos::Time
 {
@@ -40,88 +12,83 @@ namespace Atmos::Time
     class ExtendedStopwatchAdapter
     {
     public:
-        ExtendedStopwatchAdapter(
-            ObjectManager& manager, Value goal = Value());
-        ExtendedStopwatchAdapter(
-            typename const ::Inscription::BinaryTableData<ExtendedStopwatchAdapter<Stopwatch>>& data);
+        using SourceT = Stopwatch;
+    public:
+        ExtendedStopwatchAdapter();
+        explicit ExtendedStopwatchAdapter(Arca::Ptr<SourceT> source);
+        explicit ExtendedStopwatchAdapter(const ::Inscription::BinaryTableData<ExtendedStopwatchAdapter>& data);
 
         bool operator==(const ExtendedStopwatchAdapter& arg) const;
 
+        void Source(Arca::Ptr<SourceT> source);
+        Arca::Ptr<SourceT> Source() const;
+
         Value Start();
-        void SetGoal(Value set);
-        Value GetGoal() const;
-        bool HasReachedGoal() const;
         Value Calculate();
         Value Checkpoint();
         // Doesn't calculate anything
-        Value QueryElapsed() const;
-        Value CurrentTime() const;
+        [[nodiscard]] Value QueryElapsed() const;
+        [[nodiscard]] Value CurrentTime() const;
 
         void ResetAverage();
-        Value GetAverage() const;
+        [[nodiscard]] Value GetAverage() const;
         void ResetHighest();
-        Value GetHighest() const;
+        [[nodiscard]] Value GetHighest() const;
     private:
-        typedef TypedObjectReference<Stopwatch> StopwatchReference;
-        StopwatchReference stopwatch;
-    private:
-        Value elapsed;
-        Value average;
-        Value highest;
+        Arca::Ptr<SourceT> source;
+
+        Value elapsed = Value(Value::Number(0));
+        Value average = Value(Value::Number(0));
+        Value highest = Value(Value::Number(0));
     private:
         INSCRIPTION_TABLE_ACCESS;
     };
 
     template<class Stopwatch>
-    ExtendedStopwatchAdapter<Stopwatch>::ExtendedStopwatchAdapter(
-        ObjectManager& manager, Value goal) :
+    ExtendedStopwatchAdapter<Stopwatch>::ExtendedStopwatchAdapter() = default;
 
-        stopwatch(manager.CreateObject<Stopwatch>(goal)),
-        elapsed(Value::Number(0)), average(Value::Number(0)), highest(Value::Number(0))
+    template<class Stopwatch>
+    ExtendedStopwatchAdapter<Stopwatch>::ExtendedStopwatchAdapter(Arca::Ptr<SourceT> source) :
+        source(source)
     {}
 
     template<class Stopwatch>
-    ExtendedStopwatchAdapter<Stopwatch>::ExtendedStopwatchAdapter(
-        typename const ::Inscription::BinaryTableData<ExtendedStopwatchAdapter<Stopwatch>>& data) :
-
-        stopwatch(data.stopwatch),
+    ExtendedStopwatchAdapter<Stopwatch>::ExtendedStopwatchAdapter
+    (
+        const ::Inscription::BinaryTableData<ExtendedStopwatchAdapter<Stopwatch>>& data
+    ) :
+        source(data.source),
         elapsed(data.elapsed), average(data.average), highest(data.highest)
     {}
 
     template<class Stopwatch>
     bool ExtendedStopwatchAdapter<Stopwatch>::operator==(const ExtendedStopwatchAdapter& arg) const
     {
-        return stopwatch == arg.stopwatch;
+        return source == arg.source;
+    }
+
+    template<class Stopwatch>
+    void ExtendedStopwatchAdapter<Stopwatch>::Source(Arca::Ptr<SourceT> source)
+    {
+        this->source = source;
+    }
+
+    template<class Stopwatch>
+    auto ExtendedStopwatchAdapter<Stopwatch>::Source() const -> Arca::Ptr<SourceT>
+    {
+        return source;
     }
 
     template<class Stopwatch>
     Value ExtendedStopwatchAdapter<Stopwatch>::Start()
     {
-        return stopwatch->Start();
-    }
-
-    template<class Stopwatch>
-    void ExtendedStopwatchAdapter<Stopwatch>::SetGoal(Value set)
-    {
-        stopwatch->SetGoal(set);
-    }
-
-    template<class Stopwatch>
-    Value ExtendedStopwatchAdapter<Stopwatch>::GetGoal() const
-    {
-        return stopwatch->GetGoal();
-    }
-
-    template<class Stopwatch>
-    bool ExtendedStopwatchAdapter<Stopwatch>::HasReachedGoal() const
-    {
-        return stopwatch->HasReachedGoal();
+        return source->Start();
     }
 
     template<class Stopwatch>
     Value ExtendedStopwatchAdapter<Stopwatch>::Calculate()
     {
-        elapsed = stopwatch->Elapsed();
+        elapsed = source->Elapsed();
 
         // Calculate highest
         if (elapsed > highest)
@@ -130,9 +97,9 @@ namespace Atmos::Time
         // Calculate average
         // accumulator = (alpha * new_value) + (1.0 - alpha) * accumulator
         const Value::Number alpha(0.001, elapsed.GetRadixPoint());
-        average = static_cast<Value::Number>(
+        average = Value(static_cast<Value::Number>(
             (alpha * elapsed.Get()) +
-            (Value::Number(1, 0, elapsed.GetRadixPoint()) - alpha) * average.Get());
+            (Value::Number(1, 0, elapsed.GetRadixPoint()) - alpha) * average.Get()));
 
         return elapsed;
     }
@@ -140,7 +107,7 @@ namespace Atmos::Time
     template<class Stopwatch>
     Value ExtendedStopwatchAdapter<Stopwatch>::Checkpoint()
     {
-        return stopwatch->CurrentTime();
+        return source->CurrentTime();
     }
 
     template<class Stopwatch>
@@ -152,7 +119,7 @@ namespace Atmos::Time
     template<class Stopwatch>
     Value ExtendedStopwatchAdapter<Stopwatch>::CurrentTime() const
     {
-        return stopwatch->CurrentTime();
+        return source->CurrentTime();
     }
 
     template<class Stopwatch>
@@ -183,6 +150,20 @@ namespace Atmos::Time
 namespace Inscription
 {
     template<class Stopwatch>
+    struct TableData<::Atmos::Time::ExtendedStopwatchAdapter<Stopwatch>, BinaryArchive> :
+        TableDataBase<::Atmos::Time::ExtendedStopwatchAdapter<Stopwatch>, BinaryArchive>
+    {
+        using ObjectT = ::Atmos::Time::ExtendedStopwatchAdapter<Stopwatch>;
+
+        using SourceT = typename ObjectT::SourceT;
+        Arca::Ptr<SourceT> source;
+
+        ::Atmos::Time::Value elapsed;
+        ::Atmos::Time::Value average;
+        ::Atmos::Time::Value highest;
+    };
+
+    template<class Stopwatch>
     class Scribe<::Atmos::Time::ExtendedStopwatchAdapter<Stopwatch>, BinaryArchive> :
         public TableScribe<::Atmos::Time::ExtendedStopwatchAdapter<Stopwatch>, BinaryArchive>
     {
@@ -196,6 +177,7 @@ namespace Inscription
         using BaseT::Scriven;
         using BaseT::Construct;
     public:
+        using DataT = typename BaseT::DataT;
         using TableBase = typename BaseT::TableBase;
     public:
         class Table : public TableBase
@@ -203,19 +185,16 @@ namespace Inscription
         public:
             Table()
             {
-                MergeDataEntries({
-                    DataEntry::Auto(&ObjectT::stopwatch, &DataT::stopwatch),
+                MergeDataEntries
+                ({
+                    DataEntry::Auto(&ObjectT::source, &DataT::source),
                     DataEntry::Auto(&ObjectT::elapsed, &DataT::elapsed),
                     DataEntry::Auto(&ObjectT::average, &DataT::average),
-                    DataEntry::Auto(&ObjectT::highest, &DataT::highest) });
+                    DataEntry::Auto(&ObjectT::highest, &DataT::highest) }
+                );
             }
         protected:
-            void ConstructImplementation(ObjectT* storage, ArchiveT& archive) override
-            {
-                DoBasicConstruction(storage, archive);
-            }
-
-            using TableBase::DoBasicConstruction;
+            using DataEntry = typename BaseT::DataEntry;
         };
     };
 }

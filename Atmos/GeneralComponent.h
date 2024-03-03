@@ -2,110 +2,75 @@
 
 #include <unordered_set>
 
-#include "EntityComponent.h"
+#include <Arca/ShardTraits.h>
+#include <Arca/NullScribe.h>
 
 #include "NameValuePair.h"
 #include "GridPosition.h"
 #include "Direction.h"
 #include "Tag.h"
 
-#include "ObjectScribe.h"
-
 namespace Atmos::Entity
 {
-    class GeneralComponent : public Component
+    class GeneralComponent
     {
     public:
-        typedef NameValuePair StorageObject;
+        using StorageObject = NameValuePair;
     public:
-        // Name
         Name name;
         Name displayName;
 
-        // Position
-        typedef Grid::Position Position;
+        using Position = Grid::Position;
         Position position;
 
-        // Direction
-        typedef Direction Direction;
         Direction direction;
 
-        // Solid
-        bool solid;
+        bool solid = false;
 
-        // Persistent storage
         std::unordered_map<Name, StorageObject> storage;
 
-        // Tags
         std::unordered_set<Tag> tags;
     public:
-        GeneralComponent(ObjectManager& manager, EntityReference reference);
-        GeneralComponent(const GeneralComponent& arg) = default;
-        GeneralComponent(const ::Inscription::BinaryTableData<GeneralComponent>& data);
+        GeneralComponent() = default;
 
-        void SetPosition(const Position &set);
-        Grid::Position GetPositionInFront() const;
+        void SetPosition(const Position& set);
+        [[nodiscard]] Grid::Position PositionInFront() const;
 
-        void SetSolid(bool set);
-        bool IsSolid() const;
+        void SetSolid(bool set = true);
+        [[nodiscard]] bool IsSolid() const;
 
-        StorageObject* AddStorage(const StorageObject &add);
-        StorageObject* AddStorage(StorageObject &&add);
-        void RemoveStorage(const Name &remove);
-        void RemoveStorage(const StorageObject &remove);
+        StorageObject* AddStorage(const StorageObject& add);
+        StorageObject* AddStorage(StorageObject&& add);
+        void RemoveStorage(const Name& remove);
+        void RemoveStorage(const StorageObject& remove);
 
-        StorageObject* FindStorage(const Name &find);
-        StorageObject* FindStorage(const StorageObject &find);
-        const StorageObject* FindStorage(const Name &find) const;
-        const StorageObject* FindStorage(const StorageObject &find) const;
-        bool HasStorage(const Name &check) const;
-        bool HasStorage(const StorageObject &check) const;
+        [[nodiscard]] StorageObject* FindStorage(const Name& find);
+        [[nodiscard]] const StorageObject* FindStorage(const Name& find) const;
+        [[nodiscard]] bool HasStorage(const Name& check) const;
+        [[nodiscard]] bool HasStorage(const StorageObject& check) const;
 
-        void TagAs(const Tag &add);
-        void RemoveTag(const Tag &remove);
-        bool IsTaggedAs(const Tag &check) const;
-
-        ObjectTypeDescription TypeDescription() const override;
+        void TagAs(const Tag& add);
+        void RemoveTag(const Tag& remove);
+        [[nodiscard]] bool IsTaggedAs(const Tag& check) const;
     private:
         INSCRIPTION_ACCESS;
     };
 }
 
-namespace Atmos
+namespace Arca
 {
     template<>
-    struct ObjectTraits<Entity::GeneralComponent> : ObjectTraitsBase<Entity::GeneralComponent>
+    struct Traits<::Atmos::Entity::GeneralComponent>
     {
-        static const ObjectTypeName typeName;
-        static constexpr ObjectTypeList<Entity::Component> bases = {};
+        static const ObjectType objectType = ObjectType::Shard;
+        static const TypeName typeName;
     };
 }
 
 namespace Inscription
 {
     template<>
-    struct TableData<::Atmos::Entity::GeneralComponent, BinaryArchive> :
-        public ObjectTableDataBase<::Atmos::Entity::GeneralComponent, BinaryArchive>
-    {
-        ::Atmos::Name name;
-        ::Atmos::Name displayName;
-        ObjectT::Position position;
-        ObjectT::Direction direction;
-        bool solid;
-        std::unordered_set<::Atmos::Tag> tags;
-    };
-
-    template<>
-    class Scribe<::Atmos::Entity::GeneralComponent, BinaryArchive> :
-        public ObjectScribe<::Atmos::Entity::GeneralComponent, BinaryArchive>
-    {
-    public:
-        class Table : public TableBase
-        {
-        public:
-            Table();
-        protected:
-            void ObjectScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
-        };
-    };
+    class Scribe<Atmos::Entity::GeneralComponent, BinaryArchive> final
+        : public ArcaNullScribe<Atmos::Entity::GeneralComponent, BinaryArchive>
+    {};
 }

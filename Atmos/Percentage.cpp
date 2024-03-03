@@ -479,9 +479,4 @@ namespace Inscription
     {
         archive(object.wrapped);
     }
-
-    void Scribe<::Atmos::Percentage, BinaryArchive>::ConstructImplementation(ObjectT* storage, ArchiveT& archive)
-    {
-        DoBasicConstruction(storage, archive);
-    }
 }

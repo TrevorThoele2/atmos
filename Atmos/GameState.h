@@ -1,65 +1,30 @@
 #pragma once
 
-#include "StateWithGui.h"
-#include "StateGui.h"
-
-#include "InputKey.h"
-
-namespace Atmos::Input
-{
-    class Key;
-    class Action;
-}
+#include <Arca/ClosedTypedRelicAutomation.h>
 
 namespace Atmos::State
 {
-    class GameStateGui : public StateGui
+    class GameState : public Arca::ClosedTypedRelicAutomation<GameState>
     {
     public:
-        GameStateGui(ObjectManager& objectManager);
-    private:
-        void DoInitialize() override;
-    };
-
-    class GameState : public StateWithGui<GameStateGui>
-    {
-    public:
-        GameState(ObjectManager& manager);
-        bool CanNewMenu() const;
-    private:
-        void OnKeyPressed(const Input::Key& args);
-        void OnActionPressed(const Input::Action& args);
-
-        void DoInitialize() override;
-        void DoOnFocused() override;
-
-        bool AnyTertiaryOpen() const;
+        GameState() = default;
     };
 }
 
-namespace Atmos
+namespace Arca
 {
     template<>
-    struct ObjectTraits<State::GameState> : ObjectTraitsBase<State::GameState>
+    struct Traits<::Atmos::State::GameState>
     {
-        static const ObjectTypeName typeName;
-        static constexpr ObjectTypeList<State::State> bases = {};
+        static const ObjectType objectType = ObjectType::Relic;
+        static const TypeName typeName;
     };
 }
 
 namespace Inscription
 {
     template<>
-    struct TableData<::Atmos::State::GameState, BinaryArchive> :
-        public ObjectTableDataBase<::Atmos::State::GameState, BinaryArchive>
+    class Scribe<::Atmos::State::GameState, BinaryArchive> final :
+        public ArcaNullScribe<::Atmos::State::GameState, BinaryArchive>
     {};
-
-    template<>
-    class Scribe<::Atmos::State::GameState, BinaryArchive> :
-        public ObjectScribe<::Atmos::State::GameState, BinaryArchive>
-    {
-    public:
-        class Table : public TableBase
-        {};
-    };
 }

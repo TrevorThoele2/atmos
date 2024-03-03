@@ -1,9 +1,9 @@
 
 #include "InitializationFileExtractedSection.h"
 
-namespace Atmos
+namespace Atmos::Initialization
 {
-    bool InitializationFileExtractedSection::IsOccupied() const
+    bool FileExtractedSection::IsOccupied() const
     {
         return !header.empty() && !nameValues.empty();
     }

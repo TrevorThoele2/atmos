@@ -2,25 +2,25 @@
 
 namespace Atmos::Render
 {
-    class ImageAssetDataImplementation : public Asset::ImageAssetData
+    class ImageAssetDataImplementation final : public Asset::ImageAssetData
     {
     public:
         ImageAssetDataImplementation() = default;
 
-        std::unique_ptr<ImageAssetData> Clone() const override
+        [[nodiscard]] std::unique_ptr<ImageAssetData> Clone() const override
         {
-            return std::unique_ptr<ImageAssetData>(new ImageAssetDataImplementation(*this));
+            return std::make_unique<ImageAssetDataImplementation>(*this);
         }
     };
 
-    class ShaderAssetDataImplementation : public Asset::ShaderAssetData
+    class ShaderAssetDataImplementation final : public Asset::ShaderAssetData
     {
     public:
         ShaderAssetDataImplementation() = default;
 
-        std::unique_ptr<ShaderAssetData> Clone() const override
+        [[nodiscard]] std::unique_ptr<ShaderAssetData> Clone() const override
         {
-            return std::unique_ptr<ShaderAssetData>(new ShaderAssetDataImplementation(*this));
+            return std::make_unique<ShaderAssetDataImplementation>(*this);
         }
 
         void Reset() override
@@ -29,7 +29,7 @@ namespace Atmos::Render
         void Release() override
         {}
 
-        PassT Begin() const override
+        PassCount Begin() const override
         {
             return 0;
         }
@@ -37,14 +37,14 @@ namespace Atmos::Render
         void End() const override
         {}
 
-        void BeginNextPass(PassT pass) const override
+        void BeginNextPass(PassCount pass) const override
         {}
 
         void EndPass() const override
         {}
     };
 
-    class SurfaceData : public Surface::Data
+    class SurfaceData final : public Surface::Data
     {
     public:
         SurfaceData() = default;
@@ -61,13 +61,13 @@ namespace Atmos::Render
         void Release() override
         {}
 
-        Surface::Size GetSize() override
+        ScreenDimensions Size() override
         {
-            return Surface::Size(0, 0);
+            return { 0, 0 };
         }
     };
 
-    class CanvasData : public Canvas::Data
+    class CanvasData final : public Canvas::Data
     {
     public:
         CanvasData() = default;
@@ -78,7 +78,10 @@ namespace Atmos::Render
         void StopPainting() override
         {}
 
-        void PaintPixel(const Canvas::Position& position, const Color& color, Canvas::DimensionValue height) override
+        void PaintPixel(
+            const Canvas::Position& position,
+            const Color& color,
+            Canvas::DimensionValue height) override
         {}
 
         void Clear(const Color& color) override
@@ -91,7 +94,7 @@ namespace Atmos::Render
         {}
     };
 
-    NullGraphicsManager::NullGraphicsManager(ObjectManager& objectManager) : GraphicsManager(objectManager)
+    NullGraphicsManager::NullGraphicsManager(Arca::Reliquary& reliquary) : GraphicsManager(reliquary)
     {}
 
     void NullGraphicsManager::SetFullscreen(bool set)
@@ -135,51 +138,51 @@ namespace Atmos::Render
     void NullGraphicsManager::StopStencil()
     {}
 
-    void NullGraphicsManager::ReinitializeImpl()
+    void NullGraphicsManager::ReconstructInternals()
     {}
 
     void NullGraphicsManager::SetMainDimensionsImpl(const ScreenDimensions& dimensions)
     {}
 
-    ScreenDimensions NullGraphicsManager::GetMainDimensionsImpl() const
+    ScreenDimensions NullGraphicsManager::MainDimensionsImpl() const
     {
-        return ScreenDimensions(0, 0);
+        return { 0, 0 };
     }
 
     std::unique_ptr<Asset::ImageAssetData> NullGraphicsManager::CreateImageDataImpl(
         const File::Path& path)
     {
-        return std::unique_ptr<Asset::ImageAssetData>(new ImageAssetDataImplementation());
+        return std::make_unique<ImageAssetDataImplementation>();
     }
 
     std::unique_ptr<Asset::ImageAssetData> NullGraphicsManager::CreateImageDataImpl(
         void* buffer, std::int32_t size, const File::Name& name)
     {
-        return std::unique_ptr<Asset::ImageAssetData>(new ImageAssetDataImplementation());
+        return std::make_unique<ImageAssetDataImplementation>();
     }
 
     std::unique_ptr<Asset::ShaderAssetData> NullGraphicsManager::CreateShaderDataImpl(
         const File::Path& path)
     {
-        return std::unique_ptr<Asset::ShaderAssetData>(new ShaderAssetDataImplementation());
+        return std::make_unique<ShaderAssetDataImplementation>();
     }
 
     std::unique_ptr<Asset::ShaderAssetData> NullGraphicsManager::CreateShaderDataImpl(
         void* buffer, std::int32_t size, const File::Name& name)
     {
-        return std::unique_ptr<Asset::ShaderAssetData>(new ShaderAssetDataImplementation());
+        return std::make_unique<ShaderAssetDataImplementation>();
     }
 
     Surface NullGraphicsManager::CreateSurfaceImpl(
         void* window)
     {
-        return Surface(Surface::DataPtr(new SurfaceData()));
+        return Surface(std::make_unique<SurfaceData>());
     }
 
     Canvas NullGraphicsManager::CreateCanvasImpl(
         const ScreenDimensions& dimensions)
     {
-        return Canvas(Canvas::DataPtr(new CanvasData()), dimensions.width, dimensions.height);
+        return Canvas(std::make_unique<CanvasData>(), dimensions.width, dimensions.height);
     }
 
     bool NullGraphicsManager::CanMakeImageImpl(const File::Path& path) const
@@ -213,13 +216,10 @@ namespace Atmos::Render
     void NullGraphicsManager::PresentImpl(void* windowOverride)
     {}
 
-    void NullGraphicsManager::RenderSpriteImpl(SpriteReference sprite, float X, float Y)
+    void NullGraphicsManager::RenderMaterialViewImpl(MaterialRender& materialRender, float x, float y)
     {}
 
-    void NullGraphicsManager::RenderCanvasViewImpl(CanvasViewReference view, float X, float Y)
-    {}
-
-    void NullGraphicsManager::RenderUnknownFragmentImpl(RenderFragmentReference fragment, float X, float Y)
+    void NullGraphicsManager::RenderCanvasViewImpl(CanvasRender& canvasRender, float x, float y)
     {}
 
     void NullGraphicsManager::RenderLineImpl(const Line& line)

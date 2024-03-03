@@ -74,7 +74,7 @@ namespace Creation
     {}
 
     template<class... Args>
-    typename AnyEventConnection::Derived<Args...>* AnyEventConnection::Derived<Args...>::Clone() const
+    AnyEventConnection::Derived<Args...>* AnyEventConnection::Derived<Args...>::Clone() const
     {
         return new Derived(*this);
     }

@@ -4,10 +4,10 @@ namespace Atmos
 {
     enum class OperatorSelector : unsigned char
     {
-        ADD,
-        SUBTRACT,
-        MULTIPLY,
-        DIVIDE
+        Add,
+        Subtract,
+        Multiply,
+        Divide
     };
 
     struct OperatorSelectorLessThan

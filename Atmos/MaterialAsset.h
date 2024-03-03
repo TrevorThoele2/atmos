@@ -1,78 +1,46 @@
 #pragma once
 
 #include "Asset.h"
-
-#include "ObjectReference.h"
+#include <Arca/ClosedTypedRelicAutomation.h>
 
 #include "ImageAsset.h"
 #include "ShaderAsset.h"
 
-#include "StoredProperty.h"
-#include "StoredReadonlyProperty.h"
-
-#include "ObjectScribe.h"
-
 namespace Atmos::Asset
 {
-    class MaterialAsset : public Asset
+    class MaterialAsset final : public Arca::ClosedTypedRelicAutomation<MaterialAsset>, public Asset
     {
     public:
-        typedef int Dimension;
-        typedef int GridDimension;
+        using GridDimension = int;
+        [[nodiscard]] GridDimension Columns() const;
+        [[nodiscard]] GridDimension Rows() const;
     public:
-        typedef TypedObjectReference<ImageAsset> ImageAssetReference;
-        typedef TypedObjectReference<ShaderAsset> ShaderAssetReference;
-
-        typedef StoredProperty<ImageAssetReference> ImageProperty;
-        typedef StoredProperty<ShaderAssetReference> ShaderProperty;
-
-        typedef ReadonlyProperty<Dimension> DimensionProperty;
-        typedef StoredProperty<GridDimension> GridDimensionProperty;
+        [[nodiscard]] ImageAsset* Image() const;
+        [[nodiscard]] ShaderAsset* Shader() const;
     public:
-        ImageProperty xVisual;
-        ImageProperty yVisual;
-        ImageProperty zVisual;
-        ImageProperty xNormal;
-        ImageProperty yNormal;
-        ImageProperty zNormal;
-        ImageProperty xHeight;
-        ImageProperty yHeight;
-        ImageProperty zHeight;
-
-        ShaderProperty shader;
-
-        DimensionProperty width = [this]() { return _width; };
-        DimensionProperty height = [this]() { return _height; };
-
-        GridDimensionProperty columns;
-        GridDimensionProperty rows;
+        MaterialAsset();
+        MaterialAsset(const MaterialAsset& arg) = delete;
+        MaterialAsset(MaterialAsset&& arg) noexcept = default;
+        explicit MaterialAsset(const ::Inscription::BinaryTableData<MaterialAsset>& data);
     public:
-        MaterialAsset(ObjectManager& manager, const Name& name);
-        MaterialAsset(const MaterialAsset& arg);
-        MaterialAsset(const ::Inscription::BinaryTableData<MaterialAsset>& data);
-
-        ObjectTypeDescription TypeDescription() const override;
+        void Initialize(const Atmos::Name& name);
     private:
-        Dimension _width;
-        Dimension _height;
+        GridDimension columns = 0;
+        GridDimension rows = 0;
 
-        void CalculateDimensions();
-    private:
-        void DoOnImageProperties(std::function<void(ImageProperty&)>& func);
-        void DoOnImageProperties(std::function<void(const ImageProperty&)>& func) const;
-
-        void SubscribeToProperties();
-        void OnImagePropertyChanged(TypedObjectReference<ImageAsset> reference);
+        ImageAsset* image = nullptr;
+        ShaderAsset* shader = nullptr;
     };
 }
 
-namespace Atmos
+namespace Arca
 {
     template<>
-    struct ObjectTraits<Asset::MaterialAsset> : ObjectTraitsBase<Asset::MaterialAsset>
+    struct Traits<::Atmos::Asset::MaterialAsset>
     {
-        static const ObjectTypeName typeName;
-        static constexpr ObjectTypeList<Asset::Asset> bases = {};
+        static const ObjectType objectType = ObjectType::Relic;
+        static const TypeName typeName;
+        static bool ShouldCreate(Reliquary& reliquary, const ::Atmos::Name& name);
     };
 }
 
@@ -80,15 +48,20 @@ namespace Inscription
 {
     template<>
     struct TableData<::Atmos::Asset::MaterialAsset, BinaryArchive> :
-        public ObjectTableDataBase<::Atmos::Asset::MaterialAsset, BinaryArchive>
-    {};
+        TableDataBase<::Atmos::Asset::MaterialAsset, BinaryArchive>
+    {
+        Base<::Atmos::Asset::Asset> base;
+    };
 
     template<>
-    class Scribe<::Atmos::Asset::MaterialAsset, BinaryArchive> :
-        public ObjectScribe<::Atmos::Asset::MaterialAsset, BinaryArchive>
+    class Scribe<::Atmos::Asset::MaterialAsset, BinaryArchive> final :
+        public ArcaTableScribe<::Atmos::Asset::MaterialAsset, BinaryArchive>
     {
     public:
-        class Table : public TableBase
-        {};
+        class Table final : public TableBase
+        {
+        public:
+            Table();
+        };
     };
 }

@@ -6,42 +6,39 @@
 #include "String.h"
 #include "StringUtility.h"
 
-namespace Atmos
+namespace Atmos::Initialization
 {
-    class InitializationFileEntryBase
+    class FileEntryBase
     {
     public:
-        virtual ~InitializationFileEntryBase() = 0;
+        virtual ~FileEntryBase() = 0;
 
         virtual void SetToFileString(const String& set) = 0;
         virtual String FileString() const = 0;
     };
 
     template<class T>
-    class InitializationFileEntry : public InitializationFileEntryBase
+    class FileEntry : public FileEntryBase
     {
     public:
-        typedef std::function<T()> FromOutside;
-        Event<T> onLoaded;
-    public:
-        InitializationFileEntry(const String& name, FromOutside&& fromOutside);
+        FileEntry(const String& name, T* value);
 
         void SetToFileString(const String& set) override;
         String FileString() const override;
     private:
         String name;
-        FromOutside fromOutside;
+        T* value;
     private:
-        static const String assignmentToken;
+        const String assignmentToken = "=";
     };
 
     template<class T>
-    InitializationFileEntry<T>::InitializationFileEntry(const String& name, FromOutside&& fromOutside) :
-        name(name), fromOutside(std::move(fromOutside))
+    FileEntry<T>::FileEntry(const String& name, T* value) :
+        name(name), value(value)
     {}
 
     template<class T>
-    void InitializationFileEntry<T>::SetToFileString(const String& set)
+    void FileEntry<T>::SetToFileString(const String& set)
     {
         // First, get past all spaces
         size_t count = 0;
@@ -49,7 +46,7 @@ namespace Atmos
         while (loop != set.end() && *loop == ' ')
             ++loop, ++count;
 
-        // If we're already at the end, or the name isn't right here (at the beginning), then leave
+        // If we're already at the frameEndTime, or the name isn't right here (at the beginning), then leave
         if (loop == set.end() || set.find_first_of(name, count) != count)
             return;
 
@@ -65,17 +62,12 @@ namespace Atmos
         while (*retrieveFromLoop == '\n')
             retrieveFromLoop = --retrieveFrom.erase(retrieveFromLoop);
 
-        auto fromStringValue = FromString<T>(retrieveFrom);
-        onLoaded(fromStringValue);
+        *value = FromString<T>(retrieveFrom);
     }
 
     template<class T>
-    String InitializationFileEntry<T>::FileString() const
+    String FileEntry<T>::FileString() const
     {
-        auto value = fromOutside();
-        return name + assignmentToken + ToString(value) + "\n";
+        return name + assignmentToken + ToString(*value) + "\n";
     }
-
-    template<class T>
-    const String InitializationFileEntry<T>::assignmentToken = "=";
 }

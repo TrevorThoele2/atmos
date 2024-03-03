@@ -1,19 +1,17 @@
 #pragma once
 
-namespace Atmos
+namespace Arca
 {
-    class ObjectManager;
+    class Reliquary;
 }
 
-namespace Atmos::Script
+namespace Atmos::Script::Angel
 {
-    class ScriptSystem;
+    class ScriptCurator;
 
-    class UserData
+    struct UserData
     {
-    public:
-        ObjectManager* objectManager;
-        ScriptSystem* system;
-        UserData();
+        Arca::Reliquary* reliquary = nullptr;
+        ScriptCurator* curator = nullptr;
     };
 }

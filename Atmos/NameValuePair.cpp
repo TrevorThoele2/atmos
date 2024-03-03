@@ -1,16 +1,16 @@
 #include "NameValuePair.h"
 
-#include "ChromaVariant.h"
+#include "StdVariant.h"
 
 namespace Atmos
 {
     NameValuePair::NameValuePair() : name(), value()
     {}
 
-    NameValuePair::NameValuePair(const Name& name, const VariantT& value) : name(name), value(value)
+    NameValuePair::NameValuePair(const Name& name, const Variant& value) : name(name), value(value)
     {}
 
-    NameValuePair::NameValuePair(Name&& name, VariantT&& value) : name(std::move(name)), value(std::move(value))
+    NameValuePair::NameValuePair(Name&& name, Variant&& value) : name(std::move(name)), value(std::move(value))
     {}
 
     NameValuePair::NameValuePair(const NameValuePair& arg) : name(arg.name), value(arg.value)
@@ -50,10 +50,5 @@ namespace Inscription
     {
         archive(object.name);
         archive(object.value);
-    }
-
-    void Scribe<::Atmos::NameValuePair, BinaryArchive>::ConstructImplementation(ObjectT* storage, ArchiveT& archive)
-    {
-        DoBasicConstruction(storage, archive);
     }
 }

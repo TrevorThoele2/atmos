@@ -1,17 +1,23 @@
 #include "ImageAsset.h"
 
+#include "ShouldCreateAsset.h"
+
 namespace Atmos::Asset
 {
-    ImageAsset::ImageAsset(ObjectManager& manager, const File::Name& fileName, DataPtr&& data) :
-        FileAsset(manager, fileName), data(std::move(data)), width(0), height(0)
-    {}
+    auto ImageAsset::Width() const -> Dimension
+    {
+        return width;
+    }
 
-    ImageAsset::ImageAsset(const ImageAsset& arg) :
-        FileAsset(arg), data((arg.data) ? arg.data->Clone() : nullptr), width(arg.width), height(arg.height)
-    {}
+    auto ImageAsset::Height() const -> Dimension
+    {
+        return height;
+    }
+
+    ImageAsset::ImageAsset() = default;
 
     ImageAsset::ImageAsset(const ::Inscription::BinaryTableData<ImageAsset>& data) :
-        FileAsset(std::get<0>(data.bases))
+        FileAsset(data.base), width(data.width), height(data.height)
     {}
 
     ImageAsset::DataT* ImageAsset::Data()
@@ -24,16 +30,35 @@ namespace Atmos::Asset
         return data.get();
     }
 
-    ObjectTypeDescription ImageAsset::TypeDescription() const
+    void ImageAsset::Initialize(const File::Name& fileName, DataPtr&& data)
     {
-        return ObjectTraits<ImageAsset>::TypeDescription();
+        SetFileName(fileName);
+        this->data = std::move(data);
     }
 
-    ImageAssetData::~ImageAssetData()
-    {}
+    ImageAssetData::~ImageAssetData() = default;
 }
 
-namespace Atmos
+namespace Arca
 {
-    const ObjectTypeName ObjectTraits<Asset::ImageAsset>::typeName = "ImageAsset";
+    const TypeName Traits<::Atmos::Asset::ImageAsset>::typeName = "ImageAsset";
+
+    bool Traits<::Atmos::Asset::ImageAsset>::ShouldCreate(
+        Reliquary& reliquary, const ::Atmos::File::Name& fileName, ::Atmos::Asset::ImageAsset::DataPtr&& data)
+    {
+        return Atmos::Asset::ShouldCreateAsset<::Atmos::Asset::ImageAsset>(reliquary, fileName);
+    }
+}
+
+namespace Inscription
+{
+    Scribe<::Atmos::Asset::ImageAsset, BinaryArchive>::Table::Table()
+    {
+        MergeDataLinks
+        ({
+            DataLink::Base(data.base),
+            DataLink::Auto(&ObjectT::width, &DataT::width),
+            DataLink::Auto(&ObjectT::height, &DataT::height) }
+        );
+    }
 }

@@ -2,10 +2,9 @@
 
 namespace Atmos::Render
 {
-    Surface::Data::~Data()
-    {}
+    Surface::Data::~Data() = default;
 
-    Surface* Surface::Data::GetOwner() const
+    Surface* Surface::Data::Owner() const
     {
         return owner;
     }
@@ -16,15 +15,15 @@ namespace Atmos::Render
         FitToWindow();
     }
 
-    Surface::Surface(Surface&& arg) : size(std::move(arg.size))
+    Surface::Surface(Surface&& arg) noexcept : size(arg.size)
     {
         SetData(std::move(arg.data));
     }
 
-    Surface& Surface::operator=(Surface&& arg)
+    Surface& Surface::operator=(Surface&& arg) noexcept
     {
         SetData(std::move(arg.data));
-        size = std::move(arg.size);
+        size = arg.size;
         return *this;
     }
 
@@ -51,14 +50,14 @@ namespace Atmos::Render
 
     void Surface::FitToWindow()
     {
-        if (size == data->GetSize())
+        if (size == data->Size())
             return;
 
         Release();
         Reset();
     }
 
-    const Surface::Size& Surface::GetSize() const
+    ScreenDimensions Surface::Size() const
     {
         return size;
     }
@@ -71,7 +70,7 @@ namespace Atmos::Render
 
     void Surface::SetupDimensions()
     {
-        size = std::move(data->GetSize());
+        size = data->Size();
     }
 
     void Surface::SetAsRenderTargetImpl()

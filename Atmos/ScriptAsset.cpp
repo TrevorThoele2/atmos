@@ -1,27 +1,20 @@
 #include "ScriptAsset.h"
 
-#include "ObjectManager.h"
-#include "AngelScriptSystem.h"
+#include "ShouldCreateAsset.h"
 
-#include "AngelScriptAssert.h"
+#include "AngelScriptCurator.h"
+
+#include "AngelScriptResultVerification.h"
 #include <angelscript.h>
 
 #include <Inscription/InputTextFile.h>
 
 namespace Atmos::Asset
 {
-    ScriptAsset::ScriptAsset(ObjectManager& manager, const File::Name& fileName, DataPtr&& data) :
-        FileAsset(manager, fileName), data(std::move(data))
-    {
-        data->Initialize(name, fileName);
-    }
-
-    ScriptAsset::ScriptAsset(const ScriptAsset& arg) :
-        FileAsset(arg), data((arg.data) ? arg.data->Clone() : nullptr)
-    {}
+    ScriptAsset::ScriptAsset() = default;
 
     ScriptAsset::ScriptAsset(const ::Inscription::BinaryTableData<ScriptAsset>& data) :
-        FileAsset(std::get<0>(data.bases))
+        FileAsset(data.base)
     {}
 
     ScriptAsset::DataT* ScriptAsset::Data()
@@ -44,13 +37,14 @@ namespace Atmos::Asset
         return data->module;
     }
 
-    ObjectTypeDescription ScriptAsset::TypeDescription() const
+    void ScriptAsset::Initialize(const File::Name& fileName, DataPtr&& data)
     {
-        return ObjectTraits<ScriptAsset>::TypeDescription();
+        SetFileName(fileName);
+        this->data = std::move(data);
     }
 
-    ScriptAssetData::ScriptAssetData(ObjectManager& objectManager) :
-        objectManager(&objectManager), module(nullptr), isInitialized(false)
+    ScriptAssetData::ScriptAssetData(Script::Angel::ScriptCurator& scriptCurator) :
+        scriptCurator(&scriptCurator)
     {}
 
     std::unique_ptr<ScriptAssetData> ScriptAssetData::Clone() const
@@ -63,7 +57,7 @@ namespace Atmos::Asset
         if (isInitialized)
             return;
 
-        auto engine = objectManager->FindSystem<Script::ScriptSystem>()->Engine();
+        auto engine = scriptCurator->Engine();
 
         ::Inscription::InputTextFile file(fileName.GetValue());
         String fileAsString;
@@ -71,10 +65,12 @@ namespace Atmos::Asset
 
         module = engine->GetModule(fileName.GetWithoutExtension().c_str(), asGM_ALWAYS_CREATE);
 
-        Script::AngelScriptAssert(
-            module->AddScriptSection(name.c_str(),
-                fileAsString.c_str(),
-                fileAsString.length()));
+        Script::Angel::VerifyResult(module->AddScriptSection
+        (
+            name.c_str(),
+            fileAsString.c_str(),
+            fileAsString.length()
+        ));
 
         module->Build();
 
@@ -82,7 +78,22 @@ namespace Atmos::Asset
     }
 }
 
-namespace Atmos
+namespace Arca
 {
-    const ObjectTypeName ObjectTraits<Asset::ScriptAsset>::typeName = "ScriptAsset";
+    const TypeName Traits<::Atmos::Asset::ScriptAsset>::typeName = "ScriptAsset";
+    bool Traits<::Atmos::Asset::ScriptAsset>::ShouldCreate(
+        Reliquary& reliquary, const ::Atmos::File::Name& fileName, ::Atmos::Asset::ScriptAsset::DataPtr&& data)
+    {
+        return Atmos::Asset::ShouldCreateAsset<::Atmos::Asset::ScriptAsset>(reliquary, fileName);
+    }
+}
+
+namespace Inscription
+{
+    Scribe<::Atmos::Asset::ScriptAsset, BinaryArchive>::Table::Table()
+    {
+        MergeDataLinks({
+            DataLink::Base(data.base) }
+        );
+    }
 }

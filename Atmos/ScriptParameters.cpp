@@ -1,6 +1,6 @@
 #include "ScriptParameters.h"
 
-#include "ChromaVariant.h"
+#include "StdVariant.h"
 
 #include <Inscription/VectorScribe.h>
 
@@ -68,10 +68,5 @@ namespace Inscription
     void Scribe<::Atmos::Script::Parameters, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
     {
         archive(object.list);
-    }
-
-    void Scribe<::Atmos::Script::Parameters, BinaryArchive>::ConstructImplementation(ObjectT* storage, ArchiveT& archive)
-    {
-        DoBasicConstruction(storage, archive);
     }
 }

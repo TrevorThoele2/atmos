@@ -2,12 +2,6 @@
 
 namespace Atmos::Window
 {
-    NullWindow::NullWindow(ObjectManager& objectManager) : WindowBase(objectManager)
-    {}
-
-    void NullWindow::Setup()
-    {}
-
     void NullWindow::Show()
     {}
 
@@ -26,6 +20,9 @@ namespace Atmos::Window
     {
         return true;
     }
+
+    void NullWindow::SetupImpl()
+    {}
 
     AxisAlignedBox2D NullWindow::AdjustWindowDimensions()
     {

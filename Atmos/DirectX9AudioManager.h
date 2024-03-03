@@ -7,22 +7,23 @@
 
 namespace Atmos::Audio
 {
-    class DirectX9AudioManager : public AudioManager
+    class DirectX9AudioManager final : public AudioManager
     {
     public:
         DirectX9AudioManager();
-        ~DirectX9AudioManager();
-
-        void CreateSourceVoice(IXAudio2SourceVoice** voice, const WAVEFORMATEX& format);
-        bool SetMasterVolume(float setTo) override;
-    private:
-        IXAudio2* pXAudio2;
-        IXAudio2MasteringVoice* pMasterVoice;
-
         DirectX9AudioManager(const DirectX9AudioManager& arg) = delete;
         DirectX9AudioManager& operator=(const DirectX9AudioManager& arg) = delete;
+        ~DirectX9AudioManager();
 
-        std::unique_ptr<Asset::AudioAssetData> CreateAudioDataImpl(ExtractedFile&& file, const File::Name& name) override;
-        void CreateMasteringVoice(IXAudio2MasteringVoice** voice);
+        void CreateSourceVoice(IXAudio2SourceVoice** sourceVoice, const WAVEFORMATEX& waveFormat);
+        bool SetMasterVolume(float set) override;
+    private:
+        IXAudio2* xaudio2Interface = nullptr;
+        IXAudio2MasteringVoice* masteringVoice = nullptr;
+    private:
+        std::unique_ptr<Asset::AudioAssetData> CreateAudioDataImpl(
+            ExtractedFile&& file,
+            const File::Name& name) override;
+        void CreateMasteringVoice(IXAudio2MasteringVoice** sourceVoice);
     };
 }

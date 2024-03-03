@@ -1,71 +1,46 @@
 #pragma once
 
-#include <unordered_map>
-
-#include "ObjectSystem.h"
-#include "ObjectBatch.h"
-#include "ObjectID.h"
-#include "ObjectReference.h"
+#include <Arca/Curator.h>
 
 #include "RunningScript.h"
 #include "ScriptInstance.h"
+#include "AllRunningScripts.h"
 
-namespace Atmos
+namespace Atmos::Debug
 {
-    class LoggingSystem;
+    class Statistics;
 }
 
 namespace Atmos::Script
 {
-    class ScriptController : public ObjectSystem
+    class ScriptController final : public Arca::Curator
     {
-    public:
-        typedef TypedObjectReference<RunningScript> RunningScriptReference;
-        typedef ConstTypedObjectReference<ScriptInstance> ScriptInstanceReference;
-    public:
-        ScriptController(ObjectManager& manager);
-
-        void ExecuteImmediately(RunningScriptReference reference);
-
-        void ForceQuit(RunningScriptReference reference);
-
-        RunningScriptReference Current();
-
-        ObjectBatchSizeT Size() const;
-    public:
-        RunningScriptReference RunningScriptFor(ScriptInstanceReference scriptInstance) const;
-        bool IsRunning(ScriptInstanceReference scriptInstance) const;
     protected:
-        void InitializeImpl() override;
-        void WorkImpl() override;
+        void InitializeImplementation() override;
+        void WorkImplementation(Stage& stage) override;
     private:
-        typedef ObjectBatch<RunningScript> RunningScripts;
-        typedef RunningScripts::iterator RunningIterator;
-        RunningScripts runningScripts;
-        RunningIterator current;
+        AllRunningScripts* allRunningScripts = nullptr;
     private:
-        typedef std::unordered_map<ScriptInstanceReference, RunningScriptReference> RunningScriptMap;
-        RunningScriptMap runningScriptMap;
+        void LaunchOrRunScript(RunningScript& script);
     private:
-        RunningIterator Find(RunningScriptReference reference);
-        void Remove(RunningIterator itr);
+        Debug::Statistics* debugStatistics = nullptr;
+    };
+}
 
-        void LaunchOrRunScript(RunningIterator itr);
-    private:
-        void OnRunningScriptCreated(RunningScriptReference reference);
-        void OnRunningScriptDestroyed(RunningScriptReference reference);
-    private:
-        LoggingSystem* FindLoggingSystem();
+namespace Arca
+{
+    template<>
+    struct Traits<Atmos::Script::ScriptController>
+    {
+        static const ObjectType objectType = ObjectType::Curator;
+        static const TypeName typeName;
     };
 }
 
 namespace Inscription
 {
     template<>
-    class Scribe<::Atmos::Script::ScriptController, BinaryArchive> :
-        public ObjectSystemScribe<::Atmos::Script::ScriptController, BinaryArchive>
-    {
-    protected:
-        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
-    };
+    class Scribe<::Atmos::Script::ScriptController, BinaryArchive> final
+        : public ArcaNullScribe<::Atmos::Script::ScriptController, BinaryArchive>
+    {};
 }

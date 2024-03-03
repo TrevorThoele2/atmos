@@ -5,27 +5,19 @@
 
 namespace Atmos
 {
-    class Vector2D
+    struct Vector2D
     {
-    public:
-        typedef float Value;
-    public:
-        Value x, y;
-    public:
-        Vector2D();
-        Vector2D(Value x, Value y);
-        Vector2D(const Vector2D& arg) = default;
-
-        Vector2D& operator=(const Vector2D& arg) = default;
+        using Value = float;
+        Value x = 0.0f;
+        Value y = 0.0f;
 
         bool operator==(const Vector2D& arg) const;
         bool operator!=(const Vector2D& arg) const;
 
         void Scale(Value value);
-        Value Length() const;
-        Angle Angle(const Vector2D& other) const;
-        Value Dot(const Vector2D& other) const;
-        // Returns a 2D cross product
-        Value Cross(const Vector2D& other) const;
+        [[nodiscard]] Value Length() const;
+        [[nodiscard]] Angle Angle(const Vector2D& other) const;
+        [[nodiscard]] Value Dot(const Vector2D& other) const;
+        [[nodiscard]] Value Cross(const Vector2D& other) const;
     };
 }

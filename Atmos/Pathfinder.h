@@ -2,56 +2,52 @@
 #pragma once
 
 #include <stack>
-#include <map>
 #include <unordered_map>
 #include <memory>
 
-#include "ObjectSystem.h"
+#include <Arca/Curator.h>
 
-#include "Tile.h"
 #include "GridPosition.h"
 #include "BinaryHeap.h"
 
 namespace Atmos
 {
-    class Pathfinder : public ObjectSystem
+    class Pathfinder final : public Arca::Curator
     {
     public:
-        typedef std::stack<Grid::Position> TileStack;
+        using Path = std::stack<Grid::Position>;
     public:
-        Pathfinder(ObjectManager& manager);
-
-        TileStack FindPath(const Grid::Position& start, const Grid::Position& finish);
+        Path FindPath(const Grid::Position& start, const Grid::Position& finish);
     private:
         class Node
         {
         public:
-            typedef unsigned short Cost;
+            using Cost = unsigned short;
         public:
             Node(Cost gCost, Cost hCost, const Grid::Position& position);
-            Node(const Node& arg);
-            Node(Node&& arg);
+            Node(const Node& arg) = default;
+            Node(Node&& arg) noexcept;
 
-            Node& operator=(const Node& arg);
-            Node& operator=(Node&& arg);
+            Node& operator=(const Node& arg) = default;
+            Node& operator=(Node&& arg) noexcept;
 
             bool operator>(const Node& arg) const;
             bool operator==(const Node& arg) const;
             bool operator!=(const Node& arg) const;
 
-            const Grid::Position& Position() const;
+            [[nodiscard]] Grid::Position Position() const;
 
             void ChangeG(Cost to);
             void ChangeH(Cost to);
 
-            Cost G() const;
-            Cost H() const;
-            Cost F() const;
+            [[nodiscard]] Cost G() const;
+            [[nodiscard]] Cost H() const;
+            [[nodiscard]] Cost F() const;
 
             void Reparent(const Node& setTo);
-            const Node* Parent() const;
+            [[nodiscard]] const Node* Parent() const;
         private:
-            // Cost from start along best path
+            // Cost from frameStartTime along best path
             Cost gCost;
             // Heuristic
             Cost hCost;
@@ -60,15 +56,15 @@ namespace Atmos
         private:
             Grid::Position position;
         private:
-            typedef std::shared_ptr<Node> NodePtr;
+            using NodePtr = std::shared_ptr<Node>;
             NodePtr parent;
         };
 
-        typedef BinaryHeap<Node, std::greater<Node>> NodeHeap;
-        typedef std::unordered_map<Grid::Position, Node> NodeMap;
+        using NodeHeap = BinaryHeap<Node, std::greater<>>;
+        using NodeMap = std::unordered_map<Grid::Position, Node>;
     private:
-        NodeHeap::iterator FindNode(const Grid::Position& position, NodeHeap& heap);
-        void ReconstructPath(TileStack& stack, const Node& end);
-        void ClearStack(TileStack& stack);
+        NodeHeap::iterator FindNode(const Grid::Position& position, NodeHeap& heap) const;
+        static void ReconstructPath(Path& stack, const Node& end);
+        void ClearStack(Path& stack) const;
     };
 }

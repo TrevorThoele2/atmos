@@ -1,20 +1,7 @@
-
-#include <functional>
-
 #include "DebugScreen.h"
-
-#include "ObjectManager.h"
-#include "InputSystem.h"
-
-#include "StringUtility.h"
-
-#include "FontDefines.h"
 
 namespace Atmos
 {
-    DebugScreen::DebugScreen(ObjectManager& manager) : ObjectSystem(manager)
-    {}
-
     /*
     template<class T>
     T* RetrieveFromLocalObjectManager()
@@ -185,9 +172,9 @@ namespace Atmos
         return Manager()->FindSystem<StatisticsSystem>();
     }
 
-    FpsSystem* DebugScreen::FindFpsSystem()
+    TimeSystem* DebugScreen::FindFpsSystem()
     {
-        return Manager()->FindSystem<FpsSystem>();
+        return Manager()->FindSystem<TimeSystem>();
     }
 
     Input::System* DebugScreen::FindInputSystem()
@@ -195,12 +182,4 @@ namespace Atmos
         return Manager()->FindSystem<Input::System>();
     }
     */
-}
-
-namespace Inscription
-{
-    void Scribe<::Atmos::DebugScreen, BinaryArchive>::ScrivenImplementation(ObjectT& object, ArchiveT& archive)
-    {
-        BaseScriven<::Atmos::ObjectSystem>(object, archive);
-    }
 }

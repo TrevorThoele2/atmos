@@ -1,13 +1,19 @@
 #include "WindowBase.h"
 
-#include "ObjectManager.h"
-#include "GraphicsSystem.h"
-#include "LoggingSystem.h"
+#include <Arca/Reliquary.h>
+
+#include "WindowDimensionsChanged.h"
+#include "ReconstructGraphics.h"
 
 namespace Atmos::Window
 {
-    WindowBase::~WindowBase()
-    {}
+    WindowBase::~WindowBase() = default;
+
+    void WindowBase::Setup(Arca::Reliquary& reliquary)
+    {
+        this->reliquary = &reliquary;
+        SetupImpl();
+    }
 
     void WindowBase::ToggleFullscreen()
     {
@@ -22,7 +28,7 @@ namespace Atmos::Window
         isFullscreen = set;
         OnSetFullscreen();
         SetFullscreen(isFullscreen);
-        FindGraphicsSystem()->Get()->Reinitialize();
+        reliquary->Raise<Render::ReconstructGraphics>();
     }
 
     bool WindowBase::IsFullscreen() const
@@ -35,76 +41,52 @@ namespace Atmos::Window
         return !isFullscreen;
     }
 
-    WindowBase::Size WindowBase::DefaultSize()
+    WindowBase::Size WindowBase::DefaultSize() const
     {
         return Size(1024, 768);
     }
 
-    WindowBase::Size WindowBase::ClientSize()
+    WindowBase::Size WindowBase::ClientSize() const
     {
         return clientSize;
     }
 
-    WindowBase::Size WindowBase::WindowSize()
+    WindowBase::Size WindowBase::WindowSize() const
     {
         return windowSize;
     }
 
-    WindowBase::Position WindowBase::StartPosition()
+    WindowBase::Position WindowBase::StartPosition() const
     {
         return startPosition;
     }
-
-    WindowBase::WindowBase(ObjectManager& objectManager) : objectManager(&objectManager)
-    {}
 
     void WindowBase::SetWindowDimensions()
     {
         // Set lengths
         {
-            AxisAlignedBox2D box = AdjustWindowDimensions();
-            windowSize.width = static_cast<Size::Dimension>(abs(box.left) + abs(box.right));
-            windowSize.height = static_cast<Size::Dimension>(abs(box.top) + abs(box.bottom));
+            const auto box = AdjustWindowDimensions();
+            windowSize.width = static_cast<Size::Dimension>(abs(box.Left()) + abs(box.Right()));
+            windowSize.height = static_cast<Size::Dimension>(abs(box.Top()) + abs(box.Bottom()));
         }
 
         // Set default position
         {
-            Position defaultPosition = GetDefaultWindowPosition();
+            const auto defaultPosition = GetDefaultWindowPosition();
             startPosition = defaultPosition;
         }
 
-        auto graphicsManager = FindGraphicsSystem()->Get();
-        if (graphicsManager)
-            graphicsManager->SetMainDimensions(clientSize);
+        reliquary->Raise<DimensionsChanged>(clientSize);
         OnSetWindowDimensions();
     }
 
-    ObjectManager* WindowBase::GetObjectManager()
+    Arca::Reliquary& WindowBase::Reliquary()
     {
-        return objectManager;
+        return *reliquary;
     }
 
-    const ObjectManager* WindowBase::GetObjectManager() const
+    const Arca::Reliquary& WindowBase::Reliquary() const
     {
-        return objectManager;
-    }
-
-    LoggingSystem* WindowBase::FindLoggingSystem()
-    {
-        return objectManager->FindSystem<LoggingSystem>();
-    }
-
-    Render::GraphicsSystem* WindowBase::FindGraphicsSystem()
-    {
-        return objectManager->FindSystem<Render::GraphicsSystem>();
-    }
-}
-
-namespace Inscription
-{
-    void Scribe<::Atmos::Window::WindowBase, BinaryArchive>::Table::ConstructImplementation(
-        ObjectT* storage, ArchiveT& archive)
-    {
-        DoBasicConstruction(storage, archive);
+        return *reliquary;
     }
 }

@@ -2,15 +2,14 @@
 
 namespace Atmos
 {
-    class ScreenPosition
+    struct ScreenPosition
     {
-    public:
-        typedef unsigned int Dimension;
-    public:
-        Dimension x;
-        Dimension y;
-    public:
+        using Value = int;
+
+        Value x;
+        Value y;
+
         ScreenPosition();
-        ScreenPosition(Dimension x, Dimension y);
+        ScreenPosition(Value x, Value y);
     };
 }

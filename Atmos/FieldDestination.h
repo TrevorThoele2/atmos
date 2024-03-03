@@ -8,31 +8,21 @@
 
 namespace Atmos::World
 {
-    class FieldDestination
+    struct FieldDestination
     {
-    public:
         Direction direction;
         Grid::Position position;
         FieldID id;
-    public:
-        FieldDestination() = default;
-        FieldDestination(const Direction& direction, const Grid::Position& position, FieldID id);
-        FieldDestination(const FieldDestination& arg) = default;
-
-        FieldDestination& operator=(const FieldDestination& arg) = default;
-    private:
-        INSCRIPTION_ACCESS;
     };
 }
 
 namespace Inscription
 {
     template<>
-    class Scribe<::Atmos::World::FieldDestination, BinaryArchive> :
+    class Scribe<::Atmos::World::FieldDestination, BinaryArchive> final :
         public CompositeScribe<::Atmos::World::FieldDestination, BinaryArchive>
     {
     protected:
         void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
-        void ConstructImplementation(ObjectT* storage, ArchiveT& archive) override;
     };
 }

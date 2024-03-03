@@ -2,20 +2,28 @@
 
 namespace Atmos::Render
 {
-    CanvasView::CanvasView(ObjectManager& manager, const Canvas* canvas) : RenderFragment(manager), source(canvas)
-    {}
-
-    CanvasView::CanvasView(const ::Inscription::BinaryTableData<CanvasView>& data) :
-        RenderFragment(std::get<0>(data.bases))
-    {}
-
-    ObjectTypeDescription CanvasView::TypeDescription() const
+    void CanvasView::PostConstruct(ShardTuple shards)
     {
-        return ObjectTraits<CanvasView>::TypeDescription();
+        bounds = std::get<0>(shards);
+    }
+
+    void CanvasView::Initialize(Canvas& source)
+    {
+        this->source = &source;
+    }
+
+    const Canvas& CanvasView::Source() const
+    {
+        return *source;
+    }
+
+    const Bounds& CanvasView::Bounds() const
+    {
+        return *bounds;
     }
 }
 
-namespace Atmos
+namespace Arca
 {
-    const ObjectTypeName ObjectTraits<Render::CanvasView>::typeName = "CanvasView";
+    const TypeName Traits<::Atmos::Render::CanvasView>::typeName = "CanvasView";
 }

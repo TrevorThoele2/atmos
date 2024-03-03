@@ -1,27 +1,46 @@
-
 #include "AngelScriptTile.h"
 
 #include "AngelScriptRegistrationInterface.h"
 
-#include "AngelScriptAssert.h"
+#include "AngelScriptResultVerification.h"
 #include <angelscript.h>
 
-namespace Atmos::Script
+namespace Atmos::Script::Angel
 {
     Tile::Tile()
     {}
 
-    void Tile::RegisterToAngelScript(asIScriptEngine* engine)
+    void Tile::RegisterTo(asIScriptEngine* engine)
     {
         const char* className = "Tile";
 
-        AngelScriptAssert(engine->RegisterObjectType(
-            className, 0, asOBJ_REF));
-        AngelScriptAssert(engine->RegisterObjectBehaviour(
-            className, asBEHAVE_FACTORY, "MyClass@ f()", asFUNCTION(RegistrationInterface::GenerateReference<Tile>), asCALL_CDECL));
-        AngelScriptAssert(engine->RegisterObjectBehaviour(
-            className, asBEHAVE_ADDREF, "void f()", asMETHOD(Tile, AddRef), asCALL_THISCALL));
-        AngelScriptAssert(engine->RegisterObjectProperty(
-            className, "GridPosition position", asOFFSET(Tile, position)));
+        VerifyResult(engine->RegisterObjectType
+        (
+            className,
+            0,
+            asOBJ_REF
+        ));
+        VerifyResult(engine->RegisterObjectBehaviour
+        (
+            className,
+            asBEHAVE_FACTORY,
+            "MyClass@ f()",
+            asFUNCTION(RegistrationInterface::GenerateReference<Tile>),
+            asCALL_CDECL
+        ));
+        VerifyResult(engine->RegisterObjectBehaviour
+        (
+            className,
+            asBEHAVE_ADDREF,
+            "void f()",
+            asMETHOD(Tile, AddRef),
+            asCALL_THISCALL
+        ));
+        VerifyResult(engine->RegisterObjectProperty
+        (
+            className,
+            "GridPosition position",
+            asOFFSET(Tile, position)
+        ));
     }
 }

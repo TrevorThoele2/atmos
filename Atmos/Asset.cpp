@@ -4,32 +4,30 @@
 
 namespace Atmos::Asset
 {
-    Asset::Asset(ObjectManager& manager, const Name& name) : Object(manager), name(name)
-    {}
-
-    Asset::Asset(const Asset& arg) : Object(arg), name(arg.name)
-    {}
-
-    Asset::Asset(const ::Inscription::BinaryTableData<Asset>& data) :
-        Object(std::get<0>(data.bases)), name(data.name)
-    {}
-
-    ObjectTypeDescription Asset::TypeDescription() const
+    Name Asset::Name() const
     {
-        return ObjectTraits<Asset>::TypeDescription();
+        return name;
     }
-}
 
-namespace Atmos
-{
-    const ObjectTypeName ObjectTraits<Asset::Asset>::typeName = "Asset";
+    Asset::Asset(Asset&& arg) noexcept : name(std::move(arg.name))
+    {}
+
+    Asset::Asset(const ::Inscription::BinaryTableData<Asset>& data) : name(data.name)
+    {}
+
+    void Asset::SetName(const Atmos::Name& name)
+    {
+        this->name = name;
+    }
 }
 
 namespace Inscription
 {
     Scribe<::Atmos::Asset::Asset, BinaryArchive>::Table::Table()
     {
-        MergeDataEntries({
-            DataEntry::Auto(&ObjectT::name, &DataT::name) });
+        MergeDataLinks
+        ({
+            DataLink::Auto(&ObjectT::name, &DataT::name) }
+        );
     }
 }

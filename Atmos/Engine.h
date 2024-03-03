@@ -3,11 +3,9 @@
 #include "EngineInitializationProperties.h"
 #include "EngineExecution.h"
 
+#include <Arca/Reliquary.h>
+#include <Arca/ReliquaryOrigin.h>
 #include "WorldManager.h"
-#include "ObjectManager.h"
-#include "ObjectManagerFactory.h"
-
-#include "TypeRegistration.h"
 
 namespace Atmos
 {
@@ -24,25 +22,18 @@ namespace Atmos
 
         void Exit();
     protected:
-        typedef EngineInitializationProperties InitializationProperties;
+        using InitializationProperties = EngineInitializationProperties;
     protected:
-        Engine();
+        Engine() = default;
 
-        virtual InitializationProperties CreateInitializationProperties(ObjectManager& globalObjectManager) = 0;
+        virtual InitializationProperties CreateInitializationProperties(Arca::Reliquary& reliquary) = 0;
 
         virtual void DoExit() = 0;
     private:
-        bool IsSetup() const;
-
-        void SetupRequired();
+        [[nodiscard]] bool IsSetup() const;
+        void SetupRequired() const;
     private:
-        ObjectManager globalObjectManager;
-        ObjectManagerFactory localObjectManagerFactory;
-
-        TypeRegistration typeRegistration;
-        TypeRegistration::Group* globalTypes;
-        TypeRegistration::Group* localTypes;
-        TypeRegistration::Group* infrastructureTypes;
+        std::unique_ptr<Arca::Reliquary> reliquary;
 
         class ExecutionContext
         {
@@ -53,7 +44,9 @@ namespace Atmos
             ExecutionContext(Engine& owner, World::WorldManager&& worldManager);
         };
 
-        typedef std::unique_ptr<ExecutionContext> ExecutionContextPtr;
+        using ExecutionContextPtr = std::unique_ptr<ExecutionContext>;
         ExecutionContextPtr executionContext;
+
+        void ProvideInitializationProperties(InitializationProperties&& properties);
     };
 }

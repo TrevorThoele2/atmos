@@ -1,9 +1,6 @@
-
 #include "StringUtility.h"
 
 #include "GridPosition.h"
-
-#include "InputTraits.h"
 
 #include "FilePath.h"
 
@@ -137,14 +134,14 @@ namespace Atmos
 
     namespace Detail
     {
-        String FromStringImpl(const String &arg, const ::Chroma::Type<String> &t)
+        String FromStringImpl(const String &arg, const ::Chroma::TypeIdentity<String> &t)
         {
             return arg;
         }
 
-        Time::Value FromStringImpl(const String &arg, const ::Chroma::Type<Time::Value> &t)
+        Time::Value FromStringImpl(const String &arg, const ::Chroma::TypeIdentity<Time::Value> &t)
         {
-            return FromString<Time::Value::Number>(arg);
+            return Time::Value(FromString<Time::Value::Number>(arg));
         }
     }
 
@@ -203,9 +200,9 @@ namespace Atmos
     template<> ::Agui::Resolution::Size FromString(const String &arg)
     {
         ::Agui::Resolution::Size size;
-        auto pivot = arg.find_first_of("x");
-        auto left = arg.substr(0, pivot);
-        auto right = arg.substr(pivot + 1);
+        const auto pivot = arg.find_first_of("x");
+        const auto left = arg.substr(0, pivot);
+        const auto right = arg.substr(pivot + 1);
 
         size.width = FromString<::Agui::Resolution::Size::Value>(left);
         size.height = FromString<::Agui::Resolution::Size::Value>(right);
@@ -267,20 +264,5 @@ namespace Atmos
     String ToString(const ::Agui::Resolution::Size &arg)
     {
         return ToString(arg.width) + "x" + ToString(arg.height);
-    }
-
-    String ToString(const Input::KeyID &arg)
-    {
-        return "";
-    }
-
-    String ToString(const Input::MouseKeyID &arg)
-    {
-        return "";
-    }
-
-    String ToString(const Input::ActionID &arg)
-    {
-        return "";
     }
 }

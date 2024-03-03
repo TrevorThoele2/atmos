@@ -15,7 +15,5 @@ namespace Atmos::Render
         Width width;
 
         Color color;
-    public:
-        Line(const Position2D& from, const Position2D& to, const Color& color, Width width);
     };
 }

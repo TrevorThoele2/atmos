@@ -1,42 +1,41 @@
 #pragma once
 
 #include "FileAsset.h"
-
-#include "ReadonlyProperty.h"
-#include "StoredReadonlyProperty.h"
-
-#include "ObjectScribe.h"
+#include <Arca/ClosedTypedRelicAutomation.h>
 
 namespace Atmos::Asset
 {
     class ImageAssetData;
 
-    class ImageAsset : public FileAsset
+    class ImageAsset final : public Arca::ClosedTypedRelicAutomation<ImageAsset>, public FileAsset
     {
     public:
-        typedef int Dimension;
+        using Dimension = int;
+        [[nodiscard]] Dimension Width() const;
+        [[nodiscard]] Dimension Height() const;
     public:
-        typedef StoredReadonlyProperty<Dimension> DimensionProperty;
-        DimensionProperty width;
-        DimensionProperty height;
+        using DataT = ImageAssetData;
+        using DataPtr = std::unique_ptr<DataT>;
     public:
-        typedef ImageAssetData DataT;
-        typedef std::unique_ptr<DataT> DataPtr;
-    public:
-        ImageAsset(ObjectManager& manager, const File::Name& fileName, DataPtr&& data);
-        ImageAsset(const ImageAsset& arg);
-        ImageAsset(const ::Inscription::BinaryTableData<ImageAsset>& data);
+        ImageAsset();
+        ImageAsset(const ImageAsset& arg) = delete;
+        ImageAsset(ImageAsset&& arg) noexcept = default;
+        explicit ImageAsset(const ::Inscription::BinaryTableData<ImageAsset>& data);
 
-        DataT* Data();
-        const DataT* Data() const;
+        [[nodiscard]] DataT* Data();
+        [[nodiscard]] const DataT* Data() const;
         template<class RealDataT>
-        RealDataT* DataAs();
+        [[nodiscard]] RealDataT* DataAs();
         template<class RealDataT>
-        const RealDataT* DataAs() const;
-
-        ObjectTypeDescription TypeDescription() const override;
+        [[nodiscard]] const RealDataT* DataAs() const;
+    public:
+        void Initialize(const File::Name& fileName, DataPtr&& data);
     private:
         DataPtr data;
+        Dimension width = 0;
+        Dimension height = 0;
+    private:
+        INSCRIPTION_ACCESS;
     };
 
     template<class RealDataT>
@@ -55,18 +54,21 @@ namespace Atmos::Asset
     {
     public:
         virtual ~ImageAssetData() = 0;
-
-        virtual std::unique_ptr<ImageAssetData> Clone() const = 0;
+        [[nodiscard]] virtual std::unique_ptr<ImageAssetData> Clone() const = 0;
     };
 }
 
-namespace Atmos
+namespace Arca
 {
     template<>
-    struct ObjectTraits<Asset::ImageAsset> : public ObjectTraitsBase<Asset::ImageAsset>
+    struct Traits<::Atmos::Asset::ImageAsset>
     {
-        static const ObjectTypeName typeName;
-        static constexpr ObjectTypeList<Asset::FileAsset> bases = {};
+        static const ObjectType objectType = ObjectType::Relic;
+        static const TypeName typeName;
+        static bool ShouldCreate(
+            Reliquary& reliquary,
+            const ::Atmos::File::Name& fileName,
+            ::Atmos::Asset::ImageAsset::DataPtr&& data);
     };
 }
 
@@ -74,15 +76,22 @@ namespace Inscription
 {
     template<>
     struct TableData<::Atmos::Asset::ImageAsset, BinaryArchive> :
-        public ObjectTableDataBase<::Atmos::Asset::ImageAsset, BinaryArchive>
-    {};
+        TableDataBase<::Atmos::Asset::ImageAsset, BinaryArchive>
+    {
+        Base<::Atmos::Asset::FileAsset> base;
+        ObjectT::Dimension width;
+        ObjectT::Dimension height;
+    };
 
     template<>
-    class Scribe<::Atmos::Asset::ImageAsset, BinaryArchive> :
-        public ObjectScribe<::Atmos::Asset::ImageAsset, BinaryArchive>
+    class Scribe<::Atmos::Asset::ImageAsset, BinaryArchive> final :
+        public ArcaTableScribe<::Atmos::Asset::ImageAsset, BinaryArchive>
     {
     public:
-        class Table : public TableBase
-        {};
+        class Table final : public TableBase
+        {
+        public:
+            Table();
+        };
     };
 }

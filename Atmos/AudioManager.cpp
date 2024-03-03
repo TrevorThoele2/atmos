@@ -14,16 +14,16 @@ namespace Atmos::Audio
         char* dataSource;
         AudioManager::SizeT fileSize;
         OggFile(char* dataSource, AudioManager::SizeT fileSize) :
-            dataSource(std::move(dataSource)), currentPosition(dataSource), fileSize(fileSize)
+            currentPosition(dataSource), dataSource(dataSource), fileSize(fileSize)
         {}
     };
 
     size_t ReadOggFile(void* ptr, size_t size, size_t nmemb, void* dataSource)
     {
-        OggFile* oggFile = reinterpret_cast<OggFile*>(dataSource);
+        auto oggFile = reinterpret_cast<OggFile*>(dataSource);
         size_t readCount = size * nmemb;
 
-        // If going to read past the end
+        // If going to read past the frameEndTime
         if (oggFile->currentPosition + readCount > oggFile->dataSource + oggFile->fileSize)
             readCount = oggFile->dataSource + oggFile->fileSize - oggFile->currentPosition;
 
@@ -34,7 +34,7 @@ namespace Atmos::Audio
 
     int SeekOggFile(void* dataSource, ogg_int64_t offset, int type)
     {
-        OggFile* oggFile = reinterpret_cast<OggFile*>(dataSource);
+        auto oggFile = reinterpret_cast<OggFile*>(dataSource);
 
         switch (type)
         {
@@ -66,15 +66,15 @@ namespace Atmos::Audio
         return 0;
     }
 
-    int CloseOggFile(void* datasource)
+    int CloseOggFile(void*)
     {
         return 0;
     }
 
     long TellOggFile(void* dataSource)
     {
-        OggFile* oggFile = reinterpret_cast<OggFile*>(dataSource);
-        return (oggFile->currentPosition - oggFile->dataSource);
+        const auto oggFile = reinterpret_cast<OggFile*>(dataSource);
+        return oggFile->currentPosition - oggFile->dataSource;
     }
 
     ov_callbacks CreateOggCallbacks()
@@ -87,56 +87,53 @@ namespace Atmos::Audio
         return callbacks;
     }
 
-    AudioManager::~AudioManager()
-    {}
+    AudioManager::~AudioManager() = default;
 
     std::unique_ptr<Asset::AudioAssetData> AudioManager::CreateAudioData(const File::Path& path)
     {
         SimpleInFile file(path);
-        BufferT::SizeT fileSize = static_cast<BufferT::SizeT>(file.GetFileSize());
+        const auto fileSize = static_cast<BufferT::SizeT>(file.GetFileSize());
 
         auto buffer = BufferT(fileSize);
 
         file.FillBuffer(buffer.GetBytes(), fileSize);
 
-        auto typeOfBuffer = FileTypeOf(buffer, fileSize);
-        auto& createdData = ExtractFile(typeOfBuffer, std::move(buffer), fileSize);
-        auto& asset = CreateAudioDataImpl(std::move(createdData), path.GetFileName());
+        const auto typeOfBuffer = FileTypeOf(buffer, fileSize);
+        auto createdData = ExtractFile(typeOfBuffer, std::move(buffer), fileSize);
+        auto asset = CreateAudioDataImpl(std::move(createdData), path.GetFileName());
 
-        return std::move(asset);
+        return asset;
     }
 
     std::unique_ptr<Asset::AudioAssetData> AudioManager::CreateAudioData(
         void* buffer, SizeT fileSize, const File::Name& name)
     {
         BufferT madeBuffer(buffer, fileSize);
-        auto& data = ExtractFile(FileTypeOf(madeBuffer, fileSize), std::move(madeBuffer), fileSize);
+        auto data = ExtractFile(FileTypeOf(madeBuffer, fileSize), std::move(madeBuffer), fileSize);
         return CreateAudioDataImpl(std::move(data), name);
     }
 
     bool AudioManager::CanMake(const File::Path& path)
     {
         SimpleInFile file(path);
-        auto fileSize = static_cast<SizeT>(file.GetFileSize());
+        const auto fileSize = static_cast<SizeT>(file.GetFileSize());
 
-        auto buffer = BufferT(fileSize);
+        const auto buffer = BufferT(fileSize);
         file.FillBuffer(buffer.GetBytes(), fileSize);
 
-        bool ret = FileTypeOf(buffer, fileSize) != FileType::NONE;
-        return ret;
+        return FileTypeOf(buffer, fileSize) != FileType::None;
     }
 
     bool AudioManager::CanMake(void* buffer, SizeT fileSize)
     {
-        return FileTypeOf(BufferT(buffer, fileSize), fileSize) != FileType::NONE;
+        return FileTypeOf(BufferT(buffer, fileSize), fileSize) != FileType::None;
     }
 
-    AudioManager::AudioManager()
-    {}
+    AudioManager::AudioManager() = default;
 
     AudioManager::ExtractedFile AudioManager::ExtractFile(FileType fileType, BufferT&& buffer, SizeT fileSize)
     {
-        if (fileType == FileType::WAV)
+        if (fileType == FileType::Wav)
             return ExtractFileWAV(std::move(buffer), fileSize);
         else
             return ExtractFileOGG(std::move(buffer), fileSize);
@@ -144,7 +141,7 @@ namespace Atmos::Audio
 
     AudioManager::ExtractedFile AudioManager::ExtractFileWAV(BufferT&& buffer, SizeT fileSize)
     {
-        Format format;
+        Format format{};
 
         // Get WAV format
         const unsigned int AUDIOFORMAT_POSITION = 20;
@@ -174,19 +171,19 @@ namespace Atmos::Audio
         auto newBuffer = BufferT(retSize);
         currentPosition += CopyBuffer(buffer.GetBytes(), newBuffer.GetBytes(), retSize, currentPosition);
 
-        return ExtractedFile(std::move(newBuffer), std::move(format));
+        return ExtractedFile(std::move(newBuffer), format);
     }
 
     AudioManager::ExtractedFile AudioManager::ExtractFileOGG(BufferT&& buffer, SizeT fileSize)
     {
-        Format format;
+        Format format{};
 
         OggFile oggFile(buffer.GetBytes(), fileSize);
 
-        OggVorbis_File og_file;
-        ov_open_callbacks(&oggFile, &og_file, nullptr, -1, CreateOggCallbacks());
+        OggVorbis_File vorbisFile;
+        ov_open_callbacks(&oggFile, &vorbisFile, nullptr, -1, CreateOggCallbacks());
 
-        auto byteSize = static_cast<unsigned int>(ov_pcm_total(&og_file, -1) * 4);
+        auto byteSize = static_cast<unsigned int>(ov_pcm_total(&vorbisFile, -1) * 4);
         auto totalBuffer = new char[byteSize];
 
         // Create buffer
@@ -196,16 +193,16 @@ namespace Atmos::Audio
 
         // Read the entirety of the sound from the ogg file
         size_t totalRead = 0;
-        int returned = ov_read(&og_file, bufferTemp, size, 0, 2, 1, nullptr);
+        int returned = ov_read(&vorbisFile, bufferTemp, size, 0, 2, 1, nullptr);
         totalRead += returned;
         while (returned != 0)
         {
-            returned = ov_read(&og_file, bufferTemp, size, 0, 2, 1, nullptr);
+            returned = ov_read(&vorbisFile, bufferTemp, size, 0, 2, 1, nullptr);
             memcpy(&totalBuffer[totalRead], bufferTemp, returned);
             totalRead += returned;
         }
 
-        auto info = ov_info(&og_file, -1);
+        auto info = ov_info(&vorbisFile, -1);
 
         format.formatTag = WAVE_FORMAT_PCM;
         format.channels = info->channels;
@@ -214,9 +211,9 @@ namespace Atmos::Audio
         format.blockAlign = (format.channels * format.bitsPerSample) / 8;
         format.avgBytesPerSec = format.samplesPerSec * format.blockAlign;
 
-        ov_clear(&og_file);
+        ov_clear(&vorbisFile);
 
-        return ExtractedFile(BufferT(totalBuffer, byteSize), std::move(format));
+        return ExtractedFile(BufferT(totalBuffer, byteSize), format);
     }
 
     AudioManager::FileType AudioManager::FileTypeOf(const BufferT& buffer, SizeT fileSize)
@@ -229,29 +226,20 @@ namespace Atmos::Audio
             const char size = 4;
             const char magicString[size]{ 82, 73, 70, 70 };
             if (CompareBuffers(buffer.GetBytes(), &magicString, size))
-                return FileType::WAV;
+                return FileType::Wav;
         }
 
         // Test OGG
         {
             OggFile oggFile(buffer.GetBytes(), fileSize);
 
-            OggVorbis_File og_file;
-            auto result = ov_test_callbacks(&oggFile, &og_file, nullptr, 0, CreateOggCallbacks());
-            ov_clear(&og_file);
+            OggVorbis_File vorbisFile;
+            auto result = ov_test_callbacks(&oggFile, &vorbisFile, nullptr, 0, CreateOggCallbacks());
+            ov_clear(&vorbisFile);
             if (result >= 0)
-                return FileType::OGG;
+                return FileType::Ogg;
         }
 
-        return FileType::NONE;
-    }
-}
-
-namespace Inscription
-{
-    void Scribe<::Atmos::Audio::AudioManager, BinaryArchive>::Table::ConstructImplementation(
-        ObjectT* storage, ArchiveT& archive)
-    {
-        DoBasicConstruction(storage, archive);
+        return FileType::None;
     }
 }

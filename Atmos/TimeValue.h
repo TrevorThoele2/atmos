@@ -11,10 +11,10 @@ namespace Atmos::Time
     class Value
     {
     public:
-        typedef FixedPoint64 Number;
-        typedef Number::Radix Radix;
+        using Number = FixedPoint64;
+        using Radix = Number::Radix;
     public:
-        Value(Number number = Number(), Epoch epoch = Epoch::SECONDS);
+        explicit Value(Number number = Number(), Epoch epoch = Epoch::Seconds);
         Value(Number::Value number, Epoch epoch);
         Value(const Value& arg) = default;
 
@@ -39,18 +39,22 @@ namespace Atmos::Time
         explicit operator double() const;
 
         explicit operator Number() const;
-        Number Get() const;
-        Number GetAs(Epoch epoch) const;
-        Radix GetRadixPoint() const;
+        [[nodiscard]] Number Get() const;
+        [[nodiscard]] Number GetAs(Epoch epoch) const;
+        [[nodiscard]] Radix GetRadixPoint() const;
         static Radix GetRadixPoint(Epoch epoch);
 
         void ConvertTo(Epoch epoch);
-        Epoch GetEpoch() const;
+        [[nodiscard]] Epoch GetEpoch() const;
     private:
         Number number;
         Epoch epoch;
     private:
-        static Number ConvertNumberStatic(Number number, Epoch oldEpoch, Epoch newEpoch, bool manipulateValue = false);
+        static Number ConvertNumberStatic(
+            Number number,
+            Epoch oldEpoch,
+            Epoch newEpoch,
+            bool manipulateValue = false);
     private:
         INSCRIPTION_ACCESS;
     };
@@ -59,16 +63,15 @@ namespace Atmos::Time
 namespace Inscription
 {
     template<>
-    class Scribe<::Atmos::Time::Value, BinaryArchive> :
+    class Scribe<::Atmos::Time::Value, BinaryArchive> final :
         public CompositeScribe<::Atmos::Time::Value, BinaryArchive>
     {
     protected:
         void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
-        void ConstructImplementation(ObjectT* storage, ArchiveT& archive) override;
     };
 
     template<>
-    class Scribe<::Atmos::Time::Epoch, BinaryArchive> :
+    class Scribe<::Atmos::Time::Epoch, BinaryArchive> final :
         public EnumScribe<::Atmos::Time::Epoch, BinaryArchive>
     {};
 }

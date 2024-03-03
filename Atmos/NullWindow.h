@@ -4,19 +4,17 @@
 
 namespace Atmos::Window
 {
-    class NullWindow : public WindowBase
+    class NullWindow final : public WindowBase
     {
     public:
-        NullWindow(ObjectManager& objectManager);
-
-        void Setup() override;
-
         void Show() override;
         void Exit() override;
-        bool IsCurrentlyFocused() const override;
+        [[nodiscard]] bool IsCurrentlyFocused() const override;
         void Suspend(const Time::Value& time) override;
         bool OnStartFrame() override;
     protected:
+        void SetupImpl() override;
+
         AxisAlignedBox2D AdjustWindowDimensions() override;
         void OnSetWindowDimensions() override;
         Position GetDefaultWindowPosition() override;

@@ -8,21 +8,21 @@
 
 #include "String.h"
 
-namespace Atmos
+namespace Atmos::Initialization
 {
-    class InitializationFileSection
+    class FileSection
     {
     public:
-        typedef InitializationFileEntryBase EntryBase;
+        using EntryBase = FileEntryBase;
         template<class T>
-        using Entry = InitializationFileEntry<T>;
+        using Entry = FileEntry<T>;
 
-        typedef InitializationFileExtractedSection ExtractedSection;
+        using ExtractedSection = FileExtractedSection;
     public:
-        InitializationFileSection(const String& header);
+        FileSection(const String& header);
 
         template<class T>
-        Entry<T>* CreateEntry(const String& name, typename Entry<T>::FromOutside&& fromOutside);
+        Entry<T>* CreateEntry(const String& name, T* value);
         EntryBase* FindEntry(const String& name);
 
         void SetTo(const ExtractedSection& extracted);
@@ -32,16 +32,16 @@ namespace Atmos
     private:
         String header;
 
-        typedef std::unique_ptr<EntryBase> EntryPtr;
-        typedef std::map<String, EntryPtr> EntryMap;
+        using EntryPtr = std::unique_ptr<EntryBase>;
+        using EntryMap = std::map<String, EntryPtr>;
         EntryMap entries;
     };
 
     template<class T>
-    InitializationFileSection::Entry<T>* InitializationFileSection::CreateEntry(const String& name, typename Entry<T>::FromOutside&& fromOutside)
+    FileSection::Entry<T>* FileSection::CreateEntry(const String& name, T* value)
     {
-        auto made = new Entry<T>(name, std::move(fromOutside));
-        auto emplaced = entries.emplace(name, EntryPtr(made));
-        return made;
+        auto made = std::make_unique<Entry<T>>(name, value);
+        auto emplaced = entries.emplace(name, std::move(made));
+        return static_cast<Entry<T>*>(emplaced.first->second.get());
     }
 }

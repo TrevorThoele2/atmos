@@ -1,20 +1,18 @@
-
 #include "Variant.h"
 
 namespace Atmos
 {
-    class ToStringImplementation
+    struct ToStringVisitor
     {
-    public:
         template<class T>
-        static String DoReturn(T& t)
+        String operator()(T& t)
         {
             return ToString(t);
         }
     };
 
-    String ToString(const VariantT& arg)
+    String ToString(const Variant& arg)
     {
-        return ::Chroma::VisitReturn<ToStringImplementation, String>(arg);
+        return std::visit(ToStringVisitor{}, arg);
     }
 }

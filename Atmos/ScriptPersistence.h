@@ -9,7 +9,7 @@ namespace Atmos::Script
     class Persistence
     {
     public:
-        typedef size_t SizeT;
+        using SizeT = size_t;
     private:
         class Impl;
     public:
@@ -34,6 +34,5 @@ namespace Inscription
     {
     protected:
         void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
-        void ConstructImplementation(ObjectT* storage, ArchiveT& archive) override;
     };
 }

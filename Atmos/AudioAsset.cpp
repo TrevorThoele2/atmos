@@ -1,23 +1,14 @@
 #include "AudioAsset.h"
 
-#include "ObjectManager.h"
-#include "AssetPackageSystem.h"
-#include "AudioSystem.h"
+#include "ShouldCreateAsset.h"
 
 namespace Atmos::Asset
 {
-    AudioAsset::AudioAsset(ObjectManager& manager, const File::Name& fileName, DataPtr&& data) :
-        FileAsset(manager, fileName), data(std::move(data))
-    {}
-
-    AudioAsset::AudioAsset(const AudioAsset& arg) : FileAsset(arg), data((arg.data) ? arg.data->Clone() : nullptr)
-    {}
+    AudioAsset::AudioAsset() = default;
 
     AudioAsset::AudioAsset(const ::Inscription::BinaryTableData<AudioAsset>& data) :
-        FileAsset(std::get<0>(data.bases))
-    {
-        SetDataFromPackage(fileName);
-    }
+        FileAsset(data.base)
+    {}
 
     AudioAsset::DataT* AudioAsset::Data()
     {
@@ -29,35 +20,32 @@ namespace Atmos::Asset
         return data.get();
     }
 
-    ObjectTypeDescription AudioAsset::TypeDescription() const
+    void AudioAsset::Initialize(const File::Name& fileName, DataPtr&& data)
     {
-        return ObjectTraits<AudioAsset>::TypeDescription();
+        SetFileName(fileName);
+        this->data = std::move(data);
     }
 
-    void AudioAsset::SetDataFromPackage(const File::Name& fileName)
-    {
-        auto assetPackageSystem = FindAssetPackageSystem();
-        auto audioManager = FindAudioSystem()->Get();
-
-        auto buffer = assetPackageSystem->RetrieveBuffer<AudioAsset>(fileName);
-        data = std::move(audioManager->CreateAudioData(buffer.Get().first, buffer.Get().second, fileName));
-    }
-
-    AssetPackageSystem* AudioAsset::FindAssetPackageSystem()
-    {
-        return Manager()->FindSystem<AssetPackageSystem>();
-    }
-
-    Audio::AudioSystem* AudioAsset::FindAudioSystem()
-    {
-        return Manager()->FindSystem<Audio::AudioSystem>();
-    }
-
-    AudioAssetData::~AudioAssetData()
-    {}
+    AudioAssetData::~AudioAssetData() = default;
 }
 
-namespace Atmos
+namespace Arca
 {
-    const ObjectTypeName ObjectTraits<Asset::AudioAsset>::typeName = "AudioAsset";
+    const TypeName Traits<::Atmos::Asset::AudioAsset>::typeName = "AudioAsset";
+
+    bool Traits<::Atmos::Asset::AudioAsset>::ShouldCreate(
+        Reliquary& reliquary, const ::Atmos::File::Name& fileName, ::Atmos::Asset::AudioAsset::DataPtr&& data)
+    {
+        return Atmos::Asset::ShouldCreateAsset<::Atmos::Asset::AudioAsset>(reliquary, fileName);
+    }
+}
+
+namespace Inscription
+{
+    Scribe<::Atmos::Asset::AudioAsset, BinaryArchive>::Table::Table()
+    {
+        MergeDataLinks({
+            DataLink::Base(data.base) }
+        );
+    }
 }

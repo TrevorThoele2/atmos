@@ -1,14 +1,13 @@
 #pragma once
 
 #include <stdint.h>
+#include <variant>
 
 #include "StringUtility.h"
 
-#include <Chroma/Variant.h>
-
 namespace Atmos::Script
 {
-    typedef ::Chroma::Variant<
+    using Variant = std::variant<
         bool,
         std::int8_t,
         std::int16_t,
@@ -19,10 +18,11 @@ namespace Atmos::Script
         std::uint32_t,
         std::uint64_t,
         float,
-        double> VariantT;
+        double
+    >;
 }
 
 namespace Atmos
 {
-    String ToString(const Script::VariantT &arg);
+    String ToString(const Script::Variant& arg);
 }

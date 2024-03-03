@@ -1,18 +1,15 @@
-
 #include "ShaderAsset.h"
-#include <fstream>
+
+#include "ShouldCreateAsset.h"
 
 namespace Atmos::Asset
 {
-    ShaderAsset::ShaderAsset(ObjectManager& manager, const File::Name& fileName, DataPtr&& data) :
-        FileAsset(manager, fileName), data(std::move(data))
-    {}
+    ShaderAsset::ShaderAsset() = default;
 
-    ShaderAsset::ShaderAsset(const ShaderAsset& arg) : FileAsset(arg), data((arg.data) ? arg.data->Clone() : nullptr)
-    {}
+    ShaderAsset::ShaderAsset(ShaderAsset&& arg) noexcept = default;
 
     ShaderAsset::ShaderAsset(const ::Inscription::BinaryTableData<ShaderAsset>& data) :
-        FileAsset(std::get<0>(data.bases))
+        FileAsset(data.base)
     {}
 
     ShaderAsset::DataT* ShaderAsset::Data()
@@ -25,16 +22,32 @@ namespace Atmos::Asset
         return data.get();
     }
 
-    ObjectTypeDescription ShaderAsset::TypeDescription() const
+    void ShaderAsset::Initialize(const File::Name& fileName, DataPtr&& data)
     {
-        return ObjectTraits<ShaderAsset>::TypeDescription();
+        SetFileName(fileName);
+        this->data = std::move(data);
     }
 
-    ShaderAssetData::~ShaderAssetData()
-    {}
+    ShaderAssetData::~ShaderAssetData() = default;
 }
 
-namespace Atmos
+namespace Arca
 {
-    const ObjectTypeName ObjectTraits<Asset::ShaderAsset>::typeName = "ShaderAsset";
+    const TypeName Traits<::Atmos::Asset::ShaderAsset>::typeName = "ShaderAsset";
+
+    bool Traits<::Atmos::Asset::ShaderAsset>::ShouldCreate(
+        Reliquary& reliquary, const ::Atmos::File::Name& fileName, ::Atmos::Asset::ShaderAsset::DataPtr&& data)
+    {
+        return Atmos::Asset::ShouldCreateAsset<::Atmos::Asset::ShaderAsset>(reliquary, fileName);
+    }
+}
+
+namespace Inscription
+{
+    Scribe<::Atmos::Asset::ShaderAsset, BinaryArchive>::Table::Table()
+    {
+        MergeDataLinks({
+            DataLink::Base(data.base) }
+        );
+    }
 }

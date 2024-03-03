@@ -1,55 +1,49 @@
 #pragma once
 
+#include <Arca/ClosedTypedRelicAutomation.h>
 #include "Stopwatch.h"
+#include "TimeInformation.h"
 
-#include "ObjectScribe.h"
+namespace Arca
+{
+    class Reliquary;
+}
 
 namespace Atmos::Time
 {
-    class TimeSystem;
-
-    class FrameStopwatch : public Stopwatch
+    class FrameStopwatch final : public Arca::ClosedTypedRelicAutomation<FrameStopwatch>, public Stopwatch
     {
     public:
-        FrameStopwatch(ObjectManager& manager, Value goal = Value());
-        FrameStopwatch(const ::Inscription::BinaryTableData<FrameStopwatch>& data);
-
         bool operator==(const FrameStopwatch& arg) const;
         bool operator!=(const FrameStopwatch& arg) const;
-
-        Value CurrentTime() const override;
-
-        ObjectTypeDescription TypeDescription() const override;
+    public:
+        [[nodiscard]] Value CurrentTime() const override;
+    public:
+        void PostConstruct();
     private:
-        TimeSystem* timeSystem;
+        Arca::Ptr<Information> timeInformation;
     private:
         INSCRIPTION_ACCESS;
     };
 }
 
-namespace Atmos
+namespace Arca
 {
     template<>
-    struct ObjectTraits<Time::FrameStopwatch> : ObjectTraitsBase<Time::FrameStopwatch>
+    struct Traits<::Atmos::Time::FrameStopwatch>
     {
-        static const ObjectTypeName typeName;
-        static constexpr ObjectTypeList<Time::Stopwatch> bases = {};
+        static const ObjectType objectType = ObjectType::Relic;
+        static const TypeName typeName;
     };
 }
 
 namespace Inscription
 {
     template<>
-    struct TableData<::Atmos::Time::FrameStopwatch, BinaryArchive> :
-        public ObjectTableDataBase<::Atmos::Time::FrameStopwatch, BinaryArchive>
-    {};
-
-    template<>
-    class Scribe<::Atmos::Time::FrameStopwatch, BinaryArchive> :
-        public ObjectScribe<::Atmos::Time::FrameStopwatch, BinaryArchive>
+    class Scribe<::Atmos::Time::FrameStopwatch, BinaryArchive> final :
+        public ArcaCompositeScribe<::Atmos::Time::FrameStopwatch, BinaryArchive>
     {
-    public:
-        class Table : public TableBase
-        {};
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
     };
 }

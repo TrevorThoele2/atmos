@@ -1,54 +1,38 @@
 #pragma once
 
+#include <Arca/ClosedTypedRelicAutomation.h>
 #include "Stopwatch.h"
-
-#include "ObjectScribe.h"
 
 namespace Atmos::Time
 {
-    class TimeSystem;
-
-    class RealStopwatch : public Stopwatch
+    class RealStopwatch final : public Arca::ClosedTypedRelicAutomation<RealStopwatch>, public Stopwatch
     {
     public:
-        RealStopwatch(ObjectManager& manager, Value goal = Value());
-        RealStopwatch(const ::Inscription::BinaryTableData<RealStopwatch>& data);
-
         bool operator==(const RealStopwatch& arg) const;
 
-        Value CurrentTime() const override;
-
-        ObjectTypeDescription TypeDescription() const override;
-    private:
-        TimeSystem* timeSystem;
+        [[nodiscard]] Value CurrentTime() const override;
     private:
         INSCRIPTION_ACCESS;
     };
 }
 
-namespace Atmos
+namespace Arca
 {
     template<>
-    struct ObjectTraits<Time::RealStopwatch> : ObjectTraitsBase<Time::RealStopwatch>
+    struct Traits<::Atmos::Time::RealStopwatch>
     {
-        static const ObjectTypeName typeName;
-        static constexpr ObjectTypeList<Time::Stopwatch> bases = {};
+        static const ObjectType objectType = ObjectType::Relic;
+        static const TypeName typeName;
     };
 }
 
 namespace Inscription
 {
     template<>
-    struct TableData<::Atmos::Time::RealStopwatch, BinaryArchive> :
-        public ObjectTableDataBase<::Atmos::Time::RealStopwatch, BinaryArchive>
-    {};
-
-    template<>
-    class Scribe<::Atmos::Time::RealStopwatch, BinaryArchive> :
-        public ObjectScribe<::Atmos::Time::RealStopwatch, BinaryArchive>
+    class Scribe<::Atmos::Time::RealStopwatch, BinaryArchive> final :
+        public ArcaCompositeScribe<::Atmos::Time::RealStopwatch, BinaryArchive>
     {
-    public:
-        class Table : public TableBase
-        {};
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
     };
 }

@@ -1,20 +1,17 @@
 #include "Pathfinder.h"
 
-#include "TileSystem.h"
+#include "Map.h"
 
 namespace Atmos
 {
-    Pathfinder::Pathfinder(ObjectManager& manager) : ObjectSystem(manager)
-    {}
-
-    Pathfinder::TileStack Pathfinder::FindPath(const Grid::Position& start, const Grid::Position& finish)
+    Pathfinder::Path Pathfinder::FindPath(const Grid::Position& start, const Grid::Position& finish)
     {
-        TileStack createdStack;
+        Path createdStack;
         if (start == finish)
             return createdStack;
 
-        auto tiles = Manager()->FindSystem<Grid::TileSystem>();
-        if (!tiles)
+        const auto map = Owner().Find<World::Map>();
+        if (!map)
             return createdStack;
 
         NodeHeap openSet;
@@ -38,9 +35,9 @@ namespace Atmos
             for (int neighborLoop = DirectionIterationTraits::begin; neighborLoop <= DirectionIterationTraits::end; ++neighborLoop)
             {
                 // Don't consider tile positions that don't exist or the tile is solid
-                auto& neighborPosition = current.Position().FindPositionAdjacent(Direction::FromUnderlyingType(neighborLoop));
-                auto foundTile = tiles->FindTile(neighborPosition);
-                if (neighborPosition != finish && (!foundTile || foundTile->solid))
+                auto neighborPosition = current.Position().FindPositionAdjacent(Direction::FromUnderlyingType(neighborLoop));
+                const auto foundTile = map->definedRegion.find(neighborPosition);
+                if (neighborPosition != finish && foundTile == map->definedRegion.end())
                     continue;
 
                 Node neighbor(current.G() + 1, neighborPosition.FindDistance(finish), neighborPosition);
@@ -49,7 +46,7 @@ namespace Atmos
                     continue;
 
                 // Find if node is in the open set
-                NodeHeap::iterator neighborInOpen = FindNode(neighbor.Position(), openSet);
+                const auto neighborInOpen = FindNode(neighbor.Position(), openSet);
 
                 if (neighborInOpen == openSet.end())
                 {
@@ -70,33 +67,21 @@ namespace Atmos
     }
 
     Pathfinder::Node::Node(Cost gCost, Cost hCost, const Grid::Position& position) :
-        gCost(gCost), hCost(hCost), position(position), fCost(gCost + hCost), parent(nullptr)
+        gCost(gCost), hCost(hCost), fCost(gCost + hCost),
+        position(position), parent(nullptr)
     {}
 
-    Pathfinder::Node::Node(const Node& arg) :
-        gCost(arg.gCost), hCost(arg.hCost), fCost(arg.fCost), position(arg.position), parent(arg.parent)
+    Pathfinder::Node::Node(Node&& arg) noexcept :
+        gCost(arg.gCost), hCost(arg.hCost), fCost(arg.fCost),
+        position(arg.position), parent(std::move(arg.parent))
     {}
 
-    Pathfinder::Node::Node(Node&& arg) :
-        gCost(arg.gCost), hCost(arg.hCost), fCost(arg.fCost), position(std::move(arg.position)), parent(std::move(arg.parent))
-    {}
-
-    Pathfinder::Node& Pathfinder::Node::operator=(const Node& arg)
+    Pathfinder::Node& Pathfinder::Node::operator=(Node&& arg) noexcept
     {
         gCost = arg.gCost;
         hCost = arg.hCost;
         fCost = arg.fCost;
         position = arg.position;
-        parent = arg.parent;
-        return *this;
-    }
-
-    Pathfinder::Node& Pathfinder::Node::operator=(Node&& arg)
-    {
-        gCost = arg.gCost;
-        hCost = arg.hCost;
-        fCost = arg.fCost;
-        position = std::move(arg.position);
         parent = std::move(arg.parent);
         return *this;
     }
@@ -116,7 +101,7 @@ namespace Atmos
         return !(*this == arg);
     }
 
-    const Grid::Position& Pathfinder::Node::Position() const
+    Grid::Position Pathfinder::Node::Position() const
     {
         return position;
     }
@@ -148,9 +133,9 @@ namespace Atmos
         return fCost;
     }
 
-    void Pathfinder::Node::Reparent(const Pathfinder::Node& setTo)
+    void Pathfinder::Node::Reparent(const Node& setTo)
     {
-        parent.reset(new Node(setTo));
+        parent = std::make_unique<Node>(setTo);
     }
 
     const Pathfinder::Node* Pathfinder::Node::Parent() const
@@ -158,7 +143,7 @@ namespace Atmos
         return parent.get();
     }
 
-    Pathfinder::NodeHeap::iterator Pathfinder::FindNode(const Grid::Position& position, NodeHeap& heap)
+    Pathfinder::NodeHeap::iterator Pathfinder::FindNode(const Grid::Position& position, NodeHeap& heap) const
     {
         return std::find_if(heap.begin(), heap.end(),
             [position](const Node& node)
@@ -167,7 +152,7 @@ namespace Atmos
         });
     }
 
-    void Pathfinder::ReconstructPath(TileStack& stack, const Node& end)
+    void Pathfinder::ReconstructPath(Path& stack, const Node& end)
     {
         stack.push(end.Position());
         auto parent = end.Parent();
@@ -178,9 +163,9 @@ namespace Atmos
         }
     }
 
-    void Pathfinder::ClearStack(TileStack& stack)
+    void Pathfinder::ClearStack(Path& stack) const
     {
-        TileStack empty;
+        Path empty;
         std::swap(stack, empty);
     }
 }

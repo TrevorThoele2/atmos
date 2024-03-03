@@ -1,69 +1,67 @@
 #include "EngineExecution.h"
 
-#include "ObjectManager.h"
-#include "EngineSystem.h"
-#include "WindowSystem.h"
-#include "FpsSystem.h"
-#include "DebugStatisticsSystem.h"
+#include <Arca/Reliquary.h>
+#include "WindowProvider.h"
+#include "TimeCurator.h"
+#include "DebugStatistics.h"
+#include "FocusLost.h"
+#include "FocusRegained.h"
 
 #include "WorldManager.h"
 
 namespace Atmos
 {
-    EngineExecution::EngineExecution(ObjectManager& globalObjectManager, World::WorldManager& worldManager) :
-        globalObjectManager(&globalObjectManager), worldManager(&worldManager),
-        engineSystem(globalObjectManager.FindSystem<EngineSystem>()), isFocusLost(false)
+    EngineExecution::EngineExecution(Arca::Reliquary& reliquary, World::WorldManager& worldManager) :
+        reliquary(&reliquary), worldManager(&worldManager)
     {}
 
     void EngineExecution::Start()
     {
-        auto windowSystem = globalObjectManager->FindSystem<Window::WindowSystem>();
-        auto fpsSystem = globalObjectManager->FindSystem<Time::FpsSystem>();
-        auto debugStatistics = globalObjectManager->FindSystem<DebugStatisticsSystem>();
+        auto& timeCurator = reliquary->Find<Time::TimeCurator>();
+        auto debugStatistics = reliquary->Find<Debug::Statistics>();
 
-        while (StartFrame(windowSystem))
+        while (StartFrame())
         {
-            if (IsCurrentlyFocused(windowSystem)) // Check for focus on the window 
+            if (IsCurrentlyFocused())
             {
-                // Handle focus regained
                 if (isFocusLost)
                     OnFocusRegain();
 
-                debugStatistics->idleProfiler.Calculate();
+                debugStatistics->profilers.idle.Calculate();
 
-                globalObjectManager->Work();
                 worldManager->Work();
 
-                debugStatistics->idleProfiler.Start();
+                debugStatistics->profilers.idle.Start();
 
-                while (fpsSystem->DoIdle())
-                    windowSystem->Get()->Suspend(Time::Value(FixedPoint64(0), Time::Epoch::MILLISECONDS));
+                while (timeCurator.DoIdle())
+                    Window::window->Suspend(Time::Value(FixedPoint64(0), Time::Epoch::Milliseconds));
             }
-            else // Window is not in focus
+            else
             {
                 if (!isFocusLost)
                     OnFocusLost();
 
-                windowSystem->Get()->Suspend(Time::Value(FixedPoint64(1), Time::Epoch::MILLISECONDS));
+                Window::window->Suspend(Time::Value(FixedPoint64(1), Time::Epoch::Milliseconds));
             }
         }
     }
 
-    bool EngineExecution::StartFrame(Window::WindowSystem* windowSystem)
+    bool EngineExecution::StartFrame()
     {
-        // Check for and emit focus events
-        if (IsCurrentlyFocused(windowSystem) != wasFocusedLastPass)
+        if (IsCurrentlyFocused() != wasFocusedLastPass)
         {
-            (wasFocusedLastPass) ? engineSystem->onFocusLost() : engineSystem->onFocusRegained();
+            wasFocusedLastPass ?
+                reliquary->Raise<FocusLost>() :
+                reliquary->Raise<FocusRegained>();
             wasFocusedLastPass = !wasFocusedLastPass;
         }
 
-        return windowSystem->Get()->OnStartFrame();
+        return Window::window->OnStartFrame();
     }
 
-    bool EngineExecution::IsCurrentlyFocused(Window::WindowSystem* windowSystem) const
+    bool EngineExecution::IsCurrentlyFocused() const
     {
-        return windowSystem->Get()->IsCurrentlyFocused();
+        return Window::window->IsCurrentlyFocused();
     }
 
     void EngineExecution::OnFocusLost()

@@ -1,7 +1,5 @@
-
 #pragma once
 
-#include <iterator>
 #include "Serialization.h"
 #include <Chroma/Enum.h>
 
@@ -12,23 +10,23 @@ namespace Atmos
     public:
         enum Value : unsigned char
         {
-            LEFT,
-            UP,
-            RIGHT,
-            DOWN,
-            Z_UP,
-            Z_DOWN
+            Left,
+            Up,
+            Right,
+            Down,
+            ZUp,
+            ZDown
         };
 
         enum class RelativeValue : unsigned char
         {
-            SAME,
-            LEFT,
-            RIGHT,
-            OPPOSED
+            Same,
+            Left,
+            Right,
+            Opposed
         };
     public:
-        Direction(Value value = Value::UP);
+        Direction(Value value = Up);
         Direction(const Direction& arg) = default;
 
         Direction& operator=(const Direction& arg) = default;
@@ -40,11 +38,11 @@ namespace Atmos
         explicit operator Value() const;
 
         void Set(Value set);
-        Value Get() const;
+        [[nodiscard]] Value Get() const;
 
         void MoveInRelativeDirection(RelativeValue move);
-        RelativeValue GetRelativeDirection(Value value) const;
-        RelativeValue GetRelativeDirection(const Direction& direction) const;
+        [[nodiscard]] RelativeValue GetRelativeDirection(Value value) const;
+        [[nodiscard]] RelativeValue GetRelativeDirection(const Direction& direction) const;
 
         static Value FromUnderlyingType(std::underlying_type<Value>::type from);
     private:
@@ -62,21 +60,22 @@ namespace Atmos
         return static_cast<std::underlying_type<Direction::Value>::type>(value);
     }
 
-    typedef ::Chroma::EnumIterationTraits<Direction::Value, Direction::Value::LEFT, Direction::Value::DOWN>
-        DirectionIterationTraits;
+    using DirectionIterationTraits =
+        ::Chroma::EnumIterationTraits<Direction::Value, Direction::Value::Left, Direction::Value::Down>;
 }
 
 namespace Inscription
 {
     template<>
-    class Scribe<::Atmos::Direction, BinaryArchive> : public CompositeScribe<::Atmos::Direction, BinaryArchive>
+    class Scribe<::Atmos::Direction, BinaryArchive> final :
+        public CompositeScribe<::Atmos::Direction, BinaryArchive>
     {
     protected:
         void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
-        void ConstructImplementation(ObjectT* storage, ArchiveT& archive) override;
     };
 
     template<>
-    class Scribe<::Atmos::Direction::Value, BinaryArchive> : public EnumScribe<::Atmos::Direction::Value, BinaryArchive>
+    class Scribe<::Atmos::Direction::Value, BinaryArchive> final :
+        public EnumScribe<::Atmos::Direction::Value, BinaryArchive>
     {};
 }

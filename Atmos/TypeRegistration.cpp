@@ -1,61 +1,37 @@
-
 #include "TypeRegistration.h"
 
-#include "Object.h"
-#include "ObjectSystem.h"
-#include "ObjectBatchSource.h"
-#include "ObjectManager.h"
-
-#include <Inscription/OutputBinaryArchive.h>
-#include <Inscription/InputBinaryArchive.h>
+#include "DebugStatistics.h"
+#include "FocusLost.h"
+#include "FocusRegained.h"
+#include "TimeCurator.h"
+#include "StaticMaterialView.h"
+#include "InputManagerProvider.h"
+#include "GraphicsManagerProvider.h"
+#include "AudioManagerProvider.h"
+#include "Camera.h"
+#include "FrameStopwatch.h"
+#include "MaterialViewCurator.h"
 
 namespace Atmos
 {
-    TypeRegistration::TypeRegistration()
-    {}
-
-    void TypeRegistration::PushAllTo(ObjectManager& manager)
+    void RegisterTypes(Arca::ReliquaryOrigin& origin)
     {
-        for (auto& loop : groups)
-            loop.PushTo(manager);
-    }
-
-    void TypeRegistration::PushAllTo(ObjectTypeGraph& graph)
-    {
-        for (auto& loop : groups)
-            loop.PushTo(graph);
-    }
-
-    void TypeRegistration::PushAllTo(::Inscription::BinaryArchive& archive)
-    {
-        for (auto& loop : groups)
-            loop.PushTo(archive);
-    }
-
-    TypeRegistration::Entry::~Entry()
-    {}
-
-    void TypeRegistration::Group::PushTo(ObjectManager& manager)
-    {
-        for (auto& loop : entryList)
-            loop->PushTo(manager);
-    }
-
-    void TypeRegistration::Group::PushTo(ObjectTypeGraph& graph)
-    {
-        for (auto& loop : entryList)
-            loop->PushTo(graph);
-    }
-
-    void TypeRegistration::Group::PushTo(::Inscription::BinaryArchive& archive)
-    {
-        for (auto& loop : entryList)
-            loop->PushTo(archive);
-    }
-
-    TypeRegistration::Group* TypeRegistration::CreateGroup()
-    {
-        groups.push_back(Group());
-        return &groups.back();
+        origin
+            .Type<FocusRegained>()
+            .Type<FocusLost>()
+            .Type<Bounds>()
+            .Type<Debug::Statistics>()
+            .Type<Time::TimeCurator>()
+            .Type<Time::Information>()
+            .Type<Time::Settings>()
+            .Type<Time::RealStopwatch>()
+            .Type<Time::FrameStopwatch>()
+            .Type<Input::ManagerProvider>()
+            .Type<Render::GraphicsManagerProvider>()
+            .Type<Render::StaticMaterialView>()
+            .Type<Render::Camera>()
+            .Type<Render::MaterialViewCore>()
+            .Type<Render::MaterialViewCurator>()
+            .Type<Audio::AudioManagerProvider>();
     }
 }

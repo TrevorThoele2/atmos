@@ -7,11 +7,8 @@
 #include "LargeInteger.h"
 #include "FixedPoint.h"
 #include "TimeValue.h"
-#include "InputKeyID.h"
-#include "InputMouseKeyID.h"
-#include "InputActionID.h"
 
-#include <Chroma/Type.h>
+#include <Chroma/TypeIdentity.h>
 
 #include <AGUI/Resolution.h>
 
@@ -43,7 +40,7 @@ namespace Atmos
     namespace detail
     {
         template<class T>
-        T FromStringImpl(const String &arg, const ::Chroma::Type<T> &t)
+        T FromStringImpl(const String &arg, const ::Chroma::TypeIdentity<T> &t)
         {
             ::std::istringstream stream(arg);
 
@@ -52,23 +49,23 @@ namespace Atmos
             return toReturn;
         }
 
-        String FromStringImpl(const String &arg, const ::Chroma::Type<String> &t);
+        String FromStringImpl(const String &arg, const ::Chroma::TypeIdentity<String> &t);
 
         template<class T>
-        FixedPoint<T> FromStringImpl(const String &arg, const ::Chroma::Type<FixedPoint<T>> &t)
+        FixedPoint<T> FromStringImpl(const String &arg, const ::Chroma::TypeIdentity<FixedPoint<T>> &t)
         {
             FixedPoint<T> ret;
             ret.FromString(arg);
             return ret;
         }
 
-        Time::Value FromStringImpl(const String &arg, const ::Chroma::Type<Time::Value> &t);
+        Time::Value FromStringImpl(const String &arg, const ::Chroma::TypeIdentity<Time::Value> &t);
     }
 
     template<class T, typename ::std::enable_if<!::std::is_enum<T>::value, int>::type = 0>
     T FromString(const String &arg)
     {
-        return detail::FromStringImpl(arg, ::Chroma::Type<T>{});
+        return detail::FromStringImpl(arg, ::Chroma::TypeIdentity<T>{});
     }
 
     template<class T, typename ::std::enable_if<::std::is_enum<T>::value, int>::type = 0>
@@ -108,7 +105,4 @@ namespace Atmos
     String ToString(Time::Value timeValue);
     String ToString(const Grid::Position &position);
     String ToString(const ::Agui::Resolution::Size &arg);
-    String ToString(const Input::KeyID &arg);
-    String ToString(const Input::MouseKeyID &arg);
-    String ToString(const Input::ActionID &arg);
 }

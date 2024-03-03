@@ -1,87 +1,46 @@
 #pragma once
 
+#include <Arca/ShardTraits.h>
+
 #include <vector>
 
-#include "EntityComponent.h"
-
-#include "Sprite.h"
+#include "DynamicMaterialView.h"
 #include "Sound.h"
-#include "PositionalOffsetAdapter.h"
 
 #include "Position3D.h"
 
-#include "StoredProperty.h"
-
 namespace Atmos::Entity
 {
-    class SenseComponent : public Component
+    class SenseComponent
     {
     public:
-        typedef PositionalOffsetAdapter<Render::Sprite> SpriteOffset;
-        typedef PositionalOffsetAdapter<Audio::Sound> SoundOffset;
+        using MaterialViewList = std::vector<Render::MaterialView>;
+        using SoundList = std::vector<Audio::Sound>;
 
-        typedef std::vector<SpriteOffset> SpriteList;
-        typedef std::vector<SoundOffset> SoundList;
-    public:
-        bool enabled;
-    public:
-        using Position = Position3D;
-        StoredProperty<Position> position;
-    public:
-        SpriteList sprites;
+        MaterialViewList materialViews;
         SoundList sounds;
     public:
-        SenseComponent(ObjectManager& manager, EntityReference reference);
-        SenseComponent(const SenseComponent& arg) = default;
-        SenseComponent(const ::Inscription::BinaryTableData<SenseComponent>& data);
-
-        void Enable(bool enable = true);
-        void Disable();
-        bool IsEnabled() const;
-        // If show is true, then this will add the objects to the render fragment handler
-        // If show is false, then this will remove the objects from the render fragment handler
-        // It will also show/hide all of the individual objects
-        void SyncObjects();
-
-        ObjectTypeDescription TypeDescription() const override;
+        using Position = Position3D;
+        Position position;
     private:
         INSCRIPTION_ACCESS;
     };
 }
 
-namespace Atmos
+namespace Arca
 {
     template<>
-    struct ObjectTraits<Entity::SenseComponent> : ObjectTraitsBase<Entity::SenseComponent>
+    struct Traits<::Atmos::Entity::SenseComponent>
     {
-        static const ObjectTypeName typeName;
-        static constexpr ObjectTypeList<Entity::Component> bases = {};
+        static const ObjectType objectType = ObjectType::Shard;
+        static const TypeName typeName;
     };
 }
 
 namespace Inscription
 {
     template<>
-    struct TableData<::Atmos::Entity::SenseComponent, BinaryArchive> :
-        public ObjectTableDataBase<::Atmos::Entity::SenseComponent, BinaryArchive>
-    {
-        ObjectT::Position position;
-        ObjectT::SpriteList sprites;
-        ObjectT::SoundList sounds;
-        bool enabled;
-    };
-
-    template<>
-    class Scribe<::Atmos::Entity::SenseComponent, BinaryArchive> :
-        public ObjectScribe<::Atmos::Entity::SenseComponent, BinaryArchive>
-    {
-    public:
-        class Table : public TableBase
-        {
-        public:
-            Table();
-        protected:
-            void ObjectScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
-        };
-    };
+    class Scribe<::Atmos::Entity::SenseComponent, BinaryArchive> final :
+        public ArcaNullScribe<::Atmos::Entity::SenseComponent, BinaryArchive>
+    {};
 }

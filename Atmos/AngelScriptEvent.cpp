@@ -1,17 +1,16 @@
-
 #include "AngelScriptEvent.h"
 
 #include "AngelScriptRegistrationInterface.h"
 
-#include "ObjectManager.h"
-#include "AngelScriptSystem.h"
+#include <Arca/Reliquary.h>
+#include "AngelScriptCurator.h"
 
-#include "AngelScriptAssert.h"
+#include "AngelScriptResultVerification.h"
 #include <angelscript.h>
 
-namespace Atmos::Script
+namespace Atmos::Script::Angel
 {
-    Event::Event(ObjectManager& objectManager) : objectManager(&objectManager)
+    Event::Event(Arca::Reliquary& reliquary) : reliquary(&reliquary)
     {
         auto engine = Engine();
         context = engine->CreateContext();
@@ -57,34 +56,62 @@ namespace Atmos::Script
         }
     }
 
-    void Event::RegisterToAngelScript(asIScriptEngine* engine)
+    void Event::RegisterTo(asIScriptEngine* engine)
     {
-        AngelScriptAssert(engine->RegisterFuncdef(
-            "void EventFunction()"));
+        VerifyResult(engine->RegisterFuncdef
+        (
+            "void EventFunction()"
+        ));
 
         const char* className = "Event";
 
-        AngelScriptAssert(engine->RegisterObjectType(
-            className, sizeof(Event), asOBJ_VALUE));
-        AngelScriptAssert(engine->RegisterObjectBehaviour(
-            className, asBEHAVE_CONSTRUCT, "void f()", asFUNCTION(RegistrationInterface::GenerateGenericValue<Event>), asCALL_GENERIC));
-        AngelScriptAssert(engine->RegisterObjectBehaviour(
-            className, asBEHAVE_DESTRUCT, "void f()", asFUNCTION(RegistrationInterface::DestructGenericValue<Event>), asCALL_GENERIC));
-        AngelScriptAssert(engine->RegisterObjectMethod(
-            className, "void Subscribe(EventFunction@ function)", asMETHOD(Event, Subscribe), asCALL_THISCALL));
-        AngelScriptAssert(engine->RegisterObjectMethod(
-            className, "void Unsubscribe(EventFunction@ function)", asMETHOD(Event, Unsubscribe), asCALL_THISCALL));
-        AngelScriptAssert(engine->RegisterObjectMethod(
-            className, "void Execute()", asMETHOD(Event, Execute), asCALL_THISCALL));
+        VerifyResult(engine->RegisterObjectType
+        (
+            className,
+            sizeof(Event),
+            asOBJ_VALUE
+        ));
+        VerifyResult(engine->RegisterObjectBehaviour
+        (
+            className,
+            asBEHAVE_CONSTRUCT,
+            "void f()",
+            asFUNCTION(RegistrationInterface::GenerateGenericValue<Event>),
+            asCALL_GENERIC
+        ));
+        VerifyResult(engine->RegisterObjectBehaviour
+        (
+            className,
+            asBEHAVE_DESTRUCT,
+            "void f()",
+            asFUNCTION(RegistrationInterface::DestructGenericValue<Event>),
+            asCALL_GENERIC
+        ));
+        VerifyResult(engine->RegisterObjectMethod
+        (
+            className,
+            "void Subscribe(EventFunction@ function)",
+            asMETHOD(Event, Subscribe),
+            asCALL_THISCALL
+        ));
+        VerifyResult(engine->RegisterObjectMethod
+        (
+            className,
+            "void Unsubscribe(EventFunction@ function)",
+            asMETHOD(Event, Unsubscribe),
+            asCALL_THISCALL
+        ));
+        VerifyResult(engine->RegisterObjectMethod
+        (
+            className,
+            "void Execute()",
+            asMETHOD(Event, Execute),
+            asCALL_THISCALL
+        ));
     }
 
     asIScriptEngine* Event::Engine()
     {
-        return FindSystem()->Engine();
-    }
-
-    ScriptSystem* Event::FindSystem()
-    {
-        return objectManager->FindSystem<ScriptSystem>();
+        return reliquary->Find<ScriptCurator>().Engine();
     }
 }

@@ -8,46 +8,33 @@
 
 namespace Atmos::Window
 {
-    class WindowsWindowBase : public WindowBase
+    class WindowsWindow final : public WindowBase
     {
     public:
-        virtual HWND GetHwnd() = 0;
-    protected:
-        WindowsWindowBase(ObjectManager& objectManager);
-    };
-
-    class WindowsWindow : public WindowsWindowBase
-    {
-    public:
-        WindowsWindow(
-            ObjectManager& objectManager,
-            HINSTANCE hInstance,
-            LPSTR lpCmdLine,
-            int nCmdShow,
-            const String& className);
-
-        void Setup() override;
+        WindowsWindow(Arca::Reliquary& reliquary, int nCmdShow, const String& className);
 
         void Show() override;
         void Exit() override;
-        bool IsCurrentlyFocused() const override;
-        void Suspend(const Time::Value& time);
+        [[nodiscard]] bool IsCurrentlyFocused() const override;
+        void Suspend(const Time::Value& time) override;
         bool OnStartFrame() override;
 
-        HWND GetHwnd() override;
+        [[nodiscard]] HWND Hwnd() const;
     protected:
+        void SetupImpl() override;
+
         AxisAlignedBox2D AdjustWindowDimensions() override;
         void OnSetWindowDimensions() override;
         Position GetDefaultWindowPosition() override;
         void OnSetFullscreen() override;
     private:
-        HWND hwnd;
+        HWND hwnd = nullptr;
         int nCmdShow;
         String className;
     private:
-        WNDCLASSEX wc;
-        DWORD style;
-        DWORD exStyle;
+        WNDCLASSEX wc{};
+        DWORD style = 0;
+        DWORD exStyle = 0;
     private:
         const DWORD windowedStyle;
         const DWORD windowedStyleEx;

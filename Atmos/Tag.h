@@ -4,5 +4,5 @@
 
 namespace Atmos
 {
-    typedef String Tag;
+    using Tag = String;
 }

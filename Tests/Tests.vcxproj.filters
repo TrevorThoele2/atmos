@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="Main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneralFixture.cpp">
+      <Filter>Source Files\Fixtures</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderTests.cpp">
+      <Filter>Source Files\Tests</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="GeneralFixture.h">
+      <Filter>Header Files\Fixtures</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderTests.h">
+      <Filter>Header Files\Tests</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{bd2b7fde-3236-44d9-8e85-818812b56afb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{6784bc0e-0c16-42e8-a7aa-f8a9cd25e073}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Tests">
+      <UniqueIdentifier>{8dc81584-4c66-4187-b3ef-21d3b2d61a9c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Fixtures">
+      <UniqueIdentifier>{d849f80f-0dcc-40d9-add9-cce24c59cb09}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Fixtures">
+      <UniqueIdentifier>{7f57db86-4bbc-4482-967c-c1c85673d952}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Tests">
+      <UniqueIdentifier>{b8048384-a43b-4229-ae64-e182198f93c2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
