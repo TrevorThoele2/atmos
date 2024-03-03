@@ -2,7 +2,6 @@
 
 #include <Windows.h>
 int (WINAPIV * __vsnprintf)(char *, size_t, const char*, va_list) = _vsnprintf;
-#pragma comment(lib, "dxerr.lib")
 
 #include "DirectX9Renderer.h"
 #include "DirectX9ImageAssetData.h"

@@ -36,8 +36,8 @@ namespace Atmos
             {
                 // Don't consider tile positions that don't exist or the tile is solid
                 auto neighborPosition = current.Position().FindPositionAdjacent(Direction::FromUnderlyingType(neighborLoop));
-                const auto foundTile = map->definedRegion.find(neighborPosition);
-                if (neighborPosition != finish && foundTile == map->definedRegion.end())
+                const auto foundTile = map->entityRegion.find(neighborPosition);
+                if (neighborPosition != finish && foundTile == map->entityRegion.end())
                     continue;
 
                 Node neighbor(current.G() + 1, neighborPosition.FindDistance(finish), neighborPosition);

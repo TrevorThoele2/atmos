@@ -21,12 +21,6 @@ namespace Atmos
         class Position;
     }
 
-    String GetFileName(const String &filePath);
-    String GetFileExtension(const String &filePath);
-    String RemoveFileExtension(const String &string);
-    String RemoveFileName(const String &string);
-    String ReplaceFileExtension(const String &string, const String &extension);
-
     void SpliceString(String &in, const String &check, const String &replace);
 
     String Trim(const String& trim);

@@ -31,7 +31,7 @@ namespace Atmos::Render
         void OnViewFormed(const Arca::MatrixFormed<Matrix>& view);
         void OnViewDissolved(const Arca::MatrixDissolved<Matrix>& view);
     private:
-        static AxisAlignedBox3D BoxFor(const Index& view);
+        static AxisAlignedBox3D BoxFor(const Index& index);
     };
 }
 

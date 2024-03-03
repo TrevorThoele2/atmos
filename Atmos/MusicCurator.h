@@ -2,7 +2,7 @@
 
 #include <Arca/Curator.h>
 
-#include "FileName.h"
+#include "FilePath.h"
 
 #include "Serialization.h"
 
@@ -13,7 +13,7 @@ namespace Atmos::Audio
     public:
         MusicCurator() = default;
 
-        void BeginPlaying(const File::Name& fileName);
+        void BeginPlaying(const File::Path& fileName);
         void TerminateCurrent();
 
         void ResumeCurrent();

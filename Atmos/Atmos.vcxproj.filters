@@ -318,12 +318,6 @@
     <Filter Include="Header Files\World\Serialization\World">
       <UniqueIdentifier>{800b0608-37d4-410d-9b4e-8790474a95f8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\World\Map">
-      <UniqueIdentifier>{4a699d32-9bff-4632-8d5d-12c1e8c3e768}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\World\Map">
-      <UniqueIdentifier>{40b208f4-b183-40ed-ad68-e21106ffe219}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Render\MaterialView">
       <UniqueIdentifier>{e25e5bfa-b747-4420-ab7e-45c86acd0195}</UniqueIdentifier>
     </Filter>
@@ -362,6 +356,12 @@
     </Filter>
     <Filter Include="Source Files\Render\DirectX9\Data">
       <UniqueIdentifier>{5f30c8c0-b2a8-4855-9332-53631634bc0c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\World\Map">
+      <UniqueIdentifier>{4a699d32-9bff-4632-8d5d-12c1e8c3e768}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\World\Map">
+      <UniqueIdentifier>{40b208f4-b183-40ed-ad68-e21106ffe219}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -407,9 +407,6 @@
     <ClInclude Include="Canvas.h">
       <Filter>Header Files\Render\Canvas</Filter>
     </ClInclude>
-    <ClInclude Include="FilePath.h">
-      <Filter>Header Files\File</Filter>
-    </ClInclude>
     <ClInclude Include="Music.h">
       <Filter>Header Files\Audio</Filter>
     </ClInclude>
@@ -437,14 +434,8 @@
     <ClInclude Include="ShaderAsset.h">
       <Filter>Header Files\Assets\Shader</Filter>
     </ClInclude>
-    <ClInclude Include="FileUtility.h">
-      <Filter>Header Files\File</Filter>
-    </ClInclude>
     <ClInclude Include="ScrubbedType.h">
       <Filter>Header Files\Helper</Filter>
-    </ClInclude>
-    <ClInclude Include="RelativeFilePath.h">
-      <Filter>Header Files\File</Filter>
     </ClInclude>
     <ClInclude Include="DifferentiatableInherit.h">
       <Filter>Header Files\Helper</Filter>
@@ -642,9 +633,6 @@
       <Filter>Header Files\Window</Filter>
     </ClInclude>
     <ClInclude Include="NullFileManager.h">
-      <Filter>Header Files\File</Filter>
-    </ClInclude>
-    <ClInclude Include="FileName.h">
       <Filter>Header Files\File</Filter>
     </ClInclude>
     <ClInclude Include="Pathfinder.h">
@@ -1019,9 +1007,6 @@
     <ClInclude Include="GuiEngineProvider.h">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
-    <ClInclude Include="Map.h">
-      <Filter>Header Files\World\Map</Filter>
-    </ClInclude>
     <ClInclude Include="SparseRegion.h">
       <Filter>Header Files\Grid</Filter>
     </ClInclude>
@@ -1265,6 +1250,12 @@
     <ClInclude Include="LoggingTransfer.h">
       <Filter>Header Files\Logging</Filter>
     </ClInclude>
+    <ClInclude Include="Map.h">
+      <Filter>Header Files\World\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="FilePath.h">
+      <Filter>Header Files\File</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FieldDestination.cpp">
@@ -1275,9 +1266,6 @@
     </ClCompile>
     <ClCompile Include="Buffer.cpp">
       <Filter>Source Files\Helper</Filter>
-    </ClCompile>
-    <ClCompile Include="FileUtility.cpp">
-      <Filter>Source Files\File</Filter>
     </ClCompile>
     <ClCompile Include="NameValuePair.cpp">
       <Filter>Source Files\Helper</Filter>
@@ -1666,9 +1654,6 @@
     <ClCompile Include="GuiEngineProvider.cpp">
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
-    <ClCompile Include="Map.cpp">
-      <Filter>Source Files\World\Map</Filter>
-    </ClCompile>
     <ClCompile Include="MaterialViewCurator.cpp">
       <Filter>Source Files\Render\MaterialView</Filter>
     </ClCompile>
@@ -1821,6 +1806,9 @@
     </ClCompile>
     <ClCompile Include="ChangeSurfaceBackgroundColor.cpp">
       <Filter>Source Files\Render\Surface</Filter>
+    </ClCompile>
+    <ClCompile Include="Map.cpp">
+      <Filter>Source Files\World\Map</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

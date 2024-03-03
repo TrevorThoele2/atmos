@@ -13,7 +13,6 @@ namespace Atmos::File
         void OnSetup() override;
     private:
         void CreateDefaultDirectories();
-        void SetupFilePaths();
     };
 
     extern ManagerProvider manager;

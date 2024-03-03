@@ -36,7 +36,7 @@ namespace Atmos::Render::DirectX9
         this->device = device;
         InitializeBuffers();
 
-        const auto texturedSpritePath = File::manager->ExePath() + "Shaders\\TexturedSprite.fx";
+        const auto texturedSpritePath = std::filesystem::current_path() / "Shaders" / "TexturedSprite.fx";
 
         SimpleInFile inFile(texturedSpritePath);
         const auto texturedSpriteBuffer = inFile.ReadBuffer();

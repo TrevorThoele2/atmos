@@ -6,7 +6,6 @@
 #include "Field.h"
 #include "FieldDestination.h"
 
-#include "FileName.h"
 #include "FilePath.h"
 
 #include "InputFieldArchiveInterface.h"
@@ -25,16 +24,15 @@ namespace Atmos::World
         void Request(const FieldDestination& request);
 
         void UseWorld(const File::Path& path);
-        void UseWorld(const File::Name& name);
         void UseField(Field&& field);
-        void UseStasis(const File::Name& name);
+        void UseStasis(const File::Path& path);
 
         void Autosave();
 
-        const File::Path& WorldPath();
+        [[nodiscard]] const File::Path& WorldPath() const;
 
-        Field* CurrentField();
-        const Field* CurrentField() const;
+        [[nodiscard]] Field* CurrentField();
+        [[nodiscard]] const Field* CurrentField() const;
     private:
         Arca::Reliquary* globalReliquary = nullptr;
     private:
@@ -71,7 +69,7 @@ namespace Atmos::World
     private:
         std::optional<Field> currentField;
 
-        std::optional<File::Name> stasisName;
+        std::optional<File::Path> stasisName;
         std::unordered_set<FieldID> fieldIDs;
 
         File::Path worldPath;
@@ -87,8 +85,8 @@ namespace Atmos::World
 
         void SetFieldIDs(const std::vector<FieldID>& ids);
     private:
-        [[nodiscard]] static File::Path CreateWorldFilePath(const File::Name& fileName);
-        [[nodiscard]] static File::Path CreateStasisFilePath(const File::Name& fileName);
+        [[nodiscard]] static File::Path CreateWorldFilePath(const File::Path& fileName);
+        [[nodiscard]] static File::Path CreateStasisFilePath(const File::Path& fileName);
 
         [[nodiscard]] static File::Path WorldFolderFilePath();
         [[nodiscard]] static File::Path StasisFolderFilePath();
