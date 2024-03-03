@@ -6,7 +6,7 @@
 
 namespace Atmos
 {
-    ParticleFountain::Piece::Piece(const AssetReference<Material> &material, TimeValue goal, const Position3D &position, const Modulator::Observer &modulatorObserver) : timer(goal), handle(position), modulatorObserver(modulatorObserver)
+    ParticleFountain::Piece::Piece(const AssetReference<Material> &material, TimeValue goal, const Position3D &position) : timer(goal), handle(position)
     {
         handle->SetMaterial(material);
     }
@@ -25,7 +25,6 @@ namespace Atmos
     {
         scribe(cloneMaterial);
         scribe(cloneIndex);
-        scribe(cloneModulator);
 
         scribe(particleLifetime);
         scribe(packetSize);
@@ -61,8 +60,8 @@ namespace Atmos
                 PacketSize size = Random::Generate(packetSize);
                 while (size-- > 0)
                 {
-                    pieces.push_back(Piece(cloneMaterial, Random::Generate(particleLifetime.GetBegin().Get(), particleLifetime.GetEnd().Get()), position, cloneModulator.Generate()));
-                    static_cast<ModulatorT*>(pieces.back().modulatorObserver.Get())->Start(pieces.back().handle);
+                    //pieces.push_back(Piece(cloneMaterial, Random::Generate(particleLifetime.GetBegin().Get(), particleLifetime.GetEnd().Get()), position, cloneModulator.Generate()));
+                    //static_cast<ModulatorT*>(pieces.back().modulatorObserver.Get())->Start(pieces.back().handle);
                 }
 
                 // Lower the error
@@ -86,7 +85,7 @@ namespace Atmos
     bool ParticleFountain::operator==(const ParticleFountain &arg) const
     {
         return pieces == arg.pieces && working == arg.working && lifeTimer == arg.lifeTimer && packetTimeError == arg.packetTimeError && nextPacketSpawnRate == arg.nextPacketSpawnRate && position == arg.position && 
-            cloneMaterial == arg.cloneMaterial && cloneIndex == arg.cloneIndex && cloneModulator == arg.cloneModulator && particleLifetime == arg.particleLifetime &&
+            cloneMaterial == arg.cloneMaterial && cloneIndex == arg.cloneIndex && particleLifetime == arg.particleLifetime &&
             packetSize == arg.packetSize && packetSpawnRate == arg.packetSpawnRate && lifetime == arg.lifetime;
     }
 
@@ -113,7 +112,7 @@ namespace Atmos
             return;
 
         for (auto &loop : pieces)
-            loop.modulatorObserver->Stop();
+            ;// loop.modulatorObserver->Stop();
 
         working = false;
     }

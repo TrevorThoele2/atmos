@@ -47,14 +47,14 @@ namespace Atmos
         class TrackBase
         {
         public:
-            typedef size_t ID;
+            typedef size_t NodeID;
         private:
             virtual TrackBase* CloneImpl() const = 0;
 
-            virtual TrackNode* AddNodeImpl() = 0;
-            virtual void RemoveNodeImpl(ID id) = 0;
-            virtual TrackNode* FindNodeImpl(ID id) = 0;
-            virtual const TrackNode* FindNodeImpl(ID id) const = 0;
+            virtual NodeID AddNodeImpl() = 0;
+            virtual void RemoveNodeImpl(NodeID id) = 0;
+            virtual TrackNode* FindNodeImpl(NodeID id) = 0;
+            virtual const TrackNode* FindNodeImpl(NodeID id) const = 0;
 
             virtual TimeValue GetSumTimeTakenImpl() const = 0;
         protected:
@@ -64,11 +64,11 @@ namespace Atmos
 
             TrackBase* Clone() const;
 
-            TrackNode* AddNode();
-            void RemoveNode(ID id);
-            TrackNode* FindNode(ID id);
-            const TrackNode* FindNode(ID id) const;
-            bool HasNode(ID id) const;
+            NodeID AddNode();
+            void RemoveNode(NodeID id);
+            TrackNode* FindNode(NodeID id);
+            const TrackNode* FindNode(NodeID id) const;
+            bool HasNode(NodeID id) const;
 
             TimeValue GetSumTimeTaken() const;
         };
@@ -84,14 +84,14 @@ namespace Atmos
             typedef ::function::Function<Value, const ObjectT&> GetCurrentValueT;
         private:
             typedef std::list<NodeT> NodeContainer;
-            const ID startingID = 0;
+            const NodeID startingID = 0;
         private:
             TrackBase* CloneImpl() const override final;
 
-            NodeT* AddNodeImpl() override final;
-            void RemoveNodeImpl(ID id) override final;
-            NodeT* FindNodeImpl(ID id) override final;
-            const NodeT* FindNodeImpl(ID id) const override final;
+            NodeID AddNodeImpl() override final;
+            void RemoveNodeImpl(NodeID id) override final;
+            NodeT* FindNodeImpl(NodeID id) override final;
+            const NodeT* FindNodeImpl(NodeID id) const override final;
 
             TimeValue GetSumTimeTakenImpl() const override final;
         private:
@@ -103,11 +103,11 @@ namespace Atmos
 
             NodeContainer nodes;
             typename NodeContainer::iterator curPos;
-            ID curPosID;
+            NodeID curPosID;
 
             FrameTimer timer;
 
-            typename NodeContainer::iterator GetNodeGuaranteed(ID pos);
+            typename NodeContainer::iterator GetNodeGuaranteed(NodeID pos);
         public:
             Track();
             Track(Value::Type variantType, const ModifierT &modifier, const GetCurrentValueT &getCurrentValue);
@@ -130,14 +130,14 @@ namespace Atmos
         }
 
         template<class Object>
-        typename Track<Object>::NodeT* Track<Object>::AddNodeImpl()
+        typename Track<Object>::NodeID Track<Object>::AddNodeImpl()
         {
             nodes.push_back(NodeT(variantType));
-            return &nodes.back();
+            return nodes.size() - 1;
         }
 
         template<class Object>
-        void Track<Object>::RemoveNodeImpl(ID id)
+        void Track<Object>::RemoveNodeImpl(NodeID id)
         {
             if(id >= nodes.size())
                 return;
@@ -154,7 +154,7 @@ namespace Atmos
         }
 
         template<class Object>
-        typename Track<Object>::NodeT* Track<Object>::FindNodeImpl(ID id)
+        typename Track<Object>::NodeT* Track<Object>::FindNodeImpl(NodeID id)
         {
             if(id >= nodes.size())
                 return nullptr;
@@ -170,7 +170,7 @@ namespace Atmos
         }
 
         template<class Object>
-        typename const Track<Object>::NodeT* Track<Object>::FindNodeImpl(ID id) const
+        typename const Track<Object>::NodeT* Track<Object>::FindNodeImpl(NodeID id) const
         {
             if (id >= nodes.size())
                 return nullptr;
@@ -195,10 +195,10 @@ namespace Atmos
         }
 
         template<class Object>
-        typename Track<Object>::NodeContainer::iterator Track<Object>::GetNodeGuaranteed(ID pos)
+        typename Track<Object>::NodeContainer::iterator Track<Object>::GetNodeGuaranteed(NodeID pos)
         {
             auto selectedNode = nodes.begin();
-            for (ID loop = 0; loop != curPosID; ++loop)
+            for (NodeID loop = 0; loop != pos; ++loop)
                 ++selectedNode;
             return selectedNode;
         }

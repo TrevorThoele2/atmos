@@ -4,7 +4,7 @@
 #include "CombatComponent.h"
 #include "Random.h"
 
-#include "Error.h"
+#include "Logger.h"
 
 #include <Inscription/Scribe.h>
 #include <Inscription/ContainerSize.h>
@@ -143,9 +143,9 @@ namespace Atmos
     {
         auto found = entries.find(name);
         if (found == entries.end())
-            ErrorHandler::Log("Tried to find a proficiency with a tag that doesn't exist.",
-                ErrorHandler::Severity::ERROR_LOW,
-                ErrorHandler::NameValueVector{ NameValuePair("Proficiency Name", name) });
+            Logger::Log("Tried to find a proficiency with a tag that doesn't exist.",
+                Logger::Type::ERROR_LOW,
+                Logger::NameValueVector{ NameValuePair("Proficiency Name", name) });
 
         return found->second.experience;
     }
@@ -154,9 +154,9 @@ namespace Atmos
     {
         auto found = entries.find(name);
         if (found == entries.end())
-            ErrorHandler::Log("Tried to find a proficiency with a tag that doesn't exist.",
-                ErrorHandler::Severity::ERROR_LOW,
-                ErrorHandler::NameValueVector{ NameValuePair("Proficiency Name", name) });
+            Logger::Log("Tried to find a proficiency with a tag that doesn't exist.",
+                Logger::Type::ERROR_LOW,
+                Logger::NameValueVector{ NameValuePair("Proficiency Name", name) });
 
         return found->second.level;
     }

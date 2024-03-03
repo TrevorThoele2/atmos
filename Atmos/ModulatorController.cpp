@@ -64,8 +64,13 @@ namespace Atmos
 
         void Controller::Work()
         {
-            for (auto &loop : observers)
-                loop->Work();
+            for (auto loop = observers.begin(); loop != observers.end();)
+            {
+                if ((*loop)->Work())
+                    loop = observers.Remove(loop);
+                else
+                    ++loop;
+            }
         }
     }
 }

@@ -2,13 +2,18 @@
 #include "ScriptRegistry.h"
 
 #include "ScriptLoader.h"
-#include "Error.h"
+#include "Logger.h"
 #include "AssetPackage.h"
 
 #include <falcon/engine.h>
 
 namespace Atmos
 {
+    void AssetRegistry<ScriptModuleBase>::InitializeFalcon()
+    {
+        Instance();
+    }
+
     std::pair<bool, AssetRegistry<ScriptModuleBase>::ReferenceT> AssetRegistry<ScriptModuleBase>::RegisterModule(const FilePath &filePath, bool catchException)
     {
         return RegisterModule(AssetT::nullID, filePath, catchException);
@@ -177,14 +182,13 @@ namespace Atmos
                     // Create the module
                     {
                         auto buffer = AssetPackage::RetrieveScript(fileName);
-                        if (!buffer)
-                            continue;
+                        ATMOS_ASSERT_MESSAGE(buffer, "This buffer must exist.");
 
                         // Check that the file actually has data
                         if (buffer->second == 0)
-                            ErrorHandler::Log("A script file has no data.",
-                                ErrorHandler::Severity::ERROR_SEVERE,
-                                ErrorHandler::NameValueVector{ NameValuePair( "File Name", fileName.GetValue()) });
+                            Logger::Log("A script file has no data.",
+                                Logger::Type::ERROR_SEVERE,
+                                Logger::NameValueVector{ NameValuePair( "File Name", fileName.GetValue()) });
 
                         // Try loading the buffer
                         try
@@ -217,18 +221,18 @@ namespace Atmos
                         catch (Falcon::Error *err)
                         {
                             Falcon::AutoCString edesc(err->toString());
-                            ErrorHandler::Log(String("Loading a script file encountered a problem.\n") + edesc.c_str(),
-                                ErrorHandler::Severity::ERROR_SEVERE,
-                                ErrorHandler::NameValueVector{ NameValuePair("File Name", fileName.GetValue()) });
+                            Logger::Log(String("Loading a script file encountered a problem.\n") + edesc.c_str(),
+                                Logger::Type::ERROR_SEVERE,
+                                Logger::NameValueVector{ NameValuePair("File Name", fileName.GetValue()) });
                         }
                         catch (...)
                         {
                             auto e = std::current_exception();
 
                             // Catch any loading errors
-                            ErrorHandler::Log("The script file " + fileName.GetValue() + " was not loadable. It is probably corrupt or invalid.",
-                                ErrorHandler::Severity::ERROR_SEVERE,
-                                ErrorHandler::NameValueVector{ NameValuePair("File Name", fileName.GetValue()) });
+                            Logger::Log("The script file " + fileName.GetValue() + " was not loadable. It is probably corrupt or invalid.",
+                                Logger::Type::ERROR_SEVERE,
+                                Logger::NameValueVector{ NameValuePair("File Name", fileName.GetValue()) });
                         }
                     }
 

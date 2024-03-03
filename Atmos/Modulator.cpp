@@ -24,9 +24,7 @@ namespace Atmos
         }
 
         ModulatorBase::~ModulatorBase()
-        {
-            Stop();
-        }
+        {}
 
         ModulatorBase* ModulatorBase::Clone() const
         {

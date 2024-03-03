@@ -6,10 +6,11 @@
 #include <unordered_map>
 
 #include "AssetPackage.h"
+#include "Script.h"
 
 #include "SimpleFile.h"
 #include "StringUtility.h"
-#include "Error.h"
+#include "Logger.h"
 
 namespace Atmos
 {
@@ -88,7 +89,10 @@ namespace Atmos
 
     void AssetPackage::AddScript(const FilePath &path)
     {
-        AddToMap(Instance().scripts, path);
+        FilePath usePath(path);
+        ScriptModuleBase::SetupModuleExtension(usePath);
+
+        AddToMap(Instance().scripts, usePath);
     }
 
     bool AssetPackage::RemoveImage(const FileName &name)
@@ -115,9 +119,9 @@ namespace Atmos
     {
         auto buffer = RetrieveAsset(Instance().images, name);
         if (!buffer)
-            ErrorHandler::Log("A requested image was not found in the asset package. Discarding.",
-                ErrorHandler::Severity::ERROR_SEVERE,
-                ErrorHandler::NameValueVector{ NameValuePair("File Name", name.GetValue()) });
+            Logger::Log("A requested image was not found in the asset package. Discarding.",
+                Logger::Type::ERROR_SEVERE,
+                Logger::NameValueVector{ NameValuePair("File Name", name.GetValue()) });
 
         return buffer;
     }
@@ -126,9 +130,9 @@ namespace Atmos
     {
         auto buffer = RetrieveAsset(Instance().shaders, name);
         if (!buffer)
-            ErrorHandler::Log("A requested shader was not found in the asset package. Discarding.",
-                ErrorHandler::Severity::ERROR_SEVERE,
-                ErrorHandler::NameValueVector{ NameValuePair("File Name", name.GetValue()) });
+            Logger::Log("A requested shader was not found in the asset package. Discarding.",
+                Logger::Type::ERROR_SEVERE,
+                Logger::NameValueVector{ NameValuePair("File Name", name.GetValue()) });
 
         return buffer;
     }
@@ -137,9 +141,9 @@ namespace Atmos
     {
         auto buffer = RetrieveAsset(Instance().audio, name);
         if (!buffer)
-            ErrorHandler::Log("A requested audio was not found in the asset package. Discarding.",
-                ErrorHandler::Severity::ERROR_SEVERE,
-                ErrorHandler::NameValueVector{ NameValuePair("File Name", name.GetValue()) });
+            Logger::Log("A requested audio was not found in the asset package. Discarding.",
+                Logger::Type::ERROR_SEVERE,
+                Logger::NameValueVector{ NameValuePair("File Name", name.GetValue()) });
 
         return buffer;
     }
@@ -148,9 +152,9 @@ namespace Atmos
     {
         auto buffer = RetrieveAsset(Instance().scripts, name);
         if (!buffer)
-            ErrorHandler::Log("A requested script was not found in the asset package. Discarding.",
-                ErrorHandler::Severity::ERROR_SEVERE,
-                ErrorHandler::NameValueVector{ NameValuePair("File Name", name.GetValue()) });
+            Logger::Log("A requested script was not found in the asset package. Discarding.",
+                Logger::Type::ERROR_SEVERE,
+                Logger::NameValueVector{ NameValuePair("File Name", name.GetValue()) });
 
         return buffer;
     }
@@ -221,9 +225,9 @@ namespace Atmos
         wxFFileInputStream stream(processedPath.GetValue());
         if (!stream)
         {
-            ErrorHandler::Log("Could not open the asset file.",
-                ErrorHandler::Severity::ERROR_SEVERE,
-                ErrorHandler::NameValueVector{ NameValuePair("File Path", processedPath.GetValue()) });
+            Logger::Log("Could not open the asset file.",
+                Logger::Type::ERROR_SEVERE,
+                Logger::NameValueVector{ NameValuePair("File Path", processedPath.GetValue()) });
             return;
         }
 
@@ -233,9 +237,9 @@ namespace Atmos
 
         if (!zip.CanRead())
         {
-            ErrorHandler::Log("The asset file cannot be read.",
-                ErrorHandler::Severity::ERROR_SEVERE,
-                ErrorHandler::NameValueVector{ NameValuePair("File Path", processedPath.GetValue()) });
+            Logger::Log("The asset file cannot be read.",
+                Logger::Type::ERROR_SEVERE,
+                Logger::NameValueVector{ NameValuePair("File Path", processedPath.GetValue()) });
             return;
         }
         
@@ -251,18 +255,18 @@ namespace Atmos
             auto buffer = new char[size];
             if (!zip.CanRead())
             {
-                ErrorHandler::Log("The asset package cannot be read. There probably isn't any data available.",
-                    ErrorHandler::Severity::ERROR_SEVERE,
-                    ErrorHandler::NameValueVector{ NameValuePair("File Name", name.GetValue()) });
+                Logger::Log("The asset package cannot be read. There probably isn't any data available.",
+                    Logger::Type::ERROR_SEVERE,
+                    Logger::NameValueVector{ NameValuePair("File Name", name.GetValue()) });
                 continue;
             }
 
             zip.Read(buffer, size);
             if (zip.LastRead() < size)
             {
-                ErrorHandler::Log("Read too little data in the asset package.",
-                    ErrorHandler::Severity::ERROR_SEVERE,
-                    ErrorHandler::NameValueVector{ NameValuePair("File Name", name.GetValue()) });
+                Logger::Log("Read too little data in the asset package.",
+                    Logger::Type::ERROR_SEVERE,
+                    Logger::NameValueVector{ NameValuePair("File Name", name.GetValue()) });
                 continue;
             }
 

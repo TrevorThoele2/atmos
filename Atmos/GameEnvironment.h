@@ -4,6 +4,7 @@
 
 #include "Input.h"
 
+#include "ModulatorObserver.h"
 #include "ModulatorGenerator.h"
 #include "ModulatorController.h"
 #include <Affecter\System.h>
@@ -16,10 +17,10 @@ namespace Atmos
     {
     public:
         typedef Modulator::GeneratorBase::GenerateTrackPtrT ModulatorTrackGenerateT;
+        typedef std::unique_ptr<Modulator::GeneratorBase> ModulatorGeneratorPtr;
     private:
         GameEnvironment() = default;
 
-        typedef std::unique_ptr<Modulator::GeneratorBase> ModulatorGeneratorPtr;
         std::unordered_map<Name, ModulatorGeneratorPtr> modulatorGenerators;
         Modulator::Controller modulatorController;
 
@@ -43,6 +44,7 @@ namespace Atmos
         static void LoadWorld(const FilePath &path);
         static void LoadStasis(const FilePath &path);
 
+        static void AddModulatorGenerator(const Name &name, std::unique_ptr<Modulator::GeneratorBase> &&add);
         static Modulator::Observer GenerateModulator(const Name &name);
         static ModulatorTrackGenerateT GenerateModulatorTrack(const Name &modName, const Name &trackName);
         static Modulator::Controller::ID AttachModulator(const Modulator::Observer &attach);

@@ -12,7 +12,7 @@
 #include "FrameTimer.h"
 #include "Entity.h"
 
-#include "Error.h"
+#include "Logger.h"
 
 #include <falcon/item.h>
 #include <falcon/carray.h>
@@ -34,7 +34,7 @@ namespace Atmos
         Falcon::Item* RetrieveItemFromVM(const std::string &name, Falcon::VMachine *vm);
         String& AddTracebackToString(Script::Instance &instance, String &string);
 
-        void FatalScriptError(Script::Instance &instance, String &&string, ErrorHandler::Severity severity, ErrorHandler::NameValueVector &nameValueVector);
+        void FatalScriptError(Script::Instance &instance, String &&string, Logger::Type severity, Logger::NameValueVector &nameValueVector);
         void FatalScriptErrorParameterNotExist(Script::Instance &instance, const String &name);
         void FatalScriptErrorParameterNotExpectedType(Script::Instance &instance, const String &name, const String &expectedType, const String &givenType);
         void FatalScriptErrorParameterNotExpectedType(Script::Instance &instance, const String &name, const String &expectedType, Falcon::Item &item);
@@ -50,8 +50,9 @@ namespace Atmos
             static bool Is(Falcon::Item &item);
             static Type FromItem(Falcon::Item &item);
             static void SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set);
+            static void SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set);
 
-            static const String typeString;
+            static String GetTypeString();
 
             static Falcon::Item CreateItem(Falcon::VMachine &vm, const Type &set);
         };
@@ -64,8 +65,9 @@ namespace Atmos
             static bool Is(Falcon::Item &item);
             static Type FromItem(Falcon::Item &item);
             static void SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set);
+            static void SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set);
 
-            static const String typeString;
+            static String GetTypeString();
 
             static Falcon::Item CreateItem(Falcon::VMachine &vm, const Type &set);
         };
@@ -78,8 +80,9 @@ namespace Atmos
             static bool Is(Falcon::Item &item);
             static Type FromItem(Falcon::Item &item);
             static void SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set);
+            static void SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set);
 
-            static const String typeString;
+            static String GetTypeString();
 
             static Falcon::Item CreateItem(Falcon::VMachine &vm, const Type &set);
         };
@@ -92,8 +95,9 @@ namespace Atmos
             static bool Is(Falcon::Item &item);
             static Type FromItem(Falcon::Item &item);
             static void SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set);
+            static void SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set);
 
-            static const String typeString;
+            static String GetTypeString();
 
             static Falcon::Item CreateItem(Falcon::VMachine &vm, const Type &set);
         };
@@ -106,8 +110,9 @@ namespace Atmos
             static bool Is(Falcon::Item &item);
             static Type FromItem(Falcon::Item &item);
             static void SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set);
+            static void SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set);
 
-            static const String typeString;
+            static String GetTypeString();
 
             static Falcon::Item CreateItem(Falcon::VMachine &vm, const Type &set);
         };
@@ -120,8 +125,9 @@ namespace Atmos
             static bool Is(Falcon::Item &item);
             static Type FromItem(Falcon::Item &item);
             static void SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set);
+            static void SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set);
 
-            static const String typeString;
+            static String GetTypeString();
 
             static Falcon::Item CreateItem(Falcon::VMachine &vm, const Type &set);
         };
@@ -134,8 +140,9 @@ namespace Atmos
             static bool Is(Falcon::Item &item);
             static Type FromItem(Falcon::Item &item);
             static void SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set);
+            static void SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set);
 
-            static const String typeString;
+            static String GetTypeString();
 
             static Falcon::Item CreateItem(Falcon::VMachine &vm, const Type &set);
         };
@@ -148,8 +155,9 @@ namespace Atmos
             static bool Is(Falcon::Item &item);
             static Type FromItem(Falcon::Item &item);
             static void SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set);
+            static void SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set);
 
-            static const String typeString;
+            static String GetTypeString();
 
             static Falcon::Item CreateItem(Falcon::VMachine &vm, const Type &set);
         };
@@ -162,8 +170,9 @@ namespace Atmos
             static bool Is(Falcon::Item &item);
             static Type FromItem(Falcon::Item &item);
             static void SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set);
+            static void SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set);
 
-            static const String typeString;
+            static String GetTypeString();
 
             static Falcon::Item CreateItem(Falcon::VMachine &vm, const Type &set);
         };
@@ -176,8 +185,9 @@ namespace Atmos
             static bool Is(Falcon::Item &item);
             static Type FromItem(Falcon::Item &item);
             static void SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set);
+            static void SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set);
 
-            static const String typeString;
+            static String GetTypeString();
 
             static Falcon::Item CreateItem(Falcon::VMachine &vm, const Type &set);
         };
@@ -190,8 +200,9 @@ namespace Atmos
             static bool Is(Falcon::Item &item);
             static Type FromItem(Falcon::Item &item);
             static void SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set);
+            static void SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set);
 
-            static const String typeString;
+            static String GetTypeString();
 
             static Falcon::Item CreateItem(Falcon::VMachine &vm, const Type &set);
         };
@@ -216,8 +227,9 @@ namespace Atmos
                 return ret;
             }
             static void SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set) { item.setArray(&to); }
+            static void SetItem(Falcon::VarDef &item, const Type &set);
 
-            static const String typeString;
+            static String GetTypeString();
 
             static Falcon::Item CreateItem(Falcon::VMachine &vm, const Type &set)
             {
@@ -231,7 +243,10 @@ namespace Atmos
         };
 
         template<class T>
-        const String FalconVariableTraits<std::vector<T>>::typeString("Vector");
+        String FalconVariableTraits<std::vector<T>>::GetTypeString()
+        {
+            return "Vector";
+        }
 
         template<>
         struct FalconVariableTraits<Variant>
@@ -240,8 +255,9 @@ namespace Atmos
             static bool Is(Falcon::Item &item);
             static Type FromItem(Falcon::Item &item);
             static void SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set);
+            static void SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set);
 
-            static const String typeString;
+            static String GetTypeString();
 
             static const String falconTypeName;
             static const String valueName;
@@ -256,7 +272,8 @@ namespace Atmos
             static bool Is(Falcon::Item &item);
             static Type FromItem(Falcon::Item &item);
             static void SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set);
-            static const String typeString;
+            static void SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set);
+            static String GetTypeString();
 
             static const String falconTypeName;
             static const String lowName;
@@ -272,7 +289,8 @@ namespace Atmos
             static bool Is(Falcon::Item &item);
             static Type FromItem(Falcon::Item &item);
             static void SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set);
-            static const String typeString;
+            static void SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set);
+            static String GetTypeString();
 
             static const String falconTypeName;
             static const String valueName;
@@ -288,7 +306,8 @@ namespace Atmos
             static bool Is(Falcon::Item &item);
             static Type FromItem(Falcon::Item &item);
             static void SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set);
-            static const String typeString;
+            static void SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set);
+            static String GetTypeString();
 
             static const String falconTypeName;
             static const String xName;
@@ -305,6 +324,7 @@ namespace Atmos
             static bool Is(Falcon::Item &item);
             static Type FromItem(Falcon::Item &item);
             static void SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set);
+            static void SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set);
             static const String typeString;
 
             static const String falconTypeName;
@@ -321,8 +341,9 @@ namespace Atmos
             static bool Is(Falcon::Item &item);
             static Type FromItem(Falcon::Item &item);
             static void SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set);
+            static void SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set);
 
-            static const String typeString;
+            static String GetTypeString();
 
             static Falcon::Item CreateItem(Falcon::VMachine &vm, const Type &set);
         };
@@ -384,7 +405,7 @@ namespace Atmos
             {
                 Falcon::String typeString;
                 item->typeName(typeString);
-                FatalScriptErrorParameterNotExpectedType(*ScriptController::Current(), name, FalconVariableTraits<T>::typeString, Falcon::AutoCString(typeString).c_str());
+                FatalScriptErrorParameterNotExpectedType(*ScriptController::Current(), name, FalconVariableTraits<T>::GetTypeString(), Falcon::AutoCString(typeString).c_str());
                 throw ScriptException();
             }
 
@@ -453,7 +474,7 @@ namespace Atmos
             }
             else if (!VectorTraits::Is(*item))
             {
-                FatalScriptErrorParameterNotExpectedType(*ScriptController::Current(), name, VectorTraits::typeString, *item);
+                FatalScriptErrorParameterNotExpectedType(*ScriptController::Current(), name, VectorTraits::GetTypeString(), *item);
                 throw ScriptException();
             }
 

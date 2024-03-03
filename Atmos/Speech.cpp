@@ -12,7 +12,7 @@
 
 #include "FontDefines.h"
 
-#include "Error.h"
+#include "Logger.h"
 
 #include <AGUI\System.h>
 
@@ -127,9 +127,9 @@ namespace Atmos
 
             if (!dialogue.script.IsValid())
             {
-                ErrorHandler::Log("The dialogue from an entity is empty.",
-                    ErrorHandler::Severity::ERROR_LOW,
-                    ErrorHandler::NameValueVector{ NameValuePair("Entity", ToString(WorldManager::GetCurrentField()->entities.GetName(dialogue.GetOwnerEntity()).Get())) });
+                Logger::Log("The dialogue from an entity is empty.",
+                    Logger::Type::ERROR_LOW,
+                    Logger::NameValueVector{ NameValuePair("Entity", ToString(WorldManager::GetCurrentField()->entities.GetName(dialogue.GetOwnerEntity()).Get())) });
                 return false;
             }
 

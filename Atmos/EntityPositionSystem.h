@@ -10,6 +10,7 @@
 
 #include "FrameTimer.h"
 #include "GridPosition.h"
+#include "ModulatorObserver.h"
 
 #include "Event.h"
 #include "Optional.h"

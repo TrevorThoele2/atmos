@@ -9,29 +9,24 @@ namespace Atmos
     {
         scribe(id);
         scribe(type);
-        scribe(generatorRoute);
     }
 
-    AVEffect::Node::ModulatorEntry::ModulatorEntry(ID id, Type type, const Modulator::GeneratorRoute &generatorRoute) : id(id), type(type), generatorRoute(generatorRoute)
+    AVEffect::Node::ModulatorEntry::ModulatorEntry(ID id, Type type) : id(id), type(type)
     {}
 
-    AVEffect::Node::ModulatorEntry::ModulatorEntry(ID id, Type type, Modulator::GeneratorRoute &&generatorRoute) : id(id), type(type), generatorRoute(std::move(generatorRoute))
-    {}
-
-    AVEffect::Node::ModulatorEntry::ModulatorEntry(ModulatorEntry &&arg) : id(std::move(arg.id)), type(std::move(arg.type)), generatorRoute(std::move(arg.generatorRoute))
+    AVEffect::Node::ModulatorEntry::ModulatorEntry(ModulatorEntry &&arg) : id(std::move(arg.id)), type(std::move(arg.type))
     {}
 
     AVEffect::Node::ModulatorEntry& AVEffect::Node::ModulatorEntry::operator=(ModulatorEntry &&arg)
     {
         id = std::move(arg.id);
         type = std::move(arg.type);
-        generatorRoute = std::move(arg.generatorRoute);
         return *this;
     }
 
     bool AVEffect::Node::ModulatorEntry::operator==(const ModulatorEntry &arg) const
     {
-        return id == arg.id && type == arg.type && generatorRoute == arg.generatorRoute;
+        return id == arg.id && type == arg.type;
     }
 
     bool AVEffect::Node::ModulatorEntry::operator!=(const ModulatorEntry &arg) const
@@ -39,40 +34,22 @@ namespace Atmos
         return !(*this == arg);
     }
 
-    Modulator::Observer AVEffect::Node::ModulatorEntry::Start(Node &node)
-    {
-        modulatorObserver = generatorRoute.Generate();
-
-        switch (type)
-        {
-        case ModulatorEntryType::SPRITE:
-            static_cast<SpriteModulator*>(modulatorObserver.Get())->Start(node.sprites.find(id)->second);
-            break;
-        case ModulatorEntryType::SOUND:
-            static_cast<SoundModulator*>(modulatorObserver.Get())->Start(node.sounds.find(id)->second);
-            break;
-        case ModulatorEntryType::PARTICLE:
-            static_cast<ParticleModulator*>(modulatorObserver.Get())->Start(node.particleFountains.find(id)->second);
-            break;
-        }
-
-        return modulatorObserver;
-    }
-
     void AVEffect::Node::ModulatorEntry::Stop()
     {
-        modulatorObserver->Stop();
-        modulatorObserver.Reset();
+        //modulatorObserver->Stop();
+        //modulatorObserver.Reset();
     }
 
     bool AVEffect::Node::ModulatorEntry::IsWorking() const
     {
-        return modulatorObserver->IsWorking();
+        //return modulatorObserver->IsWorking();
+        return true;
     }
 
     TimeValue AVEffect::Node::ModulatorEntry::GetSumTimeTaken() const
     {
-        return modulatorObserver->GetSumTimeTaken();
+        //return modulatorObserver->GetSumTimeTaken();
+        return TimeValue();
     }
 
     INSCRIPTION_SERIALIZE_FUNCTION_DEFINE(AVEffect::Node)
@@ -131,7 +108,7 @@ namespace Atmos
     void AVEffect::Node::Start()
     {
         for (auto &loop : modulators)
-            loop.Start(*this);
+            ;// loop.Start(*this);
     }
 
     void AVEffect::Node::Stop()

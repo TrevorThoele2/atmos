@@ -24,8 +24,8 @@ namespace Atmos
                 const TrackDescriberBase<Size3D::ValueT> ScalingY("ScalingY", Value::Type::FLOAT);
                 const TrackDescriberBase<Size3D::ValueT> ScalingZ("ScalingZ", Value::Type::FLOAT);
                 const TrackDescriberBase<Angle::ValueT> RotationX("RotationX", Value::Type::FLOAT);
-                const TrackDescriberBase<Angle::ValueT> RotationY("RotationX", Value::Type::FLOAT);
-                const TrackDescriberBase<Angle::ValueT> RotationZ("RotationX", Value::Type::FLOAT);
+                const TrackDescriberBase<Angle::ValueT> RotationY("RotationY", Value::Type::FLOAT);
+                const TrackDescriberBase<Angle::ValueT> RotationZ("RotationZ", Value::Type::FLOAT);
 
                 const TrackDescriberBase<::Atmos::Sound::Volume> Volume("Volume", Value::Type::FLOAT);
                 const TrackDescriberBase<::Atmos::Sprite::Index> Index("Index", Value::Type::INT);

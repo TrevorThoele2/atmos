@@ -14,6 +14,7 @@
 #include "Script.h"
 #include "ActionID.h"
 #include "ActionParameter.h"
+#include "ModulatorController.h"
 
 #include "Entity.h"
 #include "SenseComponent.h"
@@ -95,6 +96,8 @@ namespace Atmos
 
             Gold GetAvatarGold();
             void AddToPlayerParty(Entity entity);
+
+            void AttachModulatorToSense(Entity entity, ::Atmos::Modulator::Controller::ID modID);
         }
 
         namespace Position

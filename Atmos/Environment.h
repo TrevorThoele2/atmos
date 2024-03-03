@@ -18,7 +18,7 @@
 #include "AxisBoundingBox2D.h"
 #include "MousePosition.h"
 
-#include "Error.h"
+#include "Logger.h"
 #include <AGUI\Resolution.h>
 
 namespace Atmos

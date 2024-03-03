@@ -311,6 +311,19 @@ namespace Atmos
             {
                 ::Atmos::Ent::PlayerParty::Add(entity);
             }
+
+            void AttachModulatorToSense(Entity entity, ::Atmos::Modulator::Controller::ID modID)
+            {
+                auto &obs = GameEnvironment::FindModulator(modID);
+                if (!obs)
+                    return;
+
+                auto senseComponent = GetCurrentEntities()->FindComponent<::Atmos::Ent::SenseComponent>(entity);
+                if (!senseComponent)
+                    return;
+
+                
+            }
         }
 
         namespace Position

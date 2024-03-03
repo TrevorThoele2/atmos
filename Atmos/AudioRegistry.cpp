@@ -3,7 +3,7 @@
 
 #include "Buffer.h"
 #include "AssetPackage.h"
-#include "Error.h"
+#include "Logger.h"
 
 #include "Environment.h"
 
@@ -45,17 +45,18 @@ namespace Atmos
                 {
                     if (!AudioHandlerBase::CanMake(buffer->first, buffer->second))
                     {
-                        ErrorHandler::Log("An audio file was not loadable. It is probably corrupt or invalid.",
-                            ErrorHandler::Severity::ERROR_SEVERE,
-                            ErrorHandler::NameValueVector{ NameValuePair("File Name", fileName.GetValue()) });
+                        Logger::Log("An audio file was not loadable. It is probably corrupt or invalid.",
+                            Logger::Type::ERROR_SEVERE,
+                            Logger::NameValueVector{ NameValuePair("File Name", fileName.GetValue()) });
                         continue;
                     }
 
                     Emplace(id, fileName, Environment::GetAudio()->CreateAudio(buffer->first, buffer->second, fileName));
                 }
                 else
-                    ErrorHandler::Log("The audio file " + fileName.GetValue() + " was not found in the asset package.", ErrorHandler::Severity::ERROR_SEVERE,
-                        ErrorHandler::NameValueVector{ NameValuePair("File Name", fileName.GetValue()) });
+                    Logger::Log("The audio file " + fileName.GetValue() + " was not found in the asset package.",
+                        Logger::Type::ERROR_SEVERE,
+                        Logger::NameValueVector{ NameValuePair("File Name", fileName.GetValue()) });
             }
         }
     }

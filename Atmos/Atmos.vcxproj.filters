@@ -597,9 +597,6 @@
     <ClInclude Include="WindowsInclude.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Error.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="String.h">
       <Filter>Header Files\Helper</Filter>
     </ClInclude>
@@ -1233,9 +1230,6 @@
     <ClInclude Include="ModulatorDelta.h">
       <Filter>Header Files\Modulators</Filter>
     </ClInclude>
-    <ClInclude Include="ModulatorGeneratorRoute.h">
-      <Filter>Header Files\Modulators</Filter>
-    </ClInclude>
     <ClInclude Include="ModulatorObserver.h">
       <Filter>Header Files\Modulators</Filter>
     </ClInclude>
@@ -1271,6 +1265,21 @@
     </ClInclude>
     <ClInclude Include="FalconScriptObjectPrototype.h">
       <Filter>Header Files\Assets\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="ModulatorGeneratorCreator.h">
+      <Filter>Header Files\Modulators</Filter>
+    </ClInclude>
+    <ClInclude Include="FalconScriptFunctionPrototype.h">
+      <Filter>Header Files\Assets\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="FalconScriptFunctions.h">
+      <Filter>Header Files\Assets\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="FalconScriptBasePrototype.h">
+      <Filter>Header Files\Assets\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Logger.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1411,9 +1420,6 @@
     </ClCompile>
     <ClCompile Include="WorldScribe.cpp">
       <Filter>Source Files\Serialization\Scribe</Filter>
-    </ClCompile>
-    <ClCompile Include="Error.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SoundHandler.cpp">
       <Filter>Source Files\Sound</Filter>
@@ -1907,9 +1913,6 @@
     <ClCompile Include="ModulatorController.cpp">
       <Filter>Source Files\Modulators</Filter>
     </ClCompile>
-    <ClCompile Include="ModulatorGeneratorRoute.cpp">
-      <Filter>Source Files\Modulators</Filter>
-    </ClCompile>
     <ClCompile Include="ModulatorObserver.cpp">
       <Filter>Source Files\Modulators</Filter>
     </ClCompile>
@@ -1937,8 +1940,17 @@
     <ClCompile Include="FalconScriptObjects.cpp">
       <Filter>Source Files\Assets\Script</Filter>
     </ClCompile>
-    <ClCompile Include="FalconScriptObjectPrototype.cpp">
+    <ClCompile Include="ModulatorGeneratorCreator.cpp">
+      <Filter>Source Files\Modulators</Filter>
+    </ClCompile>
+    <ClCompile Include="FalconScriptFunctionPrototype.cpp">
       <Filter>Source Files\Assets\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="FalconScriptFunctions.cpp">
+      <Filter>Source Files\Assets\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Logger.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

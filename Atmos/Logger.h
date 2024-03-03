@@ -8,10 +8,10 @@
 
 namespace Atmos
 {
-    class ErrorHandler
+    class Logger
     {
     public:
-        enum class Severity
+        enum class Type
         {
             ERROR_SEVERE,
             ERROR_MODERATE,
@@ -24,31 +24,31 @@ namespace Atmos
     public:
         Event<const String&> onLogged;
 
-        static ErrorHandler& Instance();
+        static Logger& Instance();
         // Before this is called, the file system in environment needs to be initialized
         static void Init();
 
         // Outputs the error to a text file
-        static void Log(const String &string, Severity severity);
+        static void Log(const String &string, Type type);
         // Outputs the error to a test file
         // Also outputs all of the name-value pairs
-        static void Log(const String &string, Severity severity, NameValueVector &nvps);
+        static void Log(const String &string, Type type, NameValueVector &nvps);
         static String GetTimeValue();
         static void ClearFile();
     private:
         struct Entry
         {
             String string;
-            Severity severity;
+            Type type;
             NameValueVector nvps;
-            Entry(const String &string, Severity severity, const NameValueVector &nvps);
+            Entry(const String &string, Type type, const NameValueVector &nvps);
         };
     private:
         bool initialized;
         std::vector<Entry> entries;
 
-        ErrorHandler();
-        ErrorHandler(const ErrorHandler &arg) = delete;
-        ErrorHandler& operator=(const ErrorHandler &arg) = delete;
+        Logger();
+        Logger(const Logger &arg) = delete;
+        Logger& operator=(const Logger &arg) = delete;
     };
 }

@@ -4,7 +4,6 @@
 
 #include "Sprite.h"
 #include "Modulator.h"
-#include "ModulatorGeneratorRoute.h"
 #include "ObjectOffsetHandle.h"
 
 #include "Material.h"
@@ -28,8 +27,7 @@ namespace Atmos
 
             HandleT handle;
             FrameTimer timer;
-            Modulator::Observer modulatorObserver;
-            Piece(const AssetReference<Material> &material, TimeValue goal, const Position3D &position, const Modulator::Observer &modulatorObserver);
+            Piece(const AssetReference<Material> &material, TimeValue goal, const Position3D &position);
 
             bool operator==(const Piece &arg) const;
             bool operator!=(const Piece &arg) const;
@@ -56,7 +54,6 @@ namespace Atmos
         // Clone objects won't ever be used directly, but will be used for each new sprite
         AssetReference<Material> cloneMaterial;
         Sprite::Index cloneIndex;
-        Modulator::GeneratorRoute cloneModulator;
 
         // How long the particles will last
         typedef Range<TimeValue> ParticleLifetimeRange;

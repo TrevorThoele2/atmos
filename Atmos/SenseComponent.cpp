@@ -6,7 +6,7 @@
 
 #include "CurrentField.h"
 
-#include "Error.h"
+#include "Logger.h"
 
 #include <Inscription/Inscripter.h>
 

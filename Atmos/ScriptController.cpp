@@ -2,7 +2,7 @@
 #include "ScriptController.h"
 
 #include "FalconScriptUtility.h"
-#include "Error.h"
+#include "Logger.h"
 
 #include <falcon/engine.h>
 
@@ -102,7 +102,7 @@ namespace Atmos
         if (IsRunning(instance))
             return;
 
-        Instance().stack.push_back(Piece(std::move(instance)));
+        Instance().stack.push_back(Piece(instance));
     }
 
     void ScriptController::Add(Script::Instance &instance, const Script::SymbolName &execute, const Script::Instance::ItemVector &parameters)
@@ -174,9 +174,9 @@ namespace Atmos
                 catch (Falcon::Error *err)
                 {
                     // Output an error
-                    ErrorHandler::Log(String("The execution of a script has encountered an error.\n") + Falcon::AutoCString(err->toString()).c_str(),
-                        ErrorHandler::Severity::ERROR_MODERATE,
-                        ErrorHandler::NameValueVector{ NameValuePair("Script File Name", current->GetInstance()->GetFileName().GetValue()) });
+                    Logger::Log(String("The execution of a script has encountered an error.\n") + Falcon::AutoCString(err->toString()).c_str(),
+                        Logger::Type::ERROR_MODERATE,
+                        Logger::NameValueVector{ NameValuePair("Script File Name", current->GetInstance()->GetFileName().GetValue()) });
                     error = true;
                 }
                 catch (const Falcon::VMEventQuit&)
