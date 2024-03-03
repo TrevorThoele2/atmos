@@ -4,11 +4,11 @@ namespace Atmos::Scripting::Angel
 {
     GlobalRegistration::GlobalRegistration() = default;
 
-    GlobalRegistration::GlobalRegistration(const String& containingNamespace) : containingNamespace(containingNamespace)
+    GlobalRegistration::GlobalRegistration(String containingNamespace) : containingNamespace(containingNamespace)
     {}
 
     GlobalRegistration& GlobalRegistration::Function(
-        GenericFunction function, const String& returnType, const String& name, const std::vector<String>& parameters)
+        GenericFunction function, String returnType, String name, std::vector<String> parameters)
     {
         AddItem([function, returnType, name, parameters](asIScriptEngine& engine)
             {
@@ -23,7 +23,7 @@ namespace Atmos::Scripting::Angel
         return *this;
     }
 
-    GlobalRegistration& GlobalRegistration::Typedef(const String& alias, const String& original)
+    GlobalRegistration& GlobalRegistration::Typedef(String alias, String original)
     {
         AddItem([alias, original](asIScriptEngine& engine)
             {
@@ -33,7 +33,7 @@ namespace Atmos::Scripting::Angel
         return *this;
     }
 
-    GlobalRegistration& GlobalRegistration::Funcdef(const String& returnType, const String& name, const std::vector<String>& parameters)
+    GlobalRegistration& GlobalRegistration::Funcdef(String returnType, String name, std::vector<String> parameters)
     {
         AddItem([returnType, name, parameters](asIScriptEngine& engine)
             {

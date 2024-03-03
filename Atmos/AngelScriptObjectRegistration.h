@@ -19,11 +19,11 @@ namespace Atmos::Scripting::Angel
             using GenericFunction = void(*)(asIScriptGeneric*);
         public:
             DerivedT& DefaultConstructor(GenericFunction function);
-            DerivedT& Constructor(GenericFunction function, const std::vector<String>& parameters);
+            DerivedT& Constructor(GenericFunction function, std::vector<String> parameters);
             DerivedT& CopyConstructor(GenericFunction function);
             DerivedT& Destructor(GenericFunction function);
 
-            DerivedT& Assignment(GenericFunction function, const String& parameter);
+            DerivedT& Assignment(GenericFunction function, String parameter);
             DerivedT& CopyAssignment(GenericFunction function);
 
             DerivedT& Equals(GenericFunction function);
@@ -31,20 +31,20 @@ namespace Atmos::Scripting::Angel
             DerivedT& Add(GenericFunction function);
             DerivedT& Subtract(GenericFunction function);
 
-            DerivedT& Method(GenericFunction function, const String& returnType, const String& name, const std::vector<String>& parameters);
-            DerivedT& ConstMethod(GenericFunction function, const String& returnType, const String& name, const std::vector<String>& parameters);
+            DerivedT& Method(GenericFunction function, String returnType, String name, std::vector<String> parameters);
+            DerivedT& ConstMethod(GenericFunction function, String returnType, String name, std::vector<String> parameters);
             template<auto property>
-            DerivedT& Property(const String& type, const String& name);
+            DerivedT& Property(String type, String name);
 
             void Actualize(asIScriptEngine& engine);
         public:
-            using RegistrationItem = std::function<void(asIScriptEngine&, const String&)>;
+            using RegistrationItem = std::function<void(asIScriptEngine&, String)>;
             void AddItem(RegistrationItem&& item);
         protected:
             Object(
-                const std::optional<String>& containingNamespace,
-                const String& registrationName,
-                const String& representationName,
+                std::optional<String> containingNamespace,
+                String registrationName,
+                String representationName,
                 std::vector<String> hiddenConstructorParameters,
                 asDWORD knownFlags);
         private:
@@ -63,7 +63,7 @@ namespace Atmos::Scripting::Angel
 
             std::vector<String> hiddenConstructorParameters;
         private:
-            void GenerateMethod(GenericFunction function, const String& declaration);
+            void GenerateMethod(GenericFunction function, String declaration);
         };
 
         template<class T, class DerivedT>
@@ -73,9 +73,9 @@ namespace Atmos::Scripting::Angel
         }
 
         template<class T, class DerivedT>
-        auto Object<T, DerivedT>::Constructor(GenericFunction function, const std::vector<String>& parameters) -> DerivedT&
+        auto Object<T, DerivedT>::Constructor(GenericFunction function, std::vector<String> parameters) -> DerivedT&
         {
-            AddItem([this, function, parameters](asIScriptEngine& engine, const String& representationName)
+            AddItem([this, function, parameters](asIScriptEngine& engine, String representationName)
                 {
                     auto useParameters = hiddenConstructorParameters;
                     useParameters.insert(useParameters.end(), parameters.begin(), parameters.end());
@@ -102,7 +102,7 @@ namespace Atmos::Scripting::Angel
         template<class T, class DerivedT>
         auto Object<T, DerivedT>::Destructor(GenericFunction function) -> DerivedT&
         {
-            AddItem([function](asIScriptEngine& engine, const String& representationName)
+            AddItem([function](asIScriptEngine& engine, String representationName)
                 {
                     VerifyResult(engine.RegisterObjectBehaviour(
                         representationName.c_str(),
@@ -116,7 +116,7 @@ namespace Atmos::Scripting::Angel
         }
 
         template<class T, class DerivedT>
-        auto Object<T, DerivedT>::Assignment(GenericFunction function, const String& parameter) -> DerivedT&
+        auto Object<T, DerivedT>::Assignment(GenericFunction function, String parameter) -> DerivedT&
         {
             return Method(function, representationName, "&opAssign", { parameter });
         }
@@ -147,7 +147,7 @@ namespace Atmos::Scripting::Angel
 
         template<class T, class DerivedT>
         auto Object<T, DerivedT>::Method(
-            GenericFunction function, const String& returnType, const String& name, const std::vector<String>& parameters)
+            GenericFunction function, String returnType, String name, std::vector<String> parameters)
             -> DerivedT&
         {
             const auto declaration = returnType + " " + name + "(" + Chroma::Join(", ", parameters.begin(), parameters.end()) + ")";
@@ -159,7 +159,7 @@ namespace Atmos::Scripting::Angel
 
         template<class T, class DerivedT>
         auto Object<T, DerivedT>::ConstMethod(
-            GenericFunction function, const String& returnType, const String& name, const std::vector<String>& parameters)
+            GenericFunction function, String returnType, String name, std::vector<String> parameters)
             -> DerivedT&
         {
             const auto declaration = returnType + " " + name + "(" + Chroma::Join(", ", parameters.begin(), parameters.end()) + ") const";
@@ -171,9 +171,9 @@ namespace Atmos::Scripting::Angel
 
         template<class T, class DerivedT>
         template<auto property>
-        auto Object<T, DerivedT>::Property(const String& type, const String& name) -> DerivedT&
+        auto Object<T, DerivedT>::Property(String type, String name) -> DerivedT&
         {
-            AddItem([type, name](asIScriptEngine& engine, const String& representationName)
+            AddItem([type, name](asIScriptEngine& engine, String representationName)
                 {
                     const auto declaration = type + " " + name;
 
@@ -224,9 +224,9 @@ namespace Atmos::Scripting::Angel
 
         template<class T, class DerivedT>
         Object<T, DerivedT>::Object(
-            const std::optional<String>& containingNamespace,
-            const String& registrationName,
-            const String& representationName,
+            std::optional<String> containingNamespace,
+            String registrationName,
+            String representationName,
             std::vector<String> hiddenConstructorParameters,
             asDWORD knownFlags)
             :
@@ -238,9 +238,9 @@ namespace Atmos::Scripting::Angel
         {}
 
         template<class T, class DerivedT>
-        void Object<T, DerivedT>::GenerateMethod(GenericFunction function, const String& declaration)
+        void Object<T, DerivedT>::GenerateMethod(GenericFunction function, String declaration)
         {
-            AddItem([function, declaration](asIScriptEngine& engine, const String& representationName)
+            AddItem([function, declaration](asIScriptEngine& engine, String representationName)
                 {
                     VerifyResult(engine.RegisterObjectMethod(
                         representationName.c_str(),
@@ -332,7 +332,7 @@ namespace Atmos::Scripting::Angel
         template <class T, class DerivedT>
         auto TemplateValueType<T, DerivedT>::TemplateCallback(GenericFunction function) -> DerivedT&
         {
-            Self().AddItem([function](asIScriptEngine& engine, const String& representationName)
+            Self().AddItem([function](asIScriptEngine& engine, String representationName)
                 {
                     VerifyResult(engine.RegisterObjectBehaviour(
                         representationName.c_str(),
@@ -375,7 +375,7 @@ namespace Atmos::Scripting::Angel
         template<class T, class DerivedT>
         auto ReferenceType<T, DerivedT>::AddRef(GenericFunction function) -> DerivedT&
         {
-            Self().AddItem([function](asIScriptEngine& engine, const String& representationName)
+            Self().AddItem([function](asIScriptEngine& engine, String representationName)
                 {
                     VerifyResult(engine.RegisterObjectBehaviour(
                         representationName.c_str(),
@@ -391,7 +391,7 @@ namespace Atmos::Scripting::Angel
         template<class T, class DerivedT>
         auto ReferenceType<T, DerivedT>::Release(GenericFunction function) -> DerivedT&
         {
-            Self().AddItem([function](asIScriptEngine& engine, const String& representationName)
+            Self().AddItem([function](asIScriptEngine& engine, String representationName)
                 {
                     VerifyResult(engine.RegisterObjectBehaviour(
                         representationName.c_str(),
@@ -461,14 +461,14 @@ namespace Atmos::Scripting::Angel
         public Functionality::ValueType<T, ValueTypeRegistration<T>>
     {
     public:
-        ValueTypeRegistration(const String& name);
-        ValueTypeRegistration(const String& containingNamespace, const String& name);
+        ValueTypeRegistration(String name);
+        ValueTypeRegistration(String containingNamespace, String name);
     private:
         static const asDWORD flags = asOBJ_VALUE;
     };
 
     template<class T>
-    ValueTypeRegistration<T>::ValueTypeRegistration(const String& name) :
+    ValueTypeRegistration<T>::ValueTypeRegistration(String name) :
         Functionality::Object<T, ValueTypeRegistration<T>>(
             {},
             name,
@@ -478,7 +478,7 @@ namespace Atmos::Scripting::Angel
     {}
 
     template<class T>
-    ValueTypeRegistration<T>::ValueTypeRegistration(const String& containingNamespace, const String& name) :
+    ValueTypeRegistration<T>::ValueTypeRegistration(String containingNamespace, String name) :
         Functionality::Object<T, ValueTypeRegistration<T>>(
             containingNamespace,
             name,
@@ -495,19 +495,19 @@ namespace Atmos::Scripting::Angel
     {
     public:
         TemplateValueTypeRegistration(
-            const String& name, const std::vector<String>& templateNames);
+            String name, std::vector<String> templateNames);
         TemplateValueTypeRegistration(
-            const String& containingNamespace, const String& name, const std::vector<String>& templateNames);
+            String containingNamespace, String name, std::vector<String> templateNames);
     private:
         static const asDWORD flags = asOBJ_VALUE | asOBJ_TEMPLATE;
 
-        static String CreateRegistrationName(const String& name, const std::vector<String>& templateNames);
-        static String CreateRepresentationName(const String& name, const std::vector<String>& templateNames);
+        static String CreateRegistrationName(String name, std::vector<String> templateNames);
+        static String CreateRepresentationName(String name, std::vector<String> templateNames);
     };
 
     template <class T>
     TemplateValueTypeRegistration<T>::TemplateValueTypeRegistration(
-        const String& name, const std::vector<String>& templateNames)
+        String name, std::vector<String> templateNames)
         :
         Functionality::Object<T, TemplateValueTypeRegistration<T>>(
             {},
@@ -519,7 +519,7 @@ namespace Atmos::Scripting::Angel
 
     template <class T>
     TemplateValueTypeRegistration<T>::TemplateValueTypeRegistration(
-        const String& containingNamespace, const String& name, const std::vector<String>& templateNames)
+        String containingNamespace, String name, std::vector<String> templateNames)
         :
         Functionality::Object<T, TemplateValueTypeRegistration<T>>(
             containingNamespace,
@@ -530,7 +530,7 @@ namespace Atmos::Scripting::Angel
     {}
 
     template <class T>
-    String TemplateValueTypeRegistration<T>::CreateRegistrationName(const String & name, const std::vector<String>&templateNames)
+    String TemplateValueTypeRegistration<T>::CreateRegistrationName(String name, std::vector<String> templateNames)
     {
         std::vector<String> useTemplateNames;
         useTemplateNames.reserve(templateNames.size());
@@ -540,7 +540,7 @@ namespace Atmos::Scripting::Angel
     }
 
     template <class T>
-    String TemplateValueTypeRegistration<T>::CreateRepresentationName(const String & name, const std::vector<String>&templateNames)
+    String TemplateValueTypeRegistration<T>::CreateRepresentationName(String name, std::vector<String> templateNames)
     {
         return name + "<" + Chroma::Join(", ", templateNames.begin(), templateNames.end()) + ">";
     }
@@ -553,14 +553,14 @@ namespace Atmos::Scripting::Angel
     private:
         using BaseT = Functionality::ValueType<T, ReferenceTypeRegistration<T>>;
     public:
-        ReferenceTypeRegistration(const String& name);
-        ReferenceTypeRegistration(const String& containingNamespace, const String& name);
+        ReferenceTypeRegistration(String name);
+        ReferenceTypeRegistration(String containingNamespace, String name);
     private:
         static const asDWORD flags = asOBJ_REF;
     };
 
     template<class T>
-    ReferenceTypeRegistration<T>::ReferenceTypeRegistration(const String& name) :
+    ReferenceTypeRegistration<T>::ReferenceTypeRegistration(String name) :
         Functionality::Object<T, ReferenceTypeRegistration<T>>(
             {},
             name,
@@ -570,7 +570,7 @@ namespace Atmos::Scripting::Angel
     {}
 
     template<class T>
-    ReferenceTypeRegistration<T>::ReferenceTypeRegistration(const String& containingNamespace, const String& name) :
+    ReferenceTypeRegistration<T>::ReferenceTypeRegistration(String containingNamespace, String name) :
         Functionality::Object<T, ReferenceTypeRegistration<T>>(
             containingNamespace,
             name,

@@ -77,12 +77,15 @@ namespace Atmos::World::Serialization
 
             for(auto& extractionSet : extractionSets)
             {
+                if (folderName != extractionSet.folderName)
+                    continue;
+
                 auto& toExtractFrom = toExtract.*extractionSet.toExtract;
-                if (folderName == extractionSet.folderName && toExtractFrom.find(fileName) == toExtractFrom.end())
-                {
-                    (extracted.*extractionSet.extractedAssets).emplace_back(fileName, ExtractData(zip));
-                    break;
-                }
+                if (toExtractFrom.find(fileName) == toExtractFrom.end())
+                    continue;
+
+                (extracted.*extractionSet.extractedAssets).emplace_back(fileName, ExtractData(zip));
+                break;
             }
         }
 

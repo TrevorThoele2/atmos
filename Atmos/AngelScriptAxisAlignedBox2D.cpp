@@ -14,13 +14,13 @@ namespace Atmos::Scripting::Angel
                 &Management::GenerateValue<
                     &PullFromParameter<0, Spatial::Point2D>,
                     &PullFromParameter<1, Spatial::Size2D>>,
-                { "Point2D center", "Size2D size" })
+                { "Atmos::Spatial::Point2D center", "Atmos::Spatial::Size2D size" })
             .CopyConstructor(&Management::GenerateValueFromCopy)
             .Destructor(&Management::DestructValue)
             .CopyAssignment(&Management::CopyAssign)
             .Equals(&Management::Equals)
-            .Property<&Type::center>("Point2D", "center")
-            .Property<&Type::size>("Size2D", "size")
+            .Property<&Type::center>("Atmos::Spatial::Point2D", "center")
+            .Property<&Type::size>("Atmos::Spatial::Size2D", "size")
             .Method(&Management::Method<&Type::Left>, "float", "Left", {})
             .Method(&Management::Method<&Type::Top>, "float", "Top", {})
             .Method(&Management::Method<&Type::Right>, "float", "Right", {})

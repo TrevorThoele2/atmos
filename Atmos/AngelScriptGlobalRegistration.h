@@ -12,11 +12,11 @@ namespace Atmos::Scripting::Angel
         using GenericFunction = void(*)(asIScriptGeneric*);
     public:
         GlobalRegistration();
-        GlobalRegistration(const String& containingNamespace);
+        GlobalRegistration(String containingNamespace);
 
-        GlobalRegistration& Function(GenericFunction function, const String& returnType, const String& name, const std::vector<String>& parameters);
-        GlobalRegistration& Typedef(const String& alias, const String& original);
-        GlobalRegistration& Funcdef(const String& returnType, const String& name, const std::vector<String>& parameters);
+        GlobalRegistration& Function(GenericFunction function, String returnType, String name, std::vector<String> parameters);
+        GlobalRegistration& Typedef(String alias, String original);
+        GlobalRegistration& Funcdef(String returnType, String name, std::vector<String> parameters);
 
         void Actualize(asIScriptEngine& engine);
     private:
