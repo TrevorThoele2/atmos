@@ -7,6 +7,8 @@
 #include <scriptarray.h>
 #include <scriptdictionary.h>
 
+#include "AngelScriptNumericLimits.h"
+
 #include "AngelScriptRelicID.h"
 #include "AngelScriptArcaType.h"
 #include "AngelScriptArcaBatch.h"
@@ -138,7 +140,19 @@ namespace Atmos::Scripting::Angel
 
         {
             RegistrationHandler(engine, documentationManager)
+                .Register<std::numeric_limits<std::int8_t>>()
+                .Register<std::numeric_limits<std::int16_t>>()
+                .Register<std::numeric_limits<std::int32_t>>()
+                .Register<std::numeric_limits<std::int64_t>>()
+                .Register<std::numeric_limits<std::uint8_t>>()
+                .Register<std::numeric_limits<std::uint16_t>>()
+                .Register<std::numeric_limits<std::uint32_t>>()
+                .Register<std::numeric_limits<std::uint64_t>>()
+                .Register<std::numeric_limits<float>>()
+                .Register<std::numeric_limits<double>>()
+
                 .Register<RelicID>()
+                .Register<NullRelicID>()
                 .Register<Arca::Type>()
                 .Register<Arca::Handle>()
                 .Register<GenericArcaTraits>()

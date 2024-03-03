@@ -78,7 +78,6 @@ namespace Atmos::Scripting
         if (!script->asset)
         {
             currentExecutingScript.id = Arca::nullRelicID;
-            Owner().Do(Logging::Log("Script did not have an occupied asset. Destroying.", Logging::Severity::Warning));
             Owner().Do(Arca::Destroy<Script>(id));
             return Quit{};
         }
