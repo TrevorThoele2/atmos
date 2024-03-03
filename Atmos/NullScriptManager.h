@@ -14,8 +14,11 @@ namespace Atmos::Scripting
         [[nodiscard]] std::unique_ptr<Asset::Resource::Script> CreateAssetResource(
             const Buffer& buffer, String name) override;
         [[nodiscard]] std::unique_ptr<Resource> CreateScriptResource(
-            const String& scriptAssetName, const String& executeName, const Parameters& parameters) override;
+            const Asset::Resource::Script& asset,
+            const String& assetName,
+            const String& executeName,
+            const Parameters& parameters) override;
 
-        Buffer Compile(Module module, std::vector<Module> sharedModules) override;
+        std::vector<CompiledModule> Compile(const std::vector<Module>& modules) override;
     };
 }

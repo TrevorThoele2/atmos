@@ -6,15 +6,13 @@
 #include "LoggingDetails.h"
 #include "String.h"
 
-#include <optional>
-
 namespace Atmos::Logging
 {
     struct Log
     {
         String message;
         Severity severity;
-        std::optional<Details> details;
+        Details details;
 
         explicit Log(String message);
         Log(String message, Severity severity);

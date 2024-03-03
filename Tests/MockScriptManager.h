@@ -12,7 +12,11 @@ public:
     [[nodiscard]] std::unique_ptr<Atmos::Asset::Resource::Script> CreateAssetResource(
         const Atmos::Buffer& buffer, Atmos::String name) override;
     [[nodiscard]] std::unique_ptr<Atmos::Scripting::Resource> CreateScriptResource(
-        const Atmos::String& scriptAssetName, const Atmos::String& executeName, const Atmos::Scripting::Parameters& parameters) override;
+        const Atmos::Asset::Resource::Script& asset,
+        const Atmos::String& assetName,
+        const Atmos::String& executeName,
+        const Atmos::Scripting::Parameters& parameters) override;
 
-    Atmos::Buffer Compile(Atmos::Scripting::Module module, std::vector<Atmos::Scripting::Module> sharedModules) override;
+    std::vector<Atmos::Scripting::CompiledModule> Compile(
+        const std::vector<Atmos::Scripting::Module>& modules) override;
 };

@@ -39,15 +39,15 @@ namespace Inscription
     public:
         using ObjectT = Atmos::DataCore;
     public:
-        template<class Archive>
-        void Scriven(ObjectT& object, Archive& archive)
+        template<class Format>
+        void Scriven(ObjectT& object, Format& format)
         {
-            archive("properties", object.properties);
+            format("properties", object.properties);
         }
     };
 
-    template<class Archive>
-    struct ScribeTraits<Atmos::DataCore, Archive> final
+    template<class Format>
+    struct ScribeTraits<Atmos::DataCore, Format> final
     {
         using Category = ArcaCompositeScribeCategory<Atmos::DataCore>;
     };

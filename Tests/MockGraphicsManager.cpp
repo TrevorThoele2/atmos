@@ -2,7 +2,6 @@
 
 #include "MockSurfaceResource.h"
 #include "MockImageAssetResource.h"
-#include "MockTextResource.h"
 
 class ShaderAssetResourceImplementation final : public Asset::Resource::Shader
 {
@@ -45,13 +44,6 @@ std::unique_ptr<Resource::Surface> MockGraphicsManager::CreateSurfaceResourceImp
     return std::make_unique<MockSurfaceResource>();
 }
 
-std::unique_ptr<Resource::Text> MockGraphicsManager::CreateTextResourceImpl(
-    const Buffer& buffer,
-    const Spatial::Size2D& size)
-{
-    return std::make_unique<MockTextResource>();
-}
-
 void MockGraphicsManager::StageImpl(const RenderImage& render)
 {
     imageRenders.push_back(render);
@@ -72,10 +64,7 @@ void MockGraphicsManager::StageImpl(const RenderText& render)
     textRenders.push_back(render);
 }
 
-void MockGraphicsManager::StageImpl(const UpdateText& update)
-{}
-
-void MockGraphicsManager::DrawFrameImpl(Resource::Surface& surface, const Spatial::Point2D& mapPosition, const Color& backgroundColor, Diagnostics::Statistics::Profile& profile)
+void MockGraphicsManager::DrawFrameImpl(Resource::Surface& surface, const Spatial::Point2D& mapPosition, const Color& backgroundColor)
 {}
 
 void MockGraphicsManager::ResourceDestroyingImpl(Asset::Resource::Image& resource)
@@ -85,9 +74,6 @@ void MockGraphicsManager::ResourceDestroyingImpl(Asset::Resource::Shader& resour
 {}
 
 void MockGraphicsManager::ResourceDestroyingImpl(Resource::Surface& resource)
-{}
-
-void MockGraphicsManager::ResourceDestroyingImpl(Resource::Text& resource)
 {}
 
 void MockGraphicsManager::PruneResourcesImpl()
@@ -105,3 +91,9 @@ bool MockGraphicsManager::ShouldReconstructInternals() const
 
 void MockGraphicsManager::ReconstructInternals(GraphicsReconstructionObjects objects)
 {}
+
+Spatial::Size2D MockGraphicsManager::TextBaseSizeImpl(
+    const String& string, const Asset::Resource::Font& resource, bool bold, bool italics, float wrapWidth) const
+{
+    return { 1, 1 };
+}

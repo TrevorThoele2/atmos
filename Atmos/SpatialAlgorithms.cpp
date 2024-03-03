@@ -167,21 +167,56 @@ namespace Atmos::Spatial
             std::clamp(box.NearZ(), to.FarZ(), to.NearZ()));
     }
 
+    AxisAlignedBox2D ScaleOf(AxisAlignedBox2D box, AxisAlignedBox2D against)
+    {
+        return ToAxisAlignedBox2D(
+            (box.Left() - against.Left()) / against.size.width,
+            (box.Top() - against.Top()) / against.size.height,
+            (box.Right() - against.Left()) / against.size.width,
+            (box.Bottom() - against.Top()) / against.size.height);
+    }
+
+    AxisAlignedBox3D ScaleOf(AxisAlignedBox3D box, AxisAlignedBox3D against)
+    {
+        return ToAxisAlignedBox3D(
+            (box.Left() - against.Left()) / against.size.width,
+            (box.Top() - against.Top()) / against.size.height,
+            (box.FarZ() - against.FarZ()) / against.size.depth,
+            (box.Right() - against.Left()) / against.size.width,
+            (box.Bottom() - against.Top()) / against.size.height,
+            (box.NearZ() - against.FarZ()) / against.size.depth);
+    }
+
+    AxisAlignedBox2D Cell(int column, int row, Size2D cellSize)
+    {
+        return Spatial::ToAxisAlignedBox2D
+        (
+            column * cellSize.width,
+            row * cellSize.height,
+            column * cellSize.width + cellSize.width,
+            row * cellSize.height + cellSize.height
+        );
+    }
+
+    AxisAlignedBox3D Cell(int column, int row, int depth, Size3D cellSize)
+    {
+        return Spatial::ToAxisAlignedBox3D
+        (
+            column * cellSize.width,
+            row * cellSize.height,
+            depth * cellSize.depth,
+            column * cellSize.width + cellSize.width,
+            row * cellSize.height + cellSize.height,
+            depth * cellSize.depth + cellSize.depth
+        );
+    }
+
     Point2D operator+(Point2D left, Point2D right)
     {
         return
         {
             left.x + right.x,
             left.y + right.y
-        };
-    }
-
-    Point2D operator-(Point2D left, Point2D right)
-    {
-        return
-        {
-            left.x - right.x,
-            left.y - right.y
         };
     }
 
@@ -192,6 +227,15 @@ namespace Atmos::Spatial
             left.x + right.x,
             left.y + right.y,
             left.z + right.z
+        };
+    }
+
+    Point2D operator-(Point2D left, Point2D right)
+    {
+        return
+        {
+            left.x - right.x,
+            left.y - right.y
         };
     }
 
@@ -344,21 +388,21 @@ namespace Atmos::Spatial
                 (one.Top() <= two.Bottom() && one.Bottom() >= two.Top());
         }
 
-        Point ToPoint(Point2D position)
+        Point ToPoint(Point2D point)
         {
             return
             {
-                static_cast<Point::Value>(std::floor(position.x / CellSize<Point2D::Value>)),
-                static_cast<Point::Value>(std::floor(position.y / CellSize<Point2D::Value>))
+                static_cast<Point::Value>(std::floor(point.x / CellSize<Point2D::Value>)),
+                static_cast<Point::Value>(std::floor(point.y / CellSize<Point2D::Value>))
             };
         }
 
-        Point ToPoint(Point3D position)
+        Point ToPoint(Point3D point)
         {
             return
             {
-                static_cast<Point::Value>(std::floor(position.x / CellSize<Point3D::Value>)),
-                static_cast<Point::Value>(std::floor(position.y / CellSize<Point3D::Value>))
+                static_cast<Point::Value>(std::floor(point.x / CellSize<Point3D::Value>)),
+                static_cast<Point::Value>(std::floor(point.y / CellSize<Point3D::Value>))
             };
         }
     }

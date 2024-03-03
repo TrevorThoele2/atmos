@@ -46,13 +46,13 @@ namespace Inscription
     public:
         using ObjectT = Atmos::Render::Camera;
     public:
-        template<class Archive>
-        void Scriven(ObjectT&, Archive&)
+        template<class Format>
+        void Scriven(ObjectT&, Format&)
         {}
     };
 
-    template<class Archive>
-    struct ScribeTraits<Atmos::Render::Camera, Archive> final
+    template<class Format>
+    struct ScribeTraits<Atmos::Render::Camera, Format> final
     {
         using Category = ArcaCompositeScribeCategory<Atmos::Render::Camera>;
     };

@@ -55,16 +55,16 @@ namespace Inscription
     public:
         using ObjectT = Atmos::Asset::Material;
     public:
-        template<class Archive>
-        void Scriven(ObjectT& object, Archive& archive)
+        template<class Format>
+        void Scriven(ObjectT& object, Format& format)
         {
-            BaseScriven<Atmos::Asset::Asset>(object, archive);
-            archive("passes", object.passes);
+            BaseScriven<Atmos::Asset::Asset>(object, format);
+            format("passes", object.passes);
         }
     };
 
-    template<class Archive>
-    struct ScribeTraits<Atmos::Asset::Material, Archive> final
+    template<class Format>
+    struct ScribeTraits<Atmos::Asset::Material, Format> final
     {
         using Category = ArcaCompositeScribeCategory<Atmos::Asset::Material>;
     };

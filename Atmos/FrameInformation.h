@@ -33,14 +33,14 @@ namespace Arca
     {
         static constexpr ObjectType objectType = ObjectType::Relic;
         static const inline TypeName typeName = "Atmos::Frame::Information";
-        static const Locality locality = Locality::Global;
+        static constexpr Locality locality = Locality::Global;
     };
 }
 
 namespace Inscription
 {
-    template<class Archive>
-    struct ScribeTraits<Atmos::Frame::Information, Archive> final
+    template<class Format>
+    struct ScribeTraits<Atmos::Frame::Information, Format> final
     {
         using Category = ArcaNullScribeCategory<Atmos::Frame::Information>;
     };

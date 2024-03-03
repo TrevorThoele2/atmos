@@ -32,15 +32,15 @@ namespace Inscription
     public:
         using ObjectT = Atmos::World::Field;
     public:
-        template<class Archive>
-        void Scriven(ObjectT& object, Archive& archive)
+        template<class Format>
+        void Scriven(ObjectT& object, Format& format)
         {
-            archive("reliquary", *object.reliquary);
+            format("reliquary", *object.reliquary);
         }
     };
 
-    template<class Archive>
-    struct ScribeTraits<Atmos::World::Field, Archive> final
+    template<class Format>
+    struct ScribeTraits<Atmos::World::Field, Format> final
     {
         using Category = CompositeScribeCategory<Atmos::World::Field>;
     };

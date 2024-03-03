@@ -2,6 +2,7 @@
 
 #include "AssetResourceTraits.h"
 
+#include "LoadedGlyph.h"
 #include "Size2D.h"
 
 namespace Atmos::Asset::Resource
@@ -11,7 +12,8 @@ namespace Atmos::Asset::Resource
     public:
         virtual ~Font() = 0;
 
-        [[nodiscard]] virtual Spatial::Size2D Size(const String& string, bool bold, bool italics) const = 0;
+        [[nodiscard]] virtual Render::LoadedGlyph Load(char32_t codepoint, bool bold, bool italics) const = 0;
+        [[nodiscard]] virtual float MaximumGlyphHeight() const = 0;
     protected:
         Font() = default;
     };

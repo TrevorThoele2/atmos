@@ -46,18 +46,18 @@ namespace Inscription
     public:
         using ObjectT = Atmos::Entity::Prototype;
     public:
-        template<class Archive>
-        void Scriven(ObjectT& object, Archive& archive)
+        template<class Format>
+        void Scriven(ObjectT& object, Format& format)
         {
-            archive("constructor", object.constructor);
-            archive("name", object.name);
-            archive("position", object.position);
-            archive("solid", object.solid);
+            format("constructor", object.constructor);
+            format("name", object.name);
+            format("position", object.position);
+            format("solid", object.solid);
         }
     };
 
-    template<class Archive>
-    struct ScribeTraits<Atmos::Entity::Prototype, Archive> final
+    template<class Format>
+    struct ScribeTraits<Atmos::Entity::Prototype, Format> final
     {
         using Category = ArcaCompositeScribeCategory<Atmos::Entity::Prototype>;
     };

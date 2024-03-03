@@ -27,8 +27,6 @@ namespace Atmos::Asset
         bool operator!=(const Font& arg) const;
     public:
         void Setup(ResourcePtr&& set);
-    public:
-        [[nodiscard]] Spatial::Size2D Size(const String& string, bool bold, bool italics) const;
     private:
         Arca::RelicInit init;
     private:
@@ -58,14 +56,14 @@ namespace Inscription
     public:
         using ObjectT = Atmos::Asset::Font;
     public:
-        template<class Archive>
-        void Scriven(ObjectT& object, Archive& archive)
+        template<class Format>
+        void Scriven(ObjectT& object, Format& format)
         {
             BaseScriven<Atmos::Asset::AssetWithResource<Atmos::Asset::Resource::Font>>(
-                object, archive);
-            if (archive.IsInput())
+                object, format);
+            if (format.IsInput())
             {
-                auto& assetUserContext = *archive.template UserContext<LoadAssetsUserContext>();
+                auto& assetUserContext = *format.template UserContext<LoadAssetsUserContext>();
 
                 auto extracted = assetUserContext.LoadFontData(object.Name());
                 if (extracted)
@@ -88,8 +86,8 @@ namespace Inscription
         }
     };
 
-    template<class Archive>
-    struct ScribeTraits<Atmos::Asset::Font, Archive> final
+    template<class Format>
+    struct ScribeTraits<Atmos::Asset::Font, Format> final
     {
         using Category = ArcaCompositeScribeCategory<Atmos::Asset::Font>;
     };

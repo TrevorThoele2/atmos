@@ -7,9 +7,14 @@ namespace Atmos::Render
     public:
         FontAssetResourceImplementation() = default;
 
-        [[nodiscard]] Spatial::Size2D Size(const String& string, bool bold, bool italics) const override
+        [[nodiscard]] Render::LoadedGlyph Load(char32_t codepoint, bool bold, bool italics) const override
         {
             return {};
+        }
+
+        [[nodiscard]] float MaximumGlyphHeight() const override
+        {
+            return 0.0f;
         }
     };
 
@@ -17,10 +22,5 @@ namespace Atmos::Render
         const Buffer& buffer, const Name& name) const
     {
         return std::make_unique<FontAssetResourceImplementation>();
-    }
-
-    TextData NullTextManager::DataFor(Asset::Resource::Font&, const String&, float, bool, bool)
-    {
-        return {};
     }
 }

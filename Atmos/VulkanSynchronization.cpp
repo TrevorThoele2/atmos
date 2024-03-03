@@ -16,12 +16,17 @@ namespace Atmos::Render::Vulkan
         return device.createFenceUnique(createInfo);
     }
 
-    vk::Result WaitAndReset(vk::Device device, vk::Fence fence)
+    void WaitAndReset(vk::Device device, vk::Fence fence, Logging::Logger& logger)
     {
-        const auto waitResult = device.waitForFences(fence, VK_TRUE, UINT64_MAX);
-        if (IsError(waitResult))
-            return waitResult;
+        const auto onError = [&]()
+        {
+            logger.Log("Could not wait for Vulkan fences.");
+        };
 
-        return device.resetFences(1, &fence);
+        if (IsError(device.waitForFences(fence, VK_TRUE, UINT64_MAX)))
+            onError();
+
+        if (IsError(device.resetFences(1, &fence)))
+            onError();
     }
 }

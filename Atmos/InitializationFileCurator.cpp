@@ -5,8 +5,7 @@
 #include <Arca/Reliquary.h>
 
 #include "StringUtility.h"
-#include <Inscription/OutputTextFile.h>
-#include <Inscription/InputTextFile.h>
+#include <Inscription/Plaintext.h>
 
 namespace Atmos::Initialization
 {
@@ -45,6 +44,8 @@ namespace Atmos::Initialization
         }
 
         Inscription::File::InputText file(filePath);
+        Inscription::Archive::InputText archive(file);
+        Inscription::Format::InputPlaintext format(archive);
 
         FileSection* currentSection = nullptr;
         String line;
@@ -70,7 +71,7 @@ namespace Atmos::Initialization
 
         while (!file.IsAtEnd())
         {
-            line = file.ReadLine();
+            format.ReadUntil(line, '\n');
             if (IsAllWhitespace(line))
                 continue;
 

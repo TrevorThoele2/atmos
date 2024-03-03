@@ -3,7 +3,6 @@
 #include "ArcaShardIncludes.h"
 
 #include "FontAsset.h"
-#include "TextResource.h"
 
 #include <Arca/Serialization.h>
 
@@ -20,17 +19,11 @@ namespace Atmos::Render
         bool bold = false;
         bool italics = false;
     public:
-        using ResourceT = Resource::Text;
-        using ResourcePtr = std::unique_ptr<ResourceT>;
-        ResourcePtr resource;
-    public:
         TextCore() = default;
         TextCore(const String& string, Arca::Index<Asset::Font> asset, float wrapWidth, bool bold, bool italics);
 
         bool operator==(const TextCore& arg) const;
         bool operator!=(const TextCore& arg) const;
-
-        [[nodiscard]] ResourceT* Resource();
     };
 }
 
@@ -52,15 +45,15 @@ namespace Inscription
     public:
         using ObjectT = Atmos::Render::TextCore;
     public:
-        template<class Archive>
-        void Scriven(ObjectT& object, Archive& archive)
+        template<class Format>
+        void Scriven(ObjectT& object, Format& format)
         {
-            archive("asset", object.font);
+            format("asset", object.font);
         }
     };
 
-    template<class Archive>
-    struct ScribeTraits<Atmos::Render::TextCore, Archive> final
+    template<class Format>
+    struct ScribeTraits<Atmos::Render::TextCore, Format> final
     {
         using Category = ArcaCompositeScribeCategory<Atmos::Render::TextCore>;
     };

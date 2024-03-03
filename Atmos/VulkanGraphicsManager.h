@@ -9,6 +9,7 @@
 #include "VulkanStoredResource.h"
 #include "VulkanSurfaceResource.h"
 #include "VulkanMemoryPool.h"
+#include "VulkanGlyphAtlas.h"
 #include "GraphicsError.h"
 
 #define VK_KHR_WIN32_EXTENSION_NAME "VK_KHR_win32_surface"
@@ -42,31 +43,28 @@ namespace Atmos::Render::Vulkan
             void* window) override;
         [[nodiscard]] std::unique_ptr<Resource::Surface> CreateSurfaceResourceImpl(
             void* window) override;
-        [[nodiscard]] std::unique_ptr<Resource::Text> CreateTextResourceImpl(
-            const Atmos::Buffer& buffer, const Spatial::Size2D& size) override;
 
         void StageImpl(const RenderImage& render) override;
         void StageImpl(const RenderLine& render) override;
         void StageImpl(const RenderRegion& render) override;
         void StageImpl(const RenderText& render) override;
 
-        void StageImpl(const UpdateText& update) override;
-
         void DrawFrameImpl(
             Resource::Surface& surface,
             const Spatial::Point2D& mapPosition,
-            const Color& backgroundColor,
-            Diagnostics::Statistics::Profile& profile) override;
+            const Color& backgroundColor) override;
 
         void ResourceDestroyingImpl(Asset::Resource::Image& resource) override;
         void ResourceDestroyingImpl(Asset::Resource::Shader& resource) override;
         void ResourceDestroyingImpl(Resource::Surface& resource) override;
-        void ResourceDestroyingImpl(Resource::Text& resource) override;
 
         Atmos::Buffer CompileShaderImpl(const File::Path& filePath) override;
 
         [[nodiscard]] bool ShouldReconstructInternals() const override;
         void ReconstructInternals(GraphicsReconstructionObjects objects) override;
+
+        [[nodiscard]] Spatial::Size2D TextBaseSizeImpl(
+            const String& string, const Asset::Resource::Font& resource, bool bold, bool italics, float wrapWidth) const override;
     private:
         std::optional<MemoryPool> memoryPool;
     private:
@@ -81,14 +79,14 @@ namespace Atmos::Render::Vulkan
         std::vector<const char*> instanceExtensions =
         {
             VK_KHR_SURFACE_EXTENSION_NAME,
-            VK_KHR_WIN32_EXTENSION_NAME,
-            VK_EXT_DEBUG_UTILS_EXTENSION_NAME
+            VK_KHR_WIN32_EXTENSION_NAME
         };
         std::vector<const char*> instanceLayers;
 
         vk::Instance CreateInstance();
         void ValidateRequiredInstanceExtensions() const;
         void ValidateRequiredInstanceLayers() const;
+        void DoValidateRequired(const std::set<String>& availableNames, const String& descriptor, const std::vector<const char*>& requested) const;
     private:
         vk::PhysicalDevice physicalDevice = nullptr;
         vk::PhysicalDeviceMemoryProperties memoryProperties;
@@ -136,23 +134,13 @@ namespace Atmos::Render::Vulkan
         void WaitForSurfacesIdle();
     private:
         vk::UniqueSampler sampler;
-
-        [[nodiscard]] static vk::UniqueSampler CreateSampler(vk::Device device);
     private:
-        struct ImageDataPrototype
-        {
-            Atmos::Buffer buffer;
-            Spatial::Size2D size;
-        };
-
-        std::unordered_map<Resource::Text*, UpdateText> textUpdates;
-
         template<class T>
         void StageRender(const T& render);
 
-        void UpdateTexts();
-
-        [[nodiscard]] std::vector<ImageData> CreateImageData(const std::vector<ImageDataPrototype>& prototypes);
+        [[nodiscard]] ImageData CreateImageData(const Atmos::Buffer& buffer, const Spatial::Size2D& size);
+    private:
+        std::unique_ptr<GlyphAtlas> glyphAtlas;
     private:
         std::unique_ptr<Debug> debug;
     private:

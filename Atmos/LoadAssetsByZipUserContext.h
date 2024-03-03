@@ -2,7 +2,7 @@
 
 #include "LoadAssetsUserContext.h"
 
-#include "InputAssetsArchiveInterface.h"
+#include "InputAssetsFile.h"
 
 #include "Logger.h"
 
@@ -19,17 +19,15 @@ namespace Inscription
         std::optional<Extracted> LoadFontData(const Atmos::Name& name) override;
         std::optional<Extracted> LoadScriptData(const Atmos::Name& name) override;
     private:
-        using ArchiveInterface = Atmos::World::Serialization::InputAssetsArchiveInterface;
-        ArchiveInterface inputArchive;
+        using File = Atmos::World::Serialization::InputAssetsFile;
+        File file;
 
-        using ToExtract =
-            ArchiveInterface::ToExtract ArchiveInterface::AllToExtract::*;
-        using ExtractedFromArchive =
-            ArchiveInterface::ExtractedAssets ArchiveInterface::Extracted::*;
+        using ToExtract = File::ToExtract File::AllToExtract::*;
+        using ExtractedFromFile = File::ExtractedAssets File::Extracted::*;
 
         std::optional<Extracted> Extract(
             const Atmos::Name& name,
             ToExtract toExtract,
-            ExtractedFromArchive extractedFromAssets);
+            ExtractedFromFile extractedFromFile);
     };
 }

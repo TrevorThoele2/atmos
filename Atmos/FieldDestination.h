@@ -24,17 +24,17 @@ namespace Inscription
     public:
         using ObjectT = Atmos::World::FieldDestination;
     public:
-        template<class Archive>
-        void Scriven(ObjectT& object, Archive& archive)
+        template<class Format>
+        void Scriven(ObjectT& object, Format& format)
         {
-            archive("direction", object.direction);
-            archive("position", object.position);
-            archive("id", object.id);
+            format("direction", object.direction);
+            format("position", object.position);
+            format("id", object.id);
         }
     };
 
-    template<class Archive>
-    struct ScribeTraits<Atmos::World::FieldDestination, Archive> final
+    template<class Format>
+    struct ScribeTraits<Atmos::World::FieldDestination, Format> final
     {
         using Category = CompositeScribeCategory<Atmos::World::FieldDestination>;
     };

@@ -23,16 +23,16 @@ namespace Inscription
     public:
         using ObjectT = Atmos::Spatial::Grid::Size;
     public:
-        template<class Archive>
-        void Scriven(ObjectT& object, Archive& archive)
+        template<class Format>
+        void Scriven(ObjectT& object, Format& format)
         {
-            archive("width", object.width);
-            archive("height", object.height);
+            format("width", object.width);
+            format("height", object.height);
         }
     };
 
-    template<class Archive>
-    struct ScribeTraits<Atmos::Spatial::Grid::Size, Archive> final
+    template<class Format>
+    struct ScribeTraits<Atmos::Spatial::Grid::Size, Format> final
     {
         using Category = CompositeScribeCategory<Atmos::Spatial::Grid::Size>;
     };

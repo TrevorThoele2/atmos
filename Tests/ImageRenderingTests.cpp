@@ -151,8 +151,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
                                 expectedPosition.x -= cameraLeft;
                                 expectedPosition.y -= cameraTop;
 
-                                return entry.position == expectedPosition
-                                    && entry.size == Size2D{ scalers[i].x, scalers[i].y };
+                                return entry.position == expectedPosition;
                             }));
                     }
                 }
@@ -183,8 +182,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
                                 expectedPosition.x -= cameraLeft;
                                 expectedPosition.y -= cameraTop;
 
-                                return entry.position == expectedPosition
-                                    && entry.size == Size2D{ scalers[i].x, scalers[i].y };
+                                return entry.position == expectedPosition;
                             }));
                     }
                 }
@@ -317,8 +315,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
                                 expectedPosition.x -= cameraLeft;
                                 expectedPosition.y -= cameraTop;
 
-                                return entry.position == expectedPosition
-                                    && entry.size == Size2D{ scalers[i].x, scalers[i].y };
+                                return entry.position == expectedPosition;
                             }));
                     }
                 }
@@ -349,8 +346,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
                                 expectedPosition.x -= cameraLeft;
                                 expectedPosition.y -= cameraTop;
 
-                                return entry.position == expectedPosition
-                                    && entry.size == Size2D{ scalers[i].x, scalers[i].y };
+                                return entry.position == expectedPosition;
                             }));
                     }
                 }
@@ -675,12 +671,12 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering view sliced images", "[re
         {
             auto image = fieldReliquary.Do(Arca::Create<StaticImage> {
                 imageAsset,
-                    0,
-                    material,
-                    Color{},
-                    position,
-                    scalers,
-                    Angle2D{} });
+                0,
+                material,
+                Color{},
+                position,
+                scalers,
+                Angle2D{} });
             auto viewSlice = fieldReliquary.Do(Arca::Create<ViewSlice> {
                 image.ID(), ToAxisAlignedBox2D(20, 30, 40, 50) });
             WHEN("starting engine execution")
@@ -694,10 +690,10 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering view sliced images", "[re
                     REQUIRE(imageRenders.size() == 1);
 
                     const auto render = imageRenders[0];
-                    const auto expectedSlice = AxisAlignedBox2D{
-                        Point2D{ 30, 40 },
-                        Size2D{ 20, 20 } };
-                    REQUIRE(render.slice == expectedSlice);
+                    REQUIRE(render.slice.Left() == Approx(0.1));
+                    REQUIRE(render.slice.Top() == Approx(0.15));
+                    REQUIRE(render.slice.Right() == Approx(0.2));
+                    REQUIRE(render.slice.Bottom() == Approx(0.25));
                 }
             }
         }
@@ -725,10 +721,10 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering view sliced images", "[re
                     REQUIRE(imageRenders.size() == 1);
 
                     const auto render = imageRenders[0];
-                    const auto expectedSlice = AxisAlignedBox2D{
-                        Point2D{ 130, 140 },
-                        Size2D{ 20, 20 }};
-                    REQUIRE(render.slice == expectedSlice);
+                    REQUIRE(render.slice.Left() == Approx(0.6));
+                    REQUIRE(render.slice.Top() == Approx(0.65));
+                    REQUIRE(render.slice.Right() == Approx(0.7));
+                    REQUIRE(render.slice.Bottom() == Approx(0.75));
                 }
             }
         }

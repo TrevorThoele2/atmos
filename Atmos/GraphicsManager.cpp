@@ -46,12 +46,6 @@ namespace Atmos::Render
         return CreateMainSurfaceResourceImpl(window);
     }
 
-    std::unique_ptr<Resource::Text> GraphicsManager::CreateTextResource(
-        const Buffer& buffer, const Spatial::Size2D& size)
-    {
-        return CreateTextResourceImpl(buffer, size);
-    }
-
     void GraphicsManager::Stage(const RenderImage& render)
     {
         StageImpl(render);
@@ -72,14 +66,9 @@ namespace Atmos::Render
         StageImpl(render);
     }
 
-    void GraphicsManager::Stage(const UpdateText& update)
+    void GraphicsManager::DrawFrame(Resource::Surface& surface, const Spatial::Point2D& mapPosition, const Color& backgroundColor)
     {
-        StageImpl(update);
-    }
-
-    void GraphicsManager::DrawFrame(Resource::Surface& surface, const Spatial::Point2D& mapPosition, const Color& backgroundColor, Diagnostics::Statistics::Profile& profile)
-    {
-        DrawFrameImpl(surface, mapPosition, backgroundColor, profile);
+        DrawFrameImpl(surface, mapPosition, backgroundColor);
     }
 
     void GraphicsManager::ResourceDestroying(Asset::Resource::Image& resource)
@@ -93,11 +82,6 @@ namespace Atmos::Render
     }
 
     void GraphicsManager::ResourceDestroying(Resource::Surface& resource)
-    {
-        ResourceDestroyingImpl(resource);
-    }
-
-    void GraphicsManager::ResourceDestroying(Resource::Text& resource)
     {
         ResourceDestroyingImpl(resource);
     }
@@ -125,6 +109,12 @@ namespace Atmos::Render
         return ShouldReconstructInternals();
     }
 
+    Spatial::Size2D GraphicsManager::TextBaseSize(
+        const String& string, const Asset::Resource::Font& resource, bool bold, bool italics, float wrapWidth) const
+    {
+        return TextBaseSizeImpl(string, resource, bold, italics, wrapWidth);
+    }
+
     GraphicsManager::GraphicsManager(Logging::Logger& logger, String typeName) :
         typeName(typeName), logger(&logger)
     {
@@ -134,7 +124,7 @@ namespace Atmos::Render
             Logging::Details{ {"Type Name", typeName} });
     }
 
-    Logging::Logger& GraphicsManager::Logger()
+    Logging::Logger& GraphicsManager::Logger() const
     {
         return *logger;
     }

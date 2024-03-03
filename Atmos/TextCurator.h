@@ -11,6 +11,7 @@
 #include "Work.h"
 #include "ChangeTextCore.h"
 #include "CreateFontAssetResource.h"
+#include "TextBaseSize.h"
 
 #include <Arca/All.h>
 #include <Arca/Either.h>
@@ -25,8 +26,8 @@ namespace Atmos::Render
         using ObjectCurator::Handle;
 
         void Handle(const ChangeTextCore& command);
-
         std::unique_ptr<Asset::Resource::Font> Handle(const Asset::Resource::Create<Asset::Resource::Font>& command);
+        Spatial::Size2D Handle(const TextBaseSize& command);
     protected:
         void WorkImpl(
             Spatial::AxisAlignedBox3D cameraBox,
@@ -43,12 +44,7 @@ namespace Atmos::Render
         void StageRender(
             Arca::RelicID id, const Matrix::ReferenceTuple& tuple, Spatial::Point2D cameraTopLeft, const MainSurface& mainSurface);
     private:
-        static std::tuple<Spatial::Size2D, Spatial::AxisAlignedBox2D> ViewSliceDependent(
-            Arca::Index<ViewSlice> viewSlice,
-            const Spatial::Size2D& baseSize,
-            const Spatial::Size2D& boundsSize,
-            const Spatial::Scalers2D& scalers);
-        void ChangeGraphics(const Matrix::ReferenceTuple& tuple);
+        void AttemptChangeBaseSize(const Matrix::ReferenceTuple& tuple);
     private:
         INSCRIPTION_ACCESS;
     };
@@ -64,7 +60,8 @@ namespace Arca
         using HandledCommands = HandledCommands<
             Atmos::Work,
             Atmos::Render::ChangeTextCore,
-            Atmos::Asset::Resource::Create<Atmos::Asset::Resource::Font>>;
+            Atmos::Asset::Resource::Create<Atmos::Asset::Resource::Font>,
+            Atmos::Render::TextBaseSize>;
     };
 }
 
@@ -76,13 +73,13 @@ namespace Inscription
     public:
         using ObjectT = Atmos::Render::TextCurator;
     public:
-        template<class Archive>
-        void Scriven(ObjectT&, Archive&)
+        template<class Format>
+        void Scriven(ObjectT&, Format&)
         {}
     };
 
-    template<class Archive>
-    struct ScribeTraits<Atmos::Render::TextCurator, Archive> final
+    template<class Format>
+    struct ScribeTraits<Atmos::Render::TextCurator, Format> final
     {
         using Category = ArcaCompositeScribeCategory<Atmos::Render::TextCurator>;
     };

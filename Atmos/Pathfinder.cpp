@@ -36,7 +36,7 @@ namespace Atmos::Entity
                     current.position.x + relativeNeighbor.x,
                     current.position.y + relativeNeighbor.y
                 };
-                const auto canMoveTo = reliquary.Do(CanMoveTo{ entity, neighborPosition });
+                const auto canMoveTo = reliquary.Do(CanMoveTo{ entity.ID(), neighborPosition});
                 if (neighborPosition != to && !canMoveTo)
                     continue;
 

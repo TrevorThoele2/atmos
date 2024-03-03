@@ -45,26 +45,26 @@ namespace Inscription
     public:
         using ObjectT = std::chrono::time_point<Clock, Duration>;
     public:
-        template<class Archive>
-        void Scriven(ObjectT& object, Archive& archive)
+        template<class Format>
+        void Scriven(ObjectT& object, Format& format)
         {
-            if (archive.IsOutput())
+            if (format.IsOutput())
             {
                 auto time = object.time_since_epoch().count();
-                archive(time);
+                format(time);
             }
             else
             {
                 long long time;
-                archive(time);
+                format(time);
 
                 object = ObjectT(ObjectT::duration(time));
             }
         }
     };
 
-    template<class Clock, class Duration, class Archive>
-    struct ScribeTraits<std::chrono::time_point<Clock, Duration>, Archive>
+    template<class Clock, class Duration, class Format>
+    struct ScribeTraits<std::chrono::time_point<Clock, Duration>, Format>
     {
         using Category = CompositeScribeCategory<std::chrono::time_point<Clock, Duration>>;
     };

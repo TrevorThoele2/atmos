@@ -14,12 +14,16 @@ std::unique_ptr<Atmos::Asset::Resource::Script> MockScriptManager::CreateAssetRe
 }
 
 std::unique_ptr<Atmos::Scripting::Resource> MockScriptManager::CreateScriptResource(
-    const Atmos::String& scriptAssetName, const Atmos::String& executeName, const Atmos::Scripting::Parameters& parameters)
+    const Atmos::Asset::Resource::Script& asset,
+    const Atmos::String& assetName,
+    const Atmos::String& executeName,
+    const Atmos::Scripting::Parameters& parameters)
 {
     return {};
 }
 
-Atmos::Buffer MockScriptManager::Compile(Atmos::Scripting::Module module, std::vector<Atmos::Scripting::Module> sharedModules)
+std::vector<Atmos::Scripting::CompiledModule> MockScriptManager::Compile(
+    const std::vector<Atmos::Scripting::Module>& modules)
 {
     return {};
 }

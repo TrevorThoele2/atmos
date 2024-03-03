@@ -23,16 +23,16 @@ namespace Inscription
     public:
         using ObjectT = Atmos::Asset::ImageGridSize;
     public:
-        template<class Archive>
-        void Scriven(ObjectT& object, Archive& archive)
+        template<class Format>
+        void Scriven(ObjectT& object, Format& format)
         {
-            archive("columns", object.columns);
-            archive("rows", object.rows);
+            format("columns", object.columns);
+            format("rows", object.rows);
         }
     };
 
-    template<class Archive>
-    struct ScribeTraits<Atmos::Asset::ImageGridSize, Archive> final
+    template<class Format>
+    struct ScribeTraits<Atmos::Asset::ImageGridSize, Format> final
     {
         using Category = CompositeScribeCategory<Atmos::Asset::ImageGridSize>;
     };

@@ -21,8 +21,8 @@ namespace Arca
 
 namespace Inscription
 {
-    template<class Archive>
-    struct ScribeTraits<Atmos::Asset::ActionCurator, Archive> final
+    template<class Format>
+    struct ScribeTraits<Atmos::Asset::ActionCurator, Format> final
     {
         using Category = AssetScribeCategory<Atmos::Asset::ActionCurator>;
     };

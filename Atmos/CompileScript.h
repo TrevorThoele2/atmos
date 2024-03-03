@@ -3,14 +3,13 @@
 #include <Arca/Command.h>
 
 #include "ScriptModule.h"
-#include "Buffer.h"
+#include "ScriptCompiledModule.h"
 
 namespace Atmos::Scripting
 {
     struct Compile
     {
-        Module module;
-        std::vector<Module> sharedData;
+        std::vector<Module> modules;
     };
 }
 
@@ -21,6 +20,6 @@ namespace Arca
     {
         static constexpr ObjectType objectType = ObjectType::Command;
         static const inline TypeName typeName = "Atmos::Scripting::Compile";
-        using Result = Atmos::Buffer;
+        using Result = std::vector<Atmos::Scripting::CompiledModule>;
     };
 }

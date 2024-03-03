@@ -34,8 +34,8 @@ namespace Arca
 
 namespace Inscription
 {
-    template<class Archive>
-    struct ScribeTraits<FrameTestsFixture::WaitCurator, Archive> final
+    template<class Format>
+    struct ScribeTraits<FrameTestsFixture::WaitCurator, Format> final
     {
         using Category = ArcaNullScribeCategory<FrameTestsFixture::WaitCurator>;
     };

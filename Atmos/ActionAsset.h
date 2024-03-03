@@ -56,17 +56,17 @@ namespace Inscription
     public:
         using ObjectT = Atmos::Asset::Action;
     public:
-        template<class Archive>
-        void Scriven(ObjectT& object, Archive& archive)
+        template<class Format>
+        void Scriven(ObjectT& object, Format& format)
         {
-            BaseScriven<Atmos::Asset::Asset>(object, archive);
-            archive("boundKey", object.boundKey);
-            archive("boundModifiers", object.boundModifiers);
+            BaseScriven<Atmos::Asset::Asset>(object, format);
+            format("boundKey", object.boundKey);
+            format("boundModifiers", object.boundModifiers);
         }
     };
 
-    template<class Archive>
-    struct ScribeTraits<Atmos::Asset::Action, Archive> final
+    template<class Format>
+    struct ScribeTraits<Atmos::Asset::Action, Format> final
     {
         using Category = ArcaCompositeScribeCategory<Atmos::Asset::Action>;
     };

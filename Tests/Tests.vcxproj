@@ -70,12 +70,14 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>..\;..\..\testframework;..\..\chroma;..\..\inscription;..\..\arca;..\..\externaldependencies\catch2;..\..\externaldependencies\function2\include;..\..\externaldependencies\angelscript\angelscript\include;..\..\externaldependencies\angelscript\add_on;..\..\externaldependencies\wxwidgets\include;..\..\externaldependencies\wxwidgets\lib\vc_lib\mswud;$(IncludePath)</IncludePath>
-    <LibraryPath>..\..\externaldependencies\angelscript\angelscript\lib;..\..\externaldependencies\sdl2\lib\x86;..\..\externaldependencies\freeimage\Dist\x32;..\..\externaldependencies\wxwidgets\lib\vc_lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>..\;..\..\testframework;..\..\chroma;..\..\inscription;..\..\arca;..\..\externaldependencies\catch2;..\..\externaldependencies\function2\include;..\..\externaldependencies\wxwidgets\include;..\..\externaldependencies\wxwidgets\lib\vc_lib\mswud;..\..\externaldependencies\v8\v8\include;$(IncludePath)</IncludePath>
+    <LibraryPath>..\..\externaldependencies\sdl2\lib\x86;..\..\externaldependencies\freeimage\Dist\x32;..\..\externaldependencies\wxwidgets\lib\vc_lib;..\..\externaldependencies\v8\v8\out.gn\ia32.debug\obj;..\..\externaldependencies\boost\stage\lib;$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)Working\</OutDir>
+    <TargetName>$(ProjectName)_debug</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>..\;..\..\chroma;..\..\inscription;..\..\arca;..\..\testframework;..\..\externaldependencies\catch2;..\..\externaldependencies\angelscript\angelscript\include;..\..\externaldependencies\angelscript\add_on;..\..\externaldependencies\freeimage\source;..\..\externaldependencies\testframework;..\..\externaldependencies\function2\include;..\..\externaldependencies\wxwidgets\include;..\..\externaldependencies\wxwidgets\lib\vc_lib\mswu;$(IncludePath)</IncludePath>
-    <LibraryPath>..\..\externaldependencies\angelscript\angelscript\lib;..\..\externaldependencies\sdl2\lib\x86;..\..\externaldependencies\freeimage\Dist\x32;..\..\externaldependencies\wxwidgets\lib\vc_lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>..\;..\..\chroma;..\..\inscription;..\..\arca;..\..\testframework;..\..\externaldependencies\catch2;..\..\externaldependencies\freeimage\source;..\..\externaldependencies\testframework;..\..\externaldependencies\function2\include;..\..\externaldependencies\wxwidgets\include;..\..\externaldependencies\wxwidgets\lib\vc_lib\mswu;..\..\externaldependencies\v8\v8\include;$(IncludePath)</IncludePath>
+    <LibraryPath>..\..\externaldependencies\sdl2\lib\x86;..\..\externaldependencies\freeimage\Dist\x32;..\..\externaldependencies\wxwidgets\lib\vc_lib;..\..\externaldependencies\v8\v8\out.gn\ia32.release\obj;..\..\externaldependencies\boost\stage\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -89,7 +91,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;angelscriptd.lib;freeimagelibd.lib;wxmsw31ud_core.lib;wxbase31ud.lib;wxmsw31ud_aui.lib;wxtiffd.lib;wxjpegd.lib;wxpngd.lib;wxzlibd.lib;wxregexud.lib;wxexpatd.lib;winmm.lib;comctl32.lib;rpcrt4.lib;wsock32.lib;wininet.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;freeimagelibd.lib;v8_monolith.lib;dbghelp.lib;Winmm.lib;wxmsw31ud_core.lib;wxbase31ud.lib;wxmsw31ud_aui.lib;wxtiffd.lib;wxjpegd.lib;wxpngd.lib;wxzlibd.lib;wxregexud.lib;wxexpatd.lib;winmm.lib;comctl32.lib;rpcrt4.lib;wsock32.lib;wininet.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -113,7 +115,7 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;angelscript.lib;freeimagelib.lib;wxmsw31u_core.lib;wxbase31u.lib;wxmsw31u_aui.lib;wxtiff.lib;wxjpeg.lib;wxpng.lib;wxzlib.lib;wxregexu.lib;wxexpat.lib;winmm.lib;comctl32.lib;rpcrt4.lib;wsock32.lib;wininet.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;freeimagelib.lib;v8_monolith.lib;dbghelp.lib;Winmm.lib;wxmsw31u_core.lib;wxbase31u.lib;wxmsw31u_aui.lib;wxtiff.lib;wxjpeg.lib;wxpng.lib;wxzlib.lib;wxregexu.lib;wxexpat.lib;winmm.lib;comctl32.lib;rpcrt4.lib;wsock32.lib;wininet.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -131,37 +133,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="AngelScriptArcaTests.cpp" />
-    <ClCompile Include="AngelScriptAssetTests.cpp" />
-    <ClCompile Include="AngelScriptAudioTests.cpp" />
-    <ClCompile Include="AngelScriptBoundsTests.cpp" />
-    <ClCompile Include="AngelScriptDiagnosticsTests.cpp" />
-    <ClCompile Include="AngelScriptDurationTests.cpp" />
-    <ClCompile Include="AngelScriptDynamicTextTests.cpp" />
-    <ClCompile Include="AngelScriptEntityTests.cpp" />
-    <ClCompile Include="AngelScriptExceptionTests.cpp" />
-    <ClCompile Include="AngelScriptFixture.cpp" />
-    <ClCompile Include="AngelScriptGlobalIndexTests.cpp" />
-    <ClCompile Include="AngelScriptImageCoreTests.cpp" />
-    <ClCompile Include="AngelScriptInputTests.cpp" />
-    <ClCompile Include="AngelScriptLocalIndexTests.cpp" />
-    <ClCompile Include="AngelScriptLoggingTests.cpp" />
-    <ClCompile Include="AngelScriptMathTests.cpp" />
-    <ClCompile Include="AngelScriptNumericLimitsTests.cpp" />
-    <ClCompile Include="AngelScriptRandomTests.cpp" />
-    <ClCompile Include="AngelScriptRenderCoreTests.cpp" />
-    <ClCompile Include="AngelScriptRenderTests.cpp" />
-    <ClCompile Include="AngelScriptScriptTests.cpp" />
-    <ClCompile Include="AngelScriptSpatialAlgorithmsTests.cpp" />
-    <ClCompile Include="AngelScriptSpatialObjectsTests.cpp" />
-    <ClCompile Include="AngelScriptParameterTests.cpp" />
-    <ClCompile Include="AngelScriptStopwatchTests.cpp" />
-    <ClCompile Include="AngelScriptStringUtilityTests.cpp" />
-    <ClCompile Include="AngelScriptTests.cpp" />
-    <ClCompile Include="AngelScriptUIImageTests.cpp" />
-    <ClCompile Include="AngelScriptUITextTests.cpp" />
-    <ClCompile Include="AngelScriptViewSliceTests.cpp" />
-    <ClCompile Include="AngelScriptWorldTests.cpp" />
     <ClCompile Include="AssetTests.cpp" />
     <ClCompile Include="BoundsTests.cpp" />
     <ClCompile Include="DerivedEngine.cpp" />
@@ -173,9 +144,26 @@
     <ClCompile Include="GridRegionTests.cpp" />
     <ClCompile Include="ImageRenderingTests.cpp" />
     <ClCompile Include="ImageTests.cpp" />
+    <ClCompile Include="JavaScriptAssetTests.cpp" />
+    <ClCompile Include="JavaScriptAudioTests.cpp" />
+    <ClCompile Include="JavaScriptEngine.cpp" />
+    <ClCompile Include="JavaScriptEntityTests.cpp" />
+    <ClCompile Include="JavaScriptFixture.cpp" />
+    <ClCompile Include="JavaScriptGlobalRelicTests.cpp" />
+    <ClCompile Include="JavaScriptInputTests.cpp" />
+    <ClCompile Include="JavaScriptLoggingTests.cpp" />
+    <ClCompile Include="JavaScriptParameterTests.cpp" />
+    <ClCompile Include="JavaScriptLocalRelicTests.cpp" />
+    <ClCompile Include="JavaScriptRenderTests.cpp" />
+    <ClCompile Include="JavaScriptShardTests.cpp" />
+    <ClCompile Include="JavaScriptSpatialTests.cpp" />
+    <ClCompile Include="JavaScriptTests.cpp" />
+    <ClCompile Include="JavaScriptTimeTests.cpp" />
+    <ClCompile Include="JavaScriptWorldTests.cpp" />
     <ClCompile Include="LineTests.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MockAudioManager.cpp" />
+    <ClCompile Include="MockFontAssetResource.cpp" />
     <ClCompile Include="MockGraphicsManager.cpp" />
     <ClCompile Include="MockAssetResourceManager.cpp" />
     <ClCompile Include="MockImageAssetResource.cpp" />
@@ -190,7 +178,6 @@
     <ClCompile Include="PathfinderTests.cpp" />
     <ClCompile Include="RenderAlgorithmTests.cpp" />
     <ClCompile Include="LineRenderingTests.cpp" />
-    <ClCompile Include="ScriptEngine.cpp" />
     <ClCompile Include="ScriptTests.cpp" />
     <ClCompile Include="SpatialAlgorithmsTests.cpp" />
     <ClCompile Include="StopwatchTests.cpp" />
@@ -199,38 +186,6 @@
     <ClCompile Include="WorldSerializationTests.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AngelScriptArcaTests.h" />
-    <ClInclude Include="AngelScriptAssetTests.h" />
-    <ClInclude Include="AngelScriptAudioTests.h" />
-    <ClInclude Include="AngelScriptBoundsTests.h" />
-    <ClInclude Include="AngelScriptCreateObjectFixture.h" />
-    <ClInclude Include="AngelScriptDiagnosticsTests.h" />
-    <ClInclude Include="AngelScriptDurationTests.h" />
-    <ClInclude Include="AngelScriptDynamicTextTests.h" />
-    <ClInclude Include="AngelScriptEntityTests.h" />
-    <ClInclude Include="AngelScriptExceptionTests.h" />
-    <ClInclude Include="AngelScriptFixture.h" />
-    <ClInclude Include="AngelScriptGlobalIndexTests.h" />
-    <ClInclude Include="AngelScriptImageCoreTests.h" />
-    <ClInclude Include="AngelScriptInputTests.h" />
-    <ClInclude Include="AngelScriptLocalIndexTests.h" />
-    <ClInclude Include="AngelScriptLoggingTests.h" />
-    <ClInclude Include="AngelScriptMathTests.h" />
-    <ClInclude Include="AngelScriptNumericLimitsTests.h" />
-    <ClInclude Include="AngelScriptRandomTests.h" />
-    <ClInclude Include="AngelScriptRenderCoreTests.h" />
-    <ClInclude Include="AngelScriptRenderTests.h" />
-    <ClInclude Include="AngelScriptScriptTests.h" />
-    <ClInclude Include="AngelScriptSpatialAlgorithmsTests.h" />
-    <ClInclude Include="AngelScriptSpatialObjectsTests.h" />
-    <ClInclude Include="AngelScriptParameterTests.h" />
-    <ClInclude Include="AngelScriptStopwatchTests.h" />
-    <ClInclude Include="AngelScriptStringUtilityTests.h" />
-    <ClInclude Include="AngelScriptTests.h" />
-    <ClInclude Include="AngelScriptUIImageTests.h" />
-    <ClInclude Include="AngelScriptUITextTests.h" />
-    <ClInclude Include="AngelScriptViewSliceTests.h" />
-    <ClInclude Include="AngelScriptWorldTests.h" />
     <ClInclude Include="AssetTests.h" />
     <ClInclude Include="AudioBuffer.h" />
     <ClInclude Include="BoundsTests.h" />
@@ -243,8 +198,25 @@
     <ClInclude Include="GridRegionTests.h" />
     <ClInclude Include="ImageRenderingTests.h" />
     <ClInclude Include="ImageTests.h" />
+    <ClInclude Include="JavaScriptAssetTests.h" />
+    <ClInclude Include="JavaScriptAudioTests.h" />
+    <ClInclude Include="JavaScriptEngine.h" />
+    <ClInclude Include="JavaScriptEntityTests.h" />
+    <ClInclude Include="JavaScriptFixture.h" />
+    <ClInclude Include="JavaScriptGlobalRelicTests.h" />
+    <ClInclude Include="JavaScriptInputTests.h" />
+    <ClInclude Include="JavaScriptLoggingTests.h" />
+    <ClInclude Include="JavaScriptParameterTests.h" />
+    <ClInclude Include="JavaScriptLocalRelicTests.h" />
+    <ClInclude Include="JavaScriptRenderTests.h" />
+    <ClInclude Include="JavaScriptShardTests.h" />
+    <ClInclude Include="JavaScriptSpatialTests.h" />
+    <ClInclude Include="JavaScriptTests.h" />
+    <ClInclude Include="JavaScriptTimeTests.h" />
+    <ClInclude Include="JavaScriptWorldTests.h" />
     <ClInclude Include="LineTests.h" />
     <ClInclude Include="MockAudioManager.h" />
+    <ClInclude Include="MockFontAssetResource.h" />
     <ClInclude Include="MockGraphicsManager.h" />
     <ClInclude Include="MockAssetResourceManager.h" />
     <ClInclude Include="MockImageAssetResource.h" />
@@ -253,7 +225,6 @@
     <ClInclude Include="MockSoundResource.h" />
     <ClInclude Include="MockSurfaceResource.h" />
     <ClInclude Include="MockTextManager.h" />
-    <ClInclude Include="MockTextResource.h" />
     <ClInclude Include="MockWindow.h" />
     <ClInclude Include="MockWorldManager.h" />
     <ClInclude Include="OctreeTests.h" />
@@ -261,7 +232,6 @@
     <ClInclude Include="PixelBuffer.h" />
     <ClInclude Include="RenderAlgorithmTests.h" />
     <ClInclude Include="LineRenderingTests.h" />
-    <ClInclude Include="ScriptEngine.h" />
     <ClInclude Include="ScriptTests.h" />
     <ClInclude Include="SignalListener.h" />
     <ClInclude Include="SpatialAlgorithmsTests.h" />

@@ -25,18 +25,18 @@ namespace Inscription
     public:
         using ObjectT = Atmos::Render::Color;
     public:
-        template<class Archive>
-        void Scriven(ObjectT& object, Archive& archive)
+        template<class Format>
+        void Scriven(ObjectT& object, Format& format)
         {
-            archive("alpha", object.alpha);
-            archive("red", object.red);
-            archive("green", object.green);
-            archive("blue", object.blue);
+            format("alpha", object.alpha);
+            format("red", object.red);
+            format("green", object.green);
+            format("blue", object.blue);
         }
     };
 
-    template<class Archive>
-    struct ScribeTraits<Atmos::Render::Color, Archive> final
+    template<class Format>
+    struct ScribeTraits<Atmos::Render::Color, Format> final
     {
         using Category = CompositeScribeCategory<Atmos::Render::Color>;
     };

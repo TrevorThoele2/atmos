@@ -35,23 +35,17 @@ protected:
         void* window) override;
     [[nodiscard]] std::unique_ptr<Resource::Surface> CreateSurfaceResourceImpl(
         void* window) override;
-    [[nodiscard]] std::unique_ptr<Resource::Text> CreateTextResourceImpl(
-        const Buffer& buffer,
-        const Spatial::Size2D& size) override;
 
     void StageImpl(const RenderImage& render) override;
     void StageImpl(const RenderLine& render) override;
     void StageImpl(const RenderRegion& render) override;
     void StageImpl(const RenderText& render) override;
 
-    void StageImpl(const UpdateText& update) override;
-
-    void DrawFrameImpl(Resource::Surface& surface, const Spatial::Point2D& mapPosition, const Color& backgroundColor, Diagnostics::Statistics::Profile& profile) override;
+    void DrawFrameImpl(Resource::Surface& surface, const Spatial::Point2D& mapPosition, const Color& backgroundColor) override;
 
     void ResourceDestroyingImpl(Asset::Resource::Image& resource) override;
     void ResourceDestroyingImpl(Asset::Resource::Shader& resource) override;
     void ResourceDestroyingImpl(Resource::Surface& resource) override;
-    void ResourceDestroyingImpl(Resource::Text& resource) override;
 
     void PruneResourcesImpl() override;
 
@@ -59,4 +53,7 @@ protected:
 
     [[nodiscard]] bool ShouldReconstructInternals() const override;
     void ReconstructInternals(GraphicsReconstructionObjects objects) override;
+
+    [[nodiscard]] Spatial::Size2D TextBaseSizeImpl(
+        const String& string, const Asset::Resource::Font& resource, bool bold, bool italics, float wrapWidth) const override;
 };

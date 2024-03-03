@@ -16,6 +16,7 @@ namespace Atmos::Render::Vulkan
         vk::Queue presentQueue,
         uint32_t graphicsQueueIndex,
         vk::PhysicalDeviceMemoryProperties memoryProperties,
+        GlyphAtlas& glyphAtlas,
         Logging::Logger& logger)
         :
         device(device),
@@ -26,6 +27,7 @@ namespace Atmos::Render::Vulkan
         drawCommandBuffers(device, graphicsQueueIndex, vk::CommandPoolCreateFlagBits::eResetCommandBuffer),
         memoryPool(0, memoryProperties, device),
         universalDataBuffer(0, memoryPool, device),
+        glyphAtlas(&glyphAtlas),
         logger(&logger)
     {
         imageAvailableSemaphores = CreateSemaphores(device, maxFramesInFlight);
@@ -67,13 +69,14 @@ namespace Atmos::Render::Vulkan
                 graphicsQueue,
                 memoryProperties,
                 renderPass.get(),
-                swapchainExtent);
+                swapchainExtent,
+                *glyphAtlas);
         currentRendererGroup = rendererGroups.begin();
     }
 
     void MasterRenderer::StageRender(const RenderImage& imageRender)
     {
-        currentRendererGroup->quad.StageRender(imageRender);
+        currentRendererGroup->image.StageRender(imageRender);
     }
 
     void MasterRenderer::StageRender(const RenderLine& lineRender)
@@ -88,7 +91,7 @@ namespace Atmos::Render::Vulkan
 
     void MasterRenderer::StageRender(const RenderText& textRender)
     {
-        currentRendererGroup->quad.StageRender(textRender);
+        currentRendererGroup->text.StageRender(textRender);
     }
 
     void MasterRenderer::DrawFrame(const Spatial::Size2D& screenSize, const Spatial::Point2D& mapPosition)
@@ -205,9 +208,10 @@ namespace Atmos::Render::Vulkan
     {
         for (auto& group : rendererGroups)
         {
-            group.quad.MaterialDestroying(material);
+            group.image.MaterialDestroying(material);
             group.line.MaterialDestroying(material);
             group.region.MaterialDestroying(material);
+            group.text.MaterialDestroying(material);
         }
     }
     
@@ -216,9 +220,10 @@ namespace Atmos::Render::Vulkan
         vk::Queue graphicsQueue,
         vk::PhysicalDeviceMemoryProperties memoryProperties,
         vk::RenderPass renderPass,
-        vk::Extent2D swapchainExtent)
+        vk::Extent2D swapchainExtent,
+        GlyphAtlas& glyphAtlas)
         :
-        quad(
+        image(
             device,
             graphicsQueue,
             memoryProperties,
@@ -235,12 +240,19 @@ namespace Atmos::Render::Vulkan
             graphicsQueue,
             memoryProperties,
             renderPass,
-            swapchainExtent)
+            swapchainExtent),
+        text(
+            device,
+            graphicsQueue,
+            memoryProperties,
+            renderPass,
+            swapchainExtent,
+            glyphAtlas)
     {}
 
     auto MasterRenderer::RendererGroup::AsIterable() -> IterableRenderers
     {
-        return { &quad, &line, &region };
+        return { &image, &line, &region, &text };
     }
 
     bool MasterRenderer::AllEmpty(const std::vector<RendererBase*>& check) const
@@ -308,14 +320,6 @@ namespace Atmos::Render::Vulkan
         }
 
         commandBuffer.end();
-    }
-
-    void MasterRenderer::ClearImage(vk::Image image, std::array<float, 4> color, vk::CommandBuffer commandBuffer)
-    {
-        const vk::ImageSubresourceRange subresourceRange{ vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1 };
-
-        const vk::ClearColorValue clearColor(color);
-        commandBuffer.clearColorImage(image, vk::ImageLayout::eUndefined, clearColor, subresourceRange);
     }
 
     vk::UniqueRenderPass MasterRenderer::CreateRenderPass(

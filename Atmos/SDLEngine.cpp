@@ -7,7 +7,7 @@
 #include "VulkanGraphicsManager.h"
 #include "SDLTextManager.h"
 #include "SDLAudioManager.h"
-#include "AngelScriptManager.h"
+#include "JavaScriptManager.h"
 #include "RealWorldManager.h"
 
 namespace Atmos
@@ -27,7 +27,7 @@ namespace Atmos
         auto graphics = std::make_unique<Render::Vulkan::GraphicsManager>(logger);
         auto text = std::make_unique<Render::SDL::TextManager>();
         auto audio = std::make_unique<Audio::SDL::Manager>(logger);
-        auto scripts = std::make_unique<Scripting::Angel::Manager>(logger);
+        auto scripts = std::make_unique<Scripting::JavaScript::Manager>(logger);
 
         Properties properties;
         properties.system = std::move(system);

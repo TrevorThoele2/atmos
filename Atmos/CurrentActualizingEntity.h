@@ -24,8 +24,8 @@ namespace Arca
 
 namespace Inscription
 {
-    template<class Archive>
-    struct ScribeTraits<Atmos::Entity::CurrentActualizing, Archive> final
+    template<class Format>
+    struct ScribeTraits<Atmos::Entity::CurrentActualizing, Format> final
     {
         using Category = ArcaNullScribeCategory<Atmos::Entity::CurrentActualizing>;
     };

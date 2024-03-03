@@ -14,7 +14,6 @@ namespace Atmos::Render
         OnResourceDestroying<Asset::Image>();
         OnResourceDestroying<Asset::Shader>();
         OnResourceDestroying<SurfaceCore>();
-        OnResourceDestroying<TextCore>();
         
         Owner().On<Window::SizeChanged>([this](const Window::SizeChanged& signal)
             {

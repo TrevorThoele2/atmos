@@ -19,6 +19,22 @@ namespace Atmos::Render::SDL
         FontAssetResource(const String& name, const Buffer& buffer);
         ~FontAssetResource();
 
-        [[nodiscard]] Spatial::Size2D Size(const String& string, bool bold, bool italics) const override;
+        [[nodiscard]] LoadedGlyph Load(char32_t codepoint, bool bold, bool italics) const override;
+        [[nodiscard]] float MaximumGlyphHeight() const override;
+    private:
+        int maximumHeight;
+    private:
+        struct GlyphMetrics
+        {
+            std::int32_t minX;
+            std::int32_t maxX;
+            std::int32_t minY;
+            std::int32_t maxY;
+            std::int32_t width;
+            std::int32_t height;
+            std::int32_t advance;
+        };
+
+        [[nodiscard]] GlyphMetrics Metrics(char32_t codepoint) const;
     };
 }

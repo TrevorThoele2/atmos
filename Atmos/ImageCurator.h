@@ -52,11 +52,6 @@ namespace Atmos::Render
         
         static Spatial::Bounds BoundsFor(const Index& index);
         static Spatial::AxisAlignedBox3D BoxFor(const Spatial::Bounds& bounds);
-    private:
-        static std::tuple<Spatial::Size2D, Spatial::AxisAlignedBox2D> ViewSliceDependent(
-            Arca::Index<ViewSlice> viewSlice,
-            const Spatial::AxisAlignedBox2D& assetSlice,
-            const Spatial::Size2D& boundsSize);
     };
 }
 
@@ -76,8 +71,8 @@ namespace Arca
 
 namespace Inscription
 {
-    template<class Archive>
-    struct ScribeTraits<Atmos::Render::ImageCurator, Archive> final
+    template<class Format>
+    struct ScribeTraits<Atmos::Render::ImageCurator, Format> final
     {
         using Category = ArcaNullScribeCategory<Atmos::Render::ImageCurator>;
     };

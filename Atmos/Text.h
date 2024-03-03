@@ -30,6 +30,7 @@ namespace Atmos::Render
         [[nodiscard]] Render::Color Color() const;
 
         [[nodiscard]] Spatial::Point3D Position() const;
+        [[nodiscard]] Spatial::Scalers2D Scalers() const;
         [[nodiscard]] Spatial::Size2D Size() const;
         [[nodiscard]] Spatial::Angle2D Rotation() const;
     public:

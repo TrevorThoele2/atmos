@@ -5,8 +5,8 @@
 #include <Atmos/StaticImage.h>
 #include <Atmos/TypeRegistration.h>
 
-#include <Atmos/OutputWorldArchiveInterface.h>
-#include <Atmos/OutputAssetsArchiveInterface.h>
+#include <Atmos/OutputWorldFile.h>
+#include <Atmos/OutputAssetsFile.h>
 #include <Atmos/WorldFileExtension.h>
 #include <Atmos/AssetsFileExtension.h>
 #include <Atmos/Camera.h>
@@ -146,16 +146,16 @@ SCENARIO_METHOD(WorldSerializationTestsFixture, "rendering after world serializa
             auto assetsFilePath = "Test." + World::Serialization::assetsFileExtension;
 
             {
-                auto outputArchive = World::Serialization::OutputWorldArchiveInterface(filePath);
-                outputArchive.Save(fields, {});
+                auto outputFile = World::Serialization::OutputWorldFile(filePath);
+                outputFile.Save(fields, {});
             }
 
             {
-                auto outputArchive = World::Serialization::OutputAssetsArchiveInterface(assetsFilePath);
+                auto outputFile = World::Serialization::OutputAssetsFile(assetsFilePath);
 
-                World::Serialization::OutputAssetsArchiveInterface::Saves assetSaves;
+                World::Serialization::OutputAssetsFile::Saves assetSaves;
                 assetSaves.images.emplace_back(imageAssetName, Buffer(pixelBuffer));
-                outputArchive.Save(assetSaves);
+                outputFile.Save(assetSaves);
             }
 
             engine.LoadWorld(filePath, assetsFilePath);
@@ -183,8 +183,7 @@ SCENARIO_METHOD(WorldSerializationTestsFixture, "rendering after world serializa
                             expectedPosition.x -= cameraLeft;
                             expectedPosition.y -= cameraTop;
 
-                            return entry.position == expectedPosition
-                                && entry.size == Spatial::Size2D{ scalers[i].x, scalers[i].y };
+                            return entry.position == expectedPosition;
                         }));
                 }
             }

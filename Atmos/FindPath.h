@@ -8,11 +8,10 @@ namespace Atmos::Entity
 {
     struct FindPath
     {
-        Arca::Index<Entity> entity;
+        Arca::RelicID entity;
         Spatial::Grid::Point to;
 
-        explicit FindPath(const Arca::Index<Entity>& entity, const Spatial::Grid::Point& to) :
-            entity(entity), to(to)
+        explicit FindPath(Arca::RelicID entity, const Spatial::Grid::Point& to) : entity(entity), to(to)
         {}
     };
 }

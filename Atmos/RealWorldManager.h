@@ -10,7 +10,7 @@
 
 #include "FilePath.h"
 
-#include "InputFieldArchiveInterface.h"
+#include "InputFieldFile.h"
 
 namespace Atmos::World
 {
@@ -86,8 +86,8 @@ namespace Atmos::World
             std::unique_ptr<Arca::Reliquary>&& reliquary,
             std::unique_ptr<Inscription::LoadAssetsUserContext>&& loadAssetsUserContext);
 
-        using InputArchiveInterfacePtr = std::unique_ptr<Serialization::InputFieldArchiveInterface>;
-        [[nodiscard]] InputArchiveInterfacePtr InputArchiveInterface(
+        using InputFilePtr = std::unique_ptr<Serialization::InputFieldFile>;
+        [[nodiscard]] InputFilePtr InputFile(
             Inscription::LoadAssetsUserContext& loadAssetsUserContext) const;
 
         void SetFieldIDs(const std::vector<FieldID>& ids);
@@ -107,8 +107,8 @@ namespace Atmos::World
 
 namespace Inscription
 {
-    template<class Archive>
-    struct ScribeTraits<Atmos::World::RealManager, Archive> final
+    template<class Format>
+    struct ScribeTraits<Atmos::World::RealManager, Format> final
     {
         using Category = NullScribeCategory<Atmos::World::RealManager>;
     };

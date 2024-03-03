@@ -54,18 +54,18 @@ namespace Inscription
     public:
         using ObjectT = Atmos::Render::Line;
     public:
-        template<class Archive>
-        void Scriven(ObjectT& object, Archive& archive)
+        template<class Format>
+        void Scriven(ObjectT& object, Format& format)
         {
-            archive("renderCore", object.renderCore);
-            archive("points", object.points);
-            archive("z", object.z);
-            archive("width", object.width);
+            format("renderCore", object.renderCore);
+            format("points", object.points);
+            format("z", object.z);
+            format("width", object.width);
         }
     };
 
-    template<class Archive>
-    struct ScribeTraits<Atmos::Render::Line, Archive>
+    template<class Format>
+    struct ScribeTraits<Atmos::Render::Line, Format>
     {
         using Category = ArcaCompositeScribeCategory<Atmos::Render::Line>;
     };

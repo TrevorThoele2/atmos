@@ -24,16 +24,16 @@ namespace Inscription
     public:
         using ObjectT = Atmos::Spatial::Angle3D;
     public:
-        template<class Archive>
-        void Scriven(ObjectT& object, Archive& archive)
+        template<class Format>
+        void Scriven(ObjectT& object, Format& format)
         {
-            archive("yaw", object.yaw);
-            archive("pitch", object.pitch);
+            format("yaw", object.yaw);
+            format("pitch", object.pitch);
         }
     };
 
-    template<class Archive>
-    struct ScribeTraits<Atmos::Spatial::Angle3D, Archive> final
+    template<class Format>
+    struct ScribeTraits<Atmos::Spatial::Angle3D, Format> final
     {
         using Category = CompositeScribeCategory<Atmos::Spatial::Angle3D>;
     };

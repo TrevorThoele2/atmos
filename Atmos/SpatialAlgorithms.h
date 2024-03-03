@@ -31,9 +31,15 @@ namespace Atmos::Spatial
     [[nodiscard]] AxisAlignedBox2D Clamp(AxisAlignedBox2D box, AxisAlignedBox2D to);
     [[nodiscard]] AxisAlignedBox3D Clamp(AxisAlignedBox3D box, AxisAlignedBox3D to);
 
+    [[nodiscard]] AxisAlignedBox2D ScaleOf(AxisAlignedBox2D box, AxisAlignedBox2D against);
+    [[nodiscard]] AxisAlignedBox3D ScaleOf(AxisAlignedBox3D box, AxisAlignedBox3D against);
+
+    [[nodiscard]] AxisAlignedBox2D Cell(int column, int row, Size2D cellSize);
+    [[nodiscard]] AxisAlignedBox3D Cell(int column, int row, int depth, Size3D cellSize);
+
     [[nodiscard]] Point2D operator+(Point2D left, Point2D right);
-    [[nodiscard]] Point2D operator-(Point2D left, Point2D right);
     [[nodiscard]] Point3D operator+(Point3D left, Point3D right);
+    [[nodiscard]] Point2D operator-(Point2D left, Point2D right);
     [[nodiscard]] Point3D operator-(Point3D left, Point3D right);
 
     [[nodiscard]] Point2D ToPoint2D(Point3D point);
@@ -66,7 +72,7 @@ namespace Atmos::Spatial
         [[nodiscard]] bool Contains(AxisAlignedBox box, AxisAlignedBox other);
         [[nodiscard]] bool Intersects(AxisAlignedBox one, AxisAlignedBox two);
 
-        [[nodiscard]] Point ToPoint(Point2D position);
-        [[nodiscard]] Point ToPoint(Point3D position);
+        [[nodiscard]] Point ToPoint(Point2D point);
+        [[nodiscard]] Point ToPoint(Point3D point);
     }
 }

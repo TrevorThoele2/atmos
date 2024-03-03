@@ -27,6 +27,7 @@ namespace Atmos::Render
         [[nodiscard]] Render::Color Color() const;
 
         [[nodiscard]] Spatial::Point3D Position() const;
+        [[nodiscard]] Spatial::Scalers2D Scalers() const;
         [[nodiscard]] Spatial::Size2D Size() const;
         [[nodiscard]] Spatial::Angle2D Rotation() const;
     public:
@@ -86,6 +87,12 @@ namespace Atmos::Render
     Spatial::Point3D Image<mutableBounds>::Position() const
     {
         return bounds->Position();
+    }
+
+    template<bool mutableBounds>
+    Spatial::Scalers2D Image<mutableBounds>::Scalers() const
+    {
+        return bounds->Scalers();
     }
 
     template<bool mutableBounds>

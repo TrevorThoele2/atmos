@@ -7,6 +7,6 @@ namespace Atmos::Scripting
     struct Module
     {
         String name;
-        String data;
+        String source;
     };
 }

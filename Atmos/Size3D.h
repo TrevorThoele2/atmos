@@ -24,17 +24,17 @@ namespace Inscription
     public:
         using ObjectT = Atmos::Spatial::Size3D;
     public:
-        template<class Archive>
-        void Scriven(ObjectT& object, Archive& archive)
+        template<class Format>
+        void Scriven(ObjectT& object, Format& format)
         {
-            archive("width", object.width);
-            archive("height", object.height);
-            archive("depth", object.depth);
+            format("width", object.width);
+            format("height", object.height);
+            format("depth", object.depth);
         }
     };
 
-    template<class Archive>
-    struct ScribeTraits<Atmos::Spatial::Size3D, Archive> final
+    template<class Format>
+    struct ScribeTraits<Atmos::Spatial::Size3D, Format> final
     {
         using Category = CompositeScribeCategory<Atmos::Spatial::Size3D>;
     };

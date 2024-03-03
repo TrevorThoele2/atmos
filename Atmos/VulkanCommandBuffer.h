@@ -19,10 +19,13 @@ namespace Atmos::Render::Vulkan
         vk::CommandBuffer underlying;
     };
 
-    void RecordAndSubmit(
+    void Record(
         vk::CommandBuffer to,
         vk::CommandBufferUsageFlags flags,
-        vk::Queue queue,
-        vk::Fence fence,
         const std::function<void(CommandRecorder&)>& apply);
+
+    void Submit(
+        vk::CommandBuffer to,
+        vk::Queue queue,
+        vk::Fence fence);
 }

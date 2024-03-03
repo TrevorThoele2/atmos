@@ -28,7 +28,7 @@ SCENARIO_METHOD(PathfinderTestsFixture, "pathfinder", "[entity]")
         const auto position = Spatial::Grid::Point{ 3, 5 };
         const auto isSolid = true;
 
-        const auto entity = reliquary->Do(Arca::Create<Entity::Entity>(name, position, isSolid));
+        const auto entity = reliquary->Do(Arca::Create<Entity::Entity>(name, position, isSolid, std::vector<Tag>{}));
 
         WHEN("finding path to 3 tiles away")
         {

@@ -39,16 +39,16 @@ namespace Inscription
     public:
         using ObjectT = Atmos::Spatial::AxisAlignedBox3D;
     public:
-        template<class Archive>
-        void Scriven(ObjectT& object, Archive& archive)
+        template<class Format>
+        void Scriven(ObjectT& object, Format& format)
         {
-            archive("center", object.center);
-            archive("size", object.size);
+            format("center", object.center);
+            format("size", object.size);
         }
     };
 
-    template<class Archive>
-    struct ScribeTraits<Atmos::Spatial::AxisAlignedBox3D, Archive> final
+    template<class Format>
+    struct ScribeTraits<Atmos::Spatial::AxisAlignedBox3D, Format> final
     {
         using Category = CompositeScribeCategory<Atmos::Spatial::AxisAlignedBox3D>;
     };

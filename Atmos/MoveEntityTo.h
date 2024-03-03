@@ -7,7 +7,7 @@ namespace Atmos::Entity
 {
     struct MoveTo
     {
-        Arca::Index<Entity> entity;
+        Arca::RelicID entity;
         Spatial::Grid::Point to;
     };
 }

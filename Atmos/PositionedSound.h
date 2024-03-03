@@ -45,15 +45,15 @@ namespace Inscription
     public:
         using ObjectT = Atmos::Audio::PositionedSound;
     public:
-        template<class Archive>
-        void Scriven(ObjectT& object, Archive& archive)
+        template<class Format>
+        void Scriven(ObjectT& object, Format& format)
         {
-            BaseScriven<Atmos::Audio::Sound>(object, archive);
+            BaseScriven<Atmos::Audio::Sound>(object, format);
         }
     };
 
-    template<class Archive>
-    struct ScribeTraits<Atmos::Audio::PositionedSound, Archive> final
+    template<class Format>
+    struct ScribeTraits<Atmos::Audio::PositionedSound, Format> final
     {
         using Category = ArcaCompositeScribeCategory<Atmos::Audio::PositionedSound>;
     };

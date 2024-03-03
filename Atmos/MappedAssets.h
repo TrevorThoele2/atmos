@@ -59,8 +59,8 @@ namespace Arca
 
 namespace Inscription
 {
-    template<class AssetT, class Archive>
-    struct ScribeTraits<Atmos::Asset::Mapped<AssetT>, Archive> final
+    template<class AssetT, class Format>
+    struct ScribeTraits<Atmos::Asset::Mapped<AssetT>, Format> final
     {
         using Category = ArcaNullScribeCategory<Atmos::Asset::Mapped<AssetT>>;
     };

@@ -25,27 +25,6 @@
     <ClCompile Include="MockScriptManager.cpp">
       <Filter>Source Files\Objects</Filter>
     </ClCompile>
-    <ClCompile Include="ScriptEngine.cpp">
-      <Filter>Source Files\Objects</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptFixture.cpp">
-      <Filter>Source Files\Fixtures</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptSpatialAlgorithmsTests.cpp">
-      <Filter>Source Files\Tests\Scripting\AngelScript\Atmos\Spatial</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptSpatialObjectsTests.cpp">
-      <Filter>Source Files\Tests\Scripting\AngelScript\Atmos\Spatial</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptRenderTests.cpp">
-      <Filter>Source Files\Tests\Scripting\AngelScript\Atmos\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptAssetTests.cpp">
-      <Filter>Source Files\Tests\Scripting\AngelScript\Atmos\Asset</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptBoundsTests.cpp">
-      <Filter>Source Files\Tests\Scripting\AngelScript\Atmos\Spatial</Filter>
-    </ClCompile>
     <ClCompile Include="GridRegionRenderingTests.cpp">
       <Filter>Source Files\Tests\Render</Filter>
     </ClCompile>
@@ -76,23 +55,8 @@
     <ClCompile Include="WorldSerializationTests.cpp">
       <Filter>Source Files\Tests\World</Filter>
     </ClCompile>
-    <ClCompile Include="AngelScriptStopwatchTests.cpp">
-      <Filter>Source Files\Tests\Scripting\AngelScript\Atmos\Time</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptEntityTests.cpp">
-      <Filter>Source Files\Tests\Scripting\AngelScript\Atmos\Entity</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptLoggingTests.cpp">
-      <Filter>Source Files\Tests\Scripting\AngelScript\Atmos\Logging</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptScriptTests.cpp">
-      <Filter>Source Files\Tests\Scripting\AngelScript\Atmos\Script</Filter>
-    </ClCompile>
     <ClCompile Include="FrameTests.cpp">
       <Filter>Source Files\Tests\Frame</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptInputTests.cpp">
-      <Filter>Source Files\Tests\Scripting\AngelScript\Atmos\Input</Filter>
     </ClCompile>
     <ClCompile Include="MockInputManager.cpp">
       <Filter>Source Files\Objects</Filter>
@@ -109,53 +73,17 @@
     <ClCompile Include="MockAssetResourceManager.cpp">
       <Filter>Source Files\Objects</Filter>
     </ClCompile>
-    <ClCompile Include="AngelScriptAudioTests.cpp">
-      <Filter>Source Files\Tests\Scripting\AngelScript\Atmos\Audio</Filter>
-    </ClCompile>
     <ClCompile Include="MockSoundResource.cpp">
       <Filter>Source Files\Objects</Filter>
     </ClCompile>
     <ClCompile Include="MockAudioManager.cpp">
       <Filter>Source Files\Objects</Filter>
     </ClCompile>
-    <ClCompile Include="AngelScriptWorldTests.cpp">
-      <Filter>Source Files\Tests\Scripting\AngelScript\Atmos\World</Filter>
-    </ClCompile>
     <ClCompile Include="MockWorldManager.cpp">
       <Filter>Source Files\Objects</Filter>
     </ClCompile>
-    <ClCompile Include="AngelScriptRandomTests.cpp">
-      <Filter>Source Files\Tests\Scripting\AngelScript\Atmos\Random</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptMathTests.cpp">
-      <Filter>Source Files\Tests\Scripting\AngelScript\Atmos\Math</Filter>
-    </ClCompile>
     <ClCompile Include="ScriptTests.cpp">
       <Filter>Source Files\Tests\Scripting</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptExceptionTests.cpp">
-      <Filter>Source Files\Tests\Scripting\AngelScript\Atmos</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptGlobalIndexTests.cpp">
-      <Filter>Source Files\Tests\Scripting\AngelScript\Atmos</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptLocalIndexTests.cpp">
-      <Filter>Source Files\Tests\Scripting\AngelScript\Atmos</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptParameterTests.cpp">
-      <Filter>Source Files\Tests\Scripting\AngelScript\Atmos</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptStringUtilityTests.cpp">
-      <Filter>Source Files\Tests\Scripting\AngelScript\Atmos</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptTests.cpp">
-      <Filter>Source Files\Tests\Scripting\AngelScript\Atmos</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptArcaTests.cpp">
-      <Filter>Source Files\Tests\Scripting\AngelScript\Arca</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptNumericLimitsTests.cpp">
-      <Filter>Source Files\Tests\Scripting\AngelScript\Atmos</Filter>
     </ClCompile>
     <ClCompile Include="PathfinderTests.cpp">
       <Filter>Source Files\Tests\Entity</Filter>
@@ -166,38 +94,65 @@
     <ClCompile Include="MockTextManager.cpp">
       <Filter>Source Files\Objects</Filter>
     </ClCompile>
-    <ClCompile Include="AngelScriptImageCoreTests.cpp">
-      <Filter>Source Files\Tests\Scripting\AngelScript\Atmos\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptRenderCoreTests.cpp">
-      <Filter>Source Files\Tests\Scripting\AngelScript\Atmos\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptUIImageTests.cpp">
-      <Filter>Source Files\Tests\Scripting\AngelScript\Atmos\UI</Filter>
-    </ClCompile>
     <ClCompile Include="UIImageRenderingTests.cpp">
       <Filter>Source Files\Tests\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptUITextTests.cpp">
-      <Filter>Source Files\Tests\Scripting\AngelScript\Atmos\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptDynamicTextTests.cpp">
-      <Filter>Source Files\Tests\Scripting\AngelScript\Atmos\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptViewSliceTests.cpp">
-      <Filter>Source Files\Tests\Scripting\AngelScript\Atmos\Render</Filter>
     </ClCompile>
     <ClCompile Include="UIImageTests.cpp">
       <Filter>Source Files\Tests\UI</Filter>
     </ClCompile>
-    <ClCompile Include="AngelScriptDiagnosticsTests.cpp">
-      <Filter>Source Files\Tests\Scripting\AngelScript\Atmos\Diagnostics</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptDurationTests.cpp">
-      <Filter>Source Files\Tests\Scripting\AngelScript\Atmos\Time</Filter>
-    </ClCompile>
     <ClCompile Include="FileLoggingSinkTests.cpp">
       <Filter>Source Files\Tests\Logging</Filter>
+    </ClCompile>
+    <ClCompile Include="MockFontAssetResource.cpp">
+      <Filter>Source Files\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptEngine.cpp">
+      <Filter>Source Files\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptFixture.cpp">
+      <Filter>Source Files\Fixtures</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptTests.cpp">
+      <Filter>Source Files\Tests\Scripting\JavaScript</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptParameterTests.cpp">
+      <Filter>Source Files\Tests\Scripting\JavaScript</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptLoggingTests.cpp">
+      <Filter>Source Files\Tests\Scripting\JavaScript\Atmos\Logging</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptInputTests.cpp">
+      <Filter>Source Files\Tests\Scripting\JavaScript\Atmos\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptLocalRelicTests.cpp">
+      <Filter>Source Files\Tests\Scripting\JavaScript</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptShardTests.cpp">
+      <Filter>Source Files\Tests\Scripting\JavaScript</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptSpatialTests.cpp">
+      <Filter>Source Files\Tests\Scripting\JavaScript\Atmos\Spatial</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptAudioTests.cpp">
+      <Filter>Source Files\Tests\Scripting\JavaScript\Atmos\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptEntityTests.cpp">
+      <Filter>Source Files\Tests\Scripting\JavaScript\Atmos\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptWorldTests.cpp">
+      <Filter>Source Files\Tests\Scripting\JavaScript\Atmos\World</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptTimeTests.cpp">
+      <Filter>Source Files\Tests\Scripting\JavaScript\Atmos\Time</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptGlobalRelicTests.cpp">
+      <Filter>Source Files\Tests\Scripting\JavaScript</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptRenderTests.cpp">
+      <Filter>Source Files\Tests\Scripting\JavaScript\Atmos\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="JavaScriptAssetTests.cpp">
+      <Filter>Source Files\Tests\Scripting\JavaScript\Atmos\Asset</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -228,29 +183,8 @@
     <ClInclude Include="MockScriptManager.h">
       <Filter>Header Files\Objects</Filter>
     </ClInclude>
-    <ClInclude Include="ScriptEngine.h">
-      <Filter>Header Files\Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptFixture.h">
-      <Filter>Header Files\Fixtures</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptSpatialAlgorithmsTests.h">
-      <Filter>Header Files\Tests\Scripting\AngelScript\Atmos\Spatial</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptSpatialObjectsTests.h">
-      <Filter>Header Files\Tests\Scripting\AngelScript\Atmos\Spatial</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptRenderTests.h">
-      <Filter>Header Files\Tests\Scripting\AngelScript\Atmos\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptAssetTests.h">
-      <Filter>Header Files\Tests\Scripting\AngelScript\Atmos\Asset</Filter>
-    </ClInclude>
     <ClInclude Include="AudioBuffer.h">
       <Filter>Header Files\Data</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptBoundsTests.h">
-      <Filter>Header Files\Tests\Scripting\AngelScript\Atmos\Spatial</Filter>
     </ClInclude>
     <ClInclude Include="LineRenderingTests.h">
       <Filter>Header Files\Tests\Render</Filter>
@@ -282,26 +216,8 @@
     <ClInclude Include="StopwatchTests.h">
       <Filter>Header Files\Tests\Time</Filter>
     </ClInclude>
-    <ClInclude Include="AngelScriptStopwatchTests.h">
-      <Filter>Header Files\Tests\Scripting\AngelScript\Atmos\Time</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptEntityTests.h">
-      <Filter>Header Files\Tests\Scripting\AngelScript\Atmos\Entity</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptLoggingTests.h">
-      <Filter>Header Files\Tests\Scripting\AngelScript\Atmos\Logging</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptScriptTests.h">
-      <Filter>Header Files\Tests\Scripting\AngelScript\Atmos\Script</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptCreateObjectFixture.h">
-      <Filter>Header Files\Fixtures</Filter>
-    </ClInclude>
     <ClInclude Include="FrameTests.h">
       <Filter>Header Files\Tests\Frame</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptInputTests.h">
-      <Filter>Header Files\Tests\Scripting\AngelScript\Atmos\Input</Filter>
     </ClInclude>
     <ClInclude Include="MockInputManager.h">
       <Filter>Header Files\Objects</Filter>
@@ -318,53 +234,17 @@
     <ClInclude Include="MockAssetResourceManager.h">
       <Filter>Header Files\Objects</Filter>
     </ClInclude>
-    <ClInclude Include="AngelScriptAudioTests.h">
-      <Filter>Header Files\Tests\Scripting\AngelScript\Atmos\Audio</Filter>
-    </ClInclude>
     <ClInclude Include="MockSoundResource.h">
       <Filter>Header Files\Objects</Filter>
     </ClInclude>
     <ClInclude Include="MockAudioManager.h">
       <Filter>Header Files\Objects</Filter>
     </ClInclude>
-    <ClInclude Include="AngelScriptWorldTests.h">
-      <Filter>Header Files\Tests\Scripting\AngelScript\Atmos\World</Filter>
-    </ClInclude>
     <ClInclude Include="MockWorldManager.h">
       <Filter>Header Files\Objects</Filter>
     </ClInclude>
-    <ClInclude Include="AngelScriptRandomTests.h">
-      <Filter>Header Files\Tests\Scripting\AngelScript\Atmos\Random</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptMathTests.h">
-      <Filter>Header Files\Tests\Scripting\AngelScript\Atmos\Math</Filter>
-    </ClInclude>
     <ClInclude Include="ScriptTests.h">
       <Filter>Header Files\Tests\Scripting</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptExceptionTests.h">
-      <Filter>Header Files\Tests\Scripting\AngelScript\Atmos</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptGlobalIndexTests.h">
-      <Filter>Header Files\Tests\Scripting\AngelScript\Atmos</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptLocalIndexTests.h">
-      <Filter>Header Files\Tests\Scripting\AngelScript\Atmos</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptParameterTests.h">
-      <Filter>Header Files\Tests\Scripting\AngelScript\Atmos</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptStringUtilityTests.h">
-      <Filter>Header Files\Tests\Scripting\AngelScript\Atmos</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptTests.h">
-      <Filter>Header Files\Tests\Scripting\AngelScript\Atmos</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptArcaTests.h">
-      <Filter>Header Files\Tests\Scripting\AngelScript\Arca</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptNumericLimitsTests.h">
-      <Filter>Header Files\Tests\Scripting\AngelScript\Atmos</Filter>
     </ClInclude>
     <ClInclude Include="PathfinderTests.h">
       <Filter>Header Files\Tests\Entity</Filter>
@@ -375,41 +255,65 @@
     <ClInclude Include="MockTextManager.h">
       <Filter>Header Files\Objects</Filter>
     </ClInclude>
-    <ClInclude Include="AngelScriptImageCoreTests.h">
-      <Filter>Header Files\Tests\Scripting\AngelScript\Atmos\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptRenderCoreTests.h">
-      <Filter>Header Files\Tests\Scripting\AngelScript\Atmos\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptUIImageTests.h">
-      <Filter>Header Files\Tests\Scripting\AngelScript\Atmos\UI</Filter>
-    </ClInclude>
     <ClInclude Include="UIImageRenderingTests.h">
       <Filter>Header Files\Tests\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="MockTextResource.h">
-      <Filter>Header Files\Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptUITextTests.h">
-      <Filter>Header Files\Tests\Scripting\AngelScript\Atmos\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptDynamicTextTests.h">
-      <Filter>Header Files\Tests\Scripting\AngelScript\Atmos\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptViewSliceTests.h">
-      <Filter>Header Files\Tests\Scripting\AngelScript\Atmos\Render</Filter>
     </ClInclude>
     <ClInclude Include="UIImageTests.h">
       <Filter>Header Files\Tests\UI</Filter>
     </ClInclude>
-    <ClInclude Include="AngelScriptDiagnosticsTests.h">
-      <Filter>Header Files\Tests\Scripting\AngelScript\Atmos\Diagnostics</Filter>
-    </ClInclude>
-    <ClInclude Include="AngelScriptDurationTests.h">
-      <Filter>Header Files\Tests\Scripting\AngelScript\Atmos\Time</Filter>
-    </ClInclude>
     <ClInclude Include="FileLoggingSinkTests.h">
       <Filter>Header Files\Tests\Logging</Filter>
+    </ClInclude>
+    <ClInclude Include="MockFontAssetResource.h">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptEngine.h">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptFixture.h">
+      <Filter>Header Files\Fixtures</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptTests.h">
+      <Filter>Header Files\Tests\Scripting\JavaScript</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptParameterTests.h">
+      <Filter>Header Files\Tests\Scripting\JavaScript</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptLoggingTests.h">
+      <Filter>Header Files\Tests\Scripting\JavaScript\Atmos\Logging</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptInputTests.h">
+      <Filter>Header Files\Tests\Scripting\JavaScript\Atmos\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptLocalRelicTests.h">
+      <Filter>Header Files\Tests\Scripting\JavaScript</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptShardTests.h">
+      <Filter>Header Files\Tests\Scripting\JavaScript</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptSpatialTests.h">
+      <Filter>Header Files\Tests\Scripting\JavaScript\Atmos\Spatial</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptAudioTests.h">
+      <Filter>Header Files\Tests\Scripting\JavaScript\Atmos\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptEntityTests.h">
+      <Filter>Header Files\Tests\Scripting\JavaScript\Atmos\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptWorldTests.h">
+      <Filter>Header Files\Tests\Scripting\JavaScript\Atmos\World</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptTimeTests.h">
+      <Filter>Header Files\Tests\Scripting\JavaScript\Atmos\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptGlobalRelicTests.h">
+      <Filter>Header Files\Tests\Scripting\JavaScript</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptRenderTests.h">
+      <Filter>Header Files\Tests\Scripting\JavaScript\Atmos\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaScriptAssetTests.h">
+      <Filter>Header Files\Tests\Scripting\JavaScript\Atmos\Asset</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -488,104 +392,8 @@
     <Filter Include="Source Files\Tests\Scripting">
       <UniqueIdentifier>{70cb65fc-cf81-42f3-84cc-1b8fd8329ff7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Tests\Scripting\AngelScript">
-      <UniqueIdentifier>{12275338-63de-4a1a-8eb2-f777bf45a62a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Tests\Scripting">
       <UniqueIdentifier>{e7437e40-f1c7-4b94-8562-ebf525069ec6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Tests\Scripting\AngelScript">
-      <UniqueIdentifier>{33da28d7-0d60-4929-af86-fcd6384fe1f5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Tests\Scripting\AngelScript\Atmos">
-      <UniqueIdentifier>{52eb4db4-de67-4f7d-9f00-4378ffe7b5cc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Tests\Scripting\AngelScript\Atmos\Random">
-      <UniqueIdentifier>{621017e4-cf32-4ac8-a300-b7622366c132}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Tests\Scripting\AngelScript\Atmos\Render">
-      <UniqueIdentifier>{527e77c9-4bb2-406b-886f-7e26d6f59cb3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Tests\Scripting\AngelScript\Atmos\Script">
-      <UniqueIdentifier>{aadea1f4-1c9d-41c0-af9f-cf1f8069e767}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Tests\Scripting\AngelScript\Atmos\Spatial">
-      <UniqueIdentifier>{20d00ae6-1b6b-4955-a1eb-040afefee4b7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Tests\Scripting\AngelScript\Atmos\Time">
-      <UniqueIdentifier>{ee3eee92-476f-4f97-b0c4-d2f9681387f8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Tests\Scripting\AngelScript\Atmos\World">
-      <UniqueIdentifier>{195d061b-ca1a-4d0c-a582-1fe48a47945c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Tests\Scripting\AngelScript\Atmos\Math">
-      <UniqueIdentifier>{2ac77de6-6b96-4db1-b1c1-3376fe2f427f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Tests\Scripting\AngelScript\Atmos\Asset">
-      <UniqueIdentifier>{31993633-9a61-4be6-bcbc-b441c4b93b2e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Tests\Scripting\AngelScript\Atmos\Audio">
-      <UniqueIdentifier>{24be8757-419e-4b57-9c2e-c041cc839621}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Tests\Scripting\AngelScript\Atmos\Entity">
-      <UniqueIdentifier>{7cfc0573-2b1d-4369-8683-6a54ff63b76d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Tests\Scripting\AngelScript\Atmos\Input">
-      <UniqueIdentifier>{12148342-173c-45c0-8a28-3c1c4a72d6a4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Tests\Scripting\AngelScript\Atmos\Logging">
-      <UniqueIdentifier>{bf0bcae7-477c-4113-a257-a55cdf8abb32}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Tests\Scripting\AngelScript\Atmos">
-      <UniqueIdentifier>{8e895f99-6c72-4dad-92c8-681c1250aee7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Tests\Scripting\AngelScript\Atmos\Math">
-      <UniqueIdentifier>{c753020b-1ef1-436f-bb93-66e48d9ebdfb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Tests\Scripting\AngelScript\Atmos\Asset">
-      <UniqueIdentifier>{e1422eb6-1573-4a1d-b5c6-28af6ea06778}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Tests\Scripting\AngelScript\Atmos\Audio">
-      <UniqueIdentifier>{fe62d6fd-30c7-41e7-9482-6cecc3f12191}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Tests\Scripting\AngelScript\Atmos\Entity">
-      <UniqueIdentifier>{0ab3da50-db17-4974-a403-c4ad4eabdfbc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Tests\Scripting\AngelScript\Atmos\Input">
-      <UniqueIdentifier>{13f7d87a-efb2-4b92-a10f-6ae314273306}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Tests\Scripting\AngelScript\Atmos\Logging">
-      <UniqueIdentifier>{471466bd-8adb-4eaf-afaf-e9f96209bf4d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Tests\Scripting\AngelScript\Atmos\Random">
-      <UniqueIdentifier>{ff70b359-fbf0-4f61-82a8-c9f8147f360b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Tests\Scripting\AngelScript\Atmos\Render">
-      <UniqueIdentifier>{08831dd6-6a48-4147-8b2d-76a08a66a086}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Tests\Scripting\AngelScript\Atmos\Script">
-      <UniqueIdentifier>{0735853d-3c01-41ba-b4d9-c069fd5ad86d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Tests\Scripting\AngelScript\Atmos\Spatial">
-      <UniqueIdentifier>{e75c6beb-6d90-4360-b85c-f57d9e51c0ad}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Tests\Scripting\AngelScript\Atmos\Time">
-      <UniqueIdentifier>{9b0e2143-830a-4d1a-8dbc-33e445d9fd7e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Tests\Scripting\AngelScript\Atmos\World">
-      <UniqueIdentifier>{b9f146c1-33e9-4c1e-9e4b-02e3b4a2d18b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Tests\Scripting\AngelScript\Arca">
-      <UniqueIdentifier>{0638a326-142a-4395-9bbc-07fcb7cded24}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Tests\Scripting\AngelScript\Arca">
-      <UniqueIdentifier>{282fb792-7e58-496b-99ad-6eac613ab31c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Tests\Scripting\AngelScript\Atmos\UI">
-      <UniqueIdentifier>{13b2a7c4-c006-4f31-af64-649888d05e64}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Tests\Scripting\AngelScript\Atmos\UI">
-      <UniqueIdentifier>{3cf4137a-267b-4cf2-abdb-558d64cd31df}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Tests\UI">
       <UniqueIdentifier>{40cff34d-d1e6-4e3d-9962-94be9a9af4f2}</UniqueIdentifier>
@@ -593,17 +401,77 @@
     <Filter Include="Header Files\Tests\UI">
       <UniqueIdentifier>{62ac569d-0293-4822-866e-c8b317fc1096}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Tests\Scripting\AngelScript\Atmos\Diagnostics">
-      <UniqueIdentifier>{ae4111f3-25c8-4edd-a8de-4926772f7d38}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Tests\Scripting\AngelScript\Atmos\Diagnostics">
-      <UniqueIdentifier>{ac69036b-31b8-4d91-9b92-03f733df2d58}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Tests\Logging">
       <UniqueIdentifier>{886c2f9a-5c38-46e2-8513-630a01e9dbc6}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Tests\Logging">
       <UniqueIdentifier>{d59a92ff-2ff4-494d-8e01-b272c00a32be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Tests\Scripting\JavaScript">
+      <UniqueIdentifier>{7b91817a-4366-4378-ba0e-d685953abc9a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Tests\Scripting\JavaScript">
+      <UniqueIdentifier>{4394e426-7393-4501-b0f8-5c4e321631e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Tests\Scripting\JavaScript\Atmos">
+      <UniqueIdentifier>{a0e74553-8e8f-4de3-87b9-3116a0384493}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Tests\Scripting\JavaScript\Atmos">
+      <UniqueIdentifier>{7e0ce15b-3c8e-4c05-a711-72da76d47592}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Tests\Scripting\JavaScript\Atmos\Logging">
+      <UniqueIdentifier>{29e4ad56-8669-4c2c-8cd9-2e06c046ccd4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Tests\Scripting\JavaScript\Atmos\Logging">
+      <UniqueIdentifier>{723c5377-e219-4929-81ff-b33dcedcca7b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Tests\Scripting\JavaScript\Atmos\Input">
+      <UniqueIdentifier>{b3f61f24-7337-4d42-9940-4c76bf14627c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Tests\Scripting\JavaScript\Atmos\Input">
+      <UniqueIdentifier>{adb22b12-267c-412d-88ce-1d0e9f747cb3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Tests\Scripting\JavaScript\Atmos\Spatial">
+      <UniqueIdentifier>{4da50f5c-b9a4-4a72-91a3-84feffee3b25}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Tests\Scripting\JavaScript\Atmos\Spatial">
+      <UniqueIdentifier>{394144b8-fa90-4b36-8bdf-6f87de51ebd2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Tests\Scripting\JavaScript\Atmos\Audio">
+      <UniqueIdentifier>{7f544e27-3628-45d3-ba61-cdcb78db4db9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Tests\Scripting\JavaScript\Atmos\Audio">
+      <UniqueIdentifier>{2e8fdc59-86f4-49a1-a9cd-255d8a3a7188}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Tests\Scripting\JavaScript\Atmos\Entity">
+      <UniqueIdentifier>{93f97828-74b8-4a8b-b633-fe684412b5da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Tests\Scripting\JavaScript\Atmos\Entity">
+      <UniqueIdentifier>{94646b62-e281-44f6-a567-98f816fd1f01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Tests\Scripting\JavaScript\Atmos\World">
+      <UniqueIdentifier>{59fa3d2c-0a64-474f-8dce-bc3fa1821cd2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Tests\Scripting\JavaScript\Atmos\World">
+      <UniqueIdentifier>{b25f8d0e-587d-4af8-9af5-f62b5dd9572f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Tests\Scripting\JavaScript\Atmos\Time">
+      <UniqueIdentifier>{12b68274-0f55-4532-86e9-372b1dc56e23}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Tests\Scripting\JavaScript\Atmos\Render">
+      <UniqueIdentifier>{8d5e07b7-1a8a-494c-b86a-15f186d25b0a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Tests\Scripting\JavaScript\Atmos\Time">
+      <UniqueIdentifier>{1783a8f3-bd54-41d7-a7cb-bce0905ffb8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Tests\Scripting\JavaScript\Atmos\Render">
+      <UniqueIdentifier>{3b577ec5-89f8-4803-92ce-e9b6840cd6a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Tests\Scripting\JavaScript\Atmos\Asset">
+      <UniqueIdentifier>{aab697bf-62c0-4255-b2ba-07604fee857c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Tests\Scripting\JavaScript\Atmos\Asset">
+      <UniqueIdentifier>{f80377b5-39ea-4cab-bde9-2727cc60a274}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

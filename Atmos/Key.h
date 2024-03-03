@@ -247,8 +247,8 @@ namespace Atmos::Input
 
 namespace Inscription
 {
-    template<class Archive>
-    struct ScribeTraits<Atmos::Input::Key, Archive>
+    template<class Format>
+    struct ScribeTraits<Atmos::Input::Key, Format>
     {
         using Category = EnumScribeCategory<Atmos::Input::Key>;
     };
