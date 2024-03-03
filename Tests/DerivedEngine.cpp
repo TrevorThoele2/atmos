@@ -9,11 +9,11 @@ auto DerivedEngine::CreateInitializationProperties(Logging::Logger& logger)
     using Properties = InitializationProperties;
 
     auto assetResourceManager = std::make_unique<MockAssetResourceManager>();
-    auto window = std::make_unique<MockWindow>();
-    auto input = std::make_unique<MockInputManager>();
+    auto window = std::make_unique<MockWindow>(logger);
+    auto input = std::make_unique<MockInputManager>(logger);
     auto graphics = std::make_unique<MockGraphicsManager>(logger);
-    auto audio = std::make_unique<MockAudioManager>();
-    auto scripts = std::make_unique<MockScriptManager>();
+    auto audio = std::make_unique<MockAudioManager>(logger);
+    auto scripts = std::make_unique<MockScriptManager>(logger);
     auto world = std::make_unique<World::RealManager>();
 
     mockAssetResourceManager = assetResourceManager.get();

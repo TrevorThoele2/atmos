@@ -26,8 +26,6 @@ namespace Atmos::Audio::SDL
 
         void PruneDoneResources() override;
         [[nodiscard]] std::vector<Resource::Sound*> DoneResources() override;
-
-        [[nodiscard]] String TypeName() const override;
     private:
         std::unordered_map<Channel, Resource::Sound*> channelToResources;
         std::vector<Resource::Sound*> doneResources;
@@ -39,7 +37,5 @@ namespace Atmos::Audio::SDL
 
         [[nodiscard]] Channel NextChannel() const;
         static void OnChannelDone(Channel channel);
-    private:
-        Logging::Logger* logger;
     };
 }

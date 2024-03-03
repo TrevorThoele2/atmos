@@ -52,14 +52,10 @@ namespace Atmos::Render
         void Reconstruct(GraphicsReconstructionObjects objects);
         [[nodiscard]] bool ShouldReconstruct() const;
 
-        [[nodiscard]] virtual bool IsOk() const = 0;
-
         virtual void SetFullscreen(bool set) = 0;
         virtual void ChangeVerticalSync(bool set) = 0;
-
-        [[nodiscard]] virtual String TypeName() const = 0;
     protected:
-        GraphicsManager(Logging::Logger& logger);
+        GraphicsManager(Logging::Logger& logger, String typeName);
     protected:
         [[nodiscard]] virtual std::unique_ptr<Asset::Resource::Image> CreateImageResourceImpl(
             const Buffer& buffer,
@@ -91,6 +87,7 @@ namespace Atmos::Render
     protected:
         Logging::Logger& Logger();
     private:
+        String typeName;
         Logging::Logger* logger;
     };
 }

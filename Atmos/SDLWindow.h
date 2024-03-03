@@ -9,7 +9,7 @@ namespace Atmos::Window
     class SDLWindow final : public WindowBase
     {
     public:
-        SDLWindow();
+        SDLWindow(Logging::Logger& logger);
         ~SDLWindow();
 
         void Show() override;
@@ -19,8 +19,6 @@ namespace Atmos::Window
         bool OnStartFrame() override;
 
         [[nodiscard]] void* Handle() const override;
-
-        [[nodiscard]] String TypeName() const override;
     protected:
         void OnPositionChanged() override;
         void OnSizeChanged() override;

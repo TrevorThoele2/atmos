@@ -4,7 +4,7 @@
 
 namespace Atmos::Window
 {
-    SDLWindow::SDLWindow()
+    SDLWindow::SDLWindow(Logging::Logger& logger) : WindowBase(logger, "SDL")
     {
         if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0)
             throw WindowCreationFailed(String(SDL_GetError()));
@@ -66,11 +66,6 @@ namespace Atmos::Window
     void* SDLWindow::Handle() const
     {
         return info.info.win.window;
-    }
-
-    String SDLWindow::TypeName() const
-    {
-        return "SDL";
     }
 
     void SDLWindow::OnPositionChanged()

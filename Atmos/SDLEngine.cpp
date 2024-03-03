@@ -19,8 +19,8 @@ namespace Atmos
         using Properties = InitializationProperties;
 
         auto imageAssetManager = std::make_unique<Asset::Resource::RealManager>(logger);
-        auto window = std::make_unique<Window::SDLWindow>();
-        auto input = std::make_unique<Input::SDLManager>();
+        auto window = std::make_unique<Window::SDLWindow>(logger);
+        auto input = std::make_unique<Input::SDLManager>(logger);
         auto graphics = std::make_unique<Render::Vulkan::GraphicsManager>(logger);
         auto audio = std::make_unique<Audio::SDL::Manager>(logger);
         auto scripts = std::make_unique<Scripting::Angel::Manager>(logger);

@@ -55,24 +55,14 @@ namespace Atmos::Render
         }
     };
 
-    NullGraphicsManager::NullGraphicsManager(Logging::Logger& logger) : GraphicsManager(logger)
+    NullGraphicsManager::NullGraphicsManager(Logging::Logger& logger) : GraphicsManager(logger, "Null")
     {}
-
-    bool NullGraphicsManager::IsOk() const
-    {
-        return true;
-    }
 
     void NullGraphicsManager::SetFullscreen(bool set)
     {}
 
     void NullGraphicsManager::ChangeVerticalSync(bool set)
     {}
-
-    String GraphicsManager::TypeName() const
-    {
-        return "Null";
-    }
 
     std::unique_ptr<Asset::Resource::Image> NullGraphicsManager::CreateImageResourceImpl(
         const Buffer& buffer,

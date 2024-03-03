@@ -2,6 +2,9 @@
 
 namespace Atmos::Scripting
 {
+    NullManager::NullManager(Logging::Logger& logger) : Manager(logger, "Null")
+    {}
+
     void NullManager::SetReliquary(Arca::Reliquary& reliquary)
     {}
 
@@ -20,10 +23,5 @@ namespace Atmos::Scripting
     Buffer NullManager::Compile(Module module, std::vector<Module> sharedModules)
     {
         return {};
-    }
-
-    String NullManager::TypeName() const
-    {
-        return "Null";
     }
 }

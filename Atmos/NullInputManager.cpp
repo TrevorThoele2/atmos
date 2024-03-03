@@ -2,13 +2,11 @@
 
 namespace Atmos::Input
 {
+    NullManager::NullManager(Logging::Logger& logger) : Manager(logger, "Null")
+    {}
+
     auto NullManager::ReadState() const -> State
     {
         return {};
-    }
-
-    String NullManager::TypeName() const
-    {
-        return "Null";
     }
 }

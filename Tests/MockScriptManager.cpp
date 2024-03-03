@@ -1,5 +1,9 @@
 #include "MockScriptManager.h"
 
+MockScriptManager::MockScriptManager(Atmos::Logging::Logger& logger) :
+    Manager(logger, "Mock")
+{}
+
 void MockScriptManager::SetReliquary(Arca::Reliquary& reliquary)
 {}
 
@@ -18,9 +22,4 @@ std::unique_ptr<Atmos::Scripting::Resource> MockScriptManager::CreateScriptResou
 Atmos::Buffer MockScriptManager::Compile(Atmos::Scripting::Module module, std::vector<Atmos::Scripting::Module> sharedModules)
 {
     return {};
-}
-
-Atmos::String MockScriptManager::TypeName() const
-{
-    return "Mock";
 }

@@ -2,6 +2,9 @@
 
 namespace Atmos::Window
 {
+    NullWindow::NullWindow(Logging::Logger& logger) : WindowBase(logger, "Null")
+    {}
+
     void NullWindow::Show()
     {}
 
@@ -24,11 +27,6 @@ namespace Atmos::Window
     void* NullWindow::Handle() const
     {
         return nullptr;
-    }
-
-    String NullWindow::TypeName() const
-    {
-        return "Null";
     }
 
     void NullWindow::OnPositionChanged()

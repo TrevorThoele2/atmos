@@ -7,7 +7,7 @@ namespace Atmos::Audio
     class NullManager final : public Manager
     {
     public:
-        NullManager() = default;
+        NullManager(Logging::Logger& logger);
         NullManager(const NullManager& arg) = delete;
         NullManager& operator=(const NullManager& arg) = delete;
 
@@ -20,7 +20,5 @@ namespace Atmos::Audio
 
         void PruneDoneResources() override;
         [[nodiscard]] std::vector<Resource::Sound*> DoneResources() override;
-
-        [[nodiscard]] String TypeName() const override;
     };
 }

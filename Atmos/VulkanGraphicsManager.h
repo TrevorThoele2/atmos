@@ -17,12 +17,8 @@ namespace Atmos::Render::Vulkan
     public:
         GraphicsManager(Logging::Logger& logger);
 
-        [[nodiscard]] bool IsOk() const override;
-
         void SetFullscreen(bool set) override;
         void ChangeVerticalSync(bool set) override;
-
-        [[nodiscard]] String TypeName() const override;
     protected:
         [[nodiscard]] std::unique_ptr<Asset::Resource::Image> CreateImageResourceImpl(
             const Bytes& bytes,

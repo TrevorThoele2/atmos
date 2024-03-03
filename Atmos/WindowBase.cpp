@@ -2,7 +2,13 @@
 
 namespace Atmos::Window
 {
-    WindowBase::~WindowBase() = default;
+    WindowBase::~WindowBase()
+    {
+        logger->Log(
+            "Destroyed window.",
+            Logging::Severity::Information,
+            Logging::Details{ {"Type Name", typeName} });
+    }
 
     void WindowBase::SetFullscreen(bool set)
     {
@@ -51,6 +57,15 @@ namespace Atmos::Window
     WindowBase::Point WindowBase::Position() const
     {
         return position;
+    }
+
+    WindowBase::WindowBase(Logging::Logger& logger, String typeName) :
+        typeName(typeName), logger(&logger)
+    {
+        this->logger->Log(
+            "Created window.",
+            Logging::Severity::Information,
+            Logging::Details{ {"Type Name", typeName} });
     }
 
     void WindowBase::SetWindowSize()

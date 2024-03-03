@@ -9,24 +9,14 @@ public:
     ShaderAssetResourceImplementation() = default;
 };
 
-MockGraphicsManager::MockGraphicsManager(Logging::Logger& logger) : GraphicsManager(logger)
+MockGraphicsManager::MockGraphicsManager(Logging::Logger& logger) : GraphicsManager(logger, "Mock")
 {}
-
-bool MockGraphicsManager::IsOk() const
-{
-    return true;
-}
 
 void MockGraphicsManager::SetFullscreen(bool set)
 {}
 
 void MockGraphicsManager::ChangeVerticalSync(bool set)
 {}
-
-String MockGraphicsManager::TypeName() const
-{
-    return "Mock";
-}
 
 std::unique_ptr<Asset::Resource::Image> MockGraphicsManager::CreateImageResourceImpl(
     const Buffer& buffer,

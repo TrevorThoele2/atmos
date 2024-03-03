@@ -7,7 +7,13 @@
 
 namespace Atmos::Render
 {
-    GraphicsManager::~GraphicsManager() = default;
+    GraphicsManager::~GraphicsManager()
+    {
+        logger->Log(
+            "Destroyed graphics.",
+            Logging::Severity::Information,
+            Logging::Details{ {"Type Name", typeName} });
+    }
 
     std::unique_ptr<Asset::Resource::Image> GraphicsManager::CreateImageResource(
         const Buffer& buffer,
@@ -82,8 +88,14 @@ namespace Atmos::Render
         return ShouldReconstructInternals();
     }
 
-    GraphicsManager::GraphicsManager(Logging::Logger& logger) : logger(&logger)
-    {}
+    GraphicsManager::GraphicsManager(Logging::Logger& logger, String typeName) :
+        typeName(typeName), logger(&logger)
+    {
+        this->logger->Log(
+            "Created graphics.",
+            Logging::Severity::Information,
+            Logging::Details{ {"Type Name", typeName} });
+    }
 
     Logging::Logger& GraphicsManager::Logger()
     {

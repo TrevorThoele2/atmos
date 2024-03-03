@@ -12,13 +12,9 @@ public:
     MockGraphicsManager(const MockGraphicsManager& arg) = delete;
     MockGraphicsManager& operator=(const MockGraphicsManager& arg) = delete;
 
-    [[nodiscard]] bool IsOk() const override;
-
     void SetFullscreen(bool set) override;
 
     void ChangeVerticalSync(bool set) override;
-
-    [[nodiscard]] String TypeName() const override;
 protected:
     [[nodiscard]] std::unique_ptr<Asset::Resource::Image> CreateImageResourceImpl(
         const Buffer& buffer,

@@ -9,10 +9,10 @@ auto ScriptEngine::CreateInitializationProperties(Logging::Logger& logger)
     using Properties = InitializationProperties;
 
     auto imageAssetManager = std::make_unique<MockAssetResourceManager>();
-    auto window = std::make_unique<MockWindow>();
-    auto input = std::make_unique<MockInputManager>();
+    auto window = std::make_unique<MockWindow>(logger);
+    auto input = std::make_unique<MockInputManager>(logger);
     auto graphics = std::make_unique<MockGraphicsManager>(logger);
-    auto audio = std::make_unique<MockAudioManager>();
+    auto audio = std::make_unique<MockAudioManager>(logger);
     auto scripts = std::make_unique<Scripting::Angel::Manager>(logger);
     auto world = std::make_unique<MockWorldManager>();
 

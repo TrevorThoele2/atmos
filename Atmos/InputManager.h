@@ -4,6 +4,7 @@
 #include "ScreenPoint.h"
 #include "Event.h"
 #include "String.h"
+#include "Logger.h"
 
 namespace Atmos::Input
 {
@@ -17,11 +18,12 @@ namespace Atmos::Input
             std::vector<String> enteredText;
         };
     public:
-        Manager() = default;
+        Manager(Logging::Logger& logger, String typeName);
         virtual ~Manager() = 0;
 
         [[nodiscard]] virtual State ReadState() const = 0;
-
-        [[nodiscard]] virtual String TypeName() const = 0;
+    private:
+        String typeName;
+        Logging::Logger* logger;
     };
 }
