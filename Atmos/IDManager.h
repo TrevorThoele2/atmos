@@ -245,10 +245,10 @@ namespace Atmos
     typename IDManager<ID, T>::IdentifierT IDManager<ID, T>::NextAutomaticID() const
     {
         auto itr = occupiedIDs.begin();
-        if (itr == occupiedIDs.end() || itr->GetStart() != BaseAutomaticID())
+        if (itr == occupiedIDs.end() || itr->Start() != BaseAutomaticID())
             return BaseAutomaticID();
         else
-            return itr->GetEnd() + 1;
+            return itr->End() + 1;
     }
 
     template<class ID, class T>

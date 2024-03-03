@@ -25,7 +25,7 @@ namespace Atmos
         {
             auto& mousePositionDelta = Owner()->GetMousePositionDelta();
             Owner()->eventMouseKeys.active(*this);
-            if (mousePositionDelta.Moved())
+            if (mousePositionDelta.HasMoved())
                 Owner()->eventMouseClickDragged(mousePositionDelta);
         }
 

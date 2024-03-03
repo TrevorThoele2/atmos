@@ -270,7 +270,7 @@ namespace Atmos
             float X,
             float Y,
             float Z,
-            const AxisBoundingBox2D& imageBounds,
+            const AxisAlignedBox2D& imageBounds,
             const Size2D& size,
             const Position2D& center,
             const Scalings& scalings,
@@ -315,7 +315,7 @@ namespace Atmos
                 float X,
                 float Y,
                 float Z,
-                const AxisBoundingBox2D& imageBounds,
+                const AxisAlignedBox2D& imageBounds,
                 const Size2D& size,
                 const Position2D& center,
                 const Scalings& scalings,
@@ -460,7 +460,7 @@ namespace Atmos
             focusedShaderImpl->effect->SetMatrix("g_Projection", &projection);
 
             auto& cameraSize = cameraSystem->GetSize();
-            FLOAT screenSize[2] = { static_cast<FLOAT>(cameraSize.GetWidth()), static_cast<FLOAT>(cameraSize.GetHeight()) };
+            FLOAT screenSize[2] = { static_cast<FLOAT>(cameraSize.scaledWidth), static_cast<FLOAT>(cameraSize.scaledHeight) };
             focusedShaderImpl->effect->SetFloatArray("g_ScreenSize", screenSize, 2);
 
             if (focusedTex && focusedShaderImpl)
@@ -577,7 +577,7 @@ namespace Atmos
         float X,
         float Y,
         float Z,
-        const AxisBoundingBox2D& imageBounds,
+        const AxisAlignedBox2D& imageBounds,
         const Size2D& size,
         const Position2D& center,
         const Scalings& scalings,
@@ -611,7 +611,7 @@ namespace Atmos
         float X,
         float Y,
         float Z,
-        const AxisBoundingBox2D& imageBounds,
+        const AxisAlignedBox2D& imageBounds,
         const Size2D& size,
         const Position2D& center,
         const Scalings& scalings,
@@ -623,20 +623,20 @@ namespace Atmos
     {
         Vertex(D3DXVECTOR2(0.0f, 0.0f),
             ColorToD3D(color),
-            imageBounds.GetLeft(),
-            imageBounds.GetTop()),
-        Vertex(D3DXVECTOR2(size.GetWidth(), 0.0f),
+            imageBounds.left,
+            imageBounds.top),
+        Vertex(D3DXVECTOR2(size.scaledWidth, 0.0f),
             ColorToD3D(color),
-            imageBounds.GetRight(),
-            imageBounds.GetTop()),
-        Vertex(D3DXVECTOR2(0.0f, size.GetHeight()),
+            imageBounds.right,
+            imageBounds.top),
+        Vertex(D3DXVECTOR2(0.0f, size.scaledHeight),
             ColorToD3D(color),
-            imageBounds.GetLeft(),
-            imageBounds.GetBottom()),
-        Vertex(D3DXVECTOR2(size.GetWidth(), size.GetHeight()),
+            imageBounds.left,
+            imageBounds.bottom),
+        Vertex(D3DXVECTOR2(size.scaledWidth, size.scaledHeight),
             ColorToD3D(color),
-            imageBounds.GetRight(),
-            imageBounds.GetBottom())
+            imageBounds.right,
+            imageBounds.bottom)
     }
     {
         SetupQuad(X, Y, center, scalings, rotation.As<Radians>());
@@ -669,7 +669,7 @@ namespace Atmos
         D3DXVECTOR2 transformedCenter;
         D3DXMATRIX matrix;
         {
-            D3DXVECTOR2 centerVector(center.GetX(), center.GetY());
+            D3DXVECTOR2 centerVector(center.x, center.y);
             D3DXVECTOR2 positionVector(X, Y);
             D3DXVECTOR2 scalingVector(scalings.x, scalings.y);
 
@@ -973,7 +973,7 @@ namespace Atmos
         float X,
         float Y,
         float Z,
-        const AxisBoundingBox2D& imageBounds,
+        const AxisAlignedBox2D& imageBounds,
         const Size2D& size,
         const Position2D& center,
         const Scalings& scalings,
@@ -1271,16 +1271,15 @@ namespace Atmos
             X,
             Y,
             sprite->position.z,
-            AxisBoundingBox2D(
-                sprite->primaryAssetSlice.Get().GetLeft() / sprite->material->width,
-                sprite->primaryAssetSlice.Get().GetTop() / sprite->material->height,
-                sprite->primaryAssetSlice.Get().GetRight() / sprite->material->width,
-                sprite->primaryAssetSlice.Get().GetBottom() / sprite->material->height,
-                false),
-            sprite->primaryAssetSlice.Get().GetSize(),
-            sprite->primaryAssetSlice.Get().GetCenter(),
+            AxisAlignedBox2D(
+                sprite->primaryAssetSlice.Get().left.Get() / sprite->material->width,
+                sprite->primaryAssetSlice.Get().top.Get() / sprite->material->height,
+                sprite->primaryAssetSlice.Get().right.Get() / sprite->material->width,
+                sprite->primaryAssetSlice.Get().bottom.Get() / sprite->material->height),
+            sprite->primaryAssetSlice.Get().size,
+            sprite->primaryAssetSlice.Get().center,
             Scalings(sprite->size.widthScaler, sprite->size.heightScaler),
-            sprite->size.xRotation.Get(),
+            Angle(),
             sprite->color);
     }
 
@@ -1292,11 +1291,11 @@ namespace Atmos
             X,
             Y,
             view->position.z,
-            AxisBoundingBox2D(0.0f, 0.0f, 1.0f, 1.0f),
+            AxisAlignedBox2D(0.0f, 0.0f, 1.0f, 1.0f),
             Size2D(view->size.width, view->size.height),
             Position2D(view->size.width.Get() / 2, view->size.height.Get() / 2),
             Scalings(view->size.widthScaler, view->size.heightScaler),
-            view->size.xRotation.Get(),
+            Angle(),
             Color(255, 255, 255, 255));
     }
 
@@ -1314,8 +1313,8 @@ namespace Atmos
 
         D3DXVECTOR2 points[] =
         {
-            D3DXVECTOR2(static_cast<float>(line.GetFrom().GetX()), static_cast<float>(line.GetFrom().GetY())),
-            D3DXVECTOR2(static_cast<float>(line.GetTo().GetX()), static_cast<float>(line.GetTo().GetY()))
+            D3DXVECTOR2(static_cast<float>(line.GetFrom().x), static_cast<float>(line.GetFrom().y)),
+            D3DXVECTOR2(static_cast<float>(line.GetTo().x), static_cast<float>(line.GetTo().y))
         };
         lineInterface->SetWidth(line.GetWidth());
         lineInterface->Draw(points, 2, ColorToD3D(line.color));

@@ -130,15 +130,19 @@ namespace Atmos
     {
         if (scribe.IsOutput())
         {
-            scribe.Save(objects);
-            scribe.Save(batchSources);
-            scribe.Save(systems);
+            auto& outputScribe = *scribe.AsOutput();
+
+            outputScribe.Save(objects);
+            outputScribe.Save(batchSources);
+            outputScribe.Save(systems);
         }
         else // INPUT
         {
-            scribe.Load(objects);
-            scribe.Load(batchSources);
-            scribe.Load(systems);
+            auto& inputScribe = *scribe.AsInput();
+
+            inputScribe.Load(objects);
+            inputScribe.Load(batchSources);
+            inputScribe.Load(systems);
         }
     }
 }

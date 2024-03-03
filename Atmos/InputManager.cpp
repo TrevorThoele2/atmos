@@ -162,8 +162,8 @@ namespace Atmos
             MousePosition toReturn;
 
             auto& cameraTopLeft = FindCameraSystem()->GetTopLeft();
-            toReturn.x = static_cast<MousePosition::ValueT>(floor(static_cast<double>(mousePosition.x) + cameraTopLeft.GetX()));
-            toReturn.y = static_cast<MousePosition::ValueT>(floor(static_cast<double>(mousePosition.y) + cameraTopLeft.GetY()));
+            toReturn.x = static_cast<MousePosition::Value>(floor(static_cast<double>(mousePosition.x) + cameraTopLeft.x));
+            toReturn.y = static_cast<MousePosition::Value>(floor(static_cast<double>(mousePosition.y) + cameraTopLeft.y));
 
             return toReturn;
         }

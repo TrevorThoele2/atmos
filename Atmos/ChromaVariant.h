@@ -12,7 +12,7 @@ namespace Inscription
         struct VariantSaverImplementation
         {
             template<class T>
-            static void Do(T& obj, BinaryScribe& scribe)
+            static void Do(T& obj, OutputBinaryScribe& scribe)
             {
                 scribe.Save(obj);
             }
@@ -22,7 +22,7 @@ namespace Inscription
         struct VariantLoaderImplementation
         {
             template<class... Args>
-            static bool Check(::Chroma::Variant<Args...>& variant, char typeId, BinaryScribe& scribe)
+            static bool Check(::Chroma::Variant<Args...>& variant, char typeId, InputBinaryScribe& scribe)
             {
                 typedef ::Chroma::Variant<Args...> VariantT;
                 typedef typename VariantT::VariadicTemplateT::template Parameter<index>::Type ParameterType;
@@ -46,18 +46,22 @@ namespace Inscription
         typedef ::Chroma::Variant<Args...> VariantT;
         if (scribe.IsOutput())
         {
-            scribe.Save(obj.IsInhabited());
+            auto& outputScribe = *scribe.AsOutput();
+
+            outputScribe.Save(obj.IsInhabited());
             if (!obj.IsInhabited())
                 return;
 
-            scribe.Save(static_cast<char>(obj.GetTypeAsID()));
+            outputScribe.Save(static_cast<char>(obj.GetTypeAsID()));
 
-            ::Chroma::Visit<detail::VariantSaverImplementation>(obj, scribe);
+            ::Chroma::Visit<detail::VariantSaverImplementation>(obj, outputScribe);
         }
         else
         {
+            auto& inputScribe = *scribe.AsInput();
+
             bool isInhabited;
-            scribe.Load(isInhabited);
+            inputScribe.Load(isInhabited);
             if (!isInhabited)
             {
                 obj.Set();
@@ -65,9 +69,9 @@ namespace Inscription
             }
 
             char typeAsId;
-            scribe.Load(typeAsId);
+            inputScribe.Load(typeAsId);
 
-            ::Chroma::IterateRangeCheckStop<char, detail::VariantLoaderImplementation, bool, VariantT::count - 1, 0>(true, obj, typeAsId, scribe);
+            ::Chroma::IterateRangeCheckStop<char, detail::VariantLoaderImplementation, bool, VariantT::count - 1, 0>(true, obj, typeAsId, inputScribe);
         }
     }
 }

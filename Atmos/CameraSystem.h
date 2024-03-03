@@ -5,7 +5,7 @@
 #include "Direction.h"
 #include "Position3D.h"
 #include "Size2D.h"
-#include "AxisBoundingBox2D.h"
+#include "AxisAlignedBox2D.h"
 
 #include "Event.h"
 
@@ -16,7 +16,7 @@ namespace Atmos
     class CameraSystem : public ObjectSystem
     {
     public:
-        typedef Position3D::ValueT Zoom;
+        typedef Position3D::Value Zoom;
     public:
         Event<> eventMoved;
     public:
@@ -29,22 +29,22 @@ namespace Atmos
         void ResetFocus();
         void SetFocus(const Position3D* setTo);
         void SetZoom(Zoom set);
-        void SetX(Position3D::ValueT set);
-        void SetY(Position3D::ValueT set);
-        void SetZ(Position3D::ValueT set);
-        Position3D::ValueT GetX() const;
-        Position3D::ValueT GetY() const;
-        Position3D::ValueT GetZ() const;
+        void SetX(Position3D::Value set);
+        void SetY(Position3D::Value set);
+        void SetZ(Position3D::Value set);
+        Position3D::Value GetX() const;
+        Position3D::Value GetY() const;
+        Position3D::Value GetZ() const;
 
         const Position2D& GetTopLeft() const;
         const Position2D& GetViewOrigin() const;
         // Takes into account the zoom level
         Position3D GetViewOrigin3D() const;
         const Size2D& GetSize() const;
-        const AxisBoundingBox2D& GetSides() const;
+        const AxisAlignedBox2D& GetSides() const;
 
-        void Move(Direction direction, Position3D::ValueT by);
-        void MoveBy(Position3D::ValueT x, Position3D::ValueT y, Position3D::ValueT z);
+        void Move(Direction direction, Position3D::Value by);
+        void MoveBy(Position3D::Value x, Position3D::Value y, Position3D::Value z);
         void MoveToInstant(const Position3D& pos);
         void MoveDeltaInstant(const Position3D& delta);
     private:
@@ -62,7 +62,7 @@ namespace Atmos
         Position2D viewOrigin;
         Size2D size;
         // Sides of the screen
-        AxisBoundingBox2D sides;
+        AxisAlignedBox2D sides;
 
         Position2D topLeft;
 

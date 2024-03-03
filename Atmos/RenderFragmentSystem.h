@@ -27,7 +27,7 @@ namespace Atmos
     private:
         void OnCreated(Reference object);
     private:
-        void OnObjectBoundsChanged(TypedObjectReference<PositionalObject> object, AxisBoundingBox3D previous);
+        void OnObjectBoundsChanged(TypedObjectReference<AxisAlignedObject> object, AxisAlignedBox3D previous);
     };
 }
 

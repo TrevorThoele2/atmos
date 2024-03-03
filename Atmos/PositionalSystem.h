@@ -4,7 +4,7 @@
 #include "ObjectBatch.h"
 #include "ObjectManager.h"
 
-#include "PositionalObject.h"
+#include "AxisAlignedObject.h"
 
 #include "RenderFragmentGrid.h"
 
@@ -18,14 +18,14 @@ namespace Atmos
         PositionalSystem(ObjectManager& manager);
         INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(PositionalSystem);
     private:
-        typedef ObjectBatch<PositionalObject> Batch;
-        typedef TypedObjectReference<PositionalObject> Reference;
+        typedef ObjectBatch<AxisAlignedObject> Batch;
+        typedef TypedObjectReference<AxisAlignedObject> Reference;
     private:
         Batch batch;
     private:
         void OnCreated(Reference object);
     private:
-        void OnObjectBoundsChanged(Reference object, AxisBoundingBox3D previous);
+        void OnObjectBoundsChanged(Reference object, AxisAlignedBox3D previous);
     };
 }
 

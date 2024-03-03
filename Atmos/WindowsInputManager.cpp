@@ -164,7 +164,7 @@ namespace Atmos
             auto windowSystem = FindWindowSystem();
             auto window = static_cast<WindowsWindowBase*>(windowSystem->Get());
             ScreenToClient(window->GetHwnd(), &pt);
-            return MousePosition(static_cast<MousePosition::ValueT>(pt.x), static_cast<MousePosition::ValueT>(pt.y));
+            return MousePosition(static_cast<MousePosition::Value>(pt.x), static_cast<MousePosition::Value>(pt.y));
         }
 
         bool WindowsManager::IsSignalDownBase(SignalBase &signal) const
@@ -181,11 +181,11 @@ namespace Atmos
         {
             auto windowSystem = FindWindowSystem();
             auto& clientSize = windowSystem->Get()->ClientSize();
-            AxisBoundingBox2D screen(
+            AxisAlignedBox2D screen(
                 0,
                 0,
-                static_cast<AxisBoundingBox2D::Coordinate>(clientSize.width),
-                static_cast<AxisBoundingBox2D::Coordinate>(clientSize.height));
+                static_cast<AxisAlignedBox2D::Coordinate>(clientSize.width),
+                static_cast<AxisAlignedBox2D::Coordinate>(clientSize.height));
             return screen.IsHit(GetMousePositionImpl());
         }
 

@@ -101,7 +101,7 @@ namespace Atmos
         // Save object type names
         ObjectTypeGraph objectTypeGraph;
         ObjectRegistration objectRegistration;
-        objectRegistration.Register(objectTypeGraph);
+        objectRegistration.PushTo(objectTypeGraph);
 
         ObjectTypeNameSerializer objectTypeNameSerializer;
         objectTypeNameSerializer.AddAll(objectTypeGraph.AllDescriptions());

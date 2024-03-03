@@ -26,21 +26,21 @@ namespace Atmos
         template<class T, AllowOnlyAngleUnits<T> = 0>
         Angle& operator=(T arg);
 
-        Angle operator+(const Angle &arg) const;
-        Angle& operator+=(const Angle &arg);
-        Angle operator-(const Angle &arg) const;
-        Angle& operator-=(const Angle &arg);
-        Angle operator*(const Angle &arg) const;
-        Angle& operator*=(const Angle &arg);
-        Angle operator/(const Angle &arg) const;
-        Angle& operator/=(const Angle &arg);
+        Angle operator+(const Angle& arg) const;
+        Angle& operator+=(const Angle& arg);
+        Angle operator-(const Angle& arg) const;
+        Angle& operator-=(const Angle& arg);
+        Angle operator*(const Angle& arg) const;
+        Angle& operator*=(const Angle& arg);
+        Angle operator/(const Angle& arg) const;
+        Angle& operator/=(const Angle& arg);
 
-        bool operator==(const Angle &arg) const;
-        bool operator!=(const Angle &arg) const;
-        bool operator<(const Angle &arg) const;
-        bool operator<=(const Angle &arg) const;
-        bool operator>(const Angle &arg) const;
-        bool operator>=(const Angle &arg) const;
+        bool operator==(const Angle& arg) const;
+        bool operator!=(const Angle& arg) const;
+        bool operator<(const Angle& arg) const;
+        bool operator<=(const Angle& arg) const;
+        bool operator>(const Angle& arg) const;
+        bool operator>=(const Angle& arg) const;
 
         template<class T, AllowOnlyAngleUnits<T> = 0>
         T As() const;

@@ -135,13 +135,13 @@ namespace Atmos
         (offsetWithCamera) ?
             RenderSpriteCameraOffset(
                 sprite,
-                sprite->bounds.Get().GetLeft(),
-                sprite->bounds.Get().GetTop()) :
+                sprite->bounds.Get().left,
+                sprite->bounds.Get().top) :
             
             RenderSpriteImpl(
                 sprite,
-                sprite->bounds.Get().GetLeft(),
-                sprite->bounds.Get().GetTop());
+                sprite->bounds.Get().left,
+                sprite->bounds.Get().top);
     }
 
     void GraphicsManager::RenderSprite(SpriteReference sprite, float X, float Y, bool offsetWithCamera)
@@ -163,13 +163,13 @@ namespace Atmos
         (offsetWithCamera) ?
             RenderSpriteCameraOffset(
                 sprite,
-                position.GetX(),
-                position.GetY()) :
+                position.x,
+                position.y) :
             
             RenderSpriteImpl(
                 sprite,
-                position.GetX(),
-                position.GetY());
+                position.x,
+                position.y);
     }
 
     void GraphicsManager::RenderCanvasView(CanvasViewReference view, bool offsetWithCamera)
@@ -177,13 +177,13 @@ namespace Atmos
         (offsetWithCamera) ?
             RenderCanvasViewCameraOffset(
                 view,
-                view->bounds.Get().GetLeft(),
-                view->bounds.Get().GetTop()) :
+                view->bounds.Get().left,
+                view->bounds.Get().top) :
             
             RenderCanvasViewImpl(
                 view,
-                view->bounds.Get().GetLeft(),
-                view->bounds.Get().GetTop());
+                view->bounds.Get().left,
+                view->bounds.Get().top);
     }
 
     void GraphicsManager::RenderCanvasView(CanvasViewReference view, float X, float Y, bool offsetWithCamera)
@@ -205,13 +205,13 @@ namespace Atmos
         (offsetWithCamera) ?
             RenderCanvasViewCameraOffset(
                 view,
-                position.GetX(),
-                position.GetY()) :
+                position.x,
+                position.y) :
             
             RenderCanvasViewImpl(
                 view,
-                position.GetX(),
-                position.GetY());
+                position.x,
+                position.y);
     }
 
     void GraphicsManager::RenderUnknownFragment(RenderFragmentReference fragment, bool offsetWithCamera)
@@ -219,13 +219,13 @@ namespace Atmos
         (offsetWithCamera) ?
             RenderUnknownFragmentCameraOffset(
                 fragment,
-                fragment->bounds.Get().GetLeft(),
-                fragment->bounds.Get().GetTop()) :
+                fragment->bounds.Get().left,
+                fragment->bounds.Get().top) :
             
             RenderUnknownFragmentImpl(
                 fragment,
-                fragment->bounds.Get().GetLeft(),
-                fragment->bounds.Get().GetTop());
+                fragment->bounds.Get().left,
+                fragment->bounds.Get().top);
     }
 
     void GraphicsManager::RenderUnknownFragment(RenderFragmentReference fragment, float X, float Y, bool offsetWithCamera)
@@ -247,13 +247,13 @@ namespace Atmos
         (offsetWithCamera) ?
             RenderUnknownFragmentCameraOffset(
                 fragment,
-                position.GetX(),
-                position.GetY()) :
+                position.x,
+                position.y) :
             
             RenderUnknownFragmentImpl(
                 fragment,
-                position.GetX(),
-                position.GetY());
+                position.x,
+                position.y);
     }
 
     void GraphicsManager::RenderLine(const LineRender& line)
@@ -269,8 +269,8 @@ namespace Atmos
             SetMainDimensionsImpl(this->dimensions);
             cameraSystem->SetSize(
                 Size2D(
-                    static_cast<Size2D::ValueT>(set.width),
-                    static_cast<Size2D::ValueT>(set.height)));
+                    static_cast<Size2D::Value>(set.width),
+                    static_cast<Size2D::Value>(set.height)));
         }
     }
 
@@ -332,24 +332,24 @@ namespace Atmos
     {
         RenderSpriteImpl(
             sprite,
-            X - cameraSystem->GetTopLeft().GetX(),
-            Y - cameraSystem->GetTopLeft().GetY());
+            X - cameraSystem->GetTopLeft().x,
+            Y - cameraSystem->GetTopLeft().y);
     }
 
     void GraphicsManager::RenderCanvasViewCameraOffset(CanvasViewReference view, float X, float Y)
     {
         RenderCanvasViewImpl(
             view,
-            X - cameraSystem->GetTopLeft().GetX(),
-            Y - cameraSystem->GetTopLeft().GetY());
+            X - cameraSystem->GetTopLeft().x,
+            Y - cameraSystem->GetTopLeft().y);
     }
 
     void GraphicsManager::RenderUnknownFragmentCameraOffset(RenderFragmentReference fragment, float X, float Y)
     {
         RenderUnknownFragmentImpl(
             fragment,
-            X - cameraSystem->GetTopLeft().GetX(),
-            Y - cameraSystem->GetTopLeft().GetY());
+            X - cameraSystem->GetTopLeft().x,
+            Y - cameraSystem->GetTopLeft().y);
     }
 
     GraphicsManager::RenderSurfaceList::iterator GraphicsManager::FindRenderSurface(RenderSurface& surface)
@@ -368,7 +368,7 @@ namespace Atmos
         auto &currentDimensions = GetCurrentDimensions();
         cameraSystem->SetSize(
             Size2D(
-                static_cast<Size2D::ValueT>(currentDimensions.width),
-                static_cast<Size2D::ValueT>(currentDimensions.height)));
+                static_cast<Size2D::Value>(currentDimensions.width),
+                static_cast<Size2D::Value>(currentDimensions.height)));
     }
 }

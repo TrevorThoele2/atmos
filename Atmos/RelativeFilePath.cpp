@@ -8,16 +8,20 @@ namespace Inscription
     {
         if (scribe.IsOutput())
         {
-            scribe.Save(obj.GetMoveUpCount());
-            scribe.Save(obj.GetMoveDown());
+            auto& outputScribe = *scribe.AsOutput();
+
+            outputScribe.Save(obj.GetMoveUpCount());
+            outputScribe.Save(obj.GetMoveDown());
         }
         else // INPUT
         {
+            auto& inputScribe = *scribe.AsInput();
+
             size_t moveUpCount;
-            scribe.Load(moveUpCount);
+            inputScribe.Load(moveUpCount);
 
             std::string moveDown;
-            scribe.Load(moveDown);
+            inputScribe.Load(moveDown);
 
             obj = ::Chroma::RelativeFilePath(moveUpCount, moveDown);
         }

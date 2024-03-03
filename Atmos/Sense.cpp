@@ -5,10 +5,10 @@
 
 namespace Atmos
 {
-    Sense::Sense(ObjectManager& manager) : PositionalObject(manager), enabled(true)
+    Sense::Sense(ObjectManager& manager) : AxisAlignedObject(manager), enabled(true)
     {}
 
-    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(Sense) : INSCRIPTION_TABLE_GET_BASE(PositionalObject)
+    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(Sense) : INSCRIPTION_TABLE_GET_BASE(AxisAlignedObject)
     {}
 
     Sense::~Sense()

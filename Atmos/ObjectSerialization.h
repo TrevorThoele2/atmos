@@ -76,3 +76,6 @@ static void AddMembers(Table<::Inscription::BinaryScribe>& table)
 
 #define OBJECT_INSCRIPTER_DEFINE_MEMBERS(T)     \
 void Inscripter<T>::AddMembers(Table<::Inscription::BinaryScribe>& table)
+
+#define OBJECT_INSCRIPTER_MEMBERS   \
+static void AddMembers(Table<::Inscription::BinaryScribe>& table)

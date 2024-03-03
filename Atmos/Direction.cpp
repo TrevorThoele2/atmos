@@ -5,169 +5,164 @@
 
 namespace Atmos
 {
-    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(Direction)
-    {
-        scribe(value);
-    }
-
-    Direction::Direction(ValueT value) : value(value)
+    Direction::Direction(Value value) : value(value)
     {}
 
-    Direction& Direction::operator=(ValueT arg)
+    Direction& Direction::operator=(Value arg)
     {
         value = arg;
         return *this;
     }
 
-    bool Direction::operator==(const Direction &arg) const
+    bool Direction::operator==(const Direction& arg) const
     {
         return value == arg.value;
     }
 
-    bool Direction::operator!=(const Direction &arg) const
+    bool Direction::operator!=(const Direction& arg) const
     {
         return !(*this == arg);
     }
 
-    Direction::operator ValueT() const
+    Direction::operator Value() const
     {
         return value;
     }
 
-    void Direction::Set(ValueT set)
+    void Direction::Set(Value set)
     {
         value = set;
     }
 
-    Direction::ValueT Direction::Get() const
+    Direction::Value Direction::Get() const
     {
         return value;
     }
 
-    void Direction::MoveInRelativeDirection(RelativeValueT move)
+    void Direction::MoveInRelativeDirection(RelativeValue move)
     {
         switch (move)
         {
-        case RelativeValueT::SAME:
+        case RelativeValue::SAME:
             return;
-        case RelativeValueT::LEFT:
+        case RelativeValue::LEFT:
             switch (value)
             {
-            case ValueT::UP:
-                value = ValueT::LEFT;
+            case Value::UP:
+                value = Value::LEFT;
                 return;
-            case ValueT::DOWN:
-                value = ValueT::RIGHT;
+            case Value::DOWN:
+                value = Value::RIGHT;
                 return;
-            case ValueT::LEFT:
-                value = ValueT::DOWN;
+            case Value::LEFT:
+                value = Value::DOWN;
                 return;
-            case ValueT::RIGHT:
-                value = ValueT::UP;
+            case Value::RIGHT:
+                value = Value::UP;
                 return;
             }
 
-        case RelativeValueT::RIGHT:
+        case RelativeValue::RIGHT:
             switch (value)
             {
-            case ValueT::UP:
-                value = ValueT::RIGHT;
+            case Value::UP:
+                value = Value::RIGHT;
                 return;
-            case ValueT::DOWN:
-                value = ValueT::LEFT;
+            case Value::DOWN:
+                value = Value::LEFT;
                 return;
-            case ValueT::LEFT:
-                value = ValueT::UP;
+            case Value::LEFT:
+                value = Value::UP;
                 return;
-            case ValueT::RIGHT:
-                value = ValueT::DOWN;
+            case Value::RIGHT:
+                value = Value::DOWN;
                 return;
             }
 
-        case RelativeValueT::OPPOSED:
+        case RelativeValue::OPPOSED:
             switch (value)
             {
-            case ValueT::UP:
-                value = ValueT::DOWN;
+            case Value::UP:
+                value = Value::DOWN;
                 return;
-            case ValueT::DOWN:
-                value = ValueT::UP;
+            case Value::DOWN:
+                value = Value::UP;
                 return;
-            case ValueT::LEFT:
-                value = ValueT::RIGHT;
+            case Value::LEFT:
+                value = Value::RIGHT;
                 return;
-            case ValueT::RIGHT:
-                value = ValueT::LEFT;
+            case Value::RIGHT:
+                value = Value::LEFT;
                 return;
             }
         }
     }
 
-    Direction::RelativeValueT Direction::GetRelativeDirection(ValueT value) const
+    Direction::RelativeValue Direction::GetRelativeDirection(Value value) const
     {
         switch (this->value)
         {
-        case ValueT::UP:
+        case Value::UP:
             switch (value)
             {
-            case ValueT::UP:
-                return RelativeValueT::SAME;
-            case ValueT::DOWN:
-                return RelativeValueT::OPPOSED;
-            case ValueT::LEFT:
-                return RelativeValueT::LEFT;
-            case ValueT::RIGHT:
-                return RelativeValueT::RIGHT;
+            case Value::UP:
+                return RelativeValue::SAME;
+            case Value::DOWN:
+                return RelativeValue::OPPOSED;
+            case Value::LEFT:
+                return RelativeValue::LEFT;
+            case Value::RIGHT:
+                return RelativeValue::RIGHT;
             }
-        case ValueT::DOWN:
+        case Value::DOWN:
             switch (value)
             {
-            case ValueT::UP:
-                return RelativeValueT::OPPOSED;
-            case ValueT::DOWN:
-                return RelativeValueT::SAME;
-            case ValueT::LEFT:
-                return RelativeValueT::RIGHT;
-            case ValueT::RIGHT:
-                return RelativeValueT::LEFT;
+            case Value::UP:
+                return RelativeValue::OPPOSED;
+            case Value::DOWN:
+                return RelativeValue::SAME;
+            case Value::LEFT:
+                return RelativeValue::RIGHT;
+            case Value::RIGHT:
+                return RelativeValue::LEFT;
             }
-        case ValueT::LEFT:
+        case Value::LEFT:
             switch (value)
             {
-            case ValueT::UP:
-                return RelativeValueT::RIGHT;
-            case ValueT::DOWN:
-                return RelativeValueT::LEFT;
-            case ValueT::LEFT:
-                return RelativeValueT::SAME;
-            case ValueT::RIGHT:
-                return RelativeValueT::OPPOSED;
+            case Value::UP:
+                return RelativeValue::RIGHT;
+            case Value::DOWN:
+                return RelativeValue::LEFT;
+            case Value::LEFT:
+                return RelativeValue::SAME;
+            case Value::RIGHT:
+                return RelativeValue::OPPOSED;
             }
-        case ValueT::RIGHT:
+        case Value::RIGHT:
             switch (value)
             {
-            case ValueT::UP:
-                return RelativeValueT::LEFT;
-            case ValueT::DOWN:
-                return RelativeValueT::RIGHT;
-            case ValueT::LEFT:
-                return RelativeValueT::OPPOSED;
-            case ValueT::RIGHT:
-                return RelativeValueT::SAME;
+            case Value::UP:
+                return RelativeValue::LEFT;
+            case Value::DOWN:
+                return RelativeValue::RIGHT;
+            case Value::LEFT:
+                return RelativeValue::OPPOSED;
+            case Value::RIGHT:
+                return RelativeValue::SAME;
             }
         }
 
-        return RelativeValueT::SAME;
+        return RelativeValue::SAME;
     }
 
-    Direction::RelativeValueT Direction::GetRelativeDirection(const Direction &direction) const
+    Direction::RelativeValue Direction::GetRelativeDirection(const Direction& direction) const
     {
         return GetRelativeDirection(direction.Get());
     }
 
-    Direction::ValueT Direction::FromUnderlyingType(std::underlying_type<ValueT>::type from)
+    Direction::Value Direction::FromUnderlyingType(std::underlying_type<Value>::type from)
     {
-#define CAST_PIECE(ValueTT) case CastFromValueT<ValueT::ValueTT>(): return ValueT::ValueTT;
+#define CAST_PIECE(value) case CastFromValue<Value::value>(): return Value::value;
         switch (from)
         {
             CAST_PIECE(UP)
@@ -176,7 +171,12 @@ namespace Atmos
             CAST_PIECE(RIGHT)
         }
 
-        return Direction::ValueT::UP;
+        return Direction::Value::UP;
 #undef CAST_PIECE
+    }
+
+    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(Direction)
+    {
+        scribe(value);
     }
 }

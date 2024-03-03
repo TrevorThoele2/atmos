@@ -50,7 +50,7 @@
     <ClInclude Include="AudioAssetInstance.h" />
     <ClInclude Include="AudioAssetFactory.h" />
     <ClInclude Include="AudioSystem.h" />
-    <ClInclude Include="AxisBoundingBox3D.h" />
+    <ClInclude Include="AxisAlignedBox3D.h" />
     <ClInclude Include="BitConcatenator.h" />
     <ClInclude Include="BoundedNumberWrap.h" />
     <ClInclude Include="BoundEventSubscriber.h" />
@@ -73,6 +73,8 @@
     <ClInclude Include="ObjectManagerException.h" />
     <ClInclude Include="OutputScribeBase.h" />
     <ClInclude Include="OutputStasisScribe.h" />
+    <ClInclude Include="Scalers2D.h" />
+    <ClInclude Include="Scalers3D.h" />
     <ClInclude Include="ScreenDimensions.h" />
     <ClInclude Include="ScreenPosition.h" />
     <ClInclude Include="SkipFileHandle.h" />
@@ -172,7 +174,7 @@
     <ClInclude Include="PropertyCore.h" />
     <ClInclude Include="ReadonlyPointerPropertySlotInterface.h" />
     <ClInclude Include="ReadonlyProperty.h" />
-    <ClInclude Include="PositionalObject.h" />
+    <ClInclude Include="AxisAlignedObject.h" />
     <ClInclude Include="Radians.h" />
     <ClInclude Include="Line2D.h" />
     <ClInclude Include="Line3D.h" />
@@ -241,7 +243,7 @@
     <ClInclude Include="RenderFragment.h" />
     <ClInclude Include="ImageAsset.h" />
     <ClInclude Include="ImageAssetSystem.h" />
-    <ClInclude Include="AxisBoundingBox2D.h" />
+    <ClInclude Include="AxisAlignedBox2D.h" />
     <ClInclude Include="BoundedNumber.h" />
     <ClInclude Include="DXAudio.h" />
     <ClInclude Include="Enum.h" />
@@ -327,7 +329,7 @@
     <ClCompile Include="AudioAssetInstance.cpp" />
     <ClCompile Include="AudioAssetFactory.cpp" />
     <ClCompile Include="AudioSystem.cpp" />
-    <ClCompile Include="AxisBoundingBox3D.cpp" />
+    <ClCompile Include="AxisAlignedBox3D.cpp" />
     <ClCompile Include="BoundEventSubscriber.cpp" />
     <ClCompile Include="BoundEventSubscriberList.cpp" />
     <ClCompile Include="CameraSystem.cpp" />
@@ -348,6 +350,8 @@
     <ClCompile Include="ObjectManagerException.cpp" />
     <ClCompile Include="OutputScribeBase.cpp" />
     <ClCompile Include="OutputStasisScribe.cpp" />
+    <ClCompile Include="Scalers2D.cpp" />
+    <ClCompile Include="Scalers3D.cpp" />
     <ClCompile Include="ScreenDimensions.cpp" />
     <ClCompile Include="ScreenPosition.cpp" />
     <ClCompile Include="WindowSystem.cpp" />
@@ -415,7 +419,7 @@
     <ClCompile Include="TileFactory.cpp" />
     <ClCompile Include="TimeSystem.cpp" />
     <ClCompile Include="Variant.cpp" />
-    <ClCompile Include="PositionalObject.cpp" />
+    <ClCompile Include="AxisAlignedObject.cpp" />
     <ClCompile Include="Radians.cpp" />
     <ClCompile Include="Line2D.cpp" />
     <ClCompile Include="Line3D.cpp" />
@@ -466,7 +470,7 @@
     <ClCompile Include="GraphicsManager.cpp" />
     <ClCompile Include="ImageAsset.cpp" />
     <ClCompile Include="ImageAssetSystem.cpp" />
-    <ClCompile Include="AxisBoundingBox2D.cpp" />
+    <ClCompile Include="AxisAlignedBox2D.cpp" />
     <ClCompile Include="DXAudio.cpp" />
     <ClCompile Include="FilePath.cpp" />
     <ClCompile Include="LineRender.cpp" />

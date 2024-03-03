@@ -63,9 +63,9 @@ namespace Atmos
     {
         // Set lengths
         {
-            AxisBoundingBox2D box = AdjustWindowDimensions();
-            windowSize.width = static_cast<Size::Dimension>(abs(box.GetLeft()) + abs(box.GetRight()));
-            windowSize.height = static_cast<Size::Dimension>(abs(box.GetTop()) + abs(box.GetBottom()));
+            AxisAlignedBox2D box = AdjustWindowDimensions();
+            windowSize.width = static_cast<Size::Dimension>(abs(box.left) + abs(box.right));
+            windowSize.height = static_cast<Size::Dimension>(abs(box.top) + abs(box.bottom));
         }
 
         // Set default position

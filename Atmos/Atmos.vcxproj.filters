@@ -183,9 +183,6 @@
     <Filter Include="Header Files\IDManager">
       <UniqueIdentifier>{3a794035-25af-45ad-8d1e-8c29fa870005}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\PositionalObjects">
-      <UniqueIdentifier>{574988d0-8406-4442-ba6b-b68f4ec3ac72}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Properties">
       <UniqueIdentifier>{0ecc5b11-b882-4b5b-928a-13dc531ac35d}</UniqueIdentifier>
     </Filter>
@@ -282,9 +279,6 @@
     <Filter Include="Header Files\Serialization\Skip File">
       <UniqueIdentifier>{5947c944-570c-4310-b74c-617d1cc6d664}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Positional Objects">
-      <UniqueIdentifier>{7fb22f80-31ef-484c-ad60-6bdcf9d9d2de}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Time\Stopwatches">
       <UniqueIdentifier>{534fe9e6-2447-4a7b-9f14-ee71be4e826f}</UniqueIdentifier>
     </Filter>
@@ -296,6 +290,42 @@
     </Filter>
     <Filter Include="Header Files\AngelScript\Registration\Bases">
       <UniqueIdentifier>{b1a10f14-f416-4dee-a889-914cefbd468d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Position\2D">
+      <UniqueIdentifier>{86cb1bc0-1e43-4214-9fe8-ad8343543e7d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Position\3D">
+      <UniqueIdentifier>{02e58101-57d1-4275-8db4-73de329e621b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Position\2D">
+      <UniqueIdentifier>{b49c12ba-8142-4f65-9426-b1b1fe4d5af4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Position\3D">
+      <UniqueIdentifier>{dc85c0ba-1c9b-4411-abbe-1c5a6d9508c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Position\Screen">
+      <UniqueIdentifier>{6bf6536e-2aae-4af1-8165-58608e6c4ac5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Position\Screen">
+      <UniqueIdentifier>{2d650911-45b5-4629-943c-1e51ac72e563}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Position\Grid">
+      <UniqueIdentifier>{06b37bc2-8427-4db0-95eb-fcc1f8838c27}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Position\Direction">
+      <UniqueIdentifier>{aa56492d-8bd6-48bd-bb3e-0e0562592bd1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Position\Direction">
+      <UniqueIdentifier>{0e6d1164-a7a9-4467-be95-53f8245a3575}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Position\Grid">
+      <UniqueIdentifier>{027583d5-556a-47cb-8995-d1533dd3925a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\PositionalObject">
+      <UniqueIdentifier>{7fb22f80-31ef-484c-ad60-6bdcf9d9d2de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\PositionalObject">
+      <UniqueIdentifier>{574988d0-8406-4442-ba6b-b68f4ec3ac72}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -322,9 +352,6 @@
     </ClInclude>
     <ClInclude Include="Range.h">
       <Filter>Header Files\Helper</Filter>
-    </ClInclude>
-    <ClInclude Include="Direction.h">
-      <Filter>Header Files\Position</Filter>
     </ClInclude>
     <ClInclude Include="Color.h">
       <Filter>Header Files\Render\Color</Filter>
@@ -380,9 +407,6 @@
     <ClInclude Include="Volume.h">
       <Filter>Header Files\Sound</Filter>
     </ClInclude>
-    <ClInclude Include="MousePosition.h">
-      <Filter>Header Files\Position</Filter>
-    </ClInclude>
     <ClInclude Include="NullGraphics.h">
       <Filter>Header Files\Render</Filter>
     </ClInclude>
@@ -392,44 +416,11 @@
     <ClInclude Include="InputAction.h">
       <Filter>Header Files\Input</Filter>
     </ClInclude>
-    <ClInclude Include="Position3D.h">
-      <Filter>Header Files\Position</Filter>
-    </ClInclude>
-    <ClInclude Include="Position2D.h">
-      <Filter>Header Files\Position</Filter>
-    </ClInclude>
-    <ClInclude Include="AxisBoundingBox2D.h">
-      <Filter>Header Files\Position</Filter>
-    </ClInclude>
-    <ClInclude Include="AxisBoundingBox3D.h">
-      <Filter>Header Files\Position</Filter>
-    </ClInclude>
     <ClInclude Include="LineRender.h">
       <Filter>Header Files\Render</Filter>
     </ClInclude>
-    <ClInclude Include="Line2D.h">
-      <Filter>Header Files\Position</Filter>
-    </ClInclude>
-    <ClInclude Include="Angle.h">
-      <Filter>Header Files\Position</Filter>
-    </ClInclude>
-    <ClInclude Include="Line3D.h">
-      <Filter>Header Files\Position</Filter>
-    </ClInclude>
-    <ClInclude Include="Vector3D.h">
-      <Filter>Header Files\Position</Filter>
-    </ClInclude>
-    <ClInclude Include="Vector2D.h">
-      <Filter>Header Files\Position</Filter>
-    </ClInclude>
-    <ClInclude Include="GridPosition.h">
-      <Filter>Header Files\Position</Filter>
-    </ClInclude>
     <ClInclude Include="RenderFragmentGrid.h">
       <Filter>Header Files\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="GridSize.h">
-      <Filter>Header Files\Position</Filter>
     </ClInclude>
     <ClInclude Include="Tag.h">
       <Filter>Header Files\GameData</Filter>
@@ -469,12 +460,6 @@
     </ClInclude>
     <ClInclude Include="RenderSurface.h">
       <Filter>Header Files\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="Size2D.h">
-      <Filter>Header Files\Position</Filter>
-    </ClInclude>
-    <ClInclude Include="Size3D.h">
-      <Filter>Header Files\Position</Filter>
     </ClInclude>
     <ClInclude Include="ScrubbedType.h">
       <Filter>Header Files\Helper</Filter>
@@ -563,9 +548,6 @@
     <ClInclude Include="TileSystem.h">
       <Filter>Header Files\Tile</Filter>
     </ClInclude>
-    <ClInclude Include="PositionalObject.h">
-      <Filter>Header Files\Positional Objects</Filter>
-    </ClInclude>
     <ClInclude Include="RenderFragmentSystem.h">
       <Filter>Header Files\Render</Filter>
     </ClInclude>
@@ -574,21 +556,6 @@
     </ClInclude>
     <ClInclude Include="ObjectMapIterator.h">
       <Filter>Header Files\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="Degrees.h">
-      <Filter>Header Files\Position</Filter>
-    </ClInclude>
-    <ClInclude Include="Radians.h">
-      <Filter>Header Files\Position</Filter>
-    </ClInclude>
-    <ClInclude Include="AngleUnits.h">
-      <Filter>Header Files\Position</Filter>
-    </ClInclude>
-    <ClInclude Include="AngleUnitsTypeValidation.h">
-      <Filter>Header Files\Position</Filter>
-    </ClInclude>
-    <ClInclude Include="AngleConversion.h">
-      <Filter>Header Files\Position</Filter>
     </ClInclude>
     <ClInclude Include="AssetSystem.h">
       <Filter>Header Files\Assets</Filter>
@@ -669,7 +636,7 @@
       <Filter>Header Files\Assets</Filter>
     </ClInclude>
     <ClInclude Include="PositionalSystem.h">
-      <Filter>Header Files\Positional Objects</Filter>
+      <Filter>Header Files\PositionalObject</Filter>
     </ClInclude>
     <ClInclude Include="ObjectSerialization.h">
       <Filter>Header Files\Object</Filter>
@@ -753,7 +720,7 @@
       <Filter>Header Files\Object</Filter>
     </ClInclude>
     <ClInclude Include="PositionalOffsetAdapter.h">
-      <Filter>Header Files\Positional Objects</Filter>
+      <Filter>Header Files\PositionalObject</Filter>
     </ClInclude>
     <ClInclude Include="Name.h">
       <Filter>Header Files\Helper</Filter>
@@ -1010,9 +977,6 @@
     <ClInclude Include="AngelScriptRegistrationInterface.h">
       <Filter>Header Files\AngelScript</Filter>
     </ClInclude>
-    <ClInclude Include="Pathfinder.h">
-      <Filter>Header Files\Position</Filter>
-    </ClInclude>
     <ClInclude Include="ModulatorInterpolation.h">
       <Filter>Header Files\Modulators\Interpolation</Filter>
     </ClInclude>
@@ -1088,12 +1052,6 @@
     <ClInclude Include="ObjectException.h">
       <Filter>Header Files\Object</Filter>
     </ClInclude>
-    <ClInclude Include="ScreenPosition.h">
-      <Filter>Header Files\Position</Filter>
-    </ClInclude>
-    <ClInclude Include="ScreenDimensions.h">
-      <Filter>Header Files\Position</Filter>
-    </ClInclude>
     <ClInclude Include="EngineSystem.h">
       <Filter>Header Files\Engine</Filter>
     </ClInclude>
@@ -1136,6 +1094,84 @@
     <ClInclude Include="FileName.h">
       <Filter>Header Files\File</Filter>
     </ClInclude>
+    <ClInclude Include="Pathfinder.h">
+      <Filter>Header Files\PositionalObject</Filter>
+    </ClInclude>
+    <ClInclude Include="AxisAlignedBox2D.h">
+      <Filter>Header Files\Position\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Line2D.h">
+      <Filter>Header Files\Position\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Position2D.h">
+      <Filter>Header Files\Position\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Scalers2D.h">
+      <Filter>Header Files\Position\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector2D.h">
+      <Filter>Header Files\Position\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="AxisAlignedBox3D.h">
+      <Filter>Header Files\Position\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Line3D.h">
+      <Filter>Header Files\Position\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Position3D.h">
+      <Filter>Header Files\Position\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Scalers3D.h">
+      <Filter>Header Files\Position\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Size3D.h">
+      <Filter>Header Files\Position\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector3D.h">
+      <Filter>Header Files\Position\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="ScreenDimensions.h">
+      <Filter>Header Files\Position\Screen</Filter>
+    </ClInclude>
+    <ClInclude Include="ScreenPosition.h">
+      <Filter>Header Files\Position\Screen</Filter>
+    </ClInclude>
+    <ClInclude Include="MousePosition.h">
+      <Filter>Header Files\Position\Screen</Filter>
+    </ClInclude>
+    <ClInclude Include="Angle.h">
+      <Filter>Header Files\Position\Direction</Filter>
+    </ClInclude>
+    <ClInclude Include="AngleConversion.h">
+      <Filter>Header Files\Position\Direction</Filter>
+    </ClInclude>
+    <ClInclude Include="AngleUnits.h">
+      <Filter>Header Files\Position\Direction</Filter>
+    </ClInclude>
+    <ClInclude Include="AngleUnitsTypeValidation.h">
+      <Filter>Header Files\Position\Direction</Filter>
+    </ClInclude>
+    <ClInclude Include="Degrees.h">
+      <Filter>Header Files\Position\Direction</Filter>
+    </ClInclude>
+    <ClInclude Include="Radians.h">
+      <Filter>Header Files\Position\Direction</Filter>
+    </ClInclude>
+    <ClInclude Include="GridPosition.h">
+      <Filter>Header Files\Position\Grid</Filter>
+    </ClInclude>
+    <ClInclude Include="GridSize.h">
+      <Filter>Header Files\Position\Grid</Filter>
+    </ClInclude>
+    <ClInclude Include="Direction.h">
+      <Filter>Header Files\Position\Direction</Filter>
+    </ClInclude>
+    <ClInclude Include="AxisAlignedObject.h">
+      <Filter>Header Files\PositionalObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Size2D.h">
+      <Filter>Header Files\Position\2D</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Field.cpp">
@@ -1149,9 +1185,6 @@
     </ClCompile>
     <ClCompile Include="FontDefines.cpp">
       <Filter>Source Files\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="Direction.cpp">
-      <Filter>Source Files\Position</Filter>
     </ClCompile>
     <ClCompile Include="Color.cpp">
       <Filter>Source Files\Render\Color</Filter>
@@ -1195,9 +1228,6 @@
     <ClCompile Include="Music.cpp">
       <Filter>Source Files\Sound</Filter>
     </ClCompile>
-    <ClCompile Include="MousePosition.cpp">
-      <Filter>Source Files\Position</Filter>
-    </ClCompile>
     <ClCompile Include="NullGraphics.cpp">
       <Filter>Source Files\Render</Filter>
     </ClCompile>
@@ -1207,38 +1237,8 @@
     <ClCompile Include="InputAction.cpp">
       <Filter>Source Files\Input</Filter>
     </ClCompile>
-    <ClCompile Include="Position2D.cpp">
-      <Filter>Source Files\Position</Filter>
-    </ClCompile>
-    <ClCompile Include="Position3D.cpp">
-      <Filter>Source Files\Position</Filter>
-    </ClCompile>
-    <ClCompile Include="AxisBoundingBox3D.cpp">
-      <Filter>Source Files\Position</Filter>
-    </ClCompile>
-    <ClCompile Include="AxisBoundingBox2D.cpp">
-      <Filter>Source Files\Position</Filter>
-    </ClCompile>
     <ClCompile Include="LineRender.cpp">
       <Filter>Source Files\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="Line2D.cpp">
-      <Filter>Source Files\Position</Filter>
-    </ClCompile>
-    <ClCompile Include="Angle.cpp">
-      <Filter>Source Files\Position</Filter>
-    </ClCompile>
-    <ClCompile Include="Line3D.cpp">
-      <Filter>Source Files\Position</Filter>
-    </ClCompile>
-    <ClCompile Include="Vector3D.cpp">
-      <Filter>Source Files\Position</Filter>
-    </ClCompile>
-    <ClCompile Include="Vector2D.cpp">
-      <Filter>Source Files\Position</Filter>
-    </ClCompile>
-    <ClCompile Include="GridPosition.cpp">
-      <Filter>Source Files\Position</Filter>
     </ClCompile>
     <ClCompile Include="RenderFragmentGrid.cpp">
       <Filter>Source Files\Render</Filter>
@@ -1266,12 +1266,6 @@
     </ClCompile>
     <ClCompile Include="ShaderAsset.cpp">
       <Filter>Source Files\Assets\Shader</Filter>
-    </ClCompile>
-    <ClCompile Include="Size2D.cpp">
-      <Filter>Source Files\Position</Filter>
-    </ClCompile>
-    <ClCompile Include="Size3D.cpp">
-      <Filter>Source Files\Position</Filter>
     </ClCompile>
     <ClCompile Include="Sense.cpp">
       <Filter>Source Files\Senses</Filter>
@@ -1333,23 +1327,11 @@
     <ClCompile Include="TileSystem.cpp">
       <Filter>Source Files\Tile</Filter>
     </ClCompile>
-    <ClCompile Include="PositionalObject.cpp">
-      <Filter>Source Files\PositionalObjects</Filter>
-    </ClCompile>
     <ClCompile Include="RenderFragmentSystem.cpp">
       <Filter>Source Files\Render</Filter>
     </ClCompile>
-    <ClCompile Include="Degrees.cpp">
-      <Filter>Source Files\Position</Filter>
-    </ClCompile>
-    <ClCompile Include="Radians.cpp">
-      <Filter>Source Files\Position</Filter>
-    </ClCompile>
-    <ClCompile Include="AngleConversion.cpp">
-      <Filter>Source Files\Position</Filter>
-    </ClCompile>
     <ClCompile Include="PositionalSystem.cpp">
-      <Filter>Source Files\PositionalObjects</Filter>
+      <Filter>Source Files\PositionalObject</Filter>
     </ClCompile>
     <ClCompile Include="AudioAssetInstance.cpp">
       <Filter>Source Files\Assets\Audio</Filter>
@@ -1457,7 +1439,7 @@
       <Filter>Source Files\Object</Filter>
     </ClCompile>
     <ClCompile Include="PositionalOffsetAdapter.cpp">
-      <Filter>Source Files\PositionalObjects</Filter>
+      <Filter>Source Files\PositionalObject</Filter>
     </ClCompile>
     <ClCompile Include="SimpleFile.cpp">
       <Filter>Source Files\Serialization</Filter>
@@ -1627,9 +1609,6 @@
     <ClCompile Include="AngelScriptRegistrationInterface.cpp">
       <Filter>Source Files\AngelScript</Filter>
     </ClCompile>
-    <ClCompile Include="Pathfinder.cpp">
-      <Filter>Source Files\Position</Filter>
-    </ClCompile>
     <ClCompile Include="ModulatorInterpolation.cpp">
       <Filter>Source Files\Modulators\Interpolation</Filter>
     </ClCompile>
@@ -1696,12 +1675,6 @@
     <ClCompile Include="ObjectException.cpp">
       <Filter>Source Files\Object</Filter>
     </ClCompile>
-    <ClCompile Include="ScreenPosition.cpp">
-      <Filter>Source Files\Position</Filter>
-    </ClCompile>
-    <ClCompile Include="ScreenDimensions.cpp">
-      <Filter>Source Files\Position</Filter>
-    </ClCompile>
     <ClCompile Include="EngineSystem.cpp">
       <Filter>Source Files\Engine</Filter>
     </ClCompile>
@@ -1722,6 +1695,75 @@
     </ClCompile>
     <ClCompile Include="FileName.cpp">
       <Filter>Source Files\File</Filter>
+    </ClCompile>
+    <ClCompile Include="Pathfinder.cpp">
+      <Filter>Source Files\PositionalObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Line2D.cpp">
+      <Filter>Source Files\Position\2D</Filter>
+    </ClCompile>
+    <ClCompile Include="AxisAlignedBox2D.cpp">
+      <Filter>Source Files\Position\2D</Filter>
+    </ClCompile>
+    <ClCompile Include="Position2D.cpp">
+      <Filter>Source Files\Position\2D</Filter>
+    </ClCompile>
+    <ClCompile Include="Scalers2D.cpp">
+      <Filter>Source Files\Position\2D</Filter>
+    </ClCompile>
+    <ClCompile Include="Size2D.cpp">
+      <Filter>Source Files\Position\2D</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector2D.cpp">
+      <Filter>Source Files\Position\2D</Filter>
+    </ClCompile>
+    <ClCompile Include="AxisAlignedBox3D.cpp">
+      <Filter>Source Files\Position\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Line3D.cpp">
+      <Filter>Source Files\Position\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Position3D.cpp">
+      <Filter>Source Files\Position\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Scalers3D.cpp">
+      <Filter>Source Files\Position\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Size3D.cpp">
+      <Filter>Source Files\Position\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector3D.cpp">
+      <Filter>Source Files\Position\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="ScreenDimensions.cpp">
+      <Filter>Source Files\Position\Screen</Filter>
+    </ClCompile>
+    <ClCompile Include="ScreenPosition.cpp">
+      <Filter>Source Files\Position\Screen</Filter>
+    </ClCompile>
+    <ClCompile Include="MousePosition.cpp">
+      <Filter>Source Files\Position\Screen</Filter>
+    </ClCompile>
+    <ClCompile Include="Angle.cpp">
+      <Filter>Source Files\Position\Direction</Filter>
+    </ClCompile>
+    <ClCompile Include="AngleConversion.cpp">
+      <Filter>Source Files\Position\Direction</Filter>
+    </ClCompile>
+    <ClCompile Include="Degrees.cpp">
+      <Filter>Source Files\Position\Direction</Filter>
+    </ClCompile>
+    <ClCompile Include="Direction.cpp">
+      <Filter>Source Files\Position\Direction</Filter>
+    </ClCompile>
+    <ClCompile Include="Radians.cpp">
+      <Filter>Source Files\Position\Direction</Filter>
+    </ClCompile>
+    <ClCompile Include="GridPosition.cpp">
+      <Filter>Source Files\Position\Grid</Filter>
+    </ClCompile>
+    <ClCompile Include="AxisAlignedObject.cpp">
+      <Filter>Source Files\PositionalObject</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

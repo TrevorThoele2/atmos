@@ -3,7 +3,7 @@
 #include "RenderFragment.h"
 #include "MaterialAsset.h"
 #include "Color.h"
-#include "AxisBoundingBox2D.h"
+#include "AxisAlignedBox2D.h"
 
 #include "ObjectReference.h"
 #include "ObjectManager.h"
@@ -34,7 +34,7 @@ namespace Atmos
         typedef StoredProperty<Color, Color&> ColorProperty;
         ColorProperty color;
     public:
-        typedef ReadonlyProperty<AxisBoundingBox2D> AABBProperty;
+        typedef ReadonlyProperty<AxisAlignedBox2D> AABBProperty;
         AABBProperty primaryAssetSlice;
     public:
         Sprite(ObjectManager& manager);
@@ -47,7 +47,7 @@ namespace Atmos
     private:
         void SubscribeToProperties();
     private:
-        AxisBoundingBox2D _primaryAssetSlice;
+        AxisAlignedBox2D _primaryAssetSlice;
         void CalculatePrimaryAssetSlice();
     private:
         void OnPositionChanged(Position3D newValue);

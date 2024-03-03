@@ -28,9 +28,9 @@ namespace Atmos
         return true;
     }
 
-    AxisBoundingBox2D NullWindow::AdjustWindowDimensions()
+    AxisAlignedBox2D NullWindow::AdjustWindowDimensions()
     {
-        return AxisBoundingBox2D();
+        return AxisAlignedBox2D();
     }
 
     void NullWindow::OnSetWindowDimensions()

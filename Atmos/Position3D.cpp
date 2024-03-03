@@ -2,67 +2,36 @@
 #include "Position3D.h"
 
 #include "Position2D.h"
-#include "AxisBoundingBox3D.h"
+#include "AxisAlignedBox3D.h"
 #include "MathUtility.h"
 
 #include <Inscription/Scribe.h>
 
 namespace Atmos
 {
-    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(Position3D)
-    {
-        scribe(X);
-        scribe(Y);
-        scribe(Z);
-        scribe(pixelPerfect);
-        if (scribe.IsInput())
-            Calc();
-    }
+    Position3D::Position3D() : x(0), y(0), z(0)
+    {}
 
-    void Position3D::Calc()
-    {
-        if (pixelPerfect)
-        {
-            realX = Round(X);
-            realY = Round(Y);
-            realZ = Round(Z);
-        }
-        else
-        {
-            realX = X;
-            realY = Y;
-            realZ = Z;
-        }
-    }
+    Position3D::Position3D(Value x, Value y, Value z) : x(x), y(y), z(z)
+    {}
 
-    Position3D::Position3D(ValueT X, ValueT Y, ValueT Z, bool pixelPerfect) : X(X), Y(Y), Z(Z), pixelPerfect(pixelPerfect)
-    {
-        Calc();
-    }
+    Position3D::Position3D(const Position2D& pos, Value z) : x(pos.x), y(pos.y), z(z)
+    {}
 
-    Position3D::Position3D(const Position2D &pos, ValueT Z) : X(pos.GetX()), Y(pos.GetY()), Z(Z), pixelPerfect(pos.GetPixelPerfect())
-    {
-        Calc();
-    }
-
-    Position3D::Position3D(const Position3D &arg) : X(arg.X), Y(arg.Y), Z(arg.Z), pixelPerfect(arg.pixelPerfect)
-    {
-        Calc();
-    }
+    Position3D::Position3D(const Position3D& arg) : x(arg.x), y(arg.y), z(arg.z)
+    {}
 
     Position3D& Position3D::operator=(const Position3D &arg)
     {
-        X = arg.X;
-        Y = arg.Y;
-        Z = arg.Z;
-        pixelPerfect = arg.pixelPerfect;
-        Calc();
+        x = arg.x;
+        y = arg.y;
+        z = arg.z;
         return *this;
     }
 
     bool Position3D::operator==(const Position3D &arg) const
     {
-        return realX == arg.realX && realY == arg.realY && realZ == arg.realZ;
+        return x == arg.x && y == arg.y && z == arg.z;
     }
 
     bool Position3D::operator!=(const Position3D &arg) const
@@ -72,122 +41,34 @@ namespace Atmos
 
     Position3D::operator Position2D() const
     {
-        return Position2D(GetX(), GetY(), GetPixelPerfect());
+        return Position2D(x, y);
     }
 
-    void Position3D::Set(ValueT X, ValueT Y, ValueT Z)
+    bool Position3D::Within(Value left, Value right, Value top, Value bottom, Value nearZ, Value farZ) const
     {
-        this->X = X;
-        this->Y = Y;
-        this->Z = Z;
-        Calc();
+        return x >= left && x <= right && y >= top && y <= bottom && z <= nearZ && z >= farZ;
     }
 
-    void Position3D::SetX(ValueT set)
+    bool Position3D::Within(const AxisAlignedBox3D& box) const
     {
-        X = set;
-        Calc();
+        return Within(box.left, box.right, box.top, box.bottom, box.nearZ, box.farZ);
     }
 
-    void Position3D::IncrementX(ValueT inc)
+    Position3D Position3D::FromScreen(const Position3D& convert, const Position3D& topLeftScreen, Value z)
     {
-        X += inc;
-        Calc();
+        return Position3D(convert.x + topLeftScreen.x, convert.y + topLeftScreen.y, z);
     }
 
-    void Position3D::DecrementX(ValueT dec)
+    typename Position3D::Value Position3D::FindDistance(const Position3D& starting, const Position3D& destination)
     {
-        X -= dec;
-        Calc();
-    }
-
-    void Position3D::SetY(ValueT set)
-    {
-        Y = set;
-        Calc();
-    }
-
-    void Position3D::IncrementY(ValueT inc)
-    {
-        Y += inc;
-        Calc();
-    }
-
-    void Position3D::DecrementY(ValueT dec)
-    {
-        Y -= dec;
-        Calc();
-    }
-
-    void Position3D::SetZ(ValueT set)
-    {
-        Z = set;
-        Calc();
-    }
-
-    void Position3D::IncrementZ(ValueT inc)
-    {
-        Z += inc;
-        Calc();
-    }
-
-    void Position3D::DecrementZ(ValueT dec)
-    {
-        Z -= dec;
-        Calc();
-    }
-
-    void Position3D::SetPixelPerfect(bool set)
-    {
-        pixelPerfect = set;
-        Calc();
-    }
-
-    Position3D::ValueT Position3D::GetX() const
-    {
-        return realX;
-    }
-
-    Position3D::ValueT Position3D::GetY() const
-    {
-        return realY;
-    }
-
-    Position3D::ValueT Position3D::GetZ() const
-    {
-        return realZ;
-    }
-
-    bool Position3D::GetPixelPerfect() const
-    {
-        return pixelPerfect;
-    }
-
-    bool Position3D::Within(ValueT left, ValueT right, ValueT top, ValueT bottom, ValueT nearZ, ValueT farZ) const
-    {
-        return realX >= left && realX <= right && realY >= top && realY <= bottom && realZ <= nearZ && realZ >= farZ;
-    }
-
-    bool Position3D::Within(const AxisBoundingBox3D &box) const
-    {
-        return Within(box.GetLeft(), box.GetRight(), box.GetTop(), box.GetBottom(), box.GetNearZ(), box.GetFarZ());
-    }
-
-    Position3D Position3D::FromScreen(const Position3D &convert, const Position3D &topLeftScreen, ValueT z)
-    {
-        return Position3D(convert.GetX() + topLeftScreen.GetX(), convert.GetY() + topLeftScreen.GetY(), z);
-    }
-
-    typename Position3D::ValueT Position3D::FindDistance(const Position3D &starting, const Position3D &destination)
-    {
-        ValueT distanceX = (destination.GetX() - starting.GetX());
-        ValueT distanceY = (destination.GetY() - starting.GetY());
-        ValueT distanceZ = (destination.GetZ() - starting.GetZ());
+        Value distanceX = (destination.x - starting.x);
+        Value distanceY = (destination.y - starting.y);
+        Value distanceZ = (destination.z - starting.z);
 
         return sqrt(pow(distanceX, 2) + pow(distanceY, 2) + pow(distanceZ, 2));
     }
 
-    Position3D Position3D::FindCenter(const std::vector<Position3D> &container)
+    Position3D Position3D::FindCenter(const std::vector<Position3D>& container)
     {
         auto nearTopLeft = *container.begin();
         auto nearBottomRight = *container.begin();
@@ -196,29 +77,39 @@ namespace Atmos
         for (auto loop = ++container.begin(); loop != container.end(); ++loop)
         {
             // Check X
-            if (loop->GetX() < nearTopLeft.GetX())
-                nearTopLeft.SetX(loop->GetX());
-            else if (loop->GetX() > nearBottomRight.GetX())
-                nearBottomRight.SetX(loop->GetX());
+            if (loop->x < nearTopLeft.x)
+                nearTopLeft.x = loop->x;
+            else if (loop->x > nearBottomRight.x)
+                nearBottomRight.x = loop->x;
 
             // Check Y
-            if (loop->GetY() < nearTopLeft.GetY())
-                nearTopLeft.SetY(loop->GetY());
-            else if (loop->GetY() > nearBottomRight.GetY())
-                nearBottomRight.SetY(loop->GetY());
+            if (loop->y < nearTopLeft.y)
+                nearTopLeft.y = loop->y;
+            else if (loop->y > nearBottomRight.y)
+                nearBottomRight.y = loop->y;
 
             // Check Z
-            if (loop->GetZ() < nearTopLeft.GetZ())
-                nearTopLeft.SetZ(loop->GetZ());
-            else if (loop->GetZ() > farTopLeft.GetZ())
-                farTopLeft.SetZ(loop->GetZ());
+            if (loop->z < nearTopLeft.z)
+                nearTopLeft.z = loop->z;
+            else if (loop->z > farTopLeft.z)
+                farTopLeft.z = loop->z;
         }
 
         return FindCenter(nearTopLeft, nearBottomRight, farTopLeft);
     }
 
-    Position3D Position3D::FindCenter(const Position3D &nearTopLeft, const Position3D &nearBottomRight, const Position3D &farTopLeft)
+    Position3D Position3D::FindCenter(const Position3D& nearTopLeft, const Position3D& nearBottomRight, const Position3D& farTopLeft)
     {
-        return Position3D(nearTopLeft.GetX() + ((nearBottomRight.GetX() - nearTopLeft.GetX()) / 2), nearTopLeft.GetY() + ((nearBottomRight.GetY() - nearTopLeft.GetY()) / 2), nearTopLeft.GetZ() + ((farTopLeft.GetZ() - nearTopLeft.GetZ()) / 2));
+        return Position3D(
+            nearTopLeft.x + ((nearBottomRight.x - nearTopLeft.x) / 2),
+            nearTopLeft.y + ((nearBottomRight.y - nearTopLeft.y) / 2),
+            nearTopLeft.z + ((farTopLeft.z - nearTopLeft.z) / 2));
+    }
+
+    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(Position3D)
+    {
+        scribe(x);
+        scribe(y);
+        scribe(z);
     }
 }

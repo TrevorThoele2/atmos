@@ -59,7 +59,7 @@ namespace Atmos
         toAddObjects.Clear();
     }
 
-    void Octree::InformChanged(ItemReference changed, const AxisBoundingBox3D& previousBounds)
+    void Octree::InformChanged(ItemReference changed, const AxisAlignedBox3D& previousBounds)
     {
         if (toAddObjects.Has(changed))
             return;
@@ -68,7 +68,7 @@ namespace Atmos
         toAddObjects.Add(changed);
     }
 
-    Octree::Map Octree::AllInside(const AxisBoundingBox3D& aabb)
+    Octree::Map Octree::AllInside(const AxisAlignedBox3D& aabb)
     {
         Map ret;
         for (auto& loop : heads)
@@ -90,7 +90,7 @@ namespace Atmos
         return size;
     }
 
-    Octree::NodeBase* Octree::FabricateNode(Layer layer, GridPosition::ValueT layerSize, GridPosition::ValueT x, GridPosition::ValueT y, GridPosition::ValueT z)
+    Octree::NodeBase* Octree::FabricateNode(Layer layer, GridPosition::Value layerSize, GridPosition::Value x, GridPosition::Value y, GridPosition::Value z)
     {
         if (layer == 0)
             return new LeafNode(x, y, z);
@@ -113,7 +113,7 @@ namespace Atmos
         }
         else
         {
-            auto headCreator = [&](NodePtr& ptr, GridPosition::ValueT x, GridPosition::ValueT y, GridPosition::ValueT z)
+            auto headCreator = [&](NodePtr& ptr, GridPosition::Value x, GridPosition::Value y, GridPosition::Value z)
             {
                 auto prevHead = ptr.release();
                 ptr.reset(new Node(layer, Node::FabricateLayerSize(layer), x, y, z));
@@ -168,7 +168,7 @@ namespace Atmos
             FabricateHeads(heads[0]->GetLayer() + 1);
     }
 
-    void Octree::RemoveImpl(ItemReference remove, const AxisBoundingBox3D& bounds)
+    void Octree::RemoveImpl(ItemReference remove, const AxisAlignedBox3D& bounds)
     {
         toAddObjects.Remove(remove);
         if (IsEmpty())
@@ -187,27 +187,27 @@ namespace Atmos
             --size;
     }
 
-    Octree::ChildDetermination::ChildDetermination(ChildID selection, GridPosition::ValueT xOffset, GridPosition::ValueT yOffset, GridPosition::ValueT zOffset) : selection(selection), xOffset(xOffset), yOffset(yOffset), zOffset(zOffset)
+    Octree::ChildDetermination::ChildDetermination(ChildID selection, GridPosition::Value xOffset, GridPosition::Value yOffset, GridPosition::Value zOffset) : selection(selection), xOffset(xOffset), yOffset(yOffset), zOffset(zOffset)
     {}
 
-    Optional<Octree::ChildDetermination> Octree::DetermineChild(GridPosition::ValueT layerSize, const AxisBoundingBox3D& bounds, const AxisBoundingBox3D& againstBounds)
+    Optional<Octree::ChildDetermination> Octree::DetermineChild(GridPosition::Value layerSize, const AxisAlignedBox3D& bounds, const AxisAlignedBox3D& againstBounds)
     {
         typedef Optional<ChildDetermination> RetT;
 
-        const AxisBoundingBox3D::Coordinate midpointX = bounds.GetLeft() + (layerSize / 2.0f);
-        const AxisBoundingBox3D::Coordinate midpointY = bounds.GetTop() + (layerSize / 2.0f);
-        const AxisBoundingBox3D::Coordinate midpointZ = bounds.GetFarZ() + (layerSize / 2.0f);
+        const AxisAlignedBox3D::Coordinate midpointX = bounds.left + (layerSize / 2.0f);
+        const AxisAlignedBox3D::Coordinate midpointY = bounds.top + (layerSize / 2.0f);
+        const AxisAlignedBox3D::Coordinate midpointZ = bounds.farZ + (layerSize / 2.0f);
 
         ChildDetermination determination(0, 0, 0, 0);
 
         // EAST = +0
-        if (againstBounds.GetLeft() >= midpointX)
+        if (againstBounds.left >= midpointX)
         {
             // WEST = +1
             determination.selection += 1;
             determination.xOffset = 1;
         }
-        else if (againstBounds.GetRight() > midpointX)
+        else if (againstBounds.right > midpointX)
         {
             // The right is > midpointX and left < midpointX, which means that this crosses between two grids - cannot be divided further
             // So, must be here
@@ -215,13 +215,13 @@ namespace Atmos
         }
 
         // NORTH = +0
-        if (againstBounds.GetTop() >= midpointY)
+        if (againstBounds.top >= midpointY)
         {
             // SOUTH = +2
             determination.selection += 2;
             determination.yOffset = 1;
         }
-        else if (againstBounds.GetBottom() > midpointY)
+        else if (againstBounds.bottom > midpointY)
         {
             // The bottom is > midpointY and top < midpointY, which means that this crosses between two grids - cannot be divided further
             // So, must be here
@@ -229,13 +229,13 @@ namespace Atmos
         }
 
         // FAR = +0
-        if (againstBounds.GetFarZ() >= midpointZ)
+        if (againstBounds.farZ >= midpointZ)
         {
             // NEAR = +4
             determination.selection += 4;
             determination.zOffset = 1;
         }
-        else if (againstBounds.GetNearZ() > midpointZ)
+        else if (againstBounds.nearZ > midpointZ)
         {
             // The nearZ is > midpointZ and farZ < midpointZ, which means that this crosses between two grids - cannot be divided further
             // So, must be here
@@ -245,7 +245,7 @@ namespace Atmos
         return RetT(std::move(determination));
     }
 
-    Octree::NodeBase::NodeBase(GridPosition::ValueT x, GridPosition::ValueT y, GridPosition::ValueT z) : x(x), y(y), z(z)
+    Octree::NodeBase::NodeBase(GridPosition::Value x, GridPosition::Value y, GridPosition::Value z) : x(x), y(y), z(z)
     {}
 
     Octree::NodeBase::NodeBase(NodeBase&& arg) : x(std::move(arg.x)), y(std::move(arg.y)), z(std::move(arg.z))
@@ -253,9 +253,9 @@ namespace Atmos
 
     Octree::NodeBase& Octree::NodeBase::operator=(NodeBase&& arg)
     {
-        const_cast<GridPosition::ValueT&>(x) = std::move(arg.x);
-        const_cast<GridPosition::ValueT&>(y) = std::move(arg.y);
-        const_cast<GridPosition::ValueT&>(z) = std::move(arg.z);
+        const_cast<GridPosition::Value&>(x) = std::move(arg.x);
+        const_cast<GridPosition::Value&>(y) = std::move(arg.y);
+        const_cast<GridPosition::Value&>(z) = std::move(arg.z);
         return *this;
     }
 
@@ -267,7 +267,7 @@ namespace Atmos
         return GridPosition(x, y, z);
     }
 
-    Octree::LeafNode::LeafNode(GridPosition::ValueT x, GridPosition::ValueT y, GridPosition::ValueT z) : NodeBase(x, y, z)
+    Octree::LeafNode::LeafNode(GridPosition::Value x, GridPosition::Value y, GridPosition::Value z) : NodeBase(x, y, z)
     {}
 
     Octree::LeafNode::LeafNode(LeafNode&& arg) : NodeBase(std::move(arg))
@@ -279,7 +279,7 @@ namespace Atmos
         return *this;
     }
 
-    bool Octree::LeafNode::Emplace(ObjectReference emplace, const AxisBoundingBox3D& fragmentBounds)
+    bool Octree::LeafNode::Emplace(ObjectReference emplace, const AxisAlignedBox3D& fragmentBounds)
     {
         // Check if the fragment can fit entirely within this node
         if (!fragmentBounds.Within(GetBounds()))
@@ -289,7 +289,7 @@ namespace Atmos
         return true;
     }
 
-    bool Octree::LeafNode::Remove(ObjectReference remove, const AxisBoundingBox3D& fragmentBounds)
+    bool Octree::LeafNode::Remove(ObjectReference remove, const AxisAlignedBox3D& fragmentBounds)
     {
         return objects.Remove(remove);
     }
@@ -299,7 +299,7 @@ namespace Atmos
         objects.Clear();
     }
 
-    void Octree::LeafNode::AllInside(const AxisBoundingBox3D& aabb, Octree::Map& map)
+    void Octree::LeafNode::AllInside(const AxisAlignedBox3D& aabb, Octree::Map& map)
     {
         // Check if the aabb overlaps this node
         if (!aabb.Overlapping(GetBounds()))
@@ -313,15 +313,15 @@ namespace Atmos
         return objects.IsEmpty();
     }
 
-    AxisBoundingBox3D Octree::LeafNode::GetBounds() const
+    AxisAlignedBox3D Octree::LeafNode::GetBounds() const
     {
-        GridPosition::ValueT gridSize(GRID_SIZE<GridPosition::ValueT>);
-        return AxisBoundingBox3D(static_cast<AxisBoundingBox3D::Coordinate>(x * gridSize),
-            static_cast<AxisBoundingBox3D::Coordinate>(y * gridSize),
-            static_cast<AxisBoundingBox3D::Coordinate>(z * gridSize),
-            static_cast<AxisBoundingBox3D::Coordinate>(x * gridSize + gridSize),
-            static_cast<AxisBoundingBox3D::Coordinate>(y * gridSize + gridSize),
-            static_cast<AxisBoundingBox3D::Coordinate>(z * gridSize + gridSize));
+        GridPosition::Value gridSize(GRID_SIZE<GridPosition::Value>);
+        return AxisAlignedBox3D(static_cast<AxisAlignedBox3D::Coordinate>(x * gridSize),
+            static_cast<AxisAlignedBox3D::Coordinate>(y * gridSize),
+            static_cast<AxisAlignedBox3D::Coordinate>(z * gridSize),
+            static_cast<AxisAlignedBox3D::Coordinate>(x * gridSize + gridSize),
+            static_cast<AxisAlignedBox3D::Coordinate>(y * gridSize + gridSize),
+            static_cast<AxisAlignedBox3D::Coordinate>(z * gridSize + gridSize));
     }
 
     Octree::Layer Octree::LeafNode::GetLayer() const
@@ -329,9 +329,9 @@ namespace Atmos
         return 0;
     }
 
-    GridPosition::ValueT Octree::LeafNode::GetLayerSize() const
+    GridPosition::Value Octree::LeafNode::GetLayerSize() const
     {
-        return GRID_SIZE<GridPosition::ValueT>;
+        return GRID_SIZE<GridPosition::Value>;
     }
 
     Octree::Map::SizeT Octree::LeafNode::GetTotalSize() const
@@ -346,13 +346,13 @@ namespace Atmos
         totalSize = objects.Size();
     }
 
-    Octree::Node::Node(Layer layer, GridPosition::ValueT layerSize, GridPosition::ValueT x, GridPosition::ValueT y, GridPosition::ValueT z) : NodeBase(x, y, z), layer(layer), layerSize(layerSize), totalSize(0),
-        bounds(static_cast<AxisBoundingBox3D::Coordinate>(x * layerSize),
-            static_cast<AxisBoundingBox3D::Coordinate>(y * layerSize),
-            static_cast<AxisBoundingBox3D::Coordinate>(z * layerSize),
-            static_cast<AxisBoundingBox3D::Coordinate>((x * layerSize) + layerSize),
-            static_cast<AxisBoundingBox3D::Coordinate>((y * layerSize) + layerSize),
-            static_cast<AxisBoundingBox3D::Coordinate>((z * layerSize) + layerSize))
+    Octree::Node::Node(Layer layer, GridPosition::Value layerSize, GridPosition::Value x, GridPosition::Value y, GridPosition::Value z) : NodeBase(x, y, z), layer(layer), layerSize(layerSize), totalSize(0),
+        bounds(static_cast<AxisAlignedBox3D::Coordinate>(x * layerSize),
+            static_cast<AxisAlignedBox3D::Coordinate>(y * layerSize),
+            static_cast<AxisAlignedBox3D::Coordinate>(z * layerSize),
+            static_cast<AxisAlignedBox3D::Coordinate>((x * layerSize) + layerSize),
+            static_cast<AxisAlignedBox3D::Coordinate>((y * layerSize) + layerSize),
+            static_cast<AxisAlignedBox3D::Coordinate>((z * layerSize) + layerSize))
     {}
 
     Octree::Node::Node(Node&& arg) : NodeBase(std::move(arg)), children(std::move(arg.children)), bounds(std::move(arg.bounds)), totalSize(std::move(arg.totalSize)), layer(arg.layer)
@@ -368,7 +368,7 @@ namespace Atmos
         return *this;
     }
 
-    bool Octree::Node::Emplace(ObjectReference emplace, const AxisBoundingBox3D& fragmentBounds)
+    bool Octree::Node::Emplace(ObjectReference emplace, const AxisAlignedBox3D& fragmentBounds)
     {
         // Check if the fragment can fit entirely within this node
         if (!fragmentBounds.Within(bounds))
@@ -406,7 +406,7 @@ namespace Atmos
         return emplaced;
     }
 
-    bool Octree::Node::Remove(ObjectReference remove, const AxisBoundingBox3D& fragmentBounds)
+    bool Octree::Node::Remove(ObjectReference remove, const AxisAlignedBox3D& fragmentBounds)
     {
         // If this node is totally empty, then just leave
         if (IsTotalEmpty())
@@ -457,7 +457,7 @@ namespace Atmos
         totalSize = 0;
     }
 
-    void Octree::Node::AllInside(const AxisBoundingBox3D& aabb, Octree::Map& map)
+    void Octree::Node::AllInside(const AxisAlignedBox3D& aabb, Octree::Map& map)
     {
         // Check if the aabb overlaps this node
         if (!aabb.Overlapping(bounds))
@@ -481,7 +481,7 @@ namespace Atmos
         return totalSize == 0;
     }
 
-    AxisBoundingBox3D Octree::Node::GetBounds() const
+    AxisAlignedBox3D Octree::Node::GetBounds() const
     {
         return bounds;
     }
@@ -491,7 +491,7 @@ namespace Atmos
         return layer;
     }
 
-    GridPosition::ValueT Octree::Node::GetLayerSize() const
+    GridPosition::Value Octree::Node::GetLayerSize() const
     {
         return layerSize;
     }
@@ -501,8 +501,8 @@ namespace Atmos
         return totalSize;
     }
 
-    GridPosition::ValueT Octree::Node::FabricateLayerSize(Layer layer)
+    GridPosition::Value Octree::Node::FabricateLayerSize(Layer layer)
     {
-        return GRID_SIZE<GridPosition::ValueT> * PowerOfTwo(layer);
+        return GRID_SIZE<GridPosition::Value> * PowerOfTwo(layer);
     }
 }

@@ -10,7 +10,7 @@ namespace Atmos
     class Direction
     {
     public:
-        enum ValueT : unsigned char
+        enum Value : unsigned char
         {
             LEFT,
             UP,
@@ -20,45 +20,48 @@ namespace Atmos
             Z_DOWN
         };
 
-        enum class RelativeValueT : unsigned char
+        enum class RelativeValue : unsigned char
         {
             SAME,
             LEFT,
             RIGHT,
             OPPOSED
         };
+    public:
+        Direction(Value value = Value::UP);
+        Direction(const Direction& arg) = default;
+
+        Direction& operator=(const Direction& arg) = default;
+        Direction& operator=(Value arg);
+
+        bool operator==(const Direction& arg) const;
+        bool operator!=(const Direction& arg) const;
+
+        explicit operator Value() const;
+
+        void Set(Value set);
+        Value Get() const;
+
+        void MoveInRelativeDirection(RelativeValue move);
+        RelativeValue GetRelativeDirection(Value value) const;
+        RelativeValue GetRelativeDirection(const Direction& direction) const;
+
+        static Value FromUnderlyingType(std::underlying_type<Value>::type from);
+    private:
+        Value value;
+
+        template<Value value>
+        static constexpr std::underlying_type<Value>::type CastFromValue();
     private:
         INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
-    private:
-        ValueT value;
-
-        template<ValueT val>
-        static constexpr std::underlying_type<ValueT>::type CastFromValueT();
-    public:
-        Direction(ValueT value = ValueT::UP);
-        Direction(const Direction &arg) = default;
-        Direction& operator=(const Direction &arg) = default;
-        Direction& operator=(ValueT arg);
-        bool operator==(const Direction &arg) const;
-        bool operator!=(const Direction &arg) const;
-        explicit operator ValueT() const;
-
-        void Set(ValueT set);
-        ValueT Get() const;
-
-        void MoveInRelativeDirection(RelativeValueT move);
-        RelativeValueT GetRelativeDirection(ValueT value) const;
-        RelativeValueT GetRelativeDirection(const Direction &direction) const;
-
-        static ValueT FromUnderlyingType(std::underlying_type<ValueT>::type from);
     };
 
-    template<Direction::ValueT val>
-    constexpr std::underlying_type<Direction::ValueT>::type Direction::CastFromValueT()
+    template<Direction::Value value>
+    constexpr std::underlying_type<Direction::Value>::type Direction::CastFromValue()
     {
-        return static_cast<std::underlying_type<Direction::ValueT>::type>(val);
+        return static_cast<std::underlying_type<Direction::Value>::type>(value);
     }
 
-    typedef ::Chroma::EnumIterationTraits<Direction::ValueT, Direction::ValueT::LEFT, Direction::ValueT::DOWN> DirectionIterationTraits;
+    typedef ::Chroma::EnumIterationTraits<Direction::Value, Direction::Value::LEFT, Direction::Value::DOWN> DirectionIterationTraits;
 }

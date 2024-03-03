@@ -1,7 +1,7 @@
 #pragma once
 
 #include "TimeValue.h"
-#include "AxisBoundingBox2D.h"
+#include "AxisAlignedBox2D.h"
 
 #include "ScreenPosition.h"
 #include "ScreenDimensions.h"
@@ -42,7 +42,7 @@ namespace Atmos
     protected:
         void SetWindowDimensions();
 
-        virtual AxisBoundingBox2D AdjustWindowDimensions() = 0;
+        virtual AxisAlignedBox2D AdjustWindowDimensions() = 0;
         virtual void OnSetWindowDimensions() = 0;
         virtual Position GetDefaultWindowPosition() = 0;
         virtual void OnSetFullscreen() = 0;

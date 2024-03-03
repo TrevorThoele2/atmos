@@ -25,16 +25,16 @@ namespace Atmos
 
             switch (direction.Get())
             {
-            case Direction::ValueT::UP:
+            case Direction::Value::UP:
                 --posInFront.y;
                 break;
-            case Direction::ValueT::DOWN:
+            case Direction::Value::DOWN:
                 ++posInFront.y;
                 break;
-            case Direction::ValueT::LEFT:
+            case Direction::Value::LEFT:
                 --posInFront.x;
                 break;
-            case Direction::ValueT::RIGHT:
+            case Direction::Value::RIGHT:
                 ++posInFront.x;
                 break;
             }
@@ -150,21 +150,25 @@ namespace Inscription
     {
         if (scribe.IsOutput())
         {
+            auto& outputScribe = *scribe.AsOutput();
+
             ::Inscription::ContainerSize size(obj.storage.size());
-            scribe.Save(size);
+            outputScribe.Save(size);
 
             for (auto& loop : obj.storage)
-                scribe.Save(loop.second);
+                outputScribe.Save(loop.second);
         }
         else // INPUT
         {
+            auto& inputScribe = *scribe.AsInput();
+
             ::Inscription::ContainerSize size;
-            scribe.Load(size);
+            inputScribe.Load(size);
 
             while (size-- > 0)
             {
                 ManagedT::StorageObject storageObject;
-                scribe.Load(storageObject);
+                inputScribe.Load(storageObject);
 
                 obj.storage.emplace(storageObject.name, std::move(storageObject));
             }

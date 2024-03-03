@@ -34,199 +34,99 @@
 #include "ShaderAssetFactory.h"
 #include "TileFactory.h"
 
-#include <Inscription/Scribe.h>
+#include <Inscription/OutputBinaryScribe.h>
+#include <Inscription/InputBinaryScribe.h>
 
 namespace Atmos
 {
-    class ObjectRegistration::Impl
-    {
-    public:
-        class Registrator
-        {
-        public:
-            virtual ~Registrator() = 0;
-            virtual void Register(ObjectManager& manager) = 0;
-            virtual void Register(ObjectTypeGraph& graph) = 0;
-            virtual void Register(::Inscription::Scribe& scribe) = 0;
-        };
-
-        template<class T>
-        class ObjectRegistrator : public Registrator
-        {
-        public:
-            void Register(ObjectManager& manager) override;
-            void Register(ObjectTypeGraph& graph) override;
-            void Register(::Inscription::Scribe& scribe) override;
-        };
-
-        template<class T>
-        class SystemRegistrator : public Registrator
-        {
-        public:
-            void Register(ObjectManager& manager) override;
-            void Register(ObjectTypeGraph& graph) override;
-            void Register(::Inscription::Scribe& scribe) override;
-        };
-
-        typedef std::unique_ptr<Registrator> RegistratorPtr;
-        typedef std::vector<RegistratorPtr> RegistratorList;
-        RegistratorList globalRegistratorList;
-        RegistratorList localRegistratorList;
-
-        template<class T>
-        void CreateGlobalObjectRegistrator();
-        template<class T>
-        void CreateGlobalSystemRegistrator();
-        template<class T>
-        void CreateLocalObjectRegistrator();
-        template<class T>
-        void CreateLocalSystemRegistrator();
-    };
-
-    ObjectRegistration::Impl::Registrator::~Registrator()
-    {}
-
-    template<class T>
-    void ObjectRegistration::Impl::ObjectRegistrator<T>::Register(ObjectManager& manager)
-    {
-        manager.RegisterObjectType<T>();
-    }
-
-    template<class T>
-    void ObjectRegistration::Impl::ObjectRegistrator<T>::Register(ObjectTypeGraph& graph)
-    {
-        auto description = TypeDescriptionFor<T>();
-        graph.AddDescription(description);
-    }
-
-    template<class T>
-    void ObjectRegistration::Impl::ObjectRegistrator<T>::Register(::Inscription::Scribe& scribe)
-    {
-        scribe.RegisterType<T>();
-    }
-
-    template<class T>
-    void ObjectRegistration::Impl::SystemRegistrator<T>::Register(ObjectManager& manager)
-    {
-        manager.RegisterSystemType<T>();
-    }
-
-    template<class T>
-    void ObjectRegistration::Impl::SystemRegistrator<T>::Register(ObjectTypeGraph& graph)
-    {}
-
-    template<class T>
-    void ObjectRegistration::Impl::SystemRegistrator<T>::Register(::Inscription::Scribe& scribe)
-    {
-        scribe.RegisterType<T>();
-    }
-
-    template<class T>
-    void ObjectRegistration::Impl::CreateGlobalObjectRegistrator()
-    {
-        globalRegistratorList.push_back(RegistratorPtr(new ObjectRegistrator<T>()));
-    }
-
-    template<class T>
-    void ObjectRegistration::Impl::CreateGlobalSystemRegistrator()
-    {
-        globalRegistratorList.push_back(RegistratorPtr(new SystemRegistrator<T>()));
-    }
-
-    template<class T>
-    void ObjectRegistration::Impl::CreateLocalObjectRegistrator()
-    {
-        localRegistratorList.push_back(RegistratorPtr(new ObjectRegistrator<T>()));
-    }
-
-    template<class T>
-    void ObjectRegistration::Impl::CreateLocalSystemRegistrator()
-    {
-        localRegistratorList.push_back(RegistratorPtr(new SystemRegistrator<T>()));
-    }
-
     ObjectRegistration::ObjectRegistration()
+    {}
+
+    void ObjectRegistration::RegisterDefaultGlobals()
     {
-        EnsureImplCreated();
-        StoreAllGlobals();
-        StoreAllLocals();
+        RegisterGlobal<Asset>();
+        RegisterGlobal<FileAsset>();
+        RegisterGlobal<AudioAsset>();
+        RegisterGlobal<ImageAsset>();
+        RegisterGlobal<MaterialAsset>();
+        RegisterGlobal<ShaderAsset>();
+
+        RegisterGlobal<AudioAssetSystem>();
+        RegisterGlobal<ImageAssetSystem>();
+        RegisterGlobal<MaterialAssetSystem>();
+        RegisterGlobal<ScriptAssetSystem>();
+        RegisterGlobal<ShaderAssetSystem>();
     }
 
-    void ObjectRegistration::RegisterGlobal(ObjectManager& manager)
+    void ObjectRegistration::RegisterDefaultLocals()
     {
-        for (auto& loop : impl->globalRegistratorList)
-            loop->Register(manager);
+        RegisterLocal<Tile>();
+
+        RegisterLocal<Entity::Entity>();
+        RegisterLocal<Entity::Component>();
+        RegisterLocal<Entity::ActionComponent>();
+
+        RegisterLocal<AxisAlignedObject>();
+        RegisterLocal<RenderFragment>();
+        RegisterLocal<Sense>();
+        RegisterLocal<Sprite>();
+
+        RegisterLocal<Entity::ActionSystem>();
+        RegisterLocal<Entity::AvatarSystem>();
+        RegisterLocal<Entity::AISystem>();
+        RegisterLocal<Entity::PositionSystem>();
+
+        RegisterLocal<TileSystem>();
+        RegisterLocal<RenderFragmentSystem>();
+        RegisterLocal<SoundSystem>();
+        RegisterLocal<MusicSystem>();
     }
 
-    void ObjectRegistration::RegisterLocal(ObjectManager& manager)
+    void ObjectRegistration::RegisterDefaultInfrastructures()
     {
-        for (auto& loop : impl->localRegistratorList)
-            loop->Register(manager);
+        RegisterInfrastructure<Object>();
+        RegisterInfrastructure<ObjectSystem>();
+        RegisterInfrastructure<ObjectBatchSourceBase>();
+        RegisterInfrastructure<ObjectManager>();
     }
 
-    void ObjectRegistration::Register(ObjectTypeGraph& graph)
+    void ObjectRegistration::RegisterAllDefaults()
     {
-        for (auto& loop : impl->globalRegistratorList)
-            loop->Register(graph);
-        for (auto& loop : impl->localRegistratorList)
-            loop->Register(graph);
+        RegisterDefaultGlobals();
+        RegisterDefaultLocals();
+        RegisterDefaultInfrastructures();
     }
 
-    void ObjectRegistration::Register(::Inscription::Scribe& scribe)
+    void ObjectRegistration::PushGlobalsTo(ObjectManager& manager)
     {
-        for (auto& loop : impl->globalRegistratorList)
-            loop->Register(scribe);
-        for (auto& loop : impl->localRegistratorList)
-            loop->Register(scribe);
+        for (auto& loop : globalEntryList)
+            loop->PushTo(manager);
     }
 
-    void ObjectRegistration::StoreAllGlobals()
+    void ObjectRegistration::PushLocalsTo(ObjectManager& manager)
     {
-        impl->CreateGlobalObjectRegistrator<Asset>();
-        impl->CreateGlobalObjectRegistrator<FileAsset>();
-        impl->CreateGlobalObjectRegistrator<AudioAsset>();
-        impl->CreateGlobalObjectRegistrator<ImageAsset>();
-        impl->CreateGlobalObjectRegistrator<MaterialAsset>();
-        impl->CreateGlobalObjectRegistrator<ShaderAsset>();
-
-        impl->CreateGlobalSystemRegistrator<AudioAssetSystem>();
-        impl->CreateGlobalSystemRegistrator<ImageAssetSystem>();
-        impl->CreateGlobalSystemRegistrator<MaterialAssetSystem>();
-        impl->CreateGlobalSystemRegistrator<ScriptAssetSystem>();
-        impl->CreateGlobalSystemRegistrator<ShaderAssetSystem>();
+        for (auto& loop : localEntryList)
+            loop->PushTo(manager);
     }
 
-    void ObjectRegistration::StoreAllLocals()
+    void ObjectRegistration::PushTo(ObjectTypeGraph& graph)
     {
-        impl->CreateLocalObjectRegistrator<Tile>();
-
-        impl->CreateLocalObjectRegistrator<Entity::Entity>();
-        impl->CreateLocalObjectRegistrator<Entity::Component>();
-        impl->CreateLocalObjectRegistrator<Entity::ActionComponent>();
-
-        impl->CreateLocalObjectRegistrator<PositionalObject>();
-        impl->CreateLocalObjectRegistrator<RenderFragment>();
-        impl->CreateLocalObjectRegistrator<Sense>();
-        impl->CreateLocalObjectRegistrator<Sprite>();
-
-        impl->CreateLocalSystemRegistrator<Entity::ActionSystem>();
-        impl->CreateLocalSystemRegistrator<Entity::AvatarSystem>();
-        impl->CreateLocalSystemRegistrator<Entity::AISystem>();
-        impl->CreateLocalSystemRegistrator<Entity::PositionSystem>();
-
-        impl->CreateLocalSystemRegistrator<TileSystem>();
-        impl->CreateLocalSystemRegistrator<RenderFragmentSystem>();
-        impl->CreateLocalSystemRegistrator<SoundSystem>();
-        impl->CreateLocalSystemRegistrator<MusicSystem>();
+        for (auto& loop : globalEntryList)
+            loop->PushTo(graph);
+        for (auto& loop : localEntryList)
+            loop->PushTo(graph);
     }
 
-    ObjectRegistration::ImplPtr ObjectRegistration::impl;
-
-    void ObjectRegistration::EnsureImplCreated()
+    void ObjectRegistration::PushTo(::Inscription::BinaryScribe& scribe)
     {
-        if (impl)
-            return;
-
-        impl.reset(new Impl());
+        for (auto& loop : globalEntryList)
+            loop->PushTo(scribe);
+        for (auto& loop : localEntryList)
+            loop->PushTo(scribe);
+        for (auto& loop : infrastructureEntryList)
+            loop->PushTo(scribe);
     }
+
+    ObjectRegistration::Entry::~Entry()
+    {}
 }

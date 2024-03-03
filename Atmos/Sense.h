@@ -1,12 +1,12 @@
 #pragma once
 
-#include "PositionalObject.h"
+#include "AxisAlignedObject.h"
 
 #include "ObjectSerialization.h"
 
 namespace Atmos
 {
-    class Sense : public PositionalObject
+    class Sense : public AxisAlignedObject
     {
     public:
         StoredProperty<bool> enabled;
@@ -23,7 +23,7 @@ namespace Atmos
     struct ObjectTraits<Sense> : ObjectTraitsBase<Sense>
     {
         static const ObjectTypeName typeName;
-        static constexpr ObjectTypeList<PositionalObject> bases = {};
+        static constexpr ObjectTypeList<AxisAlignedObject> bases = {};
     };
 }
 

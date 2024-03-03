@@ -222,8 +222,6 @@ namespace Atmos
 
         typeGraph.AddDescription(TypeDescriptionFor<T>());
         CreateObjectFactory<ObjectFactory<T>>();
-        ::Inscription::Scribe::RegisterType<T>();
-        ::Inscription::Scribe::RegisterType<ObjectBatchSource<T>>();
     }
 
     template<class T, class... Args>
