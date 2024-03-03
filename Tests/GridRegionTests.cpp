@@ -6,6 +6,7 @@
 #include <Atmos/TypeRegistration.h>
 #include <Atmos/StringUtility.h>
 #include <Atmos/FindGridRegionsByBox.h>
+#include <Arca/Create.h>
 
 #include "DerivedEngine.h"
 #include "MockSurfaceResource.h"

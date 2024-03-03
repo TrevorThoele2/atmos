@@ -4,6 +4,7 @@
 
 #include <Atmos/UniversalSound.h>
 #include <Atmos/PositionedSound.h>
+#include <Arca/Create.h>
 
 #include "MockSoundResource.h"
 

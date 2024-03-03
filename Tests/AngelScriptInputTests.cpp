@@ -3,6 +3,7 @@
 #include "AngelScriptInputTests.h"
 
 #include <Atmos/ActionAsset.h>
+#include <Arca/Create.h>
 
 SCENARIO_METHOD(AngelScriptInputTestsFixture, "running input AngelScript scripts", "[script][angelscript][input]")
 {

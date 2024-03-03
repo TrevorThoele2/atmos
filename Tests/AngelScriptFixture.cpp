@@ -2,6 +2,7 @@
 
 #include <Atmos/LoadScriptAssetResourceData.h>
 #include <Atmos/CompileScript.h>
+#include <Arca/Create.h>
 
 using namespace Atmos;
 

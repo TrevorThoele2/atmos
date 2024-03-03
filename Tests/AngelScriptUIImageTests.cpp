@@ -7,6 +7,7 @@
 #include <Atmos/ChangeImageCore.h>
 #include <Atmos/MoveLine.h>
 #include <Atmos/AxisAlignedBox3D.h>
+#include <Arca/Create.h>
 
 Arca::Index<Atmos::Asset::Image> AngelScriptUIImageTestsFixture::CreateImageAsset(Arca::Reliquary& reliquary)
 {

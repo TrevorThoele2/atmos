@@ -6,10 +6,12 @@
 #include <Atmos/DynamicImage.h>
 #include <Atmos/FindImagesByBox.h>
 #include <Atmos/TypeRegistration.h>
+#include <Atmos/SpatialAlgorithms.h>
+#include <Arca/Create.h>
+
 #include "DerivedEngine.h"
 #include "MockImageAssetResource.h"
 #include "MockSurfaceResource.h"
-#include <Atmos/SpatialAlgorithms.h>
 
 using namespace Atmos;
 using namespace Spatial;

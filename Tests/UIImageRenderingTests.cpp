@@ -6,6 +6,8 @@
 #include <Atmos/TypeRegistration.h>
 #include <Atmos/Camera.h>
 #include <Atmos/MainSurface.h>
+#include <Arca/Create.h>
+#include <Arca/Destroy.h>
 
 #include "DerivedEngine.h"
 #include "MockImageAssetResource.h"

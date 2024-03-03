@@ -4,6 +4,7 @@
 
 #include <Atmos/AngelScriptBounds.h>
 #include <Atmos/SpatialAlgorithms.h>
+#include <Arca/Create.h>
 
 SCENARIO_METHOD(AngelScriptBoundsTestsFixture, "running bounds AngelScript scripts", "[script][angelscript]")
 {

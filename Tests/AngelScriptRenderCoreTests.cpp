@@ -3,6 +3,7 @@
 #include "AngelScriptRenderCoreTests.h"
 
 #include <Atmos/AngelScriptRenderCore.h>
+#include <Arca/Create.h>
 
 SCENARIO_METHOD(AngelScriptRenderCoreTestsFixture, "running render core AngelScript scripts", "[script][angelscript]")
 {

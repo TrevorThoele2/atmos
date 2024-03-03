@@ -3,7 +3,8 @@
 #include "CurrentActualizingEntity.h"
 #include "ExecuteScript.h"
 
-#include <Arca/Reliquary.h>
+#include <Arca/Create.h>
+#include <Arca/Clear.h>
 
 namespace Atmos::Entity
 {

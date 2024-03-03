@@ -5,6 +5,8 @@
 #include <Atmos/TypeRegistration.h>
 #include <Atmos/MappedAssets.h>
 #include <Atmos/NullAssetResourceManager.h>
+#include <Arca/Create.h>
+#include <Arca/Assign.h>
 
 SCENARIO_METHOD(AssetTestsFixture, "assets", "[asset]")
 {

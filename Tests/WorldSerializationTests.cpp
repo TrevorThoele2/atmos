@@ -11,6 +11,7 @@
 #include <Atmos/AssetsFileExtension.h>
 #include <Atmos/Camera.h>
 #include <Atmos/MainSurface.h>
+#include <Arca/Create.h>
 
 #include "DerivedEngine.h"
 #include "MockSurfaceResource.h"
