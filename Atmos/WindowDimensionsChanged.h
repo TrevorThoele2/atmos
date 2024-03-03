@@ -2,13 +2,13 @@
 
 #include <Arca/Signal.h>
 
-#include "ScreenDimensions.h"
+#include "ScreenSize.h"
 
 namespace Atmos::Window
 {
     struct DimensionsChanged
     {
-        const ScreenDimensions dimensions;
+        const ScreenSize dimensions;
     };
 }
 

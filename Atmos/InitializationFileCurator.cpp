@@ -13,6 +13,34 @@
 
 namespace Atmos::Initialization
 {
+    FileCurator::FileCurator(Init init) :
+        Curator(init), information(init.owner)
+    {
+        auto informationData = Data(information);
+
+        sound.CreateEntry("Master Volume", &informationData->sound.masterVolume);
+
+        controls.CreateEntry("Move Up", &informationData->controls.actions.moveUp);
+        controls.CreateEntry("Move Right", &informationData->controls.actions.moveRight);
+        controls.CreateEntry("Move Down", &informationData->controls.actions.moveDown);
+        controls.CreateEntry("Move Left", &informationData->controls.actions.moveLeft);
+        controls.CreateEntry("Use", &informationData->controls.actions.use);
+        controls.CreateEntry("Menu Up", &informationData->controls.actions.menuUp);
+        controls.CreateEntry("Menu Right", &informationData->controls.actions.menuRight);
+        controls.CreateEntry("Menu Down", &informationData->controls.actions.menuDown);
+        controls.CreateEntry("Menu Left", &informationData->controls.actions.menuLeft);
+        controls.CreateEntry("Select Next Character", &informationData->controls.actions.selectNextCharacter);
+        controls.CreateEntry("Select Previous Character", &informationData->controls.actions.selectPreviousCharacter);
+        controls.CreateEntry("End Turn", &informationData->controls.actions.endTurn);
+        controls.CreateEntry("Attack", &informationData->controls.actions.attack);
+        controls.CreateEntry("Cancel", &informationData->controls.actions.cancel);
+        controls.CreateEntry("Inventory", &informationData->controls.actions.inventory);
+        controls.CreateEntry("Spells", &informationData->controls.actions.spells);
+        controls.CreateEntry("Stats", &informationData->controls.actions.stats);
+
+        Load();
+    }
+
     void FileCurator::Save()
     {
         const auto filePath = FilePath();
@@ -22,33 +50,6 @@ namespace Atmos::Initialization
         file.WriteData(graphics.FileString());
         file.WriteData(sound.FileString());
         file.WriteData(controls.FileString());
-    }
-
-    void FileCurator::InitializeImplementation()
-    {
-        information = Arca::GlobalIndex<Information>(Owner());
-
-        sound.CreateEntry("Master Volume", &information->sound.masterVolume);
-
-        controls.CreateEntry("Move Up", &information->controls.actions.moveUp);
-        controls.CreateEntry("Move Right", &information->controls.actions.moveRight);
-        controls.CreateEntry("Move Down", &information->controls.actions.moveDown);
-        controls.CreateEntry("Move Left", &information->controls.actions.moveLeft);
-        controls.CreateEntry("Use", &information->controls.actions.use);
-        controls.CreateEntry("Menu Up", &information->controls.actions.menuUp);
-        controls.CreateEntry("Menu Right", &information->controls.actions.menuRight);
-        controls.CreateEntry("Menu Down", &information->controls.actions.menuDown);
-        controls.CreateEntry("Menu Left", &information->controls.actions.menuLeft);
-        controls.CreateEntry("Select Next Character", &information->controls.actions.selectNextCharacter);
-        controls.CreateEntry("Select Previous Character", &information->controls.actions.selectPreviousCharacter);
-        controls.CreateEntry("End Turn", &information->controls.actions.endTurn);
-        controls.CreateEntry("Attack", &information->controls.actions.attack);
-        controls.CreateEntry("Cancel", &information->controls.actions.cancel);
-        controls.CreateEntry("Inventory", &information->controls.actions.inventory);
-        controls.CreateEntry("Spells", &information->controls.actions.spells);
-        controls.CreateEntry("Stats", &information->controls.actions.stats);
-
-        Load();
     }
 
     File::Path FileCurator::FilePath() const

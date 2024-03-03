@@ -22,6 +22,9 @@
     <ClCompile Include="MockGraphicsManager.cpp">
       <Filter>Source Files\Objects</Filter>
     </ClCompile>
+    <ClCompile Include="MockRenderer.cpp">
+      <Filter>Source Files\Objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneralFixture.h">
@@ -40,6 +43,9 @@
       <Filter>Header Files\Objects</Filter>
     </ClInclude>
     <ClInclude Include="MockGraphicsManager.h">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="MockRenderer.h">
       <Filter>Header Files\Objects</Filter>
     </ClInclude>
   </ItemGroup>

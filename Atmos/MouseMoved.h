@@ -1,14 +1,14 @@
 #pragma once
 
-#include <Arca/SignalTraits.h>
+#include <Arca/Signal.h>
 
-#include "MousePosition.h"
+#include "ScreenPositionDelta.h"
 
 namespace Atmos::Input
 {
     struct MouseMoved
     {
-        const MousePositionDelta delta;
+        const ScreenPositionDelta delta;
     };
 }
 
@@ -18,5 +18,6 @@ namespace Arca
     struct Traits<Atmos::Input::MouseMoved>
     {
         static const ObjectType objectType = ObjectType::Signal;
+        static inline const TypeName typeName = "InputMouseMoved";
     };
 }

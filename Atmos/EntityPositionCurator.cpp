@@ -1,43 +1,31 @@
 #include "EntityPositionCurator.h"
 
-#include "MoveEntity.h"
-#include "MoveEntityInstant.h"
-#include "MoveEntityDirection.h"
-#include "RotateEntity.h"
-
 #include <Arca/Reliquary.h>
 #include "DebugStatistics.h"
 
 namespace Atmos::Entity
 {
-    void PositionCurator::InitializeImplementation()
+    PositionCurator::PositionCurator(Init init) :
+        Curator(init), positionedEntities(init.owner), debugStatistics(init.owner)
+    {}
+
+    void PositionCurator::Handle(const MoveEntity& command)
     {
-        Owner().ExecuteOn<MoveEntity>(
-            [this](const MoveEntity& signal)
-            {
+        
+    }
 
-            });
+    void PositionCurator::Handle(const MoveEntityInstant& command)
+    {
+        
+    }
 
-        Owner().ExecuteOn<MoveEntityInstant>(
-            [this](const MoveEntityInstant& signal)
-            {
+    void PositionCurator::Handle(const MoveEntityDirection& command)
+    {
+        
+    }
 
-            });
-
-        Owner().ExecuteOn<MoveEntityDirection>(
-            [this](const MoveEntityDirection& signal)
-            {
-
-            });
-
-        Owner().ExecuteOn<RotateEntity>(
-            [this](const RotateEntity& signal)
-            {
-
-            });
-
-        positionedEntities = Arca::GlobalIndex<PositionedEntities>(Owner());
-
-        debugStatistics = Arca::GlobalIndex<Debug::Statistics>(Owner());
+    void PositionCurator::Handle(const RotateEntity& command)
+    {
+        
     }
 }

@@ -44,12 +44,12 @@ namespace Atmos::Render
         {}
     };
 
-    class SurfaceData final : public Surface::Data
+    class SurfaceDataImplementation final : public SurfaceData
     {
     public:
-        SurfaceData() = default;
+        SurfaceDataImplementation() = default;
 
-        void SetAsRenderTarget() override
+        void FullColor(const Color& color) override
         {}
 
         void Present() override
@@ -61,16 +61,19 @@ namespace Atmos::Render
         void Release() override
         {}
 
-        ScreenDimensions Size() override
+        [[nodiscard]] ScreenSize Size() const override
         {
             return { 0, 0 };
         }
     };
 
-    class CanvasData final : public Canvas::Data
+    class CanvasDataImplementation final : public CanvasData
     {
     public:
-        CanvasData() = default;
+        CanvasDataImplementation() = default;
+
+        void Resize(ScreenSize size) override
+        {}
 
         void StartPainting() override
         {}
@@ -79,9 +82,9 @@ namespace Atmos::Render
         {}
 
         void PaintPixel(
-            const Canvas::Position& position,
+            const ScreenPosition& position,
             const Color& color,
-            Canvas::DimensionValue height) override
+            ScreenPosition::Value height) override
         {}
 
         void Clear(const Color& color) override
@@ -90,138 +93,43 @@ namespace Atmos::Render
         void Release() override
         {}
 
-        void Reset(Canvas::DimensionValue width, Canvas::DimensionValue height) override
+        void Reset(ScreenSize size) override
         {}
     };
 
-    NullGraphicsManager::NullGraphicsManager(Arca::Reliquary& reliquary) : GraphicsManager(reliquary)
-    {}
+    std::unique_ptr<Asset::ImageAssetData> NullGraphicsManager::CreateImageData(
+        const Buffer& buffer, const Name& name)
+    {
+        return std::make_unique<ImageAssetDataImplementation>();
+    }
+
+    std::unique_ptr<Asset::ShaderAssetData> NullGraphicsManager::CreateShaderData(
+        const Buffer& buffer, const Name& name)
+    {
+        return std::make_unique<ShaderAssetDataImplementation>();
+    }
+
+    std::unique_ptr<SurfaceData> NullGraphicsManager::CreateSurfaceData(
+        void* window)
+    {
+        return std::make_unique<SurfaceDataImplementation>();
+    }
+
+    std::unique_ptr<CanvasData> NullGraphicsManager::CreateCanvasData(
+        const ScreenSize& size)
+    {
+        return std::make_unique<CanvasDataImplementation>();
+    }
 
     void NullGraphicsManager::SetFullscreen(bool set)
-    {}
-
-    void NullGraphicsManager::ClearTarget(const Flags<Target>& target)
-    {}
-
-    void NullGraphicsManager::ClearTarget(const Flags<Target>& target, const Color& color)
-    {}
-
-    void NullGraphicsManager::Flush()
     {}
 
     void NullGraphicsManager::SetRenderState(RenderState state, bool set)
     {}
 
-    bool NullGraphicsManager::Start()
-    {
-        return false;
-    }
-
-    void NullGraphicsManager::Stop()
-    {}
-
-    void NullGraphicsManager::StartObjects(size_t spriteCount)
-    {}
-
-    void NullGraphicsManager::StopObjects()
-    {}
-
-    void NullGraphicsManager::StartLines()
-    {}
-
-    void NullGraphicsManager::StopLines()
-    {}
-
-    void NullGraphicsManager::StartStencil()
-    {}
-
-    void NullGraphicsManager::StopStencil()
+    void NullGraphicsManager::ChangeVerticalSync(bool set)
     {}
 
     void NullGraphicsManager::ReconstructInternals()
-    {}
-
-    void NullGraphicsManager::SetMainDimensionsImpl(const ScreenDimensions& dimensions)
-    {}
-
-    ScreenDimensions NullGraphicsManager::MainDimensionsImpl() const
-    {
-        return { 0, 0 };
-    }
-
-    std::unique_ptr<Asset::ImageAssetData> NullGraphicsManager::CreateImageDataImpl(
-        const File::Path& path)
-    {
-        return std::make_unique<ImageAssetDataImplementation>();
-    }
-
-    std::unique_ptr<Asset::ImageAssetData> NullGraphicsManager::CreateImageDataImpl(
-        void* buffer, std::int32_t size, const File::Name& name)
-    {
-        return std::make_unique<ImageAssetDataImplementation>();
-    }
-
-    std::unique_ptr<Asset::ShaderAssetData> NullGraphicsManager::CreateShaderDataImpl(
-        const File::Path& path)
-    {
-        return std::make_unique<ShaderAssetDataImplementation>();
-    }
-
-    std::unique_ptr<Asset::ShaderAssetData> NullGraphicsManager::CreateShaderDataImpl(
-        void* buffer, std::int32_t size, const File::Name& name)
-    {
-        return std::make_unique<ShaderAssetDataImplementation>();
-    }
-
-    Surface NullGraphicsManager::CreateSurfaceImpl(
-        void* window)
-    {
-        return Surface(std::make_unique<SurfaceData>());
-    }
-
-    Canvas NullGraphicsManager::CreateCanvasImpl(
-        const ScreenDimensions& dimensions)
-    {
-        return Canvas(std::make_unique<CanvasData>(), dimensions.width, dimensions.height);
-    }
-
-    bool NullGraphicsManager::CanMakeImageImpl(const File::Path& path) const
-    {
-        return true;
-    }
-
-    bool NullGraphicsManager::CanMakeImageImpl(void* buffer, std::int32_t size) const
-    {
-        return true;
-    }
-
-    void NullGraphicsManager::ResizeCanvasImpl(Canvas& canvas, const ScreenDimensions& dimensions)
-    {}
-
-    void NullGraphicsManager::SetRenderTargetImpl(Surface& set)
-    {}
-
-    void NullGraphicsManager::SetRenderTargetToMainImpl()
-    {}
-
-    void NullGraphicsManager::ReleaseMainRenderTarget()
-    {}
-
-    void NullGraphicsManager::ResetMainRenderTarget()
-    {}
-
-    void NullGraphicsManager::PresentImpl()
-    {}
-
-    void NullGraphicsManager::PresentImpl(void* windowOverride)
-    {}
-
-    void NullGraphicsManager::RenderMaterialViewImpl(MaterialRender& materialRender)
-    {}
-
-    void NullGraphicsManager::RenderCanvasViewImpl(CanvasRender& canvasRender)
-    {}
-
-    void NullGraphicsManager::RenderLineImpl(const Line& line)
     {}
 }

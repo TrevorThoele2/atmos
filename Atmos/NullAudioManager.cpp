@@ -53,7 +53,7 @@ namespace Atmos::Audio
     }
 
     std::unique_ptr<Asset::AudioAssetData> NullAudioManager::CreateAudioDataImpl(
-        ExtractedFile&& file, const File::Name& name)
+        const FormattedBuffer& buffer, const Name& name)
     {
         return std::make_unique<AudioAssetDataImplementation>();
     }

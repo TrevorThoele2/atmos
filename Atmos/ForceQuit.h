@@ -7,7 +7,7 @@ namespace Atmos::Script
 {
     struct ForceQuit
     {
-        Arca::LocalPtr<RunningScript> script;
+        Arca::RelicIndex<RunningScript> script;
     };
 }
 
@@ -16,7 +16,7 @@ namespace Arca
     template<>
     struct Traits<Atmos::Script::ForceQuit>
     {
-        static const ObjectType objectType = ObjectType::Signal;
+        static const ObjectType objectType = ObjectType::Command;
         static inline const TypeName typeName = "ScriptForceQuit";
     };
 }

@@ -11,36 +11,35 @@
 
 namespace Atmos::Script
 {
-    void ScriptController::InitializeImplementation()
+    ScriptController::ScriptController(Init init) :
+        Curator(init), allRunningScripts(init.owner), debugStatistics(init.owner)
     {
-        Owner().ExecuteOn<Arca::Created>(
-            [](const Arca::Created& signal)
+        Owner().ExecuteOn<Arca::CreatedKnown<RunningScript>>(
+            [](const Arca::CreatedKnown<RunningScript>& signal)
             {
-                auto actualized = Arca::Actualize<RunningScript>(signal.handle);
-                if (!actualized)
-                    return;
-
-                //allRunningScripts->Add(actualized, actualized);
+                
             });
 
-        Owner().ExecuteOn<Arca::Destroying>(
-            [](const Arca::Destroying& signal)
+        Owner().ExecuteOn<Arca::DestroyingKnown<RunningScript>>(
+            [](const Arca::DestroyingKnown<RunningScript>& signal)
             {
-                auto actualized = Arca::Actualize<RunningScript>(signal.handle);
-                if (!actualized)
-                    return;
-
-                //allRunningScripts->Remove(actualized);
+                
             });
-
-        allRunningScripts = Arca::GlobalIndex<AllRunningScripts>(Owner());
-
-        debugStatistics = Arca::GlobalIndex<Debug::Statistics>(Owner());
     }
 
-    void ScriptController::WorkImplementation(Stage& stage)
+    void ScriptController::Work()
     {
+        
+    }
 
+    void ScriptController::Handle(const ExecuteImmediately& command)
+    {
+        
+    }
+
+    void ScriptController::Handle(const ForceQuit& command)
+    {
+        
     }
 
     void ScriptController::LaunchOrRunScript(RunningScript& script)

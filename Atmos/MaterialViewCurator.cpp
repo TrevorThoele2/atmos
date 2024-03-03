@@ -4,7 +4,8 @@
 
 namespace Atmos::Render
 {
-    void MaterialViewCurator::PostConstructImplementation()
+    MaterialViewCurator::MaterialViewCurator(Init init) :
+        Curator(init), camera(init.owner)
     {
         Owner().ExecuteOn<Arca::MatrixFormed<MaterialMatrix>>(
             [this](const Arca::MatrixFormed<MaterialMatrix>& signal)
@@ -17,11 +18,9 @@ namespace Atmos::Render
             {
                 OnMaterialDissolved(signal);
             });
-
-        camera = Arca::GlobalIndex<Camera>(Owner());
     }
 
-    void MaterialViewCurator::WorkImplementation(Stage& stage)
+    void MaterialViewCurator::Work()
     {
         auto graphics = &**Arca::ComputedIndex<GraphicsManager*>(Owner());
 
@@ -35,13 +34,14 @@ namespace Atmos::Render
             },
             Size3D
             {
-                camera->Size().width,
-                camera->Size().height,
+                static_cast<Size3D::Value>(camera->Size().width),
+                static_cast<Size3D::Value>(camera->Size().height),
                 std::numeric_limits<Size3D::Value>::max()
             }
         };
 
-        for(auto& index : octree.AllInside(queryBox))
+        auto materialViews = octree.AllInside(queryBox);
+        for (auto& index : materialViews)
         {
             auto& core = *std::get<0>(*index.value);
             auto& bounds = *std::get<1>(*index.value);
@@ -52,15 +52,76 @@ namespace Atmos::Render
 
             MaterialRender render
             {
-                core.Material().Get(),
+                core.material.Get(),
                 position,
                 bounds.Size(),
-                core.Color(),
-                core.MaterialSlice(),
-                core.PatchShader()
+                core.color,
+                core.materialSlice,
+                core.patchShader
             };
-            graphics->RenderMaterialView(render);
+            graphics->StageRender(render);
         }
+    }
+
+    void MaterialViewCurator::Handle(const ChangeMaterialViewCore& command)
+    {
+        const auto index = Arca::ShardIndex<MaterialViewCore>(command.id, Owner());
+        if (!index)
+            return;
+
+        auto data = Data(index);
+        if (command.material)
+        {
+            data->material = *command.material;
+            CalculateMaterialSlice(*data);
+        }
+
+        if (command.index)
+        {
+            data->materialIndex = *command.index;
+            CalculateMaterialSlice(*data);
+        }
+
+        if (command.color)
+            data->color = *command.color;
+
+        if (command.patchShader)
+            data->patchShader = *command.patchShader;
+    }
+
+    void MaterialViewCurator::CalculateMaterialSlice(MaterialViewCore& core)
+    {
+        auto& material = core.material;
+        auto& materialSlice = core.materialSlice;
+        auto& materialIndex = core.materialIndex;
+
+        if (!material || !material->Image())
+        {
+            materialSlice.Top(0);
+            materialSlice.Bottom(0);
+            materialSlice.Left(0);
+            materialSlice.Right(0);
+            return;
+        }
+
+        const auto columns = material->Columns();
+        const auto rows = material->Rows();
+
+        auto column = materialIndex % columns;
+        if (column == 0)
+            column = columns;
+        --column;
+
+        auto row = static_cast<int>(std::ceil(static_cast<float>(materialIndex) / static_cast<float>(columns)));
+        --row;
+
+        const auto indexWidth = static_cast<float>(material->Image()->Width() / columns);
+        const auto indexHeight = static_cast<float>(material->Image()->Height() / rows);
+
+        materialSlice.Top(row * indexHeight);
+        materialSlice.Bottom(row * indexHeight + indexHeight);
+        materialSlice.Left(column * indexWidth);
+        materialSlice.Right(column * indexWidth + indexWidth);
     }
 
     void MaterialViewCurator::OnMaterialFormed(const Arca::MatrixFormed<MaterialMatrix>& matrix)

@@ -1,71 +1,49 @@
 #pragma once
 
-#include <Arca/ClosedTypedRelicAutomation.h>
-#include "FileAsset.h"
-
-#include <type_traits>
-using namespace std::string_literals;
-
+#include <Arca/ClosedTypedRelic.h>
 #include "Name.h"
+
+#include "StringUtility.h"
+using namespace std::string_literals;
 
 namespace Atmos::Asset
 {
-    template<class AssetT, class Enable = void>
-    class MappedAssets;
-
     template<class AssetT>
-    class MappedAssets<AssetT, std::enable_if_t<std::is_base_of_v<FileAsset, AssetT>>>
-        : public Arca::ClosedTypedRelicAutomation<MappedAssets<AssetT>>
+    class MappedAssets : public Arca::ClosedTypedRelic<MappedAssets<AssetT>>
     {
     public:
-        std::unordered_map<File::Name, AssetT*> map{};
+        std::unordered_map<Name, Arca::RelicIndex<AssetT>> map{};
+    public:
+        using Arca::ClosedTypedRelic<MappedAssets<AssetT>>::ClosedTypedRelic;
+    public:
+        [[nodiscard]] Arca::RelicIndex<AssetT> Find(const Name& name) const;
 
-        [[nodiscard]] AssetT* Find(const File::Name& name) const
-        {
-            const auto found = map.find(name);
-            if (found == map.end())
-                return nullptr;
+        [[nodiscard]] bool Exists(const Name& name) const;
 
-            return found->second;
-        }
-
-        [[nodiscard]] bool Exists(const File::Name& name) const
-        {
-            return Find(name) != nullptr;
-        }
-
-        [[nodiscard]] size_t Size() const
-        {
-            return map.size();
-        }
+        [[nodiscard]] size_t Size() const;
     };
 
     template<class AssetT>
-    class MappedAssets<AssetT, std::enable_if_t<!std::is_base_of_v<FileAsset, AssetT>>>
-        : public Arca::ClosedTypedRelicAutomation<MappedAssets<AssetT>>
+    Arca::RelicIndex<AssetT> MappedAssets<AssetT>::Find(const Name& name) const
     {
-    public:
-        std::unordered_map<Name, AssetT*> map{};
+        const auto found = map.find(name);
+        if (found == map.end())
+            return {};
 
-        [[nodiscard]] AssetT* Find(const Name& name) const
-        {
-            auto found = map.find(name);
-            if (found == map.end())
-                return nullptr;
+        return found->second;
+    }
 
-            return found->second;
-        }
+    template<class AssetT>
+    bool MappedAssets<AssetT>::Exists(const Name& name) const
+    {
+        return Find(name) != nullptr;
+    }
 
-        [[nodiscard]] bool Exists(const Name& name) const
-        {
-            return Find(name) != nullptr;
-        }
-
-        [[nodiscard]] size_t Size() const
-        {
-            return map.size();
-        }
-    };
+    template<class AssetT>
+    size_t MappedAssets<AssetT>::Size() const
+    {
+        return map.size();
+    }
 }
 
 namespace Arca

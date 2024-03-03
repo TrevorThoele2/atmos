@@ -13,22 +13,12 @@ namespace Atmos::Debug
 
 namespace Atmos::Render
 {
-    class GraphicsCurator;
-
     class RenderCurator final : public Arca::Curator
     {
     public:
-        enum class Flag
-        {
-            Draw
-        };
+        explicit RenderCurator(Init init);
 
-        Flags<Flag> flags;
-    protected:
-        void InitializeImplementation() override;
-        void WorkImplementation(Stage& stage) override;
-    private:
-        Arca::ComputedIndex<GraphicsManager*> graphics;
+        void Work(Stage& stage);
     private:
         Arca::GlobalIndex<Debug::Statistics> debugStatistics;
     };

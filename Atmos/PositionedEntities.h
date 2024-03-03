@@ -1,11 +1,11 @@
 #pragma once
 
-#include <Arca/ClosedTypedRelicAutomation.h>
+#include <Arca/ClosedTypedRelic.h>
 #include "Entity.h"
 
 namespace Atmos::Entity
 {
-    class PositionedEntities final : public Arca::ClosedTypedRelicAutomation<PositionedEntities>
+    class PositionedEntities final : public Arca::ClosedTypedRelic<PositionedEntities>
     {
     public:
         [[nodiscard]] bool CanMove(const Entity& entity) const;

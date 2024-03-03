@@ -4,6 +4,10 @@
 
 namespace Atmos::Audio
 {
+    SoundCurator::SoundCurator(Init init) :
+        Curator(init), batch(init.owner.Batch<Sound>())
+    {}
+
     void SoundCurator::ResumeAll()
     {
 
@@ -12,11 +16,6 @@ namespace Atmos::Audio
     void SoundCurator::PauseAll()
     {
 
-    }
-
-    void SoundCurator::InitializeImplementation()
-    {
-        batch = Owner().Batch<Sound>();
     }
 
     void SoundCurator::OnCameraMoved()

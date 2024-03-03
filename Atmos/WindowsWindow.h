@@ -11,7 +11,7 @@ namespace Atmos::Window
     class WindowsWindow final : public WindowBase
     {
     public:
-        WindowsWindow(Arca::Reliquary& reliquary, int nCmdShow, const String& className);
+        WindowsWindow(int nCmdShow, const String& className);
 
         void Show() override;
         void Exit() override;
@@ -33,13 +33,13 @@ namespace Atmos::Window
         String className;
     private:
         WNDCLASSEX wc{};
-        DWORD style = 0;
-        DWORD exStyle = 0;
+        DWORD currentStyle = 0;
+        DWORD currentExStyle = 0;
     private:
-        const DWORD windowedStyle;
-        const DWORD windowedStyleEx;
-        const DWORD fullscreenStyle;
-        const DWORD fullscreenStyleEx;
+        const DWORD windowedStyle = WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_OVERLAPPED;
+        const DWORD windowedStyleEx = 0;
+        const DWORD fullscreenStyle = WS_POPUP;
+        const DWORD fullscreenStyleEx = WS_EX_TOPMOST;
     private:
         void SetWindowPos(HWND after);
     };

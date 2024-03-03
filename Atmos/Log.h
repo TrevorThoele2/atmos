@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Arca/Signal.h>
+#include <Arca/Command.h>
 
 #include "LoggingSeverity.h"
 #include "LoggingDetails.h"
@@ -29,7 +29,7 @@ namespace Arca
     template<>
     struct Traits<Atmos::Logging::Log>
     {
-        static const ObjectType objectType = ObjectType::Signal;
+        static const ObjectType objectType = ObjectType::Command;
         static inline const TypeName typeName = "Log";
     };
 }

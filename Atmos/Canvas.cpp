@@ -2,35 +2,25 @@
 
 namespace Atmos::Render
 {
-    Canvas::Data::~Data() = default;
-
-    Canvas* Canvas::Data::Owner() const
-    {
-        return owner;
-    }
-
-    Canvas::Canvas(DataPtr&& data, DimensionValue width, DimensionValue height) :
-        width(width), height(height)
-    {
-        SetData(std::move(data));
-    }
+    Canvas::Canvas(Init init, ScreenSize size, DataPtr&& data) :
+        ClosedTypedRelic(init), size(size), data(std::move(data))
+    {}
 
     Canvas::Canvas(Canvas&& arg) noexcept :
-        isPainting(arg.isPainting), width(arg.width), height(arg.height)
-    {
-        SetData(std::move(arg.data));
-    }
+        ClosedTypedRelic(std::move(arg)),
+        isPainting(arg.isPainting), size(arg.size), data(std::move(arg.data))
+    {}
 
-    Canvas& Canvas::operator=(Canvas&& arg) noexcept
+    Canvas& Canvas::operator=(Canvas && arg) noexcept
     {
-        width = arg.width;
-        height = arg.height;
         isPainting = arg.isPainting;
-        SetData(std::move(arg.data));
+        size = arg.size;
+        data = std::move(arg.data);
+        ClosedTypedRelic::operator=(std::move(arg));
         return *this;
     }
 
-    Canvas::Data* Canvas::GetData() const
+    auto Canvas::Data() const -> DataT*
     {
         return data.get();
     }
@@ -55,7 +45,7 @@ namespace Atmos::Render
         return isPainting;
     }
 
-    void Canvas::PaintPixel(const Position& position, const Color& color)
+    void Canvas::PaintPixel(const ScreenPosition& position, const Color& color, ScreenPosition::Value height)
     {
         if (!IsPainting())
             return;
@@ -71,14 +61,9 @@ namespace Atmos::Render
         data->Clear(color);
     }
 
-    Canvas::DimensionValue Canvas::Width() const
+    ScreenSize Canvas::Size() const
     {
-        return width;
-    }
-
-    Canvas::DimensionValue Canvas::Height() const
-    {
-        return height;
+        return size;
     }
 
     void Canvas::Release()
@@ -88,12 +73,6 @@ namespace Atmos::Render
 
     void Canvas::Reset()
     {
-        data->Reset(width, height);
-    }
-
-    void Canvas::SetData(DataPtr&& set)
-    {
-        data = std::move(set);
-        data->owner = this;
+        data->Reset(size);
     }
 }

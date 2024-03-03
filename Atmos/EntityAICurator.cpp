@@ -6,20 +6,19 @@
 
 namespace Atmos::Entity
 {
-    void AICurator::InitializeImplementation()
-    {
-        aiComponents = Owner().Batch<AIComponent>();
-    }
+    AICurator::AICurator(Init init) :
+        Curator(init), aiComponents(init.owner.Batch<AIComponent>())
+    {}
 
-    void AICurator::WorkImplementation(Stage& stage)
+    void AICurator::Work()
     {
         for (auto& loop : aiComponents)
         {
-            auto running = loop.script->RunningForThis();
+            const auto running = loop.script->RunningForThis();
             if (!running)
                 continue;
 
-            running->Resume();
+            Data(running)->Resume();
         }
     }
 }

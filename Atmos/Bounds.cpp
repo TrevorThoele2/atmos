@@ -2,6 +2,13 @@
 
 namespace Atmos
 {
+    Bounds::Bounds() = default;
+
+    Bounds::Bounds(const Position3D& position, const Size2D& size) : position(position), size(size)
+    {
+        CalculateBox();
+    }
+
     void Bounds::Position(const Position3D& to)
     {
         position = to;
@@ -31,7 +38,7 @@ namespace Atmos
 
     void Bounds::CalculateBox()
     {
-        
+        box = AxisAlignedBox2D(position, size);
     }
 }
 

@@ -6,9 +6,8 @@ namespace Atmos::Render
 {
     class CanvasViewCurator final : public Arca::Curator
     {
-    protected:
-        void InitializeImplementation() override;
-        void WorkImplementation(Stage& stage) override;
+    public:
+        void Work();
     };
 }
 

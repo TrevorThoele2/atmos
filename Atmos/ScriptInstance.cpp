@@ -21,29 +21,29 @@ namespace Atmos::Script
         if (IsRunning())
             return;
 
-        auto& running = CreateRunningFromThis();
-        Owner().Raise<Script::ExecuteImmediately>(running);
+        auto running = CreateRunningFromThis();
+        Owner().Do<Script::ExecuteImmediately>(running);
     }
 
-    RunningScript* ScriptInstance::RunningForThis() const
+    Arca::RelicIndex<RunningScript> ScriptInstance::RunningForThis() const
     {
         if (!IsRunning())
-            return nullptr;
+            return {};
 
-        return Arca::GlobalIndex<AllRunningScripts>(Owner())->RunningScriptFor(*this);
+        return Arca::GlobalIndex<AllRunningScripts>(Owner())->RunningScriptFor(ID());
     }
 
     bool ScriptInstance::IsRunning() const
     {
-        return Arca::GlobalIndex<AllRunningScripts>(Owner())->IsRunning(*this);
+        return Arca::GlobalIndex<AllRunningScripts>(Owner())->IsRunning(ID());
     }
 
-    RunningScript& ScriptInstance::CreateRunningFromThis()
+    Arca::RelicIndex<RunningScript> ScriptInstance::CreateRunningFromThis()
     {
-        auto running = Owner().Create<RunningScript>(*this);
-        running->executeName = executeName;
-        running->parameters = parameters;
-        running->persistence = persistence;
-        return *running;
+        return Owner().Do<Arca::Create<RunningScript>>(
+            Arca::RelicIndex<ScriptInstance>(ID(), Owner()),
+            executeName,
+            parameters,
+            persistence);
     }
 }

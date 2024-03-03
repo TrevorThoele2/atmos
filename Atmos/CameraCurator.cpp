@@ -8,36 +8,11 @@
 
 namespace Atmos::Render
 {
-    void CameraCurator::InitializeImplementation()
-    {
-        Owner().ExecuteOn<MoveCamera>(
-            [this](const MoveCamera& signal)
-            {
-                Move(signal.direction, signal.moveBy);
-            });
+    CameraCurator::CameraCurator(Init init) :
+        Curator(init), debugStatistics(init.owner)
+    {}
 
-        Owner().ExecuteOn<MoveCameraBy>(
-            [this](const MoveCameraBy& signal)
-            {
-                MoveBy(signal.x, signal.y, signal.z);
-            });
-
-        Owner().ExecuteOn<MoveCameraToInstant>(
-            [this](const MoveCameraToInstant& signal)
-            {
-                MoveToInstant(signal.toPosition);
-            });
-
-        Owner().ExecuteOn<MoveCameraDeltaInstant>(
-            [this](const MoveCameraDeltaInstant& signal)
-            {
-                MoveDeltaInstant(signal.x, signal.y, signal.z);
-            });
-
-        debugStatistics = Arca::GlobalIndex<Debug::Statistics>(Owner());
-    }
-
-    void CameraCurator::WorkImplementation(Stage& stage)
+    void CameraCurator::Work()
     {
         if (!IsFocusValid())
             return;
@@ -48,10 +23,31 @@ namespace Atmos::Render
         CalculateSides();
 
         if (previousViewOrigin != viewOrigin)
-            Owner().Raise<CameraMoved>(*camera);
+            Owner().Raise<CameraMoved>(camera);
 
-        debugStatistics->window.viewOriginX = camera->ViewOrigin().x;
-        debugStatistics->window.viewOriginY = camera->ViewOrigin().y;
+        const auto debugStatisticsData = Data(debugStatistics);
+        debugStatisticsData->window.viewOriginX = camera->ViewOrigin().x;
+        debugStatisticsData->window.viewOriginY = camera->ViewOrigin().y;
+    }
+
+    void CameraCurator::Handle(const MoveCamera& command)
+    {
+        Move(command.direction, command.moveBy);
+    }
+
+    void CameraCurator::Handle(const MoveCameraBy& command)
+    {
+        MoveBy(command.x, command.y, command.z);
+    }
+
+    void CameraCurator::Handle(const MoveCameraToInstant& command)
+    {
+        MoveToInstant(command.toPosition);
+    }
+
+    void CameraCurator::Handle(const MoveCameraDeltaInstant& command)
+    {
+        MoveDeltaInstant(command.x, command.y, command.z);
     }
 
     void CameraCurator::Move(Direction direction, Position3D::Value by)
@@ -107,18 +103,18 @@ namespace Atmos::Render
 
     void CameraCurator::ResetFocus()
     {
-        camera->FocusedPosition(&basePosition);
+        Data(camera)->FocusedPosition(&basePosition);
     }
 
     void CameraCurator::CalculateSides()
     {
-        const auto size = camera->Size();
+        const auto dimensions = camera->Size();
         const auto viewOrigin = camera->ViewOrigin();
         auto screenSides = camera->ScreenSides();
         Position2D topLeft { screenSides.Left(), screenSides.Top() };
 
-        const auto halfWidth = size.width / 2;
-        const auto halfHeight = size.height / 2;
+        const auto halfWidth = dimensions.width / 2;
+        const auto halfHeight = dimensions.height / 2;
 
         screenSides.Left(viewOrigin.x - halfWidth);
         screenSides.Top(viewOrigin.y - halfHeight);

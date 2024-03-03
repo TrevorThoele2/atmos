@@ -2,18 +2,18 @@
 #include <vorbis/vorbisfile.h>
 
 #include "AudioManager.h"
+#include "UnrecognizedAudioFormat.h"
 
 #include "Buffer.h"
-#include "SimpleFile.h"
 
 namespace Atmos::Audio
 {
     struct OggFile
     {
-        char* currentPosition;
-        char* dataSource;
-        AudioManager::SizeT fileSize;
-        OggFile(char* dataSource, AudioManager::SizeT fileSize) :
+        const char* currentPosition;
+        const char* dataSource;
+        size_t fileSize;
+        OggFile(const char* dataSource, size_t fileSize) :
             currentPosition(dataSource), dataSource(dataSource), fileSize(fileSize)
         {}
     };
@@ -21,7 +21,7 @@ namespace Atmos::Audio
     size_t ReadOggFile(void* ptr, size_t size, size_t nmemb, void* dataSource)
     {
         auto oggFile = reinterpret_cast<OggFile*>(dataSource);
-        size_t readCount = size * nmemb;
+        auto readCount = size * nmemb;
 
         // If going to read past the frameEndTime
         if (oggFile->currentPosition + readCount > oggFile->dataSource + oggFile->fileSize)
@@ -89,102 +89,74 @@ namespace Atmos::Audio
 
     AudioManager::~AudioManager() = default;
 
-    std::unique_ptr<Asset::AudioAssetData> AudioManager::CreateAudioData(const File::Path& path)
-    {
-        SimpleInFile file(path);
-        const auto fileSize = static_cast<BufferT::SizeT>(file.GetFileSize());
-
-        auto buffer = BufferT(fileSize);
-
-        file.FillBuffer(buffer.GetBytes(), fileSize);
-
-        const auto typeOfBuffer = FileTypeOf(buffer, fileSize);
-        auto createdData = ExtractFile(typeOfBuffer, std::move(buffer), fileSize);
-        auto asset = CreateAudioDataImpl(std::move(createdData), path.GetFileName());
-
-        return asset;
-    }
-
     std::unique_ptr<Asset::AudioAssetData> AudioManager::CreateAudioData(
-        void* buffer, SizeT fileSize, const File::Name& name)
+        const Buffer& buffer, const Name& name)
     {
-        BufferT madeBuffer(buffer, fileSize);
-        auto data = ExtractFile(FileTypeOf(madeBuffer, fileSize), std::move(madeBuffer), fileSize);
-        return CreateAudioDataImpl(std::move(data), name);
-    }
-
-    bool AudioManager::CanMake(const File::Path& path)
-    {
-        SimpleInFile file(path);
-        const auto fileSize = static_cast<SizeT>(file.GetFileSize());
-
-        const auto buffer = BufferT(fileSize);
-        file.FillBuffer(buffer.GetBytes(), fileSize);
-
-        return FileTypeOf(buffer, fileSize) != FileType::None;
-    }
-
-    bool AudioManager::CanMake(void* buffer, SizeT fileSize)
-    {
-        return FileTypeOf(BufferT(buffer, fileSize), fileSize) != FileType::None;
+        const auto formattedBuffer = FormatBuffer(buffer, name);
+        return CreateAudioDataImpl(formattedBuffer, name);
     }
 
     AudioManager::AudioManager() = default;
 
-    AudioManager::ExtractedFile AudioManager::ExtractFile(FileType fileType, BufferT&& buffer, SizeT fileSize)
+    auto AudioManager::FormatBuffer(const Buffer& buffer, const Name& name) -> FormattedBuffer
     {
-        if (fileType == FileType::Wav)
-            return ExtractFileWAV(std::move(buffer), fileSize);
-        else
-            return ExtractFileOGG(std::move(buffer), fileSize);
+        switch (FileTypeOf(buffer))
+        {
+        case FileType::Wav:
+            return FormatBufferWAV(buffer);
+        case FileType::Ogg:
+            return FormatBufferOGG(buffer);
+        default:
+            throw UnrecognizedAudioFormat(name);
+        }
     }
 
-    AudioManager::ExtractedFile AudioManager::ExtractFileWAV(BufferT&& buffer, SizeT fileSize)
+    auto AudioManager::FormatBufferWAV(const Buffer& buffer) -> FormattedBuffer
     {
         Format format{};
 
         // Get WAV format
-        const unsigned int AUDIOFORMAT_POSITION = 20;
-        const unsigned int DURATION_POSITION = 40;
+        const unsigned int audioFormatPosition = 20;
+        const unsigned int durationPosition = 40;
 
-        size_t currentPosition = AUDIOFORMAT_POSITION;
+        auto currentPosition = audioFormatPosition;
 
         // Audio format
-        currentPosition += ReadFromBuffer(buffer.GetBytes(), format.formatTag, currentPosition);
+        currentPosition += ReadFromBuffer(buffer.data(), format.formatTag, currentPosition);
         // Number of channels
-        currentPosition += ReadFromBuffer(buffer.GetBytes(), format.channels, currentPosition);
+        currentPosition += ReadFromBuffer(buffer.data(), format.channels, currentPosition);
         // Sample rate
-        currentPosition += ReadFromBuffer(buffer.GetBytes(), format.samplesPerSec, currentPosition);
+        currentPosition += ReadFromBuffer(buffer.data(), format.samplesPerSec, currentPosition);
         // Byte rate
-        currentPosition += ReadFromBuffer(buffer.GetBytes(), format.avgBytesPerSec, currentPosition);
+        currentPosition += ReadFromBuffer(buffer.data(), format.avgBytesPerSec, currentPosition);
         // Block align
-        currentPosition += ReadFromBuffer(buffer.GetBytes(), format.blockAlign, currentPosition);
+        currentPosition += ReadFromBuffer(buffer.data(), format.blockAlign, currentPosition);
         // Bits per sample
-        currentPosition += ReadFromBuffer(buffer.GetBytes(), format.bitsPerSample, currentPosition);
+        currentPosition += ReadFromBuffer(buffer.data(), format.bitsPerSample, currentPosition);
 
-        currentPosition = DURATION_POSITION;
+        currentPosition = durationPosition;
 
-        BufferT::SizeT retSize;
-        currentPosition += ReadFromBuffer(buffer.GetBytes(), retSize, currentPosition);
+        size_t retSize;
+        currentPosition += ReadFromBuffer(buffer.data(), retSize, currentPosition);
 
         // Fill sound data
-        auto newBuffer = BufferT(retSize);
-        currentPosition += CopyBuffer(buffer.GetBytes(), newBuffer.GetBytes(), retSize, currentPosition);
+        auto newBuffer = Buffer(retSize);
+        currentPosition += CopyBuffer(buffer.data(), newBuffer.data(), retSize, currentPosition);
 
-        return ExtractedFile(std::move(newBuffer), format);
+        return FormattedBuffer{ std::move(newBuffer), format};
     }
 
-    AudioManager::ExtractedFile AudioManager::ExtractFileOGG(BufferT&& buffer, SizeT fileSize)
+    auto AudioManager::FormatBufferOGG(const Buffer& buffer) -> FormattedBuffer
     {
         Format format{};
 
-        OggFile oggFile(buffer.GetBytes(), fileSize);
+        OggFile oggFile(buffer.data(), buffer.size());
 
         OggVorbis_File vorbisFile;
         ov_open_callbacks(&oggFile, &vorbisFile, nullptr, -1, CreateOggCallbacks());
 
         auto byteSize = static_cast<unsigned int>(ov_pcm_total(&vorbisFile, -1) * 4);
-        auto totalBuffer = new char[byteSize];
+        auto totalBuffer = Buffer(byteSize);
 
         // Create buffer
         const size_t size = 4096;
@@ -213,10 +185,10 @@ namespace Atmos::Audio
 
         ov_clear(&vorbisFile);
 
-        return ExtractedFile(BufferT(totalBuffer, byteSize), format);
+        return FormattedBuffer{ totalBuffer, format };
     }
 
-    AudioManager::FileType AudioManager::FileTypeOf(const BufferT& buffer, SizeT fileSize)
+    AudioManager::FileType AudioManager::FileTypeOf(const Buffer& buffer)
     {
         // Test WAV
         {
@@ -225,13 +197,13 @@ namespace Atmos::Audio
             // RIFF
             const char size = 4;
             const char magicString[size]{ 82, 73, 70, 70 };
-            if (CompareBuffers(buffer.GetBytes(), &magicString, size))
+            if (CompareBuffers(buffer.data(), &magicString, size))
                 return FileType::Wav;
         }
 
         // Test OGG
         {
-            OggFile oggFile(buffer.GetBytes(), fileSize);
+            OggFile oggFile(buffer.data(), buffer.size());
 
             OggVorbis_File vorbisFile;
             auto result = ov_test_callbacks(&oggFile, &vorbisFile, nullptr, 0, CreateOggCallbacks());
@@ -240,6 +212,6 @@ namespace Atmos::Audio
                 return FileType::Ogg;
         }
 
-        return FileType::None;
+        return FileType::Unknown;
     }
 }

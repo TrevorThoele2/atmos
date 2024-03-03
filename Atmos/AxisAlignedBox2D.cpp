@@ -1,8 +1,5 @@
 #include "AxisAlignedBox2D.h"
 
-#include <cctype>
-#include <Chroma/Contract.h>
-
 namespace Atmos
 {
     AxisAlignedBox2D::AxisAlignedBox2D(const Position2D& center, const Size2D& size) :
@@ -14,8 +11,6 @@ namespace Atmos
     AxisAlignedBox2D::AxisAlignedBox2D(Coordinate left, Coordinate top, Coordinate right, Coordinate bottom) :
         left(left), top(top), right(right), bottom(bottom)
     {
-        CoordinatePrecondition(left, right, "left", "right");
-        CoordinatePrecondition(top, bottom, "top", "bottom");
         CalculateCenterAndSize();
     }
 
@@ -60,8 +55,6 @@ namespace Atmos
 
     void AxisAlignedBox2D::Edit(Coordinate left, Coordinate top, Coordinate right, Coordinate bottom)
     {
-        CoordinatePrecondition(left, right, "left", "right");
-        CoordinatePrecondition(top, bottom, "top", "bottom");
         this->left = left;
         this->top = top;
         this->right = right;
@@ -71,25 +64,21 @@ namespace Atmos
 
     void AxisAlignedBox2D::Left(Coordinate set)
     {
-        CoordinatePrecondition(set, right, "left", "right");
         ChangeCoordinate(left, set);
     }
 
     void AxisAlignedBox2D::Top(Coordinate set)
     {
-        CoordinatePrecondition(set, bottom, "top", "bottom");
         ChangeCoordinate(top, set);
     }
 
     void AxisAlignedBox2D::Right(Coordinate set)
     {
-        CoordinatePrecondition(left, set, "left", "right");
         ChangeCoordinate(right, set);
     }
 
     void AxisAlignedBox2D::Bottom(Coordinate set)
     {
-        CoordinatePrecondition(top, set, "top", "bottom");
         ChangeCoordinate(bottom, set);
     }
 
@@ -160,21 +149,6 @@ namespace Atmos
         size.height = bottom - top;
         center.x = left + (size.width / 2);
         center.y = top + (size.height / 2);
-    }
-
-    void AxisAlignedBox2D::CoordinatePrecondition(
-        const Coordinate& low,
-        const Coordinate& high,
-        const std::string& lowName,
-        const std::string& highName
-    ) {
-        auto useLowName = lowName;
-        useLowName[0] = std::toupper(useLowName[0]);
-
-        SOFT_PRECONDITION(
-            low <= high,
-            std::invalid_argument(useLowName + " must be <= " + highName + " when given to an AxisAlignedBox3D.")
-        );
     }
 }
 

@@ -244,7 +244,7 @@ namespace Atmos::Grid
                 return false;
             }
 
-            static Position::Value FabricateLayerSize(typename Octree::LayerNumber layer);
+            static Position::Value FabricateLayerSize(LayerNumber layer);
         protected:
             using Node::x;
             using Node::y;
@@ -684,7 +684,7 @@ namespace Atmos::Grid
     bool Octree<ID, T>::ParentNode::Emplace(ID id, const T& emplace, const AxisAlignedBox3D& bounds)
     {
         // Check if the fragment can fit entirely within this node
-        if (!bounds.Contains(bounds))
+        if (!this->bounds.Contains(bounds))
             return false;
 
         // Try to emplace into the children
@@ -702,7 +702,7 @@ namespace Atmos::Grid
 
         // Wasn't emplaced into any children, but could require a new child
 
-        auto determination = DetermineChild(layerSize, bounds, bounds);
+        auto determination = DetermineChild(layerSize, this->bounds, bounds);
         if (!determination)
         {
             objects.emplace_back(id, emplace);

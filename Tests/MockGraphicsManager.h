@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Atmos/GraphicsManager.h>
+#include "MockRenderer.h"
 
 using namespace Atmos;
 using namespace Render;
@@ -8,61 +9,31 @@ using namespace Render;
 class MockGraphicsManager final : public GraphicsManager
 {
 public:
-    std::vector<MaterialRender> materialRenders;
+    MockRenderer& renderer;
 public:
-    explicit MockGraphicsManager(Arca::Reliquary& reliquary);
+    MockGraphicsManager();
     MockGraphicsManager(const MockGraphicsManager& arg) = delete;
     MockGraphicsManager& operator=(const MockGraphicsManager& arg) = delete;
 
+    void Initialize(Arca::Reliquary& reliquary) override;
+
+    [[nodiscard]] std::unique_ptr<Asset::ImageAssetData> CreateImageData(
+        const Buffer& buffer, const Name& name) override;
+    [[nodiscard]] std::unique_ptr<Asset::ShaderAssetData> CreateShaderData(
+        const Buffer& buffer, const Name& name) override;
+    [[nodiscard]] std::unique_ptr<SurfaceData> CreateMainSurfaceData() override;
+    [[nodiscard]] std::unique_ptr<SurfaceData> CreateSurfaceData(
+        void* window) override;
+    [[nodiscard]] std::unique_ptr<CanvasData> CreateCanvasData(
+        const ScreenSize& size) override;
+
     void SetFullscreen(bool set) override;
 
-    void ClearTarget(const Flags<Target>& target) override;
-    void ClearTarget(const Flags<Target>& target, const Color& color) override;
-    void Flush() override;
+    void ClearStencil(const Color& color) override;
+
     void SetRenderState(RenderState state, bool set) override;
 
-    bool Start() override;
-    void Stop() override;
-
-    void StartObjects(size_t count = 0) override;
-    void StopObjects() override;
-    void StartLines() override;
-    void StopLines() override;
-
-    void StartStencil() override;
-    void StopStencil() override;
+    void ChangeVerticalSync(bool set) override;
 private:
     void ReconstructInternals() override;
-    void SetMainDimensionsImpl(const ScreenDimensions& dimensions) override;
-    [[nodiscard]] ScreenDimensions MainDimensionsImpl() const override;
-
-    [[nodiscard]] std::unique_ptr<Asset::ImageAssetData> CreateImageDataImpl(
-        const File::Path& path) override;
-    [[nodiscard]] std::unique_ptr<Asset::ImageAssetData> CreateImageDataImpl(
-        void* buffer, std::int32_t size, const File::Name& name) override;
-    [[nodiscard]] std::unique_ptr<Asset::ShaderAssetData> CreateShaderDataImpl(
-        const File::Path& path) override;
-    [[nodiscard]] std::unique_ptr<Asset::ShaderAssetData> CreateShaderDataImpl(
-        void* buffer, std::int32_t size, const File::Name& name) override;
-    [[nodiscard]] Surface CreateSurfaceImpl(
-        void* window) override;
-    [[nodiscard]] Canvas CreateCanvasImpl(
-        const ScreenDimensions& dimensions) override;
-
-    [[nodiscard]] bool CanMakeImageImpl(const File::Path& path) const override;
-    [[nodiscard]] bool CanMakeImageImpl(void* buffer, std::int32_t size) const override;
-
-    void ResizeCanvasImpl(Canvas& canvas, const ScreenDimensions& dimensions) override;
-
-    void SetRenderTargetImpl(Surface& set) override;
-    void SetRenderTargetToMainImpl() override;
-    void ReleaseMainRenderTarget() override;
-    void ResetMainRenderTarget() override;
-
-    void PresentImpl() override;
-    void PresentImpl(void* windowOverride) override;
-
-    void RenderMaterialViewImpl(MaterialRender& materialRender) override;
-    void RenderCanvasViewImpl(CanvasRender& canvasRender) override;
-    void RenderLineImpl(const Line& line) override;
 };

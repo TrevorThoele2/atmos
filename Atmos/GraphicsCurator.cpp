@@ -1,24 +1,39 @@
 #include "GraphicsCurator.h"
 
-#include <Arca/Reliquary.h>
-
-#include "ReconstructGraphics.h"
-#include "WindowDimensionsChanged.h"
+#include "MainSurface.h"
+#include "AncillarySurface.h"
 
 namespace Atmos::Render
 {
-    void GraphicsCurator::InitializeImplementation()
+    GraphicsCurator::GraphicsCurator(Init init) :
+        Curator(init),
+        manager(init.owner)
+    {}
+
+    void GraphicsCurator::Handle(const ReconstructGraphics&)
     {
-        manager = Arca::ComputedIndex<GraphicsManager*>(Owner());
+        auto shaderAssetBatch = Owner().Batch<Asset::ShaderAsset>();
+        for (auto& loop : shaderAssetBatch)
+            Data(loop)->FileData()->Release();
 
-        Owner().ExecuteOn<ReconstructGraphics>([this](const ReconstructGraphics&)
-            {
-                (*manager)->ReconstructAll();
-            });
+        auto mainSurface = Data<MainSurface>();
+        mainSurface->Release();
+        for (auto& loop : Owner().Batch<AncillarySurface>())
+            Data(loop)->Release();
 
-        Owner().ExecuteOn<Window::DimensionsChanged>([this](const Window::DimensionsChanged& signal)
-            {
-                (*manager)->SetMainDimensions(signal.dimensions);
-            });
+        for (auto& loop : Owner().Batch<Canvas>())
+            Data(loop)->Release();
+
+        (*manager)->Reconstruct();
+
+        for (auto& loop : shaderAssetBatch)
+            Data(loop)->FileData()->Reset();
+
+        mainSurface->Reset();
+        for (auto& loop : Owner().Batch<AncillarySurface>())
+            Data(loop)->Reset();
+
+        for (auto& loop : Owner().Batch<Canvas>())
+            Data(loop)->Reset();
     }
 }

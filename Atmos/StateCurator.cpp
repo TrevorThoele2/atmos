@@ -6,31 +6,22 @@
 
 namespace Atmos::State
 {
-    void StateCurator::InitializeImplementation()
+    void StateCurator::Handle(const Request& command)
     {
-        requests = Owner().Batch<Request>();
-    }
-
-    void StateCurator::WorkImplementation(Stage& stage)
-    {
-        if (!requests.IsEmpty())
+        switch (command.value.index())
         {
-            auto& request = *--requests.end();
-            switch (request.value.index())
-            {
-            case 0:
-                Push(*std::get<0>(request.value));
-                break;
-            case 1:
-                Pop();
-                break;
-            default:
-                assert(false);
-            }
+        case 0:
+            Push(*std::get<0>(command.value));
+            break;
+        case 1:
+            Pop();
+            break;
+        default:
+            assert(false);
         }
     }
 
-    void StateCurator::Push(GameState& state)
+    void StateCurator::Push(const GameState& state)
     {
         stack.push_back(&state);
     }

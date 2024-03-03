@@ -2,10 +2,9 @@
 
 #include <optional>
 
-#include <Arca/ClosedTypedRelicAutomation.h>
+#include <Arca/ClosedTypedRelic.h>
 
 #include "RealStopwatch.h"
-#include "ExtendedStopwatchAdapter.h"
 #include "Position2D.h"
 #include "GridPosition.h"
 #include "FieldID.h"
@@ -13,10 +12,10 @@
 
 namespace Atmos::Debug
 {
-    class Statistics final : public Arca::ClosedTypedRelicAutomation<Statistics>
+    class Statistics final : public Arca::ClosedTypedRelic<Statistics>
     {
     public:
-        void Initialize();
+        explicit Statistics(Init init);
     public:
         struct Memory
         {
@@ -42,18 +41,18 @@ namespace Atmos::Debug
     public:
         struct Window
         {
-            ScreenDimensions::Dimension windowWidth = 0;
-            ScreenDimensions::Dimension windowHeight = 0;
+            ScreenSize::Dimension windowWidth = 0;
+            ScreenSize::Dimension windowHeight = 0;
             Atmos::Window::WindowBase::Size::Dimension clientWidth = 0;
             Atmos::Window::WindowBase::Size::Dimension clientHeight = 0;
-            ScreenDimensions::Dimension startX = 0;
-            ScreenDimensions::Dimension startY = 0;
+            ScreenSize::Dimension startX = 0;
+            ScreenSize::Dimension startY = 0;
 
             Position2D::Value viewOriginX = 0;
             Position2D::Value viewOriginY = 0;
         } window;
     public:
-        using Profiler = Time::ExtendedStopwatchAdapter<Time::RealStopwatch>;
+        using Profiler = Arca::RelicIndex<Time::RealStopwatch>;
 
         struct Profilers
         {
@@ -65,6 +64,10 @@ namespace Atmos::Debug
             Profiler misc1;
             Profiler misc2;
             Profiler misc3;
+
+            explicit Profilers(Arca::Reliquary& owner);
+        private:
+            static Profiler CreateProfiler(Arca::Reliquary& owner);
         } profilers;
     };
 }

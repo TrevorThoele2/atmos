@@ -10,10 +10,10 @@ namespace Atmos::Audio
     class SoundCurator final : public Arca::Curator
     {
     public:
+        explicit SoundCurator(Init init);
+    public:
         void ResumeAll();
         void PauseAll();
-    protected:
-        void InitializeImplementation() override;
     private:
         using Batch = ::Arca::Batch<Sound>;
         Batch batch;

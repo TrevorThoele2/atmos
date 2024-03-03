@@ -4,48 +4,39 @@
 
 namespace Atmos::Asset
 {
-    ShaderAsset::ShaderAsset() = default;
-
-    ShaderAsset::ShaderAsset(ShaderAsset&& arg) noexcept = default;
-
-    ShaderAsset::ShaderAsset(const ::Inscription::BinaryTableData<ShaderAsset>& data) :
-        FileAsset(data.base)
+    ShaderAsset::ShaderAsset(Init init) :
+        FileAsset(init)
     {}
 
-    ShaderAsset::DataT* ShaderAsset::Data()
-    {
-        return data.get();
-    }
+    ShaderAsset::ShaderAsset(Init init, const Atmos::Name& name, DataPtr&& data) :
+        FileAsset(init, name, std::move(data))
+    {}
 
-    const ShaderAsset::DataT* ShaderAsset::Data() const
-    {
-        return data.get();
-    }
+    ShaderAsset::ShaderAsset(ShaderAsset && arg) noexcept : FileAsset(std::move(arg))
+    {}
 
-    void ShaderAsset::Initialize(const File::Name& fileName, DataPtr&& data)
+    ShaderAsset& ShaderAsset::operator=(ShaderAsset&& arg) noexcept
     {
-        SetFileName(fileName);
-        this->data = std::move(data);
+        FileAsset::operator=(std::move(arg));
+        return *this;
     }
-
-    ShaderAssetData::~ShaderAssetData() = default;
 }
 
 namespace Arca
 {
     bool Traits<::Atmos::Asset::ShaderAsset>::ShouldCreate(
-        Reliquary& reliquary, const ::Atmos::File::Name& fileName, ::Atmos::Asset::ShaderAsset::DataPtr&& data)
+        Reliquary& reliquary, const ::Atmos::Name& name, ::Atmos::Asset::ShaderAsset::DataPtr&& data)
     {
-        return Atmos::Asset::ShouldCreateAsset<::Atmos::Asset::ShaderAsset>(reliquary, fileName);
+        return Atmos::Asset::ShouldCreateAsset<::Atmos::Asset::ShaderAsset>(reliquary, name);
     }
 }
 
 namespace Inscription
 {
-    Scribe<::Atmos::Asset::ShaderAsset, BinaryArchive>::Table::Table()
+    void Scribe<Atmos::Asset::ShaderAsset, BinaryArchive>::ScrivenImplementation(
+        ObjectT& object, ArchiveT& archive)
     {
-        MergeDataLinks({
-            DataLink::Base(data.base) }
-        );
+        BaseScriven<Atmos::Asset::FileAsset<Atmos::Asset::ShaderAssetData, Atmos::Asset::ShaderAsset>>(
+            object, archive);
     }
 }

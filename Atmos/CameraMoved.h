@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Arca/Signal.h>
+#include <utility>
 
 namespace Atmos::Render
 {
@@ -9,7 +10,10 @@ namespace Atmos::Render
     class CameraMoved
     {
     public:
-        Camera& camera;
+        Arca::GlobalIndex<Camera> camera;
+
+        explicit CameraMoved(Arca::GlobalIndex<Camera> camera) : camera(std::move(camera))
+        {}
     };
 }
 

@@ -2,12 +2,7 @@
 
 namespace Atmos::Render
 {
-    void CanvasViewCurator::InitializeImplementation()
-    {
-
-    }
-
-    void CanvasViewCurator::WorkImplementation(Stage& stage)
+    void CanvasViewCurator::Work()
     {
 
     }

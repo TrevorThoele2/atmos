@@ -56,13 +56,6 @@ namespace Atmos
 
         void CalculateCoordinates();
         void CalculateCenterAndSize();
-
-        void CoordinatePrecondition(
-            const Coordinate& low,
-            const Coordinate& high,
-            const std::string& lowName,
-            const std::string& highName
-        );
     private:
         INSCRIPTION_ACCESS;
     };

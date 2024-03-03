@@ -14,11 +14,17 @@ namespace Atmos::Render
 
     class CameraCurator final : public Arca::Curator
     {
-    protected:
-        void InitializeImplementation() override;
-        void WorkImplementation(Stage& stage) override;
+    public:
+        explicit CameraCurator(Init init);
+
+        void Work();
+    public:
+        void Handle(const MoveCamera& command);
+        void Handle(const MoveCameraBy& command);
+        void Handle(const MoveCameraToInstant& command);
+        void Handle(const MoveCameraDeltaInstant& command);
     private:
-        Camera* camera = nullptr;
+        Arca::GlobalIndex<Camera> camera;
 
         // Holder for any potential positions that aren't stored elsewhere (just looking somewhere, etc)
         Position3D basePosition;
@@ -33,7 +39,22 @@ namespace Atmos::Render
         void CalculateSides();
         bool IsFocusValid();
     private:
-        Debug::Statistics* debugStatistics = nullptr;
+        Arca::GlobalIndex<Debug::Statistics> debugStatistics;
+    };
+}
+
+namespace Arca
+{
+    template<>
+    struct Traits<Atmos::Render::CameraCurator>
+    {
+        static const ObjectType objectType = ObjectType::Curator;
+        static inline const TypeName typeName = "CameraCurator";
+        using HandledCommands = Arca::HandledCommands<
+            Atmos::Render::MoveCamera,
+            Atmos::Render::MoveCameraBy,
+            Atmos::Render::MoveCameraDeltaInstant,
+            Atmos::Render::MoveCameraToInstant>;
     };
 }
 

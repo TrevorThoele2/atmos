@@ -1,19 +1,18 @@
 #include "DirectX9Utilities.h"
 
 #include <DxErr.h>
-#include "Log.h"
+#include "Logger.h"
 
 namespace Atmos::Render::DirectX9
 {
-    D3DCOLOR ColorToD3D(const Color& col)
+    D3DCOLOR ColorToD3D(const Color& color)
     {
-        return D3DCOLOR_ARGB(col.alpha, col.red, col.green, col.blue);
+        return D3DCOLOR_ARGB(color.alpha, color.red, color.green, color.blue);
     }
 
     void LogIfError
     (
         HRESULT hr,
-        Arca::Reliquary& reliquary,
         const String& message,
         Logging::Severity severity,
         const std::optional<Logging::Details>& details
@@ -27,6 +26,6 @@ namespace Atmos::Render::DirectX9
 
         useDetails.insert(useDetails.begin(), { "Description", String(DXGetErrorDescriptionA(hr)) });
 
-        reliquary.Raise<Logging::Log>(message, severity, useDetails);
+        Logging::logger.Log(Logging::Log(message, severity, useDetails));
     }
 }

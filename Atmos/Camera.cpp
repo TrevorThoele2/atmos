@@ -2,6 +2,9 @@
 
 namespace Atmos::Render
 {
+    Camera::Camera(Init init) : ClosedTypedRelic(init)
+    {}
+
     void Camera::FocusedPosition(const Position3D* to)
     {
         focusedPosition = to;
@@ -22,12 +25,12 @@ namespace Atmos::Render
         return viewOrigin;
     }
 
-    void Camera::Size(const Size2D& to)
+    void Camera::Size(const ScreenSize& to)
     {
         size = to;
     }
 
-    Size2D Camera::Size() const
+    ScreenSize Camera::Size() const
     {
         return size;
     }

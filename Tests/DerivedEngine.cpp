@@ -3,21 +3,29 @@
 #include <Atmos/NullInputManager.h>
 #include <Atmos/NullAudioManager.h>
 
+Arca::Reliquary* DerivedEngine::TheGlobalReliquary()
+{
+    return GlobalReliquary();
+}
+
+const Arca::Reliquary* DerivedEngine::TheGlobalReliquary() const
+{
+    return GlobalReliquary();
+}
+
 void DerivedEngine::SetupImplementation()
 {
     
 }
 
-auto DerivedEngine::CreateInitializationProperties(Arca::Reliquary& reliquary)
+auto DerivedEngine::CreateInitializationProperties()
     -> InitializationProperties
 {
-    this->globalReliquary = &reliquary;
-
     using Properties = InitializationProperties;
 
     auto window = std::make_unique<MockWindow>();
     auto input = std::make_unique<Input::NullManager>();
-    auto graphics = std::make_unique<MockGraphicsManager>(reliquary);
+    auto graphics = std::make_unique<MockGraphicsManager>();
     auto audio = std::make_unique<Audio::NullAudioManager>();
 
     mockWindow = window.get();

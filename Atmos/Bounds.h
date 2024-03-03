@@ -14,6 +14,9 @@ namespace Atmos
     class Bounds
     {
     public:
+        Bounds();
+        Bounds(const Position3D& position, const Size2D& size);
+
         void Position(const Position3D& to);
         void Size(const Size2D& to);
 

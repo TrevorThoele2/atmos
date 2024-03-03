@@ -2,15 +2,9 @@
 
 namespace Atmos::Render
 {
-    void CanvasView::PostConstruct()
-    {
-        bounds = Create<Atmos::Bounds>();
-    }
-
-    void CanvasView::Initialize(Canvas& source)
-    {
-        this->source = &source;
-    }
+    CanvasView::CanvasView(Init init, Arca::RelicIndex<Canvas> source) :
+        ClosedTypedRelic(init), source(std::move(source)), bounds(init.id, init.owner)
+    {}
 
     const Canvas& CanvasView::Source() const
     {

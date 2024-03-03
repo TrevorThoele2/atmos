@@ -1,54 +1,44 @@
-
 #include "SimpleFile.h"
 
 namespace Atmos
 {
-    SimpleInFile::Pos SimpleInFile::Tell(StreamT &tell)
-    {
-        return tell.tellg();
-    }
-
     SimpleInFile::SimpleInFile(const File::Path &path) : SimpleFile(path, std::ios::in | std::ios::binary)
     {}
 
-    void SimpleInFile::Seek(Pos pos)
+    void SimpleInFile::Seek(Position position)
     {
-        stream.seekg(pos);
+        stream.seekg(position);
     }
 
-    void SimpleInFile::FillBuffer(char *buf, StreamSize size)
+    Buffer SimpleInFile::ReadBuffer(std::streamsize size)
     {
-        stream.read(buf, size);
+        Buffer buffer;
+        buffer.reserve(static_cast<const unsigned int>(size));
+        stream.read(&buffer[0], size);
+        return buffer;
     }
 
-    SimpleOutFile::Pos SimpleOutFile::Tell(StreamT &tell)
+    auto SimpleInFile::DoTell() -> Position
     {
-        return tell.tellp();
+        return stream.tellg();
     }
 
-    SimpleOutFile::SimpleOutFile(const File::Path &path) : SimpleFile(path, std::ios::out | std::ios::binary)
+    SimpleOutFile::SimpleOutFile(const File::Path& path) : SimpleFile(path, std::ios::out | std::ios::binary)
     {}
 
-    void SimpleOutFile::Seek(Pos pos)
+    void SimpleOutFile::Seek(Position position)
     {
-        stream.seekp(pos);
+        stream.seekp(position);
     }
 
-    size_t GetFileSize(const File::Path &path)
+    auto SimpleOutFile::DoTell() -> Position
+    {
+        return stream.tellp();
+    }
+
+    size_t FileSize(const File::Path& path)
     {
         std::ifstream stream(path.GetValue(), std::ios::in | std::ios::app | std::ios::ate);
         return static_cast<size_t>(stream.tellg());
-    }
-
-    std::pair<void*, size_t> ReadFileIntoBuffer(const File::Path &path)
-    {
-        std::ifstream file(path, std::ios::in | std::ios::ate | std::ios::binary);
-        size_t fileSize = static_cast<size_t>(file.tellg());
-        file.seekg(0);
-
-        auto buffer = new char[fileSize];
-        file.read(buffer, fileSize);
-
-        return std::pair<void*, size_t>(buffer, fileSize);
     }
 }

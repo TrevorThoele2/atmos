@@ -4,6 +4,24 @@
 
 namespace Atmos::Asset
 {
+    MaterialAsset::MaterialAsset(Init init) :
+        Asset(init)
+    {}
+
+    MaterialAsset::MaterialAsset(Init init, const Atmos::Name& name, GridDimension columns, GridDimension rows) :
+        Asset(init, name), columns(columns), rows(rows)
+    {}
+
+    MaterialAsset& MaterialAsset::operator=(MaterialAsset && arg) noexcept
+    {
+        columns = arg.columns;
+        rows = arg.rows;
+        image = std::move(arg.image);
+        shader = std::move(arg.shader);
+        Asset::operator=(std::move(arg));
+        return *this;
+    }
+
     auto MaterialAsset::Columns() const -> GridDimension
     {
         return columns;
@@ -14,25 +32,14 @@ namespace Atmos::Asset
         return rows;
     }
 
-    ImageAsset* MaterialAsset::Image() const
+    Arca::RelicIndex<ImageAsset> MaterialAsset::Image() const
     {
         return image;
     }
 
-    ShaderAsset* MaterialAsset::Shader() const
+    Arca::RelicIndex<ShaderAsset> MaterialAsset::Shader() const
     {
         return shader;
-    }
-
-    MaterialAsset::MaterialAsset() = default;
-
-    MaterialAsset::MaterialAsset(const ::Inscription::BinaryTableData<MaterialAsset>& data) :
-        Asset(data.base)
-    {}
-
-    void MaterialAsset::Initialize(const Atmos::Name& name)
-    {
-        SetName(name);
     }
 }
 
@@ -46,10 +53,11 @@ namespace Arca
 
 namespace Inscription
 {
-    Scribe<::Atmos::Asset::MaterialAsset, BinaryArchive>::Table::Table()
+    void Scribe<Atmos::Asset::MaterialAsset, BinaryArchive>::ScrivenImplementation(
+        ObjectT& object, ArchiveT& archive)
     {
-        MergeDataLinks({
-            DataLink::Base(data.base) }
-        );
+        BaseScriven<Atmos::Asset::Asset<Atmos::Asset::MaterialAsset>>(object, archive);
+        archive(object.columns);
+        archive(object.rows);
     }
 }

@@ -4,6 +4,14 @@
 
 namespace Atmos::Asset
 {
+    ImageAsset& ImageAsset::operator=(ImageAsset&& arg) noexcept
+    {
+        width = arg.width;
+        height = arg.height;
+        FileAsset::operator=(std::move(arg));
+        return *this;
+    }
+
     auto ImageAsset::Width() const -> Dimension
     {
         return width;
@@ -13,36 +21,12 @@ namespace Atmos::Asset
     {
         return height;
     }
-
-    ImageAsset::ImageAsset() = default;
-
-    ImageAsset::ImageAsset(const ::Inscription::BinaryTableData<ImageAsset>& data) :
-        FileAsset(data.base), width(data.width), height(data.height)
-    {}
-
-    ImageAsset::DataT* ImageAsset::Data()
-    {
-        return data.get();
-    }
-
-    const ImageAsset::DataT* ImageAsset::Data() const
-    {
-        return data.get();
-    }
-
-    void ImageAsset::Initialize(const File::Name& fileName, DataPtr&& data)
-    {
-        SetFileName(fileName);
-        this->data = std::move(data);
-    }
-
-    ImageAssetData::~ImageAssetData() = default;
 }
 
 namespace Arca
 {
     bool Traits<::Atmos::Asset::ImageAsset>::ShouldCreate(
-        Reliquary& reliquary, const ::Atmos::File::Name& fileName, ::Atmos::Asset::ImageAsset::DataPtr&& data)
+        Reliquary& reliquary, const ::Atmos::Name& fileName, ::Atmos::Asset::ImageAsset::DataPtr&& data)
     {
         return Atmos::Asset::ShouldCreateAsset<::Atmos::Asset::ImageAsset>(reliquary, fileName);
     }
@@ -50,13 +34,12 @@ namespace Arca
 
 namespace Inscription
 {
-    Scribe<::Atmos::Asset::ImageAsset, BinaryArchive>::Table::Table()
+    void Scribe<Atmos::Asset::ImageAsset, BinaryArchive>::ScrivenImplementation(
+        ObjectT& object, ArchiveT& archive)
     {
-        MergeDataLinks
-        ({
-            DataLink::Base(data.base),
-            DataLink::Auto(&ObjectT::width, &DataT::width),
-            DataLink::Auto(&ObjectT::height, &DataT::height) }
-        );
+        BaseScriven<Atmos::Asset::FileAsset<Atmos::Asset::ImageAssetData, Atmos::Asset::ImageAsset>>(
+            object, archive);
+        archive(object.width);
+        archive(object.height);
     }
 }

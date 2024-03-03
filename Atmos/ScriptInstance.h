@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Arca/ClosedTypedRelicAutomation.h>
+#include <Arca/ClosedTypedRelic.h>
 
 #include "ScriptAsset.h"
 #include "ScriptParameters.h"
@@ -12,7 +12,7 @@ namespace Atmos::Script
 {
     class RunningScript;
 
-    class ScriptInstance final : public Arca::ClosedTypedRelicAutomation<ScriptInstance>
+    class ScriptInstance final : public Arca::ClosedTypedRelic<ScriptInstance>
     {
     public:
         using Asset = Asset::ScriptAsset;
@@ -22,18 +22,16 @@ namespace Atmos::Script
         Parameters parameters;
         Persistence persistence;
     public:
-        // Executes the script standardly
         // Will defer the execute until a certain point in the frame (probably a bit later)
         void ExecuteDeferred();
-        // Executes the script standardly
         // Will immediately execute the script
         void ExecuteImmediately();
-        [[nodiscard]] RunningScript* RunningForThis() const;
+        [[nodiscard]] Arca::RelicIndex<RunningScript> RunningForThis() const;
         // Returns if this script is currently running
         // NOTE: Suspension has no effect on this
         [[nodiscard]] bool IsRunning() const;
     private:
-        RunningScript& CreateRunningFromThis();
+        Arca::RelicIndex<RunningScript> CreateRunningFromThis();
     };
 }
 

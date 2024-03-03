@@ -1,16 +1,22 @@
 #pragma once
 
-#include <Arca/ClosedTypedRelicAutomation.h>
-#include "Stopwatch.h"
+#include <Arca/OpenTypedRelic.h>
+
+#include "StopwatchCore.h"
 
 namespace Atmos::Time
 {
-    class RealStopwatch final : public Arca::ClosedTypedRelicAutomation<RealStopwatch>, public Stopwatch
+    class RealStopwatch final : public Arca::OpenTypedRelic<RealStopwatch>
     {
     public:
-        bool operator==(const RealStopwatch& arg) const;
+        explicit RealStopwatch(Init init);
 
-        [[nodiscard]] Value CurrentTime() const override;
+        Value Start() const;
+        [[nodiscard]] Value Elapsed() const;
+        [[nodiscard]] Value CurrentTime() const;
+    private:
+        using Core = StopwatchCore;
+        Arca::ShardIndex<Core> core{};
     private:
         INSCRIPTION_ACCESS;
     };

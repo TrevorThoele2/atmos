@@ -10,13 +10,15 @@ using namespace Atmos;
 class DerivedEngine final : public Engine
 {
 public:
-    Arca::Reliquary* globalReliquary = nullptr;
     MockWindow* mockWindow = nullptr;
     MockGraphicsManager* mockGraphicsManager = nullptr;
+public:
+    [[nodiscard]] Arca::Reliquary* TheGlobalReliquary();
+    [[nodiscard]] const Arca::Reliquary* TheGlobalReliquary() const;
 protected:
     void SetupImplementation() override;
 
-    InitializationProperties CreateInitializationProperties(Arca::Reliquary& reliquary) override;
+    InitializationProperties CreateInitializationProperties() override;
 
     void DoExit() override;
 };

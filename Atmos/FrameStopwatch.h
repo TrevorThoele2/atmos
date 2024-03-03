@@ -1,27 +1,25 @@
 #pragma once
 
-#include <Arca/ClosedTypedRelicAutomation.h>
-#include "Stopwatch.h"
-#include "TimeInformation.h"
+#include <Arca/OpenTypedRelic.h>
 
-namespace Arca
-{
-    class Reliquary;
-}
+#include "StopwatchCore.h"
+#include "TimeInformation.h"
 
 namespace Atmos::Time
 {
-    class FrameStopwatch final : public Arca::ClosedTypedRelicAutomation<FrameStopwatch>, public Stopwatch
+    class FrameStopwatch final : public Arca::OpenTypedRelic<FrameStopwatch>
     {
     public:
-        bool operator==(const FrameStopwatch& arg) const;
-        bool operator!=(const FrameStopwatch& arg) const;
-    public:
-        [[nodiscard]] Value CurrentTime() const override;
-    public:
-        void PostConstruct();
+        explicit FrameStopwatch(Init init);
+
+        Value Start() const;
+        [[nodiscard]] Value Elapsed() const;
+        [[nodiscard]] Value CurrentTime() const;
     private:
-        Arca::GlobalIndex<Information> timeInformation;
+        using Core = StopwatchCore;
+        Arca::ShardIndex<Core> core{};
+
+        Arca::GlobalIndex<Information> timeInformation{};
     private:
         INSCRIPTION_ACCESS;
     };

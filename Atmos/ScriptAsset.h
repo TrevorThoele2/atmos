@@ -1,72 +1,20 @@
 #pragma once
 
 #include "FileAsset.h"
-#include <Arca/ClosedTypedRelicAutomation.h>
+#include "ScriptAssetData.h"
 
 class asIScriptModule;
 
-namespace Atmos::Script::Angel
-{
-    class ScriptCurator;
-}
-
 namespace Atmos::Asset
 {
-    class ScriptAssetData;
-
-    class ScriptAsset final : public Arca::ClosedTypedRelicAutomation<ScriptAsset>, public FileAsset
+    class ScriptAsset final : public FileAsset<ScriptAssetData, ScriptAsset>
     {
     public:
         using SymbolName = Atmos::Name;
     public:
-        using DataT = ScriptAssetData;
-        using DataPtr = std::unique_ptr<DataT>;
-    public:
-        ScriptAsset();
-        ScriptAsset(const ScriptAsset& arg) = delete;
-        ScriptAsset(ScriptAsset&& arg) noexcept = default;
-        explicit ScriptAsset(const ::Inscription::BinaryTableData<ScriptAsset>& data);
+        using FileAsset::FileAsset;
 
-        [[nodiscard]] DataT* Data();
-        [[nodiscard]] const DataT* Data() const;
-        template<class RealDataT>
-        [[nodiscard]] RealDataT* DataAs();
-        template<class RealDataT>
-        [[nodiscard]] const RealDataT* DataAs() const;
-
-        [[nodiscard]] asIScriptModule* UnderlyingModule();
-        [[nodiscard]] const asIScriptModule* UnderlyingModule() const;
-    public:
-        void Initialize(const File::Name& fileName, DataPtr&& data);
-    private:
-        DataPtr data;
-    };
-
-    template<class RealDataT>
-    RealDataT* ScriptAsset::DataAs()
-    {
-        return static_cast<RealDataT*>(data.get());
-    }
-
-    template<class RealDataT>
-    const RealDataT* ScriptAsset::DataAs() const
-    {
-        return static_cast<RealDataT*>(data.get());
-    }
-
-    class ScriptAssetData
-    {
-    public:
-        explicit ScriptAssetData(Script::Angel::ScriptCurator& scriptCurator);
-        [[nodiscard]] std::unique_ptr<ScriptAssetData> Clone() const;
-        void Initialize(const Name& name, const File::Name& fileName);
-    private:
-        Script::Angel::ScriptCurator* scriptCurator;
-
-        asIScriptModule* module = nullptr;
-        bool isInitialized = false;
-    private:
-        friend ScriptAsset;
+        ScriptAsset& operator=(ScriptAsset&& arg) noexcept;
     };
 }
 
@@ -78,28 +26,17 @@ namespace Arca
         static const ObjectType objectType = ObjectType::Relic;
         static inline const TypeName typeName = "ScriptAsset";
         static bool ShouldCreate(
-            Reliquary& reliquary, const ::Atmos::File::Name& fileName, ::Atmos::Asset::ScriptAsset::DataPtr&& data);
+            Reliquary& reliquary, const ::Atmos::Name& name, ::Atmos::Asset::ScriptAsset::DataPtr&& data);
     };
 }
 
 namespace Inscription
 {
     template<>
-    struct TableData<::Atmos::Asset::ScriptAsset, BinaryArchive> :
-        TableDataBase<::Atmos::Asset::ScriptAsset, BinaryArchive>
-    {
-        Base<::Atmos::Asset::FileAsset> base;
-    };
-
-    template<>
     class Scribe<::Atmos::Asset::ScriptAsset, BinaryArchive> final :
-        public ArcaTableScribe<::Atmos::Asset::ScriptAsset, BinaryArchive>
+        public ArcaCompositeScribe<::Atmos::Asset::ScriptAsset, BinaryArchive>
     {
-    public:
-        class Table final : public TableBase
-        {
-        public:
-            Table();
-        };
+    protected:
+        void ScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
     };
 }

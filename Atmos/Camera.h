@@ -1,26 +1,26 @@
 #pragma once
 
-#include <Arca/ClosedTypedRelicAutomation.h>
+#include <Arca/ClosedTypedRelic.h>
 
 #include "Position2D.h"
 #include "Position3D.h"
-#include "Size2D.h"
+#include "ScreenSize.h"
 #include "AxisAlignedBox2D.h"
 
 namespace Atmos::Render
 {
-    class Camera final : public Arca::ClosedTypedRelicAutomation<Camera>
+    class Camera final : public Arca::ClosedTypedRelic<Camera>
     {
     public:
-        Camera() = default;
+        explicit Camera(Init init);
 
         void FocusedPosition(const Position3D* to);
         [[nodiscard]] const Position3D* FocusedPosition() const;
 
         void ViewOrigin(const Position2D& to);
         [[nodiscard]] Position2D ViewOrigin() const;
-        void Size(const Size2D& to);
-        [[nodiscard]] Size2D Size() const;
+        void Size(const ScreenSize& to);
+        [[nodiscard]] ScreenSize Size() const;
         [[nodiscard]] AxisAlignedBox2D ScreenSides() const;
 
         void Zoom(Position3D::Value to);
@@ -30,7 +30,7 @@ namespace Atmos::Render
 
         // View origin is the middle of the screen
         Position2D viewOrigin;
-        Size2D size;
+        ScreenSize size;
         AxisAlignedBox2D screenSides;
 
         Position2D topLeft;

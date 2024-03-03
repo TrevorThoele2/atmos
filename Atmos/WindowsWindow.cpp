@@ -1,7 +1,6 @@
 #include "WindowsWindow.h"
 
-#include <Arca/Reliquary.h>
-#include "Log.h"
+#include "WindowCreationFailed.h"
 
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -23,6 +22,10 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 
 namespace Atmos::Window
 {
+    WindowsWindow::WindowsWindow(int nCmdShow, const String& className) :
+        nCmdShow(nCmdShow), className(className)
+    {}
+
     void WindowsWindow::Show()
     {
         ShowWindow(hwnd, nCmdShow);
@@ -68,22 +71,22 @@ namespace Atmos::Window
     {
         if (IsWindowed())
         {
-            style = windowedStyle;
-            exStyle = windowedStyleEx;
+            currentStyle = windowedStyle;
+            currentExStyle = windowedStyleEx;
         }
         else
         {
-            style = fullscreenStyle;
-            exStyle = fullscreenStyleEx;
+            currentStyle = fullscreenStyle;
+            currentExStyle = fullscreenStyleEx;
         }
 
         // Create the window and use the result as the handle
         hwnd = CreateWindowEx
         (
-            exStyle,
+            currentExStyle,
             wc.lpszClassName,
             wc.lpszClassName,
-            style,
+            currentStyle,
             StartPosition().x,
             StartPosition().y,
             Size().width,
@@ -95,14 +98,14 @@ namespace Atmos::Window
         );
 
         if (hwnd == nullptr)
-            Reliquary().Raise<Logging::Log>("Window creation failed.", Logging::Severity::SevereError);
+            throw WindowCreationFailed();
     }
 
     AxisAlignedBox2D WindowsWindow::AdjustWindowDimensions()
     {
         RECT rect;
         SetRect(&rect, 0, 0, ClientSize().width, ClientSize().height);
-        AdjustWindowRectEx(&rect, style, false, exStyle);
+        AdjustWindowRectEx(&rect, currentStyle, false, currentExStyle);
 
         using Coordinate = AxisAlignedBox2D::Coordinate;
         return AxisAlignedBox2D
@@ -129,19 +132,19 @@ namespace Atmos::Window
     {
         if (IsFullscreen())
         {
-            style = fullscreenStyle;
-            exStyle = fullscreenStyleEx;
+            currentStyle = fullscreenStyle;
+            currentExStyle = fullscreenStyleEx;
             SetWindowPos(HWND_TOPMOST);
         }
         else
         {
-            style = windowedStyle;
-            exStyle = windowedStyleEx;
+            currentStyle = windowedStyle;
+            currentExStyle = windowedStyleEx;
             SetWindowDimensions();
         }
 
-        SetWindowLongPtr(hwnd, GWL_STYLE, style);
-        SetWindowLongPtr(hwnd, GWL_EXSTYLE, exStyle);
+        SetWindowLongPtr(hwnd, GWL_STYLE, currentStyle);
+        SetWindowLongPtr(hwnd, GWL_EXSTYLE, currentExStyle);
         Show();
     }
 

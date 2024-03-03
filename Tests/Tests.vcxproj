@@ -70,7 +70,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\Users\Trevor\Documents\ProgrammingProjects\Catch;C:\Users\Trevor\Documents\ProgrammingProjects\TestFramework;C:\Users\Trevor\Documents\ProgrammingProjects\AGUI;C:\Users\Trevor\Documents\ProgrammingProjects\Inscription;C:\Users\Trevor\Documents\ProgrammingProjects\Chroma;C:\Users\Trevor\Documents\ProgrammingProjects\Arca;C:\Users\Trevor\Documents\ProgrammingProjects\Ogg\Built\include;C:\Users\Trevor\Documents\ProgrammingProjects\AngelScript\sdk\angelscript\include;C:\Users\Trevor\Documents\ProgrammingProjects\wxWidgets2\include;C:\Users\Trevor\Documents\ProgrammingProjects\wxWidgets2\lib\vc_lib\mswud;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;C:\Users\Trevor\Documents\ProgrammingProjects\Atmos;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\Trevor\Documents\ProgrammingProjects\Catch;C:\Users\Trevor\Documents\ProgrammingProjects\TestFramework;C:\Users\Trevor\Documents\ProgrammingProjects\function2\include;C:\Users\Trevor\Documents\ProgrammingProjects\AGUI;C:\Users\Trevor\Documents\ProgrammingProjects\Inscription;C:\Users\Trevor\Documents\ProgrammingProjects\Chroma;C:\Users\Trevor\Documents\ProgrammingProjects\Arca;C:\Users\Trevor\Documents\ProgrammingProjects\Ogg\Built\include;C:\Users\Trevor\Documents\ProgrammingProjects\AngelScript\sdk\angelscript\include;C:\Users\Trevor\Documents\ProgrammingProjects\wxWidgets2\include;C:\Users\Trevor\Documents\ProgrammingProjects\wxWidgets2\lib\vc_lib\mswud;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;C:\Users\Trevor\Documents\ProgrammingProjects\Atmos;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Users\Trevor\Documents\ProgrammingProjects\AngelScript\sdk\angelscript\lib;C:\Users\Trevor\Documents\ProgrammingProjects\Ogg\libvorbis-1.3.6\win32\VS2010\Win32\Debug;C:\Users\Trevor\Documents\ProgrammingProjects\Ogg\libogg-1.3.3\win32\VS2015\Win32\Debug;C:\Users\Trevor\Documents\ProgrammingProjects\wxWidgets2\lib\vc_lib;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -136,6 +136,7 @@
     <ClCompile Include="GeneralFixture.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MockGraphicsManager.cpp" />
+    <ClCompile Include="MockRenderer.cpp" />
     <ClCompile Include="MockWindow.cpp" />
     <ClCompile Include="RenderTests.cpp" />
     <ClCompile Include="WorldSerializationTests.cpp" />
@@ -144,6 +145,7 @@
     <ClInclude Include="DerivedEngine.h" />
     <ClInclude Include="GeneralFixture.h" />
     <ClInclude Include="MockGraphicsManager.h" />
+    <ClInclude Include="MockRenderer.h" />
     <ClInclude Include="MockWindow.h" />
     <ClInclude Include="RenderTests.h" />
     <ClInclude Include="WorldSerializationTests.h" />

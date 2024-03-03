@@ -2,11 +2,29 @@
 
 #include <chrono>
 
+#include "StartStopwatch.h"
+#include "CalculateStopwatch.h"
+
 namespace Atmos::Time
 {
-    bool RealStopwatch::operator==(const RealStopwatch& arg) const
+    RealStopwatch::RealStopwatch(Init init) :
+        OpenTypedRelic(init)
     {
-        return Stopwatch::operator==(arg);
+        core = Create<Core>(
+            [this]()
+            {
+                return CurrentTime();
+            });
+    }
+
+    Value RealStopwatch::Start() const
+    {
+        return Owner().Do<StartStopwatch>(ID());
+    }
+
+    Value RealStopwatch::Elapsed() const
+    {
+        return Owner().Do<CalculateStopwatch>(ID());
     }
 
     Value RealStopwatch::CurrentTime() const
@@ -20,7 +38,5 @@ namespace Inscription
 {
     void Scribe<::Atmos::Time::RealStopwatch, BinaryArchive>::ScrivenImplementation(
         ObjectT& object, ArchiveT& archive)
-    {
-        BaseScriven<Atmos::Time::Stopwatch>(object, archive);
-    }
+    {}
 }

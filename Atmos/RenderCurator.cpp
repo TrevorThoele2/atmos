@@ -1,48 +1,24 @@
 #include "RenderCurator.h"
 
-#include <Arca/Reliquary.h>
+#include "MainSurface.h"
+
+#include "StartStopwatch.h"
+#include "CalculateStopwatch.h"
+
 #include "DebugStatistics.h"
-#include "GraphicsCurator.h"
 
 namespace Atmos::Render
 {
-    void RenderCurator::InitializeImplementation()
+    RenderCurator::RenderCurator(Init init) :
+        Curator(init), debugStatistics(init.owner)
+    {}
+
+    void RenderCurator::Work(Stage& stage)
     {
-        graphics = Arca::ComputedIndex<GraphicsManager*>(Owner());
+        Owner().Do<Time::StartStopwatch>(debugStatistics->profilers.render.ID());
 
-        debugStatistics = Arca::GlobalIndex<Debug::Statistics>(Owner());
-    }
+        Data<MainSurface>()->RenderStaged();
 
-    void RenderCurator::WorkImplementation(Stage& stage)
-    {
-        debugStatistics->profilers.render.Start();
-
-        auto& useGraphics = **graphics;
-
-        if (!useGraphics.Start())
-        {
-            debugStatistics->profilers.render.Calculate();
-            stage.Abort();
-            return;
-        }
-
-        useGraphics.StartObjects();
-        useGraphics.ClearTarget(
-            Flags<GraphicsManager::Target>({ GraphicsManager::Target::Main }),
-            Color(0, 255, 0, 0));
-
-        if (flags.Get(Flag::Draw))
-        {
-
-        }
-
-        useGraphics.Flush();
-
-        useGraphics.StopObjects();
-
-        useGraphics.Stop();
-        useGraphics.Present();
-
-        debugStatistics->profilers.render.Calculate();
+        Owner().Do<Time::CalculateStopwatch>(debugStatistics->profilers.render.ID());
     }
 }
