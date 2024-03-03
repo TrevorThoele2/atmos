@@ -1256,6 +1256,15 @@
     <ClInclude Include="MoveCameraTo.h">
       <Filter>Header Files\Render\Camera</Filter>
     </ClInclude>
+    <ClInclude Include="ChangeSurfaceBackgroundColor.h">
+      <Filter>Header Files\Render\Surface</Filter>
+    </ClInclude>
+    <ClInclude Include="SurfaceCurator.h">
+      <Filter>Header Files\Render\Surface</Filter>
+    </ClInclude>
+    <ClInclude Include="LoggingTransfer.h">
+      <Filter>Header Files\Logging</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FieldDestination.cpp">
@@ -1803,6 +1812,12 @@
     </ClCompile>
     <ClCompile Include="DebugValue.cpp">
       <Filter>Source Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="SurfaceCurator.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="LoggingTransfer.cpp">
+      <Filter>Source Files\Logging</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

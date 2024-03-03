@@ -49,9 +49,6 @@ namespace Atmos::Render
     public:
         SurfaceDataImplementation() = default;
 
-        void FullColor(const Color& color) override
-        {}
-
         void Present() override
         {}
 

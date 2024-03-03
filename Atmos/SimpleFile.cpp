@@ -12,13 +12,15 @@ namespace Atmos
 
     Buffer SimpleInFile::ReadBuffer(std::streamsize size)
     {
+        const auto useSize = size > Size() ? Size() : size;
+
         Buffer buffer;
-        buffer.reserve(static_cast<const unsigned int>(size));
-        stream.read(&buffer[0], size);
+        buffer.resize(static_cast<const unsigned int>(useSize));
+        stream.read(&buffer[0], useSize);
         return buffer;
     }
 
-    auto SimpleInFile::DoTell() -> Position
+    auto SimpleInFile::DoTell(StreamT& stream) -> Position
     {
         return stream.tellg();
     }
@@ -31,7 +33,7 @@ namespace Atmos
         stream.seekp(position);
     }
 
-    auto SimpleOutFile::DoTell() -> Position
+    auto SimpleOutFile::DoTell(StreamT& stream) -> Position
     {
         return stream.tellp();
     }

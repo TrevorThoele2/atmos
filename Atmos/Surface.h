@@ -5,8 +5,6 @@
 
 #include "GraphicsManager.h"
 
-#include "Color.h"
-
 namespace Atmos::Render
 {
     struct MaterialRender;
@@ -22,8 +20,6 @@ namespace Atmos::Render
         using Init = typename BaseT::Init;
     public:
         void RenderStaged();
-
-        void FullColor(const Color& color = Color());
 
         [[nodiscard]] ScreenSize Size() const;
 
@@ -49,13 +45,7 @@ namespace Atmos::Render
     void Surface<Derived>::RenderStaged()
     {
         auto graphicsManager = Arca::Postulate<GraphicsManager*>(Owner()).Get();
-        graphicsManager->RenderStaged(*Data());
-    }
-
-    template<class Derived>
-    void Surface<Derived>::FullColor(const Color& color)
-    {
-        Data()->FullColor(color);
+        graphicsManager->RenderStaged(*Data(), core->backgroundColor);
     }
 
     template<class Derived>

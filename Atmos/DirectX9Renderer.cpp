@@ -104,7 +104,7 @@ namespace Atmos::Render::DirectX9
         StageRender(lineRender.from, lineRender.to, lineRender.z, lineRender.width, lineRender.color);
     }
 
-    void Renderer::RenderStaged(const SurfaceData& surface)
+    void Renderer::RenderStaged(const SurfaceData& surface, const Color& backgroundColor)
     {
         if (layers.empty())
             return;
@@ -137,7 +137,7 @@ namespace Atmos::Render::DirectX9
                 lineInterface,
                 projection,
                 surface.Size());
-            pipeline.Flush(layers);
+            pipeline.Flush(layers, ToDirectXColor(backgroundColor));
         }
 
         device->SetRenderTarget(0, previousRenderSurface);
@@ -487,13 +487,15 @@ namespace Atmos::Render::DirectX9
         screenSize(screenSize)
     {}
     
-    void Renderer::Pipeline::Flush(Layers& layers)
+    void Renderer::Pipeline::Flush(Layers& layers, D3DCOLOR backgroundColor)
     {
         if (!Start())
         {
             layers.clear();
             return;
         }
+
+        SetBackgroundColor(backgroundColor);
 
         Sort(layers);
 
@@ -546,6 +548,14 @@ namespace Atmos::Render::DirectX9
         lineInterface->Begin();
 
         return true;
+    }
+
+    void Renderer::Pipeline::SetBackgroundColor(D3DCOLOR color)
+    {
+        LogIfError(
+            device->Clear(0, nullptr, D3DCLEAR_TARGET, color, 1.0f, 0),
+            "Could not set background color.",
+            Logging::Severity::SevereError);
     }
 
     void Renderer::Pipeline::Sort(Layers& layers) const

@@ -16,6 +16,6 @@ namespace Atmos::Render
         virtual void StageRender(const MaterialRender& materialRender) = 0;
         virtual void StageRender(const CanvasRender& canvasRender) = 0;
         virtual void StageRender(const LineRender& lineRender) = 0;
-        virtual void RenderStaged(const SurfaceData& surface) = 0;
+        virtual void RenderStaged(const SurfaceData& surface, const Color& backgroundColor) = 0;
     };
 }

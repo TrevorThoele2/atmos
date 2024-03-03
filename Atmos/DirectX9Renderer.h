@@ -27,7 +27,7 @@ namespace Atmos::Render::DirectX9
         void StageRender(const MaterialRender& materialRender) override;
         void StageRender(const CanvasRender& canvasRender) override;
         void StageRender(const LineRender& lineRender) override;
-        void RenderStaged(const SurfaceData& surface) override;
+        void RenderStaged(const SurfaceData& surface, const Color& backgroundColor) override;
 
         void OnLostDevice();
         void OnResetDevice();
@@ -192,7 +192,7 @@ namespace Atmos::Render::DirectX9
                 LPD3DXLINE lineInterface,
                 D3DXMATRIX projection,
                 const ScreenSize& screenSize);
-            void Flush(Layers& layers);
+            void Flush(Layers& layers, D3DCOLOR backgroundColor);
         private:
             GraphicsManager& manager;
 
@@ -217,6 +217,7 @@ namespace Atmos::Render::DirectX9
             const ShaderAssetDataImplementation* currentShaderData = nullptr;
         private:
             bool Start();
+            void SetBackgroundColor(D3DCOLOR color);
             void Sort(Layers& layers) const;
             void Sort(Layer& layer) const;
             void Handle(StagedObject& staged);

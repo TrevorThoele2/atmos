@@ -17,7 +17,6 @@ namespace Atmos::Render
         debugRenderProfiler.Start();
 
         auto mainSurfaceData = MutablePointer().Of(mainSurface);
-        mainSurfaceData->FullColor(Color{ 255, 255, 0, 0 });
         mainSurfaceData->RenderStaged();
 
         debugRenderProfiler.Calculate();

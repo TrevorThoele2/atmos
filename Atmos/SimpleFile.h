@@ -23,7 +23,7 @@ namespace Atmos
     protected:
         Stream stream;
 
-        virtual Position DoTell() = 0;
+        virtual Position DoTell(StreamT& stream) = 0;
     private:
         File::Path path;
     };
@@ -47,7 +47,7 @@ namespace Atmos
     std::streamsize SimpleFile<Stream>::Size()
     {
         Stream checkStream(path.c_str(), std::ios::binary | std::ios::ate);
-        return Tell(checkStream);
+        return DoTell(checkStream);
     }
 
     class SimpleInFile final : public SimpleFile<std::ifstream>
@@ -59,7 +59,7 @@ namespace Atmos
         void Seek(Position position) override;
         [[nodiscard]] Buffer ReadBuffer(std::streamsize size = std::numeric_limits<std::streamsize>::max());
     private:
-        Position DoTell() override;
+        Position DoTell(StreamT& stream) override;
     };
 
     template<class T>
@@ -76,7 +76,7 @@ namespace Atmos
         void operator<<(const T& arg);
         void Seek(Position position) override;
     private:
-        Position DoTell() override;
+        Position DoTell(StreamT& stream) override;
     };
 
     template<class T>

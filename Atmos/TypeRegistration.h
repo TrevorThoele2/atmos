@@ -61,6 +61,11 @@ namespace Atmos
         void RegisterGlobalRedirectionTypes(Arca::ReliquaryOrigin& origin, Arca::Reliquary& globalReliquary);
     }
 
+    namespace Asset
+    {
+        void RegisterTypes(Arca::ReliquaryOrigin& origin);
+    }
+
     namespace Time
     {
         void RegisterTypes(Arca::ReliquaryOrigin& origin);

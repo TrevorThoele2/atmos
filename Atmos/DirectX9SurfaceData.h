@@ -18,8 +18,6 @@ namespace Atmos::Render::DirectX9
 
         ~SurfaceDataImplementation();
 
-        void FullColor(const Color& color) override;
-
         void Present() override;
 
         void Reset() override;
