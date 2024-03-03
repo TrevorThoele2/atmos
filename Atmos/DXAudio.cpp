@@ -15,6 +15,11 @@ namespace Atmos
         AudioAssetInstanceData(const AudioAssetInstanceData &arg) : buffer(arg.buffer), voice(nullptr), format(arg.format)
         {}
 
+        ~AudioAssetInstanceData()
+        {
+            Stop();
+        }
+
         AudioAssetInstanceData* Clone() const override
         {
             return new AudioAssetInstanceData(*this);

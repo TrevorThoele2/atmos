@@ -10,7 +10,8 @@ namespace Atmos
         class ActionSystem : public System<ActionSystem>
         {
         private:
-            friend System<ActionSystem>;
+            typedef System<ActionSystem> SystemBaseT;
+            friend SystemBaseT;
         private:
             ActionSystem();
 

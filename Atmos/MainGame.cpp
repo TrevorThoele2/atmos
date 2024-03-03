@@ -2,7 +2,6 @@
 #include "MainGame.h"
 
 #include "Input.h"
-#include "Logic.h"
 #include "Speech.h"
 #include "StatusScreen.h"
 #include "GameDialog.h"
@@ -12,6 +11,7 @@
 #include "ScriptLocator.h"
 #include "Camera.h"
 #include "Environment.h"
+#include "CurrentMusic.h"
 
 #include "AvatarSystem.h"
 #include "EntityAISystem.h"
@@ -50,9 +50,6 @@ namespace Atmos
 
         switch (args.id)
         {
-        case Input::ActionID::USE:
-            UseOnClick();
-            break;
         case Input::ActionID::INVENTORY:
             if (CanNewMenu())
                 StatusScreen::Goto(StatusScreen::PageID::INVENTORY);
@@ -66,25 +63,6 @@ namespace Atmos
                 StatusScreen::Goto(StatusScreen::PageID::STATS);
             break;
         }
-    }
-
-    void MainGame::UseOnClick()
-    {
-        /*
-        // Activate tile in front of the main player
-        if (WorldManager::GetCurrentField()->tiles.Activate(mainPlayer->GetAt<MainPlayer::PositionComponent>()->GetPositionInFront(), GameAction::ActivationType::USE))
-            return;
-
-        if (!CanNewMenu())
-            return;
-
-        // Attempt to talk to the character in front
-        auto tile = WorldManager::GetCurrentField()->tiles.Find(MainPlayer::Instance()->GetPosInFront());
-        if (!tile || !tile->GetCharacterHere())
-            return;
-
-        tile->GetCharacterHere()->TalkTo();
-        */
     }
 
     void MainGame::InitImpl()
@@ -109,6 +87,11 @@ namespace Atmos
         GameDialog::Work();
         Speech::Handler::Work();
         Camera::Work();
+    }
+
+    void MainGame::OnFocusedImpl()
+    {
+        CurrentMusic::StopPlaying();
     }
 
     bool MainGame::AnyTertiaryOpen() const

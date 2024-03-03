@@ -5,6 +5,8 @@
 #include "Options.h"
 #include "WorldManager.h"
 #include "Environment.h"
+#include "CurrentMusic.h"
+#include "AudioRegistry.h"
 
 #include <AGUI\Image.h>
 #include <AGUI\Label.h>
@@ -55,9 +57,40 @@ namespace Atmos
     MainMenuGui::MainMenuGui() : StateGui("mainMenu")
     {}
 
+    const FileName MainMenu::mainMenuMusic("mainmenu.ogg");
+
+    void MainMenu::AddMainMenuMusic()
+    {
+        AudioRegistry::Register(GetMainMenuPath());
+    }
+
+    void MainMenu::RemoveMainMenuMusic()
+    {
+        AudioRegistry::Remove(mainMenuMusic);
+    }
+
+    FilePath MainMenu::GetMainMenuPath() const
+    {
+        auto &mainMenuMusicPath = Environment::GetFileSystem()->GetExePath();
+        mainMenuMusicPath.Append("Sound" + Environment::GetFileSystem()->GetFileSeparator());
+        mainMenuMusicPath.SetName(mainMenuMusic);
+        return mainMenuMusicPath;
+    }
+
     void MainMenu::OnFocusedImpl()
     {
         WorldManager::Clear();
+
+        AddMainMenuMusic();
+
+        CurrentMusic::ChangePlaying(mainMenuMusic);
+    }
+
+    void MainMenu::OnUnfocusedImpl()
+    {
+        CurrentMusic::StopPlaying();
+
+        RemoveMainMenuMusic();
     }
 
     MainMenu mainMenu;

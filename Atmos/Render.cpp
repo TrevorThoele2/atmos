@@ -44,7 +44,6 @@ namespace Atmos
 
         graphics->Flush();
 
-        WorldManager::DoLighting();
         graphics->EndSprites();
 
         agui::System::Work();

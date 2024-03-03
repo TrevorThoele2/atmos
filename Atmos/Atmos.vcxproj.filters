@@ -31,9 +31,6 @@
     <Filter Include="Header Files\Input">
       <UniqueIdentifier>{affee666-ba9e-4416-857d-24237f4daf67}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Logic">
-      <UniqueIdentifier>{aa65aac0-0011-4418-acb8-b4f72df9ba25}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Ini">
       <UniqueIdentifier>{08744f75-03d2-46be-bc11-8e578882cd06}</UniqueIdentifier>
     </Filter>
@@ -87,9 +84,6 @@
     </Filter>
     <Filter Include="Source Files\Time">
       <UniqueIdentifier>{42ea9f92-6b43-45bc-be88-e1d74eed9904}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Logic">
-      <UniqueIdentifier>{6403e389-2427-478a-9ed1-2e7431d8df36}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Render">
       <UniqueIdentifier>{15d98e68-259c-4e12-a6af-e68ffb0dea67}</UniqueIdentifier>
@@ -503,9 +497,6 @@
     </ClInclude>
     <ClInclude Include="FPS.h">
       <Filter>Header Files\Time</Filter>
-    </ClInclude>
-    <ClInclude Include="Logic.h">
-      <Filter>Header Files\Logic</Filter>
     </ClInclude>
     <ClInclude Include="Color.h">
       <Filter>Header Files\Render\Color</Filter>
@@ -1360,9 +1351,6 @@
     </ClCompile>
     <ClCompile Include="FPS.cpp">
       <Filter>Source Files\Time</Filter>
-    </ClCompile>
-    <ClCompile Include="Logic.cpp">
-      <Filter>Source Files\Logic</Filter>
     </ClCompile>
     <ClCompile Include="Color.cpp">
       <Filter>Source Files\Render\Color</Filter>

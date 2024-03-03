@@ -17,6 +17,7 @@ namespace Atmos
         void OnFinalizeField();
     public:
         static CurrentMusic& Instance();
+        static void StopPlaying();
         static void ChangePlaying(const FileName &name);
         static void Pause();
         static void Resume();

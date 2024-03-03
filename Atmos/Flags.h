@@ -9,151 +9,151 @@ namespace Atmos
 {
     // Flags given should be 1, 2, 3, 4, etc.
     // These represent the bit position
-    template<class enumT>
+    template<class EnumT>
     class Flags
     {
     private:
         INSCRIPTION_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
     private:
-        typedef typename std::underlying_type<enumT>::type Bits;
+        typedef typename std::underlying_type<EnumT>::type Bits;
         Bits bits;
     public:
         Flags();
-        Flags(enumT flag);
-        Flags(const std::initializer_list<enumT> &list);
+        Flags(EnumT flag);
+        Flags(const std::initializer_list<EnumT> &list);
 
-        Flags<enumT>& operator=(const Flags<enumT> &arg);
-        Flags<enumT>& operator=(enumT arg);
-        Flags<enumT>& operator|(const Flags<enumT> &arg);
-        Flags<enumT>& operator|(enumT arg);
-        Flags<enumT>& operator|=(const Flags<enumT> &arg);
-        Flags<enumT>& operator|=(enumT arg);
+        Flags<EnumT>& operator=(const Flags<EnumT> &arg);
+        Flags<EnumT>& operator=(EnumT arg);
+        Flags<EnumT>& operator|(const Flags<EnumT> &arg);
+        Flags<EnumT>& operator|(EnumT arg);
+        Flags<EnumT>& operator|=(const Flags<EnumT> &arg);
+        Flags<EnumT>& operator|=(EnumT arg);
 
-        bool operator==(const Flags<enumT> &arg) const;
-        bool operator!=(const Flags<enumT> &arg) const;
+        bool operator==(const Flags<EnumT> &arg) const;
+        bool operator!=(const Flags<EnumT> &arg) const;
 
-        void Set(enumT flag, bool set = true);
+        void Set(EnumT flag, bool set = true);
         void Reset();
-        void Flip(enumT flag);
-        bool Get(enumT flag) const;
-        bool Has(enumT flag) const;
+        void Flip(EnumT flag);
+        bool Get(EnumT flag) const;
+        bool Has(EnumT flag) const;
         // Checks if all of the bits are the given value
         bool CheckAll(bool value = true);
-        typename const Flags<enumT>::Bits& GetData() const;
+        typename const Flags<EnumT>::Bits& GetData() const;
     };
 
-    template<class enumT>
-    void Flags<enumT>::Serialize(::inscription::Scribe &scribe)
+    template<class EnumT>
+    void Flags<EnumT>::Serialize(::inscription::Scribe &scribe)
     {
         scribe(bits);
     }
 
-    template<class enumT>
-    Flags<enumT>::Flags() : bits(0)
+    template<class EnumT>
+    Flags<EnumT>::Flags() : bits(0)
     {}
 
-    template<class enumT>
-    Flags<enumT>::Flags(enumT flag) : bits(0)
+    template<class EnumT>
+    Flags<EnumT>::Flags(EnumT flag) : bits(0)
     {
         Set(flag);
     }
 
-    template<class enumT>
-    Flags<enumT>::Flags(const std::initializer_list<enumT> &list) : bits(0)
+    template<class EnumT>
+    Flags<EnumT>::Flags(const std::initializer_list<EnumT> &list) : bits(0)
     {
         for (auto &loop : list)
             Set(loop);
     }
 
-    template<class enumT>
-    Flags<enumT>& Flags<enumT>::operator=(const Flags<enumT> &arg)
+    template<class EnumT>
+    Flags<EnumT>& Flags<EnumT>::operator=(const Flags<EnumT> &arg)
     {
         bits = arg.bits;
 
         return *this;
     }
 
-    template<class enumT>
-    Flags<enumT>& Flags<enumT>::operator=(enumT arg)
+    template<class EnumT>
+    Flags<EnumT>& Flags<EnumT>::operator=(EnumT arg)
     {
         Reset();
         bits = static_cast<Bits>(arg);
         return *this;
     }
 
-    template<class enumT>
-    Flags<enumT>& Flags<enumT>::operator|(const Flags<enumT> &arg)
+    template<class EnumT>
+    Flags<EnumT>& Flags<EnumT>::operator|(const Flags<EnumT> &arg)
     {
         bits.set(arg);
     }
 
-    template<class enumT>
-    Flags<enumT>& Flags<enumT>::operator|(enumT arg)
+    template<class EnumT>
+    Flags<EnumT>& Flags<EnumT>::operator|(EnumT arg)
     {
         Set(arg);
         return *this;
     }
 
-    template<class enumT>
-    Flags<enumT>& Flags<enumT>::operator|=(const Flags<enumT> &arg)
+    template<class EnumT>
+    Flags<EnumT>& Flags<EnumT>::operator|=(const Flags<EnumT> &arg)
     {
         bits.set(arg.bits);
 
         return *this;
     }
 
-    template<class enumT>
-    Flags<enumT>& Flags<enumT>::operator|=(enumT arg)
+    template<class EnumT>
+    Flags<EnumT>& Flags<EnumT>::operator|=(EnumT arg)
     {
         Set(arg);
     }
 
-    template<class enumT>
-    bool Flags<enumT>::operator==(const Flags<enumT> &arg) const
+    template<class EnumT>
+    bool Flags<EnumT>::operator==(const Flags<EnumT> &arg) const
     {
         return bits == arg.bits;
     }
 
-    template<class enumT>
-    bool Flags<enumT>::operator!=(const Flags<enumT> &arg) const
+    template<class EnumT>
+    bool Flags<EnumT>::operator!=(const Flags<EnumT> &arg) const
     {
         return !(*this == arg);
     }
 
-    template<class enumT>
-    void Flags<enumT>::Set(enumT flag, bool setTo)
+    template<class EnumT>
+    void Flags<EnumT>::Set(EnumT flag, bool setTo)
     {
         if (Get(flag) != setTo)
             Flip(flag);
     }
 
-    template<class enumT>
-    void Flags<enumT>::Reset()
+    template<class EnumT>
+    void Flags<EnumT>::Reset()
     {
         bits = 0;
     }
 
-    template<class enumT>
-    void Flags<enumT>::Flip(enumT flag)
+    template<class EnumT>
+    void Flags<EnumT>::Flip(EnumT flag)
     {
         bits ^= 1 << (static_cast<Bits>(flag) - 1);
     }
 
-    template<class enumT>
-    bool Flags<enumT>::Get(enumT flag) const
+    template<class EnumT>
+    bool Flags<EnumT>::Get(EnumT flag) const
     {
         return ((bits >> (static_cast<Bits>(flag) - 1)) & 1) != 0;
     }
 
-    template<class enumT>
-    bool Flags<enumT>::Has(enumT flag) const
+    template<class EnumT>
+    bool Flags<EnumT>::Has(EnumT flag) const
     {
         return Get(flag);
     }
 
-    template<class enumT>
-    bool Flags<enumT>::CheckAll(bool value)
+    template<class EnumT>
+    bool Flags<EnumT>::CheckAll(bool value)
     {
         if (value)
             return bits == std::numeric_limits<Bits>::max();
@@ -161,8 +161,8 @@ namespace Atmos
             return bits == 0;
     }
 
-    template<class enumT>
-    typename const Flags<enumT>::Bits& Flags<enumT>::GetData() const
+    template<class EnumT>
+    typename const Flags<EnumT>::Bits& Flags<EnumT>::GetData() const
     {
         return bits;
     }

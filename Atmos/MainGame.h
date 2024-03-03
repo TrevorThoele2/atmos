@@ -27,10 +27,11 @@ namespace Atmos
     private:
         void OnKeyPressed(const Input::Key &args);
         void OnActionPressed(const Input::Action &args);
-        void UseOnClick();
 
         void InitImpl() override;
         void WorkImpl() override;
+        void OnFocusedImpl() override;
+
         bool AnyTertiaryOpen() const;
     public:
         MainGame() = default;

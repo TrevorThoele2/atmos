@@ -210,15 +210,6 @@ namespace Atmos
         field->renderFragments.Render();
     }
 
-    void WorldManager::DoLighting()
-    {
-        auto field = Instance().field.get();
-        if (!field)
-            return;
-
-        field->lighting.Work();
-    }
-
     void WorldManager::LockIn()
     {
         if (!change || !(mainGameState.IsTop() || battleState.IsTop()))

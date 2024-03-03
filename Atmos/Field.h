@@ -36,7 +36,6 @@ namespace Atmos
         GroundItemHandler groundItems;
 
         RenderFragmentHandler renderFragments;
-        LightingHandler lighting;
         SoundHandler sounds;
 
         Scheduler scheduler;

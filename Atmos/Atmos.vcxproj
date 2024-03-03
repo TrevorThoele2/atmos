@@ -283,7 +283,6 @@
     <ClInclude Include="ItemDescriptionBox.h" />
     <ClInclude Include="ItemDrop.h" />
     <ClInclude Include="LightSource.h" />
-    <ClInclude Include="Logic.h" />
     <ClInclude Include="MainGame.h" />
     <ClInclude Include="MainMenu.h" />
     <ClInclude Include="Math.h" />
@@ -524,7 +523,6 @@
     <ClCompile Include="ItemDescriptionBox.cpp" />
     <ClCompile Include="ItemDrop.cpp" />
     <ClCompile Include="LightSource.cpp" />
-    <ClCompile Include="Logic.cpp" />
     <ClCompile Include="MainGame.cpp" />
     <ClCompile Include="MainMenu.cpp" />
     <ClCompile Include="Movement.cpp" />

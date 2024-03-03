@@ -13,6 +13,8 @@
 #include "Sprite.h"
 #include "ModulatorGeneratorCreator.h"
 
+#include "ActionSystem.h"
+
 namespace Atmos
 {
     void GameEnvironment::OnInputPressed(const Input::Key &args)
@@ -75,6 +77,11 @@ namespace Atmos
         // Debug
         DebugScreen::Init();
         DebugScreen::Idle().Start();
+
+        return;
+
+        // Entity systems
+        Ent::ActionSystem::Instance();
     }
 
     void GameEnvironment::Loop()

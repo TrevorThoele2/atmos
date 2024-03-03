@@ -72,7 +72,6 @@ namespace Atmos
         static void Init();
         static void Work();
         static void Draw();
-        static void DoLighting();
         static void LockIn();
         static void Clear(bool destroyField = true);
 
