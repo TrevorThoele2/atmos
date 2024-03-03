@@ -1,7 +1,13 @@
 #include "MockTextManager.h"
 
 class MockFontAssetResource final : public Atmos::Asset::Resource::Font
-{};
+{
+public:
+    [[nodiscard]] Atmos::Spatial::Size2D Size(const Atmos::String& string) const override
+    {
+        return {};
+    }
+};
 
 std::unique_ptr<Atmos::Asset::Resource::Font> MockTextManager::CreateFontResource(
     const Atmos::Buffer& buffer, const Atmos::Name& name) const

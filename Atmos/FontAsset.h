@@ -7,6 +7,8 @@
 #include "CreateFontAssetResource.h"
 #include "LoadFontAssetResourceData.h"
 
+#include "Size2D.h"
+
 namespace Atmos::Asset
 {
     class Font final : public AssetWithResource<Resource::Font>
@@ -25,6 +27,8 @@ namespace Atmos::Asset
         bool operator!=(const Font& arg) const;
     public:
         void Setup(ResourcePtr&& set);
+    public:
+        [[nodiscard]] Spatial::Size2D Size(const String& string) const;
     private:
         Arca::RelicInit init;
     private:

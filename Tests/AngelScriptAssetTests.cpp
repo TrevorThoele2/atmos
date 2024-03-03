@@ -500,6 +500,41 @@ SCENARIO_METHOD(AngelScriptAssetTestsFixture, "running asset AngelScript scripts
             }
         }
     }
+
+    GIVEN("FontAsset")
+    {
+        auto name = dataGeneration.Random<std::string>();
+
+        auto resource = fieldReliquary->Do(Asset::Resource::Create<Asset::Resource::Font>{});
+        auto fontAsset = fieldReliquary->Do(Arca::Create<Asset::Font>{ name, std::move(resource) });
+
+        GIVEN("script that returns slice")
+        {
+            CompileAndCreateScript(
+                "basic_script.as",
+                "string main(string name)\n" \
+                "{\n" \
+                "    Atmos::Asset::FindByName<Atmos::Asset::Font> command(name);\n" \
+                "    auto asset = Arca::Reliquary::Do(command);\n" \
+                "    return Atmos::ToString(asset.Size(\"a\").width) + \" \" + Atmos::ToString(asset.Size(\"a\").height);\n" \
+                "}",
+                { name },
+                *fieldReliquary);
+
+            WHEN("working reliquary")
+            {
+                fieldReliquary->Do(Work{});
+
+                THEN("has correct properties")
+                {
+                    REQUIRE(finishes.size() == 1);
+
+                    const auto size = fontAsset->Size("a");
+                    REQUIRE(std::get<String>(std::get<Variant>(finishes[0].result)) == Atmos::ToString(size.width) + " " + Atmos::ToString(size.height));
+                }
+            }
+        }
+    }
 }
 
 TEST_CASE_METHOD(

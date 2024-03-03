@@ -25,6 +25,8 @@ namespace Atmos::Scripting::Angel
         static const ObjectType objectType = ObjectType::Value;
 
         static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
+    private:
+        [[nodiscard]] static Spatial::Size2D Size(Type type, String string);
     };
 
     template<>

@@ -43,6 +43,11 @@ namespace Atmos::Asset
     {
         SetResource(std::move(set));
     }
+
+    Spatial::Size2D Font::Size(const String& string) const
+    {
+        return ContainsResource() ? Resource()->Size(string) : Spatial::Size2D{};
+    }
 }
 
 namespace Arca

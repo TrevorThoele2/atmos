@@ -6,6 +6,11 @@ namespace Atmos::Render
     {
     public:
         FontAssetResourceImplementation() = default;
+
+        [[nodiscard]] Spatial::Size2D Size(const String& string) const override
+        {
+            return {};
+        }
     };
 
     std::unique_ptr<Asset::Resource::Font> NullTextManager::CreateFontResource(
