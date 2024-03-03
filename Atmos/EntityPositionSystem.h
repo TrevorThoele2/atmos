@@ -53,6 +53,14 @@ namespace Atmos
         class PositionSystem : public System<PositionSystem>
         {
         public:
+            struct StagedPosition
+            {
+                GridPosition position;
+                Direction direction;
+                Entity entity;
+                StagedPosition(const GridPosition &position, Direction direction, Entity entity);
+            };
+        private:
             enum class CollisionType
             {
                 NONE,
@@ -61,12 +69,13 @@ namespace Atmos
             };
         private:
             typedef Modulator::Modulator<SenseComponent> SenseModulator;
-        private:
+
             typedef System<PositionSystem> SystemBaseT;
             friend SystemBaseT;
 
             static std::unordered_multimap<GridPosition, Entity> map;
-            static std::unordered_set<Entity> moving;
+            static Optional<StagedPosition> stagedPosition;
+            static std::unordered_map<Entity, SenseModulator*> movingEntities;
 
             PositionSystem() = default;
             PositionSystem(const PositionSystem &arg) = delete;
@@ -78,6 +87,8 @@ namespace Atmos
             void OnGeneralComponentCreated(GeneralComponent &component);
             void OnSenseComponentCreated(SenseComponent &component);
             void OnFinalizeField();
+            void OnModulatorStarted(Modulator::ModulatorBase *modulator);
+            void OnModulatorStopped(Modulator::ModulatorBase *modulator);
 
             void SetSenseComponentPosition(Entity entity, SenseComponent &component, const Optional<Atmos::GridPosition> &position);
             Modulator::Observer GenerateSenseComponentMover(const GeneralComponent::PositionT &curPosition, const GeneralComponent::PositionT &moveToPosition, const TimeValue &timeTaken);
@@ -86,7 +97,6 @@ namespace Atmos
         public:
             static Event<MovementEventArgs> startedMoving;
             static Event<MovementEventArgs> finishedMoving;
-            static Event<MovementCollisionEventArgs> collision;
 
             static std::vector<Entity> FindEntities(const GridPosition &position);
 
@@ -104,6 +114,9 @@ namespace Atmos
             static CollisionType CheckCollision(const MovementComponent &movement, const GridPosition &destination);
 
             static void Work();
+            static size_t GetWorkedSize();
+
+            static Optional<StagedPosition> GetStagedPosition(Entity entity);
         };
     }
 }

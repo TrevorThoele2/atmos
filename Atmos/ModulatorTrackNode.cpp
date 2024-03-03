@@ -183,22 +183,23 @@ namespace Atmos
 
         void TrackNodeEndState::SetNormal(Value end)
         {
-            if (end.GetType() != variantType)
-                return;
-
+            end.Convert(variantType);
             variant.Set(Normal(end));
         }
 
         void TrackNodeEndState::SetRandom(const RangeT &range)
         {
-            if (range.GetBegin().GetType() != variantType || range.GetEnd().GetType() != variantType)
-                return;
-
-            variant.Set(Random(range));
+            RangeT use(range);
+            use.begin.Convert(variantType);
+            use.end.Convert(variantType);
+            variant.Set(Random(use));
         }
 
         Value TrackNodeEndState::GetEnding() const
         {
+            if (!variant.IsInhabited())
+                return Value();
+
             struct Getter
             {
                 static Value DoReturn(const Normal &normal, Value::Type variantType)
@@ -238,7 +239,7 @@ namespace Atmos
         TrackNode::TrackNode(Value::Type variantType) : variantType(variantType), endState(variantType)
         {}
 
-        TrackNode::TrackNode(TrackNode &&arg) : variantType(variantType), endState(std::move(arg.endState)), interpolation(std::move(arg.interpolation)), timeTaken(std::move(arg.timeTaken))
+        TrackNode::TrackNode(TrackNode &&arg) : variantType(std::move(arg.variantType)), endState(std::move(arg.endState)), interpolation(std::move(arg.interpolation)), timeTaken(std::move(arg.timeTaken))
         {}
 
         TrackNode& TrackNode::operator=(TrackNode &&arg)
@@ -273,9 +274,9 @@ namespace Atmos
             interpolation = set;
         }
 
-        Delta TrackNode::GetDelta() const
+        Delta TrackNode::GetDelta(const FrameTimer &timer) const
         {
-            return interpolation.TransformDelta(FixedPoint64());
+            return interpolation.TransformDelta(timer.PercentageElapsed().Get());
         }
 
         Value TrackNode::GetEndValue() const

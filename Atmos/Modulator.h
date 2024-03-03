@@ -28,6 +28,7 @@ namespace Atmos
             virtual TimeValue GetSumTimeTakenImpl() const = 0;
 
             virtual bool IsWorkingObjectImpl(void *obj) const = 0;
+            virtual std::type_index GetObjectTypeImpl() const = 0;
         protected:
             void StartBase();
         public:
@@ -54,6 +55,7 @@ namespace Atmos
             const Name& GetGeneratorName() const;
 
             bool IsWorkingObject(void *obj) const;
+            std::type_index GetObjectType() const;
         };
 
         template<class Object>
@@ -77,6 +79,7 @@ namespace Atmos
             TimeValue GetSumTimeTakenImpl() const override final;
 
             bool IsWorkingObjectImpl(void *obj) const override final;
+            std::type_index GetObjectTypeImpl() const override final;
         private:
             ObjectT *obj;
             TrackContainer tracks;
@@ -92,6 +95,9 @@ namespace Atmos
             bool operator!=(const Modulator &arg) const;
 
             void Start(ObjectT &obj);
+
+            ObjectT* GetObject();
+            const ObjectT* GetObject() const;
         };
 
         template<class Object>
@@ -177,6 +183,12 @@ namespace Atmos
         }
 
         template<class Object>
+        std::type_index Modulator<Object>::GetObjectTypeImpl() const
+        {
+            return std::type_index(typeid(Object));
+        }
+
+        template<class Object>
         Modulator<Object>::Modulator(const Name &generatorName) : ModulatorBase(generatorName), obj(nullptr)
         {}
 
@@ -232,9 +244,24 @@ namespace Atmos
 
             this->obj = &obj;
             for (auto &loop : tracks)
+            {
                 tracksWorking.push_back(&loop.second);
+                loop.second.Start(obj);
+            }
 
             StartBase();
+        }
+
+        template<class Object>
+        typename Modulator<Object>::ObjectT* Modulator<Object>::GetObject()
+        {
+            return obj;
+        }
+
+        template<class Object>
+        typename const Modulator<Object>::ObjectT* Modulator<Object>::GetObject() const
+        {
+            return obj;
         }
     }
 }

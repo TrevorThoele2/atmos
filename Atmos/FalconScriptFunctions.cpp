@@ -60,10 +60,10 @@ namespace Atmos
                     auto message = selfFunc.GetParameter<String>("message");
                     auto type = selfFunc.GetParameter<Logger::Type>("type");
                     
-                    if (!type->WasSet())
-                        Logger::Log(message->value, Logger::Type::INFORMATION);
+                    if (!type->WasSet() || **type == Logger::Type::INFORMATION)
+                        Logger::Log(**message, Logger::Type::INFORMATION);
                     else
-                        Logger::Log(message->value, type->value);
+                        Logger::Log(AddTracebackToString(*vm, **message), **type);
                 } BODY_END;
 
                 // Random bool
@@ -77,7 +77,7 @@ namespace Atmos
                     if (!probability->WasSet())
                         vm->retval(Act::Random::GenerateBool());
                     else
-                        vm->retval(Act::Random::GenerateBool(probability->value));
+                        vm->retval(Act::Random::GenerateBool(**probability));
                 } BODY_END;
 
                 // Random integer
@@ -94,7 +94,73 @@ namespace Atmos
                     if (!floor->WasSet() || !ceiling->WasSet())
                         vm->retval(Act::Random::GenerateIntFullRange<T>());
                     else
-                        vm->retval(Act::Random::GenerateInt<T>(floor->value, ceiling->value));
+                        vm->retval(Act::Random::GenerateInt<T>(**floor, **ceiling));
+                } BODY_END;
+            }
+
+            namespace Position
+            {
+                // Find path
+                FUNCTION(FindPath, "Atmos_FindPath")
+                    PARAMETERS(new Prototype::Parameter<Classes::Position::GridPosition>("from"), new Prototype::Parameter<Classes::Position::GridPosition>("to"))
+                BODY
+                {
+                    SETUP_FUNCTION(FindPath);
+
+                    auto from = selfFunc.GetParameter<Classes::Position::GridPosition>("from");
+                    auto to = selfFunc.GetParameter<Classes::Position::GridPosition>("to");
+
+                    ::Atmos::GridPosition atmosFrom(*from->obj.x, *from->obj.y, *from->obj.z);
+                    ::Atmos::GridPosition atmosTo(*to->obj.x, *to->obj.y, *to->obj.z);
+
+                    auto &path = ::Atmos::Act::Position::FindPath(atmosFrom, atmosTo);
+
+                    auto sendPath = new Falcon::CoreArray();
+                    while (!path.empty())
+                    {
+                        auto &top = path.top();
+                        Classes::Position::GridPosition::x.obj = top.GetX();
+                        Classes::Position::GridPosition::y.obj = top.GetY();
+                        Classes::Position::GridPosition::z.obj = top.GetZ();
+                        sendPath->append(Classes::Position::GridPosition::Instance().CreateItem(*vm));
+                        path.pop();
+                    }
+
+                    vm->retval(sendPath);
+                } BODY_END;
+            }
+
+            namespace Input
+            {
+                // Is action active
+                FUNCTION(IsActionActive, "AtmosInput_IsActionActive")
+                    PARAMETERS(new Prototype::Parameter<::Atmos::Input::ActionID>("action"))
+                BODY
+                {
+                    SETUP_FUNCTION(IsActionActive);
+                    auto action = selfFunc.GetParameter<::Atmos::Input::ActionID>("action");
+
+                    vm->retval(Act::Input::IsActionActive(action->obj));
+                } BODY_END;
+                // Is action pressed
+                FUNCTION(IsActionPressed, "AtmosInput_IsActionPressed")
+                    PARAMETERS(new Prototype::Parameter<::Atmos::Input::ActionID>("action"))
+                BODY
+                {
+                    SETUP_FUNCTION(IsActionPressed);
+                    auto action = selfFunc.GetParameter<::Atmos::Input::ActionID>("action");
+
+                    vm->retval(Act::Input::IsActionPressed(action->obj));
+                } BODY_END;
+                // Is action pressed
+                FUNCTION(IsActionDepressed, "AtmosInput_IsActionDepressed")
+                    PARAMETERS(new Prototype::Parameter<::Atmos::Input::ActionID>("action"))
+                BODY
+                {
+                    SETUP_FUNCTION(IsActionDepressed);
+                    auto action = selfFunc.GetParameter<::Atmos::Input::ActionID>("action");
+
+                    vm->retval(Act::Input::IsActionDepressed(action->obj));
                 } BODY_END;
             }
 
@@ -109,19 +175,161 @@ namespace Atmos
                     auto name = selfFunc.GetParameter<Name>("name");
 
                     // Create the modulator
-                    ::Atmos::Modulator::Observer madeMod(GameEnvironment::GenerateModulator(name->value));
+                    ::Atmos::Modulator::Observer madeMod(GameEnvironment::GenerateModulator(**name));
                     if (!madeMod)
                     {
                         // Log error if not created
-                        Logger::Log("A modulator was attempted to be created with an invalid name.",
+                        Logger::Log(AddTracebackToString(*vm, "A modulator was attempted to be created with an invalid name."),
                             Logger::Type::ERROR_LOW,
-                            Logger::NameValueVector{ NameValuePair("Name", name->value) });
+                            Logger::NameValueVector{ NameValuePair("Name", **name) });
                         return;
                     }
 
                     // Return the ID for the new modulator
-                    Classes::Modulator::Modulator::modID.value = GameEnvironment::AttachModulator(madeMod);
-                    vm->retval(Classes::Modulator::Modulator::CreateItem(*vm));
+                    Classes::Modulator::Modulator::modID.obj = GameEnvironment::GetModulatorController().Attach(madeMod);
+                    vm->retval(Classes::Modulator::Modulator::Instance().CreateItem(*vm));
+                } BODY_END;
+            }
+
+            namespace Speech
+            {
+                // SetCharacters
+                FUNCTION(SetCharacters, "AtmosSpeech_SetCharacters")
+                    PARAMETERS(new Prototype::Parameter<String>("output"))
+                BODY
+                {
+                    SETUP_FUNCTION(SetCharacters);
+
+                    auto output = selfFunc.GetParameter<String>("output");
+                    Act::Speech::SetCharacters(output->obj);
+                } BODY_END;
+
+                // SetCharacters
+                FUNCTION(AppendCharacters, "AtmosSpeech_AppendCharacters")
+                    PARAMETERS(new Prototype::Parameter<String>("append"))
+                BODY
+                {
+                    SETUP_FUNCTION(AppendCharacters);
+
+                    auto append = selfFunc.GetParameter<String>("append");
+                    Act::Speech::AppendCharacters(append->obj);
+                } BODY_END;
+
+                // Clear characters
+                FUNCTION(ClearCharacters, "AtmosSpeech_ClearCharacters")
+                    NO_PARAMETERS
+                BODY
+                {
+                    SETUP_FUNCTION(ClearCharacters);
+
+                    Act::Speech::ClearCharacters();
+                } BODY_END;
+
+                // Activate input
+                FUNCTION(ActivateInput, "AtmosSpeech_ActivateInput")
+                    PARAMETERS(new Prototype::Parameter<std::vector<String>>("strings"))
+                BODY
+                {
+                    SETUP_FUNCTION(ActivateInput);
+
+                    auto strings = selfFunc.GetParameter<std::vector<String>>("strings");
+                    std::vector<String> copy(strings->obj);
+
+                    Act::Speech::ActivateInput(std::move(copy));
+
+                } BODY_END;
+
+                // Deactivate input
+                FUNCTION(DeactivateInput, "AtmosSpeech_DeactivateInput")
+                    NO_PARAMETERS
+                BODY
+                {
+                    SETUP_FUNCTION(DeactivateInput);
+
+                    Act::Speech::DeactivateInput();
+
+                } BODY_END;
+
+                // Get input position
+                FUNCTION(GetInputPosition, "AtmosSpeech_GetInputPosition")
+                    NO_PARAMETERS
+                BODY
+                {
+                    SETUP_FUNCTION(GetInputPosition);
+
+                    vm->retval(Act::Speech::GetInputPosition());
+                } BODY_END;
+
+                // Leave
+                FUNCTION(Leave, "AtmosSpeech_Leave")
+                    NO_PARAMETERS
+                BODY
+                {
+                    SETUP_FUNCTION(Leave);
+
+                    Act::Speech::LeaveSpeech();
+                } BODY_END;
+            }
+
+            namespace Shop
+            {
+                // Enter
+                FUNCTION(Enter, "AtmosShop_Enter")
+                    PARAMETERS(new Prototype::Parameter<bool>("buying"))
+                BODY
+                {
+                    SETUP_FUNCTION(Enter);
+
+                    auto buying = selfFunc.GetParameter<bool>("buying");
+
+                    Act::Speech::EnterShop(**buying);
+                } BODY_END;
+
+                // Leave
+                FUNCTION(Leave, "AtmosShop_Leave")
+                    NO_PARAMETERS
+                BODY
+                {
+                    SETUP_FUNCTION(Leave);
+
+                    Act::Speech::LeaveShop();
+                } BODY_END;
+
+                // Leave
+                FUNCTION(IsActive, "AtmosShop_IsActive")
+                    NO_PARAMETERS
+                BODY
+                {
+                    SETUP_FUNCTION(IsActive);
+
+                    vm->retval(Act::Speech::IsShopActive());
+                } BODY_END;
+            }
+
+            namespace Party
+            {
+                // Add
+                FUNCTION(Add, "AtmosParty_Add")
+                    PARAMETERS(new Prototype::Parameter<::Atmos::Entity::ValueT>("entity"))
+                BODY
+                {
+                    SETUP_FUNCTION(Add);
+
+                    auto entity = selfFunc.GetParameter<::Atmos::Entity::ValueT>("entity");
+
+                    Act::Ent::AddToPlayerParty(entity->obj);
+                } BODY_END;
+
+                // Is entity in
+                FUNCTION(IsEntityIn, "AtmosParty_IsEntityIn")
+                    PARAMETERS(new Prototype::Parameter<::Atmos::Entity::ValueT>("entity"))
+                BODY
+                {
+                    SETUP_FUNCTION(IsEntityIn);
+
+                    auto entity = selfFunc.GetParameter<::Atmos::Entity::ValueT>("entity");
+
+                    vm->retval(Act::Ent::IsEntityInParty(entity->obj));
                 } BODY_END;
             }
         }

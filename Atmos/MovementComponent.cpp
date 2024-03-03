@@ -62,7 +62,7 @@ namespace Atmos
 
         bool MovementComponent::IsMoving() const
         {
-            return affecterConnection.IsValid();
+            return false;
         }
 
         bool MovementComponent::CanMove() const

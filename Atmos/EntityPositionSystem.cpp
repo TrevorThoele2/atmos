@@ -58,9 +58,12 @@ namespace Atmos
             return hitTile;
         }
 
+        PositionSystem::StagedPosition::StagedPosition(const GridPosition &position, Direction direction, Entity entity) : position(position), direction(direction), entity(entity)
+        {}
 
         std::unordered_multimap<GridPosition, Entity> PositionSystem::map;
-        std::unordered_set<Entity> PositionSystem::moving;
+        Optional<PositionSystem::StagedPosition> PositionSystem::stagedPosition;
+        std::unordered_map<Entity, PositionSystem::SenseModulator*> PositionSystem::movingEntities;
 
         void PositionSystem::Init()
         {
@@ -68,6 +71,8 @@ namespace Atmos
             SubscribeEvent(GeneralComponent::Map::onCreated, &PositionSystem::OnGeneralComponentCreated, *this);
             SubscribeEvent(SenseComponent::Map::onCreated, &PositionSystem::OnSenseComponentCreated, *this);
             SubscribeEvent(WorldManager::Instance().eventFinalizeField, &PositionSystem::OnFinalizeField, *this);
+            SubscribeEvent(Modulator::Controller::onStarted, &PositionSystem::OnModulatorStarted, *this);
+            SubscribeEvent(Modulator::Controller::onStopped, &PositionSystem::OnModulatorStopped, *this);
         }
 
         void PositionSystem::OnDestroyEntity(Entity entity)
@@ -99,6 +104,44 @@ namespace Atmos
         void PositionSystem::OnFinalizeField()
         {
             map.clear();
+        }
+
+        void PositionSystem::OnModulatorStarted(Modulator::ModulatorBase *modulator)
+        {
+            // If the modulator is NOT a sense component modulator
+            if (modulator->GetObjectType() != typeid(SenseModulator::ObjectT))
+                // Leave
+                return;
+
+            // Get sense modulator, entity, and general component
+            SenseModulator *senseModulator = static_cast<SenseModulator*>(modulator);
+            ATMOS_ASSERT(senseModulator->GetObject());
+            Entity entity = senseModulator->GetObject()->GetOwnerEntity();
+            GeneralComponent *generalComponent = GetCurrentEntities()->FindComponent<GeneralComponent>(entity);
+
+            // Assert that the staged position is valid
+            ATMOS_ASSERT(stagedPosition.IsValid());
+
+            // Set direction of the general component
+            generalComponent->direction = stagedPosition->direction;
+            generalComponent->SetPosition(stagedPosition->position);
+            OnMoveEntity(entity, stagedPosition->position);
+
+            movingEntities.emplace(senseModulator->GetObject()->GetOwnerEntity(), senseModulator);
+        }
+
+        void PositionSystem::OnModulatorStopped(Modulator::ModulatorBase *modulator)
+        {
+            // If the modulator is NOT a sense component modulator
+            if (modulator->GetObjectType() != typeid(SenseModulator::ObjectT))
+                // Leave
+                return;
+
+            SenseModulator *senseModulator = static_cast<SenseModulator*>(modulator);
+            if (!senseModulator->GetObject())
+                return;
+
+            movingEntities.erase(senseModulator->GetObject()->GetOwnerEntity());
         }
 
         void PositionSystem::SetSenseComponentPosition(Entity entity, SenseComponent &component, const Optional<Atmos::GridPosition> &position)
@@ -164,7 +207,6 @@ namespace Atmos
 
         Event<MovementEventArgs> PositionSystem::startedMoving;
         Event<MovementEventArgs> PositionSystem::finishedMoving;
-        Event<MovementCollisionEventArgs> PositionSystem::collision;
 
         std::vector<Entity> PositionSystem::FindEntities(const GridPosition &position)
         {
@@ -205,7 +247,6 @@ namespace Atmos
             auto senseComponentMover = Instance().GenerateSenseComponentMover(generalComponent->position, moveTo, timeTaken);
             // Start the modulator
             static_cast<Modulator::Modulator<decltype(Modulator::Description::SenseComponent)::Type>*>(senseComponentMover.Get())->Start(*senseComponent);
-            moving.emplace(entity);
             return true;
         }
 
@@ -247,53 +288,16 @@ namespace Atmos
                 return false;
 
             // Move render component
-            // Move immediately
+            // Move immediately if the modulator picked is invalid
             if (!modPicked->IsValid())
             {
                 MoveEntityInstant(entity, moveTo);
                 return true;
             }
 
-            // Move via modulator
-            // Create the mover modulator
-            modPicked->Execute();
-            Modulator::Observer mover(GameEnvironment::GenerateModulator(Modulator::Description::SenseComponent.name));
-            // Setup the mover modulator
-            switch(direction.Get())
-            {
-            case Direction::UP:
-            case Direction::DOWN:
-            {
-                typedef decltype(Modulator::Description::Track::PositionY)::Type Type;
-                auto moverTrack = mover->FindTrack(mover->AddTrack(GameEnvironment::GenerateModulatorTrack(Modulator::Description::SenseComponent.name, Modulator::Description::Track::PositionY.name)));
-                auto node = moverTrack->FindNode(moverTrack->AddNode());
-                //node->SetTimeTaken(foundMod->GetTimeTaken());
-
-                Modulator::TrackNodeEndState endState(node->PrototypeEndState());
-                endState.SetNormal(Modulator::Value(std::int64_t(moveTo.GetX())));
-                node->SetEndState(endState);
-                break;
-            }
-
-            case Direction::LEFT:
-            case Direction::RIGHT:
-            {
-                typedef decltype(Modulator::Description::Track::PositionX)::Type Type;
-                auto moverTrack = mover->FindTrack(mover->AddTrack(GameEnvironment::GenerateModulatorTrack(Modulator::Description::SenseComponent.name, Modulator::Description::Track::PositionX.name)));
-                auto node = moverTrack->FindNode(moverTrack->AddNode());
-                //node->SetTimeTaken(foundMod->GetTimeTaken());
-
-                Modulator::TrackNodeEndState endState(node->PrototypeEndState());
-                endState.SetNormal(Modulator::Value(std::int64_t(moveTo.GetY())));
-                node->SetEndState(endState);
-                break;
-            }
-            }
-
-            //moving.emplace(entity, ModulatorEntry(mover, foundMod));
-            static_cast<SenseModulator*>(mover.Get())->Start(*senseComponent);
-            // Set direction of the general component
-            generalComponent->direction = direction;
+            stagedPosition.Set(StagedPosition(moveTo, direction, entity));
+            modPicked->ExecuteImmediately();
+            stagedPosition.Reset();
             return true;
         }
 
@@ -363,7 +367,8 @@ namespace Atmos
 
         bool PositionSystem::CanMove(const MovementComponent &movement)
         {
-            return movement.CanMove();
+            // If the movement can actually move and the entity is not within the moving entities
+            return movement.CanMove() && (movingEntities.find(movement.GetOwnerEntity()) == movingEntities.end());
         }
 
         bool PositionSystem::CanMove(Entity entity, const GridPosition &destination)
@@ -439,46 +444,32 @@ namespace Atmos
 
         void PositionSystem::Work()
         {
-            for (auto loop = moving.begin(); loop != moving.end();)
+            for (auto loop = movingEntities.begin(); loop != movingEntities.end(); ++loop)
             {
-                auto comps = GetCurrentEntities()->FindMultipleComponents<GeneralComponent*, MovementComponent*, SenseComponent*>(*loop);
+                auto comps = GetCurrentEntities()->FindMultipleComponents<GeneralComponent*, MovementComponent*, SenseComponent*>(loop->first);
                 auto general = std::get<0>(comps);
                 auto movement = std::get<1>(comps);
                 auto sense = std::get<2>(comps);
 
-                if (sense->position != general->position)
-                {
-                    // Check for collision
-                    {
-                        CollisionType col = CheckCollision(*movement, sense->position);
-                        if (col != CollisionType::NONE)
-                        {
-                            if (col == CollisionType::TILE)
-                                collision(MovementCollisionEventArgs(*loop, sense->position, true));
-                            else
-                                collision(MovementCollisionEventArgs(*loop, sense->position, false));
-
-                            loop = moving.erase(loop);
-                            continue;
-                        }
-                    }
-
-                    general->position = sense->position;
-                    OnMoveEntity(*loop, general->position);
-                }
-                else
-                {
-                    /*
-                    if (!loop->moverObserver->IsWorking())
-                    {
-                        loop = moving.erase(loop);
-                        continue;
-                    }
-                    */
-                }
-
-                ++loop;
+                OnMoveEntity(loop->first, general->position);
             }
+        }
+
+        size_t PositionSystem::GetWorkedSize()
+        {
+            return movingEntities.size();
+        }
+
+        Optional<PositionSystem::StagedPosition> PositionSystem::GetStagedPosition(Entity entity)
+        {
+            typedef Optional<StagedPosition> RetT;
+            if(!stagedPosition)
+                return RetT();
+
+            if (stagedPosition->entity != entity)
+                return RetT();
+
+            return stagedPosition;
         }
 
         ENTITY_SYSTEM_FORCE_INSTANTIATION(PositionSystem);

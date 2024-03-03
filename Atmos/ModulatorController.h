@@ -1,8 +1,11 @@
 #pragma once
 
 #include <vector>
+
 #include "ModulatorObserver.h"
 #include "IDManager.h"
+
+#include "Event.h"
 
 namespace Atmos
 {
@@ -18,6 +21,9 @@ namespace Atmos
             IDManager<std::unordered_map<ID, Observer>> observers;
             bool IsIn(const Observer &check) const;
         public:
+            static Event<ModulatorBase*> onStarted;
+            static Event<ModulatorBase*> onStopped;
+
             // Modulators which are just being attached are classified as being staged; you must start them explicitly
             ID Attach(const Observer &attach);
             void Detach(ID detach);
@@ -26,6 +32,9 @@ namespace Atmos
             Observer Find(ID find) const;
             void Work();
 
+            size_t GetWorkedSize() const;
+            
+            void ForceStop(const Observer &stop);
             bool IsModulatorWorkingObject(void *obj) const;
         };
     }

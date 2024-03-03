@@ -134,7 +134,6 @@ namespace Atmos
             ScriptCaller caller;
 
             void InitializeImpl();
-            void CheckRemove();
         public:
             Instance();
             Instance(const Script &script);
@@ -156,9 +155,17 @@ namespace Atmos
             const FileName& GetFileName() const;
 
             // Executes the script standardly
-            void Execute();
+            // Will defer the execute until a certain point in the frame (probably a bit later)
+            void ExecuteDeferred();
             // Executes a sub-routine inside of the script
-            void Execute(const SymbolName &overrideExecuteName, const Script::Instance::ItemVector &overrideParameters);
+            // Will defer the execute until a certain point in the frame (probably a bit later)
+            void ExecuteDeferred(const SymbolName &overrideExecuteName, const Script::Instance::ItemVector &overrideParameters);
+            // Executes the script standardly
+            // Will immediately execute the script
+            void ExecuteImmediately();
+            // Executes a sub-routine inside of the script
+            // Will immediately execute the script
+            void ExecuteImmediately(const SymbolName &overrideExecuteName, const Script::Instance::ItemVector &overrideParameters);
             // Resumes the script from being suspended
             void Resume();
             // Suspends the script for the rest of the frame

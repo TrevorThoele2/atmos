@@ -92,12 +92,13 @@ namespace Atmos
             return item;
         }
 
-        String& AddTracebackToString(Falcon::VMachine &vm, String &string)
+        String AddTracebackToString(Falcon::VMachine &vm, const String &string)
         {
+            String ret(string);
             Falcon::SyntaxError error;
             vm.fillErrorContext(&error);
-            string.append(Falcon::AutoCString(error.toString()).c_str());
-            return string;
+            ret.append(Falcon::AutoCString(error.toString()).c_str());
+            return ret;
         }
 
         void FatalScriptError(Script::Instance &instance, String &&string, Logger::Type severity, Logger::NameValueVector &nameValueVector)
@@ -136,7 +137,7 @@ namespace Atmos
             return item.isBoolean();
         }
 
-        FalconVariableTraits<bool>::Type FalconVariableTraits<bool>::FromItem(Falcon::Item &item)
+        FalconVariableTraits<bool>::Type FalconVariableTraits<bool>::FromItem(Falcon::VMachine &vm, Falcon::Item &item)
         {
             return item.asBoolean();
         }
@@ -168,7 +169,7 @@ namespace Atmos
             return item.isInteger();
         }
 
-        FalconVariableTraits<std::uint8_t>::Type FalconVariableTraits<std::uint8_t>::FromItem(Falcon::Item &item)
+        FalconVariableTraits<std::uint8_t>::Type FalconVariableTraits<std::uint8_t>::FromItem(Falcon::VMachine &vm, Falcon::Item &item)
         {
             return static_cast<Type>(item.asInteger());
         }
@@ -200,7 +201,7 @@ namespace Atmos
             return item.isInteger();
         }
 
-        FalconVariableTraits<std::uint16_t>::Type FalconVariableTraits<std::uint16_t>::FromItem(Falcon::Item &item)
+        FalconVariableTraits<std::uint16_t>::Type FalconVariableTraits<std::uint16_t>::FromItem(Falcon::VMachine &vm, Falcon::Item &item)
         {
             return static_cast<Type>(item.asInteger());
         }
@@ -229,10 +230,10 @@ namespace Atmos
 
         bool FalconVariableTraits<std::uint32_t>::Is(Falcon::Item &item)
         {
-            return item.isInteger();
+            return item.isInteger(); 
         }
 
-        FalconVariableTraits<std::uint32_t>::Type FalconVariableTraits<std::uint32_t>::FromItem(Falcon::Item &item)
+        FalconVariableTraits<std::uint32_t>::Type FalconVariableTraits<std::uint32_t>::FromItem(Falcon::VMachine &vm, Falcon::Item &item)
         {
             return static_cast<Type>(item.asInteger());
         }
@@ -264,7 +265,7 @@ namespace Atmos
             return item.isInteger();
         }
 
-        FalconVariableTraits<std::uint64_t>::Type FalconVariableTraits<std::uint64_t>::FromItem(Falcon::Item &item)
+        FalconVariableTraits<std::uint64_t>::Type FalconVariableTraits<std::uint64_t>::FromItem(Falcon::VMachine &vm, Falcon::Item &item)
         {
             return item.asInteger();
         }
@@ -296,7 +297,7 @@ namespace Atmos
             return item.isInteger();
         }
 
-        FalconVariableTraits<std::int8_t>::Type FalconVariableTraits<std::int8_t>::FromItem(Falcon::Item &item)
+        FalconVariableTraits<std::int8_t>::Type FalconVariableTraits<std::int8_t>::FromItem(Falcon::VMachine &vm, Falcon::Item &item)
         {
             return static_cast<Type>(item.asInteger());
         }
@@ -328,7 +329,7 @@ namespace Atmos
             return item.isInteger();
         }
 
-        FalconVariableTraits<std::int16_t>::Type FalconVariableTraits<std::int16_t>::FromItem(Falcon::Item &item)
+        FalconVariableTraits<std::int16_t>::Type FalconVariableTraits<std::int16_t>::FromItem(Falcon::VMachine &vm, Falcon::Item &item)
         {
             return static_cast<Type>(item.asInteger());
         }
@@ -360,7 +361,7 @@ namespace Atmos
             return item.isInteger();
         }
 
-        FalconVariableTraits<std::int32_t>::Type FalconVariableTraits<std::int32_t>::FromItem(Falcon::Item &item)
+        FalconVariableTraits<std::int32_t>::Type FalconVariableTraits<std::int32_t>::FromItem(Falcon::VMachine &vm, Falcon::Item &item)
         {
             return static_cast<Type>(item.asInteger());
         }
@@ -392,7 +393,7 @@ namespace Atmos
             return item.isInteger();
         }
 
-        FalconVariableTraits<std::int64_t>::Type FalconVariableTraits<std::int64_t>::FromItem(Falcon::Item &item)
+        FalconVariableTraits<std::int64_t>::Type FalconVariableTraits<std::int64_t>::FromItem(Falcon::VMachine &vm, Falcon::Item &item)
         {
             return item.asInteger();
         }
@@ -419,6 +420,40 @@ namespace Atmos
             return item;
         }
 
+        const FalconVariableTraits<float>::Type FalconVariableTraits<float>::DefaultValue = 0.0f;
+
+        bool FalconVariableTraits<float>::Is(Falcon::Item &item)
+        {
+            return item.isNumeric();
+        }
+
+        FalconVariableTraits<float>::Type FalconVariableTraits<float>::FromItem(Falcon::VMachine &vm, Falcon::Item &item)
+        {
+            return static_cast<float>(item.asNumeric());
+        }
+
+        void FalconVariableTraits<float>::SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set)
+        {
+            item.setNumeric(set);
+        }
+
+        void FalconVariableTraits<float>::SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set)
+        {
+            item.setNumeric(set);
+        }
+
+        String FalconVariableTraits<float>::GetTypeString()
+        {
+            return "Float";
+        }
+
+        Falcon::Item FalconVariableTraits<float>::CreateItem(Falcon::VMachine &vm, const Type &set)
+        {
+            Falcon::Item item;
+            SetItem(vm, item, set);
+            return item;
+        }
+
         const FalconVariableTraits<double>::Type FalconVariableTraits<double>::DefaultValue = 0.0;
 
         bool FalconVariableTraits<double>::Is(Falcon::Item &item)
@@ -426,7 +461,7 @@ namespace Atmos
             return item.isNumeric();
         }
 
-        FalconVariableTraits<double>::Type FalconVariableTraits<double>::FromItem(Falcon::Item &item)
+        FalconVariableTraits<double>::Type FalconVariableTraits<double>::FromItem(Falcon::VMachine &vm, Falcon::Item &item)
         {
             return item.asNumeric();
         }
@@ -460,7 +495,7 @@ namespace Atmos
             return item.isString();
         }
 
-        FalconVariableTraits<String>::Type FalconVariableTraits<String>::FromItem(Falcon::Item &item)
+        FalconVariableTraits<String>::Type FalconVariableTraits<String>::FromItem(Falcon::VMachine &vm, Falcon::Item &item)
         {
             return Type(Falcon::AutoCString(*item.asString()).c_str());
         }
@@ -487,6 +522,7 @@ namespace Atmos
             return item;
         }
 
+        /*
         bool FalconVariableTraits<Variant>::Is(Falcon::Item &item)
         {
             return item.isObject() && item.asObject()->generator()->symbol()->name() == "atmos_Variant";
@@ -520,7 +556,7 @@ namespace Atmos
             }
         };
 
-        FalconVariableTraits<Variant>::Type FalconVariableTraits<Variant>::FromItem(Falcon::Item &item)
+        FalconVariableTraits<Variant>::Type FalconVariableTraits<Variant>::FromItem(Falcon::VMachine &vm, Falcon::Item &item)
         {
             typedef Optional<Type> OpT;
             auto made = ::function::IterateRangeCheckStop<VariantIterationTraits::UnderlyingType, VariantCreateConverter, OpT, VariantIterationTraits::maxU>(OpT(), item);
@@ -569,13 +605,14 @@ namespace Atmos
             SetItem(vm, item, set);
             return item;
         }
+        */
 
         bool FalconVariableTraits<LargeInteger>::Is(Falcon::Item &item)
         {
             return item.isObject() && item.asObject()->generator()->symbol()->name() == "atmos_LargeInteger";
         }
 
-        FalconVariableTraits<LargeInteger>::Type FalconVariableTraits<LargeInteger>::FromItem(Falcon::Item &item)
+        FalconVariableTraits<LargeInteger>::Type FalconVariableTraits<LargeInteger>::FromItem(Falcon::VMachine &vm, Falcon::Item &item)
         {
             Falcon::Item low;
             Falcon::Item high;
@@ -620,7 +657,7 @@ namespace Atmos
             if (!WrappedTraits::Is(*low) || !WrappedTraits::Is(*high))
                 return RetT();
 
-            return RetT(Type(WrappedTraits::FromItem(*low), WrappedTraits::FromItem(*high)));
+            return RetT(Type(WrappedTraits::FromItem(vm, *low), WrappedTraits::FromItem(vm, *high)));
         }
 
         Falcon::Item FalconVariableTraits<LargeInteger>::CreateItem(Falcon::VMachine &vm, const Type &set)
@@ -635,7 +672,7 @@ namespace Atmos
             return item.isObject() && item.asObject()->generator()->symbol()->name() == "atmos_FixedPoint64";
         }
 
-        FalconVariableTraits<FixedPoint64>::Type FalconVariableTraits<FixedPoint64>::FromItem(Falcon::Item &item)
+        FalconVariableTraits<FixedPoint64>::Type FalconVariableTraits<FixedPoint64>::FromItem(Falcon::VMachine &vm, Falcon::Item &item)
         {
             Falcon::Item value;
             item.getProperty("value", value);
@@ -675,73 +712,10 @@ namespace Atmos
             if (!ValueTraits::Is(*value))
                 return RetT();
 
-            return RetT(Type(ValueTraits::FromItem(*value)));
+            return RetT(Type(ValueTraits::FromItem(vm, *value)));
         }
 
         Falcon::Item FalconVariableTraits<FixedPoint64>::CreateItem(Falcon::VMachine &vm, const Type &set)
-        {
-            Falcon::Item item(vm.findGlobalItem(falconTypeName.c_str())->asClass()->createInstance());
-            SetItem(vm, item, set);
-            return item;
-        }
-
-        const FalconVariableTraits<GridPosition>::Type FalconVariableTraits<GridPosition>::DefaultValue;
-
-        bool FalconVariableTraits<GridPosition>::Is(Falcon::Item &item)
-        {
-            return item.isObject() && item.asObject()->generator()->symbol()->name() == "atmos_GridPosition";
-        }
-
-        FalconVariableTraits<GridPosition>::Type FalconVariableTraits<GridPosition>::FromItem(Falcon::Item &item)
-        {
-            Falcon::Item x;
-            Falcon::Item y;
-            Falcon::Item z;
-            item.getProperty(Convert(xName), x);
-            item.getProperty(Convert(yName), y);
-            item.getProperty(Convert(zName), z);
-            return Type(static_cast<GridPosition::ValueT>(x.asInteger()), static_cast<GridPosition::ValueT>(y.asInteger()), static_cast<GridPosition::ValueT>(z.asInteger()));
-        }
-
-        void FalconVariableTraits<GridPosition>::SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set)
-        {
-            if (item.asObject()->generator()->symbol()->name() != Convert(falconTypeName))
-                item.setObject(vm.findGlobalItem(Convert(falconTypeName))->asClass()->createInstance());
-
-            item.setProperty(Convert(xName), set.x);
-            item.setProperty(Convert(yName), set.y);
-            item.setProperty(Convert(zName), set.z);
-        }
-
-        String FalconVariableTraits<GridPosition>::GetTypeString()
-        {
-            return "GridPosition";
-        }
-
-        const String FalconVariableTraits<GridPosition>::falconTypeName("Atmos_GridPosition");
-        const String FalconVariableTraits<GridPosition>::xName("x");
-        const String FalconVariableTraits<GridPosition>::yName("y");
-        const String FalconVariableTraits<GridPosition>::zName("z");
-
-        Optional<FalconVariableTraits<GridPosition>::Type> FalconVariableTraits<GridPosition>::Create(Falcon::VMachine &vm)
-        {
-            typedef Optional<Type> RetT;
-
-            auto x = vm.findLocalSymbolItem(Convert(xName));
-            auto y = vm.findLocalSymbolItem(Convert(yName));
-            auto z = vm.findLocalSymbolItem(Convert(zName));
-
-            if (!x || !y || !z)
-                return RetT();
-
-            typedef FalconVariableTraits<Type::ValueT> WrappedTraits;
-            if (!WrappedTraits::Is(*x) || !WrappedTraits::Is(*y) || !WrappedTraits::Is(*z))
-                return RetT();
-
-            return RetT(Type(WrappedTraits::FromItem(*x), WrappedTraits::FromItem(*y), WrappedTraits::FromItem(*z)));
-        }
-
-        Falcon::Item FalconVariableTraits<GridPosition>::CreateItem(Falcon::VMachine &vm, const Type &set)
         {
             Falcon::Item item(vm.findGlobalItem(falconTypeName.c_str())->asClass()->createInstance());
             SetItem(vm, item, set);
@@ -753,7 +727,7 @@ namespace Atmos
             return item.isObject() && item.asObject()->generator()->symbol()->name() == "Atmos_FrameTimer";
         }
 
-        FalconVariableTraits<FrameTimer>::Type FalconVariableTraits<FrameTimer>::FromItem(Falcon::Item &item)
+        FalconVariableTraits<FrameTimer>::Type FalconVariableTraits<FrameTimer>::FromItem(Falcon::VMachine &vm, Falcon::Item &item)
         {
             Falcon::Item start;
             Falcon::Item goal;
@@ -798,8 +772,8 @@ namespace Atmos
                 return RetT();
 
             RetT ret;
-            ret->SetStart(WrappedTraits::FromItem(*start));
-            ret->SetGoal(WrappedTraits::FromItem(*goal));
+            ret->SetStart(WrappedTraits::FromItem(vm, *start));
+            ret->SetGoal(WrappedTraits::FromItem(vm, *goal));
             return ret;
         }
 
@@ -810,32 +784,34 @@ namespace Atmos
             return item;
         }
 
-        bool FalconVariableTraits<Entity>::Is(Falcon::Item &item)
+        const FalconVariableTraits<::Falcon::Item>::Type FalconVariableTraits<::Falcon::Item>::DefaultValue;
+
+        bool FalconVariableTraits<::Falcon::Item>::Is(Falcon::Item &item)
         {
-            return item.isInteger();
+            return true;
         }
 
-        FalconVariableTraits<Entity>::Type FalconVariableTraits<Entity>::FromItem(Falcon::Item &item)
+        FalconVariableTraits<::Falcon::Item>::Type FalconVariableTraits<::Falcon::Item>::FromItem(Falcon::VMachine &vm, Falcon::Item &item)
         {
-            return Type(static_cast<Type::ValueT>(item.asInteger()));
+            return item;
         }
 
-        void FalconVariableTraits<Entity>::SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set)
+        void FalconVariableTraits<::Falcon::Item>::SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set)
         {
-            item.setInteger(set);
+            item = set;
         }
 
-        void FalconVariableTraits<Entity>::SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set)
+        void FalconVariableTraits<::Falcon::Item>::SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set)
         {
-            item.setInteger(set);
+
         }
 
-        String FalconVariableTraits<Entity>::GetTypeString()
+        String FalconVariableTraits<::Falcon::Item>::GetTypeString()
         {
-            return "Entity";
+            return "Any";
         }
 
-        Falcon::Item FalconVariableTraits<Entity>::CreateItem(Falcon::VMachine &vm, const Type &set)
+        Falcon::Item FalconVariableTraits<::Falcon::Item>::CreateItem(Falcon::VMachine &vm, const Type &set)
         {
             Falcon::Item item;
             SetItem(vm, item, set);

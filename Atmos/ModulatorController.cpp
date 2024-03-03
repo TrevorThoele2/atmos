@@ -16,6 +16,9 @@ namespace Atmos
             return false;
         }
 
+        Event<ModulatorBase*> Controller::onStarted;
+        Event<ModulatorBase*> Controller::onStopped;
+
         Controller::ID Controller::Attach(const Observer &attach)
         {
             if (IsIn(attach))
@@ -68,8 +71,26 @@ namespace Atmos
             {
                 if (loop->second->Work())
                     loop = observers.Remove(loop);
-                else
+                else 
                     ++loop;
+            }
+        }
+
+        size_t Controller::GetWorkedSize() const
+        {
+            return observers.size();
+        }
+
+        void Controller::ForceStop(const Observer &stop)
+        {
+            for (auto loop = observers.begin(); loop != observers.end();)
+            {
+                if (loop->second == stop)
+                {
+                    loop->second->Stop();
+                    observers.Remove(loop);
+                    return;
+                }
             }
         }
 

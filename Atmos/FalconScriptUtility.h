@@ -32,7 +32,7 @@ namespace Atmos
         String Convert(const Falcon::String &arg);
 
         Falcon::Item* RetrieveItemFromVM(const std::string &name, Falcon::VMachine *vm);
-        String& AddTracebackToString(Falcon::VMachine &vm, String &string);
+        String AddTracebackToString(Falcon::VMachine &vm, const String &string);
 
         void FatalScriptError(Script::Instance &instance, String &&string, Logger::Type severity, Logger::NameValueVector &nameValueVector);
         void FatalScriptErrorParameterNotExist(Script::Instance &instance, const String &name);
@@ -40,7 +40,138 @@ namespace Atmos
         void FatalScriptErrorParameterNotExpectedType(Script::Instance &instance, const String &name, const String &expectedType, Falcon::Item &item);
 
         template<class T>
+        struct FalconVariableTraitsClassPrototype
+        {
+            typedef T Type;
+            static const Type DefaultValue;
+            static bool Is(Falcon::Item &item);
+            static Type FromItem(Falcon::VMachine &vm, Falcon::Item &item);
+            static void SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set);
+            static void SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set);
+            static Falcon::Item CreateItem(Falcon::VMachine &vm, Type &value);
+
+            static String GetTypeString();
+        };
+
+        template<class T>
+        typename const FalconVariableTraitsClassPrototype<T>::Type FalconVariableTraitsClassPrototype<T>::DefaultValue;
+        template<class T>
+        bool FalconVariableTraitsClassPrototype<T>::Is(Falcon::Item &item)
+        {
+            return T::Instance().Is(item);
+        }
+
+        template<class T>
+        typename FalconVariableTraitsClassPrototype<T>::Type FalconVariableTraitsClassPrototype<T>::FromItem(Falcon::VMachine &vm, Falcon::Item &item)
+        {
+            Type type(Type::Instance());
+            type.FromItem(vm, item);
+            return type;
+        }
+
+        template<class T>
+        void FalconVariableTraitsClassPrototype<T>::SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set)
+        {
+
+        }
+
+        template<class T>
+        void FalconVariableTraitsClassPrototype<T>::SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set)
+        {
+
+        }
+
+        template<class T>
+        Falcon::Item FalconVariableTraitsClassPrototype<T>::CreateItem(Falcon::VMachine &vm, Type &value)
+        {
+            return value.CreateItem(vm);
+        }
+
+        template<class T>
+        String FalconVariableTraitsClassPrototype<T>::GetTypeString()
+        {
+            return Type::ClsName();
+        }
+
+        template<class T>
+        struct FalconVariableTraitsEnum
+        {
+            typedef T Type;
+            typedef typename std::underlying_type<Type>::type UnderlyingType;
+            static const UnderlyingType DefaultValue;
+
+            static bool Is(Falcon::Item &item);
+            static Type FromItem(Falcon::VMachine &vm, Falcon::Item &item);
+            static void SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set);
+            static void SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set);
+            static Falcon::Item CreateItem(Falcon::VMachine &vm, const Type &value);
+
+            static String GetTypeString();
+        };
+
+        template<class T>
+        typename const FalconVariableTraitsEnum<T>::UnderlyingType FalconVariableTraitsEnum<T>::DefaultValue(0);
+        template<class T>
+        bool FalconVariableTraitsEnum<T>::Is(Falcon::Item &item)
+        {
+            return item.isInteger();
+        }
+
+        template<class T>
+        typename FalconVariableTraitsEnum<T>::Type FalconVariableTraitsEnum<T>::FromItem(Falcon::VMachine &vm, Falcon::Item &item)
+        {
+            return static_cast<Type>(item.asInteger());
+        }
+
+        template<class T>
+        void FalconVariableTraitsEnum<T>::SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set)
+        {
+            item.setInteger(static_cast<UnderlyingType>(set));
+        }
+
+        template<class T>
+        void FalconVariableTraitsEnum<T>::SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set)
+        {
+            item.setInteger(static_cast<UnderlyingType>(set));
+        }
+
+        template<class T>
+        Falcon::Item FalconVariableTraitsEnum<T>::CreateItem(Falcon::VMachine &vm, const Type &value)
+        {
+            Falcon::Item item;
+            item.setInteger(static_cast<UnderlyingType>(value));
+            return item;
+        }
+
+        template<class T>
+        String FalconVariableTraitsEnum<T>::GetTypeString()
+        {
+            return FalconVariableTraits<UnderlyingType>::GetTypeString();
+        }
+
+        template<class T>
         struct FalconVariableTraits;
+
+        namespace detail
+        {
+            template <class T, std::size_t = sizeof(T)>
+            static std::true_type HasSpecializationImpl(T *) {}
+            static std::false_type HasSpecializationImpl(...) {}
+            template <class T>
+            using HasSpecialization = decltype(HasSpecializationImpl(std::declval<T*>()));
+
+            template<class U, bool, bool>
+            struct TraitsRetriever;
+            template<class U>
+            struct TraitsRetriever<U, true, false> { typedef FalconVariableTraits<U> TraitsT; };
+            template<class U>
+            struct TraitsRetriever<U, false, true> { typedef FalconVariableTraitsEnum<U> TraitsT; };
+            template<class U>
+            struct TraitsRetriever<U, false, false> { typedef FalconVariableTraitsClassPrototype<U> TraitsT; };
+        }
+
+        template<class T>
+        using TraitsT = typename detail::TraitsRetriever<T, detail::HasSpecialization<FalconVariableTraits<T>>::value, std::is_enum<T>::value>::TraitsT;
 
         template<>
         struct FalconVariableTraits<bool>
@@ -48,7 +179,7 @@ namespace Atmos
             typedef bool Type;
             static const Type DefaultValue = false;
             static bool Is(Falcon::Item &item);
-            static Type FromItem(Falcon::Item &item);
+            static Type FromItem(Falcon::VMachine &vm, Falcon::Item &item);
             static void SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set);
             static void SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set);
 
@@ -63,7 +194,7 @@ namespace Atmos
             typedef std::uint8_t Type;
             static const Type DefaultValue = 0;
             static bool Is(Falcon::Item &item);
-            static Type FromItem(Falcon::Item &item);
+            static Type FromItem(Falcon::VMachine &vm, Falcon::Item &item);
             static void SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set);
             static void SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set);
 
@@ -78,7 +209,7 @@ namespace Atmos
             typedef std::uint16_t Type;
             static const Type DefaultValue = 0;
             static bool Is(Falcon::Item &item);
-            static Type FromItem(Falcon::Item &item);
+            static Type FromItem(Falcon::VMachine &vm, Falcon::Item &item);
             static void SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set);
             static void SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set);
 
@@ -93,7 +224,7 @@ namespace Atmos
             typedef std::uint32_t Type;
             static const Type DefaultValue = 0;
             static bool Is(Falcon::Item &item);
-            static Type FromItem(Falcon::Item &item);
+            static Type FromItem(Falcon::VMachine &vm, Falcon::Item &item);
             static void SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set);
             static void SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set);
 
@@ -108,7 +239,7 @@ namespace Atmos
             typedef std::uint64_t Type;
             static const Type DefaultValue = 0;
             static bool Is(Falcon::Item &item);
-            static Type FromItem(Falcon::Item &item);
+            static Type FromItem(Falcon::VMachine &vm, Falcon::Item &item);
             static void SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set);
             static void SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set);
 
@@ -123,7 +254,7 @@ namespace Atmos
             typedef std::int8_t Type;
             static const Type DefaultValue = 0;
             static bool Is(Falcon::Item &item);
-            static Type FromItem(Falcon::Item &item);
+            static Type FromItem(Falcon::VMachine &vm, Falcon::Item &item);
             static void SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set);
             static void SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set);
 
@@ -138,7 +269,7 @@ namespace Atmos
             typedef std::int16_t Type;
             static const Type DefaultValue = 0;
             static bool Is(Falcon::Item &item);
-            static Type FromItem(Falcon::Item &item);
+            static Type FromItem(Falcon::VMachine &vm, Falcon::Item &item);
             static void SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set);
             static void SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set);
 
@@ -153,7 +284,7 @@ namespace Atmos
             typedef std::int32_t Type;
             static const Type DefaultValue = 0;
             static bool Is(Falcon::Item &item);
-            static Type FromItem(Falcon::Item &item);
+            static Type FromItem(Falcon::VMachine &vm, Falcon::Item &item);
             static void SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set);
             static void SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set);
 
@@ -168,7 +299,22 @@ namespace Atmos
             typedef std::int64_t Type;
             static const Type DefaultValue = 0;
             static bool Is(Falcon::Item &item);
-            static Type FromItem(Falcon::Item &item);
+            static Type FromItem(Falcon::VMachine &vm, Falcon::Item &item);
+            static void SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set);
+            static void SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set);
+
+            static String GetTypeString();
+
+            static Falcon::Item CreateItem(Falcon::VMachine &vm, const Type &set);
+        };
+
+        template<>
+        struct FalconVariableTraits<float>
+        {
+            typedef float Type;
+            static const Type DefaultValue;
+            static bool Is(Falcon::Item &item);
+            static Type FromItem(Falcon::VMachine &vm, Falcon::Item &item);
             static void SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set);
             static void SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set);
 
@@ -183,7 +329,7 @@ namespace Atmos
             typedef double Type;
             static const Type DefaultValue;
             static bool Is(Falcon::Item &item);
-            static Type FromItem(Falcon::Item &item);
+            static Type FromItem(Falcon::VMachine &vm, Falcon::Item &item);
             static void SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set);
             static void SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set);
 
@@ -198,7 +344,7 @@ namespace Atmos
             typedef String Type;
             static const Type DefaultValue;
             static bool Is(Falcon::Item &item);
-            static Type FromItem(Falcon::Item &item);
+            static Type FromItem(Falcon::VMachine &vm, Falcon::Item &item);
             static void SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set);
             static void SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set);
 
@@ -212,7 +358,7 @@ namespace Atmos
         {
             typedef std::vector<T> Type;
             static constexpr bool Is(Falcon::Item &item) { return item.isArray(); }
-            static Type FromItem(Falcon::Item &item)
+            static Type FromItem(Falcon::VMachine &vm, Falcon::Item &item)
             {
                 Type ret;
 
@@ -220,16 +366,30 @@ namespace Atmos
                 for (Falcon::uint32 loop = 0; loop != arr->length(); ++loop)
                 {
                     auto &test = (*arr)[loop];
-                    auto &from = FalconVariableTraits<T>::FromItem(test);
+                    auto &from = FalconVariableTraits<T>::FromItem(vm, test);
                     ret.push_back(from);
                 }
 
                 return ret;
             }
-            static void SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set) { item.setArray(&to); }
-            static void SetItem(Falcon::VarDef &item, const Type &set);
 
-            static String GetTypeString();
+            static void SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set)
+            {
+                Falcon::CoreArray ar;
+                for (auto &loop : set)
+                    ar.append(FalconVariableTraits<T>::CreateItem(vm, loop));
+                item.setArray(&ar);
+            }
+
+            static void SetItem(Falcon::VarDef &item, const Type &set)
+            {
+
+            }
+
+            static String GetTypeString()
+            {
+                return "Vector";
+            }
 
             static Falcon::Item CreateItem(Falcon::VMachine &vm, const Type &set)
             {
@@ -242,18 +402,13 @@ namespace Atmos
             }
         };
 
-        template<class T>
-        String FalconVariableTraits<std::vector<T>>::GetTypeString()
-        {
-            return "Vector";
-        }
-
+        /*
         template<>
         struct FalconVariableTraits<Variant>
         {
             typedef Variant Type;
             static bool Is(Falcon::Item &item);
-            static Type FromItem(Falcon::Item &item);
+            static Type FromItem(Falcon::VMachine &vm, Falcon::Item &item);
             static void SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set);
             static void SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set);
 
@@ -264,13 +419,14 @@ namespace Atmos
             static Optional<Type> Create(Falcon::VMachine &vm);
             static Falcon::Item CreateItem(Falcon::VMachine &vm, const Type &set);
         };
+        */
 
         template<>
         struct FalconVariableTraits<LargeInteger>
         {
             typedef LargeInteger Type;
             static bool Is(Falcon::Item &item);
-            static Type FromItem(Falcon::Item &item);
+            static Type FromItem(Falcon::VMachine &vm, Falcon::Item &item);
             static void SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set);
             static void SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set);
             static String GetTypeString();
@@ -287,7 +443,7 @@ namespace Atmos
         {
             typedef FixedPoint64 Type;
             static bool Is(Falcon::Item &item);
-            static Type FromItem(Falcon::Item &item);
+            static Type FromItem(Falcon::VMachine &vm, Falcon::Item &item);
             static void SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set);
             static void SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set);
             static String GetTypeString();
@@ -299,30 +455,11 @@ namespace Atmos
         };
 
         template<>
-        struct FalconVariableTraits<GridPosition>
-        {
-            typedef GridPosition Type;
-            static const Type DefaultValue;
-            static bool Is(Falcon::Item &item);
-            static Type FromItem(Falcon::Item &item);
-            static void SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set);
-            static void SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set);
-            static String GetTypeString();
-
-            static const String falconTypeName;
-            static const String xName;
-            static const String yName;
-            static const String zName;
-            static Optional<Type> Create(Falcon::VMachine &vm);
-            static Falcon::Item CreateItem(Falcon::VMachine &vm, const Type &set);
-        };
-
-        template<>
         struct FalconVariableTraits<FrameTimer>
         {
             typedef FrameTimer Type;
             static bool Is(Falcon::Item &item);
-            static Type FromItem(Falcon::Item &item);
+            static Type FromItem(Falcon::VMachine &vm, Falcon::Item &item);
             static void SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set);
             static void SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set);
             static const String typeString;
@@ -335,11 +472,12 @@ namespace Atmos
         };
 
         template<>
-        struct FalconVariableTraits<Entity>
+        struct FalconVariableTraits<::Falcon::Item>
         {
-            typedef Entity Type;
+            typedef ::Falcon::Item Type;
+            static const Type DefaultValue;
             static bool Is(Falcon::Item &item);
-            static Type FromItem(Falcon::Item &item);
+            static Type FromItem(Falcon::VMachine &vm, Falcon::Item &item);
             static void SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set);
             static void SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set);
 
@@ -348,6 +486,118 @@ namespace Atmos
             static Falcon::Item CreateItem(Falcon::VMachine &vm, const Type &set);
         };
 
+        template<class... Args>
+        struct FalconVariableTraits<::function::Variant<Args...>>
+        {
+        public:
+            typedef function::Variant<Args...> Type;
+        private:
+            enum class VisitStrategy
+            {
+                IS,
+                FROM_ITEM,
+                SET_ITEM,
+                CREATE_ITEM
+            };
+
+            template<VisitStrategy strategy>
+            using StrategySelector = ::function::StrategySelector<VisitStrategy, strategy>;
+
+            template<size_t i>
+            class Iterator
+            {
+            private:
+                using U = typename ::function::VariadicTemplate<Args...>::Parameter<i>::Type;
+            public:
+                static bool Check(Falcon::Item &item, StrategySelector<VisitStrategy::IS>)
+                {
+                    return TraitsT<U>::Is(item);
+                }
+
+                static bool Check(Type &out, Falcon::VMachine &vm, Falcon::Item &item, StrategySelector<VisitStrategy::FROM_ITEM>)
+                {
+                    if (!TraitsT<U>::Is(item))
+                        return false;
+
+                    out.Set(TraitsT<U>::FromItem(vm, item));
+                    return true;
+                }
+            };
+
+            class VisitImpl
+            {
+            public:
+                template<class U>
+                static void Do(const U &u, Falcon::VMachine &vm, Falcon::Item &item, StrategySelector<VisitStrategy::SET_ITEM>)
+                {
+                    TraitsT<U>::SetItem(vm, item, u);
+                }
+
+                template<class U>
+                static void Do(const U &u, Falcon::Module &mod, Falcon::VarDef &item, StrategySelector<VisitStrategy::SET_ITEM>)
+                {
+                    TraitsT<U>::SetItem(mod, item, u);
+                }
+
+                template<class U>
+                static Falcon::Item DoReturn(const U &u, Falcon::VMachine &vm, StrategySelector<VisitStrategy::CREATE_ITEM>)
+                {
+                    return TraitsT<U>::CreateItem(vm, u);
+                }
+            };
+        public:
+            static const Type DefaultValue;
+            static bool Is(Falcon::Item &item);
+            static Type FromItem(Falcon::VMachine &vm, Falcon::Item &item);
+            static void SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set);
+            static void SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set);
+
+            static String GetTypeString();
+
+            static Falcon::Item CreateItem(Falcon::VMachine &vm, const Type &set);
+        };
+
+        template<class... Args>
+        typename const FalconVariableTraits<function::Variant<Args...>>::Type FalconVariableTraits<function::Variant<Args...>>::DefaultValue;
+
+        template<class... Args>
+        bool FalconVariableTraits<function::Variant<Args...>>::Is(Falcon::Item &item)
+        {
+            return ::function::IterateRangeCheckStop<size_t, Iterator, bool, sizeof...(Args)-1, 0>(true, item, StrategySelector<VisitStrategy::IS>{});
+        }
+
+        template<class... Args>
+        typename FalconVariableTraits<function::Variant<Args...>>::Type FalconVariableTraits<function::Variant<Args...>>::FromItem(Falcon::VMachine &vm, Falcon::Item &item)
+        {
+            Type ret;
+            ::function::IterateRangeCheckStop<size_t, Iterator, bool, sizeof...(Args)-1, 0>(true, ret, vm, item, StrategySelector<VisitStrategy::FROM_ITEM>{});
+            return ret;
+        }
+
+        template<class... Args>
+        void FalconVariableTraits<function::Variant<Args...>>::SetItem(Falcon::VMachine &vm, Falcon::Item &item, const Type &set)
+        {
+            ::function::Visit<VisitImpl>(set, vm, item, StrategySelector<VisitStrategy::SET_ITEM>{});
+        }
+
+        template<class... Args>
+        void FalconVariableTraits<function::Variant<Args...>>::SetItem(Falcon::Module &mod, Falcon::VarDef &item, const Type &set)
+        {
+            ::function::Visit<VisitImpl>(set, mod, item, StrategySelector<VisitStrategy::SET_ITEM>{});
+        }
+
+        template<class... Args>
+        String FalconVariableTraits<function::Variant<Args...>>::GetTypeString()
+        {
+            return "Variant";
+        }
+
+        template<class... Args>
+        Falcon::Item FalconVariableTraits<function::Variant<Args...>>::CreateItem(Falcon::VMachine &vm, const Type &set)
+        {
+            return ::function::VisitReturn<VisitImpl, Falcon::Item>(set, vm, StrategySelector<VisitStrategy::CREATE_ITEM>{});
+        }
+
         template<class T>
         constexpr bool Is(Falcon::Item &item)
         {
@@ -355,7 +605,7 @@ namespace Atmos
         }
 
         template<class T>
-        T FromItem(Falcon::Item &item)
+        T FromItem(Falcon::VMachine &vm, Falcon::Item &item)
         {
             return FalconVariableTraits<T>::FromItem(item);
         }
@@ -393,8 +643,9 @@ namespace Atmos
         Falcon::Item* CheckedRetrieveFromFalcon(const String &name, Falcon::uint32 id, Falcon::VMachine *vm);
 
         // Checks if item actually exists and is the right type
+        /*
         template<class T>
-        T CheckedConversionFromFalcon(const String &name, Falcon::Item *item)
+        T CheckedConversionFromFalcon(Falcon::VMachine &vm,  String &name, Falcon::Item *item)
         {
             if (!item)
             {
@@ -409,7 +660,7 @@ namespace Atmos
                 throw ScriptException();
             }
 
-            return FromItem<T>(*item);
+            return FromItem<T>(vm, *item);
         }
 
         // Retrieves the parameter from inside of the vm
@@ -520,6 +771,7 @@ namespace Atmos
         {
             CheckedItemSet(RetrieveItemFromVM(set, vm), RetrieveItemFromVM(setAs, vm), isFunc, asFunc, setFunc, defaultValue);
         }
+        */
 
         // Returns if encountering a ScriptException
         template<class Func, class... Args>

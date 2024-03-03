@@ -28,7 +28,7 @@ namespace Atmos
         ValueT value;
         EpochT epoch;
 
-        static ValueT ConvertValueStatic(ValueT value, EpochT newEpoch, bool manipulateValue = false);
+        static ValueT ConvertValueStatic(ValueT value, EpochT oldEpoch, EpochT newEpoch, bool manipulateValue = false);
     public:
         TimeValue(ValueT value = ValueT(), EpochT epoch = EpochT::SECONDS);
         TimeValue(ValueT::ValueT value, EpochT epoch);
@@ -40,14 +40,14 @@ namespace Atmos
         bool operator>=(const TimeValue &arg) const;
         bool operator<(const TimeValue &arg) const;
         bool operator<=(const TimeValue &arg) const;
-        TimeValue operator+(const TimeValue &other) const;
-        TimeValue& operator+=(const TimeValue &other);
-        TimeValue operator-(const TimeValue &other) const;
-        TimeValue& operator-=(const TimeValue &other);
-        TimeValue operator*(const TimeValue &other) const;
-        TimeValue& operator*=(const TimeValue &other);
-        TimeValue operator/(const TimeValue &other) const;
-        TimeValue& operator/=(const TimeValue &other);
+        TimeValue operator+(const TimeValue &arg) const;
+        TimeValue& operator+=(const TimeValue &arg);
+        TimeValue operator-(const TimeValue &arg) const;
+        TimeValue& operator-=(const TimeValue &arg);
+        TimeValue operator*(const TimeValue &arg) const;
+        TimeValue& operator*=(const TimeValue &arg);
+        TimeValue operator/(const TimeValue &arg) const;
+        TimeValue& operator/=(const TimeValue &arg);
 
         // Needed for Timer's in Affecter to work
         explicit operator double() const;

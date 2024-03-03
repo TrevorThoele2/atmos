@@ -1958,5 +1958,11 @@
     <ClCompile Include="ScriptCaller.cpp">
       <Filter>Source Files\Assets\Script</Filter>
     </ClCompile>
+    <ClCompile Include="FalconScriptBasePrototype.cpp">
+      <Filter>Source Files\Assets\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="FalconScriptObjectPrototype.cpp">
+      <Filter>Source Files\Assets\Script</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

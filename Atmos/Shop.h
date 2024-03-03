@@ -55,13 +55,13 @@ namespace Atmos
             static Shop& Instance();
 
             static void OnDialogDeactivated();
-            static void Exit();
             static void OnActionPressed(const Input::Action &args);
 
             static Item::Price GetItemPrice(const Item &item, const ItemStack::CountT &count);
         public:
             static void Init();
             static bool Enter(bool buying);
+            static void Leave();
             static bool IsActive();
             friend Handler;
         };

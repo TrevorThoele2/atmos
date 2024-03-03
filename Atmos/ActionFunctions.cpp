@@ -110,6 +110,11 @@ namespace Atmos
                 ::Atmos::Speech::Shop::Enter(buying);
             }
 
+            void LeaveShop()
+            {
+                ::Atmos::Speech::Shop::Leave();
+            }
+
             bool IsShopActive()
             {
                 return ::Atmos::Speech::Shop::IsActive();
@@ -314,7 +319,7 @@ namespace Atmos
 
             void AttachModulatorToSense(Entity entity, ::Atmos::Modulator::Controller::ID modID)
             {
-                auto &obs = GameEnvironment::FindModulator(modID);
+                auto &obs = GameEnvironment::GetModulatorController().Find(modID);
                 if (!obs)
                     return;
 

@@ -4,6 +4,7 @@
 #include "ModulatorDelta.h"
 #include "ModulatorValue.h"
 #include "Random.h"
+#include "FrameTimer.h"
 #include <Function/Function.h>
 #include <Function/Variant.h>
 
@@ -162,7 +163,7 @@ namespace Atmos
 
             void SetEndState(const EndStateT &set);
             void SetInterpolation(const InterpolationT &set);
-            Delta GetDelta() const;
+            Delta GetDelta(const FrameTimer &timer) const;
             Value GetEndValue() const;
 
             void SetTimeTaken(const TimeValue &set);

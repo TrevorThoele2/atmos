@@ -12,11 +12,13 @@
 #include "MaterialRegistry.h"
 #include "AudioRegistry.h"
 #include "ScriptRegistry.h"
+#include "ScriptController.h"
 #include "DayCycle.h"
 #include "StringUtility.h"
 
 #include "Entity.h"
 #include "AvatarSystem.h"
+#include "EntityPositionSystem.h"
 #include "GeneralComponent.h"
 
 #include "FontDefines.h"
@@ -150,7 +152,11 @@ namespace Atmos
         memoryPage->AddData("Shaders in memory:\n", static_cast<BasicFuncT>([]() { return ToString(ShaderRegistry::Size()); }), false);
         memoryPage->AddData("Materials in memory:\n", static_cast<BasicFuncT>([]() { return ToString(MaterialRegistry::Size()); }), false);
         memoryPage->AddData("Audio in memory:\n", static_cast<BasicFuncT>([]() { return ToString(AudioRegistry::Size()); }), false);
-        memoryPage->AddData("Scripts in memory:\n", static_cast<BasicFuncT>([]() { return ToString(ScriptRegistry::Size()); }), false);
+        memoryPage->AddData("Scripts in memory:\n\n", static_cast<BasicFuncT>([]() { return ToString(ScriptRegistry::Size()); }), true);
+
+        memoryPage->AddData("Scripts Being Worked:\n", static_cast<BasicFuncT>([]() { return ToString(ScriptController::GetWorkedSize()); }), false);
+        memoryPage->AddData("Entities Being Moved:\n", static_cast<BasicFuncT>([]() { return ToString(Ent::PositionSystem::GetWorkedSize()); }), false);
+        memoryPage->AddData("Modulators Being Worked:\n", static_cast<BasicFuncT>([]() { return ToString(GameEnvironment::GetModulatorController().GetWorkedSize()); }), false);
 
         playerPage->AddData("Player col:\n", static_cast<BasicFuncT>([]()
         {
