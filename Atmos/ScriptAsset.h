@@ -2,7 +2,7 @@
 
 #include "Asset.h"
 
-#include "ObjectSerialization.h"
+#include "ObjectScribe.h"
 
 class asIScriptModule;
 
@@ -21,7 +21,7 @@ namespace Atmos
     public:
         ScriptAsset(ObjectManager& manager, const FileName& fileName, DataPtr&& data);
         ScriptAsset(const ScriptAsset& arg);
-        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(ScriptAsset);
+        ScriptAsset(const ::Inscription::BinaryTableData<ScriptAsset>& data);
 
         DataT* Data();
         const DataT* Data() const;
@@ -54,6 +54,7 @@ namespace Atmos
     struct ObjectTraits<ScriptAsset> : ObjectTraitsBase<ScriptAsset>
     {
         static const ObjectTypeName typeName;
+        static constexpr ObjectTypeList<FileAsset> bases = {};
     };
 
     class ScriptAssetData
@@ -76,9 +77,16 @@ namespace Atmos
 
 namespace Inscription
 {
-    DECLARE_OBJECT_INSCRIPTER(::Atmos::ScriptAsset)
+    template<>
+    struct TableData<::Atmos::ScriptAsset, BinaryArchive> :
+        public ObjectTableDataBase<::Atmos::ScriptAsset, BinaryArchive>
+    {};
+
+    template<>
+    class Scribe<::Atmos::ScriptAsset, BinaryArchive> : public ObjectScribe<::Atmos::ScriptAsset, BinaryArchive>
     {
     public:
-        OBJECT_INSCRIPTER_DECLARE_MEMBERS;
+        class Table : public TableBase
+        {};
     };
 }

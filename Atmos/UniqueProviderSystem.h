@@ -6,7 +6,7 @@
 
 #include "Event.h"
 
-#include <Inscription/Memory.h>
+#include <Inscription/MemoryScribe.h>
 
 namespace Atmos
 {
@@ -14,8 +14,8 @@ namespace Atmos
     class UniqueProviderSystem : public ObjectSystem
     {
     public:
-        typedef T Value;
-        typedef std::unique_ptr<Value> ValuePtr;
+        using Value = T;
+        using ValuePtr = std::unique_ptr<Value>;
     public:
         Event<T*> onChanged;
     public:
@@ -31,7 +31,6 @@ namespace Atmos
     protected:
         UniqueProviderSystem(ObjectManager& manager);
         UniqueProviderSystem(ObjectManager& manager, ValuePtr&& value);
-        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(UniqueProviderSystem);
     private:
         ValuePtr value;
     private:
@@ -84,32 +83,23 @@ namespace Atmos
     UniqueProviderSystem<T>::UniqueProviderSystem(ObjectManager& manager, ValuePtr&& value) :
         ObjectSystem(manager), value(std::move(value))
     {}
-
-    template<class T>
-    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE_TEMPLATE(UniqueProviderSystem, UniqueProviderSystem<T>) :
-        INSCRIPTION_TABLE_GET_BASE(ObjectSystem), INSCRIPTION_TABLE_GET_MEM(value)
-    {}
 }
 
 namespace Inscription
 {
     template<class T>
-    class Inscripter<::Atmos::UniqueProviderSystem<T>> : public InscripterBase<::Atmos::UniqueProviderSystem<T>>
+    class Scribe<::Atmos::UniqueProviderSystem<T>, BinaryArchive> :
+        public ObjectSystemScribe<::Atmos::UniqueProviderSystem<T>, BinaryArchive>
     {
+    private:
+        using BaseT = typename ObjectSystemScribe<::Atmos::UniqueProviderSystem<T>, BinaryArchive>;
     public:
-        INSCRIPTION_INSCRIPTER_BASE_TYPEDEFS(::Atmos::UniqueProviderSystem<T>);
-
-        INSCRIPTION_BINARY_INSCRIPTER_DECLARE_TABLE;
+        using ObjectT = typename BaseT::ObjectT;
+        using ArchiveT = typename BaseT::ArchiveT;
+    public:
+        static void Scriven(ObjectT& object, ArchiveT& archive)
+        {
+            archive(object.value);
+        }
     };
-
-    template<class T>
-    INSCRIPTION_BINARY_INSCRIPTER_DEFINE_TABLE(::Atmos::UniqueProviderSystem<T>)
-    {
-        INSCRIPTION_BINARY_INSCRIPTER_CREATE_TABLE;
-
-        INSCRIPTION_TABLE_ADD_BASE(::Atmos::ObjectSystem);
-        INSCRIPTION_TABLE_ADD(value);
-
-        INSCRIPTION_INSCRIPTER_RETURN_TABLE;
-    }
 }

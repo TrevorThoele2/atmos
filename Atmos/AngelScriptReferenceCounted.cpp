@@ -1,25 +1,22 @@
 
 #include "AngelScriptReferenceCounted.h"
 
-namespace Atmos
+namespace Atmos::Scripting
 {
-    namespace Scripting
+    ReferenceCounted::ReferenceCounted() : refCount(1)
+    {}
+
+    ReferenceCounted::~ReferenceCounted()
+    {}
+
+    void ReferenceCounted::AddRef()
     {
-        ReferenceCounted::ReferenceCounted() : refCount(1)
-        {}
+        ++refCount;
+    }
 
-        ReferenceCounted::~ReferenceCounted()
-        {}
-
-        void ReferenceCounted::AddRef()
-        {
-            ++refCount;
-        }
-
-        void ReferenceCounted::Release()
-        {
-            if (--refCount == 0)
-                delete this;
-        }
+    void ReferenceCounted::Release()
+    {
+        if (--refCount == 0)
+            delete this;
     }
 }

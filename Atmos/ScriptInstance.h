@@ -4,7 +4,6 @@
 #include "ObjectReference.h"
 
 #include "ScriptAsset.h"
-#include "ScriptGlobalItems.h"
 #include "ScriptParameters.h"
 #include "ScriptPersistence.h"
 
@@ -14,12 +13,7 @@
 
 #include "NameValuePair.h"
 
-#include "ObjectSerialization.h"
-
-namespace Falcon
-{
-    class Item;
-}
+#include "ObjectScribe.h"
 
 namespace Atmos
 {
@@ -37,12 +31,11 @@ namespace Atmos
         Name executeName;
         Scripting::Parameters parameters;
 
-        Scripting::GlobalItems globalItems;
         Scripting::Persistence persistence;
     public:
         ScriptInstance(ObjectManager& manager);
         ScriptInstance(const ScriptInstance& arg) = default;
-        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(ScriptInstance);
+        ScriptInstance(const ::Inscription::BinaryTableData<ScriptInstance>& data);
 
         // Executes the script standardly
         // Will defer the execute until a certain point in the frame (probably a bit later)
@@ -69,9 +62,24 @@ namespace Atmos
 
 namespace Inscription
 {
-    DECLARE_OBJECT_INSCRIPTER(::Atmos::ScriptInstance)
+    template<>
+    struct TableData<::Atmos::ScriptInstance, BinaryArchive> :
+        public ObjectTableDataBase<::Atmos::ScriptInstance, BinaryArchive>
+    {
+        ObjectT::AssetReference asset;
+        ::Atmos::Name executeName;
+        ::Atmos::Scripting::Parameters parameters;
+        ::Atmos::Scripting::Persistence persistence;
+    };
+
+    template<>
+    class Scribe<::Atmos::ScriptInstance, BinaryArchive> : public ObjectScribe<::Atmos::ScriptInstance, BinaryArchive>
     {
     public:
-        OBJECT_INSCRIPTER_DECLARE_MEMBERS;
+        class Table : public TableBase
+        {
+        public:
+            Table();
+        };
     };
 }

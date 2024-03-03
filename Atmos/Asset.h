@@ -6,7 +6,7 @@
 #include "FileName.h"
 #include "FilePath.h"
 
-#include "ObjectSerialization.h"
+#include "ObjectScribe.h"
 
 namespace Atmos
 {
@@ -17,7 +17,7 @@ namespace Atmos
     public:
         Asset(ObjectManager& manager, const Name& name);
         Asset(const Asset& arg);
-        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(Asset);
+        Asset(const ::Inscription::BinaryTableData<Asset>& data);
 
         ObjectTypeDescription TypeDescription() const override;
     };
@@ -27,8 +27,6 @@ namespace Atmos
     {
         static const ObjectTypeName typeName;
     };
-
-    class nFileAssetData;
 
     class FileAsset : public Asset
     {
@@ -41,7 +39,7 @@ namespace Atmos
     protected:
         FileAsset(ObjectManager& manager, const FileName& fileName);
         FileAsset(const FileAsset& arg);
-        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(FileAsset);
+        FileAsset(const ::Inscription::BinaryTableData<FileAsset>& data);
     };
 
     template<>
@@ -54,15 +52,41 @@ namespace Atmos
 
 namespace Inscription
 {
-    DECLARE_OBJECT_INSCRIPTER(::Atmos::Asset)
+    template<>
+    struct TableData<::Atmos::Asset, BinaryArchive> :
+        public ObjectTableDataBase<::Atmos::Asset, BinaryArchive>
     {
-    public:
-        OBJECT_INSCRIPTER_DECLARE_MEMBERS;
+        ::Atmos::Name name;
     };
 
-    DECLARE_OBJECT_INSCRIPTER(::Atmos::FileAsset)
+    template<>
+    class Scribe<::Atmos::Asset, BinaryArchive> :
+        public ObjectScribe<::Atmos::Asset, BinaryArchive>
     {
     public:
-        OBJECT_INSCRIPTER_DECLARE_MEMBERS;
+        class Table : public TableBase
+        {
+        public:
+            Table();
+        };
+    };
+
+    template<>
+    struct TableData<::Atmos::FileAsset, BinaryArchive> :
+        public ObjectTableDataBase<::Atmos::FileAsset, BinaryArchive>
+    {
+        ::Atmos::FileName fileName;
+    };
+
+    template<>
+    class Scribe<::Atmos::FileAsset, BinaryArchive> :
+        public ObjectScribe<::Atmos::FileAsset, BinaryArchive>
+    {
+    public:
+        class Table : public TableBase
+        {
+        public:
+            Table();
+        };
     };
 }

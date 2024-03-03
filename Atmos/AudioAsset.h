@@ -6,7 +6,7 @@
 
 #include "ReadonlyProperty.h"
 
-#include "ObjectSerialization.h"
+#include "ObjectScribe.h"
 
 namespace Atmos
 {
@@ -23,7 +23,7 @@ namespace Atmos
     public:
         AudioAsset(ObjectManager& manager, const FileName& fileName, DataPtr&& data);
         AudioAsset(const AudioAsset& arg);
-        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(AudioAsset);
+        AudioAsset(const ::Inscription::BinaryTableData<AudioAsset>& data);
 
         DataT* Data();
         const DataT* Data() const;
@@ -76,9 +76,16 @@ namespace Atmos
 
 namespace Inscription
 {
-    DECLARE_OBJECT_INSCRIPTER(::Atmos::AudioAsset)
+    template<>
+    struct TableData<::Atmos::AudioAsset, BinaryArchive> :
+        public ObjectTableDataBase<::Atmos::AudioAsset, BinaryArchive>
+    {};
+
+    template<>
+    class Scribe<::Atmos::AudioAsset, BinaryArchive> : public ObjectScribe<::Atmos::AudioAsset, BinaryArchive>
     {
     public:
-        OBJECT_INSCRIPTER_DECLARE_MEMBERS;
+        class Table : public TableBase
+        {};
     };
 }

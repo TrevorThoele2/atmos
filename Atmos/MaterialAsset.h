@@ -10,7 +10,7 @@
 #include "StoredProperty.h"
 #include "StoredReadonlyProperty.h"
 
-#include "ObjectSerialization.h"
+#include "ObjectScribe.h"
 
 namespace Atmos
 {
@@ -41,15 +41,15 @@ namespace Atmos
 
         ShaderProperty shader;
 
-        DimensionProperty width;
-        DimensionProperty height;
+        DimensionProperty width = [this]() { return _width; };
+        DimensionProperty height = [this]() { return _height; };
 
         GridDimensionProperty columns;
         GridDimensionProperty rows;
     public:
         MaterialAsset(ObjectManager& manager, const Name& name);
         MaterialAsset(const MaterialAsset& arg);
-        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(MaterialAsset);
+        MaterialAsset(const ::Inscription::BinaryTableData<MaterialAsset>& data);
 
         ObjectTypeDescription TypeDescription() const override;
     private:
@@ -75,9 +75,16 @@ namespace Atmos
 
 namespace Inscription
 {
-    DECLARE_OBJECT_INSCRIPTER(::Atmos::MaterialAsset)
+    template<>
+    struct TableData<::Atmos::MaterialAsset, BinaryArchive> :
+        public ObjectTableDataBase<::Atmos::MaterialAsset, BinaryArchive>
+    {};
+
+    template<>
+    class Scribe<::Atmos::MaterialAsset, BinaryArchive> : public ObjectScribe<::Atmos::MaterialAsset, BinaryArchive>
     {
     public:
-        OBJECT_INSCRIPTER_DECLARE_MEMBERS;
+        class Table : public TableBase
+        {};
     };
 }

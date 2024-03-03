@@ -1,4 +1,3 @@
-
 #include "AudioAsset.h"
 
 #include "ObjectManager.h"
@@ -14,7 +13,8 @@ namespace Atmos
     AudioAsset::AudioAsset(const AudioAsset& arg) : FileAsset(arg), data((arg.data) ? arg.data->Clone() : nullptr)
     {}
 
-    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(AudioAsset) : INSCRIPTION_TABLE_GET_BASE(FileAsset)
+    AudioAsset::AudioAsset(const ::Inscription::BinaryTableData<AudioAsset>& data) :
+        FileAsset(std::get<0>(data.bases))
     {
         SetDataFromPackage(fileName);
     }
@@ -57,12 +57,4 @@ namespace Atmos
 
     AudioAssetData::~AudioAssetData()
     {}
-}
-
-namespace Inscription
-{
-    OBJECT_INSCRIPTER_DEFINE_MEMBERS(::Atmos::AudioAsset)
-    {
-
-    }
 }

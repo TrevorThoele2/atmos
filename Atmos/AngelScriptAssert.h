@@ -1,9 +1,6 @@
 #pragma once
 
-namespace Atmos
+namespace Atmos::Scripting
 {
-    namespace Scripting
-    {
-        void AngelScriptAssert(int result);
-    }
+    void AngelScriptAssert(int result);
 }

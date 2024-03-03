@@ -53,7 +53,6 @@ namespace Atmos
         template<Value value>
         static constexpr std::underlying_type<Value>::type CastFromValue();
     private:
-        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
     };
 
@@ -64,4 +63,18 @@ namespace Atmos
     }
 
     typedef ::Chroma::EnumIterationTraits<Direction::Value, Direction::Value::LEFT, Direction::Value::DOWN> DirectionIterationTraits;
+}
+
+namespace Inscription
+{
+    template<>
+    class Scribe<::Atmos::Direction, BinaryArchive> : public CompositeScribe<::Atmos::Direction, BinaryArchive>
+    {
+    public:
+        static void Scriven(ObjectT& object, ArchiveT& archive);
+    };
+
+    template<>
+    class Scribe<::Atmos::Direction::Value, BinaryArchive> : public EnumScribe<::Atmos::Direction::Value, BinaryArchive>
+    {};
 }

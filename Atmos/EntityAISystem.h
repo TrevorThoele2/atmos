@@ -6,30 +6,27 @@
 
 #include "AIComponent.h"
 
-namespace Atmos
+namespace Atmos::Entity
 {
-    namespace Entity
+    class AISystem : public ObjectSystem
     {
-        class AISystem : public ObjectSystem
-        {
-        public:
-            AISystem(ObjectManager& manager);
-            INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(AISystem);
-        private:
-            void WorkImpl() override;
-        private:
-            typedef ObjectBatch<AIComponent> AIBatch;
-            AIBatch aiComponents;
-        };
-    }
+    public:
+        AISystem(ObjectManager& manager);
+    private:
+        void WorkImpl() override;
+    private:
+        typedef ObjectBatch<AIComponent> AIBatch;
+        AIBatch aiComponents;
+    };
 }
 
 namespace Inscription
 {
-    INSCRIPTION_INSCRIPTER_DECLARE(::Atmos::Entity::AISystem)
+    template<>
+    class Scribe<::Atmos::Entity::AISystem, BinaryArchive> :
+        public ObjectSystemScribe<::Atmos::Entity::AISystem, BinaryArchive>
     {
     public:
-        INSCRIPTION_BINARY_INSCRIPTER_DECLARE_TABLE;
-        INSCRIPTION_BINARY_DECLARE_CLASS_NAME_RESOLVER;
+        static void Scriven(ObjectT& object, ArchiveT& archive);
     };
 }

@@ -5,27 +5,28 @@
 
 #include "StoredReadonlyProperty.h"
 
-#include "ObjectSerialization.h"
+#include "ObjectScribe.h"
+
+namespace Atmos::Entity
+{
+    class Entity;
+
+    class Component : public Object
+    {
+    public:
+        typedef TypedObjectReference<Entity> EntityReference;
+        EntityReference owner;
+    public:
+        Component(ObjectManager& manager, EntityReference owner);
+        Component(const Component& arg);
+        Component(const ::Inscription::BinaryTableData<Component>& data);
+
+        ObjectTypeDescription TypeDescription() const override;
+    };
+}
 
 namespace Atmos
 {
-    namespace Entity
-    {
-        class Entity;
-
-        class Component : public Object
-        {
-        public:
-            typedef TypedObjectReference<Entity> EntityReference;
-            EntityReference owner;
-        public:
-            Component(ObjectManager& manager, EntityReference owner);
-            Component(const Component& arg);
-            INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(Component);
-            ObjectTypeDescription TypeDescription() const override;
-        };
-    }
-
     template<>
     struct ObjectTraits<Entity::Component> : ObjectTraitsBase<Entity::Component>
     {
@@ -35,9 +36,17 @@ namespace Atmos
 
 namespace Inscription
 {
-    DECLARE_OBJECT_INSCRIPTER(::Atmos::Entity::Component)
+    template<>
+    struct TableData<::Atmos::Entity::Component, BinaryArchive> :
+        public ObjectTableDataBase<::Atmos::Entity::Component, BinaryArchive>
+    {};
+
+    template<>
+    class Scribe<::Atmos::Entity::Component, BinaryArchive> :
+        public ObjectScribe<::Atmos::Entity::Component, BinaryArchive>
     {
     public:
-        OBJECT_INSCRIPTER_DECLARE_MEMBERS;
+        class Table : public TableBase
+        {};
     };
 }

@@ -14,10 +14,6 @@ namespace Atmos
     AssetPackageSystem::AssetPackageSystem(ObjectManager& manager) : ObjectSystem(manager)
     {}
 
-    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(AssetPackageSystem) :
-        INSCRIPTION_TABLE_GET_BASE(ObjectSystem)
-    {}
-
     String ProcessWorldFilePath(const FilePath& worldFilePath)
     {
         return ReplaceFileExtension(worldFilePath, AssetPackageSystem::FileExtension());
@@ -185,12 +181,8 @@ namespace Atmos
 
 namespace Inscription
 {
-    INSCRIPTION_BINARY_INSCRIPTER_DEFINE_TABLE(::Atmos::AssetPackageSystem)
+    void Scribe<::Atmos::AssetPackageSystem, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
     {
-        INSCRIPTION_BINARY_INSCRIPTER_CREATE_TABLE;
-
-        INSCRIPTION_TABLE_ADD_BASE(::Atmos::ObjectSystem);
-
-        INSCRIPTION_INSCRIPTER_RETURN_TABLE;
+        BaseScriven<::Atmos::ObjectSystem>(object, archive);
     }
 }

@@ -10,7 +10,6 @@ namespace Atmos
     {
     public:
         MasterSoundSystem(ObjectManager& manager);
-        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(MasterSoundSystem);
 
         // Value between 0 and 100
         void SetMasterVolume(Volume set);
@@ -24,10 +23,11 @@ namespace Atmos
 
 namespace Inscription
 {
-    INSCRIPTION_INSCRIPTER_DECLARE(::Atmos::MasterSoundSystem)
+    template<>
+    class Scribe<::Atmos::MasterSoundSystem, BinaryArchive> :
+        public ObjectSystemScribe<::Atmos::MasterSoundSystem, BinaryArchive>
     {
     public:
-        INSCRIPTION_BINARY_INSCRIPTER_DECLARE_TABLE;
-        INSCRIPTION_BINARY_DECLARE_CLASS_NAME_RESOLVER;
+        static void Scriven(ObjectT& object, ArchiveT& archive);
     };
 }

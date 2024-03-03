@@ -1,7 +1,6 @@
-
 #pragma once
 
-#include "StopwatchBase.h"
+#include "Stopwatch.h"
 
 #include "ObjectReference.h"
 
@@ -10,7 +9,30 @@
 #include "Fraction.h"
 #include "Ratio.h"
 
-#include "ObjectSerialization.h"
+#include "ObjectScribe.h"
+
+namespace Atmos
+{
+    template<class Stopwatch>
+    class ExtendedStopwatchAdapter;
+}
+
+namespace Inscription
+{
+    template<class Stopwatch>
+    struct TableData<::Atmos::ExtendedStopwatchAdapter<Stopwatch>, BinaryArchive> :
+        public TableDataBase<::Atmos::ExtendedStopwatchAdapter<Stopwatch>, BinaryArchive>
+    {
+        using ObjectT = ::Atmos::ExtendedStopwatchAdapter<Stopwatch>;
+
+        using StopwatchReference = typename ObjectT::StopwatchReference;
+        StopwatchReference stopwatch;
+
+        ::Atmos::TimeValue elapsed;
+        ::Atmos::TimeValue average;
+        ::Atmos::TimeValue highest;
+    };
+}
 
 namespace Atmos
 {
@@ -18,8 +40,10 @@ namespace Atmos
     class ExtendedStopwatchAdapter
     {
     public:
-        ExtendedStopwatchAdapter(ObjectManager& manager, TimeValue goal = TimeValue());
-        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(ExtendedStopwatchAdapter);
+        ExtendedStopwatchAdapter(
+            ObjectManager& manager, TimeValue goal = TimeValue());
+        ExtendedStopwatchAdapter(
+            typename const ::Inscription::BinaryTableData<ExtendedStopwatchAdapter<Stopwatch>>& data);
 
         bool operator==(const ExtendedStopwatchAdapter& arg) const;
 
@@ -45,19 +69,23 @@ namespace Atmos
         TimeValue average;
         TimeValue highest;
     private:
-        INSCRIPTION_ACCESS;
+        INSCRIPTION_TABLE_ACCESS;
     };
 
     template<class Stopwatch>
-    ExtendedStopwatchAdapter<Stopwatch>::ExtendedStopwatchAdapter(ObjectManager& manager, TimeValue goal) :
+    ExtendedStopwatchAdapter<Stopwatch>::ExtendedStopwatchAdapter(
+        ObjectManager& manager, TimeValue goal) :
+
         stopwatch(manager.CreateObject<Stopwatch>(goal)),
-        elapsed(TimeValue::ValueT(0)), average(TimeValue::ValueT(0)), highest(TimeValue::ValueT(0))
+        elapsed(TimeValue::Value(0)), average(TimeValue::Value(0)), highest(TimeValue::Value(0))
     {}
 
     template<class Stopwatch>
-    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE_TEMPLATE(ExtendedStopwatchAdapter, ExtendedStopwatchAdapter<Stopwatch>) :
-        INSCRIPTION_TABLE_GET_MEM(stopwatch),
-        INSCRIPTION_TABLE_GET_MEM(elapsed), INSCRIPTION_TABLE_GET_MEM(average), INSCRIPTION_TABLE_GET_MEM(highest)
+    ExtendedStopwatchAdapter<Stopwatch>::ExtendedStopwatchAdapter(
+        typename const ::Inscription::BinaryTableData<ExtendedStopwatchAdapter<Stopwatch>>& data) :
+
+        stopwatch(data.stopwatch),
+        stopwatch(data.elapsed, data.average, data.highest)
     {}
 
     template<class Stopwatch>
@@ -101,8 +129,10 @@ namespace Atmos
 
         // Calculate average
         // accumulator = (alpha * new_value) + (1.0 - alpha) * accumulator
-        const TimeValue::ValueT alpha(0.001, elapsed.GetRadixPoint());
-        average = static_cast<TimeValue::ValueT>((alpha * elapsed.Get()) + (TimeValue::ValueT(1, 0, elapsed.GetRadixPoint()) - alpha) * average.Get());
+        const TimeValue::Value alpha(0.001, elapsed.GetRadixPoint());
+        average = static_cast<TimeValue::Value>(
+            (alpha * elapsed.Get()) +
+            (TimeValue::Value(1, 0, elapsed.GetRadixPoint()) - alpha) * average.Get());
 
         return elapsed;
     }
@@ -128,7 +158,7 @@ namespace Atmos
     template<class Stopwatch>
     void ExtendedStopwatchAdapter<Stopwatch>::ResetAverage()
     {
-        average = TimeValue(TimeValue::ValueT(0));
+        average = TimeValue(TimeValue::Value(0));
     }
 
     template<class Stopwatch>
@@ -140,7 +170,7 @@ namespace Atmos
     template<class Stopwatch>
     void ExtendedStopwatchAdapter<Stopwatch>::ResetHighest()
     {
-        highest = TimeValue(TimeValue::ValueT(0));
+        highest = TimeValue(TimeValue::Value(0));
     }
 
     template<class Stopwatch>
@@ -153,24 +183,29 @@ namespace Atmos
 namespace Inscription
 {
     template<class Stopwatch>
-    class Inscripter<::Atmos::ExtendedStopwatchAdapter<Stopwatch>> : public InscripterBase<::Atmos::ExtendedStopwatchAdapter<Stopwatch>>
+    class Scribe<::Atmos::ExtendedStopwatchAdapter<Stopwatch>, BinaryArchive> :
+        public TableScribe<::Atmos::ExtendedStopwatchAdapter<Stopwatch>, BinaryArchive>
     {
+    private:
+        using BaseT = TableScribe<::Atmos::ExtendedStopwatchAdapter<Stopwatch>, BinaryArchive>;
     public:
-        INSCRIPTION_INSCRIPTER_BASE_TYPEDEFS(::Atmos::ExtendedStopwatchAdapter<Stopwatch>);
-
-        INSCRIPTION_BINARY_INSCRIPTER_DECLARE_TABLE;
+        using ObjectT = typename BaseT::ObjectT;
+        using ArchiveT = typename BaseT::ArchiveT;
+        using ClassNameResolver = typename BaseT::ClassNameResolver;
+    public:
+        using TableBase = typename BaseT::TableBase;
+    public:
+        class Table : public TableBase
+        {
+        public:
+            Table()
+            {
+                MergeDataEntries({
+                    DataEntry::Auto(&ObjectT::stopwatch, &DataT::stopwatch),
+                    DataEntry::Auto(&ObjectT::elapsed, &DataT::elapsed),
+                    DataEntry::Auto(&ObjectT::average, &DataT::average),
+                    DataEntry::Auto(&ObjectT::highest, &DataT::highest) });
+            }
+        };
     };
-
-    template<class Stopwatch>
-    INSCRIPTION_BINARY_INSCRIPTER_DEFINE_TABLE(::Atmos::ExtendedStopwatchAdapter<Stopwatch>)
-    {
-        INSCRIPTION_BINARY_INSCRIPTER_CREATE_TABLE;
-
-        INSCRIPTION_TABLE_ADD(stopwatch);
-        INSCRIPTION_TABLE_ADD(elapsed);
-        INSCRIPTION_TABLE_ADD(average);
-        INSCRIPTION_TABLE_ADD(highest);
-
-        INSCRIPTION_INSCRIPTER_RETURN_TABLE;
-    }
 }

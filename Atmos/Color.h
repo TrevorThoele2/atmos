@@ -1,17 +1,19 @@
-
 #pragma once
 
 #include "Serialization.h"
 
-namespace Atmos
+namespace Atmos::Render
 {
     class Color
     {
     public:
-        typedef unsigned char Value;
-    public:
-        Value alpha, red, green, blue;
+        using Value = unsigned char;
 
+        Value alpha;
+        Value red;
+        Value green;
+        Value blue;
+    public:
         Color();
         Color(Value alpha, Value red, Value green, Value blue);
         Color(const Color& arg);
@@ -20,7 +22,17 @@ namespace Atmos
         bool operator==(const Color& arg) const;
         bool operator!=(const Color& arg) const;
     private:
-        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
+    };
+}
+
+namespace Inscription
+{
+    template<>
+    class Scribe<::Atmos::Render::Color, BinaryArchive> :
+        public CompositeScribe<::Atmos::Render::Color, BinaryArchive>
+    {
+    public:
+        static void Scriven(ObjectT& object, ArchiveT& archive);
     };
 }

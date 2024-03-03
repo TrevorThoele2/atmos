@@ -3,53 +3,50 @@
 
 #include "InputManager.h"
 
-namespace Atmos
+namespace Atmos::Input
 {
-    namespace Input
+    Key::Key(Key&& arg) : Signal(std::move(arg))
+    {}
+
+    Key::Key(
+        Manager& owner,
+        ObjectManager& objectManager,
+        DataPtr&& data,
+        KeyID id,
+        ::Agui::Input::Signal* guiSignal,
+        const String& displayName,
+        bool canUseForAction) :
+
+        Signal(owner, objectManager, std::move(data), id, guiSignal, displayName, canUseForAction)
+    {}
+
+    void Key::DoActiveImpl()
     {
-        Key::Key(Key&& arg) : Signal(std::move(arg))
-        {}
+        Owner()->eventKeys.active(*this);
+    }
 
-        Key::Key(
-            Manager& owner,
-            ObjectManager& objectManager,
-            DataPtr&& data,
-            KeyID id,
-            ::Agui::Input::Signal* guiSignal,
-            const String& displayName,
-            bool canUseForAction) :
+    void Key::DoUpImpl()
+    {
+        Owner()->eventKeys.pressed(*this);
+    }
 
-            Signal(owner, objectManager, std::move(data), id, guiSignal, displayName, canUseForAction)
-        {}
+    void Key::DoDownImpl()
+    {
+        Owner()->eventKeys.depressed(*this);
+    }
 
-        void Key::DoActiveImpl()
-        {
-            Owner()->eventKeys.active(*this);
-        }
+    void Key::DoDoubleDownImpl()
+    {
+        Owner()->eventKeys.doublePressed(*this);
+    }
 
-        void Key::DoUpImpl()
-        {
-            Owner()->eventKeys.pressed(*this);
-        }
+    bool Key::IsKey() const
+    {
+        return true;
+    }
 
-        void Key::DoDownImpl()
-        {
-            Owner()->eventKeys.depressed(*this);
-        }
-
-        void Key::DoDoubleDownImpl()
-        {
-            Owner()->eventKeys.doublePressed(*this);
-        }
-
-        bool Key::IsKey() const
-        {
-            return true;
-        }
-
-        bool Key::IsMouseKey() const
-        {
-            return false;
-        }
+    bool Key::IsMouseKey() const
+    {
+        return false;
     }
 }

@@ -3,27 +3,24 @@
 #include "UniqueProviderSystem.h"
 #include "InputManager.h"
 
-namespace Atmos
+namespace Atmos::Input
 {
-    namespace Input
+    class System : public UniqueProviderSystem<Manager>
     {
-        class System : public UniqueProviderSystem<Manager>
-        {
-        public:
-            System(ObjectManager& manager);
-            INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(System);
-        private:
-            void InitializeImpl() override;
-        };
-    }
+    public:
+        System(ObjectManager& manager);
+    private:
+        void InitializeImpl() override;
+    };
 }
 
 namespace Inscription
 {
-    INSCRIPTION_INSCRIPTER_DECLARE(::Atmos::Input::System)
+    template<>
+    class Scribe<::Atmos::Input::System, BinaryArchive> :
+        public ObjectSystemScribe<::Atmos::Input::System, BinaryArchive>
     {
     public:
-        INSCRIPTION_BINARY_INSCRIPTER_DECLARE_TABLE;
-        INSCRIPTION_BINARY_DECLARE_CLASS_NAME_RESOLVER;
+        static void Scriven(ObjectT& object, ArchiveT& archive);
     };
 }

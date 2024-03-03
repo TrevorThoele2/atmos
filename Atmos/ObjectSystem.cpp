@@ -8,9 +8,6 @@ namespace Atmos
     ObjectSystem::ObjectSystem(ObjectManager& manager) : manager(&manager), isInitialized(false), isStarted(false)
     {}
 
-    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(ObjectSystem) : INSCRIPTION_TABLE_GET_MEM(manager)
-    {}
-
     ObjectSystem::~ObjectSystem()
     {}
 
@@ -81,12 +78,8 @@ namespace Atmos
 
 namespace Inscription
 {
-    INSCRIPTION_BINARY_INSCRIPTER_DEFINE_TABLE(::Atmos::ObjectSystem)
+    void Scribe<::Atmos::ObjectSystem, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
     {
-        INSCRIPTION_BINARY_INSCRIPTER_CREATE_TABLE;
-
-        INSCRIPTION_TABLE_ADD_UNOWNING_POINTER(manager);
-
-        INSCRIPTION_INSCRIPTER_RETURN_TABLE;
+        archive(object.manager);
     }
 }

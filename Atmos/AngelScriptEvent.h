@@ -9,31 +9,31 @@ class asIScriptEngine;
 namespace Atmos
 {
     class ObjectManager;
+}
 
-    namespace Scripting
+namespace Atmos::Scripting
+{
+    class System;
+
+    class Event
     {
-        class System;
+    public:
+        Event(ObjectManager& objectManager);
+        ~Event();
 
-        class Event
-        {
-        public:
-            Event(ObjectManager& objectManager);
-            ~Event();
+        void Subscribe(asIScriptFunction* function);
+        void Unsubscribe(asIScriptFunction* function);
 
-            void Subscribe(asIScriptFunction* function);
-            void Unsubscribe(asIScriptFunction* function);
+        void Execute();
 
-            void Execute();
+        static void RegisterToAngelScript(asIScriptEngine* engine);
+    private:
+        asIScriptContext* context;
+        std::vector<asIScriptFunction*> subscribedFunctions;
 
-            static void RegisterToAngelScript(asIScriptEngine* engine);
-        private:
-            asIScriptContext* context;
-            std::vector<asIScriptFunction*> subscribedFunctions;
-
-            asIScriptEngine* Engine();
-        private:
-            ObjectManager* objectManager;
-            System* FindSystem();
-        };
-    }
+        asIScriptEngine* Engine();
+    private:
+        ObjectManager* objectManager;
+        System* FindSystem();
+    };
 }

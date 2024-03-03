@@ -26,3 +26,13 @@ namespace Atmos
         return (*this == arg);
     }
 }
+
+namespace Inscription
+{
+    void Scribe<::Atmos::Scalers3D, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
+    {
+        archive(object.x);
+        archive(object.y);
+        archive(object.z);
+    }
+}

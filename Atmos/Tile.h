@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include "Object.h"
@@ -8,32 +7,33 @@
 #include "GridPosition.h"
 
 #include "ReadonlyProperty.h"
-#include "StoredReadonlyProperty.h"
 
-#include "ObjectSerialization.h"
+#include "ObjectScribe.h"
 
 namespace Atmos
 {
     class Tile : public Object
     {
     public:
-        typedef StoredReadonlyProperty<GridPosition> GridPositionProperty;
-        GridPositionProperty position;
+        using Position = GridPosition;
+        using PositionProperty = ReadonlyProperty<Position>;
+        PositionProperty position = PositionProperty([this]() -> Position& { return _position; });
     public:
-        typedef PositionalOffsetAdapter<Sprite> OffsetSprite;
-        typedef std::vector<OffsetSprite> SpriteList;
-        typedef ReadonlyProperty<SpriteList&> SpriteListProperty;
-        SpriteListProperty sprites;
+        using OffsetSprite = PositionalOffsetAdapter<Sprite>;
+        using SpriteList = std::vector<OffsetSprite>;
+        using SpriteListProperty = ReadonlyProperty<SpriteList&>;
+        SpriteListProperty sprites = SpriteListProperty([this]() -> SpriteList& { return _spriteList; });
     public:
-        typedef StoredProperty<bool> SolidProperty;
+        using SolidProperty = StoredProperty<bool>;
         SolidProperty solid;
     public:
-        Tile(ObjectManager& manager, const GridPosition& position);
+        Tile(ObjectManager& manager, const Position& position);
         Tile(const Tile& arg) = default;
-        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(Tile);
+        Tile(const ::Inscription::BinaryTableData<Tile>& data);
 
         ObjectTypeDescription TypeDescription() const override;
     private:
+        Position _position;
         SpriteList _spriteList;
     private:
         INSCRIPTION_ACCESS;
@@ -48,9 +48,23 @@ namespace Atmos
 
 namespace Inscription
 {
-    DECLARE_OBJECT_INSCRIPTER(::Atmos::Tile)
+    template<>
+    struct TableData<::Atmos::Tile, BinaryArchive> :
+        public ObjectTableDataBase<::Atmos::Tile, BinaryArchive>
+    {
+        ObjectT::Position position;
+        ObjectT::SpriteList spriteList;
+        bool solid;
+    };
+
+    template<>
+    class Scribe<::Atmos::Tile, BinaryArchive> : public ObjectScribe<::Atmos::Tile, BinaryArchive>
     {
     public:
-        OBJECT_INSCRIPTER_DECLARE_MEMBERS;
+        class Table : public TableBase
+        {
+        public:
+            Table();
+        };
     };
 }

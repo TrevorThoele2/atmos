@@ -1,24 +1,19 @@
-
 #include "RenderFragmentSystem.h"
 
-namespace Atmos
+namespace Atmos::Render
 {
-    RenderFragmentSystem::RenderFragmentSystem(ObjectManager& manager) : ObjectSystem(manager)
+    FragmentSystem::FragmentSystem(ObjectManager& manager) : ObjectSystem(manager)
     {
-        renderFragments = manager.Batch<RenderFragment>();
-        renderFragments.onCreated.Subscribe(&RenderFragmentSystem::OnCreated, *this);
+        renderFragments = manager.Batch<Fragment>();
+        renderFragments.onCreated.Subscribe(&FragmentSystem::OnCreated, *this);
     }
 
-    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(RenderFragmentSystem) :
-        INSCRIPTION_TABLE_GET_BASE(ObjectSystem)
-    {}
-
-    void RenderFragmentSystem::DrawAll()
+    void FragmentSystem::DrawAll()
     {
 
     }
 
-    void RenderFragmentSystem::OnCreated(Reference object)
+    void FragmentSystem::OnCreated(Reference object)
     {
         grid.Add(object);
 
@@ -28,7 +23,7 @@ namespace Atmos
         });
     }
 
-    void RenderFragmentSystem::OnObjectBoundsChanged(TypedObjectReference<AxisAlignedObject> object, AxisAlignedBox3D previous)
+    void FragmentSystem::OnObjectBoundsChanged(TypedObjectReference<AxisAlignedObject> object, AxisAlignedBox3D previous)
     {
         grid.InformChanged(object, previous);
     }
@@ -36,14 +31,8 @@ namespace Atmos
 
 namespace Inscription
 {
-    INSCRIPTION_BINARY_INSCRIPTER_DEFINE_TABLE(::Atmos::RenderFragmentSystem)
+    void Scribe<::Atmos::FragmentSystem, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
     {
-        INSCRIPTION_BINARY_INSCRIPTER_CREATE_TABLE;
-
-        INSCRIPTION_TABLE_ADD_BASE(::Atmos::ObjectSystem);
-
-        INSCRIPTION_INSCRIPTER_RETURN_TABLE;
+        BaseScriven<::Atmos::ObjectSystem>(object, archive);
     }
-
-    INSCRIPTION_BINARY_DEFINE_SIMPLE_CLASS_NAME_RESOLVER(::Atmos::RenderFragmentSystem, "RenderFragmentSystem");
 }

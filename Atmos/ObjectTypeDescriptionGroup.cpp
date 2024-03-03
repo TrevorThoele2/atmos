@@ -1,7 +1,6 @@
-
 #include "ObjectTypeDescriptionGroup.h"
 
-#include <Inscription/Vector.h>
+#include <Inscription/VectorScribe.h>
 
 namespace Atmos
 {
@@ -42,9 +41,12 @@ namespace Atmos
     {
         return list.end();
     }
+}
 
-    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(ObjectTypeDescriptionGroup)
+namespace Inscription
+{
+    void Scribe<::Atmos::ObjectTypeDescriptionGroup, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
     {
-        scribe(list);
+        archive(object.list);
     }
 }

@@ -1,4 +1,3 @@
-
 #include "GameState.h"
 
 #include "StateSystem.h"
@@ -74,12 +73,4 @@ namespace Atmos
     }
 
     const ObjectTypeName ObjectTraits<GameState>::typeName = "GameState";
-}
-
-namespace Inscription
-{
-    OBJECT_INSCRIPTER_DEFINE_MEMBERS(::Atmos::GameState)
-    {
-
-    }
 }

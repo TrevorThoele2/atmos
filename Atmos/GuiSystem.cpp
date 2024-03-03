@@ -36,27 +36,3 @@ namespace Atmos
         */
     }
 }
-
-namespace Inscription
-{
-    INSCRIPTION_BINARY_INSCRIPTER_DEFINE_SERIALIZE_FUNCTION(::Atmos::GuiSystem)
-    {
-        if (scribe.IsOutput())
-        {
-            auto& outputScribe = *scribe.AsOutput();
-
-            outputScribe.SaveUnowningPointer(obj.Manager());
-        }
-    }
-
-    INSCRIPTION_BINARY_INSCRIPTER_DEFINE_CONSTRUCT_OBJECT_FUNCTION(::Atmos::GuiSystem)
-    {
-        auto& inputScribe = *scribe.AsInput();
-
-        ::Atmos::ObjectManager* objectManager;
-        inputScribe.LoadUnowningPointer(objectManager);
-        obj = new ManagedT(*objectManager);
-    }
-
-    INSCRIPTION_BINARY_DEFINE_SIMPLE_CLASS_NAME_RESOLVER(::Atmos::GuiSystem, "GuiSystem");
-}

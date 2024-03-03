@@ -12,9 +12,9 @@ namespace Inscription
         struct VariantSaverImplementation
         {
             template<class T>
-            static void Do(T& obj, OutputBinaryScribe& scribe)
+            static void Do(T& object, OutputBinaryArchive& archive)
             {
-                scribe.Save(obj);
+                archive(object);
             }
         };
 
@@ -22,7 +22,7 @@ namespace Inscription
         struct VariantLoaderImplementation
         {
             template<class... Args>
-            static bool Check(::Chroma::Variant<Args...>& variant, char typeId, InputBinaryScribe& scribe)
+            static bool Check(::Chroma::Variant<Args...>& variant, char typeId, InputBinaryArchive& archive)
             {
                 typedef ::Chroma::Variant<Args...> VariantT;
                 typedef typename VariantT::VariadicTemplateT::template Parameter<index>::Type ParameterType;
@@ -30,7 +30,7 @@ namespace Inscription
                 if (index == typeId)
                 {
                     ParameterType singular;
-                    scribe.Load(singular);
+                    archive(singular);
                     variant.Set(std::move(singular));
                     return true;
                 }
@@ -41,37 +41,49 @@ namespace Inscription
     }
 
     template<class... Args>
-    void Serialize(BinaryScribe& scribe, ::Chroma::Variant<Args...>& obj)
+    class Scribe<::Chroma::Variant<Args...>, BinaryArchive> : public CompositeScribe<::Chroma::Variant<Args...>, BinaryArchive>
     {
-        typedef ::Chroma::Variant<Args...> VariantT;
-        if (scribe.IsOutput())
+    private:
+        using BaseT = CompositeScribe<::Chroma::Variant<Args...>, BinaryArchive>;
+    public:
+        using ObjectT = typename BaseT::ObjectT;
+        using ArchiveT = typename BaseT::ArchiveT;
+    public:
+        static void Scriven(ObjectT& object, BinaryArchive& archive)
         {
-            auto& outputScribe = *scribe.AsOutput();
-
-            outputScribe.Save(obj.IsInhabited());
-            if (!obj.IsInhabited())
-                return;
-
-            outputScribe.Save(static_cast<char>(obj.GetTypeAsID()));
-
-            ::Chroma::Visit<detail::VariantSaverImplementation>(obj, outputScribe);
-        }
-        else
-        {
-            auto& inputScribe = *scribe.AsInput();
-
-            bool isInhabited;
-            inputScribe.Load(isInhabited);
-            if (!isInhabited)
+            typedef ::Chroma::Variant<Args...> VariantT;
+            if (archive.IsOutput())
             {
-                obj.Set();
-                return;
+                auto inhabited = object.IsInhabited();
+                archive(inhabited);
+                if (!object.IsInhabited())
+                    return;
+
+                auto type = static_cast<char>(object.GetTypeAsID());
+                archive(type);
+
+                ::Chroma::Visit<detail::VariantSaverImplementation>(object, *archive.AsOutput());
             }
+            else
+            {
+                bool isInhabited;
+                archive(isInhabited);
+                if (!isInhabited)
+                {
+                    object.Set();
+                    return;
+                }
 
-            char typeAsId;
-            inputScribe.Load(typeAsId);
+                char typeAsId;
+                archive(typeAsId);
 
-            ::Chroma::IterateRangeCheckStop<char, detail::VariantLoaderImplementation, bool, VariantT::count - 1, 0>(true, obj, typeAsId, inputScribe);
+                ::Chroma::IterateRangeCheckStop<
+                    char,
+                    detail::VariantLoaderImplementation,
+                    bool, VariantT::count - 1,
+                    0
+                >(true, object, typeAsId, *archive.AsInput());
+            }
         }
-    }
+    };
 }

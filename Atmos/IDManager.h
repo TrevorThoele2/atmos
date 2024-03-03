@@ -1,11 +1,12 @@
 #pragma once
 
 #include <unordered_map>
+#include <Inscription/UnorderedMapScribe.h>
 
 #include "IDManagerIterator.h"
 #include "IntervalList.h"
 
-#include <Inscription/UnorderedMap.h>
+#include "Serialization.h"
 
 namespace Atmos
 {
@@ -69,7 +70,6 @@ namespace Atmos
         BasicIterator Unwrap(iterator itr);
         ConstBasicIterator Unwrap(const_iterator itr) const;
     private:
-        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
     private:
         static_assert(std::is_signed<IdentifierT>::value, "IDs are required to be signed in an IDManager");
@@ -245,10 +245,10 @@ namespace Atmos
     typename IDManager<ID, T>::IdentifierT IDManager<ID, T>::NextAutomaticID() const
     {
         auto itr = occupiedIDs.begin();
-        if (itr == occupiedIDs.end() || itr->Start() != BaseAutomaticID())
+        if (itr == occupiedIDs.end() || itr->Start() > BaseAutomaticID())
             return BaseAutomaticID();
         else
-            return itr->End() + 1;
+            return itr->Start() - 1;
     }
 
     template<class ID, class T>
@@ -274,14 +274,30 @@ namespace Atmos
     {
         return itr.wrapped;
     }
+}
 
+namespace Inscription
+{
     template<class ID, class T>
-    void IDManager<ID, T>::Serialize(::Inscription::BinaryScribe& scribe)
+    class Scribe<::Atmos::IDManager<ID, T>, BinaryArchive> :
+        public CompositeScribe<::Atmos::IDManager<ID, T>, BinaryArchive>
     {
-        scribe(values);
+    private:
+        using BaseT = typename CompositeScribe<::Atmos::IDManager<ID, T>, BinaryArchive>;
+    public:
+        using ObjectT = typename BaseT::ObjectT;
+        using ArchiveT = typename BaseT::ArchiveT;
+    public:
+        static void Scriven(ObjectT& object, ArchiveT& archive)
+        {
+            archive(object.values);
 
-        occupiedIDs.Clear();
-        for (auto& loop : values)
-            occupiedIDs.Include(loop.first);
-    }
+            if (archive.IsInput())
+            {
+                object.occupiedIDs.Clear();
+                for (auto& loop : object.values)
+                    object.occupiedIDs.Include(loop.first);
+            }
+        }
+    };
 }

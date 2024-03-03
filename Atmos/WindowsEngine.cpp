@@ -1,4 +1,3 @@
-
 #include "WindowsEngine.h"
 
 #include "WindowsWindow.h"
@@ -13,8 +12,10 @@ namespace Atmos
         hInstance(hInstance), lpCmdLine(lpCmdLine), nCmdShow(nCmdShow), className(className)
     {}
 
-    WindowsEngine::CreatedContext WindowsEngine::CreateDefaultContext()
+    WindowsEngine::InitializationProperties WindowsEngine::CreateInitializationProperties(ObjectManager& globalObjectManager)
     {
+        typedef InitializationProperties Properties;
+
         auto window = new WindowsWindow(globalObjectManager, hInstance, lpCmdLine, nCmdShow, className);
         auto input = new Input::WindowsManager();
         auto backbufferSize = ScreenDimensions(window->ClientSize().width, window->ClientSize().height);
@@ -22,13 +23,13 @@ namespace Atmos
         auto audio = new DX9AudioManager();
         auto fileSystem = new WindowsFileManager();
 
-        CreatedContext context;
-        context.window = CreatedContext::Window(window);
-        context.inputManager = CreatedContext::InputManager(input);
-        context.graphicsManager = CreatedContext::GraphicsManager(graphics);
-        context.audioManager = CreatedContext::AudioManager(audio);
-        context.fileSystemManager = CreatedContext::FileManager(fileSystem);
-        return context;
+        Properties properties;
+        properties.window = Properties::Window(window);
+        properties.inputManager = Properties::InputManager(input);
+        properties.graphicsManager = Properties::GraphicsManager(graphics);
+        properties.audioManager = Properties::AudioManager(audio);
+        properties.fileSystemManager = Properties::FileManager(fileSystem);
+        return properties;
     }
 
     void WindowsEngine::DoExit()

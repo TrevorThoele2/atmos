@@ -41,7 +41,6 @@ namespace Atmos
         Mixin& ThisToMixin();
         const Mixin& ThisToMixin() const;
     private:
-        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
     };
 
@@ -185,10 +184,22 @@ namespace Atmos
     {
         return static_cast<const Mixin&>(*this);
     }
+}
 
+namespace Inscription
+{
     template<class Mixin>
-    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(AngleUnits<Mixin>)
+    class Scribe<::Atmos::AngleUnits<Mixin>, BinaryArchive> : public CompositeScribe<::Atmos::AngleUnits<Mixin>, BinaryArchive>
     {
-        scribe(value);
-    }
+    private:
+        using BaseT = typename CompositeScribe<::Atmos::AngleUnits<Mixin>, BinaryArchive>;
+    public:
+        using ObjectT = typename BaseT::ObjectT;
+        using ArchiveT = typename BaseT::ArchiveT;
+    public:
+        static void Scriven(ObjectT& object, ArchiveT& archive)
+        {
+            archive(object.value);
+        }
+    };
 }

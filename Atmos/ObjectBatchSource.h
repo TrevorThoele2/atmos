@@ -30,18 +30,6 @@ namespace Atmos
     public:
         virtual void IncrementReference() = 0;
         virtual void DecrementReference() = 0;
-    private:
-        INSCRIPTION_ACCESS;
-    };
-}
-
-namespace Inscription
-{
-    INSCRIPTION_INSCRIPTER_DECLARE(::Atmos::ObjectBatchSourceBase)
-    {
-    public:
-        INSCRIPTION_BINARY_INSCRIPTER_DECLARE_TABLE;
-        INSCRIPTION_BINARY_DECLARE_CLASS_NAME_RESOLVER;
     };
 }
 
@@ -62,11 +50,9 @@ namespace Atmos
         Event<> onInvalidated;
 
         Event<Reference> onCreated;
-
         Event<Reference> onBeforeDestroyed;
     public:
         ObjectBatchSource(ObjectManager& manager);
-        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(ObjectBatchSource);
         ~ObjectBatchSource();
 
         iterator RemoveObject(iterator itr);
@@ -115,35 +101,41 @@ namespace Atmos
 namespace Inscription
 {
     template<class T>
-    class Inscripter<::Atmos::ObjectBatchSource<T>> : public InscripterBase<::Atmos::ObjectBatchSource<T>>
+    class Scribe<::Atmos::ObjectBatchSource<T>, BinaryArchive> :
+        public CompositeScribe<::Atmos::ObjectBatchSource<T>, BinaryArchive>
     {
+    private:
+        using BaseT = typename CompositeScribe<::Atmos::ObjectBatchSource<T>, BinaryArchive>;
     public:
-        INSCRIPTION_INSCRIPTER_BASE_TYPEDEFS(::Atmos::ObjectBatchSource<T>);
+        using ObjectT = typename BaseT::ObjectT;
+        using ArchiveT = typename BaseT::ArchiveT;
+
+        using ClassNameResolver = typename BaseT::ClassNameResolver;
     public:
-        INSCRIPTION_BINARY_INSCRIPTER_TABLE
+        static void Scriven(ObjectT& object, ArchiveT& archive)
         {
-            INSCRIPTION_BINARY_INSCRIPTER_CREATE_TABLE
+            archive(object.manager);
+            if (archive.IsInput())
+                object.referenceCount = 0;
+        }
 
-            INSCRIPTION_TABLE_ADD_BASE(::Atmos::ObjectBatchSourceBase)
-
-            INSCRIPTION_TABLE_ADD_UNOWNING_POINTER(manager)
-
-            INSCRIPTION_INSCRIPTER_RETURN_TABLE
-        };
-
-        INSCRIPTION_BINARY_INSCRIPTER_SERIALIZE_FUNCTION
+        static void Construct(ObjectT*& object, ArchiveT& archive)
         {
-            if (scribe.IsInput())
-                obj.referenceCount = 0;
-            INSCRIPTION_INSCRIPTER_CALL_BASE_SERIALIZE_FUNCTION;
-        };
+            ::Atmos::ObjectManager* manager;
+            archive(manager);
 
-        INSCRIPTION_BINARY_DECLARE_CLASS_NAME_RESOLVER;
+            object = new ObjectT(*manager);
+
+            if (archive.IsInput())
+                object->referenceCount = 0;
+        }
+
+        static const ClassNameResolver classNameResolver;
     };
-
+    
     template<class T>
-    ::Inscription::ClassNameResolver<::Inscription::BinaryScribe>
-        Inscripter<::Atmos::ObjectBatchSource<T>>::classNameResolver([](Scribe& scribe) -> ClassName
+    typename const Scribe<::Atmos::ObjectBatchSource<T>, BinaryArchive>::ClassNameResolver
+        Scribe<::Atmos::ObjectBatchSource<T>, BinaryArchive>::classNameResolver = ClassNameResolver([](ArchiveT& archive) -> ClassName
     {
         ClassName baseName("ObjectBatchSource");
         ClassName objectName(::Atmos::TypeNameFor<T>());

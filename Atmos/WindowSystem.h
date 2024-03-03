@@ -9,7 +9,6 @@ namespace Atmos
     {
     public:
         WindowSystem(ObjectManager& manager);
-        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(WindowSystem);
     private:
         void InitializeImpl() override;
     };
@@ -17,10 +16,11 @@ namespace Atmos
 
 namespace Inscription
 {
-    INSCRIPTION_INSCRIPTER_DECLARE(::Atmos::WindowSystem)
+    template<>
+    class Scribe<::Atmos::WindowSystem, BinaryArchive> :
+        public ObjectSystemScribe<::Atmos::WindowSystem, BinaryArchive>
     {
     public:
-        INSCRIPTION_BINARY_INSCRIPTER_DECLARE_TABLE;
-        INSCRIPTION_BINARY_DECLARE_CLASS_NAME_RESOLVER;
+        static void Scriven(ObjectT& object, ArchiveT& archive);
     };
 }

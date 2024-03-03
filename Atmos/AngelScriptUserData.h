@@ -3,17 +3,17 @@
 namespace Atmos
 {
     class ObjectManager;
+}
 
-    namespace Scripting
+namespace Atmos::Scripting
+{
+    class System;
+
+    class UserData
     {
-        class System;
-
-        class UserData
-        {
-        public:
-            ObjectManager* objectManager;
-            System* system;
-            UserData();
-        };
-    }
+    public:
+        ObjectManager* objectManager;
+        System* system;
+        UserData();
+    };
 }

@@ -50,8 +50,8 @@ namespace Atmos
         data->objectManager = &manager;
     }
 
-    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(RunningScript) :
-        INSCRIPTION_TABLE_GET_BASE(Object), data(new Data(source)), source([this]() { return data->source; })
+    RunningScript::RunningScript(const ::Inscription::BinaryTableData<RunningScript>& data) :
+        Object(std::get<0>(data.bases)), data(new Data(source)), source([this]() { return this->data->source; })
     {}
 
     void RunningScript::Resume()
@@ -92,12 +92,4 @@ namespace Atmos
     }
 
     const ObjectTypeName ObjectTraits<RunningScript>::typeName = "RunningScript";
-}
-
-namespace Inscription
-{
-    OBJECT_INSCRIPTER_DEFINE_MEMBERS(::Atmos::RunningScript)
-    {
-
-    }
 }

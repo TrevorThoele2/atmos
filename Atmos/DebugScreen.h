@@ -63,9 +63,10 @@ namespace Atmos
 namespace Inscription
 {
     template<>
-    class Inscripter<::Atmos::DebugScreen> : public InscripterBase<::Atmos::DebugScreen>
+    class Scribe<::Atmos::DebugScreen, BinaryArchive> :
+        public ObjectSystemScribe<::Atmos::DebugScreen, BinaryArchive>
     {
     public:
-        INSCRIPTION_BINARY_INSCRIPTER_DECLARE_TABLE;
+        static void Scriven(ObjectT& object, ArchiveT& archive);
     };
 }

@@ -1,26 +1,23 @@
-
 #pragma once
-
-#include <Inscription\Scribe.h>
 
 namespace Atmos
 {
-    template<class ScribeT>
+    template<class Archive>
     class SkipFileObject
     {
     public:
-        typedef ScribeT FocusedScribe;
+        using FocusedArchive = Archive;
     public:
-        FocusedScribe& scribe;
+        FocusedArchive& archive;
     public:
-        SkipFileObject(FocusedScribe& scribe);
+        SkipFileObject(FocusedArchive& scribe);
     protected:
-        typedef typename FocusedScribe::StreamPosition Position;
+        using Position = typename FocusedArchive::StreamPosition;
     protected:
         Position position;
     };
 
-    template<class ScribeT>
-    SkipFileObject<ScribeT>::SkipFileObject(FocusedScribe& scribe) : scribe(scribe), position(0)
+    template<class Archive>
+    SkipFileObject<Archive>::SkipFileObject(FocusedArchive& archive) : archive(archive), position(0)
     {}
 }

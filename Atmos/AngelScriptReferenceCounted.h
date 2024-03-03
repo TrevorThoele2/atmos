@@ -1,19 +1,16 @@
 #pragma once
 
-namespace Atmos
+namespace Atmos::Scripting
 {
-    namespace Scripting
+    class ReferenceCounted
     {
-        class ReferenceCounted
-        {
-        public:
-            ReferenceCounted();
-            virtual ~ReferenceCounted() = 0;
+    public:
+        ReferenceCounted();
+        virtual ~ReferenceCounted() = 0;
 
-            void AddRef();
-            void Release();
-        private:
-            int refCount;
-        };
-    }
+        void AddRef();
+        void Release();
+    private:
+        int refCount;
+    };
 }

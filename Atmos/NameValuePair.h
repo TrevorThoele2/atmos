@@ -26,6 +26,15 @@ namespace Atmos
         bool operator!=(const NameValuePair& arg) const;
     private:
         INSCRIPTION_ACCESS;
-        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
+    };
+}
+
+namespace Inscription
+{
+    template<>
+    class Scribe<::Atmos::NameValuePair, BinaryArchive> : public CompositeScribe<::Atmos::NameValuePair, BinaryArchive>
+    {
+    public:
+        static void Scriven(ObjectT& object, ArchiveT& archive);
     };
 }

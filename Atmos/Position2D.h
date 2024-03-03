@@ -38,8 +38,17 @@ namespace Atmos
         static Position2D FindCenter(const std::set<Position2D>& container);
         static Position2D FindCenter(const Position2D& topLeft, const Position2D& bottomRight);
     private:
-        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
+    };
+}
+
+namespace Inscription
+{
+    template<>
+    class Scribe<::Atmos::Position2D, BinaryArchive> : public CompositeScribe<::Atmos::Position2D, BinaryArchive>
+    {
+    public:
+        static void Scriven(ObjectT& object, ArchiveT& archive);
     };
 }
 

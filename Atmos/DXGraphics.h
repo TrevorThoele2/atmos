@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include <d3d9.h>
@@ -24,7 +23,10 @@ namespace Atmos
 {
     class LoggingSystem;
     class FpsSystem;
+}
 
+namespace Atmos::Render
+{
     class DX9GraphicsManager : public GraphicsManager
     {
     private:
@@ -100,7 +102,7 @@ namespace Atmos
         std::unique_ptr<ImageAssetData> CreateImageDataImpl(void* buffer, std::int32_t size, const FileName& name) override;
         std::unique_ptr<ShaderAssetData> CreateShaderDataImpl(const FilePath& path) override;
         std::unique_ptr<ShaderAssetData> CreateShaderDataImpl(void* buffer, std::int32_t size, const FileName& name) override;
-        RenderSurface CreateRenderSurfaceImpl(void* window) override;
+        Surface CreateRenderSurfaceImpl(void* window) override;
         Canvas CreateCanvasImpl(const ScreenDimensions& dimensions) override;
 
         bool CanMakeImageImpl(const FilePath& path) const override;
@@ -108,7 +110,7 @@ namespace Atmos
 
         void ResizeCanvasImpl(Canvas& canvas, const ScreenDimensions& dimensions) override;
 
-        void SetRenderTargetImpl(RenderSurface& set) override;
+        void SetRenderTargetImpl(Surface& set) override;
         void SetRenderTargetToMainImpl() override;
         void ReleaseMainRenderTarget() override;
         void ResetMainRenderTarget() override;
@@ -119,7 +121,7 @@ namespace Atmos
         void RenderSpriteImpl(SpriteReference sprite, float X, float Y) override;
         void RenderCanvasViewImpl(CanvasViewReference view, float X, float Y) override;
         void RenderUnknownFragmentImpl(RenderFragmentReference fragment, float X, float Y) override;
-        void RenderLineImpl(const LineRender& line) override;
+        void RenderLineImpl(const Line& line) override;
 
         void SetupPresentationParameters();
         void SetRenderStates();

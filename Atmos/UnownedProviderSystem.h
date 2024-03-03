@@ -6,8 +6,6 @@
 
 #include "Event.h"
 
-#include <Inscription/Memory.h>
-
 namespace Atmos
 {
     template<class T>
@@ -28,7 +26,6 @@ namespace Atmos
         Value* Get() const;
     protected:
         UnownedProviderSystem(ObjectManager& manager);
-        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(UnownedProviderSystem);
     private:
         ValuePtr value;
     private:
@@ -67,32 +64,23 @@ namespace Atmos
     template<class T>
     UnownedProviderSystem<T>::UnownedProviderSystem(ObjectManager& manager) : ObjectSystem(manager)
     {}
-
-    template<class T>
-    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE_TEMPLATE(UnownedProviderSystem, UnownedProviderSystem<T>) :
-        INSCRIPTION_TABLE_GET_BASE(ObjectSystem), INSCRIPTION_TABLE_GET_MEM(value)
-    {}
 }
 
 namespace Inscription
 {
     template<class T>
-    class Inscripter<::Atmos::UnownedProviderSystem<T>> : public InscripterBase<::Atmos::UnownedProviderSystem<T>>
+    class Scribe<::Atmos::UnownedProviderSystem<T>, BinaryArchive> :
+        public ObjectSystemScribe<::Atmos::UnownedProviderSystem<T>, BinaryArchive>
     {
+    private:
+        using BaseT = typename ObjectSystemScribe<::Atmos::UnownedProviderSystem<T>, BinaryArchive>;
     public:
-        INSCRIPTION_INSCRIPTER_BASE_TYPEDEFS(::Atmos::UnownedProviderSystem<T>);
-
-        INSCRIPTION_BINARY_INSCRIPTER_DECLARE_TABLE;
+        using ObjectT = typename BaseT::ObjectT;
+        using ArchiveT = typename BaseT::ArchiveT;
+    public:
+        static void Scriven(ObjectT& object, ArchiveT& archive)
+        {
+            archive(object.value);
+        }
     };
-
-    template<class T>
-    INSCRIPTION_BINARY_INSCRIPTER_DEFINE_TABLE(::Atmos::UnownedProviderSystem<T>)
-    {
-        INSCRIPTION_BINARY_INSCRIPTER_CREATE_TABLE;
-
-        INSCRIPTION_TABLE_ADD_BASE(::Atmos::ObjectSystem);
-        INSCRIPTION_TABLE_ADD_UNOWNING_POINTER(value);
-
-        INSCRIPTION_INSCRIPTER_RETURN_TABLE;
-    }
 }

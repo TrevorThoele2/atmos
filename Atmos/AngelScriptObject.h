@@ -4,16 +4,13 @@
 
 #include "ObjectID.h"
 
-namespace Atmos
+namespace Atmos::Scripting
 {
-    namespace Scripting
+    class Object : public ReferenceCounted
     {
-        class Object : public ReferenceCounted
-        {
-        public:
-            ObjectID id;
+    public:
+        ObjectID id;
 
-            virtual ~Object() = 0;
-        };
-    }
+        virtual ~Object() = 0;
+    };
 }

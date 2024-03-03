@@ -6,8 +6,11 @@
 namespace Atmos
 {
     class GraphicsManager;
+}
 
-    class RenderSurface
+namespace Atmos::Render
+{
+    class Surface
     {
     public:
         typedef ScreenDimensions::Dimension Dimension;
@@ -16,27 +19,27 @@ namespace Atmos
         class Data
         {
         public:
-            typedef RenderSurface::Size Size;
+            typedef Surface::Size Size;
         public:
             virtual ~Data() = 0;
-            RenderSurface* GetOwner() const;
+            Surface* GetOwner() const;
             virtual void SetAsRenderTarget() = 0;
             virtual void Present() = 0;
             virtual void Reset() = 0;
             virtual void Release() = 0;
             virtual Size GetSize() = 0;
         private:
-            RenderSurface* owner;
+            Surface* owner;
         private:
-            friend RenderSurface;
+            friend Surface;
         };
 
         typedef std::unique_ptr<Data> DataPtr;
     public:
-        RenderSurface(DataPtr&& data);
-        RenderSurface(RenderSurface&& arg);
+        Surface(DataPtr&& data);
+        Surface(Surface&& arg);
 
-        RenderSurface& operator=(RenderSurface&& arg);
+        Surface& operator=(Surface&& arg);
 
         Data* GetData() const;
         template<class DataT>
@@ -63,7 +66,7 @@ namespace Atmos
     };
 
     template<class DataT>
-    DataT* RenderSurface::GetData() const
+    DataT* Surface::GetData() const
     {
         return static_cast<DataT*>(data.get());
     }

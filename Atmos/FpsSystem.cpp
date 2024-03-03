@@ -12,17 +12,13 @@ namespace Atmos
     FpsSystem::FpsSystem(ObjectManager& manager) : ObjectSystem(manager), stopwatch(manager)
     {}
 
-    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(FpsSystem) :
-        INSCRIPTION_TABLE_GET_BASE(ObjectSystem), INSCRIPTION_TABLE_GET_MEM(stopwatch)
-    {}
-
     void FpsSystem::SetFpsLimit(Fps fps)
     {
         currentFpsLimit = fps;
         if (currentFpsLimit == 0)
-            stopwatch.SetGoal(TimeValue::ValueT(0));
+            stopwatch.SetGoal(TimeValue::Value(0));
         else
-            stopwatch.SetGoal(TimeValue::ValueT(1) / TimeValue::ValueT(currentFpsLimit));
+            stopwatch.SetGoal(TimeValue::Value(1) / TimeValue::Value(currentFpsLimit));
     }
 
     FpsSystem::Fps FpsSystem::GetFpsLimit()
@@ -121,7 +117,7 @@ namespace Atmos
     {
         typedef ExtendedStopwatchAdapter<FrameStopwatch> FpsStopwatch;
         // All time values are in nanoseconds, so this needs to initialize from a seconds time value
-        static FpsStopwatch fpsTimer(*Manager(), TimeValue(TimeValue::ValueT(1, 0)));
+        static FpsStopwatch fpsTimer(*Manager(), TimeValue(TimeValue::Value(1, 0)));
         static unsigned int count = 0;
 
         if (fpsTimer.HasReachedGoal())
@@ -141,13 +137,9 @@ namespace Atmos
 
 namespace Inscription
 {
-    INSCRIPTION_BINARY_INSCRIPTER_DEFINE_TABLE(::Atmos::FpsSystem)
+    void Scribe<::Atmos::FpsSystem, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
     {
-        INSCRIPTION_BINARY_INSCRIPTER_CREATE_TABLE;
-
-        INSCRIPTION_TABLE_ADD_BASE(::Atmos::ObjectSystem);
-        INSCRIPTION_TABLE_ADD(stopwatch);
-
-        INSCRIPTION_INSCRIPTER_RETURN_TABLE;
+        BaseScriven<::Atmos::ObjectSystem>(object, archive);
+        archive(object.stopwatch);
     }
 }

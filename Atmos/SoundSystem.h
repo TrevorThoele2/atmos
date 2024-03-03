@@ -11,7 +11,6 @@ namespace Atmos
     {
     public:
         SoundSystem(ObjectManager& manager);
-        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(SoundSystem);
 
         void ResumeAll();
         void PauseAll();
@@ -27,10 +26,11 @@ namespace Atmos
 
 namespace Inscription
 {
-    INSCRIPTION_INSCRIPTER_DECLARE(::Atmos::SoundSystem)
+    template<>
+    class Scribe<::Atmos::SoundSystem, BinaryArchive> :
+        public ObjectSystemScribe<::Atmos::SoundSystem, BinaryArchive>
     {
     public:
-        INSCRIPTION_BINARY_INSCRIPTER_DECLARE_TABLE;
-        INSCRIPTION_BINARY_DECLARE_CLASS_NAME_RESOLVER;
+        static void Scriven(ObjectT& object, ArchiveT& archive);
     };
 }

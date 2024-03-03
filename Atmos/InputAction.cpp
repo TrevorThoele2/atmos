@@ -4,38 +4,35 @@
 #include "InputManager.h"
 #include "InputSignalBase.h"
 
-namespace Atmos
+namespace Atmos::Input
 {
-    namespace Input
+    void Action::MapToSignal(const SignalBase* set)
     {
-        void Action::MapToSignal(const SignalBase* set)
+        if (!set)
+            return;
+
+        mappedSignal = set;
+    }
+
+    const SignalBase* Action::MappedSignal() const
+    {
+        return mappedSignal;
+    }
+
+    Action::Action(Manager& owner, ActionID id, const String& displayName) :
+        owner(&owner), id(id), displayName(displayName), mappedSignal(nullptr)
+    {}
+
+    void Action::Work()
+    {
+        if (mappedSignal->IsActive())
         {
-            if (!set)
-                return;
+            owner->eventActionActive(*this);
 
-            mappedSignal = set;
+            if (mappedSignal->IsPressed())
+                owner->eventActionPressed(*this);
         }
-
-        const SignalBase* Action::MappedSignal() const
-        {
-            return mappedSignal;
-        }
-
-        Action::Action(Manager& owner, ActionID id, const String& displayName) :
-            owner(&owner), id(id), displayName(displayName), mappedSignal(nullptr)
-        {}
-
-        void Action::Work()
-        {
-            if (mappedSignal->IsActive())
-            {
-                owner->eventActionActive(*this);
-
-                if (mappedSignal->IsPressed())
-                    owner->eventActionPressed(*this);
-            }
-            else if (mappedSignal->IsDepressed())
-                owner->eventActionDepressed(*this);
-        }
+        else if (mappedSignal->IsDepressed())
+            owner->eventActionDepressed(*this);
     }
 }

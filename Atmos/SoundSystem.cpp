@@ -19,10 +19,6 @@ namespace Atmos
         engineSystem->onFocusRegained.Subscribe(&SoundSystem::OnEngineFocusRegained, *this);
     }
 
-    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(SoundSystem) :
-        INSCRIPTION_TABLE_GET_BASE(ObjectSystem)
-    {}
-
     void SoundSystem::ResumeAll()
     {
 
@@ -51,14 +47,8 @@ namespace Atmos
 
 namespace Inscription
 {
-    INSCRIPTION_BINARY_INSCRIPTER_DEFINE_TABLE(::Atmos::SoundSystem)
+    void Scribe<::Atmos::SoundSystem, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
     {
-        INSCRIPTION_BINARY_INSCRIPTER_CREATE_TABLE;
-
-        INSCRIPTION_TABLE_ADD_BASE(::Atmos::ObjectSystem);
-
-        INSCRIPTION_INSCRIPTER_RETURN_TABLE;
+        BaseScriven<::Atmos::ObjectSystem>(object, archive);
     }
-
-    INSCRIPTION_BINARY_DEFINE_SIMPLE_CLASS_NAME_RESOLVER(::Atmos::SoundSystem, "SoundSystem");
 }

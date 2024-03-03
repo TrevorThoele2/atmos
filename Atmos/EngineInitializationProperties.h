@@ -10,7 +10,7 @@
 
 namespace Atmos
 {
-    class CreatedEngineContext
+    class EngineInitializationProperties
     {
     public:
         typedef std::unique_ptr<WindowBase> Window;

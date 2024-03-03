@@ -12,19 +12,6 @@ namespace Atmos
     {
     public:
         typedef unsigned long long WrappedT;
-    private:
-        static constexpr WrappedT maxWrappedValue = std::numeric_limits<unsigned long long>::max();
-        static constexpr size_t digitCount = sizeof(WrappedT) * 2 * CHAR_BIT;
-    private:
-        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
-        INSCRIPTION_ACCESS;
-    private:
-        WrappedT low;
-        WrappedT high;
-        static void AddImpl(const LargeInteger &left, const LargeInteger &right, LargeInteger &result);
-        static void SubtractImpl(const LargeInteger &left, const LargeInteger &right, LargeInteger &result);
-        static void MultiplyImpl(const LargeInteger &multiplicand, const LargeInteger &multiplier, LargeInteger &result);
-        static void DivideImpl(const LargeInteger &dividend, const LargeInteger &divisor, LargeInteger &quotient, LargeInteger &remainder);
     public:
         constexpr LargeInteger();
         constexpr LargeInteger(WrappedT low, WrappedT high);
@@ -36,33 +23,33 @@ namespace Atmos
         constexpr LargeInteger(unsigned int i);
         constexpr LargeInteger(long long ll);
         constexpr LargeInteger(unsigned long long ll);
-        LargeInteger(const LargeInteger &arg) = default;
-        LargeInteger& operator=(const LargeInteger &arg) = default;
+        LargeInteger(const LargeInteger& arg) = default;
+        LargeInteger& operator=(const LargeInteger& arg) = default;
 
-        bool operator==(const LargeInteger &arg) const;
-        bool operator!=(const LargeInteger &arg) const;
-        bool operator<(const LargeInteger &arg) const;
-        bool operator<=(const LargeInteger &arg) const;
-        bool operator>(const LargeInteger &arg) const;
-        bool operator>=(const LargeInteger &arg) const;
+        bool operator==(const LargeInteger& arg) const;
+        bool operator!=(const LargeInteger& arg) const;
+        bool operator<(const LargeInteger& arg) const;
+        bool operator<=(const LargeInteger& arg) const;
+        bool operator>(const LargeInteger& arg) const;
+        bool operator>=(const LargeInteger& arg) const;
         explicit operator bool() const;
 
-        LargeInteger operator+(const LargeInteger &arg) const;
-        LargeInteger& operator+=(const LargeInteger &arg);
-        LargeInteger operator-(const LargeInteger &arg) const;
-        LargeInteger& operator-=(const LargeInteger &arg);
-        LargeInteger operator*(const LargeInteger &arg) const;
-        LargeInteger& operator*=(const LargeInteger &arg);
-        LargeInteger operator/(const LargeInteger &arg) const;
-        LargeInteger& operator/=(const LargeInteger &arg);
+        LargeInteger operator+(const LargeInteger& arg) const;
+        LargeInteger& operator+=(const LargeInteger& arg);
+        LargeInteger operator-(const LargeInteger& arg) const;
+        LargeInteger& operator-=(const LargeInteger& arg);
+        LargeInteger operator*(const LargeInteger& arg) const;
+        LargeInteger& operator*=(const LargeInteger& arg);
+        LargeInteger operator/(const LargeInteger& arg) const;
+        LargeInteger& operator/=(const LargeInteger& arg);
 
-        LargeInteger operator<<(const LargeInteger &arg) const;
+        LargeInteger operator<<(const LargeInteger& arg) const;
         LargeInteger operator<<(size_t arg) const;
-        LargeInteger& operator<<=(const LargeInteger &arg);
+        LargeInteger& operator<<=(const LargeInteger& arg);
         LargeInteger& operator<<=(size_t arg);
-        LargeInteger operator >> (const LargeInteger &arg) const;
+        LargeInteger operator >> (const LargeInteger& arg) const;
         LargeInteger operator >> (size_t arg) const;
-        LargeInteger& operator>>=(const LargeInteger &arg);
+        LargeInteger& operator>>=(const LargeInteger& arg);
         LargeInteger& operator>>=(size_t arg);
 
         LargeInteger& operator++();
@@ -70,22 +57,35 @@ namespace Atmos
         LargeInteger operator++(int);
         LargeInteger operator--(int);
 
-        LargeInteger operator%(const LargeInteger &arg) const;
-        LargeInteger& operator%=(const LargeInteger &arg);
+        LargeInteger operator%(const LargeInteger& arg) const;
+        LargeInteger& operator%=(const LargeInteger& arg);
         bool operator!() const;
         LargeInteger operator~() const;
-        LargeInteger operator|(const LargeInteger &arg) const;
-        LargeInteger& operator|=(const LargeInteger &arg);
-        LargeInteger operator&(const LargeInteger &arg) const;
-        LargeInteger& operator&=(const LargeInteger &arg);
-        LargeInteger operator^(const LargeInteger &arg) const;
-        LargeInteger& operator^=(const LargeInteger &arg);
+        LargeInteger operator|(const LargeInteger& arg) const;
+        LargeInteger& operator|=(const LargeInteger& arg);
+        LargeInteger operator&(const LargeInteger& arg) const;
+        LargeInteger& operator&=(const LargeInteger& arg);
+        LargeInteger operator^(const LargeInteger& arg) const;
+        LargeInteger& operator^=(const LargeInteger& arg);
 
         WrappedT GetLow() const;
         WrappedT GetHigh() const;
 
         String ToString() const;
-        void FromString(const String &arg);
+        void FromString(const String& arg);
+    private:
+        static constexpr WrappedT maxWrappedValue = std::numeric_limits<unsigned long long>::max();
+        static constexpr size_t digitCount = sizeof(WrappedT) * 2 * CHAR_BIT;
+    private:
+        WrappedT low;
+        WrappedT high;
+    private:
+        static void AddImpl(const LargeInteger& left, const LargeInteger& right, LargeInteger& result);
+        static void SubtractImpl(const LargeInteger& left, const LargeInteger& right, LargeInteger& result);
+        static void MultiplyImpl(const LargeInteger& multiplicand, const LargeInteger& multiplier, LargeInteger& result);
+        static void DivideImpl(const LargeInteger& dividend, const LargeInteger& divisor, LargeInteger& quotient, LargeInteger& remainder);
+    private:
+        INSCRIPTION_ACCESS;
     };
 
     constexpr LargeInteger::LargeInteger() : low(0), high(0)
@@ -146,4 +146,14 @@ namespace Atmos
     };
 
     typedef FixedPoint<LargeInteger> FixedPoint128;
+}
+
+namespace Inscription
+{
+    template<>
+    class Scribe<::Atmos::LargeInteger, BinaryArchive> : public CompositeScribe<::Atmos::LargeInteger, BinaryArchive>
+    {
+    public:
+        static void Scriven(ObjectT& object, ArchiveT& archive);
+    };
 }

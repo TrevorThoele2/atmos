@@ -4,118 +4,17 @@
 
 namespace Atmos
 {
-    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(LargeInteger)
-    {
-        scribe(low);
-        scribe(high);
-    }
-
-    void LargeInteger::AddImpl(const LargeInteger &left, const LargeInteger &right, LargeInteger &result)
-    {
-        result = left;
-        const WrappedT oldLow = result.low;
-        result.low += right.low;
-        result.high += right.high;
-        if (result.low < oldLow)
-            ++result.high;
-    }
-
-    void LargeInteger::SubtractImpl(const LargeInteger &left, const LargeInteger &right, LargeInteger &result)
-    {
-        result = left;
-        const WrappedT oldLow = result.low;
-        result.low -= right.low;
-        result.high -= right.high;
-        if (result.low > oldLow)
-            --result.high;
-    }
-
-    void LargeInteger::MultiplyImpl(const LargeInteger &multiplicand, const LargeInteger &multiplier, LargeInteger &result)
-    {
-        LargeInteger a = multiplicand;
-        LargeInteger b = multiplier;
-        if (a < b)
-        {
-            auto prev = a;
-            a = b;
-            b = prev;
-        }
-
-        while (b != LargeInteger(0U))
-        {
-            // If b is odd, add a to result
-            if (b & LargeInteger(1U))
-                result += a;
-
-            a <<= LargeInteger(1U);
-            b >>= LargeInteger(1U);
-        }
-    }
-
-    void LargeInteger::DivideImpl(const LargeInteger &dividend, const LargeInteger &divisor, LargeInteger &quotient, LargeInteger &remainder)
-    {
-        if (divisor == LargeInteger(0U))
-            throw DivideByZeroException();
-        else if (dividend == LargeInteger(0U))
-        {
-            quotient = 0U;
-            remainder = 0U;
-            return;
-        }
-        else if (divisor == LargeInteger(1U) || dividend == divisor)
-        {
-            quotient = 1U;
-            remainder = 0U;
-            return;
-        }
-        else if (divisor > dividend)
-        {
-            quotient = 0U;
-            remainder = dividend;
-            return;
-        }
-
-        LargeInteger num = dividend;
-        LargeInteger den = divisor;
-        quotient = 0U;
-
-        const LargeInteger one(1U);
-        LargeInteger current(one);
-        while (den <= num)
-        {
-            den <<= one;
-            current <<= one;
-        }
-
-        den >>= one;
-        current >>= one;
-
-        while (current > LargeInteger(0U))
-        {
-            if (num >= den)
-            {
-                num -= den;
-                quotient |= current;
-            }
-
-            current >>= one;
-            den >>= one;
-        }
-
-        remainder = num;
-    }
-
-    bool LargeInteger::operator==(const LargeInteger &arg) const
+    bool LargeInteger::operator==(const LargeInteger& arg) const
     {
         return low == arg.low && high == arg.high;
     }
 
-    bool LargeInteger::operator!=(const LargeInteger &arg) const
+    bool LargeInteger::operator!=(const LargeInteger& arg) const
     {
         return !(*this == arg);
     }
 
-    bool LargeInteger::operator<(const LargeInteger &arg) const
+    bool LargeInteger::operator<(const LargeInteger& arg) const
     {
         if (high == arg.high)
             return low < arg.low;
@@ -123,17 +22,17 @@ namespace Atmos
             return high < arg.high;
     }
 
-    bool LargeInteger::operator<=(const LargeInteger &arg) const
+    bool LargeInteger::operator<=(const LargeInteger& arg) const
     {
         return *this < arg || *this == arg;
     }
 
-    bool LargeInteger::operator>(const LargeInteger &arg) const
+    bool LargeInteger::operator>(const LargeInteger& arg) const
     {
         return !(*this < arg || *this == arg);
     }
 
-    bool LargeInteger::operator>=(const LargeInteger &arg) const
+    bool LargeInteger::operator>=(const LargeInteger& arg) const
     {
         return *this > arg || *this == arg;
     }
@@ -143,46 +42,46 @@ namespace Atmos
         return low != 0 || high != 0;
     }
 
-    LargeInteger LargeInteger::operator+(const LargeInteger &arg) const
+    LargeInteger LargeInteger::operator+(const LargeInteger& arg) const
     {
         LargeInteger result;
         AddImpl(*this, arg, result);
         return result;
     }
 
-    LargeInteger& LargeInteger::operator+=(const LargeInteger &arg)
+    LargeInteger& LargeInteger::operator+=(const LargeInteger& arg)
     {
         AddImpl(*this, arg, *this);
         return *this;
     }
 
-    LargeInteger LargeInteger::operator-(const LargeInteger &arg) const
+    LargeInteger LargeInteger::operator-(const LargeInteger& arg) const
     {
         LargeInteger result;
         SubtractImpl(*this, arg, result);
         return result;
     }
 
-    LargeInteger& LargeInteger::operator-=(const LargeInteger &arg)
+    LargeInteger& LargeInteger::operator-=(const LargeInteger& arg)
     {
         SubtractImpl(*this, arg, *this);
         return *this;
     }
 
-    LargeInteger LargeInteger::operator*(const LargeInteger &arg) const
+    LargeInteger LargeInteger::operator*(const LargeInteger& arg) const
     {
         LargeInteger result;
         MultiplyImpl(*this, arg, result);
         return result;
     }
 
-    LargeInteger& LargeInteger::operator*=(const LargeInteger &arg)
+    LargeInteger& LargeInteger::operator*=(const LargeInteger& arg)
     {
         MultiplyImpl(*this, arg, *this);
         return *this;
     }
 
-    LargeInteger LargeInteger::operator/(const LargeInteger &arg) const
+    LargeInteger LargeInteger::operator/(const LargeInteger& arg) const
     {
         LargeInteger quotient;
         LargeInteger remainder;
@@ -190,7 +89,7 @@ namespace Atmos
         return quotient;
     }
 
-    LargeInteger& LargeInteger::operator/=(const LargeInteger &arg)
+    LargeInteger& LargeInteger::operator/=(const LargeInteger& arg)
     {
         LargeInteger quotient;
         LargeInteger remainder;
@@ -198,7 +97,7 @@ namespace Atmos
         return *this;
     }
 
-    LargeInteger LargeInteger::operator<<(const LargeInteger &arg) const
+    LargeInteger LargeInteger::operator<<(const LargeInteger& arg) const
     {
         if (arg.high > 0 || arg.low > digitCount)
             return LargeInteger();
@@ -233,7 +132,7 @@ namespace Atmos
         return *this << LargeInteger(arg);
     }
 
-    LargeInteger& LargeInteger::operator<<=(const LargeInteger &arg)
+    LargeInteger& LargeInteger::operator<<=(const LargeInteger& arg)
     {
         if (arg.high > 0 || arg.low > digitCount)
         {
@@ -272,7 +171,7 @@ namespace Atmos
         return *this <<= LargeInteger(arg);
     }
 
-    LargeInteger LargeInteger::operator >> (const LargeInteger &arg) const
+    LargeInteger LargeInteger::operator >> (const LargeInteger& arg) const
     {
         if (arg.high > 0 || arg.low > digitCount)
             return LargeInteger();
@@ -307,7 +206,7 @@ namespace Atmos
         return *this >> LargeInteger(arg);
     }
 
-    LargeInteger& LargeInteger::operator>>=(const LargeInteger &arg)
+    LargeInteger& LargeInteger::operator>>=(const LargeInteger& arg)
     {
         if (arg.high > 0 || arg.low > digitCount)
         {
@@ -381,7 +280,7 @@ namespace Atmos
         return ret;
     }
 
-    LargeInteger LargeInteger::operator%(const LargeInteger &arg) const
+    LargeInteger LargeInteger::operator%(const LargeInteger& arg) const
     {
     LargeInteger quotient;
     LargeInteger remainder;
@@ -389,7 +288,7 @@ namespace Atmos
     return remainder;
     }
 
-    LargeInteger& LargeInteger::operator%=(const LargeInteger &arg)
+    LargeInteger& LargeInteger::operator%=(const LargeInteger& arg)
     {
         LargeInteger quotient;
         DivideImpl(*this, arg, quotient, *this);
@@ -409,7 +308,7 @@ namespace Atmos
         return ret;
     }
 
-    LargeInteger LargeInteger::operator|(const LargeInteger &arg) const
+    LargeInteger LargeInteger::operator|(const LargeInteger& arg) const
     {
         LargeInteger ret(*this);
         ret.low |= arg.low;
@@ -417,14 +316,14 @@ namespace Atmos
         return ret;
     }
 
-    LargeInteger& LargeInteger::operator|=(const LargeInteger &arg)
+    LargeInteger& LargeInteger::operator|=(const LargeInteger& arg)
     {
         low |= arg.low;
         high |= arg.high;
         return *this;
     }
 
-    LargeInteger LargeInteger::operator&(const LargeInteger &arg) const
+    LargeInteger LargeInteger::operator&(const LargeInteger& arg) const
     {
         LargeInteger ret(*this);
         ret.low &= arg.low;
@@ -432,14 +331,14 @@ namespace Atmos
         return ret;
     }
 
-    LargeInteger& LargeInteger::operator&=(const LargeInteger &arg)
+    LargeInteger& LargeInteger::operator&=(const LargeInteger& arg)
     {
         low &= arg.low;
         high &= arg.high;
         return *this;
     }
 
-    LargeInteger LargeInteger::operator^(const LargeInteger &arg) const
+    LargeInteger LargeInteger::operator^(const LargeInteger& arg) const
     {
         LargeInteger ret(*this);
         ret.low ^= arg.low;
@@ -447,7 +346,7 @@ namespace Atmos
         return ret;
     }
 
-    LargeInteger& LargeInteger::operator^=(const LargeInteger &arg)
+    LargeInteger& LargeInteger::operator^=(const LargeInteger& arg)
     {
         low ^= arg.low;
         high ^= arg.high;
@@ -478,7 +377,7 @@ namespace Atmos
         return ret;
     }
 
-    void LargeInteger::FromString(const String &arg)
+    void LargeInteger::FromString(const String& arg)
     {
         size_t count = 0;
         WrappedT selector = 1;
@@ -527,5 +426,109 @@ namespace Atmos
             selector *= 10;
             ++count;
         }
+    }
+
+    void LargeInteger::AddImpl(const LargeInteger& left, const LargeInteger& right, LargeInteger& result)
+    {
+        result = left;
+        const WrappedT oldLow = result.low;
+        result.low += right.low;
+        result.high += right.high;
+        if (result.low < oldLow)
+            ++result.high;
+    }
+
+    void LargeInteger::SubtractImpl(const LargeInteger& left, const LargeInteger& right, LargeInteger& result)
+    {
+        result = left;
+        const WrappedT oldLow = result.low;
+        result.low -= right.low;
+        result.high -= right.high;
+        if (result.low > oldLow)
+            --result.high;
+    }
+
+    void LargeInteger::MultiplyImpl(const LargeInteger& multiplicand, const LargeInteger& multiplier, LargeInteger& result)
+    {
+        LargeInteger a = multiplicand;
+        LargeInteger b = multiplier;
+        if (a < b)
+        {
+            auto prev = a;
+            a = b;
+            b = prev;
+        }
+
+        while (b != LargeInteger(0U))
+        {
+            // If b is odd, add a to result
+            if (b & LargeInteger(1U))
+                result += a;
+
+            a <<= LargeInteger(1U);
+            b >>= LargeInteger(1U);
+        }
+    }
+
+    void LargeInteger::DivideImpl(const LargeInteger& dividend, const LargeInteger& divisor, LargeInteger& quotient, LargeInteger& remainder)
+    {
+        if (divisor == LargeInteger(0U))
+            throw DivideByZeroException();
+        else if (dividend == LargeInteger(0U))
+        {
+            quotient = 0U;
+            remainder = 0U;
+            return;
+        }
+        else if (divisor == LargeInteger(1U) || dividend == divisor)
+        {
+            quotient = 1U;
+            remainder = 0U;
+            return;
+        }
+        else if (divisor > dividend)
+        {
+            quotient = 0U;
+            remainder = dividend;
+            return;
+        }
+
+        LargeInteger num = dividend;
+        LargeInteger den = divisor;
+        quotient = 0U;
+
+        const LargeInteger one(1U);
+        LargeInteger current(one);
+        while (den <= num)
+        {
+            den <<= one;
+            current <<= one;
+        }
+
+        den >>= one;
+        current >>= one;
+
+        while (current > LargeInteger(0U))
+        {
+            if (num >= den)
+            {
+                num -= den;
+                quotient |= current;
+            }
+
+            current >>= one;
+            den >>= one;
+        }
+
+        remainder = num;
+    }
+}
+
+namespace Inscription
+{
+    void Scribe<::Atmos::LargeInteger, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
+    {
+        archive(object.low);
+        archive(object.high);
     }
 }

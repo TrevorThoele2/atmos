@@ -71,10 +71,13 @@ namespace Atmos
     {
         return centerValue + (sizeValue / 2);
     }
+}
 
-    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(AxisAlignedBox3D)
+namespace Inscription
+{
+    void Scribe<::Atmos::AxisAlignedBox3D, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
     {
-        scribe(center);
-        scribe(size);
+        archive(object.center);
+        archive(object.size);
     }
 }

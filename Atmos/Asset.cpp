@@ -1,15 +1,19 @@
-
 #include "Asset.h"
+
+#include <Inscription/FileNameScribe.h>
 
 namespace Atmos
 {
+    const ObjectTypeName ObjectTraits<FileAsset>::typeName = "FileAsset";
+
     Asset::Asset(ObjectManager& manager, const Name& name) : Object(manager), name(name)
     {}
 
     Asset::Asset(const Asset& arg) : Object(arg), name(arg.name)
     {}
 
-    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(Asset) : INSCRIPTION_TABLE_GET_BASE(Object), INSCRIPTION_TABLE_GET_MEM(name)
+    Asset::Asset(const ::Inscription::BinaryTableData<Asset>& data) :
+        Object(std::get<0>(data.bases)), name(data.name)
     {}
 
     ObjectTypeDescription Asset::TypeDescription() const
@@ -35,22 +39,22 @@ namespace Atmos
         Asset(arg), fileName(arg.fileName)
     {}
 
-    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(FileAsset) :
-        INSCRIPTION_TABLE_GET_BASE(Asset), INSCRIPTION_TABLE_GET_MEM(fileName)
+    FileAsset::FileAsset(const ::Inscription::BinaryTableData<FileAsset>& data) :
+        Asset(std::get<0>(data.bases)), fileName(data.fileName)
     {}
-
-    const ObjectTypeName ObjectTraits<FileAsset>::typeName = "FileAsset";
 }
 
 namespace Inscription
 {
-    OBJECT_INSCRIPTER_DEFINE_MEMBERS(::Atmos::Asset)
+    Scribe<::Atmos::Asset, BinaryArchive>::Table::Table()
     {
-        INSCRIPTION_TABLE_ADD(name);
+        MergeDataEntries({
+            DataEntry::Auto(&ObjectT::name, &DataT::name) });
     }
 
-    OBJECT_INSCRIPTER_DEFINE_MEMBERS(::Atmos::FileAsset)
+    Scribe<::Atmos::FileAsset, BinaryArchive>::Table::Table()
     {
-        INSCRIPTION_TABLE_ADD(fileName);
+        MergeDataEntries({
+            DataEntry::Auto(&ObjectT::fileName, &DataT::fileName) });
     }
 }

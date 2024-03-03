@@ -1,20 +1,20 @@
 #pragma once
 
-#include "OutputScribeBase.h"
+#include "OutputArchiveBase.h"
 
 #include "WorldStart.h"
 
 #include "FilePath.h"
 
 #include "SkipFileSaver.h"
-#include <Inscription/OutputBinaryScribe.h>
+#include <Inscription/OutputBinaryArchive.h>
 
 namespace Atmos
 {
     class Field;
     class ObjectManager;
 
-    class OutputWorldScribe : public OutputScribeBase
+    class OutputWorldArchive : public OutputArchiveBase
     {
     public:
         enum class OpenMode
@@ -27,7 +27,7 @@ namespace Atmos
     public:
         WorldStart worldStart;
     public:
-        OutputWorldScribe(
+        OutputWorldArchive(
             const FilePath& filePath,
             ::Inscription::ContainerSize fieldCount,
             ObjectManager& globalObjectManager,
@@ -41,10 +41,10 @@ namespace Atmos
 
         static ::Inscription::Version CurrentVersion();
     protected:
-        ::Inscription::BinaryScribe& UnderlyingScribe() override;
-        const ::Inscription::BinaryScribe& UnderlyingScribe() const override;
+        ::Inscription::BinaryArchive& UnderlyingArchive() override;
+        const ::Inscription::BinaryArchive& UnderlyingArchive() const override;
     private:
-        typedef ::Inscription::OutputBinaryScribe Underlying;
+        typedef ::Inscription::OutputBinaryArchive Underlying;
 
         class FieldSaver : public SkipFileSaver<Underlying>
         {
@@ -54,7 +54,7 @@ namespace Atmos
             FieldID fieldID;
             Size size;
         public:
-            FieldSaver(FocusedScribe& cribe);
+            FieldSaver(FocusedArchive& archive);
         private:
             typedef ::Inscription::Buffer::SizeT Position;
             Position startPosition;
@@ -69,7 +69,7 @@ namespace Atmos
         FieldSaversVector fieldSavers;
         FieldSaversVector::iterator curSaver;
     private:
-        Underlying underlyingScribe;
+        Underlying underlyingArchive;
         FilePath filePath;
     private:
         ObjectManager* globalObjectManager;

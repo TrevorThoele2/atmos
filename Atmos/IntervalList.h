@@ -4,7 +4,7 @@
 
 #include "Serialization.h"
 #include <Inscription/ContainerSize.h>
-#include <Inscription/ScopedTrackingChanger.h>
+#include <Inscription/ScopeTrackingModifier.h>
 
 namespace Atmos
 {
@@ -75,7 +75,6 @@ namespace Atmos
 
         static Value EndValue(Value start, Value size);
     private:
-        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
     };
 
@@ -326,41 +325,51 @@ namespace Atmos
     {
         return start + size - 1;
     }
+}
 
+namespace Inscription
+{
     template<class T>
-    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(IntervalList<T>)
+    class Scribe<::Atmos::IntervalList<T>, BinaryArchive> : public CompositeScribe<::Atmos::IntervalList<T>, BinaryArchive>
     {
-        ::Inscription::ScopedTrackingChanger tracking(scribe, false);
-        if (scribe.IsOutput())
+    private:
+        using BaseT = typename CompositeScribe<::Atmos::IntervalList<T>, BinaryArchive>;
+    public:
+        using ObjectT = typename BaseT::ObjectT;
+        using ArchiveT = typename BaseT::ArchiveT;
+    public:
+        static void Scriven(ObjectT& object, ArchiveT& archive)
         {
-            auto& outputScribe = *scribe.AsOutput();
-
-            ::Inscription::ContainerSize size(vector.size());
-            outputScribe.Save(size);
-
-            for (auto& loop : vector)
+            ScopeTrackingModifier tracking(archive, false);
+            if (archive.IsOutput())
             {
-                outputScribe.Save(loop.Start());
-                outputScribe.Save(loop.GetSize());
+                ContainerSize size(object.vector.size());
+                archive(size);
+
+                for (auto& loop : object.vector)
+                {
+                    archive(loop.Start());
+                    archive(loop.GetSize());
+                }
+            }
+            else // INPUT
+            {
+                object.vector.clear();
+
+                ContainerSize size;
+                archive(size);
+
+                while (size-- > 0)
+                {
+                    typename ObjectT::Value start;
+                    archive(start);
+
+                    typename ObjectT::Value size;
+                    archive(size);
+
+                    object.vector.push_back(Node(start, size));
+                }
             }
         }
-        else // INPUT
-        {
-            auto& inputScribe = *scribe.AsInput();
-
-            ::Inscription::ContainerSize size;
-            inputScribe.Load(size);
-
-            while (size-- > 0)
-            {
-                Value start;
-                inputScribe.Load(start);
-
-                Value size;
-                inputScribe.Load(size);
-
-                vector.push_back(Node(start, size));
-            }
-        }
-    }
+    };
 }

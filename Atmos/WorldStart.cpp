@@ -1,4 +1,3 @@
-
 #include "WorldStart.h"
 
 namespace Atmos
@@ -14,9 +13,12 @@ namespace Atmos
         fieldID = arg.fieldID;
         return *this;
     }
+}
 
-    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(WorldStart)
+namespace Inscription
+{
+    void Scribe<::Atmos::WorldStart, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
     {
-        scribe(fieldID);
+        archive(object.fieldID);
     }
 }

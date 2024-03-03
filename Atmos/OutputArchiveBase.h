@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ScribeBase.h"
+#include "ArchiveBase.h"
 
 #include <Inscription/ContainerSize.h>
 
@@ -8,14 +8,14 @@ namespace Atmos
 {
     class Field;
 
-    class OutputScribeBase : public ScribeBase
+    class OutputArchiveBase : public ArchiveBase
     {
     public:
-        virtual ~OutputScribeBase() = 0;
+        virtual ~OutputArchiveBase() = 0;
 
         virtual void Save(Field& field) = 0;
         virtual void OverwriteFieldCount(::Inscription::ContainerSize set) = 0;
     protected:
-        OutputScribeBase() = default;
+        OutputArchiveBase() = default;
     };
 }

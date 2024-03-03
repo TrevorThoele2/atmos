@@ -1,47 +1,42 @@
-
 #include "RenderFragment.h"
 
 #include <Inscription\Scribe.h>
 
-namespace Atmos
+namespace Atmos::Render
 {
-    RenderFragment::RenderFragment(ObjectManager& manager) : Sense(manager)
+    Fragment::Fragment(ObjectManager& manager) : Sense(manager)
     {
         SubscribeToProperties();
     }
 
-    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(RenderFragment) : INSCRIPTION_TABLE_GET_BASE(Sense)
+    Fragment::Fragment(const ::Inscription::BinaryTableData<Fragment>& data) :
+        Sense(std::get<0>(data.bases))
     {
         SubscribeToProperties();
     }
 
-    void RenderFragment::Draw()
+    void Fragment::Draw()
     {
         DrawImpl();
     }
 
-    ObjectTypeDescription RenderFragment::TypeDescription() const
+    ObjectTypeDescription Fragment::TypeDescription() const
     {
-        return ObjectTraits<RenderFragment>::TypeDescription();
+        return ObjectTraits<Fragment>::TypeDescription();
     }
 
-    void RenderFragment::SubscribeToProperties()
+    void Fragment::SubscribeToProperties()
     {
-        enabled.onValueChanged.Subscribe(&RenderFragment::OnEnabledChanged, *this);
+        enabled.onValueChanged.Subscribe(&Fragment::OnEnabledChanged, *this);
     }
 
-    void RenderFragment::OnEnabledChanged(bool newValue)
+    void Fragment::OnEnabledChanged(bool newValue)
     {
 
     }
-
-    const ObjectTypeName ObjectTraits<RenderFragment>::typeName = "RenderFragment";
 }
 
-namespace Inscription
+namespace Atmos
 {
-    OBJECT_INSCRIPTER_DEFINE_MEMBERS(::Atmos::RenderFragment)
-    {
-
-    }
+    const ObjectTypeName ObjectTraits<Render::Fragment>::typeName = "RenderFragment";
 }

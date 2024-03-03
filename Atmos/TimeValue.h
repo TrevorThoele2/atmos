@@ -19,11 +19,11 @@ namespace Atmos
     {
     public:
         typedef TimeValueEpoch EpochT;
-        typedef FixedPoint64 ValueT;
-        typedef ValueT::Radix Radix;
+        typedef FixedPoint64 Value;
+        typedef Value::Radix Radix;
     public:
-        TimeValue(ValueT value = ValueT(), EpochT epoch = EpochT::SECONDS);
-        TimeValue(ValueT::ValueT value, EpochT epoch);
+        TimeValue(Value value = Value(), EpochT epoch = EpochT::SECONDS);
+        TimeValue(Value::Value value, EpochT epoch);
         TimeValue(const TimeValue& arg) = default;
 
         TimeValue& operator=(const TimeValue& arg) = default;
@@ -46,21 +46,36 @@ namespace Atmos
 
         explicit operator double() const;
 
-        explicit operator ValueT() const;
-        ValueT Get() const;
+        explicit operator Value() const;
+        Value Get() const;
         Radix GetRadixPoint() const;
         static Radix GetRadixPoint(EpochT epoch);
 
         void Convert(EpochT epoch);
-        ValueT ConvertValue(EpochT epoch) const;
+        Value ConvertValue(EpochT epoch) const;
         EpochT GetEpoch() const;
     private:
-        ValueT value;
+        Value value;
         EpochT epoch;
     private:
-        static ValueT ConvertValueStatic(ValueT value, EpochT oldEpoch, EpochT newEpoch, bool manipulateValue = false);
+        static Value ConvertValueStatic(Value value, EpochT oldEpoch, EpochT newEpoch, bool manipulateValue = false);
     private:
-        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
     };
+}
+
+namespace Inscription
+{
+    template<>
+    class Scribe<::Atmos::TimeValue, BinaryArchive> :
+        public CompositeScribe<::Atmos::TimeValue, BinaryArchive>
+    {
+    public:
+        static void Scriven(ObjectT& object, ArchiveT& archive);
+    };
+
+    template<>
+    class Scribe<::Atmos::TimeValueEpoch, BinaryArchive> :
+        public EnumScribe<::Atmos::TimeValueEpoch, BinaryArchive>
+    {};
 }

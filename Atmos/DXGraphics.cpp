@@ -1,4 +1,3 @@
-
 #include <array>
 #include "DXGraphics.h"
 
@@ -21,7 +20,7 @@ int (WINAPIV * __vsnprintf)(char *, size_t, const char*, va_list) = _vsnprintf;
 #include "FileSystem.h"
 #include "LoggingSystem.h"
 
-namespace Atmos
+namespace Atmos::Render
 {
     D3DCOLOR ColorToD3D(const Color &col)
     {
@@ -104,7 +103,7 @@ namespace Atmos
         }
     };
 
-    class RenderSurfaceData : public RenderSurface::Data
+    class RenderSurfaceData : public Surface::Data
     {
     public:
         RenderSurfaceData(DX9GraphicsManager& owner, LoggingSystem& loggingSystem, LPDIRECT3DSURFACE9 backBuffer) :
@@ -1137,7 +1136,7 @@ namespace Atmos
         return std::make_unique<ShaderAssetDataImplementation>(effect);
     }
 
-    RenderSurface DX9GraphicsManager::CreateRenderSurfaceImpl(void* window)
+    Surface DX9GraphicsManager::CreateRenderSurfaceImpl(void* window)
     {
         D3DPRESENT_PARAMETERS pp;
         ZeroMemory(&pp, sizeof(pp));
@@ -1165,7 +1164,7 @@ namespace Atmos
             FindLoggingSystem()->Log("A render surface could not be created.",
                 LogType::ERROR_SEVERE);
 
-        return RenderSurface(RenderSurface::DataPtr(new RenderSurfaceData(*this, *FindLoggingSystem(), swapChain, backBuffer)));
+        return Surface(Surface::DataPtr(new RenderSurfaceData(*this, *FindLoggingSystem(), swapChain, backBuffer)));
     }
 
     Canvas DX9GraphicsManager::CreateCanvasImpl(const ScreenDimensions& dimensions)
@@ -1219,7 +1218,7 @@ namespace Atmos
         canvas.GetData<CanvasData>()->tex = tex;
     }
 
-    void DX9GraphicsManager::SetRenderTargetImpl(RenderSurface& set)
+    void DX9GraphicsManager::SetRenderTargetImpl(Surface& set)
     {
         SetProjectionMatrix();
     }
@@ -1302,7 +1301,7 @@ namespace Atmos
     void DX9GraphicsManager::RenderUnknownFragmentImpl(RenderFragmentReference fragment, float X, float Y)
     {}
 
-    void DX9GraphicsManager::RenderLineImpl(const LineRender& line)
+    void DX9GraphicsManager::RenderLineImpl(const Line& line)
     {
         if (line.GetWidth() != lineInterface->GetWidth())
         {

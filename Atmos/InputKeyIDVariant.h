@@ -4,10 +4,7 @@
 #include "InputKeyID.h"
 #include "InputMouseKeyID.h"
 
-namespace Atmos
+namespace Atmos::Input
 {
-    namespace Input
-    {
-        typedef ::Chroma::Variant<KeyID, MouseKeyID> KeyIDVariant;
-    }
+    typedef ::Chroma::Variant<KeyID, MouseKeyID> KeyIDVariant;
 }

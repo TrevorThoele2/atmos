@@ -1,72 +1,72 @@
-
 #include "ScriptParameters.h"
 
 #include "ChromaVariant.h"
-#include <Inscription/Vector.h>
 
-namespace Atmos
+#include <Inscription/VectorScribe.h>
+
+namespace Atmos::Scripting
 {
-    namespace Scripting
+    void Parameters::Add(const Value& add)
     {
-        void Parameters::Add(const Value& add)
-        {
-            list.push_back(add);
-        }
+        list.push_back(add);
+    }
 
-        void Parameters::Remove(size_t index)
-        {
-            list.erase(begin() + index);
-        }
+    void Parameters::Remove(size_t index)
+    {
+        list.erase(begin() + index);
+    }
 
-        Parameters::Value* Parameters::Find(size_t index)
-        {
-            if (list.size() <= index)
-                return nullptr;
+    Parameters::Value* Parameters::Find(size_t index)
+    {
+        if (list.size() <= index)
+            return nullptr;
 
-            return &list[index];
-        }
+        return &list[index];
+    }
 
-        const Parameters::Value* Parameters::Find(size_t index) const
-        {
-            if (list.size() <= index)
-                return nullptr;
+    const Parameters::Value* Parameters::Find(size_t index) const
+    {
+        if (list.size() <= index)
+            return nullptr;
 
-            return &list[index];
-        }
+        return &list[index];
+    }
 
-        Parameters::SizeT Parameters::Size() const
-        {
-            return list.size();
-        }
+    Parameters::SizeT Parameters::Size() const
+    {
+        return list.size();
+    }
 
-        bool Parameters::IsEmpty() const
-        {
-            return list.empty();
-        }
+    bool Parameters::IsEmpty() const
+    {
+        return list.empty();
+    }
 
-        Parameters::iterator Parameters::begin()
-        {
-            return list.begin();
-        }
+    Parameters::iterator Parameters::begin()
+    {
+        return list.begin();
+    }
 
-        Parameters::const_iterator Parameters::begin() const
-        {
-            return list.begin();
-        }
+    Parameters::const_iterator Parameters::begin() const
+    {
+        return list.begin();
+    }
 
-        Parameters::iterator Parameters::end()
-        {
-            return list.end();
-        }
+    Parameters::iterator Parameters::end()
+    {
+        return list.end();
+    }
 
-        Parameters::const_iterator Parameters::end() const
-        {
-            return list.end();
-        }
+    Parameters::const_iterator Parameters::end() const
+    {
+        return list.end();
+    }
+}
 
-        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(Parameters)
-        {
-            scribe(list);
-        }
+namespace Inscription
+{
+    void Scribe<::Atmos::Scripting::Parameters, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
+    {
+        archive(object.list);
     }
 }

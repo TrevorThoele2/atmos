@@ -8,77 +8,65 @@
 
 #include "StringUtility.h"
 
-namespace Atmos
+namespace Atmos::Entity
 {
-    namespace Entity
+    AvatarSystem::AvatarSystem(ObjectManager& manager) : ObjectSystem(manager)
     {
-        AvatarSystem::AvatarSystem(ObjectManager& manager) : ObjectSystem(manager)
+        avatarBatch = manager.Batch<AvatarComponent>();
+        avatarBatch.onCreated.Subscribe(&AvatarSystem::OnAvatarComponentCreated, *this);
+        avatarBatch.onBeforeDestroyed.Subscribe(&AvatarSystem::OnAvatarComponentDestroyed, *this);
+    }
+
+    void AvatarSystem::Set(EntityReference set)
+    {
+        avatar = set;
+    }
+
+    AvatarSystem::EntityReference AvatarSystem::Avatar()
+    {
+        return avatar;
+    }
+
+    AvatarSystem::AvatarComponentReference AvatarSystem::Component()
+    {
+        if (avatar.IsOccupied())
+            return avatar->RetrieveComponent<AvatarComponent>();
+
+        return AvatarComponentReference();
+    }
+
+    void AvatarSystem::InitializeImpl()
+    {
+        auto debugStatistics = Manager()->FindSystem<DebugStatisticsSystem>();
+        debugStatistics->gamePage.playerColumn.retrievalFunction = [this]() -> String
         {
-            avatarBatch = manager.Batch<AvatarComponent>();
-            avatarBatch.onCreated.Subscribe(&AvatarSystem::OnAvatarComponentCreated, *this);
-            avatarBatch.onBeforeDestroyed.Subscribe(&AvatarSystem::OnAvatarComponentDestroyed, *this);
-        }
+            return ToString(Avatar()->RetrieveComponent<GeneralComponent>()->position.x);
+        };
 
-        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(AvatarSystem) : INSCRIPTION_TABLE_GET_BASE(ObjectSystem)
-        {}
-
-        void AvatarSystem::Set(EntityReference set)
+        debugStatistics->gamePage.playerRow.retrievalFunction = [this]() -> String
         {
-            avatar = set;
-        }
+            return ToString(Avatar()->RetrieveComponent<GeneralComponent>()->position.y);
+        };
+    }
 
-        AvatarSystem::EntityReference AvatarSystem::Avatar()
-        {
-            return avatar;
-        }
+    void AvatarSystem::OnAvatarComponentCreated(AvatarComponentReference reference)
+    {
+        if (avatar.IsOccupied())
+            Manager()->DestroyObject(avatar);
 
-        AvatarSystem::AvatarComponentReference AvatarSystem::Component()
-        {
-            if (avatar.IsOccupied())
-                return avatar->RetrieveComponent<AvatarComponent>();
+        Set(reference->owner);
+    }
 
-            return AvatarComponentReference();
-        }
-
-        void AvatarSystem::InitializeImpl()
-        {
-            auto debugStatistics = Manager()->FindSystem<DebugStatisticsSystem>();
-            debugStatistics->gamePage.playerColumn.retrievalFunction = [this]() -> String
-            {
-                return ToString(Avatar()->RetrieveComponent<GeneralComponent>()->position.x);
-            };
-
-            debugStatistics->gamePage.playerRow.retrievalFunction = [this]() -> String
-            {
-                return ToString(Avatar()->RetrieveComponent<GeneralComponent>()->position.y);
-            };
-        }
-
-        void AvatarSystem::OnAvatarComponentCreated(AvatarComponentReference reference)
-        {
-            if (avatar.IsOccupied())
-                Manager()->DestroyObject(avatar);
-
-            Set(reference->owner);
-        }
-
-        void AvatarSystem::OnAvatarComponentDestroyed(AvatarComponentReference reference)
-        {
-            Set(EntityReference());
-        }
+    void AvatarSystem::OnAvatarComponentDestroyed(AvatarComponentReference reference)
+    {
+        Set(EntityReference());
     }
 }
 
 namespace Inscription
 {
-    INSCRIPTION_BINARY_INSCRIPTER_DEFINE_TABLE(::Atmos::Entity::AvatarSystem)
+    void Scribe<::Atmos::Entity::AvatarSystem, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
     {
-        INSCRIPTION_BINARY_INSCRIPTER_CREATE_TABLE;
-
-        INSCRIPTION_TABLE_ADD_BASE(::Atmos::ObjectSystem);
-
-        INSCRIPTION_INSCRIPTER_RETURN_TABLE;
+        BaseScriven<::Atmos::ObjectSystem>(object, archive);
     }
-
-    INSCRIPTION_BINARY_DEFINE_SIMPLE_CLASS_NAME_RESOLVER(::Atmos::Entity::AvatarSystem, "EntityAvatarSystem");
 }

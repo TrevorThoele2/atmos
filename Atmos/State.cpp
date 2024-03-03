@@ -1,4 +1,3 @@
-
 #include "State.h"
 
 #include "ObjectManager.h"
@@ -46,7 +45,8 @@ namespace Atmos
     State::State(ObjectManager& manager) : Object(manager)
     {}
 
-    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(State) : INSCRIPTION_TABLE_GET_BASE(Object)
+    State::State(const ::Inscription::BinaryTableData<State>& data) :
+        Object(std::get<0>(data.bases))
     {}
 
     StateSystem* State::System()
@@ -82,12 +82,4 @@ namespace Atmos
     {}
 
     const ObjectTypeName ObjectTraits<State>::typeName = "State";
-}
-
-namespace Inscription
-{
-    OBJECT_INSCRIPTER_DEFINE_MEMBERS(::Atmos::State)
-    {
-
-    }
 }

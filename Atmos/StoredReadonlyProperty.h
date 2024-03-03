@@ -17,7 +17,6 @@ namespace Atmos
     private:
         Stored stored;
     private:
-        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
     };
 
@@ -40,10 +39,23 @@ namespace Atmos
     StoredReadonlyProperty<Stored, Interface>::StoredReadonlyProperty(StoredReadonlyProperty&& arg) :
         ReadonlyProperty<Interface>([this]() { return stored; }), stored(std::move(arg.stored))
     {}
+}
 
+namespace Inscription
+{
     template<class Stored, class Interface>
-    void StoredReadonlyProperty<Stored, Interface>::Serialize(::Inscription::BinaryScribe& scribe)
+    class Scribe<::Atmos::StoredReadonlyProperty<Stored, Interface>, BinaryArchive> :
+        public CompositeScribe<::Atmos::StoredReadonlyProperty<Stored, Interface>, BinaryArchive>
     {
-        scribe(stored);
-    }
+    private:
+        using BaseT = typename CompositeScribe<::Atmos::StoredReadonlyProperty<Stored, Interface>, BinaryArchive>;
+    public:
+        using ObjectT = typename BaseT::ObjectT;
+        using ArchiveT = typename BaseT::ArchiveT;
+    public:
+        static void Scriven(ObjectT& object, ArchiveT& archive)
+        {
+            archive(object.stored);
+        }
+    };
 }

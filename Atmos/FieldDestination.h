@@ -22,7 +22,17 @@ namespace Atmos
 
         FieldDestination& operator=(const FieldDestination& arg) = default;
     private:
-        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
+    };
+}
+
+namespace Inscription
+{
+    template<>
+    class Scribe<::Atmos::FieldDestination, BinaryArchive> :
+        public CompositeScribe<::Atmos::FieldDestination, BinaryArchive>
+    {
+    public:
+        static void Scriven(ObjectT& object, ArchiveT& archive);
     };
 }

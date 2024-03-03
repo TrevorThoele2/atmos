@@ -144,7 +144,7 @@ namespace Atmos
 
         TimeValue FromStringImpl(const String &arg, const ::Chroma::Type<TimeValue> &t)
         {
-            return FromString<TimeValue::ValueT>(arg);
+            return FromString<TimeValue::Value>(arg);
         }
     }
 

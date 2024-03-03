@@ -6,17 +6,17 @@
 namespace Atmos
 {
     class ObjectManager;
+}
 
-    namespace Scripting
+namespace Atmos::Scripting
+{
+    class Tile : public Object
     {
-        class Tile : public Object
-        {
-        public:
-            GridPosition position;
-        public:
-            Tile();
+    public:
+        GridPosition position;
+    public:
+        Tile();
 
-            static void RegisterToAngelScript(asIScriptEngine* engine);
-        };
-    }
+        static void RegisterToAngelScript(asIScriptEngine* engine);
+    };
 }

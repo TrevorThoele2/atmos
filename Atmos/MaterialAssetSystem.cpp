@@ -10,9 +10,6 @@ namespace Atmos
     MaterialAssetSystem::MaterialAssetSystem(ObjectManager& manager) : AssetSystem(manager)
     {}
 
-    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(MaterialAssetSystem) : INSCRIPTION_TABLE_GET_BASE(AssetSystem)
-    {}
-
     void MaterialAssetSystem::InitializeImpl()
     {
         auto debugStatistics = Manager()->FindSystem<DebugStatisticsSystem>();
@@ -25,14 +22,8 @@ namespace Atmos
 
 namespace Inscription
 {
-    INSCRIPTION_BINARY_INSCRIPTER_DEFINE_TABLE(::Atmos::MaterialAssetSystem)
+    void Scribe<::Atmos::MaterialAssetSystem, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
     {
-        INSCRIPTION_BINARY_INSCRIPTER_CREATE_TABLE;
-
-        INSCRIPTION_TABLE_ADD_BASE(::Atmos::AssetSystem<::Atmos::MaterialAsset>);
-
-        INSCRIPTION_INSCRIPTER_RETURN_TABLE;
+        BaseScriven<::Atmos::AssetSystem<::Atmos::MaterialAsset>>(object, archive);
     }
-
-    INSCRIPTION_BINARY_DEFINE_SIMPLE_CLASS_NAME_RESOLVER(::Atmos::MaterialAssetSystem, "MaterialAssetSystem");
 }

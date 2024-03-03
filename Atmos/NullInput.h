@@ -2,17 +2,14 @@
 
 #include "InputManager.h"
 
-namespace Atmos
+namespace Atmos::Input
 {
-    namespace Input
+    class NullManager : public Manager
     {
-        class NullManager : public Manager
-        {
-        private:
-            void CreateSignalsImpl() override;
-            void WorkSignalsImpl(SignalList& signalList) override;
-            bool ShouldAddActions() const override;
-            MousePosition GetMousePositionImpl() const override;
-        };
-    }
+    private:
+        void CreateSignalsImpl() override;
+        void WorkSignalsImpl(SignalList& signalList) override;
+        bool ShouldAddActions() const override;
+        MousePosition GetMousePositionImpl() const override;
+    };
 }

@@ -18,7 +18,6 @@ namespace Atmos
         typedef TypedObjectReference<T> Reference;
     public:
         AssetSystem(ObjectManager& manager);
-        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(AssetSystem);
 
         Reference FindAsset(const Name& withName) const;
 
@@ -38,11 +37,6 @@ namespace Atmos
     {
         batch = manager.Batch<Asset>();
     }
-
-    template<class T>
-    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE_TEMPLATE(AssetSystem, AssetSystem<T>) :
-        INSCRIPTION_TABLE_GET_BASE(ObjectSystem), INSCRIPTION_TABLE_GET_MEM(batch)
-    {}
 
     template<class T>
     typename AssetSystem<T>::Reference AssetSystem<T>::FindAsset(const Name& withName) const
@@ -76,22 +70,19 @@ namespace Atmos
 namespace Inscription
 {
     template<class T>
-    class Inscripter<::Atmos::AssetSystem<T>> : public InscripterBase<::Atmos::AssetSystem<T>>
+    class Scribe<::Atmos::AssetSystem<T>, BinaryArchive> :
+        public ObjectSystemScribe<::Atmos::AssetSystem<T>, BinaryArchive>
     {
+    private:
+        using BaseT = typename ObjectSystemScribe<::Atmos::AssetSystem<T>, BinaryArchive>;
     public:
-        INSCRIPTION_INSCRIPTER_BASE_TYPEDEFS(::Atmos::AssetSystem<T>);
+        using ObjectT = typename BaseT::ObjectT;
+        using ArchiveT = typename BaseT::ArchiveT;
     public:
-        INSCRIPTION_BINARY_INSCRIPTER_DECLARE_TABLE;
+        static void Scriven(ObjectT& object, ArchiveT& archive)
+        {
+            BaseScriven<::Atmos::ObjectSystem>(object, archive);
+            archive(object.batch);
+        }
     };
-
-    template<class T>
-    typename Inscripter<::Atmos::AssetSystem<T>>::Table<::Inscription::BinaryScribe> Inscripter<::Atmos::AssetSystem<T>>::CreateTable(BinaryScribe& scribe)
-    {
-        INSCRIPTION_BINARY_INSCRIPTER_CREATE_TABLE;
-
-        INSCRIPTION_TABLE_ADD_BASE(::Atmos::ObjectSystem);
-        INSCRIPTION_TABLE_ADD(batch);
-
-        INSCRIPTION_INSCRIPTER_RETURN_TABLE;
-    }
 }

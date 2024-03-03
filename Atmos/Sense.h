@@ -2,7 +2,7 @@
 
 #include "AxisAlignedObject.h"
 
-#include "ObjectSerialization.h"
+#include "ObjectScribe.h"
 
 namespace Atmos
 {
@@ -13,7 +13,7 @@ namespace Atmos
     public:
         Sense(ObjectManager& manager);
         Sense(const Sense& arg) = default;
-        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(Sense);
+        Sense(const ::Inscription::BinaryTableData<Sense>& data);
         virtual ~Sense() = 0;
     public:
         ObjectTypeDescription TypeDescription() const override;
@@ -29,9 +29,17 @@ namespace Atmos
 
 namespace Inscription
 {
-    DECLARE_OBJECT_INSCRIPTER(::Atmos::Sense)
+    template<>
+    struct TableData<::Atmos::Sense, BinaryArchive> :
+        public ObjectTableDataBase<::Atmos::Sense, BinaryArchive>
+    {};
+
+    template<>
+    class Scribe<::Atmos::Sense, BinaryArchive> :
+        public ObjectScribe<::Atmos::Sense, BinaryArchive>
     {
     public:
-        OBJECT_INSCRIPTER_DECLARE_MEMBERS;
+        class Table : public TableBase
+        {};
     };
 }

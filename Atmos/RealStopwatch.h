@@ -1,18 +1,18 @@
 #pragma once
 
-#include "StopwatchBase.h"
+#include "Stopwatch.h"
 
-#include "ObjectSerialization.h"
+#include "ObjectScribe.h"
 
 namespace Atmos
 {
     class TimeSystem;
 
-    class RealStopwatch : public StopwatchBase
+    class RealStopwatch : public Stopwatch
     {
     public:
         RealStopwatch(ObjectManager& manager, TimeValue goal = TimeValue());
-        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(RealStopwatch);
+        RealStopwatch(const ::Inscription::BinaryTableData<RealStopwatch>& data);
 
         bool operator==(const RealStopwatch& arg) const;
 
@@ -29,15 +29,22 @@ namespace Atmos
     struct ObjectTraits<RealStopwatch> : ObjectTraitsBase<RealStopwatch>
     {
         static const ObjectTypeName typeName;
-        static constexpr ObjectTypeList<StopwatchBase> bases = {};
+        static constexpr ObjectTypeList<Stopwatch> bases = {};
     };
 }
 
 namespace Inscription
 {
-    DECLARE_OBJECT_INSCRIPTER(::Atmos::RealStopwatch)
+    template<>
+    struct TableData<::Atmos::RealStopwatch, BinaryArchive> :
+        public ObjectTableDataBase<::Atmos::RealStopwatch, BinaryArchive>
+    {};
+
+    template<>
+    class Scribe<::Atmos::RealStopwatch, BinaryArchive> : public ObjectScribe<::Atmos::RealStopwatch, BinaryArchive>
     {
     public:
-        OBJECT_INSCRIPTER_DECLARE_MEMBERS;
+        class Table : public TableBase
+        {};
     };
 }

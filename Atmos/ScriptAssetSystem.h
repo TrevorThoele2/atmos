@@ -10,7 +10,6 @@ namespace Atmos
     {
     public:
         ScriptAssetSystem(ObjectManager& manager);
-        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(ScriptAssetSystem);
     private:
         void InitializeImpl() override;
     };
@@ -18,10 +17,11 @@ namespace Atmos
 
 namespace Inscription
 {
-    INSCRIPTION_INSCRIPTER_DECLARE(::Atmos::ScriptAssetSystem)
+    template<>
+    class Scribe<::Atmos::ScriptAssetSystem, BinaryArchive> :
+        public ObjectSystemScribe<::Atmos::ScriptAssetSystem, BinaryArchive>
     {
     public:
-        INSCRIPTION_BINARY_INSCRIPTER_DECLARE_TABLE;
-        INSCRIPTION_BINARY_DECLARE_CLASS_NAME_RESOLVER;
+        static void Scriven(ObjectT& object, ArchiveT& archive);
     };
 }

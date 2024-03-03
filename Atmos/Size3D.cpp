@@ -43,14 +43,17 @@ namespace Atmos
     {
         return !(*this == arg);
     }
+}
 
-    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(Size3D)
+namespace Inscription
+{
+    void Scribe<::Atmos::Size3D, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
     {
-        scribe(baseWidth);
-        scribe(baseHeight);
-        scribe(baseDepth);
-        scribe(widthScaler);
-        scribe(heightScaler);
-        scribe(depthScaler);
+        archive(object.baseWidth);
+        archive(object.baseHeight);
+        archive(object.baseDepth);
+        archive(object.widthScaler);
+        archive(object.heightScaler);
+        archive(object.depthScaler);
     }
 }

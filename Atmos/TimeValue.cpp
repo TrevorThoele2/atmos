@@ -3,12 +3,12 @@
 
 namespace Atmos
 {
-    TimeValue::TimeValue(ValueT value, EpochT epoch) : value(value), epoch(epoch)
+    TimeValue::TimeValue(Value value, EpochT epoch) : value(value), epoch(epoch)
     {
         value = ConvertValueStatic(value, EpochT::SECONDS, epoch, true);
     }
 
-    TimeValue::TimeValue(ValueT::ValueT value, EpochT epoch) : value(value, GetRadixPoint(epoch)), epoch(epoch)
+    TimeValue::TimeValue(Value::Value value, EpochT epoch) : value(value, GetRadixPoint(epoch)), epoch(epoch)
     {}
 
     bool TimeValue::operator==(const TimeValue& arg) const
@@ -90,12 +90,12 @@ namespace Atmos
         return static_cast<double>(value);
     }
 
-    TimeValue::operator ValueT() const
+    TimeValue::operator Value() const
     {
         return value;
     }
 
-    typename TimeValue::ValueT TimeValue::Get() const
+    typename TimeValue::Value TimeValue::Get() const
     {
         return value;
     }
@@ -110,18 +110,18 @@ namespace Atmos
         switch (epoch)
         {
         case EpochT::MINUTES:
-            return TimeValue::Radix(ValueT::GetDefaultRadixPoint().Get() + 1);
+            return TimeValue::Radix(Value::GetDefaultRadixPoint().Get() + 1);
         case EpochT::SECONDS:
-            return TimeValue::Radix(ValueT::GetDefaultRadixPoint());
+            return TimeValue::Radix(Value::GetDefaultRadixPoint());
         case EpochT::MILLISECONDS:
-            return TimeValue::Radix(ValueT::GetDefaultRadixPoint().Get() - 3);
+            return TimeValue::Radix(Value::GetDefaultRadixPoint().Get() - 3);
         case EpochT::MICROSECONDS:
-            return TimeValue::Radix(ValueT::GetDefaultRadixPoint().Get() - 6);
+            return TimeValue::Radix(Value::GetDefaultRadixPoint().Get() - 6);
         case EpochT::NANOSECONDS:
-            return TimeValue::Radix(ValueT::GetDefaultRadixPoint().Get() - 9);
+            return TimeValue::Radix(Value::GetDefaultRadixPoint().Get() - 9);
         }
 
-        return TimeValue::Radix(ValueT::GetDefaultRadixPoint());
+        return TimeValue::Radix(Value::GetDefaultRadixPoint());
     }
 
     void TimeValue::Convert(EpochT epoch)
@@ -129,7 +129,7 @@ namespace Atmos
         value = ConvertValueStatic(value, this->epoch, epoch);
     }
 
-    TimeValue::ValueT TimeValue::ConvertValue(EpochT epoch) const
+    TimeValue::Value TimeValue::ConvertValue(EpochT epoch) const
     {
         return ConvertValueStatic(value, this->epoch, epoch);
     }
@@ -139,7 +139,7 @@ namespace Atmos
         return epoch;
     }
 
-    TimeValue::ValueT TimeValue::ConvertValueStatic(ValueT value, EpochT oldEpoch, EpochT newEpoch, bool manipulateValue)
+    TimeValue::Value TimeValue::ConvertValueStatic(Value value, EpochT oldEpoch, EpochT newEpoch, bool manipulateValue)
     {
         unsigned int epochDifference = 0;
         switch (oldEpoch)
@@ -178,13 +178,16 @@ namespace Atmos
             break;
         }
 
-        value.SetRadixPoint(RadixPoint(ValueT::GetDefaultRadixPoint().Get() + epochDifference), manipulateValue);
+        value.SetRadixPoint(RadixPoint(Value::GetDefaultRadixPoint().Get() + epochDifference), manipulateValue);
         return value;
     }
+}
 
-    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(TimeValue)
+namespace Inscription
+{
+    void Scribe<::Atmos::TimeValue, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
     {
-        scribe(value);
-        scribe(epoch);
+        archive(object.value);
+        archive(object.epoch);
     }
 }

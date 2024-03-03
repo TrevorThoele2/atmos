@@ -17,10 +17,12 @@ namespace Atmos
         data->Initialize(name, fileName);
     }
 
-    ScriptAsset::ScriptAsset(const ScriptAsset& arg) : FileAsset(arg), data((arg.data) ? arg.data->Clone() : nullptr)
+    ScriptAsset::ScriptAsset(const ScriptAsset& arg) :
+        FileAsset(arg), data((arg.data) ? arg.data->Clone() : nullptr)
     {}
 
-    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(ScriptAsset) : INSCRIPTION_TABLE_GET_BASE(FileAsset)
+    ScriptAsset::ScriptAsset(const ::Inscription::BinaryTableData<ScriptAsset>& data) :
+        FileAsset(std::get<0>(data.bases))
     {}
 
     ScriptAsset::DataT* ScriptAsset::Data()
@@ -65,7 +67,7 @@ namespace Atmos
 
         auto engine = objectManager->FindSystem<Scripting::System>()->Engine();
 
-        ::Inscription::InputTextFile file(fileName);
+        ::Inscription::InputTextFile file(fileName.GetValue());
         String fileAsString;
         file.ReadData(fileAsString);
 
@@ -76,13 +78,5 @@ namespace Atmos
         module->Build();
 
         isInitialized = true;
-    }
-}
-
-namespace Inscription
-{
-    OBJECT_INSCRIPTER_DEFINE_MEMBERS(::Atmos::ScriptAsset)
-    {
-
     }
 }

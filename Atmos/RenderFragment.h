@@ -7,15 +7,15 @@
 
 #include "Serialization.h"
 
-namespace Atmos
+namespace Atmos::Render
 {
-    class RenderFragment : public Sense
+    class Fragment : public Sense
     {
     public:
-        RenderFragment(ObjectManager& manager);
-        RenderFragment(const RenderFragment& arg) = default;
-        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(RenderFragment);
-        
+        Fragment(ObjectManager& manager);
+        Fragment(const Fragment& arg) = default;
+        Fragment(const ::Inscription::BinaryTableData<Fragment>& data);
+
         void Draw();
 
         ObjectTypeDescription TypeDescription() const override;
@@ -26,9 +26,12 @@ namespace Atmos
     private:
         void OnEnabledChanged(bool newValue);
     };
+}
 
+namespace Atmos
+{
     template<>
-    struct ObjectTraits<RenderFragment> : ObjectTraitsBase<RenderFragment>
+    struct ObjectTraits<Render::Fragment> : ObjectTraitsBase<Render::Fragment>
     {
         static const ObjectTypeName typeName;
         static constexpr ObjectTypeList<Sense> bases = {};
@@ -37,9 +40,17 @@ namespace Atmos
 
 namespace Inscription
 {
-    DECLARE_OBJECT_INSCRIPTER(::Atmos::RenderFragment)
+    template<>
+    struct TableData<::Atmos::Render::Fragment, BinaryArchive> :
+        public ObjectTableDataBase<::Atmos::Render::Fragment, BinaryArchive>
+    {};
+
+    template<>
+    class Scribe<::Atmos::Render::Fragment, BinaryArchive> :
+        public ObjectScribe<::Atmos::Render::Fragment, BinaryArchive>
     {
     public:
-        OBJECT_INSCRIPTER_DECLARE_MEMBERS;
+        class Table : public TableBase
+        {};
     };
 }

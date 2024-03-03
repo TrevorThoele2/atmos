@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include "Asset.h"
@@ -6,7 +5,7 @@
 #include "ReadonlyProperty.h"
 #include "StoredReadonlyProperty.h"
 
-#include "ObjectSerialization.h"
+#include "ObjectScribe.h"
 
 namespace Atmos
 {
@@ -26,7 +25,7 @@ namespace Atmos
     public:
         ImageAsset(ObjectManager& manager, const FileName& fileName, DataPtr&& data);
         ImageAsset(const ImageAsset& arg);
-        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(ImageAsset);
+        ImageAsset(const ::Inscription::BinaryTableData<ImageAsset>& data);
 
         DataT* Data();
         const DataT* Data() const;
@@ -53,7 +52,8 @@ namespace Atmos
     }
 
     template<>
-    struct ObjectTraits<ImageAsset> : ObjectTraitsBase<ImageAsset>
+    struct ObjectTraits<ImageAsset> :
+        public ObjectTraitsBase<ImageAsset>
     {
         static const ObjectTypeName typeName;
         static constexpr ObjectTypeList<FileAsset> bases = {};
@@ -70,9 +70,16 @@ namespace Atmos
 
 namespace Inscription
 {
-    DECLARE_OBJECT_INSCRIPTER(::Atmos::ImageAsset)
+    template<>
+    struct TableData<::Atmos::ImageAsset, BinaryArchive> :
+        public ObjectTableDataBase<::Atmos::ImageAsset, BinaryArchive>
+    {};
+
+    template<>
+    class Scribe<::Atmos::ImageAsset, BinaryArchive> : public ObjectScribe<::Atmos::ImageAsset, BinaryArchive>
     {
     public:
-        OBJECT_INSCRIPTER_DECLARE_MEMBERS;
+        class Table : public TableBase
+        {};
     };
 }

@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include "StateWithGui.h"
@@ -47,9 +46,17 @@ namespace Atmos
 
 namespace Inscription
 {
-    DECLARE_OBJECT_INSCRIPTER(::Atmos::GameState)
+    template<>
+    struct TableData<::Atmos::GameState, BinaryArchive> :
+        public ObjectTableDataBase<::Atmos::GameState, BinaryArchive>
+    {};
+
+    template<>
+    class Scribe<::Atmos::GameState, BinaryArchive> :
+        public ObjectScribe<::Atmos::GameState, BinaryArchive>
     {
     public:
-        OBJECT_INSCRIPTER_DECLARE_MEMBERS;
+        class Table : public TableBase
+        {};
     };
 }

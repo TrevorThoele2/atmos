@@ -5,7 +5,7 @@
 
 #include "ReadonlyProperty.h"
 
-#include "ObjectSerialization.h"
+#include "ObjectScribe.h"
 
 namespace Atmos
 {
@@ -19,7 +19,7 @@ namespace Atmos
     public:
         ShaderAsset(ObjectManager& manager, const FileName& fileName, DataPtr&& data);
         ShaderAsset(const ShaderAsset& arg);
-        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(ShaderAsset);
+        ShaderAsset(const ::Inscription::BinaryTableData<ShaderAsset>& data);
 
         DataT* Data();
         const DataT* Data() const;
@@ -74,9 +74,16 @@ namespace Atmos
 
 namespace Inscription
 {
-    DECLARE_OBJECT_INSCRIPTER(::Atmos::ShaderAsset)
+    template<>
+    struct TableData<::Atmos::ShaderAsset, BinaryArchive> :
+        public ObjectTableDataBase<::Atmos::ShaderAsset, BinaryArchive>
+    {};
+
+    template<>
+    class Scribe<::Atmos::ShaderAsset, BinaryArchive> : public ObjectScribe<::Atmos::ShaderAsset, BinaryArchive>
     {
     public:
-        OBJECT_INSCRIPTER_DECLARE_MEMBERS;
+        class Table : public TableBase
+        {};
     };
 }

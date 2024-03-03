@@ -16,7 +16,6 @@ namespace Atmos
     {
     public:
         DebugStatisticsSystem(ObjectManager& manager);
-        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(DebugStatisticsSystem);
     public:
         class PageEntry
         {
@@ -188,10 +187,11 @@ namespace Atmos
 
 namespace Inscription
 {
-    INSCRIPTION_INSCRIPTER_DECLARE(::Atmos::DebugStatisticsSystem)
+    template<>
+    class Scribe<::Atmos::DebugStatisticsSystem, BinaryArchive> :
+        public ObjectSystemScribe<::Atmos::DebugStatisticsSystem, BinaryArchive>
     {
     public:
-        INSCRIPTION_BINARY_INSCRIPTER_DECLARE_TABLE;
-        INSCRIPTION_BINARY_DECLARE_CLASS_NAME_RESOLVER;
+        static void Scriven(ObjectT& object, ArchiveT& archive);
     };
 }

@@ -13,7 +13,7 @@
 
 #include "Event.h"
 
-#include "ObjectSerialization.h"
+#include "ObjectScribe.h"
 
 namespace Atmos
 {
@@ -62,8 +62,7 @@ namespace Atmos
         private:
             friend AxisAlignedObject;
         private:
-            INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
-            INSCRIPTION_ACCESS;
+            INSCRIPTION_TABLE_ACCESS;
         };
 
         class Size
@@ -127,8 +126,7 @@ namespace Atmos
         private:
             friend AxisAlignedObject;
         private:
-            INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
-            INSCRIPTION_ACCESS;
+            INSCRIPTION_TABLE_ACCESS;
         };
 
         class Bounds
@@ -154,7 +152,7 @@ namespace Atmos
         AxisAlignedObject(ObjectManager& manager);
         AxisAlignedObject(const AxisAlignedObject& arg);
         AxisAlignedObject(AxisAlignedObject&& arg);
-        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(AxisAlignedObject);
+        AxisAlignedObject(const ::Inscription::BinaryTableData<AxisAlignedObject>& data);
 
         virtual ~AxisAlignedObject() = 0;
 
@@ -186,11 +184,41 @@ namespace Atmos
 
 namespace Inscription
 {
-    DECLARE_OBJECT_INSCRIPTER(::Atmos::AxisAlignedObject)
+    template<>
+    class Scribe<::Atmos::AxisAlignedObject::Position, BinaryArchive> :
+        public CompositeScribe<::Atmos::AxisAlignedObject::Position, BinaryArchive>
     {
     public:
-        OBJECT_INSCRIPTER_DECLARE_MEMBERS;
+        static void Scriven(ObjectT& object, ArchiveT& archive);
+    };
 
-        INSCRIPTION_BINARY_INSCRIPTER_DECLARE_SERIALIZE_FUNCTION;
+    template<>
+    class Scribe<::Atmos::AxisAlignedObject::Size, BinaryArchive> :
+        public CompositeScribe<::Atmos::AxisAlignedObject::Size, BinaryArchive>
+    {
+    public:
+        static void Scriven(ObjectT& object, ArchiveT& archive);
+    };
+
+    template<>
+    struct TableData<::Atmos::AxisAlignedObject, BinaryArchive> :
+        public ObjectTableDataBase<::Atmos::AxisAlignedObject, BinaryArchive>
+    {
+        ObjectT::Position position;
+        ObjectT::Size size;
+    };
+
+    template<>
+    class Scribe<::Atmos::AxisAlignedObject, BinaryArchive> :
+        public ObjectScribe<::Atmos::AxisAlignedObject, BinaryArchive>
+    {
+    public:
+        class Table : public TableBase
+        {
+        public:
+            Table();
+        protected:
+            void ObjectScrivenImplementation(ObjectT& object, ArchiveT& archive) override;
+        };
     };
 }

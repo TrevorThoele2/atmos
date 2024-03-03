@@ -11,7 +11,8 @@ namespace Atmos
     ScriptInstance::ScriptInstance(ObjectManager& manager) : Object(manager)
     {}
 
-    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(ScriptInstance) : INSCRIPTION_TABLE_GET_BASE(Object)
+    ScriptInstance::ScriptInstance(const ::Inscription::BinaryTableData<ScriptInstance>& data) :
+        Object(std::get<0>(data.bases))
     {}
 
     void ScriptInstance::ExecuteDeferred()
@@ -55,7 +56,6 @@ namespace Atmos
         running->owner = owner;
         running->executeName = executeName;
         running->parameters = parameters;
-        running->globalItems = globalItems;
         running->persistence = persistence;
         return running;
     }
@@ -65,14 +65,12 @@ namespace Atmos
 
 namespace Inscription
 {
-    OBJECT_INSCRIPTER_DEFINE_MEMBERS(::Atmos::ScriptInstance)
+    Scribe<::Atmos::ScriptInstance, BinaryArchive>::Table::Table()
     {
-        INSCRIPTION_TABLE_ADD(asset);
-
-        INSCRIPTION_TABLE_ADD(executeName);
-        INSCRIPTION_TABLE_ADD(parameters);
-
-        INSCRIPTION_TABLE_ADD(globalItems);
-        INSCRIPTION_TABLE_ADD(persistence);
+        MergeDataEntries({
+            DataEntry::Auto(&ObjectT::asset, &DataT::asset),
+            DataEntry::Auto(&ObjectT::executeName, &DataT::executeName),
+            DataEntry::Auto(&ObjectT::parameters, &DataT::parameters),
+            DataEntry::Auto(&ObjectT::persistence, &DataT::persistence) });
     }
 }

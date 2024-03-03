@@ -15,10 +15,6 @@ namespace Atmos
         UniqueProviderSystem(manager, UniqueProviderSystem::ValuePtr(new NullWindow(manager)))
     {}
 
-    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(WindowSystem) :
-        INSCRIPTION_TABLE_GET_BASE(UniqueProviderSystem<WindowBase>)
-    {}
-
     void WindowSystem::InitializeImpl()
     {
         auto initialization = Manager()->FindSystem<InitializationFileSystem>();
@@ -60,14 +56,8 @@ namespace Atmos
 
 namespace Inscription
 {
-    INSCRIPTION_BINARY_INSCRIPTER_DEFINE_TABLE(::Atmos::WindowSystem)
+    void Scribe<::Atmos::WindowSystem, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
     {
-        INSCRIPTION_BINARY_INSCRIPTER_CREATE_TABLE;
-
-        INSCRIPTION_TABLE_ADD_BASE(::Atmos::UniqueProviderSystem<::Atmos::WindowBase>);
-
-        INSCRIPTION_INSCRIPTER_RETURN_TABLE;
+        BaseScriven<::Atmos::UniqueProviderSystem<::Atmos::WindowBase>>(object, archive);
     }
-
-    INSCRIPTION_BINARY_DEFINE_SIMPLE_CLASS_NAME_RESOLVER(::Atmos::WindowSystem, "WindowSystem");
 }

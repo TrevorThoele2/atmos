@@ -28,7 +28,6 @@ namespace Atmos
         typedef std::unordered_map<FileName, Buffer> BufferMap;
     public:
         AssetPackageSystem(ObjectManager& manager);
-        INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DECLARE(AssetPackageSystem);
 
         template<class AssetT, typename std::enable_if<std::is_base_of_v<FileAsset, AssetT>, int>::type = 0>
         void Add(const FilePath& path);
@@ -183,9 +182,10 @@ namespace Atmos
 namespace Inscription
 {
     template<>
-    class Inscripter<::Atmos::AssetPackageSystem> : public InscripterBase<::Atmos::AssetPackageSystem>
+    class Scribe<::Atmos::AssetPackageSystem, BinaryArchive> :
+        public ObjectSystemScribe<::Atmos::AssetPackageSystem, BinaryArchive>
     {
     public:
-        INSCRIPTION_BINARY_INSCRIPTER_DECLARE_TABLE;
+        static void Scriven(ObjectT& object, ArchiveT& archive);
     };
 }

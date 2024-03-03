@@ -1,7 +1,6 @@
-
 #include "ObjectTypeDescription.h"
 
-#include <Inscription/Vector.h>
+#include <Inscription/VectorScribe.h>
 
 namespace Atmos
 {
@@ -20,10 +19,13 @@ namespace Atmos
     {
         return !(*this == arg);
     }
+}
 
-    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(ObjectTypeDescription)
+namespace Inscription
+{
+    void Scribe<::Atmos::ObjectTypeDescription, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
     {
-        scribe(::Inscription::RemoveConst(typeName));
-        scribe(::Inscription::RemoveConst(baseTypes));
+        archive(object.typeName);
+        archive(object.baseTypes);
     }
 }

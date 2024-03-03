@@ -36,7 +36,16 @@ namespace Atmos
         static Position3D FindCenter(const std::vector<Position3D>& container);
         static Position3D FindCenter(const Position3D& nearTopLeft, const Position3D& nearBottomRight, const Position3D& farTopLeft);
     private:
-        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
+    };
+}
+
+namespace Inscription
+{
+    template<>
+    class Scribe<::Atmos::Position3D, BinaryArchive> : public CompositeScribe<::Atmos::Position3D, BinaryArchive>
+    {
+    public:
+        static void Scriven(ObjectT& object, ArchiveT& archive);
     };
 }

@@ -15,6 +15,7 @@
 #include "IDManager.h"
 
 #include "Event.h"
+#include "Optional.h"
 
 #include "IsSameRuntimeType.h"
 
@@ -39,6 +40,8 @@ namespace Atmos
 
         template<class T, class... Args>
         TypedObjectReference<T> CreateObject(Args&& ... args);
+        template<class T, class... Args>
+        TypedObjectReference<T> CreateObjectWithID(ObjectID id, Args&& ... args);
 
         ObjectReference FindObject(ObjectID id);
         template<class T>
@@ -78,8 +81,10 @@ namespace Atmos
 
         ObjectList objects;
 
+        template<class T, class... Args>
+        TypedObjectReference<T> CreateObjectCommon(const Optional<ObjectID>& id, Args&& ... args);
         template<class T>
-        TypedObjectReference<T> AddAndSetupObject(T& add);
+        TypedObjectReference<T> AddAndSetupObject(const Optional<ObjectID>& id, T& add);
     private:
         typedef std::unique_ptr<ObjectFactoryBase> ObjectFactoryPtr;
         typedef std::unordered_map<ObjectTypeName, ObjectFactoryPtr> ObjectFactoryList;
@@ -147,7 +152,6 @@ namespace Atmos
         template<class T>
         friend class ObjectBatchSource;
     private:
-        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
     };
 
@@ -156,15 +160,15 @@ namespace Atmos
     {
         STATIC_ASSERT_TYPE_DERIVED_FROM_OBJECT(T);
 
-        auto factory = FindObjectFactory<ObjectFactory<T>>();
-        if (!factory)
-            return TypedObjectReference<T>();
+        return CreateObjectCommon<T>(Optional<ObjectID>(), std::forward<Args>(args)...);
+    }
 
-        auto madeObject = factory->CreateObject(std::forward<Args>(args)...);
-        if (!madeObject)
-            return TypedObjectReference<T>();
+    template<class T, class... Args>
+    TypedObjectReference<T> ObjectManager::CreateObjectWithID(ObjectID id, Args&& ... args)
+    {
+        STATIC_ASSERT_TYPE_DERIVED_FROM_OBJECT(T);
 
-        return AddAndSetupObject(*madeObject);
+        return CreateObjectCommon<T>(id, std::forward<Args>(args)...);
     }
 
     template<class T>
@@ -244,12 +248,30 @@ namespace Atmos
         StoreUnownedObjectSystem(use);
     }
 
+    template<class T, class... Args>
+    TypedObjectReference<T> ObjectManager::CreateObjectCommon(const Optional<ObjectID>& id, Args&& ... args)
+    {
+        auto factory = FindObjectFactory<ObjectFactory<T>>();
+        if (!factory)
+            throw ObjectFactoryDoesntExist();
+
+        auto madeObject = factory->CreateObject(std::forward<Args>(args)...);
+        if (!madeObject)
+            return TypedObjectReference<T>();
+
+        return AddAndSetupObject(id, *madeObject);
+    }
+
     template<class T>
-    TypedObjectReference<T> ObjectManager::AddAndSetupObject(T& add)
+    TypedObjectReference<T> ObjectManager::AddAndSetupObject(const Optional<ObjectID>& id, T& add)
     {
         typedef TypedObjectReference<T> ReferenceT;
 
-        auto emplaced = objects.Add(ObjectPtr(&add));
+        auto emplaced = (id.IsValid()) ?
+            objects.Add(*id, ObjectPtr(&add)) :
+            objects.Add(ObjectPtr(&add));
+
+        emplaced->get()->id = emplaced.ID();
 
         NotifyCreation(add);
         NotifyBatchSourcesCreation(add);
@@ -362,6 +384,17 @@ namespace Atmos
     {
         batchSources.erase(TypeNameFor<T>());
     }
+}
+
+namespace Inscription
+{
+    template<>
+    class Scribe<::Atmos::ObjectManager, BinaryArchive> :
+        public CompositeScribe<::Atmos::ObjectManager, BinaryArchive>
+    {
+    public:
+        static void Scriven(ObjectT& object, ArchiveT& archive);
+    };
 }
 
 #include "ObjectBatchSourceDefinition.h"

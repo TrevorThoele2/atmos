@@ -2,14 +2,13 @@
 
 #include "ObjectManager.h"
 
-#include <Inscription/Scribe.h>
-
 namespace Atmos
 {
     Object::Object(ObjectManager& manager) : manager(&manager)
     {}
 
-    INSCRIPTION_BINARY_TABLE_CONSTRUCTOR_DEFINE(Object) : INSCRIPTION_TABLE_GET_MEM(id), INSCRIPTION_TABLE_GET_MEM(manager)
+    Object::Object(const ::Inscription::BinaryTableData<Object>& data) :
+        id(data.id), manager(data.manager)
     {}
 
     Object::~Object()
@@ -33,13 +32,10 @@ namespace Atmos
 
 namespace Inscription
 {
-    INSCRIPTION_BINARY_INSCRIPTER_DEFINE_TABLE(::Atmos::Object)
+    Scribe<::Atmos::Object, BinaryArchive>::Table::Table()
     {
-        INSCRIPTION_BINARY_INSCRIPTER_CREATE_TABLE;
-
-        INSCRIPTION_TABLE_ADD(id);
-        INSCRIPTION_TABLE_ADD_UNOWNING_POINTER(manager);
-
-        INSCRIPTION_INSCRIPTER_RETURN_TABLE;
+        MergeDataEntries({
+            DataEntry::Auto(&ObjectT::id, &DataT::id),
+            DataEntry::Auto(&ObjectT::manager, &DataT::manager) });
     }
 }

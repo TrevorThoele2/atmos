@@ -10,21 +10,31 @@ namespace Atmos
 
 namespace Inscription
 {
-    template<class EnumT>
-    void Serialize(Scribe& scribe, ::Chroma::Flags<EnumT>& obj)
+    template<class Enum>
+    class Scribe<::Chroma::Flags<Enum>, BinaryArchive> :
+        public CompositeScribe<::Chroma::Flags<Enum>, BinaryArchive>
     {
-        if (scribe.IsOutput())
+    private:
+        using BaseT = CompositeScribe<::Chroma::Flags<Enum>, BinaryArchive>;
+    public:
+        using ObjectT = typename BaseT::ObjectT;
+        using ArchiveT = typename BaseT::ArchiveT;
+    public:
+        static void Scriven(ObjectT& object, ArchiveT& archive)
         {
-            scribe.Save(obj.GetBits());
-        }
-        else
-        {
-            typedef typename ::Chroma::Flags<EnumT>::Bits Bits;
+            if (archive.IsOutput())
+            {
+                archive(object.GetBits());
+            }
+            else
+            {
+                using Bits = typename ObjectT::Bits;
 
-            Bits bits;
-            scribe.Load(bits);
+                Bits bits;
+                archive(bits);
 
-            obj = ::Chroma::Flags<EnumT>(bits);
+                object = ObjectT(bits);
+            }
         }
-    }
+    };
 }

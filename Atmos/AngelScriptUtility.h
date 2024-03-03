@@ -4,12 +4,9 @@
 
 class asIScriptContext;
 
-namespace Atmos
+namespace Atmos::Scripting
 {
-    namespace Scripting
-    {
-        typedef unsigned int ParameterIndex;
+    typedef unsigned int ParameterIndex;
 
-        void PushVariantToAngelScriptParameter(ParameterIndex index, VariantT& variant, asIScriptContext* context);
-    }
+    void PushVariantToAngelScriptParameter(ParameterIndex index, VariantT& variant, asIScriptContext* context);
 }

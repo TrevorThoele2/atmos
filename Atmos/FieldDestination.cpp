@@ -1,19 +1,20 @@
-
 #include "FieldDestination.h"
 
 #include <Inscription\Scribe.h>
-#include <Inscription\Inscripter.h>
 
 namespace Atmos
 {
     FieldDestination::FieldDestination(const Direction& direction, const GridPosition& position, FieldID id) :
         direction(direction), position(position), id(id)
     {}
+}
 
-    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(FieldDestination)
+namespace Inscription
+{
+    void Scribe<::Atmos::FieldDestination, BinaryArchive>::Scriven(ObjectT& object, ArchiveT& archive)
     {
-        scribe(direction);
-        scribe(position);
-        scribe(id);
+        archive(object.direction);
+        archive(object.position);
+        archive(object.id);
     }
 }

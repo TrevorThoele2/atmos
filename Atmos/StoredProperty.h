@@ -20,7 +20,6 @@ namespace Atmos
     private:
         Stored stored;
     private:
-        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
     };
 
@@ -47,22 +46,37 @@ namespace Atmos
     template<class Stored, class Interface>
     StoredProperty<Stored, Interface>& StoredProperty<Stored, Interface>::operator=(const StoredProperty& arg)
     {
-        this->SetInternal(arg.stored);
+        stored = arg;
+        this->SetInternal(stored);
         return *this;
     }
 
     template<class Stored, class Interface>
     StoredProperty<Stored, Interface>& StoredProperty<Stored, Interface>::operator=(Interface newValue)
     {
-        this->SetInternal(newValue);
+        stored = newValue;
+        this->SetInternal(stored);
         return *this;
     }
+}
 
+namespace Inscription
+{
     template<class Stored, class Interface>
-    void StoredProperty<Stored, Interface>::Serialize(::Inscription::BinaryScribe& scribe)
+    class Scribe<::Atmos::StoredProperty<Stored, Interface>, BinaryArchive> :
+        public CompositeScribe<::Atmos::StoredProperty<Stored, Interface>, BinaryArchive>
     {
-        scribe(stored);
-    }
+    private:
+        using BaseT = typename CompositeScribe<::Atmos::StoredProperty<Stored, Interface>, BinaryArchive>;
+    public:
+        using ObjectT = typename BaseT::ObjectT;
+        using ArchiveT = typename BaseT::ArchiveT;
+    public:
+        static void Scriven(ObjectT& object, ArchiveT& archive)
+        {
+            archive(object.stored);
+        }
+    };
 }
 
 namespace std

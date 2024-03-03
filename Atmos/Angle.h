@@ -14,7 +14,7 @@ namespace Atmos
     class Angle
     {
     public:
-        typedef float ValueT;
+        typedef float Value;
     private:
         template<class T>
         using AllowOnlyAngleUnits = typename std::enable_if<IsAngleUnits<T>::value, int>::type;
@@ -53,7 +53,6 @@ namespace Atmos
         typedef ::Chroma::SelectableType<Radians, Degrees> SelectedType;
         SelectedType selectedType;
     private:
-        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
     };
 
@@ -80,4 +79,14 @@ namespace Atmos
     {
         return selectedType.Is<T>();
     }
+}
+
+namespace Inscription
+{
+    template<>
+    class Scribe<::Atmos::Angle, BinaryArchive> : public CompositeScribe<::Atmos::Angle, BinaryArchive>
+    {
+    public:
+        static void Scriven(ObjectT& object, ArchiveT& archive);
+    };
 }

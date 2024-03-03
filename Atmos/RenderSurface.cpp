@@ -1,56 +1,55 @@
-
 #include "RenderSurface.h"
 
-namespace Atmos
+namespace Atmos::Render
 {
-    RenderSurface::Data::~Data()
+    Surface::Data::~Data()
     {}
 
-    RenderSurface* RenderSurface::Data::GetOwner() const
+    Surface* Surface::Data::GetOwner() const
     {
         return owner;
     }
 
-    RenderSurface::RenderSurface(DataPtr&& data) : size(0, 0)
+    Surface::Surface(DataPtr&& data) : size(0, 0)
     {
         SetData(std::move(data));
         FitToWindow();
     }
 
-    RenderSurface::RenderSurface(RenderSurface&& arg) : size(std::move(arg.size))
+    Surface::Surface(Surface&& arg) : size(std::move(arg.size))
     {
         SetData(std::move(arg.data));
     }
 
-    RenderSurface& RenderSurface::operator=(RenderSurface&& arg)
+    Surface& Surface::operator=(Surface&& arg)
     {
         SetData(std::move(arg.data));
         size = std::move(arg.size);
         return *this;
     }
 
-    RenderSurface::Data* RenderSurface::GetData() const
+    Surface::Data* Surface::GetData() const
     {
         return data.get();
     }
 
-    void RenderSurface::Present()
+    void Surface::Present()
     {
         data->Present();
     }
 
-    void RenderSurface::Reset()
+    void Surface::Reset()
     {
         data->Reset();
         SetupDimensions();
     }
 
-    void RenderSurface::Release()
+    void Surface::Release()
     {
         data->Release();
     }
 
-    void RenderSurface::FitToWindow()
+    void Surface::FitToWindow()
     {
         if (size == data->GetSize())
             return;
@@ -59,23 +58,23 @@ namespace Atmos
         Reset();
     }
 
-    const RenderSurface::Size& RenderSurface::GetSize() const
+    const Surface::Size& Surface::GetSize() const
     {
         return size;
     }
 
-    void RenderSurface::SetData(DataPtr&& set)
+    void Surface::SetData(DataPtr&& set)
     {
         data = std::move(set);
         data->owner = this;
     }
 
-    void RenderSurface::SetupDimensions()
+    void Surface::SetupDimensions()
     {
         size = std::move(data->GetSize());
     }
 
-    void RenderSurface::SetAsRenderTargetImpl()
+    void Surface::SetAsRenderTargetImpl()
     {
         data->SetAsRenderTarget();
     }

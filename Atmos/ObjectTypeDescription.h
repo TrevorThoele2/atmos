@@ -22,7 +22,16 @@ namespace Atmos
         bool operator==(const ObjectTypeDescription& arg) const;
         bool operator!=(const ObjectTypeDescription& arg) const;
     private:
-        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
+    };
+}
+
+namespace Inscription
+{
+    template<>
+    class Scribe<::Atmos::ObjectTypeDescription, BinaryArchive> : public CompositeScribe<::Atmos::ObjectTypeDescription, BinaryArchive>
+    {
+    public:
+        static void Scriven(ObjectT& object, ArchiveT& archive);
     };
 }

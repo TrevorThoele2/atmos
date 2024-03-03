@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "ScribeBase.h"
+#include "ArchiveBase.h"
 
 #include "WorldStart.h"
 
@@ -12,7 +12,7 @@
 
 namespace Atmos
 {
-    class InputScribeBase : public ScribeBase
+    class InputArchiveBase : public ArchiveBase
     {
     public:
         enum LoadType
@@ -27,7 +27,7 @@ namespace Atmos
         typedef ReadonlyProperty<WorldStart> WorldStartProperty;
         WorldStartProperty worldStart;
     public:
-        virtual ~InputScribeBase() = 0;
+        virtual ~InputArchiveBase() = 0;
 
         // Returns if the load was successful
         virtual bool Load(LoadType type = LOAD_ALL) = 0;
@@ -41,6 +41,6 @@ namespace Atmos
         virtual bool HasField(FieldID fieldID) const = 0;
         virtual size_t FieldCount() const = 0;
     protected:
-        InputScribeBase(WorldStartProperty::Getter worldStartGetter);
+        InputArchiveBase(WorldStartProperty::Getter worldStartGetter);
     };
 }

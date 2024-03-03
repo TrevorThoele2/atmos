@@ -15,7 +15,7 @@
 
 namespace Atmos
 {
-    typedef size_t ObjectBatchSizeT;
+    using ObjectBatchSizeT = size_t;
 
     template<class T>
     class ObjectBatch
@@ -72,7 +72,6 @@ namespace Atmos
         void OnCreated(Reference reference);
         void OnBeforeDestroyed(Reference reference);
     private:
-        INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DECLARE;
         INSCRIPTION_ACCESS;
     private:
         STATIC_ASSERT_TYPE_DERIVED_FROM_OBJECT(T);
@@ -264,12 +263,25 @@ namespace Atmos
     {
         onBeforeDestroyed(reference);
     }
+}
 
+namespace Inscription
+{
     template<class T>
-    INSCRIPTION_BINARY_SERIALIZE_FUNCTION_DEFINE(ObjectBatch<T>)
+    class Scribe<::Atmos::ObjectBatch<T>, BinaryArchive> :
+        public CompositeScribe<::Atmos::ObjectBatch<T>, BinaryArchive>
     {
-        scribe.UnowningPointer(source);
-        if(scribe.IsInput())
-            IncrementSource();
-    }
+    private:
+        using BaseT = typename CompositeScribe<::Atmos::ObjectBatch<T>, BinaryArchive>;
+    public:
+        using ObjectT = typename BaseT::ObjectT;
+        using ArchiveT = typename BaseT::ArchiveT;
+    public:
+        static void Scriven(ObjectT& object, ArchiveT& archive)
+        {
+            archive(object.source);
+            if (archive.IsInput())
+                object.IncrementSource();
+        }
+    };
 }
