@@ -9,6 +9,7 @@
 #include "Camera.h"
 #include "ChangeImageCore.h"
 #include "ChangeMaterialAsset.h"
+#include "FindImagesByBox.h"
 
 namespace Atmos::Render
 {
@@ -20,6 +21,7 @@ namespace Atmos::Render
         using ObjectCurator::Handle;
         void Handle(const ChangeImageCore& command);
         void Handle(const ChangeImageMaterialAsset& command);
+        std::vector<Arca::RelicID> Handle(const FindImagesByBox& command) const;
     protected:
         void WorkImpl(
             Spatial::AxisAlignedBox3D cameraBox,
@@ -47,7 +49,8 @@ namespace Arca
         using HandledCommands = HandledCommands<
             Atmos::Work,
             Atmos::Render::ChangeImageCore,
-            Atmos::Render::ChangeImageMaterialAsset>;
+            Atmos::Render::ChangeImageMaterialAsset,
+            Atmos::Render::FindImagesByBox>;
     };
 }
 

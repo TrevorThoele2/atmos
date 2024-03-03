@@ -93,6 +93,16 @@ namespace Atmos::Render
         core->material = command.to;
     }
 
+    std::vector<Arca::RelicID> ImageCurator::Handle(const FindImagesByBox& command) const
+    {
+        auto indices = octree.AllWithin(command.box);
+        std::vector<Arca::RelicID> returnValue;
+        returnValue.reserve(indices.size());
+        for (auto& index : indices)
+            returnValue.push_back(index->id);
+        return returnValue;
+    }
+
     void ImageCurator::OnCreated(const Arca::MatrixFormed<Matrix>& signal)
     {
         octree.Add(signal.index.ID(), signal.index, BoxFor(signal.index));

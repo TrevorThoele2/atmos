@@ -121,6 +121,15 @@
     <ClCompile Include="MockInputManager.cpp">
       <Filter>Source Files\Objects</Filter>
     </ClCompile>
+    <ClCompile Include="ImageTests.cpp">
+      <Filter>Source Files\Tests\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="LineTests.cpp">
+      <Filter>Source Files\Tests\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="GridRegionTests.cpp">
+      <Filter>Source Files\Tests\Render</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneralFixture.h">
@@ -251,6 +260,15 @@
     </ClInclude>
     <ClInclude Include="MockInputManager.h">
       <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageTests.h">
+      <Filter>Header Files\Tests\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="LineTests.h">
+      <Filter>Header Files\Tests\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="GridRegionTests.h">
+      <Filter>Header Files\Tests\Render</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

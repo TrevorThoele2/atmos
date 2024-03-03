@@ -42,6 +42,67 @@ SCENARIO_METHOD(AngelScriptInputTestsFixture, "running input AngelScript scripts
             finishes.push_back(signal);
         });
 
+    GIVEN("script that returns current mouse position")
+    {
+        CompileAndCreateScript(
+            "basic_script.as",
+            "string main()\n" \
+            "{\n" \
+            "    auto information = Atmos::Input::Information();\n" \
+            "    return Atmos::ToString(information.CurrentMousePosition().x) + \" \" + Atmos::ToString(information.CurrentMousePosition().y);\n" \
+            "}",
+            {},
+            fieldReliquary);
+
+        WHEN("working reliquary")
+        {
+            const auto mousePosition =
+                dataGeneration.RandomStack<Spatial::ScreenPoint, Spatial::ScreenPoint::Value, Spatial::ScreenPoint::Value>();
+
+            engine.mockInputManager->sendState.mousePosition = mousePosition;
+            fieldReliquary.Do(Work{});
+
+            THEN("script has executed")
+            {
+                REQUIRE(finishes.size() == 1);
+
+                const auto expectedResult = ToString(mousePosition.x) + " " + ToString(mousePosition.y);
+                REQUIRE(std::get<String>(std::get<Variant>(finishes[0].result)) == expectedResult);
+            }
+        }
+    }
+
+    GIVEN("script that returns previous mouse position")
+    {
+        CompileAndCreateScript(
+            "basic_script.as",
+            "string main()\n" \
+            "{\n" \
+            "    auto information = Atmos::Input::Information();\n" \
+            "    return Atmos::ToString(information.PreviousMousePosition().x) + \" \" + Atmos::ToString(information.PreviousMousePosition().y);\n" \
+            "}",
+            {},
+            fieldReliquary);
+
+        WHEN("working reliquary")
+        {
+            const auto mousePosition =
+                dataGeneration.RandomStack<Spatial::ScreenPoint, Spatial::ScreenPoint::Value, Spatial::ScreenPoint::Value>();
+
+            engine.mockInputManager->sendState.mousePosition = mousePosition;
+            fieldReliquary.Do(Work{});
+            fieldReliquary.Do(Work{});
+
+            THEN("script has executed")
+            {
+                REQUIRE(finishes.size() == 1);
+
+                const auto expectedResult = ToString(mousePosition.x) + " " + ToString(mousePosition.y);
+                REQUIRE(std::get<String>(std::get<Variant>(finishes[0].result)) == expectedResult);
+            }
+        }
+    }
+
     GIVEN("script that returns action active")
     {
         auto name = dataGeneration.Random<std::string>();

@@ -156,7 +156,10 @@
     <ClCompile Include="FrameTests.cpp" />
     <ClCompile Include="GeneralFixture.cpp" />
     <ClCompile Include="GridRegionRenderingTests.cpp" />
+    <ClCompile Include="GridRegionTests.cpp" />
     <ClCompile Include="ImageRenderingTests.cpp" />
+    <ClCompile Include="ImageTests.cpp" />
+    <ClCompile Include="LineTests.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MockGraphicsManager.cpp" />
     <ClCompile Include="MockImageAssetManager.cpp" />
@@ -200,7 +203,10 @@
     <ClInclude Include="FrameTests.h" />
     <ClInclude Include="GeneralFixture.h" />
     <ClInclude Include="GridRegionRenderingTests.h" />
+    <ClInclude Include="GridRegionTests.h" />
     <ClInclude Include="ImageRenderingTests.h" />
+    <ClInclude Include="ImageTests.h" />
+    <ClInclude Include="LineTests.h" />
     <ClInclude Include="MockGraphicsManager.h" />
     <ClInclude Include="MockImageAssetManager.h" />
     <ClInclude Include="MockImageAssetResource.h" />

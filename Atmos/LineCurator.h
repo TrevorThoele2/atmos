@@ -7,6 +7,7 @@
 #include "Line.h"
 #include "MoveLine.h"
 #include "ChangeMaterialAsset.h"
+#include "FindLinesByBox.h"
 
 namespace Atmos::Render
 {
@@ -18,6 +19,7 @@ namespace Atmos::Render
         using ObjectCurator::Handle;
         void Handle(const MoveLine& command);
         void Handle(const ChangeLineMaterialAsset& command);
+        std::vector<Arca::RelicID> Handle(const FindLinesByBox& command) const;
     protected:
         void WorkImpl(
             Spatial::AxisAlignedBox3D cameraBox,
@@ -45,7 +47,8 @@ namespace Arca
         using HandledCommands = HandledCommands<
             Atmos::Work,
             Atmos::Render::MoveLine,
-            Atmos::Render::ChangeLineMaterialAsset>;
+            Atmos::Render::ChangeLineMaterialAsset,
+            Atmos::Render::FindLinesByBox>;
     };
 }
 

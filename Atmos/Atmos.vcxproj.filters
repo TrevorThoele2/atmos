@@ -1763,6 +1763,24 @@
     <ClInclude Include="ToWorldPoint3D.h">
       <Filter>Header Files\Spatial\Arca</Filter>
     </ClInclude>
+    <ClInclude Include="FindImagesByBox.h">
+      <Filter>Header Files\Render\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="FindLinesByBox.h">
+      <Filter>Header Files\Render\Line</Filter>
+    </ClInclude>
+    <ClInclude Include="FindGridRegionsByBox.h">
+      <Filter>Header Files\Render\GridRegion</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptFindByBox.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="InputInformation.h">
+      <Filter>Header Files\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptInputInformation.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Input</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FieldDestination.cpp">
@@ -2582,6 +2600,15 @@
       <Filter>Source Files\Spatial\Arca</Filter>
     </ClCompile>
     <ClCompile Include="AngelScriptBindAction.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptFindByBox.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="InputInformation.cpp">
+      <Filter>Source Files\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptInputInformation.cpp">
       <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Input</Filter>
     </ClCompile>
   </ItemGroup>

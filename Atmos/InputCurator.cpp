@@ -1,5 +1,6 @@
 #include "InputCurator.h"
 
+#include "InputInformation.h"
 #include "ActionActive.h"
 #include "ActionPressed.h"
 #include "ActionDepressed.h"
@@ -267,10 +268,13 @@ namespace Atmos::Input
 
     void Curator::Handle(const Work&)
     {
-        const auto inputState = manager->ReadState();
+        auto information = MutablePointer().Of<Information>();
+        auto& mousePosition = information->mousePosition;
 
-        keyStates.current = inputState.keyStates;
-        mousePosition.current = inputState.mousePosition;
+        const auto readState = manager->ReadState();
+
+        keyStates.current = readState.keyStates;
+        information->mousePosition.current = readState.mousePosition;
 
         ActiveActions currentActiveActions;
 
@@ -280,7 +284,7 @@ namespace Atmos::Input
             const auto actionIndex = Arca::Index<Asset::Action>{ action.ID(), Owner() };
 
             const auto [isActive, actionDelta] =
-                CurrentActionState(action->Name(), action->boundKey, action->boundModifiers, keyStates);
+                CurrentActionState(action->Name(), action->boundKey, action->boundModifiers, keyStates.current);
             if (isActive)
             {
                 Owner().Raise(ActionActive{ actionIndex });
@@ -296,7 +300,7 @@ namespace Atmos::Input
         if (mousePosition.current != mousePosition.previous)
             Owner().Raise(MouseMoved{ mousePosition.previous, mousePosition.current });
 
-        for (auto& text : inputState.enteredText)
+        for (auto& text : readState.enteredText)
             Owner().Raise(TextEntered{ text });
 
         keyStates.previous = keyStates.current;
@@ -304,20 +308,18 @@ namespace Atmos::Input
         previousActiveActions = currentActiveActions;
     }
 
-    auto Curator::CurrentActionState(const Name& name, Key key, std::set<Key> modifiers, Delta<KeyStates> allKeyStates) const -> ActionState
+    auto Curator::CurrentActionState(const Name& name, Key key, std::set<Key> modifiers, KeyStates currentKeyStates) const -> ActionState
     {
-        const auto isActive = [this, key, modifiers, allKeyStates]()
+        const auto isActive = [this, key, modifiers, currentKeyStates]()
         {
             const auto& keyMapping = RequiredKeyMapping(key);
-            if (allKeyStates.current.*keyMapping.toKeyStates != KeyState::Down)
+            if (currentKeyStates.*keyMapping.toKeyStates != KeyState::Down)
                 return false;
 
             for (auto& modifier : modifiers)
             {
                 const auto& modifierMapping = RequiredKeyMapping(modifier);
-                const auto previousState = allKeyStates.previous.*modifierMapping.toKeyStates;
-                const auto currentState = allKeyStates.current.*modifierMapping.toKeyStates;
-                if (previousState == KeyState::Up || currentState == KeyState::Up)
+                if (currentKeyStates.*modifierMapping.toKeyStates == KeyState::Up)
                     return false;
             }
 
