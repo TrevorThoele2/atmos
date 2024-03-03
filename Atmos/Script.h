@@ -275,5 +275,8 @@ namespace Atmos
         ScriptCompiler() = delete;
         ScriptCompiler(const ScriptCompiler &arg) = delete;
         ScriptCompiler& operator=(const ScriptCompiler &arg) = delete;
+
+        static void OutputNoFilePathCompilationError();
+        static void OutputGeneralCompilationError(const String &err);
     };
 }

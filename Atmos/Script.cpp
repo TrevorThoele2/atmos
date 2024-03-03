@@ -720,6 +720,12 @@ namespace Atmos
 {
     bool ScriptCompiler::SetScriptToCompile(const FilePath &filePath)
     {
+        if (filePath.IsEmpty())
+        {
+            OutputNoFilePathCompilationError();
+            return false;
+        }
+
         // Make sure that falcon is initialized
         ScriptRegistry::InitializeFalcon();
 
@@ -742,6 +748,12 @@ namespace Atmos
 
     bool ScriptCompiler::SetScriptToCompile(const FilePath &filePath, const ScriptModule::Dependencies &dep)
     {
+        if (filePath.IsEmpty())
+        {
+            OutputNoFilePathCompilationError();
+            return false;
+        }
+
         // Make sure that falcon is initialized
         ScriptRegistry::InitializeFalcon();
 
@@ -751,11 +763,7 @@ namespace Atmos
         }
         catch (::Falcon::Error *err)
         {
-            Falcon::AutoCString edesc(err->toString());
-            Logger::Log(String("Script compilation has encountered an error.\n") + edesc.c_str(),
-                Logger::Type::ERROR_MODERATE,
-                Logger::NameValueVector{ NameValuePair("File Path", filePath.GetValue()) });
-            
+            OutputGeneralCompilationError(String(Falcon::AutoCString(err->toString()).c_str()));
             return false;
         }
 
@@ -773,11 +781,7 @@ namespace Atmos
         }
         catch (::Falcon::Error *err)
         {
-            Falcon::AutoCString edesc(err->toString());
-            Logger::Log(String("Script compilation has encountered an error.\n") + edesc.c_str(),
-                Logger::Type::ERROR_MODERATE,
-                Logger::NameValueVector{ NameValuePair("File Name", script.GetFileName().GetValue()) });
-
+            OutputGeneralCompilationError(String(Falcon::AutoCString(err->toString()).c_str()));
             return false;
         }
 
@@ -795,11 +799,7 @@ namespace Atmos
         }
         catch (::Falcon::Error *err)
         {
-            Falcon::AutoCString edesc(err->toString());
-            Logger::Log(String("Script compilation has encountered an error.\n") + edesc.c_str(),
-                Logger::Type::ERROR_MODERATE,
-                Logger::NameValueVector{ NameValuePair("File Name", script.GetFileName().GetValue()) });
-
+            OutputGeneralCompilationError(String(Falcon::AutoCString(err->toString()).c_str()));
             return false;
         }
 
@@ -834,11 +834,7 @@ namespace Atmos
         }
         catch (::Falcon::Error *err)
         {
-            Falcon::AutoCString edesc(err->toString());
-            Logger::Log(String("Script compilation has encountered an error.\n") + edesc.c_str(),
-                Logger::Type::ERROR_MODERATE,
-                Logger::NameValueVector{ NameValuePair("File Name", inFocus->GetFileName().GetValue()) });
-
+            OutputGeneralCompilationError(String(Falcon::AutoCString(err->toString()).c_str()));
             return false;
         }
 
@@ -851,4 +847,17 @@ namespace Atmos
     }
 
     std::unique_ptr<ScriptModule> ScriptCompiler::inFocus;
+
+    void ScriptCompiler::OutputNoFilePathCompilationError()
+    {
+        Logger::Log(String("A script with no file path was attempted to be compiled.\n"),
+            Logger::Type::ERROR_MODERATE);
+    }
+
+    void ScriptCompiler::OutputGeneralCompilationError(const String &err)
+    {
+        Logger::Log(String("Script compilation has encountered an error.\n") + err,
+            Logger::Type::ERROR_MODERATE,
+            Logger::NameValueVector{ NameValuePair("File Name", inFocus->GetFileName().GetValue()) });
+    }
 }

@@ -824,7 +824,6 @@ namespace Atmos
             // Suspension
             Functions::General::Suspend.PushAllToModule(*mainModule);
             // Caller
-            Classes::General::CallerType::PushAllToModule(*mainModule);
             Classes::General::Caller::PushAllToModule(*mainModule);
             // Logger
             Classes::General::LogType::PushAllToModule(*mainModule);
