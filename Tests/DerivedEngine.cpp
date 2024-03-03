@@ -1,15 +1,7 @@
 #include "DerivedEngine.h"
 
-#include <Atmos/NullInputManager.h>
-#include <Atmos/NullAudioManager.h>
-
 DerivedEngine::DerivedEngine(Logging::Logger& logger) : Engine(logger)
 {}
-
-void DerivedEngine::SetupImplementation()
-{
-    
-}
 
 auto DerivedEngine::CreateInitializationProperties(Logging::Logger& logger)
     -> InitializationProperties
@@ -18,7 +10,7 @@ auto DerivedEngine::CreateInitializationProperties(Logging::Logger& logger)
 
     auto imageAssetManager = std::make_unique<MockImageAssetManager>();
     auto window = std::make_unique<MockWindow>();
-    auto input = std::make_unique<Input::NullManager>();
+    auto input = std::make_unique<MockInputManager>();
     auto graphics = std::make_unique<MockGraphicsManager>(logger);
     auto audio = std::make_unique<Audio::NullAudioManager>();
     auto scripts = std::make_unique<MockScriptManager>();
@@ -26,7 +18,7 @@ auto DerivedEngine::CreateInitializationProperties(Logging::Logger& logger)
     mockImageAssetManager = imageAssetManager.get();
     mockWindow = window.get();
     nullAudioManager = audio.get();
-    nullInputManager = input.get();
+    mockInputManager = input.get();
     mockGraphicsManager = graphics.get();
     mockScriptManager = scripts.get();
 
@@ -39,6 +31,3 @@ auto DerivedEngine::CreateInitializationProperties(Logging::Logger& logger)
     properties.scriptManager = std::move(scripts);
     return properties;
 }
-
-void DerivedEngine::DoExit()
-{}

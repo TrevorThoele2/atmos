@@ -19,10 +19,11 @@ namespace Atmos::Scripting::Angel
         using Management = ObjectManagement<Type>;
 
         static inline const String name = "Stopwatch";
-        static inline const String containingNamespace = Namespaces::Atmos::Time::name;
+        static inline const String containingNamespace = "Atmos::Time";
+        static inline const String documentation = "This is a relic.";
         static const ObjectType objectType = ObjectType::Value;
 
-        static void RegisterTo(asIScriptEngine& engine);
+        static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
     private:
         [[nodiscard]] static Time::Stopwatch CreateFrameStopwatch(Arca::Reliquary* reliquary);
     };

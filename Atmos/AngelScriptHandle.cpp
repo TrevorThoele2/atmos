@@ -6,12 +6,12 @@
 
 namespace Atmos::Scripting::Angel
 {
-    void Registration<Arca::Handle>::RegisterTo(asIScriptEngine& engine)
+    void Registration<Arca::Handle>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         EnumRegistration<Arca::HandleObjectType>(containingNamespace, "HandleObjectType")
             .Value("Relic", Arca::HandleObjectType::Relic)
             .Value("Shard", Arca::HandleObjectType::Shard)
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
 
         ValueTypeRegistration<Type>(containingNamespace, name)
             .DefaultConstructor(&Management::GenerateDefaultValue)
@@ -29,6 +29,6 @@ namespace Atmos::Scripting::Angel
             .ConstMethod(&Management::Method<&Type::ID>, "Arca::RelicID", "ID", {})
             .ConstMethod(&Management::Method<&Type::Type>, "Arca::Type", "Type", {})
             .ConstMethod(&Management::Method<&Type::ObjectType>, "Arca::HandleObjectType", "ObjectType", {})
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
     }
 }

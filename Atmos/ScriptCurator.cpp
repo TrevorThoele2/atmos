@@ -38,7 +38,7 @@ namespace Atmos::Scripting
         script->Resource()->Suspend();
     }
 
-    DataBuffer Curator::Handle(const Compile& command)
+    Buffer Curator::Handle(const Compile& command)
     {
         return manager->Compile(command.module, command.sharedData);
     }

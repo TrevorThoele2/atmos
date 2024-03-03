@@ -18,9 +18,10 @@ namespace Atmos::Scripting::Angel
         using Management = ObjectManagement<Type>;
 
         static inline const String name = "Scalers3D";
-        static inline const String containingNamespace = Namespaces::Atmos::Spatial::name;
+        static inline const String containingNamespace = "Atmos::Spatial";
+        static inline const String documentation = "3D scalers.";
         static const ObjectType objectType = ObjectType::Value;
 
-        static void RegisterTo(asIScriptEngine& engine);
+        static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
     };
 }

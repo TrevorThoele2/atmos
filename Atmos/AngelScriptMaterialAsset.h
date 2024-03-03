@@ -24,10 +24,11 @@ namespace Atmos::Scripting::Angel
         using Management = ObjectManagement<Type>;
 
         static inline const String name = "MaterialPass";
-        static inline const String containingNamespace = Namespaces::Atmos::Asset::name;
+        static inline const String containingNamespace = "Atmos::Asset";
+        static inline const String documentation = "Represents a pass for the material asset to perform.";
         static const ObjectType objectType = ObjectType::Value;
 
-        static void RegisterTo(asIScriptEngine& engine);
+        static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
     };
 
     template<>
@@ -37,10 +38,11 @@ namespace Atmos::Scripting::Angel
         using Management = ObjectManagement<Type>;
 
         static inline const String name = "ImageMaterial";
-        static inline const String containingNamespace = Namespaces::Atmos::Asset::name;
+        static inline const String containingNamespace = "Atmos::Asset";
+        static inline const String documentation = "This is a relic.";
         static const ObjectType objectType = ObjectType::Value;
 
-        static void RegisterTo(asIScriptEngine& engine);
+        static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
     private:
         [[nodiscard]] static String DoName(Type type);
         [[nodiscard]] static std::vector<Asset::Material::Pass> DoPasses(Type type);
@@ -53,10 +55,11 @@ namespace Atmos::Scripting::Angel
         using Management = ObjectManagement<Type>;
 
         static inline const String name = "LineMaterial";
-        static inline const String containingNamespace = Namespaces::Atmos::Asset::name;
+        static inline const String containingNamespace = "Atmos::Asset";
+        static inline const String documentation = "This is a relic.";
         static const ObjectType objectType = ObjectType::Value;
 
-        static void RegisterTo(asIScriptEngine& engine);
+        static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
     private:
         [[nodiscard]] static String DoName(Type type);
         [[nodiscard]] static std::vector<Asset::Material::Pass> DoPasses(Type type);
@@ -69,10 +72,11 @@ namespace Atmos::Scripting::Angel
         using Management = ObjectManagement<Type>;
 
         static inline const String name = "RegionMaterial";
-        static inline const String containingNamespace = Namespaces::Atmos::Asset::name;
+        static inline const String containingNamespace = "Atmos::Asset";
+        static inline const String documentation = "This is a relic.";
         static const ObjectType objectType = ObjectType::Value;
 
-        static void RegisterTo(asIScriptEngine& engine);
+        static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
     private:
         [[nodiscard]] static String DoName(Type type);
         [[nodiscard]] static std::vector<Asset::Material::Pass> DoPasses(Type type);

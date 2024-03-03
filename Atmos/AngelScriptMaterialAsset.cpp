@@ -10,7 +10,7 @@
 
 namespace Atmos::Scripting::Angel
 {
-    void Registration<Asset::Material::Pass>::RegisterTo(asIScriptEngine& engine)
+    void Registration<Asset::Material::Pass>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         ValueTypeRegistration<Type>(containingNamespace, name)
             .DefaultConstructor(&Management::GenerateDefaultValue)
@@ -19,11 +19,11 @@ namespace Atmos::Scripting::Angel
             .CopyAssignment(&Management::CopyAssign)
             .ConstMethod(&Management::Method<&Type::VertexShader>, "Shader", "VertexShader", {})
             .ConstMethod(&Management::Method<&Type::FragmentShader>, "Shader", "FragmentShader", {})
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
     }
 
     template<class T, auto doName, auto doPasses>
-    void DoRegister(asIScriptEngine& engine)
+    void DoRegister(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         using Type = Arca::Index<T>;
 
@@ -32,16 +32,16 @@ namespace Atmos::Scripting::Angel
         registration
             .ConstMethod(&ObjectManagement<Type>::template Method<doName>, "string", "Name", {})
             .ConstMethod(&ObjectManagement<Type>::template Method<doPasses>, "MaterialPass[]@", "Passes", {})
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
 
-        Registration<ArcaTraits<T>>::RegisterTo(engine);
-        Registration<Arca::Batch<T>>::RegisterTo(engine);
-        Registration<Asset::FindByName<T>>::RegisterTo(engine);
+        Registration<ArcaTraits<T>>::RegisterTo(engine, documentationManager);
+        Registration<Arca::Batch<T>>::RegisterTo(engine, documentationManager);
+        Registration<Asset::FindByName<T>>::RegisterTo(engine, documentationManager);
     }
 
-    void Registration<Asset::ImageMaterial>::RegisterTo(asIScriptEngine& engine)
+    void Registration<Asset::ImageMaterial>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        DoRegister<Asset::ImageMaterial, &DoName, &DoPasses>(engine);
+        DoRegister<Asset::ImageMaterial, &DoName, &DoPasses>(engine, documentationManager);
     }
 
     String Registration<Asset::ImageMaterial>::DoName(Type type)
@@ -54,9 +54,9 @@ namespace Atmos::Scripting::Angel
         return RequiredValue(type)->Passes();
     }
 
-    void Registration<Asset::LineMaterial>::RegisterTo(asIScriptEngine& engine)
+    void Registration<Asset::LineMaterial>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        DoRegister<Asset::LineMaterial, &DoName, &DoPasses>(engine);
+        DoRegister<Asset::LineMaterial, &DoName, &DoPasses>(engine, documentationManager);
     }
 
     String Registration<Asset::LineMaterial>::DoName(Type type)
@@ -69,9 +69,9 @@ namespace Atmos::Scripting::Angel
         return RequiredValue(type)->Passes();
     }
 
-    void Registration<Asset::RegionMaterial>::RegisterTo(asIScriptEngine& engine)
+    void Registration<Asset::RegionMaterial>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        DoRegister<Asset::RegionMaterial, &DoName, &DoPasses>(engine);
+        DoRegister<Asset::RegionMaterial, &DoName, &DoPasses>(engine, documentationManager);
     }
 
     String Registration<Asset::RegionMaterial>::DoName(Type type)

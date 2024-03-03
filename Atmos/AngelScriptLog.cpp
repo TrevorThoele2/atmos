@@ -9,7 +9,7 @@
 
 namespace Atmos::Scripting::Angel
 {
-    void Registration<Logging::Log>::RegisterTo(asIScriptEngine& engine)
+    void Registration<Logging::Log>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         ValueTypeRegistration<Type>(containingNamespace, name)
             .Constructor(
@@ -26,8 +26,8 @@ namespace Atmos::Scripting::Angel
             .CopyAssignment(&Management::CopyAssign)
             .Property<&Type::message>("string", "message")
             .Property<&Type::severity>("Severity", "severity")
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
 
-        RegisterCommandHandler<&Chroma::Identity<Type>>(engine);
+        RegisterCommandHandler<&Chroma::Identity<Type>>(engine, documentationManager);
     }
 }

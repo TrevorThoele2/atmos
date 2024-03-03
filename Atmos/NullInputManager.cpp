@@ -2,18 +2,8 @@
 
 namespace Atmos::Input
 {
-    std::vector<NullManager::CreatedInput> NullManager::CreateAllInputs() const
+    auto NullManager::ReadState() const -> State
     {
         return {};
-    }
-
-    Spatial::ScreenPoint NullManager::CurrentMousePosition() const
-    {
-        return {};
-    }
-
-    bool NullManager::IsInputDown(Input& input) const
-    {
-        return false;
     }
 }

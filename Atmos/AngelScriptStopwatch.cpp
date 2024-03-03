@@ -10,7 +10,7 @@
 
 namespace Atmos::Scripting::Angel
 {
-    void Registration<Time::Stopwatch>::RegisterTo(asIScriptEngine& engine)
+    void Registration<Time::Stopwatch>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         ValueTypeRegistration<Type>(containingNamespace, name)
             .CopyConstructor(&Management::GenerateValueFromCopy)
@@ -24,7 +24,7 @@ namespace Atmos::Scripting::Angel
             .ConstMethod(&Management::Method<&Type::CurrentTime>, "Atmos::Time::Point<Atmos::Time::Nanoseconds>", "CurrentTime", {})
             .ConstMethod(&Management::Method<&Type::Average>, "Atmos::Time::Nanoseconds", "Average", {})
             .ConstMethod(&Management::Method<&Type::Highest>, "Atmos::Time::Nanoseconds", "Highest", {})
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
 
         GlobalRegistration(containingNamespace)
             .Function(
@@ -36,7 +36,7 @@ namespace Atmos::Scripting::Angel
                 "Atmos::Time::Stopwatch",
                 "CreateFrameStopwatch",
                 {})
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
     }
 
     Time::Stopwatch Registration<Time::Stopwatch>::CreateFrameStopwatch(Arca::Reliquary* reliquary)

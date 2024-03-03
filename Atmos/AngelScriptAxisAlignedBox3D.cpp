@@ -6,7 +6,7 @@
 
 namespace Atmos::Scripting::Angel
 {
-    void Registration<Spatial::AxisAlignedBox3D>::RegisterTo(asIScriptEngine& engine)
+    void Registration<Spatial::AxisAlignedBox3D>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         ValueTypeRegistration<Type>(containingNamespace, name)
             .DefaultConstructor(&Management::GenerateDefaultValue)
@@ -27,6 +27,6 @@ namespace Atmos::Scripting::Angel
             .Method(&Management::Method<&Type::Right>, "float", "Right", {})
             .Method(&Management::Method<&Type::Bottom>, "float", "Bottom", {})
             .Method(&Management::Method<&Type::NearZ>, "float", "NearZ", {})
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
     }
 }

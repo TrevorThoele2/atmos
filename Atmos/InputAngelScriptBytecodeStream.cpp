@@ -4,7 +4,7 @@
 
 namespace Atmos::Scripting::Angel
 {
-    InputBytecodeStream::InputBytecodeStream(const DataBuffer& buffer) :
+    InputBytecodeStream::InputBytecodeStream(const Buffer& buffer) :
         buffer(buffer)
     {}
 

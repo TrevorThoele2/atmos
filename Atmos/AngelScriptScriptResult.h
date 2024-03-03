@@ -20,10 +20,11 @@ namespace Atmos::Scripting::Angel
         using Management = ObjectManagement<Type>;
 
         static inline const String name = "Result";
-        static inline const String containingNamespace = Namespaces::Atmos::Scripting::name;
+        static inline const String containingNamespace = "Atmos::Scripting";
+        static inline const String documentation = "Represents the result of a finished script.";
         static const ObjectType objectType = ObjectType::Value;
 
-        static void RegisterTo(asIScriptEngine& engine);
+        static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
     private:
         [[nodiscard]] static Variant AsVariant(Type type);
         [[nodiscard]] static bool IsVariant(Type type);

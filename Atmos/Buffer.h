@@ -5,7 +5,7 @@
 namespace Atmos
 {
     using Buffer = std::vector<char>;
-    using DataBuffer = std::vector<unsigned char>;
+    using UnsignedBuffer = std::vector<unsigned char>;
 
     template<class T, class PositionT>
     size_t ReadFromBuffer(const char* buffer, T& obj, PositionT position)
@@ -22,4 +22,7 @@ namespace Atmos
     }
 
     bool CompareBuffers(const void* first, const void* second, size_t size);
+
+    UnsignedBuffer ToUnsignedBuffer(const Buffer& buffer);
+    Buffer ToBuffer(const UnsignedBuffer& unsignedBuffer);
 }

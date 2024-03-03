@@ -36,14 +36,7 @@ namespace Atmos::Scripting::Angel
     {
         executionType = ExecutionType::Executing;
 
-        for(auto& group : groups)
-        {
-            for (auto secondaryExecution = group.second.secondaryExecutions.begin(); secondaryExecution != group.second.secondaryExecutions.end();)
-            {
-                DoExecuteSecondary(*secondaryExecution, group.second.angelScriptFunctions, *context, *logger);
-                secondaryExecution = group.second.secondaryExecutions.erase(secondaryExecution);
-            }
-        }
+        ExecuteAllStoredSecondaries();
 
         VerifyResult(context->Prepare(executeFunction));
 
@@ -60,6 +53,8 @@ namespace Atmos::Scripting::Angel
     std::optional<Result> ScriptResource::Resume()
     {
         executionType = ExecutionType::Executing;
+
+        ExecuteAllStoredSecondaries();
 
         return DoExecute(*executeFunction, *context);
     }
@@ -86,7 +81,7 @@ namespace Atmos::Scripting::Angel
             return;
 
         if (executionType == ExecutionType::Executing)
-            DoExecuteSecondary(againstContext, group->second.angelScriptFunctions, *context, *logger);
+            DoExecuteSecondary(againstContext, group->second.angelScriptFunctions, *context->GetEngine(), *logger);
         else
             group->second.secondaryExecutions.push_back(againstContext);
     }
@@ -117,27 +112,44 @@ namespace Atmos::Scripting::Angel
             return {};
     }
 
+    void ScriptResource::ExecuteAllStoredSecondaries()
+    {
+        for (auto group = groups.begin(); group != groups.end();)
+        {
+            for (auto secondaryExecution = group->second.secondaryExecutions.begin(); secondaryExecution != group->second.secondaryExecutions.end();)
+            {
+                DoExecuteSecondary(*secondaryExecution, group->second.angelScriptFunctions, *context->GetEngine(), *logger);
+                secondaryExecution = group->second.secondaryExecutions.erase(secondaryExecution);
+            }
+
+            for (auto& function : group->second.angelScriptFunctions)
+                function->Release();
+
+            group = groups.erase(group);
+        }
+    }
+
     void ScriptResource::DoExecuteSecondary(
         const SecondaryExecution& secondaryExecution,
         AngelScriptFunctions& angelScriptFunctions,
-        asIScriptContext& context,
+        asIScriptEngine& engine,
         Logging::Logger& logger)
     {
         for (auto& storedFunction : angelScriptFunctions)
         {
-            if (IsError(context.PushState()))
-                continue;
+            auto newContext = engine.RequestContext();
 
-            VerifyResult(context.Prepare(storedFunction));
+            VerifyResult(newContext->Prepare(storedFunction));
 
-            secondaryExecution(context);
-            auto result = DoExecute(*storedFunction, context);
+            secondaryExecution(*newContext);
+            auto result = DoExecute(*storedFunction, *newContext);
             if (result && std::holds_alternative<Failure>(*result) == 1)
             {
                 const auto failure = std::get<Failure>(*result);
                 logger.Log(ToLog(failure));
             }
-            context.PopState();
+
+            engine.ReturnContext(newContext);
         }
     }
 }

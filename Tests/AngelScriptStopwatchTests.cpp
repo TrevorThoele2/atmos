@@ -20,7 +20,7 @@ SCENARIO_METHOD(AngelScriptStopwatchTestsFixture, "running stopwatch AngelScript
         fieldOrigin,
         *engine.mockImageAssetManager,
         *engine.nullAudioManager,
-        *engine.nullInputManager,
+        *engine.mockInputManager,
         *engine.mockGraphicsManager,
         *engine.scriptManager,
         Spatial::ScreenSize{

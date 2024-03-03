@@ -4,7 +4,7 @@
 
 namespace Atmos::Scripting::Angel
 {
-    void Registration<Result>::RegisterTo(asIScriptEngine& engine)
+    void Registration<Result>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         ValueTypeRegistration<Type>(containingNamespace, name)
             .DefaultConstructor(&Management::GenerateDefaultValue)
@@ -15,7 +15,7 @@ namespace Atmos::Scripting::Angel
             .ConstMethod(&Management::Method<&IsVariant>, "bool", "IsVariant", {})
             .ConstMethod(&Management::Method<&IsFailure>, "bool", "IsFailure", {})
             .ConstMethod(&Management::Method<&IsQuit>, "bool", "IsQuit", {})
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
     }
 
     Variant Registration<Result>::AsVariant(Type type)

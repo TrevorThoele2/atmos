@@ -1,5 +1,7 @@
 #include "AngelScriptRegistration.h"
 
+#include "NullScriptDocumentationManager.h"
+
 #include <scriptstdstring.h>
 #include <scripthelper.h>
 #include <scriptarray.h>
@@ -23,6 +25,7 @@
 #include "AngelScriptAngle3D.h"
 #include "AngelScriptPoint2D.h"
 #include "AngelScriptPoint3D.h"
+#include "AngelScriptScreenPoint.h"
 #include "AngelScriptGridPoint.h"
 #include "AngelScriptScalers2D.h"
 #include "AngelScriptScalers3D.h"
@@ -37,7 +40,16 @@
 #include "AngelScriptTimePoint.h"
 #include "AngelScriptStopwatch.h"
 
+#include "AngelScriptKey.h"
+#include "AngelScriptBindAction.h"
+#include "AngelScriptActionActive.h"
+#include "AngelScriptActionDepressed.h"
+#include "AngelScriptActionPressed.h"
+#include "AngelScriptMouseMoved.h"
+#include "AngelScriptTextEntered.h"
+
 #include "AngelScriptAsset.h"
+#include "AngelScriptActionAsset.h"
 #include "AngelScriptImageAsset.h"
 #include "AngelScriptShaderAsset.h"
 #include "AngelScriptMaterialAsset.h"
@@ -70,20 +82,28 @@ namespace Atmos::Scripting::Angel
     class RegistrationHandler
     {
     public:
-        RegistrationHandler(asIScriptEngine& engine) : engine(&engine)
+        RegistrationHandler(asIScriptEngine& engine, DocumentationManager& documentationManager) :
+            engine(&engine), documentationManager(&documentationManager)
         {}
 
         template<class T>
         RegistrationHandler& Register()
         {
-            Registration<T>::RegisterTo(*engine);
+            Registration<T>::RegisterTo(*engine, *documentationManager);
             return *this;
         }
     private:
         asIScriptEngine* engine;
+        DocumentationManager* documentationManager;
     };
 
     void RegisterAll(asIScriptEngine& engine)
+    {
+        NullDocumentationManager documentationManager;
+        RegisterAll(engine, documentationManager);
+    }
+
+    void RegisterAll(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         RegisterStdString(&engine);
 
@@ -93,7 +113,7 @@ namespace Atmos::Scripting::Angel
         RegisterScriptDictionary(&engine);
 
         {
-            RegistrationHandler(engine)
+            RegistrationHandler(engine, documentationManager)
                 .Register<RelicID>()
                 .Register<Arca::Type>()
                 .Register<Arca::Handle>()
@@ -120,6 +140,7 @@ namespace Atmos::Scripting::Angel
                 .Register<Spatial::Angle3D>()
                 .Register<Spatial::Point2D>()
                 .Register<Spatial::Point3D>()
+                .Register<Spatial::ScreenPoint>()
                 .Register<Spatial::Grid::Point>()
                 .Register<Spatial::Scalers2D>()
                 .Register<Spatial::Scalers3D>()
@@ -166,7 +187,10 @@ namespace Atmos::Scripting::Angel
                 .Register<TimePointCast<Time::Nanoseconds>>()
                 .Register<Time::Stopwatch>()
 
+                .Register<Input::Key>()            
+
                 .Register<GenericAssetFindByName>()
+                .Register<Asset::Action>()
                 .Register<Asset::ImageSize>()
                 .Register<Asset::ImageGridSize>()
                 .Register<Asset::Image>()
@@ -178,7 +202,14 @@ namespace Atmos::Scripting::Angel
                 .Register<Asset::Audio>()
                 .Register<Asset::Script>()
 
-                .Register<LoggingSeverity>()
+                .Register<Input::BindAction>()
+                .Register<Input::ActionActive>()
+                .Register<Input::ActionDepressed>()
+                .Register<Input::ActionPressed>()
+                .Register<Input::MouseMoved>()
+                .Register<Input::TextEntered>()
+
+                .Register<Logging::Severity>()
                 .Register<Logging::Log>()
 
                 .Register<Render::Color>()

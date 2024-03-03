@@ -34,12 +34,13 @@ namespace Atmos::Scripting::Angel
         using Type = GenericArcaCreate;
 
         static inline const String name = "Create<class T>";
-        static inline const String containingNamespace = Namespaces::Arca::name;
+        static inline const String containingNamespace = "Arca";
+        static inline const String documentation = "This is a signal. Needs to be used with explicit specializations.";
         static const ObjectType objectType = ObjectType::Value;
 
         using Management = ObjectManagement<Type>;
 
-        static void RegisterTo(asIScriptEngine& engine);
+        static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
     };
 
     template<>
@@ -48,12 +49,13 @@ namespace Atmos::Scripting::Angel
         using Type = GenericArcaCreateChild;
 
         static inline const String name = "CreateChild<class T>";
-        static inline const String containingNamespace = Namespaces::Arca::name;
+        static inline const String containingNamespace = "Arca";
+        static inline const String documentation = "This is a command. Needs to be used with explicit specializations.";
         static const ObjectType objectType = ObjectType::Value;
 
         using Management = ObjectManagement<Type>;
 
-        static void RegisterTo(asIScriptEngine& engine);
+        static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
     };
 
     template<>
@@ -62,12 +64,13 @@ namespace Atmos::Scripting::Angel
         using Type = GenericArcaIdentifiedCreate;
 
         static inline const String name = "IdentifiedCreate<class T>";
-        static inline const String containingNamespace = Namespaces::Arca::name;
+        static inline const String containingNamespace = "Arca";
+        static inline const String documentation = "This is a command. Needs to be used with explicit specializations.";
         static const ObjectType objectType = ObjectType::Value;
 
         using Management = ObjectManagement<Type>;
 
-        static void RegisterTo(asIScriptEngine& engine);
+        static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
     };
 
     template<>
@@ -76,12 +79,13 @@ namespace Atmos::Scripting::Angel
         using Type = GenericArcaIdentifiedCreate;
 
         static inline const String name = "IdentifiedCreateChild<class T>";
-        static inline const String containingNamespace = Namespaces::Arca::name;
+        static inline const String containingNamespace = "Arca";
+        static inline const String documentation = "This is a command. Needs to be used with explicit specializations.";
         static const ObjectType objectType = ObjectType::Value;
 
         using Management = ObjectManagement<Type>;
 
-        static void RegisterTo(asIScriptEngine& engine);
+        static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
     };
 
     template<class T>
@@ -90,7 +94,8 @@ namespace Atmos::Scripting::Angel
         using Type = Arca::Create<T>;
 
         static inline const String name = "Create<" + CreateName({ Registration<T>::containingNamespace }, Registration<T>::name) + ">";
-        static inline const String containingNamespace = Namespaces::Arca::name;
+        static inline const String containingNamespace = "Arca";
+        static inline const String documentation = "This is a command.";
         static const ObjectType objectType = ObjectType::Value;
 
         using Management = ObjectManagement<Type>;
@@ -102,7 +107,8 @@ namespace Atmos::Scripting::Angel
         using Type = Arca::Create<T>;
 
         static inline const String name = "CreateChild<" + CreateName({ Registration<T>::containingNamespace }, Registration<T>::name) + ">";
-        static inline const String containingNamespace = Namespaces::Arca::name;
+        static inline const String containingNamespace = "Arca";
+        static inline const String documentation = "This is a command.";
         static const ObjectType objectType = ObjectType::Value;
 
         using Management = ObjectManagement<Type>;
@@ -114,7 +120,8 @@ namespace Atmos::Scripting::Angel
         using Type = Arca::IdentifiedCreate<T>;
 
         static inline const String name = "IdentifiedCreate<" + CreateName({ Registration<T>::containingNamespace }, Registration<T>::name) + ">";
-        static inline const String containingNamespace = Namespaces::Arca::name;
+        static inline const String containingNamespace = "Arca";
+        static inline const String documentation = "This is a command.";
         static const ObjectType objectType = ObjectType::Value;
 
         using Management = ObjectManagement<Type>;
@@ -126,7 +133,8 @@ namespace Atmos::Scripting::Angel
         using Type = Arca::IdentifiedCreateChild<T>;
 
         static inline const String name = "IdentifiedCreateChild<" + CreateName({ Registration<T>::containingNamespace }, Registration<T>::name) + ">";
-        static inline const String containingNamespace = Namespaces::Arca::name;
+        static inline const String containingNamespace = "Arca";
+        static inline const String documentation = "This is a command.";
         static const ObjectType objectType = ObjectType::Value;
 
         using Management = ObjectManagement<Type>;
@@ -138,12 +146,13 @@ namespace Atmos::Scripting::Angel
         using Type = Arca::Created;
 
         static inline const String name = "Created";
-        static inline const String containingNamespace = Namespaces::Arca::name;
+        static inline const String containingNamespace = "Arca";
+        static inline const String documentation = "This is a signal.";
         static const ObjectType objectType = ObjectType::Value;
 
         using Management = ObjectManagement<Type>;
 
-        static void RegisterTo(asIScriptEngine& engine);
+        static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
     };
 
     class GenericArcaCreatedKnown
@@ -155,12 +164,13 @@ namespace Atmos::Scripting::Angel
         using Type = GenericArcaIdentifiedCreate;
 
         static inline const String name = "CreatedKnown<class T>";
-        static inline const String containingNamespace = Namespaces::Arca::name;
+        static inline const String containingNamespace = "Arca";
+        static inline const String documentation = "This is a signal. Needs to be used with explicit specializations.";
         static const ObjectType objectType = ObjectType::Value;
 
         using Management = ObjectManagement<Type>;
 
-        static void RegisterTo(asIScriptEngine& engine);
+        static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
     };
 
     template<class T>
@@ -169,7 +179,8 @@ namespace Atmos::Scripting::Angel
         using Type = Arca::CreatedKnown<T>;
 
         static inline const String name = "CreatedKnown<" + CreateName({ Registration<T>::containingNamespace }, Registration<T>::name) + ">";
-        static inline const String containingNamespace = Namespaces::Arca::name;
+        static inline const String containingNamespace = "Arca";
+        static inline const String documentation = "This is a signal.";
         static const ObjectType objectType = ObjectType::Value;
 
         using Management = ObjectManagement<Type>;
@@ -188,7 +199,8 @@ namespace Atmos::Scripting::Angel
         };
 
         template<class T, class CommandT, class ParameterTypes>
-        void DoRegisterArcaCreate(const std::vector<String>& constructorParameters, asIScriptEngine& engine)
+        void DoRegisterArcaCreate(
+            const std::vector<String>& constructorParameters, asIScriptEngine& engine, DocumentationManager& documentationManager)
         {
             using Management = ObjectManagement<CommandT>;
             using ParameterProviders = Chroma::to_non_type_with_index<ParameterTypes, ToParameterProvidersIterator>;
@@ -200,7 +212,7 @@ namespace Atmos::Scripting::Angel
                 .CopyConstructor(&Management::GenerateValueFromCopy)
                 .Destructor(&Management::DestructValue)
                 .CopyAssignment(&Management::CopyAssign)
-                .Actualize(engine);
+                .Actualize(engine, documentationManager);
 
             using CommandReturn = typename Registration<T>::Type;
 
@@ -210,11 +222,12 @@ namespace Atmos::Scripting::Angel
                 return { fromArca };
             };
 
-            RegisterCommandHandler<&Chroma::Identity<CommandT>, toCommandReturn>(engine);
+            RegisterCommandHandler<&Chroma::Identity<CommandT>, toCommandReturn>(engine, documentationManager);
         }
 
         template<class T, class SignalT>
-        void DoRegisterArcaCreated(const std::vector<String>& constructorParameters, asIScriptEngine& engine)
+        void DoRegisterArcaCreated(
+            const std::vector<String>& constructorParameters, asIScriptEngine& engine, DocumentationManager& documentationManager)
         {
             using Management = ObjectManagement<SignalT>;
 
@@ -223,17 +236,19 @@ namespace Atmos::Scripting::Angel
                 .CopyConstructor(&Management::GenerateValueFromCopy)
                 .Destructor(&Management::DestructValue)
                 .CopyAssignment(&Management::CopyAssign)
-                .Actualize(engine);
+                .Actualize(engine, documentationManager);
 
-            RegisterSignalHandler<&Chroma::Identity<SignalT>>(engine);
+            RegisterSignalHandler<&Chroma::Identity<SignalT>>(engine, documentationManager);
         }
     }
 
     template<class T, class ParameterTypes>
-    void RegisterArcaCreateRelic(const std::vector<String>& constructorParameters, asIScriptEngine& engine)
+    void RegisterArcaCreateRelic(
+        const std::vector<String>& constructorParameters, asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         {
-            Detail::DoRegisterArcaCreate<T, Arca::Create<T>, ParameterTypes>(constructorParameters, engine);
+            Detail::DoRegisterArcaCreate<T, Arca::Create<T>, ParameterTypes>(
+                constructorParameters, engine, documentationManager);
         }
 
         {
@@ -243,7 +258,7 @@ namespace Atmos::Scripting::Angel
             useConstructorParameters.insert(
                 useConstructorParameters.end(), constructorParameters.begin(), constructorParameters.end());
             Detail::DoRegisterArcaCreate<T, Arca::CreateChild<T>, UseParameterTypes>(
-                useConstructorParameters, engine);
+                useConstructorParameters, engine, documentationManager);
         }
 
         {
@@ -253,7 +268,7 @@ namespace Atmos::Scripting::Angel
             useConstructorParameters.insert(
                 useConstructorParameters.end(), constructorParameters.begin(), constructorParameters.end());
             Detail::DoRegisterArcaCreate<T, Arca::IdentifiedCreate<T>, UseParameterTypes>(
-                useConstructorParameters, engine);
+                useConstructorParameters, engine, documentationManager);
         }
 
         {
@@ -263,13 +278,14 @@ namespace Atmos::Scripting::Angel
             useConstructorParameters.insert(
                 useConstructorParameters.end(), constructorParameters.begin(), constructorParameters.end());
             Detail::DoRegisterArcaCreate<T, Arca::IdentifiedCreateChild<T>, UseParameterTypes>(
-                useConstructorParameters, engine);
+                useConstructorParameters, engine, documentationManager);
         }
 
         {
             const auto useConstructorParameters =
                 std::vector<String>{ CreateName({ Registration<T>::containingNamespace }, Registration<T>::name) + " index" };
-            Detail::DoRegisterArcaCreated<T, Arca::CreatedKnown<T>>(useConstructorParameters, engine);
+            Detail::DoRegisterArcaCreated<T, Arca::CreatedKnown<T>>(
+                useConstructorParameters, engine, documentationManager);
         }
     }
 }

@@ -13,7 +13,10 @@ namespace Atmos::Logging
         Event<const ProcessedLog&> onLog;
     public:
         explicit Logger(Severity minimumSeverity);
+        Logger(Logger&& arg);
         ~Logger();
+
+        Logger& operator=(Logger&& arg);
 
         std::optional<ProcessedLog> Log(const Logging::Log& log);
         std::optional<ProcessedLog> Log(
@@ -23,9 +26,11 @@ namespace Atmos::Logging
     private:
         Severity minimumSeverity;
     private:
+        bool shouldSignalStopSession = true;
+
         void StartSession();
         void StopSession();
-
+    private:
         void ClearFile();
 
         [[nodiscard]] static File::Path OutputFilePath();

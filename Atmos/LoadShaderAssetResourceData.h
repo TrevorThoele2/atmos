@@ -6,7 +6,6 @@
 #include "FilePath.h"
 
 #include "Buffer.h"
-#include "String.h"
 
 namespace Atmos::Asset::Resource
 {
@@ -19,13 +18,13 @@ namespace Atmos::Asset::Resource
     template<>
     struct LoadDataFromMemory<Shader>
     {
-        DataBuffer memory;
+        Buffer memory;
     };
 
     template<>
     struct Loaded<Shader>
     {
-        DataBuffer data;
+        Buffer data;
     };
 }
 

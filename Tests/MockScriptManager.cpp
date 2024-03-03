@@ -1,7 +1,7 @@
 #include "MockScriptManager.h"
 
 std::unique_ptr<Atmos::Asset::Resource::Script> MockScriptManager::CreateAssetResource(
-    const Atmos::DataBuffer&, Atmos::String)
+    const Atmos::Buffer&, Atmos::String)
 {
     return {};
 }
@@ -12,7 +12,7 @@ std::unique_ptr<Atmos::Scripting::Resource> MockScriptManager::CreateScriptResou
     return {};
 }
 
-Atmos::DataBuffer MockScriptManager::Compile(Atmos::Scripting::Module module, std::vector<Atmos::Scripting::Module> sharedModules)
+Atmos::Buffer MockScriptManager::Compile(Atmos::Scripting::Module module, std::vector<Atmos::Scripting::Module> sharedModules)
 {
     return {};
 }

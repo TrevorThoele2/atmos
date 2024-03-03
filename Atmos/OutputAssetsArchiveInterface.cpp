@@ -6,7 +6,7 @@
 
 namespace Atmos::World::Serialization
 {
-    OutputAssetsArchiveInterface::SaveAsset::SaveAsset(const Name& name, DataBuffer&& memory) :
+    OutputAssetsArchiveInterface::SaveAsset::SaveAsset(const Name& name, Buffer&& memory) :
         name(name), memory(std::move(memory))
     {}
 

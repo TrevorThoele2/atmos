@@ -8,7 +8,7 @@
 
 namespace Atmos::World::Serialization
 {
-    InputAssetsArchiveInterface::ExtractedAsset::ExtractedAsset(const Name& name, DataBuffer&& memory) :
+    InputAssetsArchiveInterface::ExtractedAsset::ExtractedAsset(const Name& name, Buffer&& memory) :
         name(name), memory(std::move(memory))
     {}
 
@@ -92,14 +92,14 @@ namespace Atmos::World::Serialization
         return extracted;
     }
 
-    auto InputAssetsArchiveInterface::ExtractData(wxZipInputStream& zip) -> DataBuffer
+    auto InputAssetsArchiveInterface::ExtractData(wxZipInputStream& zip) -> Buffer
     {
         wxMemoryOutputStream outputStream;
 
         zip.Read(outputStream);
 
         const auto size = outputStream.GetSize();
-        auto buffer = DataBuffer();
+        auto buffer = Buffer();
         buffer.resize(size);
 
         outputStream.CopyTo(&buffer[0], size);

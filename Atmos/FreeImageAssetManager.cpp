@@ -56,9 +56,9 @@ namespace Atmos::Asset
 		}
 	}
 
-	Resource::Loaded<Resource::Image> FreeImageManager::Load(const DataBuffer& memory)
+	Resource::Loaded<Resource::Image> FreeImageManager::Load(const Buffer& memory)
 	{
-		auto useMemory = memory;
+		auto useMemory = ToUnsignedBuffer(memory);
 		const auto size = useMemory.size();
 
 		const auto freeImageMemory = FreeImage_OpenMemory(useMemory.data(), size);
@@ -108,17 +108,17 @@ namespace Atmos::Asset
 			const auto bits = FreeImage_GetBits(bitmap);
 
 			const auto byteSize = bitsPerPixel / CHAR_BIT * width * height;
-			DataBuffer buffer;
+			Buffer buffer;
 			buffer.insert(buffer.begin(), bits, bits + byteSize);
 
 			FreeImage_Unload(bitmap);
 
 			return Resource::Loaded<Resource::Image>
-			{
+		    {
 				std::move(buffer),
-					* TypeFromFIF(format),
-					ImageSize{ ImageSize::Dimension(width), ImageSize::Dimension(height) }
-			};
+				*TypeFromFIF(format),
+			    ImageSize{ ImageSize::Dimension(width), ImageSize::Dimension(height) }
+		    };
 		}
 		catch (...)
 		{

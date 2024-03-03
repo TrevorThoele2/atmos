@@ -10,5 +10,8 @@ namespace Atmos::Spatial
 
         ScreenPoint();
         ScreenPoint(Value x, Value y);
+
+        bool operator==(const ScreenPoint& arg) const;
+        bool operator!=(const ScreenPoint& arg) const;
     };
 }

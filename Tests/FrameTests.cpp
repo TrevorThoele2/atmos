@@ -27,7 +27,7 @@ SCENARIO_METHOD(FrameTestsFixture, "frame", "[frame]")
             fieldOrigin,
             *engine.mockImageAssetManager,
             *engine.nullAudioManager,
-            *engine.nullInputManager,
+            *engine.mockInputManager,
             *engine.mockGraphicsManager,
             *engine.mockScriptManager,
             Spatial::ScreenSize{

@@ -16,9 +16,9 @@ namespace Atmos::World::Serialization
         struct ExtractedAsset
         {
             Name name;
-            DataBuffer memory;
+            Buffer memory;
             ExtractedAsset() = default;
-            ExtractedAsset(const Name& name, DataBuffer&& memory);
+            ExtractedAsset(const Name& name, Buffer&& memory);
         };
 
         using ExtractedAssets = std::vector<ExtractedAsset>;
@@ -48,7 +48,7 @@ namespace Atmos::World::Serialization
         std::unique_ptr<wxFileInputStream> stream;
         File::Path filePath;
     private:
-        [[nodiscard]] static DataBuffer ExtractData(wxZipInputStream& zip);
+        [[nodiscard]] static Buffer ExtractData(wxZipInputStream& zip);
     private:
         Logging::Logger* logger;
     };

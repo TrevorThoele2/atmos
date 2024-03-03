@@ -6,7 +6,7 @@
 
 namespace Atmos::Scripting::Angel
 {
-    void Registration<Spatial::Size2D>::RegisterTo(asIScriptEngine& engine)
+    void Registration<Spatial::Size2D>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         ValueTypeRegistration<Spatial::Size2D>(containingNamespace, name)
             .DefaultConstructor(&Management::GenerateDefaultValue)
@@ -21,6 +21,6 @@ namespace Atmos::Scripting::Angel
             .Equals(&Management::Equals)
             .Property<&Type::width>("float", "width")
             .Property<&Type::height>("float", "height")
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
     }
 }

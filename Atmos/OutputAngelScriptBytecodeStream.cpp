@@ -31,7 +31,7 @@ namespace Atmos::Scripting::Angel
         return {};
     }
 
-    DataBuffer OutputBytecodeStream::Buffer() const
+    Buffer OutputBytecodeStream::Buffer() const
     {
         return buffer;
     }

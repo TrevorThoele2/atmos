@@ -2,7 +2,7 @@
 
 namespace Atmos::Scripting::Angel
 {
-    void Registration<GenericArcaTraits>::RegisterTo(asIScriptEngine& engine)
+    void Registration<GenericArcaTraits>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         TemplateValueTypeRegistration<Type>(containingNamespace, "Traits", { "T" })
             .TemplateCallback(&Management::RequiredSpecializationTemplateCallback)
@@ -10,6 +10,6 @@ namespace Atmos::Scripting::Angel
             .CopyConstructor(&Management::UndefinedTemplate)
             .Destructor(&Management::UndefinedTemplate)
             .CopyAssignment(&Management::UndefinedTemplate)
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
     }
 }

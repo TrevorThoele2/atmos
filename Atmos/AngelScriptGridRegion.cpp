@@ -11,7 +11,7 @@
 
 namespace Atmos::Scripting::Angel
 {
-    void Registration<Render::GridRegion>::RegisterTo(asIScriptEngine& engine)
+    void Registration<Render::GridRegion>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         ValueTypeRegistration<Type> registration(containingNamespace, name);
         RegisterArcaIndex(registration);
@@ -19,10 +19,10 @@ namespace Atmos::Scripting::Angel
             .ConstMethod(&Management::Method<&Points>, "Atmos::Spatial::Grid::Point[]@", "Points", {})
             .ConstMethod(&Management::Method<&Z>, "int", "Z", {})
             .ConstMethod(&Management::Method<&Material>, "Atmos::Asset::RegionMaterial", "Material", {})
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
 
-        Registration<ArcaTraits<Render::GridRegion>>::RegisterTo(engine);
-        Registration<Arca::Batch<Render::GridRegion>>::RegisterTo(engine);
+        Registration<ArcaTraits<Render::GridRegion>>::RegisterTo(engine, documentationManager);
+        Registration<Arca::Batch<Render::GridRegion>>::RegisterTo(engine, documentationManager);
 
         RegisterArcaCreateRelic<
             Render::GridRegion,
@@ -36,9 +36,10 @@ namespace Atmos::Scripting::Angel
                     "int z",
                     "Atmos::Asset::RegionMaterial material"
                 },
-                engine);
+                engine,
+                documentationManager);
 
-        RegisterArcaDestroyRelic<Render::GridRegion>(engine);
+        RegisterArcaDestroyRelic<Render::GridRegion>(engine, documentationManager);
     }
 
     std::unordered_set<Spatial::Grid::Point> Registration<Render::GridRegion>::Points(Type type)
@@ -56,7 +57,7 @@ namespace Atmos::Scripting::Angel
         return RequiredValue(type)->material;
     }
 
-    void Registration<ChangeGridRegionPoints>::RegisterTo(asIScriptEngine& engine)
+    void Registration<ChangeGridRegionPoints>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         ValueTypeRegistration<Type>(containingNamespace, name)
             .Constructor(
@@ -69,9 +70,9 @@ namespace Atmos::Scripting::Angel
             .CopyAssignment(&Management::CopyAssign)
             .Property<&Type::id>("Arca::RelicID", "id")
             .Property<&Type::to>("Atmos::Spatial::Grid::Point[]@", "to")
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
 
-        RegisterCommandHandler<&ToArca>(engine);
+        RegisterCommandHandler<&ToArca>(engine, documentationManager);
     }
 
     Render::MoveGridRegion Registration<ChangeGridRegionPoints>::ToArca(Type fromAngelScript)
@@ -80,7 +81,7 @@ namespace Atmos::Scripting::Angel
         return { fromAngelScript.id, points, {} };
     }
 
-    void Registration<ChangeGridRegionZ>::RegisterTo(asIScriptEngine& engine)
+    void Registration<ChangeGridRegionZ>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         ValueTypeRegistration<Type>(containingNamespace, name)
             .Constructor(
@@ -93,9 +94,9 @@ namespace Atmos::Scripting::Angel
             .CopyAssignment(&Management::CopyAssign)
             .Property<&Type::id>("Arca::RelicID", "id")
             .Property<&Type::to>("int", "to")
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
 
-        RegisterCommandHandler<&ToArca>(engine);
+        RegisterCommandHandler<&ToArca>(engine, documentationManager);
     }
 
     Render::MoveGridRegion Registration<ChangeGridRegionZ>::ToArca(Type fromAngelScript)

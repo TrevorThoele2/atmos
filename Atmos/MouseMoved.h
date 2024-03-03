@@ -2,13 +2,14 @@
 
 #include <Arca/Signal.h>
 
-#include "ScreenPositionDelta.h"
+#include "ScreenPoint.h"
 
 namespace Atmos::Input
 {
     struct MouseMoved
     {
-        const ScreenPositionDelta delta;
+        Spatial::ScreenPoint previous;
+        Spatial::ScreenPoint current;
     };
 }
 

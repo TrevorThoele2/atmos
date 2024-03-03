@@ -39,6 +39,7 @@ namespace Atmos
     {
         void RegisterTypes(Arca::ReliquaryOrigin& origin);
         void RegisterTypes(Arca::ReliquaryOrigin& origin, Manager& manager);
+        Arca::Stage Stage();
     }
 
     namespace Render

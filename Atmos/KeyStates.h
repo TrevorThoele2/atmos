@@ -1,0 +1,246 @@
+#pragma once
+
+#include "KeyState.h"
+
+namespace Atmos::Input
+{
+    struct KeyStates
+    {
+        KeyState leftMouseButton = KeyState::Up;
+        KeyState middleMouseButton = KeyState::Up;
+        KeyState rightMouseButton = KeyState::Up;
+        KeyState x1MouseButton = KeyState::Up;
+        KeyState x2MouseButton = KeyState::Up;
+
+        KeyState a = KeyState::Up;
+        KeyState b = KeyState::Up;
+        KeyState c = KeyState::Up;
+        KeyState d = KeyState::Up;
+        KeyState e = KeyState::Up;
+        KeyState f = KeyState::Up;
+        KeyState g = KeyState::Up;
+        KeyState h = KeyState::Up;
+        KeyState i = KeyState::Up;
+        KeyState j = KeyState::Up;
+        KeyState k = KeyState::Up;
+        KeyState l = KeyState::Up;
+        KeyState m = KeyState::Up;
+        KeyState n = KeyState::Up;
+        KeyState o = KeyState::Up;
+        KeyState p = KeyState::Up;
+        KeyState q = KeyState::Up;
+        KeyState r = KeyState::Up;
+        KeyState s = KeyState::Up;
+        KeyState t = KeyState::Up;
+        KeyState u = KeyState::Up;
+        KeyState v = KeyState::Up;
+        KeyState w = KeyState::Up;
+        KeyState x = KeyState::Up;
+        KeyState y = KeyState::Up;
+        KeyState z = KeyState::Up;
+
+        KeyState zero = KeyState::Up;
+        KeyState one = KeyState::Up;
+        KeyState two = KeyState::Up;
+        KeyState three = KeyState::Up;
+        KeyState four = KeyState::Up;
+        KeyState five = KeyState::Up;
+        KeyState six = KeyState::Up;
+        KeyState seven = KeyState::Up;
+        KeyState eight = KeyState::Up;
+        KeyState nine = KeyState::Up;
+
+        KeyState left = KeyState::Up;
+        KeyState up = KeyState::Up;
+        KeyState right = KeyState::Up;
+        KeyState down = KeyState::Up;
+
+        KeyState f1 = KeyState::Up;
+        KeyState f2 = KeyState::Up;
+        KeyState f3 = KeyState::Up;
+        KeyState f4 = KeyState::Up;
+        KeyState f5 = KeyState::Up;
+        KeyState f6 = KeyState::Up;
+        KeyState f7 = KeyState::Up;
+        KeyState f8 = KeyState::Up;
+        KeyState f9 = KeyState::Up;
+        KeyState f10 = KeyState::Up;
+        KeyState f11 = KeyState::Up;
+        KeyState f12 = KeyState::Up;
+        KeyState f13 = KeyState::Up;
+        KeyState f14 = KeyState::Up;
+        KeyState f15 = KeyState::Up;
+        KeyState f16 = KeyState::Up;
+        KeyState f17 = KeyState::Up;
+        KeyState f18 = KeyState::Up;
+        KeyState f19 = KeyState::Up;
+        KeyState f20 = KeyState::Up;
+        KeyState f21 = KeyState::Up;
+        KeyState f22 = KeyState::Up;
+        KeyState f23 = KeyState::Up;
+        KeyState f24 = KeyState::Up;
+
+        KeyState leftAlt = KeyState::Up;
+        KeyState leftControl = KeyState::Up;
+        KeyState leftShift = KeyState::Up;
+        KeyState leftBracket = KeyState::Up;
+        KeyState leftGui = KeyState::Up;
+
+        KeyState rightAlt = KeyState::Up;
+        KeyState rightControl = KeyState::Up;
+        KeyState rightShift = KeyState::Up;
+        KeyState rightBracket = KeyState::Up;
+        KeyState rightGui = KeyState::Up;
+
+        KeyState pageDown = KeyState::Up;
+        KeyState pageUp = KeyState::Up;
+
+        KeyState keypad0 = KeyState::Up;
+        KeyState keypad00 = KeyState::Up;
+        KeyState keypad000 = KeyState::Up;
+        KeyState keypad1 = KeyState::Up;
+        KeyState keypad2 = KeyState::Up;
+        KeyState keypad3 = KeyState::Up;
+        KeyState keypad4 = KeyState::Up;
+        KeyState keypad5 = KeyState::Up;
+        KeyState keypad6 = KeyState::Up;
+        KeyState keypad7 = KeyState::Up;
+        KeyState keypad8 = KeyState::Up;
+        KeyState keypad9 = KeyState::Up;
+        KeyState keypadA = KeyState::Up;
+        KeyState keypadB = KeyState::Up;
+        KeyState keypadC = KeyState::Up;
+        KeyState keypadD = KeyState::Up;
+        KeyState keypadE = KeyState::Up;
+        KeyState keypadF = KeyState::Up;
+        KeyState keypadAmpersand = KeyState::Up;
+        KeyState keypadAt = KeyState::Up;
+        KeyState keypadBackspace = KeyState::Up;
+        KeyState keypadBinary = KeyState::Up;
+        KeyState keypadClear = KeyState::Up;
+        KeyState keypadClearEntry = KeyState::Up;
+        KeyState keypadColon = KeyState::Up;
+        KeyState keypadComma = KeyState::Up;
+        KeyState keypadAmpersandAmpersand = KeyState::Up;
+        KeyState keypadBarBar = KeyState::Up;
+        KeyState keypadDecimal = KeyState::Up;
+        KeyState keypadForwardSlash = KeyState::Up;
+        KeyState keypadEnter = KeyState::Up;
+        KeyState keypadEquals = KeyState::Up;
+        KeyState keypadEqualsAS400 = KeyState::Up;
+        KeyState keypadExclamation = KeyState::Up;
+        KeyState keypadGreater = KeyState::Up;
+        KeyState keypadLess = KeyState::Up;
+        KeyState keypadPound = KeyState::Up;
+        KeyState keypadHexadecimal = KeyState::Up;
+        KeyState keypadLeftBrace = KeyState::Up;
+        KeyState keypadLeftParenthesis = KeyState::Up;
+        KeyState keypadMemAdd = KeyState::Up;
+        KeyState keypadMemClear = KeyState::Up;
+        KeyState keypadMemDivide = KeyState::Up;
+        KeyState keypadMemMultiply = KeyState::Up;
+        KeyState keypadMemRecall = KeyState::Up;
+        KeyState keypadMemStore = KeyState::Up;
+        KeyState keypadMemSubtract = KeyState::Up;
+        KeyState keypadHyphen = KeyState::Up;
+        KeyState keypadAsterisk = KeyState::Up;
+        KeyState keypadOctal = KeyState::Up;
+        KeyState keypadPercent = KeyState::Up;
+        KeyState keypadPeriod = KeyState::Up;
+        KeyState keypadPlus = KeyState::Up;
+        KeyState keypadPlusMinus = KeyState::Up;
+        KeyState keypadPower = KeyState::Up;
+        KeyState keypadRightBrace = KeyState::Up;
+        KeyState keypadRightParenthesis = KeyState::Up;
+        KeyState keypadSpace = KeyState::Up;
+        KeyState keypadTab = KeyState::Up;
+        KeyState keypadBar = KeyState::Up;
+        KeyState keypadXor = KeyState::Up;
+
+        KeyState brightnessUp = KeyState::Up;
+        KeyState brightnessDown = KeyState::Up;
+
+        KeyState volumeUp = KeyState::Up;
+        KeyState volumeDown = KeyState::Up;
+
+        KeyState audioMute = KeyState::Up;
+        KeyState audioNext = KeyState::Up;
+        KeyState audioPlay = KeyState::Up;
+        KeyState audioPrevious = KeyState::Up;
+        KeyState audioStop = KeyState::Up;
+
+        KeyState acBack = KeyState::Up;
+        KeyState acBookmarks = KeyState::Up;
+        KeyState acForward = KeyState::Up;
+        KeyState acHome = KeyState::Up;
+        KeyState acRefresh = KeyState::Up;
+        KeyState acSearch = KeyState::Up;
+        KeyState acStop = KeyState::Up;
+
+        KeyState illuminationDown = KeyState::Up;
+        KeyState illuminationUp = KeyState::Up;
+        KeyState illuminationToggle = KeyState::Up;
+
+        KeyState backslash = KeyState::Up;
+        KeyState backspace = KeyState::Up;
+        KeyState comma = KeyState::Up;
+        KeyState quote = KeyState::Up;
+        KeyState again = KeyState::Up;
+        KeyState altErase = KeyState::Up;
+        KeyState application = KeyState::Up;
+        KeyState calculator = KeyState::Up;
+        KeyState cancel = KeyState::Up;
+        KeyState capsLock = KeyState::Up;
+        KeyState clear = KeyState::Up;
+        KeyState clearAgain = KeyState::Up;
+        KeyState computer = KeyState::Up;
+        KeyState copy = KeyState::Up;
+        KeyState crSel = KeyState::Up;
+        KeyState currencySubUnit = KeyState::Up;
+        KeyState currencyUnit = KeyState::Up;
+        KeyState cut = KeyState::Up;
+        KeyState decimalSeparator = KeyState::Up;
+        KeyState del = KeyState::Up;
+        KeyState displaySwitch = KeyState::Up;
+        KeyState eject = KeyState::Up;
+        KeyState end = KeyState::Up;
+        KeyState equals = KeyState::Up;
+        KeyState escape = KeyState::Up;
+        KeyState execute = KeyState::Up;
+        KeyState exSel = KeyState::Up;
+        KeyState find = KeyState::Up;
+        KeyState grave = KeyState::Up;
+        KeyState help = KeyState::Up;
+        KeyState home = KeyState::Up;
+        KeyState insert = KeyState::Up;
+        KeyState mail = KeyState::Up;
+        KeyState mediaSelect = KeyState::Up;
+        KeyState menu = KeyState::Up;
+        KeyState hyphen = KeyState::Up;
+        KeyState modeSwitch = KeyState::Up;
+        KeyState mute = KeyState::Up;
+        KeyState numlock = KeyState::Up;
+        KeyState oper = KeyState::Up;
+        KeyState out = KeyState::Up;
+        KeyState paste = KeyState::Up;
+        KeyState pause = KeyState::Up;
+        KeyState period = KeyState::Up;
+        KeyState power = KeyState::Up;
+        KeyState printScreen = KeyState::Up;
+        KeyState prior = KeyState::Up;
+        KeyState enter = KeyState::Up;
+        KeyState scrollLock = KeyState::Up;
+        KeyState select = KeyState::Up;
+        KeyState semicolon = KeyState::Up;
+        KeyState separator = KeyState::Up;
+        KeyState forwardSlash = KeyState::Up;
+        KeyState sleep = KeyState::Up;
+        KeyState space = KeyState::Up;
+        KeyState stop = KeyState::Up;
+        KeyState sysReq = KeyState::Up;
+        KeyState tab = KeyState::Up;
+        KeyState thousandsSeparator = KeyState::Up;
+        KeyState undo = KeyState::Up;
+        KeyState worldWideWeb = KeyState::Up;
+    };
+}

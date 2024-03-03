@@ -12,16 +12,16 @@
 
 namespace Atmos::Scripting::Angel
 {
-    void Registration<Script>::RegisterTo(asIScriptEngine& engine)
+    void Registration<Script>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         ValueTypeRegistration<Type> registration(containingNamespace, name);
         RegisterArcaIndex(registration);
         registration
             .ConstMethod(&Management::Method<&Data>, "Atmos::Datum[]@", "Data", {})
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
 
-        Registration<ArcaTraits<Script>>::RegisterTo(engine);
-        Registration<Arca::Batch<Script>>::RegisterTo(engine);
+        Registration<ArcaTraits<Script>>::RegisterTo(engine, documentationManager);
+        Registration<Arca::Batch<Script>>::RegisterTo(engine, documentationManager);
 
         RegisterArcaCreateRelic<
             Script,
@@ -31,9 +31,10 @@ namespace Atmos::Scripting::Angel
                 std::vector<Variant>>>
         (
             { "Atmos::Asset::Script asset", "string executeName", "Atmos::Variant[]@ parameters" },
-            engine);
+            engine,
+            documentationManager);
         
-        RegisterArcaDestroyRelic<Script>(engine);
+        RegisterArcaDestroyRelic<Script>(engine, documentationManager);
     }
 
     std::vector<Datum> Registration<Script>::Data(Type type)
@@ -41,7 +42,7 @@ namespace Atmos::Scripting::Angel
         return RequiredValue(type)->data;
     }
 
-    void Registration<ModifyData>::RegisterTo(asIScriptEngine& engine)
+    void Registration<ModifyData>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         ValueTypeRegistration<Type>(containingNamespace, name)
             .Constructor(
@@ -58,8 +59,8 @@ namespace Atmos::Scripting::Angel
             .Property<&Type::add>("Atmos::Datum[]@", "add")
             .Property<&Type::remove>("string[]@", "remove")
             .Property<&Type::replace>("Atmos::Datum[]@", "replace")
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
 
-        RegisterCommandHandler<&Chroma::Identity<Type>>(engine);
+        RegisterCommandHandler<&Chroma::Identity<Type>>(engine, documentationManager);
     }
 }

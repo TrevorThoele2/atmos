@@ -26,7 +26,7 @@ namespace Atmos::Scripting
     public:
         void Handle(const Work& command);
         void Handle(const Suspend& command);
-        DataBuffer Handle(const Compile& command);
+        Buffer Handle(const Compile& command);
         void Handle(const ModifyData& command);
         std::optional<Result> Handle(const Execute& command);
 

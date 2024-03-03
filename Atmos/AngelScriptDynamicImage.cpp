@@ -11,7 +11,7 @@
 
 namespace Atmos::Scripting::Angel
 {
-    void Registration<Render::DynamicImage>::RegisterTo(asIScriptEngine& engine)
+    void Registration<Render::DynamicImage>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         ValueTypeRegistration<Type> registration(containingNamespace, name);
         RegisterArcaIndex(registration);
@@ -24,12 +24,10 @@ namespace Atmos::Scripting::Angel
             .ConstMethod(&Management::Method<&Position>, "Atmos::Spatial::Point3D", "Position", {})
             .ConstMethod(&Management::Method<&Size>, "Atmos::Spatial::Size2D", "Size", {})
             .ConstMethod(&Management::Method<&Rotation>, "Atmos::Spatial::Angle2D", "Rotation", {})
-            .ConstMethod(&Management::Method<&Core>, "Atmos::Render::ImageCore", "Core", {})
-            .ConstMethod(&Management::Method<&Bounds>, "Atmos::Spatial::Bounds", "Bounds", {})
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
 
-        Registration<ArcaTraits<Render::DynamicImage>>::RegisterTo(engine);
-        Registration<Arca::Batch<Render::DynamicImage>>::RegisterTo(engine);
+        Registration<ArcaTraits<Render::DynamicImage>>::RegisterTo(engine, documentationManager);
+        Registration<Arca::Batch<Render::DynamicImage>>::RegisterTo(engine, documentationManager);
 
         RegisterArcaCreateRelic<
             Render::DynamicImage,
@@ -51,9 +49,10 @@ namespace Atmos::Scripting::Angel
                 "Atmos::Spatial::Scalers2D scalers",
                 "Atmos::Spatial::Angle2D rotation"
             },
-            engine);
+            engine,
+            documentationManager);
 
-        RegisterArcaDestroyRelic<Render::DynamicImage>(engine);
+        RegisterArcaDestroyRelic<Render::DynamicImage>(engine, documentationManager);
     }
 
     Arca::Index<Asset::Image> Registration<Render::DynamicImage>::Asset(Type type)
@@ -94,15 +93,5 @@ namespace Atmos::Scripting::Angel
     Spatial::Angle2D Registration<Render::DynamicImage>::Rotation(Type type)
     {
         return RequiredValue(type)->Rotation();
-    }
-
-    Arca::Index<Render::ImageCore> Registration<Render::DynamicImage>::Core(Type type)
-    {
-        return RequiredValue(type)->Core();
-    }
-
-    Arca::Index<Spatial::Bounds> Registration<Render::DynamicImage>::Bounds(Type type)
-    {
-        return RequiredValue(type)->Bounds();
     }
 }

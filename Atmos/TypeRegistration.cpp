@@ -1,5 +1,7 @@
 #include "TypeRegistration.h"
 
+#include "InputCurator.h"
+
 #include "BoundsCurator.h"
 #include "RelativeBounds.h"
 
@@ -21,6 +23,7 @@
 
 #include "AudioCurator.h"
 
+#include "ActionAsset.h"
 #include "AudioAsset.h"
 #include "ImageAsset.h"
 #include "ImageMaterialAsset.h"
@@ -29,6 +32,7 @@
 #include "ScriptAsset.h"
 #include "ShaderAsset.h"
 #include "MappedAssets.h"
+#include "ActionAssetCurator.h"
 #include "AudioAssetCurator.h"
 #include "ImageAssetCurator.h"
 #include "ImageMaterialAssetCurator.h"
@@ -125,6 +129,7 @@ namespace Atmos
     {
         auto pipeline = Arca::Pipeline();
         pipeline.push_back(Frame::StartStage());
+        pipeline.push_back(Input::Stage());
         pipeline.push_back(Scripting::Stage());
         pipeline.push_back(Render::Stage());
         pipeline.push_back(Frame::EndStage());
@@ -140,7 +145,17 @@ namespace Atmos
 
         void RegisterTypes(Arca::ReliquaryOrigin& origin, Manager& manager)
         {
+            RegisterTypes(origin);
 
+            origin
+                .Register<Curator>(std::ref(manager));
+        }
+
+        Arca::Stage Stage()
+        {
+            Arca::Stage stage;
+            stage.Add<Curator>();
+            return stage;
         }
     }
 
@@ -238,6 +253,7 @@ namespace Atmos
         {
             origin
                 .Register<Core>()
+                .Register<Action>()
                 .Register<Audio>()
                 .Register<Image>()
                 .Register<ImageMaterial>()
@@ -245,6 +261,7 @@ namespace Atmos
                 .Register<RegionMaterial>()
                 .Register<Script>()
                 .Register<Shader>()
+                .Register<Mapped<Action>>()
                 .Register<Mapped<Audio>>()
                 .Register<Mapped<Image>>()
                 .Register<Mapped<ImageMaterial>>()
@@ -252,6 +269,7 @@ namespace Atmos
                 .Register<Mapped<RegionMaterial>>()
                 .Register<Mapped<Script>>()
                 .Register<Mapped<Shader>>()
+                .Register<ActionCurator>()
                 .Register<AudioCurator>()
                 .Register<ImageCurator>(std::ref(manager))
                 .Register<ImageMaterialCurator>()

@@ -19,13 +19,13 @@ namespace Atmos::Asset::Resource
     template<>
     struct LoadDataFromMemory<Image>
     {
-        DataBuffer memory;
+        Buffer memory;
     };
 
     template<>
     struct Loaded<Image>
     {
-        DataBuffer buffer;
+        Buffer buffer;
         ImageFileType fileType;
         ImageSize size;
     };

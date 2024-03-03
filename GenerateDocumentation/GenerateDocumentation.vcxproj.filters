@@ -21,9 +21,15 @@
     <ClCompile Include="docgen.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="DocumentationManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="docgen.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DocumentationManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

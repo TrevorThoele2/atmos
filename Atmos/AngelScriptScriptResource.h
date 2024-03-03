@@ -51,10 +51,11 @@ namespace Atmos::Scripting::Angel
 
         std::unordered_map<String, Group> groups;
 
+        void ExecuteAllStoredSecondaries();
         static void DoExecuteSecondary(
             const SecondaryExecution& secondaryExecution,
             AngelScriptFunctions& angelScriptFunctions,
-            asIScriptContext& context,
+            asIScriptEngine& engine,
             Logging::Logger& logger);
     private:
         Logging::Logger* logger = nullptr;

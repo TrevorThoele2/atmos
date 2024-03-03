@@ -17,9 +17,10 @@ namespace Atmos::Scripting::Angel
     struct Registration<Angle2D>
     {
         static inline const String name = "Angle2D";
-        static inline const String containingNamespace = Namespaces::Atmos::Spatial::name;
+        static inline const String containingNamespace = "Atmos::Spatial";
+        static inline const String documentation = "2D angle.";
         static const ObjectType objectType = ObjectType::Value;
 
-        static void RegisterTo(asIScriptEngine& engine);
+        static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
     };
 }

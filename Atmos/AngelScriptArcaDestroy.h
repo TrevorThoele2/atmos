@@ -23,12 +23,13 @@ namespace Atmos::Scripting::Angel
         using Type = GenericArcaDestroy;
 
         static inline const String name = "Destroy<class T>";
-        static inline const String containingNamespace = Namespaces::Arca::name;
+        static inline const String containingNamespace = "Arca";
+        static inline const String documentation = "This is a command. Needs to be used with explicit specializations.";
         static const ObjectType objectType = ObjectType::Value;
 
         using Management = ObjectManagement<Type>;
 
-        static void RegisterTo(asIScriptEngine& engine);
+        static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
     };
 
     template<class T>
@@ -37,7 +38,8 @@ namespace Atmos::Scripting::Angel
         using Type = Arca::Destroy<T>;
 
         static inline const String name = "Destroy<" + CreateName({ Registration<T>::containingNamespace }, Registration<T>::name) + ">";
-        static inline const String containingNamespace = Namespaces::Arca::name;
+        static inline const String containingNamespace = "Arca";
+        static inline const String documentation = "This is a command.";
         static const ObjectType objectType = ObjectType::Value;
 
         using Management = ObjectManagement<Type>;
@@ -49,12 +51,13 @@ namespace Atmos::Scripting::Angel
         using Type = Arca::Destroying;
 
         static inline const String name = "Destroying";
-        static inline const String containingNamespace = Namespaces::Arca::name;
+        static inline const String containingNamespace = "Arca";
+        static inline const String documentation = "This is a signal.";
         static const ObjectType objectType = ObjectType::Value;
 
         using Management = ObjectManagement<Type>;
 
-        static void RegisterTo(asIScriptEngine& engine);
+        static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
     };
 
     class GenericArcaDestroyingKnown
@@ -66,12 +69,13 @@ namespace Atmos::Scripting::Angel
         using Type = GenericArcaDestroyingKnown;
 
         static inline const String name = "DestroyingKnown<class T>";
-        static inline const String containingNamespace = Namespaces::Arca::name;
+        static inline const String containingNamespace = "Arca";
+        static inline const String documentation = "This is a signal. Needs to be used with explicit specializations.";
         static const ObjectType objectType = ObjectType::Value;
 
         using Management = ObjectManagement<Type>;
 
-        static void RegisterTo(asIScriptEngine& engine);
+        static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
     };
 
     template<class T>
@@ -80,7 +84,8 @@ namespace Atmos::Scripting::Angel
         using Type = Arca::CreatedKnown<T>;
 
         static inline const String name = "DestroyingKnown<" + CreateName({ Registration<T>::containingNamespace }, Registration<T>::name) + ">";
-        static inline const String containingNamespace = Namespaces::Arca::name;
+        static inline const String containingNamespace = "Arca";
+        static inline const String documentation = "This is a signal.";
         static const ObjectType objectType = ObjectType::Value;
 
         using Management = ObjectManagement<Type>;
@@ -89,7 +94,7 @@ namespace Atmos::Scripting::Angel
     namespace Detail
     {
         template<class T>
-        void DoRegisterArcaDestroy(asIScriptEngine& engine)
+        void DoRegisterArcaDestroy(asIScriptEngine& engine, DocumentationManager& documentationManager)
         {
             using CommandT = Arca::Destroy<T>;
 
@@ -105,13 +110,13 @@ namespace Atmos::Scripting::Angel
                 .CopyConstructor(&Management::GenerateValueFromCopy)
                 .Destructor(&Management::DestructValue)
                 .CopyAssignment(&Management::CopyAssign)
-                .Actualize(engine);
+                .Actualize(engine, documentationManager);
 
-            RegisterCommandHandler<&Chroma::Identity<CommandT>>(engine);
+            RegisterCommandHandler<&Chroma::Identity<CommandT>>(engine, documentationManager);
         }
 
         template<class T>
-        void DoRegisterArcaDestroying(asIScriptEngine& engine)
+        void DoRegisterArcaDestroying(asIScriptEngine& engine, DocumentationManager& documentationManager)
         {
             using SignalT = Arca::DestroyingKnown<T>;
 
@@ -124,17 +129,17 @@ namespace Atmos::Scripting::Angel
                 .CopyConstructor(&Management::GenerateValueFromCopy)
                 .Destructor(&Management::DestructValue)
                 .CopyAssignment(&Management::CopyAssign)
-                .Actualize(engine);
+                .Actualize(engine, documentationManager);
 
-            RegisterSignalHandler<&Chroma::Identity<SignalT>>(engine);
+            RegisterSignalHandler<&Chroma::Identity<SignalT>>(engine, documentationManager);
         }
     }
 
     template<class T>
-    void RegisterArcaDestroyRelic(asIScriptEngine& engine)
+    void RegisterArcaDestroyRelic(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        Detail::DoRegisterArcaDestroy<T>(engine);
+        Detail::DoRegisterArcaDestroy<T>(engine, documentationManager);
 
-        Detail::DoRegisterArcaDestroying<T>(engine);
+        Detail::DoRegisterArcaDestroying<T>(engine, documentationManager);
     }
 }

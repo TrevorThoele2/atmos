@@ -2,7 +2,7 @@
 
 namespace Atmos::Scripting::Angel
 {
-    void Registration<GenericArcaCreate>::RegisterTo(asIScriptEngine& engine)
+    void Registration<GenericArcaCreate>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         TemplateValueTypeRegistration<Type>(containingNamespace, "Create", { "T" })
             .TemplateCallback(&Management::RequiredSpecializationTemplateCallback)
@@ -10,10 +10,10 @@ namespace Atmos::Scripting::Angel
             .CopyConstructor(&Management::UndefinedTemplate)
             .Destructor(&Management::UndefinedTemplate)
             .CopyAssignment(&Management::UndefinedTemplate)
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
     }
 
-    void Registration<GenericArcaCreateChild>::RegisterTo(asIScriptEngine& engine)
+    void Registration<GenericArcaCreateChild>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         TemplateValueTypeRegistration<Type>(containingNamespace, "CreateChild", { "T" })
             .TemplateCallback(&Management::RequiredSpecializationTemplateCallback)
@@ -21,10 +21,10 @@ namespace Atmos::Scripting::Angel
             .CopyConstructor(&Management::UndefinedTemplate)
             .Destructor(&Management::UndefinedTemplate)
             .CopyAssignment(&Management::UndefinedTemplate)
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
     }
 
-    void Registration<GenericArcaIdentifiedCreate>::RegisterTo(asIScriptEngine& engine)
+    void Registration<GenericArcaIdentifiedCreate>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         TemplateValueTypeRegistration<Type>(containingNamespace, "IdentifiedCreate", { "T" })
             .TemplateCallback(&Management::RequiredSpecializationTemplateCallback)
@@ -32,10 +32,10 @@ namespace Atmos::Scripting::Angel
             .CopyConstructor(&Management::UndefinedTemplate)
             .Destructor(&Management::UndefinedTemplate)
             .CopyAssignment(&Management::UndefinedTemplate)
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
     }
 
-    void Registration<GenericArcaIdentifiedCreateChild>::RegisterTo(asIScriptEngine& engine)
+    void Registration<GenericArcaIdentifiedCreateChild>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         TemplateValueTypeRegistration<Type>(containingNamespace, "IdentifiedCreateChild", { "T" })
             .TemplateCallback(&Management::RequiredSpecializationTemplateCallback)
@@ -43,10 +43,10 @@ namespace Atmos::Scripting::Angel
             .CopyConstructor(&Management::UndefinedTemplate)
             .Destructor(&Management::UndefinedTemplate)
             .CopyAssignment(&Management::UndefinedTemplate)
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
     }
 
-    void Registration<Arca::Created>::RegisterTo(asIScriptEngine& engine)
+    void Registration<Arca::Created>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         ValueTypeRegistration<Type>(containingNamespace, name)
             .DefaultConstructor(&Management::GenerateDefaultValue)
@@ -57,12 +57,12 @@ namespace Atmos::Scripting::Angel
             .Destructor(&Management::DestructValue)
             .CopyAssignment(&Management::CopyAssign)
             .Property<&Type::handle>("Arca::Handle", "handle")
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
 
-        RegisterSignalHandler<&Chroma::Identity<Type>>(engine);
+        RegisterSignalHandler<&Chroma::Identity<Type>>(engine, documentationManager);
     }
 
-    void Registration<GenericArcaCreatedKnown>::RegisterTo(asIScriptEngine& engine)
+    void Registration<GenericArcaCreatedKnown>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         TemplateValueTypeRegistration<Type>(containingNamespace, "CreatedKnown", { "T" })
             .TemplateCallback(&Management::RequiredSpecializationTemplateCallback)
@@ -70,6 +70,6 @@ namespace Atmos::Scripting::Angel
             .CopyConstructor(&Management::UndefinedTemplate)
             .Destructor(&Management::UndefinedTemplate)
             .CopyAssignment(&Management::UndefinedTemplate)
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
     }
 }

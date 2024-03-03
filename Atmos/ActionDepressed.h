@@ -2,13 +2,13 @@
 
 #include <Arca/Signal.h>
 
-#include "Action.h"
+#include "ActionAsset.h"
 
 namespace Atmos::Input
 {
     struct ActionDepressed
     {
-        const Action& action;
+        Arca::Index<Asset::Action> action;
     };
 }
 

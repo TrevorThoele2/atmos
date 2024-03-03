@@ -6,7 +6,7 @@
 
 namespace Atmos::Scripting::Angel
 {
-    void Registration<Spatial::Angle3D>::RegisterTo(asIScriptEngine& engine)
+    void Registration<Spatial::Angle3D>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         ValueTypeRegistration<Type>(containingNamespace, name)
             .DefaultConstructor(&Management::GenerateDefaultValue)
@@ -21,6 +21,6 @@ namespace Atmos::Scripting::Angel
             .Equals(&Management::Equals)
             .Property<&Type::yaw>("float", "yaw")
             .Property<&Type::pitch>("float", "pitch")
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
     }
 }

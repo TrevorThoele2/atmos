@@ -9,10 +9,10 @@ namespace Atmos::Asset
         const auto size = inputArchive.Size();
 
         Inscription::Buffer loadedBuffer;
-        loadedBuffer.resize(static_cast<size_t>(size));
+        loadedBuffer.value.resize(static_cast<size_t>(size));
         inputArchive.Read(loadedBuffer);
 
-        const auto returnBuffer = DataBuffer(loadedBuffer.begin(), loadedBuffer.end());
+        const auto returnBuffer = Buffer(loadedBuffer.value.begin(), loadedBuffer.value.end());
 
         return { returnBuffer };
     }

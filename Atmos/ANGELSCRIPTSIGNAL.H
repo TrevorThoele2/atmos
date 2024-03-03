@@ -39,51 +39,52 @@ namespace Atmos::Scripting::Angel
         }
 
         template<auto fromArca>
-        void RegisterSignalHandlerCommon(asIScriptEngine& engine)
+        void RegisterSignalHandlerCommon(asIScriptEngine& engine, DocumentationManager& documentationManager)
         {
             using ParametersT = typename FunctionTraits<fromArca>::ParameterPackT;
             static_assert(ParametersT::count == 1, "fromArca must take a single parameter.");
 
             using Argument = typename SterilizedItem<typename ParametersT::template Parameter<0>::Type>::Type;
             using ArgumentTypeRegistration = Registration<Argument>;
+            const auto funcDefNamespace = ArgumentTypeRegistration::containingNamespace;
             const auto funcDef =
                 Chroma::ReplaceString(
                     Chroma::ReplaceString(
                         Chroma::ReplaceString("On" + ArgumentTypeRegistration::name, "<", ""), ">", ""), "::", "");
-            GlobalRegistration(Namespaces::Arca::name)
+            GlobalRegistration(funcDefNamespace)
                 .Funcdef("void", funcDef, { CreateName({ArgumentTypeRegistration::containingNamespace}, ArgumentTypeRegistration::name) + " signal" })
-                .Actualize(engine);
-            GlobalRegistration(CreateName({ Namespaces::Arca::name }, "Reliquary"))
-                .Function(&RegisterOnFunction<Argument>, "void", "On", std::vector<String>{ funcDef + "@ handler" })
-                .Actualize(engine);
+                .Actualize(engine, documentationManager);
+            GlobalRegistration(CreateName({ "Arca" }, "Reliquary"))
+                .Function(&RegisterOnFunction<Argument>, "void", "On", std::vector<String>{ CreateName({ funcDefNamespace }, funcDef + "@ handler") })
+                .Actualize(engine, documentationManager);
 
             UserData::RequiredFrom(engine)->reliquary->On<Argument>([&engine](const Argument& argument)
                 {
                     const auto reliquary = UserData::RequiredFrom(engine)->reliquary;
-                    const auto currentRunningScript = RetrieveCurrentExecuting(*reliquary);
-                    if (!currentRunningScript)
-                        return;
-
-                    auto resource = currentRunningScript->Resource<ScriptResource>();
-                    if (!resource)
-                        return;
-
-                    const auto toAngelScript = fromArca(argument);
-
-                    const auto functionGroupName = Arca::TypeFor<Argument>().name;
-                    const auto prepareContext = [toAngelScript](asIScriptContext& context)
+                    auto scripts = reliquary->Batch<Script>();
+                    for(auto& script : scripts)
                     {
-                        PushToParameter(0, toAngelScript, context);
-                    };
+                        auto resource = script.Resource<ScriptResource>();
+                        if (!resource)
+                            continue;
 
-                    resource->ExecuteSecondaryAgainstStoredFunctions(functionGroupName, prepareContext);
+                        const auto toAngelScript = fromArca(argument);
+
+                        const auto functionGroupName = Arca::TypeFor<Argument>().name;
+                        const auto prepareContext = [toAngelScript](asIScriptContext& context)
+                        {
+                            PushToParameter(0, toAngelScript, context);
+                        };
+
+                        resource->ExecuteSecondaryAgainstStoredFunctions(functionGroupName, prepareContext);
+                    }
                 });
         }
     }
 
     template<auto fromArca>
-    void RegisterSignalHandler(asIScriptEngine& engine)
+    void RegisterSignalHandler(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        Detail::RegisterSignalHandlerCommon<fromArca>(engine);
+        Detail::RegisterSignalHandlerCommon<fromArca>(engine, documentationManager);
     }
 }

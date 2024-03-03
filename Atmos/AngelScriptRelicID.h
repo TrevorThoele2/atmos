@@ -22,9 +22,10 @@ namespace Atmos::Scripting::Angel
         using Management = GlobalManagement;
 
         static inline const String name = "RelicID";
-        static inline const String containingNamespace = Namespaces::Arca::name;
+        static inline const String containingNamespace = "Arca";
+        static inline const String documentation = "Every relic and shard has a RelicID that uniquely identifies it for that Reliquary.";
         static const ObjectType objectType = ObjectType::Value;
 
-        static void RegisterTo(asIScriptEngine& engine);
+        static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
     };
 }

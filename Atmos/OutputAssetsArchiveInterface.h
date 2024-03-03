@@ -14,9 +14,9 @@ namespace Atmos::World::Serialization
         struct SaveAsset
         {
             Name name;
-            DataBuffer memory;
+            Buffer memory;
             SaveAsset() = default;
-            SaveAsset(const Name& name, DataBuffer&& memory);
+            SaveAsset(const Name& name, Buffer&& memory);
         };
 
         using SaveAssets = std::vector<SaveAsset>;

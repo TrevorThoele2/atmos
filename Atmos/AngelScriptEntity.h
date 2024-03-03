@@ -25,10 +25,11 @@ namespace Atmos::Scripting::Angel
         using Management = ObjectManagement<Type>;
 
         static inline const String name = "Entity";
-        static inline const String containingNamespace = Namespaces::Atmos::Entity::name;
+        static inline const String containingNamespace = "Atmos::Entity";
+        static inline const String documentation = "This is a relic.";
         static const ObjectType objectType = ObjectType::Value;
 
-        static void RegisterTo(asIScriptEngine& engine);
+        static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
     private:
         [[nodiscard]] static String Name(Type type);
         [[nodiscard]] static String DisplayName(Type type);
@@ -50,10 +51,11 @@ namespace Atmos::Scripting::Angel
         using Management = ObjectManagement<Type>;
 
         static inline const String name = "FindByName";
-        static inline const String containingNamespace = Namespaces::Atmos::Entity::name;
+        static inline const String containingNamespace = "Atmos::Entity";
+        static inline const String documentation = "This is a command.";
         static const ObjectType objectType = ObjectType::Value;
 
-        static void RegisterTo(asIScriptEngine& engine);
+        static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
     private:
         static Arca::Index<Entity::Entity> ToCommandReturn(Arca::command_result_t<Type> fromArca, Arca::Reliquary&);
     };
@@ -65,10 +67,11 @@ namespace Atmos::Scripting::Angel
         using Management = ObjectManagement<Type>;
 
         static inline const String name = "FindByPosition";
-        static inline const String containingNamespace = Namespaces::Atmos::Entity::name;
+        static inline const String containingNamespace = "Atmos::Entity";
+        static inline const String documentation = "This is a command.";
         static const ObjectType objectType = ObjectType::Value;
 
-        static void RegisterTo(asIScriptEngine& engine);
+        static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
     private:
         static std::vector<Arca::Index<Entity::Entity>> ToCommandReturn(Arca::command_result_t<Type> fromArca, Arca::Reliquary&);
     };
@@ -80,10 +83,11 @@ namespace Atmos::Scripting::Angel
         using Management = ObjectManagement<Type>;
 
         static inline const String name = "MoveTo";
-        static inline const String containingNamespace = Namespaces::Atmos::Entity::name;
+        static inline const String containingNamespace = "Atmos::Entity";
+        static inline const String documentation = "This is a command.";
         static const ObjectType objectType = ObjectType::Value;
 
-        static void RegisterTo(asIScriptEngine& engine);
+        static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
     };
 
     template<>
@@ -93,10 +97,11 @@ namespace Atmos::Scripting::Angel
         using Management = ObjectManagement<Type>;
 
         static inline const String name = "ModifyData";
-        static inline const String containingNamespace = Namespaces::Atmos::Entity::name;
+        static inline const String containingNamespace = "Atmos::Entity";
+        static inline const String documentation = "This is a command.";
         static const ObjectType objectType = ObjectType::Value;
 
-        static void RegisterTo(asIScriptEngine& engine);
+        static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
     };
 
     template<>
@@ -106,9 +111,10 @@ namespace Atmos::Scripting::Angel
         using Management = ObjectManagement<Type>;
 
         static inline const String name = "ModifyTags";
-        static inline const String containingNamespace = Namespaces::Atmos::Entity::name;
+        static inline const String containingNamespace = "Atmos::Entity";
+        static inline const String documentation = "This is a command.";
         static const ObjectType objectType = ObjectType::Value;
 
-        static void RegisterTo(asIScriptEngine& engine);
+        static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
     };
 }

@@ -20,11 +20,11 @@ namespace Atmos::Render
         void InitializeImpl() override;
 
         [[nodiscard]] std::unique_ptr<Asset::Resource::Image> CreateImageResourceImpl(
-            const DataBuffer& buffer,
+            const Buffer& buffer,
             const Name& name,
             const Asset::ImageSize& size) override;
         [[nodiscard]] std::unique_ptr<Asset::Resource::Shader> CreateShaderResourceImpl(
-            const DataBuffer& buffer, const Name& name) override;
+            const Buffer& buffer, const Name& name) override;
         [[nodiscard]] std::unique_ptr<Resource::Surface> CreateMainSurfaceResourceImpl(
             void* window,
             Arca::Reliquary& reliquary) override;

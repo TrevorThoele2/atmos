@@ -20,7 +20,7 @@ SCENARIO_METHOD(AngelScriptStringUtilityTestsFixture, "running StringUtility Ang
         fieldOrigin,
         *engine.mockImageAssetManager,
         *engine.nullAudioManager,
-        *engine.nullInputManager,
+        *engine.mockInputManager,
         *engine.mockGraphicsManager,
         *engine.scriptManager,
         Spatial::ScreenSize{

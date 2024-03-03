@@ -11,7 +11,7 @@ namespace Atmos::Asset::Resource
     template<>
     struct Create<Script>
     {
-        DataBuffer buffer;
+        Buffer buffer;
         Name name;
     };
 }

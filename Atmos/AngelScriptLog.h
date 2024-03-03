@@ -16,9 +16,10 @@ namespace Atmos::Scripting::Angel
         using Management = ObjectManagement<Type>;
 
         static inline const String name = "Log";
-        static inline const String containingNamespace = Namespaces::Atmos::Logging::name;
+        static inline const String containingNamespace = "Atmos::Logging";
+        static inline const String documentation = "This is a command.";
         static const ObjectType objectType = ObjectType::Value;
 
-        static void RegisterTo(asIScriptEngine& engine);
+        static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
     };
 }

@@ -33,7 +33,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering images", "[render]")
             fieldOrigin,
             *engine.mockImageAssetManager,
             *engine.nullAudioManager,
-            *engine.nullInputManager,
+            *engine.mockInputManager,
             *engine.mockGraphicsManager,
             *engine.mockScriptManager,
             Spatial::ScreenSize{
@@ -661,7 +661,7 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering culled images", "[render]
             fieldOrigin,
             *engine.mockImageAssetManager,
             *engine.nullAudioManager,
-            *engine.nullInputManager,
+            *engine.mockInputManager,
             *engine.mockGraphicsManager,
             *engine.mockScriptManager,
             Spatial::ScreenSize{

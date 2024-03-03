@@ -12,9 +12,9 @@ namespace Atmos::Scripting::Angel
         int Write(const void* ptr, asUINT size) override;
         int Read(void* ptr, asUINT size) override;
 
-        [[nodiscard]] DataBuffer Buffer() const;
+        [[nodiscard]] Buffer Buffer() const;
     private:
-        DataBuffer buffer;
+        Atmos::Buffer buffer;
         asUINT location = 0;
     };
 }

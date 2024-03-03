@@ -28,7 +28,7 @@ namespace Atmos::Scripting::Angel
     }
 
     std::unique_ptr<Asset::Resource::Script> Manager::CreateAssetResource(
-        const DataBuffer& buffer, String name)
+        const Buffer& buffer, String name)
     {
         const auto moduleName = ScriptAssetNameToModuleName(name);
         auto& module = CreateModule(moduleName);
@@ -50,9 +50,9 @@ namespace Atmos::Scripting::Angel
         return std::make_unique<ScriptResource>(parameters, function, context, *logger);
     }
 
-    DataBuffer Manager::Compile(Module module, std::vector<Module> sharedModules)
+    Buffer Manager::Compile(Module module, std::vector<Module> sharedModules)
     {
-        DataBuffer returnValue;
+        Buffer returnValue;
 
         try
         {
@@ -152,7 +152,7 @@ namespace Atmos::Scripting::Angel
         VerifyResult(module.Build());
     }
 
-    void Manager::LoadModule(asIScriptModule& module, const DataBuffer& buffer)
+    void Manager::LoadModule(asIScriptModule& module, const Buffer& buffer)
     {
         auto inputStream = InputBytecodeStream(buffer);
 

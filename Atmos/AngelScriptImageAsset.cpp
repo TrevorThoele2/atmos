@@ -9,7 +9,7 @@
 
 namespace Atmos::Scripting::Angel
 {
-    void Registration<Asset::ImageSize>::RegisterTo(asIScriptEngine& engine)
+    void Registration<Asset::ImageSize>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         ValueTypeRegistration<Type>(containingNamespace, name)
             .DefaultConstructor(&Management::GenerateDefaultValue)
@@ -23,10 +23,10 @@ namespace Atmos::Scripting::Angel
             .CopyAssignment(&Management::CopyAssign)
             .Property<&Type::width>("int", "width")
             .Property<&Type::height>("int", "height")
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
     }
 
-    void Registration<Asset::ImageGridSize>::RegisterTo(asIScriptEngine& engine)
+    void Registration<Asset::ImageGridSize>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         ValueTypeRegistration<Type>(containingNamespace, name)
             .DefaultConstructor(&Management::GenerateDefaultValue)
@@ -40,10 +40,10 @@ namespace Atmos::Scripting::Angel
             .CopyAssignment(&Management::CopyAssign)
             .Property<&Type::columns>("int", "columns")
             .Property<&Type::rows>("int", "rows")
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
     }
 
-    void Registration<Asset::Image>::RegisterTo(asIScriptEngine& engine)
+    void Registration<Asset::Image>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         ValueTypeRegistration<Type> registration(containingNamespace, name);
         RegisterArcaIndex(registration);
@@ -57,11 +57,11 @@ namespace Atmos::Scripting::Angel
             .ConstMethod(&Management::Method<&GridSize>, "ImageGridSize", "GridSize", {})
             .ConstMethod(&Management::Method<&Slice>, "Atmos::Spatial::AxisAlignedBox2D", "Slice", {"int index"})
             .ConstMethod(&Management::Method<&SliceSize>, "Atmos::Spatial::Size2D", "SliceSize", {})
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
 
-        Registration<ArcaTraits<Asset::Image>>::RegisterTo(engine);
-        Registration<Arca::Batch<Asset::Image>>::RegisterTo(engine);
-        Registration<Asset::FindByName<Asset::Image>>::RegisterTo(engine);
+        Registration<ArcaTraits<Asset::Image>>::RegisterTo(engine, documentationManager);
+        Registration<Arca::Batch<Asset::Image>>::RegisterTo(engine, documentationManager);
+        Registration<Asset::FindByName<Asset::Image>>::RegisterTo(engine, documentationManager);
     }
 
     String Registration<Asset::Image>::Name(Type type)

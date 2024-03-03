@@ -11,7 +11,7 @@
 
 namespace Atmos::Scripting::Angel
 {
-    void Registration<Entity::Entity>::RegisterTo(asIScriptEngine& engine)
+    void Registration<Entity::Entity>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         ValueTypeRegistration<Type> registration(containingNamespace, name);
         RegisterArcaIndex(registration);
@@ -23,10 +23,10 @@ namespace Atmos::Scripting::Angel
             .ConstMethod(&Management::Method<&IsSolid>, "bool", "IsSolid", {})
             .ConstMethod(&Management::Method<&Data>, "Atmos::Datum[]@", "Data", {})
             .ConstMethod(&Management::Method<&Tags>, "string[]@", "Tags", {})
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
 
-        Registration<ArcaTraits<Entity::Entity>>::RegisterTo(engine);
-        Registration<Arca::Batch<Entity::Entity>>::RegisterTo(engine);
+        Registration<ArcaTraits<Entity::Entity>>::RegisterTo(engine, documentationManager);
+        Registration<Arca::Batch<Entity::Entity>>::RegisterTo(engine, documentationManager);
 
         RegisterArcaCreateRelic<
             Entity::Entity,
@@ -42,9 +42,10 @@ namespace Atmos::Scripting::Angel
                 "Atmos::Spatial::Grid::Point position",
                 "Atmos::Spatial::Angle2D direction"
             },
-            engine);
+            engine,
+            documentationManager);
 
-        RegisterArcaDestroyRelic<Entity::Entity>(engine);
+        RegisterArcaDestroyRelic<Entity::Entity>(engine, documentationManager);
     }
 
     String Registration<Entity::Entity>::Name(Type type)
@@ -82,7 +83,7 @@ namespace Atmos::Scripting::Angel
         return RequiredValue(type)->tags;
     }
 
-    void Registration<Entity::FindByName>::RegisterTo(asIScriptEngine& engine)
+    void Registration<Entity::FindByName>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         ValueTypeRegistration<Type>(containingNamespace, name)
             .Constructor(
@@ -93,9 +94,9 @@ namespace Atmos::Scripting::Angel
             .Destructor(&Management::DestructValue)
             .CopyAssignment(&Management::CopyAssign)
             .Property<&Type::name>("string", "name")
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
 
-        RegisterCommandHandler<&Chroma::Identity<Type>, &ToCommandReturn>(engine);
+        RegisterCommandHandler<&Chroma::Identity<Type>, &ToCommandReturn>(engine, documentationManager);
     }
 
     Arca::Index<Entity::Entity> Registration<Entity::FindByName>::ToCommandReturn(Arca::command_result_t<Type> fromArca, Arca::Reliquary&)
@@ -103,7 +104,7 @@ namespace Atmos::Scripting::Angel
         return fromArca;
     }
 
-    void Registration<Entity::FindByPosition>::RegisterTo(asIScriptEngine& engine)
+    void Registration<Entity::FindByPosition>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         ValueTypeRegistration<Type>(containingNamespace, name)
             .Constructor(
@@ -114,9 +115,9 @@ namespace Atmos::Scripting::Angel
             .Destructor(&Management::DestructValue)
             .CopyAssignment(&Management::CopyAssign)
             .Property<&Type::position>("Atmos::Spatial::Grid::Point", "position")
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
 
-        RegisterCommandHandler<&Chroma::Identity<Type>, &ToCommandReturn>(engine);
+        RegisterCommandHandler<&Chroma::Identity<Type>, &ToCommandReturn>(engine, documentationManager);
     }
 
     std::vector<Arca::Index<Entity::Entity>> Registration<Entity::FindByPosition>::ToCommandReturn(
@@ -125,7 +126,7 @@ namespace Atmos::Scripting::Angel
         return { fromArca.begin(), fromArca.end() };
     }
 
-    void Registration<Entity::MoveTo>::RegisterTo(asIScriptEngine& engine)
+    void Registration<Entity::MoveTo>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         ValueTypeRegistration<Type>(containingNamespace, name)
             .Constructor(
@@ -138,12 +139,12 @@ namespace Atmos::Scripting::Angel
             .CopyAssignment(&Management::CopyAssign)
             .Property<&Type::entity>("Atmos::Entity::Entity", "entity")
             .Property<&Type::to>("Atmos::Spatial::Grid::Point", "to")
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
 
-        RegisterCommandHandler<&Chroma::Identity<Type>>(engine);
+        RegisterCommandHandler<&Chroma::Identity<Type>>(engine, documentationManager);
     }
 
-    void Registration<Entity::ModifyData>::RegisterTo(asIScriptEngine& engine)
+    void Registration<Entity::ModifyData>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         ValueTypeRegistration<Type>(containingNamespace, name)
             .Constructor(
@@ -160,12 +161,12 @@ namespace Atmos::Scripting::Angel
             .Property<&Type::add>("Atmos::Datum[]@", "add")
             .Property<&Type::remove>("string[]@", "remove")
             .Property<&Type::replace>("Atmos::Datum[]@", "replace")
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
 
-        RegisterCommandHandler<&Chroma::Identity<Type>>(engine);
+        RegisterCommandHandler<&Chroma::Identity<Type>>(engine, documentationManager);
     }
 
-    void Registration<Entity::ModifyTags>::RegisterTo(asIScriptEngine& engine)
+    void Registration<Entity::ModifyTags>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         ValueTypeRegistration<Type>(containingNamespace, name)
             .Constructor(
@@ -180,8 +181,8 @@ namespace Atmos::Scripting::Angel
             .Property<&Type::entity>("Atmos::Entity::Entity", "entity")
             .Property<&Type::add>("string[]@", "add")
             .Property<&Type::remove>("string[]@", "remove")
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
 
-        RegisterCommandHandler<&Chroma::Identity<Type>>(engine);
+        RegisterCommandHandler<&Chroma::Identity<Type>>(engine, documentationManager);
     }
 }

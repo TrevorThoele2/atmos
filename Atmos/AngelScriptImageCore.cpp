@@ -10,7 +10,7 @@
 
 namespace Atmos::Scripting::Angel
 {
-    void Registration<Render::ImageCore>::RegisterTo(asIScriptEngine& engine)
+    void Registration<Render::ImageCore>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         ValueTypeRegistration<Type> registration(containingNamespace, name);
         RegisterArcaIndex(registration);
@@ -19,10 +19,10 @@ namespace Atmos::Scripting::Angel
             .ConstMethod(&Management::Method<&AssetIndex>, "int", "AssetIndex", {})
             .ConstMethod(&Management::Method<&Material>, "Atmos::Asset::ImageMaterial", "Material", {})
             .ConstMethod(&Management::Method<&Color>, "Atmos::Render::Color", "Color", {})
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
 
-        Registration<ArcaTraits<Render::ImageCore>>::RegisterTo(engine);
-        Registration<Arca::Batch<Render::ImageCore>>::RegisterTo(engine);
+        Registration<ArcaTraits<Render::ImageCore>>::RegisterTo(engine, documentationManager);
+        Registration<Arca::Batch<Render::ImageCore>>::RegisterTo(engine, documentationManager);
     }
 
     Arca::Index<Asset::Image> Registration<Render::ImageCore>::Asset(Type type)
@@ -45,7 +45,7 @@ namespace Atmos::Scripting::Angel
         return RequiredValue(type)->color;
     }
 
-    void Registration<ChangeImageAsset>::RegisterTo(asIScriptEngine& engine)
+    void Registration<ChangeImageAsset>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         ValueTypeRegistration<Type>(containingNamespace, name)
             .Constructor(
@@ -58,9 +58,9 @@ namespace Atmos::Scripting::Angel
             .CopyAssignment(&Management::CopyAssign)
             .Property<&Type::id>("Arca::RelicID", "id")
             .Property<&Type::to>("Atmos::Asset::Image", "to")
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
 
-        RegisterCommandHandler<&ToArca>(engine);
+        RegisterCommandHandler<&ToArca>(engine, documentationManager);
     }
 
     Render::ChangeImageCore Registration<ChangeImageAsset>::ToArca(Type fromAngelScript)
@@ -68,7 +68,7 @@ namespace Atmos::Scripting::Angel
         return { fromAngelScript.id, IsRequired(fromAngelScript.to), {} };
     }
 
-    void Registration<ChangeAssetIndex>::RegisterTo(asIScriptEngine& engine)
+    void Registration<ChangeAssetIndex>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         ValueTypeRegistration<Type>(containingNamespace, name)
             .Constructor(
@@ -81,9 +81,9 @@ namespace Atmos::Scripting::Angel
             .CopyAssignment(&Management::CopyAssign)
             .Property<&Type::id>("Arca::RelicID", "id")
             .Property<&Type::to>("int", "to")
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
 
-        RegisterCommandHandler<&ToArca>(engine);
+        RegisterCommandHandler<&ToArca>(engine, documentationManager);
     }
 
     Render::ChangeImageCore Registration<ChangeAssetIndex>::ToArca(Type fromAngelScript)

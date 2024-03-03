@@ -39,10 +39,11 @@ namespace Atmos::Scripting::Angel
         using Management = ObjectManagement<Type>;
 
         static inline const String name = "Line";
-        static inline const String containingNamespace = Namespaces::Atmos::Render::name;
+        static inline const String containingNamespace = "Atmos::Render";
+        static inline const String documentation = "This is a relic.";
         static const ObjectType objectType = ObjectType::Value;
 
-        static void RegisterTo(asIScriptEngine& engine);
+        static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
     private:
         [[nodiscard]] static std::vector<Spatial::Point2D> Points(Type type);
         [[nodiscard]] static Spatial::Point2D::Value Z(Type type);
@@ -61,12 +62,13 @@ namespace Atmos::Scripting::Angel
         using Type = ChangeLinePoints;
 
         static inline const String name = "ChangeLinePoints";
-        static inline const String containingNamespace = Namespaces::Atmos::Render::name;
+        static inline const String containingNamespace = "Atmos::Render";
+        static inline const String documentation = "This is a command.";
         static const ObjectType objectType = ObjectType::Value;
 
         using Management = ObjectManagement<Type>;
 
-        static void RegisterTo(asIScriptEngine& engine);
+        static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
 
         static Render::MoveLine ToArca(Type fromAngelScript);
     };
@@ -77,12 +79,13 @@ namespace Atmos::Scripting::Angel
         using Type = ChangeLineZ;
 
         static inline const String name = "ChangeLineZ";
-        static inline const String containingNamespace = Namespaces::Atmos::Render::name;
+        static inline const String containingNamespace = "Atmos::Render";
+        static inline const String documentation = "This is a command.";
         static const ObjectType objectType = ObjectType::Value;
 
         using Management = ObjectManagement<Type>;
 
-        static void RegisterTo(asIScriptEngine& engine);
+        static void RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager);
 
         static Render::MoveLine ToArca(Type fromAngelScript);
     };

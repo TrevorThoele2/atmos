@@ -25,7 +25,7 @@ SCENARIO_METHOD(AngelScriptImageCoreTestsFixture, "running image core AngelScrip
         fieldOrigin,
         *engine.mockImageAssetManager,
         *engine.nullAudioManager,
-        *engine.nullInputManager,
+        *engine.mockInputManager,
         *engine.mockGraphicsManager,
         *engine.scriptManager,
         Spatial::ScreenSize{
@@ -55,16 +55,16 @@ SCENARIO_METHOD(AngelScriptImageCoreTestsFixture, "running image core AngelScrip
     auto imageAssetRows = dataGeneration.Random<Asset::ImageGridSize::Dimension>();
 
     auto imageAssetResource = fieldReliquary.Do(Asset::Resource::Create<Asset::Resource::Image>{
-        DataBuffer{}, imageAssetName, Asset::ImageSize{ imageAssetWidth, imageAssetHeight }});
+        Buffer{}, imageAssetName, Asset::ImageSize{ imageAssetWidth, imageAssetHeight }});
     auto imageAsset = fieldReliquary.Do(Arca::Create<Asset::Image>{
         imageAssetName, std::move(imageAssetResource), Asset::ImageGridSize{ imageAssetColumns, imageAssetRows } });
 
     auto vertexShaderName = dataGeneration.Random<std::string>();
-    auto vertexResource = fieldReliquary.Do(Asset::Resource::Create<Asset::Resource::Shader>{DataBuffer{}, vertexShaderName});
+    auto vertexResource = fieldReliquary.Do(Asset::Resource::Create<Asset::Resource::Shader>{Buffer{}, vertexShaderName});
     auto vertexShaderAsset = fieldReliquary.Do(Arca::Create<Asset::Shader>{ vertexShaderName, std::move(vertexResource) });
 
     auto fragmentShaderName = dataGeneration.Random<std::string>();
-    auto fragmentResource = fieldReliquary.Do(Asset::Resource::Create<Asset::Resource::Shader>{DataBuffer{}, fragmentShaderName});
+    auto fragmentResource = fieldReliquary.Do(Asset::Resource::Create<Asset::Resource::Shader>{Buffer{}, fragmentShaderName});
     auto fragmentShaderAsset = fieldReliquary.Do(Arca::Create<Asset::Shader>{ fragmentShaderName, std::move(fragmentResource) });
 
     auto materialAssetName = dataGeneration.Random<std::string>();

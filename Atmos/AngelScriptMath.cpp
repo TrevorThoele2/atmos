@@ -7,7 +7,7 @@
 
 namespace Atmos::Scripting::Angel
 {
-    void Registration<Math>::RegisterTo(asIScriptEngine& engine)
+    void Registration<Math>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
         GlobalRegistration(containingNamespace)
             .Function(&Management::Function<&AbsoluteValue<std::int8_t, long long>>,
@@ -56,7 +56,7 @@ namespace Atmos::Scripting::Angel
                 "double", "Atan", { "double value" })
             .Function(&Management::Function<&Pi>,
                 "double", "Pi", {})
-            .Actualize(engine);
+            .Actualize(engine, documentationManager);
     }
 
     double Registration<Math>::Pi()
