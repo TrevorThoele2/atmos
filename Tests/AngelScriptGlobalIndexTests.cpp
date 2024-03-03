@@ -2,53 +2,15 @@
 
 #include "AngelScriptGlobalIndexTests.h"
 
-#include "ScriptEngine.h"
-
-#include <Atmos/TypeRegistration.h>
-#include <Atmos/Script.h>
-#include <Atmos/ScriptFinished.h>
-#include <Atmos/Work.h>
-#include <Atmos/StringUtility.h>
-
 TEMPLATE_TEST_CASE_METHOD(
     AngelScriptGlobalTestsFixture,
     "running global index AngelScript scripts",
     "[script][angelscript][global][index]",
     Render::Camera)
 {
-    Logging::Logger logger(Logging::Severity::Verbose);
-    logger.Add<Logging::FileSink>();
-    ScriptEngine engine(logger);
-
-    auto fieldOrigin = Arca::ReliquaryOrigin();
-    RegisterFieldTypes(
-        fieldOrigin,
-        *engine.mockAssetResourceManager,
-        *engine.mockAudioManager,
-        *engine.mockInputManager,
-        *engine.mockGraphicsManager,
-        *engine.mockTextManager,
-        *engine.scriptManager,
-        *engine.mockWorldManager,
-        Spatial::Size2D{
-            std::numeric_limits<Spatial::Size2D::Value>::max(),
-            std::numeric_limits<Spatial::Size2D::Value>::max() },
-            *engine.mockWindow,
-            engine.Logger());
-    fieldOrigin.CuratorCommandPipeline<Work>(Arca::Pipeline{ Scripting::Stage() });
-    World::Field field(0, fieldOrigin.Actualize());
-
-    auto& fieldReliquary = field.Reliquary();
-
-    std::vector<Scripting::Finished> finishes;
-    fieldReliquary.On<Scripting::Finished>([&finishes](const Scripting::Finished& signal)
-        {
-            finishes.push_back(signal);
-        });
-
     GIVEN("type")
     {
-        auto [index, angelScriptName] = this->template CreateObject<TestType>(fieldReliquary);
+        auto [index, angelScriptName] = this->template CreateObject<TestType>(*this->fieldReliquary);
 
         GIVEN("script that returns id")
         {
@@ -60,16 +22,16 @@ TEMPLATE_TEST_CASE_METHOD(
                 "    return index.ID();\n" \
                 "}",
                 {},
-                fieldReliquary);
+                *this->fieldReliquary);
 
             WHEN("working reliquary")
             {
-                fieldReliquary.Do(Work{});
+                this->fieldReliquary->Do(Work{});
 
                 THEN("returns ID")
                 {
-                    REQUIRE(finishes.size() == 1);
-                    REQUIRE(std::get<Arca::RelicID>(std::get<Variant>(finishes[0].result)) == index.ID());
+                    REQUIRE(this->finishes.size() == 1);
+                    REQUIRE(std::get<Arca::RelicID>(std::get<Variant>(this->finishes[0].result)) == index.ID());
                 }
             }
         }
@@ -85,16 +47,16 @@ TEMPLATE_TEST_CASE_METHOD(
                 "    return index1 == index2;\n" \
                 "}",
                 {},
-                fieldReliquary);
+                *this->fieldReliquary);
 
             WHEN("working reliquary")
             {
-                fieldReliquary.Do(Work{});
+                this->fieldReliquary->Do(Work{});
 
                 THEN("returns true")
                 {
-                    REQUIRE(finishes.size() == 1);
-                    REQUIRE(std::get<bool>(std::get<Variant>(finishes[0].result)) == true);
+                    REQUIRE(this->finishes.size() == 1);
+                    REQUIRE(std::get<bool>(std::get<Variant>(this->finishes[0].result)) == true);
                 }
             }
         }
@@ -114,15 +76,15 @@ TEMPLATE_TEST_CASE_METHOD(
                 "        Atmos::ToString(handle.type.isConst);\n" \
                 "}",
                 {},
-                fieldReliquary);
+                *this->fieldReliquary);
 
             WHEN("working reliquary")
             {
-                fieldReliquary.Do(Work{});
+                this->fieldReliquary->Do(Work{});
 
                 THEN("returns correct string")
                 {
-                    REQUIRE(finishes.size() == 1);
+                    REQUIRE(this->finishes.size() == 1);
 
                     Arca::Handle handle = index;
                     const auto expectedResult =
@@ -132,7 +94,7 @@ TEMPLATE_TEST_CASE_METHOD(
                         " " +
                         ToString(handle.type.isConst);
 
-                    REQUIRE(std::get<String>(std::get<Variant>(finishes[0].result)) == expectedResult);
+                    REQUIRE(std::get<String>(std::get<Variant>(this->finishes[0].result)) == expectedResult);
                 }
             }
         }
@@ -147,16 +109,16 @@ TEMPLATE_TEST_CASE_METHOD(
                 "    return bool(index);\n" \
                 "}",
                 {},
-                fieldReliquary);
+                *this->fieldReliquary);
 
             WHEN("working reliquary")
             {
-                fieldReliquary.Do(Work{});
+                this->fieldReliquary->Do(Work{});
 
                 THEN("returns true")
                 {
-                    REQUIRE(finishes.size() == 1);
-                    REQUIRE(std::get<bool>(std::get<Variant>(finishes[0].result)) == true);
+                    REQUIRE(this->finishes.size() == 1);
+                    REQUIRE(std::get<bool>(std::get<Variant>(this->finishes[0].result)) == true);
                 }
             }
         }
@@ -170,16 +132,16 @@ TEMPLATE_TEST_CASE_METHOD(
                 "    return Arca::Traits<" + angelScriptName + ">().Type().name;\n" \
                 "}",
                 {},
-                fieldReliquary);
+                *this->fieldReliquary);
 
             WHEN("working reliquary")
             {
-                fieldReliquary.Do(Work{});
+                this->fieldReliquary->Do(Work{});
 
                 THEN("returns false")
                 {
-                    REQUIRE(finishes.size() == 1);
-                    REQUIRE(std::get<String>(std::get<Variant>(finishes[0].result)) == Arca::TypeFor<TestType>().name);
+                    REQUIRE(this->finishes.size() == 1);
+                    REQUIRE(std::get<String>(std::get<Variant>(this->finishes[0].result)) == Arca::TypeFor<TestType>().name);
                 }
             }
         }
@@ -193,16 +155,16 @@ TEMPLATE_TEST_CASE_METHOD(
                 "    return Arca::Traits<" + angelScriptName + ">().Type().isConst;\n" \
                 "}",
                 {},
-                fieldReliquary);
+                *this->fieldReliquary);
 
             WHEN("working reliquary")
             {
-                fieldReliquary.Do(Work{});
+                this->fieldReliquary->Do(Work{});
 
                 THEN("returns false")
                 {
-                    REQUIRE(finishes.size() == 1);
-                    REQUIRE(std::get<bool>(std::get<Variant>(finishes[0].result)) == Arca::TypeFor<TestType>().isConst);
+                    REQUIRE(this->finishes.size() == 1);
+                    REQUIRE(std::get<bool>(std::get<Variant>(this->finishes[0].result)) == Arca::TypeFor<TestType>().isConst);
                 }
             }
         }

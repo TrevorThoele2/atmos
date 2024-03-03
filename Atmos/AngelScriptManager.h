@@ -52,6 +52,10 @@ namespace Atmos::Scripting::Angel
     private:
         [[nodiscard]] static String ScriptAssetNameToModuleName(const String& scriptAssetName);
     private:
+        Arca::Reliquary* reliquary = nullptr;
+
+        void AttemptDestroyAllScripts();
+    private:
         Logging::Logger* logger;
     };
 }

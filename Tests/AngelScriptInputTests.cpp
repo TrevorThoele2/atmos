@@ -2,46 +2,10 @@
 
 #include "AngelScriptInputTests.h"
 
-#include "ScriptEngine.h"
-
 #include <Atmos/ActionAsset.h>
-#include <Atmos/TypeRegistration.h>
-#include <Atmos/ScriptFinished.h>
-#include <Atmos/Work.h>
-#include <Atmos/StringUtility.h>
 
 SCENARIO_METHOD(AngelScriptInputTestsFixture, "running input AngelScript scripts", "[script][angelscript][input]")
 {
-    Logging::Logger logger(Logging::Severity::Verbose);
-    logger.Add<Logging::FileSink>();
-    ScriptEngine engine(logger);
-
-    auto fieldOrigin = Arca::ReliquaryOrigin();
-    RegisterFieldTypes(
-        fieldOrigin,
-        *engine.mockAssetResourceManager,
-        *engine.mockAudioManager,
-        *engine.mockInputManager,
-        *engine.mockGraphicsManager,
-        *engine.mockTextManager,
-        *engine.scriptManager,
-        *engine.mockWorldManager,
-        Spatial::Size2D{
-            std::numeric_limits<Spatial::Size2D::Value>::max(),
-            std::numeric_limits<Spatial::Size2D::Value>::max() },
-            *engine.mockWindow,
-            engine.Logger());
-    fieldOrigin.CuratorCommandPipeline<Work>(Arca::Pipeline{ Input::Stage(), Scripting::Stage() });
-    World::Field field(0, fieldOrigin.Actualize());
-
-    auto& fieldReliquary = field.Reliquary();
-
-    std::vector<Scripting::Finished> finishes;
-    fieldReliquary.On<Scripting::Finished>([&finishes](const Scripting::Finished& signal)
-        {
-            finishes.push_back(signal);
-        });
-
     GIVEN("script that returns current mouse position")
     {
         CompileAndCreateScript(
@@ -52,7 +16,7 @@ SCENARIO_METHOD(AngelScriptInputTestsFixture, "running input AngelScript scripts
             "    return Atmos::ToString(information.CurrentMousePosition().x) + \" \" + Atmos::ToString(information.CurrentMousePosition().y);\n" \
             "}",
             {},
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
@@ -60,7 +24,7 @@ SCENARIO_METHOD(AngelScriptInputTestsFixture, "running input AngelScript scripts
                 dataGeneration.RandomStack<Spatial::Point2D, Spatial::Point2D::Value, Spatial::Point2D::Value>();
 
             engine.mockInputManager->sendState.mousePosition = mousePosition;
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("script has executed")
             {
@@ -82,7 +46,7 @@ SCENARIO_METHOD(AngelScriptInputTestsFixture, "running input AngelScript scripts
             "    return Atmos::ToString(information.PreviousMousePosition().x) + \" \" + Atmos::ToString(information.PreviousMousePosition().y);\n" \
             "}",
             {},
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
@@ -90,8 +54,8 @@ SCENARIO_METHOD(AngelScriptInputTestsFixture, "running input AngelScript scripts
                 dataGeneration.RandomStack<Spatial::Point2D, Spatial::Point2D::Value, Spatial::Point2D::Value>();
 
             engine.mockInputManager->sendState.mousePosition = mousePosition;
-            fieldReliquary.Do(Work{});
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("script has executed")
             {
@@ -108,7 +72,7 @@ SCENARIO_METHOD(AngelScriptInputTestsFixture, "running input AngelScript scripts
         auto name = dataGeneration.Random<std::string>();
         const auto boundKey = Input::Key::Z;
 
-        fieldReliquary.Do(Arca::Create<Asset::Action>{ name, boundKey, Asset::Action::Modifiers{} });
+        fieldReliquary->Do(Arca::Create<Asset::Action>{ name, boundKey, Asset::Action::Modifiers{} });
 
         CompileAndCreateScript(
             "basic_script.as",
@@ -128,13 +92,13 @@ SCENARIO_METHOD(AngelScriptInputTestsFixture, "running input AngelScript scripts
             "    return signalHandler.signal.action.Name();\n" \
             "}",
             {},
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
             engine.mockInputManager->sendState.keyStates.z = Input::KeyState::Down;
-            fieldReliquary.Do(Work{});
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("script has executed")
             {
@@ -149,7 +113,7 @@ SCENARIO_METHOD(AngelScriptInputTestsFixture, "running input AngelScript scripts
         auto name = dataGeneration.Random<std::string>();
         const auto boundKey = Input::Key::Z;
 
-        fieldReliquary.Do(Arca::Create<Asset::Action>{ name, boundKey, Asset::Action::Modifiers{} });
+        fieldReliquary->Do(Arca::Create<Asset::Action>{ name, boundKey, Asset::Action::Modifiers{} });
 
         CompileAndCreateScript(
             "basic_script.as",
@@ -169,14 +133,14 @@ SCENARIO_METHOD(AngelScriptInputTestsFixture, "running input AngelScript scripts
             "    return signalHandler.signal.action.Name();\n" \
             "}",
             {},
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
             engine.mockInputManager->sendState.keyStates.z = Input::KeyState::Down;
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
             engine.mockInputManager->sendState.keyStates.z = Input::KeyState::Up;
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("script has executed")
             {
@@ -191,7 +155,7 @@ SCENARIO_METHOD(AngelScriptInputTestsFixture, "running input AngelScript scripts
         auto name = dataGeneration.Random<std::string>();
         const auto boundKey = Input::Key::Z;
 
-        fieldReliquary.Do(Arca::Create<Asset::Action>{ name, boundKey, Asset::Action::Modifiers{} });
+        fieldReliquary->Do(Arca::Create<Asset::Action>{ name, boundKey, Asset::Action::Modifiers{} });
 
         CompileAndCreateScript(
             "basic_script.as",
@@ -211,14 +175,14 @@ SCENARIO_METHOD(AngelScriptInputTestsFixture, "running input AngelScript scripts
             "    return signalHandler.signal.action.Name();\n" \
             "}",
             {},
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
             engine.mockInputManager->sendState.keyStates.z = Input::KeyState::Up;
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
             engine.mockInputManager->sendState.keyStates.z = Input::KeyState::Down;
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("script has executed")
             {
@@ -257,14 +221,14 @@ SCENARIO_METHOD(AngelScriptInputTestsFixture, "running input AngelScript scripts
             "        Atmos::ToString(signalHandler.signal.current.y);\n" \
             "}",
             {},
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
             engine.mockInputManager->sendState.mousePosition = previousMousePosition;
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
             engine.mockInputManager->sendState.mousePosition = currentMousePosition;
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("script has executed")
             {
@@ -302,14 +266,14 @@ SCENARIO_METHOD(AngelScriptInputTestsFixture, "running input AngelScript scripts
             "    return signalHandler.signal.text;\n" \
             "}",
             {},
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
             engine.mockInputManager->sendState.enteredText = {};
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
             engine.mockInputManager->sendState.enteredText = {text};
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("script has executed")
             {

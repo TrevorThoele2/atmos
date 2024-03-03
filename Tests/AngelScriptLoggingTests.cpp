@@ -2,13 +2,6 @@
 
 #include "AngelScriptLoggingTests.h"
 
-#include "ScriptEngine.h"
-
-#include <Atmos/TypeRegistration.h>
-#include <Atmos/Script.h>
-#include <Atmos/LoadScriptAssetResourceData.h>
-#include <Atmos/ScriptFinished.h>
-#include <Atmos/Work.h>
 #include <Inscription/InputTextArchive.h>
 
 String AngelScriptLoggingTestsFixture::AllLogged() const
@@ -26,30 +19,6 @@ String AngelScriptLoggingTestsFixture::AllLogged() const
 
 SCENARIO_METHOD(AngelScriptLoggingTestsFixture, "running logging AngelScript scripts", "[script][angelscript][logging]")
 {
-    Logging::Logger logger(Logging::Severity::Verbose);
-    logger.Add<Logging::FileSink>();
-    ScriptEngine engine(logger);
-
-    auto fieldOrigin = Arca::ReliquaryOrigin();
-    RegisterFieldTypes(
-        fieldOrigin,
-        *engine.mockAssetResourceManager,
-        *engine.mockAudioManager,
-        *engine.mockInputManager,
-        *engine.mockGraphicsManager,
-        *engine.mockTextManager,
-        *engine.scriptManager,
-        *engine.mockWorldManager,
-        Spatial::Size2D{
-            std::numeric_limits<Spatial::Size2D::Value>::max(),
-            std::numeric_limits<Spatial::Size2D::Value>::max() },
-            *engine.mockWindow,
-            engine.Logger());
-    fieldOrigin.CuratorCommandPipeline<Work>(Arca::Pipeline{ Scripting::Stage() });
-    World::Field field(0, fieldOrigin.Actualize());
-
-    auto& fieldReliquary = field.Reliquary();
-
     GIVEN("script that logs")
     {
         auto loggedMessage = dataGeneration.Random<String>();
@@ -64,11 +33,11 @@ SCENARIO_METHOD(AngelScriptLoggingTestsFixture, "running logging AngelScript scr
                 "    Atmos::Logging::Log log(loggedMessage, Atmos::Logging::Severity::Error);\n" \
                 "    Arca::Reliquary::Do(log);\n" \
                 "}",
-                fieldReliquary);
+                *fieldReliquary);
 
             WHEN("working reliquary")
             {
-                fieldReliquary.Do(Work{});
+                fieldReliquary->Do(Work{});
 
                 THEN("script has executed")
                 {

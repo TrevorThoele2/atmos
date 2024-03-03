@@ -2,53 +2,14 @@
 
 #include "AngelScriptBoundsTests.h"
 
-#include "ScriptEngine.h"
-
 #include <Atmos/AngelScriptBounds.h>
-
 #include <Atmos/SpatialAlgorithms.h>
-#include <Atmos/TypeRegistration.h>
-#include <Atmos/ScriptFinished.h>
-#include <Atmos/Work.h>
-#include <Atmos/StringUtility.h>
-#include <Arca/OpenRelic.h>
 
 SCENARIO_METHOD(AngelScriptBoundsTestsFixture, "running bounds AngelScript scripts", "[script][angelscript]")
 {
-    Logging::Logger logger(Logging::Severity::Verbose);
-    logger.Add<Logging::FileSink>();
-    ScriptEngine engine(logger);
-
-    auto fieldOrigin = Arca::ReliquaryOrigin();
-    fieldOrigin.Register<Arca::OpenRelic>();
-    RegisterFieldTypes(
-        fieldOrigin,
-        *engine.mockAssetResourceManager,
-        *engine.mockAudioManager,
-        *engine.mockInputManager,
-        *engine.mockGraphicsManager,
-        *engine.mockTextManager,
-        *engine.scriptManager,
-        *engine.mockWorldManager,
-        Spatial::Size2D{
-            std::numeric_limits<Spatial::Size2D::Value>::max(),
-            std::numeric_limits<Spatial::Size2D::Value>::max() },
-            *engine.mockWindow,
-            engine.Logger());
-    fieldOrigin.CuratorCommandPipeline<Work>(Arca::Pipeline{ Scripting::Stage() });
-    World::Field field(0, fieldOrigin.Actualize());
-
-    auto& fieldReliquary = field.Reliquary();
-
-    std::vector<Scripting::Finished> finishes;
-    fieldReliquary.On<Scripting::Finished>([&finishes](const Scripting::Finished& signal)
-        {
-            finishes.push_back(signal);
-        });
-
     GIVEN("Bounds")
     {
-        auto openRelic = fieldReliquary.Do(Arca::Create<Arca::OpenRelic>());
+        auto openRelic = fieldReliquary->Do(Arca::Create<Arca::OpenRelic>());
 
         auto position = dataGeneration.RandomStack<
             Spatial::Point3D, Spatial::Point3D::Value, Spatial::Point3D::Value, Spatial::Point3D::Value>();
@@ -57,7 +18,7 @@ SCENARIO_METHOD(AngelScriptBoundsTestsFixture, "running bounds AngelScript scrip
         auto scalers = dataGeneration.RandomStack<
             Spatial::Scalers2D, Spatial::Scalers2D::Value, Spatial::Scalers2D::Value>();
         auto rotation = dataGeneration.Random<Spatial::Angle2D>();
-        auto bounds = fieldReliquary.Do(Arca::Create<Spatial::Bounds>{openRelic, Spatial::Space::World, position, baseSize, scalers, rotation});
+        auto bounds = fieldReliquary->Do(Arca::Create<Spatial::Bounds>{openRelic, Spatial::Space::World, position, baseSize, scalers, rotation});
 
         GIVEN("script that returns position")
         {
@@ -69,11 +30,11 @@ SCENARIO_METHOD(AngelScriptBoundsTestsFixture, "running bounds AngelScript scrip
                 "    return Atmos::ToString(bounds.Position().x) + \" \" + Atmos::ToString(bounds.Position().y) + \" \" + Atmos::ToString(bounds.Position().z);\n" \
                 "}",
                 { bounds.ID() },
-                fieldReliquary);
+                *fieldReliquary);
 
             WHEN("working reliquary")
             {
-                fieldReliquary.Do(Work{});
+                fieldReliquary->Do(Work{});
 
                 THEN("has correct properties")
                 {
@@ -102,11 +63,11 @@ SCENARIO_METHOD(AngelScriptBoundsTestsFixture, "running bounds AngelScript scrip
                 "    return Atmos::ToString(bounds.BaseSize().width) + \" \" + Atmos::ToString(bounds.BaseSize().height);\n" \
                 "}",
                 { bounds.ID() },
-                fieldReliquary);
+                *fieldReliquary);
 
             WHEN("working reliquary")
             {
-                fieldReliquary.Do(Work{});
+                fieldReliquary->Do(Work{});
 
                 THEN("has correct properties")
                 {
@@ -133,11 +94,11 @@ SCENARIO_METHOD(AngelScriptBoundsTestsFixture, "running bounds AngelScript scrip
                 "    return Atmos::ToString(bounds.Size().width) + \" \" + Atmos::ToString(bounds.Size().height);\n" \
                 "}",
                 { bounds.ID() },
-                fieldReliquary);
+                *fieldReliquary);
 
             WHEN("working reliquary")
             {
-                fieldReliquary.Do(Work{});
+                fieldReliquary->Do(Work{});
 
                 THEN("has correct properties")
                 {
@@ -164,11 +125,11 @@ SCENARIO_METHOD(AngelScriptBoundsTestsFixture, "running bounds AngelScript scrip
                 "    return Atmos::ToString(bounds.Scalers().x) + \" \" + Atmos::ToString(bounds.Scalers().y);\n" \
                 "}",
                 { bounds.ID() },
-                fieldReliquary);
+                *fieldReliquary);
 
             WHEN("working reliquary")
             {
-                fieldReliquary.Do(Work{});
+                fieldReliquary->Do(Work{});
 
                 THEN("has correct properties")
                 {
@@ -195,11 +156,11 @@ SCENARIO_METHOD(AngelScriptBoundsTestsFixture, "running bounds AngelScript scrip
                 "    return bounds.Rotation();\n" \
                 "}",
                 { bounds.ID() },
-                fieldReliquary);
+                *fieldReliquary);
 
             WHEN("working reliquary")
             {
-                fieldReliquary.Do(Work{});
+                fieldReliquary->Do(Work{});
 
                 THEN("has correct properties")
                 {
@@ -221,11 +182,11 @@ SCENARIO_METHOD(AngelScriptBoundsTestsFixture, "running bounds AngelScript scrip
                 "    return bounds.Space();\n" \
                 "}",
                 { bounds.ID() },
-                fieldReliquary);
+                *fieldReliquary);
 
             WHEN("working reliquary")
             {
-                fieldReliquary.Do(Work{});
+                fieldReliquary->Do(Work{});
 
                 THEN("has correct properties")
                 {
@@ -276,11 +237,11 @@ SCENARIO_METHOD(AngelScriptBoundsTestsFixture, "running bounds AngelScript scrip
                 "        Atmos::ToString(signalHandler.signal.previousPosition.z);\n" \
                 "}",
                 { bounds.ID(), toPosition.x, toPosition.y, toPosition.z },
-                fieldReliquary);
+                *fieldReliquary);
 
             WHEN("working reliquary")
             {
-                fieldReliquary.Do(Work{});
+                fieldReliquary->Do(Work{});
 
                 THEN("has correct properties")
                 {
@@ -340,11 +301,11 @@ SCENARIO_METHOD(AngelScriptBoundsTestsFixture, "running bounds AngelScript scrip
                 "        Atmos::ToString(signalHandler.signal.previousRotation);\n" \
                 "}",
                 { bounds.ID(), toRotation },
-                fieldReliquary);
+                *fieldReliquary);
 
             WHEN("working reliquary")
             {
-                fieldReliquary.Do(Work{});
+                fieldReliquary->Do(Work{});
 
                 THEN("has correct properties")
                 {
@@ -395,11 +356,11 @@ SCENARIO_METHOD(AngelScriptBoundsTestsFixture, "running bounds AngelScript scrip
                 "        Atmos::ToString(signalHandler.signal.previousScalers.y);\n" \
                 "}",
                 { bounds.ID(), toScalers.x, toScalers.y },
-                fieldReliquary);
+                *fieldReliquary);
 
             WHEN("working reliquary")
             {
-                fieldReliquary.Do(Work{});
+                fieldReliquary->Do(Work{});
 
                 THEN("has correct properties")
                 {
@@ -433,11 +394,11 @@ SCENARIO_METHOD(AngelScriptBoundsTestsFixture, "running bounds AngelScript scrip
                 "    Arca::Reliquary::Do(Arca::Destroy<Atmos::Spatial::Bounds>(id));\n" \
                 "}",
                 { openRelic.ID() },
-                fieldReliquary);
+                *fieldReliquary);
 
             WHEN("working reliquary")
             {
-                fieldReliquary.Do(Work{});
+                fieldReliquary->Do(Work{});
 
                 THEN("has correct properties")
                 {
@@ -459,11 +420,11 @@ SCENARIO_METHOD(AngelScriptBoundsTestsFixture, "running bounds AngelScript scrip
             "    return bounds.ID();\n"
             "}",
             {},
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -490,11 +451,11 @@ SCENARIO_METHOD(AngelScriptBoundsTestsFixture, "running bounds AngelScript scrip
             "    return bounds.ID();\n"\
             "}",
             {},
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {

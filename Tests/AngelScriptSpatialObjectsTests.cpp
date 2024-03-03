@@ -2,52 +2,15 @@
 
 #include "AngelScriptSpatialObjectsTests.h"
 
-#include "ScriptEngine.h"
-
 #include <Atmos/Angle3D.h>
 #include <Atmos/Scalers2D.h>
 #include <Atmos/Scalers3D.h>
 #include <Atmos/Size3D.h>
 #include <Atmos/AxisAlignedBox3D.h>
 #include <Atmos/SpatialAlgorithms.h>
-#include <Atmos/TypeRegistration.h>
-#include <Atmos/Script.h>
-#include <Atmos/ScriptFinished.h>
-#include <Atmos/Work.h>
-#include <Atmos/StringUtility.h>
 
 SCENARIO_METHOD(AngelScriptSpatialObjectsTestsFixture, "running spatial object AngelScript scripts", "[script][angelscript]")
 {
-    Logging::Logger logger(Logging::Severity::Verbose);
-    logger.Add<Logging::FileSink>();
-    ScriptEngine engine(logger);
-
-    auto fieldOrigin = Arca::ReliquaryOrigin();
-    RegisterFieldTypes(
-        fieldOrigin,
-        *engine.mockAssetResourceManager,
-        *engine.mockAudioManager,
-        *engine.mockInputManager,
-        *engine.mockGraphicsManager,
-        *engine.mockTextManager,
-        *engine.scriptManager,
-        *engine.mockWorldManager,
-        Spatial::Size2D{
-            std::numeric_limits<Spatial::Size2D::Value>::max(),
-            std::numeric_limits<Spatial::Size2D::Value>::max() },
-            *engine.mockWindow,
-            engine.Logger());
-    fieldOrigin.CuratorCommandPipeline<Work>(Arca::Pipeline{ Scripting::Stage() });
-    World::Field field(0, fieldOrigin.Actualize());
-
-    auto& fieldReliquary = field.Reliquary();
-
-    std::vector<Scripting::Finished> finishes;
-    fieldReliquary.On<Scripting::Finished>([&finishes](const Scripting::Finished& signal)
-        {
-            finishes.push_back(signal);
-        });
-
     GIVEN("script that constructs Angle2D")
     {
         auto value = dataGeneration.Random<Spatial::Angle2D>();
@@ -59,11 +22,11 @@ SCENARIO_METHOD(AngelScriptSpatialObjectsTestsFixture, "running spatial object A
             "    return value;\n" \
             "}",
             { value },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -86,11 +49,11 @@ SCENARIO_METHOD(AngelScriptSpatialObjectsTestsFixture, "running spatial object A
             "    return Atmos::ToString(angle.yaw) + \" \" + Atmos::ToString(angle.pitch);\n" \
             "}",
             { yaw, pitch },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -118,11 +81,11 @@ SCENARIO_METHOD(AngelScriptSpatialObjectsTestsFixture, "running spatial object A
             "    return left == right;\n"
             "}",
             { left.yaw, left.pitch, right.yaw, right.pitch },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -150,11 +113,11 @@ SCENARIO_METHOD(AngelScriptSpatialObjectsTestsFixture, "running spatial object A
             "    return left != right;\n"
             "}",
             { left.yaw, left.pitch, right.yaw, right.pitch },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -179,11 +142,11 @@ SCENARIO_METHOD(AngelScriptSpatialObjectsTestsFixture, "running spatial object A
             "    return Atmos::ToString(point.x) + \" \" + Atmos::ToString(point.y);\n" \
             "}",
             { x, y },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -211,11 +174,11 @@ SCENARIO_METHOD(AngelScriptSpatialObjectsTestsFixture, "running spatial object A
             "    return left == right;\n"
             "}",
             { left.x, left.y, right.x, right.y },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -243,11 +206,11 @@ SCENARIO_METHOD(AngelScriptSpatialObjectsTestsFixture, "running spatial object A
             "    return left != right;\n"
             "}",
             { left.x, left.y, right.x, right.y },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -279,11 +242,11 @@ SCENARIO_METHOD(AngelScriptSpatialObjectsTestsFixture, "running spatial object A
             "    return Atmos::ToString(result.x) + \" \" + Atmos::ToString(result.y);\n" \
             "}",
             { left.x, left.y, right.x, right.y },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -317,11 +280,11 @@ SCENARIO_METHOD(AngelScriptSpatialObjectsTestsFixture, "running spatial object A
             "    return Atmos::ToString(result.x) + \" \" + Atmos::ToString(result.y);\n" \
             "}",
             { left.x, left.y, right.x, right.y },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -349,11 +312,11 @@ SCENARIO_METHOD(AngelScriptSpatialObjectsTestsFixture, "running spatial object A
             "    return Atmos::ToString(point.x) + \" \" + Atmos::ToString(point.y) + \" \" + Atmos::ToString(point.z);\n" \
             "}",
             { x, y, z },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -387,11 +350,11 @@ SCENARIO_METHOD(AngelScriptSpatialObjectsTestsFixture, "running spatial object A
             "    return Atmos::ToString(result.x) + \" \" + Atmos::ToString(result.y) + \" \" + Atmos::ToString(result.z);\n" \
             "}",
             { left.x, left.y, left.z, right.x, right.y, right.z },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -427,11 +390,11 @@ SCENARIO_METHOD(AngelScriptSpatialObjectsTestsFixture, "running spatial object A
             "    return Atmos::ToString(result.x) + \" \" + Atmos::ToString(result.y) + \" \" + Atmos::ToString(result.z);\n" \
             "}",
             { left.x, left.y, left.z, right.x, right.y, right.z },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -461,11 +424,11 @@ SCENARIO_METHOD(AngelScriptSpatialObjectsTestsFixture, "running spatial object A
             "    return left == right;\n"
             "}",
             { left.x, left.y, left.z, right.x, right.y, right.z },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -493,11 +456,11 @@ SCENARIO_METHOD(AngelScriptSpatialObjectsTestsFixture, "running spatial object A
             "    return left != right;\n"
             "}",
             { left.x, left.y, left.z, right.x, right.y, right.z },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -518,11 +481,11 @@ SCENARIO_METHOD(AngelScriptSpatialObjectsTestsFixture, "running spatial object A
             "    Atmos::Spatial::Grid::Point point;\n" \
             "    return Atmos::ToString(point.x) + \" \" + Atmos::ToString(point.y);\n" \
             "}",
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has 0 for coordinates")
             {
@@ -545,11 +508,11 @@ SCENARIO_METHOD(AngelScriptSpatialObjectsTestsFixture, "running spatial object A
             "    return Atmos::ToString(point.x) + \" \" + Atmos::ToString(point.y);\n" \
             "}",
             { x, y },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -578,11 +541,11 @@ SCENARIO_METHOD(AngelScriptSpatialObjectsTestsFixture, "running spatial object A
             "    return left == right;\n" \
             "}",
             { leftX, leftY, rightX, rightY },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -613,11 +576,11 @@ SCENARIO_METHOD(AngelScriptSpatialObjectsTestsFixture, "running spatial object A
             "    return left != right;\n" \
             "}",
             { leftX, leftY, rightX, rightY },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -642,11 +605,11 @@ SCENARIO_METHOD(AngelScriptSpatialObjectsTestsFixture, "running spatial object A
             "    return Atmos::ToString(scalers.x) + \" \" + Atmos::ToString(scalers.y);\n" \
             "}",
             { x, y },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -674,11 +637,11 @@ SCENARIO_METHOD(AngelScriptSpatialObjectsTestsFixture, "running spatial object A
             "    return left == right;\n"
             "}",
             { left.x, left.y, right.x, right.y },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -706,11 +669,11 @@ SCENARIO_METHOD(AngelScriptSpatialObjectsTestsFixture, "running spatial object A
             "    return left != right;\n"
             "}",
             { left.x, left.y, right.x, right.y },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -736,11 +699,11 @@ SCENARIO_METHOD(AngelScriptSpatialObjectsTestsFixture, "running spatial object A
             "    return Atmos::ToString(scalers.x) + \" \" + Atmos::ToString(scalers.y) + \" \" + Atmos::ToString(scalers.z);\n" \
             "}",
             { x, y, z },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -768,11 +731,11 @@ SCENARIO_METHOD(AngelScriptSpatialObjectsTestsFixture, "running spatial object A
             "    return left == right;\n"
             "}",
             { left.x, left.y, left.z, right.x, right.y, right.z },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -800,11 +763,11 @@ SCENARIO_METHOD(AngelScriptSpatialObjectsTestsFixture, "running spatial object A
             "    return left != right;\n"
             "}",
             { left.x, left.y, left.z, right.x, right.y, right.z },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -829,11 +792,11 @@ SCENARIO_METHOD(AngelScriptSpatialObjectsTestsFixture, "running spatial object A
             "    return Atmos::ToString(size.width) + \" \" + Atmos::ToString(size.height);\n" \
             "}",
             { width, height },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -861,11 +824,11 @@ SCENARIO_METHOD(AngelScriptSpatialObjectsTestsFixture, "running spatial object A
             "    return left == right;\n"
             "}",
             { left.width, left.height, right.width, right.height },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -893,11 +856,11 @@ SCENARIO_METHOD(AngelScriptSpatialObjectsTestsFixture, "running spatial object A
             "    return left != right;\n"
             "}",
             { left.width, left.height, right.width, right.height },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -923,11 +886,11 @@ SCENARIO_METHOD(AngelScriptSpatialObjectsTestsFixture, "running spatial object A
             "    return Atmos::ToString(size.width) + \" \" + Atmos::ToString(size.height) + \" \" + Atmos::ToString(size.depth);\n" \
             "}",
             { width, height, depth },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -955,11 +918,11 @@ SCENARIO_METHOD(AngelScriptSpatialObjectsTestsFixture, "running spatial object A
             "    return left == right;\n"
             "}",
             { left.width, left.height, left.depth, right.width, right.height, right.depth },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -987,11 +950,11 @@ SCENARIO_METHOD(AngelScriptSpatialObjectsTestsFixture, "running spatial object A
             "    return left != right;\n"
             "}",
             { left.width, left.height, left.depth, right.width, right.height, right.depth },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -1024,11 +987,11 @@ SCENARIO_METHOD(AngelScriptSpatialObjectsTestsFixture, "running spatial object A
             "Atmos::ToString(box.size.height);\n" \
             "}",
             { x, y, width, height },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -1073,11 +1036,11 @@ SCENARIO_METHOD(AngelScriptSpatialObjectsTestsFixture, "running spatial object A
             "    return leftBox == rightBox;\n"
             "}",
             { leftX, leftY, leftWidth, leftHeight, rightX, rightY, rightWidth, rightHeight },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -1118,11 +1081,11 @@ SCENARIO_METHOD(AngelScriptSpatialObjectsTestsFixture, "running spatial object A
             "    return leftBox != rightBox;\n" \
             "}",
             { leftX, leftY, leftWidth, leftHeight, rightX, rightY, rightWidth, rightHeight },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -1155,11 +1118,11 @@ SCENARIO_METHOD(AngelScriptSpatialObjectsTestsFixture, "running spatial object A
             "Atmos::ToString(box.Bottom());\n" \
             "}",
             { x, y, width, height },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -1204,11 +1167,11 @@ SCENARIO_METHOD(AngelScriptSpatialObjectsTestsFixture, "running spatial object A
             "Atmos::ToString(box.size.depth);\n" \
             "}",
             { x, y, z, width, height, depth },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -1260,11 +1223,11 @@ SCENARIO_METHOD(AngelScriptSpatialObjectsTestsFixture, "running spatial object A
             "    return leftBox == rightBox;\n" \
             "}",
             { leftX, leftY, leftWidth, leftHeight, rightX, rightY, rightWidth, rightHeight },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -1310,11 +1273,11 @@ SCENARIO_METHOD(AngelScriptSpatialObjectsTestsFixture, "running spatial object A
             "    return leftBox != rightBox;\n" \
             "}",
             { leftX, leftY, leftWidth, leftHeight, rightX, rightY, rightWidth, rightHeight },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {
@@ -1351,11 +1314,11 @@ SCENARIO_METHOD(AngelScriptSpatialObjectsTestsFixture, "running spatial object A
             "Atmos::ToString(box.NearZ());\n" \
             "}",
             { x, y, z, width, height, depth },
-            fieldReliquary);
+            *fieldReliquary);
 
         WHEN("working reliquary")
         {
-            fieldReliquary.Do(Work{});
+            fieldReliquary->Do(Work{});
 
             THEN("has correct properties")
             {

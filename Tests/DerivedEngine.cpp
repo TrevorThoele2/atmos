@@ -1,10 +1,8 @@
 #include "DerivedEngine.h"
 
 DerivedEngine::DerivedEngine(Logging::Logger& logger) :
-    Engine(CreateInitializationProperties(logger), logger),
-    worldManager(std::make_unique<World::RealManager>(
-        [this]() { return std::unique_ptr<Arca::Reliquary>{}; },
-        [this]() { return std::unique_ptr<Inscription::LoadAssetsUserContext>{}; }))
+    Engine(CreateInitializationProperties(logger), Chroma::TypeIdentity<World::RealManager>{}, logger),
+    worldManager(std::make_unique<World::RealManager>([this]() { return World::FieldInitialization{}; }))
 {}
 
 auto DerivedEngine::CreateInitializationProperties(Logging::Logger& logger)

@@ -1,7 +1,8 @@
 #include "RealWorldManager.h"
 
-#include "StringUtility.h"
+#include "TypeRegistration.h"
 
+#include "LoadAssetsByZipUserContext.h"
 #include "InputWorldArchiveInterface.h"
 #include "InputStasisArchiveInterface.h"
 
@@ -9,27 +10,25 @@
 
 namespace Atmos::World
 {
-    RealManager::RealManager(
-        const RetrieveReliquary& retrieveReliquary,
-        const RetrieveLoadAssetsUserContext& retrieveLoadAssetsUserContext)
-        :
-        retrieveReliquary(retrieveReliquary),
-        retrieveLoadAssetsUserContext(retrieveLoadAssetsUserContext)
+    RealManager::RealManager(const RetrieveFieldInitialization& retrieveFieldInitialization) :
+        retrieveFieldInitialization(retrieveFieldInitialization)
     {}
     
     void RealManager::LockIn()
     {
         if (WillLockIn())
         {
+            auto [reliquary, loadAssetsUserContext] = CreateFieldInitializer();
+
             if (std::holds_alternative<RequestedField>(*requested))
             {
                 auto& request = std::get<RequestedField>(*requested);
-                ChangeField(request.id, retrieveReliquary(), retrieveLoadAssetsUserContext());
+                ChangeField(request.id, std::move(reliquary), std::move(loadAssetsUserContext));
             }
             else if (std::holds_alternative<RequestedFieldDestination>(*requested))
             {
                 auto& request = std::get<RequestedFieldDestination>(*requested);
-                ChangeField(request.destination.id, retrieveReliquary(), retrieveLoadAssetsUserContext());
+                ChangeField(request.destination.id, std::move(reliquary), std::move(loadAssetsUserContext));
             }
 
             requested = {};
@@ -147,6 +146,34 @@ namespace Atmos::World
 
         DEBUG_ASSERT(false);
         return {};
+    }
+    
+    auto RealManager::CreateFieldInitializer() -> FieldInitializer
+    {
+        auto initialization = retrieveFieldInitialization();
+
+        Arca::ReliquaryOrigin origin;
+
+        RegisterFieldTypes(
+            origin,
+            *initialization.assetResourceManager,
+            *initialization.audioManager,
+            *initialization.inputManager,
+            *initialization.graphicsManager,
+            *initialization.textManager,
+            *initialization.scriptManager,
+            *this,
+            Spatial::Size2D{ 1024, 768 },
+            *initialization.window,
+            *initialization.logger);
+        RegisterFieldStages(origin);
+
+        auto reliquary = origin.Actualize();
+
+        auto loadAssetsUserContext = std::make_unique<Inscription::LoadAssetsByZipUserContext>(
+            initialization.assetsFilePath, *initialization.logger);
+
+        return FieldInitializer{ std::move(reliquary), std::move(loadAssetsUserContext) };
     }
 
     void RealManager::SetFieldIDs(const std::vector<FieldID>& ids)

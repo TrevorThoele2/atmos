@@ -10,6 +10,7 @@
 #include "TextManager.h"
 #include "AudioManager.h"
 #include "ScriptManager.h"
+#include "WorldManager.h"
 
 namespace Atmos
 {
@@ -24,6 +25,7 @@ namespace Atmos
         using TextManager = std::unique_ptr<Render::TextManager>;
         using AudioManager = std::unique_ptr<Audio::Manager>;
         using ScriptManager = std::unique_ptr<Scripting::Manager>;
+        using WorldManager = std::unique_ptr<World::Manager>;
 
         System system;
         AssetResourceManager assetResourceManager;
@@ -33,5 +35,6 @@ namespace Atmos
         TextManager textManager;
         AudioManager audioManager;
         ScriptManager scriptManager;
+        WorldManager worldManager;
     };
 }

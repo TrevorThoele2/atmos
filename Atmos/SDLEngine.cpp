@@ -13,7 +13,7 @@
 namespace Atmos
 {
     SDLEngine::SDLEngine(Logging::Logger& logger) :
-        Engine(CreateInitializationProperties(logger), logger)
+        Engine(CreateInitializationProperties(logger), Chroma::TypeIdentity<World::RealManager>{}, logger)
     {}
 
     SDLEngine::InitializationProperties SDLEngine::CreateInitializationProperties(Logging::Logger& logger)

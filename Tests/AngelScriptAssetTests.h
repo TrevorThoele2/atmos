@@ -6,6 +6,5 @@
 class AngelScriptAssetTestsFixture : public AngelScriptFixture
 {};
 
-template<class>
 class AngelScriptMaterialAssetTestsFixture : public AngelScriptCreateObjectFixture
 {};

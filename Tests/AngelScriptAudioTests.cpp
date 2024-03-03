@@ -2,15 +2,8 @@
 
 #include "AngelScriptAudioTests.h"
 
-#include "ScriptEngine.h"
-
 #include <Atmos/UniversalSound.h>
 #include <Atmos/PositionedSound.h>
-#include <Atmos/TypeRegistration.h>
-#include <Atmos/Script.h>
-#include <Atmos/ScriptFinished.h>
-#include <Atmos/Work.h>
-#include <Arca/OpenRelic.h>
 
 #include "MockSoundResource.h"
 
@@ -28,46 +21,15 @@ Arca::Index<Atmos::Asset::Audio> AngelScriptAudioTestsFixture::CreateAudioAsset(
 
 SCENARIO_METHOD(AngelScriptAudioTestsFixture, "running audio AngelScript scripts", "[script][angelscript]")
 {
-    Logging::Logger logger(Logging::Severity::Verbose);
-    logger.Add<Logging::FileSink>();
-    ScriptEngine engine(logger);
-
-    auto fieldOrigin = Arca::ReliquaryOrigin();
-    fieldOrigin.Register<Arca::OpenRelic>();
-    RegisterFieldTypes(
-        fieldOrigin,
-        *engine.mockAssetResourceManager,
-        *engine.mockAudioManager,
-        *engine.mockInputManager,
-        *engine.mockGraphicsManager,
-        *engine.mockTextManager,
-        *engine.scriptManager,
-        *engine.mockWorldManager,
-        Spatial::Size2D{
-            std::numeric_limits<Spatial::Size2D::Value>::max(),
-            std::numeric_limits<Spatial::Size2D::Value>::max() },
-            *engine.mockWindow,
-            engine.Logger());
-    fieldOrigin.CuratorCommandPipeline<Work>(Arca::Pipeline{ Audio::Stage(), Scripting::Stage() });
-    World::Field field(0, fieldOrigin.Actualize());
-
-    auto& fieldReliquary = field.Reliquary();
-
-    std::vector<Scripting::Finished> finishes;
-    fieldReliquary.On<Scripting::Finished>([&finishes](const Scripting::Finished& signal)
-        {
-            finishes.push_back(signal);
-        });
-
     GIVEN("PositionedSound")
     {
-        const auto audioAsset = CreateAudioAsset(fieldReliquary);
+        const auto audioAsset = CreateAudioAsset(*fieldReliquary);
         const auto volume = dataGeneration.Random<Volume>();
         const auto position = dataGeneration.RandomStack<
             Spatial::Point3D, Spatial::Point3D::Value, Spatial::Point3D::Value, Spatial::Point3D::Value>();
 
         auto createCommand = Arca::Create<PositionedSound>{ audioAsset, volume, position };
-        auto positionedSound = fieldReliquary.Do(createCommand);
+        auto positionedSound = fieldReliquary->Do(createCommand);
 
         GIVEN("script that returns asset ID")
         {
@@ -79,11 +41,11 @@ SCENARIO_METHOD(AngelScriptAudioTestsFixture, "running audio AngelScript scripts
                 "    return sound.Asset().ID();\n" \
                 "}",
                 { positionedSound.ID() },
-                fieldReliquary);
+                *fieldReliquary);
 
             WHEN("working reliquary")
             {
-                fieldReliquary.Do(Work{});
+                fieldReliquary->Do(Work{});
 
                 THEN("has correct properties")
                 {
@@ -103,11 +65,11 @@ SCENARIO_METHOD(AngelScriptAudioTestsFixture, "running audio AngelScript scripts
                 "    return sound.Volume();\n" \
                 "}",
                 { positionedSound.ID() },
-                fieldReliquary);
+                *fieldReliquary);
 
             WHEN("working reliquary")
             {
-                fieldReliquary.Do(Work{});
+                fieldReliquary->Do(Work{});
 
                 THEN("has correct properties")
                 {
@@ -128,11 +90,11 @@ SCENARIO_METHOD(AngelScriptAudioTestsFixture, "running audio AngelScript scripts
                 "    Arca::Reliquary::Do(Atmos::Audio::ChangeSoundVolume(id, newVolume));\n" \
                 "}",
                 { positionedSound.ID(), newVolume },
-                fieldReliquary);
+                *fieldReliquary);
 
             WHEN("working reliquary")
             {
-                fieldReliquary.Do(Work{});
+                fieldReliquary->Do(Work{});
 
                 THEN("has paused sound")
                 {
@@ -150,11 +112,11 @@ SCENARIO_METHOD(AngelScriptAudioTestsFixture, "running audio AngelScript scripts
                 "    Arca::Reliquary::Do(Atmos::Audio::RestartSound(id));\n" \
                 "}",
                 { positionedSound.ID() },
-                fieldReliquary);
+                *fieldReliquary);
 
             WHEN("working reliquary")
             {
-                fieldReliquary.Do(Work{});
+                fieldReliquary->Do(Work{});
 
                 THEN("has restarted sound")
                 {
@@ -172,11 +134,11 @@ SCENARIO_METHOD(AngelScriptAudioTestsFixture, "running audio AngelScript scripts
                 "    Arca::Reliquary::Do(Atmos::Audio::PauseSound(id));\n" \
                 "}",
                 { positionedSound.ID() },
-                fieldReliquary);
+                *fieldReliquary);
 
             WHEN("working reliquary")
             {
-                fieldReliquary.Do(Work{});
+                fieldReliquary->Do(Work{});
 
                 THEN("has paused sound")
                 {
@@ -194,11 +156,11 @@ SCENARIO_METHOD(AngelScriptAudioTestsFixture, "running audio AngelScript scripts
                 "    Arca::Reliquary::Do(Atmos::Audio::ResumeSound(id));\n" \
                 "}",
                 { positionedSound.ID() },
-                fieldReliquary);
+                *fieldReliquary);
 
             WHEN("working reliquary")
             {
-                fieldReliquary.Do(Work{});
+                fieldReliquary->Do(Work{});
 
                 THEN("has paused sound")
                 {
@@ -227,14 +189,14 @@ SCENARIO_METHOD(AngelScriptAudioTestsFixture, "running audio AngelScript scripts
                 "    return signalHandler.signal.id;\n" \
                 "}",
                 {},
-                fieldReliquary);
+                *fieldReliquary);
 
             WHEN("working reliquary")
             {
-                fieldReliquary.Do(Work{});
                 auto resource = const_cast<Audio::Resource::Sound*>(positionedSound->Resource());
                 engine.mockAudioManager->doneResources.push_back(resource);
-                fieldReliquary.Do(Work{});
+                fieldReliquary->Do(Work{});
+                fieldReliquary->Do(Work{});
 
                 THEN("has paused sound")
                 {
@@ -247,11 +209,11 @@ SCENARIO_METHOD(AngelScriptAudioTestsFixture, "running audio AngelScript scripts
 
     GIVEN("UniversalSound")
     {
-        const auto audioAsset = CreateAudioAsset(fieldReliquary);
+        const auto audioAsset = CreateAudioAsset(*fieldReliquary);
         const auto volume = dataGeneration.Random<Volume>();
 
         auto createCommand = Arca::Create<UniversalSound>{ audioAsset, volume };
-        auto universalSound = fieldReliquary.Do(createCommand);
+        auto universalSound = fieldReliquary->Do(createCommand);
 
         GIVEN("script that returns asset ID")
         {
@@ -263,11 +225,11 @@ SCENARIO_METHOD(AngelScriptAudioTestsFixture, "running audio AngelScript scripts
                 "    return sound.Asset().ID();\n" \
                 "}",
                 { universalSound.ID() },
-                fieldReliquary);
+                *fieldReliquary);
 
             WHEN("working reliquary")
             {
-                fieldReliquary.Do(Work{});
+                fieldReliquary->Do(Work{});
 
                 THEN("has correct properties")
                 {
@@ -287,11 +249,11 @@ SCENARIO_METHOD(AngelScriptAudioTestsFixture, "running audio AngelScript scripts
                 "    return sound.Volume();\n" \
                 "}",
                 { universalSound.ID() },
-                fieldReliquary);
+                *fieldReliquary);
 
             WHEN("working reliquary")
             {
-                fieldReliquary.Do(Work{});
+                fieldReliquary->Do(Work{});
 
                 THEN("has correct properties")
                 {

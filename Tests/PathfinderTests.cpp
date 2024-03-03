@@ -6,10 +6,7 @@
 #include <Arca/ReliquaryOrigin.h>
 #include <Atmos/TypeRegistration.h>
 
-PathfinderTestsFixture::PathfinderTestsFixture() :
-    worldManager(
-        [this]() { return std::unique_ptr<Arca::Reliquary>{}; },
-        [this]() { return std::unique_ptr<Inscription::LoadAssetsUserContext>{}; })
+PathfinderTestsFixture::PathfinderTestsFixture() : worldManager([this]() { return World::FieldInitialization{}; })
 {
     Arca::ReliquaryOrigin reliquaryOrigin;
 

@@ -23,7 +23,7 @@ public:
     MockGraphicsManager* mockGraphicsManager;
     MockTextManager* mockTextManager;
     Scripting::Angel::Manager* scriptManager;
-    std::unique_ptr<MockWorldManager> mockWorldManager;
+    MockWorldManager* mockWorldManager;
 
     ScriptEngine(Logging::Logger& logger);
     ScriptEngine(ScriptEngine&& arg) noexcept = default;
