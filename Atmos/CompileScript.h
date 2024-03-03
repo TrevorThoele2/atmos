@@ -20,7 +20,7 @@ namespace Arca
     struct Traits<Atmos::Scripting::Compile>
     {
         static const ObjectType objectType = ObjectType::Command;
-        static inline const TypeName typeName = "Atmos::Scripting::Compile";
+        static TypeName TypeName() { return "Atmos::Scripting::Compile"; }
         using Result = Atmos::Buffer;
     };
 }

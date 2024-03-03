@@ -30,7 +30,7 @@ namespace Arca
     struct Traits<Atmos::Asset::ShaderCurator>
     {
         static const ObjectType objectType = ObjectType::Curator;
-        static inline const TypeName typeName = "Atmos::Asset::ShaderCurator";
+        static TypeName TypeName() { return "Atmos::Asset::ShaderCurator"; }
         using HandledCommands = HandledCommands<
             Atmos::Asset::FindByName<Atmos::Asset::Shader>,
             Atmos::Asset::Resource::LoadDataFromFile<Atmos::Asset::Resource::Shader>,

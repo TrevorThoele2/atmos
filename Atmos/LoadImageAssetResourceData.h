@@ -37,8 +37,10 @@ namespace Arca
     struct Traits<Atmos::Asset::Resource::LoadDataFromFile<Atmos::Asset::Resource::Image>>
     {
         static const ObjectType objectType = ObjectType::Command;
-        static inline const TypeName typeName =
-            "Atmos::Asset::Resource::LoadDataFromFile<Atmos::Asset::Resource::Image>";
+        static TypeName TypeName()
+        {
+            return "Atmos::Asset::Resource::LoadDataFromFile<Atmos::Asset::Resource::Image>";
+        }
         using Result = Atmos::Asset::Resource::Loaded<Atmos::Asset::Resource::Image>;
     };
 
@@ -46,8 +48,10 @@ namespace Arca
     struct Traits<Atmos::Asset::Resource::LoadDataFromMemory<Atmos::Asset::Resource::Image>>
     {
         static const ObjectType objectType = ObjectType::Command;
-        static inline const TypeName typeName =
-            "Atmos::Asset::Resource::LoadDataFromMemory<Atmos::Asset::Resource::Image>";
+        static TypeName TypeName()
+        {
+            return "Atmos::Asset::Resource::LoadDataFromMemory<Atmos::Asset::Resource::Image>";
+        }
         using Result = Atmos::Asset::Resource::Loaded<Atmos::Asset::Resource::Image>;
     };
 }

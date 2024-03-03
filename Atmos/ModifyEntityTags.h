@@ -19,6 +19,6 @@ namespace Arca
     struct Traits<Atmos::Entity::ModifyTags>
     {
         static const ObjectType objectType = ObjectType::Command;
-        static inline const TypeName typeName = "Atmos::Entity::ModifyTags";
+        static TypeName TypeName() { return "Atmos::Entity::ModifyTags"; }
     };
 }

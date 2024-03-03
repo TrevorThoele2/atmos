@@ -23,7 +23,7 @@ namespace Arca
     struct Traits<Atmos::Asset::Resource::Create<Atmos::Asset::Resource::Image>>
     {
         static const ObjectType objectType = ObjectType::Command;
-        static inline const TypeName typeName = "Atmos::Asset::Resource::Create<Atmos::Asset::Resource::Image>";
+        static TypeName TypeName() { return "Atmos::Asset::Resource::Create<Atmos::Asset::Resource::Image>"; }
         using Result = std::unique_ptr<Atmos::Asset::Resource::Image>;
     };
 }

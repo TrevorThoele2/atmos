@@ -22,6 +22,6 @@ namespace Arca
     struct Traits<Atmos::Render::MoveLine>
     {
         static const ObjectType objectType = ObjectType::Command;
-        static inline const TypeName typeName = "Atmos::Render::MoveLine";
+        static TypeName TypeName() { return "Atmos::Render::MoveLine"; }
     };
 }

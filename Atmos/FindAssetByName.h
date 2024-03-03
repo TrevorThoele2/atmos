@@ -23,7 +23,7 @@ namespace Arca
     struct Traits<Atmos::Asset::FindByName<T>>
     {
         static const ObjectType objectType = ObjectType::Command;
-        static inline const TypeName typeName = "Atmos::Asset::FindByName<" + TypeFor<T>().name + ">";
+        static TypeName TypeName() { return "Atmos::Asset::FindByName<" + TypeFor<T>().name + ">"; }
         using Result = Index<T>;
     };
 }

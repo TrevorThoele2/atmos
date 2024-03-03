@@ -18,7 +18,7 @@ namespace Arca
     struct Traits<Atmos::Scripting::Execute>
     {
         static const ObjectType objectType = ObjectType::Command;
-        static inline const TypeName typeName = "Atmos::Scripting::Execute";
+        static TypeName TypeName() { return "Atmos::Scripting::Execute"; }
         using Result = std::optional<Atmos::Scripting::Result>;
     };
 }

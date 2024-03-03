@@ -17,6 +17,6 @@ namespace Arca
     struct Traits<Atmos::Audio::ChangeMasterVolume>
     {
         static const ObjectType objectType = ObjectType::Command;
-        static inline const TypeName typeName = "Atmos::Audio::ChangeMasterVolume";
+        static TypeName TypeName() { return "Atmos::Audio::ChangeMasterVolume"; }
     };
 }

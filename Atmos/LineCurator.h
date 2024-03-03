@@ -41,7 +41,7 @@ namespace Arca
     struct Traits<Atmos::Render::LineCurator>
     {
         static const ObjectType objectType = ObjectType::Curator;
-        static inline const TypeName typeName = "Atmos::Render::LineCurator";
+        static TypeName TypeName() { return "Atmos::Render::LineCurator"; }
         using HandledCommands = HandledCommands<
             Atmos::Work,
             Atmos::Render::MoveLine,

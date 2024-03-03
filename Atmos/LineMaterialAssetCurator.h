@@ -20,7 +20,7 @@ namespace Arca
     struct Traits<Atmos::Asset::LineMaterialCurator>
     {
         static const ObjectType objectType = ObjectType::Curator;
-        static inline const TypeName typeName = "Atmos::Asset::LineMaterialCurator";
+        static TypeName TypeName() { return "Atmos::Asset::LineMaterialCurator"; }
         using HandledCommands = HandledCommands<Atmos::Asset::FindByName<Atmos::Asset::LineMaterial>>;
     };
 }

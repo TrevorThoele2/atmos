@@ -31,7 +31,7 @@ namespace Arca
     struct Traits<Atmos::Render::CameraCurator>
     {
         static const ObjectType objectType = ObjectType::Curator;
-        static inline const TypeName typeName = "Atmos::Render::CameraCurator";
+        static TypeName TypeName() { return "Atmos::Render::CameraCurator"; }
         using HandledCommands = HandledCommands<Atmos::Work>;
     };
 }

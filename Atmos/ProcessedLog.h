@@ -28,6 +28,6 @@ namespace Arca
     struct Traits<Atmos::Logging::ProcessedLog>
     {
         static const ObjectType objectType = ObjectType::Signal;
-        static inline const TypeName typeName = "Atmos::Logging::ProcessedLog";
+        static TypeName TypeName() { return "Atmos::Logging::ProcessedLog"; }
     };
 }

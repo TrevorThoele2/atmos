@@ -23,6 +23,6 @@ namespace Arca
     struct Traits<Atmos::Spatial::ScaleBounds>
     {
         static const ObjectType objectType = ObjectType::Command;
-        static inline const TypeName typeName = "Atmos::Spatial::ScaleBounds";
+        static TypeName TypeName() { return "Atmos::Spatial::ScaleBounds"; }
     };
 }

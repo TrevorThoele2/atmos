@@ -18,7 +18,10 @@ namespace Atmos::Scripting::Angel
             asIScriptFunction& executeFunction,
             asIScriptContext& context,
             Logging::Logger& logger);
+        ScriptResource(ScriptResource&& arg) noexcept;
         ~ScriptResource();
+
+        ScriptResource& operator=(ScriptResource&& arg) noexcept;
 
         std::optional<Result> Execute() override;
 

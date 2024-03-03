@@ -14,6 +14,6 @@ namespace Arca
     struct Traits<Atmos::FocusLost>
     {
         static const ObjectType objectType = ObjectType::Signal;
-        static inline const TypeName typeName = "Atmos::FocusLost";
+        static TypeName TypeName() { return "Atmos::FocusLost"; }
     };
 }

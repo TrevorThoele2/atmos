@@ -14,7 +14,7 @@ namespace Arca
     struct Traits<::Atmos::State::GameState>
     {
         static const ObjectType objectType = ObjectType::Relic;
-        static inline const TypeName typeName = "Atmos::State::GameState";
+        static TypeName TypeName() { return "Atmos::State::GameState"; }
     };
 }
 

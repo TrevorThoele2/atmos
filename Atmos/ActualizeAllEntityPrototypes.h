@@ -14,6 +14,6 @@ namespace Arca
     struct Traits<Atmos::Entity::ActualizeAllPrototypes>
     {
         static const ObjectType objectType = ObjectType::Command;
-        static inline const TypeName typeName = "Atmos::Entity::ActualizeAllPrototypes";
+        static TypeName TypeName() { return "Atmos::Entity::ActualizeAllPrototypes"; }
     };
 }

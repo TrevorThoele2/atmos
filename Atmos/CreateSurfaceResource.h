@@ -17,7 +17,7 @@ namespace Arca
     struct Traits<Atmos::Render::Resource::CreateSurface>
     {
         static const ObjectType objectType = ObjectType::Command;
-        static inline const TypeName typeName = "Atmos::Render::Resource::CreateSurface";
+        static TypeName TypeName() { return "Atmos::Render::Resource::CreateSurface"; }
         using Result = std::unique_ptr<Atmos::Render::Resource::Surface>;
     };
 }

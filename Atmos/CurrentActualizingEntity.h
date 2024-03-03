@@ -17,7 +17,7 @@ namespace Arca
     struct Traits<Atmos::Entity::CurrentActualizing>
     {
         static const ObjectType objectType = ObjectType::Relic;
-        static inline const TypeName typeName = "Atmos::Entity::CurrentActualizing";
+        static TypeName TypeName() { return "Atmos::Entity::CurrentActualizing"; }
         static const Locality locality = Locality::Global;
     };
 }

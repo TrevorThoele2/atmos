@@ -21,7 +21,7 @@ namespace Arca
     struct Traits<Atmos::Render::SurfaceCurator>
     {
         static const ObjectType objectType = ObjectType::Curator;
-        static inline const TypeName typeName = "Atmos::Render::SurfaceCurator";
+        static TypeName TypeName() { return "Atmos::Render::SurfaceCurator"; }
         using HandledCommands = HandledCommands<
             Atmos::Render::ChangeMainSurfaceBackgroundColor>;
     };

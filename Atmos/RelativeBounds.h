@@ -22,7 +22,7 @@ namespace Arca
     struct Traits<Atmos::Spatial::RelativeBounds>
     {
         static const ObjectType objectType = ObjectType::Shard;
-        static inline const TypeName typeName = "Atmos::Spatial::RelativeBounds";
+        static TypeName TypeName() { return "Atmos::Spatial::RelativeBounds"; }
     };
 }
 

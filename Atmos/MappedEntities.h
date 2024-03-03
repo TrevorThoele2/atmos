@@ -25,7 +25,7 @@ namespace Arca
     struct Traits<Atmos::Entity::Mapped>
     {
         static const ObjectType objectType = ObjectType::Relic;
-        static inline const TypeName typeName = "Atmos::Entity::Mapped";
+        static TypeName TypeName() { return "Atmos::Entity::Mapped"; }
         static const Locality locality = Locality::Global;
     };
 }

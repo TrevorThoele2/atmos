@@ -21,7 +21,7 @@ namespace Arca
     struct Traits<Atmos::World::CurrentFieldData>
     {
         static const ObjectType objectType = ObjectType::Relic;
-        static inline const TypeName typeName = "Atmos::World::CurrentFieldData";
+        static TypeName TypeName() { return "Atmos::World::CurrentFieldData"; }
         static const Locality locality = Locality::Global;
     };
 }

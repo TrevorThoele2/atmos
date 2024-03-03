@@ -39,7 +39,7 @@ namespace Arca
     struct Traits<Atmos::Initialization::FileCurator>
     {
         static const ObjectType objectType = ObjectType::Curator;
-        static inline const TypeName typeName = "Atmos::Initialization::FileCurator";
+        static TypeName TypeName() { return "Atmos::Initialization::FileCurator"; }
     };
 }
 

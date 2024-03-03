@@ -28,7 +28,7 @@ namespace Arca
     struct Traits<Atmos::Audio::VolumeCurator>
     {
         static const ObjectType objectType = ObjectType::Curator;
-        static inline const TypeName typeName = "Atmos::Audio::VolumeCurator";
+        static TypeName TypeName() { return "Atmos::Audio::VolumeCurator"; }
         using HandledCommands = Arca::HandledCommands<Atmos::Audio::ChangeMasterVolume>;
     };
 }

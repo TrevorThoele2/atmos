@@ -18,6 +18,6 @@ namespace Arca
     struct Traits<Atmos::Entity::MoveTo>
     {
         static const ObjectType objectType = ObjectType::Command;
-        static inline const TypeName typeName = "Atmos::Entity::MoveTo";
+        static TypeName TypeName() { return "Atmos::Entity::MoveTo"; }
     };
 }

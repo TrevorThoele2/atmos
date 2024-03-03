@@ -23,6 +23,6 @@ namespace Arca
     struct Traits<Atmos::Spatial::RotateBounds>
     {
         static const ObjectType objectType = ObjectType::Command;
-        static inline const TypeName typeName = "Atmos::Spatial::RotateBounds";
+        static TypeName TypeName() { return "Atmos::Spatial::RotateBounds"; }
     };
 }

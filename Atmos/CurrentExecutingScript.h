@@ -19,7 +19,7 @@ namespace Arca
     struct Traits<Atmos::Scripting::CurrentExecutingScript>
     {
         static const ObjectType objectType = ObjectType::Relic;
-        static inline const TypeName typeName = "Atmos::Scripting::CurrentExecutingScript";
+        static TypeName TypeName() { return "Atmos::Scripting::CurrentExecutingScript"; }
         static const Locality locality = Locality::Global;
     };
 }

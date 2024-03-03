@@ -1,7 +1,6 @@
 #include "SDLInputManager.h"
 
 #include <SDL.h>
-#include <stdexcept>
 
 namespace Atmos::Input
 {
@@ -269,22 +268,13 @@ namespace Atmos::Input
             case SDL_TEXTINPUT:
                 HandleTextInputEvent(event.text, state);
                 break;
-            case SDL_MOUSEBUTTONDOWN:
-                HandleMouseButtonEvent<KeyState::Down>(event.button, state);
-                break;
-            case SDL_MOUSEBUTTONUP:
-                HandleMouseButtonEvent<KeyState::Up>(event.button, state);
-                break;
-            case SDL_KEYDOWN:
-                HandleKeyboardEvent<KeyState::Down>(event.key, state);
-                break;
-            case SDL_KEYUP:
-                HandleKeyboardEvent<KeyState::Up>(event.key, state);
-                break;
             default:
                 break;
             }
         }
+
+        HandleMouse(state);
+        HandleKeyboard(state);
 
         return state;
     }
@@ -294,10 +284,31 @@ namespace Atmos::Input
         state.enteredText.emplace_back(event.text);
     }
 
-    void SDLManager::HandleMouseMoveEvent(SDL_MouseMotionEvent event, State& state) const
+    void SDLManager::HandleMouse(State& state) const
     {
-        state.mousePosition.x = event.x;
-        state.mousePosition.y = event.y;
+        int x;
+        int y;
+        const auto mouseState = SDL_GetMouseState(&x, &y);
+
+        state.mousePosition.x = x;
+        state.mousePosition.y = y;
+
+        for(auto& [mouseButton, mapping] : mouseButtonMappings)
+        {
+            const auto isDown = mouseState & SDL_BUTTON(mouseButton);
+            state.keyStates.*mapping.toKeyStates = isDown ? KeyState::Down : KeyState::Up;
+        }
+    }
+
+    void SDLManager::HandleKeyboard(State& state) const
+    {
+        const auto keyboardState = SDL_GetKeyboardState(nullptr);
+
+        for(auto& [keyCode, mapping] : keycodeMappings)
+        {
+            const auto isDown = keyboardState[SDL_GetScancodeFromKey(keyCode)];
+            state.keyStates.*mapping.toKeyStates = isDown ? KeyState::Down : KeyState::Up;
+        }
     }
 
     auto SDLManager::FromMouse(int mouseButton) const -> const KeyMapping*

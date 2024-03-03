@@ -21,6 +21,6 @@ namespace Arca
     struct Traits<Atmos::Render::ChangeImageCore>
     {
         static const ObjectType objectType = ObjectType::Command;
-        static inline const TypeName typeName = "Atmos::Render::ChangeImageCore";
+        static TypeName TypeName() { return "Atmos::Render::ChangeImageCore"; }
     };
 }

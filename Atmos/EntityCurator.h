@@ -49,7 +49,7 @@ namespace Arca
     struct Traits<Atmos::Entity::Curator>
     {
         static const ObjectType objectType = ObjectType::Curator;
-        static inline const TypeName typeName = "Atmos::Entity::EntityCurator";
+        static TypeName TypeName() { return "Atmos::Entity::EntityCurator"; }
         using HandledCommands = HandledCommands<
             Atmos::Work,
             Atmos::Entity::ActualizeAllPrototypes,

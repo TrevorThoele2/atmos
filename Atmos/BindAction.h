@@ -19,6 +19,6 @@ namespace Arca
     struct Traits<Atmos::Input::BindAction>
     {
         static const ObjectType objectType = ObjectType::Command;
-        static inline const TypeName typeName = "Atmos::Input::BindAction";
+        static TypeName TypeName() { return "Atmos::Input::BindAction"; }
     };
 }

@@ -27,6 +27,6 @@ namespace Arca
     struct Traits<Atmos::Render::ChangeMaterialAsset<Material>>
     {
         static const ObjectType objectType = ObjectType::Command;
-        static inline const TypeName typeName = "Atmos::Render::ChangeMaterialAsset<" + Traits<Material>::typeName + ">";
+        static TypeName TypeName() { return "Atmos::Render::ChangeMaterialAsset<" + Traits<Material>::TypeName() + ">"; }
     };
 }

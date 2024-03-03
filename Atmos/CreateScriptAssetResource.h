@@ -22,7 +22,7 @@ namespace Arca
     struct Traits<Atmos::Asset::Resource::Create<Atmos::Asset::Resource::Script>>
     {
         static const ObjectType objectType = ObjectType::Command;
-        static inline const TypeName typeName = "Atmos::Asset::Resource::Create<Atmos::Asset::Resource::Script>";
+        static TypeName TypeName() { return "Atmos::Asset::Resource::Create<Atmos::Asset::Resource::Script>"; }
         using Result = std::unique_ptr<Atmos::Asset::Resource::Script>;
     };
 }

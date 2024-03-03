@@ -24,7 +24,7 @@ namespace Arca
     struct Traits<Atmos::Asset::LineMaterial>
     {
         static const ObjectType objectType = ObjectType::Relic;
-        static inline const TypeName typeName = "Atmos::Asset::LineMaterial";
+        static TypeName TypeName() { return "Atmos::Asset::LineMaterial"; }
         static bool ShouldCreate(
             Reliquary& reliquary,
             const Atmos::Name& name,

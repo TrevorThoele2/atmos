@@ -22,7 +22,7 @@ namespace Arca
     struct Traits<Atmos::Render::CompileShader>
     {
         static const ObjectType objectType = ObjectType::Command;
-        static inline const TypeName typeName = "Atmos::Render::CompileShader";
+        static TypeName TypeName() { return "Atmos::Render::CompileShader"; }
         using Result = Atmos::File::Path;
     };
 }

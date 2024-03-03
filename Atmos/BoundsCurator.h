@@ -67,7 +67,7 @@ namespace Arca
     struct Traits<Atmos::Spatial::BoundsCurator>
     {
         static const ObjectType objectType = ObjectType::Curator;
-        static inline const TypeName typeName = "Atmos::Spatial::BoundsCurator";
+        static TypeName TypeName() { return "Atmos::Spatial::BoundsCurator"; }
         using HandledCommands = HandledCommands<
             Atmos::Spatial::MoveBoundsTo,
             Atmos::Spatial::MoveBoundsBy,
