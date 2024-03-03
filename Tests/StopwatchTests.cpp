@@ -8,8 +8,9 @@
 #include <thread>
 
 using namespace Atmos;
+using namespace Time;
 
-SCENARIO_METHOD(StopwatchTestsFixture, "real stopwatch")
+SCENARIO_METHOD(StopwatchTestsFixture, "real stopwatch", "[stopwatch][time]")
 {
     GIVEN("registered reliquary")
     {
@@ -19,7 +20,7 @@ SCENARIO_METHOD(StopwatchTestsFixture, "real stopwatch")
 
         WHEN("creating real stopwatch")
         {
-            auto stopwatch = reliquary->Do<Arca::Create<Time::RealStopwatch>>();
+            const auto stopwatch = reliquary->Do<Arca::Create<Time::RealStopwatch>>();
 
             WHEN("starting")
             {
@@ -27,17 +28,17 @@ SCENARIO_METHOD(StopwatchTestsFixture, "real stopwatch")
 
                 THEN("start is greater than zero")
                 {
-                    const auto zero = Time::Value();
+                    const auto zero = Time::Value<>();
                     REQUIRE(startTime > zero);
                 }
 
                 THEN("elapsed is greater waited time")
                 {
-                    std::this_thread::sleep_for(std::chrono::seconds(10));
+                    std::this_thread::sleep_for(Milliseconds(10));
 
                     auto calculatedTime = stopwatch->Elapsed();
 
-                    const auto waitedFor = Time::Value(Time::Value::Number(10), Time::Epoch::Milliseconds);
+                    const auto waitedFor = Milliseconds(10);
                     REQUIRE(calculatedTime > waitedFor);
                 }
             }

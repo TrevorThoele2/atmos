@@ -731,9 +731,6 @@
     <ClInclude Include="NullGraphicsManager.h">
       <Filter>Header Files\Render</Filter>
     </ClInclude>
-    <ClInclude Include="Epoch.h">
-      <Filter>Header Files\Time</Filter>
-    </ClInclude>
     <ClInclude Include="SenseComponent.h">
       <Filter>Header Files\Entity\Component</Filter>
     </ClInclude>
@@ -1287,9 +1284,6 @@
     </ClCompile>
     <ClCompile Include="ShaderAsset.cpp">
       <Filter>Source Files\Assets\Shader</Filter>
-    </ClCompile>
-    <ClCompile Include="TimeValue.cpp">
-      <Filter>Source Files\Time</Filter>
     </ClCompile>
     <ClCompile Include="AudioAssetInstance.cpp">
       <Filter>Source Files\Assets\Audio</Filter>

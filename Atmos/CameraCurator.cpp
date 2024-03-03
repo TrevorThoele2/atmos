@@ -73,7 +73,7 @@ namespace Atmos::Render
 
         auto& lastFrameElapsed = Arca::Index<Time::Information>(Owner())->lastFrameElapsed;
         const auto normalizedDistance =
-            by * static_cast<float>(lastFrameElapsed.GetAs(Time::Epoch::Seconds));
+            by * static_cast<float>(std::chrono::duration_cast<Time::Seconds>(lastFrameElapsed).count());
 
         switch (direction.Get())
         {

@@ -16,7 +16,7 @@ namespace Atmos::Window
         void Show() override;
         void Exit() override;
         [[nodiscard]] bool IsCurrentlyFocused() const override;
-        void Suspend(const Time::Value& time) override;
+        void Suspend(const Time::Duration<>& time) override;
         bool OnStartFrame() override;
 
         [[nodiscard]] HWND Hwnd() const;

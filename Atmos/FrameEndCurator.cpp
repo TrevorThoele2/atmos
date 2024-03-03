@@ -20,7 +20,7 @@ namespace Atmos
         auto timeInformationData = MutablePointer(timeInformation);
 
         static unsigned int count = 0;
-        if (fpsTimer->Elapsed().Get() >= Time::Value::Number(timeSettings->fpsLimit))
+        if (fpsTimer->Elapsed() >= Time::Milliseconds(timeSettings->fpsLimit))
         {
             fpsTimer->Start();
 
@@ -30,9 +30,10 @@ namespace Atmos
 
         ++count;
 
-        timeInformationData->frameEndTime = timeInformationData->stopwatch->Elapsed();
+        timeInformationData->frameEndTime = Time::Value<>() + timeInformationData->stopwatch->Elapsed();
         timeInformationData->lastFrameElapsed =
-            timeInformationData->frameEndTime - timeInformationData->frameStartTime;
+            std::chrono::duration_cast<Time::Seconds>(
+                timeInformationData->frameEndTime - timeInformationData->frameStartTime);
         timeInformationData->totalElapsed += timeInformationData->lastFrameElapsed;
 
         debugIdleProfiler.Start();

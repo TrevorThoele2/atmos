@@ -11,9 +11,9 @@ namespace Atmos::Time
     public:
         explicit RealStopwatch(Init init);
 
-        Value Start() const;
-        Value Elapsed() const;
-        [[nodiscard]] Value CurrentTime() const;
+        Value<> Start() const;
+        Duration<> Elapsed() const;
+        [[nodiscard]] Value<> CurrentTime() const;
     private:
         using Core = StopwatchCore;
         Arca::Index<Core> core{};

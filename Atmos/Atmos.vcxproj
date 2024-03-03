@@ -136,7 +136,6 @@
     <ClInclude Include="SurfaceData.h" />
     <ClInclude Include="TimeInformation.h" />
     <ClInclude Include="DebugStatistics.h" />
-    <ClInclude Include="Epoch.h" />
     <ClInclude Include="Exception.h" />
     <ClInclude Include="Fps.h" />
     <ClInclude Include="TimeSettings.h" />
@@ -462,7 +461,6 @@
     <ClCompile Include="MaterialAsset.cpp" />
     <ClCompile Include="Size3D.cpp" />
     <ClCompile Include="StringUtility.cpp" />
-    <ClCompile Include="TimeValue.cpp" />
     <ClCompile Include="Vector2D.cpp" />
     <ClCompile Include="Vector3D.cpp" />
     <ClCompile Include="WindowsEngine.cpp" />

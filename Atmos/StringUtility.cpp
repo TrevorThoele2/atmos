@@ -138,11 +138,6 @@ namespace Atmos
         {
             return arg;
         }
-
-        Time::Value FromStringImpl(const String &arg, const ::Chroma::TypeIdentity<Time::Value> &t)
-        {
-            return Time::Value(FromString<Time::Value::Number>(arg));
-        }
     }
 
     template<class T>
@@ -246,11 +241,6 @@ namespace Atmos
     String ToString(LargeInteger arg)
     {
         return arg.ToString();
-    }
-
-    String ToString(Time::Value timeValue)
-    {
-        return ToString(timeValue.Get());
     }
 
     String ToString(const Grid::Position &position)

@@ -49,17 +49,27 @@ namespace Atmos
             return toReturn;
         }
 
-        String FromStringImpl(const String &arg, const ::Chroma::TypeIdentity<String> &t);
+        String FromStringImpl(const String &arg, const ::Chroma::TypeIdentity<String>& t);
 
         template<class T>
-        FixedPoint<T> FromStringImpl(const String &arg, const ::Chroma::TypeIdentity<FixedPoint<T>> &t)
+        FixedPoint<T> FromStringImpl(const String &arg, const ::Chroma::TypeIdentity<FixedPoint<T>>& t)
         {
             FixedPoint<T> ret;
             ret.FromString(arg);
             return ret;
         }
 
-        Time::Value FromStringImpl(const String &arg, const ::Chroma::TypeIdentity<Time::Value> &t);
+        template<class Duration>
+        Time::Value<Duration> FromStringImpl(const String& arg, const ::Chroma::TypeIdentity<Time::Value<Duration>>& t)
+        {
+            return Time::Value<Duration>(FromString<Duration>(arg));
+        }
+
+        template<class Rep, class Ratio>
+        Time::Duration<Rep, Ratio> FromStringImpl(const String& arg, const ::Chroma::TypeIdentity<Time::Duration<Rep, Ratio>>& t)
+        {
+            return Time::Duration<Rep, Ratio>(FromString<long long>(arg));
+        }
     }
 
     template<class T, typename ::std::enable_if<!::std::is_enum<T>::value, int>::type = 0>
@@ -102,7 +112,16 @@ namespace Atmos
     {
         return arg.ToString();
     }
-    String ToString(Time::Value timeValue);
+    template<class Duration>
+    String ToString(Time::Value<Duration> timeValue)
+    {
+        return ToString(timeValue.time_since_epoch().count());
+    }
+    template<class Rep, class Ratio>
+    String ToString(Time::Duration<Rep, Ratio> duration)
+    {
+        return ToString(duration.count());
+    }
     String ToString(const Grid::Position &position);
     String ToString(const ::Agui::Resolution::Size &arg);
 }

@@ -13,11 +13,11 @@ namespace Atmos::Time
     public:
         explicit Information(Init init);
 
-        Value frameStartTime;
-        Value frameEndTime;
+        Value<> frameStartTime;
+        Value<> frameEndTime;
 
-        Value lastFrameElapsed;
-        Value totalElapsed;
+        Duration<> lastFrameElapsed;
+        Duration<> totalElapsed;
 
         Fps fps = 0;
 

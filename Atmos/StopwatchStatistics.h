@@ -7,8 +7,8 @@ namespace Atmos::Time
 {
     struct StopwatchStatistics
     {
-        Value average;
-        Value highest;
+        Nanoseconds average;
+        Nanoseconds highest;
 
         StopwatchStatistics();
     };

@@ -10,7 +10,7 @@ namespace Atmos::Entity
     {
         Arca::Index<Entity> entity;
         Grid::Position toPosition;
-        Time::Value timeTaken;
+        Time::Duration<> timeTaken;
     };
 }
 

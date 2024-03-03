@@ -60,19 +60,23 @@ namespace Atmos::Debug
             AddEntry(name + " time", entrySet.time);
             entrySet.time.retrievalFunction = [&profiler]() -> String
             {
-                return ToString(profiler->Elapsed().GetAs(Time::Epoch::Milliseconds));
+                return ToString(std::chrono::duration_cast<Time::Milliseconds>(profiler->Elapsed()));
             };
 
             AddEntry(name + " average", entrySet.average);
             entrySet.average.retrievalFunction = [&profiler]() -> String
             {
-                return ToString(profiler->Find<Time::StopwatchStatistics>()->average.GetAs(Time::Epoch::Milliseconds));
+                return ToString(
+                    std::chrono::duration_cast<Time::Milliseconds>(
+                        profiler->Find<Time::StopwatchStatistics>()->average));
             };
 
             AddEntry(name + " highest", entrySet.highest);
             entrySet.highest.retrievalFunction = [&profiler]() -> String
             {
-                return ToString(profiler->Find<Time::StopwatchStatistics>()->highest.GetAs(Time::Epoch::Milliseconds));
+                return ToString(
+                    std::chrono::duration_cast<Time::Milliseconds>(
+                        profiler->Find<Time::StopwatchStatistics>()->highest));
             };
         };
 

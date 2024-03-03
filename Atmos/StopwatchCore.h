@@ -7,11 +7,11 @@ namespace Atmos::Time
 {
     struct StopwatchCore
     {
-        Value start;
-        std::function<Value()> currentTime;
+        Value<> start;
+        std::function<Value<>()> currentTime;
 
         StopwatchCore() = default;
-        explicit StopwatchCore(std::function<Value()>&& currentTime);
+        explicit StopwatchCore(std::function<Value<>()>&& currentTime);
     };
 }
 

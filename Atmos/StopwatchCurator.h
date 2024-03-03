@@ -14,8 +14,8 @@ namespace Atmos::Time
     public:
         explicit StopwatchCurator(Init init);
 
-        Value Handle(const StartStopwatch& command);
-        Value Handle(const CalculateStopwatch& command);
+        Value<> Handle(const StartStopwatch& command);
+        Duration<> Handle(const CalculateStopwatch& command);
         void Handle(const ResetAverage& command);
         void Handle(const ResetHighest& command);
     };
