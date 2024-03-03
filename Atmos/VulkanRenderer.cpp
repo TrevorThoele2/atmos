@@ -176,8 +176,13 @@ namespace Atmos::Render::Vulkan
 
         commandBuffer.beginRenderPass(renderPassBeginInfo, vk::SubpassContents::eInline);
 
-        quadRenderer.Start(reliquary, commandBuffer);
-        lineRenderer.Start(reliquary, commandBuffer);
+        const auto materialBatch = reliquary.Batch<Asset::Material>();
+        std::vector<const Asset::Material*> materials;
+        materials.reserve(materialBatch.Size());
+        for (auto& material : materialBatch)
+            materials.push_back(&material);
+        quadRenderer.Start(materials, commandBuffer);
+        lineRenderer.Start(materials, commandBuffer);
 
         const auto end = [&]()
         {

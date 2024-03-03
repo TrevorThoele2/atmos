@@ -15,11 +15,6 @@ namespace Atmos::Render
         reliquary.Do(Render::SetupMainSurfaceData{ mainWindow });
     }
 
-    void GraphicsManager::SetupDefaults(Arca::Reliquary& reliquary)
-    {
-        SetupDefaultsImpl(reliquary);
-    }
-
     std::unique_ptr<Asset::ImageData> GraphicsManager::CreateImageData(
         const Buffer& buffer,
         const Name& name,

@@ -18,7 +18,7 @@ namespace Atmos::Render::Vulkan
     public:
         struct DrawContext
         {
-            Arca::Reliquary* reliquary = nullptr;
+            std::vector<const Asset::Material*> materials;
             uint32_t count = 0;
             vk::CommandBuffer commandBuffer;
             uint32_t layerCount = 0;
@@ -48,7 +48,7 @@ namespace Atmos::Render::Vulkan
         template<class SetupDiscrimination>
         void AttemptReconstructDiscriminatedDescriptorSet(SetupDiscrimination setupDiscrimination);
     public:
-        void Start(Arca::Reliquary& reliquary, vk::CommandBuffer commandBuffer);
+        void Start(const std::vector<const Asset::Material*>& materials, vk::CommandBuffer commandBuffer);
         void End();
         [[nodiscard]] bool IsDone() const;
         [[nodiscard]] DrawContext* CurrentDrawContext();
@@ -68,6 +68,7 @@ namespace Atmos::Render::Vulkan
         LayeredContexts layeredContexts;
     private:
         std::optional<DrawContext> drawContext;
+        std::vector<const Asset::Material*> previousMaterialAssets;
     private:
         std::vector<DescriptorSetGroup::Definition> descriptorSetGroupDefinitions;
         std::optional<DescriptorSetGroup> descriptorSets;
@@ -135,7 +136,7 @@ namespace Atmos::Render::Vulkan
         SetupDiscrimination setupDiscrimination)
     {
         const auto size = allDiscriminations.size() * swapchainImageCount;
-        if (descriptorSets->Size() < size)
+        if (descriptorSets->Size() < size || drawContext->materials != previousMaterialAssets)
         {
             pipelines.clear();
             discriminatedDescriptorSets.clear();
@@ -155,13 +156,12 @@ namespace Atmos::Render::Vulkan
                 }
             }
 
-            auto allMaterials = drawContext->reliquary->template Batch<Asset::Material>();
-            for (auto& material : allMaterials)
+            for (auto& material : drawContext->materials)
             {
-                if (material.Type() != materialAssetType)
+                if (material->Type() != materialAssetType)
                     continue;
 
-                pipelines.push_back(CreatePipeline(&material, descriptorSets->DescriptorSetLayout(), extent));
+                pipelines.push_back(CreatePipeline(material, descriptorSets->DescriptorSetLayout(), extent));
                 auto& pipeline = pipelines.back();
 
                 descriptorSetIndex = 0;
@@ -179,13 +179,13 @@ namespace Atmos::Render::Vulkan
     }
 
     template<class Discriminator, class Context>
-    void RendererCore<Discriminator, Context>::Start(Arca::Reliquary& reliquary, vk::CommandBuffer commandBuffer)
+    void RendererCore<Discriminator, Context>::Start(const std::vector<const Asset::Material*>& materials, vk::CommandBuffer commandBuffer)
     {
         if (layeredContexts.empty())
             return;
 
         drawContext = DrawContext();
-        drawContext->reliquary = &reliquary;
+        drawContext->materials = materials;
         drawContext->commandBuffer = commandBuffer;
         drawContext->currentLayer = layeredContexts.begin();
     }
@@ -194,6 +194,7 @@ namespace Atmos::Render::Vulkan
     void RendererCore<Discriminator, Context>::End()
     {
         layeredContexts.clear();
+        previousMaterialAssets = drawContext->materials;
         drawContext = {};
 
         descriptorSets->Reset();

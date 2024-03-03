@@ -50,11 +50,6 @@ namespace Atmos::Render::Vulkan
         
     }
 
-    void GraphicsManager::SetupDefaultsImpl(Arca::Reliquary& reliquary)
-    {
-        
-    }
-
     std::unique_ptr<Asset::ImageData> GraphicsManager::CreateImageDataImpl(
         const Bytes& bytes,
         const Name& name,

@@ -24,8 +24,6 @@ namespace Atmos::Render::Vulkan
         void SetFullscreen(bool set) override;
         void ChangeVerticalSync(bool set) override;
     protected:
-        void SetupDefaultsImpl(Arca::Reliquary& reliquary) override;
-
         [[nodiscard]] std::unique_ptr<Asset::ImageData> CreateImageDataImpl(
             const Bytes& bytes,
             const Name& name,
