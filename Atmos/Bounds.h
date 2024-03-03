@@ -2,6 +2,7 @@
 
 #include <Arca/Shard.h>
 
+#include "Space.h"
 #include "Point3D.h"
 #include "Size2D.h"
 #include "Scalers2D.h"
@@ -9,17 +10,11 @@
 
 namespace Atmos::Spatial
 {
-    enum class BoundsSpace
-    {
-        World,
-        Screen
-    };
-
     class Bounds
     {
     public:
         Bounds();
-        Bounds(BoundsSpace space, const Point3D& position, const Size2D& baseSize, const Scalers2D& scalers, const Angle2D& rotation);
+        Bounds(Space space, const Point3D& position, const Size2D& baseSize, const Scalers2D& scalers, const Angle2D& rotation);
 
         void Position(const Point3D& to);
         void BaseSize(const Size2D& to);
@@ -31,9 +26,9 @@ namespace Atmos::Spatial
         [[nodiscard]] Size2D Size() const;
         [[nodiscard]] Scalers2D Scalers() const;
         [[nodiscard]] Angle2D Rotation() const;
-        [[nodiscard]] BoundsSpace Space() const;
+        [[nodiscard]] Space Space() const;
     private:
-        BoundsSpace space = BoundsSpace::World;
+        Spatial::Space space = Space::World;
         Point3D position;
         Size2D baseSize;
         Scalers2D scalers;
@@ -56,9 +51,9 @@ namespace Arca
 namespace Inscription
 {
     template<class Archive>
-    struct ScribeTraits<Atmos::Spatial::BoundsSpace, Archive>
+    struct ScribeTraits<Atmos::Spatial::Space, Archive>
     {
-        using Category = EnumScribeCategory<Atmos::Spatial::BoundsSpace>;
+        using Category = EnumScribeCategory<Atmos::Spatial::Space>;
     };
 
     template<>

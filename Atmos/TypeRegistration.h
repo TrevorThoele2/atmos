@@ -125,11 +125,12 @@ namespace Atmos
         void RegisterTypes(Arca::ReliquaryOrigin& origin, Logger& logger);
     }
 
-    namespace Debug
+    namespace Diagnostics
     {
         void RegisterTypes(Arca::ReliquaryOrigin& origin);
+        Arca::Stage Stage();
     }
-
+    
     namespace Random
     {
         void RegisterTypes(Arca::ReliquaryOrigin& origin);

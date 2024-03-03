@@ -187,6 +187,12 @@
     <ClCompile Include="AngelScriptViewSliceTests.cpp">
       <Filter>Source Files\Tests\Scripting\AngelScript\Atmos\Render</Filter>
     </ClCompile>
+    <ClCompile Include="UIImageTests.cpp">
+      <Filter>Source Files\Tests\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptDiagnosticsTests.cpp">
+      <Filter>Source Files\Tests\Scripting\AngelScript\Atmos\Diagnostics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneralFixture.h">
@@ -387,6 +393,12 @@
     <ClInclude Include="AngelScriptViewSliceTests.h">
       <Filter>Header Files\Tests\Scripting\AngelScript\Atmos\Render</Filter>
     </ClInclude>
+    <ClInclude Include="UIImageTests.h">
+      <Filter>Header Files\Tests\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptDiagnosticsTests.h">
+      <Filter>Header Files\Tests\Scripting\AngelScript\Atmos\Diagnostics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">
@@ -568,6 +580,12 @@
     </Filter>
     <Filter Include="Header Files\Tests\UI">
       <UniqueIdentifier>{62ac569d-0293-4822-866e-c8b317fc1096}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Tests\Scripting\AngelScript\Atmos\Diagnostics">
+      <UniqueIdentifier>{ae4111f3-25c8-4edd-a8de-4926772f7d38}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Tests\Scripting\AngelScript\Atmos\Diagnostics">
+      <UniqueIdentifier>{ac69036b-31b8-4d91-9b92-03f733df2d58}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

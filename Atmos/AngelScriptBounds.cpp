@@ -17,11 +17,11 @@
 
 namespace Atmos::Scripting::Angel
 {
-    void Registration<Spatial::BoundsSpace>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
+    void Registration<Spatial::Space>::RegisterTo(asIScriptEngine& engine, DocumentationManager& documentationManager)
     {
-        EnumRegistration<Spatial::BoundsSpace>(ContainingNamespace(), Name())
-            .Value("World", Spatial::BoundsSpace::World)
-            .Value("Screen", Spatial::BoundsSpace::Screen)
+        EnumRegistration<Spatial::Space>(ContainingNamespace(), Name())
+            .Value("World", Spatial::Space::World)
+            .Value("Screen", Spatial::Space::Screen)
             .Actualize(engine, documentationManager);
     }
 
@@ -35,7 +35,7 @@ namespace Atmos::Scripting::Angel
             .ConstMethod(&Management::Method<&Size>, "Atmos::Spatial::Size2D", "Size", {})
             .ConstMethod(&Management::Method<&Scalers>, "Atmos::Spatial::Scalers2D", "Scalers", {})
             .ConstMethod(&Management::Method<&Rotation>, "Atmos::Spatial::Angle2D", "Rotation", {})
-            .ConstMethod(&Management::Method<&Space>, "Atmos::Spatial::BoundsSpace", "Space", {})
+            .ConstMethod(&Management::Method<&Space>, "Atmos::Spatial::Space", "Space", {})
             .Actualize(engine, documentationManager);
 
         Registration<ArcaTraits<Spatial::Bounds>>::RegisterTo(engine, documentationManager);
@@ -44,13 +44,13 @@ namespace Atmos::Scripting::Angel
         ArcaCreateShardRegistration<Type::ValueT>()
             .Constructor<>({})
             .Constructor<
-                Spatial::BoundsSpace,
+                Spatial::Space,
                 Spatial::Point3D,
                 Spatial::Size2D,
                 Spatial::Scalers2D,
                 Spatial::Angle2D>
             ({
-                "Atmos::Spatial::BoundsSpace space",
+                "Atmos::Spatial::Space space",
                 "Atmos::Spatial::Point3D position",
                 "Atmos::Spatial::Size2D baseSize",
                 "Atmos::Spatial::Scalers2D scalers",
@@ -87,7 +87,7 @@ namespace Atmos::Scripting::Angel
         return RequiredValue(type)->Rotation();
     }
 
-    Spatial::BoundsSpace Registration<Spatial::Bounds>::Space(Type type)
+    Spatial::Space Registration<Spatial::Bounds>::Space(Type type)
     {
         return RequiredValue(type)->Space();
     }
@@ -153,13 +153,15 @@ namespace Atmos::Scripting::Angel
             .Constructor(
                 &Management::GenerateValue<
                     &PullFromParameter<0, Arca::RelicID>,
-                    &PullFromParameter<1, Spatial::Point3D>>,
-                { "Arca::RelicID id", "Atmos::Spatial::Point3D previousPosition"})
+                    &PullFromParameter<1, Spatial::Point3D>,
+                    &PullFromParameter<2, Spatial::Point3D>>,
+                { "Arca::RelicID id", "Atmos::Spatial::Point3D previousPosition", "Atmos::Spatial::Point3D newPosition"})
             .CopyConstructor(&Management::GenerateValueFromCopy)
             .Destructor(&Management::DestructValue)
             .CopyAssignment(&Management::CopyAssign)
             .Property<&Type::id>("Arca::RelicID", "id")
             .Property<&Type::previousPosition>("Atmos::Spatial::Point3D", "previousPosition")
+            .Property<&Type::newPosition>("Atmos::Spatial::Point3D", "newPosition")
             .Actualize(engine, documentationManager);
 
         RegisterSignalHandler<&Chroma::Identity<Type>>(engine, documentationManager);
@@ -172,13 +174,15 @@ namespace Atmos::Scripting::Angel
             .Constructor(
                 &Management::GenerateValue<
                     &PullFromParameter<0, Arca::RelicID>,
-                    &PullFromParameter<1, Spatial::Angle2D>>,
-                { "Arca::RelicID id", "Atmos::Spatial::Angle2D previousRotation"})
+                    &PullFromParameter<1, Spatial::Angle2D>,
+                    &PullFromParameter<2, Spatial::Angle2D>>,
+                { "Arca::RelicID id", "Atmos::Spatial::Angle2D previousRotation", "Atmos::Spatial::Angle2D newRotation"})
             .CopyConstructor(&Management::GenerateValueFromCopy)
             .Destructor(&Management::DestructValue)
             .CopyAssignment(&Management::CopyAssign)
             .Property<&Type::id>("Arca::RelicID", "id")
             .Property<&Type::previousRotation>("Atmos::Spatial::Angle2D", "previousRotation")
+            .Property<&Type::newRotation>("Atmos::Spatial::Angle2D", "newRotation")
             .Actualize(engine, documentationManager);
 
         RegisterSignalHandler<&Chroma::Identity<Type>>(engine, documentationManager);
@@ -191,13 +195,15 @@ namespace Atmos::Scripting::Angel
             .Constructor(
                 &Management::GenerateValue<
                     &PullFromParameter<0, Arca::RelicID>,
-                    &PullFromParameter<1, Spatial::Scalers2D>>,
-                { "Arca::RelicID id", "Atmos::Spatial::Scalers2D previousScalers"})
+                    &PullFromParameter<1, Spatial::Scalers2D>,
+                    &PullFromParameter<2, Spatial::Scalers2D>>,
+                { "Arca::RelicID id", "Atmos::Spatial::Scalers2D previousScalers", "Atmos::Spatial::Scalers2D newScalers"})
             .CopyConstructor(&Management::GenerateValueFromCopy)
             .Destructor(&Management::DestructValue)
             .CopyAssignment(&Management::CopyAssign)
             .Property<&Type::id>("Arca::RelicID", "id")
             .Property<&Type::previousScalers>("Atmos::Spatial::Scalers2D", "previousScalers")
+            .Property<&Type::newScalers>("Atmos::Spatial::Scalers2D", "newScalers")
             .Actualize(engine, documentationManager);
 
         RegisterSignalHandler<&Chroma::Identity<Type>>(engine, documentationManager);

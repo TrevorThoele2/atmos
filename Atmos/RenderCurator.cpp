@@ -4,26 +4,23 @@
 #include "ViewSlice.h"
 #include "ColorChanged.h"
 
+#include "CreateStopwatch.h"
+#include "DiagnosticsStatistics.h"
+
 namespace Atmos::Render
 {
-    Curator::Curator(Init init) :
-        Arca::Curator(init), mainSurface(init.owner),
-        debugRenderProfiler(
-            [](Debug::Statistics& statistics) -> Time::Stopwatch&
-            {
-                return statistics.profilers.render;
-            },
-            MutablePointer())
+    Curator::Curator(Init init) : Arca::Curator(init), mainSurface(init.owner)
     {}
 
     void Curator::Handle(const Work&)
     {
-        debugRenderProfiler.Start();
+        auto stopwatch = Time::CreateRealStopwatch();
 
         const auto mutableMainPointer = MutablePointer().Of(mainSurface);
         mutableMainPointer->DrawFrame();
 
-        debugRenderProfiler.Calculate();
+        const auto idleDuration = std::chrono::duration_cast<std::chrono::duration<double>>(stopwatch.Calculate());
+        MutablePointer().Of<Diagnostics::Statistics>()->renderTime = idleDuration.count();
     }
 
     void Curator::Handle(const ChangeColor& command)

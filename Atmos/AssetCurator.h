@@ -6,10 +6,6 @@
 #include "MappedAssets.h"
 #include "FindAssetByName.h"
 
-#include "Work.h"
-
-#include "DebugValue.h"
-
 namespace Inscription
 {
     template<class T>
@@ -26,15 +22,12 @@ namespace Atmos::Asset
     {
     public:
         explicit Curator(Init init);
-
-        void Handle(const Work& command);
-
+        
         Arca::Index<T> Handle(const FindByName<T>& command);
     private:
         using Traits = CuratorTraits<T>;
     private:
         Arca::Index<Mapped<T>> mappedAssets;
-        Debug::Value debugSizeValue;
 
         void ConstructMap();
         void AddToMap(Arca::Index<T> index);
@@ -46,15 +39,7 @@ namespace Atmos::Asset
     };
 
     template<class T>
-    Curator<T>::Curator(Init init) :
-        Arca::Curator(init),
-        mappedAssets(init.owner),
-        debugSizeValue(
-            [this](Debug::Statistics& statistics)
-            {
-                statistics.memory.*Traits::debugStatisticsSize = mappedAssets->Size();
-            },
-                MutablePointer())
+    Curator<T>::Curator(Init init) : Arca::Curator(init), mappedAssets(init.owner)
     {
         init.owner.On<Arca::CreatedKnown<T>>(
             [this](const Arca::CreatedKnown<T>& signal)
@@ -80,13 +65,7 @@ namespace Atmos::Asset
                 AddToMap(signal.index);
             });
     }
-
-    template<class T>
-    void Curator<T>::Handle(const Work&)
-    {
-        debugSizeValue.Set();
-    }
-
+    
     template<class T>
     Arca::Index<T> Curator<T>::Handle(const FindByName<T>& command)
     {
@@ -97,7 +76,7 @@ namespace Atmos::Asset
     void Curator<T>::ConstructMap()
     {
         auto mutableMappedAssets = MutablePointer().Of(mappedAssets);
-        auto batch = Owner().template Batch<T>();
+        auto batch = Owner().Batch<T>();
         for (auto asset = batch.begin(); asset != batch.end(); ++asset)
         {
             const auto name = asset->Name();
@@ -117,12 +96,6 @@ namespace Atmos::Asset
     {
         MutablePointer().Of(mappedAssets)->map.erase(name);
     }
-
-    template<class T>
-    struct CuratorTraitsBase
-    {
-        using DebugStatisticsSize = size_t Debug::Statistics::Memory::*;
-    };
 }
 
 namespace Inscription

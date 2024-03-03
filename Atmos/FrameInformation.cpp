@@ -4,6 +4,7 @@
 
 namespace Atmos::Frame
 {
-    Information::Information() : stopwatch(Time::CreateRealStopwatch())
+    Information::Profilers::Profilers() :
+        render(Time::CreateRealStopwatch()), frame(Time::CreateRealStopwatch()), idle(Time::CreateRealStopwatch())
     {}
 }

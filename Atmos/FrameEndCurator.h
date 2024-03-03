@@ -6,8 +6,6 @@
 
 #include "Work.h"
 
-#include "DebugProfiler.h"
-
 namespace Atmos::Frame
 {
     class EndCurator final : public Arca::Curator
@@ -18,8 +16,7 @@ namespace Atmos::Frame
         void Handle(const Work& command);
     private:
         Time::Stopwatch framesPerSecondStopwatch;
-    private:
-        Debug::Profiler debugIdleProfiler;
+        unsigned int count = 0;
     };
 }
 

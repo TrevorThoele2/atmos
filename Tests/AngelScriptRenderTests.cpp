@@ -706,7 +706,7 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                     "Arca::RelicID main(float x, float y, float width, float height)\n" \
                     "{\n" \
                     "    auto box = Atmos::Spatial::AxisAlignedBox2D(Atmos::Spatial::Point2D(x, y), Atmos::Spatial::Size2D(width, height));\n" \
-                    "    auto found = Arca::Reliquary::Do(Atmos::Render::FindImagesByBox(box));\n" \
+                    "    auto found = Arca::Reliquary::Do(Atmos::Render::FindImagesByBox(box, Atmos::Spatial::Space::World));\n" \
                     "    return found[0];\n" \
                     "}",
                     { box.center.x, box.center.y, box.size.width, box.size.height },
@@ -745,7 +745,7 @@ SCENARIO_METHOD(AngelScriptRenderTestsFixture, "running render AngelScript scrip
                     "Arca::RelicID main(float x, float y, float z, float width, float height, float depth)\n" \
                     "{\n" \
                     "    auto box = Atmos::Spatial::AxisAlignedBox3D(Atmos::Spatial::Point3D(x, y, z), Atmos::Spatial::Size3D(width, height, depth));\n" \
-                    "    auto found = Arca::Reliquary::Do(Atmos::Render::FindImagesByBox(box));\n" \
+                    "    auto found = Arca::Reliquary::Do(Atmos::Render::FindImagesByBox(box, Atmos::Spatial::Space::World));\n" \
                     "    return found[0];\n" \
                     "}",
                     { box.center.x, box.center.y, box.center.z, box.size.width, box.size.height, box.size.depth },

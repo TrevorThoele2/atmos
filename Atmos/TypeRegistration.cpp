@@ -20,11 +20,12 @@
 #include "RenderCurator.h"
 #include "GraphicsCurator.h"
 #include "Camera.h"
-#include "CameraCurator.h"
 #include "SurfaceCurator.h"
 #include "TextCurator.h"
 #include "GraphicsSettings.h"
 #include "ViewSlice.h"
+#include "RenderStartCurator.h"
+#include "RenderEndCurator.h"
 
 #include "UIImage.h"
 #include "UIText.h"
@@ -77,7 +78,8 @@
 #include "LoggingCurator.h"
 #include "LoggingInformation.h"
 
-#include "DebugStatistics.h"
+#include "DiagnosticsStatistics.h"
+#include "DiagnosticsCurator.h"
 
 #include "InputManager.h"
 #include "GraphicsManager.h"
@@ -109,7 +111,7 @@ namespace Atmos
         Frame::RegisterTypes(origin);
         Data::RegisterTypes(origin);
         Logging::RegisterTypes(origin, logger);
-        Debug::RegisterTypes(origin);
+        Diagnostics::RegisterTypes(origin);
         Random::RegisterTypes(origin);
     }
 
@@ -156,6 +158,7 @@ namespace Atmos
         pipeline.push_back(Scripting::Stage());
         pipeline.push_back(Render::Stage());
         pipeline.push_back(Audio::Stage());
+        pipeline.push_back(Diagnostics::Stage());
         pipeline.push_back(Frame::EndStage());
         origin.CuratorCommandPipeline<Work>(pipeline);
     }
@@ -200,7 +203,6 @@ namespace Atmos
                 .Register<GridRegionCurator>()
                 .Register<TextCore>()
                 .Register<DynamicText>()
-                .Register<CameraCurator>()
                 .Register<Curator>()
                 .Register<SurfaceCore>()
                 .Register<SurfaceCurator>()
@@ -227,12 +229,13 @@ namespace Atmos
         Arca::Stage Stage()
         {
             Arca::Stage stage;
+            stage.Add<StartCurator>();
             stage.Add<ImageCurator>();
             stage.Add<LineCurator>();
             stage.Add<GridRegionCurator>();
             stage.Add<TextCurator>();
-            stage.Add<CameraCurator>();
             stage.Add<Curator>();
+            stage.Add<EndCurator>();
             return stage;
         }
     }
@@ -434,15 +437,23 @@ namespace Atmos
         }
     }
 
-    namespace Debug
+    namespace Diagnostics
     {
         void RegisterTypes(Arca::ReliquaryOrigin& origin)
         {
             origin
-                .Register<Statistics>();
+                .Register<Statistics>()
+                .Register<Curator>();
+        }
+
+        Arca::Stage Stage()
+        {
+            Arca::Stage stage;
+            stage.Add<Curator>();
+            return stage;
         }
     }
-
+    
     namespace Random
     {
         void RegisterTypes(Arca::ReliquaryOrigin& origin)

@@ -20,9 +20,9 @@ class asIScriptGeneric;
 namespace Atmos::Scripting::Angel
 {
     template<>
-    struct Registration<Spatial::BoundsSpace>
+    struct Registration<Spatial::Space>
     {
-        static String Name() { return "BoundsSpace"; }
+        static String Name() { return "Space"; }
         static String ContainingNamespace() { return "Atmos::Spatial"; }
         static String Documentation() { return "Represents what space a Bounds is in."; }
         static const ObjectType objectType = ObjectType::Value;
@@ -48,7 +48,7 @@ namespace Atmos::Scripting::Angel
         [[nodiscard]] static Spatial::Size2D Size(Type type);
         [[nodiscard]] static Spatial::Scalers2D Scalers(Type type);
         [[nodiscard]] static Spatial::Angle2D Rotation(Type type);
-        [[nodiscard]] static Spatial::BoundsSpace Space(Type type);
+        [[nodiscard]] static Spatial::Space Space(Type type);
     };
 
     template<>

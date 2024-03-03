@@ -45,7 +45,7 @@ namespace Atmos::Render
             const Spatial::Point3D& position,
             const Spatial::Scalers2D& scalers,
             const Spatial::Angle2D& rotation,
-            Spatial::BoundsSpace boundsSpace);
+            Spatial::Space boundsSpace);
         Text(Arca::RelicInit init, Arca::Serialization);
     private:
         Arca::RelicInit init;

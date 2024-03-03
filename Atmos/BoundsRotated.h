@@ -11,9 +11,11 @@ namespace Atmos::Spatial
     public:
         Arca::RelicID id;
         Angle2D previousRotation;
+        Angle2D newRotation;
 
         BoundsRotated() = default;
-        explicit BoundsRotated(Arca::RelicID id, Angle2D previousRotation) : id(id), previousRotation(previousRotation)
+        explicit BoundsRotated(Arca::RelicID id, Angle2D previousRotation, Angle2D newRotation) :
+            id(id), previousRotation(previousRotation), newRotation(newRotation)
         {}
     };
 }

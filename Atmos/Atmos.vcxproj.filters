@@ -18,9 +18,6 @@
     <Filter Include="Header Files\Render">
       <UniqueIdentifier>{52e3ff53-5f40-4d5f-803d-c8e3acbfb5ec}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\State">
-      <UniqueIdentifier>{28c2efb1-fa60-4a62-b3fb-46903a66adf0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Input">
       <UniqueIdentifier>{99300fe0-fa8f-488e-8783-158595253e34}</UniqueIdentifier>
     </Filter>
@@ -29,9 +26,6 @@
     </Filter>
     <Filter Include="Source Files\Render">
       <UniqueIdentifier>{15d98e68-259c-4e12-a6af-e68ffb0dea67}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\State">
-      <UniqueIdentifier>{4fffd952-579f-41fc-8769-4c667a97ef56}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Serialization">
       <UniqueIdentifier>{3c4fb6d2-7419-47af-99c1-074f38530e0f}</UniqueIdentifier>
@@ -119,12 +113,6 @@
     </Filter>
     <Filter Include="Source Files\Initialization">
       <UniqueIdentifier>{5e1fd991-58e4-4afc-bc83-77d0724009a3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Debug">
-      <UniqueIdentifier>{f3383e2c-f123-47ad-97fd-751d80c5e160}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Debug">
-      <UniqueIdentifier>{50dec7c3-2b40-465b-aa69-2176f5d9a42f}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Window">
       <UniqueIdentifier>{ee9b11ac-de9b-4358-9243-6769facfd314}</UniqueIdentifier>
@@ -621,6 +609,18 @@
     <Filter Include="Header Files\Render\Signals">
       <UniqueIdentifier>{f0b936bf-ad5f-4a4e-a51d-0fbe436f44fe}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Diagnostics">
+      <UniqueIdentifier>{d824b47e-27c9-489b-b661-9d60891f572a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Diagnostics">
+      <UniqueIdentifier>{6321ca46-d10a-4e67-8100-0817b34fcf48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scripting\AngelScript\Types\Atmos\Diagnostics">
+      <UniqueIdentifier>{51fc5df6-3183-4d9d-ba2f-05dc6b616627}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scripting\AngelScript\Types\Atmos\Diagnostics">
+      <UniqueIdentifier>{5ac52d61-075b-4dc4-ab0d-39e7c2f061b4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FieldDestination.h">
@@ -662,9 +662,6 @@
     <ClInclude Include="AnyEventConnection.h">
       <Filter>Header Files\Event</Filter>
     </ClInclude>
-    <ClInclude Include="GameState.h">
-      <Filter>Header Files\State</Filter>
-    </ClInclude>
     <ClInclude Include="Name.h">
       <Filter>Header Files\Data</Filter>
     </ClInclude>
@@ -697,9 +694,6 @@
     </ClInclude>
     <ClInclude Include="InputManager.h">
       <Filter>Header Files\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="DebugScreen.h">
-      <Filter>Header Files\Debug</Filter>
     </ClInclude>
     <ClInclude Include="WindowBase.h">
       <Filter>Header Files\Window</Filter>
@@ -767,9 +761,6 @@
     <ClInclude Include="Exception.h">
       <Filter>Header Files\Exceptions</Filter>
     </ClInclude>
-    <ClInclude Include="DebugStatistics.h">
-      <Filter>Header Files\Debug</Filter>
-    </ClInclude>
     <ClInclude Include="ScriptVariant.h">
       <Filter>Header Files\Scripting</Filter>
     </ClInclude>
@@ -794,9 +785,6 @@
     <ClInclude Include="InitializationInformation.h">
       <Filter>Header Files\Initialization</Filter>
     </ClInclude>
-    <ClInclude Include="DebugStatisticsCurator.h">
-      <Filter>Header Files\Debug</Filter>
-    </ClInclude>
     <ClInclude Include="EntityCurator.h">
       <Filter>Header Files\Entity</Filter>
     </ClInclude>
@@ -809,20 +797,11 @@
     <ClInclude Include="Camera.h">
       <Filter>Header Files\Render\Camera</Filter>
     </ClInclude>
-    <ClInclude Include="CameraCurator.h">
-      <Filter>Header Files\Render\Camera</Filter>
-    </ClInclude>
     <ClInclude Include="Log.h">
       <Filter>Header Files\Logging</Filter>
     </ClInclude>
     <ClInclude Include="RenderCurator.h">
       <Filter>Header Files\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="StateCurator.h">
-      <Filter>Header Files\State</Filter>
-    </ClInclude>
-    <ClInclude Include="StateRequest.h">
-      <Filter>Header Files\State</Filter>
     </ClInclude>
     <ClInclude Include="FocusLost.h">
       <Filter>Header Files\Engine</Filter>
@@ -911,9 +890,6 @@
     <ClInclude Include="CurrentFieldData.h">
       <Filter>Header Files\World\Field</Filter>
     </ClInclude>
-    <ClInclude Include="CurrentFieldCurator.h">
-      <Filter>Header Files\World\Field</Filter>
-    </ClInclude>
     <ClInclude Include="AssetCore.h">
       <Filter>Header Files\Assets</Filter>
     </ClInclude>
@@ -947,20 +923,11 @@
     <ClInclude Include="LineCurator.h">
       <Filter>Header Files\Render\Line</Filter>
     </ClInclude>
-    <ClInclude Include="MoveLine.h">
-      <Filter>Header Files\Render\Line</Filter>
-    </ClInclude>
     <ClInclude Include="LineRender.h">
       <Filter>Header Files\Render\Line</Filter>
     </ClInclude>
     <ClInclude Include="LineWidth.h">
       <Filter>Header Files\Render\Line</Filter>
-    </ClInclude>
-    <ClInclude Include="DebugValue.h">
-      <Filter>Header Files\Debug</Filter>
-    </ClInclude>
-    <ClInclude Include="DebugProfiler.h">
-      <Filter>Header Files\Debug</Filter>
     </ClInclude>
     <ClInclude Include="SurfaceCurator.h">
       <Filter>Header Files\Render\Surface</Filter>
@@ -2051,6 +2018,30 @@
     <ClInclude Include="AngelScriptChangeViewSlice.h">
       <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Render</Filter>
     </ClInclude>
+    <ClInclude Include="Space.h">
+      <Filter>Header Files\Spatial\Arca</Filter>
+    </ClInclude>
+    <ClInclude Include="BoundsChanged.h">
+      <Filter>Header Files\Spatial\Arca</Filter>
+    </ClInclude>
+    <ClInclude Include="MoveLine.h">
+      <Filter>Header Files\Render\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="DiagnosticsStatistics.h">
+      <Filter>Header Files\Diagnostics</Filter>
+    </ClInclude>
+    <ClInclude Include="DiagnosticsCurator.h">
+      <Filter>Header Files\Diagnostics</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelScriptDiagnosticsStatistics.h">
+      <Filter>Header Files\Scripting\AngelScript\Types\Atmos\Diagnostics</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderStartCurator.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderEndCurator.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FieldDestination.cpp">
@@ -2077,9 +2068,6 @@
     <ClCompile Include="AnyEventConnection.cpp">
       <Filter>Source Files\Event</Filter>
     </ClCompile>
-    <ClCompile Include="GameState.cpp">
-      <Filter>Source Files\State</Filter>
-    </ClCompile>
     <ClCompile Include="Engine.cpp">
       <Filter>Source Files\Engine</Filter>
     </ClCompile>
@@ -2094,9 +2082,6 @@
     </ClCompile>
     <ClCompile Include="InitializationFileExtractedSection.cpp">
       <Filter>Source Files\Initialization</Filter>
-    </ClCompile>
-    <ClCompile Include="DebugScreen.cpp">
-      <Filter>Source Files\Debug</Filter>
     </ClCompile>
     <ClCompile Include="WindowBase.cpp">
       <Filter>Source Files\Window</Filter>
@@ -2155,14 +2140,8 @@
     <ClCompile Include="Exception.cpp">
       <Filter>Source Files\Exceptions</Filter>
     </ClCompile>
-    <ClCompile Include="DebugStatistics.cpp">
-      <Filter>Source Files\Debug</Filter>
-    </ClCompile>
     <ClCompile Include="ScriptVariant.cpp">
       <Filter>Source Files\Scripting</Filter>
-    </ClCompile>
-    <ClCompile Include="DebugStatisticsCurator.cpp">
-      <Filter>Source Files\Debug</Filter>
     </ClCompile>
     <ClCompile Include="EntityCurator.cpp">
       <Filter>Source Files\Entity</Filter>
@@ -2176,17 +2155,11 @@
     <ClCompile Include="Camera.cpp">
       <Filter>Source Files\Render\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="CameraCurator.cpp">
-      <Filter>Source Files\Render\Camera</Filter>
-    </ClCompile>
     <ClCompile Include="Log.cpp">
       <Filter>Source Files\Logging</Filter>
     </ClCompile>
     <ClCompile Include="RenderCurator.cpp">
       <Filter>Source Files\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="StateCurator.cpp">
-      <Filter>Source Files\State</Filter>
     </ClCompile>
     <ClCompile Include="AngelScriptReferenceCounted.cpp">
       <Filter>Source Files\Scripting\AngelScript\Types\Bases</Filter>
@@ -2236,9 +2209,6 @@
     <ClCompile Include="Line.cpp">
       <Filter>Source Files\Render\Line</Filter>
     </ClCompile>
-    <ClCompile Include="CurrentFieldCurator.cpp">
-      <Filter>Source Files\World\Field</Filter>
-    </ClCompile>
     <ClCompile Include="CurrentFieldData.cpp">
       <Filter>Source Files\World\Field</Filter>
     </ClCompile>
@@ -2259,12 +2229,6 @@
     </ClCompile>
     <ClCompile Include="LineCurator.cpp">
       <Filter>Source Files\Render\Line</Filter>
-    </ClCompile>
-    <ClCompile Include="DebugProfiler.cpp">
-      <Filter>Source Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="DebugValue.cpp">
-      <Filter>Source Files\Debug</Filter>
     </ClCompile>
     <ClCompile Include="SurfaceCurator.cpp">
       <Filter>Source Files\Render</Filter>
@@ -3024,6 +2988,18 @@
     </ClCompile>
     <ClCompile Include="AngelScriptChangeViewSlice.cpp">
       <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="DiagnosticsCurator.cpp">
+      <Filter>Source Files\Diagnostics</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelScriptDiagnosticsStatistics.cpp">
+      <Filter>Source Files\Scripting\AngelScript\Types\Atmos\Diagnostics</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderStartCurator.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderEndCurator.cpp">
+      <Filter>Source Files\Render</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -23,10 +23,15 @@ namespace Atmos::Render
         void WorkImpl(
             Spatial::AxisAlignedBox3D cameraBox,
             Spatial::Point2D cameraTopLeft,
-            Arca::Index<MainSurface> mainSurface) override;
+            const MainSurface& mainSurface) override;
     private:
         using Index = Arca::Index<GridRegion>;
         Spatial::Grid::Octree<Arca::RelicID, Index> octree;
+
+        void StageRender(
+            const GridRegion& value,
+            Spatial::Point2D cameraTopLeft,
+            const MainSurface& mainSurface);
 
         void OnCreated(const Arca::CreatedKnown<GridRegion>& signal);
         void OnDestroying(const Arca::DestroyingKnown<GridRegion>& signal);
@@ -37,6 +42,7 @@ namespace Atmos::Render
         void AttemptChangeObject(Arca::RelicID id, Function function);
     private:
         static Spatial::AxisAlignedBox3D BoxFor(const std::vector<Spatial::Grid::Point>& points, Spatial::Grid::Point::Value z);
+        static Spatial::AxisAlignedBox3D BoxFor(const GridRegion& region);
         static Spatial::AxisAlignedBox3D BoxFor(const Index& index);
     };
 
@@ -47,7 +53,6 @@ namespace Atmos::Render
         if (index)
         {
             const auto data = MutablePointer().Of(index);
-
             function(*data);
         }
     }

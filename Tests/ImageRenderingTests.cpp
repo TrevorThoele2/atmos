@@ -8,6 +8,10 @@
 #include <Atmos/GridCellSize.h>
 #include <Atmos/Camera.h>
 #include <Atmos/MainSurface.h>
+#include <Atmos/MoveBounds.h>
+#include <Atmos/ScaleBounds.h>
+#include <Atmos/RotateBounds.h>
+#include <Atmos/MathUtility.h>
 
 #include "DerivedEngine.h"
 #include "MockImageAssetResource.h"
@@ -543,6 +547,75 @@ SCENARIO_METHOD(ImageRenderingTestsFixture, "rendering culled images", "[render]
 
                         return entry.position == expectedPosition;
                     }));
+            }
+        }
+
+        WHEN("creating dynamic images in camera, moving them outside of the camera and starting execution")
+        {
+            auto image = fieldReliquary.Do(Arca::Create<DynamicImage> {
+                imageAsset,
+                    0,
+                    materialAsset,
+                    Color{},
+                    Point3D{},
+                    Scalers2D{},
+                    Angle2D{} });
+
+            fieldReliquary.Do(MoveBounds(image.ID(), Point3D{ 1000, 1000, 1000 }));
+
+            engine.UseField(std::move(field), {}, std::filesystem::current_path() / "Assets.dat");
+            engine.StartExecution();
+
+            THEN("moving them outside the camera causes culling")
+            {
+                auto& imageRenders = mainSurfaceImplementation->imageRenders;
+                REQUIRE(imageRenders.empty());
+            }
+        }
+
+        WHEN("creating dynamic images in camera, scaling them outside of the camera and starting execution")
+        {
+            auto image = fieldReliquary.Do(Arca::Create<DynamicImage> {
+                imageAsset,
+                    0,
+                    materialAsset,
+                    Color{},
+                    Point3D{150, 150, 0},
+                    Scalers2D{75, 75},
+                    Angle2D{} });
+
+            fieldReliquary.Do(ScaleBounds(image.ID(), Scalers2D{25, 25}));
+
+            engine.UseField(std::move(field), {}, std::filesystem::current_path() / "Assets.dat");
+            engine.StartExecution();
+
+            THEN("moving them outside the camera causes culling")
+            {
+                auto& imageRenders = mainSurfaceImplementation->imageRenders;
+                REQUIRE(imageRenders.empty());
+            }
+        }
+
+        WHEN("creating dynamic images in camera, rotating them outside of the camera and starting execution")
+        {
+            auto image = fieldReliquary.Do(Arca::Create<DynamicImage> {
+                imageAsset,
+                    0,
+                    materialAsset,
+                    Color{},
+                    Point3D{ 150, 150, 0 },
+                    Scalers2D{ 1, 75 },
+                    Angle2D{ pi<Angle2D> / 2 } });
+
+            fieldReliquary.Do(RotateBounds(image.ID(), 0.0f));
+
+            engine.UseField(std::move(field), {}, std::filesystem::current_path() / "Assets.dat");
+            engine.StartExecution();
+
+            THEN("moving them outside the camera causes culling")
+            {
+                auto& imageRenders = mainSurfaceImplementation->imageRenders;
+                REQUIRE(imageRenders.empty());
             }
         }
     }

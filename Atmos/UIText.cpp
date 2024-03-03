@@ -27,7 +27,7 @@ namespace Atmos::UI
             position,
             scalers,
             rotation,
-            Spatial::BoundsSpace::Screen)
+            Spatial::Space::Screen)
     {}
 
     Text::Text(Arca::RelicInit init, Arca::Serialization serialization) :

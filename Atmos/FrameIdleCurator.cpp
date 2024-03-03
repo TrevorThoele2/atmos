@@ -25,6 +25,6 @@ namespace Atmos::Frame
         if (settings->framesPerSecondLimit == 0 || graphicsSettings->verticalSync)
             return true;
 
-        return frameInformation->stopwatch.Elapsed() >= Time::Milliseconds(settings->framesPerSecondLimit);
+        return frameInformation->profilers.frame.Elapsed() >= Time::Milliseconds(settings->framesPerSecondLimit);
     }
 }

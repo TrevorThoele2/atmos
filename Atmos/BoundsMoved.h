@@ -11,9 +11,11 @@ namespace Atmos::Spatial
     public:
         Arca::RelicID id;
         Point3D previousPosition;
+        Point3D newPosition;
 
         BoundsMoved() = default;
-        explicit BoundsMoved(Arca::RelicID id, Point3D previousPosition) : id(id), previousPosition(previousPosition)
+        explicit BoundsMoved(Arca::RelicID id, Point3D previousPosition, Point3D newPosition) :
+            id(id), previousPosition(previousPosition), newPosition(newPosition)
         {}
     };
 }

@@ -33,33 +33,33 @@ namespace Atmos::Render
 
         const Spatial::Point2D cameraTopLeft{ cameraLeft, cameraTop };
 
-        WorkImpl(cameraBox, cameraTopLeft, mainSurface);
+        WorkImpl(cameraBox, cameraTopLeft, *mainSurface);
     }
 
-    int ObjectCurator::ToRenderSpace(Spatial::BoundsSpace space)
+    int ObjectCurator::ToRenderSpace(Spatial::Space space)
     {
         switch(space)
         {
-        case Spatial::BoundsSpace::World:
+        case Spatial::Space::World:
             return 0;
-        case Spatial::BoundsSpace::Screen:
+        case Spatial::Space::Screen:
             return 1;
         }
 
-        throw std::runtime_error("Unknown Spatial::BoundsSpace value.");
+        throw std::runtime_error("Unknown Spatial::Space value.");
     }
 
-    Spatial::Point3D ObjectCurator::ToRenderPoint(Spatial::Point3D position, Spatial::Point2D cameraTopLeft, Spatial::BoundsSpace space)
+    Spatial::Point3D ObjectCurator::ToRenderPoint(Spatial::Point3D position, Spatial::Point2D cameraTopLeft, Spatial::Space space)
     {
         switch (space)
         {
-        case Spatial::BoundsSpace::World:
+        case Spatial::Space::World:
             return ToWorldPoint(position, cameraTopLeft);
-        case Spatial::BoundsSpace::Screen:
+        case Spatial::Space::Screen:
             return ToScreenPoint(position);
         }
 
-        throw std::runtime_error("Unknown Spatial::BoundsSpace value.");
+        throw std::runtime_error("Unknown Spatial::Space value.");
     }
 
     Spatial::Point3D ObjectCurator::ToWorldPoint(Spatial::Point3D position, Spatial::Point2D cameraTopLeft)

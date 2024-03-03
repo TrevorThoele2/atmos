@@ -109,6 +109,8 @@
 #include "AngelScriptModifyWorldProperties.h"
 #include "AngelScriptRetrieveWorldProperties.h"
 
+#include "AngelScriptDiagnosticsStatistics.h"
+
 #include "AngelScriptGenerateRandomNumber.h"
 
 namespace Atmos::Scripting::Angel
@@ -213,7 +215,7 @@ namespace Atmos::Scripting::Angel
                 .Register<GridSpatialAlgorithms>()
                 .Register<Spatial::ToWorldPoint2D>()
                 .Register<Spatial::ToWorldPoint3D>()
-                .Register<Spatial::BoundsSpace>()
+                .Register<Spatial::Space>()
                 .Register<Spatial::Bounds>()
                 .Register<Spatial::MoveBounds>()
                 .Register<Spatial::RotateBounds>()
@@ -340,7 +342,9 @@ namespace Atmos::Scripting::Angel
                 .Register<Random::GenerateNumber<std::uint32_t>>()
                 .Register<Random::GenerateNumber<std::uint64_t>>()
                 .Register<Random::GenerateNumber<float>>()
-                .Register<Random::GenerateNumber<double>>();
+                .Register<Random::GenerateNumber<double>>()
+
+                .Register<Diagnostics::Statistics>();
         }
     }
 }

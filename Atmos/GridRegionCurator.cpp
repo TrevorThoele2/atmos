@@ -25,13 +25,19 @@ namespace Atmos::Render
     {
         AttemptChangeObject(
             command.id,
-            [command](GridRegion& object)
+            [this, command](GridRegion& object)
             {
+                const auto oldBox = BoxFor(object);
+
                 if (command.points)
                     object.points = *command.points;
 
                 if (command.z)
                     object.z = *command.z;
+
+                const auto newBox = BoxFor(object);
+                const Arca::Index<GridRegion> index(command.id, Owner());
+                octree.Move(command.id, index, oldBox, newBox);
             });
     }
 
@@ -48,18 +54,23 @@ namespace Atmos::Render
     void GridRegionCurator::WorkImpl(
         Spatial::AxisAlignedBox3D cameraBox,
         Spatial::Point2D cameraTopLeft,
-        Arca::Index<MainSurface> mainSurface)
+        const MainSurface& mainSurface)
     {
         auto indices = octree.AllWithin(cameraBox);
 
         for (auto& index : indices)
-        {
-            const auto& value = *index->value;
-            const auto material = value.renderCore->material;
-            if (!material || value.points.empty())
-                continue;
+            StageRender(*index->value, cameraTopLeft, mainSurface);
+    }
 
-            auto points = std::vector<Spatial::Grid::Point>{ value.points.begin(), value.points.end() };
+    void GridRegionCurator::StageRender(
+        const GridRegion& value,
+        Spatial::Point2D cameraTopLeft,
+        const MainSurface& mainSurface)
+    {
+        const auto material = value.renderCore->material;
+        if (material && !value.points.empty())
+        {
+            const auto points = std::vector<Spatial::Grid::Point>{ value.points.begin(), value.points.end() };
             auto mesh = ConvertToMesh(Triangulate(points));
             for (auto& vertex : mesh.vertices)
             {
@@ -75,9 +86,9 @@ namespace Atmos::Render
                 mesh,
                 z,
                 material,
-                ToRenderSpace(Spatial::BoundsSpace::World)
+                ToRenderSpace(Spatial::Space::World)
             };
-            mainSurface->StageRender(render);
+            mainSurface.StageRender(render);
         }
     }
 
@@ -137,9 +148,14 @@ namespace Atmos::Render
         }
     }
 
+    Spatial::AxisAlignedBox3D GridRegionCurator::BoxFor(const GridRegion& region)
+    {
+        const auto points = std::vector<Spatial::Grid::Point>{ region.points.begin(), region.points.end() };
+        return BoxFor(points, region.z);
+    }
+
     Spatial::AxisAlignedBox3D GridRegionCurator::BoxFor(const Index& index)
     {
-        const auto points = std::vector<Spatial::Grid::Point>{ index->points.begin(), index->points.end() };
-        return BoxFor(points, index->z);
+        return BoxFor(*index);
     }
 }

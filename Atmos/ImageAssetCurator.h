@@ -18,12 +18,6 @@ namespace Atmos::Asset
     private:
         Resource::Manager* resourceManager;
     };
-
-    template<>
-    struct CuratorTraits<Image> : CuratorTraitsBase<Image>
-    {
-        constexpr static DebugStatisticsSize debugStatisticsSize = &Debug::Statistics::Memory::imageAssetSize;
-    };
 }
 
 namespace Arca

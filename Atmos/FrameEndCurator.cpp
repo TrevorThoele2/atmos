@@ -4,40 +4,33 @@
 
 #include "CreateStopwatch.h"
 
+#include "DiagnosticsStatistics.h"
+
 namespace Atmos::Frame
 {
-    EndCurator::EndCurator(Init init) :
-        Curator(init),
-        framesPerSecondStopwatch(Time::CreateRealStopwatch()),
-        debugIdleProfiler(
-            [](Debug::Statistics& statistics) -> Time::Stopwatch&
-            {
-                return statistics.profilers.idle;
-            },
-            MutablePointer())
+    EndCurator::EndCurator(Init init) : Curator(init), framesPerSecondStopwatch(Time::CreateRealStopwatch())
     {}
 
     void EndCurator::Handle(const Work&)
     {
-        auto mutableInformation = MutablePointer().Of<Information>();
+        auto information = MutablePointer().Of<Information>();
 
         const auto timeSettings = Arca::Index<Settings>(Owner());
-
-        static unsigned int count = 0;
+        
         if (framesPerSecondStopwatch.Elapsed() >= Time::Milliseconds(timeSettings->framesPerSecondLimit))
         {
             framesPerSecondStopwatch.Restart();
 
-            mutableInformation->framesPerSecond = count;
+            information->framesPerSecond = count;
             count = 0;
         }
 
         ++count;
 
-        mutableInformation->endTime = mutableInformation->stopwatch.CurrentTime();
-        mutableInformation->lastElapsed = mutableInformation->endTime - mutableInformation->startTime;
-        mutableInformation->totalElapsed += mutableInformation->lastElapsed;
+        information->endTime = information->profilers.frame.CurrentTime();
+        information->lastElapsed = information->endTime - information->startTime;
+        information->totalElapsed += information->lastElapsed;
 
-        debugIdleProfiler.Start();
+        information->profilers.idle = Time::CreateRealStopwatch();
     }
 }

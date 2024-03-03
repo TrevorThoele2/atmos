@@ -21,7 +21,7 @@ namespace Atmos::Render
             position,
             scalers,
             rotation,
-            Spatial::BoundsSpace::World)
+            Spatial::Space::World)
     {}
 
     DynamicImage::DynamicImage(Arca::RelicInit init, Arca::Serialization serialization) :

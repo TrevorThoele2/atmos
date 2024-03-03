@@ -21,7 +21,7 @@ namespace Atmos::UI
             position,
             scalers,
             rotation,
-            Spatial::BoundsSpace::Screen)
+            Spatial::Space::Screen)
     {}
 
     Image::Image(Arca::RelicInit init, Arca::Serialization serialization) :

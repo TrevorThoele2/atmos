@@ -31,12 +31,20 @@ namespace Atmos::Render
         void WorkImpl(
             Spatial::AxisAlignedBox3D cameraBox,
             Spatial::Point2D cameraTopLeft,
-            Arca::Index<MainSurface> mainSurface) override;
+            const MainSurface& mainSurface) override;
     private:
         using Matrix = Arca::All<RenderCore, TextCore, Spatial::Bounds>;
 
         TextManager* manager;
         GraphicsManager* graphicsManager;
+
+        void StageRender(
+            Arca::RelicID id,
+            const RenderCore& renderCore,
+            const TextCore& core,
+            const Spatial::Bounds& bounds,
+            Spatial::Point2D cameraTopLeft,
+            const MainSurface& mainSurface);
     private:
         static std::tuple<Spatial::Size2D, Spatial::AxisAlignedBox2D> ViewSliceDependent(
             Arca::Index<ViewSlice> viewSlice,
