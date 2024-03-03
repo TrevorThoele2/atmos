@@ -3,12 +3,12 @@
 namespace Atmos::Render
 {
     ObjectCurator::ObjectCurator(Init init) :
-        Curator(init), camera(init.owner.Find<Camera>()), mainSurface(init.owner.Find<MainSurface>())
+        Curator(init), camera(init.owner.Find<Camera>())
     {}
 
     ObjectCurator::~ObjectCurator() = default;
 
-    void ObjectCurator::Handle(const Work& command)
+    void ObjectCurator::Handle(const Work&)
     {
         const auto cameraLeft = camera->Sides().Left();
         const auto cameraTop = camera->Sides().Top();
@@ -33,6 +33,7 @@ namespace Atmos::Render
 
         const Spatial::Point2D cameraTopLeft{ cameraLeft, cameraTop };
 
+        const auto mainSurface = Owner().Find<MainSurface>();
         WorkImpl(cameraBox, cameraTopLeft, *mainSurface);
     }
 

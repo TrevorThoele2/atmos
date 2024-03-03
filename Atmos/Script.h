@@ -7,6 +7,8 @@
 #include "ScriptResource.h"
 #include "FindAssetByName.h"
 
+#include <Inscription/VectorScribe.h>
+
 namespace Atmos::Scripting
 {
     class Resource;

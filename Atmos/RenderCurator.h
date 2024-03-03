@@ -2,7 +2,6 @@
 
 #include <Arca/Curator.h>
 
-#include "MainSurface.h"
 #include "Work.h"
 #include "ChangeColor.h"
 #include "ChangeMaterialAsset.h"
@@ -19,8 +18,6 @@ namespace Atmos::Render
         void Handle(const ChangeColor& command);
         void Handle(const ChangeMaterialAsset& command);
         void Handle(const ChangeViewSlice& command);
-    private:
-        Arca::Index<MainSurface> mainSurface;
     };
 }
 

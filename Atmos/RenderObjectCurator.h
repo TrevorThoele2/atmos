@@ -3,8 +3,8 @@
 #include <Arca/Curator.h>
 
 #include "Camera.h"
-#include "AxisAlignedBox3D.h"
 #include "MainSurface.h"
+#include "AxisAlignedBox3D.h"
 #include "Work.h"
 
 namespace Atmos::Render
@@ -29,6 +29,5 @@ namespace Atmos::Render
         [[nodiscard]] static Spatial::Point3D ToScreenPoint(Spatial::Point3D position);
     private:
         Arca::Index<Camera> camera;
-        Arca::Index<MainSurface> mainSurface;
     };
 }
